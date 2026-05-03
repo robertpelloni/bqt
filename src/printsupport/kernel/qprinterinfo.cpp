@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprinterinfo.h"
 #include "qprinterinfo_p.h"
 #include "qprintdevice_p.h"
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #include <qpa/qplatformprintplugin.h>
 #include <qpa/qplatformprintersupport.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_GLOBAL_STATIC(QPrinterInfoPrivate, shared_null);
 
@@ -43,7 +43,7 @@ QPrinterInfoPrivate::QPrinterInfoPrivate(const QString &id)
     existing printers.
 
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     Use the static functions to generate a list of QPrinterInfo
     objects. Each QPrinterInfo object in the list represents a single
@@ -436,7 +436,7 @@ QPrinterInfo QPrinterInfo::printerInfo(const QString &printerName)
     return QPrinterInfo(printerName);
 }
 
-#  ifndef QT_NO_DEBUG_STREAM
+#  ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QPrinterInfo &p)
 {
     QDebugStateSaver saver(debug);
@@ -449,8 +449,8 @@ QDebug operator<<(QDebug debug, const QPrinterInfo &p)
     debug << ')';
     return debug;
 }
-#  endif // !QT_NO_DEBUG_STREAM
+#  endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

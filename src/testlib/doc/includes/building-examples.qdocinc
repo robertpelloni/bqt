@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 //! [building the executable]
     You can build the test case executable using CMake or qmake.
@@ -10,12 +10,12 @@
 
     \quotefile \1/CMakeLists.txt
 
-    Next, from the command line, run either \c cmake or use the \c qt-cmake
+    Next, from the command line, run either \c cmake or use the \c bobui-cmake
     convenience script located in
-    \c Qt-prefix/<version>/<platform>/bin/qt-cmake:
+    \c BobUI-prefix/<version>/<platform>/bin/bobui-cmake:
 
     \badcode
-        <Qt-prefix>/<version>/<platform>/bin/qt-cmake <source-dir> <build-dir> -G Ninja
+        <BobUI-prefix>/<version>/<platform>/bin/bobui-cmake <source-dir> <build-dir> -G Ninja
     \endcode
 
     Then, run your preferred generator tool to build the executable. Here, we're

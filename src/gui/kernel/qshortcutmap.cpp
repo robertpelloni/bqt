@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qshortcutmap_p.h"
 #include "private/qobject_p.h"
@@ -10,14 +10,14 @@
 #include "qguiapplication.h"
 #include "qwindow.h"
 #include <private/qkeymapper_p.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qscopeguard.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcShortcutMap, "qt.gui.shortcutmap")
+Q_STATIC_LOGGING_CATEGORY(lcShortcutMap, "bobui.gui.shortcutmap")
 
 /* \internal
     Entry data for QShortcutMap
@@ -29,14 +29,14 @@ Q_STATIC_LOGGING_CATEGORY(lcShortcutMap, "qt.gui.shortcutmap")
 struct QShortcutEntry
 {
     QShortcutEntry()
-        : keySequence(0), context(Qt::WindowShortcut), enabled(false), autorepeat(1), id(0), owner(nullptr), contextMatcher(nullptr)
+        : keySequence(0), context(BobUI::WindowShortcut), enabled(false), autorepeat(1), id(0), owner(nullptr), contextMatcher(nullptr)
     {}
 
     QShortcutEntry(const QKeySequence &k)
-        : keySequence(k), context(Qt::WindowShortcut), enabled(false), autorepeat(1), id(0), owner(nullptr), contextMatcher(nullptr)
+        : keySequence(k), context(BobUI::WindowShortcut), enabled(false), autorepeat(1), id(0), owner(nullptr), contextMatcher(nullptr)
     {}
 
-    QShortcutEntry(QObject *o, const QKeySequence &k, Qt::ShortcutContext c, int i, bool a, QShortcutMap::ContextMatcher m)
+    QShortcutEntry(QObject *o, const QKeySequence &k, BobUI::ShortcutContext c, int i, bool a, QShortcutMap::ContextMatcher m)
         : keySequence(k), context(c), enabled(true), autorepeat(a), id(i), owner(o), contextMatcher(m)
     {}
 
@@ -46,7 +46,7 @@ struct QShortcutEntry
     { return keySequence < f.keySequence; }
 
     QKeySequence keySequence;
-    Qt::ShortcutContext context;
+    BobUI::ShortcutContext context;
     bool enabled : 1;
     bool autorepeat : 1;
     signed int id;
@@ -120,7 +120,7 @@ QShortcutMap::~QShortcutMap()
     Adds a shortcut to the global map.
     Returns the id of the newly added shortcut.
 */
-int QShortcutMap::addShortcut(QObject *owner, const QKeySequence &keySequence, Qt::ShortcutContext context, ContextMatcher matcher)
+int QShortcutMap::addShortcut(QObject *owner, const QKeySequence &keySequence, BobUI::ShortcutContext context, ContextMatcher matcher)
 {
     Q_ASSERT_X(owner, "QShortcutMap::addShortcut", "All shortcuts need an owner");
     Q_ASSERT_X(!keySequence.isEmpty(), "QShortcutMap::addShortcut", "Cannot add keyless shortcuts to map");
@@ -287,7 +287,7 @@ bool QShortcutMap::tryShortcut(QKeyEvent *e)
 {
     Q_D(QShortcutMap);
 
-    if (e->key() == Qt::Key_unknown)
+    if (e->key() == BobUI::Key_unknown)
         return false;
 
     QKeySequence::SequenceMatch previousState = state();
@@ -326,8 +326,8 @@ QKeySequence::SequenceMatch QShortcutMap::nextState(QKeyEvent *e)
 {
     Q_D(QShortcutMap);
     // Modifiers can NOT be shortcuts...
-    if (e->key() >= Qt::Key_Shift &&
-        e->key() <= Qt::Key_ScrollLock)
+    if (e->key() >= BobUI::Key_Shift &&
+        e->key() <= BobUI::Key_ScrollLock)
         return d->currentState;
 
     QKeySequence::SequenceMatch result = QKeySequence::NoMatch;
@@ -336,14 +336,14 @@ QKeySequence::SequenceMatch QShortcutMap::nextState(QKeyEvent *e)
     d->identicals.clear();
 
     result = find(e);
-    if (result == QKeySequence::NoMatch && (e->modifiers() & Qt::KeypadModifier)) {
+    if (result == QKeySequence::NoMatch && (e->modifiers() & BobUI::KeypadModifier)) {
         // Try to find a match without keypad modifier
-        result = find(e, Qt::KeypadModifier);
+        result = find(e, BobUI::KeypadModifier);
     }
-    if (result == QKeySequence::NoMatch && e->modifiers() & Qt::ShiftModifier) {
-        // If Shift + Key_Backtab, also try Shift + Qt::Key_Tab
-        if (e->key() == Qt::Key_Backtab) {
-            QKeyEvent pe = QKeyEvent(e->type(), Qt::Key_Tab, e->modifiers(), e->text());
+    if (result == QKeySequence::NoMatch && e->modifiers() & BobUI::ShiftModifier) {
+        // If Shift + Key_Backtab, also try Shift + BobUI::Key_Tab
+        if (e->key() == BobUI::Key_Backtab) {
+            QKeyEvent pe = QKeyEvent(e->type(), BobUI::Key_Tab, e->modifiers(), e->text());
             result = find(&pe);
         }
     }
@@ -397,7 +397,7 @@ QKeySequence::SequenceMatch QShortcutMap::find(QKeyEvent *e, int ignoredModifier
 
     // Should never happen
     if (d->newEntries == d->currentSequences) {
-        Q_ASSERT_X(e->key() != Qt::Key_unknown || e->text().size(),
+        Q_ASSERT_X(e->key() != BobUI::Key_unknown || e->text().size(),
                    "QShortcutMap::find", "New sequence to find identical to previous");
         return QKeySequence::NoMatch;
     }
@@ -495,7 +495,7 @@ void QShortcutMap::createNewSequences(QKeyEvent *e, QList<QKeySequence> &ksl, in
     Q_D(QShortcutMap);
     QList<QKeyCombination> possibleKeys = QKeyMapper::possibleKeys(e);
     qCDebug(lcShortcutMap) << "Creating new sequences for" << e
-        << "with ignoredModifiers=" << Qt::KeyboardModifiers(ignoredModifiers);
+        << "with ignoredModifiers=" << BobUI::KeyboardModifiers(ignoredModifiers);
     int pkTotal = possibleKeys.size();
     if (!pkTotal)
         return;
@@ -531,17 +531,17 @@ void QShortcutMap::createNewSequences(QKeyEvent *e, QList<QKeySequence> &ksl, in
 /*! \internal
     Converts keyboard button states into modifier states
 */
-int QShortcutMap::translateModifiers(Qt::KeyboardModifiers modifiers)
+int QShortcutMap::translateModifiers(BobUI::KeyboardModifiers modifiers)
 {
     int result = 0;
-    if (modifiers & Qt::ShiftModifier)
-        result |= Qt::SHIFT;
-    if (modifiers & Qt::ControlModifier)
-        result |= Qt::CTRL;
-    if (modifiers & Qt::MetaModifier)
-        result |= Qt::META;
-    if (modifiers & Qt::AltModifier)
-        result |= Qt::ALT;
+    if (modifiers & BobUI::ShiftModifier)
+        result |= BobUI::SHIFT;
+    if (modifiers & BobUI::ControlModifier)
+        result |= BobUI::CTRL;
+    if (modifiers & BobUI::MetaModifier)
+        result |= BobUI::META;
+    if (modifiers & BobUI::AltModifier)
+        result |= BobUI::ALT;
     return result;
 }
 
@@ -613,7 +613,7 @@ QList<QKeySequence> QShortcutMap::keySequences(bool getAll) const
     for (auto sequence : d->shortcuts) {
         bool addSequence = false;
         if (sequence.enabled) {
-            if (getAll || sequence.context == Qt::ApplicationShortcut ||
+            if (getAll || sequence.context == BobUI::ApplicationShortcut ||
                 sequence.owner == QGuiApplication::focusObject()) {
                 addSequence = true;
             } else {
@@ -624,9 +624,9 @@ QList<QKeySequence> QShortcutMap::keySequences(bool getAll) const
                     possibleWindow = possibleWindow->parent();
                 }
                 if (possibleWindow == QGuiApplication::focusWindow()) {
-                    if (sequence.context == Qt::WindowShortcut) {
+                    if (sequence.context == BobUI::WindowShortcut) {
                         addSequence = true;
-                    } else if (sequence.context == Qt::WidgetWithChildrenShortcut) {
+                    } else if (sequence.context == BobUI::WidgetWithChildrenShortcut) {
                         QObject *possibleWidget = QGuiApplication::focusObject();
                         while (possibleWidget->parent()) {
                             possibleWidget = possibleWidget->parent();
@@ -659,4 +659,4 @@ void QShortcutMap::dumpMap() const
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

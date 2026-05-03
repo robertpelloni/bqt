@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 #include <QBuffer>
 #include <QDebug>
@@ -11,9 +11,9 @@
 #include <QImageWriter>
 #include <QPixmap>
 
-#include <QtCore/private/qfactoryloader_p.h>
+#include <BobUICore/private/qfactoryloader_p.h>
 #include <QSet>
-#include <QTimer>
+#include <BOBUIimer>
 
 typedef QMap<QString, QString> QStringMap;
 typedef QList<int> QIntList;
@@ -67,13 +67,13 @@ tst_bench_QImageReader::tst_bench_QImageReader()
     images << QPair<QString, QByteArray>(QLatin1String("runners.ppm"), QByteArray("ppm"));
     images << QPair<QString, QByteArray>(QLatin1String("test.ppm"), QByteArray("ppm"));
     images << QPair<QString, QByteArray>(QLatin1String("gnus.xbm"), QByteArray("xbm"));
-#if defined QTEST_HAVE_JPEG
+#if defined BOBUIEST_HAVE_JPEG
     images << QPair<QString, QByteArray>(QLatin1String("beavis.jpg"), QByteArray("jpeg"));
     images << QPair<QString, QByteArray>(QLatin1String("YCbCr_cmyk.jpg"), QByteArray("jpeg"));
     images << QPair<QString, QByteArray>(QLatin1String("YCbCr_rgb.jpg"), QByteArray("jpeg"));
     images << QPair<QString, QByteArray>(QLatin1String("task210380.jpg"), QByteArray("jpeg"));
 #endif
-#if defined QTEST_HAVE_GIF
+#if defined BOBUIEST_HAVE_GIF
     images << QPair<QString, QByteArray>(QLatin1String("earth.gif"), QByteArray("gif"));
     images << QPair<QString, QByteArray>(QLatin1String("trolltech.gif"), QByteArray("gif"));
 #endif
@@ -112,13 +112,13 @@ void tst_bench_QImageReader::rawFactoryLoader_instance()
 
 void tst_bench_QImageReader::readImage_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
 
     for (int i = 0; i < images.size(); ++i) {
         const QString file = images[i].first;
         const QByteArray format = images[i].second;
-        QTest::newRow(qPrintable(file)) << file << format;
+        BOBUIest::newRow(qPrintable(file)) << file << format;
     }
 }
 
@@ -136,9 +136,9 @@ void tst_bench_QImageReader::readImage()
 
 void tst_bench_QImageReader::setScaledSize_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
-    QTest::addColumn<QSize>("newSize");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QSize>("newSize");
 
     for (int i = 0; i < images.size(); ++i) {
         const QString file = images[i].first;
@@ -148,7 +148,7 @@ void tst_bench_QImageReader::setScaledSize_data()
             size = QSize(400, 400);
         else if (file == QLatin1String("test.ppm"))
             size = QSize(10, 10);
-        QTest::newRow(qPrintable(file)) << file << format << size;
+        BOBUIest::newRow(qPrintable(file)) << file << format << size;
     }
 }
 
@@ -168,14 +168,14 @@ void tst_bench_QImageReader::setScaledSize()
 
 void tst_bench_QImageReader::setClipRect_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
-    QTest::addColumn<QRect>("newRect");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QRect>("newRect");
 
     for (int i = 0; i < images.size(); ++i) {
         const QString file = images[i].first;
         const QByteArray format = images[i].second;
-        QTest::newRow(qPrintable(file)) << file << format << QRect(0, 0, 50, 50);
+        BOBUIest::newRow(qPrintable(file)) << file << format << QRect(0, 0, 50, 50);
     }
 }
 
@@ -213,5 +213,5 @@ void tst_bench_QImageReader::setScaledClipRect()
     }
 }
 
-QTEST_MAIN(tst_bench_QImageReader)
+BOBUIEST_MAIN(tst_bench_QImageReader)
 #include "tst_bench_qimagereader.moc"

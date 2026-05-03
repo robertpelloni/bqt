@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "hpacktable_p.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #include <algorithm>
 #include <cstddef>
@@ -12,7 +12,7 @@
 #include <limits>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace HPack
 {
@@ -520,4 +520,4 @@ std::vector<HeaderField>::const_iterator FieldLookupTable::findInStaticPart(cons
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

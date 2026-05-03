@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(secureudpserver LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Network Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Network Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(secureudpserver
+bobui_add_executable(secureudpserver
     main.cpp
     mainwindow.cpp mainwindow.h mainwindow.ui
     nicselector.cpp nicselector.h nicselector.ui
@@ -21,10 +21,10 @@ set_target_properties(secureudpserver PROPERTIES
 )
 
 target_link_libraries(secureudpserver PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Network
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Network
+    BobUI6::Widgets
 )
 
 install(TARGETS secureudpserver
@@ -33,7 +33,7 @@ install(TARGETS secureudpserver
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-qt_generate_deploy_app_script(
+bobui_generate_deploy_app_script(
     TARGET secureudpserver
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR

@@ -1,14 +1,14 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PYTHONWRITEDECLARATION_H
 #define PYTHONWRITEDECLARATION_H
 
 #include <treewalker.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextStream;
+class BOBUIextStream;
 class Driver;
 class Uic;
 
@@ -26,12 +26,12 @@ struct WriteDeclaration : public TreeWalker
 private:
     Uic *m_uic;
     Driver *m_driver;
-    QTextStream &m_output;
+    BOBUIextStream &m_output;
     const Option &m_option;
 };
 
 } // namespace Python
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PYTHONWRITEDECLARATION_H

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'pagefold.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,35 +9,35 @@
 #ifndef PAGEFOLD_H
 #define PAGEFOLD_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
 public:
     QAction *exitAction;
-    QAction *aboutQtAction;
+    QAction *aboutBobUIAction;
     QAction *editStyleAction;
     QAction *aboutAction;
     QWidget *centralwidget;
@@ -72,8 +72,8 @@ public:
         MainWindow->resize(392, 412);
         exitAction = new QAction(MainWindow);
         exitAction->setObjectName("exitAction");
-        aboutQtAction = new QAction(MainWindow);
-        aboutQtAction->setObjectName("aboutQtAction");
+        aboutBobUIAction = new QAction(MainWindow);
+        aboutBobUIAction->setObjectName("aboutBobUIAction");
         editStyleAction = new QAction(MainWindow);
         editStyleAction->setObjectName("editStyleAction");
         aboutAction = new QAction(MainWindow);
@@ -153,7 +153,7 @@ public:
 
         buttonBox = new QDialogButtonBox(mainFrame);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         gridLayout->addWidget(buttonBox, 7, 2, 1, 2);
@@ -214,13 +214,13 @@ public:
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
         MainWindow->setStatusBar(statusbar);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         ageLabel->setBuddy(ageSpinBox);
         nameLabel->setBuddy(nameCombo);
         passwordLabel->setBuddy(passwordEdit);
         label->setBuddy(professionList);
         countryLabel->setBuddy(professionList);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         menubar->addAction(menu_File->menuAction());
         menubar->addAction(menu_Help->menuAction());
@@ -229,7 +229,7 @@ public:
         menu_File->addAction(exitAction);
         menu_Help->addAction(aboutAction);
         menu_Help->addSeparator();
-        menu_Help->addAction(aboutQtAction);
+        menu_Help->addAction(aboutBobUIAction);
 
         retranslateUi(MainWindow);
 
@@ -245,7 +245,7 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         exitAction->setText(QCoreApplication::translate("MainWindow", "&Exit", nullptr));
-        aboutQtAction->setText(QCoreApplication::translate("MainWindow", "About Qt", nullptr));
+        aboutBobUIAction->setText(QCoreApplication::translate("MainWindow", "About BobUI", nullptr));
         editStyleAction->setText(QCoreApplication::translate("MainWindow", "Edit &Style", nullptr));
         aboutAction->setText(QCoreApplication::translate("MainWindow", "About", nullptr));
         nameCombo->setItemText(0, QCoreApplication::translate("MainWindow", "Girish", nullptr));
@@ -253,35 +253,35 @@ public:
         nameCombo->setItemText(2, QCoreApplication::translate("MainWindow", "Simon", nullptr));
         nameCombo->setItemText(3, QCoreApplication::translate("MainWindow", "Zack", nullptr));
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         nameCombo->setToolTip(QCoreApplication::translate("MainWindow", "Specify your name", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         femaleRadioButton->setStyleSheet(QCoreApplication::translate("MainWindow", "Check this if you are female", nullptr));
         femaleRadioButton->setText(QCoreApplication::translate("MainWindow", "&Female", nullptr));
         genderLabel->setText(QCoreApplication::translate("MainWindow", "Gender:", nullptr));
         ageLabel->setText(QCoreApplication::translate("MainWindow", "&Age:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         maleRadioButton->setToolTip(QCoreApplication::translate("MainWindow", "Check this if you are male", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         maleRadioButton->setText(QCoreApplication::translate("MainWindow", "&Male", nullptr));
         nameLabel->setText(QCoreApplication::translate("MainWindow", "&Name:", nullptr));
         passwordLabel->setText(QCoreApplication::translate("MainWindow", "&Password:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         ageSpinBox->setToolTip(QCoreApplication::translate("MainWindow", "Specify your age", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(statustip)
         ageSpinBox->setStatusTip(QCoreApplication::translate("MainWindow", "Specify your age", nullptr));
-#endif // QT_CONFIG(statustip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(statustip)
+#if BOBUI_CONFIG(tooltip)
         agreeCheckBox->setToolTip(QCoreApplication::translate("MainWindow", "Please read the LICENSE file before checking", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         agreeCheckBox->setText(QCoreApplication::translate("MainWindow", "I &accept the terms and &conditions", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         passwordEdit->setToolTip(QCoreApplication::translate("MainWindow", "Specify your password", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(statustip)
         passwordEdit->setStatusTip(QCoreApplication::translate("MainWindow", "Specify your password", nullptr));
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
         passwordEdit->setText(QCoreApplication::translate("MainWindow", "Password", nullptr));
 
         const bool __sortingEnabled = professionList->isSortingEnabled();
@@ -294,15 +294,15 @@ public:
         ___qlistwidgetitem2->setText(QCoreApplication::translate("MainWindow", "Fisherman", nullptr));
         professionList->setSortingEnabled(__sortingEnabled);
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         professionList->setToolTip(QCoreApplication::translate("MainWindow", "Select your profession", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(statustip)
         professionList->setStatusTip(QCoreApplication::translate("MainWindow", "Specify your name here", nullptr));
-#endif // QT_CONFIG(statustip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(statustip)
+#if BOBUI_CONFIG(whatsthis)
         professionList->setWhatsThis(QCoreApplication::translate("MainWindow", "Specify your name here", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         label->setText(QCoreApplication::translate("MainWindow", "Profession:", nullptr));
         countryCombo->setItemText(0, QCoreApplication::translate("MainWindow", "Egypt", nullptr));
         countryCombo->setItemText(1, QCoreApplication::translate("MainWindow", "France", nullptr));
@@ -312,12 +312,12 @@ public:
         countryCombo->setItemText(5, QCoreApplication::translate("MainWindow", "Korea", nullptr));
         countryCombo->setItemText(6, QCoreApplication::translate("MainWindow", "Norway", nullptr));
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         countryCombo->setToolTip(QCoreApplication::translate("MainWindow", "Specify country of origin", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(statustip)
         countryCombo->setStatusTip(QCoreApplication::translate("MainWindow", "Specify country of origin", nullptr));
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
         countryLabel->setText(QCoreApplication::translate("MainWindow", "Pro&fession", nullptr));
         menu_File->setTitle(QCoreApplication::translate("MainWindow", "&File", nullptr));
         menu_Help->setTitle(QCoreApplication::translate("MainWindow", "&Help", nullptr));
@@ -329,6 +329,6 @@ namespace Ui {
     class MainWindow: public Ui_MainWindow {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PAGEFOLD_H

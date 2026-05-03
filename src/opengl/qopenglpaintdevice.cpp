@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qopenglpaintdevice.h>
 #include <qpaintengine.h>
-#include <qthreadstorage.h>
+#include <bobuihreadstorage.h>
 
 #include <private/qopenglpaintdevice_p.h>
 #include <private/qobject_p.h>
@@ -11,18 +11,18 @@
 #include <private/qopenglframebufferobject_p.h>
 #include <private/qopenglpaintengine_p.h>
 
-// for qt_defaultDpiX/Y
+// for bobui_defaultDpiX/Y
 #include <private/qfont_p.h>
 
 #include <qopenglfunctions.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOpenGLPaintDevice
     \brief The QOpenGLPaintDevice class enables painting to an OpenGL context using QPainter.
     \since 5.0
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     \ingroup painting-3D
 
@@ -131,8 +131,8 @@ QOpenGLPaintDevice::~QOpenGLPaintDevice()
 QOpenGLPaintDevicePrivate::QOpenGLPaintDevicePrivate(const QSize &sz)
     : size(sz)
     , ctx(QOpenGLContext::currentContext())
-    , dpmx(qt_defaultDpiX() * 100. / 2.54)
-    , dpmy(qt_defaultDpiY() * 100. / 2.54)
+    , dpmx(bobui_defaultDpiX() * 100. / 2.54)
+    , dpmy(bobui_defaultDpiY() * 100. / 2.54)
     , devicePixelRatio(1.0)
     , flipped(false)
     , engine(nullptr)
@@ -154,10 +154,10 @@ public:
     }
 
 private:
-    QThreadStorage<QPaintEngine *> storage;
+    BOBUIhreadStorage<QPaintEngine *> storage;
 };
 
-Q_GLOBAL_STATIC(QOpenGLEngineThreadStorage, qt_opengl_engine)
+Q_GLOBAL_STATIC(QOpenGLEngineThreadStorage, bobui_opengl_engine)
 
 /*!
     \reimp
@@ -168,7 +168,7 @@ QPaintEngine *QOpenGLPaintDevice::paintEngine() const
     if (d_ptr->engine)
         return d_ptr->engine;
 
-    QPaintEngine *engine = qt_opengl_engine()->engine();
+    QPaintEngine *engine = bobui_opengl_engine()->engine();
     if (engine->isActive() && engine->paintDevice() != this) {
         d_ptr->engine = new QOpenGL2PaintEngineEx;
         return d_ptr->engine;
@@ -337,4 +337,4 @@ void QOpenGLPaintDevice::ensureActiveTarget()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

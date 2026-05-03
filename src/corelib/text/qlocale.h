@@ -1,26 +1,26 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-impl-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-impl-only
 
 #ifndef QLOCALE_H
 #define QLOCALE_H
 
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCalendar;
 class QDataStream;
 class QDate;
 class QDateTime;
 class QLocale;
-class QTime;
+class BOBUIime;
 class QVariant;
-class QTextStream;
-class QTextStreamPrivate;
+class BOBUIextStream;
+class BOBUIextStreamPrivate;
 
 class QLocalePrivate;
 
@@ -33,8 +33,8 @@ class Q_CORE_EXPORT QLocale
     friend class QByteArray;
     friend class QIntValidator;
     friend class QDoubleValidatorPrivate;
-    friend class QTextStream;
-    friend class QTextStreamPrivate;
+    friend class BOBUIextStream;
+    friend class BOBUIextStreamPrivate;
 
 public:
     static constexpr int DefaultTwoDigitBaseYear = 1900;
@@ -569,7 +569,7 @@ public:
         LastScript = HanifiScript
     };
 
-    // ### Qt 7: Rename to Territory
+    // ### BobUI 7: Rename to Territory
     enum Country : ushort {
         AnyTerritory = 0,
         Afghanistan = 1,
@@ -864,7 +864,7 @@ public:
     };
 // GENERATED PART ENDS HERE
 
-    using Territory = Country; // ### Qt 7: reverse
+    using Territory = Country; // ### BobUI 7: reverse
 
     Q_ENUM(Language)
     Q_ENUM(Country)
@@ -874,7 +874,7 @@ public:
         MetricSystem,
         ImperialUSSystem,
         ImperialUKSystem,
-        ImperialSystem = ImperialUSSystem // Qt 4 compatibility
+        ImperialSystem = ImperialUSSystem // BobUI 4 compatibility
     };
     Q_ENUM(MeasurementSystem)
 
@@ -920,13 +920,13 @@ public:
     Q_FLAG(DataSizeFormats)
 
     QLocale();
-    QT_CORE_INLINE_SINCE(6, 4)
+    BOBUI_CORE_INLINE_SINCE(6, 4)
     explicit QLocale(const QString &name);
     explicit QLocale(QStringView name);
     QLocale(Language language, Territory territory);
     QLocale(Language language, Script script = AnyScript, Territory territory = AnyTerritory);
     QLocale(const QLocale &other) noexcept;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QLocale)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QLocale)
     QLocale &operator=(const QLocale &other) noexcept;
     ~QLocale();
 
@@ -935,12 +935,12 @@ public:
     Language language() const;
     Script script() const;
     Territory territory() const;
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use territory() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use territory() instead")
     Country country() const;
 #endif
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QString name() const;
     QString bcp47Name() const;
 #endif
@@ -949,8 +949,8 @@ public:
 
     QString nativeLanguageName() const;
     QString nativeTerritoryName() const;
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use nativeTerritoryName() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use nativeTerritoryName() instead")
     QString nativeCountryName() const;
 #endif
 
@@ -1014,14 +1014,14 @@ public:
 
     // (Can't inline first two: passing by value doesn't work when only forward-declared.)
     QString toString(QDate date, const QString &format) const;
-    QString toString(QTime time, const QString &format) const;
+    QString toString(BOBUIime time, const QString &format) const;
     QString toString(const QDateTime &dateTime, const QString &format) const
     { return toString(dateTime, qToStringViewIgnoringNull(format)); }
     QString toString(QDate date, QStringView format) const;
-    QString toString(QTime time, QStringView format) const;
+    QString toString(BOBUIime time, QStringView format) const;
     QString toString(const QDateTime &dateTime, QStringView format) const;
     QString toString(QDate date, FormatType format = LongFormat) const;
-    QString toString(QTime time, FormatType format = LongFormat) const;
+    QString toString(BOBUIime time, FormatType format = LongFormat) const;
     QString toString(const QDateTime &dateTime, FormatType format = LongFormat) const;
 
     /* We can't pass a default for QCalendar (its declaration mentions
@@ -1039,10 +1039,10 @@ public:
     QString dateTimeFormat(FormatType format = LongFormat) const;
     // QCalendar's header has to #include QLocale's, preventing the reverse, so
     // QCalendar parameters can't have defaults here.
-#if QT_CONFIG(datestring)
-    QTime toTime(const QString &string, FormatType = LongFormat) const;
-    QTime toTime(const QString &string, const QString &format) const;
-#  if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CONFIG(datestring)
+    BOBUIime toTime(const QString &string, FormatType = LongFormat) const;
+    BOBUIime toTime(const QString &string, const QString &format) const;
+#  if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QDate toDate(const QString &string, FormatType = LongFormat) const;
     QDate toDate(const QString &string, const QString &format) const;
     QDateTime toDateTime(const QString &string, FormatType format = LongFormat) const;
@@ -1085,15 +1085,15 @@ public:
     QString dayName(int, FormatType format = LongFormat) const;
     QString standaloneDayName(int, FormatType format = LongFormat) const;
 
-    Qt::DayOfWeek firstDayOfWeek() const;
-    QList<Qt::DayOfWeek> weekdays() const;
+    BobUI::DayOfWeek firstDayOfWeek() const;
+    QList<BobUI::DayOfWeek> weekdays() const;
 
     QString amText() const;
     QString pmText() const;
 
     MeasurementSystem measurementSystem() const;
     QLocale collation() const;
-    Qt::LayoutDirection textDirection() const;
+    BobUI::LayoutDirection textDirection() const;
 
     QString toUpper(const QString &str) const;
     QString toLower(const QString &str) const;
@@ -1115,7 +1115,7 @@ public:
 
     QString formattedDataSize(qint64 bytes, int precision = 2, DataSizeFormats format = DataSizeIecFormat) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QStringList uiLanguages() const;
 #endif
     QStringList uiLanguages(TagSeparator separator = TagSeparator::Dash) const;
@@ -1137,7 +1137,7 @@ public:
     Q_DECLARE_FLAGS(LanguageCodeTypes, LanguageCodeType)
     Q_FLAG(LanguageCodeTypes)
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     static QString languageToCode(Language language);
     static Language codeToLanguage(QStringView languageCode) noexcept;
 #endif
@@ -1146,10 +1146,10 @@ public:
                                    LanguageCodeTypes codeTypes = AnyLanguageCode) noexcept;
     static QString territoryToCode(Territory territory);
     static Territory codeToTerritory(QStringView territoryCode) noexcept;
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use territoryToCode(Territory) instead")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use territoryToCode(Territory) instead")
     static QString countryToCode(Country country);
-    QT_DEPRECATED_VERSION_X_6_6("Use codeToTerritory(QStringView) instead")
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use codeToTerritory(QStringView) instead")
     static Country codeToCountry(QStringView countryCode) noexcept;
 #endif
     static QString scriptToCode(Script script);
@@ -1157,8 +1157,8 @@ public:
 
     static QString languageToString(Language language);
     static QString territoryToString(Territory territory);
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use territoryToString(Territory) instead")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use territoryToString(Territory) instead")
     static QString countryToString(Country country);
 #endif
     static QString scriptToString(Script script);
@@ -1169,8 +1169,8 @@ public:
 
     static QList<QLocale> matchingLocales(QLocale::Language language, QLocale::Script script,
                                           QLocale::Territory territory);
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Query territory() on each entry from matchingLocales() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Query territory() on each entry from matchingLocales() instead")
     static QList<Country> countriesForLanguage(Language lang);
 #endif
 
@@ -1190,7 +1190,7 @@ private:
     bool equals(const QLocale &other) const noexcept;
     friend class QLocalePrivate;
     friend class QSystemLocale;
-    friend class QTimeZonePrivate;
+    friend class BOBUIimeZonePrivate;
     friend class QCalendarBackend;
     friend class QRomanCalendar;
     friend Q_CORE_EXPORT size_t qHash(const QLocale &key, size_t seed) noexcept;
@@ -1210,20 +1210,20 @@ Q_DECLARE_SHARED(QLocale)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLocale::NumberOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLocale::LanguageCodeTypes)
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 4)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 4)
 QLocale::QLocale(const QString &name)
     : QLocale(qToStringViewIgnoringNull(name)) {}
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QLocale &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QLocale &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QLocale &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOCALE_H

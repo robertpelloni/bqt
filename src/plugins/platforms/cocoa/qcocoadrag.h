@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOADRAG_H
 #define QCOCOADRAG_H
 
 #include <qpa/qplatformdrag.h>
-#include <QtGui/private/qsimpledrag_p.h>
-#include <QtGui/private/qinternalmimedata_p.h>
+#include <BobUIGui/private/qsimpledrag_p.h>
+#include <BobUIGui/private/qinternalmimedata_p.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSView);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSEvent);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSPasteboard);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDrag;
 class QEventLoop;
@@ -29,10 +29,10 @@ public:
     ~QCocoaDrag();
 
     QMimeData *dragMimeData();
-    Qt::DropAction drag(QDrag *m_drag) override;
+    BobUI::DropAction drag(QDrag *m_drag) override;
 
-    Qt::DropAction defaultAction(Qt::DropActions possibleActions,
-                                 Qt::KeyboardModifiers modifiers) const override;
+    BobUI::DropAction defaultAction(BobUI::DropActions possibleActions,
+                                 BobUI::KeyboardModifiers modifiers) const override;
 
     /**
     * to meet NSView dragImage:at guarantees, we need to record the original
@@ -40,13 +40,13 @@ public:
     */
     void setLastInputEvent(NSEvent *event, NSView *view);
 
-    void setAcceptedAction(Qt::DropAction act);
+    void setAcceptedAction(BobUI::DropAction act);
     void exitDragLoop();
 private:
     QDrag *m_drag;
     NSEvent *m_lastEvent;
     QObjCWeakPointer<NSView> m_lastView;
-    Qt::DropAction m_executed_drop_action;
+    BobUI::DropAction m_executed_drop_action;
     QEventLoop *m_internalDragLoop = nullptr;
 
     bool maybeDragMultipleItems();
@@ -68,6 +68,6 @@ public:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

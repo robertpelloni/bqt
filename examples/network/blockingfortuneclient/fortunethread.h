@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef FORTUNETHREAD_H
 #define FORTUNETHREAD_H
 
-#include <QThread>
+#include <BOBUIhread>
 #include <QMutex>
 #include <QWaitCondition>
 
 //! [0]
-class FortuneThread : public QThread
+class FortuneThread : public BOBUIhread
 {
     Q_OBJECT
 

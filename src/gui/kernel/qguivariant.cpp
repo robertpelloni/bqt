@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 // Gui types
 #include "qbitmap.h"
@@ -9,16 +9,16 @@
 #include "qcursor.h"
 #include "qfont.h"
 #include "qimage.h"
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include "qkeysequence.h"
 #endif
-#include "qtransform.h"
+#include "bobuiransform.h"
 #include "qpalette.h"
 #include "qpen.h"
 #include "qpixmap.h"
 #include "qpolygon.h"
 #include "qregion.h"
-#include "qtextformat.h"
+#include "bobuiextformat.h"
 #include "qmatrix4x4.h"
 #include "qvector2d.h"
 #include "qvector3d.h"
@@ -49,22 +49,22 @@
 
 #include <private/qmetatype_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 struct QVariantGuiHelper : QMetaTypeModuleHelper
 {
-#define QT_IMPL_METATYPEINTERFACE_GUI_TYPES(MetaTypeName, MetaTypeId, RealName) \
-    QT_METATYPE_INTERFACE_INIT(RealName),
+#define BOBUI_IMPL_METATYPEINTERFACE_GUI_TYPES(MetaTypeName, MetaTypeId, RealName) \
+    BOBUI_METATYPE_INTERFACE_INIT(RealName),
 
-    static const QtPrivate::QMetaTypeInterface *interfaceForType(int type)
+    static const BobUIPrivate::QMetaTypeInterface *interfaceForType(int type)
     {
         switch (type) {
-            QT_FOR_EACH_STATIC_GUI_CLASS(QT_METATYPE_CONVERT_ID_TO_TYPE)
+            BOBUI_FOR_EACH_STATIC_GUI_CLASS(BOBUI_METATYPE_CONVERT_ID_TO_TYPE)
             default: return nullptr;
         }
     }
-#undef QT_IMPL_METATYPEINTERFACE_GUI_TYPES
+#undef BOBUI_IMPL_METATYPEINTERFACE_GUI_TYPES
 
     static bool convert(const void *from, int fromTypeId, void *to, int toTypeId)
     {
@@ -74,7 +74,7 @@ struct QVariantGuiHelper : QMetaTypeModuleHelper
         // either two nullptrs from canConvert, or two valid pointers
         Q_ASSERT(onlyCheck || (bool(from) && bool(to)));
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         using Int = int;
 #endif
         switch (makePair(toTypeId, fromTypeId)) {
@@ -96,7 +96,7 @@ struct QVariantGuiHelper : QMetaTypeModuleHelper
             result = QColor::fromString(source);
             return result.isValid();
         );
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         QMETATYPE_CONVERTER(QString, QKeySequence,
             result = source.toString(QKeySequence::NativeText);
             return true;
@@ -119,7 +119,7 @@ struct QVariantGuiHelper : QMetaTypeModuleHelper
         QMETATYPE_CONVERTER(QPixmap, QBrush, result = source.texture(); return true;);
         QMETATYPE_CONVERTER(QBrush, QPixmap, result = source; return true;);
         QMETATYPE_CONVERTER(QColor, QBrush,
-            if (source.style() == Qt::SolidPattern) {
+            if (source.style() == BobUI::SolidPattern) {
                 result = source.color();
                 return true;
             }
@@ -143,4 +143,4 @@ void qRegisterGuiVariant()
 }
 Q_CONSTRUCTOR_FUNCTION(qRegisterGuiVariant)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

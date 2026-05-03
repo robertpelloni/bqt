@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGESTURE_P_H
 #define QGESTURE_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qrect.h"
 #include "qpoint.h"
 #include "qgesture.h"
@@ -24,9 +24,9 @@
 #include "qelapsedtimer.h"
 #include "private/qobject_p.h"
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGesturePrivate : public QObjectPrivate
 {
@@ -34,13 +34,13 @@ class QGesturePrivate : public QObjectPrivate
 
 public:
     QGesturePrivate()
-        : gestureType(Qt::CustomGesture), state(Qt::NoGesture),
+        : gestureType(BobUI::CustomGesture), state(BobUI::NoGesture),
           isHotSpotSet(false), gestureCancelPolicy(0)
     {
     }
 
-    Qt::GestureType gestureType;
-    Qt::GestureState state;
+    BobUI::GestureType gestureType;
+    BobUI::GestureState state;
     QPointF hotSpot;
     QPointF sceneHotSpot;
     uint isHotSpotSet : 1;
@@ -68,7 +68,7 @@ public:
     qreal acceleration;
     qreal xVelocity;
     qreal yVelocity;
-    int pointCount; // ### fixme Qt 5.5: Add accessor to QPanGesture.
+    int pointCount; // ### fixme BobUI 5.5: Add accessor to QPanGesture.
 };
 
 class QPinchGesturePrivate : public QGesturePrivate
@@ -134,24 +134,24 @@ public:
     QElapsedTimer time;
 };
 
-class QTapGesturePrivate : public QGesturePrivate
+class BOBUIapGesturePrivate : public QGesturePrivate
 {
-    Q_DECLARE_PUBLIC(QTapGesture)
+    Q_DECLARE_PUBLIC(BOBUIapGesture)
 
 public:
-    QTapGesturePrivate()
+    BOBUIapGesturePrivate()
     {
     }
 
     QPointF position;
 };
 
-class QTapAndHoldGesturePrivate : public QGesturePrivate
+class BOBUIapAndHoldGesturePrivate : public QGesturePrivate
 {
-    Q_DECLARE_PUBLIC(QTapAndHoldGesture)
+    Q_DECLARE_PUBLIC(BOBUIapAndHoldGesture)
 
 public:
-    QTapAndHoldGesturePrivate()
+    BOBUIapAndHoldGesturePrivate()
     {
     }
 
@@ -160,8 +160,8 @@ public:
     static int Timeout;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 #endif // QGESTURE_P_H

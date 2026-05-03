@@ -1,16 +1,16 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## splitter Binary:
 #####################################################################
 
-qt_internal_add_manual_test(splitter
+bobui_internal_add_manual_test(splitter
     GUI
     SOURCES
         ../shared/shared.h
         main.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )

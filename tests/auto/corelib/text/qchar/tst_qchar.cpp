@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qchar.h>
 #include <qfile.h>
 #include <qstringlist.h>
@@ -18,7 +18,7 @@ constexpr inline bool disabled = !explicitly<C>;
 //
 // Conversion from character types
 //
-#ifdef QT_NO_CAST_FROM_ASCII
+#ifdef BOBUI_NO_CAST_FROM_ASCII
 static_assert(disabled<char>);
 #else
 static_assert(implicitly<char>);
@@ -37,7 +37,7 @@ static_assert(explicitly<char32_t>);
 //
 // Conversion from others
 //
-#if defined(QT_RESTRICTED_CAST_FROM_ASCII) || defined(QT_NO_CAST_FROM_ASCII)
+#if defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) || defined(BOBUI_NO_CAST_FROM_ASCII)
 static_assert(disabled<uchar>);
 #else
 static_assert(explicitly<uchar>);
@@ -48,7 +48,7 @@ static_assert(explicitly<int>);
 static_assert(explicitly<uint>);
 
 //
-// Disabled conversions (from Qt 6.9)
+// Disabled conversions (from BobUI 6.9)
 //
 static_assert(disabled<bool>);
 static_assert(disabled<std::byte>);
@@ -57,7 +57,7 @@ static_assert(disabled<long>);
 static_assert(disabled<long long>);
 static_assert(disabled<unsigned long>);
 static_assert(disabled<unsigned long long>);
-static_assert(disabled<Qt::Key>);
+static_assert(disabled<BobUI::Key>);
 enum E1 {};
 static_assert(disabled<E1>);
 enum class E2 {};
@@ -124,9 +124,9 @@ void tst_QChar::fromChar16_t()
 
 void tst_QChar::fromUcs4_data()
 {
-    QTest::addColumn<uint>("ucs4");
+    BOBUIest::addColumn<uint>("ucs4");
     auto row = [](uint ucs4) {
-        QTest::addRow("0x%08X", ucs4) << ucs4;
+        BOBUIest::addRow("0x%08X", ucs4) << ucs4;
     };
 
     row(0x2f868); // a CJK Compatibility Ideograph
@@ -183,7 +183,7 @@ void tst_QChar::operator_eqeq_null()
         } while (0)
 
         CHECK(0);
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         CHECK('\0');
 #endif
         CHECK(u'\0');
@@ -208,7 +208,7 @@ void tst_QChar::operator_eqeq_null()
         } while (0)
 
         CHECK(0);
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         CHECK('\0');
 #endif
         CHECK(u'\0');
@@ -218,12 +218,12 @@ void tst_QChar::operator_eqeq_null()
 
 void tst_QChar::operators_data()
 {
-    QTest::addColumn<QChar>("lhs");
-    QTest::addColumn<QChar>("rhs");
+    BOBUIest::addColumn<QChar>("lhs");
+    BOBUIest::addColumn<QChar>("rhs");
 
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j)
-            QTest::addRow("'\\%d' (op) '\\%d'", i, j)
+            BOBUIest::addRow("'\\%d' (op) '\\%d'", i, j)
                     << QChar(ushort(i)) << QChar(ushort(j));
     }
 }
@@ -245,14 +245,14 @@ void tst_QChar::operators()
 
 void tst_QChar::qchar_qlatin1char_operators_symmetry_data()
 {
-    QTest::addColumn<char>("lhs");
-    QTest::addColumn<char>("rhs");
+    BOBUIest::addColumn<char>("lhs");
+    BOBUIest::addColumn<char>("rhs");
 
     const uchar values[] = {0x00, 0x3a, 0x7f, 0x80, 0xab, 0xff};
 
     for (uchar i : values) {
         for (uchar j : values)
-            QTest::addRow("'\\x%02x'_op_'\\x%02x'", i, j) << char(i) << char(j);
+            BOBUIest::addRow("'\\x%02x'_op_'\\x%02x'", i, j) << char(i) << char(j);
     }
 }
 
@@ -379,13 +379,13 @@ void tst_QChar::toCaseFolded()
 
 void tst_QChar::isDigit_data()
 {
-    QTest::addColumn<ushort>("ucs");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<ushort>("ucs");
+    BOBUIest::addColumn<bool>("expected");
 
     for (ushort ucs = 0; ucs < 256; ++ucs) {
         bool isDigit = (ucs <= '9' && ucs >= '0');
         const QByteArray tag = "0x" + QByteArray::number(ucs, 16);
-        QTest::newRow(tag.constData()) << ucs << isDigit;
+        BOBUIest::newRow(tag.constData()) << ucs << isDigit;
     }
 }
 
@@ -407,12 +407,12 @@ static bool isExpectedLetter(ushort ucs)
 
 void tst_QChar::isLetter_data()
 {
-    QTest::addColumn<ushort>("ucs");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<ushort>("ucs");
+    BOBUIest::addColumn<bool>("expected");
 
     for (ushort ucs = 0; ucs < 256; ++ucs) {
         const QByteArray tag = "0x" + QByteArray::number(ucs, 16);
-        QTest::newRow(tag.constData()) << ucs << isExpectedLetter(ucs);
+        BOBUIest::newRow(tag.constData()) << ucs << isExpectedLetter(ucs);
     }
 }
 
@@ -425,8 +425,8 @@ void tst_QChar::isLetter()
 
 void tst_QChar::isLetterOrNumber_data()
 {
-    QTest::addColumn<ushort>("ucs");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<ushort>("ucs");
+    BOBUIest::addColumn<bool>("expected");
 
     for (ushort ucs = 0; ucs < 256; ++ucs) {
         bool isLetterOrNumber = isExpectedLetter(ucs)
@@ -434,7 +434,7 @@ void tst_QChar::isLetterOrNumber_data()
                 || ucs == 0xB2 || ucs == 0xB3 || ucs == 0xB9
                 || (ucs >= 0xBC && ucs <= 0xBE);
         const QByteArray tag = "0x" + QByteArray::number(ucs, 16);
-        QTest::newRow(tag.constData()) << ucs << isLetterOrNumber;
+        BOBUIest::newRow(tag.constData()) << ucs << isLetterOrNumber;
     }
 }
 
@@ -543,13 +543,13 @@ void tst_QChar::isTitleCase()
 
 void tst_QChar::isSpace_data()
 {
-    QTest::addColumn<ushort>("ucs");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<ushort>("ucs");
+    BOBUIest::addColumn<bool>("expected");
 
     for (ushort ucs = 0; ucs < 256; ++ucs) {
         bool isSpace = (ucs <= 0x0D && ucs >= 0x09) || ucs == 0x20 || ucs == 0xA0 || ucs == 0x85;
         const QByteArray tag = "0x" + QByteArray::number(ucs, 16);
-        QTest::newRow(tag.constData()) << ucs << isSpace;
+        BOBUIest::newRow(tag.constData()) << ucs << isSpace;
     }
 }
 
@@ -864,8 +864,8 @@ void tst_QChar::script()
 #if !defined(Q_OS_WASM)
 void tst_QChar::normalization_data()
 {
-    QTest::addColumn<QStringList>("columns");
-    QTest::addColumn<int>("part");
+    BOBUIest::addColumn<QStringList>("columns");
+    BOBUIest::addColumn<int>("part");
 
     int linenum = 0;
     int part = 0;
@@ -921,7 +921,7 @@ void tst_QChar::normalization_data()
 
         const QByteArray nm = "line #" + QByteArray::number(linenum) + " (part "
             + QByteArray::number(part);
-        QTest::newRow(nm.constData()) << columns << part;
+        BOBUIest::newRow(nm.constData()) << columns << part;
     }
 }
 
@@ -1054,7 +1054,7 @@ void tst_QChar::normalization_manual()
         QVERIFY(decomposed.normalized(QString::NormalizationForm_KD) == decomposed);
         QVERIFY(decomposed.normalized(QString::NormalizationForm_KC) == composed);
     }
-    // QTBUG-71894 - erratum fixed in Unicode 4.1.0; SCount bounds are < not <=
+    // BOBUIBUG-71894 - erratum fixed in Unicode 4.1.0; SCount bounds are < not <=
     {
         // Hangul compose, test 0x11a7:
         const QChar c[] = { QChar(0xae30), QChar(0x11a7), {} };
@@ -1110,5 +1110,5 @@ void tst_QChar::normalizationCorrections()
 }
 
 
-QTEST_APPLESS_MAIN(tst_QChar)
+BOBUIEST_APPLESS_MAIN(tst_QChar)
 #include "tst_qchar.moc"

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-#include <QtGui>
-#include <QtDeclarative/QtDeclarative>
-#include <QtUiTools/QtUiTools>
+#include <BobUIGui>
+#include <BobUIDeclarative/BobUIDeclarative>
+#include <BobUIUiTools/BobUIUiTools>
 
 #include "accessibilityinspector.h"
 
@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     if (app.arguments().count() < 2) {
         qDebug() << "Usage: accessebilityInspector [ ui-file | qml-file ] [Option]";
         qDebug() << "Option:";
-#ifdef QT_ACCESSIBILITY_INSPECTOR_SCENE_GRAPH
-        qDebug() << "-qtquick1: Use QDeclarativeView instead of QSGView for rendering QML files";
+#ifdef BOBUI_ACCESSIBILITY_INSPECTOR_SCENE_GRAPH
+        qDebug() << "-bobuiquick1: Use QDeclarativeView instead of QSGView for rendering QML files";
 #endif
         return 0;
     }
@@ -43,15 +43,15 @@ int main(int argc, char **argv)
             fileUrl = QUrl::fromLocalFile(fileName);
         }
 
-#ifdef QT_ACCESSIBILITY_INSPECTOR_SCENE_GRAPH
-        if (mode == QLatin1String("-qtquick1"))
+#ifdef BOBUI_ACCESSIBILITY_INSPECTOR_SCENE_GRAPH
+        if (mode == QLatin1String("-bobuiquick1"))
 #endif
         {
             QDeclarativeView * declarativeView = new QDeclarativeView();
             declarativeView->setSource(fileUrl);
             window = declarativeView;
         }
-#ifdef QT_ACCESSIBILITY_INSPECTOR_SCENE_GRAPH
+#ifdef BOBUI_ACCESSIBILITY_INSPECTOR_SCENE_GRAPH
         else {
             QSGView * sceneGraphView = new QSGView();
             sceneGraphView->setSource(fileUrl);

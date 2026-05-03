@@ -1,5 +1,5 @@
-QT += network widgets
-requires(qtConfig(filedialog))
+BOBUI += network widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS += addtorrentdialog.h \
            bencodeparser.h \
@@ -31,5 +31,5 @@ FORMS += addtorrentform.ui
 RESOURCES += icons.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/torrent
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/torrent
 INSTALLS += target

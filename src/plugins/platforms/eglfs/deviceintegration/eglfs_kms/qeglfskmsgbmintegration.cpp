@@ -1,7 +1,7 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsgbmintegration_p.h"
 #include "qeglfskmsgbmdevice_p.h"
@@ -10,17 +10,17 @@
 #include "qeglfskmsgbmwindow_p.h"
 #include "private/qeglfscursor_p.h"
 
-#include <QtCore/QLoggingCategory>
-#include <QtGui/QScreen>
-#include <QtDeviceDiscoverySupport/private/qdevicediscovery_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/QScreen>
+#include <BobUIDeviceDiscoverySupport/private/qdevicediscovery_p.h>
 
-#if QT_CONFIG(filesystemwatcher)
-#include <QtCore/QFileSystemWatcher>
+#if BOBUI_CONFIG(filesystemwatcher)
+#include <BobUICore/QFileSystemWatcher>
 #endif
 
 #include <gbm.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsGbmIntegration::QEglFSKmsGbmIntegration()
 {
@@ -82,7 +82,7 @@ void QEglFSKmsGbmIntegration::destroyNativeWindow(EGLNativeWindowType window)
 
 QPlatformCursor *QEglFSKmsGbmIntegration::createCursor(QPlatformScreen *screen) const
 {
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (!screenConfig()->hwCursor()) {
         qCDebug(qLcEglfsKmsDebug, "Using plain OpenGL mouse cursor");
         return new QEglFSCursor(screen);
@@ -104,7 +104,7 @@ QKmsDevice *QEglFSKmsGbmIntegration::createDevice()
 {
 
     m_deviceDiscovery = std::unique_ptr<QDeviceDiscovery>(QDeviceDiscovery::create(QDeviceDiscovery::Device_VideoMask));
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     m_kmsConfigWatcher = std::unique_ptr<QFileSystemWatcher>(new QFileSystemWatcher());
 #endif
 
@@ -122,7 +122,7 @@ QKmsDevice *QEglFSKmsGbmIntegration::createDevice()
         qCDebug(qLcEglfsKmsDebug) << "Using" << path;
     }
 
-    bool hotreload = !qEnvironmentVariable("QT_QPA_EGLFS_HOTPLUG_ENABLED").isEmpty();
+    bool hotreload = !qEnvironmentVariable("BOBUI_QPA_EGLFS_HOTPLUG_ENABLED").isEmpty();
     if (hotreload) {
         qCWarning(qLcEglfsKmsDebug) << "EGLFS/KMS: Hot-Reload on KMS-events enabled, be aware that"
                                     << "this requires actions in UI code for proper functionallity"
@@ -134,12 +134,12 @@ QKmsDevice *QEglFSKmsGbmIntegration::createDevice()
                          });
     }
 
-    QString json = qEnvironmentVariable("QT_QPA_EGLFS_KMS_CONFIG");
+    QString json = qEnvironmentVariable("BOBUI_QPA_EGLFS_KMS_CONFIG");
     if (json.isEmpty())
-        json = qEnvironmentVariable("QT_QPA_KMS_CONFIG");
+        json = qEnvironmentVariable("BOBUI_QPA_KMS_CONFIG");
 
     if (!json.isEmpty()) {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         m_kmsConfigWatcher->addPath(json);
         QObject::connect(m_kmsConfigWatcher.get(), &QFileSystemWatcher::fileChanged,
                          m_kmsConfigWatcher.get(), [this, json]() {
@@ -161,4 +161,4 @@ QEglFSWindow *QEglFSKmsGbmIntegration::createWindow(QWindow *window) const
     return new QEglFSKmsGbmWindow(window, this);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

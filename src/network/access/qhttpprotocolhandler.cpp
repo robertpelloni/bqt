@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include <private/qhttpprotocolhandler_p.h>
 #include <private/qnoncontiguousbytedevice_p.h>
 #include <private/qhttpnetworkconnectionchannel_p.h>
 #include <private/qsocketabstraction_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QHttpProtocolHandler::QHttpProtocolHandler(QHttpNetworkConnectionChannel *channel)
     : QAbstractProtocolHandler(channel)
@@ -196,7 +196,7 @@ void QHttpProtocolHandler::_q_readyRead()
     if (QSocketAbstraction::socketState(m_socket) == QAbstractSocket::ConnectedState
         && m_socket->bytesAvailable() == 0) {
         // We got a readyRead but no bytes are available..
-        // This happens for the Unbuffered QTcpSocket
+        // This happens for the Unbuffered BOBUIcpSocket
         // Also check if socket is in ConnectedState since
         // this function may also be invoked via the event loop.
         char c;
@@ -275,11 +275,11 @@ bool QHttpProtocolHandler::sendRequest()
             url.setUserInfo(QString());
             m_channel->request.setUrl(url);
         }
-        // Will only be false if Qt WebKit is performing a cross-origin XMLHttpRequest
+        // Will only be false if BobUI WebKit is performing a cross-origin XMLHttpRequest
         // and withCredentials has not been set to true.
         if (m_channel->request.withCredentials())
             m_connection->d_func()->createAuthorization(m_socket, m_channel->request);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         m_header = QHttpNetworkRequestPrivate::header(m_channel->request,
             (m_connection->d_func()->networkProxy.type() != QNetworkProxy::NoProxy));
 #else
@@ -300,7 +300,7 @@ bool QHttpProtocolHandler::sendRequest()
         } else {
             // no data to send: just send the HTTP headers
             m_socket->write(std::exchange(m_header, {}));
-            QMetaObject::invokeMethod(m_reply, "requestSent", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(m_reply, "requestSent", BobUI::QueuedConnection);
             m_channel->state = QHttpNetworkConnectionChannel::WaitingState; // now wait for response
             sendRequest(); //recurse
         }
@@ -323,13 +323,13 @@ bool QHttpProtocolHandler::sendRequest()
             break;
         }
 
-        // only feed the QTcpSocket buffer when there is less than 32 kB in it;
+        // only feed the BOBUIcpSocket buffer when there is less than 32 kB in it;
         // note that the headers do not count towards these limits.
         const qint64 socketBufferFill = 32*1024;
         const qint64 socketWriteMaxSize = 16*1024;
 
         // if it is really an ssl socket, check more than just bytesToWrite()
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         QSslSocket *sslSocket = qobject_cast<QSslSocket*>(m_socket);
         const auto encryptedBytesToWrite = [sslSocket]() -> qint64
         {
@@ -375,7 +375,7 @@ bool QHttpProtocolHandler::sendRequest()
                     currentWriteSize = m_socket->write(std::exchange(m_header, {}));
                     if (currentWriteSize != -1)
                         currentWriteSize -= headerSize;
-                    QMetaObject::invokeMethod(m_reply, "requestSent", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(m_reply, "requestSent", BobUI::QueuedConnection);
                 }
                 if (currentWriteSize == -1 || currentWriteSize != currentReadSize) {
                     // socket broke down
@@ -414,7 +414,7 @@ bool QHttpProtocolHandler::sendRequest()
         // this is needed if the sends an reply before we have finished sending the request. In that
         // case receiveReply had been called before but ignored the server reply
         if (m_socket->bytesAvailable())
-            QMetaObject::invokeMethod(m_channel, "_q_receiveReply", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(m_channel, "_q_receiveReply", BobUI::QueuedConnection);
         break;
     }
     case QHttpNetworkConnectionChannel::ReadingState:
@@ -426,4 +426,4 @@ bool QHttpProtocolHandler::sendRequest()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalserver.h"
 #include "qlocalserver_p.h"
 #include "qlocalsocket.h"
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
 
 #include <qdebug.h>
 
@@ -20,9 +20,9 @@
 // before it is read.  Pipewriter is used for write buffering.
 #define BUFSIZE 0
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 bool QLocalServerPrivate::addListener()
 {
@@ -195,7 +195,7 @@ bool QLocalServerPrivate::addListener()
 void QLocalServerPrivate::setError(const QString &function)
 {
     int windowsError = GetLastError();
-    errorString = QString::fromLatin1("%1: %2").arg(function, qt_error_string(windowsError));
+    errorString = QString::fromLatin1("%1: %2").arg(function, bobui_error_string(windowsError));
     error = QAbstractSocket::UnknownSocketError;
 }
 
@@ -236,7 +236,7 @@ bool QLocalServerPrivate::listen(const QString &name)
 
 bool QLocalServerPrivate::listen(qintptr)
 {
-    qWarning("QLocalServer::listen(qintptr) is not supported on Windows QTBUG-24230");
+    qWarning("QLocalServer::listen(qintptr) is not supported on Windows BOBUIBUG-24230");
     return false;
 }
 
@@ -310,4 +310,4 @@ void QLocalServerPrivate::waitForNewConnection(int msecs, bool *timedOut)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q_CTF_H
 #define Q_CTF_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,10 +16,10 @@
 //
 //
 
-#include <qtcoreexports.h>
+#include <bobuicoreexports.h>
 #include <qobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QCtfTraceMetadata;
 struct Q_CORE_EXPORT QCtfTracePointProvider
@@ -69,9 +69,9 @@ Q_CORE_EXPORT void _do_tracepoint(const QCtfTracePointEvent &point, const QByteA
 Q_CORE_EXPORT QCtfTracePointPrivate *_initialize_tracepoint(const QCtfTracePointEvent &point);
 
 #ifndef BUILD_LIBRARY
-#include <QtCore/qbytearray.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qurl.h>
 namespace trace {
 inline void toByteArray(QByteArray &)
 {
@@ -180,11 +180,11 @@ inline QByteArray toByteArrayFromFlags(QFlags<T> value)
 } // trace
 
 #define _DEFINE_EVENT(provider, event, metadata, size, varSize) \
-    static QCtfTracePointEvent _ctf_ ## event = QCtfTracePointEvent(_ctf_provider_ ## provider, QStringLiteral(QT_STRINGIFY(event)), metadata, size, varSize);
+    static QCtfTracePointEvent _ctf_ ## event = QCtfTracePointEvent(_ctf_provider_ ## provider, QStringLiteral(BOBUI_STRINGIFY(event)), metadata, size, varSize);
 #define _DEFINE_METADATA(provider, name, metadata) \
-    static QCtfTraceMetadata _ctf_metadata_ ## name = QCtfTraceMetadata(_ctf_provider_ ## provider, QStringLiteral(QT_STRINGIFY(name)), metadata);
+    static QCtfTraceMetadata _ctf_metadata_ ## name = QCtfTraceMetadata(_ctf_provider_ ## provider, QStringLiteral(BOBUI_STRINGIFY(name)), metadata);
 #define _DEFINE_TRACEPOINT_PROVIDER(provider) \
-    static QCtfTracePointProvider _ctf_provider_ ## provider = QCtfTracePointProvider(QStringLiteral(QT_STRINGIFY(provider)));
+    static QCtfTracePointProvider _ctf_provider_ ## provider = QCtfTracePointProvider(QStringLiteral(BOBUI_STRINGIFY(provider)));
 
 #define TRACEPOINT_EVENT(provider, event, metadata, size, varSize) \
     _DEFINE_EVENT(provider, event, metadata, size, varSize)
@@ -233,6 +233,6 @@ public:
     virtual void shutdown(bool *shutdown) = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

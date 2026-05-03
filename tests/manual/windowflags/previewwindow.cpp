@@ -1,23 +1,23 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QGridLayout>
 #include <QVBoxLayout>
-#include <QTextStream>
-#include <QTimer>
+#include <BOBUIextStream>
+#include <BOBUIimer>
 #include <QPainter>
 #include <QLinearGradient>
 
-#include <QtGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qpa/qplatformwindow.h>
 
 #include "previewwindow.h"
 
 PreviewWindow::PreviewWindow(QWindow *parent)
     : QRasterWindow(parent)
 {
-    setTitle(tr("Preview <QWindow> Qt %1").arg(QLatin1StringView(QT_VERSION_STR)));
+    setTitle(tr("Preview <QWindow> BobUI %1").arg(QLatin1StringView(BOBUI_VERSION_STR)));
     resize(400, 400);
 }
 
@@ -34,113 +34,113 @@ void PreviewWindow::paintEvent(QPaintEvent *)
     painter.fillRect(rect, QGradient::DustyGrass);
 }
 
-static void formatWindowFlags(QTextStream &str, Qt::WindowFlags flags)
+static void formatWindowFlags(BOBUIextStream &str, BobUI::WindowFlags flags)
 {
-    str << "Window flags: " << Qt::hex << Qt::showbase << unsigned(flags) << Qt::noshowbase
-        << Qt::dec << ' ';
-    switch (flags & Qt::WindowType_Mask) {
-    case Qt::Window:
-        str << "Qt::Window";
+    str << "Window flags: " << BobUI::hex << BobUI::showbase << unsigned(flags) << BobUI::noshowbase
+        << BobUI::dec << ' ';
+    switch (flags & BobUI::WindowType_Mask) {
+    case BobUI::Window:
+        str << "BobUI::Window";
         break;
-    case Qt::Dialog:
-        str << "Qt::Dialog";
+    case BobUI::Dialog:
+        str << "BobUI::Dialog";
         break;
-    case Qt::Sheet:
-        str << "Qt::Sheet";
+    case BobUI::Sheet:
+        str << "BobUI::Sheet";
         break;
-    case Qt::Drawer:
-        str << "Qt::Drawer";
+    case BobUI::Drawer:
+        str << "BobUI::Drawer";
         break;
-    case Qt::Popup:
-        str << "Qt::Popup";
+    case BobUI::Popup:
+        str << "BobUI::Popup";
         break;
-    case Qt::Tool:
-        str << "Qt::Tool";
+    case BobUI::Tool:
+        str << "BobUI::Tool";
         break;
-    case Qt::ToolTip:
-        str << "Qt::ToolTip";
+    case BobUI::ToolTip:
+        str << "BobUI::ToolTip";
         break;
-    case Qt::SplashScreen:
-        str << "Qt::SplashScreen";
+    case BobUI::SplashScreen:
+        str << "BobUI::SplashScreen";
         break;
     }
 
-    if (flags & Qt::MSWindowsFixedSizeDialogHint)
-        str << "\n| Qt::MSWindowsFixedSizeDialogHint";
-    if (flags & Qt::BypassWindowManagerHint)
-        str << "\n| Qt::BypassWindowManagerHint";
-    if (flags & Qt::FramelessWindowHint)
-        str << "\n| Qt::FramelessWindowHint";
-    if (flags & Qt::WindowTitleHint)
-        str << "\n| Qt::WindowTitleHint";
-    if (flags & Qt::WindowSystemMenuHint)
-        str << "\n| Qt::WindowSystemMenuHint";
-    if (flags & Qt::WindowMinimizeButtonHint)
-        str << "\n| Qt::WindowMinimizeButtonHint";
-    if (flags & Qt::WindowMaximizeButtonHint)
-        str << "\n| Qt::WindowMaximizeButtonHint";
-    if (flags & Qt::WindowCloseButtonHint)
-        str << "\n| Qt::WindowCloseButtonHint";
-    if (flags & Qt::WindowContextHelpButtonHint)
-        str << "\n| Qt::WindowContextHelpButtonHint";
-    if (flags & Qt::WindowShadeButtonHint)
-        str << "\n| Qt::WindowShadeButtonHint";
-    if (flags & Qt::WindowStaysOnTopHint)
-        str << "\n| Qt::WindowStaysOnTopHint";
-    if (flags & Qt::CustomizeWindowHint)
-        str << "\n| Qt::CustomizeWindowHint";
-    if (flags & Qt::WindowStaysOnBottomHint)
-        str << "\n| Qt::WindowStaysOnBottomHint";
-    if (flags & Qt::WindowFullscreenButtonHint)
-        str << "\n| Qt::WindowFullscreenButtonHint";
-    if (flags & Qt::WindowTransparentForInput)
-        str << "\n| Qt::WindowTransparentForInput";
-    if (flags & Qt::WindowOverridesSystemGestures)
-        str << "\n| Qt::WindowOverridesSystemGestures";
-    if (flags & Qt::WindowDoesNotAcceptFocus)
-        str << "\n| Qt::WindowDoesNotAcceptFocus";
-    if (flags & Qt::ExpandedClientAreaHint)
-        str << "\n| Qt::ExpandedClientAreaHint";
-    if (flags & Qt::NoDropShadowWindowHint)
-        str << "\n| Qt::NoDropShadowWindowHint";
+    if (flags & BobUI::MSWindowsFixedSizeDialogHint)
+        str << "\n| BobUI::MSWindowsFixedSizeDialogHint";
+    if (flags & BobUI::BypassWindowManagerHint)
+        str << "\n| BobUI::BypassWindowManagerHint";
+    if (flags & BobUI::FramelessWindowHint)
+        str << "\n| BobUI::FramelessWindowHint";
+    if (flags & BobUI::WindowTitleHint)
+        str << "\n| BobUI::WindowTitleHint";
+    if (flags & BobUI::WindowSystemMenuHint)
+        str << "\n| BobUI::WindowSystemMenuHint";
+    if (flags & BobUI::WindowMinimizeButtonHint)
+        str << "\n| BobUI::WindowMinimizeButtonHint";
+    if (flags & BobUI::WindowMaximizeButtonHint)
+        str << "\n| BobUI::WindowMaximizeButtonHint";
+    if (flags & BobUI::WindowCloseButtonHint)
+        str << "\n| BobUI::WindowCloseButtonHint";
+    if (flags & BobUI::WindowContextHelpButtonHint)
+        str << "\n| BobUI::WindowContextHelpButtonHint";
+    if (flags & BobUI::WindowShadeButtonHint)
+        str << "\n| BobUI::WindowShadeButtonHint";
+    if (flags & BobUI::WindowStaysOnTopHint)
+        str << "\n| BobUI::WindowStaysOnTopHint";
+    if (flags & BobUI::CustomizeWindowHint)
+        str << "\n| BobUI::CustomizeWindowHint";
+    if (flags & BobUI::WindowStaysOnBottomHint)
+        str << "\n| BobUI::WindowStaysOnBottomHint";
+    if (flags & BobUI::WindowFullscreenButtonHint)
+        str << "\n| BobUI::WindowFullscreenButtonHint";
+    if (flags & BobUI::WindowTransparentForInput)
+        str << "\n| BobUI::WindowTransparentForInput";
+    if (flags & BobUI::WindowOverridesSystemGestures)
+        str << "\n| BobUI::WindowOverridesSystemGestures";
+    if (flags & BobUI::WindowDoesNotAcceptFocus)
+        str << "\n| BobUI::WindowDoesNotAcceptFocus";
+    if (flags & BobUI::ExpandedClientAreaHint)
+        str << "\n| BobUI::ExpandedClientAreaHint";
+    if (flags & BobUI::NoDropShadowWindowHint)
+        str << "\n| BobUI::NoDropShadowWindowHint";
 }
 
-static void formatWindowStates(QTextStream &str, Qt::WindowStates states)
+static void formatWindowStates(BOBUIextStream &str, BobUI::WindowStates states)
 {
-    str << "Window states: " << Qt::hex << Qt::showbase << unsigned(states) << Qt::noshowbase
-        << Qt::dec << ' ';
-    if (states & Qt::WindowActive) {
-        str << "Qt::WindowActive ";
-        states &= ~Qt::WindowActive;
+    str << "Window states: " << BobUI::hex << BobUI::showbase << unsigned(states) << BobUI::noshowbase
+        << BobUI::dec << ' ';
+    if (states & BobUI::WindowActive) {
+        str << "BobUI::WindowActive ";
+        states &= ~BobUI::WindowActive;
     }
     switch (states) {
-    case Qt::WindowNoState:
-        str << "Qt::WindowNoState";
+    case BobUI::WindowNoState:
+        str << "BobUI::WindowNoState";
         break;
-    case Qt::WindowMinimized:
-        str << "Qt::WindowMinimized";
+    case BobUI::WindowMinimized:
+        str << "BobUI::WindowMinimized";
         break;
-    case Qt::WindowMaximized:
-        str << "Qt::WindowMaximized";
+    case BobUI::WindowMaximized:
+        str << "BobUI::WindowMaximized";
         break;
-    case Qt::WindowFullScreen:
-        str << "Qt::WindowFullScreen";
+    case BobUI::WindowFullScreen:
+        str << "BobUI::WindowFullScreen";
         break;
     default:
         break;
     }
 }
 
-QTextStream &operator<<(QTextStream &str, const QRect &r)
+BOBUIextStream &operator<<(BOBUIextStream &str, const QRect &r)
 {
-    str << r.width() << 'x' << r.height() << Qt::forcesign << r.x() << r.y() << Qt::noforcesign;
+    str << r.width() << 'x' << r.height() << BobUI::forcesign << r.x() << r.y() << BobUI::noforcesign;
     return str;
 }
 
 static QString formatWidgetInfo(const QWidget *w)
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     formatWindowFlags(str, w->windowFlags());
     str << '\n';
     formatWindowStates(str, w->windowState());
@@ -193,7 +193,7 @@ PreviewWidget::PreviewWidget(QWidget *parent)
     : QWidget(parent)
 {
     textEdit = createControlPanel(this);
-    setWindowTitle(tr("Preview <QWidget> Qt %1").arg(QLatin1String(QT_VERSION_STR)));
+    setWindowTitle(tr("Preview <QWidget> BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)));
 }
 
 bool PreviewWidget::event(QEvent *event)
@@ -213,12 +213,12 @@ bool PreviewWidget::event(QEvent *event)
     return ret;
 }
 
-void PreviewWidget::setWindowFlags(Qt::WindowFlags flags)
+void PreviewWidget::setWindowFlags(BobUI::WindowFlags flags)
 {
     if (flags == windowFlags())
         return;
     QWidget::setWindowFlags(flags);
-    QTimer::singleShot(0, this, SLOT(updateInfo()));
+    BOBUIimer::singleShot(0, this, SLOT(updateInfo()));
 }
 
 void PreviewWidget::updateInfo()
@@ -230,7 +230,7 @@ PreviewDialog::PreviewDialog(QWidget *parent)
     : QDialog(parent)
 {
     textEdit = createControlPanel(this);
-    setWindowTitle(tr("Preview <QDialog> Qt %1").arg(QLatin1String(QT_VERSION_STR)));
+    setWindowTitle(tr("Preview <QDialog> BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)));
 }
 
 bool PreviewDialog::event(QEvent *event)
@@ -250,12 +250,12 @@ bool PreviewDialog::event(QEvent *event)
     return ret;
 }
 
-void PreviewDialog::setWindowFlags(Qt::WindowFlags flags)
+void PreviewDialog::setWindowFlags(BobUI::WindowFlags flags)
 {
     if (flags == windowFlags())
         return;
     QWidget::setWindowFlags(flags);
-    QTimer::singleShot(0, this, SLOT(updateInfo()));
+    BOBUIimer::singleShot(0, this, SLOT(updateInfo()));
 }
 
 void PreviewDialog::updateInfo()

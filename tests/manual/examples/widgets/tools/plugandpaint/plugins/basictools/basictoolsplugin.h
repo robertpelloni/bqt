@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef BASICTOOLSPLUGIN_H
 #define BASICTOOLSPLUGIN_H
@@ -12,7 +12,7 @@
 #include <QPainterPath>
 #include <QRect>
 #include <QStringList>
-#include <QtPlugin>
+#include <BobUIPlugin>
 
 //! [1]
 class BasicToolsPlugin : public QObject,
@@ -22,7 +22,7 @@ class BasicToolsPlugin : public QObject,
 {
     Q_OBJECT
 //! [4]
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.Examples.PlugAndPaint.BrushInterface" FILE "basictools.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.Examples.PlugAndPaint.BrushInterface" FILE "basictools.json")
 //! [4]
     Q_INTERFACES(BrushInterface ShapeInterface FilterInterface)
 //! [0]

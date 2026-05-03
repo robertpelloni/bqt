@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page modelview.html
     \ingroup tutorials
-    \startpage {index.html}{Qt Reference Documentation}
+    \startpage {index.html}{BobUI Reference Documentation}
 
     \title Model/View Tutorial
     \brief An introduction to ModelView programming
@@ -27,7 +27,7 @@
 
     \image treeview.png {Directory and its contents in a tree view}
 
-    In the process, we will learn about some basic technologies provided by Qt,
+    In the process, we will learn about some basic technologies provided by BobUI,
     such as:
 
     \list
@@ -48,7 +48,7 @@
     model/view programming or if classic widgets will work just as well.
 
     This tutorial includes example code for you to edit and integrate into your
-    project. The tutorial's source code is located in Qt's
+    project. The tutorial's source code is located in BobUI's
     \e examples/widgets/tutorials/modelview directory.
 
     For more detailed information you may also want to look at the
@@ -59,7 +59,7 @@
 
     Model/View is a technology used to separate data from views in widgets that
     handle data sets. Standard widgets are not designed for separating data
-    from views and this is why Qt has two different types of widgets. Both
+    from views and this is why BobUI has two different types of widgets. Both
     types of widgets look the same, but they interact with data differently.
 
     \table
@@ -121,13 +121,13 @@
         \row
             \li  \inlineimage tableview.png
                  {Directory displaying its contents as a table}
-            \li  \l QTableWidget
-            \li  \l QTableView
+            \li  \l BOBUIableWidget
+            \li  \l BOBUIableView
         \row
             \li  \inlineimage treeview.png
                  {Directory displaying its contents as a tree}
-            \li  \l QTreeWidget
-            \li  \l QTreeView
+            \li  \l BOBUIreeWidget
+            \li  \l BOBUIreeView
         \row
             \li  \inlineimage columnview.png
                  {Directory displaying its contents as columns}
@@ -155,8 +155,8 @@
 
     \image widgetmapper.png {Form with personal and other information}
 
-    Another example of an adapter is \l QCompleter. Qt has \l QCompleter for
-    providing auto-completions in Qt widgets such as \l QComboBox and, as shown
+    Another example of an adapter is \l QCompleter. BobUI has \l QCompleter for
+    providing auto-completions in BobUI widgets such as \l QComboBox and, as shown
     below, \l QLineEdit. \l QCompleter uses a model as its data source.
 
     \image qcompleter.png {Completer with suggestions for the characters "Em"}
@@ -177,7 +177,7 @@
 
     \section2 2.1 A Read Only Table
 
-    We start with an application that uses a QTableView to show data. We will
+    We start with an application that uses a BOBUIableView to show data. We will
     add editing capabilities later.
 
     (file source: examples/widgets/tutorials/modelview/1_readonly/main.cpp)
@@ -186,8 +186,8 @@
     We have the usual \l {modelview-part2-main-cpp.html}{main()} function:
 
     Here is the interesting part: We create an instance of MyModel and use
-    \l{QTableView::setModel()}{tableView.setModel(&myModel);} to pass a
-    pointer of it to \l{QTableView}{tableView}. \l{QTableView}{tableView}
+    \l{BOBUIableView::setModel()}{tableView.setModel(&myModel);} to pass a
+    pointer of it to \l{BOBUIableView}{tableView}. \l{BOBUIableView}{tableView}
     will invoke the methods of the pointer it has received to find out two
     things:
 
@@ -215,7 +215,7 @@
     has to know what the cell's text is, it calls the method
     \l{QAbstractItemModel::data()}{MyModel::data()}. Row and column information
     is specified with parameter \c index and the role is set to
-    \l{Qt::ItemDataRole}{Qt::DisplayRole}. Other roles are covered in the next
+    \l{BobUI::ItemDataRole}{BobUI::DisplayRole}. Other roles are covered in the next
     section. In our example, the data that should be displayed is generated. In
     a real application, \c MyModel would have a member called \c MyData, which
     serves as the target for all reading and writing operations.
@@ -253,37 +253,37 @@
 
     \table
         \header
-            \li \l{Qt::ItemDataRole}{enum Qt::ItemDataRole}
+            \li \l{BobUI::ItemDataRole}{enum BobUI::ItemDataRole}
             \li  Meaning
             \li  Type
         \row
-            \li \l{Qt::ItemDataRole}{}Qt::DisplayRole
+            \li \l{BobUI::ItemDataRole}{}BobUI::DisplayRole
             \li  text
             \li  QString
         \row
-            \li \l{Qt::ItemDataRole}{Qt::FontRole}
+            \li \l{BobUI::ItemDataRole}{BobUI::FontRole}
             \li  font
             \li  QFont
         \row
-            \li \l{Qt::ItemDataRole}{BackgroundRole}
+            \li \l{BobUI::ItemDataRole}{BackgroundRole}
             \li  brush for the background of the cell
             \li  QBrush
         \row
-            \li \l{Qt::ItemDataRole}{Qt::TextAlignmentRole}
+            \li \l{BobUI::ItemDataRole}{BobUI::TextAlignmentRole}
             \li  text alignment
-            \li  \l{Qt::AlignmentFlag}{enum Qt::AlignmentFlag}
+            \li  \l{BobUI::AlignmentFlag}{enum BobUI::AlignmentFlag}
         \row
-        \li {1, 3}  \l{Qt::ItemDataRole}{Qt::CheckStateRole}
+        \li {1, 3}  \l{BobUI::ItemDataRole}{BobUI::CheckStateRole}
         \li {1, 3} suppresses checkboxes with \l{QVariant}{QVariant()},
 
-              sets checkboxes with \l{Qt::CheckState}{Qt::Checked}
+              sets checkboxes with \l{BobUI::CheckState}{BobUI::Checked}
 
-              or \l{Qt::CheckState}{Qt::Unchecked}
-        \li {1, 3}  \l{Qt::ItemDataRole}{enum Qt::ItemDataRole}
+              or \l{BobUI::CheckState}{BobUI::Unchecked}
+        \li {1, 3}  \l{BobUI::ItemDataRole}{enum BobUI::ItemDataRole}
     \endtable
 
-    Refer to the Qt namespace documentation to learn more about the
-    \l{Qt::ItemDataRole}{Qt::ItemDataRole} enum's capabilities.
+    Refer to the BobUI namespace documentation to learn more about the
+    \l{BobUI::ItemDataRole}{BobUI::ItemDataRole} enum's capabilities.
 
     Now we need to determine how using a separated model impacts the
     application's performance, so let's trace how often the view calls the
@@ -324,7 +324,7 @@
     We ask the view to read the data in the top left cell again by emitting the
     \l{QAbstractItemModel::}{dataChanged()} signal.  Note that we did not
     explicitly connect the \l{QAbstractItemModel::}{dataChanged()} signal to the
-    view. This happened automatically when we called \l{QTableView::}{setModel()}.
+    view. This happened automatically when we called \l{BOBUIableView::}{setModel()}.
 
     \section2 2.4 Setting up Headers for Columns and Rows
 
@@ -345,7 +345,7 @@
 
     In this example, we are going to build an application that automatically
     populates a window title with content by repeating values entered into table
-    cells. To be able to access the window title easily we put the QTableView in
+    cells. To be able to access the window title easily we put the BOBUIableView in
     a QMainWindow.
 
     The model decides whether editing capabilities are available. We only have
@@ -368,10 +368,10 @@
     \l{QAbstractItemModel::setData()}{setData()} will be called each time the
     user edits a cell. The \c index parameter tells us which field has been
     edited and \c value  provides the result of the editing process. The role
-    will always be set to \l Qt::EditRole because our cells only contain text.
+    will always be set to \l BobUI::EditRole because our cells only contain text.
     If a checkbox were present and user permissions are set to allow the
     checkbox to be selected, calls would also be made with the role set to
-    \l Qt::CheckStateRole.
+    \l BobUI::CheckStateRole.
 
     (file source: examples/widgets/tutorials/modelview/5_edit/mymodel.cpp)
     \snippet tutorials/modelview/5_edit/mymodel.cpp quoting mymodel_f
@@ -379,7 +379,7 @@
     Various properties of a cell can be adjusted with
     \l{QAbstractItemModel::flags()}{flags()}.
 
-    Returning \l{Qt::ItemFlag}{Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled}
+    Returning \l{BobUI::ItemFlag}{BobUI::ItemIsSelectable | BobUI::ItemIsEditable | BobUI::ItemIsEnabled}
     is enough to show an editor that a cell can be selected.
 
     If editing one cell modifies more data than the data in that particular
@@ -392,13 +392,13 @@
     \section2 3.1 TreeView
 
     You can convert the example above into an application with a tree view.
-    Simply replace QTableView with QTreeView, which results in a read/write
+    Simply replace BOBUIableView with BOBUIreeView, which results in a read/write
     tree. No changes have to be made to the model. The tree won't have any
     hierarchies because there aren't any hierarchies in the model itself.
 
     \image dummy_tree.png {Tree view displaying table data with no hierarchy}
 
-    QListView, QTableView and QTreeView all use a model abstraction, which is a
+    QListView, BOBUIableView and BOBUIreeView all use a model abstraction, which is a
     merged list, table and tree. This makes it possible to use several different
     types of view classes from the same model.
 
@@ -467,7 +467,7 @@
     \section2 3.3 Predefined Models
 
     The typical way to use model/view is to wrap specific data to make it usable
-    with view classes. Qt, however, also provides predefined models for common
+    with view classes. BobUI, however, also provides predefined models for common
     underlying data structures. If one of the available data structures is
     suitable for your application, a predefined model can be a good choice.
 
@@ -541,7 +541,7 @@
     you want to leave the grid, you would not use a custom delegate but a custom
     view class.
 
-    Other references to delegates in Qt Documentation:
+    Other references to delegates in BobUI Documentation:
 
     \list
     \li \l{Delegate Classes}
@@ -560,8 +560,8 @@
     call has crashed the application and which operation has introduced the
     problem.
 
-    Qt Labs provides software called
-    \l{http://wiki.qt.io/Model_Test}{ModelTest},
+    BobUI Labs provides software called
+    \l{http://wiki.bobui.io/Model_Test}{ModelTest},
     which checks models while your programming is running. Every time the model
     is changed, ModelTest scans the model and reports errors with an assert.
     This is especially important for tree models, since their hierarchical
@@ -575,7 +575,7 @@
 
     \section1 Examples
 
-    Qt comes with multiple examples for model/view. You can find them on the
+    BobUI comes with multiple examples for model/view. You can find them on the
     \l{Item Views Examples} page.
 */
 

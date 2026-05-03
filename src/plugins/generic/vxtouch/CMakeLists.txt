@@ -1,20 +1,20 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QVxTouchScreenPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QVxTouchScreenPlugin
+bobui_internal_add_plugin(QVxTouchScreenPlugin
     OUTPUT_NAME qvxtouchplugin
     PLUGIN_TYPE generic
     DEFAULT_IF FALSE
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::InputSupportPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::InputSupportPrivate
 )

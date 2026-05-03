@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 static const int QGRAPHICSVIEW_REGION_RECT_THRESHOLD = 50;
 
@@ -12,7 +12,7 @@ static const int QGRAPHICSVIEW_PREALLOC_STYLE_OPTIONS = 503; // largest prime < 
     contents of a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsView visualizes the contents of a QGraphicsScene in a scrollable
     viewport. To create a scene with geometrical items, see QGraphicsScene's
@@ -57,7 +57,7 @@ static const int QGRAPHICSVIEW_PREALLOC_STYLE_OPTIONS = 503; // largest prime < 
     setViewport(new QOpenGLWidget). QGraphicsView takes ownership of the
     viewport widget.
 
-    QGraphicsView supports affine transformations, using QTransform. You can
+    QGraphicsView supports affine transformations, using BOBUIransform. You can
     either pass a matrix to setTransform(), or you can call one of the
     convenience functions rotate(), scale(), translate() or shear(). The most
     two common transformations are scaling, which is used to implement
@@ -191,7 +191,7 @@ static const int QGRAPHICSVIEW_PREALLOC_STYLE_OPTIONS = 503; // largest prime < 
     common side effect is that items that do draw with antialiasing can leave
     painting traces behind on the scene as they are moved.
 
-    \value IndirectPainting Since Qt 4.6, restore the old painting algorithm
+    \value IndirectPainting Since BobUI 4.6, restore the old painting algorithm
     that calls QGraphicsView::drawItems() and QGraphicsScene::drawItems().
     To be used only for compatibility with old code.
 */
@@ -255,25 +255,25 @@ static const int QGRAPHICSVIEW_PREALLOC_STYLE_OPTIONS = 503; // largest prime < 
 #include "qgraphicssceneevent.h"
 #include "qgraphicswidget.h"
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qmath.h>
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtWidgets/qapplication.h>
-#include <QtGui/qevent.h>
-#include <QtWidgets/qlayout.h>
-#include <QtGui/qtransform.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpainterpath.h>
-#include <QtWidgets/qscrollbar.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIWidgets/qlayout.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpainterpath.h>
+#include <BobUIWidgets/qscrollbar.h>
+#include <BobUIWidgets/qstyleoption.h>
 
 #include <private/qevent_p.h>
-#include <QtGui/private/qeventpoint_p.h>
+#include <BobUIGui/private/qeventpoint_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
+bool bobui_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 
 inline int q_round_bound(qreal d) //### (int)(qreal) INT_MAX != INT_MAX for single precision
 {
@@ -284,7 +284,7 @@ inline int q_round_bound(qreal d) //### (int)(qreal) INT_MAX != INT_MAX for sing
     return d >= 0.0 ? int(d + 0.5) : int(d - int(d-1) + 0.5) + int(d-1);
 }
 
-void QGraphicsViewPrivate::translateTouchEvent(QGraphicsViewPrivate *d, QTouchEvent *touchEvent)
+void QGraphicsViewPrivate::translateTouchEvent(QGraphicsViewPrivate *d, BOBUIouchEvent *touchEvent)
 {
     for (int i = 0; i < touchEvent->pointCount(); ++i) {
         auto &pt = touchEvent->point(i);
@@ -314,19 +314,19 @@ QGraphicsViewPrivate::QGraphicsViewPrivate()
       mustResizeBackgroundPixmap(true),
       fullUpdatePending(true),
       hasUpdateClip(false),
-      mousePressButton(Qt::NoButton),
+      mousePressButton(BobUI::NoButton),
       leftIndent(0), topIndent(0),
-      alignment(Qt::AlignCenter),
+      alignment(BobUI::AlignCenter),
       transformationAnchor(QGraphicsView::AnchorViewCenter), resizeAnchor(QGraphicsView::NoAnchor),
       viewportUpdateMode(QGraphicsView::MinimalViewportUpdate),
       scene(nullptr),
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
       rubberBanding(false),
-      rubberBandSelectionMode(Qt::IntersectsItemShape),
-      rubberBandSelectionOperation(Qt::ReplaceSelection),
+      rubberBandSelectionMode(BobUI::IntersectsItemShape),
+      rubberBandSelectionOperation(BobUI::ReplaceSelection),
 #endif
       handScrollMotions(0),
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
       hasStoredOriginalCursor(false),
 #endif
       lastDragDropEvent(nullptr),
@@ -353,9 +353,9 @@ void QGraphicsViewPrivate::recalculateContentSize()
 
     bool frameOnlyAround = (q->style()->styleHint(QStyle::SH_ScrollView_FrameOnlyAroundContents, nullptr, q));
     if (frameOnlyAround) {
-        if (hbarpolicy == Qt::ScrollBarAlwaysOn)
+        if (hbarpolicy == BobUI::ScrollBarAlwaysOn)
             height -= frameWidth * 2;
-        if (vbarpolicy == Qt::ScrollBarAlwaysOn)
+        if (vbarpolicy == BobUI::ScrollBarAlwaysOn)
             width -= frameWidth * 2;
     }
 
@@ -365,14 +365,14 @@ void QGraphicsViewPrivate::recalculateContentSize()
                               + (frameOnlyAround ? frameWidth * 2 : 0);
 
     // We do not need to subtract the width scrollbars whose policy is
-    // Qt::ScrollBarAlwaysOn, this was already done by maximumViewportSize().
-    bool useHorizontalScrollBar = (viewRect.width() > width) && hbarpolicy == Qt::ScrollBarAsNeeded;
-    bool useVerticalScrollBar = (viewRect.height() > height) && vbarpolicy == Qt::ScrollBarAsNeeded;
-    if (useHorizontalScrollBar && vbarpolicy == Qt::ScrollBarAsNeeded) {
+    // BobUI::ScrollBarAlwaysOn, this was already done by maximumViewportSize().
+    bool useHorizontalScrollBar = (viewRect.width() > width) && hbarpolicy == BobUI::ScrollBarAsNeeded;
+    bool useVerticalScrollBar = (viewRect.height() > height) && vbarpolicy == BobUI::ScrollBarAsNeeded;
+    if (useHorizontalScrollBar && vbarpolicy == BobUI::ScrollBarAsNeeded) {
         if (viewRect.height() > height - scrollBarExtent)
             useVerticalScrollBar = true;
     }
-    if (useVerticalScrollBar && hbarpolicy == Qt::ScrollBarAsNeeded) {
+    if (useVerticalScrollBar && hbarpolicy == BobUI::ScrollBarAsNeeded) {
         if (viewRect.width() > width - scrollBarExtent)
             useHorizontalScrollBar = true;
     }
@@ -397,14 +397,14 @@ void QGraphicsViewPrivate::recalculateContentSize()
     const int left =  q_round_bound(viewRect.left());
     const int right = q_round_bound(viewRect.right() - width);
     if (left >= right) {
-        switch (alignment & Qt::AlignHorizontal_Mask) {
-        case Qt::AlignLeft:
+        switch (alignment & BobUI::AlignHorizontal_Mask) {
+        case BobUI::AlignLeft:
             leftIndent = -viewRect.left();
             break;
-        case Qt::AlignRight:
+        case BobUI::AlignRight:
             leftIndent = maxSize.width() - viewRect.width() - viewRect.left() - 1;
             break;
-        case Qt::AlignHCenter:
+        case BobUI::AlignHCenter:
         default:
             leftIndent = maxSize.width() / 2 - (viewRect.left() + viewRect.right()) / 2;
             break;
@@ -427,14 +427,14 @@ void QGraphicsViewPrivate::recalculateContentSize()
     const int top = q_round_bound(viewRect.top());
     const int bottom = q_round_bound(viewRect.bottom()  - height);
     if (top >= bottom) {
-        switch (alignment & Qt::AlignVertical_Mask) {
-        case Qt::AlignTop:
+        switch (alignment & BobUI::AlignVertical_Mask) {
+        case BobUI::AlignTop:
             topIndent = -viewRect.top();
             break;
-        case Qt::AlignBottom:
+        case BobUI::AlignBottom:
             topIndent = maxSize.height() - viewRect.height() - viewRect.top() - 1;
             break;
-        case Qt::AlignVCenter:
+        case BobUI::AlignVCenter:
         default:
             topIndent = maxSize.height() / 2 - (viewRect.top() + viewRect.bottom()) / 2;
             break;
@@ -539,7 +539,7 @@ qint64 QGraphicsViewPrivate::verticalScroll() const
 /*!
     \internal
 
-    Maps the given rectangle to the scene using QTransform::mapRect()
+    Maps the given rectangle to the scene using BOBUIransform::mapRect()
 */
 QRectF QGraphicsViewPrivate::mapRectToScene(const QRect &rect) const
 {
@@ -553,7 +553,7 @@ QRectF QGraphicsViewPrivate::mapRectToScene(const QRect &rect) const
 /*!
     \internal
 
-    Maps the given rectangle from the scene using QTransform::mapRect()
+    Maps the given rectangle from the scene using BOBUIransform::mapRect()
 */
 QRectF QGraphicsViewPrivate::mapRectFromScene(const QRectF &rect) const
 {
@@ -628,7 +628,7 @@ void QGraphicsViewPrivate::mouseMoveEventHandler(QMouseEvent *event)
 {
     Q_Q(QGraphicsView);
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     updateRubberBand(event);
 #endif
 
@@ -660,7 +660,7 @@ void QGraphicsViewPrivate::mouseMoveEventHandler(QMouseEvent *event)
     lastMouseMoveScreenPoint = mouseEvent.screenPos();
     mouseEvent.setAccepted(false);
     if (event->spontaneous())
-        qt_sendSpontaneousEvent(scene, &mouseEvent);
+        bobui_sendSpontaneousEvent(scene, &mouseEvent);
     else
         QCoreApplication::sendEvent(scene, &mouseEvent);
 
@@ -673,7 +673,7 @@ void QGraphicsViewPrivate::mouseMoveEventHandler(QMouseEvent *event)
         return;
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     // If all the items ignore hover events, we don't look-up any items
     // in QGraphicsScenePrivate::dispatchHoverEvent, hence the
     // cachedItemsUnderMouse list will be empty. We therefore do the look-up
@@ -704,7 +704,7 @@ void QGraphicsViewPrivate::mouseMoveEventHandler(QMouseEvent *event)
 /*!
     \internal
 */
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 QRegion QGraphicsViewPrivate::rubberBandRegion(const QWidget *widget, const QRect &rect) const
 {
     QStyleHintReturnMask mask;
@@ -742,7 +742,7 @@ void QGraphicsViewPrivate::updateRubberBand(const QMouseEvent *event)
     // if we didn't get the release events).
     if (!event->buttons()) {
         rubberBanding = false;
-        rubberBandSelectionOperation = Qt::ReplaceSelection;
+        rubberBandSelectionOperation = BobUI::ReplaceSelection;
         if (!rubberBandRect.isNull()) {
             rubberBandRect = QRect();
             emit q->rubberBandChanged(rubberBandRect, QPointF(), QPointF());
@@ -793,7 +793,7 @@ void QGraphicsViewPrivate::clearRubberBand()
     }
 
     rubberBanding = false;
-    rubberBandSelectionOperation = Qt::ReplaceSelection;
+    rubberBandSelectionOperation = BobUI::ReplaceSelection;
     if (!rubberBandRect.isNull()) {
         rubberBandRect = QRect();
         emit q->rubberBandChanged(rubberBandRect, QPointF(), QPointF());
@@ -804,7 +804,7 @@ void QGraphicsViewPrivate::clearRubberBand()
 /*!
     \internal
 */
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QGraphicsViewPrivate::_q_setViewportCursor(const QCursor &cursor)
 {
     if (!hasStoredOriginalCursor) {
@@ -818,7 +818,7 @@ void QGraphicsViewPrivate::_q_setViewportCursor(const QCursor &cursor)
 /*!
     \internal
 */
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QGraphicsViewPrivate::_q_unsetViewportCursor()
 {
     Q_Q(QGraphicsView);
@@ -834,7 +834,7 @@ void QGraphicsViewPrivate::_q_unsetViewportCursor()
     if (hasStoredOriginalCursor) {
         hasStoredOriginalCursor = false;
         if (dragMode == QGraphicsView::ScrollHandDrag)
-            viewport->setCursor(Qt::OpenHandCursor);
+            viewport->setCursor(BobUI::OpenHandCursor);
         else
             viewport->setCursor(originalCursor);
     }
@@ -867,7 +867,7 @@ void QGraphicsViewPrivate::storeDragDropEvent(const QGraphicsSceneDragDropEvent 
 void QGraphicsViewPrivate::populateSceneDragDropEvent(QGraphicsSceneDragDropEvent *dest,
                                                       QDropEvent *source)
 {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     Q_Q(QGraphicsView);
     dest->setScenePos(q->mapToScene(source->position().toPoint()));
     dest->setScreenPos(q->mapToGlobal(source->position().toPoint()));
@@ -888,7 +888,7 @@ void QGraphicsViewPrivate::populateSceneDragDropEvent(QGraphicsSceneDragDropEven
 /*!
     \internal
 */
-QTransform QGraphicsViewPrivate::mapToViewTransform(const QGraphicsItem *item) const
+BOBUIransform QGraphicsViewPrivate::mapToViewTransform(const QGraphicsItem *item) const
 {
     Q_Q(const QGraphicsView);
     if (dirtyScroll)
@@ -909,15 +909,15 @@ QTransform QGraphicsViewPrivate::mapToViewTransform(const QGraphicsItem *item) c
         offset += itemd->pos;
     } while ((parentItem = itemd->parent));
 
-    QTransform move = QTransform::fromTranslate(offset.x(), offset.y());
+    BOBUIransform move = BOBUIransform::fromTranslate(offset.x(), offset.y());
     if (!parentItem) {
         move.translate(-scrollX, -scrollY);
         return identityMatrix ? move : matrix * move;
     }
-    QTransform tr = parentItem->sceneTransform();
+    BOBUIransform tr = parentItem->sceneTransform();
     if (!identityMatrix)
         tr *= matrix;
-    return move * tr * QTransform::fromTranslate(-scrollX, -scrollY);
+    return move * tr * BOBUIransform::fromTranslate(-scrollX, -scrollY);
 }
 
 QRect QGraphicsViewPrivate::mapToViewRect(const QGraphicsItem *item, const QRectF &rect) const
@@ -935,7 +935,7 @@ QRegion QGraphicsViewPrivate::mapToViewRegion(const QGraphicsItem *item, const Q
         const_cast<QGraphicsViewPrivate *>(this)->updateScroll();
 
     // Accurate bounding region
-    QTransform itv = item->deviceTransform(q->viewportTransform());
+    BOBUIransform itv = item->deviceTransform(q->viewportTransform());
     return item->boundingRegion(itv) & itv.mapRect(rect).toAlignedRect();
 }
 
@@ -997,7 +997,7 @@ void QGraphicsViewPrivate::setUpdateClip(QGraphicsItem *item)
     //              .mapRect(item->boundingRect()).toAlignedRect();
     QRect clip;
     if (item->d_ptr->itemIsUntransformable()) {
-        QTransform xform = item->deviceTransform(q->viewportTransform());
+        BOBUIransform xform = item->deviceTransform(q->viewportTransform());
         clip = xform.mapRect(item->boundingRect()).toAlignedRect();
     } else if (item->d_ptr->sceneTransformTranslateOnly && identityMatrix) {
         QRectF r(item->boundingRect());
@@ -1007,7 +1007,7 @@ void QGraphicsViewPrivate::setUpdateClip(QGraphicsItem *item)
     } else if (!q->isTransformed()) {
         clip = item->d_ptr->sceneTransform.mapRect(item->boundingRect()).toAlignedRect();
     } else {
-        QTransform xform = item->d_ptr->sceneTransform;
+        BOBUIransform xform = item->d_ptr->sceneTransform;
         xform *= q->viewportTransform();
         clip = xform.mapRect(item->boundingRect()).toAlignedRect();
     }
@@ -1021,7 +1021,7 @@ void QGraphicsViewPrivate::setUpdateClip(QGraphicsItem *item)
     }
 }
 
-bool QGraphicsViewPrivate::updateRegion(const QRectF &rect, const QTransform &xform)
+bool QGraphicsViewPrivate::updateRegion(const QRectF &rect, const BOBUIransform &xform)
 {
     if (rect.isEmpty())
         return false;
@@ -1116,11 +1116,11 @@ void QGraphicsViewPrivate::freeStyleOptionsArray(QStyleOptionGraphicsItem *array
         delete [] array;
 }
 
-Q_GUI_EXPORT extern QPainterPath qt_regionToPath(const QRegion &region);
+Q_GUI_EXPORT extern QPainterPath bobui_regionToPath(const QRegion &region);
 
 /*!
     \class QGraphicsViewPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -1134,7 +1134,7 @@ Q_GUI_EXPORT extern QPainterPath qt_regionToPath(const QRegion &region);
     must search for items with an adjustment of (-1, -1, 1, 1).
 */
 QList<QGraphicsItem *> QGraphicsViewPrivate::findItems(const QRegion &exposedRegion, bool *allItems,
-                                                       const QTransform &viewTransform) const
+                                                       const BOBUIransform &viewTransform) const
 {
     Q_Q(const QGraphicsView);
 
@@ -1148,17 +1148,17 @@ QList<QGraphicsItem *> QGraphicsViewPrivate::findItems(const QRegion &exposedReg
         *allItems = true;
 
         // All items are guaranteed within the exposed region.
-        return scene->items(Qt::AscendingOrder);
+        return scene->items(BobUI::AscendingOrder);
     }
 
     // Step 2) If the expose region is a simple rect and the view is only
     // translated or scaled, search for items using
     // QGraphicsScene::items(QRectF).
-    bool simpleRectLookup =  exposedRegion.rectCount() == 1 && matrix.type() <= QTransform::TxScale;
+    bool simpleRectLookup =  exposedRegion.rectCount() == 1 && matrix.type() <= BOBUIransform::TxScale;
     if (simpleRectLookup) {
         return scene->items(exposedRegionSceneBounds,
-                            Qt::IntersectsItemBoundingRect,
-                            Qt::AscendingOrder, viewTransform);
+                            BobUI::IntersectsItemBoundingRect,
+                            BobUI::AscendingOrder, viewTransform);
     }
 
     // If the region is complex or the view has a complex transform, adjust
@@ -1168,9 +1168,9 @@ QList<QGraphicsItem *> QGraphicsViewPrivate::findItems(const QRegion &exposedReg
     for (const QRect &r : exposedRegion)
         adjustedRegion += r.adjusted(-1, -1, 1, 1);
 
-    const QPainterPath exposedScenePath(q->mapToScene(qt_regionToPath(adjustedRegion)));
-    return scene->items(exposedScenePath, Qt::IntersectsItemBoundingRect,
-                        Qt::AscendingOrder, viewTransform);
+    const QPainterPath exposedScenePath(q->mapToScene(bobui_regionToPath(adjustedRegion)));
+    return scene->items(exposedScenePath, BobUI::IntersectsItemBoundingRect,
+                        BobUI::AscendingOrder, viewTransform);
 }
 
 /*!
@@ -1186,8 +1186,8 @@ void QGraphicsViewPrivate::updateInputMethodSensitivity()
     QGraphicsItem *focusItem = nullptr;
     bool enabled = scene && (focusItem = scene->focusItem())
                    && (focusItem->d_ptr->flags & QGraphicsItem::ItemAcceptsInputMethod);
-    q->setAttribute(Qt::WA_InputMethodEnabled, enabled);
-    q->viewport()->setAttribute(Qt::WA_InputMethodEnabled, enabled);
+    q->setAttribute(BobUI::WA_InputMethodEnabled, enabled);
+    q->viewport()->setAttribute(BobUI::WA_InputMethodEnabled, enabled);
 
     if (!enabled) {
         q->setInputMethodHints({ });
@@ -1217,8 +1217,8 @@ QGraphicsView::QGraphicsView(QWidget *parent)
     setAcceptDrops(true);
     setBackgroundRole(QPalette::Base);
     // Investigate leaving these disabled by default.
-    setAttribute(Qt::WA_InputMethodEnabled);
-    viewport()->setAttribute(Qt::WA_InputMethodEnabled);
+    setAttribute(BobUI::WA_InputMethodEnabled);
+    viewport()->setAttribute(BobUI::WA_InputMethodEnabled);
 }
 
 /*!
@@ -1233,8 +1233,8 @@ QGraphicsView::QGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setAcceptDrops(true);
     setBackgroundRole(QPalette::Base);
     // Investigate leaving these disabled by default.
-    setAttribute(Qt::WA_InputMethodEnabled);
-    viewport()->setAttribute(Qt::WA_InputMethodEnabled);
+    setAttribute(BobUI::WA_InputMethodEnabled);
+    viewport()->setAttribute(BobUI::WA_InputMethodEnabled);
 }
 
 /*!
@@ -1247,8 +1247,8 @@ QGraphicsView::QGraphicsView(QGraphicsViewPrivate &dd, QWidget *parent)
     setAcceptDrops(true);
     setBackgroundRole(QPalette::Base);
     // Investigate leaving these disabled by default.
-    setAttribute(Qt::WA_InputMethodEnabled);
-    viewport()->setAttribute(Qt::WA_InputMethodEnabled);
+    setAttribute(BobUI::WA_InputMethodEnabled);
+    viewport()->setAttribute(BobUI::WA_InputMethodEnabled);
 }
 
 /*!
@@ -1327,17 +1327,17 @@ void QGraphicsView::setRenderHint(QPainter::RenderHint hint, bool enabled)
 
     If the whole scene is visible in the view, (i.e., there are no visible
     scroll bars,) the view's alignment will decide where the scene will be
-    rendered in the view. For example, if the alignment is Qt::AlignCenter,
+    rendered in the view. For example, if the alignment is BobUI::AlignCenter,
     which is default, the scene will be centered in the view, and if the
-    alignment is (Qt::AlignLeft | Qt::AlignTop), the scene will be rendered in
+    alignment is (BobUI::AlignLeft | BobUI::AlignTop), the scene will be rendered in
     the top-left corner of the view.
 */
-Qt::Alignment QGraphicsView::alignment() const
+BobUI::Alignment QGraphicsView::alignment() const
 {
     Q_D(const QGraphicsView);
     return d->alignment;
 }
-void QGraphicsView::setAlignment(Qt::Alignment alignment)
+void QGraphicsView::setAlignment(BobUI::Alignment alignment)
 {
     Q_D(QGraphicsView);
     if (d->alignment != alignment) {
@@ -1506,11 +1506,11 @@ void QGraphicsView::setDragMode(DragMode mode)
     if (d->dragMode == mode)
         return;
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     d->clearRubberBand();
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (d->dragMode == ScrollHandDrag)
         viewport()->unsetCursor();
 #endif
@@ -1524,16 +1524,16 @@ void QGraphicsView::setDragMode(DragMode mode)
 
     d->dragMode = mode;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (d->dragMode == ScrollHandDrag) {
         // Forget the stored viewport cursor when we enter scroll hand drag mode.
         d->hasStoredOriginalCursor = false;
-        viewport()->setCursor(Qt::OpenHandCursor);
+        viewport()->setCursor(BobUI::OpenHandCursor);
     }
 #endif
 }
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 /*!
     \property QGraphicsView::rubberBandSelectionMode
     \brief the behavior for selecting items with a rubber band selection rectangle.
@@ -1542,17 +1542,17 @@ void QGraphicsView::setDragMode(DragMode mode)
     This property defines how items are selected when using the RubberBandDrag
     drag mode.
 
-    The default value is Qt::IntersectsItemShape; all items whose shape
+    The default value is BobUI::IntersectsItemShape; all items whose shape
     intersects with or is contained by the rubber band are selected.
 
     \sa dragMode, items(), rubberBandRect()
 */
-Qt::ItemSelectionMode QGraphicsView::rubberBandSelectionMode() const
+BobUI::ItemSelectionMode QGraphicsView::rubberBandSelectionMode() const
 {
     Q_D(const QGraphicsView);
     return d->rubberBandSelectionMode;
 }
-void QGraphicsView::setRubberBandSelectionMode(Qt::ItemSelectionMode mode)
+void QGraphicsView::setRubberBandSelectionMode(BobUI::ItemSelectionMode mode)
 {
     Q_D(QGraphicsView);
     d->rubberBandSelectionMode = mode;
@@ -1764,7 +1764,7 @@ void QGraphicsView::setScene(QGraphicsScene *scene)
 
         // enable touch events if any items is interested in them
         if (!d->scene->d_func()->allItemsIgnoreTouchEvents)
-            d->viewport->setAttribute(Qt::WA_AcceptTouchEvents);
+            d->viewport->setAttribute(BobUI::WA_AcceptTouchEvents);
 
         if (isActiveWindow() && isVisible()) {
             QEvent windowActivate(QEvent::WindowActivate);
@@ -1828,7 +1828,7 @@ void QGraphicsView::setSceneRect(const QRectF &rect)
 void QGraphicsView::rotate(qreal angle)
 {
     Q_D(QGraphicsView);
-    QTransform matrix = d->matrix;
+    BOBUIransform matrix = d->matrix;
     matrix.rotate(angle);
     setTransform(matrix);
 }
@@ -1841,7 +1841,7 @@ void QGraphicsView::rotate(qreal angle)
 void QGraphicsView::scale(qreal sx, qreal sy)
 {
     Q_D(QGraphicsView);
-    QTransform matrix = d->matrix;
+    BOBUIransform matrix = d->matrix;
     matrix.scale(sx, sy);
     setTransform(matrix);
 }
@@ -1854,7 +1854,7 @@ void QGraphicsView::scale(qreal sx, qreal sy)
 void QGraphicsView::shear(qreal sh, qreal sv)
 {
     Q_D(QGraphicsView);
-    QTransform matrix = d->matrix;
+    BOBUIransform matrix = d->matrix;
     matrix.shear(sh, sv);
     setTransform(matrix);
 }
@@ -1867,7 +1867,7 @@ void QGraphicsView::shear(qreal sh, qreal sv)
 void QGraphicsView::translate(qreal dx, qreal dy)
 {
     Q_D(QGraphicsView);
-    QTransform matrix = d->matrix;
+    BOBUIransform matrix = d->matrix;
     matrix.translate(dx, dy);
     setTransform(matrix);
 }
@@ -2020,7 +2020,7 @@ void QGraphicsView::ensureVisible(const QGraphicsItem *item, int xmargin, int ym
 
     \sa setTransform(), ensureVisible(), centerOn()
 */
-void QGraphicsView::fitInView(const QRectF &rect, Qt::AspectRatioMode aspectRatioMode)
+void QGraphicsView::fitInView(const QRectF &rect, BobUI::AspectRatioMode aspectRatioMode)
 {
     Q_D(QGraphicsView);
     if (!d->scene || rect.isNull())
@@ -2045,13 +2045,13 @@ void QGraphicsView::fitInView(const QRectF &rect, Qt::AspectRatioMode aspectRati
 
     // Respect the aspect ratio mode.
     switch (aspectRatioMode) {
-    case Qt::KeepAspectRatio:
+    case BobUI::KeepAspectRatio:
         xratio = yratio = qMin(xratio, yratio);
         break;
-    case Qt::KeepAspectRatioByExpanding:
+    case BobUI::KeepAspectRatioByExpanding:
         xratio = yratio = qMax(xratio, yratio);
         break;
-    case Qt::IgnoreAspectRatio:
+    case BobUI::IgnoreAspectRatio:
         break;
     }
 
@@ -2062,7 +2062,7 @@ void QGraphicsView::fitInView(const QRectF &rect, Qt::AspectRatioMode aspectRati
 
 /*!
     \fn void QGraphicsView::fitInView(qreal x, qreal y, qreal w, qreal h,
-    Qt::AspectRatioMode aspectRatioMode = Qt::IgnoreAspectRatio)
+    BobUI::AspectRatioMode aspectRatioMode = BobUI::IgnoreAspectRatio)
 
     \overload
 
@@ -2080,7 +2080,7 @@ void QGraphicsView::fitInView(const QRectF &rect, Qt::AspectRatioMode aspectRati
 
     \sa ensureVisible(), centerOn()
 */
-void QGraphicsView::fitInView(const QGraphicsItem *item, Qt::AspectRatioMode aspectRatioMode)
+void QGraphicsView::fitInView(const QGraphicsItem *item, BobUI::AspectRatioMode aspectRatioMode)
 {
     QPainterPath path = item->isClipped() ? item->clipPath() : item->shape();
     if (item->d_ptr->hasTranslateOnlySceneTransform()) {
@@ -2112,7 +2112,7 @@ void QGraphicsView::fitInView(const QGraphicsItem *item, Qt::AspectRatioMode asp
     \sa QGraphicsScene::render()
 */
 void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect &source,
-                           Qt::AspectRatioMode aspectRatioMode)
+                           BobUI::AspectRatioMode aspectRatioMode)
 {
     // ### Switch to using the recursive rendering algorithm instead.
 
@@ -2140,13 +2140,13 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
 
     // Scale according to the aspect ratio mode.
     switch (aspectRatioMode) {
-    case Qt::KeepAspectRatio:
+    case BobUI::KeepAspectRatio:
         xratio = yratio = qMin(xratio, yratio);
         break;
-    case Qt::KeepAspectRatioByExpanding:
+    case BobUI::KeepAspectRatioByExpanding:
         xratio = yratio = qMax(xratio, yratio);
         break;
-    case Qt::IgnoreAspectRatio:
+    case BobUI::IgnoreAspectRatio:
         break;
     }
 
@@ -2154,7 +2154,7 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
     // in reverse order).
     QPolygonF sourceScenePoly = mapToScene(sourceRect.adjusted(-1, -1, 1, 1));
     QList<QGraphicsItem *> itemList = d->scene->items(sourceScenePoly,
-                                                      Qt::IntersectsItemBoundingRect);
+                                                      BobUI::IntersectsItemBoundingRect);
     QGraphicsItem **itemArray = new QGraphicsItem *[itemList.size()];
     int numItems = itemList.size();
     for (int i = 0; i < numItems; ++i)
@@ -2162,9 +2162,9 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
     itemList.clear();
 
     // Setup painter matrix.
-    QTransform moveMatrix = QTransform::fromTranslate(-d->horizontalScroll(), -d->verticalScroll());
-    QTransform painterMatrix = d->matrix * moveMatrix;
-    painterMatrix *= QTransform()
+    BOBUIransform moveMatrix = BOBUIransform::fromTranslate(-d->horizontalScroll(), -d->verticalScroll());
+    BOBUIransform painterMatrix = d->matrix * moveMatrix;
+    painterMatrix *= BOBUIransform()
                      .translate(targetRect.left(), targetRect.top())
                      .scale(xratio, yratio)
                      .translate(-sourceRect.left(), -sourceRect.top());
@@ -2181,7 +2181,7 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
     QPainterPath path;
     path.addPolygon(sourceScenePoly);
     path.closeSubpath();
-    painter->setClipPath(painterMatrix.map(path), Qt::IntersectClip);
+    painter->setClipPath(painterMatrix.map(path), BobUI::IntersectClip);
 
     // Transform the painter.
     painter->setTransform(painterMatrix, true);
@@ -2237,18 +2237,18 @@ QList<QGraphicsItem *> QGraphicsView::items(const QPoint &pos) const
     // ### Unify these two, and use the items(QPointF) version in
     // QGraphicsScene instead. The scene items function could use the viewport
     // transform to map the point to a rect/polygon.
-    if ((d->identityMatrix || d->matrix.type() <= QTransform::TxScale)) {
+    if ((d->identityMatrix || d->matrix.type() <= BOBUIransform::TxScale)) {
         // Use the rect version
-        QTransform xinv = viewportTransform().inverted();
+        BOBUIransform xinv = viewportTransform().inverted();
         return d->scene->items(xinv.mapRect(QRectF(pos.x(), pos.y(), 1, 1)),
-                               Qt::IntersectsItemShape,
-                               Qt::DescendingOrder,
+                               BobUI::IntersectsItemShape,
+                               BobUI::DescendingOrder,
                                viewportTransform());
     }
     // Use the polygon version
     return d->scene->items(mapToScene(pos.x(), pos.y(), 1, 1),
-                           Qt::IntersectsItemShape,
-                           Qt::DescendingOrder,
+                           BobUI::IntersectsItemShape,
+                           BobUI::DescendingOrder,
                            viewportTransform());
 }
 
@@ -2266,7 +2266,7 @@ QList<QGraphicsItem *> QGraphicsView::items(const QPoint &pos) const
     contained by or intersect with \a rect. \a rect is in viewport
     coordinates.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with or is contained by \a rect are returned.
 
     The items are sorted in descending stacking order (i.e., the first item in
@@ -2274,16 +2274,16 @@ QList<QGraphicsItem *> QGraphicsView::items(const QPoint &pos) const
 
     \sa itemAt(), items(), mapToScene(), {QGraphicsItem#Sorting}{Sorting}
 */
-QList<QGraphicsItem *> QGraphicsView::items(const QRect &rect, Qt::ItemSelectionMode mode) const
+QList<QGraphicsItem *> QGraphicsView::items(const QRect &rect, BobUI::ItemSelectionMode mode) const
 {
     Q_D(const QGraphicsView);
     if (!d->scene)
         return QList<QGraphicsItem *>();
-    return d->scene->items(mapToScene(rect), mode, Qt::DescendingOrder, viewportTransform());
+    return d->scene->items(mapToScene(rect), mode, BobUI::DescendingOrder, viewportTransform());
 }
 
 /*!
-    \fn QList<QGraphicsItem *> QGraphicsView::items(int x, int y, int w, int h, Qt::ItemSelectionMode mode) const
+    \fn QList<QGraphicsItem *> QGraphicsView::items(int x, int y, int w, int h, BobUI::ItemSelectionMode mode) const
     \since 4.3
 
     This convenience function is equivalent to calling items(QRectF(\a x, \a
@@ -2297,7 +2297,7 @@ QList<QGraphicsItem *> QGraphicsView::items(const QRect &rect, Qt::ItemSelection
     contained by or intersect with \a polygon. \a polygon is in viewport
     coordinates.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with or is contained by \a polygon are returned.
 
     The items are sorted by descending stacking order (i.e., the first item in
@@ -2305,12 +2305,12 @@ QList<QGraphicsItem *> QGraphicsView::items(const QRect &rect, Qt::ItemSelection
 
     \sa itemAt(), items(), mapToScene(), {QGraphicsItem#Sorting}{Sorting}
 */
-QList<QGraphicsItem *> QGraphicsView::items(const QPolygon &polygon, Qt::ItemSelectionMode mode) const
+QList<QGraphicsItem *> QGraphicsView::items(const QPolygon &polygon, BobUI::ItemSelectionMode mode) const
 {
     Q_D(const QGraphicsView);
     if (!d->scene)
         return QList<QGraphicsItem *>();
-    return d->scene->items(mapToScene(polygon), mode, Qt::DescendingOrder, viewportTransform());
+    return d->scene->items(mapToScene(polygon), mode, BobUI::DescendingOrder, viewportTransform());
 }
 
 /*!
@@ -2320,17 +2320,17 @@ QList<QGraphicsItem *> QGraphicsView::items(const QPolygon &polygon, Qt::ItemSel
     contained by or intersect with \a path. \a path is in viewport
     coordinates.
 
-    The default value for \a mode is Qt::IntersectsItemShape; all items whose
+    The default value for \a mode is BobUI::IntersectsItemShape; all items whose
     exact shape intersects with or is contained by \a path are returned.
 
     \sa itemAt(), items(), mapToScene(), {QGraphicsItem#Sorting}{Sorting}
 */
-QList<QGraphicsItem *> QGraphicsView::items(const QPainterPath &path, Qt::ItemSelectionMode mode) const
+QList<QGraphicsItem *> QGraphicsView::items(const QPainterPath &path, BobUI::ItemSelectionMode mode) const
 {
     Q_D(const QGraphicsView);
     if (!d->scene)
         return QList<QGraphicsItem *>();
-    return d->scene->items(mapToScene(path), mode, Qt::DescendingOrder, viewportTransform());
+    return d->scene->items(mapToScene(path), mode, BobUI::DescendingOrder, viewportTransform());
 }
 
 /*!
@@ -2409,7 +2409,7 @@ QPolygonF QGraphicsView::mapToScene(const QRect &rect) const
 
     QPolygonF poly(4);
     if (!d->identityMatrix) {
-        QTransform x = d->matrix.inverted();
+        BOBUIransform x = d->matrix.inverted();
         poly[0] = x.map(tl);
         poly[1] = x.map(tr);
         poly[2] = x.map(br);
@@ -2454,7 +2454,7 @@ QPolygonF QGraphicsView::mapToScene(const QPolygon &polygon) const
 QPainterPath QGraphicsView::mapToScene(const QPainterPath &path) const
 {
     Q_D(const QGraphicsView);
-    QTransform matrix = QTransform::fromTranslate(d->horizontalScroll(), d->verticalScroll());
+    BOBUIransform matrix = BOBUIransform::fromTranslate(d->horizontalScroll(), d->verticalScroll());
     matrix *= d->matrix.inverted();
     return matrix.map(path);
 }
@@ -2494,7 +2494,7 @@ QPolygon QGraphicsView::mapFromScene(const QRectF &rect) const
     QPointF br;
     QPointF bl;
     if (!d->identityMatrix) {
-        const QTransform &x = d->matrix;
+        const BOBUIransform &x = d->matrix;
         tl = x.map(rect.topLeft());
         tr = x.map(rect.topRight());
         br = x.map(rect.bottomRight());
@@ -2550,15 +2550,15 @@ QPolygon QGraphicsView::mapFromScene(const QPolygonF &polygon) const
 QPainterPath QGraphicsView::mapFromScene(const QPainterPath &path) const
 {
     Q_D(const QGraphicsView);
-    QTransform matrix = d->matrix;
-    matrix *= QTransform::fromTranslate(-d->horizontalScroll(), -d->verticalScroll());
+    BOBUIransform matrix = d->matrix;
+    matrix *= BOBUIransform::fromTranslate(-d->horizontalScroll(), -d->verticalScroll());
     return matrix.map(path);
 }
 
 /*!
     \reimp
 */
-QVariant QGraphicsView::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QGraphicsView::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     Q_D(const QGraphicsView);
     if (!d->scene)
@@ -2585,7 +2585,7 @@ QVariant QGraphicsView::inputMethodQuery(Qt::InputMethodQuery query) const
     drawBackground(). To provide custom background drawing for this view, you
     can reimplement drawBackground() instead.
 
-    By default, this property contains a brush with the Qt::NoBrush pattern.
+    By default, this property contains a brush with the BobUI::NoBrush pattern.
 
     \sa QGraphicsScene::backgroundBrush, foregroundBrush
 */
@@ -2615,7 +2615,7 @@ void QGraphicsView::setBackgroundBrush(const QBrush &brush)
     drawForeground(). To provide custom foreground drawing for this view, you
     can reimplement drawForeground() instead.
 
-    By default, this property contains a brush with the Qt::NoBrush pattern.
+    By default, this property contains a brush with the BobUI::NoBrush pattern.
 
     \sa QGraphicsScene::foregroundBrush, backgroundBrush
 */
@@ -2664,7 +2664,7 @@ void QGraphicsView::updateScene(const QList<QRectF> &rects)
     QRect boundingRect;
     QRect viewportRect = viewport()->rect();
     bool redraw = false;
-    QTransform transform = viewportTransform();
+    BOBUIransform transform = viewportTransform();
 
     // Convert scene rects to viewport rects.
     for (const QRectF &rect : rects) {
@@ -2741,7 +2741,7 @@ void QGraphicsView::setupViewport(QWidget *widget)
 
     d->accelerateScrolling = !(isGLWidget);
 
-    widget->setFocusPolicy(Qt::StrongFocus);
+    widget->setFocusPolicy(BobUI::StrongFocus);
 
     if (isGLWidget)
         d->stereoEnabled = QWidgetPrivate::get(widget)->isStereoEnabled();
@@ -2763,12 +2763,12 @@ void QGraphicsView::setupViewport(QWidget *widget)
 
     // enable touch events if any items is interested in them
     if (d->scene && !d->scene->d_func()->allItemsIgnoreTouchEvents)
-        widget->setAttribute(Qt::WA_AcceptTouchEvents);
+        widget->setAttribute(BobUI::WA_AcceptTouchEvents);
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (d->scene) {
         const auto gestures = d->scene->d_func()->grabbedGestures.keys();
-        for (Qt::GestureType gesture : gestures)
+        for (BobUI::GestureType gesture : gestures)
             widget->grabGesture(gesture);
     }
 #endif
@@ -2792,7 +2792,7 @@ bool QGraphicsView::event(QEvent *event)
         case QEvent::KeyPress:
             if (d->scene) {
                 QKeyEvent *k = static_cast<QKeyEvent *>(event);
-                if (k->key() == Qt::Key_Tab || k->key() == Qt::Key_Backtab) {
+                if (k->key() == BobUI::Key_Tab || k->key() == BobUI::Key_Backtab) {
                     // Send the key events to the scene. This will invoke the
                     // scene's tab focus handling, and if the event is
                     // accepted, we return (prevent further event delivery),
@@ -2872,7 +2872,7 @@ bool QGraphicsView::viewportEvent(QEvent *event)
         event->setAccepted(leaveEvent.isAccepted());
         break;
     }
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     case QEvent::ToolTip: {
         QHelpEvent *toolTip = static_cast<QHelpEvent *>(event);
         QGraphicsSceneHelpEvent helpEvent(QEvent::GraphicsSceneHelp);
@@ -2914,7 +2914,7 @@ bool QGraphicsView::viewportEvent(QEvent *event)
 
         if (d->scene && d->sceneInteractionAllowed) {
             // Convert and deliver the touch event to the scene.
-            QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+            BOBUIouchEvent *touchEvent = static_cast<BOBUIouchEvent *>(event);
             QMutableTouchEvent::setTarget(touchEvent, viewport());
             QGraphicsViewPrivate::translateTouchEvent(d, touchEvent);
             QCoreApplication::sendEvent(d->scene, touchEvent);
@@ -2924,7 +2924,7 @@ bool QGraphicsView::viewportEvent(QEvent *event)
 
         return true;
     }
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case QEvent::Gesture:
     case QEvent::GestureOverride:
     {
@@ -2938,7 +2938,7 @@ bool QGraphicsView::viewportEvent(QEvent *event)
         }
         return true;
     }
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
     default:
         break;
     }
@@ -2946,7 +2946,7 @@ bool QGraphicsView::viewportEvent(QEvent *event)
     return QAbstractScrollArea::viewportEvent(event);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -2973,9 +2973,9 @@ void QGraphicsView::contextMenuEvent(QContextMenuEvent *event)
     QCoreApplication::sendEvent(d->scene, &contextEvent);
     event->setAccepted(contextEvent.isAccepted());
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     \reimp
 */
@@ -3090,7 +3090,7 @@ void QGraphicsView::dragMoveEvent(QDragMoveEvent *event)
     if (sceneEvent.isAccepted())
         event->setDropAction(sceneEvent.dropAction());
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \reimp
@@ -3187,7 +3187,7 @@ void QGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
     mouseEvent.setFlags(event->flags());
     mouseEvent.setTimestamp(event->timestamp());
     if (event->spontaneous())
-        qt_sendSpontaneousEvent(d->scene, &mouseEvent);
+        bobui_sendSpontaneousEvent(d->scene, &mouseEvent);
     else
         QCoreApplication::sendEvent(d->scene, &mouseEvent);
 
@@ -3239,7 +3239,7 @@ void QGraphicsView::mousePressEvent(QMouseEvent *event)
             mouseEvent.setAccepted(false);
             mouseEvent.setTimestamp(event->timestamp());
             if (event->spontaneous())
-                qt_sendSpontaneousEvent(d->scene, &mouseEvent);
+                bobui_sendSpontaneousEvent(d->scene, &mouseEvent);
             else
                 QCoreApplication::sendEvent(d->scene, &mouseEvent);
 
@@ -3255,7 +3255,7 @@ void QGraphicsView::mousePressEvent(QMouseEvent *event)
         }
     }
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (d->dragMode == QGraphicsView::RubberBandDrag && !d->rubberBanding) {
         if (d->sceneInteractionAllowed) {
             // Rubberbanding is only allowed in interactive mode.
@@ -3263,25 +3263,25 @@ void QGraphicsView::mousePressEvent(QMouseEvent *event)
             d->rubberBanding = true;
             d->rubberBandRect = QRect();
             if (d->scene) {
-                bool extendSelection = (event->modifiers() & Qt::ControlModifier) != 0;
+                bool extendSelection = (event->modifiers() & BobUI::ControlModifier) != 0;
 
                 if (extendSelection) {
-                    d->rubberBandSelectionOperation = Qt::AddToSelection;
+                    d->rubberBandSelectionOperation = BobUI::AddToSelection;
                 } else {
-                    d->rubberBandSelectionOperation = Qt::ReplaceSelection;
+                    d->rubberBandSelectionOperation = BobUI::ReplaceSelection;
                     d->scene->clearSelection();
                 }
             }
         }
     } else
 #endif
-        if (d->dragMode == QGraphicsView::ScrollHandDrag && event->button() == Qt::LeftButton) {
+        if (d->dragMode == QGraphicsView::ScrollHandDrag && event->button() == BobUI::LeftButton) {
             // Left-button press in scroll hand mode initiates hand scrolling.
             event->accept();
             d->handScrolling = true;
             d->handScrollMotions = 0;
-#ifndef QT_NO_CURSOR
-            viewport()->setCursor(Qt::ClosedHandCursor);
+#ifndef BOBUI_NO_CURSOR
+            viewport()->setCursor(BobUI::ClosedHandCursor);
 #endif
         }
 }
@@ -3317,17 +3317,17 @@ void QGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_D(QGraphicsView);
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (d->dragMode == QGraphicsView::RubberBandDrag && d->sceneInteractionAllowed && !event->buttons()) {
         d->clearRubberBand();
     } else
 #endif
-    if (d->dragMode == QGraphicsView::ScrollHandDrag && event->button() == Qt::LeftButton) {
-#ifndef QT_NO_CURSOR
+    if (d->dragMode == QGraphicsView::ScrollHandDrag && event->button() == BobUI::LeftButton) {
+#ifndef BOBUI_NO_CURSOR
         // Restore the open hand cursor. ### There might be items
         // under the mouse that have a valid cursor at this time, so
         // we could repeat the steps from mouseMoveEvent().
-        viewport()->setCursor(Qt::OpenHandCursor);
+        viewport()->setCursor(BobUI::OpenHandCursor);
 #endif
         d->handScrolling = false;
 
@@ -3363,7 +3363,7 @@ void QGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     mouseEvent.setAccepted(false);
     mouseEvent.setTimestamp(event->timestamp());
     if (event->spontaneous())
-        qt_sendSpontaneousEvent(d->scene, &mouseEvent);
+        bobui_sendSpontaneousEvent(d->scene, &mouseEvent);
     else
         QCoreApplication::sendEvent(d->scene, &mouseEvent);
 
@@ -3371,15 +3371,15 @@ void QGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     d->lastMouseEvent->setAccepted(mouseEvent.isAccepted());
     event->setAccepted(mouseEvent.isAccepted());
 
-#ifndef QT_NO_CURSOR
-    if (mouseEvent.isAccepted() && mouseEvent.buttons() == 0 && viewport()->testAttribute(Qt::WA_SetCursor)) {
+#ifndef BOBUI_NO_CURSOR
+    if (mouseEvent.isAccepted() && mouseEvent.buttons() == 0 && viewport()->testAttribute(BobUI::WA_SetCursor)) {
         // The last mouse release on the viewport will trigger clearing the cursor.
         d->_q_unsetViewportCursor();
     }
 #endif
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 /*!
     \reimp
 */
@@ -3404,7 +3404,7 @@ void QGraphicsView::wheelEvent(QWheelEvent *event)
     wheelEvent.setPixelDelta(event->pixelDelta());
     wheelEvent.setPhase(event->phase());
     wheelEvent.setInverted(event->isInverted());
-    wheelEvent.setOrientation(horizontal ? Qt::Horizontal : Qt::Vertical);
+    wheelEvent.setOrientation(horizontal ? BobUI::Horizontal : BobUI::Vertical);
     wheelEvent.setAccepted(false);
     wheelEvent.setTimestamp(event->timestamp());
     QCoreApplication::sendEvent(d->scene, &wheelEvent);
@@ -3412,7 +3412,7 @@ void QGraphicsView::wheelEvent(QWheelEvent *event)
     if (!event->isAccepted())
         QAbstractScrollArea::wheelEvent(event);
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 /*!
     \reimp
@@ -3434,7 +3434,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
 
     // Set up the painter
     QPainter painter(viewport());
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (d->rubberBanding && !d->rubberBandRect.isEmpty())
         painter.save();
 #endif
@@ -3446,7 +3446,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
     const bool viewTransformed = isTransformed();
     if (viewTransformed)
         painter.setWorldTransform(viewportTransform());
-    const QTransform viewTransform = painter.worldTransform();
+    const BOBUIransform viewTransform = painter.worldTransform();
 
     const auto actuallyDraw = [&]() {
         // Draw background
@@ -3459,7 +3459,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
                 d->backgroundPixmap.setDevicePixelRatio(dpr);
                 QBrush bgBrush = viewport()->palette().brush(viewport()->backgroundRole());
                 if (!bgBrush.isOpaque())
-                    d->backgroundPixmap.fill(Qt::transparent);
+                    d->backgroundPixmap.fill(BobUI::transparent);
                 QPainter p(&d->backgroundPixmap);
                 p.fillRect(0, 0, d->backgroundPixmap.width(), d->backgroundPixmap.height(), bgBrush);
                 d->backgroundPixmapExposed = QRegion(viewport()->rect());
@@ -3469,7 +3469,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
             // Redraw exposed areas
             if (!d->backgroundPixmapExposed.isEmpty()) {
                 QPainter backgroundPainter(&d->backgroundPixmap);
-                backgroundPainter.setClipRegion(d->backgroundPixmapExposed, Qt::ReplaceClip);
+                backgroundPainter.setClipRegion(d->backgroundPixmapExposed, BobUI::ReplaceClip);
                 if (viewTransformed)
                     backgroundPainter.setTransform(viewTransform);
                 QRectF backgroundExposedSceneRect = mapToScene(d->backgroundPixmapExposed.boundingRect()).boundingRect();
@@ -3479,7 +3479,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
 
             // Blit the background from the background pixmap
             if (viewTransformed) {
-                painter.setWorldTransform(QTransform());
+                painter.setWorldTransform(BOBUIransform());
                 painter.drawPixmap(QPoint(), d->backgroundPixmap);
                 painter.setWorldTransform(viewTransform);
             } else {
@@ -3529,7 +3529,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
                 const int numItems = itemList.size();
                 QGraphicsItem **itemArray = &itemList[0]; // Relies on QList internals, but is perfectly valid.
                 QStyleOptionGraphicsItem *styleOptionArray = d->allocStyleOptionsArray(numItems);
-                QTransform transform(Qt::Uninitialized);
+                BOBUIransform transform(BobUI::Uninitialized);
                 for (int i = 0; i < numItems; ++i) {
                     QGraphicsItem *item = itemArray[i];
                     QGraphicsItemPrivate *itemd = item->d_ptr.data();
@@ -3558,7 +3558,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
         // Foreground
         drawForeground(&painter, exposedSceneRect);
 
-    #if QT_CONFIG(rubberband)
+    #if BOBUI_CONFIG(rubberband)
         // Rubberband
         if (d->rubberBanding && !d->rubberBandRect.isEmpty()) {
             painter.restore();
@@ -3570,7 +3570,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
             QStyleHintReturnMask mask;
             if (viewport()->style()->styleHint(QStyle::SH_RubberBand_Mask, &option, viewport(), &mask)) {
                 // painter clipping for masked rubberbands
-                painter.setClipRegion(mask.region, Qt::IntersectClip);
+                painter.setClipRegion(mask.region, BobUI::IntersectClip);
             }
 
             viewport()->style()->drawControl(QStyle::CE_RubberBand, &option, &painter, viewport());
@@ -3638,7 +3638,7 @@ void QGraphicsView::scrollContentsBy(int dx, int dy)
     if (d->viewportUpdateMode != QGraphicsView::NoViewportUpdate) {
         if (d->viewportUpdateMode != QGraphicsView::FullViewportUpdate) {
             if (d->accelerateScrolling) {
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
                 // Update new and old rubberband regions
                 if (!d->rubberBandRect.isEmpty()) {
                     QRegion rubberBandRegion(d->rubberBandRegion(viewport(), d->rubberBandRect));
@@ -3673,7 +3673,7 @@ void QGraphicsView::scrollContentsBy(int dx, int dy)
 
         // Invalidate the background pixmap
         d->backgroundPixmapExposed.translate(dx, dy);
-        const QRegion exposedScaled = QTransform::fromScale(inverseDpr, inverseDpr).map(exposed);
+        const QRegion exposedScaled = BOBUIransform::fromScale(inverseDpr, inverseDpr).map(exposed);
         d->backgroundPixmapExposed += exposedScaled;
     }
 
@@ -3723,7 +3723,7 @@ void QGraphicsView::inputMethodEvent(QInputMethodEvent *event)
 void QGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_D(QGraphicsView);
-    if (d->scene && d->backgroundBrush.style() == Qt::NoBrush) {
+    if (d->scene && d->backgroundBrush.style() == BobUI::NoBrush) {
         d->scene->drawBackground(painter, rect);
         return;
     }
@@ -3756,7 +3756,7 @@ void QGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 void QGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
 {
     Q_D(QGraphicsView);
-    if (d->scene && d->foregroundBrush.style() == Qt::NoBrush) {
+    if (d->scene && d->foregroundBrush.style() == BobUI::NoBrush) {
         d->scene->drawForeground(painter, rect);
         return;
     }
@@ -3775,7 +3775,7 @@ void QGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
 
     The default implementation calls the scene's drawItems() function.
 
-    Since Qt 4.6, this function is not called anymore unless
+    Since BobUI 4.6, this function is not called anymore unless
     the QGraphicsView::IndirectPainting flag is given as an Optimization
     flag.
 
@@ -3798,7 +3798,7 @@ void QGraphicsView::drawItems(QPainter *painter, int numItems,
 
     \sa setTransform(), rotate(), scale(), shear(), translate()
 */
-QTransform QGraphicsView::transform() const
+BOBUIransform QGraphicsView::transform() const
 {
     Q_D(const QGraphicsView);
     return d->matrix;
@@ -3809,10 +3809,10 @@ QTransform QGraphicsView::transform() const
 
     \sa mapToScene(), mapFromScene()
 */
-QTransform QGraphicsView::viewportTransform() const
+BOBUIransform QGraphicsView::viewportTransform() const
 {
     Q_D(const QGraphicsView);
-    QTransform moveMatrix = QTransform::fromTranslate(-d->horizontalScroll(), -d->verticalScroll());
+    BOBUIransform moveMatrix = BOBUIransform::fromTranslate(-d->horizontalScroll(), -d->verticalScroll());
     return d->identityMatrix ? moveMatrix : d->matrix * moveMatrix;
 }
 
@@ -3856,10 +3856,10 @@ bool QGraphicsView::isTransformed() const
 
     \sa transform(), resetTransform(), rotate(), scale(), shear(), translate()
 */
-void QGraphicsView::setTransform(const QTransform &matrix, bool combine )
+void QGraphicsView::setTransform(const BOBUIransform &matrix, bool combine )
 {
     Q_D(QGraphicsView);
-    QTransform oldMatrix = d->matrix;
+    BOBUIransform oldMatrix = d->matrix;
     if (!combine)
         d->matrix = matrix;
     else
@@ -3891,7 +3891,7 @@ void QGraphicsView::setTransform(const QTransform &matrix, bool combine )
 */
 void QGraphicsView::resetTransform()
 {
-    setTransform(QTransform());
+    setTransform(BOBUIransform());
 }
 
 QPointF QGraphicsViewPrivate::mapToScene(const QPointF &point) const
@@ -3912,7 +3912,7 @@ QRectF QGraphicsViewPrivate::mapToScene(const QRectF &rect) const
 
     QPolygonF poly(4);
     if (!identityMatrix) {
-        QTransform x = matrix.inverted();
+        BOBUIransform x = matrix.inverted();
         poly[0] = x.map(tl);
         poly[1] = x.map(tr);
         poly[2] = x.map(br);
@@ -3926,6 +3926,6 @@ QRectF QGraphicsViewPrivate::mapToScene(const QRectF &rect) const
     return poly.boundingRect();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicsview.cpp"

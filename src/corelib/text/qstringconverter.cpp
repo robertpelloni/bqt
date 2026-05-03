@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qstringconverter.h>
 #include <private/qstringconverter_p.h>
@@ -9,37 +9,37 @@
 
 #include "private/qsimd_p.h"
 #include "private/qstringiterator_p.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 #include "qbytearraymatcher.h"
 #include "qcontainertools_impl.h"
-#include <QtCore/qbytearraylist.h>
+#include <BobUICore/qbytearraylist.h>
 
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
 
 #include <unicode/ucnv.h>
 #include <unicode/ucnv_cb.h>
 #include <unicode/ucnv_err.h>
 #include <unicode/ustring.h>
-#define QT_USE_ICU_CODECS
-#define QT_COM_THREAD_INIT
+#define BOBUI_USE_ICU_CODECS
+#define BOBUI_COM_THREAD_INIT
 
-#elif QT_CONFIG(winsdkicu)
+#elif BOBUI_CONFIG(winsdkicu)
 
 #include <icu.h>
 #include <private/qfunctions_win_p.h>
-#define QT_USE_ICU_CODECS
-#define QT_COM_THREAD_INIT qt_win_ensureComInitializedOnThisThread();
+#define BOBUI_USE_ICU_CODECS
+#define BOBUI_COM_THREAD_INIT bobui_win_ensureComInitializedOnThisThread();
 
-#endif // QT_CONFIG(icu) || QT_CONFIG(winsdkicu)
+#endif // BOBUI_CONFIG(icu) || BOBUI_CONFIG(winsdkicu)
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
-#ifndef QT_BOOTSTRAPPED
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/private/wcharhelpers_win_p.h>
+#include <bobui_windows.h>
+#ifndef BOBUI_BOOTSTRAPPED
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/private/wcharhelpers_win_p.h>
 
-#include <QtCore/q20iterator.h>
-#endif // !QT_BOOTSTRAPPED
+#include <BobUICore/q20iterator.h>
+#endif // !BOBUI_BOOTSTRAPPED
 #endif // Q_OS_WIN
 
 #include <array>
@@ -47,14 +47,14 @@
 #include <bit>
 #endif
 #include <string>
-#include <QtCore/q20utility.h>
-#ifndef QT_BOOTSTRAPPED
-#include <QtCore/q26numeric.h>
-#endif // !QT_BOOTSTRAPPED
+#include <BobUICore/q20utility.h>
+#ifndef BOBUI_BOOTSTRAPPED
+#include <BobUICore/q26numeric.h>
+#endif // !BOBUI_BOOTSTRAPPED
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 static_assert(std::is_nothrow_move_constructible_v<QStringEncoder>);
 static_assert(std::is_nothrow_move_assignable_v<QStringEncoder>);
@@ -717,7 +717,7 @@ QByteArray QUtf8::convertFromUnicode(QStringView in)
     qsizetype len = in.size();
 
     // create a QByteArray with the worst case scenario size
-    QByteArray result(len * 3, Qt::Uninitialized);
+    QByteArray result(len * 3, BobUI::Uninitialized);
     char *dst = const_cast<char *>(result.constData());
     dst = convertFromUnicode(dst, in);
     result.truncate(dst - result.constData());
@@ -726,7 +726,7 @@ QByteArray QUtf8::convertFromUnicode(QStringView in)
 
 QByteArray QUtf8::convertFromUnicode(QStringView in, QStringConverter::State *state)
 {
-    QByteArray ba(3*in.size() +3, Qt::Uninitialized);
+    QByteArray ba(3*in.size() +3, BobUI::Uninitialized);
     char *end = convertFromUnicode(ba.data(), in, state);
     ba.truncate(end - ba.data());
     return ba;
@@ -818,7 +818,7 @@ QString QUtf8::convertToUnicode(QByteArrayView in)
     //
     // The table holds for invalid sequences too: we'll insert one replacement char
     // per invalid byte.
-    QString result(in.size(), Qt::Uninitialized);
+    QString result(in.size(), BobUI::Uninitialized);
     QChar *data = const_cast<QChar*>(result.constData()); // we know we're not shared
     const QChar *end = convertToUnicode(data, in);
     result.truncate(end - data);
@@ -898,7 +898,7 @@ QString QUtf8::convertToUnicode(QByteArrayView in, QStringConverter::State *stat
     //   1 of 2 bytes       invalid continuation        +1 (need to insert replacement and restart)
     //   2 of 3 bytes       same                        +1 (same)
     //   3 of 4 bytes       same                        +1 (same)
-    QString result(in.size() + 1, Qt::Uninitialized);
+    QString result(in.size() + 1, BobUI::Uninitialized);
     QChar *end = convertToUnicode(result.data(), in, state);
     result.truncate(end - result.constData());
     return result;
@@ -1040,7 +1040,7 @@ QUtf8::ValidUtf8Result QUtf8::isValidUtf8(QByteArrayView in)
     return { true, isValidAscii };
 }
 
-int QUtf8::compareUtf8(QByteArrayView utf8, QStringView utf16, Qt::CaseSensitivity cs) noexcept
+int QUtf8::compareUtf8(QByteArrayView utf8, QStringView utf16, BobUI::CaseSensitivity cs) noexcept
 {
     auto src1 = reinterpret_cast<const qchar8_t *>(utf8.data());
     auto end1 = src1 + utf8.size();
@@ -1060,7 +1060,7 @@ int QUtf8::compareUtf8(QByteArrayView utf8, QStringView utf16, Qt::CaseSensitivi
                 if (QChar::isHighSurrogate(uc2) && src2 < end2 && QChar::isLowSurrogate(*src2))
                     uc2 = QChar::surrogateToUcs4(uc2, *src2++);
             }
-            if (cs == Qt::CaseInsensitive) {
+            if (cs == BobUI::CaseInsensitive) {
                 uc1 = QChar::toCaseFolded(uc1);
                 uc2 = QChar::toCaseFolded(uc2);
             }
@@ -1073,7 +1073,7 @@ int QUtf8::compareUtf8(QByteArrayView utf8, QStringView utf16, Qt::CaseSensitivi
     return (end1 > src1) - int(end2 > src2);
 }
 
-int QUtf8::compareUtf8(QByteArrayView utf8, QLatin1StringView s, Qt::CaseSensitivity cs)
+int QUtf8::compareUtf8(QByteArrayView utf8, QLatin1StringView s, BobUI::CaseSensitivity cs)
 {
     auto src1 = reinterpret_cast<const qchar8_t *>(utf8.data());
     auto end1 = src1 + utf8.size();
@@ -1083,7 +1083,7 @@ int QUtf8::compareUtf8(QByteArrayView utf8, QLatin1StringView s, Qt::CaseSensiti
     while (src1 < end1 && src2 < end2) {
         char32_t uc1 = QUtf8Functions::nextUcs4FromUtf8(src1, end1);
         char32_t uc2 = *src2++;
-        if (cs == Qt::CaseInsensitive) {
+        if (cs == BobUI::CaseInsensitive) {
             uc1 = QChar::toCaseFolded(uc1);
             uc2 = QChar::toCaseFolded(uc2);
         }
@@ -1095,18 +1095,18 @@ int QUtf8::compareUtf8(QByteArrayView utf8, QLatin1StringView s, Qt::CaseSensiti
     return (end1 > src1) - (end2 > src2);
 }
 
-int QUtf8::compareUtf8(QByteArrayView lhs, QByteArrayView rhs, Qt::CaseSensitivity cs) noexcept
+int QUtf8::compareUtf8(QByteArrayView lhs, QByteArrayView rhs, BobUI::CaseSensitivity cs) noexcept
 {
     if (lhs.isEmpty())
-        return qt_lencmp(0, rhs.size());
+        return bobui_lencmp(0, rhs.size());
 
     if (rhs.isEmpty())
-        return qt_lencmp(lhs.size(), 0);
+        return bobui_lencmp(lhs.size(), 0);
 
-    if (cs == Qt::CaseSensitive) {
+    if (cs == BobUI::CaseSensitive) {
         const auto l = std::min(lhs.size(), rhs.size());
         int r = memcmp(lhs.data(), rhs.data(), l);
-        return r ? r : qt_lencmp(lhs.size(), rhs.size());
+        return r ? r : bobui_lencmp(lhs.size(), rhs.size());
     }
 
     auto src1 = reinterpret_cast<const qchar8_t *>(lhs.data());
@@ -1128,7 +1128,7 @@ int QUtf8::compareUtf8(QByteArrayView lhs, QByteArrayView rhs, Qt::CaseSensitivi
     return (end1 > src1) - (end2 > src2);
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 QByteArray QUtf16::convertFromUnicode(QStringView in, QStringConverter::State *state, DataEndianness endian)
 {
     bool writeBom = !(state->internalState & HeaderDone) && state->flags & QStringConverter::Flag::WriteBom;
@@ -1136,7 +1136,7 @@ QByteArray QUtf16::convertFromUnicode(QStringView in, QStringConverter::State *s
     if (writeBom)
         length += 2;
 
-    QByteArray d(length, Qt::Uninitialized);
+    QByteArray d(length, BobUI::Uninitialized);
     char *end = convertFromUnicode(d.data(), in, state, endian);
     Q_ASSERT(end - d.constData() == d.size());
     Q_UNUSED(end);
@@ -1172,7 +1172,7 @@ char *QUtf16::convertFromUnicode(char *out, QStringView in, QStringConverter::St
 
 QString QUtf16::convertToUnicode(QByteArrayView in, QStringConverter::State *state, DataEndianness endian)
 {
-    QString result((in.size() + 1) >> 1, Qt::Uninitialized); // worst case
+    QString result((in.size() + 1) >> 1, BobUI::Uninitialized); // worst case
     QChar *qch = convertToUnicode(result.data(), in, state, endian);
     result.truncate(qch - result.constData());
     return result;
@@ -1265,7 +1265,7 @@ QByteArray QUtf32::convertFromUnicode(QStringView in, QStringConverter::State *s
     qsizetype length =  4*in.size();
     if (writeBom)
         length += 4;
-    QByteArray ba(length, Qt::Uninitialized);
+    QByteArray ba(length, BobUI::Uninitialized);
     char *end = convertFromUnicode(ba.data(), in, state, endian);
     ba.truncate(end - ba.constData());
     return ba;
@@ -1438,9 +1438,9 @@ QChar *QUtf32::convertToUnicode(QChar *out, QByteArrayView in, QStringConverter:
 
     return out;
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
-#if defined(Q_OS_WIN) && !defined(QT_BOOTSTRAPPED)
+#if defined(Q_OS_WIN) && !defined(BOBUI_BOOTSTRAPPED)
 int QLocal8Bit::checkUtf8()
 {
     return GetACP() == CP_UTF8 ? 1 : -1;
@@ -1774,11 +1774,11 @@ QByteArray QLocal8Bit::convertFromUnicode_sys(QStringView in, quint32 codePage,
                     // incomplete sequence, probably a Windows bug. We try to avoid that from
                     // happening by reducing the window size in that case. But let's keep this
                     // branch just in case of other bugs.
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                     r = GetLastError();
                     fprintf(stderr,
                             "WideCharToMultiByte: Cannot convert multibyte text (error %d)\n", r);
-#endif // !QT_NO_DEBUG
+#endif // !BOBUI_NO_DEBUG
                     break;
                 }
                 std::tie(out, outlen) = growOut(neededLength);
@@ -1787,11 +1787,11 @@ QByteArray QLocal8Bit::convertFromUnicode_sys(QStringView in, quint32 codePage,
                 // and try again...
             } else {
                 // Fail.  Probably can't happen in fact (dwFlags is 0).
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                 // Can't use qWarning(), as it'll recurse to handle %ls
                 fprintf(stderr,
                         "WideCharToMultiByte: Cannot convert multibyte text (error %d): %ls\n",
-                        r, qt_castToWchar(QStringView(ch, uclen).left(100).toString()));
+                        r, bobui_castToWchar(QStringView(ch, uclen).left(100).toString()));
 #endif
                 break;
             }
@@ -1822,8 +1822,8 @@ void QStringConverter::State::clear() noexcept
 void QStringConverter::State::reset() noexcept
 {
     if (flags & Flag::UsesIcu) {
-#if defined(QT_USE_ICU_CODECS)
-        QT_COM_THREAD_INIT
+#if defined(BOBUI_USE_ICU_CODECS)
+        BOBUI_COM_THREAD_INIT
         UConverter *converter = static_cast<UConverter *>(d[0]);
         if (converter)
             ucnv_reset(converter);
@@ -1835,7 +1835,7 @@ void QStringConverter::State::reset() noexcept
     }
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 static QChar *fromUtf16(QChar *out, QByteArrayView in, QStringConverter::State *state)
 {
     return QUtf16::convertToUnicode(out, in, state, DetectEndianness);
@@ -1895,7 +1895,7 @@ static char *toUtf32LE(char *out, QStringView in, QStringConverter::State *state
 {
     return QUtf32::convertFromUnicode(out, in, state, LittleEndianness);
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 char *QLatin1::convertFromUnicode(char *out, QStringView in, QStringConverter::State *state) noexcept
 {
@@ -1937,7 +1937,7 @@ static char *toLocal8Bit(char *out, QStringView in, QStringConverter::State *sta
 static qsizetype fromUtf8Len(qsizetype l) { return l + 1; }
 static qsizetype toUtf8Len(qsizetype l) { return 3*(l + 1); }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 static qsizetype fromUtf16Len(qsizetype l) { return l/2 + 2; }
 static qsizetype toUtf16Len(qsizetype l) { return 2*(l + 1); }
 
@@ -1952,13 +1952,13 @@ static qsizetype toLatin1Len(qsizetype l) { return l + 1; }
 
 /*!
     \class QStringConverter
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStringConverter class provides a base class for encoding and decoding text.
     \reentrant
     \ingroup i18n
     \ingroup string-processing
 
-    Qt uses UTF-16 to store, draw and manipulate strings. In many
+    BobUI uses UTF-16 to store, draw and manipulate strings. In many
     situations you may wish to deal with data that uses a different
     encoding. Most text data transferred over files and network connections is encoded
     in UTF-8.
@@ -1966,7 +1966,7 @@ static qsizetype toLatin1Len(qsizetype l) { return l + 1; }
     The QStringConverter class is a base class for the \l {QStringEncoder} and
     \l {QStringDecoder} classes that help with converting between different
     text encodings. QStringDecoder can decode a string from an encoded representation
-    into UTF-16, the format Qt uses internally. QStringEncoder does the opposite
+    into UTF-16, the format BobUI uses internally. QStringEncoder does the opposite
     operation, encoding UTF-16 encoded data (usually in the form of a QString) to
     the requested encoding.
 
@@ -1984,7 +1984,7 @@ static qsizetype toLatin1Len(qsizetype l) { return l + 1; }
     \li The system encoding
     \endlist
 
-    QStringConverter may support more encodings depending on how Qt was
+    QStringConverter may support more encodings depending on how BobUI was
     compiled. If more codecs are supported, they can be listed using
     availableCodecs().
 
@@ -2003,8 +2003,8 @@ static qsizetype toLatin1Len(qsizetype l) { return l + 1; }
 
     \snippet code/src_corelib_text_qstringconverter.cpp 1
 
-    To read or write text files in various encodings, use QTextStream and
-    its \l{QTextStream::setEncoding()}{setEncoding()} function.
+    To read or write text files in various encodings, use BOBUIextStream and
+    its \l{BOBUIextStream::setEncoding()}{setEncoding()} function.
 
     Some care must be taken when trying to convert the data in chunks,
     for example, when receiving it over a network. In such cases it is
@@ -2026,7 +2026,7 @@ static qsizetype toLatin1Len(qsizetype l) { return l + 1; }
     QStringConverter objects can't be copied because of their internal state, but
     can be moved.
 
-    \sa QTextStream, QStringDecoder, QStringEncoder
+    \sa BOBUIextStream, QStringDecoder, QStringEncoder
 */
 
 /*!
@@ -2077,7 +2077,7 @@ static qsizetype toLatin1Len(qsizetype l) { return l + 1; }
 const QStringConverter::Interface QStringConverter::encodingInterfaces[QStringConverter::LastEncoding + 1] =
 {
     { "UTF-8", QUtf8::convertToUnicode, fromUtf8Len, QUtf8::convertFromUnicode, toUtf8Len },
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     { "UTF-16", fromUtf16, fromUtf16Len, toUtf16, toUtf16Len },
     { "UTF-16LE", fromUtf16LE, fromUtf16Len, toUtf16LE, toUtf16Len },
     { "UTF-16BE", fromUtf16BE, fromUtf16Len, toUtf16BE, toUtf16Len },
@@ -2102,7 +2102,7 @@ static bool nameMatch_impl_impl(const char *a, const Char *b, const Char *b_end)
             return true;
         if (char16_t(*b) > 127)
             return false; // non-US-ASCII cannot match US-ASCII (prevents narrowing below)
-    } while (QtMiscUtils::toAsciiLower(*a++) == QtMiscUtils::toAsciiLower(char(*b++)));
+    } while (BobUIMiscUtils::toAsciiLower(*a++) == BobUIMiscUtils::toAsciiLower(char(*b++)));
 
     return false;
 }
@@ -2139,13 +2139,13 @@ static bool nameMatch(const char *a, QAnyStringView b)
 */
 
 
-#if defined(QT_USE_ICU_CODECS)
+#if defined(BOBUI_USE_ICU_CODECS)
 // only derives from QStringConverter to get access to protected types
 struct QStringConverterICU : QStringConverter
 {
     static void clear_function(QStringConverter::State *state) noexcept
     {
-        QT_COM_THREAD_INIT
+        BOBUI_COM_THREAD_INIT
         ucnv_close(static_cast<UConverter *>(state->d[0]));
         state->d[0] = nullptr;
     }
@@ -2160,7 +2160,7 @@ struct QStringConverterICU : QStringConverter
 
     static QChar *toUtf16(QChar *out, QByteArrayView in, QStringConverter::State *state)
     {
-        QT_COM_THREAD_INIT
+        BOBUI_COM_THREAD_INIT
         ensureConverter(state);
 
         auto icu_conv = static_cast<UConverter *>(state->d[0]);
@@ -2197,7 +2197,7 @@ struct QStringConverterICU : QStringConverter
 
     static char *fromUtf16(char *out, QStringView in, QStringConverter::State *state)
     {
-        QT_COM_THREAD_INIT
+        BOBUI_COM_THREAD_INIT
         ensureConverter(state);
         auto icu_conv = static_cast<UConverter *>(state->d[0]);
         UErrorCode err = U_ZERO_ERROR;
@@ -2263,7 +2263,7 @@ struct QStringConverterICU : QStringConverter
     {
         Q_ASSERT(name);
         Q_ASSERT(state);
-        QT_COM_THREAD_INIT
+        BOBUI_COM_THREAD_INIT
         UErrorCode status = U_ZERO_ERROR;
         UConverter *conv = ucnv_open(name, &status);
         if (status != U_ZERO_ERROR && status != U_AMBIGUOUS_ALIAS_WARNING) {
@@ -2370,7 +2370,7 @@ struct QStringConverterICU : QStringConverter
             QStringConverter::State *state,
             const char *name)
     {
-        QT_COM_THREAD_INIT
+        BOBUI_COM_THREAD_INIT
         UErrorCode status = U_ZERO_ERROR;
         UConverter *conv = createConverterForName(name, state);
         if (!conv)
@@ -2410,7 +2410,7 @@ QStringConverter::QStringConverter(QAnyStringView name, Flags f)
     auto e = encodingForName(name);
     if (e)
         iface = encodingInterfaces + int(*e);
-#if defined(QT_USE_ICU_CODECS)
+#if defined(BOBUI_USE_ICU_CODECS)
     else
         iface = QStringConverterICU::make_icu_converter(&state, name);
 #endif
@@ -2422,7 +2422,7 @@ const char *QStringConverter::name() const noexcept
     if (!iface)
         return nullptr;
     if (state.flags & QStringConverter::Flag::UsesIcu) {
-#if defined(QT_USE_ICU_CODECS)
+#if defined(BOBUI_USE_ICU_CODECS)
         return static_cast<const char*>(state.d[1]);
 #else
         return nullptr;
@@ -2472,10 +2472,10 @@ const char *QStringConverter::name() const noexcept
 
     If the \a name is not the name of a codec listed in the Encoding enumeration,
     \c{std::nullopt} is returned. Such a name may, none the less, be accepted by
-    the QStringConverter constructor when Qt is built with ICU, if ICU provides a
+    the QStringConverter constructor when BobUI is built with ICU, if ICU provides a
     converter with the given name.
 
-    \note In Qt versions prior to 6.8, this function took only a \c{const char *},
+    \note In BobUI versions prior to 6.8, this function took only a \c{const char *},
     which was expected to be UTF-8-encoded.
 */
 std::optional<QStringConverter::Encoding> QStringConverter::encodingForName(QAnyStringView name) noexcept
@@ -2491,13 +2491,13 @@ std::optional<QStringConverter::Encoding> QStringConverter::encodingForName(QAny
     return std::nullopt;
 }
 
-#ifndef QT_BOOTSTRAPPED
-namespace QtPrivate {
+#ifndef BOBUI_BOOTSTRAPPED
+namespace BobUIPrivate {
 // Note: Check isValid() on the QStringConverter before calling this with its
 // state!
 static int partiallyParsedDataCount(QStringConverter::State *state)
 {
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
     if (state->flags & QStringConverter::Flag::UsesIcu) {
         UConverter *converter = static_cast<UConverter *>(state->d[0]);
         if (!converter)
@@ -2511,7 +2511,7 @@ static int partiallyParsedDataCount(QStringConverter::State *state)
 #endif
     return q26::saturate_cast<int>(state->remainingChars);
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 /*!
    Returns the encoding for the content of \a data if it can be determined.
@@ -2587,7 +2587,7 @@ static QByteArray parseHtmlMetaForEncoding(QByteArrayView data)
                     if (colon > 0)
                         name = name.left(colon);
                     name = name.simplified();
-                    if (name == "unicode") // QTBUG-41998, ICU will return UTF-16.
+                    if (name == "unicode") // BOBUIBUG-41998, ICU will return UTF-16.
                         name = QByteArrayLiteral("UTF-8");
                     if (!name.isEmpty())
                         return name;
@@ -2623,11 +2623,11 @@ std::optional<QStringConverter::Encoding> QStringConverter::encodingForHtml(QByt
 
 static qsizetype availableCodecCount()
 {
-#if !defined(QT_USE_ICU_CODECS)
+#if !defined(BOBUI_USE_ICU_CODECS)
     return QStringConverter::Encoding::LastEncoding;
 #else
-    QT_COM_THREAD_INIT
-    /* icu contains also the names of what Qt provides
+    BOBUI_COM_THREAD_INIT
+    /* icu contains also the names of what BobUI provides
        except for the special Locale one (so add one for it)
     */
     return 1 + ucnv_countAvailable();
@@ -2641,7 +2641,7 @@ static qsizetype availableCodecCount()
     the given codec.
 
     This function may be used to obtain a listing of additional codecs beyond
-    the standard ones. Support for additional codecs requires Qt be compiled
+    the standard ones. Support for additional codecs requires BobUI be compiled
     with support for the ICU library.
 
     \note The order of codecs is an internal implementation detail
@@ -2651,13 +2651,13 @@ QStringList QStringConverter::availableCodecs()
 {
     auto availableCodec = [](qsizetype index) -> QString
     {
-    #if !defined(QT_USE_ICU_CODECS)
+    #if !defined(BOBUI_USE_ICU_CODECS)
         return QString::fromLatin1(encodingInterfaces[index].name);
     #else
         if (index == 0) // "Locale", not provided by icu
             return QString::fromLatin1(
                         encodingInterfaces[QStringConverter::Encoding::System].name);
-        QT_COM_THREAD_INIT
+        BOBUI_COM_THREAD_INIT
         // this mirrors the setup we do to set a converters name
         UErrorCode status = U_ZERO_ERROR;
         auto icuName = ucnv_getAvailableName(int32_t(index - 1));
@@ -2686,7 +2686,7 @@ QStringList QStringConverter::availableCodecs()
 */
 /*!
     \class QStringConverter::FinalizeResultChar
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.11
     \reentrant
     \brief Holds the result of calling finalize() on QStringDecoder or
@@ -2764,7 +2764,7 @@ auto QStringDecoder::finalize(char16_t *out, qsizetype maxlen) -> FinalizeResult
 {
     int count = 0;
     if (isValid())
-        count = QtPrivate::partiallyParsedDataCount(&state);
+        count = BobUIPrivate::partiallyParsedDataCount(&state);
     using Error = FinalizeResult::Error;
     const qint16 invalidChars = q26::saturate_cast<qint16>(state.invalidChars + count);
     if (count == 0 || !out) {
@@ -2820,7 +2820,7 @@ auto QStringEncoder::finalize(char *out, qsizetype maxlen) -> QStringEncoder::Fi
 {
     qsizetype count = 0;
     if (isValid())
-        count = QtPrivate::partiallyParsedDataCount(&state);
+        count = BobUIPrivate::partiallyParsedDataCount(&state);
     // For ICU we may be using a stateful codec that need to restore or finalize
     // some state, otherwise we have nothing to do with count == 0
     using Error = FinalizeResult::Error;
@@ -2832,7 +2832,7 @@ auto QStringEncoder::finalize(char *out, qsizetype maxlen) -> QStringEncoder::Fi
     }
 
     if ((false)) {
-#if defined(QT_USE_ICU_CODECS)
+#if defined(BOBUI_USE_ICU_CODECS)
     } else if (usesIcu) {
         Q_ASSERT(out);
         auto *icu_conv = static_cast<UConverter *>(state.d[0]);
@@ -2905,15 +2905,15 @@ QStringDecoder QStringDecoder::decoderForHtml(QByteArrayView data)
 
     return QStringDecoder(Utf8);
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 /*!
     Returns the canonical name for encoding \a e or \nullptr if \a e is an
     invalid value.
 
-    \note In Qt versions prior to 6.10, 6.9.1, 6.8.4 or 6.5.9, calling this
+    \note In BobUI versions prior to 6.10, 6.9.1, 6.8.4 or 6.5.9, calling this
     function with an invalid argument resulted in undefined behavior. Since the
-    above-mentioned Qt versions, it returns nullptr instead.
+    above-mentioned BobUI versions, it returns nullptr instead.
 */
 const char *QStringConverter::nameForEncoding(QStringConverter::Encoding e) noexcept
 {
@@ -2925,13 +2925,13 @@ const char *QStringConverter::nameForEncoding(QStringConverter::Encoding e) noex
 
 /*!
     \class QStringEncoder
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStringEncoder class provides a state-based encoder for text.
     \reentrant
     \ingroup i18n
     \ingroup string-processing
 
-    A text encoder converts text from Qt's internal representation into an encoded
+    A text encoder converts text from BobUI's internal representation into an encoded
     text format using a specific encoding.
 
     Converting a string from Unicode to the local encoding can be achieved
@@ -2979,7 +2979,7 @@ const char *QStringConverter::nameForEncoding(QStringConverter::Encoding e) noex
     Creates an encoder object using \a name and \a flags.
     If \a name is not the name of a known encoding an invalid converter will get created.
 
-    \note In Qt versions prior to 6.8, this function took only a \c{const char *},
+    \note In BobUI versions prior to 6.8, this function took only a \c{const char *},
     which was expected to be UTF-8-encoded.
 
     \sa isValid()
@@ -3021,14 +3021,14 @@ const char *QStringConverter::nameForEncoding(QStringConverter::Encoding e) noex
 
 /*!
     \class QStringDecoder
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStringDecoder class provides a state-based decoder for text.
     \reentrant
     \ingroup i18n
     \ingroup string-processing
 
     A text decoder converts text an encoded text format that uses a specific encoding
-    into Qt's internal representation.
+    into BobUI's internal representation.
 
     Converting encoded data into a QString can be achieved
     using the following code:
@@ -3075,7 +3075,7 @@ const char *QStringConverter::nameForEncoding(QStringConverter::Encoding e) noex
     Creates an decoder object using \a name and \a flags.
     If \a name is not the name of a known encoding an invalid converter will get created.
 
-    \note In Qt versions prior to 6.8, this function took only a \c{const char *},
+    \note In BobUI versions prior to 6.8, this function took only a \c{const char *},
     which was expected to be UTF-8-encoded.
 
     \sa isValid()
@@ -3123,4 +3123,4 @@ const char *QStringConverter::nameForEncoding(QStringConverter::Encoding e) noex
     \overload
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

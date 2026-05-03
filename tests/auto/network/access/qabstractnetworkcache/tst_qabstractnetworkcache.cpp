@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTemporaryDir>
-#include <QTest>
-#include <QtNetwork/QtNetwork>
+#include <BOBUIemporaryDir>
+#include <BOBUIest>
+#include <BobUINetwork/BobUINetwork>
 #include <QSignalSpy>
 
 #include "../../../network-settings.h"
 
 #include <algorithm>
 
-#define TESTFILE QLatin1String("http://") + QtNetworkSettings::httpServerName() + QLatin1String("/qtest/cgi-bin/")
+#define TESTFILE QLatin1String("http://") + BobUINetworkSettings::httpServerName() + QLatin1String("/bobuiest/cgi-bin/")
 
 class tst_QAbstractNetworkCache : public QObject
 {
@@ -50,7 +50,7 @@ private:
 
 };
 
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
 class NetworkDiskCache : public QNetworkDiskCache
 {
     Q_OBJECT
@@ -70,7 +70,7 @@ public:
         return QNetworkDiskCache::data(url);
     }
 
-    QTemporaryDir tempDir;
+    BOBUIemporaryDir tempDir;
     bool gotData;
 };
 #endif
@@ -78,7 +78,7 @@ public:
 
 tst_QAbstractNetworkCache::tst_QAbstractNetworkCache()
 {
-    QCoreApplication::setOrganizationName(QLatin1String("QtProject"));
+    QCoreApplication::setOrganizationName(QLatin1String("BobUIProject"));
     QCoreApplication::setApplicationName(QLatin1String("autotest_qabstractnetworkcache"));
     QCoreApplication::setApplicationVersion(QLatin1String("1.0"));
 }
@@ -95,10 +95,10 @@ Q_DECLARE_METATYPE(QNetworkRequest::CacheLoadControl)
 
 void tst_QAbstractNetworkCache::initTestCase()
 {
-#if defined(QT_TEST_SERVER)
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 80));
+#if defined(BOBUI_TEST_SERVER)
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 80));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 }
@@ -106,24 +106,24 @@ void tst_QAbstractNetworkCache::initTestCase()
 
 void tst_QAbstractNetworkCache::expires_data()
 {
-    QTest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("fetchFromCache");
+    BOBUIest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("fetchFromCache");
 
-    QTest::newRow("304-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_expires304.cgi" << AlwaysFalse;
-    QTest::newRow("304-1") << QNetworkRequest::PreferNetwork << "httpcachetest_expires304.cgi" << true;
-    QTest::newRow("304-2") << QNetworkRequest::AlwaysCache << "httpcachetest_expires304.cgi" << AlwaysTrue;
-    QTest::newRow("304-3") << QNetworkRequest::PreferCache << "httpcachetest_expires304.cgi" << true;
+    BOBUIest::newRow("304-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_expires304.cgi" << AlwaysFalse;
+    BOBUIest::newRow("304-1") << QNetworkRequest::PreferNetwork << "httpcachetest_expires304.cgi" << true;
+    BOBUIest::newRow("304-2") << QNetworkRequest::AlwaysCache << "httpcachetest_expires304.cgi" << AlwaysTrue;
+    BOBUIest::newRow("304-3") << QNetworkRequest::PreferCache << "httpcachetest_expires304.cgi" << true;
 
-    QTest::newRow("500-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_expires500.cgi" << AlwaysFalse;
-    QTest::newRow("500-1") << QNetworkRequest::PreferNetwork << "httpcachetest_expires500.cgi" << true;
-    QTest::newRow("500-2") << QNetworkRequest::AlwaysCache << "httpcachetest_expires500.cgi" << AlwaysTrue;
-    QTest::newRow("500-3") << QNetworkRequest::PreferCache << "httpcachetest_expires500.cgi" << true;
+    BOBUIest::newRow("500-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_expires500.cgi" << AlwaysFalse;
+    BOBUIest::newRow("500-1") << QNetworkRequest::PreferNetwork << "httpcachetest_expires500.cgi" << true;
+    BOBUIest::newRow("500-2") << QNetworkRequest::AlwaysCache << "httpcachetest_expires500.cgi" << AlwaysTrue;
+    BOBUIest::newRow("500-3") << QNetworkRequest::PreferCache << "httpcachetest_expires500.cgi" << true;
 
-    QTest::newRow("200-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_expires200.cgi" << AlwaysFalse;
-    QTest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_expires200.cgi" << false;
-    QTest::newRow("200-2") << QNetworkRequest::AlwaysCache << "httpcachetest_expires200.cgi" << AlwaysTrue;
-    QTest::newRow("200-3") << QNetworkRequest::PreferCache << "httpcachetest_expires200.cgi" << false;
+    BOBUIest::newRow("200-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_expires200.cgi" << AlwaysFalse;
+    BOBUIest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_expires200.cgi" << false;
+    BOBUIest::newRow("200-2") << QNetworkRequest::AlwaysCache << "httpcachetest_expires200.cgi" << AlwaysTrue;
+    BOBUIest::newRow("200-3") << QNetworkRequest::PreferCache << "httpcachetest_expires200.cgi" << false;
 }
 
 void tst_QAbstractNetworkCache::expires()
@@ -143,19 +143,19 @@ void tst_QAbstractNetworkCache::expiresSynchronous()
 
 void tst_QAbstractNetworkCache::lastModified_data()
 {
-    QTest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("fetchFromCache");
+    BOBUIest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("fetchFromCache");
 
-    QTest::newRow("304-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_lastModified304.cgi" << AlwaysFalse;
-    QTest::newRow("304-1") << QNetworkRequest::PreferNetwork << "httpcachetest_lastModified304.cgi" << true;
-    QTest::newRow("304-2") << QNetworkRequest::AlwaysCache << "httpcachetest_lastModified304.cgi" << AlwaysTrue;
-    QTest::newRow("304-3") << QNetworkRequest::PreferCache << "httpcachetest_lastModified304.cgi" << true;
+    BOBUIest::newRow("304-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_lastModified304.cgi" << AlwaysFalse;
+    BOBUIest::newRow("304-1") << QNetworkRequest::PreferNetwork << "httpcachetest_lastModified304.cgi" << true;
+    BOBUIest::newRow("304-2") << QNetworkRequest::AlwaysCache << "httpcachetest_lastModified304.cgi" << AlwaysTrue;
+    BOBUIest::newRow("304-3") << QNetworkRequest::PreferCache << "httpcachetest_lastModified304.cgi" << true;
 
-    QTest::newRow("200-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_lastModified200.cgi" << AlwaysFalse;
-    QTest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_lastModified200.cgi" << true;
-    QTest::newRow("200-2") << QNetworkRequest::AlwaysCache << "httpcachetest_lastModified200.cgi" << AlwaysTrue;
-    QTest::newRow("200-3") << QNetworkRequest::PreferCache << "httpcachetest_lastModified200.cgi" << true;
+    BOBUIest::newRow("200-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_lastModified200.cgi" << AlwaysFalse;
+    BOBUIest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_lastModified200.cgi" << true;
+    BOBUIest::newRow("200-2") << QNetworkRequest::AlwaysCache << "httpcachetest_lastModified200.cgi" << AlwaysTrue;
+    BOBUIest::newRow("200-3") << QNetworkRequest::PreferCache << "httpcachetest_lastModified200.cgi" << true;
 }
 
 void tst_QAbstractNetworkCache::lastModified()
@@ -175,19 +175,19 @@ void tst_QAbstractNetworkCache::lastModifiedSynchronous()
 
 void tst_QAbstractNetworkCache::etag_data()
 {
-    QTest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("fetchFromCache");
+    BOBUIest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("fetchFromCache");
 
-    QTest::newRow("304-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_etag304.cgi" << AlwaysFalse;
-    QTest::newRow("304-1") << QNetworkRequest::PreferNetwork << "httpcachetest_etag304.cgi" << true;
-    QTest::newRow("304-2") << QNetworkRequest::AlwaysCache << "httpcachetest_etag304.cgi" << AlwaysTrue;
-    QTest::newRow("304-3") << QNetworkRequest::PreferCache << "httpcachetest_etag304.cgi" << true;
+    BOBUIest::newRow("304-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_etag304.cgi" << AlwaysFalse;
+    BOBUIest::newRow("304-1") << QNetworkRequest::PreferNetwork << "httpcachetest_etag304.cgi" << true;
+    BOBUIest::newRow("304-2") << QNetworkRequest::AlwaysCache << "httpcachetest_etag304.cgi" << AlwaysTrue;
+    BOBUIest::newRow("304-3") << QNetworkRequest::PreferCache << "httpcachetest_etag304.cgi" << true;
 
-    QTest::newRow("200-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_etag200.cgi" << AlwaysFalse;
-    QTest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_etag200.cgi" << false;
-    QTest::newRow("200-2") << QNetworkRequest::AlwaysCache << "httpcachetest_etag200.cgi" << AlwaysTrue;
-    QTest::newRow("200-3") << QNetworkRequest::PreferCache << "httpcachetest_etag200.cgi" << false;
+    BOBUIest::newRow("200-0") << QNetworkRequest::AlwaysNetwork << "httpcachetest_etag200.cgi" << AlwaysFalse;
+    BOBUIest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_etag200.cgi" << false;
+    BOBUIest::newRow("200-2") << QNetworkRequest::AlwaysCache << "httpcachetest_etag200.cgi" << AlwaysTrue;
+    BOBUIest::newRow("200-3") << QNetworkRequest::PreferCache << "httpcachetest_etag200.cgi" << false;
 }
 
 void tst_QAbstractNetworkCache::etag()
@@ -207,31 +207,31 @@ void tst_QAbstractNetworkCache::etagSynchronous()
 
 void tst_QAbstractNetworkCache::cacheControl_data()
 {
-    QTest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("fetchFromCache");
-    QTest::newRow("200-0") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?max-age=-1" << true;
-    QTest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol-expire.cgi" << false;
+    BOBUIest::addColumn<QNetworkRequest::CacheLoadControl>("cacheLoadControl");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("fetchFromCache");
+    BOBUIest::newRow("200-0") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?max-age=-1" << true;
+    BOBUIest::newRow("200-1") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol-expire.cgi" << false;
 
-    QTest::newRow("200-2") << QNetworkRequest::AlwaysNetwork << "httpcachetest_cachecontrol.cgi?no-cache" << AlwaysFalse;
-    QTest::newRow("200-3") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?no-cache" << true;
-    QTest::newRow("200-4") << QNetworkRequest::AlwaysCache << "httpcachetest_cachecontrol.cgi?no-cache" << false;
-    QTest::newRow("200-5") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol.cgi?no-cache" << true;
+    BOBUIest::newRow("200-2") << QNetworkRequest::AlwaysNetwork << "httpcachetest_cachecontrol.cgi?no-cache" << AlwaysFalse;
+    BOBUIest::newRow("200-3") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?no-cache" << true;
+    BOBUIest::newRow("200-4") << QNetworkRequest::AlwaysCache << "httpcachetest_cachecontrol.cgi?no-cache" << false;
+    BOBUIest::newRow("200-5") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol.cgi?no-cache" << true;
 
-    QTest::newRow("200-6") << QNetworkRequest::AlwaysNetwork << "httpcachetest_cachecontrol.cgi?no-store" << AlwaysFalse;
-    QTest::newRow("200-7") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?no-store" << false;
-    QTest::newRow("200-8") << QNetworkRequest::AlwaysCache << "httpcachetest_cachecontrol.cgi?no-store" << false;
-    QTest::newRow("200-9") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol.cgi?no-store" << false;
+    BOBUIest::newRow("200-6") << QNetworkRequest::AlwaysNetwork << "httpcachetest_cachecontrol.cgi?no-store" << AlwaysFalse;
+    BOBUIest::newRow("200-7") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?no-store" << false;
+    BOBUIest::newRow("200-8") << QNetworkRequest::AlwaysCache << "httpcachetest_cachecontrol.cgi?no-store" << false;
+    BOBUIest::newRow("200-9") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol.cgi?no-store" << false;
 
-    QTest::newRow("304-0") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?max-age=1000" << true;
+    BOBUIest::newRow("304-0") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?max-age=1000" << true;
 
-    QTest::newRow("304-1") << QNetworkRequest::AlwaysNetwork << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << AlwaysFalse;
-    QTest::newRow("304-2") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << true;
-    QTest::newRow("304-3") << QNetworkRequest::AlwaysCache << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << false;
-    QTest::newRow("304-4") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << true;
+    BOBUIest::newRow("304-1") << QNetworkRequest::AlwaysNetwork << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << AlwaysFalse;
+    BOBUIest::newRow("304-2") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << true;
+    BOBUIest::newRow("304-3") << QNetworkRequest::AlwaysCache << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << false;
+    BOBUIest::newRow("304-4") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol.cgi?max-age=1000, must-revalidate" << true;
 
-    QTest::newRow("304-2b") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol200.cgi?private, max-age=1000" << true;
-    QTest::newRow("304-4b") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol200.cgi?private, max-age=1000" << true;
+    BOBUIest::newRow("304-2b") << QNetworkRequest::PreferNetwork << "httpcachetest_cachecontrol200.cgi?private, max-age=1000" << true;
+    BOBUIest::newRow("304-4b") << QNetworkRequest::PreferCache << "httpcachetest_cachecontrol200.cgi?private, max-age=1000" << true;
 }
 
 void tst_QAbstractNetworkCache::cacheControl()
@@ -256,7 +256,7 @@ void tst_QAbstractNetworkCache::runTest()
     QFETCH(bool, fetchFromCache);
 
     QNetworkAccessManager manager;
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
     NetworkDiskCache *diskCache = new NetworkDiskCache(&manager);
     QVERIFY2(diskCache->tempDir.isValid(), qPrintable(diskCache->tempDir.errorString()));
     manager.setCache(diskCache);
@@ -269,8 +269,8 @@ void tst_QAbstractNetworkCache::runTest()
     // prime the cache
     QNetworkReply *reply = manager.get(request);
     QSignalSpy downloaded1(reply, SIGNAL(finished()));
-    QTRY_COMPARE(downloaded1.size(), 1);
-#if QT_CONFIG(networkdiskcache)
+    BOBUIRY_COMPARE(downloaded1.size(), 1);
+#if BOBUI_CONFIG(networkdiskcache)
     QCOMPARE(diskCache->gotData, false);
 #endif
     QByteArray goodData = reply->readAll();
@@ -280,7 +280,7 @@ void tst_QAbstractNetworkCache::runTest()
     // should be in the cache now
     QNetworkReply *reply2 = manager.get(request);
     QSignalSpy downloaded2(reply2, SIGNAL(finished()));
-    QTRY_COMPARE(downloaded2.size(), 1);
+    BOBUIRY_COMPARE(downloaded2.size(), 1);
 
     QByteArray secondData = reply2->readAll();
     if (!fetchFromCache && cacheLoadControl == QNetworkRequest::AlwaysCache) {
@@ -299,21 +299,21 @@ void tst_QAbstractNetworkCache::runTest()
         std::sort(rawHeaderList.begin(), rawHeaderList.end());
         std::sort(rawHeaderList2.begin(), rawHeaderList2.end());
     }
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
     QCOMPARE(diskCache->gotData, fetchFromCache);
 #endif
 }
 
 void tst_QAbstractNetworkCache::checkSynchronous()
 {
-    QSKIP("not working yet, see QTBUG-15221");
+    QSKIP("not working yet, see BOBUIBUG-15221");
 
     QFETCH(QNetworkRequest::CacheLoadControl, cacheLoadControl);
     QFETCH(QString, url);
     QFETCH(bool, fetchFromCache);
 
     QNetworkAccessManager manager;
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
     NetworkDiskCache *diskCache = new NetworkDiskCache(&manager);
     QVERIFY2(diskCache->tempDir.isValid(), qPrintable(diskCache->tempDir.errorString()));
     manager.setCache(diskCache);
@@ -330,7 +330,7 @@ void tst_QAbstractNetworkCache::checkSynchronous()
     // prime the cache
     QNetworkReply *reply = manager.get(request);
     QVERIFY(reply->isFinished()); // synchronous
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
     QCOMPARE(diskCache->gotData, false);
 #endif
     QByteArray goodData = reply->readAll();
@@ -360,7 +360,7 @@ void tst_QAbstractNetworkCache::checkSynchronous()
         std::sort(rawHeaderList.begin(), rawHeaderList.end());
         std::sort(rawHeaderList2.begin(), rawHeaderList2.end());
     }
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
     QCOMPARE(diskCache->gotData, fetchFromCache);
 #endif
 }
@@ -368,7 +368,7 @@ void tst_QAbstractNetworkCache::checkSynchronous()
 void tst_QAbstractNetworkCache::deleteCache()
 {
     QNetworkAccessManager manager;
-#if QT_CONFIG(networkdiskcache)
+#if BOBUI_CONFIG(networkdiskcache)
     NetworkDiskCache *diskCache = new NetworkDiskCache(&manager);
     QVERIFY2(diskCache->tempDir.isValid(), qPrintable(diskCache->tempDir.errorString()));
     manager.setCache(diskCache);
@@ -379,10 +379,10 @@ void tst_QAbstractNetworkCache::deleteCache()
     QNetworkReply *reply = manager.get(request);
     QSignalSpy downloaded1(reply, SIGNAL(finished()));
     manager.setCache(0);
-    QTRY_COMPARE(downloaded1.size(), 1);
+    BOBUIRY_COMPARE(downloaded1.size(), 1);
 }
 
 
-QTEST_MAIN(tst_QAbstractNetworkCache)
+BOBUIEST_MAIN(tst_QAbstractNetworkCache)
 #include "tst_qabstractnetworkcache.moc"
 

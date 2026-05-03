@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 
@@ -15,10 +15,10 @@ MainWindow::MainWindow()
 
     readSettings();
 
-    connect(textEdit->document(), &QTextDocument::contentsChanged,
+    connect(textEdit->document(), &BOBUIextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     connect(qApp, &QGuiApplication::commitDataRequest,
             this, &MainWindow::commitData);
 #endif
@@ -66,7 +66,7 @@ bool MainWindow::save()
 bool MainWindow::saveAs()
 {
     QFileDialog dialog(this);
-    dialog.setWindowModality(Qt::WindowModal);
+    dialog.setWindowModality(BobUI::WindowModal);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     if (dialog.exec() != QDialog::Accepted)
         return false;
@@ -77,7 +77,7 @@ void MainWindow::about()
 {
    QMessageBox::about(this, tr("About Application"),
             tr("The <b>Application</b> example demonstrates how to "
-               "write modern GUI applications using Qt, with a menu bar, "
+               "write modern GUI applications using BobUI, with a menu bar, "
                "toolbars, and a status bar."));
 }
 
@@ -90,7 +90,7 @@ void MainWindow::createActions()
 {
 
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    QToolBar *fileToolBar = addToolBar(tr("File"));
+    BOBUIoolBar *fileToolBar = addToolBar(tr("File"));
     const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
     QAction *newAct = new QAction(newIcon, tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
@@ -128,9 +128,9 @@ void MainWindow::createActions()
     exitAct->setStatusTip(tr("Exit the application"));
 
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
-    QToolBar *editToolBar = addToolBar(tr("Edit"));
+    BOBUIoolBar *editToolBar = addToolBar(tr("Edit"));
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     const QIcon cutIcon = QIcon::fromTheme("edit-cut", QIcon(":/images/cut.png"));
     QAction *cutAct = new QAction(cutIcon, tr("Cu&t"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
@@ -160,21 +160,21 @@ void MainWindow::createActions()
 
     menuBar()->addSeparator();
 
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     QAction *aboutAct = helpMenu->addAction(tr("&About"), this, &MainWindow::about);
     aboutAct->setStatusTip(tr("Show the application's About box"));
 
-    QAction *aboutQtAct = helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+    QAction *aboutBobUIAct = helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
+    aboutBobUIAct->setStatusTip(tr("Show the BobUI library's About box"));
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     cutAct->setEnabled(false);
     copyAct->setEnabled(false);
     connect(textEdit, &QPlainTextEdit::copyAvailable, cutAct, &QAction::setEnabled);
     connect(textEdit, &QPlainTextEdit::copyAvailable, copyAct, &QAction::setEnabled);
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 }
 
 void MainWindow::createStatusBar()
@@ -232,12 +232,12 @@ void MainWindow::loadFile(const QString &fileName)
         return;
     }
 
-    QTextStream in(&file);
-#ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    BOBUIextStream in(&file);
+#ifndef BOBUI_NO_CURSOR
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
 #endif
     textEdit->setPlainText(in.readAll());
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
 
@@ -249,10 +249,10 @@ bool MainWindow::saveFile(const QString &fileName)
 {
     QString errorMessage;
 
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
     QSaveFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
-        QTextStream out(&file);
+        BOBUIextStream out(&file);
         out << textEdit->toPlainText();
         if (!file.commit()) {
             errorMessage = tr("Cannot write file %1:\n%2.")
@@ -291,7 +291,7 @@ QString MainWindow::strippedName(const QString &fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 void MainWindow::commitData(QSessionManager &manager)
 {
     if (manager.allowsInteraction()) {

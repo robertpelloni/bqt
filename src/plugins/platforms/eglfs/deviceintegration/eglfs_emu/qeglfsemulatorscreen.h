@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEGLFSEMULATORSCREEN_H
 #define QEGLFSEMULATORSCREEN_H
 
-#include <QtCore/QJsonObject>
+#include <BobUICore/QJsonObject>
 
 #include "qeglfsemulatorintegration.h"
 #include "private/qeglfsscreen_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEglFSEmulatorScreen : public QEglFSScreen
 {
@@ -24,8 +24,8 @@ public:
     QDpi logicalDpi() const override;
     QDpi logicalBaseDpi() const override;
     qreal refreshRate() const override;
-    Qt::ScreenOrientation nativeOrientation() const override;
-    Qt::ScreenOrientation orientation() const override;
+    BobUI::ScreenOrientation nativeOrientation() const override;
+    BobUI::ScreenOrientation orientation() const override;
     QString name() const override;
 
     uint id() const;
@@ -39,11 +39,11 @@ private:
     QImage::Format m_format;
     QSizeF m_physicalSize;
     float m_refreshRate;
-    Qt::ScreenOrientation m_nativeOrientation;
-    Qt::ScreenOrientation m_orientation;
+    BobUI::ScreenOrientation m_nativeOrientation;
+    BobUI::ScreenOrientation m_orientation;
     uint m_id;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEGLFSEMULATORSCREEN_H

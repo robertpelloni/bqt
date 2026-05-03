@@ -1,22 +1,22 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
-#include <QtCore/QThread>
-#include <QtCore/QHash>
-#include <QtCore/QEventLoop>
-#include <QtCore/QList>
-#include <QtCore/QMutex>
-#include <QtCore/QWaitCondition>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QHash>
+#include <BobUICore/QEventLoop>
+#include <BobUICore/QList>
+#include <BobUICore/QMutex>
+#include <BobUICore/QWaitCondition>
 
 #include <xcb/xcb.h>
 
 #include <atomic>
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QXcbEventNode {
     QXcbEventNode(xcb_generic_event_t *e = nullptr)
@@ -30,7 +30,7 @@ struct QXcbEventNode {
 class QXcbConnection;
 class QAbstractEventDispatcher;
 
-class QXcbEventQueue : public QThread
+class QXcbEventQueue : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -147,4 +147,4 @@ xcb_generic_event_t *QXcbEventQueue::peek(PeekOption option, Peeker &&peeker)
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

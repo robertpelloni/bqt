@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMPLATFORM_H
 #define QWASMPLATFORM_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qnamespace.h>
 
 #include <QPoint>
 
 #include <emscripten/val.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum class Platform {
     Generic,
@@ -24,6 +24,6 @@ enum class Platform {
 
 Platform platform();
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif  // QWASMPLATFORM_H

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSIZEPOLICY_H
 #define QSIZEPOLICY_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qalgorithms.h>
-#include <QtCore/qhashfunctions.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qalgorithms.h>
+#include <BobUICore/qhashfunctions.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVariant;
 class QSizePolicy;
@@ -72,10 +72,10 @@ public:
     constexpr void setVerticalPolicy(Policy d) noexcept { bits.verPolicy = d; }
     void setControlType(ControlType type) noexcept;
 
-    // ### Qt 7: consider making Policy a QFlags and removing these casts
-    constexpr Qt::Orientations expandingDirections() const noexcept {
-        return ( (verticalPolicy()   & static_cast<Policy>(ExpandFlag)) ? Qt::Vertical   : Qt::Orientations() )
-             | ( (horizontalPolicy() & static_cast<Policy>(ExpandFlag)) ? Qt::Horizontal : Qt::Orientations() ) ;
+    // ### BobUI 7: consider making Policy a QFlags and removing these casts
+    constexpr BobUI::Orientations expandingDirections() const noexcept {
+        return ( (verticalPolicy()   & static_cast<Policy>(ExpandFlag)) ? BobUI::Vertical   : BobUI::Orientations() )
+             | ( (horizontalPolicy() & static_cast<Policy>(ExpandFlag)) ? BobUI::Horizontal : BobUI::Orientations() ) ;
     }
 
     constexpr void setHeightForWidth(bool b) noexcept { bits.hfw = b;  }
@@ -105,7 +105,7 @@ public:
     }
 
 private:
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_WIDGETS_EXPORT QDataStream &operator<<(QDataStream &, const QSizePolicy &);
     friend Q_WIDGETS_EXPORT QDataStream &operator>>(QDataStream &, QSizePolicy &);
 #endif
@@ -165,15 +165,15 @@ Q_DECLARE_TYPEINFO(QSizePolicy, Q_PRIMITIVE_TYPE);
 Q_DECLARE_OPERATORS_FOR_FLAGS(QSizePolicy::ControlTypes)
 Q_DECLARE_MIXED_ENUM_OPERATORS(int, QSizePolicy::Policy, QSizePolicy::PolicyFlag)
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_WIDGETS_EXPORT QDataStream &operator<<(QDataStream &, const QSizePolicy &);
 Q_WIDGETS_EXPORT QDataStream &operator>>(QDataStream &, QSizePolicy &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug dbg, const QSizePolicy &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSIZEPOLICY_H

@@ -9,7 +9,7 @@ elseif(WIN32)
     set(deploy_tool_options_arg --no-compiler-runtime)
 endif()
 
-qt_generate_deploy_app_script(
+bobui_generate_deploy_app_script(
     TARGET MyApp
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR

@@ -1,15 +1,15 @@
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCBORARRAY_H
 #define QCBORARRAY_H
 
-#include <QtCore/qcborvalue.h>
+#include <BobUICore/qcborvalue.h>
 
 #include <initializer_list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QJsonArray;
 class QDataStream;
@@ -47,7 +47,7 @@ public:
         QCborValueRef *operator->() { return &item; }
         const QCborValueConstRef *operator->() const { return &item; }
         QCborValueRef operator[](qsizetype j) const { return { item.d, item.i + j }; }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         bool operator==(const Iterator &o) const { return item.d == o.item.d && item.i == o.item.i; }
         bool operator!=(const Iterator &o) const { return !operator==(o); }
         bool operator<(const Iterator& other) const { Q_ASSERT(item.d == other.item.d); return item.i < other.item.i; }
@@ -82,18 +82,18 @@ public:
             return lhs.item.d == rhs.item.d && lhs.item.i == rhs.item.i;
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const Iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const Iterator &lhs,
                                                           const Iterator &rhs) noexcept
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.i, rhs.item.i);
+            return BobUI::compareThreeWay(lhs.item.i, rhs.item.i);
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const Iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const Iterator &lhs,
                                                           const ConstIterator &rhs) noexcept
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.i, rhs.item.i);
+            return BobUI::compareThreeWay(lhs.item.i, rhs.item.i);
         }
 
         // Compare friends
@@ -101,7 +101,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const Iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const Iterator &lhs,
                                                    const Iterator &rhs) noexcept
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -111,7 +111,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const Iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const Iterator &lhs,
                                                    const ConstIterator &rhs) noexcept
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -144,7 +144,7 @@ public:
         QCborValueConstRef operator*() const { return item; }
         const QCborValueConstRef *operator->() const { return &item; }
         QCborValueConstRef operator[](qsizetype j) const { return QCborValueRef{ item.d, item.i + j }; }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         bool operator==(const Iterator &o) const { return item.d == o.item.d && item.i == o.item.i; }
         bool operator!=(const Iterator &o) const { return !operator==(o); }
         bool operator<(const Iterator& other) const { Q_ASSERT(item.d == other.item.d); return item.i < other.item.i; }
@@ -174,11 +174,11 @@ public:
         {
             return lhs.item.d == rhs.item.d && lhs.item.i == rhs.item.i;
         }
-        static Qt::strong_ordering compareThreeWay_helper(const ConstIterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const ConstIterator &lhs,
                                                           const ConstIterator &rhs) noexcept
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.i, rhs.item.i);
+            return BobUI::compareThreeWay(lhs.item.i, rhs.item.i);
         }
 
         // Compare friends
@@ -186,7 +186,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const ConstIterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const ConstIterator &lhs,
                                                    const ConstIterator &rhs) noexcept
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -206,7 +206,7 @@ public:
     QCborArray(const QCborArray &other) noexcept;
     QCborArray(QCborArray &&other) noexcept = default;
     QCborArray &operator=(const QCborArray &other) noexcept;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCborArray)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCborArray)
     QCborArray(std::initializer_list<QCborValue> args)
         : QCborArray()
     {
@@ -258,7 +258,7 @@ public:
     bool contains(const QCborValue &value) const;
 
     Q_DECL_PURE_FUNCTION int compare(const QCborArray &other) const noexcept;
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QCborArray &other) const noexcept
     { return compare(other) == 0; }
     bool operator!=(const QCborArray &other) const noexcept
@@ -308,24 +308,24 @@ public:
 private:
     friend Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool
     comparesEqual(const QCborArray &lhs, const QCborArray &rhs) noexcept;
-    friend Qt::strong_ordering compareThreeWay(const QCborArray &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborArray &lhs,
                                                const QCborArray &rhs) noexcept
     {
         int c = lhs.compare(rhs);
-        return Qt::compareThreeWay(c, 0);
+        return BobUI::compareThreeWay(c, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QCborArray)
 
     static Q_DECL_PURE_FUNCTION bool
     comparesEqual_helper(const QCborArray &lhs, const QCborValue &rhs) noexcept;
-    static Q_DECL_PURE_FUNCTION Qt::strong_ordering
+    static Q_DECL_PURE_FUNCTION BobUI::strong_ordering
     compareThreeWay_helper(const QCborArray &lhs, const QCborValue &rhs) noexcept;
     friend bool comparesEqual(const QCborArray &lhs,
                               const QCborValue &rhs) noexcept
     {
         return comparesEqual_helper(lhs, rhs);
     }
-    friend Qt::strong_ordering compareThreeWay(const QCborArray &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborArray &lhs,
                                                const QCborValue &rhs) noexcept
     {
         return compareThreeWay_helper(lhs, rhs);
@@ -334,14 +334,14 @@ private:
 
     static Q_DECL_PURE_FUNCTION bool
     comparesEqual_helper(const QCborArray &lhs, QCborValueConstRef rhs) noexcept;
-    static Q_DECL_PURE_FUNCTION Qt::strong_ordering
+    static Q_DECL_PURE_FUNCTION BobUI::strong_ordering
     compareThreeWay_helper(const QCborArray &lhs, QCborValueConstRef rhs) noexcept;
     friend bool comparesEqual(const QCborArray &lhs,
                               const QCborValueConstRef &rhs) noexcept
     {
         return comparesEqual_helper(lhs, rhs);
     }
-    friend Qt::strong_ordering compareThreeWay(const QCborArray &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborArray &lhs,
                                                const QCborValueConstRef &rhs) noexcept
     {
         return compareThreeWay_helper(lhs, rhs);
@@ -364,7 +364,7 @@ inline QCborValue::QCborValue(QCborArray &&a)
 {
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 inline QCborArray QCborValueRef::toArray() const
 {
     return concrete().toArray();
@@ -388,17 +388,17 @@ inline QCborArray QCborValueConstRef::toArray(const QCborArray &a) const
 
 Q_CORE_EXPORT size_t qHash(const QCborArray &array, size_t seed = 0);
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QCborArray &a);
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#if QT_CONFIG(cborstreamwriter)
+#ifndef BOBUI_NO_DATASTREAM
+#if BOBUI_CONFIG(cborstreamwriter)
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QCborArray &);
 #endif
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QCborArray &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCBORARRAY_H

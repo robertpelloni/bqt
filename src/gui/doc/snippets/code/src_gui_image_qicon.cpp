@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QIcon>
 #include <QPainter>
-#include <QToolButton>
+#include <BOBUIoolButton>
 #include <QSize>
 
 namespace src_gui_image_qicon {
@@ -17,7 +17,7 @@ struct MyWidget : public QWidget
 void wrapper0() {
 
 //! [0]
-QToolButton *button = new QToolButton;
+BOBUIoolButton *button = new BOBUIoolButton;
 button->setIcon(QIcon("open.png"));
 //! [0]
 
@@ -38,14 +38,14 @@ button->setIcon(QIcon());
 //! [2]
 void MyWidget::drawIcon(QPainter *painter, const QRect &rect)
 {
-    icon.paint(painter, rect, Qt::AlignCenter, isEnabled() ? QIcon::Normal
+    icon.paint(painter, rect, BobUI::AlignCenter, isEnabled() ? QIcon::Normal
                                                            : QIcon::Disabled,
                                                isChecked() ? QIcon::On
                                                            : QIcon::Off);
 }
 //! [2]
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void wrapper1() {
 

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWHATSTHIS_H
 #define QWHATSTHIS_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtGui/qcursor.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUIGui/qcursor.h>
 
-QT_REQUIRE_CONFIG(whatsthis);
+BOBUI_REQUIRE_CONFIG(whatsthis);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 class QAction;
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
 class Q_WIDGETS_EXPORT QWhatsThis
 {
@@ -29,12 +29,12 @@ public:
     static void showText(const QPoint &pos, const QString &text, QWidget *w = nullptr);
     static void hideText();
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     static QAction *createAction(QObject *parent = nullptr);
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWHATSTHIS_H

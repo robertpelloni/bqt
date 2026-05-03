@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2017 ITAGE Corporation, author: <yusuke.binsaki@itage.co.jp>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandwlshellintegration_p.h"
 
-#include <QtWaylandClient/private/qwaylandshellintegrationplugin_p.h>
+#include <BobUIWaylandClient/private/qwaylandshellintegrationplugin_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandWlShellIntegrationPlugin : public QWaylandShellIntegrationPlugin
 {
@@ -28,6 +28,6 @@ QWaylandShellIntegration *QWaylandWlShellIntegrationPlugin::create(const QString
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

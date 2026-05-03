@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILESYSTEMWATCHER_KQUEUE_P_H
 #define QFILESYSTEMWATCHER_KQUEUE_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,15 +18,15 @@
 
 #include "qfilesystemwatcher_p.h"
 
-#include <QtCore/qhash.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qsocketnotifier.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qsocketnotifier.h>
+#include <BobUICore/bobuihread.h>
 
-QT_REQUIRE_CONFIG(filesystemwatcher);
+BOBUI_REQUIRE_CONFIG(filesystemwatcher);
 struct kevent;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QKqueueFileSystemWatcherEngine : public QFileSystemWatcherEngine
 {
@@ -54,6 +54,6 @@ private:
     QSocketNotifier notifier;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILESYSTEMWATCHER_KQUEUE_P_H

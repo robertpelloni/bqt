@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
@@ -9,12 +9,12 @@
 #include <QLoggingCategory>
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QGestureEvent;
 class QPanGesture;
 class QPinchGesture;
 class QSwipeGesture;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcExample)
 
@@ -26,7 +26,7 @@ class ImageWidget : public QWidget
 public:
     ImageWidget(QWidget *parent = nullptr);
     void openDirectory(const QString &url);
-    void grabGestures(const QList<Qt::GestureType> &gestures);
+    void grabGestures(const QList<BobUI::GestureType> &gestures);
 
 protected:
     bool event(QEvent *event) override;

@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QINPUTDIALOG_H
 #define QINPUTDIALOG_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qstring.h>
-#include <QtWidgets/qlineedit.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUIWidgets/qlineedit.h>
 
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(inputdialog);
+BOBUI_REQUIRE_CONFIG(inputdialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QInputDialogPrivate;
 
@@ -55,7 +55,7 @@ public:
         DoubleInput
     };
 
-    QInputDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    QInputDialog(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QInputDialog();
 
     void setInputMode(InputMode mode);
@@ -126,24 +126,24 @@ public:
     static QString getText(QWidget *parent, const QString &title, const QString &label,
                            QLineEdit::EchoMode echo = QLineEdit::Normal,
                            const QString &text = QString(), bool *ok = nullptr,
-                           Qt::WindowFlags flags = Qt::WindowFlags(),
-                           Qt::InputMethodHints inputMethodHints = Qt::ImhNone);
+                           BobUI::WindowFlags flags = BobUI::WindowFlags(),
+                           BobUI::InputMethodHints inputMethodHints = BobUI::ImhNone);
     static QString getMultiLineText(QWidget *parent, const QString &title, const QString &label,
                                     const QString &text = QString(), bool *ok = nullptr,
-                                    Qt::WindowFlags flags = Qt::WindowFlags(),
-                                    Qt::InputMethodHints inputMethodHints = Qt::ImhNone);
+                                    BobUI::WindowFlags flags = BobUI::WindowFlags(),
+                                    BobUI::InputMethodHints inputMethodHints = BobUI::ImhNone);
     static QString getItem(QWidget *parent, const QString &title, const QString &label,
                            const QStringList &items, int current = 0, bool editable = true,
-                           bool *ok = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
-                           Qt::InputMethodHints inputMethodHints = Qt::ImhNone);
+                           bool *ok = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags(),
+                           BobUI::InputMethodHints inputMethodHints = BobUI::ImhNone);
 
     static int getInt(QWidget *parent, const QString &title, const QString &label, int value = 0,
                       int minValue = -2147483647, int maxValue = 2147483647,
-                      int step = 1, bool *ok = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+                      int step = 1, bool *ok = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
 
     static double getDouble(QWidget *parent, const QString &title, const QString &label, double value = 0,
                             double minValue = -2147483647, double maxValue = 2147483647,
-                            int decimals = 1, bool *ok = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
+                            int decimals = 1, bool *ok = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags(),
                             double step = 1);
 
     void setDoubleStep(double step);
@@ -166,6 +166,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QInputDialog::InputDialogOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QINPUTDIALOG_H

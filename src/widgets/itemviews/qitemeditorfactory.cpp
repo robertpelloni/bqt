@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qplatformdefs.h>
 #include "qitemeditorfactory.h"
 #include "qitemeditorfactory_p.h"
 
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 #include <qcombobox.h>
 #endif
-#if QT_CONFIG(datetimeedit)
+#if BOBUI_CONFIG(datetimeedit)
 #include <qdatetimeedit.h>
 #endif
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
 #include <qlabel.h>
 #endif
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include <qlineedit.h>
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 #include <qspinbox.h>
 #endif
 #include <qstyle.h>
@@ -30,10 +30,10 @@
 
 #include <vector>
 #include <algorithm>
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 
 class QBooleanComboBox : public QComboBox
 {
@@ -46,10 +46,10 @@ public:
     bool value() const;
 };
 
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 
 class QUIntSpinBox : public QSpinBox
 {
@@ -76,18 +76,18 @@ Q_SIGNALS:
     void uintValueChanged();
 };
 
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
 /*!
     \class QItemEditorFactory
     \brief The QItemEditorFactory class provides widgets for editing item data
     in views and delegates.
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     When editing data in an item view, editors are created and
     displayed by a delegate. QStyledItemDelegate, which is the delegate by
-    default installed on Qt's item views, uses a QItemEditorFactory to
+    default installed on BobUI's item views, uses a QItemEditorFactory to
     create editors for it. A default unique instance provided by
     QItemEditorFactory is used by all item delegates.  If you set a
     new default factory with setDefaultFactory(), the new factory will
@@ -95,7 +95,7 @@ Q_SIGNALS:
 
     A factory keeps a collection of QItemEditorCreatorBase
     instances, which are specialized editors that produce editors
-    for one particular QVariant data type (All Qt models store
+    for one particular QVariant data type (All BobUI models store
     their data in \l{QVariant}s).
 
     \section1 Standard Editing Widgets
@@ -115,7 +115,7 @@ Q_SIGNALS:
     \row    \li QDateTime \li QDateTimeEdit
     \row    \li QPixmap \li QLabel
     \row    \li QString \li QLineEdit
-    \row    \li QTime \li QTimeEdit
+    \row    \li BOBUIime \li BOBUIimeEdit
     \endtable
 
     Additional editors can be registered with the registerEditor() function.
@@ -204,14 +204,14 @@ public:
 QWidget *QDefaultItemEditorFactory::createEditor(int userType, QWidget *parent) const
 {
     switch (userType) {
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
     case QMetaType::Bool: {
         QBooleanComboBox *cb = new QBooleanComboBox(parent);
         cb->setFrame(false);
         cb->setSizePolicy(QSizePolicy::Ignored, cb->sizePolicy().verticalPolicy());
         return cb; }
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     case QMetaType::UInt: {
         QSpinBox *sb = new QUIntSpinBox(parent);
         sb->setFrame(false);
@@ -227,13 +227,13 @@ QWidget *QDefaultItemEditorFactory::createEditor(int userType, QWidget *parent) 
         sb->setSizePolicy(QSizePolicy::Ignored, sb->sizePolicy().verticalPolicy());
         return sb; }
 #endif
-#if QT_CONFIG(datetimeedit)
+#if BOBUI_CONFIG(datetimeedit)
     case QMetaType::QDate: {
         QDateTimeEdit *ed = new QDateEdit(parent);
         ed->setFrame(false);
         return ed; }
-    case QMetaType::QTime: {
-        QDateTimeEdit *ed = new QTimeEdit(parent);
+    case QMetaType::BOBUIime: {
+        QDateTimeEdit *ed = new BOBUIimeEdit(parent);
         ed->setFrame(false);
         return ed; }
     case QMetaType::QDateTime: {
@@ -241,11 +241,11 @@ QWidget *QDefaultItemEditorFactory::createEditor(int userType, QWidget *parent) 
         ed->setFrame(false);
         return ed; }
 #endif
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     case QMetaType::QPixmap:
         return new QLabel(parent);
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     case QMetaType::Double: {
         QDoubleSpinBox *sb = new QDoubleSpinBox(parent);
         sb->setFrame(false);
@@ -254,7 +254,7 @@ QWidget *QDefaultItemEditorFactory::createEditor(int userType, QWidget *parent) 
         sb->setSizePolicy(QSizePolicy::Ignored, sb->sizePolicy().verticalPolicy());
         return sb; }
 #endif
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
     case QMetaType::QString:
     default: {
         // the default editor is a lineedit
@@ -274,20 +274,20 @@ QWidget *QDefaultItemEditorFactory::createEditor(int userType, QWidget *parent) 
 QByteArray QDefaultItemEditorFactory::valuePropertyName(int userType) const
 {
     switch (userType) {
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
     case QMetaType::Bool:
         return "currentIndex";
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     case QMetaType::UInt:
     case QMetaType::Int:
     case QMetaType::Double:
         return "value";
 #endif
-#if QT_CONFIG(datetimeedit)
+#if BOBUI_CONFIG(datetimeedit)
     case QMetaType::QDate:
         return "date";
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         return "time";
     case QMetaType::QDateTime:
         return "dateTime";
@@ -337,7 +337,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     \brief The QItemEditorCreatorBase class provides an abstract base class that
     must be subclassed when implementing new item editor creators.
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QItemEditorCreatorBase objects are specialized widget factories that
     provide editor widgets for one particular QVariant data type. They
@@ -346,7 +346,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     QItemEditorFactory::registerEditor().
 
     An editor should provide a user property for the data it edits.
-    QItemDelagates can then access the property using Qt's
+    QItemDelagates can then access the property using BobUI's
     \l{Meta-Object System}{meta-object system} to set and retrieve the
     editing data. A property is set as the user property with the USER
     keyword:
@@ -398,7 +398,7 @@ QItemEditorCreatorBase::~QItemEditorCreatorBase()
     and must be registered in the item editor factory for the QMetaType::Bool
     type.
 
-    Note: Since Qt 4.2 the item delegates query the user property of widgets,
+    Note: Since BobUI 4.2 the item delegates query the user property of widgets,
     and only call this function if the widget has no user property. You can
     override this behavior by reimplementing QAbstractItemDelegate::setModelData()
     and QAbstractItemDelegate::setEditorData().
@@ -413,7 +413,7 @@ QItemEditorCreatorBase::~QItemEditorCreatorBase()
            QItemEditorCreatorBase.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QItemEditorCreator\<T\> is a convenience template class where \a T specifies
     the widget type. It uses the template class to create editors for
@@ -463,7 +463,7 @@ QItemEditorCreatorBase::~QItemEditorCreatorBase()
     QItemEditorCreatorBase.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStandardItemEditorCreator\<T\> is a convenience template class where \a T
     specifies the widget type. It makes it possible to register widgets without
@@ -479,7 +479,7 @@ QItemEditorCreatorBase::~QItemEditorCreatorBase()
 
     The editor must provide a user property that will contain the
     editing data. The property is used by \l{QStyledItemDelegate}s to set
-    and retrieve the data (using Qt's \l{Meta-Object
+    and retrieve the data (using BobUI's \l{Meta-Object
     System}{meta-object system}). You set the user property with
     the USER keyword:
 
@@ -505,7 +505,7 @@ QItemEditorCreatorBase::~QItemEditorCreatorBase()
     \reimp
 */
 
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 
 QExpandingLineEdit::QExpandingLineEdit(QWidget *parent)
     : QLineEdit(parent), originalWidth(-1), widgetOwnsGeometry(false)
@@ -562,9 +562,9 @@ void QExpandingLineEdit::resizeToContents()
     }
 }
 
-#endif // QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(lineedit)
 
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 
 QBooleanComboBox::QBooleanComboBox(QWidget *parent)
     : QComboBox(parent)
@@ -583,11 +583,11 @@ bool QBooleanComboBox::value() const
     return (currentIndex() == 1);
 }
 
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#if QT_CONFIG(lineedit) || QT_CONFIG(combobox)
+#if BOBUI_CONFIG(lineedit) || BOBUI_CONFIG(combobox)
 #include "qitemeditorfactory.moc"
 #endif
 

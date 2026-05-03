@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #include "qlibrary.h"
 #include "qlibrary_p.h"
@@ -29,39 +29,39 @@
 #include "qfactoryloader_p.h"
 #include "qmachparser_p.h"
 
-#include <qtcore_tracepoints_p.h>
+#include <bobuicore_tracepoints_p.h>
 
-#include <QtCore/q20map.h>
+#include <BobUICore/q20map.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_TRACE_POINT(qtcore, QLibraryPrivate_load_entry, const QString &fileName);
-Q_TRACE_POINT(qtcore, QLibraryPrivate_load_exit, bool success);
+Q_TRACE_POINT(bobuicore, QLibraryPrivate_load_entry, const QString &fileName);
+Q_TRACE_POINT(bobuicore, QLibraryPrivate_load_exit, bool success);
 
 // On Unix systema and on Windows with MinGW, we can mix and match debug and
 // release plugins without problems. (unless compiled in debug-and-release mode
 // - why?)
-static constexpr bool PluginMustMatchQtDebug =
+static constexpr bool PluginMustMatchBobUIDebug =
         QOperatingSystemVersion::currentType() == QOperatingSystemVersion::Windows
 #if defined(Q_CC_MINGW)
-        && QT_CONFIG(debug_and_release)
+        && BOBUI_CONFIG(debug_and_release)
 #endif
         ;
 
-#ifdef QT_NO_DEBUG
-static constexpr bool QtBuildIsDebug = false;
+#ifdef BOBUI_NO_DEBUG
+static constexpr bool BobUIBuildIsDebug = false;
 #else
-static constexpr bool QtBuildIsDebug = true;
+static constexpr bool BobUIBuildIsDebug = true;
 #endif
 
-Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(qt_lcDebugPlugins, "QT_DEBUG_PLUGINS", "qt.core.plugin.loader")
-Q_STATIC_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(lcDebugLibrary, "QT_DEBUG_PLUGINS", "qt.core.library")
+Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(bobui_lcDebugPlugins, "BOBUI_DEBUG_PLUGINS", "bobui.core.plugin.loader")
+Q_STATIC_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(lcDebugLibrary, "BOBUI_DEBUG_PLUGINS", "bobui.core.library")
 
 /*!
     \class QLibrary
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QLibrary class loads shared libraries at runtime.
 
@@ -164,7 +164,7 @@ Q_STATIC_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(lcDebugLibrary, "QT_DEBUG_PLUGINS", 
     \sa loadHints
 */
 
-static QLibraryScanResult qt_find_pattern(const char *s, qsizetype s_len, QString *errMsg)
+static QLibraryScanResult bobui_find_pattern(const char *s, qsizetype s_len, QString *errMsg)
 {
     /*
       We used to search from the end of the file so we'd skip the code and find
@@ -182,13 +182,13 @@ static QLibraryScanResult qt_find_pattern(const char *s, qsizetype s_len, QStrin
 #elif defined(Q_OS_WIN) || defined(Q_OS_CYGWIN)
     return QCoffPeParser::parse({s, s_len}, errMsg);
 #else
-#   warning "Qt does not know how to efficiently parse your platform's binary format; using slow fall-back."
+#   warning "BobUI does not know how to efficiently parse your platform's binary format; using slow fall-back."
 #endif
     static constexpr auto matcher = [] {
         // QPluginMetaData::MagicString is not NUL-terminated, but
         // qMakeStaticByteArrayMatcher requires its argument to be, so
         // duplicate here, but statically check we didn't mess up:
-        constexpr auto &pattern = "QTMETADATA !";
+        constexpr auto &pattern = "BOBUIMETADATA !";
         constexpr auto magic = std::string_view(QPluginMetaData::MagicString,
                                                 sizeof(QPluginMetaData::MagicString));
         static_assert(pattern == magic);
@@ -196,7 +196,7 @@ static QLibraryScanResult qt_find_pattern(const char *s, qsizetype s_len, QStrin
     }();
     qsizetype i = matcher.indexIn({s, s_len});
     if (i < 0) {
-        *errMsg = QLibrary::tr("'%1' is not a Qt plugin").arg(*errMsg);
+        *errMsg = QLibrary::tr("'%1' is not a BobUI plugin").arg(*errMsg);
         return QLibraryScanResult{};
     }
     i += sizeof(QPluginMetaData::MagicString);
@@ -205,7 +205,7 @@ static QLibraryScanResult qt_find_pattern(const char *s, qsizetype s_len, QStrin
 
 /*
   This opens the specified library, mmaps it into memory, and searches
-  for the QT_PLUGIN_VERIFICATION_DATA.  The advantage of this approach is that
+  for the BOBUI_PLUGIN_VERIFICATION_DATA.  The advantage of this approach is that
   we can get the verification data without have to actually load the library.
   This lets us detect mismatches more safely.
 
@@ -219,7 +219,7 @@ static QLibraryScanResult findPatternUnloaded(const QString &library, QLibraryPr
     if (!file.open(QIODevice::ReadOnly)) {
         if (lib)
             lib->errorString = file.errorString();
-        qCWarning(qt_lcDebugPlugins, "%ls: cannot open: %ls", qUtf16Printable(library),
+        qCWarning(bobui_lcDebugPlugins, "%ls: cannot open: %ls", qUtf16Printable(library),
                   qUtf16Printable(file.errorString()));
         return {};
     }
@@ -236,7 +236,7 @@ static QLibraryScanResult findPatternUnloaded(const QString &library, QLibraryPr
     if (filedata == nullptr) {
         // If we can't mmap(), then the dynamic loader won't be able to either.
         // This can't be used as a plugin.
-        qCWarning(qt_lcDebugPlugins, "%ls: failed to map to memory: %ls",
+        qCWarning(bobui_lcDebugPlugins, "%ls: failed to map to memory: %ls",
                   qUtf16Printable(library), qUtf16Printable(file.errorString()));
         return {};
     }
@@ -253,7 +253,7 @@ static QLibraryScanResult findPatternUnloaded(const QString &library, QLibraryPr
 #endif
 
     QString errMsg = library;
-    QLibraryScanResult r = qt_find_pattern(filedata, fdlen, &errMsg);
+    QLibraryScanResult r = bobui_find_pattern(filedata, fdlen, &errMsg);
     if (r.length) {
 #if defined(Q_OF_MACH_O)
         if (r.isEncrypted)
@@ -261,16 +261,16 @@ static QLibraryScanResult findPatternUnloaded(const QString &library, QLibraryPr
 #endif
         if (!lib->metaData.parse(QByteArrayView(filedata + r.pos, r.length))) {
             errMsg = lib->metaData.errorString();
-            qCDebug(qt_lcDebugPlugins, "Found invalid metadata in lib %ls: %ls",
+            qCDebug(bobui_lcDebugPlugins, "Found invalid metadata in lib %ls: %ls",
                       qUtf16Printable(library), qUtf16Printable(errMsg));
         } else {
-            qCDebug(qt_lcDebugPlugins, "Found metadata in lib %ls, metadata=\n%s\n",
+            qCDebug(bobui_lcDebugPlugins, "Found metadata in lib %ls, metadata=\n%s\n",
                     qUtf16Printable(library),
                     QJsonDocument(lib->metaData.toJson()).toJson().constData());
             return r;
         }
     } else {
-        qCDebug(qt_lcDebugPlugins, "Failed to find metadata in lib %ls: %ls",
+        qCDebug(bobui_lcDebugPlugins, "Failed to find metadata in lib %ls: %ls",
                 qUtf16Printable(library), qUtf16Printable(errMsg));
     }
 
@@ -283,7 +283,7 @@ static void installCoverageTool(QLibraryPrivate *libPrivate)
 {
 #ifdef __COVERAGESCANNER__
     /*
-      __COVERAGESCANNER__ is defined when Qt has been instrumented for code
+      __COVERAGESCANNER__ is defined when BobUI has been instrumented for code
       coverage by TestCocoon. CoverageScanner is the name of the tool that
       generates the code instrumentation.
       This code is required here when code coverage analysis with TestCocoon
@@ -323,23 +323,23 @@ public:
 private:
     static inline QLibraryStore *instance();
 
-    // all members and instance() are protected by qt_library_mutex
+    // all members and instance() are protected by bobui_library_mutex
     typedef std::map<QString, QLibraryPrivate *> LibraryMap;
     LibraryMap libraryMap;
 };
 
-Q_CONSTINIT static QBasicMutex qt_library_mutex;
-Q_CONSTINIT static QLibraryStore *qt_library_data = nullptr;
-Q_CONSTINIT static bool qt_library_data_once;
+Q_CONSTINIT static QBasicMutex bobui_library_mutex;
+Q_CONSTINIT static QLibraryStore *bobui_library_data = nullptr;
+Q_CONSTINIT static bool bobui_library_data_once;
 
 QLibraryStore::~QLibraryStore()
 {
-    qt_library_data = nullptr;
+    bobui_library_data = nullptr;
 }
 
 inline void QLibraryStore::cleanup()
 {
-    QLibraryStore *data = qt_library_data;
+    QLibraryStore *data = bobui_library_data;
     if (!data)
         return;
 
@@ -367,7 +367,7 @@ inline void QLibraryStore::cleanup()
         for (auto &[_, lib] : data->libraryMap) {
             if (lib)
                 qCDebug(lcDebugLibrary)
-                        << "On QtCore unload," << lib->fileName << "was leaked, with"
+                        << "On BobUICore unload," << lib->fileName << "was leaked, with"
                         << lib->libraryRefCount.loadRelaxed() << "users";
         }
     }
@@ -384,12 +384,12 @@ Q_DESTRUCTOR_FUNCTION(qlibraryCleanup)
 // must be called with a locked mutex
 QLibraryStore *QLibraryStore::instance()
 {
-    if (Q_UNLIKELY(!qt_library_data_once && !qt_library_data)) {
+    if (Q_UNLIKELY(!bobui_library_data_once && !bobui_library_data)) {
         // only create once per process lifetime
-        qt_library_data = new QLibraryStore;
-        qt_library_data_once = true;
+        bobui_library_data = new QLibraryStore;
+        bobui_library_data_once = true;
     }
-    return qt_library_data;
+    return bobui_library_data;
 }
 
 inline QLibraryPrivate *QLibraryStore::findOrCreate(const QString &fileName, const QString &version,
@@ -404,7 +404,7 @@ inline QLibraryPrivate *QLibraryStore::findOrCreate(const QString &fileName, con
     if (fileName.isEmpty())   // request for empty d-pointer in QLibrary::setLoadHints();
         return lazyNewLib();  // must return an independent (new) object
 
-    QMutexLocker locker(&qt_library_mutex);
+    QMutexLocker locker(&bobui_library_mutex);
     QLibraryStore *data = instance();
 
     if (Q_UNLIKELY(!data)) {
@@ -428,7 +428,7 @@ inline QLibraryPrivate *QLibraryStore::findOrCreate(const QString &fileName, con
 
 inline void QLibraryStore::releaseLibrary(QLibraryPrivate *lib)
 {
-    QMutexLocker locker(&qt_library_mutex);
+    QMutexLocker locker(&bobui_library_mutex);
     QLibraryStore *data = instance();
 
     if (lib->libraryRefCount.deref()) {
@@ -494,7 +494,7 @@ void QLibraryPrivate::setLoadHints(QLibrary::LoadHints lh)
     }
 
     // this locks a global mutex
-    QMutexLocker lock(&qt_library_mutex);
+    QMutexLocker lock(&bobui_library_mutex);
     mergeLoadHints(lh);
 }
 
@@ -507,7 +507,7 @@ QObject *QLibraryPrivate::pluginInstance()
 
     // We need to call the plugin's factory function. Is that cached?
     // skip increasing the reference count (why? -Thiago)
-    QtPluginInstanceFunction factory = instanceFactory.loadAcquire();
+    BobUIPluginInstanceFunction factory = instanceFactory.loadAcquire();
     if (!factory)
         factory = loadPlugin();
 
@@ -580,7 +580,7 @@ void QLibraryPrivate::release()
     QLibraryStore::releaseLibrary(this);
 }
 
-QtPluginInstanceFunction QLibraryPrivate::loadPlugin()
+BobUIPluginInstanceFunction QLibraryPrivate::loadPlugin()
 {
     if (auto ptr = instanceFactory.loadAcquire()) {
         libraryUnloadCount.ref();
@@ -589,13 +589,13 @@ QtPluginInstanceFunction QLibraryPrivate::loadPlugin()
     if (pluginState == IsNotAPlugin)
         return nullptr;
     if (load()) {
-        auto ptr = reinterpret_cast<QtPluginInstanceFunction>(resolve("qt_plugin_instance"));
+        auto ptr = reinterpret_cast<BobUIPluginInstanceFunction>(resolve("bobui_plugin_instance"));
         instanceFactory.storeRelease(ptr); // two threads may store the same value
         if (Q_LIKELY(ptr))
             return ptr;
-        errorString = QLibrary::tr("Could not resolve 'qt_plugin_instance' function");
+        errorString = QLibrary::tr("Could not resolve 'bobui_plugin_instance' function");
     }
-    qCDebug(qt_lcDebugPlugins) << "QLibraryPrivate::loadPlugin failed on" << fileName << ":" << errorString;
+    qCDebug(bobui_lcDebugPlugins) << "QLibraryPrivate::loadPlugin failed on" << fileName << ":" << errorString;
     pluginState = IsNotAPlugin;
     return nullptr;
 }
@@ -618,7 +618,7 @@ QtPluginInstanceFunction QLibraryPrivate::loadPlugin()
 bool QLibrary::isLibrary(const QString &fileName)
 {
 #if defined(Q_OS_WIN) || defined(Q_OS_CYGWIN)
-    return fileName.endsWith(".dll"_L1, Qt::CaseInsensitive);
+    return fileName.endsWith(".dll"_L1, BobUI::CaseInsensitive);
 #else // Generic Unix
 # if defined(Q_OS_DARWIN)
     // On Apple platforms, dylib look like libmylib.1.0.0.dylib
@@ -677,19 +677,19 @@ bool QLibrary::isLibrary(const QString &fileName)
 #endif
 }
 
-static bool qt_get_metadata(QLibraryPrivate *priv, QString *errMsg)
+static bool bobui_get_metadata(QLibraryPrivate *priv, QString *errMsg)
 {
     auto error = [=](QString &&explanation) {
-        *errMsg = QLibrary::tr("'%1' is not a Qt plugin (%2)").arg(priv->fileName, std::move(explanation));
+        *errMsg = QLibrary::tr("'%1' is not a BobUI plugin (%2)").arg(priv->fileName, std::move(explanation));
         return false;
     };
 
     QPluginMetaData metaData;
-    QFunctionPointer pfn = priv->resolve("qt_plugin_query_metadata_v2");
+    QFunctionPointer pfn = priv->resolve("bobui_plugin_query_metadata_v2");
     if (pfn) {
         metaData = reinterpret_cast<QPluginMetaData (*)()>(pfn)();
-#if QT_VERSION <= QT_VERSION_CHECK(7, 0, 0)
-    } else if ((pfn = priv->resolve("qt_plugin_query_metadata"))) {
+#if BOBUI_VERSION <= BOBUI_VERSION_CHECK(7, 0, 0)
+    } else if ((pfn = priv->resolve("bobui_plugin_query_metadata"))) {
         metaData = reinterpret_cast<QPluginMetaData (*)()>(pfn)();
         if (metaData.size < sizeof(QPluginMetaData::MagicHeader))
             return error(QLibrary::tr("metadata too small"));
@@ -749,14 +749,14 @@ void QLibraryPrivate::updatePluginState()
         QLibraryScanResult result = findPatternUnloaded(fileName, this);
 #if defined(Q_OF_MACH_O)
         if (result.length && result.isEncrypted) {
-            // We found the .qtmetadata section, but since the library is encrypted
+            // We found the .bobuimetadata section, but since the library is encrypted
             // we need to dlopen() it before we can parse the metadata for further
             // validation.
-            qCDebug(qt_lcDebugPlugins, "Library is encrypted. Doing prospective load before parsing metadata");
+            qCDebug(bobui_lcDebugPlugins, "Library is encrypted. Doing prospective load before parsing metadata");
             locker.unlock();
             load();
             locker.relock();
-            success = qt_get_metadata(this, &errorString);
+            success = bobui_get_metadata(this, &errorString);
         } else
 #endif
         {
@@ -765,7 +765,7 @@ void QLibraryPrivate::updatePluginState()
     } else {
         // library is already loaded (probably via QLibrary)
         // simply get the target function and call it.
-        success = qt_get_metadata(this, &errorString);
+        success = bobui_get_metadata(this, &errorString);
     }
 
     if (!success) {
@@ -773,7 +773,7 @@ void QLibraryPrivate::updatePluginState()
             if (fileName.isEmpty())
                 errorString = QLibrary::tr("The shared library was not found.");
             else
-                errorString = QLibrary::tr("The file '%1' is not a valid Qt plugin.").arg(fileName);
+                errorString = QLibrary::tr("The file '%1' is not a valid BobUI plugin.").arg(fileName);
         }
         pluginState = IsNotAPlugin;
         return;
@@ -781,23 +781,23 @@ void QLibraryPrivate::updatePluginState()
 
     pluginState = IsNotAPlugin; // be pessimistic
 
-    uint qt_version = uint(metaData.value(QtPluginMetaDataKeys::QtVersion).toInteger());
-    bool debug = metaData.value(QtPluginMetaDataKeys::IsDebug).toBool();
-    if ((qt_version & 0x00ff00) > (QT_VERSION & 0x00ff00) || (qt_version & 0xff0000) != (QT_VERSION & 0xff0000)) {
-        qCDebug(qt_lcDebugPlugins, "In %s:\n"
-                 "  Plugin uses incompatible Qt library (%d.%d.%d) [%s]",
+    uint bobui_version = uint(metaData.value(BobUIPluginMetaDataKeys::BobUIVersion).toInteger());
+    bool debug = metaData.value(BobUIPluginMetaDataKeys::IsDebug).toBool();
+    if ((bobui_version & 0x00ff00) > (BOBUI_VERSION & 0x00ff00) || (bobui_version & 0xff0000) != (BOBUI_VERSION & 0xff0000)) {
+        qCDebug(bobui_lcDebugPlugins, "In %s:\n"
+                 "  Plugin uses incompatible BobUI library (%d.%d.%d) [%s]",
                  QFile::encodeName(fileName).constData(),
-                 (qt_version&0xff0000) >> 16, (qt_version&0xff00) >> 8, qt_version&0xff,
+                 (bobui_version&0xff0000) >> 16, (bobui_version&0xff00) >> 8, bobui_version&0xff,
                  debug ? "debug" : "release");
-        errorString = QLibrary::tr("The plugin '%1' uses incompatible Qt library. (%2.%3.%4) [%5]")
+        errorString = QLibrary::tr("The plugin '%1' uses incompatible BobUI library. (%2.%3.%4) [%5]")
             .arg(fileName,
-                 QString::number((qt_version & 0xff0000) >> 16),
-                 QString::number((qt_version & 0xff00) >> 8),
-                 QString::number(qt_version & 0xff),
+                 QString::number((bobui_version & 0xff0000) >> 16),
+                 QString::number((bobui_version & 0xff00) >> 8),
+                 QString::number(bobui_version & 0xff),
                  debug ? "debug"_L1 : "release"_L1);
-    } else if (PluginMustMatchQtDebug && debug != QtBuildIsDebug) {
+    } else if (PluginMustMatchBobUIDebug && debug != BobUIBuildIsDebug) {
         //don't issue a qWarning since we will hopefully find a non-debug? --Sam
-        errorString = QLibrary::tr("The plugin '%1' uses incompatible Qt library."
+        errorString = QLibrary::tr("The plugin '%1' uses incompatible BobUI library."
                  " (Cannot mix debug and release libraries.)").arg(fileName);
     } else {
         pluginState = IsAPlugin;
@@ -856,7 +856,7 @@ bool QLibrary::unload()
 /*!
     Returns \c true if load() succeeded; otherwise returns \c false.
 
-    \note Prior to Qt 6.6, this function would return \c true even without a
+    \note Prior to BobUI 6.6, this function would return \c true even without a
     call to load() if another QLibrary object on the same library had caused it
     to be loaded.
 
@@ -1001,7 +1001,7 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, const QString &ver
         d->release();
     }
     QLibraryPrivate *dd = QLibraryPrivate::findOrCreate(fileName, version, lh);
-    d = QTaggedPointer(dd, NotLoaded);      // we haven't load()ed
+    d = BOBUIaggedPointer(dd, NotLoaded);      // we haven't load()ed
 }
 
 /*!
@@ -1161,12 +1161,12 @@ QLibrary::LoadHints QLibrary::loadHints() const
 }
 
 /* Internal, for debugging */
-bool qt_debug_component()
+bool bobui_debug_component()
 {
-    static int debug_env = QT_PREPEND_NAMESPACE(qEnvironmentVariableIntValue)("QT_DEBUG_PLUGINS");
+    static int debug_env = BOBUI_PREPEND_NAMESPACE(qEnvironmentVariableIntValue)("BOBUI_DEBUG_PLUGINS");
     return debug_env != 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlibrary.cpp"

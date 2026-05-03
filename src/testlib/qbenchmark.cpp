@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/qbenchmark.h>
-#include <QtTest/private/qbenchmark_p.h>
-#include <QtTest/private/qbenchmarkmetric_p.h>
-#include <QtTest/private/qbenchmarktimemeasurers_p.h>
+#include <BobUITest/qbenchmark.h>
+#include <BobUITest/private/qbenchmark_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/private/qbenchmarktimemeasurers_p.h>
 
-#include <QtCore/qdir.h>
-#include <QtCore/qset.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QBenchmarkGlobalData *QBenchmarkGlobalData::current;
 
@@ -38,11 +38,11 @@ QBenchmarkMeasurerBase * QBenchmarkGlobalData::createMeasurer()
 {
     QBenchmarkMeasurerBase *measurer = nullptr;
     if (0) {
-#if QT_CONFIG(valgrind)
+#if BOBUI_CONFIG(valgrind)
     } else if (mode_ == CallgrindChildProcess || mode_ == CallgrindParentProcess) {
         measurer = new QBenchmarkCallgrindMeasurer;
 #endif
-#ifdef QTESTLIB_USE_PERF_EVENTS
+#ifdef BOBUIESTLIB_USE_PERF_EVENTS
     } else if (mode_ == PerfCounter) {
         measurer = new QBenchmarkPerfEventsMeasurer;
 #endif
@@ -133,7 +133,7 @@ void QBenchmarkTestMethodData::setResults(const QList<QBenchmarkMeasurerBase::Me
 }
 
 /*!
-    \class QTest::QBenchmarkIterationController
+    \class BOBUIest::QBenchmarkIterationController
     \internal
 
     The QBenchmarkIterationController class is used by the QBENCHMARK macro to
@@ -143,60 +143,60 @@ void QBenchmarkTestMethodData::setResults(const QList<QBenchmarkMeasurerBase::Me
 
 /*! \internal
 */
-QTest::QBenchmarkIterationController::QBenchmarkIterationController(RunMode runMode)
+BOBUIest::QBenchmarkIterationController::QBenchmarkIterationController(RunMode runMode)
 {
     i = 0;
     if (runMode == RunOnce)
         QBenchmarkTestMethodData::current->runOnce = true;
-    QTest::beginBenchmarkMeasurement();
+    BOBUIest::beginBenchmarkMeasurement();
 }
 
-QTest::QBenchmarkIterationController::QBenchmarkIterationController()
+BOBUIest::QBenchmarkIterationController::QBenchmarkIterationController()
 {
     i = 0;
-    QTest::beginBenchmarkMeasurement();
+    BOBUIest::beginBenchmarkMeasurement();
 }
 
 /*! \internal
 */
-QTest::QBenchmarkIterationController::~QBenchmarkIterationController()
+BOBUIest::QBenchmarkIterationController::~QBenchmarkIterationController()
 {
-    QBenchmarkTestMethodData::current->setResults(QTest::endBenchmarkMeasurement());
+    QBenchmarkTestMethodData::current->setResults(BOBUIest::endBenchmarkMeasurement());
 }
 
 /*! \internal
 */
-bool QTest::QBenchmarkIterationController::isDone() const noexcept
+bool BOBUIest::QBenchmarkIterationController::isDone() const noexcept
 {
     if (QBenchmarkTestMethodData::current->runOnce)
         return i > 0;
-    return i >= QTest::iterationCount();
+    return i >= BOBUIest::iterationCount();
 }
 
 /*! \internal
 */
-void QTest::QBenchmarkIterationController::next() noexcept
+void BOBUIest::QBenchmarkIterationController::next() noexcept
 {
     ++i;
 }
 
 /*! \internal
 */
-int QTest::iterationCount() noexcept
+int BOBUIest::iterationCount() noexcept
 {
     return QBenchmarkTestMethodData::current->iterationCount;
 }
 
 /*! \internal
 */
-void QTest::setIterationCountHint(int count)
+void BOBUIest::setIterationCountHint(int count)
 {
     QBenchmarkTestMethodData::current->adjustIterationCount(count);
 }
 
 /*! \internal
 */
-void QTest::setIterationCount(int count)
+void BOBUIest::setIterationCount(int count)
 {
     QBenchmarkTestMethodData::current->iterationCount = count;
     QBenchmarkTestMethodData::current->resultAccepted = true;
@@ -204,7 +204,7 @@ void QTest::setIterationCount(int count)
 
 /*! \internal
 */
-void QTest::beginBenchmarkMeasurement()
+void BOBUIest::beginBenchmarkMeasurement()
 {
     QBenchmarkGlobalData::current->measurer->start();
     // the clock is ticking after the line above, don't add code here.
@@ -212,7 +212,7 @@ void QTest::beginBenchmarkMeasurement()
 
 /*! \internal
 */
-QList<QBenchmarkMeasurerBase::Measurement> QTest::endBenchmarkMeasurement()
+QList<QBenchmarkMeasurerBase::Measurement> BOBUIest::endBenchmarkMeasurement()
 {
     // the clock is ticking before the line below, don't add code here.
     return QBenchmarkGlobalData::current->measurer->stop();
@@ -222,7 +222,7 @@ QList<QBenchmarkMeasurerBase::Measurement> QTest::endBenchmarkMeasurement()
     Sets the benchmark result for this test function to \a result.
 
     Use this function if you want to report benchmark results without
-    using the QBENCHMARK macro. Use \a metric to specify how Qt Test
+    using the QBENCHMARK macro. Use \a metric to specify how BobUI Test
     should interpret the results.
 
     The context for the result will be the test function name and any
@@ -235,9 +235,9 @@ QList<QBenchmarkMeasurerBase::Measurement> QTest::endBenchmarkMeasurement()
 
     \since 4.7
 */
-void QTest::setBenchmarkResult(qreal result, QTest::QBenchmarkMetric metric)
+void BOBUIest::setBenchmarkResult(qreal result, BOBUIest::QBenchmarkMetric metric)
 {
     QBenchmarkTestMethodData::current->setResult({ result, metric }, false);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

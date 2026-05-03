@@ -1,10 +1,10 @@
 ********* Start testing of tst_EventLoop *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_EventLoop::initTestCase()
 FAIL!  : tst_EventLoop::fail() Failing test should still clean up
-   Loc: [qtbase/tests/auto/testlib/selftests/eventloop/tst_eventloop.cpp(0)]
+   Loc: [bobuibase/tests/auto/testlib/selftests/eventloop/tst_eventloop.cpp(0)]
 SKIP   : tst_EventLoop::skip() Skipping test should still clean up
-   Loc: [qtbase/tests/auto/testlib/selftests/eventloop/tst_eventloop.cpp(0)]
+   Loc: [bobuibase/tests/auto/testlib/selftests/eventloop/tst_eventloop.cpp(0)]
 PASS   : tst_EventLoop::pass()
 PASS   : tst_EventLoop::cleanupTestCase()
 Totals: 3 passed, 1 failed, 1 skipped, 0 blacklisted, 0ms

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFSFILEENGINE_P_H
 #define QFSFILEENGINE_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,9 +17,9 @@
 //
 
 #include "qplatformdefs.h"
-#include "QtCore/private/qabstractfileengine_p.h"
-#include <QtCore/private/qfilesystementry_p.h>
-#include <QtCore/private/qfilesystemmetadata_p.h>
+#include "BobUICore/private/qabstractfileengine_p.h"
+#include <BobUICore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
 #include <qhash.h>
 
 #include <optional>
@@ -28,9 +28,9 @@
 #include <sys/types.h> // for mode_t
 #endif
 
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct ProcessOpenModeResult
 {
@@ -85,7 +85,7 @@ public:
     virtual void setFileEntry(QFileSystemEntry &&entry);
     int handle() const override;
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
     IteratorUniquePtr beginEntryList(const QString &path, QDirListing::IteratorFlags filters,
                                      const QStringList &filterNames) override;
 #endif
@@ -227,8 +227,8 @@ protected:
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FSFILEENGINE
+#endif // BOBUI_NO_FSFILEENGINE
 
 #endif // QFSFILEENGINE_P_H

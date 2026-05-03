@@ -1,0 +1,158 @@
+name: OmniUI CI/CD Deployment Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build-native:
+    name: Native Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        qt_ver: [6.6.0]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_ver }}
+        host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
+        target: desktop
+        modules: 'qtdeclarative qtwebsockets qt5compat qtshadertools qtmultimedia qtsvg'
+
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+
+    - name: Configure CMake (HelloOmni)
+      run: |
+        cd OmniUI/examples/HelloOmni
+        mkdir build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+
+    - name: Build OmniCore & HelloOmni
+      run: |
+        cd OmniUI/examples/HelloOmni/build
+        cmake --build . --parallel
+
+    - name: Configure & Build Tests
+      run: |
+        cd OmniUI/tests
+        mkdir build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build . --parallel
+
+    - name: Run QTest (Multi-Cursor Verification)
+      run: |
+        cd OmniUI/tests/build
+        ctest --output-on-failure
+
+    - name: Upload Native Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: HelloOmni-${{ matrix.os }}
+        path: |
+          OmniUI/examples/HelloOmni/build/HelloOmni*
+          !OmniUI/examples/HelloOmni/build/CMakeFiles/
+        if-no-files-found: warn
+
+  build-wasm:
+    name: WebAssembly Build (Emscripten)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install Qt for WASM
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.6.0'
+        host: 'linux'
+        target: 'desktop'
+        arch: 'wasm_32'
+        modules: 'qtdeclarative qtwebsockets qt5compat'
+
+    - name: Setup Emscripten
+      uses: mymindstorm/setup-emsdk@v14
+
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+
+    - name: Configure & Build WASM Target
+      run: |
+        source $EMSDK/emsdk_env.sh
+        cd OmniUI/examples/HelloOmni
+        mkdir build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DQT_WASM=ON -DCMAKE_TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake ..
+        cmake --build . --parallel
+
+    - name: Upload WASM Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: HelloOmni-WASM
+        path: |
+          OmniUI/examples/HelloOmni/build/*.html
+          OmniUI/examples/HelloOmni/build/*.js
+          OmniUI/examples/HelloOmni/build/*.wasm
+        if-no-files-found: warn
+
+  release:
+    name: Generate GitHub Release
+    needs: [build-native, build-wasm]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Extract Version
+      id: get_version
+      run: |
+        VERSION=$(cat VERSION.md | tr -d '\r\n')
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "Parsed Version: $VERSION"
+
+    - name: Download All Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+
+    - name: Zip Artifacts for Release
+      run: |
+        cd artifacts
+        zip -r ../HelloOmni-Windows.zip HelloOmni-windows-latest/ || true
+        zip -r ../HelloOmni-Linux.zip HelloOmni-ubuntu-latest/ || true
+        zip -r ../HelloOmni-Web.zip HelloOmni-WASM/ || true
+
+    - name: Create Release & Upload Assets
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ env.VERSION }}
+        name: OmniUI OS Release v${{ env.VERSION }}
+        body_path: CHANGELOG.md
+        draft: false
+        prerelease: false
+        files: |
+          HelloOmni-Windows.zip
+          HelloOmni-Linux.zip
+          HelloOmni-Web.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

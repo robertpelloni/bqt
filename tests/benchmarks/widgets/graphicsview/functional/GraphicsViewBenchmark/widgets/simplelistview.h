@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef SIMPLELISTVIEW_H
 #define SIMPLELISTVIEW_H
@@ -41,7 +41,7 @@ protected:
 
     virtual void scrollContentsBy(qreal dx, qreal dy);
     void resizeEvent(QGraphicsSceneResizeEvent *event);
-    QSizeF sizeHint(Qt::SizeHint which,
+    QSizeF sizeHint(BobUI::SizeHint which,
                     const QSizeF & constraint) const;
 
 private:

@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'saveformastemplate.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,19 +16,19 @@
 #ifndef SAVEFORMASTEMPLATE_H
 #define SAVEFORMASTEMPLATE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_SaveFormAsTemplate
 {
@@ -55,7 +55,7 @@ public:
         label->setObjectName("label");
         label->setFrameShape(QFrame::Shape::NoFrame);
         label->setFrameShadow(QFrame::Shadow::Plain);
-        label->setTextFormat(Qt::TextFormat::AutoText);
+        label->setTextFormat(BobUI::TextFormat::AutoText);
 
         formLayout->setWidget(0, QFormLayout::ItemRole::LabelRole, label);
 
@@ -70,7 +70,7 @@ public:
         label_2->setObjectName("label_2");
         label_2->setFrameShape(QFrame::Shape::NoFrame);
         label_2->setFrameShadow(QFrame::Shadow::Plain);
-        label_2->setTextFormat(Qt::TextFormat::AutoText);
+        label_2->setTextFormat(BobUI::TextFormat::AutoText);
 
         formLayout->setWidget(1, QFormLayout::ItemRole::LabelRole, label_2);
 
@@ -91,15 +91,15 @@ public:
 
         buttonBox = new QDialogButtonBox(SaveFormAsTemplate);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         vboxLayout->addWidget(buttonBox);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(templateNameEdit);
         label_2->setBuddy(categoryCombo);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(SaveFormAsTemplate);
         QObject::connect(buttonBox, &QDialogButtonBox::accepted, SaveFormAsTemplate, qOverload<>(&QDialog::accept));
@@ -122,6 +122,6 @@ namespace Ui {
     class SaveFormAsTemplate: public Ui_SaveFormAsTemplate {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // SAVEFORMASTEMPLATE_H

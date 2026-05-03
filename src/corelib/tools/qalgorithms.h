@@ -1,22 +1,22 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QALGORITHMS_H
 #define QALGORITHMS_H
 
 #if 0
-#pragma qt_class(QtAlgorithms)
+#pragma bobui_class(BobUIAlgorithms)
 #endif
 
-#include <QtCore/qglobal.h>
-#include <QtCore/q20bit.h>
-#include <QtCore/q20functional.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/q20bit.h>
+#include <BobUICore/q20functional.h>
 #include <type_traits>
 
-#define QT_HAS_CONSTEXPR_BITOPS
+#define BOBUI_HAS_CONSTEXPR_BITOPS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename ForwardIterator>
 Q_OUTOFLINE_TEMPLATE void qDeleteAll(ForwardIterator begin, ForwardIterator end)
@@ -128,7 +128,7 @@ Result qJoin(InputIterator first, InputIterator last, Result init, const Separat
     return init;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename T>
 constexpr
@@ -141,8 +141,8 @@ log2i(T x)
     return int(sizeof(T) * 8 - 1 - qCountLeadingZeroBits(x));
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QALGORITHMS_H

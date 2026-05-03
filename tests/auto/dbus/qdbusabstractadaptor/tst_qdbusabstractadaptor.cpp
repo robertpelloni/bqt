@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QProcess>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusConnectionInterface>
@@ -14,15 +14,15 @@
 #include "../qdbusmarshall/common.h"
 #include "myobject.h"
 
-static const char serviceName[] = "org.qtproject.autotests.qmyserver";
-static const char objectPath[] = "/org/qtproject/qmyserver";
+static const char serviceName[] = "org.bobuiproject.autotests.qmyserver";
+static const char objectPath[] = "/org/bobuiproject/qmyserver";
 static const char *interfaceName = serviceName;
 
 const char *slotSpy;
 QString valueSpy;
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
     char *toString(QDBusMessage::MessageType t)
     {
         switch (t)
@@ -42,7 +42,7 @@ namespace QTest {
         }
     }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class TypesInterface: public QDBusAbstractAdaptor
 {
@@ -449,7 +449,7 @@ WaitForQMyServer::WaitForQMyServer()
     if (!ok()) {
         connect(con.interface(), SIGNAL(serviceOwnerChanged(QString,QString,QString)),
                 SLOT(ownerChange(QString)));
-        QTimer::singleShot(2000, &loop, SLOT(quit()));
+        BOBUIimer::singleShot(2000, &loop, SLOT(quit()));
         loop.exec();
     }
 }
@@ -503,12 +503,12 @@ void tst_QDBusAbstractAdaptor::cleanupTestCase()
 
 void tst_QDBusAbstractAdaptor::methodCalls_data()
 {
-    QTest::addColumn<int>("nInterfaces");
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("3") << 3;
-    QTest::newRow("4") << 4;
+    BOBUIest::addColumn<int>("nInterfaces");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("3") << 3;
+    BOBUIest::newRow("4") << 4;
 }
 
 void tst_QDBusAbstractAdaptor::methodCalls()
@@ -605,18 +605,18 @@ static void emitSignal(MyObject *obj, const QString &iface, const QString &name,
 
 void tst_QDBusAbstractAdaptor::signalEmissions_data()
 {
-    QTest::addColumn<QString>("interface");
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<QString>("signature");
-    QTest::addColumn<QVariant>("parameter");
+    BOBUIest::addColumn<QString>("interface");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<QString>("signature");
+    BOBUIest::addColumn<QVariant>("parameter");
 
-    QTest::newRow("Interface2.signal") << "local.Interface2" << "signal" << QString() << QVariant();
-    QTest::newRow("Interface3.signalVoid") << "local.Interface3" << "signalVoid" << QString() << QVariant();
-    QTest::newRow("Interface3.signalInt") << "local.Interface3" << "signalInt" << "i" << QVariant(1);
-    QTest::newRow("Interface3.signalString") << "local.Interface3" << "signalString" << "s" << QVariant("foo");
-    QTest::newRow("MyObject.scriptableSignalVoid") << "local.MyObject" << "scriptableSignalVoid" << QString() << QVariant();
-    QTest::newRow("MyObject.scriptableSignalInt") << "local.MyObject" << "scriptableSignalInt" << "i" << QVariant(1);
-    QTest::newRow("MyObject.nySignalString") << "local.MyObject" << "scriptableSignalString" << "s" << QVariant("foo");
+    BOBUIest::newRow("Interface2.signal") << "local.Interface2" << "signal" << QString() << QVariant();
+    BOBUIest::newRow("Interface3.signalVoid") << "local.Interface3" << "signalVoid" << QString() << QVariant();
+    BOBUIest::newRow("Interface3.signalInt") << "local.Interface3" << "signalInt" << "i" << QVariant(1);
+    BOBUIest::newRow("Interface3.signalString") << "local.Interface3" << "signalString" << "s" << QVariant("foo");
+    BOBUIest::newRow("MyObject.scriptableSignalVoid") << "local.MyObject" << "scriptableSignalVoid" << QString() << QVariant();
+    BOBUIest::newRow("MyObject.scriptableSignalInt") << "local.MyObject" << "scriptableSignalInt" << "i" << QVariant(1);
+    BOBUIest::newRow("MyObject.nySignalString") << "local.MyObject" << "scriptableSignalString" << "s" << QVariant("foo");
 }
 
 void tst_QDBusAbstractAdaptor::signalEmissions()
@@ -627,7 +627,7 @@ void tst_QDBusAbstractAdaptor::signalEmissions()
 
     QDBusConnection con = QDBusConnection::sessionBus();
     QVERIFY(con.isConnected());
-    con.registerService("org.qtproject.tst_QDBusAbstractAdaptor");
+    con.registerService("org.bobuiproject.tst_QDBusAbstractAdaptor");
 
     MyObject obj(3);
     con.registerObject("/", &obj, QDBusConnection::ExportAdaptors
@@ -653,10 +653,10 @@ void tst_QDBusAbstractAdaptor::signalEmissions()
 
         emitSignal(&obj, interface, name, parameter);
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 
@@ -672,10 +672,10 @@ void tst_QDBusAbstractAdaptor::signalEmissions()
         emitSignal(&obj, "local.MyObject", "scriptableSignalInt", QVariant(1));
         emitSignal(&obj, "local.MyObject", "scriptableSignalString", QVariant("foo"));
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 }
@@ -694,7 +694,7 @@ void tst_QDBusAbstractAdaptor::sameSignalDifferentPaths()
     con.connect(con.baseService(), "/p1", "local.Interface2", "signal", &spy, SLOT(slot(QDBusMessage)));
     obj.if2->emitSignal(QString(), QVariant());
 
-    QTRY_COMPARE(spy.count, 1);
+    BOBUIRY_COMPARE(spy.count, 1);
     QCOMPARE(spy.interface, QString("local.Interface2"));
     QCOMPARE(spy.name, QString("signal"));
     QVERIFY(spy.signature.isEmpty());
@@ -704,7 +704,7 @@ void tst_QDBusAbstractAdaptor::sameSignalDifferentPaths()
     con.connect(con.baseService(), "/p2", "local.Interface2", "signal", &spy, SLOT(slot(QDBusMessage)));
     obj.if2->emitSignal(QString(), QVariant());
 
-    QTRY_COMPARE(spy.count, 2);
+    BOBUIRY_COMPARE(spy.count, 2);
 }
 
 void tst_QDBusAbstractAdaptor::sameObjectDifferentPaths()
@@ -722,7 +722,7 @@ void tst_QDBusAbstractAdaptor::sameObjectDifferentPaths()
     con.connect(con.baseService(), "/p2", "local.Interface2", "signal", &spy, SLOT(slot(QDBusMessage)));
     obj.if2->emitSignal(QString(), QVariant());
 
-    QTRY_COMPARE(spy.count, 1);
+    BOBUIRY_COMPARE(spy.count, 1);
     QCOMPARE(spy.interface, QString("local.Interface2"));
     QCOMPARE(spy.name, QString("signal"));
     QVERIFY(spy.signature.isEmpty());
@@ -747,7 +747,7 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNot()
         obj.emitSignal("scriptableSignalVoid", QVariant());
         obj.emitSignal("nonScriptableSignalVoid", QVariant());
 
-        QTRY_COMPARE(spy.count, 1);     // only /p1 must have emitted
+        BOBUIRY_COMPARE(spy.count, 1);     // only /p1 must have emitted
         QCOMPARE(spy.interface, QString("local.MyObject"));
         QCOMPARE(spy.name, QString("scriptableSignalVoid"));
         QCOMPARE(spy.path, QString("/p1"));
@@ -766,7 +766,7 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNot()
         con.connect(con.baseService(), "/p2", "local.MyObject", "nonScriptableSignalVoid", &spy, SLOT(slot(QDBusMessage)));
         obj.emitSignal("nonScriptableSignalVoid", QVariant());
 
-        QTRY_COMPARE(spy.count, 1);     // only /p2 must have emitted now
+        BOBUIRY_COMPARE(spy.count, 1);     // only /p2 must have emitted now
         QCOMPARE(spy.interface, QString("local.MyObject"));
         QCOMPARE(spy.name, QString("nonScriptableSignalVoid"));
         QCOMPARE(spy.path, QString("/p2"));
@@ -786,7 +786,7 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNot()
                                            | QDBusConnection::ExportNonScriptableSignals);
         } // <--- QObject emits the destroyed(QObject*) signal at this point
 
-        QTest::qWait(200);
+        BOBUIest::qWait(200);
 
         QCOMPARE(spy.count, 0);
     }
@@ -794,11 +794,11 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNot()
 
 void tst_QDBusAbstractAdaptor::overloadedSignalEmission_data()
 {
-    QTest::addColumn<QString>("signature");
-    QTest::addColumn<QVariant>("parameter");
-    QTest::newRow("void") << QString("") << QVariant();
-    QTest::newRow("int") << "i" << QVariant(1);
-    QTest::newRow("string") << "s" << QVariant("foo");
+    BOBUIest::addColumn<QString>("signature");
+    BOBUIest::addColumn<QVariant>("parameter");
+    BOBUIest::newRow("void") << QString("") << QVariant();
+    BOBUIest::newRow("int") << "i" << QVariant(1);
+    BOBUIest::newRow("string") << "s" << QVariant("foo");
 }
 
 void tst_QDBusAbstractAdaptor::overloadedSignalEmission()
@@ -826,10 +826,10 @@ void tst_QDBusAbstractAdaptor::overloadedSignalEmission()
 
         emitSignal(&obj, interface, name, parameter);
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 
@@ -842,10 +842,10 @@ void tst_QDBusAbstractAdaptor::overloadedSignalEmission()
         emitSignal(&obj, "local.Interface4", "signal", QVariant(1));
         emitSignal(&obj, "local.Interface4", "signal", QVariant("foo"));
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 }
@@ -891,20 +891,20 @@ void tst_QDBusAbstractAdaptor::readPropertiesInvalidInterface()
 
 void tst_QDBusAbstractAdaptor::readPropertiesEmptyInterface_data()
 {
-    QTest::addColumn<QVariantMap>("expectedProperties");
-    QTest::addColumn<bool>("existing");
+    BOBUIest::addColumn<QVariantMap>("expectedProperties");
+    BOBUIest::addColumn<bool>("existing");
 
     QVariantMap expectedProperties;
     expectedProperties["prop1"] = QVariant();
     expectedProperties["prop2"] = QVariant();
     expectedProperties["interface3prop"] = "QString Interface3::interface3prop() const";
     expectedProperties["interface4prop"] = "QString Interface4::interface4prop() const";
-    QTest::newRow("existing") << expectedProperties << true;
+    BOBUIest::newRow("existing") << expectedProperties << true;
 
     expectedProperties.clear();
     expectedProperties["prop5"] = QVariant();
     expectedProperties["foobar"] = QVariant();
-    QTest::newRow("non-existing") << expectedProperties << false;
+    BOBUIest::newRow("non-existing") << expectedProperties << false;
 }
 
 void tst_QDBusAbstractAdaptor::readPropertiesEmptyInterface()
@@ -1173,10 +1173,10 @@ void tst_QDBusAbstractAdaptor::signalEmissionsPeer()
 
         emitSignalPeer(interface, name, parameter);
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 
@@ -1194,10 +1194,10 @@ void tst_QDBusAbstractAdaptor::signalEmissionsPeer()
         emitSignalPeer("local.MyObject", "scriptableSignalInt", QVariant(1));
         emitSignalPeer("local.MyObject", "scriptableSignalString", QVariant("foo"));
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 }
@@ -1217,7 +1217,7 @@ void tst_QDBusAbstractAdaptor::sameSignalDifferentPathsPeer()
     con.connect(QString(), "/p1", "local.Interface2", "signal", &spy, SLOT(slot(QDBusMessage)));
     emitSignalPeer("local.Interface2", QString(), QVariant());
 
-    QTRY_COMPARE(spy.count, 1);
+    BOBUIRY_COMPARE(spy.count, 1);
     QCOMPARE(spy.interface, QString("local.Interface2"));
     QCOMPARE(spy.name, QString("signal"));
     QVERIFY(spy.signature.isEmpty());
@@ -1227,7 +1227,7 @@ void tst_QDBusAbstractAdaptor::sameSignalDifferentPathsPeer()
     con.connect(QString(), "/p2", "local.Interface2", "signal", &spy, SLOT(slot(QDBusMessage)));
     emitSignalPeer("local.Interface2", QString(), QVariant());
 
-    QTRY_COMPARE(spy.count, 2);
+    BOBUIRY_COMPARE(spy.count, 2);
 }
 
 void tst_QDBusAbstractAdaptor::sameObjectDifferentPathsPeer()
@@ -1246,7 +1246,7 @@ void tst_QDBusAbstractAdaptor::sameObjectDifferentPathsPeer()
     con.connect(QString(), "/p2", "local.Interface2", "signal", &spy, SLOT(slot(QDBusMessage)));
     emitSignalPeer("local.Interface2", QString(), QVariant());
 
-    QTRY_COMPARE(spy.count, 1);
+    BOBUIRY_COMPARE(spy.count, 1);
     QCOMPARE(spy.interface, QString("local.Interface2"));
     QCOMPARE(spy.name, QString("signal"));
     QVERIFY(spy.signature.isEmpty());
@@ -1272,7 +1272,7 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNotPeer()
         emitSignalPeer("local.MyObject", "scriptableSignalVoid", QVariant());
         emitSignalPeer("local.MyObject", "nonScriptableSignalVoid", QVariant());
 
-        QTRY_COMPARE(spy.count, 1);     // only /p1 must have emitted
+        BOBUIRY_COMPARE(spy.count, 1);     // only /p1 must have emitted
         QCOMPARE(spy.interface, QString("local.MyObject"));
         QCOMPARE(spy.name, QString("scriptableSignalVoid"));
         QCOMPARE(spy.path, QString("/p1"));
@@ -1292,7 +1292,7 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNotPeer()
         con.connect(QString(), "/p2", "local.MyObject", "nonScriptableSignalVoid", &spy, SLOT(slot(QDBusMessage)));
         emitSignalPeer("local.MyObject", "nonScriptableSignalVoid", QVariant());
 
-        QTRY_COMPARE(spy.count, 1);     // only /p2 must have emitted now
+        BOBUIRY_COMPARE(spy.count, 1);     // only /p2 must have emitted now
         QCOMPARE(spy.interface, QString("local.MyObject"));
         QCOMPARE(spy.name, QString("nonScriptableSignalVoid"));
         QCOMPARE(spy.path, QString("/p2"));
@@ -1312,7 +1312,7 @@ void tst_QDBusAbstractAdaptor::scriptableSignalOrNotPeer()
                                     | QDBusConnection::ExportNonScriptableSignals);
         } // <--- QObject emits the destroyed(QObject*) signal at this point
 
-        QTest::qWait(200);
+        BOBUIest::qWait(200);
 
         QCOMPARE(spy.count, 0);
     }
@@ -1349,10 +1349,10 @@ void tst_QDBusAbstractAdaptor::overloadedSignalEmissionPeer()
 
         emitSignalPeer(interface, name, parameter);
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 
@@ -1366,10 +1366,10 @@ void tst_QDBusAbstractAdaptor::overloadedSignalEmissionPeer()
         emitSignalPeer("local.Interface4", "signal", QVariant(1));
         emitSignalPeer("local.Interface4", "signal", QVariant("foo"));
 
-        QTRY_COMPARE(spy.count, 1);
+        BOBUIRY_COMPARE(spy.count, 1);
         QCOMPARE(spy.interface, interface);
         QCOMPARE(spy.name, name);
-        QTEST(spy.signature, "signature");
+        BOBUIEST(spy.signature, "signature");
         QCOMPARE(spy.value, parameter);
     }
 }
@@ -1752,29 +1752,29 @@ void tst_QDBusAbstractAdaptor::objectTreeIntrospection()
 
 void tst_QDBusAbstractAdaptor::typeMatching_data()
 {
-    QTest::addColumn<QString>("basename");
-    QTest::addColumn<QString>("signature");
-    QTest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QString>("basename");
+    BOBUIest::addColumn<QString>("signature");
+    BOBUIest::addColumn<QVariant>("value");
 
-    QTest::newRow("bool") << "Bool" << "b" << QVariant(true);
-    QTest::newRow("byte") << "UChar" << "y" << QVariant::fromValue(uchar(42));
-    QTest::newRow("short") << "Short" << "n" << QVariant::fromValue(short(-43));
-    QTest::newRow("ushort") << "UShort" << "q" << QVariant::fromValue(ushort(44));
-    QTest::newRow("int") << "Int" << "i" << QVariant(42);
-    QTest::newRow("uint") << "UInt" << "u" << QVariant(42U);
-    QTest::newRow("qlonglong") << "LongLong" << "x" << QVariant(Q_INT64_C(42));
-    QTest::newRow("qulonglong") << "ULongLong" << "t" << QVariant(Q_UINT64_C(42));
-    QTest::newRow("double") << "Double" << "d" << QVariant(2.5);
-    QTest::newRow("string") << "String" << "s" << QVariant("Hello, World!");
+    BOBUIest::newRow("bool") << "Bool" << "b" << QVariant(true);
+    BOBUIest::newRow("byte") << "UChar" << "y" << QVariant::fromValue(uchar(42));
+    BOBUIest::newRow("short") << "Short" << "n" << QVariant::fromValue(short(-43));
+    BOBUIest::newRow("ushort") << "UShort" << "q" << QVariant::fromValue(ushort(44));
+    BOBUIest::newRow("int") << "Int" << "i" << QVariant(42);
+    BOBUIest::newRow("uint") << "UInt" << "u" << QVariant(42U);
+    BOBUIest::newRow("qlonglong") << "LongLong" << "x" << QVariant(Q_INT64_C(42));
+    BOBUIest::newRow("qulonglong") << "ULongLong" << "t" << QVariant(Q_UINT64_C(42));
+    BOBUIest::newRow("double") << "Double" << "d" << QVariant(2.5);
+    BOBUIest::newRow("string") << "String" << "s" << QVariant("Hello, World!");
 
-    QTest::newRow("variant") << "Variant" << "v" << QVariant::fromValue(QDBusVariant("Hello again!"));
-    QTest::newRow("list") << "List" << "av" << QVariant(QVariantList()
+    BOBUIest::newRow("variant") << "Variant" << "v" << QVariant::fromValue(QDBusVariant("Hello again!"));
+    BOBUIest::newRow("list") << "List" << "av" << QVariant(QVariantList()
                                                         << 42
                                                         << QString("foo")
                                                         << QByteArray("bar")
                                                         << QVariant::fromValue(QDBusVariant(QString("baz"))));
-    QTest::newRow("stringlist") << "StringList" << "as" << QVariant(QStringList() << "Hello" << "world");
-    QTest::newRow("bytearray") << "ByteArray" << "ay" << QVariant(QByteArray("foo"));
+    BOBUIest::newRow("stringlist") << "StringList" << "as" << QVariant(QStringList() << "Hello" << "world");
+    BOBUIest::newRow("bytearray") << "ByteArray" << "ay" << QVariant(QByteArray("foo"));
 
     QVariantMap map;
     map["one"] = 1;       // int
@@ -1782,23 +1782,23 @@ void tst_QDBusAbstractAdaptor::typeMatching_data()
     map["In the beginning..."] = QString("There was nothing"); // string
     map["but Unix came and said"] = QByteArray("\"Hello, World\""); // bytearray
     map["two"] = QVariant::fromValue(short(2)); // short
-    QTest::newRow("map") << "Map" << "a{sv}" << QVariant(map);
+    BOBUIest::newRow("map") << "Map" << "a{sv}" << QVariant(map);
 
     StringStringMap ssmap;
     ssmap["a"] = "A";
     ssmap["A"] = "a";
-    QTest::newRow("ssmap") << "SSMap" << "a{ss}" << QVariant::fromValue(ssmap);
+    BOBUIest::newRow("ssmap") << "SSMap" << "a{ss}" << QVariant::fromValue(ssmap);
 
     LLDateTimeMap lldtmap;
     lldtmap[-1] = QDateTime();
     QDateTime now = QDateTime::currentDateTime();
     lldtmap[now.toSecsSinceEpoch()] = now; // array of struct of int64 and struct of 3 ints and struct of 4 ints and int
-    QTest::newRow("lldtmap") << "LLDateTimeMap" << "a{x((iii)(iiii)i)}" << QVariant::fromValue(lldtmap);
+    BOBUIest::newRow("lldtmap") << "LLDateTimeMap" << "a{x((iii)(iiii)i)}" << QVariant::fromValue(lldtmap);
 
     MyStruct s;
     s.i = 42;
     s.s = "A value";
-    QTest::newRow("struct") << "Struct" << "(is)" << QVariant::fromValue(s);
+    BOBUIest::newRow("struct") << "Struct" << "(is)" << QVariant::fromValue(s);
 }
 
 void tst_QDBusAbstractAdaptor::typeMatching()
@@ -1871,6 +1871,6 @@ void tst_QDBusAbstractAdaptor::methodWithMoreThanOneReturnValuePeer()
     QCOMPARE(qdbus_cast<QString>(reply.arguments().at(1)), testString);
 }
 
-QTEST_MAIN(tst_QDBusAbstractAdaptor)
+BOBUIEST_MAIN(tst_QDBusAbstractAdaptor)
 
 #include "tst_qdbusabstractadaptor.moc"

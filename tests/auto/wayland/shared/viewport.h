@@ -1,5 +1,5 @@
 // Copyright (C) 2022 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_VIEWPORT_H
 #define MOCKCOMPOSITOR_VIEWPORT_H
@@ -11,7 +11,7 @@ namespace MockCompositor {
 
 class Viewport;
 
-class Viewporter : public Global, public QtWaylandServer::wp_viewporter
+class Viewporter : public Global, public BobUIWaylandServer::wp_viewporter
 {
     Q_OBJECT
 public:
@@ -22,7 +22,7 @@ protected:
     void wp_viewporter_get_viewport(Resource *resource, uint32_t id, wl_resource *surface) override;
 };
 
-class Viewport : public QObject, public QtWaylandServer::wp_viewport
+class Viewport : public QObject, public BobUIWaylandServer::wp_viewport
 {
     Q_OBJECT
 public:

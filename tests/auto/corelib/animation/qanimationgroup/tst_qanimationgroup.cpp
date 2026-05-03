@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QPauseAnimation>
 #include <QVariantAnimation>
 #include <QPropertyAnimation>
 #include <QSignalSpy>
 
-#include <QtCore/qanimationgroup.h>
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qsequentialanimationgroup.h>
-#include <QtCore/qparallelanimationgroup.h>
+#include <BobUICore/qanimationgroup.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qsequentialanimationgroup.h>
+#include <BobUICore/qparallelanimationgroup.h>
 
 using namespace std::chrono_literals;
 
@@ -83,7 +83,7 @@ public:
     int duration() const override { return -1; /* not time driven */ }
 
 protected:
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         if (event->id() == timer.id())
             stop();
@@ -120,7 +120,7 @@ void tst_QAnimationGroup::emptyGroup()
 
     QCOMPARE(group.state(), QAnimationGroup::Stopped);
 
-    QTest::ignoreMessage(QtWarningMsg, "QAbstractAnimation::pause: Cannot pause a stopped animation");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QAbstractAnimation::pause: Cannot pause a stopped animation");
     group.pause();
 
     QCOMPARE(groupStateChangedSpy.size(), 2);
@@ -355,5 +355,5 @@ void tst_QAnimationGroup::loopWithoutStartValue()
     parent->stop();
 }
 
-QTEST_MAIN(tst_QAnimationGroup)
+BOBUIEST_MAIN(tst_QAnimationGroup)
 #include "tst_qanimationgroup.moc"

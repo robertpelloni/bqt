@@ -1,18 +1,18 @@
-Qt 5.13.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.13.0.
+BobUI 5.13.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.13.0.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-https://doc.qt.io/qt-5/index.html
+https://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.13 series is binary compatible with the 5.12.x series.
+The BobUI version 5.13 series is binary compatible with the 5.12.x series.
 Applications compiled for 5.12 will continue to run with 5.13.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -21,9 +21,9 @@ information about a particular change.
 *                        Important Behavior Changes                        *
 ****************************************************************************
 
- - [QTBUG-76521] RCC's default compression algorithm was changed back to
+ - [BOBUIBUG-76521] RCC's default compression algorithm was changed back to
    Zlib, as it was in all previous releases until 5.13.0. The default will
-   remain Zlib for all Qt 5.x releases but will change in Qt 6.0. To
+   remain Zlib for all BobUI 5.x releases but will change in BobUI 6.0. To
    activate Zstd compression for your resources, either pass the
    --compress-algo=zstd option to the rcc tool or add the XML attribute
    compression-algorithm="zstd" to the <file> tags in the .qrc file.
@@ -32,16 +32,16 @@ information about a particular change.
 *                                 Android                                  *
 ****************************************************************************
 
- - [QTBUG-76293] Fix NDK r20 linking.
+ - [BOBUIBUG-76293] Fix NDK r20 linking.
 
 ****************************************************************************
-*                                  QtCore                                  *
+*                                  BobUICore                                  *
 ****************************************************************************
 
  - Global:
-   * [QTBUG-72073] Added the QT_NO_FLOAT16_OPERATORS macro in order to work
+   * [BOBUIBUG-72073] Added the BOBUI_NO_FLOAT16_OPERATORS macro in order to work
      around a Microsoft <= VS2017 compiler bug that is exposed when using
-     std::bitset along with any Qt header that includes <qfloat16.h>.
+     std::bitset along with any BobUI header that includes <qfloat16.h>.
 
  - QCborStreamReader:
    * Fixed a bug that caused the QIODevice that the data was being read
@@ -49,7 +49,7 @@ information about a particular change.
      user to consume data that may follow the CBOR payload.
 
  - QDeadlineTimer:
-   * [QTBUG-69750] Fixed integer overflows leading to immediate timeouts.
+   * [BOBUIBUG-69750] Fixed integer overflows leading to immediate timeouts.
 
  - QStorageInfo:
    * Fixed a bug that caused QStorageInfo to be unable to report all
@@ -57,12 +57,12 @@ information about a particular change.
      900 characters, roughly), such as those found in Docker overlay
      mounts.
 
- - QTextBoundaryFinder:
+ - BOBUIextBoundaryFinder:
    * Sentence breaking now no longer breaks between uppercase letters and
      comma. This is a deviation from the Unicode specification, but
      produces less surprising behavior.
 
- - QTimeZone:
+ - BOBUIimeZone:
    * The IANA timezone database backend now properly follows symlinks even
      when they point to variable locations like /run or /var (useful when
      /etc is mounted read-only).
@@ -72,7 +72,7 @@ information about a particular change.
      copies.
 
 ****************************************************************************
-*                                QtNetwork                                 *
+*                                BobUINetwork                                 *
 ****************************************************************************
 
  - Windows:
@@ -80,13 +80,13 @@ information about a particular change.
      services
 
  - QNetworkAccessManager:
-   * Fixed QNetworkAccessManager::sendCustomRequest for Qt For WebAssembly.
+   * Fixed QNetworkAccessManager::sendCustomRequest for BobUI For WebAssembly.
 
 ****************************************************************************
-*                                  QtGui                                   *
+*                                  BobUIGui                                   *
 ****************************************************************************
 
- - [QTBUG-73231] QWindow::mapToGlobal()/mapFromGlobal() now handle windows
+ - [BOBUIBUG-73231] QWindow::mapToGlobal()/mapFromGlobal() now handle windows
    spanning screens correctly.
 
  - QImage:
@@ -94,16 +94,16 @@ information about a particular change.
      the target.
 
  - QPixmapCache:
-   * [QTBUG-76694][QTBUG-72523] Ignore unsafe access from non-main threads
+   * [BOBUIBUG-76694][BOBUIBUG-72523] Ignore unsafe access from non-main threads
 
  - Text:
-   * [QTBUG-76219] Fixed a bug which could cause the font cache to grow
+   * [BOBUIBUG-76219] Fixed a bug which could cause the font cache to grow
      larger than it was supposed to.
-   * [QTBUG-55096][QTBUG-74761] Fixed bug where regular text rendered with
+   * [BOBUIBUG-55096][BOBUIBUG-74761] Fixed bug where regular text rendered with
      a color font would always display in black.
 
 ****************************************************************************
-*                                QtWidgets                                 *
+*                                BobUIWidgets                                 *
 ****************************************************************************
 
  - QSystemTrayIcon:
@@ -137,5 +137,5 @@ information about a particular change.
 *                                  qmake                                   *
 ****************************************************************************
 
- - [QTBUG-75653] The CONFIG value c++latest was added to select the latest
+ - [BOBUIBUG-75653] The CONFIG value c++latest was added to select the latest
    C++ standard the currently used toolchain supports.

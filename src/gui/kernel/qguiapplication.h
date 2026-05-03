@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGUIAPPLICATION_H
 #define QGUIAPPLICATION_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtGui/qinputmethod.h>
-#include <QtCore/qlocale.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qsize.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUIGui/qinputmethod.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qsize.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSessionManager;
@@ -40,7 +40,7 @@ class Q_GUI_EXPORT QGuiApplication : public QCoreApplication
     Q_PROPERTY(QString applicationDisplayName READ applicationDisplayName
                WRITE setApplicationDisplayName NOTIFY applicationDisplayNameChanged)
     Q_PROPERTY(QString desktopFileName READ desktopFileName WRITE setDesktopFileName)
-    Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection
+    Q_PROPERTY(BobUI::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection
                NOTIFY layoutDirectionChanged)
     Q_PROPERTY(QString platformName READ platformName STORED false CONSTANT)
     Q_PROPERTY(bool quitOnLastWindowClosed  READ quitOnLastWindowClosed
@@ -83,7 +83,7 @@ public:
 
     qreal devicePixelRatio() const;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     static QCursor *overrideCursor();
     static void setOverrideCursor(const QCursor &);
     static void changeOverrideCursor(const QCursor &);
@@ -93,22 +93,22 @@ public:
     static QFont font();
     static void setFont(const QFont &);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     static QClipboard *clipboard();
 #endif
 
     static QPalette palette();
     static void setPalette(const QPalette &pal);
 
-    static Qt::KeyboardModifiers keyboardModifiers();
-    static Qt::KeyboardModifiers queryKeyboardModifiers();
-    static Qt::MouseButtons mouseButtons();
+    static BobUI::KeyboardModifiers keyboardModifiers();
+    static BobUI::KeyboardModifiers queryKeyboardModifiers();
+    static BobUI::MouseButtons mouseButtons();
 
-    static void setLayoutDirection(Qt::LayoutDirection direction);
-    static Qt::LayoutDirection layoutDirection();
+    static void setLayoutDirection(BobUI::LayoutDirection direction);
+    static BobUI::LayoutDirection layoutDirection();
 
-    static inline bool isRightToLeft() { return layoutDirection() == Qt::RightToLeft; }
-    static inline bool isLeftToRight() { return layoutDirection() == Qt::LeftToRight; }
+    static inline bool isRightToLeft() { return layoutDirection() == BobUI::RightToLeft; }
+    static inline bool isLeftToRight() { return layoutDirection() == BobUI::LeftToRight; }
 
     static QStyleHints *styleHints();
     static void setDesktopSettingsAware(bool on);
@@ -123,15 +123,15 @@ public:
     static void setQuitOnLastWindowClosed(bool quit);
     static bool quitOnLastWindowClosed();
 
-    static Qt::ApplicationState applicationState();
+    static BobUI::ApplicationState applicationState();
 
-    static void setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy policy);
-    static Qt::HighDpiScaleFactorRoundingPolicy highDpiScaleFactorRoundingPolicy();
+    static void setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy policy);
+    static BobUI::HighDpiScaleFactorRoundingPolicy highDpiScaleFactorRoundingPolicy();
 
     static int exec();
     bool notify(QObject *, QEvent *) override;
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     // session management
     bool isSessionRestored() const;
     QString sessionId() const;
@@ -139,7 +139,7 @@ public:
     bool isSavingSession() const;
 #endif
 
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(QGuiApplication)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(QGuiApplication)
 
     static void sync();
 Q_SIGNALS:
@@ -150,21 +150,21 @@ Q_SIGNALS:
     void lastWindowClosed();
     void focusObjectChanged(QObject *focusObject);
     void focusWindowChanged(QWindow *focusWindow);
-    void applicationStateChanged(Qt::ApplicationState state);
-    void layoutDirectionChanged(Qt::LayoutDirection direction);
-#ifndef QT_NO_SESSIONMANAGER
+    void applicationStateChanged(BobUI::ApplicationState state);
+    void layoutDirectionChanged(BobUI::LayoutDirection direction);
+#ifndef BOBUI_NO_SESSIONMANAGER
     void commitDataRequest(QSessionManager &sessionManager);
     void saveStateRequest(QSessionManager &sessionManager);
 #endif
     void applicationDisplayNameChanged();
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Handle QEvent::ApplicationPaletteChange instead") void paletteChanged(const QPalette &pal);
-    QT_DEPRECATED_VERSION_X_6_0("Handle QEvent::ApplicationFontChange instead")  void fontChanged(const QFont &font);
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Handle QEvent::ApplicationPaletteChange instead") void paletteChanged(const QPalette &pal);
+    BOBUI_DEPRECATED_VERSION_X_6_0("Handle QEvent::ApplicationFontChange instead")  void fontChanged(const QFont &font);
 #endif
 protected:
     bool event(QEvent *) override;
-#  if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
-    QT_DEPRECATED_VERSION_X_6_10("This feature will be removed in Qt 7")
+#  if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_10("This feature will be removed in BobUI 7")
     bool compressEvent(QEvent *, QObject *receiver, QPostEventList *) override;
 #  endif
 
@@ -176,18 +176,18 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void _q_updateFocusObject(QObject *object))
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     friend class QGestureManager;
 #endif
     friend class QFontDatabasePrivate;
     friend class QPlatformIntegration;
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     friend class QPlatformSessionManager;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#include <QtGui/qguiapplication_platform.h>
+#include <BobUIGui/qguiapplication_platform.h>
 
 #endif // QGUIAPPLICATION_H

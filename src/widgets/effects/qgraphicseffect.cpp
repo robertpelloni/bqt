@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsEffect
@@ -9,7 +9,7 @@
     \since 4.6
     \ingroup multimedia
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Effects alter the appearance of elements by hooking into the rendering
     pipeline and operating between the source (e.g., a QGraphicsPixmapItem)
@@ -22,7 +22,7 @@
     subclass of QGraphicsEffect. The effect can then be installed on the item
     using QGraphicsItem::setGraphicsEffect().
 
-    Qt provides the following standard effects:
+    BobUI provides the following standard effects:
 
     \list
     \li QGraphicsBlurEffect - blurs the item by a given radius
@@ -76,16 +76,16 @@
 #include "qgraphicseffect_p.h"
 #include "private/qgraphicsitem_p.h"
 
-#include <QtWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qgraphicsitem.h>
 
-#include <QtGui/qimage.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpaintengine.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qdebug.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpaintengine.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qdebug.h>
 #include <private/qdrawhelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QGraphicsEffectPrivate::~QGraphicsEffectPrivate()
 {
@@ -125,7 +125,7 @@ QGraphicsEffectSource::~QGraphicsEffectSource()
 
     \sa draw()
 */
-QRectF QGraphicsEffectSource::boundingRect(Qt::CoordinateSystem system) const
+QRectF QGraphicsEffectSource::boundingRect(BobUI::CoordinateSystem system) const
 {
     return d_func()->boundingRect(system);
 }
@@ -133,13 +133,13 @@ QRectF QGraphicsEffectSource::boundingRect(Qt::CoordinateSystem system) const
 /*!
     Returns the bounding rectangle of the source mapped to the given \a system.
 
-    Calling this function with Qt::DeviceCoordinates outside of
+    Calling this function with BobUI::DeviceCoordinates outside of
     QGraphicsEffect::draw() will give undefined results, as there is no device
     context available.
 
     \sa draw()
 */
-QRectF QGraphicsEffect::sourceBoundingRect(Qt::CoordinateSystem system) const
+QRectF QGraphicsEffect::sourceBoundingRect(BobUI::CoordinateSystem system) const
 {
     Q_D(const QGraphicsEffect);
     if (d->source)
@@ -193,15 +193,15 @@ void QGraphicsEffectSource::draw(QPainter *painter)
 
     QPixmap pm;
     if (QPixmapCache::find(d->m_cacheKey, &pm)) {
-        QTransform restoreTransform;
-        if (d->m_cachedSystem == Qt::DeviceCoordinates) {
+        BOBUIransform restoreTransform;
+        if (d->m_cachedSystem == BobUI::DeviceCoordinates) {
             restoreTransform = painter->worldTransform();
-            painter->setWorldTransform(QTransform());
+            painter->setWorldTransform(BOBUIransform());
         }
 
         painter->drawPixmap(d->m_cachedOffset, pm);
 
-        if (d->m_cachedSystem == Qt::DeviceCoordinates)
+        if (d->m_cachedSystem == BobUI::DeviceCoordinates)
             painter->setWorldTransform(restoreTransform);
     } else {
         d_func()->draw(painter);
@@ -275,24 +275,24 @@ bool QGraphicsEffect::sourceIsPixmap() const
     By default, the pixmap will contain the whole effect.
 
     The returned pixmap is bound to the current painter's device rectangle when
-    \a system is Qt::DeviceCoordinates.
+    \a system is BobUI::DeviceCoordinates.
 
     \sa QGraphicsEffect::draw(), boundingRect()
 */
-QPixmap QGraphicsEffectSource::pixmap(Qt::CoordinateSystem system, QPoint *offset, QGraphicsEffect::PixmapPadMode mode) const
+QPixmap QGraphicsEffectSource::pixmap(BobUI::CoordinateSystem system, QPoint *offset, QGraphicsEffect::PixmapPadMode mode) const
 {
     Q_D(const QGraphicsEffectSource);
 
     // Shortcut, no cache for childless pixmap items...
     const QGraphicsItem *item = graphicsItem();
-    if (system == Qt::LogicalCoordinates && mode == QGraphicsEffect::NoPad && item && isPixmap()) {
+    if (system == BobUI::LogicalCoordinates && mode == QGraphicsEffect::NoPad && item && isPixmap()) {
         const QGraphicsPixmapItem *pixmapItem = static_cast<const QGraphicsPixmapItem *>(item);
         if (offset)
             *offset = pixmapItem->offset().toPoint();
         return pixmapItem->pixmap();
     }
 
-    if (Q_UNLIKELY(system == Qt::DeviceCoordinates && item &&
+    if (Q_UNLIKELY(system == BobUI::DeviceCoordinates && item &&
                    !static_cast<const QGraphicsItemEffectSourcePrivate *>(d_func())->info)) {
         qWarning("QGraphicsEffectSource::pixmap: Not yet implemented, lacking device context");
         return QPixmap();
@@ -326,15 +326,15 @@ QPixmap QGraphicsEffectSource::pixmap(Qt::CoordinateSystem system, QPoint *offse
     padded use the \a mode parameter.
 
     The returned pixmap is clipped to the current painter's device rectangle when
-    \a system is Qt::DeviceCoordinates.
+    \a system is BobUI::DeviceCoordinates.
 
-    Calling this function with Qt::DeviceCoordinates outside of
+    Calling this function with BobUI::DeviceCoordinates outside of
     QGraphicsEffect::draw() will give undefined results, as there is no device
     context available.
 
     \sa draw(), boundingRect()
 */
-QPixmap QGraphicsEffect::sourcePixmap(Qt::CoordinateSystem system, QPoint *offset, QGraphicsEffect::PixmapPadMode mode) const
+QPixmap QGraphicsEffect::sourcePixmap(BobUI::CoordinateSystem system, QPoint *offset, QGraphicsEffect::PixmapPadMode mode) const
 {
     Q_D(const QGraphicsEffect);
     if (d->source)
@@ -356,7 +356,7 @@ void QGraphicsEffectSourcePrivate::invalidateCache(InvalidateReason reason) cons
 {
     if (m_cachedMode != QGraphicsEffect::PadToEffectiveBoundingRect
         && (reason == EffectRectChanged
-            || (reason == TransformChanged && m_cachedSystem == Qt::LogicalCoordinates))) {
+            || (reason == TransformChanged && m_cachedSystem == BobUI::LogicalCoordinates))) {
         return;
     }
 
@@ -565,7 +565,7 @@ void QGraphicsEffect::sourceChanged(ChangeFlags flags)
     \class QGraphicsColorizeEffect
     \brief The QGraphicsColorizeEffect class provides a colorize effect.
     \since 4.6
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A colorize effect renders the source with a tint of its color(). The color
     can be modified using the setColor() function.
@@ -670,7 +670,7 @@ void QGraphicsColorizeEffect::draw(QPainter *painter)
     QPoint offset;
     if (sourceIsPixmap()) {
         // No point in drawing in device coordinates (pixmap will be scaled anyways).
-        const QPixmap pixmap = sourcePixmap(Qt::LogicalCoordinates, &offset, NoPad);
+        const QPixmap pixmap = sourcePixmap(BobUI::LogicalCoordinates, &offset, NoPad);
         if (!pixmap.isNull())
             d->filter->draw(painter, offset, pixmap);
 
@@ -678,12 +678,12 @@ void QGraphicsColorizeEffect::draw(QPainter *painter)
     }
 
     // Draw pixmap in deviceCoordinates to avoid pixmap scaling.
-    const QPixmap pixmap = sourcePixmap(Qt::DeviceCoordinates, &offset);
+    const QPixmap pixmap = sourcePixmap(BobUI::DeviceCoordinates, &offset);
     if (pixmap.isNull())
         return;
 
-    QTransform restoreTransform = painter->worldTransform();
-    painter->setWorldTransform(QTransform());
+    BOBUIransform restoreTransform = painter->worldTransform();
+    painter->setWorldTransform(BOBUIransform());
     d->filter->draw(painter, offset, pixmap);
     painter->setWorldTransform(restoreTransform);
 }
@@ -692,7 +692,7 @@ void QGraphicsColorizeEffect::draw(QPainter *painter)
     \class QGraphicsBlurEffect
     \brief The QGraphicsBlurEffect class provides a blur effect.
     \since 4.6
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A blur effect blurs the source. This effect is useful for reducing details,
     such as when the source loses focus and you want to draw attention to other
@@ -840,7 +840,7 @@ void QGraphicsBlurEffect::draw(QPainter *painter)
     PixmapPadMode mode = PadToEffectiveBoundingRect;
 
     QPoint offset;
-    QPixmap pixmap = sourcePixmap(Qt::LogicalCoordinates, &offset, mode);
+    QPixmap pixmap = sourcePixmap(BobUI::LogicalCoordinates, &offset, mode);
     if (pixmap.isNull())
         return;
 
@@ -851,7 +851,7 @@ void QGraphicsBlurEffect::draw(QPainter *painter)
     \class QGraphicsDropShadowEffect
     \brief The QGraphicsDropShadowEffect class provides a drop shadow effect.
     \since 4.6
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A drop shadow effect renders the source with a drop shadow. The color of
     the drop shadow can be modified using the setColor() function. The drop
@@ -1033,12 +1033,12 @@ void QGraphicsDropShadowEffect::draw(QPainter *painter)
 
     // Draw pixmap in device coordinates to avoid pixmap scaling.
     QPoint offset;
-    const QPixmap pixmap = sourcePixmap(Qt::DeviceCoordinates, &offset, mode);
+    const QPixmap pixmap = sourcePixmap(BobUI::DeviceCoordinates, &offset, mode);
     if (pixmap.isNull())
         return;
 
-    QTransform restoreTransform = painter->worldTransform();
-    painter->setWorldTransform(QTransform());
+    BOBUIransform restoreTransform = painter->worldTransform();
+    painter->setWorldTransform(BOBUIransform());
     d->filter->draw(painter, offset, pixmap);
     painter->setWorldTransform(restoreTransform);
 }
@@ -1047,7 +1047,7 @@ void QGraphicsDropShadowEffect::draw(QPainter *painter)
     \class QGraphicsOpacityEffect
     \brief The QGraphicsOpacityEffect class provides an opacity effect.
     \since 4.6
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     An opacity effect renders the source with an opacity. This effect is useful
     for making the source semi-transparent, similar to a fade-in/fade-out
@@ -1145,7 +1145,7 @@ void QGraphicsOpacityEffect::setOpacityMask(const QBrush &mask)
         return;
 
     d->opacityMask = mask;
-    d->hasOpacityMask = (mask.style() != Qt::NoBrush);
+    d->hasOpacityMask = (mask.style() != BobUI::NoBrush);
     update();
 
     emit opacityMaskChanged(mask);
@@ -1176,7 +1176,7 @@ void QGraphicsOpacityEffect::draw(QPainter *painter)
     }
 
     QPoint offset;
-    Qt::CoordinateSystem system = sourceIsPixmap() ? Qt::LogicalCoordinates : Qt::DeviceCoordinates;
+    BobUI::CoordinateSystem system = sourceIsPixmap() ? BobUI::LogicalCoordinates : BobUI::DeviceCoordinates;
     QPixmap pixmap = sourcePixmap(system, &offset, QGraphicsEffect::NoPad);
     if (pixmap.isNull())
         return;
@@ -1188,9 +1188,9 @@ void QGraphicsOpacityEffect::draw(QPainter *painter)
         QPainter pixmapPainter(&pixmap);
         pixmapPainter.setRenderHints(painter->renderHints());
         pixmapPainter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-        if (system == Qt::DeviceCoordinates) {
-            QTransform worldTransform = painter->worldTransform();
-            worldTransform *= QTransform::fromTranslate(-offset.x(), -offset.y());
+        if (system == BobUI::DeviceCoordinates) {
+            BOBUIransform worldTransform = painter->worldTransform();
+            worldTransform *= BOBUIransform::fromTranslate(-offset.x(), -offset.y());
             pixmapPainter.setWorldTransform(worldTransform);
             pixmapPainter.fillRect(sourceBoundingRect(), d->opacityMask);
         } else {
@@ -1199,15 +1199,15 @@ void QGraphicsOpacityEffect::draw(QPainter *painter)
         }
     }
 
-    if (system == Qt::DeviceCoordinates)
-        painter->setWorldTransform(QTransform());
+    if (system == BobUI::DeviceCoordinates)
+        painter->setWorldTransform(BOBUIransform());
 
     painter->drawPixmap(offset, pixmap);
     painter->restore();
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicseffect.cpp"
 #include "moc_qgraphicseffect_p.cpp"

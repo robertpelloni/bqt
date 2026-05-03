@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2019 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "moc.h"
 #include "generator.h"
 #include "qdatetime.h"
 #include "utils.h"
 #include "outputrevision.h"
-#include <QtCore/qfile.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qjsondocument.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qjsondocument.h>
 
 // for normalizeTypeInternal
 #include <private/qmetaobject_p.h>
@@ -21,9 +21,9 @@
 // faster SHA1 implementations from OpenSSL.
 #include "../../3rdparty/sha1/sha1.cpp"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // only moc needs this function
 static QByteArray normalizeType(const QByteArray &ba)
@@ -392,7 +392,7 @@ bool Moc::skipCxxAttributes()
     return false;
 }
 
-QTypeRevision Moc::parseRevision()
+BOBUIypeRevision Moc::parseRevision()
 {
     next(LPAREN);
     QByteArray revisionString = lexemUntil(RPAREN);
@@ -403,23 +403,23 @@ QTypeRevision Moc::parseRevision()
     case 1: {
         bool ok = false;
         const int revision = revisionString.toInt(&ok);
-        if (!ok || !QTypeRevision::isValidSegment(revision))
+        if (!ok || !BOBUIypeRevision::isValidSegment(revision))
             error("Invalid revision");
-        return QTypeRevision::fromMinorVersion(revision);
+        return BOBUIypeRevision::fromMinorVersion(revision);
     }
     case 2: { // major.minor
         bool ok = false;
         const int major = majorMinor[0].toInt(&ok);
-        if (!ok || !QTypeRevision::isValidSegment(major))
+        if (!ok || !BOBUIypeRevision::isValidSegment(major))
             error("Invalid major version");
         const int minor = majorMinor[1].toInt(&ok);
-        if (!ok || !QTypeRevision::isValidSegment(minor))
+        if (!ok || !BOBUIypeRevision::isValidSegment(minor))
             error("Invalid minor version");
-        return QTypeRevision::fromVersion(major, minor);
+        return BOBUIypeRevision::fromVersion(major, minor);
     }
     default:
         error("Invalid revision");
-        return QTypeRevision();
+        return BOBUIypeRevision();
     }
 }
 
@@ -718,7 +718,7 @@ void Moc::parse()
                     while (test(SCOPE)) {
                         /* treat (C++20's) namespace A::inline B {} as A::B
                            this is mostly to not break compilation when encountering such
-                           a construct in a header; the interaction of Qt's meta-macros with
+                           a construct in a header; the interaction of BobUI's meta-macros with
                            inline namespaces is still rather poor.
                         */
                         test(INLINE);
@@ -730,7 +730,7 @@ void Moc::parse()
                         // namespace Foo = Bar::Baz;
                         until(SEMIC);
                     } else if (test(LPAREN)) {
-                        // Ignore invalid code such as: 'namespace __identifier("x")' (QTBUG-56634)
+                        // Ignore invalid code such as: 'namespace __identifier("x")' (BOBUIBUG-56634)
                         until(RPAREN);
                     } else if (!test(SEMIC)) {
                         NamespaceDef def;
@@ -857,7 +857,7 @@ void Moc::parse()
                 if (test(NAMESPACE)) {
                     while (test(SCOPE) || test(IDENTIFIER))
                         ;
-                    // Ignore invalid code such as: 'using namespace __identifier("x")' (QTBUG-63772)
+                    // Ignore invalid code such as: 'using namespace __identifier("x")' (BOBUIBUG-63772)
                     if (test(LPAREN))
                         until(RPAREN);
                     next(SEMIC);
@@ -956,7 +956,7 @@ void Moc::parse()
                     def.hasQObject = true;
                     if (templateClass)
                         error("Template classes not supported by Q_OBJECT");
-                    if (def.classname != "Qt" && def.classname != "QObject" && def.superclassList.isEmpty())
+                    if (def.classname != "BobUI" && def.classname != "QObject" && def.superclassList.isEmpty())
                         error("Class contains Q_OBJECT macro but does not inherit from QObject");
                     break;
                 case Q_GADGET_EXPORT_TOKEN:
@@ -973,7 +973,7 @@ void Moc::parse()
                 case Q_PROPERTY_TOKEN:
                     parseProperty(&def, Named);
                     break;
-                case QT_ANONYMOUS_PROPERTY_TOKEN:
+                case BOBUI_ANONYMOUS_PROPERTY_TOKEN:
                     parseProperty(&def, Anonymous);
                     break;
                 case Q_PLUGIN_METADATA_TOKEN:
@@ -1011,7 +1011,7 @@ void Moc::parse()
                 case Q_PRIVATE_PROPERTY_TOKEN:
                     parsePrivateProperty(&def, Named);
                     break;
-                case QT_ANONYMOUS_PRIVATE_PROPERTY_TOKEN:
+                case BOBUI_ANONYMOUS_PRIVATE_PROPERTY_TOKEN:
                     parsePrivateProperty(&def, Anonymous);
                     break;
                 case ENUM: {
@@ -1080,7 +1080,7 @@ void Moc::parse()
             if ((def.hasQObject || def.hasQGadget) && qmlRegistrationMacroSymbol.token != NOTOKEN) {
                 QByteArray msg("Potential QML registration macro was found, but no header containing it was included.\n"
                                "This might cause runtime errors in QML applications\n"
-                               "Include <QtQmlIntegration/qqmlintegration.h> or <QtQml/qqmlregistration.h> to fix this.");
+                               "Include <BobUIQmlIntegration/qqmlintegration.h> or <BobUIQml/qqmlregistration.h> to fix this.");
                 if (qmlMacroWarningIsFatal)
                     error(qmlRegistrationMacroSymbol, msg.constData());
                 else
@@ -1176,16 +1176,16 @@ static QByteArrayList make_candidates()
     QByteArrayList result;
     result
 #define STREAM_SMART_POINTER(SMART_POINTER) << #SMART_POINTER
-        QT_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(STREAM_SMART_POINTER)
+        BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(STREAM_SMART_POINTER)
 #undef STREAM_SMART_POINTER
 #define STREAM_1ARG_TEMPLATE(TEMPLATENAME) << #TEMPLATENAME
-        QT_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(STREAM_1ARG_TEMPLATE)
+        BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(STREAM_1ARG_TEMPLATE)
 #undef STREAM_1ARG_TEMPLATE
         ;
     return result;
 }
 
-static QByteArrayList requiredQtContainers(const QList<ClassDef> &classes)
+static QByteArrayList requiredBobUIContainers(const QList<ClassDef> &classes)
 {
     static const QByteArrayList candidates = make_candidates();
 
@@ -1240,13 +1240,13 @@ void Moc::generate(FILE *out, FILE *jsonOutput)
 
     fprintf(out, "/****************************************************************************\n"
             "** Meta object code from reading C++ file '%s'\n**\n" , fn.constData());
-    fprintf(out, "** Created by: The Qt Meta Object Compiler version %d (Qt %s)\n**\n" , mocOutputRevision, QT_VERSION_STR);
+    fprintf(out, "** Created by: The BobUI Meta Object Compiler version %d (BobUI %s)\n**\n" , mocOutputRevision, BOBUI_VERSION_STR);
     fprintf(out, "** WARNING! All changes made in this file will be lost!\n"
             "*****************************************************************************/\n\n");
 
     // include header(s) of user class definitions at _first_ to allow
     // for preprocessor definitions possibly affecting standard headers.
-    // see https://codereview.qt-project.org/c/qt/qtbase/+/445937
+    // see https://codereview.bobui-project.org/c/bobui/bobuibase/+/445937
     if (!noInclude) {
         if (includePath.size() && !includePath.endsWith('/'))
             includePath += '/';
@@ -1259,32 +1259,32 @@ void Moc::generate(FILE *out, FILE *jsonOutput)
             fprintf(out, "#include %s\n", inc.constData());
         }
     }
-    if (classList.size() && classList.constFirst().classname == "Qt")
-        fprintf(out, "#include <QtCore/qobject.h>\n");
+    if (classList.size() && classList.constFirst().classname == "BobUI")
+        fprintf(out, "#include <BobUICore/qobject.h>\n");
 
-    fprintf(out, "#include <QtCore/qmetatype.h>\n");  // For QMetaType::Type
+    fprintf(out, "#include <BobUICore/qmetatype.h>\n");  // For QMetaType::Type
     if (mustIncludeQPluginH)
-        fprintf(out, "#include <QtCore/qplugin.h>\n");
+        fprintf(out, "#include <BobUICore/qplugin.h>\n");
 
-    const auto qtContainers = requiredQtContainers(classList);
-    for (const QByteArray &qtContainer : qtContainers)
-        fprintf(out, "#include <QtCore/%s>\n", qtContainer.constData());
+    const auto bobuiContainers = requiredBobUIContainers(classList);
+    for (const QByteArray &bobuiContainer : bobuiContainers)
+        fprintf(out, "#include <BobUICore/%s>\n", bobuiContainer.constData());
 
-    fprintf(out, "\n#include <QtCore/qtmochelpers.h>\n");
+    fprintf(out, "\n#include <BobUICore/bobuimochelpers.h>\n");
 
     fprintf(out, "\n#include <memory>\n\n");  // For std::addressof
-    fprintf(out, "\n#include <QtCore/qxptype_traits.h>\n"); // is_detected
+    fprintf(out, "\n#include <BobUICore/qxptype_traits.h>\n"); // is_detected
 
     fprintf(out, "#if !defined(Q_MOC_OUTPUT_REVISION)\n"
             "#error \"The header file '%s' doesn't include <QObject>.\"\n", fn.constData());
     fprintf(out, "#elif Q_MOC_OUTPUT_REVISION != %d\n", mocOutputRevision);
     fprintf(out, "#error \"This file was generated using the moc from %s."
             " It\"\n#error \"cannot be used with the include files from"
-            " this version of Qt.\"\n#error \"(The moc has changed too"
-            " much.)\"\n", QT_VERSION_STR);
+            " this version of BobUI.\"\n#error \"(The moc has changed too"
+            " much.)\"\n", BOBUI_VERSION_STR);
     fprintf(out, "#endif\n\n");
 
-#if QT_VERSION <= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION <= BOBUI_VERSION_CHECK(7, 0, 0)
     fprintf(out, "#ifndef Q_CONSTINIT\n"
             "#define Q_CONSTINIT\n"
             "#endif\n\n");
@@ -1308,9 +1308,9 @@ void Moc::generate(FILE *out, FILE *jsonOutput)
         cdef.enumList = enumList;
     }
 
-    fprintf(out, "QT_WARNING_PUSH\n");
-    fprintf(out, "QT_WARNING_DISABLE_DEPRECATED\n");
-    fprintf(out, "QT_WARNING_DISABLE_GCC(\"-Wuseless-cast\")\n");
+    fprintf(out, "BOBUI_WARNING_PUSH\n");
+    fprintf(out, "BOBUI_WARNING_DISABLE_DEPRECATED\n");
+    fprintf(out, "BOBUI_WARNING_DISABLE_GCC(\"-Wuseless-cast\")\n");
 
     QHash<QByteArray, QJsonObject> classDefJsonObjects;
     QHash<QByteArray, QByteArray> metaObjectHashes;
@@ -1334,7 +1334,7 @@ void Moc::generate(FILE *out, FILE *jsonOutput)
     }
     fputs("", out);
 
-    fprintf(out, "QT_WARNING_POP\n");
+    fprintf(out, "BOBUI_WARNING_POP\n");
 
     if (jsonOutput) {
         QJsonObject mocData;
@@ -1363,7 +1363,7 @@ void Moc::generate(FILE *out, FILE *jsonOutput)
 
 void Moc::parseSlots(ClassDef *def, FunctionDef::Access access)
 {
-    QTypeRevision defaultRevision;
+    BOBUIypeRevision defaultRevision;
     if (test(Q_REVISION_TOKEN))
         defaultRevision = parseRevision();
 
@@ -1405,7 +1405,7 @@ void Moc::parseSlots(ClassDef *def, FunctionDef::Access access)
 
 void Moc::parseSignals(ClassDef *def)
 {
-    QTypeRevision defaultRevision;
+    BOBUIypeRevision defaultRevision;
     if (test(Q_REVISION_TOKEN))
         defaultRevision = parseRevision();
 
@@ -1492,7 +1492,7 @@ void Moc::parsePropertyAttributes(PropertyDef &propDef)
         if (def.endsWith(')')) {
             QByteArray msg = "Providing a function for ";
             msg += name;
-            msg += " in a property declaration is not be supported in Qt 6.";
+            msg += " in a property declaration is not be supported in BobUI 6.";
             error(msg.constData());
         }
     };
@@ -1560,9 +1560,9 @@ void Moc::parsePropertyAttributes(PropertyDef &propDef)
             else if (l == "REVISION") {
                 bool ok = false;
                 const int minor = v.toInt(&ok);
-                if (!ok || !QTypeRevision::isValidSegment(minor))
+                if (!ok || !BOBUIypeRevision::isValidSegment(minor))
                     error(lsym);
-                propDef.revision = QTypeRevision::fromMinorVersion(minor).toEncodedVersion<int>();
+                propDef.revision = BOBUIypeRevision::fromMinorVersion(minor).toEncodedVersion<int>();
             } else
                 error(lsym);
             break;
@@ -1806,7 +1806,7 @@ Moc::EncounteredQmlMacro Moc::parseClassInfo(BaseDef *def)
     } else if (test(Q_REVISION_TOKEN)) {
         infoDef.value = QByteArray::number(parseRevision().toEncodedVersion<quint16>());
     } else {
-        // support Q_CLASSINFO("help", QT_TR_NOOP("blah"))
+        // support Q_CLASSINFO("help", BOBUI_TR_NOOP("blah"))
         next(IDENTIFIER);
         next(LPAREN);
         next(STRING_LITERAL);
@@ -2007,7 +2007,7 @@ bool Moc::until(Token target) {
         }
 
         if (braceCount <= 0 && t == SEMIC) {
-            // Abort on semicolon. Allow recovering bad template parsing (QTBUG-31218)
+            // Abort on semicolon. Allow recovering bad template parsing (BOBUIBUG-31218)
             break;
         }
     }
@@ -2369,7 +2369,7 @@ QByteArray EnumDef::qualifiedType(const ClassDef *cdef) const
     if (name == cdef->classname) {
         // The name of the enclosing namespace is the same as the enum class name
         if (cdef->qualified.contains("::")) {
-            // QTBUG-112996, fully qualify by using cdef->qualified to disambiguate enum
+            // BOBUIBUG-112996, fully qualify by using cdef->qualified to disambiguate enum
             // class name and enclosing namespace, e.g.:
             // namespace A { namespace B { Q_NAMESPACE; enum class B { }; Q_ENUM_NS(B) } }
             return cdef->qualified % "::" % name;
@@ -2383,4 +2383,4 @@ QByteArray EnumDef::qualifiedType(const ClassDef *cdef) const
     return cdef->classname % "::" % name;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

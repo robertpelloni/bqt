@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtOpenGL/QOpenGLFramebufferObject>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QWindow>
+#include <BobUIOpenGL/QOpenGLFramebufferObject>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QWindow>
 #include <rhi/qrhi.h>
 #include <qpa/qplatformbackingstore.h>
 
 #include "qopenglcompositor_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOpenGLCompositor
@@ -330,18 +330,18 @@ void QOpenGLCompositor::ensureCorrectZOrder()
                   }
 
                   // Case #3: Modality gets higher Z
-                  if (w1->modality() != Qt::NonModal && w2->modality() == Qt::NonModal)
+                  if (w1->modality() != BobUI::NonModal && w2->modality() == BobUI::NonModal)
                       return false;
 
-                  if (w2->modality() != Qt::NonModal && w1->modality() == Qt::NonModal)
+                  if (w2->modality() != BobUI::NonModal && w1->modality() == BobUI::NonModal)
                       return true;
 
-                  const bool isTool1 = (w1->flags() & Qt::Tool) == Qt::Tool;
-                  const bool isTool2 = (w2->flags() & Qt::Tool) == Qt::Tool;
-                  const bool isPurePopup1 = !isTool1 && (w1->flags() & Qt::Popup) == Qt::Popup;
-                  const bool isPurePopup2 = !isTool2 && (w2->flags() & Qt::Popup) == Qt::Popup;
+                  const bool isTool1 = (w1->flags() & BobUI::Tool) == BobUI::Tool;
+                  const bool isTool2 = (w2->flags() & BobUI::Tool) == BobUI::Tool;
+                  const bool isPurePopup1 = !isTool1 && (w1->flags() & BobUI::Popup) == BobUI::Popup;
+                  const bool isPurePopup2 = !isTool2 && (w2->flags() & BobUI::Popup) == BobUI::Popup;
 
-                  // Case #4: By pure-popup we mean menus and tooltips. Qt::Tool implies Qt::Popup
+                  // Case #4: By pure-popup we mean menus and tooltips. BobUI::Tool implies BobUI::Popup
                   // and we don't want to catch QDockWidget and other tool windows just yet
                   if (isPurePopup1 != isPurePopup2)
                       return !isPurePopup1;
@@ -355,6 +355,6 @@ void QOpenGLCompositor::ensureCorrectZOrder()
               });
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglcompositor_p.cpp"

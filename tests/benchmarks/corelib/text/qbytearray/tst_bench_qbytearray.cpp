@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QDebug>
 #include <QIODevice>
 #include <QFile>
 #include <QString>
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <limits>
 
 class tst_QByteArray : public QObject
@@ -23,7 +23,7 @@ private slots:
     void toULongLong_data();
     void toULongLong();
 
-    void latin1Uppercasing_qt54();
+    void latin1Uppercasing_bobui54();
     void latin1Uppercasing_xlate();
     void latin1Uppercasing_xlate_checked();
     void latin1Uppercasing_category();
@@ -45,16 +45,16 @@ void tst_QByteArray::initTestCase()
 
 void tst_QByteArray::append_data()
 {
-    QTest::addColumn<int>("size");
-    QTest::newRow("1")         << int(1);
-    QTest::newRow("10")        << int(10);
-    QTest::newRow("100")       << int(100);
-    QTest::newRow("1000")      << int(1000);
-    QTest::newRow("10000")     << int(10000);
-    QTest::newRow("100000")    << int(100000);
-    QTest::newRow("1000000")   << int(1000000);
-    QTest::newRow("10000000")  << int(10000000);
-    QTest::newRow("100000000") << int(100000000);
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::newRow("1")         << int(1);
+    BOBUIest::newRow("10")        << int(10);
+    BOBUIest::newRow("100")       << int(100);
+    BOBUIest::newRow("1000")      << int(1000);
+    BOBUIest::newRow("10000")     << int(10000);
+    BOBUIest::newRow("100000")    << int(100000);
+    BOBUIest::newRow("1000000")   << int(1000000);
+    BOBUIest::newRow("10000000")  << int(10000000);
+    BOBUIest::newRow("100000000") << int(100000000);
 }
 
 void tst_QByteArray::append()
@@ -85,10 +85,10 @@ static QByteArray decNext(QByteArray big)
 
 void tst_QByteArray::toLongLong_data()
 {
-    QTest::addColumn<QByteArray>("text");
-    QTest::addColumn<bool>("good");
-    QTest::addColumn<qlonglong>("number");
-#define ROW(n) QTest::newRow(#n) << QByteArray(#n) << true << n ## LL
+    BOBUIest::addColumn<QByteArray>("text");
+    BOBUIest::addColumn<bool>("good");
+    BOBUIest::addColumn<qlonglong>("number");
+#define ROW(n) BOBUIest::newRow(#n) << QByteArray(#n) << true << n ## LL
     ROW(0);
     ROW(1);
     ROW(-1);
@@ -98,10 +98,10 @@ void tst_QByteArray::toLongLong_data()
     ROW(-1234567890);
 #undef ROW
     using LL = std::numeric_limits<qlonglong>;
-    QTest::newRow("min") << QByteArray::number(LL::min()) << true << LL::min();
-    QTest::newRow("min-1") << decNext(QByteArray::number(LL::min())) << false << 0LL;
-    QTest::newRow("max") << QByteArray::number(LL::max()) << true << LL::max();
-    QTest::newRow("max+1") << decNext(QByteArray::number(LL::max())) << false << 0LL;
+    BOBUIest::newRow("min") << QByteArray::number(LL::min()) << true << LL::min();
+    BOBUIest::newRow("min-1") << decNext(QByteArray::number(LL::min())) << false << 0LL;
+    BOBUIest::newRow("max") << QByteArray::number(LL::max()) << true << LL::max();
+    BOBUIest::newRow("max+1") << decNext(QByteArray::number(LL::max())) << false << 0LL;
 }
 
 void tst_QByteArray::toLongLong()
@@ -121,20 +121,20 @@ void tst_QByteArray::toLongLong()
 
 void tst_QByteArray::toULongLong_data()
 {
-    QTest::addColumn<QByteArray>("text");
-    QTest::addColumn<bool>("good");
-    QTest::addColumn<qulonglong>("number");
+    BOBUIest::addColumn<QByteArray>("text");
+    BOBUIest::addColumn<bool>("good");
+    BOBUIest::addColumn<qulonglong>("number");
 #define ROW(n) \
-    QTest::newRow(#n) << QByteArray(#n) << true << n ## ULL; \
-    QTest::newRow("-" #n) << QByteArray("-" #n) << false << 0ULL
+    BOBUIest::newRow(#n) << QByteArray(#n) << true << n ## ULL; \
+    BOBUIest::newRow("-" #n) << QByteArray("-" #n) << false << 0ULL
     ROW(0);
     ROW(1);
     ROW(17);
     ROW(1234567890);
 #undef ROW
     using ULL = std::numeric_limits<qulonglong>;
-    QTest::newRow("max") << QByteArray::number(ULL::max()) << true << ULL::max();
-    QTest::newRow("max+1") << decNext(QByteArray::number(ULL::max())) << false << 0ULL;
+    BOBUIest::newRow("max") << QByteArray::number(ULL::max()) << true << ULL::max();
+    BOBUIest::newRow("max+1") << decNext(QByteArray::number(ULL::max())) << false << 0ULL;
 }
 
 void tst_QByteArray::toULongLong()
@@ -152,7 +152,7 @@ void tst_QByteArray::toULongLong()
     QCOMPARE(ok, good);
 }
 
-void tst_QByteArray::latin1Uppercasing_qt54()
+void tst_QByteArray::latin1Uppercasing_bobui54()
 {
     QByteArray s = sourcecode;
     s.detach();
@@ -329,14 +329,14 @@ void tst_QByteArray::latin1Uppercasing_bitcheck()
 
 void tst_QByteArray::toPercentEncoding_data()
 {
-    QTest::addColumn<QByteArray>("plaintext");
-    QTest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QByteArray>("plaintext");
+    BOBUIest::addColumn<QByteArray>("expected");
 
-    QTest::newRow("empty") << QByteArray("") << QByteArray("");
-    QTest::newRow("plain")
+    BOBUIest::newRow("empty") << QByteArray("") << QByteArray("");
+    BOBUIest::newRow("plain")
         << QByteArray("the quick brown fox jumped over the lazy dogs")
         << QByteArray("the%20quick%20brown%20fox%20jumped%20over%20the%20lazy%20dogs");
-    QTest::newRow("specials")
+    BOBUIest::newRow("specials")
         << QByteArray(
             "\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15"
             "\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\"#$%&'()*+,/:;<=>?@[\\]^`{|}\x7f")
@@ -353,13 +353,13 @@ void tst_QByteArray::toPercentEncoding()
     QBENCHMARK {
         encoded = plaintext.toPercentEncoding();
     }
-    QTEST(encoded, "expected");
+    BOBUIEST(encoded, "expected");
 }
 
 void tst_QByteArray::operator_assign_char()
 {
     QFETCH(QByteArray, data);
-    QString str(data.size(), Qt::Uninitialized);
+    QString str(data.size(), BobUI::Uninitialized);
 
     const char *tdata = data.constData();
     QBENCHMARK {
@@ -369,25 +369,25 @@ void tst_QByteArray::operator_assign_char()
 
 void tst_QByteArray::operator_assign_char_data()
 {
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("data");
 
     QByteArray data;
     data.fill('a', 5);
-    QTest::newRow("length: 5") << data;
+    BOBUIest::newRow("length: 5") << data;
     data.fill('b', 10);
-    QTest::newRow("length: 10") << data;
+    BOBUIest::newRow("length: 10") << data;
     data.fill('c', 20);
-    QTest::newRow("length: 20") << data;
+    BOBUIest::newRow("length: 20") << data;
     data.fill('d', 50);
-    QTest::newRow("length: 50") << data;
+    BOBUIest::newRow("length: 50") << data;
     data.fill('e', 100);
-    QTest::newRow("length: 100") << data;
+    BOBUIest::newRow("length: 100") << data;
     data.fill('f', 500);
-    QTest::newRow("length: 500") << data;
+    BOBUIest::newRow("length: 500") << data;
     data.fill('g', 1'000);
-    QTest::newRow("length: 1'000") << data;
+    BOBUIest::newRow("length: 1'000") << data;
 }
 
-QTEST_MAIN(tst_QByteArray)
+BOBUIEST_MAIN(tst_QByteArray)
 
 #include "tst_bench_qbytearray.moc"

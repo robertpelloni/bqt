@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 #include <QVarLengthArray>
 #include <qvariant.h>
 #include <qscopeguard.h>
@@ -67,7 +67,7 @@ private slots:
     void sizeConstructor_NonCopyable() { sizeConstructor<NonCopyable>(); }
     void append();
     void preallocatedSize();
-#if QT_DEPRECATED_SINCE(6, 3)
+#if BOBUI_DEPRECATED_SINCE(6, 3)
     void prepend();
 #endif
     void emplace();
@@ -113,7 +113,7 @@ private slots:
     void erase();
 
     // special cases:
-    void copesWithCopyabilityOfMoveOnlyVector(); // QTBUG-109745
+    void copesWithCopyabilityOfMoveOnlyVector(); // BOBUIBUG-109745
 private:
     template <typename T>
     void defaultConstructor();
@@ -204,9 +204,9 @@ void tst_QVarLengthArray::preallocatedSize()
     static_assert(QVarLengthArray<int, 1'000'000>::PreallocatedSize == 1'000'000);
 }
 
-#if QT_DEPRECATED_SINCE(6, 3)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QVarLengthArray::prepend()
 {
     QVarLengthArray<QString, 2> v;
@@ -225,8 +225,8 @@ void tst_QVarLengthArray::prepend()
     v.prepend(v.back());
     QCOMPARE(v.front(), v.back());
 }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 3)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 3)
 
 void tst_QVarLengthArray::emplace()
 {
@@ -443,7 +443,7 @@ void tst_QVarLengthArray::appendCausingRealloc()
     for (int i=0; i<30; i++)
         d.append(i);
 
-    // Regression test for QTBUG-110412:
+    // Regression test for BOBUIBUG-110412:
     constexpr qsizetype InitialCapacity = 10;
     QVarLengthArray<float, InitialCapacity> d2(InitialCapacity);
     std::iota(d2.begin(), d2.end(), 0.0f);
@@ -457,7 +457,7 @@ void tst_QVarLengthArray::appendCausingRealloc()
 
 void tst_QVarLengthArray::appendIsStronglyExceptionSafe()
 {
-#ifdef QT_NO_EXCEPTIONS
+#ifdef BOBUI_NO_EXCEPTIONS
     QSKIP("This test requires exception support enabled in the compiler.");
 #else
     static bool throwOnCopyNow = false;
@@ -759,13 +759,13 @@ struct MyComplex
     char i;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_TYPEINFO(MyPrimitive, Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(MyMovable, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(MyComplex, Q_COMPLEX_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 bool reallocTestProceed = true;
 
@@ -787,8 +787,8 @@ void reallocTest()
 
     typedef QVarLengthArray<T, 16> Container;
     enum {
-        isRelocatable = QTypeInfo<T>::isRelocatable,
-        isComplex = QTypeInfo<T>::isComplex,
+        isRelocatable = BOBUIypeInfo<T>::isRelocatable,
+        isComplex = BOBUIypeInfo<T>::isComplex,
 
         isPrimitive = !isComplex && isRelocatable,
         isMovable = isRelocatable
@@ -1628,43 +1628,43 @@ void tst_QVarLengthArray::insert()
 
 void tst_QVarLengthArray::insert_data()
 {
-    QTest::addColumn<QVarLengthArray<QString>>("arr");
-    QTest::addColumn<int>("pos");
-    QTest::addColumn<int>("count");
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QVarLengthArray<QString>>("expected");
+    BOBUIest::addColumn<QVarLengthArray<QString>>("arr");
+    BOBUIest::addColumn<int>("pos");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<QVarLengthArray<QString>>("expected");
 
     const QString data("Test");
 
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
             << QVarLengthArray<QString>() << 0 << 1 << data << QVarLengthArray<QString>({ data });
-    QTest::newRow("empty-none")
+    BOBUIest::newRow("empty-none")
             << QVarLengthArray<QString>() << 0 << 0 << data << QVarLengthArray<QString>();
-    QTest::newRow("begin")
+    BOBUIest::newRow("begin")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 0 << 1 << data
             << QVarLengthArray<QString>({ data, "value1", "value2" });
-    QTest::newRow("end")
+    BOBUIest::newRow("end")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 2 << 1 << data
             << QVarLengthArray<QString>({ "value1", "value2", data });
-    QTest::newRow("middle")
+    BOBUIest::newRow("middle")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 1 << 1 << data
             << QVarLengthArray<QString>({ "value1", data, "value2" });
-    QTest::newRow("begin-none")
+    BOBUIest::newRow("begin-none")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 0 << 0 << data
             << QVarLengthArray<QString>({ "value1", "value2" });
-    QTest::newRow("end-none")
+    BOBUIest::newRow("end-none")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 2 << 0 << data
             << QVarLengthArray<QString>({ "value1", "value2" });
-    QTest::newRow("middle-none")
+    BOBUIest::newRow("middle-none")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 1 << 0 << data
             << QVarLengthArray<QString>({ "value1", "value2" });
-    QTest::newRow("multi begin")
+    BOBUIest::newRow("multi begin")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 0 << 2 << data
             << QVarLengthArray<QString>({ data, data, "value1", "value2" });
-    QTest::newRow("multi end")
+    BOBUIest::newRow("multi end")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 2 << 2 << data
             << QVarLengthArray<QString>({ "value1", "value2", data, data });
-    QTest::newRow("multi middle")
+    BOBUIest::newRow("multi middle")
             << QVarLengthArray<QString>({ "value1", "value2" }) << 1 << 2 << data
             << QVarLengthArray<QString>({ "value1", data, data, "value2" });
 }
@@ -1764,5 +1764,5 @@ void tst_QVarLengthArray::copesWithCopyabilityOfMoveOnlyVector()
     QCOMPARE_EQ(moved.back().size(), 44U);
 }
 
-QTEST_APPLESS_MAIN(tst_QVarLengthArray)
+BOBUIEST_APPLESS_MAIN(tst_QVarLengthArray)
 #include "tst_qvarlengtharray.moc"

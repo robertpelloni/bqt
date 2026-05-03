@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qfontdatabase.h>
 #include <qfontinfo.h>
 #include <qfontmetrics.h>
-#include <qtextlayout.h>
+#include <bobuiextlayout.h>
 #include <private/qrawfont_p.h>
 #include <private/qfont_p.h>
 #include <private/qfontengine_p.h>
 #include <qpa/qplatformfontdatabase.h>
 #include <qpa/qplatformintegration.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcTests, "qt.text.tests")
+Q_LOGGING_CATEGORY(lcTests, "bobui.text.tests")
 
 class tst_QFontDatabase : public QObject
 {
@@ -96,9 +96,9 @@ void tst_QFontDatabase::initTestCase()
     m_testFontCondensed = QFINDTESTDATA("testfont_condensed.ttf");
     m_testFontItalic = QFINDTESTDATA("testfont_italic.ttf");
     m_testFontVariable = QFINDTESTDATA("testfont_variable.ttf");
-    m_limitedFont = QFINDTESTDATA("QtTestLimitedFont-Regular.ttf");
-    m_fallbackFont = QFINDTESTDATA("QtTestFallbackFont-Regular.ttf");
-    m_emojiFont = QFINDTESTDATA("QtEmojiTestFont-Regular.ttf");
+    m_limitedFont = QFINDTESTDATA("BobUITestLimitedFont-Regular.ttf");
+    m_fallbackFont = QFINDTESTDATA("BobUITestFallbackFont-Regular.ttf");
+    m_emojiFont = QFINDTESTDATA("BobUIEmojiTestFont-Regular.ttf");
     QVERIFY(!m_ledFont.isEmpty());
     QVERIFY(!m_testFont.isEmpty());
     QVERIFY(!m_testFontCondensed.isEmpty());
@@ -111,9 +111,9 @@ void tst_QFontDatabase::initTestCase()
 
 void tst_QFontDatabase::styles_data()
 {
-    QTest::addColumn<QString>("font");
+    BOBUIest::addColumn<QString>("font");
 
-    QTest::newRow( "data0" ) << QString( "Times New Roman" );
+    BOBUIest::newRow( "data0" ) << QString( "Times New Roman" );
 }
 
 void tst_QFontDatabase::styles()
@@ -133,22 +133,22 @@ void tst_QFontDatabase::styles()
 
 void tst_QFontDatabase::fixedPitch_data()
 {
-    QTest::addColumn<QString>("font");
-    QTest::addColumn<bool>("fixedPitch");
+    BOBUIest::addColumn<QString>("font");
+    BOBUIest::addColumn<bool>("fixedPitch");
 
-    QTest::newRow( "Times New Roman" ) << QString( "Times New Roman" ) << false;
-    QTest::newRow( "Arial" ) << QString( "Arial" ) << false;
-    QTest::newRow( "Andale Mono" ) << QString( "Andale Mono" ) << true;
-    QTest::newRow( "Courier" ) << QString( "Courier" ) << true;
-    QTest::newRow( "Courier New" ) << QString( "Courier New" ) << true;
+    BOBUIest::newRow( "Times New Roman" ) << QString( "Times New Roman" ) << false;
+    BOBUIest::newRow( "Arial" ) << QString( "Arial" ) << false;
+    BOBUIest::newRow( "Andale Mono" ) << QString( "Andale Mono" ) << true;
+    BOBUIest::newRow( "Courier" ) << QString( "Courier" ) << true;
+    BOBUIest::newRow( "Courier New" ) << QString( "Courier New" ) << true;
 #ifndef Q_OS_MAC
-    QTest::newRow( "Script" ) << QString( "Script" ) << false;
-    QTest::newRow( "Lucida Console" ) << QString( "Lucida Console" ) << true;
-    QTest::newRow( "DejaVu Sans" ) << QString( "DejaVu Sans" ) << false;
-    QTest::newRow( "DejaVu Sans Mono" ) << QString( "DejaVu Sans Mono" ) << true;
+    BOBUIest::newRow( "Script" ) << QString( "Script" ) << false;
+    BOBUIest::newRow( "Lucida Console" ) << QString( "Lucida Console" ) << true;
+    BOBUIest::newRow( "DejaVu Sans" ) << QString( "DejaVu Sans" ) << false;
+    BOBUIest::newRow( "DejaVu Sans Mono" ) << QString( "DejaVu Sans Mono" ) << true;
 #else
-    QTest::newRow( "Menlo" ) << QString( "Menlo" ) << true;
-    QTest::newRow( "Monaco" ) << QString( "Monaco" ) << true;
+    BOBUIest::newRow( "Menlo" ) << QString( "Menlo" ) << true;
+    BOBUIest::newRow( "Monaco" ) << QString( "Monaco" ) << true;
 #endif
 }
 
@@ -167,10 +167,10 @@ void tst_QFontDatabase::fixedPitch()
     QCOMPARE(fi.fixedPitch(), fixedPitch);
 }
 
-void tst_QFontDatabase::systemFixedFont() // QTBUG-54623
+void tst_QFontDatabase::systemFixedFont() // BOBUIBUG-54623
 {
 #if defined(Q_OS_VXWORKS)
-    QSKIP("QTBUG-130071: VxWorks doesn't support fixed system font out of the box");
+    QSKIP("BOBUIBUG-130071: VxWorks doesn't support fixed system font out of the box");
 #endif
     QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     QFontInfo fontInfo(font);
@@ -183,9 +183,9 @@ void tst_QFontDatabase::systemFixedFont() // QTBUG-54623
 #ifdef Q_OS_MAC
 void tst_QFontDatabase::trickyFonts_data()
 {
-    QTest::addColumn<QString>("font");
+    BOBUIest::addColumn<QString>("font");
 
-    QTest::newRow( "Geeza Pro" ) << QString( "Geeza Pro" );
+    BOBUIest::newRow( "Geeza Pro" ) << QString( "Geeza Pro" );
 }
 
 void tst_QFontDatabase::trickyFonts()
@@ -203,11 +203,11 @@ void tst_QFontDatabase::trickyFonts()
 
 void tst_QFontDatabase::widthTwoTimes_data()
 {
-    QTest::addColumn<QString>("font");
-    QTest::addColumn<int>("pixelSize");
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("font");
+    BOBUIest::addColumn<int>("pixelSize");
+    BOBUIest::addColumn<QString>("text");
 
-    QTest::newRow("Arial") << QString("Arial") << 1000 << QString("Some text");
+    BOBUIest::newRow("Arial") << QString("Arial") << 1000 << QString("Some text");
 }
 
 void tst_QFontDatabase::widthTwoTimes()
@@ -229,9 +229,9 @@ void tst_QFontDatabase::widthTwoTimes()
 
 void tst_QFontDatabase::addAppFont_data()
 {
-    QTest::addColumn<bool>("useMemoryFont");
-    QTest::newRow("font file") << false;
-    QTest::newRow("memory font") << true;
+    BOBUIest::addColumn<bool>("useMemoryFont");
+    BOBUIest::newRow("font file") << false;
+    BOBUIest::newRow("memory font") << true;
 }
 
 void tst_QFontDatabase::addAppFont()
@@ -254,7 +254,7 @@ void tst_QFontDatabase::addAppFont()
     } else {
         id = QFontDatabase::addApplicationFont(m_ledFont);
     }
-#if defined(Q_OS_HPUX) && defined(QT_NO_FONTCONFIG)
+#if defined(Q_OS_HPUX) && defined(BOBUI_NO_FONTCONFIG)
     // Documentation says that X11 systems that don't have fontconfig
     // don't support application fonts.
     QCOMPARE(id, -1);
@@ -334,7 +334,7 @@ void tst_QFontDatabase::aliases()
 
 void tst_QFontDatabase::fallbackFonts()
 {
-    QTextLayout layout;
+    BOBUIextLayout layout;
     QString s;
     s.append(QChar(0x31));
     s.append(QChar(0x05D0));
@@ -414,13 +414,13 @@ void tst_QFontDatabase::condensedFontWidth()
             QFontDatabase::removeApplicationFont(testFontCondensedId);
     });
 
-    QVERIFY(QFontDatabase::hasFamily("QtBidiTestFont"));
-    if (!QFontDatabase::hasFamily("QtBidiTestFontCondensed"))
-        QSKIP("This platform doesn't support font sub-family names (QTBUG-55625)");
+    QVERIFY(QFontDatabase::hasFamily("BobUIBidiTestFont"));
+    if (!QFontDatabase::hasFamily("BobUIBidiTestFontCondensed"))
+        QSKIP("This platform doesn't support font sub-family names (BOBUIBUG-55625)");
 
-    // Test we really get a condensed font, and a not renormalized one (QTBUG-48043):
-    QFont testFont("QtBidiTestFont");
-    QFont testFontCondensed("QtBidiTestFontCondensed");
+    // Test we really get a condensed font, and a not renormalized one (BOBUIBUG-48043):
+    QFont testFont("BobUIBidiTestFont");
+    QFont testFontCondensed("BobUIBidiTestFontCondensed");
     QFontMetrics fmTF(testFont);
     QFontMetrics fmTFC(testFontCondensed);
     QVERIFY(fmTF.horizontalAdvance(testString()) > fmTFC.horizontalAdvance(testString()));
@@ -431,8 +431,8 @@ void tst_QFontDatabase::condensedFontMatching()
 {
     QFontDatabase::removeAllApplicationFonts();
     int testFontCondensedId = QFontDatabase::addApplicationFont(m_testFontCondensed);
-    if (!QFontDatabase::hasFamily("QtBidiTestFont"))
-        QSKIP("This platform doesn't support preferred font family names (QTBUG-53478)");
+    if (!QFontDatabase::hasFamily("BobUIBidiTestFont"))
+        QSKIP("This platform doesn't support preferred font family names (BOBUIBUG-53478)");
     int testFontId = QFontDatabase::addApplicationFont(m_testFont);
     auto cleanup = qScopeGuard([&testFontId, &testFontCondensedId] {
         if (testFontId >= 0)
@@ -442,9 +442,9 @@ void tst_QFontDatabase::condensedFontMatching()
     });
 
     // Test we correctly get the condensed font using different font matching methods:
-    QFont tfcByStretch("QtBidiTestFont");
+    QFont tfcByStretch("BobUIBidiTestFont");
     tfcByStretch.setStretch(QFont::Condensed);
-    QFont tfcByStyleName("QtBidiTestFont");
+    QFont tfcByStyleName("BobUIBidiTestFont");
     tfcByStyleName.setStyleName("Condensed");
 
 #ifdef Q_OS_WIN
@@ -460,10 +460,10 @@ void tst_QFontDatabase::condensedFontMatching()
     QCOMPARE(QFontMetrics(tfcByStretch).horizontalAdvance(testString()),
              QFontMetrics(tfcByStyleName).horizontalAdvance(testString()));
 
-    if (!QFontDatabase::hasFamily("QtBidiTestFontCondensed"))
-        QSKIP("This platform doesn't support font sub-family names (QTBUG-55625)");
+    if (!QFontDatabase::hasFamily("BobUIBidiTestFontCondensed"))
+        QSKIP("This platform doesn't support font sub-family names (BOBUIBUG-55625)");
 
-    QFont tfcBySubfamilyName("QtBidiTestFontCondensed");
+    QFont tfcBySubfamilyName("BobUIBidiTestFontCondensed");
     QCOMPARE(QFontMetrics(tfcByStyleName).horizontalAdvance(testString()),
              QFontMetrics(tfcBySubfamilyName).horizontalAdvance(testString()));
 }
@@ -510,7 +510,7 @@ void tst_QFontDatabase::registerOpenTypePreferredNamesApplication()
     if (id == -1)
         QSKIP("Skip the test since app fonts are not supported on this system");
 
-    QStringList styles = QFontDatabase::styles(QString::fromLatin1("QtBidiTestFont"));
+    QStringList styles = QFontDatabase::styles(QString::fromLatin1("BobUIBidiTestFont"));
     QVERIFY(styles.contains(QLatin1String("Open")));
 
     QFontDatabase::removeApplicationFont(id);
@@ -545,10 +545,10 @@ void tst_QFontDatabase::findCourier()
 
 void tst_QFontDatabase::variableFont_data()
 {
-    QTest::addColumn<bool>("loadFromData");
+    BOBUIest::addColumn<bool>("loadFromData");
 
-    QTest::newRow( "Load from file" ) << false;
-    QTest::newRow( "Load from data" ) << true;
+    BOBUIest::newRow( "Load from file" ) << false;
+    BOBUIest::newRow( "Load from data" ) << true;
 }
 
 void tst_QFontDatabase::variableFont()
@@ -589,14 +589,14 @@ void tst_QFontDatabase::variableFont()
     {
         QFont font(family);
         font.setWeight(QFont::Black);
-        QCOMPARE(QFontInfo(font).styleName(), u"QtExtraBold"_s);
+        QCOMPARE(QFontInfo(font).styleName(), u"BobUIExtraBold"_s);
         QCOMPARE(QFontInfo(font).weight(), int(QFont::Black));
     }
 
     {
         QFont regularFont(family);
         QFont extraBoldFont(family);
-        extraBoldFont.setStyleName(u"QtExtraBold"_s);
+        extraBoldFont.setStyleName(u"BobUIExtraBold"_s);
 
         QFontMetricsF regularFm(regularFont);
         QFontMetricsF extraBoldFm(extraBoldFont);
@@ -607,7 +607,7 @@ void tst_QFontDatabase::variableFont()
     {
         QFont regularFont(family);
         QFont extraBoldFont(family);
-        extraBoldFont.setStyleName(u"QtExtraBold"_s);
+        extraBoldFont.setStyleName(u"BobUIExtraBold"_s);
         extraBoldFont.setVariableAxis("wght", 400);
 
         QFontMetricsF regularFm(regularFont);
@@ -641,7 +641,7 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QSKIP("Skip the test since app fonts are not supported on this system");
 
     auto getHebrewFont = [&]() {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(hebrewChar);
         layout.setFont(QFont(u"LED Real"_s));
         layout.beginLayout();
@@ -660,10 +660,10 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QSKIP("Skip the test since Hebrew is not supported on this system");
 
     QVERIFY(QFontDatabase::applicationFallbackFontFamilies(QChar::Script_Hebrew).isEmpty());
-    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Hebrew, u"QtBidiTestFont"_s);
+    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Hebrew, u"BobUIBidiTestFont"_s);
 
     QCOMPARE(QFontDatabase::applicationFallbackFontFamilies(QChar::Script_Hebrew).size(), 1);
-    QCOMPARE(QFontDatabase::applicationFallbackFontFamilies(QChar::Script_Hebrew).first(), u"QtBidiTestFont"_s);
+    QCOMPARE(QFontDatabase::applicationFallbackFontFamilies(QChar::Script_Hebrew).first(), u"BobUIBidiTestFont"_s);
 
     {
         QString hebrewFontNow = getHebrewFont();
@@ -675,21 +675,21 @@ void tst_QFontDatabase::addApplicationFontFallback()
 
     {
         QString hebrewFontNow = getHebrewFont();
-        QCOMPARE(hebrewFontNow, u"QtBidiTestFont"_s);
+        QCOMPARE(hebrewFontNow, u"BobUIBidiTestFont"_s);
     }
 
-    QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Hebrew, u"QtBidiTestFont"_s);
+    QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Hebrew, u"BobUIBidiTestFont"_s);
 
     {
         QString hebrewFontNow = getHebrewFont();
         QCOMPARE(hebrewFontNow, defaultHebrewFont);
     }
 
-    QFontDatabase::setApplicationFallbackFontFamilies(QChar::Script_Hebrew, QStringList(u"QtBidiTestFont"_s));
+    QFontDatabase::setApplicationFallbackFontFamilies(QChar::Script_Hebrew, QStringList(u"BobUIBidiTestFont"_s));
 
     {
         QString hebrewFontNow = getHebrewFont();
-        QCOMPARE(hebrewFontNow, u"QtBidiTestFont"_s);
+        QCOMPARE(hebrewFontNow, u"BobUIBidiTestFont"_s);
     }
 
     QFontDatabase::setApplicationFallbackFontFamilies(QChar::Script_Hebrew, QStringList{});
@@ -705,14 +705,14 @@ void tst_QFontDatabase::addApplicationFontFallback()
     fallbackId = QFontDatabase::addApplicationFont(m_fallbackFont);
     QVERIFY(fallbackId >= 0);
 
-    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Common, u"QtTestFallbackFont"_s);
+    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Common, u"BobUITestFallbackFont"_s);
 
     // The fallback for Common will be used also for Latin, because Latin and Common are
     // considered the same script by the font matching engine.
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(u"A'B,"_s);
-        layout.setFont(QFont(u"QtTestLimitedFont"_s));
+        layout.setFont(QFont(u"BobUITestLimitedFont"_s));
         layout.beginLayout();
         layout.createLine();
         layout.endLayout();
@@ -720,16 +720,16 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QList<QGlyphRun> glyphRuns = layout.glyphRuns();
         QVERIFY(glyphRuns.size() > 1);
         for (int i = 0; i < glyphRuns.size(); ++i) {
-            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"QtTestFallbackFont"_s
-                    || glyphRuns.at(i).rawFont().familyName() == u"QtTestLimitedFont"_s);
+            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"BobUITestFallbackFont"_s
+                    || glyphRuns.at(i).rawFont().familyName() == u"BobUITestLimitedFont"_s);
         }
     }
 
     // When the text only consists of common script characters, the fallback font will also be used.
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(u"',"_s);
-        layout.setFont(QFont(u"QtTestLimitedFont"_s));
+        layout.setFont(QFont(u"BobUITestLimitedFont"_s));
         layout.beginLayout();
         layout.createLine();
         layout.endLayout();
@@ -737,19 +737,19 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QList<QGlyphRun> glyphRuns = layout.glyphRuns();
         QCOMPARE(glyphRuns.size(), 2);
         for (int i = 0; i < glyphRuns.size(); ++i) {
-            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"QtTestFallbackFont"_s
-                    || glyphRuns.at(i).rawFont().familyName() == u"QtTestLimitedFont"_s);
+            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"BobUITestFallbackFont"_s
+                    || glyphRuns.at(i).rawFont().familyName() == u"BobUITestLimitedFont"_s);
         }
     }
 
-    QVERIFY(QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Common, u"QtTestFallbackFont"_s));
-    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Latin, u"QtTestFallbackFont"_s);
+    QVERIFY(QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Common, u"BobUITestFallbackFont"_s));
+    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Latin, u"BobUITestFallbackFont"_s);
 
     // Latin fallback works just the same as Common fallback
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(u"A'B,"_s);
-        layout.setFont(QFont(u"QtTestLimitedFont"_s));
+        layout.setFont(QFont(u"BobUITestLimitedFont"_s));
         layout.beginLayout();
         layout.createLine();
         layout.endLayout();
@@ -757,17 +757,17 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QList<QGlyphRun> glyphRuns = layout.glyphRuns();
         QCOMPARE(glyphRuns.size(), 2);
         for (int i = 0; i < glyphRuns.size(); ++i) {
-            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"QtTestFallbackFont"_s
-                    || glyphRuns.at(i).rawFont().familyName() == u"QtTestLimitedFont"_s);
+            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"BobUITestFallbackFont"_s
+                    || glyphRuns.at(i).rawFont().familyName() == u"BobUITestLimitedFont"_s);
         }
     }
 
     // When the common character is placed next to a Cyrillic characters, it gets adapted to this,
     // so the fallback font will not be selected, even if it supports the character in question
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(u"A'Б,"_s);
-        layout.setFont(QFont(u"QtTestLimitedFont"_s));
+        layout.setFont(QFont(u"BobUITestLimitedFont"_s));
         layout.beginLayout();
         layout.createLine();
         layout.endLayout();
@@ -775,17 +775,17 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QList<QGlyphRun> glyphRuns = layout.glyphRuns();
         QCOMPARE(glyphRuns.size(), 2);
         for (int i = 0; i < glyphRuns.size(); ++i) {
-            QVERIFY(glyphRuns.at(i).rawFont().familyName() != u"QtTestFallbackFont"_s);
+            QVERIFY(glyphRuns.at(i).rawFont().familyName() != u"BobUITestFallbackFont"_s);
         }
     }
 
-    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Cyrillic, u"QtTestFallbackFont"_s);
+    QFontDatabase::addApplicationFallbackFontFamily(QChar::Script_Cyrillic, u"BobUITestFallbackFont"_s);
 
     // When we set the fallback font for Cyrillic as well, it gets selected
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(u"A'Б,"_s);
-        layout.setFont(QFont(u"QtTestLimitedFont"_s));
+        layout.setFont(QFont(u"BobUITestLimitedFont"_s));
         layout.beginLayout();
         layout.createLine();
         layout.endLayout();
@@ -793,13 +793,13 @@ void tst_QFontDatabase::addApplicationFontFallback()
         QList<QGlyphRun> glyphRuns = layout.glyphRuns();
         QCOMPARE(glyphRuns.size(), 2);
         for (int i = 0; i < glyphRuns.size(); ++i) {
-            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"QtTestFallbackFont"_s
-                    || glyphRuns.at(i).rawFont().familyName() == u"QtTestLimitedFont"_s);
+            QVERIFY(glyphRuns.at(i).rawFont().familyName() == u"BobUITestFallbackFont"_s
+                    || glyphRuns.at(i).rawFont().familyName() == u"BobUITestLimitedFont"_s);
         }
     }
 
-    QVERIFY(QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Cyrillic, u"QtTestFallbackFont"_s));
-    QVERIFY(QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Latin, u"QtTestFallbackFont"_s));
+    QVERIFY(QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Cyrillic, u"BobUITestFallbackFont"_s));
+    QVERIFY(QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script_Latin, u"BobUITestFallbackFont"_s));
 }
 
 void tst_QFontDatabase::addApplicationEmojiFontFamily()
@@ -829,7 +829,7 @@ void tst_QFontDatabase::addApplicationEmojiFontFamily()
 
     // Get emoji version of regular airplane symbol
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(QString(airplane) + vs16);
         layout.beginLayout();
         layout.createLine();
@@ -850,7 +850,7 @@ void tst_QFontDatabase::addApplicationEmojiFontFamily()
 
     // Get emoji keycap ligature (vs16 should be ignored when evaluating ligature substitution)
     {
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setText(QString(asterisk) + vs16 + enclosingKeyCap);
         layout.beginLayout();
         layout.createLine();
@@ -868,5 +868,5 @@ void tst_QFontDatabase::addApplicationEmojiFontFamily()
 
 }
 
-QTEST_MAIN(tst_QFontDatabase)
+BOBUIEST_MAIN(tst_QFontDatabase)
 #include "tst_qfontdatabase.moc"

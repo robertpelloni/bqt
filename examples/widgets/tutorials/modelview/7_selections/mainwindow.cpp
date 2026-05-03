@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [quoting modelview_a]
 #include "mainwindow.h"
 
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , treeView(new QTreeView(this))
+    , treeView(new BOBUIreeView(this))
     , standardModel(new QStandardItemModel(this))
 {
     setCentralWidget(treeView);
@@ -55,7 +55,7 @@ void MainWindow::selectionChangedSlot(const QItemSelection & /*newSelection*/, c
 {
     // get the text of the selected item
     const QModelIndex index = treeView->selectionModel()->currentIndex();
-    QString selectedText = index.data(Qt::DisplayRole).toString();
+    QString selectedText = index.data(BobUI::DisplayRole).toString();
     // find out the hierarchy level of the selected item
     int hierarchyLevel = 1;
     QModelIndex seekRoot = index;

@@ -1,26 +1,26 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHASH_H
 #define QHASH_H
 
-#include <QtCore/qalgorithms.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qiterator.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qrefcount.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qalgorithms.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qiterator.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qrefcount.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <initializer_list>
 #include <functional> // for std::hash
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 
 class tst_QHash; // for befriending
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QHashDummyValue
 {
@@ -70,7 +70,7 @@ size_t calculateHash(const T &t, size_t seed = 0)
         Q_UNUSED(seed);
         return std::hash<T>()(t);
     } else {
-        static_assert(QtPrivate::type_dependent_false<T>(), "The key type must have a qHash overload or a std::hash specialization");
+        static_assert(BobUIPrivate::type_dependent_false<T>(), "The key type must have a qHash overload or a std::hash specialization");
         return 0;
     }
 }
@@ -223,8 +223,8 @@ struct MultiNode
 
 template<typename  Node>
 inline constexpr bool isRelocatable_v =
-        QTypeInfo<typename Node::KeyType>::isRelocatable &&
-        QTypeInfo<typename Node::ValueType>::isRelocatable;
+        BOBUIypeInfo<typename Node::KeyType>::isRelocatable &&
+        BOBUIypeInfo<typename Node::ValueType>::isRelocatable;
 
 struct SpanConstants {
     static constexpr size_t SpanShift = 7;
@@ -459,7 +459,7 @@ struct Data
     using Span = QHashPrivate::Span<Node>;
     using iterator = QHashPrivate::iterator<Node>;
 
-    QtPrivate::RefCount ref = {{1}};
+    BobUIPrivate::RefCount ref = {{1}};
     size_t size = 0;
     size_t numBuckets = 0;
     size_t seed = 0;
@@ -873,8 +873,8 @@ public:
     }
     ~QHash()
     {
-        static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in Qt containers.");
-        static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+        static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in BobUI containers.");
+        static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
         if (d && !d->ref.deref())
             delete d;
@@ -897,25 +897,25 @@ public:
         : d(std::exchange(other.d, nullptr))
     {
     }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QHash)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QHash)
 #ifdef Q_QDOC
     template <typename InputIterator>
     QHash(InputIterator f, InputIterator l);
 #else
-    template <typename InputIterator, QtPrivate::IfAssociativeIteratorHasKeyAndValue<InputIterator> = true>
+    template <typename InputIterator, BobUIPrivate::IfAssociativeIteratorHasKeyAndValue<InputIterator> = true>
     QHash(InputIterator f, InputIterator l)
         : QHash()
     {
-        QtPrivate::reserveIfForwardIterator(this, f, l);
+        BobUIPrivate::reserveIfForwardIterator(this, f, l);
         for (; f != l; ++f)
             insert(f.key(), f.value());
     }
 
-    template <typename InputIterator, QtPrivate::IfAssociativeIteratorHasFirstAndSecond<InputIterator> = true>
+    template <typename InputIterator, BobUIPrivate::IfAssociativeIteratorHasFirstAndSecond<InputIterator> = true>
     QHash(InputIterator f, InputIterator l)
         : QHash()
     {
-        QtPrivate::reserveIfForwardIterator(this, f, l);
+        BobUIPrivate::reserveIfForwardIterator(this, f, l);
         for (; f != l; ++f) {
             auto &&e = *f;
             using V = decltype(e);
@@ -923,7 +923,7 @@ public:
         }
     }
 #endif
-    void swap(QHash &other) noexcept { qt_ptr_swap(d, other.d); }
+    void swap(QHash &other) noexcept { bobui_ptr_swap(d, other.d); }
 
     class const_iterator;
 
@@ -935,7 +935,7 @@ private:
     }
 
     template <typename AKey = Key, typename AT = T,
-              QTypeTraits::compare_eq_result_container<QHash, AKey, AT> = true>
+              BOBUIypeTraits::compare_eq_result_container<QHash, AKey, AT> = true>
     friend bool comparesEqual(const QHash &lhs, const QHash &rhs) noexcept
     {
         if (lhs.d == rhs.d)
@@ -951,9 +951,9 @@ private:
         // all values must be the same as size is the same
         return true;
     }
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QHash, QHash, /* non-constexpr */, noexcept,
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QHash, QHash, /* non-constexpr */, noexcept,
                      template <typename AKey = Key, typename AT = T,
-                               QTypeTraits::compare_eq_result_container<QHash, AKey, AT> = true>)
+                               BOBUIypeTraits::compare_eq_result_container<QHash, AKey, AT> = true>)
 public:
 #else
     friend bool operator==(const QHash &lhs, const QHash &rhs) noexcept;
@@ -1018,7 +1018,7 @@ public:
     template <typename Predicate>
     qsizetype removeIf(Predicate pred)
     {
-        return QtPrivate::associative_erase_if(*this, pred);
+        return BobUIPrivate::associative_erase_if(*this, pred);
     }
 
     T take(const Key &key)
@@ -1265,10 +1265,10 @@ public:
     inline const_key_value_iterator constKeyValueBegin() const noexcept { return const_key_value_iterator(begin()); }
     inline const_key_value_iterator keyValueEnd() const noexcept { return const_key_value_iterator(end()); }
     inline const_key_value_iterator constKeyValueEnd() const noexcept { return const_key_value_iterator(end()); }
-    auto asKeyValueRange() & { return QtPrivate::QKeyValueRange<QHash &>(*this); }
-    auto asKeyValueRange() const & { return QtPrivate::QKeyValueRange<const QHash &>(*this); }
-    auto asKeyValueRange() && { return QtPrivate::QKeyValueRange<QHash>(std::move(*this)); }
-    auto asKeyValueRange() const && { return QtPrivate::QKeyValueRange<QHash>(std::move(*this)); }
+    auto asKeyValueRange() & { return BobUIPrivate::QKeyValueRange<QHash &>(*this); }
+    auto asKeyValueRange() const & { return BobUIPrivate::QKeyValueRange<const QHash &>(*this); }
+    auto asKeyValueRange() && { return BobUIPrivate::QKeyValueRange<QHash>(std::move(*this)); }
+    auto asKeyValueRange() const && { return BobUIPrivate::QKeyValueRange<QHash>(std::move(*this)); }
 
     struct TryEmplaceResult
     {
@@ -1702,18 +1702,18 @@ public:
     template <typename InputIterator>
     QMultiHash(InputIterator f, InputIterator l);
 #else
-    template <typename InputIterator, QtPrivate::IfAssociativeIteratorHasKeyAndValue<InputIterator> = true>
+    template <typename InputIterator, BobUIPrivate::IfAssociativeIteratorHasKeyAndValue<InputIterator> = true>
     QMultiHash(InputIterator f, InputIterator l)
     {
-        QtPrivate::reserveIfForwardIterator(this, f, l);
+        BobUIPrivate::reserveIfForwardIterator(this, f, l);
         for (; f != l; ++f)
             insert(f.key(), f.value());
     }
 
-    template <typename InputIterator, QtPrivate::IfAssociativeIteratorHasFirstAndSecond<InputIterator> = true>
+    template <typename InputIterator, BobUIPrivate::IfAssociativeIteratorHasFirstAndSecond<InputIterator> = true>
     QMultiHash(InputIterator f, InputIterator l)
     {
-        QtPrivate::reserveIfForwardIterator(this, f, l);
+        BobUIPrivate::reserveIfForwardIterator(this, f, l);
         for (; f != l; ++f) {
             auto &&e = *f;
             using V = decltype(e);
@@ -1729,8 +1729,8 @@ public:
     }
     ~QMultiHash()
     {
-        static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in Qt containers.");
-        static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+        static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in BobUI containers.");
+        static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
         if (d && !d->ref.deref())
             delete d;
@@ -1772,14 +1772,14 @@ public:
 
     void swap(QMultiHash &other) noexcept
     {
-        qt_ptr_swap(d, other.d);
+        bobui_ptr_swap(d, other.d);
         std::swap(m_size, other.m_size);
     }
 
 #ifndef Q_QDOC
 private:
     template <typename AKey = Key, typename AT = T,
-              QTypeTraits::compare_eq_result_container<QMultiHash, AKey, AT> = true>
+              BOBUIypeTraits::compare_eq_result_container<QMultiHash, AKey, AT> = true>
     friend bool comparesEqual(const QMultiHash &lhs, const QMultiHash &rhs) noexcept
     {
         if (lhs.d == rhs.d)
@@ -1813,9 +1813,9 @@ private:
         // all values must be the same as size is the same
         return true;
     }
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QMultiHash, QMultiHash, /* non-constexpr */, noexcept,
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QMultiHash, QMultiHash, /* non-constexpr */, noexcept,
                  template <typename AKey = Key, typename AT = T,
-                           QTypeTraits::compare_eq_result_container<QMultiHash, AKey, AT> = true>)
+                           BOBUIypeTraits::compare_eq_result_container<QMultiHash, AKey, AT> = true>)
 public:
 #else
     friend bool operator==(const QMultiHash &lhs, const QMultiHash &rhs) noexcept;
@@ -1879,7 +1879,7 @@ public:
     template <typename Predicate>
     qsizetype removeIf(Predicate pred)
     {
-        return QtPrivate::associative_erase_if(*this, pred);
+        return BobUIPrivate::associative_erase_if(*this, pred);
     }
 
     T take(const Key &key)
@@ -2203,10 +2203,10 @@ public:
     inline const_key_value_iterator constKeyValueBegin() const noexcept { return const_key_value_iterator(begin()); }
     inline const_key_value_iterator keyValueEnd() const noexcept { return const_key_value_iterator(end()); }
     inline const_key_value_iterator constKeyValueEnd() const noexcept { return const_key_value_iterator(end()); }
-    auto asKeyValueRange() & { return QtPrivate::QKeyValueRange<QMultiHash &>(*this); }
-    auto asKeyValueRange() const & { return QtPrivate::QKeyValueRange<const QMultiHash &>(*this); }
-    auto asKeyValueRange() && { return QtPrivate::QKeyValueRange<QMultiHash>(std::move(*this)); }
-    auto asKeyValueRange() const && { return QtPrivate::QKeyValueRange<QMultiHash>(std::move(*this)); }
+    auto asKeyValueRange() & { return BobUIPrivate::QKeyValueRange<QMultiHash &>(*this); }
+    auto asKeyValueRange() const & { return BobUIPrivate::QKeyValueRange<const QMultiHash &>(*this); }
+    auto asKeyValueRange() && { return BobUIPrivate::QKeyValueRange<QMultiHash>(std::move(*this)); }
+    auto asKeyValueRange() const && { return BobUIPrivate::QKeyValueRange<QMultiHash>(std::move(*this)); }
 
     iterator detach(const_iterator it)
     {
@@ -2261,7 +2261,7 @@ public:
         return i;
     }
 
-    // more Qt
+    // more BobUI
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
     inline qsizetype count() const noexcept { return size(); }
@@ -2749,7 +2749,7 @@ template <class Key, class T>
 size_t qHash(const QHash<Key, T> &key, size_t seed = 0)
     noexcept(noexcept(qHash(std::declval<Key&>())) && noexcept(qHash(std::declval<T&>())))
 {
-    const QtPrivate::QHashCombine combine(seed);
+    const BobUIPrivate::QHashCombine combine(seed);
     size_t hash = 0;
     for (auto it = key.begin(), end = key.end(); it != end; ++it) {
         size_t h = combine(seed, it.key());
@@ -2763,7 +2763,7 @@ template <class Key, class T>
 inline size_t qHash(const QMultiHash<Key, T> &key, size_t seed = 0)
     noexcept(noexcept(qHash(std::declval<Key&>())) && noexcept(qHash(std::declval<T&>())))
 {
-    const QtPrivate::QHashCombine combine(seed);
+    const BobUIPrivate::QHashCombine combine(seed);
     size_t hash = 0;
     for (auto it = key.begin(), end = key.end(); it != end; ++it) {
         size_t h = combine(seed, it.key());
@@ -2776,15 +2776,15 @@ inline size_t qHash(const QMultiHash<Key, T> &key, size_t seed = 0)
 template <typename Key, typename T, typename Predicate>
 qsizetype erase_if(QHash<Key, T> &hash, Predicate pred)
 {
-    return QtPrivate::associative_erase_if(hash, pred);
+    return BobUIPrivate::associative_erase_if(hash, pred);
 }
 
 template <typename Key, typename T, typename Predicate>
 qsizetype erase_if(QMultiHash<Key, T> &hash, Predicate pred)
 {
-    return QtPrivate::associative_erase_if(hash, pred);
+    return BobUIPrivate::associative_erase_if(hash, pred);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHASH_H

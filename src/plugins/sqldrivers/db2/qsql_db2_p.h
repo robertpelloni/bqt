@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQL_DB2_H
 #define QSQL_DB2_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#ifdef QT_PLUGIN
+#ifdef BOBUI_PLUGIN
 #define Q_EXPORT_SQLDRIVER_DB2
 #else
 #define Q_EXPORT_SQLDRIVER_DB2 Q_SQL_EXPORT
 #endif
 
-#include <QtSql/qsqldriver.h>
+#include <BobUISql/qsqldriver.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDB2DriverPrivate;
 
@@ -38,7 +38,7 @@ class Q_EXPORT_SQLDRIVER_DB2 QDB2Driver : public QSqlDriver
 
 public:
     explicit QDB2Driver(QObject *parent = nullptr);
-    QDB2Driver(Qt::HANDLE env, Qt::HANDLE con, QObject *parent = nullptr);
+    QDB2Driver(BobUI::HANDLE env, BobUI::HANDLE con, QObject *parent = nullptr);
     ~QDB2Driver();
     bool hasFeature(DriverFeature) const override;
     void close() override;
@@ -63,6 +63,6 @@ private:
     bool setAutoCommit(bool autoCommit);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQL_DB2_H

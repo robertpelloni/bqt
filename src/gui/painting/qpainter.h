@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTER_H
 #define QPAINTER_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qtextoption.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/bobuiextoption.h>
 #include <memory>
 
-#ifndef QT_INCLUDE_COMPAT
-#include <QtGui/qpolygon.h>
-#include <QtGui/qpen.h>
-#include <QtGui/qbrush.h>
-#include <QtGui/qtransform.h>
-#include <QtGui/qfontinfo.h>
-#include <QtGui/qfontmetrics.h>
+#ifndef BOBUI_INCLUDE_COMPAT
+#include <BobUIGui/qpolygon.h>
+#include <BobUIGui/qpen.h>
+#include <BobUIGui/qbrush.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUIGui/qfontinfo.h>
+#include <BobUIGui/qfontmetrics.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QBrush;
@@ -34,9 +34,9 @@ class QPainterPath;
 class QPainterPrivate;
 class QPen;
 class QPolygon;
-class QTextItem;
-class QTextEngine;
-class QTransform;
+class BOBUIextItem;
+class BOBUIextEngine;
+class BOBUIransform;
 class QStaticText;
 class QGlyphRun;
 
@@ -150,23 +150,23 @@ public:
     QFontInfo fontInfo() const;
 
     void setPen(const QColor &color);
-    QT_GUI_INLINE_SINCE(6, 11)
+    BOBUI_GUI_INLINE_SINCE(6, 11)
     void setPen(const QPen &pen);
     void setPen(QPen &&pen) { doSetPen(pen, &pen); }
-    void setPen(Qt::PenStyle style);
+    void setPen(BobUI::PenStyle style);
     const QPen &pen() const;
 
-    QT_GUI_INLINE_SINCE(6, 11)
+    BOBUI_GUI_INLINE_SINCE(6, 11)
     void setBrush(const QBrush &brush);
     void setBrush(QBrush &&brush) { doSetBrush(brush, &brush); }
-    void setBrush(Qt::BrushStyle style);
+    void setBrush(BobUI::BrushStyle style);
     void setBrush(QColor color);
-    void setBrush(Qt::GlobalColor color) { setBrush(QColor(color)); }
+    void setBrush(BobUI::GlobalColor color) { setBrush(QColor(color)); }
     const QBrush &brush() const;
 
     // attributes/modes
-    void setBackgroundMode(Qt::BGMode mode);
-    Qt::BGMode backgroundMode() const;
+    void setBackgroundMode(BobUI::BGMode mode);
+    BobUI::BGMode backgroundMode() const;
 
     QPoint brushOrigin() const;
     QPointF brushOriginF() const;
@@ -184,13 +184,13 @@ public:
     QRegion clipRegion() const;
     QPainterPath clipPath() const;
 
-    void setClipRect(const QRectF &, Qt::ClipOperation op = Qt::ReplaceClip);
-    void setClipRect(const QRect &, Qt::ClipOperation op = Qt::ReplaceClip);
-    inline void setClipRect(int x, int y, int w, int h, Qt::ClipOperation op = Qt::ReplaceClip);
+    void setClipRect(const QRectF &, BobUI::ClipOperation op = BobUI::ReplaceClip);
+    void setClipRect(const QRect &, BobUI::ClipOperation op = BobUI::ReplaceClip);
+    inline void setClipRect(int x, int y, int w, int h, BobUI::ClipOperation op = BobUI::ReplaceClip);
 
-    void setClipRegion(const QRegion &, Qt::ClipOperation op = Qt::ReplaceClip);
+    void setClipRegion(const QRegion &, BobUI::ClipOperation op = BobUI::ReplaceClip);
 
-    void setClipPath(const QPainterPath &path, Qt::ClipOperation op = Qt::ReplaceClip);
+    void setClipPath(const QPainterPath &path, BobUI::ClipOperation op = BobUI::ReplaceClip);
 
     void setClipping(bool enable);
     bool hasClipping() const;
@@ -201,15 +201,15 @@ public:
     void restore();
 
     // XForm functions
-    void setTransform(const QTransform &transform, bool combine = false);
-    const QTransform &transform() const;
-    const QTransform &deviceTransform() const;
+    void setTransform(const BOBUIransform &transform, bool combine = false);
+    const BOBUIransform &transform() const;
+    const BOBUIransform &deviceTransform() const;
     void resetTransform();
 
-    void setWorldTransform(const QTransform &matrix, bool combine = false);
-    const QTransform &worldTransform() const;
+    void setWorldTransform(const BOBUIransform &matrix, bool combine = false);
+    const BOBUIransform &worldTransform() const;
 
-    QTransform combinedTransform() const;
+    BOBUIransform combinedTransform() const;
 
     void setWorldMatrixEnabled(bool enabled);
     bool worldMatrixEnabled() const;
@@ -283,10 +283,10 @@ public:
     void drawPolyline(const QPoint *points, int pointCount);
     inline void drawPolyline(const QPolygon &polygon);
 
-    void drawPolygon(const QPointF *points, int pointCount, Qt::FillRule fillRule = Qt::OddEvenFill);
-    inline void drawPolygon(const QPolygonF &polygon, Qt::FillRule fillRule = Qt::OddEvenFill);
-    void drawPolygon(const QPoint *points, int pointCount, Qt::FillRule fillRule = Qt::OddEvenFill);
-    inline void drawPolygon(const QPolygon &polygon, Qt::FillRule fillRule = Qt::OddEvenFill);
+    void drawPolygon(const QPointF *points, int pointCount, BobUI::FillRule fillRule = BobUI::OddEvenFill);
+    inline void drawPolygon(const QPolygonF &polygon, BobUI::FillRule fillRule = BobUI::OddEvenFill);
+    void drawPolygon(const QPoint *points, int pointCount, BobUI::FillRule fillRule = BobUI::OddEvenFill);
+    inline void drawPolygon(const QPolygon &polygon, BobUI::FillRule fillRule = BobUI::OddEvenFill);
 
     void drawConvexPolygon(const QPointF *points, int pointCount);
     inline void drawConvexPolygon(const QPolygonF &polygon);
@@ -306,16 +306,16 @@ public:
     inline void drawChord(const QRect &, int a, int alen);
 
     void drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
-                         Qt::SizeMode mode = Qt::AbsoluteSize);
+                         BobUI::SizeMode mode = BobUI::AbsoluteSize);
     inline void drawRoundedRect(int x, int y, int w, int h, qreal xRadius, qreal yRadius,
-                                Qt::SizeMode mode = Qt::AbsoluteSize);
+                                BobUI::SizeMode mode = BobUI::AbsoluteSize);
     inline void drawRoundedRect(const QRect &rect, qreal xRadius, qreal yRadius,
-                                Qt::SizeMode mode = Qt::AbsoluteSize);
+                                BobUI::SizeMode mode = BobUI::AbsoluteSize);
 
     void drawTiledPixmap(const QRectF &rect, const QPixmap &pm, const QPointF &offset = QPointF());
     inline void drawTiledPixmap(int x, int y, int w, int h, const QPixmap &, int sx=0, int sy=0);
     inline void drawTiledPixmap(const QRect &, const QPixmap &, const QPoint & = QPoint());
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
     void drawPicture(const QPointF &p, const QPicture &picture);
     inline void drawPicture(int x, int y, const QPicture &picture);
     inline void drawPicture(const QPoint &p, const QPicture &picture);
@@ -339,24 +339,24 @@ public:
                              const QPixmap &pixmap, PixmapFragmentHints hints = PixmapFragmentHints());
 
     void drawImage(const QRectF &targetRect, const QImage &image, const QRectF &sourceRect,
-                   Qt::ImageConversionFlags flags = Qt::AutoColor);
+                   BobUI::ImageConversionFlags flags = BobUI::AutoColor);
     inline void drawImage(const QRect &targetRect, const QImage &image, const QRect &sourceRect,
-                          Qt::ImageConversionFlags flags = Qt::AutoColor);
+                          BobUI::ImageConversionFlags flags = BobUI::AutoColor);
     inline void drawImage(const QPointF &p, const QImage &image, const QRectF &sr,
-                          Qt::ImageConversionFlags flags = Qt::AutoColor);
+                          BobUI::ImageConversionFlags flags = BobUI::AutoColor);
     inline void drawImage(const QPoint &p, const QImage &image, const QRect &sr,
-                          Qt::ImageConversionFlags flags = Qt::AutoColor);
+                          BobUI::ImageConversionFlags flags = BobUI::AutoColor);
     inline void drawImage(const QRectF &r, const QImage &image);
     inline void drawImage(const QRect &r, const QImage &image);
     void drawImage(const QPointF &p, const QImage &image);
     inline void drawImage(const QPoint &p, const QImage &image);
     inline void drawImage(int x, int y, const QImage &image, int sx = 0, int sy = 0,
-                          int sw = -1, int sh = -1, Qt::ImageConversionFlags flags = Qt::AutoColor);
+                          int sw = -1, int sh = -1, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
-    void setLayoutDirection(Qt::LayoutDirection direction);
-    Qt::LayoutDirection layoutDirection() const;
+    void setLayoutDirection(BobUI::LayoutDirection direction);
+    BobUI::LayoutDirection layoutDirection() const;
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
     void drawGlyphRun(const QPointF &position, const QGlyphRun &glyphRun);
 #endif
 
@@ -374,17 +374,17 @@ public:
     void drawText(const QRect &r, int flags, const QString &text, QRect *br = nullptr);
     inline void drawText(int x, int y, int w, int h, int flags, const QString &text, QRect *br = nullptr);
 
-    void drawText(const QRectF &r, const QString &text, const QTextOption &o = QTextOption());
+    void drawText(const QRectF &r, const QString &text, const BOBUIextOption &o = BOBUIextOption());
 
     QRectF boundingRect(const QRectF &rect, int flags, const QString &text);
     QRect boundingRect(const QRect &rect, int flags, const QString &text);
     inline QRect boundingRect(int x, int y, int w, int h, int flags, const QString &text);
 
-    QRectF boundingRect(const QRectF &rect, const QString &text, const QTextOption &o = QTextOption());
+    QRectF boundingRect(const QRectF &rect, const QString &text, const BOBUIextOption &o = BOBUIextOption());
 
-    void drawTextItem(const QPointF &p, const QTextItem &ti);
-    inline void drawTextItem(int x, int y, const QTextItem &ti);
-    inline void drawTextItem(const QPoint &p, const QTextItem &ti);
+    void drawTextItem(const QPointF &p, const BOBUIextItem &ti);
+    inline void drawTextItem(int x, int y, const BOBUIextItem &ti);
+    inline void drawTextItem(const QPoint &p, const BOBUIextItem &ti);
 
     void fillRect(const QRectF &, const QBrush &);
     inline void fillRect(int x, int y, int w, int h, const QBrush &);
@@ -394,13 +394,13 @@ public:
     inline void fillRect(int x, int y, int w, int h, const QColor &color);
     void fillRect(const QRect &, const QColor &color);
 
-    inline void fillRect(int x, int y, int w, int h, Qt::GlobalColor c);
-    inline void fillRect(const QRect &r, Qt::GlobalColor c);
-    inline void fillRect(const QRectF &r, Qt::GlobalColor c);
+    inline void fillRect(int x, int y, int w, int h, BobUI::GlobalColor c);
+    inline void fillRect(const QRect &r, BobUI::GlobalColor c);
+    inline void fillRect(const QRectF &r, BobUI::GlobalColor c);
 
-    inline void fillRect(int x, int y, int w, int h, Qt::BrushStyle style);
-    inline void fillRect(const QRect &r, Qt::BrushStyle style);
-    inline void fillRect(const QRectF &r, Qt::BrushStyle style);
+    inline void fillRect(int x, int y, int w, int h, BobUI::BrushStyle style);
+    inline void fillRect(const QRect &r, BobUI::BrushStyle style);
+    inline void fillRect(const QRectF &r, BobUI::BrushStyle style);
 
     inline void fillRect(int x, int y, int w, int h, QGradient::Preset preset);
     inline void fillRect(const QRect &r, QGradient::Preset preset);
@@ -442,7 +442,7 @@ private:
     friend class QRasterPaintEngine;
     friend class QAlphaPaintEngine;
     friend class QPreviewPaintEngine;
-    friend class QTextEngine;
+    friend class BOBUIextEngine;
 };
 Q_DECLARE_TYPEINFO(QPainter::PixmapFragment, Q_RELOCATABLE_TYPE);
 
@@ -508,12 +508,12 @@ inline void QPainter::drawPolyline(const QPolygon &polyline)
     drawPolyline(polyline.constData(), int(polyline.size()));
 }
 
-inline void QPainter::drawPolygon(const QPolygonF &polygon, Qt::FillRule fillRule)
+inline void QPainter::drawPolygon(const QPolygonF &polygon, BobUI::FillRule fillRule)
 {
     drawPolygon(polygon.constData(), int(polygon.size()), fillRule);
 }
 
-inline void QPainter::drawPolygon(const QPolygon &polygon, Qt::FillRule fillRule)
+inline void QPainter::drawPolygon(const QPolygon &polygon, BobUI::FillRule fillRule)
 {
     drawPolygon(polygon.constData(), int(polygon.size()), fillRule);
 }
@@ -581,13 +581,13 @@ inline void QPainter::drawPoints(const QPolygon &points)
 }
 
 inline void QPainter::drawRoundedRect(int x, int y, int w, int h, qreal xRadius, qreal yRadius,
-                            Qt::SizeMode mode)
+                            BobUI::SizeMode mode)
 {
     drawRoundedRect(QRectF(x, y, w, h), xRadius, yRadius, mode);
 }
 
 inline void QPainter::drawRoundedRect(const QRect &rect, qreal xRadius, qreal yRadius,
-                            Qt::SizeMode mode)
+                            BobUI::SizeMode mode)
 {
     drawRoundedRect(QRectF(rect), xRadius, yRadius, mode);
 }
@@ -637,7 +637,7 @@ inline void QPainter::drawChord(int x, int y, int w, int h, int a, int alen)
     drawChord(QRectF(x, y, w, h), a, alen);
 }
 
-inline void QPainter::setClipRect(int x, int y, int w, int h, Qt::ClipOperation op)
+inline void QPainter::setClipRect(int x, int y, int w, int h, BobUI::ClipOperation op)
 {
     setClipRect(QRect(x, y, w, h), op);
 }
@@ -662,32 +662,32 @@ inline void QPainter::fillRect(int x, int y, int w, int h, const QColor &b)
     fillRect(QRect(x, y, w, h), b);
 }
 
-inline void QPainter::fillRect(int x, int y, int w, int h, Qt::GlobalColor c)
+inline void QPainter::fillRect(int x, int y, int w, int h, BobUI::GlobalColor c)
 {
     fillRect(QRect(x, y, w, h), QColor(c));
 }
 
-inline void QPainter::fillRect(const QRect &r, Qt::GlobalColor c)
+inline void QPainter::fillRect(const QRect &r, BobUI::GlobalColor c)
 {
     fillRect(r, QColor(c));
 }
 
-inline void QPainter::fillRect(const QRectF &r, Qt::GlobalColor c)
+inline void QPainter::fillRect(const QRectF &r, BobUI::GlobalColor c)
 {
     fillRect(r, QColor(c));
 }
 
-inline void QPainter::fillRect(int x, int y, int w, int h, Qt::BrushStyle style)
+inline void QPainter::fillRect(int x, int y, int w, int h, BobUI::BrushStyle style)
 {
     fillRect(QRectF(x, y, w, h), QBrush(style));
 }
 
-inline void QPainter::fillRect(const QRect &r, Qt::BrushStyle style)
+inline void QPainter::fillRect(const QRect &r, BobUI::BrushStyle style)
 {
     fillRect(QRectF(r), QBrush(style));
 }
 
-inline void QPainter::fillRect(const QRectF &r, Qt::BrushStyle style)
+inline void QPainter::fillRect(const QRectF &r, BobUI::BrushStyle style)
 {
     fillRect(r, QBrush(style));
 }
@@ -707,7 +707,7 @@ inline void QPainter::fillRect(const QRectF &r, QGradient::Preset p)
     fillRect(r, QGradient(p));
 }
 
-#if QT_GUI_INLINE_IMPL_SINCE(6, 11)
+#if BOBUI_GUI_INLINE_IMPL_SINCE(6, 11)
 
 void QPainter::setPen(const QPen &p)
 {
@@ -719,7 +719,7 @@ void QPainter::setBrush(const QBrush &b)
     doSetBrush(b, nullptr);
 }
 
-#endif // QT_GUI_INLINE_IMPL_SINCE(6, 11)
+#endif // BOBUI_GUI_INLINE_IMPL_SINCE(6, 11)
 
 
 inline void QPainter::setBrushOrigin(int x, int y)
@@ -789,25 +789,25 @@ inline void QPainter::drawPixmap(const QPoint &p, const QPixmap &pm, const QRect
     drawPixmap(QRectF(p.x(), p.y(), -1, -1), pm, sr);
 }
 
-inline void QPainter::drawTextItem(int x, int y, const QTextItem &ti)
+inline void QPainter::drawTextItem(int x, int y, const BOBUIextItem &ti)
 {
     drawTextItem(QPointF(x, y), ti);
 }
 
 inline void QPainter::drawImage(const QRect &targetRect, const QImage &image, const QRect &sourceRect,
-                                Qt::ImageConversionFlags flags)
+                                BobUI::ImageConversionFlags flags)
 {
     drawImage(QRectF(targetRect), image, QRectF(sourceRect), flags);
 }
 
 inline void QPainter::drawImage(const QPointF &p, const QImage &image, const QRectF &sr,
-                                Qt::ImageConversionFlags flags)
+                                BobUI::ImageConversionFlags flags)
 {
     drawImage(QRectF(p.x(), p.y(), -1, -1), image, sr, flags);
 }
 
 inline void QPainter::drawImage(const QPoint &p, const QImage &image, const QRect &sr,
-                                Qt::ImageConversionFlags flags)
+                                BobUI::ImageConversionFlags flags)
 {
     drawImage(QRect(p.x(), p.y(), -1, -1), image, sr, flags);
 }
@@ -829,9 +829,9 @@ inline void QPainter::drawImage(const QPoint &p, const QImage &image)
 }
 
 inline void QPainter::drawImage(int x, int y, const QImage &image, int sx, int sy, int sw, int sh,
-                                Qt::ImageConversionFlags flags)
+                                BobUI::ImageConversionFlags flags)
 {
-    if (sx == 0 && sy == 0 && sw == -1 && sh == -1 && flags == Qt::AutoColor)
+    if (sx == 0 && sy == 0 && sw == -1 && sh == -1 && flags == BobUI::AutoColor)
         drawImage(QPointF(x, y), image);
     else
         drawImage(QRectF(x, y, -1, -1), image, QRectF(sx, sy, sw, sh), flags);
@@ -847,7 +847,7 @@ inline void QPainter::drawStaticText(int x, int y, const QStaticText &staticText
     drawStaticText(QPointF(x, y), staticText);
 }
 
-inline void QPainter::drawTextItem(const QPoint &p, const QTextItem &ti)
+inline void QPainter::drawTextItem(const QPoint &p, const BOBUIextItem &ti)
 {
     drawTextItem(QPointF(p), ti);
 }
@@ -892,7 +892,7 @@ inline void QPainter::setWindow(int x, int y, int w, int h)
     setWindow(QRect(x, y, w, h));
 }
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 inline void QPainter::drawPicture(int x, int y, const QPicture &p)
 {
     drawPicture(QPoint(x, y), p);
@@ -904,6 +904,6 @@ inline void QPainter::drawPicture(const QPoint &pt, const QPicture &p)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTER_H

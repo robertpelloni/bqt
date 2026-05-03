@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qvnc_p.h"
 #include "qvncscreen.h"
 #include "qvncclient.h"
-#include "QtNetwork/qtcpserver.h"
-#include "QtNetwork/qtcpsocket.h"
+#include "BobUINetwork/bobuicpserver.h"
+#include "BobUINetwork/bobuicpsocket.h"
 #include <qendian.h>
-#include <qthread.h>
+#include <bobuihread.h>
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/QWindow>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/QWindow>
 
 #ifdef Q_OS_WIN
 #include <winsock2.h>
@@ -17,11 +17,11 @@
 #include <arpa/inet.h>
 #endif
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcVnc, "qt.qpa.vnc");
+Q_LOGGING_CATEGORY(lcVnc, "bobui.qpa.vnc");
 
 QVncDirtyMap::QVncDirtyMap(QVncScreen *screen)
     : screen(screen), bytesPerPixel(0), numDirty(0)
@@ -65,7 +65,7 @@ inline void QVncDirtyMap::setClean(int x, int y)
 template <class T>
 void QVncDirtyMapOptimized<T>::setDirty(int tileX, int tileY, bool force)
 {
-    static bool alwaysForce = qEnvironmentVariableIsSet("QT_VNC_NO_COMPAREBUFFER");
+    static bool alwaysForce = qEnvironmentVariableIsSet("BOBUI_VNC_NO_COMPAREBUFFER");
     if (alwaysForce)
         force = true;
 
@@ -139,74 +139,74 @@ static const struct {
     int keysym;
     int keycode;
 } keyMap[] = {
-    { 0xff08, Qt::Key_Backspace },
-    { 0xff09, Qt::Key_Tab       },
-    { 0xff0d, Qt::Key_Return    },
-    { 0xff1b, Qt::Key_Escape    },
-    { 0xff63, Qt::Key_Insert    },
-    { 0xffff, Qt::Key_Delete    },
-    { 0xff50, Qt::Key_Home      },
-    { 0xff57, Qt::Key_End       },
-    { 0xff55, Qt::Key_PageUp    },
-    { 0xff56, Qt::Key_PageDown  },
-    { 0xff51, Qt::Key_Left      },
-    { 0xff52, Qt::Key_Up        },
-    { 0xff53, Qt::Key_Right     },
-    { 0xff54, Qt::Key_Down      },
-    { 0xffbe, Qt::Key_F1        },
-    { 0xffbf, Qt::Key_F2        },
-    { 0xffc0, Qt::Key_F3        },
-    { 0xffc1, Qt::Key_F4        },
-    { 0xffc2, Qt::Key_F5        },
-    { 0xffc3, Qt::Key_F6        },
-    { 0xffc4, Qt::Key_F7        },
-    { 0xffc5, Qt::Key_F8        },
-    { 0xffc6, Qt::Key_F9        },
-    { 0xffc7, Qt::Key_F10       },
-    { 0xffc8, Qt::Key_F11       },
-    { 0xffc9, Qt::Key_F12       },
-    { 0xffe1, Qt::Key_Shift     },
-    { 0xffe2, Qt::Key_Shift     },
-    { 0xffe3, Qt::Key_Control   },
-    { 0xffe4, Qt::Key_Control   },
-    { 0xffe7, Qt::Key_Meta      },
-    { 0xffe8, Qt::Key_Meta      },
-    { 0xffe9, Qt::Key_Alt       },
-    { 0xffea, Qt::Key_Alt       },
+    { 0xff08, BobUI::Key_Backspace },
+    { 0xff09, BobUI::Key_Tab       },
+    { 0xff0d, BobUI::Key_Return    },
+    { 0xff1b, BobUI::Key_Escape    },
+    { 0xff63, BobUI::Key_Insert    },
+    { 0xffff, BobUI::Key_Delete    },
+    { 0xff50, BobUI::Key_Home      },
+    { 0xff57, BobUI::Key_End       },
+    { 0xff55, BobUI::Key_PageUp    },
+    { 0xff56, BobUI::Key_PageDown  },
+    { 0xff51, BobUI::Key_Left      },
+    { 0xff52, BobUI::Key_Up        },
+    { 0xff53, BobUI::Key_Right     },
+    { 0xff54, BobUI::Key_Down      },
+    { 0xffbe, BobUI::Key_F1        },
+    { 0xffbf, BobUI::Key_F2        },
+    { 0xffc0, BobUI::Key_F3        },
+    { 0xffc1, BobUI::Key_F4        },
+    { 0xffc2, BobUI::Key_F5        },
+    { 0xffc3, BobUI::Key_F6        },
+    { 0xffc4, BobUI::Key_F7        },
+    { 0xffc5, BobUI::Key_F8        },
+    { 0xffc6, BobUI::Key_F9        },
+    { 0xffc7, BobUI::Key_F10       },
+    { 0xffc8, BobUI::Key_F11       },
+    { 0xffc9, BobUI::Key_F12       },
+    { 0xffe1, BobUI::Key_Shift     },
+    { 0xffe2, BobUI::Key_Shift     },
+    { 0xffe3, BobUI::Key_Control   },
+    { 0xffe4, BobUI::Key_Control   },
+    { 0xffe7, BobUI::Key_Meta      },
+    { 0xffe8, BobUI::Key_Meta      },
+    { 0xffe9, BobUI::Key_Alt       },
+    { 0xffea, BobUI::Key_Alt       },
 
-    { 0xffb0, Qt::Key_0         },
-    { 0xffb1, Qt::Key_1         },
-    { 0xffb2, Qt::Key_2         },
-    { 0xffb3, Qt::Key_3         },
-    { 0xffb4, Qt::Key_4         },
-    { 0xffb5, Qt::Key_5         },
-    { 0xffb6, Qt::Key_6         },
-    { 0xffb7, Qt::Key_7         },
-    { 0xffb8, Qt::Key_8         },
-    { 0xffb9, Qt::Key_9         },
+    { 0xffb0, BobUI::Key_0         },
+    { 0xffb1, BobUI::Key_1         },
+    { 0xffb2, BobUI::Key_2         },
+    { 0xffb3, BobUI::Key_3         },
+    { 0xffb4, BobUI::Key_4         },
+    { 0xffb5, BobUI::Key_5         },
+    { 0xffb6, BobUI::Key_6         },
+    { 0xffb7, BobUI::Key_7         },
+    { 0xffb8, BobUI::Key_8         },
+    { 0xffb9, BobUI::Key_9         },
 
-    { 0xff8d, Qt::Key_Return    },
-    { 0xffaa, Qt::Key_Asterisk  },
-    { 0xffab, Qt::Key_Plus      },
-    { 0xffad, Qt::Key_Minus     },
-    { 0xffae, Qt::Key_Period    },
-    { 0xffaf, Qt::Key_Slash     },
+    { 0xff8d, BobUI::Key_Return    },
+    { 0xffaa, BobUI::Key_Asterisk  },
+    { 0xffab, BobUI::Key_Plus      },
+    { 0xffad, BobUI::Key_Minus     },
+    { 0xffae, BobUI::Key_Period    },
+    { 0xffaf, BobUI::Key_Slash     },
 
-    { 0xff95, Qt::Key_Home      },
-    { 0xff96, Qt::Key_Left      },
-    { 0xff97, Qt::Key_Up        },
-    { 0xff98, Qt::Key_Right     },
-    { 0xff99, Qt::Key_Down      },
-    { 0xff9a, Qt::Key_PageUp    },
-    { 0xff9b, Qt::Key_PageDown  },
-    { 0xff9c, Qt::Key_End       },
-    { 0xff9e, Qt::Key_Insert    },
-    { 0xff9f, Qt::Key_Delete    },
+    { 0xff95, BobUI::Key_Home      },
+    { 0xff96, BobUI::Key_Left      },
+    { 0xff97, BobUI::Key_Up        },
+    { 0xff98, BobUI::Key_Right     },
+    { 0xff99, BobUI::Key_Down      },
+    { 0xff9a, BobUI::Key_PageUp    },
+    { 0xff9b, BobUI::Key_PageDown  },
+    { 0xff9c, BobUI::Key_End       },
+    { 0xff9e, BobUI::Key_Insert    },
+    { 0xff9f, BobUI::Key_Delete    },
 
     { 0, 0 }
 };
 
-void QRfbRect::read(QTcpSocket *s)
+void QRfbRect::read(BOBUIcpSocket *s)
 {
     quint16 buf[4];
     s->read(reinterpret_cast<char*>(buf), 8);
@@ -216,7 +216,7 @@ void QRfbRect::read(QTcpSocket *s)
     h = ntohs(buf[3]);
 }
 
-void QRfbRect::write(QTcpSocket *s) const
+void QRfbRect::write(BOBUIcpSocket *s) const
 {
     quint16 buf[4];
     buf[0] = htons(x);
@@ -226,7 +226,7 @@ void QRfbRect::write(QTcpSocket *s) const
     s->write(reinterpret_cast<char*>(buf) , 8);
 }
 
-void QRfbPixelFormat::read(QTcpSocket *s)
+void QRfbPixelFormat::read(BOBUIcpSocket *s)
 {
     char buf[16];
     s->read(buf, 16);
@@ -252,7 +252,7 @@ void QRfbPixelFormat::read(QTcpSocket *s)
     blueShift = buf[12];
 }
 
-void QRfbPixelFormat::write(QTcpSocket *s)
+void QRfbPixelFormat::write(BOBUIcpSocket *s)
 {
     char buf[16];
     buf[0] = bitsPerPixel;
@@ -286,7 +286,7 @@ void QRfbServerInit::setName(const char *n)
     strcpy(name, n);
 }
 
-void QRfbServerInit::read(QTcpSocket *s)
+void QRfbServerInit::read(BOBUIcpSocket *s)
 {
     s->read(reinterpret_cast<char *>(&width), 2);
     width = ntohs(width);
@@ -303,7 +303,7 @@ void QRfbServerInit::read(QTcpSocket *s)
     name[len] = '\0';
 }
 
-void QRfbServerInit::write(QTcpSocket *s)
+void QRfbServerInit::write(BOBUIcpSocket *s)
 {
     quint16 t = htons(width);
     s->write(reinterpret_cast<char *>(&t), 2);
@@ -316,7 +316,7 @@ void QRfbServerInit::write(QTcpSocket *s)
     s->write(name, static_cast<qint64>(strlen(name)));
 }
 
-bool QRfbSetEncodings::read(QTcpSocket *s)
+bool QRfbSetEncodings::read(BOBUIcpSocket *s)
 {
     if (s->bytesAvailable() < 3)
         return false;
@@ -329,7 +329,7 @@ bool QRfbSetEncodings::read(QTcpSocket *s)
     return true;
 }
 
-bool QRfbFrameBufferUpdateRequest::read(QTcpSocket *s)
+bool QRfbFrameBufferUpdateRequest::read(BOBUIcpSocket *s)
 {
     if (s->bytesAvailable() < 9)
         return false;
@@ -340,7 +340,7 @@ bool QRfbFrameBufferUpdateRequest::read(QTcpSocket *s)
     return true;
 }
 
-bool QRfbKeyEvent::read(QTcpSocket *s)
+bool QRfbKeyEvent::read(BOBUIcpSocket *s)
 {
     if (s->bytesAvailable() < 7)
         return false;
@@ -369,29 +369,29 @@ bool QRfbKeyEvent::read(QTcpSocket *s)
         if (key <= 0xff) {
             unicode = key;
             if (key >= 'a' && key <= 'z')
-                keycode = Qt::Key_A + key - 'a';
+                keycode = BobUI::Key_A + key - 'a';
             else if (key >= ' ' && key <= '~')
-                keycode = Qt::Key_Space + key - ' ';
+                keycode = BobUI::Key_Space + key - ' ';
         }
     }
 
     return true;
 }
 
-bool QRfbPointerEvent::read(QTcpSocket *s)
+bool QRfbPointerEvent::read(BOBUIcpSocket *s)
 {
     if (s->bytesAvailable() < 5)
         return false;
 
     char buttonMask;
     s->read(&buttonMask, 1);
-    buttons = Qt::NoButton;
+    buttons = BobUI::NoButton;
     if (buttonMask & 1)
-        buttons |= Qt::LeftButton;
+        buttons |= BobUI::LeftButton;
     if (buttonMask & 2)
-        buttons |= Qt::MiddleButton;
+        buttons |= BobUI::MiddleButton;
     if (buttonMask & 4)
-        buttons |= Qt::RightButton;
+        buttons |= BobUI::RightButton;
 
     quint16 tmp;
     s->read(reinterpret_cast<char *>(&tmp), 2);
@@ -402,7 +402,7 @@ bool QRfbPointerEvent::read(QTcpSocket *s)
     return true;
 }
 
-bool QRfbClientCutText::read(QTcpSocket *s)
+bool QRfbClientCutText::read(BOBUIcpSocket *s)
 {
     if (s->bytesAvailable() < 7)
         return false;
@@ -418,7 +418,7 @@ bool QRfbClientCutText::read(QTcpSocket *s)
 void QRfbRawEncoder::write()
 {
 //    QVncDirtyMap *map = server->dirtyMap();
-    QTcpSocket *socket = client->clientSocket();
+    BOBUIcpSocket *socket = client->clientSocket();
 
     const int bytesPerPixel = client->clientBytesPerPixel();
 
@@ -498,11 +498,11 @@ void QRfbRawEncoder::write()
     socket->flush();
 }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 QVncClientCursor::QVncClientCursor()
 {
     QWindow *w = QGuiApplication::focusWindow();
-    QCursor c = w ? w->cursor() : QCursor(Qt::ArrowCursor);
+    QCursor c = w ? w->cursor() : QCursor(BobUI::ArrowCursor);
     changeCursor(&c, nullptr);
 }
 
@@ -512,7 +512,7 @@ QVncClientCursor::~QVncClientCursor()
 
 void QVncClientCursor::write(QVncClient *client) const
 {
-    QTcpSocket *socket = client->clientSocket();
+    BOBUIcpSocket *socket = client->clientSocket();
 
     // FramebufferUpdate header
     {
@@ -554,9 +554,9 @@ void QVncClientCursor::write(QVncClient *client) const
 void QVncClientCursor::changeCursor(QCursor *widgetCursor, QWindow *window)
 {
     Q_UNUSED(window);
-    const Qt::CursorShape shape = widgetCursor ? widgetCursor->shape() : Qt::ArrowCursor;
+    const BobUI::CursorShape shape = widgetCursor ? widgetCursor->shape() : BobUI::ArrowCursor;
 
-    if (shape == Qt::BitmapCursor) {
+    if (shape == BobUI::BitmapCursor) {
         // application supplied cursor
         hotspot = widgetCursor->hotSpot();
         cursor = widgetCursor->pixmap().toImage();
@@ -585,18 +585,18 @@ uint QVncClientCursor::removeClient(QVncClient *client)
     clients.removeOne(client);
     return clients.size();
 }
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 QVncServer::QVncServer(QVncScreen *screen, quint16 port)
     : qvnc_screen(screen)
     , m_port(port)
 {
-    QMetaObject::invokeMethod(this, "init", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "init", BobUI::QueuedConnection);
 }
 
 void QVncServer::init()
 {
-    serverSocket = new QTcpServer(this);
+    serverSocket = new BOBUIcpServer(this);
     if (!serverSocket->listen(QHostAddress::Any, m_port))
         qWarning() << "QVncServer could not connect:" << serverSocket->errorString();
     else
@@ -646,6 +646,6 @@ inline QImage QVncServer::screenImage() const
     return *qvnc_screen->image();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvnc_p.cpp"

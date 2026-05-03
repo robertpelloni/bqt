@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>NewForm</class>
  <widget class="QDialog" name="NewForm">
@@ -33,7 +33,7 @@
       <number>1</number>
      </property>
      <item>
-      <widget class="QTreeWidget" name="treeWidget">
+      <widget class="BOBUIreeWidget" name="treeWidget">
        <property name="iconSize">
         <size>
          <width>128</width>
@@ -68,7 +68,7 @@
         <string>Choose a template for a preview</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
+        <set>BobUI::AlignmentFlag::AlignCenter</set>
        </property>
        <property name="margin">
         <number>5</number>

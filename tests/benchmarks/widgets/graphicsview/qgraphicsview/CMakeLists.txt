@@ -1,19 +1,19 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_bench_qgraphicsview Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_qgraphicsview
+bobui_internal_add_benchmark(tst_bench_qgraphicsview
     SOURCES
         chiptester/chip.cpp chiptester/chip.h
         chiptester/chiptester.cpp chiptester/chiptester.h
         tst_qgraphicsview.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Test
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Test
+        BobUI::Widgets
 )
 
 # Resources:
@@ -24,17 +24,17 @@ set(qgraphicsview_resource_files
     "random.data"
 )
 
-qt_internal_add_resource(tst_bench_qgraphicsview "qgraphicsview"
+bobui_internal_add_resource(tst_bench_qgraphicsview "qgraphicsview"
     PREFIX
         "/"
     FILES
         ${qgraphicsview_resource_files}
 )
 set(images_resource_files
-    "chiptester/qt4logo.png"
+    "chiptester/bobui4logo.png"
 )
 
-qt_internal_add_resource(tst_bench_qgraphicsview "images"
+bobui_internal_add_resource(tst_bench_qgraphicsview "images"
     PREFIX
         "/"
     BASE
@@ -46,7 +46,7 @@ qt_internal_add_resource(tst_bench_qgraphicsview "images"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_bench_qgraphicsview CONDITION TARGET Qt::OpenGL
+bobui_internal_extend_target(tst_bench_qgraphicsview CONDITION TARGET BobUI::OpenGL
     LIBRARIES
-        Qt::OpenGL
+        BobUI::OpenGL
 )

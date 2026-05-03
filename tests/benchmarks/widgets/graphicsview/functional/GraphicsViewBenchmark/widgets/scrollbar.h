@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef SCROLLBAR_H
 #define SCROLLBAR_H
@@ -16,7 +16,7 @@ class ScrollBar : public QGraphicsWidget
 
 public:
 
-    ScrollBar(Qt::Orientation orientation, QGraphicsWidget *parent=0);
+    ScrollBar(BobUI::Orientation orientation, QGraphicsWidget *parent=0);
     virtual ~ScrollBar();
 
 public:
@@ -43,7 +43,7 @@ private:
         const QStyleOptionGraphicsItem *option,
         QWidget *widget);
 
-    QSizeF sizeHint(Qt::SizeHint which,
+    QSizeF sizeHint(BobUI::SizeHint which,
         const QSizeF &constraint = QSizeF()) const;
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

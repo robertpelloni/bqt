@@ -1,10 +1,10 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qalgorithms.h>
-#include <QTest>
+#include <BobUICore/qalgorithms.h>
+#include <BOBUIest>
 
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 #include <sstream>
 #include <iterator>
@@ -21,7 +21,7 @@ QT_WARNING_DISABLE_DEPRECATED
 #define Q_TEST_PERFORMANCE 0
 
 using namespace std;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 template <typename Container, typename T>
 Container make(int size, T factor)
@@ -166,9 +166,9 @@ template <typename T> struct PrintIfFailed
     PrintIfFailed(T v) : value(v) {}
     ~PrintIfFailed()
     {
-        if (!QTest::currentTestFailed())
+        if (!BOBUIest::currentTestFailed())
             return;
-        qWarning() << "Original value was" << Qt::hex << Qt::showbase << T(value);
+        qWarning() << "Original value was" << BobUI::hex << BobUI::showbase << T(value);
     }
 };
 
@@ -295,7 +295,7 @@ namespace SwapTest {
 void tst_QAlgorithms::swap2()
 {
     {
-#ifndef QT_NO_SQL
+#ifndef BOBUI_NO_SQL
         //check the namespace lookup works correctly
         SwapTest::ST a = { 45, 65 };
         SwapTest::ST b = { 48, 68 };
@@ -342,7 +342,7 @@ static constexpr uint bitsSetInInt64(quint64 word)
 
 void tst_QAlgorithms::popCount_data_impl(size_t sizeof_T_Int)
 {
-    using namespace QTest;
+    using namespace BOBUIest;
     addColumn<quint64>("input");
     addColumn<uint>("expected");
 
@@ -351,22 +351,22 @@ void tst_QAlgorithms::popCount_data_impl(size_t sizeof_T_Int)
         const uint bits = bitsSetInByte(byte);
         const quint64 value = static_cast<quint64>(byte);
         const quint64 input = value << ((i % sizeof_T_Int) * 8U);
-        QTest::addRow("%u-bits", i) << input << bits;
+        BOBUIest::addRow("%u-bits", i) << input << bits;
     }
 
     // and some random ones:
     if (sizeof_T_Int >= 8) {
         for (size_t i = 0; i < 1000; ++i) {
             const quint64 input = QRandomGenerator::global()->generate64();
-            QTest::addRow("random-%zu", i) << input << bitsSetInInt64(input);
+            BOBUIest::addRow("random-%zu", i) << input << bitsSetInInt64(input);
         }
     } else if (sizeof_T_Int >= 2) {
         for (size_t i = 0; i < 1000 ; ++i) {
             const quint32 input = QRandomGenerator::global()->generate();
             if (sizeof_T_Int >= 4) {
-                QTest::addRow("random-%zu", i) << quint64(input) << bitsSetInInt(input);
+                BOBUIest::addRow("random-%zu", i) << quint64(input) << bitsSetInInt(input);
             } else {
-                QTest::addRow("random-%zu", i)
+                BOBUIest::addRow("random-%zu", i)
                     << quint64(input & 0xFFFF) << bitsSetInShort(input & 0xFFFF);
             }
         }
@@ -394,7 +394,7 @@ static constexpr int casesPerOffset = 3;
 
 void tst_QAlgorithms::countTrailing_data_impl(size_t sizeof_T_Int)
 {
-    using namespace QTest;
+    using namespace BOBUIest;
     addColumn<quint64>("input");
     addColumn<uint>("expected");
 
@@ -443,7 +443,7 @@ void tst_QAlgorithms::countTrailing_impl()
 
 void tst_QAlgorithms::countLeading_data_impl(size_t sizeof_T_Int)
 {
-    using namespace QTest;
+    using namespace BOBUIest;
     addColumn<quint64>("input");
     addColumn<uint>("expected");
 
@@ -518,6 +518,6 @@ void tst_QAlgorithms::join_impl_InputIterator(std::stringstream ss, const Separa
     QCOMPARE(res, expectedResult);
 }
 
-QTEST_APPLESS_MAIN(tst_QAlgorithms)
+BOBUIEST_APPLESS_MAIN(tst_QAlgorithms)
 #include "tst_qalgorithms.moc"
 

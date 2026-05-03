@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPUSHBUTTON_H
 #define QPUSHBUTTON_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractbutton.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractbutton.h>
 
-QT_REQUIRE_CONFIG(pushbutton);
+BOBUI_REQUIRE_CONFIG(pushbutton);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPushButtonPrivate;
@@ -39,7 +39,7 @@ public:
     bool isDefault() const;
     void setDefault(bool);
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void setMenu(QMenu* menu);
     QMenu* menu() const;
 #endif
@@ -48,7 +48,7 @@ public:
     bool isFlat() const;
 
 public Q_SLOTS:
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void showMenu();
 #endif
 
@@ -68,6 +68,6 @@ private:
     Q_DECLARE_PRIVATE(QPushButton)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPUSHBUTTON_H

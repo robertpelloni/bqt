@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QEASINGCURVE_H
 #define QEASINGCURVE_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_REQUIRE_CONFIG(easingcurve);
+BOBUI_REQUIRE_CONFIG(easingcurve);
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qobjectdefs.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qobjectdefs.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEasingCurvePrivate;
 class QPointF;
@@ -45,11 +45,11 @@ public:
     QEasingCurve &operator=(const QEasingCurve &other)
     { if ( this != &other ) { QEasingCurve copy(other); swap(copy); } return *this; }
     QEasingCurve(QEasingCurve &&other) noexcept : d_ptr(other.d_ptr) { other.d_ptr = nullptr; }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QEasingCurve)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QEasingCurve)
 
-    void swap(QEasingCurve &other) noexcept { qt_ptr_swap(d_ptr, other.d_ptr); }
+    void swap(QEasingCurve &other) noexcept { bobui_ptr_swap(d_ptr, other.d_ptr); }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QEasingCurve &other) const;
     inline bool operator!=(const QEasingCurve &other) const
     { return !(this->operator==(other)); }
@@ -78,30 +78,30 @@ public:
 
 private:
     QEasingCurvePrivate *d_ptr;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QEasingCurve &item);
 #endif
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QEasingCurve &);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QEasingCurve &);
 #endif
     friend Q_CORE_EXPORT bool
     comparesEqual(const QEasingCurve &lhs, const QEasingCurve &rhs);
-#if !QT_CORE_REMOVED_SINCE(6, 8)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_DECLARE_EQUALITY_COMPARABLE_NON_NOEXCEPT(QEasingCurve)
 #endif
 };
 Q_DECLARE_SHARED(QEasingCurve)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QEasingCurve &item);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QEasingCurve &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QEasingCurve &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

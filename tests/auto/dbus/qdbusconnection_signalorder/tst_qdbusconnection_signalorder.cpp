@@ -1,14 +1,14 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QObject>
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static constexpr int MAX_TEST_DURATION_MS = 10000;
 static constexpr int NUM_MESSAGES = 20;
@@ -60,7 +60,7 @@ private Q_SLOTS:
     void signalOrder();
 };
 
-// This is a regression test for QTBUG-105457. The bug is a race condition,
+// This is a regression test for BOBUIBUG-105457. The bug is a race condition,
 // so it cannot be reliably triggered at each test execution.
 void tst_QDBusConnection_SignalOrder::signalOrder()
 {
@@ -70,7 +70,7 @@ void tst_QDBusConnection_SignalOrder::signalOrder()
     QCoreApplication app(argc, argv);
 
     const QString serviceName =
-            u"org.qtproject.tst_dbusconnection_signalorder_%1"_s.arg(app.applicationPid());
+            u"org.bobuiproject.tst_dbusconnection_signalorder_%1"_s.arg(app.applicationPid());
 
     auto connection = QDBusConnection::sessionBus();
 
@@ -79,7 +79,7 @@ void tst_QDBusConnection_SignalOrder::signalOrder()
 
     // Limit the test execution time in case if something goes wrong inside
     // the signal receiver.
-    QTimer::singleShot(MAX_TEST_DURATION_MS, &app, &QCoreApplication::quit);
+    BOBUIimer::singleShot(MAX_TEST_DURATION_MS, &app, &QCoreApplication::quit);
 
     SignalReceiver signalReceiver(connection, serviceName);
     connect(&signalReceiver, &SignalReceiver::done, &app, &QCoreApplication::quit);
@@ -98,6 +98,6 @@ void tst_QDBusConnection_SignalOrder::signalOrder()
     QCOMPARE(signalReceiver.nextValue(), NUM_MESSAGES);
 }
 
-QTEST_APPLESS_MAIN(tst_QDBusConnection_SignalOrder)
+BOBUIEST_APPLESS_MAIN(tst_QDBusConnection_SignalOrder)
 
 #include "tst_qdbusconnection_signalorder.moc"

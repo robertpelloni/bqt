@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "rhiwindow.h"
 #include <QPlatformSurfaceEvent>
@@ -111,7 +111,7 @@ void RhiWindow::init()
         m_rhi.reset(QRhi::create(QRhi::Null, &params));
     }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (m_graphicsApi == QRhi::OpenGLES2) {
         m_fallbackSurface.reset(QRhiGles2InitParams::newFallbackSurface());
         QRhiGles2InitParams params;
@@ -121,7 +121,7 @@ void RhiWindow::init()
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (m_graphicsApi == QRhi::Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = vulkanInstance();
@@ -146,7 +146,7 @@ void RhiWindow::init()
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (m_graphicsApi == QRhi::Metal) {
         QRhiMetalInitParams params;
         m_rhi.reset(QRhi::create(QRhi::Metal, &params));
@@ -285,10 +285,10 @@ void HelloWindow::ensureFullscreenTexture(const QSize &pixelSize, QRhiResourceUp
 //! [ensure-texture]
     QPainter painter(&image);
     painter.fillRect(QRectF(QPointF(0, 0), size()), QColor::fromRgbF(0.4f, 0.7f, 0.0f, 1.0f));
-    painter.setPen(Qt::transparent);
+    painter.setPen(BobUI::transparent);
     painter.setBrush({ QGradient(QGradient::DeepBlue) });
     painter.drawRoundedRect(QRectF(QPointF(20, 20), size() - QSize(40, 40)), 16, 16);
-    painter.setPen(Qt::black);
+    painter.setPen(BobUI::black);
     QFont font;
     font.setPixelSize(0.05 * qMin(width(), height()));
     painter.setFont(font);
@@ -416,7 +416,7 @@ void HelloWindow::customRender()
     ensureFullscreenTexture(outputSizeInPixels, resourceUpdates);
 
 //! [render-pass]
-    cb->beginPass(m_sc->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, resourceUpdates);
+    cb->beginPass(m_sc->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, resourceUpdates);
 //! [render-pass]
 
     cb->setGraphicsPipeline(m_fullscreenQuadPipeline.get());

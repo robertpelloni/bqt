@@ -17,7 +17,7 @@ target_include_directories(${imgui_target} PRIVATE
     ${imgui_base}/imgui
 )
 
-qt6_add_resources(${imgui_target} "imgui_resources"
+bobui6_add_resources(${imgui_target} "imgui_resources"
     PREFIX
         "/"
     BASE

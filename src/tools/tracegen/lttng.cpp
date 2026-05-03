@@ -1,18 +1,18 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Rafael Roquetto <rafael.roquetto@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "lttng.h"
 #include "provider.h"
 #include "helpers.h"
 #include "panic.h"
-#include "qtheaders.h"
+#include "bobuiheaders.h"
 
 #include <qfile.h>
 #include <qfileinfo.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qdebug.h>
 
-static void writeCtfMacro(QTextStream &stream, const Provider &provider, const Tracepoint::Field &field)
+static void writeCtfMacro(BOBUIextStream &stream, const Provider &provider, const Tracepoint::Field &field)
 {
     const QString &paramType = field.paramType;
     const QString &name = field.name;
@@ -56,33 +56,33 @@ static void writeCtfMacro(QTextStream &stream, const Provider &provider, const T
     case Tracepoint::Field::String:
         stream << "ctf_string(" << name << ", " << name << ")";
         return;
-    case Tracepoint::Field::QtString:
+    case Tracepoint::Field::BobUIString:
         stream << "ctf_string(" << name << ", " << name << ".toUtf8().constData())";
         return;
-    case Tracepoint::Field::QtByteArray:
+    case Tracepoint::Field::BobUIByteArray:
         stream << "ctf_sequence(const char, " << name << ", "
                << name << ".constData(), unsigned int, " << name << ".size())";
         return;
-    case Tracepoint::Field::QtUrl:
+    case Tracepoint::Field::BobUIUrl:
         stream << "ctf_string(" << name << ", " << name << ".toString().toUtf8().constData())";
         return;
-    case Tracepoint::Field::QtRect:
+    case Tracepoint::Field::BobUIRect:
         stream << "ctf_integer(int, QRect_" << name << "_x, " << name << ".x()) "
                << "ctf_integer(int, QRect_" << name << "_y, " << name << ".y()) "
                << "ctf_integer(int, QRect_" << name << "_width, " << name << ".width()) "
                << "ctf_integer(int, QRect_" << name << "_height, " << name << ".height()) ";
         return;
-    case Tracepoint::Field::QtSizeF:
+    case Tracepoint::Field::BobUISizeF:
         stream << "ctf_float(double, QSizeF_" << name << "_width, " << name << ".width()) "
                << "ctf_float(double, QSizeF_" << name << "_height, " << name << ".height()) ";
         return;
-    case Tracepoint::Field::QtRectF:
+    case Tracepoint::Field::BobUIRectF:
         stream << "ctf_float(double, QRectF_" << name << "_x, " << name << ".x()) "
                << "ctf_float(double, QRectF_" << name << "_y, " << name << ".y()) "
                << "ctf_float(double, QRectF_" << name << "_width, " << name << ".width()) "
                << "ctf_float(double, QRectF_" << name << "_height, " << name << ".height()) ";
         return;
-    case Tracepoint::Field::QtSize:
+    case Tracepoint::Field::BobUISize:
         stream << "ctf_integer(int, QSize_" << name << "_width, " << name << ".width()) "
                << "ctf_integer(int, QSize_" << name << "_height, " << name << ".height()) ";
         return;
@@ -99,7 +99,7 @@ static void writeCtfMacro(QTextStream &stream, const Provider &provider, const T
     }
 }
 
-static void writePrologue(QTextStream &stream, const QString &fileName, const Provider &provider)
+static void writePrologue(BOBUIextStream &stream, const QString &fileName, const Provider &provider)
 {
     writeCommonPrologue(stream);
     const QString guard = includeGuard(fileName);
@@ -108,9 +108,9 @@ static void writePrologue(QTextStream &stream, const QString &fileName, const Pr
     stream << "#define TRACEPOINT_PROVIDER " << provider.name << "\n";
     stream << "\n";
 
-    // include prefix text or qt headers only once
+    // include prefix text or bobui headers only once
     stream << "#if !defined(" << guard << ")\n";
-    stream << qtHeaders();
+    stream << bobuiHeaders();
     stream << "\n";
     if (!provider.prefixText.isEmpty())
         stream << provider.prefixText.join(u'\n') << "\n\n";
@@ -130,19 +130,19 @@ static void writePrologue(QTextStream &stream, const QString &fileName, const Pr
     const QString namespaceGuard = guard + QStringLiteral("_USE_NAMESPACE");
     stream << "#if !defined(" << namespaceGuard << ")\n"
            << "#define " << namespaceGuard << "\n"
-           << "QT_USE_NAMESPACE\n"
+           << "BOBUI_USE_NAMESPACE\n"
            << "#endif // " << namespaceGuard << "\n\n";
 }
 
-static void writeEpilogue(QTextStream &stream, const QString &fileName)
+static void writeEpilogue(BOBUIextStream &stream, const QString &fileName)
 {
     stream << "\n";
     stream << "#endif // " << includeGuard(fileName) << "\n"
            << "#include <lttng/tracepoint-event.h>\n"
-           << "#include <private/qtrace_p.h>\n";
+           << "#include <private/bobuirace_p.h>\n";
 }
 
-static void writeWrapper(QTextStream &stream,
+static void writeWrapper(BOBUIextStream &stream,
         const Tracepoint &tracepoint, const Provider &provider)
 {
     const QString argList = formatFunctionSignature(tracepoint.args);
@@ -156,8 +156,8 @@ static void writeWrapper(QTextStream &stream,
     stream << "\n"
            << "#ifndef " << includeGuard << "\n"
            << "#define " << includeGuard << "\n"
-           << "QT_BEGIN_NAMESPACE\n"
-           << "namespace QtPrivate {\n";
+           << "BOBUI_BEGIN_NAMESPACE\n"
+           << "namespace BobUIPrivate {\n";
 
     stream << "inline void trace_" << name << "(" << argList << ")\n"
            << "{\n"
@@ -174,12 +174,12 @@ static void writeWrapper(QTextStream &stream,
            << "    return tracepoint_enabled(" << provider.name << ", " << name << ");\n"
            << "}\n";
 
-    stream << "} // namespace QtPrivate\n"
-           << "QT_END_NAMESPACE\n"
+    stream << "} // namespace BobUIPrivate\n"
+           << "BOBUI_END_NAMESPACE\n"
            << "#endif // " << includeGuard << "\n\n";
 }
 
-static void writeTracepoint(QTextStream &stream, const Provider &provider,
+static void writeTracepoint(BOBUIextStream &stream, const Provider &provider,
         const Tracepoint &tracepoint, const QString &providerName)
 {
     stream  << "TRACEPOINT_EVENT(\n"
@@ -213,7 +213,7 @@ static void writeTracepoint(QTextStream &stream, const Provider &provider,
     stream << ")\n)\n\n";
 }
 
-static void writeEnums(QTextStream &stream, const Provider &provider)
+static void writeEnums(BOBUIextStream &stream, const Provider &provider)
 {
     for (const auto &e : provider.enumerations) {
         stream << "TRACEPOINT_ENUM(\n"
@@ -233,7 +233,7 @@ static void writeEnums(QTextStream &stream, const Provider &provider)
     }
 }
 
-static void writeFlags(QTextStream &stream, const Provider &provider)
+static void writeFlags(BOBUIextStream &stream, const Provider &provider)
 {
     for (const auto &f : provider.flags) {
         stream << "TRACEPOINT_ENUM(\n"
@@ -255,8 +255,8 @@ static void writeFlags(QTextStream &stream, const Provider &provider)
     stream << "\n"
            << "#ifndef " << includeGuard << "\n"
            << "#define " << includeGuard << "\n";
-    stream << "QT_BEGIN_NAMESPACE\n";
-    stream << "namespace QtPrivate {\n";
+    stream << "BOBUI_BEGIN_NAMESPACE\n";
+    stream << "namespace BobUIPrivate {\n";
     for (const auto &f : provider.flags) {
         stream << "inline QByteArray trace_convert_" << typeToTypeName(f.name) << "(" << f.name << " val)\n";
         stream << "{\n";
@@ -272,12 +272,12 @@ static void writeFlags(QTextStream &stream, const Provider &provider)
         stream << "}\n";
 
     }
-    stream << "} // namespace QtPrivate\n"
-           << "QT_END_NAMESPACE\n\n"
+    stream << "} // namespace BobUIPrivate\n"
+           << "BOBUI_END_NAMESPACE\n\n"
            << "#endif // " << includeGuard << "\n\n";
 }
 
-static void writeTracepoints(QTextStream &stream, const Provider &provider)
+static void writeTracepoints(BOBUIextStream &stream, const Provider &provider)
 {
     for (const Tracepoint &t : provider.tracepoints) {
         writeTracepoint(stream, provider, t, provider.name);
@@ -287,7 +287,7 @@ static void writeTracepoints(QTextStream &stream, const Provider &provider)
 
 void writeLttng(QFile &file, const Provider &provider)
 {
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
 
     const QString fileName = QFileInfo(file.fileName()).fileName();
 

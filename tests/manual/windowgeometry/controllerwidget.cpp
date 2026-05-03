@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "controllerwidget.h"
 #include <controls.h>
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include <QBackingStore>
 #include <QPaintDevice>
@@ -111,9 +111,9 @@ BaseWindowControl::BaseWindowControl(QObject *w)
     m_layout->addWidget(frameGB, row, 2);
 
     m_layout->addWidget(m_hintControl, ++row, 0, 1, 2);
-    connect(m_hintControl, SIGNAL(changed(Qt::WindowFlags)), this, SLOT(windowFlagsChanged()));
+    connect(m_hintControl, SIGNAL(changed(BobUI::WindowFlags)), this, SLOT(windowFlagsChanged()));
     m_layout->addWidget(m_typeControl, row, 2);
-    connect(m_typeControl, SIGNAL(changed(Qt::WindowFlags)), this, SLOT(windowFlagsChanged()));
+    connect(m_typeControl, SIGNAL(changed(BobUI::WindowFlags)), this, SLOT(windowFlagsChanged()));
 
     QGroupBox *eventGroupBox = new QGroupBox(tr("Events"));
     QVBoxLayout *l = new QVBoxLayout(eventGroupBox);
@@ -186,7 +186,7 @@ void BaseWindowControl::framePosChanged(const QPoint &p)
 
 void BaseWindowControl::windowFlagsChanged()
 {
-    const Qt::WindowFlags f = m_typeControl->type() | m_hintControl->hints();
+    const BobUI::WindowFlags f = m_typeControl->type() | m_hintControl->hints();
     setObjectWindowFlags(m_object, f);
 }
 
@@ -194,7 +194,7 @@ void BaseWindowControl::refresh()
 {
     m_geometry->setRectValue(objectGeometry(m_object));
     m_framePosition->setPointValue(objectFramePosition(m_object));
-    const Qt::WindowFlags flags = objectWindowFlags(m_object);
+    const BobUI::WindowFlags flags = objectWindowFlags(m_object);
     m_typeControl->setType(flags);
     m_hintControl->setHints(flags);
 }
@@ -222,9 +222,9 @@ private:
         { static_cast<QWidget *>(o)->move(p); }
     virtual QPoint objectMapToGlobal(const QObject *o, const QPoint &p) const
         { return static_cast<const QWidget *>(o)->mapToGlobal(p); }
-    virtual Qt::WindowFlags objectWindowFlags(const QObject *o) const
+    virtual BobUI::WindowFlags objectWindowFlags(const QObject *o) const
         { return static_cast<const QWidget *>(o)->windowFlags(); }
-    virtual void setObjectWindowFlags(QObject *o, Qt::WindowFlags f);
+    virtual void setObjectWindowFlags(QObject *o, BobUI::WindowFlags f);
 
     WindowStatesControl *m_statesControl;
 };
@@ -238,7 +238,7 @@ WidgetWindowControl::WidgetWindowControl(QWidget *w )
     connect(m_statesControl, SIGNAL(changed()), this, SLOT(statesChanged()));
 }
 
-void WidgetWindowControl::setObjectWindowFlags(QObject *o, Qt::WindowFlags f)
+void WidgetWindowControl::setObjectWindowFlags(QObject *o, BobUI::WindowFlags f)
 {
     QWidget *w = static_cast<QWidget *>(o);
     const bool visible = w->isVisible();
@@ -291,7 +291,7 @@ void Window::render()
     if (!rect.size().isEmpty()) {
         QPaintDevice *device = m_backingStore->paintDevice();
         QPainter p(device);
-        p.fillRect(rect, Qt::white);
+        p.fillRect(rect, BobUI::white);
         p.drawLine(0, 0, rect.width(), rect.height());
         p.drawLine(0, rect.height(), rect.width(), 0);
     }
@@ -322,9 +322,9 @@ private:
         { static_cast<QWindow *>(o)->setFramePosition(p); }
     virtual QPoint objectMapToGlobal(const QObject *o, const QPoint &p) const
         { return static_cast<const QWindow *>(o)->mapToGlobal(p); }
-    virtual Qt::WindowFlags objectWindowFlags(const QObject *o) const
+    virtual BobUI::WindowFlags objectWindowFlags(const QObject *o) const
         { return static_cast<const QWindow *>(o)->flags(); }
-    virtual void setObjectWindowFlags(QObject *o, Qt::WindowFlags f)
+    virtual void setObjectWindowFlags(QObject *o, BobUI::WindowFlags f)
         { static_cast<QWindow *>(o)->setFlags(f); }
 
     WindowStatesControl *m_statesControl;
@@ -364,11 +364,11 @@ ControllerWidget::ControllerWidget(QWidget *parent)
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     QAction *exitAction = fileMenu->addAction(tr("Exit"));
-    exitAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    exitAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_Q));
     connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-    QString title = QLatin1String("Geometry test, (Qt ");
-    title += QLatin1String(QT_VERSION_STR);
+    QString title = QLatin1String("Geometry test, (BobUI ");
+    title += QLatin1String(BOBUI_VERSION_STR);
     title += QLatin1String(", ");
     title += qApp->platformName();
     title += QLatin1Char(')');
@@ -394,26 +394,26 @@ ControllerWidget::ControllerWidget(QWidget *parent)
     m_testWidget->move(x, y);
     m_testWidget->resize(200, 200);
 
-    if (args.contains(QLatin1String("-widgetminimized"), Qt::CaseInsensitive))
+    if (args.contains(QLatin1String("-widgetminimized"), BobUI::CaseInsensitive))
         m_testWidget->showMinimized();
-    else if (args.contains(QLatin1String("-widgetmaximized"), Qt::CaseInsensitive))
+    else if (args.contains(QLatin1String("-widgetmaximized"), BobUI::CaseInsensitive))
         m_testWidget->showMaximized();
-    else if (args.contains(QLatin1String("-widgetfullscreen"), Qt::CaseInsensitive))
+    else if (args.contains(QLatin1String("-widgetfullscreen"), BobUI::CaseInsensitive))
         m_testWidget->showFullScreen();
     else
         m_testWidget->show();
 
     x += 300;
-    m_testWindow->setFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint
-                                 | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint
-                                 | Qt::WindowTitleHint | Qt::WindowFullscreenButtonHint);
+    m_testWindow->setFlags(BobUI::Window | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint
+                                 | BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint
+                                 | BobUI::WindowTitleHint | BobUI::WindowFullscreenButtonHint);
     m_testWindow->setFramePosition(QPoint(x, y));
     m_testWindow->resize(200, 200);
-    if (args.contains(QLatin1String("-windowminimized"), Qt::CaseInsensitive))
+    if (args.contains(QLatin1String("-windowminimized"), BobUI::CaseInsensitive))
         m_testWindow->showMinimized();
-    else if (args.contains(QLatin1String("-windowmaximized"), Qt::CaseInsensitive))
+    else if (args.contains(QLatin1String("-windowmaximized"), BobUI::CaseInsensitive))
         m_testWindow->showMaximized();
-    else if (args.contains(QLatin1String("-windowfullscreen"), Qt::CaseInsensitive))
+    else if (args.contains(QLatin1String("-windowfullscreen"), BobUI::CaseInsensitive))
         m_testWindow->showFullScreen();
     else
         m_testWindow->show();
@@ -424,9 +424,9 @@ ControllerWidget::ControllerWidget(QWidget *parent)
 
     const QString labelText = tr(
         "<html><head/><body><p>This example lets you control the geometry"
-        " of a QWidget and a QWindow (Qt 5) for testing out"
+        " of a QWidget and a QWindow (BobUI 5) for testing out"
         " QPA plugins.</p>"
-        "<p>It compiles with Qt 4 and Qt 5 for comparison.</p>"
+        "<p>It compiles with BobUI 4 and BobUI 5 for comparison.</p>"
         "<p>The command line option <code>-offset &lt;value&gt;</code> specifies"
         " a vertical offset.</p></body></html>");
 

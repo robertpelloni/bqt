@@ -1,15 +1,15 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcsvbenchmarklogger_p.h"
-#include "qtestresult_p.h"
+#include "bobuiestresult_p.h"
 #include "qbenchmark_p.h"
 
 #include <cstdio>
 
 /*! \internal
     \class QCsvBenchmarkLogger
-    \inmodule QtTest
+    \inmodule BobUITest
 
     QCsvBenchmarkLogger implements a comma-separated value format for benchmarks.
 
@@ -51,15 +51,15 @@ void QCsvBenchmarkLogger::addIncident(QAbstractTestLogger::IncidentTypes, const 
 
 void QCsvBenchmarkLogger::addBenchmarkResult(const QBenchmarkResult &result)
 {
-    const char *fn = QTestResult::currentTestFunction() ? QTestResult::currentTestFunction()
+    const char *fn = BOBUIestResult::currentTestFunction() ? BOBUIestResult::currentTestFunction()
         : "UnknownTestFunc";
-    const char *tag = QTestResult::currentDataTag() ? QTestResult::currentDataTag() : "";
-    const char *gtag = QTestResult::currentGlobalDataTag()
-                     ? QTestResult::currentGlobalDataTag()
+    const char *tag = BOBUIestResult::currentDataTag() ? BOBUIestResult::currentDataTag() : "";
+    const char *gtag = BOBUIestResult::currentGlobalDataTag()
+                     ? BOBUIestResult::currentGlobalDataTag()
                      : "";
     const char *filler = (tag[0] && gtag[0]) ? ":" : "";
 
-    const char *metric = QTest::benchmarkMetricName(result.measurement.metric);
+    const char *metric = BOBUIest::benchmarkMetricName(result.measurement.metric);
 
     char buf[1024];
     // "function","[globaltag:]tag","metric",value_per_iteration,total,iterations

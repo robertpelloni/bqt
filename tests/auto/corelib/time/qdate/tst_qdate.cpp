@@ -1,37 +1,37 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDateTime>
-#include <QTest>
+#include <BOBUIest>
 
 #include <QLocale>
 #include <QMap>
-#include <QTimeZone>
+#include <BOBUIimeZone>
 
 #include <private/qglobal_p.h> // for the icu feature test
 #include <private/qcomparisontesthelper_p.h>
 #include <private/qdatetime_p.h>
-#if !QT_CONFIG(timezone)
-#  include <private/qtenvironmentvariables_p.h> // for qTzName()
+#if !BOBUI_CONFIG(timezone)
+#  include <private/bobuienvironmentvariables_p.h> // for qTzName()
 #endif
 
-using namespace QtPrivate::DateTimeConstants;
-using namespace Qt::StringLiterals;
+using namespace BobUIPrivate::DateTimeConstants;
+using namespace BobUI::StringLiterals;
 
 #undef USING_MS_TZDB
 #undef USING_WIN_TZ
 #ifdef Q_OS_WIN
-#  if QT_CONFIG(timezone_tzdb)
+#  if BOBUI_CONFIG(timezone_tzdb)
 #    define USING_MS_TZDB
-#  elif !QT_CONFIG(icu)
+#  elif !BOBUI_CONFIG(icu)
 #    define USING_WIN_TZ
 #  endif
 #endif
 
 #undef GLIBC_TZDB_MISPARSE
-#if QT_CONFIG(timezone_tzdb) && defined(__GLIBCXX__) // && _GLIBCXX_RELEASE <= 14
-#  define GLIBC_TZDB_MISPARSE // QTBUG-127598
+#if BOBUI_CONFIG(timezone_tzdb) && defined(__GLIBCXX__) // && _GLIBCXX_RELEASE <= 14
+#  define GLIBC_TZDB_MISPARSE // BOBUIBUG-127598
 #endif
 
 class tst_QDate : public QObject
@@ -80,10 +80,10 @@ private Q_SLOTS:
     void ordering_chrono_types();
     void operator_insert_extract_data();
     void operator_insert_extract();
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     void fromStringDateFormat_data();
     void fromStringDateFormat();
-# if QT_CONFIG(datetimeparser)
+# if BOBUI_CONFIG(datetimeparser)
     void fromStringFormat_data();
     void fromStringFormat();
 # endif
@@ -96,7 +96,7 @@ private Q_SLOTS:
     void yearsZeroToNinetyNine();
     void printNegativeYear_data() const;
     void printNegativeYear() const;
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     void roundtripString() const;
 #endif
     void roundtrip() const;
@@ -106,7 +106,7 @@ private:
     QDate defDate() const { return QDate(1900, 1, 1); }
 
     QDate epochDate() const {
-        using namespace QtPrivate::DateTimeConstants;
+        using namespace BobUIPrivate::DateTimeConstants;
         Q_ASSERT(JULIAN_DAY_FOR_EPOCH == QDate(1970, 1, 1).toJulianDay());
         return QDate::fromJulianDay(JULIAN_DAY_FOR_EPOCH);
     }
@@ -116,21 +116,21 @@ private:
     QDate invalidDate() const { return QDate(); }
 };
 
-Q_DECLARE_METATYPE(Qt::DateFormat)
+Q_DECLARE_METATYPE(BobUI::DateFormat)
 
 void tst_QDate::isNull_data()
 {
-    QTest::addColumn<qint64>("jd");
-    QTest::addColumn<bool>("null");
+    BOBUIest::addColumn<qint64>("jd");
+    BOBUIest::addColumn<bool>("null");
 
-    QTest::newRow("qint64 min") << std::numeric_limits<qint64>::min() << true;
-    QTest::newRow("minJd - 1")  << minJd - 1                          << true;
-    QTest::newRow("minJd")      << minJd                              << false;
-    QTest::newRow("minJd + 1")  << minJd + 1                          << false;
-    QTest::newRow("maxJd - 1")  << maxJd - 1                          << false;
-    QTest::newRow("maxJd")      << maxJd                              << false;
-    QTest::newRow("maxJd + 1")  << maxJd + 1                          << true;
-    QTest::newRow("qint64 max") << std::numeric_limits<qint64>::max() << true;
+    BOBUIest::newRow("qint64 min") << std::numeric_limits<qint64>::min() << true;
+    BOBUIest::newRow("minJd - 1")  << minJd - 1                          << true;
+    BOBUIest::newRow("minJd")      << minJd                              << false;
+    BOBUIest::newRow("minJd + 1")  << minJd + 1                          << false;
+    BOBUIest::newRow("maxJd - 1")  << maxJd - 1                          << false;
+    BOBUIest::newRow("maxJd")      << maxJd                              << false;
+    BOBUIest::newRow("maxJd + 1")  << maxJd + 1                          << true;
+    BOBUIest::newRow("qint64 max") << std::numeric_limits<qint64>::max() << true;
 }
 
 void tst_QDate::isNull()
@@ -138,72 +138,72 @@ void tst_QDate::isNull()
     QFETCH(qint64, jd);
 
     QDate d = QDate::fromJulianDay(jd);
-    QTEST(d.isNull(), "null");
+    BOBUIEST(d.isNull(), "null");
 }
 
 void tst_QDate::isValid_data()
 {
     qint64 nullJd = std::numeric_limits<qint64>::min();
 
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<qint64>("jd");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<qint64>("jd");
+    BOBUIest::addColumn<bool>("valid");
 
-    QTest::newRow("0-0-0")    <<    0 <<  0 << 0 << nullJd << false;
-    QTest::newRow("month 0")  << 2000 <<  0 << 1 << nullJd << false;
-    QTest::newRow("day 0")    << 2000 <<  1 << 0 << nullJd << false;
+    BOBUIest::newRow("0-0-0")    <<    0 <<  0 << 0 << nullJd << false;
+    BOBUIest::newRow("month 0")  << 2000 <<  0 << 1 << nullJd << false;
+    BOBUIest::newRow("day 0")    << 2000 <<  1 << 0 << nullJd << false;
 
-    QTest::newRow("month 13") << 2000 << 13 << 1 << nullJd << false;
+    BOBUIest::newRow("month 13") << 2000 << 13 << 1 << nullJd << false;
 
     // test leap years
-    QTest::newRow("non-leap")            << 2006 <<  2 << 29 << nullJd  << false;
-    QTest::newRow("normal leap")         << 2004 <<  2 << 29 << qint64(2453065) << true;
-    QTest::newRow("century leap 1900")   << 1900 <<  2 << 29 << nullJd  << false;
-    QTest::newRow("century leap 2100")   << 2100 <<  2 << 29 << nullJd  << false;
-    QTest::newRow("400-years leap 2000") << 2000 <<  2 << 29 << qint64(2451604) << true;
-    QTest::newRow("400-years leap 2400") << 2400 <<  2 << 29 << qint64(2597701) << true;
-    QTest::newRow("400-years leap 1600") << 1600 <<  2 << 29 << qint64(2305507) << true;
-    QTest::newRow("year 0")              <<    0 <<  2 << 27 << nullJd  << false;
+    BOBUIest::newRow("non-leap")            << 2006 <<  2 << 29 << nullJd  << false;
+    BOBUIest::newRow("normal leap")         << 2004 <<  2 << 29 << qint64(2453065) << true;
+    BOBUIest::newRow("century leap 1900")   << 1900 <<  2 << 29 << nullJd  << false;
+    BOBUIest::newRow("century leap 2100")   << 2100 <<  2 << 29 << nullJd  << false;
+    BOBUIest::newRow("400-years leap 2000") << 2000 <<  2 << 29 << qint64(2451604) << true;
+    BOBUIest::newRow("400-years leap 2400") << 2400 <<  2 << 29 << qint64(2597701) << true;
+    BOBUIest::newRow("400-years leap 1600") << 1600 <<  2 << 29 << qint64(2305507) << true;
+    BOBUIest::newRow("year 0")              <<    0 <<  2 << 27 << nullJd  << false;
 
     // Test end of four-digit years:
-    QTest::newRow("late") << 9999 << 12 << 31 << qint64(5373484) << true;
+    BOBUIest::newRow("late") << 9999 << 12 << 31 << qint64(5373484) << true;
 
     // test the number of days in months:
-    QTest::newRow("jan") << 2000 <<  1 << 31 << qint64(2451575) << true;
-    QTest::newRow("feb") << 2000 <<  2 << 29 << qint64(2451604) << true; // same data as 400-years leap
-    QTest::newRow("mar") << 2000 <<  3 << 31 << qint64(2451635) << true;
-    QTest::newRow("apr") << 2000 <<  4 << 30 << qint64(2451665) << true;
-    QTest::newRow("may") << 2000 <<  5 << 31 << qint64(2451696) << true;
-    QTest::newRow("jun") << 2000 <<  6 << 30 << qint64(2451726) << true;
-    QTest::newRow("jul") << 2000 <<  7 << 31 << qint64(2451757) << true;
-    QTest::newRow("aug") << 2000 <<  8 << 31 << qint64(2451788) << true;
-    QTest::newRow("sep") << 2000 <<  9 << 30 << qint64(2451818) << true;
-    QTest::newRow("oct") << 2000 << 10 << 31 << qint64(2451849) << true;
-    QTest::newRow("nov") << 2000 << 11 << 30 << qint64(2451879) << true;
-    QTest::newRow("dec") << 2000 << 12 << 31 << qint64(2451910) << true;
+    BOBUIest::newRow("jan") << 2000 <<  1 << 31 << qint64(2451575) << true;
+    BOBUIest::newRow("feb") << 2000 <<  2 << 29 << qint64(2451604) << true; // same data as 400-years leap
+    BOBUIest::newRow("mar") << 2000 <<  3 << 31 << qint64(2451635) << true;
+    BOBUIest::newRow("apr") << 2000 <<  4 << 30 << qint64(2451665) << true;
+    BOBUIest::newRow("may") << 2000 <<  5 << 31 << qint64(2451696) << true;
+    BOBUIest::newRow("jun") << 2000 <<  6 << 30 << qint64(2451726) << true;
+    BOBUIest::newRow("jul") << 2000 <<  7 << 31 << qint64(2451757) << true;
+    BOBUIest::newRow("aug") << 2000 <<  8 << 31 << qint64(2451788) << true;
+    BOBUIest::newRow("sep") << 2000 <<  9 << 30 << qint64(2451818) << true;
+    BOBUIest::newRow("oct") << 2000 << 10 << 31 << qint64(2451849) << true;
+    BOBUIest::newRow("nov") << 2000 << 11 << 30 << qint64(2451879) << true;
+    BOBUIest::newRow("dec") << 2000 << 12 << 31 << qint64(2451910) << true;
 
     // and invalid dates:
-    QTest::newRow("ijan") << 2000 <<  1 << 32 << nullJd << false;
-    QTest::newRow("ifeb") << 2000 <<  2 << 30 << nullJd << false;
-    QTest::newRow("imar") << 2000 <<  3 << 32 << nullJd << false;
-    QTest::newRow("iapr") << 2000 <<  4 << 31 << nullJd << false;
-    QTest::newRow("imay") << 2000 <<  5 << 32 << nullJd << false;
-    QTest::newRow("ijun") << 2000 <<  6 << 31 << nullJd << false;
-    QTest::newRow("ijul") << 2000 <<  7 << 32 << nullJd << false;
-    QTest::newRow("iaug") << 2000 <<  8 << 32 << nullJd << false;
-    QTest::newRow("isep") << 2000 <<  9 << 31 << nullJd << false;
-    QTest::newRow("ioct") << 2000 << 10 << 32 << nullJd << false;
-    QTest::newRow("inov") << 2000 << 11 << 31 << nullJd << false;
-    QTest::newRow("idec") << 2000 << 12 << 32 << nullJd << false;
+    BOBUIest::newRow("ijan") << 2000 <<  1 << 32 << nullJd << false;
+    BOBUIest::newRow("ifeb") << 2000 <<  2 << 30 << nullJd << false;
+    BOBUIest::newRow("imar") << 2000 <<  3 << 32 << nullJd << false;
+    BOBUIest::newRow("iapr") << 2000 <<  4 << 31 << nullJd << false;
+    BOBUIest::newRow("imay") << 2000 <<  5 << 32 << nullJd << false;
+    BOBUIest::newRow("ijun") << 2000 <<  6 << 31 << nullJd << false;
+    BOBUIest::newRow("ijul") << 2000 <<  7 << 32 << nullJd << false;
+    BOBUIest::newRow("iaug") << 2000 <<  8 << 32 << nullJd << false;
+    BOBUIest::newRow("isep") << 2000 <<  9 << 31 << nullJd << false;
+    BOBUIest::newRow("ioct") << 2000 << 10 << 32 << nullJd << false;
+    BOBUIest::newRow("inov") << 2000 << 11 << 31 << nullJd << false;
+    BOBUIest::newRow("idec") << 2000 << 12 << 32 << nullJd << false;
 
     // the beginning of the Julian Day calendar:
-    QTest::newRow("jd earliest formula") <<   -4800 <<  1 <<  1 << qint64(   -31738) << true;
-    QTest::newRow("jd -1")               <<   -4714 << 11 << 23 << qint64(       -1) << true;
-    QTest::newRow("jd 0")                <<   -4714 << 11 << 24 << qint64(        0) << true;
-    QTest::newRow("jd 1")                <<   -4714 << 11 << 25 << qint64(        1) << true;
-    QTest::newRow("jd latest formula")   << 1400000 << 12 << 31 << qint64(513060925) << true;
+    BOBUIest::newRow("jd earliest formula") <<   -4800 <<  1 <<  1 << qint64(   -31738) << true;
+    BOBUIest::newRow("jd -1")               <<   -4714 << 11 << 23 << qint64(       -1) << true;
+    BOBUIest::newRow("jd 0")                <<   -4714 << 11 << 24 << qint64(        0) << true;
+    BOBUIest::newRow("jd 1")                <<   -4714 << 11 << 25 << qint64(        1) << true;
+    BOBUIest::newRow("jd latest formula")   << 1400000 << 12 << 31 << qint64(513060925) << true;
 }
 
 // INTEGRITY incident-85878 (timezone and clock_cast are not supported)
@@ -301,27 +301,27 @@ void tst_QDate::julianDay()
 
 void tst_QDate::dayOfWeek_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<int>("dayOfWeek");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("dayOfWeek");
 
-    QTest::newRow("data0")  <<     0 <<  0 <<  0 << 0;
-    QTest::newRow("data1")  <<  2000 <<  1 <<  3 << 1;
-    QTest::newRow("data2")  <<  2000 <<  1 <<  4 << 2;
-    QTest::newRow("data3")  <<  2000 <<  1 <<  5 << 3;
-    QTest::newRow("data4")  <<  2000 <<  1 <<  6 << 4;
-    QTest::newRow("data5")  <<  2000 <<  1 <<  7 << 5;
-    QTest::newRow("data6")  <<  2000 <<  1 <<  8 << 6;
-    QTest::newRow("data7")  <<  2000 <<  1 <<  9 << 7;
-    QTest::newRow("data8")  << -4800 <<  1 <<  1 << 1;
-    QTest::newRow("data9")  << -4800 <<  1 <<  2 << 2;
-    QTest::newRow("data10") << -4800 <<  1 <<  3 << 3;
-    QTest::newRow("data11") << -4800 <<  1 <<  4 << 4;
-    QTest::newRow("data12") << -4800 <<  1 <<  5 << 5;
-    QTest::newRow("data13") << -4800 <<  1 <<  6 << 6;
-    QTest::newRow("data14") << -4800 <<  1 <<  7 << 7;
-    QTest::newRow("data15") << -4800 <<  1 <<  8 << 1;
+    BOBUIest::newRow("data0")  <<     0 <<  0 <<  0 << 0;
+    BOBUIest::newRow("data1")  <<  2000 <<  1 <<  3 << 1;
+    BOBUIest::newRow("data2")  <<  2000 <<  1 <<  4 << 2;
+    BOBUIest::newRow("data3")  <<  2000 <<  1 <<  5 << 3;
+    BOBUIest::newRow("data4")  <<  2000 <<  1 <<  6 << 4;
+    BOBUIest::newRow("data5")  <<  2000 <<  1 <<  7 << 5;
+    BOBUIest::newRow("data6")  <<  2000 <<  1 <<  8 << 6;
+    BOBUIest::newRow("data7")  <<  2000 <<  1 <<  9 << 7;
+    BOBUIest::newRow("data8")  << -4800 <<  1 <<  1 << 1;
+    BOBUIest::newRow("data9")  << -4800 <<  1 <<  2 << 2;
+    BOBUIest::newRow("data10") << -4800 <<  1 <<  3 << 3;
+    BOBUIest::newRow("data11") << -4800 <<  1 <<  4 << 4;
+    BOBUIest::newRow("data12") << -4800 <<  1 <<  5 << 5;
+    BOBUIest::newRow("data13") << -4800 <<  1 <<  6 << 6;
+    BOBUIest::newRow("data14") << -4800 <<  1 <<  7 << 7;
+    BOBUIest::newRow("data15") << -4800 <<  1 <<  8 << 1;
 }
 
 void tst_QDate::dayOfWeek()
@@ -337,25 +337,25 @@ void tst_QDate::dayOfWeek()
 
 void tst_QDate::dayOfYear_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<int>("dayOfYear");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("dayOfYear");
 
-    QTest::newRow("data0")  <<     0 <<  0 <<  0 <<   0;
-    QTest::newRow("data1")  <<  2000 <<  1 <<  1 <<   1;
-    QTest::newRow("data2")  <<  2000 <<  1 <<  2 <<   2;
-    QTest::newRow("data3")  <<  2000 <<  1 <<  3 <<   3;
-    QTest::newRow("data4")  <<  2000 << 12 << 31 << 366;
-    QTest::newRow("data5")  <<  2001 << 12 << 31 << 365;
-    QTest::newRow("data6")  <<  1815 <<  1 <<  1 <<   1;
-    QTest::newRow("data7")  <<  1815 << 12 << 31 << 365;
-    QTest::newRow("data8")  <<  1500 <<  1 <<  1 <<   1;
-    QTest::newRow("data9")  <<  1500 << 12 << 31 << 365;
-    QTest::newRow("data10") << -1500 <<  1 <<  1 <<   1;
-    QTest::newRow("data11") << -1500 << 12 << 31 << 365;
-    QTest::newRow("data12") << -4800 <<  1 <<  1 <<   1;
-    QTest::newRow("data13") << -4800 << 12 << 31 << 365;
+    BOBUIest::newRow("data0")  <<     0 <<  0 <<  0 <<   0;
+    BOBUIest::newRow("data1")  <<  2000 <<  1 <<  1 <<   1;
+    BOBUIest::newRow("data2")  <<  2000 <<  1 <<  2 <<   2;
+    BOBUIest::newRow("data3")  <<  2000 <<  1 <<  3 <<   3;
+    BOBUIest::newRow("data4")  <<  2000 << 12 << 31 << 366;
+    BOBUIest::newRow("data5")  <<  2001 << 12 << 31 << 365;
+    BOBUIest::newRow("data6")  <<  1815 <<  1 <<  1 <<   1;
+    BOBUIest::newRow("data7")  <<  1815 << 12 << 31 << 365;
+    BOBUIest::newRow("data8")  <<  1500 <<  1 <<  1 <<   1;
+    BOBUIest::newRow("data9")  <<  1500 << 12 << 31 << 365;
+    BOBUIest::newRow("data10") << -1500 <<  1 <<  1 <<   1;
+    BOBUIest::newRow("data11") << -1500 << 12 << 31 << 365;
+    BOBUIest::newRow("data12") << -4800 <<  1 <<  1 <<   1;
+    BOBUIest::newRow("data13") << -4800 << 12 << 31 << 365;
 }
 
 void tst_QDate::dayOfYear()
@@ -371,26 +371,26 @@ void tst_QDate::dayOfYear()
 
 void tst_QDate::daysInMonth_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<int>("daysInMonth");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("daysInMonth");
 
-    QTest::newRow("data0")  <<     0 <<  0 <<  0 <<   0;
-    QTest::newRow("data1")  <<  2000 <<  1 <<  1 <<  31;
-    QTest::newRow("data2")  <<  2000 <<  2 <<  1 <<  29;
-    QTest::newRow("data3")  <<  2000 <<  3 <<  1 <<  31;
-    QTest::newRow("data4")  <<  2000 <<  4 <<  1 <<  30;
-    QTest::newRow("data5")  <<  2000 <<  5 <<  1 <<  31;
-    QTest::newRow("data6")  <<  2000 <<  6 <<  1 <<  30;
-    QTest::newRow("data7")  <<  2000 <<  7 <<  1 <<  31;
-    QTest::newRow("data8")  <<  2000 <<  8 <<  1 <<  31;
-    QTest::newRow("data9")  <<  2000 <<  9 <<  1 <<  30;
-    QTest::newRow("data10") <<  2000 << 10 <<  1 <<  31;
-    QTest::newRow("data11") <<  2000 << 11 <<  1 <<  30;
-    QTest::newRow("data12") <<  2000 << 12 <<  1 <<  31;
-    QTest::newRow("data13") <<  2001 <<  2 <<  1 <<  28;
-    QTest::newRow("data14")  <<  2000 <<  0 <<  1 <<   0;
+    BOBUIest::newRow("data0")  <<     0 <<  0 <<  0 <<   0;
+    BOBUIest::newRow("data1")  <<  2000 <<  1 <<  1 <<  31;
+    BOBUIest::newRow("data2")  <<  2000 <<  2 <<  1 <<  29;
+    BOBUIest::newRow("data3")  <<  2000 <<  3 <<  1 <<  31;
+    BOBUIest::newRow("data4")  <<  2000 <<  4 <<  1 <<  30;
+    BOBUIest::newRow("data5")  <<  2000 <<  5 <<  1 <<  31;
+    BOBUIest::newRow("data6")  <<  2000 <<  6 <<  1 <<  30;
+    BOBUIest::newRow("data7")  <<  2000 <<  7 <<  1 <<  31;
+    BOBUIest::newRow("data8")  <<  2000 <<  8 <<  1 <<  31;
+    BOBUIest::newRow("data9")  <<  2000 <<  9 <<  1 <<  30;
+    BOBUIest::newRow("data10") <<  2000 << 10 <<  1 <<  31;
+    BOBUIest::newRow("data11") <<  2000 << 11 <<  1 <<  30;
+    BOBUIest::newRow("data12") <<  2000 << 12 <<  1 <<  31;
+    BOBUIest::newRow("data13") <<  2001 <<  2 <<  1 <<  28;
+    BOBUIest::newRow("data14")  <<  2000 <<  0 <<  1 <<   0;
 }
 
 void tst_QDate::daysInMonth()
@@ -406,14 +406,14 @@ void tst_QDate::daysInMonth()
 
 void tst_QDate::daysInYear_data()
 {
-    QTest::addColumn<QDate>("date");
-    QTest::addColumn<int>("expectedDaysInYear");
+    BOBUIest::addColumn<QDate>("date");
+    BOBUIest::addColumn<int>("expectedDaysInYear");
 
-    QTest::newRow("2000, 1, 1") << QDate(2000, 1, 1) << 366;
-    QTest::newRow("2001, 1, 1") << QDate(2001, 1, 1) << 365;
-    QTest::newRow("4, 1, 1") << QDate(4, 1, 1) << 366;
-    QTest::newRow("5, 1, 1") << QDate(5, 1, 1) << 365;
-    QTest::newRow("0, 0, 0") << QDate(0, 0, 0) << 0;
+    BOBUIest::newRow("2000, 1, 1") << QDate(2000, 1, 1) << 366;
+    BOBUIest::newRow("2001, 1, 1") << QDate(2001, 1, 1) << 365;
+    BOBUIest::newRow("4, 1, 1") << QDate(4, 1, 1) << 366;
+    BOBUIest::newRow("5, 1, 1") << QDate(5, 1, 1) << 365;
+    BOBUIest::newRow("0, 0, 0") << QDate(0, 0, 0) << 0;
 }
 
 void tst_QDate::daysInYear()
@@ -441,11 +441,11 @@ void tst_QDate::getDate()
 
 void tst_QDate::weekNumber_data()
 {
-    QTest::addColumn<int>("expectedWeekNum");
-    QTest::addColumn<int>("expectedYearNum");
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("expectedWeekNum");
+    BOBUIest::addColumn<int>("expectedYearNum");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
 
     enum { Thursday = 4 };
     bool wasLastYearLong = false;   // 1999 was not a long (53-week) year
@@ -460,20 +460,20 @@ void tst_QDate::weekNumber_data()
         isLongYear = (wday == Thursday) || (QDate::isLeapYear(yr) && wday == Thursday - 1);
 
         // Jan 4 is always on week 1
-        QTest::newRow(yrstr + "-01-04") << 1 << yr << yr << 1 << 4;
+        BOBUIest::newRow(yrstr + "-01-04") << 1 << yr << yr << 1 << 4;
 
         // Dec 28 is always on the last week
-        QTest::newRow(yrstr + "-12-28") << (52 + isLongYear) << yr << yr << 12 << 28;
+        BOBUIest::newRow(yrstr + "-12-28") << (52 + isLongYear) << yr << yr << 12 << 28;
 
         // Jan 1 is on either on week 1 or on the last week of the previous year
-        QTest::newRow(yrstr + "-01-01")
+        BOBUIest::newRow(yrstr + "-01-01")
                 << (wday <= Thursday ? 1 : 52 + wasLastYearLong)
                 << (wday <= Thursday ? yr : yr - 1)
                 << yr << 1 << 1;
 
         // Dec 31 is either on the last week or week 1 of the next year
         wday = QDate(yr, 12, 31).dayOfWeek();
-        QTest::newRow(yrstr + "-12-31")
+        BOBUIest::newRow(yrstr + "-12-31")
                 << (wday >= Thursday ? 52 + isLongYear : 1)
                 << (wday >= Thursday ? yr : yr + 1)
                 << yr << 12 << 31;
@@ -495,14 +495,14 @@ void tst_QDate::weekNumber()
 
 void tst_QDate::weekNumber_invalid_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << 0 << 0 << 0;
-    QTest::newRow( "data1" )  << 2001 << 1 << 32;
-    QTest::newRow( "data2" )  << 1999 << 2 << 29;
+    BOBUIest::newRow( "data0" )  << 0 << 0 << 0;
+    BOBUIest::newRow( "data1" )  << 2001 << 1 << 32;
+    BOBUIest::newRow( "data2" )  << 1999 << 2 << 29;
 }
 
 void tst_QDate::weekNumber_invalid()
@@ -527,16 +527,16 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(BackendKludges)
 
 void tst_QDate::startOfDay_endOfDay_data()
 {
-    QTest::addColumn<QDate>("date"); // Typically a spring-forward.
+    BOBUIest::addColumn<QDate>("date"); // Typically a spring-forward.
     // A zone in which that date's start and end are worth checking:
-    QTest::addColumn<QTimeZone>("zone");
+    BOBUIest::addColumn<BOBUIimeZone>("zone");
     // The start and end times in that zone:
-    QTest::addColumn<QTime>("start");
-    QTest::addColumn<QTime>("end");
+    BOBUIest::addColumn<BOBUIime>("start");
+    BOBUIest::addColumn<BOBUIime>("end");
     // Ignored for backends that don't need it:
-    QTest::addColumn<BackendKludges>("kludge");
+    BOBUIest::addColumn<BackendKludges>("kludge");
 
-    const QTime early(0, 0), late(23, 59, 59, 999), invalid(QDateTime().time());
+    const BOBUIime early(0, 0), late(23, 59, 59, 999), invalid(QDateTime().time());
     constexpr BackendKludges Clean = {};
     constexpr BackendKludges IgnoreBoth = IgnoreStart | IgnoreEnd;
     // Use IgnoreBoth directly for the one transition Android lacks; the other
@@ -552,7 +552,7 @@ void tst_QDate::startOfDay_endOfDay_data()
     constexpr BackendKludges MsNoStart = Clean;
     constexpr BackendKludges MsNoBoth = Clean;
 #endif
-#if QT_CONFIG(timezone) && QT_CONFIG(timezone_tzdb) && defined(__GLIBCXX__)
+#if BOBUI_CONFIG(timezone) && BOBUI_CONFIG(timezone_tzdb) && defined(__GLIBCXX__)
     // The IANA-DB parser in libstdc++ (at least up to _GLIBCXX_RELEASE == 14) gets
     // a lot of zone-transitions wrong in C++20's tzdb :-(
     constexpr BackendKludges GlibCxxNoBoth = IgnoreBoth;
@@ -560,7 +560,7 @@ void tst_QDate::startOfDay_endOfDay_data()
 #else
     constexpr BackendKludges GlibCxxNoBoth = Clean;
 #endif
-    const QTimeZone UTC(QTimeZone::UTC);
+    const BOBUIimeZone UTC(BOBUIimeZone::UTC);
 
     using Bound = std::numeric_limits<qint64>;
     const auto dateAtMillis = [UTC](qint64 millis) {
@@ -568,28 +568,28 @@ void tst_QDate::startOfDay_endOfDay_data()
     };
 
     // UTC and fixed offset are always available and predictable:
-    QTest::newRow("epoch") << epochDate() << UTC << early << late << Clean;
+    BOBUIest::newRow("epoch") << epochDate() << UTC << early << late << Clean;
 
     // First and last days in QDateTime's supported range:
-    QTest::newRow("earliest")
+    BOBUIest::newRow("earliest")
         << dateAtMillis(Bound::min()) << UTC << invalid << late << Clean;
-    QTest::newRow("latest")
+    BOBUIest::newRow("latest")
         << dateAtMillis(Bound::max()) << UTC << early << invalid << Clean;
 
     const struct {
         const char *test;
         const char *zone;
         const QDate day;
-        const QTime start;
-        const QTime end;
+        const BOBUIime start;
+        const BOBUIime end;
         const BackendKludges msOpt;
     } transitions[] = {
         // Compare tst_QDateTime::fromStringDateFormat(ISO 24:00 in DST).
-        { "Brazil", "America/Sao_Paulo", QDate(2008, 10, 19), QTime(1, 0), late, Clean },
+        { "Brazil", "America/Sao_Paulo", QDate(2008, 10, 19), BOBUIime(1, 0), late, Clean },
 
         // Several southern zones within EET (but not the northern ones) spent
         // part of the 1990s using midnight as spring transition.
-        { "Sofia", "Europe/Sofia", QDate(1994, 3, 27), QTime(1, 0), late, MsNoStart },
+        { "Sofia", "Europe/Sofia", QDate(1994, 3, 27), BOBUIime(1, 0), late, MsNoStart },
 
         // Two Pacific zones skipped days to get on the west of the
         // International Date Line; those days have neither start nor end.
@@ -599,17 +599,17 @@ void tst_QDate::startOfDay_endOfDay_data()
 
         // TODO: find other zones with transitions at/crossing midnight.
     };
-    const QTimeZone local = QTimeZone::LocalTime;
+    const BOBUIimeZone local = BOBUIimeZone::LocalTime;
 
-#if QT_CONFIG(timezone)
-    const QTimeZone sys = QTimeZone::systemTimeZone();
+#if BOBUI_CONFIG(timezone)
+    const BOBUIimeZone sys = BOBUIimeZone::systemTimeZone();
     QVERIFY2(sys.isValid(), "Test depends on properly configured system");
     for (const auto &tran : transitions) {
-        if (QTimeZone zone(tran.zone); zone.isValid()) {
-            QTest::newRow(tran.test)
+        if (BOBUIimeZone zone(tran.zone); zone.isValid()) {
+            BOBUIest::newRow(tran.test)
                 << tran.day << zone << tran.start << tran.end << tran.msOpt;
             if (zone == sys) {
-                QTest::addRow("Local=%s", tran.test)
+                BOBUIest::addRow("Local=%s", tran.test)
                     << tran.day << local << tran.start << tran.end << tran.msOpt;
             }
         }
@@ -625,7 +625,7 @@ void tst_QDate::startOfDay_endOfDay_data()
     };
     for (const auto &tran : transitions) {
         if (isLocalZone(tran.zone)) { // Might need a different name to match
-            QTest::addRow("Local=%s", tran.test)
+            BOBUIest::addRow("Local=%s", tran.test)
                 << tran.day << local << tran.start << tran.end << tran.msOpt;
         }
     }
@@ -635,9 +635,9 @@ void tst_QDate::startOfDay_endOfDay_data()
 void tst_QDate::startOfDay_endOfDay()
 {
     QFETCH(const QDate, date);
-    QFETCH(const QTimeZone, zone);
-    QFETCH(const QTime, start);
-    QFETCH(const QTime, end);
+    QFETCH(const BOBUIimeZone, zone);
+    QFETCH(const BOBUIime, start);
+    QFETCH(const BOBUIime, end);
 #ifdef KLUDGING // Cope with backend limitations:
     QFETCH(const BackendKludges, kludge);
 #define UNLESSKLUDGE(flag) if (!kludge.testFlag(flag))
@@ -679,44 +679,44 @@ void tst_QDate::startOfDay_endOfDay()
 
 void tst_QDate::startOfDay_endOfDay_fixed_data()
 {
-    QTest::addColumn<QDate>("date");
+    BOBUIest::addColumn<QDate>("date");
 
     const qint64 kilo(1000);
     using Bounds = std::numeric_limits<qint64>;
-    const auto UTC = QTimeZone::UTC;
+    const auto UTC = BOBUIimeZone::UTC;
     const QDateTime first(QDateTime::fromMSecsSinceEpoch(Bounds::min() + 1, UTC));
     const QDateTime start32sign(QDateTime::fromMSecsSinceEpoch(Q_INT64_C(-0x80000000) * kilo, UTC));
     const QDateTime end32sign(QDateTime::fromMSecsSinceEpoch(Q_INT64_C(0x80000000) * kilo, UTC));
     const QDateTime end32unsign(QDateTime::fromMSecsSinceEpoch(Q_INT64_C(0x100000000) * kilo, UTC));
     const QDateTime last(QDateTime::fromMSecsSinceEpoch(Bounds::max(), UTC));
 
-    QTest::newRow("epoch") <<  epochDate();
-    QTest::newRow("y2k-leap-day") << QDate(2000, 2, 29);
-    QTest::newRow("start-1900") << QDate(1900, 1, 1); // QTBUG-99747
+    BOBUIest::newRow("epoch") <<  epochDate();
+    BOBUIest::newRow("y2k-leap-day") << QDate(2000, 2, 29);
+    BOBUIest::newRow("start-1900") << QDate(1900, 1, 1); // BOBUIBUG-99747
    // Just outside the start and end of 32-bit time_t:
-    QTest::newRow("pre-sign32") << QDate(start32sign.date().year(), 1, 1);
-    QTest::newRow("post-sign32") << QDate(end32sign.date().year(), 12, 31);
-    QTest::newRow("post-uint32") << QDate(end32unsign.date().year(), 12, 31);
+    BOBUIest::newRow("pre-sign32") << QDate(start32sign.date().year(), 1, 1);
+    BOBUIest::newRow("post-sign32") << QDate(end32sign.date().year(), 12, 31);
+    BOBUIest::newRow("post-uint32") << QDate(end32unsign.date().year(), 12, 31);
     // Just inside the start and end of QDateTime's range:
-    QTest::newRow("first-full") << first.date().addDays(1);
-    QTest::newRow("last-full") << last.date().addDays(-1);
+    BOBUIest::newRow("first-full") << first.date().addDays(1);
+    BOBUIest::newRow("last-full") << last.date().addDays(-1);
 }
 
 void tst_QDate::startOfDay_endOfDay_fixed()
 {
-    const QTime early(0, 0), late(23, 59, 59, 999);
+    const BOBUIime early(0, 0), late(23, 59, 59, 999);
     QFETCH(QDate, date);
 
-    QDateTime start(date.startOfDay(QTimeZone::UTC));
-    QDateTime end(date.endOfDay(QTimeZone::UTC));
+    QDateTime start(date.startOfDay(BOBUIimeZone::UTC));
+    QDateTime end(date.endOfDay(BOBUIimeZone::UTC));
     QCOMPARE(start.date(), date);
     QCOMPARE(end.date(), date);
     QCOMPARE(start.time(), early);
     QCOMPARE(end.time(), late);
-    QCOMPARE(date.addDays(1).startOfDay(QTimeZone::UTC).addMSecs(-1), end);
-    QCOMPARE(date.addDays(-1).endOfDay(QTimeZone::UTC).addMSecs(1), start);
+    QCOMPARE(date.addDays(1).startOfDay(BOBUIimeZone::UTC).addMSecs(-1), end);
+    QCOMPARE(date.addDays(-1).endOfDay(BOBUIimeZone::UTC).addMSecs(1), start);
     for (int offset = -60 * 16; offset <= 60 * 16; offset += 65) {
-        const auto zone = QTimeZone::fromSecondsAheadOfUtc(offset);
+        const auto zone = BOBUIimeZone::fromSecondsAheadOfUtc(offset);
         start = date.startOfDay(zone);
         end = date.endOfDay(zone);
         QCOMPARE(start.date(), date);
@@ -730,8 +730,8 @@ void tst_QDate::startOfDay_endOfDay_fixed()
     // Minimal testing for LocalTime and TimeZone
     QCOMPARE(date.startOfDay().date(), date);
     QCOMPARE(date.endOfDay().date(), date);
-#if QT_CONFIG(timezone) && !defined(GLIBC_TZDB_MISPARSE)
-    const QTimeZone cet("Europe/Oslo");
+#if BOBUI_CONFIG(timezone) && !defined(GLIBC_TZDB_MISPARSE)
+    const BOBUIimeZone cet("Europe/Oslo");
     if (cet.isValid()) {
         QCOMPARE(date.startOfDay(cet).date(), date);
         QCOMPARE(date.endOfDay(cet).date(), date);
@@ -743,7 +743,7 @@ void tst_QDate::startOfDay_endOfDay_bounds()
 {
     // Check the days in which QDateTime's range starts and ends:
     using Bounds = std::numeric_limits<qint64>;
-    const auto UTC = QTimeZone::UTC;
+    const auto UTC = BOBUIimeZone::UTC;
     const QDateTime
         first(QDateTime::fromMSecsSinceEpoch(Bounds::min(), UTC)),
         last(QDateTime::fromMSecsSinceEpoch(Bounds::max(), UTC)),
@@ -760,20 +760,20 @@ void tst_QDate::startOfDay_endOfDay_bounds()
         QCOMPARE_LT(last.addMSecs(1), last);
 
     // Now test start/end methods with them:
-    QCOMPARE(first.date().endOfDay(UTC).time(), QTime(23, 59, 59, 999));
-    QCOMPARE(last.date().startOfDay(UTC).time(), QTime(0, 0));
+    QCOMPARE(first.date().endOfDay(UTC).time(), BOBUIime(23, 59, 59, 999));
+    QCOMPARE(last.date().startOfDay(UTC).time(), BOBUIime(0, 0));
     QVERIFY(!first.date().startOfDay(UTC).isValid());
     QVERIFY(!last.date().endOfDay(UTC).isValid());
 
-    // Test for QTBUG-100873, shouldn't assert:
+    // Test for BOBUIBUG-100873, shouldn't assert:
     const QDate qdteMin(1752, 9, 14); // Used by QDateTimeEdit
     QCOMPARE(qdteMin.startOfDay(UTC).date(), qdteMin);
     QCOMPARE(qdteMin.startOfDay().date(), qdteMin);
-#if QT_CONFIG(timezone)
-    const QTimeZone sys = QTimeZone::systemTimeZone();
+#if BOBUI_CONFIG(timezone)
+    const BOBUIimeZone sys = BOBUIimeZone::systemTimeZone();
     QVERIFY2(sys.isValid(), "Test depends on properly configured system");
     QCOMPARE(qdteMin.startOfDay(sys).date(), qdteMin);
-    QTimeZone berlin("Europe/Berlin");
+    BOBUIimeZone berlin("Europe/Berlin");
     if (berlin.isValid())
         QCOMPARE(qdteMin.startOfDay(berlin).date(), qdteMin);
 #endif
@@ -867,32 +867,32 @@ void tst_QDate::addDays()
 
 void tst_QDate::addDays_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<int>("amountToAdd");
-    QTest::addColumn<int>("expectedYear");
-    QTest::addColumn<int>("expectedMonth");
-    QTest::addColumn<int>("expectedDay");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("amountToAdd");
+    BOBUIest::addColumn<int>("expectedYear");
+    BOBUIest::addColumn<int>("expectedMonth");
+    BOBUIest::addColumn<int>("expectedDay");
 
-    QTest::newRow( "data0" ) << 2000 << 1 << 1 << 1 << 2000 << 1 << 2;
-    QTest::newRow( "data1" ) << 2000 << 1 << 31 << 1 << 2000 << 2 << 1;
-    QTest::newRow( "data2" ) << 2000 << 2 << 28 << 1 << 2000 << 2 << 29;
-    QTest::newRow( "data3" ) << 2000 << 2 << 29 << 1 << 2000 << 3 << 1;
-    QTest::newRow( "data4" ) << 2000 << 12 << 31 << 1 << 2001 << 1 << 1;
-    QTest::newRow( "data5" ) << 2001 << 2 << 28 << 1 << 2001 << 3 << 1;
-    QTest::newRow( "data6" ) << 2001 << 2 << 28 << 30 << 2001 << 3 << 30;
-    QTest::newRow( "data7" ) << 2001 << 3 << 30 << 5 << 2001 << 4 << 4;
+    BOBUIest::newRow( "data0" ) << 2000 << 1 << 1 << 1 << 2000 << 1 << 2;
+    BOBUIest::newRow( "data1" ) << 2000 << 1 << 31 << 1 << 2000 << 2 << 1;
+    BOBUIest::newRow( "data2" ) << 2000 << 2 << 28 << 1 << 2000 << 2 << 29;
+    BOBUIest::newRow( "data3" ) << 2000 << 2 << 29 << 1 << 2000 << 3 << 1;
+    BOBUIest::newRow( "data4" ) << 2000 << 12 << 31 << 1 << 2001 << 1 << 1;
+    BOBUIest::newRow( "data5" ) << 2001 << 2 << 28 << 1 << 2001 << 3 << 1;
+    BOBUIest::newRow( "data6" ) << 2001 << 2 << 28 << 30 << 2001 << 3 << 30;
+    BOBUIest::newRow( "data7" ) << 2001 << 3 << 30 << 5 << 2001 << 4 << 4;
 
-    QTest::newRow( "data8" ) << 2000 << 1 << 1 << -1 << 1999 << 12 << 31;
-    QTest::newRow( "data9" ) << 2000 << 1 << 31 << -1 << 2000 << 1 << 30;
-    QTest::newRow( "data10" ) << 2000 << 2 << 28 << -1 << 2000 << 2 << 27;
-    QTest::newRow( "data11" ) << 2001 << 2 << 28 << -30 << 2001 << 1 << 29;
+    BOBUIest::newRow( "data8" ) << 2000 << 1 << 1 << -1 << 1999 << 12 << 31;
+    BOBUIest::newRow( "data9" ) << 2000 << 1 << 31 << -1 << 2000 << 1 << 30;
+    BOBUIest::newRow( "data10" ) << 2000 << 2 << 28 << -1 << 2000 << 2 << 27;
+    BOBUIest::newRow( "data11" ) << 2001 << 2 << 28 << -30 << 2001 << 1 << 29;
 
-    QTest::newRow( "data12" ) << -4713 << 1 << 2 << -2 << -4714 << 12 << 31;
-    QTest::newRow( "data13" ) << -4713 << 1 << 2 <<  2 << -4713 <<  1 <<  4;
+    BOBUIest::newRow( "data12" ) << -4713 << 1 << 2 << -2 << -4714 << 12 << 31;
+    BOBUIest::newRow( "data13" ) << -4713 << 1 << 2 <<  2 << -4713 <<  1 <<  4;
 
-    QTest::newRow( "invalid" ) << 0 << 0 << 0 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow( "invalid" ) << 0 << 0 << 0 << 1 << 0 << 0 << 0;
 }
 
 void tst_QDate::incrementable()
@@ -988,39 +988,39 @@ void tst_QDate::addMonths()
 
 void tst_QDate::addMonths_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<int>("amountToAdd");
-    QTest::addColumn<int>("expectedYear");
-    QTest::addColumn<int>("expectedMonth");
-    QTest::addColumn<int>("expectedDay");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("amountToAdd");
+    BOBUIest::addColumn<int>("expectedYear");
+    BOBUIest::addColumn<int>("expectedMonth");
+    BOBUIest::addColumn<int>("expectedDay");
 
-    QTest::newRow( "data0" ) << 2000 << 1 << 1 << 1 << 2000 << 2 << 1;
-    QTest::newRow( "data1" ) << 2000 << 1 << 31 << 1 << 2000 << 2 << 29;
-    QTest::newRow( "data2" ) << 2000 << 2 << 28 << 1 << 2000 << 3 << 28;
-    QTest::newRow( "data3" ) << 2000 << 2 << 29 << 1 << 2000 << 3 << 29;
-    QTest::newRow( "data4" ) << 2000 << 12 << 31 << 1 << 2001 << 1 << 31;
-    QTest::newRow( "data5" ) << 2001 << 2 << 28 << 1 << 2001 << 3 << 28;
-    QTest::newRow( "data6" ) << 2001 << 2 << 28 << 12 << 2002 << 2 << 28;
-    QTest::newRow( "data7" ) << 2000 << 2 << 29 << 12 << 2001 << 2 << 28;
-    QTest::newRow( "data8" ) << 2000 << 10 << 15 << 4 << 2001 << 2 << 15;
+    BOBUIest::newRow( "data0" ) << 2000 << 1 << 1 << 1 << 2000 << 2 << 1;
+    BOBUIest::newRow( "data1" ) << 2000 << 1 << 31 << 1 << 2000 << 2 << 29;
+    BOBUIest::newRow( "data2" ) << 2000 << 2 << 28 << 1 << 2000 << 3 << 28;
+    BOBUIest::newRow( "data3" ) << 2000 << 2 << 29 << 1 << 2000 << 3 << 29;
+    BOBUIest::newRow( "data4" ) << 2000 << 12 << 31 << 1 << 2001 << 1 << 31;
+    BOBUIest::newRow( "data5" ) << 2001 << 2 << 28 << 1 << 2001 << 3 << 28;
+    BOBUIest::newRow( "data6" ) << 2001 << 2 << 28 << 12 << 2002 << 2 << 28;
+    BOBUIest::newRow( "data7" ) << 2000 << 2 << 29 << 12 << 2001 << 2 << 28;
+    BOBUIest::newRow( "data8" ) << 2000 << 10 << 15 << 4 << 2001 << 2 << 15;
 
-    QTest::newRow( "data9" ) << 2000 << 1 << 1 << -1 << 1999 << 12 << 1;
-    QTest::newRow( "data10" ) << 2000 << 1 << 31 << -1 << 1999 << 12 << 31;
-    QTest::newRow( "data11" ) << 2000 << 12 << 31 << -1 << 2000 << 11 << 30;
-    QTest::newRow( "data12" ) << 2001 << 2 << 28 << -12 << 2000 << 2 << 28;
-    QTest::newRow( "data13" ) << 2000 << 1 << 31 << -7 << 1999 << 6 << 30;
-    QTest::newRow( "data14" ) << 2000 << 2 << 29 << -12 << 1999 << 2 << 28;
+    BOBUIest::newRow( "data9" ) << 2000 << 1 << 1 << -1 << 1999 << 12 << 1;
+    BOBUIest::newRow( "data10" ) << 2000 << 1 << 31 << -1 << 1999 << 12 << 31;
+    BOBUIest::newRow( "data11" ) << 2000 << 12 << 31 << -1 << 2000 << 11 << 30;
+    BOBUIest::newRow( "data12" ) << 2001 << 2 << 28 << -12 << 2000 << 2 << 28;
+    BOBUIest::newRow( "data13" ) << 2000 << 1 << 31 << -7 << 1999 << 6 << 30;
+    BOBUIest::newRow( "data14" ) << 2000 << 2 << 29 << -12 << 1999 << 2 << 28;
 
     // year sign change:
-    QTest::newRow( "data15" ) << 1 << 1 << 1 << -1 << -1 << 12 << 1;
-    QTest::newRow( "data16" ) << 1 << 1 << 1 << -12 << -1 << 1 << 1;
-    QTest::newRow( "data17" ) << -1 << 12 << 1 << 1 << 1 << 1 << 1;
-    QTest::newRow( "data18" ) << -1 << 1 << 1 << 12 << 1 << 1 << 1;
-    QTest::newRow( "data19" ) << -2 << 1 << 1 << 12 << -1 << 1 << 1;
+    BOBUIest::newRow( "data15" ) << 1 << 1 << 1 << -1 << -1 << 12 << 1;
+    BOBUIest::newRow( "data16" ) << 1 << 1 << 1 << -12 << -1 << 1 << 1;
+    BOBUIest::newRow( "data17" ) << -1 << 12 << 1 << 1 << 1 << 1 << 1;
+    BOBUIest::newRow( "data18" ) << -1 << 1 << 1 << 12 << 1 << 1 << 1;
+    BOBUIest::newRow( "data19" ) << -2 << 1 << 1 << 12 << -1 << 1 << 1;
 
-    QTest::newRow( "invalid" ) << 0 << 0 << 0 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow( "invalid" ) << 0 << 0 << 0 << 1 << 0 << 0 << 0;
 }
 
 void tst_QDate::addYears()
@@ -1043,37 +1043,37 @@ void tst_QDate::addYears()
 
 void tst_QDate::addYears_data()
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<int>("month");
-    QTest::addColumn<int>("day");
-    QTest::addColumn<int>("amountToAdd");
-    QTest::addColumn<int>("expectedYear");
-    QTest::addColumn<int>("expectedMonth");
-    QTest::addColumn<int>("expectedDay");
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<int>("month");
+    BOBUIest::addColumn<int>("day");
+    BOBUIest::addColumn<int>("amountToAdd");
+    BOBUIest::addColumn<int>("expectedYear");
+    BOBUIest::addColumn<int>("expectedMonth");
+    BOBUIest::addColumn<int>("expectedDay");
 
-    QTest::newRow( "data0" ) << 2000 << 1 << 1 << 1 << 2001 << 1 << 1;
-    QTest::newRow( "data1" ) << 2000 << 1 << 31 << 1 << 2001 << 1 << 31;
-    QTest::newRow( "data2" ) << 2000 << 2 << 28 << 1 << 2001 << 2 << 28;
-    QTest::newRow( "data3" ) << 2000 << 2 << 29 << 1 << 2001 << 2 << 28;
-    QTest::newRow( "data4" ) << 2000 << 12 << 31 << 1 << 2001 << 12 << 31;
-    QTest::newRow( "data5" ) << 2001 << 2 << 28 << 3 << 2004 << 2 << 28;
-    QTest::newRow( "data6" ) << 2000 << 2 << 29 << 4 << 2004 << 2 << 29;
+    BOBUIest::newRow( "data0" ) << 2000 << 1 << 1 << 1 << 2001 << 1 << 1;
+    BOBUIest::newRow( "data1" ) << 2000 << 1 << 31 << 1 << 2001 << 1 << 31;
+    BOBUIest::newRow( "data2" ) << 2000 << 2 << 28 << 1 << 2001 << 2 << 28;
+    BOBUIest::newRow( "data3" ) << 2000 << 2 << 29 << 1 << 2001 << 2 << 28;
+    BOBUIest::newRow( "data4" ) << 2000 << 12 << 31 << 1 << 2001 << 12 << 31;
+    BOBUIest::newRow( "data5" ) << 2001 << 2 << 28 << 3 << 2004 << 2 << 28;
+    BOBUIest::newRow( "data6" ) << 2000 << 2 << 29 << 4 << 2004 << 2 << 29;
 
-    QTest::newRow( "data7" ) << 2000 << 1 << 31 << -1 << 1999 << 1 << 31;
-    QTest::newRow( "data9" ) << 2000 << 2 << 29 << -1 << 1999 << 2 << 28;
-    QTest::newRow( "data10" ) << 2000 << 12 << 31 << -1 << 1999 << 12 << 31;
-    QTest::newRow( "data11" ) << 2001 << 2 << 28 << -3 << 1998 << 2 << 28;
-    QTest::newRow( "data12" ) << 2000 << 2 << 29 << -4 << 1996 << 2 << 29;
-    QTest::newRow( "data13" ) << 2000 << 2 << 29 << -5 << 1995 << 2 << 28;
+    BOBUIest::newRow( "data7" ) << 2000 << 1 << 31 << -1 << 1999 << 1 << 31;
+    BOBUIest::newRow( "data9" ) << 2000 << 2 << 29 << -1 << 1999 << 2 << 28;
+    BOBUIest::newRow( "data10" ) << 2000 << 12 << 31 << -1 << 1999 << 12 << 31;
+    BOBUIest::newRow( "data11" ) << 2001 << 2 << 28 << -3 << 1998 << 2 << 28;
+    BOBUIest::newRow( "data12" ) << 2000 << 2 << 29 << -4 << 1996 << 2 << 29;
+    BOBUIest::newRow( "data13" ) << 2000 << 2 << 29 << -5 << 1995 << 2 << 28;
 
-    QTest::newRow( "data14" ) << 2000 << 1 << 1 << -1999 << 1 << 1 << 1;
-    QTest::newRow( "data15" ) << 2000 << 1 << 1 << -2000 << -1 << 1 << 1;
-    QTest::newRow( "data16" ) << 2000 << 1 << 1 << -2001 << -2 << 1 << 1;
-    QTest::newRow( "data17" ) << -2000 << 1 << 1 << 1999 << -1 << 1 << 1;
-    QTest::newRow( "data18" ) << -2000 << 1 << 1 << 2000 << 1 << 1 << 1;
-    QTest::newRow( "data19" ) << -2000 << 1 << 1 << 2001 << 2 << 1 << 1;
+    BOBUIest::newRow( "data14" ) << 2000 << 1 << 1 << -1999 << 1 << 1 << 1;
+    BOBUIest::newRow( "data15" ) << 2000 << 1 << 1 << -2000 << -1 << 1 << 1;
+    BOBUIest::newRow( "data16" ) << 2000 << 1 << 1 << -2001 << -2 << 1 << 1;
+    BOBUIest::newRow( "data17" ) << -2000 << 1 << 1 << 1999 << -1 << 1 << 1;
+    BOBUIest::newRow( "data18" ) << -2000 << 1 << 1 << 2000 << 1 << 1 << 1;
+    BOBUIest::newRow( "data19" ) << -2000 << 1 << 1 << 2001 << 2 << 1 << 1;
 
-    QTest::newRow( "invalid" ) << 0 << 0 << 0 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow( "invalid" ) << 0 << 0 << 0 << 1 << 0 << 0 << 0;
 }
 
 void tst_QDate::daysTo()
@@ -1104,26 +1104,26 @@ void tst_QDate::daysTo()
 
 void tst_QDate::orderingCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QDate>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QDate>();
 // INTEGRITY incident-85878 (timezone and clock_cast are not supported)
 #if __cpp_lib_chrono >= 201907L && !defined(Q_OS_INTEGRITY)
-    QTestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_day>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_day_last>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_weekday>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_weekday_last>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_day>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_day_last>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_weekday>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QDate, std::chrono::year_month_weekday_last>();
 #endif
 }
 
 void tst_QDate::operator_eq_eq_data()
 {
-    QTest::addColumn<QDate>("d1");
-    QTest::addColumn<QDate>("d2");
-    QTest::addColumn<bool>("expectEqual");
+    BOBUIest::addColumn<QDate>("d1");
+    BOBUIest::addColumn<QDate>("d2");
+    BOBUIest::addColumn<bool>("expectEqual");
 
-    QTest::newRow("data0") << QDate(2000,1,2) << QDate(2000,1,2) << true;
-    QTest::newRow("data1") << QDate(2001,12,5) << QDate(2001,12,5) << true;
-    QTest::newRow("data2") << QDate(2001,12,5) << QDate(2001,12,5) << true;
-    QTest::newRow("data3") << QDate(2001,12,5) << QDate(2002,12,5) << false;
+    BOBUIest::newRow("data0") << QDate(2000,1,2) << QDate(2000,1,2) << true;
+    BOBUIest::newRow("data1") << QDate(2001,12,5) << QDate(2001,12,5) << true;
+    BOBUIest::newRow("data2") << QDate(2001,12,5) << QDate(2001,12,5) << true;
+    BOBUIest::newRow("data3") << QDate(2001,12,5) << QDate(2002,12,5) << false;
 
     QDate date1(1900, 1, 1);
     QDate date2 = date1.addDays(1);
@@ -1133,15 +1133,15 @@ void tst_QDate::operator_eq_eq_data()
     QDate date6 = date1.addYears(1);
     QDate date7 = date1.addYears(-1);
 
-    QTest::newRow("data4") << date2 << date3 << false;
-    QTest::newRow("data5") << date4 << date5 << false;
-    QTest::newRow("data6") << date6 << date7 << false;
-    QTest::newRow("data7") << date1 << date2 << false;
-    QTest::newRow("data8") << date1 << date3 << false;
-    QTest::newRow("data9") << date1 << date4 << false;
-    QTest::newRow("data10") << date1 << date5 << false;
-    QTest::newRow("data11") << date1 << date6 << false;
-    QTest::newRow("data12") << date1 << date7 << false;
+    BOBUIest::newRow("data4") << date2 << date3 << false;
+    BOBUIest::newRow("data5") << date4 << date5 << false;
+    BOBUIest::newRow("data6") << date6 << date7 << false;
+    BOBUIest::newRow("data7") << date1 << date2 << false;
+    BOBUIest::newRow("data8") << date1 << date3 << false;
+    BOBUIest::newRow("data9") << date1 << date4 << false;
+    BOBUIest::newRow("data10") << date1 << date5 << false;
+    BOBUIest::newRow("data11") << date1 << date6 << false;
+    BOBUIest::newRow("data12") << date1 << date7 << false;
 }
 
 void tst_QDate::operator_eq_eq()
@@ -1150,7 +1150,7 @@ void tst_QDate::operator_eq_eq()
     QFETCH(QDate, d2);
     QFETCH(bool, expectEqual);
 
-    QT_TEST_EQUALITY_OPS(d1, d2, expectEqual);
+    BOBUI_TEST_EQUALITY_OPS(d1, d2, expectEqual);
 
     if (expectEqual)
         QVERIFY(qHash(d1) == qHash(d2));
@@ -1158,33 +1158,33 @@ void tst_QDate::operator_eq_eq()
 
 void tst_QDate::ordering_data()
 {
-    QTest::addColumn<QDate>("left");
-    QTest::addColumn<QDate>("right");
-    QTest::addColumn<Qt::strong_ordering>("expectedOrdering");
+    BOBUIest::addColumn<QDate>("left");
+    BOBUIest::addColumn<QDate>("right");
+    BOBUIest::addColumn<BobUI::strong_ordering>("expectedOrdering");
 
-    QTest::newRow("2000-1-2_vs_2000-1-2")
-            << QDate(2000, 1, 2) << QDate(2000, 1, 2) << Qt::strong_ordering::equivalent;
-    QTest::newRow("2001-12-4_vs_2001-12-5")
-            << QDate(2001, 12, 4) << QDate(2001, 12, 5) << Qt::strong_ordering::less;
-    QTest::newRow("2001-11-5_vs_2001-12-5")
-            << QDate(2001, 11, 5) << QDate(2001, 12, 5) << Qt::strong_ordering::less;
-    QTest::newRow("2000-12-5_vs_2001-12-5")
-            << QDate(2000, 12, 5) << QDate(2001, 12, 5) << Qt::strong_ordering::less;
-    QTest::newRow("2002-12-5_vs_2001-12-5")
-            << QDate(2002, 12, 5) << QDate(2001, 12, 5) << Qt::strong_ordering::greater;
-    QTest::newRow("2001-12-5_vs_2001-11-5")
-            << QDate(2001, 12, 5) << QDate(2001, 11, 5) << Qt::strong_ordering::greater;
-    QTest::newRow("2001-12-6_vs_2001-12-5")
-            << QDate(2001, 12, 6) << QDate(2001, 12, 5) << Qt::strong_ordering::greater;
+    BOBUIest::newRow("2000-1-2_vs_2000-1-2")
+            << QDate(2000, 1, 2) << QDate(2000, 1, 2) << BobUI::strong_ordering::equivalent;
+    BOBUIest::newRow("2001-12-4_vs_2001-12-5")
+            << QDate(2001, 12, 4) << QDate(2001, 12, 5) << BobUI::strong_ordering::less;
+    BOBUIest::newRow("2001-11-5_vs_2001-12-5")
+            << QDate(2001, 11, 5) << QDate(2001, 12, 5) << BobUI::strong_ordering::less;
+    BOBUIest::newRow("2000-12-5_vs_2001-12-5")
+            << QDate(2000, 12, 5) << QDate(2001, 12, 5) << BobUI::strong_ordering::less;
+    BOBUIest::newRow("2002-12-5_vs_2001-12-5")
+            << QDate(2002, 12, 5) << QDate(2001, 12, 5) << BobUI::strong_ordering::greater;
+    BOBUIest::newRow("2001-12-5_vs_2001-11-5")
+            << QDate(2001, 12, 5) << QDate(2001, 11, 5) << BobUI::strong_ordering::greater;
+    BOBUIest::newRow("2001-12-6_vs_2001-12-5")
+            << QDate(2001, 12, 6) << QDate(2001, 12, 5) << BobUI::strong_ordering::greater;
 }
 
 void tst_QDate::ordering()
 {
     QFETCH(QDate, left);
     QFETCH(QDate, right);
-    QFETCH(Qt::strong_ordering, expectedOrdering);
+    QFETCH(BobUI::strong_ordering, expectedOrdering);
 
-    QT_TEST_ALL_COMPARISON_OPS(left, right, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(left, right, expectedOrdering);
 }
 
 void tst_QDate::ordering_chrono_types()
@@ -1194,37 +1194,37 @@ void tst_QDate::ordering_chrono_types()
     using namespace std::chrono;
     QDate friday(2001, 11, 30); // the 5th Friday of November 2001
     // std::chrono::year_month_day
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_day(2001y, November, 29d),
-                               Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_day(2001y, November, 30d),
-                               Qt::strong_ordering::equivalent);
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_day(2001y, December, 1d),
-                               Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_day(2001y, November, 29d),
+                               BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_day(2001y, November, 30d),
+                               BobUI::strong_ordering::equivalent);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_day(2001y, December, 1d),
+                               BobUI::strong_ordering::less);
 
     // std::chrono::year_month_day_last
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_day_last(2001y, {October / last}),
-                               Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_day_last(2001y, {November / last}),
-                               Qt::strong_ordering::equivalent);
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_day_last(2001y, {December / last}),
-                               Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_day_last(2001y, {October / last}),
+                               BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_day_last(2001y, {November / last}),
+                               BobUI::strong_ordering::equivalent);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_day_last(2001y, {December / last}),
+                               BobUI::strong_ordering::less);
 
     // std::chrono::year_month_weekday
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_weekday(2001y, November, Thursday[5]),
-                               Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_weekday(2001y, November, Friday[5]),
-                               Qt::strong_ordering::equivalent);
-    QT_TEST_ALL_COMPARISON_OPS(friday, year_month_weekday(2001y, December, Saturday[1]),
-                               Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_weekday(2001y, November, Thursday[5]),
+                               BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_weekday(2001y, November, Friday[5]),
+                               BobUI::strong_ordering::equivalent);
+    BOBUI_TEST_ALL_COMPARISON_OPS(friday, year_month_weekday(2001y, December, Saturday[1]),
+                               BobUI::strong_ordering::less);
 
     // std::chrono::year_month_weekday_last
     QDate thursday(2001, 11, 29); // the last Thursday of November 2001
-    QT_TEST_ALL_COMPARISON_OPS(thursday, year_month_weekday_last(2001y, November, Wednesday[last]),
-                               Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(thursday, year_month_weekday_last(2001y, November, Thursday[last]),
-                               Qt::strong_ordering::equivalent);
-    QT_TEST_ALL_COMPARISON_OPS(thursday, year_month_weekday_last(2001y, November, Friday[last]),
-                               Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(thursday, year_month_weekday_last(2001y, November, Wednesday[last]),
+                               BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(thursday, year_month_weekday_last(2001y, November, Thursday[last]),
+                               BobUI::strong_ordering::equivalent);
+    BOBUI_TEST_ALL_COMPARISON_OPS(thursday, year_month_weekday_last(2001y, November, Friday[last]),
+                               BobUI::strong_ordering::less);
 #else
     QSKIP("This test requires C++20-level <chrono> support enabled in the standard library.");
 #endif // __cpp_lib_chrono >= 201907L
@@ -1234,26 +1234,26 @@ Q_DECLARE_METATYPE(QDataStream::Version)
 
 void tst_QDate::operator_insert_extract_data()
 {
-    QTest::addColumn<QDate>("date");
-    QTest::addColumn<QDataStream::Version>("dataStreamVersion");
+    BOBUIest::addColumn<QDate>("date");
+    BOBUIest::addColumn<QDataStream::Version>("dataStreamVersion");
 
     const QMetaEnum e = QMetaEnum::fromType<QDataStream::Version>();
-    for (int version = QDataStream::Qt_1_0; version <= QDataStream::Qt_DefaultCompiledVersion;
+    for (int version = QDataStream::BobUI_1_0; version <= QDataStream::BobUI_DefaultCompiledVersion;
          ++version) {
-        if (e.value(version) == -1 || qstrcmp(e.key(version), "Qt_DefaultCompiledVersion") == 0)
+        if (e.value(version) == -1 || qstrcmp(e.key(version), "BobUI_DefaultCompiledVersion") == 0)
             continue;
         const auto dataStreamVersion = static_cast<QDataStream::Version>(version);
         const char *const tag = e.key(version);
-        QTest::addRow("(invalid) %s", tag) << invalidDate() << dataStreamVersion;
-        QTest::addRow("(1, 1, 1) %s", tag) << QDate(1, 1, 1) << dataStreamVersion;
-        QTest::addRow("(-1, 1, 1) %s", tag) << QDate(-1, 1, 1) << dataStreamVersion;
-        QTest::addRow("(1995, 5, 20) %s", tag) << QDate(1995, 5, 20) << dataStreamVersion;
+        BOBUIest::addRow("(invalid) %s", tag) << invalidDate() << dataStreamVersion;
+        BOBUIest::addRow("(1, 1, 1) %s", tag) << QDate(1, 1, 1) << dataStreamVersion;
+        BOBUIest::addRow("(-1, 1, 1) %s", tag) << QDate(-1, 1, 1) << dataStreamVersion;
+        BOBUIest::addRow("(1995, 5, 20) %s", tag) << QDate(1995, 5, 20) << dataStreamVersion;
 
         // Test minimums for quint32/qint64.
-        if (dataStreamVersion >= QDataStream::Qt_5_0)
-            QTest::addRow("(-4714, 11, 24) %s", tag) << QDate(-4714, 11, 24) << dataStreamVersion;
+        if (dataStreamVersion >= QDataStream::BobUI_5_0)
+            BOBUIest::addRow("(-4714, 11, 24) %s", tag) << QDate(-4714, 11, 24) << dataStreamVersion;
         else
-            QTest::addRow("(-4713, 1, 2) %s", tag) << QDate(-4713, 1, 2) << dataStreamVersion;
+            BOBUIest::addRow("(-4713, 1, 2) %s", tag) << QDate(-4713, 1, 2) << dataStreamVersion;
     }
 }
 
@@ -1274,311 +1274,311 @@ void tst_QDate::operator_insert_extract()
     QCOMPARE(deserialised, date);
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 void tst_QDate::fromStringDateFormat_data()
 {
-    QTest::addColumn<QString>("dateStr");
-    QTest::addColumn<Qt::DateFormat>("dateFormat");
-    QTest::addColumn<QDate>("expectedDate");
+    BOBUIest::addColumn<QString>("dateStr");
+    BOBUIest::addColumn<BobUI::DateFormat>("dateFormat");
+    BOBUIest::addColumn<QDate>("expectedDate");
 
-    QTest::newRow("text0") << u"Sat May 20 1995"_s << Qt::TextDate << QDate(1995, 5, 20);
-    QTest::newRow("text1") << u"Tue Dec 17 2002"_s << Qt::TextDate << QDate(2002, 12, 17);
-    QTest::newRow("text2") << QDate(1999, 11, 14).toString(Qt::TextDate) << Qt::TextDate << QDate(1999, 11, 14);
-    QTest::newRow("text3") << u"xxx Jan 1 0999"_s << Qt::TextDate << QDate(999, 1, 1);
-    QTest::newRow("text3b") << u"xxx Jan 1 999"_s << Qt::TextDate << QDate(999, 1, 1);
-    QTest::newRow("text4") << u"xxx Jan 1 12345"_s << Qt::TextDate << QDate(12345, 1, 1);
-    QTest::newRow("text5") << u"xxx Jan 1 -0001"_s << Qt::TextDate << QDate(-1, 1, 1);
-    QTest::newRow("text6") << u"xxx Jan 1 -4712"_s << Qt::TextDate << QDate(-4712, 1, 1);
-    QTest::newRow("text7") << u"xxx Nov 25 -4713"_s << Qt::TextDate << QDate(-4713, 11, 25);
-    QTest::newRow("text, empty") << QString() << Qt::TextDate << QDate();
-    QTest::newRow("text, 3 part") << u"part1 part2 part3"_s << Qt::TextDate << QDate();
-    QTest::newRow("text, invalid month name") << u"Wed BabytownFrolics 8 2012"_s << Qt::TextDate << QDate();
-    QTest::newRow("text, invalid day") << u"Wed May Wilhelm 2012"_s << Qt::TextDate << QDate();
-    QTest::newRow("text, invalid year") << u"Wed May 8 Cats"_s << Qt::TextDate << QDate();
+    BOBUIest::newRow("text0") << u"Sat May 20 1995"_s << BobUI::TextDate << QDate(1995, 5, 20);
+    BOBUIest::newRow("text1") << u"Tue Dec 17 2002"_s << BobUI::TextDate << QDate(2002, 12, 17);
+    BOBUIest::newRow("text2") << QDate(1999, 11, 14).toString(BobUI::TextDate) << BobUI::TextDate << QDate(1999, 11, 14);
+    BOBUIest::newRow("text3") << u"xxx Jan 1 0999"_s << BobUI::TextDate << QDate(999, 1, 1);
+    BOBUIest::newRow("text3b") << u"xxx Jan 1 999"_s << BobUI::TextDate << QDate(999, 1, 1);
+    BOBUIest::newRow("text4") << u"xxx Jan 1 12345"_s << BobUI::TextDate << QDate(12345, 1, 1);
+    BOBUIest::newRow("text5") << u"xxx Jan 1 -0001"_s << BobUI::TextDate << QDate(-1, 1, 1);
+    BOBUIest::newRow("text6") << u"xxx Jan 1 -4712"_s << BobUI::TextDate << QDate(-4712, 1, 1);
+    BOBUIest::newRow("text7") << u"xxx Nov 25 -4713"_s << BobUI::TextDate << QDate(-4713, 11, 25);
+    BOBUIest::newRow("text, empty") << QString() << BobUI::TextDate << QDate();
+    BOBUIest::newRow("text, 3 part") << u"part1 part2 part3"_s << BobUI::TextDate << QDate();
+    BOBUIest::newRow("text, invalid month name") << u"Wed BabytownFrolics 8 2012"_s << BobUI::TextDate << QDate();
+    BOBUIest::newRow("text, invalid day") << u"Wed May Wilhelm 2012"_s << BobUI::TextDate << QDate();
+    BOBUIest::newRow("text, invalid year") << u"Wed May 8 Cats"_s << BobUI::TextDate << QDate();
 
-    QTest::newRow("iso0") << u"1995-05-20"_s << Qt::ISODate << QDate(1995, 5, 20);
-    QTest::newRow("iso1") << u"2002-12-17"_s << Qt::ISODate << QDate(2002, 12, 17);
-    QTest::newRow("iso2") << QDate(1999, 11, 14).toString(Qt::ISODate) << Qt::ISODate << QDate(1999, 11, 14);
-    QTest::newRow("iso3") << u"0999-01-01"_s << Qt::ISODate << QDate(999, 1, 1);
-    QTest::newRow("iso3b") << u"0999-01-01"_s << Qt::ISODate << QDate(999, 1, 1);
-    QTest::newRow("iso4") << u"2000101101"_s      << Qt::ISODate << QDate();
-    QTest::newRow("iso5") << u"2000/01/01"_s      << Qt::ISODate << QDate(2000, 1, 1);
-    QTest::newRow("iso6") << u"2000-01-01 blah"_s << Qt::ISODate << QDate(2000, 1, 1);
-    QTest::newRow("iso7") << u"2000-01-011blah"_s << Qt::ISODate << QDate();
-    QTest::newRow("iso8") << u"2000-01-01blah"_s  << Qt::ISODate << QDate(2000, 1, 1);
-    QTest::newRow("iso9") << u"-001-01-01"_s      << Qt::ISODate << QDate();
-    QTest::newRow("iso10") << u"99999-01-01"_s    << Qt::ISODate << QDate();
-    QTest::newRow("iso-yr-0") << u"0000-01-01"_s  << Qt::ISODate << QDate();
+    BOBUIest::newRow("iso0") << u"1995-05-20"_s << BobUI::ISODate << QDate(1995, 5, 20);
+    BOBUIest::newRow("iso1") << u"2002-12-17"_s << BobUI::ISODate << QDate(2002, 12, 17);
+    BOBUIest::newRow("iso2") << QDate(1999, 11, 14).toString(BobUI::ISODate) << BobUI::ISODate << QDate(1999, 11, 14);
+    BOBUIest::newRow("iso3") << u"0999-01-01"_s << BobUI::ISODate << QDate(999, 1, 1);
+    BOBUIest::newRow("iso3b") << u"0999-01-01"_s << BobUI::ISODate << QDate(999, 1, 1);
+    BOBUIest::newRow("iso4") << u"2000101101"_s      << BobUI::ISODate << QDate();
+    BOBUIest::newRow("iso5") << u"2000/01/01"_s      << BobUI::ISODate << QDate(2000, 1, 1);
+    BOBUIest::newRow("iso6") << u"2000-01-01 blah"_s << BobUI::ISODate << QDate(2000, 1, 1);
+    BOBUIest::newRow("iso7") << u"2000-01-011blah"_s << BobUI::ISODate << QDate();
+    BOBUIest::newRow("iso8") << u"2000-01-01blah"_s  << BobUI::ISODate << QDate(2000, 1, 1);
+    BOBUIest::newRow("iso9") << u"-001-01-01"_s      << BobUI::ISODate << QDate();
+    BOBUIest::newRow("iso10") << u"99999-01-01"_s    << BobUI::ISODate << QDate();
+    BOBUIest::newRow("iso-yr-0") << u"0000-01-01"_s  << BobUI::ISODate << QDate();
 
-    // Test Qt::RFC2822Date format (RFC 2822).
-    QTest::newRow("RFC 2822") << u"13 Feb 1987 13:24:51 +0100"_s
-        << Qt::RFC2822Date << QDate(1987, 2, 13);
-    QTest::newRow("RFC 2822 after space")
+    // Test BobUI::RFC2822Date format (RFC 2822).
+    BOBUIest::newRow("RFC 2822") << u"13 Feb 1987 13:24:51 +0100"_s
+        << BobUI::RFC2822Date << QDate(1987, 2, 13);
+    BOBUIest::newRow("RFC 2822 after space")
         << u" 13 Feb 1987 13:24:51 +0100"_s
-        << Qt::RFC2822Date << QDate(1987, 2, 13);
-    QTest::newRow("RFC 2822 with day") << u"Thu, 01 Jan 1970 00:12:34 +0000"_s
-        << Qt::RFC2822Date << epochDate();
-    QTest::newRow("RFC 2822 with day after space")
+        << BobUI::RFC2822Date << QDate(1987, 2, 13);
+    BOBUIest::newRow("RFC 2822 with day") << u"Thu, 01 Jan 1970 00:12:34 +0000"_s
+        << BobUI::RFC2822Date << epochDate();
+    BOBUIest::newRow("RFC 2822 with day after space")
         << u" Thu, 01 Jan 1970 00:12:34 +0000"_s
-        << Qt::RFC2822Date << epochDate();
+        << BobUI::RFC2822Date << epochDate();
     // No timezone
-    QTest::newRow("RFC 2822 no timezone") << u"01 Jan 1970 00:12:34"_s
-        << Qt::RFC2822Date << epochDate();
+    BOBUIest::newRow("RFC 2822 no timezone") << u"01 Jan 1970 00:12:34"_s
+        << BobUI::RFC2822Date << epochDate();
     // No time specified
-    QTest::newRow("RFC 2822 date only") << u"01 Nov 2002"_s
-        << Qt::RFC2822Date << QDate(2002, 11, 1);
-    QTest::newRow("RFC 2822 with day date only") << u"Fri, 01 Nov 2002"_s
-        << Qt::RFC2822Date << QDate(2002, 11, 1);
-    QTest::newRow("RFC 2822 malformed time")
-        << u"01 Nov 2002 0:"_s << Qt::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 date only") << u"01 Nov 2002"_s
+        << BobUI::RFC2822Date << QDate(2002, 11, 1);
+    BOBUIest::newRow("RFC 2822 with day date only") << u"Fri, 01 Nov 2002"_s
+        << BobUI::RFC2822Date << QDate(2002, 11, 1);
+    BOBUIest::newRow("RFC 2822 malformed time")
+        << u"01 Nov 2002 0:"_s << BobUI::RFC2822Date << QDate();
     // Test invalid month, day, year
-    QTest::newRow("RFC 2822 invalid month name") << u"13 Fev 1987 13:24:51 +0100"_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid day") << u"36 Fev 1987 13:24:51 +0100"_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid year") << u"13 Fev 0000 13:24:51 +0100"_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid character at end")
-        << u"01 Jan 2012 08:00:00 +0100!"_s << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid character at front")
-        << u"!01 Jan 2012 08:00:00 +0100"_s << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid character both ends")
-        << u"!01 Jan 2012 08:00:00 +0100!"_s << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid character at front, 2 at back")
-        << u"!01 Jan 2012 08:00:00 +0100.."_s << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 2822 invalid character 2 at front")
-        << u"!!01 Jan 2012 08:00:00 +0100"_s << Qt::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid month name") << u"13 Fev 1987 13:24:51 +0100"_s
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid day") << u"36 Fev 1987 13:24:51 +0100"_s
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid year") << u"13 Fev 0000 13:24:51 +0100"_s
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid character at end")
+        << u"01 Jan 2012 08:00:00 +0100!"_s << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid character at front")
+        << u"!01 Jan 2012 08:00:00 +0100"_s << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid character both ends")
+        << u"!01 Jan 2012 08:00:00 +0100!"_s << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid character at front, 2 at back")
+        << u"!01 Jan 2012 08:00:00 +0100.."_s << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 2822 invalid character 2 at front")
+        << u"!!01 Jan 2012 08:00:00 +0100"_s << BobUI::RFC2822Date << QDate();
     // The common date text used by the "invalid character" tests, just to be
     // sure *it's* not what's invalid:
-    QTest::newRow("RFC 2822 (not invalid)")
+    BOBUIest::newRow("RFC 2822 (not invalid)")
         << u"01 Jan 2012 08:00:00 +0100"_s
-        << Qt::RFC2822Date << QDate(2012, 1, 1);
+        << BobUI::RFC2822Date << QDate(2012, 1, 1);
 
-    // Test Qt::RFC2822Date format (RFC 850 and 1036, permissive).
-    QTest::newRow("RFC 850 and 1036") << u"Fri Feb 13 13:24:51 1987 +0100"_s
-        << Qt::RFC2822Date << QDate(1987, 2, 13);
-    QTest::newRow("RFC 850 and 1036 after space")
+    // Test BobUI::RFC2822Date format (RFC 850 and 1036, permissive).
+    BOBUIest::newRow("RFC 850 and 1036") << u"Fri Feb 13 13:24:51 1987 +0100"_s
+        << BobUI::RFC2822Date << QDate(1987, 2, 13);
+    BOBUIest::newRow("RFC 850 and 1036 after space")
         << u" Fri Feb 13 13:24:51 1987 +0100"_s
-        << Qt::RFC2822Date << QDate(1987, 2, 13);
+        << BobUI::RFC2822Date << QDate(1987, 2, 13);
     // No timezone
-    QTest::newRow("RFC 850 and 1036 no timezone") << u"Thu Jan 01 00:12:34 1970"_s
-        << Qt::RFC2822Date << epochDate();
+    BOBUIest::newRow("RFC 850 and 1036 no timezone") << u"Thu Jan 01 00:12:34 1970"_s
+        << BobUI::RFC2822Date << epochDate();
     // No time specified
-    QTest::newRow("RFC 850 and 1036 date only") << u"Fri Nov 01 2002"_s
-        << Qt::RFC2822Date << QDate(2002, 11, 1);
+    BOBUIest::newRow("RFC 850 and 1036 date only") << u"Fri Nov 01 2002"_s
+        << BobUI::RFC2822Date << QDate(2002, 11, 1);
     // Test invalid characters.
-    QTest::newRow("RFC 850 and 1036 invalid character at end")
+    BOBUIest::newRow("RFC 850 and 1036 invalid character at end")
         << u"Sun Jan 01 08:00:00 2012 +0100!"_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 850 and 1036 invalid character at front")
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 850 and 1036 invalid character at front")
         << u"!Sun Jan 01 08:00:00 2012 +0100"_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 850 and 1036 invalid character both ends")
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 850 and 1036 invalid character both ends")
         << u"!Sun Jan 01 08:00:00 2012 +0100!"_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 850 and 1036 invalid character at front, 2 at back")
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 850 and 1036 invalid character at front, 2 at back")
         << u"!Sun Jan 01 08:00:00 2012 +0100.."_s
-        << Qt::RFC2822Date << QDate();
-    QTest::newRow("RFC 850 and 1036 invalid character 2 at front")
+        << BobUI::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC 850 and 1036 invalid character 2 at front")
         << u"!!Sun Jan 01 08:00:00 2012 +0100"_s
-        << Qt::RFC2822Date << QDate();
+        << BobUI::RFC2822Date << QDate();
     // Again, check the text in the "invalid character" tests isn't the source of invalidity:
-    QTest::newRow("RFC 850 and 1036 (not invalid)")
+    BOBUIest::newRow("RFC 850 and 1036 (not invalid)")
         << u"Sun Jan 01 08:00:00 2012 +0100"_s
-        << Qt::RFC2822Date << QDate(2012, 1, 1);
+        << BobUI::RFC2822Date << QDate(2012, 1, 1);
 
-    QTest::newRow("RFC empty") << u""_s << Qt::RFC2822Date << QDate();
+    BOBUIest::newRow("RFC empty") << u""_s << BobUI::RFC2822Date << QDate();
 }
 
 void tst_QDate::fromStringDateFormat()
 {
     QFETCH(QString, dateStr);
-    QFETCH(Qt::DateFormat, dateFormat);
+    QFETCH(BobUI::DateFormat, dateFormat);
     QFETCH(QDate, expectedDate);
 
     QCOMPARE(QDate::fromString(dateStr, dateFormat), expectedDate);
 }
 
-# if QT_CONFIG(datetimeparser)
+# if BOBUI_CONFIG(datetimeparser)
 void tst_QDate::fromStringFormat_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<int>("baseYear");
-    QTest::addColumn<QDate>("expected");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<int>("baseYear");
+    BOBUIest::addColumn<QDate>("expected");
 
-    QTest::newRow("empty") << u""_s << u""_s << 1900 << defDate();
-    QTest::newRow("space-as-empty") << u" "_s << u""_s << 1900 << invalidDate();
-    QTest::newRow("space") << u" "_s << u" "_s << 1900 << defDate();
-    QTest::newRow("mispunc") << u"-%$%#"_s << u"$*(#@"_s << 1900 << invalidDate();
-    QTest::newRow("literal-d") << u"d"_s << u"'d'"_s << 1900 << defDate();
-    QTest::newRow("greedy") << u"101010"_s << u"dMyy"_s << 1900 << QDate(1910, 10, 10);
-    QTest::newRow("greedy-miss") << u"101010b"_s << u"dMyy"_s << 1900 << invalidDate();
-    QTest::newRow("January") << u"January"_s << u"MMMM"_s << 1900 << defDate();
-    QTest::newRow("mistext") << u"ball"_s << u"balle"_s << 1900 << invalidDate();
-    QTest::newRow("text") << u"balleh"_s << u"balleh"_s << 1900 << defDate();
-    QTest::newRow("yearless:19") << u"10.01.1"_s << u"M.dd.d"_s << 1900 << QDate(1900, 10, 1);
-    QTest::newRow("yearless:20") << u"10.01.1"_s << u"M.dd.d"_s << 2000 << QDate(2000, 10, 1);
-    QTest::newRow("neg-month") << u"-1.01.1"_s << u"M.dd.d"_s << 1900 << invalidDate();
-    QTest::newRow("greedy-break") << u"11010"_s << u"dMMyy"_s << 1900 << invalidDate();
-    QTest::newRow("neg-day") << u"-2"_s << u"d"_s << 1900 << invalidDate();
-    QTest::newRow("Md:132") << u"132"_s << u"Md"_s << 1900 << invalidDate();
-    QTest::newRow("February") << u"February"_s << u"MMMM"_s << 1900 << QDate(1900, 2, 1);
+    BOBUIest::newRow("empty") << u""_s << u""_s << 1900 << defDate();
+    BOBUIest::newRow("space-as-empty") << u" "_s << u""_s << 1900 << invalidDate();
+    BOBUIest::newRow("space") << u" "_s << u" "_s << 1900 << defDate();
+    BOBUIest::newRow("mispunc") << u"-%$%#"_s << u"$*(#@"_s << 1900 << invalidDate();
+    BOBUIest::newRow("literal-d") << u"d"_s << u"'d'"_s << 1900 << defDate();
+    BOBUIest::newRow("greedy") << u"101010"_s << u"dMyy"_s << 1900 << QDate(1910, 10, 10);
+    BOBUIest::newRow("greedy-miss") << u"101010b"_s << u"dMyy"_s << 1900 << invalidDate();
+    BOBUIest::newRow("January") << u"January"_s << u"MMMM"_s << 1900 << defDate();
+    BOBUIest::newRow("mistext") << u"ball"_s << u"balle"_s << 1900 << invalidDate();
+    BOBUIest::newRow("text") << u"balleh"_s << u"balleh"_s << 1900 << defDate();
+    BOBUIest::newRow("yearless:19") << u"10.01.1"_s << u"M.dd.d"_s << 1900 << QDate(1900, 10, 1);
+    BOBUIest::newRow("yearless:20") << u"10.01.1"_s << u"M.dd.d"_s << 2000 << QDate(2000, 10, 1);
+    BOBUIest::newRow("neg-month") << u"-1.01.1"_s << u"M.dd.d"_s << 1900 << invalidDate();
+    BOBUIest::newRow("greedy-break") << u"11010"_s << u"dMMyy"_s << 1900 << invalidDate();
+    BOBUIest::newRow("neg-day") << u"-2"_s << u"d"_s << 1900 << invalidDate();
+    BOBUIest::newRow("Md:132") << u"132"_s << u"Md"_s << 1900 << invalidDate();
+    BOBUIest::newRow("February") << u"February"_s << u"MMMM"_s << 1900 << QDate(1900, 2, 1);
 
-    QTest::newRow("mon-aug-8th")
+    BOBUIest::newRow("mon-aug-8th")
             << u"Mon August 8 2005"_s << u"ddd MMMM d yyyy"_s << 1900 << QDate(2005, 8, 8);
-    QTest::newRow("year-match-20000") << u"2000:00"_s << u"yyyy:yy"_s << 1900 << QDate(2000, 1, 1);
-    QTest::newRow("year-match-1999") << u"1999:99"_s << u"yyyy:yy"_s << 1900 << QDate(1999, 1, 1);
-    QTest::newRow("year-match-2099") << u"2099:99"_s << u"yyyy:yy"_s << 1900 << QDate(2099, 1, 1);
-    QTest::newRow("year-match-2001") << u"2001:01"_s << u"yyyy:yy"_s << 1900 << QDate(2001, 1, 1);
-    QTest::newRow("just-yy-1999") << u"99"_s << u"yy"_s << 1900 << QDate(1999, 1, 1);
-    QTest::newRow("just-yy-1901") << u"01"_s << u"yy"_s << 1900 << QDate(1901, 1, 1);
-    QTest::newRow("just-yy-2001") << u"01"_s << u"yy"_s << 1970 << QDate(2001, 1, 1);
+    BOBUIest::newRow("year-match-20000") << u"2000:00"_s << u"yyyy:yy"_s << 1900 << QDate(2000, 1, 1);
+    BOBUIest::newRow("year-match-1999") << u"1999:99"_s << u"yyyy:yy"_s << 1900 << QDate(1999, 1, 1);
+    BOBUIest::newRow("year-match-2099") << u"2099:99"_s << u"yyyy:yy"_s << 1900 << QDate(2099, 1, 1);
+    BOBUIest::newRow("year-match-2001") << u"2001:01"_s << u"yyyy:yy"_s << 1900 << QDate(2001, 1, 1);
+    BOBUIest::newRow("just-yy-1999") << u"99"_s << u"yy"_s << 1900 << QDate(1999, 1, 1);
+    BOBUIest::newRow("just-yy-1901") << u"01"_s << u"yy"_s << 1900 << QDate(1901, 1, 1);
+    BOBUIest::newRow("just-yy-2001") << u"01"_s << u"yy"_s << 1970 << QDate(2001, 1, 1);
 
-    QTest::newRow("Monday") << u"Monday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 1);
-    QTest::newRow("Tuesday") << u"Tuesday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 2);
-    QTest::newRow("Wednesday") << u"Wednesday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 3);
-    QTest::newRow("Thursday") << u"Thursday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 4);
-    QTest::newRow("Friday") << u"Friday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 5);
-    QTest::newRow("Saturday") << u"Saturday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 6);
-    QTest::newRow("Sunday") << u"Sunday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 7);
+    BOBUIest::newRow("Monday") << u"Monday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 1);
+    BOBUIest::newRow("Tuesday") << u"Tuesday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 2);
+    BOBUIest::newRow("Wednesday") << u"Wednesday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 3);
+    BOBUIest::newRow("Thursday") << u"Thursday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 4);
+    BOBUIest::newRow("Friday") << u"Friday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 5);
+    BOBUIest::newRow("Saturday") << u"Saturday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 6);
+    BOBUIest::newRow("Sunday") << u"Sunday"_s << u"dddd"_s << 1900 << QDate(1900, 1, 7);
 
-    QTest::newRow("Mon06") << u"Monday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 2);
-    QTest::newRow("Tues06") << u"Tuesday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 3);
-    QTest::newRow("Wed06") << u"Wednesday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 4);
-    QTest::newRow("Thu06") << u"Thursday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 5);
-    QTest::newRow("Fri06") << u"Friday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 6);
-    QTest::newRow("Sat06") << u"Saturday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 7);
-    QTest::newRow("Sun06") << u"Sunday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 1);
-    QTest::newRow("Tue07Mar")
+    BOBUIest::newRow("Mon06") << u"Monday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 2);
+    BOBUIest::newRow("Tues06") << u"Tuesday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 3);
+    BOBUIest::newRow("Wed06") << u"Wednesday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 4);
+    BOBUIest::newRow("Thu06") << u"Thursday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 5);
+    BOBUIest::newRow("Fri06") << u"Friday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 6);
+    BOBUIest::newRow("Sat06") << u"Saturday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 7);
+    BOBUIest::newRow("Sun06") << u"Sunday 2006"_s << u"dddd yyyy"_s << 1900 << QDate(2006, 1, 1);
+    BOBUIest::newRow("Tue07Mar")
             << u"Tuesday 2007 March"_s << u"dddd yyyy MMMM"_s << 1900 << QDate(2007, 3, 6);
 
-    QTest::newRow("21May2006")
+    BOBUIest::newRow("21May2006")
             << u"21052006"_s << u"ddMMyyyy"_s << 1900 << QDate(2006, 5, 21);
-    QTest::newRow("21May06:19")
+    BOBUIest::newRow("21May06:19")
             << u"210506"_s << u"ddMMyy"_s << 1900 << QDate(1906, 5, 21);
-    QTest::newRow("21May06:20")
+    BOBUIest::newRow("21May06:20")
             << u"210506"_s << u"ddMMyy"_s << 1970 << QDate(2006, 5, 21);
-    QTest::newRow("21/May/2006")
+    BOBUIest::newRow("21/May/2006")
             << u"21/5/2006"_s << u"d/M/yyyy"_s << 1900 << QDate(2006, 5, 21);
-    QTest::newRow("21/5/06")
+    BOBUIest::newRow("21/5/06")
             << u"21/5/06"_s << u"d/M/yy"_s << 1900 << QDate(1906, 5, 21);
-    QTest::newRow("21/5/06:19")
+    BOBUIest::newRow("21/5/06:19")
             << u"21/5/06"_s << u"d/M/yy"_s << 1900 << QDate(1906, 5, 21);
-    QTest::newRow("21/5/06:20")
+    BOBUIest::newRow("21/5/06:20")
             << u"21/5/06"_s << u"d/M/yy"_s << 1910 << QDate(2006, 5, 21);
-    QTest::newRow("2006May21")
+    BOBUIest::newRow("2006May21")
             << u"20060521"_s << u"yyyyMMdd"_s << 1900 << QDate(2006, 5, 21);
-    QTest::newRow("06May21:19")
+    BOBUIest::newRow("06May21:19")
             << u"060521"_s << u"yyMMdd"_s << 1900 << QDate(1906, 5, 21);
-    QTest::newRow("06May21:20")
+    BOBUIest::newRow("06May21:20")
             << u"060521"_s << u"yyMMdd"_s << 1907 << QDate(2006, 5, 21);
-    QTest::newRow("lateMarch")
+    BOBUIest::newRow("lateMarch")
             << u"9999-03-06"_s << u"yyyy-MM-dd"_s << 1900 << QDate(9999, 3, 6);
-    QTest::newRow("late")
+    BOBUIest::newRow("late")
             << u"9999-12-31"_s << u"yyyy-MM-dd"_s << 1900 << QDate(9999, 12, 31);
 
-    QTest::newRow("quoted-dd")
+    BOBUIest::newRow("quoted-dd")
             << u"21dd-05-2006"_s << u"dd'dd'-MM-yyyy"_s << 1900 << QDate(2006, 5, 21);
-    QTest::newRow("quoted-MM")
+    BOBUIest::newRow("quoted-MM")
             << u"21-MM05-2006"_s << u"dd-'MM'MM-yyyy"_s << 1900 << QDate(2006, 5, 21);
-    QTest::newRow("quotes-empty")
+    BOBUIest::newRow("quotes-empty")
             << u"21-'05-2006"_s << u"dd-MM-''yy"_s << 1900 << QDate(2006, 5, 21);
 
     // Test unicode handling.
-    QTest::newRow("Unicode in format string")
+    BOBUIest::newRow("Unicode in format string")
             << u"2020🤣09🤣21"_s << u"yyyy🤣MM🤣dd"_s << 1900 << QDate(2020, 9, 21);
-    QTest::newRow("Unicode-in-format-string-quoted-emoji")
+    BOBUIest::newRow("Unicode-in-format-string-quoted-emoji")
             << u"🤣🤣2020👍09🤣21"_s << u"'🤣🤣'yyyy👍MM🤣dd"_s << 1900
             << QDate(2020, 9, 21);
-    QTest::newRow("Unicode-in-quoted-dd-format-string")
+    BOBUIest::newRow("Unicode-in-quoted-dd-format-string")
             << u"🤣🤣2020👍09🤣21dd"_s << u"🤣🤣yyyy👍MM🤣dd'dd'"_s << 1900
             << QDate(2020, 9, 21);
-    QTest::newRow("Unicode-in-all-formats-quoted-string")
+    BOBUIest::newRow("Unicode-in-all-formats-quoted-string")
             << u"🤣🤣yyyy2020👍MM09🤣21dd"_s << u"🤣🤣'yyyy'yyyy👍'MM'MM🤣dd'dd'"_s
             << 1900 << QDate(2020, 9, 21);
 
-    // QTBUG-84334
-    QTest::newRow("-ve year: front, nosep")
+    // BOBUIBUG-84334
+    BOBUIest::newRow("-ve year: front, nosep")
             << u"-20060521"_s << u"yyyyMMdd"_s << 1900 << QDate(-2006, 5, 21);
-    QTest::newRow("-ve year: mid, nosep")
+    BOBUIest::newRow("-ve year: mid, nosep")
             << u"05-200621"_s << u"MMyyyydd"_s << 1900 << QDate(-2006, 5, 21);
-    QTest::newRow("-ve year: back, nosep")
+    BOBUIest::newRow("-ve year: back, nosep")
             << u"0521-2006"_s << u"MMddyyyy"_s << 1900 << QDate(-2006, 5, 21);
     // - as separator should not interfere with negative year numbers:
-    QTest::newRow("-ve year: front, dash")
+    BOBUIest::newRow("-ve year: front, dash")
             << u"-2006-05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate(-2006, 5, 21);
-    QTest::newRow("positive year: front, dash")
+    BOBUIest::newRow("positive year: front, dash")
             << u"-2006-05-21"_s << u"-yyyy-MM-dd"_s << 1900 << QDate(2006, 5, 21);
-    QTest::newRow("-ve year: mid, dash")
+    BOBUIest::newRow("-ve year: mid, dash")
             << u"05--2006-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate(-2006, 5, 21);
-    QTest::newRow("-ve year: back, dash")
+    BOBUIest::newRow("-ve year: back, dash")
             << u"05-21--2006"_s << u"MM-dd-yyyy"_s << 1900 << QDate(-2006, 5, 21);
     // zero year number is invalid
-    QTest::newRow("year-zero-front")
+    BOBUIest::newRow("year-zero-front")
             << u"0000-05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
-    QTest::newRow("year-zero-mid")
+    BOBUIest::newRow("year-zero-mid")
             << u"05-0000-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
-    QTest::newRow("year-zero-back")
+    BOBUIest::newRow("year-zero-back")
             << u"05-21-0000"_s << u"MM-dd-yyyy"_s << 1900 << QDate();
     // negative three digit year numbers should be rejected:
-    QTest::newRow("-ve 3digit year: front")
+    BOBUIest::newRow("-ve 3digit year: front")
             << u"-206-05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
-    QTest::newRow("-ve 3digit year: mid")
+    BOBUIest::newRow("-ve 3digit year: mid")
             << u"05--206-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
-    QTest::newRow("-ve 3digit year: back")
+    BOBUIest::newRow("-ve 3digit year: back")
             << u"05-21--206"_s << u"MM-dd-yyyy"_s << 1900 << QDate();
     // negative month numbers should be rejected:
-    QTest::newRow("-ve 2digit month: mid")
+    BOBUIest::newRow("-ve 2digit month: mid")
             << u"2060--05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
-    QTest::newRow("-ve 2digit month: front")
+    BOBUIest::newRow("-ve 2digit month: front")
             << u"-05-2060-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
-    QTest::newRow("-ve 2digit month: back")
+    BOBUIest::newRow("-ve 2digit month: back")
             << u"21-2060--05"_s << u"dd-yyyy-MM"_s << 1900 << QDate();
     // negative single digit month numbers should be rejected:
-    QTest::newRow("-ve 1digit month: mid")
+    BOBUIest::newRow("-ve 1digit month: mid")
             << u"2060--5-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
-    QTest::newRow("-ve 1digit month: front")
+    BOBUIest::newRow("-ve 1digit month: front")
             << u"-5-2060-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
-    QTest::newRow("-ve 1digit month: back")
+    BOBUIest::newRow("-ve 1digit month: back")
             << u"21-2060--5"_s << u"dd-yyyy-MM"_s << 1900 << QDate();
     // negative day numbers should be rejected:
-    QTest::newRow("-ve 2digit day: front")
+    BOBUIest::newRow("-ve 2digit day: front")
             << u"-21-2060-05"_s << u"dd-yyyy-MM"_s << 1900 << QDate();
-    QTest::newRow("-ve 2digit day: mid")
+    BOBUIest::newRow("-ve 2digit day: mid")
             << u"2060--21-05"_s << u"yyyy-dd-MM"_s << 1900 << QDate();
-    QTest::newRow("-ve 2digit day: back")
+    BOBUIest::newRow("-ve 2digit day: back")
             << u"05-2060--21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
     // negative single digit day numbers should be rejected:
-    QTest::newRow("-ve 1digit day: front")
+    BOBUIest::newRow("-ve 1digit day: front")
             << u"-2-2060-05"_s << u"dd-yyyy-MM"_s << 1900 << QDate();
-    QTest::newRow("-ve 1digit day: mid")
+    BOBUIest::newRow("-ve 1digit day: mid")
             << u"05--2-2060"_s << u"MM-dd-yyyy"_s << 1900 << QDate();
-    QTest::newRow("-ve 1digit day: back")
+    BOBUIest::newRow("-ve 1digit day: back")
             << u"2060-05--2"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
     // positive three digit year numbers should be rejected:
-    QTest::newRow("3digit year, front") << u"206-05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
-    QTest::newRow("3digit year, mid") << u"05-206-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
-    QTest::newRow("3digit year, back") << u"05-21-206"_s << u"MM-dd-yyyy"_s << 1900 << QDate();
+    BOBUIest::newRow("3digit year, front") << u"206-05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
+    BOBUIest::newRow("3digit year, mid") << u"05-206-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
+    BOBUIest::newRow("3digit year, back") << u"05-21-206"_s << u"MM-dd-yyyy"_s << 1900 << QDate();
     // positive five digit year numbers should be rejected:
-    QTest::newRow("5digit year, front")
+    BOBUIest::newRow("5digit year, front")
             << u"00206-05-21"_s << u"yyyy-MM-dd"_s << 1900 << QDate();
-    QTest::newRow("5digit year, mid")
+    BOBUIest::newRow("5digit year, mid")
             << u"05-00206-21"_s << u"MM-yyyy-dd"_s << 1900 << QDate();
-    QTest::newRow("5digit year, back")
+    BOBUIest::newRow("5digit year, back")
             << u"05-21-00206"_s << u"MM-dd-yyyy"_s << 1900 << QDate();
-    QTest::newRow("non-leap-feb-29") // QTBUG-132115: should fail but not assert
+    BOBUIest::newRow("non-leap-feb-29") // BOBUIBUG-132115: should fail but not assert
             << u"290215"_s << u"ddMMyy"_s << 1900 << QDate();
 
-    QTest::newRow("dash separator, no year at end")
+    BOBUIest::newRow("dash separator, no year at end")
             << u"05-21-"_s << u"dd-MM-yyyy"_s << 1900 << QDate();
-    QTest::newRow("slash separator, no year at end")
+    BOBUIest::newRow("slash separator, no year at end")
             << u"11/05/"_s << u"d/MM/yyyy"_s << 1900 << QDate();
 
-    // QTBUG-84349
-    QTest::newRow("+ sign in year field") << u"+0200322"_s << u"yyyyMMdd"_s << 1900 << QDate();
-    QTest::newRow("+ sign in month field") << u"2020+322"_s << u"yyyyMMdd"_s << 1900 << QDate();
-    QTest::newRow("+ sign in day field") << u"202003+1"_s << u"yyyyMMdd"_s << 1900 << QDate();
+    // BOBUIBUG-84349
+    BOBUIest::newRow("+ sign in year field") << u"+0200322"_s << u"yyyyMMdd"_s << 1900 << QDate();
+    BOBUIest::newRow("+ sign in month field") << u"2020+322"_s << u"yyyyMMdd"_s << 1900 << QDate();
+    BOBUIest::newRow("+ sign in day field") << u"202003+1"_s << u"yyyyMMdd"_s << 1900 << QDate();
 }
 
 
@@ -1590,7 +1590,7 @@ void tst_QDate::fromStringFormat()
     QFETCH(QDate, expected);
 
     QDate dt = QDate::fromString(string, format, baseYear);
-    QEXPECT_FAIL("quotes-empty", "QTBUG-110669: doubled single-quotes in format mishandled",
+    QEXPECT_FAIL("quotes-empty", "BOBUIBUG-110669: doubled single-quotes in format mishandled",
                  Continue);
     QCOMPARE(dt, expected);
 }
@@ -1598,15 +1598,15 @@ void tst_QDate::fromStringFormat()
 
 void tst_QDate::toStringFormat_data()
 {
-    QTest::addColumn<QDate>("t");
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<QString>("str");
+    BOBUIest::addColumn<QDate>("t");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<QString>("str");
 
-    QTest::newRow( "data0" ) << QDate(1995,5,20) << u"d-M-yy"_s << u"20-5-95"_s;
-    QTest::newRow( "data1" ) << QDate(2002,12,17) << u"dd-MM-yyyy"_s << u"17-12-2002"_s;
-    QTest::newRow( "data2" ) << QDate(1995,5,20) << u"M-yy"_s << u"5-95"_s;
-    QTest::newRow( "data3" ) << QDate(2002,12,17) << u"dd"_s << u"17"_s;
-    QTest::newRow( "data4" ) << QDate() << u"dd-mm-yyyy"_s << QString();
+    BOBUIest::newRow( "data0" ) << QDate(1995,5,20) << u"d-M-yy"_s << u"20-5-95"_s;
+    BOBUIest::newRow( "data1" ) << QDate(2002,12,17) << u"dd-MM-yyyy"_s << u"17-12-2002"_s;
+    BOBUIest::newRow( "data2" ) << QDate(1995,5,20) << u"M-yy"_s << u"5-95"_s;
+    BOBUIest::newRow( "data3" ) << QDate(2002,12,17) << u"dd"_s << u"17"_s;
+    BOBUIest::newRow( "data4" ) << QDate() << u"dd-mm-yyyy"_s << QString();
 }
 
 void tst_QDate::toStringFormat()
@@ -1620,24 +1620,24 @@ void tst_QDate::toStringFormat()
 
 void tst_QDate::toStringDateFormat_data()
 {
-    QTest::addColumn<QDate>("date");
-    QTest::addColumn<Qt::DateFormat>("format");
-    QTest::addColumn<QString>("expectedStr");
+    BOBUIest::addColumn<QDate>("date");
+    BOBUIest::addColumn<BobUI::DateFormat>("format");
+    BOBUIest::addColumn<QString>("expectedStr");
 
-    QTest::newRow("data0") << QDate(1,1,1) << Qt::ISODate << u"0001-01-01"_s;
-    QTest::newRow("data1") << QDate(11,1,1) << Qt::ISODate << u"0011-01-01"_s;
-    QTest::newRow("data2") << QDate(111,1,1) << Qt::ISODate << u"0111-01-01"_s;
-    QTest::newRow("data3") << QDate(1974,12,1) << Qt::ISODate << u"1974-12-01"_s;
-    QTest::newRow("year < 0") << QDate(-1,1,1) << Qt::ISODate << QString();
-    QTest::newRow("year > 9999") << QDate(10000, 1, 1) << Qt::ISODate << QString();
-    QTest::newRow("RFC2822Date") << QDate(1974,12,1) << Qt::RFC2822Date << u"01 Dec 1974"_s;
-    QTest::newRow("ISODateWithMs") << QDate(1974,12,1) << Qt::ISODateWithMs << u"1974-12-01"_s;
+    BOBUIest::newRow("data0") << QDate(1,1,1) << BobUI::ISODate << u"0001-01-01"_s;
+    BOBUIest::newRow("data1") << QDate(11,1,1) << BobUI::ISODate << u"0011-01-01"_s;
+    BOBUIest::newRow("data2") << QDate(111,1,1) << BobUI::ISODate << u"0111-01-01"_s;
+    BOBUIest::newRow("data3") << QDate(1974,12,1) << BobUI::ISODate << u"1974-12-01"_s;
+    BOBUIest::newRow("year < 0") << QDate(-1,1,1) << BobUI::ISODate << QString();
+    BOBUIest::newRow("year > 9999") << QDate(10000, 1, 1) << BobUI::ISODate << QString();
+    BOBUIest::newRow("RFC2822Date") << QDate(1974,12,1) << BobUI::RFC2822Date << u"01 Dec 1974"_s;
+    BOBUIest::newRow("ISODateWithMs") << QDate(1974,12,1) << BobUI::ISODateWithMs << u"1974-12-01"_s;
 }
 
 void tst_QDate::toStringDateFormat()
 {
     QFETCH(QDate, date);
-    QFETCH(Qt::DateFormat, format);
+    QFETCH(BobUI::DateFormat, format);
     QFETCH(QString, expectedStr);
 
     QCOMPARE(date.toString(format), expectedStr);
@@ -1729,12 +1729,12 @@ void tst_QDate::yearsZeroToNinetyNine()
 
 void tst_QDate::printNegativeYear_data() const
 {
-    QTest::addColumn<int>("year");
-    QTest::addColumn<QString>("expect");
-    QTest::newRow("millennium") << -1000 << u"-1000"_s;
-    QTest::newRow("century") << -500 << u"-0500"_s;
-    QTest::newRow("decade") << -20 << u"-0020"_s;
-    QTest::newRow("year") << -7 << u"-0007"_s;
+    BOBUIest::addColumn<int>("year");
+    BOBUIest::addColumn<QString>("expect");
+    BOBUIest::newRow("millennium") << -1000 << u"-1000"_s;
+    BOBUIest::newRow("century") << -500 << u"-0500"_s;
+    BOBUIest::newRow("decade") << -20 << u"-0020"_s;
+    BOBUIest::newRow("year") << -7 << u"-0007"_s;
 }
 
 void tst_QDate::printNegativeYear() const
@@ -1749,17 +1749,17 @@ void tst_QDate::printNegativeYear() const
     QCOMPARE(date.toString(u"yyyy"), expect);
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 void tst_QDate::roundtripString() const
 {
     /* This code path should not result in warnings. */
     const QDate date(QDate::currentDate());
-    QCOMPARE(date.fromString(date.toString(Qt::TextDate), Qt::TextDate), date);
+    QCOMPARE(date.fromString(date.toString(BobUI::TextDate), BobUI::TextDate), date);
 
     const QDateTime now(QDateTime::currentDateTime());
     // TextDate discards milliseconds, so clip to whole second:
     const QDateTime when = now.addMSecs(-now.time().msec());
-    QCOMPARE(when.fromString(when.toString(Qt::TextDate), Qt::TextDate), when);
+    QCOMPARE(when.fromString(when.toString(BobUI::TextDate), BobUI::TextDate), when);
 }
 #endif
 
@@ -1854,11 +1854,11 @@ void tst_QDate::roundtrip() const
 
 void tst_QDate::qdebug() const
 {
-    QTest::ignoreMessage(QtDebugMsg, "QDate(Invalid)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "QDate(Invalid)");
     qDebug() << QDate();
-    QTest::ignoreMessage(QtDebugMsg, "QDate(\"1983-08-07\")");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "QDate(\"1983-08-07\")");
     qDebug() << QDate(1983, 8, 7);
 }
 
-QTEST_APPLESS_MAIN(tst_QDate)
+BOBUIEST_APPLESS_MAIN(tst_QDate)
 #include "tst_qdate.moc"

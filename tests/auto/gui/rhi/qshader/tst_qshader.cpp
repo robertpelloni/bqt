@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QFile>
 #include <QBuffer>
 
@@ -144,7 +144,7 @@ void tst_QShader::genVariants()
             if (key.source() == QShader::GlslShader) {
                 ++batchableGlslVariantCount;
                 const QByteArray src = s.shader(key).shader();
-                QVERIFY(src.contains(QByteArrayLiteral("_qt_order * ")));
+                QVERIFY(src.contains(QByteArrayLiteral("_bobui_order * ")));
             }
         }
     }
@@ -394,7 +394,7 @@ void tst_QShader::loadV4()
     for (const QShaderDescription::InOutVariable &v : desc.inputVariables()) {
         switch (v.location) {
         case 0:
-            QCOMPARE(v.name, QByteArrayLiteral("qt_TexCoord"));
+            QCOMPARE(v.name, QByteArrayLiteral("bobui_TexCoord"));
             QCOMPARE(v.type, QShaderDescription::Vec2);
             break;
         default:
@@ -428,7 +428,7 @@ void tst_QShader::loadV4()
         case 0:
             QCOMPARE(v.offset, 0);
             QCOMPARE(v.size, 64);
-            QCOMPARE(v.name, QByteArrayLiteral("qt_Matrix"));
+            QCOMPARE(v.name, QByteArrayLiteral("bobui_Matrix"));
             QCOMPARE(v.type, QShaderDescription::Mat4);
             QCOMPARE(v.matrixStride, 16);
             break;
@@ -448,7 +448,7 @@ void tst_QShader::loadV4()
 void tst_QShader::manualShaderPackCreation()
 {
     // Exercise manually building a QShader (instead of loading it from
-    // serialized form). Some Qt modules may do this, in particular when OpenGL
+    // serialized form). Some BobUI modules may do this, in particular when OpenGL
     // and GLSL code that cannot be processed through the normal pipeline with
     // Vulkan SPIR-V as the primary target.
 
@@ -456,14 +456,14 @@ void tst_QShader::manualShaderPackCreation()
         "#extension GL_OES_EGL_image_external : require\n"
         "varying vec2 v_texcoord;\n"
         "struct buf {\n"
-        "    mat4 qt_Matrix;\n"
-        "    float qt_Opacity;\n"
+        "    mat4 bobui_Matrix;\n"
+        "    float bobui_Opacity;\n"
         "};\n"
         "uniform buf ubuf;\n"
         "uniform samplerExternalOES tex0;\n"
         "void main()\n"
         "{\n"
-        "    gl_FragColor = ubuf.qt_Opacity * texture2D(tex0, v_texcoord);\n"
+        "    gl_FragColor = ubuf.bobui_Opacity * texture2D(tex0, v_texcoord);\n"
         "}\n";
     static const char *FS_GLES_PREAMBLE =
         "precision highp float;\n";
@@ -503,13 +503,13 @@ void tst_QShader::manualShaderPackCreation()
     // No real uniform blocks in GLSL shaders used with QRhi, but metadata-wise
     // that's what the struct maps to in others shading languages.
     QShaderDescription::BlockVariable matrixBlockVar;
-    matrixBlockVar.name = "qt_Matrix";
+    matrixBlockVar.name = "bobui_Matrix";
     matrixBlockVar.type = QShaderDescription::Mat4;
     matrixBlockVar.offset = 0;
     matrixBlockVar.size = 64;
 
     QShaderDescription::BlockVariable opacityBlockVar;
-    opacityBlockVar.name = "qt_Opacity";
+    opacityBlockVar.name = "bobui_Opacity";
     opacityBlockVar.type = QShaderDescription::Float;
     opacityBlockVar.offset = 64;
     opacityBlockVar.size = 4;
@@ -698,4 +698,4 @@ void tst_QShader::loadV8()
 }
 
 #include <tst_qshader.moc>
-QTEST_MAIN(tst_QShader)
+BOBUIEST_MAIN(tst_QShader)

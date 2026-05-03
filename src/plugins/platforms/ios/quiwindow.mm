@@ -1,15 +1,15 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "quiwindow.h"
 
 #include "qiostheme.h"
 
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/qpa/qplatformtheme.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
 
 #include <UIKit/UIKit.h>
 
@@ -46,10 +46,10 @@
     if (!qGuiApp)
         return;
 
-    Qt::ColorScheme colorScheme = self.traitCollection.userInterfaceStyle
+    BobUI::ColorScheme colorScheme = self.traitCollection.userInterfaceStyle
                               == UIUserInterfaceStyleDark
-                              ? Qt::ColorScheme::Dark
-                              : Qt::ColorScheme::Light;
+                              ? BobUI::ColorScheme::Dark
+                              : BobUI::ColorScheme::Light;
 
     if (self.screen == UIScreen.mainScreen) {
         // Check if the current userInterfaceStyle reports a different appearance than

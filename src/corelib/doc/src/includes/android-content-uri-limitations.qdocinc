@@ -8,6 +8,6 @@ On Android, some limitations apply when dealing with
             such as using app specific directories instead of other public external directories.
             For more information, also see
             \l {Android: storage best practices}{storage best practices}.
-        \li Due to the design of Qt APIs (e.g. QFile), it's not possible to fully
+        \li Due to the design of BobUI APIs (e.g. QFile), it's not possible to fully
             integrate the latter APIs with Android's \l {Android: MediaStore}{MediaStore} APIs.
 \endlist

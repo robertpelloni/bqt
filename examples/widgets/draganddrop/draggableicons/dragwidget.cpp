@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "dragwidget.h"
 
@@ -17,19 +17,19 @@ DragWidget::DragWidget(QWidget *parent)
     boatIcon->setPixmap(QPixmap(":/images/boat.png"));
     boatIcon->move(10, 10);
     boatIcon->show();
-    boatIcon->setAttribute(Qt::WA_DeleteOnClose);
+    boatIcon->setAttribute(BobUI::WA_DeleteOnClose);
 
     QLabel *carIcon = new QLabel(this);
     carIcon->setPixmap(QPixmap(":/images/car.png"));
     carIcon->move(100, 10);
     carIcon->show();
-    carIcon->setAttribute(Qt::WA_DeleteOnClose);
+    carIcon->setAttribute(BobUI::WA_DeleteOnClose);
 
     QLabel *houseIcon = new QLabel(this);
     houseIcon->setPixmap(QPixmap(":/images/house.png"));
     houseIcon->move(10, 80);
     houseIcon->show();
-    houseIcon->setAttribute(Qt::WA_DeleteOnClose);
+    houseIcon->setAttribute(BobUI::WA_DeleteOnClose);
 }
 //! [0]
 
@@ -37,7 +37,7 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -51,7 +51,7 @@ void DragWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -75,10 +75,10 @@ void DragWidget::dropEvent(QDropEvent *event)
         newIcon->setPixmap(pixmap);
         newIcon->move(event->position().toPoint() - offset);
         newIcon->show();
-        newIcon->setAttribute(Qt::WA_DeleteOnClose);
+        newIcon->setAttribute(BobUI::WA_DeleteOnClose);
 
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -116,7 +116,7 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
 
     child->setParent(nullptr);
 
-    if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
+    if (drag->exec(BobUI::CopyAction | BobUI::MoveAction, BobUI::CopyAction) == BobUI::MoveAction) {
         delete child;
     } else {
         child->setParent(this);

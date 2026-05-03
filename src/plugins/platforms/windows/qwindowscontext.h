@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSCONTEXT_H
 #define QWINDOWSCONTEXT_H
 
-#include "qtwindowsglobal.h"
-#include <QtCore/qt_windows.h>
+#include "bobuiwindowsglobal.h"
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qloggingcategory.h>
 
 #define STRICT_TYPED_ITEMIDS
 #include <shlobj.h>
 #include <shlwapi.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindow)
 Q_DECLARE_LOGGING_CATEGORY(lcQpaEvents)
@@ -98,7 +98,7 @@ public:
     void clearWindowUnderMouse();
 
     inline bool windowsProc(HWND hwnd, UINT message,
-                            QtWindows::WindowsEventType et,
+                            BobUIWindows::WindowsEventType et,
                             WPARAM wParam, LPARAM lParam, LRESULT *result,
                             QWindowsWindow **platformWindowPtr);
 
@@ -110,9 +110,9 @@ public:
 
     static void setTabletAbsoluteRange(int a);
 
-    static bool setProcessDpiAwareness(QtWindows::DpiAwareness dpiAwareness);
-    static QtWindows::DpiAwareness processDpiAwareness();
-    static QtWindows::DpiAwareness windowDpiAwareness(HWND hwnd);
+    static bool setProcessDpiAwareness(BobUIWindows::DpiAwareness dpiAwareness);
+    static BobUIWindows::DpiAwareness processDpiAwareness();
+    static BobUIWindows::DpiAwareness windowDpiAwareness(HWND hwnd);
 
     void setDetectAltGrModifier(bool a);
 
@@ -152,8 +152,8 @@ public:
     static bool filterNativeEvent(QWindow *window, MSG *msg, LRESULT *result);
 
 private:
-    void handleFocusEvent(QtWindows::WindowsEventType et, QWindowsWindow *w);
-#ifndef QT_NO_CONTEXTMENU
+    void handleFocusEvent(BobUIWindows::WindowsEventType et, QWindowsWindow *w);
+#ifndef BOBUI_NO_CONTEXTMENU
     bool handleContextMenuEvent(QWindow *window, const MSG &msg);
 #endif
     void handleExitSizeMove(QWindow *window);
@@ -162,8 +162,8 @@ private:
     static QWindowsContext *m_instance;
 };
 
-LRESULT QT_WIN_CALLBACK qWindowsWndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT BOBUI_WIN_CALLBACK qWindowsWndProc(HWND, UINT, WPARAM, LPARAM);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSCONTEXT_H

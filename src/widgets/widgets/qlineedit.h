@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLINEEDIT_H
 #define QLINEEDIT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qframe.h>
-#include <QtGui/qtextcursor.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qmargins.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qframe.h>
+#include <BobUIGui/bobuiextcursor.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qmargins.h>
 
-QT_REQUIRE_CONFIG(lineedit);
+BOBUI_REQUIRE_CONFIG(lineedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QValidator;
 class QMenu;
@@ -23,7 +23,7 @@ class QStyleOptionFrame;
 class QAbstractSpinBox;
 class QDateTimeEdit;
 class QIcon;
-class QToolButton;
+class BOBUIoolButton;
 
 class Q_WIDGETS_EXPORT QLineEdit : public QWidget
 {
@@ -36,7 +36,7 @@ class Q_WIDGETS_EXPORT QLineEdit : public QWidget
     Q_PROPERTY(EchoMode echoMode READ echoMode WRITE setEchoMode)
     Q_PROPERTY(QString displayText READ displayText)
     Q_PROPERTY(int cursorPosition READ cursorPosition WRITE setCursorPosition)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool modified READ isModified WRITE setModified DESIGNABLE false)
     Q_PROPERTY(bool hasSelectedText READ hasSelectedText)
     Q_PROPERTY(QString selectedText READ selectedText)
@@ -46,7 +46,7 @@ class Q_WIDGETS_EXPORT QLineEdit : public QWidget
     Q_PROPERTY(bool redoAvailable READ isRedoAvailable)
     Q_PROPERTY(bool acceptableInput READ hasAcceptableInput)
     Q_PROPERTY(QString placeholderText READ placeholderText WRITE setPlaceholderText)
-    Q_PROPERTY(Qt::CursorMoveStyle cursorMoveStyle READ cursorMoveStyle WRITE setCursorMoveStyle)
+    Q_PROPERTY(BobUI::CursorMoveStyle cursorMoveStyle READ cursorMoveStyle WRITE setCursorMoveStyle)
     Q_PROPERTY(bool clearButtonEnabled READ isClearButtonEnabled WRITE setClearButtonEnabled)
 public:
     enum ActionPosition {
@@ -83,12 +83,12 @@ public:
     bool isReadOnly() const;
     void setReadOnly(bool);
 
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
     void setValidator(const QValidator *);
     const QValidator * validator() const;
 #endif
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     void setCompleter(QCompleter *completer);
     QCompleter *completer() const;
 #endif
@@ -100,8 +100,8 @@ public:
     void setCursorPosition(int);
     int cursorPositionAt(const QPoint &pos);
 
-    void setAlignment(Qt::Alignment flag);
-    Qt::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment flag);
+    BobUI::Alignment alignment() const;
 
     void cursorForward(bool mark, int steps = 1);
     void cursorBackward(bool mark, int steps = 1);
@@ -128,8 +128,8 @@ public:
     void setDragEnabled(bool b);
     bool dragEnabled() const;
 
-    void setCursorMoveStyle(Qt::CursorMoveStyle style);
-    Qt::CursorMoveStyle cursorMoveStyle() const;
+    void setCursorMoveStyle(BobUI::CursorMoveStyle style);
+    BobUI::CursorMoveStyle cursorMoveStyle() const;
 
     QString inputMask() const;
     void setInputMask(const QString &inputMask);
@@ -139,7 +139,7 @@ public:
     void setTextMargins(const QMargins &margins);
     QMargins textMargins() const;
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     using QWidget::addAction;
     void addAction(QAction *action, ActionPosition position);
     QAction *addAction(const QIcon &icon, ActionPosition position);
@@ -151,7 +151,7 @@ public Q_SLOTS:
     void selectAll();
     void undo();
     void redo();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void cut();
     void copy() const;
     void paste();
@@ -160,7 +160,7 @@ public Q_SLOTS:
 public:
     void deselect();
     void insert(const QString &);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     QMenu *createStandardContextMenu();
 #endif
 
@@ -183,23 +183,23 @@ protected:
     void focusInEvent(QFocusEvent *) override;
     void focusOutEvent(QFocusEvent *) override;
     void paintEvent(QPaintEvent *) override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QDragEnterEvent *) override;
     void dragMoveEvent(QDragMoveEvent *e) override;
     void dragLeaveEvent(QDragLeaveEvent *e) override;
     void dropEvent(QDropEvent *) override;
 #endif
     void changeEvent(QEvent *) override;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *) override;
 #endif
 
     void inputMethodEvent(QInputMethodEvent *) override;
     virtual void initStyleOption(QStyleOptionFrame *option) const;
 public:
-    QVariant inputMethodQuery(Qt::InputMethodQuery) const override;
-    Q_INVOKABLE QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
-    void timerEvent(QTimerEvent *) override;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery) const override;
+    Q_INVOKABLE QVariant inputMethodQuery(BobUI::InputMethodQuery property, QVariant argument) const;
+    void timerEvent(BOBUIimerEvent *) override;
     bool event(QEvent *) override;
 protected:
     QRect cursorRect() const;
@@ -210,13 +210,13 @@ private:
     friend class QAbstractSpinBox;
     friend class QAccessibleLineEdit;
     friend class QComboBox;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     friend class QDateTimeEdit;
 #endif
     Q_DISABLE_COPY(QLineEdit)
     Q_DECLARE_PRIVATE(QLineEdit)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLINEEDIT_H

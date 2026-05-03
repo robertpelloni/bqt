@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessibilityhints_p.h"
 #include <qstylehints.h>
@@ -9,7 +9,7 @@
 #include <private/qguiapplication_p.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline QVariant hint(QPlatformIntegration::StyleHint h)
 {
@@ -49,7 +49,7 @@ static inline QVariant themeableHint(QPlatformTheme::ThemeHint th)
     \class QStyleHints
     \since 5.0
     \brief The QStyleHints class contains platform specific hints and settings.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     An object of this class, obtained from QGuiApplication, provides access to certain global
     user interface parameters of the current platform.
@@ -132,11 +132,11 @@ int QStyleHints::touchDoubleTapDistance() const
     ignore any changes to the system's color scheme. However, doing so is a hint to the
     system, and overriding the color scheme is not supported on all platforms.
 
-    Resetting this property, or setting it to \l{Qt::ColorScheme::Unknown}, will remove
+    Resetting this property, or setting it to \l{BobUI::ColorScheme::Unknown}, will remove
     the override and make the application follow the system default again. The property
     value will change to the color scheme the system currently has.
 
-    When this property changes, Qt will read the system palette and update the default
+    When this property changes, BobUI will read the system palette and update the default
     palette, but won't overwrite palette entries that have been explicitly set by the
     application. When the colorSchemeChange() signal gets emitted, the old palette is
     still in effect.
@@ -146,10 +146,10 @@ int QStyleHints::touchDoubleTapDistance() const
     specific colors when the effective palette changes, handle
     \l{QEvent::}{PaletteChange} or \l{QEvent::}{ApplicationPaletteChange} events.
 
-    \sa Qt::ColorScheme, QGuiApplication::palette(), QEvent::PaletteChange
+    \sa BobUI::ColorScheme, QGuiApplication::palette(), QEvent::PaletteChange
     \since 6.5
 */
-Qt::ColorScheme QStyleHints::colorScheme() const
+BobUI::ColorScheme QStyleHints::colorScheme() const
 {
     Q_D(const QStyleHints);
     return d->colorScheme();
@@ -159,9 +159,9 @@ Qt::ColorScheme QStyleHints::colorScheme() const
     \since 6.8
 
     Sets the color scheme used by the application to an explicit \a scheme, or
-    revert to the system's current color scheme if \a scheme is Qt::ColorScheme::Unknown.
+    revert to the system's current color scheme if \a scheme is BobUI::ColorScheme::Unknown.
 */
-void QStyleHints::setColorScheme(Qt::ColorScheme scheme)
+void QStyleHints::setColorScheme(BobUI::ColorScheme scheme)
 {
     if (!QCoreApplication::instance()) {
         qWarning("Must construct a QGuiApplication before accessing a platform theme hint.");
@@ -362,7 +362,7 @@ int QStyleHints::keyboardInputInterval() const
            themeableHint(QPlatformTheme::KeyboardInputInterval, QPlatformIntegration::KeyboardInputInterval).toInt();
 }
 
-#if QT_DEPRECATED_SINCE(6, 5)
+#if BOBUI_DEPRECATED_SINCE(6, 5)
 /*!
     \property QStyleHints::keyboardAutoRepeatRate
     \brief the rate, in events per second,  in which additional repeated key
@@ -458,10 +458,10 @@ bool QStyleHints::showIsMaximized() const
     \brief \c true if the platform normally shows shortcut key sequences in
     context menus, otherwise \c false.
 
-    Since Qt 5.13, the setShowShortcutsInContextMenus() function can be used to
+    Since BobUI 5.13, the setShowShortcutsInContextMenus() function can be used to
     override the platform default.
 
-    \sa Qt::AA_DontShowShortcutsInContextMenus
+    \sa BobUI::AA_DontShowShortcutsInContextMenus
 */
 bool QStyleHints::showShortcutsInContextMenus() const
 {
@@ -492,23 +492,23 @@ void QStyleHints::setShowShortcutsInContextMenus(bool s)
     \note Developers must use this property with great care, as it changes the default interaction
     mode that their users will expect on the platform that they are running on.
 
-    \sa Qt::ContextMenuTrigger
+    \sa BobUI::ContextMenuTrigger
 */
-Qt::ContextMenuTrigger QStyleHints::contextMenuTrigger() const
+BobUI::ContextMenuTrigger QStyleHints::contextMenuTrigger() const
 {
     Q_D(const QStyleHints);
     if (d->m_contextMenuTrigger == -1) {
         return themeableHint(QPlatformTheme::ContextMenuOnMouseRelease).toBool()
-                   ? Qt::ContextMenuTrigger::Release
-                   : Qt::ContextMenuTrigger::Press;
+                   ? BobUI::ContextMenuTrigger::Release
+                   : BobUI::ContextMenuTrigger::Press;
     }
-    return Qt::ContextMenuTrigger(d->m_contextMenuTrigger);
+    return BobUI::ContextMenuTrigger(d->m_contextMenuTrigger);
 }
 
-void QStyleHints::setContextMenuTrigger(Qt::ContextMenuTrigger contextMenuTrigger)
+void QStyleHints::setContextMenuTrigger(BobUI::ContextMenuTrigger contextMenuTrigger)
 {
     Q_D(QStyleHints);
-    const Qt::ContextMenuTrigger currentTrigger = this->contextMenuTrigger();
+    const BobUI::ContextMenuTrigger currentTrigger = this->contextMenuTrigger();
     d->m_contextMenuTrigger = int(contextMenuTrigger);
     if (currentTrigger != contextMenuTrigger)
         emit contextMenuTriggerChanged(contextMenuTrigger);
@@ -592,10 +592,10 @@ bool QStyleHints::setFocusOnTouchRelease() const
     signal is not implemented yet.
 */
 
-Qt::TabFocusBehavior QStyleHints::tabFocusBehavior() const
+BobUI::TabFocusBehavior QStyleHints::tabFocusBehavior() const
 {
     Q_D(const QStyleHints);
-    return Qt::TabFocusBehavior(d->m_tabFocusBehavior >= 0 ?
+    return BobUI::TabFocusBehavior(d->m_tabFocusBehavior >= 0 ?
                                 d->m_tabFocusBehavior :
                                 themeableHint(QPlatformTheme::TabFocusBehavior, QPlatformIntegration::TabFocusBehavior).toInt());
 }
@@ -606,7 +606,7 @@ Qt::TabFocusBehavior QStyleHints::tabFocusBehavior() const
     \sa tabFocusBehavior()
     \since 5.7
 */
-void QStyleHints::setTabFocusBehavior(Qt::TabFocusBehavior tabFocusBehavior)
+void QStyleHints::setTabFocusBehavior(BobUI::TabFocusBehavior tabFocusBehavior)
 {
     Q_D(QStyleHints);
     if (d->m_tabFocusBehavior == tabFocusBehavior)
@@ -734,7 +734,7 @@ int QStyleHints::mouseQuickSelectionThreshold() const
    Set \a colorScheme as the new color scheme of the QStyleHints.
    The colorSchemeChanged signal will be emitted if present and new color scheme differ.
  */
-void QStyleHintsPrivate::updateColorScheme(Qt::ColorScheme colorScheme)
+void QStyleHintsPrivate::updateColorScheme(BobUI::ColorScheme colorScheme)
 {
     if (m_colorScheme == colorScheme)
         return;
@@ -769,6 +769,6 @@ QStyleHintsPrivate *QStyleHintsPrivate::get(QStyleHints *q)
     return q->d_func();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstylehints.cpp"

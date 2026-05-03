@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -9,9 +9,9 @@
 #include "qcocoascreen.h"
 #include <private/qpointingdevice_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_CONSTINIT QHash<qint64, QCocoaTouch*> QCocoaTouch::_currentTouches;
 Q_CONSTINIT QHash<quint64, QPointingDevice*> QCocoaTouch::_touchDevices;
@@ -79,25 +79,25 @@ QCocoaTouch *QCocoaTouch::findQCocoaTouch(NSTouch *nstouch)
 
 QEventPoint::State QCocoaTouch::toTouchPointState(NSTouchPhase nsState)
 {
-    QEventPoint::State qtState = QEventPoint::State::Released;
+    QEventPoint::State bobuiState = QEventPoint::State::Released;
     switch (nsState) {
         case NSTouchPhaseBegan:
-            qtState = QEventPoint::State::Pressed;
+            bobuiState = QEventPoint::State::Pressed;
             break;
         case NSTouchPhaseMoved:
-            qtState = QEventPoint::State::Updated;
+            bobuiState = QEventPoint::State::Updated;
             break;
         case NSTouchPhaseStationary:
-            qtState = QEventPoint::State::Stationary;
+            bobuiState = QEventPoint::State::Stationary;
             break;
         case NSTouchPhaseEnded:
         case NSTouchPhaseCancelled:
-            qtState = QEventPoint::State::Released;
+            bobuiState = QEventPoint::State::Released;
             break;
         default:
             break;
     }
-    return qtState;
+    return bobuiState;
 }
 
 QList<QWindowSystemInterface::TouchPoint>
@@ -200,4 +200,4 @@ QPointingDevice *QCocoaTouch::getTouchDevice(QInputDevice::DeviceType type, quin
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

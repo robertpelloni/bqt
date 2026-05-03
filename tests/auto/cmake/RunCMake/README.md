@@ -4,7 +4,7 @@ These test suites use upstream [CMake's `RunCMake`][RunCMake-cmake] test module.
 documentation on how to add tests.
 
 A few minor adjustments we make:
-- `add_RunCMake_test()` function is defined in `QtRunCMakeTestHelpers` module
+- `add_RunCMake_test()` function is defined in `BobUIRunCMakeTestHelpers` module
 instead of the `CMakeLists.txt`
 - `CMAKE_CMAKE_COMMAND` is replaced with `CMAKE_COMMAND`
 - `CMAKE_MODULE_PATH` points to `CMAKE_CURRENT_LIST_DIR` (indirectly via variable `RunCMakeDir`)

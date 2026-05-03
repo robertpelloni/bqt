@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevdevkeyboardhandler_p.h"
 #include "qoutputmapping_p.h"
@@ -14,8 +14,8 @@
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qcore_unix_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qinputdevicemanager_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qinputdevicemanager_p.h>
 
 #ifdef Q_OS_FREEBSD
 #include <dev/evdev/input.h>
@@ -31,12 +31,12 @@
 #define input_event_usec time.tv_usec
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcEvdevKey, "qt.qpa.input")
-Q_STATIC_LOGGING_CATEGORY(qLcEvdevKeyMap, "qt.qpa.input.keymap")
+Q_LOGGING_CATEGORY(qLcEvdevKey, "bobui.qpa.input")
+Q_STATIC_LOGGING_CATEGORY(qLcEvdevKeyMap, "bobui.qpa.input.keymap")
 
 // simple builtin US keymap
 #include "qevdevkeyboard_defaultmap_p.h"
@@ -98,10 +98,10 @@ std::unique_ptr<QEvdevKeyboardHandler> QEvdevKeyboardHandler::create(const QStri
 
     qCDebug(qLcEvdevKey, "Opening keyboard at %ls", qUtf16Printable(device));
 
-    QFdContainer fd(qt_safe_open(device.toLocal8Bit().constData(), O_RDWR | O_NDELAY, 0));
+    QFdContainer fd(bobui_safe_open(device.toLocal8Bit().constData(), O_RDWR | O_NDELAY, 0));
     if (fd.get() < 0) {
         qCDebug(qLcEvdevKey, "Keyboard device could not be opened as read-write, trying read-only");
-        fd.reset(qt_safe_open(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0));
+        fd.reset(bobui_safe_open(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0));
     }
     if (fd.get() >= 0) {
         ::ioctl(fd.get(), EVIOCGRAB, grab);
@@ -130,7 +130,7 @@ void QEvdevKeyboardHandler::switchLed(int led, bool state)
     led_ie.code = led;
     led_ie.value = state;
 
-    qt_safe_write(m_fd.get(), &led_ie, sizeof(led_ie));
+    bobui_safe_write(m_fd.get(), &led_ie, sizeof(led_ie));
 }
 
 void QEvdevKeyboardHandler::readKeycode()
@@ -139,7 +139,7 @@ void QEvdevKeyboardHandler::readKeycode()
     int n = 0;
 
     forever {
-        int result = qt_safe_read(m_fd.get(), reinterpret_cast<char *>(buffer) + n, sizeof(buffer) - n);
+        int result = bobui_safe_read(m_fd.get(), reinterpret_cast<char *>(buffer) + n, sizeof(buffer) - n);
 
         if (result == 0) {
             qWarning("evdevkeyboard: Got EOF from the input device");
@@ -198,18 +198,18 @@ void QEvdevKeyboardHandler::readKeycode()
     }
 }
 
-void QEvdevKeyboardHandler::processKeyEvent(int nativecode, int unicode, int qtcode,
-                                            Qt::KeyboardModifiers modifiers, bool isPress, bool autoRepeat)
+void QEvdevKeyboardHandler::processKeyEvent(int nativecode, int unicode, int bobuicode,
+                                            BobUI::KeyboardModifiers modifiers, bool isPress, bool autoRepeat)
 {
     if (!autoRepeat)
-        QGuiApplicationPrivate::inputDeviceManager()->setKeyboardModifiers(QKeyboardMap::toQtModifiers(m_modifiers));
+        QGuiApplicationPrivate::inputDeviceManager()->setKeyboardModifiers(QKeyboardMap::toBobUIModifiers(m_modifiers));
 
     QWindow *window = nullptr;
 #ifdef Q_OS_WEBOS
     window = QOutputMapping::get()->windowForDeviceNode(m_device);
 #endif
     QWindowSystemInterface::handleExtendedKeyEvent(window, (isPress ? QEvent::KeyPress : QEvent::KeyRelease),
-                                                   qtcode, modifiers, nativecode + 8, 0, int(modifiers),
+                                                   bobuicode, modifiers, nativecode + 8, 0, int(modifiers),
                                                    (unicode != 0xffff ) ? QString(QChar(unicode)) : QString(), autoRepeat);
 }
 
@@ -259,7 +259,7 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
 
     bool skip = false;
     quint16 unicode = it->unicode;
-    quint32 qtcode = it->qtcode;
+    quint32 bobuicode = it->bobuicode;
 
     if ((it->flags & QKeyboardMap::IsModifier) && it->special) {
         // this is a modifier, i.e. Shift, Alt, ...
@@ -267,16 +267,16 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
             m_modifiers |= quint8(it->special);
         else
             m_modifiers &= ~quint8(it->special);
-    } else if (qtcode >= Qt::Key_CapsLock && qtcode <= Qt::Key_ScrollLock) {
+    } else if (bobuicode >= BobUI::Key_CapsLock && bobuicode <= BobUI::Key_ScrollLock) {
         // (Caps|Num|Scroll)Lock
         if (first_press) {
-            quint8 &lock = m_locks[qtcode - Qt::Key_CapsLock];
+            quint8 &lock = m_locks[bobuicode - BobUI::Key_CapsLock];
             lock ^= 1;
 
-            switch (qtcode) {
-            case Qt::Key_CapsLock  : result = lock ? QKeycodeAction::CapsLockOn : QKeycodeAction::CapsLockOff; break;
-            case Qt::Key_NumLock   : result = lock ? QKeycodeAction::NumLockOn : QKeycodeAction::NumLockOff; break;
-            case Qt::Key_ScrollLock: result = lock ? QKeycodeAction::ScrollLockOn : QKeycodeAction::ScrollLockOff; break;
+            switch (bobuicode) {
+            case BobUI::Key_CapsLock  : result = lock ? QKeycodeAction::CapsLockOn : QKeycodeAction::CapsLockOff; break;
+            case BobUI::Key_NumLock   : result = lock ? QKeycodeAction::NumLockOn : QKeycodeAction::NumLockOff; break;
+            case BobUI::Key_ScrollLock: result = lock ? QKeycodeAction::ScrollLockOn : QKeycodeAction::ScrollLockOff; break;
             default                : break;
             }
         }
@@ -310,8 +310,8 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
             break;
         }
 
-        skip = true; // no need to tell Qt about it
-    } else if ((qtcode == Qt::Key_Multi_key) && m_do_compose) {
+        skip = true; // no need to tell BobUI about it
+    } else if ((bobuicode == BobUI::Key_Multi_key) && m_do_compose) {
         // the Compose key was pressed
         if (first_press)
             m_composing = 2;
@@ -320,7 +320,7 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
         // a Dead key was pressed
         if (first_press && m_composing == 1 && m_dead_unicode == unicode) { // twice
             m_composing = 0;
-            qtcode = Qt::Key_unknown; // otherwise it would be Qt::Key_Dead...
+            bobuicode = BobUI::Key_unknown; // otherwise it would be BobUI::Key_Dead...
         } else if (first_press && unicode != 0xffff) {
             m_dead_unicode = unicode;
             m_composing = 1;
@@ -332,14 +332,14 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
 
     if (!skip) {
         // a normal key was pressed
-        const int modmask = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
+        const int modmask = BobUI::ShiftModifier | BobUI::ControlModifier | BobUI::AltModifier | BobUI::MetaModifier | BobUI::KeypadModifier;
 
         // we couldn't find a specific mapping for the current modifiers,
         // or that mapping didn't have special modifiers:
         // so just report the plain mapping with additional modifiers.
         if ((it == map_plain && it != map_withmod) ||
-            (map_withmod && !(map_withmod->qtcode & modmask))) {
-            qtcode |= QKeyboardMap::toQtModifiers(modifiers);
+            (map_withmod && !(map_withmod->bobuicode & modmask))) {
+            bobuicode |= QKeyboardMap::toBobUIModifiers(modifiers);
         }
 
         if (m_composing == 2 && first_press && !(it->flags & QKeyboardMap::IsModifier)) {
@@ -377,29 +377,29 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
                     quint16 composed = m_keycompose[idx].result;
                     if (composed != 0xffff) {
                         unicode = composed;
-                        qtcode = Qt::Key_unknown;
+                        bobuicode = BobUI::Key_unknown;
                         valid = true;
                     }
                 }
             }
             if (!valid) {
                 unicode = m_dead_unicode;
-                qtcode = Qt::Key_unknown;
+                bobuicode = BobUI::Key_unknown;
             }
             m_composing = 0;
         }
 
         if (!skip) {
-            // Up until now qtcode contained both the key and modifiers. Split it.
-            Qt::KeyboardModifiers qtmods = Qt::KeyboardModifiers(qtcode & modmask);
-            qtcode &= ~modmask;
+            // Up until now bobuicode contained both the key and modifiers. Split it.
+            BobUI::KeyboardModifiers bobuimods = BobUI::KeyboardModifiers(bobuicode & modmask);
+            bobuicode &= ~modmask;
 
-            // qtmods here is the modifier state before the event, i.e. not
+            // bobuimods here is the modifier state before the event, i.e. not
             // including the current key in case it is a modifier.
-            qCDebug(qLcEvdevKeyMap, "Processing: uni=%04x, qt=%08x, qtmod=%08x", unicode, qtcode, int(qtmods));
+            qCDebug(qLcEvdevKeyMap, "Processing: uni=%04x, bobui=%08x, bobuimod=%08x", unicode, bobuicode, int(bobuimods));
 
             // If NumLockOff and keypad key pressed remap event sent
-            if (!m_locks[1] && (qtmods & Qt::KeypadModifier) &&
+            if (!m_locks[1] && (bobuimods & BobUI::KeypadModifier) &&
                  keycode >= 71 &&
                  keycode <= 83 &&
                  keycode != 74 &&
@@ -408,47 +408,47 @@ QKeycodeAction QEvdevKeyboardHandler::processKeycode(quint16 keycode, bool press
                 unicode = 0xffff;
                 switch (keycode) {
                 case 71: //7 --> Home
-                    qtcode = Qt::Key_Home;
+                    bobuicode = BobUI::Key_Home;
                     break;
                 case 72: //8 --> Up
-                    qtcode = Qt::Key_Up;
+                    bobuicode = BobUI::Key_Up;
                     break;
                 case 73: //9 --> PgUp
-                    qtcode = Qt::Key_PageUp;
+                    bobuicode = BobUI::Key_PageUp;
                     break;
                 case 75: //4 --> Left
-                    qtcode = Qt::Key_Left;
+                    bobuicode = BobUI::Key_Left;
                     break;
                 case 76: //5 --> Clear
-                    qtcode = Qt::Key_Clear;
+                    bobuicode = BobUI::Key_Clear;
                     break;
                 case 77: //6 --> right
-                    qtcode = Qt::Key_Right;
+                    bobuicode = BobUI::Key_Right;
                     break;
                 case 79: //1 --> End
-                    qtcode = Qt::Key_End;
+                    bobuicode = BobUI::Key_End;
                     break;
                 case 80: //2 --> Down
-                    qtcode = Qt::Key_Down;
+                    bobuicode = BobUI::Key_Down;
                     break;
                 case 81: //3 --> PgDn
-                    qtcode = Qt::Key_PageDown;
+                    bobuicode = BobUI::Key_PageDown;
                     break;
                 case 82: //0 --> Ins
-                    qtcode = Qt::Key_Insert;
+                    bobuicode = BobUI::Key_Insert;
                     break;
                 case 83: //, --> Del
-                    qtcode = Qt::Key_Delete;
+                    bobuicode = BobUI::Key_Delete;
                     break;
                 }
             }
 
             // Map SHIFT + Tab to SHIFT + Backtab, QShortcutMap knows about this translation
-            if (qtcode == Qt::Key_Tab && (qtmods & Qt::ShiftModifier) == Qt::ShiftModifier)
-                qtcode = Qt::Key_Backtab;
+            if (bobuicode == BobUI::Key_Tab && (bobuimods & BobUI::ShiftModifier) == BobUI::ShiftModifier)
+                bobuicode = BobUI::Key_Backtab;
 
             // Generate the QPA event.
-            processKeyEvent(keycode, unicode, qtcode, qtmods, pressed, autorepeat);
+            processKeyEvent(keycode, unicode, bobuicode, bobuimods, pressed, autorepeat);
         }
     }
     return result;
@@ -562,4 +562,4 @@ void QEvdevKeyboardHandler::switchLang()
     m_langLock ^= 1;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

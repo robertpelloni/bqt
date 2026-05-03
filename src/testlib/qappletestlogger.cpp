@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qappletestlogger_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if defined(QT_USE_APPLE_UNIFIED_LOGGING)
+#if defined(BOBUI_USE_APPLE_UNIFIED_LOGGING)
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 /*! \internal
     \class QAppleTestLogger
-    \inmodule QtTest
+    \inmodule BobUITest
 
     QAppleTestLogger reports test results through Apple's unified system logging.
     Results can be viewed in the Console app.
@@ -37,15 +37,15 @@ void QAppleTestLogger::enterTestFunction(const char *function)
     Q_UNUSED(function);
 
     // Re-create activity each time
-    testFunctionActivity = QT_APPLE_LOG_ACTIVITY("Running test function").enter();
+    testFunctionActivity = BOBUI_APPLE_LOG_ACTIVITY("Running test function").enter();
 
-    QTestCharBuffer testIdentifier;
-    QTestPrivate::generateTestIdentifier(&testIdentifier);
+    BOBUIestCharBuffer testIdentifier;
+    BOBUIestPrivate::generateTestIdentifier(&testIdentifier);
     QString identifier = QString::fromLatin1(testIdentifier.data());
-    QMessageLogContext context(nullptr, 0, nullptr, "qt.test.enter");
+    QMessageLogContext context(nullptr, 0, nullptr, "bobui.test.enter");
     QString message = identifier;
 
-    AppleUnifiedLogger::messageHandler(QtDebugMsg, context, message, identifier);
+    AppleUnifiedLogger::messageHandler(BobUIDebugMsg, context, message, identifier);
 }
 
 void QAppleTestLogger::leaveTestFunction()
@@ -55,15 +55,15 @@ void QAppleTestLogger::leaveTestFunction()
 
 struct MessageData
 {
-    QtMsgType messageType = QtFatalMsg;
+    BobUIMsgType messageType = BobUIFatalMsg;
     const char *categorySuffix = nullptr;
 
-    void generateCategory(QTestCharBuffer *category)
+    void generateCategory(BOBUIestCharBuffer *category)
     {
         if (categorySuffix)
-            QTest::qt_asprintf(category, "qt.test.%s", categorySuffix);
+            BOBUIest::bobui_asprintf(category, "bobui.test.%s", categorySuffix);
         else
-            QTest::qt_asprintf(category, "qt.test");
+            BOBUIest::bobui_asprintf(category, "bobui.test");
     }
 };
 
@@ -74,28 +74,28 @@ void QAppleTestLogger::addIncident(IncidentTypes type, const char *description,
     MessageData messageData = [=]() {
         switch (type) {
         case QAbstractTestLogger::Skip:
-            return MessageData{QtInfoMsg, "skip"};
+            return MessageData{BobUIInfoMsg, "skip"};
         case QAbstractTestLogger::Pass:
-            return MessageData{QtInfoMsg, "pass"};
+            return MessageData{BobUIInfoMsg, "pass"};
         case QAbstractTestLogger::XFail:
-            return MessageData{QtInfoMsg, "xfail"};
+            return MessageData{BobUIInfoMsg, "xfail"};
         case QAbstractTestLogger::Fail:
-            return MessageData{QtCriticalMsg, "fail"};
+            return MessageData{BobUICriticalMsg, "fail"};
         case QAbstractTestLogger::XPass:
-            return MessageData{QtInfoMsg, "xpass"};
+            return MessageData{BobUIInfoMsg, "xpass"};
         case QAbstractTestLogger::BlacklistedPass:
-            return MessageData{QtWarningMsg, "bpass"};
+            return MessageData{BobUIWarningMsg, "bpass"};
         case QAbstractTestLogger::BlacklistedFail:
-            return MessageData{QtInfoMsg, "bfail"};
+            return MessageData{BobUIInfoMsg, "bfail"};
         case QAbstractTestLogger::BlacklistedXPass:
-            return MessageData{QtWarningMsg, "bxpass"};
+            return MessageData{BobUIWarningMsg, "bxpass"};
         case QAbstractTestLogger::BlacklistedXFail:
-            return MessageData{QtInfoMsg, "bxfail"};
+            return MessageData{BobUIInfoMsg, "bxfail"};
         }
         Q_UNREACHABLE();
     }();
 
-    QTestCharBuffer category;
+    BOBUIestCharBuffer category;
     messageData.generateCategory(&category);
 
     QMessageLogContext context(file, line, /* function = */ nullptr, category.data());
@@ -107,15 +107,15 @@ void QAppleTestLogger::addIncident(IncidentTypes type, const char *description,
     // As long as the Apple logger doesn't propagate the context's file and
     // line number we need to manually print it.
     if (context.line && context.file) {
-        QTestCharBuffer line;
-        QTest::qt_asprintf(&line, "\n   [Loc: %s:%d]", context.file, context.line);
+        BOBUIestCharBuffer line;
+        BOBUIest::bobui_asprintf(&line, "\n   [Loc: %s:%d]", context.file, context.line);
         message += QLatin1String(line.data());
     }
 
     AppleUnifiedLogger::messageHandler(messageData.messageType, context, message, subsystem());
 }
 
-void QAppleTestLogger::addMessage(QtMsgType type, const QMessageLogContext &context, const QString &message)
+void QAppleTestLogger::addMessage(BobUIMsgType type, const QMessageLogContext &context, const QString &message)
 {
     AppleUnifiedLogger::messageHandler(type, context, message);
 }
@@ -126,21 +126,21 @@ void QAppleTestLogger::addMessage(MessageTypes type, const QString &message, con
         switch (type) {
         case QAbstractTestLogger::Warn:
         case QAbstractTestLogger::QWarning:
-            return MessageData{QtWarningMsg, nullptr};
+            return MessageData{BobUIWarningMsg, nullptr};
         case QAbstractTestLogger::QDebug:
-            return MessageData{QtDebugMsg, nullptr};
+            return MessageData{BobUIDebugMsg, nullptr};
         case QAbstractTestLogger::QCritical:
-            return MessageData{QtWarningMsg, "critical"};
+            return MessageData{BobUIWarningMsg, "critical"};
         case QAbstractTestLogger::QFatal:
-            return MessageData{QtFatalMsg, nullptr};
+            return MessageData{BobUIFatalMsg, nullptr};
         case QAbstractTestLogger::Info:
         case QAbstractTestLogger::QInfo:
-            return MessageData{QtInfoMsg, nullptr};
+            return MessageData{BobUIInfoMsg, nullptr};
         }
         Q_UNREACHABLE();
     }();
 
-    QTestCharBuffer category;
+    BOBUIestCharBuffer category;
     messageData.generateCategory(&category);
 
     QMessageLogContext context(file, line, /* function = */ nullptr, category.data());
@@ -150,7 +150,7 @@ void QAppleTestLogger::addMessage(MessageTypes type, const QString &message, con
 
 QString QAppleTestLogger::subsystem() const
 {
-    QTestCharBuffer buffer;
+    BOBUIestCharBuffer buffer;
     // It would be nice to have the data tag as part of the subsystem too, but that
     // will for some tests result in hundreds of thousands of log objects being
     // created, so we limit the subsystem to test functions, which we can hope
@@ -161,11 +161,11 @@ QString QAppleTestLogger::subsystem() const
 
 QString QAppleTestLogger::testIdentifier() const
 {
-    QTestCharBuffer buffer;
+    BOBUIestCharBuffer buffer;
     generateTestIdentifier(&buffer);
     return QString::fromLatin1(buffer.data());
 }
 
-#endif // QT_USE_APPLE_UNIFIED_LOGGING
+#endif // BOBUI_USE_APPLE_UNIFIED_LOGGING
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

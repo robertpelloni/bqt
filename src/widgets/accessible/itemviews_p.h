@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ACCESSIBLE_ITEMVIEWS_H
 #define ACCESSIBLE_ITEMVIEWS_H
@@ -8,25 +8,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtCore/qpointer.h"
-#include <QtGui/qaccessible.h>
-#include <QtWidgets/qaccessiblewidget.h>
-#include <QtWidgets/qabstractitemview.h>
-#include <QtWidgets/qheaderview.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUICore/qpointer.h"
+#include <BobUIGui/qaccessible.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
+#include <BobUIWidgets/qabstractitemview.h>
+#include <BobUIWidgets/qheaderview.h>
 
-QT_REQUIRE_CONFIG(itemviews);
+BOBUI_REQUIRE_CONFIG(itemviews);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 class QAccessibleTableCell;
 class QAccessibleTableHeaderCell;
@@ -113,7 +113,7 @@ private:
     inline int logicalIndex(const QModelIndex &index) const;
 };
 
-#if QT_CONFIG(treeview)
+#if BOBUI_CONFIG(treeview)
 class QAccessibleTree :public QAccessibleTable
 {
 public:
@@ -142,7 +142,7 @@ private:
 };
 #endif
 
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 class QAccessibleList :public QAccessibleTable
 {
 public:
@@ -209,10 +209,10 @@ private:
     void unselectCell();
 
 friend class QAccessibleTable;
-#if QT_CONFIG(treeview)
+#if BOBUI_CONFIG(treeview)
 friend class QAccessibleTree;
 #endif
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 friend class QAccessibleList;
 #endif
 };
@@ -222,7 +222,7 @@ class QAccessibleTableHeaderCell: public QAccessibleInterface
 {
 public:
     // For header cells, pass the header view in addition
-    QAccessibleTableHeaderCell(QAbstractItemView *view, int index, Qt::Orientation orientation);
+    QAccessibleTableHeaderCell(QAbstractItemView *view, int index, BobUI::Orientation orientation);
 
     QObject *object() const override { return nullptr; }
     QAccessible::Role role() const override;
@@ -245,13 +245,13 @@ private:
 
     QPointer<QAbstractItemView> view;
     int index;
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
 
 friend class QAccessibleTable;
-#if QT_CONFIG(treeview)
+#if BOBUI_CONFIG(treeview)
 friend class QAccessibleTree;
 #endif
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 friend class QAccessibleList;
 #endif
 };
@@ -291,8 +291,8 @@ private:
 };
 
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ACCESSIBLE_ITEMVIEWS_H

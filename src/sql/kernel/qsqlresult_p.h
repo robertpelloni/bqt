@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLRESULT_P_H
 #define QSQLRESULT_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qsql*model.h .  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtSql/private/qtsqlglobal_p.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qhash.h>
+#include <BobUISql/private/bobuisqlglobal_p.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qhash.h>
 #include "qsqlerror.h"
 #include "qsqlresult.h"
 #include "qsqldriver.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // convenience method Q*ResultPrivate::drv_d_func() returns pointer to private driver. Compare to Q_DECLARE_PRIVATE in qglobal.h.
 #define Q_DECLARE_SQLDRIVER_PRIVATE(Class) \
@@ -104,6 +104,6 @@ public:
     static bool isVariantNull(const QVariant &variant);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLRESULT_P_H

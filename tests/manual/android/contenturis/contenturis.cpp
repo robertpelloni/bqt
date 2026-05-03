@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDirIterator>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSharedPointer>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class ContentUris: public QObject
 {
@@ -159,13 +159,13 @@ void ContentUris::moveFile()
 
 void ContentUris::specialFileNames_data()
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
 
-    QTest::newRow("spaces") << u"a file with spaces.txt"_s;
-    QTest::newRow("special_chars") << u"file-with_special$chars!.log"_s;
-    QTest::newRow("arabic") << u"ملف.txt"_s;
-    QTest::newRow("japanese") << u"ファイル.txt"_s;
-    QTest::newRow("chinese") << u"文件.txt"_s;
+    BOBUIest::newRow("spaces") << u"a file with spaces.txt"_s;
+    BOBUIest::newRow("special_chars") << u"file-with_special$chars!.log"_s;
+    BOBUIest::newRow("arabic") << u"ملف.txt"_s;
+    BOBUIest::newRow("japanese") << u"ファイル.txt"_s;
+    BOBUIest::newRow("chinese") << u"文件.txt"_s;
 }
 
 void ContentUris::specialFileNames()
@@ -208,56 +208,56 @@ void ContentUris::specialFileNames()
 
 void ContentUris::validateStaticFileUris_data()
 {
-    QTest::addColumn<QString>("uri");
-    QTest::addColumn<QString>("expectedFileName");
-    QTest::addColumn<QString>("expectedFilePath");
+    BOBUIest::addColumn<QString>("uri");
+    BOBUIest::addColumn<QString>("expectedFileName");
+    BOBUIest::addColumn<QString>("expectedFilePath");
 
     // External Storage Provider
-    QTest::newRow("file_in_tree_implicit")
+    BOBUIest::newRow("file_in_tree_implicit")
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir/a_file.txt"
         << "a_file.txt"
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir/document/primary%3AMyDir%2Fa_file.txt";
 
-    QTest::newRow("document_with_encoded_path")
+    BOBUIest::newRow("document_with_encoded_path")
         << "content://com.android.externalstorage.documents/document/primary%3AMyDir%2Ffile.txt"
         << "file.txt"
         << "content://com.android.externalstorage.documents/document/primary%3AMyDir%2Ffile.txt";
 
-    QTest::newRow("mixed_tree_and_document")
+    BOBUIest::newRow("mixed_tree_and_document")
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir/document/primary%3Afile.txt"
         << "file.txt"
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir/document/primary%3Afile.txt";
 
-    QTest::newRow("mixed_tree_and_document_long")
+    BOBUIest::newRow("mixed_tree_and_document_long")
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir/document/primary%3AMyDir%2Ffile.txt"
         << "file.txt"
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir/document/primary%3AMyDir%2Ffile.txt";
 
     // Downloads Provider
-    QTest::newRow("downloads_provider_doc")
+    BOBUIest::newRow("downloads_provider_doc")
         << "content://com.android.providers.downloads.documents/document/1234"
         << "1234"
         << "content://com.android.providers.downloads.documents/document/1234";
 
     // MediaStore Provider
-    QTest::newRow("mediastore_provider_doc")
+    BOBUIest::newRow("mediastore_provider_doc")
         << "content://media/external/images/media/5678"
         << "5678"
         << "content://media/external/images/media/5678";
 
     // Hypothetical Cloud Provider
-    QTest::newRow("cloud_provider_doc")
+    BOBUIest::newRow("cloud_provider_doc")
         << "content://com.example.cloudstorage.documents/document/some_file_id"
         << "some_file_id"
         << "content://com.example.cloudstorage.documents/document/some_file_id";
 
-    QTest::newRow("cloud_provider_nested_doc")
+    BOBUIest::newRow("cloud_provider_nested_doc")
         << "content://com.example.mycloudstorage.documents/tree/user_id%3Amy_docs/document/user_id%3Amy_docs%2Freport.docx"
         << "report.docx"
         << "content://com.example.mycloudstorage.documents/tree/user_id%3Amy_docs/document/user_id%3Amy_docs%2Freport.docx";
 
     // Contacts Provider
-    QTest::newRow("contacts_people_item")
+    BOBUIest::newRow("contacts_people_item")
         << "content://com.contacts/people/123"
         << "123"
         << "content://com.contacts/people/123";
@@ -281,37 +281,37 @@ void ContentUris::validateStaticFileUris()
 
 void ContentUris::validateStaticDirUris_data()
 {
-    QTest::addColumn<QString>("uri");
-    QTest::addColumn<QString>("expectedDirName");
+    BOBUIest::addColumn<QString>("uri");
+    BOBUIest::addColumn<QString>("expectedDirName");
 
     // External Storage Provider
-    QTest::newRow("tree_root")
+    BOBUIest::newRow("tree_root")
         << "content://com.android.externalstorage.documents/tree/primary%3AMyDir"
         << "MyDir";
 
-    QTest::newRow("children_uri")
+    BOBUIest::newRow("children_uri")
         << "content://com.android.externalstorage.documents/tree/primary%3AMyProject/document/primary%3AMyProject/children"
         << "MyProject";
 
-    QTest::newRow("base_provider_uri")
+    BOBUIest::newRow("base_provider_uri")
         << "content://com.android.externalstorage.documents/"
         << "";
 
-    QTest::newRow("tree_with_device_id")
+    BOBUIest::newRow("tree_with_device_id")
         << "content://com.android.externalstorage.documents/tree/ABCD-EFGH%3ADownloads"
         << "Downloads";
 
     // Hypothetical Cloud Provider
-    QTest::newRow("cloud_provider_tree")
+    BOBUIest::newRow("cloud_provider_tree")
         << "content://com.example.cloudstorage.documents/tree/user_id%3Amy_docs"
         << "my_docs";
 
     // Contacts Provider (not file-system, but should be handled gracefully)
-    QTest::newRow("contacts_people_base")
+    BOBUIest::newRow("contacts_people_base")
         << "content://com.contacts/people"
         << "people";
 
-    QTest::newRow("contacts_data_base")
+    BOBUIest::newRow("contacts_data_base")
         << "content://com.contacts/data"
         << "data";
 }
@@ -500,5 +500,5 @@ void ContentUris::filePickerOpen()
     QVERIFY(!file.exists());
 }
 
-QTEST_MAIN(ContentUris)
+BOBUIEST_MAIN(ContentUris)
 #include "contenturis.moc"

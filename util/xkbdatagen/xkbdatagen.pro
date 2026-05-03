@@ -1,3 +1,3 @@
 SOURCES = main.cpp
-QT = core xml
+BOBUI = core xml
 

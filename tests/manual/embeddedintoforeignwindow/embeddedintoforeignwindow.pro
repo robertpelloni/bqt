@@ -1,5 +1,5 @@
 TEMPLATE = app
-QT += gui-private
+BOBUI += gui-private
 CONFIG += cmdline c++11
 SOURCES += main.cpp itemwindow.cpp
 HEADERS += itemwindow.h

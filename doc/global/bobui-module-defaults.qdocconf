@@ -1,0 +1,7 @@
+#The default configuration for a BobUI module, including Add-Ons and Tools.
+#Include this file for a standard BobUI module. This file is provided for
+#compatibility reasons.
+
+#The default is the offline style. The alternate style is in
+#bobui-module-defaults-online.qdocconf
+include(bobui-module-defaults-offline.qdocconf)

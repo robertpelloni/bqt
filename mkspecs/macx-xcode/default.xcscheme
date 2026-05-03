@@ -34,8 +34,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "@TEST_BUNDLE_PBX_KEY@"
-               BuildableName = "Qt Test"
-               BlueprintName = "Qt Test"
+               BuildableName = "BobUI Test"
+               BlueprintName = "BobUI Test"
                ReferencedContainer = "container:@QMAKE_RELATIVE_PBX_DIR@">
             </BuildableReference>
          </TestableReference>
@@ -80,7 +80,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "DYLD_IMAGE_SUFFIX"
-            value = "$(QT_LIBRARY_SUFFIX)"
+            value = "$(BOBUI_LIBRARY_SUFFIX)"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

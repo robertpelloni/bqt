@@ -1,5 +1,5 @@
 TEMPLATE      = subdirs
 
-qtHaveModule(widgets) {
+bobuiHaveModule(widgets) {
     SUBDIRS +=  dombookmarks
 }

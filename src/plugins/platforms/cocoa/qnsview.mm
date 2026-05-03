@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
 #include <AppKit/AppKit.h>
 #include <MetalKit/MetalKit.h>
@@ -18,25 +18,25 @@
 #include <qpa/qplatformintegration.h>
 
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/QTextFormat>
-#include <QtCore/QDebug>
-#include <QtCore/QPointer>
-#include <QtCore/QSet>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/QAccessible>
-#include <QtGui/QImage>
+#include <BobUIGui/BOBUIextFormat>
+#include <BobUICore/QDebug>
+#include <BobUICore/QPointer>
+#include <BobUICore/QSet>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/QAccessible>
+#include <BobUIGui/QImage>
 #include <private/qguiapplication_p.h>
 #include <private/qcoregraphics_p.h>
 #include <private/qwindow_p.h>
 #include <private/qpointingdevice_p.h>
 #include <private/qhighdpiscaling_p.h>
 #include "qcocoabackingstore.h"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include "qcocoaglcontext.h"
 #endif
 #include "qcocoaintegration.h"
-#include <QtGui/private/qmacmimeregistry_p.h>
-#include <QtGui/private/qmetallayer_p.h>
+#include <BobUIGui/private/qmacmimeregistry_p.h>
+#include <BobUIGui/private/qmetallayer_p.h>
 
 #include <QuartzCore/CATransaction.h>
 
@@ -44,7 +44,7 @@
 - (void)initDrawing;
 @end
 
-@interface QT_MANGLE_NAMESPACE(QNSViewMouseMoveHelper) : NSObject
+@interface BOBUI_MANGLE_NAMESPACE(QNSViewMouseMoveHelper) : NSObject
 - (instancetype)initWithView:(QNSView *)theView;
 - (void)mouseMoved:(NSEvent *)theEvent;
 - (void)mouseEntered:(NSEvent *)theEvent;
@@ -52,7 +52,7 @@
 - (void)cursorUpdate:(NSEvent *)theEvent;
 @end
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMouseMoveHelper);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMouseMoveHelper);
 
 @interface QNSView (Mouse)
 - (void)initMouse;
@@ -86,15 +86,15 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMouseMoveHelper);
 @interface QNSView (ServicesMenu) <NSServicesMenuRequestor>
 @end
 
-#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
+#if BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
 @interface QNSView (ContentSelectionInfo) <NSViewContentSelectionInfo>
 @end
 #endif
 
-@interface QT_MANGLE_NAMESPACE(QNSViewMenuHelper) : NSObject
+@interface BOBUI_MANGLE_NAMESPACE(QNSViewMenuHelper) : NSObject
 - (instancetype)initWithView:(QNSView *)theView;
 @end
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
 
 // Private interface
 @interface QNSView ()
@@ -110,10 +110,10 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
 
     // Mouse
     QNSViewMouseMoveHelper *m_mouseMoveHelper;
-    Qt::MouseButtons m_buttons;
-    Qt::MouseButtons m_acceptedMouseDowns;
-    Qt::MouseButtons m_frameStrutButtons;
-    Qt::KeyboardModifiers m_currentWheelModifiers;
+    BobUI::MouseButtons m_buttons;
+    BobUI::MouseButtons m_acceptedMouseDowns;
+    BobUI::MouseButtons m_frameStrutButtons;
+    BobUI::KeyboardModifiers m_currentWheelModifiers;
     bool m_dontOverrideCtrlLMB;
     bool m_sendUpAsRightButton;
     bool m_scrolling;
@@ -181,7 +181,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
 {
     NSMutableString *description = [NSMutableString stringWithString:[super description]];
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     QString platformWindowDescription;
     QDebug debug(&platformWindowDescription);
     debug.nospace() << "; " << m_platformWindow << ">";
@@ -264,13 +264,13 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
 
     qCDebug(lcQpaWindow) << "Done moving" << self << "to" << self.window;
 
-    // Get rid of our Qt managed NSWindow if we're now embedded
+    // Get rid of our BobUI managed NSWindow if we're now embedded
     if (m_platformWindow && m_platformWindow->isEmbedded())
         m_platformWindow->recreateWindowIfNeeded();
 }
 
 // QWindow::setParent() promises that the child window will be clipped
-// to its parent, which we rely on in e.g. Qt Widgets when a native window
+// to its parent, which we rely on in e.g. BobUI Widgets when a native window
 // is added to a scroll area. We try to be smart and only enable clipping
 // if we have potential child QWindows that rely on this behavior.
 // FIXME: Be even smarter, and only consider QWindow based subviews,
@@ -334,7 +334,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
 - (BOOL)isTransparentForUserInput
 {
     return m_platformWindow->window() &&
-        m_platformWindow->window()->flags() & Qt::WindowTransparentForInput;
+        m_platformWindow->window()->flags() & BobUI::WindowTransparentForInput;
 }
 
 - (BOOL)becomeFirstResponder
@@ -354,7 +354,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
         // the QWindow. The latter means that the QWindow should have keyboard
         // focus. But those two are not necessarily the same; A tool window could e.g be
         // rendered as Active while the parent window, which is also Active, has
-        // input focus. But we currently don't distinguish between that cleanly in Qt.
+        // input focus. But we currently don't distinguish between that cleanly in BobUI.
         // Since we don't want a QWindow to be rendered as Active when the NSWindow
         // it belongs to is not key, we skip calling handleWindowActivated when
         // that is the case. Instead, we wait for the window to become key, and handle
@@ -362,7 +362,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
         // exception is if the window can never become key, in which case we naturally
         // cannot wait for that to happen.
         QWindowSystemInterface::handleFocusWindowChanged<QWindowSystemInterface::SynchronousDelivery>(
-            [self topLevelWindow], Qt::ActiveWindowFocusReason);
+            [self topLevelWindow], BobUI::ActiveWindowFocusReason);
     }
 
     return YES;
@@ -376,7 +376,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
         return NO;
     if ([self isTransparentForUserInput])
         return NO;
-    if ((m_platformWindow->window()->flags() & Qt::ToolTip) == Qt::ToolTip)
+    if ((m_platformWindow->window()->flags() & BobUI::ToolTip) == BobUI::ToolTip)
         return NO;
     return YES;
 }
@@ -391,9 +391,9 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
     return candidate;
 }
 
-- (void)convertFromScreen:(NSPoint)mouseLocation toWindowPoint:(QPointF *)qtWindowPoint andScreenPoint:(QPointF *)qtScreenPoint
+- (void)convertFromScreen:(NSPoint)mouseLocation toWindowPoint:(QPointF *)bobuiWindowPoint andScreenPoint:(QPointF *)bobuiScreenPoint
 {
-    // Calculate the mouse position in the QWindow and Qt screen coordinate system,
+    // Calculate the mouse position in the QWindow and BobUI screen coordinate system,
     // starting from coordinates in the NSWindow coordinate system.
     //
     // This involves translating according to the window location on screen,
@@ -404,7 +404,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
     // Name             Origin
     //
     // OS X screen      bottom-left
-    // Qt screen        top-left
+    // BobUI screen        top-left
     // NSWindow         bottom-left
     // NSView/QWindow   top-left
     //
@@ -416,8 +416,8 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
     NSRect windowRect = [window convertRectFromScreen:NSMakeRect(mouseLocation.x, mouseLocation.y, 1, 1)];
     nsWindowPoint = windowRect.origin;                    // NSWindow coordinates
     NSPoint nsViewPoint = [self convertPoint: nsWindowPoint fromView: nil]; // NSView/QWindow coordinates
-    *qtWindowPoint = QPointF(nsViewPoint.x, nsViewPoint.y);                     // NSView/QWindow coordinates
-    *qtScreenPoint = QCocoaScreen::mapFromNative(mouseLocation);
+    *bobuiWindowPoint = QPointF(nsViewPoint.x, nsViewPoint.y);                     // NSView/QWindow coordinates
+    *bobuiScreenPoint = QCocoaScreen::mapFromNative(mouseLocation);
 }
 
 @end
@@ -431,13 +431,13 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSViewMenuHelper);
 #include "qnsview_keys.mm"
 #include "qnsview_complextext.mm"
 #include "qnsview_menus.mm"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qnsview_accessibility.mm"
 #endif
 
 // -----------------------------------------------------
 
-@implementation QNSView (QtExtras)
+@implementation QNSView (BobUIExtras)
 
 - (QCocoaWindow*)platformWindow
 {

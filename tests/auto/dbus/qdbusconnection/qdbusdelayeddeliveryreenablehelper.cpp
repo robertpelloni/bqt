@@ -1,14 +1,14 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QTimer>
-#include <QtCore/QCoreApplication>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusMessage>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/QCoreApplication>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/QDBusMessage>
 
 #include <stdio.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 static QString myInterface()
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     makeSynchronousCall(session);
 
     QCoreApplication app(argc, argv);
-    QTimer::singleShot(15s, qApp, [] {
+    BOBUIimer::singleShot(15s, qApp, [] {
         fprintf(stderr, "Did not receive signal.\n");
         qApp->exit(1);
     });

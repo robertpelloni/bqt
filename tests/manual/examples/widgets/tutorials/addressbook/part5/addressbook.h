@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef ADDRESSBOOK_H
 #define ADDRESSBOOK_H
@@ -9,12 +9,12 @@
 //! [include finddialog's header]
 #include "finddialog.h"
 //! [include finddialog's header]
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPushButton;
 class QLabel;
 class QLineEdit;
-class QTextEdit;
-QT_END_NAMESPACE
+class BOBUIextEdit;
+BOBUI_END_NAMESPACE
 
 
 class AddressBook : public QWidget
@@ -51,7 +51,7 @@ private:
     QPushButton *nextButton;
     QPushButton *previousButton;
     QLineEdit *nameLine;
-    QTextEdit *addressText;
+    BOBUIextEdit *addressText;
 
     QMap<QString, QString> contacts;
 //! [FindDialog declaration]

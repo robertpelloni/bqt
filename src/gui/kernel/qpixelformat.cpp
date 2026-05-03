@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpixelformat.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPixelFormat
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.4
     \brief QPixelFormat is a class for describing different pixel
     layouts in graphics buffers.
 
-    In Qt there is a often a need to represent the layout of the pixels in a
+    In BobUI there is a often a need to represent the layout of the pixels in a
     graphics buffer. QPixelFormat can describe up to 5 color channels and 1 alpha
     channel, including details about how these channels are represented in memory
     individually and in relation to each other.
@@ -548,7 +548,7 @@ QT_BEGIN_NAMESPACE
 static_assert(sizeof(QPixelFormat) == sizeof(quint64));
 
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     QPixelFormat QPixelFormat_createYUV(QPixelFormat::YUVLayout yuvLayout,
                                         uchar alphaSize,
                                         QPixelFormat::AlphaUsage alphaUsage,
@@ -606,7 +606,7 @@ namespace QtPrivate {
     }
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPixelFormat &f)
 {
     QDebugStateSaver saver(dbg);
@@ -660,6 +660,6 @@ QDebug operator<<(QDebug dbg, const QPixelFormat &f)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpixelformat.cpp"

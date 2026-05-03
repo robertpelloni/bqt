@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandclientbufferintegrationfactory_p.h"
 #include "qwaylandclientbufferintegrationplugin_p.h"
 #include "qwaylandclientbufferintegration_p.h"
-#include <QtCore/private/qfactoryloader_p.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
+#include <BobUICore/private/qfactoryloader_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDir>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, qwcbifLoader,
-    (QWaylandClientBufferIntegrationFactoryInterface_iid, QLatin1String("/wayland-graphics-integration-client"), Qt::CaseInsensitive))
+    (QWaylandClientBufferIntegrationFactoryInterface_iid, QLatin1String("/wayland-graphics-integration-client"), BobUI::CaseInsensitive))
 
 QStringList QWaylandClientBufferIntegrationFactory::keys()
 {
@@ -27,4 +27,4 @@ QWaylandClientBufferIntegration *QWaylandClientBufferIntegrationFactory::create(
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

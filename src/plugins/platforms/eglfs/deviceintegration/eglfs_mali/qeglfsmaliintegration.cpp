@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsmaliintegration.h"
 
@@ -10,7 +10,7 @@
 
 #include <private/qcore_unix_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct shadow_fbdev_window {
     unsigned short width;
@@ -22,7 +22,7 @@ void QEglFSMaliIntegration::platformInit()
     // Keep the non-overridden base class functions based on fb0 working.
     QEglFSDeviceIntegration::platformInit();
 
-    int fd = qt_safe_open("/dev/fb0", O_RDWR, 0);
+    int fd = bobui_safe_open("/dev/fb0", O_RDWR, 0);
     if (fd == -1)
         qWarning("Failed to open fb to detect screen resolution!");
 
@@ -47,7 +47,7 @@ void QEglFSMaliIntegration::platformInit()
     if (ioctl(fd, FBIOPUT_VSCREENINFO, &vinfo) == -1)
         qErrnoWarning(errno, "Unable to set double buffer mode!");
 
-    qt_safe_close(fd);
+    bobui_safe_close(fd);
 }
 
 EGLNativeWindowType QEglFSMaliIntegration::createNativeWindow(QPlatformWindow *window, const QSize &size, const QSurfaceFormat &format)
@@ -69,4 +69,4 @@ void QEglFSMaliIntegration::destroyNativeWindow(EGLNativeWindowType window)
     free((void*)window);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

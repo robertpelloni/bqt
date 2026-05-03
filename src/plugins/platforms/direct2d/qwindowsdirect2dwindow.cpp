@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dcontext.h"
 #include "qwindowsdirect2dbitmap.h"
@@ -14,11 +14,11 @@
 
 using Microsoft::WRL::ComPtr;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWindowsDirect2DWindow::QWindowsDirect2DWindow(QWindow *window, const QWindowsWindowData &data)
     : QWindowsWindow(window, data)
-    , m_directRendering(!(data.flags & Qt::FramelessWindowHint && window->format().hasAlpha()))
+    , m_directRendering(!(data.flags & BobUI::FramelessWindowHint && window->format().hasAlpha()))
 {
     if (m_directRendering)
         setupSwapChain();
@@ -34,9 +34,9 @@ QWindowsDirect2DWindow::~QWindowsDirect2DWindow()
 {
 }
 
-void QWindowsDirect2DWindow::setWindowFlags(Qt::WindowFlags flags)
+void QWindowsDirect2DWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
-    m_directRendering = !(flags & Qt::FramelessWindowHint && window()->format().hasAlpha());
+    m_directRendering = !(flags & BobUI::FramelessWindowHint && window()->format().hasAlpha());
     if (!m_directRendering)
         m_swapChain.Reset(); // No need for the swap chain; release from memory
     else if (!m_swapChain)
@@ -277,4 +277,4 @@ void QWindowsDirect2DWindow::setupBitmap()
     m_pixmap.reset(new QPixmap(pp));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class Window : public QWidget
 {
@@ -17,7 +17,7 @@ public slots:
 
 private:
     QLabel *explanation;
-   QToolButton *toolButton;
+   BOBUIoolButton *toolButton;
    QMenu *menu;
    QLineEdit *echo;
    QComboBox *comboBox;
@@ -32,7 +32,7 @@ Window::Window()
        "This test is used to verify that popup windows will be closed "
        "as expected. This includes when clicking outside the popup or moving the "
        "parent window. Tested popups include context menus, combo box popups, tooltips "
-       "and QWindow with Qt::Popup set."
+       "and QWindow with BobUI::Popup set."
    );
    explanation->setWordWrap(true);
    explanation->setToolTip("I'm a tool tip!");
@@ -56,9 +56,9 @@ Window::Window()
    subMenu2->addAction("2 3");
    menu->addMenu(subMenu2);
 
-   toolButton = new QToolButton(group);
+   toolButton = new BOBUIoolButton(group);
    toolButton->setMenu(menu);
-   toolButton->setPopupMode( QToolButton::MenuButtonPopup );
+   toolButton->setPopupMode( BOBUIoolButton::MenuButtonPopup );
    toolButton->setText("select me");
 
    echo = new QLineEdit(group);
@@ -99,7 +99,7 @@ void Window::showPoppWindow()
     window->setPosition(this->pos());
     window->setWidth(100);
     window->setHeight(100);
-    window->setFlags(Qt::Window | Qt::Popup);
+    window->setFlags(BobUI::Window | BobUI::Popup);
     window->show();
 }
 

@@ -1,21 +1,21 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxbuttoneventnotifier.h"
 
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/qhash.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/QDebug>
-#include <QtCore/QMetaEnum>
-#include <QtCore/QSocketNotifier>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMetaEnum>
+#include <BobUICore/QSocketNotifier>
+#include <BobUICore/private/qcore_unix_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaInputHwButton, "qt.qpa.input.hwbutton");
+Q_LOGGING_CATEGORY(lcQpaInputHwButton, "bobui.qpa.input.hwbutton");
 
 const char *QQnxButtonEventNotifier::ppsPath = "/pps/system/buttons/status";
 const size_t QQnxButtonEventNotifier::ppsBufferSize = 256;
@@ -49,7 +49,7 @@ void QQnxButtonEventNotifier::start()
 
     // Open the pps interface
     errno = 0;
-    m_fd = qt_safe_open(ppsPath, O_RDONLY);
+    m_fd = bobui_safe_open(ppsPath, O_RDONLY);
     if (m_fd == -1) {
 #if defined (QQNXBUTTON_DEBUG)
         qWarning("QQNX: failed to open buttons pps, errno=%d", errno);
@@ -70,7 +70,7 @@ void QQnxButtonEventNotifier::updateButtonStates()
 
     // Attempt to read pps data
     errno = 0;
-    int bytes = qt_safe_read(m_fd, buffer, ppsBufferSize - 1);
+    int bytes = bobui_safe_read(m_fd, buffer, ppsBufferSize - 1);
     qCDebug(lcQpaInputHwButton) << "Read" << bytes << "bytes of data";
 
     if (bytes == -1) {
@@ -108,22 +108,22 @@ void QQnxButtonEventNotifier::updateButtonStates()
             // Is it a key press or key release event?
             QEvent::Type type = (newState == ButtonDown) ? QEvent::KeyPress : QEvent::KeyRelease;
 
-            Qt::Key key;
+            BobUI::Key key;
             switch (buttonId) {
                 case bid_minus:
-                    key = Qt::Key_VolumeDown;
+                    key = BobUI::Key_VolumeDown;
                     break;
 
                 case bid_playpause:
-                    key = Qt::Key_Play;
+                    key = BobUI::Key_Play;
                     break;
 
                 case bid_plus:
-                    key = Qt::Key_VolumeUp;
+                    key = BobUI::Key_VolumeUp;
                     break;
 
                 case bid_power:
-                    key = Qt::Key_PowerDown;
+                    key = BobUI::Key_PowerDown;
                     break;
 
                 default:
@@ -132,7 +132,7 @@ void QQnxButtonEventNotifier::updateButtonStates()
             }
 
             // No modifiers
-            Qt::KeyboardModifiers modifier = Qt::NoModifier;
+            BobUI::KeyboardModifiers modifier = BobUI::NoModifier;
 
             // Post the event
             QWindowSystemInterface::handleKeyEvent(QGuiApplication::focusWindow(), type, key, modifier);
@@ -146,7 +146,7 @@ void QQnxButtonEventNotifier::close()
     m_readNotifier = 0;
 
     if (m_fd != -1) {
-        qt_safe_close(m_fd);
+        bobui_safe_close(m_fd);
         m_fd = -1;
     }
 }
@@ -183,4 +183,4 @@ bool QQnxButtonEventNotifier::parsePPS(const QByteArray &ppsData, QHash<QByteArr
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

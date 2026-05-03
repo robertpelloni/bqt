@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLDRIVER_H
 #define QSQLDRIVER_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringlist.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringlist.h>
 
 // clazy:excludeall=qproperty-without-notify
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSqlDatabase;
@@ -120,6 +120,6 @@ private:
     Q_DISABLE_COPY(QSqlDriver)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLDRIVER_H

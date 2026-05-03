@@ -1,0 +1,85 @@
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \headerfile <BobUIDeprecationMarkers>
+    \inmodule BobUICore
+    \title BobUI Deprecation Macros
+
+    \brief The <BobUIDeprecationMarkers> header file contains deprecation helper macros.
+
+    The header file declares several macros for disabling deprecated BobUI APIs
+    and enabling/disabling compiler warnings when they are used.
+*/
+
+/*!
+    \macro BOBUI_DISABLE_DEPRECATED_BEFORE
+    \relates <BobUIDeprecationMarkers>
+    \deprecated [6.5] Use BOBUI_DISABLE_DEPRECATED_UP_TO instead
+
+    \sa BOBUI_DISABLE_DEPRECATED_UP_TO
+*/
+
+/*!
+    \macro BOBUI_DISABLE_DEPRECATED_UP_TO
+    \relates <BobUIDeprecationMarkers>
+
+    This macro can be defined in the project file to disable functions
+    deprecated in a specified version of BobUI or any earlier version. The default
+    version number is 5.0, meaning that functions deprecated in or before
+    BobUI 5.0 will not be included.
+
+    For instance, when preparing to upgrade to BobUI 6.3, after eliminating all
+    deprecation warnings, you can set \c{BOBUI_DISABLE_DEPRECATED_UP_TO=0x060300}
+    to exclude from your builds the BobUI APIs you no longer use. In your own
+    project's build configuration, this will ensure that anyone adding new calls
+    to the deprecated APIs will know about it right away. If you also build BobUI
+    for yourself, including this define in your build configuration for BobUI will
+    make your binaries smaller by leaving out even the implementation of the
+    deprecated APIs.
+
+    \note In order to avoid linker errors, the same deprecation level should be
+    used consistently in the entire binary. This means that in static builds
+    the BobUI libraries should also be built with \c {BOBUI_DISABLE_DEPRECATED_UP_TO}
+    set to the same version as in the user code. That is because in static
+    build the BobUI libraries also become a part of the binary.
+
+    \sa BOBUI_DEPRECATED_WARNINGS, BOBUI_WARN_DEPRECATED_UP_TO
+*/
+
+/*!
+    \macro BOBUI_WARN_DEPRECATED_UP_TO
+    \relates <BobUIDeprecationMarkers>
+
+    This macro can be defined in the project file to disable deprecation
+    warnings introduced in BobUI versions higher than the specified version.
+
+    For instance, when preparing to upgrade to BobUI 6.10, if you are not
+    ready to deal with every single deprecation warnings, you can set
+    \c{BOBUI_WARN_DEPRECATED_UP_TO=0x060900} to limit the deprecation
+    warnings to those in 6.9 and earlier.
+
+    \sa BOBUI_DISABLE_DEPRECATED_UP_TO, BOBUI_NO_DEPRECATED_WARNINGS
+*/
+
+/*!
+    \macro BOBUI_DEPRECATED_WARNINGS
+    \relates <BobUIDeprecationMarkers>
+
+    Since BobUI 5.13, this macro has no effect. In BobUI 5.12 and before, if this macro
+    is defined, the compiler will generate warnings if any API declared as
+    deprecated by BobUI is used.
+
+    \sa BOBUI_DISABLE_DEPRECATED_UP_TO, BOBUI_NO_DEPRECATED_WARNINGS, BOBUI_WARN_DEPRECATED_UP_TO
+*/
+
+/*!
+    \macro BOBUI_NO_DEPRECATED_WARNINGS
+    \relates <BobUIDeprecationMarkers>
+    \since 5.13
+
+    This macro can be used to suppress deprecation warnings that would otherwise
+    be generated when using deprecated APIs.
+
+    \sa BOBUI_DISABLE_DEPRECATED_UP_TO, BOBUI_WARN_DEPRECATED_UP_TO
+*/

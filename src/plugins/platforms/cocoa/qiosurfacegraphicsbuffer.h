@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSURFACEGRAPHICSBUFFER_H
 #define QIOSURFACEGRAPHICSBUFFER_H
@@ -11,7 +11,7 @@
 #include <CoreGraphics/CGColorSpace.h>
 #include <IOSurface/IOSurface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSurfaceGraphicsBuffer : public QPlatformGraphicsBuffer
 {
@@ -38,10 +38,10 @@ private:
     friend QDebug operator<<(QDebug, const QIOSurfaceGraphicsBuffer *);
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug, const QIOSurfaceGraphicsBuffer *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOSURFACEGRAPHICSBUFFER_H

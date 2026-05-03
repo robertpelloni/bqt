@@ -1,12 +1,12 @@
 TEMPLATE = app
 
 # needs gui-private to be able to include <rhi/qrhi.h>
-QT += gui-private widgets
+BOBUI += gui-private widgets
 
 HEADERS += examplewidget.h
 SOURCES += examplewidget.cpp main.cpp
 
 RESOURCES += cuberhiwidget.qrc
 
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/rhi/cuberhiwidget
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/rhi/cuberhiwidget
 INSTALLS += target

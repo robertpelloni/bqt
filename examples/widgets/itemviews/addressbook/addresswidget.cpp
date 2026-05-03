@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "addresswidget.h"
 #include "adddialog.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [0]
 AddressWidget::AddressWidget(QWidget *parent)
-    : QTabWidget(parent),
+    : BOBUIabWidget(parent),
       table(new TableModel(this)),
       newAddressTab(new NewAddressTab(this))
 {
@@ -41,9 +41,9 @@ void AddressWidget::addEntry(const QString &name, const QString &address)
         table->insertRows(0, 1, QModelIndex());
 
         QModelIndex index = table->index(0, 0, QModelIndex());
-        table->setData(index, name, Qt::EditRole);
+        table->setData(index, name, BobUI::EditRole);
         index = table->index(0, 1, QModelIndex());
-        table->setData(index, address, Qt::EditRole);
+        table->setData(index, address, BobUI::EditRole);
         removeTab(indexOf(newAddressTab));
     } else {
         QMessageBox::information(this, tr("Duplicate Name"),
@@ -55,7 +55,7 @@ void AddressWidget::addEntry(const QString &name, const QString &address)
 //! [4a]
 void AddressWidget::editEntry()
 {
-    QTableView *temp = static_cast<QTableView*>(currentWidget());
+    BOBUIableView *temp = static_cast<BOBUIableView*>(currentWidget());
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
@@ -67,11 +67,11 @@ void AddressWidget::editEntry()
     for (const QModelIndex &index : indexes) {
         row = proxy->mapToSource(index).row();
         QModelIndex nameIndex = table->index(row, 0, QModelIndex());
-        QVariant varName = table->data(nameIndex, Qt::DisplayRole);
+        QVariant varName = table->data(nameIndex, BobUI::DisplayRole);
         name = varName.toString();
 
         QModelIndex addressIndex = table->index(row, 1, QModelIndex());
-        QVariant varAddr = table->data(addressIndex, Qt::DisplayRole);
+        QVariant varAddr = table->data(addressIndex, BobUI::DisplayRole);
         address = varAddr.toString();
     }
 //! [4a]
@@ -85,7 +85,7 @@ void AddressWidget::editEntry()
         const QString newAddress = aDialog.address();
         if (newAddress != address) {
             const QModelIndex index = table->index(row, 1, QModelIndex());
-            table->setData(index, newAddress, Qt::EditRole);
+            table->setData(index, newAddress, BobUI::EditRole);
         }
     }
 }
@@ -94,7 +94,7 @@ void AddressWidget::editEntry()
 //! [5]
 void AddressWidget::removeEntry()
 {
-    QTableView *temp = static_cast<QTableView*>(currentWidget());
+    BOBUIableView *temp = static_cast<BOBUIableView*>(currentWidget());
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
@@ -113,7 +113,7 @@ void AddressWidget::removeEntry()
 //! [1]
 void AddressWidget::setupTabs()
 {
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
     const auto groups = { "ABC"_L1, "DEF"_L1, "GHI"_L1, "JKL"_L1, "MNO"_L1, "PQR"_L1,
                           "STU"_L1, "VW"_L1, "XYZ"_L1 };
 
@@ -126,7 +126,7 @@ void AddressWidget::setupTabs()
         proxyModel->setFilterRegularExpression(regExp);
         proxyModel->setFilterKeyColumn(0);
 
-        QTableView *tableView = new QTableView;
+        BOBUIableView *tableView = new BOBUIableView;
         tableView->setModel(proxyModel);
         tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableView->horizontalHeader()->setStretchLastSection(true);
@@ -138,7 +138,7 @@ void AddressWidget::setupTabs()
         connect(tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
                 this, &AddressWidget::selectionChanged);
 
-        connect(this, &QTabWidget::currentChanged, this, [this, tableView](int tabIndex) {
+        connect(this, &BOBUIabWidget::currentChanged, this, [this, tableView](int tabIndex) {
             if (widget(tabIndex) == tableView)
                 emit selectionChanged(tableView->selectionModel()->selection());
         });

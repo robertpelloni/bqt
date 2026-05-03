@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGraphicsGridLayout>
 #include <QDebug>
@@ -44,7 +44,7 @@ AbstractViewItem *RecycledListItem::newItemInstance()
     return item;
 }
 
-QSizeF RecycledListItem::effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF RecycledListItem::effectiveSizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     QSizeF s = m_item->effectiveSizeHint(which,constraint);
     if (m_item2)
@@ -56,7 +56,7 @@ QSizeF RecycledListItem::effectiveSizeHint(Qt::SizeHint which, const QSizeF &con
 
 QVariant RecycledListItem::data(int role) const
 {
-    if (m_item && role == Qt::DisplayRole)
+    if (m_item && role == BobUI::DisplayRole)
         return m_item->data();
 
     return QVariant();
@@ -64,7 +64,7 @@ QVariant RecycledListItem::data(int role) const
 
 void RecycledListItem::setData(const QVariant &value, int role)
 {
-    if (m_item && role == Qt::DisplayRole) {
+    if (m_item && role == BobUI::DisplayRole) {
         m_item->setData(value);
         if (m_item2) {
             m_item2->setData(value);
@@ -82,7 +82,7 @@ void RecycledListItem::updateItemContents()
 {
     AbstractViewItem::updateItemContents();
     if (m_model && m_index.isValid())
-        setData(m_model->data(m_index,Qt::DisplayRole), Qt::DisplayRole);
+        setData(m_model->data(m_index,BobUI::DisplayRole), BobUI::DisplayRole);
 }
 
 void RecycledListItem::setTwoColumns(const bool enabled)

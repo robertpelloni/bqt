@@ -1,30 +1,30 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
 // Copyright (C) 2015 Keith Gardner <kreios4004@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QVERSIONNUMBER_H
 #define QVERSIONNUMBER_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qspan.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qtypeinfo.h>
-#if !defined(QT_LEAN_HEADERS) || QT_LEAN_HEADERS < 2
-#include <QtCore/qtyperevision.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qspan.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/bobuiypeinfo.h>
+#if !defined(BOBUI_LEAN_HEADERS) || BOBUI_LEAN_HEADERS < 2
+#include <BobUICore/bobuiyperevision.h>
 #endif // lean headers level 2
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVersionNumber;
 Q_CORE_EXPORT size_t qHash(const QVersionNumber &key, size_t seed = 0);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &out, const QVersionNumber &version);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &in, QVersionNumber &version);
 #endif
@@ -99,7 +99,7 @@ class QVersionNumber
             other.dummy = 1;
         }
 
-        QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(SegmentStorage)
+        BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(SegmentStorage)
 
         void swap(SegmentStorage &other) noexcept
         {
@@ -204,8 +204,8 @@ class QVersionNumber
 
         friend constexpr bool comparesEqual(const It &lhs, const It &rhs)
         { Q_ASSERT(lhs.v == rhs.v); return lhs.i == rhs.i; }
-        friend constexpr Qt::strong_ordering compareThreeWay(const It &lhs, const It &rhs)
-        { Q_ASSERT(lhs.v == rhs.v); return Qt::compareThreeWay(lhs.i, rhs.i); }
+        friend constexpr BobUI::strong_ordering compareThreeWay(const It &lhs, const It &rhs)
+        { Q_ASSERT(lhs.v == rhs.v); return BobUI::compareThreeWay(lhs.i, rhs.i); }
         // macro variant does not exist: Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE_NON_NOEXCEPT(It)
         friend constexpr bool operator==(It lhs, It rhs) {
             return comparesEqual(lhs, rhs);
@@ -238,13 +238,13 @@ class QVersionNumber
 
         using iterator_category = std::random_access_iterator_tag;
         using value_type = int;
-#ifdef QT_COMPILER_HAS_LWG3346
+#ifdef BOBUI_COMPILER_HAS_LWG3346
         using element_type = const int;
 #endif
         using difference_type = qptrdiff; // difference to container requirements
         using size_type = qsizetype;      // difference to container requirements
         using reference = value_type;     // difference to container requirements
-        using pointer = QtPrivate::ArrowProxy<reference>;
+        using pointer = BobUIPrivate::ArrowProxy<reference>;
 
         reference operator*() const { return v->segmentAt(i); }
         pointer operator->() const { return {**this}; }
@@ -355,14 +355,14 @@ public:
     [[nodiscard]] Q_CORE_EXPORT QString toString() const;
     [[nodiscard]] Q_CORE_EXPORT static QVersionNumber fromString(QAnyStringView string, qsizetype *suffixIndex = nullptr);
 
-#if QT_DEPRECATED_SINCE(6, 4) && QT_POINTER_SIZE != 4
+#if BOBUI_DEPRECATED_SINCE(6, 4) && BOBUI_POINTER_SIZE != 4
     Q_WEAK_OVERLOAD
-    QT_DEPRECATED_VERSION_X_6_4("Use the 'qsizetype *suffixIndex' overload.")
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use the 'qsizetype *suffixIndex' overload.")
     [[nodiscard]] static QVersionNumber fromString(QAnyStringView string, int *suffixIndex)
     {
-        QT_WARNING_PUSH
+        BOBUI_WARNING_PUSH
         // fromString() writes to *n unconditionally, but GCC can't know that
-        QT_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
+        BOBUI_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
         qsizetype n;
         auto r = fromString(string, &n);
         if (suffixIndex) {
@@ -370,12 +370,12 @@ public:
             *suffixIndex = int(n);
         }
         return r;
-        QT_WARNING_POP
+        BOBUI_WARNING_POP
     }
 #endif
 
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     [[nodiscard]] Q_CORE_EXPORT static QVersionNumber fromString(const QString &string, int *suffixIndex);
     [[nodiscard]] Q_CORE_EXPORT static QVersionNumber fromString(QLatin1StringView string, int *suffixIndex);
     [[nodiscard]] Q_CORE_EXPORT static QVersionNumber fromString(QStringView string, int *suffixIndex);
@@ -387,15 +387,15 @@ private:
     {
         return lhs.segmentCount() == rhs.segmentCount() && compare(lhs, rhs) == 0;
     }
-    [[nodiscard]] friend Qt::strong_ordering compareThreeWay(const QVersionNumber &lhs,
+    [[nodiscard]] friend BobUI::strong_ordering compareThreeWay(const QVersionNumber &lhs,
                                                              const QVersionNumber &rhs) noexcept
     {
         int c = compare(lhs, rhs);
-        return Qt::compareThreeWay(c, 0);
+        return BobUI::compareThreeWay(c, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QVersionNumber)
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream& operator>>(QDataStream &in, QVersionNumber &version);
 #endif
     friend Q_CORE_EXPORT size_t qHash(const QVersionNumber &key, size_t seed);
@@ -403,12 +403,12 @@ private:
 
 Q_DECLARE_TYPEINFO(QVersionNumber, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QVersionNumber &version);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QVersionNumber, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QVersionNumber, Q_CORE_EXPORT)
 
 #endif // QVERSIONNUMBER_H

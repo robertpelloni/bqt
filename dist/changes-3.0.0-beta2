@@ -1,20 +1,20 @@
-Qt 3.0 Beta2 is not binary compatible with Beta1, this means that any
+BobUI 3.0 Beta2 is not binary compatible with Beta1, this means that any
 programs linked with Beta1 must be recompiled.
 
-Below you'll find a description of general changes in the Qt Library
-and Qt Designer followed by a detailed list of changes in the
+Below you'll find a description of general changes in the BobUI Library
+and BobUI Designer followed by a detailed list of changes in the
 programming API.
 
 
-The Qt Library
+The BobUI Library
 ========================================
 
 Wacom Tablet Support
 --------------------
 
 Support for Wacom brand tablets has been introduced on Irix and
-Windows.  These devices generate a QTabletEvent that can be handled by
-QWidget::tabletEvent(). The QTabletEvent holds information about
+Windows.  These devices generate a BOBUIabletEvent that can be handled by
+QWidget::tabletEvent(). The BOBUIabletEvent holds information about
 pressure, X and Y tilt, and which device is being used (e.g. stylus or
 eraser).  Note: at present, there are known issues with the Windows
 version.
@@ -28,7 +28,7 @@ images and code examples.
 QStyle (and derived classes)
 ----------------------------
 
-The style API has been completely rewritten in Qt 3.0. The main reason
+The style API has been completely rewritten in BobUI 3.0. The main reason
 for doing this was because it was getting inconsistent, hard to
 maintain and extend. Most of the old 2.x functions have been replaced
 by a small set of more general functions. The new API is:
@@ -71,7 +71,7 @@ For more information about the new style API, please read the QStyle
 documentation.
 
 
-Qt Designer
+BobUI Designer
 ========================================
 
  - Improved indentation algorithm for the code editor.
@@ -79,7 +79,7 @@ Qt Designer
    much easier.
 
 
-Qt Functions
+BobUI Functions
 ========================================
 
 QCanvas
@@ -100,11 +100,11 @@ QCom
  - Introduced QS_OK, QS_FALSE, QE_NOINTERFACE, QE_INVALIDARG and
    QE_NOIMPL as possible QRESULT return values.
 
-QDate, QTime and QDateTime
+QDate, BOBUIime and QDateTime
 --------------------------
 
  - New function for outputting free form strings and new DateFormat
-   enum Qt::LocalDate.
+   enum BobUI::LocalDate.
 
 New functions:
 	QString	toString( const QString& format );
@@ -177,7 +177,7 @@ New function:
 QLibrary
 --------
 
-Enabled plug-in loading with static Qt library (Windows).
+Enabled plug-in loading with static BobUI library (Windows).
 
 QMovie
 ------
@@ -232,7 +232,7 @@ New functions:
 QPrinter
 --------
 
- - X11 version only: Introduced Qt settings switch 'embedFonts' that
+ - X11 version only: Introduced BobUI settings switch 'embedFonts' that
    allows disabling font embedding to reduce size of PostScript output.
 
 QProcess
@@ -284,7 +284,7 @@ QSql
 ----
 
  - The source of the SQL driver plug-ins have been moved to
-   $QTDIR/plugins/src/sqldrivers/.
+   $BOBUIDIR/plugins/src/sqldrivers/.
  - The postgres driver checks the version number of the server. So there is
    no need for different drivers: QPSQL6 no longer exists -- use QPSQL7
    instead.
@@ -298,7 +298,7 @@ QSql
    (QSqlResult::setForwardOnly()).
  - QSqlDatabase passes the port number to the SQL driver.
 
-QTable
+BOBUIable
 ------
 
  - No longer calls processEvents() in columnWidthChanged() and
@@ -314,16 +314,16 @@ New functions:
 	int currEditRow() const;
 	int currEditCol() const;
 
-QTextCodec
+BOBUIextCodec
 ----------
 
  - Fixes for characters in the 0x80..0xff range.
 
-QTextEdit
+BOBUIextEdit
 ---------
 
  - The rich text engine has seen many internal improvements and
-   additions to the QTextEdit class.
+   additions to the BOBUIextEdit class.
 
 New functions:
 	virtual void scrollToBottom();

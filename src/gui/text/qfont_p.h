@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONT_P_H
 #define QFONT_P_H
@@ -8,25 +8,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtGui/qfont.h"
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qobject.h"
-#include "QtCore/qstringlist.h"
-#include <QtGui/qfontdatabase.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUIGui/qfont.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qmap.h"
+#include "BobUICore/qhash.h"
+#include "BobUICore/qobject.h"
+#include "BobUICore/qstringlist.h"
+#include <BobUIGui/qfontdatabase.h>
 #include "private/qfixed_p.h"
 #include "private/qfontdatabase_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // forwards
 class QFontCache;
@@ -286,7 +286,7 @@ public:
 private:
     void increaseCost(uint cost);
     void decreaseCost(uint cost);
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
     void decreaseCache();
 
     static const uint min_cost;
@@ -298,13 +298,13 @@ private:
     const int m_id;
 };
 
-Q_GUI_EXPORT int qt_defaultDpiX();
-Q_GUI_EXPORT int qt_defaultDpiY();
-Q_GUI_EXPORT int qt_defaultDpi();
+Q_GUI_EXPORT int bobui_defaultDpiX();
+Q_GUI_EXPORT int bobui_defaultDpiY();
+Q_GUI_EXPORT int bobui_defaultDpi();
 
-Q_GUI_EXPORT int qt_legacyToOpenTypeWeight(int weight);
-Q_GUI_EXPORT int qt_openTypeToLegacyWeight(int weight);
+Q_GUI_EXPORT int bobui_legacyToOpenTypeWeight(int weight);
+Q_GUI_EXPORT int bobui_openTypeToLegacyWeight(int weight);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONT_P_H

@@ -1,24 +1,24 @@
 // Copyright (C) 2017 Erik Larsson.
-// Copyright (C) 2021 David Redondo <qt@david-redondo.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 David Redondo <bobui@david-redondo.de>
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandclientextension.h"
 #include "qwaylandclientextension_p.h"
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandintegration_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandintegration_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using RegistryGlobal = QtWaylandClient::QWaylandDisplay::RegistryGlobal;
-using namespace Qt::StringLiterals;
+using RegistryGlobal = BobUIWaylandClient::QWaylandDisplay::RegistryGlobal;
+using namespace BobUI::StringLiterals;
 
 QWaylandClientExtensionPrivate::QWaylandClientExtensionPrivate()
 {
     // Keep the possibility to use a custom waylandIntegration as a plugin,
     // but also add the possibility to run it as a QML component.
-    waylandIntegration = QtWaylandClient::QWaylandIntegration::instance();
+    waylandIntegration = BobUIWaylandClient::QWaylandIntegration::instance();
     if (!waylandIntegration)
-        waylandIntegration = new QtWaylandClient::QWaylandIntegration("wayland"_L1);
+        waylandIntegration = new BobUIWaylandClient::QWaylandIntegration("wayland"_L1);
 }
 
 void QWaylandClientExtensionPrivate::globalAdded(const RegistryGlobal &global)
@@ -51,7 +51,7 @@ void QWaylandClientExtension::initialize()
     if (d->active) {
         return;
     }
-    const QtWaylandClient::QWaylandDisplay *display = d->waylandIntegration->display();
+    const BobUIWaylandClient::QWaylandDisplay *display = d->waylandIntegration->display();
     const auto globals = display->globals();
     auto global =
             std::find_if(globals.cbegin(), globals.cend(), [this](const RegistryGlobal &global) {
@@ -70,19 +70,19 @@ QWaylandClientExtension::QWaylandClientExtension(const int ver)
     Q_D(QWaylandClientExtension);
     d->version = ver;
     auto display = d->waylandIntegration->display();
-    QObjectPrivate::connect(display, &QtWaylandClient::QWaylandDisplay::globalAdded, d,
+    QObjectPrivate::connect(display, &BobUIWaylandClient::QWaylandDisplay::globalAdded, d,
                             &QWaylandClientExtensionPrivate::globalAdded);
-    QObjectPrivate::connect(display, &QtWaylandClient::QWaylandDisplay::globalRemoved, d,
+    QObjectPrivate::connect(display, &BobUIWaylandClient::QWaylandDisplay::globalRemoved, d,
                             &QWaylandClientExtensionPrivate::globalRemoved);
     // This function uses virtual functions and we don't want it to be called from the constructor.
-    QMetaObject::invokeMethod(this, "initialize", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "initialize", BobUI::QueuedConnection);
 }
 
 QWaylandClientExtension::~QWaylandClientExtension()
 {
 }
 
-QtWaylandClient::QWaylandIntegration *QWaylandClientExtension::integration() const
+BobUIWaylandClient::QWaylandIntegration *QWaylandClientExtension::integration() const
 {
     Q_D(const QWaylandClientExtension);
     return d->waylandIntegration;
@@ -109,6 +109,6 @@ bool QWaylandClientExtension::isActive() const
     return d->active;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandclientextension.cpp"

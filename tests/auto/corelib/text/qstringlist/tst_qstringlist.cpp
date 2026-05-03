@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qlatin1stringmatcher.h>
 #include <qlist.h>
 #include <qregularexpression.h>
@@ -12,7 +12,7 @@
 
 #include <algorithm>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QStringList : public QObject
 {
@@ -79,28 +79,28 @@ void tst_QStringList::constructors()
 
 void tst_QStringList::indexOf_data()
 {
-    QTest::addColumn<QStringList>("list");
-    QTest::addColumn<QString>("search");
-    QTest::addColumn<int>("from");
-    QTest::addColumn<int>("expectedResult");
+    BOBUIest::addColumn<QStringList>("list");
+    BOBUIest::addColumn<QString>("search");
+    BOBUIest::addColumn<int>("from");
+    BOBUIest::addColumn<int>("expectedResult");
 
     QStringList searchIn{"harald", "trond", "vohi", "harald"};
-    QTest::newRow("harald") << searchIn << "harald" << 0 << 0;
-    QTest::newRow("trond") << searchIn << "trond" << 0 << 1;
-    QTest::newRow("vohi") << searchIn << "vohi" << 0 << 2;
-    QTest::newRow("harald-1") << searchIn << "harald" << 1 << 3;
+    BOBUIest::newRow("harald") << searchIn << "harald" << 0 << 0;
+    BOBUIest::newRow("trond") << searchIn << "trond" << 0 << 1;
+    BOBUIest::newRow("vohi") << searchIn << "vohi" << 0 << 2;
+    BOBUIest::newRow("harald-1") << searchIn << "harald" << 1 << 3;
 
-    QTest::newRow("hans") << searchIn << "hans" << 0 << -1;
-    QTest::newRow("trond-1") << searchIn << "trond" << 2 << -1;
-    QTest::newRow("harald-2") << searchIn << "harald" << -1 << 3;
-    QTest::newRow("vohi-1") << searchIn << "vohi" << -3 << 2;
+    BOBUIest::newRow("hans") << searchIn << "hans" << 0 << -1;
+    BOBUIest::newRow("trond-1") << searchIn << "trond" << 2 << -1;
+    BOBUIest::newRow("harald-2") << searchIn << "harald" << -1 << 3;
+    BOBUIest::newRow("vohi-1") << searchIn << "vohi" << -3 << 2;
 
-    QTest::newRow("from-bigger-than-size") << searchIn << "harald" << 100 << -1;
+    BOBUIest::newRow("from-bigger-than-size") << searchIn << "harald" << 100 << -1;
 
     searchIn = {"lost+found", "foo.bar"};
-    QTest::newRow("string-with-regex-meta-char1") << searchIn << "lost+found" << 0 << 0;
-    QTest::newRow("string-with-regex-meta-char2") << searchIn << "foo.bar" << 0 << 1;
-    QTest::newRow("string-with-regex-meta-char3") << searchIn << "foo.bar" << 2 << -1;
+    BOBUIest::newRow("string-with-regex-meta-char1") << searchIn << "lost+found" << 0 << 0;
+    BOBUIest::newRow("string-with-regex-meta-char2") << searchIn << "foo.bar" << 0 << 1;
+    BOBUIest::newRow("string-with-regex-meta-char3") << searchIn << "foo.bar" << 2 << -1;
 }
 
 void tst_QStringList::indexOf()
@@ -116,9 +116,9 @@ void tst_QStringList::indexOf()
     QCOMPARE(list.indexOf(QRegularExpression(QRegularExpression::escape(search)), from), expectedResult);
 
     QString searchUpper = search.toUpper();
-    QCOMPARE(list.indexOf(searchUpper, from, Qt::CaseInsensitive), expectedResult);
-    QCOMPARE(list.indexOf(QStringView(searchUpper), from, Qt::CaseInsensitive), expectedResult);
-    QCOMPARE(list.indexOf(QLatin1StringView(searchUpper.toLatin1()), from, Qt::CaseInsensitive),
+    QCOMPARE(list.indexOf(searchUpper, from, BobUI::CaseInsensitive), expectedResult);
+    QCOMPARE(list.indexOf(QStringView(searchUpper), from, BobUI::CaseInsensitive), expectedResult);
+    QCOMPARE(list.indexOf(QLatin1StringView(searchUpper.toLatin1()), from, BobUI::CaseInsensitive),
              expectedResult);
     const QRegularExpression re(QRegularExpression::escape(searchUpper),
                                 QRegularExpression::CaseInsensitiveOption);
@@ -127,26 +127,26 @@ void tst_QStringList::indexOf()
 
 void tst_QStringList::lastIndexOf_data()
 {
-    QTest::addColumn<QStringList>("list");
-    QTest::addColumn<QString>("search");
-    QTest::addColumn<int>("from");
-    QTest::addColumn<int>("expectedResult");
+    BOBUIest::addColumn<QStringList>("list");
+    BOBUIest::addColumn<QString>("search");
+    BOBUIest::addColumn<int>("from");
+    BOBUIest::addColumn<int>("expectedResult");
 
     QStringList list{"harald", "trond", "vohi", "harald"};
-    QTest::newRow("harald") << list << "harald" << -1 << 3;
-    QTest::newRow("trond") << list << "trond" << -1 << 1;
-    QTest::newRow("vohi") << list << "vohi" << -1 << 2;
-    QTest::newRow("harald-1") << list << "harald" << 2 << 0;
+    BOBUIest::newRow("harald") << list << "harald" << -1 << 3;
+    BOBUIest::newRow("trond") << list << "trond" << -1 << 1;
+    BOBUIest::newRow("vohi") << list << "vohi" << -1 << 2;
+    BOBUIest::newRow("harald-1") << list << "harald" << 2 << 0;
 
-    QTest::newRow("hans") << list << "hans" << -1 << -1;
-    QTest::newRow("vohi-1") << list << "vohi" << 1 << -1;
-    QTest::newRow("vohi-2") << list << "vohi" << -1 << 2;
-    QTest::newRow("vohi-3") << list << "vohi" << -3 << -1;
+    BOBUIest::newRow("hans") << list << "hans" << -1 << -1;
+    BOBUIest::newRow("vohi-1") << list << "vohi" << 1 << -1;
+    BOBUIest::newRow("vohi-2") << list << "vohi" << -1 << 2;
+    BOBUIest::newRow("vohi-3") << list << "vohi" << -3 << -1;
 
     list = {"lost+found", "foo.bar"};
-    QTest::newRow("string-with-regex-meta-char1") << list << "lost+found" << -1 << 0;
-    QTest::newRow("string-with-regex-meta-char2") << list << "foo.bar" << -1 << 1;
-    QTest::newRow("string-with-regex-meta-char3") << list << "foo.bar" << -2 << -1;
+    BOBUIest::newRow("string-with-regex-meta-char1") << list << "lost+found" << -1 << 0;
+    BOBUIest::newRow("string-with-regex-meta-char2") << list << "foo.bar" << -1 << 1;
+    BOBUIest::newRow("string-with-regex-meta-char3") << list << "foo.bar" << -2 << -1;
 }
 
 void tst_QStringList::lastIndexOf()
@@ -162,9 +162,9 @@ void tst_QStringList::lastIndexOf()
     QCOMPARE(list.lastIndexOf(QRegularExpression(QRegularExpression::escape(search)), from), expectedResult);
 
     const QString searchUpper = search.toUpper();
-    QCOMPARE(list.lastIndexOf(searchUpper, from, Qt::CaseInsensitive), expectedResult);
-    QCOMPARE(list.lastIndexOf(QStringView(searchUpper), from, Qt::CaseInsensitive), expectedResult);
-    QCOMPARE(list.lastIndexOf(QLatin1String(searchUpper.toLatin1()), from, Qt::CaseInsensitive),
+    QCOMPARE(list.lastIndexOf(searchUpper, from, BobUI::CaseInsensitive), expectedResult);
+    QCOMPARE(list.lastIndexOf(QStringView(searchUpper), from, BobUI::CaseInsensitive), expectedResult);
+    QCOMPARE(list.lastIndexOf(QLatin1String(searchUpper.toLatin1()), from, BobUI::CaseInsensitive),
              expectedResult);
     const QRegularExpression re(QRegularExpression::escape(searchUpper),
                                 QRegularExpression::CaseInsensitiveOption);
@@ -187,13 +187,13 @@ void tst_QStringList::filter()
 
     { // CaseInsensitive
         const QStringList expected = {u"Bill Gates"_s, u"Bill Clinton"_s, u"bIll"_s};
-        QCOMPARE(list.filter(u"bill"_s, Qt::CaseInsensitive), expected);
-        QCOMPARE(list.filter(u"bill", Qt::CaseInsensitive), expected);
-        QCOMPARE(list.filter("bill"_L1, Qt::CaseInsensitive), expected);
+        QCOMPARE(list.filter(u"bill"_s, BobUI::CaseInsensitive), expected);
+        QCOMPARE(list.filter(u"bill", BobUI::CaseInsensitive), expected);
+        QCOMPARE(list.filter("bill"_L1, BobUI::CaseInsensitive), expected);
         QCOMPARE(list.filter(QRegularExpression(u"[i]ll"_s, QRegularExpression::CaseInsensitiveOption)),
                              expected);
-        QCOMPARE(list.filter(QStringMatcher(u"Bill", Qt::CaseInsensitive)), expected);
-        QCOMPARE(list.filter(QLatin1StringMatcher("bill"_L1, Qt::CaseInsensitive)), expected);
+        QCOMPARE(list.filter(QStringMatcher(u"Bill", BobUI::CaseInsensitive)), expected);
+        QCOMPARE(list.filter(QLatin1StringMatcher("bill"_L1, BobUI::CaseInsensitive)), expected);
     }
 }
 
@@ -211,12 +211,12 @@ void tst_QStringList::sort()
     const QScopeGuard restore([currentLocale]() { setlocale(LC_ALL, currentLocale); });
     QStringList list3, list4;
     list3 << "alpha" << "beta" << "BETA" << "gamma" << "Gamma" << "gAmma" << "epsilon";
-    list3.sort(Qt::CaseInsensitive);
+    list3.sort(BobUI::CaseInsensitive);
     list4 << "alpha" << "beta" << "BETA" << "epsilon" << "Gamma" << "gAmma" << "gamma";
     // with this list, case insensitive sorting can give more than one permutation for "equivalent"
     // elements; so we check that the sort gave the formally correct result (list[i] <= list[i+1])
     for (int i = 0; i < list4.size() - 1; ++i)
-        QVERIFY2(QString::compare(list4.at(i), list4.at(i + 1), Qt::CaseInsensitive) <= 0, qPrintable(QString("index %1 failed").arg(i)));
+        QVERIFY2(QString::compare(list4.at(i), list4.at(i + 1), BobUI::CaseInsensitive) <= 0, qPrintable(QString("index %1 failed").arg(i)));
     // additional checks
     QCOMPARE(list4.at(0), QString("alpha"));
     QVERIFY(list4.indexOf("epsilon") > 0);
@@ -269,24 +269,24 @@ void tst_QStringList::replaceInStrings()
 
 void tst_QStringList::contains_data()
 {
-    QTest::addColumn<QString>("needle");
-    QTest::addColumn<Qt::CaseSensitivity>("cs");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("needle");
+    BOBUIest::addColumn<BobUI::CaseSensitivity>("cs");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("arthur") << u"arthur"_s << Qt::CaseSensitive << true;
-    QTest::newRow("ArthuR") << u"ArthuR"_s << Qt::CaseSensitive << false;
-    QTest::newRow("arthur") << u"arthur"_s << Qt::CaseInsensitive << true;
-    QTest::newRow("ArthuR") << u"ArthuR"_s << Qt::CaseInsensitive << true;
-    QTest::newRow("ARTHUR") << u"ARTHUR"_s << Qt::CaseInsensitive << true;
-    QTest::newRow("Hans") << u"Hans"_s << Qt::CaseSensitive << false;
-    QTest::newRow("hans") << u"hans"_s << Qt::CaseInsensitive << false;
-    QTest::newRow("dent") << u"dent"_s << Qt::CaseInsensitive << true;
+    BOBUIest::newRow("arthur") << u"arthur"_s << BobUI::CaseSensitive << true;
+    BOBUIest::newRow("ArthuR") << u"ArthuR"_s << BobUI::CaseSensitive << false;
+    BOBUIest::newRow("arthur") << u"arthur"_s << BobUI::CaseInsensitive << true;
+    BOBUIest::newRow("ArthuR") << u"ArthuR"_s << BobUI::CaseInsensitive << true;
+    BOBUIest::newRow("ARTHUR") << u"ARTHUR"_s << BobUI::CaseInsensitive << true;
+    BOBUIest::newRow("Hans") << u"Hans"_s << BobUI::CaseSensitive << false;
+    BOBUIest::newRow("hans") << u"hans"_s << BobUI::CaseInsensitive << false;
+    BOBUIest::newRow("dent") << u"dent"_s << BobUI::CaseInsensitive << true;
 }
 
 void tst_QStringList::contains()
 {
     QFETCH(QString, needle);
-    QFETCH(Qt::CaseSensitivity, cs);
+    QFETCH(BobUI::CaseSensitivity, cs);
     QFETCH(bool, expected);
 
     const QStringList list = {
@@ -300,14 +300,14 @@ void tst_QStringList::contains()
 
 void tst_QStringList::removeDuplicates_data()
 {
-    QTest::addColumn<QString>("before");
-    QTest::addColumn<QString>("after");
-    QTest::addColumn<int>("count");
-    QTest::addColumn<bool>("detached");
+    BOBUIest::addColumn<QString>("before");
+    BOBUIest::addColumn<QString>("after");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<bool>("detached");
 
-    QTest::newRow("empty-1") << "Hello,Hello" << "Hello" << 1 << true;
-    QTest::newRow("empty-2") << "Hello,World" << "Hello,World" << 0 << false;
-    QTest::newRow("middle")  << "Hello,World,Hello" << "Hello,World" << 1 << true;
+    BOBUIest::newRow("empty-1") << "Hello,Hello" << "Hello" << 1 << true;
+    BOBUIest::newRow("empty-2") << "Hello,World" << "Hello,World" << 0 << false;
+    BOBUIest::newRow("middle")  << "Hello,World,Hello" << "Hello,World" << 1 << true;
 }
 
 void tst_QStringList::removeDuplicates()
@@ -379,39 +379,39 @@ void tst_QStringList::join() const
 
 void tst_QStringList::join_data() const
 {
-    QTest::addColumn<QStringList>("input");
-    QTest::addColumn<QString>("separator");
-    QTest::addColumn<QString>("expectedResult");
+    BOBUIest::addColumn<QStringList>("input");
+    BOBUIest::addColumn<QString>("separator");
+    BOBUIest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
                 << QStringList()
                 << QString()
                 << QString();
 
-    QTest::newRow("data2")
+    BOBUIest::newRow("data2")
                 << QStringList()
                 << QString(QLatin1String("separator"))
                 << QString();
 
-    QTest::newRow("data3")
+    BOBUIest::newRow("data3")
                 << QStringList("one")
                 << QString(QLatin1String("separator"))
                 << QString("one");
 
-    QTest::newRow("data4")
+    BOBUIest::newRow("data4")
                 << QStringList("one")
                 << QString(QLatin1String("separator"))
                 << QString("one");
 
 
-    QTest::newRow("data5")
+    BOBUIest::newRow("data5")
                 << (QStringList()
                         << QLatin1String("a")
                         << QLatin1String("b"))
                 << QString(QLatin1String(" "))
                 << QString("a b");
 
-    QTest::newRow("data6")
+    BOBUIest::newRow("data6")
                 << (QStringList()
                         << QLatin1String("a")
                         << QLatin1String("b")
@@ -431,23 +431,23 @@ void tst_QStringList::joinChar() const
 
 void tst_QStringList::joinChar_data() const
 {
-    QTest::addColumn<QStringList>("input");
-    QTest::addColumn<QChar>("separator");
-    QTest::addColumn<QString>("expectedResult");
+    BOBUIest::addColumn<QStringList>("input");
+    BOBUIest::addColumn<QChar>("separator");
+    BOBUIest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
                 << QStringList()
                 << QChar(QLatin1Char(' '))
                 << QString();
 
-    QTest::newRow("data5")
+    BOBUIest::newRow("data5")
                 << (QStringList()
                         << QLatin1String("a")
                         << QLatin1String("b"))
                 << QChar(QLatin1Char(' '))
                 << QString("a b");
 
-    QTest::newRow("data6")
+    BOBUIest::newRow("data6")
                 << (QStringList()
                         << QLatin1String("a")
                         << QLatin1String("b")
@@ -455,7 +455,7 @@ void tst_QStringList::joinChar_data() const
                 << QChar(QLatin1Char(' '))
                 << QString("a b c");
 
-    QTest::newRow("null separator")
+    BOBUIest::newRow("null separator")
             << QStringList{QStringLiteral("a"), QStringLiteral("b"), QStringLiteral("c")}
             << QChar(u'\0')
             << QStringLiteral("a\0b\0c");
@@ -478,5 +478,5 @@ void tst_QStringList::initializeList() const
     QCOMPARE(v1, (QStringList{"hello","world","plop"}));
 }
 
-QTEST_APPLESS_MAIN(tst_QStringList)
+BOBUIEST_APPLESS_MAIN(tst_QStringList)
 #include "tst_qstringlist.moc"

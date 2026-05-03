@@ -13,10 +13,10 @@ instructions:
 
   - type: EnvironmentVariable
     variableName: COIN_CONFIGURE_ARGS
-    variableValue: "{{.Env.NON_QTBASE_CONFIGURE_ARGS}}"
+    variableValue: "{{.Env.NON_BOBUIBASE_CONFIGURE_ARGS}}"
   - type: EnvironmentVariable
     variableName: COIN_CMAKE_ARGS
-    variableValue: "{{.Env.NON_QTBASE_CMAKE_ARGS}} {{.Env.COMMON_NON_QTBASE_CMAKE_ARGS}}"
+    variableValue: "{{.Env.NON_BOBUIBASE_CMAKE_ARGS}} {{.Env.COMMON_NON_BOBUIBASE_CMAKE_ARGS}}"
   - type: AppendToEnvironmentVariable
     variableName: CONFIGURE_ARGS
     variableValue: " ${{ToUpper .Env.TESTED_MODULE_COIN}}_CONFIGURE_ARGS"
@@ -34,7 +34,7 @@ instructions:
   - type: EnvironmentVariable
     variableName: CONFIGURE_ENV_PREFIX
     variableValue: "{{.Env.ENV_PREFIX}}"
-  - !include "{{qt/qtbase}}/call_configure_module.yaml"
+  - !include "{{bobui/bobuibase}}/call_configure_module.yaml"
 
   - type: EnvironmentVariable
     variableName: CMAKE_BUILD_TIMEOUT
@@ -83,11 +83,11 @@ instructions:
         - condition: property
           property: target.osVersion
           not_in_values: [WebAssembly, Android_ANY]
-  - !include "{{qt/qtbase}}/call_host_install.yaml"
+  - !include "{{bobui/bobuibase}}/call_host_install.yaml"
   - type: EnvironmentVariable
     variableName: DESTDIR
     variableValue: "{{.InstallRoot}}"
-  - !include "{{qt/qtbase}}/call_host_install.yaml"
+  - !include "{{bobui/bobuibase}}/call_host_install.yaml"
   - type: EnvironmentVariable
     variableName: DESTDIR
     variableValue: ""
@@ -112,6 +112,6 @@ instructions:
   - type: EnvironmentVariable
     variableName: COIN_CONFIG_TYPE
     variableValue: "Host"
-  - !include "{{qt/qtbase}}/cmake_build_standalone_examples_host.yaml"
-  - !include "{{qt/qtbase}}/qmake/get_qmake_location_host.yaml"
-  - !include "{{qt/qtbase}}/qmake_examples/build_qmake_examples_instructions.yaml"
+  - !include "{{bobui/bobuibase}}/cmake_build_standalone_examples_host.yaml"
+  - !include "{{bobui/bobuibase}}/qmake/get_qmake_location_host.yaml"
+  - !include "{{bobui/bobuibase}}/qmake_examples/build_qmake_examples_instructions.yaml"

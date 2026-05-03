@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /****************************************************************************
 **
 ** In addition, as a special exception, the copyright holders listed above give
-** permission to link the code of its release of Qt with the OpenSSL project's
+** permission to link the code of its release of BobUI with the OpenSSL project's
 ** "OpenSSL" library (or modified versions of the "OpenSSL" library that use the
 ** same license as the original version), and distribute the linked executables.
 **
@@ -21,15 +21,15 @@
 #ifndef QSSLCONFIGURATION_H
 #define QSSLCONFIGURATION_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qshareddata.h>
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qssl.h>
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslCertificate;
 class QSslCipher;
@@ -126,7 +126,7 @@ public:
     static QSslConfiguration defaultConfiguration();
     static void setDefaultConfiguration(const QSslConfiguration &configuration);
 
-#if QT_CONFIG(dtls) || defined(Q_QDOC)
+#if BOBUI_CONFIG(dtls) || defined(Q_QDOC)
     bool dtlsCookieVerificationEnabled() const;
     void setDtlsCookieVerificationEnabled(bool enable);
 
@@ -162,17 +162,17 @@ private:
     friend class QSslSocket;
     friend class QSslConfigurationPrivate;
     friend class QSslContext;
-    friend class QTlsBackend;
+    friend class BOBUIlsBackend;
     QSslConfiguration(QSslConfigurationPrivate *dd);
     QSharedDataPointer<QSslConfigurationPrivate> d;
 };
 
 Q_DECLARE_SHARED(QSslConfiguration)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QSslConfiguration, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QSslConfiguration, Q_NETWORK_EXPORT)
 
-#endif  // QT_NO_SSL
+#endif  // BOBUI_NO_SSL
 
 #endif

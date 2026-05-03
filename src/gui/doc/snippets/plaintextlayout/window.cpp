@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QPainter>
-#include <QTextLayout>
+#include <BOBUIextLayout>
 #include <QWidget>
 
 namespace plaintextlayout {
@@ -19,7 +19,7 @@ void Window::paintEvent(QPaintEvent *event)
 {
 
 //! [0]
-QTextLayout textLayout(text, font);
+BOBUIextLayout textLayout(text, font);
 qreal margin = 10;
 qreal radius = qMin(width()/2.0, height()/2.0) - margin;
 QFontMetrics fm(font);
@@ -31,7 +31,7 @@ textLayout.beginLayout();
 
 while (1) {
     // create a new line
-    QTextLine line = textLayout.createLine();
+    BOBUIextLine line = textLayout.createLine();
     if (!line.isValid())
         break;
 
@@ -50,13 +50,13 @@ textLayout.endLayout();
 QPainter painter;
 painter.begin(this);
 painter.setRenderHint(QPainter::Antialiasing);
-painter.fillRect(rect(), Qt::white);
-painter.setBrush(QBrush(Qt::black));
-painter.setPen(QPen(Qt::black));
+painter.fillRect(rect(), BobUI::white);
+painter.setBrush(QBrush(BobUI::black));
+painter.setPen(QPen(BobUI::black));
 textLayout.draw(&painter, QPoint(0,0));
 
 painter.setBrush(QBrush(QColor("#a6ce39")));
-painter.setPen(QPen(Qt::black));
+painter.setPen(QPen(BobUI::black));
 painter.drawEllipse(QRectF(-radius, margin, 2*radius, 2*radius));
 painter.end();
 //! [0]

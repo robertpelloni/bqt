@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#include <QtXml/qdom.h>
+#include <BobUIXml/qdom.h>
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qregularexpression.h>
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qtemporaryfile.h>
-#include <QtCore/qtextstream.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qxmlstream.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/bobuiemporaryfile.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qxmlstream.h>
 
-#include <QtXml/private/qdom_p.h>
+#include <BobUIXml/private/qdom_p.h>
 
 #include <cmath>
 
-QT_REQUIRE_CONFIG(dom);
-QT_FORWARD_DECLARE_CLASS(QDomDocument)
-QT_FORWARD_DECLARE_CLASS(QDomNode)
+BOBUI_REQUIRE_CONFIG(dom);
+BOBUI_FORWARD_DECLARE_CLASS(QDomDocument)
+BOBUI_FORWARD_DECLARE_CLASS(QDomNode)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QDom : public QObject
 {
@@ -112,13 +112,13 @@ private slots:
     void setContentWhitespace_data() const;
     void setContentUnopenedQIODevice() const;
 
-    void taskQTBUG4595_dontAssertWhenDocumentSpecifiesUnknownEncoding() const;
-    void cloneDTD_QTBUG8398() const;
+    void taskBOBUIBUG4595_dontAssertWhenDocumentSpecifiesUnknownEncoding() const;
+    void cloneDTD_BOBUIBUG8398() const;
     void DTDNotationDecl();
     void DTDEntityDecl();
     void DTDInternalSubset() const;
     void DTDInternalSubset_data() const;
-    void QTBUG49113_dontCrashWithNegativeIndex() const;
+    void BOBUIBUG49113_dontCrashWithNegativeIndex() const;
     void standalone();
     void splitTextLeakMemory() const;
 
@@ -161,12 +161,12 @@ void tst_QDom::setContent_data()
         "</a1>\n"
         );
 
-    QTest::addColumn<QString>("doc");
-    QTest::addColumn<QStringList>("featuresTrue");
-    QTest::addColumn<QStringList>("featuresFalse");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<QString>("doc");
+    BOBUIest::addColumn<QStringList>("featuresTrue");
+    BOBUIest::addColumn<QStringList>("featuresFalse");
+    BOBUIest::addColumn<QString>("res");
 
-    QTest::newRow( "01" ) << doc01
+    BOBUIest::newRow( "01" ) << doc01
                        << QStringList()
                        << QString("http://trolltech.com/xml/features/report-whitespace-only-CharData").split(' ')
                        << QString("<!DOCTYPE a1>\n"
@@ -183,7 +183,7 @@ void tst_QDom::setContent_data()
                                    "    </b3>\n"
                                    "</a1>\n");
 
-    QTest::newRow("02") << QString("<message>\n"
+    BOBUIest::newRow("02") << QString("<message>\n"
                                 "    <body>&lt;b&gt;foo&lt;/b&gt;>]]&gt;</body>\n"
                                 "</message>\n")
                      << QStringList() << QStringList()
@@ -199,17 +199,17 @@ void tst_QDom::setContent()
 
     QDomDocument domDoc;
     QXmlStreamReader reader(doc);
-#if QT_DEPRECATED_SINCE(6, 8)
-    QT_IGNORE_DEPRECATIONS(domDoc.setContent(&reader, true);)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+    BOBUI_IGNORE_DEPRECATIONS(domDoc.setContent(&reader, true);)
 #else
     QVERIFY(domDoc.setContent(&reader, QDomDocument::ParseOption::UseNamespaceProcessing));
-#endif // QT_DEPRECATED_SINCE(6, 8)
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 
     QString eRes;
-    QTextStream ts( &eRes, QIODevice::WriteOnly );
+    BOBUIextStream ts( &eRes, QIODevice::WriteOnly );
     domDoc.save( ts, 4 );
 
-    QTEST( eRes, "res" );
+    BOBUIEST( eRes, "res" );
 
     // make sure that if we parse our output again, we get the same document
     QDomDocument domDoc1;
@@ -265,9 +265,9 @@ void tst_QDom::setContentOverloads()
     QVERIFY(doc.setContent(&buffer, QDomDocument::ParseOption::Default));
     buffer.reset();
 
-#if QT_DEPRECATED_SINCE(6, 8)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     // With output param
     QVERIFY(doc.setContent(data, &errorMessage));
     QVERIFY(doc.setContent(text, &errorMessage));
@@ -289,8 +289,8 @@ QT_WARNING_DISABLE_DEPRECATED
     QVERIFY(doc.setContent(&reader, false, &errorMessage));
     QVERIFY(doc.setContent(&buffer, false, &errorMessage));
     buffer.reset();
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 }
 
 void tst_QDom::parseOptions()
@@ -326,29 +326,29 @@ void tst_QDom::parseOptions()
 
 void tst_QDom::spacingOnlyNodes_data() const
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expected");
-    QTest::addColumn<QDomDocument::ParseOption>("options");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QDomDocument::ParseOption>("options");
 
-    QTest::newRow("spacing-only-remove")
+    BOBUIest::newRow("spacing-only-remove")
             << u"<a> \t \n \r</a>"_s
             << u"<a/>"_s
             << QDomDocument::ParseOption::Default;
     // \r is translated to \n, see https://www.w3.org/TR/xml11/#sec-line-ends
-    QTest::newRow("spacing-only-preserve")
+    BOBUIest::newRow("spacing-only-preserve")
             << u"<a> \t \n \r</a>"_s
             << u"<a> \t \n \n</a>"_s
             << QDomDocument::ParseOption::PreserveSpacingOnlyNodes;
-    QTest::newRow("mixed-text-remove")
+    BOBUIest::newRow("mixed-text-remove")
             << u"<a> abc \t \n \r</a>"_s
             << u"<a> abc \t \n \n</a>"_s
             << QDomDocument::ParseOption::Default;
-    QTest::newRow("mixed-text-preserve")
+    BOBUIest::newRow("mixed-text-preserve")
             << u"<a> abc \t \n \r</a>"_s
             << u"<a> abc \t \n \n</a>"_s
             << QDomDocument::ParseOption::PreserveSpacingOnlyNodes;
 
-    // QDomDocument treats all chacarcters below as spaces (see QTBUG-105348)
+    // QDomDocument treats all chacarcters below as spaces (see BOBUIBUG-105348)
     static constexpr char16_t spaces[] = {
         QChar::Space, QChar::Tabulation, QChar::LineFeed,
         QChar::CarriageReturn, QChar::Nbsp,
@@ -358,14 +358,14 @@ void tst_QDom::spacingOnlyNodes_data() const
     };
 
     for (char16_t space : spaces) {
-        QTest::addRow("spacing-remove-u%04x", space)
+        BOBUIest::addRow("spacing-remove-u%04x", space)
                 << u"<a>"_s + space + u"</a>"_s
                 << u"<a/>"_s
                 << QDomDocument::ParseOption::Default;
 
         // \r is translated to \n, see https://www.w3.org/TR/xml11/#sec-line-ends
         char16_t expected = (space == QChar::CarriageReturn) ? char16_t(QChar::LineFeed) : space;
-        QTest::addRow("spacing-preserve-u%04x", space)
+        BOBUIest::addRow("spacing-preserve-u%04x", space)
                 << u"<a>"_s + space + u"</a>"_s
                 << u"<a>"_s + expected + u"</a>"_s
                 << QDomDocument::ParseOption::PreserveSpacingOnlyNodes;
@@ -405,19 +405,19 @@ void tst_QDom::parseResult()
 
 void tst_QDom::toString_01_data()
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
     const QString prefix = QFINDTESTDATA("testdata/toString_01");
     if (prefix.isEmpty())
         QFAIL("Cannot find testdata directory!");
-    QTest::newRow( "01" ) << QString(prefix + "/doc01.xml");
-    QTest::newRow( "02" ) << QString(prefix + "/doc02.xml");
-    QTest::newRow( "03" ) << QString(prefix + "/doc03.xml");
-    QTest::newRow( "04" ) << QString(prefix + "/doc04.xml");
-    QTest::newRow( "05" ) << QString(prefix + "/doc05.xml");
+    BOBUIest::newRow( "01" ) << QString(prefix + "/doc01.xml");
+    BOBUIest::newRow( "02" ) << QString(prefix + "/doc02.xml");
+    BOBUIest::newRow( "03" ) << QString(prefix + "/doc03.xml");
+    BOBUIest::newRow( "04" ) << QString(prefix + "/doc04.xml");
+    BOBUIest::newRow( "05" ) << QString(prefix + "/doc05.xml");
 
-    QTest::newRow( "little-endian" ) << QString(prefix + "/doc_little-endian.xml");
-    QTest::newRow( "utf-16" ) << QString(prefix + "/doc_utf-16.xml");
-    QTest::newRow( "utf-8" ) << QString(prefix + "/doc_utf-8.xml");
+    BOBUIest::newRow( "little-endian" ) << QString(prefix + "/doc_little-endian.xml");
+    BOBUIest::newRow( "utf-16" ) << QString(prefix + "/doc_utf-16.xml");
+    BOBUIest::newRow( "utf-8" ) << QString(prefix + "/doc_utf-8.xml");
 
 }
 
@@ -471,14 +471,14 @@ void tst_QDom::toString_02()
 
     QDomDocument domDoc;
     QVERIFY( domDoc.setContent( doc ) );
-    QTEST( domDoc.toString(indent), "res" );
+    BOBUIEST( domDoc.toString(indent), "res" );
 }
 
 
 void tst_QDom::hasAttributes_data()
 {
-    QTest::addColumn<int>("visitedNodes");
-    QTest::addColumn<QByteArray>("xmlDoc");
+    BOBUIest::addColumn<int>("visitedNodes");
+    BOBUIest::addColumn<QByteArray>("xmlDoc");
 
     QByteArray doc1("<top>Make a <blubb>stupid</blubb>, useless test sentence.</top>");
     QByteArray doc2("<top a=\"a\">Make a <blubb a=\"a\">stupid</blubb>, useless test sentence.</top>");
@@ -496,9 +496,9 @@ void tst_QDom::hasAttributes_data()
                     "<!-- just a useless comment -->\n"
                     "<?pi foo bar?>\n");
 
-    QTest::newRow( "01" ) << 6 << doc1;
-    QTest::newRow( "02" ) << 6 << doc2;
-    QTest::newRow( "03" ) << 13 << doc3;
+    BOBUIest::newRow( "01" ) << 6 << doc1;
+    BOBUIest::newRow( "02" ) << 6 << doc2;
+    BOBUIest::newRow( "03" ) << 13 << doc3;
 }
 
 /*
@@ -514,7 +514,7 @@ void tst_QDom::hasAttributes()
     QVERIFY( doc.setContent( xmlDoc ) );
 
     int visitedNodes = hasAttributesHelper( doc );
-    QTEST( visitedNodes, "visitedNodes" );
+    BOBUIEST( visitedNodes, "visitedNodes" );
 }
 
 void tst_QDom::setGetAttributes()
@@ -635,14 +635,14 @@ void tst_QDom::save_data()
             "</a1>\n"
             );
 
-    QTest::addColumn<QString>("doc");
-    QTest::addColumn<int>("indent");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<QString>("doc");
+    BOBUIest::addColumn<int>("indent");
+    BOBUIest::addColumn<QString>("res");
 
-    QTest::newRow( "01" ) << doc01 << 0 << QString(doc01).replace( QRegularExpression(" "), "" );
-    QTest::newRow( "02" ) << doc01 << 1 << doc01;
-    QTest::newRow( "03" ) << doc01 << 2 << QString(doc01).replace( QRegularExpression(" "), "  " );
-    QTest::newRow( "04" ) << doc01 << 10 << QString(doc01).replace( QRegularExpression(" "), "          " );
+    BOBUIest::newRow( "01" ) << doc01 << 0 << QString(doc01).replace( QRegularExpression(" "), "" );
+    BOBUIest::newRow( "02" ) << doc01 << 1 << doc01;
+    BOBUIest::newRow( "03" ) << doc01 << 2 << QString(doc01).replace( QRegularExpression(" "), "  " );
+    BOBUIest::newRow( "04" ) << doc01 << 10 << QString(doc01).replace( QRegularExpression(" "), "          " );
 }
 
 void tst_QDom::save()
@@ -654,10 +654,10 @@ void tst_QDom::save()
     QVERIFY( domDoc.setContent( doc ) );
 
     QString eRes;
-    QTextStream ts( &eRes, QIODevice::WriteOnly );
+    BOBUIextStream ts( &eRes, QIODevice::WriteOnly );
     domDoc.save( ts, indent );
 
-    QTEST( eRes, "res" );
+    BOBUIEST( eRes, "res" );
 }
 
 void tst_QDom::initTestCase()
@@ -693,7 +693,7 @@ void tst_QDom::saveWithSerialization() const
     QBuffer writeDevice(&storage);
     QVERIFY(writeDevice.open(QIODevice::WriteOnly));
 
-    QTextStream s(&writeDevice);
+    BOBUIextStream s(&writeDevice);
 
     doc.save(s, 0, QDomNode::EncodingFromTextStream);
     s.flush();
@@ -723,19 +723,19 @@ void tst_QDom::saveWithSerialization() const
 
 void tst_QDom::saveWithSerialization_data() const
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
     const QString prefix = QFINDTESTDATA("testdata/toString_01");
     if (prefix.isEmpty())
         QFAIL("Cannot find testdata!");
-    QTest::newRow("doc01.xml") << QString(prefix + "/doc01.xml");
-    QTest::newRow("doc02.xml") << QString(prefix + "/doc02.xml");
-    QTest::newRow("doc03.xml") << QString(prefix + "/doc03.xml");
-    QTest::newRow("doc04.xml") << QString(prefix + "/doc04.xml");
-    QTest::newRow("doc05.xml") << QString(prefix + "/doc05.xml");
+    BOBUIest::newRow("doc01.xml") << QString(prefix + "/doc01.xml");
+    BOBUIest::newRow("doc02.xml") << QString(prefix + "/doc02.xml");
+    BOBUIest::newRow("doc03.xml") << QString(prefix + "/doc03.xml");
+    BOBUIest::newRow("doc04.xml") << QString(prefix + "/doc04.xml");
+    BOBUIest::newRow("doc05.xml") << QString(prefix + "/doc05.xml");
 
-    QTest::newRow("doc_little-endian.xml") << QString(prefix + "/doc_little-endian.xml");
-    QTest::newRow("doc_utf-16.xml") << QString(prefix + "/doc_utf-16.xml");
-    QTest::newRow("doc_utf-8.xml") << QString(prefix + "/doc_utf-8.xml");
+    BOBUIest::newRow("doc_little-endian.xml") << QString(prefix + "/doc_little-endian.xml");
+    BOBUIest::newRow("doc_utf-16.xml") << QString(prefix + "/doc_utf-16.xml");
+    BOBUIest::newRow("doc_utf-8.xml") << QString(prefix + "/doc_utf-8.xml");
 }
 
 void tst_QDom::cloneNode_data()
@@ -763,17 +763,17 @@ void tst_QDom::cloneNode_data()
     QList<QVariant> nodeC2;
     nodeC2 << 0 << 1;
 
-    QTest::addColumn<QString>("doc");
-    QTest::addColumn<QList<QVariant> >("pathToNode");
-    QTest::addColumn<bool>("deep");
+    BOBUIest::addColumn<QString>("doc");
+    BOBUIest::addColumn<QList<QVariant> >("pathToNode");
+    BOBUIest::addColumn<bool>("deep");
 
-    QTest::newRow( "noDeep_01" ) << doc01 << nodeB1 << false;
-    QTest::newRow( "noDeep_02" ) << doc01 << nodeC1 << false;
-    QTest::newRow( "noDeep_03" ) << doc01 << nodeC2 << false;
+    BOBUIest::newRow( "noDeep_01" ) << doc01 << nodeB1 << false;
+    BOBUIest::newRow( "noDeep_02" ) << doc01 << nodeC1 << false;
+    BOBUIest::newRow( "noDeep_03" ) << doc01 << nodeC2 << false;
 
-    QTest::newRow( "deep_01" ) << doc01 << nodeB1 << true;
-    QTest::newRow( "deep_02" ) << doc01 << nodeC1 << true;
-    QTest::newRow( "deep_03" ) << doc01 << nodeC2 << true;
+    BOBUIest::newRow( "deep_01" ) << doc01 << nodeB1 << true;
+    BOBUIest::newRow( "deep_02" ) << doc01 << nodeC1 << true;
+    BOBUIest::newRow( "deep_03" ) << doc01 << nodeC2 << true;
 }
 
 void tst_QDom::cloneNode()
@@ -807,8 +807,8 @@ void tst_QDom::ownerElementTask45192_data()
         "</root>"
     );
 
-    QTest::addColumn<QString>("doc");
-    QTest::newRow("doc") << doc;
+    BOBUIest::addColumn<QString>("doc");
+    BOBUIest::newRow("doc") << doc;
 }
 
 void tst_QDom::ownerElementTask45192()
@@ -903,25 +903,25 @@ void tst_QDom::ownerDocument()
         OWNERDOCUMENT_IMPORTNODE_TEST( QDomProcessingInstruction,   doc2.createProcessingInstruction( "foo", "bar" ) );
         OWNERDOCUMENT_IMPORTNODE_TEST( QDomText,                    doc2.createTextNode( "foo" ) );
 
-        // QTBUG-12927
+        // BOBUIBUG-12927
         QVERIFY(doc2.importNode(QDomNode(), deep).isNull());
     }
 }
 
 void tst_QDom::ownerDocumentTask27424_data()
 {
-    QTest::addColumn<bool>("insertLevel1AfterCstr");
-    QTest::addColumn<bool>("insertLevel2AfterCstr");
-    QTest::addColumn<bool>("insertLevel3AfterCstr");
+    BOBUIest::addColumn<bool>("insertLevel1AfterCstr");
+    BOBUIest::addColumn<bool>("insertLevel2AfterCstr");
+    BOBUIest::addColumn<bool>("insertLevel3AfterCstr");
 
-    QTest::newRow( "000" ) << false << false << false;
-    QTest::newRow( "001" ) << false << false << true;
-    QTest::newRow( "010" ) << false << true  << false;
-    QTest::newRow( "011" ) << false << true  << true;
-    QTest::newRow( "100" ) << true  << false << false;
-    QTest::newRow( "101" ) << true  << false << true;
-    QTest::newRow( "110" ) << true  << true  << false;
-    QTest::newRow( "111" ) << true  << true  << true;
+    BOBUIest::newRow( "000" ) << false << false << false;
+    BOBUIest::newRow( "001" ) << false << false << true;
+    BOBUIest::newRow( "010" ) << false << true  << false;
+    BOBUIest::newRow( "011" ) << false << true  << true;
+    BOBUIest::newRow( "100" ) << true  << false << false;
+    BOBUIest::newRow( "101" ) << true  << false << true;
+    BOBUIest::newRow( "110" ) << true  << true  << false;
+    BOBUIest::newRow( "111" ) << true  << true  << true;
 }
 
 void tst_QDom::ownerDocumentTask27424()
@@ -1036,18 +1036,18 @@ void tst_QDom::parentNode()
 
 void tst_QDom::documentCreationTask27424_data()
 {
-    QTest::addColumn<bool>("insertLevel1AfterCstr");
-    QTest::addColumn<bool>("insertLevel2AfterCstr");
-    QTest::addColumn<bool>("insertLevel3AfterCstr");
+    BOBUIest::addColumn<bool>("insertLevel1AfterCstr");
+    BOBUIest::addColumn<bool>("insertLevel2AfterCstr");
+    BOBUIest::addColumn<bool>("insertLevel3AfterCstr");
 
-    QTest::newRow( "000" ) << false << false << false;
-    QTest::newRow( "001" ) << false << false << true;
-    QTest::newRow( "010" ) << false << true  << false;
-    QTest::newRow( "011" ) << false << true  << true;
-    QTest::newRow( "100" ) << true  << false << false;
-    QTest::newRow( "101" ) << true  << false << true;
-    QTest::newRow( "110" ) << true  << true  << false;
-    QTest::newRow( "111" ) << true  << true  << true;
+    BOBUIest::newRow( "000" ) << false << false << false;
+    BOBUIest::newRow( "001" ) << false << false << true;
+    BOBUIest::newRow( "010" ) << false << true  << false;
+    BOBUIest::newRow( "011" ) << false << true  << true;
+    BOBUIest::newRow( "100" ) << true  << false << false;
+    BOBUIest::newRow( "101" ) << true  << false << true;
+    BOBUIest::newRow( "110" ) << true  << true  << false;
+    BOBUIest::newRow( "111" ) << true  << true  << true;
 }
 
 void tst_QDom::documentCreationTask27424()
@@ -1165,12 +1165,12 @@ bool tst_QDom::compareNodes( const QDomNode &node1, const QDomNode &node2, bool 
     if ( deep ) {
         QString str1;
         {
-            QTextStream stream( &str1 );
+            BOBUIextStream stream( &str1 );
             stream << node1;
         }
         QString str2;
         {
-            QTextStream stream( &str2 );
+            BOBUIextStream stream( &str2 );
             stream << node2;
         }
         return str1 == str2;
@@ -1577,7 +1577,7 @@ void tst_QDom::domNodeListReverseIteratorListFilteredByTag()
     }
     QVERIFY(it == list.rbegin());
 
-#if __cplusplus >= 202002L // QTBUG-131933
+#if __cplusplus >= 202002L // BOBUIBUG-131933
     int i = 0;
     for (auto iter = list.rbegin(); iter != list.rend(); ++iter) {
         QCOMPARE(iter->attributes().item(0).nodeValue().toInt(), listSize - ++i);
@@ -1632,19 +1632,19 @@ void tst_QDom::nullDocument()
 
 void tst_QDom::invalidName_data()
 {
-    QTest::addColumn<QString>("in_name");
-    QTest::addColumn<bool>("ok_AcceptInvalidChars");
-    QTest::addColumn<bool>("ok_DropInvalidChars");
-    QTest::addColumn<bool>("ok_ReturnNullNode");
-    QTest::addColumn<QString>("out_name");
+    BOBUIest::addColumn<QString>("in_name");
+    BOBUIest::addColumn<bool>("ok_AcceptInvalidChars");
+    BOBUIest::addColumn<bool>("ok_DropInvalidChars");
+    BOBUIest::addColumn<bool>("ok_ReturnNullNode");
+    BOBUIest::addColumn<QString>("out_name");
 
-    QTest::newRow( "foo" )     << QString("foo")     << true  << true  << true  << QString("foo");
-    QTest::newRow( "_f.o-o:" ) << QString("_f.o-o:") << true  << true  << true  << QString("_f.o-o:");
-    QTest::newRow( "...:." )   << QString("...:.")   << true  << true  << false << QString(":.");
-    QTest::newRow( "empty" )   << QString()          << false << false << false << QString();
-    QTest::newRow( "~f~o~o~" ) << QString("~f~o~o~") << true  << true  << false << QString("foo");
-    QTest::newRow( "~" )       << QString("~")       << true  << false << false << QString();
-    QTest::newRow( "..." )     << QString("...")     << true  << false << false << QString();
+    BOBUIest::newRow( "foo" )     << QString("foo")     << true  << true  << true  << QString("foo");
+    BOBUIest::newRow( "_f.o-o:" ) << QString("_f.o-o:") << true  << true  << true  << QString("_f.o-o:");
+    BOBUIest::newRow( "...:." )   << QString("...:.")   << true  << true  << false << QString(":.");
+    BOBUIest::newRow( "empty" )   << QString()          << false << false << false << QString();
+    BOBUIest::newRow( "~f~o~o~" ) << QString("~f~o~o~") << true  << true  << false << QString("foo");
+    BOBUIest::newRow( "~" )       << QString("~")       << true  << false << false << QString();
+    BOBUIest::newRow( "..." )     << QString("...")     << true  << false << false << QString();
 }
 
 void tst_QDom::invalidName()
@@ -1733,20 +1733,20 @@ void tst_QDom::invalidName()
 
 void tst_QDom::invalidQualifiedName_data()
 {
-    QTest::addColumn<QString>("in_name");
-    QTest::addColumn<bool>("ok_AcceptInvalidChars");
-    QTest::addColumn<bool>("ok_DropInvalidChars");
-    QTest::addColumn<bool>("ok_ReturnNullNode");
-    QTest::addColumn<QString>("out_name");
+    BOBUIest::addColumn<QString>("in_name");
+    BOBUIest::addColumn<bool>("ok_AcceptInvalidChars");
+    BOBUIest::addColumn<bool>("ok_DropInvalidChars");
+    BOBUIest::addColumn<bool>("ok_ReturnNullNode");
+    BOBUIest::addColumn<QString>("out_name");
 
-    QTest::newRow( "foo" )     << QString("foo")      << true  << true  << true  << QString("foo");
-    QTest::newRow( "foo:bar" ) << QString("foo:bar")  << true  << true  << true  << QString("foo:bar");
-    QTest::newRow( "bar:" )    << QString("bar:")     << false << false << false << QString();
-    QTest::newRow( ":" )       << QString(":")        << false << false << false << QString();
-    QTest::newRow( "empty" )   << QString()           << false << false << false << QString();
-    QTest::newRow("foo:...:.") << QString("foo:...:.")<< true  << true  << false << QString("foo::.");
-    QTest::newRow("foo:~")     << QString("foo:~")    << true  << false << false << QString();
-    QTest::newRow("foo:.~")    << QString("foo:.~")   << true  << false << false << QString();
+    BOBUIest::newRow( "foo" )     << QString("foo")      << true  << true  << true  << QString("foo");
+    BOBUIest::newRow( "foo:bar" ) << QString("foo:bar")  << true  << true  << true  << QString("foo:bar");
+    BOBUIest::newRow( "bar:" )    << QString("bar:")     << false << false << false << QString();
+    BOBUIest::newRow( ":" )       << QString(":")        << false << false << false << QString();
+    BOBUIest::newRow( "empty" )   << QString()           << false << false << false << QString();
+    BOBUIest::newRow("foo:...:.") << QString("foo:...:.")<< true  << true  << false << QString("foo::.");
+    BOBUIest::newRow("foo:~")     << QString("foo:~")    << true  << false << false << QString();
+    BOBUIest::newRow("foo:.~")    << QString("foo:.~")   << true  << false << false << QString();
 }
 
 void tst_QDom::invalidQualifiedName()
@@ -1826,20 +1826,20 @@ void tst_QDom::invalidQualifiedName()
 
 void tst_QDom::invalidCharData_data()
 {
-    QTest::addColumn<QString>("in_text");
-    QTest::addColumn<bool>("ok_AcceptInvalidChars");
-    QTest::addColumn<bool>("ok_DropInvalidChars");
-    QTest::addColumn<bool>("ok_ReturnNullNode");
-    QTest::addColumn<QString>("out_text");
+    BOBUIest::addColumn<QString>("in_text");
+    BOBUIest::addColumn<bool>("ok_AcceptInvalidChars");
+    BOBUIest::addColumn<bool>("ok_DropInvalidChars");
+    BOBUIest::addColumn<bool>("ok_ReturnNullNode");
+    BOBUIest::addColumn<QString>("out_text");
 
-    QTest::newRow( "foo" )     << QString("foo")       << true  << true  << true  << QString("foo");
-    QTest::newRow( "f<o&o" )   << QString("f<o&o")     << true  << true  << true  << QString("f<o&o");
-    QTest::newRow( "empty" )   << QString()            << true  << true  << true  << QString();
-    QTest::newRow("f\\x07o\\x02")<< QString("f\x07o\x02")<< true  << true  << false << QString("fo");
+    BOBUIest::newRow( "foo" )     << QString("foo")       << true  << true  << true  << QString("foo");
+    BOBUIest::newRow( "f<o&o" )   << QString("f<o&o")     << true  << true  << true  << QString("f<o&o");
+    BOBUIest::newRow( "empty" )   << QString()            << true  << true  << true  << QString();
+    BOBUIest::newRow("f\\x07o\\x02")<< QString("f\x07o\x02")<< true  << true  << false << QString("fo");
 
     const QChar pair[2] = { QChar(0xdc00), QChar(0xe000) };
     QString invalid(pair, 2);
-    QTest::newRow("\\xdc00\\xe000") << invalid << true << true << false << invalid.last(1);
+    BOBUIest::newRow("\\xdc00\\xe000") << invalid << true << true << false << invalid.last(1);
 }
 
 void tst_QDom::invalidCharData()
@@ -1922,7 +1922,7 @@ void tst_QDom::roundTripAttributes() const
     QByteArray serialized;
     QBuffer buffer(&serialized);
     buffer.open(QIODevice::WriteOnly);
-    QTextStream stream(&buffer);
+    BOBUIextStream stream(&buffer);
 
     doc.save(stream, 0);
     stream.flush();
@@ -1952,7 +1952,7 @@ void tst_QDom::normalizeEndOfLine() const
 
     const QString expected(QLatin1String("<a>\nc\nc\na\na</a>"));
 
-    // ### Qt 6: fix this, if we keep QDom at all
+    // ### BobUI 6: fix this, if we keep QDom at all
     QEXPECT_FAIL("", "The parser doesn't perform newline normalization. Fixing that would change behavior.", Continue);
     QCOMPARE(doc.documentElement().text(), expected);
 }
@@ -1980,7 +1980,7 @@ void tst_QDom::serializeWeirdEOL() const
     QByteArray output;
     QBuffer writeBuffer(&output);
     QVERIFY(writeBuffer.open(QIODevice::WriteOnly));
-    QTextStream stream(&writeBuffer);
+    BOBUIextStream stream(&writeBuffer);
 
     const QByteArray expected("<name xmlns=\"\">&#xd;\nasd\nasd&#xd;asd\n</name>\n");
     doc.save(stream, 0);
@@ -2241,7 +2241,7 @@ static const QChar umlautName[] =
 /*!
   \internal
 
-  Write a german umlaut to a QByteArray, via a QTextStream.
+  Write a german umlaut to a QByteArray, via a BOBUIextStream.
  */
 void tst_QDom::germanUmlautToByteArray() const
 {
@@ -2253,7 +2253,7 @@ void tst_QDom::germanUmlautToByteArray() const
     QByteArray data;
     QBuffer buffer(&data);
     QVERIFY(buffer.open(QIODevice::WriteOnly));
-    QTextStream ts(&buffer);
+    BOBUIextStream ts(&buffer);
     ts << d.toString();
     buffer.close();
 
@@ -2270,7 +2270,7 @@ void tst_QDom::germanUmlautToByteArray() const
 /*!
   \internal
 
-  Write a german umlaut to a QFile, via a QTextStream.
+  Write a german umlaut to a QFile, via a BOBUIextStream.
  */
 void tst_QDom::germanUmlautToFile() const
 {
@@ -2282,9 +2282,9 @@ void tst_QDom::germanUmlautToFile() const
 
     QDomDocument d("test");
     d.appendChild(d.createElement(name));
-    QTemporaryFile file;
+    BOBUIemporaryFile file;
     QVERIFY(file.open());
-    QTextStream ts(&file);
+    BOBUIextStream ts(&file);
     ts << d.toString();
     file.close();
 
@@ -2408,37 +2408,37 @@ void tst_QDom::setContentWhitespace() const
 
 void tst_QDom::setContentWhitespace_data() const
 {
-    QTest::addColumn<QString>("doc");
-    QTest::addColumn<bool>("expectedValidity");
+    BOBUIest::addColumn<QString>("doc");
+    BOBUIest::addColumn<bool>("expectedValidity");
 
-    QTest::newRow("data1") << QString::fromLatin1(" <e/>")           << true;
-    QTest::newRow("data2") << QString::fromLatin1("  <e/>")          << true;
-    QTest::newRow("data3") << QString::fromLatin1("   <e/>")         << true;
-    QTest::newRow("data4") << QString::fromLatin1("    <e/>")        << true;
-    QTest::newRow("data5") << QString::fromLatin1("\n<e/>")          << true;
-    QTest::newRow("data6") << QString::fromLatin1("\n\n<e/>")        << true;
-    QTest::newRow("data7") << QString::fromLatin1("\n\n\n<e/>")      << true;
-    QTest::newRow("data8") << QString::fromLatin1("\n\n\n\n<e/>")    << true;
-    QTest::newRow("data9") << QString::fromLatin1("\t<e/>")          << true;
-    QTest::newRow("data10") << QString::fromLatin1("\t\t<e/>")        << true;
-    QTest::newRow("data11") << QString::fromLatin1("\t\t\t<e/>")      << true;
-    QTest::newRow("data12") << QString::fromLatin1("\t\t\t\t<e/>")    << true;
+    BOBUIest::newRow("data1") << QString::fromLatin1(" <e/>")           << true;
+    BOBUIest::newRow("data2") << QString::fromLatin1("  <e/>")          << true;
+    BOBUIest::newRow("data3") << QString::fromLatin1("   <e/>")         << true;
+    BOBUIest::newRow("data4") << QString::fromLatin1("    <e/>")        << true;
+    BOBUIest::newRow("data5") << QString::fromLatin1("\n<e/>")          << true;
+    BOBUIest::newRow("data6") << QString::fromLatin1("\n\n<e/>")        << true;
+    BOBUIest::newRow("data7") << QString::fromLatin1("\n\n\n<e/>")      << true;
+    BOBUIest::newRow("data8") << QString::fromLatin1("\n\n\n\n<e/>")    << true;
+    BOBUIest::newRow("data9") << QString::fromLatin1("\t<e/>")          << true;
+    BOBUIest::newRow("data10") << QString::fromLatin1("\t\t<e/>")        << true;
+    BOBUIest::newRow("data11") << QString::fromLatin1("\t\t\t<e/>")      << true;
+    BOBUIest::newRow("data12") << QString::fromLatin1("\t\t\t\t<e/>")    << true;
 
     /* With XML prolog. */
-    QTest::newRow("data13") << QString::fromLatin1("<?xml version='1.0' ?><e/>")          << true;
+    BOBUIest::newRow("data13") << QString::fromLatin1("<?xml version='1.0' ?><e/>")          << true;
 
-    QTest::newRow("data14") << QString::fromLatin1(" <?xml version='1.0' ?><e/>")         << false;
-    QTest::newRow("data15") << QString::fromLatin1("  <?xml version='1.0' ?><e/>")        << false;
-    QTest::newRow("data16") << QString::fromLatin1("   <?xml version='1.0' ?><e/>")       << false;
-    QTest::newRow("data17") << QString::fromLatin1("    <?xml version='1.0' ?><e/>")      << false;
-    QTest::newRow("data18") << QString::fromLatin1("\n<?xml version='1.0' ?><e/>")        << false;
-    QTest::newRow("data19") << QString::fromLatin1("\n\n<?xml version='1.0' ?><e/>")      << false;
-    QTest::newRow("data20") << QString::fromLatin1("\n\n\n<?xml version='1.0' ?><e/>")    << false;
-    QTest::newRow("data21") << QString::fromLatin1("\n\n\n\n<?xml version='1.0' ?><e/>")  << false;
-    QTest::newRow("data22") << QString::fromLatin1("\t<?xml version='1.0' ?><e/>")        << false;
-    QTest::newRow("data23") << QString::fromLatin1("\t\t<?xml version='1.0' ?><e/>")      << false;
-    QTest::newRow("data24") << QString::fromLatin1("\t\t\t<?xml version='1.0' ?><e/>")    << false;
-    QTest::newRow("data25") << QString::fromLatin1("\t\t\t\t<?xml version='1.0' ?><e/>")  << false;
+    BOBUIest::newRow("data14") << QString::fromLatin1(" <?xml version='1.0' ?><e/>")         << false;
+    BOBUIest::newRow("data15") << QString::fromLatin1("  <?xml version='1.0' ?><e/>")        << false;
+    BOBUIest::newRow("data16") << QString::fromLatin1("   <?xml version='1.0' ?><e/>")       << false;
+    BOBUIest::newRow("data17") << QString::fromLatin1("    <?xml version='1.0' ?><e/>")      << false;
+    BOBUIest::newRow("data18") << QString::fromLatin1("\n<?xml version='1.0' ?><e/>")        << false;
+    BOBUIest::newRow("data19") << QString::fromLatin1("\n\n<?xml version='1.0' ?><e/>")      << false;
+    BOBUIest::newRow("data20") << QString::fromLatin1("\n\n\n<?xml version='1.0' ?><e/>")    << false;
+    BOBUIest::newRow("data21") << QString::fromLatin1("\n\n\n\n<?xml version='1.0' ?><e/>")  << false;
+    BOBUIest::newRow("data22") << QString::fromLatin1("\t<?xml version='1.0' ?><e/>")        << false;
+    BOBUIest::newRow("data23") << QString::fromLatin1("\t\t<?xml version='1.0' ?><e/>")      << false;
+    BOBUIest::newRow("data24") << QString::fromLatin1("\t\t\t<?xml version='1.0' ?><e/>")    << false;
+    BOBUIest::newRow("data25") << QString::fromLatin1("\t\t\t\t<?xml version='1.0' ?><e/>")  << false;
 }
 
 void tst_QDom::setContentUnopenedQIODevice() const
@@ -2448,25 +2448,25 @@ void tst_QDom::setContentUnopenedQIODevice() const
 
     QDomDocument doc;
 
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QDomDocument called with unopened QIODevice. "
-                         "This will not be supported in future Qt versions.");
+                         "This will not be supported in future BobUI versions.");
 
-    // Note: the check below is expected to fail in Qt 7.
+    // Note: the check below is expected to fail in BobUI 7.
     // Fix the test and remove the obsolete code from setContent().
     QVERIFY(doc.setContent(&buffer, QDomDocument::ParseOption::UseNamespaceProcessing));
     QCOMPARE(doc.toString().trimmed(), data);
 }
 
-void tst_QDom::taskQTBUG4595_dontAssertWhenDocumentSpecifiesUnknownEncoding() const
+void tst_QDom::taskBOBUIBUG4595_dontAssertWhenDocumentSpecifiesUnknownEncoding() const
 {
     QString xmlWithUnknownEncoding("<?xml version='1.0' encoding='unknown-encoding'?>"
                                    "<foo>"
                                    " <bar>How will this sentence be handled?</bar>"
                                    "</foo>");
     QDomDocument d;
-    QTest::ignoreMessage(
-                QtWarningMsg,
+    BOBUIest::ignoreMessage(
+                BobUIWarningMsg,
                 "QDomDocument::save(): Unsupported encoding \"unknown-encoding\" specified.");
     QVERIFY(d.setContent(xmlWithUnknownEncoding));
 
@@ -2474,7 +2474,7 @@ void tst_QDom::taskQTBUG4595_dontAssertWhenDocumentSpecifiesUnknownEncoding() co
     QVERIFY(true);
 }
 
-void tst_QDom::cloneDTD_QTBUG8398() const
+void tst_QDom::cloneDTD_BOBUIBUG8398() const
 {
     QString dtd("<?xml version='1.0' encoding='UTF-8'?>\n"
                    "<!DOCTYPE first [\n"
@@ -2486,7 +2486,7 @@ void tst_QDom::cloneDTD_QTBUG8398() const
     QVERIFY(domDocument.setContent(dtd));
     QDomDocument domDocument2 = domDocument.cloneNode(true).toDocument();
 
-    // this string is relying on a specific QHash ordering, QTBUG-25071
+    // this string is relying on a specific QHash ordering, BOBUIBUG-25071
     QString expected("<?xml version='1.0' encoding='UTF-8'?>\n"
                    "<!DOCTYPE first [\n"
                    "<!ENTITY thirdFile SYSTEM 'third.xml'>\n"
@@ -2494,9 +2494,9 @@ void tst_QDom::cloneDTD_QTBUG8398() const
                    "]>\n"
                    "<first/>\n");
     QString output;
-    QTextStream stream(&output);
+    BOBUIextStream stream(&output);
     domDocument2.save(stream, 0);
-    // check against the original string and the expected one, QTBUG-25071
+    // check against the original string and the expected one, BOBUIBUG-25071
     QVERIFY(output == dtd || output == expected);
 }
 
@@ -2546,7 +2546,7 @@ void tst_QDom::DTDEntityDecl()
     QCOMPARE(doctype.namedItem(QString("logo")).toEntity().notationName(), QString("gif"));
 }
 
-void tst_QDom::QTBUG49113_dontCrashWithNegativeIndex() const
+void tst_QDom::BOBUIBUG49113_dontCrashWithNegativeIndex() const
 {
     QDomDocument doc;
     QDomElement elem = doc.appendChild(doc.createElement("root")).toElement();
@@ -2592,15 +2592,15 @@ void tst_QDom::DTDInternalSubset() const
 
 void tst_QDom::DTDInternalSubset_data() const
 {
-    QTest::addColumn<QString>("doc");
-    QTest::addColumn<QString>("internalSubset");
+    BOBUIest::addColumn<QString>("doc");
+    BOBUIest::addColumn<QString>("internalSubset");
 
-    QTest::newRow("data1") << "<?xml version='1.0'?>\n"
+    BOBUIest::newRow("data1") << "<?xml version='1.0'?>\n"
                               "<!DOCTYPE note SYSTEM '/[abcd].dtd'>\n"
                               "<note/>\n"
                            << "" ;
 
-    QTest::newRow("data2") << "<?xml version='1.0'?>\n"
+    BOBUIest::newRow("data2") << "<?xml version='1.0'?>\n"
                               "<!DOCTYPE note PUBLIC '-/freedesktop' 'https://[abcd].dtd'>\n"
                               "<note/>\n"
                            << "" ;
@@ -2609,7 +2609,7 @@ void tst_QDom::DTDInternalSubset_data() const
                 "<!-- open brackets comment [ -->\n"
                 "<!-- colse brackets comment ] -->\n"
                 );
-    QTest::newRow("data3") << "<?xml version='1.0'?>\n"
+    BOBUIest::newRow("data3") << "<?xml version='1.0'?>\n"
                               "<!DOCTYPE note ["
                               + internalSubset0 +
                               "]>\n"
@@ -2620,21 +2620,21 @@ void tst_QDom::DTDInternalSubset_data() const
                 "<!ENTITY obra '['>\n"
                 "<!ENTITY cbra ']'>\n"
                 );
-    QTest::newRow("data4") << "<?xml version='1.0'?>\n"
+    BOBUIest::newRow("data4") << "<?xml version='1.0'?>\n"
                               "<!DOCTYPE note ["
                               + internalSubset1 +
                               "]>\n"
                               "<note/>\n"
                            << internalSubset1;
 
-    QTest::newRow("data5") << "<?xml version='1.0'?>\n"
+    BOBUIest::newRow("data5") << "<?xml version='1.0'?>\n"
           "<!DOCTYPE note  PUBLIC '-/freedesktop' 'https://[abcd].dtd' ["
           + internalSubset0
           + "]>\n"
           "<note/>\n"
        << internalSubset0;
 
-    QTest::newRow("data6") << "<?xml version='1.0'?>\n"
+    BOBUIest::newRow("data6") << "<?xml version='1.0'?>\n"
           "<!DOCTYPE note  PUBLIC '-/freedesktop' "
             "'2001:db8:130F:0000:0000:09C0:876A:130B://[abcd].dtd' ["
           + internalSubset0
@@ -2659,13 +2659,13 @@ void tst_QDom::splitTextLeakMemory() const
 
 void tst_QDom::testDomListComparisonCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QDomNodeList>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QDomNodeList>();
 }
 
 static QDomElement findElementByName(const QDomDocument &doc, QLatin1StringView tag)
 {
     const auto list = doc.elementsByTagName(tag);
-#ifdef QTEST_THROW_ON_FAIL
+#ifdef BOBUIEST_THROW_ON_FAIL
     QCOMPARE(list.size(), 1);
     QCOMPARE(list.at(0).nodeType(), QDomNode::NodeType::ElementNode);
 #endif
@@ -2674,10 +2674,10 @@ static QDomElement findElementByName(const QDomDocument &doc, QLatin1StringView 
 
 void tst_QDom::testDomListComparison_data()
 {
-    QTest::addColumn<QDomDocument>("doc");
-    QTest::addColumn<QDomNodeList>("lhs");
-    QTest::addColumn<QDomNodeList>("rhs");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QDomDocument>("doc");
+    BOBUIest::addColumn<QDomNodeList>("lhs");
+    BOBUIest::addColumn<QDomNodeList>("rhs");
+    BOBUIest::addColumn<bool>("result");
 
     const auto xml = "<top><child1/><child2/><child3><cchild1/><cchild2/></child3></top>"_L1;
 
@@ -2691,7 +2691,7 @@ void tst_QDom::testDomListComparison_data()
     const QDomNodeList topChildren = findElementByName(doc, "top"_L1).childNodes();
 
 #define ROW(lhs, rhs, res) \
-    QTest::addRow("%s <> %s", #lhs, #rhs) << doc << lhs << rhs << bool(res)
+    BOBUIest::addRow("%s <> %s", #lhs, #rhs) << doc << lhs << rhs << bool(res)
 
     ROW(null, null, true);
     ROW(empty, empty, true);
@@ -2713,10 +2713,10 @@ void tst_QDom::testDomListComparison()
     QFETCH(const QDomNodeList, rhs);
     QFETCH(const bool, result);
 
-    QT_TEST_EQUALITY_OPS(lhs, rhs, result);
+    BOBUI_TEST_EQUALITY_OPS(lhs, rhs, result);
 }
 
-// The fix of QTBUG-131151 crash
+// The fix of BOBUIBUG-131151 crash
 void tst_QDom::noCrashOnDeepNesting() const
 {
     const QString prefix = QFINDTESTDATA("testdata/");
@@ -2732,5 +2732,5 @@ void tst_QDom::noCrashOnDeepNesting() const
     file.close();
 }
 
-QTEST_MAIN(tst_QDom)
+BOBUIEST_MAIN(tst_QDom)
 #include "tst_qdom.moc"

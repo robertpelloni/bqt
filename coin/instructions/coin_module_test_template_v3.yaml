@@ -2,18 +2,18 @@ type: Group
 instructions:
   - type: Group
     instructions:
-    - !include "{{qt/qtbase}}/run_license_check.yaml"
+    - !include "{{bobui/bobuibase}}/run_license_check.yaml"
     enable_if:
       condition: property
       property: features
       contains_value: LicenseCheckV2
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/cmake_build_tests_in_test_stage.yaml"
-      - !include "{{qt/qtbase}}/coin_module_test_template_common.yaml"
+      - !include "{{bobui/bobuibase}}/cmake_build_tests_in_test_stage.yaml"
+      - !include "{{bobui/bobuibase}}/coin_module_test_template_common.yaml"
       - type: Group
         instructions:
-          - !include "{{qt/qtbase}}/cmake_regular_test_instructions.yaml"
+          - !include "{{bobui/bobuibase}}/cmake_regular_test_instructions.yaml"
         enable_if:
           condition: or
           conditions:

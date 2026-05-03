@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qshortcut.h"
 #include "qshortcut_p.h"
@@ -10,7 +10,7 @@
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformmenu.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define QAPP_CHECK(functionName) \
     if (Q_UNLIKELY(!qApp)) {                                            \
@@ -23,10 +23,10 @@ QT_BEGIN_NAMESPACE
     \brief The QShortcut class is used to create keyboard shortcuts.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The QShortcut class provides a way of connecting keyboard
-    shortcuts to Qt's \l{signals and slots} mechanism, so that
+    shortcuts to BobUI's \l{signals and slots} mechanism, so that
     objects can be informed when a shortcut is executed. The shortcut
     can be set up to contain all the key presses necessary to
     describe a keyboard shortcut, including the states of modifier
@@ -42,9 +42,9 @@ QT_BEGIN_NAMESPACE
     shown and the character will be underlined. On Windows, shortcuts
     are normally not displayed until the user presses the \uicontrol Alt
     key, but this is a setting the user can change. On Mac, shortcuts
-    are disabled by default. Call \l qt_set_sequence_auto_mnemonic() to
+    are disabled by default. Call \l bobui_set_sequence_auto_mnemonic() to
     enable them. However, because mnemonic shortcuts do not fit in
-    with Aqua's guidelines, Qt will not show the shortcut character
+    with Aqua's guidelines, BobUI will not show the shortcut character
     underlined.
 
     For applications that use menus, it may be more convenient to
@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
     When the user types the \l{QKeySequence}{key sequence}
     for a given shortcut, the shortcut's activated() signal is
     emitted. (In the case of ambiguity, the activatedAmbiguously()
-    signal is emitted.) A shortcut is "listened for" by Qt's event
+    signal is emitted.) A shortcut is "listened for" by BobUI's event
     loop when the shortcut's parent widget is receiving events.
 
     A shortcut's key sequence can be set with setKey() and retrieved
@@ -96,12 +96,12 @@ QT_BEGIN_NAMESPACE
     \sa activated()
 */
 
-bool QShortcutPrivate::simpleContextMatcher(QObject *object, Qt::ShortcutContext context)
+bool QShortcutPrivate::simpleContextMatcher(QObject *object, BobUI::ShortcutContext context)
 {
     auto guiShortcut = qobject_cast<QShortcut *>(object);
-    if (QGuiApplication::applicationState() != Qt::ApplicationActive || guiShortcut == nullptr)
+    if (QGuiApplication::applicationState() != BobUI::ApplicationActive || guiShortcut == nullptr)
         return false;
-    if (context == Qt::ApplicationShortcut)
+    if (context == BobUI::ApplicationShortcut)
         return true;
     auto focusWindow = QGuiApplication::focusWindow();
     if (!focusWindow)
@@ -110,7 +110,7 @@ bool QShortcutPrivate::simpleContextMatcher(QObject *object, Qt::ShortcutContext
     if (!window)
         return false;
     if (focusWindow == window && focusWindow->isTopLevel())
-        return context == Qt::WindowShortcut || context == Qt::WidgetWithChildrenShortcut;
+        return context == BobUI::WindowShortcut || context == BobUI::WidgetWithChildrenShortcut;
     return focusWindow->isAncestorOf(window, QWindow::ExcludeTransients);
 }
 
@@ -177,7 +177,7 @@ QShortcut::QShortcut(QObject *parent)
 */
 QShortcut::QShortcut(const QKeySequence &key, QObject *parent,
                            const char *member, const char *ambiguousMember,
-                           Qt::ShortcutContext context)
+                           BobUI::ShortcutContext context)
     : QShortcut(parent)
 {
     Q_D(QShortcut);
@@ -204,7 +204,7 @@ QShortcut::QShortcut(const QKeySequence &key, QObject *parent,
 */
 QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
                      const char *member, const char *ambiguousMember,
-                     Qt::ShortcutContext context)
+                     BobUI::ShortcutContext context)
     : QShortcut(parent)
 {
     Q_D(QShortcut);
@@ -219,7 +219,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
 
 
 /*!
-    \fn template<typename Functor> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, Functor functor, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, Functor functor, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 5.15
     \overload
 
@@ -227,7 +227,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
     \l{QShortcut::activated()}{activated()} signal to the \a functor.
 */
 /*!
-    \fn template<typename Functor> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, const QObject *context, Functor functor, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, const QObject *context, Functor functor, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 5.15
     \overload
 
@@ -239,7 +239,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
     If the \a context object is destroyed, the \a functor will not be called.
 */
 /*!
-    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, const QObject *context, Functor functor, FunctorAmbiguous functorAmbiguous, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, const QObject *context, Functor functor, FunctorAmbiguous functorAmbiguous, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 5.15
     \overload
 
@@ -255,7 +255,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
     \a functorAmbiguous will not be called.
 */
 /*!
-    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, const QObject *context1, Functor functor, const QObject *context2, FunctorAmbiguous functorAmbiguous, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(const QKeySequence &key, QObject *parent, const QObject *context1, Functor functor, const QObject *context2, FunctorAmbiguous functorAmbiguous, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 5.15
     \overload
 
@@ -275,7 +275,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
 */
 
 /*!
-    \fn template<typename Functor> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, Functor functor, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, Functor functor, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 6.0
     \overload
 
@@ -283,7 +283,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
     \l{QShortcut::activated()}{activated()} signal to the \a functor.
 */
 /*!
-    \fn template<typename Functor> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, const QObject *context, Functor functor, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, const QObject *context, Functor functor, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 6.0
     \overload
 
@@ -295,7 +295,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
     If the \a context object is destroyed, the \a functor will not be called.
 */
 /*!
-    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, const QObject *context, Functor functor, FunctorAmbiguous functorAmbiguous, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, const QObject *context, Functor functor, FunctorAmbiguous functorAmbiguous, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 6.0
     \overload
 
@@ -311,7 +311,7 @@ QShortcut::QShortcut(QKeySequence::StandardKey standardKey, QObject *parent,
     \a functorAmbiguous will not be called.
 */
 /*!
-    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, const QObject *context1, Functor functor, const QObject *context2, FunctorAmbiguous functorAmbiguous, Qt::ShortcutContext shortcutContext = Qt::WindowShortcut)
+    \fn template<typename Functor, typename FunctorAmbiguous> QShortcut::QShortcut(QKeySequence::StandardKey key, QObject *parent, const QObject *context1, Functor functor, const QObject *context2, FunctorAmbiguous functorAmbiguous, BobUI::ShortcutContext shortcutContext = BobUI::WindowShortcut)
     \since 6.0
     \overload
 
@@ -449,14 +449,14 @@ bool QShortcut::isEnabled() const
     \brief the context in which the shortcut is valid
 
     A shortcut's context decides in which circumstances a shortcut is
-    allowed to be triggered. The normal context is Qt::WindowShortcut,
+    allowed to be triggered. The normal context is BobUI::WindowShortcut,
     which allows the shortcut to trigger if the parent (the widget
     containing the shortcut) is a subwidget of the active top-level
     window.
 
-    By default, this property is set to Qt::WindowShortcut.
+    By default, this property is set to BobUI::WindowShortcut.
 */
-void QShortcut::setContext(Qt::ShortcutContext context)
+void QShortcut::setContext(BobUI::ShortcutContext context)
 {
     Q_D(QShortcut);
     if (d->sc_context == context)
@@ -466,7 +466,7 @@ void QShortcut::setContext(Qt::ShortcutContext context)
     d->redoGrab(QGuiApplicationPrivate::instance()->shortcutMap);
 }
 
-Qt::ShortcutContext QShortcut::context() const
+BobUI::ShortcutContext QShortcut::context() const
 {
     Q_D(const QShortcut);
     return d->sc_context;
@@ -532,7 +532,7 @@ QString QShortcut::whatsThis() const
     return d->sc_whatsthis;
 }
 
-#if QT_DEPRECATED_SINCE(6,0)
+#if BOBUI_DEPRECATED_SINCE(6,0)
 /*!
     Returns the primary key binding's ID.
 
@@ -575,7 +575,7 @@ bool QShortcut::event(QEvent *e)
     return QObject::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef QAPP_CHECK
 

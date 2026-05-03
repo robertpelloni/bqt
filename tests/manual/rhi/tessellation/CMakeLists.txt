@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(tessellation
+bobui_internal_add_manual_test(tessellation
     GUI
     SOURCES
         tessellation.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 set(tessellation_resource_files
@@ -17,7 +17,7 @@ set(tessellation_resource_files
     "test.frag.qsb"
 )
 
-qt_internal_add_resource(tessellation "tessellation"
+bobui_internal_add_resource(tessellation "tessellation"
     PREFIX
         "/"
     FILES

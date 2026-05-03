@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -54,7 +54,7 @@ void examples()
 
     {
         QModelIndex index;
-        int role = Qt::DisplayRole;
+        int role = BobUI::DisplayRole;
 
         //! [6]
         QVariant value = model->data(index, role);

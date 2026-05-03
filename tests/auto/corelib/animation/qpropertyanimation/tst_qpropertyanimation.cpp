@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 #include <QSignalSpy>
 #include <QAnimationGroup>
 #include <QSequentialAnimationGroup>
-#include <QtCore/qpropertyanimation.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qvariantanimation.h>
+#include <BobUICore/qpropertyanimation.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/qvariantanimation.h>
 #include <private/qabstractanimation_p.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIWidgets/qwidget.h>
 
 #include <math.h>
 
@@ -81,12 +81,12 @@ public:
          * When QAbstractAnimation::start() is called it will end up calling
          * QAnimationTimer::registerAnimation(). This will do
          *
-         *      QMetaObject::invokeMethod(inst, "startAnimations", Qt::QueuedConnection);   // typeof(inst) == QAnimationTimer
+         *      QMetaObject::invokeMethod(inst, "startAnimations", BobUI::QueuedConnection);   // typeof(inst) == QAnimationTimer
          *
          * startAnimations() will again fire a queued connection to actually add the animation
          * to the list of running animations:
          *
-         *      QMetaObject::invokeMethod(inst, "startTimers", Qt::QueuedConnection);   // typeof(inst) == QUnifiedTimer
+         *      QMetaObject::invokeMethod(inst, "startTimers", BobUI::QueuedConnection);   // typeof(inst) == QUnifiedTimer
          *
          *  We therefore have to call QCoreApplication::sendPostedEvents() twice here.
          */
@@ -105,7 +105,7 @@ public:
         // will actually delete themselves within the test function.
         // Normally, they won't be deleted until the main event loop is processed.
         // Therefore, have to explicitly say that we want to process DeferredDelete events. Same
-        // trick is used by QTest::qWait().
+        // trick is used by BOBUIest::qWait().
         QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
     }
 
@@ -211,35 +211,35 @@ void tst_QPropertyAnimation::construction()
 
 void tst_QPropertyAnimation::setCurrentTime_data()
 {
-    QTest::addColumn<int>("duration");
-    QTest::addColumn<int>("loopCount");
-    QTest::addColumn<int>("currentTime");
-    QTest::addColumn<int>("testCurrentTime");
-    QTest::addColumn<int>("testCurrentLoop");
+    BOBUIest::addColumn<int>("duration");
+    BOBUIest::addColumn<int>("loopCount");
+    BOBUIest::addColumn<int>("currentTime");
+    BOBUIest::addColumn<int>("testCurrentTime");
+    BOBUIest::addColumn<int>("testCurrentLoop");
 
-    QTest::newRow("-1") << -1 << 1 << 0 << 0 << 0;
-    QTest::newRow("0")  <<  0 << 1 << 0 << 0 << 0;
-    QTest::newRow("1")  <<  0 << 1 << 1 << 0 << 0;
-    QTest::newRow("2")  <<  0 << 2 << 1 << 0 << 0;
-    QTest::newRow("3")  <<  1 << 1 << 0 << 0 << 0;
-    QTest::newRow("4")  <<  1 << 1 << 1 << 1 << 0;
-    QTest::newRow("5")  <<  1 << 2 << 1 << 0 << 1;
-    QTest::newRow("6")  <<  1 << 2 << 2 << 1 << 1;
-    QTest::newRow("7")  <<  1 << 2 << 3 << 1 << 1;
-    QTest::newRow("8")  <<  1 << 3 << 2 << 0 << 2;
-    QTest::newRow("9")  <<  1 << 3 << 3 << 1 << 2;
-    QTest::newRow("a") <<  10 << 1 << 0 << 0 << 0;
-    QTest::newRow("b") <<  10 << 1 << 1 << 1 << 0;
-    QTest::newRow("c") <<  10 << 1 << 10 << 10 << 0;
-    QTest::newRow("d") <<  10 << 2 << 10 << 0 << 1;
-    QTest::newRow("e") <<  10 << 2 << 11 << 1 << 1;
-    QTest::newRow("f") <<  10 << 2 << 20 << 10 << 1;
-    QTest::newRow("g") <<  10 << 2 << 21 << 10 << 1;
-    QTest::newRow("negloop 0") <<  10 << -1 << 0 << 0 << 0;
-    QTest::newRow("negloop 1") <<  10 << -1 << 10 << 0 << 1;
-    QTest::newRow("negloop 2") <<  10 << -1 << 15 << 5 << 1;
-    QTest::newRow("negloop 3") <<  10 << -1 << 20 << 0 << 2;
-    QTest::newRow("negloop 4") <<  10 << -1 << 30 << 0 << 3;
+    BOBUIest::newRow("-1") << -1 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("0")  <<  0 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("1")  <<  0 << 1 << 1 << 0 << 0;
+    BOBUIest::newRow("2")  <<  0 << 2 << 1 << 0 << 0;
+    BOBUIest::newRow("3")  <<  1 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("4")  <<  1 << 1 << 1 << 1 << 0;
+    BOBUIest::newRow("5")  <<  1 << 2 << 1 << 0 << 1;
+    BOBUIest::newRow("6")  <<  1 << 2 << 2 << 1 << 1;
+    BOBUIest::newRow("7")  <<  1 << 2 << 3 << 1 << 1;
+    BOBUIest::newRow("8")  <<  1 << 3 << 2 << 0 << 2;
+    BOBUIest::newRow("9")  <<  1 << 3 << 3 << 1 << 2;
+    BOBUIest::newRow("a") <<  10 << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("b") <<  10 << 1 << 1 << 1 << 0;
+    BOBUIest::newRow("c") <<  10 << 1 << 10 << 10 << 0;
+    BOBUIest::newRow("d") <<  10 << 2 << 10 << 0 << 1;
+    BOBUIest::newRow("e") <<  10 << 2 << 11 << 1 << 1;
+    BOBUIest::newRow("f") <<  10 << 2 << 20 << 10 << 1;
+    BOBUIest::newRow("g") <<  10 << 2 << 21 << 10 << 1;
+    BOBUIest::newRow("negloop 0") <<  10 << -1 << 0 << 0 << 0;
+    BOBUIest::newRow("negloop 1") <<  10 << -1 << 10 << 0 << 1;
+    BOBUIest::newRow("negloop 2") <<  10 << -1 << 15 << 5 << 1;
+    BOBUIest::newRow("negloop 3") <<  10 << -1 << 20 << 0 << 2;
+    BOBUIest::newRow("negloop 4") <<  10 << -1 << 30 << 0 << 3;
 }
 
 void tst_QPropertyAnimation::setCurrentTime()
@@ -252,7 +252,7 @@ void tst_QPropertyAnimation::setCurrentTime()
 
     QPropertyAnimation animation;
     if (duration < 0)
-        QTest::ignoreMessage(QtWarningMsg, "QVariantAnimation::setDuration: cannot set a negative duration");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QVariantAnimation::setDuration: cannot set a negative duration");
     animation.setDuration(duration);
     animation.setLoopCount(loopCount);
     animation.setCurrentTime(currentTime);
@@ -263,9 +263,9 @@ void tst_QPropertyAnimation::setCurrentTime()
 
 void tst_QPropertyAnimation::statesAndSignals_data()
 {
-    QTest::addColumn<bool>("uncontrolled");
-    QTest::newRow("normal animation") << false;
-    QTest::newRow("animation with undefined duration")  <<  true;
+    BOBUIest::addColumn<bool>("uncontrolled");
+    BOBUIest::newRow("normal animation") << false;
+    BOBUIest::newRow("animation with undefined duration")  <<  true;
 }
 
 void tst_QPropertyAnimation::statesAndSignals()
@@ -426,7 +426,7 @@ void tst_QPropertyAnimation::deletion2()
     QCOMPARE(finishedSpy.size(), 0);
 
     //we can't call deletaLater directly because the delete would only happen in the next loop of _this_ event loop
-    QTimer::singleShot(0, object, SLOT(deleteLater()));
+    BOBUIimer::singleShot(0, object, SLOT(deleteLater()));
     timeDriver.wait(50);
 
     QVERIFY(anim);
@@ -568,7 +568,7 @@ void tst_QPropertyAnimation::startWhenAnotherIsRunning()
         QCOMPARE(anim->state(), QVariantAnimation::Running);
 
         //anim2 will interrupt anim1
-        QMetaObject::invokeMethod(anim2, "start", Qt::QueuedConnection, Q_ARG(QAbstractAnimation::DeletionPolicy, QVariantAnimation::DeleteWhenStopped));
+        QMetaObject::invokeMethod(anim2, "start", BobUI::QueuedConnection, Q_ARG(QAbstractAnimation::DeletionPolicy, QVariantAnimation::DeleteWhenStopped));
         timeDriver.wait(50);
         QVERIFY(!anim); //anim should have been deleted
         QVERIFY(anim2);
@@ -596,13 +596,13 @@ static qreal easeInOutBack(qreal t)
 
 void tst_QPropertyAnimation::easingcurve_data()
 {
-    QTest::addColumn<int>("currentTime");
-    QTest::addColumn<int>("expectedvalue");
+    BOBUIest::addColumn<int>("currentTime");
+    BOBUIest::addColumn<int>("expectedvalue");
 
-    QTest::newRow("interpolation1") << 0 << 0;
-    QTest::newRow("interpolation2") << 1000 << 1000;
-    QTest::newRow("extrapolationbelow") << 250 << -99;
-    QTest::newRow("extrapolationabove") << 750 << 1099;
+    BOBUIest::newRow("interpolation1") << 0 << 0;
+    BOBUIest::newRow("interpolation2") << 1000 << 1000;
+    BOBUIest::newRow("extrapolationbelow") << 250 << -99;
+    BOBUIest::newRow("extrapolationabove") << 750 << 1099;
 }
 
 void tst_QPropertyAnimation::easingcurve()
@@ -752,9 +752,9 @@ struct Number
 
     int n;
 };
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(Number, Q_PRIMITIVE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Number)
 
@@ -833,13 +833,13 @@ void tst_QPropertyAnimation::interpolated()
 
 void tst_QPropertyAnimation::setStartEndValues_data()
 {
-    QTest::addColumn<QByteArray>("propertyName");
-    QTest::addColumn<QVariant>("initialValue");
-    QTest::addColumn<QVariant>("startValue");
-    QTest::addColumn<QVariant>("endValue");
+    BOBUIest::addColumn<QByteArray>("propertyName");
+    BOBUIest::addColumn<QVariant>("initialValue");
+    BOBUIest::addColumn<QVariant>("startValue");
+    BOBUIest::addColumn<QVariant>("endValue");
 
-    QTest::newRow("dynamic property")  << QByteArray("ole") << QVariant(42) << QVariant(0) << QVariant(10);
-    QTest::newRow("real property, with unmatching types") << QByteArray("x") << QVariant(42.) << QVariant(0) << QVariant(10.);
+    BOBUIest::newRow("dynamic property")  << QByteArray("ole") << QVariant(42) << QVariant(0) << QVariant(10);
+    BOBUIest::newRow("real property, with unmatching types") << QByteArray("x") << QVariant(42.) << QVariant(0) << QVariant(10.);
 }
 
 void tst_QPropertyAnimation::setStartEndValues()
@@ -981,28 +981,28 @@ void tst_QPropertyAnimation::zeroDurationForwardBackward()
 
 void tst_QPropertyAnimation::operationsInStates_data()
 {
-    QTest::addColumn<QAbstractAnimation::State>("originState");
-    QTest::addColumn<int>("operation");
-    QTest::addColumn<QString>("expectedWarning");
-    QTest::addColumn<QAbstractAnimation::State>("expectedState");
+    BOBUIest::addColumn<QAbstractAnimation::State>("originState");
+    BOBUIest::addColumn<int>("operation");
+    BOBUIest::addColumn<QString>("expectedWarning");
+    BOBUIest::addColumn<QAbstractAnimation::State>("expectedState");
 
     QString pauseWarn(QLatin1String("QAbstractAnimation::pause: Cannot pause a stopped animation"));
     QString resumeWarn(QLatin1String("QAbstractAnimation::resume: Cannot resume an animation that is not paused"));
 
-    QTest::newRow("S-pause")  << QAbstractAnimation::Stopped << Pause << pauseWarn << QAbstractAnimation::Stopped;
-    QTest::newRow("S-start")  << QAbstractAnimation::Stopped << Start << QString() << QAbstractAnimation::Running;
-    QTest::newRow("S-resume") << QAbstractAnimation::Stopped << Resume << resumeWarn << QAbstractAnimation::Stopped;
-    QTest::newRow("S-stop")   << QAbstractAnimation::Stopped << Stop << QString() << QAbstractAnimation::Stopped;
+    BOBUIest::newRow("S-pause")  << QAbstractAnimation::Stopped << Pause << pauseWarn << QAbstractAnimation::Stopped;
+    BOBUIest::newRow("S-start")  << QAbstractAnimation::Stopped << Start << QString() << QAbstractAnimation::Running;
+    BOBUIest::newRow("S-resume") << QAbstractAnimation::Stopped << Resume << resumeWarn << QAbstractAnimation::Stopped;
+    BOBUIest::newRow("S-stop")   << QAbstractAnimation::Stopped << Stop << QString() << QAbstractAnimation::Stopped;
 
-    QTest::newRow("P-pause")  << QAbstractAnimation::Paused << Pause << QString() << QAbstractAnimation::Paused;
-    QTest::newRow("P-start")  << QAbstractAnimation::Paused << Start << QString() << QAbstractAnimation::Running;
-    QTest::newRow("P-resume") << QAbstractAnimation::Paused << Resume << QString() << QAbstractAnimation::Running;
-    QTest::newRow("P-stop")   << QAbstractAnimation::Paused << Stop << QString() << QAbstractAnimation::Stopped;
+    BOBUIest::newRow("P-pause")  << QAbstractAnimation::Paused << Pause << QString() << QAbstractAnimation::Paused;
+    BOBUIest::newRow("P-start")  << QAbstractAnimation::Paused << Start << QString() << QAbstractAnimation::Running;
+    BOBUIest::newRow("P-resume") << QAbstractAnimation::Paused << Resume << QString() << QAbstractAnimation::Running;
+    BOBUIest::newRow("P-stop")   << QAbstractAnimation::Paused << Stop << QString() << QAbstractAnimation::Stopped;
 
-    QTest::newRow("R-pause")  << QAbstractAnimation::Running << Pause << QString() << QAbstractAnimation::Paused;
-    QTest::newRow("R-start")  << QAbstractAnimation::Running << Start << QString() << QAbstractAnimation::Running;
-    QTest::newRow("R-resume") << QAbstractAnimation::Running << Resume << resumeWarn << QAbstractAnimation::Running;
-    QTest::newRow("R-stop")   << QAbstractAnimation::Running << Stop << QString() << QAbstractAnimation::Stopped;
+    BOBUIest::newRow("R-pause")  << QAbstractAnimation::Running << Pause << QString() << QAbstractAnimation::Paused;
+    BOBUIest::newRow("R-start")  << QAbstractAnimation::Running << Start << QString() << QAbstractAnimation::Running;
+    BOBUIest::newRow("R-resume") << QAbstractAnimation::Running << Resume << resumeWarn << QAbstractAnimation::Running;
+    BOBUIest::newRow("R-stop")   << QAbstractAnimation::Running << Stop << QString() << QAbstractAnimation::Stopped;
 }
 
 void tst_QPropertyAnimation::operationsInStates()
@@ -1044,7 +1044,7 @@ void tst_QPropertyAnimation::operationsInStates()
     break;
     }
     if (!expectedWarning.isEmpty()) {
-        QTest::ignoreMessage(QtWarningMsg, qPrintable(expectedWarning));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, qPrintable(expectedWarning));
     }
     QCOMPARE(anim.state(), originState);
     switch (operation) {
@@ -1237,9 +1237,9 @@ void tst_QPropertyAnimation::twoAnimations()
     //We use a queued connection to check just after the tick from the common timer
     //the other way is true too
     QObject::connect(&o1.anim, SIGNAL(finished()),
-        &o2, SLOT(checkAnimationFinished()), Qt::QueuedConnection);
+        &o2, SLOT(checkAnimationFinished()), BobUI::QueuedConnection);
     QObject::connect(&o2.anim, SIGNAL(finished()),
-        &o1, SLOT(checkAnimationFinished()), Qt::QueuedConnection);
+        &o1, SLOT(checkAnimationFinished()), BobUI::QueuedConnection);
 
     o1.anim.start();
     o2.anim.start();
@@ -1390,15 +1390,15 @@ void tst_QPropertyAnimation::bindings()
     std::unique_ptr<AnimationObject> o2(new AnimationObject);
     QPropertyAnimation a(o1.get(), "value");
 
-    QTestPrivate::testReadWritePropertyBasics<QPropertyAnimation, QByteArray>(
+    BOBUIestPrivate::testReadWritePropertyBasics<QPropertyAnimation, QByteArray>(
             a, QByteArray("realValue"), QByteArray("value"), "propertyName");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug() << "Failed property test for QPropertyAnimation::propertyName";
         return;
     }
-    QTestPrivate::testReadWritePropertyBasics<QPropertyAnimation, QObject *>(a, o2.get(), o1.get(),
+    BOBUIestPrivate::testReadWritePropertyBasics<QPropertyAnimation, QObject *>(a, o2.get(), o1.get(),
                                                                              "targetObject");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug() << "Failed property test for QPropertyAnimation::targetObject";
         return;
     }
@@ -1410,18 +1410,18 @@ void tst_QPropertyAnimation::bindings()
 
 void tst_QPropertyAnimation::speedModifier_data()
 {
-    QTest::addColumn<int>("duration");
-    QTest::addColumn<qreal>("speedModifier");
-    QTest::addColumn<int>("waitDuration");
+    BOBUIest::addColumn<int>("duration");
+    BOBUIest::addColumn<qreal>("speedModifier");
+    BOBUIest::addColumn<int>("waitDuration");
 
     // It should progress at 50% of the ordinary animation speed. If the speedModifier
     // was 1, it would be 0.5 after 200 milliseconds, so we expect (via the calculation for
     // "expected") half of that.
-    QTest::newRow("0.5") << 400 << 0.5 << 200;
+    BOBUIest::newRow("0.5") << 400 << 0.5 << 200;
 
     // It should progress at 200% of the ordinary animation speed, so should
     // have already finished after 200 milliseconds.
-    QTest::newRow("2") << 400 << 2.0 << 200;
+    BOBUIest::newRow("2") << 400 << 2.0 << 200;
 }
 
 void tst_QPropertyAnimation::speedModifier()
@@ -1450,7 +1450,7 @@ void tst_QPropertyAnimation::speedModifier()
     // How long does it take us to get within tiny of that target?
     QElapsedTimer timer;
     timer.start();
-    QTRY_VERIFY(targetObject.x() + tiny >= target);
+    BOBUIRY_VERIFY(targetObject.x() + tiny >= target);
 
     // How much of the animation did that actually play ?
     const qreal fractionPlayed = targetObject.x();
@@ -1504,5 +1504,5 @@ void tst_QPropertyAnimation::speedModifier()
     }
 }
 
-QTEST_MAIN(tst_QPropertyAnimation)
+BOBUIEST_MAIN(tst_QPropertyAnimation)
 #include "tst_qpropertyanimation.moc"

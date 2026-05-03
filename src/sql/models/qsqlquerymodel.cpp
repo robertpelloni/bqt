@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsqlquerymodel.h"
 #include "qsqlquerymodel_p.h"
@@ -9,9 +9,9 @@
 #include <qsqldriver.h>
 #include <qsqlfield.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define QSQL_PREFETCH 255
 
@@ -73,12 +73,12 @@ int QSqlQueryModelPrivate::columnInQuery(int modelColumn) const
     result sets.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     QSqlQueryModel is a high-level interface for executing SQL
     statements and traversing the result set. It is built on top of
     the lower-level QSqlQuery and can be used to provide data to
-    view classes such as QTableView. For example:
+    view classes such as BOBUIableView. For example:
 
     \snippet sqldatabase/sqldatabase_snippet.cpp 16
 
@@ -181,21 +181,21 @@ bool QSqlQueryModel::canFetchMore(const QModelIndex &parent) const
 
     Returns the model's role names.
 
-    Qt defines only one role for the QSqlQueryModel:
+    BobUI defines only one role for the QSqlQueryModel:
 
     \table
     \header
-    \li Qt Role
+    \li BobUI Role
     \li QML Role Name
     \row
-    \li Qt::DisplayRole
+    \li BobUI::DisplayRole
     \li display
     \endtable
 */
 QHash<int, QByteArray> QSqlQueryModel::roleNames() const
 {
     static const QHash<int, QByteArray> names = {
-        { Qt::DisplayRole, QByteArrayLiteral("display") }
+        { BobUI::DisplayRole, QByteArrayLiteral("display") }
     };
     return names;
 }
@@ -331,7 +331,7 @@ QVariant QSqlQueryModel::data(const QModelIndex &item, int role) const
     if (!item.isValid())
         return QVariant();
 
-    if (role & ~(Qt::DisplayRole | Qt::EditRole))
+    if (role & ~(BobUI::DisplayRole | BobUI::EditRole))
         return QVariant();
 
     if (!d->rec.isGenerated(item.column()))
@@ -352,16 +352,16 @@ QVariant QSqlQueryModel::data(const QModelIndex &item, int role) const
     Returns the header data for the given \a role in the \a section
     of the header with the specified \a orientation.
 */
-QVariant QSqlQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QSqlQueryModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QSqlQueryModel);
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         QVariant val = d->headers.value(section).value(role);
-        if (role == Qt::DisplayRole && !val.isValid())
-            val = d->headers.value(section).value(Qt::EditRole);
+        if (role == BobUI::DisplayRole && !val.isValid())
+            val = d->headers.value(section).value(BobUI::EditRole);
         if (val.isValid())
             return val;
-        if (role == Qt::DisplayRole && d->rec.count() > section && d->columnInQuery(section) != -1)
+        if (role == BobUI::DisplayRole && d->rec.count() > section && d->columnInQuery(section) != -1)
             return d->rec.fieldName(section);
     }
     return QAbstractItemModel::headerData(section, orientation, role);
@@ -380,19 +380,19 @@ void QSqlQueryModel::queryChange()
     // do nothing
 }
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 2)
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 2)
 /*!
     \deprecated [6.2] Use the \c{setQuery(QSqlQuery &&query)} overload instead.
-    This overload will be removed in Qt 7.
+    This overload will be removed in BobUI 7.
 
     \overload
 */
 void QSqlQueryModel::setQuery(const QSqlQuery &query)
 {
-    QT_IGNORE_DEPRECATIONS(QSqlQuery copy = query;)
+    BOBUI_IGNORE_DEPRECATIONS(QSqlQuery copy = query;)
     setQuery(std::move(copy));
 }
-#endif // QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 2)
+#endif // BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 2)
 
 /*!
     Resets the model and sets the data provider to be the given \a
@@ -508,9 +508,9 @@ void QSqlQueryModel::clear()
 /*!
     Sets the caption for a horizontal header for the specified \a role to
     \a value. This is useful if the model is used to
-    display data in a view (e.g., QTableView).
+    display data in a view (e.g., BOBUIableView).
 
-    Returns \c true if \a orientation is Qt::Horizontal and
+    Returns \c true if \a orientation is BobUI::Horizontal and
     the \a section refers to a valid section; otherwise returns
     false.
 
@@ -519,11 +519,11 @@ void QSqlQueryModel::clear()
 
     \sa data()
  */
-bool QSqlQueryModel::setHeaderData(int section, Qt::Orientation orientation,
+bool QSqlQueryModel::setHeaderData(int section, BobUI::Orientation orientation,
                                    const QVariant &value, int role)
 {
     Q_D(QSqlQueryModel);
-    if (orientation != Qt::Horizontal || section < 0 || columnCount() <= section)
+    if (orientation != BobUI::Horizontal || section < 0 || columnCount() <= section)
         return false;
 
     if (d->headers.size() <= section)
@@ -538,7 +538,7 @@ bool QSqlQueryModel::setHeaderData(int section, Qt::Orientation orientation,
 
     \sa setQuery()
 */
-const QSqlQuery &QSqlQueryModel::query(QT6_IMPL_NEW_OVERLOAD) const
+const QSqlQuery &QSqlQueryModel::query(BOBUI6_IMPL_NEW_OVERLOAD) const
 {
     Q_D(const QSqlQueryModel);
     return d->query;
@@ -586,7 +586,7 @@ QSqlRecord QSqlQueryModel::record(int row) const
 
     QSqlRecord rec = d->rec;
     for (int i = 0; i < rec.count(); ++i)
-        rec.setValue(i, data(createIndex(row, i), Qt::EditRole));
+        rec.setValue(i, data(createIndex(row, i), BobUI::EditRole));
     return rec;
 }
 
@@ -693,6 +693,6 @@ QModelIndex QSqlQueryModel::indexInQuery(const QModelIndex &item) const
     return createIndex(item.row(), modelColumn, item.internalPointer());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqlquerymodel.cpp"

@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QPainter>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -37,7 +37,7 @@ public:
     {
         show();
         if (isWindow()) {
-            QVERIFY(QTest::qWaitForWindowExposed(this));
+            QVERIFY(BOBUIest::qWaitForWindowExposed(this));
             QVERIFY(waitForPainted());
         }
         paintedRegions = {};
@@ -46,8 +46,8 @@ public:
     bool waitForPainted(int timeout = 5000)
     {
         int remaining = timeout;
-        QDeadlineTimer deadline(remaining, Qt::PreciseTimer);
-        if (!QTest::qWaitFor([this]{ return !paintedRegions.isEmpty(); }, timeout))
+        QDeadlineTimer deadline(remaining, BobUI::PreciseTimer);
+        if (!BOBUIest::qWaitFor([this]{ return !paintedRegions.isEmpty(); }, timeout))
             return false;
 
         // In case of multiple paint events:
@@ -89,8 +89,8 @@ protected:
     {
         paintedRegions += event->region();
         QPainter painter(this);
-        const QBrush patternBrush = isWindow() ? QBrush(Qt::blue, Qt::VerPattern)
-                                               : QBrush(Qt::red, Qt::HorPattern);
+        const QBrush patternBrush = isWindow() ? QBrush(BobUI::blue, BobUI::VerPattern)
+                                               : QBrush(BobUI::red, BobUI::HorPattern);
         painter.fillRect(rect(), patternBrush);
     }
 };
@@ -101,7 +101,7 @@ public:
     OpaqueWidget(const QColor &col, QWidget *parent = nullptr)
     : QWidget(parent), fillColor(col)
     {
-        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(BobUI::WA_OpaquePaintEvent);
     }
 
     bool event(QEvent *event) override
@@ -121,7 +121,7 @@ protected:
         painter.fillRect(e->rect(), fillColor);
 #ifdef MANUAL_DEBUG
         ++paintCount;
-        painter.drawText(rect(), Qt::AlignCenter, QString::number(paintCount));
+        painter.drawText(rect(), BobUI::AlignCenter, QString::number(paintCount));
 #endif
     }
 
@@ -134,17 +134,17 @@ class Draggable : public OpaqueWidget
 {
 public:
     Draggable(QWidget *parent = nullptr)
-    : OpaqueWidget(Qt::white, parent)
+    : OpaqueWidget(BobUI::white, parent)
     {
     }
 
     Draggable(const QColor &col, QWidget *parent = nullptr)
     : OpaqueWidget(col, parent)
     {
-        left = new OpaqueWidget(Qt::gray, this);
-        top = new OpaqueWidget(Qt::gray, this);
-        right = new OpaqueWidget(Qt::gray, this);
-        bottom = new OpaqueWidget(Qt::gray, this);
+        left = new OpaqueWidget(BobUI::gray, this);
+        top = new OpaqueWidget(BobUI::gray, this);
+        right = new OpaqueWidget(BobUI::gray, this);
+        bottom = new OpaqueWidget(BobUI::gray, this);
     }
 
     QSize sizeHint() const override {
@@ -201,20 +201,20 @@ public:
         area->setPalette(palette);
 
         // all these children set WA_OpaquePaintEvent
-        redChild = new Draggable(Qt::red, area);
+        redChild = new Draggable(BobUI::red, area);
         redChild->setObjectName("redChild");
 
-        greenChild = new Draggable(Qt::green, area);
+        greenChild = new Draggable(BobUI::green, area);
         greenChild->setObjectName("greenChild");
 
-        yellowChild = new Draggable(Qt::yellow, this);
+        yellowChild = new Draggable(BobUI::yellow, this);
         yellowChild->setObjectName("yellowChild");
 
         nakedChild = new Draggable(this);
         nakedChild->move(300, 0);
         nakedChild->setObjectName("nakedChild");
 
-        bar = new OpaqueWidget(Qt::darkGray, this);
+        bar = new OpaqueWidget(BobUI::darkGray, this);
         bar->setObjectName("bar");
     }
 
@@ -264,7 +264,7 @@ private slots:
     void evaluateRhi();
     void rhiRecreateMaintainsWindowProperties();
 
-#if defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_BUILD_INTERNAL)
     void scrollWithOverlap();
     void overlappedRegion();
     void fastMove();
@@ -300,8 +300,8 @@ protected:
 
 #ifdef MANUAL_DEBUG
         if (!result) {
-            backingstoreContent.save(QString("/tmp/backingstore_%1_%2.png").arg(QTest::currentTestFunction(), QTest::currentDataTag()));
-            widgetRender.save(QString("/tmp/grab_%1_%2.png").arg(QTest::currentTestFunction(), QTest::currentDataTag()));
+            backingstoreContent.save(QString("/tmp/backingstore_%1_%2.png").arg(BOBUIest::currentTestFunction(), BOBUIest::currentDataTag()));
+            widgetRender.save(QString("/tmp/grab_%1_%2.png").arg(BOBUIest::currentTestFunction(), BOBUIest::currentDataTag()));
         }
 #endif
         return result;
@@ -321,9 +321,9 @@ protected:
         if (!repaintManager)
             return true;
 
-        return QTest::qWaitFor([repaintManager]{ return !repaintManager->isDirty(); } );
+        return BOBUIest::qWaitFor([repaintManager]{ return !repaintManager->isDirty(); } );
     };
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 
 private:
@@ -340,7 +340,7 @@ void tst_QWidgetRepaintManager::initTestCase()
 {
     QWidget widget;
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     m_implementsScroll = widget.backingStore()->handle()->scroll(QRegion(widget.rect()), 1, 1);
     qInfo() << QGuiApplication::platformName() << "QPA backend implements scroll:" << m_implementsScroll;
@@ -355,7 +355,7 @@ void tst_QWidgetRepaintManager::basic()
 {
     TestWidget widget;
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     QCOMPARE(widget.takePaintedRegions(), QRegion(0, 0, widget.width(), widget.height()));
 
@@ -382,7 +382,7 @@ void tst_QWidgetRepaintManager::children()
     TestWidget *child1 = new TestWidget(&widget);
     child1->move(20, 20);
     child1->show();
-    QVERIFY(QTest::qWaitForWindowExposed(child1));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(child1));
     QVERIFY(child1->waitForPainted());
     QCOMPARE(widget.takePaintedRegions(), QRegion(child1->geometry()));
     QCOMPARE(child1->takePaintedRegions(), QRegion(child1->rect()));
@@ -418,7 +418,7 @@ void tst_QWidgetRepaintManager::opaqueChildren()
 
     TestWidget *child1 = new TestWidget(&widget);
     child1->move(20, 20);
-    child1->setAttribute(Qt::WA_OpaquePaintEvent);
+    child1->setAttribute(BobUI::WA_OpaquePaintEvent);
     child1->show();
 
     QVERIFY(child1->waitForPainted());
@@ -434,7 +434,7 @@ void tst_QWidgetRepaintManager::opaqueChildren()
 }
 
 /*!
-    When resizing to be larger, a widget with Qt::WA_StaticContents set
+    When resizing to be larger, a widget with BobUI::WA_StaticContents set
     should only repaint the newly revealed areas.
 */
 void tst_QWidgetRepaintManager::staticContents()
@@ -444,7 +444,7 @@ void tst_QWidgetRepaintManager::staticContents()
         QSKIP("Platform does not support static backingstore content");
 
     TestWidget widget;
-    widget.setAttribute(Qt::WA_StaticContents);
+    widget.setAttribute(BobUI::WA_StaticContents);
     widget.initialShow();
 
     // Trigger resize via QWindow (similar to QWSI code path)
@@ -490,7 +490,7 @@ void tst_QWidgetRepaintManager::scroll()
     QCOMPARE(widget.takePaintedRegions(), child->geometry());
 
     // a explicitly opaque child scrolling only needs the child to repaint newly exposed regions
-    child->setAttribute(Qt::WA_OpaquePaintEvent);
+    child->setAttribute(BobUI::WA_OpaquePaintEvent);
     child->scroll(10, 0);
     QVERIFY(child->waitForPainted());
     if (!m_implementsScroll)
@@ -543,7 +543,7 @@ void tst_QWidgetRepaintManager::paintOnScreenUpdates()
         QCOMPARE(renderToTextureWidget.takePaintedRegions(), renderToTextureWidget.rect());
 
         // Then toggle WA_PaintOnScreen
-        paintOnScreenWidget.setAttribute(Qt::WA_PaintOnScreen);
+        paintOnScreenWidget.setAttribute(BobUI::WA_PaintOnScreen);
 
         // The render-to-texture widget updates fine
         renderToTextureWidget.update();
@@ -554,7 +554,7 @@ void tst_QWidgetRepaintManager::paintOnScreenUpdates()
         // in a paint event, but should result in an update request.
         paintOnScreenWidget.updateRequests = 0;
         paintOnScreenWidget.update();
-        QVERIFY(QTest::qWaitFor([&]{ return paintOnScreenWidget.updateRequests > 0; }));
+        QVERIFY(BOBUIest::qWaitFor([&]{ return paintOnScreenWidget.updateRequests > 0; }));
 
         // And should not prevent the render-to-texture widget from receiving updates
         renderToTextureWidget.update();
@@ -565,22 +565,22 @@ void tst_QWidgetRepaintManager::paintOnScreenUpdates()
     {
         TestWidget paintOnScreenTopLevel;
         paintOnScreenTopLevel.setObjectName("PaintOnScreenTopLevel");
-        paintOnScreenTopLevel.setAttribute(Qt::WA_PaintOnScreen);
+        paintOnScreenTopLevel.setAttribute(BobUI::WA_PaintOnScreen);
 
         paintOnScreenTopLevel.initialShow();
 
         paintOnScreenTopLevel.updateRequests = 0;
         paintOnScreenTopLevel.update();
-        QVERIFY(QTest::qWaitFor([&]{ return paintOnScreenTopLevel.updateRequests > 0; }));
+        QVERIFY(BOBUIest::qWaitFor([&]{ return paintOnScreenTopLevel.updateRequests > 0; }));
 
         // Turn off paint on screen and make it a render-to-texture widget.
         // This will lead us into a QWidgetRepaintManager::markDirty() code
         // path that checks updateRequestSent, which is still set from the
         // update above since paint-on-screen handling doesn't reset it.
-        paintOnScreenTopLevel.setAttribute(Qt::WA_PaintOnScreen, false);
+        paintOnScreenTopLevel.setAttribute(BobUI::WA_PaintOnScreen, false);
         QWidgetPrivate::get(&paintOnScreenTopLevel)->setRenderToTexture();
         paintOnScreenTopLevel.update();
-        QVERIFY(QTest::qWaitFor([&]{ return paintOnScreenTopLevel.updateRequests > 1; }));
+        QVERIFY(BOBUIest::qWaitFor([&]{ return paintOnScreenTopLevel.updateRequests > 1; }));
     }
 }
 
@@ -616,10 +616,10 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         QSKIP("Platform does not support RHI based rendering");
 
     // We need full control over whether widgets are native or not
-    const bool nativeSiblingsOriginal = qApp->testAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
-    qApp->setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
+    const bool nativeSiblingsOriginal = qApp->testAttribute(BobUI::AA_DontCreateNativeWidgetSiblings);
+    qApp->setAttribute(BobUI::AA_DontCreateNativeWidgetSiblings, true);
     auto nativeSiblingGuard = qScopeGuard([&]{
-        qApp->setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, nativeSiblingsOriginal);
+        qApp->setAttribute(BobUI::AA_DontCreateNativeWidgetSiblings, nativeSiblingsOriginal);
     });
 
     auto defaultSurfaceType = QSurface::RasterSurface;
@@ -629,7 +629,7 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         // Plain QWidget doesn't enable RHI
         QWidget regularWidget;
         regularWidget.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&regularWidget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&regularWidget));
         QVERIFY(!QWidgetPrivate::get(&regularWidget)->usesRhiFlush);
 
         // The platform might use a non-raster surface type if it uses
@@ -648,12 +648,12 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         // But a top level RHI widget does
         RhiWidget rhiWidget;
         rhiWidget.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&rhiWidget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&rhiWidget));
         QVERIFY(QWidgetPrivate::get(&rhiWidget)->usesRhiFlush);
         QVERIFY(QWidgetPrivate::get(&rhiWidget)->rhi());
     }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
         return;
 
@@ -662,7 +662,7 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         QWidget topLevel;
         RhiWidget rhiWidget(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
         QCOMPARE(topLevel.windowHandle()->surfaceType(), QSurface::OpenGLSurface);
         QVERIFY(QWidgetPrivate::get(&topLevel)->usesRhiFlush);
         QVERIFY(QWidgetPrivate::get(&topLevel)->rhi());
@@ -676,9 +676,9 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         // Native child RHI widget does not enable RHI for top level
         QWidget topLevel;
         RhiWidget nativeRhiWidget(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
-        nativeRhiWidget.setAttribute(Qt::WA_NativeWindow);
+        nativeRhiWidget.setAttribute(BobUI::WA_NativeWindow);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
         QCOMPARE(nativeRhiWidget.windowHandle()->surfaceType(), QSurface::OpenGLSurface);
         QVERIFY(QWidgetPrivate::get(&nativeRhiWidget)->usesRhiFlush);
         QVERIFY(QWidgetPrivate::get(&nativeRhiWidget)->rhi());
@@ -694,10 +694,10 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         // but not top level.
         QWidget topLevel;
         QWidget nativeChild(&topLevel);
-        nativeChild.setAttribute(Qt::WA_NativeWindow);
+        nativeChild.setAttribute(BobUI::WA_NativeWindow);
         RhiWidget rhiWidget(QPlatformBackingStoreRhiConfig::OpenGL, &nativeChild);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
         QCOMPARE(nativeChild.windowHandle()->surfaceType(), QSurface::OpenGLSurface);
         QVERIFY(QWidgetPrivate::get(&nativeChild)->usesRhiFlush);
@@ -716,9 +716,9 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         QWidget topLevel;
         RhiWidget rhiWidget(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
         RhiWidget nativeRhiWidget(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
-        nativeRhiWidget.setAttribute(Qt::WA_NativeWindow);
+        nativeRhiWidget.setAttribute(BobUI::WA_NativeWindow);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
         QCOMPARE(nativeRhiWidget.windowHandle()->surfaceType(), QSurface::OpenGLSurface);
         QVERIFY(QWidgetPrivate::get(&nativeRhiWidget)->usesRhiFlush);
@@ -737,12 +737,12 @@ void tst_QWidgetRepaintManager::evaluateRhi()
 
         RhiWidget rhiWidget(QPlatformBackingStoreRhiConfig::Null);
         rhiWidget.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&rhiWidget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&rhiWidget));
         QVERIFY(QWidgetPrivate::get(&rhiWidget)->usesRhiFlush);
         QVERIFY(QWidgetPrivate::get(&rhiWidget)->rhi());
 
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
         rhiWidget.setParent(&topLevel);
         QVERIFY(QWidgetPrivate::get(&topLevel)->usesRhiFlush);
         QVERIFY(QWidgetPrivate::get(&topLevel)->rhi());
@@ -753,11 +753,11 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         // but does not prevent top level from flushing with RHI.
         QWidget topLevel;
         QWidget nativeChild(&topLevel);
-        nativeChild.setAttribute(Qt::WA_NativeWindow);
+        nativeChild.setAttribute(BobUI::WA_NativeWindow);
         RhiWidget rhiGranchild(QPlatformBackingStoreRhiConfig::OpenGL, &nativeChild);
         RhiWidget rhiChild(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
         QCOMPARE(nativeChild.windowHandle()->surfaceType(), QSurface::OpenGLSurface);
         QVERIFY(QWidgetPrivate::get(&nativeChild)->usesRhiFlush);
@@ -771,17 +771,17 @@ void tst_QWidgetRepaintManager::evaluateRhi()
         QVERIFY(QWidgetPrivate::get(&rhiChild)->rhi());
     }
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     QRhiMetalInitParams metalParams;
     if (QRhi::probe(QRhi::Metal, &metalParams)) {
         // Native RHI childen allows mixing RHI backends
         QWidget topLevel;
         RhiWidget openglWidget(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
-        openglWidget.setAttribute(Qt::WA_NativeWindow);
+        openglWidget.setAttribute(BobUI::WA_NativeWindow);
         RhiWidget metalWidget(QPlatformBackingStoreRhiConfig::Metal, &topLevel);
-        metalWidget.setAttribute(Qt::WA_NativeWindow);
+        metalWidget.setAttribute(BobUI::WA_NativeWindow);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
         QCOMPARE(topLevel.windowHandle()->surfaceType(), defaultSurfaceType);
         QVERIFY(!QWidgetPrivate::get(&topLevel)->usesRhiFlush);
@@ -798,9 +798,9 @@ void tst_QWidgetRepaintManager::evaluateRhi()
 
         QVERIFY(QWidgetPrivate::get(&openglWidget)->rhi() != QWidgetPrivate::get(&metalWidget)->rhi());
     }
-#endif // QT_CONFIG(metal)
+#endif // BOBUI_CONFIG(metal)
 
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
 }
 
 void tst_QWidgetRepaintManager::rhiRecreateMaintainsWindowProperties()
@@ -809,7 +809,7 @@ void tst_QWidgetRepaintManager::rhiRecreateMaintainsWindowProperties()
     if (!integration->hasCapability(QPlatformIntegration::RhiBasedRendering))
         QSKIP("Platform does not support RHI based rendering");
 
-#if !QT_CONFIG(opengl)
+#if !BOBUI_CONFIG(opengl)
     QSKIP("Platform does not support OpenGL RHI based rendering");
 #endif
 
@@ -821,7 +821,7 @@ void tst_QWidgetRepaintManager::rhiRecreateMaintainsWindowProperties()
     // window position must remain the same
     QMainWindow topLevel;
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     QPoint windowPos = topLevel.pos();
     RhiWidget nativeRhiWidget(QPlatformBackingStoreRhiConfig::OpenGL, &topLevel);
     QVERIFY(QWidgetPrivate::get(&topLevel)->usesRhiFlush);
@@ -829,12 +829,12 @@ void tst_QWidgetRepaintManager::rhiRecreateMaintainsWindowProperties()
     QCOMPARE(topLevel.pos(), windowPos);
 }
 
-#if defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_BUILD_INTERNAL)
 
 /*!
     Verify that overlapping children are repainted correctly when
     a widget is moved (via a scroll area) for such a distance that
-    none of the old area is still visible. QTBUG-26269
+    none of the old area is still visible. BOBUIBUG-26269
 */
 void tst_QWidgetRepaintManager::scrollWithOverlap()
 {
@@ -845,20 +845,20 @@ void tst_QWidgetRepaintManager::scrollWithOverlap()
     {
     public:
         MainWindow(QWidget *parent = 0)
-            : QWidget(parent, Qt::WindowStaysOnTopHint)
+            : QWidget(parent, BobUI::WindowStaysOnTopHint)
         {
             m_scrollArea = new QScrollArea(this);
-            m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-            m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            m_scrollArea->setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+            m_scrollArea->setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
             QWidget *w = new QWidget;
-            w->setPalette(QPalette(Qt::gray));
+            w->setPalette(QPalette(BobUI::gray));
             w->setAutoFillBackground(true);
             m_scrollArea->setWidget(w);
             m_scrollArea->resize(500, 100);
             w->resize(5000, 600);
 
             m_topWidget = new QWidget(this);
-            m_topWidget->setPalette(QPalette(Qt::red));
+            m_topWidget->setPalette(QPalette(BobUI::red));
             m_topWidget->setAutoFillBackground(true);
             m_topWidget->resize(300, 200);
 
@@ -885,7 +885,7 @@ void tst_QWidgetRepaintManager::scrollWithOverlap()
     MainWindow w;
     w.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
 
     bool result = compareWidget(w.topWidget());
     // if this fails already, then the system we test on can't compare screenshots from grabbed widgets,
@@ -939,7 +939,7 @@ void tst_QWidgetRepaintManager::overlappedRegion()
     }
 
     scene.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&scene));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&scene));
 
     auto overlappedRegion = [](QWidget *widget, bool breakAfterFirst = false){
         auto *priv = QWidgetPrivate::get(widget);
@@ -964,24 +964,24 @@ void tst_QWidgetRepaintManager::overlappedRegion()
     // moving the red child out of obscurity
     scene.redChild->move(100, 0);
     overlap = overlappedRegion(scene.redChild);
-    QTRY_VERIFY(overlap.isEmpty());
+    BOBUIRY_VERIFY(overlap.isEmpty());
 
     // moving the red child down so it's partially behind the bar
     scene.redChild->move(100, 100);
     overlap = overlappedRegion(scene.redChild);
-    QTRY_VERIFY(!overlap.isEmpty());
+    BOBUIRY_VERIFY(!overlap.isEmpty());
 
     // moving the yellow child so it is partially overlapped by the bar
     scene.yellowChild->move(200, 200);
     overlap = overlappedRegion(scene.yellowChild);
-    QTRY_VERIFY(!overlap.isEmpty());
+    BOBUIRY_VERIFY(!overlap.isEmpty());
 }
 
 void tst_QWidgetRepaintManager::fastMove()
 {
     TestScene scene;
     scene.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&scene));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&scene));
 
     QWidgetRepaintManager *repaintManager = QWidgetPrivate::get(&scene)->maybeRepaintManager();
     QVERIFY(repaintManager->dirtyRegion().isEmpty());
@@ -997,7 +997,7 @@ void tst_QWidgetRepaintManager::fastMove()
         QCOMPARE(dirtyRegion(scene.yellowChild), QRect(0, 0, 100, 100));
     }
     QCOMPARE(dirtyRegion(&scene), QRect(0, 0, 25, 100));
-    QTRY_VERIFY(dirtyRegion(&scene).isEmpty());
+    BOBUIRY_VERIFY(dirtyRegion(&scene).isEmpty());
     QVERIFY(compareWidget(&scene));
 }
 
@@ -1005,7 +1005,7 @@ void tst_QWidgetRepaintManager::moveAccross()
 {
     TestScene scene;
     scene.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&scene));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&scene));
 
     QWidgetRepaintManager *repaintManager = QWidgetPrivate::get(&scene)->maybeRepaintManager();
     QVERIFY(repaintManager->dirtyRegion().isEmpty());
@@ -1033,7 +1033,7 @@ void tst_QWidgetRepaintManager::moveInOutOverlapped()
 {
     TestScene scene;
     scene.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&scene));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&scene));
 
     QWidgetRepaintManager *repaintManager = QWidgetPrivate::get(&scene)->maybeRepaintManager();
     QVERIFY(repaintManager->dirtyRegion().isEmpty());
@@ -1073,7 +1073,7 @@ void tst_QWidgetRepaintManager::moveInOutOverlapped()
     QVERIFY(waitForFlush(&scene));
     QVERIFY(compareWidget(&scene));
 }
-#endif //# defined(QT_BUILD_INTERNAL)
+#endif //# defined(BOBUI_BUILD_INTERNAL)
 
-QTEST_MAIN(tst_QWidgetRepaintManager)
+BOBUIEST_MAIN(tst_QWidgetRepaintManager)
 #include "tst_qwidgetrepaintmanager.moc"

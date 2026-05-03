@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef QGET_H
 #define QGET_H
 
@@ -75,7 +75,7 @@ private slots:
     void finished(QNetworkReply *reply);
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 #endif
     void downloadFinished(TransferItem *item);

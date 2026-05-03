@@ -1,8 +1,8 @@
-# TuioTouch plugin for Qt 5
+# TuioTouch plugin for BobUI 5
 
 ## Introduction
 
-This is a QPA-using plugin (meaning, it uses Qt internals) that provides touch
+This is a QPA-using plugin (meaning, it uses BobUI internals) that provides touch
 events from TUIO-based sources (such as [TUIOPad](https://code.google.com/p/tuiopad/)).
 
 [TUIO](http://www.tuio.org/) is a framework for providing touch events over the
@@ -17,7 +17,7 @@ Run your application with -plugin TuioTouch, e.g.
 
 `qmlscene foo.qml -plugin TuioTouch`
 
-Or make sure the plugin is loaded using the QT_QPA_GENERIC_PLUGINS environment
+Or make sure the plugin is loaded using the BOBUI_QPA_GENERIC_PLUGINS environment
 variable.
 
 By default, you must direct TUIO packets to the IP of the machine the application
@@ -48,7 +48,7 @@ Supported rotations are 90, 180, and 270.
 ## Further work
 
 * Support other profiles (we implement 2Dcur, we want 2Dobj, 2Dblb?)
-* Support multiple simultaneous sources, generating distinct QTouchEvents
+* Support multiple simultaneous sources, generating distinct BOBUIouchEvents
     * We'd need to somehow not rely on FSEQ for removing touchpoints, else our
       currently minor memory exhaustion problem could become a real issue
 * Support TCP transports?

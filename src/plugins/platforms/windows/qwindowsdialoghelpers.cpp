@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#define QT_NO_URL_CAST_FROM_STRING 1
+#define BOBUI_NO_URL_CAST_FROM_STRING 1
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include "qwindowsdialoghelpers.h"
 
 #include "qwindowscontext.h"
@@ -11,28 +11,28 @@
 #include "qwindowsintegration.h"
 #include "qwindowstheme.h" // Color conversion helpers
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qcolor.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qcolor.h>
 
-#include <QtCore/qdebug.h>
-#if QT_CONFIG(regularexpression)
-#  include <QtCore/qregularexpression.h>
+#include <BobUICore/qdebug.h>
+#if BOBUI_CONFIG(regularexpression)
+#  include <BobUICore/qregularexpression.h>
 #endif
-#include <QtCore/qtimer.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qsysinfo.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/quuid.h>
-#include <QtCore/qtemporaryfile.h>
-#include <QtCore/private/qfunctions_win_p.h>
-#include <QtCore/private/qsystemerror_p.h>
-#include <QtCore/private/qcomobject_p.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qsysinfo.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/quuid.h>
+#include <BobUICore/bobuiemporaryfile.h>
+#include <BobUICore/private/qfunctions_win_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
+#include <BobUICore/private/qcomobject_p.h>
 
 #include <algorithm>
 #include <vector>
@@ -41,9 +41,9 @@ using namespace std::chrono_literals;
 
 // #define USE_NATIVE_COLOR_DIALOG /* Testing purposes only */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Return an allocated wchar_t array from a QString, reserve more memory if desired.
 static wchar_t *qStringToWCharArray(const QString &s, size_t reserveSize = 0)
@@ -200,7 +200,7 @@ QWindowsNativeDialogBase *QWindowsDialogHelperBase<BaseClass>::nativeDialog() co
 }
 
 template <class BaseClass>
-void QWindowsDialogHelperBase<BaseClass>::timerEvent(QTimerEvent *)
+void QWindowsDialogHelperBase<BaseClass>::timerEvent(BOBUIimerEvent *)
 {
     startDialogThread();
 }
@@ -223,7 +223,7 @@ QWindowsNativeDialogBase *QWindowsDialogHelperBase<BaseClass>::ensureNativeDialo
     \internal
 */
 
-class QWindowsDialogThread : public QThread
+class QWindowsDialogThread : public BOBUIhread
 {
 public:
     using QWindowsNativeDialogBasePtr = QSharedPointer<QWindowsNativeDialogBase>;
@@ -246,11 +246,11 @@ void QWindowsDialogThread::run()
 }
 
 template <class BaseClass>
-bool QWindowsDialogHelperBase<BaseClass>::show(Qt::WindowFlags,
-                                                   Qt::WindowModality windowModality,
+bool QWindowsDialogHelperBase<BaseClass>::show(BobUI::WindowFlags,
+                                                   BobUI::WindowModality windowModality,
                                                    QWindow *parent)
 {
-    const bool modal = (windowModality != Qt::NonModal);
+    const bool modal = (windowModality != BobUI::NonModal);
     if (!parent)
         parent = QGuiApplication::focusWindow(); // Need a parent window, else the application loses activation when closed.
     if (parent) {
@@ -498,7 +498,7 @@ public:
 
     static IShellItems itemsFromItemArray(IShellItemArray *items);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     void format(QDebug &d) const;
 #endif
 
@@ -665,10 +665,10 @@ QString QWindowsShellItem::libraryItemDefaultSaveFolder(IShellItem *item)
     return result;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 void QWindowsShellItem::format(QDebug &d) const
 {
-    d << "attributes=0x" << Qt::hex << attributes() << Qt::dec;
+    d << "attributes=0x" << BobUI::hex << attributes() << BobUI::dec;
     if (isFileSystem())
         d << " [filesys]";
     if (isDir())
@@ -710,7 +710,7 @@ QDebug operator<<(QDebug d, IShellItem *i)
     d << ')';
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     \class QWindowsNativeFileDialogBase
@@ -903,7 +903,7 @@ void QWindowsNativeFileDialogBase::doExec(HWND owner)
     // gets a WM_CLOSE or the parent window is destroyed.
     const HRESULT hr = m_fileDialog->Show(owner);
     QWindowsDialogs::eatMouseMove();
-    qCDebug(lcQpaDialogs) << '<' << __FUNCTION__ << " returns " << Qt::hex << hr;
+    qCDebug(lcQpaDialogs) << '<' << __FUNCTION__ << " returns " << BobUI::hex << hr;
     // Emit accepted() only if there is a result as otherwise UI hangs occur.
     // For example, typing in invalid URLs results in empty result lists.
     if (hr == S_OK && !m_data.selectedFiles().isEmpty()) {
@@ -934,7 +934,7 @@ void QWindowsNativeFileDialogBase::setMode(QFileDialogOptions::FileMode mode,
         break;
     case QFileDialogOptions::Directory:
     case QFileDialogOptions::DirectoryOnly:
-        // QTBUG-63645: Restrict to file system items, as Qt cannot deal with
+        // BOBUIBUG-63645: Restrict to file system items, as BobUI cannot deal with
         // places like 'Network', etc.
         flags |= FOS_PICKFOLDERS | FOS_FILEMUSTEXIST | FOS_FORCEFILESYSTEM;
         break;
@@ -944,7 +944,7 @@ void QWindowsNativeFileDialogBase::setMode(QFileDialogOptions::FileMode mode,
     }
     qCDebug(lcQpaDialogs) << __FUNCTION__ << "mode=" << mode
         << "acceptMode=" << acceptMode << "options=" << options
-        << "results in" << Qt::showbase << Qt::hex << flags;
+        << "results in" << BobUI::showbase << BobUI::hex << flags;
 
     if (FAILED(m_fileDialog->SetOptions(flags)))
         qErrnoWarning("%s: SetOptions() failed", __FUNCTION__);
@@ -965,7 +965,7 @@ static QList<FilterSpec> filterSpecs(const QStringList &filters,
     result.reserve(filters.size());
     *totalStringLength = 0;
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     const QRegularExpression filterSeparatorRE(QStringLiteral("[;\\s]+"));
     const QString separator = QStringLiteral(";");
     Q_ASSERT(filterSeparatorRE.isValid());
@@ -983,7 +983,7 @@ static QList<FilterSpec> filterSpecs(const QStringList &filters,
             filterString.mid(openingParenPos + 1, closingParenPos - openingParenPos - 1).trimmed();
         if (filterSpec.filter.isEmpty())
             filterSpec.filter += u'*';
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         filterSpec.filter.replace(filterSeparatorRE, separator);
 #else
         filterSpec.filter.replace(u' ', u';');
@@ -1270,7 +1270,7 @@ static inline QString suffixFromFilter(const QString &filter)
 void QWindowsNativeSaveFileDialog::setNameFilters(const QStringList &f)
 {
     QWindowsNativeFileDialogBase::setNameFilters(f);
-    // QTBUG-31381, QTBUG-30748: IFileDialog will update the suffix of the selected name
+    // BOBUIBUG-31381, BOBUIBUG-30748: IFileDialog will update the suffix of the selected name
     // filter only if a default suffix is set (see docs). Set the first available
     // suffix unless we have a defaultSuffix.
     if (!hasDefaultSuffix()) {
@@ -1330,7 +1330,7 @@ private:
 // Helpers for managing a list of temporary copies of items with no
 // file system representation (SFGAO_FILESYSTEM unset, for example devices
 // using MTP) returned by IFileOpenDialog. This emulates the behavior
-// of the Win32 API GetOpenFileName() used in Qt 4 (QTBUG-57070).
+// of the Win32 API GetOpenFileName() used in BobUI 4 (BOBUIBUG-57070).
 
 Q_GLOBAL_STATIC(QStringList, temporaryItemCopies)
 
@@ -1376,7 +1376,7 @@ static QString createTemporaryItemCopy(QWindowsShellItem &qItem, QString *errorM
         return QString();
     }
 
-    QTemporaryFile targetFile(tempFilePattern(qItem.normalDisplay()));
+    BOBUIemporaryFile targetFile(tempFilePattern(qItem.normalDisplay()));
     targetFile.setAutoRemove(false);
     if (!targetFile.open())  {
         *errorMessage = "Cannot create temporary file: "_L1
@@ -1480,7 +1480,7 @@ QWindowsNativeFileDialogBase *QWindowsNativeFileDialogBase::create(QFileDialogOp
     \class QWindowsFileDialogHelper
     \brief Helper for native Windows file dialogs
 
-    For Qt 4 compatibility, do not create native non-modal dialogs on widgets,
+    For BobUI 4 compatibility, do not create native non-modal dialogs on widgets,
     but only on QQuickWindows, which do not have a fallback.
 
     \internal
@@ -1686,7 +1686,7 @@ void QWindowsXpNativeFileDialog::doExec(HWND owner)
 // Callback for QWindowsNativeXpFileDialog directory dialog.
 // MFC Directory Dialog. Contrib: Steve Williams (minor parts from Scott Powers)
 
-static int QT_WIN_CALLBACK xpFileDialogGetExistingDirCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+static int BOBUI_WIN_CALLBACK xpFileDialogGetExistingDirCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
     auto *dialog = reinterpret_cast<QWindowsXpNativeFileDialog *>(lpData);
     return dialog->existingDirCallback(hwnd, uMsg, lParam);
@@ -1786,7 +1786,7 @@ void QWindowsXpNativeFileDialog::populateOpenFileName(OPENFILENAME *ofn, HWND ow
         QString defaultSuffix = m_options->defaultSuffix();
         if (defaultSuffix.startsWith(u'.'))
             defaultSuffix.remove(0, 1);
-        // QTBUG-33156, also create empty strings to trigger the appending mechanism.
+        // BOBUIBUG-33156, also create empty strings to trigger the appending mechanism.
         ofn->lpstrDefExt = qStringToWCharArray(defaultSuffix);
     }
     // Flags.
@@ -2064,6 +2064,6 @@ QPlatformDialogHelper *createHelper(QPlatformTheme::DialogType type)
 }
 
 } // namespace QWindowsDialogs
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qwindowsdialoghelpers.moc"

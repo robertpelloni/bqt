@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef RENDERTHREAD_H
 #define RENDERTHREAD_H
 
 #include <QMutex>
 #include <QSize>
-#include <QThread>
+#include <BOBUIhread>
 #include <QWaitCondition>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QImage;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
-class RenderThread : public QThread
+class RenderThread : public BOBUIhread
 {
     Q_OBJECT
 

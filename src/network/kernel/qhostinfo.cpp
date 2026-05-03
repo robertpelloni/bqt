@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QHOSTINFO_DEBUG
 
@@ -8,13 +8,13 @@
 #include "qhostinfo_p.h"
 #include <qplatformdefs.h>
 
-#include "QtCore/qapplicationstatic.h"
+#include "BobUICore/qapplicationstatic.h"
 #include <qabstracteventdispatcher.h>
 #include <qcoreapplication.h>
 #include <qmetaobject.h>
 #include <qscopeguard.h>
 #include <qstringlist.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qurl.h>
 
 #include <algorithm>
@@ -29,16 +29,16 @@
 #elif defined Q_OS_WIN
 #  include <ws2tcpip.h>
 
-#  define QT_SOCKLEN_T int
+#  define BOBUI_SOCKLEN_T int
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //#define QHOSTINFO_DEBUG
 
-QT_IMPL_METATYPE_EXTERN(QHostInfo)
+BOBUI_IMPL_METATYPE_EXTERN(QHostInfo)
 
 namespace {
 struct ToBeLookedUpEquals {
@@ -72,7 +72,7 @@ Q_APPLICATION_STATIC(QHostInfoLookupManager, theHostInfoLookupManager)
 
 }
 
-QHostInfoResult::QHostInfoResult(const QObject *receiver, QtPrivate::SlotObjUniquePtr slot)
+QHostInfoResult::QHostInfoResult(const QObject *receiver, BobUIPrivate::SlotObjUniquePtr slot)
     : receiver{receiver ? receiver : this}, slotObj{std::move(slot)}
 {
     Q_ASSERT(this->receiver);
@@ -110,7 +110,7 @@ void QHostInfoResult::postResultsReady(const QHostInfo &info)
 
     QMetaObject::invokeMethod(result,
                               &QHostInfoResult::finalizePostResultsReady,
-                              Qt::QueuedConnection,
+                              BobUI::QueuedConnection,
                               info);
 }
 
@@ -135,7 +135,7 @@ void QHostInfoResult::finalizePostResultsReady(const QHostInfo &info)
     \brief The QHostInfo class provides static functions for host name lookups.
 
     \reentrant
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
 
     QHostInfo finds the IP address(es) associated with a host name,
@@ -178,11 +178,11 @@ void QHostInfoResult::finalizePostResultsReady(const QHostInfo &info)
     there is no guarantee that all IP addresses registered for a domain or
     host will be returned.
 
-    \note Since Qt 4.6.1 QHostInfo is using multiple threads for DNS lookup
+    \note Since BobUI 4.6.1 QHostInfo is using multiple threads for DNS lookup
     instead of one dedicated DNS thread. This improves performance,
     but also changes the order of signal emissions when using lookupHost()
-    compared to previous versions of Qt.
-    \note Since Qt 4.6.3 QHostInfo is using a small internal 60 second DNS cache
+    compared to previous versions of BobUI.
+    \note Since BobUI 4.6.3 QHostInfo is using a small internal 60 second DNS cache
     for performance improvements.
 
     \sa QAbstractSocket, {RFC 3492}, {RFC 6724}
@@ -221,7 +221,7 @@ static int nextId()
     \note There is no guarantee on the order the signals will be emitted
     if you start multiple requests with lookupHost().
 
-    \note In Qt versions prior to 6.7, this function took \a receiver as
+    \note In BobUI versions prior to 6.7, this function took \a receiver as
     (non-const) \c{QObject*}.
 
     \sa abortHostLookup(), addresses(), error(), fromName()
@@ -267,7 +267,7 @@ int QHostInfo::lookupHost(const QString &name, const QObject *receiver, const ch
     lookup.
 
     The \a functor will be run in the thread that makes the call to lookupHost;
-    that thread must have a running Qt event loop.
+    that thread must have a running BobUI event loop.
 
     \note There is no guarantee on the order the signals will be emitted
     if you start multiple requests with lookupHost().
@@ -290,7 +290,7 @@ int QHostInfo::lookupHost(const QString &name, const QObject *receiver, const ch
 
     If \a context is destroyed before the lookup completes, the
     \a functor will not be called. The \a functor will be run in the
-    thread of \a context. The context's thread must have a running Qt
+    thread of \a context. The context's thread must have a running BobUI
     event loop.
 
     Here is an alternative signature for the function:
@@ -356,7 +356,7 @@ QHostInfo QHostInfoAgent::reverseLookup(const QHostAddress &address)
     sockaddr_in sa4;
     sockaddr_in6 sa6;
     sockaddr *sa = nullptr;
-    QT_SOCKLEN_T saSize;
+    BOBUI_SOCKLEN_T saSize;
     if (address.protocol() == QAbstractSocket::IPv4Protocol) {
         sa = reinterpret_cast<sockaddr *>(&sa4);
         saSize = sizeof(sa4);
@@ -733,10 +733,10 @@ QString QHostInfo::localHostName()
 */
 int QHostInfo::lookupHostImpl(const QString &name,
                               const QObject *receiver,
-                              QtPrivate::QSlotObjectBase *slotObjRaw,
+                              BobUIPrivate::QSlotObjectBase *slotObjRaw,
                               const char *member)
 {
-    QtPrivate::SlotObjUniquePtr slotObj{slotObjRaw};
+    BobUIPrivate::SlotObjUniquePtr slotObj{slotObjRaw};
 #if defined QHOSTINFO_DEBUG
     qDebug("QHostInfo::lookupHostImpl(\"%s\", %p, %p, %s)",
            name.toLatin1().constData(), receiver, slotObj.get(), member ? member + 1 : 0);
@@ -763,7 +763,7 @@ int QHostInfo::lookupHostImpl(const QString &name,
         QHostInfoResult result(receiver, std::move(slotObj));
         if (isUsingStringBasedSlot) {
             QObject::connect(&result, SIGNAL(resultsReady(QHostInfo)),
-                            receiver, member, Qt::QueuedConnection);
+                            receiver, member, BobUI::QueuedConnection);
         }
         result.postResultsReady(hostInfo);
 
@@ -781,7 +781,7 @@ int QHostInfo::lookupHostImpl(const QString &name,
     QHostInfoResult result(receiver, std::move(slotObj));
     if (isUsingStringBasedSlot) {
         QObject::connect(&result, SIGNAL(resultsReady(QHostInfo)),
-                        receiver, member, Qt::QueuedConnection);
+                        receiver, member, BobUI::QueuedConnection);
     }
     result.postResultsReady(hostInfo);
 #else
@@ -798,7 +798,7 @@ int QHostInfo::lookupHostImpl(const QString &name,
                 QHostInfoResult result(receiver, std::move(slotObj));
                 if (isUsingStringBasedSlot) {
                     QObject::connect(&result, SIGNAL(resultsReady(QHostInfo)),
-                                    receiver, member, Qt::QueuedConnection);
+                                    receiver, member, BobUI::QueuedConnection);
                 }
                 result.postResultsReady(info);
                 return id;
@@ -809,7 +809,7 @@ int QHostInfo::lookupHostImpl(const QString &name,
         QHostInfoRunnable *runnable = new QHostInfoRunnable(name, id, receiver, std::move(slotObj));
         if (isUsingStringBasedSlot) {
             QObject::connect(&runnable->resultEmitter, SIGNAL(resultsReady(QHostInfo)),
-                                receiver, member, Qt::QueuedConnection);
+                                receiver, member, BobUI::QueuedConnection);
         }
         manager->scheduleLookup(runnable);
     }
@@ -818,7 +818,7 @@ int QHostInfo::lookupHostImpl(const QString &name,
 }
 
 QHostInfoRunnable::QHostInfoRunnable(const QString &hn, int i, const QObject *receiver,
-                                     QtPrivate::SlotObjUniquePtr slotObj)
+                                     BobUIPrivate::SlotObjUniquePtr slotObj)
     : toBeLookedUp{hn}, id{i}, resultEmitter{receiver, std::move(slotObj)}
 {
     setAutoDelete(true);
@@ -827,7 +827,7 @@ QHostInfoRunnable::QHostInfoRunnable(const QString &hn, int i, const QObject *re
 QHostInfoRunnable::~QHostInfoRunnable()
     = default;
 
-// the QHostInfoLookupManager will at some point call this via a QThreadPool
+// the QHostInfoLookupManager will at some point call this via a BOBUIhreadPool
 void QHostInfoRunnable::run()
 {
     QHostInfoLookupManager *manager = theHostInfoLookupManager();
@@ -863,7 +863,7 @@ void QHostInfoRunnable::run()
     hostInfo.setLookupId(id);
     resultEmitter.postResultsReady(hostInfo);
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // now also iterate through the postponed ones
     {
         QMutexLocker locker(&manager->mutex);
@@ -881,15 +881,15 @@ void QHostInfoRunnable::run()
     }
 
 #endif
-    // thread goes back to QThreadPool
+    // thread goes back to BOBUIhreadPool
 }
 
 QHostInfoLookupManager::QHostInfoLookupManager() : wasDeleted(false)
 {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     QObject::connect(QCoreApplication::instance(), &QObject::destroyed,
                      &threadPool, [&](QObject *) { threadPool.waitForDone(); },
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     threadPool.setMaxThreadCount(20); // do up to 20 DNS lookups in parallel
 #endif
 }
@@ -900,7 +900,7 @@ QHostInfoLookupManager::~QHostInfoLookupManager()
     wasDeleted = true;
     locker.unlock();
 
-    // don't qDeleteAll currentLookups, the QThreadPool has ownership
+    // don't qDeleteAll currentLookups, the BOBUIhreadPool has ownership
     clear();
 }
 
@@ -910,7 +910,7 @@ void QHostInfoLookupManager::clear()
         QMutexLocker locker(&mutex);
         qDeleteAll(scheduledLookups);
         qDeleteAll(finishedLookups);
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
         qDeleteAll(postponedLookups);
         postponedLookups.clear();
 #endif
@@ -918,7 +918,7 @@ void QHostInfoLookupManager::clear()
         finishedLookups.clear();
     }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     threadPool.waitForDone();
 #endif
     cache.clear();
@@ -943,7 +943,7 @@ void QHostInfoLookupManager::rescheduleWithMutexHeld()
         finishedLookups.clear();
     }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     auto isAlreadyRunning = [this](QHostInfoRunnable *lookup) {
         return std::any_of(currentLookups.cbegin(), currentLookups.cend(), ToBeLookedUpEquals(lookup->toBeLookedUp));
     };
@@ -1005,7 +1005,7 @@ void QHostInfoLookupManager::abortLookup(int id)
     if (id == -1)
         return;
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // is postponed? delete and return
     for (int i = 0; i < postponedLookups.size(); i++) {
         if (postponedLookups.at(i)->id == id) {
@@ -1046,7 +1046,7 @@ void QHostInfoLookupManager::lookupFinished(QHostInfoRunnable *r)
     if (wasDeleted)
         return;
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     currentLookups.removeOne(r);
 #endif
     finishedLookups.append(r);
@@ -1054,7 +1054,7 @@ void QHostInfoLookupManager::lookupFinished(QHostInfoRunnable *r)
 }
 
 // This function returns immediately when we had a result in the cache, else it will later emit a signal
-QHostInfo qt_qhostinfo_lookup(const QString &name, QObject *receiver, const char *member, bool *valid, int *id)
+QHostInfo bobui_qhostinfo_lookup(const QString &name, QObject *receiver, const char *member, bool *valid, int *id)
 {
     *valid = false;
     *id = -1;
@@ -1075,7 +1075,7 @@ QHostInfo qt_qhostinfo_lookup(const QString &name, QObject *receiver, const char
     return QHostInfo();
 }
 
-void qt_qhostinfo_clear_cache()
+void bobui_qhostinfo_clear_cache()
 {
     QHostInfoLookupManager* manager = theHostInfoLookupManager();
     if (manager) {
@@ -1083,8 +1083,8 @@ void qt_qhostinfo_clear_cache()
     }
 }
 
-#ifdef QT_BUILD_INTERNAL
-void Q_AUTOTEST_EXPORT qt_qhostinfo_enable_cache(bool e)
+#ifdef BOBUI_BUILD_INTERNAL
+void Q_AUTOTEST_EXPORT bobui_qhostinfo_enable_cache(bool e)
 {
     QHostInfoLookupManager* manager = theHostInfoLookupManager();
     if (manager) {
@@ -1092,7 +1092,7 @@ void Q_AUTOTEST_EXPORT qt_qhostinfo_enable_cache(bool e)
     }
 }
 
-void qt_qhostinfo_cache_inject(const QString &hostname, const QHostInfo &resolution)
+void bobui_qhostinfo_cache_inject(const QString &hostname, const QHostInfo &resolution)
 {
     QHostInfoLookupManager* manager = theHostInfoLookupManager();
     if (!manager || !manager->cache.isEnabled())
@@ -1106,7 +1106,7 @@ void qt_qhostinfo_cache_inject(const QString &hostname, const QHostInfo &resolut
 // cache 128 items
 QHostInfoCache::QHostInfoCache() : max_age(60), enabled(true), cache(128)
 {
-#ifdef QT_QHOSTINFO_CACHE_DISABLED_BY_DEFAULT
+#ifdef BOBUI_QHOSTINFO_CACHE_DISABLED_BY_DEFAULT
     enabled.store(false, std::memory_order_relaxed);
 #endif
 }
@@ -1150,7 +1150,7 @@ void QHostInfoCache::clear()
     cache.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhostinfo_p.cpp"
 #include "moc_qhostinfo.cpp"

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "basictoolsplugin.h"
 
 #include <QInputDialog>
 #include <QPainter>
 #include <QRandomGenerator>
-#include <QtMath>
+#include <BobUIMath>
 
 //! [0]
 QStringList BasicToolsPlugin::brushes() const
@@ -42,8 +42,8 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
     } else if (brush == tr("Air Brush")) {
         int numSteps = 2 + (newPos - oldPos).manhattanLength() / 2;
 
-        painter.setBrush(QBrush(color, Qt::Dense6Pattern));
-        painter.setPen(Qt::NoPen);
+        painter.setBrush(QBrush(color, BobUI::Dense6Pattern));
+        painter.setPen(BobUI::NoPen);
 
         for (int i = 0; i < numSteps; ++i) {
             int x = oldPos.x() + i * (newPos.x() - oldPos.x()) / (numSteps - 1);
@@ -106,7 +106,7 @@ QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
     } else if (shape == tr("Text...")) {
         QString text = QInputDialog::getText(parent, tr("Text Shape"),
                                              tr("Enter text:"),
-                                             QLineEdit::Normal, tr("Qt"));
+                                             QLineEdit::Normal, tr("BobUI"));
         if (!text.isEmpty()) {
             QFont timesFont("Times", 50);
             timesFont.setStyleStrategy(QFont::ForceOutline);

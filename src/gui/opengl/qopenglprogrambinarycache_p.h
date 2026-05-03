@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLPROGRAMBINARYCACHE_P_H
 #define QOPENGLPROGRAMBINARYCACHE_P_H
@@ -8,27 +8,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qcache.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/QLoggingCategory>
-#include <QtGui/private/qopenglcontext_p.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qcache.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/private/qopenglcontext_p.h>
 #include <rhi/qshader.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // These classes are also used by the OpenGL backend of QRhi. They must
 // therefore stay independent from QOpenGLShader(Program). Must rely only on
 // QOpenGLContext/Functions.
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcOpenGLProgramDiskCache, Q_GUI_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcOpenGLProgramDiskCache, Q_GUI_EXPORT)
 
 class Q_GUI_EXPORT QOpenGLProgramBinaryCache
 {
@@ -69,7 +69,7 @@ private:
         uint format;
     };
     QCache<QByteArray, MemCacheEntry> m_memCache;
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
     void (QOPENGLF_APIENTRYP programBinaryOES)(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length);
     void (QOPENGLF_APIENTRYP getProgramBinaryOES)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary);
     void initializeProgramBinaryOES(QOpenGLContext *context);
@@ -108,6 +108,6 @@ private:
     QOpenGLMultiGroupSharedResource m_resource;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

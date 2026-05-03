@@ -1,19 +1,19 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qsystemtrayicon Binary:
 #####################################################################
 
-qt_internal_add_manual_test(qsystemtrayicon
+bobui_internal_add_manual_test(qsystemtrayicon
     GUI
     SOURCES
         main.cpp
     INCLUDE_DIRECTORIES
         .
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )
 
 # Resources:
@@ -27,7 +27,7 @@ set(icons_resource_files
     "macsystray64x64.png"
 )
 
-qt_internal_add_resource(qsystemtrayicon "icons"
+bobui_internal_add_resource(qsystemtrayicon "icons"
     PREFIX
         "/"
     FILES

@@ -1,0 +1,4 @@
+BOBUIreeWidget::item {
+   border: 1px solid #32ff44;
+   background-color: transparent;
+}

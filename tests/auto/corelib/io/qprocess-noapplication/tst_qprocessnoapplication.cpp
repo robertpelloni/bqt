@@ -1,10 +1,10 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QProcess>
-#include <QtCore/QThread>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QProcess>
+#include <BobUICore/BOBUIhread>
+#include <BOBUIest>
 
 class tst_QProcessNoApplication : public QObject
 {
@@ -16,13 +16,13 @@ private Q_SLOTS:
 
 void tst_QProcessNoApplication::initializationDeadlock()
 {
-    // see QTBUG-27260
+    // see BOBUIBUG-27260
     // QProcess on Unix uses (or used to, at the time of the writing of this test)
     // a global class called QProcessManager.
     // This class is instantiated (or was) only in the main thread, which meant that
     // blocking the main thread while waiting for QProcess could mean a deadlock.
 
-    struct MyThread : public QThread
+    struct MyThread : public BOBUIhread
     {
         void run() override
         {
@@ -32,7 +32,7 @@ void tst_QProcessNoApplication::initializationDeadlock()
         }
     };
 
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()), 0 };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()), 0 };
     int argc = 1;
     QCoreApplication app(argc, argv);
     MyThread thread;
@@ -40,6 +40,6 @@ void tst_QProcessNoApplication::initializationDeadlock()
     QVERIFY(thread.wait(10000));
 }
 
-QTEST_APPLESS_MAIN(tst_QProcessNoApplication)
+BOBUIEST_APPLESS_MAIN(tst_QProcessNoApplication)
 
 #include "tst_qprocessnoapplication.moc"

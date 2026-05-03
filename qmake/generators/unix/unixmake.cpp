@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "unixmake.h"
 #include "option.h"
@@ -9,7 +9,7 @@
 #include <time.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 ProStringList UnixMakefileGenerator::libdirToFlags(const ProKey &key)
 {
@@ -66,7 +66,7 @@ UnixMakefileGenerator::init()
 
     project->values("QMAKE_ORIG_DESTDIR") = project->values("DESTDIR");
     if((!project->isEmpty("QMAKE_LIB_FLAG") && !project->isActiveConfig("staticlib")) ||
-       (project->isActiveConfig("qt") &&  project->isActiveConfig("plugin"))) {
+       (project->isActiveConfig("bobui") &&  project->isActiveConfig("plugin"))) {
         if(configs.indexOf("dll") == -1) configs.append("dll");
     } else if(!project->isEmpty("QMAKE_APP_FLAG") || project->isActiveConfig("dll")) {
         configs.removeAll("staticlib");
@@ -747,4 +747,4 @@ UnixMakefileGenerator::escapeFilePath(const QString &path) const
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

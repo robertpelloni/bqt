@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-#ifndef QTICOHANDLER_H
-#define QTICOHANDLER_H
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+#ifndef BOBUIICOHANDLER_H
+#define BOBUIICOHANDLER_H
 
-#include <QtGui/QImageIOHandler>
+#include <BobUIGui/QImageIOHandler>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class ICOReader;
-class QtIcoHandler: public QImageIOHandler
+class BobUIIcoHandler: public QImageIOHandler
 {
 public:
-    QtIcoHandler(QIODevice *device);
-    virtual ~QtIcoHandler();
+    BobUIIcoHandler(QIODevice *device);
+    virtual ~BobUIIcoHandler();
 
     bool canRead() const override;
     bool read(QImage *image) override;
@@ -33,7 +33,7 @@ private:
     mutable bool knownCanRead = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif /* QTICOHANDLER_H */
+#endif /* BOBUIICOHANDLER_H */
 

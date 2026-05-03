@@ -1,17 +1,17 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Rafael Roquetto <rafael.roquetto@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "provider.h"
 #include "panic.h"
 
 #include <qfile.h>
 #include <qfileinfo.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qregularexpression.h>
 #include <qstring.h>
-#include <qtpreprocessorsupport.h>
+#include <bobuipreprocessorsupport.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #ifdef TRACEGEN_DEBUG
 #include <qdebug.h>
@@ -97,7 +97,7 @@ static QString removeBraces(QString type)
 }
 
 #define TYPEDATA_ENTRY(type, backendType) \
-{ QT_STRINGIFY(type), backendType }
+{ BOBUI_STRINGIFY(type), backendType }
 
 static Tracepoint::Field::Type backendType(QString rawType)
 {
@@ -136,13 +136,13 @@ static Tracepoint::Field::Type backendType(QString rawType)
         TYPEDATA_ENTRY(float, Tracepoint::Field::Float),
         TYPEDATA_ENTRY(double, Tracepoint::Field::Float),
         TYPEDATA_ENTRY(long double, Tracepoint::Field::Float),
-        TYPEDATA_ENTRY(QString, Tracepoint::Field::QtString),
-        TYPEDATA_ENTRY(QByteArray, Tracepoint::Field::QtByteArray),
-        TYPEDATA_ENTRY(QUrl, Tracepoint::Field::QtUrl),
-        TYPEDATA_ENTRY(QRect, Tracepoint::Field::QtRect),
-        TYPEDATA_ENTRY(QSize, Tracepoint::Field::QtSize),
-        TYPEDATA_ENTRY(QRectF, Tracepoint::Field::QtRectF),
-        TYPEDATA_ENTRY(QSizeF, Tracepoint::Field::QtSizeF)
+        TYPEDATA_ENTRY(QString, Tracepoint::Field::BobUIString),
+        TYPEDATA_ENTRY(QByteArray, Tracepoint::Field::BobUIByteArray),
+        TYPEDATA_ENTRY(QUrl, Tracepoint::Field::BobUIUrl),
+        TYPEDATA_ENTRY(QRect, Tracepoint::Field::BobUIRect),
+        TYPEDATA_ENTRY(QSize, Tracepoint::Field::BobUISize),
+        TYPEDATA_ENTRY(QRectF, Tracepoint::Field::BobUIRectF),
+        TYPEDATA_ENTRY(QSizeF, Tracepoint::Field::BobUISizeF)
     };
 
     auto backendType = [](const QString &rawType) {
@@ -296,7 +296,7 @@ Provider parseProvider(const QString &filename)
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
         panic("Cannot open %s: %s", qPrintable(filename), qPrintable(f.errorString()));
 
-    QTextStream s(&f);
+    BOBUIextStream s(&f);
 
     static const QRegularExpression tracedef(QStringLiteral("^([A-Za-z][A-Za-z0-9_]*)\\((.*)\\)$"));
     static const QRegularExpression enumenddef(QStringLiteral("^} ?([A-Za-z][A-Za-z0-9_:]*);"));
@@ -430,7 +430,7 @@ Provider parseProvider(const QString &filename)
         if (match.hasMatch()) {
             const QString name = match.captured(1);
             const QString argsString = match.captured(2);
-            const QStringList args = argsString.split(u',', Qt::SkipEmptyParts);
+            const QStringList args = argsString.split(u',', BobUI::SkipEmptyParts);
 
             provider.tracepoints << parseTracepoint(provider, name, args, filename, lineNumber);
         } else {

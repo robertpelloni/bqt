@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qfileselectors Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qfileselectors LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Resources:
@@ -69,11 +69,11 @@ set(qfileselector_resource_files
     "platforms/test5"
 )
 
-qt_internal_add_test(tst_qfileselectors
+bobui_internal_add_test(tst_qfileselectors
     SOURCES
         tst_qfileselector.cpp
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
     TESTDATA ${qfileselector_resource_files}
     BUILTIN_TESTDATA
 )

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qmath.h>
-#include <QtGui/qquaternion.h>
+#include <BOBUIest>
+#include <BobUICore/qmath.h>
+#include <BobUIGui/qquaternion.h>
 
 // This is a more tolerant version of qFuzzyCompare that also handles the case
 // where one or more of the values being compare are close to zero
@@ -250,32 +250,32 @@ void tst_QQuaternion::create()
 // Test the computation of dot product.
 void tst_QQuaternion::dotProduct_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("scalar1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("scalar2");
-    QTest::addColumn<float>("dot");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("scalar1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("scalar2");
+    BOBUIest::addColumn<float>("dot");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 1.0f;
 
-    QTest::newRow("unitvec")
+    BOBUIest::newRow("unitvec")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << 3.0f << 4.0f
         << 4.0f << 5.0f << 6.0f << 7.0f
         << 60.0f;
@@ -302,22 +302,22 @@ void tst_QQuaternion::dotProduct()
 // Test length computation for quaternions.
 void tst_QQuaternion::length_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("z");
-    QTest::addColumn<float>("w");
-    QTest::addColumn<float>("len");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("z");
+    BOBUIest::addColumn<float>("w");
+    BOBUIest::addColumn<float>("len");
 
-    QTest::newRow("null") << 0.0f << 0.0f << 0.0f << 0.0f << 0.0f;
-    QTest::newRow("1x") << 1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("1y") << 0.0f << 1.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("1z") << 0.0f << 0.0f << 1.0f << 0.0f << 1.0f;
-    QTest::newRow("1w") << 0.0f << 0.0f << 0.0f << 1.0f << 1.0f;
-    QTest::newRow("-1x") << -1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("-1y") << 0.0f << -1.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("-1z") << 0.0f << 0.0f << -1.0f << 0.0f << 1.0f;
-    QTest::newRow("-1w") << 0.0f << 0.0f << 0.0f << -1.0f << 1.0f;
-    QTest::newRow("two") << 2.0f << -2.0f << 2.0f << 2.0f << std::sqrt(16.0f);
+    BOBUIest::newRow("null") << 0.0f << 0.0f << 0.0f << 0.0f << 0.0f;
+    BOBUIest::newRow("1x") << 1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1y") << 0.0f << 1.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1z") << 0.0f << 0.0f << 1.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1w") << 0.0f << 0.0f << 0.0f << 1.0f << 1.0f;
+    BOBUIest::newRow("-1x") << -1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1y") << 0.0f << -1.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1z") << 0.0f << 0.0f << -1.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1w") << 0.0f << 0.0f << 0.0f << -1.0f << 1.0f;
+    BOBUIest::newRow("two") << 2.0f << -2.0f << 2.0f << 2.0f << std::sqrt(16.0f);
 }
 void tst_QQuaternion::length()
 {
@@ -426,45 +426,45 @@ void tst_QQuaternion::compare()
 // Test addition for quaternions.
 void tst_QQuaternion::add_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("w3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("w3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f << 0.0f
         << 3.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 0.0f << 2.0f << 0.0f << 0.0f
         << 0.0f << 3.0f << 0.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 0.0f
         << 0.0f << 0.0f << 2.0f << 0.0f
         << 0.0f << 0.0f << 3.0f << 0.0f;
 
-    QTest::newRow("wonly")
+    BOBUIest::newRow("wonly")
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 0.0f << 2.0f
         << 0.0f << 0.0f << 0.0f << 3.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << 3.0f << 8.0f
         << 4.0f << 5.0f << -6.0f << 9.0f
         << 5.0f << 7.0f << -3.0f << 17.0f;
@@ -550,24 +550,24 @@ void tst_QQuaternion::subtract()
 // Test quaternion multiplication.
 void tst_QQuaternion::multiply_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("unitvec")
+    BOBUIest::newRow("unitvec")
         << 1.0f << 0.0f << 0.0f << 1.0f
         << 0.0f << 1.0f << 0.0f << 1.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << 3.0f << 7.0f
         << 4.0f << 5.0f << 6.0f << 8.0f;
 
@@ -575,7 +575,7 @@ void tst_QQuaternion::multiply_data()
         for (float x = -1.0f; x <= 1.0f; x += 0.5f)
             for (float y = -1.0f; y <= 1.0f; y += 0.5f)
                 for (float z = -1.0f; z <= 1.0f; z += 0.5f) {
-                    QTest::addRow("exhaustive: (%.1f, %.1f, %.1f), %.1f", x, y, z, w)
+                    BOBUIest::addRow("exhaustive: (%.1f, %.1f, %.1f), %.1f", x, y, z, w)
                         << x << y << z << w
                         << z << w << y << x;
                 }
@@ -609,47 +609,47 @@ void tst_QQuaternion::multiply()
 // Test multiplication by a factor for quaternions.
 void tst_QQuaternion::multiplyFactor_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 100.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 2.0f
         << 2.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 2.0f
         << 0.0f << 2.0f << 0.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 0.0f
         << 2.0f
         << 0.0f << 0.0f << 2.0f << 0.0f;
 
-    QTest::newRow("wonly")
+    BOBUIest::newRow("wonly")
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 2.0f
         << 0.0f << 0.0f << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << -3.0f << 4.0f
         << 2.0f
         << 2.0f << 4.0f << -6.0f << 8.0f;
 
-    QTest::newRow("allzero")
+    BOBUIest::newRow("allzero")
         << 1.0f << 2.0f << -3.0f << 4.0f
         << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
@@ -759,24 +759,24 @@ void tst_QQuaternion::conjugated()
 // Test quaternion creation from an axis and an angle.
 void tst_QQuaternion::fromAxisAndAngle_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("angle");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("angle");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 90.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 180.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 270.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << -3.0f << 45.0f;
 }
 void tst_QQuaternion::fromAxisAndAngle()
@@ -854,31 +854,31 @@ void tst_QQuaternion::fromRotationMatrix()
 // Test quaternion convertion to and from orthonormal axes.
 void tst_QQuaternion::fromAxes_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("angle");
-    QTest::addColumn<QVector3D>("xAxis");
-    QTest::addColumn<QVector3D>("yAxis");
-    QTest::addColumn<QVector3D>("zAxis");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("angle");
+    BOBUIest::addColumn<QVector3D>("xAxis");
+    BOBUIest::addColumn<QVector3D>("yAxis");
+    BOBUIest::addColumn<QVector3D>("zAxis");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << QVector3D(1, 0, 0) << QVector3D(0, 1, 0) << QVector3D(0, 0, 1);
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 90.0f
         << QVector3D(1, 0, 0) << QVector3D(0, 0, 1) << QVector3D(0, -1, 0);
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 180.0f
         << QVector3D(-1, 0, 0) << QVector3D(0, 1, 0) << QVector3D(0, 0, -1);
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 270.0f
         << QVector3D(0, -1, 0) << QVector3D(1, 0, 0) << QVector3D(0, 0, 1);
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << -3.0f << 45.0f
         << QVector3D(0.728028f, -0.525105f, -0.440727f) << QVector3D(0.608789f, 0.790791f, 0.0634566f) << QVector3D(0.315202f, -0.314508f, 0.895395f);
 }
@@ -915,41 +915,41 @@ void tst_QQuaternion::fromAxes()
 // Test shortest arc quaternion.
 void tst_QQuaternion::rotationTo_data()
 {
-    QTest::addColumn<QVector3D>("from");
-    QTest::addColumn<QVector3D>("to");
+    BOBUIest::addColumn<QVector3D>("from");
+    BOBUIest::addColumn<QVector3D>("to");
 
     // same
-    QTest::newRow("+X -> +X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(10.0f, 0.0f, 0.0f);
-    QTest::newRow("-X -> -X") << QVector3D(-10.0f, 0.0f, 0.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
-    QTest::newRow("+Y -> +Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
-    QTest::newRow("-Y -> -Y") << QVector3D(0.0f, -10.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("+Z -> +Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, 10.0f);
-    QTest::newRow("-Z -> -Z") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(0.0f, 0.0f, -10.0f);
-    QTest::newRow("+X+Y+Z -> +X+Y+Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(10.0f, 10.0f, 10.0f);
-    QTest::newRow("-X-Y-Z -> -X-Y-Z") << QVector3D(-10.0f, -10.0f, -10.0f) << QVector3D(-10.0f, -10.0f, -10.0f);
+    BOBUIest::newRow("+X -> +X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("-X -> -X") << QVector3D(-10.0f, 0.0f, 0.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("+Y -> +Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
+    BOBUIest::newRow("-Y -> -Y") << QVector3D(0.0f, -10.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("+Z -> +Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, 10.0f);
+    BOBUIest::newRow("-Z -> -Z") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(0.0f, 0.0f, -10.0f);
+    BOBUIest::newRow("+X+Y+Z -> +X+Y+Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(10.0f, 10.0f, 10.0f);
+    BOBUIest::newRow("-X-Y-Z -> -X-Y-Z") << QVector3D(-10.0f, -10.0f, -10.0f) << QVector3D(-10.0f, -10.0f, -10.0f);
 
     // arbitrary
-    QTest::newRow("+Z -> +X") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(10.0f, 0.0f, 0.0f);
-    QTest::newRow("+Z -> -X") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
-    QTest::newRow("+Z -> +Y") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 10.0f, 0.0f);
-    QTest::newRow("+Z -> -Y") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("-Z -> +X") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(10.0f, 0.0f, 0.0f);
-    QTest::newRow("-Z -> -X") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
-    QTest::newRow("-Z -> +Y") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(0.0f, 10.0f, 0.0f);
-    QTest::newRow("-Z -> -Y") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("+X -> +Y") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
-    QTest::newRow("+X -> -Y") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("-X -> +Y") << QVector3D(-10.0f, 0.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
-    QTest::newRow("-X -> -Y") << QVector3D(-10.0f, 0.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("+X+Y+Z -> +X-Y-Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(10.0f, -10.0f, -10.0f);
-    QTest::newRow("-X-Y+Z -> -X+Y-Z") << QVector3D(-10.0f, -10.0f, 10.0f) << QVector3D(-10.0f, 10.0f, -10.0f);
-    QTest::newRow("+X+Y+Z -> +Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(0.0f, 0.0f, 10.0f);
+    BOBUIest::newRow("+Z -> +X") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("+Z -> -X") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("+Z -> +Y") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 10.0f, 0.0f);
+    BOBUIest::newRow("+Z -> -Y") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("-Z -> +X") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("-Z -> -X") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("-Z -> +Y") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(0.0f, 10.0f, 0.0f);
+    BOBUIest::newRow("-Z -> -Y") << QVector3D(0.0f, 0.0f, -10.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("+X -> +Y") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
+    BOBUIest::newRow("+X -> -Y") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("-X -> +Y") << QVector3D(-10.0f, 0.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
+    BOBUIest::newRow("-X -> -Y") << QVector3D(-10.0f, 0.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("+X+Y+Z -> +X-Y-Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(10.0f, -10.0f, -10.0f);
+    BOBUIest::newRow("-X-Y+Z -> -X+Y-Z") << QVector3D(-10.0f, -10.0f, 10.0f) << QVector3D(-10.0f, 10.0f, -10.0f);
+    BOBUIest::newRow("+X+Y+Z -> +Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(0.0f, 0.0f, 10.0f);
 
     // collinear
-    QTest::newRow("+X -> -X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
-    QTest::newRow("+Y -> -Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("+Z -> -Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, -10.0f);
-    QTest::newRow("+X+Y+Z -> -X-Y-Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(-10.0f, -10.0f, -10.0f);
+    BOBUIest::newRow("+X -> -X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("+Y -> -Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("+Z -> -Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, -10.0f);
+    BOBUIest::newRow("+X+Y+Z -> -X-Y-Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(-10.0f, -10.0f, -10.0f);
 }
 void tst_QQuaternion::rotationTo()
 {
@@ -972,8 +972,8 @@ void tst_QQuaternion::rotationTo()
 // Test quaternion convertion to and from orthonormal axes.
 void tst_QQuaternion::fromDirection_data()
 {
-    QTest::addColumn<QVector3D>("direction");
-    QTest::addColumn<QVector3D>("up");
+    BOBUIest::addColumn<QVector3D>("direction");
+    BOBUIest::addColumn<QVector3D>("up");
 
     // 1 default constructed element + 360/45 loops, each adding 4 elements
     constexpr int size = 1 + (360 / 45) * 4;
@@ -994,7 +994,7 @@ void tst_QQuaternion::fromDirection_data()
     for (QQuaternion q : orientations) {
         const auto [xAxis, yAxis, zAxis] = q.toAxes();
 
-        QTest::addRow("ortho dirs: (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f)",
+        BOBUIest::addRow("ortho dirs: (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f)",
                       xAxis.x(), xAxis.y(), xAxis.z(),
                       yAxis.x(), yAxis.y(), yAxis.z(),
                       zAxis.x(), zAxis.y(), zAxis.z())
@@ -1002,20 +1002,20 @@ void tst_QQuaternion::fromDirection_data()
     }
 
     // collinear up and dir
-    QTest::newRow("dir: +X, up: +X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(10.0f, 0.0f, 0.0f);
-    QTest::newRow("dir: +X, up: -X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
-    QTest::newRow("dir: +Y, up: +Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
-    QTest::newRow("dir: +Y, up: -Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
-    QTest::newRow("dir: +Z, up: +Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, 10.0f);
-    QTest::newRow("dir: +Z, up: -Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, -10.0f);
-    QTest::newRow("dir: +X+Y+Z, up: +X+Y+Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(10.0f, 10.0f, 10.0f);
-    QTest::newRow("dir: +X+Y+Z, up: -X-Y-Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(-10.0f, -10.0f, -10.0f);
+    BOBUIest::newRow("dir: +X, up: +X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("dir: +X, up: -X") << QVector3D(10.0f, 0.0f, 0.0f) << QVector3D(-10.0f, 0.0f, 0.0f);
+    BOBUIest::newRow("dir: +Y, up: +Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, 10.0f, 0.0f);
+    BOBUIest::newRow("dir: +Y, up: -Y") << QVector3D(0.0f, 10.0f, 0.0f) << QVector3D(0.0f, -10.0f, 0.0f);
+    BOBUIest::newRow("dir: +Z, up: +Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, 10.0f);
+    BOBUIest::newRow("dir: +Z, up: -Z") << QVector3D(0.0f, 0.0f, 10.0f) << QVector3D(0.0f, 0.0f, -10.0f);
+    BOBUIest::newRow("dir: +X+Y+Z, up: +X+Y+Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(10.0f, 10.0f, 10.0f);
+    BOBUIest::newRow("dir: +X+Y+Z, up: -X-Y-Z") << QVector3D(10.0f, 10.0f, 10.0f) << QVector3D(-10.0f, -10.0f, -10.0f);
 
     // invalid up
     for (QQuaternion q : orientations) {
         const auto [xAxis, yAxis, zAxis] = q.toAxes();
 
-        QTest::addRow("bad dirs: (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f)",
+        BOBUIest::addRow("bad dirs: (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f), (%.1f,%.1f,%.1f)",
                       xAxis.x(), xAxis.y(), xAxis.z(),
                       yAxis.x(), yAxis.y(), yAxis.z(),
                       zAxis.x(), zAxis.y(), zAxis.z())
@@ -1048,71 +1048,71 @@ void tst_QQuaternion::fromDirection()
 // Test quaternion creation from an axis and an angle.
 void tst_QQuaternion::fromEulerAngles_data()
 {
-    QTest::addColumn<float>("pitch");
-    QTest::addColumn<float>("yaw");
-    QTest::addColumn<float>("roll");
+    BOBUIest::addColumn<float>("pitch");
+    BOBUIest::addColumn<float>("yaw");
+    BOBUIest::addColumn<float>("roll");
 
-    QTest::addColumn<QQuaternion>("quaternion");
+    BOBUIest::addColumn<QQuaternion>("quaternion");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << QQuaternion(1.0f, 0.0f, 0.0f, 0.0f);
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 90.0f << 0.0f << 0.0f << QQuaternion(0.707107f, 0.707107f, 0.0f, 0.0f);
 
-    QTest::newRow("xonly-opposite")
+    BOBUIest::newRow("xonly-opposite")
         << -90.0f << 0.0f << 0.0f << QQuaternion{M_SQRT1_2, -M_SQRT1_2, 0, 0};
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 180.0f << 0.0f << QQuaternion(0.0f, 0.0f, 1.0f, 0.0f);
 
-    QTest::newRow("yonly-opposite")
+    BOBUIest::newRow("yonly-opposite")
         << 0.0f << -180.0f << 0.0f << QQuaternion(0.0f, 0.0f, -1.0f, 0.0f);
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 270.0f << QQuaternion(-0.707107f, 0.0f, 0.0f, 0.707107f);
 
-    QTest::newRow("zonly-opposite")
+    BOBUIest::newRow("zonly-opposite")
         << 0.0f << 0.0f << -270.0f << QQuaternion(-M_SQRT1_2, 0.0f, 0.0f, M_SQRT1_2);
 
-    QTest::newRow("x+z")
+    BOBUIest::newRow("x+z")
         << 30.0f << 0.0f << 45.0f << QQuaternion(0.892399f, 0.239118f, -0.099046f, 0.369644f);
 
-    QTest::newRow("x+y")
+    BOBUIest::newRow("x+y")
         << 30.0f << 90.0f << 0.0f << QQuaternion(0.683013f, 0.183013f, 0.683013f, -0.183013f);
 
-    QTest::newRow("y+z")
+    BOBUIest::newRow("y+z")
         << 0.0f << 45.0f << 30.0f << QQuaternion(0.892399f, 0.099046f, 0.369644f, 0.239118f);
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 30.0f << 240.0f << -45.0f << QQuaternion(-0.531976f, -0.43968f, 0.723317f, -0.02226f);
 
     // Three gimbal_lock cases are not unique for the conversions from quaternion
-    // to euler, Qt will use only XY rotations for these cases.
+    // to euler, BobUI will use only XY rotations for these cases.
     // For example, QQuaternion(0.5f, 0.5f, -0.5f, 0.5f) can be EulerXYZ(90.0f, 0.0f, 90.0f), too.
-    // But Qt will always convert it to EulerXYZ(90.0f, -90.0f, 0.0f) without Z-rotation.
-    QTest::newRow("gimbal_lock_1")
+    // But BobUI will always convert it to EulerXYZ(90.0f, -90.0f, 0.0f) without Z-rotation.
+    BOBUIest::newRow("gimbal_lock_1")
             << 90.0f << -90.0f << 0.0f << QQuaternion(0.5f, 0.5f, -0.5f, 0.5f);
 
-    QTest::newRow("gimbal_lock_2")
+    BOBUIest::newRow("gimbal_lock_2")
             << 90.0f << 40.0f << 0.0f << QQuaternion(0.664463f, 0.664463f, 0.241845f, -0.241845f);
 
-    QTest::newRow("gimbal_lock_3") << 90.0f << 170.0f << 0.0f
+    BOBUIest::newRow("gimbal_lock_3") << 90.0f << 170.0f << 0.0f
                                    << QQuaternion(0.0616285f, 0.0616285f, 0.704416f, -0.704416f);
 
     // These four examples have a fraction of errors that would bypass normalize() threshold
     // and could make Gimbal lock detection fail.
-    QTest::newRow("gimbal_lock_fraction_1")
+    BOBUIest::newRow("gimbal_lock_fraction_1")
             << -90.0f << 90.001152f << 0.0f << QQuaternion(0.499989986f, -0.5f, 0.5f, 0.5f);
 
-    QTest::newRow("gimbal_lock_fraction_2")
+    BOBUIest::newRow("gimbal_lock_fraction_2")
             << -90.0f << -179.999985f << 0.0f
             << QQuaternion(1.00000001e-07f, 1.00000001e-10f, -0.707106769f, -0.707105756f);
 
-    QTest::newRow("gimbal_lock_fraction_3")
+    BOBUIest::newRow("gimbal_lock_fraction_3")
             << -90.0f << 90.0011597f << 0.0f << QQuaternion(0.499989986f, -0.49999994f, 0.5f, 0.5f);
 
-    QTest::newRow("gimbal_lock_fraction_4")
+    BOBUIest::newRow("gimbal_lock_fraction_4")
             << -90.0f << -180.0f << 0.0f
             << QQuaternion(9.99999996e-12f, 9.99999996e-12f, -0.707106769f, -0.707096756f);
 }
@@ -1200,46 +1200,46 @@ void tst_QQuaternion::fromEulerAngles()
 // Test spherical interpolation of quaternions.
 void tst_QQuaternion::slerp_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("angle1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("angle2");
-    QTest::addColumn<float>("t");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("angle3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("angle1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("angle2");
+    BOBUIest::addColumn<float>("t");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("angle3");
 
-    QTest::newRow("first")
+    BOBUIest::newRow("first")
         << 1.0f << 2.0f << -3.0f << 90.0f
         << 1.0f << 2.0f << -3.0f << 180.0f
         << 0.0f
         << 1.0f << 2.0f << -3.0f << 90.0f;
-    QTest::newRow("first2")
+    BOBUIest::newRow("first2")
         << 1.0f << 2.0f << -3.0f << 90.0f
         << 1.0f << 2.0f << -3.0f << 180.0f
         << -0.5f
         << 1.0f << 2.0f << -3.0f << 90.0f;
-    QTest::newRow("second")
+    BOBUIest::newRow("second")
         << 1.0f << 2.0f << -3.0f << 90.0f
         << 1.0f << 2.0f << -3.0f << 180.0f
         << 1.0f
         << 1.0f << 2.0f << -3.0f << 180.0f;
-    QTest::newRow("second2")
+    BOBUIest::newRow("second2")
         << 1.0f << 2.0f << -3.0f << 90.0f
         << 1.0f << 2.0f << -3.0f << 180.0f
         << 1.5f
         << 1.0f << 2.0f << -3.0f << 180.0f;
-    QTest::newRow("middle")
+    BOBUIest::newRow("middle")
         << 1.0f << 2.0f << -3.0f << 90.0f
         << 1.0f << 2.0f << -3.0f << 180.0f
         << 0.5f
         << 1.0f << 2.0f << -3.0f << 135.0f;
-    QTest::newRow("wide angle")
+    BOBUIest::newRow("wide angle")
         << 1.0f << 2.0f << -3.0f << 0.0f
         << 1.0f << 2.0f << -3.0f << 270.0f
         << 0.5f
@@ -1375,6 +1375,6 @@ void tst_QQuaternion::metaTypes()
     QCOMPARE(qMetaTypeId<QQuaternion>(), int(QMetaType::QQuaternion));
 }
 
-QTEST_APPLESS_MAIN(tst_QQuaternion)
+BOBUIEST_APPLESS_MAIN(tst_QQuaternion)
 
 #include "tst_qquaternion.moc"

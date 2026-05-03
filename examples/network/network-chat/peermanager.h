@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PEERMANAGER_H
 #define PEERMANAGER_H
@@ -7,7 +7,7 @@
 #include <QByteArray>
 #include <QList>
 #include <QObject>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QUdpSocket>
 
 class Client;
@@ -40,7 +40,7 @@ private:
     QList<QHostAddress> broadcastAddresses;
     QList<QHostAddress> ipAddresses;
     QUdpSocket broadcastSocket;
-    QTimer broadcastTimer;
+    BOBUIimer broadcastTimer;
     QString username;
     QByteArray localUniqueId;
     int serverPort = 0;

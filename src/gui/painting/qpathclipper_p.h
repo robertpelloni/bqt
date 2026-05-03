@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPATHCLIPPER_P_H
 #define QPATHCLIPPER_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qpainterpath.h>
-#include <QtCore/qlist.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qpainterpath.h>
+#include <BobUICore/qlist.h>
 
 #include <private/qbezier_p.h>
 #include <private/qdatabuffer_p.h>
 #include <stdio.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QWingedEdge;
@@ -137,7 +137,7 @@ public:
             return t < o.t;
         }
     };
-    friend class QTypeInfo<Intersection>;
+    friend class BOBUIypeInfo<Intersection>;
 
     struct Segment {
         Segment(int pathId, int vertexA, int vertexB)
@@ -159,7 +159,7 @@ public:
 
         QRectF bounds;
     };
-    friend class QTypeInfo<Segment>;
+    friend class BOBUIypeInfo<Segment>;
 
 
     QPathSegments(int reserve);
@@ -449,6 +449,6 @@ inline void QWingedEdge::TraversalStatus::flip()
     flipTraversal();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPATHCLIPPER_P_H

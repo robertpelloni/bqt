@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class MyGraphicsItem : public QGraphicsRectItem
 {
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     QGraphicsScene s(0.0, 0.0, 5000.0, 5000.0);
     v->setScene(&s);
     v->setInteractive(true);
-    v->setRubberBandSelectionMode(Qt::IntersectsItemBoundingRect);
+    v->setRubberBandSelectionMode(BobUI::IntersectsItemBoundingRect);
 
     for (int u = 0; u < 100; ++u)
         for (int n = 0; n < 100; ++n) {

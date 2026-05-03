@@ -1,6 +1,6 @@
 // Copyright (C) 2021 David Edmundson <davidedmundson@kde.org>
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_H
 #define MOCKCOMPOSITOR_H
@@ -15,7 +15,7 @@
 #include "fractionalscalev1.h"
 #include "xdgdialog.h"
 
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 
 // As defined in linux/input-event-codes.h
 #ifndef BTN_LEFT
@@ -77,21 +77,21 @@ public:
 } // namespace MockCompositor
 
 #define QCOMPOSITOR_VERIFY(expr) QVERIFY(exec([&]{ return expr; }))
-#define QCOMPOSITOR_TRY_VERIFY(expr) QTRY_VERIFY(exec([&]{ return expr; }))
+#define QCOMPOSITOR_TRY_VERIFY(expr) BOBUIRY_VERIFY(exec([&]{ return expr; }))
 #define QCOMPOSITOR_COMPARE(expr, expr2) QCOMPARE(exec([&]{ return expr; }), expr2)
-#define QCOMPOSITOR_TRY_COMPARE(expr, expr2) QTRY_COMPARE(exec([&]{ return expr; }), expr2)
+#define QCOMPOSITOR_TRY_COMPARE(expr, expr2) BOBUIRY_COMPARE(exec([&]{ return expr; }), expr2)
 
 #define QCOMPOSITOR_TEST_MAIN(test) \
 int main(int argc, char **argv) \
 { \
-    QTemporaryDir tmpRuntimeDir; \
+    BOBUIemporaryDir tmpRuntimeDir; \
     qputenv("XDG_RUNTIME_DIR", tmpRuntimeDir.path().toLocal8Bit()); \
-    qputenv("XDG_CURRENT_DESKTOP", "qtwaylandtests"); \
-    qputenv("QT_QPA_PLATFORM", "wayland"); \
+    qputenv("XDG_CURRENT_DESKTOP", "bobuiwaylandtests"); \
+    qputenv("BOBUI_QPA_PLATFORM", "wayland"); \
     test tc; \
     QGuiApplication app(argc, argv); \
-    QTEST_SET_MAIN_SOURCE_PATH \
-    return QTest::qExec(&tc, argc, argv); \
+    BOBUIEST_SET_MAIN_SOURCE_PATH \
+    return BOBUIest::qExec(&tc, argc, argv); \
 } \
 
 #endif

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QLineEdit>
 #include <QStyle>
 #include <QStyleOptionGroupBox>
@@ -14,7 +14,7 @@
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 #include "qgroupbox.h"
 
@@ -48,8 +48,8 @@ private slots:
     void toggledVsClicked();
     void childrenAreDisabled();
     void propagateFocus();
-    void task_QTBUG_19170_ignoreMouseReleaseEvent();
-    void task_QTBUG_15519_propagateMouseEvents();
+    void task_BOBUIBUG_19170_ignoreMouseReleaseEvent();
+    void task_BOBUIBUG_15519_propagateMouseEvents();
     void buttonPressKeys();
 
 private:
@@ -78,30 +78,30 @@ void tst_QGroupBox::init()
 
 void tst_QGroupBox::setTitle_data()
 {
-    QTest::addColumn<QString>("title");
-    QTest::addColumn<QString>("expectedTitle");
-    QTest::newRow( "empty_title" ) << QString("") << QString("");
-    QTest::newRow( "normal_title" ) << QString("Whatisthematrix") << QString("Whatisthematrix");
-    QTest::newRow( "special_chars_title" ) << QString("<>%&#/()=") << QString("<>%&#/()=");
-    QTest::newRow( "spaces_title" ) << QString("  Hello  ") <<  QString("  Hello  ");
+    BOBUIest::addColumn<QString>("title");
+    BOBUIest::addColumn<QString>("expectedTitle");
+    BOBUIest::newRow( "empty_title" ) << QString("") << QString("");
+    BOBUIest::newRow( "normal_title" ) << QString("Whatisthematrix") << QString("Whatisthematrix");
+    BOBUIest::newRow( "special_chars_title" ) << QString("<>%&#/()=") << QString("<>%&#/()=");
+    BOBUIest::newRow( "spaces_title" ) << QString("  Hello  ") <<  QString("  Hello  ");
 }
 
 void tst_QGroupBox::setCheckable_data()
 {
-    QTest::addColumn<bool>("checkable");
-    QTest::addColumn<bool>("expectedCheckable");
-    QTest::newRow( "checkable_true" ) << true << true;
-    QTest::newRow( "checkable_false" ) << false << false;
+    BOBUIest::addColumn<bool>("checkable");
+    BOBUIest::addColumn<bool>("expectedCheckable");
+    BOBUIest::newRow( "checkable_true" ) << true << true;
+    BOBUIest::newRow( "checkable_false" ) << false << false;
 }
 
 void tst_QGroupBox::setChecked_data()
 {
-    QTest::addColumn<bool>("checkable");
-    QTest::addColumn<bool>("checked");
-    QTest::addColumn<bool>("expectedChecked");
-    QTest::newRow( "checkable_false_checked_true" ) << false << true << false;
-    QTest::newRow( "checkable_true_checked_true" ) << true << true << true;
-    QTest::newRow( "checkable_true_checked_false" ) << true << false << false;
+    BOBUIest::addColumn<bool>("checkable");
+    BOBUIest::addColumn<bool>("checked");
+    BOBUIest::addColumn<bool>("expectedChecked");
+    BOBUIest::newRow( "checkable_false_checked_true" ) << false << true << false;
+    BOBUIest::newRow( "checkable_true_checked_true" ) << true << true << true;
+    BOBUIest::newRow( "checkable_true_checked_false" ) << true << false << false;
 }
 
 void tst_QGroupBox::setTitle()
@@ -322,29 +322,29 @@ void tst_QGroupBox::toggled()
 
 void tst_QGroupBox::clicked_data()
 {
-    QTest::addColumn<bool>("checkable");
-    QTest::addColumn<bool>("initialCheck");
-    QTest::addColumn<int>("areaToHit");
-    QTest::addColumn<int>("clickedCount");
-    QTest::addColumn<bool>("finalCheck");
+    BOBUIest::addColumn<bool>("checkable");
+    BOBUIest::addColumn<bool>("initialCheck");
+    BOBUIest::addColumn<int>("areaToHit");
+    BOBUIest::addColumn<int>("clickedCount");
+    BOBUIest::addColumn<bool>("finalCheck");
 
-    QTest::newRow("hit nothing, not checkable") << false << false << int(QStyle::SC_None) << 0 << false;
-    QTest::newRow("hit frame, not checkable") << false << false << int(QStyle::SC_GroupBoxFrame) << 0 << false;
-    QTest::newRow("hit content, not checkable") << false << false << int(QStyle::SC_GroupBoxContents) << 0 << false;
-    QTest::newRow("hit label, not checkable") << false << false << int(QStyle::SC_GroupBoxLabel) << 0 << false;
-    QTest::newRow("hit checkbox, not checkable") << false << false << int(QStyle::SC_GroupBoxCheckBox) << 0 << false;
+    BOBUIest::newRow("hit nothing, not checkable") << false << false << int(QStyle::SC_None) << 0 << false;
+    BOBUIest::newRow("hit frame, not checkable") << false << false << int(QStyle::SC_GroupBoxFrame) << 0 << false;
+    BOBUIest::newRow("hit content, not checkable") << false << false << int(QStyle::SC_GroupBoxContents) << 0 << false;
+    BOBUIest::newRow("hit label, not checkable") << false << false << int(QStyle::SC_GroupBoxLabel) << 0 << false;
+    BOBUIest::newRow("hit checkbox, not checkable") << false << false << int(QStyle::SC_GroupBoxCheckBox) << 0 << false;
 
-    QTest::newRow("hit nothing, checkable") << true << true << int(QStyle::SC_None) << 0 << true;
-    QTest::newRow("hit frame, checkable") << true << true << int(QStyle::SC_GroupBoxFrame) << 0 << true;
-    QTest::newRow("hit content, checkable") << true << true << int(QStyle::SC_GroupBoxContents) << 0 << true;
-    QTest::newRow("hit label, checkable") << true << true << int(QStyle::SC_GroupBoxLabel) << 1 << false;
-    QTest::newRow("hit checkbox, checkable") << true << true << int(QStyle::SC_GroupBoxCheckBox) << 1 << false;
+    BOBUIest::newRow("hit nothing, checkable") << true << true << int(QStyle::SC_None) << 0 << true;
+    BOBUIest::newRow("hit frame, checkable") << true << true << int(QStyle::SC_GroupBoxFrame) << 0 << true;
+    BOBUIest::newRow("hit content, checkable") << true << true << int(QStyle::SC_GroupBoxContents) << 0 << true;
+    BOBUIest::newRow("hit label, checkable") << true << true << int(QStyle::SC_GroupBoxLabel) << 1 << false;
+    BOBUIest::newRow("hit checkbox, checkable") << true << true << int(QStyle::SC_GroupBoxCheckBox) << 1 << false;
 
-    QTest::newRow("hit nothing, checkable, but unchecked") << true << false << int(QStyle::SC_None) << 0 << false;
-    QTest::newRow("hit frame, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxFrame) << 0 << false;
-    QTest::newRow("hit content, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxContents) << 0 << false;
-    QTest::newRow("hit label, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxLabel) << 1 << true;
-    QTest::newRow("hit checkbox, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxCheckBox) << 1 << true;
+    BOBUIest::newRow("hit nothing, checkable, but unchecked") << true << false << int(QStyle::SC_None) << 0 << false;
+    BOBUIest::newRow("hit frame, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxFrame) << 0 << false;
+    BOBUIest::newRow("hit content, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxContents) << 0 << false;
+    BOBUIest::newRow("hit label, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxLabel) << 1 << true;
+    BOBUIest::newRow("hit checkbox, checkable, but unchecked") << true << false << int(QStyle::SC_GroupBoxCheckBox) << 1 << true;
 }
 
 void tst_QGroupBox::clicked()
@@ -369,14 +369,14 @@ void tst_QGroupBox::clicked()
                                                     QStyle::SubControl(areaToHit), &testWidget);
 
     if (rect.isValid())
-        QTest::mouseClick(&testWidget, Qt::LeftButton, {}, rect.center());
+        BOBUIest::mouseClick(&testWidget, BobUI::LeftButton, {}, rect.center());
     else
-        QTest::mouseClick(&testWidget, Qt::LeftButton);
+        BOBUIest::mouseClick(&testWidget, BobUI::LeftButton);
 
-    QTEST(int(spy.size()), "clickedCount");
+    BOBUIEST(int(spy.size()), "clickedCount");
     if (spy.size() > 0)
-        QTEST(spy.at(0).at(0).toBool(), "finalCheck");
-    QTEST(testWidget.isChecked(), "finalCheck");
+        BOBUIEST(spy.at(0).at(0).toBool(), "finalCheck");
+    BOBUIEST(testWidget.isChecked(), "finalCheck");
 }
 
 void tst_QGroupBox::toggledVsClicked()
@@ -402,7 +402,7 @@ void tst_QGroupBox::toggledVsClicked()
     QRect rect = groupBox.style()->subControlRect(QStyle::CC_GroupBox, &option,
                                                   QStyle::SC_GroupBoxCheckBox, &groupBox);
 
-    QTest::mouseClick(&groupBox, Qt::LeftButton, {}, rect.center());
+    BOBUIest::mouseClick(&groupBox, BobUI::LeftButton, {}, rect.center());
     QCOMPARE(clickSpy.size(), 1);
     QCOMPARE(toggleSpy.size(), 2);
     QVERIFY(toggleTimeStamp < clickTimeStamp);
@@ -433,7 +433,7 @@ void tst_QGroupBox::childrenAreDisabled()
     for (QObject *object : box.children()) {
         if (QWidget *widget = qobject_cast<QWidget *>(object)) {
             QVERIFY(!widget->isEnabled());
-            QVERIFY(!widget->testAttribute(Qt::WA_ForceDisabled));
+            QVERIFY(!widget->testAttribute(BobUI::WA_ForceDisabled));
         }
     }
 
@@ -441,7 +441,7 @@ void tst_QGroupBox::childrenAreDisabled()
     for (QObject *object : box.children()) {
         if (QWidget *widget = qobject_cast<QWidget *>(object)) {
             QVERIFY(widget->isEnabled());
-            QVERIFY(!widget->testAttribute(Qt::WA_ForceDisabled));
+            QVERIFY(!widget->testAttribute(BobUI::WA_ForceDisabled));
         }
     }
 
@@ -449,30 +449,30 @@ void tst_QGroupBox::childrenAreDisabled()
     for (QObject *object : box.children()) {
         if (QWidget *widget = qobject_cast<QWidget *>(object)) {
             QVERIFY(!widget->isEnabled());
-            QVERIFY(!widget->testAttribute(Qt::WA_ForceDisabled));
+            QVERIFY(!widget->testAttribute(BobUI::WA_ForceDisabled));
         }
     }
 }
 
 void tst_QGroupBox::propagateFocus()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QGroupBox box;
     QLineEdit lineEdit(&box);
     box.show();
-    QVERIFY(QTest::qWaitForWindowActive(&box));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&box));
     box.setFocus();
-    QTRY_COMPARE(qApp->focusWidget(), static_cast<QWidget*>(&lineEdit));
+    BOBUIRY_COMPARE(qApp->focusWidget(), static_cast<QWidget*>(&lineEdit));
 }
 
-void tst_QGroupBox::task_QTBUG_19170_ignoreMouseReleaseEvent()
+void tst_QGroupBox::task_BOBUIBUG_19170_ignoreMouseReleaseEvent()
 {
     QGroupBox box;
     box.setCheckable(true);
     box.setChecked(false);
-    box.setTitle("This is a test for QTBUG-19170");
+    box.setTitle("This is a test for BOBUIBUG-19170");
     box.show();
 
     QStyleOptionGroupBox option;
@@ -481,11 +481,11 @@ void tst_QGroupBox::task_QTBUG_19170_ignoreMouseReleaseEvent()
     QRect rect = box.style()->subControlRect(QStyle::CC_GroupBox, &option,
                                              QStyle::SC_GroupBoxCheckBox, &box);
 
-    QTest::mouseClick(&box, Qt::LeftButton, {}, rect.center());
+    BOBUIest::mouseClick(&box, BobUI::LeftButton, {}, rect.center());
     QCOMPARE(box.isChecked(), true);
 
     box.setChecked(false);
-    QTest::mouseRelease(&box, Qt::LeftButton, {}, rect.center());
+    BOBUIest::mouseRelease(&box, BobUI::LeftButton, {}, rect.center());
     QCOMPARE(box.isChecked(), false);
 }
 
@@ -520,14 +520,14 @@ protected:
     }
 };
 
-void tst_QGroupBox::task_QTBUG_15519_propagateMouseEvents()
+void tst_QGroupBox::task_BOBUIBUG_15519_propagateMouseEvents()
 {
     MouseEventTestWidget parent;
     QGroupBox box(&parent);
     parent.setMouseTracking(true);
     box.setMouseTracking(true);
     box.resize(100, 100);
-    box.setTitle("This is a test for QTBUG-15519");
+    box.setTitle("This is a test for BOBUIBUG-15519");
     box.show();
 
     QStyleOptionGroupBox option;
@@ -539,19 +539,19 @@ void tst_QGroupBox::task_QTBUG_15519_propagateMouseEvents()
     // Without a checkbox, all mouse events should propagate
 
     parent.reset();
-    QTest::mousePress(&box, Qt::LeftButton, {}, checkBoxRect.center());
+    BOBUIest::mousePress(&box, BobUI::LeftButton, {}, checkBoxRect.center());
     QCOMPARE(parent.mousePressed, true);
 
     parent.reset();
-    QTest::mousePress(&box, Qt::LeftButton, {}, box.rect().center());
+    BOBUIest::mousePress(&box, BobUI::LeftButton, {}, box.rect().center());
     QCOMPARE(parent.mousePressed, true);
 
     parent.reset();
-    QTest::mouseRelease(&box, Qt::LeftButton, {}, checkBoxRect.center());
+    BOBUIest::mouseRelease(&box, BobUI::LeftButton, {}, checkBoxRect.center());
     QCOMPARE(parent.mouseReleased, true);
 
     parent.reset();
-    QTest::mouseRelease(&box, Qt::LeftButton, {}, box.rect().center());
+    BOBUIest::mouseRelease(&box, BobUI::LeftButton, {}, box.rect().center());
     QCOMPARE(parent.mouseReleased, true);
 
     parent.reset();
@@ -567,19 +567,19 @@ void tst_QGroupBox::task_QTBUG_15519_propagateMouseEvents()
     box.setCheckable(true);
 
     parent.reset();
-    QTest::mousePress(&box, Qt::LeftButton, {}, checkBoxRect.center());
+    BOBUIest::mousePress(&box, BobUI::LeftButton, {}, checkBoxRect.center());
     QCOMPARE(parent.mousePressed, false);
 
     parent.reset();
-    QTest::mousePress(&box, Qt::LeftButton, {}, box.rect().center());
+    BOBUIest::mousePress(&box, BobUI::LeftButton, {}, box.rect().center());
     QCOMPARE(parent.mousePressed, true);
 
     parent.reset();
-    QTest::mouseRelease(&box, Qt::LeftButton, {}, checkBoxRect.center());
+    BOBUIest::mouseRelease(&box, BobUI::LeftButton, {}, checkBoxRect.center());
     QCOMPARE(parent.mouseReleased, false);
 
     parent.reset();
-    QTest::mouseRelease(&box, Qt::LeftButton, {}, box.rect().center());
+    BOBUIest::mouseRelease(&box, BobUI::LeftButton, {}, box.rect().center());
     QCOMPARE(parent.mouseReleased, true);
 
     parent.reset();
@@ -598,16 +598,16 @@ void tst_QGroupBox::buttonPressKeys()
     QSignalSpy clickedSpy(&groupBox, &QGroupBox::clicked);
     const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                          ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                         .value<QList<Qt::Key>>();
+                                         .value<QList<BobUI::Key>>();
     for (int i = 0; i < buttonPressKeys.size(); ++i) {
-        QTest::keyClick(&groupBox, buttonPressKeys[i]);
+        BOBUIest::keyClick(&groupBox, buttonPressKeys[i]);
         QCOMPARE(clickedSpy.size(), i + 1);
     }
 
     groupBox.setCheckable(false);
     QSignalSpy notClickedSpy(&groupBox, &QGroupBox::clicked);
     for (int i = 0; i < buttonPressKeys.size(); ++i) {
-        QTest::keyClick(&groupBox, buttonPressKeys[i]);
+        BOBUIest::keyClick(&groupBox, buttonPressKeys[i]);
         QCOMPARE(notClickedSpy.size(), 0);
     }
 }
@@ -616,9 +616,9 @@ void tst_QGroupBox::sendMouseMoveEvent(QWidget *widget, const QPoint &localPos)
 {
     // Send a MouseMove event without actually moving the pointer
     QMouseEvent event(QEvent::MouseMove, localPos, widget->mapToGlobal(localPos),
-                      Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+                      BobUI::NoButton, BobUI::NoButton, BobUI::NoModifier);
     QApplication::sendEvent(widget, &event);
 }
 
-QTEST_MAIN(tst_QGroupBox)
+BOBUIEST_MAIN(tst_QGroupBox)
 #include "tst_qgroupbox.moc"

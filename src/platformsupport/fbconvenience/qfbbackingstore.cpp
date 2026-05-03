@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfbbackingstore_p.h"
 #include "qfbwindow_p.h"
 #include "qfbscreen_p.h"
 
 #include <qpa/qplatformwindow.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qpainter.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qpainter.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QFbBackingStore::QFbBackingStore(QWindow *window)
     : QPlatformBackingStore(window)
@@ -69,7 +69,7 @@ void QFbBackingStore::beginPaint(const QRegion &region)
         QPainter p(&mImage);
         p.setCompositionMode(QPainter::CompositionMode_Source);
         for (const QRect &r : region)
-            p.fillRect(r, Qt::transparent);
+            p.fillRect(r, BobUI::transparent);
     }
 }
 
@@ -78,4 +78,4 @@ void QFbBackingStore::endPaint()
     unlock();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

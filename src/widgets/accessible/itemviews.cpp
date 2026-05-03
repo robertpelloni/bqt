@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "itemviews_p.h"
 
 #include <qheaderview.h>
-#if QT_CONFIG(tableview)
-#include <qtableview.h>
+#if BOBUI_CONFIG(tableview)
+#include <bobuiableview.h>
 #endif
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 #include <qlistview.h>
 #endif
-#if QT_CONFIG(treeview)
-#include <qtreeview.h>
-#include <private/qtreeview_p.h>
+#if BOBUI_CONFIG(treeview)
+#include <bobuireeview.h>
+#include <private/bobuireeview_p.h>
 #endif
 #include <private/qwidget_p.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
 Implementation of the IAccessible2 table2 interface. Much simpler than
@@ -43,7 +43,7 @@ int QAccessibleTable::logicalIndex(const QModelIndex &index) const
     if (!theModel || !index.isValid())
         return -1;
 
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
     if (role() == QAccessible::List) {
         if (index.column() != qobject_cast<const QListView*>(view())->modelColumn())
             return -1;
@@ -75,12 +75,12 @@ QHeaderView *QAccessibleTable::horizontalHeader() const
 {
     QHeaderView *header = nullptr;
     if (false) {
-#if QT_CONFIG(tableview)
-    } else if (const QTableView *tv = qobject_cast<const QTableView*>(view())) {
+#if BOBUI_CONFIG(tableview)
+    } else if (const BOBUIableView *tv = qobject_cast<const BOBUIableView*>(view())) {
         header = tv->horizontalHeader();
 #endif
-#if QT_CONFIG(treeview)
-    } else if (const QTreeView *tv = qobject_cast<const QTreeView*>(view())) {
+#if BOBUI_CONFIG(treeview)
+    } else if (const BOBUIreeView *tv = qobject_cast<const BOBUIreeView*>(view())) {
         header = tv->header();
 #endif
     }
@@ -91,8 +91,8 @@ QHeaderView *QAccessibleTable::verticalHeader() const
 {
     QHeaderView *header = nullptr;
     if (false) {
-#if QT_CONFIG(tableview)
-    } else if (const QTableView *tv = qobject_cast<const QTableView*>(view())) {
+#if BOBUI_CONFIG(tableview)
+    } else if (const BOBUIableView *tv = qobject_cast<const BOBUIableView*>(view())) {
         header = tv->verticalHeader();
 #endif
     }
@@ -157,7 +157,7 @@ QString QAccessibleTable::columnDescription(int column) const
     const QAbstractItemModel *theModel = theView->model();
     if (!theModel)
         return QString();
-    return theModel->headerData(column, Qt::Horizontal).toString();
+    return theModel->headerData(column, BobUI::Horizontal).toString();
 }
 
 int QAccessibleTable::columnCount() const
@@ -206,7 +206,7 @@ QString QAccessibleTable::rowDescription(int row) const
     const QAbstractItemModel *theModel = theView->model();
     if (!theModel)
         return QString();
-    return theModel->headerData(row, Qt::Vertical).toString();
+    return theModel->headerData(row, BobUI::Vertical).toString();
 }
 
 QList<QAccessibleInterface *> QAccessibleTable::selectedCells() const
@@ -606,14 +606,14 @@ QAccessibleInterface *QAccessibleTable::child(int logicalIndex) const
             if (hHeader && row == 0) {
                 iface = new QAccessibleTableCornerButton(theView);
             } else {
-                iface = new QAccessibleTableHeaderCell(theView, row - hHeader, Qt::Vertical);
+                iface = new QAccessibleTableHeaderCell(theView, row - hHeader, BobUI::Vertical);
             }
         }
         --column;
     }
     if (!iface && hHeader) {
         if (row == 0) {
-            iface = new QAccessibleTableHeaderCell(theView, column, Qt::Horizontal);
+            iface = new QAccessibleTableHeaderCell(theView, column, BobUI::Horizontal);
         }
         --row;
     }
@@ -747,7 +747,7 @@ void QAccessibleTable::modelChange(QAccessibleTableModelChangeEvent *event)
     }
 }
 
-#if QT_CONFIG(treeview)
+#if BOBUI_CONFIG(treeview)
 
 // TREE VIEW
 
@@ -756,7 +756,7 @@ QModelIndex QAccessibleTree::indexFromLogical(int row, int column) const
     if (!isValid() || !view()->model())
         return QModelIndex();
 
-    const QTreeView *treeView = qobject_cast<const QTreeView*>(view());
+    const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView*>(view());
     if (Q_UNLIKELY(row < 0 || column < 0 || treeView->d_func()->viewItems.size() <= row)) {
         qWarning() << "QAccessibleTree::indexFromLogical: invalid index: " << row << column << " for " << treeView;
         return QModelIndex();
@@ -785,7 +785,7 @@ QAccessibleInterface *QAccessibleTree::childAt(int x, int y) const
     if (!index.isValid())
         return nullptr;
 
-    const QTreeView *treeView = qobject_cast<const QTreeView *>(theView);
+    const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView *>(theView);
     int row = treeView->d_func()->viewIndex(index) + (horizontalHeader() ? 1 : 0);
     int column = index.column();
 
@@ -803,7 +803,7 @@ QAccessibleInterface *QAccessibleTree::focusChild() const
     if (!index.isValid())
         return nullptr;
 
-    const QTreeView *treeView = qobject_cast<const QTreeView *>(theView);
+    const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView *>(theView);
     const int row = treeView->d_func()->viewIndex(index) + (horizontalHeader() ? 1 : 0);
     const int column = index.column();
 
@@ -813,7 +813,7 @@ QAccessibleInterface *QAccessibleTree::focusChild() const
 
 int QAccessibleTree::childCount() const
 {
-    const QTreeView *treeView = qobject_cast<const QTreeView*>(view());
+    const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView*>(view());
     if (!treeView)
         return 0;
     const QAbstractItemModel *theModel = treeView->model();
@@ -844,7 +844,7 @@ QAccessibleInterface *QAccessibleTree::child(int logicalIndex) const
 
     if (horizontalHeader()) {
         if (index < theModel->columnCount(rootIndex))
-            iface = new QAccessibleTableHeaderCell(theView, index, Qt::Horizontal);
+            iface = new QAccessibleTableHeaderCell(theView, index, BobUI::Horizontal);
         else
             index -= theModel->columnCount(rootIndex);
     }
@@ -864,7 +864,7 @@ QAccessibleInterface *QAccessibleTree::child(int logicalIndex) const
 
 int QAccessibleTree::rowCount() const
 {
-    const QTreeView *treeView = qobject_cast<const QTreeView*>(view());
+    const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView*>(view());
     if (!treeView)
         return 0;
     return treeView->d_func()->viewItems.size();
@@ -884,7 +884,7 @@ int QAccessibleTree::indexOfChild(const QAccessibleInterface *iface) const
 
     if (iface->role() == QAccessible::TreeItem) {
         const QAccessibleTableCell* cell = static_cast<const QAccessibleTableCell*>(iface);
-        const QTreeView *treeView = qobject_cast<const QTreeView *>(theView);
+        const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView *>(theView);
         Q_ASSERT(treeView);
         int row = treeView->d_func()->viewIndex(cell->m_index) + (horizontalHeader() ? 1 : 0);
         int column = cell->m_index.column();
@@ -909,7 +909,7 @@ QAccessibleInterface *QAccessibleTree::cellAt(int row, int column) const
         qWarning("Requested invalid tree cell: %d %d", row, column);
         return nullptr;
     }
-    const QTreeView *treeView = qobject_cast<const QTreeView*>(view());
+    const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView*>(view());
     Q_ASSERT(treeView);
     int logicalIndex = treeView->d_func()->accessibleTable2Index(index);
 
@@ -959,9 +959,9 @@ bool QAccessibleTree::selectRow(int row)
     return true;
 }
 
-#endif // QT_CONFIG(treeview)
+#endif // BOBUI_CONFIG(treeview)
 
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 
 // LIST VIEW
 
@@ -1039,7 +1039,7 @@ QList<QAccessibleInterface *> QAccessibleList::selectedCells() const
     return cells;
 }
 
-#endif // QT_CONFIG(listview)
+#endif // BOBUI_CONFIG(listview)
 
 // TABLE CELL
 
@@ -1067,7 +1067,7 @@ QList<QAccessibleInterface*> QAccessibleTableCell::rowHeaderCells() const
     QList<QAccessibleInterface*> headerCell;
     if (verticalHeader()) {
         // FIXME
-        headerCell.append(new QAccessibleTableHeaderCell(view, m_index.row(), Qt::Vertical));
+        headerCell.append(new QAccessibleTableHeaderCell(view, m_index.row(), BobUI::Vertical));
     }
     return headerCell;
 }
@@ -1077,7 +1077,7 @@ QList<QAccessibleInterface*> QAccessibleTableCell::columnHeaderCells() const
     QList<QAccessibleInterface*> headerCell;
     if (horizontalHeader()) {
         // FIXME
-        headerCell.append(new QAccessibleTableHeaderCell(view, m_index.column(), Qt::Horizontal));
+        headerCell.append(new QAccessibleTableHeaderCell(view, m_index.column(), BobUI::Horizontal));
     }
     return headerCell;
 }
@@ -1087,12 +1087,12 @@ QHeaderView *QAccessibleTableCell::horizontalHeader() const
     QHeaderView *header = nullptr;
 
     if (false) {
-#if QT_CONFIG(tableview)
-    } else if (const QTableView *tv = qobject_cast<const QTableView*>(view)) {
+#if BOBUI_CONFIG(tableview)
+    } else if (const BOBUIableView *tv = qobject_cast<const BOBUIableView*>(view)) {
         header = tv->horizontalHeader();
 #endif
-#if QT_CONFIG(treeview)
-    } else if (const QTreeView *tv = qobject_cast<const QTreeView*>(view)) {
+#if BOBUI_CONFIG(treeview)
+    } else if (const BOBUIreeView *tv = qobject_cast<const BOBUIreeView*>(view)) {
         header = tv->header();
 #endif
     }
@@ -1103,8 +1103,8 @@ QHeaderView *QAccessibleTableCell::horizontalHeader() const
 QHeaderView *QAccessibleTableCell::verticalHeader() const
 {
     QHeaderView *header = nullptr;
-#if QT_CONFIG(tableview)
-    if (const QTableView *tv = qobject_cast<const QTableView*>(view))
+#if BOBUI_CONFIG(tableview)
+    if (const BOBUIableView *tv = qobject_cast<const BOBUIableView*>(view))
         header = tv->verticalHeader();
 #endif
     return header;
@@ -1114,7 +1114,7 @@ int QAccessibleTableCell::columnIndex() const
 {
     if (!isValid())
         return -1;
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
     if (role() == QAccessible::ListItem) {
         return 0;
     }
@@ -1126,9 +1126,9 @@ int QAccessibleTableCell::rowIndex() const
 {
     if (!isValid())
         return -1;
-#if QT_CONFIG(treeview)
+#if BOBUI_CONFIG(treeview)
     if (role() == QAccessible::TreeItem) {
-       const QTreeView *treeView = qobject_cast<const QTreeView*>(view);
+       const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView*>(view);
        Q_ASSERT(treeView);
        int row = treeView->d_func()->viewIndex(m_index);
        return row;
@@ -1269,14 +1269,14 @@ QAccessible::State QAccessibleTableCell::state() const
     if (view->selectionModel()->currentIndex() == m_index)
         st.focused = true;
 
-    const QVariant checkState = m_index.data(Qt::CheckStateRole);
-    if (checkState.toInt() == Qt::Checked)
+    const QVariant checkState = m_index.data(BobUI::CheckStateRole);
+    if (checkState.toInt() == BobUI::Checked)
         st.checked = true;
 
-    Qt::ItemFlags flags = m_index.flags();
-    if ((flags & Qt::ItemIsUserCheckable) && checkState.isValid())
+    BobUI::ItemFlags flags = m_index.flags();
+    if ((flags & BobUI::ItemIsUserCheckable) && checkState.isValid())
         st.checkable = true;
-    if (flags & Qt::ItemIsSelectable) {
+    if (flags & BobUI::ItemIsSelectable) {
         st.selectable = true;
         st.focusable = true;
         if (view->selectionMode() == QAbstractItemView::MultiSelection)
@@ -1284,9 +1284,9 @@ QAccessible::State QAccessibleTableCell::state() const
         if (view->selectionMode() == QAbstractItemView::ExtendedSelection)
             st.extSelectable = true;
     }
-#if QT_CONFIG(treeview)
+#if BOBUI_CONFIG(treeview)
     if (m_role == QAccessible::TreeItem) {
-        const QTreeView *treeView = qobject_cast<const QTreeView*>(view);
+        const BOBUIreeView *treeView = qobject_cast<const BOBUIreeView*>(view);
         if (treeView->model()->hasChildren(m_index))
             st.expandable = true;
         if (treeView->isExpanded(m_index))
@@ -1319,12 +1319,12 @@ QString QAccessibleTableCell::text(QAccessible::Text t) const
     QAbstractItemModel *model = view->model();
     switch (t) {
     case QAccessible::Name:
-        value = model->data(m_index, Qt::AccessibleTextRole).toString();
+        value = model->data(m_index, BobUI::AccessibleTextRole).toString();
         if (value.isEmpty())
-            value = model->data(m_index, Qt::DisplayRole).toString();
+            value = model->data(m_index, BobUI::DisplayRole).toString();
         break;
     case QAccessible::Description:
-        value = model->data(m_index, Qt::AccessibleDescriptionRole).toString();
+        value = model->data(m_index, BobUI::AccessibleDescriptionRole).toString();
         break;
     default:
         break;
@@ -1334,14 +1334,14 @@ QString QAccessibleTableCell::text(QAccessible::Text t) const
 
 void QAccessibleTableCell::setText(QAccessible::Text /*t*/, const QString &text)
 {
-    if (!isValid() || !(m_index.flags() & Qt::ItemIsEditable))
+    if (!isValid() || !(m_index.flags() & BobUI::ItemIsEditable))
         return;
     view->model()->setData(m_index, text);
 }
 
 bool QAccessibleTableCell::isValid() const
 {
-    return view && !qt_widget_private(view)->data.in_destructor
+    return view && !bobui_widget_private(view)->data.in_destructor
             && view->model() && m_index.isValid();
 }
 
@@ -1355,7 +1355,7 @@ QAccessibleInterface *QAccessibleTableCell::child(int) const
     return nullptr;
 }
 
-QAccessibleTableHeaderCell::QAccessibleTableHeaderCell(QAbstractItemView *view_, int index_, Qt::Orientation orientation_)
+QAccessibleTableHeaderCell::QAccessibleTableHeaderCell(QAbstractItemView *view_, int index_, BobUI::Orientation orientation_)
     : view(view_), index(index_), orientation(orientation_)
 {
     Q_ASSERT(index_ >= 0);
@@ -1363,7 +1363,7 @@ QAccessibleTableHeaderCell::QAccessibleTableHeaderCell(QAbstractItemView *view_,
 
 QAccessible::Role QAccessibleTableHeaderCell::role() const
 {
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         return QAccessible::ColumnHeader;
     return QAccessible::RowHeader;
 }
@@ -1372,7 +1372,7 @@ QAccessible::State QAccessibleTableHeaderCell::state() const
 {
     QAccessible::State s;
     if (QHeaderView *h = headerView()) {
-        s.invisible = !h->testAttribute(Qt::WA_WState_Visible);
+        s.invisible = !h->testAttribute(BobUI::WA_WState_Visible);
         s.disabled = !h->isEnabled();
     }
     return s;
@@ -1382,16 +1382,16 @@ QRect QAccessibleTableHeaderCell::rect() const
 {
     QHeaderView *header = nullptr;
     if (false) {
-#if QT_CONFIG(tableview)
-    } else if (const QTableView *tv = qobject_cast<const QTableView*>(view)) {
-        if (orientation == Qt::Horizontal) {
+#if BOBUI_CONFIG(tableview)
+    } else if (const BOBUIableView *tv = qobject_cast<const BOBUIableView*>(view)) {
+        if (orientation == BobUI::Horizontal) {
             header = tv->horizontalHeader();
         } else {
             header = tv->verticalHeader();
         }
 #endif
-#if QT_CONFIG(treeview)
-    } else if (const QTreeView *tv = qobject_cast<const QTreeView*>(view)) {
+#if BOBUI_CONFIG(treeview)
+    } else if (const BOBUIreeView *tv = qobject_cast<const BOBUIreeView*>(view)) {
         header = tv->header();
 #endif
     }
@@ -1400,7 +1400,7 @@ QRect QAccessibleTableHeaderCell::rect() const
     QPoint zero = header->mapToGlobal(QPoint(0, 0));
     int sectionSize = header->sectionSize(index);
     int sectionPos = header->sectionPosition(index);
-    return orientation == Qt::Horizontal
+    return orientation == BobUI::Horizontal
             ? QRect(zero.x() + sectionPos, zero.y(), sectionSize, header->height())
             : QRect(zero.x(), zero.y() + sectionPos, header->width(), sectionSize);
 }
@@ -1411,12 +1411,12 @@ QString QAccessibleTableHeaderCell::text(QAccessible::Text t) const
     QString value;
     switch (t) {
     case QAccessible::Name:
-        value = model->headerData(index, orientation, Qt::AccessibleTextRole).toString();
+        value = model->headerData(index, orientation, BobUI::AccessibleTextRole).toString();
         if (value.isEmpty())
-            value = model->headerData(index, orientation, Qt::DisplayRole).toString();
+            value = model->headerData(index, orientation, BobUI::DisplayRole).toString();
         break;
     case QAccessible::Description:
-        value = model->headerData(index, orientation, Qt::AccessibleDescriptionRole).toString();
+        value = model->headerData(index, orientation, BobUI::AccessibleDescriptionRole).toString();
         break;
     default:
         break;
@@ -1431,12 +1431,12 @@ void QAccessibleTableHeaderCell::setText(QAccessible::Text, const QString &)
 
 bool QAccessibleTableHeaderCell::isValid() const
 {
-    const QAbstractItemModel *theModel = view && !qt_widget_private(view)->data.in_destructor
+    const QAbstractItemModel *theModel = view && !bobui_widget_private(view)->data.in_destructor
                                        ? view->model() : nullptr;
     if (!theModel)
         return false;
     const QModelIndex rootIndex = view->rootIndex();
-    return (index >= 0) && ((orientation == Qt::Horizontal)
+    return (index >= 0) && ((orientation == BobUI::Horizontal)
                         ? (index < theModel->columnCount(rootIndex))
                         : (index < theModel->rowCount(rootIndex)));
 }
@@ -1455,22 +1455,22 @@ QHeaderView *QAccessibleTableHeaderCell::headerView() const
 {
     QHeaderView *header = nullptr;
     if (false) {
-#if QT_CONFIG(tableview)
-    } else if (const QTableView *tv = qobject_cast<const QTableView*>(view)) {
-        if (orientation == Qt::Horizontal) {
+#if BOBUI_CONFIG(tableview)
+    } else if (const BOBUIableView *tv = qobject_cast<const BOBUIableView*>(view)) {
+        if (orientation == BobUI::Horizontal) {
             header = tv->horizontalHeader();
         } else {
             header = tv->verticalHeader();
         }
 #endif
-#if QT_CONFIG(treeview)
-    } else if (const QTreeView *tv = qobject_cast<const QTreeView*>(view)) {
+#if BOBUI_CONFIG(treeview)
+    } else if (const BOBUIreeView *tv = qobject_cast<const BOBUIreeView*>(view)) {
         header = tv->header();
 #endif
     }
     return header;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

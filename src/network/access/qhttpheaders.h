@@ -1,24 +1,24 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTPHEADERS_H
 #define QHTTPHEADERS_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qcontainerfwd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
 class QHttpHeadersPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QHttpHeadersPrivate, Q_NETWORK_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QHttpHeadersPrivate, Q_NETWORK_EXPORT)
 class QHttpHeaders
 {
     Q_GADGET_EXPORT(Q_NETWORK_EXPORT)
@@ -212,7 +212,7 @@ public:
     Q_NETWORK_EXPORT QHttpHeaders(const QHttpHeaders &other);
     QHttpHeaders(QHttpHeaders &&other) noexcept = default;
     Q_NETWORK_EXPORT QHttpHeaders &operator=(const QHttpHeaders &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QHttpHeaders)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QHttpHeaders)
     void swap(QHttpHeaders &other) noexcept { d.swap(other.d); }
 
     Q_NETWORK_EXPORT bool append(QAnyStringView name, QAnyStringView value);
@@ -284,11 +284,11 @@ public:
     Q_NETWORK_EXPORT QMultiHash<QByteArray, QByteArray> toMultiHash() const;
 
 private:
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QHttpHeaders &headers);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_NETWORK_EXPORT QDataStream &operator<<(QDataStream &stream, const QHttpHeaders &headers);
     friend Q_NETWORK_EXPORT QDataStream &operator>>(QDataStream &stream, QHttpHeaders &headers);
 #endif
@@ -306,6 +306,6 @@ private:
 
 Q_DECLARE_SHARED(QHttpHeaders)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHTTPHEADERS_H

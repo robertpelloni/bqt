@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMVULKANWINDOW_H
 #define QANDROIDPLATFORMVULKANWINDOW_H
@@ -14,10 +14,10 @@
 #include "qandroidplatformwindow.h"
 
 #include <QWaitCondition>
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformVulkanWindow : public QAndroidPlatformWindow
 {
@@ -27,7 +27,7 @@ public:
 
     void setGeometry(const QRect &rect) override;
     QSurfaceFormat format() const override;
-    void applicationStateChanged(Qt::ApplicationState) override;
+    void applicationStateChanged(BobUI::ApplicationState) override;
 
     VkSurfaceKHR *vkSurface();
 
@@ -44,6 +44,6 @@ private:
     PFN_vkDestroySurfaceKHR m_destroyVkSurface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDPLATFORMVULKANWINDOW_H

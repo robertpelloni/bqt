@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QLOGGING_H
 #define QLOGGING_H
 
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/qcontainerfwd.h>
 
 #if 0
 // header is automatically included in qglobal.h
-#pragma qt_no_master_include
-#pragma qt_class(QtLogging)
+#pragma bobui_no_master_include
+#pragma bobui_class(BobUILogging)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
   Forward declarations only.
@@ -26,15 +26,15 @@ class QDebug;
 class QNoDebug;
 
 
-enum QtMsgType {
-    QtDebugMsg,
-    QT7_ONLY(QtInfoMsg,)
-    QtWarningMsg,
-    QtCriticalMsg,
-    QtFatalMsg,
-    QT6_ONLY(QtInfoMsg,)
-#if QT_DEPRECATED_SINCE(6, 7)
-    QtSystemMsg Q_DECL_ENUMERATOR_DEPRECATED_X("Use QtCriticalMsg instead.") = QtCriticalMsg
+enum BobUIMsgType {
+    BobUIDebugMsg,
+    BOBUI7_ONLY(BobUIInfoMsg,)
+    BobUIWarningMsg,
+    BobUICriticalMsg,
+    BobUIFatalMsg,
+    BOBUI6_ONLY(BobUIInfoMsg,)
+#if BOBUI_DEPRECATED_SINCE(6, 7)
+    BobUISystemMsg Q_DECL_ENUMERATOR_DEPRECATED_X("Use BobUICriticalMsg instead.") = BobUICriticalMsg
 #endif
 };
 
@@ -64,9 +64,9 @@ private:
 class QLoggingCategory;
 
 #if defined(Q_CC_MSVC_ONLY)
-#  define QT_MESSAGE_LOGGER_NORETURN
+#  define BOBUI_MESSAGE_LOGGER_NORETURN
 #else
-#  define QT_MESSAGE_LOGGER_NORETURN Q_NORETURN
+#  define BOBUI_MESSAGE_LOGGER_NORETURN Q_NORETURN
 #endif
 
 class Q_CORE_EXPORT QMessageLogger
@@ -87,7 +87,7 @@ public:
     void warning(const char *msg, ...) const Q_ATTRIBUTE_FORMAT_PRINTF(2, 3);
     Q_DECL_COLD_FUNCTION
     void critical(const char *msg, ...) const Q_ATTRIBUTE_FORMAT_PRINTF(2, 3);
-    QT_MESSAGE_LOGGER_NORETURN Q_DECL_COLD_FUNCTION
+    BOBUI_MESSAGE_LOGGER_NORETURN Q_DECL_COLD_FUNCTION
     void fatal(const char *msg, ...) const noexcept Q_ATTRIBUTE_FORMAT_PRINTF(2, 3);
 
     typedef const QLoggingCategory &(*CategoryFunction)();
@@ -104,12 +104,12 @@ public:
     void critical(const QLoggingCategory &cat, const char *msg, ...) const Q_ATTRIBUTE_FORMAT_PRINTF(3, 4);
     Q_DECL_COLD_FUNCTION
     void critical(CategoryFunction catFunc, const char *msg, ...) const Q_ATTRIBUTE_FORMAT_PRINTF(3, 4);
-    QT_MESSAGE_LOGGER_NORETURN Q_DECL_COLD_FUNCTION
+    BOBUI_MESSAGE_LOGGER_NORETURN Q_DECL_COLD_FUNCTION
     void fatal(const QLoggingCategory &cat, const char *msg, ...) const noexcept Q_ATTRIBUTE_FORMAT_PRINTF(3, 4);
-    QT_MESSAGE_LOGGER_NORETURN Q_DECL_COLD_FUNCTION
+    BOBUI_MESSAGE_LOGGER_NORETURN Q_DECL_COLD_FUNCTION
     void fatal(CategoryFunction catFunc, const char *msg, ...) const noexcept Q_ATTRIBUTE_FORMAT_PRINTF(3, 4);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     QDebug debug() const;
     QDebug debug(const QLoggingCategory &cat) const;
     QDebug debug(CategoryFunction catFunc) const;
@@ -134,9 +134,9 @@ public:
     QDebug fatal(const QLoggingCategory &cat) const;
     Q_DECL_COLD_FUNCTION
     QDebug fatal(CategoryFunction catFunc) const;
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-#  if QT_CORE_REMOVED_SINCE(6, 10)
+#  if BOBUI_CORE_REMOVED_SINCE(6, 10)
     QNoDebug noDebug() const noexcept;
 #  endif
     inline QNoDebug noDebug(...) const noexcept;    // in qdebug.h
@@ -145,63 +145,63 @@ private:
     QMessageLogContext context;
 };
 
-#undef QT_MESSAGE_LOGGER_NORETURN
+#undef BOBUI_MESSAGE_LOGGER_NORETURN
 
-#if !defined(QT_MESSAGELOGCONTEXT) && !defined(QT_NO_MESSAGELOGCONTEXT)
-#  if defined(QT_NO_DEBUG)
-#    define QT_NO_MESSAGELOGCONTEXT
+#if !defined(BOBUI_MESSAGELOGCONTEXT) && !defined(BOBUI_NO_MESSAGELOGCONTEXT)
+#  if defined(BOBUI_NO_DEBUG)
+#    define BOBUI_NO_MESSAGELOGCONTEXT
 #  else
-#    define QT_MESSAGELOGCONTEXT
+#    define BOBUI_MESSAGELOGCONTEXT
 #  endif
 #endif
 
-#ifdef QT_MESSAGELOGCONTEXT
-  #define QT_MESSAGELOG_FILE static_cast<const char *>(__FILE__)
-  #define QT_MESSAGELOG_LINE __LINE__
-  #define QT_MESSAGELOG_FUNC static_cast<const char *>(Q_FUNC_INFO)
+#ifdef BOBUI_MESSAGELOGCONTEXT
+  #define BOBUI_MESSAGELOG_FILE static_cast<const char *>(__FILE__)
+  #define BOBUI_MESSAGELOG_LINE __LINE__
+  #define BOBUI_MESSAGELOG_FUNC static_cast<const char *>(Q_FUNC_INFO)
 #else
-  #define QT_MESSAGELOG_FILE nullptr
-  #define QT_MESSAGELOG_LINE 0
-  #define QT_MESSAGELOG_FUNC nullptr
+  #define BOBUI_MESSAGELOG_FILE nullptr
+  #define BOBUI_MESSAGELOG_LINE 0
+  #define BOBUI_MESSAGELOG_FUNC nullptr
 #endif
 
-#define qDebug QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC).debug
-#define qInfo QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC).info
-#define qWarning QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC).warning
-#define qCritical QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC).critical
-#define qFatal QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC).fatal
+#define qDebug QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC).debug
+#define qInfo QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC).info
+#define qWarning QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC).warning
+#define qCritical QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC).critical
+#define qFatal QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC).fatal
 
 Q_CORE_EXPORT Q_DECL_COLD_FUNCTION void qErrnoWarning(int code, const char *msg, ...);
 Q_CORE_EXPORT Q_DECL_COLD_FUNCTION void qErrnoWarning(const char *msg, ...);
 
-#define QT_NO_QDEBUG_MACRO while (false) QMessageLogger().noDebug
+#define BOBUI_NO_QDEBUG_MACRO while (false) QMessageLogger().noDebug
 
-#if defined(QT_NO_DEBUG_OUTPUT)
+#if defined(BOBUI_NO_DEBUG_OUTPUT)
 #  undef qDebug
-#  define qDebug QT_NO_QDEBUG_MACRO
+#  define qDebug BOBUI_NO_QDEBUG_MACRO
 #endif
-#if defined(QT_NO_INFO_OUTPUT)
+#if defined(BOBUI_NO_INFO_OUTPUT)
 #  undef qInfo
-#  define qInfo QT_NO_QDEBUG_MACRO
+#  define qInfo BOBUI_NO_QDEBUG_MACRO
 #endif
-#if defined(QT_NO_WARNING_OUTPUT)
+#if defined(BOBUI_NO_WARNING_OUTPUT)
 #  undef qWarning
-#  define qWarning QT_NO_QDEBUG_MACRO
-#  define qErrnoWarning QT_NO_QDEBUG_MACRO
+#  define qWarning BOBUI_NO_QDEBUG_MACRO
+#  define qErrnoWarning BOBUI_NO_QDEBUG_MACRO
 #endif
 
-Q_CORE_EXPORT void qt_message_output(QtMsgType, const QMessageLogContext &context,
+Q_CORE_EXPORT void bobui_message_output(BobUIMsgType, const QMessageLogContext &context,
                                      const QString &message);
 
-typedef void (*QtMessageHandler)(QtMsgType, const QMessageLogContext &, const QString &);
-Q_CORE_EXPORT QtMessageHandler qInstallMessageHandler(QtMessageHandler);
+typedef void (*BobUIMessageHandler)(BobUIMsgType, const QMessageLogContext &, const QString &);
+Q_CORE_EXPORT BobUIMessageHandler qInstallMessageHandler(BobUIMessageHandler);
 
 Q_CORE_EXPORT void qSetMessagePattern(const QString &messagePattern);
-Q_CORE_EXPORT QString qFormatLogMessage(QtMsgType type, const QMessageLogContext &context,
+Q_CORE_EXPORT QString qFormatLogMessage(BobUIMsgType type, const QMessageLogContext &context,
                                         const QString &buf);
 
 Q_DECL_COLD_FUNCTION
-Q_CORE_EXPORT QString qt_error_string(int errorCode = -1);
+Q_CORE_EXPORT QString bobui_error_string(int errorCode = -1);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QLOGGING_H

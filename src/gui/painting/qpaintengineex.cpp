@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpaintengineex_p.h"
 #include "qpainter_p.h"
@@ -13,10 +13,10 @@
 #include <qdebug.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if !defined(QT_MAX_CACHED_GLYPH_SIZE)
-#  define QT_MAX_CACHED_GLYPH_SIZE 64
+#if !defined(BOBUI_MAX_CACHED_GLYPH_SIZE)
+#  define BOBUI_MAX_CACHED_GLYPH_SIZE 64
 #endif
 
 /*******************************************************************************
@@ -92,19 +92,19 @@ QVectorPath::CacheEntry *QVectorPath::addCacheData(QPaintEngineEx *engine, void 
 }
 
 
-const QVectorPath &qtVectorPathForPath(const QPainterPath &path)
+const QVectorPath &bobuiVectorPathForPath(const QPainterPath &path)
 {
     Q_ASSERT(path.d_func());
     return path.d_func()->vectorPath();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug Q_GUI_EXPORT &operator<<(QDebug &s, const QVectorPath &path)
 {
     QDebugStateSaver saver(s);
     QRectF rf = path.controlPointRect();
     s << "QVectorPath(size:" << path.elementCount()
-      << " hints:" << Qt::hex << path.hints()
+      << " hints:" << BobUI::hex << path.hints()
       << rf << ')';
     return s;
 }
@@ -128,7 +128,7 @@ QPaintEngineExPrivate::QPaintEngineExPrivate()
     : dasher(&stroker),
       strokeHandler(nullptr),
       activeStroker(nullptr),
-      strokerPen(Qt::NoPen)
+      strokerPen(BobUI::NoPen)
 {
 }
 
@@ -149,7 +149,7 @@ void QPaintEngineExPrivate::replayClipOperations()
 
     const QList<QPainterClipInfo> &clipInfo = p->d_ptr->state->clipInfo;
 
-    QTransform transform = q->state()->matrix;
+    BOBUIransform transform = q->state()->matrix;
 
     for (const QPainterClipInfo &info : clipInfo) {
 
@@ -347,11 +347,11 @@ QPainterState *QPaintEngineEx::createState(QPainterState *orig) const
     return new QPainterState(orig);
 }
 
-Q_GUI_EXPORT extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale); // qtransform.cpp
+Q_GUI_EXPORT extern bool bobui_scaleForTransform(const BOBUIransform &transform, qreal *scale); // bobuiransform.cpp
 
 void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     qDebug() << "QPaintEngineEx::stroke()" << inPen;
 #endif
 
@@ -369,9 +369,9 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
 
     QRectF clipRect;
     QPen pen = inPen;
-    if (pen.style() > Qt::SolidLine) {
+    if (pen.style() > BobUI::SolidLine) {
         QRectF cpRect = path.controlPointRect();
-        const QTransform &xf = state()->matrix;
+        const BOBUIransform &xf = state()->matrix;
         if (pen.isCosmetic()) {
             clipRect = d->exDeviceRect;
             cpRect.translate(xf.dx(), xf.dy());
@@ -389,10 +389,10 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
             patternLength += qMax(pattern.at(i), qreal(0));
         patternLength *= pw;
         if (qFuzzyIsNull(patternLength)) {
-            pen.setStyle(Qt::NoPen);
+            pen.setStyle(BobUI::NoPen);
         } else if (extent / patternLength > QDashStroker::repetitionLimit()) {
             // approximate stream of tiny dashes with semi-transparent solid line
-            pen.setStyle(Qt::SolidLine);
+            pen.setStyle(BobUI::SolidLine);
             QColor color(pen.color());
             color.setAlpha(color.alpha() / 2);
             pen.setColor(color);
@@ -410,10 +410,10 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
         else
             d->stroker.setStrokeWidth(penWidth);
 
-        Qt::PenStyle style = pen.style();
-        if (style == Qt::SolidLine) {
+        BobUI::PenStyle style = pen.style();
+        if (style == BobUI::SolidLine) {
             d->activeStroker = &d->stroker;
-        } else if (style == Qt::NoPen) {
+        } else if (style == BobUI::NoPen) {
             d->activeStroker = nullptr;
         } else {
             d->dasher.setDashPattern(pen.dashPattern());
@@ -447,7 +447,7 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
     if (path.elementCount() > 2)
         flags |= QVectorPath::NonConvexShapeMask;
 
-    if (d->stroker.capStyle() == Qt::RoundCap || d->stroker.joinStyle() == Qt::RoundJoin)
+    if (d->stroker.capStyle() == BobUI::RoundCap || d->stroker.joinStyle() == BobUI::RoundJoin)
         flags |= QVectorPath::CurvedShapeMask;
 
     // ### Perspective Xforms are currently not supported...
@@ -508,11 +508,11 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
         fill(strokePath, pen.brush());
     } else {
         // For cosmetic pens we need a bit of trickery... We to process xform the input points
-        if (state()->matrix.type() >= QTransform::TxProject) {
+        if (state()->matrix.type() >= BOBUIransform::TxProject) {
             QPainterPath painterPath = state()->matrix.map(path.convertToPainterPath());
-            d->activeStroker->strokePath(painterPath, d->strokeHandler, QTransform());
+            d->activeStroker->strokePath(painterPath, d->strokeHandler, BOBUIransform());
         } else {
-            d->activeStroker->setCurveThresholdFromTransform(QTransform());
+            d->activeStroker->setCurveThresholdFromTransform(BOBUIransform());
             d->activeStroker->begin(d->strokeHandler);
             if (types) {
                 while (points < lastPoint) {
@@ -570,12 +570,12 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
                                d->strokeHandler->types.data(),
                                flags);
 
-        QTransform xform = state()->matrix;
-        state()->matrix = QTransform();
+        BOBUIransform xform = state()->matrix;
+        state()->matrix = BOBUIransform();
         transformChanged();
 
         QBrush brush = pen.brush();
-        if (qbrush_style(brush) != Qt::SolidPattern)
+        if (qbrush_style(brush) != BobUI::SolidPattern)
             brush.setTransform(brush.transform() * xform);
 
         fill(strokePath, brush);
@@ -588,16 +588,16 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &inPen)
 void QPaintEngineEx::draw(const QVectorPath &path)
 {
     const QBrush &brush = state()->brush;
-    if (qbrush_style(brush) != Qt::NoBrush)
+    if (qbrush_style(brush) != BobUI::NoBrush)
         fill(path, brush);
 
     const QPen &pen = state()->pen;
-    if (qpen_style(pen) != Qt::NoPen && qbrush_style(qpen_brush(pen)) != Qt::NoBrush)
+    if (qpen_style(pen) != BobUI::NoPen && qbrush_style(qpen_brush(pen)) != BobUI::NoBrush)
         stroke(path, pen);
 }
 
 
-void QPaintEngineEx::clip(const QRect &r, Qt::ClipOperation op)
+void QPaintEngineEx::clip(const QRect &r, BobUI::ClipOperation op)
 {
     qreal right = r.x() + r.width();
     qreal bottom = r.y() + r.height();
@@ -610,7 +610,7 @@ void QPaintEngineEx::clip(const QRect &r, Qt::ClipOperation op)
     clip(vp, op);
 }
 
-void QPaintEngineEx::clip(const QRegion &region, Qt::ClipOperation op)
+void QPaintEngineEx::clip(const QRegion &region, BobUI::ClipOperation op)
 {
     const auto rectsInRegion = region.rectCount();
     if (rectsInRegion == 1) {
@@ -674,13 +674,13 @@ void QPaintEngineEx::clip(const QRegion &region, Qt::ClipOperation op)
 
 }
 
-void QPaintEngineEx::clip(const QPainterPath &path, Qt::ClipOperation op)
+void QPaintEngineEx::clip(const QPainterPath &path, BobUI::ClipOperation op)
 {
     if (path.isEmpty()) {
         QVectorPath vp(nullptr, 0);
         clip(vp, op);
     } else {
-        clip(qtVectorPathForPath(path), op);
+        clip(bobuiVectorPathForPath(path), op);
     }
 }
 
@@ -732,14 +732,14 @@ void QPaintEngineEx::drawRects(const QRectF *rects, int rectCount)
 
 
 void QPaintEngineEx::drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
-                                     Qt::SizeMode mode)
+                                     BobUI::SizeMode mode)
 {
     qreal x1 = rect.left();
     qreal x2 = rect.right();
     qreal y1 = rect.top();
     qreal y2 = rect.bottom();
 
-    if (mode == Qt::RelativeSize) {
+    if (mode == BobUI::RelativeSize) {
         xRadius = xRadius * rect.width() / 200.;
         yRadius = yRadius * rect.height() / 200.;
     }
@@ -817,7 +817,7 @@ void QPaintEngineEx::drawEllipse(const QRectF &r)
     x.ptr = pts;
 
     int point_count = 0;
-    x.points[0] = qt_curves_for_arc(r, 0, -360, x.points + 1, &point_count);
+    x.points[0] = bobui_curves_for_arc(r, 0, -360, x.points + 1, &point_count);
     if (point_count == 0)
         return;
     QVectorPath vp((qreal *) pts, point_count + 1, qpaintengineex_ellipse_types, QVectorPath::EllipseHint);
@@ -832,15 +832,15 @@ void QPaintEngineEx::drawEllipse(const QRect &r)
 void QPaintEngineEx::drawPath(const QPainterPath &path)
 {
     if (!path.isEmpty())
-        draw(qtVectorPathForPath(path));
+        draw(bobuiVectorPathForPath(path));
 }
 
 
 void QPaintEngineEx::drawPoints(const QPointF *points, int pointCount)
 {
     QPen pen = state()->pen;
-    if (pen.capStyle() == Qt::FlatCap)
-        pen.setCapStyle(Qt::SquareCap);
+    if (pen.capStyle() == BobUI::FlatCap)
+        pen.setCapStyle(BobUI::SquareCap);
 
     if (pen.brush().isOpaque()) {
         while (pointCount > 0) {
@@ -870,8 +870,8 @@ void QPaintEngineEx::drawPoints(const QPointF *points, int pointCount)
 void QPaintEngineEx::drawPoints(const QPoint *points, int pointCount)
 {
     QPen pen = state()->pen;
-    if (pen.capStyle() == Qt::FlatCap)
-        pen.setCapStyle(Qt::SquareCap);
+    if (pen.capStyle() == BobUI::FlatCap)
+        pen.setCapStyle(BobUI::SquareCap);
 
     if (pen.brush().isOpaque()) {
         while (pointCount > 0) {
@@ -942,7 +942,7 @@ void QPaintEngineEx::drawImage(const QPointF &pos, const QImage &image)
 void QPaintEngineEx::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s)
 {
     QBrush brush(state()->pen.color(), pixmap);
-    QTransform xform = QTransform::fromTranslate(r.x() - s.x(), r.y() - s.y());
+    BOBUIransform xform = BOBUIransform::fromTranslate(r.x() - s.x(), r.y() - s.y());
     if (!qFuzzyCompare(pixmap.devicePixelRatio(), qreal(1.0)))
         xform.scale(1.0/pixmap.devicePixelRatio(), 1.0/pixmap.devicePixelRatio());
     brush.setTransform(xform);
@@ -963,10 +963,10 @@ void QPaintEngineEx::drawPixmapFragments(const QPainter::PixmapFragment *fragmen
         return;
 
     qreal oldOpacity = state()->opacity;
-    QTransform oldTransform = state()->matrix;
+    BOBUIransform oldTransform = state()->matrix;
 
     for (int i = 0; i < fragmentCount; ++i) {
-        QTransform transform = oldTransform;
+        BOBUIransform transform = oldTransform;
         transform.translate(fragments[i].x, fragments[i].y);
         transform.rotate(fragments[i].rotation);
         state()->opacity = oldOpacity * fragments[i].opacity;
@@ -998,7 +998,7 @@ void QPaintEngineEx::updateState(const QPaintEngineState &)
     // do nothing...
 }
 
-Q_GUI_EXPORT QPainterPath qt_painterPathFromVectorPath(const QVectorPath &path)
+Q_GUI_EXPORT QPainterPath bobui_painterPathFromVectorPath(const QVectorPath &path)
 {
     const qreal *points = path.points();
     const QPainterPath::ElementType *types = path.elements();
@@ -1038,7 +1038,7 @@ Q_GUI_EXPORT QPainterPath qt_painterPathFromVectorPath(const QVectorPath &path)
         }
     }
     if (path.hints() & QVectorPath::WindingFill)
-        p.setFillRule(Qt::WindingFill);
+        p.setFillRule(BobUI::WindingFill);
 
     return p;
 }
@@ -1046,7 +1046,7 @@ Q_GUI_EXPORT QPainterPath qt_painterPathFromVectorPath(const QVectorPath &path)
 void QPaintEngineEx::drawStaticTextItem(QStaticTextItem *staticTextItem)
 {
     QPainterPath path;
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
 
     if (staticTextItem->numGlyphs == 0)
         return;
@@ -1066,7 +1066,7 @@ void QPaintEngineEx::drawStaticTextItem(QStaticTextItem *staticTextItem)
             changedHints = true;
         }
 
-        fill(qtVectorPathForPath(path), s->pen.brush());
+        fill(bobuiVectorPathForPath(path), s->pen.brush());
 
         if (changedHints) {
             s->renderHints = oldHints;
@@ -1075,24 +1075,24 @@ void QPaintEngineEx::drawStaticTextItem(QStaticTextItem *staticTextItem)
     }
 }
 
-bool QPaintEngineEx::requiresPretransformedGlyphPositions(QFontEngine *, const QTransform &) const
+bool QPaintEngineEx::requiresPretransformedGlyphPositions(QFontEngine *, const BOBUIransform &) const
 {
     return false;
 }
 
-bool QPaintEngineEx::shouldDrawCachedGlyphs(QFontEngine *fontEngine, const QTransform &m) const
+bool QPaintEngineEx::shouldDrawCachedGlyphs(QFontEngine *fontEngine, const BOBUIransform &m) const
 {
     if (fontEngine->glyphFormat == QFontEngine::Format_ARGB)
         return true;
 
     static const int maxCachedGlyphSizeSquared = std::pow([]{
-        if (int env = qEnvironmentVariableIntValue("QT_MAX_CACHED_GLYPH_SIZE"))
+        if (int env = qEnvironmentVariableIntValue("BOBUI_MAX_CACHED_GLYPH_SIZE"))
             return env;
-        return QT_MAX_CACHED_GLYPH_SIZE;
+        return BOBUI_MAX_CACHED_GLYPH_SIZE;
     }(), 2);
 
     qreal pixelSize = fontEngine->fontDef.pixelSize;
     return (pixelSize * pixelSize * qAbs(m.determinant())) <= maxCachedGlyphSizeSquared;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

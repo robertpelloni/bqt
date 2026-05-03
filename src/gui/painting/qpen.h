@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPEN_H
 #define QPEN_H
 
-#include <QtCore/qshareddata.h>
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qbrush.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qbrush.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QVariant;
@@ -17,35 +17,35 @@ class QPenPrivate;
 class QBrush;
 class QPen;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QPen &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPen &);
 #endif
 
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QPenPrivate, Q_GUI_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QPenPrivate, Q_GUI_EXPORT)
 
 class Q_GUI_EXPORT QPen
 {
 public:
     QPen();
-    QPen(Qt::PenStyle);
+    QPen(BobUI::PenStyle);
     QPen(const QColor &color);
-    QPen(const QBrush &brush, qreal width, Qt::PenStyle s = Qt::SolidLine,
-         Qt::PenCapStyle c = Qt::SquareCap, Qt::PenJoinStyle j = Qt::BevelJoin);
+    QPen(const QBrush &brush, qreal width, BobUI::PenStyle s = BobUI::SolidLine,
+         BobUI::PenCapStyle c = BobUI::SquareCap, BobUI::PenJoinStyle j = BobUI::BevelJoin);
     QPen(const QPen &pen) noexcept;
 
     ~QPen();
 
     QPen &operator=(const QPen &pen) noexcept;
     QPen(QPen &&other) noexcept = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPen)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPen)
     void swap(QPen &other) noexcept { d.swap(other.d); }
 
     QPen &operator=(QColor color);
-    QPen &operator=(Qt::PenStyle style);
+    QPen &operator=(BobUI::PenStyle style);
 
-    Qt::PenStyle style() const;
-    void setStyle(Qt::PenStyle);
+    BobUI::PenStyle style() const;
+    void setStyle(BobUI::PenStyle);
 
     QList<qreal> dashPattern() const;
     void setDashPattern(const QList<qreal> &pattern);
@@ -70,11 +70,11 @@ public:
 
     bool isSolid() const;
 
-    Qt::PenCapStyle capStyle() const;
-    void setCapStyle(Qt::PenCapStyle pcs);
+    BobUI::PenCapStyle capStyle() const;
+    void setCapStyle(BobUI::PenCapStyle pcs);
 
-    Qt::PenJoinStyle joinStyle() const;
-    void setJoinStyle(Qt::PenJoinStyle pcs);
+    BobUI::PenJoinStyle joinStyle() const;
+    void setJoinStyle(BobUI::PenJoinStyle pcs);
 
     bool isCosmetic() const;
     void setCosmetic(bool cosmetic);
@@ -98,12 +98,12 @@ private:
     }
     Q_DECLARE_EQUALITY_COMPARABLE(QPen, QColor)
 
-    bool doCompareEqualStyle(Qt::PenStyle rhs) const;
-    friend bool comparesEqual(const QPen &lhs, Qt::PenStyle rhs)
+    bool doCompareEqualStyle(BobUI::PenStyle rhs) const;
+    friend bool comparesEqual(const QPen &lhs, BobUI::PenStyle rhs)
     {
         return lhs.doCompareEqualStyle(rhs);
     }
-    Q_DECLARE_EQUALITY_COMPARABLE_NON_NOEXCEPT(QPen, Qt::PenStyle)
+    Q_DECLARE_EQUALITY_COMPARABLE_NON_NOEXCEPT(QPen, BobUI::PenStyle)
 
 public:
     using DataPtr = QExplicitlySharedDataPointer<QPenPrivate>;
@@ -118,10 +118,10 @@ public:
 
 Q_DECLARE_SHARED(QPen)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPen &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPEN_H

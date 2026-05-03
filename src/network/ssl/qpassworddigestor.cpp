@@ -1,19 +1,19 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #include "qpassworddigestor.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QMessageAuthenticationCode>
-#include <QtCore/QtEndian>
-#include <QtCore/QList>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMessageAuthenticationCode>
+#include <BobUICore/BobUIEndian>
+#include <BobUICore/QList>
 
-#include "qtcore-config_p.h"
+#include "bobuicore-config_p.h"
 
 #include <limits>
 
-#if QT_CONFIG(opensslv30) && QT_CONFIG(openssl_linked)
+#if BOBUI_CONFIG(opensslv30) && BOBUI_CONFIG(openssl_linked)
 #define USING_OPENSSL30
 #include <openssl/core_names.h>
 #include <openssl/kdf.h>
@@ -21,12 +21,12 @@
 #include <openssl/provider.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace QPasswordDigestor {
 
 /*!
     \namespace QPasswordDigestor
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QPasswordDigestor namespace contains functions which you can use
     to generate hashes or keys.
@@ -218,7 +218,7 @@ Q_NETWORK_EXPORT QByteArray deriveKeyPbkdf2(QCryptographicHash::Algorithm algori
     QByteArray key;
     quint32 currentIteration = 1;
     QMessageAuthenticationCode hmac(algorithm, data);
-    QByteArray index(4, Qt::Uninitialized);
+    QByteArray index(4, BobUI::Uninitialized);
     while (quint64(key.size()) < dkLen) {
         hmac.addData(salt);
 
@@ -241,4 +241,4 @@ Q_NETWORK_EXPORT QByteArray deriveKeyPbkdf2(QCryptographicHash::Algorithm algori
     return key.left(dkLen);
 }
 } // namespace QPasswordDigestor
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

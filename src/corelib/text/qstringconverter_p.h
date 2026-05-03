@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTRINGCONVERTER_P_H
 #define QSTRINGCONVERTER_P_H
@@ -10,19 +10,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qstring.h>
-#include <QtCore/qendian.h>
-#include <QtCore/qstringconverter.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qstringconverter.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef __cpp_char8_t
 enum qchar8_t : uchar {};
@@ -346,11 +346,11 @@ struct QUtf8
     };
     static ValidUtf8Result isValidUtf8(QByteArrayView in);
     static int compareUtf8(QByteArrayView utf8, QStringView utf16,
-                           Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+                           BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
     static int compareUtf8(QByteArrayView utf8, QLatin1StringView s,
-                           Qt::CaseSensitivity cs = Qt::CaseSensitive);
+                           BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
     static int compareUtf8(QByteArrayView lhs, QByteArrayView rhs,
-                           Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+                           BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
 private:
     template <typename OnErrorLambda> static char *
@@ -377,7 +377,7 @@ struct QUtf32
 
 struct Q_CORE_EXPORT QLocal8Bit
 {
-#if !defined(Q_OS_WIN) || defined(QT_BOOTSTRAPPED)
+#if !defined(Q_OS_WIN) || defined(BOBUI_BOOTSTRAPPED)
     static QString convertToUnicode(QByteArrayView in, QStringConverter::State *state)
     { return QUtf8::convertToUnicode(in, state); }
     static QByteArray convertFromUnicode(QStringView in, QStringConverter::State *state)
@@ -414,6 +414,6 @@ struct Q_CORE_EXPORT QLocal8Bit
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTRINGCONVERTER_P_H

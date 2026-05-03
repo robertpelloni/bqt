@@ -1,9 +1,9 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qpkmhandler_p.h"
-#include "qtexturefiledata_p.h"
+#include "bobuiexturefiledata_p.h"
 
 #include <QFile>
 #include <QDebug>
@@ -12,7 +12,7 @@
 
 //#define ETC_DEBUG
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const int qpkmh_headerSize = 16;
 
@@ -39,17 +39,17 @@ bool QPkmHandler::canRead(const QByteArray &suffix, const QByteArray &block)
     return block.startsWith("PKM ");
 }
 
-QTextureFileData QPkmHandler::read()
+BOBUIextureFileData QPkmHandler::read()
 {
-    QTextureFileData texData;
+    BOBUIextureFileData texData;
 
     if (!device())
         return texData;
 
     QByteArray fileData = device()->readAll();
     if (fileData.size() < qpkmh_headerSize || !canRead(QByteArray(), fileData)) {
-        qCDebug(lcQtGuiTextureIO, "Invalid PKM file %s", logName().constData());
-        return QTextureFileData();
+        qCDebug(lcBobUIGuiTextureIO, "Invalid PKM file %s", logName().constData());
+        return BOBUIextureFileData();
     }
     texData.setData(fileData);
 
@@ -60,8 +60,8 @@ QTextureFileData QPkmHandler::read()
     // texture type
     quint16 type = qFromBigEndian<quint16>(rawData + 6);
     if (type >= sizeof(typeMap)/sizeof(typeMap[0])) {
-        qCDebug(lcQtGuiTextureIO, "Unknown compression format in PKM file %s", logName().constData());
-        return QTextureFileData();
+        qCDebug(lcBobUIGuiTextureIO, "Unknown compression format in PKM file %s", logName().constData());
+        return BOBUIextureFileData();
     }
     texData.setGLFormat(0);                    // 0 for compressed textures
     texData.setGLInternalFormat(typeMap[type].glFormat);
@@ -79,8 +79,8 @@ QTextureFileData QPkmHandler::read()
     texData.setDataOffset(qpkmh_headerSize);
 
     if (!texData.isValid()) {
-        qCDebug(lcQtGuiTextureIO, "Invalid values in header of PKM file %s", logName().constData());
-        return QTextureFileData();
+        qCDebug(lcBobUIGuiTextureIO, "Invalid values in header of PKM file %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     texData.setLogName(logName());
@@ -91,4 +91,4 @@ QTextureFileData QPkmHandler::read()
     return texData;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qurl_p.h"
 
-#include <QtCore/qstringlist.h>
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/private/qoffsetstringarray_p.h>
-#include <QtCore/private/qstringiterator_p.h>
-#include <QtCore/private/qunicodetables_p.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/private/qoffsetstringarray_p.h>
+#include <BobUICore/private/qstringiterator_p.h>
+#include <BobUICore/private/qunicodetables_p.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // needed by the punycode encoder/decoder
 static const uint base = 36;
@@ -65,7 +65,7 @@ static inline void appendEncode(QString *output, uint delta, uint bias)
     *output += QChar(encodeDigit(qq));
 }
 
-Q_AUTOTEST_EXPORT void qt_punycodeEncoder(QStringView in, QString *output)
+Q_AUTOTEST_EXPORT void bobui_punycodeEncoder(QStringView in, QString *output)
 {
     uint n = initial_n;
     uint delta = 0;
@@ -169,7 +169,7 @@ Q_AUTOTEST_EXPORT void qt_punycodeEncoder(QStringView in, QString *output)
     return;
 }
 
-Q_AUTOTEST_EXPORT QString qt_punycodeDecoder(const QString &pc)
+Q_AUTOTEST_EXPORT QString bobui_punycodeDecoder(const QString &pc)
 {
     uint n = initial_n;
     uint i = 0;
@@ -257,7 +257,7 @@ Q_AUTOTEST_EXPORT QString qt_punycodeDecoder(const QString &pc)
         }
 
         // Surrogates should normally be rejected later by other IDNA code.
-        // But because of Qt's use of UTF-16 to represent strings the
+        // But because of BobUI's use of UTF-16 to represent strings the
         // IDNA code is not able to distinguish characters represented as pairs
         // of surrogates from normal code points. This is why surrogates are
         // not allowed here.
@@ -348,7 +348,7 @@ static bool equal(const QChar *a, int l, const char *b)
     return l == 0;
 }
 
-static bool qt_is_idn_enabled(QStringView aceDomain)
+static bool bobui_is_idn_enabled(QStringView aceDomain)
 {
     auto idx = aceDomain.lastIndexOf(u'.');
     if (idx == -1)
@@ -799,7 +799,7 @@ static QString convertToAscii(QStringView normalizedDomain, AceLeadingDot dot)
         if (labelLength) {
             const auto label = normalizedDomain.sliced(lastIdx, labelLength);
             aceForm.clear();
-            qt_punycodeEncoder(label, &aceForm);
+            bobui_punycodeEncoder(label, &aceForm);
             if (aceForm.isEmpty())
                 return {};
 
@@ -871,7 +871,7 @@ static QString convertToUnicode(const QString &asciiDomain, QUrl::AceProcessingO
                 break;
         } else {
             const auto label = asciiDomain.sliced(lastIdx, labelLength);
-            const auto unicodeLabel = qt_punycodeDecoder(label);
+            const auto unicodeLabel = bobui_punycodeDecoder(label);
 
             if (unicodeLabel.isEmpty())
                 return asciiDomain;
@@ -918,7 +918,7 @@ static bool checkUnicodeName(const QString &domainName, QUrl::AceProcessingOptio
     return true;
 }
 
-QString qt_ACE_do(const QString &domain, AceOperation op, AceLeadingDot dot,
+QString bobui_ACE_do(const QString &domain, AceOperation op, AceLeadingDot dot,
                   QUrl::AceProcessingOptions options)
 {
     if (domain.isEmpty())
@@ -941,7 +941,7 @@ QString qt_ACE_do(const QString &domain, AceOperation op, AceLeadingDot dot,
         return {};
 
     if (op == ToAceOnly || !needsConversionToUnicode
-        || (!options.testFlag(QUrl::IgnoreIDNWhitelist) && !qt_is_idn_enabled(aceResult))) {
+        || (!options.testFlag(QUrl::IgnoreIDNWhitelist) && !bobui_is_idn_enabled(aceResult))) {
         return aceResult;
     }
 
@@ -984,7 +984,7 @@ QStringList QUrl::idnWhitelist()
     Note that if you call this function, you need to do so \e before
     you start any threads that might access idnWhitelist().
 
-    Qt comes with a default list that contains the Internet top-level domains
+    BobUI comes with a default list that contains the Internet top-level domains
     that have published support for Internationalized Domain Names (IDNs)
     and rules to guarantee that no deception can happen between similarly-looking
     characters (such as the Latin lowercase letter \c 'a' and the Cyrillic
@@ -1003,4 +1003,4 @@ void QUrl::setIdnWhitelist(const QStringList &list)
     *user_idn_whitelist = list;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

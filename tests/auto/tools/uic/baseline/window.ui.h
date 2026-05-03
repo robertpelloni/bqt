@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'window.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QWidget>
 #include "displaywidget.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Window
 {
@@ -33,12 +33,12 @@ public:
     QLabel *label;
     QComboBox *shapeComboBox;
     QLabel *label_2;
-    QToolButton *colorButton;
+    BOBUIoolButton *colorButton;
     QLabel *label_3;
     QComboBox *shapeComboBox_2;
     QHBoxLayout *horizontalLayout;
     QSpacerItem *horizontalSpacer;
-    QToolButton *toolButton_2;
+    BOBUIoolButton *toolButton_2;
 
     void setupUi(QWidget *Window)
     {
@@ -87,7 +87,7 @@ public:
 
         gridLayout->addWidget(label_2, 1, 0, 1, 1);
 
-        colorButton = new QToolButton(Window);
+        colorButton = new BOBUIoolButton(Window);
         colorButton->setObjectName("colorButton");
 
         gridLayout->addWidget(colorButton, 1, 1, 1, 1);
@@ -114,7 +114,7 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        toolButton_2 = new QToolButton(Window);
+        toolButton_2 = new BOBUIoolButton(Window);
         toolButton_2->setObjectName("toolButton_2");
 
         horizontalLayout->addWidget(toolButton_2);
@@ -122,11 +122,11 @@ public:
 
         gridLayout_2->addLayout(horizontalLayout, 2, 0, 1, 3);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(shapeComboBox);
         label_2->setBuddy(colorButton);
         label_3->setBuddy(shapeComboBox_2);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(Window);
         QObject::connect(shapeComboBox, SIGNAL(currentIndexChanged(int)), Window, SLOT(updateShape(int)));
@@ -160,6 +160,6 @@ namespace Ui {
     class Window: public Ui_Window {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // WINDOW_H

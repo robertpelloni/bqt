@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include "addressbook.h"
 
 AddressBook::AddressBook(QWidget *parent)
@@ -12,7 +12,7 @@ AddressBook::AddressBook(QWidget *parent)
     nameLine->setReadOnly(true);
 
     QLabel *addressLabel = new QLabel(tr("Address:"));
-    addressText = new QTextEdit;
+    addressText = new BOBUIextEdit;
     addressText->setReadOnly(true);
 
     addButton = new QPushButton(tr("&Add"));
@@ -84,7 +84,7 @@ AddressBook::AddressBook(QWidget *parent)
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(nameLabel, 0, 0);
     mainLayout->addWidget(nameLine, 0, 1);
-    mainLayout->addWidget(addressLabel, 1, 0, Qt::AlignTop);
+    mainLayout->addWidget(addressLabel, 1, 0, BobUI::AlignTop);
     mainLayout->addWidget(addressText, 1, 1);
     mainLayout->addLayout(buttonLayout1, 1, 2);
     mainLayout->addLayout(buttonLayout2, 2, 1);
@@ -251,7 +251,7 @@ void AddressBook::updateInterface(Mode mode)
     case EditingMode:
 
         nameLine->setReadOnly(false);
-        nameLine->setFocus(Qt::OtherFocusReason);
+        nameLine->setFocus(BobUI::OtherFocusReason);
         addressText->setReadOnly(false);
 
         addButton->setEnabled(false);
@@ -317,7 +317,7 @@ void AddressBook::saveToFile()
 //! [saveToFile() function part2]
 //! [saveToFile() function part3]
         QDataStream out(&file);
-        out.setVersion(QDataStream::Qt_4_5);
+        out.setVersion(QDataStream::BobUI_4_5);
         out << contacts;
     }
 }
@@ -345,7 +345,7 @@ void AddressBook::loadFromFile()
         }
 
         QDataStream in(&file);
-        in.setVersion(QDataStream::Qt_4_5);
+        in.setVersion(QDataStream::BobUI_4_5);
         contacts.clear();   // clear existing contacts
         in >> contacts;
 //! [loadFromFile() function part2]

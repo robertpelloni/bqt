@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QListView>
 #include <QStandardItemModel>
 
@@ -28,7 +28,7 @@ void tst_QListView::benchSetCurrentIndex()
         lv.setRowHidden(i, true);
     lv.setCurrentIndex(lv.model()->index(0, 0, QModelIndex()));
     lv.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     QBENCHMARK_ONCE {
         while (lv.currentIndex().row() < rc - 20)
@@ -39,5 +39,5 @@ void tst_QListView::benchSetCurrentIndex()
 }
 
 
-QTEST_MAIN(tst_QListView)
+BOBUIEST_MAIN(tst_QListView)
 #include "tst_qlistview.moc"

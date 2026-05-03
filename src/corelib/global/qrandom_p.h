@@ -1,5 +1,5 @@
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRANDOM_P_H
 #define QRANDOM_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -19,7 +19,7 @@
 #include <qrandom.h>
 #include <private/qsimd_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum QRandomGeneratorControl {
     UseSystemRNG = 1,
@@ -35,17 +35,17 @@ enum RNGType {
     MersenneTwister = 1
 };
 
-#if defined(QT_BUILD_INTERNAL)
-extern Q_CORE_EXPORT QBasicAtomicInteger<uint> qt_randomdevice_control;
+#if defined(BOBUI_BUILD_INTERNAL)
+extern Q_CORE_EXPORT QBasicAtomicInteger<uint> bobui_randomdevice_control;
 #else
 static const struct
 {
     uint loadAcquire() const { return 0; }
-} qt_randomdevice_control;
+} bobui_randomdevice_control;
 #endif
 
-QRandomGenerator::InitialRandomData qt_initial_random_value() noexcept;
+QRandomGenerator::InitialRandomData bobui_initial_random_value() noexcept;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRANDOM_P_H

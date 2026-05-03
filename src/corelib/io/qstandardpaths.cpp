@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:provides-trusted-directory-paths
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:provides-trusted-directory-paths
 
 #include "qstandardpaths.h"
 
@@ -9,7 +9,7 @@
 #include <qfileinfo.h>
 #include <qvarlengtharray.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qobject.h>
 #include <qcoreapplication.h>
 #endif
@@ -22,14 +22,14 @@
 #include <unistd.h>
 #endif
 
-#ifndef QT_NO_STANDARDPATHS
+#ifndef BOBUI_NO_STANDARDPATHS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 /*!
     \class QStandardPaths
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStandardPaths class provides methods for accessing standard paths.
     \since 5.0
 
@@ -88,7 +88,7 @@ using namespace Qt::StringLiterals;
            generic or application-specific, but the returned path is never empty.
     \value AppLocalDataLocation Returns the local settings path on the Windows operating
            system. On all other platforms, it returns the same value as AppDataLocation.
-           This enum value was added in Qt 5.4.
+           This enum value was added in BobUI 5.4.
     \value CacheLocation Returns a directory location where user-specific
            non-essential (cached) data should be written. This is an application-specific directory.
            The returned path is never empty.
@@ -115,19 +115,19 @@ using namespace Qt::StringLiterals;
            To obtain a path to store data to be shared with other applications, use
            QStandardPaths::GenericDataLocation. The returned path is never empty.
            On the Windows operating system, this returns the roaming path.
-           This enum value was added in Qt 5.4.
+           This enum value was added in BobUI 5.4.
     \value AppConfigLocation Returns a directory location where user-specific
            configuration files should be written. This is an application-specific directory,
            and the returned path is never empty.
-           This enum value was added in Qt 5.5.
+           This enum value was added in BobUI 5.5.
     \value PublicShareLocation Returns a directory location where user-specific publicly shared files
            and directories can be stored. This is a generic value. Note that the returned path may be
            empty if the system has no concept of a publicly shared location.
-           This enum value was added in Qt 6.4.
+           This enum value was added in BobUI 6.4.
     \value TemplatesLocation Returns a directory location where user-specific
            template files can be stored. This is a generic value. Note that the returned path may be
            empty if the system has no concept of a templates location.
-           This enum value was added in Qt 6.4.
+           This enum value was added in BobUI 6.4.
     \value [since 6.7] StateLocation Returns a directory location where user-specific application
            state data files should be written. This is an application-specific directory,
            and the returned path is never empty.
@@ -340,7 +340,7 @@ using namespace Qt::StringLiterals;
     executable.
 
     The paths above should not be relied upon, as they may change according to
-    OS configuration, locale, or they may change in future Qt versions.
+    OS configuration, locale, or they may change in future BobUI versions.
 
     \note On Android, applications with open files on the external storage (<USER> locations),
         will be killed if the external storage is unmounted.
@@ -359,7 +359,7 @@ using namespace Qt::StringLiterals;
         as argument to \l{QFileDialog::setDirectory()},
         a native image picker dialog will be used for accessing the user's photo album.
         The filename returned can be loaded using QFile and related APIs.
-        This feature was added in Qt 5.5.
+        This feature was added in BobUI 5.5.
 
     \sa writableLocation(), standardLocations(), displayName(), locate(), locateAll()
 */
@@ -453,7 +453,7 @@ static QStringList executableExtensions()
 {
     // If %PATHEXT% does not contain .exe, it is either empty, malformed, or distorted in ways that we cannot support, anyway.
     const QStringList pathExt = QString::fromLocal8Bit(qgetenv("PATHEXT")).toLower().split(u';');
-    return pathExt.contains(".exe"_L1, Qt::CaseInsensitive) ?
+    return pathExt.contains(".exe"_L1, BobUI::CaseInsensitive) ?
            pathExt : QStringList{".exe"_L1, ".com"_L1, ".bat"_L1, ".cmd"_L1};
 }
 #endif
@@ -524,7 +524,7 @@ QString QStandardPaths::findExecutable(const QString &executableName, const QStr
 
         // Remove trailing slashes, which occur on Windows.
         searchPaths.reserve(pEnv.count(QDir::listSeparator()));
-        auto tokenizer = qTokenize(pEnv, QDir::listSeparator(), Qt::SkipEmptyParts);
+        auto tokenizer = qTokenize(pEnv, QDir::listSeparator(), BobUI::SkipEmptyParts);
         for (QStringView rawPath : tokenizer) {
             QString cleanPath = QDir::cleanPath(rawPath.toString());
             if (cleanPath.size() > 1 && cleanPath.endsWith(u'/'))
@@ -539,7 +539,7 @@ QString QStandardPaths::findExecutable(const QString &executableName, const QStr
     static const QStringList executable_extensions = executableExtensions();
     if (executableName.contains(u'.')) {
         const QString suffix = QFileInfo(executableName).suffix();
-        if (suffix.isEmpty() || !executable_extensions.contains(u'.' + suffix, Qt::CaseInsensitive))
+        if (suffix.isEmpty() || !executable_extensions.contains(u'.' + suffix, BobUI::CaseInsensitive))
             return searchExecutableAppendSuffix(searchPaths, executableName, executable_extensions);
     } else {
         return searchExecutableAppendSuffix(searchPaths, executableName, executable_extensions);
@@ -554,7 +554,7 @@ QString QStandardPaths::findExecutable(const QString &executableName, const QStr
     \include standardpath/functiondocs.qdocinc displayName
 */
 
-#if !defined(Q_OS_DARWIN) && !defined(QT_BOOTSTRAPPED)
+#if !defined(Q_OS_DARWIN) && !defined(BOBUI_BOOTSTRAPPED)
 QString QStandardPaths::displayName(StandardLocation type)
 {
     switch (type) {
@@ -636,10 +636,10 @@ bool QStandardPaths::isTestModeEnabled()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qstandardpaths.cpp"
 #endif
 
-#endif // QT_NO_STANDARDPATHS
+#endif // BOBUI_NO_STANDARDPATHS

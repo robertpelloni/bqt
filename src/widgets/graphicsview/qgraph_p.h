@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPH_P_H
 #define QGRAPH_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/QHash>
-#include <QtCore/QQueue>
-#include <QtCore/QString>
-#include <QtCore/QSet>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/QHash>
+#include <BobUICore/QQueue>
+#include <BobUICore/QString>
+#include <BobUICore/QSet>
 
 #include <functional> // for std::less
 
 #include <float.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename Vertex, typename EdgeData>
 class Graph
@@ -118,13 +118,13 @@ public:
     void createEdge(Vertex *first, Vertex *second, EdgeData *data)
     {
         // Creates a bidirectional edge
-#if defined(QT_DEBUG) && 0
+#if defined(BOBUI_DEBUG) && 0
         qDebug("Graph::createEdge(): %s",
                qPrintable(QString::fromLatin1("%1-%2")
                           .arg(first->toString()).arg(second->toString())));
 #endif
         if (edgeData(first, second)) {
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
             qWarning("%s-%s already has an edge", qPrintable(first->toString()), qPrintable(second->toString()));
 #endif
         }
@@ -135,7 +135,7 @@ public:
     void removeEdge(Vertex *first, Vertex *second)
     {
         // Removes a bidirectional edge
-#if defined(QT_DEBUG) && 0
+#if defined(BOBUI_DEBUG) && 0
         qDebug("Graph::removeEdge(): %s",
                qPrintable(QString::fromLatin1("%1-%2")
                           .arg(first->toString()).arg(second->toString())));
@@ -148,7 +148,7 @@ public:
 
     EdgeData *takeEdge(Vertex* first, Vertex* second)
     {
-#if defined(QT_DEBUG) && 0
+#if defined(BOBUI_DEBUG) && 0
         qDebug("Graph::takeEdge(): %s",
                qPrintable(QString::fromLatin1("%1-%2")
                           .arg(first->toString()).arg(second->toString())));
@@ -192,7 +192,7 @@ public:
         return conns;
     }
 
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
     QString serializeToDot() {   // traversal
         QString strVertices;
         QString edges;
@@ -244,6 +244,6 @@ private:
     QHash<Vertex *, QHash<Vertex *, EdgeData *> > m_graph;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

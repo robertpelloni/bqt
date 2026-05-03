@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "car.h"
-#include <QtWidgets/QtWidgets>
+#include <BobUIWidgets/BobUIWidgets>
 #include <cmath>
 
 QRectF Car::boundingRect() const
@@ -45,7 +45,7 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setBrush(Qt::gray);
+    painter->setBrush(BobUI::gray);
     painter->drawRect(-20, -58, 40, 2); // front axel
     painter->drawRect(-20, 7, 40, 2); // rear axel
 
@@ -60,7 +60,7 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
 
     painter->drawRect(-17, 19, 34, 15); // rear wing
 
-    painter->setBrush(Qt::black);
+    painter->setBrush(BobUI::black);
     painter->drawPie(-5, -51, 10, 15, 0, 180 * 16);
     painter->drawRect(-5, -44, 10, 10); // cocpit
 
@@ -80,7 +80,7 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     painter->drawRect(19, 0, 12, 17);  // rear right
 }
 
-void Car::timerEvent(QTimerEvent *event)
+void Car::timerEvent(BOBUIimerEvent *event)
 {
     Q_UNUSED(event);
 
@@ -91,12 +91,12 @@ void Car::timerEvent(QTimerEvent *event)
     qreal turnRate = qRadiansToDegrees(turnRateRads);
     qreal rotation = speed * turnRate;
 
-    setTransform(QTransform().rotate(rotation), true);
-    setTransform(QTransform::fromTranslate(0, -speed), true);
+    setTransform(BOBUIransform().rotate(rotation), true);
+    setTransform(BOBUIransform::fromTranslate(0, -speed), true);
 
     if (!scene()->views().isEmpty()) {
         QRect viewRect = scene()->views().at(0)->sceneRect().toRect();
-        QTransform fx = transform();
+        BOBUIransform fx = transform();
         qreal dx = fx.dx();
         qreal dy = fx.dy();
         while (dx < viewRect.left() - 10)
@@ -107,7 +107,7 @@ void Car::timerEvent(QTimerEvent *event)
             dx -= viewRect.width();
         while (dy > viewRect.bottom() + 10)
             dy -= viewRect.width();
-        setTransform(QTransform(fx.m11(), fx.m12(), fx.m13(),
+        setTransform(BOBUIransform(fx.m11(), fx.m12(), fx.m13(),
                                 fx.m21(), fx.m22(), fx.m23(),
                                 dx, dy, fx.m33()));
     }

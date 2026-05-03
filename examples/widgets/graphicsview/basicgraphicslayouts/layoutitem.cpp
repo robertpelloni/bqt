@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "layoutitem.h"
 
@@ -73,14 +73,14 @@ void LayoutItem::setGeometry(const QRectF &geom)
 //! [4]
 
 //! [5]
-QSizeF LayoutItem::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF LayoutItem::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     switch (which) {
-    case Qt::MinimumSize:
-    case Qt::PreferredSize:
+    case BobUI::MinimumSize:
+    case BobUI::PreferredSize:
         // Do not allow a size smaller than the pixmap with two frames around it.
         return m_pix.size() + QSize(12, 12);
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         return QSizeF(1000,1000);
     default:
         break;

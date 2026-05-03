@@ -1,21 +1,21 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeventpoint.h"
 #include "private/qeventpoint_p.h"
 #include "private/qpointingdevice_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcPointerVel, "qt.pointer.velocity")
-Q_LOGGING_CATEGORY(lcEPDetach, "qt.pointer.eventpoint.detach")
+Q_LOGGING_CATEGORY(lcPointerVel, "bobui.pointer.velocity")
+Q_LOGGING_CATEGORY(lcEPDetach, "bobui.pointer.eventpoint.detach")
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QEventPointPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QEventPointPrivate)
 
 /*! \class QEventPoint
     \brief The QEventPoint class provides information about a point in a QPointerEvent.
     \since 6.0
-    \inmodule QtGui
+    \inmodule BobUIGui
 */
 
 /*!
@@ -258,7 +258,7 @@ QPointF QEventPoint::globalLastPosition() const
     \note If the device's capabilities include QInputDevice::Velocity, it means
     velocity comes from the operating system (perhaps the touch hardware or
     driver provides it). But usually the \c Velocity capability is not set,
-    indicating that the velocity is calculated by Qt, using a simple Kalman
+    indicating that the velocity is calculated by BobUI, using a simple Kalman
     filter to provide a smoothed average velocity rather than an instantaneous
     value. Effectively it tells how fast and in what direction the user has
     been dragging this point over the last few events, with the most recent
@@ -301,7 +301,7 @@ int QEventPoint::id() const
     It is often invalid (see \l {QPointingDeviceUniqueId::isValid()} {isValid()}),
     because touchscreens cannot uniquely identify fingers.
 
-    When it comes from a QTabletEvent, it identifies the serial number of the
+    When it comes from a BOBUIabletEvent, it identifies the serial number of the
     stylus in use.
 
     It may identify a specific token (fiducial object) when the TUIO driver is
@@ -386,8 +386,8 @@ QSizeF QEventPoint::ellipseDiameters() const
     In widget-based applications, this property is not used, as it's only meaningful
     for a widget to accept or reject a complete QInputEvent.
 
-    In Qt Quick however, it's normal for an Item or Event Handler to accept
-    only the individual points in a QTouchEvent that are actually participating
+    In BobUI Quick however, it's normal for an Item or Event Handler to accept
+    only the individual points in a BOBUIouchEvent that are actually participating
     in a gesture, while other points can be delivered to other items or
     handlers. For the sake of consistency, that applies to any QPointerEvent;
     and delivery is done only when all points in a QPointerEvent have been
@@ -430,7 +430,7 @@ QPointF QEventPoint::normalizedPosition() const
     return (globalPosition() - geom.topLeft()) / geom.width();
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \deprecated [6.0] Use globalPressPosition() instead.
 
@@ -468,7 +468,7 @@ QPointF QEventPoint::lastNormalizedPos() const
         return QPointF();
     return (globalLastPosition() - geom.topLeft()) / geom.width();
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \internal
     This class is explicitly shared, which means if you construct an event and
@@ -614,6 +614,6 @@ void QMutableEventPoint::setTimestamp(QEventPoint &p, ulong t)
     Usually it's calculated by mapping scenePosition() to the target anyway.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventpoint.cpp"

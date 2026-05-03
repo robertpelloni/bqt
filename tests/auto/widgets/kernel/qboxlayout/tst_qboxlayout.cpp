@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qdial.h>
-#include <QtWidgets/qdialog.h>
-#include <QtWidgets/qgroupbox.h>
-#include <QtWidgets/qlabel.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtWidgets/qproxystyle.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qstylefactory.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/qboxlayout.h>
+#include <BobUIWidgets/qdial.h>
+#include <BobUIWidgets/qdialog.h>
+#include <BobUIWidgets/qgroupbox.h>
+#include <BobUIWidgets/qlabel.h>
+#include <BobUIWidgets/qlineedit.h>
+#include <BobUIWidgets/qproxystyle.h>
+#include <BobUIWidgets/qpushbutton.h>
+#include <BobUIWidgets/qstylefactory.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIWidgets/qwidget.h>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QBoxLayout : public QObject
 {
@@ -36,10 +36,10 @@ private slots:
     void testLayoutEngine_data();
     void testLayoutEngine();
 
-    void taskQTBUG_7103_minMaxWidthNotRespected();
-    void taskQTBUG_27420_takeAtShouldUnparentLayout();
-    void taskQTBUG_40609_addingWidgetToItsOwnLayout();
-    void taskQTBUG_40609_addingLayoutToItself();
+    void taskBOBUIBUG_7103_minMaxWidthNotRespected();
+    void taskBOBUIBUG_27420_takeAtShouldUnparentLayout();
+    void taskBOBUIBUG_40609_addingWidgetToItsOwnLayout();
+    void taskBOBUIBUG_40609_addingLayoutToItself();
     void replaceWidget();
     void indexOf();
     void invalidIndex();
@@ -97,7 +97,7 @@ void tst_QBoxLayout::cleanup()
 void tst_QBoxLayout::insertSpacerItem()
 {
     QWidget window;
-    window.setWindowTitle(QTest::currentTestFunction());
+    window.setWindowTitle(BOBUIest::currentTestFunction());
 
     QSpacerItem *spacer1 = new QSpacerItem(20, 10, QSizePolicy::Expanding, QSizePolicy::Expanding);
     QSpacerItem *spacer2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -126,7 +126,7 @@ void tst_QBoxLayout::insertLayout()
     QCOMPARE(dummyParentLayout->count(), 1);
 
     // add subLayout to another layout
-    QTest::ignoreMessage(QtWarningMsg, "QLayout::addChildLayout: layout QHBoxLayout \"\" already has a parent");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout::addChildLayout: layout QHBoxLayout \"\" already has a parent");
     vbox->addLayout(subLayout);
     QCOMPARE((subLayout->parent() == vbox), (vbox->count() == 1));
 }
@@ -135,7 +135,7 @@ void tst_QBoxLayout::insertLayout()
 void tst_QBoxLayout::sizeHint()
 {
     QWidget window;
-    window.setWindowTitle(QTest::currentTestFunction());
+    window.setWindowTitle(BOBUIest::currentTestFunction());
     QHBoxLayout *lay1 = new QHBoxLayout;
     QHBoxLayout *lay2 = new QHBoxLayout;
     QLabel *label = new QLabel("widget twooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
@@ -143,7 +143,7 @@ void tst_QBoxLayout::sizeHint()
     lay1->addLayout(lay2);
     window.setLayout(lay1);
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
     label->setText("foooooooo baaaaaaar");
     QSize sh = lay1->sizeHint();
     QApplication::processEvents();
@@ -157,14 +157,14 @@ void tst_QBoxLayout::sizeHint()
 void tst_QBoxLayout::sizeConstraints()
 {
     QWidget window;
-    window.setWindowTitle(QTest::currentTestFunction());
+    window.setWindowTitle(BOBUIest::currentTestFunction());
     QHBoxLayout *lay = new QHBoxLayout;
     lay->addWidget(new QLabel("foooooooooooooooooooooooooooooooooooo"));
     lay->addWidget(new QLabel("baaaaaaaaaaaaaaaaaaaaaaaaaaaaaar"));
     lay->setSizeConstraint(QLayout::SetFixedSize);
     window.setLayout(lay);
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
     QSize sh = window.sizeHint();
     delete lay->takeAt(1);
     QVERIFY(sh.width() >= window.sizeHint().width() &&
@@ -175,7 +175,7 @@ void tst_QBoxLayout::sizeConstraints()
 void tst_QBoxLayout::setGeometry()
 {
     QWidget toplevel;
-    toplevel.setWindowTitle(QTest::currentTestFunction());
+    toplevel.setWindowTitle(BOBUIest::currentTestFunction());
     setFrameless(&toplevel);
     QWidget w(&toplevel);
     QVBoxLayout *lay = new QVBoxLayout;
@@ -184,8 +184,8 @@ void tst_QBoxLayout::setGeometry()
     QHBoxLayout *lay2 = new QHBoxLayout;
     QDial *dial = new QDial;
     lay2->addWidget(dial);
-    lay2->setAlignment(Qt::AlignTop);
-    lay2->setAlignment(Qt::AlignRight);
+    lay2->setAlignment(BobUI::AlignTop);
+    lay2->setAlignment(BobUI::AlignRight);
     lay->addLayout(lay2);
     w.setLayout(lay);
     toplevel.show();
@@ -199,19 +199,19 @@ void tst_QBoxLayout::setStyleShouldChangeSpacing()
 {
 
     QWidget window;
-    window.setWindowTitle(QTest::currentTestFunction());
+    window.setWindowTitle(BOBUIest::currentTestFunction());
     QHBoxLayout *hbox = new QHBoxLayout(&window);
     QPushButton *pb1 = new QPushButton(tr("The spacing between this"));
     QPushButton *pb2 = new QPushButton(tr("and this button should depend on the style of the parent widget"));
-    pb1->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    pb2->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+    pb1->setAttribute(BobUI::WA_LayoutUsesWidgetRect);
+    pb2->setAttribute(BobUI::WA_LayoutUsesWidgetRect);
     hbox->addWidget(pb1);
     hbox->addWidget(pb2);
     QScopedPointer<CustomLayoutStyle> style1(new CustomLayoutStyle);
     style1->hspacing = 6;
     window.setStyle(style1.data());
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
 
     auto spacing = [&]() { return pb2->geometry().left() - pb1->geometry().right() - 1; };
     QCOMPARE(spacing(), 6);
@@ -219,7 +219,7 @@ void tst_QBoxLayout::setStyleShouldChangeSpacing()
     QScopedPointer<CustomLayoutStyle> style2(new CustomLayoutStyle());
     style2->hspacing = 10;
     window.setStyle(style2.data());
-    QTRY_COMPARE(spacing(), 10);
+    BOBUIRY_COMPARE(spacing(), 10);
 }
 
 class MarginEatingStyle : public QProxyStyle
@@ -251,7 +251,7 @@ public:
 
 void tst_QBoxLayout::widgetSurplus()
 {
-    // Test case for QTBUG-67608 - a style requests space in the margin
+    // Test case for BOBUIBUG-67608 - a style requests space in the margin
 
     QDialog window;
     QScopedPointer<MarginEatingStyle> marginEater(new MarginEatingStyle);
@@ -280,14 +280,14 @@ void tst_QBoxLayout::widgetSurplus()
     window.setLayout(vbox);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
     QCOMPARE(groupBox->y(), 0);
     QCOMPARE(groupBox->x(), 0);
 }
 
-void tst_QBoxLayout::taskQTBUG_7103_minMaxWidthNotRespected()
+void tst_QBoxLayout::taskBOBUIBUG_7103_minMaxWidthNotRespected()
 {
-    QLabel *label = new QLabel("Qt uses standard C++, but makes extensive use of the C pre-processor to enrich the language. Qt can also be used in several other programming languages via language bindings. It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, network support and a unified cross-platform API for file handling.");
+    QLabel *label = new QLabel("BobUI uses standard C++, but makes extensive use of the C pre-processor to enrich the language. BobUI can also be used in several other programming languages via language bindings. It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, network support and a unified cross-platform API for file handling.");
     label->setWordWrap(true);
     label->setFixedWidth(200);
 
@@ -296,10 +296,10 @@ void tst_QBoxLayout::taskQTBUG_7103_minMaxWidthNotRespected()
     layout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Expanding));
 
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.setLayout(layout);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     int height = label->height();
 
@@ -307,12 +307,12 @@ void tst_QBoxLayout::taskQTBUG_7103_minMaxWidthNotRespected()
     g.setWidth(600);
     widget.setGeometry(g);
 
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
 
     QCOMPARE(label->height(), height);
 }
 
-void tst_QBoxLayout::taskQTBUG_27420_takeAtShouldUnparentLayout()
+void tst_QBoxLayout::taskBOBUIBUG_27420_takeAtShouldUnparentLayout()
 {
     QSharedPointer<QHBoxLayout> outer(new QHBoxLayout);
     QPointer<QVBoxLayout> inner = new QVBoxLayout;
@@ -333,34 +333,34 @@ void tst_QBoxLayout::taskQTBUG_27420_takeAtShouldUnparentLayout()
         QVERIFY(!inner.isNull());
 }
 
-void tst_QBoxLayout::taskQTBUG_40609_addingWidgetToItsOwnLayout(){
+void tst_QBoxLayout::taskBOBUIBUG_40609_addingWidgetToItsOwnLayout(){
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.setObjectName("347b469225a24a0ef05150a");
     QVBoxLayout layout(&widget);
     layout.setObjectName("ef9e2b42298e0e6420105bb");
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add a null widget to QVBoxLayout/ef9e2b42298e0e6420105bb");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add a null widget to QVBoxLayout/ef9e2b42298e0e6420105bb");
     layout.addWidget(nullptr);
     QCOMPARE(layout.count(), 0);
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add parent widget QWidget/347b469225a24a0ef05150a to its child layout QVBoxLayout/ef9e2b42298e0e6420105bb");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add parent widget QWidget/347b469225a24a0ef05150a to its child layout QVBoxLayout/ef9e2b42298e0e6420105bb");
     layout.addWidget(&widget);
     QCOMPARE(layout.count(), 0);
 }
 
-void tst_QBoxLayout::taskQTBUG_40609_addingLayoutToItself(){
+void tst_QBoxLayout::taskBOBUIBUG_40609_addingLayoutToItself(){
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.setObjectName("fe44e5cb6c08006597126a");
     QVBoxLayout layout(&widget);
     layout.setObjectName("cc751dd0f50f62b05a62da");
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add a null layout to QVBoxLayout/cc751dd0f50f62b05a62da");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add a null layout to QVBoxLayout/cc751dd0f50f62b05a62da");
     layout.addLayout(nullptr);
     QCOMPARE(layout.count(), 0);
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add layout QVBoxLayout/cc751dd0f50f62b05a62da to itself");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add layout QVBoxLayout/cc751dd0f50f62b05a62da to itself");
     layout.addLayout(&layout);
     QCOMPARE(layout.count(), 0);
 }
@@ -399,8 +399,8 @@ public:
     QSize sizeHint() const override { return QSize(m_descr.sizeHint, 100); }
     QSize minimumSize() const override { return QSize(m_descr.minimumSize, 0); }
     QSize maximumSize() const override { return QSize(m_descr.maximumSize, QLAYOUTSIZE_MAX); }
-    Qt::Orientations expandingDirections() const override
-    { return m_descr.expanding ? Qt::Horizontal :  Qt::Orientations{}; }
+    BobUI::Orientations expandingDirections() const override
+    { return m_descr.expanding ? BobUI::Horizontal :  BobUI::Orientations{}; }
     void setGeometry(const QRect &r) override { m_pos = r.x(); m_size = r.width();}
     QRect geometry() const override { return QRect(m_pos, 0, m_size, 100); }
     bool isEmpty() const override { return m_descr.empty; }
@@ -414,27 +414,27 @@ private:
 void tst_QBoxLayout::testLayoutEngine_data()
 {
     // (int min, int sh, int max = -1, bool exp= false, int _stretch = 0, bool _empty = false)
-    QTest::addColumn<DescrList>("itemDescriptions");
-    QTest::addColumn<int>("size");
-    QTest::addColumn<int>("spacing");
-    QTest::addColumn<PosList>("expectedPositions");
-    QTest::addColumn<SizeList>("expectedSizes");
+    BOBUIest::addColumn<DescrList>("itemDescriptions");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<int>("spacing");
+    BOBUIest::addColumn<PosList>("expectedPositions");
+    BOBUIest::addColumn<SizeList>("expectedSizes");
 
-    QTest::newRow("Just one")
+    BOBUIest::newRow("Just one")
         << (DescrList() << Descr(0, 100))
         << 200
         << 0
         << (PosList() << 0)
         << (SizeList() << 200);
 
-    QTest::newRow("Two non-exp")
+    BOBUIest::newRow("Two non-exp")
         << (DescrList() << Descr(0, 100) << Descr(0,100))
         << 400
         << 0
         << (PosList() << 0 << 200)
         << (SizeList() << 200 << 200);
 
-    QTest::newRow("Exp + non-exp")
+    BOBUIest::newRow("Exp + non-exp")
         << (DescrList() << Descr(0, 100, -1, true) << Descr(0,100))
         << 400
         << 0
@@ -442,7 +442,7 @@ void tst_QBoxLayout::testLayoutEngine_data()
         << (SizeList() << 300 << 100);
 
 
-    QTest::newRow("Stretch")
+    BOBUIest::newRow("Stretch")
         << (DescrList() << Descr(0, 100, -1, false, 1) << Descr(0,100, -1, false, 2))
         << 300
         << 0
@@ -450,7 +450,7 @@ void tst_QBoxLayout::testLayoutEngine_data()
         << (SizeList() << 100 << 200);
 
 
-    QTest::newRow("Spacing")
+    BOBUIest::newRow("Spacing")
         << (DescrList() << Descr(0, 100) << Descr(0,100))
         << 400
         << 10
@@ -458,7 +458,7 @@ void tst_QBoxLayout::testLayoutEngine_data()
         << (SizeList() << 195 << 195);
 
 
-    QTest::newRow("Less than minimum")
+    BOBUIest::newRow("Less than minimum")
         << (DescrList() << Descr(100, 100, 100, false) << Descr(50, 100, 100, false))
         << 100
         << 0
@@ -466,49 +466,49 @@ void tst_QBoxLayout::testLayoutEngine_data()
         << (SizeList() << 50 << 50);
 
 
-    QTest::newRow("Less than sizehint")
+    BOBUIest::newRow("Less than sizehint")
         << (DescrList() << Descr(100, 200, 100, false) << Descr(50, 200, 100, false))
         << 200
         << 0
         << (PosList() << 0 << 100)
         << (SizeList() << 100 << 100);
 
-    QTest::newRow("Too much space")
+    BOBUIest::newRow("Too much space")
         << (DescrList() << Descr(0, 100, 100, false) << Descr(0, 100, 100, false))
         << 500
         << 0
         << (PosList() << 100 << 300)
         << (SizeList() << 100 << 100);
 
-    QTest::newRow("Empty")
+    BOBUIest::newRow("Empty")
         << (DescrList() << Descr(0, 100, 100) << Descr(0,0,-1, false, 0, true) << Descr(0, 100, 100) )
         << 500
         << 0
         << (PosList() << 100 << 300 << 300)
         << (SizeList() << 100 << 0 << 100);
 
-    QTest::newRow("QTBUG-33104")
+    BOBUIest::newRow("BOBUIBUG-33104")
         << (DescrList() << Descr(11, 75, 75, true) << Descr(75, 75))
         << 200
         << 0
         << (PosList() << 0 << 75)
         << (SizeList() << 75 << 125);
 
-    QTest::newRow("Expanding with maximumSize")
+    BOBUIest::newRow("Expanding with maximumSize")
         << (DescrList() << Descr(11, 75, 100, true) << Descr(75, 75))
         << 200
         << 0
         << (PosList() << 0 << 100)
         << (SizeList() << 100 << 100);
 
-    QTest::newRow("Stretch with maximumSize")
+    BOBUIest::newRow("Stretch with maximumSize")
         << (DescrList() << Descr(11, 75, 100, false, 1) << Descr(75, 75))
         << 200
         << 0
         << (PosList() << 0 << 100)
         << (SizeList() << 100 << 100);
 
-    QTest::newRow("Stretch with maximumSize last")
+    BOBUIest::newRow("Stretch with maximumSize last")
         << (DescrList()  << Descr(75, 75) << Descr(11, 75, 100, false, 1))
         << 200
         << 0
@@ -594,5 +594,5 @@ void tst_QBoxLayout::invalidIndex()
     QCOMPARE(layout.itemAt(0)->widget(), &lbl);
 }
 
-QTEST_MAIN(tst_QBoxLayout)
+BOBUIEST_MAIN(tst_QBoxLayout)
 #include "tst_qboxlayout.moc"

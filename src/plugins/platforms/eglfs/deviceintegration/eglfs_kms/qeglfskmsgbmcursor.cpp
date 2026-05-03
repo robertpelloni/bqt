@@ -1,7 +1,7 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsgbmcursor_p.h"
 #include "qeglfskmsgbmscreen_p.h"
@@ -9,13 +9,13 @@
 
 #include <private/qeglfskmsintegration_p.h>
 
-#include <QtCore/QFile>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QtCore/QLoggingCategory>
-#include <QtGui/QPainter>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/QFile>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonObject>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -28,9 +28,9 @@
 #define DRM_CAP_CURSOR_HEIGHT 0x9
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QEglFSKmsGbmCursor::QEglFSKmsGbmCursor(QEglFSKmsGbmScreen *screen)
     : m_screen(screen)
@@ -40,7 +40,7 @@ QEglFSKmsGbmCursor::QEglFSKmsGbmCursor(QEglFSKmsGbmScreen *screen)
     , m_state(CursorPendingVisible)
     , m_deviceListener(nullptr)
 {
-    QByteArray hideCursorVal = qgetenv("QT_QPA_EGLFS_HIDECURSOR");
+    QByteArray hideCursorVal = qgetenv("BOBUI_QPA_EGLFS_HIDECURSOR");
     if (!hideCursorVal.isEmpty() && hideCursorVal.toInt()) {
         m_state = CursorDisabled;
         return;
@@ -67,8 +67,8 @@ QEglFSKmsGbmCursor::QEglFSKmsGbmCursor(QEglFSKmsGbmScreen *screen)
     if (!m_deviceListener->hasMouse())
         m_state = CursorPendingHidden;
 
-#ifndef QT_NO_CURSOR
-    QCursor cursor(Qt::ArrowCursor);
+#ifndef BOBUI_NO_CURSOR
+    QCursor cursor(BobUI::ArrowCursor);
     changeCursor(&cursor, nullptr);
 #endif
     setPos(QPoint(0, 0));
@@ -99,7 +99,7 @@ void QEglFSKmsGbmCursor::updateMouseStatus()
 
     m_state = visible ? CursorPendingVisible : CursorPendingHidden;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     changeCursor(nullptr, m_screen->topLevelAt(pos()));
 #endif
 }
@@ -120,7 +120,7 @@ void QEglFSKmsGbmCursor::pointerEvent(const QMouseEvent &event)
     setPos(event.globalPosition().toPoint());
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QEglFSKmsGbmCursor::changeCursor(QCursor *windowCursor, QWindow *window)
 {
     Q_UNUSED(window);
@@ -139,8 +139,8 @@ void QEglFSKmsGbmCursor::changeCursor(QCursor *windowCursor, QWindow *window)
     if (m_state == CursorHidden || m_state == CursorDisabled)
         return;
 
-    const Qt::CursorShape newShape = windowCursor ? windowCursor->shape() : Qt::ArrowCursor;
-    if (newShape == Qt::BitmapCursor) {
+    const BobUI::CursorShape newShape = windowCursor ? windowCursor->shape() : BobUI::ArrowCursor;
+    if (newShape == BobUI::BitmapCursor) {
         m_cursorImage.set(windowCursor->pixmap().toImage(),
                           windowCursor->hotSpot().x(),
                           windowCursor->hotSpot().y());
@@ -165,7 +165,7 @@ void QEglFSKmsGbmCursor::changeCursor(QCursor *windowCursor, QWindow *window)
         qWarning("Cursor larger than %dx%d, cursor will be clipped.", m_cursorSize.width(), m_cursorSize.height());
 
     QImage cursorImage(m_cursorSize, QImage::Format_ARGB32);
-    cursorImage.fill(Qt::transparent);
+    cursorImage.fill(BobUI::transparent);
 
     QPainter painter;
     painter.begin(&cursorImage);
@@ -189,7 +189,7 @@ void QEglFSKmsGbmCursor::changeCursor(QCursor *windowCursor, QWindow *window)
             qWarning("Could not set cursor on screen %s: %d", kmsScreen->name().toLatin1().constData(), status);
     }
 }
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
 
 QPoint QEglFSKmsGbmCursor::pos() const
 {
@@ -235,7 +235,7 @@ void QEglFSKmsGbmCursor::setPos(const QPoint &pos)
 
 void QEglFSKmsGbmCursor::initCursorAtlas()
 {
-    static QByteArray json = qgetenv("QT_QPA_EGLFS_CURSOR");
+    static QByteArray json = qgetenv("BOBUI_QPA_EGLFS_CURSOR");
     if (json.isEmpty())
         json = ":/cursor.json";
 
@@ -263,7 +263,7 @@ void QEglFSKmsGbmCursor::initCursorAtlas()
     m_cursorAtlas.cursorsPerRow = cursorsPerRow;
 
     const QJsonArray hotSpots = object.value("hotSpots"_L1).toArray();
-    Q_ASSERT(hotSpots.count() == Qt::LastCursor + 1);
+    Q_ASSERT(hotSpots.count() == BobUI::LastCursor + 1);
     for (int i = 0; i < hotSpots.count(); i++) {
         QPoint hotSpot(hotSpots[i].toArray()[0].toDouble(), hotSpots[i].toArray()[1].toDouble());
         m_cursorAtlas.hotSpots << hotSpot;
@@ -271,10 +271,10 @@ void QEglFSKmsGbmCursor::initCursorAtlas()
 
     QImage image = QImage(atlas).convertToFormat(QImage::Format_ARGB32);
     m_cursorAtlas.cursorWidth = image.width() / m_cursorAtlas.cursorsPerRow;
-    m_cursorAtlas.cursorHeight = image.height() / ((Qt::LastCursor + cursorsPerRow) / cursorsPerRow);
+    m_cursorAtlas.cursorHeight = image.height() / ((BobUI::LastCursor + cursorsPerRow) / cursorsPerRow);
     m_cursorAtlas.width = image.width();
     m_cursorAtlas.height = image.height();
     m_cursorAtlas.image = image;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

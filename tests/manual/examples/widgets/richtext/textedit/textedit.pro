@@ -1,6 +1,6 @@
-QT += widgets
-requires(qtConfig(filedialog))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 TEMPLATE        = app
 TARGET          = textedit
@@ -18,5 +18,5 @@ build_all:!build_pass {
 EXAMPLE_FILES = textedit.qdoc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/richtext/textedit
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/richtext/textedit
 INSTALLS += target

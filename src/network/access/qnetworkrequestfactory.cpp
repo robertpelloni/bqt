@@ -1,30 +1,30 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkrequestfactory.h"
 #include "qnetworkrequestfactory_p.h"
 
-#if QT_CONFIG(ssl)
-#include <QtNetwork/qsslconfiguration.h>
+#if BOBUI_CONFIG(ssl)
+#include <BobUINetwork/qsslconfiguration.h>
 #endif
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmap.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmap.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QNetworkRequestFactoryPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QNetworkRequestFactoryPrivate)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcQrequestfactory, "qt.network.access.request.factory")
+Q_STATIC_LOGGING_CATEGORY(lcQrequestfactory, "bobui.network.access.request.factory")
 
 /*!
     \class QNetworkRequestFactory
     \since 6.7
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief Convenience class for grouping remote server endpoints that share
     common network request properties.
@@ -147,7 +147,7 @@ void QNetworkRequestFactory::setBaseUrl(const QUrl &url)
     d->baseUrl = url;
 }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 /*!
     Returns the SSL configuration set to this factory. The SSL configuration
     is set to each individual request.
@@ -605,7 +605,7 @@ QNetworkRequest QNetworkRequestFactoryPrivate::newRequest(const QUrl &url) const
 {
     QNetworkRequest request;
     request.setUrl(url);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (!sslConfig.isNull())
         request.setSslConfiguration(sslConfig);
 #endif
@@ -681,7 +681,7 @@ QUrl QNetworkRequestFactoryPrivate::requestUrl(const QString *path,
     return resultUrl;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \fn QDebug QNetworkRequestFactory::operator<<(QDebug debug,
                                         const QNetworkRequestFactory &factory)
@@ -702,7 +702,7 @@ QDebug operator<<(QDebug debug, const QNetworkRequestFactory &factory)
           << ", transferTimeout = " << factory.transferTimeout()
           << ", userName = " << (factory.userName().isEmpty() ? "(empty)" : "(is set)")
           << ", password = " << (factory.password().isEmpty() ? "(empty)" : "(is set)")
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
           << ", SSL configuration"
           << (factory.sslConfiguration().isNull() ? " is not set (default)" : " is set")
 #else
@@ -711,6 +711,6 @@ QDebug operator<<(QDebug debug, const QNetworkRequestFactory &factory)
           << ")";
     return debug;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

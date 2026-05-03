@@ -1,13 +1,13 @@
 Subject: [PATCH] Make RunCMake compatible with downstream projects
 ---
-Index: src/testinternal/3rdparty/cmake/QtRunCMakeTestHelpers.cmake
+Index: src/testinternal/3rdparty/cmake/BobUIRunCMakeTestHelpers.cmake
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
-diff --git a/src/testinternal/3rdparty/cmake/QtRunCMakeTestHelpers.cmake b/src/testinternal/3rdparty/cmake/QtRunCMakeTestHelpers.cmake
---- a/src/testinternal/3rdparty/cmake/QtRunCMakeTestHelpers.cmake    (revision 5201a6f8063d7be8fee3d9cd01e7c5e195869467)
-+++ b/src/testinternal/3rdparty/cmake/QtRunCMakeTestHelpers.cmake    (revision 27aa47b3c906dbe263f23ff4abbdb535b504404f)
+diff --git a/src/testinternal/3rdparty/cmake/BobUIRunCMakeTestHelpers.cmake b/src/testinternal/3rdparty/cmake/BobUIRunCMakeTestHelpers.cmake
+--- a/src/testinternal/3rdparty/cmake/BobUIRunCMakeTestHelpers.cmake    (revision 5201a6f8063d7be8fee3d9cd01e7c5e195869467)
++++ b/src/testinternal/3rdparty/cmake/BobUIRunCMakeTestHelpers.cmake    (revision 27aa47b3c906dbe263f23ff4abbdb535b504404f)
 @@ -3,6 +3,8 @@
  #
  # Original file location was Tests/RunCMake/CMakeLists.txt

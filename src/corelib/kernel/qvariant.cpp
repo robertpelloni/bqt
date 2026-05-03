@@ -1,15 +1,15 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qvariant_p.h"
 
 #include "private/qlocale_p.h"
 #include "qmetatype_p.h"
 
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
 #include "qabstractitemmodel.h"
 #endif
 #include "qbitarray.h"
@@ -21,7 +21,7 @@
 #include "qdatastream.h"
 #include "qdatetime.h"
 #include "qdebug.h"
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
 #include "qeasingcurve.h"
 #endif
 #include "qhash.h"
@@ -35,7 +35,7 @@
 #include "qmap.h"
 #include "qpoint.h"
 #include "qrect.h"
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include "qregularexpression.h"
 #endif
 #include "qsize.h"
@@ -48,9 +48,9 @@
 #include <cmath>
 #include <cstring>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace { // anonymous used to hide QVariant handlers
 
@@ -198,9 +198,9 @@ static std::optional<double> qConvertToRealNumber(const QVariant::Private *d)
     }
 }
 
-static bool isValidMetaTypeForVariant(const QtPrivate::QMetaTypeInterface *iface, const void *copy)
+static bool isValidMetaTypeForVariant(const BobUIPrivate::QMetaTypeInterface *iface, const void *copy)
 {
-    using namespace QtMetaTypePrivate;
+    using namespace BobUIMetaTypePrivate;
     if (!iface || iface->size == 0)
         return false;
 
@@ -236,10 +236,10 @@ enum CustomConstructNullabilityOption {
 
 // the type of d has already been set, but other field are not set
 template <CustomConstructMoveOptions moveOption = UseCopy, CustomConstructNullabilityOption nullability = MaybeNull>
-static void customConstruct(const QtPrivate::QMetaTypeInterface *iface, QVariant::Private *d,
+static void customConstruct(const BobUIPrivate::QMetaTypeInterface *iface, QVariant::Private *d,
                             std::conditional_t<moveOption == ForceMove, void *, const void *> copy)
 {
-    using namespace QtMetaTypePrivate;
+    using namespace BobUIMetaTypePrivate;
     Q_ASSERT(iface);
     Q_ASSERT(iface->size);
     Q_ASSERT(!isInterfaceFor<void>(iface));
@@ -253,8 +253,8 @@ static void customConstruct(const QtPrivate::QMetaTypeInterface *iface, QVariant
 
     // need to check for nullptr_t here, as this can get called by fromValue(nullptr). fromValue() uses
     // std::addressof(value) which in this case returns the address of the nullptr object.
-    // ### Qt 7: remove nullptr_t special casing
-    d->is_null = !copy QT6_ONLY(|| isInterfaceFor<std::nullptr_t>(iface));
+    // ### BobUI 7: remove nullptr_t special casing
+    d->is_null = !copy BOBUI6_ONLY(|| isInterfaceFor<std::nullptr_t>(iface));
 
     if (QVariant::Private::canUseInternalSpace(iface)) {
         d->is_shared = false;
@@ -277,13 +277,13 @@ static void customConstruct(const QtPrivate::QMetaTypeInterface *iface, QVariant
 
 static void customClear(QVariant::Private *d)
 {
-    const QtPrivate::QMetaTypeInterface *iface = d->typeInterface();
+    const BobUIPrivate::QMetaTypeInterface *iface = d->typeInterface();
     if (!iface)
         return;
     if (!d->is_shared) {
-        QtMetaTypePrivate::destruct(iface, d->data.data);
+        BobUIMetaTypePrivate::destruct(iface, d->data.data);
     } else {
-        QtMetaTypePrivate::destruct(iface, d->data.shared->data());
+        BobUIMetaTypePrivate::destruct(iface, d->data.shared->data());
         QVariant::PrivateShared::free(d->data.shared);
     }
 }
@@ -293,17 +293,17 @@ static QVariant::Private clonePrivate(const QVariant::Private &other)
     QVariant::Private d = other;
     if (d.is_shared) {
         d.data.shared->ref.ref();
-    } else if (const QtPrivate::QMetaTypeInterface *iface = d.typeInterface()) {
+    } else if (const BobUIPrivate::QMetaTypeInterface *iface = d.typeInterface()) {
         if (Q_LIKELY(d.canUseInternalSpace(iface))) {
             // if not trivially copyable, ask to copy (if it's trivially
             // copyable, we've already copied it)
             if (iface->copyCtr)
-                QtMetaTypePrivate::copyConstruct(iface, d.data.data, other.data.data);
+                BobUIMetaTypePrivate::copyConstruct(iface, d.data.data, other.data.data);
         } else {
             // highly unlikely, but possible case: type has changed relocatability
             // between builds
             d.data.shared = QVariant::PrivateShared::create(iface->size, iface->alignment);
-            QtMetaTypePrivate::copyConstruct(iface, d.data.shared->data(), other.data.data);
+            BobUIMetaTypePrivate::copyConstruct(iface, d.data.shared->data(), other.data.data);
         }
 
     }
@@ -314,8 +314,8 @@ static QVariant::Private clonePrivate(const QVariant::Private &other)
 
 /*!
     \class QVariant
-    \inmodule QtCore
-    \brief The QVariant class acts like a union for the most common Qt data types.
+    \inmodule BobUICore
+    \brief The QVariant class acts like a union for the most common BobUI data types.
 
     \ingroup objectmodel
     \ingroup shared
@@ -354,12 +354,12 @@ static QVariant::Private clonePrivate(const QVariant::Private &other)
 
     QVariant can be extended to support other types than those
     mentioned in the \l QMetaType::Type enum.
-    See \l{Creating Custom Qt Types}{Creating Custom Qt Types} for details.
+    See \l{Creating Custom BobUI Types}{Creating Custom BobUI Types} for details.
 
     \section1 A Note on GUI Types
 
-    Because QVariant is part of the Qt Core module, it cannot provide
-    conversion functions to data types defined in Qt GUI, such as
+    Because QVariant is part of the BobUI Core module, it cannot provide
+    conversion functions to data types defined in BobUI GUI, such as
     QColor, QImage, and QPixmap. In other words, there is no \c
     toColor() function. Instead, you can use the QVariant::value() or
     the qvariant_cast() template function. For example:
@@ -426,7 +426,7 @@ static QVariant::Private clonePrivate(const QVariant::Private &other)
     \value Locale  a QLocale
     \value LongLong a \l qlonglong
     \value Map  a QVariantMap
-    \value Transform  a QTransform
+    \value Transform  a BOBUIransform
     \value Matrix4x4  a QMatrix4x4
     \value Palette  a QPalette
     \value Pen  a QPen
@@ -445,9 +445,9 @@ static QVariant::Private clonePrivate(const QVariant::Private &other)
     \value SizePolicy  a QSizePolicy
     \value String  a QString
     \value StringList  a QStringList
-    \value TextFormat  a QTextFormat
-    \value TextLength  a QTextLength
-    \value Time  a QTime
+    \value TextFormat  a BOBUIextFormat
+    \value TextLength  a BOBUIextLength
+    \value Time  a BOBUIime
     \value UInt  a \l uint
     \value ULongLong a \l qulonglong
     \value Url  a QUrl
@@ -494,7 +494,7 @@ static QVariant::Private clonePrivate(const QVariant::Private &other)
     \a copy is not \nullptr.
 
 */
-//### Qt 7: Remove in favor of QMetaType overload
+//### BobUI 7: Remove in favor of QMetaType overload
 void QVariant::create(int type, const void *copy)
 {
     create(QMetaType(type), copy);
@@ -619,7 +619,7 @@ void *QVariant::prepareForEmplace(QMetaType type)
         d.packedType = quintptr(type.iface()) >> 2;
         return d.data.data;
     } else if (d.is_shared && isDetached() && typeFits()) { // (2)
-        QtMetaTypePrivate::destruct(d.typeInterface(), d.data.shared->data());
+        BobUIMetaTypePrivate::destruct(d.typeInterface(), d.data.shared->data());
         // compare QVariant::PrivateShared::create
         const auto ps = d.data.shared;
         const auto align = type.alignOf();
@@ -659,7 +659,7 @@ void *QVariant::prepareForEmplace(QMetaType type)
     the variant.
 
     You can disable this operator by defining \c
-    QT_NO_CAST_FROM_ASCII when you compile your applications.
+    BOBUI_NO_CAST_FROM_ASCII when you compile your applications.
 */
 
 /*!
@@ -687,7 +687,7 @@ void *QVariant::prepareForEmplace(QMetaType type)
 */
 
 /*!
-  \fn QVariant::QVariant(QTime val) noexcept
+  \fn QVariant::QVariant(BOBUIime val) noexcept
 
     Constructs a new variant with a time value, \a val.
 */
@@ -938,7 +938,7 @@ QVariant::QVariant(QChar val) noexcept : d(std::piecewise_construct_t{}, val) {}
 QVariant::QVariant(const QStringList &val) noexcept : d(std::piecewise_construct_t{}, val) {}
 
 QVariant::QVariant(QDate val) noexcept : d(std::piecewise_construct_t{}, val) {}
-QVariant::QVariant(QTime val) noexcept : d(std::piecewise_construct_t{}, val) {}
+QVariant::QVariant(BOBUIime val) noexcept : d(std::piecewise_construct_t{}, val) {}
 QVariant::QVariant(const QDateTime &val) noexcept : d(std::piecewise_construct_t{}, val) {}
 
 QVariant::QVariant(const QList<QVariant> &list) noexcept : d(std::piecewise_construct_t{}, list) {}
@@ -947,7 +947,7 @@ QVariant::QVariant(const QHash<QString, QVariant> &hash) noexcept : d(std::piece
 
 QVariant::QVariant(QLatin1StringView val) : QVariant(QString(val)) {}
 
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
 QVariant::QVariant(const QEasingCurve &val) : d(std::piecewise_construct_t{}, val) {}
 #endif
 QVariant::QVariant(QPoint pt) noexcept
@@ -968,9 +968,9 @@ QVariant::QVariant(QSizeF s) noexcept(Private::FitsInInternalSize<sizeof(qreal) 
     : d(std::piecewise_construct_t{}, s) {}
 QVariant::QVariant(const QUrl &u) noexcept : d(std::piecewise_construct_t{}, u) {}
 QVariant::QVariant(const QLocale &l) noexcept : d(std::piecewise_construct_t{}, l) {}
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 QVariant::QVariant(const QRegularExpression &re) noexcept : d(std::piecewise_construct_t{}, re) {}
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 QVariant::QVariant(QUuid uuid) noexcept(Private::FitsInInternalSize<16>) : d(std::piecewise_construct_t{}, uuid) {}
 QVariant::QVariant(const QJsonValue &jsonValue) noexcept(Private::FitsInInternalSize<sizeof(CborValueStandIn)>)
     : d(std::piecewise_construct_t{}, jsonValue)
@@ -978,7 +978,7 @@ QVariant::QVariant(const QJsonValue &jsonValue) noexcept(Private::FitsInInternal
 QVariant::QVariant(const QJsonObject &jsonObject) noexcept : d(std::piecewise_construct_t{}, jsonObject) {}
 QVariant::QVariant(const QJsonArray &jsonArray) noexcept : d(std::piecewise_construct_t{}, jsonArray) {}
 QVariant::QVariant(const QJsonDocument &jsonDocument) : d(std::piecewise_construct_t{}, jsonDocument) {}
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
 QVariant::QVariant(const QModelIndex &modelIndex) noexcept(Private::FitsInInternalSize<8 + 2 * sizeof(quintptr)>)
     : d(std::piecewise_construct_t{}, modelIndex) {}
 QVariant::QVariant(const QPersistentModelIndex &modelIndex) : d(std::piecewise_construct_t{}, modelIndex) {}
@@ -1122,9 +1122,9 @@ void QVariant::clear()
     representation, the variant is set to \c Invalid.
 */
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 enum { MapFromThreeCount = 36 };
-static const ushort mapIdFromQt3ToCurrent[MapFromThreeCount] =
+static const ushort mapIdFromBobUI3ToCurrent[MapFromThreeCount] =
 {
     QMetaType::UnknownType,
     QMetaType::QVariantMap,
@@ -1153,11 +1153,11 @@ static const ushort mapIdFromQt3ToCurrent[MapFromThreeCount] =
     QMetaType::QCursor,
     QMetaType::QSizePolicy,
     QMetaType::QDate,
-    QMetaType::QTime,
+    QMetaType::BOBUIime,
     QMetaType::QDateTime,
     QMetaType::QByteArray,
     QMetaType::QBitArray,
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QMetaType::QKeySequence,
 #else
     0, // QKeySequence
@@ -1165,22 +1165,22 @@ static const ushort mapIdFromQt3ToCurrent[MapFromThreeCount] =
     QMetaType::QPen,
     QMetaType::LongLong,
     QMetaType::ULongLong,
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
     QMetaType::QEasingCurve
 #endif
 };
 
-// values needed to map Qt5 based type id's to Qt6 based ones
-constexpr int Qt5UserType = 1024;
-constexpr int Qt5LastCoreType = QMetaType::QCborMap;
-constexpr int Qt5FirstGuiType = 64;
-constexpr int Qt5LastGuiType = 87;
-constexpr int Qt5SizePolicy = 121;
-constexpr int Qt5RegExp = 27;
-constexpr int Qt5KeySequence = 75;
-constexpr int Qt5QQuaternion = 85;
+// values needed to map BobUI5 based type id's to BobUI6 based ones
+constexpr int BobUI5UserType = 1024;
+constexpr int BobUI5LastCoreType = QMetaType::QCborMap;
+constexpr int BobUI5FirstGuiType = 64;
+constexpr int BobUI5LastGuiType = 87;
+constexpr int BobUI5SizePolicy = 121;
+constexpr int BobUI5RegExp = 27;
+constexpr int BobUI5KeySequence = 75;
+constexpr int BobUI5QQuaternion = 85;
 
-constexpr int Qt6ToQt5GuiTypeDelta = qToUnderlying(QMetaType::FirstGuiType) - Qt5FirstGuiType;
+constexpr int BobUI6ToBobUI5GuiTypeDelta = qToUnderlying(QMetaType::FirstGuiType) - BobUI5FirstGuiType;
 
 /*!
     Internal function for loading a variant from stream \a s. Use the
@@ -1194,42 +1194,42 @@ void QVariant::load(QDataStream &s)
 
     quint32 typeId;
     s >> typeId;
-    if (s.version() < QDataStream::Qt_4_0) {
-        // map to Qt 5 ids
+    if (s.version() < QDataStream::BobUI_4_0) {
+        // map to BobUI 5 ids
         if (typeId >= MapFromThreeCount)
             return;
-        typeId = mapIdFromQt3ToCurrent[typeId];
-    } else if (s.version() < QDataStream::Qt_5_0) {
-        // map to Qt 5 type ids
+        typeId = mapIdFromBobUI3ToCurrent[typeId];
+    } else if (s.version() < QDataStream::BobUI_5_0) {
+        // map to BobUI 5 type ids
         if (typeId == 127 /* QVariant::UserType */) {
-            typeId = Qt5UserType;
-        } else if (typeId >= 128 && typeId != Qt5UserType) {
-            // In Qt4 id == 128 was FirstExtCoreType. In Qt5 ExtCoreTypes set was merged to CoreTypes
+            typeId = BobUI5UserType;
+        } else if (typeId >= 128 && typeId != BobUI5UserType) {
+            // In BobUI4 id == 128 was FirstExtCoreType. In BobUI5 ExtCoreTypes set was merged to CoreTypes
             // by moving all ids down by 97.
             typeId -= 97;
         } else if (typeId == 75 /* QSizePolicy */) {
-            typeId = Qt5SizePolicy;
+            typeId = BobUI5SizePolicy;
         } else if (typeId > 75 && typeId <= 86) {
             // and as a result these types received lower ids too
-            // QKeySequence QPen QTextLength QTextFormat QTransform QMatrix4x4 QVector2D QVector3D QVector4D QQuaternion
+            // QKeySequence QPen BOBUIextLength BOBUIextFormat BOBUIransform QMatrix4x4 QVector2D QVector3D QVector4D QQuaternion
             typeId -=1;
         }
     }
-    if (s.version() < QDataStream::Qt_6_0) {
-        // map from Qt 5 to Qt 6 values
-        if (typeId == Qt5UserType) {
+    if (s.version() < QDataStream::BobUI_6_0) {
+        // map from BobUI 5 to BobUI 6 values
+        if (typeId == BobUI5UserType) {
             typeId = QMetaType::User;
-        } else if (typeId >= Qt5FirstGuiType && typeId <= Qt5LastGuiType) {
-            typeId += Qt6ToQt5GuiTypeDelta;
-        } else if (typeId == Qt5SizePolicy) {
+        } else if (typeId >= BobUI5FirstGuiType && typeId <= BobUI5LastGuiType) {
+            typeId += BobUI6ToBobUI5GuiTypeDelta;
+        } else if (typeId == BobUI5SizePolicy) {
             typeId = QMetaType::QSizePolicy;
-        } else if (typeId == Qt5RegExp) {
+        } else if (typeId == BobUI5RegExp) {
             typeId = QMetaType::fromName("QRegExp").id();
         }
     }
 
     qint8 is_null = false;
-    if (s.version() >= QDataStream::Qt_4_2)
+    if (s.version() >= QDataStream::BobUI_4_2)
         s >> is_null;
     if (typeId == QMetaType::User) {
         QByteArray name;
@@ -1245,7 +1245,7 @@ void QVariant::load(QDataStream &s)
     d.is_null = is_null;
 
     if (!isValid()) {
-        if (s.version() < QDataStream::Qt_5_0) {
+        if (s.version() < QDataStream::BobUI_5_0) {
             // Since we wrote something, we should read something
             QString x;
             s >> x;
@@ -1276,31 +1276,31 @@ void QVariant::save(QDataStream &s) const
         typeId = QMetaType::User;
         saveAsUserType = true;
     }
-    if (s.version() < QDataStream::Qt_6_0) {
-        // map to Qt 5 values
+    if (s.version() < QDataStream::BobUI_6_0) {
+        // map to BobUI 5 values
         if (typeId == QMetaType::User) {
-            typeId = Qt5UserType;
+            typeId = BobUI5UserType;
             if (!strcmp(d.type().name(), "QRegExp")) {
-                typeId = 27; // QRegExp in Qt 4/5
+                typeId = 27; // QRegExp in BobUI 4/5
             }
-        } else if (typeId > Qt5LastCoreType && typeId <= QMetaType::LastCoreType) {
-            // the type didn't exist in Qt 5
-            typeId = Qt5UserType;
+        } else if (typeId > BobUI5LastCoreType && typeId <= QMetaType::LastCoreType) {
+            // the type didn't exist in BobUI 5
+            typeId = BobUI5UserType;
             saveAsUserType = true;
         } else if (typeId >= QMetaType::FirstGuiType && typeId <= QMetaType::LastGuiType) {
-            typeId -= Qt6ToQt5GuiTypeDelta;
-            if (typeId > Qt5LastGuiType) {
-                typeId = Qt5UserType;
+            typeId -= BobUI6ToBobUI5GuiTypeDelta;
+            if (typeId > BobUI5LastGuiType) {
+                typeId = BobUI5UserType;
                 saveAsUserType = true;
             }
         } else if (typeId == QMetaType::QSizePolicy) {
-            typeId = Qt5SizePolicy;
+            typeId = BobUI5SizePolicy;
         }
     }
-    if (s.version() < QDataStream::Qt_4_0) {
+    if (s.version() < QDataStream::BobUI_4_0) {
         int i;
         for (i = 0; i <= MapFromThreeCount - 1; ++i) {
-            if (mapIdFromQt3ToCurrent[i] == typeId) {
+            if (mapIdFromBobUI3ToCurrent[i] == typeId) {
                 typeId = i;
                 break;
             }
@@ -1309,40 +1309,40 @@ void QVariant::save(QDataStream &s) const
             s << QVariant();
             return;
         }
-    } else if (s.version() < QDataStream::Qt_5_0) {
-        if (typeId == Qt5UserType) {
-            typeId = 127; // QVariant::UserType had this value in Qt4
+    } else if (s.version() < QDataStream::BobUI_5_0) {
+        if (typeId == BobUI5UserType) {
+            typeId = 127; // QVariant::UserType had this value in BobUI4
             saveAsUserType = true;
-        } else if (typeId >= 128 - 97 && typeId <= Qt5LastCoreType) {
-            // In Qt4 id == 128 was FirstExtCoreType. In Qt5 ExtCoreTypes set was merged to CoreTypes
+        } else if (typeId >= 128 - 97 && typeId <= BobUI5LastCoreType) {
+            // In BobUI4 id == 128 was FirstExtCoreType. In BobUI5 ExtCoreTypes set was merged to CoreTypes
             // by moving all ids down by 97.
             typeId += 97;
-        } else if (typeId == Qt5SizePolicy) {
+        } else if (typeId == BobUI5SizePolicy) {
             typeId = 75;
-        } else if (typeId >= Qt5KeySequence && typeId <= Qt5QQuaternion) {
+        } else if (typeId >= BobUI5KeySequence && typeId <= BobUI5QQuaternion) {
             // and as a result these types received lower ids too
             typeId += 1;
-        } else if (typeId > Qt5QQuaternion || typeId == QMetaType::QUuid) {
-            // These existed in Qt 4 only as a custom type
+        } else if (typeId > BobUI5QQuaternion || typeId == QMetaType::QUuid) {
+            // These existed in BobUI 4 only as a custom type
             typeId = 127;
             saveAsUserType = true;
         }
     }
     const char *typeName = nullptr;
     if (saveAsUserType) {
-        if (s.version() < QDataStream::Qt_6_0)
-            typeName = QtMetaTypePrivate::typedefNameForType(d.type().d_ptr);
+        if (s.version() < QDataStream::BobUI_6_0)
+            typeName = BobUIMetaTypePrivate::typedefNameForType(d.type().d_ptr);
         if (!typeName)
             typeName = d.type().name();
     }
     s << typeId;
-    if (s.version() >= QDataStream::Qt_4_2)
+    if (s.version() >= QDataStream::BobUI_4_2)
         s << qint8(d.is_null);
     if (typeName)
         s << typeName;
 
     if (!isValid()) {
-        if (s.version() < QDataStream::Qt_5_0)
+        if (s.version() < QDataStream::BobUI_5_0)
             s << QString();
         return;
     }
@@ -1371,7 +1371,7 @@ void QVariant::save(QDataStream &s) const
     QVariant::load: unknown user type with name QList<int>
     \endquotation
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator>>(QDataStream &s, QVariant &p)
 {
@@ -1383,7 +1383,7 @@ QDataStream &operator>>(QDataStream &s, QVariant &p)
     Writes a variant \a p to the stream \a s.
     \relates QVariant
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator<<(QDataStream &s, const QVariant &p)
 {
@@ -1404,7 +1404,7 @@ QDataStream &operator<<(QDataStream &s, const QVariant &p)
 
     Writes a variant type \a p to the stream \a s.
 */
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
 /*!
     \fn bool QVariant::isValid() const
@@ -1435,7 +1435,7 @@ QStringList QVariant::toStringList() const
     \l QMetaType::QString, \l QMetaType::Bool, \l QMetaType::QByteArray,
     \l QMetaType::QChar, \l QMetaType::QDate, \l QMetaType::QDateTime,
     \l QMetaType::Double, \l QMetaType::Int, \l QMetaType::LongLong,
-    \l QMetaType::QStringList, \l QMetaType::QTime, \l QMetaType::UInt, or
+    \l QMetaType::QStringList, \l QMetaType::BOBUIime, \l QMetaType::UInt, or
     \l QMetaType::ULongLong.
 
     Calling QVariant::toString() on an unsupported variant returns an empty
@@ -1483,7 +1483,7 @@ QVariantHash QVariant::toHash() const
     otherwise returns an invalid date.
 
     If the metaType() is \l QMetaType::QString, an invalid date will be returned if
-    the string cannot be parsed as a Qt::ISODate format date.
+    the string cannot be parsed as a BobUI::ISODate format date.
 
     \sa canConvert(), convert()
 */
@@ -1493,20 +1493,20 @@ QDate QVariant::toDate() const
 }
 
 /*!
-    \fn QTime QVariant::toTime() const
+    \fn BOBUIime QVariant::toTime() const
 
-    Returns the variant as a QTime if the variant has userType()
-    \l QMetaType::QTime, \l QMetaType::QDateTime, or \l QMetaType::QString;
+    Returns the variant as a BOBUIime if the variant has userType()
+    \l QMetaType::BOBUIime, \l QMetaType::QDateTime, or \l QMetaType::QString;
     otherwise returns an invalid time.
 
     If the metaType() is \l QMetaType::QString, an invalid time will be returned if
-    the string cannot be parsed as a Qt::ISODate format time.
+    the string cannot be parsed as a BobUI::ISODate format time.
 
     \sa canConvert(), convert()
 */
-QTime QVariant::toTime() const
+BOBUIime QVariant::toTime() const
 {
-    return qvariant_cast<QTime>(*this);
+    return qvariant_cast<BOBUIime>(*this);
 }
 
 /*!
@@ -1517,7 +1517,7 @@ QTime QVariant::toTime() const
     otherwise returns an invalid date/time.
 
     If the metaType() is \l QMetaType::QString, an invalid date/time will be
-    returned if the string cannot be parsed as a Qt::ISODate format date/time.
+    returned if the string cannot be parsed as a BobUI::ISODate format date/time.
 
     \sa canConvert(), convert()
 */
@@ -1535,7 +1535,7 @@ QDateTime QVariant::toDateTime() const
 
     \sa canConvert(), convert()
 */
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
 QEasingCurve QVariant::toEasingCurve() const
 {
     return qvariant_cast<QEasingCurve>(*this);
@@ -1689,7 +1689,7 @@ QLocale QVariant::toLocale() const
     return qvariant_cast<QLocale>(*this);
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \fn QRegularExpression QVariant::toRegularExpression() const
     \since 5.0
@@ -1703,9 +1703,9 @@ QRegularExpression QVariant::toRegularExpression() const
 {
     return qvariant_cast<QRegularExpression>(*this);
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
 /*!
     \since 5.0
 
@@ -1731,7 +1731,7 @@ QPersistentModelIndex QVariant::toPersistentModelIndex() const
 {
     return qvariant_cast<QPersistentModelIndex>(*this);
 }
-#endif // QT_CONFIG(itemmodel)
+#endif // BOBUI_CONFIG(itemmodel)
 
 /*!
     \since 5.0
@@ -2134,8 +2134,8 @@ bool QVariant::view(int type, void *ptr)
 
     \list
     \li If both types are numeric types (integers and floatins point numbers)
-    Qt will compare those types using standard C++ type promotion rules.
-    \li If one type is numeric and the other one a QString, Qt will try to
+    BobUI will compare those types using standard C++ type promotion rules.
+    \li If one type is numeric and the other one a QString, BobUI will try to
     convert the QString to a matching numeric type and if successful compare
     those.
     \li If both variants contain pointers to QObject derived types, QVariant
@@ -2160,8 +2160,8 @@ bool QVariant::view(int type, void *ptr)
 
     \list
     \li If both types are numeric types (integers and floatins point numbers)
-    Qt will compare those types using standard C++ type promotion rules.
-    \li If one type is numeric and the other one a QString, Qt will try to
+    BobUI will compare those types using standard C++ type promotion rules.
+    \li If one type is numeric and the other one a QString, BobUI will try to
     convert the QString to a matching numeric type and if successful compare
     those.
     \li If both variants contain pointers to QObject derived types, QVariant
@@ -2198,8 +2198,8 @@ static bool qIsFloatingPoint(uint tp)
     return tp == QMetaType::Double || tp == QMetaType::Float || tp == QMetaType::Float16;
 }
 
-static bool canBeNumericallyCompared(const QtPrivate::QMetaTypeInterface *iface1,
-                                     const QtPrivate::QMetaTypeInterface *iface2)
+static bool canBeNumericallyCompared(const BobUIPrivate::QMetaTypeInterface *iface1,
+                                     const BobUIPrivate::QMetaTypeInterface *iface2)
 {
     if (!iface1 || !iface2)
         return false;
@@ -2232,8 +2232,8 @@ static bool canBeNumericallyCompared(const QtPrivate::QMetaTypeInterface *iface1
     return false;
 }
 
-static int numericTypePromotion(const QtPrivate::QMetaTypeInterface *iface1,
-                                const QtPrivate::QMetaTypeInterface *iface2)
+static int numericTypePromotion(const BobUIPrivate::QMetaTypeInterface *iface1,
+                                const BobUIPrivate::QMetaTypeInterface *iface2)
 {
     Q_ASSERT(canBeNumericallyCompared(iface1, iface2));
 
@@ -2299,13 +2299,13 @@ static QPartialOrdering integralCompare(uint promotedType, const QVariant::Priva
     if (!l1 || !l2)
         return QPartialOrdering::Unordered;
     if (promotedType == QMetaType::UInt)
-        return Qt::compareThreeWay(uint(*l1), uint(*l2));
+        return BobUI::compareThreeWay(uint(*l1), uint(*l2));
     if (promotedType == QMetaType::LongLong)
-        return Qt::compareThreeWay(qlonglong(*l1), qlonglong(*l2));
+        return BobUI::compareThreeWay(qlonglong(*l1), qlonglong(*l2));
     if (promotedType == QMetaType::ULongLong)
-        return Qt::compareThreeWay(qulonglong(*l1), qulonglong(*l2));
+        return BobUI::compareThreeWay(qulonglong(*l1), qulonglong(*l2));
 
-    return Qt::compareThreeWay(int(*l1), int(*l2));
+    return BobUI::compareThreeWay(int(*l1), int(*l2));
 }
 
 static QPartialOrdering numericCompare(const QVariant::Private *d1, const QVariant::Private *d2)
@@ -2320,7 +2320,7 @@ static QPartialOrdering numericCompare(const QVariant::Private *d1, const QVaria
     if (!r1 || !r2)
         return QPartialOrdering::Unordered;
 
-    return Qt::compareThreeWay(*r1, *r2);
+    return BobUI::compareThreeWay(*r1, *r2);
 }
 
 static bool qvCanConvertMetaObject(QMetaType fromType, QMetaType toType)
@@ -2336,8 +2336,8 @@ static bool qvCanConvertMetaObject(QMetaType fromType, QMetaType toType)
 
 static QPartialOrdering pointerCompare(const QVariant::Private *d1, const QVariant::Private *d2)
 {
-    return Qt::compareThreeWay(Qt::totally_ordered_wrapper(d1->get<QObject *>()),
-                               Qt::totally_ordered_wrapper(d2->get<QObject *>()));
+    return BobUI::compareThreeWay(BobUI::totally_ordered_wrapper(d1->get<QObject *>()),
+                               BobUI::totally_ordered_wrapper(d2->get<QObject *>()));
 }
 
 /*!
@@ -2468,7 +2468,7 @@ void *QVariant::data()
 
     A variant is considered null if it contains no initialized value or a null pointer.
 
-    \note This behavior has been changed from Qt 5, where isNull() would also
+    \note This behavior has been changed from BobUI 5, where isNull() would also
     return true if the variant contained an object of a builtin type with an isNull()
     method that returned true for that object.
 
@@ -2483,7 +2483,7 @@ bool QVariant::isNull() const
     return false;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug QVariant::qdebugHelper(QDebug dbg) const
 {
     QDebugStateSaver saver(dbg);
@@ -2517,9 +2517,9 @@ QVariant QVariant::copyConstruct(QMetaType type, const void *data)
     return var;
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 QDebug operator<<(QDebug dbg, const QVariant::Type p)
 {
@@ -2531,7 +2531,7 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     return dbg;
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
 
 #endif
@@ -2649,7 +2649,7 @@ QT_WARNING_POP
     Returns a QVariant with the type and value of the active variant of \a value. If
     the active type is std::monostate a default QVariant is returned.
 
-    \note With this method you do not need to register the variant as a Qt metatype,
+    \note With this method you do not need to register the variant as a BobUI metatype,
     since the std::variant is resolved before being stored. The component types
     should be registered however.
 
@@ -2823,7 +2823,7 @@ QVariant QVariant::fromMetaType(QMetaType type, const void *copy)
 /*!
     \internal
  */
-const void *QtPrivate::QVariantTypeCoercer::convert(const QVariant &value, const QMetaType &type)
+const void *BobUIPrivate::QVariantTypeCoercer::convert(const QVariant &value, const QMetaType &type)
 {
     if (type == QMetaType::fromType<QVariant>())
         return &value;
@@ -2843,7 +2843,7 @@ const void *QtPrivate::QVariantTypeCoercer::convert(const QVariant &value, const
 /*!
     \internal
  */
-const void *QtPrivate::QVariantTypeCoercer::coerce(const QVariant &value, const QMetaType &type)
+const void *BobUIPrivate::QVariantTypeCoercer::coerce(const QVariant &value, const QMetaType &type)
 {
     if (const void *result = convert(value, type))
         return result;
@@ -2852,15 +2852,15 @@ const void *QtPrivate::QVariantTypeCoercer::coerce(const QVariant &value, const 
     return converted.constData();
 }
 
-#if QT_DEPRECATED_SINCE(6, 15)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 /*!
     \class QVariantRef
     \since 6.0
     \deprecated [6.15] Use QVariant::Reference instead.
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QVariantRef acts as a non-const reference to a QVariant.
 
     As the generic iterators don't actually instantiate a QVariant on each
@@ -2914,7 +2914,7 @@ QT_WARNING_DISABLE_DEPRECATED
     \class QVariantConstPointer
     \since 6.0
     \deprecated [6.15] Use QVariant::ConstPointer instead.
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Emulated const pointer to QVariant based on a pointer.
 
     QVariantConstPointer wraps a QVariant and returns it from its operator*().
@@ -2952,7 +2952,7 @@ const QVariant *QVariantConstPointer::operator->() const
     \class QVariantPointer
     \since 6.0
     \deprecated [6.15] Use QVariant::Pointer instead.
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QVariantPointer is a template class that emulates a pointer to QVariant based on a pointer.
 
     QVariantPointer\<Pointer\> wraps a pointer of type \a Pointer and returns
@@ -2980,13 +2980,13 @@ const QVariant *QVariantConstPointer::operator->() const
     implement operator->().
  */
 
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 15)
 
 /*!
     \class QVariant::ConstReference
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QVariant::ConstReference acts as a const reference to a QVariant.
 
     As the generic iterators don't actually instantiate a QVariant on each
@@ -3036,7 +3036,7 @@ QT_WARNING_POP
 /*!
     \class QVariant::Reference
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QVariant::Reference acts as a non-const reference to a QVariant.
 
     As the generic iterators don't actually instantiate a QVariant on each
@@ -3103,7 +3103,7 @@ QT_WARNING_POP
 /*!
     \class QVariant::ConstPointer
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QVariant::ConstPointer is a template class that emulates a const pointer to QVariant.
 
     QVariant::ConstPointer\<Indirect\> wraps a pointed-to value of type
@@ -3134,7 +3134,7 @@ QT_WARNING_POP
 /*!
     \class QVariant::Pointer
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QVariant::Pointer is a template class that emulates a non-const pointer to QVariant.
 
     QVariant::Pointer\<Indirect\> wraps a pointed-to value of type \a Indirect
@@ -3168,4 +3168,4 @@ QT_WARNING_POP
     Converts this QVariant::Pointer into a QVariant::ConstPointer.
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

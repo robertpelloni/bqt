@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "background_renderer.h"
 
 #include <qmath.h>
 #include <QFileInfo>
-#include <QTime>
+#include <BOBUIime>
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLContext>
@@ -37,7 +37,7 @@ FragmentToy::FragmentToy(const QString &fragmentSource, QObject *parent)
         QFileInfo info(fragmentSource);
         m_fragment_file_last_modified = info.lastModified();
         m_fragment_file = fragmentSource;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
         m_watcher.addPath(info.canonicalPath());
         QObject::connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this, &FragmentToy::fileChanged);
 #endif

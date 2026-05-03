@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qcursor.h"
@@ -11,14 +11,14 @@
 #include "qstyleoption.h"
 #include "qstylepainter.h"
 
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qpointer.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #include "private/qmenu_p.h"
 #endif
@@ -28,23 +28,23 @@
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QScrollBar
     \brief The QScrollBar widget provides a vertical or horizontal scroll bar.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A scroll bar is a control that enables the user to access parts of a
     document that is larger than the widget used to display it. It provides
     a visual indication of the user's current position within the document
     and the amount of the document that is visible. Scroll bars are usually
     equipped with other controls that enable more accurate navigation.
-    Qt displays scroll bars in a way that is appropriate for each platform.
+    BobUI displays scroll bars in a way that is appropriate for each platform.
 
     If you need to provide a scrolling view onto another widget, it may be
     more convenient to use the QScrollArea class because this provides a
@@ -147,7 +147,7 @@ using namespace Qt::StringLiterals;
     \endlist
 
     A scroll bar can be controlled by the keyboard, but it has a
-    default focusPolicy() of Qt::NoFocus. Use setFocusPolicy() to
+    default focusPolicy() of BobUI::NoFocus. Use setFocusPolicy() to
     enable keyboard interaction with the scroll bar:
     \list
          \li Left/Right move a horizontal scroll bar by one single step.
@@ -174,7 +174,7 @@ bool QScrollBarPrivate::updateHoverControl(const QPoint &pos)
     Q_Q(QScrollBar);
     QRect lastHoverRect = hoverRect;
     QStyle::SubControl lastHoverControl = hoverControl;
-    bool doesHover = q->testAttribute(Qt::WA_Hover);
+    bool doesHover = q->testAttribute(BobUI::WA_Hover);
     if (lastHoverControl != newHoverControl(pos) && doesHover) {
         q->update(lastHoverRect);
         q->update(hoverRect);
@@ -300,14 +300,14 @@ void QScrollBar::initStyleOption(QStyleOptionSlider *option) const
     option->singleStep = d->singleStep;
     option->pageStep = d->pageStep;
     option->upsideDown = d->invertedAppearance;
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         option->state |= QStyle::State_Horizontal;
     if ((d->flashed || !d->transient) && style()->styleHint(QStyle::SH_ScrollBar_Transient, option, this))
         option->state |= QStyle::State_On;
 }
 
 
-#define HORIZONTAL (d_func()->orientation == Qt::Horizontal)
+#define HORIZONTAL (d_func()->orientation == BobUI::Horizontal)
 #define VERTICAL !HORIZONTAL
 
 /*!
@@ -322,7 +322,7 @@ void QScrollBar::initStyleOption(QStyleOptionSlider *option) const
     initial \l {QAbstractSlider::value} {value} of 0.
 */
 QScrollBar::QScrollBar(QWidget *parent)
-    : QScrollBar(Qt::Vertical, parent)
+    : QScrollBar(BobUI::Vertical, parent)
 {
 }
 
@@ -337,7 +337,7 @@ QScrollBar::QScrollBar(QWidget *parent)
     \l {QAbstractSlider::pageStep} {pageStep} size of 10, and an
     initial \l {QAbstractSlider::value} {value} of 0.
 */
-QScrollBar::QScrollBar(Qt::Orientation orientation, QWidget *parent)
+QScrollBar::QScrollBar(BobUI::Orientation orientation, QWidget *parent)
     : QAbstractSlider(*new QScrollBarPrivate, parent)
 {
     d_func()->orientation = orientation;
@@ -363,16 +363,16 @@ void QScrollBarPrivate::init()
     opt.initFrom(q);
     transient = q->style()->styleHint(QStyle::SH_ScrollBar_Transient, &opt, q);
     flashed = false;
-    q->setFocusPolicy(Qt::NoFocus);
+    q->setFocusPolicy(BobUI::NoFocus);
     QSizePolicy sp(QSizePolicy::Minimum, QSizePolicy::Fixed, QSizePolicy::Slider);
-    if (orientation == Qt::Vertical)
+    if (orientation == BobUI::Vertical)
         sp.transpose();
     q->setSizePolicy(sp);
-    q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
-    q->setAttribute(Qt::WA_OpaquePaintEvent);
+    q->setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
+    q->setAttribute(BobUI::WA_OpaquePaintEvent);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     \since 6.10
 
@@ -385,10 +385,10 @@ void QScrollBarPrivate::init()
 */
 QMenu *QScrollBar::createStandardContextMenu(QPoint position)
 {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     const bool horiz = HORIZONTAL;
     QMenu *menu = new QMenu(this);
-    menu->setObjectName("qt_scrollbar_menu"_L1);
+    menu->setObjectName("bobui_scrollbar_menu"_L1);
 
     if (window() && window()->windowHandle()) {
         if (auto *menuTopData = QMenuPrivate::get(menu)->topData())
@@ -423,7 +423,7 @@ QMenu *QScrollBar::createStandardContextMenu(QPoint position)
 #else
     Q_UNUSED(position);
     return nullptr;
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 }
 
 /*!
@@ -433,7 +433,7 @@ QMenu *QScrollBar::createStandardContextMenu(QPoint position)
     Shows the standard context menu created with createStandardContextMenu().
 
     If you do not want the scroll bar to have a context menu, you can set
-    its \l contextMenuPolicy to Qt::NoContextMenu. A style can also control
+    its \l contextMenuPolicy to BobUI::NoContextMenu. A style can also control
     this behavior using the SH_ScrollBar_ContextMenu hint.
 
     If you want to customize the context menu, reimplement this function.
@@ -450,18 +450,18 @@ void QScrollBar::contextMenuEvent(QContextMenuEvent *event)
         return;
     }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     QMenu *menu = createStandardContextMenu(event->pos());
     if (!menu)
         return;
 
-    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->setAttribute(BobUI::WA_DeleteOnClose);
     menu->popup(event->globalPos());
 #else
     Q_UNUSED(pos)
 #endif
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*! \reimp */
 QSize QScrollBar::sizeHint() const
@@ -473,7 +473,7 @@ QSize QScrollBar::sizeHint() const
     int scrollBarExtent = style()->pixelMetric(QStyle::PM_ScrollBarExtent, &opt, this);
     int scrollBarSliderMin = style()->pixelMetric(QStyle::PM_ScrollBarSliderMin, &opt, this);
     QSize size;
-    if (opt.orientation == Qt::Horizontal)
+    if (opt.orientation == BobUI::Horizontal)
         size = QSize(scrollBarExtent * 2 + scrollBarSliderMin, scrollBarExtent);
     else
         size = QSize(scrollBarExtent, scrollBarExtent * 2 + scrollBarSliderMin);
@@ -507,7 +507,7 @@ bool QScrollBar::event(QEvent *event)
         break;
     }
     case QEvent::Timer:
-        if (static_cast<QTimerEvent *>(event)->id() == d->flashTimer.id()) {
+        if (static_cast<BOBUIimerEvent *>(event)->id() == d->flashTimer.id()) {
             QStyleOptionSlider opt;
             initStyleOption(&opt);
             if (d->flashed && style()->styleHint(QStyle::SH_ScrollBar_Transient, &opt, this)) {
@@ -526,7 +526,7 @@ bool QScrollBar::event(QEvent *event)
 /*!
     \reimp
 */
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QScrollBar::wheelEvent(QWheelEvent *event)
 {
     event->ignore();
@@ -534,7 +534,7 @@ void QScrollBar::wheelEvent(QWheelEvent *event)
     // The vertical wheel can be used to scroll a horizontal scrollbar, but only if
     // there is no simultaneous horizontal wheel movement.  This is to avoid chaotic
     // scrolling on touchpads.
-    if (!horizontal && event->angleDelta().x() != 0 && orientation() == Qt::Horizontal)
+    if (!horizontal && event->angleDelta().x() != 0 && orientation() == BobUI::Horizontal)
         return;
     // scrollbar is a special case - in vertical mode it reaches minimum
     // value in the upper position, however QSlider's minimum value is on
@@ -543,12 +543,12 @@ void QScrollBar::wheelEvent(QWheelEvent *event)
     // horizontal orientation.
     int delta = horizontal ? -event->angleDelta().x() : event->angleDelta().y();
     Q_D(QScrollBar);
-    if (d->scrollByDelta(horizontal ? Qt::Horizontal : Qt::Vertical, event->modifiers(), delta))
+    if (d->scrollByDelta(horizontal ? BobUI::Horizontal : BobUI::Vertical, event->modifiers(), delta))
         event->accept();
 
-    if (event->phase() == Qt::ScrollBegin)
+    if (event->phase() == BobUI::ScrollBegin)
         d->setTransient(false);
-    else if (event->phase() == Qt::ScrollEnd)
+    else if (event->phase() == BobUI::ScrollEnd)
         d->setTransient(true);
 }
 #endif
@@ -591,7 +591,7 @@ void QScrollBar::mousePressEvent(QMouseEvent *e)
 
     if (d->maximum == d->minimum // no range
         || (e->buttons() & (~e->button())) // another button was clicked before
-        || !(e->button() == Qt::LeftButton || (midButtonAbsPos && e->button() == Qt::MiddleButton))) {
+        || !(e->button() == BobUI::LeftButton || (midButtonAbsPos && e->button() == BobUI::MiddleButton))) {
         e->ignore();
         return;
     }
@@ -603,7 +603,7 @@ void QScrollBar::mousePressEvent(QMouseEvent *e)
                                        QStyle::SC_ScrollBarSlider, this);
     QPoint click = e->position().toPoint();
     QPoint pressValue = click - sr.center() + sr.topLeft();
-    d->pressValue = d->orientation == Qt::Horizontal ? d->pixelPosToRangeValue(pressValue.x()) :
+    d->pressValue = d->orientation == BobUI::Horizontal ? d->pixelPosToRangeValue(pressValue.x()) :
         d->pixelPosToRangeValue(pressValue.y());
     if (d->pressedControl == QStyle::SC_ScrollBarSlider) {
         d->clickOffset = HORIZONTAL ? (click.x()-sr.x()) : (click.y()-sr.y());
@@ -612,9 +612,9 @@ void QScrollBar::mousePressEvent(QMouseEvent *e)
 
     if ((d->pressedControl == QStyle::SC_ScrollBarAddPage
           || d->pressedControl == QStyle::SC_ScrollBarSubPage)
-        && ((midButtonAbsPos && e->button() == Qt::MiddleButton)
+        && ((midButtonAbsPos && e->button() == BobUI::MiddleButton)
             || (style()->styleHint(QStyle::SH_ScrollBar_LeftClickAbsolutePosition, &opt, this)
-                && e->button() == Qt::LeftButton))) {
+                && e->button() == BobUI::LeftButton))) {
         int sliderLength = HORIZONTAL ? sr.width() : sr.height();
         setSliderPosition(d->pixelPosToRangeValue((HORIZONTAL ? e->position().toPoint().x()
                                                               : e->position().toPoint().y()) - sliderLength / 2));
@@ -667,8 +667,8 @@ void QScrollBar::mouseMoveEvent(QMouseEvent *e)
 
     QStyleOptionSlider opt;
     initStyleOption(&opt);
-    if (!(e->buttons() & Qt::LeftButton
-          ||  ((e->buttons() & Qt::MiddleButton)
+    if (!(e->buttons() & BobUI::LeftButton
+          ||  ((e->buttons() & BobUI::MiddleButton)
                && style()->styleHint(QStyle::SH_ScrollBar_MiddleClickAbsolutePosition, &opt, this))))
         return;
 
@@ -728,11 +728,11 @@ int QScrollBarPrivate::pixelPosToRangeValue(int pos) const
                                           QStyle::SC_ScrollBarSlider, q);
     int sliderMin, sliderMax, sliderLength;
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         sliderLength = sr.width();
         sliderMin = gr.x();
         sliderMax = gr.right() - sliderLength + 1;
-        if (q->layoutDirection() == Qt::RightToLeft)
+        if (q->layoutDirection() == BobUI::RightToLeft)
             opt.upsideDown = !opt.upsideDown;
     } else {
         sliderLength = sr.height();
@@ -758,13 +758,13 @@ void QScrollBar::hideEvent(QHideEvent *)
 /*! \internal
     Returns the style option for scroll bar.
 */
-Q_WIDGETS_EXPORT QStyleOptionSlider qt_qscrollbarStyleOption(QScrollBar *scrollbar)
+Q_WIDGETS_EXPORT QStyleOptionSlider bobui_qscrollbarStyleOption(QScrollBar *scrollbar)
 {
     QStyleOptionSlider opt;
     scrollbar->initStyleOption(&opt);
     return opt;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qscrollbar.cpp"

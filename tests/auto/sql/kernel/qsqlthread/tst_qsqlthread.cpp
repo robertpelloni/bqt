@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qdebug.h>
 
 #include "../qsqldatabase/tst_databases.h"
 
-QString qtest;
+QString bobuiest;
 // set this define if Oracle is built with threading support
 //#define QOCI_THREADED
 
@@ -63,12 +63,12 @@ private:
 
 static QAtomicInt counter;
 
-class QtTestSqlThread : public QThread
+class BobUITestSqlThread : public BOBUIhread
 {
     Q_OBJECT
 public:
-    QtTestSqlThread(const QSqlDatabase &aDb, QObject *parent = nullptr)
-        : QThread(parent), sourceDb(aDb) {}
+    BobUITestSqlThread(const QSqlDatabase &aDb, QObject *parent = nullptr)
+        : BOBUIhread(parent), sourceDb(aDb) {}
 
     void runHelper(const QString &dbName)
     {
@@ -76,7 +76,7 @@ public:
         QVERIFY_SQL(db, open());
 
         int sum = 0;
-        QSqlQuery q("select id from " + qtest, db);
+        QSqlQuery q("select id from " + bobuiest, db);
         QVERIFY_SQL(q, isActive());
         while (q.next())
             sum += q.value(0).toInt();
@@ -86,7 +86,7 @@ public:
 
     void run() override
     {
-        QString dbName = QString("QThreadDb%1").arg((size_t)currentThreadId());
+        QString dbName = QString("BOBUIhreadDb%1").arg((size_t)currentThreadId());
         runHelper(dbName);
 
         QSqlDatabase::database(dbName).close();
@@ -99,26 +99,26 @@ private:
 
 enum { ProdConIterations = 10 };
 
-class SqlProducer: public QThread
+class SqlProducer: public BOBUIhread
 {
     Q_OBJECT
 public:
     SqlProducer(const QSqlDatabase &aDb, QObject *parent = nullptr)
-        : QThread(parent), sourceDb(aDb) {}
+        : BOBUIhread(parent), sourceDb(aDb) {}
 
     void runHelper(const QString &dbName)
     {
         QSqlDatabase db = QSqlDatabase::cloneDatabase(sourceDb, dbName);
         QVERIFY_SQL(db, open());
         QSqlQuery q(db);
-        QVERIFY_SQL(q, prepare("insert into " + qtest + " values (?, ?, ?)"));
+        QVERIFY_SQL(q, prepare("insert into " + bobuiest + " values (?, ?, ?)"));
         int id = 10;
         for (int i = 0; i < ProdConIterations; ++i) {
             q.bindValue(0, ++id);
             q.bindValue(1, "threaddy");
             q.bindValue(2, 10);
             QVERIFY_SQL(q, exec());
-            QThread::yieldCurrentThread();
+            BOBUIhread::yieldCurrentThread();
         }
     }
 
@@ -133,28 +133,28 @@ private:
     QSqlDatabase sourceDb;
 };
 
-class SqlConsumer: public QThread
+class SqlConsumer: public BOBUIhread
 {
     Q_OBJECT
 
 public:
     SqlConsumer(const QSqlDatabase &aDb, QObject *parent = nullptr)
-        : QThread(parent), sourceDb(aDb) {}
+        : BOBUIhread(parent), sourceDb(aDb) {}
 
     void runHelper(const QString &dbName)
     {
         QSqlDatabase db = QSqlDatabase::cloneDatabase(sourceDb, dbName);
         QVERIFY_SQL(db, open());
         QSqlQuery q1(db), q2(db);
-        QVERIFY_SQL(q2, prepare("delete from " + qtest + " where id = :id"));
+        QVERIFY_SQL(q2, prepare("delete from " + bobuiest + " where id = :id"));
 
         for (int i = 0; i < ProdConIterations; ++i) {
-            QVERIFY_SQL(q1, exec("select max(id) from " + qtest));
+            QVERIFY_SQL(q1, exec("select max(id) from " + bobuiest));
             q1.first();
             q2.bindValue(":id", q1.value(0));
             q1.clear();
             QVERIFY_SQL(q2, exec());
-            QThread::yieldCurrentThread();
+            BOBUIhread::yieldCurrentThread();
         }
     }
 
@@ -170,7 +170,7 @@ private:
     QSqlDatabase sourceDb;
 };
 
-class SqlThread: public QThread
+class SqlThread: public BOBUIhread
 {
     Q_OBJECT
 
@@ -178,7 +178,7 @@ public:
     enum Mode { SimpleReading, PreparedReading, SimpleWriting, PreparedWriting };
 
     SqlThread(Mode m, const QSqlDatabase &db, QObject *parent = nullptr)
-        : QThread(parent), sourceDb(db), mode(m) {}
+        : BOBUIhread(parent), sourceDb(db), mode(m) {}
 
     void run() override
     {
@@ -188,7 +188,7 @@ public:
             // Executes a Query for reading, iterates over the first 4 results
             QSqlQuery q(sourceDb);
             for (int j = 0; j < ProdConIterations; ++j) {
-                QVERIFY_SQL(q, exec("select id,name from " + qtest + " order by id"));
+                QVERIFY_SQL(q, exec("select id,name from " + bobuiest + " order by id"));
                 for (int i = 1; i < 4; ++i) {
                     QVERIFY_SQL(q, next());
                     QCOMPARE(q.value(0).toInt(), i);
@@ -199,7 +199,7 @@ public:
             // Executes a query for writing (appends a new row)
             QSqlQuery q(sourceDb);
             for (int j = 0; j < ProdConIterations; ++j) {
-                QVERIFY_SQL(q, exec(QString("insert into " + qtest
+                QVERIFY_SQL(q, exec(QString("insert into " + bobuiest
                                 + " (id, name) values(%1, '%2')")
                                       .arg(counter.fetchAndAddRelaxed(1)).arg("Robert")));
             }
@@ -207,7 +207,7 @@ public:
         case PreparedReading: {
             // Prepares a query for reading and iterates over the results
             QSqlQuery q(sourceDb);
-            QVERIFY_SQL(q, prepare("select id, name from " + qtest + " where id = ?"));
+            QVERIFY_SQL(q, prepare("select id, name from " + bobuiest + " where id = ?"));
             for (int j = 0; j < ProdConIterations; ++j) {
                 q.addBindValue(j % 3 + 1);
                 QVERIFY_SQL(q, exec());
@@ -217,7 +217,7 @@ public:
             break; }
         case PreparedWriting: {
             QSqlQuery q(sourceDb);
-            QVERIFY_SQL(q, prepare("insert into " + qtest + " (id, name) "
+            QVERIFY_SQL(q, prepare("insert into " + bobuiest + " (id, name) "
                                      "values(?, ?)"));
             for (int i = 0; i < ProdConIterations; ++i) {
                 q.addBindValue(counter.fetchAndAddRelaxed(1));
@@ -237,8 +237,8 @@ private:
 tst_QSqlThread::tst_QSqlThread()
     : threadFinishedCount(0)
 {
-    static QSqlDatabase static_qtest_db = QSqlDatabase();
-    qtest = qTableName("qtest", __FILE__, static_qtest_db);
+    static QSqlDatabase static_bobuiest_db = QSqlDatabase();
+    bobuiest = qTableName("bobuiest", __FILE__, static_bobuiest_db);
 }
 
 tst_QSqlThread::~tst_QSqlThread()
@@ -249,9 +249,9 @@ void tst_QSqlThread::generic_data(const QString& engine)
 {
     if ( dbs.fillTestTable(engine) == 0 ) {
         if(engine.isEmpty())
-           QSKIP( "No database drivers are available in this Qt configuration");
+           QSKIP( "No database drivers are available in this BobUI configuration");
         else
-           QSKIP( (QString("No database drivers of type %1 are available in this Qt configuration").arg(engine)).toLocal8Bit());
+           QSKIP( (QString("No database drivers of type %1 are available in this BobUI configuration").arg(engine)).toLocal8Bit());
     }
 }
 
@@ -259,7 +259,7 @@ void tst_QSqlThread::dropTestTables()
 {
     for (const auto &dbName : dbs.dbNames) {
         QSqlDatabase db = QSqlDatabase::database(dbName);
-        tst_Databases::safeDropTables(db, { qtest, qTableName("qtest2", __FILE__, db), qTableName("emptytable", __FILE__, db) });
+        tst_Databases::safeDropTables(db, { bobuiest, qTableName("bobuiest2", __FILE__, db), qTableName("emptytable", __FILE__, db) });
     }
 }
 
@@ -269,10 +269,10 @@ void tst_QSqlThread::createTestTables()
         QSqlDatabase db = QSqlDatabase::database(dbName);
         QSqlQuery q(db);
 
-        QVERIFY_SQL(q, exec("create table " + qtest
+        QVERIFY_SQL(q, exec("create table " + bobuiest
                        + "(id int NOT NULL primary key, name varchar(20), title int)"));
 
-        QVERIFY_SQL(q, exec("create table " + qTableName("qtest2", __FILE__, db)
+        QVERIFY_SQL(q, exec("create table " + qTableName("bobuiest2", __FILE__, db)
                        + "(id int NOT NULL primary key, title varchar(20))"));
 
         QVERIFY_SQL(q, exec("create table " + qTableName("emptytable", __FILE__, db)
@@ -286,14 +286,14 @@ void tst_QSqlThread::repopulateTestTables()
         QSqlDatabase db = QSqlDatabase::database(dbName);
         QSqlQuery q(db);
 
-        QVERIFY_SQL(q, exec("delete from " + qtest));
-        QVERIFY_SQL(q, exec("insert into " + qtest + " values(1, 'harry', 1)"));
-        QVERIFY_SQL(q, exec("insert into " + qtest + " values(2, 'trond', 2)"));
-        QVERIFY_SQL(q, exec("insert into " + qtest + " values(3, 'vohi', 3)"));
+        QVERIFY_SQL(q, exec("delete from " + bobuiest));
+        QVERIFY_SQL(q, exec("insert into " + bobuiest + " values(1, 'harry', 1)"));
+        QVERIFY_SQL(q, exec("insert into " + bobuiest + " values(2, 'trond', 2)"));
+        QVERIFY_SQL(q, exec("insert into " + bobuiest + " values(3, 'vohi', 3)"));
 
-        QVERIFY_SQL(q, exec("delete from " + qTableName("qtest2", __FILE__, db)));
-        QVERIFY_SQL(q, exec("insert into " + qTableName("qtest2", __FILE__, db) + " values(1, 'herr')"));
-        QVERIFY_SQL(q, exec("insert into " + qTableName("qtest2", __FILE__, db) + " values(2, 'mister')"));
+        QVERIFY_SQL(q, exec("delete from " + qTableName("bobuiest2", __FILE__, db)));
+        QVERIFY_SQL(q, exec("insert into " + qTableName("bobuiest2", __FILE__, db) + " values(1, 'herr')"));
+        QVERIFY_SQL(q, exec("insert into " + qTableName("bobuiest2", __FILE__, db) + " values(2, 'mister')"));
     }
 }
 
@@ -338,16 +338,16 @@ void tst_QSqlThread::simpleThreading()
     if (db.databaseName() == ":memory:")
         QSKIP("does not work with in-memory databases");
 
-    QtTestSqlThread t1(db);
-    QtTestSqlThread t2(db);
+    BobUITestSqlThread t1(db);
+    BobUITestSqlThread t2(db);
 
-    connect(&t1, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
-    connect(&t2, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+    connect(&t1, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
+    connect(&t2, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
 
     t1.start();
     t2.start();
 
-    QTRY_VERIFY(threadFinishedCount >= 2);
+    BOBUIRY_VERIFY(threadFinishedCount >= 2);
 }
 
 // This test creates two threads that clone their db connection and read
@@ -366,13 +366,13 @@ void tst_QSqlThread::readWriteThreading()
     SqlProducer producer(db);
     SqlConsumer consumer(db);
 
-    connect(&producer, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
-    connect(&consumer, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+    connect(&producer, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
+    connect(&consumer, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
 
     producer.start();
     consumer.start();
 
-    QTRY_VERIFY_WITH_TIMEOUT(threadFinishedCount >= 2, 10000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(threadFinishedCount >= 2, 10000);
 }
 
 #ifdef QOCI_THREADED
@@ -393,11 +393,11 @@ void tst_QSqlThread::readFromSingleConnection()
     QObject cleanupHelper; // make sure the threads die when we exit the scope
     for (int i = 0; i < maxThreadCount; ++i) {
         SqlThread *reader = new SqlThread(SqlThread::SimpleReading, db, &cleanupHelper);
-        connect(reader, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+        connect(reader, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
         reader->start();
     }
 
-    QTRY_VERIFY(threadFinishedCount >= maxThreadCount);
+    BOBUIRY_VERIFY(threadFinishedCount >= maxThreadCount);
 #endif
 }
 
@@ -414,15 +414,15 @@ void tst_QSqlThread::readWriteFromSingleConnection()
     QObject cleanupHelper;
     for (int i = 0; i < maxThreadCount; ++i) {
         SqlThread *reader = new SqlThread(SqlThread::SimpleReading, db, &cleanupHelper);
-        connect(reader, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+        connect(reader, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
         reader->start();
 
         SqlThread *writer = new SqlThread(SqlThread::SimpleWriting, db, &cleanupHelper);
-        connect(writer, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+        connect(writer, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
         writer->start();
     }
 
-    QTRY_VERIFY(threadFinishedCount >= maxThreadCount * 2);
+    BOBUIRY_VERIFY(threadFinishedCount >= maxThreadCount * 2);
 #endif
 }
 
@@ -439,15 +439,15 @@ void tst_QSqlThread::preparedReadWriteFromSingleConnection()
     QObject cleanupHelper;
     for (int i = 0; i < maxThreadCount; ++i) {
         SqlThread *reader = new SqlThread(SqlThread::PreparedReading, db, &cleanupHelper);
-        connect(reader, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+        connect(reader, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
         reader->start();
 
         SqlThread *writer = new SqlThread(SqlThread::PreparedWriting, db, &cleanupHelper);
-        connect(writer, SIGNAL(finished()), this, SLOT(threadFinished()), Qt::QueuedConnection);
+        connect(writer, SIGNAL(finished()), this, SLOT(threadFinished()), BobUI::QueuedConnection);
         writer->start();
     }
 
-    QTRY_VERIFY(threadFinishedCount >= maxThreadCount * 2);
+    BOBUIRY_VERIFY(threadFinishedCount >= maxThreadCount * 2);
 #endif
 }
 
@@ -464,7 +464,7 @@ void tst_QSqlThread::transactionsFromSingleConnection()
     // start and commit a transaction
     QVERIFY_SQL(db, db.transaction());
     preparedReadWriteFromSingleConnection(); // read and write from multiple threads
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     QVERIFY_SQL(db, db.commit());
 
@@ -474,11 +474,11 @@ void tst_QSqlThread::transactionsFromSingleConnection()
     // start and roll back a transaction
     QVERIFY_SQL(db, db.transaction());
     preparedReadWriteFromSingleConnection(); // read and write from multiple threads
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     QVERIFY_SQL(db, db.rollback());
 #endif
 }
 
-QTEST_MAIN(tst_QSqlThread)
+BOBUIEST_MAIN(tst_QSqlThread)
 #include "tst_qsqlthread.moc"

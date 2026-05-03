@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 /*!
     \class QImageReader
     \brief The QImageReader class provides a format independent interface
     for reading images from files or other devices.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \reentrant
     \ingroup painting
 
@@ -61,7 +61,7 @@
     The image read will have its \e{device pixel ratio} set to a value of 2.
 
     This can be disabled by setting the environment variable
-    \c QT_HIGHDPI_DISABLE_2X_IMAGE_LOADING.
+    \c BOBUI_HIGHDPI_DISABLE_2X_IMAGE_LOADING.
 
     \sa QImageWriter, QImageIOHandler, QImageIOPlugin, QMimeDatabase, QColorSpace
     \sa QImage::devicePixelRatio(), QPixmap::devicePixelRatio(), QIcon, QPainter::drawPixmap(), QPainter::drawImage()
@@ -76,13 +76,13 @@
     \value FileNotFoundError QImageReader was used with a file name,
     but not file was found with that name. This can also happen if the
     file name contained no extension, and the file with the correct
-    extension is not supported by Qt.
+    extension is not supported by BobUI.
 
     \value DeviceError QImageReader encountered a device error when
     reading the image. You can consult your particular device for more
     details on what went wrong.
 
-    \value UnsupportedFormatError Qt does not support the requested
+    \value UnsupportedFormatError BobUI does not support the requested
     image format.
 
     \value InvalidDataError The image data was invalid, and
@@ -111,9 +111,9 @@
 // factory loader
 #include <qcoreapplication.h>
 #include <private/qfactoryloader_p.h>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/private/qlocking_p.h>
 
-// for qt_getImageText
+// for bobui_getImageText
 #include <private/qimage_p.h>
 
 // image handlers
@@ -121,24 +121,24 @@
 #include <private/qppmhandler_p.h>
 #include <private/qxbmhandler_p.h>
 #include <private/qxpmhandler_p.h>
-#ifndef QT_NO_IMAGEFORMAT_PNG
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
 #include <private/qpnghandler_p.h>
 #endif
 
 #include <private/qimagereaderwriterhelpers_p.h>
-#include <qtgui_tracepoints_p.h>
+#include <bobuigui_tracepoints_p.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcImageReader, "qt.gui.imageio.reader")
+Q_STATIC_LOGGING_CATEGORY(lcImageReader, "bobui.gui.imageio.reader")
 
 using namespace QImageReaderWriterHelpers;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_TRACE_POINT(qtgui, QImageReader_read_before_reading, QImageReader *reader, const QString &filename);
-Q_TRACE_POINT(qtgui, QImageReader_read_after_reading, QImageReader *reader, bool result);
+Q_TRACE_POINT(bobuigui, QImageReader_read_before_reading, QImageReader *reader, const QString &filename);
+Q_TRACE_POINT(bobuigui, QImageReader_read_after_reading, QImageReader *reader, bool result);
 
 static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
                                                 const QByteArray &format,
@@ -154,9 +154,9 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
 
     qCDebug(lcImageReader) << "Finding read handler for" << device << "and format" << format;
 
-#if QT_CONFIG(imageformatplugin)
+#if BOBUI_CONFIG(imageformatplugin)
     Q_CONSTINIT static QBasicMutex mutex;
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     typedef QMultiMap<int, QString> PluginKeyMap;
 
@@ -167,7 +167,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
     qCDebug(lcImageReader) << keyMap.uniqueKeys().size() << "plugins available:" << keyMap.values();
 
     int testFormatPluginIndex = -1;
-#endif // QT_CONFIG(imageformatplugin)
+#endif // BOBUI_CONFIG(imageformatplugin)
 
     if (device && format.isEmpty() && autoDetectImageFormat && !ignoresFormatAndExtension) {
         // if there's no format, see if \a device is a file, and if so, find the file suffix
@@ -181,7 +181,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
     if (ignoresFormatAndExtension)
         testFormat = QByteArray();
 
-#if QT_CONFIG(imageformatplugin)
+#if BOBUI_CONFIG(imageformatplugin)
     if (!testFormat.isEmpty()) {
         // Check first support for the given format name or suffix among our plugins' registered
         // formats. This allows plugins to override our built-in handlers.
@@ -200,7 +200,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         if (device && !device->isSequential())
             device->seek(pos); // Should not have moved, but guard against buggy plugins
     }
-#endif // QT_CONFIG(imageformatplugin)
+#endif // BOBUI_CONFIG(imageformatplugin)
 
     // if we don't have a handler yet, check if we have built-in support for
     // the format
@@ -208,26 +208,26 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         qCDebug(lcImageReader) << "Checking if any built in handlers recognize the format"
                                << testFormat;
         if (false) {
-#ifndef QT_NO_IMAGEFORMAT_PNG
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
         } else if (testFormat == "png") {
             handler = new QPngHandler;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
         } else if (testFormat == "bmp") {
             handler = new QBmpHandler;
         } else if (testFormat == "dib") {
             handler = new QBmpHandler(QBmpHandler::DibFormat);
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
         } else if (testFormat == "xpm") {
             handler = new QXpmHandler;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
+#ifndef BOBUI_NO_IMAGEFORMAT_XBM
         } else if (testFormat == "xbm") {
             handler = new QXbmHandler;
             handler->setOption(QImageIOHandler::SubType, testFormat);
 #endif
-#ifndef QT_NO_IMAGEFORMAT_PPM
+#ifndef BOBUI_NO_IMAGEFORMAT_PPM
         } else if (testFormat == "pbm" || testFormat == "pbmraw" || testFormat == "pgm"
                    || testFormat == "pgmraw" || testFormat == "ppm" || testFormat == "ppmraw") {
             handler = new QPpmHandler;
@@ -239,7 +239,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
             qCDebug(lcImageReader) << "Using the built-in handler for format" << testFormat;
     }
 
-#if QT_CONFIG(imageformatplugin)
+#if BOBUI_CONFIG(imageformatplugin)
     if (!handler && !testFormat.isEmpty() && autoDetectImageFormat) {
         // check if any other plugin supports the format name (they are not allowed to
         // read from the device yet).
@@ -261,7 +261,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         if (device && !device->isSequential())
             device->seek(pos);  // Should not have moved, but guard against buggy plugins
     }
-#endif // QT_CONFIG(imageformatplugin)
+#endif // BOBUI_CONFIG(imageformatplugin)
 
     if (handler && device && !suffix.isEmpty()) {
         Q_ASSERT(qobject_cast<QFile *>(device));
@@ -285,7 +285,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         handler = nullptr;
     }
 
-#if QT_CONFIG(imageformatplugin)
+#if BOBUI_CONFIG(imageformatplugin)
     if (!handler && (autoDetectImageFormat || ignoresFormatAndExtension)) {
         // check if any of our plugins recognize the file from its contents.
         qCDebug(lcImageReader) << "Checking if any plugins recognize the format"
@@ -305,7 +305,7 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         if (device && !device->isSequential())
             device->seek(pos);
     }
-#endif // QT_CONFIG(imageformatplugin)
+#endif // BOBUI_CONFIG(imageformatplugin)
 
     if (!handler && (autoDetectImageFormat || ignoresFormatAndExtension)) {
         // check if any of our built-in handlers recognize the file from its
@@ -316,8 +316,8 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         if (!suffix.isEmpty()) {
             // If reading from a file with a suffix, start testing our
             // built-in handler for that suffix first.
-            for (int i = 0; i < _qt_NumFormats; ++i) {
-                if (_qt_BuiltInFormats[i].extension == suffix) {
+            for (int i = 0; i < _bobui_NumFormats; ++i) {
+                if (_bobui_BuiltInFormats[i].extension == suffix) {
                     currentFormat = i;
                     break;
                 }
@@ -325,40 +325,40 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
         }
 
         QByteArray subType;
-        int numFormats = _qt_NumFormats;
+        int numFormats = _bobui_NumFormats;
         while (device && numFormats >= 0) {
             const qint64 pos = device->pos();
             switch (currentFormat) {
-#ifndef QT_NO_IMAGEFORMAT_PNG
-            case _qt_PngFormat:
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
+            case _bobui_PngFormat:
                 if (QPngHandler::canRead(device))
                     handler = new QPngHandler;
                 break;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_BMP
-            case _qt_BmpFormat:
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
+            case _bobui_BmpFormat:
                 if (QBmpHandler::canRead(device))
                     handler = new QBmpHandler;
                 break;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
-            case _qt_XpmFormat:
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
+            case _bobui_XpmFormat:
                 if (QXpmHandler::canRead(device))
                     handler = new QXpmHandler;
                 break;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_PPM
-            case _qt_PbmFormat:
-            case _qt_PgmFormat:
-            case _qt_PpmFormat:
+#ifndef BOBUI_NO_IMAGEFORMAT_PPM
+            case _bobui_PbmFormat:
+            case _bobui_PgmFormat:
+            case _bobui_PpmFormat:
                 if (QPpmHandler::canRead(device, &subType)) {
                     handler = new QPpmHandler;
                     handler->setOption(QImageIOHandler::SubType, subType);
                 }
                 break;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
-            case _qt_XbmFormat:
+#ifndef BOBUI_NO_IMAGEFORMAT_XBM
+            case _bobui_XbmFormat:
                 if (QXbmHandler::canRead(device))
                     handler = new QXbmHandler;
                 break;
@@ -371,13 +371,13 @@ static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
 
             if (handler) {
                 qCDebug(lcImageReader, "The %s built-in handler can read this data",
-                       _qt_BuiltInFormats[currentFormat].extension);
+                       _bobui_BuiltInFormats[currentFormat].extension);
                 break;
             }
 
             --numFormats;
             ++currentFormat;
-            if (currentFormat >= _qt_NumFormats)
+            if (currentFormat >= _bobui_NumFormats)
                 currentFormat = 0;
         }
     }
@@ -528,7 +528,7 @@ bool QImageReaderPrivate::initHandler()
 void QImageReaderPrivate::getText()
 {
     if (text.isEmpty() && q->supportsOption(QImageIOHandler::Description))
-        text = qt_getImageTextFromDescription(handler->option(QImageIOHandler::Description).toString());
+        text = bobui_getImageTextFromDescription(handler->option(QImageIOHandler::Description).toString());
 }
 
 /*!
@@ -630,7 +630,7 @@ QByteArray QImageReader::format() const
     content detection is done at this stage. QImageReader will choose the
     first plugin that supports reading for this format.
 
-    \li If no plugin supports the image format, Qt's built-in handlers are
+    \li If no plugin supports the image format, BobUI's built-in handlers are
     checked based on either the optional format string, or the file name
     suffix.
 
@@ -710,7 +710,7 @@ bool QImageReader::decideFormatFromContent() const
     If the device is not already open, QImageReader will attempt to
     open the device in \l {QIODeviceBase::}{ReadOnly} mode by calling
     open(). Note that this does not work for certain devices, such as
-    QProcess, QTcpSocket and QUdpSocket, where more logic is required
+    QProcess, BOBUIcpSocket and QUdpSocket, where more logic is required
     to open the device.
 
     \sa device(), setFileName()
@@ -806,7 +806,7 @@ int QImageReader::quality() const
     contents.
 
     If the image format does not support this feature, this function returns
-    an invalid size. Qt's built-in image handlers all support this feature,
+    an invalid size. BobUI's built-in image handlers all support this feature,
     but custom image format plugins are not required to do so.
 
     \sa QImageIOHandler::ImageOption, QImageIOHandler::option(), QImageIOHandler::supportsOption()
@@ -897,7 +897,7 @@ QRect QImageReader::clipRect() const
     rect is applied. The algorithm used for scaling depends on the
     image format. By default (i.e., if the image format does not
     support scaling), QImageReader will use QImage::scale() with
-    Qt::SmoothScaling.
+    BobUI::SmoothScaling.
 
     If only one dimension is set in \a size, the other one will be
     computed from the image's \l {size()} {natural size} so as to
@@ -1103,7 +1103,7 @@ QImage QImageReader::read()
     return read(&image) ? image : QImage();
 }
 
-extern void qt_imageTransform(QImage &src, QImageIOHandler::Transformations orient);
+extern void bobui_imageTransform(QImage &src, QImageIOHandler::Transformations orient);
 
 /*!
     \overload
@@ -1203,7 +1203,7 @@ bool QImageReader::read(QImage *image)
                 // likely a broken handler.
             } else {
                 if (scaledSize.isValid()) {
-                    *image = image->scaled(scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    *image = image->scaled(scaledSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
                 }
                 if (d->scaledClipRect.isValid()) {
                     *image = image->copy(d->scaledClipRect);
@@ -1230,7 +1230,7 @@ bool QImageReader::read(QImage *image)
                 if (d->clipRect.isValid())
                     *image = image->copy(d->clipRect);
                 if (scaledSize.isValid())
-                    *image = image->scaled(scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    *image = image->scaled(scaledSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
                 if (d->scaledClipRect.isValid())
                     *image = image->copy(d->scaledClipRect);
             }
@@ -1238,14 +1238,14 @@ bool QImageReader::read(QImage *image)
     }
 
     // successful read; check for "@Nx" file name suffix and set device pixel ratio.
-    static bool disableNxImageLoading = !qEnvironmentVariableIsEmpty("QT_HIGHDPI_DISABLE_2X_IMAGE_LOADING");
+    static bool disableNxImageLoading = !qEnvironmentVariableIsEmpty("BOBUI_HIGHDPI_DISABLE_2X_IMAGE_LOADING");
     if (!disableNxImageLoading) {
         const QByteArray suffix = QFileInfo(filename).baseName().right(3).toLatin1();
         if (suffix.size() == 3 && suffix[0] == '@' && suffix[1] >= '2' && suffix[1] <= '9' && suffix[2] == 'x')
             image->setDevicePixelRatio(suffix[1] - '0');
     }
     if (autoTransform())
-        qt_imageTransform(*image, transformation());
+        bobui_imageTransform(*image, transformation());
 
     return true;
 }
@@ -1438,7 +1438,7 @@ QByteArray QImageReader::imageFormat(QIODevice *device)
 /*!
     Returns the list of image formats supported by QImageReader.
 
-    By default, Qt can read the following formats:
+    By default, BobUI can read the following formats:
 
     \table
     \header \li Format \li MIME type                    \li Description
@@ -1454,8 +1454,8 @@ QByteArray QImageReader::imageFormat(QIODevice *device)
     \row    \li SVG    \li image/svg+xml                \li Scalable Vector Graphics
     \endtable
 
-    Reading and writing SVG files is supported through the \l{Qt SVG} module.
-    The \l{Qt Image Formats} module provides support for additional image formats.
+    Reading and writing SVG files is supported through the \l{BobUI SVG} module.
+    The \l{BobUI Image Formats} module provides support for additional image formats.
 
     Note that the QCoreApplication instance must be created before this function is
     called.
@@ -1510,7 +1510,7 @@ int QImageReader::allocationLimit()
 {
     static int envLimit = []() {
         bool ok = false;
-        int res = qEnvironmentVariableIntValue("QT_IMAGEIO_MAXALLOC", &ok);
+        int res = qEnvironmentVariableIntValue("BOBUI_IMAGEIO_MAXALLOC", &ok);
         return ok ? res : -1;
     }();
 
@@ -1528,9 +1528,9 @@ int QImageReader::allocationLimit()
     loading corrupt image files. It is normally not needed to change it. The
     default limit is large enough for all commonly used image sizes.
 
-    At runtime, this value may be overridden by the environment variable \c QT_IMAGEIO_MAXALLOC.
+    At runtime, this value may be overridden by the environment variable \c BOBUI_IMAGEIO_MAXALLOC.
 
-    \note The memory requirements are calculated for a minimum of 32 bits per pixel, since Qt will
+    \note The memory requirements are calculated for a minimum of 32 bits per pixel, since BobUI will
     typically convert an image to that depth when it is used in GUI. This means that the effective
     allocation limit is significantly smaller than \a mbLimit when reading 1 bpp and 8 bpp images.
 
@@ -1542,4 +1542,4 @@ void QImageReader::setAllocationLimit(int mbLimit)
         QImageReaderPrivate::maxAlloc = mbLimit;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

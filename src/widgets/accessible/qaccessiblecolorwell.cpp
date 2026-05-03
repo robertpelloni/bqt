@@ -1,17 +1,17 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "private/qaccessiblecolorwell_p.h"
 
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 
-QT_REQUIRE_CONFIG(accessibility);
+BOBUI_REQUIRE_CONFIG(accessibility);
 
-#if QT_CONFIG(colordialog)
+#if BOBUI_CONFIG(colordialog)
 
 #include "private/qcolorwell_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAccessibleColorWellItem : public QAccessibleInterface
 {
     QAccessibleColorWell *m_parent;
@@ -183,6 +183,6 @@ QColorWell *QAccessibleColorWell::colorWell() const
     return qobject_cast<QColorWell *>(object());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(colordialog)
+#endif // BOBUI_CONFIG(colordialog)

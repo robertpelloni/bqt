@@ -1,25 +1,25 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 #include "qundostack.h"
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
 #include "qundogroup.h"
 #endif
 #include "qundostack_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QUndoCommand
     \brief The QUndoCommand class is the base class of all commands stored on a QUndoStack.
     \since 4.2
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    For an overview of Qt's Undo Framework, see the
-    \l{Overview of Qt's Undo Framework}{overview document}.
+    For an overview of BobUI's Undo Framework, see the
+    \l{Overview of BobUI's Undo Framework}{overview document}.
 
     A QUndoCommand represents a single editing action on a document; for example,
     inserting or deleting a block of text in a text editor. QUndoCommand can apply
@@ -260,7 +260,7 @@ QString QUndoCommand::actionText() const
     them with "\\n" and pass into this function. Even if you do not use this feature
     for English strings during development, you can still let translators use two
     different strings in order to match specific languages' needs.
-    The described feature and the function actionText() are available since Qt 4.8.
+    The described feature and the function actionText() are available since BobUI 4.8.
 
     \sa text(), actionText(), QUndoStack::createUndoAction(), QUndoStack::createRedoAction()
 */
@@ -305,17 +305,17 @@ const QUndoCommand *QUndoCommand::child(int index) const
     return d->child_list.at(index);
 }
 
-#if QT_CONFIG(undostack)
+#if BOBUI_CONFIG(undostack)
 
 /*!
     \class QUndoStack
     \brief The QUndoStack class is a stack of QUndoCommand objects.
     \since 4.2
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    For an overview of Qt's Undo Framework, see the
-    \l{Overview of Qt's Undo Framework}{overview document}.
+    For an overview of BobUI's Undo Framework, see the
+    \l{Overview of BobUI's Undo Framework}{overview document}.
 
     An undo stack maintains a stack of commands that have been applied to a
     document.
@@ -486,7 +486,7 @@ bool QUndoStackPrivate::checkUndoLimit()
 QUndoStack::QUndoStack(QObject *parent)
     : QObject(*(new QUndoStackPrivate), parent)
 {
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     if (QUndoGroup *group = qobject_cast<QUndoGroup*>(parent))
         group->addStack(this);
 #endif
@@ -501,7 +501,7 @@ QUndoStack::QUndoStack(QObject *parent)
 
 QUndoStack::~QUndoStack()
 {
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     Q_D(QUndoStack);
     if (d->group != nullptr)
         d->group->removeStack(this);
@@ -1010,7 +1010,7 @@ QString QUndoStack::redoText() const
     return QString();
 }
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 
 /*!
     \internal
@@ -1042,7 +1042,7 @@ void QUndoStackPrivate::setPrefixedText(QAction *action, const QString &prefix, 
     this action will be disabled.
 
     If \a prefix is empty, the default template "Undo %1" is used instead of prefix.
-    Before Qt 4.8, the prefix "Undo" was used by default.
+    Before BobUI 4.8, the prefix "Undo" was used by default.
 
     \sa createRedoAction(), canUndo(), QUndoCommand::text()
 */
@@ -1079,7 +1079,7 @@ QAction *QUndoStack::createUndoAction(QObject *parent, const QString &prefix) co
     this action will be disabled.
 
     If \a prefix is empty, the default template "Redo %1" is used instead of prefix.
-    Before Qt 4.8, the prefix "Redo" was used by default.
+    Before BobUI 4.8, the prefix "Redo" was used by default.
 
     \sa createUndoAction(), canRedo(), QUndoCommand::text()
 */
@@ -1107,7 +1107,7 @@ QAction *QUndoStack::createRedoAction(QObject *parent, const QString &prefix) co
     return action;
 }
 
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
 /*!
     Begins composition of a macro command with the given \a text description.
@@ -1281,7 +1281,7 @@ int QUndoStack::undoLimit() const
 
 void QUndoStack::setActive(bool active)
 {
-#if !QT_CONFIG(undogroup)
+#if !BOBUI_CONFIG(undogroup)
     Q_UNUSED(active);
 #else
     Q_D(QUndoStack);
@@ -1297,7 +1297,7 @@ void QUndoStack::setActive(bool active)
 
 bool QUndoStack::isActive() const
 {
-#if !QT_CONFIG(undogroup)
+#if !BOBUI_CONFIG(undogroup)
     return true;
 #else
     Q_D(const QUndoStack);
@@ -1361,8 +1361,8 @@ bool QUndoStack::isActive() const
     \a canRedo specifies the new value.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qundostack.cpp"
 
-#endif // QT_CONFIG(undostack)
+#endif // BOBUI_CONFIG(undostack)

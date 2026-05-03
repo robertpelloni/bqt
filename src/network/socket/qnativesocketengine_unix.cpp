@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QNATIVESOCKETENGINE_DEBUG
 #include "qnativesocketengine_p_p.h"
@@ -28,7 +28,7 @@
 #endif
 
 #include <netinet/tcp.h>
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/sctp.h>
@@ -37,13 +37,13 @@
 #  include <net/if_dl.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     Extracts the port and address from a sockaddr, and stores them in
     \a port and \a addr if they are non-null.
 */
-static inline void qt_socket_getPortAndAddress(const qt_sockaddr *s, quint16 *port, QHostAddress *addr)
+static inline void bobui_socket_getPortAndAddress(const bobui_sockaddr *s, quint16 *port, QHostAddress *addr)
 {
     if (s->a.sa_family == AF_INET6) {
         Q_IPV6ADDR tmp;
@@ -52,7 +52,7 @@ static inline void qt_socket_getPortAndAddress(const qt_sockaddr *s, quint16 *po
             QHostAddress tmpAddress;
             tmpAddress.setAddress(tmp);
             *addr = tmpAddress;
-#if QT_CONFIG(networkinterface)
+#if BOBUI_CONFIG(networkinterface)
             if (s->a6.sin6_scope_id)
                 addr->setScopeId(QNetworkInterface::interfaceNameFromIndex(s->a6.sin6_scope_id));
 #endif
@@ -201,7 +201,7 @@ static void convertToLevelAndOption(QNativeSocketEngine::SocketOption opt,
 bool QNativeSocketEnginePrivate::createNewSocket(QAbstractSocket::SocketType socketType,
                                          QAbstractSocket::NetworkLayerProtocol &socketProtocol)
 {
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
     int protocol = (socketType == QAbstractSocket::SctpSocket) ? IPPROTO_SCTP : 0;
 #else
     if (socketType == QAbstractSocket::SctpSocket) {
@@ -214,15 +214,15 @@ bool QNativeSocketEnginePrivate::createNewSocket(QAbstractSocket::SocketType soc
         return false;
     }
     int protocol = 0;
-#endif // QT_NO_SCTP
+#endif // BOBUI_NO_SCTP
     int domain = (socketProtocol == QAbstractSocket::IPv6Protocol
                   || socketProtocol == QAbstractSocket::AnyIPProtocol) ? AF_INET6 : AF_INET;
     int type = (socketType == QAbstractSocket::UdpSocket) ? SOCK_DGRAM : SOCK_STREAM;
 
-    int socket = qt_safe_socket(domain, type, protocol, O_NONBLOCK);
+    int socket = bobui_safe_socket(domain, type, protocol, O_NONBLOCK);
     if (socket < 0 && socketProtocol == QAbstractSocket::AnyIPProtocol && (errno == EAFNOSUPPORT || errno == ENOTSUP )) {
         domain = AF_INET;
-        socket = qt_safe_socket(domain, type, protocol, O_NONBLOCK);
+        socket = bobui_safe_socket(domain, type, protocol, O_NONBLOCK);
         socketProtocol = QAbstractSocket::IPv4Protocol;
     }
 
@@ -297,9 +297,9 @@ int QNativeSocketEnginePrivate::option(QNativeSocketEngine::SocketOption opt) co
     case QNativeSocketEngine::BroadcastSocketOption:
         return -1;
     case QNativeSocketEngine::MaxStreamsSocketOption: {
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
         sctp_initmsg sctpInitMsg;
-        QT_SOCKOPTLEN_T sctpInitMsgSize = sizeof(sctpInitMsg);
+        BOBUI_SOCKOPTLEN_T sctpInitMsgSize = sizeof(sctpInitMsg);
         if (::getsockopt(socketDescriptor, SOL_SCTP, SCTP_INITMSG, &sctpInitMsg,
                          &sctpInitMsgSize) == 0)
             return int(qMin(sctpInitMsg.sinit_num_ostreams, sctpInitMsg.sinit_max_instreams));
@@ -313,7 +313,7 @@ int QNativeSocketEnginePrivate::option(QNativeSocketEngine::SocketOption opt) co
         // (Linux); fall back to IPV6_PATHMTU otherwise (FreeBSD):
         if (socketProtocol == QAbstractSocket::IPv6Protocol) {
             ip6_mtuinfo mtuinfo;
-            QT_SOCKOPTLEN_T len = sizeof(mtuinfo);
+            BOBUI_SOCKOPTLEN_T len = sizeof(mtuinfo);
             if (::getsockopt(socketDescriptor, IPPROTO_IPV6, IPV6_PATHMTU, &mtuinfo, &len) == 0)
                 return int(mtuinfo.ip6m_mtu);
             return -1;
@@ -327,7 +327,7 @@ int QNativeSocketEnginePrivate::option(QNativeSocketEngine::SocketOption opt) co
 
     int n, level;
     int v = 0;
-    QT_SOCKOPTLEN_T len = sizeof(v);
+    BOBUI_SOCKOPTLEN_T len = sizeof(v);
 
     convertToLevelAndOption(opt, socketProtocol, level, n);
     if (n != -1 && ::getsockopt(socketDescriptor, level, n, (char *) &v, &len) != -1)
@@ -366,7 +366,7 @@ bool QNativeSocketEnginePrivate::setOption(QNativeSocketEngine::SocketOption opt
             return false;
         }
 #else // Q_OS_VXWORKS
-        if (qt_safe_ioctl(socketDescriptor, FIONBIO, &v) < 0) {
+        if (bobui_safe_ioctl(socketDescriptor, FIONBIO, &v) < 0) {
             perrorDebug("ioctl(FIONBIO, 1) failed");
             return false;
         }
@@ -389,9 +389,9 @@ bool QNativeSocketEnginePrivate::setOption(QNativeSocketEngine::SocketOption opt
         break;
 
     case QNativeSocketEngine::MaxStreamsSocketOption: {
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
         sctp_initmsg sctpInitMsg;
-        QT_SOCKOPTLEN_T sctpInitMsgSize = sizeof(sctpInitMsg);
+        BOBUI_SOCKOPTLEN_T sctpInitMsgSize = sizeof(sctpInitMsg);
         if (::getsockopt(socketDescriptor, SOL_SCTP, SCTP_INITMSG, &sctpInitMsg,
                          &sctpInitMsgSize) == 0) {
             sctpInitMsg.sinit_num_ostreams = sctpInitMsg.sinit_max_instreams = uint16_t(v);
@@ -413,7 +413,7 @@ bool QNativeSocketEnginePrivate::setOption(QNativeSocketEngine::SocketOption opt
         } else {
             return ::setsockopt(socketDescriptor, IPPROTO_IP, IP_BOUND_IF, &v, sizeof(v)) == 0;
         }
-#elif defined(SO_BINDTODEVICE) && QT_CONFIG(networkinterface)
+#elif defined(SO_BINDTODEVICE) && BOBUI_CONFIG(networkinterface)
         // need to convert to interface name
         const QByteArray name = QNetworkInterfaceManager::interfaceNameFromIndex(v).toLatin1();
         return ::setsockopt(socketDescriptor, SOL_SOCKET, SO_BINDTODEVICE,
@@ -432,7 +432,7 @@ bool QNativeSocketEnginePrivate::setOption(QNativeSocketEngine::SocketOption opt
     if (opt == QNativeSocketEngine::AddressReusable) {
         // on OS X, SO_REUSEADDR isn't sufficient to allow multiple binds to the
         // same port (which is useful for multicast UDP). SO_REUSEPORT is, but
-        // we most definitely do not want to use this for TCP. See QTBUG-6305.
+        // we most definitely do not want to use this for TCP. See BOBUIBUG-6305.
         if (socketType == QAbstractSocket::UdpSocket)
             n = SO_REUSEPORT;
     }
@@ -450,11 +450,11 @@ bool QNativeSocketEnginePrivate::nativeConnect(const QHostAddress &addr, quint16
     qDebug() << "QNativeSocketEnginePrivate::nativeConnect() " << socketDescriptor;
 #endif
 
-    qt_sockaddr aa;
-    QT_SOCKLEN_T sockAddrSize;
+    bobui_sockaddr aa;
+    BOBUI_SOCKLEN_T sockAddrSize;
     setPortAndAddress(port, addr, &aa, &sockAddrSize);
 
-    int connectResult = qt_safe_connect(socketDescriptor, &aa.a, sockAddrSize);
+    int connectResult = bobui_safe_connect(socketDescriptor, &aa.a, sockAddrSize);
 #if defined (QNATIVESOCKETENGINE_DEBUG)
     int ecopy = errno;
 #endif
@@ -528,8 +528,8 @@ bool QNativeSocketEnginePrivate::nativeConnect(const QHostAddress &addr, quint16
 
 bool QNativeSocketEnginePrivate::nativeBind(const QHostAddress &address, quint16 port)
 {
-    qt_sockaddr aa;
-    QT_SOCKLEN_T sockAddrSize;
+    bobui_sockaddr aa;
+    BOBUI_SOCKLEN_T sockAddrSize;
     setPortAndAddress(port, address, &aa, &sockAddrSize);
 
 #ifdef IPV6_V6ONLY
@@ -542,14 +542,14 @@ bool QNativeSocketEnginePrivate::nativeBind(const QHostAddress &address, quint16
     }
 #endif
 
-    int bindResult = QT_SOCKET_BIND(socketDescriptor, &aa.a, sockAddrSize);
+    int bindResult = BOBUI_SOCKET_BIND(socketDescriptor, &aa.a, sockAddrSize);
     if (bindResult < 0 && errno == EAFNOSUPPORT && address.protocol() == QAbstractSocket::AnyIPProtocol) {
         // retry with v4
         aa.a4.sin_family = AF_INET;
         aa.a4.sin_port = htons(port);
         aa.a4.sin_addr.s_addr = htonl(address.toIPv4Address());
         sockAddrSize = sizeof(aa.a4);
-        bindResult = QT_SOCKET_BIND(socketDescriptor, &aa.a, sockAddrSize);
+        bindResult = BOBUI_SOCKET_BIND(socketDescriptor, &aa.a, sockAddrSize);
     }
 
     if (bindResult < 0) {
@@ -591,7 +591,7 @@ bool QNativeSocketEnginePrivate::nativeBind(const QHostAddress &address, quint16
 
 bool QNativeSocketEnginePrivate::nativeListen(int backlog)
 {
-    if (qt_safe_listen(socketDescriptor, backlog) < 0) {
+    if (bobui_safe_listen(socketDescriptor, backlog) < 0) {
 #if defined (QNATIVESOCKETENGINE_DEBUG)
         int ecopy = errno;
 #endif
@@ -621,7 +621,7 @@ bool QNativeSocketEnginePrivate::nativeListen(int backlog)
 
 qintptr QNativeSocketEnginePrivate::nativeAccept()
 {
-    int acceptedDescriptor = qt_safe_accept(socketDescriptor, nullptr, nullptr);
+    int acceptedDescriptor = bobui_safe_accept(socketDescriptor, nullptr, nullptr);
     if (acceptedDescriptor == -1) {
         switch (errno) {
         case EBADF:
@@ -668,7 +668,7 @@ qintptr QNativeSocketEnginePrivate::nativeAccept()
     return qintptr(acceptedDescriptor);
 }
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
 static bool multicastMembershipHelper(QNativeSocketEnginePrivate *d,
                                       int how6,
@@ -772,7 +772,7 @@ QNetworkInterface QNativeSocketEnginePrivate::nativeMulticastInterface() const
 {
     if (socketProtocol == QAbstractSocket::IPv6Protocol || socketProtocol == QAbstractSocket::AnyIPProtocol) {
         uint v;
-        QT_SOCKOPTLEN_T sizeofv = sizeof(v);
+        BOBUI_SOCKOPTLEN_T sizeofv = sizeof(v);
         if (::getsockopt(socketDescriptor, IPPROTO_IPV6, IPV6_MULTICAST_IF, &v, &sizeofv) == -1)
             return QNetworkInterface();
         return QNetworkInterface::interfaceFromIndex(v);
@@ -783,10 +783,10 @@ QNetworkInterface QNativeSocketEnginePrivate::nativeMulticastInterface() const
 #else
     struct in_addr v = { 0 };
 #endif
-    QT_SOCKOPTLEN_T sizeofv = sizeof(v);
+    BOBUI_SOCKOPTLEN_T sizeofv = sizeof(v);
     if (::getsockopt(socketDescriptor, IPPROTO_IP, IP_MULTICAST_IF, &v, &sizeofv) == -1)
         return QNetworkInterface();
-    if (v.s_addr != 0 && sizeofv >= QT_SOCKOPTLEN_T(sizeof(v))) {
+    if (v.s_addr != 0 && sizeofv >= BOBUI_SOCKOPTLEN_T(sizeof(v))) {
         QHostAddress ipv4(ntohl(v.s_addr));
         QList<QNetworkInterface> ifaces = QNetworkInterface::allInterfaces();
         for (int i = 0; i < ifaces.size(); ++i) {
@@ -829,7 +829,7 @@ bool QNativeSocketEnginePrivate::nativeSetMulticastInterface(const QNetworkInter
     return (::setsockopt(socketDescriptor, IPPROTO_IP, IP_MULTICAST_IF, &v, sizeof(v)) != -1);
 }
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 qint64 QNativeSocketEnginePrivate::nativeBytesAvailable() const
 {
@@ -845,7 +845,7 @@ qint64 QNativeSocketEnginePrivate::nativeBytesAvailable() const
     }
 #endif
 
-    if (available == -1 && qt_safe_ioctl(socketDescriptor, FIONREAD, (char *) &nbytes) >= 0)
+    if (available == -1 && bobui_safe_ioctl(socketDescriptor, FIONREAD, (char *) &nbytes) >= 0)
         available = nbytes;
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)
@@ -859,7 +859,7 @@ bool QNativeSocketEnginePrivate::nativeHasPendingDatagrams() const
     // Peek 1 bytes into the next message.
     ssize_t readBytes;
     char c;
-    QT_EINTR_LOOP(readBytes, ::recv(socketDescriptor, &c, 1, MSG_PEEK));
+    BOBUI_EINTR_LOOP(readBytes, ::recv(socketDescriptor, &c, 1, MSG_PEEK));
 
     // If there's no error, or if our buffer was too small, there must be a
     // pending datagram.
@@ -878,7 +878,7 @@ qint64 QNativeSocketEnginePrivate::nativePendingDatagramSize() const
 #ifdef Q_OS_LINUX
     // Linux can return the actual datagram size if we use MSG_TRUNC
     char c;
-    QT_EINTR_LOOP(recvResult, ::recv(socketDescriptor, &c, 1, MSG_PEEK | MSG_TRUNC));
+    BOBUI_EINTR_LOOP(recvResult, ::recv(socketDescriptor, &c, 1, MSG_PEEK | MSG_TRUNC));
 #elif defined(SO_NREAD)
     // macOS can return the actual datagram size if we use SO_NREAD
     int value;
@@ -946,14 +946,14 @@ qint64 QNativeSocketEnginePrivate::nativeReceiveDatagram(char *data, qint64 maxS
 #if !defined(IP_PKTINFO) && defined(IP_RECVIF) && defined(AF_LINK)
                    + CMSG_SPACE(sizeof(sockaddr_dl))
 #endif
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
                    + CMSG_SPACE(sizeof(struct sctp_sndrcvinfo))
 #endif
                    + sizeof(quintptr) - 1) / sizeof(quintptr)];
 
     struct msghdr msg;
     struct iovec vec;
-    qt_sockaddr aa;
+    bobui_sockaddr aa;
     char c;
     memset(&msg, 0, sizeof(msg));
     memset(&aa, 0, sizeof(aa));
@@ -997,17 +997,17 @@ qint64 QNativeSocketEnginePrivate::nativeReceiveDatagram(char *data, qint64 maxS
             header->clear();
     } else if (options != QAbstractSocketEngine::WantNone) {
         Q_ASSERT(header);
-        qt_socket_getPortAndAddress(&aa, &header->senderPort, &header->senderAddress);
+        bobui_socket_getPortAndAddress(&aa, &header->senderPort, &header->senderAddress);
         header->destinationPort = localPort;
         header->endOfRecord = (msg.msg_flags & MSG_EOR) != 0;
 
         // parse the ancillary data
         struct cmsghdr *cmsgptr;
-        QT_WARNING_PUSH
-        QT_WARNING_DISABLE_CLANG("-Wsign-compare")
+        BOBUI_WARNING_PUSH
+        BOBUI_WARNING_DISABLE_CLANG("-Wsign-compare")
         for (cmsgptr = CMSG_FIRSTHDR(&msg); cmsgptr != nullptr;
              cmsgptr = CMSG_NXTHDR(&msg, cmsgptr)) {
-            QT_WARNING_POP
+            BOBUI_WARNING_POP
             if (cmsgptr->cmsg_level == IPPROTO_IPV6 && cmsgptr->cmsg_type == IPV6_PKTINFO
                     && cmsgptr->cmsg_len >= CMSG_LEN(sizeof(in6_pktinfo))) {
                 in6_pktinfo *info = reinterpret_cast<in6_pktinfo *>(CMSG_DATA(cmsgptr));
@@ -1051,7 +1051,7 @@ qint64 QNativeSocketEnginePrivate::nativeReceiveDatagram(char *data, qint64 maxS
                 memcpy(&header->hopLimit, CMSG_DATA(cmsgptr), sizeof(header->hopLimit));
             }
 
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
             if (cmsgptr->cmsg_level == IPPROTO_SCTP && cmsgptr->cmsg_type == SCTP_SNDRCV
                 && cmsgptr->cmsg_len >= CMSG_LEN(sizeof(sctp_sndrcvinfo))) {
                 sctp_sndrcvinfo *rcvInfo = reinterpret_cast<sctp_sndrcvinfo *>(CMSG_DATA(cmsgptr));
@@ -1064,7 +1064,7 @@ qint64 QNativeSocketEnginePrivate::nativeReceiveDatagram(char *data, qint64 maxS
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)
     qDebug("QNativeSocketEnginePrivate::nativeReceiveDatagram(%p \"%s\", %lli, %s, %i) == %lli",
-           data, QtDebugUtils::toPrintable(data, recvResult, 16).constData(), maxSize,
+           data, BobUIDebugUtils::toPrintable(data, recvResult, 16).constData(), maxSize,
            (recvResult != -1 && options != QAbstractSocketEngine::WantNone)
            ? header->senderAddress.toString().toLatin1().constData() : "(unknown)",
            (recvResult != -1 && options != QAbstractSocketEngine::WantNone)
@@ -1078,7 +1078,7 @@ qint64 QNativeSocketEnginePrivate::nativeSendDatagram(const char *data, qint64 l
 {
     // we use quintptr to force the alignment
     quintptr cbuf[(CMSG_SPACE(sizeof(struct in6_pktinfo)) + CMSG_SPACE(sizeof(int))
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
                    + CMSG_SPACE(sizeof(struct sctp_sndrcvinfo))
 #endif
                    + sizeof(quintptr) - 1) / sizeof(quintptr)];
@@ -1086,7 +1086,7 @@ qint64 QNativeSocketEnginePrivate::nativeSendDatagram(const char *data, qint64 l
     struct cmsghdr *cmsgptr = reinterpret_cast<struct cmsghdr *>(cbuf);
     struct msghdr msg;
     struct iovec vec;
-    qt_sockaddr aa;
+    bobui_sockaddr aa;
 
     memset(&msg, 0, sizeof(msg));
     memset(&aa, 0, sizeof(aa));
@@ -1155,7 +1155,7 @@ qint64 QNativeSocketEnginePrivate::nativeSendDatagram(const char *data, qint64 l
 #endif
     }
 
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
     if (header.streamNumber != -1) {
         struct sctp_sndrcvinfo *data = reinterpret_cast<sctp_sndrcvinfo *>(CMSG_DATA(cmsgptr));
         memset(data, 0, sizeof(*data));
@@ -1170,7 +1170,7 @@ qint64 QNativeSocketEnginePrivate::nativeSendDatagram(const char *data, qint64 l
 
     if (msg.msg_controllen == 0)
         msg.msg_control = nullptr;
-    ssize_t sentBytes = qt_safe_sendmsg(socketDescriptor, &msg, 0);
+    ssize_t sentBytes = bobui_safe_sendmsg(socketDescriptor, &msg, 0);
 
     if (sentBytes < 0) {
         switch (errno) {
@@ -1195,7 +1195,7 @@ qint64 QNativeSocketEnginePrivate::nativeSendDatagram(const char *data, qint64 l
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)
     qDebug("QNativeSocketEngine::sendDatagram(%p \"%s\", %lli, \"%s\", %i) == %lli", data,
-           QtDebugUtils::toPrintable(data, len, 16).constData(), len,
+           BobUIDebugUtils::toPrintable(data, len, 16).constData(), len,
            header.destinationAddress.toString().toLatin1().constData(),
            header.destinationPort, (qint64) sentBytes);
 #endif
@@ -1214,13 +1214,13 @@ bool QNativeSocketEnginePrivate::fetchConnectionParameters()
     if (socketDescriptor == -1)
         return false;
 
-    qt_sockaddr sa;
-    QT_SOCKLEN_T sockAddrSize = sizeof(sa);
+    bobui_sockaddr sa;
+    BOBUI_SOCKLEN_T sockAddrSize = sizeof(sa);
 
     // Determine local address
     memset(&sa, 0, sizeof(sa));
     if (::getsockname(socketDescriptor, &sa.a, &sockAddrSize) == 0) {
-        qt_socket_getPortAndAddress(&sa, &localPort, &localAddress);
+        bobui_socket_getPortAndAddress(&sa, &localPort, &localAddress);
 
         // Determine protocol family
         switch (sa.a.sa_family) {
@@ -1262,22 +1262,22 @@ bool QNativeSocketEnginePrivate::fetchConnectionParameters()
     // Determine the remote address
     bool connected = ::getpeername(socketDescriptor, &sa.a, &sockAddrSize) == 0;
     if (connected) {
-        qt_socket_getPortAndAddress(&sa, &peerPort, &peerAddress);
+        bobui_socket_getPortAndAddress(&sa, &peerPort, &peerAddress);
         inboundStreamCount = outboundStreamCount = 1;
     }
 
     // Determine the socket type (UDP/TCP/SCTP)
     int value = 0;
-    QT_SOCKOPTLEN_T valueSize = sizeof(int);
+    BOBUI_SOCKOPTLEN_T valueSize = sizeof(int);
     if (::getsockopt(socketDescriptor, SOL_SOCKET, SO_TYPE, &value, &valueSize) == 0) {
         if (value == SOCK_STREAM) {
             socketType = QAbstractSocket::TcpSocket;
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
             if (option(QNativeSocketEngine::MaxStreamsSocketOption) != -1) {
                 socketType = QAbstractSocket::SctpSocket;
                 if (connected) {
                     sctp_status sctpStatus;
-                    QT_SOCKOPTLEN_T sctpStatusSize = sizeof(sctpStatus);
+                    BOBUI_SOCKOPTLEN_T sctpStatusSize = sizeof(sctpStatus);
                     sctp_event_subscribe sctpEvents;
 
                     memset(&sctpEvents, 0, sizeof(sctpEvents));
@@ -1305,7 +1305,7 @@ bool QNativeSocketEnginePrivate::fetchConnectionParameters()
             // a notion of connection. SOCK_DGRAM are connectionless, while
             // SOCK_STREAM and SOCK_SEQPACKET are connection-orientired.
             // This mapping is still suboptimal, because it is possible to send
-            // a 0-byte packet via SEQPACKET socket and Qt will treat it as
+            // a 0-byte packet via SEQPACKET socket and BobUI will treat it as
             // a disconnect.
             socketType = QAbstractSocket::TcpSocket;
 #endif
@@ -1338,7 +1338,7 @@ void QNativeSocketEnginePrivate::nativeClose()
     qDebug("QNativeSocketEngine::nativeClose()");
 #endif
 
-    qt_safe_close(socketDescriptor);
+    bobui_safe_close(socketDescriptor);
 }
 
 qint64 QNativeSocketEnginePrivate::nativeWrite(const char *data, qint64 len)
@@ -1346,7 +1346,7 @@ qint64 QNativeSocketEnginePrivate::nativeWrite(const char *data, qint64 len)
     Q_Q(QNativeSocketEngine);
 
     ssize_t writtenBytes;
-    writtenBytes = qt_safe_write_nosignal(socketDescriptor, data, len);
+    writtenBytes = bobui_safe_write_nosignal(socketDescriptor, data, len);
 
     if (writtenBytes < 0) {
         switch (errno) {
@@ -1372,7 +1372,7 @@ qint64 QNativeSocketEnginePrivate::nativeWrite(const char *data, qint64 len)
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)
     qDebug("QNativeSocketEnginePrivate::nativeWrite(%p \"%s\", %llu) == %i", data,
-           QtDebugUtils::toPrintable(data, len, 16).constData(), len, (int) writtenBytes);
+           BobUIDebugUtils::toPrintable(data, len, 16).constData(), len, (int) writtenBytes);
 #endif
 
     return qint64(writtenBytes);
@@ -1388,7 +1388,7 @@ qint64 QNativeSocketEnginePrivate::nativeRead(char *data, qint64 maxSize)
     }
 
     ssize_t r = 0;
-    r = qt_safe_read(socketDescriptor, data, maxSize);
+    r = bobui_safe_read(socketDescriptor, data, maxSize);
 
     if (r < 0) {
         r = -1;
@@ -1416,13 +1416,13 @@ qint64 QNativeSocketEnginePrivate::nativeRead(char *data, qint64 maxSize)
 
         if (r == -1) {
             hasSetSocketError = true;
-            socketErrorString = qt_error_string();
+            socketErrorString = bobui_error_string();
         }
     }
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)
     qDebug("QNativeSocketEnginePrivate::nativeRead(%p \"%s\", %llu) == %zd", data,
-           QtDebugUtils::toPrintable(data, r, 16).constData(), maxSize, r);
+           BobUIDebugUtils::toPrintable(data, r, 16).constData(), maxSize, r);
 #endif
 
     return qint64(r);
@@ -1440,7 +1440,7 @@ int QNativeSocketEnginePrivate::nativeSelect(QDeadlineTimer deadline, bool check
                                              bool checkWrite, bool *selectForRead,
                                              bool *selectForWrite) const
 {
-    pollfd pfd = qt_make_pollfd(socketDescriptor, 0);
+    pollfd pfd = bobui_make_pollfd(socketDescriptor, 0);
 
     if (checkRead)
         pfd.events |= POLLIN;
@@ -1448,7 +1448,7 @@ int QNativeSocketEnginePrivate::nativeSelect(QDeadlineTimer deadline, bool check
     if (checkWrite)
         pfd.events |= POLLOUT;
 
-    const int ret = qt_safe_poll(&pfd, 1, deadline);
+    const int ret = bobui_safe_poll(&pfd, 1, deadline);
 
     if (ret <= 0)
         return ret;
@@ -1490,4 +1490,4 @@ int QNativeSocketEnginePrivate::nativeSelect(QDeadlineTimer deadline, bool check
 
 #endif // Q_OS_WASM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

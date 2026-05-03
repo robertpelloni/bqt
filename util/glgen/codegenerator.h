@@ -1,12 +1,12 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef CODEGENERATOR_H
 #define CODEGENERATOR_H
 
 #include "specparser.h"
 
-class QTextStream;
+class BOBUIextStream;
 
 class CodeGenerator
 {
@@ -36,8 +36,8 @@ private:
 
     FunctionCollection functionCollection( const VersionProfile& classVersionProfile ) const;
 
-    void writePreamble(const QString &baseFileName, QTextStream &stream, const QString replacement = QString()) const;
-    void writePostamble(const QString &baseFileName, QTextStream &stream) const;
+    void writePreamble(const QString &baseFileName, BOBUIextStream &stream, const QString replacement = QString()) const;
+    void writePostamble(const QString &baseFileName, BOBUIextStream &stream) const;
 
     QString passByType(const Argument &arg) const;
     QString safeArgumentName(const QString& arg) const;
@@ -53,10 +53,10 @@ private:
 
     QString generateClassName(const VersionProfile &classVersion, ClassVisibility visibility = Public) const;
 
-    void writeBackendClassDeclaration(QTextStream &stream,
+    void writeBackendClassDeclaration(BOBUIextStream &stream,
                                       const VersionProfile &versionProfile,
                                       const QString &baseClass) const;
-    void writeBackendClassImplementation(QTextStream &stream,
+    void writeBackendClassImplementation(BOBUIextStream &stream,
                                          const VersionProfile &versionProfile,
                                          const QString &baseClass) const;
 
@@ -67,42 +67,42 @@ private:
                                         const VersionProfile &versionProfile,
                                         const QString& baseClass) const;
 
-    void writeClassFunctionDeclarations(QTextStream &stream,
+    void writeClassFunctionDeclarations(BOBUIextStream &stream,
                                         const FunctionCollection &functionSets,
                                         ClassVisibility visibility) const;
 
-    void writeFunctionDeclaration(QTextStream &stream, const Function &f, ClassVisibility visibility) const;
+    void writeFunctionDeclaration(BOBUIextStream &stream, const Function &f, ClassVisibility visibility) const;
 
-    void writeClassInlineFunctions(QTextStream &stream,
+    void writeClassInlineFunctions(BOBUIextStream &stream,
                                    const QString &className,
                                    const FunctionCollection &functionSet) const;
 
-    void writeInlineFunction(QTextStream &stream, const QString &className,
+    void writeInlineFunction(BOBUIextStream &stream, const QString &className,
                              const QString &backendVar, const Function &f) const;
 
-    void writeEntryPointResolutionCode(QTextStream &stream,
+    void writeEntryPointResolutionCode(BOBUIextStream &stream,
                                        const FunctionCollection &functionSet) const;
 
-    void writeEntryPointResolutionStatement(QTextStream &stream, const Function &f,
+    void writeEntryPointResolutionStatement(BOBUIextStream &stream, const Function &f,
                                             const QString &prefix = QString(), bool useGetProcAddress = false) const;
 
     QList<VersionProfile> backendsForFunctionCollection(const FunctionCollection &functionSet) const;
     QString backendClassName(const VersionProfile &v) const;
     QString backendVariableName(const VersionProfile &v) const;
-    void writeBackendVariableDeclarations(QTextStream &stream, const QList<VersionProfile> &backends) const;
+    void writeBackendVariableDeclarations(BOBUIextStream &stream, const QList<VersionProfile> &backends) const;
 
 
     // Extension class support
     void writeExtensionHeader(const QString &fileName) const;
     void writeExtensionImplementation(const QString &fileName) const;
 
-    void writeExtensionClassDeclaration(QTextStream &stream,
+    void writeExtensionClassDeclaration(BOBUIextStream &stream,
                                         const QString &extension,
                                         ClassVisibility visibility = Public) const;
-    void writeExtensionClassImplementation(QTextStream &stream, const QString &extension) const;
+    void writeExtensionClassImplementation(BOBUIextStream &stream, const QString &extension) const;
 
     QString generateExtensionClassName(const QString &extension, ClassVisibility visibility = Public) const;
-    void writeExtensionInlineFunction(QTextStream &stream, const QString &className, const Function &f) const;
+    void writeExtensionInlineFunction(BOBUIextStream &stream, const QString &className, const Function &f) const;
 
     SpecParser *m_parser;
     mutable QMap<QString, int> m_extensionIds;

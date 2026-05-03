@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSSERVICEWATCHER_H
 #define QDBUSSERVICEWATCHER_H
@@ -9,9 +9,9 @@
 #include <QtCore/qcontainerfwd.h> // Q(String)List
 #include <QtDBus/qtdbusglobal.h>
 
-#if !defined(QT_NO_DBUS) && !defined(QT_NO_QOBJECT)
+#if !defined(BOBUI_NO_DBUS) && !defined(BOBUI_NO_QOBJECT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QString;
 template<typename T>
@@ -66,7 +66,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusServiceWatcher::WatchMode)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS || QT_NO_QOBJECT
+#endif // BOBUI_NO_DBUS || BOBUI_NO_QOBJECT
 #endif // QDBUSSERVICEWATCHER_H

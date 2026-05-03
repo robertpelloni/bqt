@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandintegration_p.h"
 
@@ -10,7 +10,7 @@
 #include "qwaylandinputmethodcontext_p.h"
 #include "qwaylandshmbackingstore_p.h"
 #include "qwaylandnativeinterface_p.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qwaylandclipboard_p.h"
 #endif
 #include "qwaylanddnd_p.h"
@@ -20,22 +20,22 @@
 #include "qwaylandcursor_p.h"
 
 #if defined(Q_OS_MACOS)
-#  include <QtGui/private/qcoretextfontdatabase_p.h>
-#  include <QtGui/private/qfontengine_coretext_p.h>
+#  include <BobUIGui/private/qcoretextfontdatabase_p.h>
+#  include <BobUIGui/private/qfontengine_coretext_p.h>
 #else
-#  include <QtGui/private/qgenericunixfontdatabase_p.h>
+#  include <BobUIGui/private/qgenericunixfontdatabase_p.h>
 #endif
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
-#include <QtGui/private/qgenericunixtheme_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixtheme_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qplatformcursor.h>
-#include <QtGui/QSurfaceFormat>
-#if QT_CONFIG(opengl)
-#include <QtGui/QOpenGLContext>
-#endif // QT_CONFIG(opengl)
+#include <BobUIGui/QSurfaceFormat>
+#if BOBUI_CONFIG(opengl)
+#include <BobUIGui/QOpenGLContext>
+#endif // BOBUI_CONFIG(opengl)
 #include <QSocketNotifier>
 
 #include <qpa/qplatforminputcontextfactory_p.h>
@@ -58,26 +58,26 @@
 #include "qwaylandwindow_p.h"
 #include "qwaylandsessionmanager_p.h"
 
-#include <QtWaylandClient/private/qwayland-xdg-system-bell-v1.h>
+#include <BobUIWaylandClient/private/qwayland-xdg-system-bell-v1.h>
 
-#if QT_CONFIG(accessibility_atspi_bridge)
-#include <QtGui/private/qspiaccessiblebridge_p.h>
+#if BOBUI_CONFIG(accessibility_atspi_bridge)
+#include <BobUIGui/private/qspiaccessiblebridge_p.h>
 #endif
 
-#if QT_CONFIG(xkbcommon)
-#include <QtGui/private/qxkbcommon_p.h>
+#if BOBUI_CONFIG(xkbcommon)
+#include <BobUIGui/private/qxkbcommon_p.h>
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qwaylandvulkaninstance_p.h"
 #include "qwaylandvulkanwindow_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandIntegration *QWaylandIntegration::sInstance = nullptr;
 
@@ -88,13 +88,13 @@ QWaylandIntegration::QWaylandIntegration(const QString &platformName)
     : mPlatformName(platformName), mFontDb(new QGenericUnixFontDatabase())
 #endif
 {
-    QCoreApplication::setAttribute(Qt::AA_CompressHighFrequencyEvents);
+    QCoreApplication::setAttribute(BobUI::AA_CompressHighFrequencyEvents);
 
     mDisplay.reset(new QWaylandDisplay(this));
     mPlatformServices.reset(new QWaylandPlatformServices(mDisplay.data()));
 
     QWaylandWindow::fixedToplevelPositions =
-            !qEnvironmentVariableIsSet("QT_WAYLAND_DISABLE_FIXED_POSITIONS");
+            !qEnvironmentVariableIsSet("BOBUI_WAYLAND_DISABLE_FIXED_POSITIONS");
 
     sInstance = this;
     if (platformName != "wayland"_L1)
@@ -146,15 +146,15 @@ QPlatformWindow *QWaylandIntegration::createPlatformWindow(QWindow *window) cons
         && mDisplay->clientBufferIntegration())
         return mDisplay->clientBufferIntegration()->createEglWindow(window);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (window->surfaceType() == QSurface::VulkanSurface)
         return new QWaylandVulkanWindow(window, mDisplay.data());
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
     return new QWaylandShmWindow(window, mDisplay.data());
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 QPlatformOpenGLContext *QWaylandIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     if (mDisplay->clientBufferIntegration())
@@ -197,10 +197,10 @@ void QWaylandIntegration::initializePlatform()
 
     mNativeInterface.reset(createPlatformNativeInterface());
     initializeInputDeviceIntegration();
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     mClipboard.reset(new QWaylandClipboard(mDisplay.data()));
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     mDrag.reset(new QWaylandDrag(mDisplay.data()));
 #endif
 
@@ -216,7 +216,7 @@ void QWaylandIntegration::initialize()
     QObject::connect(dispatcher, SIGNAL(aboutToBlock()), mDisplay.data(), SLOT(flushRequests()));
     QObject::connect(dispatcher, SIGNAL(awake()), mDisplay.data(), SLOT(flushRequests()));
 
-    // Qt does not support running with no screens
+    // BobUI does not support running with no screens
     mDisplay->ensureScreen();
 }
 
@@ -225,14 +225,14 @@ QPlatformFontDatabase *QWaylandIntegration::fontDatabase() const
     return mFontDb.data();
 }
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 QPlatformClipboard *QWaylandIntegration::clipboard() const
 {
     return mClipboard.data();
 }
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QPlatformDrag *QWaylandIntegration::drag() const
 {
     return mDrag.data();
@@ -252,11 +252,11 @@ QVariant QWaylandIntegration::styleHint(StyleHint hint) const
     return QPlatformIntegration::styleHint(hint);
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 QPlatformAccessibility *QWaylandIntegration::accessibility() const
 {
     if (!mAccessibility) {
-#if QT_CONFIG(accessibility_atspi_bridge)
+#if BOBUI_CONFIG(accessibility_atspi_bridge)
         Q_ASSERT_X(QCoreApplication::eventDispatcher(), "QWaylandIntegration",
             "Initializing accessibility without event-dispatcher!");
         mAccessibility.reset(new QSpiAccessibleBridge());
@@ -278,12 +278,12 @@ QWaylandDisplay *QWaylandIntegration::display() const
     return mDisplay.data();
 }
 
-Qt::KeyboardModifiers QWaylandIntegration::queryKeyboardModifiers() const
+BobUI::KeyboardModifiers QWaylandIntegration::queryKeyboardModifiers() const
 {
     if (auto *seat = mDisplay->currentInputDevice(); seat && seat->keyboardFocus()) {
         return seat->modifiers();
     }
-    return Qt::NoModifier;
+    return BobUI::NoModifier;
 }
 
 QList<int> QWaylandIntegration::possibleKeys(const QKeyEvent *event) const
@@ -313,12 +313,12 @@ QWaylandCursor *QWaylandIntegration::createPlatformCursor(QWaylandDisplay *displ
    return new QWaylandCursor(display);
 }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 QPlatformVulkanInstance *QWaylandIntegration::createPlatformVulkanInstance(QVulkanInstance *instance) const
 {
     return new QWaylandVulkanInstance(instance);
 }
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
 // May be called from non-GUI threads
 QWaylandClientBufferIntegration *QWaylandIntegration::clientBufferIntegration() const
@@ -354,7 +354,7 @@ void QWaylandIntegration::initializeClientBufferIntegration()
     if (mClientBufferIntegrationInitialized)
         return;
 
-    QString targetKey = QString::fromLocal8Bit(qgetenv("QT_WAYLAND_CLIENT_BUFFER_INTEGRATION"));
+    QString targetKey = QString::fromLocal8Bit(qgetenv("BOBUI_WAYLAND_CLIENT_BUFFER_INTEGRATION"));
     if (mPlatformName == "wayland-egl"_L1)
         targetKey = "wayland-egl"_L1;
     else if (mPlatformName == "wayland-brcm"_L1)
@@ -397,7 +397,7 @@ void QWaylandIntegration::initializeServerBufferIntegration()
 {
     mServerBufferIntegrationInitialized = true;
 
-    QString targetKey = QString::fromLocal8Bit(qgetenv("QT_WAYLAND_SERVER_BUFFER_INTEGRATION"));
+    QString targetKey = QString::fromLocal8Bit(qgetenv("BOBUI_WAYLAND_SERVER_BUFFER_INTEGRATION"));
 
     if (targetKey.isEmpty() && mDisplay->hardwareIntegration())
         targetKey = mDisplay->hardwareIntegration()->serverBufferIntegration();
@@ -426,7 +426,7 @@ void QWaylandIntegration::initializeShellIntegration()
 {
     mShellIntegrationInitialized = true;
 
-    QByteArray integrationNames = qgetenv("QT_WAYLAND_SHELL_INTEGRATION");
+    QByteArray integrationNames = qgetenv("BOBUI_WAYLAND_SHELL_INTEGRATION");
     QString targetKeys = QString::fromLocal8Bit(integrationNames);
 
     QStringList preferredShells;
@@ -435,7 +435,7 @@ void QWaylandIntegration::initializeShellIntegration()
     } else {
         preferredShells << QLatin1String("xdg-shell");
         preferredShells << QLatin1String("wl-shell") << QLatin1String("ivi-shell");
-        preferredShells << QLatin1String("qt-shell");
+        preferredShells << QLatin1String("bobui-shell");
     }
 
     for (const QString &preferredShell : std::as_const(preferredShells)) {
@@ -464,7 +464,7 @@ QWaylandInputDevice *QWaylandIntegration::createInputDevice(QWaylandDisplay *dis
 
 void QWaylandIntegration::initializeInputDeviceIntegration()
 {
-    QByteArray integrationName = qgetenv("QT_WAYLAND_INPUTDEVICE_INTEGRATION");
+    QByteArray integrationName = qgetenv("BOBUI_WAYLAND_INPUTDEVICE_INTEGRATION");
     QString targetKey = QString::fromLocal8Bit(integrationName);
 
     if (targetKey.isEmpty()) {
@@ -491,9 +491,9 @@ void QWaylandIntegration::reconfigureInputContext()
     }
 
     auto requested = QPlatformInputContextFactory::requested();
-    if (requested.contains(QLatin1String("qtvirtualkeyboard")))
-        qCWarning(lcQpaWayland) << "qtvirtualkeyboard currently is not supported at client-side,"
-                                   " use QT_IM_MODULES=qtvirtualkeyboard at compositor-side.";
+    if (requested.contains(QLatin1String("bobuivirtualkeyboard")))
+        qCWarning(lcQpaWayland) << "bobuivirtualkeyboard currently is not supported at client-side,"
+                                   " use BOBUI_IM_MODULES=bobuivirtualkeyboard at compositor-side.";
 
     if (mDisplay->isWaylandInputContextRequested()
         && !requested.contains(QLatin1String(WAYLAND_IM_KEY)))
@@ -520,7 +520,7 @@ void QWaylandIntegration::reconfigureInputContext()
             break;
     }
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     QXkbCommon::setXkbContext(mInputContext.data(), mDisplay->xkbContext());
     if (QWaylandInputContext* waylandInput = qobject_cast<QWaylandInputContext*>(mInputContext.get())) {
         waylandInput->setXkbContext(mDisplay->xkbContext());
@@ -540,7 +540,7 @@ QWaylandShellIntegration *QWaylandIntegration::createShellIntegration(const QStr
     }
 }
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 QPlatformSessionManager *QWaylandIntegration::createPlatformSessionManager(const QString &id, const QString &key) const
 {
     Q_UNUSED(key);
@@ -573,4 +573,4 @@ void QWaylandIntegration::beep() const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

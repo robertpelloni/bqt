@@ -1,10 +1,10 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS             = screenshot.h
 SOURCES             = main.cpp \
                       screenshot.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/desktop/screenshot
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/desktop/screenshot
 INSTALLS += target

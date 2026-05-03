@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
 #include <QGraphicsView>
@@ -22,9 +22,9 @@ private slots:
 struct MySquareWidget : public QGraphicsWidget
 {
     MySquareWidget() {}
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
-        if (which != Qt::PreferredSize)
+        if (which != BobUI::PreferredSize)
             return QGraphicsWidget::sizeHint(which, constraint);
         if (constraint.width() < 0)
             return QGraphicsWidget::sizeHint(which, constraint);
@@ -34,13 +34,13 @@ struct MySquareWidget : public QGraphicsWidget
 
 void tst_QGraphicsLinearLayout::heightForWidth_data()
 {
-    QTest::addColumn<bool>("hfw");
-    QTest::addColumn<bool>("nested");
+    BOBUIest::addColumn<bool>("hfw");
+    BOBUIest::addColumn<bool>("nested");
 
-    QTest::newRow("hfw") << true << false;
-    QTest::newRow("hfw, nested") << true << true;
-    QTest::newRow("not hfw") << false << false;
-    QTest::newRow("not hfw, nested") << false << true;
+    BOBUIest::newRow("hfw") << true << false;
+    BOBUIest::newRow("hfw, nested") << true << true;
+    BOBUIest::newRow("not hfw") << false << false;
+    BOBUIest::newRow("not hfw, nested") << false << true;
 }
 
 void tst_QGraphicsLinearLayout::heightForWidth()
@@ -56,14 +56,14 @@ void tst_QGraphicsLinearLayout::heightForWidth()
     if (nested) {
        outerlayout = new QGraphicsLinearLayout(form);
        for (int i = 0; i < 8; i++) {
-           QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical);
+           QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(BobUI::Vertical);
            outerlayout->addItem(layout);
            outerlayout = layout;
        }
     }
 
     QGraphicsLinearLayout *qlayout = 0;
-    qlayout = new QGraphicsLinearLayout(Qt::Vertical);
+    qlayout = new QGraphicsLinearLayout(BobUI::Vertical);
     if (nested)
         outerlayout->addItem(qlayout);
     else
@@ -84,12 +84,12 @@ void tst_QGraphicsLinearLayout::heightForWidth()
     // effectiveSizeHint()
     QSizeF constraint(hfw ? 100 : -1, -1);
     QBENCHMARK {
-        (void)form->effectiveSizeHint(Qt::PreferredSize, constraint);
+        (void)form->effectiveSizeHint(BobUI::PreferredSize, constraint);
     }
 
 }
 
 
-QTEST_MAIN(tst_QGraphicsLinearLayout)
+BOBUIEST_MAIN(tst_QGraphicsLinearLayout)
 
 #include "tst_qgraphicslinearlayout.moc"

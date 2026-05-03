@@ -1,22 +1,22 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsintegration_p.h"
 #include "qeglfskmsscreen_p.h"
 
-#include <QtKmsSupport/private/qkmsdevice_p.h>
+#include <BobUIKmsSupport/private/qkmsdevice_p.h>
 
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/QScreen>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/QScreen>
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcEglfsKmsDebug, "qt.qpa.eglfs.kms")
+Q_LOGGING_CATEGORY(qLcEglfsKmsDebug, "bobui.qpa.eglfs.kms")
 
 QEglFSKmsIntegration::QEglFSKmsIntegration()
     : m_device(nullptr)
@@ -105,7 +105,7 @@ void *QEglFSKmsIntegration::nativeResourceForIntegration(const QByteArray &name)
     if (name == QByteArrayLiteral("dri_fd") && m_device)
         return (void *) (qintptr) m_device->fd();
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     if (name == QByteArrayLiteral("dri_atomic_request") && m_device)
         return (void *) (qintptr) m_device->threadLocalAtomicRequest();
 #endif
@@ -142,4 +142,4 @@ QKmsScreenConfig *QEglFSKmsIntegration::createScreenConfig()
     return screenConfig;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

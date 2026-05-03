@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlineedit.h"
 #include "qlineedit_p.h"
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #  include "qaction.h"
 #endif
 #include "qapplication.h"
 #include "qclipboard.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qdrag.h>
 #endif
 #include "qdrawutil.h"
 #include "qevent.h"
 #include "qfontmetrics.h"
 #include "qstylehints.h"
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #endif
 #include "qpainter.h"
@@ -26,30 +26,30 @@
 #include "qstringlist.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
-#include "qtimer.h"
+#include "bobuiimer.h"
 #include "qvalidator.h"
 #include "qvariant.h"
 #include "qdebug.h"
-#if QT_CONFIG(textedit)
-#include "qtextedit.h"
-#include <private/qtextedit_p.h>
+#if BOBUI_CONFIG(textedit)
+#include "bobuiextedit.h"
+#include <private/bobuiextedit_p.h>
 #endif
 #include <private/qwidgettextcontrol_p.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include "qabstractitemview.h"
 #endif
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
 #include "private/qstylesheetstyle_p.h"
 #endif
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #include "private/qapplication_p.h"
 #include "private/qshortcutmap_p.h"
 #include "qkeysequence.h"
-#define ACCEL_KEY(k) (!QCoreApplication::testAttribute(Qt::AA_DontShowShortcutsInContextMenus) \
+#define ACCEL_KEY(k) (!QCoreApplication::testAttribute(BobUI::AA_DontShowShortcutsInContextMenus) \
                       && !QGuiApplicationPrivate::instance()->shortcutMap.hasShortcutForKeySequence(k) ? \
                       u'\t' + QKeySequence(k).toString(QKeySequence::NativeText) : QString())
 #else
@@ -61,9 +61,9 @@
 #undef DrawText
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     Initialize \a option with the values from this QLineEdit. This method
@@ -86,7 +86,7 @@ void QLineEdit::initStyleOption(QStyleOptionFrame *option) const
     option->state |= QStyle::State_Sunken;
     if (d->control->isReadOnly())
         option->state |= QStyle::State_ReadOnly;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (hasEditFocus())
         option->state |= QStyle::State_HasEditFocus;
 #endif
@@ -98,7 +98,7 @@ void QLineEdit::initStyleOption(QStyleOptionFrame *option) const
     \brief The QLineEdit widget is a one-line text editor.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-lineedit.png {Line edit showing a text greeting}
 
@@ -109,7 +109,7 @@ void QLineEdit::initStyleOption(QStyleOptionFrame *option) const
     By changing the echoMode() of a line edit, it can also be used as
     a write-only field for inputs such as passwords.
 
-    QTextEdit is a related class that allows multi-line, rich text
+    BOBUIextEdit is a related class that allows multi-line, rich text
     editing.
 
     \section1 Constraining Text
@@ -187,7 +187,7 @@ void QLineEdit::initStyleOption(QStyleOptionFrame *option) const
     Any other keystroke that represents a valid character, will cause the
     character to be inserted into the line edit.
 
-    \sa QTextEdit, QLabel, QComboBox, {Line Edits Example}
+    \sa BOBUIextEdit, QLabel, QComboBox, {Line Edits Example}
 */
 
 
@@ -401,19 +401,19 @@ bool QLineEdit::hasFrame() const
     added.
 
     \value LeadingPosition  The widget is displayed to the left of the text
-                            when using layout direction \c Qt::LeftToRight or to
-                            the right when using \c Qt::RightToLeft, respectively.
+                            when using layout direction \c BobUI::LeftToRight or to
+                            the right when using \c BobUI::RightToLeft, respectively.
 
     \value TrailingPosition The widget is displayed to the right of the text
-                            when using layout direction \c Qt::LeftToRight or to
-                            the left when using \c Qt::RightToLeft, respectively.
+                            when using layout direction \c BobUI::LeftToRight or to
+                            the left when using \c BobUI::RightToLeft, respectively.
 
     \sa addAction(), removeAction(), QWidget::layoutDirection
 
     \since 5.2
 */
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 /*!
     Adds the \a action to the list of actions at the \a position.
 
@@ -441,7 +441,7 @@ QAction *QLineEdit::addAction(const QIcon &icon, ActionPosition position)
     addAction(result, position);
     return result;
 }
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 /*!
     \property QLineEdit::clearButtonEnabled
     \brief Whether the line edit displays a clear button when it is not empty.
@@ -458,7 +458,7 @@ static const char clearButtonActionNameC[] = "_q_qlineeditclearaction";
 
 void QLineEdit::setClearButtonEnabled(bool enable)
 {
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     Q_D(QLineEdit);
     if (enable == isClearButtonEnabled())
         return;
@@ -478,12 +478,12 @@ void QLineEdit::setClearButtonEnabled(bool enable)
     }
 #else
     Q_UNUSED(enable);
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 }
 
 bool QLineEdit::isClearButtonEnabled() const
 {
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     return findChild<QAction *>(QLatin1StringView(clearButtonActionNameC));
 #else
     return false;
@@ -550,18 +550,18 @@ void QLineEdit::setEchoMode(EchoMode mode)
     Q_D(QLineEdit);
     if (mode == (EchoMode)d->control->echoMode())
         return;
-    Qt::InputMethodHints imHints = inputMethodHints();
-    imHints.setFlag(Qt::ImhHiddenText, mode == Password || mode == NoEcho);
-    imHints.setFlag(Qt::ImhNoAutoUppercase, mode != Normal);
-    imHints.setFlag(Qt::ImhNoPredictiveText, mode != Normal);
-    imHints.setFlag(Qt::ImhSensitiveData, mode != Normal);
+    BobUI::InputMethodHints imHints = inputMethodHints();
+    imHints.setFlag(BobUI::ImhHiddenText, mode == Password || mode == NoEcho);
+    imHints.setFlag(BobUI::ImhNoAutoUppercase, mode != Normal);
+    imHints.setFlag(BobUI::ImhNoPredictiveText, mode != Normal);
+    imHints.setFlag(BobUI::ImhSensitiveData, mode != Normal);
     setInputMethodHints(imHints);
     d->control->setEchoMode(mode);
     update();
 }
 
 
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
 /*!
     Returns a pointer to the current input validator, or \nullptr if no
     validator has been set.
@@ -600,9 +600,9 @@ void QLineEdit::setValidator(const QValidator *v)
     Q_D(QLineEdit);
     d->control->setValidator(v);
 }
-#endif // QT_NO_VALIDATOR
+#endif // BOBUI_NO_VALIDATOR
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 /*!
     \since 4.2
 
@@ -649,7 +649,7 @@ QCompleter *QLineEdit::completer() const
     return d->control->completer();
 }
 
-#endif // QT_CONFIG(completer)
+#endif // BOBUI_CONFIG(completer)
 
 /*!
     Returns a recommended size for the widget.
@@ -738,21 +738,21 @@ int QLineEdit::cursorPositionAt(const QPoint &pos)
     \property QLineEdit::alignment
     \brief The alignment of the line edit.
 
-    Both horizontal and vertical alignment is allowed here, Qt::AlignJustify
-    will map to Qt::AlignLeft.
+    Both horizontal and vertical alignment is allowed here, BobUI::AlignJustify
+    will map to BobUI::AlignLeft.
 
-    By default, this property contains a combination of Qt::AlignLeft and Qt::AlignVCenter.
+    By default, this property contains a combination of BobUI::AlignLeft and BobUI::AlignVCenter.
 
-    \sa Qt::Alignment
+    \sa BobUI::Alignment
 */
 
-Qt::Alignment QLineEdit::alignment() const
+BobUI::Alignment QLineEdit::alignment() const
 {
     Q_D(const QLineEdit);
     return QFlag(d->alignment);
 }
 
-void QLineEdit::setAlignment(Qt::Alignment alignment)
+void QLineEdit::setAlignment(BobUI::Alignment alignment)
 {
     Q_D(QLineEdit);
     d->alignment = alignment;
@@ -1064,25 +1064,25 @@ void QLineEdit::setDragEnabled(bool b)
   \brief The movement style of the cursor in this line edit.
   \since 4.8
 
-  When this property is set to Qt::VisualMoveStyle, the line edit will use a
+  When this property is set to BobUI::VisualMoveStyle, the line edit will use a
   visual movement style. Using the left arrow key will always cause the
   cursor to move left, regardless of the text's writing direction. The same
   behavior applies to the right arrow key.
 
-  When the property is set to Qt::LogicalMoveStyle (the default), within a
+  When the property is set to BobUI::LogicalMoveStyle (the default), within a
   left-to-right (LTR) text block, using the left arrow key will increase
   the cursor position, whereas using the right arrow key will decrease the
   cursor position. If the text block is right-to-left (RTL), the opposite
   behavior applies.
 */
 
-Qt::CursorMoveStyle QLineEdit::cursorMoveStyle() const
+BobUI::CursorMoveStyle QLineEdit::cursorMoveStyle() const
 {
     Q_D(const QLineEdit);
     return d->control->cursorMoveStyle();
 }
 
-void QLineEdit::setCursorMoveStyle(Qt::CursorMoveStyle style)
+void QLineEdit::setCursorMoveStyle(BobUI::CursorMoveStyle style)
 {
     Q_D(QLineEdit);
     d->control->setCursorMoveStyle(style);
@@ -1280,7 +1280,7 @@ void QLineEdit::deselect()
 */
 void QLineEdit::insert(const QString &newText)
 {
-//     q->resetInputContext(); //#### FIX ME IN QT
+//     q->resetInputContext(); //#### FIX ME IN BOBUI
     Q_D(QLineEdit);
     d->control->insert(newText);
 }
@@ -1347,15 +1347,15 @@ void QLineEdit::setReadOnly(bool enable)
     if (d->control->isReadOnly() != enable) {
         d->control->setReadOnly(enable);
         d->setClearButtonEnabled(!enable);
-        setAttribute(Qt::WA_MacShowFocusRect, !enable);
-        setAttribute(Qt::WA_InputMethodEnabled, d->shouldEnableInputMethod());
-#ifndef QT_NO_CURSOR
-        setCursor(enable ? Qt::ArrowCursor : Qt::IBeamCursor);
+        setAttribute(BobUI::WA_MacShowFocusRect, !enable);
+        setAttribute(BobUI::WA_InputMethodEnabled, d->shouldEnableInputMethod());
+#ifndef BOBUI_NO_CURSOR
+        setCursor(enable ? BobUI::ArrowCursor : BobUI::IBeamCursor);
 #endif
         QEvent event(QEvent::ReadOnlyChange);
         QCoreApplication::sendEvent(this, &event);
         update();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessible::State changedState;
         changedState.readOnly = true;
         QAccessibleStateChangeEvent ev(this, changedState);
@@ -1365,7 +1365,7 @@ void QLineEdit::setReadOnly(bool enable)
 }
 
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 /*!
     Copies the selected text to the clipboard and deletes it, if there
     is any, and if echoMode() is \l Normal.
@@ -1414,17 +1414,17 @@ void QLineEdit::paste()
     d->control->paste();
 }
 
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 
 /*!
     \reimp
 */
-void QLineEdit::timerEvent(QTimerEvent *e)
+void QLineEdit::timerEvent(BOBUIimerEvent *e)
 {
     Q_D(QLineEdit);
-    int timerId = ((QTimerEvent*)e)->timerId();
+    int timerId = ((BOBUIimerEvent*)e)->timerId();
     if (false) {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     } else if (timerId == d->dndTimer.timerId()) {
         d->drag();
 #endif
@@ -1439,17 +1439,17 @@ bool QLineEdit::event(QEvent * e)
 {
     Q_D(QLineEdit);
     if (e->type() == QEvent::ContextMenu) {
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
         if (d->control->composeMode())
             return true;
 #endif
         //d->separate();
     } else if (e->type() == QEvent::WindowActivate) {
-        QTimer::singleShot(0, this, [this]() {
+        BOBUIimer::singleShot(0, this, [this]() {
             Q_D(QLineEdit);
             d->handleWindowActivate();
         });
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     } else if (e->type() == QEvent::ShortcutOverride) {
         QKeyEvent *ke = static_cast<QKeyEvent*>(e);
         d->control->processShortcutOverrideEvent(ke);
@@ -1466,7 +1466,7 @@ bool QLineEdit::event(QEvent * e)
         }
     } else if (e->type() == QEvent::Hide) {
         d->control->setBlinkingCursorEnabled(false);
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     } else if (e->type() == QEvent::ActionRemoved) {
         d->removeAction(static_cast<QActionEvent *>(e)->action());
 #endif
@@ -1475,7 +1475,7 @@ bool QLineEdit::event(QEvent * e)
     } else if (e->type() == QEvent::StyleChange) {
         d->initMouseYThreshold();
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (QApplicationPrivate::keypadNavigationEnabled()) {
         if (e->type() == QEvent::EnterEditFocus) {
             end(false);
@@ -1505,11 +1505,11 @@ void QLineEdit::mousePressEvent(QMouseEvent* e)
 
     if (d->sendMouseEventToInputContext(e))
         return;
-    if (e->button() == Qt::RightButton) {
+    if (e->button() == BobUI::RightButton) {
         e->ignore();
         return;
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (QApplication::QApplicationPrivate() && !hasEditFocus()) {
         setEditFocus(true);
         // Get the completion list to pop up.
@@ -1522,14 +1522,14 @@ void QLineEdit::mousePressEvent(QMouseEvent* e)
         selectAll();
         return;
     }
-    bool mark = e->modifiers() & Qt::ShiftModifier;
+    bool mark = e->modifiers() & BobUI::ShiftModifier;
 #ifdef Q_OS_ANDROID
-    mark = mark && (d->imHints & Qt::ImhNoPredictiveText);
+    mark = mark && (d->imHints & BobUI::ImhNoPredictiveText);
 #endif // Q_OS_ANDROID
     int cursor = d->xToPos(e->position().toPoint().x());
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     if (!mark && d->dragEnabled && d->control->echoMode() == Normal &&
-         e->button() == Qt::LeftButton && d->inSelection(e->position().toPoint().x())) {
+         e->button() == BobUI::LeftButton && d->inSelection(e->position().toPoint().x())) {
         if (!d->dndTimer.isActive())
             d->dndTimer.start(QApplication::startDragTime(), this);
     } else
@@ -1545,8 +1545,8 @@ void QLineEdit::mouseMoveEvent(QMouseEvent * e)
 {
     Q_D(QLineEdit);
 
-    if (e->buttons() & Qt::LeftButton) {
-#if QT_CONFIG(draganddrop)
+    if (e->buttons() & BobUI::LeftButton) {
+#if BOBUI_CONFIG(draganddrop)
         if (d->dndTimer.isActive()) {
             if ((d->mousePressPos - e->position().toPoint()).manhattanLength() > QApplication::startDragDistance())
                 d->drag();
@@ -1556,16 +1556,16 @@ void QLineEdit::mouseMoveEvent(QMouseEvent * e)
 #ifndef Q_OS_ANDROID
             const bool select = true;
 #else
-            const bool select = (d->imHints & Qt::ImhNoPredictiveText);
+            const bool select = (d->imHints & BobUI::ImhNoPredictiveText);
 #endif
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
             if (d->mouseYThreshold > 0 && e->position().toPoint().y() > d->mousePressPos.y() + d->mouseYThreshold) {
-                if (layoutDirection() == Qt::RightToLeft)
+                if (layoutDirection() == BobUI::RightToLeft)
                     d->control->home(select);
                 else
                     d->control->end(select);
             } else if (d->mouseYThreshold > 0 && e->position().toPoint().y() + d->mouseYThreshold < d->mousePressPos.y()) {
-                if (layoutDirection() == Qt::RightToLeft)
+                if (layoutDirection() == BobUI::RightToLeft)
                     d->control->end(select);
                 else
                     d->control->home(select);
@@ -1593,8 +1593,8 @@ void QLineEdit::mouseReleaseEvent(QMouseEvent* e)
     Q_D(QLineEdit);
     if (d->sendMouseEventToInputContext(e))
         return;
-#if QT_CONFIG(draganddrop)
-    if (e->button() == Qt::LeftButton) {
+#if BOBUI_CONFIG(draganddrop)
+    if (e->button() == BobUI::LeftButton) {
         if (d->dndTimer.isActive()) {
             d->dndTimer.stop();
             deselect();
@@ -1602,11 +1602,11 @@ void QLineEdit::mouseReleaseEvent(QMouseEvent* e)
         }
     }
 #endif
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     if (QGuiApplication::clipboard()->supportsSelection()) {
-        if (e->button() == Qt::LeftButton) {
+        if (e->button() == BobUI::LeftButton) {
             d->control->copy(QClipboard::Selection);
-        } else if (!d->control->isReadOnly() && e->button() == Qt::MiddleButton) {
+        } else if (!d->control->isReadOnly() && e->button() == BobUI::MiddleButton) {
             deselect();
             d->control->paste(QClipboard::Selection);
         }
@@ -1624,11 +1624,11 @@ void QLineEdit::mouseDoubleClickEvent(QMouseEvent* e)
 {
     Q_D(QLineEdit);
 
-    if (e->button() == Qt::LeftButton) {
+    if (e->button() == BobUI::LeftButton) {
         int position = d->xToPos(e->position().toPoint().x());
 
         // exit composition mode
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
         if (d->control->composeMode()) {
             int preeditPos = d->control->cursor();
             int posInPreedit = position - d->control->cursor();
@@ -1717,10 +1717,10 @@ void QLineEdit::mouseDoubleClickEvent(QMouseEvent* e)
 void QLineEdit::keyPressEvent(QKeyEvent *event)
 {
     Q_D(QLineEdit);
-    #ifdef QT_KEYPAD_NAVIGATION
+    #ifdef BOBUI_KEYPAD_NAVIGATION
     bool select = false;
     switch (event->key()) {
-        case Qt::Key_Select:
+        case BobUI::Key_Select:
             if (QApplicationPrivate::keypadNavigationEnabled()) {
                 if (hasEditFocus()) {
                     setEditFocus(false);
@@ -1730,8 +1730,8 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
                 }
             }
             break;
-        case Qt::Key_Back:
-        case Qt::Key_No:
+        case BobUI::Key_Back:
+        case BobUI::Key_No:
             if (!QApplicationPrivate::keypadNavigationEnabled() || !hasEditFocus()) {
                 event->ignore();
                 return;
@@ -1739,7 +1739,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
             break;
         default:
             if (QApplicationPrivate::keypadNavigationEnabled()) {
-                if (!hasEditFocus() && !(event->modifiers() & Qt::ControlModifier)) {
+                if (!hasEditFocus() && !(event->modifiers() & BobUI::ControlModifier)) {
                     if (!event->text().isEmpty() && event->text().at(0).isPrint()
                         && !isReadOnly())
                         setEditFocus(true);
@@ -1755,7 +1755,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
 
     if (QApplicationPrivate::keypadNavigationEnabled() && !select && !hasEditFocus()) {
         setEditFocus(true);
-        if (event->key() == Qt::Key_Select)
+        if (event->key() == BobUI::Key_Select)
             return; // Just start. No action.
     }
 #endif
@@ -1801,7 +1801,7 @@ void QLineEdit::inputMethodEvent(QInputMethodEvent *e)
         clear();
     }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     // Focus in if currently in navigation focus on the widget
     // Only focus in on preedits, to allow input methods to
     // commit text as they focus out without interfering with focus
@@ -1813,21 +1813,21 @@ void QLineEdit::inputMethodEvent(QInputMethodEvent *e)
 
     d->control->processInputMethodEvent(e);
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     if (!e->commitString().isEmpty())
-        d->control->complete(Qt::Key_unknown);
+        d->control->complete(BobUI::Key_unknown);
 #endif
 }
 
 /*!\reimp
 */
-QVariant QLineEdit::inputMethodQuery(Qt::InputMethodQuery property) const
+QVariant QLineEdit::inputMethodQuery(BobUI::InputMethodQuery property) const
 {
 #ifdef Q_OS_ANDROID
-    // QTBUG-61652
-    if (property == Qt::ImEnterKeyType) {
+    // BOBUIBUG-61652
+    if (property == BobUI::ImEnterKeyType) {
         QWidget *next = nextInFocusChain();
-        while (next && next != this && next->focusPolicy() == Qt::NoFocus)
+        while (next && next != this && next->focusPolicy() == BobUI::NoFocus)
             next = next->nextInFocusChain();
         if (next) {
             const auto nextYPos = next->mapToGlobal(QPoint(0, 0)).y();
@@ -1835,7 +1835,7 @@ QVariant QLineEdit::inputMethodQuery(Qt::InputMethodQuery property) const
             if (currentYPos < nextYPos)
                 // Set EnterKey to KeyNext type only if the next widget
                 // in the focus chain is below current QLineEdit
-                return Qt::EnterKeyNext;
+                return BobUI::EnterKeyNext;
         }
     }
 #endif
@@ -1844,49 +1844,49 @@ QVariant QLineEdit::inputMethodQuery(Qt::InputMethodQuery property) const
 
 /*!\internal
 */
-QVariant QLineEdit::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant QLineEdit::inputMethodQuery(BobUI::InputMethodQuery property, QVariant argument) const
 {
     Q_D(const QLineEdit);
     switch(property) {
-    case Qt::ImEnabled:
+    case BobUI::ImEnabled:
         return isEnabled() && !isReadOnly();
-    case Qt::ImCursorRectangle:
+    case BobUI::ImCursorRectangle:
         return d->cursorRect();
-    case Qt::ImAnchorRectangle:
+    case BobUI::ImAnchorRectangle:
         return d->adjustedControlRect(d->control->anchorRect());
-    case Qt::ImFont:
+    case BobUI::ImFont:
         return font();
-    case Qt::ImAbsolutePosition:
-    case Qt::ImCursorPosition: {
+    case BobUI::ImAbsolutePosition:
+    case BobUI::ImCursorPosition: {
         const QPointF pt = argument.toPointF();
         if (!pt.isNull())
-            return QVariant(d->xToPos(pt.x(), QTextLine::CursorBetweenCharacters));
+            return QVariant(d->xToPos(pt.x(), BOBUIextLine::CursorBetweenCharacters));
         return QVariant(d->control->cursor()); }
-    case Qt::ImSurroundingText:
+    case BobUI::ImSurroundingText:
         return QVariant(d->control->surroundingText());
-    case Qt::ImCurrentSelection:
+    case BobUI::ImCurrentSelection:
         return QVariant(selectedText());
-    case Qt::ImMaximumTextLength:
+    case BobUI::ImMaximumTextLength:
         return QVariant(maxLength());
-    case Qt::ImAnchorPosition:
+    case BobUI::ImAnchorPosition:
         if (d->control->selectionStart() == d->control->selectionEnd())
             return QVariant(d->control->cursor());
         else if (d->control->selectionStart() == d->control->cursor())
             return QVariant(d->control->selectionEnd());
         else
             return QVariant(d->control->selectionStart());
-    case Qt::ImReadOnly:
+    case BobUI::ImReadOnly:
         return isReadOnly();
-    case Qt::ImTextBeforeCursor: {
+    case BobUI::ImTextBeforeCursor: {
         const QPointF pt = argument.toPointF();
         if (!pt.isNull())
-            return d->textBeforeCursor(d->xToPos(pt.x(), QTextLine::CursorBetweenCharacters));
+            return d->textBeforeCursor(d->xToPos(pt.x(), BOBUIextLine::CursorBetweenCharacters));
         else
             return d->textBeforeCursor(d->control->cursor()); }
-    case Qt::ImTextAfterCursor: {
+    case BobUI::ImTextAfterCursor: {
         const QPointF pt = argument.toPointF();
         if (!pt.isNull())
-            return d->textAfterCursor(d->xToPos(pt.x(), QTextLine::CursorBetweenCharacters));
+            return d->textAfterCursor(d->xToPos(pt.x(), BOBUIextLine::CursorBetweenCharacters));
         else
             return d->textAfterCursor(d->control->cursor()); }
     default:
@@ -1900,21 +1900,21 @@ QVariant QLineEdit::inputMethodQuery(Qt::InputMethodQuery property, QVariant arg
 void QLineEdit::focusInEvent(QFocusEvent *e)
 {
     Q_D(QLineEdit);
-    if (e->reason() == Qt::TabFocusReason ||
-         e->reason() == Qt::BacktabFocusReason  ||
-         e->reason() == Qt::ShortcutFocusReason) {
+    if (e->reason() == BobUI::TabFocusReason ||
+         e->reason() == BobUI::BacktabFocusReason  ||
+         e->reason() == BobUI::ShortcutFocusReason) {
         if (!d->control->inputMask().isEmpty())
             d->control->moveCursor(d->control->nextMaskBlank(0));
         else if (!d->control->hasSelectedText())
             selectAll();
         else
             updateMicroFocus();
-    } else if (e->reason() == Qt::MouseFocusReason) {
+    } else if (e->reason() == BobUI::MouseFocusReason) {
         d->clickCausedFocus = 1;
         updateMicroFocus();
     }
-#ifdef QT_KEYPAD_NAVIGATION
-    if (!QApplicationPrivate::keypadNavigationEnabled() || (hasEditFocus() && ( e->reason() == Qt::PopupFocusReason))) {
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    if (!QApplicationPrivate::keypadNavigationEnabled() || (hasEditFocus() && ( e->reason() == BobUI::PopupFocusReason))) {
 #endif
     d->control->setBlinkingCursorEnabled(true);
     QStyleOptionFrame opt;
@@ -1922,11 +1922,11 @@ void QLineEdit::focusInEvent(QFocusEvent *e)
     if ((!hasSelectedText() && d->control->preeditAreaText().isEmpty())
        || style()->styleHint(QStyle::SH_BlinkCursorWhenTextSelected, &opt, this))
         d->setCursorVisible(true);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         d->control->setCancelText(d->control->text());
     }
 #endif
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     if (d->control->completer()) {
         d->control->completer()->setWidget(this);
         d->connectCompleter();
@@ -1946,28 +1946,28 @@ void QLineEdit::focusOutEvent(QFocusEvent *e)
         d->updatePasswordEchoEditing(false);
     }
 
-    Qt::FocusReason reason = e->reason();
-    if (reason != Qt::ActiveWindowFocusReason &&
-        reason != Qt::PopupFocusReason)
+    BobUI::FocusReason reason = e->reason();
+    if (reason != BobUI::ActiveWindowFocusReason &&
+        reason != BobUI::PopupFocusReason)
         deselect();
 
     d->setCursorVisible(false);
     d->control->setBlinkingCursorEnabled(false);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     // editingFinished() is already emitted on LeaveEditFocus
     if (!QApplicationPrivate::keypadNavigationEnabled())
 #endif
-    if (reason != Qt::PopupFocusReason
+    if (reason != BobUI::PopupFocusReason
         || !(QApplication::activePopupWidget() && QApplication::activePopupWidget()->parentWidget() == this)) {
             if (d->edited && (hasAcceptableInput() || d->control->fixup())) {
                 emit editingFinished();
                 d->edited = false;
             }
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     d->control->setCancelText(QString());
 #endif
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     if (d->control->completer())
         d->disconnectCompleter();
 #endif
@@ -1997,12 +1997,12 @@ void QLineEdit::paintEvent(QPaintEvent *)
         fmHeight = fm.boundingRect(d->control->text() + d->control->preeditAreaText()).height();
     fmHeight = qMax(fmHeight, fm.height());
 
-    Qt::Alignment va = QStyle::visualAlignment(d->control->layoutDirection(), QFlag(d->alignment));
-    switch (va & Qt::AlignVertical_Mask) {
-     case Qt::AlignBottom:
+    BobUI::Alignment va = QStyle::visualAlignment(d->control->layoutDirection(), QFlag(d->alignment));
+    switch (va & BobUI::AlignVertical_Mask) {
+     case BobUI::AlignBottom:
          d->vscroll = r.y() + r.height() - fmHeight - QLineEditPrivate::verticalMargin;
          break;
-     case Qt::AlignTop:
+     case BobUI::AlignTop:
          d->vscroll = r.y() + QLineEditPrivate::verticalMargin;
          break;
      default:
@@ -2015,15 +2015,15 @@ void QLineEdit::paintEvent(QPaintEvent *)
 
     if (d->shouldShowPlaceholderText()) {
         if (!d->placeholderText.isEmpty()) {
-            const Qt::LayoutDirection layoutDir = d->placeholderText.isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
-            const Qt::Alignment alignPhText = QStyle::visualAlignment(layoutDir, QFlag(d->alignment));
+            const BobUI::LayoutDirection layoutDir = d->placeholderText.isRightToLeft() ? BobUI::RightToLeft : BobUI::LeftToRight;
+            const BobUI::Alignment alignPhText = QStyle::visualAlignment(layoutDir, QFlag(d->alignment));
             const QColor col = pal.placeholderText().color();
             QPen oldpen = p.pen();
             p.setPen(col);
-            Qt::LayoutDirection oldLayoutDir = p.layoutDirection();
+            BobUI::LayoutDirection oldLayoutDir = p.layoutDirection();
             p.setLayoutDirection(layoutDir);
 
-            const QString elidedText = fm.elidedText(d->placeholderText, Qt::ElideRight, lineRect.width());
+            const QString elidedText = fm.elidedText(d->placeholderText, BobUI::ElideRight, lineRect.width());
             p.drawText(lineRect, alignPhText, elidedText);
             p.setPen(oldpen);
             p.setLayoutDirection(oldLayoutDir);
@@ -2040,11 +2040,11 @@ void QLineEdit::paintEvent(QPaintEvent *)
     int widthUsed = qRound(d->control->naturalTextWidth()) + 1;
     if (widthUsed <= lineRect.width()) {
         // text fits in lineRect; use hscroll for alignment
-        switch (va & ~(Qt::AlignAbsolute|Qt::AlignVertical_Mask)) {
-        case Qt::AlignRight:
+        switch (va & ~(BobUI::AlignAbsolute|BobUI::AlignVertical_Mask)) {
+        case BobUI::AlignRight:
             d->hscroll = widthUsed - lineRect.width() + 1;
             break;
-        case Qt::AlignHCenter:
+        case BobUI::AlignHCenter:
             d->hscroll = (widthUsed - lineRect.width()) / 2;
             break;
         default:
@@ -2072,8 +2072,8 @@ void QLineEdit::paintEvent(QPaintEvent *)
     QPoint topLeft = lineRect.topLeft() - QPoint(d->hscroll, d->control->ascent() - fm.ascent());
 
     // draw text, selections and cursors
-#if QT_CONFIG(style_stylesheet)
-    if (QStyleSheetStyle* cssStyle = qt_styleSheet(style())) {
+#if BOBUI_CONFIG(style_stylesheet)
+    if (QStyleSheetStyle* cssStyle = bobui_styleSheet(style())) {
         cssStyle->styleSheetPalette(this, &panel, &pal);
     }
 #endif
@@ -2081,7 +2081,7 @@ void QLineEdit::paintEvent(QPaintEvent *)
 
     int flags = QWidgetLineControl::DrawText;
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (!QApplicationPrivate::keypadNavigationEnabled() || hasEditFocus())
 #endif
     if (d->control->hasSelectedText() || (d->cursorVisible && !d->control->inputMask().isEmpty() && !d->control->isReadOnly())){
@@ -2106,7 +2106,7 @@ void QLineEdit::paintEvent(QPaintEvent *)
 }
 
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!\reimp
 */
 void QLineEdit::dragMoveEvent(QDragMoveEvent *e)
@@ -2143,7 +2143,7 @@ void QLineEdit::dropEvent(QDropEvent* e)
     QString str = e->mimeData()->text();
 
     if (!str.isNull() && !d->control->isReadOnly()) {
-        if (e->source() == this && e->dropAction() == Qt::CopyAction)
+        if (e->source() == this && e->dropAction() == BobUI::CopyAction)
             deselect();
         int cursorPos = d->xToPos(e->position().toPoint().x());
         int selStart = cursorPos;
@@ -2154,7 +2154,7 @@ void QLineEdit::dropEvent(QDropEvent* e)
         e->acceptProposedAction();
         insert(str);
         if (e->source() == this) {
-            if (e->dropAction() == Qt::MoveAction) {
+            if (e->dropAction() == BobUI::MoveAction) {
                 if (selStart > oldSelStart && selStart <= oldSelEnd)
                     setSelection(oldSelStart, str.size());
                 else if (selStart > oldSelEnd)
@@ -2171,15 +2171,15 @@ void QLineEdit::dropEvent(QDropEvent* e)
     }
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     Shows the standard context menu created with
     createStandardContextMenu().
 
     If you do not want the line edit to have a context menu, you can set
-    its \l contextMenuPolicy to Qt::NoContextMenu. To customize the context
+    its \l contextMenuPolicy to BobUI::NoContextMenu. To customize the context
     menu, reimplement this function. To extend the standard context menu,
     reimplement this function, call createStandardContextMenu(), and extend the
     menu returned.
@@ -2194,7 +2194,7 @@ void QLineEdit::dropEvent(QDropEvent* e)
 void QLineEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     if (QMenu *menu = createStandardContextMenu()) {
-        menu->setAttribute(Qt::WA_DeleteOnClose);
+        menu->setAttribute(BobUI::WA_DeleteOnClose);
         menu->popup(event->globalPos());
     }
 }
@@ -2209,7 +2209,7 @@ QMenu *QLineEdit::createStandardContextMenu()
 {
     Q_D(QLineEdit);
     QMenu *popup = new QMenu(this);
-    popup->setObjectName("qt_edit_menu"_L1);
+    popup->setObjectName("bobui_edit_menu"_L1);
     QAction *action = nullptr;
 
     if (!isReadOnly()) {
@@ -2228,7 +2228,7 @@ QMenu *QLineEdit::createStandardContextMenu()
         popup->addSeparator();
     }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     if (!isReadOnly()) {
         action = popup->addAction(QLineEdit::tr("Cu&t") + ACCEL_KEY(QKeySequence::Cut));
         action->setEnabled(!d->control->isReadOnly() && d->control->hasSelectedText()
@@ -2280,7 +2280,7 @@ QMenu *QLineEdit::createStandardContextMenu()
     }
     return popup;
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*! \reimp */
 void QLineEdit::changeEvent(QEvent *ev)
@@ -2305,7 +2305,7 @@ void QLineEdit::changeEvent(QEvent *ev)
         update();
         break;
     case QEvent::LayoutDirectionChange:
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
         for (const auto &e : d->trailingSideWidgets) { // Refresh icon to show arrow in right direction.
             if (e.flags & QLineEditPrivate::SideWidgetClearButton)
                 static_cast<QLineEditIconButton *>(e.widget)->setIcon(d->clearButtonIcon());
@@ -2319,6 +2319,6 @@ void QLineEdit::changeEvent(QEvent *ev)
     QWidget::changeEvent(ev);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlineedit.cpp"

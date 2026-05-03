@@ -1,10 +1,10 @@
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qtversion.h>
-#include <QtCore/qyieldcpu.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuiversion.h>
+#include <BobUICore/qyieldcpu.h>
+#include <BobUICore/bobuiypes.h>
 
 #ifdef Q_COMPILER_THREAD_LOCAL
 #  include <threads.h>
@@ -52,29 +52,29 @@ void tst_GlobalTypes()
     quintptr qup;
     Q_UNUSED(qs); Q_UNUSED(qp); Q_UNUSED(qip); Q_UNUSED(qup);
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     qint128 s128;
     quint128 u128;
     Q_UNUSED(s128); Q_UNUSED(u128);
-#endif /* QT_SUPPORTS_INT128 */
+#endif /* BOBUI_SUPPORTS_INT128 */
 }
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 qint128 tst_qint128_min() { return Q_INT128_MIN + 0; }
 qint128 tst_qint128_max() { return 0 + Q_INT128_MAX; }
 quint128 tst_quint128_max() { return Q_UINT128_MAX - 1 + 1; }
 #endif
 
-/* Qt version */
-int tst_QtVersion()
+/* BobUI version */
+int tst_BobUIVersion()
 {
-    return QT_VERSION;
+    return BOBUI_VERSION;
 }
 
 const char *tst_qVersion() Q_DECL_NOEXCEPT;
 const char *tst_qVersion()
 {
-#if !defined(QT_NAMESPACE)
+#if !defined(BOBUI_NAMESPACE)
     return qVersion();
 #else
     return NULL;

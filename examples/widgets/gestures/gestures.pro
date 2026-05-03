@@ -1,4 +1,4 @@
-requires(qtHaveModule(widgets))
+requires(bobuiHaveModule(widgets))
 
 TEMPLATE      = \
               subdirs

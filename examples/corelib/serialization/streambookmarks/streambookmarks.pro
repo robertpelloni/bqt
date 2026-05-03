@@ -5,11 +5,11 @@ SOURCES       = main.cpp \
                 mainwindow.cpp \
                 xbelreader.cpp \
                 xbelwriter.cpp
-QT           += widgets
-requires(qtConfig(filedialog))
+BOBUI           += widgets
+requires(bobuiConfig(filedialog))
 
 EXAMPLE_FILES = jennifer.xbel
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/serialization/streambookmarks
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/serialization/streambookmarks
 INSTALLS += target

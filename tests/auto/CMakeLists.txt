@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Order by dependency [*], then alphabetic. [*] If bugs in part A of
@@ -8,35 +8,35 @@
 add_subdirectory(util/testrunner)
 
 set(run_dbus_tests OFF)
-if (QT_FEATURE_dbus)
+if (BOBUI_FEATURE_dbus)
     set(run_dbus_tests ON)
-    if((NOT CMAKE_CROSSCOMPILING OR WIN32) AND TARGET Qt::DBus)
+    if((NOT CMAKE_CROSSCOMPILING OR WIN32) AND TARGET BobUI::DBus)
         execute_process(COMMAND dbus-send --session --type=signal / local.AutotestCheck.Hello
             TIMEOUT 5
             RESULT_VARIABLE dbus_session_test
             OUTPUT_QUIET ERROR_QUIET)
         if(NOT "${dbus_session_test}" STREQUAL "0")
             set(run_dbus_tests OFF)
-            if(QT_FEATURE_dbus_linked)
+            if(BOBUI_FEATURE_dbus_linked)
                 message(WARNING
-                    " QtDBus is enabled but session bus is not available for testing.\n"
-                    " Please check the installation. Skipping QtDBus tests.")
+                    " BobUIDBus is enabled but session bus is not available for testing.\n"
+                    " Please check the installation. Skipping BobUIDBus tests.")
             else()
                 message(WARNING
-                    " QtDBus is enabled with runtime support, but session bus is not available.\n"
-                    " Skipping QtDBus tests.")
+                    " BobUIDBus is enabled with runtime support, but session bus is not available.\n"
+                    " Skipping BobUIDBus tests.")
             endif()
         endif()
     endif()
 endif()
 
 if(UIKIT)
-    # For now, only build CMake auto tests when QT_BUILD_MINIMAL_STATIC_TEST
+    # For now, only build CMake auto tests when BOBUI_BUILD_MINIMAL_STATIC_TEST
     # is a requested (which is basically what CI will build).
-    # The reason is that qt_internal_add_test doesn't use qt_add_executable
+    # The reason is that bobui_internal_add_test doesn't use bobui_add_executable
     # at the moment, which means none of the required iOS specific finalizers
     # are run.
-    if(QT_BUILD_MINIMAL_STATIC_TESTS)
+    if(BOBUI_BUILD_MINIMAL_STATIC_TESTS)
         add_subdirectory(cmake)
         return()
     endif()
@@ -44,14 +44,14 @@ if(UIKIT)
     # Build only corelib and gui tests when targeting uikit (iOS),
     # because the script can't handle the SUBDIRS assignment well.
     add_subdirectory(corelib)
-    if (TARGET Qt::Gui)
+    if (TARGET BobUI::Gui)
         add_subdirectory(gui)
     endif()
     return()
 endif()
 
-# Limit set of tests to run for Android multi-ABI Qt builds.
-if(QT_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS)
+# Limit set of tests to run for Android multi-ABI BobUI builds.
+if(BOBUI_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS)
     add_subdirectory(cmake)
     add_subdirectory(corelib/kernel/qmath)
     add_subdirectory(widgets/effects/qpixmapfilter)
@@ -59,8 +59,8 @@ if(QT_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS)
     return()
 endif()
 
-if(QT_BUILD_WASM_BATCHED_TESTS)
-    if(TARGET Qt::Concurrent)
+if(BOBUI_BUILD_WASM_BATCHED_TESTS)
+    if(TARGET BobUI::Concurrent)
         add_subdirectory(corelib/io/qurl)
     endif()
     add_subdirectory(corelib/io/qdiriterator)
@@ -74,7 +74,7 @@ if(QT_BUILD_WASM_BATCHED_TESTS)
     add_subdirectory(corelib/io/qfileselector)
     add_subdirectory(corelib/io/qfile)
     add_subdirectory(corelib/io/qdir)
-    if(TARGET Qt::Concurrent)
+    if(TARGET BobUI::Concurrent)
         if(NOT INTEGRITY)
         add_subdirectory(corelib/io/qdebug)
         endif()
@@ -91,16 +91,16 @@ if(WASM)
 endif()
 
 add_subdirectory(testlib)
-if(NOT CMAKE_CROSSCOMPILING AND QT_FEATURE_process)
+if(NOT CMAKE_CROSSCOMPILING AND BOBUI_FEATURE_process)
      add_subdirectory(tools)
 endif()
 add_subdirectory(corelib)
-if (TARGET Qt::Xml AND TARGET Qt::Sql AND TARGET Qt::Network)
+if (TARGET BobUI::Xml AND TARGET BobUI::Sql AND TARGET BobUI::Network)
     add_subdirectory(cmake)
 endif()
 
-# Limit set of tests to run for static Qt builds.
-if(QT_BUILD_MINIMAL_STATIC_TESTS)
+# Limit set of tests to run for static BobUI builds.
+if(BOBUI_BUILD_MINIMAL_STATIC_TESTS)
     return()
 endif()
 
@@ -109,31 +109,31 @@ endif()
 if(run_dbus_tests)
     add_subdirectory(dbus)
 endif()
-if (TARGET Qt::Network)
+if (TARGET BobUI::Network)
      add_subdirectory(network)
 endif()
-if(QT_FEATURE_wayland)
+if(BOBUI_FEATURE_wayland)
     add_subdirectory(wayland)
 endif()
-if (TARGET Qt::Gui)
+if (TARGET BobUI::Gui)
     add_subdirectory(gui)
 endif()
-if (TARGET Qt::Widgets)
+if (TARGET BobUI::Widgets)
      add_subdirectory(widgets)
 endif()
-if (TARGET Qt::OpenGL)
+if (TARGET BobUI::OpenGL)
      add_subdirectory(opengl)
 endif()
-if (TARGET Qt::PrintSupport)
+if (TARGET BobUI::PrintSupport)
      add_subdirectory(printsupport)
 endif()
-if (TARGET Qt::Sql)
+if (TARGET BobUI::Sql)
      add_subdirectory(sql)
 endif()
-if (TARGET Qt::Xml)
+if (TARGET BobUI::Xml)
      add_subdirectory(xml)
 endif()
-if (TARGET Qt::Concurrent)
+if (TARGET BobUI::Concurrent)
      add_subdirectory(concurrent)
 endif()
 add_subdirectory(other)

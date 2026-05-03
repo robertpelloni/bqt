@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "movieplayer.h"
 
@@ -10,7 +10,7 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QStyle>
-#include <QToolButton>
+#include <BOBUIoolButton>
 #include <QVBoxLayout>
 
 MoviePlayer::MoviePlayer(QWidget *parent)
@@ -20,7 +20,7 @@ MoviePlayer::MoviePlayer(QWidget *parent)
     movie->setCacheMode(QMovie::CacheAll);
 
     movieLabel = new QLabel(tr("No movie loaded"));
-    movieLabel->setAlignment(Qt::AlignCenter);
+    movieLabel->setAlignment(BobUI::AlignCenter);
     movieLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     movieLabel->setBackgroundRole(QPalette::Dark);
     movieLabel->setAutoFillBackground(true);
@@ -115,7 +115,7 @@ void MoviePlayer::createControls()
 
     frameLabel = new QLabel(tr("Current frame:"));
 
-    frameSlider = new QSlider(Qt::Horizontal);
+    frameSlider = new QSlider(BobUI::Horizontal);
     frameSlider->setTickPosition(QSlider::TicksBelow);
     frameSlider->setTickInterval(10);
 
@@ -138,36 +138,36 @@ void MoviePlayer::createButtons()
 {
     QSize iconSize(36, 36);
 
-    openButton = new QToolButton;
+    openButton = new BOBUIoolButton;
     openButton->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
     openButton->setIconSize(iconSize);
     openButton->setToolTip(tr("Open File"));
-    connect(openButton, &QToolButton::clicked, this, &MoviePlayer::open);
+    connect(openButton, &BOBUIoolButton::clicked, this, &MoviePlayer::open);
 
-    playButton = new QToolButton;
+    playButton = new BOBUIoolButton;
     playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     playButton->setIconSize(iconSize);
     playButton->setToolTip(tr("Play"));
-    connect(playButton, &QToolButton::clicked, movie, &QMovie::start);
+    connect(playButton, &BOBUIoolButton::clicked, movie, &QMovie::start);
 
-    pauseButton = new QToolButton;
+    pauseButton = new BOBUIoolButton;
     pauseButton->setCheckable(true);
     pauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
     pauseButton->setIconSize(iconSize);
     pauseButton->setToolTip(tr("Pause"));
-    connect(pauseButton, &QToolButton::clicked, movie, &QMovie::setPaused);
+    connect(pauseButton, &BOBUIoolButton::clicked, movie, &QMovie::setPaused);
 
-    stopButton = new QToolButton;
+    stopButton = new BOBUIoolButton;
     stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
     stopButton->setIconSize(iconSize);
     stopButton->setToolTip(tr("Stop"));
-    connect(stopButton, &QToolButton::clicked, movie, &QMovie::stop);
+    connect(stopButton, &BOBUIoolButton::clicked, movie, &QMovie::stop);
 
-    quitButton = new QToolButton;
+    quitButton = new BOBUIoolButton;
     quitButton->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
     quitButton->setIconSize(iconSize);
     quitButton->setToolTip(tr("Quit"));
-    connect(quitButton, &QToolButton::clicked, this, &MoviePlayer::close);
+    connect(quitButton, &BOBUIoolButton::clicked, this, &MoviePlayer::close);
 
     buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch();

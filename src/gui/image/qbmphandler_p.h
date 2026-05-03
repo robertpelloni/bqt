@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QBMPHANDLER_P_H
 #define QBMPHANDLER_P_H
@@ -9,19 +9,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtGui/qimageiohandler.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUIGui/qimageiohandler.h"
 
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct BMP_FILEHDR {                     // BMP file header
     char   bfType[2];                    // "BM"
@@ -102,8 +102,8 @@ private:
     qint64 startpos;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_IMAGEFORMAT_BMP
+#endif // BOBUI_NO_IMAGEFORMAT_BMP
 
 #endif // QBMPHANDLER_P_H

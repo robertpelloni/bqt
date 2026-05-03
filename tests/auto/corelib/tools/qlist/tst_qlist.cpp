@@ -1,24 +1,24 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#ifdef QT_NO_STRICT_QLIST_ITERATORS
-#  ifdef QT_STRICT_QLIST_ITERATORS
-#    undef QT_STRICT_QLIST_ITERATORS
+#ifdef BOBUI_NO_STRICT_QLIST_ITERATORS
+#  ifdef BOBUI_STRICT_QLIST_ITERATORS
+#    undef BOBUI_STRICT_QLIST_ITERATORS
 #  endif
 #endif
 #include <qlist.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QAtomicInt>
 #include <QAtomicScopedValueRollback>
-#include <QThread>
+#include <BOBUIhread>
 #include <QSemaphore>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
 #include <cstdio>
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20memory.h>
 
-#ifdef QT_COMPILER_HAS_LWG3346
+#ifdef BOBUI_COMPILER_HAS_LWG3346
 #  if __has_include(<concepts>)
 #    include <concepts>
 #    if defined(__cpp_lib_concepts) && __cpp_lib_concepts >= 202002L
@@ -116,9 +116,9 @@ private:
 inline size_t qHash(const Movable &key, size_t seed = 0) { return qHash(key.i, seed); }
 
 QAtomicInt Movable::counter = 0;
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(Movable, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 Q_DECLARE_METATYPE(Movable);
 
 struct NoexceptMovable
@@ -195,9 +195,9 @@ private:
     { return qHash(key.i, seed); }
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(NoexceptMovable, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 struct Custom {
     Custom(char input = 'j')
@@ -271,12 +271,12 @@ inline size_t qHash(const Custom &key, size_t seed = 0) { return qHash(key.i, se
 Q_DECLARE_METATYPE(Custom);
 
 // tests depends on the fact that:
-static_assert(QTypeInfo<int>::isRelocatable);
-static_assert(!QTypeInfo<int>::isComplex);
-static_assert(QTypeInfo<Movable>::isRelocatable);
-static_assert(QTypeInfo<Movable>::isComplex);
-static_assert(!QTypeInfo<Custom>::isRelocatable);
-static_assert(QTypeInfo<Custom>::isComplex);
+static_assert(BOBUIypeInfo<int>::isRelocatable);
+static_assert(!BOBUIypeInfo<int>::isComplex);
+static_assert(BOBUIypeInfo<Movable>::isRelocatable);
+static_assert(BOBUIypeInfo<Movable>::isComplex);
+static_assert(!BOBUIypeInfo<Custom>::isRelocatable);
+static_assert(BOBUIypeInfo<Custom>::isComplex);
 
 // leak checking utility:
 template<typename T>
@@ -452,7 +452,7 @@ private slots:
     void swapCustom() const { swap<Custom>(); }
     void toAddress() const;
     void toList() const;
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
     void fromStdVector() const;
     void toStdVector() const;
 #endif
@@ -495,19 +495,19 @@ private slots:
     void replaceMovable() const { replace<Movable>(); }
     void replaceNoexceptMovable() const { replace<NoexceptMovable>(); }
     void fromReadOnlyData() const;
-    void reallocateCustomAlignedType_qtbug90359() const;
-    void reinsertToBeginInt_qtbug91360() const { reinsertToBegin<int>(); }
-    void reinsertToBeginMovable_qtbug91360() const { reinsertToBegin<Movable>(); }
-    void reinsertToBeginNoexceptMovable_qtbug91360() const { reinsertToBegin<NoexceptMovable>(); }
-    void reinsertToBeginCustom_qtbug91360() const { reinsertToBegin<Custom>(); }
-    void reinsertToEndInt_qtbug91360() const { reinsertToEnd<int>(); }
-    void reinsertToEndMovable_qtbug91360() const { reinsertToEnd<Movable>(); }
-    void reinsertToEndNoexceptMovable_qtbug91360() const { reinsertToEnd<NoexceptMovable>(); }
-    void reinsertToEndCustom_qtbug91360() const { reinsertToEnd<Custom>(); }
-    void reinsertRangeToEndInt_qtbug91360() const { reinsertRangeToEnd<int>(); }
-    void reinsertRangeToEndMovable_qtbug91360() const { reinsertRangeToEnd<Movable>(); }
-    void reinsertRangeToEndNoexceptMovable_qtbug91360() const { reinsertRangeToEnd<NoexceptMovable>(); }
-    void reinsertRangeToEndCustom_qtbug91360() const { reinsertRangeToEnd<Custom>(); }
+    void reallocateCustomAlignedType_bobuibug90359() const;
+    void reinsertToBeginInt_bobuibug91360() const { reinsertToBegin<int>(); }
+    void reinsertToBeginMovable_bobuibug91360() const { reinsertToBegin<Movable>(); }
+    void reinsertToBeginNoexceptMovable_bobuibug91360() const { reinsertToBegin<NoexceptMovable>(); }
+    void reinsertToBeginCustom_bobuibug91360() const { reinsertToBegin<Custom>(); }
+    void reinsertToEndInt_bobuibug91360() const { reinsertToEnd<int>(); }
+    void reinsertToEndMovable_bobuibug91360() const { reinsertToEnd<Movable>(); }
+    void reinsertToEndNoexceptMovable_bobuibug91360() const { reinsertToEnd<NoexceptMovable>(); }
+    void reinsertToEndCustom_bobuibug91360() const { reinsertToEnd<Custom>(); }
+    void reinsertRangeToEndInt_bobuibug91360() const { reinsertRangeToEnd<int>(); }
+    void reinsertRangeToEndMovable_bobuibug91360() const { reinsertRangeToEnd<Movable>(); }
+    void reinsertRangeToEndNoexceptMovable_bobuibug91360() const { reinsertRangeToEnd<NoexceptMovable>(); }
+    void reinsertRangeToEndCustom_bobuibug91360() const { reinsertRangeToEnd<Custom>(); }
     // QList reference stability tests:
     void stability_reserveInt() const { stability_reserve<int>(); }
     void stability_reserveMovable() const { stability_reserve<Movable>(); }
@@ -707,7 +707,7 @@ void tst_QList::constructors_reserveAndInitialize() const
 
 void tst_QList::constructorsThrowOnSillySize() const
 {
-#ifdef QT_NO_EXCEPTIONS
+#ifdef BOBUI_NO_EXCEPTIONS
     QSKIP("Compiled without exception support");
 #else
     // Only testing primitives for this; it should be enough.
@@ -723,7 +723,7 @@ void tst_QList::constructorsThrowOnSillySize() const
 
     QVERIFY_THROWS_EXCEPTION(std::bad_alloc, QList<T> l(NumElements));
     QVERIFY_THROWS_EXCEPTION(std::bad_alloc, QList<T> l(NumElements, 0));
-    QVERIFY_THROWS_EXCEPTION(std::bad_alloc, QList<T> l(NumElements, Qt::Uninitialized));
+    QVERIFY_THROWS_EXCEPTION(std::bad_alloc, QList<T> l(NumElements, BobUI::Uninitialized));
 
     // Since we're here, we might as well test resize() and reserve().
     QVERIFY_THROWS_EXCEPTION(std::bad_alloc, QList<T> l; l.reserve(NumElements));
@@ -1096,15 +1096,15 @@ Q_ENUM_NS(RelationWithPrependBuffer)
 
 void tst_QList::assignUsesPrependBuffer_data() const
 {
-    QTest::addColumn<ListState>("listState");
-    QTest::addColumn<RelationWithPrependBuffer>("relationWithPrependBuffer");
+    BOBUIest::addColumn<ListState>("listState");
+    BOBUIest::addColumn<RelationWithPrependBuffer>("relationWithPrependBuffer");
 
     const auto sme = QMetaEnum::fromType<ListState>();
     const auto rme = QMetaEnum::fromType<RelationWithPrependBuffer>();
 
     for (int i = 0, s = sme.value(i); s != -1; s = sme.value(++i)) {
         for (int j = 0, r = rme.value(j); r != -1; r = rme.value(++j)) {
-            QTest::addRow("%s-%s", sme.key(i), rme.key(j))
+            BOBUIest::addRow("%s-%s", sme.key(i), rme.key(j))
                 << ListState(s) << RelationWithPrependBuffer(r);
         }
     }
@@ -1233,8 +1233,8 @@ struct ConstructionCounted
     int copies = 0;
     int moves = 0;
 };
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
 char *toString(const ConstructionCounted &cc)
 {
     char *str = new char[5];
@@ -1242,7 +1242,7 @@ char *toString(const ConstructionCounted &cc)
     return str;
 }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QList::appendList() const
 {
@@ -1992,7 +1992,7 @@ void tst_QList::fromList() const
     QCOMPARE(list, QList<T>() << SimpleValue<T>::at(0) << SimpleValue<T>::at(1) << SimpleValue<T>::at(2) << SimpleValue<T>::at(3));
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
 void tst_QList::fromStdVector() const
 {
     // stl = :(
@@ -2155,9 +2155,9 @@ void tst_QList::insert() const
 
 void tst_QList::insertZeroCount_data()
 {
-    QTest::addColumn<int>("pos");
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
+    BOBUIest::addColumn<int>("pos");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
 }
 
 void tst_QList::insertZeroCount() const
@@ -2606,11 +2606,11 @@ void tst_QList::removeFirstLast() const
 
 void tst_QList::resizePOD_data() const
 {
-    QTest::addColumn<QList<int> >("vector");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QList<int> >("vector");
+    BOBUIest::addColumn<int>("size");
 
-    QVERIFY(!QTypeInfo<int>::isComplex);
-    QVERIFY(QTypeInfo<int>::isRelocatable);
+    QVERIFY(!BOBUIypeInfo<int>::isComplex);
+    QVERIFY(BOBUIypeInfo<int>::isRelocatable);
 
     QList<int> null;
     QList<int> empty(0, 5);
@@ -2625,13 +2625,13 @@ void tst_QList::resizePOD_data() const
     QVERIFY(emptyReserved.capacity() >= 10);
     QVERIFY(nonEmptyReserved.capacity() >= 15);
 
-    QTest::newRow("null") << null << 10;
-    QTest::newRow("null and 0 size") << null << 0;
-    QTest::newRow("empty") << empty << 10;
-    QTest::newRow("empty and 0 size") << empty << 0;
-    QTest::newRow("emptyReserved") << emptyReserved << 10;
-    QTest::newRow("nonEmpty") << nonEmpty << 10;
-    QTest::newRow("nonEmptyReserved") << nonEmptyReserved << 10;
+    BOBUIest::newRow("null") << null << 10;
+    BOBUIest::newRow("null and 0 size") << null << 0;
+    BOBUIest::newRow("empty") << empty << 10;
+    BOBUIest::newRow("empty and 0 size") << empty << 0;
+    BOBUIest::newRow("emptyReserved") << emptyReserved << 10;
+    BOBUIest::newRow("nonEmpty") << nonEmpty << 10;
+    BOBUIest::newRow("nonEmptyReserved") << nonEmptyReserved << 10;
 }
 
 void tst_QList::resizePOD() const
@@ -2659,11 +2659,11 @@ void tst_QList::resizePOD() const
 
 void tst_QList::resizeComplexMovable_data() const
 {
-    QTest::addColumn<QList<Movable> >("vector");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QList<Movable> >("vector");
+    BOBUIest::addColumn<int>("size");
 
-    QVERIFY(QTypeInfo<Movable>::isComplex);
-    QVERIFY(QTypeInfo<Movable>::isRelocatable);
+    QVERIFY(BOBUIypeInfo<Movable>::isComplex);
+    QVERIFY(BOBUIypeInfo<Movable>::isRelocatable);
 
     QList<Movable> null;
     QList<Movable> empty(0, 'Q');
@@ -2678,13 +2678,13 @@ void tst_QList::resizeComplexMovable_data() const
     QVERIFY(emptyReserved.capacity() >= 10);
     QVERIFY(nonEmptyReserved.capacity() >= 15);
 
-    QTest::newRow("null") << null << 10;
-    QTest::newRow("null and 0 size") << null << 0;
-    QTest::newRow("empty") << empty << 10;
-    QTest::newRow("empty and 0 size") << empty << 0;
-    QTest::newRow("emptyReserved") << emptyReserved << 10;
-    QTest::newRow("nonEmpty") << nonEmpty << 10;
-    QTest::newRow("nonEmptyReserved") << nonEmptyReserved << 10;
+    BOBUIest::newRow("null") << null << 10;
+    BOBUIest::newRow("null and 0 size") << null << 0;
+    BOBUIest::newRow("empty") << empty << 10;
+    BOBUIest::newRow("empty and 0 size") << empty << 0;
+    BOBUIest::newRow("emptyReserved") << emptyReserved << 10;
+    BOBUIest::newRow("nonEmpty") << nonEmpty << 10;
+    BOBUIest::newRow("nonEmptyReserved") << nonEmptyReserved << 10;
 }
 
 void tst_QList::resizeComplexMovable() const
@@ -2715,11 +2715,11 @@ void tst_QList::resizeComplexMovable() const
 
 void tst_QList::resizeComplex_data() const
 {
-    QTest::addColumn<QList<Custom> >("vector");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QList<Custom> >("vector");
+    BOBUIest::addColumn<int>("size");
 
-    QVERIFY(QTypeInfo<Custom>::isComplex);
-    QVERIFY(!QTypeInfo<Custom>::isRelocatable);
+    QVERIFY(BOBUIypeInfo<Custom>::isComplex);
+    QVERIFY(!BOBUIypeInfo<Custom>::isRelocatable);
 
     QList<Custom> null;
     QList<Custom> empty(0, '0');
@@ -2734,13 +2734,13 @@ void tst_QList::resizeComplex_data() const
     QVERIFY(emptyReserved.capacity() >= 10);
     QVERIFY(nonEmptyReserved.capacity() >= 15);
 
-    QTest::newRow("null") << null << 10;
-    QTest::newRow("null and 0 size") << null << 0;
-    QTest::newRow("empty") << empty << 10;
-    QTest::newRow("empty and 0 size") << empty << 0;
-    QTest::newRow("emptyReserved") << emptyReserved << 10;
-    QTest::newRow("nonEmpty") << nonEmpty << 10;
-    QTest::newRow("nonEmptyReserved") << nonEmptyReserved << 10;
+    BOBUIest::newRow("null") << null << 10;
+    BOBUIest::newRow("null and 0 size") << null << 0;
+    BOBUIest::newRow("empty") << empty << 10;
+    BOBUIest::newRow("empty and 0 size") << empty << 0;
+    BOBUIest::newRow("emptyReserved") << emptyReserved << 10;
+    BOBUIest::newRow("nonEmpty") << nonEmpty << 10;
+    BOBUIest::newRow("nonEmptyReserved") << nonEmptyReserved << 10;
 }
 
 void tst_QList::resizeComplex() const
@@ -2814,9 +2814,9 @@ void tst_QList::resizeToZero() const
 
 void tst_QList::resizeToTheSameSize_data()
 {
-    QTest::addColumn<QList<int>>("x");
-    QTest::newRow("size 2") << QList({ 1, 2 });
-    QTest::newRow("size 0") << QList<int>();
+    BOBUIest::addColumn<QList<int>>("x");
+    BOBUIest::newRow("size 2") << QList({ 1, 2 });
+    BOBUIest::newRow("size 0") << QList<int>();
 }
 
 void tst_QList::resizeToTheSameSize() const
@@ -2833,13 +2833,13 @@ void tst_QList::resizeForOverwrite() const
     constexpr int BUILD_COUNT = 42;
     {
         // Smoke test
-        QList<int> l(BUILD_COUNT, Qt::Uninitialized);
+        QList<int> l(BUILD_COUNT, BobUI::Uninitialized);
         l.resizeForOverwrite(l.size() + BUILD_COUNT);
     }
 
     {
         const int beforeCounter = Movable::counter.loadRelaxed();
-        QList<Movable> l(BUILD_COUNT, Qt::Uninitialized);
+        QList<Movable> l(BUILD_COUNT, BobUI::Uninitialized);
         const int after1Counter = Movable::counter.loadRelaxed();
         QCOMPARE(after1Counter, beforeCounter + BUILD_COUNT);
 
@@ -2848,14 +2848,14 @@ void tst_QList::resizeForOverwrite() const
         QCOMPARE(after2Counter, after1Counter + BUILD_COUNT);
     }
 
-    struct QtInitializationSupport {
+    struct BobUIInitializationSupport {
         bool wasInitialized;
-        QtInitializationSupport() : wasInitialized(true) {}
-        explicit QtInitializationSupport(Qt::Initialization) : wasInitialized(false) {}
+        BobUIInitializationSupport() : wasInitialized(true) {}
+        explicit BobUIInitializationSupport(BobUI::Initialization) : wasInitialized(false) {}
     };
 
     {
-        QList<QtInitializationSupport> l(BUILD_COUNT);
+        QList<BobUIInitializationSupport> l(BUILD_COUNT);
         for (const auto &elem : l)
             QVERIFY(elem.wasInitialized);
         l.resize(l.size() + BUILD_COUNT);
@@ -2864,7 +2864,7 @@ void tst_QList::resizeForOverwrite() const
     }
 
     {
-        QList<QtInitializationSupport> l(BUILD_COUNT, Qt::Uninitialized);
+        QList<BobUIInitializationSupport> l(BUILD_COUNT, BobUI::Uninitialized);
         for (const auto &elem : l)
             QVERIFY(!elem.wasInitialized);
         l.resizeForOverwrite(l.size() + BUILD_COUNT);
@@ -2879,23 +2879,23 @@ void tst_QList::iterators() const
 
     QCOMPARE(v.begin(), v.end());
     QCOMPARE(v.rbegin(), v.rend());
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), v.end(), Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.rend(), Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(v.cbegin(), v.end(), Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(v.crbegin(), v.rend(), Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), v.cend(), Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.crend(), Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), v.end(), BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.rend(), BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.cbegin(), v.end(), BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.crbegin(), v.rend(), BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), v.cend(), BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.crend(), BobUI::strong_ordering::equal);
 
     qsizetype idx = 0;
     for (; idx < 10; ++idx)
         v.push_back(idx);
     QCOMPARE_LT(v.begin(), v.end());
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), v.end(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.rend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.cbegin(), v.end(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.crbegin(), v.rend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), v.cend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.crend(), Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), v.end(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.rend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.cbegin(), v.end(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.crbegin(), v.rend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), v.cend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.crend(), BobUI::strong_ordering::less);
 
     // stl-style iterators
     idx = 0;
@@ -2905,10 +2905,10 @@ void tst_QList::iterators() const
 
     std::advance(it, 7);
     idx += 7;
-    QT_TEST_ALL_COMPARISON_OPS(it, v.end(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(it, v.cend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), it, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.cbegin(), it, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(it, v.end(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(it, v.cend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), it, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.cbegin(), it, BobUI::strong_ordering::less);
     QCOMPARE(*it, idx);
     // idx == 7
 
@@ -3045,19 +3045,19 @@ void tst_QList::constIterators() const
     QCOMPARE(constEmptyList.constBegin(), constEmptyList.cbegin());
     QCOMPARE(constEmptyList.constEnd(), constEmptyList.cend());
     QVERIFY(!constEmptyList.isDetached());
-    QT_TEST_ALL_COMPARISON_OPS(constEmptyList.begin(), constEmptyList.end(),
-                               Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(constEmptyList.rbegin(), constEmptyList.rend(),
-                               Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(constEmptyList.begin(), constEmptyList.end(),
+                               BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(constEmptyList.rbegin(), constEmptyList.rend(),
+                               BobUI::strong_ordering::equal);
 
     const QList<int> v { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     QCOMPARE_LT(v.begin(), v.end());
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), v.end(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.rend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.cbegin(), v.end(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.crbegin(), v.rend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), v.cend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.crend(), Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), v.end(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.rend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.cbegin(), v.end(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.crbegin(), v.rend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), v.cend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.rbegin(), v.crend(), BobUI::strong_ordering::less);
 
     // stl-style iterators
     qsizetype idx = 0;
@@ -3067,10 +3067,10 @@ void tst_QList::constIterators() const
 
     std::advance(it, 7);
     idx += 7;
-    QT_TEST_ALL_COMPARISON_OPS(it, v.end(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(it, v.cend(), Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.begin(), it, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(v.cbegin(), it, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(it, v.end(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(it, v.cend(), BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.begin(), it, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(v.cbegin(), it, BobUI::strong_ordering::less);
     QCOMPARE(*it, idx);
     // idx == 7
 
@@ -3264,10 +3264,10 @@ void tst_QList::toAddress() const
         QCOMPARE_EQ(q20::to_address(b), l.data());
         QCOMPARE_EQ(q20::to_address(e), l.data() + l.size());
     };
-    // begin QTBUG-130643
+    // begin BOBUIBUG-130643
     check(l.begin(), l.end());
     check(l.cbegin(), l.cend());
-    // end QTBUG-130643
+    // end BOBUIBUG-130643
     // for reverse_iterator, account for the off-by-one to its ::base():
     check(l.rend() - 1, l.rbegin() - 1);
     check(l.crend() - 1, l.crbegin() - 1);
@@ -3303,7 +3303,7 @@ void tst_QList::toList() const
     QCOMPARE(myvec, QList<QString>() << "A" << "B" << "C");
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
 void tst_QList::toStdVector() const
 {
     QList<QString> myvec;
@@ -3425,7 +3425,7 @@ void tst_QList::reserve()
     QCOMPARE(fooCtor, fooDtor);
 }
 
-// This is a regression test for QTBUG-51758
+// This is a regression test for BOBUIBUG-51758
 void tst_QList::reserveZero()
 {
     QList<int> vec;
@@ -3598,7 +3598,7 @@ void tst_QList::detachThreadSafety() const
 
     static const uint threadsCount = 5;
 
-    struct : QThread {
+    struct : BOBUIhread {
         void run() override
         {
             QList<T> copy(*detachThreadSafetyData<T>()->loadRelaxed());
@@ -3611,7 +3611,7 @@ void tst_QList::detachThreadSafety() const
 
     for (uint i = 0; i < threadsCount; ++i)
         threads[i].start();
-    QThread::yieldCurrentThread();
+    BOBUIhread::yieldCurrentThread();
     detachThreadSafetyLock.acquire(threadsCount);
 
     // destroy static original data
@@ -3619,7 +3619,7 @@ void tst_QList::detachThreadSafety() const
 
     QVERIFY(threadsCount < 100);
     detachThreadSafetyLock.release(threadsCount * 100);
-    QThread::yieldCurrentThread();
+    BOBUIhread::yieldCurrentThread();
 
     for (uint i = 0; i < threadsCount; ++i)
         threads[i].wait();
@@ -3801,20 +3801,20 @@ void tst_QList::emplaceWithElementFromTheSameContainer()
 
 void tst_QList::emplaceWithElementFromTheSameContainer_data()
 {
-    QTest::addColumn<int>("elementPos");
-    QTest::addColumn<int>("insertPos");
-    QTest::addColumn<bool>("doCopy");
+    BOBUIest::addColumn<int>("elementPos");
+    BOBUIest::addColumn<int>("insertPos");
+    BOBUIest::addColumn<bool>("doCopy");
 
     for (int i = 0; i < 2; ++i) {
         const bool doCopy = i == 0;
         const char *opName = doCopy ? "copy" : "move";
 
-        QTest::addRow("%s: begin  -> end"   , opName) << 0 << 5 << doCopy;
-        QTest::addRow("%s: begin  -> middle", opName) << 0 << 2 << doCopy;
-        QTest::addRow("%s: middle -> begin" , opName) << 2 << 0 << doCopy;
-        QTest::addRow("%s: middle -> end"   , opName) << 2 << 5 << doCopy;
-        QTest::addRow("%s: end    -> middle", opName) << 4 << 2 << doCopy;
-        QTest::addRow("%s: end    -> begin" , opName) << 4 << 0 << doCopy;
+        BOBUIest::addRow("%s: begin  -> end"   , opName) << 0 << 5 << doCopy;
+        BOBUIest::addRow("%s: begin  -> middle", opName) << 0 << 2 << doCopy;
+        BOBUIest::addRow("%s: middle -> begin" , opName) << 2 << 0 << doCopy;
+        BOBUIest::addRow("%s: middle -> end"   , opName) << 2 << 5 << doCopy;
+        BOBUIest::addRow("%s: end    -> middle", opName) << 4 << 2 << doCopy;
+        BOBUIest::addRow("%s: end    -> begin" , opName) << 4 << 0 << doCopy;
     }
 }
 
@@ -4001,7 +4001,7 @@ struct alignas(8) CustomAligned
     friend bool operator==(const CustomAligned &x, const CustomAligned &y) { return x.v == y.v; }
 };
 
-void tst_QList::reallocateCustomAlignedType_qtbug90359() const
+void tst_QList::reallocateCustomAlignedType_bobuibug90359() const
 {
     // Note: a very special test that could only fail for specific alignments
     constexpr bool canFail = (alignof(QArrayData) == 4) && (sizeof(QArrayData) == 12);
@@ -4047,12 +4047,12 @@ void tst_QList::stability_reserve() const
 
     // NOTE: this test verifies that QList::constData() stays unchanged when
     // inserting as much as requested by the reserve. This is specifically
-    // designed this way as in cases when QTypeInfo<T>::isRelocatable returns
+    // designed this way as in cases when BOBUIypeInfo<T>::isRelocatable returns
     // true, reallocation might use fast ::realloc() path which may in theory
     // (and, actually, in practice) just expand the current memory area and thus
     // keep QList::constData() unchanged, which means checks like
     // QVERIFY(oldConstData != vec.constData()) are flaky. When
-    // QTypeInfo<T>::isRelocatable returns false, constData() will always change
+    // BOBUIypeInfo<T>::isRelocatable returns false, constData() will always change
     // if a reallocation happens and this will fail the test. This should be
     // sufficient on its own to test the stability requirements.
 
@@ -4310,5 +4310,5 @@ void tst_QList::stability_resize() const
     }
 }
 
-QTEST_MAIN(tst_QList)
+BOBUIEST_MAIN(tst_QList)
 #include "tst_qlist.moc"

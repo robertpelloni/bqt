@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qpermissions.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qwaitcondition.h>
-#include <QtCore/qtimer.h>
+#include <BobUICore/qpermissions.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qwaitcondition.h>
+#include <BobUICore/bobuiimer.h>
 
-#if defined(Q_OS_MACOS) && defined(QT_BUILD_INTERNAL)
+#if defined(Q_OS_MACOS) && defined(BOBUI_BUILD_INTERNAL)
 #include <private/qcore_mac_p.h>
-Q_CONSTRUCTOR_FUNCTION(qt_mac_ensureResponsible);
+Q_CONSTRUCTOR_FUNCTION(bobui_mac_ensureResponsible);
 #endif
 
 class tst_QPermissions : public QObject
@@ -30,14 +30,14 @@ private slots:
 
 void tst_QPermissions::initTestCase_data()
 {
-    QTest::addColumn<QPermission>("permission");
+    BOBUIest::addColumn<QPermission>("permission");
 
-    QTest::newRow("Camera") << QPermission(QCameraPermission{});
-    QTest::newRow("Microphone") << QPermission(QMicrophonePermission{});
-    QTest::newRow("Bluetooth") << QPermission(QBluetoothPermission{});
-    QTest::newRow("Contacts") << QPermission(QContactsPermission{});
-    QTest::newRow("Calendar") << QPermission(QCalendarPermission{});
-    QTest::newRow("Location") << QPermission(QLocationPermission{});
+    BOBUIest::newRow("Camera") << QPermission(QCameraPermission{});
+    BOBUIest::newRow("Microphone") << QPermission(QMicrophonePermission{});
+    BOBUIest::newRow("Bluetooth") << QPermission(QBluetoothPermission{});
+    BOBUIest::newRow("Contacts") << QPermission(QContactsPermission{});
+    BOBUIest::newRow("Calendar") << QPermission(QCalendarPermission{});
+    BOBUIest::newRow("Location") << QPermission(QLocationPermission{});
 }
 
 void tst_QPermissions::checkPermission()
@@ -46,7 +46,7 @@ void tst_QPermissions::checkPermission()
     qApp->checkPermission(permission);
 }
 
-class Thread : public QThread
+class Thread : public BOBUIhread
 {
 public:
     QMutex mutex;
@@ -82,10 +82,10 @@ void tst_QPermissions::checkPermissionInNonMainThread()
 void tst_QPermissions::requestPermission()
 {
     QFETCH_GLOBAL(QPermission, permission);
-    QTimer::singleShot(0, this, [=] {
+    BOBUIimer::singleShot(0, this, [=] {
         qApp->requestPermission(permission, [=](auto result) {
             qDebug() << result;
-            Q_ASSERT(QThread::currentThread() == thread());
+            Q_ASSERT(BOBUIhread::currentThread() == thread());
             qApp->exit();
         });
     });
@@ -96,7 +96,7 @@ void tst_QPermissions::requestPermissionInNonMainThread()
 {
     QFETCH_GLOBAL(QPermission, permission);
 
-    QTest::ignoreMessage(QtWarningMsg, "Permissions can only be requested from the GUI (main) thread");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Permissions can only be requested from the GUI (main) thread");
 
     Thread thread;
     thread.function = [&]{
@@ -112,5 +112,5 @@ void tst_QPermissions::requestPermissionInNonMainThread()
     QVERIFY(thread.isFinished());
 }
 
-QTEST_MAIN(tst_QPermissions)
+BOBUIEST_MAIN(tst_QPermissions)
 #include "tst_qpermissions.moc"

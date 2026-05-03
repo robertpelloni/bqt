@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdbusutil_p.h"
 
 #include "qdbus_symbols_p.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qstringlist.h>
-#include <private/qtools_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qstringlist.h>
+#include <private/bobuiools_p.h>
 
 #include "qdbusargument.h"
 #include "qdbusunixfiledescriptor.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 static inline bool isValidCharacterNoDash(QChar c)
 {
@@ -38,7 +38,7 @@ static inline bool isValidNumber(QChar c)
     return (isAsciiDigit(c.toLatin1()));
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 static bool argToString(const QDBusArgument &arg, QString &out);
 
 static bool variantToString(const QVariant &arg, QString &out)
@@ -281,7 +281,7 @@ static const char *validateSingleType(const char *signature)
 
 /*!
     \namespace QDBusUtil
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \internal
 
     \brief The QDBusUtil namespace contains a few functions that are of general use when
@@ -292,13 +292,13 @@ namespace QDBusUtil
     /*!
         \internal
         \since 4.5
-        Dumps the contents of a Qt D-Bus argument from \a arg into a string.
+        Dumps the contents of a BobUI D-Bus argument from \a arg into a string.
     */
     QString argumentToString(const QVariant &arg)
     {
         QString out;
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         variantToString(arg, out);
 #else
         Q_UNUSED(arg);
@@ -540,6 +540,6 @@ namespace QDBusUtil
 
 } // namespace QDBusUtil
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

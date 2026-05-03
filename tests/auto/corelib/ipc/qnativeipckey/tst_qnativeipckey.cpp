@@ -1,26 +1,26 @@
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QNativeIpcKey>
-#include <QtTest/QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BobUICore/QNativeIpcKey>
+#include <BobUITest/BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
 #include "../ipctestcommon.h"
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 #  include <qsharedmemory.h>
 #endif
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
 #  include <qsystemsemaphore.h>
 #endif
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 static const auto makeLegacyKey = QSharedMemory::legacyNativeKey;
 #else
 static const auto makeLegacyKey = QSystemSemaphore::legacyNativeKey;
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QNativeIpcKey : public QObject
 {
@@ -43,7 +43,7 @@ private slots:
 
 void tst_QNativeIpcKey::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QNativeIpcKey>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QNativeIpcKey>();
 }
 
 void tst_QNativeIpcKey::defaultTypes()
@@ -75,7 +75,7 @@ void tst_QNativeIpcKey::defaultTypes()
 
 #if defined(Q_OS_WIN)
     QCOMPARE(legacy, QNativeIpcKey::Type::Windows);
-#elif defined(QT_POSIX_IPC)
+#elif defined(BOBUI_POSIX_IPC)
     QCOMPARE(legacy, QNativeIpcKey::Type::PosixRealtime);
 #elif !defined(Q_OS_DARWIN)
     QCOMPARE(legacy, QNativeIpcKey::Type::SystemV);
@@ -187,43 +187,43 @@ void tst_QNativeIpcKey::equality()
     QNativeIpcKey key1, key2;
     QCOMPARE(key1, key2);
     QVERIFY(!(key1 != key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, true);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, true);
 
     key1.setNativeKey("key1");
     QCOMPARE_NE(key1, key2);
     QVERIFY(!(key1 == key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, false);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, false);
 
     key2.setType({});
     QCOMPARE_NE(key1, key2);
     QVERIFY(!(key1 == key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, false);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, false);
 
     key2.setNativeKey(key1.nativeKey());
     QCOMPARE_NE(key1, key2);
     QVERIFY(!(key1 == key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, false);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, false);
 
     key2.setType(QNativeIpcKey::DefaultTypeForOs);
     QCOMPARE(key1, key2);
     QVERIFY(!(key1 != key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, true);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, true);
 
     key1 = makeLegacyKey("key1", QNativeIpcKey::DefaultTypeForOs);
     QCOMPARE_NE(key1, key2);
     QVERIFY(!(key1 == key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, false);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, false);
 
     key2 = key1;
     QCOMPARE(key1, key2);
     QVERIFY(!(key1 != key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, true);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, true);
 
     // just setting the native key won't make them equal again!
     key2.setNativeKey(key1.nativeKey());
     QCOMPARE_NE(key1, key2);
     QVERIFY(!(key1 == key2));
-    QT_TEST_EQUALITY_OPS(key1, key2, false);
+    BOBUI_TEST_EQUALITY_OPS(key1, key2, false);
 }
 
 void tst_QNativeIpcKey::hash()
@@ -268,16 +268,16 @@ void tst_QNativeIpcKey::swap()
 
 void tst_QNativeIpcKey::toString_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QNativeIpcKey>("key");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QNativeIpcKey>("key");
 
-    QTest::newRow("invalid") << QString() << QNativeIpcKey(QNativeIpcKey::Type(0));
+    BOBUIest::newRow("invalid") << QString() << QNativeIpcKey(QNativeIpcKey::Type(0));
 
     auto addRow = [](const char *prefix, QNativeIpcKey::Type type) {
         auto add = [=](const char *name, QLatin1StringView key, QLatin1StringView encoded = {}) {
             if (encoded.isNull())
                 encoded = key;
-            QTest::addRow("%s-%s", prefix, name)
+            BOBUIest::addRow("%s-%s", prefix, name)
                     << prefix + u":"_s + encoded << QNativeIpcKey(key, type);
         };
         add("empty", {});
@@ -293,7 +293,7 @@ void tst_QNativeIpcKey::toString_data()
         add("triple-slash", "///"_L1, "/%2F/"_L1);
         add("non-ascii", "\xe9"_L1);
         add("non-utf8", "\xa0\xff"_L1);
-        QTest::addRow("%s-%s", prefix, "non-latin1")
+        BOBUIest::addRow("%s-%s", prefix, "non-latin1")
                 << prefix + u":\u0100.\u2000.\U00010000"_s
                 << QNativeIpcKey(u"\u0100.\u2000.\U00010000"_s, type);
     };
@@ -317,45 +317,45 @@ void tst_QNativeIpcKey::toString()
 void tst_QNativeIpcKey::fromString_data()
 {
     toString_data();
-    QTest::addRow("systemv-alias") << "systemv-81:" << QNativeIpcKey(QNativeIpcKey::Type::SystemV);
-    QTest::addRow("systemv-zeropadded") << "systemv-009:" << QNativeIpcKey(QNativeIpcKey::Type(9));
+    BOBUIest::addRow("systemv-alias") << "systemv-81:" << QNativeIpcKey(QNativeIpcKey::Type::SystemV);
+    BOBUIest::addRow("systemv-zeropadded") << "systemv-009:" << QNativeIpcKey(QNativeIpcKey::Type(9));
 
     QNativeIpcKey valid("/foo", QNativeIpcKey::Type::PosixRealtime);
     QNativeIpcKey invalid(QNativeIpcKey::Type(0));
 
     // percent-decoding
-    QTest::addRow("percent-encoded") << "posix:%2f%66o%6f" << valid;
-    QTest::addRow("percent-utf8")
+    BOBUIest::addRow("percent-encoded") << "posix:%2f%66o%6f" << valid;
+    BOBUIest::addRow("percent-utf8")
             << "posix:%C4%80.%E2%80%80.%F0%90%80%80"
             << QNativeIpcKey(u"\u0100.\u2000.\U00010000"_s, QNativeIpcKey::Type::PosixRealtime);
 
     // fragments are ignored
-    QTest::addRow("with-fragment") << "posix:/foo#bar" << valid;
-    QTest::addRow("with-fragmentquery") << "posix:/foo#bar?baz" << valid;
+    BOBUIest::addRow("with-fragment") << "posix:/foo#bar" << valid;
+    BOBUIest::addRow("with-fragmentquery") << "posix:/foo#bar?baz" << valid;
 
     // but unknown query items are not
-    QTest::addRow("with-query") << "posix:/foo?bar" << invalid;
-    QTest::addRow("with-queryfragment") << "posix:/foo?bar#baz" << invalid;
+    BOBUIest::addRow("with-query") << "posix:/foo?bar" << invalid;
+    BOBUIest::addRow("with-queryfragment") << "posix:/foo?bar#baz" << invalid;
 
     // add some ones that won't parse well
-    QTest::addRow("positive-number") << "81" << invalid;
-    QTest::addRow("negative-number") << "-81" << invalid;
-    QTest::addRow("invalidprefix") << "invalidprefix:" << invalid;
-    QTest::addRow("systemv-nodash") << "systemv255" << invalid;
-    QTest::addRow("systemv-doubledash") << "systemv--255:" << invalid;
-    QTest::addRow("systemv-plus") << "systemv+255" << invalid;
-    QTest::addRow("systemv-hex") << "systemv-0x01:" << invalid;
-    QTest::addRow("systemv-too-low") << "systemv-0:" << invalid;
-    QTest::addRow("systemv-too-high") << "systemv-256" << invalid;
-    QTest::addRow("systemv-overflow-15bit") << "systemv-32769:" << invalid;
-    QTest::addRow("systemv-overflow-16bit") << "systemv-65537:" << invalid;
-    QTest::addRow("systemv-overflow-31bit") << "systemv-2147483649:" << invalid;
-    QTest::addRow("systemv-overflow-32bit") << "systemv-4294967297:" << invalid;
+    BOBUIest::addRow("positive-number") << "81" << invalid;
+    BOBUIest::addRow("negative-number") << "-81" << invalid;
+    BOBUIest::addRow("invalidprefix") << "invalidprefix:" << invalid;
+    BOBUIest::addRow("systemv-nodash") << "systemv255" << invalid;
+    BOBUIest::addRow("systemv-doubledash") << "systemv--255:" << invalid;
+    BOBUIest::addRow("systemv-plus") << "systemv+255" << invalid;
+    BOBUIest::addRow("systemv-hex") << "systemv-0x01:" << invalid;
+    BOBUIest::addRow("systemv-too-low") << "systemv-0:" << invalid;
+    BOBUIest::addRow("systemv-too-high") << "systemv-256" << invalid;
+    BOBUIest::addRow("systemv-overflow-15bit") << "systemv-32769:" << invalid;
+    BOBUIest::addRow("systemv-overflow-16bit") << "systemv-65537:" << invalid;
+    BOBUIest::addRow("systemv-overflow-31bit") << "systemv-2147483649:" << invalid;
+    BOBUIest::addRow("systemv-overflow-32bit") << "systemv-4294967297:" << invalid;
 
     auto addRows = [=](const char *name) {
-        QTest::addRow("%s-nocolon", name) << name << invalid;
-        QTest::addRow("%s-junk", name) << name + u"junk"_s << invalid;
-        QTest::addRow("junk-%s-colon", name) << u"junk:"_s + name + u':' << invalid;
+        BOBUIest::addRow("%s-nocolon", name) << name << invalid;
+        BOBUIest::addRow("%s-junk", name) << name + u"junk"_s << invalid;
+        BOBUIest::addRow("junk-%s-colon", name) << u"junk:"_s + name + u':' << invalid;
     };
     addRows("systemv");
     addRows("posix");
@@ -374,8 +374,8 @@ void tst_QNativeIpcKey::fromString()
 
 void tst_QNativeIpcKey::legacyKeys_data()
 {
-    QTest::addColumn<QNativeIpcKey::Type>("type");
-    QTest::addColumn<QString>("legacyKey");
+    BOBUIest::addColumn<QNativeIpcKey::Type>("type");
+    BOBUIest::addColumn<QString>("legacyKey");
     auto addRows = [](QNativeIpcKey::Type type) {
         const char *label = "<unknown-type>";
         switch (type) {
@@ -390,7 +390,7 @@ void tst_QNativeIpcKey::legacyKeys_data()
             break;
         }
         auto add = [=](const char *name, const QString &legacyKey) {
-            QTest::addRow("%s-%s", label, name) << type << legacyKey;
+            BOBUIest::addRow("%s-%s", label, name) << type << legacyKey;
         };
         add("empty", {});
         add("text", "foobar"_L1);
@@ -425,7 +425,7 @@ void tst_QNativeIpcKey::legacyKeys()
     QString string = key.toString();
     QNativeIpcKey key2 = QNativeIpcKey::fromString(string);
     QCOMPARE(key2, key);
-    QT_TEST_EQUALITY_OPS(key, key2, true);
+    BOBUI_TEST_EQUALITY_OPS(key, key2, true);
 
     if (!legacyKey.isEmpty()) {
         // confirm it shows up in the encoded form
@@ -438,5 +438,5 @@ void tst_QNativeIpcKey::legacyKeys()
     }
 }
 
-QTEST_MAIN(tst_QNativeIpcKey)
+BOBUIEST_MAIN(tst_QNativeIpcKey)
 #include "tst_qnativeipckey.moc"

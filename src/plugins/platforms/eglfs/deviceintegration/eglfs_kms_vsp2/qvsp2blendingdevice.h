@@ -1,16 +1,16 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVSP2BLENDINGDEVICE_H
 #define QVSP2BLENDINGDEVICE_H
 
-#include <QtCore/QList>
-#include <QtCore/QRect>
-#include <QtCore/qglobal.h>
+#include <BobUICore/QList>
+#include <BobUICore/QRect>
+#include <BobUICore/qglobal.h>
 
 #include "qlinuxmediadevice.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSize;
 
@@ -55,6 +55,6 @@ private:
     bool m_dirty = true;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVSP2BLENDINGDEVICE

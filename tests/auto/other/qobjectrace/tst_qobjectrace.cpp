@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qsemaphore.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qsemaphore.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/qvarlengtharray.h>
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
 #include <optional>
 
@@ -29,7 +29,7 @@ class tst_QObjectRace: public QObject
     Q_OBJECT
 public:
     tst_QObjectRace()
-        : ThreadCount(QThread::idealThreadCount())
+        : ThreadCount(BOBUIhread::idealThreadCount())
     {}
 
 private slots:
@@ -46,7 +46,7 @@ private:
 class RaceObject : public QObject
 {
     Q_OBJECT
-    QList<QThread *> threads;
+    QList<BOBUIhread *> threads;
     int count;
 
 public:
@@ -54,7 +54,7 @@ public:
         : count(0)
     { }
 
-    void addThread(QThread *thread)
+    void addThread(BOBUIhread *thread)
     { threads.append(thread); }
 
 public slots:
@@ -62,7 +62,7 @@ public slots:
     {
         enum { step = 35 };
         if ((++count % step) == 0) {
-            QThread *nextThread = threads.at((count / step) % threads.size());
+            BOBUIhread *nextThread = threads.at((count / step) % threads.size());
             moveToThread(nextThread);
         }
     }
@@ -74,7 +74,7 @@ signals:
     void theSignal();
 };
 
-class RaceThread : public QThread
+class RaceThread : public BOBUIhread
 {
     Q_OBJECT
     RaceObject *object;
@@ -93,14 +93,14 @@ public:
 
     void start() {
         stopWatch.start();
-        QThread::start();
+        BOBUIhread::start();
     }
 
     void run() override
     {
-        QTimer zeroTimer;
+        BOBUIimer zeroTimer;
         connect(&zeroTimer, SIGNAL(timeout()), object, SLOT(theSlot()));
-        connect(&zeroTimer, SIGNAL(timeout()), this, SLOT(checkStopWatch()), Qt::DirectConnection);
+        connect(&zeroTimer, SIGNAL(timeout()), this, SLOT(checkStopWatch()), BobUI::DirectConnection);
         zeroTimer.start(0);
         (void) exec();
     }
@@ -140,7 +140,7 @@ void tst_QObjectRace::moveToThreadRace()
         QObject o;
         connect(&o, SIGNAL(destroyed()) , object, SLOT(destroSlot()));
         connect(object, SIGNAL(destroyed()) , &o, SLOT(deleteLater()));
-        QTest::qWait(10);
+        BOBUIest::qWait(10);
     }
     // the other threads should finish pretty quickly now
     for (int i = 1; i < ThreadCount; ++i)
@@ -196,7 +196,7 @@ const PMFType _signalsPMF[] = { &MyObject::signal1, &MyObject::signal2, &MyObjec
 
 }
 
-class DestroyThread : public QThread
+class DestroyThread : public BOBUIhread
 {
     Q_OBJECT
     MyObject **objects;
@@ -251,7 +251,7 @@ public:
 
 void tst_QObjectRace::destroyRace()
 {
-    if (QTestPrivate::isRunningArmOnX86())
+    if (BOBUIestPrivate::isRunningArmOnX86())
         QSKIP("Test is too slow to run on emulator");
 
     constexpr int ObjectCountPerThread = 2777;
@@ -340,7 +340,7 @@ void tst_QObjectRace::blockingQueuedDestroyRace()
         // Connect it to the sender via BlockingQueuedConnection
         QVERIFY(connect(&sender, &BlockingQueuedDestroyRaceObject::aSignal,
                         &*receiver, &BlockingQueuedDestroyRaceObject::aSlot,
-                        Qt::BlockingQueuedConnection));
+                        BobUI::BlockingQueuedConnection));
 
         const auto emitUntilDestroyed = [&sender] {
             // Hack: as long as the receiver is alive and the connection
@@ -351,10 +351,10 @@ void tst_QObjectRace::blockingQueuedDestroyRace()
                 ;
         };
 
-        std::unique_ptr<QThread> thread(QThread::create(emitUntilDestroyed));
+        std::unique_ptr<BOBUIhread> thread(BOBUIhread::create(emitUntilDestroyed));
         thread->start();
 
-        QTest::qWait(WaitTime);
+        BOBUIest::qWait(WaitTime);
 
         // Destroy the receiver, and immediately allocate a new one at
         // the same address. In case of a race, this might cause:
@@ -365,7 +365,7 @@ void tst_QObjectRace::blockingQueuedDestroyRace()
         receiver.emplace(BlockingQueuedDestroyRaceObject::Behavior::Crash);
 
         // Flush events
-        QTest::qWait(0);
+        BOBUIest::qWait(0);
 
         thread->wait();
     }
@@ -391,7 +391,7 @@ signals:
     void theSignal();
 };
 
-class DisconnectRaceThread : public QThread
+class DisconnectRaceThread : public BOBUIhread
 {
     Q_OBJECT
 
@@ -399,7 +399,7 @@ class DisconnectRaceThread : public QThread
     bool emitSignal;
 public:
     DisconnectRaceThread(DisconnectRaceSenderObject *s, bool emitIt)
-        : QThread(), sender(s), emitSignal(emitIt)
+        : BOBUIhread(), sender(s), emitSignal(emitIt)
     {
     }
 
@@ -407,7 +407,7 @@ public:
     {
         while (!isInterruptionRequested()) {
             QMetaObject::Connection conn = connect(sender, &DisconnectRaceSenderObject::theSignal,
-                                                   sender, CountedFunctor(), Qt::BlockingQueuedConnection);
+                                                   sender, CountedFunctor(), BobUI::BlockingQueuedConnection);
             if (emitSignal)
                 emit sender->theSignal();
             disconnect(conn);
@@ -416,14 +416,14 @@ public:
     }
 };
 
-class DeleteReceiverRaceSenderThread : public QThread
+class DeleteReceiverRaceSenderThread : public BOBUIhread
 {
     Q_OBJECT
 
     DisconnectRaceSenderObject *sender;
 public:
     DeleteReceiverRaceSenderThread(DisconnectRaceSenderObject *s)
-        : QThread(), sender(s)
+        : BOBUIhread(), sender(s)
     {
     }
 
@@ -442,13 +442,13 @@ class DeleteReceiverRaceReceiver : public QObject
 
     DisconnectRaceSenderObject *sender;
     QObject *receiver;
-    QTimer *timer;
+    BOBUIimer *timer;
 public:
     DeleteReceiverRaceReceiver(DisconnectRaceSenderObject *s)
         : QObject(), sender(s), receiver(0)
     {
-        timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &DeleteReceiverRaceReceiver::onTimeout);
+        timer = new BOBUIimer(this);
+        connect(timer, &BOBUIimer::timeout, this, &DeleteReceiverRaceReceiver::onTimeout);
         timer->start(1);
     }
     ~DeleteReceiverRaceReceiver()
@@ -461,18 +461,18 @@ public:
         if (receiver)
             delete receiver;
         receiver = new QObject;
-        connect(sender, &DisconnectRaceSenderObject::theSignal, receiver, CountedFunctor(), Qt::BlockingQueuedConnection);
+        connect(sender, &DisconnectRaceSenderObject::theSignal, receiver, CountedFunctor(), BobUI::BlockingQueuedConnection);
     }
 };
 
-class DeleteReceiverRaceReceiverThread : public QThread
+class DeleteReceiverRaceReceiverThread : public BOBUIhread
 {
     Q_OBJECT
 
     DisconnectRaceSenderObject *sender;
 public:
     DeleteReceiverRaceReceiverThread(DisconnectRaceSenderObject *s)
-        : QThread(), sender(s)
+        : BOBUIhread(), sender(s)
     {
     }
 
@@ -491,7 +491,7 @@ void tst_QObjectRace::disconnectRace()
 
     {
         QScopedPointer<DisconnectRaceSenderObject> sender(new DisconnectRaceSenderObject());
-        QScopedPointer<QThread> senderThread(new QThread());
+        QScopedPointer<BOBUIhread> senderThread(new BOBUIhread());
         senderThread->start();
         sender->moveToThread(senderThread.data());
 
@@ -501,7 +501,7 @@ void tst_QObjectRace::disconnectRace()
             threads[i]->start();
         }
 
-        QTest::qWait(TimeLimit);
+        BOBUIest::qWait(TimeLimit);
 
         for (int i = 0; i < ThreadCount; ++i) {
             threads[i]->requestInterruption();
@@ -527,7 +527,7 @@ void tst_QObjectRace::disconnectRace()
             threads[i]->start();
         }
 
-        QTest::qWait(TimeLimit);
+        BOBUIest::qWait(TimeLimit);
 
         senderThread->requestInterruption();
         QVERIFY(senderThread->wait());
@@ -550,7 +550,7 @@ void tst_QObjectRace::disconnectRace2()
     QSemaphore createSemaphore(0);
     QSemaphore proceedSemaphore(0);
 
-    std::unique_ptr<QThread> t1(QThread::create([&]() {
+    std::unique_ptr<BOBUIhread> t1(BOBUIhread::create([&]() {
         for (int i = 0; i < IterationCount; ++i) {
             MyObject sender;
             ptr.storeRelease(&sender);
@@ -558,13 +558,13 @@ void tst_QObjectRace::disconnectRace2()
             proceedSemaphore.acquire();
             ptr.storeRelaxed(nullptr);
             for (int i = 0; i < YieldCount; ++i)
-                QThread::yieldCurrentThread();
+                BOBUIhread::yieldCurrentThread();
         }
     }));
     t1->start();
 
 
-    std::unique_ptr<QThread> t2(QThread::create([&]() {
+    std::unique_ptr<BOBUIhread> t2(BOBUIhread::create([&]() {
         auto connections = std::make_unique<QMetaObject::Connection[]>(ConnectionCount);
         for (int i = 0; i < IterationCount; ++i) {
             MyObject receiver;
@@ -590,5 +590,5 @@ void tst_QObjectRace::disconnectRace2()
     t2->wait();
 }
 
-QTEST_MAIN(tst_QObjectRace)
+BOBUIEST_MAIN(tst_QObjectRace)
 #include "tst_qobjectrace.moc"

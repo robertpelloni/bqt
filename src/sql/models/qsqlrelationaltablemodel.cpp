@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsqlrelationaltablemodel.h"
 
@@ -18,9 +18,9 @@
 
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QSqlRelationalTableModelSql: public QSqlQueryModelSql
 {
@@ -32,7 +32,7 @@ using SqlrTm = QSqlRelationalTableModelSql;
 
 /*!
     \class QSqlRelation
-    \inmodule QtSql
+    \inmodule BobUISql
     \brief The QSqlRelation class stores information about an SQL foreign key.
 
     QSqlRelation is a helper class for QSqlRelationalTableModel. See
@@ -303,7 +303,7 @@ void QSqlRelationalTableModelPrivate::clearCache()
     data model for a single database table, with foreign key support.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     QSqlRelationalTableModel acts like QSqlTableModel, but allows
     columns to be set as foreign keys into other database tables.
@@ -314,7 +314,7 @@ void QSqlRelationalTableModelPrivate::clearCache()
     \endtable
 
     The screenshot on the left shows a plain QSqlTableModel in a
-    QTableView. Foreign keys (\c city and \c country) aren't resolved
+    BOBUIableView. Foreign keys (\c city and \c country) aren't resolved
     to human-readable values. The screenshot on the right shows a
     QSqlRelationalTableModel, with foreign keys resolved into
     human-readable text strings.
@@ -376,8 +376,8 @@ void QSqlRelationalTableModelPrivate::clearCache()
        (e.g. relTblAl_2). The alias can be used to filter the table
        (For example, setFilter("relTblAl_2='Oslo' OR
        relTblAl_3='USA'")).
-    \li When using setData() the role should always be Qt::EditRole,
-       and when using data() the role should always be Qt::DisplayRole.
+    \li When using setData() the role should always be BobUI::EditRole,
+       and when using data() the role should always be BobUI::DisplayRole.
     \endlist
 
     \sa QSqlRelation, QSqlRelationalDelegate,
@@ -409,7 +409,7 @@ QVariant QSqlRelationalTableModel::data(const QModelIndex &index, int role) cons
 {
     Q_D(const QSqlRelationalTableModel);
 
-    if (role == Qt::DisplayRole && index.column() >= 0 && index.column() < d->relations.size() &&
+    if (role == BobUI::DisplayRole && index.column() >= 0 && index.column() < d->relations.size() &&
             d->relations.at(index.column())->isValid()) {
         auto relation = d->relations.at(index.column());
         if (!relation->isDictionaryInitialized())
@@ -453,7 +453,7 @@ bool QSqlRelationalTableModel::setData(const QModelIndex &index, const QVariant 
                                        int role)
 {
     Q_D(QSqlRelationalTableModel);
-    if ( role == Qt::EditRole && index.column() > 0 && index.column() < d->relations.size()
+    if ( role == BobUI::EditRole && index.column() > 0 && index.column() < d->relations.size()
             && d->relations.at(index.column())->isValid()) {
         auto relation = d->relations.at(index.column());
         if (!relation->isDictionaryInitialized())
@@ -544,7 +544,7 @@ QString QSqlRelationalTableModel::selectStatement() const
 
             const QSqlRecord rec = database().record(relation.tableName());
             for (int i = 0; i < rec.count(); ++i) {
-                if (name.compare(rec.fieldName(i), Qt::CaseInsensitive) == 0) {
+                if (name.compare(rec.fieldName(i), BobUI::CaseInsensitive) == 0) {
                     name = rec.fieldName(i);
                     break;
                 }
@@ -751,7 +751,7 @@ QString QSqlRelationalTableModel::orderByClause() const
         return QSqlTableModel::orderByClause();
 
     QString f = d->fullyQualifiedFieldName(SqlrTm::relTablePrefix(d->sortColumn), rel.displayColumn());
-    f = d->sortOrder == Qt::AscendingOrder ? SqlrTm::asc(f) : SqlrTm::desc(f);
+    f = d->sortOrder == BobUI::AscendingOrder ? SqlrTm::asc(f) : SqlrTm::desc(f);
     return SqlrTm::orderBy(f);
 }
 
@@ -773,6 +773,6 @@ bool QSqlRelationalTableModel::removeColumns(int column, int count, const QModel
     return QSqlTableModel::removeColumns(column, count, parent);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqlrelationaltablemodel.cpp"

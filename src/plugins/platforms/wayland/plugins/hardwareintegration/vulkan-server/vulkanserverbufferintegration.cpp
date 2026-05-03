@@ -1,18 +1,18 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "vulkanserverbufferintegration.h"
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
 #include <QDebug>
-#include <QtOpenGL/QOpenGLTexture>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/qopengl.h>
-#include <QtGui/QImage>
-#include <QtCore/QCoreApplication>
+#include <BobUIOpenGL/QOpenGLTexture>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/QImage>
+#include <BobUICore/QCoreApplication>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 static constexpr bool sbiExtraDebug =
 #ifdef VULKAN_SERVER_BUFFER_EXTRA_DEBUG
@@ -69,7 +69,7 @@ bool VulkanServerBufferGlFunctions::create(QOpenGLContext *glContext)
     return true;
 }
 
-VulkanServerBuffer::VulkanServerBuffer(VulkanServerBufferIntegration *integration, struct ::qt_server_buffer *id,
+VulkanServerBuffer::VulkanServerBuffer(VulkanServerBufferIntegration *integration, struct ::bobui_server_buffer *id,
                                        int32_t fd, uint32_t width, uint32_t height, uint32_t memory_size, uint32_t format)
     : m_integration(integration)
     , m_server_buffer(id)
@@ -91,8 +91,8 @@ VulkanServerBuffer::~VulkanServerBuffer()
         if (sbiExtraDebug) qDebug() << "glDeleteMemoryObjectsEXT" << m_memoryObject;
         funcs->glDeleteMemoryObjectsEXT(1, &m_memoryObject);
     }
-    qt_server_buffer_release(m_server_buffer);
-    qt_server_buffer_destroy(m_server_buffer);
+    bobui_server_buffer_release(m_server_buffer);
+    bobui_server_buffer_destroy(m_server_buffer);
 }
 
 void VulkanServerBuffer::import()
@@ -100,7 +100,7 @@ void VulkanServerBuffer::import()
     if (m_texture)
         return;
 
-    if (sbiExtraDebug) qDebug() << "importing" << m_fd << Qt::hex << glGetError();
+    if (sbiExtraDebug) qDebug() << "importing" << m_fd << BobUI::hex << glGetError();
 
     auto *glContext = QOpenGLContext::currentContext();
     if (!glContext)
@@ -110,21 +110,21 @@ void VulkanServerBuffer::import()
         return;
 
     funcs->glCreateMemoryObjectsEXT(1, &m_memoryObject);
-    if (sbiExtraDebug) qDebug() << "glCreateMemoryObjectsEXT" << Qt::hex << glGetError();
+    if (sbiExtraDebug) qDebug() << "glCreateMemoryObjectsEXT" << BobUI::hex << glGetError();
     funcs->glImportMemoryFdEXT(m_memoryObject, m_memorySize, GL_HANDLE_TYPE_OPAQUE_FD_EXT, m_fd);
-    if (sbiExtraDebug) qDebug() << "glImportMemoryFdEXT" << Qt::hex << glGetError();
+    if (sbiExtraDebug) qDebug() << "glImportMemoryFdEXT" << BobUI::hex << glGetError();
 
 
     m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
     m_texture->create();
 
-    if (sbiExtraDebug) qDebug() << "created texture" << m_texture->textureId() << Qt::hex << glGetError();
+    if (sbiExtraDebug) qDebug() << "created texture" << m_texture->textureId() << BobUI::hex << glGetError();
 
     m_texture->bind();
-    if (sbiExtraDebug) qDebug() << "bound texture" << Qt::hex << glGetError();
+    if (sbiExtraDebug) qDebug() << "bound texture" << BobUI::hex << glGetError();
     funcs->glTexStorageMem2DEXT(GL_TEXTURE_2D, 1, m_internalFormat, m_size.width(), m_size.height(), m_memoryObject, 0 );
-    if (sbiExtraDebug) qDebug() << "glTexStorageMem2DEXT" << Qt::hex << glGetError();
-    if (sbiExtraDebug) qDebug() << "format" << Qt::hex  << m_internalFormat << GL_RGBA8;
+    if (sbiExtraDebug) qDebug() << "glTexStorageMem2DEXT" << BobUI::hex << glGetError();
+    if (sbiExtraDebug) qDebug() << "format" << BobUI::hex  << m_internalFormat << GL_RGBA8;
 }
 
 QOpenGLTexture *VulkanServerBuffer::toOpenGlTexture()
@@ -141,25 +141,25 @@ void VulkanServerBufferIntegration::initialize(QWaylandDisplay *display)
     display->addRegistryListener(&wlDisplayHandleGlobal, this);
 }
 
-QWaylandServerBuffer *VulkanServerBufferIntegration::serverBuffer(struct qt_server_buffer *buffer)
+QWaylandServerBuffer *VulkanServerBufferIntegration::serverBuffer(struct bobui_server_buffer *buffer)
 {
-    return static_cast<QWaylandServerBuffer *>(qt_server_buffer_get_user_data(buffer));
+    return static_cast<QWaylandServerBuffer *>(bobui_server_buffer_get_user_data(buffer));
 }
 
 void VulkanServerBufferIntegration::wlDisplayHandleGlobal(void *data, ::wl_registry *registry, uint32_t id, const QString &interface, uint32_t version)
 {
     Q_UNUSED(version);
-    if (interface == "zqt_vulkan_server_buffer_v1") {
+    if (interface == "zbobui_vulkan_server_buffer_v1") {
         auto *integration = static_cast<VulkanServerBufferIntegration *>(data);
-        integration->QtWayland::zqt_vulkan_server_buffer_v1::init(registry, id, 1);
+        integration->BobUIWayland::zbobui_vulkan_server_buffer_v1::init(registry, id, 1);
     }
 }
 
-void VulkanServerBufferIntegration::zqt_vulkan_server_buffer_v1_server_buffer_created(qt_server_buffer *id, int32_t fd, uint32_t width, uint32_t height, uint32_t memory_size, uint32_t format)
+void VulkanServerBufferIntegration::zbobui_vulkan_server_buffer_v1_server_buffer_created(bobui_server_buffer *id, int32_t fd, uint32_t width, uint32_t height, uint32_t memory_size, uint32_t format)
 {
     if (sbiExtraDebug) qDebug() << "vulkan_server_buffer_server_buffer_created" << fd;
     auto *server_buffer = new VulkanServerBuffer(this, id, fd, width, height, memory_size, format);
-    qt_server_buffer_set_user_data(id, server_buffer);
+    bobui_server_buffer_set_user_data(id, server_buffer);
 }
 
 void VulkanServerBufferIntegration::deleteOrphanedTextures()
@@ -174,4 +174,4 @@ void VulkanServerBufferIntegration::deleteOrphanedTextures()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

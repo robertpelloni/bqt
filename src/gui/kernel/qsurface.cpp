@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsurface.h"
 #include "qopenglcontext.h"
 #include <qpa/qplatformintegration.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QSurface*, QSurface_ptr)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QSurface*, QSurface_ptr)
 
 /*!
     \class QSurface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.0
-    \brief The QSurface class is an abstraction of renderable surfaces in Qt.
+    \brief The QSurface class is an abstraction of renderable surfaces in BobUI.
 
     The size of the surface is accessible with the size() function. The rendering
     specific attributes of the surface are accessible through the format() function.
@@ -36,7 +36,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QSurface*, QSurface_ptr)
     The SurfaceType enum describes what type of surface this is.
 
     \value RasterSurface The surface is composed of pixels and can be rendered to using
-    a software rasterizer like Qt's raster paint engine.
+    a software rasterizer like BobUI's raster paint engine.
     \value OpenGLSurface The surface is an OpenGL compatible surface and can be used
     in conjunction with QOpenGLContext.
     \value OpenVGSurface The surface is an OpenVG compatible surface and can be used
@@ -105,7 +105,7 @@ QSurface::QSurface(SurfaceClass type)
 */
 QSurface::~QSurface()
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLContext *context = QOpenGLContext::currentContext();
     if (context && context->surface() == this)
         context->doneCurrent();
@@ -120,7 +120,7 @@ QSurface::SurfaceClass QSurface::surfaceClass() const
     return m_type;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsurface.cpp"
 

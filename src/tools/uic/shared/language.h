@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef LANGUAGE_H
 #define LANGUAGE_H
 
-#include <QtCore/qstring.h>
-#include <QtCore/qstringview.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringview.h>
 
-QT_FORWARD_DECLARE_CLASS(QTextStream)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextStream)
 
 enum class Language { Cpp, Python };
 
@@ -26,7 +26,7 @@ extern char listStart;
 extern char listEnd;
 extern QString nullPtr;
 extern QString operatorNew;
-extern QString qtQualifier;
+extern QString bobuiQualifier;
 extern QString qualifier;
 extern QString self;
 extern QString eol;
@@ -48,29 +48,29 @@ private:
     QStringView m_parameter;
 };
 
-class qtConfig : public StringViewStreamable
+class bobuiConfig : public StringViewStreamable
 {
 public:
-    qtConfig(QStringView name) : StringViewStreamable(name) {}
+    bobuiConfig(QStringView name) : StringViewStreamable(name) {}
 };
 
-QTextStream &operator<<(QTextStream &str, const qtConfig &c);
+BOBUIextStream &operator<<(BOBUIextStream &str, const bobuiConfig &c);
 
-class openQtConfig : public StringViewStreamable
+class openBobUIConfig : public StringViewStreamable
 {
 public:
-    openQtConfig(QStringView name) : StringViewStreamable(name) {}
+    openBobUIConfig(QStringView name) : StringViewStreamable(name) {}
 };
 
-QTextStream &operator<<(QTextStream &str, const openQtConfig &c);
+BOBUIextStream &operator<<(BOBUIextStream &str, const openBobUIConfig &c);
 
-class closeQtConfig : public StringViewStreamable
+class closeBobUIConfig : public StringViewStreamable
 {
 public:
-    closeQtConfig(QStringView name) : StringViewStreamable(name) {}
+    closeBobUIConfig(QStringView name) : StringViewStreamable(name) {}
 };
 
-QTextStream &operator<<(QTextStream &, const closeQtConfig &c);
+BOBUIextStream &operator<<(BOBUIextStream &, const closeBobUIConfig &c);
 
 QString fixClassName(QString className);
 
@@ -81,7 +81,7 @@ QLatin1StringView paletteColorRole(int v);
 
 enum class Encoding { Utf8, Unicode };
 
-void _formatString(QTextStream &str, const QString &value, const QString &indent,
+void _formatString(BOBUIextStream &str, const QString &value, const QString &indent,
                    bool qString);
 
 template <bool AsQString>
@@ -91,7 +91,7 @@ public:
     explicit _string(const QString &value, const QString &indent = QString())
         : m_value(value), m_indent(indent) {}
 
-    void format(QTextStream &str) const
+    void format(BOBUIextStream &str) const
     { _formatString(str, m_value, m_indent, AsQString); }
 
 private:
@@ -100,7 +100,7 @@ private:
 };
 
 template <bool AsQString>
-inline QTextStream &operator<<(QTextStream &str, const language::_string<AsQString> &s)
+inline BOBUIextStream &operator<<(BOBUIextStream &str, const language::_string<AsQString> &s)
 {
     s.format(str);
     return str;
@@ -113,7 +113,7 @@ class repeat {
 public:
     explicit repeat(int count, char c) : m_count(count), m_char(c) {}
 
-    friend QTextStream &operator<<(QTextStream &str, const repeat &r);
+    friend BOBUIextStream &operator<<(BOBUIextStream &str, const repeat &r);
 
 private:
     const int m_count;
@@ -127,7 +127,7 @@ public:
                                       const QString &indent,
                                       const char *returnType = nullptr);
 
-    friend QTextStream &operator<<(QTextStream &str, const startFunctionDefinition1 &f);
+    friend BOBUIextStream &operator<<(BOBUIextStream &str, const startFunctionDefinition1 &f);
 private:
     const char *m_name;
     const QString &m_parameterType;
@@ -140,12 +140,12 @@ class endFunctionDefinition {
 public:
     explicit endFunctionDefinition(const char *name);
 
-    friend QTextStream &operator<<(QTextStream &str, const endFunctionDefinition &f);
+    friend BOBUIextStream &operator<<(BOBUIextStream &str, const endFunctionDefinition &f);
 private:
     const char *m_name;
 };
 
-void _formatStackVariable(QTextStream &str, const char *className, QStringView varName, bool withInitParameters);
+void _formatStackVariable(BOBUIextStream &str, const char *className, QStringView varName, bool withInitParameters);
 
 template <bool withInitParameters>
 class _stackVariable {
@@ -153,7 +153,7 @@ public:
     explicit _stackVariable(const char *className, QStringView varName) :
         m_className(className), m_varName(varName) {}
 
-    void format(QTextStream &str) const
+    void format(BOBUIextStream &str) const
     { _formatStackVariable(str, m_className, m_varName, withInitParameters); }
 
 private:
@@ -163,7 +163,7 @@ private:
 };
 
 template <bool withInitParameters>
-inline QTextStream &operator<<(QTextStream &str, const _stackVariable<withInitParameters> &s)
+inline BOBUIextStream &operator<<(BOBUIextStream &str, const _stackVariable<withInitParameters> &s)
 {
     s.format(str);
     return str;
@@ -187,7 +187,7 @@ struct SignalSlot
     SignalSlotOptions options;
 };
 
-void formatConnection(QTextStream &str, const SignalSlot &sender, const SignalSlot &receiver,
+void formatConnection(BOBUIextStream &str, const SignalSlot &sender, const SignalSlot &receiver,
                       ConnectionSyntax connectionSyntax);
 
 QString boolValue(bool v);

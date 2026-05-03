@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QOPENGLTEXTUREBLITWINDOW_H
 #define QOPENGLTEXTUREBLITWINDOW_H
 
-#include <QtGui/QWindow>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLTextureBlitter>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLTextureBlitter>
 
 class QOpenGLTextureBlitWindow : public QWindow
 {

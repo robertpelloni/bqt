@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -10,11 +10,11 @@ if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/FindPackageHints.cmake")
     include("${CMAKE_CURRENT_LIST_DIR}/FindPackageHints.cmake")
 endif()
 
-find_package(Qt6Core REQUIRED HINTS ${Qt6Tests_PREFIX_PATH})
+find_package(BobUI6Core REQUIRED HINTS ${BobUI6Tests_PREFIX_PATH})
 
 # Test options. The -i option removes the include "myobject.h" from the moc file
 # causing a compile failure. -> Options work
-qt_wrap_cpp(moc_files myobject.h OPTIONS -i)
+bobui_wrap_cpp(moc_files myobject.h OPTIONS -i)
 
 add_executable(myobject myobject.cpp ${moc_files})
-target_link_libraries(myobject PRIVATE Qt::Core)
+target_link_libraries(myobject PRIVATE BobUI::Core)

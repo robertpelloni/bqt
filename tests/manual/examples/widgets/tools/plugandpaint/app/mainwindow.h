@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -8,12 +8,12 @@
 #include <QMainWindow>
 #include <QStringList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QMenu;
 class QScrollArea;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 class PaintArea;
 
 class MainWindow : public QMainWindow
@@ -61,7 +61,7 @@ private:
     QAction *brushWidthAct = nullptr;
     QAction *brushColorAct = nullptr;
     QAction *aboutAct = nullptr;
-    QAction *aboutQtAct = nullptr;
+    QAction *aboutBobUIAct = nullptr;
     QAction *aboutPluginsAct = nullptr;
 };
 

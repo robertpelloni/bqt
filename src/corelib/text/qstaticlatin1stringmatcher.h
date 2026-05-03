@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTATICLATIN1STRINGMATCHER_H
 #define QSTATICLATIN1STRINGMATCHER_H
@@ -9,16 +9,16 @@
 #include <iterator>
 #include <limits>
 
-#include <QtCore/q20algorithm.h>
-#include <QtCore/qlatin1stringmatcher.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/q20algorithm.h>
+#include <BobUICore/qlatin1stringmatcher.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_CC_GHS
-#  define QT_STATIC_BOYER_MOORE_NOT_SUPPORTED
+#  define BOBUI_STATIC_BOYER_MOORE_NOT_SUPPORTED
 #else
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <class RandomIt1,
           class Hash = std::hash<typename std::iterator_traits<RandomIt1>::value_type>,
           class BinaryPredicate = std::equal_to<>>
@@ -89,18 +89,18 @@ public:
 private:
     alignas(16) uchar m_skiptable[256];
 };
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-template <Qt::CaseSensitivity CS, size_t N>
+template <BobUI::CaseSensitivity CS, size_t N>
 class QStaticLatin1StringMatcher
 {
     static_assert(N > 2,
                   "QStaticLatin1StringMatcher makes no sense for finding a single-char pattern");
 
     QLatin1StringView m_pattern;
-    using Hasher = std::conditional_t<CS == Qt::CaseSensitive, QtPrivate::QCaseSensitiveLatin1Hash,
-                                      QtPrivate::QCaseInsensitiveLatin1Hash>;
-    QtPrivate::q_boyer_moore_searcher<const char *, Hasher> m_searcher;
+    using Hasher = std::conditional_t<CS == BobUI::CaseSensitive, BobUIPrivate::QCaseSensitiveLatin1Hash,
+                                      BobUIPrivate::QCaseInsensitiveLatin1Hash>;
+    BobUIPrivate::q_boyer_moore_searcher<const char *, Hasher> m_searcher;
 
 public:
     explicit constexpr QStaticLatin1StringMatcher(QLatin1StringView patternToMatch) noexcept
@@ -119,7 +119,7 @@ private:
     template <typename String>
     constexpr qsizetype indexIn_helper(String haystack, qsizetype from = 0) const noexcept
     {
-        static_assert(QtPrivate::isLatin1OrUtf16View<String>);
+        static_assert(BobUIPrivate::isLatin1OrUtf16View<String>);
 
         if (from >= haystack.size())
             return -1;
@@ -140,7 +140,7 @@ private:
 template <size_t N>
 constexpr auto qMakeStaticCaseSensitiveLatin1StringMatcher(const char (&patternToMatch)[N]) noexcept
 {
-    return QStaticLatin1StringMatcher<Qt::CaseSensitive, N>(
+    return QStaticLatin1StringMatcher<BobUI::CaseSensitive, N>(
             QLatin1StringView(patternToMatch, qsizetype(N) - 1));
 }
 
@@ -148,11 +148,11 @@ template <size_t N>
 constexpr auto
 qMakeStaticCaseInsensitiveLatin1StringMatcher(const char (&patternToMatch)[N]) noexcept
 {
-    return QStaticLatin1StringMatcher<Qt::CaseInsensitive, N>(
+    return QStaticLatin1StringMatcher<BobUI::CaseInsensitive, N>(
             QLatin1StringView(patternToMatch, qsizetype(N) - 1));
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTATICLATIN1STRINGMATCHER_H

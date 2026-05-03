@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcborstreamreader.h"
 
@@ -14,26 +14,26 @@
 #include <qstack.h>
 #include <qvarlengtharray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static bool qt_cbor_decoder_can_read(void *token, size_t len);
-static void qt_cbor_decoder_advance(void *token, size_t len);
-static void *qt_cbor_decoder_read(void *token, void *userptr, size_t offset, size_t len);
-static CborError qt_cbor_decoder_transfer_string(void *token, const void **userptr, size_t offset, size_t len);
+static bool bobui_cbor_decoder_can_read(void *token, size_t len);
+static void bobui_cbor_decoder_advance(void *token, size_t len);
+static void *bobui_cbor_decoder_read(void *token, void *userptr, size_t offset, size_t len);
+static CborError bobui_cbor_decoder_transfer_string(void *token, const void **userptr, size_t offset, size_t len);
 
 #define CBOR_PARSER_READER_CONTROL              1
-#define CBOR_PARSER_CAN_READ_BYTES_FUNCTION     qt_cbor_decoder_can_read
-#define CBOR_PARSER_ADVANCE_BYTES_FUNCTION      qt_cbor_decoder_advance
-#define CBOR_PARSER_TRANSFER_STRING_FUNCTION    qt_cbor_decoder_transfer_string
-#define CBOR_PARSER_READ_BYTES_FUNCTION         qt_cbor_decoder_read
+#define CBOR_PARSER_CAN_READ_BYTES_FUNCTION     bobui_cbor_decoder_can_read
+#define CBOR_PARSER_ADVANCE_BYTES_FUNCTION      bobui_cbor_decoder_advance
+#define CBOR_PARSER_TRANSFER_STRING_FUNCTION    bobui_cbor_decoder_transfer_string
+#define CBOR_PARSER_READ_BYTES_FUNCTION         bobui_cbor_decoder_read
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4334) // '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
-QT_WARNING_DISABLE_GCC("-Wimplicit-fallthrough")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4334) // '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+BOBUI_WARNING_DISABLE_GCC("-Wimplicit-fallthrough")
 
 #include <cborparser.c>
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 static CborError _cbor_value_dup_string(const CborValue *, void **, size_t *, CborValue *)
 {
@@ -59,9 +59,9 @@ static_assert(int(QCborStreamReader::Invalid) == CborInvalidType);
 
 /*!
    \class QCborStreamReader
-   \inmodule QtCore
+   \inmodule BobUICore
    \ingroup cbor
-   \ingroup qtserialization
+   \ingroup bobuiserialization
    \reentrant
    \since 5.12
 
@@ -146,7 +146,7 @@ static_assert(int(QCborStreamReader::Invalid) == CborInvalidType);
    The only recoverable error is QCborError::EndOfFile, which indicates that
    more data is required in order to complete the parsing. This situation is
    useful when data is being read from an asynchronous source, such as a pipe
-   (QProcess) or a socket (QTcpSocket, QUdpSocket, QNetworkReply, etc.). When
+   (QProcess) or a socket (BOBUIcpSocket, QUdpSocket, QNetworkReply, etc.). When
    more data arrives, the surrounding code needs to call either addData(), if
    parsing from a QByteArray, or reparse(), if it is instead reading directly
    a the QIDOevice that now has more data available (see setDevice()).
@@ -198,7 +198,7 @@ static_assert(int(QCborStreamReader::Invalid) == CborInvalidType);
 
 /*!
    \class QCborStreamReader::StringResult
-   \inmodule QtCore
+   \inmodule BobUICore
 
    StringResult\<Container\> is a template class where \a Container specifies
    the type used to hold the string data (such as QString or QByteArray).
@@ -643,12 +643,12 @@ public:
     bool ensureStringIteration();
 };
 
-void qt_cbor_stream_set_error(QCborStreamReaderPrivate *d, QCborError error)
+void bobui_cbor_stream_set_error(QCborStreamReaderPrivate *d, QCborError error)
 {
     d->handleError(CborError(error.c));
 }
 
-static inline bool qt_cbor_decoder_can_read(void *token, size_t len)
+static inline bool bobui_cbor_decoder_can_read(void *token, size_t len)
 {
     Q_ASSERT(len <= QCborStreamReaderPrivate::MaxCborIndividualSize);
     auto self = static_cast<QCborStreamReaderPrivate *>(token);
@@ -657,7 +657,7 @@ static inline bool qt_cbor_decoder_can_read(void *token, size_t len)
     return len <= quint64(avail);
 }
 
-static void qt_cbor_decoder_advance(void *token, size_t len)
+static void bobui_cbor_decoder_advance(void *token, size_t len)
 {
     Q_ASSERT(len <= QCborStreamReaderPrivate::MaxCborIndividualSize);
     auto self = static_cast<QCborStreamReaderPrivate *>(token);
@@ -667,7 +667,7 @@ static void qt_cbor_decoder_advance(void *token, size_t len)
     self->preread();
 }
 
-static void *qt_cbor_decoder_read(void *token, void *userptr, size_t offset, size_t len)
+static void *bobui_cbor_decoder_read(void *token, void *userptr, size_t offset, size_t len)
 {
     Q_ASSERT(len == 1 || len == 2 || len == 4 || len == 8);
     Q_ASSERT(offset == 0 || offset == 1);
@@ -678,7 +678,7 @@ static void *qt_cbor_decoder_read(void *token, void *userptr, size_t offset, siz
     return memcpy(userptr, self->buffer.constBegin() + self->bufferStart + offset, len);
 }
 
-static CborError qt_cbor_decoder_transfer_string(void *token, const void **userptr, size_t offset, size_t len)
+static CborError bobui_cbor_decoder_transfer_string(void *token, const void **userptr, size_t offset, size_t len)
 {
     auto self = static_cast<QCborStreamReaderPrivate *>(token);
     Q_ASSERT(offset <= size_t(self->buffer.size()));
@@ -1608,7 +1608,7 @@ QCborStreamReader::readStringChunk(char *ptr, qsizetype maxlen)
 }
 
 // used by qcborvalue.cpp
-QCborStreamReader::StringResultCode qt_cbor_append_string_chunk(QCborStreamReader &reader, QByteArray *data)
+QCborStreamReader::StringResultCode bobui_cbor_append_string_chunk(QCborStreamReader &reader, QByteArray *data)
 {
     return QCborStreamReaderPrivate::appendStringChunk(reader, data);
 }
@@ -1639,7 +1639,7 @@ QCborStreamReaderPrivate::readStringChunk(ReadStringChunk params)
     // Note: in the current implementation, the call into TinyCBOR below only
     // succeeds if we *already* have all the data in memory. That's obvious for
     // the case of direct memory (no QIODevice), whereas for QIODevices
-    // qt_cbor_decoder_transfer_string() enforces that
+    // bobui_cbor_decoder_transfer_string() enforces that
     // QIODevice::bytesAvailable() be bigger than the amount we're about to
     // read.
     //
@@ -1746,11 +1746,11 @@ QCborStreamReaderPrivate::readStringChunk_byte(ReadStringChunk params, qsizetype
             handleError(CborErrorDataTooLarge);
             return -1;
         }
-        QT_TRY {
+        BOBUI_TRY {
             params.array->resize(newSize);
-        } QT_CATCH (const std::bad_alloc &) {
+        } BOBUI_CATCH (const std::bad_alloc &) {
             // the distinction between DataTooLarge and OOM is mostly for
-            // compatibility with Qt 5; in Qt 6, we could consider everything
+            // compatibility with BobUI 5; in BobUI 6, we could consider everything
             // to be OOM.
             handleError(newSize > QByteArray::maxSize() ? CborErrorDataTooLarge: CborErrorOutOfMemory);
             return -1;
@@ -1795,9 +1795,9 @@ QCborStreamReaderPrivate::readStringChunk_unicode(ReadStringChunk params, qsizet
         handleError(CborErrorDataTooLarge);
         return -1;
     }
-    QT_TRY {
+    BOBUI_TRY {
         params.string->resize(qsizetype(newSize));
-    } QT_CATCH (const std::bad_alloc &) {
+    } BOBUI_CATCH (const std::bad_alloc &) {
         handleError(CborErrorOutOfMemory);
         return -1;
     }
@@ -1849,13 +1849,13 @@ QCborStreamReaderPrivate::readStringChunk_utf8(ReadStringChunk params, qsizetype
     // validate the UTF-8 content we've just read
     QByteArrayView chunk = *params.array;
     chunk = chunk.last(result);
-    if (QtPrivate::isValidUtf8(chunk))
+    if (BobUIPrivate::isValidUtf8(chunk))
         return result;
 
     handleError(CborErrorInvalidUtf8TextString);
     return -1;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcborstreamreader.cpp"

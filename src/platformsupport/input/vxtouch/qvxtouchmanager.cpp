@@ -1,29 +1,29 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvxtouchmanager_p.h"
 #include "qvxtouchhandler_p.h"
 
-#include <QtInputSupport/private/qevdevutil_p.h>
+#include <BobUIInputSupport/private/qevdevutil_p.h>
 
 #include <QStringList>
 #include <QGuiApplication>
 #include <QLoggingCategory>
-#include <QtDeviceDiscoverySupport/private/qdevicediscovery_p.h>
+#include <BobUIDeviceDiscoverySupport/private/qdevicediscovery_p.h>
 #include <private/qguiapplication_p.h>
 #include <private/qinputdevicemanager_p_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QVxTouchManager::QVxTouchManager(const QString &key, const QString &specification, QObject *parent)
     : QObject(parent)
 {
     Q_UNUSED(key);
 
-    if (qEnvironmentVariableIsSet("QT_QPA_VXEVDEV_DEBUG"))
-        const_cast<QLoggingCategory &>(qLcVxTouch()).setEnabled(QtDebugMsg, true);
+    if (qEnvironmentVariableIsSet("BOBUI_QPA_VXEVDEV_DEBUG"))
+        const_cast<QLoggingCategory &>(qLcVxTouch()).setEnabled(BobUIDebugMsg, true);
 
-    QString spec = QString::fromLocal8Bit(qgetenv("QT_QPA_VXEVDEV_TOUCHSCREEN_PARAMETERS"));
+    QString spec = QString::fromLocal8Bit(qgetenv("BOBUI_QPA_VXEVDEV_TOUCHSCREEN_PARAMETERS"));
 
     if (spec.isEmpty())
         spec = specification;
@@ -89,4 +89,4 @@ void QVxTouchManager::updateInputDeviceCount()
         QInputDeviceManager::DeviceTypeTouch, registeredTouchDevices);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

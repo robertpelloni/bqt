@@ -1,26 +1,26 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "nativewindowdump.h"
 
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 #include <qpa/qplatformnativeinterface.h>
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 void dumpNativeWindows(WId wid)
 {
     QPlatformNativeInterface *ni = QGuiApplication::platformNativeInterface();
     QString result;
-    QMetaObject::invokeMethod(ni, "dumpNativeWindows", Qt::DirectConnection,
+    QMetaObject::invokeMethod(ni, "dumpNativeWindows", BobUI::DirectConnection,
                               Q_RETURN_ARG(QString, result),
                               Q_ARG(WId, wid));
     qDebug().noquote() << result;
 }
 
-void dumpNativeQtTopLevels()
+void dumpNativeBobUITopLevels()
 {
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

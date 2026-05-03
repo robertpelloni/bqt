@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "droparea.h"
 
 #include <QDragEnterEvent>
 #include <QMimeData>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [DropArea constructor]
 DropArea::DropArea(QWidget *parent)
@@ -14,7 +14,7 @@ DropArea::DropArea(QWidget *parent)
 {
     setMinimumSize(200, 200);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
-    setAlignment(Qt::AlignCenter);
+    setAlignment(BobUI::AlignCenter);
     setAcceptDrops(true);
     setAutoFillBackground(true);
     clear();
@@ -55,13 +55,13 @@ void DropArea::dropEvent(QDropEvent *event)
         setBackgroundRole(QPalette::Button);
     } else if (mimeData->hasFormat(u"text/markdown"_s)) {
         setText(QString::fromUtf8(mimeData->data(u"text/markdown"_s)));
-        setTextFormat(Qt::MarkdownText);
+        setTextFormat(BobUI::MarkdownText);
     } else if (mimeData->hasHtml()) {
         setText(mimeData->html());
-        setTextFormat(Qt::RichText);
+        setTextFormat(BobUI::RichText);
     } else if (mimeData->hasText()) {
         setText(mimeData->text());
-        setTextFormat(Qt::PlainText);
+        setTextFormat(BobUI::PlainText);
     } else if (mimeData->hasUrls()) {
         QList<QUrl> urlList = mimeData->urls();
         QString text;

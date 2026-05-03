@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpathclipper_p.h"
 
@@ -27,7 +27,7 @@
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline bool fuzzyIsNull(qreal d)
 {
@@ -245,10 +245,10 @@ SegmentTree::SegmentTree(QPathSegments &segments)
     : m_segments(segments),
       m_intersections(0)
 {
-    m_bounds.x1 = qt_inf();
-    m_bounds.y1 = qt_inf();
-    m_bounds.x2 = -qt_inf();
-    m_bounds.y2 = -qt_inf();
+    m_bounds.x1 = bobui_inf();
+    m_bounds.y1 = bobui_inf();
+    m_bounds.x2 = -bobui_inf();
+    m_bounds.y2 = -bobui_inf();
 
     m_index.resize(m_segments.segments());
 
@@ -617,10 +617,10 @@ void qTraverseKdPointTree(QKdPointTree::Node &node, T &t, int depth = 0)
     const bool traverseLeft = (status == QKdPointTree::TraverseBoth || status == QKdPointTree::TraverseLeft);
 
     if (traverseLeft && node.left)
-        QT_PREPEND_NAMESPACE(qTraverseKdPointTree<T>)(*node.left, t, depth + 1);
+        BOBUI_PREPEND_NAMESPACE(qTraverseKdPointTree<T>)(*node.left, t, depth + 1);
 
     if (traverseRight && node.right)
-        QT_PREPEND_NAMESPACE(qTraverseKdPointTree<T>)(*node.right, t, depth + 1);
+        BOBUI_PREPEND_NAMESPACE(qTraverseKdPointTree<T>)(*node.right, t, depth + 1);
 }
 
 static inline qreal component(const QPointF &point, unsigned int i)
@@ -732,7 +732,7 @@ void QPathSegments::mergePoints()
 
         for (int i = 0; i < points(); ++i) {
             QKdPointFinder finder(i, *this, tree);
-            QT_PREPEND_NAMESPACE(qTraverseKdPointTree<QKdPointFinder>)(*tree.rootNode(), finder);
+            BOBUI_PREPEND_NAMESPACE(qTraverseKdPointTree<QKdPointFinder>)(*tree.rootNode(), finder);
 
             Q_ASSERT(finder.result() != -1);
 
@@ -919,7 +919,7 @@ void QPathSegments::addPath(const QPainterPath &path)
                 } else {
                     QRectF bounds = bezier.bounds();
 
-                    // threshold based on similar algorithm as in qtriangulatingstroker.cpp
+                    // threshold based on similar algorithm as in bobuiriangulatingstroker.cpp
                     int threshold = qMin<float>(64, qMax(bounds.width(), bounds.height()) * (2 * qreal(3.14) / 6));
 
                     if (threshold < 3) threshold = 3;
@@ -1420,8 +1420,8 @@ QPathClipper::QPathClipper(const QPainterPath &subject,
     : subjectPath(subject)
     , clipPath(clip)
 {
-    aMask = subjectPath.fillRule() == Qt::WindingFill ? ~0x0 : 0x1;
-    bMask = clipPath.fillRule() == Qt::WindingFill ? ~0x0 : 0x1;
+    aMask = subjectPath.fillRule() == BobUI::WindingFill ? ~0x0 : 0x1;
+    bMask = clipPath.fillRule() == BobUI::WindingFill ? ~0x0 : 0x1;
 }
 
 static void clear(QWingedEdge& list, int edge, QPathEdge::Traversal traversal)
@@ -1444,7 +1444,7 @@ static void clear(QWingedEdge& list, int edge, QPathEdge::Traversal traversal)
 template <typename InputIterator>
 InputIterator qFuzzyFind(InputIterator first, InputIterator last, qreal val)
 {
-    while (first != last && !QT_PREPEND_NAMESPACE(qFuzzyCompare)(qreal(*first), qreal(val)))
+    while (first != last && !BOBUI_PREPEND_NAMESPACE(qFuzzyCompare)(qreal(*first), qreal(val)))
         ++first;
     return first;
 }
@@ -1517,7 +1517,7 @@ QPainterPath QPathClipper::clip(Operation operation)
                 QPainterPath result = subjectPath;
                 if (result.fillRule() == clipPath.fillRule()) {
                     result.addPath(clipPath);
-                } else if (result.fillRule() == Qt::WindingFill) {
+                } else if (result.fillRule() == BobUI::WindingFill) {
                     result = result.simplified();
                     result.addPath(clipPath);
                 } else {
@@ -1547,7 +1547,7 @@ QPainterPath QPathClipper::clip(Operation operation)
             if (subjectIsRect) {
                 switch (op) {
                 case BoolSub:
-                    if (clipPath.fillRule() == Qt::OddEvenFill) {
+                    if (clipPath.fillRule() == BobUI::OddEvenFill) {
                         QPainterPath result = clipPath;
                         result.addRect(subjectBounds);
                         return result;
@@ -1967,7 +1967,7 @@ void clipBezier(const QPointF &a, const QPointF &b, const QPointF &c, const QPoi
         return;
     }
 
-    QTransform flip = isVertical(edge) ? QTransform(0, 1, 1, 0, 0, 0) : QTransform();
+    BOBUIransform flip = isVertical(edge) ? BOBUIransform(0, 1, 1, 0, 0, 0) : BOBUIransform();
     QBezier unflipped = bezier;
     QBezier flipped = bezier.mapBy(flip);
 
@@ -2077,4 +2077,4 @@ QPainterPath QPathClipper::intersect(const QPainterPath &path, const QRectF &rec
     return intersectPath(path, rect);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
     This file was originally created by qdbusxml2cpp version 0.8
@@ -15,14 +15,14 @@
 
 #include "qstatusnotifieritemadaptor_p.h"
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QCoreApplication>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QCoreApplication>
 
 #include "qdbustrayicon_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcMenu)
 Q_DECLARE_LOGGING_CATEGORY(qLcTray)
@@ -155,8 +155,8 @@ void QStatusNotifierItemAdaptor::SecondaryActivate(int x, int y)
     emit m_trayIcon->activated(QPlatformSystemTrayIcon::MiddleClick);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstatusnotifieritemadaptor_p.cpp"
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON

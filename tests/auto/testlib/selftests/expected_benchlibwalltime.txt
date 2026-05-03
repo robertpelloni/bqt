@@ -1,5 +1,5 @@
 ********* Start testing of tst_BenchlibWalltime *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_BenchlibWalltime::initTestCase()
 PASS   : tst_BenchlibWalltime::waitForOneThousand()
 RESULT : tst_BenchlibWalltime::waitForOneThousand():

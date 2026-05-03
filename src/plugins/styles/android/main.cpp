@@ -1,29 +1,29 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/qstyleplugin.h>
+#include <BobUIWidgets/qstyleplugin.h>
 #include "qandroidstyle_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidStylePlugin : public QStylePlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "androidstyle.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QStyleFactoryInterface" FILE "androidstyle.json")
 public:
     QStyle *create(const QString &key);
 };
 
 QStyle *QAndroidStylePlugin::create(const QString &key)
 {
-    if (key.compare(QLatin1String("android"), Qt::CaseInsensitive) == 0)
+    if (key.compare(QLatin1String("android"), BobUI::CaseInsensitive) == 0)
         return new QAndroidStyle();
 
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"
 

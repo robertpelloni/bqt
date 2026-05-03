@@ -1,11 +1,11 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfontvariableaxis.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFontVariableAxisPrivate : public QSharedData
 {
@@ -20,7 +20,7 @@ public:
 /*!
     \class QFontVariableAxis
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup shared
     \since 6.9
 
@@ -50,7 +50,7 @@ QFontVariableAxis::QFontVariableAxis()
     Destroys this QFontVariableAxis object.
 */
 QFontVariableAxis::~QFontVariableAxis() = default;
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QFontVariableAxisPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QFontVariableAxisPrivate)
 
 /*!
     Creates a QFontVariableAxis object that is a copy of the given \a axis.
@@ -268,7 +268,7 @@ void QFontVariableAxis::detach()
     d_ptr.detach();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QFontVariableAxis &axis)
 {
     QDebugStateSaver save(debug);
@@ -288,4 +288,4 @@ QDebug operator<<(QDebug debug, const QFontVariableAxis &axis)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglprogrambinarycache_p.h"
 #include <QOpenGLContext>
@@ -16,11 +16,11 @@
 #include <private/qcore_unix_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcOpenGLProgramDiskCache, "qt.opengl.diskcache")
+Q_LOGGING_CATEGORY(lcOpenGLProgramDiskCache, "bobui.opengl.diskcache")
 
 #ifndef GL_CONTEXT_LOST
 #define GL_CONTEXT_LOST                   0x0507
@@ -36,7 +36,7 @@ Q_LOGGING_CATEGORY(lcOpenGLProgramDiskCache, "qt.opengl.diskcache")
 
 const quint32 BINSHADER_MAGIC = 0x5174;
 const quint32 BINSHADER_VERSION = 0x3;
-const quint32 BINSHADER_QTVERSION = QT_VERSION;
+const quint32 BINSHADER_BOBUIVERSION = BOBUI_VERSION;
 
 namespace {
 struct GLEnvInfo
@@ -74,7 +74,7 @@ QByteArray QOpenGLProgramBinaryCache::ProgramDesc::cacheKey() const
     return keyBuilder.result().toHex();
 }
 
-static inline bool qt_ensureWritableDir(const QString &name)
+static inline bool bobui_ensureWritableDir(const QString &name)
 {
     QDir::root().mkpath(name);
     return QFileInfo(name).isWritable();
@@ -83,18 +83,18 @@ static inline bool qt_ensureWritableDir(const QString &name)
 QOpenGLProgramBinaryCache::QOpenGLProgramBinaryCache()
     : m_cacheWritable(false)
 {
-    const QString subPath = "/qtshadercache-"_L1 + QSysInfo::buildAbi() + u'/';
+    const QString subPath = "/bobuishadercache-"_L1 + QSysInfo::buildAbi() + u'/';
     const QString sharedCachePath = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
     m_globalCacheDir = sharedCachePath + subPath;
     m_localCacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + subPath;
 
     if (!sharedCachePath.isEmpty()) {
         m_currentCacheDir = m_globalCacheDir;
-        m_cacheWritable = qt_ensureWritableDir(m_currentCacheDir);
+        m_cacheWritable = bobui_ensureWritableDir(m_currentCacheDir);
     }
     if (!m_cacheWritable) {
         m_currentCacheDir = m_localCacheDir;
-        m_cacheWritable = qt_ensureWritableDir(m_currentCacheDir);
+        m_cacheWritable = bobui_ensureWritableDir(m_currentCacheDir);
     }
 
     qCDebug(lcOpenGLProgramDiskCache, "Cache location '%s' writable = %d", qPrintable(m_currentCacheDir), m_cacheWritable);
@@ -140,8 +140,8 @@ bool QOpenGLProgramBinaryCache::verifyHeader(const QByteArray &buf) const
         qCDebug(lcOpenGLProgramDiskCache, "Version does not match");
         return false;
     }
-    if (readUInt(&p) != BINSHADER_QTVERSION) {
-        qCDebug(lcOpenGLProgramDiskCache, "Qt version does not match");
+    if (readUInt(&p) != BINSHADER_BOBUIVERSION) {
+        qCDebug(lcOpenGLProgramDiskCache, "BobUI version does not match");
         return false;
     }
     if (readUInt(&p) != sizeof(quintptr)) {
@@ -160,7 +160,7 @@ bool QOpenGLProgramBinaryCache::setProgramBinary(uint programId, uint blobFormat
         if (error == GL_NO_ERROR || error == GL_CONTEXT_LOST)
             break;
     }
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
     if (context->isOpenGLES() && context->format().majorVersion() < 3) {
         initializeProgramBinaryOES(context);
         programBinaryOES(programId, blobFormat, p, blobSize);
@@ -196,12 +196,12 @@ class FdWrapper
 public:
     FdWrapper(const QString &fn)
     {
-        fd = qt_safe_open(QFile::encodeName(fn).constData(), O_RDONLY);
+        fd = bobui_safe_open(QFile::encodeName(fn).constData(), O_RDONLY);
     }
     ~FdWrapper()
     {
         if (fd != -1)
-            qt_safe_close(fd);
+            bobui_safe_close(fd);
     }
     auto map()
     {
@@ -273,7 +273,7 @@ bool QOpenGLProgramBinaryCache::load(const QByteArray &cacheKey, uint programId)
     if (fdw.fd == -1)
         return false;
     char header[BASE_HEADER_SIZE];
-    qint64 bytesRead = qt_safe_read(fdw.fd, header, BASE_HEADER_SIZE);
+    qint64 bytesRead = bobui_safe_read(fdw.fd, header, BASE_HEADER_SIZE);
     if (bytesRead == BASE_HEADER_SIZE)
         buf = QByteArray::fromRawData(header, BASE_HEADER_SIZE);
 #else
@@ -348,7 +348,7 @@ static inline void writeStr(uchar **p, const QByteArray &str)
 
 static inline bool writeFile(const QString &filename, const QByteArray &data)
 {
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
     QSaveFile f(filename);
     if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         f.write(data);
@@ -395,12 +395,12 @@ void QOpenGLProgramBinaryCache::save(const QByteArray &cacheKey, uint programId)
     if (!blobSize)
         return;
 
-    QByteArray blob(totalSize, Qt::Uninitialized);
+    QByteArray blob(totalSize, BobUI::Uninitialized);
     uchar *p = reinterpret_cast<uchar *>(blob.data());
 
     writeUInt(&p, BINSHADER_MAGIC);
     writeUInt(&p, BINSHADER_VERSION);
-    writeUInt(&p, BINSHADER_QTVERSION);
+    writeUInt(&p, BINSHADER_BOBUIVERSION);
     writeUInt(&p, sizeof(quintptr));
 
     writeStr(&p, info.glvendor);
@@ -416,7 +416,7 @@ void QOpenGLProgramBinaryCache::save(const QByteArray &cacheKey, uint programId)
         *p++ = 0;
 
     GLint outSize = 0;
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
     if (context->isOpenGLES() && context->format().majorVersion() < 3) {
         QMutexLocker lock(&m_mutex);
         initializeProgramBinaryOES(context);
@@ -435,7 +435,7 @@ void QOpenGLProgramBinaryCache::save(const QByteArray &cacheKey, uint programId)
     bool ok = writeFile(filename, blob);
     if (!ok && m_currentCacheDir == m_globalCacheDir) {
         m_currentCacheDir = m_localCacheDir;
-        m_cacheWritable = qt_ensureWritableDir(m_currentCacheDir);
+        m_cacheWritable = bobui_ensureWritableDir(m_currentCacheDir);
         qCDebug(lcOpenGLProgramDiskCache, "Cache location changed to '%s' writable = %d",
                 qPrintable(m_currentCacheDir), m_cacheWritable);
         if (m_cacheWritable) {
@@ -447,7 +447,7 @@ void QOpenGLProgramBinaryCache::save(const QByteArray &cacheKey, uint programId)
         qCDebug(lcOpenGLProgramDiskCache, "Failed to write %s to shader cache", qPrintable(filename));
 }
 
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
 void QOpenGLProgramBinaryCache::initializeProgramBinaryOES(QOpenGLContext *context)
 {
     if (m_programBinaryOESInitialized)
@@ -464,11 +464,11 @@ QOpenGLProgramBinarySupportCheck::QOpenGLProgramBinarySupportCheck(QOpenGLContex
     : QOpenGLSharedResource(context->shareGroup()),
       m_supported(false)
 {
-    if (QCoreApplication::testAttribute(Qt::AA_DisableShaderDiskCache)) {
+    if (QCoreApplication::testAttribute(BobUI::AA_DisableShaderDiskCache)) {
         qCDebug(lcOpenGLProgramDiskCache, "Shader cache disabled via app attribute");
         return;
     }
-    if (qEnvironmentVariableIntValue("QT_DISABLE_SHADER_DISK_CACHE")) {
+    if (qEnvironmentVariableIntValue("BOBUI_DISABLE_SHADER_DISK_CACHE")) {
         qCDebug(lcOpenGLProgramDiskCache, "Shader cache disabled via env var");
         return;
     }
@@ -501,4 +501,4 @@ QOpenGLProgramBinarySupportCheck::QOpenGLProgramBinarySupportCheck(QOpenGLContex
     qCDebug(lcOpenGLProgramDiskCache, "Shader cache supported = %d", m_supported);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

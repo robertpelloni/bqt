@@ -1,15 +1,15 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore/qrangemodeladapter.h>
+#include <BobUICore/qrangemodeladapter.h>
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#include <QtWidgets/qlistview.h>
-#include <QtWidgets/qtableview.h>
-#include <QtWidgets/qtreeview.h>
+#include <BobUIWidgets/qlistview.h>
+#include <BobUIWidgets/bobuiableview.h>
+#include <BobUIWidgets/bobuireeview.h>
 #include <vector>
 
 class Book
@@ -22,7 +22,7 @@ class Book
 public:
     enum Roles
     {
-        TitleRole = Qt::UserRole,
+        TitleRole = BobUI::UserRole,
         AuthorRole,
         SummaryRole,
         RatingRole,
@@ -199,7 +199,7 @@ void list_access()
 
 void table_access()
 {
-    QTableView tableView;
+    BOBUIableView tableView;
     {
         //! [table-item-access]
         QRangeModelAdapter table(std::vector<std::vector<double>>{
@@ -236,7 +236,7 @@ void table_access()
 
 void tree_access()
 {
-    QTreeView treeView;
+    BOBUIreeView treeView;
 
     //! [tree-row-access]
     QRangeModelAdapter tree = QRangeModelAdapter(Tree{

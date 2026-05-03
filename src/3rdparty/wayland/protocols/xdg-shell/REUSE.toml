@@ -14,7 +14,7 @@ SPDX-License-Identifier = "MIT"
 [[annotations]]
 path = "xdg-shell-unstable-v6.xml"
 precedence = "closest"
-comment = "missing from qt_atttribution.json"
+comment = "missing from bobui_atttribution.json"
 SPDX-FileCopyrightText = ["Copyright © 2008-2013 Kristian Høgsberg",
                           "Copyright © 2013      Rafael Antognolli",
                           "Copyright © 2013      Jasper St. Pierre",

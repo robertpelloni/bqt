@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVENTDISPATCHER_UNIX_P_H
 #define QEVENTDISPATCHER_UNIX_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/qabstracteventdispatcher.h"
-#include "QtCore/qlist.h"
+#include "BobUICore/qabstracteventdispatcher.h"
+#include "BobUICore/qlist.h"
 #include "private/qabstracteventdispatcher_p.h"
 #include "private/qcore_unix_p.h"
-#include "QtCore/qvarlengtharray.h"
-#include "QtCore/qhash.h"
-#include "private/qtimerinfo_unix_p.h"
+#include "BobUICore/qvarlengtharray.h"
+#include "BobUICore/qhash.h"
+#include "private/bobuiimerinfo_unix_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEventDispatcherUNIXPrivate;
 
@@ -39,10 +39,10 @@ struct Q_CORE_EXPORT QSocketNotifierSetUNIX final
 
 Q_DECLARE_TYPEINFO(QSocketNotifierSetUNIX, Q_PRIMITIVE_TYPE);
 
-struct QThreadPipe
+struct BOBUIhreadPipe
 {
-    QThreadPipe();
-    ~QThreadPipe();
+    BOBUIhreadPipe();
+    ~BOBUIhreadPipe();
 
     bool init();
     pollfd prepare() const;
@@ -75,12 +75,12 @@ public:
     void registerSocketNotifier(QSocketNotifier *notifier) final;
     void unregisterSocketNotifier(QSocketNotifier *notifier) final;
 
-    void registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType,
+    void registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType,
                        QObject *object) override final;
-    bool unregisterTimer(Qt::TimerId timerId) override final;
+    bool unregisterTimer(BobUI::TimerId timerId) override final;
     bool unregisterTimers(QObject *object) override final;
     QList<TimerInfoV2> timersForObject(QObject *object) const override final;
-    Duration remainingTime(Qt::TimerId timerId) const override final;
+    Duration remainingTime(BobUI::TimerId timerId) const override final;
 
     void wakeUp() override;
     void interrupt() final;
@@ -103,13 +103,13 @@ public:
     int activateSocketNotifiers();
     void setSocketNotifierPending(QSocketNotifier *notifier);
 
-    QThreadPipe threadPipe;
+    BOBUIhreadPipe threadPipe;
     QList<pollfd> pollfds;
 
     QHash<int, QSocketNotifierSetUNIX> socketNotifiers;
     QList<QSocketNotifier *> pendingNotifiers;
 
-    QTimerInfoList timerList;
+    BOBUIimerInfoList timerList;
     QAtomicInt interrupt; // bool
 };
 
@@ -141,6 +141,6 @@ inline short QSocketNotifierSetUNIX::events() const noexcept
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_UNIX_P_H

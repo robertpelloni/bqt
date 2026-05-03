@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QStringList>
 
 #include "nfa.h"
@@ -14,11 +14,11 @@ private:
     struct SharedStream
     {
         int ref;
-        QTextStream *stream;
+        BOBUIextStream *stream;
     };
 
 public:
-    LineStream(QTextStream *textStream)
+    LineStream(BOBUIextStream *textStream)
     {
         shared = new SharedStream;
         shared->ref = 1;
@@ -40,7 +40,7 @@ public:
     ~LineStream()
     {
         if (!--shared->ref) {
-            (*shared->stream) << Qt::endl;
+            (*shared->stream) << BobUI::endl;
             delete shared;
         }
     }
@@ -64,13 +64,13 @@ public:
     LineStream operator<<(const T &value)
     { stream << indentStr; stream << value; return LineStream(&stream); }
 
-    inline void addNewLine() { stream << Qt::endl; }
+    inline void addNewLine() { stream << BobUI::endl; }
 
     inline QString toString() const { stream.flush(); return output; }
 
 private:
     QString output;
-    mutable QTextStream stream;
+    mutable BOBUIextStream stream;
     QString indentStr;
 };
 

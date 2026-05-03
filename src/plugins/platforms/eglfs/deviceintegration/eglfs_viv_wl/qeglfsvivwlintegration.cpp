@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsvivwlintegration.h"
 #include <EGL/eglvivante.h>
@@ -7,7 +7,7 @@
 
 #include <wayland-server.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QEglFSVivWaylandIntegration::platformInit()
 {
@@ -16,10 +16,10 @@ void QEglFSVivWaylandIntegration::platformInit()
     int width, height;
 
     bool multiBufferNotEnabledYet = qEnvironmentVariableIsEmpty("FB_MULTI_BUFFER");
-    bool multiBuffer = qEnvironmentVariableIsEmpty("QT_EGLFS_IMX6_NO_FB_MULTI_BUFFER");
+    bool multiBuffer = qEnvironmentVariableIsEmpty("BOBUI_EGLFS_IMX6_NO_FB_MULTI_BUFFER");
     if (multiBufferNotEnabledYet && multiBuffer) {
         qWarning() << "QEglFSVivWaylandIntegration will set environment variable FB_MULTI_BUFFER=2 to enable double buffering and vsync.\n"
-                   << "If this is not desired, you can override this via: export QT_EGLFS_IMX6_NO_FB_MULTI_BUFFER=1";
+                   << "If this is not desired, you can override this via: export BOBUI_EGLFS_IMX6_NO_FB_MULTI_BUFFER=1";
         qputenv("FB_MULTI_BUFFER", "2");
     }
 
@@ -65,4 +65,4 @@ void *QEglFSVivWaylandIntegration::wlDisplay() const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

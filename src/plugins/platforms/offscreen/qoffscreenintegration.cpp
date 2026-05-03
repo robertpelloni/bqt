@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoffscreenintegration.h"
 #include "qoffscreenwindow.h"
 #include "qoffscreencommon.h"
 
 #if defined(Q_OS_UNIX)
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 #if defined(Q_OS_MAC)
 #include <qpa/qplatformfontdatabase.h>
-#include <QtGui/private/qcoretextfontdatabase_p.h>
+#include <BobUIGui/private/qcoretextfontdatabase_p.h>
 #else
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
 #endif
 #elif defined(Q_OS_WIN)
-#include <QtGui/private/qfreetypefontdatabase_p.h>
-#include <QtCore/private/qeventdispatcher_win_p.h>
+#include <BobUIGui/private/qfreetypefontdatabase_p.h>
+#include <BobUICore/private/qeventdispatcher_win_p.h>
 #endif
 
-#include <QtCore/qfile.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qjsonvalue.h>
-#include <QtGui/private/qpixmap_raster_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qjsonarray.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qjsonobject.h>
+#include <BobUICore/qjsonvalue.h>
+#include <BobUIGui/private/qpixmap_raster_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qplatforminputcontext.h>
 #include <qpa/qplatformtheme.h>
@@ -32,13 +32,13 @@
 
 #include <qpa/qplatformservices.h>
 
-#if QT_CONFIG(xlib) && QT_CONFIG(opengl) && !QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(xlib) && BOBUI_CONFIG(opengl) && !BOBUI_CONFIG(opengles2)
 #include "qoffscreenintegration_x11.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QCoreTextFontEngine;
 
@@ -71,7 +71,7 @@ QOffscreenIntegration::QOffscreenIntegration(const QStringList& paramList)
     m_fontDatabase.reset(new QFreeTypeFontDatabase());
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     m_drag.reset(new QOffscreenDrag);
 #endif
 
@@ -283,17 +283,17 @@ void QOffscreenIntegration::setConfiguration(const QJsonObject &configuration)
         int newLogicalBaseDpi = newConfig["logicalBaseDpi"].toInt(96);
         if (currentLogicalBaseDpi != newLogicalBaseDpi) {
             screen->m_logicalBaseDpi = newLogicalBaseDpi;
-            qWarning("You ain't supposed to change logicalBaseDpi - its a platform constant. Qt may not react to the change");
+            qWarning("You ain't supposed to change logicalBaseDpi - its a platform constant. BobUI may not react to the change");
         }
 
-        // DPR. There is also no handleChange function in Qt at this point, instead
+        // DPR. There is also no handleChange function in BobUI at this point, instead
         // the new DPR value will be used during the next repaint. We could repaint
         // all windows here, but don't. Print a warning.
         double currentDpr = currentConfig["dpr"].toDouble(1);
         double newDpr = newConfig["dpr"].toDouble(1);
         if (currentDpr != newDpr) {
             screen->m_dpr = newDpr;
-            qWarning("DPR change notifications is not implemented - Qt may not react to the change");
+            qWarning("DPR change notifications is not implemented - BobUI may not react to the change");
         }
     }
 
@@ -407,7 +407,7 @@ QPlatformFontDatabase *QOffscreenIntegration::fontDatabase() const
     return m_fontDatabase.data();
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QPlatformDrag *QOffscreenIntegration::drag() const
 {
     return m_drag.data();
@@ -426,8 +426,8 @@ QOffscreenIntegration *QOffscreenIntegration::createOffscreenIntegration(const Q
 {
     QOffscreenIntegration *offscreenIntegration = nullptr;
 
-#if QT_CONFIG(xlib) && QT_CONFIG(opengl) && !QT_CONFIG(opengles2)
-    QByteArray glx = qgetenv("QT_QPA_OFFSCREEN_NO_GLX");
+#if BOBUI_CONFIG(xlib) && BOBUI_CONFIG(opengl) && !BOBUI_CONFIG(opengles2)
+    QByteArray glx = qgetenv("BOBUI_QPA_OFFSCREEN_NO_GLX");
     if (glx.isEmpty())
         offscreenIntegration = new QOffscreenX11Integration(paramList);
 #endif
@@ -442,4 +442,4 @@ QList<QOffscreenScreen *> QOffscreenIntegration::screens() const
     return m_screens;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
-#include <QtWidgets>
-#include <QTest>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qregularexpression.h>
+#include <BobUIWidgets>
+#include <BOBUIest>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qregularexpression.h>
 
 // some versions of CALayer.h use 'slots' as an identifier
-#define QT_NO_KEYWORDS
+#define BOBUI_NO_KEYWORDS
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets>
-#include <QTest>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qlineedit.h>
+#include <BobUIWidgets/qpushbutton.h>
+#include <BobUIWidgets>
+#include <BOBUIest>
 #include <unistd.h>
 
 #import <AppKit/AppKit.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 struct AXErrorTag {
     AXError err;
@@ -425,7 +425,7 @@ public:
     {
         layout()->addWidget(widget);
         widget->show();
-        QVERIFY(QTest::qWaitForWindowExposed(widget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(widget));
     }
 
     void clearChildren()
@@ -460,11 +460,11 @@ private:
 void tst_QAccessibilityMac::init()
 {
     m_window = new AccessibleTestWindow();
-    m_window->setWindowTitle(QString("Test window - %1").arg(QTest::currentTestFunction()));
+    m_window->setWindowTitle(QString("Test window - %1").arg(BOBUIest::currentTestFunction()));
     m_window->show();
     m_window->resize(400, 400);
 
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
 }
 
 void tst_QAccessibilityMac::cleanup()
@@ -480,13 +480,13 @@ void tst_QAccessibilityMac::singleWidgetTest()
     QLineEdit *le = new QLineEdit();
     le->setText("button");
     le->show();
-    QVERIFY(QTest::qWaitForWindowExposed(le));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(le));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
     QVERIFY(appObject);
 
-    QTRY_VERIFY(appObject.windowList.count == 1);
+    BOBUIRY_VERIFY(appObject.windowList.count == 1);
 
     AXUIElementRef windowRef = (AXUIElementRef) [appObject.windowList objectAtIndex: 0];
     QVERIFY(windowRef != nil);
@@ -501,7 +501,7 @@ void tst_QAccessibilityMac::singleWidgetTest()
     delete le;
     QCoreApplication::processEvents();
     TestAXObject *lineEditInvalid = [[TestAXObject alloc] initWithAXUIElementRef: lineEditRef];
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression("kAXErrorInvalidUIElement"));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, QRegularExpression("kAXErrorInvalidUIElement"));
     QVERIFY([[lineEditInvalid value] length] == 0);
 }
 
@@ -510,14 +510,14 @@ void tst_QAccessibilityMac::lineEditTest()
     QLineEdit *lineEdit = new QLineEdit(m_window);
     lineEdit->setText("a11y test QLineEdit");
     m_window->addWidget(lineEdit);
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
     QVERIFY(appObject);
 
     // one window
-    QTRY_VERIFY(appObject.windowList.count == 1);
+    BOBUIRY_VERIFY(appObject.windowList.count == 1);
     AXUIElementRef windowRef = (AXUIElementRef) [appObject.windowList objectAtIndex: 0];
     QVERIFY(windowRef != nil);
     TestAXObject *window = [[TestAXObject alloc] initWithAXUIElementRef: windowRef];
@@ -570,14 +570,14 @@ void tst_QAccessibilityMac::hierarchyTest()
     w->layout()->addWidget(b2);
     b2->setText("Button 2");
 
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
     QVERIFY(appObject);
 
     // one window
-    QTRY_VERIFY(appObject.windowList.count == 1);
+    BOBUIRY_VERIFY(appObject.windowList.count == 1);
     AXUIElementRef windowRef = (AXUIElementRef) [appObject.windowList objectAtIndex: 0];
     QVERIFY(windowRef != nil);
     TestAXObject *window = [[TestAXObject alloc] initWithAXUIElementRef: windowRef];
@@ -632,13 +632,13 @@ void tst_QAccessibilityMac::notificationsTest()
     w->layout()->addWidget(le2);
 
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
     QVERIFY(appObject);
 
     // one window
-    QTRY_VERIFY(appObject.windowList.count == 1);
+    BOBUIRY_VERIFY(appObject.windowList.count == 1);
     AXUIElementRef windowRef = (AXUIElementRef) [appObject.windowList objectAtIndex: 0];
     QVERIFY(windowRef != nil);
     TestAXObject *window = [[TestAXObject alloc] initWithAXUIElementRef: windowRef];
@@ -656,17 +656,17 @@ void tst_QAccessibilityMac::notificationsTest()
 
     QVERIFY(notificationList.length() == 0);
     le2->setFocus();
-    QTRY_VERIFY(notificationList.length() == 1);
-    QTRY_VERIFY(notificationList.at(0) == QAccessible::Focus);
+    BOBUIRY_VERIFY(notificationList.length() == 1);
+    BOBUIRY_VERIFY(notificationList.at(0) == QAccessible::Focus);
     le1->setFocus();
-    QTRY_VERIFY(notificationList.length() == 2);
-    QTRY_VERIFY(notificationList.at(1) == QAccessible::Focus);
+    BOBUIRY_VERIFY(notificationList.length() == 2);
+    BOBUIRY_VERIFY(notificationList.at(1) == QAccessible::Focus);
     le1->setText("hello");
-    QTRY_VERIFY(notificationList.length() == 3);
-    QTRY_VERIFY(notificationList.at(2) == QAccessible::ValueChanged);
+    BOBUIRY_VERIFY(notificationList.length() == 3);
+    BOBUIRY_VERIFY(notificationList.at(2) == QAccessible::ValueChanged);
     le1->setText("foo");
-    QTRY_VERIFY(notificationList.length() == 4);
-    QTRY_VERIFY(notificationList.at(3) == QAccessible::ValueChanged);
+    BOBUIRY_VERIFY(notificationList.length() == 4);
+    BOBUIRY_VERIFY(notificationList.at(3) == QAccessible::ValueChanged);
 }
 
 void tst_QAccessibilityMac::checkBoxTest()
@@ -674,14 +674,14 @@ void tst_QAccessibilityMac::checkBoxTest()
     QCheckBox *ckBox = new QCheckBox(m_window);
     ckBox->setText("Great option");
     m_window->addWidget(ckBox);
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
     QVERIFY(appObject);
 
     // one window
-    QTRY_VERIFY(appObject.windowList.count == 1);
+    BOBUIRY_VERIFY(appObject.windowList.count == 1);
     AXUIElementRef windowRef = (AXUIElementRef) [appObject.windowList objectAtIndex: 0];
     QVERIFY(windowRef != nil);
     TestAXObject *window = [[TestAXObject alloc] initWithAXUIElementRef: windowRef];
@@ -705,13 +705,13 @@ void tst_QAccessibilityMac::checkBoxTest()
     [cb performAction:kAXPressAction];
     QVERIFY([cb valueNumber] == 0);
 
-    ckBox->setCheckState(Qt::PartiallyChecked);
+    ckBox->setCheckState(BobUI::PartiallyChecked);
     QVERIFY([cb valueNumber] == 2);
 }
 
 void tst_QAccessibilityMac::tableViewTest()
 {
-    QTableWidget *tw = new QTableWidget(3, 2, m_window);
+    BOBUIableWidget *tw = new BOBUIableWidget(3, 2, m_window);
     struct Person
     {
         const char *name;
@@ -723,13 +723,13 @@ void tst_QAccessibilityMac::tableViewTest()
                               };
     for (int i = 0; i < int(sizeof(contents) / sizeof(Person)); ++i) {
         Person p = contents[i];
-        QTableWidgetItem *name = new QTableWidgetItem(QString::fromLatin1(p.name));
+        BOBUIableWidgetItem *name = new BOBUIableWidgetItem(QString::fromLatin1(p.name));
         tw->setItem(i, 0, name);
-        QTableWidgetItem *address = new QTableWidgetItem(QString::fromLatin1(p.address));
+        BOBUIableWidgetItem *address = new BOBUIableWidgetItem(QString::fromLatin1(p.address));
         tw->setItem(i, 1, address);
     }
     m_window->addWidget(tw);
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
@@ -779,16 +779,16 @@ void tst_QAccessibilityMac::tableViewTest()
 
 void tst_QAccessibilityMac::treeViewTest()
 {
-    QTreeWidget *tw = new QTreeWidget;
+    BOBUIreeWidget *tw = new BOBUIreeWidget;
     tw->setColumnCount(2);
-    QTreeWidgetItem *root = new QTreeWidgetItem(tw, {"/", "0"});
+    BOBUIreeWidgetItem *root = new BOBUIreeWidgetItem(tw, {"/", "0"});
     root->setExpanded(false);
-    QTreeWidgetItem *users = new QTreeWidgetItem(root,{ "Users", "1"});
-    (void)new QTreeWidgetItem(root, {"Applications", "2"});
-    QTreeWidgetItem *lastChild = new QTreeWidgetItem(root, {"Libraries", "3"});
+    BOBUIreeWidgetItem *users = new BOBUIreeWidgetItem(root,{ "Users", "1"});
+    (void)new BOBUIreeWidgetItem(root, {"Applications", "2"});
+    BOBUIreeWidgetItem *lastChild = new BOBUIreeWidgetItem(root, {"Libraries", "3"});
 
     m_window->addWidget(tw);
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
@@ -885,14 +885,14 @@ void tst_QAccessibilityMac::treeViewTest()
 
 void tst_QAccessibilityMac::tabBarTest()
 {
-    QTabBar *tbar = new QTabBar;
+    BOBUIabBar *tbar = new BOBUIabBar;
     static const unsigned int nTabs = 20;
     for (unsigned int i = 0; i < nTabs; ++i)
         tbar->addTab(QString::number(i));
     tbar->setUsesScrollButtons(true);
 
     m_window->addWidget(tbar);
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
@@ -937,9 +937,9 @@ void tst_QAccessibilityMac::tabBarTest()
 
 void tst_QAccessibilityMac::windowTest()
 {
-    QTextEdit *textEdit = new QTextEdit;
+    BOBUIextEdit *textEdit = new BOBUIextEdit;
     m_window->addWidget(textEdit);
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     QCoreApplication::processEvents();
 
     TestAXObject *appObject = [TestAXObject getApplicationAXObject];
@@ -965,5 +965,5 @@ void tst_QAccessibilityMac::windowTest()
     QVERIFY(axWindow);
 }
 
-QTEST_MAIN(tst_QAccessibilityMac)
+BOBUIEST_MAIN(tst_QAccessibilityMac)
 #include "tst_qaccessibilitymac.moc"

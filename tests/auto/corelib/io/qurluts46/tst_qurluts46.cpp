@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QUrl>
-#include <QtCore/QFile>
-#include <QTest>
+#include <BobUICore/QUrl>
+#include <BobUICore/QFile>
+#include <BOBUIest>
 #include <QSet>
 #include <QByteArray>
 #include <algorithm>
@@ -69,13 +69,13 @@ static QString postProcessField(const QString &field)
 
 void tst_QUrlUts46::idnaTestV2_data()
 {
-    QTest::addColumn<QString>("source");
-    QTest::addColumn<QString>("toUnicode");
-    QTest::addColumn<bool>("toUnicodeOk");
-    QTest::addColumn<QString>("toAsciiN");
-    QTest::addColumn<bool>("toAsciiNOk");
-    QTest::addColumn<QString>("toAsciiT");
-    QTest::addColumn<bool>("toAsciiTOk");
+    BOBUIest::addColumn<QString>("source");
+    BOBUIest::addColumn<QString>("toUnicode");
+    BOBUIest::addColumn<bool>("toUnicodeOk");
+    BOBUIest::addColumn<QString>("toAsciiN");
+    BOBUIest::addColumn<bool>("toAsciiNOk");
+    BOBUIest::addColumn<QString>("toAsciiT");
+    BOBUIest::addColumn<bool>("toAsciiTOk");
 
     QFile dataFile(QFINDTESTDATA("testdata/IdnaTestV2.txt"));
     qDebug() << "Data file:" << dataFile.fileName();
@@ -117,7 +117,7 @@ void tst_QUrlUts46::idnaTestV2_data()
         QString toAsciiT = fields[5].isNull() ? toAsciiN : fields[5];
         bool toAsciiTOk = isToAsciiOk(fields[6], toAsciiNOk);
 
-        QTest::addRow("line %u", lineNo) << source << toUnicode << toUnicodeOk << toAsciiN
+        BOBUIest::addRow("line %u", lineNo) << source << toUnicode << toUnicodeOk << toAsciiN
                                          << toAsciiNOk << toAsciiT << toAsciiTOk;
     }
 }
@@ -135,7 +135,7 @@ void tst_QUrlUts46::idnaTestV2()
 #define TEST_TRAILING_EMPTY_ROOT(x)                                                               \
     do {                                                                                          \
         if ((x).endsWith(u".")) {                                                                 \
-            QEXPECT_FAIL("", "Qt doesn't yet reject domain names with trailing empty root label", \
+            QEXPECT_FAIL("", "BobUI doesn't yet reject domain names with trailing empty root label", \
                          Abort);                                                                  \
         }                                                                                         \
     } while (false)
@@ -167,6 +167,6 @@ void tst_QUrlUts46::idnaTestV2()
         QCOMPARE(normalized, toAceN);
 }
 
-QTEST_APPLESS_MAIN(tst_QUrlUts46)
+BOBUIEST_APPLESS_MAIN(tst_QUrlUts46)
 
 #include "tst_qurluts46.moc"

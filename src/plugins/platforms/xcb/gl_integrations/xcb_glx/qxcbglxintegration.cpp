@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbglxintegration.h"
 
-#if QT_CONFIG(xcb_glx)
+#if BOBUI_CONFIG(xcb_glx)
 #include <xcb/glx.h>
 #endif
 
@@ -13,9 +13,9 @@
 #include "qxcbscreen.h"
 #include "qglxintegration.h"
 
-#include <QtCore/QVersionNumber>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/private/qopenglcontext_p.h>
+#include <BobUICore/QVersionNumber>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/private/qopenglcontext_p.h>
 
 #include "qxcbglxnativeinterfacehandler.h"
 
@@ -23,11 +23,11 @@
 #include <X11/Xlibint.h>
 #undef register
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(xcb_glx)
-  #define QT_XCB_GLX_REQUIRED_MAJOR 1
-  #define QT_XCB_GLX_REQUIRED_MINOR 3
+#if BOBUI_CONFIG(xcb_glx)
+  #define BOBUI_XCB_GLX_REQUIRED_MAJOR 1
+  #define BOBUI_XCB_GLX_REQUIRED_MINOR 3
 
   #if XCB_GLX_MAJOR_VERSION == 1 && XCB_GLX_MINOR_VERSION < 4
     #define XCB_GLX_BUFFER_SWAP_COMPLETE 1
@@ -72,7 +72,7 @@ QXcbGlxIntegration::~QXcbGlxIntegration()
 bool QXcbGlxIntegration::initialize(QXcbConnection *connection)
 {
     m_connection = connection;
-#if QT_CONFIG(xcb_glx)
+#if BOBUI_CONFIG(xcb_glx)
 
     const xcb_query_extension_reply_t *reply = xcb_get_extension_data(m_connection->xcb_connection(), &xcb_glx_id);
     if (!reply || !reply->present)
@@ -85,7 +85,7 @@ bool QXcbGlxIntegration::initialize(QXcbConnection *connection)
                                   XCB_GLX_MINOR_VERSION);
     if ((!xglx_query)
         || (QVersionNumber(xglx_query->major_version, xglx_query->minor_version)
-            < QVersionNumber(QT_XCB_GLX_REQUIRED_MAJOR, QT_XCB_GLX_REQUIRED_MINOR))) {
+            < QVersionNumber(BOBUI_XCB_GLX_REQUIRED_MAJOR, BOBUI_XCB_GLX_REQUIRED_MINOR))) {
         qCWarning(lcQpaGl) << "QXcbConnection: Failed to initialize GLX";
         return false;
     }
@@ -111,7 +111,7 @@ bool QXcbGlxIntegration::handleXcbEvent(xcb_generic_event_t *event, uint respons
         XEvent dummy;
         event->sequence = LastKnownRequestProcessed(xdisplay);
         if (proc(xdisplay, &dummy, (xEvent*)event)) {
-#if QT_CONFIG(xcb_glx)
+#if BOBUI_CONFIG(xcb_glx)
             // DRI2 clients don't receive GLXBufferSwapComplete events on the wire.
             // Instead the GLX event is synthesized from the DRI2BufferSwapComplete event
             // by DRI2WireToEvent(). For an application to be able to see the event
@@ -224,4 +224,4 @@ bool QXcbGlxIntegration::supportsSwitchableWidgetComposition() const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

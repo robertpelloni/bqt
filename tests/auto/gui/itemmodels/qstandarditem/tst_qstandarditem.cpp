@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <QStandardItem>
@@ -49,12 +49,12 @@ private slots:
 void tst_QStandardItem::clearData()
 {
     QStandardItem item;
-    item.setData(QStringLiteral("Test"), Qt::EditRole);
-    item.setData(5, Qt::UserRole);
+    item.setData(QStringLiteral("Test"), BobUI::EditRole);
+    item.setData(5, BobUI::UserRole);
     item.clearData();
-    QCOMPARE(item.data(Qt::EditRole), QVariant());
-    QCOMPARE(item.data(Qt::UserRole), QVariant());
-    QCOMPARE(item.data(Qt::DisplayRole), QVariant());
+    QCOMPARE(item.data(BobUI::EditRole), QVariant());
+    QCOMPARE(item.data(BobUI::UserRole), QVariant());
+    QCOMPARE(item.data(BobUI::DisplayRole), QVariant());
 }
 
 void tst_QStandardItem::ctor()
@@ -74,7 +74,7 @@ void tst_QStandardItem::textCtor()
 void tst_QStandardItem::iconTextCtor()
 {
     QPixmap pixmap(32, 32);
-    pixmap.fill(Qt::red);
+    pixmap.fill(BobUI::red);
     QIcon icon(pixmap);
     QLatin1String text("text");
     QStandardItem item(icon, text);
@@ -103,7 +103,7 @@ void tst_QStandardItem::getSetData()
             QCOMPARE(item.text(), text);
 
             QPixmap pixmap(32, 32);
-            pixmap.fill((i == 1) ? Qt::red : Qt::green);
+            pixmap.fill((i == 1) ? BobUI::red : BobUI::green);
             QIcon icon(pixmap);
             item.setIcon(icon);
             QCOMPARE(item.icon(), icon);
@@ -112,13 +112,13 @@ void tst_QStandardItem::getSetData()
             item.setToolTip(toolTip);
             QCOMPARE(item.toolTip(), toolTip);
 
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
             QString statusTip = QLatin1String("statusTip ") + iS;
             item.setStatusTip(statusTip);
             QCOMPARE(item.statusTip(), statusTip);
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
             QString whatsThis = QLatin1String("whatsThis ") + iS;
             item.setWhatsThis(whatsThis);
             QCOMPARE(item.whatsThis(), whatsThis);
@@ -132,21 +132,21 @@ void tst_QStandardItem::getSetData()
             item.setFont(font);
             QCOMPARE(item.font(), font);
 
-            Qt::Alignment textAlignment((i == 1)
-                                        ? Qt::AlignLeft|Qt::AlignVCenter
-                                        : Qt::AlignRight);
+            BobUI::Alignment textAlignment((i == 1)
+                                        ? BobUI::AlignLeft|BobUI::AlignVCenter
+                                        : BobUI::AlignRight);
             item.setTextAlignment(textAlignment);
             QCOMPARE(item.textAlignment(), textAlignment);
 
-            QColor backgroundColor((i == 1) ? Qt::blue : Qt::yellow);
+            QColor backgroundColor((i == 1) ? BobUI::blue : BobUI::yellow);
             item.setBackground(backgroundColor);
             QCOMPARE(item.background().color(), backgroundColor);
 
-            QColor textColor((i == 1) ? Qt::green : Qt::cyan);
+            QColor textColor((i == 1) ? BobUI::green : BobUI::cyan);
             item.setForeground(textColor);
             QCOMPARE(item.foreground().color(), textColor);
 
-            Qt::CheckState checkState((i == 1) ? Qt::PartiallyChecked : Qt::Checked);
+            BobUI::CheckState checkState((i == 1) ? BobUI::PartiallyChecked : BobUI::Checked);
             item.setCheckState(checkState);
             QCOMPARE(item.checkState(), checkState);
 
@@ -161,10 +161,10 @@ void tst_QStandardItem::getSetData()
             QCOMPARE(item.text(), text);
             QCOMPARE(item.icon(), icon);
             QCOMPARE(item.toolTip(), toolTip);
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
             QCOMPARE(item.statusTip(), statusTip);
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
             QCOMPARE(item.whatsThis(), whatsThis);
 #endif
             QCOMPARE(item.sizeHint(), sizeHint);
@@ -176,55 +176,55 @@ void tst_QStandardItem::getSetData()
             QCOMPARE(item.accessibleText(), accessibleText);
             QCOMPARE(item.accessibleDescription(), accessibleDescription);
 
-            QCOMPARE(qvariant_cast<QString>(item.data(Qt::DisplayRole)), text);
-            QCOMPARE(qvariant_cast<QIcon>(item.data(Qt::DecorationRole)), icon);
-            QCOMPARE(qvariant_cast<QString>(item.data(Qt::ToolTipRole)), toolTip);
-#ifndef QT_NO_STATUSTIP
-            QCOMPARE(qvariant_cast<QString>(item.data(Qt::StatusTipRole)), statusTip);
+            QCOMPARE(qvariant_cast<QString>(item.data(BobUI::DisplayRole)), text);
+            QCOMPARE(qvariant_cast<QIcon>(item.data(BobUI::DecorationRole)), icon);
+            QCOMPARE(qvariant_cast<QString>(item.data(BobUI::ToolTipRole)), toolTip);
+#ifndef BOBUI_NO_STATUSTIP
+            QCOMPARE(qvariant_cast<QString>(item.data(BobUI::StatusTipRole)), statusTip);
 #endif
-#if QT_CONFIG(whatsthis)
-            QCOMPARE(qvariant_cast<QString>(item.data(Qt::WhatsThisRole)), whatsThis);
+#if BOBUI_CONFIG(whatsthis)
+            QCOMPARE(qvariant_cast<QString>(item.data(BobUI::WhatsThisRole)), whatsThis);
 #endif
-            QCOMPARE(qvariant_cast<QSize>(item.data(Qt::SizeHintRole)), sizeHint);
-            QCOMPARE(qvariant_cast<QFont>(item.data(Qt::FontRole)), font);
-            QCOMPARE(qvariant_cast<int>(item.data(Qt::TextAlignmentRole)), int(textAlignment));
-            QCOMPARE(qvariant_cast<QBrush>(item.data(Qt::BackgroundRole)), QBrush(backgroundColor));
-            QCOMPARE(qvariant_cast<QBrush>(item.data(Qt::ForegroundRole)), QBrush(textColor));
-            QCOMPARE(qvariant_cast<int>(item.data(Qt::CheckStateRole)), int(checkState));
-            QCOMPARE(qvariant_cast<QString>(item.data(Qt::AccessibleTextRole)), accessibleText);
-            QCOMPARE(qvariant_cast<QString>(item.data(Qt::AccessibleDescriptionRole)), accessibleDescription);
+            QCOMPARE(qvariant_cast<QSize>(item.data(BobUI::SizeHintRole)), sizeHint);
+            QCOMPARE(qvariant_cast<QFont>(item.data(BobUI::FontRole)), font);
+            QCOMPARE(qvariant_cast<int>(item.data(BobUI::TextAlignmentRole)), int(textAlignment));
+            QCOMPARE(qvariant_cast<QBrush>(item.data(BobUI::BackgroundRole)), QBrush(backgroundColor));
+            QCOMPARE(qvariant_cast<QBrush>(item.data(BobUI::ForegroundRole)), QBrush(textColor));
+            QCOMPARE(qvariant_cast<int>(item.data(BobUI::CheckStateRole)), int(checkState));
+            QCOMPARE(qvariant_cast<QString>(item.data(BobUI::AccessibleTextRole)), accessibleText);
+            QCOMPARE(qvariant_cast<QString>(item.data(BobUI::AccessibleDescriptionRole)), accessibleDescription);
 
             item.setBackground(pixmap);
             QCOMPARE(item.background().texture(), pixmap);
-            QCOMPARE(qvariant_cast<QBrush>(item.data(Qt::BackgroundRole)).texture(), pixmap);
+            QCOMPARE(qvariant_cast<QBrush>(item.data(BobUI::BackgroundRole)).texture(), pixmap);
         }
-        item.setData(QVariant(), Qt::DisplayRole);
-        item.setData(QVariant(), Qt::DecorationRole);
-        item.setData(QVariant(), Qt::ToolTipRole);
-        item.setData(QVariant(), Qt::StatusTipRole);
-        item.setData(QVariant(), Qt::WhatsThisRole);
-        item.setData(QVariant(), Qt::SizeHintRole);
-        item.setData(QVariant(), Qt::FontRole);
-        item.setData(QVariant(), Qt::TextAlignmentRole);
-        item.setData(QVariant(), Qt::BackgroundRole);
-        item.setData(QVariant(), Qt::ForegroundRole);
-        item.setData(QVariant(), Qt::CheckStateRole);
-        item.setData(QVariant(), Qt::AccessibleTextRole);
-        item.setData(QVariant(), Qt::AccessibleDescriptionRole);
+        item.setData(QVariant(), BobUI::DisplayRole);
+        item.setData(QVariant(), BobUI::DecorationRole);
+        item.setData(QVariant(), BobUI::ToolTipRole);
+        item.setData(QVariant(), BobUI::StatusTipRole);
+        item.setData(QVariant(), BobUI::WhatsThisRole);
+        item.setData(QVariant(), BobUI::SizeHintRole);
+        item.setData(QVariant(), BobUI::FontRole);
+        item.setData(QVariant(), BobUI::TextAlignmentRole);
+        item.setData(QVariant(), BobUI::BackgroundRole);
+        item.setData(QVariant(), BobUI::ForegroundRole);
+        item.setData(QVariant(), BobUI::CheckStateRole);
+        item.setData(QVariant(), BobUI::AccessibleTextRole);
+        item.setData(QVariant(), BobUI::AccessibleDescriptionRole);
 
-        QCOMPARE(item.data(Qt::DisplayRole), QVariant());
-        QCOMPARE(item.data(Qt::DecorationRole), QVariant());
-        QCOMPARE(item.data(Qt::ToolTipRole), QVariant());
-        QCOMPARE(item.data(Qt::StatusTipRole), QVariant());
-        QCOMPARE(item.data(Qt::WhatsThisRole), QVariant());
-        QCOMPARE(item.data(Qt::SizeHintRole), QVariant());
-        QCOMPARE(item.data(Qt::FontRole), QVariant());
-        QCOMPARE(item.data(Qt::TextAlignmentRole), QVariant());
-        QCOMPARE(item.data(Qt::BackgroundRole), QVariant());
-        QCOMPARE(item.data(Qt::ForegroundRole), QVariant());
-        QCOMPARE(item.data(Qt::CheckStateRole), QVariant());
-        QCOMPARE(item.data(Qt::AccessibleTextRole), QVariant());
-        QCOMPARE(item.data(Qt::AccessibleDescriptionRole), QVariant());
+        QCOMPARE(item.data(BobUI::DisplayRole), QVariant());
+        QCOMPARE(item.data(BobUI::DecorationRole), QVariant());
+        QCOMPARE(item.data(BobUI::ToolTipRole), QVariant());
+        QCOMPARE(item.data(BobUI::StatusTipRole), QVariant());
+        QCOMPARE(item.data(BobUI::WhatsThisRole), QVariant());
+        QCOMPARE(item.data(BobUI::SizeHintRole), QVariant());
+        QCOMPARE(item.data(BobUI::FontRole), QVariant());
+        QCOMPARE(item.data(BobUI::TextAlignmentRole), QVariant());
+        QCOMPARE(item.data(BobUI::BackgroundRole), QVariant());
+        QCOMPARE(item.data(BobUI::ForegroundRole), QVariant());
+        QCOMPARE(item.data(BobUI::CheckStateRole), QVariant());
+        QCOMPARE(item.data(BobUI::AccessibleTextRole), QVariant());
+        QCOMPARE(item.data(BobUI::AccessibleDescriptionRole), QVariant());
     }
 }
 
@@ -233,69 +233,69 @@ void tst_QStandardItem::getSetFlags()
     QStandardItem item;
     item.setEnabled(true);
     QVERIFY(item.isEnabled());
-    QVERIFY(item.flags() & Qt::ItemIsEnabled);
+    QVERIFY(item.flags() & BobUI::ItemIsEnabled);
     item.setEditable(true);
     QVERIFY(item.isEditable());
-    QVERIFY(item.flags() & Qt::ItemIsEditable);
+    QVERIFY(item.flags() & BobUI::ItemIsEditable);
     item.setSelectable(true);
     QVERIFY(item.isSelectable());
-    QVERIFY(item.flags() & Qt::ItemIsSelectable);
+    QVERIFY(item.flags() & BobUI::ItemIsSelectable);
     item.setCheckable(true);
     QVERIFY(item.isCheckable());
-    QCOMPARE(item.checkState(), Qt::Unchecked);
-    QVERIFY(item.flags() & Qt::ItemIsUserCheckable);
+    QCOMPARE(item.checkState(), BobUI::Unchecked);
+    QVERIFY(item.flags() & BobUI::ItemIsUserCheckable);
     item.setUserTristate(true);
     QVERIFY(item.isUserTristate());
-    QVERIFY(item.flags() & Qt::ItemIsUserTristate);
+    QVERIFY(item.flags() & BobUI::ItemIsUserTristate);
     item.setAutoTristate(true);
     QVERIFY(item.isAutoTristate());
-    QVERIFY(item.flags() & Qt::ItemIsAutoTristate);
-#if QT_CONFIG(draganddrop)
+    QVERIFY(item.flags() & BobUI::ItemIsAutoTristate);
+#if BOBUI_CONFIG(draganddrop)
     item.setDragEnabled(true);
     QVERIFY(item.isDragEnabled());
-    QVERIFY(item.flags() & Qt::ItemIsDragEnabled);
+    QVERIFY(item.flags() & BobUI::ItemIsDragEnabled);
     item.setDropEnabled(true);
     QVERIFY(item.isDropEnabled());
-    QVERIFY(item.flags() & Qt::ItemIsDropEnabled);
+    QVERIFY(item.flags() & BobUI::ItemIsDropEnabled);
 #endif
 
     QVERIFY(item.isEnabled());
     item.setEnabled(false);
     QVERIFY(!item.isEnabled());
-    QVERIFY(!(item.flags() & Qt::ItemIsEnabled));
+    QVERIFY(!(item.flags() & BobUI::ItemIsEnabled));
     QVERIFY(item.isEditable());
     item.setEditable(false);
     QVERIFY(!item.isEditable());
-    QVERIFY(!(item.flags() & Qt::ItemIsEditable));
+    QVERIFY(!(item.flags() & BobUI::ItemIsEditable));
     QVERIFY(item.isSelectable());
     item.setSelectable(false);
     QVERIFY(!item.isSelectable());
-    QVERIFY(!(item.flags() & Qt::ItemIsSelectable));
+    QVERIFY(!(item.flags() & BobUI::ItemIsSelectable));
     QVERIFY(item.isCheckable());
     item.setCheckable(false);
     QVERIFY(!item.isCheckable());
-    QVERIFY(!(item.flags() & Qt::ItemIsUserCheckable));
+    QVERIFY(!(item.flags() & BobUI::ItemIsUserCheckable));
     item.setUserTristate(false);
     QVERIFY(!item.isUserTristate());
-    QVERIFY(!(item.flags() & Qt::ItemIsUserTristate));
+    QVERIFY(!(item.flags() & BobUI::ItemIsUserTristate));
     item.setAutoTristate(false);
     QVERIFY(!item.isAutoTristate());
-    QVERIFY(!(item.flags() & Qt::ItemIsAutoTristate));
-#if QT_CONFIG(draganddrop)
+    QVERIFY(!(item.flags() & BobUI::ItemIsAutoTristate));
+#if BOBUI_CONFIG(draganddrop)
     QVERIFY(item.isDragEnabled());
     item.setDragEnabled(false);
     QVERIFY(!item.isDragEnabled());
-    QVERIFY(!(item.flags() & Qt::ItemIsDragEnabled));
+    QVERIFY(!(item.flags() & BobUI::ItemIsDragEnabled));
     QVERIFY(item.isDropEnabled());
     item.setDropEnabled(false);
     QVERIFY(!item.isDropEnabled());
-    QVERIFY(!(item.flags() & Qt::ItemIsDropEnabled));
+    QVERIFY(!(item.flags() & BobUI::ItemIsDropEnabled));
 #endif
 
     item.setCheckable(false);
-    item.setCheckState(Qt::Checked);
+    item.setCheckState(BobUI::Checked);
     item.setCheckable(true);
-    QCOMPARE(item.checkState(), Qt::Checked);
+    QCOMPARE(item.checkState(), BobUI::Checked);
 }
 
 void tst_QStandardItem::getSetRowAndColumnCount()
@@ -340,13 +340,13 @@ void tst_QStandardItem::getSetRowAndColumnCount()
 
 void tst_QStandardItem::getSetChild_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("row");
-    QTest::addColumn<int>("column");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<int>("column");
 
-    QTest::newRow("0x0 children, child at (-1,-1)") << 0 << 0 << -1 << -1;
-    QTest::newRow("0x0 children, child at (0,0)") << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("0x0 children, child at (-1,-1)") << 0 << 0 << -1 << -1;
+    BOBUIest::newRow("0x0 children, child at (0,0)") << 0 << 0 << 0 << 0;
 }
 
 void tst_QStandardItem::getSetChild()
@@ -408,35 +408,35 @@ void tst_QStandardItem::parent()
 
 void tst_QStandardItem::insertColumn_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("column");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("column");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("insert 0 at -1 in 0x0") << 0 << 0 << -1 << 0;
-    QTest::newRow("insert 0 at 0 in 0x0") << 0 << 0 << 0 << 0;
-    QTest::newRow("insert 0 at 0 in 1x0") << 1 << 0 << 0 << 0;
-    QTest::newRow("insert 0 at 0 in 0x1") << 0 << 1 << 0 << 0;
-    QTest::newRow("insert 0 at 0 in 1x1") << 1 << 1 << 0 << 0;
-    QTest::newRow("insert 1 at -1 in 0x0") << 0 << 0 << -1 << 1;
-    QTest::newRow("insert 1 at 0 in 0x0") << 0 << 0 << 0 << 1;
-    QTest::newRow("insert 1 at 0 in 1x0") << 1 << 0 << 0 << 1;
-    QTest::newRow("insert 1 at 0 in 0x1") << 0 << 1 << 0 << 1;
-    QTest::newRow("insert 1 at 0 in 1x1") << 1 << 1 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 1x1") << 1 << 1 << 1 << 1;
-    QTest::newRow("insert 1 at 0 in 2x1") << 2 << 1 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 2x1") << 2 << 1 << 1 << 1;
-    QTest::newRow("insert 1 at 0 in 1x2") << 1 << 2 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 1x2") << 1 << 2 << 1 << 1;
-    QTest::newRow("insert 1 at 0 in 8x4") << 8 << 4 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 8x4") << 8 << 4 << 1 << 1;
-    QTest::newRow("insert 1 at 2 in 8x4") << 8 << 4 << 2 << 1;
-    QTest::newRow("insert 1 at 3 in 8x4") << 8 << 4 << 3 << 1;
-    QTest::newRow("insert 1 at 4 in 8x4") << 8 << 4 << 4 << 1;
-    QTest::newRow("insert 4 at 0 in 8x4") << 8 << 4 << 0 << 4;
-    QTest::newRow("insert 4 at 4 in 8x4") << 8 << 4 << 4 << 4;
-    QTest::newRow("insert 6 at 0 in 8x4") << 8 << 4 << 0 << 6;
-    QTest::newRow("insert 6 at 4 in 8x4") << 8 << 4 << 4 << 6;
+    BOBUIest::newRow("insert 0 at -1 in 0x0") << 0 << 0 << -1 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 0x0") << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 1x0") << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 0x1") << 0 << 1 << 0 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 1x1") << 1 << 1 << 0 << 0;
+    BOBUIest::newRow("insert 1 at -1 in 0x0") << 0 << 0 << -1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 0x0") << 0 << 0 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 1x0") << 1 << 0 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 0x1") << 0 << 1 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 1x1") << 1 << 1 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 1x1") << 1 << 1 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 2x1") << 2 << 1 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 2x1") << 2 << 1 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 1x2") << 1 << 2 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 1x2") << 1 << 2 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 8x4") << 8 << 4 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 8x4") << 8 << 4 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 2 in 8x4") << 8 << 4 << 2 << 1;
+    BOBUIest::newRow("insert 1 at 3 in 8x4") << 8 << 4 << 3 << 1;
+    BOBUIest::newRow("insert 1 at 4 in 8x4") << 8 << 4 << 4 << 1;
+    BOBUIest::newRow("insert 4 at 0 in 8x4") << 8 << 4 << 0 << 4;
+    BOBUIest::newRow("insert 4 at 4 in 8x4") << 8 << 4 << 4 << 4;
+    BOBUIest::newRow("insert 6 at 0 in 8x4") << 8 << 4 << 0 << 6;
+    BOBUIest::newRow("insert 6 at 4 in 8x4") << 8 << 4 << 4 << 6;
 }
 
 void tst_QStandardItem::insertColumn()
@@ -472,35 +472,35 @@ void tst_QStandardItem::insertColumn()
 
 void tst_QStandardItem::insertRow_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("row");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("insert 0 at -1 in 0x0") << 0 << 0 << -1 << 0;
-    QTest::newRow("insert 0 at 0 in 0x0") << 0 << 0 << 0 << 0;
-    QTest::newRow("insert 0 at 0 in 1x0") << 1 << 0 << 0 << 0;
-    QTest::newRow("insert 0 at 0 in 0x1") << 0 << 1 << 0 << 0;
-    QTest::newRow("insert 0 at 0 in 1x1") << 1 << 1 << 0 << 0;
-    QTest::newRow("insert 1 at -1 in 0x0") << 0 << 0 << -1 << 1;
-    QTest::newRow("insert 1 at 0 in 0x0") << 0 << 0 << 0 << 1;
-    QTest::newRow("insert 1 at 0 in 1x0") << 1 << 0 << 0 << 1;
-    QTest::newRow("insert 1 at 0 in 0x1") << 0 << 1 << 0 << 1;
-    QTest::newRow("insert 1 at 0 in 1x1") << 1 << 1 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 1x1") << 1 << 1 << 1 << 1;
-    QTest::newRow("insert 1 at 0 in 2x1") << 2 << 1 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 2x1") << 2 << 1 << 1 << 1;
-    QTest::newRow("insert 1 at 0 in 1x2") << 1 << 2 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 1x2") << 1 << 2 << 1 << 1;
-    QTest::newRow("insert 1 at 0 in 4x8") << 4 << 8 << 0 << 1;
-    QTest::newRow("insert 1 at 1 in 4x8") << 4 << 8 << 1 << 1;
-    QTest::newRow("insert 1 at 2 in 4x8") << 4 << 8 << 2 << 1;
-    QTest::newRow("insert 1 at 3 in 4x8") << 4 << 8 << 3 << 1;
-    QTest::newRow("insert 1 at 4 in 4x8") << 4 << 8 << 4 << 1;
-    QTest::newRow("insert 4 at 0 in 4x8") << 4 << 8 << 0 << 4;
-    QTest::newRow("insert 4 at 4 in 4x8") << 4 << 8 << 4 << 4;
-    QTest::newRow("insert 6 at 0 in 4x8") << 4 << 8 << 0 << 6;
-    QTest::newRow("insert 6 at 4 in 4x8") << 4 << 8 << 4 << 6;
+    BOBUIest::newRow("insert 0 at -1 in 0x0") << 0 << 0 << -1 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 0x0") << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 1x0") << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 0x1") << 0 << 1 << 0 << 0;
+    BOBUIest::newRow("insert 0 at 0 in 1x1") << 1 << 1 << 0 << 0;
+    BOBUIest::newRow("insert 1 at -1 in 0x0") << 0 << 0 << -1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 0x0") << 0 << 0 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 1x0") << 1 << 0 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 0x1") << 0 << 1 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 1x1") << 1 << 1 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 1x1") << 1 << 1 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 2x1") << 2 << 1 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 2x1") << 2 << 1 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 1x2") << 1 << 2 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 1x2") << 1 << 2 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 0 in 4x8") << 4 << 8 << 0 << 1;
+    BOBUIest::newRow("insert 1 at 1 in 4x8") << 4 << 8 << 1 << 1;
+    BOBUIest::newRow("insert 1 at 2 in 4x8") << 4 << 8 << 2 << 1;
+    BOBUIest::newRow("insert 1 at 3 in 4x8") << 4 << 8 << 3 << 1;
+    BOBUIest::newRow("insert 1 at 4 in 4x8") << 4 << 8 << 4 << 1;
+    BOBUIest::newRow("insert 4 at 0 in 4x8") << 4 << 8 << 0 << 4;
+    BOBUIest::newRow("insert 4 at 4 in 4x8") << 4 << 8 << 4 << 4;
+    BOBUIest::newRow("insert 6 at 0 in 4x8") << 4 << 8 << 0 << 6;
+    BOBUIest::newRow("insert 6 at 4 in 4x8") << 4 << 8 << 4 << 6;
 }
 
 void tst_QStandardItem::insertRow()
@@ -536,12 +536,12 @@ void tst_QStandardItem::insertRow()
 
 void tst_QStandardItem::insertRows_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("insertAt");
-    QTest::addColumn<int>("insertCount");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("insertAt");
+    BOBUIest::addColumn<int>("insertCount");
 
-    QTest::newRow("insert {0,1} at 0 in 0x0") << 0 << 0 << 0 << 2;
+    BOBUIest::newRow("insert {0,1} at 0 in 0x0") << 0 << 0 << 0 << 2;
 }
 
 void tst_QStandardItem::insertRows()
@@ -563,38 +563,38 @@ void tst_QStandardItem::insertRows()
 
 void tst_QStandardItem::appendColumn_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("append 0 to 0x0") << 0 << 0 << 0;
-    QTest::newRow("append 1 to 0x0") << 0 << 0 << 1;
-    QTest::newRow("append 1 to 1x0") << 1 << 0 << 1;
-    QTest::newRow("append 1 to 0x1") << 0 << 1 << 1;
-    QTest::newRow("append 1 to 1x1") << 1 << 1 << 1;
-    QTest::newRow("append 1 to 2x0") << 2 << 0 << 1;
-    QTest::newRow("append 1 to 0x2") << 0 << 2 << 1;
-    QTest::newRow("append 1 to 2x1") << 2 << 1 << 1;
-    QTest::newRow("append 1 to 1x2") << 1 << 2 << 1;
-    QTest::newRow("append 1 to 2x2") << 2 << 2 << 1;
-    QTest::newRow("append 2 to 0x0") << 0 << 0 << 2;
-    QTest::newRow("append 2 to 1x0") << 1 << 0 << 2;
-    QTest::newRow("append 2 to 0x1") << 0 << 1 << 2;
-    QTest::newRow("append 2 to 1x1") << 1 << 1 << 2;
-    QTest::newRow("append 2 to 2x0") << 2 << 0 << 2;
-    QTest::newRow("append 2 to 0x2") << 0 << 2 << 2;
-    QTest::newRow("append 2 to 2x1") << 2 << 1 << 2;
-    QTest::newRow("append 2 to 1x2") << 1 << 2 << 2;
-    QTest::newRow("append 2 to 2x2") << 2 << 2 << 2;
-    QTest::newRow("append 3 to 2x1") << 2 << 1 << 3;
-    QTest::newRow("append 3 to 1x2") << 1 << 2 << 3;
-    QTest::newRow("append 3 to 2x2") << 2 << 2 << 3;
-    QTest::newRow("append 3 to 4x2") << 4 << 2 << 3;
-    QTest::newRow("append 3 to 2x4") << 2 << 4 << 3;
-    QTest::newRow("append 3 to 4x4") << 4 << 4 << 3;
-    QTest::newRow("append 7 to 4x2") << 4 << 2 << 7;
-    QTest::newRow("append 7 to 2x4") << 2 << 4 << 7;
-    QTest::newRow("append 7 to 4x4") << 4 << 4 << 7;
+    BOBUIest::newRow("append 0 to 0x0") << 0 << 0 << 0;
+    BOBUIest::newRow("append 1 to 0x0") << 0 << 0 << 1;
+    BOBUIest::newRow("append 1 to 1x0") << 1 << 0 << 1;
+    BOBUIest::newRow("append 1 to 0x1") << 0 << 1 << 1;
+    BOBUIest::newRow("append 1 to 1x1") << 1 << 1 << 1;
+    BOBUIest::newRow("append 1 to 2x0") << 2 << 0 << 1;
+    BOBUIest::newRow("append 1 to 0x2") << 0 << 2 << 1;
+    BOBUIest::newRow("append 1 to 2x1") << 2 << 1 << 1;
+    BOBUIest::newRow("append 1 to 1x2") << 1 << 2 << 1;
+    BOBUIest::newRow("append 1 to 2x2") << 2 << 2 << 1;
+    BOBUIest::newRow("append 2 to 0x0") << 0 << 0 << 2;
+    BOBUIest::newRow("append 2 to 1x0") << 1 << 0 << 2;
+    BOBUIest::newRow("append 2 to 0x1") << 0 << 1 << 2;
+    BOBUIest::newRow("append 2 to 1x1") << 1 << 1 << 2;
+    BOBUIest::newRow("append 2 to 2x0") << 2 << 0 << 2;
+    BOBUIest::newRow("append 2 to 0x2") << 0 << 2 << 2;
+    BOBUIest::newRow("append 2 to 2x1") << 2 << 1 << 2;
+    BOBUIest::newRow("append 2 to 1x2") << 1 << 2 << 2;
+    BOBUIest::newRow("append 2 to 2x2") << 2 << 2 << 2;
+    BOBUIest::newRow("append 3 to 2x1") << 2 << 1 << 3;
+    BOBUIest::newRow("append 3 to 1x2") << 1 << 2 << 3;
+    BOBUIest::newRow("append 3 to 2x2") << 2 << 2 << 3;
+    BOBUIest::newRow("append 3 to 4x2") << 4 << 2 << 3;
+    BOBUIest::newRow("append 3 to 2x4") << 2 << 4 << 3;
+    BOBUIest::newRow("append 3 to 4x4") << 4 << 4 << 3;
+    BOBUIest::newRow("append 7 to 4x2") << 4 << 2 << 7;
+    BOBUIest::newRow("append 7 to 2x4") << 2 << 4 << 7;
+    BOBUIest::newRow("append 7 to 4x4") << 4 << 4 << 7;
 }
 
 void tst_QStandardItem::appendColumn()
@@ -638,38 +638,38 @@ void tst_QStandardItem::appendColumn()
 
 void tst_QStandardItem::appendRow_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("append 0 to 0x0") << 0 << 0 << 0;
-    QTest::newRow("append 1 to 0x0") << 0 << 0 << 1;
-    QTest::newRow("append 1 to 1x0") << 1 << 0 << 1;
-    QTest::newRow("append 1 to 0x1") << 0 << 1 << 1;
-    QTest::newRow("append 1 to 1x1") << 1 << 1 << 1;
-    QTest::newRow("append 1 to 2x0") << 2 << 0 << 1;
-    QTest::newRow("append 1 to 0x2") << 0 << 2 << 1;
-    QTest::newRow("append 1 to 2x1") << 2 << 1 << 1;
-    QTest::newRow("append 1 to 1x2") << 1 << 2 << 1;
-    QTest::newRow("append 1 to 2x2") << 2 << 2 << 1;
-    QTest::newRow("append 2 to 0x0") << 0 << 0 << 2;
-    QTest::newRow("append 2 to 1x0") << 1 << 0 << 2;
-    QTest::newRow("append 2 to 0x1") << 0 << 1 << 2;
-    QTest::newRow("append 2 to 1x1") << 1 << 1 << 2;
-    QTest::newRow("append 2 to 2x0") << 2 << 0 << 2;
-    QTest::newRow("append 2 to 0x2") << 0 << 2 << 2;
-    QTest::newRow("append 2 to 2x1") << 2 << 1 << 2;
-    QTest::newRow("append 2 to 1x2") << 1 << 2 << 2;
-    QTest::newRow("append 2 to 2x2") << 2 << 2 << 2;
-    QTest::newRow("append 3 to 2x1") << 2 << 1 << 3;
-    QTest::newRow("append 3 to 1x2") << 1 << 2 << 3;
-    QTest::newRow("append 3 to 2x2") << 2 << 2 << 3;
-    QTest::newRow("append 3 to 4x2") << 4 << 2 << 3;
-    QTest::newRow("append 3 to 2x4") << 2 << 4 << 3;
-    QTest::newRow("append 3 to 4x4") << 4 << 4 << 3;
-    QTest::newRow("append 7 to 4x2") << 4 << 2 << 7;
-    QTest::newRow("append 7 to 2x4") << 2 << 4 << 7;
-    QTest::newRow("append 7 to 4x4") << 4 << 4 << 7;
+    BOBUIest::newRow("append 0 to 0x0") << 0 << 0 << 0;
+    BOBUIest::newRow("append 1 to 0x0") << 0 << 0 << 1;
+    BOBUIest::newRow("append 1 to 1x0") << 1 << 0 << 1;
+    BOBUIest::newRow("append 1 to 0x1") << 0 << 1 << 1;
+    BOBUIest::newRow("append 1 to 1x1") << 1 << 1 << 1;
+    BOBUIest::newRow("append 1 to 2x0") << 2 << 0 << 1;
+    BOBUIest::newRow("append 1 to 0x2") << 0 << 2 << 1;
+    BOBUIest::newRow("append 1 to 2x1") << 2 << 1 << 1;
+    BOBUIest::newRow("append 1 to 1x2") << 1 << 2 << 1;
+    BOBUIest::newRow("append 1 to 2x2") << 2 << 2 << 1;
+    BOBUIest::newRow("append 2 to 0x0") << 0 << 0 << 2;
+    BOBUIest::newRow("append 2 to 1x0") << 1 << 0 << 2;
+    BOBUIest::newRow("append 2 to 0x1") << 0 << 1 << 2;
+    BOBUIest::newRow("append 2 to 1x1") << 1 << 1 << 2;
+    BOBUIest::newRow("append 2 to 2x0") << 2 << 0 << 2;
+    BOBUIest::newRow("append 2 to 0x2") << 0 << 2 << 2;
+    BOBUIest::newRow("append 2 to 2x1") << 2 << 1 << 2;
+    BOBUIest::newRow("append 2 to 1x2") << 1 << 2 << 2;
+    BOBUIest::newRow("append 2 to 2x2") << 2 << 2 << 2;
+    BOBUIest::newRow("append 3 to 2x1") << 2 << 1 << 3;
+    BOBUIest::newRow("append 3 to 1x2") << 1 << 2 << 3;
+    BOBUIest::newRow("append 3 to 2x2") << 2 << 2 << 3;
+    BOBUIest::newRow("append 3 to 4x2") << 4 << 2 << 3;
+    BOBUIest::newRow("append 3 to 2x4") << 2 << 4 << 3;
+    BOBUIest::newRow("append 3 to 4x4") << 4 << 4 << 3;
+    BOBUIest::newRow("append 7 to 4x2") << 4 << 2 << 7;
+    BOBUIest::newRow("append 7 to 2x4") << 2 << 4 << 7;
+    BOBUIest::newRow("append 7 to 4x4") << 4 << 4 << 7;
 }
 
 void tst_QStandardItem::appendRow()
@@ -730,23 +730,23 @@ void tst_QStandardItem::takeChild()
 
 void tst_QStandardItem::takeColumn_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("column");
-    QTest::addColumn<bool>("expectSuccess");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("column");
+    BOBUIest::addColumn<bool>("expectSuccess");
 
-    QTest::newRow("take -1 from 0x0") << 0 << 0 << -1 << false;
-    QTest::newRow("take 0 from 0x0") << 0 << 0 << 0 << false;
-    QTest::newRow("take 0 from 1x0") << 1 << 0 << 0 << false;
-    QTest::newRow("take 0 from 0x1") << 0 << 1 << 0 << true;
-    QTest::newRow("take 1 from 0x1") << 0 << 1 << 1 << false;
-    QTest::newRow("take 0 from 1x1") << 1 << 1 << 0 << true;
-    QTest::newRow("take 1 from 1x1") << 0 << 1 << 1 << false;
-    QTest::newRow("take 0 from 4x1") << 4 << 1 << 0 << true;
-    QTest::newRow("take 1 from 4x1") << 4 << 1 << 1 << false;
-    QTest::newRow("take 0 from 4x8") << 4 << 8 << 0 << true;
-    QTest::newRow("take 7 from 4x8") << 4 << 8 << 7 << true;
-    QTest::newRow("take 8 from 4x8") << 4 << 8 << 8 << false;
+    BOBUIest::newRow("take -1 from 0x0") << 0 << 0 << -1 << false;
+    BOBUIest::newRow("take 0 from 0x0") << 0 << 0 << 0 << false;
+    BOBUIest::newRow("take 0 from 1x0") << 1 << 0 << 0 << false;
+    BOBUIest::newRow("take 0 from 0x1") << 0 << 1 << 0 << true;
+    BOBUIest::newRow("take 1 from 0x1") << 0 << 1 << 1 << false;
+    BOBUIest::newRow("take 0 from 1x1") << 1 << 1 << 0 << true;
+    BOBUIest::newRow("take 1 from 1x1") << 0 << 1 << 1 << false;
+    BOBUIest::newRow("take 0 from 4x1") << 4 << 1 << 0 << true;
+    BOBUIest::newRow("take 1 from 4x1") << 4 << 1 << 1 << false;
+    BOBUIest::newRow("take 0 from 4x8") << 4 << 8 << 0 << true;
+    BOBUIest::newRow("take 7 from 4x8") << 4 << 8 << 7 << true;
+    BOBUIest::newRow("take 8 from 4x8") << 4 << 8 << 8 << false;
 }
 
 void tst_QStandardItem::takeColumn()
@@ -791,23 +791,23 @@ void tst_QStandardItem::takeColumn()
 
 void tst_QStandardItem::takeRow_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("row");
-    QTest::addColumn<bool>("expectSuccess");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<bool>("expectSuccess");
 
-    QTest::newRow("take -1 from 0x0") << 0 << 0 << -1 << false;
-    QTest::newRow("take 0 from 0x0") << 0 << 0 << 0 << false;
-    QTest::newRow("take 0 from 1x0") << 1 << 0 << 0 << true;
-    QTest::newRow("take 0 from 0x1") << 0 << 1 << 0 << false;
-    QTest::newRow("take 1 from 0x1") << 0 << 1 << 1 << false;
-    QTest::newRow("take 0 from 1x1") << 1 << 1 << 0 << true;
-    QTest::newRow("take 1 from 1x1") << 0 << 1 << 1 << false;
-    QTest::newRow("take 0 from 1x4") << 1 << 4 << 0 << true;
-    QTest::newRow("take 1 from 1x4") << 1 << 4 << 1 << false;
-    QTest::newRow("take 0 from 8x4") << 8 << 4 << 0 << true;
-    QTest::newRow("take 7 from 8x4") << 8 << 4 << 7 << true;
-    QTest::newRow("take 8 from 8x4") << 8 << 4 << 8 << false;
+    BOBUIest::newRow("take -1 from 0x0") << 0 << 0 << -1 << false;
+    BOBUIest::newRow("take 0 from 0x0") << 0 << 0 << 0 << false;
+    BOBUIest::newRow("take 0 from 1x0") << 1 << 0 << 0 << true;
+    BOBUIest::newRow("take 0 from 0x1") << 0 << 1 << 0 << false;
+    BOBUIest::newRow("take 1 from 0x1") << 0 << 1 << 1 << false;
+    BOBUIest::newRow("take 0 from 1x1") << 1 << 1 << 0 << true;
+    BOBUIest::newRow("take 1 from 1x1") << 0 << 1 << 1 << false;
+    BOBUIest::newRow("take 0 from 1x4") << 1 << 4 << 0 << true;
+    BOBUIest::newRow("take 1 from 1x4") << 1 << 4 << 1 << false;
+    BOBUIest::newRow("take 0 from 8x4") << 8 << 4 << 0 << true;
+    BOBUIest::newRow("take 7 from 8x4") << 8 << 4 << 7 << true;
+    BOBUIest::newRow("take 8 from 8x4") << 8 << 4 << 8 << false;
 }
 
 void tst_QStandardItem::takeRow()
@@ -856,15 +856,15 @@ void tst_QStandardItem::streamItem()
     item.setText(QLatin1String("text"));
     item.setToolTip(QLatin1String("toolTip"));
     item.setStatusTip(QLatin1String("statusTip"));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     item.setWhatsThis(QLatin1String("whatsThis"));
 #endif
     item.setSizeHint(QSize(64, 48));
     item.setFont(QFont());
-    item.setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    item.setBackground(QColor(Qt::blue));
-    item.setForeground(QColor(Qt::green));
-    item.setCheckState(Qt::PartiallyChecked);
+    item.setTextAlignment(BobUI::AlignLeft|BobUI::AlignVCenter);
+    item.setBackground(QColor(BobUI::blue));
+    item.setForeground(QColor(BobUI::green));
+    item.setCheckState(BobUI::PartiallyChecked);
     item.setAccessibleText(QLatin1String("accessibleText"));
     item.setAccessibleDescription(QLatin1String("accessibleDescription"));
 
@@ -880,7 +880,7 @@ void tst_QStandardItem::streamItem()
         QCOMPARE(streamedItem.text(), item.text());
         QCOMPARE(streamedItem.toolTip(), item.toolTip());
         QCOMPARE(streamedItem.statusTip(), item.statusTip());
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         QCOMPARE(streamedItem.whatsThis(), item.whatsThis());
 #endif
         QCOMPARE(streamedItem.sizeHint(), item.sizeHint());
@@ -921,24 +921,24 @@ void tst_QStandardItem::clone()
     item.setText(QLatin1String("text"));
     item.setToolTip(QLatin1String("toolTip"));
     item.setStatusTip(QLatin1String("statusTip"));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     item.setWhatsThis(QLatin1String("whatsThis"));
 #endif
     item.setSizeHint(QSize(64, 48));
     item.setFont(QFont());
-    item.setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    item.setBackground(QColor(Qt::blue));
-    item.setForeground(QColor(Qt::green));
-    item.setCheckState(Qt::PartiallyChecked);
+    item.setTextAlignment(BobUI::AlignLeft|BobUI::AlignVCenter);
+    item.setBackground(QColor(BobUI::blue));
+    item.setForeground(QColor(BobUI::green));
+    item.setCheckState(BobUI::PartiallyChecked);
     item.setAccessibleText(QLatin1String("accessibleText"));
     item.setAccessibleDescription(QLatin1String("accessibleDescription"));
-    item.setFlags(Qt::ItemIsEnabled | Qt::ItemIsDropEnabled);
+    item.setFlags(BobUI::ItemIsEnabled | BobUI::ItemIsDropEnabled);
 
     QStandardItem *clone = item.clone();
     QCOMPARE(clone->text(), item.text());
     QCOMPARE(clone->toolTip(), item.toolTip());
     QCOMPARE(clone->statusTip(), item.statusTip());
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     QCOMPARE(clone->whatsThis(), item.whatsThis());
 #endif
     QCOMPARE(clone->sizeHint(), item.sizeHint());
@@ -975,7 +975,7 @@ void tst_QStandardItem::sortChildren()
         QSignalSpy layoutChangedSpy(
             model, &QAbstractItemModel::layoutChanged);
 
-        one->sortChildren(0, Qt::DescendingOrder);
+        one->sortChildren(0, BobUI::DescendingOrder);
         // verify sorted
         QCOMPARE(one->child(0)->text(), QLatin1String("c"));
         QCOMPARE(one->child(1)->text(), QLatin1String("b"));
@@ -985,7 +985,7 @@ void tst_QStandardItem::sortChildren()
         QCOMPARE(two->child(1)->text(), QLatin1String("d"));
         QCOMPARE(two->child(2)->text(), QLatin1String("e"));
 
-        two->sortChildren(0, Qt::AscendingOrder);
+        two->sortChildren(0, BobUI::AscendingOrder);
         // verify sorted
         QCOMPARE(two->child(0)->text(), QLatin1String("d"));
         QCOMPARE(two->child(1)->text(), QLatin1String("e"));
@@ -995,7 +995,7 @@ void tst_QStandardItem::sortChildren()
         QCOMPARE(one->child(1)->text(), QLatin1String("b"));
         QCOMPARE(one->child(2)->text(), QLatin1String("a"));
 
-        item->sortChildren(0, Qt::AscendingOrder);
+        item->sortChildren(0, BobUI::AscendingOrder);
         // verify everything sorted
         QCOMPARE(one->child(0)->text(), QLatin1String("a"));
         QCOMPARE(one->child(1)->text(), QLatin1String("b"));
@@ -1030,11 +1030,11 @@ public:
     void setData(const QVariant &value, int role) override
     {
         switch (role) {
-        case Qt::DisplayRole:
+        case BobUI::DisplayRole:
             QStandardItem::setData(value, role);
             break;
         default:
-            // setFlags() uses Qt::StandardItemFlagsRole to store the flags,
+            // setFlags() uses BobUI::StandardItemFlagsRole to store the flags,
             // which is an implementation detail not exposed in the docs.
             QStandardItem::setData(value, role);
             break;
@@ -1044,10 +1044,10 @@ public:
     QVariant data(int role) const override
     {
         switch (role) {
-        case Qt::DisplayRole:
+        case BobUI::DisplayRole:
             return QStandardItem::data(role);
         default:
-            // flags() uses Qt::StandardItemFlagsRole to get the flags, which is
+            // flags() uses BobUI::StandardItemFlagsRole to get the flags, which is
             // an implementation detail not exposed in the docs.
             return QStandardItem::data(role);
         }
@@ -1088,11 +1088,11 @@ void tst_QStandardItem::subclassing()
     QCOMPARE(item->child(1), child0);
     QCOMPARE(item->child(2), child1);
 
-    item->setFlags(Qt::ItemFlags{0});
-    QCOMPARE(item->flags(), Qt::ItemFlags{0});
+    item->setFlags(BobUI::ItemFlags{0});
+    QCOMPARE(item->flags(), BobUI::ItemFlags{0});
 
-    item->setFlags(Qt::ItemFlags{Qt::ItemIsEditable | Qt::ItemIsSelectable});
-    QCOMPARE(item->flags(), Qt::ItemFlags{Qt::ItemIsEditable | Qt::ItemIsSelectable});
+    item->setFlags(BobUI::ItemFlags{BobUI::ItemIsEditable | BobUI::ItemIsSelectable});
+    QCOMPARE(item->flags(), BobUI::ItemFlags{BobUI::ItemIsEditable | BobUI::ItemIsSelectable});
 }
 
 void tst_QStandardItem::lessThan()
@@ -1109,5 +1109,5 @@ void tst_QStandardItem::lessThan()
     QVERIFY(!(invalid1 < invalid2));
 }
 
-QTEST_MAIN(tst_QStandardItem)
+BOBUIEST_MAIN(tst_QStandardItem)
 #include "tst_qstandarditem.moc"

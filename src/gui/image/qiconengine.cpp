@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qiconengine.h"
 #include "qiconengine_p.h"
 #include "qpainter.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QIconEngine
@@ -13,7 +13,7 @@ QT_BEGIN_NAMESPACE
   \brief The QIconEngine class provides an abstract base class for QIcon renderers.
 
   \ingroup painting
-  \inmodule QtGui
+  \inmodule BobUIGui
 
   An icon engine provides the rendering functions for a QIcon. Each icon has a
   corresponding icon engine that is responsible for drawing the icon with a
@@ -124,13 +124,13 @@ void QIconEngine::addFile(const QString &/*fileName*/, const QSize &/*size*/, QI
     \value IsNullHook Allow to query if this engine represents a null
     icon. The \a data argument of the virtual_hook() is a pointer to a
     bool that can be set to true if the icon is null. This enum value
-    was added in Qt 5.7.
+    was added in BobUI 5.7.
 
     \value ScaledPixmapHook Provides a way to get a pixmap that is scaled
     according to the given scale (typically equal to the \l {High
     DPI}{device pixel ratio}). The \a data argument of the virtual_hook()
     function is a \l ScaledPixmapArgument pointer that contains both the input and
-    output arguments. This enum value was added in Qt 5.9.
+    output arguments. This enum value was added in BobUI 5.9.
 
     \sa virtual_hook()
  */
@@ -139,7 +139,7 @@ void QIconEngine::addFile(const QString &/*fileName*/, const QSize &/*size*/, QI
     \class QIconEngine::ScaledPixmapArgument
     \since 5.9
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This struct represents arguments to the virtual_hook() function when
     the \a id parameter is QIconEngine::ScaledPixmapHook.
@@ -151,7 +151,7 @@ void QIconEngine::addFile(const QString &/*fileName*/, const QSize &/*size*/, QI
     in the appropriate \c index.theme file.
 
     Icons created via other approaches will return the same result as a call to
-    \l pixmap() would, and continue to benefit from Qt's \l {High Resolution
+    \l pixmap() would, and continue to benefit from BobUI's \l {High Resolution
     Versions of Images}{"@nx" high DPI syntax}.
 
     \sa virtual_hook(), QIconEngine::IconEngineHook, {High DPI Icons}
@@ -378,4 +378,4 @@ void QProxyIconEngine::virtual_hook(int id, void *data)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -2,8 +2,8 @@ TARGET = mv_edit
 
 TEMPLATE = app
 
-QT += widgets
-requires(qtConfig(tableview))
+BOBUI += widgets
+requires(bobuiConfig(tableview))
 
 SOURCES += main.cpp \
            mainwindow.cpp \
@@ -13,5 +13,5 @@ HEADERS += mainwindow.h \
            mymodel.h
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tutorials/modelview/5_edit
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tutorials/modelview/5_edit
 INSTALLS += target

@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QQnxIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QQnxIntegrationPlugin
+bobui_internal_add_plugin(QQnxIntegrationPlugin
     OUTPUT_NAME qqnx
     PLUGIN_TYPE platforms
-    DEFAULT_IF "qnx" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "qnx" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp main.h
         qqnxabstractcover.h
@@ -32,23 +32,23 @@ qt_internal_add_plugin(QQnxIntegrationPlugin
         qqnxservices.cpp qqnxservices.h
         qqnxwindow.cpp qqnxwindow.h
     NO_PCH_SOURCES
-        qqnxclipboard.cpp # undef QT_NO_FOREACH
-        qqnxintegration.cpp # undef QT_NO_FOREACH
-        qqnxscreen.cpp # undef QT_NO_FOREACH
-        qqnxscreeneventhandler.cpp # undef QT_NO_FOREACH
-        qqnxwindow.cpp # undef QT_NO_FOREACH
+        qqnxclipboard.cpp # undef BOBUI_NO_FOREACH
+        qqnxintegration.cpp # undef BOBUI_NO_FOREACH
+        qqnxscreen.cpp # undef BOBUI_NO_FOREACH
+        qqnxscreeneventhandler.cpp # undef BOBUI_NO_FOREACH
+        qqnxwindow.cpp # undef BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
         screen
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_egl
+bobui_internal_extend_target(QQnxIntegrationPlugin CONDITION BOBUI_FEATURE_egl
     SOURCES
         qqnxeglwindow.cpp qqnxeglwindow.h
         qqnxglcontext.cpp qqnxglcontext.h
@@ -56,7 +56,7 @@ qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_egl
         EGL::EGL
 )
 
-qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_qqnx_pps
+bobui_internal_extend_target(QQnxIntegrationPlugin CONDITION BOBUI_FEATURE_qqnx_pps
     SOURCES
         qqnxbuttoneventnotifier.cpp qqnxbuttoneventnotifier.h
         qqnxnavigatoreventnotifier.cpp qqnxnavigatoreventnotifier.h
@@ -66,24 +66,24 @@ qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_qqnx_pps
         PPS::PPS
 )
 
-qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_clipboard AND QT_FEATURE_qqnx_pps
+bobui_internal_extend_target(QQnxIntegrationPlugin CONDITION BOBUI_FEATURE_clipboard AND BOBUI_FEATURE_qqnx_pps
     SOURCES
         qqnxclipboard.cpp qqnxclipboard.h
     LIBRARIES
         clipboard
 )
 
-qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_qqnx_imf AND QT_FEATURE_qqnx_pps
+bobui_internal_extend_target(QQnxIntegrationPlugin CONDITION BOBUI_FEATURE_qqnx_imf AND BOBUI_FEATURE_qqnx_pps
     SOURCES
         qqnxinputcontext_imf.cpp qqnxinputcontext_imf.h
 )
 
-qt_internal_extend_target(QQnxIntegrationPlugin CONDITION QT_FEATURE_qqnx_pps AND NOT QT_FEATURE_qqnx_imf
+bobui_internal_extend_target(QQnxIntegrationPlugin CONDITION BOBUI_FEATURE_qqnx_pps AND NOT BOBUI_FEATURE_qqnx_imf
     SOURCES
         qqnxinputcontext_noimf.cpp qqnxinputcontext_noimf.h
 )
 
-qt_internal_extend_target(QQnxIntegrationPlugin CONDITION lgmon
+bobui_internal_extend_target(QQnxIntegrationPlugin CONDITION lgmon
     SOURCES
         qqnxlgmon.cpp
     DEFINES

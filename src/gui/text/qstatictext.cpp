@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qstatictext.h"
 #include "qstatictext_p.h"
 #include <qmath.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <private/qfontengine_p.h>
 #include <qabstracttextdocumentlayout.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QStaticText)
+BOBUI_IMPL_METATYPE_EXTERN(QStaticText)
 
 QStaticTextUserData::~QStaticTextUserData()
 {
@@ -21,7 +21,7 @@ QStaticTextUserData::~QStaticTextUserData()
     \brief The QStaticText class enables optimized drawing of text when the text and its layout
     is updated rarely.
     \since 4.7
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup multimedia
     \ingroup text
@@ -79,10 +79,10 @@ QStaticTextUserData::~QStaticTextUserData()
     performance.
 
     For extra convenience, it is possible to apply formatting to the text using the HTML subset
-    supported by QTextDocument. QStaticText will attempt to guess the format of the input text using
-    Qt::mightBeRichText(), and interpret it as rich text if this function returns \c true. To force
+    supported by BOBUIextDocument. QStaticText will attempt to guess the format of the input text using
+    BobUI::mightBeRichText(), and interpret it as rich text if this function returns \c true. To force
     QStaticText to display its contents as either plain text or rich text, use the function
-    QStaticText::setTextFormat() and pass in, respectively, Qt::PlainText and Qt::RichText.
+    QStaticText::setTextFormat() and pass in, respectively, BobUI::PlainText and BobUI::RichText.
 
     QStaticText can only represent text, so only HTML tags which alter the layout or appearance of
     the text will be respected. Adding an image to the input HTML, for instance, will cause the
@@ -99,7 +99,7 @@ QStaticTextUserData::~QStaticTextUserData()
     QPainter::drawStaticText() call where it occurs. To avoid this overhead in the paint event, you
     can call prepare() ahead of time to ensure that the layout is calculated.
 
-    \sa QPainter::drawText(), QPainter::drawStaticText(), QTextLayout, QTextDocument
+    \sa QPainter::drawText(), QPainter::drawStaticText(), BOBUIextLayout, BOBUIextDocument
 */
 
 /*!
@@ -175,7 +175,7 @@ void QStaticText::detach()
 
   \sa QPainter::setFont(), QPainter::setWorldTransform()
 */
-void QStaticText::prepare(const QTransform &matrix, const QFont &font)
+void QStaticText::prepare(const BOBUIransform &matrix, const QFont &font)
 {
     data->matrix = matrix;
     data->font = font;
@@ -235,16 +235,16 @@ void QStaticText::setText(const QString &text)
 
 /*!
    Sets the text format of the QStaticText to \a textFormat. If \a textFormat is set to
-   Qt::AutoText (the default), the format of the text will try to be determined using the
-   function Qt::mightBeRichText(). If the text format is Qt::PlainText, then the text will be
-   displayed as is, whereas it will be interpreted as HTML if the format is Qt::RichText. HTML tags
+   BobUI::AutoText (the default), the format of the text will try to be determined using the
+   function BobUI::mightBeRichText(). If the text format is BobUI::PlainText, then the text will be
+   displayed as is, whereas it will be interpreted as HTML if the format is BobUI::RichText. HTML tags
    that alter the font of the text, its color, or its layout are supported by QStaticText.
 
    \note This function will cause the layout of the text to require recalculation.
 
    \sa textFormat(), setText(), text()
 */
-void QStaticText::setTextFormat(Qt::TextFormat textFormat)
+void QStaticText::setTextFormat(BobUI::TextFormat textFormat)
 {
     detach();
     data->textFormat = textFormat;
@@ -256,9 +256,9 @@ void QStaticText::setTextFormat(Qt::TextFormat textFormat)
 
   \sa setTextFormat(), setText(), text()
 */
-Qt::TextFormat QStaticText::textFormat() const
+BobUI::TextFormat QStaticText::textFormat() const
 {
-    return Qt::TextFormat(data->textFormat);
+    return BobUI::TextFormat(data->textFormat);
 }
 
 /*!
@@ -309,7 +309,7 @@ QStaticText::PerformanceHint QStaticText::performanceHint() const
 
    \sa textOption()
 */
-void QStaticText::setTextOption(const QTextOption &textOption)
+void QStaticText::setTextOption(const BOBUIextOption &textOption)
 {
     detach();
     data->textOption = textOption;
@@ -319,7 +319,7 @@ void QStaticText::setTextOption(const QTextOption &textOption)
 /*!
     Returns the current text option used to control the layout process.
 */
-QTextOption QStaticText::textOption() const
+BOBUIextOption QStaticText::textOption() const
 {
     return data->textOption;
 }
@@ -368,7 +368,7 @@ QSizeF QStaticText::size() const
 
 QStaticTextPrivate::QStaticTextPrivate()
         : textWidth(-1.0), items(nullptr), itemCount(0), glyphPool(nullptr), positionPool(nullptr),
-          needsRelayout(true), useBackendOptimizations(false), textFormat(Qt::AutoText),
+          needsRelayout(true), useBackendOptimizations(false), textFormat(BobUI::AutoText),
           untransformedCoordinates(false)
 {
 }
@@ -413,9 +413,9 @@ namespace {
             }
         }
 
-        virtual void drawTextItem(const QPointF &position, const QTextItem &textItem) override
+        virtual void drawTextItem(const QPointF &position, const BOBUIextItem &textItem) override
         {
-            const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+            const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(textItem);
 
             QStaticTextItem currentItem;
             currentItem.setFontEngine(ti.fontEngine);
@@ -426,7 +426,7 @@ namespace {
             if (m_dirtyPen)
                 currentItem.color = m_currentColor;
 
-            QTransform matrix = m_untransformedCoordinates ? QTransform() : state->transform();
+            BOBUIransform matrix = m_untransformedCoordinates ? BOBUIransform() : state->transform();
             matrix.translate(position.x(), position.y());
 
             QVarLengthArray<glyph_t> glyphs;
@@ -514,11 +514,11 @@ namespace {
                 break;
             case PdmDpiX:
             case PdmPhysicalDpiX:
-                val = qt_defaultDpiX();
+                val = bobui_defaultDpiX();
                 break;
             case PdmDpiY:
             case PdmPhysicalDpiY:
-                val = qt_defaultDpiY();
+                val = bobui_defaultDpiY();
                 break;
             case PdmNumColors:
                 val = 16777216;
@@ -566,11 +566,11 @@ namespace {
 
 void QStaticTextPrivate::paintText(const QPointF &topLeftPosition, QPainter *p, const QColor &pen)
 {
-    bool preferRichText = textFormat == Qt::RichText
-                          || (textFormat == Qt::AutoText && Qt::mightBeRichText(text));
+    bool preferRichText = textFormat == BobUI::RichText
+                          || (textFormat == BobUI::AutoText && BobUI::mightBeRichText(text));
 
     if (!preferRichText) {
-        QTextLayout textLayout;
+        BOBUIextLayout textLayout;
         textLayout.setText(text);
         textLayout.setFont(font);
         textLayout.setTextOption(textOption);
@@ -579,7 +579,7 @@ void QStaticTextPrivate::paintText(const QPointF &topLeftPosition, QPainter *p, 
         qreal height = 0;
         textLayout.beginLayout();
         while (1) {
-            QTextLine line = textLayout.createLine();
+            BOBUIextLine line = textLayout.createLine();
             if (!line.isValid())
                 break;
             line.setLeadingIncluded(true);
@@ -599,8 +599,8 @@ void QStaticTextPrivate::paintText(const QPointF &topLeftPosition, QPainter *p, 
         p->setPen(pen);
         textLayout.draw(p, topLeftPosition);
     } else {
-        QTextDocument document;
-#ifndef QT_NO_CSSPARSER
+        BOBUIextDocument document;
+#ifndef BOBUI_NO_CSSPARSER
         document.setDefaultStyleSheet(QString::fromLatin1("body { color: rgba(%1, %2, %3, %4%) }")
                                       .arg(QString::number(pen.red()))
                                       .arg(QString::number(pen.green()))
@@ -609,7 +609,7 @@ void QStaticTextPrivate::paintText(const QPointF &topLeftPosition, QPainter *p, 
 #endif
         document.setDefaultFont(font);
         document.setDocumentMargin(0.0);
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
         document.setHtml(text);
 #else
         document.setPlainText(text);
@@ -671,4 +671,4 @@ void QStaticTextPrivate::init()
     needsRelayout = false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

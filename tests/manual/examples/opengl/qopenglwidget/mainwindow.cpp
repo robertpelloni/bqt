@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 
@@ -12,9 +12,9 @@
 #include <QRandomGenerator>
 #include <QSpinBox>
 #include <QScrollArea>
-#include <QTabWidget>
-#include <QTabBar>
-#include <QToolButton>
+#include <BOBUIabWidget>
+#include <BOBUIabBar>
+#include <BOBUIoolButton>
 
 #include "glwidget.h"
 
@@ -24,9 +24,9 @@ MainWindow::MainWindow()
     GLWidget *glwidget = new GLWidget(this, qRgb(20, 20, 50));
     m_glWidgets << glwidget;
     QLabel *label = new QLabel(this);
-    m_timer = new QTimer(this);
+    m_timer = new BOBUIimer(this);
     QSlider *slider = new QSlider(this);
-    slider->setOrientation(Qt::Horizontal);
+    slider->setOrientation(BobUI::Horizontal);
 
     QLabel *updateLabel = new QLabel("Update interval");
     QSpinBox *updateInterval = new QSpinBox(this);
@@ -43,7 +43,7 @@ MainWindow::MainWindow()
                            "expecting the blocking swap to throttle the thread.\n"
                            "This shows how unnecessary the timer is in most cases.");
     QCheckBox *transparent = new QCheckBox("Transparent background", this);
-    transparent->setToolTip("Toggles Qt::WA_AlwaysStackOnTop and transparent clear color for glClear().\n"
+    transparent->setToolTip("Toggles BobUI::WA_AlwaysStackOnTop and transparent clear color for glClear().\n"
                             "Note how the button on top stacks incorrectly when enabling this.");
     QHBoxLayout *updateLayout = new QHBoxLayout;
     updateLayout->addWidget(updateLabel);
@@ -56,7 +56,7 @@ MainWindow::MainWindow()
     slider->setSliderPosition(30);
     m_timer->setInterval(10);
     label->setText("A scrollable QOpenGLWidget");
-    label->setAlignment(Qt::AlignHCenter);
+    label->setAlignment(BobUI::AlignHCenter);
 
     QGroupBox * groupBox = new QGroupBox(this);
     setCentralWidget(groupBox);
@@ -85,9 +85,9 @@ MainWindow::MainWindow()
     showBubbles->setChecked(true);
     showMenu->addAction("Open tab window", this, &MainWindow::showNewWindow);
     QMenu *helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction("About Qt", qApp, &QApplication::aboutQt);
+    helpMenu->addAction("About BobUI", qApp, &QApplication::aboutBobUI);
 
-    connect(m_timer, &QTimer::timeout, glwidget, QOverload<>::of(&QWidget::update));
+    connect(m_timer, &BOBUIimer::timeout, glwidget, QOverload<>::of(&QWidget::update));
 
     connect(slider, &QAbstractSlider::valueChanged, glwidget, &GLWidget::setScaling);
     connect(transparent, &QCheckBox::toggled, glwidget, &GLWidget::setTransparent);
@@ -117,7 +117,7 @@ void MainWindow::addNew()
                                              QRandomGenerator::global()->bounded(256),
                                              QRandomGenerator::global()->bounded(256)));
     m_glWidgets << w;
-    connect(m_timer, &QTimer::timeout, w, QOverload<>::of(&QWidget::update));
+    connect(m_timer, &BOBUIimer::timeout, w, QOverload<>::of(&QWidget::update));
     m_layout->addWidget(w, m_nextY, m_nextX, 1, 1);
     if (m_nextX == 3) {
         m_nextX = 1;
@@ -145,16 +145,16 @@ void MainWindow::resizeEvent(QResizeEvent *)
 
 void MainWindow::showNewWindow()
 {
-    QTabWidget *tabs = new QTabWidget;
+    BOBUIabWidget *tabs = new BOBUIabWidget;
     tabs->resize(800, 600);
 
-    QToolButton *tb = new QToolButton;
+    BOBUIoolButton *tb = new BOBUIoolButton;
     tb->setText(QLatin1String("+"));
     tabs->addTab(new QLabel(QLatin1String("Add OpenGL widgets with +")), QString());
     tabs->setTabEnabled(0, false);
-    tabs->tabBar()->setTabButton(0, QTabBar::RightSide, tb);
+    tabs->tabBar()->setTabButton(0, BOBUIabBar::RightSide, tb);
     tabs->tabBar()->setTabsClosable(true);
-    QObject::connect(tabs->tabBar(), &QTabBar::tabCloseRequested, tabs, [tabs](int index) {
+    QObject::connect(tabs->tabBar(), &BOBUIabBar::tabCloseRequested, tabs, [tabs](int index) {
         tabs->widget(index)->deleteLater();
     });
 
@@ -162,19 +162,19 @@ void MainWindow::showNewWindow()
     const QString msgFromTopLevel = QLatin1String("Move back under tab widget");
 
     QObject::connect(tb, &QAbstractButton::clicked, tabs, [=] {
-        GLWidget *glwidget = new GLWidget(nullptr, Qt::blue);
+        GLWidget *glwidget = new GLWidget(nullptr, BobUI::blue);
         glwidget->resize(tabs->size());
         glwidget->setWindowTitle(QString::asprintf("QOpenGLWidget %p", glwidget));
 
         QPushButton *btn = new QPushButton(msgToTopLevel, glwidget);
         connect(btn, &QPushButton::clicked, glwidget, [=] {
             if (glwidget->parent()) {
-                glwidget->setAttribute(Qt::WA_DeleteOnClose, true);
+                glwidget->setAttribute(BobUI::WA_DeleteOnClose, true);
                 glwidget->setParent(nullptr);
                 glwidget->show();
                 btn->setText(msgFromTopLevel);
             } else {
-                glwidget->setAttribute(Qt::WA_DeleteOnClose, false);
+                glwidget->setAttribute(BobUI::WA_DeleteOnClose, false);
                 tabs->addTab(glwidget, glwidget->windowTitle());
                 btn->setText(msgToTopLevel);
             }
@@ -183,6 +183,6 @@ void MainWindow::showNewWindow()
         tabs->setCurrentIndex(tabs->addTab(glwidget, glwidget->windowTitle()));
     });
 
-    tabs->setAttribute(Qt::WA_DeleteOnClose);
+    tabs->setAttribute(BobUI::WA_DeleteOnClose);
     tabs->show();
 }

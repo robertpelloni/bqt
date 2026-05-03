@@ -1,12 +1,12 @@
 // Copyright (C) 2016 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtWaylandClient/private/qwaylandserverbufferintegrationplugin_p.h>
+#include <BobUIWaylandClient/private/qwaylandserverbufferintegrationplugin_p.h>
 #include "libhybriseglserverbufferintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class LibHybrisEglServerBufferPlugin : public QWaylandServerBufferIntegrationPlugin
 {
@@ -25,6 +25,6 @@ QWaylandServerBufferIntegration *LibHybrisEglServerBufferPlugin::create(const QS
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
+// Copyright (C) 2019 The BobUI Company Ltd.
 // Copyright (C) 2013 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOBJECT_P_P_H
 #define QOBJECT_P_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qobject.cpp.  This header file may change from version to version
 // without notice, or even be removed.
 //
@@ -17,14 +17,14 @@
 //
 
 // Even though this file is only used by qobject.cpp, the only reason this
-// code lives here is that some special apps/libraries for e.g., QtJambi,
+// code lives here is that some special apps/libraries for e.g., BobUIJambi,
 // Gammaray need access to the structs in this file.
 
-#include <QtCore/qalloc.h>
-#include <QtCore/qobject.h>
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/qalloc.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/private/qobject_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // ConnectionList is a singly-linked list
 struct QObjectPrivate::ConnectionList
@@ -77,10 +77,10 @@ struct QObjectPrivate::Connection : public ConnectionOrSignalVector
 
     QObject *sender;
     QAtomicPointer<QObject> receiver;
-    QAtomicPointer<QThreadData> receiverThreadData;
+    QAtomicPointer<BOBUIhreadData> receiverThreadData;
     union {
         StaticMetaCallFunction callFunction;
-        QtPrivate::QSlotObjectBase *slotObj;
+        BobUIPrivate::QSlotObjectBase *slotObj;
     };
     QAtomicPointer<const int> argumentTypes;
     QAtomicInt ref_{
@@ -155,7 +155,7 @@ struct QObjectPrivate::ConnectionData
         if (v) {
             const size_t allocSize = sizeof(SignalVector) + (v->allocated + 1) * sizeof(ConnectionList);
             v->~SignalVector();
-            QtPrivate::sizedFree(v, allocSize);
+            BobUIPrivate::sizedFree(v, allocSize);
         }
     }
 
@@ -187,7 +187,7 @@ struct QObjectPrivate::ConnectionData
         if (vector && vector->allocated > size)
             return;
         size = (size + 7) & ~7;
-        void *ptr = QtPrivate::fittedMalloc(sizeof(SignalVector), &size, sizeof(ConnectionList), 1);
+        void *ptr = BobUIPrivate::fittedMalloc(sizeof(SignalVector), &size, sizeof(ConnectionList), 1);
         auto newVector = new (ptr) SignalVector;
 
         int start = -1;
@@ -254,6 +254,6 @@ struct QObjectPrivate::Sender
 };
 Q_DECLARE_TYPEINFO(QObjectPrivate::Sender, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

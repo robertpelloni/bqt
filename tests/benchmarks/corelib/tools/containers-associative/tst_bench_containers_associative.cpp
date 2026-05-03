@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QString>
 #include <QMap>
 #include <QHash>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 class tst_associative_containers : public QObject
 {
@@ -29,15 +29,15 @@ void testInsert(int size)
 
 void tst_associative_containers::insert_data()
 {
-    QTest::addColumn<bool>("useHash");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("useHash");
+    BOBUIest::addColumn<int>("size");
 
     for (int size = 10; size < 20000; size += 100) {
 
         const QByteArray sizeString = QByteArray::number(size);
 
-        QTest::newRow(QByteArray("hash--" + sizeString).constData()) << true << size;
-        QTest::newRow(QByteArray("map--" + sizeString).constData()) << false << size;
+        BOBUIest::newRow(QByteArray("hash--" + sizeString).constData()) << true << size;
+        BOBUIest::newRow(QByteArray("map--" + sizeString).constData()) << false << size;
     }
 }
 
@@ -61,15 +61,15 @@ void tst_associative_containers::lookup_data()
 //    setReportType(LineChartReport);
 //    setChartTitle("Time to call value(), with an increasing number of items in the container");
 
-    QTest::addColumn<bool>("useHash");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("useHash");
+    BOBUIest::addColumn<int>("size");
 
     for (int size = 10; size < 20000; size += 100) {
 
         const QByteArray sizeString = QByteArray::number(size);
 
-        QTest::newRow(QByteArray("hash--" + sizeString).constData()) << true << size;
-        QTest::newRow(QByteArray("map--" + sizeString).constData()) << false << size;
+        BOBUIest::newRow(QByteArray("hash--" + sizeString).constData()) << true << size;
+        BOBUIest::newRow(QByteArray("map--" + sizeString).constData()) << false << size;
     }
 }
 
@@ -103,6 +103,6 @@ void tst_associative_containers::lookup()
     }
 }
 
-QTEST_MAIN(tst_associative_containers)
+BOBUIEST_MAIN(tst_associative_containers)
 
 #include "tst_bench_containers_associative.moc"

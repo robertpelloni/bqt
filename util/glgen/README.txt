@@ -10,7 +10,7 @@ http://www.opengl.org/registry/api/gl.spec
 http://www.opengl.org/registry/api/gl.tm
 
 and place them into the application directory. These files are not stored in
-the Qt Project's git repo or downloaded automatically to
+the BobUI Project's git repo or downloaded automatically to
 
 a) avoid copyright issues
 b) make sure the version of OpenGL used is controlled by a human
@@ -48,9 +48,9 @@ qopenglfunction_<MAJOR>_<MINOR>[_PROFILE].h
 
 and should be moved to
 
-$QTBASE/src/gui/opengl/
+$BOBUIBASE/src/gui/opengl/
 
-and forms part of the public QtGui library API.
+and forms part of the public BobUIGui library API.
 
 
 Backend Helper Classes
@@ -90,7 +90,7 @@ qopenglversionfunctions.cpp
 
 and should also be moved to
 
-$QTBASE/src/gui/opengl/
+$BOBUIBASE/src/gui/opengl/
 
 
 OpenGL Version and Profile Factory
@@ -118,9 +118,9 @@ will return a null pointer that can be checked for.
 
 The source and header file for this class should be moved to
 
-$QTBASE/src/gui/opengl/
+$BOBUIBASE/src/gui/opengl/
 
-and forms part of the QtGui library.
+and forms part of the BobUIGui library.
 
 If a user instantiates a version functions object directly (i.e. not via QOpenGLContext)
 then it bypasses the above checks. However, the same checks are applied in the
@@ -142,6 +142,6 @@ QOpenGLExtension_<name-of-extension>
 The usage pattern for OpenGL extensions is to just use a small
 number of extensions out of the large number of those available.
 
-Prior to Qt 6, these classes were provided as the openglextensions
-module. Because of the new graphics architecture in Qt 6, that module
+Prior to BobUI 6, these classes were provided as the openglextensions
+module. Because of the new graphics architecture in BobUI 6, that module
 has been removed.

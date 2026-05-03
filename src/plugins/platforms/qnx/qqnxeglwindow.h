@@ -1,14 +1,14 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXEGLWINDOW_H
 #define QQNXEGLWINDOW_H
 
 #include "qqnxwindow.h"
-#include <QtCore/QMutex>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QMutex>
+#include <BobUICore/QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindowEgl);
 
@@ -54,6 +54,6 @@ private:
     QSurfaceFormat m_format;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXEGLWINDOW_H

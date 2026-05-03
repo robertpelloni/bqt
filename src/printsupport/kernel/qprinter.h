@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTER_H
 #define QPRINTER_H
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/qpagedpaintdevice.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/qpagedpaintdevice.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #if defined(B0)
 #undef B0 // Terminal hang-up.  We assume that you do not want that.
@@ -180,12 +180,12 @@ private:
     friend class QAbstractPrintDialog;
     friend class QAbstractPrintDialogPrivate;
     friend class QPrintPreviewWidgetPrivate;
-    friend class QTextDocument;
+    friend class BOBUIextDocument;
     friend class QPageSetupWidget;
 };
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTER_H

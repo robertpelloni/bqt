@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -72,14 +72,14 @@
     ================
 
     Fragment shaders are also specified as multiple (partial) shaders. The
-    different fragment shaders represent the different stages in Qt's fragment
+    different fragment shaders represent the different stages in BobUI's fragment
     pipeline. There are 1-3 stages in this pipeline: First stage is to get the
     fragment's colour value. The next stage is to get the fragment's mask value
     (coverage value for anti-aliasing) and the final stage is to blend the
     incoming fragment with the background (for composition modes not supported
     by GL).
 
-    Of these, the first stage will always be present. If Qt doesn't need to
+    Of these, the first stage will always be present. If BobUI doesn't need to
     apply anti-aliasing (because it's off or handled by multisampling) then
     the coverage value doesn't need to be applied. (Note: There are two types
     of mask, one for regular anti-aliasing and one for sub-pixel anti-
@@ -170,7 +170,7 @@
 
     The custom shader is passed to the engine as a partial fragment shader
     (QOpenGLCustomShaderStage). The shader will implement a pre-defined method name
-    which Qt's fragment pipeline will call:
+    which BobUI's fragment pipeline will call:
 
         lowp vec4 customShader(lowp sampler2d imageTexture, highp vec2 textureCoords)
 
@@ -190,7 +190,7 @@
 #include <private/qopenglcontext_p.h>
 #include <private/qopenglcustomshaderstage_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 
@@ -209,12 +209,12 @@ struct QOpenGLEngineCachedShaderProg
 }
 */
 
-static const GLuint QT_VERTEX_COORDS_ATTR  = 0;
-static const GLuint QT_TEXTURE_COORDS_ATTR = 1;
-static const GLuint QT_OPACITY_ATTR = 2;
-static const GLuint QT_PMV_MATRIX_1_ATTR = 3;
-static const GLuint QT_PMV_MATRIX_2_ATTR = 4;
-static const GLuint QT_PMV_MATRIX_3_ATTR = 5;
+static const GLuint BOBUI_VERTEX_COORDS_ATTR  = 0;
+static const GLuint BOBUI_TEXTURE_COORDS_ATTR = 1;
+static const GLuint BOBUI_OPACITY_ATTR = 2;
+static const GLuint BOBUI_PMV_MATRIX_1_ATTR = 3;
+static const GLuint BOBUI_PMV_MATRIX_2_ATTR = 4;
+static const GLuint BOBUI_PMV_MATRIX_3_ATTR = 5;
 
 class QOpenGLEngineShaderProg;
 
@@ -290,7 +290,7 @@ public:
 
         TotalSnippetCount, InvalidSnippetName
     };
-#if defined (QT_DEBUG)
+#if defined (BOBUI_DEBUG)
     Q_ENUM(SnippetName)
     static QByteArray snippetNameStr(SnippetName snippetName);
 #endif
@@ -379,12 +379,12 @@ public:
 
     enum MaskType {NoMask, PixelMask, SubPixelMaskPass1, SubPixelMaskPass2, SubPixelWithGammaMask};
     enum PixelSrcType {
-        ImageSrc = Qt::TexturePattern+1,
-        NonPremultipliedImageSrc = Qt::TexturePattern+2,
-        PatternSrc = Qt::TexturePattern+3,
-        TextureSrcWithPattern = Qt::TexturePattern+4,
-        GrayscaleImageSrc = Qt::TexturePattern+5,
-        AlphaImageSrc = Qt::TexturePattern+6,
+        ImageSrc = BobUI::TexturePattern+1,
+        NonPremultipliedImageSrc = BobUI::TexturePattern+2,
+        PatternSrc = BobUI::TexturePattern+3,
+        TextureSrcWithPattern = BobUI::TexturePattern+4,
+        GrayscaleImageSrc = BobUI::TexturePattern+5,
+        AlphaImageSrc = BobUI::TexturePattern+6,
     };
 
     enum Uniform {
@@ -418,8 +418,8 @@ public:
     // There are optimizations we can do, depending on the brush transform:
     //    1) May not have to apply perspective-correction
     //    2) Can use lower precision for matrix
-    void optimiseForBrushTransform(QTransform::TransformationType transformType);
-    void setSrcPixelType(Qt::BrushStyle);
+    void optimiseForBrushTransform(BOBUIransform::TransformationType transformType);
+    void setSrcPixelType(BobUI::BrushStyle);
     void setSrcPixelType(PixelSrcType); // For non-brush sources, like pixmaps & images
     void setOpacityMode(OpacityMode);
     void setMaskType(MaskType);
@@ -456,7 +456,7 @@ private:
     bool            complexGeometry;
 
     // Current state variables which influence the choice of shader:
-    QTransform                  brushTransform;
+    BOBUIransform                  brushTransform;
     int                         srcPixelType;
     OpacityMode                 opacityMode;
     MaskType                    maskType;
@@ -466,6 +466,6 @@ private:
     QOpenGLEngineShaderProg*    currentShaderProg;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QOPENGLENGINE_SHADER_MANAGER_H

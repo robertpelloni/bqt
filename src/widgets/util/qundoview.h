@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QUNDOVIEW_H
 #define QUNDOVIEW_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qlistview.h>
-#include <QtCore/qstring.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qlistview.h>
+#include <BobUICore/qstring.h>
 
-QT_REQUIRE_CONFIG(undoview);
+BOBUI_REQUIRE_CONFIG(undoview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QUndoViewPrivate;
 class QUndoStack;
@@ -29,13 +29,13 @@ class Q_WIDGETS_EXPORT QUndoView : public QListView
 public:
     explicit QUndoView(QWidget *parent = nullptr);
     explicit QUndoView(QUndoStack *stack, QWidget *parent = nullptr);
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     explicit QUndoView(QUndoGroup *group, QWidget *parent = nullptr);
 #endif
     ~QUndoView();
 
     QUndoStack *stack() const;
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     QUndoGroup *group() const;
 #endif
 
@@ -47,7 +47,7 @@ public:
 
 public Q_SLOTS:
     void setStack(QUndoStack *stack);
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     void setGroup(QUndoGroup *group);
 #endif
 
@@ -55,6 +55,6 @@ private:
     Q_DISABLE_COPY(QUndoView)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QUNDOVIEW_H

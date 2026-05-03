@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrandomaccessasyncfile_p_p.h"
 
@@ -8,11 +8,11 @@
 #include "qiooperation_p_p.h"
 #include "qplatformdefs.h"
 
-#include <QtCore/qdir.h>
-#include <QtCore/qfile.h>
-#include <QtCore/private/qfilesystemengine_p.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/private/qfilesystemengine_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
@@ -29,7 +29,7 @@ template <typename Operation, typename ...Args>
 Operation *
 QRandomAccessAsyncFileNativeBackend::addOperation(QIOOperation::Type type, qint64 offset, Args &&...args)
 {
-    auto dataStorage = new QtPrivate::QIOOperationDataStorage(std::forward<Args>(args)...);
+    auto dataStorage = new BobUIPrivate::QIOOperationDataStorage(std::forward<Args>(args)...);
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
     priv->type = type;
@@ -159,7 +159,7 @@ QIOOperation *QRandomAccessAsyncFileNativeBackend::flush()
 
 QIOReadOperation *QRandomAccessAsyncFileNativeBackend::read(qint64 offset, qint64 maxSize)
 {
-    QByteArray array(maxSize, Qt::Uninitialized);
+    QByteArray array(maxSize, BobUI::Uninitialized);
     return addOperation<QIOReadOperation>(QIOOperation::Type::Read, offset, std::move(array));
 }
 
@@ -385,7 +385,7 @@ void QRandomAccessAsyncFileNativeBackend::queueCompletion(OperationId opId, int 
     const OperationResult res = { opId, 0LL, error };
     QMetaObject::invokeMethod(m_owner, [this, res] {
         handleOperationComplete(res);
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 }
 
 void QRandomAccessAsyncFileNativeBackend::startOperationsUntilBarrier()
@@ -535,7 +535,7 @@ void QRandomAccessAsyncFileNativeBackend::executeFlush(OperationInfo &opInfo)
             const OperationResult res = { opId, 0LL, err };
             QMetaObject::invokeMethod(context, [sharedThis](const OperationResult &r) {
                 sharedThis->handleOperationComplete(r);
-            }, Qt::QueuedConnection, res);
+            }, BobUI::QueuedConnection, res);
         }
     });
 }
@@ -543,23 +543,23 @@ void QRandomAccessAsyncFileNativeBackend::executeFlush(OperationInfo &opInfo)
 // stolen from qfsfileengine_unix.cpp
 static inline int openModeToOpenFlags(QIODevice::OpenMode mode)
 {
-    int oflags = QT_OPEN_RDONLY;
-#ifdef QT_LARGEFILE_SUPPORT
-    oflags |= QT_OPEN_LARGEFILE;
+    int oflags = BOBUI_OPEN_RDONLY;
+#ifdef BOBUI_LARGEFILE_SUPPORT
+    oflags |= BOBUI_OPEN_LARGEFILE;
 #endif
     if ((mode & QIODevice::ReadWrite) == QIODevice::ReadWrite)
-        oflags = QT_OPEN_RDWR;
+        oflags = BOBUI_OPEN_RDWR;
     else if (mode & QIODevice::WriteOnly)
-        oflags = QT_OPEN_WRONLY;
+        oflags = BOBUI_OPEN_WRONLY;
     if ((mode & QIODevice::WriteOnly)
         && !(mode & QIODevice::ExistingOnly)) // QFSFileEnginePrivate::openModeCanCreate(mode))
-        oflags |= QT_OPEN_CREAT;
+        oflags |= BOBUI_OPEN_CREAT;
     if (mode & QIODevice::Truncate)
-        oflags |= QT_OPEN_TRUNC;
+        oflags |= BOBUI_OPEN_TRUNC;
     if (mode & QIODevice::Append)
-        oflags |= QT_OPEN_APPEND;
+        oflags |= BOBUI_OPEN_APPEND;
     if (mode & QIODevice::NewOnly)
-        oflags |= QT_OPEN_EXCL;
+        oflags |= BOBUI_OPEN_EXCL;
     return oflags;
 }
 
@@ -609,7 +609,7 @@ void QRandomAccessAsyncFileNativeBackend::executeOpen(OperationInfo &opInfo)
                            QMetaObject::invokeMethod(context,
                                [sharedThis](const OperationResult &r) {
                                    sharedThis->handleOperationComplete(r);
-                               }, Qt::QueuedConnection, res);
+                               }, BobUI::QueuedConnection, res);
                        }
                    });
 }
@@ -710,13 +710,13 @@ void QRandomAccessAsyncFileNativeBackend::readOneBufferHelper(OperationId opId, 
                                  QMetaObject::invokeMethod(context,
                                      [sharedThis](const OperationResult &r) {
                                          sharedThis->handleOperationComplete(r);
-                                     }, Qt::QueuedConnection, res);
+                                     }, BobUI::QueuedConnection, res);
                              } else {
                                  // else execute read for the next buffer
                                  QMetaObject::invokeMethod(context,
                                      [sharedThis, opId, nextBufferIdx, totalRead] {
                                          sharedThis->readOneBuffer(opId, nextBufferIdx, totalRead);
-                                     }, Qt::QueuedConnection);
+                                     }, BobUI::QueuedConnection);
                              }
                          }
                      });
@@ -766,7 +766,7 @@ void QRandomAccessAsyncFileNativeBackend::writeHelper(OperationId opId, dispatch
                               QMetaObject::invokeMethod(context,
                                   [sharedThis](const OperationResult &r) {
                                       sharedThis->handleOperationComplete(r);
-                                  }, Qt::QueuedConnection, res);
+                                  }, BobUI::QueuedConnection, res);
                           }
                       });
 }
@@ -780,4 +780,4 @@ QRandomAccessAsyncFileNativeBackend::OperationId QRandomAccessAsyncFileNativeBac
     return opId;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

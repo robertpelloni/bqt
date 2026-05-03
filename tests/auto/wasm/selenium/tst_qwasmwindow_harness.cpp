@@ -1,31 +1,31 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QEvent>
-#include <QtWidgets/qwidget.h>
+#include <BobUICore/QEvent>
+#include <BobUIWidgets/qwidget.h>
 
-#include <QtGui/qevent.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qregularexpression.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qrasterwindow.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qguiapplication.h>
-#include <QtWidgets/qlineedit.h>
+#include <BobUIGui/qevent.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qrasterwindow.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIWidgets/qlineedit.h>
 #include <QApplication>
 #include <QDialog>
 #include <QSysInfo>
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QFileSystemModel>
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QSpinBox>
-#include <QToolTip>
+#include <BOBUIoolTip>
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QPushButton>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QPlainTextEdit>
 #include <QLabel>
 
@@ -64,7 +64,7 @@ public:
     void ShowContextMenu()
     {
         QContextMenuEvent event(QContextMenuEvent::Reason::Mouse, QPoint(0, geometry().bottom()),
-                                mapToGlobal(QPoint(0, geometry().bottom())), Qt::NoModifier);
+                                mapToGlobal(QPoint(0, geometry().bottom())), BobUI::NoModifier);
 
         contextMenuEvent(&event);
     }
@@ -149,7 +149,7 @@ private:
         painter.fillRect(e->rect(), m_backgroundColor);
     }
 
-    QColor m_backgroundColor = Qt::white;
+    QColor m_backgroundColor = BobUI::white;
 };
 
 class ContextGuard
@@ -448,7 +448,7 @@ public:
     {
         TestSpinBox *spinBox = findSpinBox(name);
         if (spinBox)
-            QToolTip::showText(spinBox->mapToGlobal( QPoint( 0, 0 ) ), spinBox->toolTip());
+            BOBUIoolTip::showText(spinBox->mapToGlobal( QPoint( 0, 0 ) ), spinBox->toolTip());
     }
     void makeNative(const std::string &name)
     {
@@ -470,16 +470,16 @@ public:
 
         auto *scrollArea = new QScrollArea();
         auto *layout = new QVBoxLayout(widget.get());
-        auto *treeView = new QTreeView(scrollArea);
+        auto *treeView = new BOBUIreeView(scrollArea);
         treeView->setModel(model);
 
         layout->addWidget(spinBox);
         layout->addWidget(scrollArea);
 
-        treeView->setAttribute(Qt::WA_NativeWindow);
-        scrollArea->setAttribute(Qt::WA_NativeWindow);
-        spinBox->setAttribute(Qt::WA_NativeWindow);
-        widget->setAttribute(Qt::WA_NativeWindow);
+        treeView->setAttribute(BobUI::WA_NativeWindow);
+        scrollArea->setAttribute(BobUI::WA_NativeWindow);
+        spinBox->setAttribute(BobUI::WA_NativeWindow);
+        widget->setAttribute(BobUI::WA_NativeWindow);
     }
 
     void makeNativeA11yButtonWidgets(const std::string &name)
@@ -538,8 +538,8 @@ public:
         auto *lineEditA4 = new QLineEdit("LineEditA4", widget.get());
         auto *lineEditA5 = new QLineEdit("LineEditA5", widget.get());
 
-        auto *textEditB1 = new QTextEdit("TextEditB1", widget.get());
-        auto *textEditB2 = new QTextEdit("TextEditB2", widget.get());
+        auto *textEditB1 = new BOBUIextEdit("TextEditB1", widget.get());
+        auto *textEditB2 = new BOBUIextEdit("TextEditB2", widget.get());
 
         auto *plainTextEditC1 = new QPlainTextEdit("PlainTextEditC1", widget.get());
         auto *plainTextEditC2 = new QPlainTextEdit("PlainTextEditC2", widget.get());
@@ -740,7 +740,7 @@ void setWidgetNoFocusShow(const std::string &name)
 {
     auto w = WidgetStorage::getInstance()->findWidget(name);
     if (w)
-        w->setAttribute(Qt::WA_ShowWithoutActivating);
+        w->setAttribute(BobUI::WA_ShowWithoutActivating);
 }
 
 void showWidget(const std::string &name)
@@ -810,8 +810,8 @@ void createWindow(int x, int y, int w, int h, const std::string &parentType, con
     if (opengl) {
         qDebug() << "Making OpenGL window";
         auto window = new TestOpenGLWindow;
-        window->setFlag(Qt::WindowTitleHint);
-        window->setFlag(Qt::WindowMaximizeButtonHint);
+        window->setFlag(BobUI::WindowTitleHint);
+        window->setFlag(BobUI::WindowMaximizeButtonHint);
         window->setTitle(QString::fromLatin1(title));
         window->setGeometry(x, y, w, h);
         window->setScreen(parentScreen);
@@ -819,8 +819,8 @@ void createWindow(int x, int y, int w, int h, const std::string &parentType, con
     } else {
         qDebug() << "Making Raster window";
         auto window = new TestWindow;
-        window->setFlag(Qt::WindowTitleHint);
-        window->setFlag(Qt::WindowMaximizeButtonHint);
+        window->setFlag(BobUI::WindowTitleHint);
+        window->setFlag(BobUI::WindowMaximizeButtonHint);
         window->setTitle(QString::fromLatin1(title));
         window->setGeometry(x, y, w, h);
         window->setScreen(parentScreen);
@@ -907,7 +907,7 @@ void getOpenGLColorAt_0_0(const std::string &windowTitle)
                                                  emscripten::val(colorToJs(r, g, b)));
 }
 
-#if QT_CONFIG(wasm_jspi)
+#if BOBUI_CONFIG(wasm_jspi)
 #  define EMSC_BIND_FUNC(name, afunction) \
       emscripten::function(name, afunction, emscripten::async())
 #else

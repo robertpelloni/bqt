@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfont.h"
 #include "qpaintdevice.h"
@@ -8,10 +8,10 @@
 #include "qfont_p.h"
 #include "qfontengine_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-extern void qt_format_text(const QFont& font, const QRectF &_r,
+extern void bobui_format_text(const QFont& font, const QRectF &_r,
                            int tf, const QString &text, QRectF *brect,
                            int tabStops, int *tabArray, int tabArrayLen,
                            QPainter *painter);
@@ -23,7 +23,7 @@ extern void qt_format_text(const QFont& font, const QRectF &_r,
 /*!
     \class QFontMetrics
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QFontMetrics class provides font metrics information.
 
@@ -108,7 +108,7 @@ extern void qt_format_text(const QFont& font, const QRectF &_r,
     rectangle specified by the \a x and \a y coordinates, \a width, and
     \a height.
 
-    If Qt::TextExpandTabs is set in \a flags and \a tabArray is
+    If BobUI::TextExpandTabs is set in \a flags and \a tabArray is
     non-null, it specifies a 0-terminated sequence of pixel-positions
     for tabs; otherwise, if \a tabStops is non-zero, it is used as the
     tab spacing (in pixels).
@@ -149,7 +149,7 @@ QFontMetrics::QFontMetrics(const QFont &font)
 */
 QFontMetrics::QFontMetrics(const QFont &font, const QPaintDevice *paintdevice)
 {
-    const int dpi = paintdevice ? paintdevice->logicalDpiY() : qt_defaultDpi();
+    const int dpi = paintdevice ? paintdevice->logicalDpiY() : bobui_defaultDpi();
     if (font.d->dpi != dpi) {
         d = new QFontPrivate(*font.d);
         d->dpi = dpi;
@@ -514,7 +514,7 @@ int QFontMetrics::horizontalAdvance(const QString &text, int len) const
 
     \sa boundingRect()
 */
-int QFontMetrics::horizontalAdvance(const QString &text, const QTextOption &option) const
+int QFontMetrics::horizontalAdvance(const QString &text, const BOBUIextOption &option) const
 {
     int pos = text.indexOf(s_variableLengthStringSeparator);
     int len = -1;
@@ -551,7 +551,7 @@ int QFontMetrics::horizontalAdvance(const QString &text, const QTextOption &opti
     characters or non-spacing marks in the middle of a string, as the
     glyph shaping and positioning of marks that happens when
     processing strings cannot be taken into account. When implementing
-    an interactive text control, use QTextLayout instead.
+    an interactive text control, use BOBUIextLayout instead.
 
     \since 5.11
 
@@ -635,7 +635,7 @@ QRect QFontMetrics::boundingRect(const QString &text) const
     \sa horizontalAdvance(), height(), QPainter::boundingRect(),
         tightBoundingRect()
 */
-QRect QFontMetrics::boundingRect(const QString &text, const QTextOption &option) const
+QRect QFontMetrics::boundingRect(const QString &text, const BOBUIextOption &option) const
 {
     if (text.size() == 0)
         return QRect();
@@ -686,29 +686,29 @@ QRect QFontMetrics::boundingRect(QChar ch) const
 
     The \a flags argument is the bitwise OR of the following flags:
     \list
-    \li Qt::AlignLeft aligns to the left border, except for
+    \li BobUI::AlignLeft aligns to the left border, except for
           Arabic and Hebrew where it aligns to the right.
-    \li Qt::AlignRight aligns to the right border, except for
+    \li BobUI::AlignRight aligns to the right border, except for
           Arabic and Hebrew where it aligns to the left.
-    \li Qt::AlignJustify produces justified text.
-    \li Qt::AlignHCenter aligns horizontally centered.
-    \li Qt::AlignTop aligns to the top border.
-    \li Qt::AlignBottom aligns to the bottom border.
-    \li Qt::AlignVCenter aligns vertically centered
-    \li Qt::AlignCenter (== \c{Qt::AlignHCenter | Qt::AlignVCenter})
-    \li Qt::TextSingleLine ignores newline characters in the text.
-    \li Qt::TextExpandTabs expands tabs (see below)
-    \li Qt::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
-    \li Qt::TextWordWrap breaks the text to fit the rectangle.
+    \li BobUI::AlignJustify produces justified text.
+    \li BobUI::AlignHCenter aligns horizontally centered.
+    \li BobUI::AlignTop aligns to the top border.
+    \li BobUI::AlignBottom aligns to the bottom border.
+    \li BobUI::AlignVCenter aligns vertically centered
+    \li BobUI::AlignCenter (== \c{BobUI::AlignHCenter | BobUI::AlignVCenter})
+    \li BobUI::TextSingleLine ignores newline characters in the text.
+    \li BobUI::TextExpandTabs expands tabs (see below)
+    \li BobUI::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
+    \li BobUI::TextWordWrap breaks the text to fit the rectangle.
     \endlist
 
-    Qt::Horizontal alignment defaults to Qt::AlignLeft and vertical
-    alignment defaults to Qt::AlignTop.
+    BobUI::Horizontal alignment defaults to BobUI::AlignLeft and vertical
+    alignment defaults to BobUI::AlignTop.
 
     If several of the horizontal or several of the vertical alignment
     flags are set, the resulting alignment is undefined.
 
-    If Qt::TextExpandTabs is set in \a flags, then: if \a tabArray is
+    If BobUI::TextExpandTabs is set in \a flags, then: if \a tabArray is
     non-null, it specifies a 0-terminated sequence of pixel-positions
     for tabs; otherwise if \a tabStops is non-zero, it is used as the
     tab spacing (in pixels).
@@ -730,7 +730,7 @@ QRect QFontMetrics::boundingRect(QChar ch) const
     fontHeight() and lineSpacing() are used to calculate the height,
     rather than individual character heights.
 
-    \sa horizontalAdvance(), QPainter::boundingRect(), Qt::Alignment
+    \sa horizontalAdvance(), QPainter::boundingRect(), BobUI::Alignment
 */
 QRect QFontMetrics::boundingRect(const QRect &rect, int flags, const QString &text, int tabStops,
                                  int *tabArray) const
@@ -742,7 +742,7 @@ QRect QFontMetrics::boundingRect(const QRect &rect, int flags, const QString &te
 
     QRectF rb;
     QRectF rr(rect);
-    qt_format_text(QFont(d.data()), rr, flags | Qt::TextDontPrint, text, &rb, tabStops, tabArray,
+    bobui_format_text(QFont(d.data()), rr, flags | BobUI::TextDontPrint, text, &rb, tabStops, tabArray,
                    tabArrayLen, nullptr);
 
     return rb.toAlignedRect();
@@ -753,13 +753,13 @@ QRect QFontMetrics::boundingRect(const QRect &rect, int flags, const QString &te
 
     The \a flags argument is the bitwise OR of the following flags:
     \list
-    \li Qt::TextSingleLine ignores newline characters.
-    \li Qt::TextExpandTabs expands tabs (see below)
-    \li Qt::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
-    \li Qt::TextWordWrap breaks the text to fit the rectangle.
+    \li BobUI::TextSingleLine ignores newline characters.
+    \li BobUI::TextExpandTabs expands tabs (see below)
+    \li BobUI::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
+    \li BobUI::TextWordWrap breaks the text to fit the rectangle.
     \endlist
 
-    If Qt::TextExpandTabs is set in \a flags, then: if \a tabArray is
+    If BobUI::TextExpandTabs is set in \a flags, then: if \a tabArray is
     non-null, it specifies a 0-terminated sequence of pixel-positions
     for tabs; otherwise if \a tabStops is non-zero, it is used as the
     tab spacing (in pixels).
@@ -773,7 +773,7 @@ QRect QFontMetrics::boundingRect(const QRect &rect, int flags, const QString &te
 */
 QSize QFontMetrics::size(int flags, const QString &text, int tabStops, int *tabArray) const
 {
-    return boundingRect(QRect(0,0,0,0), flags | Qt::TextLongestVariant, text, tabStops, tabArray).size();
+    return boundingRect(QRect(0,0,0,0), flags | BobUI::TextLongestVariant, text, tabStops, tabArray).size();
 }
 
 /*!
@@ -829,7 +829,7 @@ QRect QFontMetrics::tightBoundingRect(const QString &text) const
 
     \sa horizontalAdvance(), height(), boundingRect()
 */
-QRect QFontMetrics::tightBoundingRect(const QString &text, const QTextOption &option) const
+QRect QFontMetrics::tightBoundingRect(const QString &text, const BOBUIextOption &option) const
 {
     if (text.size() == 0)
         return QRect();
@@ -855,18 +855,18 @@ QRect QFontMetrics::tightBoundingRect(const QString &text, const QTextOption &op
     The \a width is specified in pixels, not characters.
 
     The \a flags argument is optional and currently only supports
-    Qt::TextShowMnemonic as value.
+    BobUI::TextShowMnemonic as value.
 
-    The elide mark follows the \l{Qt::LayoutDirection}{layoutdirection}.
+    The elide mark follows the \l{BobUI::LayoutDirection}{layoutdirection}.
     For example, it will be on the right side of the text for right-to-left
-    layouts if the \a mode is \c{Qt::ElideLeft}, and on the left side of the
-    text if the \a mode is \c{Qt::ElideRight}.
+    layouts if the \a mode is \c{BobUI::ElideLeft}, and on the left side of the
+    text if the \a mode is \c{BobUI::ElideRight}.
 
 */
-QString QFontMetrics::elidedText(const QString &text, Qt::TextElideMode mode, int width, int flags) const
+QString QFontMetrics::elidedText(const QString &text, BobUI::TextElideMode mode, int width, int flags) const
 {
     QString _text = text;
-    if (!(flags & Qt::TextLongestVariant)) {
+    if (!(flags & BobUI::TextLongestVariant)) {
         int posA = 0;
         int posB = _text.indexOf(s_variableLengthStringSeparator);
         while (posB >= 0) {
@@ -948,7 +948,7 @@ qreal QFontMetrics::fontDpi() const
 /*!
     \class QFontMetricsF
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QFontMetricsF class provides font metrics information.
 
@@ -1057,7 +1057,7 @@ QFontMetricsF::QFontMetricsF(const QFont &font)
 */
 QFontMetricsF::QFontMetricsF(const QFont &font, const QPaintDevice *paintdevice)
 {
-    int dpi = paintdevice ? paintdevice->logicalDpiY() : qt_defaultDpi();
+    int dpi = paintdevice ? paintdevice->logicalDpiY() : bobui_defaultDpi();
     if (font.d->dpi != dpi) {
         d = new QFontPrivate(*font.d);
         d->dpi = dpi;
@@ -1409,7 +1409,7 @@ qreal QFontMetricsF::horizontalAdvance(const QString &text, int length) const
 
     \sa boundingRect()
 */
-qreal QFontMetricsF::horizontalAdvance(const QString &text, const QTextOption &option) const
+qreal QFontMetricsF::horizontalAdvance(const QString &text, const BOBUIextOption &option) const
 {
     int pos = text.indexOf(s_variableLengthStringSeparator);
     int length = -1;
@@ -1447,7 +1447,7 @@ qreal QFontMetricsF::horizontalAdvance(const QString &text, const QTextOption &o
     characters or non-spacing marks in the middle of a string, as the
     glyph shaping and positioning of marks that happens when
     processing strings cannot be taken into account. When implementing
-    an interactive text control, use QTextLayout instead.
+    an interactive text control, use BOBUIextLayout instead.
 
     \since 5.11
 
@@ -1536,7 +1536,7 @@ QRectF QFontMetricsF::boundingRect(const QString &text) const
     \since 6.3
     \sa horizontalAdvance(), height(), QPainter::boundingRect()
 */
-QRectF QFontMetricsF::boundingRect(const QString &text, const QTextOption &option) const
+QRectF QFontMetricsF::boundingRect(const QString &text, const BOBUIextOption &option) const
 {
     if (text.size() == 0)
         return QRectF();
@@ -1592,31 +1592,31 @@ QRectF QFontMetricsF::boundingRect(QChar ch) const
 
     The \a flags argument is the bitwise OR of the following flags:
     \list
-    \li Qt::AlignLeft aligns to the left border, except for
+    \li BobUI::AlignLeft aligns to the left border, except for
           Arabic and Hebrew where it aligns to the right.
-    \li Qt::AlignRight aligns to the right border, except for
+    \li BobUI::AlignRight aligns to the right border, except for
           Arabic and Hebrew where it aligns to the left.
-    \li Qt::AlignJustify produces justified text.
-    \li Qt::AlignHCenter aligns horizontally centered.
-    \li Qt::AlignTop aligns to the top border.
-    \li Qt::AlignBottom aligns to the bottom border.
-    \li Qt::AlignVCenter aligns vertically centered
-    \li Qt::AlignCenter (== \c{Qt::AlignHCenter | Qt::AlignVCenter})
-    \li Qt::TextSingleLine ignores newline characters in the text.
-    \li Qt::TextExpandTabs expands tabs (see below)
-    \li Qt::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
-    \li Qt::TextWordWrap breaks the text to fit the rectangle.
+    \li BobUI::AlignJustify produces justified text.
+    \li BobUI::AlignHCenter aligns horizontally centered.
+    \li BobUI::AlignTop aligns to the top border.
+    \li BobUI::AlignBottom aligns to the bottom border.
+    \li BobUI::AlignVCenter aligns vertically centered
+    \li BobUI::AlignCenter (== \c{BobUI::AlignHCenter | BobUI::AlignVCenter})
+    \li BobUI::TextSingleLine ignores newline characters in the text.
+    \li BobUI::TextExpandTabs expands tabs (see below)
+    \li BobUI::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
+    \li BobUI::TextWordWrap breaks the text to fit the rectangle.
     \endlist
 
-    Qt::Horizontal alignment defaults to Qt::AlignLeft and vertical
-    alignment defaults to Qt::AlignTop.
+    BobUI::Horizontal alignment defaults to BobUI::AlignLeft and vertical
+    alignment defaults to BobUI::AlignTop.
 
     If several of the horizontal or several of the vertical alignment
     flags are set, the resulting alignment is undefined.
 
-    These flags are defined in \l{Qt::AlignmentFlag}.
+    These flags are defined in \l{BobUI::AlignmentFlag}.
 
-    If Qt::TextExpandTabs is set in \a flags, the following behavior is
+    If BobUI::TextExpandTabs is set in \a flags, the following behavior is
     used to interpret tab characters in the text:
     \list
     \li If \a tabArray is non-null, it specifies a 0-terminated sequence of
@@ -1640,7 +1640,7 @@ QRectF QFontMetricsF::boundingRect(QChar ch) const
     fontHeight() and lineSpacing() are used to calculate the height,
     rather than individual character heights.
 
-    \sa horizontalAdvance(), QPainter::boundingRect(), Qt::Alignment
+    \sa horizontalAdvance(), QPainter::boundingRect(), BobUI::Alignment
 */
 QRectF QFontMetricsF::boundingRect(const QRectF &rect, int flags, const QString& text,
                                    int tabStops, int *tabArray) const
@@ -1651,7 +1651,7 @@ QRectF QFontMetricsF::boundingRect(const QRectF &rect, int flags, const QString&
             tabArrayLen++;
 
     QRectF rb;
-    qt_format_text(QFont(d.data()), rect, flags | Qt::TextDontPrint, text, &rb, tabStops, tabArray,
+    bobui_format_text(QFont(d.data()), rect, flags | BobUI::TextDontPrint, text, &rb, tabStops, tabArray,
                    tabArrayLen, nullptr);
     return rb;
 }
@@ -1661,15 +1661,15 @@ QRectF QFontMetricsF::boundingRect(const QRectF &rect, int flags, const QString&
 
     The \a flags argument is the bitwise OR of the following flags:
     \list
-    \li Qt::TextSingleLine ignores newline characters.
-    \li Qt::TextExpandTabs expands tabs (see below)
-    \li Qt::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
-    \li Qt::TextWordWrap breaks the text to fit the rectangle.
+    \li BobUI::TextSingleLine ignores newline characters.
+    \li BobUI::TextExpandTabs expands tabs (see below)
+    \li BobUI::TextShowMnemonic interprets "&x" as \underline{x}; i.e., underlined.
+    \li BobUI::TextWordWrap breaks the text to fit the rectangle.
     \endlist
 
-    These flags are defined in the \l{Qt::TextFlag} enum.
+    These flags are defined in the \l{BobUI::TextFlag} enum.
 
-    If Qt::TextExpandTabs is set in \a flags, the following behavior is
+    If BobUI::TextExpandTabs is set in \a flags, the following behavior is
     used to interpret tab characters in the text:
     \list
     \li If \a tabArray is non-null, it specifies a 0-terminated sequence of
@@ -1686,7 +1686,7 @@ QRectF QFontMetricsF::boundingRect(const QRectF &rect, int flags, const QString&
 */
 QSizeF QFontMetricsF::size(int flags, const QString &text, int tabStops, int *tabArray) const
 {
-    return boundingRect(QRectF(), flags | Qt::TextLongestVariant, text, tabStops, tabArray).size();
+    return boundingRect(QRectF(), flags | BobUI::TextLongestVariant, text, tabStops, tabArray).size();
 }
 
 /*!
@@ -1742,7 +1742,7 @@ QRectF QFontMetricsF::tightBoundingRect(const QString &text) const
 
     \sa horizontalAdvance(), height(), boundingRect()
 */
-QRectF QFontMetricsF::tightBoundingRect(const QString &text, const QTextOption &option) const
+QRectF QFontMetricsF::tightBoundingRect(const QString &text, const BOBUIextOption &option) const
 {
     if (text.size() == 0)
         return QRectF();
@@ -1768,17 +1768,17 @@ QRectF QFontMetricsF::tightBoundingRect(const QString &text, const QTextOption &
     The \a width is specified in pixels, not characters.
 
     The \a flags argument is optional and currently only supports
-    Qt::TextShowMnemonic as value.
+    BobUI::TextShowMnemonic as value.
 
-    The elide mark follows the \l{Qt::LayoutDirection}{layoutdirection}.
+    The elide mark follows the \l{BobUI::LayoutDirection}{layoutdirection}.
     For example, it will be on the right side of the text for right-to-left
-    layouts if the \a mode is \c{Qt::ElideLeft}, and on the left side of the
-    text if the \a mode is \c{Qt::ElideRight}.
+    layouts if the \a mode is \c{BobUI::ElideLeft}, and on the left side of the
+    text if the \a mode is \c{BobUI::ElideRight}.
 */
-QString QFontMetricsF::elidedText(const QString &text, Qt::TextElideMode mode, qreal width, int flags) const
+QString QFontMetricsF::elidedText(const QString &text, BobUI::TextElideMode mode, qreal width, int flags) const
 {
     QString _text = text;
-    if (!(flags & Qt::TextLongestVariant)) {
+    if (!(flags & BobUI::TextLongestVariant)) {
         int posA = 0;
         int posB = _text.indexOf(s_variableLengthStringSeparator);
         while (posB >= 0) {
@@ -1852,4 +1852,4 @@ qreal QFontMetricsF::fontDpi() const
     return d->dpi;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

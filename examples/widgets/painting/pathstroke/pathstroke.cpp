@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "pathstroke.h"
 #include "arthurstyle.h"
@@ -166,7 +166,7 @@ void PathStrokeControls::layoutForDesktop()
     createCommonControls(mainGroup);
 
     QGroupBox* penWidthGroup = new QGroupBox(mainGroup);
-    QSlider *penWidth = new QSlider(Qt::Horizontal, penWidthGroup);
+    QSlider *penWidth = new QSlider(BobUI::Horizontal, penWidthGroup);
     penWidth->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     penWidthGroup->setTitle(tr("Pen Width"));
     penWidth->setRange(0, 500);
@@ -242,13 +242,13 @@ void PathStrokeControls::layoutForSmallScreens()
     quitBtn->setMinimumSize(100, okBtn->minimumSize().height());
 
     QLabel *penWidthLabel = new QLabel(tr(" Width:"));
-    QSlider *penWidth = new QSlider(Qt::Horizontal, this);
+    QSlider *penWidth = new QSlider(BobUI::Horizontal, this);
     penWidth->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     penWidth->setRange(0, 500);
 
     // Layouts:
     QHBoxLayout *penWidthLayout = new QHBoxLayout;
-    penWidthLayout->addWidget(penWidthLabel, 0, Qt::AlignRight);
+    penWidthLayout->addWidget(penWidthLabel, 0, BobUI::AlignRight);
     penWidthLayout->addWidget(penWidth);
 
     QVBoxLayout *leftLayout = new QVBoxLayout;
@@ -271,8 +271,8 @@ void PathStrokeControls::layoutForSmallScreens()
 
     mainLayout->addLayout(leftLayout, 1, 1);
     mainLayout->addLayout(rightLayout, 1, 2);
-    mainLayout->addWidget(quitBtn, 2, 1, Qt::AlignHCenter | Qt::AlignTop);
-    mainLayout->addWidget(okBtn, 2, 2, Qt::AlignHCenter | Qt::AlignTop);
+    mainLayout->addWidget(quitBtn, 2, 1, BobUI::AlignHCenter | BobUI::AlignTop);
+    mainLayout->addWidget(okBtn, 2, 2, BobUI::AlignHCenter | BobUI::AlignTop);
 
     connect(penWidth, &QAbstractSlider::valueChanged, m_renderer, &PathStrokeRenderer::setPenWidth);
     connect(quitBtn, &QAbstractButton::clicked, this, &PathStrokeControls::emitQuitSignal);
@@ -346,14 +346,14 @@ PathStrokeRenderer::PathStrokeRenderer(QWidget *parent, bool smallScreen)
     m_smallScreen = smallScreen;
     m_pointSize = 10;
     m_activePoint = -1;
-    m_capStyle = Qt::FlatCap;
-    m_joinStyle = Qt::BevelJoin;
+    m_capStyle = BobUI::FlatCap;
+    m_joinStyle = BobUI::BevelJoin;
     m_pathMode = CurveMode;
     m_penWidth = 1;
-    m_penStyle = Qt::SolidLine;
+    m_penStyle = BobUI::SolidLine;
     m_wasAnimated = true;
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    setAttribute(Qt::WA_AcceptTouchEvents);
+    setAttribute(BobUI::WA_AcceptTouchEvents);
 }
 
 void PathStrokeRenderer::paint(QPainter *painter)
@@ -364,7 +364,7 @@ void PathStrokeRenderer::paint(QPainter *painter)
     painter->setRenderHint(QPainter::Antialiasing);
 
     QPalette pal = palette();
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
 
     // Construct the path
     QPainterPath path;
@@ -387,10 +387,10 @@ void PathStrokeRenderer::paint(QPainter *painter)
 
     // Draw the path
     {
-        QColor lg = Qt::red;
+        QColor lg = BobUI::red;
 
         // The "custom" pen
-        if (m_penStyle == Qt::NoPen) {
+        if (m_penStyle == BobUI::NoPen) {
             QPainterPathStroker stroker;
             stroker.setWidth(m_penWidth);
             stroker.setJoinStyle(m_joinStyle);
@@ -424,8 +424,8 @@ void PathStrokeRenderer::paint(QPainter *painter)
                                        pos.y() - m_pointSize,
                                        m_pointSize*2, m_pointSize*2));
         }
-        painter->setPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
-        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(BobUI::lightGray, 0, BobUI::SolidLine));
+        painter->setBrush(BobUI::NoBrush);
         painter->drawPolyline(m_points);
     }
 
@@ -437,10 +437,10 @@ void PathStrokeRenderer::initializePoints()
     m_points.clear();
     m_vectors.clear();
 
-    QTransform m;
+    BOBUIransform m;
     qreal rot = 360.0 / count;
     QPointF center(width() / 2, height() / 2);
-    QTransform vm;
+    BOBUIransform vm;
     vm.shear(2, -1);
     vm.scale(3, 3);
 
@@ -528,7 +528,7 @@ void PathStrokeRenderer::mouseReleaseEvent(QMouseEvent *)
         emit clicked();
 }
 
-void PathStrokeRenderer::timerEvent(QTimerEvent *e)
+void PathStrokeRenderer::timerEvent(BOBUIimerEvent *e)
 {
     if (e->timerId() == m_timer.timerId()) {
         updatePoints();
@@ -547,7 +547,7 @@ bool PathStrokeRenderer::event(QEvent *e)
         Q_FALLTHROUGH();
     case QEvent::TouchUpdate:
     {
-        const QTouchEvent *const event = static_cast<const QTouchEvent*>(e);
+        const BOBUIouchEvent *const event = static_cast<const BOBUIouchEvent*>(e);
         const auto points = event->points();
         for (const auto &point : points) {
             const int id = point.id();

@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "window.h"
 #include <QPlatformSurfaceEvent>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QFile>
 #include <rhi/qshader.h>
 #include "../shared/cube.h"
@@ -16,7 +16,7 @@ Window::Window(QRhi::Implementation graphicsApi)
     case QRhi::OpenGLES2:
         setSurfaceType(OpenGLSurface);
         break;
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     case QRhi::Vulkan:
         instance.setLayers({ "VK_LAYER_KHRONOS_validation" });
         instance.create();
@@ -76,7 +76,7 @@ void Window::init()
     QRhi::Flags rhiFlags = QRhi::EnableDebugMarkers;
 
     switch (m_graphicsApi) {
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     case QRhi::Vulkan:
     {
         QRhiVulkanInitParams params;
@@ -243,7 +243,7 @@ void Window::render()
 
     m_rhi->endFrame(m_sc.get());
 
-    QTimer::singleShot(0, this, [this] { render(); });
+    BOBUIimer::singleShot(0, this, [this] { render(); });
 }
 
 QShader Window::getShader(const QString &name)

@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_XDGSHELL_H
 #define MOCKCOMPOSITOR_XDGSHELL_H
@@ -12,14 +12,14 @@ namespace MockCompositor {
 class XdgSurface;
 class XdgToplevel;
 class XdgPopup;
-using XdgPositioner = QtWaylandServer::xdg_positioner;
+using XdgPositioner = BobUIWaylandServer::xdg_positioner;
 
-class XdgWmBase : public Global, public QtWaylandServer::xdg_wm_base
+class XdgWmBase : public Global, public BobUIWaylandServer::xdg_wm_base
 {
     Q_OBJECT
 public:
     explicit XdgWmBase(CoreCompositor *compositor, int version = 4);
-    using QtWaylandServer::xdg_wm_base::send_ping;
+    using BobUIWaylandServer::xdg_wm_base::send_ping;
     void send_ping(uint32_t) = delete; // It's a global, use resource specific instead
     bool isClean() override { return m_xdgSurfaces.empty(); }
     QString dirtyMessage() override { return m_xdgSurfaces.empty() ? "clean" : "remaining xdg surfaces"; }
@@ -43,7 +43,7 @@ protected:
     }
 };
 
-class XdgSurface : public QObject, public QtWaylandServer::xdg_surface
+class XdgSurface : public QObject, public BobUIWaylandServer::xdg_surface
 {
     Q_OBJECT
 public:
@@ -90,7 +90,7 @@ class XdgToplevelRole : public SurfaceRole
     Q_OBJECT
 };
 
-class XdgToplevel : public QObject, public QtWaylandServer::xdg_toplevel
+class XdgToplevel : public QObject, public BobUIWaylandServer::xdg_toplevel
 {
     Q_OBJECT
 public:
@@ -116,7 +116,7 @@ class XdgPopupRole : public SurfaceRole
     Q_OBJECT
 };
 
-class XdgPopup : public QObject, public QtWaylandServer::xdg_popup
+class XdgPopup : public QObject, public BobUIWaylandServer::xdg_popup
 {
     Q_OBJECT
 public:

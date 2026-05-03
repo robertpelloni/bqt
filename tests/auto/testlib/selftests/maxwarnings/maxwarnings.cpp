@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class MaxWarnings: public QObject
 {
@@ -18,5 +18,5 @@ void MaxWarnings::warn()
         qWarning("%d", i);
 }
 
-QTEST_MAIN(MaxWarnings)
+BOBUIEST_MAIN(MaxWarnings)
 #include "maxwarnings.moc"

@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(treewidget))
+BOBUI += widgets
+requires(bobuiConfig(treewidget))
 
 HEADERS       = regularexpressiondialog.h
 SOURCES       = regularexpressiondialog.cpp \
@@ -8,5 +8,5 @@ SOURCES       = regularexpressiondialog.cpp \
 RESOURCES += regularexpression.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/regularexpression
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/regularexpression
 INSTALLS += target

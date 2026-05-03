@@ -1,5 +1,5 @@
-Qt 3.0.7 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.0.6.
+BobUI 3.0.7 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.0.6.
 
 ****************************************************************************
 *                              General                                     *
@@ -130,7 +130,7 @@ to 1.0.15.
 	style flags for frame painting.
 
 - QHeader
-	Some speed improvements for the sake of QTable and
+	Some speed improvements for the sake of BOBUIable and
 	QListView. Fix redrawing problems when moving header sections.
 
 - QIconView
@@ -298,29 +298,29 @@ to 1.0.15.
 	chords. Respect text alignments. No background for Bezier
 	the listbox. Don't auto-complete when saving a filecurves.
 
-- QTabBar
+- BOBUIabBar
 	Move focus to the current tab if the tab with focus is being
 	removed.
 
-- QTable
+- BOBUIable
 	Fixed contentsContextMenuEvent(). Fixed
 	adjustRow()/adjustColumn() for multi line sections. Support
 	for QApplicaton::globalStrut(). Speed improvements for
 	setNumRows(). Improved sizeHint() to include the left/top
 	header. Fix for mouse release handling. Update geometry of
 	cell widgets when changing rowHeight/colWidth. Fixed
-	QTableItem::sizeHint() for items with wordwrap. Catch
+	BOBUIableItem::sizeHint() for items with wordwrap. Catch
 	hideColumn() on tables with too few columns. Fixed an endless
 	recursion when swapping header sections.
 
-- QTableItem
+- BOBUIableItem
 	Fixed multiple calls to setSpan().
 
-- QTextCodec:
+- BOBUIextCodec:
 	Initialize locale before loading textcodec plugins. Fixed a
 	bug in the unicode -> jisx0208 conversion table.
 
-- QTextEdit	
+- BOBUIextEdit	
 	Reset cursor on undos that leave us with an empty
 	textedit. Quote quotes when exporting rich text. Fixed
 	possible crash when appending empty paragraphs like
@@ -332,7 +332,7 @@ to 1.0.15.
 	double deletion crash when clearing a document with floating
 	custom items.
 
-- QToolButton
+- BOBUIoolButton
 	In sizeHint() don't reserve space for icons if button has
 	only a textlabel. Made popups more robust (e.g. if the slot
 	connected to the popup menu results in the destruction of the

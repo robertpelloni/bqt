@@ -1,7 +1,7 @@
 TEMPLATE = app
 CONFIG += console
 
-QT += gui-private
+BOBUI += gui-private
 
 SOURCES = \
     offscreen.cpp

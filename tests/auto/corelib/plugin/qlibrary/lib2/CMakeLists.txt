@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## mylib Generic Library:
 #####################################################################
 
-qt_internal_add_cmake_library(mylib2
+bobui_internal_add_cmake_library(mylib2
     SHARED
     INSTALL_DIRECTORY "${INSTALL_TESTSDIR}tst_qlibrary"
     #OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
     SOURCES
         mylib.c
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
 
 # This test is very "annoying" to get working with CMake as it involves having
@@ -44,7 +44,7 @@ if(UNIX)
         add_custom_command(TARGET mylib2 POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 $<TARGET_FILE:mylib2>
-                "${CMAKE_CURRENT_BINARY_DIR}/../system.qt.test.mylib.so.dylib"
+                "${CMAKE_CURRENT_BINARY_DIR}/../system.bobui.test.mylib.so.dylib"
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 $<TARGET_FILE:mylib2>
                 "${CMAKE_CURRENT_BINARY_DIR}/../libmylib.2.0.0.dylib"
@@ -64,7 +64,7 @@ if(UNIX)
         add_custom_command(TARGET mylib2 POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 $<TARGET_FILE:mylib2>
-                "${CMAKE_CURRENT_BINARY_DIR}/../system.qt.test.mylib.so"
+                "${CMAKE_CURRENT_BINARY_DIR}/../system.bobui.test.mylib.so"
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 $<TARGET_FILE:mylib2>
                 "${CMAKE_CURRENT_BINARY_DIR}/../libmylib.so.2.0.0"
@@ -87,14 +87,14 @@ if(UNIX)
         add_custom_command(TARGET mylib2 POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:mylib2>
-            "${CMAKE_CURRENT_BINARY_DIR}/../libsystem.qt.test.mylib.so"
+            "${CMAKE_CURRENT_BINARY_DIR}/../libsystem.bobui.test.mylib.so"
             VERBATIM)
     endif()
 else() #Win32
     add_custom_command(TARGET mylib2 POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:mylib2>
-            "${CMAKE_CURRENT_BINARY_DIR}/../system.qt.test.mylib.dll"
+            "${CMAKE_CURRENT_BINARY_DIR}/../system.bobui.test.mylib.dll"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:mylib2>
             "${CMAKE_CURRENT_BINARY_DIR}/../mylib.dl2"
@@ -104,7 +104,7 @@ endif()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(mylib2 CONDITION MSVC
+bobui_internal_extend_target(mylib2 CONDITION MSVC
     DEFINES
         WIN32_MSVC
 )

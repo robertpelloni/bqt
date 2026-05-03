@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACCESSIBLEOBJECT_H
 #define QACCESSIBLEOBJECT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qaccessible.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qaccessible.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 class QAccessibleObjectPrivate;
 class QObject;
@@ -57,8 +57,8 @@ public:
     QAccessible::State state() const override;
 };
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QACCESSIBLEOBJECT_H

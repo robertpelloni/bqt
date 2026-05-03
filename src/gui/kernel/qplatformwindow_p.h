@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMWINDOW_P_H
 #define QPLATFORMWINDOW_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qnativeinterface.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUIGui/qwindow.h>
 
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
 #include <any>
-#include <QtCore/qobject.h>
+#include <BobUICore/qobject.h>
 
 struct wl_surface;
 #endif
@@ -36,7 +36,7 @@ enum NSVisualEffectBlendingMode : NSInteger;
 enum NSVisualEffectState: NSInteger;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMargins;
 
@@ -54,7 +54,7 @@ namespace QNativeInterface::Private {
 #if defined(Q_OS_WASM) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QWasmWindow
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWasmWindow, 1, QWindow)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWasmWindow, 1, QWindow)
     virtual emscripten::val document() const = 0;
     virtual emscripten::val clientArea() const = 0;
 };
@@ -63,7 +63,7 @@ struct Q_GUI_EXPORT QWasmWindow
 #if defined(Q_OS_MACOS) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QCocoaWindow
 {
-    QT_DECLARE_NATIVE_INTERFACE(QCocoaWindow, 2, QWindow)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QCocoaWindow, 2, QWindow)
     virtual void setContentBorderEnabled(bool enable) = 0;
     virtual QPoint bottomLeftClippedByNSWindowOffset() const = 0;
     virtual CALayer *contentLayer() const = 0;
@@ -73,10 +73,10 @@ struct Q_GUI_EXPORT QCocoaWindow
 };
 #endif
 
-#if QT_CONFIG(xcb) || defined(Q_QDOC)
+#if BOBUI_CONFIG(xcb) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QXcbWindow
 {
-    QT_DECLARE_NATIVE_INTERFACE(QXcbWindow, 1, QWindow)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QXcbWindow, 1, QWindow)
 
     enum WindowType {
         None         = 0x000000,
@@ -108,7 +108,7 @@ struct Q_GUI_EXPORT QXcbWindow
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QWindowsWindow
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWindowsWindow, 1, QWindow)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWindowsWindow, 1, QWindow)
 
     virtual void setHasBorderInFullScreen(bool border) = 0;
     virtual bool hasBorderInFullScreen() const = 0;
@@ -118,12 +118,12 @@ struct Q_GUI_EXPORT QWindowsWindow
 };
 #endif // Q_OS_WIN
 
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
 struct Q_GUI_EXPORT QWaylandWindow : public QObject
 {
     Q_OBJECT
 public:
-    QT_DECLARE_NATIVE_INTERFACE(QWaylandWindow, 1, QWindow)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWaylandWindow, 1, QWindow)
 
     enum WindowType {
         Default,
@@ -162,6 +162,6 @@ protected:
 
 } // QNativeInterface::Private
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMWINDOW_P_H

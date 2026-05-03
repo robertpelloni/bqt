@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "../connection.h"
 #include "customsqlmodel.h"
 #include "editablesqlmodel.h"
 
 #include <QApplication>
-#include <QTableView>
+#include <BOBUIableView>
 
 void initializeModel(QSqlQueryModel *model)
 {
     model->setQuery("select * from person");
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("First name"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Last name"));
+    model->setHeaderData(0, BobUI::Horizontal, QObject::tr("ID"));
+    model->setHeaderData(1, BobUI::Horizontal, QObject::tr("First name"));
+    model->setHeaderData(2, BobUI::Horizontal, QObject::tr("Last name"));
 }
 
-QTableView* createView(QSqlQueryModel *model, const QString &title = "")
+BOBUIableView* createView(QSqlQueryModel *model, const QString &title = "")
 {
-    QTableView *view = new QTableView;
+    BOBUIableView *view = new BOBUIableView;
     view->setModel(model);
     static int offset = 0;
 

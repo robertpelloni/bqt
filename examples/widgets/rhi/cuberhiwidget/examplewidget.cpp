@@ -1,12 +1,12 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "examplewidget.h"
 #include "cube.h"
 
 #include <QFile>
 #include <QPainter>
-#include <QtGui/qquaternion.h>
+#include <BobUIGui/qquaternion.h>
 
 static const QSize CUBE_TEX_SIZE(512, 512);
 

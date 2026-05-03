@@ -1,5 +1,5 @@
-QT += core
-QT -= gui
+BOBUI += core
+BOBUI -= gui
 
 TARGET = convert
 CONFIG += cmdline
@@ -7,7 +7,7 @@ CONFIG += cmdline
 TEMPLATE = app
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/serialization/convert
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/serialization/convert
 INSTALLS += target
 
 SOURCES += main.cpp \

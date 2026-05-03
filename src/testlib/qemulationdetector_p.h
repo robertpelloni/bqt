@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEMULATIONDETECTOR_P_H
 #define QEMULATIONDETECTOR_P_H
@@ -8,31 +8,31 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 
 #if defined(Q_OS_LINUX) && defined(Q_PROCESSOR_ARM)
 #define SHOULD_CHECK_ARM_ON_X86
 
 #include <QFileInfo>
 
-#if QT_CONFIG(process) && QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(process) && BOBUI_CONFIG(regularexpression)
 #include <QProcess>
 #include <QRegularExpression>
 #endif
 
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Helper functions for detecting if running emulated
-namespace QTestPrivate {
+namespace BOBUIestPrivate {
 
 #ifdef SHOULD_CHECK_ARM_ON_X86
 static bool isX86SpecificFileAvailable(void);
@@ -63,7 +63,7 @@ static bool isReportedArchitectureX86(void);
  */
 static bool isX86SpecificFileAvailable()
 {
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
     // MTRR (Memory Type Range Registers) are a feature of the x86 architecture
     // and /proc/mtrr is only present (on Linux) for that family.
@@ -80,9 +80,9 @@ static bool isX86SpecificFileAvailable()
  */
 static bool isReportedArchitectureX86(void)
 {
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(process) && QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(process) && BOBUI_CONFIG(regularexpression)
     QProcess unamer;
     QString machineString;
 
@@ -105,9 +105,9 @@ static bool isReportedArchitectureX86(void)
 }
 #endif // SHOULD_CHECK_ARM_ON_X86
 
-} // QTestPrivate namespace
+} // BOBUIestPrivate namespace
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

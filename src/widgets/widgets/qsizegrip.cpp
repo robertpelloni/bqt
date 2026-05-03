@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsizegrip.h"
 
@@ -17,15 +17,15 @@
 #include <private/qwidget_p.h>
 #include "private/qapplication_p.h"
 #include <qpa/qplatformtheme.h>
-#include <QtWidgets/qabstractscrollarea.h>
+#include <BobUIWidgets/qabstractscrollarea.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static QWidget *qt_sizegrip_topLevelWidget(QWidget* w)
+static QWidget *bobui_sizegrip_topLevelWidget(QWidget* w)
 {
-    while (w && !w->isWindow() && w->windowType() != Qt::SubWindow)
+    while (w && !w->isWindow() && w->windowType() != BobUI::SubWindow)
         w = w->parentWidget();
     return w;
 }
@@ -41,25 +41,25 @@ public:
     int d;
     int dxMax;
     int dyMax;
-    Qt::Corner m_corner;
+    BobUI::Corner m_corner;
     bool gotMousePress;
     QPointer<QWidget> tlw;
 
-    Qt::Corner corner() const;
+    BobUI::Corner corner() const;
     inline bool atBottom() const
     {
-        return m_corner == Qt::BottomRightCorner || m_corner == Qt::BottomLeftCorner;
+        return m_corner == BobUI::BottomRightCorner || m_corner == BobUI::BottomLeftCorner;
     }
 
     inline bool atLeft() const
     {
-        return m_corner == Qt::BottomLeftCorner || m_corner == Qt::TopLeftCorner;
+        return m_corner == BobUI::BottomLeftCorner || m_corner == BobUI::TopLeftCorner;
     }
 
     void updateTopLevelWidget()
     {
         Q_Q(QSizeGrip);
-        QWidget *w = qt_sizegrip_topLevelWidget(q);
+        QWidget *w = bobui_sizegrip_topLevelWidget(q);
         if (tlw == w)
             return;
         if (tlw)
@@ -72,15 +72,15 @@ public:
     // This slot is invoked by QLayout when the size grip is added to
     // a layout or reparented after the tlw is shown. This re-implementation is basically
     // the same as QWidgetPrivate::_q_showIfNotHidden except that it checks
-    // for Qt::WindowFullScreen and Qt::WindowMaximized as well.
+    // for BobUI::WindowFullScreen and BobUI::WindowMaximized as well.
     void _q_showIfNotHidden()
     {
         Q_Q(QSizeGrip);
         bool showSizeGrip = !isExplicitlyHidden();
         updateTopLevelWidget();
         if (tlw && showSizeGrip) {
-            Qt::WindowStates sizeGripNotVisibleState = Qt::WindowFullScreen;
-            sizeGripNotVisibleState |= Qt::WindowMaximized;
+            BobUI::WindowStates sizeGripNotVisibleState = BobUI::WindowFullScreen;
+            sizeGripNotVisibleState |= BobUI::WindowMaximized;
             // Don't show the size grip if the tlw is maximized or in full screen mode.
             showSizeGrip = !(tlw->windowState() & sizeGripNotVisibleState);
         }
@@ -100,17 +100,17 @@ QSizeGripPrivate::QSizeGripPrivate()
 {
 }
 
-Qt::Corner QSizeGripPrivate::corner() const
+BobUI::Corner QSizeGripPrivate::corner() const
 {
     Q_Q(const QSizeGrip);
-    QWidget *tlw = qt_sizegrip_topLevelWidget(const_cast<QSizeGrip *>(q));
+    QWidget *tlw = bobui_sizegrip_topLevelWidget(const_cast<QSizeGrip *>(q));
     const QPoint sizeGripPos = q->mapTo(tlw, QPoint(0, 0));
     bool isAtBottom = sizeGripPos.y() >= tlw->height() / 2;
     bool isAtLeft = sizeGripPos.x() <= tlw->width() / 2;
     if (isAtLeft)
-        return isAtBottom ? Qt::BottomLeftCorner : Qt::TopLeftCorner;
+        return isAtBottom ? BobUI::BottomLeftCorner : BobUI::TopLeftCorner;
     else
-        return isAtBottom ? Qt::BottomRightCorner : Qt::TopRightCorner;
+        return isAtBottom ? BobUI::BottomRightCorner : BobUI::TopRightCorner;
 }
 
 /*!
@@ -120,7 +120,7 @@ Qt::Corner QSizeGripPrivate::corner() const
 
     \ingroup mainwindow-classes
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This widget works like the standard Windows resize handle. In the
     X11 version this resize handle generally works differently from
@@ -128,7 +128,7 @@ Qt::Corner QSizeGripPrivate::corner() const
     support necessary modern post-ICCCM specifications.
 
     Put this widget anywhere in a widget tree and the user can use it
-    to resize the top-level window or any widget with the Qt::SubWindow
+    to resize the top-level window or any widget with the BobUI::SubWindow
     flag set. Generally, this should be in the lower right-hand corner.
 
     Note that QStatusBar already uses this widget, so if you have a
@@ -146,7 +146,7 @@ Qt::Corner QSizeGripPrivate::corner() const
 
     \image fusion-statusbar-sizegrip.png {Size grip at the bottom-right corner}
     \caption  A size grip widget at the bottom-right corner of a main window, shown in the
-    \l{Qt Widget Gallery}{Fusion widget style}.
+    \l{BobUI Widget Gallery}{Fusion widget style}.
 
     The QSizeGrip class inherits QWidget and reimplements the \l
     {QWidget::mousePressEvent()}{mousePressEvent()} and \l
@@ -174,11 +174,11 @@ QSizeGrip::QSizeGrip(QWidget * parent)
 void QSizeGripPrivate::init()
 {
     Q_Q(QSizeGrip);
-    m_corner = q->isLeftToRight() ? Qt::BottomRightCorner : Qt::BottomLeftCorner;
+    m_corner = q->isLeftToRight() ? BobUI::BottomRightCorner : BobUI::BottomLeftCorner;
 
-#if !defined(QT_NO_CURSOR)
-    q->setCursor(m_corner == Qt::TopLeftCorner || m_corner == Qt::BottomRightCorner
-                 ? Qt::SizeFDiagCursor : Qt::SizeBDiagCursor);
+#if !defined(BOBUI_NO_CURSOR)
+    q->setCursor(m_corner == BobUI::TopLeftCorner || m_corner == BobUI::BottomRightCorner
+                 ? BobUI::SizeFDiagCursor : BobUI::SizeBDiagCursor);
 #endif
     q->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed));
     updateTopLevelWidget();
@@ -228,38 +228,38 @@ void QSizeGrip::paintEvent(QPaintEvent *event)
     parameter.
 */
 
-static Qt::Edges edgesFromCorner(Qt::Corner corner)
+static BobUI::Edges edgesFromCorner(BobUI::Corner corner)
 {
     switch (corner) {
-    case Qt::TopLeftCorner: return Qt::TopEdge | Qt::LeftEdge;
-    case Qt::TopRightCorner: return Qt::TopEdge | Qt::RightEdge;
-    case Qt::BottomLeftCorner: return Qt::BottomEdge | Qt::LeftEdge;
-    case Qt::BottomRightCorner: return Qt::BottomEdge | Qt::RightEdge;
+    case BobUI::TopLeftCorner: return BobUI::TopEdge | BobUI::LeftEdge;
+    case BobUI::TopRightCorner: return BobUI::TopEdge | BobUI::RightEdge;
+    case BobUI::BottomLeftCorner: return BobUI::BottomEdge | BobUI::LeftEdge;
+    case BobUI::BottomRightCorner: return BobUI::BottomEdge | BobUI::RightEdge;
     }
-    return Qt::Edges{};
+    return BobUI::Edges{};
 }
 
 static bool usePlatformSizeGrip(const QWidget *tlw)
 {
     const QString &platformName = QGuiApplication::platformName();
-    if (platformName.contains(u"xcb")) // ### FIXME QTBUG-69716
+    if (platformName.contains(u"xcb")) // ### FIXME BOBUIBUG-69716
         return false;
-    if (tlw->testAttribute(Qt::WA_TranslucentBackground)
+    if (tlw->testAttribute(BobUI::WA_TranslucentBackground)
         && platformName == u"windows") {
-        return false; // QTBUG-90628, flicker when using translucency
+        return false; // BOBUIBUG-90628, flicker when using translucency
     }
     return true;
 }
 
 void QSizeGrip::mousePressEvent(QMouseEvent * e)
 {
-    if (e->button() != Qt::LeftButton) {
+    if (e->button() != BobUI::LeftButton) {
         QWidget::mousePressEvent(e);
         return;
     }
 
     Q_D(QSizeGrip);
-    QWidget *tlw = qt_sizegrip_topLevelWidget(this);
+    QWidget *tlw = bobui_sizegrip_topLevelWidget(this);
     d->p = e->globalPosition().toPoint();
     d->gotMousePress = true;
     d->r = tlw->geometry();
@@ -268,12 +268,12 @@ void QSizeGrip::mousePressEvent(QMouseEvent * e)
     d->m_platformSizeGrip = false;
     if (tlw->isWindow()
         && tlw->windowHandle()
-        && !(tlw->windowFlags() & Qt::X11BypassWindowManagerHint)
-        && !tlw->testAttribute(Qt::WA_DontShowOnScreen)
+        && !(tlw->windowFlags() & BobUI::X11BypassWindowManagerHint)
+        && !tlw->testAttribute(BobUI::WA_DontShowOnScreen)
         && !tlw->hasHeightForWidth()
         && usePlatformSizeGrip(tlw)) {
         QPlatformWindow *platformWindow = tlw->windowHandle()->handle();
-        const Qt::Edges edges = edgesFromCorner(d->m_corner);
+        const BobUI::Edges edges = edgesFromCorner(d->m_corner);
         d->m_platformSizeGrip = platformWindow->startSystemResize(edges);
     }
 
@@ -295,13 +295,13 @@ void QSizeGrip::mousePressEvent(QMouseEvent * e)
         // Check if tlw is inside QAbstractScrollArea/QScrollArea.
         // If that's the case tlw->parentWidget() will return the viewport
         // and tlw->parentWidget()->parentWidget() will return the scroll area.
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
         QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea *>(tlwParent->parentWidget());
         if (scrollArea) {
-            hasHorizontalSizeConstraint = scrollArea->horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff;
-            hasVerticalSizeConstraint = scrollArea->verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff;
+            hasHorizontalSizeConstraint = scrollArea->horizontalScrollBarPolicy() == BobUI::ScrollBarAlwaysOff;
+            hasVerticalSizeConstraint = scrollArea->verticalScrollBarPolicy() == BobUI::ScrollBarAlwaysOff;
         }
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)
         availableGeometry = tlwParent->contentsRect();
     }
 
@@ -349,13 +349,13 @@ void QSizeGrip::mousePressEvent(QMouseEvent * e)
 void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
 {
     Q_D(QSizeGrip);
-    if (e->buttons() != Qt::LeftButton || d->m_platformSizeGrip) {
+    if (e->buttons() != BobUI::LeftButton || d->m_platformSizeGrip) {
         QWidget::mouseMoveEvent(e);
         return;
     }
 
-    QWidget* tlw = qt_sizegrip_topLevelWidget(this);
-    if (!d->gotMousePress || tlw->testAttribute(Qt::WA_WState_ConfigPending))
+    QWidget* tlw = bobui_sizegrip_topLevelWidget(this);
+    if (!d->gotMousePress || tlw->testAttribute(BobUI::WA_WState_ConfigPending))
         return;
 
     QPoint np(e->globalPosition().toPoint());
@@ -396,7 +396,7 @@ void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
 */
 void QSizeGrip::mouseReleaseEvent(QMouseEvent *mouseEvent)
 {
-    if (mouseEvent->button() == Qt::LeftButton) {
+    if (mouseEvent->button() == BobUI::LeftButton) {
         Q_D(QSizeGrip);
         d->gotMousePress = false;
         d->p = QPoint();
@@ -416,9 +416,9 @@ void QSizeGrip::moveEvent(QMoveEvent * /*moveEvent*/)
         return;
 
     d->m_corner = d->corner();
-#if !defined(QT_NO_CURSOR)
-    setCursor(d->m_corner == Qt::TopLeftCorner || d->m_corner == Qt::BottomRightCorner
-              ? Qt::SizeFDiagCursor : Qt::SizeBDiagCursor);
+#if !defined(BOBUI_NO_CURSOR)
+    setCursor(d->m_corner == BobUI::TopLeftCorner || d->m_corner == BobUI::BottomRightCorner
+              ? BobUI::SizeFDiagCursor : BobUI::SizeBDiagCursor);
 #endif
 }
 
@@ -455,11 +455,11 @@ bool QSizeGrip::eventFilter(QObject *o, QEvent *e)
         || o != d->tlw) {
         return QWidget::eventFilter(o, e);
     }
-    Qt::WindowStates sizeGripNotVisibleState = Qt::WindowFullScreen;
-    sizeGripNotVisibleState |= Qt::WindowMaximized;
+    BobUI::WindowStates sizeGripNotVisibleState = BobUI::WindowFullScreen;
+    sizeGripNotVisibleState |= BobUI::WindowMaximized;
     // Don't show the size grip if the tlw is maximized or in full screen mode.
     setVisible(!(d->tlw->windowState() & sizeGripNotVisibleState));
-    setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+    setAttribute(BobUI::WA_WState_ExplicitShowHide, false);
     return QWidget::eventFilter(o, e);
 }
 
@@ -471,6 +471,6 @@ bool QSizeGrip::event(QEvent *event)
     return QWidget::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsizegrip.cpp"

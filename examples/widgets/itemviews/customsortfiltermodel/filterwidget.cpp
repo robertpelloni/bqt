@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "filterwidget.h"
 
@@ -8,7 +8,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QActionGroup>
-#include <QToolButton>
+#include <BOBUIoolButton>
 #include <QWidgetAction>
 
 FilterWidget::FilterWidget(QWidget *parent)
@@ -41,28 +41,28 @@ FilterWidget::FilterWidget(QWidget *parent)
     connect(m_patternGroup, &QActionGroup::triggered, this, &FilterWidget::filterChanged);
 
     const QIcon icon = QIcon(QPixmap(":/images/find.png"));
-    QToolButton *optionsButton = new QToolButton;
-#ifndef QT_NO_CURSOR
-    optionsButton->setCursor(Qt::ArrowCursor);
+    BOBUIoolButton *optionsButton = new BOBUIoolButton;
+#ifndef BOBUI_NO_CURSOR
+    optionsButton->setCursor(BobUI::ArrowCursor);
 #endif
-    optionsButton->setFocusPolicy(Qt::NoFocus);
+    optionsButton->setFocusPolicy(BobUI::NoFocus);
     optionsButton->setIcon(icon);
     optionsButton->setMenu(menu);
-    optionsButton->setPopupMode(QToolButton::InstantPopup);
+    optionsButton->setPopupMode(BOBUIoolButton::InstantPopup);
 
     QWidgetAction *optionsAction = new QWidgetAction(this);
     optionsAction->setDefaultWidget(optionsButton);
     addAction(optionsAction, QLineEdit::LeadingPosition);
 }
 
-Qt::CaseSensitivity FilterWidget::caseSensitivity() const
+BobUI::CaseSensitivity FilterWidget::caseSensitivity() const
 {
-    return m_caseSensitivityAction->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    return m_caseSensitivityAction->isChecked() ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
 }
 
-void FilterWidget::setCaseSensitivity(Qt::CaseSensitivity cs)
+void FilterWidget::setCaseSensitivity(BobUI::CaseSensitivity cs)
 {
-    m_caseSensitivityAction->setChecked(cs == Qt::CaseSensitive);
+    m_caseSensitivityAction->setChecked(cs == BobUI::CaseSensitive);
 }
 
 static inline FilterWidget::PatternSyntax patternSyntaxFromAction(const QAction *a)

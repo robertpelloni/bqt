@@ -73,7 +73,7 @@
          <string>File(s):</string>
         </property>
         <property name="alignment" >
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         <set>BobUI::AlignLeading|BobUI::AlignLeft|BobUI::AlignTop</set>
         </property>
        </widget>
       </item>
@@ -92,15 +92,15 @@
        </widget>
       </item>
       <item row="5" column="1" colspan="3" >
-       <widget class="QTextEdit" name="torrentContents" >
+       <widget class="BOBUIextEdit" name="torrentContents" >
         <property name="focusPolicy" >
-         <enum>Qt::NoFocus</enum>
+         <enum>BobUI::NoFocus</enum>
         </property>
         <property name="tabChangesFocus" >
          <bool>true</bool>
         </property>
         <property name="lineWrapMode" >
-         <enum>QTextEdit::NoWrap</enum>
+         <enum>BOBUIextEdit::NoWrap</enum>
         </property>
         <property name="readOnly" >
          <bool>true</bool>
@@ -110,7 +110,7 @@
       <item row="6" column="1" colspan="2" >
        <widget class="QLineEdit" name="destinationFolder" >
         <property name="focusPolicy" >
-         <enum>Qt::StrongFocus</enum>
+         <enum>BobUI::StrongFocus</enum>
         </property>
        </widget>
       </item>
@@ -187,7 +187,7 @@
      <item>
       <spacer>
        <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+        <enum>BobUI::Horizontal</enum>
        </property>
        <property name="sizeHint" >
         <size>

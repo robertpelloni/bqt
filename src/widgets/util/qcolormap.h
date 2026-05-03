@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOLORMAP_H
 #define QCOLORMAP_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qrgb.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qlist.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qrgb.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QColor;
 class QColormapPrivate;
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 11)
-class Q_WIDGETS_EXPORT QT_DEPRECATED_VERSION_6_11 QColormap
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 11)
+class Q_WIDGETS_EXPORT BOBUI_DEPRECATED_VERSION_6_11 QColormap
 {
 public:
     enum Mode { Direct, Indexed, Gray };
@@ -46,8 +46,8 @@ private:
     QColormap();
     QColormapPrivate *d;
 };
-#endif // QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 11)
+#endif // BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 11)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLORMAP_H

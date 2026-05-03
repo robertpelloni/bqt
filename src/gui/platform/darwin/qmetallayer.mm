@@ -1,18 +1,18 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmetallayer_p.h"
 
-#include <QtCore/qreadwritelock.h>
-#include <QtCore/qrect.h>
+#include <BobUICore/qreadwritelock.h>
+#include <BobUICore/qrect.h>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
-Q_LOGGING_CATEGORY(lcMetalLayer, "qt.gui.metal")
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+Q_LOGGING_CATEGORY(lcMetalLayer, "bobui.gui.metal")
+BOBUI_END_NAMESPACE
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 @implementation QMetalLayer
 {

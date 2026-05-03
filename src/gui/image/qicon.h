@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QICON_H
 #define QICON_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qlist.h>
-#include <QtGui/qpixmap.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qlist.h>
+#include <BobUIGui/qpixmap.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QIconPrivate;
@@ -193,9 +193,9 @@ public:
     explicit QIcon(QIconEngine *engine);
     ~QIcon();
     QIcon &operator=(const QIcon &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QIcon)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QIcon)
     inline void swap(QIcon &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
     bool operator==(const QIcon &) const = delete;
     bool operator!=(const QIcon &) const = delete;
 
@@ -207,21 +207,21 @@ public:
     inline QPixmap pixmap(int extent, Mode mode = Normal, State state = Off) const
         { return pixmap(QSize(extent, extent), mode, state); }
     QPixmap pixmap(const QSize &size, qreal devicePixelRatio, Mode mode = Normal, State state = Off) const;
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use pixmap(size, devicePixelRatio) instead")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use pixmap(size, devicePixelRatio) instead")
     QPixmap pixmap(QWindow *window, const QSize &size, Mode mode = Normal, State state = Off) const;
 #endif
 
     QSize actualSize(const QSize &size, Mode mode = Normal, State state = Off) const;
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use actualSize(size) instead")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use actualSize(size) instead")
     QSize actualSize(QWindow *window, const QSize &size, Mode mode = Normal, State state = Off) const;
 #endif
 
     QString name() const;
 
-    void paint(QPainter *painter, const QRect &rect, Qt::Alignment alignment = Qt::AlignCenter, Mode mode = Normal, State state = Off) const;
-    inline void paint(QPainter *painter, int x, int y, int w, int h, Qt::Alignment alignment = Qt::AlignCenter, Mode mode = Normal, State state = Off) const
+    void paint(QPainter *painter, const QRect &rect, BobUI::Alignment alignment = BobUI::AlignCenter, Mode mode = Normal, State state = Off) const;
+    inline void paint(QPainter *painter, int x, int y, int w, int h, BobUI::Alignment alignment = BobUI::AlignCenter, Mode mode = Normal, State state = Off) const
         { paint(painter, QRect(x, y, w, h), alignment, mode, state); }
 
     bool isNull() const;
@@ -260,7 +260,7 @@ public:
 
 private:
     QIconPrivate *d;
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QIcon &);
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QIcon &);
 #endif
@@ -274,18 +274,18 @@ public:
 
 Q_DECLARE_SHARED(QIcon)
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QIcon &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QIcon &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QIcon &);
 #endif
 
-Q_GUI_EXPORT QString qt_findAtNxFile(const QString &baseFileName, qreal targetDevicePixelRatio,
+Q_GUI_EXPORT QString bobui_findAtNxFile(const QString &baseFileName, qreal targetDevicePixelRatio,
                                      qreal *sourceDevicePixelRatio = nullptr);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QICON_H

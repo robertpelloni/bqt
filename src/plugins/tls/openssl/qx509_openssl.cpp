@@ -1,31 +1,31 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #include "qsslsocket_openssl_symbols_p.h"
-#include "qtlsbackend_openssl_p.h"
-#include "qtlskey_openssl_p.h"
+#include "bobuilsbackend_openssl_p.h"
+#include "bobuilskey_openssl_p.h"
 #include "qx509_openssl_p.h"
-#include "qtls_openssl_p.h"
+#include "bobuils_openssl_p.h"
 
-#include <QtNetwork/private/qsslcertificate_p.h>
+#include <BobUINetwork/private/qsslcertificate_p.h>
 
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qhostaddress.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qhostaddress.h>
 
-#include <QtCore/qendian.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qtimezone.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/bobuiimezone.h>
+#include <BobUICore/qvarlengtharray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 namespace {
 
@@ -78,8 +78,8 @@ QDateTime dateTimeFromASN1(const ASN1_TIME *aTime)
 
     if (q_ASN1_TIME_to_tm(aTime, &lTime)) {
         QDate resDate(lTime.tm_year + 1900, lTime.tm_mon + 1, lTime.tm_mday);
-        QTime resTime(lTime.tm_hour, lTime.tm_min, lTime.tm_sec);
-        result = QDateTime(resDate, resTime, QTimeZone::UTC);
+        BOBUIime resTime(lTime.tm_hour, lTime.tm_min, lTime.tm_sec);
+        result = QDateTime(resDate, resTime, BOBUIimeZone::UTC);
     }
 
     return result;
@@ -96,7 +96,7 @@ QByteArray x509ToQByteArray(X509 *x509, QSsl::EncodingFormat format)
     // Use i2d_X509 to convert the X509 to an array.
     const int length = q_i2d_X509(x509, nullptr);
     if (length <= 0) {
-        QTlsBackendOpenSSL::logAndClearErrorQueue();
+        BOBUIlsBackendOpenSSL::logAndClearErrorQueue();
         return {};
     }
 
@@ -353,7 +353,7 @@ QVariant x509ExtensionToValue(X509_EXTENSION *ext)
 
 } // Unnamed namespace
 
-int qt_X509Callback(int ok, X509_STORE_CTX *ctx)
+int bobui_X509Callback(int ok, X509_STORE_CTX *ctx)
 {
     if (!ok) {
         // Store the error and at which depth the error was detected.
@@ -376,7 +376,7 @@ int qt_X509Callback(int ok, X509_STORE_CTX *ctx)
 
             // TLSTODO: verification callback has to change as soon as TlsCryptographer is in place.
             // This is a temporary solution for now to ease the transition.
-            const auto offset = QTlsBackendOpenSSL::s_indexForSSLExtraData
+            const auto offset = BOBUIlsBackendOpenSSL::s_indexForSSLExtraData
                                 + TlsCryptographOpenSSL::errorOffsetInExData;
             if (SSL *ssl = static_cast<SSL *>(q_X509_STORE_CTX_get_ex_data(ctx, q_SSL_get_ex_data_X509_STORE_CTX_idx())))
                 errors = ErrorListPtr(q_SSL_get_ex_data(ssl, offset));
@@ -411,7 +411,7 @@ bool X509CertificateOpenSSL::isEqual(const X509Certificate &rhs) const
         const int ret = q_X509_cmp(x509, other.x509);
         if (ret >= -1 && ret <= 1)
             return ret == 0;
-        QTlsBackendOpenSSL::logAndClearErrorQueue();
+        BOBUIlsBackendOpenSSL::logAndClearErrorQueue();
     }
 
     return false;
@@ -519,9 +519,9 @@ QString X509CertificateOpenSSL::toText() const
     return x509ToText(x509);
 }
 
-Qt::HANDLE X509CertificateOpenSSL::handle() const
+BobUI::HANDLE X509CertificateOpenSSL::handle() const
 {
-    return Qt::HANDLE(x509);
+    return BobUI::HANDLE(x509);
 }
 
 size_t X509CertificateOpenSSL::hash(size_t seed) const noexcept
@@ -541,7 +541,7 @@ QSslCertificate X509CertificateOpenSSL::certificateFromX509(X509 *x509)
 {
     QSslCertificate certificate;
 
-    auto *backend = QTlsBackend::backend<X509CertificateOpenSSL>(certificate);
+    auto *backend = BOBUIlsBackend::backend<X509CertificateOpenSSL>(certificate);
     if (!backend || !x509)
         return certificate;
 
@@ -656,7 +656,7 @@ QList<QSslError> X509CertificateOpenSSL::verify(const QList<QSslCertificate> &ca
     }
 
     // Register a custom callback to get all verification errors.
-    q_X509_STORE_set_verify_cb(certStore, qt_X509Callback);
+    q_X509_STORE_set_verify_cb(certStore, bobui_X509Callback);
 
     // Build the chain of intermediate certificates
     STACK_OF(X509) *intermediates = nullptr;
@@ -820,8 +820,8 @@ bool X509CertificateOpenSSL::importPkcs12(QIODevice *device, QSslKey *key, QSslC
                               reinterpret_cast<void (*)(void *)>(q_X509_free));
     });
 
-    // Convert to Qt types
-    auto *tlsKey = QTlsBackend::backend<TlsKeyOpenSSL>(*key);
+    // Convert to BobUI types
+    auto *tlsKey = BOBUIlsBackend::backend<TlsKeyOpenSSL>(*key);
     if (!tlsKey || !tlsKey->fromEVP_PKEY(pkey)) {
         qCWarning(lcTlsBackend, "Unable to convert private key");
         return false;
@@ -908,7 +908,7 @@ void X509CertificateOpenSSL::parseExtensions()
     }
 
     // Converting an extension may result in an error(s), clean them up:
-    QTlsBackendOpenSSL::clearErrorQueue();
+    BOBUIlsBackendOpenSSL::clearErrorQueue();
 }
 
 X509CertificateBase::X509CertificateExtension X509CertificateOpenSSL::convertExtension(X509_EXTENSION *ext)
@@ -943,6 +943,6 @@ X509CertificateBase::X509CertificateExtension X509CertificateOpenSSL::convertExt
     return result;
 }
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

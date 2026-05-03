@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qfile.h>
 #include <qpainterpath.h>
@@ -66,7 +66,7 @@ private slots:
 
     void testToFillPolygons();
 
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     void testNaNandInfinites();
 #endif
 
@@ -152,22 +152,22 @@ void tst_QPainterPath::clear()
     p3.lineTo(50, 50);
     QCOMPARE(p1, p3);
 
-    QCOMPARE(p1.fillRule(), Qt::OddEvenFill);
-    p1.setFillRule(Qt::WindingFill);
+    QCOMPARE(p1.fillRule(), BobUI::OddEvenFill);
+    p1.setFillRule(BobUI::WindingFill);
     QVERIFY(p1 != p3);
     p1.clear();
     QVERIFY(p1 != p3);
-    p1.setFillRule(Qt::OddEvenFill);
+    p1.setFillRule(BobUI::OddEvenFill);
     QCOMPARE(p1, p2);
 
     QPainterPath p4;
-    QCOMPARE(p4.fillRule(), Qt::OddEvenFill);
-    p4.setFillRule(Qt::WindingFill);
-    QCOMPARE(p4.fillRule(), Qt::WindingFill);
+    QCOMPARE(p4.fillRule(), BobUI::OddEvenFill);
+    p4.setFillRule(BobUI::WindingFill);
+    QCOMPARE(p4.fillRule(), BobUI::WindingFill);
     p4.clear();
-    QCOMPARE(p4.fillRule(), Qt::WindingFill);
+    QCOMPARE(p4.fillRule(), BobUI::WindingFill);
     p4 = QPainterPath();
-    QCOMPARE(p4.fillRule(), Qt::OddEvenFill);
+    QCOMPARE(p4.fillRule(), BobUI::OddEvenFill);
 }
 
 void tst_QPainterPath::reserveAndCapacity()
@@ -218,9 +218,9 @@ void tst_QPainterPath::currentPosition()
 
 void tst_QPainterPath::contains_QPointF_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QPointF>("pt");
-    QTest::addColumn<bool>("contained");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QPointF>("pt");
+    BOBUIest::addColumn<bool>("contained");
 
     QPainterPath path;
     path.addRect(0, 0, 100, 100);
@@ -231,33 +231,33 @@ void tst_QPainterPath::contains_QPointF_data()
     // #   #
     // #####
 
-    QTest::newRow("[0,0] in [0,0,100,100]") << path << QPointF(0, 0) << true;
+    BOBUIest::newRow("[0,0] in [0,0,100,100]") << path << QPointF(0, 0) << true;
 
-    QTest::newRow("[99,0] in [0,0,100,100]") << path << QPointF(99, 0) << true;
-    QTest::newRow("[0,99] in [0,0,100,100]") << path << QPointF(0, 99) << true;
-    QTest::newRow("[99,99] in [0,0,100,100]") << path << QPointF(99, 99) << true;
+    BOBUIest::newRow("[99,0] in [0,0,100,100]") << path << QPointF(99, 0) << true;
+    BOBUIest::newRow("[0,99] in [0,0,100,100]") << path << QPointF(0, 99) << true;
+    BOBUIest::newRow("[99,99] in [0,0,100,100]") << path << QPointF(99, 99) << true;
 
-    QTest::newRow("[99.99,0] in [0,0,100,100]") << path << QPointF(99.99, 0) << true;
-    QTest::newRow("[0,99.99] in [0,0,100,100]") << path << QPointF(0, 99.99) << true;
-    QTest::newRow("[99.99,99.99] in [0,0,100,100]") << path << QPointF(99.99, 99.99) << true;
+    BOBUIest::newRow("[99.99,0] in [0,0,100,100]") << path << QPointF(99.99, 0) << true;
+    BOBUIest::newRow("[0,99.99] in [0,0,100,100]") << path << QPointF(0, 99.99) << true;
+    BOBUIest::newRow("[99.99,99.99] in [0,0,100,100]") << path << QPointF(99.99, 99.99) << true;
 
-    QTest::newRow("[0.01,0.01] in [0,0,100,100]") << path << QPointF(0.01, 0.01) << true;
-    QTest::newRow("[0,0.01] in [0,0,100,100]") << path << QPointF(0, 0.01) << true;
-    QTest::newRow("[0.01,0] in [0,0,100,100]") << path << QPointF(0.01, 0) << true;
+    BOBUIest::newRow("[0.01,0.01] in [0,0,100,100]") << path << QPointF(0.01, 0.01) << true;
+    BOBUIest::newRow("[0,0.01] in [0,0,100,100]") << path << QPointF(0, 0.01) << true;
+    BOBUIest::newRow("[0.01,0] in [0,0,100,100]") << path << QPointF(0.01, 0) << true;
 
-    QTest::newRow("[-0.01,-0.01] in [0,0,100,100]") << path << QPointF(-0.01, -0.01) << false;
-    QTest::newRow("[-0,-0.01] in [0,0,100,100]") << path << QPointF(0, -0.01) << false;
-    QTest::newRow("[-0.01,0] in [0,0,100,100]") << path << QPointF(-0.01, 0) << false;
+    BOBUIest::newRow("[-0.01,-0.01] in [0,0,100,100]") << path << QPointF(-0.01, -0.01) << false;
+    BOBUIest::newRow("[-0,-0.01] in [0,0,100,100]") << path << QPointF(0, -0.01) << false;
+    BOBUIest::newRow("[-0.01,0] in [0,0,100,100]") << path << QPointF(-0.01, 0) << false;
 
 
-    QTest::newRow("[-10,0] in [0,0,100,100]") << path << QPointF(-10, 0) << false;
-    QTest::newRow("[100,0] in [0,0,100,100]") << path << QPointF(100, 0) << false;
+    BOBUIest::newRow("[-10,0] in [0,0,100,100]") << path << QPointF(-10, 0) << false;
+    BOBUIest::newRow("[100,0] in [0,0,100,100]") << path << QPointF(100, 0) << false;
 
-    QTest::newRow("[0,-10] in [0,0,100,100]") << path << QPointF(0, -10) << false;
-    QTest::newRow("[0,100] in [0,0,100,100]") << path << QPointF(0, 100) << false;
+    BOBUIest::newRow("[0,-10] in [0,0,100,100]") << path << QPointF(0, -10) << false;
+    BOBUIest::newRow("[0,100] in [0,0,100,100]") << path << QPointF(0, 100) << false;
 
-    QTest::newRow("[100.1,0] in [0,0,100,100]") << path << QPointF(100.1, 0) << false;
-    QTest::newRow("[0,100.1] in [0,0,100,100]") << path << QPointF(0, 100.1) << false;
+    BOBUIest::newRow("[100.1,0] in [0,0,100,100]") << path << QPointF(100.1, 0) << false;
+    BOBUIest::newRow("[0,100.1] in [0,0,100,100]") << path << QPointF(0, 100.1) << false;
 
     path.addRect(50, 50, 100, 100);
 
@@ -269,12 +269,12 @@ void tst_QPainterPath::contains_QPointF_data()
     //   #   #
     //   #####
 
-    QTest::newRow("[49,49] in 2 rects") << path << QPointF(49,49) << true;
-    QTest::newRow("[50,50] in 2 rects") << path << QPointF(50,50) << false;
-    QTest::newRow("[100,100] in 2 rects") << path << QPointF(100,100) << true;
+    BOBUIest::newRow("[49,49] in 2 rects") << path << QPointF(49,49) << true;
+    BOBUIest::newRow("[50,50] in 2 rects") << path << QPointF(50,50) << false;
+    BOBUIest::newRow("[100,100] in 2 rects") << path << QPointF(100,100) << true;
 
-    path.setFillRule(Qt::WindingFill);
-    QTest::newRow("[50,50] in 2 rects (winding)") << path << QPointF(50,50) << true;
+    path.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("[50,50] in 2 rects (winding)") << path << QPointF(50,50) << true;
 
     path.addEllipse(0, 0, 150, 150);
 
@@ -286,12 +286,12 @@ void tst_QPainterPath::contains_QPointF_data()
     //  ##  ##
     //   #####
 
-    QTest::newRow("[50,50] in complex (winding)") << path << QPointF(50, 50) << true;
+    BOBUIest::newRow("[50,50] in complex (winding)") << path << QPointF(50, 50) << true;
 
-    path.setFillRule(Qt::OddEvenFill);
-    QTest::newRow("[50,50] in complex (windinf)") << path << QPointF(50, 50) << true;
-    QTest::newRow("[49,49] in complex") << path << QPointF(49,49) << false;
-    QTest::newRow("[100,100] in complex") << path << QPointF(49,49) << false;
+    path.setFillRule(BobUI::OddEvenFill);
+    BOBUIest::newRow("[50,50] in complex (windinf)") << path << QPointF(50, 50) << true;
+    BOBUIest::newRow("[49,49] in complex") << path << QPointF(49,49) << false;
+    BOBUIest::newRow("[100,100] in complex") << path << QPointF(49,49) << false;
 
 
     // unclosed triangle
@@ -300,13 +300,13 @@ void tst_QPainterPath::contains_QPointF_data()
     path.lineTo(130, 70);
     path.lineTo(150, 110);
 
-    QTest::newRow("[100,100] in triangle") << path << QPointF(100, 100) << true;
-    QTest::newRow("[140,100] in triangle") << path << QPointF(140, 100) << true;
-    QTest::newRow("[130,80] in triangle") << path << QPointF(130, 80) << true;
+    BOBUIest::newRow("[100,100] in triangle") << path << QPointF(100, 100) << true;
+    BOBUIest::newRow("[140,100] in triangle") << path << QPointF(140, 100) << true;
+    BOBUIest::newRow("[130,80] in triangle") << path << QPointF(130, 80) << true;
 
-    QTest::newRow("[110,80] in triangle") << path << QPointF(110, 80) << false;
-    QTest::newRow("[150,100] in triangle") << path << QPointF(150, 100) << false;
-    QTest::newRow("[120,110] in triangle") << path << QPointF(120, 110) << false;
+    BOBUIest::newRow("[110,80] in triangle") << path << QPointF(110, 80) << false;
+    BOBUIest::newRow("[150,100] in triangle") << path << QPointF(150, 100) << false;
+    BOBUIest::newRow("[120,110] in triangle") << path << QPointF(120, 110) << false;
 
     QRectF base_rect(0, 0, 20, 20);
 
@@ -318,23 +318,23 @@ void tst_QPainterPath::contains_QPointF_data()
     inside.addEllipse(base_rect.adjusted(5, 5, -5, -5));
     QPolygonF inside_poly = inside.toFillPolygon();
     for (int i=0; i<inside_poly.size(); ++i)
-        QTest::newRow(("inside_ellipse " + QByteArray::number(i)).constData()) << path << inside_poly.at(i) << true;
+        BOBUIest::newRow(("inside_ellipse " + QByteArray::number(i)).constData()) << path << inside_poly.at(i) << true;
 
     QPainterPath outside;
     outside.addEllipse(base_rect.adjusted(-5, -5, 5, 5));
     QPolygonF outside_poly = outside.toFillPolygon();
     for (int i=0; i<outside_poly.size(); ++i)
-        QTest::newRow(("outside_ellipse " + QByteArray::number(i)).constData()) << path << outside_poly.at(i) << false;
+        BOBUIest::newRow(("outside_ellipse " + QByteArray::number(i)).constData()) << path << outside_poly.at(i) << false;
 
     path = QPainterPath();
     base_rect = QRectF(50, 50, 200, 200);
     path.addEllipse(base_rect);
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
 
-    QTest::newRow("topleft outside ellipse") << path << base_rect.topLeft() << false;
-    QTest::newRow("topright outside ellipse") << path << base_rect.topRight() << false;
-    QTest::newRow("bottomright outside ellipse") << path << base_rect.bottomRight() << false;
-    QTest::newRow("bottomleft outside ellipse") << path << base_rect.bottomLeft() << false;
+    BOBUIest::newRow("topleft outside ellipse") << path << base_rect.topLeft() << false;
+    BOBUIest::newRow("topright outside ellipse") << path << base_rect.topRight() << false;
+    BOBUIest::newRow("bottomright outside ellipse") << path << base_rect.bottomRight() << false;
+    BOBUIest::newRow("bottomleft outside ellipse") << path << base_rect.bottomLeft() << false;
 
     // Test horizontal curve segment
     path = QPainterPath();
@@ -343,13 +343,13 @@ void tst_QPainterPath::contains_QPointF_data()
     path.lineTo(150, 200);
     path.closeSubpath();
 
-    QTest::newRow("horizontal cubic, out left") << path << QPointF(0, 100) << false;
-    QTest::newRow("horizontal cubic, out right") << path << QPointF(300, 100) <<false;
-    QTest::newRow("horizontal cubic, in mid") << path << QPointF(150, 100) << true;
+    BOBUIest::newRow("horizontal cubic, out left") << path << QPointF(0, 100) << false;
+    BOBUIest::newRow("horizontal cubic, out right") << path << QPointF(300, 100) <<false;
+    BOBUIest::newRow("horizontal cubic, in mid") << path << QPointF(150, 100) << true;
 
     path = QPainterPath();
     path.addEllipse(QRectF(-5000.0, -5000.0, 1500000.0, 1500000.0));
-    QTest::newRow("huge ellipse, qreal=float crash") << path << QPointF(1100000.35, 1098000.2) << true;
+    BOBUIest::newRow("huge ellipse, qreal=float crash") << path << QPointF(1100000.35, 1098000.2) << true;
 
 }
 
@@ -364,40 +364,40 @@ void tst_QPainterPath::contains_QPointF()
 
 void tst_QPainterPath::contains_QRectF_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QRectF>("rect");
-    QTest::addColumn<bool>("contained");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QRectF>("rect");
+    BOBUIest::addColumn<bool>("contained");
 
     QPainterPath path;
     path.addRect(0, 0, 100, 100);
 
-    QTest::newRow("same rect") << path << QRectF(0.1, 0.1, 99, 99) << true; // ###
-    QTest::newRow("outside") << path << QRectF(-1, -1, 100, 100) << false;
-    QTest::newRow("covers") << path << QRectF(-1, -1, 102, 102) << false;
-    QTest::newRow("left") << path << QRectF(-10, 50, 5, 5) << false;
-    QTest::newRow("top") << path << QRectF(50, -10, 5, 5) << false;
-    QTest::newRow("right") << path << QRectF(110, 50, 5, 5) << false;
-    QTest::newRow("bottom") << path << QRectF(50, 110, 5, 5) << false;
+    BOBUIest::newRow("same rect") << path << QRectF(0.1, 0.1, 99, 99) << true; // ###
+    BOBUIest::newRow("outside") << path << QRectF(-1, -1, 100, 100) << false;
+    BOBUIest::newRow("covers") << path << QRectF(-1, -1, 102, 102) << false;
+    BOBUIest::newRow("left") << path << QRectF(-10, 50, 5, 5) << false;
+    BOBUIest::newRow("top") << path << QRectF(50, -10, 5, 5) << false;
+    BOBUIest::newRow("right") << path << QRectF(110, 50, 5, 5) << false;
+    BOBUIest::newRow("bottom") << path << QRectF(50, 110, 5, 5) << false;
 
     path.addRect(50, 50, 100, 100);
 
-    QTest::newRow("r1 top") << path << QRectF(0.1, 0.1, 99, 49) << true;
-    QTest::newRow("r1 left") << path << QRectF(0.1, 0.1, 49, 99) << true;
-    QTest::newRow("r2 right") << path << QRectF(100.01, 50.1, 49, 99) << true;
-    QTest::newRow("r2 bottom") << path << QRectF(50.1, 100.1, 99, 49) << true;
-    QTest::newRow("inside 2 rects") << path << QRectF(51, 51, 48, 48) << false;
-    QTest::newRow("topRight 2 rects") << path << QRectF(100, 0, 49, 49) << false;
-    QTest::newRow("bottomLeft 2 rects") << path << QRectF(0, 100, 49, 49) << false;
+    BOBUIest::newRow("r1 top") << path << QRectF(0.1, 0.1, 99, 49) << true;
+    BOBUIest::newRow("r1 left") << path << QRectF(0.1, 0.1, 49, 99) << true;
+    BOBUIest::newRow("r2 right") << path << QRectF(100.01, 50.1, 49, 99) << true;
+    BOBUIest::newRow("r2 bottom") << path << QRectF(50.1, 100.1, 99, 49) << true;
+    BOBUIest::newRow("inside 2 rects") << path << QRectF(51, 51, 48, 48) << false;
+    BOBUIest::newRow("topRight 2 rects") << path << QRectF(100, 0, 49, 49) << false;
+    BOBUIest::newRow("bottomLeft 2 rects") << path << QRectF(0, 100, 49, 49) << false;
 
-    path.setFillRule(Qt::WindingFill);
-    QTest::newRow("inside 2 rects (winding)") << path << QRectF(51, 51, 48, 48) << true;
+    path.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("inside 2 rects (winding)") << path << QRectF(51, 51, 48, 48) << true;
 
     path.addEllipse(0, 0, 150, 150);
-    QTest::newRow("topRight rects+circle") << path << QRectF(100, 25, 24, 24) << true;
-    QTest::newRow("bottomLeft rects+circle") << path << QRectF(25, 100, 24, 24) << true;
+    BOBUIest::newRow("topRight rects+circle") << path << QRectF(100, 25, 24, 24) << true;
+    BOBUIest::newRow("bottomLeft rects+circle") << path << QRectF(25, 100, 24, 24) << true;
 
-    path.setFillRule(Qt::OddEvenFill);
-    QTest::newRow("inside rects+circle") << path << QRectF(50, 50, 49, 49) << false;
+    path.setFillRule(BobUI::OddEvenFill);
+    BOBUIest::newRow("inside rects+circle") << path << QRectF(50, 50, 49, 49) << false;
 }
 
 void tst_QPainterPath::contains_QRectF()
@@ -435,42 +435,42 @@ static inline QPainterPath linePath(qreal x1, qreal y1, qreal x2, qreal y2)
 
 void tst_QPainterPath::intersects_QRectF_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QRectF>("rect");
-    QTest::addColumn<bool>("intersects");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QRectF>("rect");
+    BOBUIest::addColumn<bool>("intersects");
 
     QPainterPath path;
     path.addRect(0, 0, 100, 100);
 
-    QTest::newRow("same rect") << path << QRectF(0.1, 0.1, 99, 99) << true; // ###
-    QTest::newRow("outside") << path << QRectF(-1, -1, 100, 100) << true;
-    QTest::newRow("covers") << path << QRectF(-1, -1, 102, 102) << true;
-    QTest::newRow("left") << path << QRectF(-10, 50, 5, 5) << false;
-    QTest::newRow("top") << path << QRectF(50, -10, 5, 5) << false;
-    QTest::newRow("right") << path << QRectF(110, 50, 5, 5) << false;
-    QTest::newRow("bottom") << path << QRectF(50, 110, 5, 5) << false;
+    BOBUIest::newRow("same rect") << path << QRectF(0.1, 0.1, 99, 99) << true; // ###
+    BOBUIest::newRow("outside") << path << QRectF(-1, -1, 100, 100) << true;
+    BOBUIest::newRow("covers") << path << QRectF(-1, -1, 102, 102) << true;
+    BOBUIest::newRow("left") << path << QRectF(-10, 50, 5, 5) << false;
+    BOBUIest::newRow("top") << path << QRectF(50, -10, 5, 5) << false;
+    BOBUIest::newRow("right") << path << QRectF(110, 50, 5, 5) << false;
+    BOBUIest::newRow("bottom") << path << QRectF(50, 110, 5, 5) << false;
 
     path.addRect(50, 50, 100, 100);
 
-    QTest::newRow("r1 top") << path << QRectF(0.1, 0.1, 99, 49) << true;
-    QTest::newRow("r1 left") << path << QRectF(0.1, 0.1, 49, 99) << true;
-    QTest::newRow("r2 right") << path << QRectF(100.01, 50.1, 49, 99) << true;
-    QTest::newRow("r2 bottom") << path << QRectF(50.1, 100.1, 99, 49) << true;
-    QTest::newRow("inside 2 rects") << path << QRectF(51, 51, 48, 48) << false;
+    BOBUIest::newRow("r1 top") << path << QRectF(0.1, 0.1, 99, 49) << true;
+    BOBUIest::newRow("r1 left") << path << QRectF(0.1, 0.1, 49, 99) << true;
+    BOBUIest::newRow("r2 right") << path << QRectF(100.01, 50.1, 49, 99) << true;
+    BOBUIest::newRow("r2 bottom") << path << QRectF(50.1, 100.1, 99, 49) << true;
+    BOBUIest::newRow("inside 2 rects") << path << QRectF(51, 51, 48, 48) << false;
 
-    path.setFillRule(Qt::WindingFill);
-    QTest::newRow("inside 2 rects (winding)") << path << QRectF(51, 51, 48, 48) << true;
+    path.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("inside 2 rects (winding)") << path << QRectF(51, 51, 48, 48) << true;
 
     path.addEllipse(0, 0, 150, 150);
-    QTest::newRow("topRight 2 rects") << path << QRectF(100, 25, 24, 24) << true;
-    QTest::newRow("bottomLeft 2 rects") << path << QRectF(25, 100, 24, 24) << true;
+    BOBUIest::newRow("topRight 2 rects") << path << QRectF(100, 25, 24, 24) << true;
+    BOBUIest::newRow("bottomLeft 2 rects") << path << QRectF(25, 100, 24, 24) << true;
 
-    QTest::newRow("horizontal line") << linePath(0, 0, 10, 0) << QRectF(1, -1, 2, 2) << true;
-    QTest::newRow("vertical line") << linePath(0, 0, 0, 10) << QRectF(-1, 1, 2, 2) << true;
+    BOBUIest::newRow("horizontal line") << linePath(0, 0, 10, 0) << QRectF(1, -1, 2, 2) << true;
+    BOBUIest::newRow("vertical line") << linePath(0, 0, 0, 10) << QRectF(-1, 1, 2, 2) << true;
 
     path = QPainterPath();
     path.addEllipse(QRectF(-5000.0, -5000.0, 1500000.0, 1500000.0));
-    QTest::newRow("huge ellipse, qreal=float crash") << path << QRectF(1100000.35, 1098000.2, 1500000.0, 1500000.0) << true;
+    BOBUIest::newRow("huge ellipse, qreal=float crash") << path << QRectF(1100000.35, 1098000.2, 1500000.0, 1500000.0) << true;
 }
 
 void tst_QPainterPath::intersects_QRectF()
@@ -485,85 +485,85 @@ void tst_QPainterPath::intersects_QRectF()
 
 void tst_QPainterPath::testContainsAndIntersects_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QPainterPath>("candidate");
-    QTest::addColumn<bool>("contained");
-    QTest::addColumn<bool>("intersects");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QPainterPath>("candidate");
+    BOBUIest::addColumn<bool>("contained");
+    BOBUIest::addColumn<bool>("intersects");
 
-    QTest::newRow("rect vs small ellipse (upper left)") << rectPath(0, 0, 100, 100) << ellipsePath(0, 0, 50, 50) << false << true;
-    QTest::newRow("rect vs small ellipse (upper right)") << rectPath(0, 0, 100, 100) << ellipsePath(50, 0, 50, 50) << false << true;
-    QTest::newRow("rect vs small ellipse (lower right)") << rectPath(0, 0, 100, 100) << ellipsePath(50, 50, 50, 50) << false << true;
-    QTest::newRow("rect vs small ellipse (lower left)") << rectPath(0, 0, 100, 100) << ellipsePath(0, 50, 50, 50) << false << true;
-    QTest::newRow("rect vs small ellipse (centered)") << rectPath(0, 0, 100, 100) << ellipsePath(25, 25, 50, 50) << true << true;
-    QTest::newRow("rect vs equal ellipse") << rectPath(0, 0, 100, 100) << ellipsePath(0, 0, 100, 100) << false << true;
-    QTest::newRow("rect vs big ellipse") << rectPath(0, 0, 100, 100) << ellipsePath(-10, -10, 120, 120) << false << true;
+    BOBUIest::newRow("rect vs small ellipse (upper left)") << rectPath(0, 0, 100, 100) << ellipsePath(0, 0, 50, 50) << false << true;
+    BOBUIest::newRow("rect vs small ellipse (upper right)") << rectPath(0, 0, 100, 100) << ellipsePath(50, 0, 50, 50) << false << true;
+    BOBUIest::newRow("rect vs small ellipse (lower right)") << rectPath(0, 0, 100, 100) << ellipsePath(50, 50, 50, 50) << false << true;
+    BOBUIest::newRow("rect vs small ellipse (lower left)") << rectPath(0, 0, 100, 100) << ellipsePath(0, 50, 50, 50) << false << true;
+    BOBUIest::newRow("rect vs small ellipse (centered)") << rectPath(0, 0, 100, 100) << ellipsePath(25, 25, 50, 50) << true << true;
+    BOBUIest::newRow("rect vs equal ellipse") << rectPath(0, 0, 100, 100) << ellipsePath(0, 0, 100, 100) << false << true;
+    BOBUIest::newRow("rect vs big ellipse") << rectPath(0, 0, 100, 100) << ellipsePath(-10, -10, 120, 120) << false << true;
 
     QPainterPath twoEllipses = ellipsePath(0, 0, 100, 100).united(ellipsePath(200, 0, 100, 100));
 
-    QTest::newRow("rect vs two small ellipses") << rectPath(0, 0, 100, 100) << ellipsePath(25, 25, 50, 50).united(ellipsePath(225, 25, 50, 50)) << false << true;
-    QTest::newRow("rect vs two equal ellipses") << rectPath(0, 0, 100, 100) << twoEllipses << false << true;
+    BOBUIest::newRow("rect vs two small ellipses") << rectPath(0, 0, 100, 100) << ellipsePath(25, 25, 50, 50).united(ellipsePath(225, 25, 50, 50)) << false << true;
+    BOBUIest::newRow("rect vs two equal ellipses") << rectPath(0, 0, 100, 100) << twoEllipses << false << true;
 
-    QTest::newRow("rect vs self") << rectPath(0, 0, 100, 100) << rectPath(0, 0, 100, 100) << false << true;
-    QTest::newRow("ellipse vs self") << ellipsePath(0, 0, 100, 100) << ellipsePath(0, 0, 100, 100) << false << true;
+    BOBUIest::newRow("rect vs self") << rectPath(0, 0, 100, 100) << rectPath(0, 0, 100, 100) << false << true;
+    BOBUIest::newRow("ellipse vs self") << ellipsePath(0, 0, 100, 100) << ellipsePath(0, 0, 100, 100) << false << true;
 
     QPainterPath twoRects = rectPath(0, 0, 100, 100).united(rectPath(200, 0, 100, 100));
-    QTest::newRow("two rects vs small ellipse (upper left)") << twoRects << ellipsePath(0, 0, 50, 50) << false << true;
-    QTest::newRow("two rects vs small ellipse (upper right)") << twoRects << ellipsePath(50, 0, 50, 50) << false << true;
-    QTest::newRow("two rects vs small ellipse (lower right)") << twoRects << ellipsePath(50, 50, 50, 50) << false << true;
-    QTest::newRow("two rects vs small ellipse (lower left)") << twoRects << ellipsePath(0, 50, 50, 50) << false << true;
-    QTest::newRow("two rects vs small ellipse (centered)") << twoRects << ellipsePath(25, 25, 50, 50) << true << true;
-    QTest::newRow("two rects vs equal ellipse") << twoRects << ellipsePath(0, 0, 100, 100) << false << true;
-    QTest::newRow("two rects vs big ellipse") << twoRects << ellipsePath(-10, -10, 120, 120) << false << true;
+    BOBUIest::newRow("two rects vs small ellipse (upper left)") << twoRects << ellipsePath(0, 0, 50, 50) << false << true;
+    BOBUIest::newRow("two rects vs small ellipse (upper right)") << twoRects << ellipsePath(50, 0, 50, 50) << false << true;
+    BOBUIest::newRow("two rects vs small ellipse (lower right)") << twoRects << ellipsePath(50, 50, 50, 50) << false << true;
+    BOBUIest::newRow("two rects vs small ellipse (lower left)") << twoRects << ellipsePath(0, 50, 50, 50) << false << true;
+    BOBUIest::newRow("two rects vs small ellipse (centered)") << twoRects << ellipsePath(25, 25, 50, 50) << true << true;
+    BOBUIest::newRow("two rects vs equal ellipse") << twoRects << ellipsePath(0, 0, 100, 100) << false << true;
+    BOBUIest::newRow("two rects vs big ellipse") << twoRects << ellipsePath(-10, -10, 120, 120) << false << true;
 
-    QTest::newRow("two rects vs two small ellipses") << twoRects << ellipsePath(25, 25, 50, 50).united(ellipsePath(225, 25, 50, 50)) << true << true;
-    QTest::newRow("two rects vs two equal ellipses") << twoRects << ellipsePath(0, 0, 100, 100).united(ellipsePath(200, 0, 100, 100)) << false << true;
+    BOBUIest::newRow("two rects vs two small ellipses") << twoRects << ellipsePath(25, 25, 50, 50).united(ellipsePath(225, 25, 50, 50)) << true << true;
+    BOBUIest::newRow("two rects vs two equal ellipses") << twoRects << ellipsePath(0, 0, 100, 100).united(ellipsePath(200, 0, 100, 100)) << false << true;
 
-    QTest::newRow("two rects vs self") << twoRects << twoRects << false << true;
-    QTest::newRow("two ellipses vs self") << twoEllipses << twoEllipses << false << true;
+    BOBUIest::newRow("two rects vs self") << twoRects << twoRects << false << true;
+    BOBUIest::newRow("two ellipses vs self") << twoEllipses << twoEllipses << false << true;
 
     QPainterPath windingRect = rectPath(0, 0, 100, 100);
     windingRect.addRect(25, 25, 100, 50);
-    windingRect.setFillRule(Qt::WindingFill);
+    windingRect.setFillRule(BobUI::WindingFill);
 
-    QTest::newRow("rect with winding rule vs tall rect") << windingRect << rectPath(40, 20, 20, 60) << true << true;
-    QTest::newRow("rect with winding rule vs self") << windingRect << windingRect << false << true;
+    BOBUIest::newRow("rect with winding rule vs tall rect") << windingRect << rectPath(40, 20, 20, 60) << true << true;
+    BOBUIest::newRow("rect with winding rule vs self") << windingRect << windingRect << false << true;
 
     QPainterPath thickFrame = rectPath(0, 0, 100, 100).subtracted(rectPath(25, 25, 50, 50));
     QPainterPath thinFrame = rectPath(10, 10, 80, 80).subtracted(rectPath(15, 15, 70, 70));
 
-    QTest::newRow("thin frame in thick frame") << thickFrame << thinFrame << true << true;
-    QTest::newRow("rect in thick frame") << thickFrame << rectPath(40, 40, 20, 20) << false << false;
-    QTest::newRow("rect in thin frame") << thinFrame << rectPath(40, 40, 20, 20) << false << false;
+    BOBUIest::newRow("thin frame in thick frame") << thickFrame << thinFrame << true << true;
+    BOBUIest::newRow("rect in thick frame") << thickFrame << rectPath(40, 40, 20, 20) << false << false;
+    BOBUIest::newRow("rect in thin frame") << thinFrame << rectPath(40, 40, 20, 20) << false << false;
 
     QPainterPath ellipses;
     ellipses.addEllipse(0, 0, 10, 10);
     ellipses.addEllipse(4, 4, 2, 2);
-    ellipses.setFillRule(Qt::WindingFill);
+    ellipses.setFillRule(BobUI::WindingFill);
 
     // the definition of QPainterPath::intersects() and contains() is fill-area based,
-    QTest::newRow("line in rect") << rectPath(0, 0, 100, 100) << linePath(10, 10, 90, 90) << true << true;
-    QTest::newRow("horizontal line in rect") << rectPath(0, 0, 100, 100) << linePath(10, 50, 90, 50) << true << true;
-    QTest::newRow("vertical line in rect") << rectPath(0, 0, 100, 100) << linePath(50, 10, 50, 90) << true << true;
+    BOBUIest::newRow("line in rect") << rectPath(0, 0, 100, 100) << linePath(10, 10, 90, 90) << true << true;
+    BOBUIest::newRow("horizontal line in rect") << rectPath(0, 0, 100, 100) << linePath(10, 50, 90, 50) << true << true;
+    BOBUIest::newRow("vertical line in rect") << rectPath(0, 0, 100, 100) << linePath(50, 10, 50, 90) << true << true;
 
-    QTest::newRow("line through rect") << rectPath(0, 0, 100, 100) << linePath(-10, -10, 110, 110) << false << true;
-    QTest::newRow("line through rect 2") << rectPath(0, 0, 100, 100) << linePath(-10, 0, 110, 100) << false << true;
-    QTest::newRow("line through rect 3") << rectPath(0, 0, 100, 100) << linePath(5, 10, 110, 100) << false << true;
-    QTest::newRow("line through rect 4") << rectPath(0, 0, 100, 100) << linePath(-10, 0, 90, 90) << false << true;
+    BOBUIest::newRow("line through rect") << rectPath(0, 0, 100, 100) << linePath(-10, -10, 110, 110) << false << true;
+    BOBUIest::newRow("line through rect 2") << rectPath(0, 0, 100, 100) << linePath(-10, 0, 110, 100) << false << true;
+    BOBUIest::newRow("line through rect 3") << rectPath(0, 0, 100, 100) << linePath(5, 10, 110, 100) << false << true;
+    BOBUIest::newRow("line through rect 4") << rectPath(0, 0, 100, 100) << linePath(-10, 0, 90, 90) << false << true;
 
-    QTest::newRow("horizontal line through rect") << rectPath(0, 0, 100, 100) << linePath(-10, 50, 110, 50) << false << true;
-    QTest::newRow("vertical line through rect") << rectPath(0, 0, 100, 100) << linePath(50, -10, 50, 110) << false << true;
+    BOBUIest::newRow("horizontal line through rect") << rectPath(0, 0, 100, 100) << linePath(-10, 50, 110, 50) << false << true;
+    BOBUIest::newRow("vertical line through rect") << rectPath(0, 0, 100, 100) << linePath(50, -10, 50, 110) << false << true;
 
-    QTest::newRow("line vs line") << linePath(0, 0, 10, 10) << linePath(10, 0, 0, 10) << false << true;
+    BOBUIest::newRow("line vs line") << linePath(0, 0, 10, 10) << linePath(10, 0, 0, 10) << false << true;
 
-    QTest::newRow("line in rect with hole") << rectPath(0, 0, 10, 10).subtracted(rectPath(2, 2, 6, 6)) << linePath(4, 4, 6, 6) << false << false;
-    QTest::newRow("line in ellipse") << ellipses << linePath(3, 5, 7, 5) << false << true;
-    QTest::newRow("line in ellipse 2") << ellipses << linePath(4.5, 5, 5.5, 5) << true << true;
+    BOBUIest::newRow("line in rect with hole") << rectPath(0, 0, 10, 10).subtracted(rectPath(2, 2, 6, 6)) << linePath(4, 4, 6, 6) << false << false;
+    BOBUIest::newRow("line in ellipse") << ellipses << linePath(3, 5, 7, 5) << false << true;
+    BOBUIest::newRow("line in ellipse 2") << ellipses << linePath(4.5, 5, 5.5, 5) << true << true;
 
-    QTest::newRow("winding ellipse") << ellipses << ellipsePath(4, 4, 2, 2) << false << true;
-    QTest::newRow("winding ellipse 2") << ellipses << ellipsePath(4.5, 4.5, 1, 1) << true << true;
-    ellipses.setFillRule(Qt::OddEvenFill);
-    QTest::newRow("odd even ellipse") << ellipses << ellipsePath(4, 4, 2, 2) << false << true;
-    QTest::newRow("odd even ellipse 2") << ellipses << ellipsePath(4.5, 4.5, 1, 1) << false << false;
+    BOBUIest::newRow("winding ellipse") << ellipses << ellipsePath(4, 4, 2, 2) << false << true;
+    BOBUIest::newRow("winding ellipse 2") << ellipses << ellipsePath(4.5, 4.5, 1, 1) << true << true;
+    ellipses.setFillRule(BobUI::OddEvenFill);
+    BOBUIest::newRow("odd even ellipse") << ellipses << ellipsePath(4, 4, 2, 2) << false << true;
+    BOBUIest::newRow("odd even ellipse 2") << ellipses << ellipsePath(4.5, 4.5, 1, 1) << false << false;
 }
 
 void tst_QPainterPath::testContainsAndIntersects()
@@ -579,23 +579,23 @@ void tst_QPainterPath::testContainsAndIntersects()
 
 void tst_QPainterPath::testSimplified_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<int>("elements");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<int>("elements");
 
-    QTest::newRow("rect") << rectPath(0, 0, 10, 10) << 5;
+    BOBUIest::newRow("rect") << rectPath(0, 0, 10, 10) << 5;
 
     QPainterPath twoRects = rectPath(0, 0, 10, 10);
     twoRects.addPath(rectPath(5, 0, 10, 10));
-    QTest::newRow("two rects (odd)") << twoRects << 10;
+    BOBUIest::newRow("two rects (odd)") << twoRects << 10;
 
-    twoRects.setFillRule(Qt::WindingFill);
-    QTest::newRow("two rects (winding)") << twoRects << 5;
+    twoRects.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("two rects (winding)") << twoRects << 5;
 
     QPainterPath threeSteps = rectPath(0, 0, 10, 10);
     threeSteps.addPath(rectPath(0, 10, 20, 10));
     threeSteps.addPath(rectPath(0, 20, 30, 10));
 
-    QTest::newRow("three rects (steps)") << threeSteps << 9;
+    BOBUIest::newRow("three rects (steps)") << threeSteps << 9;
 }
 
 void tst_QPainterPath::testSimplified()
@@ -613,16 +613,16 @@ void tst_QPainterPath::testSimplified()
 
 void tst_QPainterPath::testStroker_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QPen>("pen");
-    QTest::addColumn<QPainterPath>("stroke");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QPen>("pen");
+    BOBUIest::addColumn<QPainterPath>("stroke");
 
-    QTest::newRow("line 1") << linePath(2, 2, 10, 2) << QPen(Qt::black, 2, Qt::SolidLine, Qt::FlatCap) << rectPath(2, 1, 8, 2);
-    QTest::newRow("line 2") << linePath(2, 2, 10, 2) << QPen(Qt::black, 2, Qt::SolidLine, Qt::SquareCap) << rectPath(1, 1, 10, 2);
+    BOBUIest::newRow("line 1") << linePath(2, 2, 10, 2) << QPen(BobUI::black, 2, BobUI::SolidLine, BobUI::FlatCap) << rectPath(2, 1, 8, 2);
+    BOBUIest::newRow("line 2") << linePath(2, 2, 10, 2) << QPen(BobUI::black, 2, BobUI::SolidLine, BobUI::SquareCap) << rectPath(1, 1, 10, 2);
 
-    QTest::newRow("rect") << rectPath(1, 1, 8, 8) << QPen(Qt::black, 2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin) << rectPath(0, 0, 10, 10).subtracted(rectPath(2, 2, 6, 6));
+    BOBUIest::newRow("rect") << rectPath(1, 1, 8, 8) << QPen(BobUI::black, 2, BobUI::SolidLine, BobUI::SquareCap, BobUI::MiterJoin) << rectPath(0, 0, 10, 10).subtracted(rectPath(2, 2, 6, 6));
 
-    QTest::newRow("dotted line") << linePath(0, 0, 10, 0) << QPen(Qt::black, 2, Qt::DotLine) << rectPath(-1, -1, 4, 2).united(rectPath(5, -1, 4, 2));
+    BOBUIest::newRow("dotted line") << linePath(0, 0, 10, 0) << QPen(BobUI::black, 2, BobUI::DotLine) << rectPath(-1, -1, 4, 2).united(rectPath(5, -1, 4, 2));
 }
 
 void tst_QPainterPath::testStroker()
@@ -661,7 +661,7 @@ void tst_QPainterPath::testOperatorEquals()
     rect2.addRect(100, 100, 100, 100);
     QCOMPARE(rect1, rect2);
 
-    rect2.setFillRule(Qt::WindingFill);
+    rect2.setFillRule(BobUI::WindingFill);
     QVERIFY(rect1 != rect2);
 
     QPainterPath ellipse1;
@@ -688,7 +688,7 @@ void tst_QPainterPath::testOperatorEquals_fuzzy()
 
         QCOMPARE(pa, pb);
 
-        QTransform transform;
+        BOBUIransform transform;
         transform.translate(-100, -100);
 
         QCOMPARE(transform.map(pa), transform.map(pb));
@@ -706,7 +706,7 @@ void tst_QPainterPath::testOperatorEquals_fuzzy()
 
         QCOMPARE(pa, pb);
 
-        QTransform transform;
+        BOBUIransform transform;
         transform.translate(-1, -1);
 
         QCOMPARE(transform.map(pa), transform.map(pb));
@@ -718,7 +718,7 @@ void tst_QPainterPath::testOperatorEquals_fuzzy()
         QPainterPath a;
         a.addRect(0, 0, 100, 100);
 
-        QTransform transform;
+        BOBUIransform transform;
         transform.translate(100, 20);
         transform.scale(1.5, 1.5);
 
@@ -747,9 +747,9 @@ void tst_QPainterPath::testOperatorDatastream()
     QPainterPath path;
     path.addEllipse(0, 0, 100, 100);
     path.addRect(0, 0, 100, 100);
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
 
-    QTemporaryDir tempDir(QDir::tempPath() + "/tst_qpainterpath.XXXXXX");
+    BOBUIemporaryDir tempDir(QDir::tempPath() + "/tst_qpainterpath.XXXXXX");
     QVERIFY2(tempDir.isValid(), qPrintable(tempDir.errorString()));
     // Write out
     {
@@ -907,8 +907,8 @@ void tst_QPainterPath::closing()
 
 void tst_QPainterPath::testArcMoveTo_data()
 {
-    QTest::addColumn<QRectF>("rect");
-    QTest::addColumn<qreal>("angle");
+    BOBUIest::addColumn<QRectF>("rect");
+    BOBUIest::addColumn<qreal>("angle");
 
     static constexpr QRectF rects[] = {
         QRectF(100, 100, 100, 100),
@@ -921,38 +921,38 @@ void tst_QPainterPath::testArcMoveTo_data()
     int index = 0;
     for (const auto &rect : rects) {
         for (int i = -360; i <= 360; ++i)
-            QTest::addRow("test %d %d", index, i) << rect << qreal(i);
+            BOBUIest::addRow("test %d %d", index, i) << rect << qreal(i);
 
         // test low angles
-        QTest::addRow("low +angle %d", index) << rect << tinyAngle;
-        QTest::addRow("low -angle %d", index) << rect << -tinyAngle;
+        BOBUIest::addRow("low +angle %d", index) << rect << tinyAngle;
+        BOBUIest::addRow("low -angle %d", index) << rect << -tinyAngle;
         ++index;
     }
 }
 
 void tst_QPainterPath::operators_data()
 {
-    QTest::addColumn<QPainterPath>("test");
-    QTest::addColumn<QPainterPath>("expected");
+    BOBUIest::addColumn<QPainterPath>("test");
+    BOBUIest::addColumn<QPainterPath>("expected");
 
     QPainterPath a;
     QPainterPath b;
     a.addRect(0, 0, 100, 100);
     b.addRect(50, 50, 100, 100);
 
-    QTest::newRow("a & b") << (a & b) << a.intersected(b);
-    QTest::newRow("a | b") << (a | b) << a.united(b);
-    QTest::newRow("a + b") << (a + b) << a.united(b);
-    QTest::newRow("a - b") << (a - b) << a.subtracted(b);
+    BOBUIest::newRow("a & b") << (a & b) << a.intersected(b);
+    BOBUIest::newRow("a | b") << (a | b) << a.united(b);
+    BOBUIest::newRow("a + b") << (a + b) << a.united(b);
+    BOBUIest::newRow("a - b") << (a - b) << a.subtracted(b);
 
     QPainterPath c = a;
-    QTest::newRow("a &= b") << (a &= b) << a.intersected(b);
+    BOBUIest::newRow("a &= b") << (a &= b) << a.intersected(b);
     c = a;
-    QTest::newRow("a |= b") << (a |= b) << a.united(b);
+    BOBUIest::newRow("a |= b") << (a |= b) << a.united(b);
     c = a;
-    QTest::newRow("a += b") << (a += b) << a.united(b);
+    BOBUIest::newRow("a += b") << (a += b) << a.united(b);
     c = a;
-    QTest::newRow("a -= b") << (a -= b) << a.subtracted(b);
+    BOBUIest::newRow("a -= b") << (a -= b) << a.subtracted(b);
 }
 
 void tst_QPainterPath::operators()
@@ -998,16 +998,16 @@ void tst_QPainterPath::testArcMoveTo()
 
 void tst_QPainterPath::testOnPath_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<qreal>("start");
-    QTest::addColumn<qreal>("middle");
-    QTest::addColumn<qreal>("end");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<qreal>("start");
+    BOBUIest::addColumn<qreal>("middle");
+    BOBUIest::addColumn<qreal>("end");
 
     QPainterPath path = QPainterPath(QPointF(153, 199));
     path.cubicTo(QPointF(147, 61), QPointF(414, 18),
                  QPointF(355, 201));
 
-    QTest::newRow("First case") << path
+    BOBUIest::newRow("First case") << path
                                 << qreal(93.0)
                                 << qreal(4.0)
                                 << qreal(252.13);
@@ -1015,7 +1015,7 @@ void tst_QPainterPath::testOnPath_data()
     path = QPainterPath(QPointF(328, 197));
     path.cubicTo(QPointF(150, 50), QPointF(401, 50),
                  QPointF(225, 197));
-    QTest::newRow("Second case") << path
+    BOBUIest::newRow("Second case") << path
                                  << qreal(140.0)
                                  << qreal(0.0)
                                  << qreal(220.0);
@@ -1023,7 +1023,7 @@ void tst_QPainterPath::testOnPath_data()
     path = QPainterPath(QPointF(328, 197));
     path.cubicTo(QPointF(101 , 153), QPointF(596, 151),
                  QPointF(353, 197));
-    QTest::newRow("Third case") << path
+    BOBUIest::newRow("Third case") << path
                                 << qreal(169.0)
                                 << qreal(0.22)
                                 <<  qreal(191.0);
@@ -1031,7 +1031,7 @@ void tst_QPainterPath::testOnPath_data()
     path = QPainterPath(QPointF(153, 199));
     path.cubicTo(QPointF(59, 53), QPointF(597, 218),
                   QPointF(355, 201));
-    QTest::newRow("Fourth case") << path
+    BOBUIest::newRow("Fourth case") << path
                                  << qreal(122.0)
                                  <<  qreal(348.0)
                                  << qreal(175.0);
@@ -1067,69 +1067,69 @@ void tst_QPainterPath::testOnPath()
 
 void tst_QPainterPath::pointAtPercent_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<qreal>("percent");
-    QTest::addColumn<QPointF>("point");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<qreal>("percent");
+    BOBUIest::addColumn<QPointF>("point");
 
     QPainterPath path;
     path.lineTo(100, 0);
 
-    QTest::newRow("Case 1") << path << qreal(0.2) << QPointF(20, 0);
-    QTest::newRow("Case 2") << path << qreal(0.5) << QPointF(50, 0);
-    QTest::newRow("Case 3") << path << qreal(0.0) << QPointF(0, 0);
-    QTest::newRow("Case 4") << path << qreal(1.0) << QPointF(100, 0);
+    BOBUIest::newRow("Case 1") << path << qreal(0.2) << QPointF(20, 0);
+    BOBUIest::newRow("Case 2") << path << qreal(0.5) << QPointF(50, 0);
+    BOBUIest::newRow("Case 3") << path << qreal(0.0) << QPointF(0, 0);
+    BOBUIest::newRow("Case 4") << path << qreal(1.0) << QPointF(100, 0);
 
     path = QPainterPath();
     path.lineTo(0, 100);
 
-    QTest::newRow("Case 5") << path << qreal(0.2) << QPointF(0, 20);
-    QTest::newRow("Case 6") << path << qreal(0.5) << QPointF(0, 50);
-    QTest::newRow("Case 7") << path << qreal(0.0) << QPointF(0, 0);
-    QTest::newRow("Case 8") << path << qreal(1.0) << QPointF(0, 100);
+    BOBUIest::newRow("Case 5") << path << qreal(0.2) << QPointF(0, 20);
+    BOBUIest::newRow("Case 6") << path << qreal(0.5) << QPointF(0, 50);
+    BOBUIest::newRow("Case 7") << path << qreal(0.0) << QPointF(0, 0);
+    BOBUIest::newRow("Case 8") << path << qreal(1.0) << QPointF(0, 100);
 
     path.lineTo(300, 100);
 
-    QTest::newRow("Case 9")  << path << qreal(0.25) << QPointF(0, 100);
-    QTest::newRow("Case 10") << path << qreal(0.5) << QPointF(100, 100);
-    QTest::newRow("Case 11") << path << qreal(0.75) << QPointF(200, 100);
+    BOBUIest::newRow("Case 9")  << path << qreal(0.25) << QPointF(0, 100);
+    BOBUIest::newRow("Case 10") << path << qreal(0.5) << QPointF(100, 100);
+    BOBUIest::newRow("Case 11") << path << qreal(0.75) << QPointF(200, 100);
 
     path = QPainterPath();
     path.addEllipse(0, 0, 100, 100);
 
-    QTest::newRow("Case 12") << path << qreal(0.0)  << QPointF(100, 50);
-    QTest::newRow("Case 13") << path << qreal(0.25) << QPointF(50, 100);
-    QTest::newRow("Case 14") << path << qreal(0.5)  << QPointF(0, 50);
-    QTest::newRow("Case 15") << path << qreal(0.75) << QPointF(50, 0);
-    QTest::newRow("Case 16") << path << qreal(1.0)  << QPointF(100, 50);
+    BOBUIest::newRow("Case 12") << path << qreal(0.0)  << QPointF(100, 50);
+    BOBUIest::newRow("Case 13") << path << qreal(0.25) << QPointF(50, 100);
+    BOBUIest::newRow("Case 14") << path << qreal(0.5)  << QPointF(0, 50);
+    BOBUIest::newRow("Case 15") << path << qreal(0.75) << QPointF(50, 0);
+    BOBUIest::newRow("Case 16") << path << qreal(1.0)  << QPointF(100, 50);
 
     path = QPainterPath();
     QRectF rect(241, 273, 185, 228);
     path.addEllipse(rect);
-    QTest::newRow("Case 17") << path << qreal(1.0) << QPointF(rect.right(), qreal(0.5) * (rect.top() + rect.bottom()));
+    BOBUIest::newRow("Case 17") << path << qreal(1.0) << QPointF(rect.right(), qreal(0.5) * (rect.top() + rect.bottom()));
 
     path = QPainterPath();
     path.moveTo(100, 100);
-    QTest::newRow("Case 18") << path << qreal(0.0) << QPointF(100, 100);
-    QTest::newRow("Case 19") << path << qreal(1.0) << QPointF(100, 100);
+    BOBUIest::newRow("Case 18") << path << qreal(0.0) << QPointF(100, 100);
+    BOBUIest::newRow("Case 19") << path << qreal(1.0) << QPointF(100, 100);
 
     path.clear();
     path.lineTo(100, 0);
     path.moveTo(0, 100);
     path.lineTo(100, 100);
-    QTest::newRow("Case 20") << path << qreal(0.25) << QPointF(50, 0);
-    QTest::newRow("Case 21") << path << qreal(0.5) << QPointF(100, 0);
-    QTest::newRow("Case 22") << path << qreal(0.75) << QPointF(50, 100);
-    QTest::newRow("Case 23") << path << qreal(1.0) << QPointF(100, 100);
+    BOBUIest::newRow("Case 20") << path << qreal(0.25) << QPointF(50, 0);
+    BOBUIest::newRow("Case 21") << path << qreal(0.5) << QPointF(100, 0);
+    BOBUIest::newRow("Case 22") << path << qreal(0.75) << QPointF(50, 100);
+    BOBUIest::newRow("Case 23") << path << qreal(1.0) << QPointF(100, 100);
 
     path.clear();
     path.moveTo(100, 100);
     path.lineTo(0, 100);
     path.moveTo(100, 0);
     path.lineTo(0, 0);
-    QTest::newRow("Case 24") << path << qreal(0.25) << QPointF(50, 100);
-    QTest::newRow("Case 25") << path << qreal(0.5) << QPointF(0, 100);
-    QTest::newRow("Case 26") << path << qreal(0.75) << QPointF(50, 0);
-    QTest::newRow("Case 27") << path << qreal(1.0) << QPointF(0, 0);
+    BOBUIest::newRow("Case 24") << path << qreal(0.25) << QPointF(50, 100);
+    BOBUIest::newRow("Case 25") << path << qreal(0.5) << QPointF(0, 100);
+    BOBUIest::newRow("Case 26") << path << qreal(0.75) << QPointF(50, 0);
+    BOBUIest::newRow("Case 27") << path << qreal(1.0) << QPointF(0, 0);
 
     path.clear();
     path.lineTo(0, 100);
@@ -1137,11 +1137,11 @@ void tst_QPainterPath::pointAtPercent_data()
     path.cubicTo(QPointF(80, 80), QPointF(80, 80), QPointF(100, 20));
     path.closeSubpath();
     path.addPath(path);
-    QTest::newRow("Case 28") << path << qreal(0.5) << QPointF(0, 0);
-    QTest::newRow("Case 29") << path << qreal(0.05) << path.pointAtPercent(0.5 + 0.05);
-    QTest::newRow("Case 30") << path << qreal(0.2) << path.pointAtPercent(0.5 + 0.2);
-    QTest::newRow("Case 31") << path << qreal(0.4) << path.pointAtPercent(0.5 + 0.4);
-    QTest::newRow("Case 32") << path << qreal(0.45) << path.pointAtPercent(0.5 + 0.45);
+    BOBUIest::newRow("Case 28") << path << qreal(0.5) << QPointF(0, 0);
+    BOBUIest::newRow("Case 29") << path << qreal(0.05) << path.pointAtPercent(0.5 + 0.05);
+    BOBUIest::newRow("Case 30") << path << qreal(0.2) << path.pointAtPercent(0.5 + 0.2);
+    BOBUIest::newRow("Case 31") << path << qreal(0.4) << path.pointAtPercent(0.5 + 0.4);
+    BOBUIest::newRow("Case 32") << path << qreal(0.45) << path.pointAtPercent(0.5 + 0.45);
 }
 
 void tst_QPainterPath::pointAtPercent()
@@ -1164,33 +1164,33 @@ void tst_QPainterPath::pointAtPercent()
 
 void tst_QPainterPath::lengths_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<qreal>("length");
-    QTest::addColumn<qreal>("lenAt25");
-    QTest::addColumn<qreal>("lenAt50");
-    QTest::addColumn<qreal>("lenAt75");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<qreal>("length");
+    BOBUIest::addColumn<qreal>("lenAt25");
+    BOBUIest::addColumn<qreal>("lenAt50");
+    BOBUIest::addColumn<qreal>("lenAt75");
 
     QPainterPath p;
     p.addRect(50, 50, 200, 100);
     qreal len = 2 * 200 + 2 * 100;
-    QTest::newRow("rect") << p << len << len * 0.25 << len * 0.5 << len * 0.75;
+    BOBUIest::newRow("rect") << p << len << len * 0.25 << len * 0.5 << len * 0.75;
 
     p.clear();
     p.addEllipse(50, 50, 100, 100);
     len = M_PI * 100;
-    QTest::newRow("circle") << p << len << len * 0.25 << len * 0.5 << len * 0.75;
+    BOBUIest::newRow("circle") << p << len << len * 0.25 << len * 0.5 << len * 0.75;
 
     p.addEllipse(60, 60, 100, 100);
     p.addEllipse(70, 70, 100, 100);
     len *= 3;
-    QTest::newRow("three_circles") << p << len << len * 0.25 << len * 0.5 << len * 0.75;
+    BOBUIest::newRow("three_circles") << p << len << len * 0.25 << len * 0.5 << len * 0.75;
 
     p.clear();
     p.lineTo(0, 100);
     p.cubicTo(QPointF(5, 0), QPointF(90, 100), QPointF(100, 100));
     p.cubicTo(QPointF(80, 80), QPointF(80, 80), QPointF(100, 20));
     len = 332.113;
-    QTest::newRow("asymmetric") << p << len << len * 0.25 << 173.85 << 248.77;
+    BOBUIest::newRow("asymmetric") << p << len << len * 0.25 << 173.85 << 248.77;
 }
 
 void tst_QPainterPath::lengths()
@@ -1219,18 +1219,18 @@ void tst_QPainterPath::lengths()
 
 void tst_QPainterPath::trimmed_data()
 {
-    QTest::addColumn<QPainterPath>("p");
-    QTest::addColumn<bool>("caching");
+    BOBUIest::addColumn<QPainterPath>("p");
+    BOBUIest::addColumn<bool>("caching");
 
     QPainterPath p;
     p.addEllipse(50, 50, 200, 100);
-    QTest::newRow("ellipse") << p << false;
-    QTest::newRow("ellipse, caching") << p << true;
+    BOBUIest::newRow("ellipse") << p << false;
+    BOBUIest::newRow("ellipse, caching") << p << true;
 
     p.clear();
     p.addRect(-50, -100, 200, 150);
-    QTest::newRow("rect") << p << false;
-    QTest::newRow("rect, caching") << p << true;
+    BOBUIest::newRow("rect") << p << false;
+    BOBUIest::newRow("rect, caching") << p << true;
 }
 
 void tst_QPainterPath::trimmed()
@@ -1308,53 +1308,53 @@ void tst_QPainterPath::angleAtPercent()
 
 void tst_QPainterPath::arcWinding_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QPointF>("point");
-    QTest::addColumn<bool>("inside");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QPointF>("point");
+    BOBUIest::addColumn<bool>("inside");
 
     QPainterPath a;
     a.addEllipse(0, 0, 100, 100);
     a.addRect(50, 50, 100, 100);
 
-    QTest::newRow("Case A (oddeven)") << a << QPointF(55, 55) << false;
-    a.setFillRule(Qt::WindingFill);
-    QTest::newRow("Case A (winding)") << a << QPointF(55, 55) << true;
+    BOBUIest::newRow("Case A (oddeven)") << a << QPointF(55, 55) << false;
+    a.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("Case A (winding)") << a << QPointF(55, 55) << true;
 
     QPainterPath b;
     b.arcMoveTo(0, 0, 100, 100, 10);
     b.arcTo(0, 0, 100, 100, 10, 360);
     b.addRect(50, 50, 100, 100);
 
-    QTest::newRow("Case B (oddeven)") << b << QPointF(55, 55) << false;
-    b.setFillRule(Qt::WindingFill);
-    QTest::newRow("Case B (winding)") << b << QPointF(55, 55) << false;
+    BOBUIest::newRow("Case B (oddeven)") << b << QPointF(55, 55) << false;
+    b.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("Case B (winding)") << b << QPointF(55, 55) << false;
 
     QPainterPath c;
     c.arcMoveTo(0, 0, 100, 100, 0);
     c.arcTo(0, 0, 100, 100, 0, 360);
     c.addRect(50, 50, 100, 100);
 
-    QTest::newRow("Case C (oddeven)") << c << QPointF(55, 55) << false;
-    c.setFillRule(Qt::WindingFill);
-    QTest::newRow("Case C (winding)") << c << QPointF(55, 55) << false;
+    BOBUIest::newRow("Case C (oddeven)") << c << QPointF(55, 55) << false;
+    c.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("Case C (winding)") << c << QPointF(55, 55) << false;
 
     QPainterPath d;
     d.arcMoveTo(0, 0, 100, 100, 10);
     d.arcTo(0, 0, 100, 100, 10, -360);
     d.addRect(50, 50, 100, 100);
 
-    QTest::newRow("Case D (oddeven)") << d << QPointF(55, 55) << false;
-    d.setFillRule(Qt::WindingFill);
-    QTest::newRow("Case D (winding)") << d << QPointF(55, 55) << true;
+    BOBUIest::newRow("Case D (oddeven)") << d << QPointF(55, 55) << false;
+    d.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("Case D (winding)") << d << QPointF(55, 55) << true;
 
     QPainterPath e;
     e.arcMoveTo(0, 0, 100, 100, 0);
     e.arcTo(0, 0, 100, 100, 0, -360);
     e.addRect(50, 50, 100, 100);
 
-    QTest::newRow("Case E (oddeven)") << e << QPointF(55, 55) << false;
-    e.setFillRule(Qt::WindingFill);
-    QTest::newRow("Case E (winding)") << e << QPointF(55, 55) << true;
+    BOBUIest::newRow("Case E (oddeven)") << e << QPointF(55, 55) << false;
+    e.setFillRule(BobUI::WindingFill);
+    BOBUIest::newRow("Case E (winding)") << e << QPointF(55, 55) << true;
 }
 
 void tst_QPainterPath::arcWinding()
@@ -1381,7 +1381,7 @@ void tst_QPainterPath::testToFillPolygons()
     QCOMPARE(polygons.first().count(QPointF(70, 50)), 0);
 }
 
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
 void tst_QPainterPath::testNaNandInfinites()
 {
     QPainterPath path1;
@@ -1394,11 +1394,11 @@ void tst_QPainterPath::testNaNandInfinites()
 
     // All these operations with NaN/Inf should be ignored.
     // Can't test operator>> reliably, as we can't create a path with NaN to << later.
-#ifdef QT_NO_DEBUG
+#ifdef BOBUI_NO_DEBUG
 #  define WARNS(name)
 #else
 #  define WARNS(name) \
-    QTest::ignoreMessage(QtWarningMsg, "QPainterPath::" #name ": " \
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QPainterPath::" #name ": " \
                          "Adding point with invalid coordinates, ignoring call")
 #endif
 
@@ -1557,7 +1557,7 @@ void tst_QPainterPath::lineWithinBounds()
 
 void tst_QPainterPath::intersectionEquality()
 {
-    // Test case from QTBUG-17027
+    // Test case from BOBUIBUG-17027
     QPainterPath p1;
     p1.moveTo(256.0000000000000000, 135.8384137532701743);
     p1.lineTo(50.9999999999999715, 107.9999999999999857);
@@ -1605,7 +1605,7 @@ void tst_QPainterPath::intersectionEquality()
 
 void tst_QPainterPath::intersectionPointOnEdge()
 {
-    // From QTBUG-31551
+    // From BOBUIBUG-31551
     QPainterPath p; p.addRoundedRect(-10, 10, 40, 40, 10, 10);
     QRectF r(0, 0, 100, 100);
     QPainterPath rp; rp.addRect(r);
@@ -1643,13 +1643,13 @@ void tst_QPainterPath::boundsAtStartPoint()
 void tst_QPainterPath::percentAtEmptyPath_data()
 {
     const QPointF qpf(2., 2.);
-    QTest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QPainterPath>("path");
 
-    QTest::newRow("defaultConstructed") << QPainterPath();
-    QTest::newRow("withStartPoint") << QPainterPath(qpf);
+    BOBUIest::newRow("defaultConstructed") << QPainterPath();
+    BOBUIest::newRow("withStartPoint") << QPainterPath(qpf);
     QPainterPath pp(qpf);
     pp.lineTo(qpf);
-    QTest::newRow("equalPoints") << pp;
+    BOBUIest::newRow("equalPoints") << pp;
 }
 
 void tst_QPainterPath::percentAtEmptyPath()
@@ -1663,6 +1663,6 @@ void tst_QPainterPath::percentAtEmptyPath()
     path.percentAtLength(0);
 }
 
-QTEST_APPLESS_MAIN(tst_QPainterPath)
+BOBUIEST_APPLESS_MAIN(tst_QPainterPath)
 
 #include "tst_qpainterpath.moc"

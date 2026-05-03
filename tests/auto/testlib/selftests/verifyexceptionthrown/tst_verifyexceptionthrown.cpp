@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 #  include <stdexcept>
 #endif
 
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
 class MyBaseException
 {
@@ -24,7 +24,7 @@ public:
 };
 
 
-#endif // !QT_NO_EXCEPTIONS
+#endif // !BOBUI_NO_EXCEPTIONS
 
 
 class tst_VerifyExceptionThrown: public QObject
@@ -32,13 +32,13 @@ class tst_VerifyExceptionThrown: public QObject
     Q_OBJECT
 private:
     void doSomething() const {}
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void throwSomething() const { throw std::logic_error("This line doesn't throw"); }
 #endif
 
 private slots:
 // Remove all test cases if exceptions are not available
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void testCorrectStdTypes() const;
     void testCorrectStdExceptions() const;
     void testCorrectMyExceptions() const;
@@ -52,12 +52,12 @@ private slots:
 
     void testFailNoException() const;
     void testFailNoException2() const;
-#endif // !QT_NO_EXCEPTIONS
+#endif // !BOBUI_NO_EXCEPTIONS
 };
 
 
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
 void tst_VerifyExceptionThrown::testCorrectStdTypes() const
 {
@@ -65,14 +65,14 @@ void tst_VerifyExceptionThrown::testCorrectStdTypes() const
     QVERIFY_THROWS_EXCEPTION(float, throw float(9.8));
     QVERIFY_THROWS_EXCEPTION(bool, throw bool(true));
     QVERIFY_THROWS_EXCEPTION(std::string, throw std::string("some string"));
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     QVERIFY_EXCEPTION_THROWN(throw int(5), int);
     QVERIFY_EXCEPTION_THROWN(throw float(9.8), float);
     QVERIFY_EXCEPTION_THROWN(throw bool(true), bool);
     QVERIFY_EXCEPTION_THROWN(throw std::string("some string"), std::string);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 }
 
@@ -82,24 +82,24 @@ void tst_VerifyExceptionThrown::testCorrectStdExceptions() const
     QVERIFY_THROWS_EXCEPTION(std::exception, throw std::exception());
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, throw std::runtime_error("runtime error"));
     QVERIFY_THROWS_EXCEPTION(std::overflow_error, throw std::overflow_error("overflow error"));
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     QVERIFY_EXCEPTION_THROWN(throw std::exception(), std::exception);
     QVERIFY_EXCEPTION_THROWN(throw std::runtime_error("runtime error"), std::runtime_error);
     QVERIFY_EXCEPTION_THROWN(throw std::overflow_error("overflow error"), std::overflow_error);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 
     // inheritance
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, throw std::overflow_error("overflow error"));
     QVERIFY_THROWS_EXCEPTION(std::exception, throw std::overflow_error("overflow error"));
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     QVERIFY_EXCEPTION_THROWN(throw std::overflow_error("overflow error"), std::runtime_error);
     QVERIFY_EXCEPTION_THROWN(throw std::overflow_error("overflow error"), std::exception);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 }
 
@@ -108,23 +108,23 @@ void tst_VerifyExceptionThrown::testCorrectMyExceptions() const
     // same type
     QVERIFY_THROWS_EXCEPTION(MyBaseException, throw MyBaseException());
     QVERIFY_THROWS_EXCEPTION(MyDerivedException, throw MyDerivedException());
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     QVERIFY_EXCEPTION_THROWN(throw MyBaseException(), MyBaseException);
     QVERIFY_EXCEPTION_THROWN(throw MyDerivedException(), MyDerivedException);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 
     // inheritance
     QVERIFY_THROWS_EXCEPTION(MyBaseException, throw MyDerivedException());
     QVERIFY_THROWS_EXCEPTION(std::domain_error, throw MyDerivedException());
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     QVERIFY_EXCEPTION_THROWN(throw MyDerivedException(), MyBaseException);
     QVERIFY_EXCEPTION_THROWN(throw MyDerivedException(), std::domain_error);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 }
 
@@ -172,10 +172,10 @@ void tst_VerifyExceptionThrown::testFailNoException2() const
     QVERIFY_THROWS_NO_EXCEPTION(throwSomething());
 }
 
-#endif // !QT_NO_EXCEPTIONS
+#endif // !BOBUI_NO_EXCEPTIONS
 
 
 
-QTEST_MAIN(tst_VerifyExceptionThrown)
+BOBUIEST_MAIN(tst_VerifyExceptionThrown)
 
 #include "tst_verifyexceptionthrown.moc"

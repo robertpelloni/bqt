@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qget.h"
 #include <QAuthenticator>
@@ -15,7 +15,7 @@ DownloadManager::DownloadManager()
     connect(&nam, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
     connect(&nam, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
     connect(&nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this, SLOT(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     connect(&nam, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 #endif
 }
@@ -101,7 +101,7 @@ void DownloadManager::proxyAuthenticationRequired(const QNetworkProxy &, QAuthen
     }
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void DownloadManager::sslErrors(QNetworkReply *, const QList<QSslError> &errors)
 {
     qDebug() << "sslErrors";

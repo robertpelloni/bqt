@@ -1,19 +1,19 @@
 // Copyright (C) 2011 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QAbstractItemModelTester>
 #include <QCoreApplication>
 #include <QSignalSpy>
 #include <QStandardItemModel>
 #include <QStringListModel>
-#include <QTest>
-#include <QTransposeProxyModel>
+#include <BOBUIest>
+#include <BOBUIransposeProxyModel>
 #include <QLoggingCategory>
 
 #include "dynamictreemodel.h"
 #include "qidentityproxymodel.h"
 
-Q_LOGGING_CATEGORY(lcItemModels, "qt.corelib.tests.itemmodels")
+Q_LOGGING_CATEGORY(lcItemModels, "bobui.corelib.tests.itemmodels")
 
 class DataChangedModel : public QAbstractListModel
 {
@@ -272,10 +272,10 @@ void tst_QIdentityProxyModel::moveRows()
 void tst_QIdentityProxyModel::moveColumns()
 {
     // QStringListModel implements moveRows but not moveColumns
-    // so we have to use a QTransposeProxyModel inbetween to check if
+    // so we have to use a BOBUIransposeProxyModel inbetween to check if
     // QIdentityProxyModel::moveColumns works as expected
     QStringListModel model({"A", "B", "C", "D", "E", "F"});
-    QTransposeProxyModel tpm;
+    BOBUIransposeProxyModel tpm;
     tpm.setSourceModel(&model);
 
     m_proxy->setSourceModel(&tpm);
@@ -402,14 +402,14 @@ public:
     QVariant data(const QModelIndex &index, int role) const override
     {
         const QVariant result = QIdentityProxyModel::data(index, role);
-        if (role != Qt::DisplayRole)
+        if (role != BobUI::DisplayRole)
             return result;
         return result.toString() + QLatin1String("_appended");
     }
     QMap<int, QVariant> itemData(const QModelIndex &index) const override
     {
         QMap<int, QVariant> result = QIdentityProxyModel::itemData(index);
-        auto displayIter = result.find(Qt::DisplayRole);
+        auto displayIter = result.find(BobUI::DisplayRole);
         if (displayIter != result.end())
             displayIter.value() = displayIter.value().toString() + QLatin1String("_appended");
         return result;
@@ -424,9 +424,9 @@ void tst_QIdentityProxyModel::itemData()
     proxy.setSourceModel(&model);
 
     const QModelIndex topIndex = proxy.index(0, 0);
-    QCOMPARE(topIndex.data(Qt::DisplayRole).toString(), QStringLiteral("Monday_appended"));
-    QCOMPARE(proxy.data(topIndex, Qt::DisplayRole).toString(), QStringLiteral("Monday_appended"));
-    QCOMPARE(proxy.itemData(topIndex).value(Qt::DisplayRole).toString(), QStringLiteral("Monday_appended"));
+    QCOMPARE(topIndex.data(BobUI::DisplayRole).toString(), QStringLiteral("Monday_appended"));
+    QCOMPARE(proxy.data(topIndex, BobUI::DisplayRole).toString(), QStringLiteral("Monday_appended"));
+    QCOMPARE(proxy.itemData(topIndex).value(BobUI::DisplayRole).toString(), QStringLiteral("Monday_appended"));
 }
 
 void dump(QAbstractItemModel* model, QString const& indent = " - ", QModelIndex const& parent = {})
@@ -472,7 +472,7 @@ void tst_QIdentityProxyModel::persistIndexOnLayoutChange()
 
     QPersistentModelIndex persistentIndex;
 
-    QPersistentModelIndex sourcePersistentIndex = model.match(model.index(0, 0), Qt::DisplayRole, "5", 1, Qt::MatchRecursive).first();
+    QPersistentModelIndex sourcePersistentIndex = model.match(model.index(0, 0), BobUI::DisplayRole, "5", 1, BobUI::MatchRecursive).first();
 
     QCOMPARE(sourcePersistentIndex.data().toString(), QStringLiteral("5"));
 
@@ -482,7 +482,7 @@ void tst_QIdentityProxyModel::persistIndexOnLayoutChange()
     QObject::connect(&proxy, &QAbstractItemModel::layoutAboutToBeChanged, &proxy, [&proxy, &persistentIndex, &gotLayoutAboutToBeChanged]
     {
         gotLayoutAboutToBeChanged = true;
-        persistentIndex = proxy.match(proxy.index(0, 0), Qt::DisplayRole, "5", 1, Qt::MatchRecursive).first();
+        persistentIndex = proxy.match(proxy.index(0, 0), BobUI::DisplayRole, "5", 1, BobUI::MatchRecursive).first();
     });
 
     QObject::connect(&proxy, &QAbstractItemModel::layoutChanged, &proxy, [&proxy, &persistentIndex, &sourcePersistentIndex, &gotLayoutChanged]
@@ -503,12 +503,12 @@ void tst_QIdentityProxyModel::persistIndexOnLayoutChange()
     QVERIFY(persistentIndex.isValid());
 }
 
-void tst_QIdentityProxyModel::createPersistentOnLayoutAboutToBeChanged() // QTBUG-93466
+void tst_QIdentityProxyModel::createPersistentOnLayoutAboutToBeChanged() // BOBUIBUG-93466
 {
     QStandardItemModel model(3, 1);
     for (int row = 0; row < 3; ++row)
-        model.setData(model.index(row, 0), row, Qt::UserRole);
-    model.setSortRole(Qt::UserRole);
+        model.setData(model.index(row, 0), row, BobUI::UserRole);
+    model.setSortRole(BobUI::UserRole);
     QIdentityProxyModel proxy;
     new QAbstractItemModelTester(&proxy, &proxy);
     proxy.setSourceModel(&model);
@@ -524,15 +524,15 @@ void tst_QIdentityProxyModel::createPersistentOnLayoutAboutToBeChanged() // QTBU
         QCOMPARE(idxList.size(), 3);
         QCOMPARE(idxList.at(0).row(), 1);
         QCOMPARE(idxList.at(0).column(), 0);
-        QCOMPARE(idxList.at(0).data(Qt::UserRole).toInt(), 0);
+        QCOMPARE(idxList.at(0).data(BobUI::UserRole).toInt(), 0);
         QCOMPARE(idxList.at(1).row(), 0);
         QCOMPARE(idxList.at(1).column(), 0);
-        QCOMPARE(idxList.at(1).data(Qt::UserRole).toInt(), -1);
+        QCOMPARE(idxList.at(1).data(BobUI::UserRole).toInt(), -1);
         QCOMPARE(idxList.at(2).row(), 2);
         QCOMPARE(idxList.at(2).column(), 0);
-        QCOMPARE(idxList.at(2).data(Qt::UserRole).toInt(), 2);
+        QCOMPARE(idxList.at(2).data(BobUI::UserRole).toInt(), 2);
     });
-    model.setData(model.index(1, 0), -1, Qt::UserRole);
+    model.setData(model.index(1, 0), -1, BobUI::UserRole);
     model.sort(0);
     QCOMPARE(layoutAboutToBeChangedSpy.size(), 1);
     QCOMPARE(layoutChangedSpy.size(), 1);
@@ -582,10 +582,10 @@ class CustomRoleProxyModel : public QIdentityProxyModel
 public:
     using QIdentityProxyModel::QIdentityProxyModel;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override
     {
         Q_ASSERT(index.isValid());
-        if (role == Qt::UserRole)
+        if (role == BobUI::UserRole)
             return QStringLiteral("CustomUserData-%1").arg(index.row());
         return QIdentityProxyModel::data(index, role);
     }
@@ -602,13 +602,13 @@ void tst_QIdentityProxyModel::matchCustomRole()
 
     const QString targetValue = QStringLiteral("CustomUserData-3");
 
-    const QModelIndexList matches = proxyModel.match(proxyModel.index(0, 0), Qt::UserRole,
-                                                     targetValue, 1, Qt::MatchExactly);
+    const QModelIndexList matches = proxyModel.match(proxyModel.index(0, 0), BobUI::UserRole,
+                                                     targetValue, 1, BobUI::MatchExactly);
 
     QCOMPARE(matches.size(), 1);
     QCOMPARE(matches.first().row(), 3);
-    QCOMPARE(proxyModel.data(matches.first(), Qt::UserRole).toString(), targetValue);
+    QCOMPARE(proxyModel.data(matches.first(), BobUI::UserRole).toString(), targetValue);
 }
 
-QTEST_MAIN(tst_QIdentityProxyModel)
+BOBUIEST_MAIN(tst_QIdentityProxyModel)
 #include "tst_qidentityproxymodel.moc"

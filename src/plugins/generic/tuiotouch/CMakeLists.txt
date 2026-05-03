@@ -1,27 +1,27 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
-## QTuioTouchPlugin Plugin:
+## BOBUIuioTouchPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QTuioTouchPlugin
-    OUTPUT_NAME qtuiotouchplugin
+bobui_internal_add_plugin(BOBUIuioTouchPlugin
+    OUTPUT_NAME bobuiuiotouchplugin
     PLUGIN_TYPE generic
     DEFAULT_IF FALSE
     SOURCES
         main.cpp
         qoscbundle.cpp qoscbundle_p.h
         qoscmessage.cpp qoscmessage_p.h
-        qtuiocursor_p.h
-        qtuiohandler.cpp qtuiohandler_p.h
-        qtuiotoken_p.h
+        bobuiuiocursor_p.h
+        bobuiuiohandler.cpp bobuiuiohandler_p.h
+        bobuiuiotoken_p.h
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Network
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Network
 )

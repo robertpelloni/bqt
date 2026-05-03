@@ -1,22 +1,22 @@
 // Copyright (C) 2014 Jeremy Lainé <jeremy.laine@m4x.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 
 #include "qasn1element_p.h"
 
-#include <QtCore/qdatastream.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qtimezone.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/bobuiimezone.h>
+#include <BobUICore/qlist.h>
 #include <QDebug>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 typedef QMap<QByteArray, QByteArray> OidNameMap;
 static OidNameMap createOidMap()
@@ -242,10 +242,10 @@ QDateTime QAsn1Element::toDateTime() const
         Q_ASSERT(date.year() >= rfc2459CenturyStart);
         Q_ASSERT(date.year() < 100 + rfc2459CenturyStart);
 
-        QTime time = QTime::fromString(inputView.sliced(6, 6), u"HHmmss");
+        BOBUIime time = BOBUIime::fromString(inputView.sliced(6, 6), u"HHmmss");
         if (!time.isValid())
             return result;
-        result = QDateTime(date, time, QTimeZone::UTC);
+        result = QDateTime(date, time, BOBUIimeZone::UTC);
     } else if (mType == GeneralizedTimeType && mValue.size() == 15) {
         result = QDateTime::fromString(QString::fromLatin1(mValue), u"yyyyMMddHHmmsst");
     }
@@ -351,4 +351,4 @@ QString QAsn1Element::toString() const
     return QString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
 // Copyright (C) 2025 Ahmad Samir <a.samirh78@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page qdiriterator-to-qdirlisting-porting.html
@@ -7,7 +7,7 @@
 
     \ingroup how-to
 
-    In Qt 6.8 QDirListing was added as a more efficient replacement for QDirIterator
+    In BobUI 6.8 QDirListing was added as a more efficient replacement for QDirIterator
     (the latter is still available for now). This page highlights some points to keep
     in mind when porting QDirIterator to QDirListing.
 

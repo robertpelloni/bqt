@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qbenchmarktimemeasurers_p.h>
-#include <QtTest/private/qbenchmark_p.h>
-#include <QtTest/private/qbenchmarkmetric_p.h>
-#include <QtTest/qbenchmark.h>
+#include <BobUITest/private/qbenchmarktimemeasurers_p.h>
+#include <BobUITest/private/qbenchmark_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/qbenchmark.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // QBenchmarkTimeMeasurer implementation
 
@@ -18,7 +18,7 @@ void QBenchmarkTimeMeasurer::start()
 
 QList<QBenchmarkMeasurerBase::Measurement> QBenchmarkTimeMeasurer::stop()
 {
-    return { { qreal(time.elapsed()), QTest::WalltimeMilliseconds } };
+    return { { qreal(time.elapsed()), BOBUIest::WalltimeMilliseconds } };
 }
 
 bool QBenchmarkTimeMeasurer::isMeasurementAccepted(Measurement measurement)
@@ -51,7 +51,7 @@ void QBenchmarkTickMeasurer::start()
 QList<QBenchmarkMeasurerBase::Measurement> QBenchmarkTickMeasurer::stop()
 {
     CycleCounterTicks now = getticks();
-    return { { qreal(elapsed(now, startTicks)), QTest::CPUTicks } };
+    return { { qreal(elapsed(now, startTicks)), BOBUIest::CPUTicks } };
 }
 
 bool QBenchmarkTickMeasurer::isMeasurementAccepted(QBenchmarkMeasurerBase::Measurement)
@@ -77,4 +77,4 @@ bool QBenchmarkTickMeasurer::needsWarmupIteration()
 #endif
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

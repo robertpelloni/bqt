@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS += \
 	coloritem.h \
@@ -14,5 +14,5 @@ RESOURCES += \
 
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/dragdroprobot
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/dragdroprobot
 INSTALLS += target

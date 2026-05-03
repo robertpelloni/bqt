@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example tools/undoframework
@@ -8,11 +8,11 @@
     \ingroup examples-widgets-tools
 
     \brief This example shows how to implement undo/redo functionality
-    with the Qt undo framework.
+    with the BobUI undo framework.
 
     \image undoframeworkexample.png The Undo Diagram Example
 
-    In the Qt undo framework, all actions that the user performs are
+    In the BobUI undo framework, all actions that the user performs are
     implemented in classes that inherit QUndoCommand. An undo command
     class knows how to both \l{QUndoCommand::}{redo()} - or just do
     the first time - and \l{QUndoCommand::}{undo()} an action. For
@@ -20,7 +20,7 @@
     QUndoStack.  Since the stack contains all commands executed
     (stacked in chronological order) on the document, it can roll the
     state of the document backwards and forwards by undoing and redoing
-    its commands. See the \l{Overview of Qt's Undo Framework}{overview
+    its commands. See the \l{Overview of BobUI's Undo Framework}{overview
     document} for a high-level introduction to the undo framework.
 
     The undo example implements a simple diagram application. It is

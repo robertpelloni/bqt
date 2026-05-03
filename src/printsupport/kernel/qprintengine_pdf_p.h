@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTENGINE_PDF_P_H
 #define QPRINTENGINE_PDF_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtPrintSupport/qprintengine.h"
+#include "BobUIPrintSupport/qprintengine.h"
 
-#ifndef QT_NO_PRINTER
-#include "QtCore/qdatastream.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qstring.h"
-#include "QtGui/qpaintengine.h"
-#include "QtGui/qpainterpath.h"
+#ifndef BOBUI_NO_PRINTER
+#include "BobUICore/qdatastream.h"
+#include "BobUICore/qmap.h"
+#include "BobUICore/qstring.h"
+#include "BobUIGui/qpaintengine.h"
+#include "BobUIGui/qpainterpath.h"
 
 #include "private/qfontengine_p.h"
 #include "private/qpdf_p.h"
@@ -31,7 +31,7 @@
 #include "qprintengine.h"
 #include "qprint_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QImage;
 class QDataStream;
@@ -103,8 +103,8 @@ private:
     int fd;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
 #endif // QPRINTENGINE_PDF_P_H

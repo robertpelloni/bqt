@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qbenchmark_p.h>
+#include <BobUITest/private/qbenchmark_p.h>
 
-#include <QtTest/private/qbenchmarkvalgrind_p.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qprocess.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qregularexpression.h>
-#include <QtCore/qset.h>
+#include <BobUITest/private/qbenchmarkvalgrind_p.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qprocess.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/qset.h>
 #include "3rdparty/valgrind/callgrind_p.h"
 
 #include <charconv>
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Returns \c true if valgrind is available.
 bool QBenchmarkValgrindUtils::haveValgrind()
@@ -177,7 +177,7 @@ QList<QBenchmarkMeasurerBase::Measurement> QBenchmarkCallgrindMeasurer::stop()
 {
     CALLGRIND_DUMP_STATS;
     const qint64 result = QBenchmarkValgrindUtils::extractLastResult();
-    return { { qreal(result), QTest::InstructionReads } };
+    return { { qreal(result), BOBUIest::InstructionReads } };
 }
 
 bool QBenchmarkCallgrindMeasurer::isMeasurementAccepted(Measurement measurement)
@@ -201,4 +201,4 @@ bool QBenchmarkCallgrindMeasurer::needsWarmupIteration()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

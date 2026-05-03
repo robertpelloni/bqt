@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMENUBAR_H
 #define QMENUBAR_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qmenu.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qmenu.h>
 
-QT_REQUIRE_CONFIG(menubar);
+BOBUI_REQUIRE_CONFIG(menubar);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMenuBarPrivate;
 class QStyleOptionMenuItem;
@@ -29,7 +29,7 @@ public:
     ~QMenuBar();
 
     using QWidget::addAction;
-#if QT_WIDGETS_REMOVED_SINCE(6, 3)
+#if BOBUI_WIDGETS_REMOVED_SINCE(6, 3)
     QAction *addAction(const QString &text);
     QAction *addAction(const QString &text, const QObject *receiver, const char* member);
 #endif
@@ -59,8 +59,8 @@ public:
     QRect actionGeometry(QAction *) const;
     QAction *actionAt(const QPoint &) const;
 
-    void setCornerWidget(QWidget *w, Qt::Corner corner = Qt::TopRightCorner);
-    QWidget *cornerWidget(Qt::Corner corner = Qt::TopRightCorner) const;
+    void setCornerWidget(QWidget *w, BobUI::Corner corner = BobUI::TopRightCorner);
+    QWidget *cornerWidget(BobUI::Corner corner = BobUI::TopRightCorner) const;
 
 #if defined(Q_OS_MACOS) || defined(Q_QDOC)
     NSMenu* toNSMenu();
@@ -88,7 +88,7 @@ protected:
     void actionEvent(QActionEvent *) override;
     void focusOutEvent(QFocusEvent *) override;
     void focusInEvent(QFocusEvent *) override;
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
     bool eventFilter(QObject *, QEvent *) override;
     bool event(QEvent *) override;
     virtual void initStyleOption(QStyleOptionMenuItem *option, const QAction *action) const;
@@ -106,6 +106,6 @@ private:
     friend class QWindowsStyle;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMENUBAR_H

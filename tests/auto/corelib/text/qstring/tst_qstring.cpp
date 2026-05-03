@@ -1,33 +1,33 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#ifdef QT_NO_CAST_TO_ASCII
-# undef QT_NO_CAST_TO_ASCII
+#ifdef BOBUI_NO_CAST_TO_ASCII
+# undef BOBUI_NO_CAST_TO_ASCII
 #endif
-#ifdef QT_ASCII_CAST_WARNINGS
-# undef QT_ASCII_CAST_WARNINGS
+#ifdef BOBUI_ASCII_CAST_WARNINGS
+# undef BOBUI_ASCII_CAST_WARNINGS
 #endif
 
 #include <private/qglobal_p.h> // for the icu feature test
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QTest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
 #include <QString>
 #include <QStringBuilder>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qstringlist.h>
 #include <qstringmatcher.h>
 #include <qbytearraymatcher.h>
 #include <qvariant.h>
 #include <qlocale.h>
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 
 #include <locale.h>
 #include <qhash.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
 #include <forward_list>
 #include <string>
@@ -38,7 +38,7 @@
 #include "../shared/test_number_shared.h"
 #include "../../../../shared/localechange.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define CREATE_VIEW(string)                                              \
     const QString padded = QLatin1Char(' ') + string + QLatin1Char(' '); \
@@ -265,9 +265,9 @@ public:
 };
 
 } // unnamed namespace
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(CharStarContainer, Q_PRIMITIVE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(CharStarContainer)
 
@@ -323,7 +323,7 @@ public:
     Q_DECLARE_FLAGS(DataOptions, DataOption)
 private:
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     template<typename List, class RegExp>
     void split_regexp(const QString &string, const QString &pattern, QStringList result);
 #endif
@@ -366,8 +366,8 @@ public:
 private slots:
     void fromStdString();
     void toStdString();
-    void check_QTextIOStream();
-    void check_QTextStream();
+    void check_BOBUIextIOStream();
+    void check_BOBUIextStream();
     void check_QDataStream();
     void fromRawData();
     void setRawData();
@@ -400,7 +400,7 @@ private slots:
     void replace_string_data();
     void replace_string();
     void replace_string_extra();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void replace_regexp_data();
     void replace_regexp();
     void replace_regexp_extra();
@@ -409,7 +409,7 @@ private slots:
     void remove_uint_uint();
     void remove_string_data();
     void remove_string();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void remove_regexp_data();
     void remove_regexp();
 #endif
@@ -431,16 +431,16 @@ private slots:
     void prepend_qchar()              { prepend_impl<Reversed<QChar>, QString &(QString::*)(QChar)>(); }
     void prepend_qchar_data()         { prepend_data(EmptyIsNoop); }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void prepend_qbytearray()         { prepend_impl<QByteArray>(); }
     void prepend_qbytearray_data()    { prepend_data(EmptyIsNoop); }
     void prepend_charstar()           { prepend_impl<const char *, QString &(QString::*)(const char *)>(); }
     void prepend_charstar_data()      { prepend_data(EmptyIsNoop); }
     void prepend_bytearray_special_cases_data();
     void prepend_bytearray_special_cases();
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
-#if !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII)
     void prepend_char()               { prepend_impl<Reversed<char>, QString &(QString::*)(QChar)>(); }
     void prepend_char_data()          { prepend_data({EmptyIsNoop, Latin1Encoded}); }
 #endif
@@ -460,24 +460,24 @@ private slots:
     void append_qchar()              { append_impl<QChar, QString &(QString::*)(QChar)>(); }
     void append_qchar_data()         { append_data(EmptyIsNoop); }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void append_qbytearray()         { append_impl<QByteArray>(); }
     void append_qbytearray_data()    { append_data(); }
 #endif
 
-#if !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII)
     void append_char()               { append_impl<char, QString &(QString::*)(QChar)>(); }
     void append_char_data()          { append_data({EmptyIsNoop, Latin1Encoded}); }
 #endif
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void append_charstar()           { append_impl<const char *, QString &(QString::*)(const char *)>(); }
     void append_charstar_data()      { append_data(); }
 #endif
 
     void append_special_cases();
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void append_bytearray_special_cases_data();
     void append_bytearray_special_cases();
 #endif
@@ -494,22 +494,22 @@ private slots:
     void operator_pluseq_qutf8stringview_data() { operator_pluseq_data(); }
     void operator_pluseq_qchar()              { operator_pluseq_impl<QChar, QString &(QString::*)(QChar)>(); }
     void operator_pluseq_qchar_data()         { operator_pluseq_data(EmptyIsNoop); }
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void operator_pluseq_qbytearray()         { operator_pluseq_impl<QByteArray>(); }
     void operator_pluseq_qbytearray_data()    { operator_pluseq_data(); }
     void operator_pluseq_charstar()           { operator_pluseq_impl<const char *, QString &(QString::*)(const char *)>(); }
     void operator_pluseq_charstar_data()      { operator_pluseq_data(); }
     void operator_assign_symmetry();
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
     void operator_pluseq_special_cases();
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void operator_pluseq_bytearray_special_cases_data();
     void operator_pluseq_bytearray_special_cases();
 #endif
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void operator_eqeq_bytearray_data();
     void operator_eqeq_bytearray();
 #endif
@@ -529,17 +529,17 @@ private slots:
     void insert_qchar()              { insert_impl<Reversed<QChar>, QString &(QString::*)(qsizetype, QChar)>(); }
     void insert_qchar_data()         { insert_data(EmptyIsNoop); }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void insert_qbytearray()         { insert_impl<QByteArray>(); }
     void insert_qbytearray_data()    { insert_data(EmptyIsNoop); }
 #endif
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     void insert_char()               { insert_impl<Reversed<char>, QString &(QString::*)(qsizetype, QChar)>(); }
     void insert_char_data()          { insert_data({EmptyIsNoop, Latin1Encoded}); }
 #endif
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void insert_charstar()           { insert_impl<const char *, QString &(QString::*)(qsizetype, const char*) >(); }
     void insert_charstar_data()      { insert_data(EmptyIsNoop); }
 #endif
@@ -572,7 +572,7 @@ private slots:
     void lastIndexOf();
     void indexOf_data();
     void indexOf();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void indexOfInvalidRegex();
     void lastIndexOfInvalidRegex();
 #endif
@@ -588,7 +588,7 @@ private slots:
     void chop();
 
     void constructor();
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void constructorQByteArray_data();
     void constructorQByteArray();
 #endif
@@ -599,7 +599,7 @@ private slots:
     void isEmpty();
     void isNull();
     void nullness();
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     void acc_01();
 #endif
     void length_data();
@@ -654,13 +654,13 @@ private slots:
     void reverseIterators();
     void split_data();
     void split();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void split_regularexpression_data();
     void split_regularexpression();
     void regularexpression_lifetime();
 #endif
     void fromUtf16_data();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void fromUtf16();
 #endif
     void fromUtf16_char16_data() { fromUtf16_data(); }
@@ -688,12 +688,12 @@ private slots:
     void repeated() const;
     void repeated_data() const;
     void arg_locale();
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
     void toUpperLower_icu();
 #endif
     void literals();
     void userDefinedLiterals();
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     void eightBitLiterals_data();
     void eightBitLiterals();
 #endif
@@ -767,19 +767,19 @@ QString verifyZeroTermination(const QString &str)
     return str;
 }
 
-// Overriding QTest's QCOMPARE, to check QString for null termination
+// Overriding BOBUIest's QCOMPARE, to check QString for null termination
 #undef QCOMPARE
 #define QCOMPARE(actual, expected)                                      \
     do {                                                                \
-        if (!QTest::qCompare(verifyZeroTermination(actual), expected,   \
+        if (!BOBUIest::qCompare(verifyZeroTermination(actual), expected,   \
                 #actual, #expected, __FILE__, __LINE__))                \
             return;                                                     \
     } while (0)                                                         \
     /**/
-#undef QTEST
-#define QTEST(actual, testElement)                                      \
+#undef BOBUIEST
+#define BOBUIEST(actual, testElement)                                      \
     do {                                                                \
-        if (!QTest::qTest(verifyZeroTermination(actual), testElement,   \
+        if (!BOBUIest::qTest(verifyZeroTermination(actual), testElement,   \
                 #actual, #testElement, __FILE__, __LINE__))             \
             return;                                                     \
     } while (0)                                                         \
@@ -809,24 +809,24 @@ void tst_QString::indexOf3_data()
 
 void tst_QString::replace_qchar_qchar_data()
 {
-    QTest::addColumn<QString>("src" );
-    QTest::addColumn<QChar>("before" );
-    QTest::addColumn<QChar>("after" );
-    QTest::addColumn<Qt::CaseSensitivity>("cs");
-    QTest::addColumn<QString>("expected" );
+    BOBUIest::addColumn<QString>("src" );
+    BOBUIest::addColumn<QChar>("before" );
+    BOBUIest::addColumn<QChar>("after" );
+    BOBUIest::addColumn<BobUI::CaseSensitivity>("cs");
+    BOBUIest::addColumn<QString>("expected" );
 
-    QTest::newRow("1") << u"foo"_s << QChar(u'o') << QChar(u'a') << Qt::CaseSensitive << u"faa"_s;
-    QTest::newRow("2") << u"foo"_s << QChar(u'o') << QChar(u'a') << Qt::CaseInsensitive << u"faa"_s;
-    QTest::newRow("3") << u"foo"_s << QChar(u'O') << QChar(u'a') << Qt::CaseSensitive << u"foo"_s;
-    QTest::newRow("4") << u"foo"_s << QChar(u'O') << QChar(u'a') << Qt::CaseInsensitive << u"faa"_s;
-    QTest::newRow("5") << u"ababABAB"_s << QChar(u'a') << QChar(u' ') << Qt::CaseSensitive
+    BOBUIest::newRow("1") << u"foo"_s << QChar(u'o') << QChar(u'a') << BobUI::CaseSensitive << u"faa"_s;
+    BOBUIest::newRow("2") << u"foo"_s << QChar(u'o') << QChar(u'a') << BobUI::CaseInsensitive << u"faa"_s;
+    BOBUIest::newRow("3") << u"foo"_s << QChar(u'O') << QChar(u'a') << BobUI::CaseSensitive << u"foo"_s;
+    BOBUIest::newRow("4") << u"foo"_s << QChar(u'O') << QChar(u'a') << BobUI::CaseInsensitive << u"faa"_s;
+    BOBUIest::newRow("5") << u"ababABAB"_s << QChar(u'a') << QChar(u' ') << BobUI::CaseSensitive
                        << u" b bABAB"_s;
-    QTest::newRow("6") << u"ababABAB"_s << QChar(u'a') << QChar(u' ') << Qt::CaseInsensitive
+    BOBUIest::newRow("6") << u"ababABAB"_s << QChar(u'a') << QChar(u' ') << BobUI::CaseInsensitive
                        << u" b b B B"_s;
-    QTest::newRow("7") << u"ababABAB"_s << QChar() << QChar(u' ') << Qt::CaseInsensitive
+    BOBUIest::newRow("7") << u"ababABAB"_s << QChar() << QChar(u' ') << BobUI::CaseInsensitive
                        << u"ababABAB"_s;
-    QTest::newRow("8") << QString() << QChar() << QChar(u'x') << Qt::CaseInsensitive << QString();
-    QTest::newRow("9") << QString() << QChar(u'a') << QChar(u'x') << Qt::CaseInsensitive
+    BOBUIest::newRow("8") << QString() << QChar() << QChar(u'x') << BobUI::CaseInsensitive << QString();
+    BOBUIest::newRow("9") << QString() << QChar(u'a') << QChar(u'x') << BobUI::CaseInsensitive
                        << QString();
 }
 
@@ -835,7 +835,7 @@ void tst_QString::replace_qchar_qchar()
     QFETCH(QString, src);
     QFETCH(QChar, before);
     QFETCH(QChar, after);
-    QFETCH(Qt::CaseSensitivity, cs);
+    QFETCH(BobUI::CaseSensitivity, cs);
     QFETCH(QString, expected);
 
     QString str = src;
@@ -850,36 +850,36 @@ void tst_QString::replace_qchar_qchar()
 
 void tst_QString::replace_qchar_qstring_data()
 {
-    QTest::addColumn<QString>("src" );
-    QTest::addColumn<QChar>("before" );
-    QTest::addColumn<QString>("after" );
-    QTest::addColumn<Qt::CaseSensitivity>("cs");
-    QTest::addColumn<QString>("expected" );
+    BOBUIest::addColumn<QString>("src" );
+    BOBUIest::addColumn<QChar>("before" );
+    BOBUIest::addColumn<QString>("after" );
+    BOBUIest::addColumn<BobUI::CaseSensitivity>("cs");
+    BOBUIest::addColumn<QString>("expected" );
 
-    QTest::newRow("1") << u"foo"_s << QChar(u'o') << u"aA"_s << Qt::CaseSensitive
+    BOBUIest::newRow("1") << u"foo"_s << QChar(u'o') << u"aA"_s << BobUI::CaseSensitive
                        << u"faAaA"_s;
-    QTest::newRow("2") << u"foo"_s << QChar(u'o') << u"aA"_s << Qt::CaseInsensitive
+    BOBUIest::newRow("2") << u"foo"_s << QChar(u'o') << u"aA"_s << BobUI::CaseInsensitive
                        << u"faAaA"_s;
-    QTest::newRow("3") << u"foo"_s << QChar(u'O') << u"aA"_s << Qt::CaseSensitive
+    BOBUIest::newRow("3") << u"foo"_s << QChar(u'O') << u"aA"_s << BobUI::CaseSensitive
                        << u"foo"_s;
-    QTest::newRow("4") << u"foo"_s << QChar(u'O') << u"aA"_s << Qt::CaseInsensitive
+    BOBUIest::newRow("4") << u"foo"_s << QChar(u'O') << u"aA"_s << BobUI::CaseInsensitive
                        << u"faAaA"_s;
-    QTest::newRow("5") << u"ababABAB"_s << QChar(u'a') << u"  "_s << Qt::CaseSensitive
+    BOBUIest::newRow("5") << u"ababABAB"_s << QChar(u'a') << u"  "_s << BobUI::CaseSensitive
                        << u"  b  bABAB"_s;
-    QTest::newRow("6") << u"ababABAB"_s << QChar(u'a') << u"  "_s << Qt::CaseInsensitive
+    BOBUIest::newRow("6") << u"ababABAB"_s << QChar(u'a') << u"  "_s << BobUI::CaseInsensitive
                        << u"  b  b  B  B"_s;
-    QTest::newRow("7") << u"ababABAB"_s << QChar() << u"  "_s << Qt::CaseInsensitive
+    BOBUIest::newRow("7") << u"ababABAB"_s << QChar() << u"  "_s << BobUI::CaseInsensitive
                        << u"ababABAB"_s;
-    QTest::newRow("8") << u"ababABAB"_s << QChar() << QString() << Qt::CaseInsensitive
+    BOBUIest::newRow("8") << u"ababABAB"_s << QChar() << QString() << BobUI::CaseInsensitive
                        << u"ababABAB"_s;
-    QTest::newRow("null-in-null-with-X") << QString() << QChar() << u"X"_s
-                                         << Qt::CaseSensitive << QString();
-    QTest::newRow("x-in-null-with-abc") << QString() << QChar(u'x') << u"abc"_s
-                                        << Qt::CaseSensitive << QString();
-    QTest::newRow("null-in-empty-with-X") << u""_s << QChar() << u"X"_s
-                                          << Qt::CaseInsensitive << QString();
-    QTest::newRow("x-in-empty-with-abc") << u""_s << QChar(u'x') << u"abc"_s
-                                          << Qt::CaseInsensitive << QString();
+    BOBUIest::newRow("null-in-null-with-X") << QString() << QChar() << u"X"_s
+                                         << BobUI::CaseSensitive << QString();
+    BOBUIest::newRow("x-in-null-with-abc") << QString() << QChar(u'x') << u"abc"_s
+                                        << BobUI::CaseSensitive << QString();
+    BOBUIest::newRow("null-in-empty-with-X") << u""_s << QChar() << u"X"_s
+                                          << BobUI::CaseInsensitive << QString();
+    BOBUIest::newRow("x-in-empty-with-abc") << u""_s << QChar(u'x') << u"abc"_s
+                                          << BobUI::CaseInsensitive << QString();
 }
 
 void tst_QString::replace_qchar_qstring()
@@ -887,7 +887,7 @@ void tst_QString::replace_qchar_qstring()
     QFETCH(QString, src);
     QFETCH(QChar, before);
     QFETCH(QString, after);
-    QFETCH(Qt::CaseSensitivity, cs);
+    QFETCH(BobUI::CaseSensitivity, cs);
     QFETCH(QString, expected);
 
     // Test when string needs detach
@@ -902,222 +902,222 @@ void tst_QString::replace_qchar_qstring()
 
 void tst_QString::replace_pos_len_data()
 {
-    QTest::addColumn<QString>("string" );
-    QTest::addColumn<qsizetype>("index" );
-    QTest::addColumn<qsizetype>("len" );
-    QTest::addColumn<QString>("after" );
-    QTest::addColumn<QString>("result" );
+    BOBUIest::addColumn<QString>("string" );
+    BOBUIest::addColumn<qsizetype>("index" );
+    BOBUIest::addColumn<qsizetype>("len" );
+    BOBUIest::addColumn<QString>("after" );
+    BOBUIest::addColumn<QString>("result" );
 
-    QTest::newRow("empty_rem00") << QString()
+    BOBUIest::newRow("empty_rem00") << QString()
                                  << qsizetype(0) << qsizetype(0) << u""_s
                                  << QString();
 
-    QTest::newRow("empty_rem01") << QString()
+    BOBUIest::newRow("empty_rem01") << QString()
                                  << qsizetype(0) << qsizetype(3) << u""_s
                                  << QString();
 
-    QTest::newRow("empty_rem02") << QString()
+    BOBUIest::newRow("empty_rem02") << QString()
                                  << qsizetype(5) << qsizetype(3) << u""_s
                                  << QString();
 
-    QTest::newRow("rem00") << u"-<>ABCABCABCABC>"_s
+    BOBUIest::newRow("rem00") << u"-<>ABCABCABCABC>"_s
                            << qsizetype(0) << qsizetype(3) << u""_s
                            << u"ABCABCABCABC>"_s;
 
-    QTest::newRow("rem01") << u"ABCABCABCABC>"_s
+    BOBUIest::newRow("rem01") << u"ABCABCABCABC>"_s
                            << qsizetype(1) << qsizetype(4) << u""_s
                            << u"ACABCABC>"_s;
 
-    QTest::newRow("rem04") << u"ACABCABC>"_s << qsizetype(8) << qsizetype(4)
+    BOBUIest::newRow("rem04") << u"ACABCABC>"_s << qsizetype(8) << qsizetype(4)
                            << u""_s
                            << u"ACABCABC"_s;
 
-    QTest::newRow("rem05") << u"ACABCABC"_s << qsizetype(7) << qsizetype(1)
+    BOBUIest::newRow("rem05") << u"ACABCABC"_s << qsizetype(7) << qsizetype(1)
                            << u""_s
                            << u"ACABCAB"_s;
 
-    QTest::newRow("rem06") << u"ACABCAB"_s
+    BOBUIest::newRow("rem06") << u"ACABCAB"_s
                            << qsizetype(4) << qsizetype(0) << u""_s
                            << u"ACABCAB"_s;
 
-    QTest::newRow("empty_rep00") << QString()
+    BOBUIest::newRow("empty_rep00") << QString()
                                  << qsizetype(0) << qsizetype(0) << u"X"_s
                                  << u"X"_s;
 
-    QTest::newRow("empty_rep01") << QString()
+    BOBUIest::newRow("empty_rep01") << QString()
                                  << qsizetype(0) << qsizetype(3) << u"X"_s
                                  << u"X"_s;
 
-    QTest::newRow("empty_rep02") << QString()
+    BOBUIest::newRow("empty_rep02") << QString()
                                  << qsizetype(5) << qsizetype(3) << u"X"_s
                                  << QString();
 
-    QTest::newRow("rep00") << u"ACABCAB"_s
+    BOBUIest::newRow("rep00") << u"ACABCAB"_s
                            << qsizetype(4) << qsizetype(0) << u"X"_s
                            << u"ACABXCAB"_s;
 
-    QTest::newRow("rep01") << u"ACABXCAB"_s
+    BOBUIest::newRow("rep01") << u"ACABXCAB"_s
                            << qsizetype(4) << qsizetype(1) << u"Y"_s
                            << u"ACABYCAB"_s;
 
-    QTest::newRow("rep02") << u"ACABYCAB"_s
+    BOBUIest::newRow("rep02") << u"ACABYCAB"_s
                            << qsizetype(4) << qsizetype(1) << u""_s
                            << u"ACABCAB"_s;
 
-    QTest::newRow("rep03") << u"ACABCAB"_s
+    BOBUIest::newRow("rep03") << u"ACABCAB"_s
                            << qsizetype(0) << qsizetype(9999) << u"XX"_s
                            << u"XX"_s;
 
-    QTest::newRow("rep04") << u"XX"_s
+    BOBUIest::newRow("rep04") << u"XX"_s
                            << qsizetype(0) << qsizetype(9999) << u""_s
                            << u""_s;
 
-    QTest::newRow("rep05") << u"ACABCAB"_s
+    BOBUIest::newRow("rep05") << u"ACABCAB"_s
                            << qsizetype(0) << qsizetype(2) << u"XX"_s
                            << u"XXABCAB"_s;
 
-    QTest::newRow("rep06") << u"ACABCAB"_s
+    BOBUIest::newRow("rep06") << u"ACABCAB"_s
                            << qsizetype(1) << qsizetype(2) << u"XX"_s
                            << u"AXXBCAB"_s;
 
-    QTest::newRow("rep07") << u"ACABCAB"_s
+    BOBUIest::newRow("rep07") << u"ACABCAB"_s
                            << qsizetype(2) << qsizetype(2) << u"XX"_s
                            << u"ACXXCAB"_s;
 
-    QTest::newRow("rep08") << u"ACABCAB"_s
+    BOBUIest::newRow("rep08") << u"ACABCAB"_s
                            << qsizetype(3) << qsizetype(2) << u"XX"_s
                            << u"ACAXXAB"_s;
 
-    QTest::newRow("rep09") << u"ACABCAB"_s
+    BOBUIest::newRow("rep09") << u"ACABCAB"_s
                            << qsizetype(4) << qsizetype(2) << u"XX"_s
                            << u"ACABXXB"_s;
 
-    QTest::newRow("rep10") << u"ACABCAB"_s
+    BOBUIest::newRow("rep10") << u"ACABCAB"_s
                            << qsizetype(5) << qsizetype(2) << u"XX"_s
                            << u"ACABCXX"_s;
 
-    QTest::newRow("rep11") << u"ACABCAB"_s
+    BOBUIest::newRow("rep11") << u"ACABCAB"_s
                            << qsizetype(6) << qsizetype(2) << u"XX"_s
                            << u"ACABCAXX"_s;
 
-    QTest::newRow("rep12") << QString()
+    BOBUIest::newRow("rep12") << QString()
                            << qsizetype(0) << qsizetype(10) << u"X"_s
                            << u"X"_s;
 
-    QTest::newRow("rep13") << u"short"_s
+    BOBUIest::newRow("rep13") << u"short"_s
                            << qsizetype(0) << qsizetype(10) << u"X"_s
                            << u"X"_s;
 
-    QTest::newRow("rep14") << QString()
+    BOBUIest::newRow("rep14") << QString()
                            << qsizetype(0) << qsizetype(10) << u"XX"_s
                            << u"XX"_s;
 
-    QTest::newRow("rep15") << u"short"_s
+    BOBUIest::newRow("rep15") << u"short"_s
                            << qsizetype(0) << qsizetype(10) << u"XX"_s
                            << u"XX"_s;
 
     // This is a regression test for an old bug where QString would add index and len parameters,
     // potentially causing integer overflow.
     constexpr qsizetype maxSize = std::numeric_limits<qsizetype>::max();
-    QTest::newRow("no overflow") << u"ACABCAB"_s
+    BOBUIest::newRow("no overflow") << u"ACABCAB"_s
                                  << qsizetype(1) << maxSize - 1 << u""_s
                                  << u"A"_s;
 
-    QTest::newRow("overflow") << u"ACABCAB"_s
+    BOBUIest::newRow("overflow") << u"ACABCAB"_s
                               << qsizetype(1) << maxSize << u""_s
                               << u"A"_s;
 }
 
 void tst_QString::replace_string_data()
 {
-    QTest::addColumn<QString>("string" );
-    QTest::addColumn<QString>("before" );
-    QTest::addColumn<QString>("after" );
-    QTest::addColumn<QString>("result" );
-    QTest::addColumn<bool>("bcs" );
+    BOBUIest::addColumn<QString>("string" );
+    BOBUIest::addColumn<QString>("before" );
+    BOBUIest::addColumn<QString>("after" );
+    BOBUIest::addColumn<QString>("result" );
+    BOBUIest::addColumn<bool>("bcs" );
 
-    QTest::newRow( "rem00" ) << u""_s << u""_s << u""_s << u""_s << true;
-    QTest::newRow( "rem01" ) << u"A"_s << u""_s << u""_s << u"A"_s << true;
-    QTest::newRow( "rem02" ) << u"A"_s << u"A"_s << u""_s << u""_s << true;
-    QTest::newRow( "rem03" ) << u"A"_s << u"B"_s << u""_s << u"A"_s << true;
-    QTest::newRow( "rem04" ) << u"AA"_s << u"A"_s << u""_s << u""_s << true;
-    QTest::newRow( "rem05" ) << u"AB"_s << u"A"_s << u""_s << u"B"_s << true;
-    QTest::newRow( "rem06" ) << u"AB"_s << u"B"_s << u""_s << u"A"_s << true;
-    QTest::newRow( "rem07" ) << u"AB"_s << u"C"_s << u""_s << u"AB"_s << true;
-    QTest::newRow( "rem08" ) << u"ABA"_s << u"A"_s << u""_s << u"B"_s << true;
-    QTest::newRow( "rem09" ) << u"ABA"_s << u"B"_s << u""_s << u"AA"_s << true;
-    QTest::newRow( "rem10" ) << u"ABA"_s << u"C"_s << u""_s << u"ABA"_s << true;
-    QTest::newRow( "rem11" ) << u"banana"_s << u"an"_s << u""_s << u"ba"_s << true;
-    QTest::newRow( "rem12" ) << u""_s << u"A"_s << u""_s << u""_s << true;
-    QTest::newRow( "rem13" ) << u""_s << u"A"_s << QString() << u""_s << true;
-    QTest::newRow( "rem14" ) << QString() << u"A"_s << u""_s << QString() << true;
-    QTest::newRow( "rem15" ) << QString() << u"A"_s << QString() << QString() << true;
-    QTest::newRow( "rem16" ) << QString() << u""_s << u""_s << u""_s << true;
-    QTest::newRow( "rem17" ) << u""_s << QString() << u""_s << u""_s << true;
-    QTest::newRow( "rem18" ) << u"a"_s << u"a"_s << u""_s << u""_s << false;
-    QTest::newRow( "rem19" ) << u"A"_s << u"A"_s << u""_s << u""_s << false;
-    QTest::newRow( "rem20" ) << u"a"_s << u"A"_s << u""_s << u""_s << false;
-    QTest::newRow( "rem21" ) << u"A"_s << u"a"_s << u""_s << u""_s << false;
-    QTest::newRow( "rem22" ) << u"Alpha beta"_s << u"a"_s << u""_s << u"lph bet"_s << false;
-    QTest::newRow( "rem23" ) << u"+00:00"_s << u":"_s << u""_s << u"+0000"_s << false;
+    BOBUIest::newRow( "rem00" ) << u""_s << u""_s << u""_s << u""_s << true;
+    BOBUIest::newRow( "rem01" ) << u"A"_s << u""_s << u""_s << u"A"_s << true;
+    BOBUIest::newRow( "rem02" ) << u"A"_s << u"A"_s << u""_s << u""_s << true;
+    BOBUIest::newRow( "rem03" ) << u"A"_s << u"B"_s << u""_s << u"A"_s << true;
+    BOBUIest::newRow( "rem04" ) << u"AA"_s << u"A"_s << u""_s << u""_s << true;
+    BOBUIest::newRow( "rem05" ) << u"AB"_s << u"A"_s << u""_s << u"B"_s << true;
+    BOBUIest::newRow( "rem06" ) << u"AB"_s << u"B"_s << u""_s << u"A"_s << true;
+    BOBUIest::newRow( "rem07" ) << u"AB"_s << u"C"_s << u""_s << u"AB"_s << true;
+    BOBUIest::newRow( "rem08" ) << u"ABA"_s << u"A"_s << u""_s << u"B"_s << true;
+    BOBUIest::newRow( "rem09" ) << u"ABA"_s << u"B"_s << u""_s << u"AA"_s << true;
+    BOBUIest::newRow( "rem10" ) << u"ABA"_s << u"C"_s << u""_s << u"ABA"_s << true;
+    BOBUIest::newRow( "rem11" ) << u"banana"_s << u"an"_s << u""_s << u"ba"_s << true;
+    BOBUIest::newRow( "rem12" ) << u""_s << u"A"_s << u""_s << u""_s << true;
+    BOBUIest::newRow( "rem13" ) << u""_s << u"A"_s << QString() << u""_s << true;
+    BOBUIest::newRow( "rem14" ) << QString() << u"A"_s << u""_s << QString() << true;
+    BOBUIest::newRow( "rem15" ) << QString() << u"A"_s << QString() << QString() << true;
+    BOBUIest::newRow( "rem16" ) << QString() << u""_s << u""_s << u""_s << true;
+    BOBUIest::newRow( "rem17" ) << u""_s << QString() << u""_s << u""_s << true;
+    BOBUIest::newRow( "rem18" ) << u"a"_s << u"a"_s << u""_s << u""_s << false;
+    BOBUIest::newRow( "rem19" ) << u"A"_s << u"A"_s << u""_s << u""_s << false;
+    BOBUIest::newRow( "rem20" ) << u"a"_s << u"A"_s << u""_s << u""_s << false;
+    BOBUIest::newRow( "rem21" ) << u"A"_s << u"a"_s << u""_s << u""_s << false;
+    BOBUIest::newRow( "rem22" ) << u"Alpha beta"_s << u"a"_s << u""_s << u"lph bet"_s << false;
+    BOBUIest::newRow( "rem23" ) << u"+00:00"_s << u":"_s << u""_s << u"+0000"_s << false;
 
-    QTest::newRow( "rep00" ) << u"ABC"_s << u"B"_s << u"-"_s << u"A-C"_s << true;
-    QTest::newRow( "rep01" ) << u"$()*+.?[\\]^{|}"_s << u"$()*+.?[\\]^{|}"_s << u"X"_s << u"X"_s << true;
-    QTest::newRow( "rep02" ) << u"ABCDEF"_s << u""_s << u"X"_s << u"XAXBXCXDXEXFX"_s << true;
-    QTest::newRow( "rep03" ) << u""_s << u""_s << u"X"_s << u"X"_s << true;
-    QTest::newRow( "rep04" ) << u"a"_s << u"a"_s << u"b"_s << u"b"_s << false;
-    QTest::newRow( "rep05" ) << u"A"_s << u"A"_s << u"b"_s << u"b"_s << false;
-    QTest::newRow( "rep06" ) << u"a"_s << u"A"_s << u"b"_s << u"b"_s << false;
-    QTest::newRow( "rep07" ) << u"A"_s << u"a"_s << u"b"_s << u"b"_s << false;
-    QTest::newRow( "rep08" ) << u"a"_s << u"a"_s << u"a"_s << u"a"_s << false;
-    QTest::newRow( "rep09" ) << u"A"_s << u"A"_s << u"a"_s << u"a"_s << false;
-    QTest::newRow( "rep10" ) << u"a"_s << u"A"_s << u"a"_s << u"a"_s << false;
-    QTest::newRow( "rep11" ) << u"A"_s << u"a"_s << u"a"_s << u"a"_s << false;
-    QTest::newRow( "rep12" ) << u"Alpha beta"_s << u"a"_s << u"o"_s << u"olpho beto"_s << false;
-    QTest::newRow( "rep13" ) << QString() << u""_s << u"A"_s << u"A"_s << true;
-    QTest::newRow( "rep14" ) << u""_s << QString() << u"A"_s << u"A"_s << true;
-    QTest::newRow( "rep15" ) << u"fooxbarxbazxblub"_s << u"x"_s << u"yz"_s << u"fooyzbaryzbazyzblub"_s << true;
-    QTest::newRow( "rep16" ) << u"fooxbarxbazxblub"_s << u"x"_s << u"z"_s << u"foozbarzbazzblub"_s << true;
-    QTest::newRow( "rep17" ) << u"fooxybarxybazxyblub"_s << u"xy"_s << u"z"_s << u"foozbarzbazzblub"_s << true;
-    QTest::newRow("rep18") << QString() << QString() << u"X"_s << u"X"_s << false;
-    QTest::newRow("rep19") << QString() << u"A"_s << u"X"_s << u""_s << false;
+    BOBUIest::newRow( "rep00" ) << u"ABC"_s << u"B"_s << u"-"_s << u"A-C"_s << true;
+    BOBUIest::newRow( "rep01" ) << u"$()*+.?[\\]^{|}"_s << u"$()*+.?[\\]^{|}"_s << u"X"_s << u"X"_s << true;
+    BOBUIest::newRow( "rep02" ) << u"ABCDEF"_s << u""_s << u"X"_s << u"XAXBXCXDXEXFX"_s << true;
+    BOBUIest::newRow( "rep03" ) << u""_s << u""_s << u"X"_s << u"X"_s << true;
+    BOBUIest::newRow( "rep04" ) << u"a"_s << u"a"_s << u"b"_s << u"b"_s << false;
+    BOBUIest::newRow( "rep05" ) << u"A"_s << u"A"_s << u"b"_s << u"b"_s << false;
+    BOBUIest::newRow( "rep06" ) << u"a"_s << u"A"_s << u"b"_s << u"b"_s << false;
+    BOBUIest::newRow( "rep07" ) << u"A"_s << u"a"_s << u"b"_s << u"b"_s << false;
+    BOBUIest::newRow( "rep08" ) << u"a"_s << u"a"_s << u"a"_s << u"a"_s << false;
+    BOBUIest::newRow( "rep09" ) << u"A"_s << u"A"_s << u"a"_s << u"a"_s << false;
+    BOBUIest::newRow( "rep10" ) << u"a"_s << u"A"_s << u"a"_s << u"a"_s << false;
+    BOBUIest::newRow( "rep11" ) << u"A"_s << u"a"_s << u"a"_s << u"a"_s << false;
+    BOBUIest::newRow( "rep12" ) << u"Alpha beta"_s << u"a"_s << u"o"_s << u"olpho beto"_s << false;
+    BOBUIest::newRow( "rep13" ) << QString() << u""_s << u"A"_s << u"A"_s << true;
+    BOBUIest::newRow( "rep14" ) << u""_s << QString() << u"A"_s << u"A"_s << true;
+    BOBUIest::newRow( "rep15" ) << u"fooxbarxbazxblub"_s << u"x"_s << u"yz"_s << u"fooyzbaryzbazyzblub"_s << true;
+    BOBUIest::newRow( "rep16" ) << u"fooxbarxbazxblub"_s << u"x"_s << u"z"_s << u"foozbarzbazzblub"_s << true;
+    BOBUIest::newRow( "rep17" ) << u"fooxybarxybazxyblub"_s << u"xy"_s << u"z"_s << u"foozbarzbazzblub"_s << true;
+    BOBUIest::newRow("rep18") << QString() << QString() << u"X"_s << u"X"_s << false;
+    BOBUIest::newRow("rep19") << QString() << u"A"_s << u"X"_s << u""_s << false;
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QString::replace_regexp_data()
 {
     remove_regexp_data(); // Sets up the columns, adds rows with empty replacement text.
     // Columns (all QString): string, regexp, after, result; string.replace(regexp, after) == result
     // Test-cases with empty after (replacement text, third column) go in remove_regexp_data()
 
-    QTest::newRow("empty-in-null") << QString() << "" << "after" << "after";
-    QTest::newRow("empty-in-empty") << "" << "" << "after" << "after";
+    BOBUIest::newRow("empty-in-null") << QString() << "" << "after" << "after";
+    BOBUIest::newRow("empty-in-empty") << "" << "" << "after" << "after";
 
-    QTest::newRow( "rep00" ) << u"A <i>bon mot</i>."_s << u"<i>([^<]*)</i>"_s << u"\\emph{\\1}"_s << u"A \\emph{bon mot}."_s;
-    QTest::newRow( "rep01" ) << u"banana"_s << u"^.a()"_s << u"\\1"_s << u"nana"_s;
-    QTest::newRow( "rep02" ) << u"banana"_s << u"(ba)"_s << u"\\1X\\1"_s << u"baXbanana"_s;
-    QTest::newRow( "rep03" ) << u"banana"_s << u"(ba)(na)na"_s << u"\\2X\\1"_s << u"naXba"_s;
-    QTest::newRow("rep04") << QString() << u"(ba)"_s << u"\\1X\\1"_s << QString();
+    BOBUIest::newRow( "rep00" ) << u"A <i>bon mot</i>."_s << u"<i>([^<]*)</i>"_s << u"\\emph{\\1}"_s << u"A \\emph{bon mot}."_s;
+    BOBUIest::newRow( "rep01" ) << u"banana"_s << u"^.a()"_s << u"\\1"_s << u"nana"_s;
+    BOBUIest::newRow( "rep02" ) << u"banana"_s << u"(ba)"_s << u"\\1X\\1"_s << u"baXbanana"_s;
+    BOBUIest::newRow( "rep03" ) << u"banana"_s << u"(ba)(na)na"_s << u"\\2X\\1"_s << u"naXba"_s;
+    BOBUIest::newRow("rep04") << QString() << u"(ba)"_s << u"\\1X\\1"_s << QString();
 
-    QTest::newRow("backref00") << u"\\1\\2\\3\\4\\5\\6\\7\\8\\9\\A\\10\\11"_s << u"\\\\[34]"_s
+    BOBUIest::newRow("backref00") << u"\\1\\2\\3\\4\\5\\6\\7\\8\\9\\A\\10\\11"_s << u"\\\\[34]"_s
                                << u"X"_s << u"\\1\\2XX\\5\\6\\7\\8\\9\\A\\10\\11"_s;
-    QTest::newRow("backref01") << u"foo"_s << u"[fo]"_s << u"\\1"_s << u"\\1\\1\\1"_s;
-    QTest::newRow("backref02") << u"foo"_s << u"([fo])"_s << u"(\\1)"_s << u"(f)(o)(o)"_s;
-    QTest::newRow("backref03") << u"foo"_s << u"([fo])"_s << u"\\2"_s << u"\\2\\2\\2"_s;
-    QTest::newRow("backref04") << u"foo"_s << u"([fo])"_s << u"\\10"_s << u"f0o0o0"_s;
-    QTest::newRow("backref05") << u"foo"_s << u"([fo])"_s << u"\\11"_s << u"f1o1o1"_s;
-    QTest::newRow("backref06") << u"foo"_s << u"([fo])"_s << u"\\19"_s << u"f9o9o9"_s;
-    QTest::newRow("backref07") << u"foo"_s << u"(f)(o+)"_s
+    BOBUIest::newRow("backref01") << u"foo"_s << u"[fo]"_s << u"\\1"_s << u"\\1\\1\\1"_s;
+    BOBUIest::newRow("backref02") << u"foo"_s << u"([fo])"_s << u"(\\1)"_s << u"(f)(o)(o)"_s;
+    BOBUIest::newRow("backref03") << u"foo"_s << u"([fo])"_s << u"\\2"_s << u"\\2\\2\\2"_s;
+    BOBUIest::newRow("backref04") << u"foo"_s << u"([fo])"_s << u"\\10"_s << u"f0o0o0"_s;
+    BOBUIest::newRow("backref05") << u"foo"_s << u"([fo])"_s << u"\\11"_s << u"f1o1o1"_s;
+    BOBUIest::newRow("backref06") << u"foo"_s << u"([fo])"_s << u"\\19"_s << u"f9o9o9"_s;
+    BOBUIest::newRow("backref07") << u"foo"_s << u"(f)(o+)"_s
                                << u"\\2\\1\\10\\20\\11\\22\\19\\29\\3"_s
                                << u"ooff0oo0f1oo2f9oo9\\3"_s;
-    QTest::newRow("backref08") << u"abc"_s << u"(((((((((((((([abc]))))))))))))))"_s
+    BOBUIest::newRow("backref08") << u"abc"_s << u"(((((((((((((([abc]))))))))))))))"_s
                                << u"{\\14}"_s << u"{a}{b}{c}"_s;
-    QTest::newRow("backref09") << u"abcdefghijklmn"_s
+    BOBUIest::newRow("backref09") << u"abcdefghijklmn"_s
                                << u"(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)(m)(n)"_s
                                << u"\\19\\18\\17\\16\\15\\14\\13\\12\\11\\10"
                                    "\\9\\90\\8\\80\\7\\70\\6\\60\\5\\50\\4\\40\\3\\30\\2\\20\\1"_s
                                << u"a9a8a7a6a5nmlkjii0hh0gg0ff0ee0dd0cc0bb0a"_s;
-    QTest::newRow("backref10") << u"abc"_s << u"((((((((((((((abc))))))))))))))"_s
+    BOBUIest::newRow("backref10") << u"abc"_s << u"((((((((((((((abc))))))))))))))"_s
                                << u"\\0\\01\\011"_s << u"\\0\\01\\011"_s;
 }
 #endif
@@ -1125,25 +1125,25 @@ void tst_QString::replace_regexp_data()
 void tst_QString::utf8_data()
 {
     QString str;
-    QTest::addColumn<QByteArray>("utf8" );
-    QTest::addColumn<QString>("res" );
+    BOBUIest::addColumn<QByteArray>("utf8" );
+    BOBUIest::addColumn<QString>("res" );
 
-    QTest::newRow("null") << QByteArray() << QString();
-    QTest::newRow("empty") << QByteArray("") << u""_s;
+    BOBUIest::newRow("null") << QByteArray() << QString();
+    BOBUIest::newRow("empty") << QByteArray("") << u""_s;
 
-    QTest::newRow("str0") << QByteArray("abcdefgh") << u"abcdefgh"_s;
+    BOBUIest::newRow("str0") << QByteArray("abcdefgh") << u"abcdefgh"_s;
 
-    QTest::newRow( "str1" ) << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
+    BOBUIest::newRow( "str1" ) << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
                           << QString::fromLatin1("\366\344\374\326\304\334\370\346\345\330\306\305") ;
     str += QChar( 0x05e9 );
     str += QChar( 0x05d3 );
     str += QChar( 0x05d2 );
-    QTest::newRow( "str2" ) << QByteArray("\327\251\327\223\327\222")
+    BOBUIest::newRow( "str2" ) << QByteArray("\327\251\327\223\327\222")
                           << str;
 
     str = QChar( 0x20ac );
     str += u" some text"_s;
-    QTest::newRow( "str3" ) << QByteArray("\342\202\254 some text")
+    BOBUIest::newRow( "str3" ) << QByteArray("\342\202\254 some text")
                           << str;
 
     str = u"Old Italic: "_s;
@@ -1157,28 +1157,28 @@ void tst_QString::utf8_data()
     str += QChar(0xdf03);
     str += QChar(0xd800);
     str += QChar(0xdf04);
-    QTest::newRow("surrogate") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str;
+    BOBUIest::newRow("surrogate") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str;
 }
 
 void tst_QString::length_data()
 {
-    QTest::addColumn<QString>("s1");
-    QTest::addColumn<qsizetype>("res");
+    BOBUIest::addColumn<QString>("s1");
+    BOBUIest::addColumn<qsizetype>("res");
 
-    QTest::newRow("null") << QString() << qsizetype(0);
-    QTest::newRow("empty") << u""_s << qsizetype(0);
-    QTest::newRow("data0") << u"Test"_s << qsizetype(4);
-    QTest::newRow("data1") << u"The quick brown fox jumps over the lazy dog"_s << qsizetype(43);
-    QTest::newRow("data2") << u"Sphinx of black quartz, judge my vow!"_s << qsizetype(37);
-    QTest::newRow("data3") << u"A"_s << qsizetype(1);
-    QTest::newRow("data4") << u"AB"_s << qsizetype(2);
-    QTest::newRow("data5") << u"AB\n"_s << qsizetype(3);
-    QTest::newRow("data6") << u"AB\nC"_s << qsizetype(4);
-    QTest::newRow("data7") << u"\n"_s << qsizetype(1);
-    QTest::newRow("data8") << u"\nA"_s << qsizetype(2);
-    QTest::newRow("data9") << u"\nAB"_s << qsizetype(3);
-    QTest::newRow("data10") << u"\nAB\nCDE"_s << qsizetype(7);
-    QTest::newRow("data11") << u"shdnftrheid fhgnt gjvnfmd chfugkh bnfhg thgjf vnghturkf "
+    BOBUIest::newRow("null") << QString() << qsizetype(0);
+    BOBUIest::newRow("empty") << u""_s << qsizetype(0);
+    BOBUIest::newRow("data0") << u"Test"_s << qsizetype(4);
+    BOBUIest::newRow("data1") << u"The quick brown fox jumps over the lazy dog"_s << qsizetype(43);
+    BOBUIest::newRow("data2") << u"Sphinx of black quartz, judge my vow!"_s << qsizetype(37);
+    BOBUIest::newRow("data3") << u"A"_s << qsizetype(1);
+    BOBUIest::newRow("data4") << u"AB"_s << qsizetype(2);
+    BOBUIest::newRow("data5") << u"AB\n"_s << qsizetype(3);
+    BOBUIest::newRow("data6") << u"AB\nC"_s << qsizetype(4);
+    BOBUIest::newRow("data7") << u"\n"_s << qsizetype(1);
+    BOBUIest::newRow("data8") << u"\nA"_s << qsizetype(2);
+    BOBUIest::newRow("data9") << u"\nAB"_s << qsizetype(3);
+    BOBUIest::newRow("data10") << u"\nAB\nCDE"_s << qsizetype(7);
+    BOBUIest::newRow("data11") << u"shdnftrheid fhgnt gjvnfmd chfugkh bnfhg thgjf vnghturkf "
                                 "chfnguh bjgnfhvygh hnbhgutjfv dhdnjds dcjs d"_s
                             << qsizetype(100);
 }
@@ -1187,16 +1187,16 @@ void tst_QString::length()
 {
     // size(), length() and count() do the same
     QFETCH(QString, s1);
-    QTEST(s1.size(), "res");
-    QTEST(s1.size(), "res");
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_IGNORE_DEPRECATIONS(QTEST(s1.size(), "res");)
+    BOBUIEST(s1.size(), "res");
+    BOBUIEST(s1.size(), "res");
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_IGNORE_DEPRECATIONS(BOBUIEST(s1.size(), "res");)
 #endif
 }
 
 #include <qfile.h>
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
 void tst_QString::acc_01()
 {
     QString a;
@@ -1225,7 +1225,7 @@ void tst_QString::acc_01()
     f[7]='F';
     QCOMPARE(e, QLatin1String("String E"));
 
-#ifndef QT_RESTRICTED_CAST_FROM_ASCII
+#ifndef BOBUI_RESTRICTED_CAST_FROM_ASCII
     char text[]="String f";
     f = text;
     text[7]='!';
@@ -1242,7 +1242,7 @@ void tst_QString::acc_01()
     QCOMPARE(b, QLatin1String("456"));
     QCOMPARE(a, QLatin1String("253"));
 
-#ifndef QT_RESTRICTED_CAST_FROM_ASCII
+#ifndef BOBUI_RESTRICTED_CAST_FROM_ASCII
     char t[]="TEXT";
     a="A";
     a=t;
@@ -1287,17 +1287,17 @@ void tst_QString::acc_01()
     QCOMPARE(QString(a+'X'), QLatin1String("ABCX"));
     QCOMPARE(QString("XXXX"+a), QLatin1String("XXXXABC"));
     QCOMPARE(QString('X'+a), QLatin1String("XABC"));
-#ifndef QT_RESTRICTED_CAST_FROM_ASCII
+#ifndef BOBUI_RESTRICTED_CAST_FROM_ASCII
     a = (const char*)0;
     QVERIFY(a.isNull());
     QVERIFY(*a.toLatin1().constData() == '\0');
 #endif
 }
-#endif // QT_NO_CAST_FROM_ASCII
+#endif // BOBUI_NO_CAST_FROM_ASCII
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wformat-security")
-QT_WARNING_DISABLE_CLANG("-Wformat-security")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wformat-security")
+BOBUI_WARNING_DISABLE_CLANG("-Wformat-security")
 
 void tst_QString::isNull()
 {
@@ -1309,7 +1309,7 @@ void tst_QString::isNull()
     QVERIFY(!QString::asprintf(zero).isNull());
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 void tst_QString::nullness()
 {
@@ -1317,8 +1317,8 @@ void tst_QString::nullness()
         QString s;
         QVERIFY(s.isNull());
     }
-#if defined(__cpp_char8_t) || !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-#if !defined(QT_NO_CAST_FROM_ASCII)
+#if defined(__cpp_char8_t) || !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII)
     // we don't have QString(std::nullptr_t), so this uses QString(const char8_t*) in C++20:
     {
         QString s = nullptr;
@@ -1327,7 +1327,7 @@ void tst_QString::nullness()
 #endif
 #endif
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     {
         const char *ptr = nullptr;
         QString s = ptr;
@@ -1426,11 +1426,11 @@ void tst_QString::constructor()
     QVERIFY(empty.isEmpty());
 }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 void tst_QString::constructorQByteArray_data()
 {
-    QTest::addColumn<QByteArray>("src" );
-    QTest::addColumn<QString>("expected" );
+    BOBUIest::addColumn<QByteArray>("src" );
+    BOBUIest::addColumn<QString>("expected" );
 
     QByteArray ba( 4, 0 );
     ba[0] = 'C';
@@ -1438,7 +1438,7 @@ void tst_QString::constructorQByteArray_data()
     ba[2] = 'M';
     ba[3] = 'P';
 
-    QTest::newRow( "1" ) << ba << u"COMP"_s;
+    BOBUIest::newRow( "1" ) << ba << u"COMP"_s;
 
     QByteArray ba1( 7, 0 );
     ba1[0] = 'a';
@@ -1449,12 +1449,12 @@ void tst_QString::constructorQByteArray_data()
     ba1[5] = 'e';
     ba1[6] = 'f';
 
-    QTest::newRow( "2" ) << ba1 << QString::fromUtf16(u"abc\0def", 7);
+    BOBUIest::newRow( "2" ) << ba1 << QString::fromUtf16(u"abc\0def", 7);
 
-    QTest::newRow( "3" ) << QByteArray::fromRawData("abcd", 3) << u"abc"_s;
-    QTest::newRow( "4" ) << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
-    QTest::newRow( "4-bis" ) << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
-    QTest::newRow( "4-tre" ) << QByteArray("\xc3\xa9") << QString::fromLatin1("\xe9");
+    BOBUIest::newRow( "3" ) << QByteArray::fromRawData("abcd", 3) << u"abc"_s;
+    BOBUIest::newRow( "4" ) << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
+    BOBUIest::newRow( "4-bis" ) << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
+    BOBUIest::newRow( "4-tre" ) << QByteArray("\xc3\xa9") << QString::fromLatin1("\xe9");
 }
 
 void tst_QString::constructorQByteArray()
@@ -1485,7 +1485,7 @@ void tst_QString::constructorQByteArray()
         QCOMPARE(str1, expected.left(zero));
     }
 }
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
 void tst_QString::STL()
 {
@@ -1510,9 +1510,9 @@ void tst_QString::STL()
 
     std::string stdstr( "QString" );
 
-    QString stlqt = QString::fromStdString(stdstr);
-    QCOMPARE(stlqt, QString::fromLatin1(stdstr.c_str()));
-    QCOMPARE(stlqt.toStdString(), stdstr);
+    QString stlbobui = QString::fromStdString(stdstr);
+    QCOMPARE(stlbobui, QString::fromLatin1(stdstr.c_str()));
+    QCOMPARE(stlbobui.toStdString(), stdstr);
 
     const wchar_t arr[] = {'h', 'e', 'l', 'l', 'o', 0};
     std::wstring stlStr = arr;
@@ -1582,21 +1582,21 @@ void tst_QString::truncate()
 
 void tst_QString::chop_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("count" );
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<int>("count" );
+    BOBUIest::addColumn<QString>("result");
 
     const QString original(u"abcd"_s);
 
-    QTest::newRow("null chop 1") << QString() << 1 << QString();
-    QTest::newRow("null chop -1") << QString() << -1 << QString();
-    QTest::newRow("empty chop 1") << u""_s << 1 << u""_s;
-    QTest::newRow("empty chop -1") << u""_s << -1 << u""_s;
-    QTest::newRow("data0") << original << 1 << u"abc"_s;
-    QTest::newRow("data1") << original << 0 << original;
-    QTest::newRow("data2") << original << -1 << original;
-    QTest::newRow("data3") << original << int(original.size()) << QString();
-    QTest::newRow("data4") << original << 1000  << QString();
+    BOBUIest::newRow("null chop 1") << QString() << 1 << QString();
+    BOBUIest::newRow("null chop -1") << QString() << -1 << QString();
+    BOBUIest::newRow("empty chop 1") << u""_s << 1 << u""_s;
+    BOBUIest::newRow("empty chop -1") << u""_s << -1 << u""_s;
+    BOBUIest::newRow("data0") << original << 1 << u"abc"_s;
+    BOBUIest::newRow("data1") << original << 0 << original;
+    BOBUIest::newRow("data2") << original << -1 << original;
+    BOBUIest::newRow("data3") << original << int(original.size()) << QString();
+    BOBUIest::newRow("data4") << original << 1000  << QString();
 }
 
 void tst_QString::chop()
@@ -1706,13 +1706,13 @@ void tst_QString::asprintf()
     QCOMPARE(QString::asprintf("%015f", d), QLatin1String("-0000514.256830"));
     QCOMPARE(QString::asprintf("%015.6f", d), QLatin1String("-0000514.256830"));
     QCOMPARE(QString::asprintf("%015.10f", d), QLatin1String("-514.2568300000"));
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wformat")
-QT_WARNING_DISABLE_CLANG("-Wformat") // Flag '0' ignored when flag '-' is present
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wformat")
+BOBUI_WARNING_DISABLE_CLANG("-Wformat") // Flag '0' ignored when flag '-' is present
     QCOMPARE(QString::asprintf("%-015f", d), QLatin1String("-514.256830    "));
     QCOMPARE(QString::asprintf("%-015.6f", d), QLatin1String("-514.256830    "));
     QCOMPARE(QString::asprintf("%-015.10f", d), QLatin1String("-514.2568300000"));
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     {
         /* This code crashed. I don't know how to reduce it further. In other words,
@@ -1739,16 +1739,16 @@ void tst_QString::asprintfS()
     // Check utf8 conversion for %s
     QCOMPARE(QString::asprintf("%s", "\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205"), QString::fromLatin1("\366\344\374\326\304\334\370\346\345\330\306\305"));
 
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 // Android clang emits warning: '%n' specifier not supported on this platform
-QT_WARNING_DISABLE_CLANG("-Wformat")
+BOBUI_WARNING_DISABLE_CLANG("-Wformat")
     int n1;
     QCOMPARE(QString::asprintf("%s%n%s", "hello", &n1, "goodbye"), u"hellogoodbye");
     QCOMPARE(n1, 5);
     qlonglong n2;
     QCOMPARE(QString::asprintf("%s%s%lln%s", "foo", "bar", &n2, "whiz"), u"foobarwhiz");
     QCOMPARE((int)n2, 6);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     { // %ls
 
@@ -1772,11 +1772,11 @@ QT_WARNING_POP
                  QLatin1String("\366\344\374\326\304\334\370\346\345\330\306\305"));
 
         int n;
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 // Android clang emits warning: '%n' specifier not supported on this platform
-QT_WARNING_DISABLE_CLANG("-Wformat")
+BOBUI_WARNING_DISABLE_CLANG("-Wformat")
         QCOMPARE(QString::asprintf("%ls%n%s", qUtf16Printable(u"hello"_s), &n, "goodbye"), "hellogoodbye"_L1);
-QT_WARNING_POP
+BOBUI_WARNING_POP
         QCOMPARE(n, 5);
     }
 }
@@ -1791,97 +1791,97 @@ QT_WARNING_POP
 
 void tst_QString::indexOf_data()
 {
-    QTest::addColumn<QString>("haystack" );
-    QTest::addColumn<QString>("needle" );
-    QTest::addColumn<int>("startpos" );
-    QTest::addColumn<bool>("bcs" );
-    QTest::addColumn<int>("resultpos" );
+    BOBUIest::addColumn<QString>("haystack" );
+    BOBUIest::addColumn<QString>("needle" );
+    BOBUIest::addColumn<int>("startpos" );
+    BOBUIest::addColumn<bool>("bcs" );
+    BOBUIest::addColumn<int>("resultpos" );
 
-    QTest::newRow( "data0" ) << u"abc"_s << u"a"_s << 0 << true << 0;
-    QTest::newRow( "data1" ) << u"abc"_s << u"a"_s << 0 << false << 0;
-    QTest::newRow( "data2" ) << u"abc"_s << u"A"_s << 0 << true << -1;
-    QTest::newRow( "data3" ) << u"abc"_s << u"A"_s << 0 << false << 0;
-    QTest::newRow( "data4" ) << u"abc"_s << u"a"_s << 1 << true << -1;
-    QTest::newRow( "data5" ) << u"abc"_s << u"a"_s << 1 << false << -1;
-    QTest::newRow( "data6" ) << u"abc"_s << u"A"_s << 1 << true << -1;
-    QTest::newRow( "data7" ) << u"abc"_s << u"A"_s << 1 << false << -1;
-    QTest::newRow( "data8" ) << u"abc"_s << u"b"_s << 0 << true << 1;
-    QTest::newRow( "data9" ) << u"abc"_s << u"b"_s << 0 << false << 1;
-    QTest::newRow( "data10" ) << u"abc"_s << u"B"_s << 0 << true << -1;
-    QTest::newRow( "data11" ) << u"abc"_s << u"B"_s << 0 << false << 1;
-    QTest::newRow( "data12" ) << u"abc"_s << u"b"_s << 1 << true << 1;
-    QTest::newRow( "data13" ) << u"abc"_s << u"b"_s << 1 << false << 1;
-    QTest::newRow( "data14" ) << u"abc"_s << u"B"_s << 1 << true << -1;
-    QTest::newRow( "data15" ) << u"abc"_s << u"B"_s << 1 << false << 1;
-    QTest::newRow( "data16" ) << u"abc"_s << u"b"_s << 2 << true << -1;
-    QTest::newRow( "data17" ) << u"abc"_s << u"b"_s << 2 << false << -1;
+    BOBUIest::newRow( "data0" ) << u"abc"_s << u"a"_s << 0 << true << 0;
+    BOBUIest::newRow( "data1" ) << u"abc"_s << u"a"_s << 0 << false << 0;
+    BOBUIest::newRow( "data2" ) << u"abc"_s << u"A"_s << 0 << true << -1;
+    BOBUIest::newRow( "data3" ) << u"abc"_s << u"A"_s << 0 << false << 0;
+    BOBUIest::newRow( "data4" ) << u"abc"_s << u"a"_s << 1 << true << -1;
+    BOBUIest::newRow( "data5" ) << u"abc"_s << u"a"_s << 1 << false << -1;
+    BOBUIest::newRow( "data6" ) << u"abc"_s << u"A"_s << 1 << true << -1;
+    BOBUIest::newRow( "data7" ) << u"abc"_s << u"A"_s << 1 << false << -1;
+    BOBUIest::newRow( "data8" ) << u"abc"_s << u"b"_s << 0 << true << 1;
+    BOBUIest::newRow( "data9" ) << u"abc"_s << u"b"_s << 0 << false << 1;
+    BOBUIest::newRow( "data10" ) << u"abc"_s << u"B"_s << 0 << true << -1;
+    BOBUIest::newRow( "data11" ) << u"abc"_s << u"B"_s << 0 << false << 1;
+    BOBUIest::newRow( "data12" ) << u"abc"_s << u"b"_s << 1 << true << 1;
+    BOBUIest::newRow( "data13" ) << u"abc"_s << u"b"_s << 1 << false << 1;
+    BOBUIest::newRow( "data14" ) << u"abc"_s << u"B"_s << 1 << true << -1;
+    BOBUIest::newRow( "data15" ) << u"abc"_s << u"B"_s << 1 << false << 1;
+    BOBUIest::newRow( "data16" ) << u"abc"_s << u"b"_s << 2 << true << -1;
+    BOBUIest::newRow( "data17" ) << u"abc"_s << u"b"_s << 2 << false << -1;
 
-    QTest::newRow( "data20" ) << u"ABC"_s << u"A"_s << 0 << true << 0;
-    QTest::newRow( "data21" ) << u"ABC"_s << u"A"_s << 0 << false << 0;
-    QTest::newRow( "data22" ) << u"ABC"_s << u"a"_s << 0 << true << -1;
-    QTest::newRow( "data23" ) << u"ABC"_s << u"a"_s << 0 << false << 0;
-    QTest::newRow( "data24" ) << u"ABC"_s << u"A"_s << 1 << true << -1;
-    QTest::newRow( "data25" ) << u"ABC"_s << u"A"_s << 1 << false << -1;
-    QTest::newRow( "data26" ) << u"ABC"_s << u"a"_s << 1 << true << -1;
-    QTest::newRow( "data27" ) << u"ABC"_s << u"a"_s << 1 << false << -1;
-    QTest::newRow( "data28" ) << u"ABC"_s << u"B"_s << 0 << true << 1;
-    QTest::newRow( "data29" ) << u"ABC"_s << u"B"_s << 0 << false << 1;
-    QTest::newRow( "data30" ) << u"ABC"_s << u"b"_s << 0 << true << -1;
-    QTest::newRow( "data31" ) << u"ABC"_s << u"b"_s << 0 << false << 1;
-    QTest::newRow( "data32" ) << u"ABC"_s << u"B"_s << 1 << true << 1;
-    QTest::newRow( "data33" ) << u"ABC"_s << u"B"_s << 1 << false << 1;
-    QTest::newRow( "data34" ) << u"ABC"_s << u"b"_s << 1 << true << -1;
-    QTest::newRow( "data35" ) << u"ABC"_s << u"b"_s << 1 << false << 1;
-    QTest::newRow( "data36" ) << u"ABC"_s << u"B"_s << 2 << true << -1;
-    QTest::newRow( "data37" ) << u"ABC"_s << u"B"_s << 2 << false << -1;
+    BOBUIest::newRow( "data20" ) << u"ABC"_s << u"A"_s << 0 << true << 0;
+    BOBUIest::newRow( "data21" ) << u"ABC"_s << u"A"_s << 0 << false << 0;
+    BOBUIest::newRow( "data22" ) << u"ABC"_s << u"a"_s << 0 << true << -1;
+    BOBUIest::newRow( "data23" ) << u"ABC"_s << u"a"_s << 0 << false << 0;
+    BOBUIest::newRow( "data24" ) << u"ABC"_s << u"A"_s << 1 << true << -1;
+    BOBUIest::newRow( "data25" ) << u"ABC"_s << u"A"_s << 1 << false << -1;
+    BOBUIest::newRow( "data26" ) << u"ABC"_s << u"a"_s << 1 << true << -1;
+    BOBUIest::newRow( "data27" ) << u"ABC"_s << u"a"_s << 1 << false << -1;
+    BOBUIest::newRow( "data28" ) << u"ABC"_s << u"B"_s << 0 << true << 1;
+    BOBUIest::newRow( "data29" ) << u"ABC"_s << u"B"_s << 0 << false << 1;
+    BOBUIest::newRow( "data30" ) << u"ABC"_s << u"b"_s << 0 << true << -1;
+    BOBUIest::newRow( "data31" ) << u"ABC"_s << u"b"_s << 0 << false << 1;
+    BOBUIest::newRow( "data32" ) << u"ABC"_s << u"B"_s << 1 << true << 1;
+    BOBUIest::newRow( "data33" ) << u"ABC"_s << u"B"_s << 1 << false << 1;
+    BOBUIest::newRow( "data34" ) << u"ABC"_s << u"b"_s << 1 << true << -1;
+    BOBUIest::newRow( "data35" ) << u"ABC"_s << u"b"_s << 1 << false << 1;
+    BOBUIest::newRow( "data36" ) << u"ABC"_s << u"B"_s << 2 << true << -1;
+    BOBUIest::newRow( "data37" ) << u"ABC"_s << u"B"_s << 2 << false << -1;
 
-    QTest::newRow( "data40" ) << u"aBc"_s << u"bc"_s << 0 << true << -1;
-    QTest::newRow( "data41" ) << u"aBc"_s << u"Bc"_s << 0 << true << 1;
-    QTest::newRow( "data42" ) << u"aBc"_s << u"bC"_s << 0 << true << -1;
-    QTest::newRow( "data43" ) << u"aBc"_s << u"BC"_s << 0 << true << -1;
-    QTest::newRow( "data44" ) << u"aBc"_s << u"bc"_s << 0 << false << 1;
-    QTest::newRow( "data45" ) << u"aBc"_s << u"Bc"_s << 0 << false << 1;
-    QTest::newRow( "data46" ) << u"aBc"_s << u"bC"_s << 0 << false << 1;
-    QTest::newRow( "data47" ) << u"aBc"_s << u"BC"_s << 0 << false << 1;
-    QTest::newRow( "data48" ) << u"AbC"_s << u"bc"_s << 0 << true << -1;
-    QTest::newRow( "data49" ) << u"AbC"_s << u"Bc"_s << 0 << true << -1;
-    QTest::newRow( "data50" ) << u"AbC"_s << u"bC"_s << 0 << true << 1;
-    QTest::newRow( "data51" ) << u"AbC"_s << u"BC"_s << 0 << true << -1;
-    QTest::newRow( "data52" ) << u"AbC"_s << u"bc"_s << 0 << false << 1;
-    QTest::newRow( "data53" ) << u"AbC"_s << u"Bc"_s << 0 << false << 1;
+    BOBUIest::newRow( "data40" ) << u"aBc"_s << u"bc"_s << 0 << true << -1;
+    BOBUIest::newRow( "data41" ) << u"aBc"_s << u"Bc"_s << 0 << true << 1;
+    BOBUIest::newRow( "data42" ) << u"aBc"_s << u"bC"_s << 0 << true << -1;
+    BOBUIest::newRow( "data43" ) << u"aBc"_s << u"BC"_s << 0 << true << -1;
+    BOBUIest::newRow( "data44" ) << u"aBc"_s << u"bc"_s << 0 << false << 1;
+    BOBUIest::newRow( "data45" ) << u"aBc"_s << u"Bc"_s << 0 << false << 1;
+    BOBUIest::newRow( "data46" ) << u"aBc"_s << u"bC"_s << 0 << false << 1;
+    BOBUIest::newRow( "data47" ) << u"aBc"_s << u"BC"_s << 0 << false << 1;
+    BOBUIest::newRow( "data48" ) << u"AbC"_s << u"bc"_s << 0 << true << -1;
+    BOBUIest::newRow( "data49" ) << u"AbC"_s << u"Bc"_s << 0 << true << -1;
+    BOBUIest::newRow( "data50" ) << u"AbC"_s << u"bC"_s << 0 << true << 1;
+    BOBUIest::newRow( "data51" ) << u"AbC"_s << u"BC"_s << 0 << true << -1;
+    BOBUIest::newRow( "data52" ) << u"AbC"_s << u"bc"_s << 0 << false << 1;
+    BOBUIest::newRow( "data53" ) << u"AbC"_s << u"Bc"_s << 0 << false << 1;
 
-    QTest::newRow( "data54" ) << u"AbC"_s << u"bC"_s << 0 << false << 1;
-    QTest::newRow( "data55" ) << u"AbC"_s << u"BC"_s << 0 << false << 1;
-    QTest::newRow( "data56" ) << u"AbC"_s << u"BC"_s << 1 << false << 1;
-    QTest::newRow( "data57" ) << u"AbC"_s << u"BC"_s << 2 << false << -1;
+    BOBUIest::newRow( "data54" ) << u"AbC"_s << u"bC"_s << 0 << false << 1;
+    BOBUIest::newRow( "data55" ) << u"AbC"_s << u"BC"_s << 0 << false << 1;
+    BOBUIest::newRow( "data56" ) << u"AbC"_s << u"BC"_s << 1 << false << 1;
+    BOBUIest::newRow( "data57" ) << u"AbC"_s << u"BC"_s << 2 << false << -1;
 
-    QTest::newRow( "null-in-null") << QString() << QString() << 0 << false << 0;
-    QTest::newRow( "empty-in-null") << QString() << u""_s << 0 << false << 0;
-    QTest::newRow( "null-in-empty") << u""_s << QString() << 0 << false << 0;
-    QTest::newRow( "empty-in-empty") << u""_s << u""_s << 0 << false << 0;
-    QTest::newRow( "data-in-null") << QString() << u"a"_s << 0 << false << -1;
-    QTest::newRow( "data-in-empty") << u""_s << u"a"_s << 0 << false << -1;
+    BOBUIest::newRow( "null-in-null") << QString() << QString() << 0 << false << 0;
+    BOBUIest::newRow( "empty-in-null") << QString() << u""_s << 0 << false << 0;
+    BOBUIest::newRow( "null-in-empty") << u""_s << QString() << 0 << false << 0;
+    BOBUIest::newRow( "empty-in-empty") << u""_s << u""_s << 0 << false << 0;
+    BOBUIest::newRow( "data-in-null") << QString() << u"a"_s << 0 << false << -1;
+    BOBUIest::newRow( "data-in-empty") << u""_s << u"a"_s << 0 << false << -1;
 
 
     QString s1 = u"abc"_s;
     s1 += QChar(0xb5);
     QString s2;
     s2 += QChar(0x3bc);
-    QTest::newRow( "data58" ) << s1 << s2 << 0 << false << 3;
+    BOBUIest::newRow( "data58" ) << s1 << s2 << 0 << false << 3;
     s2.prepend(QLatin1Char('C'));
-    QTest::newRow( "data59" ) << s1 << s2 << 0 << false << 2;
+    BOBUIest::newRow( "data59" ) << s1 << s2 << 0 << false << 2;
 
     QString veryBigHaystack(500, u'a');
     veryBigHaystack += u'B';
-    QTest::newRow("BoyerMooreStressTest") << veryBigHaystack << veryBigHaystack << 0 << true << 0;
-    QTest::newRow("BoyerMooreStressTest2") << QString(veryBigHaystack + u'c') << veryBigHaystack << 0 << true << 0;
-    QTest::newRow("BoyerMooreStressTest3") << QString(u'c' + veryBigHaystack) << veryBigHaystack << 0 << true << 1;
-    QTest::newRow("BoyerMooreStressTest4") << veryBigHaystack << QString(veryBigHaystack + u'c') << 0 << true << -1;
-    QTest::newRow("BoyerMooreStressTest5") << veryBigHaystack << QString(u'c' + veryBigHaystack) << 0 << true << -1;
-    QTest::newRow("BoyerMooreStressTest6") << QString(u'd' + veryBigHaystack) << QString(u'c' + veryBigHaystack) << 0 << true << -1;
-    QTest::newRow("BoyerMooreStressTest7") << QString(veryBigHaystack + u'c') << QString(u'c' + veryBigHaystack) << 0 << true << -1;
+    BOBUIest::newRow("BoyerMooreStressTest") << veryBigHaystack << veryBigHaystack << 0 << true << 0;
+    BOBUIest::newRow("BoyerMooreStressTest2") << QString(veryBigHaystack + u'c') << veryBigHaystack << 0 << true << 0;
+    BOBUIest::newRow("BoyerMooreStressTest3") << QString(u'c' + veryBigHaystack) << veryBigHaystack << 0 << true << 1;
+    BOBUIest::newRow("BoyerMooreStressTest4") << veryBigHaystack << QString(veryBigHaystack + u'c') << 0 << true << -1;
+    BOBUIest::newRow("BoyerMooreStressTest5") << veryBigHaystack << QString(u'c' + veryBigHaystack) << 0 << true << -1;
+    BOBUIest::newRow("BoyerMooreStressTest6") << QString(u'd' + veryBigHaystack) << QString(u'c' + veryBigHaystack) << 0 << true << -1;
+    BOBUIest::newRow("BoyerMooreStressTest7") << QString(veryBigHaystack + u'c') << QString(u'c' + veryBigHaystack) << 0 << true << -1;
 
-    QTest::newRow("BoyerMooreInsensitiveStressTest") << veryBigHaystack << veryBigHaystack << 0 << false << 0;
+    BOBUIest::newRow("BoyerMooreInsensitiveStressTest") << veryBigHaystack << veryBigHaystack << 0 << false << 0;
 
 }
 
@@ -1894,20 +1894,20 @@ void tst_QString::indexOf()
     QFETCH( int, resultpos );
     CREATE_VIEW(needle);
 
-    Qt::CaseSensitivity cs = bcs ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    BobUI::CaseSensitivity cs = bcs ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
 
     bool needleIsLatin = (QString::fromLatin1(needle.toLatin1()) == needle);
 
     QCOMPARE( haystack.indexOf(needle, startpos, cs), resultpos );
     QCOMPARE( haystack.indexOf(view, startpos, cs), resultpos );
     if (needleIsLatin) {
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && ! defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && ! defined(BOBUI_NO_CAST_FROM_ASCII)
         QCOMPARE( haystack.indexOf(needle.toLatin1(), startpos, cs), resultpos );
         QCOMPARE( haystack.indexOf(needle.toLatin1().data(), startpos, cs), resultpos );
 #endif
     }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     {
         QRegularExpression::PatternOptions options = QRegularExpression::NoPatternOption;
         if (!bcs)
@@ -1930,11 +1930,11 @@ void tst_QString::indexOf()
     }
 #endif
 
-    if (cs == Qt::CaseSensitive) {
+    if (cs == BobUI::CaseSensitive) {
         QCOMPARE( haystack.indexOf(needle, startpos), resultpos );
         QCOMPARE( haystack.indexOf(view, startpos), resultpos );
         if (needleIsLatin) {
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
             QCOMPARE( haystack.indexOf(needle.toLatin1(), startpos), resultpos );
             QCOMPARE( haystack.indexOf(needle.toLatin1().data(), startpos), resultpos );
 #endif
@@ -1943,7 +1943,7 @@ void tst_QString::indexOf()
             QCOMPARE( haystack.indexOf(needle), resultpos );
             QCOMPARE( haystack.indexOf(view), resultpos );
             if (needleIsLatin) {
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
                 QCOMPARE( haystack.indexOf(needle.toLatin1()), resultpos );
                 QCOMPARE( haystack.indexOf(needle.toLatin1().data()), resultpos );
 #endif
@@ -1959,54 +1959,54 @@ void tst_QString::indexOf()
 
 void tst_QString::indexOf2_data()
 {
-    QTest::addColumn<QString>("haystack" );
-    QTest::addColumn<QString>("needle" );
-    QTest::addColumn<int>("resultpos" );
+    BOBUIest::addColumn<QString>("haystack" );
+    BOBUIest::addColumn<QString>("needle" );
+    BOBUIest::addColumn<int>("resultpos" );
 
-    QTest::newRow( "data0" ) << QString() << QString() << 0;
-    QTest::newRow( "data1" ) << QString() << u""_s << 0;
-    QTest::newRow( "data2" ) << u""_s << QString() << 0;
-    QTest::newRow( "data3" ) << u""_s << u""_s << 0;
-    QTest::newRow( "data4" ) << QString() << u"a"_s << -1;
-    QTest::newRow( "data5" ) << QString() << u"abcdefg"_s << -1;
-    QTest::newRow( "data6" ) << u""_s << u"a"_s << -1;
-    QTest::newRow( "data7" ) << u""_s << u"abcdefg"_s << -1;
+    BOBUIest::newRow( "data0" ) << QString() << QString() << 0;
+    BOBUIest::newRow( "data1" ) << QString() << u""_s << 0;
+    BOBUIest::newRow( "data2" ) << u""_s << QString() << 0;
+    BOBUIest::newRow( "data3" ) << u""_s << u""_s << 0;
+    BOBUIest::newRow( "data4" ) << QString() << u"a"_s << -1;
+    BOBUIest::newRow( "data5" ) << QString() << u"abcdefg"_s << -1;
+    BOBUIest::newRow( "data6" ) << u""_s << u"a"_s << -1;
+    BOBUIest::newRow( "data7" ) << u""_s << u"abcdefg"_s << -1;
 
-    QTest::newRow( "data8" ) << u"a"_s << QString() << 0;
-    QTest::newRow( "data9" ) << u"a"_s << u""_s << 0;
-    QTest::newRow( "data10" ) << u"a"_s << u"a"_s << 0;
-    QTest::newRow( "data11" ) << u"a"_s << u"b"_s << -1;
-    QTest::newRow( "data12" ) << u"a"_s << u"abcdefg"_s << -1;
-    QTest::newRow( "data13" ) << u"ab"_s << QString() << 0;
-    QTest::newRow( "data14" ) << u"ab"_s << u""_s << 0;
-    QTest::newRow( "data15" ) << u"ab"_s << u"a"_s << 0;
-    QTest::newRow( "data16" ) << u"ab"_s << u"b"_s << 1;
-    QTest::newRow( "data17" ) << u"ab"_s << u"ab"_s << 0;
-    QTest::newRow( "data18" ) << u"ab"_s << u"bc"_s << -1;
-    QTest::newRow( "data19" ) << u"ab"_s << u"abcdefg"_s << -1;
+    BOBUIest::newRow( "data8" ) << u"a"_s << QString() << 0;
+    BOBUIest::newRow( "data9" ) << u"a"_s << u""_s << 0;
+    BOBUIest::newRow( "data10" ) << u"a"_s << u"a"_s << 0;
+    BOBUIest::newRow( "data11" ) << u"a"_s << u"b"_s << -1;
+    BOBUIest::newRow( "data12" ) << u"a"_s << u"abcdefg"_s << -1;
+    BOBUIest::newRow( "data13" ) << u"ab"_s << QString() << 0;
+    BOBUIest::newRow( "data14" ) << u"ab"_s << u""_s << 0;
+    BOBUIest::newRow( "data15" ) << u"ab"_s << u"a"_s << 0;
+    BOBUIest::newRow( "data16" ) << u"ab"_s << u"b"_s << 1;
+    BOBUIest::newRow( "data17" ) << u"ab"_s << u"ab"_s << 0;
+    BOBUIest::newRow( "data18" ) << u"ab"_s << u"bc"_s << -1;
+    BOBUIest::newRow( "data19" ) << u"ab"_s << u"abcdefg"_s << -1;
 
-    QTest::newRow( "data30" ) << u"abc"_s << u"a"_s << 0;
-    QTest::newRow( "data31" ) << u"abc"_s << u"b"_s << 1;
-    QTest::newRow( "data32" ) << u"abc"_s << u"c"_s << 2;
-    QTest::newRow( "data33" ) << u"abc"_s << u"d"_s << -1;
-    QTest::newRow( "data34" ) << u"abc"_s << u"ab"_s << 0;
-    QTest::newRow( "data35" ) << u"abc"_s << u"bc"_s << 1;
-    QTest::newRow( "data36" ) << u"abc"_s << u"cd"_s << -1;
-    QTest::newRow( "data37" ) << u"abc"_s << u"ac"_s << -1;
+    BOBUIest::newRow( "data30" ) << u"abc"_s << u"a"_s << 0;
+    BOBUIest::newRow( "data31" ) << u"abc"_s << u"b"_s << 1;
+    BOBUIest::newRow( "data32" ) << u"abc"_s << u"c"_s << 2;
+    BOBUIest::newRow( "data33" ) << u"abc"_s << u"d"_s << -1;
+    BOBUIest::newRow( "data34" ) << u"abc"_s << u"ab"_s << 0;
+    BOBUIest::newRow( "data35" ) << u"abc"_s << u"bc"_s << 1;
+    BOBUIest::newRow( "data36" ) << u"abc"_s << u"cd"_s << -1;
+    BOBUIest::newRow( "data37" ) << u"abc"_s << u"ac"_s << -1;
 
     // sizeof(whale) > 32
     QString whale = u"a5zby6cx7dw8evf9ug0th1si2rj3qkp4lomn"_s;
     QString minnow = u"zby"_s;
 
-    QTest::newRow( "data40" ) << whale << minnow << 2;
-    QTest::newRow( "data41" ) << QString(whale + whale) << minnow << 2;
-    QTest::newRow( "data42" ) << QString(minnow + whale) << minnow << 0;
-    QTest::newRow( "data43" ) << whale << whale << 0;
-    QTest::newRow( "data44" ) << QString(whale + whale) << whale << 0;
-    QTest::newRow( "data45" ) << whale << QString(whale + whale) << -1;
-    QTest::newRow( "data46" ) << QString(whale + whale) << QString(whale + whale) << 0;
-    QTest::newRow( "data47" ) << QString(whale + whale) << QString(whale + minnow) << -1;
-    QTest::newRow( "data48" ) << QString(minnow + whale) << whale << (int)minnow.size();
+    BOBUIest::newRow( "data40" ) << whale << minnow << 2;
+    BOBUIest::newRow( "data41" ) << QString(whale + whale) << minnow << 2;
+    BOBUIest::newRow( "data42" ) << QString(minnow + whale) << minnow << 0;
+    BOBUIest::newRow( "data43" ) << whale << whale << 0;
+    BOBUIest::newRow( "data44" ) << QString(whale + whale) << whale << 0;
+    BOBUIest::newRow( "data45" ) << whale << QString(whale + whale) << -1;
+    BOBUIest::newRow( "data46" ) << QString(whale + whale) << QString(whale + whale) << 0;
+    BOBUIest::newRow( "data47" ) << QString(whale + whale) << QString(whale + minnow) << -1;
+    BOBUIest::newRow( "data48" ) << QString(minnow + whale) << whale << (int)minnow.size();
 }
 
 void tst_QString::indexOf2()
@@ -2020,16 +2020,16 @@ void tst_QString::indexOf2()
     QByteArray cneedle = needle.toLatin1();
     int got;
 
-    QCOMPARE( haystack.indexOf(needle, 0, Qt::CaseSensitive), resultpos );
-    QCOMPARE( haystack.indexOf(view, 0, Qt::CaseSensitive), resultpos );
-    QCOMPARE( QStringMatcher(needle, Qt::CaseSensitive).indexIn(haystack, 0), resultpos );
-    QCOMPARE( haystack.indexOf(needle, 0, Qt::CaseInsensitive), resultpos );
-    QCOMPARE( haystack.indexOf(view, 0, Qt::CaseInsensitive), resultpos );
-    QCOMPARE( QStringMatcher(needle, Qt::CaseInsensitive).indexIn(haystack, 0), resultpos );
+    QCOMPARE( haystack.indexOf(needle, 0, BobUI::CaseSensitive), resultpos );
+    QCOMPARE( haystack.indexOf(view, 0, BobUI::CaseSensitive), resultpos );
+    QCOMPARE( QStringMatcher(needle, BobUI::CaseSensitive).indexIn(haystack, 0), resultpos );
+    QCOMPARE( haystack.indexOf(needle, 0, BobUI::CaseInsensitive), resultpos );
+    QCOMPARE( haystack.indexOf(view, 0, BobUI::CaseInsensitive), resultpos );
+    QCOMPARE( QStringMatcher(needle, BobUI::CaseInsensitive).indexIn(haystack, 0), resultpos );
     if ( needle.size() > 0 ) {
-        got = haystack.lastIndexOf( needle, -1, Qt::CaseSensitive );
+        got = haystack.lastIndexOf( needle, -1, BobUI::CaseSensitive );
         QVERIFY( got == resultpos || (resultpos >= 0 && got >= resultpos) );
-        got = haystack.lastIndexOf( needle, -1, Qt::CaseInsensitive );
+        got = haystack.lastIndexOf( needle, -1, BobUI::CaseInsensitive );
         QVERIFY( got == resultpos || (resultpos >= 0 && got >= resultpos) );
     }
 
@@ -2041,7 +2041,7 @@ void tst_QString::indexOf2()
     }
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QString::indexOfInvalidRegex()
 {
     static const QRegularExpression ignoreMessagePattern(
@@ -2049,14 +2049,14 @@ void tst_QString::indexOfInvalidRegex()
     );
 
     QString str = u"invalid regex\\"_s;
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(str.indexOf(QRegularExpression(str)), -1);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(str.indexOf(QRegularExpression(str), -1, nullptr), -1);
 
     QRegularExpressionMatch match;
     QVERIFY(!match.hasMatch());
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(str.indexOf(QRegularExpression(str), -1, &match), -1);
     QVERIFY(!match.hasMatch());
 }
@@ -2064,52 +2064,52 @@ void tst_QString::indexOfInvalidRegex()
 
 void tst_QString::lastIndexOf_data()
 {
-    QTest::addColumn<QString>("haystack" );
-    QTest::addColumn<QString>("needle" );
-    QTest::addColumn<int>("from" );
-    QTest::addColumn<int>("expected" );
-    QTest::addColumn<bool>("caseSensitive" );
+    BOBUIest::addColumn<QString>("haystack" );
+    BOBUIest::addColumn<QString>("needle" );
+    BOBUIest::addColumn<int>("from" );
+    BOBUIest::addColumn<int>("expected" );
+    BOBUIest::addColumn<bool>("caseSensitive" );
 
     QString a = u"ABCDEFGHIEfGEFG"_s;
 
-    QTest::newRow("-1") << a << "G" << int(a.size()) - 1 << 14 << true;
-    QTest::newRow("1") << a << "G" << - 1 << 14 << true;
-    QTest::newRow("2") << a << "G" << -3 << 11 << true;
-    QTest::newRow("3") << a << "G" << -5 << 6 << true;
-    QTest::newRow("4") << a << "G" << 14 << 14 << true;
-    QTest::newRow("5") << a << "G" << 13 << 11 << true;
-    QTest::newRow("6") << a << "B" << int(a.size()) - 1 << 1 << true;
-    QTest::newRow("7") << a << "B" << - 1 << 1 << true;
-    QTest::newRow("8") << a << "B" << 1 << 1 << true;
-    QTest::newRow("9") << a << "B" << 0 << -1 << true;
+    BOBUIest::newRow("-1") << a << "G" << int(a.size()) - 1 << 14 << true;
+    BOBUIest::newRow("1") << a << "G" << - 1 << 14 << true;
+    BOBUIest::newRow("2") << a << "G" << -3 << 11 << true;
+    BOBUIest::newRow("3") << a << "G" << -5 << 6 << true;
+    BOBUIest::newRow("4") << a << "G" << 14 << 14 << true;
+    BOBUIest::newRow("5") << a << "G" << 13 << 11 << true;
+    BOBUIest::newRow("6") << a << "B" << int(a.size()) - 1 << 1 << true;
+    BOBUIest::newRow("7") << a << "B" << - 1 << 1 << true;
+    BOBUIest::newRow("8") << a << "B" << 1 << 1 << true;
+    BOBUIest::newRow("9") << a << "B" << 0 << -1 << true;
 
-    QTest::newRow("10") << a << "G" <<  -1 <<  int(a.size())-1 << true;
-    QTest::newRow("11") << a << "G" <<  int(a.size())-1 <<  int(a.size())-1 << true;
-    QTest::newRow("12") << a << "G" <<  int(a.size()) <<  int(a.size())-1 << true;
-    QTest::newRow("13") << a << "A" <<  0 <<  0 << true;
-    QTest::newRow("14") << a << "A" <<  -1*int(a.size()) <<  0 << true;
+    BOBUIest::newRow("10") << a << "G" <<  -1 <<  int(a.size())-1 << true;
+    BOBUIest::newRow("11") << a << "G" <<  int(a.size())-1 <<  int(a.size())-1 << true;
+    BOBUIest::newRow("12") << a << "G" <<  int(a.size()) <<  int(a.size())-1 << true;
+    BOBUIest::newRow("13") << a << "A" <<  0 <<  0 << true;
+    BOBUIest::newRow("14") << a << "A" <<  -1*int(a.size()) <<  0 << true;
 
-    QTest::newRow("15") << a << "efg" << 0 << -1 << false;
-    QTest::newRow("16") << a << "efg" << int(a.size()) << 12 << false;
-    QTest::newRow("17") << a << "efg" << -1 * int(a.size()) << -1 << false;
-    QTest::newRow("19") << a << "efg" << int(a.size()) - 1 << 12 << false;
-    QTest::newRow("20") << a << "efg" << 12 << 12 << false;
-    QTest::newRow("21") << a << "efg" << -12 << -1 << false;
-    QTest::newRow("22") << a << "efg" << 11 << 9 << false;
+    BOBUIest::newRow("15") << a << "efg" << 0 << -1 << false;
+    BOBUIest::newRow("16") << a << "efg" << int(a.size()) << 12 << false;
+    BOBUIest::newRow("17") << a << "efg" << -1 * int(a.size()) << -1 << false;
+    BOBUIest::newRow("19") << a << "efg" << int(a.size()) - 1 << 12 << false;
+    BOBUIest::newRow("20") << a << "efg" << 12 << 12 << false;
+    BOBUIest::newRow("21") << a << "efg" << -12 << -1 << false;
+    BOBUIest::newRow("22") << a << "efg" << 11 << 9 << false;
 
-    QTest::newRow("24") << "" << "asdf" << -1 << -1 << false;
-    QTest::newRow("25") << "asd" << "asdf" << -1 << -1 << false;
-    QTest::newRow("26") << "" << QString() << -1 << -1 << false;
+    BOBUIest::newRow("24") << "" << "asdf" << -1 << -1 << false;
+    BOBUIest::newRow("25") << "asd" << "asdf" << -1 << -1 << false;
+    BOBUIest::newRow("26") << "" << QString() << -1 << -1 << false;
 
-    QTest::newRow("27") << a << "" << int(a.size()) << int(a.size()) << false;
-    QTest::newRow("28") << a << "" << int(a.size()) + 10 << -1 << false;
+    BOBUIest::newRow("27") << a << "" << int(a.size()) << int(a.size()) << false;
+    BOBUIest::newRow("28") << a << "" << int(a.size()) + 10 << -1 << false;
 
-    QTest::newRow("null-in-null") << QString() << QString() << 0 << 0 << false;
-    QTest::newRow("empty-in-null") << QString() << u""_s << 0 << 0 << false;
-    QTest::newRow("null-in-empty") << u""_s << QString() << 0 << 0 << false;
-    QTest::newRow("empty-in-empty") << u""_s << u""_s << 0 << 0 << false;
-    QTest::newRow("data-in-null") << QString() << u"a"_s << 0 << -1 << false;
-    QTest::newRow("data-in-empty") << u""_s << u"a"_s << 0 << -1 << false;
+    BOBUIest::newRow("null-in-null") << QString() << QString() << 0 << 0 << false;
+    BOBUIest::newRow("empty-in-null") << QString() << u""_s << 0 << 0 << false;
+    BOBUIest::newRow("null-in-empty") << u""_s << QString() << 0 << 0 << false;
+    BOBUIest::newRow("empty-in-empty") << u""_s << u""_s << 0 << 0 << false;
+    BOBUIest::newRow("data-in-null") << QString() << u"a"_s << 0 << -1 << false;
+    BOBUIest::newRow("data-in-empty") << u""_s << u"a"_s << 0 << -1 << false;
 }
 
 void tst_QString::lastIndexOf()
@@ -2121,16 +2121,16 @@ void tst_QString::lastIndexOf()
     QFETCH(bool, caseSensitive);
     CREATE_VIEW(needle);
 
-    Qt::CaseSensitivity cs = (caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    BobUI::CaseSensitivity cs = (caseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive);
 
     QCOMPARE(haystack.lastIndexOf(needle, from, cs), expected);
     QCOMPARE(haystack.lastIndexOf(view, from, cs), expected);
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     QCOMPARE(haystack.lastIndexOf(needle.toLatin1(), from, cs), expected);
     QCOMPARE(haystack.lastIndexOf(needle.toLatin1().data(), from, cs), expected);
 #endif
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     if (from >= -1 && from < haystack.size() && needle.size() > 0) {
         // unfortunately, QString and QRegularExpression don't have the same out of bound semantics
         // I think QString is wrong -- See file log for contact information.
@@ -2156,17 +2156,17 @@ void tst_QString::lastIndexOf()
     }
 #endif
 
-    if (cs == Qt::CaseSensitive) {
+    if (cs == BobUI::CaseSensitive) {
         QCOMPARE(haystack.lastIndexOf(needle, from), expected);
         QCOMPARE(haystack.lastIndexOf(view, from), expected);
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
         QCOMPARE(haystack.lastIndexOf(needle.toLatin1(), from), expected);
         QCOMPARE(haystack.lastIndexOf(needle.toLatin1().data(), from), expected);
 #endif
         if (from == haystack.size()) {
             QCOMPARE(haystack.lastIndexOf(needle), expected);
             QCOMPARE(haystack.lastIndexOf(view), expected);
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
             QCOMPARE(haystack.lastIndexOf(needle.toLatin1()), expected);
             QCOMPARE(haystack.lastIndexOf(needle.toLatin1().data()), expected);
 #endif
@@ -2178,7 +2178,7 @@ void tst_QString::lastIndexOf()
     }
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QString::lastIndexOfInvalidRegex()
 {
     static const QRegularExpression ignoreMessagePattern(
@@ -2186,14 +2186,14 @@ void tst_QString::lastIndexOfInvalidRegex()
     );
 
     const QString str(u"invalid regex\\"_s);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(str.lastIndexOf(QRegularExpression(str), 0), -1);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(str.lastIndexOf(QRegularExpression(str), -1, nullptr), -1);
 
     QRegularExpressionMatch match;
     QVERIFY(!match.hasMatch());
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(str.lastIndexOf(QRegularExpression(str), -1, &match), -1);
     QVERIFY(!match.hasMatch());
 }
@@ -2212,38 +2212,38 @@ void tst_QString::count()
     QCOMPARE(a.count(QChar(u'Z')), 0);
     QCOMPARE(a.count(QChar(u'E')), 3);
     QCOMPARE(a.count(QChar(u'F')), 2);
-    QCOMPARE(a.count(QChar(u'F'), Qt::CaseInsensitive), 3);
+    QCOMPARE(a.count(QChar(u'F'), BobUI::CaseInsensitive), 3);
 
     QCOMPARE(a.count(QString(u"FG"_s)), 2);
-    QCOMPARE(a.count(QString(u"FG"_s), Qt::CaseInsensitive), 3);
+    QCOMPARE(a.count(QString(u"FG"_s), BobUI::CaseInsensitive), 3);
 
     QCOMPARE(a.count(QStringView(u"FG")), 2);
-    QCOMPARE(a.count(QStringView(u"FG"), Qt::CaseInsensitive), 3);
+    QCOMPARE(a.count(QStringView(u"FG"), BobUI::CaseInsensitive), 3);
 
     QCOMPARE(a.count(QLatin1StringView("FG")), 2);
-    QCOMPARE(a.count(QLatin1StringView("FG"), Qt::CaseInsensitive), 3);
+    QCOMPARE(a.count(QLatin1StringView("FG"), BobUI::CaseInsensitive), 3);
 
-    QCOMPARE(a.count( QString(), Qt::CaseInsensitive), 16);
-    QCOMPARE(a.count(QString(u""_s), Qt::CaseInsensitive), 16);
-    QCOMPARE(a.count(QStringView(u""), Qt::CaseInsensitive), 16);
-    QCOMPARE(a.count(QLatin1StringView(""), Qt::CaseInsensitive), 16);
+    QCOMPARE(a.count( QString(), BobUI::CaseInsensitive), 16);
+    QCOMPARE(a.count(QString(u""_s), BobUI::CaseInsensitive), 16);
+    QCOMPARE(a.count(QStringView(u""), BobUI::CaseInsensitive), 16);
+    QCOMPARE(a.count(QLatin1StringView(""), BobUI::CaseInsensitive), 16);
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QCOMPARE(a.count(QRegularExpression(u""_s)), 16);
     QCOMPARE(a.count(QRegularExpression(u"[FG][HI]"_s)), 1);
     QCOMPARE(a.count(QRegularExpression(u"[G][HE]"_s)), 2);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(a.count(QRegularExpression(u"invalid regex\\"_s)), 0);
 #endif
 
     CREATE_VIEW(QLatin1String("FG"));
     QCOMPARE(a.count(view),2);
-    QCOMPARE(a.count(view,Qt::CaseInsensitive),3);
-    QCOMPARE(a.count( QStringView(), Qt::CaseInsensitive), 16);
+    QCOMPARE(a.count(view,BobUI::CaseInsensitive),3);
+    QCOMPARE(a.count( QStringView(), BobUI::CaseInsensitive), 16);
 
     QString nullStr;
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(nullStr.size(), 0);)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(nullStr.size(), 0);)
 #endif
     QCOMPARE(nullStr.count(QChar(u'A')), 0);
     QCOMPARE(nullStr.count(QString(u"AB"_s)), 0);
@@ -2255,16 +2255,16 @@ void tst_QString::count()
     QCOMPARE(nullStr.count(QStringView(u"")), 1);
     QCOMPARE(nullStr.count(QLatin1StringView("")), 1);
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QCOMPARE(nullStr.count(QRegularExpression(u""_s)), 1);
     QCOMPARE(nullStr.count(QRegularExpression(u"[FG][HI]"_s)), 0);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(nullStr.count(QRegularExpression(u"invalid regex\\"_s)), 0);
 #endif
 
     QString emptyStr(u""_s);
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(emptyStr.size(), 0);)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(emptyStr.size(), 0);)
 #endif
     QCOMPARE(emptyStr.count(u'A'), 0);
     QCOMPARE(emptyStr.count(QString(u"AB"_s)), 0);
@@ -2276,27 +2276,27 @@ void tst_QString::count()
     QCOMPARE(emptyStr.count(QStringView(u"")), 1);
     QCOMPARE(emptyStr.count(QLatin1StringView("")), 1);
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QCOMPARE(emptyStr.count(QRegularExpression(u""_s)), 1);
     QCOMPARE(emptyStr.count(QRegularExpression(u"[FG][HI]"_s)), 0);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(emptyStr.count(QRegularExpression(u"invalid regex\\"_s)), 0);
 #endif
 
     QString nonBmpString = u"\U00010000\U00010000abc\U00010000"_s;
     QCOMPARE(nonBmpString.count(u"\U00010000"), 3);
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QCOMPARE(nonBmpString.count(QRegularExpression(u"\U00010000"_s)), 3);
     QCOMPARE(nonBmpString.count(QRegularExpression(u"\U00010000a?"_s)), 3);
     QCOMPARE(nonBmpString.count(QRegularExpression(u"\U00010000a"_s)), 1);
     QCOMPARE(nonBmpString.count(QRegularExpression(u"."_s)), 6);
 
     // can't search for unpaired surrogates
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(nonBmpString.count(QRegularExpression(QChar(0xd800))), 0);
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QCOMPARE(nonBmpString.count(QRegularExpression(QChar(0xdc00))), 0);
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 }
 
 void tst_QString::contains()
@@ -2312,24 +2312,24 @@ void tst_QString::contains()
     QVERIFY(!a.contains(QChar(u'Z')));
     QVERIFY(a.contains(QChar(u'E')));
     QVERIFY(a.contains(QChar(u'F')));
-    QVERIFY(a.contains(QChar(u'f'), Qt::CaseInsensitive));
+    QVERIFY(a.contains(QChar(u'f'), BobUI::CaseInsensitive));
 
     QVERIFY(a.contains(QString(u"FG"_s)));
-    QVERIFY(a.contains(QString(u"FG"_s), Qt::CaseInsensitive));
+    QVERIFY(a.contains(QString(u"FG"_s), BobUI::CaseInsensitive));
     QVERIFY(a.contains(QStringView(u"FG")));
-    QVERIFY(a.contains(QStringView(u"fg"), Qt::CaseInsensitive));
+    QVERIFY(a.contains(QStringView(u"fg"), BobUI::CaseInsensitive));
 
     QVERIFY(a.contains(QLatin1String("FG")));
-    QVERIFY(a.contains(QLatin1String("fg"),Qt::CaseInsensitive));
+    QVERIFY(a.contains(QLatin1String("fg"),BobUI::CaseInsensitive));
 
-    QVERIFY(a.contains(QString(), Qt::CaseInsensitive));
-    QVERIFY(a.contains(QString(u""_s), Qt::CaseInsensitive));
-    QVERIFY(a.contains(QStringView(), Qt::CaseInsensitive));
-    QVERIFY(a.contains(QStringView(u""), Qt::CaseInsensitive));
-    QVERIFY(a.contains(QLatin1StringView(), Qt::CaseInsensitive));
-    QVERIFY(a.contains(QLatin1StringView(""), Qt::CaseInsensitive));
+    QVERIFY(a.contains(QString(), BobUI::CaseInsensitive));
+    QVERIFY(a.contains(QString(u""_s), BobUI::CaseInsensitive));
+    QVERIFY(a.contains(QStringView(), BobUI::CaseInsensitive));
+    QVERIFY(a.contains(QStringView(u""), BobUI::CaseInsensitive));
+    QVERIFY(a.contains(QLatin1StringView(), BobUI::CaseInsensitive));
+    QVERIFY(a.contains(QLatin1StringView(""), BobUI::CaseInsensitive));
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QVERIFY(a.contains(QRegularExpression(u"[FG][HI]"_s)));
     QVERIFY(a.contains(QRegularExpression(u"[G][HE]"_s)));
 
@@ -2382,21 +2382,21 @@ void tst_QString::contains()
         QVERIFY(!a.contains(QRegularExpression(u"ZZZ"_s), 0));
     }
 
-    QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     QVERIFY(!a.contains(QRegularExpression(u"invalid regex\\"_s)));
 #endif
 
     CREATE_VIEW(QLatin1String("FG"));
     QVERIFY(a.contains(view));
-    QVERIFY(a.contains(view, Qt::CaseInsensitive));
-    QVERIFY(a.contains( QStringView(), Qt::CaseInsensitive));
+    QVERIFY(a.contains(view, BobUI::CaseInsensitive));
+    QVERIFY(a.contains( QStringView(), BobUI::CaseInsensitive));
 
     QString nullStr;
     QVERIFY(!nullStr.contains(u'A'));
     QVERIFY(!nullStr.contains(QString(u"AB"_s)));
     QVERIFY(!nullStr.contains(QLatin1StringView("AB")));
     QVERIFY(!nullStr.contains(view));
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QVERIFY(!nullStr.contains(QRegularExpression(u"[FG][HI]"_s)));
     QRegularExpressionMatch nullMatch;
     QVERIFY(nullStr.contains(QRegularExpression(u""_s), &nullMatch));
@@ -2412,7 +2412,7 @@ void tst_QString::contains()
     QVERIFY(!emptyStr.contains(QString(u"AB"_s)));
     QVERIFY(!emptyStr.contains(QLatin1StringView("AB")));
     QVERIFY(!emptyStr.contains(view));
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QVERIFY(!emptyStr.contains(QRegularExpression(u"[FG][HI]"_s)));
     QRegularExpressionMatch emptyMatch;
     QVERIFY(emptyStr.contains(QRegularExpression(u""_s), &emptyMatch));
@@ -2808,16 +2808,16 @@ void tst_QString::rightJustified()
 
 void tst_QString::unicodeTableAccess_data()
 {
-    QTest::addColumn<QString>("invalid");
+    BOBUIest::addColumn<QString>("invalid");
 
     const auto join = [](char16_t high, char16_t low) {
         const QChar pair[2] = { high, low };
         return QString(pair, 2);
     };
     // Least high surrogate for which an invalid successor produces an error:
-    QTest::newRow("least-high") << join(0xdbf8, 0xfc00);
+    BOBUIest::newRow("least-high") << join(0xdbf8, 0xfc00);
     // Least successor that, after a high surrogate, produces invalid:
-    QTest::newRow("least-follow") << join(0xdbff, 0xe000);
+    BOBUIest::newRow("least-follow") << join(0xdbff, 0xe000);
 }
 
 void tst_QString::unicodeTableAccess()
@@ -2966,76 +2966,76 @@ void tst_QString::toLower()
 
 void tst_QString::isLower_isUpper_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<bool>("isLower");
-    QTest::addColumn<bool>("isUpper");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<bool>("isLower");
+    BOBUIest::addColumn<bool>("isUpper");
 
     int row = 0;
-    QTest::addRow("lower-and-upper-%02d", row++) << QString() << true << true;
-    QTest::addRow("lower-and-upper-%02d", row++) << u""_s << true << true;
-    QTest::addRow("lower-and-upper-%02d", row++) << u" "_s << true << true;
-    QTest::addRow("lower-and-upper-%02d", row++) << u"123"_s << true << true;
-    QTest::addRow("lower-and-upper-%02d", row++) << u"@123$#"_s << true << true;
-    QTest::addRow("lower-and-upper-%02d", row++) << QString::fromUtf8("𝄞𝄴𝆏♫") << true << true; // Unicode Block 'Musical Symbols'
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << QString() << true << true;
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u""_s << true << true;
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u" "_s << true << true;
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u"123"_s << true << true;
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u"@123$#"_s << true << true;
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << QString::fromUtf8("𝄞𝄴𝆏♫") << true << true; // Unicode Block 'Musical Symbols'
     // not foldable
-    QTest::addRow("lower-and-upper-%02d", row++) << u"𝚊𝚋𝚌𝚍𝚎"_s << true << true; // MATHEMATICAL MONOSPACE SMALL A, ... E
-    QTest::addRow("lower-and-upper-%02d", row++) << u"𝙖,𝙗,𝙘,𝙙,𝙚"_s << true << true; // MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL A, ... E
-    QTest::addRow("lower-and-upper-%02d", row++) << u"𝗔𝗕𝗖𝗗𝗘"_s << true << true; // MATHEMATICAL SANS-SERIF BOLD CAPITAL A, ... E
-    QTest::addRow("lower-and-upper-%02d", row++) << u"𝐀,𝐁,𝐂,𝐃,𝐄"_s << true << true; // MATHEMATICAL BOLD CAPITAL A, ... E
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u"𝚊𝚋𝚌𝚍𝚎"_s << true << true; // MATHEMATICAL MONOSPACE SMALL A, ... E
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u"𝙖,𝙗,𝙘,𝙙,𝙚"_s << true << true; // MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL A, ... E
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u"𝗔𝗕𝗖𝗗𝗘"_s << true << true; // MATHEMATICAL SANS-SERIF BOLD CAPITAL A, ... E
+    BOBUIest::addRow("lower-and-upper-%02d", row++) << u"𝐀,𝐁,𝐂,𝐃,𝐄"_s << true << true; // MATHEMATICAL BOLD CAPITAL A, ... E
 
     row = 0;
-    QTest::addRow("only-lower-%02d", row++) << u"text"_s << true << false;
-    QTest::addRow("only-lower-%02d", row++) << QString::fromUtf8("àaa") << true << false;
-    QTest::addRow("only-lower-%02d", row++) << QString::fromUtf8("øæß") << true << false;
-    QTest::addRow("only-lower-%02d", row++) << u"text "_s << true << false;
-    QTest::addRow("only-lower-%02d", row++) << u" text"_s << true << false;
-    QTest::addRow("only-lower-%02d", row++) << u"hello, world!"_s << true << false;
-    QTest::addRow("only-lower-%02d", row++) << u"123@abyz["_s << true << false;
-    QTest::addRow("only-lower-%02d", row++) << u"`abyz{"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"text"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << QString::fromUtf8("àaa") << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << QString::fromUtf8("øæß") << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"text "_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u" text"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"hello, world!"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"123@abyz["_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"`abyz{"_s << true << false;
     // MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL A, ... E
-    QTest::addRow("only-lower-%02d", row++) << u"a𝙖a|b𝙗b|c𝙘c|d𝙙d|e𝙚e"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"a𝙖a|b𝙗b|c𝙘c|d𝙙d|e𝙚e"_s << true << false;
     // DESERET SMALL LETTER LONG I
-    QTest::addRow("only-lower-%02d", row++) << u"𐐨"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"𐐨"_s << true << false;
     // uppercase letters, not foldable
     // MATHEMATICAL SANS-SERIF BOLD CAPITAL A
-    QTest::addRow("only-lower-%02d", row++) << u"text𝗔text"_s << true << false;
+    BOBUIest::addRow("only-lower-%02d", row++) << u"text𝗔text"_s << true << false;
 
     row = 0;
-    QTest::addRow("only-upper-%02d", row++) << u"TEXT"_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u"ÀAA"_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u"ØÆẞ"_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u"TEXT "_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u" TEXT"_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u"HELLO, WORLD!"_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u"123@ABYZ["_s << false << true;
-    QTest::addRow("only-upper-%02d", row++) << u"`ABYZ{"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"TEXT"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"ÀAA"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"ØÆẞ"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"TEXT "_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u" TEXT"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"HELLO, WORLD!"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"123@ABYZ["_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"`ABYZ{"_s << false << true;
     // MATHEMATICAL BOLD CAPITAL A, ... E
-    QTest::addRow("only-upper-%02d", row++) << u"A𝐀A|B𝐁B|C𝐂C|D𝐃D|E𝐄E"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"A𝐀A|B𝐁B|C𝐂C|D𝐃D|E𝐄E"_s << false << true;
     // DESERET CAPITAL LETTER LONG I
-    QTest::addRow("only-upper-%02d", row++) << u"𐐀"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"𐐀"_s << false << true;
     // lowercase letters, not foldable
     // MATHEMATICAL MONOSPACE SMALL A
-    QTest::addRow("only-upper-%02d", row++) << u"TEXT𝚊TEXT"_s << false << true;
+    BOBUIest::addRow("only-upper-%02d", row++) << u"TEXT𝚊TEXT"_s << false << true;
 
     row = 0;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"Text"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"tExt"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"teXt"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"texT"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"TExt"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"teXT"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"tEXt"_s << false << false;
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"tExT"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"Text"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"tExt"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"teXt"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"texT"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"TExt"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"teXT"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"tEXt"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"tExT"_s << false << false;
     // not foldable
     // MATHEMATICAL MONOSPACE SMALL A
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"TEXT𝚊text"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"TEXT𝚊text"_s << false << false;
     // MATHEMATICAL SANS-SERIF BOLD CAPITAL A
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"text𝗔TEXT"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"text𝗔TEXT"_s << false << false;
     // titlecase, foldable
     // LATIN CAPITAL LETTER L WITH SMALL LETTER J
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"abcǈdef"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"abcǈdef"_s << false << false;
     // LATIN CAPITAL LETTER L WITH SMALL LETTER J
-    QTest::addRow("not-lower-nor-upper-%02d", row++) << u"ABCǈDEF"_s << false << false;
+    BOBUIest::addRow("not-lower-nor-upper-%02d", row++) << u"ABCǈDEF"_s << false << false;
 }
 
 void tst_QString::isLower_isUpper()
@@ -3116,14 +3116,14 @@ void tst_QString::toCaseFolded()
 
 void tst_QString::trimmed_data()
 {
-    QTest::addColumn<QString>("full" );
-    QTest::addColumn<QString>("trimmed" );
+    BOBUIest::addColumn<QString>("full" );
+    BOBUIest::addColumn<QString>("trimmed" );
 
-    QTest::addRow("null") << QString() << QString();
-    QTest::addRow("simple") << u"Text"_s << u"Text"_s;
-    QTest::addRow("single-space") << u" "_s << u""_s;
-    QTest::addRow("single-char") << u" a   "_s << u"a"_s;
-    QTest::addRow("mixed") << u" a \t\n\v b  "_s << u"a \t\n\v b"_s;
+    BOBUIest::addRow("null") << QString() << QString();
+    BOBUIest::addRow("simple") << u"Text"_s << u"Text"_s;
+    BOBUIest::addRow("single-space") << u" "_s << u""_s;
+    BOBUIest::addRow("single-char") << u" a   "_s << u"a"_s;
+    BOBUIest::addRow("mixed") << u" a \t\n\v b  "_s << u"a \t\n\v b"_s;
 }
 
 void tst_QString::trimmed()
@@ -3149,34 +3149,34 @@ void tst_QString::trimmed()
 
 void tst_QString::simplified_data()
 {
-    QTest::addColumn<QString>("full" );
-    QTest::addColumn<QString>("simple" );
+    BOBUIest::addColumn<QString>("full" );
+    BOBUIest::addColumn<QString>("simple" );
 
-    QTest::newRow("null") << QString() << QString();
-    QTest::newRow("empty") << "" << "";
-    QTest::newRow("one char") << "a" << "a";
-    QTest::newRow("one word") << "foo" << "foo";
-    QTest::newRow("chars trivial") << "a b" << "a b";
-    QTest::newRow("words trivial") << "foo bar" << "foo bar";
-    QTest::newRow("allspace") << "  \t\v " << "";
-    QTest::newRow("char trailing") << "a " << "a";
-    QTest::newRow("char trailing tab") << "a\t" << "a";
-    QTest::newRow("char multitrailing") << "a   " << "a";
-    QTest::newRow("char multitrailing tab") << "a   \t" << "a";
-    QTest::newRow("char leading") << " a" << "a";
-    QTest::newRow("char leading tab") << "\ta" << "a";
-    QTest::newRow("char multileading") << "   a" << "a";
-    QTest::newRow("char multileading tab") << "\t   a" << "a";
-    QTest::newRow("chars apart") << "a  b" << "a b";
-    QTest::newRow("words apart") << "foo  bar" << "foo bar";
-    QTest::newRow("enclosed word") << "   foo \t " << "foo";
-    QTest::newRow("enclosed chars apart") << " a   b " << "a b";
-    QTest::newRow("enclosed words apart") << " foo   bar " << "foo bar";
-    QTest::newRow("chars apart posttab") << "a \tb" << "a b";
-    QTest::newRow("chars apart pretab") << "a\t b" << "a b";
-    QTest::newRow("many words") << "  just some    random\ttext here" << "just some random text here";
-    QTest::newRow("newlines") << "a\nb\nc" << "a b c";
-    QTest::newRow("newlines-trailing") << "a\nb\nc\n" << "a b c";
+    BOBUIest::newRow("null") << QString() << QString();
+    BOBUIest::newRow("empty") << "" << "";
+    BOBUIest::newRow("one char") << "a" << "a";
+    BOBUIest::newRow("one word") << "foo" << "foo";
+    BOBUIest::newRow("chars trivial") << "a b" << "a b";
+    BOBUIest::newRow("words trivial") << "foo bar" << "foo bar";
+    BOBUIest::newRow("allspace") << "  \t\v " << "";
+    BOBUIest::newRow("char trailing") << "a " << "a";
+    BOBUIest::newRow("char trailing tab") << "a\t" << "a";
+    BOBUIest::newRow("char multitrailing") << "a   " << "a";
+    BOBUIest::newRow("char multitrailing tab") << "a   \t" << "a";
+    BOBUIest::newRow("char leading") << " a" << "a";
+    BOBUIest::newRow("char leading tab") << "\ta" << "a";
+    BOBUIest::newRow("char multileading") << "   a" << "a";
+    BOBUIest::newRow("char multileading tab") << "\t   a" << "a";
+    BOBUIest::newRow("chars apart") << "a  b" << "a b";
+    BOBUIest::newRow("words apart") << "foo  bar" << "foo bar";
+    BOBUIest::newRow("enclosed word") << "   foo \t " << "foo";
+    BOBUIest::newRow("enclosed chars apart") << " a   b " << "a b";
+    BOBUIest::newRow("enclosed words apart") << " foo   bar " << "foo bar";
+    BOBUIest::newRow("chars apart posttab") << "a \tb" << "a b";
+    BOBUIest::newRow("chars apart pretab") << "a\t b" << "a b";
+    BOBUIest::newRow("many words") << "  just some    random\ttext here" << "just some random text here";
+    BOBUIest::newRow("newlines") << "a\nb\nc" << "a b c";
+    BOBUIest::newRow("newlines-trailing") << "a\nb\nc\n" << "a b c";
 }
 
 void tst_QString::simplified()
@@ -3210,10 +3210,10 @@ void tst_QString::simplified()
 
 void tst_QString::insert_data(DataOptions options)
 {
-    QTest::addColumn<QString>("s");
-    QTest::addColumn<CharStarContainer>("arg");
-    QTest::addColumn<int>("a1");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("s");
+    BOBUIest::addColumn<CharStarContainer>("arg");
+    BOBUIest::addColumn<int>("a1");
+    BOBUIest::addColumn<QString>("expected");
 
     const bool emptyIsNoop = options.testFlag(EmptyIsNoop);
 
@@ -3236,30 +3236,30 @@ void tst_QString::insert_data(DataOptions options)
     const QString yumlautA = QStringLiteral("\u00ffa");
     const QString aYumlaut = QStringLiteral("a\u00ff");
 
-    QTest::newRow("null.insert(0, null)") << null << nullC << 0 << null;
-    QTest::newRow("null.insert(0, empty)") << null << emptyC << 0 << (emptyIsNoop ? null : empty);
-    QTest::newRow("null.insert(0, a)") << null << aC << 0 << a;
-    QTest::newRow("empty.insert(0, null)") << empty << nullC << 0 << empty;
-    QTest::newRow("empty.insert(0, empty)") << empty << emptyC << 0 << empty;
-    QTest::newRow("empty.insert(0, a)") << empty << aC << 0 << a;
-    QTest::newRow("a.insert(0, null)") << a << nullC << 0 << a;
-    QTest::newRow("a.insert(0, empty)") << a << emptyC << 0 << a;
-    QTest::newRow("a.insert(0, b)") << a << bC << 0 << ba;
-    QTest::newRow("a.insert(0, ba)") << a << baC << 0 << (ba + a);
-    QTest::newRow("a.insert(1, null)") << a << nullC << 1 << a;
-    QTest::newRow("a.insert(1, empty)") << a << emptyC << 1 << a;
-    QTest::newRow("a.insert(1, b)") << a << bC << 1 << ab;
-    QTest::newRow("a.insert(1, ba)") << a << baC << 1 << (a + ba);
-    QTest::newRow("ba.insert(1, a)") << ba << aC << 1 << (ba + a);
-    QTest::newRow("ba.insert(2, b)") << ba << bC << 2 << (ba + b);
-    QTest::newRow("ba.insert(10, b)") << ba << bC << 10 << (ba + QString(10 - ba.size(), u' ') + b);
+    BOBUIest::newRow("null.insert(0, null)") << null << nullC << 0 << null;
+    BOBUIest::newRow("null.insert(0, empty)") << null << emptyC << 0 << (emptyIsNoop ? null : empty);
+    BOBUIest::newRow("null.insert(0, a)") << null << aC << 0 << a;
+    BOBUIest::newRow("empty.insert(0, null)") << empty << nullC << 0 << empty;
+    BOBUIest::newRow("empty.insert(0, empty)") << empty << emptyC << 0 << empty;
+    BOBUIest::newRow("empty.insert(0, a)") << empty << aC << 0 << a;
+    BOBUIest::newRow("a.insert(0, null)") << a << nullC << 0 << a;
+    BOBUIest::newRow("a.insert(0, empty)") << a << emptyC << 0 << a;
+    BOBUIest::newRow("a.insert(0, b)") << a << bC << 0 << ba;
+    BOBUIest::newRow("a.insert(0, ba)") << a << baC << 0 << (ba + a);
+    BOBUIest::newRow("a.insert(1, null)") << a << nullC << 1 << a;
+    BOBUIest::newRow("a.insert(1, empty)") << a << emptyC << 1 << a;
+    BOBUIest::newRow("a.insert(1, b)") << a << bC << 1 << ab;
+    BOBUIest::newRow("a.insert(1, ba)") << a << baC << 1 << (a + ba);
+    BOBUIest::newRow("ba.insert(1, a)") << ba << aC << 1 << (ba + a);
+    BOBUIest::newRow("ba.insert(2, b)") << ba << bC << 2 << (ba + b);
+    BOBUIest::newRow("ba.insert(10, b)") << ba << bC << 10 << (ba + QString(10 - ba.size(), u' ') + b);
 
-    QTest::newRow("null-insert-0-yumlaut") << null << yumlautC << 0 << yumlaut;
-    QTest::newRow("empty-insert-0-yumlaut") << empty << yumlautC << 0 << yumlaut;
-    QTest::newRow("yumlaut-insert-0-null") << yumlaut << nullC << 0 << yumlaut;
-    QTest::newRow("yumlaut-insert-0-empty") << yumlaut << emptyC << 0 << yumlaut;
-    QTest::newRow("a-insert-0-yumlaut") << a << yumlautC << 0 << yumlautA;
-    QTest::newRow("a-insert-1-yumlaut") << a << yumlautC << 1 << aYumlaut;
+    BOBUIest::newRow("null-insert-0-yumlaut") << null << yumlautC << 0 << yumlaut;
+    BOBUIest::newRow("empty-insert-0-yumlaut") << empty << yumlautC << 0 << yumlaut;
+    BOBUIest::newRow("yumlaut-insert-0-null") << yumlaut << nullC << 0 << yumlaut;
+    BOBUIest::newRow("yumlaut-insert-0-empty") << yumlaut << emptyC << 0 << yumlaut;
+    BOBUIest::newRow("a-insert-0-yumlaut") << a << yumlautC << 0 << yumlautA;
+    BOBUIest::newRow("a-insert-1-yumlaut") << a << yumlautC << 1 << aYumlaut;
 
     if (!options.testFlag(Latin1Encoded)) {
         const auto smallTheta = QStringLiteral("\u03b8");      // GREEK LETTER SMALL THETA
@@ -3283,48 +3283,48 @@ void tst_QString::insert_data(DataOptions options)
         const CharStarContainer ssaC("\xe0\xa4\xb7");              // Higher BMP
         const CharStarContainer chakmaZeroC("\xf0\x91\x84\xb6");   // Non-BMP
 
-        QTest::newRow("null-insert-0-theta") << null << smallThetaC << 0 << smallTheta;
-        QTest::newRow("null-insert-0-ssa") << null << ssaC << 0 << ssa;
-        QTest::newRow("null-insert-0-chakma") << null << chakmaZeroC << 0 << chakmaZero;
+        BOBUIest::newRow("null-insert-0-theta") << null << smallThetaC << 0 << smallTheta;
+        BOBUIest::newRow("null-insert-0-ssa") << null << ssaC << 0 << ssa;
+        BOBUIest::newRow("null-insert-0-chakma") << null << chakmaZeroC << 0 << chakmaZero;
 
-        QTest::newRow("empty-insert-0-theta") << empty << smallThetaC << 0 << smallTheta;
-        QTest::newRow("empty-insert-0-ssa") << empty << ssaC << 0 << ssa;
-        QTest::newRow("empty-insert-0-chakma") << empty << chakmaZeroC << 0 << chakmaZero;
+        BOBUIest::newRow("empty-insert-0-theta") << empty << smallThetaC << 0 << smallTheta;
+        BOBUIest::newRow("empty-insert-0-ssa") << empty << ssaC << 0 << ssa;
+        BOBUIest::newRow("empty-insert-0-chakma") << empty << chakmaZeroC << 0 << chakmaZero;
 
-        QTest::newRow("theta-insert-0-null") << smallTheta << nullC << 0 << smallTheta;
-        QTest::newRow("ssa-insert-0-null") << ssa << nullC << 0 << ssa;
-        QTest::newRow("chakma-insert-0-null") << chakmaZero << nullC << 0 << chakmaZero;
+        BOBUIest::newRow("theta-insert-0-null") << smallTheta << nullC << 0 << smallTheta;
+        BOBUIest::newRow("ssa-insert-0-null") << ssa << nullC << 0 << ssa;
+        BOBUIest::newRow("chakma-insert-0-null") << chakmaZero << nullC << 0 << chakmaZero;
 
-        QTest::newRow("theta-insert-0-empty") << smallTheta << emptyC << 0 << smallTheta;
-        QTest::newRow("ssa-insert-0-empty") << ssa << emptyC << 0 << ssa;
-        QTest::newRow("chakma-insert-0-empty") << chakmaZero << emptyC << 0 << chakmaZero;
+        BOBUIest::newRow("theta-insert-0-empty") << smallTheta << emptyC << 0 << smallTheta;
+        BOBUIest::newRow("ssa-insert-0-empty") << ssa << emptyC << 0 << ssa;
+        BOBUIest::newRow("chakma-insert-0-empty") << chakmaZero << emptyC << 0 << chakmaZero;
 
-        QTest::newRow("a-insert-0-theta") << a << smallThetaC << 0 << smallThetaA;
-        QTest::newRow("a-insert-0-ssa") << a << ssaC << 0 << ssaA;
-        QTest::newRow("a-insert-0-chakma") << a << chakmaZeroC << 0 << chakmaZeroA;
-        QTest::newRow("yumlaut-insert-0-theta") << yumlaut << smallThetaC << 0 << thetaUmlaut;
-        QTest::newRow("theta-insert-0-yumlaut") << smallTheta << yumlautC << 0 << umlautTheta;
-        QTest::newRow("ssa-insert-0-chakma") << ssa << chakmaZeroC << 0 << chakmaSsa;
-        QTest::newRow("chakma-insert-0-ssa") << chakmaZero << ssaC << 0 << ssaChakma;
+        BOBUIest::newRow("a-insert-0-theta") << a << smallThetaC << 0 << smallThetaA;
+        BOBUIest::newRow("a-insert-0-ssa") << a << ssaC << 0 << ssaA;
+        BOBUIest::newRow("a-insert-0-chakma") << a << chakmaZeroC << 0 << chakmaZeroA;
+        BOBUIest::newRow("yumlaut-insert-0-theta") << yumlaut << smallThetaC << 0 << thetaUmlaut;
+        BOBUIest::newRow("theta-insert-0-yumlaut") << smallTheta << yumlautC << 0 << umlautTheta;
+        BOBUIest::newRow("ssa-insert-0-chakma") << ssa << chakmaZeroC << 0 << chakmaSsa;
+        BOBUIest::newRow("chakma-insert-0-ssa") << chakmaZero << ssaC << 0 << ssaChakma;
 
-        QTest::newRow("theta-insert-1-null") << smallTheta << nullC << 1 << smallTheta;
-        QTest::newRow("ssa-insert-1-null") << ssa << nullC << 1 << ssa;
-        QTest::newRow("chakma-insert-1-null") << chakmaZero << nullC << 1 << chakmaZero;
+        BOBUIest::newRow("theta-insert-1-null") << smallTheta << nullC << 1 << smallTheta;
+        BOBUIest::newRow("ssa-insert-1-null") << ssa << nullC << 1 << ssa;
+        BOBUIest::newRow("chakma-insert-1-null") << chakmaZero << nullC << 1 << chakmaZero;
 
-        QTest::newRow("theta-insert-1-empty") << smallTheta << emptyC << 1 << smallTheta;
-        QTest::newRow("ssa-insert-1-empty") << ssa << emptyC << 1 << ssa;
-        QTest::newRow("chakma-insert-1-empty") << chakmaZero << emptyC << 1 << chakmaZero;
+        BOBUIest::newRow("theta-insert-1-empty") << smallTheta << emptyC << 1 << smallTheta;
+        BOBUIest::newRow("ssa-insert-1-empty") << ssa << emptyC << 1 << ssa;
+        BOBUIest::newRow("chakma-insert-1-empty") << chakmaZero << emptyC << 1 << chakmaZero;
 
-        QTest::newRow("a-insert-1-theta") << a << smallThetaC << 1 << aSmallTheta;
-        QTest::newRow("a-insert-1-ssa") << a << ssaC << 1 << aSsa;
-        QTest::newRow("a-insert-1-chakma") << a << chakmaZeroC << 1 << aChakmaZero;
-        QTest::newRow("yumlaut-insert-1-theta") << yumlaut << smallThetaC << 1 << umlautTheta;
-        QTest::newRow("theta-insert-1-yumlaut") << smallTheta << yumlautC << 1 << thetaUmlaut;
-        QTest::newRow("ssa-insert-1-chakma") << ssa << chakmaZeroC << 1 << ssaChakma;
+        BOBUIest::newRow("a-insert-1-theta") << a << smallThetaC << 1 << aSmallTheta;
+        BOBUIest::newRow("a-insert-1-ssa") << a << ssaC << 1 << aSsa;
+        BOBUIest::newRow("a-insert-1-chakma") << a << chakmaZeroC << 1 << aChakmaZero;
+        BOBUIest::newRow("yumlaut-insert-1-theta") << yumlaut << smallThetaC << 1 << umlautTheta;
+        BOBUIest::newRow("theta-insert-1-yumlaut") << smallTheta << yumlautC << 1 << thetaUmlaut;
+        BOBUIest::newRow("ssa-insert-1-chakma") << ssa << chakmaZeroC << 1 << ssaChakma;
         // Beware, this will insert ssa right into the middle of the chakma:
         // Actual   (s)       : "\uD804\u0937\uDD36"
         // Expected (expected): "\uD804\uDD36\u0937"
-        // QTest::newRow("chakma.insert(1, ssa)") << chakmaZero << ssaC << 1 << chakmaSsa;
+        // BOBUIest::newRow("chakma.insert(1, ssa)") << chakmaZero << ssaC << 1 << chakmaSsa;
     }
 }
 
@@ -3398,7 +3398,7 @@ void tst_QString::insert_special_cases()
         QCOMPARE(a.insert(4, ""_L1), montreal);
         QCOMPARE(a.insert(3, ""_L1), montreal);
         QCOMPARE(a.insert(3, QLatin1String(nullptr)), montreal);
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         QCOMPARE(a.insert(3, static_cast<const char *>(0)), montreal);
 #endif
         QCOMPARE(a.insert(0, u"a"_s), "aMontreal"_L1);
@@ -3486,9 +3486,9 @@ void tst_QString::insert_special_cases()
 
 void tst_QString::append_data(DataOptions options)
 {
-    QTest::addColumn<QString>("s");
-    QTest::addColumn<CharStarContainer>("arg");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("s");
+    BOBUIest::addColumn<CharStarContainer>("arg");
+    BOBUIest::addColumn<QString>("expected");
 
     const bool emptyIsNoop = options.testFlag(EmptyIsNoop);
 
@@ -3508,19 +3508,19 @@ void tst_QString::append_data(DataOptions options)
     const QString yumlaut = QStringLiteral("\u00ff");           // LATIN LETTER SMALL Y WITH UMLAUT
     const QString aYumlaut = QStringLiteral("a\u00ff");
 
-    QTest::newRow("null + null") << null << nullC << null;
-    QTest::newRow("null + empty") << null << emptyC << (emptyIsNoop ? null : empty);
-    QTest::newRow("null + a") << null << aC << a;
-    QTest::newRow("empty + null") << empty << nullC << empty;
-    QTest::newRow("empty + empty") << empty << emptyC << empty;
-    QTest::newRow("empty + a") << empty << aC << a;
-    QTest::newRow("a + null") << a << nullC << a;
-    QTest::newRow("a + empty") << a << emptyC << a;
-    QTest::newRow("a + b") << a << bC << ab;
+    BOBUIest::newRow("null + null") << null << nullC << null;
+    BOBUIest::newRow("null + empty") << null << emptyC << (emptyIsNoop ? null : empty);
+    BOBUIest::newRow("null + a") << null << aC << a;
+    BOBUIest::newRow("empty + null") << empty << nullC << empty;
+    BOBUIest::newRow("empty + empty") << empty << emptyC << empty;
+    BOBUIest::newRow("empty + a") << empty << aC << a;
+    BOBUIest::newRow("a + null") << a << nullC << a;
+    BOBUIest::newRow("a + empty") << a << emptyC << a;
+    BOBUIest::newRow("a + b") << a << bC << ab;
 
-    QTest::newRow("null+yumlaut") << null << yumlautC << yumlaut;
-    QTest::newRow("empty+yumlaut") << empty << yumlautC << yumlaut;
-    QTest::newRow("a+yumlaut") << a << yumlautC << aYumlaut;
+    BOBUIest::newRow("null+yumlaut") << null << yumlautC << yumlaut;
+    BOBUIest::newRow("empty+yumlaut") << empty << yumlautC << yumlaut;
+    BOBUIest::newRow("a+yumlaut") << a << yumlautC << aYumlaut;
 
     if (!options.testFlag(Latin1Encoded)) {
         const auto smallTheta = QStringLiteral("\u03b8");        // GREEK LETTER SMALL THETA
@@ -3548,32 +3548,32 @@ void tst_QString::append_data(DataOptions options)
         const CharStarContainer ssaC("\xe0\xa4\xb7");              // Higher BMP
         const CharStarContainer chakmaZeroC("\xf0\x91\x84\xb6");   // Non-BMP
 
-        QTest::newRow("null+smallTheta") << null << smallThetaC << smallTheta;
-        QTest::newRow("empty+smallTheta") << empty << smallThetaC << smallTheta;
-        QTest::newRow("a+smallTheta") << a << smallThetaC << aSmallTheta;
+        BOBUIest::newRow("null+smallTheta") << null << smallThetaC << smallTheta;
+        BOBUIest::newRow("empty+smallTheta") << empty << smallThetaC << smallTheta;
+        BOBUIest::newRow("a+smallTheta") << a << smallThetaC << aSmallTheta;
 
-        QTest::newRow("null+ssa") << null << ssaC << ssa;
-        QTest::newRow("empty+ssa") << empty << ssaC << ssa;
-        QTest::newRow("a+ssa") << a << ssaC << aSsa;
+        BOBUIest::newRow("null+ssa") << null << ssaC << ssa;
+        BOBUIest::newRow("empty+ssa") << empty << ssaC << ssa;
+        BOBUIest::newRow("a+ssa") << a << ssaC << aSsa;
 
-        QTest::newRow("null+chakma") << null << chakmaZeroC << chakmaZero;
-        QTest::newRow("empty+chakma") << empty << chakmaZeroC << chakmaZero;
-        QTest::newRow("a+chakma") << a << chakmaZeroC << aChakmaZero;
+        BOBUIest::newRow("null+chakma") << null << chakmaZeroC << chakmaZero;
+        BOBUIest::newRow("empty+chakma") << empty << chakmaZeroC << chakmaZero;
+        BOBUIest::newRow("a+chakma") << a << chakmaZeroC << aChakmaZero;
 
-        QTest::newRow("smallTheta+chakma") << smallTheta << chakmaZeroC << thetaChakma;
-        QTest::newRow("chakma+smallTheta") << chakmaZero << smallThetaC << chakmaTheta;
-        QTest::newRow("smallTheta+ssa") << smallTheta << ssaC << thetaSsa;
+        BOBUIest::newRow("smallTheta+chakma") << smallTheta << chakmaZeroC << thetaChakma;
+        BOBUIest::newRow("chakma+smallTheta") << chakmaZero << smallThetaC << chakmaTheta;
+        BOBUIest::newRow("smallTheta+ssa") << smallTheta << ssaC << thetaSsa;
 
-        QTest::newRow("ssa+smallTheta") << ssa << smallThetaC << ssaTheta;
-        QTest::newRow("ssa+chakma") << ssa << chakmaZeroC << ssaChakma;
-        QTest::newRow("chakma+ssa") << chakmaZero << ssaC << chakmaSsa;
+        BOBUIest::newRow("ssa+smallTheta") << ssa << smallThetaC << ssaTheta;
+        BOBUIest::newRow("ssa+chakma") << ssa << chakmaZeroC << ssaChakma;
+        BOBUIest::newRow("chakma+ssa") << chakmaZero << ssaC << chakmaSsa;
 
-        QTest::newRow("smallTheta+yumlaut") << smallTheta << yumlautC << thetaUmlaut;
-        QTest::newRow("yumlaut+smallTheta") << yumlaut << smallThetaC << umlautTheta;
-        QTest::newRow("ssa+yumlaut") << ssa << yumlautC << ssaUmlaut;
-        QTest::newRow("yumlaut+ssa") << yumlaut << ssaC << umlautSsa;
-        QTest::newRow("chakma+yumlaut") << chakmaZero << yumlautC << chakmaUmlaut;
-        QTest::newRow("yumlaut+chakma") << yumlaut << chakmaZeroC << umlautChakma;
+        BOBUIest::newRow("smallTheta+yumlaut") << smallTheta << yumlautC << thetaUmlaut;
+        BOBUIest::newRow("yumlaut+smallTheta") << yumlaut << smallThetaC << umlautTheta;
+        BOBUIest::newRow("ssa+yumlaut") << ssa << yumlautC << ssaUmlaut;
+        BOBUIest::newRow("yumlaut+ssa") << yumlaut << ssaC << umlautSsa;
+        BOBUIest::newRow("chakma+yumlaut") << chakmaZero << yumlautC << chakmaUmlaut;
+        BOBUIest::newRow("yumlaut+chakma") << yumlaut << chakmaZeroC << umlautChakma;
     }
 }
 
@@ -3651,12 +3651,12 @@ void tst_QString::append_special_cases()
     }
 }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 void tst_QString::append_bytearray_special_cases_data()
 {
-    QTest::addColumn<QString>("str" );
-    QTest::addColumn<QByteArray>("ba" );
-    QTest::addColumn<QString>("res" );
+    BOBUIest::addColumn<QString>("str" );
+    BOBUIest::addColumn<QByteArray>("ba" );
+    BOBUIest::addColumn<QString>("res" );
 
     QByteArray ba( 5, 0 );
     ba[0] = 'a';
@@ -3666,24 +3666,24 @@ void tst_QString::append_bytearray_special_cases_data()
 
     // no 0 termination
     ba.resize( 4 );
-    QTest::newRow( "notTerminated_0" ) << QString() << ba << u"abcd"_s;
-    QTest::newRow( "notTerminated_1" ) << u""_s << ba << u"abcd"_s;
-    QTest::newRow( "notTerminated_2" ) << u"foobar "_s << ba << u"foobar abcd"_s;
+    BOBUIest::newRow( "notTerminated_0" ) << QString() << ba << u"abcd"_s;
+    BOBUIest::newRow( "notTerminated_1" ) << u""_s << ba << u"abcd"_s;
+    BOBUIest::newRow( "notTerminated_2" ) << u"foobar "_s << ba << u"foobar abcd"_s;
 
     // byte array with only a 0
     ba.resize( 1 );
     ba[0] = 0;
     QByteArray ba2("foobar ");
     ba2.append('\0');
-    QTest::newRow( "emptyString" ) << u"foobar "_s << ba << QString(ba2);
+    BOBUIest::newRow( "emptyString" ) << u"foobar "_s << ba << QString(ba2);
 
     // empty byte array
     ba.resize( 0 );
-    QTest::newRow( "emptyByteArray" ) << u"foobar "_s << ba << u"foobar "_s;
+    BOBUIest::newRow( "emptyByteArray" ) << u"foobar "_s << ba << u"foobar "_s;
 
     // non-ascii byte array
-    QTest::newRow( "nonAsciiByteArray") << QString() << QByteArray("\xc3\xa9") << QString("\xc3\xa9");
-    QTest::newRow( "nonAsciiByteArray2") << QString() << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
+    BOBUIest::newRow( "nonAsciiByteArray") << QString() << QByteArray("\xc3\xa9") << QString("\xc3\xa9");
+    BOBUIest::newRow( "nonAsciiByteArray2") << QString() << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
 }
 
 void tst_QString::append_bytearray_special_cases()
@@ -3694,7 +3694,7 @@ void tst_QString::append_bytearray_special_cases()
 
         str.append( ba );
 
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
     {
         QFETCH( QString, str );
@@ -3702,7 +3702,7 @@ void tst_QString::append_bytearray_special_cases()
 
         str.append( ba );
 
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
 
     QFETCH( QByteArray, ba );
@@ -3710,10 +3710,10 @@ void tst_QString::append_bytearray_special_cases()
         QFETCH( QString, str );
 
         str.append(ba.constData());
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
 }
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
 void tst_QString::appendFromRawData()
 {
@@ -3773,7 +3773,7 @@ void tst_QString::assign()
         QCOMPARE(str.size(), 0);
     }
     {
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         // This needs to be on its own to ensure we call them on empty str
         QString str;
         const char c8[] = "a©☻🂤"; // [1, 2, 3, 4] bytes in utf-8 code points
@@ -3794,7 +3794,7 @@ void tst_QString::assign()
         QCOMPARE_EQ(str.capacity(), oldCap);
         QCOMPARE_EQ(str.size(), 0);
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         const char c8[] = "a©☻🂤"; // [1, 2, 3, 4] bytes in utf-8 code points
         str.assign(std::begin(c8), std::end(c8) - 1);
         QCOMPARE(str, c8);
@@ -3875,7 +3875,7 @@ void tst_QString::assign()
         QCOMPARE_EQ(str.capacity(), oldCap);
         QCOMPARE_EQ(str.size(), 0);
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         str.resize(0);
         str.squeeze();
         str.reserve(5);
@@ -3892,7 +3892,7 @@ void tst_QString::assign()
         ss.clear();
         ss.str(c8IllFormed);
         str.assign(std::istream_iterator<char>{ss}, std::istream_iterator<char>{});
-        QEXPECT_FAIL("", "Iconsistent handling of ill-formed sequences, QTBUG-117051", Continue);
+        QEXPECT_FAIL("", "Iconsistent handling of ill-formed sequences, BOBUIBUG-117051", Continue);
         QCOMPARE_EQ(str, QString(c8IllFormed));
 
         const char c82[] = "ÌşṫһíᶊśꞧɨℼṩuDF49ïľι?";
@@ -4058,7 +4058,7 @@ void tst_QString::operator_pluseq_data(DataOptions options)
     append_data(options);
 }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 void tst_QString::operator_pluseq_bytearray_special_cases_data()
 {
     append_bytearray_special_cases_data();
@@ -4072,7 +4072,7 @@ void tst_QString::operator_pluseq_bytearray_special_cases()
 
         str += ba;
 
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
     {
         QFETCH( QString, str );
@@ -4080,7 +4080,7 @@ void tst_QString::operator_pluseq_bytearray_special_cases()
 
         str += ba;
 
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
 
     QFETCH( QByteArray, ba );
@@ -4088,7 +4088,7 @@ void tst_QString::operator_pluseq_bytearray_special_cases()
         QFETCH( QString, str );
 
         str += ba.constData();
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
 }
 
@@ -4133,7 +4133,7 @@ void tst_QString::operator_assign_symmetry()
         QVERIFY(str.isNull());
     }
 }
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
 void tst_QString::swap()
 {
@@ -4146,9 +4146,9 @@ void tst_QString::swap()
 
 void tst_QString::prepend_data(DataOptions options)
 {
-    QTest::addColumn<QString>("s");
-    QTest::addColumn<CharStarContainer>("arg");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("s");
+    BOBUIest::addColumn<CharStarContainer>("arg");
+    BOBUIest::addColumn<QString>("expected");
 
     const bool emptyIsNoop = options.testFlag(EmptyIsNoop);
 
@@ -4168,20 +4168,20 @@ void tst_QString::prepend_data(DataOptions options)
     const QString yumlaut = QStringLiteral("\u00ff");           // LATIN LETTER SMALL Y WITH UMLAUT
     const QString yumlautA = QStringLiteral("\u00ffa");
 
-    QTest::newRow("null.prepend(null)") << null << nullC << null;
-    QTest::newRow("null.prepend(empty)") << null << emptyC << (emptyIsNoop ? null : empty);
-    QTest::newRow("null.prepend(a)") << null << aC << a;
-    QTest::newRow("empty.prepend(null)") << empty << nullC << empty;
-    QTest::newRow("empty.prepend(empty)") << empty << emptyC << empty;
-    QTest::newRow("empty.prepend(a)") << empty << aC << a;
-    QTest::newRow("a.prepend(null)") << a << nullC << a;
-    QTest::newRow("a.prepend(empty)") << a << emptyC << a;
-    QTest::newRow("a.prepend(b)") << a << bC << ba;
-    QTest::newRow("a.prepend(ba)") << a << baC << (ba + a);
+    BOBUIest::newRow("null.prepend(null)") << null << nullC << null;
+    BOBUIest::newRow("null.prepend(empty)") << null << emptyC << (emptyIsNoop ? null : empty);
+    BOBUIest::newRow("null.prepend(a)") << null << aC << a;
+    BOBUIest::newRow("empty.prepend(null)") << empty << nullC << empty;
+    BOBUIest::newRow("empty.prepend(empty)") << empty << emptyC << empty;
+    BOBUIest::newRow("empty.prepend(a)") << empty << aC << a;
+    BOBUIest::newRow("a.prepend(null)") << a << nullC << a;
+    BOBUIest::newRow("a.prepend(empty)") << a << emptyC << a;
+    BOBUIest::newRow("a.prepend(b)") << a << bC << ba;
+    BOBUIest::newRow("a.prepend(ba)") << a << baC << (ba + a);
 
-    QTest::newRow("null-prepend-yumlaut") << null << yumlautC << yumlaut;
-    QTest::newRow("empty-prepend-yumlaut") << empty << yumlautC << yumlaut;
-    QTest::newRow("a-prepend-yumlaut") << a << yumlautC << yumlautA;
+    BOBUIest::newRow("null-prepend-yumlaut") << null << yumlautC << yumlaut;
+    BOBUIest::newRow("empty-prepend-yumlaut") << empty << yumlautC << yumlaut;
+    BOBUIest::newRow("a-prepend-yumlaut") << a << yumlautC << yumlautA;
 
     if (!options.testFlag(Latin1Encoded)) {
         const auto smallTheta = QStringLiteral("\u03b8");      // GREEK LETTER SMALL THETA
@@ -4209,39 +4209,39 @@ void tst_QString::prepend_data(DataOptions options)
         const CharStarContainer ssaC("\xe0\xa4\xb7");              // Higher BMP
         const CharStarContainer chakmaZeroC("\xf0\x91\x84\xb6");   // Non-BMP
 
-        QTest::newRow("null-prepend-smallTheta") << null << smallThetaC << smallTheta;
-        QTest::newRow("empty-prepend-smallTheta") << empty << smallThetaC << smallTheta;
-        QTest::newRow("a-prepend-smallTheta") << a << smallThetaC << smallThetaA;
+        BOBUIest::newRow("null-prepend-smallTheta") << null << smallThetaC << smallTheta;
+        BOBUIest::newRow("empty-prepend-smallTheta") << empty << smallThetaC << smallTheta;
+        BOBUIest::newRow("a-prepend-smallTheta") << a << smallThetaC << smallThetaA;
 
-        QTest::newRow("null-prepend-ssa") << null << ssaC << ssa;
-        QTest::newRow("empty-prepend-ssa") << empty << ssaC << ssa;
-        QTest::newRow("a-prepend-ssa") << a << ssaC << ssaA;
+        BOBUIest::newRow("null-prepend-ssa") << null << ssaC << ssa;
+        BOBUIest::newRow("empty-prepend-ssa") << empty << ssaC << ssa;
+        BOBUIest::newRow("a-prepend-ssa") << a << ssaC << ssaA;
 
-        QTest::newRow("null-prepend-chakma") << null << chakmaZeroC << chakmaZero;
-        QTest::newRow("empty-prepend-chakma") << empty << chakmaZeroC << chakmaZero;
-        QTest::newRow("a-prepend-chakma") << a << chakmaZeroC << chakmaZeroA;
+        BOBUIest::newRow("null-prepend-chakma") << null << chakmaZeroC << chakmaZero;
+        BOBUIest::newRow("empty-prepend-chakma") << empty << chakmaZeroC << chakmaZero;
+        BOBUIest::newRow("a-prepend-chakma") << a << chakmaZeroC << chakmaZeroA;
 
-        QTest::newRow("smallTheta-prepend-chakma") << smallTheta << chakmaZeroC << chakmaTheta;
-        QTest::newRow("chakma-prepend-smallTheta") << chakmaZero << smallThetaC << thetaChakma;
-        QTest::newRow("smallTheta-prepend-ssa") << smallTheta << ssaC << ssaTheta;
-        QTest::newRow("ssa-prepend-smallTheta") << ssa << smallThetaC << thetaSsa;
-        QTest::newRow("ssa-prepend-chakma") << ssa << chakmaZeroC << chakmaSsa;
-        QTest::newRow("chakma-prepend-ssa") << chakmaZero << ssaC << ssaChakma;
-        QTest::newRow("smallTheta-prepend-yumlaut") << smallTheta << yumlautC << umlautTheta;
-        QTest::newRow("yumlaut-prepend-smallTheta") << yumlaut << smallThetaC << thetaUmlaut;
-        QTest::newRow("ssa-prepend-yumlaut") << ssa << yumlautC << umlautSsa;
-        QTest::newRow("yumlaut-prepend-ssa") << yumlaut << ssaC << ssaUmlaut;
-        QTest::newRow("chakma-prepend-yumlaut") << chakmaZero << yumlautC << umlautChakma;
-        QTest::newRow("yumlaut-prepend-chakma") << yumlaut << chakmaZeroC << chakmaUmlaut;
+        BOBUIest::newRow("smallTheta-prepend-chakma") << smallTheta << chakmaZeroC << chakmaTheta;
+        BOBUIest::newRow("chakma-prepend-smallTheta") << chakmaZero << smallThetaC << thetaChakma;
+        BOBUIest::newRow("smallTheta-prepend-ssa") << smallTheta << ssaC << ssaTheta;
+        BOBUIest::newRow("ssa-prepend-smallTheta") << ssa << smallThetaC << thetaSsa;
+        BOBUIest::newRow("ssa-prepend-chakma") << ssa << chakmaZeroC << chakmaSsa;
+        BOBUIest::newRow("chakma-prepend-ssa") << chakmaZero << ssaC << ssaChakma;
+        BOBUIest::newRow("smallTheta-prepend-yumlaut") << smallTheta << yumlautC << umlautTheta;
+        BOBUIest::newRow("yumlaut-prepend-smallTheta") << yumlaut << smallThetaC << thetaUmlaut;
+        BOBUIest::newRow("ssa-prepend-yumlaut") << ssa << yumlautC << umlautSsa;
+        BOBUIest::newRow("yumlaut-prepend-ssa") << yumlaut << ssaC << ssaUmlaut;
+        BOBUIest::newRow("chakma-prepend-yumlaut") << chakmaZero << yumlautC << umlautChakma;
+        BOBUIest::newRow("yumlaut-prepend-chakma") << yumlaut << chakmaZeroC << chakmaUmlaut;
     }
 }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 void tst_QString::prepend_bytearray_special_cases_data()
 {
-    QTest::addColumn<QString>("str" );
-    QTest::addColumn<QByteArray>("ba" );
-    QTest::addColumn<QString>("res" );
+    BOBUIest::addColumn<QString>("str" );
+    BOBUIest::addColumn<QByteArray>("ba" );
+    BOBUIest::addColumn<QString>("res" );
 
     QByteArray ba( 5, 0 );
     ba[0] = 'a';
@@ -4252,15 +4252,15 @@ void tst_QString::prepend_bytearray_special_cases_data()
     // byte array with only a 0
     ba.resize( 1 );
     ba[0] = 0;
-    QTest::newRow( "emptyString" ) << u"foobar "_s << ba << QStringView::fromArray(u"\0foobar ").chopped(1).toString();
+    BOBUIest::newRow( "emptyString" ) << u"foobar "_s << ba << QStringView::fromArray(u"\0foobar ").chopped(1).toString();
 
     // empty byte array
     ba.resize( 0 );
-    QTest::newRow( "emptyByteArray" ) << u" foobar"_s << ba << u" foobar"_s;
+    BOBUIest::newRow( "emptyByteArray" ) << u" foobar"_s << ba << u" foobar"_s;
 
     // non-ascii byte array
-    QTest::newRow( "nonAsciiByteArray") << QString() << QByteArray("\xc3\xa9") << QString("\xc3\xa9");
-    QTest::newRow( "nonAsciiByteArray2") << QString() << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
+    BOBUIest::newRow( "nonAsciiByteArray") << QString() << QByteArray("\xc3\xa9") << QString("\xc3\xa9");
+    BOBUIest::newRow( "nonAsciiByteArray2") << QString() << QByteArray("\xc3\xa9") << QString::fromUtf8("\xc3\xa9");
 }
 
 void tst_QString::prepend_bytearray_special_cases()
@@ -4280,7 +4280,7 @@ void tst_QString::prepend_bytearray_special_cases()
 
         str.prepend( ba );
 
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
 
     QFETCH( QByteArray, ba );
@@ -4288,10 +4288,10 @@ void tst_QString::prepend_bytearray_special_cases()
         QFETCH( QString, str );
 
         str.prepend(ba.constData());
-        QTEST( str, "res" );
+        BOBUIEST( str, "res" );
     }
 }
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
 void tst_QString::prependEventuallyProducesFreeSpaceAtBegin()
 {
@@ -4311,46 +4311,46 @@ void tst_QString::replace_pos_len()
     // Test when the string is shared
     QString s1 = string;
     s1.replace(index, len, after );
-    QTEST( s1, "result" );
+    BOBUIEST( s1, "result" );
     // Test when it's not shared
     s1 = string;
     s1.detach();
     s1.replace(index, len, after);
-    QTEST(s1, "result");
+    BOBUIEST(s1, "result");
 
     // Test when the string is shared
     QString s2 = string;
     s2.replace(index, len, after.unicode(), after.size());
-    QTEST(s2, "result");
+    BOBUIEST(s2, "result");
     // Test when it's not shared
     s2 = string;
     s2.detach();
     s2.replace(index, len, after.unicode(), after.size());
-    QTEST(s2, "result");
+    BOBUIEST(s2, "result");
 
     if (after.size() == 1) {
         // Test when the string is shared
         QString s3 = string;
         s3.replace(index, len, QChar(after[0]));
-        QTEST(s3, "result");
+        BOBUIEST(s3, "result");
         // Test when it's not shared
         s3 = string;
         s3.detach();
         s3.replace(index, len, QChar(after[0]));
-        QTEST(s3, "result");
+        BOBUIEST(s3, "result");
 
-#if !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII)
         // Testing replace(qsizetype, qsizetype, QLatin1Char) calls aren't ambiguous
 
         // Test when the string is shared
         QString s4 = string;
         s4.replace(index, len, QChar(after[0]).toLatin1());
-        QTEST(s4, "result");
+        BOBUIEST(s4, "result");
         // Test when it's not shared
         s4 = string;
         s4.detach();
         s4.replace(index, len, QChar(after[0]).toLatin1());
-        QTEST(s4, "result");
+        BOBUIEST(s4, "result");
 #endif
     }
 }
@@ -4437,7 +4437,7 @@ void tst_QString::replace_extra()
 
     const int many = 1024;
     /*
-      QS::replace(const QChar *, int, const QChar *, int, Qt::CaseSensitivity)
+      QS::replace(const QChar *, int, const QChar *, int, BobUI::CaseSensitivity)
       does its replacements in batches of many (please keep in sync with any
       changes to batch size), which lead to misbehaviour if ether QChar * array
       was part of the data being modified.
@@ -4474,7 +4474,7 @@ void tst_QString::replace_string()
     QFETCH( bool, bcs );
     QFETCH(QString, result);
 
-    Qt::CaseSensitivity cs = bcs ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    BobUI::CaseSensitivity cs = bcs ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
 
     if ( before.size() == 1 ) {
         QChar ch = before.at( 0 );
@@ -4529,7 +4529,7 @@ void tst_QString::replace_string_extra()
     }
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QString::replace_regexp()
 {
     static const QRegularExpression ignoreMessagePattern(
@@ -4542,9 +4542,9 @@ void tst_QString::replace_regexp()
 
     QRegularExpression regularExpression(regexp);
     if (!regularExpression.isValid())
-        QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     string.replace(regularExpression, after);
-    QTEST(string, "result");
+    BOBUIEST(string, "result");
 }
 
 void tst_QString::replace_regexp_extra()
@@ -4610,7 +4610,7 @@ void tst_QString::remove_string()
     QFETCH( bool, bcs );
     QFETCH(QString, result);
 
-    Qt::CaseSensitivity cs = bcs ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    BobUI::CaseSensitivity cs = bcs ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
 
     if ( after.size() == 0 ) {
         if ( before.size() == 1 && cs ) {
@@ -4627,7 +4627,7 @@ void tst_QString::remove_string()
             s4.remove( ch );
             QCOMPARE(s4, result);
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
             // Testing remove(QLatin1Char) isn't ambiguous
             if ( QChar(ch.toLatin1()) == ch ) {
                 QString s2 = string;
@@ -4647,7 +4647,7 @@ void tst_QString::remove_string()
         s5.remove( before, cs );
         QCOMPARE(s5, result);
 
-        if (QtPrivate::isLatin1(before)) {
+        if (BobUIPrivate::isLatin1(before)) {
             QString s6 = string;
             s6.remove( QLatin1String(before.toLatin1()), cs );
             QCOMPARE(s6, result);
@@ -4655,28 +4655,28 @@ void tst_QString::remove_string()
     }
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QString::remove_regexp_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QString>("regexp");
-    QTest::addColumn<QString>("after"); // For the benefit of replace_regexp; empty = remove.
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("regexp");
+    BOBUIest::addColumn<QString>("after"); // For the benefit of replace_regexp; empty = remove.
+    BOBUIest::addColumn<QString>("result");
     // string.remove(regexp) == result
 
-    QTest::newRow("alpha:s/a+//")
+    BOBUIest::newRow("alpha:s/a+//")
         << u"alpha"_s << u"a+"_s << u""_s << u"lph"_s;
-    QTest::newRow("banana:s/^.a//")
+    BOBUIest::newRow("banana:s/^.a//")
         << u"banana"_s << u"^.a"_s << u""_s << u"nana"_s;
-    QTest::newRow("<empty>:s/^.a//")
+    BOBUIest::newRow("<empty>:s/^.a//")
         << u""_s << u"^.a"_s << u""_s << u""_s;
     // The null-vs-empty distinction in after is only relevant to repplace_regexp(), but
     // include both cases here to keep after's "empty here, non-empty there" rule simple.
-    QTest::newRow("<empty>:s/^.a/<null>/")
+    BOBUIest::newRow("<empty>:s/^.a/<null>/")
         << u""_s << u"^.a"_s << QString() << u""_s;
-    QTest::newRow("<null>:s/^.a//") << QString() << u"^.a"_s << u""_s << QString();
-    QTest::newRow("<null>s/.a/<null>/") << QString() << u"^.a"_s << QString() << QString();
-    QTest::newRow("invalid")
+    BOBUIest::newRow("<null>:s/^.a//") << QString() << u"^.a"_s << u""_s << QString();
+    BOBUIest::newRow("<null>s/.a/<null>/") << QString() << u"^.a"_s << QString() << QString();
+    BOBUIest::newRow("invalid")
         << u""_s << u"invalid regex\\"_s << u""_s << u""_s;
 }
 
@@ -4688,14 +4688,14 @@ void tst_QString::remove_regexp()
 
     QFETCH( QString, string );
     QFETCH( QString, regexp );
-    QTEST(QString(), "after"); // non-empty replacement text tests should go in replace_regexp_data()
+    BOBUIEST(QString(), "after"); // non-empty replacement text tests should go in replace_regexp_data()
 
     QRegularExpression regularExpression(regexp);
     // remove() delegates to replace(), which produces this warning:
     if (!regularExpression.isValid())
-        QTest::ignoreMessage(QtWarningMsg, ignoreMessagePattern);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, ignoreMessagePattern);
     string.remove(regularExpression);
-    QTEST(string, "result");
+    BOBUIEST(string, "result");
 }
 #endif
 
@@ -4789,32 +4789,32 @@ void tst_QString::erase()
 
 void tst_QString::toNum_base_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("FF") << u"FF"_s << 16 << 255;
-    QTest::newRow("0xFF") << u"0xFF"_s << 16 << 255;
-    QTest::newRow("77") << u"77"_s << 8 << 63;
-    QTest::newRow("077") << u"077"_s << 8 << 63;
+    BOBUIest::newRow("FF") << u"FF"_s << 16 << 255;
+    BOBUIest::newRow("0xFF") << u"0xFF"_s << 16 << 255;
+    BOBUIest::newRow("77") << u"77"_s << 8 << 63;
+    BOBUIest::newRow("077") << u"077"_s << 8 << 63;
 
-    QTest::newRow("0xFF - deduced base") << u"0xFF"_s << 0 << 255;
-    QTest::newRow("077 - deduced base") << u"077"_s << 0 << 63;
-    QTest::newRow("255 - deduced base") << u"255"_s << 0 << 255;
+    BOBUIest::newRow("0xFF - deduced base") << u"0xFF"_s << 0 << 255;
+    BOBUIest::newRow("077 - deduced base") << u"077"_s << 0 << 63;
+    BOBUIest::newRow("255 - deduced base") << u"255"_s << 0 << 255;
 
-    QTest::newRow(" FF") << u" FF"_s << 16 << 255;
-    QTest::newRow(" 0xFF") << u" 0xFF"_s << 16 << 255;
-    QTest::newRow(" 77") << u" 77"_s << 8 << 63;
-    QTest::newRow(" 077") << u" 077"_s << 8 << 63;
+    BOBUIest::newRow(" FF") << u" FF"_s << 16 << 255;
+    BOBUIest::newRow(" 0xFF") << u" 0xFF"_s << 16 << 255;
+    BOBUIest::newRow(" 77") << u" 77"_s << 8 << 63;
+    BOBUIest::newRow(" 077") << u" 077"_s << 8 << 63;
 
-    QTest::newRow(" 0xFF - deduced base") << u" 0xFF"_s << 0 << 255;
-    QTest::newRow(" 077 - deduced base") << u" 077"_s << 0 << 63;
-    QTest::newRow(" 255 - deduced base") << u" 255"_s << 0 << 255;
+    BOBUIest::newRow(" 0xFF - deduced base") << u" 0xFF"_s << 0 << 255;
+    BOBUIest::newRow(" 077 - deduced base") << u" 077"_s << 0 << 63;
+    BOBUIest::newRow(" 255 - deduced base") << u" 255"_s << 0 << 255;
 
-    QTest::newRow("\tFF\t") << u"\tFF\t"_s << 16 << 255;
-    QTest::newRow("\t0xFF  ") << u"\t0xFF  "_s << 16 << 255;
-    QTest::newRow("   77   ") << u"   77   "_s << 8 << 63;
-    QTest::newRow("77  ") << u"77  "_s << 8 << 63;
+    BOBUIest::newRow("\tFF\t") << u"\tFF\t"_s << 16 << 255;
+    BOBUIest::newRow("\t0xFF  ") << u"\t0xFF  "_s << 16 << 255;
+    BOBUIest::newRow("   77   ") << u"   77   "_s << 8 << 63;
+    BOBUIest::newRow("77  ") << u"77  "_s << 8 << 63;
 }
 
 void tst_QString::toNum_base()
@@ -4851,18 +4851,18 @@ void tst_QString::toNum_base()
 
 void tst_QString::toNum_base_neg_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("-FE") << u"-FE"_s << 16 << -254;
-    QTest::newRow("-0xFE") << u"-0xFE"_s << 16 << -254;
-    QTest::newRow("-77") << u"-77"_s << 8 << -63;
-    QTest::newRow("-077") << u"-077"_s << 8 << -63;
+    BOBUIest::newRow("-FE") << u"-FE"_s << 16 << -254;
+    BOBUIest::newRow("-0xFE") << u"-0xFE"_s << 16 << -254;
+    BOBUIest::newRow("-77") << u"-77"_s << 8 << -63;
+    BOBUIest::newRow("-077") << u"-077"_s << 8 << -63;
 
-    QTest::newRow("-0xFE - deduced base") << u"-0xFE"_s << 0 << -254;
-    QTest::newRow("-077 - deduced base") << u"-077"_s << 0 << -63;
-    QTest::newRow("-254 - deduced base") << u"-254"_s << 0 << -254;
+    BOBUIest::newRow("-0xFE - deduced base") << u"-0xFE"_s << 0 << -254;
+    BOBUIest::newRow("-077 - deduced base") << u"-077"_s << 0 << -63;
+    BOBUIest::newRow("-254 - deduced base") << u"-254"_s << 0 << -254;
 }
 
 void tst_QString::toNum_base_neg()
@@ -4943,17 +4943,17 @@ void tst_QString::toNum_Bad()
 
 void tst_QString::toNum_BadAll_data()
 {
-    QTest::addColumn<QString>("str");
+    BOBUIest::addColumn<QString>("str");
 
-    QTest::newRow("empty") << u""_s;
-    QTest::newRow("space") << u" "_s;
-    QTest::newRow("dot") << u"."_s;
-    QTest::newRow("dash") << u"-"_s;
-    QTest::newRow("hello") << u"hello"_s;
-    QTest::newRow("1.2.3") << u"1.2.3"_s;
-    QTest::newRow("0x0x0x") << u"0x0x0x"_s;
-    QTest::newRow("123-^~<") << u"123-^~<"_s;
-    QTest::newRow("123ThisIsNotANumber") << u"123ThisIsNotANumber"_s;
+    BOBUIest::newRow("empty") << u""_s;
+    BOBUIest::newRow("space") << u" "_s;
+    BOBUIest::newRow("dot") << u"."_s;
+    BOBUIest::newRow("dash") << u"-"_s;
+    BOBUIest::newRow("hello") << u"hello"_s;
+    BOBUIest::newRow("1.2.3") << u"1.2.3"_s;
+    BOBUIest::newRow("0x0x0x") << u"0x0x0x"_s;
+    BOBUIest::newRow("123-^~<") << u"123-^~<"_s;
+    BOBUIest::newRow("123ThisIsNotANumber") << u"123ThisIsNotANumber"_s;
 }
 
 void tst_QString::toNum_BadAll()
@@ -5067,7 +5067,7 @@ void tst_QString::toNum()
     a.toULongLong(&ok, 0);
     QVERIFY(!ok);
 
-#ifdef QT_NO_FPU
+#ifdef BOBUI_NO_FPU
     double d = 3.40282346638528e+38; // slightly off FLT_MAX when using hardfloats
 #else
     double d = 3.4028234663852886e+38; // FLT_MAX
@@ -5359,15 +5359,15 @@ void tst_QString::toUInt()
 
 void tst_QString::toULong_data()
 {
-    QTest::addColumn<QString>("str" );
-    QTest::addColumn<int>("base" );
-    QTest::addColumn<ulong>("result" );
-    QTest::addColumn<bool>("ok" );
+    BOBUIest::addColumn<QString>("str" );
+    BOBUIest::addColumn<int>("base" );
+    BOBUIest::addColumn<ulong>("result" );
+    BOBUIest::addColumn<bool>("ok" );
 
-    QTest::newRow( "default" ) << QString() << 10 << 0UL << false;
-    QTest::newRow( "empty" ) << u""_s << 10 << 0UL << false;
-    QTest::newRow( "ulong1" ) << u"3234567890"_s << 10 << 3234567890UL << true;
-    QTest::newRow( "ulong2" ) << u"fFFfFfFf"_s << 16 << 0xFFFFFFFFUL << true;
+    BOBUIest::newRow( "default" ) << QString() << 10 << 0UL << false;
+    BOBUIest::newRow( "empty" ) << u""_s << 10 << 0UL << false;
+    BOBUIest::newRow( "ulong1" ) << u"3234567890"_s << 10 << 3234567890UL << true;
+    BOBUIest::newRow( "ulong2" ) << u"fFFfFfFf"_s << 16 << 0xFFFFFFFFUL << true;
 }
 
 void tst_QString::toULong()
@@ -5385,21 +5385,21 @@ void tst_QString::toULong()
 
 void tst_QString::toLong_data()
 {
-    QTest::addColumn<QString>("str" );
-    QTest::addColumn<int>("base" );
-    QTest::addColumn<long>("result" );
-    QTest::addColumn<bool>("ok" );
+    BOBUIest::addColumn<QString>("str" );
+    BOBUIest::addColumn<int>("base" );
+    BOBUIest::addColumn<long>("result" );
+    BOBUIest::addColumn<bool>("ok" );
 
-    QTest::newRow( "default" ) << QString() << 10 << 0L << false;
-    QTest::newRow("empty") << u""_s << 10 << 0L << false;
-    QTest::newRow("normal") << u"7fFFfFFf"_s << 16 << 0x7fFFfFFfL << true;
-    QTest::newRow("long_max") << u"2147483647"_s << 10 << 2147483647L << true;
+    BOBUIest::newRow( "default" ) << QString() << 10 << 0L << false;
+    BOBUIest::newRow("empty") << u""_s << 10 << 0L << false;
+    BOBUIest::newRow("normal") << u"7fFFfFFf"_s << 16 << 0x7fFFfFFfL << true;
+    BOBUIest::newRow("long_max") << u"2147483647"_s << 10 << 2147483647L << true;
     if (sizeof(long) == 4) {
-        QTest::newRow("long_max+1") << u"2147483648"_s << 10 << 0L << false;
-        QTest::newRow("long_min-1") << u"-80000001"_s << 16 << 0L << false;
+        BOBUIest::newRow("long_max+1") << u"2147483648"_s << 10 << 0L << false;
+        BOBUIest::newRow("long_min-1") << u"-80000001"_s << 16 << 0L << false;
     }
-    QTest::newRow("negative") << u"-7fffffff"_s << 16 << -0x7fffffffL << true;
-//    QTest::newRow( "long_min" ) << QString("-80000000") << 16 << 0x80000000uL << true;
+    BOBUIest::newRow("negative") << u"-7fffffff"_s << 16 << -0x7fffffffL << true;
+//    BOBUIest::newRow( "long_min" ) << QString("-80000000") << 16 << 0x80000000uL << true;
 }
 
 void tst_QString::toLong()
@@ -5587,44 +5587,44 @@ void tst_QString::toFloat()
 
 void tst_QString::toDouble_data()
 {
-    QTest::addColumn<QString>("str" );
-    QTest::addColumn<double>("result" );
-    QTest::addColumn<bool>("result_ok" );
+    BOBUIest::addColumn<QString>("str" );
+    BOBUIest::addColumn<double>("result" );
+    BOBUIest::addColumn<bool>("result_ok" );
 
-    QTest::newRow("null") << QString() << 0.0 << false;
-    QTest::newRow("empty") << u""_s << 0.0 << false;
+    BOBUIest::newRow("null") << QString() << 0.0 << false;
+    BOBUIest::newRow("empty") << u""_s << 0.0 << false;
 
-    QTest::newRow("ok00") << u"0.000000000931322574615478515625"_s << 0.000000000931322574615478515625 << true;
-    QTest::newRow("ok01") << u" 123.45"_s << 123.45 << true;
+    BOBUIest::newRow("ok00") << u"0.000000000931322574615478515625"_s << 0.000000000931322574615478515625 << true;
+    BOBUIest::newRow("ok01") << u" 123.45"_s << 123.45 << true;
 
-    QTest::newRow("ok02") << u"0.1e10"_s << 0.1e10 << true;
-    QTest::newRow("ok03") << u"0.1e-10"_s << 0.1e-10 << true;
+    BOBUIest::newRow("ok02") << u"0.1e10"_s << 0.1e10 << true;
+    BOBUIest::newRow("ok03") << u"0.1e-10"_s << 0.1e-10 << true;
 
-    QTest::newRow("ok04") << u"1e10"_s << 1.0e10 << true;
-    QTest::newRow("ok05") << u"1e+10"_s << 1.0e10 << true;
-    QTest::newRow("ok06") << u"1e-10"_s << 1.0e-10 << true;
+    BOBUIest::newRow("ok04") << u"1e10"_s << 1.0e10 << true;
+    BOBUIest::newRow("ok05") << u"1e+10"_s << 1.0e10 << true;
+    BOBUIest::newRow("ok06") << u"1e-10"_s << 1.0e-10 << true;
 
-    QTest::newRow("ok07") << u" 1e10"_s << 1.0e10 << true;
-    QTest::newRow("ok08") << u"  1e+10"_s << 1.0e10 << true;
-    QTest::newRow("ok09") << u"   1e-10"_s << 1.0e-10 << true;
+    BOBUIest::newRow("ok07") << u" 1e10"_s << 1.0e10 << true;
+    BOBUIest::newRow("ok08") << u"  1e+10"_s << 1.0e10 << true;
+    BOBUIest::newRow("ok09") << u"   1e-10"_s << 1.0e-10 << true;
 
-    QTest::newRow("ok10") << u"1."_s << 1.0 << true;
-    QTest::newRow("ok11") << u".1"_s << 0.1 << true;
-    QTest::newRow("ok12") << u"1.2345"_s << 1.2345 << true;
-    QTest::newRow("ok13") << u"12345.6"_s << 12345.6 << true;
-    QTest::newRow("double-e+") << u"1.2345e+01"_s << 12.345 << true;
-    QTest::newRow("double-E+") << u"1.2345E+01"_s << 12.345 << true;
+    BOBUIest::newRow("ok10") << u"1."_s << 1.0 << true;
+    BOBUIest::newRow("ok11") << u".1"_s << 0.1 << true;
+    BOBUIest::newRow("ok12") << u"1.2345"_s << 1.2345 << true;
+    BOBUIest::newRow("ok13") << u"12345.6"_s << 12345.6 << true;
+    BOBUIest::newRow("double-e+") << u"1.2345e+01"_s << 12.345 << true;
+    BOBUIest::newRow("double-E+") << u"1.2345E+01"_s << 12.345 << true;
 
-    QTest::newRow("wrong00") << u"123.45 "_s << 123.45 << true;
-    QTest::newRow("wrong01") << u" 123.45 "_s << 123.45 << true;
+    BOBUIest::newRow("wrong00") << u"123.45 "_s << 123.45 << true;
+    BOBUIest::newRow("wrong01") << u" 123.45 "_s << 123.45 << true;
 
-    QTest::newRow("wrong02") << u"aa123.45aa"_s << 0.0 << false;
-    QTest::newRow("wrong03") << u"123.45aa"_s << 0.0 << false;
-    QTest::newRow("wrong04") << u"123erf"_s << 0.0 << false;
+    BOBUIest::newRow("wrong02") << u"aa123.45aa"_s << 0.0 << false;
+    BOBUIest::newRow("wrong03") << u"123.45aa"_s << 0.0 << false;
+    BOBUIest::newRow("wrong04") << u"123erf"_s << 0.0 << false;
 
-    QTest::newRow("wrong05") << u"abc"_s << 0.0 << false;
-    QTest::newRow( "wrong06" ) << QString() << 0.0 << false;
-    QTest::newRow("wrong07") << u""_s << 0.0 << false;
+    BOBUIest::newRow("wrong05") << u"abc"_s << 0.0 << false;
+    BOBUIest::newRow( "wrong06" ) << QString() << 0.0 << false;
+    BOBUIest::newRow("wrong07") << u""_s << 0.0 << false;
 }
 
 void tst_QString::toDouble()
@@ -5634,7 +5634,7 @@ void tst_QString::toDouble()
     bool ok;
     double d = str.toDouble( &ok );
     if ( result_ok ) {
-        QTEST( d, "result" );
+        BOBUIEST( d, "result" );
         QVERIFY( ok );
     } else {
         QVERIFY( !ok );
@@ -5710,46 +5710,46 @@ void tst_QString::startsWith()
     QVERIFY( a.startsWith(QLatin1String("")) );
     QVERIFY( a.startsWith(QLatin1String(nullptr)) );
 
-    QVERIFY(a.startsWith(u"A"_s, Qt::CaseSensitive));
-    QVERIFY(a.startsWith(u"A"_s, Qt::CaseInsensitive));
-    QVERIFY(!a.startsWith(u"a"_s, Qt::CaseSensitive));
-    QVERIFY(a.startsWith(u"a"_s, Qt::CaseInsensitive));
-    QVERIFY(!a.startsWith(u"aB"_s, Qt::CaseSensitive));
-    QVERIFY(a.startsWith(u"aB"_s, Qt::CaseInsensitive));
-    QVERIFY(!a.startsWith(u"C"_s, Qt::CaseSensitive));
-    QVERIFY(!a.startsWith(u"C"_s, Qt::CaseInsensitive));
-    QVERIFY(!a.startsWith(u"c"_s, Qt::CaseSensitive));
-    QVERIFY(!a.startsWith(u"c"_s, Qt::CaseInsensitive));
-    QVERIFY(!a.startsWith(u"abcdef"_s, Qt::CaseInsensitive));
-    QVERIFY(a.startsWith(u""_s, Qt::CaseInsensitive));
-    QVERIFY( a.startsWith(QString(), Qt::CaseInsensitive) );
-    QVERIFY(a.startsWith(u'a', Qt::CaseInsensitive));
-    QVERIFY(a.startsWith(u'A', Qt::CaseInsensitive));
-    QVERIFY( a.startsWith(QLatin1Char('a'), Qt::CaseInsensitive) );
-    QVERIFY(a.startsWith(QChar(u'a'), Qt::CaseInsensitive));
-    QVERIFY(!a.startsWith(u'c', Qt::CaseInsensitive));
-    QVERIFY( !a.startsWith(QChar(), Qt::CaseInsensitive) );
-    QVERIFY( !a.startsWith(QLatin1Char(0), Qt::CaseInsensitive) );
+    QVERIFY(a.startsWith(u"A"_s, BobUI::CaseSensitive));
+    QVERIFY(a.startsWith(u"A"_s, BobUI::CaseInsensitive));
+    QVERIFY(!a.startsWith(u"a"_s, BobUI::CaseSensitive));
+    QVERIFY(a.startsWith(u"a"_s, BobUI::CaseInsensitive));
+    QVERIFY(!a.startsWith(u"aB"_s, BobUI::CaseSensitive));
+    QVERIFY(a.startsWith(u"aB"_s, BobUI::CaseInsensitive));
+    QVERIFY(!a.startsWith(u"C"_s, BobUI::CaseSensitive));
+    QVERIFY(!a.startsWith(u"C"_s, BobUI::CaseInsensitive));
+    QVERIFY(!a.startsWith(u"c"_s, BobUI::CaseSensitive));
+    QVERIFY(!a.startsWith(u"c"_s, BobUI::CaseInsensitive));
+    QVERIFY(!a.startsWith(u"abcdef"_s, BobUI::CaseInsensitive));
+    QVERIFY(a.startsWith(u""_s, BobUI::CaseInsensitive));
+    QVERIFY( a.startsWith(QString(), BobUI::CaseInsensitive) );
+    QVERIFY(a.startsWith(u'a', BobUI::CaseInsensitive));
+    QVERIFY(a.startsWith(u'A', BobUI::CaseInsensitive));
+    QVERIFY( a.startsWith(QLatin1Char('a'), BobUI::CaseInsensitive) );
+    QVERIFY(a.startsWith(QChar(u'a'), BobUI::CaseInsensitive));
+    QVERIFY(!a.startsWith(u'c', BobUI::CaseInsensitive));
+    QVERIFY( !a.startsWith(QChar(), BobUI::CaseInsensitive) );
+    QVERIFY( !a.startsWith(QLatin1Char(0), BobUI::CaseInsensitive) );
 
-    QVERIFY( a.startsWith(QLatin1String("A"), Qt::CaseSensitive) );
-    QVERIFY( a.startsWith(QLatin1String("A"), Qt::CaseInsensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("a"), Qt::CaseSensitive) );
-    QVERIFY( a.startsWith(QLatin1String("a"), Qt::CaseInsensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("aB"), Qt::CaseSensitive) );
-    QVERIFY( a.startsWith(QLatin1String("aB"), Qt::CaseInsensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("C"), Qt::CaseSensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("C"), Qt::CaseInsensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("c"), Qt::CaseSensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("c"), Qt::CaseInsensitive) );
-    QVERIFY( !a.startsWith(QLatin1String("abcdef"), Qt::CaseInsensitive) );
-    QVERIFY( a.startsWith(QLatin1String(""), Qt::CaseInsensitive) );
-    QVERIFY( a.startsWith(QLatin1String(nullptr), Qt::CaseInsensitive) );
-    QVERIFY(a.startsWith(u'A', Qt::CaseSensitive));
-    QVERIFY(a.startsWith(QLatin1Char('A'), Qt::CaseSensitive));
-    QVERIFY(a.startsWith(QChar(u'A'), Qt::CaseSensitive));
-    QVERIFY(!a.startsWith(u'a', Qt::CaseSensitive));
-    QVERIFY( !a.startsWith(QChar(), Qt::CaseSensitive) );
-    QVERIFY( !a.startsWith(QLatin1Char(0), Qt::CaseSensitive) );
+    QVERIFY( a.startsWith(QLatin1String("A"), BobUI::CaseSensitive) );
+    QVERIFY( a.startsWith(QLatin1String("A"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("a"), BobUI::CaseSensitive) );
+    QVERIFY( a.startsWith(QLatin1String("a"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("aB"), BobUI::CaseSensitive) );
+    QVERIFY( a.startsWith(QLatin1String("aB"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("C"), BobUI::CaseSensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("C"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("c"), BobUI::CaseSensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("c"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.startsWith(QLatin1String("abcdef"), BobUI::CaseInsensitive) );
+    QVERIFY( a.startsWith(QLatin1String(""), BobUI::CaseInsensitive) );
+    QVERIFY( a.startsWith(QLatin1String(nullptr), BobUI::CaseInsensitive) );
+    QVERIFY(a.startsWith(u'A', BobUI::CaseSensitive));
+    QVERIFY(a.startsWith(QLatin1Char('A'), BobUI::CaseSensitive));
+    QVERIFY(a.startsWith(QChar(u'A'), BobUI::CaseSensitive));
+    QVERIFY(!a.startsWith(u'a', BobUI::CaseSensitive));
+    QVERIFY( !a.startsWith(QChar(), BobUI::CaseSensitive) );
+    QVERIFY( !a.startsWith(QLatin1Char(0), BobUI::CaseSensitive) );
 
 #define TEST_VIEW_STARTS_WITH(string, yes) { CREATE_VIEW(string); QCOMPARE(a.startsWith(view), yes); }
     TEST_VIEW_STARTS_WITH(u"A"_s, true);
@@ -5790,7 +5790,7 @@ void tst_QString::startsWith()
     QVERIFY(!a.startsWith(u"á"_s));
 
     // this one is dependent of encoding
-    QVERIFY(a.startsWith(u"É"_s, Qt::CaseInsensitive));
+    QVERIFY(a.startsWith(u"É"_s, BobUI::CaseInsensitive));
 }
 
 void tst_QString::endsWith()
@@ -5826,46 +5826,46 @@ void tst_QString::endsWith()
     QVERIFY( a.endsWith(QLatin1String("")) );
     QVERIFY( a.endsWith(QLatin1String(nullptr)) );
 
-    QVERIFY( a.endsWith(u"B"_s, Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(u"B", Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(u"b", Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(u"b"_s, Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(u"aB"_s, Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(u"aB"_s, Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(u"C"_s, Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(u"C"_s, Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(u"c"_s, Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(u"c"_s, Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(u"abcdef"_s, Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(u""_s, Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(QString(), Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(u'b', Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(u'B', Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(QLatin1Char('b'), Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(QChar(u'b'), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(u'c', Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QChar(), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QLatin1Char(0), Qt::CaseInsensitive) );
+    QVERIFY( a.endsWith(u"B"_s, BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(u"B", BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(u"b", BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(u"b"_s, BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(u"aB"_s, BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(u"aB"_s, BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(u"C"_s, BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(u"C"_s, BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(u"c"_s, BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(u"c"_s, BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(u"abcdef"_s, BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(u""_s, BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(QString(), BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(u'b', BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(u'B', BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(QLatin1Char('b'), BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(QChar(u'b'), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(u'c', BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QChar(), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QLatin1Char(0), BobUI::CaseInsensitive) );
 
-    QVERIFY( a.endsWith(QLatin1String("B"), Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(QLatin1String("B"), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("b"), Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(QLatin1String("b"), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("aB"), Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(QLatin1String("aB"), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("C"), Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("C"), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("c"), Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("c"), Qt::CaseInsensitive) );
-    QVERIFY( !a.endsWith(QLatin1String("abcdef"), Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(QLatin1String(""), Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(QLatin1String(nullptr), Qt::CaseInsensitive) );
-    QVERIFY( a.endsWith(u'B', Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(QLatin1Char('B'), Qt::CaseSensitive) );
-    QVERIFY( a.endsWith(QChar(u'B'), Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(u'b', Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(QChar(), Qt::CaseSensitive) );
-    QVERIFY( !a.endsWith(QLatin1Char(0), Qt::CaseSensitive) );
+    QVERIFY( a.endsWith(QLatin1String("B"), BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(QLatin1String("B"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("b"), BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(QLatin1String("b"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("aB"), BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(QLatin1String("aB"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("C"), BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("C"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("c"), BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("c"), BobUI::CaseInsensitive) );
+    QVERIFY( !a.endsWith(QLatin1String("abcdef"), BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(QLatin1String(""), BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(QLatin1String(nullptr), BobUI::CaseInsensitive) );
+    QVERIFY( a.endsWith(u'B', BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(QLatin1Char('B'), BobUI::CaseSensitive) );
+    QVERIFY( a.endsWith(QChar(u'B'), BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(u'b', BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(QChar(), BobUI::CaseSensitive) );
+    QVERIFY( !a.endsWith(QLatin1Char(0), BobUI::CaseSensitive) );
 
 #define TEST_VIEW_ENDS_WITH(string, yes) { CREATE_VIEW(string); QCOMPARE(a.endsWith(view), yes); }
     TEST_VIEW_ENDS_WITH(QLatin1String("B"), true);
@@ -5907,7 +5907,7 @@ void tst_QString::endsWith()
     QVERIFY(!a.endsWith(u"á"_s));
 
     // this one is dependent of encoding
-    QVERIFY(a.endsWith(u"É"_s, Qt::CaseInsensitive));
+    QVERIFY(a.endsWith(u"É"_s, BobUI::CaseInsensitive));
 }
 
 void tst_QString::check_QDataStream()
@@ -5925,34 +5925,34 @@ void tst_QString::check_QDataStream()
     }
 }
 
-void tst_QString::check_QTextStream()
+void tst_QString::check_BOBUIextStream()
 {
     QString a;
     QByteArray ar;
     {
-        QTextStream out(&ar,QIODevice::WriteOnly);
+        BOBUIextStream out(&ar,QIODevice::WriteOnly);
         out << u"This is COMPARE Text"_s;
     }
     {
-        QTextStream in(&ar,QIODevice::ReadOnly);
+        BOBUIextStream in(&ar,QIODevice::ReadOnly);
         in >> a;
         QCOMPARE(a, QLatin1String("This"));
     }
 }
 
-void tst_QString::check_QTextIOStream()
+void tst_QString::check_BOBUIextIOStream()
 {
     QString a;
     {
         a = u""_s;
-        QTextStream ts(&a);
+        BOBUIextStream ts(&a);
         // invalid Utf8
         ts << "pi \261= " << 3.125;
         QCOMPARE(a, QString::fromUtf16(u"pi \xfffd= 3.125"));
     }
     {
         a = u""_s;
-        QTextStream ts(&a);
+        BOBUIextStream ts(&a);
         // valid Utf8
         ts << "pi ø= " << 3.125;
         QCOMPARE(a, QString::fromUtf16(u"pi ø= 3.125"));
@@ -5960,7 +5960,7 @@ void tst_QString::check_QTextIOStream()
     {
         a = u"123 456"_s;
         int x,y;
-        QTextStream(&a) >> x >> y;
+        BOBUIextStream(&a) >> x >> y;
         QCOMPARE(x,123);
         QCOMPARE(y,456);
     }
@@ -5999,11 +5999,11 @@ void tst_QString::setRawData()
     // This actually tests the recycling of the shared data object
     QString::DataPointer csd = cstr.data_ptr();
     cstr.setRawData(ptr2, 1);
-    QEXPECT_FAIL("", "This is currently not working: QTBUG-94450.", Continue);
+    QEXPECT_FAIL("", "This is currently not working: BOBUIBUG-94450.", Continue);
     QVERIFY(cstr.isDetached());
     QVERIFY(cstr.constData() == ptr2);
     QVERIFY(cstr == QString(ptr2, 1));
-    QEXPECT_FAIL("", "This is currently not working: QTBUG-94450.", Continue);
+    QEXPECT_FAIL("", "This is currently not working: BOBUIBUG-94450.", Continue);
     QVERIFY(cstr.data_ptr() == csd);
 
     // This tests the discarding of the shared data object
@@ -6014,7 +6014,7 @@ void tst_QString::setRawData()
     // Another test of the fallback
     csd = cstr.data_ptr();
     cstr.setRawData(ptr2, 1);
-    QEXPECT_FAIL("", "This is currently not working: QTBUG-94450.", Continue);
+    QEXPECT_FAIL("", "This is currently not working: BOBUIBUG-94450.", Continue);
     QVERIFY(cstr.isDetached());
     QVERIFY(cstr.constData() == ptr2);
     QVERIFY(cstr == QString(ptr2, 1));
@@ -6025,7 +6025,7 @@ void tst_QString::nullTerminated()
 {
     const QChar ptr[] = { u'ሴ', u'ʎ', u'\0' };
 
-    QTest::ThrowOnFailEnabler thrower;
+    BOBUIest::ThrowOnFailEnabler thrower;
 
     auto check = [ptr] (const QString &r) {
         QVERIFY(r.constData() != ptr);
@@ -6062,7 +6062,7 @@ void tst_QString::setUnicode()
     const QChar ptr[] = { u'ሴ', QChar(0x0000) };
     const char16_t utf16[] = { u'ሴ', 0x0000 };
 
-    QTest::ThrowOnFailEnabler throwOnFail;
+    BOBUIest::ThrowOnFailEnabler throwOnFail;
 
     auto doTest = [](const auto ptr, QString &str) mutable {
         // make sure that the data was copied
@@ -6111,8 +6111,8 @@ void tst_QString::fromStdString()
     QCOMPARE( eng, u"foo"_s );
     const char cnull[] = "Embedded\0null\0character!";
     std::string stdnull( cnull, sizeof(cnull)-1 );
-    QString qtnull = QString::fromStdString( stdnull );
-    QCOMPARE(qtnull.size(), qsizetype(stdnull.size()));
+    QString bobuinull = QString::fromStdString( stdnull );
+    QCOMPARE(bobuinull.size(), qsizetype(stdnull.size()));
 }
 
 void tst_QString::toStdString()
@@ -6133,13 +6133,13 @@ void tst_QString::toStdString()
     // to embedded null characters, had to find one that works...
     const char16_t utf16[] = u"Embedded\0null\0character!";
     const size_t size = std::size(utf16) - 1; // - 1, null terminator of the string literal
-    QString qtnull(reinterpret_cast<const QChar *>(utf16), size);
+    QString bobuinull(reinterpret_cast<const QChar *>(utf16), size);
 
-    std::string stdnull = qtnull.toStdString();
-    QCOMPARE(int(stdnull.size()), qtnull.size());
+    std::string stdnull = bobuinull.toStdString();
+    QCOMPARE(int(stdnull.size()), bobuinull.size());
 
-    std::u16string stdu16null = qtnull.toStdU16String();
-    QCOMPARE(int(stdu16null.size()), qtnull.size());
+    std::u16string stdu16null = bobuinull.toStdU16String();
+    QCOMPARE(int(stdu16null.size()), bobuinull.size());
 }
 
 void tst_QString::utf8()
@@ -6155,41 +6155,41 @@ void tst_QString::utf8()
 
 void tst_QString::fromUtf8_data()
 {
-    QTest::addColumn<QByteArray>("utf8");
-    QTest::addColumn<QString>("res");
-    QTest::addColumn<int>("len");
+    BOBUIest::addColumn<QByteArray>("utf8");
+    BOBUIest::addColumn<QString>("res");
+    BOBUIest::addColumn<int>("len");
     QString str;
 
-    QTest::newRow("str0") << QByteArray("abcdefgh") << u"abcdefgh"_s << -1;
-    QTest::newRow("str0-len") << QByteArray("abcdefgh") << u"abc"_s << 3;
-    QTest::newRow("str1") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
+    BOBUIest::newRow("str0") << QByteArray("abcdefgh") << u"abcdefgh"_s << -1;
+    BOBUIest::newRow("str0-len") << QByteArray("abcdefgh") << u"abc"_s << 3;
+    BOBUIest::newRow("str1") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
                           << QString::fromLatin1("\366\344\374\326\304\334\370\346\345\330\306\305") << -1;
-    QTest::newRow("str1-len") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
+    BOBUIest::newRow("str1-len") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
                               << QString::fromLatin1("\366\344\374\326\304") << 10;
 
     str += QChar(0x05e9);
     str += QChar(0x05d3);
     str += QChar(0x05d2);
-    QTest::newRow("str2") << QByteArray("\327\251\327\223\327\222") << str << -1;
+    BOBUIest::newRow("str2") << QByteArray("\327\251\327\223\327\222") << str << -1;
 
     str = QChar(0x05e9);
-    QTest::newRow("str2-len") << QByteArray("\327\251\327\223\327\222") << str << 2;
+    BOBUIest::newRow("str2-len") << QByteArray("\327\251\327\223\327\222") << str << 2;
 
     str = QChar(0x20ac);
     str += u" some text"_s;
-    QTest::newRow("str3") << QByteArray("\342\202\254 some text") << str << -1;
+    BOBUIest::newRow("str3") << QByteArray("\342\202\254 some text") << str << -1;
 
     str = QChar(0x20ac);
     str += u" some "_s;
-    QTest::newRow("str3-len") << QByteArray("\342\202\254 some text") << str << 9;
+    BOBUIest::newRow("str3-len") << QByteArray("\342\202\254 some text") << str << 9;
 
     // test that QString::fromUtf8 suppresses an initial BOM, but not a ZWNBSP
     str = u"hello"_s;
     QByteArray bom("\357\273\277");
-    QTest::newRow("bom0") << bom << QString() << 3;
-    QTest::newRow("bom1") << bom + "hello" << str << -1;
-    QTest::newRow("bom+zwnbsp0") << bom + bom << QString(QChar(0xfeff)) << -1;
-    QTest::newRow("bom+zwnbsp1") << bom + "hello" + bom << str + QChar(0xfeff) << -1;
+    BOBUIest::newRow("bom0") << bom << QString() << 3;
+    BOBUIest::newRow("bom1") << bom + "hello" << str << -1;
+    BOBUIest::newRow("bom+zwnbsp0") << bom + bom << QString(QChar(0xfeff)) << -1;
+    BOBUIest::newRow("bom+zwnbsp1") << bom + "hello" + bom << str + QChar(0xfeff) << -1;
 
     str = u"hello"_s;
     str += QChar::ReplacementCharacter;
@@ -6200,8 +6200,8 @@ void tst_QString::fromUtf8_data()
     str += QChar::ReplacementCharacter;
     str += QChar(0x61);
     str += QChar::ReplacementCharacter;
-    QTest::newRow("invalid utf8") << QByteArray("hello\344h\344\344\366\344a\304") << str << -1;
-    QTest::newRow("invalid utf8-len") << QByteArray("hello\344h\344\344\366\344a\304") << u"hello"_s << 5;
+    BOBUIest::newRow("invalid utf8") << QByteArray("hello\344h\344\344\366\344a\304") << str << -1;
+    BOBUIest::newRow("invalid utf8-len") << QByteArray("hello\344h\344\344\366\344a\304") << u"hello"_s << 5;
 
     str = u"Prohl"_s;
     str += QChar::ReplacementCharacter;
@@ -6212,15 +6212,15 @@ void tst_QString::fromUtf8_data()
     str += QChar::ReplacementCharacter;
     str += u" Netscape"_s;
 
-    QTest::newRow("invalid utf8 2") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << str << -1;
-    QTest::newRow("invalid utf8-len 2") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << u""_s << 0;
+    BOBUIest::newRow("invalid utf8 2") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << str << -1;
+    BOBUIest::newRow("invalid utf8-len 2") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << u""_s << 0;
 
-    QTest::newRow("null-1") << QByteArray() << QString() << -1;
-    QTest::newRow("null0") << QByteArray() << QString() << 0;
-    QTest::newRow("empty-1") << QByteArray("\0abcd", 5) << QString() << -1;
-    QTest::newRow("empty5") << QByteArray("\0abcd", 5) << QString::fromLatin1("\0abcd", 5) << 5;
-    QTest::newRow("other-1") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab") << -1;
-    QTest::newRow("other5") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab\0cd", 5) << 5;
+    BOBUIest::newRow("null-1") << QByteArray() << QString() << -1;
+    BOBUIest::newRow("null0") << QByteArray() << QString() << 0;
+    BOBUIest::newRow("empty-1") << QByteArray("\0abcd", 5) << QString() << -1;
+    BOBUIest::newRow("empty5") << QByteArray("\0abcd", 5) << QString::fromLatin1("\0abcd", 5) << 5;
+    BOBUIest::newRow("other-1") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab") << -1;
+    BOBUIest::newRow("other5") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab\0cd", 5) << 5;
 
     str = u"Old Italic: "_s;
     str += QChar(0xd800);
@@ -6233,9 +6233,9 @@ void tst_QString::fromUtf8_data()
     str += QChar(0xdf03);
     str += QChar(0xd800);
     str += QChar(0xdf04);
-    QTest::newRow("surrogate") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str << -1;
+    BOBUIest::newRow("surrogate") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str << -1;
 
-    QTest::newRow("surrogate-len") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str.left(16) << 20;
+    BOBUIest::newRow("surrogate-len") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str.left(16) << 20;
 
 }
 
@@ -6273,16 +6273,16 @@ void tst_QString::nullFromUtf8()
 
 void tst_QString::fromLocal8Bit_data()
 {
-    QTest::addColumn<QByteArray>("local8Bit");
-    QTest::addColumn<int>("len");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QByteArray>("local8Bit");
+    BOBUIest::addColumn<int>("len");
+    BOBUIest::addColumn<QString>("result");
 
-    //QTest::newRow("nullString") << QByteArray() << -1 << QString();
-    //QTest::newRow("emptyString") << QByteArray("") << -1 << QString("");
-    //QTest::newRow("string") << QByteArray("test") << -1 << QString("test");
-    //QTest::newRow("stringlen0") << QByteArray("test") << 0 << QString("");
-    //QTest::newRow("stringlen3") << QByteArray("test") << 3 << QString("tes");
-    QTest::newRow("stringlen99") << QByteArray("test\0foo", 8) << 8 << QString::fromLatin1("test\0foo", 8);
+    //BOBUIest::newRow("nullString") << QByteArray() << -1 << QString();
+    //BOBUIest::newRow("emptyString") << QByteArray("") << -1 << QString("");
+    //BOBUIest::newRow("string") << QByteArray("test") << -1 << QString("test");
+    //BOBUIest::newRow("stringlen0") << QByteArray("test") << 0 << QString("");
+    //BOBUIest::newRow("stringlen3") << QByteArray("test") << 3 << QString("tes");
+    BOBUIest::newRow("stringlen99") << QByteArray("test\0foo", 8) << 8 << QString::fromLatin1("test\0foo", 8);
 
     QByteArray longQByteArray;
     QString longQString;
@@ -6292,19 +6292,19 @@ void tst_QString::fromLocal8Bit_data()
         longQString += u"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"_s;
     }
 
-    //QTest::newRow("longString") << longQByteArray << -1 << longQString;
-    //QTest::newRow("longStringlen0") << longQByteArray << 0 << QString("");
-    //QTest::newRow("longStringlen3") << longQByteArray << 3 << QString("aaa");
-    //QTest::newRow("someNonAlphaChars") << QByteArray("d:/this/is/a/test.h") << -1 << QString("d:/this/is/a/test.h");
+    //BOBUIest::newRow("longString") << longQByteArray << -1 << longQString;
+    //BOBUIest::newRow("longStringlen0") << longQByteArray << 0 << QString("");
+    //BOBUIest::newRow("longStringlen3") << longQByteArray << 3 << QString("aaa");
+    //BOBUIest::newRow("someNonAlphaChars") << QByteArray("d:/this/is/a/test.h") << -1 << QString("d:/this/is/a/test.h");
 
-    //QTest::newRow("null-1") << QByteArray() << -1 << QString();
-    //QTest::newRow("null0") << QByteArray() << 0 << QString();
-    //QTest::newRow("null5") << QByteArray() << 5 << QString();
-    //QTest::newRow("empty-1") << QByteArray("\0abcd", 5) << -1 << QString();
-    //QTest::newRow("empty0") << QByteArray() << 0 << QString();
-    //QTest::newRow("empty5") << QByteArray("\0abcd", 5) << 5 << QString::fromLatin1("\0abcd", 5);
-    //QTest::newRow("other-1") << QByteArray("ab\0cd", 5) << -1 << QString::fromLatin1("ab");
-    //QTest::newRow("other5") << QByteArray("ab\0cd", 5) << 5 << QString::fromLatin1("ab\0cd", 5);
+    //BOBUIest::newRow("null-1") << QByteArray() << -1 << QString();
+    //BOBUIest::newRow("null0") << QByteArray() << 0 << QString();
+    //BOBUIest::newRow("null5") << QByteArray() << 5 << QString();
+    //BOBUIest::newRow("empty-1") << QByteArray("\0abcd", 5) << -1 << QString();
+    //BOBUIest::newRow("empty0") << QByteArray() << 0 << QString();
+    //BOBUIest::newRow("empty5") << QByteArray("\0abcd", 5) << 5 << QString::fromLatin1("\0abcd", 5);
+    //BOBUIest::newRow("other-1") << QByteArray("ab\0cd", 5) << -1 << QString::fromLatin1("ab");
+    //BOBUIest::newRow("other5") << QByteArray("ab\0cd", 5) << 5 << QString::fromLatin1("ab\0cd", 5);
 }
 
 void tst_QString::fromLocal8Bit()
@@ -6320,12 +6320,12 @@ void tst_QString::fromLocal8Bit()
 
 void tst_QString::local8Bit_data()
 {
-    QTest::addColumn<QString>("local8Bit");
-    QTest::addColumn<QByteArray>("result");
+    BOBUIest::addColumn<QString>("local8Bit");
+    BOBUIest::addColumn<QByteArray>("result");
 
-    QTest::newRow("nullString") << QString() << QByteArray();
-    QTest::newRow("emptyString") << u""_s << QByteArray("");
-    QTest::newRow("string") << u"test"_s << QByteArray("test");
+    BOBUIest::newRow("nullString") << QString() << QByteArray();
+    BOBUIest::newRow("emptyString") << u""_s << QByteArray("");
+    BOBUIest::newRow("string") << u"test"_s << QByteArray("test");
 
     QByteArray longQByteArray;
     QString longQString;
@@ -6335,8 +6335,8 @@ void tst_QString::local8Bit_data()
         longQString += u"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"_s;
     }
 
-    QTest::newRow("longString") << longQString << longQByteArray;
-    QTest::newRow("someNonAlphaChars") << u"d:/this/is/a/test.h"_s << QByteArray("d:/this/is/a/test.h");
+    BOBUIest::newRow("longString") << longQString << longQByteArray;
+    BOBUIest::newRow("someNonAlphaChars") << u"d:/this/is/a/test.h"_s << QByteArray("d:/this/is/a/test.h");
 }
 
 void tst_QString::local8Bit()
@@ -6349,13 +6349,13 @@ void tst_QString::local8Bit()
 
 void tst_QString::invalidToLocal8Bit_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<QByteArray>("expect"); // Initial validly-converted prefix
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QByteArray>("expect"); // Initial validly-converted prefix
 
     {
         const QChar malformed[] = { u'A', QChar(0xd800), u'B', u'\0' };
         const char expected[] = "A";
-        QTest::newRow("LoneHighSurrogate")
+        BOBUIest::newRow("LoneHighSurrogate")
             << QString(malformed, sizeof(malformed) / sizeof(QChar))
             // Don't include the terminating '\0' of expected:
             << QByteArray(expected, sizeof(expected) / sizeof(char) - 1);
@@ -6363,28 +6363,28 @@ void tst_QString::invalidToLocal8Bit_data()
     {
         const QChar malformed[] = { u'A', QChar(0xdc00), u'B', u'\0' };
         const char expected[] = "A";
-        QTest::newRow("LoneLowSurrogate")
+        BOBUIest::newRow("LoneLowSurrogate")
             << QString(malformed, sizeof(malformed) / sizeof(QChar))
             << QByteArray(expected, sizeof(expected) / sizeof(char) - 1);
     }
     {
         const QChar malformed[] = { u'A', QChar(0xd800), QChar(0xd801), u'B', u'\0' };
         const char expected[] = "A";
-        QTest::newRow("DoubleHighSurrogate")
+        BOBUIest::newRow("DoubleHighSurrogate")
             << QString(malformed, sizeof(malformed) / sizeof(QChar))
             << QByteArray(expected, sizeof(expected) / sizeof(char) - 1);
     }
     {
         const QChar malformed[] = { u'A', QChar(0xdc00), QChar(0xdc01), u'B', u'\0' };
         const char expected[] = "A";
-        QTest::newRow("DoubleLowSurrogate")
+        BOBUIest::newRow("DoubleLowSurrogate")
             << QString(malformed, sizeof(malformed) / sizeof(QChar))
             << QByteArray(expected, sizeof(expected) / sizeof(char) - 1);
     }
     {
         const QChar malformed[] = { u'A', QChar(0xdc00), QChar(0xd800), u'B', u'\0' };
         const char expected[] = "A";
-        QTest::newRow("ReversedSurrogates") // low before high
+        BOBUIest::newRow("ReversedSurrogates") // low before high
             << QString(malformed, sizeof(malformed) / sizeof(QChar))
             << QByteArray(expected, sizeof(expected) / sizeof(char) - 1);
     }
@@ -6426,21 +6426,21 @@ void tst_QString::nullFromLocal8Bit()
 
 void tst_QString::fromLatin1Roundtrip_data()
 {
-    QTest::addColumn<QByteArray>("latin1");
-    QTest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QByteArray>("latin1");
+    BOBUIest::addColumn<QString>("unicode");
 
-    QTest::newRow("null") << QByteArray() << QString();
-    QTest::newRow("empty") << QByteArray("") << "";
+    BOBUIest::newRow("null") << QByteArray() << QString();
+    BOBUIest::newRow("empty") << QByteArray("") << "";
 
     static const char16_t unicode1[] = { 'H', 'e', 'l', 'l', 'o', 1, '\r', '\n', 0x7f };
-    QTest::newRow("ascii-only") << QByteArray("Hello") << QString::fromUtf16(unicode1, 5);
-    QTest::newRow("ascii+control") << QByteArray("Hello\1\r\n\x7f") << QString::fromUtf16(unicode1, 9);
+    BOBUIest::newRow("ascii-only") << QByteArray("Hello") << QString::fromUtf16(unicode1, 5);
+    BOBUIest::newRow("ascii+control") << QByteArray("Hello\1\r\n\x7f") << QString::fromUtf16(unicode1, 9);
 
     static const char16_t unicode3[] = { 'a', 0, 'z' };
-    QTest::newRow("ascii+nul") << QByteArray("a\0z", 3) << QString::fromUtf16(unicode3, 3);
+    BOBUIest::newRow("ascii+nul") << QByteArray("a\0z", 3) << QString::fromUtf16(unicode3, 3);
 
     static const char16_t unicode4[] = { 0x80, 0xc0, 0xff };
-    QTest::newRow("non-ascii") << QByteArray("\x80\xc0\xff") << QString::fromUtf16(unicode4, 3);
+    BOBUIest::newRow("non-ascii") << QByteArray("\x80\xc0\xff") << QString::fromUtf16(unicode4, 3);
 }
 
 void tst_QString::fromLatin1Roundtrip()
@@ -6448,7 +6448,7 @@ void tst_QString::fromLatin1Roundtrip()
     QFETCH(QByteArray, latin1);
     QFETCH(QString, unicode);
 
-    // Qt Test safety check:
+    // BobUI Test safety check:
     QCOMPARE(latin1.isNull(), unicode.isNull());
     QCOMPARE(latin1.isEmpty(), unicode.isEmpty());
     QCOMPARE(latin1.size(), unicode.size());
@@ -6470,7 +6470,7 @@ void tst_QString::fromLatin1Roundtrip()
     if (latin1.isEmpty())
         return;
 
-    if (QTest::currentTestFailed()) QFAIL("failed");
+    if (BOBUIest::currentTestFailed()) QFAIL("failed");
     while (latin1.length() < 16) {
         latin1 += latin1;
         unicode += unicode;
@@ -6478,18 +6478,18 @@ void tst_QString::fromLatin1Roundtrip()
     roundtripTest();
 
     // double again (length will be > 32)
-    if (QTest::currentTestFailed()) QFAIL("failed");
+    if (BOBUIest::currentTestFailed()) QFAIL("failed");
     latin1 += latin1;
     unicode += unicode;
     roundtripTest();
 
     // double again (length will be > 64)
-    if (QTest::currentTestFailed()) QFAIL("failed");
+    if (BOBUIest::currentTestFailed()) QFAIL("failed");
     latin1 += latin1;
     unicode += unicode;
     roundtripTest();
 
-    if (QTest::currentTestFailed()) QFAIL("failed");
+    if (BOBUIest::currentTestFailed()) QFAIL("failed");
     latin1 += latin1;
     unicode += unicode;
     roundtripTest();
@@ -6497,31 +6497,31 @@ void tst_QString::fromLatin1Roundtrip()
 
 void tst_QString::toLatin1Roundtrip_data()
 {
-    QTest::addColumn<QByteArray>("latin1");
-    QTest::addColumn<QString>("unicodesrc");
-    QTest::addColumn<QString>("unicodedst");
+    BOBUIest::addColumn<QByteArray>("latin1");
+    BOBUIest::addColumn<QString>("unicodesrc");
+    BOBUIest::addColumn<QString>("unicodedst");
 
-    QTest::newRow("null") << QByteArray() << QString() << QString();
-    QTest::newRow("empty") << QByteArray("") << "" << "";
+    BOBUIest::newRow("null") << QByteArray() << QString() << QString();
+    BOBUIest::newRow("empty") << QByteArray("") << "" << "";
 
     static const char16_t unicode1[] = { 'H', 'e', 'l', 'l', 'o', 1, '\r', '\n', 0x7f };
-    QTest::newRow("ascii-only") << QByteArray("Hello") << QString::fromUtf16(unicode1, 5) << QString::fromUtf16(unicode1, 5);
-    QTest::newRow("ascii+control") << QByteArray("Hello\1\r\n\x7f") << QString::fromUtf16(unicode1, 9)  << QString::fromUtf16(unicode1, 9);
+    BOBUIest::newRow("ascii-only") << QByteArray("Hello") << QString::fromUtf16(unicode1, 5) << QString::fromUtf16(unicode1, 5);
+    BOBUIest::newRow("ascii+control") << QByteArray("Hello\1\r\n\x7f") << QString::fromUtf16(unicode1, 9)  << QString::fromUtf16(unicode1, 9);
 
     static const char16_t unicode3[] = { 'a', 0, 'z' };
-    QTest::newRow("ascii+nul") << QByteArray("a\0z", 3) << QString::fromUtf16(unicode3, 3) << QString::fromUtf16(unicode3, 3);
+    BOBUIest::newRow("ascii+nul") << QByteArray("a\0z", 3) << QString::fromUtf16(unicode3, 3) << QString::fromUtf16(unicode3, 3);
 
     static const char16_t unicode4[] = { 0x80, 0xc0, 0xff };
-    QTest::newRow("non-ascii") << QByteArray("\x80\xc0\xff") << QString::fromUtf16(unicode4, 3) << QString::fromUtf16(unicode4, 3);
+    BOBUIest::newRow("non-ascii") << QByteArray("\x80\xc0\xff") << QString::fromUtf16(unicode4, 3) << QString::fromUtf16(unicode4, 3);
 
     static const char16_t unicodeq[] = { '?', '?', '?', '?', '?' };
     const QString questionmarks = QString::fromUtf16(unicodeq, 5);
 
     static const char16_t unicode5[] = { 0x100, 0x101, 0x17f, 0x7f00, 0x7f7f };
-    QTest::newRow("non-latin1a") << QByteArray("?????") << QString::fromUtf16(unicode5, 5) << questionmarks;
+    BOBUIest::newRow("non-latin1a") << QByteArray("?????") << QString::fromUtf16(unicode5, 5) << questionmarks;
 
     static const char16_t unicode6[] = { 0x180, 0x1ff, 0x8001, 0x8080, 0xfffc };
-    QTest::newRow("non-latin1b") << QByteArray("?????") << QString::fromUtf16(unicode6, 5) << questionmarks;
+    BOBUIest::newRow("non-latin1b") << QByteArray("?????") << QString::fromUtf16(unicode6, 5) << questionmarks;
 }
 
 void tst_QString::toLatin1Roundtrip()
@@ -6530,7 +6530,7 @@ void tst_QString::toLatin1Roundtrip()
     QFETCH(QString, unicodesrc);
     QFETCH(QString, unicodedst);
 
-    // Qt Test safety check:
+    // BobUI Test safety check:
     QCOMPARE(latin1.isNull(), unicodesrc.isNull());
     QCOMPARE(latin1.isEmpty(), unicodesrc.isEmpty());
     QCOMPARE(latin1.size(), unicodesrc.size());
@@ -6632,7 +6632,7 @@ void tst_QString::fromUcs4()
     s = QString::fromUcs4(U"\u221212\U000020AC\U00010000");
     QCOMPARE(s, QString::fromUtf8("\342\210\222" "12" "\342\202\254" "\360\220\200\200"));
 
-    // QTBUG-62011: don't mistake ZWNBS for BOM
+    // BOBUIBUG-62011: don't mistake ZWNBS for BOM
     // Start with one BOM, to ensure we use the right endianness:
     const char32_t text[] = { 0xfeff, 97, 0xfeff, 98, 0xfeff, 99, 0xfeff, 100 };
     s = QString::fromUcs4(text, 8);
@@ -6720,8 +6720,8 @@ void tst_QString::toUcs4()
 void tst_QString::arg()
 {
 /*
-    Warning: If any of these test fails, the warning given by Qt Test
-    is all messed up, because Qt Test itself uses QString::arg().
+    Warning: If any of these test fails, the warning given by BobUI Test
+    is all messed up, because BobUI Test itself uses QString::arg().
 */
 
     TransientDefaultLocale transient(QLocale(u"de_DE"));
@@ -6792,27 +6792,27 @@ void tst_QString::arg()
     QString fullName = QString(u"My name is %2, %1 %2"_s).arg(firstName).arg(lastName);
     QCOMPARE(fullName, QLatin1String("My name is Bond, James Bond"));
 
-    // ### Qt 7: clean this up, leave just the #else branch
-#if QT_VERSION < QT_VERSION_CHECK(6, 6, 0)
+    // ### BobUI 7: clean this up, leave just the #else branch
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 6, 0)
     static const QRegularExpression nonAsciiArgWarning("QString::arg\\(\\): the replacement \".*\" contains non-ASCII digits");
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
     QCOMPARE( QString("%¹").arg("foo"), QString("foo") );
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
     QCOMPARE( QString("%¹%1").arg("foo"), QString("foofoo") );
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
     QCOMPARE( QString("%1²").arg("E=mc"), QString("E=mc") );
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
     QCOMPARE( QString("%1²%2").arg("a").arg("b"), QString("ba") );
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
     QCOMPARE( QString("%¹%1²%2").arg("a").arg("b"), QString("a%1²b") );
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
-    QTest::ignoreMessage(QtWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, nonAsciiArgWarning);
     QCOMPARE( QString("%2²%1").arg("a").arg("b"), QString("ba") );
 #else
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"%¹\", \"foo\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"%¹\", \"foo\"");
     QCOMPARE(u"%¹"_s.arg(foo), u"%¹");
     QCOMPARE(u"%¹%1"_s.arg(foo), u"%¹foo");
     QCOMPARE(u"%1²"_s.arg(u"E=mc"_s), u"E=mc²");
@@ -6837,7 +6837,7 @@ void tst_QString::arg()
 
     // (unscoped) enums
     enum Enum {
-        Foo1, Foo2,           // reproducer for QTBUG-131906,
+        Foo1, Foo2,           // reproducer for BOBUIBUG-131906,
         RangeExtended = -667, // but w/o the UB of out-of-range values
     };
     QCOMPARE(s4.arg(Enum(-666)), QLatin1String("[-666]"));
@@ -6857,29 +6857,29 @@ void tst_QString::arg()
     QCOMPARE(QLatin1String("[%1]").arg(L'ø'), QStringView(u"[ø]"));
     QCOMPARE(s4.arg(L'ø'), QStringView(u"[ø]"));
 #ifndef __cpp_char8_t
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     QCOMPARE(QLatin1String("[%1]").arg(u8'a'), QLatin1String("[a]"));
 #endif
 #endif
     QCOMPARE(s4.arg(u8'a'), QLatin1String("[a]"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"\", \"foo\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"\", \"foo\"");
     QCOMPARE(QString().arg(foo), QString());
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"\", 0");
     QCOMPARE( QString().arg(0), QString() );
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"\", 0");
     QCOMPARE( QString().arg(0U), QString() );
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"\", 0");
     QCOMPARE( QString().arg(0.0), QString() );
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"\", 0");
     QCOMPARE(QString(u""_s).arg(0), u""_s);
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \" \", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \" \", 0");
     QCOMPARE(QString(u" "_s).arg(0), " "_L1);
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"%\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"%\", 0");
     QCOMPARE(QString(u"%"_s).arg(0), "%"_L1);
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"%%\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"%%\", 0");
     QCOMPARE(QString(u"%%"_s).arg(0), "%%"_L1);
-    QTest::ignoreMessage(QtWarningMsg, "QString::arg: Argument missing: \"%%%\", 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QString::arg: Argument missing: \"%%%\", 0");
     QCOMPARE(QString(u"%%%"_s).arg(0), "%%%"_L1);
     QCOMPARE(QString(u"%%%1%%%2"_s).arg(foo).arg(bar), "%%foo%%bar"_L1);
 
@@ -6982,7 +6982,7 @@ template <typename S, typename...Ts>
 constexpr bool arg_compiles_v = qxp::is_detected_v<arg_compile_test, S, Ts...>;
 
 template <typename T>
-struct Wrapper { // QTBUG-138471
+struct Wrapper { // BOBUIBUG-138471
     Q_IMPLICIT operator T() const {
         return T(1);
     }
@@ -7023,26 +7023,26 @@ void tst_QString::number()
 
 void tst_QString::number_double_data()
 {
-    QTest::addColumn<double>("value");
-    QTest::addColumn<char>("format");
-    QTest::addColumn<int>("precision");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<double>("value");
+    BOBUIest::addColumn<char>("format");
+    BOBUIest::addColumn<int>("precision");
+    BOBUIest::addColumn<QString>("expected");
 
     // This function is implemented in ../shared/test_number_shared.h
     add_number_double_shared_data([](NumberDoubleTestData datum) {
         const char *title =
                 !datum.optTitle.isEmpty() ? datum.optTitle.data() : datum.expected.data();
-        QTest::addRow("%s, format '%c', precision %d", title, datum.f, datum.p)
+        BOBUIest::addRow("%s, format '%c', precision %d", title, datum.f, datum.p)
                 << datum.d << datum.f << datum.p << datum.expected.toString();
         if (datum.f != 'f') { // Also test uppercase format
-            datum.f = QtMiscUtils::toAsciiUpper(datum.f);
+            datum.f = BobUIMiscUtils::toAsciiUpper(datum.f);
             QString upper = datum.expected.toString().toUpper();
             QString upperTitle = QString::fromLatin1(title);
             if (!datum.optTitle.isEmpty())
                 upperTitle += u", uppercase"_s;
             else
                 upperTitle = upperTitle.toUpper();
-            QTest::addRow("%s, format '%c', precision %d", qPrintable(upper), datum.f, datum.p)
+            BOBUIest::addRow("%s, format '%c', precision %d", qPrintable(upper), datum.f, datum.p)
                     << datum.d << datum.f << datum.p << upper;
         }
     });
@@ -7053,57 +7053,57 @@ void tst_QString::number_double()
     QFETCH(double, value);
     QFETCH(char, format);
     QFETCH(int, precision);
-    QT_IGNORE_DEPRECATIONS(constexpr bool has_denorm = std::numeric_limits<double>::has_denorm != std::denorm_present;)
+    BOBUI_IGNORE_DEPRECATIONS(constexpr bool has_denorm = std::numeric_limits<double>::has_denorm != std::denorm_present;)
     if constexpr (has_denorm) {
-        if (::qstrcmp(QTest::currentDataTag(), "Very small number, very high precision, format 'f', precision 350") == 0) {
+        if (::qstrcmp(BOBUIest::currentDataTag(), "Very small number, very high precision, format 'f', precision 350") == 0) {
             QSKIP("Skipping 'denorm' as this type lacks denormals on this system");
         }
     }
-    QTEST(QString::number(value, format, precision), "expected");
+    BOBUIEST(QString::number(value, format, precision), "expected");
 }
 
 void tst_QString::number_base_data()
 {
-    QTest::addColumn<qlonglong>("n");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<qlonglong>("n");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("base 10, positive") << 12346LL << 10 << u"12346"_s;
-    QTest::newRow("base  2, positive") << 12346LL <<  2 << u"11000000111010"_s;
-    QTest::newRow("base  8, positive") << 12346LL <<  8 << u"30072"_s;
-    QTest::newRow("base 16, positive") << 12346LL << 16 << u"303a"_s;
-    QTest::newRow("base 17, positive") << 12346LL << 17 << u"28c4"_s;
-    QTest::newRow("base 36, positive") << 2181789482LL << 36 << u"102zbje"_s;
+    BOBUIest::newRow("base 10, positive") << 12346LL << 10 << u"12346"_s;
+    BOBUIest::newRow("base  2, positive") << 12346LL <<  2 << u"11000000111010"_s;
+    BOBUIest::newRow("base  8, positive") << 12346LL <<  8 << u"30072"_s;
+    BOBUIest::newRow("base 16, positive") << 12346LL << 16 << u"303a"_s;
+    BOBUIest::newRow("base 17, positive") << 12346LL << 17 << u"28c4"_s;
+    BOBUIest::newRow("base 36, positive") << 2181789482LL << 36 << u"102zbje"_s;
 
-    QTest::newRow("base 10, negative") << -12346LL << 10 << u"-12346"_s;
-    QTest::newRow("base  2, negative") << -12346LL <<  2 << u"-11000000111010"_s;
-    QTest::newRow("base  8, negative") << -12346LL <<  8 << u"-30072"_s;
-    QTest::newRow("base 16, negative") << -12346LL << 16 << u"-303a"_s;
-    QTest::newRow("base 17, negative") << -12346LL << 17 << u"-28c4"_s;
-    QTest::newRow("base 36, negative") << -2181789482LL << 36 << u"-102zbje"_s;
+    BOBUIest::newRow("base 10, negative") << -12346LL << 10 << u"-12346"_s;
+    BOBUIest::newRow("base  2, negative") << -12346LL <<  2 << u"-11000000111010"_s;
+    BOBUIest::newRow("base  8, negative") << -12346LL <<  8 << u"-30072"_s;
+    BOBUIest::newRow("base 16, negative") << -12346LL << 16 << u"-303a"_s;
+    BOBUIest::newRow("base 17, negative") << -12346LL << 17 << u"-28c4"_s;
+    BOBUIest::newRow("base 36, negative") << -2181789482LL << 36 << u"-102zbje"_s;
 
-    QTest::newRow("base  2, minus 1") << -1LL << 2 << u"-1"_s;
+    BOBUIest::newRow("base  2, minus 1") << -1LL << 2 << u"-1"_s;
 
-    QTest::newRow("largeint, base 10, positive")
+    BOBUIest::newRow("largeint, base 10, positive")
             << 123456789012LL << 10 << u"123456789012"_s;
-    QTest::newRow("largeint, base  2, positive")
+    BOBUIest::newRow("largeint, base  2, positive")
             << 123456789012LL <<  2 << u"1110010111110100110010001101000010100"_s;
-    QTest::newRow("largeint, base  8, positive")
+    BOBUIest::newRow("largeint, base  8, positive")
             << 123456789012LL <<  8 << u"1627646215024"_s;
-    QTest::newRow("largeint, base 16, positive")
+    BOBUIest::newRow("largeint, base 16, positive")
             << 123456789012LL << 16 << u"1cbe991a14"_s;
-    QTest::newRow("largeint, base 17, positive")
+    BOBUIest::newRow("largeint, base 17, positive")
             << 123456789012LL << 17 << u"10bec2b629"_s;
 
-    QTest::newRow("largeint, base 10, negative")
+    BOBUIest::newRow("largeint, base 10, negative")
             << -123456789012LL << 10 << u"-123456789012"_s;
-    QTest::newRow("largeint, base  2, negative")
+    BOBUIest::newRow("largeint, base  2, negative")
             << -123456789012LL <<  2 << u"-1110010111110100110010001101000010100"_s;
-    QTest::newRow("largeint, base  8, negative")
+    BOBUIest::newRow("largeint, base  8, negative")
             << -123456789012LL <<  8 << u"-1627646215024"_s;
-    QTest::newRow("largeint, base 16, negative")
+    BOBUIest::newRow("largeint, base 16, negative")
             << -123456789012LL << 16 << u"-1cbe991a14"_s;
-    QTest::newRow("largeint, base 17, negative")
+    BOBUIest::newRow("largeint, base 17, negative")
             << -123456789012LL << 17 << u"-10bec2b629"_s;
 }
 
@@ -7126,7 +7126,7 @@ void tst_QString::number_base()
 
 void tst_QString::doubleOut()
 {
-    // Regression test for QTBUG-63620; the first two paths lost the exponent's
+    // Regression test for BOBUIBUG-63620; the first two paths lost the exponent's
     // leading 0 at 5.7; C's printf() family guarantee a two-digit exponent (in
     // contrast with ECMAScript, which forbids leading zeros).
     const QString expect(QStringLiteral("1e-06"));
@@ -7138,7 +7138,7 @@ void tst_QString::doubleOut()
     }
     {
         QString text;
-        QTextStream stream(&text);
+        BOBUIextStream stream(&text);
         stream << micro;
         QCOMPARE(text, expect);
     }
@@ -7181,146 +7181,146 @@ void tst_QString::capacity()
 
 void tst_QString::section_data()
 {
-    QTest::addColumn<QString>("wholeString" );
-    QTest::addColumn<QString>("sep" );
-    QTest::addColumn<int>("start" );
-    QTest::addColumn<int>("end" );
-    QTest::addColumn<int>("flags" );
-    QTest::addColumn<QString>("sectionString" );
-    QTest::addColumn<bool>("regexp" );
+    BOBUIest::addColumn<QString>("wholeString" );
+    BOBUIest::addColumn<QString>("sep" );
+    BOBUIest::addColumn<int>("start" );
+    BOBUIest::addColumn<int>("end" );
+    BOBUIest::addColumn<int>("flags" );
+    BOBUIest::addColumn<QString>("sectionString" );
+    BOBUIest::addColumn<bool>("regexp" );
 
-    QTest::newRow("null") << QString() << u","_s << 0 << -1 << int(QString::SectionDefault)
+    BOBUIest::newRow("null") << QString() << u","_s << 0 << -1 << int(QString::SectionDefault)
                           << QString() << false;
-    QTest::newRow("empty") << u""_s << u","_s << 0 << -1 << int(QString::SectionDefault) << u""_s
+    BOBUIest::newRow("empty") << u""_s << u","_s << 0 << -1 << int(QString::SectionDefault) << u""_s
                            << false;
-    QTest::newRow("data0") << u"forename,middlename,surname,phone"_s << u","_s << 2 << 2
+    BOBUIest::newRow("data0") << u"forename,middlename,surname,phone"_s << u","_s << 2 << 2
                            << int(QString::SectionDefault) << u"surname"_s << false;
-    QTest::newRow("data1") << u"/usr/local/bin/myapp"_s << u"/"_s << 3 << 4
+    BOBUIest::newRow("data1") << u"/usr/local/bin/myapp"_s << u"/"_s << 3 << 4
                            << int(QString::SectionDefault) << u"bin/myapp"_s << false;
-    QTest::newRow("data2") << u"/usr/local/bin/myapp"_s << u"/"_s << 3 << 3
+    BOBUIest::newRow("data2") << u"/usr/local/bin/myapp"_s << u"/"_s << 3 << 3
                            << int(QString::SectionSkipEmpty) << u"myapp"_s << false;
-    QTest::newRow("data3") << u"forename**middlename**surname**phone"_s << u"**"_s << 2 << 2
+    BOBUIest::newRow("data3") << u"forename**middlename**surname**phone"_s << u"**"_s << 2 << 2
                            << int(QString::SectionDefault) << u"surname"_s << false;
-    QTest::newRow("data4") << u"forename**middlename**surname**phone"_s << u"**"_s << -3 << -2
+    BOBUIest::newRow("data4") << u"forename**middlename**surname**phone"_s << u"**"_s << -3 << -2
                            << int(QString::SectionDefault) << u"middlename**surname"_s << false;
-    QTest::newRow("data5") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 0
+    BOBUIest::newRow("data5") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 0
                            << 0 << int(QString::SectionSkipEmpty) << u"Datt"_s << false;
-    QTest::newRow("data6") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 1
+    BOBUIest::newRow("data6") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 1
                            << 1 << int(QString::SectionSkipEmpty) << u"wollen"_s << false;
-    QTest::newRow("data7") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 2
+    BOBUIest::newRow("data7") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 2
                            << 2 << int(QString::SectionSkipEmpty) << u"wir"_s << false;
-    QTest::newRow("data8") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 3
+    BOBUIest::newRow("data8") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 3
                            << 3 << int(QString::SectionSkipEmpty) << u"mal"_s << false;
-    QTest::newRow("data9") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 4
+    BOBUIest::newRow("data9") << u"##Datt######wollen######wir######mal######sehen##"_s << u"#"_s << 4
                            << 4 << int(QString::SectionSkipEmpty) << u"sehen"_s << false;
     // not fixed for 3.1
-    QTest::newRow("data10") << u"a/b/c/d"_s << u"/"_s << 1 << -1
+    BOBUIest::newRow("data10") << u"a/b/c/d"_s << u"/"_s << 1 << -1
                             << int(QString::SectionIncludeLeadingSep | QString::SectionIncludeTrailingSep)
                             << u"/b/c/d"_s << false;
-    QTest::newRow("data11") << u"aoLoboLocolod"_s << u"olo"_s << -1 << -1
+    BOBUIest::newRow("data11") << u"aoLoboLocolod"_s << u"olo"_s << -1 << -1
                             << int(QString::SectionCaseInsensitiveSeps) << u"d"_s << false;
-    QTest::newRow("data12") << u"F0"_s << u"F"_s << 0 << 0 << int(QString::SectionSkipEmpty)
+    BOBUIest::newRow("data12") << u"F0"_s << u"F"_s << 0 << 0 << int(QString::SectionSkipEmpty)
                             << u"0"_s << false;
-    QTest::newRow("foo1") << u"foo;foo;"_s << u";"_s << 0 << 0
+    BOBUIest::newRow("foo1") << u"foo;foo;"_s << u";"_s << 0 << 0
                           << int(QString::SectionIncludeLeadingSep) << u"foo"_s << false;
-    QTest::newRow("foo2") << u"foo;foo;"_s << u";"_s << 1 << 1
+    BOBUIest::newRow("foo2") << u"foo;foo;"_s << u";"_s << 1 << 1
                           << int(QString::SectionIncludeLeadingSep) << u";foo"_s << false;
-    QTest::newRow("foo3") << u"foo;foo;"_s << u";"_s << 2 << 2
+    BOBUIest::newRow("foo3") << u"foo;foo;"_s << u";"_s << 2 << 2
                           << int(QString::SectionIncludeLeadingSep) << u";"_s << false;
-    QTest::newRow("foo1rx") << u"foo;foo;"_s << u";"_s << 0 << 0
+    BOBUIest::newRow("foo1rx") << u"foo;foo;"_s << u";"_s << 0 << 0
                             << int(QString::SectionIncludeLeadingSep) << u"foo"_s << true;
-    QTest::newRow("foo2rx") << u"foo;foo;"_s << u";"_s << 1 << 1
+    BOBUIest::newRow("foo2rx") << u"foo;foo;"_s << u";"_s << 1 << 1
                             << int(QString::SectionIncludeLeadingSep) << u";foo"_s << true;
-    QTest::newRow("foo3rx") << u"foo;foo;"_s << u";"_s << 2 << 2
+    BOBUIest::newRow("foo3rx") << u"foo;foo;"_s << u";"_s << 2 << 2
                             << int(QString::SectionIncludeLeadingSep) << u";"_s << true;
 
-    QTest::newRow("qmake_path") << u"/Users/sam/troll/qt4.0/src/corelib/QtCore_debug.xcode/"_s
+    BOBUIest::newRow("qmake_path") << u"/Users/sam/troll/bobui4.0/src/corelib/BobUICore_debug.xcode/"_s
                                 << u"/"_s << 0 << -2 << int(QString::SectionDefault)
-                                << u"/Users/sam/troll/qt4.0/src/corelib/QtCore_debug.xcode"_s
+                                << u"/Users/sam/troll/bobui4.0/src/corelib/BobUICore_debug.xcode"_s
                                 << false;
-    QTest::newRow("qmake_pathrx") << u"/Users/sam/troll/qt4.0/src/corelib/QtCore_debug.xcode/"_s
+    BOBUIest::newRow("qmake_pathrx") << u"/Users/sam/troll/bobui4.0/src/corelib/BobUICore_debug.xcode/"_s
                                   << u"/"_s << 0 << -2 << int(QString::SectionDefault)
-                                  << u"/Users/sam/troll/qt4.0/src/corelib/QtCore_debug.xcode"_s
+                                  << u"/Users/sam/troll/bobui4.0/src/corelib/BobUICore_debug.xcode"_s
                                   << true;
-    QTest::newRow("data13") << u"||2|3|||"_s << u"|"_s << 0 << 1
+    BOBUIest::newRow("data13") << u"||2|3|||"_s << u"|"_s << 0 << 1
                             << int(QString::SectionIncludeLeadingSep | QString::SectionIncludeTrailingSep)
                             << u"||"_s << false;
-    QTest::newRow("data14") << u"||2|3|||"_s << u"\\|"_s << 0 << 1
+    BOBUIest::newRow("data14") << u"||2|3|||"_s << u"\\|"_s << 0 << 1
                             << int(QString::SectionIncludeLeadingSep | QString::SectionIncludeTrailingSep)
                             << u"||"_s << true;
-    QTest::newRow("data15") << u"|1|2|"_s << u"|"_s << 0 << 1
+    BOBUIest::newRow("data15") << u"|1|2|"_s << u"|"_s << 0 << 1
                             << int(QString::SectionIncludeLeadingSep | QString::SectionIncludeTrailingSep)
                             << u"|1|"_s << false;
-    QTest::newRow("data16") << u"|1|2|"_s << u"\\|"_s << 0 << 1
+    BOBUIest::newRow("data16") << u"|1|2|"_s << u"\\|"_s << 0 << 1
                             << int(QString::SectionIncludeLeadingSep | QString::SectionIncludeTrailingSep)
                             << u"|1|"_s << true;
-    QTest::newRow("normal1") << u"o1o2o"_s
+    BOBUIest::newRow("normal1") << u"o1o2o"_s
                             << u"o"_s << 0 << 0
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << u"o"_s << false;
-    QTest::newRow("normal2") << u"o1o2o"_s
+    BOBUIest::newRow("normal2") << u"o1o2o"_s
                             << u"o"_s << 1 << 1
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << u"o1o"_s << false;
-    QTest::newRow("normal3") << u"o1o2o"_s
+    BOBUIest::newRow("normal3") << u"o1o2o"_s
                             << u"o"_s << 2 << 2
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << u"o2o"_s << false;
-    QTest::newRow("normal4") << u"o1o2o"_s
+    BOBUIest::newRow("normal4") << u"o1o2o"_s
                             << u"o"_s << 2 << 3
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << u"o2o"_s << false;
-    QTest::newRow("normal5") << u"o1o2o"_s
+    BOBUIest::newRow("normal5") << u"o1o2o"_s
                             << u"o"_s << 1 << 2
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << u"o1o2o"_s << false;
-    QTest::newRow("range1") << u"o1o2o"_s
+    BOBUIest::newRow("range1") << u"o1o2o"_s
                             << u"o"_s << -5 << -5
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << QString() << false;
-    QTest::newRow("range2") << u"oo1o2o"_s
+    BOBUIest::newRow("range2") << u"oo1o2o"_s
                             << u"o"_s << -5 << 1
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep
                                    |QString::SectionSkipEmpty)
                             << u"oo1o2o"_s << false;
-    QTest::newRow("range3") << u"o1o2o"_s
+    BOBUIest::newRow("range3") << u"o1o2o"_s
                             << u"o"_s << 2 << 1
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << QString() << false;
-    QTest::newRow("range4") << u"o1o2o"_s
+    BOBUIest::newRow("range4") << u"o1o2o"_s
                             << u"o"_s << 4 << 4
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                             << QString() << false;
-    QTest::newRow("range5") << u"o1oo2o"_s
+    BOBUIest::newRow("range5") << u"o1oo2o"_s
                             << u"o"_s << -2 << -1
                             << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep
                                    |QString::SectionSkipEmpty)
                             << u"o1oo2o"_s << false;
-    QTest::newRow("rx1") << u"o1o2o"_s
+    BOBUIest::newRow("rx1") << u"o1o2o"_s
                         << u"[a-z]"_s << 0 << 0
                         << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                         << u"o"_s << true;
-    QTest::newRow("rx2") << u"o1o2o"_s
+    BOBUIest::newRow("rx2") << u"o1o2o"_s
                         << u"[a-z]"_s << 1 << 1
                         << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                         << u"o1o"_s << true;
-    QTest::newRow("rx3") << u"o1o2o"_s
+    BOBUIest::newRow("rx3") << u"o1o2o"_s
                         << u"[a-z]"_s << 2 << 2
                         << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                         << u"o2o"_s << true;
-    QTest::newRow("rx4") << u"o1o2o"_s
+    BOBUIest::newRow("rx4") << u"o1o2o"_s
                         << u"[a-z]"_s << 2 << 3
                         << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                         << u"o2o"_s << true;
-    QTest::newRow("rx5") << u"o1o2o"_s
+    BOBUIest::newRow("rx5") << u"o1o2o"_s
                         << u"[a-z]"_s << 1 << 2
                         << int(QString::SectionIncludeLeadingSep|QString::SectionIncludeTrailingSep)
                         << u"o1o2o"_s << true;
-    QTest::newRow("data17") << u"This is a story, a small story"_s
+    BOBUIest::newRow("data17") << u"This is a story, a small story"_s
                         << u"\\b"_s << 3 << 3
                         << int(QString::SectionDefault)
                         << u"is"_s << true;
-    QTest::newRow("data18") << u"99.0 42.3"_s
+    BOBUIest::newRow("data18") << u"99.0 42.3"_s
                         << u"\\s*[AaBb]\\s*"_s << 1 << 1
                         << int(QString::SectionIncludeLeadingSep)
                         << QString() << true;
@@ -7336,7 +7336,7 @@ void tst_QString::section()
     QFETCH( QString, sectionString );
     QFETCH( bool, regexp );
     if (regexp) {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         QCOMPARE( wholeString.section( QRegularExpression(sep), start, end, QString::SectionFlag(flags) ), sectionString );
 #else
         QSKIP("QRegularExpression not supported");
@@ -7345,7 +7345,7 @@ void tst_QString::section()
         if (sep.size() == 1)
             QCOMPARE( wholeString.section( sep[0], start, end, QString::SectionFlag(flags) ), sectionString );
         QCOMPARE( wholeString.section( sep, start, end, QString::SectionFlag(flags) ), sectionString );
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         QCOMPARE( wholeString.section( QRegularExpression(QRegularExpression::escape(sep)), start, end, QString::SectionFlag(flags) ), sectionString );
 #endif
     }
@@ -7396,7 +7396,7 @@ void tst_QString::operator_smaller()
     QVERIFY( !(null < empty) );
     QVERIFY( !(null > empty) );
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     QVERIFY( !(nullC < empty) );
     QVERIFY( !(nullC > empty) );
 
@@ -7467,7 +7467,7 @@ void tst_QString::operator_smaller()
     // operator< is not locale-aware (or shouldn't be)
     QCOMPARE_LT(foo, QString::fromUtf8("\xc3\xa9"));
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     QVERIFY( foo < "\xc3\xa9" );
 #endif
 
@@ -7479,7 +7479,7 @@ void tst_QString::operator_smaller()
     QCOMPARE_GE(QString(u"b"_s), QString(u"a"_s));
     QCOMPARE_GT(QString(u"b"_s), QString(u"a"_s));
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     QVERIFY(QString("a") < "b");
     QVERIFY(QString("a") <= "b");
     QVERIFY(QString("a") <= "a");
@@ -7497,7 +7497,7 @@ void tst_QString::operator_smaller()
     QCOMPARE_GT("b", QString(u"a"_s));
 #endif
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     QVERIFY(QString("a") < QByteArray("b"));
     QVERIFY(QString("a") <= QByteArray("b"));
     QVERIFY(QString("a") <= QByteArray("a"));
@@ -7523,7 +7523,7 @@ void tst_QString::operator_smaller()
     QVERIFY(QString(u"b"_s) >= QLatin1String("a"));
     QVERIFY(QString(u"b"_s) > QLatin1String("a"));
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
     QVERIFY("a" < QLatin1String("b"));
     QVERIFY("a" <= QLatin1String("b"));
     QVERIFY("a" <= QLatin1String("a"));
@@ -7544,74 +7544,74 @@ void tst_QString::operator_smaller()
 
 void tst_QString::integer_conversion_data()
 {
-    QTest::addColumn<QString>("num_str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<bool>("good");
-    QTest::addColumn<qlonglong>("num");
+    BOBUIest::addColumn<QString>("num_str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<bool>("good");
+    BOBUIest::addColumn<qlonglong>("num");
 
-    QTest::newRow("C empty 0")      << u""_s         << 0  << false << qlonglong(0);
-    QTest::newRow("C empty 8")      << u""_s         << 8  << false << qlonglong(0);
-    QTest::newRow("C empty 10")     << u""_s         << 10 << false << qlonglong(0);
-    QTest::newRow("C empty 16")     << u""_s         << 16 << false << qlonglong(0);
+    BOBUIest::newRow("C empty 0")      << u""_s         << 0  << false << qlonglong(0);
+    BOBUIest::newRow("C empty 8")      << u""_s         << 8  << false << qlonglong(0);
+    BOBUIest::newRow("C empty 10")     << u""_s         << 10 << false << qlonglong(0);
+    BOBUIest::newRow("C empty 16")     << u""_s         << 16 << false << qlonglong(0);
 
-    QTest::newRow("C null 0")       << QString()           << 0  << false << (qlonglong)0;
-    QTest::newRow("C null 8")       << QString()           << 8  << false << (qlonglong)0;
-    QTest::newRow("C null 10")      << QString()           << 10 << false << (qlonglong)0;
-    QTest::newRow("C null 16")      << QString()           << 16 << false << (qlonglong)0;
+    BOBUIest::newRow("C null 0")       << QString()           << 0  << false << (qlonglong)0;
+    BOBUIest::newRow("C null 8")       << QString()           << 8  << false << (qlonglong)0;
+    BOBUIest::newRow("C null 10")      << QString()           << 10 << false << (qlonglong)0;
+    BOBUIest::newRow("C null 16")      << QString()           << 16 << false << (qlonglong)0;
 
-    QTest::newRow("C   -0xf 0")     << u"  -0xf"_s   << 0  << true  << qlonglong(-15);
-    QTest::newRow("C -0xf   0")     << u"-0xf  "_s   << 0  << true  << qlonglong(-15);
-    QTest::newRow("C \t0xf\t 0")    << u"\t0xf\t"_s  << 0  << true  << qlonglong(15);
-    QTest::newRow("C   -010 0")     << u"  -010"_s   << 0  << true  << qlonglong(-8);
-    QTest::newRow("C 010   0")      << u"010  "_s    << 0  << true  << qlonglong(8);
-    QTest::newRow("C \t-010\t 0")   << u"\t-010\t"_s << 0  << true  << qlonglong(-8);
-    QTest::newRow("C   123 10")     << u"  123"_s    << 10 << true  << qlonglong(123);
-    QTest::newRow("C 123   10")     << u"123  "_s    << 10 << true  << qlonglong(123);
-    QTest::newRow("C \t123\t 10")   << u"\t123\t"_s  << 10 << true  << qlonglong(123);
-    QTest::newRow("C   -0xf 16")    << u"  -0xf"_s   << 16 << true  << qlonglong(-15);
-    QTest::newRow("C -0xf   16")    << u"-0xf  "_s   << 16 << true  << qlonglong(-15);
-    QTest::newRow("C \t0xf\t 16")   << u"\t0xf\t"_s  << 16 << true  << qlonglong(15);
+    BOBUIest::newRow("C   -0xf 0")     << u"  -0xf"_s   << 0  << true  << qlonglong(-15);
+    BOBUIest::newRow("C -0xf   0")     << u"-0xf  "_s   << 0  << true  << qlonglong(-15);
+    BOBUIest::newRow("C \t0xf\t 0")    << u"\t0xf\t"_s  << 0  << true  << qlonglong(15);
+    BOBUIest::newRow("C   -010 0")     << u"  -010"_s   << 0  << true  << qlonglong(-8);
+    BOBUIest::newRow("C 010   0")      << u"010  "_s    << 0  << true  << qlonglong(8);
+    BOBUIest::newRow("C \t-010\t 0")   << u"\t-010\t"_s << 0  << true  << qlonglong(-8);
+    BOBUIest::newRow("C   123 10")     << u"  123"_s    << 10 << true  << qlonglong(123);
+    BOBUIest::newRow("C 123   10")     << u"123  "_s    << 10 << true  << qlonglong(123);
+    BOBUIest::newRow("C \t123\t 10")   << u"\t123\t"_s  << 10 << true  << qlonglong(123);
+    BOBUIest::newRow("C   -0xf 16")    << u"  -0xf"_s   << 16 << true  << qlonglong(-15);
+    BOBUIest::newRow("C -0xf   16")    << u"-0xf  "_s   << 16 << true  << qlonglong(-15);
+    BOBUIest::newRow("C \t0xf\t 16")   << u"\t0xf\t"_s  << 16 << true  << qlonglong(15);
 
-    QTest::newRow("C -0 0")         << u"-0"_s       << 0   << true << qlonglong(0);
-    QTest::newRow("C -0 8")         << u"-0"_s       << 8   << true << qlonglong(0);
-    QTest::newRow("C -0 10")        << u"-0"_s       << 10  << true << qlonglong(0);
-    QTest::newRow("C -0 16")        << u"-0"_s       << 16  << true << qlonglong(0);
+    BOBUIest::newRow("C -0 0")         << u"-0"_s       << 0   << true << qlonglong(0);
+    BOBUIest::newRow("C -0 8")         << u"-0"_s       << 8   << true << qlonglong(0);
+    BOBUIest::newRow("C -0 10")        << u"-0"_s       << 10  << true << qlonglong(0);
+    BOBUIest::newRow("C -0 16")        << u"-0"_s       << 16  << true << qlonglong(0);
 
-    QTest::newRow("C 1.234 10")     << u"1.234"_s    << 10 << false << qlonglong(0);
-    QTest::newRow("C 1,234 10")     << u"1,234"_s    << 10 << false << qlonglong(0);
+    BOBUIest::newRow("C 1.234 10")     << u"1.234"_s    << 10 << false << qlonglong(0);
+    BOBUIest::newRow("C 1,234 10")     << u"1,234"_s    << 10 << false << qlonglong(0);
 
-    QTest::newRow("C 0x 0")         << u"0x"_s       << 0  << false << qlonglong(0);
-    QTest::newRow("C 0x 16")        << u"0x"_s       << 16 << false << qlonglong(0);
+    BOBUIest::newRow("C 0x 0")         << u"0x"_s       << 0  << false << qlonglong(0);
+    BOBUIest::newRow("C 0x 16")        << u"0x"_s       << 16 << false << qlonglong(0);
 
-    QTest::newRow("C 10 0")         << u"10"_s       << 0  << true  << qlonglong(10);
-    QTest::newRow("C 010 0")        << u"010"_s      << 0  << true  << qlonglong(8);
-    QTest::newRow("C 0x10 0")       << u"0x10"_s     << 0  << true  << qlonglong(16);
-    QTest::newRow("C 10 8")         << u"10"_s       << 8  << true  << qlonglong(8);
-    QTest::newRow("C 010 8")        << u"010"_s      << 8  << true  << qlonglong(8);
-    QTest::newRow("C 0x10 8")       << u"0x10"_s     << 8  << false << qlonglong(0);
-    QTest::newRow("C 10 10")        << u"10"_s       << 10 << true  << qlonglong(10);
-    QTest::newRow("C 010 10")       << u"010"_s      << 10 << true  << qlonglong(10);
-    QTest::newRow("C 0x10 10")      << u"0x10"_s     << 10 << false << qlonglong(0);
-    QTest::newRow("C 10 16")        << u"10"_s       << 16 << true  << qlonglong(16);
-    QTest::newRow("C 010 16")       << u"010"_s      << 16 << true  << qlonglong(16);
-    QTest::newRow("C 0x10 16")      << u"0x10"_s     << 16 << true  << qlonglong(16);
+    BOBUIest::newRow("C 10 0")         << u"10"_s       << 0  << true  << qlonglong(10);
+    BOBUIest::newRow("C 010 0")        << u"010"_s      << 0  << true  << qlonglong(8);
+    BOBUIest::newRow("C 0x10 0")       << u"0x10"_s     << 0  << true  << qlonglong(16);
+    BOBUIest::newRow("C 10 8")         << u"10"_s       << 8  << true  << qlonglong(8);
+    BOBUIest::newRow("C 010 8")        << u"010"_s      << 8  << true  << qlonglong(8);
+    BOBUIest::newRow("C 0x10 8")       << u"0x10"_s     << 8  << false << qlonglong(0);
+    BOBUIest::newRow("C 10 10")        << u"10"_s       << 10 << true  << qlonglong(10);
+    BOBUIest::newRow("C 010 10")       << u"010"_s      << 10 << true  << qlonglong(10);
+    BOBUIest::newRow("C 0x10 10")      << u"0x10"_s     << 10 << false << qlonglong(0);
+    BOBUIest::newRow("C 10 16")        << u"10"_s       << 16 << true  << qlonglong(16);
+    BOBUIest::newRow("C 010 16")       << u"010"_s      << 16 << true  << qlonglong(16);
+    BOBUIest::newRow("C 0x10 16")      << u"0x10"_s     << 16 << true  << qlonglong(16);
 
-    QTest::newRow("C -10 0")        << u"-10"_s      << 0  << true  << qlonglong(-10);
-    QTest::newRow("C -010 0")       << u"-010"_s     << 0  << true  << qlonglong(-8);
-    QTest::newRow("C -0x10 0")      << u"-0x10"_s    << 0  << true  << qlonglong(-16);
-    QTest::newRow("C -10 8")        << u"-10"_s      << 8  << true  << qlonglong(-8);
-    QTest::newRow("C -010 8")       << u"-010"_s     << 8  << true  << qlonglong(-8);
-    QTest::newRow("C -0x10 8")      << u"-0x10"_s    << 8  << false << qlonglong(0);
-    QTest::newRow("C -10 10")       << u"-10"_s      << 10 << true  << qlonglong(-10);
-    QTest::newRow("C -010 10")      << u"-010"_s     << 10 << true  << qlonglong(-10);
-    QTest::newRow("C -0x10 10")     << u"-0x10"_s    << 10 << false << qlonglong(0);
-    QTest::newRow("C -10 16")       << u"-10"_s      << 16 << true  << qlonglong(-16);
-    QTest::newRow("C -010 16")      << u"-010"_s     << 16 << true  << qlonglong(-16);
-    QTest::newRow("C -0x10 16")     << u"-0x10"_s    << 16 << true  << qlonglong(-16);
+    BOBUIest::newRow("C -10 0")        << u"-10"_s      << 0  << true  << qlonglong(-10);
+    BOBUIest::newRow("C -010 0")       << u"-010"_s     << 0  << true  << qlonglong(-8);
+    BOBUIest::newRow("C -0x10 0")      << u"-0x10"_s    << 0  << true  << qlonglong(-16);
+    BOBUIest::newRow("C -10 8")        << u"-10"_s      << 8  << true  << qlonglong(-8);
+    BOBUIest::newRow("C -010 8")       << u"-010"_s     << 8  << true  << qlonglong(-8);
+    BOBUIest::newRow("C -0x10 8")      << u"-0x10"_s    << 8  << false << qlonglong(0);
+    BOBUIest::newRow("C -10 10")       << u"-10"_s      << 10 << true  << qlonglong(-10);
+    BOBUIest::newRow("C -010 10")      << u"-010"_s     << 10 << true  << qlonglong(-10);
+    BOBUIest::newRow("C -0x10 10")     << u"-0x10"_s    << 10 << false << qlonglong(0);
+    BOBUIest::newRow("C -10 16")       << u"-10"_s      << 16 << true  << qlonglong(-16);
+    BOBUIest::newRow("C -010 16")      << u"-010"_s     << 16 << true  << qlonglong(-16);
+    BOBUIest::newRow("C -0x10 16")     << u"-0x10"_s    << 16 << true  << qlonglong(-16);
 
     // Let's try some Arabic
     const char16_t arabic_str[] = { 0x0661, 0x0662, 0x0663, 0x0664, 0x0000 }; // "1234"
-    QTest::newRow("ar_SA 1234 0")  << QString::fromUtf16(arabic_str)  << 0  << false << (qlonglong)0;
+    BOBUIest::newRow("ar_SA 1234 0")  << QString::fromUtf16(arabic_str)  << 0  << false << (qlonglong)0;
 }
 
 void tst_QString::integer_conversion()
@@ -7632,53 +7632,53 @@ void tst_QString::integer_conversion()
 
 void tst_QString::double_conversion_data()
 {
-    QTest::addColumn<QString>("num_str");
-    QTest::addColumn<bool>("good");
-    QTest::addColumn<double>("num");
+    BOBUIest::addColumn<QString>("num_str");
+    BOBUIest::addColumn<bool>("good");
+    BOBUIest::addColumn<double>("num");
 
     // The good...
 
-    QTest::newRow("C 1")             << u"1"_s          << true  << 1.0;
-    QTest::newRow("C 1.0")           << u"1.0"_s        << true  << 1.0;
-    QTest::newRow("C 1.234")         << u"1.234"_s      << true  << 1.234;
-    QTest::newRow("C 1.234e-10")     << u"1.234e-10"_s  << true  << 1.234e-10;
-    QTest::newRow("C 1.234E10")      << u"1.234E10"_s   << true  << 1.234e10;
-    QTest::newRow("C 1e10")          << u"1e10"_s       << true  << 1.0e10;
+    BOBUIest::newRow("C 1")             << u"1"_s          << true  << 1.0;
+    BOBUIest::newRow("C 1.0")           << u"1.0"_s        << true  << 1.0;
+    BOBUIest::newRow("C 1.234")         << u"1.234"_s      << true  << 1.234;
+    BOBUIest::newRow("C 1.234e-10")     << u"1.234e-10"_s  << true  << 1.234e-10;
+    BOBUIest::newRow("C 1.234E10")      << u"1.234E10"_s   << true  << 1.234e10;
+    BOBUIest::newRow("C 1e10")          << u"1e10"_s       << true  << 1.0e10;
 
     // The bad...
 
-    QTest::newRow("C null")          << QString()       << false << 0.0;
-    QTest::newRow("C empty")         << u""_s           << false << 0.0;
-    QTest::newRow("C space")         << u" "_s          << false << 0.0;
-    QTest::newRow("C spaces")        << u"  "_s         << false << 0.0;
-    QTest::newRow("C .")             << u"."_s          << false << 0.0;
-    QTest::newRow("C 1e")            << u"1e"_s         << false << 0.0;
-    QTest::newRow("C 1,")            << u"1,"_s         << false << 0.0;
-    QTest::newRow("C 1,0")           << u"1,0"_s        << false << 0.0;
-    QTest::newRow("C 1,000")         << u"1,000"_s      << false << 0.0;
-    QTest::newRow("C 1e1.0")         << u"1e1.0"_s      << false << 0.0;
-    QTest::newRow("C 1e+")           << u"1e+"_s        << false << 0.0;
-    QTest::newRow("C 1e-")           << u"1e-"_s        << false << 0.0;
-    QTest::newRow("de_DE 1,0")       << u"1,0"_s        << false << 0.0;
-    QTest::newRow("de_DE 1,234")     << u"1,234"_s      << false << 0.0;
-    QTest::newRow("de_DE 1,234e-10") << u"1,234e-10"_s  << false << 0.0;
-    QTest::newRow("de_DE 1,234E10")  << u"1,234E10"_s   << false << 0.0;
+    BOBUIest::newRow("C null")          << QString()       << false << 0.0;
+    BOBUIest::newRow("C empty")         << u""_s           << false << 0.0;
+    BOBUIest::newRow("C space")         << u" "_s          << false << 0.0;
+    BOBUIest::newRow("C spaces")        << u"  "_s         << false << 0.0;
+    BOBUIest::newRow("C .")             << u"."_s          << false << 0.0;
+    BOBUIest::newRow("C 1e")            << u"1e"_s         << false << 0.0;
+    BOBUIest::newRow("C 1,")            << u"1,"_s         << false << 0.0;
+    BOBUIest::newRow("C 1,0")           << u"1,0"_s        << false << 0.0;
+    BOBUIest::newRow("C 1,000")         << u"1,000"_s      << false << 0.0;
+    BOBUIest::newRow("C 1e1.0")         << u"1e1.0"_s      << false << 0.0;
+    BOBUIest::newRow("C 1e+")           << u"1e+"_s        << false << 0.0;
+    BOBUIest::newRow("C 1e-")           << u"1e-"_s        << false << 0.0;
+    BOBUIest::newRow("de_DE 1,0")       << u"1,0"_s        << false << 0.0;
+    BOBUIest::newRow("de_DE 1,234")     << u"1,234"_s      << false << 0.0;
+    BOBUIest::newRow("de_DE 1,234e-10") << u"1,234e-10"_s  << false << 0.0;
+    BOBUIest::newRow("de_DE 1,234E10")  << u"1,234E10"_s   << false << 0.0;
 
     // And the ugly...
 
-    QTest::newRow("C .1")            << u".1"_s         << true  << 0.1;
-    QTest::newRow("C -.1")           << u"-.1"_s        << true  << -0.1;
-    QTest::newRow("C 1.")            << u"1."_s         << true  << 1.0;
-    QTest::newRow("C 1.E10")         << u"1.E10"_s      << true  << 1.0e10;
-    QTest::newRow("C 1e+10")         << u"1e+10"_s      << true  << 1.0e+10;
-    QTest::newRow("C   1")           << u"  1"_s        << true  << 1.0;
-    QTest::newRow("C 1  ")           << u"1  "_s        << true  << 1.0;
+    BOBUIest::newRow("C .1")            << u".1"_s         << true  << 0.1;
+    BOBUIest::newRow("C -.1")           << u"-.1"_s        << true  << -0.1;
+    BOBUIest::newRow("C 1.")            << u"1."_s         << true  << 1.0;
+    BOBUIest::newRow("C 1.E10")         << u"1.E10"_s      << true  << 1.0e10;
+    BOBUIest::newRow("C 1e+10")         << u"1e+10"_s      << true  << 1.0e+10;
+    BOBUIest::newRow("C   1")           << u"  1"_s        << true  << 1.0;
+    BOBUIest::newRow("C 1  ")           << u"1  "_s        << true  << 1.0;
 
     // Let's try some Arabic
     const char16_t arabic_str[] = { 0x0660, 0x066B, 0x0661, 0x0662,
                                     0x0663, 0x0664, 0x0065, 0x0662,
                                     0x0000 };                            // "0.1234e2"
-    QTest::newRow("ar_SA") << QString::fromUtf16(arabic_str) << false << 0.0;
+    BOBUIest::newRow("ar_SA") << QString::fromUtf16(arabic_str) << false << 0.0;
 }
 
 void tst_QString::double_conversion()
@@ -7724,7 +7724,7 @@ void tst_QString::tortureSprintfDouble()
             buff[7 - i] = data->bytes[i];
 #        endif
         const QString s = QString::asprintf(data->fmt, d);
-#ifdef QT_NO_FPU // reduced precision when running with hardfloats in qemu
+#ifdef BOBUI_NO_FPU // reduced precision when running with hardfloats in qemu
         if (d - 0.1 < 1e12)
             QSKIP("clib sprintf doesn't fill with 0's on this platform");
         QCOMPARE(s.left(16), QString(data->expected).left(16));
@@ -7797,22 +7797,22 @@ void tst_QString::reverseIterators()
 
 void tst_QString::split_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<QString>("sep");
-    QTest::addColumn<QStringList>("result");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<QString>("sep");
+    BOBUIest::addColumn<QStringList>("result");
 
-    QTest::newRow("1") << u"a,b,c"_s << u","_s << QStringList{u"a"_s, u"b"_s, u"c"_s};
-    QTest::newRow("2") << u"-rw-r--r--  1 0  0  519240 Jul  9  2002 bigfile"_s << u" "_s
+    BOBUIest::newRow("1") << u"a,b,c"_s << u","_s << QStringList{u"a"_s, u"b"_s, u"c"_s};
+    BOBUIest::newRow("2") << u"-rw-r--r--  1 0  0  519240 Jul  9  2002 bigfile"_s << u" "_s
                        << QStringList{ u"-rw-r--r--"_s, u""_s, u"1"_s,      u"0"_s,      u""_s,
                                        u"0"_s,          u""_s, u"519240"_s, u"Jul"_s,    u""_s,
                                        u"9"_s,          u""_s, u"2002"_s,   u"bigfile"_s };
-    QTest::newRow("one-empty") << u""_s << u" "_s << QStringList{u""_s};
-    QTest::newRow("two-empty") << u" "_s << u" "_s << QStringList{u""_s, u""_s};
-    QTest::newRow("three-empty") << u"  "_s << u" "_s << QStringList{u""_s, u""_s, u""_s};
+    BOBUIest::newRow("one-empty") << u""_s << u" "_s << QStringList{u""_s};
+    BOBUIest::newRow("two-empty") << u" "_s << u" "_s << QStringList{u""_s, u""_s};
+    BOBUIest::newRow("three-empty") << u"  "_s << u" "_s << QStringList{u""_s, u""_s, u""_s};
 
-    QTest::newRow("all-empty") << u""_s << u""_s << QStringList{u""_s, u""_s};
-    QTest::newRow("sep-empty") << u"abc"_s << u""_s << QStringList{u""_s, u"a"_s, u"b"_s, u"c"_s, u""_s};
-    QTest::newRow("null-empty") << QString() << u" "_s << QStringList{u""_s};
+    BOBUIest::newRow("all-empty") << u""_s << u""_s << QStringList{u""_s, u""_s};
+    BOBUIest::newRow("sep-empty") << u"abc"_s << u""_s << QStringList{u""_s, u"a"_s, u"b"_s, u"c"_s, u""_s};
+    BOBUIest::newRow("null-empty") << QString() << u" "_s << QStringList{u""_s};
 }
 
 template<class> struct StringSplitWrapper;
@@ -7820,22 +7820,22 @@ template<> struct StringSplitWrapper<QString>
 {
     const QString &string;
 
-    QStringList split(const QString &sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return string.split(sep, behavior, cs); }
-    QStringList split(QChar sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return string.split(sep, behavior, cs); }
-#if QT_CONFIG(regularexpression)
-    QStringList split(const QRegularExpression &sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts) const { return string.split(sep, behavior); }
+    QStringList split(const QString &sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return string.split(sep, behavior, cs); }
+    QStringList split(QChar sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return string.split(sep, behavior, cs); }
+#if BOBUI_CONFIG(regularexpression)
+    QStringList split(const QRegularExpression &sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts) const { return string.split(sep, behavior); }
 #endif
 };
 
 template<> struct StringSplitWrapper<QStringView>
 {
     const QString &string;
-    QList<QStringView> split(const QString &sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    QList<QStringView> split(const QString &sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     { return QStringView{string}.split(sep, behavior, cs); }
-    QList<QStringView> split(QChar sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    QList<QStringView> split(QChar sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     { return QStringView{string}.split(sep, behavior, cs); }
-#if QT_CONFIG(regularexpression)
-    QList<QStringView> split(const QRegularExpression &sep, Qt::SplitBehavior behavior = Qt::KeepEmptyParts) const
+#if BOBUI_CONFIG(regularexpression)
+    QList<QStringView> split(const QRegularExpression &sep, BobUI::SplitBehavior behavior = BobUI::KeepEmptyParts) const
     { return QStringView{string}.split(sep, behavior); }
 #endif
 };
@@ -7853,7 +7853,7 @@ static bool operator==(const QList<QStringView> &result, const QStringList &expe
 template<class List>
 void tst_QString::split(const QString &string, const QString &sep, QStringList result)
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression re(QRegularExpression::escape(sep));
 #endif
 
@@ -7862,7 +7862,7 @@ void tst_QString::split(const QString &string, const QString &sep, QStringList r
 
     list = str.split(sep);
     QVERIFY(list == result);
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     list = str.split(re);
     QVERIFY(list == result);
 #endif
@@ -7871,31 +7871,31 @@ void tst_QString::split(const QString &string, const QString &sep, QStringList r
         QVERIFY(list == result);
     }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-    list = str.split(sep, Qt::KeepEmptyParts);
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+    list = str.split(sep, BobUI::KeepEmptyParts);
     QVERIFY(list == result);
-#if QT_CONFIG(regularexpression)
-    list = str.split(re, Qt::KeepEmptyParts);
+#if BOBUI_CONFIG(regularexpression)
+    list = str.split(re, BobUI::KeepEmptyParts);
     QVERIFY(list == result);
 #endif
     if (sep.size() == 1) {
-        list = str.split(sep.at(0), Qt::KeepEmptyParts);
+        list = str.split(sep.at(0), BobUI::KeepEmptyParts);
         QVERIFY(list == result);
     }
 
     result.removeAll(u""_s);
-    list = str.split(sep, Qt::SkipEmptyParts);
+    list = str.split(sep, BobUI::SkipEmptyParts);
     QVERIFY(list == result);
-#if QT_CONFIG(regularexpression)
-    list = str.split(re, Qt::SkipEmptyParts);
+#if BOBUI_CONFIG(regularexpression)
+    list = str.split(re, BobUI::SkipEmptyParts);
     QVERIFY(list == result);
 #endif
     if (sep.size() == 1) {
-        list = str.split(sep.at(0), Qt::SkipEmptyParts);
+        list = str.split(sep.at(0), BobUI::SkipEmptyParts);
         QVERIFY(list == result);
     }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
 void tst_QString::split()
@@ -7907,22 +7907,22 @@ void tst_QString::split()
     split<QList<QStringView>>(str, sep, result);
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QString::split_regularexpression_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QString>("pattern");
-    QTest::addColumn<QStringList>("result");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("pattern");
+    BOBUIest::addColumn<QStringList>("result");
 
-    QTest::newRow("data01") << "Some  text\n\twith  strange whitespace."
+    BOBUIest::newRow("data01") << "Some  text\n\twith  strange whitespace."
                             << "\\s+"
                             << QStringList{u"Some"_s, u"text"_s, u"with"_s, u"strange"_s, u"whitespace."_s };
 
-    QTest::newRow("data02") << "This time, a normal English sentence."
+    BOBUIest::newRow("data02") << "This time, a normal English sentence."
                             << "\\W+"
                             << QStringList{u"This"_s, u"time"_s, u"a"_s, u"normal"_s, u"English"_s, u"sentence"_s, u""_s};
 
-    QTest::newRow("data03") << "Now: this sentence fragment."
+    BOBUIest::newRow("data03") << "Now: this sentence fragment."
                             << "\\b"
                             << QStringList{u""_s, u"Now"_s, u": "_s, u"this"_s, u" "_s, u"sentence"_s, u" "_s, u"fragment"_s, u"."_s};
 }
@@ -7938,7 +7938,7 @@ void tst_QString::split_regexp(const QString &_string, const QString &pattern, Q
 
     result.removeAll(QString());
 
-    list = string.split(RegExp(pattern), Qt::SkipEmptyParts);
+    list = string.split(RegExp(pattern), BobUI::SkipEmptyParts);
     QVERIFY(list == result);
 }
 
@@ -7993,23 +7993,23 @@ void tst_QString::regularexpression_lifetime()
 
 void tst_QString::fromUtf16_data()
 {
-    QTest::addColumn<QString>("ucs2");
-    QTest::addColumn<QString>("res");
-    QTest::addColumn<int>("len");
+    BOBUIest::addColumn<QString>("ucs2");
+    BOBUIest::addColumn<QString>("res");
+    BOBUIest::addColumn<int>("len");
 
-    QTest::newRow("str0") << u"abcdefgh"_s << u"abcdefgh"_s << -1;
-    QTest::newRow("str0-len") << u"abcdefgh"_s << u"abc"_s << 3;
+    BOBUIest::newRow("str0") << u"abcdefgh"_s << u"abcdefgh"_s << -1;
+    BOBUIest::newRow("str0-len") << u"abcdefgh"_s << u"abc"_s << 3;
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 void tst_QString::fromUtf16()
 {
     QFETCH(QString, ucs2);
     QFETCH(QString, res);
     QFETCH(int, len);
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(QString::fromUtf16(ucs2.utf16(), len), res);)
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(QString::fromUtf16(ucs2.utf16(), len), res);)
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 void tst_QString::fromUtf16_char16()
 {
@@ -8063,31 +8063,31 @@ void tst_QString::latin1String()
 
 void tst_QString::isInf_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<bool>("expected_ok");
-    QTest::addColumn<bool>("expected_is_inf");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<bool>("expected_ok");
+    BOBUIest::addColumn<bool>("expected_is_inf");
 
-    QTest::newRow("inf") << u"inf"_s << true << true;
-    QTest::newRow("INF") << u"INF"_s << true << true;
-    QTest::newRow("inf  ") << u"inf  "_s << true << true;
-    QTest::newRow("+inf") << u"+inf"_s << true << true;
-    QTest::newRow("\t +INF") << u"\t +INF"_s << true << true;
-    QTest::newRow("\t INF") << u"\t INF"_s << true << true;
-    QTest::newRow("inF  ") << u"inF  "_s << true << true;
-    QTest::newRow("+iNf") << u"+iNf"_s << true << true;
-    QTest::newRow("INFe-10") << u"INFe-10"_s << false << false;
-    QTest::newRow("0xINF") << u"0xINF"_s << false << false;
-    QTest::newRow("- INF") << u"- INF"_s << false << false;
-    QTest::newRow("+ INF") << u"+ INF"_s << false << false;
-    QTest::newRow("-- INF") << u"-- INF"_s << false << false;
-    QTest::newRow("inf0") << u"inf0"_s << false << false;
-    QTest::newRow("--INF") << u"--INF"_s << false << false;
-    QTest::newRow("++INF") << u"++INF"_s << false << false;
-    QTest::newRow("INF++") << u"INF++"_s << false << false;
-    QTest::newRow("INF--") << u"INF--"_s << false << false;
-    QTest::newRow("INF +") << u"INF +"_s << false << false;
-    QTest::newRow("INF -") << u"INF -"_s << false << false;
-    QTest::newRow("0INF") << u"0INF"_s << false << false;
+    BOBUIest::newRow("inf") << u"inf"_s << true << true;
+    BOBUIest::newRow("INF") << u"INF"_s << true << true;
+    BOBUIest::newRow("inf  ") << u"inf  "_s << true << true;
+    BOBUIest::newRow("+inf") << u"+inf"_s << true << true;
+    BOBUIest::newRow("\t +INF") << u"\t +INF"_s << true << true;
+    BOBUIest::newRow("\t INF") << u"\t INF"_s << true << true;
+    BOBUIest::newRow("inF  ") << u"inF  "_s << true << true;
+    BOBUIest::newRow("+iNf") << u"+iNf"_s << true << true;
+    BOBUIest::newRow("INFe-10") << u"INFe-10"_s << false << false;
+    BOBUIest::newRow("0xINF") << u"0xINF"_s << false << false;
+    BOBUIest::newRow("- INF") << u"- INF"_s << false << false;
+    BOBUIest::newRow("+ INF") << u"+ INF"_s << false << false;
+    BOBUIest::newRow("-- INF") << u"-- INF"_s << false << false;
+    BOBUIest::newRow("inf0") << u"inf0"_s << false << false;
+    BOBUIest::newRow("--INF") << u"--INF"_s << false << false;
+    BOBUIest::newRow("++INF") << u"++INF"_s << false << false;
+    BOBUIest::newRow("INF++") << u"INF++"_s << false << false;
+    BOBUIest::newRow("INF--") << u"INF--"_s << false << false;
+    BOBUIest::newRow("INF +") << u"INF +"_s << false << false;
+    BOBUIest::newRow("INF -") << u"INF -"_s << false << false;
+    BOBUIest::newRow("0INF") << u"0INF"_s << false << false;
 }
 
 void tst_QString::isInf()
@@ -8104,22 +8104,22 @@ void tst_QString::isInf()
 
 void tst_QString::isNan_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<bool>("expected_ok");
-    QTest::addColumn<bool>("expected_is_nan");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<bool>("expected_ok");
+    BOBUIest::addColumn<bool>("expected_is_nan");
 
-    QTest::newRow("nan") << u"nan"_s << true << true;
-    QTest::newRow("NAN") << u"NAN"_s << true << true;
-    QTest::newRow("nan  ") << u"nan  "_s << true << true;
-    QTest::newRow("\t NAN") << u"\t NAN"_s << true << true;
-    QTest::newRow("\t NAN  ") << u"\t NAN  "_s << true << true;
-    QTest::newRow("-nan") << u"-nan"_s << false << false;
-    QTest::newRow("+NAN") << u"+NAN"_s << false << false;
-    QTest::newRow("NaN") << u"NaN"_s << true << true;
-    QTest::newRow("nAn") << u"nAn"_s << true << true;
-    QTest::newRow("NANe-10") << u"NANe-10"_s << false << false;
-    QTest::newRow("0xNAN") << u"0xNAN"_s << false << false;
-    QTest::newRow("0NAN") << u"0NAN"_s << false << false;
+    BOBUIest::newRow("nan") << u"nan"_s << true << true;
+    BOBUIest::newRow("NAN") << u"NAN"_s << true << true;
+    BOBUIest::newRow("nan  ") << u"nan  "_s << true << true;
+    BOBUIest::newRow("\t NAN") << u"\t NAN"_s << true << true;
+    BOBUIest::newRow("\t NAN  ") << u"\t NAN  "_s << true << true;
+    BOBUIest::newRow("-nan") << u"-nan"_s << false << false;
+    BOBUIest::newRow("+NAN") << u"+NAN"_s << false << false;
+    BOBUIest::newRow("NaN") << u"NaN"_s << true << true;
+    BOBUIest::newRow("nAn") << u"nAn"_s << true << true;
+    BOBUIest::newRow("NANe-10") << u"NANe-10"_s << false << false;
+    BOBUIest::newRow("0xNAN") << u"0xNAN"_s << false << false;
+    BOBUIest::newRow("0NAN") << u"0NAN"_s << false << false;
 }
 
 void tst_QString::isNan()
@@ -8206,32 +8206,32 @@ void tst_QString::nanAndInf()
 
 void tst_QString::arg_fillChar_data()
 {
-    QTest::addColumn<QString>("pattern");
-    QTest::addColumn<QList<QVariant> >("replaceValues");
-    QTest::addColumn<IntList>("widths");
-    QTest::addColumn<QString>("fillChars");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("pattern");
+    BOBUIest::addColumn<QList<QVariant> >("replaceValues");
+    BOBUIest::addColumn<IntList>("widths");
+    BOBUIest::addColumn<QString>("fillChars");
+    BOBUIest::addColumn<QString>("expected");
 
     using DataList = QList<QVariant>;
 
-    QTest::newRow("str0")
+    BOBUIest::newRow("str0")
         << QStringLiteral("%1%2%3")
         << DataList{QVariant(int(5)), QVariant(u"f"_s), QVariant(int(0))}
         << IntList{3, 2, 5} << u"abc"_s << u"aa5bfcccc0"_s;
 
-    QTest::newRow("str1")
+    BOBUIest::newRow("str1")
         << QStringLiteral("%3.%1.%3.%2")
         << DataList{QVariant(int(5)), QVariant(u"foo"_s), QVariant(qulonglong(INT_MAX))}
         << IntList{10, 2, 5} << u"0 c"_s << u"2147483647.0000000005.2147483647.foo"_s;
 
-    QTest::newRow("str2")
+    BOBUIest::newRow("str2")
         << QStringLiteral("%9 og poteter")
         << DataList{QVariant(u"fisk"_s)} << IntList{100} << u"f"_s
         << u"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
            "fffffffffffffffffffffffffffffffffffffisk og poteter"_s;
 
     // Left-padding with zeros fits them before the minus sign:
-    QTest::newRow("zero-left")
+    BOBUIest::newRow("zero-left")
         << QStringLiteral("%1 %2 %3 %4 %5 %6")
         << DataList{QVariant(-314.0), QVariant(-3.14e8), QVariant(-3.14e12),
                     QVariant(-.0314), QVariant(-3.14e-7), QVariant(-3.14e-13)}
@@ -8239,7 +8239,7 @@ void tst_QString::arg_fillChar_data()
         << QStringLiteral("-00314 -003.14e+08 -003.14e+12 -000.0314 -003.14e-07 -003.14e-13");
 
     // Right-padding with zeros is not so sensible:
-    QTest::newRow("zero-right")
+    BOBUIest::newRow("zero-right")
         << QStringLiteral("%1 %2 %3 %4 %5 %6")
         << DataList{QVariant(-314.0), QVariant(-3.14e8), QVariant(-3.14e12),
                     QVariant(-.0314), QVariant(-3.14e-7), QVariant(-3.14e-13)}
@@ -8296,51 +8296,51 @@ void tst_QString::arg_fillChar()
 
 void tst_QString::comparisonCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QString>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, std::nullptr_t>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, QChar>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, QLatin1StringView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, const char16_t *>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, QStringView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, QUtf8StringView>();
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, QByteArrayView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, QByteArray>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, const char *>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, std::nullptr_t>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, QChar>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, QLatin1StringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, const char16_t *>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, QStringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, QUtf8StringView>();
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, QByteArrayView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, QByteArray>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, const char *>();
 #endif
 #ifdef __cpp_char8_t
-    QTestPrivate::testAllComparisonOperatorsCompile<QString, const char8_t *>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QString, const char8_t *>();
 #endif
 }
 
 void tst_QString::compare_data()
 {
-    QTest::addColumn<QString>("s1");
-    QTest::addColumn<QString>("s2");
-    QTest::addColumn<int>("csr"); // case sensitive result
-    QTest::addColumn<int>("cir"); // case insensitive result
+    BOBUIest::addColumn<QString>("s1");
+    BOBUIest::addColumn<QString>("s2");
+    BOBUIest::addColumn<int>("csr"); // case sensitive result
+    BOBUIest::addColumn<int>("cir"); // case insensitive result
 
     // null strings
-    QTest::newRow("null-null") << QString() << QString() << 0 << 0;
-    QTest::newRow("text-null") << u"a"_s << QString() << 1 << 1;
-    QTest::newRow("null-text") << QString() << u"a"_s << -1 << -1;
-    QTest::newRow("null-empty") << QString() << u""_s << 0 << 0;
-    QTest::newRow("empty-null") << u""_s << QString() << 0 << 0;
+    BOBUIest::newRow("null-null") << QString() << QString() << 0 << 0;
+    BOBUIest::newRow("text-null") << u"a"_s << QString() << 1 << 1;
+    BOBUIest::newRow("null-text") << QString() << u"a"_s << -1 << -1;
+    BOBUIest::newRow("null-empty") << QString() << u""_s << 0 << 0;
+    BOBUIest::newRow("empty-null") << u""_s << QString() << 0 << 0;
 
     // empty strings
-    QTest::newRow("data0") << u""_s << u""_s << 0 << 0;
-    QTest::newRow("data1") << u"a"_s << u""_s << 1 << 1;
-    QTest::newRow("data2") << u""_s << u"a"_s << -1 << -1;
+    BOBUIest::newRow("data0") << u""_s << u""_s << 0 << 0;
+    BOBUIest::newRow("data1") << u"a"_s << u""_s << 1 << 1;
+    BOBUIest::newRow("data2") << u""_s << u"a"_s << -1 << -1;
 
     // equal length
-    QTest::newRow("data3") << u"abc"_s << u"abc"_s << 0 << 0;
-    QTest::newRow("data4") << u"abC"_s << u"abc"_s << -1 << 0;
-    QTest::newRow("data5") << u"abc"_s << u"abC"_s << 1 << 0;
+    BOBUIest::newRow("data3") << u"abc"_s << u"abc"_s << 0 << 0;
+    BOBUIest::newRow("data4") << u"abC"_s << u"abc"_s << -1 << 0;
+    BOBUIest::newRow("data5") << u"abc"_s << u"abC"_s << 1 << 0;
 
     // different length
-    QTest::newRow("data6") << u"abcdef"_s << u"abc"_s << 1 << 1;
-    QTest::newRow("data7") << u"abCdef"_s << u"abc"_s << -1 << 1;
-    QTest::newRow("data8") << u"abc"_s << u"abcdef"_s << -1 << -1;
+    BOBUIest::newRow("data6") << u"abcdef"_s << u"abc"_s << 1 << 1;
+    BOBUIest::newRow("data7") << u"abCdef"_s << u"abc"_s << -1 << 1;
+    BOBUIest::newRow("data8") << u"abc"_s << u"abcdef"_s << -1 << -1;
 
     QString upper;
     upper += QChar(QChar::highSurrogate(0x10400));
@@ -8348,17 +8348,17 @@ void tst_QString::compare_data()
     QString lower;
     lower += QChar(QChar::highSurrogate(0x10428));
     lower += QChar(QChar::lowSurrogate(0x10428));
-    QTest::newRow("data9") << upper << lower << -1 << 0;
+    BOBUIest::newRow("data9") << upper << lower << -1 << 0;
 
     // embedded nulls
     QLatin1String onenull("", 1);
-    QTest::newRow("data10") << QString(onenull) << QString(onenull) << 0 << 0;
-    QTest::newRow("data11") << QString(onenull) << u""_s << 1 << 1;
-    QTest::newRow("data12") << u""_s << QString(onenull) << -1 << -1;
-    QTest::newRow("data13") << QString::fromLatin1("ab\0c", 4) << QString(QLatin1String("ab\0c", 4)) << 0 << 0;
-    QTest::newRow("data14") << QString(QLatin1String("ab\0c", 4)) << u"abc"_s << -1 << -1;
-    QTest::newRow("data15") << u"abc"_s << QString(QLatin1String("ab\0c", 4)) << 1 << 1;
-    QTest::newRow("data16") << u"abc"_s << QString(QLatin1String("abc", 4)) << -1 << -1;
+    BOBUIest::newRow("data10") << QString(onenull) << QString(onenull) << 0 << 0;
+    BOBUIest::newRow("data11") << QString(onenull) << u""_s << 1 << 1;
+    BOBUIest::newRow("data12") << u""_s << QString(onenull) << -1 << -1;
+    BOBUIest::newRow("data13") << QString::fromLatin1("ab\0c", 4) << QString(QLatin1String("ab\0c", 4)) << 0 << 0;
+    BOBUIest::newRow("data14") << QString(QLatin1String("ab\0c", 4)) << u"abc"_s << -1 << -1;
+    BOBUIest::newRow("data15") << u"abc"_s << QString(QLatin1String("ab\0c", 4)) << 1 << 1;
+    BOBUIest::newRow("data16") << u"abc"_s << QString(QLatin1String("abc", 4)) << -1 << -1;
 
     // All tests below (generated by the 3 for-loops) are meant to exercise the vectorized versions
     // of ucstrncmp.
@@ -8378,24 +8378,24 @@ void tst_QString::compare_data()
     for (int i = 1; i <= 65; ++i) {
         QString inp1 = in1.left(i);
         QString inp2 = in2.left(i);
-        QTest::addRow("all-different-%d", i) << inp1 << inp2 << -1 << -1;
+        BOBUIest::addRow("all-different-%d", i) << inp1 << inp2 << -1 << -1;
     }
 
     for (int i = 1; i <= 65; ++i) {
         QString start(i - 1, u'a');
 
         QString in = start + QLatin1Char('a');
-        QTest::addRow("all-same-%d", i) << in << in << 0 << 0;
+        BOBUIest::addRow("all-same-%d", i) << in << in << 0 << 0;
 
         QString in2 = start + QLatin1Char('b');
-        QTest::addRow("last-different-%d", i) << in << in2 << -1 << -1;
+        BOBUIest::addRow("last-different-%d", i) << in << in2 << -1 << -1;
     }
 
     for (int i = 0; i < 16; ++i) {
         QString in1(16, u'a');
         QString in2 = in1;
         in2[i] = u'b';
-        QTest::addRow("all-same-except-char-%d", i) << in1 << in2 << -1 << -1;
+        BOBUIest::addRow("all-same-except-char-%d", i) << in1 << in2 << -1 << -1;
     }
 
     // some non-US-ASCII comparisons
@@ -8405,13 +8405,13 @@ void tst_QString::compare_data()
     QChar nbsp = u'\u00a0';
     for (int i = 1; i <= 65; ++i) {
         QString padding(i - 1, u' ');
-        QTest::addRow("ascii-nonascii-%d", i)
+        BOBUIest::addRow("ascii-nonascii-%d", i)
                 << (padding + smallA) << (padding + smallAWithAcute) << -1 << -1;
-        QTest::addRow("nonascii-nonascii-equal-%d", i)
+        BOBUIest::addRow("nonascii-nonascii-equal-%d", i)
                 << (padding + smallAWithAcute) << (padding + smallAWithAcute) << 0 << 0;
-        QTest::addRow("nonascii-nonascii-caseequal-%d", i)
+        BOBUIest::addRow("nonascii-nonascii-caseequal-%d", i)
                 << (padding + capitalAWithAcute) << (padding + smallAWithAcute) << -1 << 0;
-        QTest::addRow("nonascii-nonascii-notequal-%d", i)
+        BOBUIest::addRow("nonascii-nonascii-notequal-%d", i)
                 << (padding + nbsp) << (padding + smallAWithAcute) << -1 << -1;
     }
 }
@@ -8450,17 +8450,17 @@ void tst_QString::compare()
     QCOMPARE(sign(s1.compare(s2)), csr);
     QCOMPARE(sign(s1.compare(v2)), csr);
 
-    QCOMPARE(sign(s1.compare(s2, Qt::CaseSensitive)), csr);
-    QCOMPARE(sign(s1.compare(s2, Qt::CaseInsensitive)), cir);
-    QCOMPARE(sign(s1.compare(v2, Qt::CaseSensitive)), csr);
-    QCOMPARE(sign(s1.compare(v2, Qt::CaseInsensitive)), cir);
-    QCOMPARE(sign(QtPrivate::compareStrings(QUtf8StringView(s1_8), v2, Qt::CaseSensitive)), csr);
-    QCOMPARE(sign(QtPrivate::compareStrings(QUtf8StringView(s1_8), v2, Qt::CaseInsensitive)), cir);
-    QCOMPARE(sign(QtPrivate::compareStrings(QUtf8StringView(s2_8), v1, Qt::CaseSensitive)), -csr);
-    QCOMPARE(sign(QtPrivate::compareStrings(QUtf8StringView(s2_8), v1, Qt::CaseInsensitive)), -cir);
+    QCOMPARE(sign(s1.compare(s2, BobUI::CaseSensitive)), csr);
+    QCOMPARE(sign(s1.compare(s2, BobUI::CaseInsensitive)), cir);
+    QCOMPARE(sign(s1.compare(v2, BobUI::CaseSensitive)), csr);
+    QCOMPARE(sign(s1.compare(v2, BobUI::CaseInsensitive)), cir);
+    QCOMPARE(sign(BobUIPrivate::compareStrings(QUtf8StringView(s1_8), v2, BobUI::CaseSensitive)), csr);
+    QCOMPARE(sign(BobUIPrivate::compareStrings(QUtf8StringView(s1_8), v2, BobUI::CaseInsensitive)), cir);
+    QCOMPARE(sign(BobUIPrivate::compareStrings(QUtf8StringView(s2_8), v1, BobUI::CaseSensitive)), -csr);
+    QCOMPARE(sign(BobUIPrivate::compareStrings(QUtf8StringView(s2_8), v1, BobUI::CaseInsensitive)), -cir);
 
-    QCOMPARE(sign(QString::compare(s1, s2, Qt::CaseSensitive)), csr);
-    QCOMPARE(sign(QString::compare(s1, s2, Qt::CaseInsensitive)), cir);
+    QCOMPARE(sign(QString::compare(s1, s2, BobUI::CaseSensitive)), csr);
+    QCOMPARE(sign(QString::compare(s1, s2, BobUI::CaseInsensitive)), cir);
 
     if (csr == 0) {
         QVERIFY(qHash(s1) == qHash(s2));
@@ -8475,27 +8475,27 @@ void tst_QString::compare()
         QCOMPARE(s1.toCaseFolded(), s2.toCaseFolded());
 
     if (isLatin(s2)) {
-        QVERIFY(QtPrivate::isLatin1(s2));
+        QVERIFY(BobUIPrivate::isLatin1(s2));
         QCOMPARE(sign(QString::compare(s1, l1s2)), csr);
-        QCOMPARE(sign(QString::compare(s1, l1s2, Qt::CaseInsensitive)), cir);
+        QCOMPARE(sign(QString::compare(s1, l1s2, BobUI::CaseInsensitive)), cir);
 
         // ensure it doesn't compare past the explicit size
         QByteArray l1 = s2.toLatin1();
         l1 += "x";
         QLatin1String l1str(l1.constData(), l1.size() - 1);
         QCOMPARE(sign(QString::compare(s1, l1str)), csr);
-        QCOMPARE(sign(QString::compare(s1, l1str, Qt::CaseInsensitive)), cir);
+        QCOMPARE(sign(QString::compare(s1, l1str, BobUI::CaseInsensitive)), cir);
     }
 
     if (isLatin(s1)) {
-        QVERIFY(QtPrivate::isLatin1(s1));
+        QVERIFY(BobUIPrivate::isLatin1(s1));
         QCOMPARE(sign(QString::compare(l1s1, s2)), csr);
-        QCOMPARE(sign(QString::compare(l1s1, s2, Qt::CaseInsensitive)), cir);
+        QCOMPARE(sign(QString::compare(l1s1, s2, BobUI::CaseInsensitive)), cir);
     }
 
     if (isLatin(s1) && isLatin(s2)) {
-        QCOMPARE(sign(QtPrivate::compareStrings(l1s1, l1s2)), csr);
-        QCOMPARE(sign(QtPrivate::compareStrings(l1s1, l1s2, Qt::CaseInsensitive)), cir);
+        QCOMPARE(sign(BobUIPrivate::compareStrings(l1s1, l1s2)), csr);
+        QCOMPARE(sign(BobUIPrivate::compareStrings(l1s1, l1s2, BobUI::CaseInsensitive)), cir);
         QCOMPARE(l1s1 == l1s2, csr == 0);
         QCOMPARE(l1s1 < l1s2, csr < 0);
         QCOMPARE(l1s1 > l1s2, csr > 0);
@@ -8513,56 +8513,56 @@ void tst_QString::comparisonMacros()
     QFETCH(const QString, s2);
     QFETCH(int, csr);
 
-    const Qt::strong_ordering expectedOrdering = [&csr] {
+    const BobUI::strong_ordering expectedOrdering = [&csr] {
         if (csr > 0)
-            return Qt::strong_ordering::greater;
+            return BobUI::strong_ordering::greater;
         else if (csr < 0)
-            return Qt::strong_ordering::less;
-        return Qt::strong_ordering::equal;
+            return BobUI::strong_ordering::less;
+        return BobUI::strong_ordering::equal;
     }();
 
-    QT_TEST_ALL_COMPARISON_OPS(s1, s2, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(s1, s2, expectedOrdering);
 
     const QStringView s2sv(s2);
-    QT_TEST_ALL_COMPARISON_OPS(s1, s2sv, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(s1, s2sv, expectedOrdering);
 
     if (!s2.contains(QChar(u'\0'))) {
         const char16_t *utfData = reinterpret_cast<const char16_t*>(s2.constData());
-        QT_TEST_ALL_COMPARISON_OPS(s1, utfData, expectedOrdering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(s1, utfData, expectedOrdering);
     }
 
     if (s2.size() == 1) {
         const QChar ch = s2.front();
-        QT_TEST_ALL_COMPARISON_OPS(s1, ch, expectedOrdering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(s1, ch, expectedOrdering);
     }
 
     if (isLatin(s2)) {
         QByteArray ba = s2.toLatin1();
         const QLatin1StringView l1s2{ba};
-        QT_TEST_ALL_COMPARISON_OPS(s1, l1s2, expectedOrdering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(s1, l1s2, expectedOrdering);
     }
 
     const QByteArray u8s2 = s2.toUtf8();
 
     const QUtf8StringView u8s2sv(u8s2.data(), u8s2.size());
-    QT_TEST_ALL_COMPARISON_OPS(s1, u8s2sv, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(s1, u8s2sv, expectedOrdering);
 
 #ifdef __cpp_char8_t
     if (!s2.contains(QChar(u'\0'))) {
         const char8_t *char8data = reinterpret_cast<const char8_t*>(u8s2.constData());
-        QT_TEST_ALL_COMPARISON_OPS(s1, char8data, expectedOrdering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(s1, char8data, expectedOrdering);
     }
 #endif // __cpp_char8_t
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
-    QT_TEST_ALL_COMPARISON_OPS(s1, u8s2, expectedOrdering);
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
+    BOBUI_TEST_ALL_COMPARISON_OPS(s1, u8s2, expectedOrdering);
     const QByteArrayView u8s2view{u8s2.begin(), u8s2.size()};
-    QT_TEST_ALL_COMPARISON_OPS(s1, u8s2view, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(s1, u8s2view, expectedOrdering);
     if (!s2.contains(QChar(u'\0'))) {
         const char *u8data = u8s2.constData();
-        QT_TEST_ALL_COMPARISON_OPS(s1, u8data, expectedOrdering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(s1, u8data, expectedOrdering);
     }
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 }
 
 void tst_QString::resize()
@@ -8733,63 +8733,63 @@ void tst_QString::repeated() const
 
 void tst_QString::repeated_data() const
 {
-    QTest::addColumn<QString>("string" );
-    QTest::addColumn<QString>("expected" );
-    QTest::addColumn<int>("count" );
+    BOBUIest::addColumn<QString>("string" );
+    BOBUIest::addColumn<QString>("expected" );
+    BOBUIest::addColumn<int>("count" );
 
     /* Empty strings. */
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
         << QString()
         << QString()
         << 0;
 
-    QTest::newRow("data2")
+    BOBUIest::newRow("data2")
         << QString()
         << QString()
         << -1004;
 
-    QTest::newRow("data3")
+    BOBUIest::newRow("data3")
         << QString()
         << QString()
         << 1;
 
-    QTest::newRow("data4")
+    BOBUIest::newRow("data4")
         << QString()
         << QString()
         << 5;
 
     /* On simple string. */
-    QTest::newRow("data5")
+    BOBUIest::newRow("data5")
         << QString(QLatin1String("abc"))
         << QString()
         << -1004;
 
-    QTest::newRow("data6")
+    BOBUIest::newRow("data6")
         << QString(QLatin1String("abc"))
         << QString()
         << -1;
 
-    QTest::newRow("data7")
+    BOBUIest::newRow("data7")
         << QString(QLatin1String("abc"))
         << QString()
         << 0;
 
-    QTest::newRow("data8")
+    BOBUIest::newRow("data8")
         << QString(QLatin1String("abc"))
         << QString(QLatin1String("abc"))
         << 1;
 
-    QTest::newRow("data9")
+    BOBUIest::newRow("data9")
         << QString(QLatin1String("abc"))
         << QString(QLatin1String("abcabc"))
         << 2;
 
-    QTest::newRow("data10")
+    BOBUIest::newRow("data10")
         << QString(QLatin1String("abc"))
         << QString(QLatin1String("abcabcabc"))
         << 3;
 
-    QTest::newRow("data11")
+    BOBUIest::newRow("data11")
         << QString(QLatin1String("abc"))
         << QString(QLatin1String("abcabcabcabc"))
         << 4;
@@ -8812,8 +8812,8 @@ void tst_QString::arg_locale()
 }
 
 
-#if QT_CONFIG(icu)
-// Qt has to be built with ICU support
+#if BOBUI_CONFIG(icu)
+// BobUI has to be built with ICU support
 void tst_QString::toUpperLower_icu()
 {
     QString s = QString::fromLatin1("i");
@@ -8874,7 +8874,7 @@ void tst_QString::literals()
 void tst_QString::userDefinedLiterals()
 {
     {
-        using namespace Qt::StringLiterals;
+        using namespace BobUI::StringLiterals;
         QString str = u"abcd"_s;
 
         QVERIFY(str.size() == 4);
@@ -8896,9 +8896,9 @@ void tst_QString::userDefinedLiterals()
         QVERIFY(str2.capacity() >= str2.size());
     }
 
-#if QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
     {
-        QT_IGNORE_DEPRECATIONS(QString str = u"abcd"_qs;)
+        BOBUI_IGNORE_DEPRECATIONS(QString str = u"abcd"_qs;)
 
         QVERIFY(str.size() == 4);
         QCOMPARE(str.capacity(), 0);
@@ -8918,19 +8918,19 @@ void tst_QString::userDefinedLiterals()
         QVERIFY(str2.data() != s);
         QVERIFY(str2.capacity() >= str2.size());
     }
-#endif // QT_DEPRECATED_SINCE(6, 8)
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 }
 
-#if !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#if !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 void tst_QString::eightBitLiterals_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QString>("stringData");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QString>("stringData");
 
-    QTest::newRow("null") << QByteArray() << QString();
-    QTest::newRow("empty") << QByteArray("") << QString("");
-    QTest::newRow("regular") << QByteArray("foo") << "foo";
-    QTest::newRow("non-ascii") << QByteArray("\xc3\xa9") << QString::fromLatin1("\xe9");
+    BOBUIest::newRow("null") << QByteArray() << QString();
+    BOBUIest::newRow("empty") << QByteArray("") << QString("");
+    BOBUIest::newRow("regular") << QByteArray("foo") << "foo";
+    BOBUIest::newRow("non-ascii") << QByteArray("\xc3\xa9") << QString::fromLatin1("\xe9");
 }
 
 void tst_QString::eightBitLiterals()
@@ -9026,7 +9026,7 @@ void tst_QString::eightBitLiterals()
         QVERIFY(stringData >= data.constData());
     }
 }
-#endif // !defined(QT_RESTRICTED_CAST_FROM_ASCII) && !defined(QT_NO_CAST_FROM_ASCII)
+#endif // !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII) && !defined(BOBUI_NO_CAST_FROM_ASCII)
 
 void tst_QString::reserve()
 {
@@ -9041,16 +9041,16 @@ void tst_QString::reserve()
 
 void tst_QString::toHtmlEscaped_data()
 {
-    QTest::addColumn<QString>("original");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("original");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("null") << QString() << QString();
-    QTest::newRow("empty") << u""_s << u""_s;
-    QTest::newRow("1") << "Hello World\n" << "Hello World\n";
-    QTest::newRow("2") << "#include <QtCore>" << "#include &lt;QtCore&gt;";
-    QTest::newRow("3") << "<p class=\"cool\"><a href=\"http://example.com/?foo=bar&amp;bar=foo\">plop --&gt; </a></p>"
+    BOBUIest::newRow("null") << QString() << QString();
+    BOBUIest::newRow("empty") << u""_s << u""_s;
+    BOBUIest::newRow("1") << "Hello World\n" << "Hello World\n";
+    BOBUIest::newRow("2") << "#include <BobUICore>" << "#include &lt;BobUICore&gt;";
+    BOBUIest::newRow("3") << "<p class=\"cool\"><a href=\"http://example.com/?foo=bar&amp;bar=foo\">plop --&gt; </a></p>"
                        << "&lt;p class=&quot;cool&quot;&gt;&lt;a href=&quot;http://example.com/?foo=bar&amp;amp;bar=foo&quot;&gt;plop --&amp;gt; &lt;/a&gt;&lt;/p&gt;";
-    QTest::newRow("4") << QString::fromUtf8("<\320\222\321\201>") << QString::fromUtf8("&lt;\320\222\321\201&gt;");
+    BOBUIest::newRow("4") << QString::fromUtf8("<\320\222\321\201>") << QString::fromUtf8("&lt;\320\222\321\201&gt;");
 }
 
 void tst_QString::toHtmlEscaped()
@@ -9250,46 +9250,46 @@ void tst_QString::assignQChar()
 
 void tst_QString::isRightToLeft_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<bool>("rtl");
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<bool>("rtl");
 
-    QTest::newRow("null") << QString() << false;
-    QTest::newRow("empty") << u""_s << false;
+    BOBUIest::newRow("null") << QString() << false;
+    BOBUIest::newRow("empty") << u""_s << false;
 
-    QTest::newRow("numbers-only") << u"12345"_s << false;
-    QTest::newRow("latin1-only") << u"hello"_s << false;
-    QTest::newRow("numbers-latin1") << (u"12345"_s + u"hello"_s) << false;
+    BOBUIest::newRow("numbers-only") << u"12345"_s << false;
+    BOBUIest::newRow("latin1-only") << u"hello"_s << false;
+    BOBUIest::newRow("numbers-latin1") << (u"12345"_s + u"hello"_s) << false;
 
     static const char16_t unicode1[] = { 0x627, 0x627 };
-    QTest::newRow("arabic-only") << QString::fromUtf16(unicode1, 2) << true;
-    QTest::newRow("numbers-arabic") << (u"12345"_s + QString::fromUtf16(unicode1, 2)) << true;
-    QTest::newRow("numbers-latin1-arabic") << (u"12345"_s + u"hello"_s + QString::fromUtf16(unicode1, 2)) << false;
-    QTest::newRow("numbers-arabic-latin1") << (u"12345"_s + QString::fromUtf16(unicode1, 2) + u"hello"_s) << true;
+    BOBUIest::newRow("arabic-only") << QString::fromUtf16(unicode1, 2) << true;
+    BOBUIest::newRow("numbers-arabic") << (u"12345"_s + QString::fromUtf16(unicode1, 2)) << true;
+    BOBUIest::newRow("numbers-latin1-arabic") << (u"12345"_s + u"hello"_s + QString::fromUtf16(unicode1, 2)) << false;
+    BOBUIest::newRow("numbers-arabic-latin1") << (u"12345"_s + QString::fromUtf16(unicode1, 2) + u"hello"_s) << true;
 
     static const char16_t unicode2[] = { QChar::highSurrogate(0xE01DAu), QChar::lowSurrogate(0xE01DAu), QChar::highSurrogate(0x2F800u), QChar::lowSurrogate(0x2F800u) };
-    QTest::newRow("surrogates-VS-CJK") << QString::fromUtf16(unicode2, 4) << false;
+    BOBUIest::newRow("surrogates-VS-CJK") << QString::fromUtf16(unicode2, 4) << false;
 
     static const char16_t unicode3[] = { QChar::highSurrogate(0x10800u), QChar::lowSurrogate(0x10800u), QChar::highSurrogate(0x10805u), QChar::lowSurrogate(0x10805u) };
-    QTest::newRow("surrogates-cypriot") << QString::fromUtf16(unicode3, 4) << true;
+    BOBUIest::newRow("surrogates-cypriot") << QString::fromUtf16(unicode3, 4) << true;
 
-    QTest::newRow("lre") << (u"12345"_s + QChar(0x202a) + u"9"_s + QChar(0x202c)) << false;
-    QTest::newRow("rle") << (u"12345"_s + QChar(0x202b) + u"9"_s + QChar(0x202c)) << false;
-    QTest::newRow("r in lre") << (u"12345"_s + QChar(0x202a) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
-    QTest::newRow("l in lre") << (u"12345"_s + QChar(0x202a) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
-    QTest::newRow("r in rle") << (u"12345"_s + QChar(0x202b) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
-    QTest::newRow("l in rle") << (u"12345"_s + QChar(0x202b) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
+    BOBUIest::newRow("lre") << (u"12345"_s + QChar(0x202a) + u"9"_s + QChar(0x202c)) << false;
+    BOBUIest::newRow("rle") << (u"12345"_s + QChar(0x202b) + u"9"_s + QChar(0x202c)) << false;
+    BOBUIest::newRow("r in lre") << (u"12345"_s + QChar(0x202a) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
+    BOBUIest::newRow("l in lre") << (u"12345"_s + QChar(0x202a) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
+    BOBUIest::newRow("r in rle") << (u"12345"_s + QChar(0x202b) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
+    BOBUIest::newRow("l in rle") << (u"12345"_s + QChar(0x202b) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
 
-    QTest::newRow("lro") << (u"12345"_s + QChar(0x202d) + u"9"_s + QChar(0x202c)) << false;
-    QTest::newRow("rlo") << (u"12345"_s + QChar(0x202e) + u"9"_s + QChar(0x202c)) << false;
-    QTest::newRow("r in lro") << (u"12345"_s + QChar(0x202d) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
-    QTest::newRow("l in lro") << (u"12345"_s + QChar(0x202d) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
-    QTest::newRow("r in rlo") << (u"12345"_s + QChar(0x202e) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
-    QTest::newRow("l in rlo") << (u"12345"_s + QChar(0x202e) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
+    BOBUIest::newRow("lro") << (u"12345"_s + QChar(0x202d) + u"9"_s + QChar(0x202c)) << false;
+    BOBUIest::newRow("rlo") << (u"12345"_s + QChar(0x202e) + u"9"_s + QChar(0x202c)) << false;
+    BOBUIest::newRow("r in lro") << (u"12345"_s + QChar(0x202d) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
+    BOBUIest::newRow("l in lro") << (u"12345"_s + QChar(0x202d) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
+    BOBUIest::newRow("r in rlo") << (u"12345"_s + QChar(0x202e) + QString::fromUtf16(unicode1, 2) + QChar(0x202c) + u"a"_s) << true;
+    BOBUIest::newRow("l in rlo") << (u"12345"_s + QChar(0x202e) + u"a"_s + QChar(0x202c) + QString::fromUtf16(unicode1, 2)) << false;
 
-    QTest::newRow("lri") << (u"12345"_s + QChar(0x2066) + u"a"_s + QChar(0x2069) + QString::fromUtf16(unicode1, 2)) << true;
-    QTest::newRow("rli") << (u"12345"_s + QChar(0x2067) + QString::fromUtf16(unicode1, 2) + QChar(0x2069) + u"a"_s) << false;
-    QTest::newRow("fsi1") << (u"12345"_s + QChar(0x2068) + u"a"_s + QChar(0x2069) + QString::fromUtf16(unicode1, 2)) << true;
-    QTest::newRow("fsi2") << (u"12345"_s + QChar(0x2068) + QString::fromUtf16(unicode1, 2) + QChar(0x2069) + u"a"_s) << false;
+    BOBUIest::newRow("lri") << (u"12345"_s + QChar(0x2066) + u"a"_s + QChar(0x2069) + QString::fromUtf16(unicode1, 2)) << true;
+    BOBUIest::newRow("rli") << (u"12345"_s + QChar(0x2067) + QString::fromUtf16(unicode1, 2) + QChar(0x2069) + u"a"_s) << false;
+    BOBUIest::newRow("fsi1") << (u"12345"_s + QChar(0x2068) + u"a"_s + QChar(0x2069) + QString::fromUtf16(unicode1, 2)) << true;
+    BOBUIest::newRow("fsi2") << (u"12345"_s + QChar(0x2068) + QString::fromUtf16(unicode1, 2) + QChar(0x2069) + u"a"_s) << false;
 }
 
 void tst_QString::isRightToLeft()
@@ -9302,48 +9302,48 @@ void tst_QString::isRightToLeft()
 
 void tst_QString::isValidUtf16_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<bool>("valid");
 
     int row = 0;
-    QTest::addRow("valid-%02d", row++) << QString() << true;
-    QTest::addRow("valid-%02d", row++) << u""_s << true;
-    QTest::addRow("valid-%02d", row++) << u"abc def"_s << true;
-    QTest::addRow("valid-%02d", row++) << u"àbç"_s << true;
-    QTest::addRow("valid-%02d", row++) << u"ßẞ"_s << true;
-    QTest::addRow("valid-%02d", row++) << u"𝐀𝐁𝐂abc𝐃𝐄𝐅def"_s << true;
-    QTest::addRow("valid-%02d", row++) << u"abc𝐀𝐁𝐂def𝐃𝐄𝐅"_s << true;
-    QTest::addRow("valid-%02d", row++) << QString(u"abc"_s + QChar(0x0000) + u"def"_s) << true;
-    QTest::addRow("valid-%02d", row++) << QString(u"abc"_s + QChar(0xFFFF) + u"def"_s) << true;
+    BOBUIest::addRow("valid-%02d", row++) << QString() << true;
+    BOBUIest::addRow("valid-%02d", row++) << u""_s << true;
+    BOBUIest::addRow("valid-%02d", row++) << u"abc def"_s << true;
+    BOBUIest::addRow("valid-%02d", row++) << u"àbç"_s << true;
+    BOBUIest::addRow("valid-%02d", row++) << u"ßẞ"_s << true;
+    BOBUIest::addRow("valid-%02d", row++) << u"𝐀𝐁𝐂abc𝐃𝐄𝐅def"_s << true;
+    BOBUIest::addRow("valid-%02d", row++) << u"abc𝐀𝐁𝐂def𝐃𝐄𝐅"_s << true;
+    BOBUIest::addRow("valid-%02d", row++) << QString(u"abc"_s + QChar(0x0000) + u"def"_s) << true;
+    BOBUIest::addRow("valid-%02d", row++) << QString(u"abc"_s + QChar(0xFFFF) + u"def"_s) << true;
     // check that BOM presence doesn't make any difference
-    QTest::addRow("valid-%02d", row++) << (QString() + QChar(0xFEFF) + u"abc𝐀𝐁𝐂def𝐃𝐄𝐅"_s) << true;
-    QTest::addRow("valid-%02d", row++) << (QString() + QChar(0xFFFE) + u"abc𝐀𝐁𝐂def𝐃𝐄𝐅"_s) << true;
+    BOBUIest::addRow("valid-%02d", row++) << (QString() + QChar(0xFEFF) + u"abc𝐀𝐁𝐂def𝐃𝐄𝐅"_s) << true;
+    BOBUIest::addRow("valid-%02d", row++) << (QString() + QChar(0xFFFE) + u"abc𝐀𝐁𝐂def𝐃𝐄𝐅"_s) << true;
 
     row = 0;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800)) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800)) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800) + u"def"_s) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800) + u"def"_s) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800) + QChar(0xD800)) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800) + QChar(0xD800)) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800) + QChar(0xD800) + u"def"_s) << false;
-    QTest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800) + QChar(0xD800) + u"def"_s) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800)) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800)) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800) + u"def"_s) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800) + u"def"_s) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800) + QChar(0xD800)) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800) + QChar(0xD800)) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + QChar(0xD800) + QChar(0xD800) + u"def"_s) << false;
+    BOBUIest::addRow("stray-high-%02d", row++) << (QString() + u"abc"_s + QChar(0xD800) + QChar(0xD800) + u"def"_s) << false;
 
     row = 0;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00)) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00)) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00) + u"def"_s) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00) + u"def"_s) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00) + QChar(0xDC00)) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00) + QChar(0xDC00)) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00) + QChar(0xDC00) + u"def"_s) << false;
-    QTest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00) + QChar(0xDC00) + u"def"_s) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00)) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00)) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00) + u"def"_s) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00) + u"def"_s) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00) + QChar(0xDC00)) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00) + QChar(0xDC00)) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + QChar(0xDC00) + QChar(0xDC00) + u"def"_s) << false;
+    BOBUIest::addRow("stray-low-%02d", row++) << (QString() + u"abc"_s + QChar(0xDC00) + QChar(0xDC00) + u"def"_s) << false;
 }
 
 void tst_QString::isValidUtf16()
 {
     QFETCH(QString, string);
-    QTEST(string.isValidUtf16(), "valid");
+    BOBUIEST(string.isValidUtf16(), "valid");
 }
 
 static QString doVasprintf(const char *msg, ...) {
@@ -9616,6 +9616,6 @@ void tst_QString::std_stringview_conversion()
 }
 
 // QString's collation order is only supported during the lifetime as QCoreApplication
-QTEST_GUILESS_MAIN(tst_QString)
+BOBUIEST_GUILESS_MAIN(tst_QString)
 
 #include "tst_qstring.moc"

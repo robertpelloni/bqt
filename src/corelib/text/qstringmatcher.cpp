@@ -1,23 +1,23 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Mail.ru Group.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qstringmatcher.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static constexpr qsizetype FoldBufferCapacity = 256;
 
-static void bm_init_skiptable(QStringView needle, uchar *skiptable, Qt::CaseSensitivity cs)
+static void bm_init_skiptable(QStringView needle, uchar *skiptable, BobUI::CaseSensitivity cs)
 {
     const char16_t *uc = needle.utf16();
     const qsizetype len =
-            cs == Qt::CaseSensitive ? needle.size() : qMin(needle.size(), FoldBufferCapacity);
+            cs == BobUI::CaseSensitive ? needle.size() : qMin(needle.size(), FoldBufferCapacity);
     int l = qMin(int(len), 255);
     memset(skiptable, l, 256 * sizeof(uchar));
     uc += len - l;
-    if (cs == Qt::CaseSensitive) {
+    if (cs == BobUI::CaseSensitive) {
         while (l--) {
             skiptable[*uc & 0xff] = l;
             ++uc;
@@ -32,7 +32,7 @@ static void bm_init_skiptable(QStringView needle, uchar *skiptable, Qt::CaseSens
 }
 
 static inline qsizetype bm_find(QStringView haystack, qsizetype index, QStringView needle,
-                          const uchar *skiptable, Qt::CaseSensitivity cs)
+                          const uchar *skiptable, BobUI::CaseSensitivity cs)
 {
     const char16_t *uc = haystack.utf16();
     const qsizetype l = haystack.size();
@@ -42,7 +42,7 @@ static inline qsizetype bm_find(QStringView haystack, qsizetype index, QStringVi
     if (pl == 0)
         return index > l ? -1 : index;
 
-    if (cs == Qt::CaseSensitive) {
+    if (cs == BobUI::CaseSensitive) {
         const qsizetype pl_minus_one = pl - 1;
         const char16_t *current = uc + index + pl_minus_one;
         const char16_t *end = uc + l;
@@ -96,7 +96,7 @@ static inline qsizetype bm_find(QStringView haystack, qsizetype index, QStringVi
                             haystack.sliced(qMin(haystack.size(), candidatePos + foldBufferLength));
                     if (restNeedle.size() == 0
                         || restHaystack.startsWith(
-                                restNeedle, Qt::CaseInsensitive)) // Check the rest of the string
+                                restNeedle, BobUI::CaseInsensitive)) // Check the rest of the string
                         return candidatePos;
                 }
                 // in case we don't have a match we are a bit inefficient as we only skip by one
@@ -121,7 +121,7 @@ void QStringMatcher::updateSkipTable()
 
 /*!
     \class QStringMatcher
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStringMatcher class holds a sequence of characters that
     can be quickly matched in a Unicode string.
 
@@ -154,7 +154,7 @@ void QStringMatcher::updateSkipTable()
 
     Call indexIn() to perform a search.
 */
-QStringMatcher::QStringMatcher(const QString &pattern, Qt::CaseSensitivity cs)
+QStringMatcher::QStringMatcher(const QString &pattern, BobUI::CaseSensitivity cs)
     : d_ptr(nullptr), q_cs(cs), q_pattern(pattern)
 {
     q_sv = q_pattern;
@@ -162,7 +162,7 @@ QStringMatcher::QStringMatcher(const QString &pattern, Qt::CaseSensitivity cs)
 }
 
 /*!
-    \fn QStringMatcher::QStringMatcher(const QChar *uc, qsizetype length, Qt::CaseSensitivity cs)
+    \fn QStringMatcher::QStringMatcher(const QChar *uc, qsizetype length, BobUI::CaseSensitivity cs)
     \since 4.5
 
     Constructs a string matcher that will search for the pattern referred to
@@ -170,7 +170,7 @@ QStringMatcher::QStringMatcher(const QString &pattern, Qt::CaseSensitivity cs)
 */
 
 /*!
-    \fn QStringMatcher::QStringMatcher(QStringView pattern, Qt::CaseSensitivity cs = Qt::CaseSensitive)
+    \fn QStringMatcher::QStringMatcher(QStringView pattern, BobUI::CaseSensitivity cs = BobUI::CaseSensitive)
     \since 5.14
 
     Constructs a string matcher that will search for \a pattern, with
@@ -178,7 +178,7 @@ QStringMatcher::QStringMatcher(const QString &pattern, Qt::CaseSensitivity cs)
 
     Call indexIn() to perform a search.
 */
-QStringMatcher::QStringMatcher(QStringView str, Qt::CaseSensitivity cs)
+QStringMatcher::QStringMatcher(QStringView str, BobUI::CaseSensitivity cs)
     : d_ptr(nullptr), q_cs(cs), q_sv(str)
 {
     updateSkipTable();
@@ -258,7 +258,7 @@ QString QStringMatcher::pattern() const
 
     \sa caseSensitivity(), setPattern(), indexIn()
 */
-void QStringMatcher::setCaseSensitivity(Qt::CaseSensitivity cs)
+void QStringMatcher::setCaseSensitivity(BobUI::CaseSensitivity cs)
 {
     if (cs == q_cs)
         return;
@@ -309,7 +309,7 @@ qsizetype QStringMatcher::indexIn(QStringView str, qsizetype from) const
 }
 
 /*!
-    \fn Qt::CaseSensitivity QStringMatcher::caseSensitivity() const
+    \fn BobUI::CaseSensitivity QStringMatcher::caseSensitivity() const
 
     Returns the case sensitivity setting for this string matcher.
 
@@ -322,7 +322,7 @@ qsizetype QStringMatcher::indexIn(QStringView str, qsizetype from) const
 
 qsizetype qFindStringBoyerMoore(
     QStringView haystack, qsizetype haystackOffset,
-    QStringView needle, Qt::CaseSensitivity cs)
+    QStringView needle, BobUI::CaseSensitivity cs)
 {
     uchar skiptable[256];
     bm_init_skiptable(needle, skiptable, cs);
@@ -331,4 +331,4 @@ qsizetype qFindStringBoyerMoore(
     return bm_find(haystack, haystackOffset, needle, skiptable, cs);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,23 +1,23 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCBORSTREAMREADER_H
 #define QCBORSTREAMREADER_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcborcommon.h>
-#include <QtCore/qfloat16.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringview.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcborcommon.h>
+#include <BobUICore/qfloat16.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringview.h>
 
 #ifdef __cpp_lib_bit_cast
 #include <bit>
 #endif
 #include <memory>
 
-QT_REQUIRE_CONFIG(cborstreamreader);
+BOBUI_REQUIRE_CONFIG(cborstreamreader);
 
 /* X11 headers use these values too, but as defines */
 #if defined(False) && defined(True)
@@ -25,7 +25,7 @@ QT_REQUIRE_CONFIG(cborstreamreader);
 #  undef False
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
 
@@ -83,7 +83,7 @@ public:
     void clear();
     void reset();
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QCborError lastError();
 #endif
     QCborError lastError() const;
@@ -209,6 +209,6 @@ private:
     quint8 reserved[3] = {};
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCBORSTREAMREADER_H

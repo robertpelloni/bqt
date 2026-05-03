@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 #include "layoutitem.h"
@@ -7,10 +7,10 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsGridLayout>
 
-Window::Window(QGraphicsWidget *parent) : QGraphicsWidget(parent, Qt::Window)
+Window::Window(QGraphicsWidget *parent) : QGraphicsWidget(parent, BobUI::Window)
 {
 //! [0]
-    QGraphicsLinearLayout *windowLayout = new QGraphicsLinearLayout(Qt::Vertical);
+    QGraphicsLinearLayout *windowLayout = new QGraphicsLinearLayout(BobUI::Vertical);
     QGraphicsLinearLayout *linear = new QGraphicsLinearLayout(windowLayout);
     LayoutItem *item = new LayoutItem;
     linear->addItem(item);
@@ -30,10 +30,10 @@ Window::Window(QGraphicsWidget *parent) : QGraphicsWidget(parent, Qt::Window)
     grid->addItem(item, 0, 0, 4, 1);
     item = new LayoutItem;
     item->setMaximumHeight(item->minimumHeight());
-    grid->addItem(item, 0, 1, 2, 1, Qt::AlignVCenter);
+    grid->addItem(item, 0, 1, 2, 1, BobUI::AlignVCenter);
     item = new LayoutItem;
     item->setMaximumHeight(item->minimumHeight());
-    grid->addItem(item, 2, 1, 2, 1, Qt::AlignVCenter);
+    grid->addItem(item, 2, 1, 2, 1, BobUI::AlignVCenter);
     item = new LayoutItem;
     grid->addItem(item, 0, 2);
     item = new LayoutItem;

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtCore>
-#include <QtWidgets/QTreeView>
-#include <qtest.h>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUICore>
+#include <BobUIWidgets/BOBUIreeView>
+#include <bobuiest.h>
 #include "object.h"
 #include <qcoreapplication.h>
 #include <qdatetime.h>
@@ -87,13 +87,13 @@ struct Functor {
 
 void tst_QObject::signal_slot_benchmark_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::newRow("simple function") << 0;
-    QTest::newRow("single signal/slot") << 1;
-    QTest::newRow("multi signal/slot") << 2;
-    QTest::newRow("unconnected signal") << 3;
-    QTest::newRow("single signal/ptr") << 4;
-    QTest::newRow("functor") << 5;
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::newRow("simple function") << 0;
+    BOBUIest::newRow("single signal/slot") << 1;
+    BOBUIest::newRow("multi signal/slot") << 2;
+    BOBUIest::newRow("unconnected signal") << 3;
+    BOBUIest::newRow("single signal/ptr") << 4;
+    BOBUIest::newRow("functor") << 5;
 }
 
 void tst_QObject::signal_slot_benchmark()
@@ -159,10 +159,10 @@ void tst_QObject::signal_slot_benchmark()
 
 void tst_QObject::signal_many_receivers_data()
 {
-    QTest::addColumn<int>("receiverCount");
-    QTest::newRow("100 receivers") << 100;
-    QTest::newRow("1 000 receivers") << 1000;
-    QTest::newRow("10 000 receivers") << 10000;
+    BOBUIest::addColumn<int>("receiverCount");
+    BOBUIest::newRow("100 receivers") << 100;
+    BOBUIest::newRow("1 000 receivers") << 1000;
+    BOBUIest::newRow("10 000 receivers") << 10000;
 }
 
 void tst_QObject::signal_many_receivers()
@@ -181,12 +181,12 @@ void tst_QObject::signal_many_receivers()
 
 void tst_QObject::qproperty_benchmark_data()
 {
-    QTest::addColumn<QByteArray>("name");
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    BOBUIest::addColumn<QByteArray>("name");
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     for (int i = 0; i < mo->propertyCount(); ++i) {
         QMetaProperty prop = mo->property(i);
         if (prop.isWritable())
-            QTest::newRow(prop.name()) << QByteArray(prop.name());
+            BOBUIest::newRow(prop.name()) << QByteArray(prop.name());
     }
 }
 
@@ -194,7 +194,7 @@ void tst_QObject::qproperty_benchmark()
 {
     QFETCH(QByteArray, name);
     const char *p = name.constData();
-    QTreeView obj;
+    BOBUIreeView obj;
     QVariant v = obj.property(p);
     QBENCHMARK {
         obj.setProperty(p, v);
@@ -204,7 +204,7 @@ void tst_QObject::qproperty_benchmark()
 
 void tst_QObject::dynamic_property_benchmark()
 {
-    QTreeView obj;
+    BOBUIreeView obj;
     QBENCHMARK {
         obj.setProperty("myProperty", 123);
         (void)obj.property("myProperty");
@@ -215,60 +215,60 @@ void tst_QObject::dynamic_property_benchmark()
 
 void tst_QObject::connect_disconnect_benchmark_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::newRow("normalized signature") << 0;
-    QTest::newRow("unormalized signature") << 1;
-    QTest::newRow("function pointer") << 2;
-    QTest::newRow("normalized signature/handle") << 3;
-    QTest::newRow("unormalized signature/handle") << 4;
-    QTest::newRow("function pointer/handle") << 5;
-    QTest::newRow("functor/handle") << 6;}
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::newRow("normalized signature") << 0;
+    BOBUIest::newRow("unormalized signature") << 1;
+    BOBUIest::newRow("function pointer") << 2;
+    BOBUIest::newRow("normalized signature/handle") << 3;
+    BOBUIest::newRow("unormalized signature/handle") << 4;
+    BOBUIest::newRow("function pointer/handle") << 5;
+    BOBUIest::newRow("functor/handle") << 6;}
 
 void tst_QObject::connect_disconnect_benchmark()
 {
     QFETCH(int, type);
     switch (type) {
         case 0: {
-            QTreeView obj;
+            BOBUIreeView obj;
             QBENCHMARK {
                 QObject::connect   (&obj, SIGNAL(viewportEntered()), &obj, SLOT(expandAll()));
                 QObject::disconnect(&obj, SIGNAL(viewportEntered()), &obj, SLOT(expandAll()));
             }
         } break;
         case 1: {
-            QTreeView obj;
+            BOBUIreeView obj;
             QBENCHMARK {
                 QObject::connect   (&obj, SIGNAL(viewportEntered(  )), &obj, SLOT(expandAll(  ))); // sic: non-normalised
                 QObject::disconnect(&obj, SIGNAL(viewportEntered(  )), &obj, SLOT(expandAll(  ))); // sic: non-normalised
             }
         } break;
         case 2: {
-            QTreeView obj;
+            BOBUIreeView obj;
             QBENCHMARK {
-                QObject::connect   (&obj, &QAbstractItemView::viewportEntered, &obj, &QTreeView::expandAll);
-                QObject::disconnect(&obj, &QAbstractItemView::viewportEntered, &obj, &QTreeView::expandAll);
+                QObject::connect   (&obj, &QAbstractItemView::viewportEntered, &obj, &BOBUIreeView::expandAll);
+                QObject::disconnect(&obj, &QAbstractItemView::viewportEntered, &obj, &BOBUIreeView::expandAll);
             }
         } break;
         case 3: {
-            QTreeView obj;
+            BOBUIreeView obj;
             QBENCHMARK {
                 QObject::disconnect(QObject::connect(&obj, SIGNAL(viewportEntered()), &obj, SLOT(expandAll())));
             }
         } break;
         case 4: {
-            QTreeView obj;
+            BOBUIreeView obj;
             QBENCHMARK {
                 QObject::disconnect(QObject::connect(&obj, SIGNAL(viewportEntered(  )), &obj, SLOT(expandAll(  )))); // sic: non-normalised
             }
         } break;
         case 5: {
-            QTreeView obj;
+            BOBUIreeView obj;
             QBENCHMARK {
-                QObject::disconnect(QObject::connect(&obj, &QAbstractItemView::viewportEntered, &obj, &QTreeView::expandAll));
+                QObject::disconnect(QObject::connect(&obj, &QAbstractItemView::viewportEntered, &obj, &BOBUIreeView::expandAll));
             }
         } break;
         case 6: {
-            QTreeView obj;
+            BOBUIreeView obj;
             Functor functor;
             QBENCHMARK {
                 QObject::disconnect(QObject::connect(&obj, &QAbstractItemView::viewportEntered, functor));
@@ -286,6 +286,6 @@ void tst_QObject::receiver_destroyed_benchmark()
     }
 }
 
-QTEST_MAIN(tst_QObject)
+BOBUIEST_MAIN(tst_QObject)
 
 #include "tst_bench_qobject.moc"

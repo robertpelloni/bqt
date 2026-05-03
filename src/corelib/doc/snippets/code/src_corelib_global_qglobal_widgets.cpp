@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QLabel>
 #include <QStyle>
@@ -8,7 +8,7 @@ void label_example()
 {
     QLabel *label = new QLabel;
     //! [0]
-    label->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    label->setAlignment(BobUI::AlignLeft | BobUI::AlignTop);
     label->setAlignment({ });
     //! [0]
 }
@@ -22,7 +22,7 @@ QStyle *style()
 void snippet_16()
 {
     //! [1]
-    #if QT_VERSION >= QT_VERSION_CHECK(4, 1, 0)
+    #if BOBUI_VERSION >= BOBUI_VERSION_CHECK(4, 1, 0)
         QIcon icon = style()->standardIcon(QStyle::SP_TrashIcon);
     #else
         QPixmap pixmap = style()->standardPixmap(QStyle::SP_TrashIcon);
@@ -36,9 +36,9 @@ void snippet_16()
 #include <stdio.h>
 #include <stdlib.h>
 
-QtMessageHandler originalHandler = nullptr;
+BobUIMessageHandler originalHandler = nullptr;
 
-void logToFile(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+void logToFile(BobUIMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QString message = qFormatLogMessage(type, context, msg);
     static FILE *f = fopen("log.txt", "a");
@@ -72,8 +72,8 @@ QString tr(const char *)
 
 //! [3]
 static const char *greeting_strings[] = {
-    QT_TRANSLATE_NOOP("FriendlyConversation", "Hello"),
-    QT_TRANSLATE_NOOP("FriendlyConversation", "Goodbye")
+    BOBUI_TRANSLATE_NOOP("FriendlyConversation", "Hello"),
+    BOBUI_TRANSLATE_NOOP("FriendlyConversation", "Goodbye")
 };
 
 QString FriendlyConversation::greeting(int type)
@@ -107,9 +107,9 @@ namespace repetition
 
     static struct { const char *source; const char *comment; } greeting_strings[] =
     {
-        QT_TRANSLATE_NOOP3("FriendlyConversation", "Hello",
+        BOBUI_TRANSLATE_NOOP3("FriendlyConversation", "Hello",
                            "A really friendly hello"),
-        QT_TRANSLATE_NOOP3("FriendlyConversation", "Goodbye",
+        BOBUI_TRANSLATE_NOOP3("FriendlyConversation", "Goodbye",
                            "A really friendly goodbye")
     };
 
@@ -128,7 +128,7 @@ namespace repetition
     //! [4]
 }
 
-namespace snippet_qttranslatennoop3
+namespace snippet_bobuitranslatennoop3
 {
     class FriendlyConversation
     {
@@ -141,11 +141,11 @@ namespace snippet_qttranslatennoop3
         return "";
     }
 
-    //! [qttranslatennoop]
+    //! [bobuitranslatennoop]
     static struct { const char * const source; const char * const comment; } status_strings[] = {
-        QT_TRANSLATE_N_NOOP3("Message Status", "Hello, you have %n message(s)",
+        BOBUI_TRANSLATE_N_NOOP3("Message Status", "Hello, you have %n message(s)",
                              "A login message status"),
-        QT_TRANSLATE_N_NOOP3("Message status", "You have %n new message(s)",
+        BOBUI_TRANSLATE_N_NOOP3("Message status", "You have %n new message(s)",
                              "A new message query status")
     };
 
@@ -162,7 +162,7 @@ namespace snippet_qttranslatennoop3
                                status_strings[type].comment,
                                count);
     }
-    //! [qttranslatennoop]
+    //! [bobuitranslatennoop]
 }
 
 class TheClass : public QWidget
@@ -174,21 +174,21 @@ class TheClass : public QWidget
         void addLabels();
 };
 
-//! [qttrid_noop]
+//! [bobuitrid_noop]
 static const char * const ids[] = {
     //% "This is the first text."
-    QT_TRID_NOOP("qtn_1st_text"),
+    BOBUI_TRID_NOOP("bobuin_1st_text"),
     //% "This is the second text."
-    QT_TRID_NOOP("qtn_2nd_text"),
+    BOBUI_TRID_NOOP("bobuin_2nd_text"),
     0
 };
 
 void TheClass::addLabels()
 {
     for (int i = 0; ids[i]; ++i)
-        new QLabel(qtTrId(ids[i]), this);
+        new QLabel(bobuiTrId(ids[i]), this);
 }
-//! [qttrid_noop]
+//! [bobuitrid_noop]
 
 void qwidget_example()
 {
@@ -197,12 +197,12 @@ void qwidget_example()
     //! [5]
 }
 
-//! [qt-version-check]
-#include <QtGlobal>
+//! [bobui-version-check]
+#include <BobUIGlobal>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include <QtWidgets>
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(5, 0, 0)
+#include <BobUIWidgets>
 #else
-#include <QtGui>
+#include <BobUIGui>
 #endif
-//! [qt-version-check]
+//! [bobui-version-check]

@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QLoggingCategory>
@@ -10,12 +10,12 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    const bool dbg = qEnvironmentVariableIntValue("QT_VK_DEBUG");
+    const bool dbg = qEnvironmentVariableIntValue("BOBUI_VK_DEBUG");
 
     QVulkanInstance inst;
 
     if (dbg) {
-        QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
+        QLoggingCategory::setFilterRules(QStringLiteral("bobui.vulkan=true"));
         inst.setLayers({ "VK_LAYER_KHRONOS_validation" });
     }
 

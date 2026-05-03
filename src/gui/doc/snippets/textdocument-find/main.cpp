@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -11,14 +11,14 @@ QString tr(const char *text)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QTextEdit *editor = new QTextEdit();
+    BOBUIextEdit *editor = new BOBUIextEdit();
 
-    QTextCursor cursor(editor->textCursor());
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor(editor->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextCharFormat plainFormat(cursor.charFormat());
-    QTextCharFormat colorFormat = plainFormat;
-    colorFormat.setForeground(Qt::red);
+    BOBUIextCharFormat plainFormat(cursor.charFormat());
+    BOBUIextCharFormat colorFormat = plainFormat;
+    colorFormat.setForeground(BobUI::red);
 
     cursor.insertText(tr("Text can be displayed in a variety of "
                                   "different character "
@@ -30,16 +30,16 @@ int main(int argc, char *argv[])
 
     QString searchString = tr("text");
 
-    QTextDocument *document = editor->document();
+    BOBUIextDocument *document = editor->document();
 //! [0]
-    QTextCursor newCursor(document);
+    BOBUIextCursor newCursor(document);
 
     while (!newCursor.isNull() && !newCursor.atEnd()) {
         newCursor = document->find(searchString, newCursor);
 
         if (!newCursor.isNull()) {
-            newCursor.movePosition(QTextCursor::WordRight,
-                                   QTextCursor::KeepAnchor);
+            newCursor.movePosition(BOBUIextCursor::WordRight,
+                                   BOBUIextCursor::KeepAnchor);
 
             newCursor.mergeCharFormat(colorFormat);
         }

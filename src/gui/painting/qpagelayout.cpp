@@ -1,23 +1,23 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qpagelayout.h"
 
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qsize.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qsize.h>
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QPageLayout)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPageLayout::Unit, QPageLayout__Unit)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPageLayout::Orientation, QPageLayout__Orientation)
+BOBUI_IMPL_METATYPE_EXTERN(QPageLayout)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPageLayout::Unit, QPageLayout__Unit)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPageLayout::Orientation, QPageLayout__Orientation)
 
 // Multiplier for converting units to points.
-Q_GUI_EXPORT qreal qt_pointMultiplier(QPageLayout::Unit unit)
+Q_GUI_EXPORT qreal bobui_pointMultiplier(QPageLayout::Unit unit)
 {
     switch (unit) {
     case QPageLayout::Millimeter:
@@ -37,9 +37,9 @@ Q_GUI_EXPORT qreal qt_pointMultiplier(QPageLayout::Unit unit)
 }
 
 // Multiplier for converting pixels to points.
-Q_GUI_EXPORT extern qreal qt_pixelMultiplier(int resolution);
+Q_GUI_EXPORT extern qreal bobui_pixelMultiplier(int resolution);
 
-Q_GUI_EXPORT QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits)
+Q_GUI_EXPORT QMarginsF bobui_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits)
 {
     // If the margins have the same units, or are all 0, then don't need to convert
     if (fromUnits == toUnits || margins.isNull())
@@ -47,7 +47,7 @@ Q_GUI_EXPORT QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::
 
     // If converting to points then convert and round up to 2 decimal places
     if (toUnits == QPageLayout::Point) {
-        const qreal multiplierX100 = qt_pointMultiplier(fromUnits) * 100;
+        const qreal multiplierX100 = bobui_pointMultiplier(fromUnits) * 100;
         return QMarginsF(qCeil(margins.left() * multiplierX100) / 100.0,
                          qCeil(margins.top() * multiplierX100) / 100.0,
                          qCeil(margins.right() * multiplierX100) / 100.0,
@@ -55,10 +55,10 @@ Q_GUI_EXPORT QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::
     }
 
     // If converting to other units, need to convert to unrounded points first
-    QMarginsF pointMargins = fromUnits == QPageLayout::Point ? margins : margins * qt_pointMultiplier(fromUnits);
+    QMarginsF pointMargins = fromUnits == QPageLayout::Point ? margins : margins * bobui_pointMultiplier(fromUnits);
 
     // Then convert from points to required units rounded to 2 decimal places
-    const qreal multiplier = qt_pointMultiplier(toUnits);
+    const qreal multiplier = bobui_pointMultiplier(toUnits);
     return QMarginsF(qRound(pointMargins.left() * 100 / multiplier) / 100.0,
                      qRound(pointMargins.top() * 100 / multiplier) / 100.0,
                      qRound(pointMargins.right() * 100 / multiplier) / 100.0,
@@ -137,8 +137,8 @@ bool QPageLayoutPrivate::isEquivalentTo(const QPageLayoutPrivate &other) const
 {
     return m_pageSize.isEquivalentTo(other.m_pageSize)
            && m_orientation == other.m_orientation
-           && qt_convertMargins(m_margins, m_units, QPageLayout::Point)
-              == qt_convertMargins(other.m_margins, other.m_units, QPageLayout::Point);
+           && bobui_convertMargins(m_margins, m_units, QPageLayout::Point)
+              == bobui_convertMargins(other.m_margins, other.m_units, QPageLayout::Point);
 }
 
 bool QPageLayoutPrivate::isValid() const
@@ -156,17 +156,17 @@ QMarginsF QPageLayoutPrivate::clampMargins(const QMarginsF &margins) const
 
 QMarginsF QPageLayoutPrivate::margins(QPageLayout::Unit units) const
 {
-    return qt_convertMargins(m_margins, m_units, units);
+    return bobui_convertMargins(m_margins, m_units, units);
 }
 
 QMarginsF QPageLayoutPrivate::marginsPoints() const
 {
-    return qt_convertMargins(m_margins, m_units, QPageLayout::Point);
+    return bobui_convertMargins(m_margins, m_units, QPageLayout::Point);
 }
 
 QMargins QPageLayoutPrivate::marginsPixels(int resolution) const
 {
-    return QMarginsF(marginsPoints() / qt_pixelMultiplier(resolution)).toMargins();
+    return QMarginsF(marginsPoints() / bobui_pixelMultiplier(resolution)).toMargins();
 }
 
 void QPageLayoutPrivate::setDefaultMargins(const QMarginsF &minMargins)
@@ -220,7 +220,7 @@ QRectF QPageLayoutPrivate::paintRect() const
 
 /*!
     \class QPageLayout
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.3
     \brief Describes the size, orientation and margins of a page.
 
@@ -233,7 +233,7 @@ QRectF QPageLayoutPrivate::paintRect() const
     orientation.
 
     The minimum margins can be defined for the layout but normally default to 0.
-    When used in conjunction with Qt's printing support the minimum margins
+    When used in conjunction with BobUI's printing support the minimum margins
     will reflect the minimum printable area defined by the printer.
 
     In the default StandardMode the current margins and minimum margins are
@@ -521,9 +521,9 @@ void QPageLayout::setUnits(Unit units)
 {
     if (units != d->m_units) {
         d.detach();
-        d->m_margins = qt_convertMargins(d->m_margins, d->m_units, units);
-        d->m_minMargins = qt_convertMargins(d->m_minMargins, d->m_units, units);
-        d->m_maxMargins = qt_convertMargins(d->m_maxMargins, d->m_units, units);
+        d->m_margins = bobui_convertMargins(d->m_margins, d->m_units, units);
+        d->m_minMargins = bobui_convertMargins(d->m_minMargins, d->m_units, units);
+        d->m_maxMargins = bobui_convertMargins(d->m_maxMargins, d->m_units, units);
         d->m_units = units;
         d->m_fullSize = d->fullSizeUnits(d->m_units);
     }
@@ -545,7 +545,7 @@ QPageLayout::Unit QPageLayout::units() const
     The units used are those currently defined for the layout.  To use different
     units then call setUnits() first.
 
-    Since Qt 6.8, the optional \a outOfBoundsPolicy can be used to specify how
+    Since BobUI 6.8, the optional \a outOfBoundsPolicy can be used to specify how
     margins that are out of bounds are handled.
 
     \sa margins(), units()
@@ -595,7 +595,7 @@ bool QPageLayout::setMargins(const QMarginsF &margins, OutOfBoundsPolicy outOfBo
     The units used are those currently defined for the layout.  To use different
     units call setUnits() first.
 
-    Since Qt 6.8, the optional \a outOfBoundsPolicy can be used to specify how
+    Since BobUI 6.8, the optional \a outOfBoundsPolicy can be used to specify how
     margins that are out of bounds are handled.
 
     \sa setMargins(), margins()
@@ -606,7 +606,7 @@ bool QPageLayout::setLeftMargin(qreal leftMargin, OutOfBoundsPolicy outOfBoundsP
     if (d->m_mode == StandardMode && outOfBoundsPolicy == OutOfBoundsPolicy::Clamp)
         leftMargin = qBound(d->m_minMargins.left(), leftMargin, d->m_maxMargins.left());
 
-    if (QtPrivate::fuzzyCompare(leftMargin, d->m_margins.left()))
+    if (BobUIPrivate::fuzzyCompare(leftMargin, d->m_margins.left()))
         return true;
 
     if (d->m_mode == FullPageMode
@@ -626,7 +626,7 @@ bool QPageLayout::setLeftMargin(qreal leftMargin, OutOfBoundsPolicy outOfBoundsP
     The units used are those currently defined for the layout.  To use different
     units call setUnits() first.
 
-    Since Qt 6.8, the optional \a outOfBoundsPolicy can be used to specify how
+    Since BobUI 6.8, the optional \a outOfBoundsPolicy can be used to specify how
     margins that are out of bounds are handled.
 
     \sa setMargins(), margins()
@@ -637,7 +637,7 @@ bool QPageLayout::setRightMargin(qreal rightMargin, OutOfBoundsPolicy outOfBound
     if (d->m_mode == StandardMode && outOfBoundsPolicy == OutOfBoundsPolicy::Clamp)
         rightMargin = qBound(d->m_minMargins.right(), rightMargin, d->m_maxMargins.right());
 
-    if (QtPrivate::fuzzyCompare(rightMargin, d->m_margins.right()))
+    if (BobUIPrivate::fuzzyCompare(rightMargin, d->m_margins.right()))
         return true;
 
     if (d->m_mode == FullPageMode
@@ -657,7 +657,7 @@ bool QPageLayout::setRightMargin(qreal rightMargin, OutOfBoundsPolicy outOfBound
     The units used are those currently defined for the layout.  To use different
     units call setUnits() first.
 
-    Since Qt 6.8, the optional \a outOfBoundsPolicy can be used to specify how
+    Since BobUI 6.8, the optional \a outOfBoundsPolicy can be used to specify how
     margins that are out of bounds are handled.
 
     \sa setMargins(), margins()
@@ -668,7 +668,7 @@ bool QPageLayout::setTopMargin(qreal topMargin, OutOfBoundsPolicy outOfBoundsPol
     if (d->m_mode == StandardMode && outOfBoundsPolicy == OutOfBoundsPolicy::Clamp)
         topMargin = qBound(d->m_minMargins.top(), topMargin, d->m_maxMargins.top());
 
-    if (QtPrivate::fuzzyCompare(topMargin, d->m_margins.top()))
+    if (BobUIPrivate::fuzzyCompare(topMargin, d->m_margins.top()))
         return true;
 
     if (d->m_mode == FullPageMode
@@ -688,7 +688,7 @@ bool QPageLayout::setTopMargin(qreal topMargin, OutOfBoundsPolicy outOfBoundsPol
     The units used are those currently defined for the layout.  To use different
     units call setUnits() first.
 
-    Since Qt 6.8, the optional \a outOfBoundsPolicy can be used to specify how
+    Since BobUI 6.8, the optional \a outOfBoundsPolicy can be used to specify how
     margins that are out of bounds are handled.
 
     \sa setMargins(), margins()
@@ -699,7 +699,7 @@ bool QPageLayout::setBottomMargin(qreal bottomMargin, OutOfBoundsPolicy outOfBou
     if (d->m_mode == StandardMode && outOfBoundsPolicy == OutOfBoundsPolicy::Clamp)
         bottomMargin = qBound(d->m_minMargins.bottom(), bottomMargin, d->m_maxMargins.bottom());
 
-    if (QtPrivate::fuzzyCompare(bottomMargin, d->m_margins.bottom()))
+    if (BobUIPrivate::fuzzyCompare(bottomMargin, d->m_margins.bottom()))
         return true;
 
     if (d->m_mode == FullPageMode
@@ -930,7 +930,7 @@ QRect QPageLayout::paintRectPixels(int resolution) const
                                                   : d->fullRectPixels(resolution) - d->marginsPixels(resolution);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPageLayout &layout)
 {
     QDebugStateSaver saver(dbg);
@@ -969,4 +969,4 @@ QDebug operator<<(QDebug dbg, const QPageLayout &layout)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

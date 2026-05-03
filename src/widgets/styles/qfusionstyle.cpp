@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfusionstyle_p.h"
 #include "qfusionstyle_p_p.h"
 
-#if QT_CONFIG(style_fusion) || defined(QT_PLUGIN)
+#if BOBUI_CONFIG(style_fusion) || defined(BOBUI_PLUGIN)
 #include "qcommonstyle_p.h"
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 #include <qcombobox.h>
 #endif
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
 #include <qpushbutton.h>
 #endif
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
 #include <qabstractbutton.h>
 #endif
 #include <qpainter.h>
@@ -22,33 +22,33 @@
 #include <qdir.h>
 #include <qstyleoption.h>
 #include <qapplication.h>
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 #include <qmainwindow.h>
 #endif
 #include <qfont.h>
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
 #include <qgroupbox.h>
 #endif
 #include <qpixmapcache.h>
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 #include <qscrollbar.h>
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 #include <qspinbox.h>
 #endif
-#if QT_CONFIG(abstractslider)
+#if BOBUI_CONFIG(abstractslider)
 #include <qabstractslider.h>
 #endif
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 #include <qslider.h>
 #endif
-#if QT_CONFIG(splitter)
+#if BOBUI_CONFIG(splitter)
 #include <qsplitter.h>
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
 #include <qprogressbar.h>
 #endif
-#if QT_CONFIG(wizard)
+#if BOBUI_CONFIG(wizard)
 #include <qwizard.h>
 #endif
 #include <qdrawutil.h>
@@ -57,9 +57,9 @@
 #include <private/qapplication_p.h>
 #include <private/qwidget_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace QStyleHelper;
 
 enum Direction {
@@ -76,8 +76,8 @@ static const int windowsItemVMargin      =  8; // menu item ver text margin
 static const int groupBoxBottomMargin    =  0;  // space below the groupbox
 static const int groupBoxTopMargin       =  3;
 
-#if QT_CONFIG(imageformat_xpm)
-static const char * const qt_titlebar_context_help[] = {
+#if BOBUI_CONFIG(imageformat_xpm)
+static const char * const bobui_titlebar_context_help[] = {
     "10 10 3 1",
     "  c None",
     "# c #000000",
@@ -92,7 +92,7 @@ static const char * const qt_titlebar_context_help[] = {
     "          ",
     "    ##    ",
     "    ##    "};
-#endif // QT_CONFIG(imageformat_xpm)
+#endif // BOBUI_CONFIG(imageformat_xpm)
 
 static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
 {
@@ -105,7 +105,7 @@ static QColor mergedColors(const QColor &colorA, const QColor &colorB, int facto
 }
 
 // The default button and handle gradient
-static QLinearGradient qt_fusion_gradient(const QRect &rect, const QBrush &baseColor, Direction direction = TopDown)
+static QLinearGradient bobui_fusion_gradient(const QRect &rect, const QBrush &baseColor, Direction direction = TopDown)
 {
     int x = rect.center().x();
     int y = rect.center().y();
@@ -141,7 +141,7 @@ static QLinearGradient qt_fusion_gradient(const QRect &rect, const QBrush &baseC
     return gradient;
 }
 
-static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QStyleOption *option, const QRect &rect, const QColor &color)
+static void bobui_fusion_draw_arrow(BobUI::ArrowType type, QPainter *painter, const QStyleOption *option, const QRect &rect, const QColor &color)
 {
     if (rect.isEmpty())
         return;
@@ -160,20 +160,20 @@ static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QS
     QCachedPainter cp(painter, pixmapName, option, rect.size(), rect);
     if (cp.needsPainting()) {
         QRectF arrowRect(0, 0, size, arrowHeight * size / arrowWidth);
-        if (type == Qt::LeftArrow || type == Qt::RightArrow)
+        if (type == BobUI::LeftArrow || type == BobUI::RightArrow)
             arrowRect = arrowRect.transposed();
         arrowRect.moveTo((rect.width() - arrowRect.width()) / 2.0,
                          (rect.height() - arrowRect.height()) / 2.0);
 
         std::array<QPointF, 3> triangle;
         switch (type) {
-        case Qt::DownArrow:
+        case BobUI::DownArrow:
             triangle = {arrowRect.topLeft(), arrowRect.topRight(), QPointF(arrowRect.center().x(), arrowRect.bottom())};
             break;
-        case Qt::RightArrow:
+        case BobUI::RightArrow:
             triangle = {arrowRect.topLeft(), arrowRect.bottomLeft(), QPointF(arrowRect.right(), arrowRect.center().y())};
             break;
-        case Qt::LeftArrow:
+        case BobUI::LeftArrow:
             triangle = {arrowRect.topRight(), arrowRect.bottomRight(), QPointF(arrowRect.left(), arrowRect.center().y())};
             break;
         default:
@@ -181,14 +181,14 @@ static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QS
             break;
         }
 
-        cp->setPen(Qt::NoPen);
+        cp->setPen(BobUI::NoPen);
         cp->setBrush(color);
         cp->setRenderHint(QPainter::Antialiasing);
         cp->drawPolygon(triangle.data(), int(triangle.size()));
     }
 }
 
-static void qt_fusion_draw_mdibutton(QPainter *painter, const QStyleOptionTitleBar *option, const QRect &tmp, bool hover, bool sunken)
+static void bobui_fusion_draw_mdibutton(QPainter *painter, const QStyleOptionTitleBar *option, const QRect &tmp, bool hover, bool sunken)
 {
     bool active = (option->titleBarState & QStyle::State_Active);
     const QColor dark = QColor::fromHsv(option->palette.button().color().hue(),
@@ -252,7 +252,7 @@ QFusionStylePrivate::QFusionStylePrivate()
     \class QFusionStyle
     \brief The QFusionStyle class provides a custom widget style
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 
     The Fusion style provides a custom look and feel that is not
@@ -318,39 +318,39 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
 
     switch (elem) {
 
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
     // No frame drawn
     case PE_FrameGroupBox:
     {
         const auto strFrameGroupBox = QStringLiteral(u"fusion_groupbox");
         QPixmap pixmap;
         if (!QPixmapCache::find(strFrameGroupBox, &pixmap)) {
-            pixmap.load(":/qt-project.org/styles/commonstyle/images/fusion_groupbox.png"_L1);
+            pixmap.load(":/bobui-project.org/styles/commonstyle/images/fusion_groupbox.png"_L1);
             QPixmapCache::insert(strFrameGroupBox, pixmap);
         }
         qDrawBorderPixmap(painter, option->rect, QMargins(6, 6, 6, 6), pixmap);
         break;
     }
-#endif // QT_CONFIG(groupbox)
+#endif // BOBUI_CONFIG(groupbox)
     case PE_IndicatorBranch: {
         if (!(option->state & State_Children))
             break;
         if (option->state & State_Open)
             drawPrimitive(PE_IndicatorArrowDown, option, painter, widget);
         else {
-            const bool reverse = (option->direction == Qt::RightToLeft);
+            const bool reverse = (option->direction == BobUI::RightToLeft);
             drawPrimitive(reverse ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight, option, painter, widget);
         }
         break;
     }
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     case PE_FrameTabBarBase:
         if (const QStyleOptionTabBarBase *tbb
                 = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
             painter->save();
             painter->setPen(outline.lighter(110));
             switch (tbb->shape) {
-            case QTabBar::RoundedNorth: {
+            case BOBUIabBar::RoundedNorth: {
                 QRegion region(tbb->rect);
                 region -= tbb->selectedTabRect;
                 painter->drawLine(tbb->rect.topLeft(), tbb->rect.topRight());
@@ -359,20 +359,20 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
                 painter->drawLine(tbb->rect.topLeft() + QPoint(0, 1), tbb->rect.topRight() + QPoint(0, 1));
             }
                 break;
-            case QTabBar::RoundedWest:
+            case BOBUIabBar::RoundedWest:
                 painter->drawLine(tbb->rect.left(), tbb->rect.top(), tbb->rect.left(), tbb->rect.bottom());
                 break;
-            case QTabBar::RoundedSouth:
+            case BOBUIabBar::RoundedSouth:
                 painter->drawLine(tbb->rect.left(), tbb->rect.bottom(),
                                   tbb->rect.right(), tbb->rect.bottom());
                 break;
-            case QTabBar::RoundedEast:
+            case BOBUIabBar::RoundedEast:
                 painter->drawLine(tbb->rect.topRight(), tbb->rect.bottomRight());
                 break;
-            case QTabBar::TriangularNorth:
-            case QTabBar::TriangularEast:
-            case QTabBar::TriangularWest:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::TriangularNorth:
+            case BOBUIabBar::TriangularEast:
+            case BOBUIabBar::TriangularWest:
+            case BOBUIabBar::TriangularSouth:
                 painter->restore();
                 QCommonStyle::drawPrimitive(elem, option, painter, widget);
                 return;
@@ -380,7 +380,7 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             painter->restore();
         }
         return;
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
     case PE_PanelScrollAreaCorner: {
         painter->save();
         QColor alphaOutline = outline;
@@ -399,21 +399,21 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             break;
         QColor arrowColor = option->palette.windowText().color();
         arrowColor.setAlpha(160);
-        Qt::ArrowType arrow = Qt::UpArrow;
+        BobUI::ArrowType arrow = BobUI::UpArrow;
         switch (elem) {
         case PE_IndicatorArrowDown:
-            arrow = Qt::DownArrow;
+            arrow = BobUI::DownArrow;
             break;
         case PE_IndicatorArrowRight:
-            arrow = Qt::RightArrow;
+            arrow = BobUI::RightArrow;
             break;
         case PE_IndicatorArrowLeft:
-            arrow = Qt::LeftArrow;
+            arrow = BobUI::LeftArrow;
             break;
         default:
             break;
         }
-        qt_fusion_draw_arrow(arrow, painter, option, option->rect, arrowColor);
+        bobui_fusion_draw_arrow(arrow, painter, option, option->rect, arrowColor);
     }
         break;
     case PE_IndicatorItemViewItemCheck:
@@ -430,15 +430,15 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             QColor arrowColor = header->palette.windowText().color();
             arrowColor.setAlpha(180);
 
-            Qt::ArrowType arrowType = Qt::UpArrow;
+            BobUI::ArrowType arrowType = BobUI::UpArrow;
 #if defined(Q_OS_LINUX)
             if (header->sortIndicator & QStyleOptionHeader::SortDown)
-                arrowType = Qt::DownArrow;
+                arrowType = BobUI::DownArrow;
 #else
             if (header->sortIndicator & QStyleOptionHeader::SortUp)
-                arrowType = Qt::DownArrow;
+                arrowType = BobUI::DownArrow;
 #endif
-            qt_fusion_draw_arrow(arrowType, painter, option, r, arrowColor);
+            bobui_fusion_draw_arrow(arrowType, painter, option, r, arrowColor);
         }
         break;
     case PE_IndicatorButtonDropDown:
@@ -578,7 +578,7 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             const QRect rect = option->rect.adjusted(0, 0, -1, -1);
 
             QColor pressedColor = mergedColors(option->palette.base().color(), option->palette.windowText().color(), 85);
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
 
             const auto state = option->state;
             // Gradient fill
@@ -592,7 +592,7 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             if (option->state & State_HasFocus && option->state & State_KeyboardFocusChange)
                 painter->setPen(highlightedOutline);
             else
-                painter->setPen(colorScheme() == Qt::ColorScheme::Dark ? outline.lighter(240)
+                painter->setPen(colorScheme() == BobUI::ColorScheme::Dark ? outline.lighter(240)
                                                                        : outline.lighter(110));
             painter->drawRect(rect);
 
@@ -619,7 +619,7 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
                 checkMarkColor.setAlpha(210);
                 painter->translate(dpiScaled(-0.8, dpi), dpiScaled(0.5, dpi));
                 painter->setPen(checkPen);
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
 
                 // Draw checkmark
                 QPainterPath path;
@@ -724,7 +724,7 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
         if (isFlat && !isDown) {
             if (isDefault) {
                 const QRect r = option->rect.adjusted(0, 1, 0, -1);
-                painter->setPen(Qt::black);
+                painter->setPen(BobUI::black);
                 const QLine lines[4] = {
                     QLine(QPoint(r.left() + 2, r.top()),
                     QPoint(r.right() - 2, r.top())),
@@ -765,11 +765,11 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             p->setRenderHint(QPainter::Antialiasing, true);
             p->translate(0.5, -0.5);
 
-            QLinearGradient gradient = qt_fusion_gradient(rect, (isEnabled && option->state & State_MouseOver ) ? buttonColor : buttonColor.darker(104));
-            p->setPen(Qt::transparent);
+            QLinearGradient gradient = bobui_fusion_gradient(rect, (isEnabled && option->state & State_MouseOver ) ? buttonColor : buttonColor.darker(104));
+            p->setPen(BobUI::transparent);
             p->setBrush(isDown ? QBrush(buttonColor.darker(110)) : gradient);
             p->drawRoundedRect(r, 2.0, 2.0);
-            p->setBrush(Qt::NoBrush);
+            p->setBrush(BobUI::NoBrush);
 
             // Outline
             p->setPen(!isEnabled ? darkOutline.lighter(115) : darkOutline);
@@ -783,15 +783,15 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
     case PE_FrameTabWidget:
         painter->save();
         painter->fillRect(option->rect.adjusted(0, 0, -1, -1), d->tabFrameColor(option->palette));
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         if (const QStyleOptionTabWidgetFrame *twf = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
             QRect rect = option->rect.adjusted(0, 0, -1, -1);
 
             // Shadow outline
-            if (twf->shape != QTabBar::RoundedSouth) {
+            if (twf->shape != BOBUIabBar::RoundedSouth) {
                 rect.adjust(0, 0, 0, -1);
                 QColor borderColor = outline.lighter(110);
-                QColor alphaShadow(Qt::black);
+                QColor alphaShadow(BobUI::black);
                 alphaShadow.setAlpha(15);
                 painter->setPen(alphaShadow);
                 painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
@@ -807,7 +807,7 @@ void QFusionStyle::drawPrimitive(PrimitiveElement elem,
             painter->drawRect(rect.adjusted(1, 1, -1, -1));
 
         }
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
         painter->restore();
         break ;
 
@@ -849,13 +849,13 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 QRect iconRect(editRect);
                 iconRect.setWidth(cb->iconSize.width() + 4);
                 iconRect = alignedRect(cb->direction,
-                                       Qt::AlignLeft | Qt::AlignVCenter,
+                                       BobUI::AlignLeft | BobUI::AlignVCenter,
                                        iconRect.size(), editRect);
                 if (cb->editable)
                     painter->fillRect(iconRect, cb->palette.brush(QPalette::Base));
-                proxy()->drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
+                proxy()->drawItemPixmap(painter, iconRect, BobUI::AlignCenter, pixmap);
 
-                if (cb->direction == Qt::RightToLeft)
+                if (cb->direction == BobUI::RightToLeft)
                     editRect.translate(-4 - cb->iconSize.width(), 0);
                 else
                     editRect.translate(cb->iconSize.width() + 4, 0);
@@ -889,7 +889,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
         }
         break;
     }
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     case CE_RubberBand:
         if (qstyleoption_cast<const QStyleOptionRubberBand *>(option)) {
             const QRect &rect = option->rect;
@@ -911,7 +911,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->drawRoundedRect(rect.adjusted(0, 0, -1, -1), 1, 1);
             //when the rectangle we get is large enough, draw the inner rectangle.
             if (rect.width() > 2 && rect.height() > 2) {
-                QColor innerLine = Qt::white;
+                QColor innerLine = BobUI::white;
                 innerLine.setAlpha(40);
                 painter->setPen(innerLine);
                 painter->drawRoundedRect(rect.adjusted(1, 1, -2, -2), 1, 1);
@@ -919,7 +919,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->restore();
         }
         break;
-#endif //QT_CONFIG(rubberband)
+#endif //BOBUI_CONFIG(rubberband)
     case CE_SizeGrip:
         painter->save();
     {
@@ -927,7 +927,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
         //draw grips
         for (int i = -6; i< 12 ; i += 3) {
             for (int j = -6 ; j< 12 ; j += 3) {
-                if ((option->direction == Qt::LeftToRight && i > -j) || (option->direction == Qt::RightToLeft && j > i) ) {
+                if ((option->direction == BobUI::LeftToRight && i > -j) || (option->direction == BobUI::RightToLeft && j > i) ) {
                     painter->fillRect(center.x() + i, center.y() + j, 2, 2, QFusionStylePrivate::lightShade);
                     painter->fillRect(center.x() + i, center.y() + j, 1, 1, QFusionStylePrivate::darkShade);
                 }
@@ -936,7 +936,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
     }
         painter->restore();
         break;
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
     case CE_ToolBar:
         if (const QStyleOptionToolBar *toolBar = qstyleoption_cast<const QStyleOptionToolBar *>(option)) {
             // Reserve the beveled appearance only for mainwindow toolbars
@@ -958,7 +958,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             constexpr QColor shadow = QFusionStylePrivate::darkShade;
 
             QPen oldPen = painter->pen();
-            if (toolBar->toolBarArea == Qt::TopToolBarArea) {
+            if (toolBar->toolBarArea == BobUI::TopToolBarArea) {
                 if (toolBar->positionOfLine == QStyleOptionToolBar::End
                         || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
                     // The end and onlyone top toolbar lines draw a double
@@ -977,7 +977,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 // All top toolbar lines draw a light line at the top.
                 painter->setPen(light);
                 painter->drawLine(rect.topLeft(), rect.topRight());
-            } else if (toolBar->toolBarArea == Qt::BottomToolBarArea) {
+            } else if (toolBar->toolBarArea == BobUI::BottomToolBarArea) {
                 if (toolBar->positionOfLine == QStyleOptionToolBar::End
                         || toolBar->positionOfLine == QStyleOptionToolBar::Middle) {
                     // The end and middle bottom tool bar lines draw a dark
@@ -1012,7 +1012,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                     painter->drawLine(rect.topLeft(), rect.topRight());
                 }
             }
-            if (toolBar->toolBarArea == Qt::LeftToolBarArea) {
+            if (toolBar->toolBarArea == BobUI::LeftToolBarArea) {
                 if (toolBar->positionOfLine == QStyleOptionToolBar::Middle
                         || toolBar->positionOfLine == QStyleOptionToolBar::End) {
                     // The middle and left end toolbar lines draw a light
@@ -1032,7 +1032,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                     painter->setPen(shadow);
                     painter->drawLine(rect.topRight(), rect.bottomRight());
                 }
-            } else if (toolBar->toolBarArea == Qt::RightToolBarArea) {
+            } else if (toolBar->toolBarArea == BobUI::RightToolBarArea) {
                 if (toolBar->positionOfLine == QStyleOptionToolBar::Middle
                         || toolBar->positionOfLine == QStyleOptionToolBar::End) {
                     // Right middle and end toolbar lines draw the dark right line
@@ -1058,7 +1058,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->setPen(oldPen);
         }
         break;
-#endif // QT_CONFIG(toolbar)
+#endif // BOBUI_CONFIG(toolbar)
     case CE_DockWidgetTitle:
         painter->save();
         if (const QStyleOptionDockWidget *dwOpt = qstyleoption_cast<const QStyleOptionDockWidget *>(option)) {
@@ -1080,10 +1080,10 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             if (!dwOpt->title.isEmpty()) {
                 QString titleText
                         = painter->fontMetrics().elidedText(dwOpt->title,
-                                                            Qt::ElideRight, titleRect.width());
+                                                            BobUI::ElideRight, titleRect.width());
                 proxy()->drawItemText(painter,
                                       titleRect,
-                                      Qt::AlignLeft | Qt::AlignVCenter | Qt::TextHideMnemonic, dwOpt->palette,
+                                      BobUI::AlignLeft | BobUI::AlignVCenter | BobUI::TextHideMnemonic, dwOpt->palette,
                                       dwOpt->state & State_Enabled, titleText,
                                       QPalette::WindowText);
             }
@@ -1126,19 +1126,19 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 }
                 cp->fillRect(pixmapRect, gradient);
                 cp->setPen(QFusionStylePrivate::innerContrastLine);
-                cp->setBrush(Qt::NoBrush);
+                cp->setBrush(BobUI::NoBrush);
                 cp->drawLine(pixmapRect.topLeft(), pixmapRect.topRight());
                 cp->setPen(d->outline(option->palette));
                 cp->drawLine(pixmapRect.bottomLeft(), pixmapRect.bottomRight());
 
-                if (header->orientation == Qt::Horizontal &&
+                if (header->orientation == BobUI::Horizontal &&
                         header->position != QStyleOptionHeader::End &&
                         header->position != QStyleOptionHeader::OnlyOneSection) {
                     cp->setPen(QColor(0, 0, 0, 40));
                     cp->drawLine(pixmapRect.topRight(), pixmapRect.bottomRight() + QPoint(0, -1));
                     cp->setPen(QFusionStylePrivate::innerContrastLine);
                     cp->drawLine(pixmapRect.topRight() + QPoint(-1, 0), pixmapRect.bottomRight() + QPoint(-1, -1));
-                } else if (header->orientation == Qt::Vertical) {
+                } else if (header->orientation == BobUI::Vertical) {
                     cp->setPen(d->outline(option->palette));
                     cp->drawLine(pixmapRect.topRight(), pixmapRect.bottomRight());
                 }
@@ -1153,7 +1153,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->translate(0.5, 0.5);
 
-        QColor shadowAlpha = Qt::black;
+        QColor shadowAlpha = BobUI::black;
         shadowAlpha.setAlpha(16);
         painter->setPen(shadowAlpha);
         painter->drawLine(rect.topLeft() - QPoint(0, 1), rect.topRight() - QPoint(0, 1));
@@ -1180,14 +1180,14 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             const auto complete = bar->progress == bar->maximum;
             const auto vertical = !(bar->state & QStyle::State_Horizontal);
             const auto inverted = bar->invertedAppearance;
-            const auto reverse = (bar->direction == Qt::RightToLeft) ^ inverted;
+            const auto reverse = (bar->direction == BobUI::RightToLeft) ^ inverted;
 
             // If the orientation is vertical, we use a transform to rotate
             // the progress bar 90 degrees (counter)clockwise. This way we can use the
             // same rendering code for both orientations.
             if (vertical) {
                 rect = QRect(rect.left(), rect.top(), rect.height(), rect.width()); // flip width and height
-                QTransform m;
+                BOBUIransform m;
                 if (inverted) {
                     m.rotate(90);
                     m.translate(0, -rect.height());
@@ -1197,7 +1197,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 }
                 painter->setTransform(m, true);
             } else if (reverse) {
-                QTransform m = QTransform::fromScale(-1, 1);
+                BOBUIransform m = BOBUIransform::fromScale(-1, 1);
                 m.translate(-rect.width(), 0);
                 painter->setTransform(m, true);
             }
@@ -1245,19 +1245,19 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 painter->drawRoundedRect(fillRect, 2, 2);
                 painter->restore();
 
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 painter->setPen(QColor(255, 255, 255, 50));
                 painter->drawRoundedRect(progressBar.adjusted(1, 1, -1, -1), 1, 1);
 
                 if (!indeterminate) {
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
                     (const_cast<QFusionStylePrivate*>(d))->stopAnimation(option->styleObject);
 #endif
                 } else {
                     highlightedGradientStartColor.setAlpha(120);
                     painter->setPen(QPen(highlightedGradientStartColor, 9.0));
                     painter->setClipRect(progressBar.adjusted(1, 1, -1, -1));
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
                     if (QProgressStyleAnimation *animation =
                         qobject_cast<QProgressStyleAnimation*>(d->animation(option->styleObject))) {
                         step = animation->animationStep() % 22;
@@ -1276,7 +1276,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 }
             }
             if (!indeterminate && !complete) {
-                QColor innerShadow(Qt::black);
+                QColor innerShadow(BobUI::black);
                 innerShadow.setAlpha(35);
                 painter->setPen(innerShadow);
                 painter->drawLine(progressBar.topRight() + QPoint(2, 1), progressBar.bottomRight() + QPoint(2, 0));
@@ -1297,7 +1297,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->save();
             const auto vertical = !(bar->state & QStyle::State_Horizontal);
             const auto inverted = bar->invertedAppearance;
-            const auto reverse = (bar->direction == Qt::RightToLeft) ^ inverted;
+            const auto reverse = (bar->direction == BobUI::RightToLeft) ^ inverted;
             const auto totalSteps = qMax(Q_INT64_C(1), qint64(bar->maximum) - bar->minimum);
             const auto progressSteps = qint64(bar->progress) - bar->minimum;
             const auto progressIndicatorPos = progressSteps * (vertical ? rect.height() : rect.width()) / totalSteps;
@@ -1327,10 +1327,10 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             const auto firstIsAlternateColor = (vertical && !inverted) || (!vertical && reverse);
             painter->setClipRect(rightRect);
             painter->setPen(firstIsAlternateColor ? alternateTextColor : textColor);
-            painter->drawText(rect, bar->text, QTextOption(Qt::AlignAbsolute | Qt::AlignHCenter | Qt::AlignVCenter));
+            painter->drawText(rect, bar->text, BOBUIextOption(BobUI::AlignAbsolute | BobUI::AlignHCenter | BobUI::AlignVCenter));
             painter->setPen(firstIsAlternateColor ? textColor : alternateTextColor);
             painter->setClipRect(leftRect);
-            painter->drawText(rect, bar->text, QTextOption(Qt::AlignAbsolute | Qt::AlignHCenter | Qt::AlignVCenter));
+            painter->drawText(rect, bar->text, BOBUIextOption(BobUI::AlignAbsolute | BobUI::AlignHCenter | BobUI::AlignVCenter));
 
             painter->restore();
         }
@@ -1359,9 +1359,9 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
 
                 //draw text
                 QPalette::ColorRole textRole = dis ? QPalette::Text : QPalette::HighlightedText;
-                uint alignment = Qt::AlignCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
+                uint alignment = BobUI::AlignCenter | BobUI::TextShowMnemonic | BobUI::TextDontClip | BobUI::TextSingleLine;
                 if (!proxy()->styleHint(SH_UnderlineShortcut, mbi, widget))
-                    alignment |= Qt::TextHideMnemonic;
+                    alignment |= BobUI::TextHideMnemonic;
                 proxy()->drawItemText(painter, item.rect, alignment, mbi->palette, mbi->state & State_Enabled, mbi->text, textRole);
             } else {
                 QColor shadow = mergedColors(option->palette.window().color().darker(120),
@@ -1382,13 +1382,13 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 if (!menuItem->text.isEmpty()) {
                     painter->setFont(menuItem->font);
                     proxy()->drawItemText(painter, menuItem->rect.adjusted(margin, 0, -margin, 0),
-                                          Qt::AlignLeft | Qt::AlignVCenter,
+                                          BobUI::AlignLeft | BobUI::AlignVCenter,
                                           menuItem->palette, menuItem->state & State_Enabled, menuItem->text,
                                           QPalette::Text);
                     w = menuItem->fontMetrics.horizontalAdvance(menuItem->text) + margin;
                 }
                 painter->setPen(QFusionStylePrivate::darkShade.lighter(106));
-                const bool reverse = menuItem->direction == Qt::RightToLeft;
+                const bool reverse = menuItem->direction == BobUI::RightToLeft;
                 qreal y = menuItem->rect.center().y() + 0.5f;
                 painter->drawLine(QPointF(menuItem->rect.left() + margin + (reverse ? 0 : w), y),
                                   QPointF(menuItem->rect.right() - margin - (reverse ? w : 0), y));
@@ -1414,7 +1414,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             int checkcol = qMax<int>(menuItem->rect.height() * 0.79,
                                      qMax<int>(menuItem->maxIconWidth, dpiScaled(21, option)));
             bool ignoreCheckMark = false;
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
             if (qobject_cast<const QComboBox*>(widget))
                 ignoreCheckMark = true; //ignore the checkmarks provided by the QComboMenuDelegate
 #endif
@@ -1432,7 +1432,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                         // Radio button
                         if (menuItem->state & State_On || checked || sunken) {
                             painter->setRenderHint(QPainter::Antialiasing);
-                            painter->setPen(Qt::NoPen);
+                            painter->setPen(BobUI::NoPen);
 
                             QPalette::ColorRole textRole = !enabled
                                                          ? QPalette::Text :
@@ -1481,7 +1481,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
 
                 int smallIconSize = proxy()->pixelMetric(PM_SmallIconSize, option, widget);
                 QSize iconSize(smallIconSize, smallIconSize);
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
                 if (const QComboBox *combo = qobject_cast<const QComboBox*>(widget))
                     iconSize = combo->iconSize();
 #endif
@@ -1529,10 +1529,10 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             if (!s.isEmpty()) {                     // draw text
                 p->save();
                 const qsizetype tabIndex = s.indexOf(u'\t');
-                int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
+                int text_flags = BobUI::AlignVCenter | BobUI::TextShowMnemonic | BobUI::TextDontClip | BobUI::TextSingleLine;
                 if (!proxy()->styleHint(SH_UnderlineShortcut, menuitem, widget))
-                    text_flags |= Qt::TextHideMnemonic;
-                text_flags |= Qt::AlignLeft;
+                    text_flags |= BobUI::TextHideMnemonic;
+                text_flags |= BobUI::AlignLeft;
                 if (tabIndex >= 0) {
                     QRect vShortcutRect = visualRect(opt->direction, menuitem->rect,
                                                      QRect(textRect.topRight(),
@@ -1560,7 +1560,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 p->setFont(font);
                 const QFontMetricsF fontMetrics(font);
                 const QString textToDraw = fontMetrics.elidedText(s.left(tabIndex).toString(),
-                                                                  Qt::ElideMiddle, vTextRect.width() + 0.5f,
+                                                                  BobUI::ElideMiddle, vTextRect.width() + 0.5f,
                                                                   text_flags);
                 if (dis && !act && proxy()->styleHint(SH_EtchDisabledText, option, widget)) {
                     p->setPen(menuitem->palette.light().color());
@@ -1575,7 +1575,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {// draw sub menu arrow
                 const int dim = (menuItem->rect.height() - 4) / 2;
                 PrimitiveElement arrow;
-                arrow = option->direction == Qt::RightToLeft ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
+                arrow = option->direction == BobUI::RightToLeft ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
                 const int xpos = menuItem->rect.left() + menuItem->rect.width() - 3 - dim;
                 QRect  vSubMenuRect = visualRect(option->direction, menuItem->rect,
                                                  QRect(xpos, menuItem->rect.top() + menuItem->rect.height() / 2 - dim / 2, dim, dim));
@@ -1615,14 +1615,14 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
     }
         painter->restore();
         break;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     case CE_TabBarTabShape:
         painter->save();
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
 
-            bool rtlHorTabs = (tab->direction == Qt::RightToLeft
-                               && (tab->shape == QTabBar::RoundedNorth
-                                   || tab->shape == QTabBar::RoundedSouth));
+            bool rtlHorTabs = (tab->direction == BobUI::RightToLeft
+                               && (tab->shape == BOBUIabBar::RoundedNorth
+                                   || tab->shape == BOBUIabBar::RoundedSouth));
             bool selected = tab->state & State_Selected;
             bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End)
                             || (rtlHorTabs
@@ -1631,26 +1631,26 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
             QRect rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
 
-            QTransform rotMatrix;
+            BOBUIransform rotMatrix;
             bool flip = false;
             painter->setPen(QFusionStylePrivate::darkShade);
 
             switch (tab->shape) {
-            case QTabBar::RoundedNorth:
+            case BOBUIabBar::RoundedNorth:
                 break;
-            case QTabBar::RoundedSouth:
+            case BOBUIabBar::RoundedSouth:
                 rotMatrix.rotate(180);
                 rotMatrix.translate(0, -rect.height() + 1);
                 rotMatrix.scale(-1, 1);
                 painter->setTransform(rotMatrix, true);
                 break;
-            case QTabBar::RoundedWest:
+            case BOBUIabBar::RoundedWest:
                 rotMatrix.rotate(180 + 90);
                 rotMatrix.scale(-1, 1);
                 flip = true;
                 painter->setTransform(rotMatrix, true);
                 break;
-            case QTabBar::RoundedEast:
+            case BOBUIabBar::RoundedEast:
                 rotMatrix.rotate(90);
                 rotMatrix.translate(0, - rect.width() + 1);
                 flip = true;
@@ -1692,7 +1692,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->setClipRect(rect.adjusted(-1, -1, 1, selected ? -2 : -3));
             painter->setBrush(fillGradient);
             painter->drawRoundedRect(drawRect.adjusted(0, 0, -1, -1), 2.0, 2.0);
-            painter->setBrush(Qt::NoBrush);
+            painter->setBrush(BobUI::NoBrush);
             painter->setPen(QFusionStylePrivate::innerContrastLine);
             painter->drawRoundedRect(drawRect.adjusted(1, 1, -2, -1), 2.0, 2.0);
             painter->restore();
@@ -1706,21 +1706,21 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
         }
         painter->restore();
         break;
-#endif //QT_CONFIG(tabbar)
+#endif //BOBUI_CONFIG(tabbar)
     default:
         QCommonStyle::drawControl(element,option,painter,widget);
         break;
     }
 }
 
-extern QPalette qt_fusionPalette();
+extern QPalette bobui_fusionPalette();
 
 /*!
   \reimp
 */
 QPalette QFusionStyle::standardPalette () const
 {
-    return qt_fusionPalette();
+    return bobui_fusionPalette();
 }
 
 /*!
@@ -1750,7 +1750,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                 painter->save();
                 QRegion region(groupBox->rect);
                 if (!groupBox->text.isEmpty()) {
-                    bool ltr = groupBox->direction == Qt::LeftToRight;
+                    bool ltr = groupBox->direction == BobUI::LeftToRight;
                     QRect finalRect;
                     if (groupBox->subControls & QStyle::SC_GroupBoxCheckBox) {
                         finalRect = checkBoxRect.united(textRect);
@@ -1778,9 +1778,9 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                 painter->setPen(QPen(option->palette.windowText(), 1));
                 int alignment = int(groupBox->textAlignment);
                 if (!proxy()->styleHint(QStyle::SH_UnderlineShortcut, option, widget))
-                    alignment |= Qt::TextHideMnemonic;
+                    alignment |= BobUI::TextHideMnemonic;
 
-                proxy()->drawItemText(painter, textRect,  Qt::TextShowMnemonic | Qt::AlignLeft | alignment,
+                proxy()->drawItemText(painter, textRect,  BobUI::TextShowMnemonic | BobUI::AlignLeft | alignment,
                                       groupBox->palette, groupBox->state & State_Enabled, groupBox->text, QPalette::NoRole);
 
                 if (groupBox->state & State_HasFocus) {
@@ -1801,7 +1801,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
         }
         painter->restore();
         break;
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     case CC_SpinBox:
         if (const QStyleOptionSpinBox *spinBox = qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
             QCachedPainter cp(painter, "spinbox"_L1, option);
@@ -1831,7 +1831,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     cp->translate(0.5, 0.5);
 
                     // Fill background
-                    cp->setPen(Qt::NoPen);
+                    cp->setPen(BobUI::NoPen);
                     cp->setBrush(option->palette.base());
                     cp->drawRoundedRect(r.adjusted(0, 0, -1, -1), 2, 2);
 
@@ -1842,17 +1842,17 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     if (!upRect.isNull()) {
                         // Draw button gradient
                         const QRect updownRect = upRect.adjusted(0, -2, 0, downRect.height() + 2);
-                        const QLinearGradient gradient = qt_fusion_gradient(updownRect, (isEnabled && option->state & State_MouseOver )
+                        const QLinearGradient gradient = bobui_fusion_gradient(updownRect, (isEnabled && option->state & State_MouseOver )
                                                        ? buttonColor : buttonColor.darker(104));
 
-                        cp->setPen(Qt::NoPen);
+                        cp->setPen(BobUI::NoPen);
                         cp->setBrush(gradient);
 
                         cp->save();
                         cp->setClipRect(updownRect);
                         cp->drawRoundedRect(r.adjusted(0, 0, -1, -1), 2, 2);
                         cp->setPen(QFusionStylePrivate::innerContrastLine);
-                        cp->setBrush(Qt::NoBrush);
+                        cp->setBrush(BobUI::NoBrush);
                         cp->drawRoundedRect(r.adjusted(1, 1, -2, -2), 2, 2);
                         cp->restore();
                     }
@@ -1872,7 +1872,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     }
 
                     cp->setPen(hasFocus ? d->highlightedOutline(option->palette) : d->outline(option->palette));
-                    cp->setBrush(Qt::NoBrush);
+                    cp->setBrush(BobUI::NoBrush);
                     cp->drawRoundedRect(r.adjusted(0, 0, -1, -1), 2, 2);
                     if (hasFocus) {
                         QColor softHighlight = option->palette.highlight().color();
@@ -1887,7 +1887,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     // buttonSymbols == NoButtons results in 'null' rects
                     // and a tiny rect painted in the corner.
                     cp->setPen(d->outline(option->palette));
-                    if (spinBox->direction == Qt::RightToLeft)
+                    if (spinBox->direction == BobUI::RightToLeft)
                         cp->drawLine(QLineF(upRect.right(), upRect.top() - 0.5, upRect.right(), downRect.bottom() + 1.5));
                     else
                         cp->drawLine(QLineF(upRect.left(), upRect.top() - 0.5, upRect.left(), downRect.bottom() + 1.5));
@@ -1925,15 +1925,15 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
 
                 } else if (spinBox->buttonSymbols == QAbstractSpinBox::UpDownArrows){
                     // arrows
-                    qt_fusion_draw_arrow(Qt::UpArrow, cp.painter(), option, upRect.adjusted(0, 0, 0, 1),
+                    bobui_fusion_draw_arrow(BobUI::UpArrow, cp.painter(), option, upRect.adjusted(0, 0, 0, 1),
                                          (spinBox->stepEnabled & QAbstractSpinBox::StepUpEnabled) ? arrowColor : disabledColor);
-                    qt_fusion_draw_arrow(Qt::DownArrow, cp.painter(), option, downRect,
+                    bobui_fusion_draw_arrow(BobUI::DownArrow, cp.painter(), option, downRect,
                                          (spinBox->stepEnabled & QAbstractSpinBox::StepDownEnabled) ? arrowColor : disabledColor);
                 }
             }
         }
         break;
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
     case CC_TitleBar:
         painter->save();
         if (const QStyleOptionTitleBar *titleBar = qstyleoption_cast<const QStyleOptionTitleBar *>(option)) {
@@ -1995,23 +1995,23 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             painter->setPen(active ? palette.text().color().lighter(120) : palette.text().color());
             // Note workspace also does elliding but it does not use the correct font
             const QString title =
-                painter->fontMetrics().elidedText(titleBar->text, Qt::ElideRight, textRect.width() - 14);
-            painter->drawText(textRect.adjusted(1, 1, 1, 1), title, QTextOption(Qt::AlignHCenter | Qt::AlignVCenter));
-            painter->setPen(Qt::white);
+                painter->fontMetrics().elidedText(titleBar->text, BobUI::ElideRight, textRect.width() - 14);
+            painter->drawText(textRect.adjusted(1, 1, 1, 1), title, BOBUIextOption(BobUI::AlignHCenter | BobUI::AlignVCenter));
+            painter->setPen(BobUI::white);
             if (active)
-                painter->drawText(textRect, title, QTextOption(Qt::AlignHCenter | Qt::AlignVCenter));
+                painter->drawText(textRect, title, BOBUIextOption(BobUI::AlignHCenter | BobUI::AlignVCenter));
 
             const auto isHover = [option](SubControl sc)
                 { return (option->activeSubControls & sc) && (option->state & State_MouseOver); };
             const auto isSunken = [option](SubControl sc)
                 { return (option->activeSubControls & sc) && (option->state & State_Sunken); };
             // min button
-            if ((titleBar->subControls & SC_TitleBarMinButton) && (titleBar->titleBarFlags & Qt::WindowMinimizeButtonHint) &&
-                    !(titleBar->titleBarState& Qt::WindowMinimized)) {
+            if ((titleBar->subControls & SC_TitleBarMinButton) && (titleBar->titleBarFlags & BobUI::WindowMinimizeButtonHint) &&
+                    !(titleBar->titleBarState& BobUI::WindowMinimized)) {
                 const auto sc = SC_TitleBarMinButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
 
                     const QRect rect = buttonRect.marginsRemoved(buttonMargins);
                     const QLine lines[2] = {{rect.left(), rect.bottom(), rect.right() - 1, rect.bottom()},
@@ -2021,12 +2021,12 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                 }
             }
             // max button
-            if ((titleBar->subControls & SC_TitleBarMaxButton) && (titleBar->titleBarFlags & Qt::WindowMaximizeButtonHint) &&
-                    !(titleBar->titleBarState & Qt::WindowMaximized)) {
+            if ((titleBar->subControls & SC_TitleBarMaxButton) && (titleBar->titleBarFlags & BobUI::WindowMaximizeButtonHint) &&
+                    !(titleBar->titleBarState & BobUI::WindowMaximized)) {
                 const auto sc = SC_TitleBarMaxButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
 
                     const QRect rect = buttonRect.marginsRemoved(buttonMargins);
                     const QLine lines[5] = {{rect.left(), rect.top(), rect.right(), rect.top()},
@@ -2040,11 +2040,11 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             }
 
             // close button
-            if ((titleBar->subControls & SC_TitleBarCloseButton) && (titleBar->titleBarFlags & Qt::WindowSystemMenuHint)) {
+            if ((titleBar->subControls & SC_TitleBarCloseButton) && (titleBar->titleBarFlags & BobUI::WindowSystemMenuHint)) {
                 const auto sc = SC_TitleBarCloseButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
                     QRect rect = buttonRect.marginsRemoved(buttonMargins);
                     rect.setWidth((rect.width() / 2) * 2 + 1);
                     rect.setHeight((rect.height() / 2) * 2 + 1);
@@ -2058,14 +2058,14 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
 
             // normalize button
             if ((titleBar->subControls & SC_TitleBarNormalButton) &&
-                    (((titleBar->titleBarFlags & Qt::WindowMinimizeButtonHint) &&
-                      (titleBar->titleBarState & Qt::WindowMinimized)) ||
-                     ((titleBar->titleBarFlags & Qt::WindowMaximizeButtonHint) &&
-                      (titleBar->titleBarState & Qt::WindowMaximized)))) {
+                    (((titleBar->titleBarFlags & BobUI::WindowMinimizeButtonHint) &&
+                      (titleBar->titleBarState & BobUI::WindowMinimized)) ||
+                     ((titleBar->titleBarFlags & BobUI::WindowMaximizeButtonHint) &&
+                      (titleBar->titleBarState & BobUI::WindowMaximized)))) {
                 const auto sc = SC_TitleBarNormalButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
 
                     QRect normalButtonIconRect = buttonRect.marginsRemoved(buttonMargins);
                     painter->setPen(buttonPaintingsColor);
@@ -2092,13 +2092,13 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
 
             // context help button
             if (titleBar->subControls & SC_TitleBarContextHelpButton
-                    && (titleBar->titleBarFlags & Qt::WindowContextHelpButtonHint)) {
+                    && (titleBar->titleBarFlags & BobUI::WindowContextHelpButtonHint)) {
                 const auto sc = SC_TitleBarContextHelpButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
-#if QT_CONFIG(imageformat_xpm)
-                    QImage image(qt_titlebar_context_help);
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+#if BOBUI_CONFIG(imageformat_xpm)
+                    QImage image(bobui_titlebar_context_help);
                     QColor alpha = buttonPaintingsColor;
                     alpha.setAlpha(128);
                     image.setColor(1, buttonPaintingsColor.rgba());
@@ -2110,26 +2110,26 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             }
 
             // shade button
-            if (titleBar->subControls & SC_TitleBarShadeButton && (titleBar->titleBarFlags & Qt::WindowShadeButtonHint)) {
+            if (titleBar->subControls & SC_TitleBarShadeButton && (titleBar->titleBarFlags & BobUI::WindowShadeButtonHint)) {
                 const auto sc = SC_TitleBarShadeButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
-                    qt_fusion_draw_arrow(Qt::UpArrow, painter, option, buttonRect.adjusted(5, 7, -5, -7), buttonPaintingsColor);
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+                    bobui_fusion_draw_arrow(BobUI::UpArrow, painter, option, buttonRect.adjusted(5, 7, -5, -7), buttonPaintingsColor);
                 }
             }
 
             // unshade button
-            if (titleBar->subControls & SC_TitleBarUnshadeButton && (titleBar->titleBarFlags & Qt::WindowShadeButtonHint)) {
+            if (titleBar->subControls & SC_TitleBarUnshadeButton && (titleBar->titleBarFlags & BobUI::WindowShadeButtonHint)) {
                 const auto sc = SC_TitleBarUnshadeButton;
                 const auto buttonRect = proxy()->subControlRect(CC_TitleBar, titleBar, sc, widget);
                 if (buttonRect.isValid()) {
-                    qt_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
-                    qt_fusion_draw_arrow(Qt::DownArrow, painter, option, buttonRect.adjusted(5, 7, -5, -7), buttonPaintingsColor);
+                    bobui_fusion_draw_mdibutton(painter, titleBar, buttonRect, isHover(sc), isSunken(sc));
+                    bobui_fusion_draw_arrow(BobUI::DownArrow, painter, option, buttonRect.adjusted(5, 7, -5, -7), buttonPaintingsColor);
                 }
             }
 
-            if ((titleBar->subControls & SC_TitleBarSysMenu) && (titleBar->titleBarFlags & Qt::WindowSystemMenuHint)) {
+            if ((titleBar->subControls & SC_TitleBarSysMenu) && (titleBar->titleBarFlags & BobUI::WindowSystemMenuHint)) {
                 QRect iconRect = proxy()->subControlRect(CC_TitleBar, titleBar, SC_TitleBarSysMenu, widget);
                 if (iconRect.isValid()) {
                     if (!titleBar->icon.isNull()) {
@@ -2140,7 +2140,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                                         .pixmap(QSize(16, 16), QStyleHelper::getDpr(painter));
                         tool.rect = iconRect;
                         painter->save();
-                        proxy()->drawItemPixmap(painter, iconRect, Qt::AlignCenter, pm);
+                        proxy()->drawItemPixmap(painter, iconRect, BobUI::AlignCenter, pm);
                         painter->restore();
                     }
                 }
@@ -2148,7 +2148,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
         }
         painter->restore();
         break;
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     case CC_ScrollBar:
         painter->save();
         if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
@@ -2157,7 +2157,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             qreal expandOffset = -1.0;
             QObject *styleObject = option->styleObject;
             if (styleObject && proxy()->styleHint(SH_ScrollBar_Transient, option, widget)) {
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
                 qreal opacity = 0.0;
                 bool shouldExpand = false;
                 const qreal maxExpandScale = 13.0 / 9.0;
@@ -2189,7 +2189,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     styleObject->setProperty("_q_stylestate", static_cast<QStyle::State::Int>(scrollBar->state));
                     styleObject->setProperty("_q_stylecontrols", static_cast<uint>(scrollBar->activeSubControls));
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
                     // if the scrollbar is transient or its attributes, geometry or
                     // state has changed, the opacity is reset back to 100% opaque
                     opacity = 1.0;
@@ -2210,7 +2210,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
 #endif // animation
                 }
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
                 QScrollbarStyleAnimation *anim = qobject_cast<QScrollbarStyleAnimation *>(d->animation(styleObject));
                 if (anim && anim->mode() == QScrollbarStyleAnimation::Deactivating) {
                     // once a scrollbar was active (hovered/pressed), it retains
@@ -2243,7 +2243,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             }
 
             bool transient = proxy()->styleHint(SH_ScrollBar_Transient, option, widget);
-            bool horizontal = scrollBar->orientation == Qt::Horizontal;
+            bool horizontal = scrollBar->orientation == BobUI::Horizontal;
             bool sunken = scrollBar->state & State_Sunken;
 
             QRect scrollBarSubLine = proxy()->subControlRect(control, scrollBar, SC_ScrollBarSubLine, widget);
@@ -2303,7 +2303,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                 if (transient)
                     painter->setOpacity(0.8);
                 painter->fillRect(rect, gradient);
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 if (transient)
                     painter->setOpacity(0.4);
                 painter->setPen(alphaOutline);
@@ -2315,7 +2315,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                 QColor subtleEdge = alphaOutline;
                 subtleEdge.setAlpha(40);
                 painter->setPen(subtleEdge);
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 painter->drawRect(scrollBarGroove.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, -1, -1));
                 painter->restore();
             }
@@ -2343,7 +2343,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             if (scrollBar->subControls & SC_ScrollBarSlider) {
                 if (transient) {
                     QRect rect = scrollBarSlider.adjusted(horizontal ? 1 : 2, horizontal ? 2 : 1, -1, -1);
-                    painter->setPen(Qt::NoPen);
+                    painter->setPen(BobUI::NoPen);
                     painter->setBrush(isDarkBg ? QFusionStylePrivate::lightShade : QFusionStylePrivate::darkShade);
                     int r = qMin(rect.width(), rect.height()) / 2;
 
@@ -2390,20 +2390,20 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     painter->setBrush(gradient);
 
                 const QRect upRect = scrollBarSubLine.adjusted(0, 0, -1, -1);
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->drawRect(upRect.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, 0, 0));
                 painter->setPen(alphaOutline);
                 painter->drawRect(upRect);
 
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 painter->setPen(QFusionStylePrivate::innerContrastLine);
                 painter->drawRect(upRect.adjusted(1, 1, -1, -1));
 
                 // Arrows
-                Qt::ArrowType arrowType = Qt::UpArrow;
+                BobUI::ArrowType arrowType = BobUI::UpArrow;
                 if (option->state & State_Horizontal)
-                    arrowType = option->direction == Qt::LeftToRight ? Qt::LeftArrow : Qt::RightArrow;
-                qt_fusion_draw_arrow(arrowType, painter, option, upRect.adjusted(1, 1, 0, 0), arrowColor);
+                    arrowType = option->direction == BobUI::LeftToRight ? BobUI::LeftArrow : BobUI::RightArrow;
+                bobui_fusion_draw_arrow(arrowType, painter, option, upRect.adjusted(1, 1, 0, 0), arrowColor);
             }
 
             // The AddLine (down/right) button
@@ -2416,25 +2416,25 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     painter->setBrush(gradient);
 
                 const QRect downRect = scrollBarAddLine.adjusted(0, 0, -1, -1);
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->drawRect(downRect.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, 0, 0));
                 painter->setPen(alphaOutline);
                 painter->drawRect(downRect);
 
-                painter->setBrush(Qt::NoBrush);
+                painter->setBrush(BobUI::NoBrush);
                 painter->setPen(QFusionStylePrivate::innerContrastLine);
                 painter->drawRect(downRect.adjusted(1, 1, -1, -1));
 
-                Qt::ArrowType arrowType = Qt::DownArrow;
+                BobUI::ArrowType arrowType = BobUI::DownArrow;
                 if (option->state & State_Horizontal)
-                    arrowType = option->direction == Qt::LeftToRight ? Qt::RightArrow : Qt::LeftArrow;
-                qt_fusion_draw_arrow(arrowType, painter, option, downRect.adjusted(1, 1, 0, 0), arrowColor);
+                    arrowType = option->direction == BobUI::LeftToRight ? BobUI::RightArrow : BobUI::LeftArrow;
+                bobui_fusion_draw_arrow(arrowType, painter, option, downRect.adjusted(1, 1, 0, 0), arrowColor);
             }
 
         }
         painter->restore();
         break;
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
     case CC_ComboBox:
         painter->save();
         if (const QStyleOptionComboBox *comboBox = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
@@ -2472,7 +2472,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                         cp->save();
                         cp->setRenderHint(QPainter::Antialiasing, true);
                         cp->translate(0.5, 0.5);
-                        cp->setPen(Qt::NoPen);
+                        cp->setPen(BobUI::NoPen);
                         cp->setBrush(buttonOption.palette.base());
                         cp->drawRoundedRect(rect.adjusted(0, 0, -1, -1), 2, 2);
                         cp->restore();
@@ -2482,7 +2482,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     // Draw button clipped
                     cp->save();
                     cp->setClipRect(downArrowRect.adjusted(0, 0, 1, 0));
-                    buttonOption.rect.setLeft(comboBox->direction == Qt::LeftToRight ?
+                    buttonOption.rect.setLeft(comboBox->direction == BobUI::LeftToRight ?
                                                   downArrowRect.left() - 6: downArrowRect.right() + 6);
                     proxy()->drawPrimitive(PE_PanelButtonCommand, &buttonOption, cp.painter(), widget);
                     cp->restore();
@@ -2490,7 +2490,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
 
                     if (!sunken) {
                         int borderSize = 1;
-                        if (comboBox->direction == Qt::RightToLeft) {
+                        if (comboBox->direction == BobUI::RightToLeft) {
                             cp->drawLine(QPoint(downArrowRect.right() - 1, downArrowRect.top() + borderSize ),
                                          QPoint(downArrowRect.right() - 1, downArrowRect.bottom() - borderSize));
                         } else {
@@ -2498,7 +2498,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                                          QPoint(downArrowRect.left() , downArrowRect.bottom() - borderSize));
                         }
                     } else {
-                        if (comboBox->direction == Qt::RightToLeft) {
+                        if (comboBox->direction == BobUI::RightToLeft) {
                             cp->drawLine(QPoint(downArrowRect.right(), downArrowRect.top() + 2),
                                          QPoint(downArrowRect.right(), downArrowRect.bottom() - 2));
 
@@ -2522,24 +2522,24 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     // Draw the up/down arrow
                     QColor arrowColor = option->palette.buttonText().color();
                     arrowColor.setAlpha(160);
-                    qt_fusion_draw_arrow(Qt::DownArrow, cp.painter(), option, downArrowRect, arrowColor);
+                    bobui_fusion_draw_arrow(BobUI::DownArrow, cp.painter(), option, downArrowRect, arrowColor);
                 }
             }
         }
         painter->restore();
         break;
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     case CC_Slider:
         if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
             QPainterStateGuard psg(painter);
             QRect groove = proxy()->subControlRect(CC_Slider, option, SC_SliderGroove, widget);
             QRect handle = proxy()->subControlRect(CC_Slider, option, SC_SliderHandle, widget);
 
-            bool horizontal = slider->orientation == Qt::Horizontal;
+            bool horizontal = slider->orientation == BobUI::Horizontal;
             bool ticksAbove = slider->tickPosition & QSlider::TicksAbove;
             bool ticksBelow = slider->tickPosition & QSlider::TicksBelow;
             const QColor activeHighlight = d->highlight(option->palette);
-            const QColor shadowAlpha(0, 0, 0, 10); // Qt::black with 4% opacity
+            const QColor shadowAlpha(0, 0, 0, 10); // BobUI::black with 4% opacity
             const QColor outline = (option->state & State_HasFocus
                                     && option->state & State_KeyboardFocusChange)
                                  ? d->highlightedOutline(option->palette)
@@ -2589,7 +2589,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                         clipRect = QRect(groove.left(), groove.top(), groove.width(), handle.top() - groove.top());
                 }
                 painter->save();
-                painter->setClipRect(clipRect.adjusted(0, 0, 1, 1), Qt::IntersectClip);
+                painter->setClipRect(clipRect.adjusted(0, 0, 1, 1), BobUI::IntersectClip);
 
                 QCachedPainter cpBlue(painter, "slider_groove_blue"_L1, option, groove.size(), groove);
                 if (cpBlue.needsPainting()) {
@@ -2615,7 +2615,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
                     cpBlue->setBrush(gradient);
                     cpBlue->drawRoundedRect(pixmapRect.adjusted(1, 1, -2, -2), 1, 1);
                     cpBlue->setPen(QFusionStylePrivate::innerContrastLine);
-                    cpBlue->setBrush(Qt::NoBrush);
+                    cpBlue->setBrush(BobUI::NoBrush);
                     cpBlue->drawRoundedRect(pixmapRect.adjusted(2, 2, -3, -3), 1, 1);
                 }
                 cpBlue.finish();
@@ -2692,18 +2692,18 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
 
                     // gradient fill
                     QRect r = pixmapRect.adjusted(1, 1, -2, -2);
-                    QLinearGradient gradient = qt_fusion_gradient(gradRect, d->buttonColor(option->palette),horizontal ? TopDown : FromLeft);
+                    QLinearGradient gradient = bobui_fusion_gradient(gradRect, d->buttonColor(option->palette),horizontal ? TopDown : FromLeft);
 
                     cp->translate(0.5, 0.5);
 
-                    cp->setPen(Qt::NoPen);
+                    cp->setPen(BobUI::NoPen);
                     cp->setBrush(QColor(0, 0, 0, 40));
                     cp->drawRect(horizontal ? r.adjusted(-1, 2, 1, -2) : r.adjusted(2, -1, -2, 1));
 
                     cp->setPen(outline);
                     cp->setBrush(gradient);
                     cp->drawRoundedRect(r, 2, 2);
-                    cp->setBrush(Qt::NoBrush);
+                    cp->setBrush(BobUI::NoBrush);
                     cp->setPen(QFusionStylePrivate::innerContrastLine);
                     cp->drawRoundedRect(r.adjusted(1, 1, -1, -1), 2, 2);
 
@@ -2719,8 +2719,8 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             }
         }
         break;
-#endif // QT_CONFIG(slider)
-#if QT_CONFIG(dial)
+#endif // BOBUI_CONFIG(slider)
+#if BOBUI_CONFIG(dial)
     case CC_Dial:
         if (const QStyleOptionSlider *dial = qstyleoption_cast<const QStyleOptionSlider *>(option))
             QStyleHelper::drawDial(dial, painter);
@@ -2926,7 +2926,7 @@ QSize QFusionStyle::sizeFromContents(ContentsType type, const QStyleOption *opti
                 }
             }
             else if (!menuItem->icon.isNull()) {
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
                 if (const QComboBox *combo = qobject_cast<const QComboBox*>(widget)) {
                     newSize.setHeight(qMax(combo->iconSize().height() + 2, newSize.height()));
                 }
@@ -2963,30 +2963,30 @@ void QFusionStyle::polish(QWidget *widget)
 {
     QCommonStyle::polish(widget);
     if (false
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
             || qobject_cast<QAbstractButton*>(widget)
 #endif
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
             || qobject_cast<QComboBox *>(widget)
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
             || qobject_cast<QProgressBar *>(widget)
 #endif
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
             || qobject_cast<QScrollBar *>(widget)
 #endif
-#if QT_CONFIG(splitter)
+#if BOBUI_CONFIG(splitter)
             || qobject_cast<QSplitterHandle *>(widget)
 #endif
-#if QT_CONFIG(abstractslider)
+#if BOBUI_CONFIG(abstractslider)
             || qobject_cast<QAbstractSlider *>(widget)
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
             || qobject_cast<QAbstractSpinBox *>(widget)
 #endif
             ) {
-        widget->setAttribute(Qt::WA_Hover, true);
-        widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
+        widget->setAttribute(BobUI::WA_Hover, true);
+        widget->setAttribute(BobUI::WA_OpaquePaintEvent, false);
     }
 }
 
@@ -3005,29 +3005,29 @@ void QFusionStyle::unpolish(QWidget *widget)
 {
     QCommonStyle::unpolish(widget);
     if (false
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
             || qobject_cast<QAbstractButton*>(widget)
 #endif
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
             || qobject_cast<QComboBox *>(widget)
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
             || qobject_cast<QProgressBar *>(widget)
 #endif
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
             || qobject_cast<QScrollBar *>(widget)
 #endif
-#if QT_CONFIG(splitter)
+#if BOBUI_CONFIG(splitter)
             || qobject_cast<QSplitterHandle *>(widget)
 #endif
-#if QT_CONFIG(abstractslider)
+#if BOBUI_CONFIG(abstractslider)
             || qobject_cast<QAbstractSlider *>(widget)
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
             || qobject_cast<QAbstractSpinBox *>(widget)
 #endif
             ) {
-        widget->setAttribute(Qt::WA_Hover, false);
+        widget->setAttribute(BobUI::WA_Hover, false);
     }
 }
 
@@ -3048,14 +3048,14 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
     QRect rect = QCommonStyle::subControlRect(control, option, subControl, widget);
 
     switch (control) {
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     case CC_Slider:
         if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
             int tickSize = proxy()->pixelMetric(PM_SliderTickmarkOffset, option, widget);
             switch (subControl) {
             case SC_SliderHandle: {
                 const bool bothTicks = (slider->tickPosition & QSlider::TicksBothSides) == QSlider::TicksBothSides;
-                if (slider->orientation == Qt::Horizontal) {
+                if (slider->orientation == BobUI::Horizontal) {
                     rect.setHeight(proxy()->pixelMetric(PM_SliderThickness, option, widget));
                     rect.setWidth(proxy()->pixelMetric(PM_SliderLength, option, widget));
                     int centerY = slider->rect.center().y() - rect.height() / 2;
@@ -3084,7 +3084,7 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
                 QPoint grooveCenter = slider->rect.center();
                 const int grooveThickness = QStyleHelper::dpiScaled(7, option);
                 const bool bothTicks = (slider->tickPosition & QSlider::TicksBothSides) == QSlider::TicksBothSides;
-                if (slider->orientation == Qt::Horizontal) {
+                if (slider->orientation == BobUI::Horizontal) {
                     rect.setHeight(grooveThickness);
                     if (!bothTicks) {
                         if (slider->tickPosition & QSlider::TicksAbove)
@@ -3109,8 +3109,8 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
             }
         }
         break;
-#endif // QT_CONFIG(slider)
-#if QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(slider)
+#if BOBUI_CONFIG(spinbox)
     case CC_SpinBox:
         if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
             int center = spinbox->rect.height() / 2;
@@ -3149,11 +3149,11 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
             rect = visualRect(spinbox->direction, spinbox->rect, rect);
         }
         break;
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
     case CC_GroupBox:
         if (const QStyleOptionGroupBox *groupBox = qstyleoption_cast<const QStyleOptionGroupBox *>(option)) {
             const int groupBoxTextAlignment = groupBox->textAlignment;
-            const bool hasVerticalAlignment = (groupBoxTextAlignment & Qt::AlignVertical_Mask) == Qt::AlignVCenter;
+            const bool hasVerticalAlignment = (groupBoxTextAlignment & BobUI::AlignVertical_Mask) == BobUI::AlignVCenter;
             const int fontMetricsHeight = groupBox->text.isEmpty() ? 0 : groupBox->fontMetrics.height();
 
             if (subControl == SC_GroupBoxFrame)
@@ -3179,15 +3179,15 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
             rect = QRect();
 
             if (option->rect.width() > width) {
-                switch (groupBoxTextAlignment & Qt::AlignHorizontal_Mask) {
-                case Qt::AlignHCenter:
+                switch (groupBoxTextAlignment & BobUI::AlignHorizontal_Mask) {
+                case BobUI::AlignHCenter:
                     rect.moveLeft((option->rect.width() - width) / 2);
                     break;
-                case Qt::AlignRight:
+                case BobUI::AlignRight:
                     rect.moveLeft(option->rect.width() - width
                                   - (hasVerticalAlignment ? proxy()->pixelMetric(PM_LayoutRightMargin, groupBox, widget) : 0));
                     break;
-                case Qt::AlignLeft:
+                case BobUI::AlignLeft:
                     if (hasVerticalAlignment)
                         rect.moveLeft(proxy()->pixelMetric(PM_LayoutLeftMargin, option, widget));
                     break;
@@ -3252,63 +3252,63 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
             const int delta = controlHeight + controlWidthMargin;
             int offset = 0;
 
-            bool isMinimized = tb->titleBarState & Qt::WindowMinimized;
-            bool isMaximized = tb->titleBarState & Qt::WindowMaximized;
+            bool isMinimized = tb->titleBarState & BobUI::WindowMinimized;
+            bool isMaximized = tb->titleBarState & BobUI::WindowMaximized;
 
             switch (sc) {
             case SC_TitleBarLabel:
-                if (tb->titleBarFlags & (Qt::WindowTitleHint | Qt::WindowSystemMenuHint)) {
+                if (tb->titleBarFlags & (BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint)) {
                     ret = tb->rect;
-                    if (tb->titleBarFlags & Qt::WindowSystemMenuHint)
+                    if (tb->titleBarFlags & BobUI::WindowSystemMenuHint)
                         ret.adjust(delta, 0, -delta, 0);
-                    if (tb->titleBarFlags & Qt::WindowMinimizeButtonHint)
+                    if (tb->titleBarFlags & BobUI::WindowMinimizeButtonHint)
                         ret.adjust(0, 0, -delta, 0);
-                    if (tb->titleBarFlags & Qt::WindowMaximizeButtonHint)
+                    if (tb->titleBarFlags & BobUI::WindowMaximizeButtonHint)
                         ret.adjust(0, 0, -delta, 0);
-                    if (tb->titleBarFlags & Qt::WindowShadeButtonHint)
+                    if (tb->titleBarFlags & BobUI::WindowShadeButtonHint)
                         ret.adjust(0, 0, -delta, 0);
-                    if (tb->titleBarFlags & Qt::WindowContextHelpButtonHint)
+                    if (tb->titleBarFlags & BobUI::WindowContextHelpButtonHint)
                         ret.adjust(0, 0, -delta, 0);
                 }
                 break;
             case SC_TitleBarContextHelpButton:
-                if (tb->titleBarFlags & Qt::WindowContextHelpButtonHint)
+                if (tb->titleBarFlags & BobUI::WindowContextHelpButtonHint)
                     offset += delta;
                 Q_FALLTHROUGH();
             case SC_TitleBarMinButton:
-                if (!isMinimized && (tb->titleBarFlags & Qt::WindowMinimizeButtonHint))
+                if (!isMinimized && (tb->titleBarFlags & BobUI::WindowMinimizeButtonHint))
                     offset += delta;
                 else if (sc == SC_TitleBarMinButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarNormalButton:
-                if (isMinimized && (tb->titleBarFlags & Qt::WindowMinimizeButtonHint))
+                if (isMinimized && (tb->titleBarFlags & BobUI::WindowMinimizeButtonHint))
                     offset += delta;
-                else if (isMaximized && (tb->titleBarFlags & Qt::WindowMaximizeButtonHint))
+                else if (isMaximized && (tb->titleBarFlags & BobUI::WindowMaximizeButtonHint))
                     offset += delta;
                 else if (sc == SC_TitleBarNormalButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarMaxButton:
-                if (!isMaximized && (tb->titleBarFlags & Qt::WindowMaximizeButtonHint))
+                if (!isMaximized && (tb->titleBarFlags & BobUI::WindowMaximizeButtonHint))
                     offset += delta;
                 else if (sc == SC_TitleBarMaxButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarShadeButton:
-                if (!isMinimized && (tb->titleBarFlags & Qt::WindowShadeButtonHint))
+                if (!isMinimized && (tb->titleBarFlags & BobUI::WindowShadeButtonHint))
                     offset += delta;
                 else if (sc == SC_TitleBarShadeButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarUnshadeButton:
-                if (isMinimized && (tb->titleBarFlags & Qt::WindowShadeButtonHint))
+                if (isMinimized && (tb->titleBarFlags & BobUI::WindowShadeButtonHint))
                     offset += delta;
                 else if (sc == SC_TitleBarUnshadeButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarCloseButton:
-                if (tb->titleBarFlags & Qt::WindowSystemMenuHint)
+                if (tb->titleBarFlags & BobUI::WindowSystemMenuHint)
                     offset += delta;
                 else if (sc == SC_TitleBarCloseButton)
                     break;
@@ -3316,7 +3316,7 @@ QRect QFusionStyle::subControlRect(ComplexControl control, const QStyleOptionCom
                             controlHeight, controlHeight);
                 break;
             case SC_TitleBarSysMenu:
-                if (tb->titleBarFlags & Qt::WindowSystemMenuHint) {
+                if (tb->titleBarFlags & BobUI::WindowSystemMenuHint) {
                     ret.setRect(tb->rect.left() + controlWidthMargin + indent, tb->rect.top() + controlTopMargin,
                                 controlHeight, controlHeight);
                 }
@@ -3394,7 +3394,7 @@ int QFusionStyle::styleHint(StyleHint hint, const QStyleOption *option, const QW
     case SH_Menu_SupportsSections:
         return 1;
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
     case SH_ComboBox_UseNativePopup:
         return 1;
 #endif
@@ -3417,8 +3417,8 @@ int QFusionStyle::styleHint(StyleHint hint, const QStyleOption *option, const QW
         return option ? option->palette.window().color().darker(120).rgba() : 0;
 
     case SH_MessageBox_TextInteractionFlags:
-        return Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
-#if QT_CONFIG(wizard)
+        return BobUI::TextSelectableByMouse | BobUI::LinksAccessibleByMouse;
+#if BOBUI_CONFIG(wizard)
     case SH_WizardStyle:
         return QWizard::ClassicStyle;
 #endif
@@ -3445,9 +3445,9 @@ int QFusionStyle::styleHint(StyleHint hint, const QStyleOption *option, const QW
     case SH_GroupBox_TextLabelVerticalAlignment: {
         if (const auto *groupBox = qstyleoption_cast<const QStyleOptionGroupBox *>(option)) {
             if (groupBox) {
-                const auto vAlign = groupBox->textAlignment & Qt::AlignVertical_Mask;
+                const auto vAlign = groupBox->textAlignment & BobUI::AlignVertical_Mask;
                 // default fusion style is AlignTop
-                return vAlign == 0 ? Qt::AlignTop : vAlign;
+                return vAlign == 0 ? BobUI::AlignTop : vAlign;
             }
         }
         break;
@@ -3476,7 +3476,7 @@ QRect QFusionStyle::subElementRect(SubElement sr, const QStyleOption *opt, const
             if (verticalTitleBar) {
                 r.adjust(0, 0, 0, -4);
             } else {
-                if (opt->direction == Qt::LeftToRight)
+                if (opt->direction == BobUI::LeftToRight)
                     r.adjust(4, 0, 0, 0);
                 else
                     r.adjust(0, 0, -4, 0);
@@ -3497,10 +3497,10 @@ QRect QFusionStyle::subElementRect(SubElement sr, const QStyleOption *opt, const
 QIcon QFusionStyle::iconFromTheme(StandardPixmap standardIcon) const
 {
     QIcon icon;
-#if QT_CONFIG(imageformat_png)
+#if BOBUI_CONFIG(imageformat_png)
     auto addIconFiles = [](QStringView prefix, QIcon &icon)
     {
-        const auto fullPrefix = QStringLiteral(":/qt-project.org/styles/fusionstyle/images/") + prefix;
+        const auto fullPrefix = QStringLiteral(":/bobui-project.org/styles/fusionstyle/images/") + prefix;
         static constexpr auto dockTitleIconSizes = {10, 16, 20, 32, 48, 64};
         for (int size : dockTitleIconSizes)
             icon.addFile(fullPrefix + QString::number(size) + QStringLiteral(".png"),
@@ -3553,16 +3553,16 @@ QPixmap QFusionStyle::standardPixmap(StandardPixmap standardPixmap, const QStyle
 bool QFusionStyle::isHighContrast() const
 {
     return QGuiApplicationPrivate::platformTheme()->contrastPreference()
-            == Qt::ContrastPreference::HighContrast;
+            == BobUI::ContrastPreference::HighContrast;
 }
 
-Qt::ColorScheme QFusionStyle::colorScheme() const
+BobUI::ColorScheme QFusionStyle::colorScheme() const
 {
     return QGuiApplicationPrivate::platformTheme()->colorScheme();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfusionstyle_p.cpp"
 
-#endif // style_fusion|| QT_PLUGIN
+#endif // style_fusion|| BOBUI_PLUGIN

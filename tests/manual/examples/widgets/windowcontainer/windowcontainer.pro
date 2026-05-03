@@ -1,9 +1,9 @@
 SOURCES     = windowcontainer.cpp
 
-QT += widgets
+BOBUI += widgets
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/windowcontainer
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/windowcontainer
 INSTALLS += target
 
 include(../../opengl/openglwindow/openglwindow.pri)

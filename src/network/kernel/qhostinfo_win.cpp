@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <winsock2.h>
 
@@ -11,7 +11,7 @@
 #include <qbasicatomic.h>
 #include <qurl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //#define QHOSTINFO_DEBUG
 
@@ -40,4 +40,4 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
 
 // QString QHostInfo::localDomainName() defined in qnetworkinterface_win.cpp
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

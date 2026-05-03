@@ -1,14 +1,14 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "textconverter.h"
 
 #include <QFile>
-#include <QTextStream>
+#include <BOBUIextStream>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static void dumpVariant(QTextStream &out, const QVariant &v)
+static void dumpVariant(BOBUIextStream &out, const QVariant &v)
 {
     switch (v.userType()) {
     case QMetaType::QVariantList: {
@@ -21,7 +21,7 @@ static void dumpVariant(QTextStream &out, const QVariant &v)
     case QMetaType::QString: {
         const QStringList list = v.toStringList();
         for (const QString &s : list)
-            out << s << Qt::endl;
+            out << s << BobUI::endl;
         break;
     }
 
@@ -35,11 +35,11 @@ static void dumpVariant(QTextStream &out, const QVariant &v)
     }
 
     case QMetaType::Nullptr:
-        out << "(null)" << Qt::endl;
+        out << "(null)" << BobUI::endl;
         break;
 
     default:
-        out << v.toString() << Qt::endl;
+        out << v.toString() << BobUI::endl;
         break;
     }
 }
@@ -67,7 +67,7 @@ QVariant TextConverter::loadFile(QIODevice *f, const Converter *&outputConverter
         outputConverter = this;
 
     QVariantList list;
-    QTextStream in(f);
+    BOBUIextStream in(f);
     QString line;
     while (!in.atEnd()) {
         in.readLineInto(&line);
@@ -92,7 +92,7 @@ void TextConverter::saveFile(QIODevice *f, const QVariant &contents,
                qPrintable(options.first()));
     }
 
-    QTextStream out(f);
+    BOBUIextStream out(f);
     dumpVariant(out, contents);
 }
 

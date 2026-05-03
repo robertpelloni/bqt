@@ -1,0 +1,5 @@
+{
+     extern "C++" {
+         "@BOBUI_NAMESPACE_PREFIX@QGuiApplication::notify(@BOBUI_NAMESPACE_PREFIX@QObject*, @BOBUI_NAMESPACE_PREFIX@QEvent*)";
+     };
+};

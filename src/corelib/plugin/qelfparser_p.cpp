@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qelfparser_p.h"
 
@@ -21,22 +21,22 @@
 #  error "Need ELF header to parse plugins."
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-// ### Qt7: propagate the constant and eliminate dead code
-static constexpr bool ElfNotesAreMandatory = QT_VERSION >= QT_VERSION_CHECK(7,0,0);
+// ### BobUI7: propagate the constant and eliminate dead code
+static constexpr bool ElfNotesAreMandatory = BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0);
 
 // Whether we include some extra validity checks
 // (checks to ensure we don't read out-of-bounds are always included)
 static constexpr bool IncludeValidityChecks = true;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 #  define QELFPARSER_DEBUG
 #endif
 #if defined(QELFPARSER_DEBUG)
-Q_STATIC_LOGGING_CATEGORY(lcElfParser, "qt.core.plugin.elfparser")
+Q_STATIC_LOGGING_CATEGORY(lcElfParser, "bobui.core.plugin.elfparser")
 #  define qEDebug       qCDebug(lcElfParser) << reinterpret_cast<const char16_t *>(error.errMsg->constData()) << ':'
 #else
 #  define qEDebug       if (false) {} else QNoDebug()
@@ -59,8 +59,8 @@ Q_STATIC_LOGGING_CATEGORY(lcElfParser, "qt.core.plugin.elfparser")
 #  define PN_XNUM 0xffff
 #endif
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wunused-const-variable")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wunused-const-variable")
 
 namespace {
 template <QSysInfo::Endian Order> struct ElfEndianTraits
@@ -421,7 +421,7 @@ Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, ElfSectionDebug s)
 {
     // not exhaustive, just a few common things
     QDebugStateSaver saver(d);
-    d << Qt::hex << Qt::showbase;
+    d << BobUI::hex << BobUI::showbase;
     d << "type";
     switch (s.shdr->sh_type) {
     case SHT_NULL:          d << "NULL"; break;
@@ -460,7 +460,7 @@ struct ElfProgramDebug { const ElfHeaderCheck<>::TypeTraits::Phdr *phdr; };
 Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, ElfProgramDebug p)
 {
     QDebugStateSaver saved(d);
-    d << Qt::hex << Qt::showbase << "program";
+    d << BobUI::hex << BobUI::showbase << "program";
     switch (p.phdr->p_type) {
     case PT_NULL:       d << "NULL"; break;
     case PT_LOAD:       d << "LOAD"; break;
@@ -508,7 +508,7 @@ struct ErrorMaker
 
     Q_DECL_COLD_FUNCTION QLibraryScanResult notplugin(QString &&explanation) const
     {
-        *errMsg = QLibrary::tr("'%1' is not a Qt plugin (%2)").arg(*errMsg, explanation);
+        *errMsg = QLibrary::tr("'%1' is not a BobUI plugin (%2)").arg(*errMsg, explanation);
         return {};
     }
 
@@ -519,7 +519,7 @@ struct ErrorMaker
 };
 } // unnamed namespace
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 using T = ElfHeaderCheck<>::TypeTraits;
 
@@ -603,7 +603,7 @@ static QLibraryScanResult scanProgramHeadersForNotes(QByteArrayView data, const 
             auto h = reinterpret_cast<const T::Ehdr *>(data.data());
             auto segments = reinterpret_cast<const T::Phdr *>(data.data() + h->e_phoff);
             qEDebug << "segment" << (phdr - segments) << "contains a note with size"
-                    << Qt::hex << Qt::showbase << phdr->p_filesz
+                    << BobUI::hex << BobUI::showbase << phdr->p_filesz
                     << "which is larger than half the virtual memory space";
             return true;
         }
@@ -649,8 +649,8 @@ static QLibraryScanResult scanProgramHeadersForNotes(QByteArrayView data, const 
     if (!r.length)
         return r;
 
-    qEDebug << "found Qt metadata in ELF note at"
-                << Qt::hex << Qt::showbase << r.pos << "size" << Qt::reset << r.length;
+    qEDebug << "found BobUI metadata in ELF note at"
+                << BobUI::hex << BobUI::showbase << r.pos << "size" << BobUI::reset << r.length;
     return r;
 }
 
@@ -658,7 +658,7 @@ static QLibraryScanResult scanSections(QByteArrayView data, const ErrorMaker &er
 {
     auto header = reinterpret_cast<const T::Ehdr *>(data.data());
 
-    // in order to find the .qtmetadata section, we need to:
+    // in order to find the .bobuimetadata section, we need to:
     // a) find the section table
     //    it's located at offset header->e_shoff
     // validate it
@@ -681,7 +681,7 @@ static QLibraryScanResult scanSections(QByteArrayView data, const ErrorMaker &er
             || end > size_t(data.size()))
         return error(QLibrary::tr("section header string table extends past the end of the file"));
 
-    // c) iterate over the sections to find .qtmetadata
+    // c) iterate over the sections to find .bobuimetadata
     const char *shstrtab_start = data.data() + offset;
     shdr = sections;
     for (int section = 0; shdr != sections_end; ++section, ++shdr) {
@@ -706,29 +706,29 @@ static QLibraryScanResult scanSections(QByteArrayView data, const ErrorMaker &er
             return error(QLibrary::tr("section contents extend past the end of the file"));
         }
 
-        if (name != ".qtmetadata"_L1)
+        if (name != ".bobuimetadata"_L1)
             continue;
-        qEDebug << "found .qtmetadata section";
+        qEDebug << "found .bobuimetadata section";
         if (shdr->sh_size < sizeof(QPluginMetaData::MagicHeader))
-            return error(QLibrary::tr(".qtmetadata section is too small"));
+            return error(QLibrary::tr(".bobuimetadata section is too small"));
 
         if (IncludeValidityChecks) {
             QByteArrayView expectedMagic = QByteArrayView::fromArray(QPluginMetaData::MagicString);
             QByteArrayView actualMagic = data.sliced(shdr->sh_offset, expectedMagic.size());
             if (expectedMagic != actualMagic)
-                return error(QLibrary::tr(".qtmetadata section has incorrect magic"));
+                return error(QLibrary::tr(".bobuimetadata section has incorrect magic"));
 
             if (shdr->sh_flags & SHF_WRITE)
-                return error(QLibrary::tr(".qtmetadata section is writable"));
+                return error(QLibrary::tr(".bobuimetadata section is writable"));
             if (shdr->sh_flags & SHF_EXECINSTR)
-                return error(QLibrary::tr(".qtmetadata section is executable"));
+                return error(QLibrary::tr(".bobuimetadata section is executable"));
         }
 
         return { qsizetype(shdr->sh_offset + sizeof(QPluginMetaData::MagicString)),
                  qsizetype(shdr->sh_size - sizeof(QPluginMetaData::MagicString)) };
     }
 
-    // section .qtmetadata not found
+    // section .bobuimetadata not found
     return error.notfound();
 }
 
@@ -773,7 +773,7 @@ QLibraryScanResult QElfParser::parse(QByteArrayView data, QString *errMsg)
         }
         if (header->e_shoff == 0 || header->e_shnum == 0) {
             // this is still a valid ELF file but we don't have a section table
-            qEDebug << "no section table present, not able to find Qt metadata";
+            qEDebug << "no section table present, not able to find BobUI metadata";
             return error.notfound();
         }
 
@@ -785,6 +785,6 @@ QLibraryScanResult QElfParser::parse(QByteArrayView data, QString *errMsg)
     return error.notfound();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_OF_ELF

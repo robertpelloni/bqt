@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLUGIN_P_H
 #define QPLUGIN_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QLibrary class.  This header file may change from
 // version to version without notice, or even be removed.
 //
@@ -17,14 +17,14 @@
 
 #include <private/qglobal_p.h>
 
-#include "QtCore/qplugin.h"
-#include "QtCore/qcborvalue.h"
-#include "QtCore/qcbormap.h"
+#include "BobUICore/qplugin.h"
+#include "BobUICore/qcborvalue.h"
+#include "BobUICore/qcbormap.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-enum class QtPluginMetaDataKeys {
-    QtVersion,
+enum class BobUIPluginMetaDataKeys {
+    BobUIVersion,
     Requirements,
     IID,
     ClassName,
@@ -35,15 +35,15 @@ enum class QtPluginMetaDataKeys {
 
 // F(IntKey, StringKey, Description)
 // Keep this list sorted in the order moc should output.
-#define QT_PLUGIN_FOREACH_METADATA(F) \
-    F(QtPluginMetaDataKeys::IID, "IID", "Plugin's Interface ID")                \
-    F(QtPluginMetaDataKeys::ClassName, "className", "Plugin class name")        \
-    F(QtPluginMetaDataKeys::MetaData, "MetaData", "Other meta data")            \
-    F(QtPluginMetaDataKeys::URI, "URI", "Plugin URI")                           \
+#define BOBUI_PLUGIN_FOREACH_METADATA(F) \
+    F(BobUIPluginMetaDataKeys::IID, "IID", "Plugin's Interface ID")                \
+    F(BobUIPluginMetaDataKeys::ClassName, "className", "Plugin class name")        \
+    F(BobUIPluginMetaDataKeys::MetaData, "MetaData", "Other meta data")            \
+    F(BobUIPluginMetaDataKeys::URI, "URI", "Plugin URI")                           \
     /* not output by moc in CBOR */                                             \
-    F(QtPluginMetaDataKeys::QtVersion, "version", "Qt version")                 \
-    F(QtPluginMetaDataKeys::Requirements, "archlevel", "Architectural level")   \
-    F(QtPluginMetaDataKeys::IsDebug, "debug", "Debug-mode plugin")              \
+    F(BobUIPluginMetaDataKeys::BobUIVersion, "version", "BobUI version")                 \
+    F(BobUIPluginMetaDataKeys::Requirements, "archlevel", "Architectural level")   \
+    F(BobUIPluginMetaDataKeys::IsDebug, "debug", "Debug-mode plugin")              \
     /**/
 
 namespace {
@@ -120,10 +120,10 @@ public:
 
     // if data is not a map, toMap() returns empty, so shall these functions
     QCborMap toCbor() const                         { return data.toMap(); }
-    QCborValue value(QtPluginMetaDataKeys k) const  { return data[int(k)]; }
+    QCborValue value(BobUIPluginMetaDataKeys k) const  { return data[int(k)]; }
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLUGIN_P_H

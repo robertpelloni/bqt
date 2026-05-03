@@ -21,7 +21,7 @@
        <item>
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -134,7 +134,7 @@
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -149,7 +149,7 @@
      <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>BobUI::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -207,7 +207,7 @@
      <item>
       <spacer name="verticalSpacer_2">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>BobUI::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -246,7 +246,7 @@
        <item>
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -261,7 +261,7 @@
      <item>
       <spacer name="verticalSpacer_3">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>BobUI::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

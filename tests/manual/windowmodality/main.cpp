@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "ui_dialog.h"
 #include "ui_widget.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
+#include <BobUICore/QDebug>
+#include <BobUICore/BOBUIimer>
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QFontDialog>
@@ -41,40 +41,40 @@ public:
 
 private slots:
     void on_modelessCustomDialogButton_clicked()
-    { newDialog(CustomDialogType, Qt::NonModal); }
+    { newDialog(CustomDialogType, BobUI::NonModal); }
     void on_modelessColorDialogButton_clicked()
-    { newDialog(ColorDialogType, Qt::NonModal); }
+    { newDialog(ColorDialogType, BobUI::NonModal); }
     void on_modelessFontDialogButton_clicked()
-    { newDialog(FontDialogType, Qt::NonModal); }
+    { newDialog(FontDialogType, BobUI::NonModal); }
 
     void on_windowModalCustomDialogButton_clicked()
-    { newDialog(CustomDialogType, Qt::WindowModal); }
+    { newDialog(CustomDialogType, BobUI::WindowModal); }
     void on_windowModalColorDialogButton_clicked()
-    { newDialog(ColorDialogType, Qt::WindowModal); }
+    { newDialog(ColorDialogType, BobUI::WindowModal); }
     void on_windowModalFileDialogButton_clicked()
-    { newDialog(FileDialogType, Qt::WindowModal); }
+    { newDialog(FileDialogType, BobUI::WindowModal); }
     void on_windowModalFontDialogButton_clicked()
-    { newDialog(FontDialogType, Qt::WindowModal); }
+    { newDialog(FontDialogType, BobUI::WindowModal); }
     void on_windowModalPageSetupDialogButton_clicked()
-    { newDialog(PageSetupDialogType, Qt::WindowModal); }
+    { newDialog(PageSetupDialogType, BobUI::WindowModal); }
     void on_windowModalPrintDialogButton_clicked()
-    { newDialog(PrintDialogType, Qt::WindowModal); }
+    { newDialog(PrintDialogType, BobUI::WindowModal); }
 
     void on_applicationModalCustomDialogButton_clicked()
-    { newDialog(CustomDialogType, Qt::ApplicationModal); }
+    { newDialog(CustomDialogType, BobUI::ApplicationModal); }
     void on_applicationModalColorDialogButton_clicked()
-    { newDialog(ColorDialogType, Qt::ApplicationModal); }
+    { newDialog(ColorDialogType, BobUI::ApplicationModal); }
     void on_applicationModalFileDialogButton_clicked()
-    { newDialog(FileDialogType, Qt::ApplicationModal); }
+    { newDialog(FileDialogType, BobUI::ApplicationModal); }
     void on_applicationModalFontDialogButton_clicked()
-    { newDialog(FontDialogType, Qt::ApplicationModal); }
+    { newDialog(FontDialogType, BobUI::ApplicationModal); }
     void on_applicationModalPageSetupDialogButton_clicked()
-    { newDialog(PageSetupDialogType, Qt::ApplicationModal); }
+    { newDialog(PageSetupDialogType, BobUI::ApplicationModal); }
     void on_applicationModalPrintDialogButton_clicked()
-    { newDialog(PrintDialogType, Qt::ApplicationModal); }
+    { newDialog(PrintDialogType, BobUI::ApplicationModal); }
 
 private:
-    void newDialog(DialogType dialogType, Qt::WindowModality windowModality)
+    void newDialog(DialogType dialogType, BobUI::WindowModality windowModality)
     {
         QWidget *parent = nullptr;
         if (useThisAsParentCheckBox->isChecked())
@@ -88,21 +88,21 @@ private:
             dialog = new CustomDialog(parent);
             break;
         case ColorDialogType:
-            if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
-                QColorDialog::getColor(Qt::white, parent);
+            if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
+                QColorDialog::getColor(BobUI::white, parent);
                 return;
             }
             dialog = new QColorDialog(parent);
             break;
         case FileDialogType:
-            if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
+            if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
                 QFileDialog::getOpenFileName(parent);
                 return;
             }
             dialog = new QFileDialog(parent);
             break;
         case FontDialogType:
-            if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
+            if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
                 bool unused = false;
                 QFontDialog::getFont(&unused, parent);
                 return;
@@ -117,12 +117,12 @@ private:
             break;
         }
 
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setAttribute(BobUI::WA_DeleteOnClose);
         dialog->setWindowModality(windowModality);
 
-        if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked())
+        if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked())
             dialog->exec();
-        else if (windowModality == Qt::WindowModal)
+        else if (windowModality == BobUI::WindowModal)
             dialog->open();
         else
             dialog->show();
@@ -130,7 +130,7 @@ private:
     bool event(QEvent *event)
     {
         if (event->type() == QEvent::WindowBlocked)
-            setPalette(Qt::darkGray);
+            setPalette(BobUI::darkGray);
         else if (event->type() == QEvent::WindowUnblocked)
             setPalette(QPalette());
         return QWidget::event(event);
@@ -152,40 +152,40 @@ private slots:
     { (new Widget)->show(); }
 
     void on_modelessCustomDialogButton_clicked()
-    { newDialog(CustomDialogType, Qt::NonModal); }
+    { newDialog(CustomDialogType, BobUI::NonModal); }
     void on_modelessColorDialogButton_clicked()
-    { newDialog(ColorDialogType, Qt::NonModal); }
+    { newDialog(ColorDialogType, BobUI::NonModal); }
     void on_modelessFontDialogButton_clicked()
-    { newDialog(FontDialogType, Qt::NonModal); }
+    { newDialog(FontDialogType, BobUI::NonModal); }
 
     void on_windowModalCustomDialogButton_clicked()
-    { newDialog(CustomDialogType, Qt::WindowModal); }
+    { newDialog(CustomDialogType, BobUI::WindowModal); }
     void on_windowModalColorDialogButton_clicked()
-    { newDialog(ColorDialogType, Qt::WindowModal); }
+    { newDialog(ColorDialogType, BobUI::WindowModal); }
     void on_windowModalFileDialogButton_clicked()
-    { newDialog(FileDialogType, Qt::WindowModal); }
+    { newDialog(FileDialogType, BobUI::WindowModal); }
     void on_windowModalFontDialogButton_clicked()
-    { newDialog(FontDialogType, Qt::WindowModal); }
+    { newDialog(FontDialogType, BobUI::WindowModal); }
     void on_windowModalPageSetupDialogButton_clicked()
-    { newDialog(PageSetupDialogType, Qt::WindowModal); }
+    { newDialog(PageSetupDialogType, BobUI::WindowModal); }
     void on_windowModalPrintDialogButton_clicked()
-    { newDialog(PrintDialogType, Qt::WindowModal); }
+    { newDialog(PrintDialogType, BobUI::WindowModal); }
 
     void on_applicationModalCustomDialogButton_clicked()
-    { newDialog(CustomDialogType, Qt::ApplicationModal); }
+    { newDialog(CustomDialogType, BobUI::ApplicationModal); }
     void on_applicationModalColorDialogButton_clicked()
-    { newDialog(ColorDialogType, Qt::ApplicationModal); }
+    { newDialog(ColorDialogType, BobUI::ApplicationModal); }
     void on_applicationModalFileDialogButton_clicked()
-    { newDialog(FileDialogType, Qt::ApplicationModal); }
+    { newDialog(FileDialogType, BobUI::ApplicationModal); }
     void on_applicationModalFontDialogButton_clicked()
-    { newDialog(FontDialogType, Qt::ApplicationModal); }
+    { newDialog(FontDialogType, BobUI::ApplicationModal); }
     void on_applicationModalPageSetupDialogButton_clicked()
-    { newDialog(PageSetupDialogType, Qt::ApplicationModal); }
+    { newDialog(PageSetupDialogType, BobUI::ApplicationModal); }
     void on_applicationModalPrintDialogButton_clicked()
-    { newDialog(PrintDialogType, Qt::ApplicationModal); }
+    { newDialog(PrintDialogType, BobUI::ApplicationModal); }
 
 private:
-    void newDialog(DialogType dialogType, Qt::WindowModality windowModality)
+    void newDialog(DialogType dialogType, BobUI::WindowModality windowModality)
     {
         QWidget *parent = nullptr;
         if (useThisAsParentCheckBox->isChecked())
@@ -197,21 +197,21 @@ private:
             dialog = new CustomDialog(parent);
             break;
         case ColorDialogType:
-            if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
-                QColorDialog::getColor(Qt::white, parent);
+            if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
+                QColorDialog::getColor(BobUI::white, parent);
                 return;
             }
             dialog = new QColorDialog(parent);
             break;
         case FileDialogType:
-            if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
+            if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
                 QFileDialog::getOpenFileName(parent);
                 return;
             }
             dialog = new QFileDialog(parent);
             break;
         case FontDialogType:
-            if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
+            if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked()) {
                 bool unused = false;
                 QFontDialog::getFont(&unused, parent);
                 return;
@@ -226,12 +226,12 @@ private:
             break;
         }
 
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setAttribute(BobUI::WA_DeleteOnClose);
         dialog->setWindowModality(windowModality);
 
-        if (windowModality == Qt::ApplicationModal && applicationModalUseExecCheckBox->isChecked())
+        if (windowModality == BobUI::ApplicationModal && applicationModalUseExecCheckBox->isChecked())
             dialog->exec();
-        else if (windowModality == Qt::WindowModal)
+        else if (windowModality == BobUI::WindowModal)
             dialog->open();
         else
             dialog->show();
@@ -239,7 +239,7 @@ private:
     bool event(QEvent *event)
     {
         if (event->type() == QEvent::WindowBlocked)
-            setPalette(Qt::darkGray);
+            setPalette(BobUI::darkGray);
         else if (event->type() == QEvent::WindowUnblocked)
             setPalette(QPalette());
         return QWidget::event(event);

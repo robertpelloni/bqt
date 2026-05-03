@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLISTVIEW_P_H
 #define QLISTVIEW_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qlistview.h"
 #include "private/qabstractitemview_p.h"
 #include "qbitarray.h"
@@ -24,9 +24,9 @@
 #include <limits.h>
 #include <qscrollbar.h>
 
-QT_REQUIRE_CONFIG(listview);
+BOBUI_REQUIRE_CONFIG(listview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QListViewItem
 {
@@ -109,12 +109,12 @@ public:
     virtual void removeHiddenRow(int row);
     virtual void setPositionForIndex(const QPoint &, const QModelIndex &) { }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual void paintDragDrop(QPainter *painter);
     virtual bool filterDragMoveEvent(QDragMoveEvent *) { return false; }
     virtual bool filterDragLeaveEvent(QDragLeaveEvent *) { return false; }
     virtual bool filterDropEvent(QDropEvent *) { return false; }
-    virtual bool filterStartDrag(Qt::DropActions) { return false; }
+    virtual bool filterStartDrag(BobUI::DropActions) { return false; }
 #endif
 
 
@@ -194,7 +194,7 @@ public:
     void updateHorizontalScrollBar(const QSize &step) override;
     void updateVerticalScrollBar(const QSize &step) override;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     // The next two methods are to be used on LefToRight flow only.
     // WARNING: Plenty of duplicated code from QAbstractItemView{,Private}.
     QAbstractItemView::DropIndicatorPosition position(const QPoint &pos, const QRect &rect, const QModelIndex &idx) const;
@@ -207,7 +207,7 @@ private:
     void doStaticLayout(const QListViewLayoutInfo &info);
     int perItemScrollToValue(int index, int value, int height,
                              QAbstractItemView::ScrollHint hint,
-                             Qt::Orientation orientation, bool wrap, int extent) const;
+                             BobUI::Orientation orientation, bool wrap, int extent) const;
     int perItemScrollingPageSteps(int length, int bounds, bool wrap) const;
 };
 
@@ -240,11 +240,11 @@ public:
     void removeHiddenRow(int row) override;
     void setPositionForIndex(const QPoint &position, const QModelIndex &index) override;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     bool filterDragMoveEvent(QDragMoveEvent *) override;
     bool filterDragLeaveEvent(QDragLeaveEvent *) override;
     bool filterDropEvent(QDropEvent *e) override;
-    bool filterStartDrag(Qt::DropActions) override;
+    bool filterStartDrag(BobUI::DropActions) override;
 #endif
 
 private:
@@ -318,7 +318,7 @@ public:
             return QRect();
         executePostedLayout();
         auto oldItemAlignment = itemAlignment;
-        itemAlignment = Qt::Alignment();
+        itemAlignment = BobUI::Alignment();
         const QRect rect = rectForIndex(index);
         itemAlignment = oldItemAlignment;
         return rect;
@@ -341,12 +341,12 @@ public:
     QItemSelection selection(const QRect &rect) const;
     void selectAll(QItemSelectionModel::SelectionFlags command) override;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QAbstractItemView::DropIndicatorPosition position(const QPoint &pos, const QRect &rect, const QModelIndex &idx) const override;
     bool dropOn(QDropEvent *event, int *row, int *col, QModelIndex *index) override;
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     int accessibleChildIndex(const QModelIndex &index) const override;
 #endif
 
@@ -428,7 +428,7 @@ public:
     QRect elasticBand;
     bool showElasticBand;
 
-    Qt::Alignment itemAlignment;
+    BobUI::Alignment itemAlignment;
 };
 
 // inline implementations
@@ -470,6 +470,6 @@ inline int QCommonListViewBase::hiddenCount() const { return dd->hiddenRows.size
 
 inline bool QCommonListViewBase::isRightToLeft() const { return qq->isRightToLeft(); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLISTVIEW_P_H

@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS       = mandelbrotwidget.h \
                 renderthread.h
@@ -7,5 +7,5 @@ SOURCES       = main.cpp \
                 renderthread.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/threads/mandelbrot
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/threads/mandelbrot
 INSTALLS += target

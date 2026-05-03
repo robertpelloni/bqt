@@ -1,7 +1,7 @@
 #! /bin/bash
 
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 set -m
 
@@ -52,7 +52,7 @@ fi
 
 script_dir=`dirname ${BASH_SOURCE[0]}`
 cd "$script_dir"
-$python_command qtwasmserver.py --cross-origin-isolation -p 8001 > /dev/null 2>&1 &
+$python_command bobuiwasmserver.py --cross-origin-isolation -p 8001 > /dev/null 2>&1 &
 cleanupPid=$!
 
 $python_command qwasmwindow.py $@

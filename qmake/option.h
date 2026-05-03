@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef OPTION_H
 #define OPTION_H
@@ -13,7 +13,7 @@
 #include <qstringlist.h>
 #include <qfile.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QString qmake_getpwd();
 bool qmake_setpwd(const QString &p);
@@ -173,6 +173,6 @@ private:
 inline QString fixEnvVariables(const QString &x) { return Option::fixString(x, Option::FixEnvVars); }
 inline QStringList splitPathList(const QString &paths) { return paths.isEmpty() ? QStringList() : paths.split(Option::globals->dirlist_sep); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // OPTION_H

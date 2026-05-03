@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdatastream.h"
 
-#if !defined(QT_NO_DATASTREAM) || defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_NO_DATASTREAM) || defined(BOBUI_BOOTSTRAPPED)
 #include "qbuffer.h"
 #include "qfloat16.h"
 #include "qstring.h"
@@ -13,17 +13,17 @@
 #include <stdlib.h>
 #include "qendian.h"
 
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20memory.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 constexpr quint32 QDataStream::NullCode;
 constexpr quint32 QDataStream::ExtendedSize;
 
 /*!
     \class QDataStream
-    \inmodule QtCore
-    \ingroup qtserialization
+    \inmodule BobUICore
+    \ingroup bobuiserialization
     \reentrant
     \brief The QDataStream class provides serialization of binary data
     to a QIODevice.
@@ -38,7 +38,7 @@ constexpr quint32 QDataStream::ExtendedSize;
 
     You can also use a data stream to read/write \l{raw}{raw
     unencoded binary data}. If you want a "parsing" input stream, see
-    QTextStream.
+    BOBUIextStream.
 
     The QDataStream class implements the serialization of C++'s basic
     data types, like \c char, \c short, \c int, \c{char *}, etc.
@@ -58,13 +58,13 @@ constexpr quint32 QDataStream::ExtendedSize;
     \snippet code/src_corelib_io_qdatastream.cpp 1
 
     Each item written to the stream is written in a predefined binary
-    format that varies depending on the item's type. Supported Qt
+    format that varies depending on the item's type. Supported BobUI
     types include QBrush, QColor, QDateTime, QFont, QPixmap, QString,
-    QVariant and many others. For the complete list of all Qt types
-    supporting data streaming see \l{Serializing Qt Data Types}.
+    QVariant and many others. For the complete list of all BobUI types
+    supporting data streaming see \l{Serializing BobUI Data Types}.
 
-    For integers it is best to always cast to a Qt integer type for
-    writing, and to read back into the same Qt integer type. This
+    For integers it is best to always cast to a BobUI integer type for
+    writing, and to read back into the same BobUI integer type. This
     ensures that you get integers of the size you want and insulates
     you from compiler and platform differences.
 
@@ -98,8 +98,8 @@ constexpr quint32 QDataStream::ExtendedSize;
 
     \section1 Versioning
 
-    QDataStream's binary format has evolved since Qt 1.0, and is
-    likely to continue evolving to reflect changes done in Qt. When
+    QDataStream's binary format has evolved since BobUI 1.0, and is
+    likely to continue evolving to reflect changes done in BobUI. When
     inputting or outputting complex types, it's very important to
     make sure that the same version of the stream (version()) is used
     for reading and writing. If you need both forward and backward
@@ -143,17 +143,17 @@ constexpr quint32 QDataStream::ExtendedSize;
     data, followed by the data. Note that any encoding/decoding of
     the data (apart from the length quint32) must be done by you.
 
-    \section1 Reading and Writing Qt Collection Classes
+    \section1 Reading and Writing BobUI Collection Classes
 
-    The Qt container classes can also be serialized to a QDataStream.
+    The BobUI container classes can also be serialized to a QDataStream.
     These include QList, QSet, QHash, and QMap.
     The stream operators are declared as non-members of the classes.
 
-    \target Serializing Qt Classes
-    \section1 Reading and Writing Other Qt Classes
+    \target Serializing BobUI Classes
+    \section1 Reading and Writing Other BobUI Classes
 
     In addition to the overloaded stream operators documented here,
-    any Qt classes that you might want to serialize to a QDataStream
+    any BobUI classes that you might want to serialize to a QDataStream
     will have appropriate stream operators declared as non-member of
     the class:
 
@@ -164,7 +164,7 @@ constexpr quint32 QDataStream::ExtendedSize;
 
     \snippet code/src_corelib_serialization_qdatastream.cpp 1
 
-    To see if your favorite Qt class has similar stream operators
+    To see if your favorite BobUI class has similar stream operators
     defined, check the \b {Related Non-Members} section of the
     class's documentation page.
 
@@ -203,7 +203,7 @@ constexpr quint32 QDataStream::ExtendedSize;
     whose provenance is at least as trustworthy as that of the application
     itself or its plugins.
 
-    \sa QTextStream, QVariant
+    \sa BOBUIextStream, QVariant
 */
 
 /*!
@@ -219,7 +219,7 @@ constexpr quint32 QDataStream::ExtendedSize;
   \enum QDataStream::FloatingPointPrecision
 
   The precision of floating point numbers used for reading/writing the data. This will only have
-  an effect if the version of the data stream is Qt_4_6 or higher.
+  an effect if the version of the data stream is BobUI_4_6 or higher.
 
   \warning The floating point precision must be set to the same value on the object that writes
   and the object that reads the data stream.
@@ -254,7 +254,7 @@ constexpr quint32 QDataStream::ExtendedSize;
 #define Q_VOID
 
 #undef  CHECK_STREAM_PRECOND
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
 #define CHECK_STREAM_PRECOND(retVal) \
     if (!dev) { \
         qWarning("QDataStream: No device"); \
@@ -315,7 +315,7 @@ QDataStream::QDataStream(QIODevice *d)
 QDataStream::QDataStream(QByteArray *a, OpenMode flags)
 {
     QBuffer *buf = new QBuffer(a);
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     buf->blockSignals(true);
 #endif
     buf->open(flags);
@@ -334,7 +334,7 @@ QDataStream::QDataStream(QByteArray *a, OpenMode flags)
 QDataStream::QDataStream(const QByteArray &a)
 {
     QBuffer *buf = new QBuffer;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     buf->blockSignals(true);
 #endif
     buf->setData(a);
@@ -413,12 +413,12 @@ bool QDataStream::atEnd() const
 
 /*!
     Sets the floating point precision of the data stream to \a precision. If the floating point precision is
-    DoublePrecision and the version of the data stream is Qt_4_6 or higher, all floating point
+    DoublePrecision and the version of the data stream is BobUI_4_6 or higher, all floating point
     numbers will be written and read with 64-bit precision. If the floating point precision is
-    SinglePrecision and the version is Qt_4_6 or higher, all floating point numbers will be written
+    SinglePrecision and the version is BobUI_4_6 or higher, all floating point numbers will be written
     and read with 32-bit precision.
 
-    For versions prior to Qt_4_6, the precision of floating point numbers in the data stream depends
+    For versions prior to BobUI_4_6, the precision of floating point numbers in the data stream depends
     on the stream operator called.
 
     The default is DoublePrecision.
@@ -491,8 +491,8 @@ void QDataStream::setStatus(Status status)
 
 void QDataStream::setByteOrder(ByteOrder bo)
 {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
-    // accessed by inline byteOrder() prior to Qt 6.8
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
+    // accessed by inline byteOrder() prior to BobUI 6.8
     byteorder = bo;
 #endif
     if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
@@ -508,52 +508,52 @@ void QDataStream::setByteOrder(ByteOrder bo)
     This enum provides symbolic synonyms for the data serialization
     format version numbers.
 
-    \value Qt_1_0
-    \value Qt_2_0
-    \value Qt_2_1
-    \value Qt_3_0
-    \value Qt_3_1
-    \value Qt_3_3
-    \value Qt_4_0
-    \value Qt_4_1
-    \value Qt_4_2
-    \value Qt_4_3
-    \value Qt_4_4
-    \value Qt_4_5
-    \value Qt_4_6
-    \value Qt_4_7
-    \value Qt_4_8
-    \value Qt_4_9
-    \value Qt_5_0
-    \value Qt_5_1
-    \value Qt_5_2
-    \value Qt_5_3
-    \value Qt_5_4
-    \value Qt_5_5
-    \value Qt_5_6
-    \value Qt_5_7
-    \value Qt_5_8
-    \value Qt_5_9
-    \value Qt_5_10
-    \value Qt_5_11
-    \value Qt_5_12
-    \value Qt_5_13
-    \value Qt_5_14
-    \value Qt_5_15
-    \value Qt_6_0
-    \value Qt_6_1
-    \value Qt_6_2
-    \value Qt_6_3
-    \value Qt_6_4
-    \value Qt_6_5
-    \value Qt_6_6
-    \value Qt_6_7
-    \value Qt_6_8
-    \value Qt_6_9
-    \value Qt_6_10
-    \value Qt_6_11
-    \value Qt_6_12
-    \omitvalue Qt_DefaultCompiledVersion
+    \value BobUI_1_0
+    \value BobUI_2_0
+    \value BobUI_2_1
+    \value BobUI_3_0
+    \value BobUI_3_1
+    \value BobUI_3_3
+    \value BobUI_4_0
+    \value BobUI_4_1
+    \value BobUI_4_2
+    \value BobUI_4_3
+    \value BobUI_4_4
+    \value BobUI_4_5
+    \value BobUI_4_6
+    \value BobUI_4_7
+    \value BobUI_4_8
+    \value BobUI_4_9
+    \value BobUI_5_0
+    \value BobUI_5_1
+    \value BobUI_5_2
+    \value BobUI_5_3
+    \value BobUI_5_4
+    \value BobUI_5_5
+    \value BobUI_5_6
+    \value BobUI_5_7
+    \value BobUI_5_8
+    \value BobUI_5_9
+    \value BobUI_5_10
+    \value BobUI_5_11
+    \value BobUI_5_12
+    \value BobUI_5_13
+    \value BobUI_5_14
+    \value BobUI_5_15
+    \value BobUI_6_0
+    \value BobUI_6_1
+    \value BobUI_6_2
+    \value BobUI_6_3
+    \value BobUI_6_4
+    \value BobUI_6_5
+    \value BobUI_6_6
+    \value BobUI_6_7
+    \value BobUI_6_8
+    \value BobUI_6_9
+    \value BobUI_6_10
+    \value BobUI_6_11
+    \value BobUI_6_12
+    \omitvalue BobUI_DefaultCompiledVersion
 
     \sa setVersion(), version()
 */
@@ -573,19 +573,19 @@ void QDataStream::setByteOrder(ByteOrder bo)
     a value of the \l Version enum.
 
     You don't \e have to set a version if you are using the current
-    version of Qt, but for your own custom binary formats we
+    version of BobUI, but for your own custom binary formats we
     recommend that you do; see \l{Versioning} in the Detailed
     Description.
 
     To accommodate new functionality, the datastream serialization
-    format of some Qt classes has changed in some versions of Qt. If
+    format of some BobUI classes has changed in some versions of BobUI. If
     you want to read data that was created by an earlier version of
-    Qt, or write data that can be read by a program that was compiled
-    with an earlier version of Qt, use this function to modify the
+    BobUI, or write data that can be read by a program that was compiled
+    with an earlier version of BobUI, use this function to modify the
     serialization format used by QDataStream.
 
     The \l Version enum provides symbolic constants for the different
-    versions of Qt. For example:
+    versions of BobUI. For example:
 
     \snippet code/src_corelib_io_qdatastream.cpp 5
 
@@ -919,7 +919,7 @@ QDataStream &QDataStream::operator>>(bool &i)
 
 QDataStream &QDataStream::operator>>(float &f)
 {
-    if (version() >= QDataStream::Qt_4_6
+    if (version() >= QDataStream::BobUI_4_6
         && floatingPointPrecision() == QDataStream::DoublePrecision) {
         double d;
         *this >> d;
@@ -956,7 +956,7 @@ QDataStream &QDataStream::operator>>(float &f)
 
 QDataStream &QDataStream::operator>>(double &f)
 {
-    if (version() >= QDataStream::Qt_4_6
+    if (version() >= QDataStream::BobUI_4_6
         && floatingPointPrecision() == QDataStream::SinglePrecision) {
         float d;
         *this >> d;
@@ -1038,7 +1038,7 @@ QDataStream &QDataStream::operator>>(char32_t &c)
 
     Reads a char from the stream \a in into char \a chr.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &in, QChar &chr)
 {
@@ -1048,7 +1048,7 @@ QDataStream &operator>>(QDataStream &in, QChar &chr)
     return in;
 }
 
-#if QT_DEPRECATED_SINCE(6, 11)
+#if BOBUI_DEPRECATED_SINCE(6, 11)
 
 /*!
     \deprecated [6.11] Use an overload that takes qint64 length instead.
@@ -1067,7 +1067,7 @@ QDataStream &QDataStream::readBytes(char *&s, uint &l)
     return *this;
 }
 
-#endif // QT_DEPRECATED_SINCE(6, 11)
+#endif // BOBUI_DEPRECATED_SINCE(6, 11)
 
 /*!
     \since 6.7
@@ -1153,7 +1153,7 @@ qint64 QDataStream::readRawData(char *s, qint64 len)
 
     This function requires the T1 and T2 types to implement \c operator>>().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 /*****************************************************************************
@@ -1295,7 +1295,7 @@ QDataStream &QDataStream::operator<<(qint64 i)
 
 QDataStream &QDataStream::operator<<(float f)
 {
-    if (version() >= QDataStream::Qt_4_6
+    if (version() >= QDataStream::BobUI_4_6
         && floatingPointPrecision() == QDataStream::DoublePrecision) {
         *this << double(f);
         return *this;
@@ -1333,7 +1333,7 @@ QDataStream &QDataStream::operator<<(float f)
 
 QDataStream &QDataStream::operator<<(double f)
 {
-    if (version() >= QDataStream::Qt_4_6
+    if (version() >= QDataStream::BobUI_4_6
         && floatingPointPrecision() == QDataStream::SinglePrecision) {
         *this << float(f);
         return *this;
@@ -1405,7 +1405,7 @@ QDataStream &QDataStream::operator<<(char32_t c)
 
     Writes the char \a chr to the stream \a out.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, QChar chr)
 {
@@ -1493,9 +1493,9 @@ qint64 QDataStream::skipRawData(qint64 len)
 
     This function requires the T1 and T2 types to implement \c operator<<().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM

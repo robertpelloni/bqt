@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qicon.h>
 
 class tst_QIconHighDpi : public QObject
@@ -30,19 +30,19 @@ void tst_QIconHighDpi::initTestCase()
 
 void tst_QIconHighDpi::fromTheme_data()
 {
-    QTest::addColumn<int>("requestedSize");
-    QTest::addColumn<qreal>("requestedDpr");
-    QTest::addColumn<int>("expectedSize");
-    QTest::addColumn<qreal>("expectedDpr");
+    BOBUIest::addColumn<int>("requestedSize");
+    BOBUIest::addColumn<qreal>("requestedDpr");
+    BOBUIest::addColumn<int>("expectedSize");
+    BOBUIest::addColumn<qreal>("expectedDpr");
 
     // The pixmaps that we have available can be found in tst_qiconhighdpi.qrc.
     // Currently we only have @1 and @2 icons available, which limits the expected
     // devicePixelRatio when testing at e.g. devicePixelRatio 3.
 
     // We have an @2 high DPI version of the 22x22 size of this icon.
-    QTest::newRow("22x22,dpr=1") << 22 << 1.0 << 22 << 1.0;
-    QTest::newRow("22x22,dpr=2") << 22 << 2.0 << 44 << 2.0;
-    QTest::newRow("22x22,dpr=3") << 22 << 3.0 << 44 << 2.0;
+    BOBUIest::newRow("22x22,dpr=1") << 22 << 1.0 << 22 << 1.0;
+    BOBUIest::newRow("22x22,dpr=2") << 22 << 2.0 << 44 << 2.0;
+    BOBUIest::newRow("22x22,dpr=3") << 22 << 3.0 << 44 << 2.0;
 
     // We don't have a high DPI version of the 16x16 size of this icon,
     // so directoryMatchesSize() will return false for all directories.
@@ -63,9 +63,9 @@ void tst_QIconHighDpi::fromTheme_data()
     // Both of these functions are implementations of the freedesktop icon theme spec,
     // which dictates that if there is no matching scale, directorySizeDistance() determines
     // the winner, regardless of whether or not the scale is too low for the requested scale.
-    QTest::newRow("16x16,dpr=1") << 16 << 1.0 << 16 << 1.0;
-    QTest::newRow("16x16,dpr=2") << 16 << 2.0 << 32 << 2.0;
-    QTest::newRow("16x16,dpr=3") << 16 << 3.0 << 44 << 2.75;
+    BOBUIest::newRow("16x16,dpr=1") << 16 << 1.0 << 16 << 1.0;
+    BOBUIest::newRow("16x16,dpr=2") << 16 << 2.0 << 32 << 2.0;
+    BOBUIest::newRow("16x16,dpr=3") << 16 << 3.0 << 44 << 2.75;
 
     // We don't have an 8x8 size of this icon, so:
     // Available size | Available scale | Requested size | Requested scale | Delta
@@ -80,9 +80,9 @@ void tst_QIconHighDpi::fromTheme_data()
     //        22      *        2        -       8        *        3        =    20 < (22x22, prefer downscale)
     //        22      *        1        -       8        *        3        =    -2
     //        16      *        1        -       8        *        3        =    -8
-    QTest::newRow("8x8,dpr=1") << 8 << 1.0 << 8 << 1.0;
-    QTest::newRow("8x8,dpr=2") << 8 << 2.0 << 16 << 2.0;
-    QTest::newRow("8x8,dpr=3") << 8 << 3.0 << 24 << 3.0;
+    BOBUIest::newRow("8x8,dpr=1") << 8 << 1.0 << 8 << 1.0;
+    BOBUIest::newRow("8x8,dpr=2") << 8 << 2.0 << 16 << 2.0;
+    BOBUIest::newRow("8x8,dpr=3") << 8 << 3.0 << 24 << 3.0;
 
     // We don't have a 44x44 size of this icon, so:
     // Available size | Available scale | Requested size | Requested scale | Delta
@@ -97,9 +97,9 @@ void tst_QIconHighDpi::fromTheme_data()
     //        22      *        2        -       44       *        3        =   -88 < (22x22@2)
     //        22      *        1        -       44       *        3        =  -110
     //        16      *        1        -       44       *        3        =  -116
-    QTest::newRow("44x44,dpr=1") << 44 << 1.0 << 44 << 1.0;
-    QTest::newRow("44x44,dpr=2") << 44 << 2.0 << 44 << 1.0;
-    QTest::newRow("44x44,dpr=3") << 44 << 3.0 << 44 << 1.0;
+    BOBUIest::newRow("44x44,dpr=1") << 44 << 1.0 << 44 << 1.0;
+    BOBUIest::newRow("44x44,dpr=2") << 44 << 2.0 << 44 << 1.0;
+    BOBUIest::newRow("44x44,dpr=3") << 44 << 3.0 << 44 << 1.0;
 
     // We don't have a 20x20 size of this icon, so:
     // Available size | Available scale | Requested size | Requested scale | Delta
@@ -114,11 +114,11 @@ void tst_QIconHighDpi::fromTheme_data()
     //        22      *        2        -       20       *        3        =   -16 < (22x22@2)
     //        22      *        1        -       20       *        3        =   -38
     //        16      *        1        -       20       *        3        =   -44
-    QTest::newRow("20x20,dpr=1") << 20 << 1.0 << 20 << 1.0;
+    BOBUIest::newRow("20x20,dpr=1") << 20 << 1.0 << 20 << 1.0;
     // PixmapEntry::pixmap() will only downscale the pixmap if actualSize.width() > size.width().
     // In this case, 44 > 40 is true, so the 44x44 pixmap is downscaled to 40x40.
-    QTest::newRow("20x20,dpr=2") << 20 << 2.0 << 40 << 2.0;
-    QTest::newRow("20x20,dpr=3") << 20 << 3.0 << 44 << 2.2;
+    BOBUIest::newRow("20x20,dpr=2") << 20 << 2.0 << 40 << 2.0;
+    BOBUIest::newRow("20x20,dpr=3") << 20 << 3.0 << 44 << 2.2;
 }
 
 void tst_QIconHighDpi::fromTheme()
@@ -180,7 +180,7 @@ void tst_QIconHighDpi::addPixmap()
     QVERIFY(icon.availableSizes().contains(QSize(16, 16)));
     QVERIFY(icon.availableSizes().contains(QSize(22, 22)));
 
-    if (qstrcmp(QTest::currentDataTag(), "44x44,dpr=1") == 0)
+    if (qstrcmp(BOBUIest::currentDataTag(), "44x44,dpr=1") == 0)
         QSKIP("broken corner case"); // expect 44x44, get 22x22
 
     const QPixmap pixmap = icon.pixmap(QSize(requestedSize, requestedSize), requestedDpr);
@@ -228,8 +228,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     Q_UNUSED(app);
     tst_QIconHighDpi test;
-    QTEST_SET_MAIN_SOURCE_PATH
-    return QTest::qExec(&test, argc, argv);
+    BOBUIEST_SET_MAIN_SOURCE_PATH
+    return BOBUIest::qExec(&test, argc, argv);
 }
 
 #include "tst_qiconhighdpi.moc"

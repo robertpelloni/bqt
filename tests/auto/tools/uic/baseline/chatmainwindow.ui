@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Qt D-Bus Chat</string>
+   <string>BobUI D-Bus Chat</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout">
@@ -30,7 +30,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QTextBrowser" name="chatHistory">
+       <widget class="BOBUIextBrowser" name="chatHistory">
         <property name="acceptDrops">
          <bool>false</bool>
         </property>
@@ -101,7 +101,7 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionAboutQt"/>
+    <addaction name="actionAboutBobUI"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -123,9 +123,9 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionAboutQt">
+  <action name="actionAboutBobUI">
    <property name="text">
-    <string>About Qt...</string>
+    <string>About BobUI...</string>
    </property>
   </action>
   <action name="actionChangeNickname">

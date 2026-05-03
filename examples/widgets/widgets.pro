@@ -1,4 +1,4 @@
-requires(qtHaveModule(widgets))
+requires(bobuiHaveModule(widgets))
 
 TEMPLATE      = subdirs
 CONFIG += no_docs_target
@@ -22,6 +22,6 @@ SUBDIRS       = \
                 tutorials \
                 widgets
 
-contains(DEFINES, QT_NO_CURSOR): SUBDIRS -= mainwindows
-!qtConfig(draganddrop): SUBDIRS -= draganddrop
-!qtConfig(animation): SUBDIRS -= animation
+contains(DEFINES, BOBUI_NO_CURSOR): SUBDIRS -= mainwindows
+!bobuiConfig(draganddrop): SUBDIRS -= draganddrop
+!bobuiConfig(animation): SUBDIRS -= animation

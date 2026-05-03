@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QTypeRevision>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BOBUIypeRevision>
 
 #include <qobject.h>
 #include <qmetaobject.h>
@@ -170,21 +170,21 @@ void MethodTestObject::voidSlotNoParameterNames(bool, int) {}
 
 void tst_QMetaMethod::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QMetaMethod>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMetaMethod>();
 }
 
 void tst_QMetaMethod::method_data()
 {
-    QTest::addColumn<QByteArray>("signature");
-    QTest::addColumn<int>("returnType");
-    QTest::addColumn<QByteArray>("returnTypeName");
-    QTest::addColumn<QList<int> >("parameterTypes");
-    QTest::addColumn<QList<QByteArray> >("parameterTypeNames");
-    QTest::addColumn<QList<QByteArray> >("parameterNames");
-    QTest::addColumn<QMetaMethod::Access>("access");
-    QTest::addColumn<QMetaMethod::MethodType>("methodType");
+    BOBUIest::addColumn<QByteArray>("signature");
+    BOBUIest::addColumn<int>("returnType");
+    BOBUIest::addColumn<QByteArray>("returnTypeName");
+    BOBUIest::addColumn<QList<int> >("parameterTypes");
+    BOBUIest::addColumn<QList<QByteArray> >("parameterTypeNames");
+    BOBUIest::addColumn<QList<QByteArray> >("parameterNames");
+    BOBUIest::addColumn<QMetaMethod::Access>("access");
+    BOBUIest::addColumn<QMetaMethod::MethodType>("methodType");
 
-    QTest::newRow("voidSignal")
+    BOBUIest::newRow("voidSignal")
             << QByteArray("voidSignal()")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>())
@@ -193,7 +193,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokable")
+    BOBUIest::newRow("voidInvokable")
             << QByteArray("voidInvokable()")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>())
@@ -202,7 +202,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlot")
+    BOBUIest::newRow("voidSlot")
             << QByteArray("voidSlot()")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>())
@@ -211,7 +211,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject()")
+    BOBUIest::newRow("MethodTestObject()")
             << QByteArray("MethodTestObject()")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>())
@@ -220,7 +220,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Constructor;
 
-    QTest::newRow("voidSignalVoid")
+    BOBUIest::newRow("voidSignalVoid")
             << QByteArray("voidSignalVoid()")
             << int(QMetaType::Void) << QByteArray("void")
             << QList<int>()
@@ -229,7 +229,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidSignalInt")
+    BOBUIest::newRow("voidSignalInt")
             << QByteArray("voidSignalInt(int)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::Int))
@@ -238,7 +238,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokableInt")
+    BOBUIest::newRow("voidInvokableInt")
             << QByteArray("voidInvokableInt(int)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::Int))
@@ -247,7 +247,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlotInt")
+    BOBUIest::newRow("voidSlotInt")
             << QByteArray("voidSlotInt(int)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::Int))
@@ -256,7 +256,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject(int)")
+    BOBUIest::newRow("MethodTestObject(int)")
             << QByteArray("MethodTestObject(int)")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>() << int(QMetaType::Int))
@@ -265,7 +265,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Constructor;
 
-    QTest::newRow("voidSignalQReal")
+    BOBUIest::newRow("voidSignalQReal")
             << QByteArray("voidSignalQReal(qreal)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << qMetaTypeId<qreal>())
@@ -274,7 +274,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokableQReal")
+    BOBUIest::newRow("voidInvokableQReal")
             << QByteArray("voidInvokableQReal(qreal)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << qMetaTypeId<qreal>())
@@ -283,7 +283,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlotQReal")
+    BOBUIest::newRow("voidSlotQReal")
             << QByteArray("voidSlotQReal(qreal)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << qMetaTypeId<qreal>())
@@ -292,7 +292,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject(qreal)")
+    BOBUIest::newRow("MethodTestObject(qreal)")
             << QByteArray("MethodTestObject(qreal)")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>() << qMetaTypeId<qreal>())
@@ -301,7 +301,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Constructor;
 
-    QTest::newRow("voidSignalQString")
+    BOBUIest::newRow("voidSignalQString")
             << QByteArray("voidSignalQString(QString)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::QString))
@@ -310,7 +310,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokableQString")
+    BOBUIest::newRow("voidInvokableQString")
             << QByteArray("voidInvokableQString(QString)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::QString))
@@ -319,7 +319,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlotQString")
+    BOBUIest::newRow("voidSlotQString")
             << QByteArray("voidSlotQString(QString)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::QString))
@@ -328,7 +328,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject(QString)")
+    BOBUIest::newRow("MethodTestObject(QString)")
             << QByteArray("MethodTestObject(QString)")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>() << int(QMetaType::QString))
@@ -337,7 +337,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Constructor;
 
-    QTest::newRow("voidSignalCustomType")
+    BOBUIest::newRow("voidSignalCustomType")
             << QByteArray("voidSignalCustomType(CustomType)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << qMetaTypeId<CustomType>())
@@ -346,7 +346,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokableCustomType")
+    BOBUIest::newRow("voidInvokableCustomType")
             << QByteArray("voidInvokableCustomType(CustomType)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << qMetaTypeId<CustomType>())
@@ -355,7 +355,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlotCustomType")
+    BOBUIest::newRow("voidSlotCustomType")
             << QByteArray("voidSlotCustomType(CustomType)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << qMetaTypeId<CustomType>())
@@ -364,7 +364,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject(CustomType)")
+    BOBUIest::newRow("MethodTestObject(CustomType)")
             << QByteArray("MethodTestObject(CustomType)")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>() << qMetaTypeId<CustomType>())
@@ -373,8 +373,8 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Constructor;
 
-    // since Qt 6.0, parameter types get automatically registered
-    QTest::newRow("voidSignalCustomUnregisteredType")
+    // since BobUI 6.0, parameter types get automatically registered
+    BOBUIest::newRow("voidSignalCustomUnregisteredType")
             << QByteArray("voidSignalCustomUnregisteredType(CustomUnregisteredType)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << QMetaType::fromType<CustomUnregisteredType>().id())
@@ -383,7 +383,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokableCustomUnregisteredType")
+    BOBUIest::newRow("voidInvokableCustomUnregisteredType")
             << QByteArray("voidInvokableCustomUnregisteredType(CustomUnregisteredType)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << QMetaType::fromType<CustomUnregisteredType>().id())
@@ -392,7 +392,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlotCustomUnregisteredType")
+    BOBUIest::newRow("voidSlotCustomUnregisteredType")
             << QByteArray("voidSlotCustomUnregisteredType(CustomUnregisteredType)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << QMetaType::fromType<CustomUnregisteredType>().id())
@@ -401,7 +401,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject(CustomUnregisteredType)")
+    BOBUIest::newRow("MethodTestObject(CustomUnregisteredType)")
             << QByteArray("MethodTestObject(CustomUnregisteredType)")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>() << QMetaType::fromType<CustomUnregisteredType>().id())
@@ -410,7 +410,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Constructor;
 
-    QTest::newRow("boolSignal")
+    BOBUIest::newRow("boolSignal")
             << QByteArray("boolSignal()")
             << int(QMetaType::Bool) << QByteArray("bool")
             << (QList<int>())
@@ -419,7 +419,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("boolInvokable")
+    BOBUIest::newRow("boolInvokable")
             << QByteArray("boolInvokable()")
             << int(QMetaType::Bool) << QByteArray("bool")
             << (QList<int>())
@@ -428,7 +428,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("boolSlot")
+    BOBUIest::newRow("boolSlot")
             << QByteArray("boolSlot()")
             << int(QMetaType::Bool) << QByteArray("bool")
             << (QList<int>())
@@ -437,7 +437,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("qrealSignal")
+    BOBUIest::newRow("qrealSignal")
             << QByteArray("qrealSignal()")
             << int(QMetaType::QReal) << QByteArray("qreal")
             << (QList<int>())
@@ -446,7 +446,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("qrealInvokable")
+    BOBUIest::newRow("qrealInvokable")
             << QByteArray("qrealInvokable()")
             << int(QMetaType::QReal) << QByteArray("qreal")
             << (QList<int>())
@@ -455,7 +455,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("qrealSlot")
+    BOBUIest::newRow("qrealSlot")
             << QByteArray("qrealSlot()")
             << int(QMetaType::QReal) << QByteArray("qreal")
             << (QList<int>())
@@ -464,7 +464,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("qstringSignal")
+    BOBUIest::newRow("qstringSignal")
             << QByteArray("qstringSignal()")
             << int(QMetaType::QString) << QByteArray("QString")
             << (QList<int>())
@@ -473,7 +473,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("qstringInvokable")
+    BOBUIest::newRow("qstringInvokable")
             << QByteArray("qstringInvokable()")
             << int(QMetaType::QString) << QByteArray("QString")
             << (QList<int>())
@@ -482,7 +482,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("qstringSlot")
+    BOBUIest::newRow("qstringSlot")
             << QByteArray("qstringSlot()")
             << int(QMetaType::QString) << QByteArray("QString")
             << (QList<int>())
@@ -510,7 +510,7 @@ void tst_QMetaMethod::method_data()
                 << QByteArray("ulongArg") << QByteArray("ushortArg") << QByteArray("ucharArg")
                 << QByteArray("floatArg");
 
-        QTest::newRow("qvariantSignalBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat")
+        BOBUIest::newRow("qvariantSignalBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat")
                 << QByteArray("qvariantSignalBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat("
                               "bool,int,uint,qlonglong,qulonglong,double,long,short,char,ulong,ushort,uchar,float)")
                 << int(QMetaType::QVariant) << QByteArray("QVariant")
@@ -518,7 +518,7 @@ void tst_QMetaMethod::method_data()
                 << QMetaMethod::Public
                 << QMetaMethod::Signal;
 
-        QTest::newRow("qvariantInvokableBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat")
+        BOBUIest::newRow("qvariantInvokableBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat")
                 << QByteArray("qvariantInvokableBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat("
                               "bool,int,uint,qlonglong,qulonglong,double,long,short,char,ulong,ushort,uchar,float)")
                 << int(QMetaType::QVariant) << QByteArray("QVariant")
@@ -526,7 +526,7 @@ void tst_QMetaMethod::method_data()
                 << QMetaMethod::Public
                 << QMetaMethod::Method;
 
-        QTest::newRow("qvariantSlotBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat")
+        BOBUIest::newRow("qvariantSlotBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat")
                 << QByteArray("qvariantSlotBoolIntUIntLonglongULonglongDoubleLongShortCharUlongUshortUcharFloat("
                               "bool,int,uint,qlonglong,qulonglong,double,long,short,char,ulong,ushort,uchar,float)")
                 << int(QMetaType::QVariant) << QByteArray("QVariant")
@@ -534,7 +534,7 @@ void tst_QMetaMethod::method_data()
                 << QMetaMethod::Public
                 << QMetaMethod::Slot;
 
-        QTest::newRow("MethodTestObject(bool,int,uint,qlonglong,qulonglong,double,long,short,char,ulong,ushort,uchar,float)")
+        BOBUIest::newRow("MethodTestObject(bool,int,uint,qlonglong,qulonglong,double,long,short,char,ulong,ushort,uchar,float)")
                 << QByteArray("MethodTestObject(bool,int,uint,qlonglong,qulonglong,double,long,short,char,ulong,ushort,uchar,float)")
                 << int(QMetaType::UnknownType) << QByteArray("")
                 << parameterTypes << parameterTypeNames << parameterNames
@@ -542,7 +542,7 @@ void tst_QMetaMethod::method_data()
                 << QMetaMethod::Constructor;
     }
 
-    QTest::newRow("voidSignalNoParameterNames")
+    BOBUIest::newRow("voidSignalNoParameterNames")
             << QByteArray("voidSignalNoParameterNames(bool,int)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::Bool) << int(QMetaType::Int))
@@ -551,7 +551,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Signal;
 
-    QTest::newRow("voidInvokableNoParameterNames")
+    BOBUIest::newRow("voidInvokableNoParameterNames")
             << QByteArray("voidInvokableNoParameterNames(bool,int)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::Bool) << int(QMetaType::Int))
@@ -560,7 +560,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Method;
 
-    QTest::newRow("voidSlotNoParameterNames")
+    BOBUIest::newRow("voidSlotNoParameterNames")
             << QByteArray("voidSlotNoParameterNames(bool,int)")
             << int(QMetaType::Void) << QByteArray("void")
             << (QList<int>() << int(QMetaType::Bool) << int(QMetaType::Int))
@@ -569,7 +569,7 @@ void tst_QMetaMethod::method_data()
             << QMetaMethod::Public
             << QMetaMethod::Slot;
 
-    QTest::newRow("MethodTestObject(bool,int)")
+    BOBUIest::newRow("MethodTestObject(bool,int)")
             << QByteArray("MethodTestObject(bool,int)")
             << int(QMetaType::UnknownType) << QByteArray("")
             << (QList<int>() << int(QMetaType::Bool) << int(QMetaType::Int))
@@ -618,7 +618,7 @@ void tst_QMetaMethod::method()
 
     QCOMPARE(method.tag(), "");
     QCOMPARE(method.returnType(), returnType);
-    if (QT7_ONLY(method.methodType() == QMetaMethod::Constructor) QT6_ONLY(false))
+    if (BOBUI7_ONLY(method.methodType() == QMetaMethod::Constructor) BOBUI6_ONLY(false))
         QVERIFY(method.typeName());
     else
         QVERIFY(method.typeName() != 0);
@@ -658,8 +658,8 @@ void tst_QMetaMethod::method()
     // Bogus indexes
     QCOMPARE(method.parameterType(-1), 0);
     QCOMPARE(method.parameterType(parameterTypes.size()), 0);
-    QT_TEST_EQUALITY_OPS(method, QMetaMethod(), false);
-    QT_TEST_EQUALITY_OPS(QMetaMethod(), QMetaMethod(), true);
+    BOBUI_TEST_EQUALITY_OPS(method, QMetaMethod(), false);
+    BOBUI_TEST_EQUALITY_OPS(QMetaMethod(), QMetaMethod(), true);
 }
 
 void tst_QMetaMethod::invalidMethod()
@@ -672,9 +672,9 @@ void tst_QMetaMethod::invalidMethod()
 
     QMetaMethod method3 = staticMetaObject.method(-1);
     QVERIFY(!method3.isValid());
-    QT_TEST_EQUALITY_OPS(method, method2, true);
-    QT_TEST_EQUALITY_OPS(method2, method3, true);
-    QT_TEST_EQUALITY_OPS(method, method3, true);
+    BOBUI_TEST_EQUALITY_OPS(method, method2, true);
+    BOBUI_TEST_EQUALITY_OPS(method2, method3, true);
+    BOBUI_TEST_EQUALITY_OPS(method, method3, true);
 }
 
 void tst_QMetaMethod::comparisonOperators()
@@ -689,9 +689,9 @@ void tst_QMetaMethod::comparisonOperators()
                 QMetaMethod other = x ? mo->constructor(j) : mo->method(j);
                 bool expectedEqual = ((methodMo == other.enclosingMetaObject())
                                       && (i == j));
-                QT_TEST_EQUALITY_OPS(method, other, expectedEqual);
+                BOBUI_TEST_EQUALITY_OPS(method, other, expectedEqual);
             }
-            QT_TEST_EQUALITY_OPS(method, QMetaMethod(), false);
+            BOBUI_TEST_EQUALITY_OPS(method, QMetaMethod(), false);
         }
     }
 
@@ -700,7 +700,7 @@ void tst_QMetaMethod::comparisonOperators()
     for (int i = 0; i < qMin(mo->methodCount(), mo->constructorCount()); ++i) {
         QMetaMethod method = mo->method(i);
         QMetaMethod constructor = mo->constructor(i);
-        QT_TEST_EQUALITY_OPS(method, constructor, false);
+        BOBUI_TEST_EQUALITY_OPS(method, constructor, false);
     }
 }
 
@@ -756,7 +756,7 @@ void tst_QMetaMethod::gadget()
     QMetaMethod getValueMethod = MyGadget::staticMetaObject.method(idx);
     QVERIFY(getValueMethod.isValid());
 
-    QT_TEST_EQUALITY_OPS(setValueMethod, getValueMethod, false);
+    BOBUI_TEST_EQUALITY_OPS(setValueMethod, getValueMethod, false);
     {
         MyGadget gadget;
         QString string;
@@ -799,7 +799,7 @@ void tst_QMetaMethod::revision()
     const int idx = mo.indexOfSlot(normalized);
     QMetaMethod mm = mo.method(idx);
     QVERIFY(mm.isValid());
-    QCOMPARE(QTypeRevision::fromEncodedVersion(mm.revision()), QTypeRevision::fromMinorVersion(42));
+    QCOMPARE(BOBUIypeRevision::fromEncodedVersion(mm.revision()), BOBUIypeRevision::fromMinorVersion(42));
 }
 
 void tst_QMetaMethod::returnMetaType()
@@ -883,14 +883,14 @@ void tst_QMetaMethod::isConst()
 
 void tst_QMetaMethod::methodIndexes_data()
 {
-    QTest::addColumn<QByteArray>("signature");
-    QTest::addColumn<QMetaMethod::MethodType>("methodType");
+    BOBUIest::addColumn<QByteArray>("signature");
+    BOBUIest::addColumn<QMetaMethod::MethodType>("methodType");
 
-    QTest::newRow("constructor1") << QByteArray("MethodTestObject()") << QMetaMethod::Constructor;
-    QTest::newRow("constructor5") << QByteArray("MethodTestObject(CustomUnregisteredType)")
+    BOBUIest::newRow("constructor1") << QByteArray("MethodTestObject()") << QMetaMethod::Constructor;
+    BOBUIest::newRow("constructor5") << QByteArray("MethodTestObject(CustomUnregisteredType)")
                                   << QMetaMethod::Constructor;
-    QTest::newRow("method0") << QByteArray("voidInvokable()") << QMetaMethod::Method;
-    QTest::newRow("method6") << QByteArray("boolInvokable()") << QMetaMethod::Method;
+    BOBUIest::newRow("method0") << QByteArray("voidInvokable()") << QMetaMethod::Method;
+    BOBUIest::newRow("method6") << QByteArray("boolInvokable()") << QMetaMethod::Method;
 }
 
 void tst_QMetaMethod::methodIndexes()
@@ -918,5 +918,5 @@ void tst_QMetaMethod::methodIndexes()
     QCOMPARE(absoluteMethodIndex, index);
 }
 
-QTEST_MAIN(tst_QMetaMethod)
+BOBUIEST_MAIN(tst_QMetaMethod)
 #include "tst_qmetamethod.moc"

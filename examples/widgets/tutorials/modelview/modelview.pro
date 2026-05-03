@@ -8,5 +8,5 @@ SUBDIRS = 1_readonly \
           7_selections
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tutorials/modelview
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tutorials/modelview
 INSTALLS += target

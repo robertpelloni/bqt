@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(WrapPCRE2 MODULE PROVIDED_TARGETS WrapPCRE2::WrapPCRE2)
-qt_internal_extend_sbom(WrapPCRE2::WrapPCRE2
+bobui_find_package(WrapPCRE2 MODULE PROVIDED_TARGETS WrapPCRE2::WrapPCRE2)
+bobui_internal_extend_sbom(WrapPCRE2::WrapPCRE2
     CPE_VENDOR "pcre"
     CPE_PRODUCT "pcre2"
     DOWNLOAD_LOCATION "https://github.com/PCRE2Project/pcre2"
 )
-qt_find_package(WrapZLIB MODULE PROVIDED_TARGETS WrapZLIB::WrapZLIB)
-qt_internal_extend_sbom(WrapZLIB::WrapZLIB
+bobui_find_package(WrapZLIB MODULE PROVIDED_TARGETS WrapZLIB::WrapZLIB)
+bobui_internal_extend_sbom(WrapZLIB::WrapZLIB
     CPE_VENDOR "zlib"
     CPE_PRODUCT "zlib"
     DOWNLOAD_LOCATION "https://github.com/madler/zlib"
@@ -16,22 +16,22 @@ qt_internal_extend_sbom(WrapZLIB::WrapZLIB
 
 if(ANDROID)
     set(corelib_extra_cmake_files
-        "${CMAKE_CURRENT_SOURCE_DIR}/${QT_CMAKE_EXPORT_NAMESPACE}AndroidMacros.cmake"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${QT_CMAKE_EXPORT_NAMESPACE}AndroidDynamicFeatureHelpers.cmake"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${QT_CMAKE_EXPORT_NAMESPACE}AndroidGradleHelpers.cmake"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${QT_CMAKE_EXPORT_NAMESPACE}AndroidPermissionHelpers.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${BOBUI_CMAKE_EXPORT_NAMESPACE}AndroidMacros.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${BOBUI_CMAKE_EXPORT_NAMESPACE}AndroidDynamicFeatureHelpers.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${BOBUI_CMAKE_EXPORT_NAMESPACE}AndroidGradleHelpers.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${BOBUI_CMAKE_EXPORT_NAMESPACE}AndroidPermissionHelpers.cmake"
     )
 endif()
 if(WASM)
     set(corelib_extra_cmake_files
-        "${CMAKE_CURRENT_SOURCE_DIR}/${QT_CMAKE_EXPORT_NAMESPACE}WasmMacros.cmake")
+        "${CMAKE_CURRENT_SOURCE_DIR}/${BOBUI_CMAKE_EXPORT_NAMESPACE}WasmMacros.cmake")
 endif()
 
 #####################################################################
 ## Core Module:
 #####################################################################
 
-qt_internal_add_module(Core
+bobui_internal_add_module(Core
     QMAKE_MODULE_CONFIG moc resources
     NO_GENERATE_METATYPES # metatypes are extracted manually below
     EXCEPTIONS
@@ -44,6 +44,8 @@ qt_internal_add_module(Core
         # Keep the rest alphabetical
         compat/removed_api.cpp
         global/archdetect.cpp
+        global/bobuimacros.h
+        BobUICore
         global/qalloc.cpp global/qalloc.h
         global/qassert.cpp global/qassert.h
         global/qcheckedint_impl.h
@@ -80,25 +82,25 @@ qt_internal_add_module(Core
         global/qswap.h
         global/qsysinfo.cpp global/qsysinfo.h
         global/qsystemdetection.h
-        global/qtclasshelpermacros.h
-        global/qtclasshelper_p.h
-        global/qtconfiginclude.h
-        global/qtconfigmacros.h
-        global/qtcoreglobal.h global/qtcoreglobal_p.h
-        global/qtdeprecationmarkers.h
-        global/qtenvironmentvariables.cpp global/qtenvironmentvariables.h
-        global/qtenvironmentvariables_p.h
-        global/qtnoop.h
-        global/qtpreprocessorsupport.h
-        global/qtrace_p.h
-        global/qtresource.h
-        global/qtsymbolmacros.h
-        global/qttranslation.h
-        global/qttypetraits.h
-        global/qtversionchecks.h
-        global/qtversion.h
-        global/qtypeinfo.h
-        global/qtypes.cpp global/qtypes.h
+        global/bobuiclasshelpermacros.h
+        global/bobuiclasshelper_p.h
+        global/bobuiconfiginclude.h
+        global/bobuiconfigmacros.h
+        global/bobuicoreglobal.h global/bobuicoreglobal_p.h
+        global/bobuideprecationmarkers.h
+        global/bobuienvironmentvariables.cpp global/bobuienvironmentvariables.h
+        global/bobuienvironmentvariables_p.h
+        global/bobuinoop.h
+        global/bobuipreprocessorsupport.h
+        global/bobuirace_p.h
+        global/bobuiresource.h
+        global/bobuisymbolmacros.h
+        global/bobuitranslation.h
+        global/bobuitypetraits.h
+        global/bobuiversionchecks.h
+        global/bobuiversion.h
+        global/bobuiypeinfo.h
+        global/bobuiypes.cpp global/bobuiypes.h
         global/qvolatile_p.h
         global/q17memory.h
         global/q20algorithm.h
@@ -121,7 +123,7 @@ qt_internal_add_module(Core
         global/qversiontagging.h
         ipc/qsharedmemory.cpp ipc/qsharedmemory.h ipc/qsharedmemory_p.h
         ipc/qsystemsemaphore.cpp ipc/qsystemsemaphore.h ipc/qsystemsemaphore_p.h
-        ipc/qtipccommon.cpp ipc/qtipccommon.h ipc/qtipccommon_p.h
+        ipc/bobuiipccommon.cpp ipc/bobuiipccommon.h ipc/bobuiipccommon_p.h
         io/qabstractfileengine.cpp io/qabstractfileengine_p.h
         io/qbuffer.cpp io/qbuffer.h
         io/qdataurl.cpp io/qdataurl_p.h
@@ -151,8 +153,8 @@ qt_internal_add_module(Core
         io/qsavefile.cpp io/qsavefile.h io/qsavefile_p.h
         io/qstandardpaths.cpp io/qstandardpaths.h
         io/qstorageinfo.cpp io/qstorageinfo.h io/qstorageinfo_p.h
-        io/qtemporarydir.cpp io/qtemporarydir.h
-        io/qtemporaryfile.cpp io/qtemporaryfile.h io/qtemporaryfile_p.h
+        io/bobuiemporarydir.cpp io/bobuiemporarydir.h
+        io/bobuiemporaryfile.cpp io/bobuiemporaryfile.h io/bobuiemporaryfile_p.h
         io/qurl.cpp io/qurl.h io/qurl_p.h
         io/qurlidna.cpp
         io/qurlquery.cpp io/qurlquery.h
@@ -183,7 +185,7 @@ qt_internal_add_module(Core
         kernel/qmetasequence.cpp kernel/qmetasequence.h
         kernel/qmetatype.cpp kernel/qmetatype.h kernel/qmetatype_p.h
         kernel/qmimedata.cpp kernel/qmimedata.h
-        kernel/qtmetamacros.h kernel/qtmocconstants.h kernel/qtmochelpers.h
+        kernel/bobuimetamacros.h kernel/bobuimocconstants.h kernel/bobuimochelpers.h
         kernel/qobject.cpp kernel/qobject.h kernel/qobject_p.h kernel/qobject_p_p.h
         kernel/qobject_impl.h
         kernel/qobjectcleanuphandler.cpp kernel/qobjectcleanuphandler.h
@@ -197,9 +199,9 @@ qt_internal_add_module(Core
         kernel/qsingleshottimer.cpp kernel/qsingleshottimer_p.h
         kernel/qsocketnotifier.cpp kernel/qsocketnotifier.h
         kernel/qsystemerror.cpp kernel/qsystemerror_p.h
-        kernel/qtestsupport_core.cpp kernel/qtestsupport_core.h
-        kernel/qtimer.cpp kernel/qtimer.h kernel/qtimer_p.h
-        kernel/qtranslator.cpp kernel/qtranslator.h kernel/qtranslator_p.h
+        kernel/bobuiestsupport_core.cpp kernel/bobuiestsupport_core.h
+        kernel/bobuiimer.cpp kernel/bobuiimer.h kernel/bobuiimer_p.h
+        kernel/bobuiranslator.cpp kernel/bobuiranslator.h kernel/bobuiranslator_p.h
         kernel/qvariant.cpp kernel/qvariant.h kernel/qvariant_p.h
         kernel/qvariantmap.h kernel/qvarianthash.h kernel/qvariantlist.h
         plugin/qfactoryinterface.cpp plugin/qfactoryinterface.h
@@ -223,7 +225,7 @@ qt_internal_add_module(Core
         serialization/qjsonparser.cpp serialization/qjsonparser_p.h
         serialization/qjsonvalue.cpp serialization/qjsonvalue.h
         serialization/qjsonwriter.cpp serialization/qjsonwriter_p.h
-        serialization/qtextstream.cpp serialization/qtextstream.h serialization/qtextstream_p.h
+        serialization/bobuiextstream.cpp serialization/bobuiextstream.h serialization/bobuiextstream_p.h
         serialization/qxmlutils.cpp serialization/qxmlutils_p.h
         text/qanystringview.cpp text/qanystringview.h
         text/qbytearray.cpp text/qbytearray.h
@@ -251,8 +253,8 @@ qt_internal_add_module(Core
         text/qstringmatcher.h
         text/qstringtokenizer.cpp text/qstringtokenizer.h
         text/qstringview.cpp text/qstringview.h
-        text/qtextboundaryfinder.cpp text/qtextboundaryfinder.h
-        text/qtformat_impl.h
+        text/bobuiextboundaryfinder.cpp text/bobuiextboundaryfinder.h
+        text/bobuiformat_impl.h
         text/qunicodetables_p.h
         text/qunicodetools.cpp text/qunicodetools_p.h
         text/qutf8stringview.h
@@ -267,11 +269,11 @@ qt_internal_add_module(Core
         thread/qorderedmutexlocker_p.h
         thread/qreadwritelock.h
         thread/qrunnable.cpp thread/qrunnable.h
-        thread/qthread.cpp thread/qthread.h thread/qthread_p.h
-        thread/qthreadstorage.h
-        thread/qthreadpool.cpp thread/qthreadpool_p.h thread/qthreadpool.h
+        thread/bobuihread.cpp thread/bobuihread.h thread/bobuihread_p.h
+        thread/bobuihreadstorage.h
+        thread/bobuihreadpool.cpp thread/bobuihreadpool_p.h thread/bobuihreadpool.h
         thread/qsemaphore.cpp thread/qsemaphore.h
-        thread/qtsan_impl.h
+        thread/bobuisan_impl.h
         thread/qwaitcondition.h thread/qwaitcondition_p.h
         thread/qyieldcpu.h
         time/qcalendar.cpp time/qcalendar.h
@@ -283,7 +285,7 @@ qt_internal_add_module(Core
         time/qlocaltime.cpp time/qlocaltime_p.h
         time/qmilankoviccalendar.cpp time/qmilankoviccalendar_p.h
         time/qromancalendar.cpp time/qromancalendar_p.h
-        time/qtimezone.cpp time/qtimezone.h
+        time/bobuiimezone.cpp time/bobuiimezone.h
         tools/qalgorithms.h
         tools/qarraydata.cpp tools/qarraydata.h
         tools/qarraydataops.h
@@ -328,9 +330,9 @@ qt_internal_add_module(Core
         tools/qsmallbytearray_p.h
         tools/qspan.h
         tools/qstack.h
-        tools/qtaggedpointer.h
-        tools/qtools_p.h
-        tools/qtyperevision.cpp tools/qtyperevision.h
+        tools/bobuiaggedpointer.h
+        tools/bobuiools_p.h
+        tools/bobuiyperevision.cpp tools/bobuiyperevision.h
         tools/quniquehandle_p.h
         tools/quniquehandle_types.cpp tools/quniquehandle_types_p.h
         tools/qvarlengtharray.h
@@ -348,38 +350,38 @@ qt_internal_add_module(Core
         text/qstringconverter.cpp # enum Data
         tools/qcryptographichash.cpp # KeccakNISTInterface/Final
         io/qdebug.cpp # undef qDebug
-        io/qresource.cpp # QTBUG-132114
+        io/qresource.cpp # BOBUIBUG-132114
     NO_PCH_SOURCES
         compat/removed_api.cpp
         global/qsimd.cpp
         kernel/qsocketnotifier.cpp # defines BUILDING_QSOCKETNOTIFIER
     DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_FOREACH
-        QT_NO_QPAIR
-        QT_NO_USING_NAMESPACE
-        QT_TYPESAFE_FLAGS
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_FOREACH
+        BOBUI_NO_QPAIR
+        BOBUI_NO_USING_NAMESPACE
+        BOBUI_TYPESAFE_FLAGS
+        BOBUI_USE_NODISCARD_FILE_OPEN
     INCLUDE_DIRECTORIES
         "${CMAKE_CURRENT_BINARY_DIR}/global"
         "${CMAKE_CURRENT_BINARY_DIR}/kernel" # for moc_qobject.cpp to be found by qobject.cpp
         ../3rdparty/tinycbor/src
     LIBRARIES
-        Qt::GlobalConfigPrivate
+        BobUI::GlobalConfigPrivate
         WrapZLIB::WrapZLIB
     PRECOMPILED_HEADER
-        "global/qt_pch.h"
+        "global/bobui_pch.h"
     PUBLIC_LIBRARIES
-        Qt::Platform
+        BobUI::Platform
     EXTRA_CMAKE_FILES
-        "${CMAKE_CURRENT_SOURCE_DIR}/Qt6CTestMacros.cmake"
-        "${CMAKE_CURRENT_SOURCE_DIR}/Qt6CoreConfigureFileTemplate.in"
-        "${CMAKE_CURRENT_SOURCE_DIR}/Qt6CoreResourceInit.in.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/Qt6CoreDeploySupport.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/BobUI6CTestMacros.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/BobUI6CoreConfigureFileTemplate.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/BobUI6CoreResourceInit.in.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/BobUI6CoreDeploySupport.cmake"
         ${corelib_extra_cmake_files}
     POLICIES
-        QTP0002
-        QTP0003
+        BOBUIP0002
+        BOBUIP0003
     ATTRIBUTION_FILE_DIR_PATHS
         text
         global
@@ -392,39 +394,39 @@ qt_internal_add_module(Core
         ../3rdparty/rfc6234
         ../3rdparty/tinycbor
     ELF_LINKER_DYNAMIC_LIST
-        QtCore.dynlist.in
+        BobUICore.dynlist.in
 )
-_qt_internal_setup_deploy_support()
+_bobui_internal_setup_deploy_support()
 
 add_dependencies(Core qmodule_pri)
 
-qt_internal_extend_target(Core CONDITION CMAKE_PROJECT_VERSION VERSION_LESS "7.0"
+bobui_internal_extend_target(Core CONDITION CMAKE_PROJECT_VERSION VERSION_LESS "7.0"
     SOURCES
         text/qstringconverter_base_deprecated.h
 )
 
-if (NOT QT_NAMESPACE STREQUAL "")
-    set(core_namespace_defs "QT_NAMESPACE=${QT_NAMESPACE}")
-    if(QT_INLINE_NAMESPACE)
-        list(APPEND core_namespace_defs QT_INLINE_NAMESPACE)
+if (NOT BOBUI_NAMESPACE STREQUAL "")
+    set(core_namespace_defs "BOBUI_NAMESPACE=${BOBUI_NAMESPACE}")
+    if(BOBUI_INLINE_NAMESPACE)
+        list(APPEND core_namespace_defs BOBUI_INLINE_NAMESPACE)
     endif()
     target_compile_definitions(Core PUBLIC ${core_namespace_defs})
-    set_target_properties(Core PROPERTIES _qt_namespace "${QT_NAMESPACE}")
-    set_property(TARGET Core APPEND PROPERTY EXPORT_PROPERTIES _qt_namespace)
+    set_target_properties(Core PROPERTIES _bobui_namespace "${BOBUI_NAMESPACE}")
+    set_property(TARGET Core APPEND PROPERTY EXPORT_PROPERTIES _bobui_namespace)
 
-    set_target_properties(Core PROPERTIES QT_NAMESPACE "${QT_NAMESPACE}")
-    set_property(TARGET Core APPEND PROPERTY EXPORT_PROPERTIES QT_NAMESPACE)
+    set_target_properties(Core PROPERTIES BOBUI_NAMESPACE "${BOBUI_NAMESPACE}")
+    set_property(TARGET Core APPEND PROPERTY EXPORT_PROPERTIES BOBUI_NAMESPACE)
 endif()
 
-qt_generate_qconfig_cpp(global/qconfig.cpp.in global/qconfig.cpp)
+bobui_generate_qconfig_cpp(global/qconfig.cpp.in global/qconfig.cpp)
 
-set_target_properties(Core PROPERTIES INTERFACE_QT_COORD_TYPE "${QT_COORD_TYPE}")
-set_property(TARGET Core APPEND PROPERTY COMPATIBLE_INTERFACE_STRING QT_COORD_TYPE)
+set_target_properties(Core PROPERTIES INTERFACE_BOBUI_COORD_TYPE "${BOBUI_COORD_TYPE}")
+set_property(TARGET Core APPEND PROPERTY COMPATIBLE_INTERFACE_STRING BOBUI_COORD_TYPE)
 
-# Handle qtConfig(thread): CONFIG += thread like in qt.prf.
+# Handle bobuiConfig(thread): CONFIG += thread like in bobui.prf.
 # Aka if the feature is enabled, publicly link against the threading library.
 # This also ensures the link flag is in the .prl file.
-if(QT_FEATURE_thread)
+if(BOBUI_FEATURE_thread)
     target_link_libraries(Platform INTERFACE Threads::Threads)
 endif()
 
@@ -435,7 +437,7 @@ endif()
 set_source_files_properties(kernel/qobject.cpp kernel/qobject.h kernel/qobject_p.h kernel/qobject_p_p.h
                             PROPERTIES SKIP_AUTOMOC TRUE)
 
-qt_manual_moc(qobject_moc_files
+bobui_manual_moc(qobject_moc_files
                OUTPUT_MOC_JSON_FILES core_qobject_metatypes_json_list
                kernel/qobject.h)
 # The moc file is included directly by qobject.cpp
@@ -443,18 +445,18 @@ set_source_files_properties(${qobject_moc_files} PROPERTIES HEADER_FILE_ONLY ON)
 
 set(core_metatype_args MANUAL_MOC_JSON_FILES ${core_qobject_metatypes_json_list})
 
-if(QT_WILL_INSTALL)
+if(BOBUI_WILL_INSTALL)
     set(metatypes_install_dir ${INSTALL_ARCHDATADIR}/metatypes)
     if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
         cmake_path(SET metatypes_install_dir NORMALIZE "${metatypes_install_dir}")
     endif()
     list(APPEND core_metatype_args
-        __QT_INTERNAL_INSTALL __QT_INTERNAL_INSTALL_DIR "${metatypes_install_dir}")
+        __BOBUI_INTERNAL_INSTALL __BOBUI_INTERNAL_INSTALL_DIR "${metatypes_install_dir}")
 endif()
 
-# Use qt6_extract_metatypes instead so that we can manually pass the
+# Use bobui6_extract_metatypes instead so that we can manually pass the
 # additional json files.
-qt6_extract_metatypes(Core ${core_metatype_args})
+bobui6_extract_metatypes(Core ${core_metatype_args})
 
 target_sources(Core PRIVATE
     "${CMAKE_CURRENT_BINARY_DIR}/global/qconfig.h"
@@ -481,29 +483,29 @@ if ((LINUX OR HURD) AND NOT CMAKE_CROSSCOMPILING AND BUILD_SHARED_LIBS)
         endif()
     endif()
     if (ELF_INTERPRETER)
-        target_link_options(Core PRIVATE "-Wl,-e,qt_core_boilerplate")
+        target_link_options(Core PRIVATE "-Wl,-e,bobui_core_boilerplate")
         target_compile_definitions(Core PRIVATE ELF_INTERPRETER="${ELF_INTERPRETER}")
     endif()
 endif()
 
-qt_internal_add_simd_part(Core SIMD mips_dsp
+bobui_internal_add_simd_part(Core SIMD mips_dsp
     SOURCES
-        ../gui/painting/qt_mips_asm_dsp_p.h
+        ../gui/painting/bobui_mips_asm_dsp_p.h
         text/qstring_mips_dsp_asm.S
 )
 
 if(ANDROID)
-    _qt_internal_add_android_executable_finalizer(Core)
-    set_property(TARGET Core APPEND PROPERTY QT_ANDROID_BUNDLED_JAR_DEPENDENCIES
-        jar/Qt${QtBase_VERSION_MAJOR}Android.jar
+    _bobui_internal_add_android_executable_finalizer(Core)
+    set_property(TARGET Core APPEND PROPERTY BOBUI_ANDROID_BUNDLED_JAR_DEPENDENCIES
+        jar/BobUI${BobUIBase_VERSION_MAJOR}Android.jar
     )
-    set_property(TARGET Core APPEND PROPERTY QT_ANDROID_LIB_DEPENDENCIES
-        ${INSTALL_PLUGINSDIR}/platforms/libplugins_platforms_qtforandroid.so
+    set_property(TARGET Core APPEND PROPERTY BOBUI_ANDROID_LIB_DEPENDENCIES
+        ${INSTALL_PLUGINSDIR}/platforms/libplugins_platforms_bobuiforandroid.so
     )
-    qt_internal_add_android_permission(Core
+    bobui_internal_add_android_permission(Core
         NAME android.permission.WRITE_EXTERNAL_STORAGE
     )
-    qt_internal_add_android_permission(Core
+    bobui_internal_add_android_permission(Core
         NAME android.permission.INTERNET
     )
 endif()
@@ -512,14 +514,14 @@ endif()
 # or the platform supports it.
 set(core_version_tagging_files
     global/qversiontagging.cpp)
-qt_internal_extend_target(Core
-    CONDITION QT_FEATURE_version_tagging
+bobui_internal_extend_target(Core
+    CONDITION BOBUI_FEATURE_version_tagging
     SOURCES ${core_version_tagging_files}
 )
 
 if((GCC OR CLANG) AND NOT MSVC)
     # qglobal.cpp has #include moc_qnamespace.cpp, so increase the template
-    # depth for it due to the size of the Qt namespace
+    # depth for it due to the size of the BobUI namespace
     set_source_files_properties(global/qglobal.cpp PROPERTIES
         COMPILE_OPTIONS "-ftemplate-depth=2048")
 endif()
@@ -534,7 +536,7 @@ if(GCC)
 endif()
 
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION ( TEST_architecture_arch STREQUAL i386 ) OR
         ( TEST_architecture_arch STREQUAL x86_64 ) OR
         ( CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" ) OR
@@ -543,24 +545,24 @@ qt_internal_extend_target(Core
         global/qsimd_x86_p.h
 )
 
-qt_internal_extend_target(Core CONDITION ANDROID
+bobui_internal_extend_target(Core CONDITION ANDROID
     DEFINES
         LIBS_SUFFIX="_${ANDROID_ABI}.so"
 )
 
-qt_internal_extend_target(Core CONDITION MSVC AND (TEST_architecture_arch STREQUAL "i386")
+bobui_internal_extend_target(Core CONDITION MSVC AND (TEST_architecture_arch STREQUAL "i386")
     LINK_OPTIONS
         "/BASE:0x67000000"
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_xmlstream
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_xmlstream
     SOURCES
         serialization/qxmlstream.cpp serialization/qxmlstream.h serialization/qxmlstream_p.h
         serialization/qxmlstreamgrammar.cpp serialization/qxmlstreamgrammar_p.h
         serialization/qxmlstreamparser_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_animation
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_animation
     SOURCES
         animation/qabstractanimation.cpp animation/qabstractanimation.h animation/qabstractanimation_p.h
         animation/qanimationgroup.cpp animation/qanimationgroup.h animation/qanimationgroup_p.h
@@ -571,30 +573,30 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_animation
         animation/qvariantanimation.cpp animation/qvariantanimation.h animation/qvariantanimation_p.h
 )
 
-if(QT_FEATURE_async_io)
-    qt_internal_extend_target(Core
+if(BOBUI_FEATURE_async_io)
+    bobui_internal_extend_target(Core
         SOURCES
             io/qiooperation.cpp io/qiooperation_p.h io/qiooperation_p_p.h
             io/qrandomaccessasyncfile.cpp io/qrandomaccessasyncfile_p.h io/qrandomaccessasyncfile_p_p.h
     )
 
     if(APPLE)
-        qt_internal_extend_target(Core
+        bobui_internal_extend_target(Core
             SOURCES
                 io/qrandomaccessasyncfile_darwin.mm
         )
-    elseif((LINUX AND QT_FEATURE_liburing) OR (WIN32 AND QT_FEATURE_windows_ioring))
-        qt_internal_extend_target(Core
+    elseif((LINUX AND BOBUI_FEATURE_liburing) OR (WIN32 AND BOBUI_FEATURE_windows_ioring))
+        bobui_internal_extend_target(Core
             SOURCES
                 io/qrandomaccessasyncfile_qioring.cpp
             DEFINES
-                QT_RANDOMACCESSASYNCFILE_QIORING
+                BOBUI_RANDOMACCESSASYNCFILE_QIORING
         )
     endif()
     # This is the fallback condition that should be always available.
     # TODO: try to rewrite it so that it does not depend on
-    # QT_FEATURE_future.
-    qt_internal_extend_target(Core
+    # BOBUI_FEATURE_future.
+    bobui_internal_extend_target(Core
         SOURCES
             io/qrandomaccessasyncfile_threadpool.cpp
     )
@@ -604,7 +606,7 @@ endif()
 # from synchronization also appears in kernel32 in the version of MinGW we use in CI.
 # However, when picking the symbols from libkernel32.a it will try to load the symbols
 # from the wrong DLL at runtime and crash!
-qt_internal_extend_target(Core CONDITION QT_FEATURE_thread AND WIN32
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_thread AND WIN32
     SOURCES
         thread/qfutex_win_p.h
         thread/qwaitcondition_win.cpp
@@ -612,15 +614,15 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_thread AND WIN32
         synchronization
 )
 
-qt_internal_extend_target(Core CONDITION CYGWIN
+bobui_internal_extend_target(Core CONDITION CYGWIN
     SOURCES
-        global/qt_windows.h
+        global/bobui_windows.h
 )
 
-qt_internal_extend_target(Core CONDITION WIN32
+bobui_internal_extend_target(Core CONDITION WIN32
     SOURCES
         global/qoperatingsystemversion_win.cpp global/qoperatingsystemversion_win_p.h
-        global/qt_windows.h
+        global/bobui_windows.h
         io/qfilesystemengine_win.cpp
         io/qfsfileengine_win.cpp
         io/qlockfile_win.cpp
@@ -638,7 +640,7 @@ qt_internal_extend_target(Core CONDITION WIN32
         kernel/qwinregistry.cpp kernel/qwinregistry_p.h
         plugin/qsystemlibrary.cpp plugin/qsystemlibrary_p.h
         text/qlocale_win.cpp
-        thread/qthread_win.cpp
+        thread/bobuihread_win.cpp
         platform/windows/qcomobject_p.h
         platform/windows/qcomptr_p.h
         platform/windows/qbstr_p.h
@@ -663,7 +665,7 @@ qt_internal_extend_target(Core CONDITION WIN32
         userenv
 )
 
-qt_internal_extend_target(Core CONDITION WIN32
+bobui_internal_extend_target(Core CONDITION WIN32
     NO_UNITY_BUILD_SOURCES
         global/qsimd.cpp # Q_DECL_INIT_PRIORITY
         serialization/qcborvalue.cpp # various windows.h clashes
@@ -677,24 +679,24 @@ qt_internal_extend_target(Core CONDITION WIN32
         kernel/qwinregistry.cpp # ntstatus.h clashes
 )
 
-qt_internal_extend_target(Core CONDITION GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "13"
+bobui_internal_extend_target(Core CONDITION GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "13"
     NO_UNITY_BUILD_SOURCES
         io/qresource.cpp io/qresource.h io/qresource_p.h # -Werror=subobject-linkage
 )
 
 if(NOT WIN32)
-    ### Qt7: remove
+    ### BobUI7: remove
     # Make qwineventnotifier.h available on non-Windows platforms too for code bases that include
     # it unconditionally.
-    qt_internal_extend_target(Core SOURCES kernel/qwineventnotifier.h)
+    bobui_internal_extend_target(Core SOURCES kernel/qwineventnotifier.h)
     set_source_files_properties(kernel/qwineventnotifier.h PROPERTIES SKIP_AUTOMOC ON)
 endif()
 
-qt_internal_extend_target(Core CONDITION WASM
+bobui_internal_extend_target(Core CONDITION WASM
     SOURCES
         kernel/qcore_wasm.cpp)
 
-qt_internal_extend_target(Core CONDITION APPLE
+bobui_internal_extend_target(Core CONDITION APPLE
     SOURCES
         global/qoperatingsystemversion_darwin.mm
         io/qfilesystemengine_mac.mm
@@ -719,7 +721,7 @@ qt_internal_extend_target(Core CONDITION APPLE
         kernel/qcore_mac.mm # See below
         kernel/qsystemerror.cpp
         # This makes sure that the tst_qmakelib passes. For some reason,
-        # QtCore ends up returning a corrupted error message in
+        # BobUICore ends up returning a corrupted error message in
         # write_file(): fail
     NO_PCH_SOURCES
         kernel/qcore_mac.mm # See below
@@ -732,7 +734,7 @@ if(APPLE)
     set_source_files_properties(kernel/qcore_mac.mm PROPERTIES COMPILE_FLAGS -fobjc-weak)
 endif()
 
-qt_internal_extend_target(Core CONDITION MACOS
+bobui_internal_extend_target(Core CONDITION MACOS
     LIBRARIES
         ${FWAppKit}
         ${FWApplicationServices}
@@ -742,7 +744,7 @@ qt_internal_extend_target(Core CONDITION MACOS
         ${FWDiskArbitration}
 )
 
-qt_internal_extend_target(Core CONDITION INTEGRITY
+bobui_internal_extend_target(Core CONDITION INTEGRITY
     LIBRARIES
         ivfs
         net
@@ -753,45 +755,45 @@ qt_internal_extend_target(Core CONDITION INTEGRITY
         --pending_instantiations=128
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_liburing
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_liburing
     SOURCES
         io/qioring.cpp io/qioring_linux.cpp io/qioring_p.h
     LIBRARIES
         uring
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_windows_ioring
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_windows_ioring
     SOURCES
         io/qioring.cpp io/qioring_win.cpp io/qioring_p.h
 )
 
-# Workaround for QTBUG-101411
+# Workaround for BOBUIBUG-101411
 # Remove if QCC (gcc version 8.3.0) for QNX 7.1.0 is no longer supported
-qt_internal_extend_target(Core CONDITION QCC AND (CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "8.3.0")
+bobui_internal_extend_target(Core CONDITION QCC AND (CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "8.3.0")
     PUBLIC_COMPILE_OPTIONS $<$<COMPILE_LANGUAGE:CXX>:-Wno-invalid-offsetof>
 )
 
-qt_internal_extend_target(Core CONDITION QNX AND QT_FEATURE_fsnotify
+bobui_internal_extend_target(Core CONDITION QNX AND BOBUI_FEATURE_fsnotify
     LIBRARIES
         fsnotify
 )
 
-qt_internal_extend_target(Core CONDITION LINUX AND QT_BUILD_SHARED_LIBS
+bobui_internal_extend_target(Core CONDITION LINUX AND BOBUI_BUILD_SHARED_LIBS
     SOURCES
         global/minimum-linux_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_slog2
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_slog2
     LIBRARIES
         Slog2::Slog2
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_journald
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_journald
     LIBRARIES
         PkgConfig::Libsystemd
 )
 
-qt_internal_extend_target(Core CONDITION UNIX
+bobui_internal_extend_target(Core CONDITION UNIX
     SOURCES
         io/qfilesystemengine_unix.cpp
         io/qfilesystemiterator_unix.cpp
@@ -799,58 +801,58 @@ qt_internal_extend_target(Core CONDITION UNIX
         io/qlockfile_unix.cpp
         kernel/qcore_unix.cpp kernel/qcore_unix_p.h
         kernel/qpoll_p.h
-        kernel/qtimerinfo_unix.cpp kernel/qtimerinfo_unix_p.h
-        thread/qthread_unix.cpp
+        kernel/bobuiimerinfo_unix.cpp kernel/bobuiimerinfo_unix_p.h
+        thread/bobuihread_unix.cpp
 )
 if(APPLE)
     set_source_files_properties(io/qfilesystemengine_unix.cpp PROPERTIES LANGUAGE OBJCXX)
-    qt_internal_extend_target(Core CONDITION
+    bobui_internal_extend_target(Core CONDITION
         PUBLIC_LIBRARIES ${FWUniformTypeIdentifiers}
     )
 endif()
 
-qt_internal_extend_target(Core CONDITION UNIX AND NOT WASM
+bobui_internal_extend_target(Core CONDITION UNIX AND NOT WASM
     SOURCES
         kernel/qeventdispatcher_unix.cpp kernel/qeventdispatcher_unix_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_thread
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_thread
     SOURCES
         thread/qatomic.cpp
         thread/qfutex_p.h
         thread/qlatch.cpp thread/qlatch_p.h
         thread/qmutex.cpp thread/qmutex_p.h
         thread/qreadwritelock.cpp thread/qreadwritelock_p.h
-        thread/qthreadstorage.cpp thread/qthreadstorage_p.h
+        thread/bobuihreadstorage.cpp thread/bobuihreadstorage_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_thread AND UNIX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_thread AND UNIX
     SOURCES
         thread/qwaitcondition_unix.cpp
 )
 
-qt_internal_extend_target(Core CONDITION APPLE AND QT_FEATURE_thread
+bobui_internal_extend_target(Core CONDITION APPLE AND BOBUI_FEATURE_thread
     SOURCES
         thread/qfutex_mac_p.h
         thread/qmutex_mac.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_thread AND UNIX AND NOT APPLE AND NOT LINUX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_thread AND UNIX AND NOT APPLE AND NOT LINUX
     SOURCES
         thread/qmutex_unix.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_thread AND FREEBSD
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_thread AND FREEBSD
     SOURCES
         thread/qfutex_freebsd_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_thread AND LINUX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_thread AND LINUX
     SOURCES
         thread/qfutex_linux_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_future
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_future
     SOURCES
         thread/qexception.cpp thread/qexception.h
         thread/qfuture.h
@@ -862,35 +864,35 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_future
         thread/qresultstore.cpp thread/qresultstore.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_std_atomic64
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_std_atomic64
     PUBLIC_LIBRARIES
         WrapAtomic::WrapAtomic
 )
 
-qt_internal_extend_target(Core CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(Core CONDITION NOT BOBUI_FEATURE_system_zlib
     LIBRARIES
-        Qt::ZlibPrivate
+        BobUI::ZlibPrivate
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_commandlineparser
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_commandlineparser
     SOURCES
         tools/qcommandlineoption.cpp tools/qcommandlineoption.h
         tools/qcommandlineparser.cpp tools/qcommandlineparser.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_backtrace
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_backtrace
     DEFINES
         BACKTRACE_HEADER="${Backtrace_HEADER}"
     LIBRARIES
         WrapBacktrace::WrapBacktrace
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_system_doubleconversion
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_system_doubleconversion
     LIBRARIES
         WrapSystemDoubleConversion::WrapSystemDoubleConversion
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_doubleconversion AND NOT QT_FEATURE_system_doubleconversion
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_doubleconversion AND NOT BOBUI_FEATURE_system_doubleconversion
     SOURCES
         ../3rdparty/double-conversion/double-conversion/bignum.cc
         ../3rdparty/double-conversion/double-conversion/bignum-dtoa.cc
@@ -919,51 +921,51 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_doubleconversion AND NOT QT_
         ../3rdparty/double-conversion
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_system_libb2
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_system_libb2
     LIBRARIES
         Libb2::Libb2
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_easingcurve
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_easingcurve
     SOURCES
         tools/qeasingcurve.cpp tools/qeasingcurve.h
-        tools/qtimeline.cpp tools/qtimeline.h
+        tools/bobuiimeline.cpp tools/bobuiimeline.h
     ATTRIBUTION_FILE_DIR_PATHS
         ../3rdparty/easing
 )
 
-qt_internal_extend_target(Core CONDITION UNIX AND NOT HAIKU AND NOT INTEGRITY AND NOT VXWORKS AND NOT WASM AND NOT MACOS
+bobui_internal_extend_target(Core CONDITION UNIX AND NOT HAIKU AND NOT INTEGRITY AND NOT VXWORKS AND NOT WASM AND NOT MACOS
     LIBRARIES
         m
 )
 
-qt_internal_extend_target(Core CONDITION APPLE
+bobui_internal_extend_target(Core CONDITION APPLE
     SOURCES
         text/qlocale_mac.mm
 )
 
-qt_internal_extend_target(Core CONDITION UNIX AND NOT APPLE AND NOT WASM
+bobui_internal_extend_target(Core CONDITION UNIX AND NOT APPLE AND NOT WASM
     SOURCES
         text/qlocale_unix.cpp
 )
 
 # Switch this to just 'icu' once we can expect Windows 10 version 1903
-qt_internal_extend_target(Core CONDITION QT_FEATURE_winsdkicu
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_winsdkicu
     LIBRARIES
         icuuc icuin
 )
 
-qt_internal_extend_target(Core CONDITION WASM
+bobui_internal_extend_target(Core CONDITION WASM
     SOURCES
         text/qlocale_wasm.cpp
 )
 
-qt_internal_extend_target(Core CONDITION MSVC AND CLANG
+bobui_internal_extend_target(Core CONDITION MSVC AND CLANG
     LIBRARIES
         clang_rt.builtins-$<IF:$<STREQUAL:${TEST_architecture_arch},arm64>,aarch64,x86_64>
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_icu
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_icu
     SOURCES
         text/qcollator_icu.cpp
         text/qlocale_icu.cpp
@@ -971,213 +973,213 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_icu
         ICU::i18n ICU::uc ICU::data
 )
 
-qt_internal_extend_target(Core CONDITION WIN32 AND NOT QT_FEATURE_icu
+bobui_internal_extend_target(Core CONDITION WIN32 AND NOT BOBUI_FEATURE_icu
     SOURCES
         text/qcollator_win.cpp
 )
 
-qt_internal_extend_target(Core CONDITION MACOS AND NOT QT_FEATURE_icu
+bobui_internal_extend_target(Core CONDITION MACOS AND NOT BOBUI_FEATURE_icu
     SOURCES
         text/qcollator_macx.cpp
 )
 
-qt_internal_extend_target(Core CONDITION UNIX AND NOT MACOS AND NOT QT_FEATURE_icu
+bobui_internal_extend_target(Core CONDITION UNIX AND NOT MACOS AND NOT BOBUI_FEATURE_icu
     SOURCES
         text/qcollator_posix.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_jemalloc
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_jemalloc
     PUBLIC_LIBRARIES
         PkgConfig::JeMalloc
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_regularexpression
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_regularexpression
     SOURCES
         text/qregularexpression.cpp text/qregularexpression.h
     LIBRARIES
         WrapPCRE2::WrapPCRE2
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_openssl_hash
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_openssl_hash
     LIBRARIES
         WrapOpenSSL::WrapOpenSSL
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_hijricalendar
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_hijricalendar
     SOURCES
         time/qhijricalendar.cpp time/qhijricalendar_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_islamiccivilcalendar
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_islamiccivilcalendar
     SOURCES
         time/qislamiccivilcalendar.cpp time/qislamiccivilcalendar_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_jalalicalendar
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_jalalicalendar
     SOURCES
         time/qjalalicalendar.cpp time/qjalalicalendar_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_timezone
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_timezone
     SOURCES
-        time/qtimezoneprivate.cpp time/qtimezoneprivate_p.h
+        time/bobuiimezoneprivate.cpp time/bobuiimezoneprivate_p.h
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_timezone_tzdb
+        BOBUI_FEATURE_timezone_tzdb
     SOURCES
-        time/qtimezoneprivate_chrono.cpp
+        time/bobuiimezoneprivate_chrono.cpp
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_timezone AND APPLE AND NOT QT_FEATURE_timezone_tzdb
+        BOBUI_FEATURE_timezone AND APPLE AND NOT BOBUI_FEATURE_timezone_tzdb
     SOURCES
-        time/qtimezoneprivate_mac.mm
+        time/bobuiimezoneprivate_mac.mm
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_timezone AND ANDROID
-        AND NOT APPLE AND NOT QT_FEATURE_timezone_tzdb
+        BOBUI_FEATURE_timezone AND ANDROID
+        AND NOT APPLE AND NOT BOBUI_FEATURE_timezone_tzdb
     SOURCES
-        time/qtimezoneprivate_android.cpp
+        time/bobuiimezoneprivate_android.cpp
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_timezone AND UNIX AND NOT VXWORKS
-        AND NOT ANDROID AND NOT APPLE AND NOT QT_FEATURE_timezone_tzdb
+        BOBUI_FEATURE_timezone AND UNIX AND NOT VXWORKS
+        AND NOT ANDROID AND NOT APPLE AND NOT BOBUI_FEATURE_timezone_tzdb
     SOURCES
-        time/qtimezoneprivate_tz.cpp
+        time/bobuiimezoneprivate_tz.cpp
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_icu AND QT_FEATURE_timezone
-        AND (VXWORKS OR NOT UNIX) AND NOT QT_FEATURE_timezone_tzdb
+        BOBUI_FEATURE_icu AND BOBUI_FEATURE_timezone
+        AND (VXWORKS OR NOT UNIX) AND NOT BOBUI_FEATURE_timezone_tzdb
     SOURCES
-        time/qtimezoneprivate_icu.cpp
+        time/bobuiimezoneprivate_icu.cpp
 )
 
 # Even MS says we should prefer ICU over its APIs for TZ data:
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_timezone AND WIN32 AND NOT QT_FEATURE_icu
-        AND NOT QT_FEATURE_timezone_tzdb
+        BOBUI_FEATURE_timezone AND WIN32 AND NOT BOBUI_FEATURE_icu
+        AND NOT BOBUI_FEATURE_timezone_tzdb
     SOURCES
-        time/qtimezoneprivate_win.cpp
+        time/bobuiimezoneprivate_win.cpp
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION
-        QT_FEATURE_timezone_locale
+        BOBUI_FEATURE_timezone_locale
     SOURCES
-        time/qtimezonelocale.cpp time/qtimezonelocale_p.h
+        time/bobuiimezonelocale.cpp time/bobuiimezonelocale_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_datetimeparser
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_datetimeparser
     SOURCES
         time/qdatetimeparser.cpp time/qdatetimeparser_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_zstd
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_zstd
     LIBRARIES
         WrapZSTD::WrapZSTD
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_filesystemwatcher
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_filesystemwatcher
     SOURCES
         io/qfilesystemwatcher.cpp io/qfilesystemwatcher.h io/qfilesystemwatcher_p.h
         io/qfilesystemwatcher_polling.cpp io/qfilesystemwatcher_polling_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_filesystemwatcher AND WIN32
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_filesystemwatcher AND WIN32
     SOURCES
         io/qfilesystemwatcher_win.cpp io/qfilesystemwatcher_win_p.h
 )
 
-qt_internal_extend_target(Core CONDITION MACOS AND QT_FEATURE_filesystemwatcher
+bobui_internal_extend_target(Core CONDITION MACOS AND BOBUI_FEATURE_filesystemwatcher
     SOURCES
         io/qfilesystemwatcher_fsevents.mm io/qfilesystemwatcher_fsevents_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_filesystemwatcher AND QT_FEATURE_inotify AND UNIX AND NOT MACOS
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_filesystemwatcher AND BOBUI_FEATURE_inotify AND UNIX AND NOT MACOS
     SOURCES
         io/qfilesystemwatcher_inotify.cpp io/qfilesystemwatcher_inotify_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_filesystemwatcher AND UNIX AND NOT MACOS AND NOT QT_FEATURE_inotify AND (APPLE OR FREEBSD OR NETBSD OR OPENBSD)
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_filesystemwatcher AND UNIX AND NOT MACOS AND NOT BOBUI_FEATURE_inotify AND (APPLE OR FREEBSD OR NETBSD OR OPENBSD)
     SOURCES
         io/qfilesystemwatcher_kqueue.cpp io/qfilesystemwatcher_kqueue_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_processenvironment
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_processenvironment
     SOURCES
         io/qprocess.cpp io/qprocess.h io/qprocess_p.h
 )
 
-if (NOT QT_FEATURE_process)
+if (NOT BOBUI_FEATURE_process)
     set_source_files_properties(io/qprocess.cpp io/qprocess.h PROPERTIES SKIP_AUTOMOC TRUE)
 endif()
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_processenvironment AND WIN32
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_processenvironment AND WIN32
     SOURCES
         io/qprocess_win.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_processenvironment AND UNIX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_processenvironment AND UNIX
     SOURCES
         io/qprocess_unix.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_settings
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_settings
     SOURCES
         io/qsettings.cpp io/qsettings.h io/qsettings_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_settings AND WIN32
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_settings AND WIN32
     SOURCES
         io/qsettings_win.cpp
 )
 
-qt_internal_extend_target(Core CONDITION APPLE AND QT_FEATURE_settings
+bobui_internal_extend_target(Core CONDITION APPLE AND BOBUI_FEATURE_settings
     SOURCES
         io/qsettings_mac.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_settings AND WASM
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_settings AND WASM
     SOURCES
         io/qsettings_wasm.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_filesystemiterator AND WIN32
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_filesystemiterator AND WIN32
     SOURCES
         io/qfilesystemiterator_win.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_process AND UNIX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_process AND UNIX
     SOURCES
         ../3rdparty/forkfd/forkfd.h
-        io/forkfd_qt.c
+        io/forkfd_bobui.c
     INCLUDE_DIRECTORIES
         ../3rdparty/forkfd
     ATTRIBUTION_FILE_DIR_PATHS
         ../3rdparty/forkfd
 )
 
-qt_internal_extend_target(Core CONDITION APPLE AND QT_FEATURE_processenvironment
+bobui_internal_extend_target(Core CONDITION APPLE AND BOBUI_FEATURE_processenvironment
     SOURCES
         io/qprocess_darwin.mm
 )
 
-qt_internal_extend_target(Core CONDITION APPLE AND NOT MACOS
+bobui_internal_extend_target(Core CONDITION APPLE AND NOT MACOS
     PUBLIC_LIBRARIES
         ${FWMobileCoreServices}
 )
 
-qt_internal_extend_target(Core CONDITION ANDROID
+bobui_internal_extend_target(Core CONDITION ANDROID
     SOURCES
         io/qstandardpaths_android.cpp
         io/qstorageinfo_linux.cpp io/qstorageinfo_linux_p.h
@@ -1194,20 +1196,20 @@ qt_internal_extend_target(Core CONDITION ANDROID
         platform/android/qandroidmodelindexproxy_p.h platform/android/qandroidmodelindexproxy.cpp
     NO_UNITY_BUILD_SOURCES
         platform/android/qandroidextras.cpp
-        # qtNativeClassName conflicts with similar symbols in android headers
+        # bobuiNativeClassName conflicts with similar symbols in android headers
         # TODO: Resolve conflicts between various variables set as,
-        # `org/qtproject/qt/android/QtNative` QtAndroidPrivate might be a good
+        # `org/bobuiproject/bobui/android/BobUINative` BobUIAndroidPrivate might be a good
         # place to put them.
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_cpp_winrt
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_cpp_winrt
     SOURCES
         platform/windows/qfactorycacheregistration_p.h
         platform/windows/qfactorycacheregistration.cpp
-        platform/windows/qt_winrtbase_p.h
+        platform/windows/bobui_winrtbase_p.h
 )
 
-qt_internal_extend_target(Core CONDITION HAIKU AND NOT ANDROID
+bobui_internal_extend_target(Core CONDITION HAIKU AND NOT ANDROID
     SOURCES
         io/qstandardpaths_haiku.cpp
         io/qstorageinfo_unix.cpp
@@ -1215,20 +1217,20 @@ qt_internal_extend_target(Core CONDITION HAIKU AND NOT ANDROID
         be
 )
 
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     CONDITION UNIX AND NOT LINUX AND NOT APPLE AND NOT HAIKU AND NOT ANDROID AND NOT VXWORKS
     SOURCES
         io/qstandardpaths_unix.cpp
         io/qstorageinfo_unix.cpp
 )
 
-qt_internal_extend_target(Core CONDITION LINUX AND NOT ANDROID AND NOT VXWORKS
+bobui_internal_extend_target(Core CONDITION LINUX AND NOT ANDROID AND NOT VXWORKS
     SOURCES
         io/qstandardpaths_unix.cpp
         io/qstorageinfo_linux.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_itemmodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_itemmodel
     SOURCES
         itemmodels/qabstractitemmodel.cpp itemmodels/qabstractitemmodel.h itemmodels/qabstractitemmodel_p.h
         itemmodels/qitemselectionmodel.cpp itemmodels/qitemselectionmodel.h itemmodels/qitemselectionmodel_p.h
@@ -1236,134 +1238,134 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_itemmodel
         itemmodels/qrangemodeladapter.h itemmodels/qrangemodeladapter_impl.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_proxymodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_proxymodel
     SOURCES
         itemmodels/qabstractproxymodel.cpp itemmodels/qabstractproxymodel.h itemmodels/qabstractproxymodel_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_concatenatetablesproxymodel AND QT_FEATURE_proxymodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_concatenatetablesproxymodel AND BOBUI_FEATURE_proxymodel
     SOURCES
         itemmodels/qconcatenatetablesproxymodel.cpp itemmodels/qconcatenatetablesproxymodel.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_identityproxymodel AND QT_FEATURE_proxymodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_identityproxymodel AND BOBUI_FEATURE_proxymodel
     SOURCES
         itemmodels/qidentityproxymodel.cpp itemmodels/qidentityproxymodel.h itemmodels/qidentityproxymodel_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_proxymodel AND QT_FEATURE_sortfilterproxymodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_proxymodel AND BOBUI_FEATURE_sortfilterproxymodel
     SOURCES
         itemmodels/qsortfilterproxymodel.cpp itemmodels/qsortfilterproxymodel.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_proxymodel AND QT_FEATURE_transposeproxymodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_proxymodel AND BOBUI_FEATURE_transposeproxymodel
     SOURCES
-        itemmodels/qtransposeproxymodel.cpp itemmodels/qtransposeproxymodel.h itemmodels/qtransposeproxymodel_p.h
+        itemmodels/bobuiransposeproxymodel.cpp itemmodels/bobuiransposeproxymodel.h itemmodels/bobuiransposeproxymodel_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_stringlistmodel
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_stringlistmodel
     SOURCES
         itemmodels/qstringlistmodel.cpp itemmodels/qstringlistmodel.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_library
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_library
     SOURCES
         plugin/qlibrary.cpp plugin/qlibrary.h plugin/qlibrary_p.h
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_library AND CYGWIN
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_library AND CYGWIN
     SOURCES
         plugin/qcoffpeparser.cpp plugin/qcoffpeparser_p.h
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_library AND WIN32
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_library AND WIN32
     SOURCES
         plugin/qcoffpeparser.cpp plugin/qcoffpeparser_p.h
         plugin/qlibrary_win.cpp
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_library AND APPLE
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_library AND APPLE
     SOURCES
         plugin/qlibrary_unix.cpp
         plugin/qmachparser.cpp plugin/qmachparser_p.h
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_library AND UNIX AND NOT APPLE
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_library AND UNIX AND NOT APPLE
     SOURCES
         plugin/qelfparser_p.cpp plugin/qelfparser_p.h
         plugin/qlibrary_unix.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_dlopen
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_dlopen
     LIBRARIES
         ${CMAKE_DL_LIBS}
 )
 
-qt_internal_extend_target(Core CONDITION APPLE AND UIKIT
+bobui_internal_extend_target(Core CONDITION APPLE AND UIKIT
     LIBRARIES
         ${FWUIKit}
 )
 
-qt_internal_extend_target(Core CONDITION WATCHOS
+bobui_internal_extend_target(Core CONDITION WATCHOS
     LIBRARIES
         ${FWWatchKit}
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_poll_select AND UNIX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_poll_select AND UNIX
     SOURCES
         kernel/qpoll.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_glib AND UNIX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_glib AND UNIX
     SOURCES
         kernel/qeventdispatcher_glib.cpp kernel/qeventdispatcher_glib_p.h
     LIBRARIES
         GLIB2::GLIB2
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_clock_gettime
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_clock_gettime
     LIBRARIES
         WrapRt::WrapRt
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_posix_shm AND UNIX
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_posix_shm AND UNIX
     SOURCES
         ipc/qsharedmemory_posix.cpp
     LIBRARIES
         WrapRt::WrapRt
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_sysv_shm
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_sysv_shm
     SOURCES
         ipc/qsharedmemory_systemv.cpp
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_posix_sem
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_posix_sem
     SOURCES
         ipc/qsystemsemaphore_posix.cpp
     LIBRARIES
         WrapRt::WrapRt
 )
-qt_internal_extend_target(Core CONDITION QT_FEATURE_sysv_sem
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_sysv_sem
     SOURCES
         ipc/qsystemsemaphore_systemv.cpp
 )
 
-qt_internal_extend_target(Core CONDITION VXWORKS
+bobui_internal_extend_target(Core CONDITION VXWORKS
     SOURCES
         io/qstandardpaths_unix.cpp
         io/qstorageinfo_stub.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_cborstreamreader
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_cborstreamreader
     SOURCES
         serialization/qcborstreamreader.cpp serialization/qcborstreamreader.h
     NO_UNITY_BUILD_SOURCES
         serialization/qcborstreamreader.cpp # some problem with cbor_value_get_type etc
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_cborstreamwriter
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_cborstreamwriter
     SOURCES
         serialization/qcborstreamwriter.cpp serialization/qcborstreamwriter.h
     NO_UNITY_BUILD_SOURCES
         serialization/qcborstreamwriter.cpp # CBOR macro clashes
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_mimetype
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_mimetype
     SOURCES
         mimetypes/qmimedatabase.cpp mimetypes/qmimedatabase.h mimetypes/qmimedatabase_p.h
         mimetypes/qmimeglobpattern.cpp mimetypes/qmimeglobpattern_p.h
@@ -1374,13 +1376,13 @@ qt_internal_extend_target(Core CONDITION QT_FEATURE_mimetype
         mimetypes/qmimetypeparser.cpp mimetypes/qmimetypeparser_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_permissions
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_permissions
     SOURCES
         kernel/qpermissions.cpp kernel/qpermissions.h kernel/qpermissions_p.h
 )
 
-if(QT_FEATURE_permissions AND APPLE)
-    qt_internal_extend_target(Core
+if(BOBUI_FEATURE_permissions AND APPLE)
+    bobui_internal_extend_target(Core
         SOURCES
             kernel/qpermissions_darwin.mm
             platform/darwin/qdarwinpermissionplugin.mm
@@ -1390,85 +1392,85 @@ if(QT_FEATURE_permissions AND APPLE)
     )
 
     foreach(permission Camera Microphone Bluetooth Contacts Calendar Location)
-        qt_internal_add_darwin_permission_plugin("${permission}")
+        bobui_internal_add_darwin_permission_plugin("${permission}")
     endforeach()
 
     # Camera
-    qt_internal_extend_target(QDarwinCameraPermissionPlugin
+    bobui_internal_extend_target(QDarwinCameraPermissionPlugin
         LIBRARIES ${FWAVFoundation}
     )
     set_property(TARGET QDarwinCameraPermissionPlugin PROPERTY
-        _qt_darwin_permissison_separate_request TRUE
+        _bobui_darwin_permissison_separate_request TRUE
     )
 
     # Microphone
-    qt_internal_extend_target(QDarwinMicrophonePermissionPlugin
+    bobui_internal_extend_target(QDarwinMicrophonePermissionPlugin
         LIBRARIES ${FWAVFoundation}
     )
     set_property(TARGET QDarwinMicrophonePermissionPlugin PROPERTY
-        _qt_darwin_permissison_separate_request TRUE
+        _bobui_darwin_permissison_separate_request TRUE
     )
 
     # Bluetooth
-    qt_internal_extend_target(QDarwinBluetoothPermissionPlugin
+    bobui_internal_extend_target(QDarwinBluetoothPermissionPlugin
         LIBRARIES ${FWCoreBluetooth}
     )
     set_property(TARGET QDarwinBluetoothPermissionPlugin PROPERTY
-        _qt_info_plist_usage_descriptions "NSBluetoothAlwaysUsageDescription"
+        _bobui_info_plist_usage_descriptions "NSBluetoothAlwaysUsageDescription"
     )
 
     # Contacts
-    qt_internal_extend_target(QDarwinContactsPermissionPlugin
+    bobui_internal_extend_target(QDarwinContactsPermissionPlugin
         LIBRARIES ${FWContacts}
     )
 
     # Calendar
-    qt_internal_extend_target(QDarwinCalendarPermissionPlugin
+    bobui_internal_extend_target(QDarwinCalendarPermissionPlugin
         LIBRARIES ${FWEventKit}
     )
     set_property(TARGET QDarwinCalendarPermissionPlugin PROPERTY
-        _qt_info_plist_usage_descriptions "NSCalendarsUsageDescription"
+        _bobui_info_plist_usage_descriptions "NSCalendarsUsageDescription"
     )
 
     # Location
-    qt_internal_extend_target(QDarwinLocationPermissionPlugin
+    bobui_internal_extend_target(QDarwinLocationPermissionPlugin
         LIBRARIES ${FWCoreLocation}
     )
     if(MACOS)
         set_property(TARGET QDarwinLocationPermissionPlugin PROPERTY
-            _qt_info_plist_usage_descriptions
+            _bobui_info_plist_usage_descriptions
                 "NSLocationUsageDescription"
         )
     else()
         set_property(TARGET QDarwinLocationPermissionPlugin PROPERTY
-            _qt_info_plist_usage_descriptions
+            _bobui_info_plist_usage_descriptions
                 "NSLocationWhenInUseUsageDescription"
                 "NSLocationAlwaysAndWhenInUseUsageDescription"
         )
     endif()
 endif()
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_permissions AND ANDROID
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_permissions AND ANDROID
     SOURCES
         kernel/qpermissions_android.cpp
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_permissions AND WASM
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_permissions AND WASM
     SOURCES
         kernel/qpermissions_wasm.cpp
 )
 
-if(QT_FEATURE_mimetype AND QT_FEATURE_mimetype_database)
+if(BOBUI_FEATURE_mimetype AND BOBUI_FEATURE_mimetype_database)
     include(${CMAKE_CURRENT_SOURCE_DIR}/mimetypes/mimetypes_resources.cmake)
 
-    if(CMAKE_VERSION VERSION_LESS 3.18 OR QT_AVOID_CMAKE_ARCHIVING_API)
+    if(CMAKE_VERSION VERSION_LESS 3.18 OR BOBUI_AVOID_CMAKE_ARCHIVING_API)
         set(archiving_api "External")
     else()
         set(archiving_api "CMake")
-        if(QT_FEATURE_zstd AND NOT QT_CMAKE_ZSTD_SUPPORT)
+        if(BOBUI_FEATURE_zstd AND NOT BOBUI_CMAKE_ZSTD_SUPPORT)
             message(FATAL_ERROR
                 "CMake was not built with zstd support. "
-                "Rebuild CMake or set QT_AVOID_CMAKE_ARCHIVING_API=ON.")
+                "Rebuild CMake or set BOBUI_AVOID_CMAKE_ARCHIVING_API=ON.")
         endif()
     endif()
 
@@ -1481,18 +1483,18 @@ if(QT_FEATURE_mimetype AND QT_FEATURE_mimetype_database)
             " ${INPUT_mimetype_database_compression}\nSupported compression types:\n"
             "    ${supported_compression_types}")
         endif()
-        if(compression_type STREQUAL "zstd" AND NOT QT_FEATURE_zstd)
+        if(compression_type STREQUAL "zstd" AND NOT BOBUI_FEATURE_zstd)
             message(FATAL_ERROR
                 "zstd compression is selected for mime type database, but the 'zstd'"
                 " feature is disabled.")
         endif()
-    elseif(QT_FEATURE_zstd)
+    elseif(BOBUI_FEATURE_zstd)
         set(compression_type "zstd")
     else()
         set(compression_type "gzip")
     endif()
 
-    if(QT_INTERNAL_ENABLE_VERBOSE_MIME_DATABASE_COMPRESSION)
+    if(BOBUI_INTERNAL_ENABLE_VERBOSE_MIME_DATABASE_COMPRESSION)
         set(extra_mime_db_compressor_flags "--log-level=STATUS")
     else()
         set(extra_mime_db_compressor_flags "--log-level=NOTICE")
@@ -1506,15 +1508,15 @@ if(QT_FEATURE_mimetype AND QT_FEATURE_mimetype_database)
             -DOUTPUT_FILE=${qmimeprovider_db_output}
             -DARCHIVING_API=${archiving_api}
             -DCOMPRESSION_TYPE=${compression_type}
-            -P "${CMAKE_CURRENT_SOURCE_DIR}/QtCompressMimeDatabase.cmake"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/BobUICompressMimeDatabase.cmake"
             ${extra_mime_db_compressor_flags}
         DEPENDS
-            "${CMAKE_CURRENT_SOURCE_DIR}/QtCompressMimeDatabase.cmake"
+            "${CMAKE_CURRENT_SOURCE_DIR}/BobUICompressMimeDatabase.cmake"
             "${corelib_mimetypes_resource_file}"
         VERBATIM
     )
 
-    qt_internal_extend_target(Core
+    bobui_internal_extend_target(Core
         SOURCES ${qmimeprovider_db_output}
         INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/.rcc"
         ATTRIBUTION_FILE_DIR_PATHS
@@ -1526,7 +1528,7 @@ if(QT_FEATURE_mimetype AND QT_FEATURE_mimetype_database)
     )
 endif()
 
-qt_internal_extend_target(Core CONDITION WASM
+bobui_internal_extend_target(Core CONDITION WASM
     SOURCES
         platform/wasm/qwasmanimationdriver.cpp platform/wasm/qwasmanimationdriver_p.h
         platform/wasm/qwasmglobal.cpp platform/wasm/qwasmglobal_p.h
@@ -1537,7 +1539,7 @@ qt_internal_extend_target(Core CONDITION WASM
         kernel/qeventdispatcher_wasm.cpp kernel/qeventdispatcher_wasm_p.h
 )
 
-qt_internal_extend_target(Core CONDITION QT_FEATURE_ctf
+bobui_internal_extend_target(Core CONDITION BOBUI_FEATURE_ctf
     SOURCES
         tracing/qctf_p.h tracing/qctf.cpp
     PLUGIN_TYPES
@@ -1550,24 +1552,24 @@ set_source_files_properties(
     thread/qmutex_unix.cpp
     PROPERTIES HEADER_FILE_ONLY ON)
 
-# Remove QT_NO_CAST_TO_ASCII to ensure that the symbols are included in the library.
+# Remove BOBUI_NO_CAST_TO_ASCII to ensure that the symbols are included in the library.
 if(WIN32)
     get_target_property(defines Core COMPILE_DEFINITIONS)
-    list(REMOVE_ITEM defines QT_NO_CAST_TO_ASCII)
+    list(REMOVE_ITEM defines BOBUI_NO_CAST_TO_ASCII)
     set_target_properties(Core PROPERTIES COMPILE_DEFINITIONS "${defines}")
 endif()
 
-qt_internal_apply_gc_binaries_conditional(Core PUBLIC)
+bobui_internal_apply_gc_binaries_conditional(Core PUBLIC)
 
 # Add entry-point on platforms that need it. A project can opt-out of using the
-# entrypoint by setting the qt_no_entrypoint property to TRUE on a target.
+# entrypoint by setting the bobui_no_entrypoint property to TRUE on a target.
 if(WIN32 OR UIKIT)
-    # find_package(Qt6Core) should call find_package(Qt6EntryPointPrivate) so that we can
+    # find_package(BobUI6Core) should call find_package(BobUI6EntryPointPrivate) so that we can
     # link against EntryPointPrivate. Normally this is handled automatically for deps, but
     # it doesn't work for EntryPointPrivate since its linker line contains the generator expression.
-    qt_internal_register_target_dependencies(Core PUBLIC Qt6::EntryPointPrivate)
+    bobui_internal_register_target_dependencies(Core PUBLIC BobUI6::EntryPointPrivate)
 
-    set(entrypoint_conditions "$<NOT:$<BOOL:$<TARGET_PROPERTY:qt_no_entrypoint>>>")
+    set(entrypoint_conditions "$<NOT:$<BOOL:$<TARGET_PROPERTY:bobui_no_entrypoint>>>")
     list(APPEND entrypoint_conditions "$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>")
 
     if(WIN32)
@@ -1578,19 +1580,19 @@ if(WIN32 OR UIKIT)
     set(entrypoint_conditions "$<AND:${entrypoint_conditions}>")
 
     target_link_libraries(Core INTERFACE
-        "$<${entrypoint_conditions}:${QT_CMAKE_EXPORT_NAMESPACE}::EntryPointPrivate>"
+        "$<${entrypoint_conditions}:${BOBUI_CMAKE_EXPORT_NAMESPACE}::EntryPointPrivate>"
     )
 endif()
 
 # Record darwin minimum deployment target.
 if(APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
     set_property(TARGET Core PROPERTY
-                 QT_DARWIN_MIN_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+                 BOBUI_DARWIN_MIN_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
     set_property(TARGET Core APPEND PROPERTY
-                 EXPORT_PROPERTIES "QT_DARWIN_MIN_DEPLOYMENT_TARGET")
+                 EXPORT_PROPERTIES "BOBUI_DARWIN_MIN_DEPLOYMENT_TARGET")
 endif()
 
-qt_internal_generate_tracepoints(Core core
+bobui_internal_generate_tracepoints(Core core
     SOURCES
         kernel/qcoreapplication.cpp
         kernel/qcoreevent.cpp
@@ -1599,63 +1601,63 @@ qt_internal_generate_tracepoints(Core core
         plugin/qlibrary.cpp
         global/qlogging.cpp
 )
-qt_internal_add_docs(Core
-    doc/qtcore.qdocconf
+bobui_internal_add_docs(Core
+    doc/bobuicore.qdocconf
 )
 
-qt_internal_add_optimize_full_flags()
+bobui_internal_add_optimize_full_flags()
 
-# Copy / install an lldb python script into the QtCore.framework.dSYM bundle which searches
-# for the latest installed Qt Creator and loads its lldbbridge.py script.
-# When debugging a Qt app, lldb will prompt the developer to explicitly import the shim script.
-# It will then enable Qt C++ type pretty printers when using command-line lldb or Xcode
+# Copy / install an lldb python script into the BobUICore.framework.dSYM bundle which searches
+# for the latest installed BobUI Creator and loads its lldbbridge.py script.
+# When debugging a BobUI app, lldb will prompt the developer to explicitly import the shim script.
+# It will then enable BobUI C++ type pretty printers when using command-line lldb or Xcode
 # (e.g. show contents of QString).
-if(APPLE AND QT_FEATURE_framework AND QT_FEATURE_separate_debug_info)
-    qt_internal_module_info(dsym_module_name "Core")
+if(APPLE AND BOBUI_FEATURE_framework AND BOBUI_FEATURE_separate_debug_info)
+    bobui_internal_module_info(dsym_module_name "Core")
 
     set(dsym_dir "${dsym_module_name}.framework.dSYM")
     set(script_name "${dsym_module_name}.py")
     set(dsym_script_dir_suffix "${INSTALL_LIBDIR}/${dsym_dir}/Contents/Resources/Python")
-    set(dsym_script_build_path "${QT_BUILD_DIR}/${dsym_script_dir_suffix}/${script_name}")
+    set(dsym_script_build_path "${BOBUI_BUILD_DIR}/${dsym_script_dir_suffix}/${script_name}")
 
-    qt_path_join(dsym_script_install_dir
-                 ${QT_BUILD_INTERNALS_RELOCATABLE_INSTALL_PREFIX} ${dsym_script_dir_suffix})
+    bobui_path_join(dsym_script_install_dir
+                 ${BOBUI_BUILD_INTERNALS_RELOCATABLE_INSTALL_PREFIX} ${dsym_script_dir_suffix})
 
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/debug_script.py"
         "${dsym_script_build_path}"
         @ONLY
     )
-    qt_install(FILES
+    bobui_install(FILES
         "${dsym_script_build_path}"
         DESTINATION "${dsym_script_install_dir}"
     )
 endif()
 
 if(IOS)
-    qt_internal_set_apple_privacy_manifest(Core
+    bobui_internal_set_apple_privacy_manifest(Core
         "${CMAKE_CURRENT_SOURCE_DIR}/platform/ios/PrivacyInfo.xcprivacy")
 endif()
 
 set(elf_linker_script_contents "")
-if (QT_NAMESPACE STREQUAL "")
-    set(tag_symbol "qt_version_tag")
+if (BOBUI_NAMESPACE STREQUAL "")
+    set(tag_symbol "bobui_version_tag")
 else()
-    set(tag_symbol "qt_version_tag_${QT_NAMESPACE}")
+    set(tag_symbol "bobui_version_tag_${BOBUI_NAMESPACE}")
 endif()
 foreach(minor_version RANGE ${PROJECT_VERSION_MINOR})
     set(previous "${current}")
-    set(current "Qt_${PROJECT_VERSION_MAJOR}.${minor_version}")
+    set(current "BobUI_${PROJECT_VERSION_MAJOR}.${minor_version}")
     if (minor_version EQUAL ${PROJECT_VERSION_MINOR})
         string(APPEND elf_linker_script_contents "${current} { ${tag_symbol}; } ${previous};\n")
     else()
         string(APPEND elf_linker_script_contents "${current} {} ${previous};\n")
     endif()
 endforeach()
-qt_internal_extend_target(Core
+bobui_internal_extend_target(Core
     EXTRA_ELF_LINKER_SCRIPT_CONTENT "${elf_linker_script_contents}"
 
-    # Workaround for QTBUG-117514:
+    # Workaround for BOBUIBUG-117514:
     # Function called by inline methods taking a pointer to a private class as a parameter
     EXTRA_ELF_LINKER_SCRIPT_EXPORTS
         # QFutureInterfaceBase::setContinuation(std::function<void (QFutureInterfaceBase const&)>, QFutureInterfaceBasePrivate*)
@@ -1664,34 +1666,34 @@ qt_internal_extend_target(Core
         "_ZN*14QReadWriteLock16destroyRecursiveEP*21QReadWriteLockPrivate*"
 )
 
-function(qt_internal_library_deprecation_level)
-    # QT_DISABLE_DEPRECATED_UP_TO controls which version we use as a cut-off
-    # compiling in to the library. E.g. if it is set to QT_VERSION then no
-    # code which was deprecated before QT_VERSION will be compiled in.
+function(bobui_internal_library_deprecation_level)
+    # BOBUI_DISABLE_DEPRECATED_UP_TO controls which version we use as a cut-off
+    # compiling in to the library. E.g. if it is set to BOBUI_VERSION then no
+    # code which was deprecated before BOBUI_VERSION will be compiled in.
     set(digit "[0-9a-fA-F]")
     string(REPEAT "${digit}" 6 six_digits)
-    if(NOT DEFINED QT_DISABLE_DEPRECATED_UP_TO)
+    if(NOT DEFINED BOBUI_DISABLE_DEPRECATED_UP_TO)
         if(WIN32)
             # On Windows, due to the way DLLs work, we need to export all functions,
             # including the inlines
-            set(QT_DISABLE_DEPRECATED_UP_TO "0x040800")
+            set(BOBUI_DISABLE_DEPRECATED_UP_TO "0x040800")
         else()
-            # On other platforms, Qt's own compilation does need to compile the Qt 5.0 API
-            set(QT_DISABLE_DEPRECATED_UP_TO "0x050000")
+            # On other platforms, BobUI's own compilation does need to compile the BobUI 5.0 API
+            set(BOBUI_DISABLE_DEPRECATED_UP_TO "0x050000")
         endif()
-    elseif(NOT QT_DISABLE_DEPRECATED_UP_TO MATCHES "^0x${six_digits}$")
-        message(FATAL_ERROR "Invalid format of the QT_DISABLE_DEPRECATED_UP_TO macro:"
-            " ${QT_DISABLE_DEPRECATED_UP_TO}. The expected format is the hexadecimal number,"
+    elseif(NOT BOBUI_DISABLE_DEPRECATED_UP_TO MATCHES "^0x${six_digits}$")
+        message(FATAL_ERROR "Invalid format of the BOBUI_DISABLE_DEPRECATED_UP_TO macro:"
+            " ${BOBUI_DISABLE_DEPRECATED_UP_TO}. The expected format is the hexadecimal number,"
             " e.g. 0x060102")
     endif()
-    # QT_WARN_DEPRECATED_UP_TO controls the upper-bound of deprecation
+    # BOBUI_WARN_DEPRECATED_UP_TO controls the upper-bound of deprecation
     # warnings that are emitted. E.g. if it is set to 0x060500 then all use of
     # things deprecated in or before 6.5.0 will be warned against.
-    set(QT_WARN_DEPRECATED_UP_TO 0x070000)
+    set(BOBUI_WARN_DEPRECATED_UP_TO 0x070000)
 
-    set(output_header "${CMAKE_CURRENT_BINARY_DIR}/global/qtdeprecationdefinitions.h")
+    set(output_header "${CMAKE_CURRENT_BINARY_DIR}/global/bobuideprecationdefinitions.h")
     configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/global/qtdeprecationdefinitions.h.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/global/bobuideprecationdefinitions.h.in"
         "${output_header}"
         @ONLY
         NEWLINE_STYLE UNIX
@@ -1700,8 +1702,8 @@ function(qt_internal_library_deprecation_level)
     target_sources(Core PRIVATE "${output_header}")
     set_source_files_properties("${output_header}" PROPERTIES GENERATED TRUE)
 endfunction()
-qt_internal_library_deprecation_level()
+bobui_internal_library_deprecation_level()
 
-if(QT_BUILD_DOC_SNIPPETS)
+if(BOBUI_BUILD_DOC_SNIPPETS)
     add_subdirectory(doc/snippets)
 endif()

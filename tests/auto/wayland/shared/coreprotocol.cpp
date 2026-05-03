@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "coreprotocol.h"
 #include "datadevice.h"
@@ -7,7 +7,7 @@
 namespace MockCompositor {
 
 Surface::Surface(WlCompositor *wlCompositor, wl_client *client, int id, int version)
-    : QtWaylandServer::wl_surface(client, id, version)
+    : BobUIWaylandServer::wl_surface(client, id, version)
     , m_wlCompositor(wlCompositor)
     , m_wlshell(wlCompositor->m_compositor->m_type == CoreCompositor::CompositorType::Legacy)
 {
@@ -95,7 +95,7 @@ void Surface::surface_attach(Resource *resource, wl_resource *buffer, int32_t x,
     }
 }
 
-void Surface::surface_set_buffer_scale(QtWaylandServer::wl_surface::Resource *resource, int32_t scale)
+void Surface::surface_set_buffer_scale(BobUIWaylandServer::wl_surface::Resource *resource, int32_t scale)
 {
     Q_UNUSED(resource);
     m_pending.bufferScale = scale;
@@ -186,8 +186,8 @@ void SubCompositor::subcompositor_get_subsurface(Resource *resource, uint32_t id
                                                  ::wl_resource *surfaceResource,
                                                  ::wl_resource *parent)
 {
-    QTRY_VERIFY(parent);
-    QTRY_VERIFY(surfaceResource);
+    BOBUIRY_VERIFY(parent);
+    BOBUIRY_VERIFY(surfaceResource);
     auto surface = fromResource<Surface>(surfaceResource);
     if (!surface->m_role) {
         surface->m_role = new SubSurfaceRole;
@@ -250,7 +250,7 @@ void Output::sendDone()
         wl_output::send_done(r->handle);
 }
 
-void Output::output_bind_resource(QtWaylandServer::wl_output::Resource *resource)
+void Output::output_bind_resource(BobUIWaylandServer::wl_output::Resource *resource)
 {
     sendGeometry(resource);
     send_mode(resource->handle, mode_preferred | mode_current,
@@ -266,7 +266,7 @@ void Output::output_bind_resource(QtWaylandServer::wl_output::Resource *resource
 
 // Seat stuff
 Seat::Seat(CoreCompositor *compositor, uint capabilities, int version, const QString &seatName) //TODO: check version
-    : QtWaylandServer::wl_seat(compositor->m_display, version)
+    : BobUIWaylandServer::wl_seat(compositor->m_display, version)
     , m_seatName(seatName)
     , m_compositor(compositor)
 {
@@ -331,7 +331,7 @@ void Seat::seat_get_pointer(Resource *resource, uint32_t id)
     m_pointer->add(resource->client(), id, resource->version());
 }
 
-void Seat::seat_get_touch(QtWaylandServer::wl_seat::Resource *resource, uint32_t id)
+void Seat::seat_get_touch(BobUIWaylandServer::wl_seat::Resource *resource, uint32_t id)
 {
     if (~m_capabilities & capability_touch) {
         qWarning() << "Client requested a wl_touch without the capability being available."
@@ -346,7 +346,7 @@ void Seat::seat_get_touch(QtWaylandServer::wl_seat::Resource *resource, uint32_t
     m_touch->add(resource->client(), id, resource->version());
 }
 
-void Seat::seat_get_keyboard(QtWaylandServer::wl_seat::Resource *resource, uint32_t id)
+void Seat::seat_get_keyboard(BobUIWaylandServer::wl_seat::Resource *resource, uint32_t id)
 {
     if (~m_capabilities & capability_keyboard) {
         qWarning() << "Client requested a wl_keyboard without the capability being available."
@@ -427,7 +427,7 @@ void Pointer::sendAxis(wl_client *client, axis axis, qreal value)
         send_axis(r->handle, time, axis, val);
 }
 
-void Pointer::sendAxisDiscrete(wl_client *client, QtWaylandServer::wl_pointer::axis axis, int discrete)
+void Pointer::sendAxisDiscrete(wl_client *client, BobUIWaylandServer::wl_pointer::axis axis, int discrete)
 {
     // TODO: assert v5 or newer
     const auto pointerResources = resourceMap().values(client);
@@ -435,7 +435,7 @@ void Pointer::sendAxisDiscrete(wl_client *client, QtWaylandServer::wl_pointer::a
         send_axis_discrete(r->handle, axis, discrete);
 }
 
-void Pointer::sendAxisSource(wl_client *client, QtWaylandServer::wl_pointer::axis_source source)
+void Pointer::sendAxisSource(wl_client *client, BobUIWaylandServer::wl_pointer::axis_source source)
 {
     // TODO: assert v5 or newer
     const auto pointerResources = resourceMap().values(client);
@@ -443,7 +443,7 @@ void Pointer::sendAxisSource(wl_client *client, QtWaylandServer::wl_pointer::axi
         send_axis_source(r->handle, source);
 }
 
-void Pointer::sendAxisStop(wl_client *client, QtWaylandServer::wl_pointer::axis axis)
+void Pointer::sendAxisStop(wl_client *client, BobUIWaylandServer::wl_pointer::axis axis)
 {
     // TODO: assert v5 or newer
     auto time = m_seat->m_compositor->currentTimeMilliseconds();
@@ -460,14 +460,14 @@ void Pointer::sendFrame(wl_client *client)
         send_frame(r->handle);
 }
 
-void Pointer::sendAxisValue120(wl_client *client, QtWaylandServer::wl_pointer::axis axis, int value120)
+void Pointer::sendAxisValue120(wl_client *client, BobUIWaylandServer::wl_pointer::axis axis, int value120)
 {
     const auto pointerResources = resourceMap().values(client);
     for (auto *r : pointerResources)
         send_axis_value120(r->handle, axis, value120);
 }
 
-void Pointer::sendAxisRelativeDirection(wl_client *client, QtWaylandServer::wl_pointer::axis axis, QtWaylandServer::wl_pointer::axis_relative_direction direction)
+void Pointer::sendAxisRelativeDirection(wl_client *client, BobUIWaylandServer::wl_pointer::axis axis, BobUIWaylandServer::wl_pointer::axis_relative_direction direction)
 {
     const auto pointerResources = resourceMap().values(client);
     for (auto *r : pointerResources)
@@ -591,7 +591,7 @@ uint Keyboard::sendKey(wl_client *client, uint key, uint state)
 
 // Shm implementation
 Shm::Shm(CoreCompositor *compositor, QList<format> formats, int version)
-    : QtWaylandServer::wl_shm(compositor->m_display, version)
+    : BobUIWaylandServer::wl_shm(compositor->m_display, version)
     , m_compositor(compositor)
     , m_formats(formats)
 {
@@ -620,7 +620,7 @@ void Shm::shm_create_pool(Resource *resource, uint32_t id, int32_t fd, int32_t s
 }
 
 ShmPool::ShmPool(Shm *shm, wl_client *client, int id, int version)
-    : QtWaylandServer::wl_shm_pool(client, id, version)
+    : BobUIWaylandServer::wl_shm_pool(client, id, version)
     , m_shm(shm)
 {
 }
@@ -640,7 +640,7 @@ void ShmPool::shm_pool_destroy_resource(Resource *resource)
 }
 
 WlShell::WlShell(CoreCompositor *compositor, int version)
-    : QtWaylandServer::wl_shell(compositor->m_display, version)
+    : BobUIWaylandServer::wl_shell(compositor->m_display, version)
     , m_compositor(compositor)
 {
 }
@@ -661,7 +661,7 @@ void WlShell::shell_get_shell_surface(Resource *resource, uint32_t id, wl_resour
 }
 
 WlShellSurface::WlShellSurface(WlShell *wlShell, wl_client *client, int id, Surface *surface)
-    : QtWaylandServer::wl_shell_surface(client, id, 1)
+    : BobUIWaylandServer::wl_shell_surface(client, id, 1)
     , m_wlShell(wlShell)
     , m_surface(surface)
 {

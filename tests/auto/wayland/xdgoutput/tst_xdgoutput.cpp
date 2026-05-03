@@ -1,11 +1,11 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "xdgoutputv1.h"
 #include "mockcompositor.h"
 
-#include <QtGui/QRasterWindow>
-#include <QtGui/QScreen>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/QScreen>
 
 using namespace MockCompositor;
 
@@ -35,8 +35,8 @@ private slots:
 void tst_xdgoutput::cleanup()
 {
     QCOMPOSITOR_COMPARE(getAll<Output>().size(), 1); // Only the default output should be left
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
-    QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
 }
 
 void tst_xdgoutput::primaryScreen()
@@ -49,9 +49,9 @@ void tst_xdgoutput::primaryScreen()
         QCOMPARE(xdgOutput()->m_logicalGeometry.size(), QSize(1920, 1080));
     });
     auto *s = QGuiApplication::primaryScreen();
-    QTRY_COMPARE(s->size(), QSize(1920, 1080));
-    QTRY_COMPARE(s->geometry().topLeft(), QPoint(0, 0));
-    QTRY_COMPARE(s->name(), QString("WL-1"));
+    BOBUIRY_COMPARE(s->size(), QSize(1920, 1080));
+    BOBUIRY_COMPARE(s->geometry().topLeft(), QPoint(0, 0));
+    BOBUIRY_COMPARE(s->name(), QString("WL-1"));
 }
 
 void tst_xdgoutput::overrideGeometry()
@@ -62,11 +62,11 @@ void tst_xdgoutput::overrideGeometry()
         xdgOutput->m_logicalGeometry = QRect(10, 20, 800, 1200);
     });
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
     auto *s = QGuiApplication::screens()[1];
 
-    QTRY_COMPARE(s->size(), QSize(800, 1200));
-    QTRY_COMPARE(s->geometry().topLeft(), QPoint(10, 20));
+    BOBUIRY_COMPARE(s->size(), QSize(800, 1200));
+    BOBUIRY_COMPARE(s->geometry().topLeft(), QPoint(10, 20));
 
     exec([&] { remove(output(1)); });
 }
@@ -80,9 +80,9 @@ void tst_xdgoutput::changeGeometry()
         return xdgOutput;
     });
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
     auto *screen = QGuiApplication::screens()[1];
-    QTRY_COMPARE(screen->size(), QSize(800, 1200));
+    BOBUIRY_COMPARE(screen->size(), QSize(800, 1200));
 
     exec([&] {
         xdgOutput->sendLogicalSize(QSize(1024, 768));
@@ -93,18 +93,18 @@ void tst_xdgoutput::changeGeometry()
     // logical_size request yet, so we add a screen and verify it on the client side just to give
     // the client a chance to mess up.
     exec([&] { add<Output>(); });
-    QTRY_COMPARE(QGuiApplication::screens().size(), 3);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 3);
     exec([&] { remove(output(2)); });
 
     // The logical_size event should have been handled by now, but state should not have been applied yet.
-    QTRY_COMPARE(screen->size(), QSize(800, 1200));
+    BOBUIRY_COMPARE(screen->size(), QSize(800, 1200));
 
     exec([&] {
         xdgOutput->m_output->sendDone();
     });
 
     // Finally, the size should change
-    QTRY_COMPARE(screen->size(), QSize(1024, 768));
+    BOBUIRY_COMPARE(screen->size(), QSize(1024, 768));
 
     exec([&] { remove(output(1)); });
 }
@@ -120,7 +120,7 @@ void tst_xdgoutput::outputCreateEnterRace()
     QCOMPOSITOR_TRY_VERIFY(xdgSurface() && xdgSurface()->m_committedConfigureSerial);
     exec([&] { xdgToplevel()->surface()->sendEnter(output(0));});
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
     QScreen *primaryScreen = QGuiApplication::screens().first();
     QCOMPARE(window.screen(), primaryScreen);
 
@@ -129,14 +129,14 @@ void tst_xdgoutput::outputCreateEnterRace()
      });
 
      // In Compositor Thread
-     connect(out, &Output::outputBound, this, [this](QtWaylandServer::wl_output::Resource *resource){
+     connect(out, &Output::outputBound, this, [this](BobUIWaylandServer::wl_output::Resource *resource){
         auto surface = xdgToplevel()->surface();
         surface->sendLeave(output(0));
-        surface->QtWaylandServer::wl_surface::send_enter(surface->resource()->handle, resource->handle);
-     }, Qt::DirectConnection);
+        surface->BobUIWaylandServer::wl_surface::send_enter(surface->resource()->handle, resource->handle);
+     }, BobUI::DirectConnection);
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
-    QTRY_COMPARE(window.screen(), QGuiApplication::screens()[1]);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(window.screen(), QGuiApplication::screens()[1]);
 
     exec([&] { remove(out); });
     m_config.autoConfigure = false;

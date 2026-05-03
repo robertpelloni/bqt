@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qdebug.h>
-#include <QTest>
+#include <BOBUIest>
 
 #include <qglobal.h>
 
 #include <q20utility.h>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
 class tst_QGetPutEnv : public QObject
@@ -31,7 +31,7 @@ private:
 void tst_QGetPutEnv::init()
 {
     QUuid uuid = QUuid::createUuid();
-    uniqueEnvVarName = "QT_TEST_ENV_VAR_" + uuid.toByteArray(QUuid::Id128);
+    uniqueEnvVarName = "BOBUI_TEST_ENV_VAR_" + uuid.toByteArray(QUuid::Id128);
 }
 
 void tst_QGetPutEnv::getSetCheck()
@@ -150,19 +150,19 @@ void tst_QGetPutEnv::encoding()
 
 void tst_QGetPutEnv::intValue_data()
 {
-    QTest::addColumn<QByteArray>("value");
-    QTest::addColumn<qint64>("expected");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QByteArray>("value");
+    BOBUIest::addColumn<qint64>("expected");
+    BOBUIest::addColumn<bool>("ok");
 
     // some repetition from what is tested in getSetCheck()
-    QTest::newRow("empty") << QByteArray() << qint64(0) << false;
-    QTest::newRow("spaces-heading") << QByteArray(" \n\r\t1") << qint64(1) << true;
-    QTest::newRow("spaces-trailing") << QByteArray("1 \n\r\t") << qint64(1) << true;
-    QTest::newRow("junk-heading") << QByteArray("x1") << qint64(0) << false;
-    QTest::newRow("junk-trailing") << QByteArray("1x") << qint64(0) << false;
+    BOBUIest::newRow("empty") << QByteArray() << qint64(0) << false;
+    BOBUIest::newRow("spaces-heading") << QByteArray(" \n\r\t1") << qint64(1) << true;
+    BOBUIest::newRow("spaces-trailing") << QByteArray("1 \n\r\t") << qint64(1) << true;
+    BOBUIest::newRow("junk-heading") << QByteArray("x1") << qint64(0) << false;
+    BOBUIest::newRow("junk-trailing") << QByteArray("1x") << qint64(0) << false;
 
     auto addRow = [](const char *text, qint64 expected, bool ok) {
-        QTest::newRow(text) << QByteArray(text) << expected << ok;
+        BOBUIest::newRow(text) << QByteArray(text) << expected << ok;
     };
     addRow("auto", 0, false);
     addRow("1auto", 0, false);
@@ -187,11 +187,11 @@ void tst_QGetPutEnv::intValue_data()
     auto addNumWithBase = [](auto num, int base) {
         QByteArray text;
         {
-            QTextStream s(&text);
+            BOBUIextStream s(&text);
             s.setIntegerBase(base);
-            s << Qt::showbase << num;
+            s << BobUI::showbase << num;
         }
-        QTestData &row = QTest::addRow("%s", text.constData()) << text;
+        BOBUIestData &row = BOBUIest::addRow("%s", text.constData()) << text;
         bool ok = true;
         if constexpr (std::is_same_v<decltype(num), quint64>)
             ok = num <= quint64(LLONG_MAX);
@@ -244,5 +244,5 @@ void tst_QGetPutEnv::intValue()
         QCOMPARE(qEnvironmentVariableIntegerValue(varName), std::nullopt);
 }
 
-QTEST_MAIN(tst_QGetPutEnv)
+BOBUIEST_MAIN(tst_QGetPutEnv)
 #include "tst_qgetputenv.moc"

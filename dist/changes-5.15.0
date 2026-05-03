@@ -1,16 +1,16 @@
-Qt 5.15 introduces many new features and improvements as well as bugfixes
+BobUI 5.15 introduces many new features and improvements as well as bugfixes
 over the 5.14.x series. For more details, refer to the online documentation
 included in this distribution. The documentation is also available online:
 
-https://doc.qt.io/qt-5/index.html
+https://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.15 series is binary compatible with the 5.14.x series.
+The BobUI version 5.15 series is binary compatible with the 5.14.x series.
 Applications compiled for 5.14 will continue to run with 5.15.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -20,7 +20,7 @@ information about a particular change.
 ****************************************************************************
 
  - Calling QList::insert() or removeAt() with an out of bounds index is
-   deprecated and will no longer be supported in Qt 6.
+   deprecated and will no longer be supported in BobUI 6.
 
 ****************************************************************************
 *                 Potentially Binary-Incompatible Changes                  *
@@ -31,7 +31,7 @@ information about a particular change.
      forward iterator.  This may cause trouble if a library uses the
      iterator category to alter functionality through tag dispatching. This
      only applies when compiling the library or application with
-     QT_DISABLE_DEPRECATED_BEFORE=0x050F00 and the other with a lower value.
+     BOBUI_DISABLE_DEPRECATED_BEFORE=0x050F00 and the other with a lower value.
 
 ****************************************************************************
 *                            Deprecation Notice                            *
@@ -40,32 +40,32 @@ information about a particular change.
  - The binary JSON representation is deprecated. The CBOR format should be
    used instead.
 
- - [QTBUG-80308] QUrl::topLevelDomain() was deprecated in 5.15 and will be
+ - [BOBUIBUG-80308] QUrl::topLevelDomain() was deprecated in 5.15 and will be
    removed in 6.0
 
- - QtNetwork:
+ - BobUINetwork:
    * QNetworkConfigurationManager, QNetworkConfiguration and QNetworkSession
-     are deprecated, to be removed in Qt 6.
+     are deprecated, to be removed in BobUI 6.
    * QNetworkAccessManager::activeConfiguration, configuration and
-     setConfiguration are deprecated, to be removed in Qt 6.
+     setConfiguration are deprecated, to be removed in BobUI 6.
    * QNetworkAccessManager::networkAccessible, setNetworkAccessible and
-     the NetworkAccessibility enum are deprecated, to be removed in Qt 6.
+     the NetworkAccessibility enum are deprecated, to be removed in BobUI 6.
    * QLocalSocket::error() (the signal) is deprecated; superseded by
      errorOccurred()
    * QAbstractSocket::error() (the signal) is deprecated; superseded by
      errorOccurred()
    * QNetworkReply::error() (the signal) is deprecated; superseded by
      errorOccurred()
-   * [QTBUG-80369] QSslSocket::sslErrors() (the getter) was deprecated and
+   * [BOBUIBUG-80369] QSslSocket::sslErrors() (the getter) was deprecated and
      superseded by sslHandshakeErrors()
 
- - [QTBUG-81630][QTBUG-80312] QLinkedList is deprecated and will be moved
-   to Qt5Compat in Qt 6. It is recommended to use std::list instead.
+ - [BOBUIBUG-81630][BOBUIBUG-80312] QLinkedList is deprecated and will be moved
+   to BobUI5Compat in BobUI 6. It is recommended to use std::list instead.
 
 See also the various sections below, which include many more deprecations.
 
 ****************************************************************************
-*                                  QtCore                                  *
+*                                  BobUICore                                  *
 ****************************************************************************
 
  - QCalendar::monthsInYear(QCalendar::Unspecified) now returns
@@ -76,8 +76,8 @@ See also the various sections below, which include many more deprecations.
    * Added operator-> to the key-value iterator for QHash/QMap.
 
  - QAbstractItemModel:
-   * [QTBUG-72587] The match() method now supports the new
-     Qt::RegularExpression match flag value. This will allow users to use
+   * [BOBUIBUG-72587] The match() method now supports the new
+     BobUI::RegularExpression match flag value. This will allow users to use
      either a string or a fully configured QRegularExpression when doing
      searches. In the second case, the case sensitivity flag will be
      ignored if passed.
@@ -94,7 +94,7 @@ See also the various sections below, which include many more deprecations.
      than the array's size plus 1.
 
  - QCborMap:
-   * [QTBUG-83366] Fixed some issues relating to assigning elements from a
+   * [BOBUIBUG-83366] Fixed some issues relating to assigning elements from a
      map to itself.
 
  - QCborValue:
@@ -106,8 +106,8 @@ See also the various sections below, which include many more deprecations.
      allocates memory).
 
  - QDate:
-   * QDate::toString(Qt::DateFormat, QCalendar) no longer takes calendar
-     into account for Qt::TextDate. There was no matching support in
+   * QDate::toString(BobUI::DateFormat, QCalendar) no longer takes calendar
+     into account for BobUI::TextDate. There was no matching support in
      QDateTime and the locale-independent formats are intended to be
      standard, rather than customized to the user.
 
@@ -120,7 +120,7 @@ See also the various sections below, which include many more deprecations.
      the trash.
 
  - QFileInfo:
-   * [QTBUG-75869] Add QFileInfo::isJunction so that applications can
+   * [BOBUIBUG-75869] Add QFileInfo::isJunction so that applications can
      recognize NTFS file system entries as junctions
 
  - QHash:
@@ -136,7 +136,7 @@ See also the various sections below, which include many more deprecations.
    * Added compare().
 
  - QLibrary and QPluginLoader:
-   * [QTBUG-39642] Fixed a deadlock that would happen if the plugin or
+   * [BOBUIBUG-39642] Fixed a deadlock that would happen if the plugin or
      library being loaded has load-time initialization code (C++ global
      variables) that recursed back into the same QLibrary or QPluginLoader
      object.
@@ -147,19 +147,19 @@ See also the various sections below, which include many more deprecations.
    * Data used for currency formats in several locales and list patterns in
      some locales have changed due to now parsing the CLDR data more
      faithfully.
-   * [QTBUG-79902] Currency formats are now based on CLDR's accounting
+   * [BOBUIBUG-79902] Currency formats are now based on CLDR's accounting
      formats, where they were previously mostly based (more or less by
      accident) on standard formats. In particular, this now means negative
      currency formats are specified, where available, where they (mostly)
      were not previously.
 
  - QMap:
-   * [QTBUG-35544] insertMulti(), unite(), values(Key), uniqueKeys(),
+   * [BOBUIBUG-35544] insertMulti(), unite(), values(Key), uniqueKeys(),
      count(Key) is now deprecated. Please use QMultiMap instead.
 
  - QObject:
-   * [QTBUG-76375] A logging category
-     qt.core.qmetaobject.connectslotsbyname was added, which will report
+   * [BOBUIBUG-76375] A logging category
+     bobui.core.qmetaobject.connectslotsbyname was added, which will report
      on the connections made by QMetaObject::connectSlotsByName().
 
  - QProcess:
@@ -200,7 +200,7 @@ See also the various sections below, which include many more deprecations.
    * Conversion from std::basic_string can now be constexpr (when
      std::basic_string is).
 
- - QTimeZone:
+ - BOBUIimeZone:
    * The constructor can now handle general UTC-offset zone names. The
      reported id() of such a zone shall be in canonical form, so might not
      match the ID passed to the constructor.
@@ -217,11 +217,11 @@ See also the various sections below, which include many more deprecations.
    * Moc now correctly sets a non-null QMetaObject::superClass for
      Q_GADGETs that inherit from a template which inherits another
      Q_GADGET.
-   * [QTBUG-74521][QTBUG-76598] moc can now output a ".d" dep file that can
+   * [BOBUIBUG-74521][BOBUIBUG-76598] moc can now output a ".d" dep file that can
      be consumed by other build systems.
 
 ****************************************************************************
-*                                  QtGui                                   *
+*                                  BobUIGui                                   *
 ****************************************************************************
 
  - Extended QVulkanWindow to allow user to specify additional queues to be
@@ -233,15 +233,15 @@ See also the various sections below, which include many more deprecations.
    * Support lazily-provided copying of data to the clipboard on macOS
 
  - QCursor:
-   * [QTBUG-48701] QCursor::bitmap() and QCursor::mask() can now return
+   * [BOBUIBUG-48701] QCursor::bitmap() and QCursor::mask() can now return
      by-value instead of by-pointer.
 
  - QFont:
    * Deprecated QFont::ForceIntegerMetrics and QFont::OpenGLCompatible,
-     with the intention of removing them in Qt 6.0.0.
+     with the intention of removing them in BobUI 6.0.0.
 
  - QMarkdownWriter:
-   * [QTBUG-80603] Code blocks are no longer word-wrapped; the beginning
+   * [BOBUIBUG-80603] Code blocks are no longer word-wrapped; the beginning
      fence of a code block no longer has a space before the language string;
      and the ending fence is no longer skipped in some cases where it was.
 
@@ -249,14 +249,14 @@ See also the various sections below, which include many more deprecations.
    * New API to provide external document XMP metadata and attach files to
      PDF.
 
- - QTabletEvent:
-   * QTabletEvent::device() is deprecated, because the plan is to return
-     an object pointer in Qt 6 rather than an enum. The enum is now provided
+ - BOBUIabletEvent:
+   * BOBUIabletEvent::device() is deprecated, because the plan is to return
+     an object pointer in BobUI 6 rather than an enum. The enum is now provided
      by deviceType().
    * hiResGlobalX() and hiResGlobalY() are deprecated, because globalPosF()
      has the same resolution. But globalPosF() (and several others) will
-     probably be renamed in Qt 6. The replacements are not in place yet.
-   * [QTBUG-77826] Local coordinates are now correct when the event is
+     probably be renamed in BobUI 6. The replacements are not in place yet.
+   * [BOBUIBUG-77826] Local coordinates are now correct when the event is
      delivered to a nested window on X11.
 
  - Text:
@@ -265,7 +265,7 @@ See also the various sections below, which include many more deprecations.
    * Fixed an issue with QFont::PreferNoShaping where boxes would appear in
      place of unprintable characters.
    * Fixed a problem where certain bold fonts would be synthetically
-     emboldened by Qt when using the Freetype font engine.
+     emboldened by BobUI when using the Freetype font engine.
 
  - Application palettes are now resolved against the platform's theme
    palette, the same way widget palettes are resolved against their parents,
@@ -274,20 +274,20 @@ See also the various sections below, which include many more deprecations.
    set via QGuiApplication::setPalette().
 
 ****************************************************************************
-*                                QtWidgets                                 *
+*                                BobUIWidgets                                 *
 ****************************************************************************
 
  - Added QStyleOptionTabV4 as a subclass of QStyleOptionTab so that the
    tab's index information can be obtained.
 
  - ItemViews:
-   * [QTBUG-76423] The convenience views QList/Table/TreeWidgetItem now
+   * [BOBUIBUG-76423] The convenience views QList/Table/TreeWidgetItem now
      treat a default constructed QBrush or QSize as an empty QVariant which
      allows resetting of the values set to it's default values.
 
  - QApplication:
    * The globalStrut property has been deprecated and will be removed from
-     Qt 6.
+     BobUI 6.
 
  - QButtonGroup:
    * Added signals idClicked/Pressed/Released/Toggled that replace the
@@ -304,7 +304,7 @@ See also the various sections below, which include many more deprecations.
      added while blocked by a modal panel.
 
  - QLabel:
-   * [QTBUG-48701] QLabel::pixmap() and QLabel::picture() can now return
+   * [BOBUIBUG-48701] QLabel::pixmap() and QLabel::picture() can now return
      by-value instead of by-pointer.
 
  - QLineEdit:
@@ -324,7 +324,7 @@ See also the various sections below, which include many more deprecations.
  - QSystemTrayIcon:
    * On macOS, clicking on the message will remove the notification.
 
- - QTabWidget/QTabBar:
+ - BOBUIabWidget/BOBUIabBar:
    * Tabs can now be hidden with setTabVisible
 
  - QWidget:
@@ -336,7 +336,7 @@ See also the various sections below, which include many more deprecations.
    * visitedPages has been deprecated, use visitedIds instead.
 
 ****************************************************************************
-*                                QtNetwork                                 *
+*                                BobUINetwork                                 *
 ****************************************************************************
 
  - A new signal introduced to report when a valid session ticket is received
@@ -347,11 +347,11 @@ See also the various sections below, which include many more deprecations.
    * The minimum required version of OpenSSL is now 1.1.1.
 
  - QSslCertificate:
-   * [QTBUG-72587] Add overload of fromPath that does not make use of
+   * [BOBUIBUG-72587] Add overload of fromPath that does not make use of
      QRegExp and deprecate the QRegExp variant.
 
 ****************************************************************************
-*                                  QtSql                                   *
+*                                  BobUISql                                   *
 ****************************************************************************
 
  - QMYSQL:
@@ -363,7 +363,7 @@ See also the various sections below, which include many more deprecations.
    * The one-arg version of QSqlDriver::notifcation() is now deprecated.
 
 ****************************************************************************
-*                                 QTestLib                                 *
+*                                 BOBUIestLib                                 *
 ****************************************************************************
 
  - The formerly named 'xunitxml' test reporter has been renamed to what it
@@ -371,11 +371,11 @@ See also the various sections below, which include many more deprecations.
    junitxml to the test binary.
 
 ****************************************************************************
-*                                  QtXml                                   *
+*                                  BobUIXml                                   *
 ****************************************************************************
 
- - [QTBUG-76177] SAX classes are now deprecated. Use QXmlStreamReader,
-   QXmlStreamWriter in QtCore instead.
+ - [BOBUIBUG-76177] SAX classes are now deprecated. Use QXmlStreamReader,
+   QXmlStreamWriter in BobUICore instead.
 
 ****************************************************************************
 *                                Configure                                 *
@@ -385,17 +385,17 @@ See also the various sections below, which include many more deprecations.
    coverage feature. This can be used for code coverage analysis.
 
  - X11:
-   * [QTBUG-67277][QTBUG-30939] The minimal required version of libxcb now
+   * [BOBUIBUG-67277][BOBUIBUG-30939] The minimal required version of libxcb now
      is 1.11.
-   * [QTBUG-67277][QTBUG-30939] Removed -qt-xcb, -system-xcb, -xkb,
+   * [BOBUIBUG-67277][BOBUIBUG-30939] Removed -bobui-xcb, -system-xcb, -xkb,
      -xcb-xinput switches.
 
 ****************************************************************************
 *                                  cmake                                   *
 ****************************************************************************
 
- - Fixed an issue where some Qt location and declarative plugins whose name
-   did not end with "Plugin" where not imported by the corresponding Qt
+ - Fixed an issue where some BobUI location and declarative plugins whose name
+   did not end with "Plugin" where not imported by the corresponding BobUI
    component package.
 
 ****************************************************************************
@@ -405,7 +405,7 @@ See also the various sections below, which include many more deprecations.
  - libjpeg-turbo was updated to version 2.0.4
 
  - X11:
-   * [QTBUG-67277][QTBUG-30939] Removed all bundled XCB libs, with the
+   * [BOBUIBUG-67277][BOBUIBUG-30939] Removed all bundled XCB libs, with the
      exception of xcb-xinput, which is not available on systems with libxcb
      1.11.
 
@@ -415,21 +415,21 @@ See also the various sections below, which include many more deprecations.
 
  - Linux:
    * Enable accessibility on Linux when Orca is started by hand
-   * [QTBUG-78754] Vulkan is now supported by eglfs (eglfs_viv backend) on
+   * [BOBUIBUG-78754] Vulkan is now supported by eglfs (eglfs_viv backend) on
      i.MX8 devices with the Vivante graphics stack. This is done via
      VK_KHR_display so no windowing system is required.
 
  - X11:
-   * [QTBUG-67277][QTBUG-30939] XKB and XInput2 now are mandatory
+   * [BOBUIBUG-67277][BOBUIBUG-30939] XKB and XInput2 now are mandatory
      dependencies for XCB plugin. XCB-XKB is a part of libxcb 1.11
-     releases. XCB-XInput is not part of libxcb 1.11 releases, but Qt
+     releases. XCB-XInput is not part of libxcb 1.11 releases, but BobUI
      builders can use the -bundled-xcb-xinput switch.
 
  - Android:
-   * [REVERTED] Qt::MaximizeUsingFullscreenGeometryHint window flag is
+   * [REVERTED] BobUI::MaximizeUsingFullscreenGeometryHint window flag is
      now supported, and will make the window fullscreen, but keep the
      system UI on-screen, with a translucent background color.
-   * [QTBUG-82120] Use native file dialog by default for open and save
+   * [BOBUIBUG-82120] Use native file dialog by default for open and save
      operations.
 
  - Windows:

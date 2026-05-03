@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (c) 2007-2008, Apple, Inc.
 // SPDX-License-Identifier: BSD-3-Clause
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp, qcolor_x11.cpp, qfiledialog.cpp
 // and many other.  This header file may change from version to version
 // without notice, or even be removed.
@@ -25,7 +25,7 @@
 
 #import <AppKit/NSApplication.h>
 
-QT_DECLARE_NAMESPACED_OBJC_INTERFACE(QCocoaApplicationDelegate, NSObject <NSApplicationDelegate>
+BOBUI_DECLARE_NAMESPACED_OBJC_INTERFACE(QCocoaApplicationDelegate, NSObject <NSApplicationDelegate>
 @property (nonatomic, retain) NSMenu *dockMenu;
 + (instancetype)sharedDelegate;
 - (void)setReflectionDelegate:(NSObject<NSApplicationDelegate> *)oldDelegate;
@@ -35,7 +35,7 @@ QT_DECLARE_NAMESPACED_OBJC_INTERFACE(QCocoaApplicationDelegate, NSObject <NSAppl
 
 #if defined(__OBJC__)
 @interface QCocoaApplicationDelegate (MenuAPI)
-- (void)qt_itemFired:(QCocoaNSMenuItem *)item;
+- (void)bobui_itemFired:(QCocoaNSMenuItem *)item;
 @end
 #endif
 

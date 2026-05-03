@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2024 Ahmad Samir <a.samirh78@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \since 6.8
     \class QDirListing
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup  io
     \brief The QDirListing class provides an STL-style iterator for directory entries.
 
@@ -141,24 +141,24 @@
 #include "qdiriterator.h"
 #include "qabstractfileengine_p.h"
 
-#if QT_CONFIG(regularexpression)
-#include <QtCore/qregularexpression.h>
+#if BOBUI_CONFIG(regularexpression)
+#include <BobUICore/qregularexpression.h>
 #endif
 
-#include <QtCore/private/qfilesystemiterator_p.h>
-#include <QtCore/private/qfilesystementry_p.h>
-#include <QtCore/private/qfilesystemmetadata_p.h>
-#include <QtCore/private/qfilesystemengine_p.h>
-#include <QtCore/private/qfileinfo_p.h>
-#include <QtCore/private/qduplicatetracker_p.h>
+#include <BobUICore/private/qfilesystemiterator_p.h>
+#include <BobUICore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
+#include <BobUICore/private/qfilesystemengine_p.h>
+#include <BobUICore/private/qfileinfo_p.h>
+#include <BobUICore/private/qduplicatetracker_p.h>
 
 #include <memory>
 #include <stack>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QDirListingPrivate
 {
@@ -193,7 +193,7 @@ public:
     QDirListing::IteratorFlags iteratorFlags;
     QDirEntryInfo currentEntryInfo;
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     std::vector<QRegularExpression> nameRegExps;
     bool regexMatchesName(const QString &fileName) const
     {
@@ -206,7 +206,7 @@ public:
 
     using FEngineIteratorPtr = std::unique_ptr<QAbstractFileEngineIterator>;
     vector_stack<FEngineIteratorPtr> fileEngineIterators;
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
     using FsIteratorPtr = std::unique_ptr<QFileSystemIterator>;
     vector_stack<FsIteratorPtr> nativeIterators;
 #endif
@@ -220,11 +220,11 @@ void QDirListingPrivate::init()
     if (nameFilters.contains("*"_L1))
         nameFilters.clear();
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     nameRegExps.reserve(size_t(nameFilters.size()));
 
     const bool isCase = iteratorFlags.testAnyFlags(QDirListing::IteratorFlag::CaseSensitive);
-    const auto cs = isCase ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    const auto cs = isCase ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     for (const auto &filter : std::as_const(nameFilters))
         nameRegExps.emplace_back(QRegularExpression::fromWildcard(filter, cs));
 #endif
@@ -241,7 +241,7 @@ void QDirListingPrivate::init()
 */
 void QDirListingPrivate::beginIterating()
 {
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
     nativeIterators.clear();
 #endif
     fileEngineIterators.clear();
@@ -274,7 +274,7 @@ void QDirListingPrivate::pushDirectory(QDirEntryInfo &entryInfo)
             // No iterator; no entry list.
         }
     } else {
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
         QFileSystemEntry *fentry = nullptr;
         if (entryInfo.fileInfoOpt)
             fentry = &entryInfo.fileInfoOpt->d_ptr->fileEntry;
@@ -282,7 +282,7 @@ void QDirListingPrivate::pushDirectory(QDirEntryInfo &entryInfo)
             fentry = &entryInfo.entry;
         nativeIterators.push(std::make_unique<QFileSystemIterator>(*fentry, iteratorFlags));
 #else
-        qWarning("Qt was built with -no-feature-filesystemiterator: no files/plugins will be found!");
+        qWarning("BobUI was built with -no-feature-filesystemiterator: no files/plugins will be found!");
 #endif
     }
 }
@@ -325,7 +325,7 @@ void QDirListingPrivate::advance()
             fileEngineIterators.pop();
         }
     } else {
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
         QDirEntryInfo entryInfo;
         while (!nativeIterators.empty()) {
             // Find the next valid iterator that matches the filters.
@@ -393,14 +393,14 @@ bool QDirListingPrivate::matchesFilters(QDirEntryInfo &entryInfo) const
         return false;
 
     // name filter
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     const bool skipNameFilters = iteratorFlags.testAnyFlags(F::NoNameFiltersForDirs)
                                  && entryInfo.isDir();
     if (!skipNameFilters) {
         if (!regexMatchesName(fileName))
             return false;
     }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
     if (isDotOrDotDot(fileName))
         return iteratorFlags.testFlags(F::IncludeDotAndDotDot);
@@ -441,7 +441,7 @@ bool QDirListingPrivate::hasIterators() const
     if (engine)
         return !fileEngineIterators.empty();
 
-#if !defined(QT_NO_FILESYSTEMITERATOR)
+#if !defined(BOBUI_NO_FILESYSTEMITERATOR)
     return !nativeIterators.empty();
 #endif
 
@@ -554,7 +554,7 @@ QStringList QDirListing::nameFilters() const
 /*!
     \class QDirListing::const_iterator
     \since 6.8
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup  io
 
     The iterator type returned by QDirListing::cbegin().
@@ -595,7 +595,7 @@ QStringList QDirListing::nameFilters() const
 /*!
     \class QDirListing::sentinel
     \since 6.8
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup  io
 
     \l QDirListing returns an object of this type to signal the end of
@@ -699,7 +699,7 @@ auto QDirListing::next(DirEntry dirEntry) -> DirEntry
 
 /*!
     \class QDirListing::DirEntry
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup  io
 
     Dereferencing a valid QDirListing::const_iterator returns a DirEntry
@@ -737,11 +737,11 @@ auto QDirListing::next(DirEntry dirEntry) -> DirEntry
     \fn bool QDirListing::DirEntry::isWritable() const
     \fn bool QDirListing::DirEntry::isExecutable() const
     \fn qint64 QDirListing::DirEntry::size() const
-    \fn QDateTime QDirListing::DirEntry::fileTime(QFile::FileTime type, const QTimeZone &tz) const
-    \fn QDateTime QDirListing::DirEntry::birthTime(const QTimeZone &tz) const;
-    \fn QDateTime QDirListing::DirEntry::metadataChangeTime(const QTimeZone &tz) const;
-    \fn QDateTime QDirListing::DirEntry::lastModified(const QTimeZone &tz) const;
-    \fn QDateTime QDirListing::DirEntry::lastRead(const QTimeZone &tz) const;
+    \fn QDateTime QDirListing::DirEntry::fileTime(QFile::FileTime type, const BOBUIimeZone &tz) const
+    \fn QDateTime QDirListing::DirEntry::birthTime(const BOBUIimeZone &tz) const;
+    \fn QDateTime QDirListing::DirEntry::metadataChangeTime(const BOBUIimeZone &tz) const;
+    \fn QDateTime QDirListing::DirEntry::lastModified(const BOBUIimeZone &tz) const;
+    \fn QDateTime QDirListing::DirEntry::lastRead(const BOBUIimeZone &tz) const;
 
     See the QFileInfo methods with the same names.
 */
@@ -846,9 +846,9 @@ qint64 QDirListing::DirEntry::size() const
     return dirListPtr->currentEntryInfo.size();
 }
 
-QDateTime QDirListing::DirEntry::fileTime(QFile::FileTime type, const QTimeZone &tz) const
+QDateTime QDirListing::DirEntry::fileTime(QFile::FileTime type, const BOBUIimeZone &tz) const
 {
     return dirListPtr->currentEntryInfo.fileTime(type, tz);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

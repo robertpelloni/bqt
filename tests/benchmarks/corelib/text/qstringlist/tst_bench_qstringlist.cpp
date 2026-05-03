@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QStringList>
-#include <QTest>
+#include <BOBUIest>
 
 #include <sstream>
 #include <string>
 #include <vector>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QStringList: public QObject
 {
@@ -81,22 +81,22 @@ void tst_QStringList::join() const
 
 void tst_QStringList::join_data() const
 {
-    QTest::addColumn<QStringList>("input");
-    QTest::addColumn<QString>("separator");
+    BOBUIest::addColumn<QStringList>("input");
+    BOBUIest::addColumn<QString>("separator");
 
-    QTest::newRow("100")
+    BOBUIest::newRow("100")
         << populateList(100, QLatin1String("unit"))
         << QString();
 
-    QTest::newRow("1000")
+    BOBUIest::newRow("1000")
         << populateList(1000, QLatin1String("unit"))
         << QString();
 
-    QTest::newRow("10000")
+    BOBUIest::newRow("10000")
         << populateList(10'000, QLatin1String("unit"))
         << QString();
 
-    QTest::newRow("100000")
+    BOBUIest::newRow("100000")
         << populateList(100'000, QLatin1String("unit"))
         << QString();
 }
@@ -113,15 +113,15 @@ void tst_QStringList::removeDuplicates() const
 
 void tst_QStringList::removeDuplicates_data() const
 {
-    QTest::addColumn<QStringList>("input");
+    BOBUIest::addColumn<QStringList>("input");
 
     const QStringList s = {"one", "two", "three"};
 
-    QTest::addRow("empty") << QStringList();
-    QTest::addRow("short-dup-0.00") << s;
-    QTest::addRow("short-dup-0.50") << (s + s);
-    QTest::addRow("short-dup-0.66") << (s + s + s);
-    QTest::addRow("short-dup-0.75") << (s + s + s + s);
+    BOBUIest::addRow("empty") << QStringList();
+    BOBUIest::addRow("short-dup-0.00") << s;
+    BOBUIest::addRow("short-dup-0.50") << (s + s);
+    BOBUIest::addRow("short-dup-0.66") << (s + s + s);
+    BOBUIest::addRow("short-dup-0.75") << (s + s + s + s);
 
     const QStringList l = []() {
         QStringList result;
@@ -131,21 +131,21 @@ void tst_QStringList::removeDuplicates_data() const
             result.push_back(QString::number(i));
         return result;
     }();
-    QTest::addRow("long-dup-0.00") << l;
-    QTest::addRow("long-dup-0.50") << (l + l);
-    QTest::addRow("long-dup-0.66") << (l + l + l);
-    QTest::addRow("long-dup-0.75") << (l + l + l + l);
+    BOBUIest::addRow("long-dup-0.00") << l;
+    BOBUIest::addRow("long-dup-0.50") << (l + l);
+    BOBUIest::addRow("long-dup-0.66") << (l + l + l);
+    BOBUIest::addRow("long-dup-0.75") << (l + l + l + l);
 }
 
 void tst_QStringList::filter_data() const
 {
-    QTest::addColumn<QStringList>("list");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<QStringList>("list");
+    BOBUIest::addColumn<QStringList>("expected");
 
     for (int i : {10, 20, 30, 40, 50, 70, 80, 100, 300, 500, 700, 900, 10'000}) {
         QStringList list = populateList(i, u"A rather long string to test QStringMatcher"_s);
         list.append(u"Horse and cart from old"_s);
-        QTest::addRow("list%d", i) << list << QStringList(u"Horse and cart from old"_s);
+        BOBUIest::addRow("list%d", i) << list << QStringList(u"Horse and cart from old"_s);
     }
 }
 
@@ -155,7 +155,7 @@ void tst_QStringList::filter() const
     QFETCH(QStringList, expected);
 
     QBENCHMARK {
-        QCOMPARE(list.filter(u"Horse and cart from old", Qt::CaseSensitive), expected);
+        QCOMPARE(list.filter(u"Horse and cart from old", BobUI::CaseSensitive), expected);
     }
 }
 
@@ -164,7 +164,7 @@ void tst_QStringList::filter_stringMatcher() const
     QFETCH(QStringList, list);
     QFETCH(QStringList, expected);
 
-    const QStringMatcher matcher(u"Horse and cart from old", Qt::CaseSensitive);
+    const QStringMatcher matcher(u"Horse and cart from old", BobUI::CaseSensitive);
     QBENCHMARK {
         QCOMPARE(list.filter(matcher), expected);
     }
@@ -172,13 +172,13 @@ void tst_QStringList::filter_stringMatcher() const
 
 void tst_QStringList::split_data() const
 {
-    QTest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("input");
     QString unit = QLatin1String("unit") + QString(100, QLatin1Char('s'));
-    //QTest::newRow("") << populateString(10, unit);
-    QTest::newRow("") << populateString(100, unit);
-    //QTest::newRow("") << populateString(100, unit);
-    //QTest::newRow("") << populateString(1000, unit);
-    //QTest::newRow("") << populateString(10000, unit);
+    //BOBUIest::newRow("") << populateString(10, unit);
+    BOBUIest::newRow("") << populateString(100, unit);
+    //BOBUIest::newRow("") << populateString(100, unit);
+    //BOBUIest::newRow("") << populateString(1000, unit);
+    //BOBUIest::newRow("") << populateString(10000, unit);
 }
 
 void tst_QStringList::split_qlist_qbytearray() const
@@ -250,6 +250,6 @@ void tst_QStringList::split_stdlist_stdstring() const
     }
 }
 
-QTEST_MAIN(tst_QStringList)
+BOBUIEST_MAIN(tst_QStringList)
 
 #include "tst_bench_qstringlist.moc"

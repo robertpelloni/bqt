@@ -1,19 +1,19 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "itemwindow.h"
 
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 
-#include <QtCore/QCommandLineOption>
-#include <QtCore/QCommandLineParser>
-#include <QtCore/QDebug>
-#include <QtCore/QStringList>
+#include <BobUICore/QCommandLineOption>
+#include <BobUICore/QCommandLineParser>
+#include <BobUICore/QDebug>
+#include <BobUICore/QStringList>
 
 #ifdef Q_OS_WIN
 #  include <qpa/qplatformnativeinterface.h>
-#  include <QtCore/QMetaObject>
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/QMetaObject>
+#  include <BobUICore/bobui_windows.h>
 #endif
 
 #include <eventfilter.h> // diaglib
@@ -21,7 +21,7 @@
 
 #include <iostream>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 static const char usage[] =
     "\nEmbeds a QWindow into a native foreign window passed on the command line.\n"
@@ -29,7 +29,7 @@ static const char usage[] =
 
 static QString windowTitle()
 {
-    return QLatin1String(QT_VERSION_STR) + QLatin1Char(' ') + QGuiApplication::platformName();
+    return QLatin1String(BOBUI_VERSION_STR) + QLatin1Char(' ') + QGuiApplication::platformName();
 }
 
 #ifdef Q_OS_WIN
@@ -39,7 +39,7 @@ static QString registerWindowClass(const QString &name)
     QString result;
     void *proc = DefWindowProc;
     QPlatformNativeInterface *ni = QGuiApplication::platformNativeInterface();
-    if (!QMetaObject::invokeMethod(ni, "registerWindowClass", Qt::DirectConnection,
+    if (!QMetaObject::invokeMethod(ni, "registerWindowClass", BobUI::DirectConnection,
                                    Q_RETURN_ARG(QString, result),
                                    Q_ARG(QString, name),
                                    Q_ARG(void *, proc))) {
@@ -123,29 +123,29 @@ public:
 
         QPoint pos(spacing, spacing);
         addItem(new TextItem(::windowTitle(), QRect(pos, QSize(width - 2 * spacing, buttonSize.height())),
-                             Qt::white));
+                             BobUI::white));
 
         pos.ry() += 2 * spacing + buttonSize.height();
 
         ButtonItem *mgi = new ButtonItem("Map to global", QRect(pos, buttonSize),
-                                         QColor(Qt::yellow).lighter(), this);
+                                         QColor(BobUI::yellow).lighter(), this);
         connect(mgi, &ButtonItem::clicked, this, &EmbeddedTestWindow::testMapToGlobal);
         addItem(mgi);
 
         pos.rx() += buttonSize.width() + spacing;
         ButtonItem *di = new ButtonItem("Dump Wins", QRect(pos, buttonSize),
-                                        QColor(Qt::cyan).lighter(), this);
-        connect(di, &ButtonItem::clicked, this, [] () { QtDiag::dumpAllWindows(); });
+                                        QColor(BobUI::cyan).lighter(), this);
+        connect(di, &ButtonItem::clicked, this, [] () { BobUIDiag::dumpAllWindows(); });
         addItem(di);
 
         pos.rx() += buttonSize.width() + spacing;
         ButtonItem *qi = new ButtonItem("Quit", QRect(pos, buttonSize),
-                                        QColor(Qt::red).lighter(), this);
-        qi->setShortcut(Qt::CTRL | Qt::Key_Q);
+                                        QColor(BobUI::red).lighter(), this);
+        qi->setShortcut(BobUI::CTRL | BobUI::Key_Q);
         connect(qi, &ButtonItem::clicked, qApp, &QCoreApplication::quit);
         addItem(qi);
 
-        setBackground(Qt::lightGray);
+        setBackground(BobUI::lightGray);
         resize(width, pos.y() + buttonSize.height() + spacing);
     }
 
@@ -164,13 +164,13 @@ struct EventFilterOption
 {
     const char *name;
     const char *description;
-    QtDiag::EventFilter::EventCategories categories;
+    BobUIDiag::EventFilter::EventCategories categories;
 };
 
 EventFilterOption eventFilterOptions[] = {
-{"mouse-events", "Dump mouse events.", QtDiag::EventFilter::MouseEvents},
-{"keyboard-events", "Dump keyboard events.", QtDiag::EventFilter::KeyEvents},
-{"state-events", "Dump state/focus change events.", QtDiag::EventFilter::StateChangeEvents | QtDiag::EventFilter::FocusEvents}
+{"mouse-events", "Dump mouse events.", BobUIDiag::EventFilter::MouseEvents},
+{"keyboard-events", "Dump keyboard events.", BobUIDiag::EventFilter::KeyEvents},
+{"state-events", "Dump state/focus change events.", BobUIDiag::EventFilter::StateChangeEvents | BobUIDiag::EventFilter::FocusEvents}
 };
 
 static inline bool isOptionSet(int argc, char *argv[], const char *option)
@@ -182,7 +182,7 @@ static inline bool isOptionSet(int argc, char *argv[], const char *option)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationVersion(QLatin1String(QT_VERSION_STR));
+    QCoreApplication::setApplicationVersion(QLatin1String(BOBUI_VERSION_STR));
     QGuiApplication::setApplicationDisplayName("Foreign Window Embedding Tester");
 
     QGuiApplication app(argc, argv);
@@ -205,13 +205,13 @@ int main(int argc, char *argv[])
 
     parser.process(QCoreApplication::arguments());
 
-    QtDiag::EventFilter::EventCategories eventCategories = {};
+    BobUIDiag::EventFilter::EventCategories eventCategories = {};
     for (int i = 0; i < eventFilterOptionCount; ++i) {
         if (parser.isSet(QLatin1String(eventFilterOptions[i].name)))
             eventCategories |= eventFilterOptions[i].categories;
     }
     if (eventCategories)
-        app.installEventFilter(new QtDiag::EventFilter(eventCategories, &app));
+        app.installEventFilter(new BobUIDiag::EventFilter(eventCategories, &app));
 
     // Obtain foreign window to test with.
     WId testForeignWinId = 0;

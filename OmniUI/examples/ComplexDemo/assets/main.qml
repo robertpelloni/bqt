@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Layouts 1.15
 import OmniUI 1.0
 import OmniCharts 1.0
 import OmniLayout 1.0
@@ -13,7 +13,7 @@ ApplicationWindow {
 
     SplitView {
         anchors.fill: parent
-        orientation: Qt.Horizontal
+        orientation: BobUI.Horizontal
 
         // Left Panel: Sequencer & Controls
         DockArea {
@@ -29,6 +29,18 @@ ApplicationWindow {
                 Sequencer {
                     id: seq
                     bpm: 140
+                }
+
+                Text { text: "Output Level" }
+                Meter {
+                    Layout.fillWidth: true
+                    height: 20
+                    level: Math.random() // Mock level
+                    running: true
+                    Timer {
+                        interval: 100; running: true; repeat: true
+                        onTriggered: parent.level = Math.random()
+                    }
                 }
 
                 RowLayout {

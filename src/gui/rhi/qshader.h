@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSHADER_H
 #define QSHADER_H
@@ -10,15 +10,15 @@
 //
 // This file is part of the RHI API, with limited compatibility guarantees.
 // Usage of this API may make your code source and binary incompatible with
-// future versions of Qt.
+// future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qmap.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qmap.h>
 #include <rhi/qshaderdescription.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QShaderPrivate;
 class QShaderKey;
@@ -111,18 +111,18 @@ public:
 
     enum class SerializedFormatVersion {
         Latest = 0,
-        Qt_6_5,
-        Qt_6_4
+        BobUI_6_5,
+        BobUI_6_4
     };
 
     QShader();
     QShader(const QShader &other);
     QShader &operator=(const QShader &other);
     QShader(QShader &&other) noexcept : d(std::exchange(other.d, nullptr)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QShader)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QShader)
     ~QShader();
 
-    void swap(QShader &other) noexcept { qt_ptr_swap(d, other.d); }
+    void swap(QShader &other) noexcept { bobui_ptr_swap(d, other.d); }
     void detach();
 
     bool isValid() const;
@@ -170,7 +170,7 @@ private:
     friend struct QShaderPrivate;
     friend Q_GUI_EXPORT bool operator==(const QShader &, const QShader &) noexcept;
     friend Q_GUI_EXPORT size_t qHash(const QShader &, size_t) noexcept;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QShader &);
 #endif
 };
@@ -231,12 +231,12 @@ inline bool operator!=(const QShaderCode &lhs, const QShaderCode &rhs) noexcept
 
 Q_GUI_EXPORT size_t qHash(const QShaderKey &k, size_t seed = 0) noexcept;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QShader &);
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QShaderKey &k);
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QShaderVersion &v);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

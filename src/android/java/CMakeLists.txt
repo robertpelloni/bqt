@@ -1,4 +1,4 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Android Java Resource files
@@ -9,9 +9,9 @@ set(resource_directories
 )
 
 set(java_bindings
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/org/qtproject/qt/android/bindings/QtActivity.java"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/org/qtproject/qt/android/bindings/QtService.java"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/org/qtproject/qt/android/bindings/QtApplication.java"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/org/bobuiproject/bobui/android/bindings/BobUIActivity.java"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/org/bobuiproject/bobui/android/bindings/BobUIService.java"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/org/bobuiproject/bobui/android/bindings/BobUIApplication.java"
 )
 
 set(strings_resouces
@@ -37,20 +37,20 @@ set(strings_resouces
     "${CMAKE_CURRENT_SOURCE_DIR}/res/values-zh-rTW/strings.xml"
 )
 
-add_custom_target(Qt${QtBase_VERSION_MAJOR}AndroidBindings
+add_custom_target(BobUI${BobUIBase_VERSION_MAJOR}AndroidBindings
     SOURCES
         ${java_bindings}
         ${strings_resouces}
 )
 
-qt_path_join(destination ${QT_INSTALL_DIR} ${INSTALL_DATADIR} "src/android/java")
+bobui_path_join(destination ${BOBUI_INSTALL_DIR} ${INSTALL_DATADIR} "src/android/java")
 
-qt_copy_or_install(DIRECTORY ${resource_directories}
+bobui_copy_or_install(DIRECTORY ${resource_directories}
                    DESTINATION "${destination}"
 )
 
-if(NOT QT_WILL_INSTALL)
-    qt_internal_copy_at_build_time(TARGET Qt${QtBase_VERSION_MAJOR}AndroidBindings
+if(NOT BOBUI_WILL_INSTALL)
+    bobui_internal_copy_at_build_time(TARGET BobUI${BobUIBase_VERSION_MAJOR}AndroidBindings
         DIRECTORIES ${resource_directories}
         DESTINATION ${destination})
 endif()
@@ -59,8 +59,8 @@ endif()
 # make this step to remove them from the build folder. This mainly useful for existing builds,
 # as clean builds wouldn't have to deal with this case.
 if ("${PROJECT_VERSION}" GREATER_EQUAL "6.7")
-    set(loader_bindings "QtLoader.java" "QtActivityLoader.java" "QtServiceLoader.java")
+    set(loader_bindings "BobUILoader.java" "BobUIActivityLoader.java" "BobUIServiceLoader.java")
     foreach(binding IN LISTS loader_bindings)
-        file(REMOVE "${destination}/src/org/qtproject/qt/android/bindings/${binding}")
+        file(REMOVE "${destination}/src/org/bobuiproject/bobui/android/bindings/${binding}")
     endforeach()
 endif()

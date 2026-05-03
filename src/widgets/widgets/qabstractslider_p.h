@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSLIDER_P_H
 #define QABSTRACTSLIDER_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qelapsedtimer.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qelapsedtimer.h"
 #include "private/qwidget_p.h"
 #include "qstyle.h"
 
-QT_REQUIRE_CONFIG(abstractslider);
+BOBUI_REQUIRE_CONFIG(abstractslider);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractSliderPrivate : public QWidgetPrivate
 {
@@ -50,13 +50,13 @@ public:
     uint pressed : 1;
     uint invertedAppearance : 1;
     uint invertedControls : 1;
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
 
     QBasicTimer repeatActionTimer;
     int repeatActionTime;
     QAbstractSlider::SliderAction repeatAction;
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     int origValue;
 
     /**
@@ -79,7 +79,7 @@ public:
     inline int effectiveSingleStep() const
     {
         return singleStep
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         * repeatMultiplier
 #endif
         ;
@@ -108,9 +108,9 @@ public:
         }
         q->triggerAction(repeatAction);
     }
-    bool scrollByDelta(Qt::Orientation orientation, Qt::KeyboardModifiers modifiers, int delta);
+    bool scrollByDelta(BobUI::Orientation orientation, BobUI::KeyboardModifiers modifiers, int delta);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSLIDER_P_H

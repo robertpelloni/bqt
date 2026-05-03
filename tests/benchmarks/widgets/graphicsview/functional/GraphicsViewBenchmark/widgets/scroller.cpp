@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QScrollBar>
 #include <QEvent>
@@ -78,7 +78,7 @@ bool ScrollerPrivate::eventFilter(QObject *obj, QEvent *event)
     switch (m_state) {
     case ScrollerPrivate::Stopped:
         if (mouseEvent->type() == QEvent::GraphicsSceneMousePress &&
-            mouseEvent->buttons() == Qt::LeftButton) {
+            mouseEvent->buttons() == BobUI::LeftButton) {
             m_cursorPos = QCursor::pos();
             m_speed = QPointF(0.0, 0.0);
             m_state = Started;

@@ -1,13 +1,13 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXABSTRACTNAVIGATOR_H
 #define QQNXABSTRACTNAVIGATOR_H
 
 #include <QObject>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaQnxNavigator);
 
@@ -26,6 +26,6 @@ protected:
     virtual bool requestInvokeUrl(const QByteArray &encodedUrl) = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXABSTRACTNAVIGATOR_H

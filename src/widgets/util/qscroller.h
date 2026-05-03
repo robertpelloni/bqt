@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCROLLER_H
 #define QSCROLLER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/QObject>
-#include <QtCore/QPointF>
-#include <QtWidgets/QScrollerProperties>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/QObject>
+#include <BobUICore/QPointF>
+#include <BobUIWidgets/QScrollerProperties>
 
 class tst_QScroller;
 
-QT_REQUIRE_CONFIG(scroller);
+BOBUI_REQUIRE_CONFIG(scroller);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QWidget;
 class QScrollerPrivate;
 class QScrollerProperties;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 class QFlickGestureRecognizer;
 class QMouseFlickGestureRecognizer;
 #endif
@@ -62,9 +62,9 @@ public:
     static QScroller *scroller(QObject *target);
     static const QScroller *scroller(const QObject *target);
 
-#ifndef QT_NO_GESTURES
-    static Qt::GestureType grabGesture(QObject *target, ScrollerGestureType gestureType = TouchGesture);
-    static Qt::GestureType grabbedGesture(QObject *target);
+#ifndef BOBUI_NO_GESTURES
+    static BobUI::GestureType grabGesture(QObject *target, ScrollerGestureType gestureType = TouchGesture);
+    static BobUI::GestureType grabbedGesture(QObject *target);
     static void ungrabGesture(QObject *target);
 #endif
 
@@ -110,11 +110,11 @@ private:
     Q_DECLARE_PRIVATE(QScroller)
 
     friend class ::tst_QScroller;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     friend class QFlickGestureRecognizer;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCROLLER_H

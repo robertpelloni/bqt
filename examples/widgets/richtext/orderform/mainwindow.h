@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -8,10 +8,10 @@
 #include <QMainWindow>
 #include <QPair>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
-class QTabWidget;
-QT_END_NAMESPACE
+class BOBUIabWidget;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class MainWindow : public QMainWindow
@@ -32,7 +32,7 @@ private:
                       bool sendOffers);
 
     QAction *printAction;
-    QTabWidget *letters;
+    BOBUIabWidget *letters;
 };
 //! [0]
 

@@ -1,9 +1,9 @@
 // Copyright (C) 2012 Hewlett-Packard Development Company, L.P.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtNetwork/private/qbytedatabuffer_p.h>
+#include <BobUINetwork/private/qbytedatabuffer_p.h>
 
 // for QIODEVICE_BUFFERSIZE macro (== 16384):
 #include <private/qiodevice_p.h>
@@ -122,11 +122,11 @@ void tst_QByteDataBuffer::readBuffer(int size, int readSize)
 
 void tst_QByteDataBuffer::readCompleteBuffer_data()
 {
-    QTest::addColumn<int>("size");
-    QTest::newRow("10B") << (int)10;
-    QTest::newRow("1MB") << (int)1e6;
-    QTest::newRow("5MB") << (int)5e6;
-    QTest::newRow("10MB") << (int)10e6;
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::newRow("10B") << (int)10;
+    BOBUIest::newRow("1MB") << (int)1e6;
+    BOBUIest::newRow("5MB") << (int)5e6;
+    BOBUIest::newRow("10MB") << (int)10e6;
 }
 
 void tst_QByteDataBuffer::readCompleteBuffer()
@@ -202,5 +202,5 @@ void tst_QByteDataBuffer::readPointer()
     QCOMPARE(view, "");
 }
 
-QTEST_MAIN(tst_QByteDataBuffer)
+BOBUIEST_MAIN(tst_QByteDataBuffer)
 #include "tst_qbytedatabuffer.moc"

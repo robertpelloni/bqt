@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include <qpa/qplatformintegrationplugin.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qstringlist.h>
 
 #include "qwindowsgdiintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
-    \title Qt platform plugin for Windows
+    \title BobUI platform plugin for Windows
 
-    \brief Class documentation of the  Qt platform plugin for Windows.
+    \brief Class documentation of the  BobUI platform plugin for Windows.
 
     \section1 Supported Parameters
 
@@ -38,14 +38,14 @@ using namespace Qt::StringLiterals;
  */
 
 /*!
-    \namespace QtWindows
+    \namespace BobUIWindows
 
     \brief Namespace for enumerations, etc.
     \internal
 */
 
 /*!
-    \enum QtWindows::WindowsEventType
+    \enum BobUIWindows::WindowsEventType
 
     \brief Enumerations for WM_XX events.
 
@@ -64,11 +64,11 @@ public:
 
 QPlatformIntegration *QWindowsIntegrationPlugin::create(const QString& system, const QStringList& paramList, int &, char **)
 {
-    if (system.compare(system, "windows"_L1, Qt::CaseInsensitive) == 0)
+    if (system.compare(system, "windows"_L1, BobUI::CaseInsensitive) == 0)
         return new QWindowsGdiIntegration(paramList);
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

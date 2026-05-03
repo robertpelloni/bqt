@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qimageiohandler.h>
 #include <qdebug.h>
 
-#ifdef QT_NO_IMAGEFORMAT_ICO
-#undef QT_NO_IMAGEFORMAT_ICO
+#ifdef BOBUI_NO_IMAGEFORMAT_ICO
+#undef BOBUI_NO_IMAGEFORMAT_ICO
 #endif
 #include "qicohandler.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QICOPlugin : public QImageIOPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QImageIOHandlerFactoryInterface" FILE "ico.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QImageIOHandlerFactoryInterface" FILE "ico.json")
 public:
     Capabilities capabilities(QIODevice *device, const QByteArray &format) const override;
     QImageIOHandler *create(QIODevice *device, const QByteArray &format = QByteArray()) const override;
@@ -30,7 +30,7 @@ QImageIOPlugin::Capabilities QICOPlugin::capabilities(QIODevice *device, const Q
         return { };
 
     Capabilities cap;
-    if (device->isReadable() && QtIcoHandler::canRead(device))
+    if (device->isReadable() && BobUIIcoHandler::canRead(device))
         cap |= CanRead;
     if (device->isWritable())
         cap |= CanWrite;
@@ -39,12 +39,12 @@ QImageIOPlugin::Capabilities QICOPlugin::capabilities(QIODevice *device, const Q
 
 QImageIOHandler *QICOPlugin::create(QIODevice *device, const QByteArray &format) const
 {
-    QImageIOHandler *handler = new QtIcoHandler(device);
+    QImageIOHandler *handler = new BobUIIcoHandler(device);
 
     handler->setFormat(format);
     return handler;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

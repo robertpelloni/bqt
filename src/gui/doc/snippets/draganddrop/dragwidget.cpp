@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QApplication>
@@ -13,7 +13,7 @@ DragWidget::DragWidget(QWidget *parent)
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     dragDropLabel = new QLabel("", this);
-    dragDropLabel->setAlignment(Qt::AlignHCenter);
+    dragDropLabel->setAlignment(BobUI::AlignHCenter);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addStretch(0);
@@ -34,18 +34,18 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 //! [1]
 void DragWidget::dropEvent(QDropEvent *event)
 {
-    if (event->source() == this && event->possibleActions() & Qt::MoveAction)
+    if (event->source() == this && event->possibleActions() & BobUI::MoveAction)
         return;
 //! [1]
 
 //! [2]
-    if (event->proposedAction() == Qt::MoveAction) {
+    if (event->proposedAction() == BobUI::MoveAction) {
         event->acceptProposedAction();
         // Process the data from the event.
 //! [2]
         emit dragResult(tr("The data was moved here."));
 //! [3]
-    } else if (event->proposedAction() == Qt::CopyAction) {
+    } else if (event->proposedAction() == BobUI::CopyAction) {
         event->acceptProposedAction();
         // Process the data from the event.
 //! [3]
@@ -68,7 +68,7 @@ void DragWidget::dropEvent(QDropEvent *event)
 //! [6]
 void DragWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == BobUI::LeftButton)
         dragStartPosition = event->pos();
 }
 //! [6]
@@ -76,7 +76,7 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
 //! [7]
 void DragWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (!(event->buttons() & Qt::LeftButton))
+    if (!(event->buttons() & BobUI::LeftButton))
         return;
     if ((event->pos() - dragStartPosition).manhattanLength()
          < QApplication::startDragDistance())
@@ -88,14 +88,14 @@ void DragWidget::mouseMoveEvent(QMouseEvent *event)
     mimeData->setData(mimeType, data);
     drag->setMimeData(mimeData);
 
-    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction);
+    BobUI::DropAction dropAction = drag->exec(BobUI::CopyAction | BobUI::MoveAction);
 //! [7]
 
     switch (dropAction) {
-        case Qt::CopyAction:
+        case BobUI::CopyAction:
             emit dragResult(tr("The text was copied."));
             break;
-        case Qt::MoveAction:
+        case BobUI::MoveAction:
             emit dragResult(tr("The text was moved."));
             break;
         default:

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONTMETRICS_H
 #define QFONTMETRICS_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qfont.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qfont.h>
 
-#ifndef QT_INCLUDE_COMPAT
-#include <QtCore/qrect.h>
+#ifndef BOBUI_INCLUDE_COMPAT
+#include <BobUICore/qrect.h>
 #endif
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRect;
-class QTextOption;
+class BOBUIextOption;
 
 class Q_GUI_EXPORT QFontMetrics
 {
@@ -26,7 +26,7 @@ public:
     ~QFontMetrics();
 
     QFontMetrics &operator=(const QFontMetrics &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFontMetrics)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFontMetrics)
 
     void swap(QFontMetrics &other) noexcept
     { d.swap(other.d); }
@@ -51,13 +51,13 @@ public:
     int rightBearing(QChar) const;
 
     int horizontalAdvance(const QString &, int len = -1) const;
-    int horizontalAdvance(const QString &, const QTextOption &textOption) const;
+    int horizontalAdvance(const QString &, const BOBUIextOption &textOption) const;
     int horizontalAdvance(QChar) const;
 
     QRect boundingRect(QChar) const;
 
     QRect boundingRect(const QString &text) const;
-    QRect boundingRect(const QString &text, const QTextOption &textOption) const;
+    QRect boundingRect(const QString &text, const BOBUIextOption &textOption) const;
     QRect boundingRect(const QRect &r, int flags, const QString &text, int tabstops = 0, int *tabarray = nullptr) const;
     inline QRect boundingRect(int x, int y, int w, int h, int flags, const QString &text,
                               int tabstops = 0, int *tabarray = nullptr) const
@@ -65,9 +65,9 @@ public:
     QSize size(int flags, const QString& str, int tabstops = 0, int *tabarray = nullptr) const;
 
     QRect tightBoundingRect(const QString &text) const;
-    QRect tightBoundingRect(const QString &text, const QTextOption &textOption) const;
+    QRect tightBoundingRect(const QString &text, const BOBUIextOption &textOption) const;
 
-    QString elidedText(const QString &text, Qt::TextElideMode mode, int width, int flags = 0) const;
+    QString elidedText(const QString &text, BobUI::TextElideMode mode, int width, int flags = 0) const;
 
     int underlinePos() const;
     int overlinePos() const;
@@ -99,7 +99,7 @@ public:
 
     QFontMetricsF &operator=(const QFontMetricsF &);
     QFontMetricsF &operator=(const QFontMetrics &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFontMetricsF)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFontMetricsF)
 
     void swap(QFontMetricsF &other) noexcept { d.swap(other.d); }
 
@@ -124,18 +124,18 @@ public:
 
     qreal horizontalAdvance(const QString &string, int length = -1) const;
     qreal horizontalAdvance(QChar) const;
-    qreal horizontalAdvance(const QString &string, const QTextOption &textOption) const;
+    qreal horizontalAdvance(const QString &string, const BOBUIextOption &textOption) const;
 
     QRectF boundingRect(const QString &string) const;
-    QRectF boundingRect(const QString &text, const QTextOption &textOption) const;
+    QRectF boundingRect(const QString &text, const BOBUIextOption &textOption) const;
     QRectF boundingRect(QChar) const;
     QRectF boundingRect(const QRectF &r, int flags, const QString& string, int tabstops = 0, int *tabarray = nullptr) const;
     QSizeF size(int flags, const QString& str, int tabstops = 0, int *tabarray = nullptr) const;
 
     QRectF tightBoundingRect(const QString &text) const;
-    QRectF tightBoundingRect(const QString &text, const QTextOption &textOption) const;
+    QRectF tightBoundingRect(const QString &text, const BOBUIextOption &textOption) const;
 
-    QString elidedText(const QString &text, Qt::TextElideMode mode, qreal width, int flags = 0) const;
+    QString elidedText(const QString &text, BobUI::TextElideMode mode, qreal width, int flags = 0) const;
 
     qreal underlinePos() const;
     qreal overlinePos() const;
@@ -153,6 +153,6 @@ private:
 
 Q_DECLARE_SHARED(QFontMetricsF)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONTMETRICS_H

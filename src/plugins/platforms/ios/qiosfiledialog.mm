@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <UIKit/UIKit.h>
 
 #import <Photos/Photos.h>
 
-#include <QtCore/qstandardpaths.h>
-#include <QtGui/qwindow.h>
+#include <BobUICore/qstandardpaths.h>
+#include <BobUIGui/qwindow.h>
 #include <QDebug>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qiosglobal.h"
 #include "qiosfiledialog.h"
@@ -18,9 +18,9 @@
 #include "qiosoptionalplugininterface.h"
 #include "qiosdocumentpickercontroller.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QIOSFileDialog::QIOSFileDialog()
     : m_viewController(nullptr)
@@ -37,7 +37,7 @@ void QIOSFileDialog::exec()
     m_eventLoop.exec(QEventLoop::DialogExec);
 }
 
-bool QIOSFileDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QIOSFileDialog::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_UNUSED(windowFlags);
     Q_UNUSED(windowModality);
@@ -75,7 +75,7 @@ bool QIOSFileDialog::showImagePickerDialog(QWindow *parent)
     }
 
     if (!m_viewController) {
-        qWarning() << "QIOSFileDialog: Could not resolve Qt plugin that gives access to photos on iOS";
+        qWarning() << "QIOSFileDialog: Could not resolve BobUI plugin that gives access to photos on iOS";
         return false;
     }
 

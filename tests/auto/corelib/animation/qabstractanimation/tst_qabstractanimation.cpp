@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/qabstractanimation.h>
-#include <QtCore/qanimationgroup.h>
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BobUICore/qabstractanimation.h>
+#include <BobUICore/qanimationgroup.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 
 class tst_QAbstractAnimation : public QObject
 {
@@ -151,7 +151,7 @@ void tst_QAbstractAnimation::avoidJumpAtStart()
         so the sleep should have no effect
     */
     anim.start();
-    QTest::qSleep(300);
+    BOBUIest::qSleep(300);
     QCoreApplication::processEvents();
     QVERIFY(anim.currentTime() < 50);
 }
@@ -168,7 +168,7 @@ void tst_QAbstractAnimation::avoidJumpAtStartWithStop()
     anim3.setDuration(1000);
 
     anim.start();
-    QTest::qWait(300);
+    BOBUIest::qWait(300);
     anim.stop();
 
     /*
@@ -176,7 +176,7 @@ void tst_QAbstractAnimation::avoidJumpAtStartWithStop()
         running animation that is stopped
     */
     anim2.start();
-    QTest::qSleep(300);
+    BOBUIest::qSleep(300);
     anim3.start();
     QCoreApplication::processEvents();
     QVERIFY(anim2.currentTime() < 50);
@@ -195,14 +195,14 @@ void tst_QAbstractAnimation::avoidJumpAtStartWithRunning()
     anim3.setDuration(1000);
 
     anim.start();
-    QTest::qWait(300);  //make sure timer has started
+    BOBUIest::qWait(300);  //make sure timer has started
 
     /*
         same test as avoidJumpAtStart, but with an
         existing running animation
     */
     anim2.start();
-    QTest::qSleep(300); //force large delta for next tick
+    BOBUIest::qSleep(300); //force large delta for next tick
     anim3.start();
     QCoreApplication::processEvents();
     QVERIFY(anim2.currentTime() < 50);
@@ -212,7 +212,7 @@ void tst_QAbstractAnimation::avoidJumpAtStartWithRunning()
 void tst_QAbstractAnimation::stateBinding()
 {
     TestableQAbstractAnimation animation;
-    QTestPrivate::testReadOnlyPropertyBasics(animation, QAbstractAnimation::Stopped,
+    BOBUIestPrivate::testReadOnlyPropertyBasics(animation, QAbstractAnimation::Stopped,
                                              QAbstractAnimation::Running, "state",
                                              [&] { animation.start(); });
 }
@@ -220,7 +220,7 @@ void tst_QAbstractAnimation::stateBinding()
 void tst_QAbstractAnimation::loopCountBinding()
 {
     TestableQAbstractAnimation animation;
-    QTestPrivate::testReadWritePropertyBasics(animation, 42, 43, "loopCount");
+    BOBUIestPrivate::testReadWritePropertyBasics(animation, 42, 43, "loopCount");
 }
 
 void tst_QAbstractAnimation::currentTimeBinding()
@@ -228,7 +228,7 @@ void tst_QAbstractAnimation::currentTimeBinding()
     TestableQAbstractAnimation animation;
 
     QProperty<int> currentTimeProperty;
-    animation.bindableCurrentTime().setBinding(Qt::makePropertyBinding(currentTimeProperty));
+    animation.bindableCurrentTime().setBinding(BobUI::makePropertyBinding(currentTimeProperty));
     QCOMPARE(animation.currentTime(), currentTimeProperty);
 
     // This should cancel the binding
@@ -237,14 +237,14 @@ void tst_QAbstractAnimation::currentTimeBinding()
     currentTimeProperty = 5;
     QVERIFY(animation.currentTime() != currentTimeProperty);
 
-    QTestPrivate::testReadWritePropertyBasics(animation, 6, 7, "currentTime");
+    BOBUIestPrivate::testReadWritePropertyBasics(animation, 6, 7, "currentTime");
 }
 
 void tst_QAbstractAnimation::currentLoopBinding()
 {
     TestableQAbstractAnimation animation;
 
-    QTestPrivate::testReadOnlyPropertyBasics(animation, 0, 3, "currentLoop", [&] {
+    BOBUIestPrivate::testReadOnlyPropertyBasics(animation, 0, 3, "currentLoop", [&] {
         // Trigger an update of currentLoop
         animation.setLoopCount(4);
         // This brings us to the end of the animation, so currentLoop should be loopCount - 1
@@ -255,7 +255,7 @@ void tst_QAbstractAnimation::currentLoopBinding()
 void tst_QAbstractAnimation::directionBinding()
 {
     TestableQAbstractAnimation animation;
-    QTestPrivate::testReadWritePropertyBasics(animation, QAbstractAnimation::Backward,
+    BOBUIestPrivate::testReadWritePropertyBasics(animation, QAbstractAnimation::Backward,
                                               QAbstractAnimation::Forward, "direction");
 
     // setDirection() may trigger a currentLoop update. Make sure the observers
@@ -293,6 +293,6 @@ void tst_QAbstractAnimation::directionBinding()
     QVERIFY(directionChanged);
 }
 
-QTEST_MAIN(tst_QAbstractAnimation)
+BOBUIEST_MAIN(tst_QAbstractAnimation)
 
 #include "tst_qabstractanimation.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhimetal_p.h"
 #include "qshader_p.h"
@@ -7,14 +7,14 @@
 #include <QWindow>
 #include <QUrl>
 #include <QFile>
-#include <QTemporaryFile>
+#include <BOBUIemporaryFile>
 #include <QFileInfo>
 #include <qmath.h>
 #include <QOperatingSystemVersion>
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/private/qmetallayer_p.h>
-#include <QtGui/qpa/qplatformwindow_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qmetallayer_p.h>
+#include <BobUIGui/qpa/qplatformwindow_p.h>
 
 #ifdef Q_OS_MACOS
 #include <AppKit/AppKit.h>
@@ -28,7 +28,7 @@
 
 #include <utility> // for std::pair
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     Metal backend. Double buffers and throttles to vsync. "Dynamic" buffers are
@@ -45,9 +45,9 @@ QT_BEGIN_NAMESPACE
 #error ARC not supported
 #endif
 
-// Even though the macOS 13 MTLBinaryArchive problem (QTBUG-106703) seems
+// Even though the macOS 13 MTLBinaryArchive problem (BOBUIBUG-106703) seems
 // to be solved in later 13.x releases, we have reports from old Intel hardware
-// and older macOS versions where this causes problems (QTBUG-114338).
+// and older macOS versions where this causes problems (BOBUIBUG-114338).
 // Thus we no longer do OS version based differentiation, but rather have a
 // single toggle that is currently on, and so QRhi::(set)pipelineCache()
 // does nothing with Metal.
@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiMetalInitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Metal specific initialization parameters.
@@ -99,7 +99,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiMetalNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Holds the Metal device used by the QRhi.
@@ -123,7 +123,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiMetalCommandBufferNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Holds the MTLCommandBuffer and MTLRenderCommandEncoder objects that are backing a QRhiCommandBuffer.
@@ -611,7 +611,7 @@ bool QRhiMetal::create(QRhi::Flags flags)
     // an option when capturing, and becomes especially useful when having
     // multiple windows with multiple QRhis.
     d->captureScope = [d->captureMgr newCaptureScopeWithCommandQueue: d->cmdQueue];
-    const QString label = QString::asprintf("Qt capture scope for QRhi %p", this);
+    const QString label = QString::asprintf("BobUI capture scope for QRhi %p", this);
     d->captureScope.label = label.toNSString();
 
 #if defined(Q_OS_MACOS) || defined(Q_OS_VISIONOS)
@@ -979,7 +979,7 @@ QByteArray QRhiMetal::pipelineCacheData()
     if (!d->binArch || !rhiFlags.testFlag(QRhi::EnablePipelineCacheDataSave))
         return data;
 
-    QTemporaryFile tmp;
+    BOBUIemporaryFile tmp;
     if (!tmp.open()) {
         qCDebug(QRHI_LOG_INFO, "pipelineCacheData: Failed to create temporary file for Metal");
         return data;
@@ -1073,7 +1073,7 @@ void QRhiMetal::setPipelineCacheData(const QByteArray &data)
 
     const char *p = data.constData() + dataOffset;
 
-    QTemporaryFile tmp;
+    BOBUIemporaryFile tmp;
     if (!tmp.open()) {
         qCDebug(QRHI_LOG_INFO, "pipelineCacheData: Failed to create temporary file for Metal");
         return;
@@ -2501,26 +2501,26 @@ QRhi::FrameOpResult QRhiMetal::endFrame(QRhiSwapChain *swapChain, QRhi::EndFrame
                 if (NSThread.currentThread == NSThread.mainThread) {
                     presentWithTransaction();
                 } else {
-                    auto *qtMetalLayer = qt_objc_cast<QMetalLayer*>(swapChainD->d->layer);
-                    Q_ASSERT(qtMetalLayer);
+                    auto *bobuiMetalLayer = bobui_objc_cast<QMetalLayer*>(swapChainD->d->layer);
+                    Q_ASSERT(bobuiMetalLayer);
                     // Let the main thread present the drawable from displayLayer
-                    qtMetalLayer.mainThreadPresentation = presentWithTransaction;
+                    bobuiMetalLayer.mainThreadPresentation = presentWithTransaction;
                 }
             } else {
                 // Keep strong reference to Metal layer so it's valid in the block
-                auto *qtMetalLayer = qt_objc_cast<QMetalLayer*>(swapChainD->d->layer);
+                auto *bobuiMetalLayer = bobui_objc_cast<QMetalLayer*>(swapChainD->d->layer);
                 [commandBuffer addScheduledHandler:^(id<MTLCommandBuffer>) {
-                    if (qtMetalLayer) {
+                    if (bobuiMetalLayer) {
                         // The schedule handler comes in on the com.Metal.CompletionQueueDispatch
                         // thread, which means we might be racing against a display cycle on the
                         // main thread. If the displayLayer is already in progress, we don't want
                         // to step on its toes.
-                        if (qtMetalLayer.displayLock.tryLockForRead()) {
+                        if (bobuiMetalLayer.displayLock.tryLockForRead()) {
                             [drawable present];
-                            qtMetalLayer.displayLock.unlock();
+                            bobuiMetalLayer.displayLock.unlock();
                         } else {
                             qCDebug(QRHI_LOG_INFO) << "Skipping" << drawable
-                                << "due to" << qtMetalLayer << "needing display";
+                                << "due to" << bobuiMetalLayer << "needing display";
                         }
                     } else {
                         [drawable present];
@@ -5818,7 +5818,7 @@ bool QMetalGraphicsPipeline::createTessellationPipelines(const QShader &tessVert
     // Now the vertex shader is a compute shader.
     // It should have three dedicated *VertexAsComputeShader variants.
     // What the requested variant was (Standard or Batchable) plays no role here.
-    // (the Qt Quick scenegraph does not use tessellation with its materials)
+    // (the BobUI Quick scenegraph does not use tessellation with its materials)
     // Create all three versions.
 
     bool variantsPresent[3] = {};
@@ -6511,7 +6511,7 @@ bool QMetalSwapChain::createOrResize()
     } else if (m_flags.testFlag(SurfaceHasNonPreMulAlpha)) {
         // The CoreAnimation compositor is said to expect premultiplied alpha,
         // so this is then wrong when it comes to the blending operations but
-        // there's nothing we can do. Fortunately Qt Quick always outputs
+        // there's nothing we can do. Fortunately BobUI Quick always outputs
         // premultiplied alpha so it is not a problem there.
         d->layer.opaque = NO;
     } else {
@@ -6631,4 +6631,4 @@ QRhiSwapChainHdrInfo QMetalSwapChain::hdrInfo()
     return info;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

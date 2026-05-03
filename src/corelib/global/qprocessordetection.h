@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #if 0
-#pragma qt_class(QtProcessorDetection)
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_class(BobUIProcessorDetection)
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QPROCESSORDETECTION_H
@@ -343,7 +343,7 @@
 #  define Q_PROCESSOR_WASM
 #  define Q_BYTE_ORDER Q_LITTLE_ENDIAN
 #  define Q_PROCESSOR_WORDSIZE 8
-#ifdef QT_COMPILER_SUPPORTS_SSE2
+#ifdef BOBUI_COMPILER_SUPPORTS_SSE2
 #  define Q_PROCESSOR_X86 6   // enables SIMD support
 # define Q_PROCESSOR_X86_64 // wasm64
 #  define Q_PROCESSOR_WASM_64
@@ -386,13 +386,13 @@
 */
 
 #if defined __SIZEOF_POINTER__
-#  define QT_POINTER_SIZE           __SIZEOF_POINTER__
+#  define BOBUI_POINTER_SIZE           __SIZEOF_POINTER__
 #elif defined(__LP64__) || defined(_LP64)
-#  define QT_POINTER_SIZE           8
+#  define BOBUI_POINTER_SIZE           8
 #elif defined(Q_PROCESSOR_WORDSIZE)
-#  define QT_POINTER_SIZE           Q_PROCESSOR_WORDSIZE
+#  define BOBUI_POINTER_SIZE           Q_PROCESSOR_WORDSIZE
 #else
-#  define QT_POINTER_SIZE           4
+#  define BOBUI_POINTER_SIZE           4
 #endif
 
 /*
@@ -400,10 +400,10 @@
    the size of the register). On some architectures where a pointer could be
    smaller than the register, the macro is defined above.
 
-   Falls back to QT_POINTER_SIZE if not set explicitly for the platform.
+   Falls back to BOBUI_POINTER_SIZE if not set explicitly for the platform.
 */
 #ifndef Q_PROCESSOR_WORDSIZE
-#  define Q_PROCESSOR_WORDSIZE        QT_POINTER_SIZE
+#  define Q_PROCESSOR_WORDSIZE        BOBUI_POINTER_SIZE
 #endif
 
 

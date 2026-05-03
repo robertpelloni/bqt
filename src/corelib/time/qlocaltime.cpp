@@ -1,23 +1,23 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlocaltime_p.h"
 #include "qplatformdefs.h"
 
 #include "private/qcalendarmath_p.h"
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
 #include "private/qdatetimeparser_p.h"
 #endif
 #include "private/qgregoriancalendar_p.h"
 #include "private/qnumeric_p.h"
-#include "private/qtenvironmentvariables_p.h"
-#if QT_CONFIG(timezone)
-#include "private/qtimezoneprivate_p.h"
+#include "private/bobuienvironmentvariables_p.h"
+#if BOBUI_CONFIG(timezone)
+#include "private/bobuiimezoneprivate_p.h"
 #endif
 
 #include <time.h>
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
 #ifdef __GLIBC__ // Extends struct tm with some extra fields:
@@ -25,12 +25,12 @@
 #define HAVE_TM_ZONE // tm_zone is the zone abbreviation.
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtPrivate::DateTimeConstants;
+using namespace BobUIPrivate::DateTimeConstants;
 namespace {
 /*
-    Qt represents n BCE as -n, whereas struct tm's tm_year field represents a
+    BobUI represents n BCE as -n, whereas struct tm's tm_year field represents a
     year by the number of years after (negative for before) 1900, so that 1+m
     BCE is -1900 -m; so treating 1 BCE as 0 CE. We thus shift by different
     offsets depending on whether the year is BCE or CE.
@@ -80,7 +80,7 @@ public:
    value, consistent with that; so we don't call mktime() on MS in this case and
    can't get -1 unless it's a real error). However, on UNIX, that's -1 UTC time
    and all we know, aside from mktime's return, is the local time. (We could
-   check errno, but we call mktime from within a qt_scoped_lock(QBasicMutex),
+   check errno, but we call mktime from within a bobui_scoped_lock(QBasicMutex),
    whose unlocking and destruction of the locker might frob errno.)
 
    We can assume time-zone offsets are less than a day, so this can only arise
@@ -173,7 +173,7 @@ struct tm matchYearMonth(struct tm when, const struct tm &base)
     while (when.tm_mon > base.tm_mon) {
         const auto yearMon = QRoundingDown::qDivMod<12>(when.tm_mon);
         int year = yearMon.quotient;
-        // We want the month before's Qt month number, which is the tm_mon mod 12:
+        // We want the month before's BobUI month number, which is the tm_mon mod 12:
         int month = yearMon.remainder;
         if (month == 0) {
             --year;
@@ -185,7 +185,7 @@ struct tm matchYearMonth(struct tm when, const struct tm &base)
     }
     while (when.tm_mon < base.tm_mon) {
         const auto yearMon = QRoundingDown::qDivMod<12>(when.tm_mon);
-        // Qt month number is offset from tm_mon by one:
+        // BobUI month number is offset from tm_mon by one:
         when.tm_mday -= QGregorianCalendar::monthLength(
             yearMon.remainder + 1, qYearFromTmYear(yearMon.quotient + when.tm_year));
         ++when.tm_mon;
@@ -205,7 +205,7 @@ struct tm adjacentDay(struct tm when, int dayStep)
 
     if (dayStep < 0) {
         if (when.tm_mday <= 0) {
-            // Month before's day-count; but tm_mon's value is one less than Qt's
+            // Month before's day-count; but tm_mon's value is one less than BobUI's
             // month numbering so, before we decrement it, it has the value we need,
             // unless it's 0.
             int daysInMonth = when.tm_mon
@@ -463,7 +463,7 @@ inline bool secondsAndMillisOverflow(qint64 epochSeconds, qint64 millis, qint64 
 
 namespace QLocalTime {
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 // Even if local time is currently in DST, this returns the standard time offset
 // (in seconds) nominally in effect at present:
 int getCurrentStandardUtcOffset()
@@ -524,7 +524,7 @@ int getUtcOffset(qint64 atMSecsSinceEpoch)
 {
     return QDateTimePrivate::expressUtcAsLocal(atMSecsSinceEpoch).offset;
 }
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 // Calls the platform variant of localtime() for the given utcMillis, and
 // returns the local milliseconds, offset from UTC and DST status.
@@ -717,4 +717,4 @@ SystemMillisRange computeSystemMillisRange()
 
 } // QLocalTime
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONT_H
 #define QFONT_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qendian.h>
-#include <QtCore/qshareddata.h>
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/qstring.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QFontPrivate;                                     /* don't touch */
@@ -245,12 +245,12 @@ public:
         }
         Q_GUI_EXPORT static std::optional<Tag> fromString(QAnyStringView view) noexcept;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
         friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, Tag);
         friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, Tag &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         friend Q_GUI_EXPORT QDebug operator<<(QDebug debug, Tag tag);
 #endif
 
@@ -260,8 +260,8 @@ public:
     private:
         friend constexpr bool comparesEqual(const Tag &lhs, const Tag &rhs) noexcept
         { return lhs.m_value == rhs.m_value; }
-        friend constexpr Qt::strong_ordering compareThreeWay(const Tag &lhs, const Tag &rhs) noexcept
-        { return Qt::compareThreeWay(lhs.m_value, rhs.m_value); }
+        friend constexpr BobUI::strong_ordering compareThreeWay(const Tag &lhs, const Tag &rhs) noexcept
+        { return BobUI::compareThreeWay(lhs.m_value, rhs.m_value); }
         Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QFont::Tag)
 
         quint32 m_value = 0;
@@ -290,7 +290,7 @@ public:
     bool operator<(const QFont &) const;
     operator QVariant() const;
     bool isCopyOf(const QFont &) const;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFont)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFont)
 
     QString key() const;
 
@@ -313,9 +313,9 @@ public:
     inline uint resolveMask() const { return resolve_mask; }
     inline void setResolveMask(uint mask) { resolve_mask = mask; }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use setWeight() instead") void setLegacyWeight(int legacyWeight);
-    QT_DEPRECATED_VERSION_X_6_0("Use weight() instead") int legacyWeight() const;
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use setWeight() instead") void setLegacyWeight(int legacyWeight);
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use weight() instead") int legacyWeight() const;
 #endif
 
 private:
@@ -334,28 +334,28 @@ private:
     friend class QApplication;
     friend class QWidget;
     friend class QWidgetPrivate;
-    friend class QTextLayout;
-    friend class QTextEngine;
+    friend class BOBUIextLayout;
+    friend class BOBUIextEngine;
     friend class QStackTextEngine;
-    friend class QTextLine;
+    friend class BOBUIextLine;
     friend struct QScriptLine;
     friend class QOpenGLContext;
     friend class QWin32PaintEngine;
     friend class QAlphaPaintEngine;
     friend class QPainterPath;
-    friend class QTextItemInt;
+    friend class BOBUIextItemInt;
     friend class QPicturePaintEngine;
     friend class QPainterReplayer;
     friend class QPaintBufferEngine;
     friend class QCommandLinkButtonPrivate;
     friend class QFontEngine;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QFont &);
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QFont &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QFont &);
 #endif
 
@@ -388,15 +388,15 @@ inline void QFont::setItalic(bool b) {
   QFont stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QFont &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QFont &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QFont &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONT_H

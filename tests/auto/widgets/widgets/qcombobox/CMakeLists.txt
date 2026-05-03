@@ -1,31 +1,31 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qcombobox Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qcombobox LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
-list(APPEND test_data "qtlogo.png")
-list(APPEND test_data "qtlogoinverted.png")
+list(APPEND test_data "bobuilogo.png")
+list(APPEND test_data "bobuilogoinverted.png")
 
-qt_internal_add_test(tst_qcombobox
+bobui_internal_add_test(tst_qcombobox
     SOURCES
         tst_qcombobox.cpp
     DEFINES
-        QTEST_QPA_MOUSE_HANDLING
+        BOBUIEST_QPA_MOUSE_HANDLING
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::TestPrivate
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::TestPrivate
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
     TESTDATA ${test_data}
 )

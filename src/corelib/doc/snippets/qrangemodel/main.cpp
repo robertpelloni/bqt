@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore/qrangemodel.h>
+#include <BobUICore/qrangemodel.h>
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qlistview.h>
-#include <QtWidgets/qtableview.h>
-#include <QtWidgets/qtreeview.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qlistview.h>
+#include <BobUIWidgets/bobuiableview.h>
+#include <BobUIWidgets/bobuireeview.h>
 
 #include <array>
 #include <vector>
@@ -97,7 +97,7 @@ void grid_of_numbers()
         {11, 12, 13, 14, 15},
     };
     QRangeModel model(&gridOfNumbers); // columnCount() == 5
-    QTableView tableView;
+    BOBUIableView tableView;
     tableView.setModel(&model);
     //! [grid_of_numbers]
 }
@@ -112,7 +112,7 @@ void pair_int_QString()
         {3, "three"}
     };
     QRangeModel model(&numberNames); // columnCount() == 2
-    QTableView tableView;
+    BOBUIableView tableView;
     tableView.setModel(&model);
     //! [pair_int_QString]
 }
@@ -372,7 +372,7 @@ void tree_protocol()
     //! [tree_protocol_6]
     // instantiate the model with a pointer to the tree, not a copy!
     QRangeModel model(&tree);
-    QTreeView view;
+    BOBUIreeView view;
     view.setModel(&model);
     //! [tree_protocol_6]
 }
@@ -478,7 +478,7 @@ int main(int argc, char **argv)
     Tree tree = make_tree_of_pointers();
 
     QRangeModel model(std::move(tree), TreeTraversal{});
-    QTreeView treeView;
+    BOBUIreeView treeView;
     treeView.setModel(&model);
     treeView.show();
 
@@ -491,16 +491,16 @@ int main(int argc, char **argv)
 void color_map()
 {
     //! [color_map]
-    using ColorEntry = QMap<Qt::ItemDataRole, QVariant>;
+    using ColorEntry = QMap<BobUI::ItemDataRole, QVariant>;
 
     const QStringList colorNames = QColor::colorNames();
     QList<ColorEntry> colors;
     colors.reserve(colorNames.size());
     for (const QString &name : colorNames) {
         const QColor color = QColor::fromString(name);
-        colors << ColorEntry{{Qt::DisplayRole, name},
-                            {Qt::DecorationRole, color},
-                            {Qt::ToolTipRole, color.name()}};
+        colors << ColorEntry{{BobUI::DisplayRole, name},
+                            {BobUI::DecorationRole, color},
+                            {BobUI::ToolTipRole, color.name()}};
     }
     QRangeModel colorModel(colors);
     QListView list;
@@ -558,7 +558,7 @@ void color_table() {
     // ...
 
     QRangeModel colorModel(colorTable);
-    QTableView table;
+    BOBUIableView table;
     table.setModel(&colorModel);
     //! [color_gadget_table]
 }
@@ -602,4 +602,4 @@ void color_list_single_column() {
 }
 } // namespace multirole_gadget
 
-#endif // QT_NO_WIDGETS
+#endif // BOBUI_NO_WIDGETS

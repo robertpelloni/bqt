@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qguiapplication Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qguiapplication LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 if (WIN32)
@@ -23,47 +23,47 @@ set(tst_qguiapplication_resource_files
     "icons/usericon.png"
 )
 
-qt_internal_add_test(tst_qguiapplication
+bobui_internal_add_test(tst_qguiapplication
     VERSION ${target_version}
     SOURCES
         ../../../corelib/kernel/qcoreapplication/tst_qcoreapplication.cpp ../../../corelib/kernel/qcoreapplication/tst_qcoreapplication.h
         tst_qguiapplication.cpp
     DEFINES
-        QT_QGUIAPPLICATIONTEST=1
+        BOBUI_QGUIAPPLICATIONTEST=1
     INCLUDE_DIRECTORIES
         ../../../corelib/kernel/qcoreapplication
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
     TESTDATA ${tst_qguiapplication_resource_files}
     BUILTIN_TESTDATA
 )
 
 if (ANDROID)
-    set_property(TARGET tst_qguiapplication PROPERTY QT_ANDROID_VERSION_NAME ${target_version})
+    set_property(TARGET tst_qguiapplication PROPERTY BOBUI_ANDROID_VERSION_NAME ${target_version})
 endif()
 if (APPLE)
     set_property(TARGET tst_qguiapplication PROPERTY MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist")
     set_property(TARGET tst_qguiapplication PROPERTY PROPERTY MACOSX_BUNDLE TRUE)
 endif()
 
-qt_internal_add_test(tst_static_qguiapplication
+bobui_internal_add_test(tst_static_qguiapplication
     SOURCES
         ../../../corelib/kernel/qcoreapplication/tst_static_qcoreapplication.cpp
         ../../../corelib/kernel/qcoreapplication/maybeshow.h
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
+        BobUI::CorePrivate
+        BobUI::Gui
 )
 
-qt_internal_add_executable(apphelper_gui
+bobui_internal_add_executable(apphelper_gui
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/"
     SOURCES
         ../../../corelib/kernel/qcoreapplication/apphelper.cpp
         ../../../corelib/kernel/qcoreapplication/maybeshow.h
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
+        BobUI::CorePrivate
+        BobUI::Gui
 )
 set_target_properties(apphelper_gui PROPERTIES OUTPUT_NAME apphelper)
 
@@ -71,16 +71,16 @@ add_dependencies(tst_qguiapplication
     apphelper_gui
 )
 
-if(QT_FEATURE_library)
-    qt_internal_add_cmake_library(apphelper_gui_plugin
+if(BOBUI_FEATURE_library)
+    bobui_internal_add_cmake_library(apphelper_gui_plugin
         MODULE
         SOURCES
             ../../../corelib/kernel/qcoreapplication/apphelper_plugin.cpp
         NO_PCH_SOURCES
             ../../../corelib/kernel/qcoreapplication/apphelper_plugin.cpp
         LIBRARIES
-            Qt::Gui
+            BobUI::Gui
     )
-    qt_autogen_tools_initial_setup(apphelper_gui_plugin)
+    bobui_autogen_tools_initial_setup(apphelper_gui_plugin)
     add_dependencies(apphelper_gui apphelper_gui_plugin)
 endif()

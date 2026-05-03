@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDTYPECONVERTER_P_H
 #define QANDROIDTYPECONVERTER_P_H
@@ -8,26 +8,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 
-#include <QtCore/private/qandroidtypes_p.h>
-#include <QtCore/private/qandroiditemmodelproxy_p.h>
+#include <BobUICore/private/qandroidtypes_p.h>
+#include <BobUICore/private/qandroiditemmodelproxy_p.h>
 
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjnitypes.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjnitypes.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QAndroidTypeConverter
 {
     [[maybe_unused]] static QVariant toQVariant(const QJniObject &object)
     {
-        using namespace QtJniTypes;
+        using namespace BobUIJniTypes;
         if (!object.isValid())
             return QVariant{};
         const QByteArray classname(object.className());
@@ -46,7 +46,7 @@ namespace QAndroidTypeConverter
             return QVariant::fromValue<bool>(object.callMethod<jboolean>("booleanValue"));
         else {
             QJniEnvironment env;
-            const jclass className = env.findClass(Traits<JQtAbstractItemModel>::className());
+            const jclass className = env.findClass(Traits<JBobUIAbstractItemModel>::className());
             if (env->IsInstanceOf(object.object(), className))
                 return QVariant::fromValue(QAndroidItemModelProxy::createNativeProxy(object));
         }
@@ -59,28 +59,28 @@ namespace QAndroidTypeConverter
         Q_ASSERT(env);
         switch (var.typeId()) {
         case QMetaType::Type::Int:
-            return env->NewLocalRef(QJniObject::construct<QtJniTypes::Integer>(
+            return env->NewLocalRef(QJniObject::construct<BobUIJniTypes::Integer>(
                                             get<int>(var))
                                             .object());
         case QMetaType::Type::Long:
         case QMetaType::Type::LongLong:
-            return env->NewLocalRef(QJniObject::construct<QtJniTypes::Long>(
+            return env->NewLocalRef(QJniObject::construct<BobUIJniTypes::Long>(
                                             get<jlong>(var))
                                             .object());
         case QMetaType::Type::Double:
-            return env->NewLocalRef(QJniObject::construct<QtJniTypes::Double>(
+            return env->NewLocalRef(QJniObject::construct<BobUIJniTypes::Double>(
                                             get<double>(var))
                                             .object());
         case QMetaType::Type::Float:
-            return env->NewLocalRef(QJniObject::construct<QtJniTypes::Float>(
+            return env->NewLocalRef(QJniObject::construct<BobUIJniTypes::Float>(
                                             get<float>(var))
                                             .object());
         case QMetaType::Type::Bool:
-            return env->NewLocalRef(QJniObject::construct<QtJniTypes::Boolean>(
+            return env->NewLocalRef(QJniObject::construct<BobUIJniTypes::Boolean>(
                                             get<bool>(var))
                                             .object());
         case QMetaType::Type::VoidStar:
-            return env->NewLocalRef(QJniObject::construct<QtJniTypes::Void>().object());
+            return env->NewLocalRef(QJniObject::construct<BobUIJniTypes::Void>().object());
         case QMetaType::Type::QString:
             return env->NewLocalRef(
                     QJniObject::fromString(get<QString>(var)).object());
@@ -96,6 +96,6 @@ namespace QAndroidTypeConverter
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDTYPECONVERTER_P_H

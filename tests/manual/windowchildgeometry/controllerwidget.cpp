@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "controllerwidget.h"
 #include <controls.h>
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <QWindow>
 #include <QBackingStore>
 #include <QPaintDevice>
@@ -202,9 +202,9 @@ private:
         { static_cast<QWidget *>(o)->move(p); }
     virtual QPoint objectMapToGlobal(const QObject *o, const QPoint &p) const
         { return static_cast<const QWidget *>(o)->mapToGlobal(p); }
-    virtual Qt::WindowFlags objectWindowFlags(const QObject *o) const
+    virtual BobUI::WindowFlags objectWindowFlags(const QObject *o) const
         { return static_cast<const QWidget *>(o)->windowFlags(); }
-    virtual void setObjectWindowFlags(QObject *o, Qt::WindowFlags f);
+    virtual void setObjectWindowFlags(QObject *o, BobUI::WindowFlags f);
 
     WindowStatesControl *m_statesControl;
 };
@@ -218,7 +218,7 @@ WidgetWindowControl::WidgetWindowControl(QWidget *w )
     connect(m_statesControl, SIGNAL(changed()), this, SLOT(statesChanged()));
 }
 
-void WidgetWindowControl::setObjectWindowFlags(QObject *o, Qt::WindowFlags f)
+void WidgetWindowControl::setObjectWindowFlags(QObject *o, BobUI::WindowFlags f)
 {
     QWidget *w = static_cast<QWidget *>(o);
     const bool visible = w->isVisible();
@@ -249,7 +249,7 @@ public:
     explicit Window(QWindow *parent = nullptr)
         : QWindow(parent)
         , m_backingStore(new QBackingStore(this))
-        , m_color(Qt::GlobalColor(QRandomGenerator::global()->bounded(18)))
+        , m_color(BobUI::GlobalColor(QRandomGenerator::global()->bounded(18)))
     {
         setObjectName(QStringLiteral("window"));
         setTitle(tr("TestWindow"));
@@ -265,7 +265,7 @@ protected:
 
 private:
     QBackingStore *m_backingStore;
-    Qt::GlobalColor m_color;
+    BobUI::GlobalColor m_color;
     QPoint m_mouseDownPosition;
     void render();
 };
@@ -334,7 +334,7 @@ private:
         { static_cast<QWindow *>(o)->setFramePosition(p); }
     virtual QPoint objectMapToGlobal(const QObject *o, const QPoint &p) const
         { return static_cast<const QWindow *>(o)->mapToGlobal(p); }
-    virtual void setObjectWindowFlags(QObject *o, Qt::WindowFlags f)
+    virtual void setObjectWindowFlags(QObject *o, BobUI::WindowFlags f)
         { static_cast<QWindow *>(o)->setFlags(f); }
 
     WindowStatesControl *m_statesControl;
@@ -432,11 +432,11 @@ ControllerWidget::ControllerWidget(QWidget *parent)
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     QAction *exitAction = fileMenu->addAction(tr("Exit"));
-    exitAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    exitAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_Q));
     connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-    QString title = QLatin1String("Child Window Geometry test, (Qt ");
-    title += QLatin1String(QT_VERSION_STR);
+    QString title = QLatin1String("Child Window Geometry test, (BobUI ");
+    title += QLatin1String(BOBUI_VERSION_STR);
     title += QLatin1String(", ");
     title += qApp->platformName();
     title += QLatin1Char(')');
@@ -454,9 +454,9 @@ ControllerWidget::ControllerWidget(QWidget *parent)
     x += 800;
 
     x += 300;
-    m_testWindow->setFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint
-                                 | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint
-                                 | Qt::WindowTitleHint | Qt::WindowFullscreenButtonHint);
+    m_testWindow->setFlags(BobUI::Window | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint
+                                 | BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint
+                                 | BobUI::WindowTitleHint | BobUI::WindowFullscreenButtonHint);
     m_testWindow->setFramePosition(QPoint(x, y));
     m_testWindow->resize(200, 200);
     m_testWindow->setTitle(tr("TestWindow"));

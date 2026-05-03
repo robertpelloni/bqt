@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qstyle.h>
 #include <private/qproxystyle_p.h>
@@ -9,11 +9,11 @@
 #include "qstylefactory.h"
 #include <private/qstyle_p.h>
 
-#if !defined(QT_NO_STYLE_PROXY) || defined(QT_PLUGIN)
+#if !defined(BOBUI_NO_STYLE_PROXY) || defined(BOBUI_PLUGIN)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QProxyStyle
@@ -23,7 +23,7 @@ using namespace Qt::StringLiterals;
 
     \since 4.6
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QProxyStyle wraps a QStyle (usually the default system style) for the
     purpose of dynamically overriding painting or other specific style behavior.
@@ -33,7 +33,7 @@ using namespace Qt::StringLiterals;
 
     \snippet code/src_gui_qproxystyle.cpp 1
 
-    Warning: The \l {QCommonStyle} {common styles} provided by Qt will
+    Warning: The \l {QCommonStyle} {common styles} provided by BobUI will
     respect this hint, because they call QStyle::proxy(), but there is
     no guarantee that QStyle::proxy() will be called for user defined
     or system controlled styles. It would not work on a Mac, for
@@ -395,7 +395,7 @@ QIcon QProxyStyle::standardIcon(StandardPixmap standardIcon,
  */
 int QProxyStyle::layoutSpacing(QSizePolicy::ControlType control1,
                                QSizePolicy::ControlType control2,
-                               Qt::Orientation orientation,
+                               BobUI::Orientation orientation,
                                const QStyleOption *option,
                                const QWidget *widget) const
 {
@@ -404,8 +404,8 @@ int QProxyStyle::layoutSpacing(QSizePolicy::ControlType control1,
     return d->baseStyle->layoutSpacing(control1, control2, orientation, option, widget);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qproxystyle.cpp"
 
-#endif // QT_NO_STYLE_PROXY
+#endif // BOBUI_NO_STYLE_PROXY

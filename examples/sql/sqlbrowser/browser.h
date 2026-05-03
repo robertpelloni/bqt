@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef BROWSER_H
 #define BROWSER_H
@@ -9,14 +9,14 @@
 
 #include <memory>
 
-QT_FORWARD_DECLARE_CLASS(QSqlError)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlError)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace Ui
 {
 class Browser;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class Browser : public QWidget
 {
@@ -62,8 +62,8 @@ public:
     using QSqlTableModel::QSqlTableModel;
     QVariant data(const QModelIndex &idx, int role) const override
     {
-        if (role == Qt::BackgroundRole && isDirty(idx))
-            return QBrush(QColor(Qt::yellow));
+        if (role == BobUI::BackgroundRole && isDirty(idx))
+            return QBrush(QColor(BobUI::yellow));
         return QSqlTableModel::data(idx, role);
     }
 };

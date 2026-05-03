@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILEDIALOG_H
 #define QFILEDIALOG_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qurl.h>
+#include <BobUIWidgets/qdialog.h>
 
 #include <functional>
 
-QT_REQUIRE_CONFIG(filedialog);
+BOBUI_REQUIRE_CONFIG(filedialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QModelIndex;
 class QItemSelection;
@@ -59,7 +59,7 @@ public:
     Q_DECLARE_FLAGS(Options, Option)
     Q_FLAG(Options)
 
-    QFileDialog(QWidget *parent, Qt::WindowFlags f);
+    QFileDialog(QWidget *parent, BobUI::WindowFlags f);
     explicit QFileDialog(QWidget *parent = nullptr,
                          const QString &caption = QString(),
                          const QString &directory = QString(),
@@ -86,7 +86,7 @@ public:
     QString selectedMimeTypeFilter() const;
     QString selectedNameFilter() const;
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     void setMimeTypeFilters(const QStringList &filters);
     QStringList mimeTypeFilters() const;
     void selectMimeTypeFilter(const QString &filter);
@@ -128,7 +128,7 @@ public:
     void setSupportedSchemes(const QStringList &schemes);
     QStringList supportedSchemes() const;
 
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     void setProxyModel(QAbstractProxyModel *model);
     QAbstractProxyModel *proxyModel() const;
 #endif
@@ -221,7 +221,7 @@ public:
                                 const QString &fileNameHint,
                                 QWidget *parent = nullptr);
 
-#if QT_WIDGETS_REMOVED_SINCE(6, 7)
+#if BOBUI_WIDGETS_REMOVED_SINCE(6, 7)
     static void getOpenFileContent(const QString &nameFilter,
                                    const std::function<void(const QString &, const QByteArray &)> &fileContentsReady);
     static void saveFileContent(const QByteArray &fileContent,
@@ -247,6 +247,6 @@ inline void QFileDialog::setDirectory(const QDir &adirectory)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFileDialog::Options)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILEDIALOG_H

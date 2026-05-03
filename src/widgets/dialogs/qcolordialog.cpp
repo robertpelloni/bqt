@@ -1,32 +1,32 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcolordialog.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include "qapplication.h"
 #include "qdrawutil.h"
 #include "qevent.h"
 #include "qimage.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qdrag.h>
 #endif
 #include "qlabel.h"
 #include "qlayout.h"
 #include "qlineedit.h"
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #endif
 #include "qpainter.h"
 #include "qpixmap.h"
 #include "qpushbutton.h"
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include "qsettings.h"
 #endif
 #include "qsharedpointer.h"
@@ -38,7 +38,7 @@
 #include "qdialogbuttonbox.h"
 #include "qscreen.h"
 #include "qcursor.h"
-#include "qtimer.h"
+#include "bobuiimer.h"
 #include "qwindow.h"
 
 #include "private/qdialog_p.h"
@@ -48,25 +48,25 @@
 #include <qpa/qplatformservices.h>
 #include <private/qguiapplication_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QColorLuminancePicker;
 class QColorPicker;
 class QColorShower;
 class QColorPickingEventFilter;
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-using QColorLuminancePicker = QtPrivate::QColorLuminancePicker;
-using QColorPicker = QtPrivate::QColorPicker;
-using QColorShower = QtPrivate::QColorShower;
-using QColorPickingEventFilter = QtPrivate::QColorPickingEventFilter;
+using QColorLuminancePicker = BobUIPrivate::QColorLuminancePicker;
+using QColorPicker = BobUIPrivate::QColorPicker;
+using QColorShower = BobUIPrivate::QColorShower;
+using QColorPickingEventFilter = BobUIPrivate::QColorPickingEventFilter;
 
 class QColorDialogPrivate : public QDialogPrivate
 {
@@ -151,7 +151,7 @@ public:
     QPointer<QObject> receiverToDisconnectOnClose;
     QByteArray memberToDisconnectOnClose;
 #ifdef Q_OS_WIN32
-    QTimer *updateTimer;
+    BOBUIimer *updateTimer;
     QWindow dummyTransparentWindow;
 #endif
 
@@ -213,7 +213,7 @@ QWellArray::QWellArray(int rows, int cols, QWidget *parent)
     : QWidget(parent)
         ,nrows(rows), ncols(cols)
 {
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(BobUI::StrongFocus);
     cellw = 28;
     cellh = 24;
     curCol = 0;
@@ -264,8 +264,8 @@ void QWellArray::paintCellContents(QPainter *p, int row, int col, const QRect &r
 {
     Q_UNUSED(row);
     Q_UNUSED(col);
-    p->fillRect(r, Qt::white);
-    p->setPen(Qt::black);
+    p->fillRect(r, BobUI::white);
+    p->setPen(BobUI::black);
     p->drawLine(r.topLeft(), r.bottomRight());
     p->drawLine(r.topRight(), r.bottomLeft());
 }
@@ -332,7 +332,7 @@ void QWellArray::setSelected(int row, int col)
     if (row >= 0)
         emit selected(row, col);
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (isVisible() && qobject_cast<QMenu*>(parentWidget()))
         parentWidget()->close();
 #endif
@@ -354,26 +354,26 @@ void QWellArray::focusOutEvent(QFocusEvent*)
 void QWellArray::keyPressEvent(QKeyEvent* e)
 {
     switch(e->key()) {                        // Look at the key code
-    case Qt::Key_Left:                                // If 'left arrow'-key,
+    case BobUI::Key_Left:                                // If 'left arrow'-key,
         if (curCol > 0)                        // and cr't not in leftmost col
             setCurrent(curRow, curCol - 1);        // set cr't to next left column
         break;
-    case Qt::Key_Right:                                // Correspondingly...
+    case BobUI::Key_Right:                                // Correspondingly...
         if (curCol < numCols()-1)
             setCurrent(curRow, curCol + 1);
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         if (curRow > 0)
             setCurrent(curRow - 1, curCol);
         break;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         if (curRow < numRows()-1)
             setCurrent(curRow + 1, curCol);
         break;
 #if 0
     // bad idea that shouldn't have been implemented; very counterintuitive
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
+    case BobUI::Key_Return:
+    case BobUI::Key_Enter:
         /*
           ignore the key, so that the dialog get it, but still select
           the current row/col
@@ -381,7 +381,7 @@ void QWellArray::keyPressEvent(QKeyEvent* e)
         e->ignore();
         // fallthrough intended
 #endif
-    case Qt::Key_Space:
+    case BobUI::Key_Space:
         setSelected(curRow, curCol);
         break;
     default:                                // If not an interesting key,
@@ -392,7 +392,7 @@ void QWellArray::keyPressEvent(QKeyEvent* e)
 
 void QWellArray::sendAccessibleChildFocusEvent()
 {
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (!QAccessible::isActive())
         return;
 
@@ -407,7 +407,7 @@ void QWellArray::sendAccessibleChildFocusEvent()
 
 //////////// QWellArray END
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 // Event filter to be installed on the dialog while in color-picking mode.
 class QColorPickingEventFilter : public QObject {
@@ -429,9 +429,9 @@ public:
         return false;
     }
 
-    void applicationStateChanged(Qt::ApplicationState state)
+    void applicationStateChanged(BobUI::ApplicationState state)
     {
-        if (state != Qt::ApplicationActive)
+        if (state != BobUI::ApplicationActive)
             m_dp->releaseColorPicking();
     }
 
@@ -439,7 +439,7 @@ private:
     QColorDialogPrivate *m_dp;
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 /*!
     Returns the number of custom colors supported by QColorDialog. All
@@ -516,7 +516,7 @@ void QColorWell::mousePressEvent(QMouseEvent *e)
 void QColorWell::mouseMoveEvent(QMouseEvent *e)
 {
     QWellArray::mouseMoveEvent(e);
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     if (!mousePressed)
         return;
     if ((pressPos - e->position().toPoint()).manhattanLength() > QApplication::startDragDistance()) {
@@ -534,12 +534,12 @@ void QColorWell::mouseMoveEvent(QMouseEvent *e)
         drg->setMimeData(mime);
         drg->setPixmap(pix);
         mousePressed = false;
-        drg->exec(Qt::CopyAction);
+        drg->exec(BobUI::CopyAction);
     }
 #endif
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QColorWell::dragEnterEvent(QDragEnterEvent *e)
 {
     if (qvariant_cast<QColor>(e->mimeData()->colorData()).isValid())
@@ -576,7 +576,7 @@ void QColorWell::dropEvent(QDropEvent *e)
     }
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 void QColorWell::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -586,7 +586,7 @@ void QColorWell::mouseReleaseEvent(QMouseEvent *e)
     mousePressed = false;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class QColorPicker : public QFrame
 {
@@ -625,12 +625,12 @@ private:
     bool crossVisible;
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 static int pWidth = 220;
 static int pHeight = 200;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class QColorLuminancePicker : public QWidget
 {
@@ -683,7 +683,7 @@ QColorLuminancePicker::QColorLuminancePicker(QWidget* parent)
 {
     hue = 100; val = 100; sat = 100;
     //    setAttribute(WA_NoErase, true);
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(BobUI::StrongFocus);
 }
 
 QColorLuminancePicker::~QColorLuminancePicker()
@@ -693,10 +693,10 @@ QColorLuminancePicker::~QColorLuminancePicker()
 void QColorLuminancePicker::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         setVal(std::clamp(val - 1, 0, 255));
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         setVal(std::clamp(val + 1, 0, 255));
         break;
     default:
@@ -707,7 +707,7 @@ void QColorLuminancePicker::keyPressEvent(QKeyEvent *event)
 
 void QColorLuminancePicker::mouseMoveEvent(QMouseEvent *m)
 {
-    if (m->buttons() == Qt::NoButton) {
+    if (m->buttons() == BobUI::NoButton) {
         m->ignore();
         return;
     }
@@ -813,8 +813,8 @@ QColorPicker::QColorPicker(QWidget* parent)
     : QFrame(parent)
     , crossVisible(true)
 {
-    setAttribute(Qt::WA_NoSystemBackground);
-    setFocusPolicy(Qt::StrongFocus);
+    setAttribute(BobUI::WA_NoSystemBackground);
+    setFocusPolicy(BobUI::StrongFocus);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed) );
     adjustSize();
 
@@ -853,16 +853,16 @@ void QColorPicker::setCol(int h, int s)
 void QColorPicker::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         setCol(m_pos + QPoint(0, 1));
         break;
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         setCol(m_pos + QPoint(-1, 0));
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         setCol(m_pos + QPoint(1, 0));
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         setCol(m_pos + QPoint(0, -1));
         break;
     default:
@@ -874,7 +874,7 @@ void QColorPicker::keyPressEvent(QKeyEvent *event)
 void QColorPicker::mouseMoveEvent(QMouseEvent *m)
 {
     QPoint p = m->position().toPoint() - contentsRect().topLeft();
-    if (m->buttons() == Qt::NoButton) {
+    if (m->buttons() == BobUI::NoButton) {
         m->ignore();
         return;
     }
@@ -897,9 +897,9 @@ void QColorPicker::paintEvent(QPaintEvent* )
 
     if (crossVisible) {
         QPoint pt = m_pos + r.topLeft();
-        p.setPen(Qt::black);
-        p.fillRect(pt.x()-9, pt.y(), 20, 2, Qt::black);
-        p.fillRect(pt.x(), pt.y()-9, 2, 20, Qt::black);
+        p.setPen(BobUI::black);
+        p.fillRect(pt.x()-9, pt.y(), 20, 2, BobUI::black);
+        p.fillRect(pt.x(), pt.y()-9, 2, 20, BobUI::black);
     }
 }
 
@@ -1013,8 +1013,8 @@ private:
     QColorDialog *colorDialog;
     QGridLayout *gl;
 
-    friend class QT_PREPEND_NAMESPACE(QColorDialog);
-    friend class QT_PREPEND_NAMESPACE(QColorDialogPrivate);
+    friend class BOBUI_PREPEND_NAMESPACE(QColorDialog);
+    friend class BOBUI_PREPEND_NAMESPACE(QColorDialogPrivate);
 };
 
 class QColorShowLabel : public QFrame
@@ -1037,7 +1037,7 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragLeaveEvent(QDragLeaveEvent *e) override;
     void dropEvent(QDropEvent *e) override;
@@ -1075,7 +1075,7 @@ void QColorShowLabel::mousePressEvent(QMouseEvent *e)
 
 void QColorShowLabel::mouseMoveEvent(QMouseEvent *e)
 {
-#if !QT_CONFIG(draganddrop)
+#if !BOBUI_CONFIG(draganddrop)
     Q_UNUSED(e);
 #else
     if (!mousePressed)
@@ -1092,12 +1092,12 @@ void QColorShowLabel::mouseMoveEvent(QMouseEvent *e)
         drg->setMimeData(mime);
         drg->setPixmap(pix);
         mousePressed = false;
-        drg->exec(Qt::CopyAction);
+        drg->exec(BobUI::CopyAction);
     }
 #endif
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QColorShowLabel::dragEnterEvent(QDragEnterEvent *e)
 {
     if (qvariant_cast<QColor>(e->mimeData()->colorData()).isValid())
@@ -1122,7 +1122,7 @@ void QColorShowLabel::dropEvent(QDropEvent *e)
         e->ignore();
     }
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 void QColorShowLabel::mouseReleaseEvent(QMouseEvent *)
 {
@@ -1137,21 +1137,21 @@ QColorShower::QColorShower(QColorDialog *parent)
     colorDialog = parent;
 
     curCol = qRgb(255, 255, 255);
-    curQColor = Qt::white;
+    curQColor = BobUI::white;
 
     gl = new QGridLayout(this);
     const int s = gl->spacing();
     gl->setContentsMargins(s, s, s, s);
     lab = new QColorShowLabel(this);
 
-#ifdef QT_SMALL_COLORDIALOG
+#ifdef BOBUI_SMALL_COLORDIALOG
     lab->setMinimumHeight(60);
 #endif
     lab->setMinimumWidth(60);
 
 // For QVGA screens only the comboboxes and color label are visible.
 // For nHD screens only color and luminence pickers and color label are visible.
-#if !defined(QT_SMALL_COLORDIALOG)
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lab, 0, 0, -1, 1);
 #else
     gl->addWidget(lab, 0, 0, 1, -1);
@@ -1162,11 +1162,11 @@ QColorShower::QColorShower(QColorDialog *parent)
     hEd = new QColSpinBox(this);
     hEd->setRange(0, 359);
     lblHue = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     lblHue->setBuddy(hEd);
 #endif
-    lblHue->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    lblHue->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblHue, 0, 1);
     gl->addWidget(hEd, 0, 2);
 #else
@@ -1176,11 +1176,11 @@ QColorShower::QColorShower(QColorDialog *parent)
 
     sEd = new QColSpinBox(this);
     lblSat = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     lblSat->setBuddy(sEd);
 #endif
-    lblSat->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    lblSat->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblSat, 1, 1);
     gl->addWidget(sEd, 1, 2);
 #else
@@ -1190,11 +1190,11 @@ QColorShower::QColorShower(QColorDialog *parent)
 
     vEd = new QColSpinBox(this);
     lblVal = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     lblVal->setBuddy(vEd);
 #endif
-    lblVal->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    lblVal->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblVal, 2, 1);
     gl->addWidget(vEd, 2, 2);
 #else
@@ -1204,11 +1204,11 @@ QColorShower::QColorShower(QColorDialog *parent)
 
     rEd = new QColSpinBox(this);
     lblRed = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     lblRed->setBuddy(rEd);
 #endif
-    lblRed->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    lblRed->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblRed, 0, 3);
     gl->addWidget(rEd, 0, 4);
 #else
@@ -1218,11 +1218,11 @@ QColorShower::QColorShower(QColorDialog *parent)
 
     gEd = new QColSpinBox(this);
     lblGreen = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     lblGreen->setBuddy(gEd);
 #endif
-    lblGreen->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    lblGreen->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblGreen, 1, 3);
     gl->addWidget(gEd, 1, 4);
 #else
@@ -1232,11 +1232,11 @@ QColorShower::QColorShower(QColorDialog *parent)
 
     bEd = new QColSpinBox(this);
     lblBlue = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     lblBlue->setBuddy(bEd);
 #endif
-    lblBlue->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    lblBlue->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblBlue, 2, 3);
     gl->addWidget(bEd, 2, 4);
 #else
@@ -1246,11 +1246,11 @@ QColorShower::QColorShower(QColorDialog *parent)
 
     alphaEd = new QColSpinBox(this);
     alphaLab = new QLabel(this);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     alphaLab->setBuddy(alphaEd);
 #endif
-    alphaLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if !defined(QT_SMALL_COLORDIALOG)
+    alphaLab->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if !defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(alphaLab, 3, 1, 1, 3);
     gl->addWidget(alphaEd, 3, 4);
 #else
@@ -1261,12 +1261,12 @@ QColorShower::QColorShower(QColorDialog *parent)
     alphaLab->hide();
     lblHtml = new QLabel(this);
     htEd = new QLineEdit(this);
-    htEd->setObjectName("qt_colorname_lineedit");
-#ifndef QT_NO_SHORTCUT
+    htEd->setObjectName("bobui_colorname_lineedit");
+#ifndef BOBUI_NO_SHORTCUT
     lblHtml->setBuddy(htEd);
 #endif
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression regExp(QStringLiteral("#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})"));
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(regExp, this);
     htEd->setValidator(validator);
@@ -1275,8 +1275,8 @@ QColorShower::QColorShower(QColorDialog *parent)
 #endif
     htEd->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
 
-    lblHtml->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-#if defined(QT_SMALL_COLORDIALOG)
+    lblHtml->setAlignment(BobUI::AlignRight|BobUI::AlignVCenter);
+#if defined(BOBUI_SMALL_COLORDIALOG)
     gl->addWidget(lblHtml, 5, 0);
     gl->addWidget(htEd, 5, 1, 1, /*colspan=*/ 2);
 #else
@@ -1297,7 +1297,7 @@ QColorShower::QColorShower(QColorDialog *parent)
     retranslateStrings();
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 inline QRgb QColorDialogPrivate::currentColor() const { return cs->currentColor(); }
 inline int QColorDialogPrivate::currentAlpha() const { return cs->currentAlpha(); }
@@ -1597,8 +1597,8 @@ void QColorDialogPrivate::pickScreenColor()
                      colorPickingEventFilter, &QColorPickingEventFilter::applicationStateChanged);
     // If user pushes Escape, the last color before picking will be restored.
     beforeScreenColorPicking = cs->currentColor();
-#ifndef QT_NO_CURSOR
-    q->grabMouse(Qt::CrossCursor);
+#ifndef BOBUI_NO_CURSOR
+    q->grabMouse(BobUI::CrossCursor);
 #else
     q->grabMouse();
 #endif
@@ -1673,7 +1673,7 @@ void QColorDialogPrivate::init(const QColor &initial)
 
 #ifdef Q_OS_WIN32
     dummyTransparentWindow.resize(1, 1);
-    dummyTransparentWindow.setFlags(Qt::Tool | Qt::FramelessWindowHint);
+    dummyTransparentWindow.setFlags(BobUI::Tool | BobUI::FramelessWindowHint);
 #endif
 
     q->setCurrentColor(initial);
@@ -1691,7 +1691,7 @@ void QColorDialogPrivate::initWidgets()
 
     leftLay = nullptr;
 
-#if defined(QT_SMALL_COLORDIALOG)
+#if defined(BOBUI_SMALL_COLORDIALOG)
     smallDisplay = true;
     const int lumSpace = 20;
 #else
@@ -1707,7 +1707,7 @@ void QColorDialogPrivate::initWidgets()
 
         standard = new QColorWell(q, standardColorRows, colorColumns, QColorDialogOptions::standardColors());
         lblBasicColors = new QLabel(q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         lblBasicColors->setBuddy(standard);
 #endif
         QObjectPrivate::connect(standard, &QColorWell::selected,
@@ -1715,7 +1715,7 @@ void QColorDialogPrivate::initWidgets()
         leftLay->addWidget(lblBasicColors);
         leftLay->addWidget(standard);
 
-#if !defined(QT_SMALL_COLORDIALOG)
+#if !defined(BOBUI_SMALL_COLORDIALOG)
         if (supportsColorPicking()) {
             eyeDropperButton = new QPushButton();
             leftLay->addWidget(eyeDropperButton);
@@ -1744,7 +1744,7 @@ void QColorDialogPrivate::initWidgets()
         });
 
         lblCustomColors = new QLabel(q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         lblCustomColors->setBuddy(custom);
 #endif
         leftLay->addWidget(lblCustomColors);
@@ -1755,7 +1755,7 @@ void QColorDialogPrivate::initWidgets()
         leftLay->addWidget(addCusBt);
     } else {
         // better color picker size for small displays
-#if defined(QT_SMALL_COLORDIALOG)
+#if defined(BOBUI_SMALL_COLORDIALOG)
         QSize screenSize = QGuiApplication::screenAt(QCursor::pos())->availableGeometry().size();
         pWidth = pHeight = qMin(screenSize.width(), screenSize.height());
         pHeight -= 20;
@@ -1781,7 +1781,7 @@ void QColorDialogPrivate::initWidgets()
 
     cp->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
-#if defined(QT_SMALL_COLORDIALOG)
+#if defined(BOBUI_SMALL_COLORDIALOG)
     cp->hide();
 #else
     cLay->addSpacing(lumSpace);
@@ -1790,7 +1790,7 @@ void QColorDialogPrivate::initWidgets()
     cLay->addSpacing(lumSpace);
 
     lp = new QColorLuminancePicker(q);
-#if defined(QT_SMALL_COLORDIALOG)
+#if defined(BOBUI_SMALL_COLORDIALOG)
     lp->hide();
 #else
     lp->setFixedWidth(20);
@@ -1810,7 +1810,7 @@ void QColorDialogPrivate::initWidgets()
                             this, &QColorDialogPrivate::newColorTypedIn);
     QObject::connect(cs, &QColorShower::currentColorChanged,
                      q, &QColorDialog::currentColorChanged);
-#if defined(QT_SMALL_COLORDIALOG)
+#if defined(BOBUI_SMALL_COLORDIALOG)
     topLay->addWidget(cs);
 #else
     rightLay->addWidget(cs);
@@ -1828,8 +1828,8 @@ void QColorDialogPrivate::initWidgets()
     QObject::connect(cancel, &QPushButton::clicked, q, &QColorDialog::reject);
 
 #ifdef Q_OS_WIN32
-    updateTimer = new QTimer(q);
-    QObjectPrivate::connect(updateTimer, &QTimer::timeout,
+    updateTimer = new BOBUIimer(q);
+    QObjectPrivate::connect(updateTimer, &BOBUIimer::timeout,
                             this, qOverload<>(&QColorDialogPrivate::updateColorPicking));
 #endif
     retranslateStrings();
@@ -1868,7 +1868,7 @@ void QColorDialogPrivate::retranslateStrings()
         lblBasicColors->setText(QColorDialog::tr("&Basic colors"));
         lblCustomColors->setText(QColorDialog::tr("&Custom colors"));
         addCusBt->setText(QColorDialog::tr("&Add to Custom Colors"));
-#if !defined(QT_SMALL_COLORDIALOG)
+#if !defined(BOBUI_SMALL_COLORDIALOG)
         if (eyeDropperButton)
             eyeDropperButton->setText(QColorDialog::tr("&Pick Screen Color"));
 #endif
@@ -1891,8 +1891,8 @@ bool QColorDialogPrivate::canBeNativeDialog() const
     const QDialog * const q = static_cast<const QDialog*>(q_ptr);
     if (nativeDialogInUse)
         return true;
-    if (QCoreApplication::testAttribute(Qt::AA_DontUseNativeDialogs)
-        || q->testAttribute(Qt::WA_DontShowOnScreen)
+    if (QCoreApplication::testAttribute(BobUI::AA_DontUseNativeDialogs)
+        || q->testAttribute(BobUI::WA_DontShowOnScreen)
         || (options->options() & QColorDialog::DontUseNativeDialog)) {
         return false;
     }
@@ -1900,16 +1900,16 @@ bool QColorDialogPrivate::canBeNativeDialog() const
     return strcmp(QColorDialog::staticMetaObject.className(), q->metaObject()->className()) == 0;
 }
 
-static const Qt::WindowFlags qcd_DefaultWindowFlags =
-        Qt::Dialog | Qt::WindowTitleHint
-        | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint;
+static const BobUI::WindowFlags qcd_DefaultWindowFlags =
+        BobUI::Dialog | BobUI::WindowTitleHint
+        | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint;
 
 /*!
     \class QColorDialog
     \brief The QColorDialog class provides a dialog widget for specifying colors.
 
     \ingroup standard-dialogs
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The color dialog's function is to allow users to choose colors.
     For example, you might use this in a drawing program to allow the
@@ -1936,7 +1936,7 @@ static const Qt::WindowFlags qcd_DefaultWindowFlags =
     before entering this mode.
 
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
-    how to use QColorDialog as well as other built-in Qt dialogs.
+    how to use QColorDialog as well as other built-in BobUI dialogs.
 
     \image fusion-colordialog.png A color dialog in the Fusion widget style.
 
@@ -1947,7 +1947,7 @@ static const Qt::WindowFlags qcd_DefaultWindowFlags =
     Constructs a color dialog with the given \a parent.
 */
 QColorDialog::QColorDialog(QWidget *parent)
-    : QColorDialog(QColor(Qt::white), parent)
+    : QColorDialog(QColor(BobUI::white), parent)
 {
 }
 
@@ -2079,8 +2079,8 @@ QColorDialog::ColorDialogOptions QColorDialog::options() const
 
     \value ShowAlphaChannel Allow the user to select the alpha component of a color.
     \value NoButtons Don't display \uicontrol{OK} and \uicontrol{Cancel} buttons. (Useful for "live dialogs".)
-    \value NoEyeDropperButton Hide the \uicontrol{Eye Dropper} button. This value was added in Qt 6.6.
-    \value DontUseNativeDialog  Use Qt's standard color dialog instead of the operating system
+    \value NoEyeDropperButton Hide the \uicontrol{Eye Dropper} button. This value was added in BobUI 6.6.
+    \value DontUseNativeDialog  Use BobUI's standard color dialog instead of the operating system
                                 native color dialog.
 
     \sa options, setOption(), testOption(), windowModality()
@@ -2134,12 +2134,12 @@ void QColorDialogPrivate::setVisible(bool visible)
         if (setNativeDialogVisible(visible)) {
             // Set WA_DontShowOnScreen so that QDialog::setVisible(visible) below
             // updates the state correctly, but skips showing the non-native version:
-            q->setAttribute(Qt::WA_DontShowOnScreen);
+            q->setAttribute(BobUI::WA_DontShowOnScreen);
         } else if (visible) {
             initWidgets();
         }
     } else {
-        q->setAttribute(Qt::WA_DontShowOnScreen, false);
+        q->setAttribute(BobUI::WA_DontShowOnScreen, false);
     }
 
     QDialogPrivate::setVisible(visible);
@@ -2207,7 +2207,7 @@ void QColorDialog::changeEvent(QEvent *e)
 
 void QColorDialogPrivate::updateColorPicking()
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     Q_Q(QColorDialog);
     static QPoint lastGlobalPos;
     QPoint newGlobalPos = QCursor::pos();
@@ -2221,13 +2221,13 @@ void QColorDialogPrivate::updateColorPicking()
         dummyTransparentWindow.setPosition(newGlobalPos);
 #endif
     }
-#endif // ! QT_NO_CURSOR
+#endif // ! BOBUI_NO_CURSOR
 }
 
 void QColorDialogPrivate::updateColorPicking(const QPoint &globalPos)
 {
     const QColor color = grabScreenColor(globalPos);
-    // QTBUG-39792, do not change standard, custom color selectors while moving as
+    // BOBUIBUG-39792, do not change standard, custom color selectors while moving as
     // otherwise it is not possible to pre-select a custom cell for assignment.
     setCurrentColor(color, ShowColor);
     updateColorLabelText(globalPos);
@@ -2252,13 +2252,13 @@ bool QColorDialogPrivate::handleColorPickingMouseButtonRelease(QMouseEvent *e)
 bool QColorDialogPrivate::handleColorPickingKeyPress(QKeyEvent *e)
 {
     Q_Q(QColorDialog);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     if (e->matches(QKeySequence::Cancel)) {
         releaseColorPicking();
         q->setCurrentColor(beforeScreenColorPicking);
     } else
 #endif
-      if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) {
+      if (e->key() == BobUI::Key_Return || e->key() == BobUI::Key_Enter) {
         q->setCurrentColor(grabScreenColor(QCursor::pos()));
         releaseColorPicking();
     }
@@ -2291,7 +2291,7 @@ void QColorDialog::done(int result)
     d->memberToDisconnectOnClose.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qcolordialog.moc"
 #include "moc_qcolordialog.cpp"

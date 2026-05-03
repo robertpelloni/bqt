@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGuiApplication>
 #include <QImage>
@@ -68,9 +68,9 @@ int main(int argc, char **argv)
 
 #if defined(Q_OS_WIN)
     graphicsApi = D3D11;
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     graphicsApi = Metal;
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     graphicsApi = Vulkan;
 #else
     graphicsApi = OpenGL;
@@ -115,10 +115,10 @@ int main(int argc, char **argv)
         r = QRhi::create(QRhi::Null, &params, rhiFlags);
     }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance inst;
     if (graphicsApi == Vulkan) {
-        QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
+        QLoggingCategory::setFilterRules(QStringLiteral("bobui.vulkan=true"));
         inst.setLayers({ "VK_LAYER_KHRONOS_validation" });
         inst.setExtensions(QRhiVulkanInitParams::preferredInstanceExtensions());
         if (inst.create()) {
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
     }
 #endif
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QScopedPointer<QOffscreenSurface> offscreenSurface;
     if (graphicsApi == OpenGL) {
         offscreenSurface.reset(QRhiGles2InitParams::newFallbackSurface());
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (graphicsApi == Metal) {
         QRhiMetalInitParams params;
         r = QRhi::create(QRhi::Metal, &params, rhiFlags);

@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WIDGETGALLERY_H
 #define WIDGETGALLERY_H
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QGroupBox;
 class QProgressBar;
-class QTabWidget;
-class QTextBrowser;
-class QToolBox;
-QT_END_NAMESPACE
+class BOBUIabWidget;
+class BOBUIextBrowser;
+class BOBUIoolBox;
+BOBUI_END_NAMESPACE
 
 class WidgetGallery : public QDialog
 {
@@ -31,13 +31,13 @@ private slots:
 
 private:
     static QGroupBox *createButtonsGroupBox();
-    static QTabWidget *createItemViewTabWidget();
+    static BOBUIabWidget *createItemViewTabWidget();
     static QGroupBox *createSimpleInputWidgetsGroupBox();
-    QToolBox *createTextToolBox();
+    BOBUIoolBox *createTextToolBox();
     QProgressBar *createProgressBar();
 
     QProgressBar *progressBar;
-    QTextBrowser *systemInfoTextBrowser{};
+    BOBUIextBrowser *systemInfoTextBrowser{};
 };
 
 #endif // WIDGETGALLERY_H

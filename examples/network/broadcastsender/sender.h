@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SENDER_H
 #define SENDER_H
 
 #include <QWidget>
-#include <QTimer>
+#include <BOBUIimer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QLabel;
 class QPushButton;
 class QUdpSocket;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class Sender : public QWidget
 {
@@ -28,7 +28,7 @@ private:
     QLabel *statusLabel = nullptr;
     QPushButton *startButton = nullptr;
     QUdpSocket *udpSocket = nullptr;
-    QTimer timer;
+    BOBUIimer timer;
     int messageNo = 1;
 };
 

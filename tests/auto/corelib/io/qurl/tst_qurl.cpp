@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtConcurrent/qtconcurrentrun.h>
+#include <BobUIConcurrent/bobuiconcurrentrun.h>
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qdiriterator.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qthreadpool.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdiriterator.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/bobuihreadpool.h>
+#include <BobUICore/qurl.h>
 
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_METATYPE(QUrl::FormattingOptions)
 
@@ -172,7 +172,7 @@ private:
     void testThreadingHelper();
 
     const QString m_currentPath = QDir::currentPath();
-    QTemporaryDir m_tempDir;
+    BOBUIemporaryDir m_tempDir;
 };
 
 void tst_QUrl::initTestCase()
@@ -240,14 +240,14 @@ void tst_QUrl::constructing()
     QVERIFY(fromLocal.isEmpty());
     QCOMPARE(fromLocal.toString(), QString());
 
-    QUrl justHost("qt-project.org");
+    QUrl justHost("bobui-project.org");
     QVERIFY(!justHost.isEmpty());
     QVERIFY(justHost.host().isEmpty());
-    QCOMPARE(justHost.path(), QString::fromLatin1("qt-project.org"));
+    QCOMPARE(justHost.path(), QString::fromLatin1("bobui-project.org"));
 
-    QUrl hostWithSlashes("//qt-project.org");
+    QUrl hostWithSlashes("//bobui-project.org");
     QVERIFY(hostWithSlashes.path().isEmpty());
-    QCOMPARE(hostWithSlashes.host(), QString::fromLatin1("qt-project.org"));
+    QCOMPARE(hostWithSlashes.host(), QString::fromLatin1("bobui-project.org"));
 }
 
 void tst_QUrl::hashInPath()
@@ -284,7 +284,7 @@ void tst_QUrl::unc()
 
 void tst_QUrl::assignment()
 {
-    QUrl url("http://qt-project.org/");
+    QUrl url("http://bobui-project.org/");
     QVERIFY(url.isValid());
 
     QUrl copy;
@@ -295,15 +295,15 @@ void tst_QUrl::assignment()
 
 void tst_QUrl::orderingCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QUrl>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QUrl>();
 }
 
 void tst_QUrl::comparison()
 {
-    QUrl url1("http://qt-project.org/");
+    QUrl url1("http://bobui-project.org/");
     QVERIFY(url1.isValid());
 
-    QUrl url2("http://qt-project.org/");
+    QUrl url2("http://bobui-project.org/");
     QVERIFY(url2.isValid());
 
     QCOMPARE(url1, url2);
@@ -378,15 +378,15 @@ void tst_QUrl::comparison()
     QVERIFY(url7 < url8);
 
     // Trailing slash difference
-    QUrl url9("http://qt-project.org/path/");
-    QUrl url9NoSlash("http://qt-project.org/path");
+    QUrl url9("http://bobui-project.org/path/");
+    QUrl url9NoSlash("http://bobui-project.org/path");
     QVERIFY(!(url9 == url9NoSlash));
     QVERIFY(!url9.matches(url9NoSlash, QUrl::None));
     QVERIFY(url9.matches(url9NoSlash, QUrl::StripTrailingSlash));
 
     // RemoveFilename
-    QUrl url10("http://qt-project.org/file");
-    QUrl url10bis("http://qt-project.org/otherfile");
+    QUrl url10("http://bobui-project.org/file");
+    QUrl url10bis("http://bobui-project.org/otherfile");
     QVERIFY(!(url10 == url10bis));
     QVERIFY(!url10.matches(url10bis, QUrl::None));
     QVERIFY(!url10.matches(url10bis, QUrl::StripTrailingSlash));
@@ -441,42 +441,42 @@ void tst_QUrl::comparison()
 
 void tst_QUrl::comparison2_data()
 {
-    QTest::addColumn<QUrl>("url1");
-    QTest::addColumn<QUrl>("url2");
-    QTest::addColumn<int>("ordering"); // like strcmp
+    BOBUIest::addColumn<QUrl>("url1");
+    BOBUIest::addColumn<QUrl>("url2");
+    BOBUIest::addColumn<int>("ordering"); // like strcmp
 
-    QTest::newRow("null-null") << QUrl() << QUrl() << 0;
+    BOBUIest::newRow("null-null") << QUrl() << QUrl() << 0;
 
     QUrl empty;
     empty.setPath("/hello"); // ensure it has detached
     empty.setPath(QString());
-    QTest::newRow("null-empty") << QUrl() << empty << 0;
+    BOBUIest::newRow("null-empty") << QUrl() << empty << 0;
 
-    QTest::newRow("scheme-null") << QUrl("x:") << QUrl() << 1;
-    QTest::newRow("samescheme") << QUrl("x:") << QUrl("x:") << 0;
-    QTest::newRow("no-fragment-empty-fragment") << QUrl("http://kde.org/dir/") << QUrl("http://kde.org/dir/#") << -1;
-    QTest::newRow("no-query-empty-query") << QUrl("http://kde.org/dir/") << QUrl("http://kde.org/dir/?") << -1;
-    QTest::newRow("simple-file-url") << QUrl("file:///home/dfaure/file") << QUrl("file:///home/dfaure/file") << 0;
-    QTest::newRow("fromLocalFile-vs-ctor") << QUrl::fromLocalFile("/home/dfaure/file") << QUrl("file:///home/dfaure/file") << 0;
+    BOBUIest::newRow("scheme-null") << QUrl("x:") << QUrl() << 1;
+    BOBUIest::newRow("samescheme") << QUrl("x:") << QUrl("x:") << 0;
+    BOBUIest::newRow("no-fragment-empty-fragment") << QUrl("http://kde.org/dir/") << QUrl("http://kde.org/dir/#") << -1;
+    BOBUIest::newRow("no-query-empty-query") << QUrl("http://kde.org/dir/") << QUrl("http://kde.org/dir/?") << -1;
+    BOBUIest::newRow("simple-file-url") << QUrl("file:///home/dfaure/file") << QUrl("file:///home/dfaure/file") << 0;
+    BOBUIest::newRow("fromLocalFile-vs-ctor") << QUrl::fromLocalFile("/home/dfaure/file") << QUrl("file:///home/dfaure/file") << 0;
 
     // the following three are by choice
     // the order could be the opposite and it would still be correct
-    QTest::newRow("scheme-path") << QUrl("x:") << QUrl("/tmp") << +1;
-    QTest::newRow("fragment-path") << QUrl("#foo") << QUrl("/tmp") << -1;
-    QTest::newRow("fragment-scheme") << QUrl("#foo") << QUrl("x:") << -1;
+    BOBUIest::newRow("scheme-path") << QUrl("x:") << QUrl("/tmp") << +1;
+    BOBUIest::newRow("fragment-path") << QUrl("#foo") << QUrl("/tmp") << -1;
+    BOBUIest::newRow("fragment-scheme") << QUrl("#foo") << QUrl("x:") << -1;
 
-    QTest::newRow("noport-zeroport") << QUrl("http://example.com") << QUrl("http://example.com:0") << -1;
+    BOBUIest::newRow("noport-zeroport") << QUrl("http://example.com") << QUrl("http://example.com:0") << -1;
 
     // check that nothing is remembered
     auto addEmptiedUrl = [](const char *label, const QUrl &url) {
         QUrl copy = url;
         copy.setUrl(QString());
-        QTest::addRow("null-latent-%s", label) << QUrl() << copy << 0;
+        BOBUIest::addRow("null-latent-%s", label) << QUrl() << copy << 0;
 
-        QString nonempty = u"https://www.qt-project.org"_s;
+        QString nonempty = u"https://www.bobui-project.org"_s;
         copy = url;
         copy.setUrl(nonempty);
-        QTest::addRow("nonnull-latent-%s", label) << QUrl(nonempty) << copy << 0;
+        BOBUIest::addRow("nonnull-latent-%s", label) << QUrl(nonempty) << copy << 0;
     };
     addEmptiedUrl("scheme", QUrl("x:"));
     addEmptiedUrl("username", QUrl("//user@"));
@@ -501,12 +501,12 @@ void tst_QUrl::comparison2()
     QFETCH(QUrl, url2);
     QFETCH(int, ordering);
 
-    const Qt::weak_ordering expectedOrdering = [&ordering] {
+    const BobUI::weak_ordering expectedOrdering = [&ordering] {
         if (ordering > 0)
-            return Qt::weak_ordering::greater;
+            return BobUI::weak_ordering::greater;
         else if (ordering < 0)
-            return Qt::weak_ordering::less;
-        return Qt::weak_ordering::equivalent;
+            return BobUI::weak_ordering::less;
+        return BobUI::weak_ordering::equivalent;
     }();
 
     if (ordering == 0) {
@@ -523,7 +523,7 @@ void tst_QUrl::comparison2()
         QCOMPARE_NE(url1, url2);
         QCOMPARE_GT(url1, url2);
     }
-    QT_TEST_ALL_COMPARISON_OPS(url1, url2, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(url1, url2, expectedOrdering);
 
     // redundant checks (the above should catch these)
     QCOMPARE(url1 < url2 || url2 < url1, ordering != 0);
@@ -533,7 +533,7 @@ void tst_QUrl::comparison2()
 
 void tst_QUrl::copying()
 {
-    QUrl url("http://qt-project.org/");
+    QUrl url("http://bobui-project.org/");
     QVERIFY(url.isValid());
 
     QUrl copy(url);
@@ -703,13 +703,13 @@ void tst_QUrl::setUrl()
     }
 
     {
-        QUrl url("file:/opt/kde2/qt2/doc/html/showimg-main-cpp.html#QObject::connect");
+        QUrl url("file:/opt/kde2/bobui2/doc/html/showimg-main-cpp.html#QObject::connect");
         QVERIFY(url.isValid());
         QCOMPARE(url.fragment(), QString::fromLatin1("QObject::connect"));
     }
 
     {
-        QUrl url("file:/opt/kde2/qt2/doc/html/showimg-main-cpp.html#QObject:connect");
+        QUrl url("file:/opt/kde2/bobui2/doc/html/showimg-main-cpp.html#QObject:connect");
         QVERIFY(url.isValid());
         QCOMPARE(url.fragment(), QString::fromLatin1("QObject:connect"));
     }
@@ -873,16 +873,16 @@ void tst_QUrl::setUrl()
 
 void tst_QUrl::i18n_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QByteArray>("punyOutput");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QByteArray>("punyOutput");
 
-    QTest::newRow("øl") << QString::fromUtf8("http://ole:passord@www.øl.no/index.html?ole=æsemann&ilder gud=hei#top")
+    BOBUIest::newRow("øl") << QString::fromUtf8("http://ole:passord@www.øl.no/index.html?ole=æsemann&ilder gud=hei#top")
                         << QByteArray("http://ole:passord@www.xn--l-4ga.no/index.html?ole=%C3%A6semann&ilder%20gud=hei#top");
-    QTest::newRow("räksmörgås") << QString::fromUtf8("http://www.räksmörgås.no/")
+    BOBUIest::newRow("räksmörgås") << QString::fromUtf8("http://www.räksmörgås.no/")
                              << QByteArray("http://www.xn--rksmrgs-5wao1o.no/");
-    QTest::newRow("bühler") << QString::fromUtf8("http://www.bühler.no/")
+    BOBUIest::newRow("bühler") << QString::fromUtf8("http://www.bühler.no/")
                          << QByteArray("http://www.xn--bhler-kva.no/");
-    QTest::newRow("non-latin1")
+    BOBUIest::newRow("non-latin1")
         << QString::fromUtf8("http://www.\316\261\316\270\316\256\316\275\316\261.info")
         << QByteArray("http://www.xn--jxafb0a0a.info");
 }
@@ -903,110 +903,110 @@ void tst_QUrl::i18n()
 
 void tst_QUrl::resolving_data()
 {
-    QTest::addColumn<QString>("baseUrl");
-    QTest::addColumn<QString>("relativeUrl");
-    QTest::addColumn<QString>("resolvedUrl");
+    BOBUIest::addColumn<QString>("baseUrl");
+    BOBUIest::addColumn<QString>("relativeUrl");
+    BOBUIest::addColumn<QString>("resolvedUrl");
 
     // boundary cases
-    QTest::newRow("empty-on-empty") << "http://a" << "" << "http://a";
-    QTest::newRow("empty-on-/") << "http://a/" << "" << "http://a/";
-    QTest::newRow("empty-on-//") << "http://a//" << "" << "http://a//";
-    QTest::newRow("empty-on-/.") << "http://a/." << "" << "http://a/";
-    QTest::newRow("empty-on-/./") << "http://a/./" << "" << "http://a/";
-    QTest::newRow("empty-on-/..") << "http://a/.." << "" << "http://a/";
-    QTest::newRow("empty-on-/../") << "http://a/../" << "" << "http://a/";
+    BOBUIest::newRow("empty-on-empty") << "http://a" << "" << "http://a";
+    BOBUIest::newRow("empty-on-/") << "http://a/" << "" << "http://a/";
+    BOBUIest::newRow("empty-on-//") << "http://a//" << "" << "http://a//";
+    BOBUIest::newRow("empty-on-/.") << "http://a/." << "" << "http://a/";
+    BOBUIest::newRow("empty-on-/./") << "http://a/./" << "" << "http://a/";
+    BOBUIest::newRow("empty-on-/..") << "http://a/.." << "" << "http://a/";
+    BOBUIest::newRow("empty-on-/../") << "http://a/../" << "" << "http://a/";
 
-    QTest::newRow("/-on-empty-with-authority") << "http://a" << "/" << "http://a/";
-    QTest::newRow(".-on-empty-with-authority") << "http://a" << "." << "http://a/";
-    QTest::newRow("./-on-empty-with-authority") << "http://a" << "./" << "http://a/";
-    QTest::newRow(".//-on-empty-with-authority") << "http://a" << ".//" << "http://a//";
-    QTest::newRow("..-on-empty-with-authority") << "http://a" << ".." << "http://a/";
-    QTest::newRow("../-on-empty-with-authority") << "http://a" << "../" << "http://a/";
-    QTest::newRow("/-on-empty-no-authority") << "scheme:" << "/" << "scheme:/";
-    QTest::newRow(".-on-empty-no-authority") << "scheme:" << "." << "scheme:";
-    QTest::newRow("./-on-empty-no-authority") << "scheme:" << "./" << "scheme:";
-    QTest::newRow(".//-on-empty-no-authority") << "scheme:" << ".//" << "scheme:";
-    QTest::newRow("..-on-empty-no-authority") << "scheme:" << ".." << "scheme:";
-    QTest::newRow("../-on-empty-no-authority") << "scheme:" << "../" << "scheme:";
+    BOBUIest::newRow("/-on-empty-with-authority") << "http://a" << "/" << "http://a/";
+    BOBUIest::newRow(".-on-empty-with-authority") << "http://a" << "." << "http://a/";
+    BOBUIest::newRow("./-on-empty-with-authority") << "http://a" << "./" << "http://a/";
+    BOBUIest::newRow(".//-on-empty-with-authority") << "http://a" << ".//" << "http://a//";
+    BOBUIest::newRow("..-on-empty-with-authority") << "http://a" << ".." << "http://a/";
+    BOBUIest::newRow("../-on-empty-with-authority") << "http://a" << "../" << "http://a/";
+    BOBUIest::newRow("/-on-empty-no-authority") << "scheme:" << "/" << "scheme:/";
+    BOBUIest::newRow(".-on-empty-no-authority") << "scheme:" << "." << "scheme:";
+    BOBUIest::newRow("./-on-empty-no-authority") << "scheme:" << "./" << "scheme:";
+    BOBUIest::newRow(".//-on-empty-no-authority") << "scheme:" << ".//" << "scheme:";
+    BOBUIest::newRow("..-on-empty-no-authority") << "scheme:" << ".." << "scheme:";
+    BOBUIest::newRow("../-on-empty-no-authority") << "scheme:" << "../" << "scheme:";
 
-    QTest::newRow("scheme-change") << "http://a" << "https://b" << "https://b";
-    QTest::newRow("scheme-change-path") << "http://a/" << "scheme:" << "scheme:";
+    BOBUIest::newRow("scheme-change") << "http://a" << "https://b" << "https://b";
+    BOBUIest::newRow("scheme-change-path") << "http://a/" << "scheme:" << "scheme:";
 
     // 5.4.1 Normal Examples (http://www.ietf.org/rfc/rfc3986.txt)
     // URL paths not ending in /
-    QTest::newRow("g:h")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g:h")      << QString::fromLatin1("g:h");
-    QTest::newRow("g")         << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g")        << QString::fromLatin1("http://a/b/c/g");
-    QTest::newRow("./g")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./g")      << QString::fromLatin1("http://a/b/c/g");
-    QTest::newRow("g/")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g/")       << QString::fromLatin1("http://a/b/c/g/");
-    QTest::newRow("/g")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("/g")       << QString::fromLatin1("http://a/g");
-    QTest::newRow("//g")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("//g")      << QString::fromLatin1("http://g");
-    QTest::newRow("?y")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("?y")       << QString::fromLatin1("http://a/b/c/d;p?y");
-    QTest::newRow("g?y")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y")      << QString::fromLatin1("http://a/b/c/g?y");
-    QTest::newRow("#s")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("#s")       << QString::fromLatin1("http://a/b/c/d;p?q#s");
-    QTest::newRow("g#s")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g#s")      << QString::fromLatin1("http://a/b/c/g#s");
-    QTest::newRow("g?y#s")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y#s")    << QString::fromLatin1("http://a/b/c/g?y#s");
-    QTest::newRow(";x")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(";x")       << QString::fromLatin1("http://a/b/c/;x");
-    QTest::newRow("g;x")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x")      << QString::fromLatin1("http://a/b/c/g;x");
-    QTest::newRow("g;x?y#s")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x?y#s")  << QString::fromLatin1("http://a/b/c/g;x?y#s");
-    QTest::newRow("[empty]")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("")         << QString::fromLatin1("http://a/b/c/d;p?q");
-    QTest::newRow(".")         << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(".")        << QString::fromLatin1("http://a/b/c/");
-    QTest::newRow("./")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./")       << QString::fromLatin1("http://a/b/c/");
-    QTest::newRow(".//")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(".//")      << QString::fromLatin1("http://a/b/c//");
-    QTest::newRow("..")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..")       << QString::fromLatin1("http://a/b/");
-    QTest::newRow("../")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../")      << QString::fromLatin1("http://a/b/");
-    QTest::newRow("..//")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..//")     << QString::fromLatin1("http://a/b//");
-    QTest::newRow("../g")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../g")     << QString::fromLatin1("http://a/b/g");
-    QTest::newRow("..//g")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..//g")    << QString::fromLatin1("http://a/b//g");
-    QTest::newRow("../..")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../..")    << QString::fromLatin1("http://a/");
-    QTest::newRow("../../")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../")   << QString::fromLatin1("http://a/");
-    QTest::newRow("../..//")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../..//")  << QString::fromLatin1("http://a//");
-    QTest::newRow("../../g")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../g")  << QString::fromLatin1("http://a/g");
-    QTest::newRow("../..//g")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../..//g") << QString::fromLatin1("http://a//g");
+    BOBUIest::newRow("g:h")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g:h")      << QString::fromLatin1("g:h");
+    BOBUIest::newRow("g")         << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g")        << QString::fromLatin1("http://a/b/c/g");
+    BOBUIest::newRow("./g")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./g")      << QString::fromLatin1("http://a/b/c/g");
+    BOBUIest::newRow("g/")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g/")       << QString::fromLatin1("http://a/b/c/g/");
+    BOBUIest::newRow("/g")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("/g")       << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("//g")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("//g")      << QString::fromLatin1("http://g");
+    BOBUIest::newRow("?y")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("?y")       << QString::fromLatin1("http://a/b/c/d;p?y");
+    BOBUIest::newRow("g?y")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y")      << QString::fromLatin1("http://a/b/c/g?y");
+    BOBUIest::newRow("#s")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("#s")       << QString::fromLatin1("http://a/b/c/d;p?q#s");
+    BOBUIest::newRow("g#s")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g#s")      << QString::fromLatin1("http://a/b/c/g#s");
+    BOBUIest::newRow("g?y#s")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y#s")    << QString::fromLatin1("http://a/b/c/g?y#s");
+    BOBUIest::newRow(";x")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(";x")       << QString::fromLatin1("http://a/b/c/;x");
+    BOBUIest::newRow("g;x")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x")      << QString::fromLatin1("http://a/b/c/g;x");
+    BOBUIest::newRow("g;x?y#s")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x?y#s")  << QString::fromLatin1("http://a/b/c/g;x?y#s");
+    BOBUIest::newRow("[empty]")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("")         << QString::fromLatin1("http://a/b/c/d;p?q");
+    BOBUIest::newRow(".")         << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(".")        << QString::fromLatin1("http://a/b/c/");
+    BOBUIest::newRow("./")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./")       << QString::fromLatin1("http://a/b/c/");
+    BOBUIest::newRow(".//")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(".//")      << QString::fromLatin1("http://a/b/c//");
+    BOBUIest::newRow("..")        << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..")       << QString::fromLatin1("http://a/b/");
+    BOBUIest::newRow("../")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../")      << QString::fromLatin1("http://a/b/");
+    BOBUIest::newRow("..//")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..//")     << QString::fromLatin1("http://a/b//");
+    BOBUIest::newRow("../g")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../g")     << QString::fromLatin1("http://a/b/g");
+    BOBUIest::newRow("..//g")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..//g")    << QString::fromLatin1("http://a/b//g");
+    BOBUIest::newRow("../..")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../..")    << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../../")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../")   << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../..//")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../..//")  << QString::fromLatin1("http://a//");
+    BOBUIest::newRow("../../g")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../g")  << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("../..//g")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../..//g") << QString::fromLatin1("http://a//g");
 
     // URL paths ending in /
-    QTest::newRow("g:h-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g:h")      << QString::fromLatin1("g:h");
-    QTest::newRow("g-on-/")        << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g")        << QString::fromLatin1("http://a/b/c/g");
-    QTest::newRow("./g-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("./g")      << QString::fromLatin1("http://a/b/c/g");
-    QTest::newRow("g/-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g/")       << QString::fromLatin1("http://a/b/c/g/");
-    QTest::newRow("/g-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("/g")       << QString::fromLatin1("http://a/g");
-    QTest::newRow("//g-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("//g")      << QString::fromLatin1("http://g");
-    QTest::newRow("?y-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("?y")       << QString::fromLatin1("http://a/b/c/;p?y");
-    QTest::newRow("g?y-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g?y")      << QString::fromLatin1("http://a/b/c/g?y");
-    QTest::newRow("#s-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("#s")       << QString::fromLatin1("http://a/b/c/;p?q#s");
-    QTest::newRow("g#s-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g#s")      << QString::fromLatin1("http://a/b/c/g#s");
-    QTest::newRow("g?y#s-on-/")    << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g?y#s")    << QString::fromLatin1("http://a/b/c/g?y#s");
-    QTest::newRow(";x-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1(";x")       << QString::fromLatin1("http://a/b/c/;x");
-    QTest::newRow("g;x-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g;x")      << QString::fromLatin1("http://a/b/c/g;x");
-    QTest::newRow("g;x?y#s-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g;x?y#s")  << QString::fromLatin1("http://a/b/c/g;x?y#s");
-    QTest::newRow("[empty]-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("")         << QString::fromLatin1("http://a/b/c/;p?q");
-    QTest::newRow(".-on-/")        << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1(".")        << QString::fromLatin1("http://a/b/c/");
-    QTest::newRow("./-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("./")       << QString::fromLatin1("http://a/b/c/");
-    QTest::newRow(".//-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1(".//")      << QString::fromLatin1("http://a/b/c//");
-    QTest::newRow("..-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("..")       << QString::fromLatin1("http://a/b/");
-    QTest::newRow("../-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../")      << QString::fromLatin1("http://a/b/");
-    QTest::newRow("..//-on-/")     << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("..//")     << QString::fromLatin1("http://a/b//");
-    QTest::newRow("../g-on-/")     << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../g")     << QString::fromLatin1("http://a/b/g");
-    QTest::newRow("..//g-on-/")    << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("..//g")    << QString::fromLatin1("http://a/b//g");
-    QTest::newRow("../..-on-/")    << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../..")    << QString::fromLatin1("http://a/");
-    QTest::newRow("../../-on-/")   << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../../")   << QString::fromLatin1("http://a/");
-    QTest::newRow("../..//-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../..//")  << QString::fromLatin1("http://a//");
-    QTest::newRow("../../g-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../../g")  << QString::fromLatin1("http://a/g");
-    QTest::newRow("../..//g-on-/") << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../..//g") << QString::fromLatin1("http://a//g");
+    BOBUIest::newRow("g:h-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g:h")      << QString::fromLatin1("g:h");
+    BOBUIest::newRow("g-on-/")        << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g")        << QString::fromLatin1("http://a/b/c/g");
+    BOBUIest::newRow("./g-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("./g")      << QString::fromLatin1("http://a/b/c/g");
+    BOBUIest::newRow("g/-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g/")       << QString::fromLatin1("http://a/b/c/g/");
+    BOBUIest::newRow("/g-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("/g")       << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("//g-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("//g")      << QString::fromLatin1("http://g");
+    BOBUIest::newRow("?y-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("?y")       << QString::fromLatin1("http://a/b/c/;p?y");
+    BOBUIest::newRow("g?y-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g?y")      << QString::fromLatin1("http://a/b/c/g?y");
+    BOBUIest::newRow("#s-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("#s")       << QString::fromLatin1("http://a/b/c/;p?q#s");
+    BOBUIest::newRow("g#s-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g#s")      << QString::fromLatin1("http://a/b/c/g#s");
+    BOBUIest::newRow("g?y#s-on-/")    << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g?y#s")    << QString::fromLatin1("http://a/b/c/g?y#s");
+    BOBUIest::newRow(";x-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1(";x")       << QString::fromLatin1("http://a/b/c/;x");
+    BOBUIest::newRow("g;x-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g;x")      << QString::fromLatin1("http://a/b/c/g;x");
+    BOBUIest::newRow("g;x?y#s-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("g;x?y#s")  << QString::fromLatin1("http://a/b/c/g;x?y#s");
+    BOBUIest::newRow("[empty]-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("")         << QString::fromLatin1("http://a/b/c/;p?q");
+    BOBUIest::newRow(".-on-/")        << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1(".")        << QString::fromLatin1("http://a/b/c/");
+    BOBUIest::newRow("./-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("./")       << QString::fromLatin1("http://a/b/c/");
+    BOBUIest::newRow(".//-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1(".//")      << QString::fromLatin1("http://a/b/c//");
+    BOBUIest::newRow("..-on-/")       << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("..")       << QString::fromLatin1("http://a/b/");
+    BOBUIest::newRow("../-on-/")      << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../")      << QString::fromLatin1("http://a/b/");
+    BOBUIest::newRow("..//-on-/")     << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("..//")     << QString::fromLatin1("http://a/b//");
+    BOBUIest::newRow("../g-on-/")     << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../g")     << QString::fromLatin1("http://a/b/g");
+    BOBUIest::newRow("..//g-on-/")    << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("..//g")    << QString::fromLatin1("http://a/b//g");
+    BOBUIest::newRow("../..-on-/")    << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../..")    << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../../-on-/")   << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../../")   << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../..//-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../..//")  << QString::fromLatin1("http://a//");
+    BOBUIest::newRow("../../g-on-/")  << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../../g")  << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("../..//g-on-/") << QString::fromLatin1("http://a/b/c/;p?q") << QString::fromLatin1("../..//g") << QString::fromLatin1("http://a//g");
 
     // URL paths ending in //
-    QTest::newRow(".-on-//") << "http://a/b/c//" << "." << "http://a/b/c//";
-    QTest::newRow("./-on-//") << "http://a/b/c//" << "./" << "http://a/b/c//";
-    QTest::newRow(".//-on-//") << "http://a/b/c//" << ".//" << "http://a/b/c///";  // weird but correct
-    QTest::newRow("..-on-//") << "http://a/b/c//" << ".." << "http://a/b/c/";
-    QTest::newRow("../-on-//") << "http://a/b/c//" << "../" << "http://a/b/c/";
-    QTest::newRow("..//-on-//") << "http://a/b/c//" << "..//" << "http://a/b/c//";
-    QTest::newRow("../g-on-//") << "http://a/b/c//" << "../g" << "http://a/b/c/g";
-    QTest::newRow("..//g-on-//") << "http://a/b/c//" << "..//g" << "http://a/b/c//g";
-    QTest::newRow("../..-on-//") << "http://a/b/c//" << "../.." << "http://a/b/";
-    QTest::newRow("../../-on-//") << "http://a/b/c//" << "../../" << "http://a/b/";
-    QTest::newRow("../..//-on-//") << "http://a/b/c//" << "../..//" << "http://a/b//";
-    QTest::newRow("../../g-on-//") << "http://a/b/c//" << "../../g" << "http://a/b/g";
-    QTest::newRow("../..//g-on-//") << "http://a/b/c//" << "../..//g" << "http://a/b//g";
+    BOBUIest::newRow(".-on-//") << "http://a/b/c//" << "." << "http://a/b/c//";
+    BOBUIest::newRow("./-on-//") << "http://a/b/c//" << "./" << "http://a/b/c//";
+    BOBUIest::newRow(".//-on-//") << "http://a/b/c//" << ".//" << "http://a/b/c///";  // weird but correct
+    BOBUIest::newRow("..-on-//") << "http://a/b/c//" << ".." << "http://a/b/c/";
+    BOBUIest::newRow("../-on-//") << "http://a/b/c//" << "../" << "http://a/b/c/";
+    BOBUIest::newRow("..//-on-//") << "http://a/b/c//" << "..//" << "http://a/b/c//";
+    BOBUIest::newRow("../g-on-//") << "http://a/b/c//" << "../g" << "http://a/b/c/g";
+    BOBUIest::newRow("..//g-on-//") << "http://a/b/c//" << "..//g" << "http://a/b/c//g";
+    BOBUIest::newRow("../..-on-//") << "http://a/b/c//" << "../.." << "http://a/b/";
+    BOBUIest::newRow("../../-on-//") << "http://a/b/c//" << "../../" << "http://a/b/";
+    BOBUIest::newRow("../..//-on-//") << "http://a/b/c//" << "../..//" << "http://a/b//";
+    BOBUIest::newRow("../../g-on-//") << "http://a/b/c//" << "../../g" << "http://a/b/g";
+    BOBUIest::newRow("../..//g-on-//") << "http://a/b/c//" << "../..//g" << "http://a/b//g";
 
     // 5.4.2  Abnormal Examples (http://www.ietf.org/rfc/rfc3986.txt)
 
@@ -1014,35 +1014,35 @@ void tst_QUrl::resolving_data()
     // relative path ".." segments than there are hierarchical levels in the
     // base URI's path.  Note that the ".." syntax cannot be used to change
     // the authority component of a URI.
-    QTest::newRow("../../../")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../")     << QString::fromLatin1("http://a/");
-    QTest::newRow("../../../..") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../..")  << QString::fromLatin1("http://a/");
-    QTest::newRow("../../../..//") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../..//")  << QString::fromLatin1("http://a//");
-    QTest::newRow("../../../../..") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../../..")  << QString::fromLatin1("http://a/");
-    QTest::newRow("../../../../../") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../../../")  << QString::fromLatin1("http://a/");
-    QTest::newRow("../../../g")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../g")     << QString::fromLatin1("http://a/g");
-    QTest::newRow("../../..//g")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../..//g")    << QString::fromLatin1("http://a//g");
-    QTest::newRow("../../../../g") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../../g")  << QString::fromLatin1("http://a/g");
-    QTest::newRow("../../../..//g") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../..//g") << QString::fromLatin1("http://a//g");
+    BOBUIest::newRow("../../../")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../")     << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../../../..") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../..")  << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../../../..//") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../..//")  << QString::fromLatin1("http://a//");
+    BOBUIest::newRow("../../../../..") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../../..")  << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../../../../../") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../../../")  << QString::fromLatin1("http://a/");
+    BOBUIest::newRow("../../../g")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../g")     << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("../../..//g")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../..//g")    << QString::fromLatin1("http://a//g");
+    BOBUIest::newRow("../../../../g") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../../g")  << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("../../../..//g") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("../../../..//g") << QString::fromLatin1("http://a//g");
 
     // Similarly, parsers must remove the dot-segments "." and ".." when
     // they are complete components of a path, but not when they are only
     // part of a segment.
-    QTest::newRow("/./g")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("/./g")  << QString::fromLatin1("http://a/g");
-    QTest::newRow("/../g") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("/../g") << QString::fromLatin1("http://a/g");
-    QTest::newRow("g.")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g.")    << QString::fromLatin1("http://a/b/c/g.");
-    QTest::newRow(".g")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(".g")    << QString::fromLatin1("http://a/b/c/.g");
-    QTest::newRow("g..")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g..")   << QString::fromLatin1("http://a/b/c/g..");
-    QTest::newRow("..g")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..g")   << QString::fromLatin1("http://a/b/c/..g");
+    BOBUIest::newRow("/./g")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("/./g")  << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("/../g") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("/../g") << QString::fromLatin1("http://a/g");
+    BOBUIest::newRow("g.")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g.")    << QString::fromLatin1("http://a/b/c/g.");
+    BOBUIest::newRow(".g")    << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1(".g")    << QString::fromLatin1("http://a/b/c/.g");
+    BOBUIest::newRow("g..")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g..")   << QString::fromLatin1("http://a/b/c/g..");
+    BOBUIest::newRow("..g")   << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("..g")   << QString::fromLatin1("http://a/b/c/..g");
 
     // Less likely are cases where the relative URI reference uses
     // unnecessary or nonsensical forms of the "." and ".." complete path
     // segments.
-    QTest::newRow("./../g")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./../g")     << QString::fromLatin1("http://a/b/g");
-    QTest::newRow("./g/.")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./g/.")      << QString::fromLatin1("http://a/b/c/g/");
-    QTest::newRow("g/./h")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g/./h")      << QString::fromLatin1("http://a/b/c/g/h");
-    QTest::newRow("g/../h")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g/../h")     << QString::fromLatin1("http://a/b/c/h");
-    QTest::newRow("g;x=1/./y")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x=1/./y")  << QString::fromLatin1("http://a/b/c/g;x=1/y");
-    QTest::newRow("g;x=1/../y") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x=1/../y") << QString::fromLatin1("http://a/b/c/y");
+    BOBUIest::newRow("./../g")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./../g")     << QString::fromLatin1("http://a/b/g");
+    BOBUIest::newRow("./g/.")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("./g/.")      << QString::fromLatin1("http://a/b/c/g/");
+    BOBUIest::newRow("g/./h")      << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g/./h")      << QString::fromLatin1("http://a/b/c/g/h");
+    BOBUIest::newRow("g/../h")     << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g/../h")     << QString::fromLatin1("http://a/b/c/h");
+    BOBUIest::newRow("g;x=1/./y")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x=1/./y")  << QString::fromLatin1("http://a/b/c/g;x=1/y");
+    BOBUIest::newRow("g;x=1/../y") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g;x=1/../y") << QString::fromLatin1("http://a/b/c/y");
 
     // Some applications fail to separate the reference's query and/or
     // fragment components from a relative path before merging it with the
@@ -1050,71 +1050,71 @@ void tst_QUrl::resolving_data()
     // since typical usage of a fragment never includes the hierarchy ("/")
     // character, and the query component is not normally used within
     // relative references.
-    QTest::newRow("g?y/./x")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y/./x")  << QString::fromLatin1("http://a/b/c/g?y/./x");
-    QTest::newRow("g?y/../x") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y/../x") << QString::fromLatin1("http://a/b/c/g?y/../x");
-    QTest::newRow("g#s/./x")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g#s/./x")  << QString::fromLatin1("http://a/b/c/g#s/./x");
-    QTest::newRow("g#s/../x") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g#s/../x") << QString::fromLatin1("http://a/b/c/g#s/../x");
+    BOBUIest::newRow("g?y/./x")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y/./x")  << QString::fromLatin1("http://a/b/c/g?y/./x");
+    BOBUIest::newRow("g?y/../x") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g?y/../x") << QString::fromLatin1("http://a/b/c/g?y/../x");
+    BOBUIest::newRow("g#s/./x")  << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g#s/./x")  << QString::fromLatin1("http://a/b/c/g#s/./x");
+    BOBUIest::newRow("g#s/../x") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("g#s/../x") << QString::fromLatin1("http://a/b/c/g#s/../x");
 
     // Some parsers allow the scheme name to be present in a relative URI
     // reference if it is the same as the base URI scheme.  This is
     // considered to be a loophole in prior specifications of partial URI [RFC1630],
-    //QTest::newRow("http:g [for backward compatibility]") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("http:g") << QString::fromLatin1("http://a/b/c/g");
+    //BOBUIest::newRow("http:g [for backward compatibility]") << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("http:g") << QString::fromLatin1("http://a/b/c/g");
     // However we don't do that anymore, as per RFC3986, in order for the data:subpage testcase below to work.
-    QTest::newRow("http:g")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("http:g") << QString::fromLatin1("http:g");
-    QTest::newRow("data:subpage") << QString::fromLatin1("data:text/plain, main page") << QString::fromLatin1("data:text/plain, subpage") << QString::fromLatin1("data:text/plain, subpage");
+    BOBUIest::newRow("http:g")       << QString::fromLatin1("http://a/b/c/d;p?q") << QString::fromLatin1("http:g") << QString::fromLatin1("http:g");
+    BOBUIest::newRow("data:subpage") << QString::fromLatin1("data:text/plain, main page") << QString::fromLatin1("data:text/plain, subpage") << QString::fromLatin1("data:text/plain, subpage");
 
     // Resolve relative with relative
-    QTest::newRow("../a (1)")  << QString::fromLatin1("b") << QString::fromLatin1("../a")  << QString::fromLatin1("a");
-    QTest::newRow("../a (2)")  << QString::fromLatin1("b/a") << QString::fromLatin1("../a")  << QString::fromLatin1("a");
-    QTest::newRow("../a (3)")  << QString::fromLatin1("b/c/a") << QString::fromLatin1("../a")  << QString::fromLatin1("b/a");
-    QTest::newRow("../a (4)")  << QString::fromLatin1("b") << QString::fromLatin1("/a")  << QString::fromLatin1("/a");
-    QTest::newRow("relative+.") << "scheme:" << "." << "scheme:";
-    QTest::newRow("relative+./") << "scheme:" << "./" << "scheme:";
-    QTest::newRow("relative+.//") << "scheme:" << ".//" << "scheme:";
-    QTest::newRow("relative+.///") << "scheme:" << ".///" << "scheme:";
-    QTest::newRow("relative+./.") << "scheme:" << "./." << "scheme:";
-    QTest::newRow("relative+././") << "scheme:" << "././" << "scheme:";
-    QTest::newRow("relative+..") << "scheme:" << ".." << "scheme:";
-    QTest::newRow("relative+../") << "scheme:" << "../" << "scheme:";
-    QTest::newRow("relative+..//") << "scheme:" << "..//" << "scheme:";
-    QTest::newRow("relative+..///") << "scheme:" << "..///" << "scheme:";
-    QTest::newRow("relative+../.") << "scheme:" << "../." << "scheme:";
-    QTest::newRow("relative+.././") << "scheme:" << ".././" << "scheme:";
-    QTest::newRow("relative+.././/") << "scheme:" << ".././/" << "scheme:";
-    QTest::newRow("relative+.././//") << "scheme:" << ".././//" << "scheme:";
-    QTest::newRow("relative+../../../..") << "scheme:b/c/d" << "../../../.." << "scheme:";
-    QTest::newRow("relative+../../../../") << "scheme:b/c/d" << "../../../../" << "scheme:";
-    QTest::newRow("relative+../../../..//") << "scheme:b/c/d" << "../../../..//" << "scheme:";
-    QTest::newRow("relative+../../d/../..") << "scheme:b/c/d" << "../../d/../.." << "scheme:";
-    QTest::newRow("relative+../../d/../../") << "scheme:b/c/d" << "../../d/../../" << "scheme:";
-    QTest::newRow("relative+endslash+../../../..") << "scheme:b/c/d/" << "../../../.." << "scheme:";
-    QTest::newRow("relative+endslash+../../../../") << "scheme:b/c/d/" << "../../../../" << "scheme:";
-    QTest::newRow("relative+endslash+../../../..//") << "scheme:b/c/d/" << "../../../..//" << "scheme:";
+    BOBUIest::newRow("../a (1)")  << QString::fromLatin1("b") << QString::fromLatin1("../a")  << QString::fromLatin1("a");
+    BOBUIest::newRow("../a (2)")  << QString::fromLatin1("b/a") << QString::fromLatin1("../a")  << QString::fromLatin1("a");
+    BOBUIest::newRow("../a (3)")  << QString::fromLatin1("b/c/a") << QString::fromLatin1("../a")  << QString::fromLatin1("b/a");
+    BOBUIest::newRow("../a (4)")  << QString::fromLatin1("b") << QString::fromLatin1("/a")  << QString::fromLatin1("/a");
+    BOBUIest::newRow("relative+.") << "scheme:" << "." << "scheme:";
+    BOBUIest::newRow("relative+./") << "scheme:" << "./" << "scheme:";
+    BOBUIest::newRow("relative+.//") << "scheme:" << ".//" << "scheme:";
+    BOBUIest::newRow("relative+.///") << "scheme:" << ".///" << "scheme:";
+    BOBUIest::newRow("relative+./.") << "scheme:" << "./." << "scheme:";
+    BOBUIest::newRow("relative+././") << "scheme:" << "././" << "scheme:";
+    BOBUIest::newRow("relative+..") << "scheme:" << ".." << "scheme:";
+    BOBUIest::newRow("relative+../") << "scheme:" << "../" << "scheme:";
+    BOBUIest::newRow("relative+..//") << "scheme:" << "..//" << "scheme:";
+    BOBUIest::newRow("relative+..///") << "scheme:" << "..///" << "scheme:";
+    BOBUIest::newRow("relative+../.") << "scheme:" << "../." << "scheme:";
+    BOBUIest::newRow("relative+.././") << "scheme:" << ".././" << "scheme:";
+    BOBUIest::newRow("relative+.././/") << "scheme:" << ".././/" << "scheme:";
+    BOBUIest::newRow("relative+.././//") << "scheme:" << ".././//" << "scheme:";
+    BOBUIest::newRow("relative+../../../..") << "scheme:b/c/d" << "../../../.." << "scheme:";
+    BOBUIest::newRow("relative+../../../../") << "scheme:b/c/d" << "../../../../" << "scheme:";
+    BOBUIest::newRow("relative+../../../..//") << "scheme:b/c/d" << "../../../..//" << "scheme:";
+    BOBUIest::newRow("relative+../../d/../..") << "scheme:b/c/d" << "../../d/../.." << "scheme:";
+    BOBUIest::newRow("relative+../../d/../../") << "scheme:b/c/d" << "../../d/../../" << "scheme:";
+    BOBUIest::newRow("relative+endslash+../../../..") << "scheme:b/c/d/" << "../../../.." << "scheme:";
+    BOBUIest::newRow("relative+endslash+../../../../") << "scheme:b/c/d/" << "../../../../" << "scheme:";
+    BOBUIest::newRow("relative+endslash+../../../..//") << "scheme:b/c/d/" << "../../../..//" << "scheme:";
 
     // Resolve absolute without authority with relative
-    QTest::newRow("../a (5)")  << QString::fromLatin1("/b") << QString::fromLatin1("../a")  << QString::fromLatin1("/a");
-    QTest::newRow("../a (6)")  << QString::fromLatin1("/b/a") << QString::fromLatin1("../a")  << QString::fromLatin1("/a");
-    QTest::newRow("../a (7)")  << QString::fromLatin1("/b/c/a") << QString::fromLatin1("../a")  << QString::fromLatin1("/b/a");
-    QTest::newRow("../a (8)")  << QString::fromLatin1("/b") << QString::fromLatin1("/a")  << QString::fromLatin1("/a");
-    QTest::newRow("noauthority+.") << "scheme:/a/b" << "." << "scheme:/a/";
-    QTest::newRow("noauthority+./") << "scheme:/a/b" << "./" << "scheme:/a/";
-    QTest::newRow("noauthority+.//") << "scheme:/a/b" << ".//" << "scheme:/a//";
-    QTest::newRow("noauthority+./d") << "scheme:/a/b" << "./d" << "scheme:/a/d";
-    QTest::newRow("noauthority+.//d") << "scheme:/a/b" << ".//d" << "scheme:/a//d";
-    QTest::newRow("noauthority+..") << "scheme:/a/b" << ".." << "scheme:/";
-    QTest::newRow("noauthority+../") << "scheme:/a/b" << "../" << "scheme:/";
-    QTest::newRow("noauthority+..//") << "scheme:/a/b" << "..//" << "scheme:/";
-    QTest::newRow("noauthority+../d") << "scheme:/a/b" << "../d" << "scheme:/d";
-    QTest::newRow("noauthority+..//d") << "scheme:/a/b" << "..//d" << "scheme:/d"; // no double slash!
-    QTest::newRow("noauthority+../..") << "scheme:/a/b" << "../.." << "scheme:/";
-    QTest::newRow("noauthority+../../") << "scheme:/a/b" << "../../" << "scheme:/";
-    QTest::newRow("noauthority+../..//") << "scheme:/a/b" << "../..//" << "scheme:/";
-    QTest::newRow("noauthority+../../d") << "scheme:/a/b" << "../../d" << "scheme:/d";
-    QTest::newRow("noauthority+../..//d") << "scheme:/a/b" << "../..//d" << "scheme:/d"; // no double slash!
+    BOBUIest::newRow("../a (5)")  << QString::fromLatin1("/b") << QString::fromLatin1("../a")  << QString::fromLatin1("/a");
+    BOBUIest::newRow("../a (6)")  << QString::fromLatin1("/b/a") << QString::fromLatin1("../a")  << QString::fromLatin1("/a");
+    BOBUIest::newRow("../a (7)")  << QString::fromLatin1("/b/c/a") << QString::fromLatin1("../a")  << QString::fromLatin1("/b/a");
+    BOBUIest::newRow("../a (8)")  << QString::fromLatin1("/b") << QString::fromLatin1("/a")  << QString::fromLatin1("/a");
+    BOBUIest::newRow("noauthority+.") << "scheme:/a/b" << "." << "scheme:/a/";
+    BOBUIest::newRow("noauthority+./") << "scheme:/a/b" << "./" << "scheme:/a/";
+    BOBUIest::newRow("noauthority+.//") << "scheme:/a/b" << ".//" << "scheme:/a//";
+    BOBUIest::newRow("noauthority+./d") << "scheme:/a/b" << "./d" << "scheme:/a/d";
+    BOBUIest::newRow("noauthority+.//d") << "scheme:/a/b" << ".//d" << "scheme:/a//d";
+    BOBUIest::newRow("noauthority+..") << "scheme:/a/b" << ".." << "scheme:/";
+    BOBUIest::newRow("noauthority+../") << "scheme:/a/b" << "../" << "scheme:/";
+    BOBUIest::newRow("noauthority+..//") << "scheme:/a/b" << "..//" << "scheme:/";
+    BOBUIest::newRow("noauthority+../d") << "scheme:/a/b" << "../d" << "scheme:/d";
+    BOBUIest::newRow("noauthority+..//d") << "scheme:/a/b" << "..//d" << "scheme:/d"; // no double slash!
+    BOBUIest::newRow("noauthority+../..") << "scheme:/a/b" << "../.." << "scheme:/";
+    BOBUIest::newRow("noauthority+../../") << "scheme:/a/b" << "../../" << "scheme:/";
+    BOBUIest::newRow("noauthority+../..//") << "scheme:/a/b" << "../..//" << "scheme:/";
+    BOBUIest::newRow("noauthority+../../d") << "scheme:/a/b" << "../../d" << "scheme:/d";
+    BOBUIest::newRow("noauthority+../..//d") << "scheme:/a/b" << "../..//d" << "scheme:/d"; // no double slash!
 
     // More tests from KDE
-    QTest::newRow("brackets")  << QString::fromLatin1("http://www.calorieking.com/personal/diary/") << QString::fromLatin1("/personal/diary/rpc.php?C=jsrs1&F=getDiaryDay&P0=[2006-3-8]&U=1141858921458") << QString::fromLatin1("http://www.calorieking.com/personal/diary/rpc.php?C=jsrs1&F=getDiaryDay&P0=[2006-3-8]&U=1141858921458");
-    QTest::newRow("javascript")<< QString::fromLatin1("http://www.youtube.com/?v=JvOSnRD5aNk") << QString::fromLatin1("javascript:window.location+\"__flashplugin_unique__\"")  << QString::fromLatin1("javascript:window.location+%22__flashplugin_unique__%22");
+    BOBUIest::newRow("brackets")  << QString::fromLatin1("http://www.calorieking.com/personal/diary/") << QString::fromLatin1("/personal/diary/rpc.php?C=jsrs1&F=getDiaryDay&P0=[2006-3-8]&U=1141858921458") << QString::fromLatin1("http://www.calorieking.com/personal/diary/rpc.php?C=jsrs1&F=getDiaryDay&P0=[2006-3-8]&U=1141858921458");
+    BOBUIest::newRow("javascript")<< QString::fromLatin1("http://www.youtube.com/?v=JvOSnRD5aNk") << QString::fromLatin1("javascript:window.location+\"__flashplugin_unique__\"")  << QString::fromLatin1("javascript:window.location+%22__flashplugin_unique__%22");
 }
 
 void tst_QUrl::resolving()
@@ -1129,109 +1129,109 @@ void tst_QUrl::resolving()
 
 void tst_QUrl::toString_data()
 {
-    QTest::addColumn<QString>("urlString");
-    QTest::addColumn<uint>("options");
-    QTest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("urlString");
+    BOBUIest::addColumn<uint>("options");
+    BOBUIest::addColumn<QString>("string");
 
-    QTest::newRow("data0") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data0") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveScheme)
                         << QString::fromLatin1("//ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data2") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data2") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemovePassword)
                         << QString::fromLatin1("http://ole@www.troll.no:9090/index.html?ole=semann&gud=hei#top");
 
     // show that QUrl keeps the empty-but-present username if you remove the password
     // see data3-bis for another case
-    QTest::newRow("data2-bis") << QString::fromLatin1("http://:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data2-bis") << QString::fromLatin1("http://:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemovePassword)
                         << QString::fromLatin1("http://@www.troll.no:9090/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data3") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data3") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveUserInfo)
                         << QString::fromLatin1("http://www.troll.no:9090/index.html?ole=semann&gud=hei#top");
 
     // show that QUrl keeps the empty-but-preset hostname if you remove the userinfo
-    QTest::newRow("data3-bis") << QString::fromLatin1("http://ole:password@/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data3-bis") << QString::fromLatin1("http://ole:password@/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveUserInfo)
                         << QString::fromLatin1("http:///index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data4") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data4") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemovePort)
                         << QString::fromLatin1("http://ole:password@www.troll.no/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data5") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data5") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveAuthority)
                         << QString::fromLatin1("http:/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data6") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data6") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemovePath)
                         << QString::fromLatin1("http://ole:password@www.troll.no:9090?ole=semann&gud=hei#top");
 
-    QTest::newRow("data7") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data7") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveQuery)
                         << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html#top");
 
-    QTest::newRow("data8") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data8") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveFragment)
                         << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei");
 
-    QTest::newRow("data9") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data9") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                         << uint(QUrl::RemoveScheme | QUrl::RemovePassword)
                         << QString::fromLatin1("//ole@www.troll.no:9090/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data10") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data10") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveScheme | QUrl::RemoveUserInfo)
                          << QString::fromLatin1("//www.troll.no:9090/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data11") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data11") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveScheme | QUrl::RemovePort)
                          << QString::fromLatin1("//ole:password@www.troll.no/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data12") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data12") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveScheme | QUrl::RemoveAuthority)
                          << QString::fromLatin1("/index.html?ole=semann&gud=hei#top");
 
-    QTest::newRow("data13") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data13") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveScheme | QUrl::RemovePath)
                          << QString::fromLatin1("//ole:password@www.troll.no:9090?ole=semann&gud=hei#top");
 
-    QTest::newRow("data14") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data14") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveScheme | QUrl::RemoveAuthority | QUrl::RemoveFragment)
                          << QString::fromLatin1("/index.html?ole=semann&gud=hei");
 
-    QTest::newRow("data15") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data15") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveAuthority | QUrl::RemoveQuery)
                          << QString::fromLatin1("http:/index.html#top");
 
-    QTest::newRow("data16") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data16") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemovePassword | QUrl::RemovePort
                             | QUrl::RemovePath | QUrl::RemoveQuery
                             | QUrl::RemoveFragment)
                          << QString::fromLatin1("http://ole@www.troll.no");
 
-    QTest::newRow("data17") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
+    BOBUIest::newRow("data17") << QString::fromLatin1("http://ole:password@www.troll.no:9090/index.html?ole=semann&gud=hei#top")
                          << uint(QUrl::RemoveScheme | QUrl::RemovePassword
                             | QUrl::RemovePort | QUrl::RemovePath
                             | QUrl::RemoveQuery | QUrl::RemoveFragment)
                          << QString::fromLatin1("//ole@www.troll.no");
 
-    QTest::newRow("data18") << QString::fromLatin1("http://andreas:hemmelig@www.vg.no/?my=query&your=query#yougotfragged")
+    BOBUIest::newRow("data18") << QString::fromLatin1("http://andreas:hemmelig@www.vg.no/?my=query&your=query#yougotfragged")
                          << uint(QUrl::None)
                          << QString::fromLatin1("http://andreas:hemmelig@www.vg.no/?my=query&your=query#yougotfragged");
 
-    QTest::newRow("nopath") << QString::fromLatin1("host://protocol")
+    BOBUIest::newRow("nopath") << QString::fromLatin1("host://protocol")
                          << uint(QUrl::None)
                          << QString::fromLatin1("host://protocol");
 
-    QTest::newRow("underscore") << QString::fromLatin1("http://foo_bar.host.com/rss.php")
+    BOBUIest::newRow("underscore") << QString::fromLatin1("http://foo_bar.host.com/rss.php")
                          << uint(QUrl::None)
                          << QString::fromLatin1("http://foo_bar.host.com/rss.php");
 
-    QTest::newRow("mailto-brackets") << QString::fromLatin1("mailto:test[at]gmail[dot]com")
+    BOBUIest::newRow("mailto-brackets") << QString::fromLatin1("mailto:test[at]gmail[dot]com")
                                      << uint(QUrl::PrettyDecoded)
                                      << QString::fromLatin1("mailto:test[at]gmail[dot]com");
-    QTest::newRow("mailto-query")    << QString::fromLatin1("mailto:?to=test@example.com")
+    BOBUIest::newRow("mailto-query")    << QString::fromLatin1("mailto:?to=test@example.com")
                                      << uint(QUrl::PrettyDecoded)
                                      << QString::fromLatin1("mailto:?to=test@example.com");
 }
@@ -1251,16 +1251,16 @@ void tst_QUrl::toString()
 }
 void tst_QUrl::toString_PreferLocalFile_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<QString>("string");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QString>("string");
 
 #ifdef Q_OS_WIN
-    QTest::newRow("win-drive") << QUrl(QString::fromLatin1("file:///c:/windows/regedit.exe"))
+    BOBUIest::newRow("win-drive") << QUrl(QString::fromLatin1("file:///c:/windows/regedit.exe"))
                                << QString::fromLatin1("c:/windows/regedit.exe");
-    QTest::newRow("win-share") << QUrl(QString::fromLatin1("//Anarki/homes"))
+    BOBUIest::newRow("win-share") << QUrl(QString::fromLatin1("//Anarki/homes"))
                                << QString::fromLatin1("//anarki/homes");
 #else
-    QTest::newRow("unix-path") << QUrl(QString::fromLatin1("file:///tmp"))
+    BOBUIest::newRow("unix-path") << QUrl(QString::fromLatin1("file:///tmp"))
                                << QString::fromLatin1("/tmp");
 #endif
 }
@@ -1275,11 +1275,11 @@ void tst_QUrl::toString_PreferLocalFile()
 
 void tst_QUrl::toAndFromStringList_data()
 {
-    QTest::addColumn<QStringList>("strings");
+    BOBUIest::addColumn<QStringList>("strings");
 
-    QTest::newRow("empty") << QStringList();
-    QTest::newRow("local") << (QStringList() << "file:///tmp" << "file:///");
-    QTest::newRow("remote") << (QStringList() << "http://qt-project.org");
+    BOBUIest::newRow("empty") << QStringList();
+    BOBUIest::newRow("local") << (QStringList() << "file:///tmp" << "file:///");
+    BOBUIest::newRow("remote") << (QStringList() << "http://bobui-project.org");
 }
 
 void tst_QUrl::toAndFromStringList()
@@ -1295,51 +1295,51 @@ void tst_QUrl::toAndFromStringList()
 //### more tests ... what do we expect ...
 void tst_QUrl::isParentOf_data()
 {
-    QTest::addColumn<QString>("parent");
-    QTest::addColumn<QString>("child");
-    QTest::addColumn<bool>("trueFalse");
+    BOBUIest::addColumn<QString>("parent");
+    BOBUIest::addColumn<QString>("child");
+    BOBUIest::addColumn<bool>("trueFalse");
 
-    QTest::newRow("data0") << QString::fromLatin1("http://a.b.c/d")
+    BOBUIest::newRow("data0") << QString::fromLatin1("http://a.b.c/d")
                         << QString::fromLatin1("http://a.b.c/d/e?f") << true;
-    QTest::newRow("data1") << QString::fromLatin1("http://a.b.c/d")
+    BOBUIest::newRow("data1") << QString::fromLatin1("http://a.b.c/d")
                         << QString::fromLatin1("http://a.b.c/d") << false;
-    QTest::newRow("data2") << QString::fromLatin1("http://a.b.c/d")
+    BOBUIest::newRow("data2") << QString::fromLatin1("http://a.b.c/d")
                         << QString::fromLatin1("http://a.b.c/de") << false;
-    QTest::newRow("data3") << QString::fromLatin1("http://a.b.c/d/")
+    BOBUIest::newRow("data3") << QString::fromLatin1("http://a.b.c/d/")
                         << QString::fromLatin1("http://a.b.c/de") << false;
-    QTest::newRow("data4") << QString::fromLatin1("http://a.b.c/d/")
+    BOBUIest::newRow("data4") << QString::fromLatin1("http://a.b.c/d/")
                         << QString::fromLatin1("http://a.b.c/d/e") << true;
 }
 
 void tst_QUrl::toString_constructed_data()
 {
-    QTest::addColumn<QString>("scheme");
-    QTest::addColumn<QString>("userName");
-    QTest::addColumn<QString>("password");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<int>("port");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("query");
-    QTest::addColumn<QString>("fragment");
-    QTest::addColumn<QString>("asString");
-    QTest::addColumn<QByteArray>("asEncoded");
-    QTest::addColumn<uint>("options");
+    BOBUIest::addColumn<QString>("scheme");
+    BOBUIest::addColumn<QString>("userName");
+    BOBUIest::addColumn<QString>("password");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<int>("port");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("query");
+    BOBUIest::addColumn<QString>("fragment");
+    BOBUIest::addColumn<QString>("asString");
+    BOBUIest::addColumn<QByteArray>("asEncoded");
+    BOBUIest::addColumn<uint>("options");
 
     QString n("");
 
-    QTest::newRow("data1") << n << n << n << QString::fromLatin1("qt-project.org") << -1 << QString::fromLatin1("/index.html")
-                        << QString() << n << QString::fromLatin1("//qt-project.org/index.html")
-                        << QByteArray("//qt-project.org/index.html") << 0u;
-    QTest::newRow("data2") << QString::fromLatin1("file") << n << n << n << -1 << QString::fromLatin1("/root") << QString()
+    BOBUIest::newRow("data1") << n << n << n << QString::fromLatin1("bobui-project.org") << -1 << QString::fromLatin1("/index.html")
+                        << QString() << n << QString::fromLatin1("//bobui-project.org/index.html")
+                        << QByteArray("//bobui-project.org/index.html") << 0u;
+    BOBUIest::newRow("data2") << QString::fromLatin1("file") << n << n << n << -1 << QString::fromLatin1("/root") << QString()
                         << n << QString::fromLatin1("file:///root") << QByteArray("file:///root") << 0u;
-    QTest::newRow("userAndPass") << QString::fromLatin1("http") << QString::fromLatin1("dfaure") << QString::fromLatin1("kde")
+    BOBUIest::newRow("userAndPass") << QString::fromLatin1("http") << QString::fromLatin1("dfaure") << QString::fromLatin1("kde")
                         << "kde.org" << 443 << QString::fromLatin1("/") << QString() << n
                         << QString::fromLatin1("http://dfaure:kde@kde.org:443/") << QByteArray("http://dfaure:kde@kde.org:443/")
                         << 0u;
-    QTest::newRow("PassWithoutUser") << QString::fromLatin1("http") << n << QString::fromLatin1("kde")
+    BOBUIest::newRow("PassWithoutUser") << QString::fromLatin1("http") << n << QString::fromLatin1("kde")
                         << "kde.org" << 443 << QString::fromLatin1("/") << QString() << n
                         << QString::fromLatin1("http://:kde@kde.org:443/") << QByteArray("http://:kde@kde.org:443/") << 0u;
-    QTest::newRow("PassWithoutUser-RemovePassword") << QString::fromLatin1("http") << n << QString::fromLatin1("kde")
+    BOBUIest::newRow("PassWithoutUser-RemovePassword") << QString::fromLatin1("http") << n << QString::fromLatin1("kde")
                         << "kde.org" << 443 << QString::fromLatin1("/") << QString() << n
                         << QString::fromLatin1("http://kde.org:443/") << QByteArray("http://kde.org:443/")
                         << uint(QUrl::RemovePassword);
@@ -1400,18 +1400,18 @@ void tst_QUrl::toString_constructed()
 
 void tst_QUrl::toDisplayString_PreferLocalFile_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<QString>("string");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QString>("string");
 
-    QTest::newRow("basic") << QUrl::fromLocalFile("/home/charles/foomoo")
+    BOBUIest::newRow("basic") << QUrl::fromLocalFile("/home/charles/foomoo")
                            << QString::fromLatin1("/home/charles/foomoo");
-    QTest::newRow("with%") << QUrl::fromLocalFile("/home/charles/foo%20moo")
+    BOBUIest::newRow("with%") << QUrl::fromLocalFile("/home/charles/foo%20moo")
                            << QString::fromLatin1("/home/charles/foo%20moo");
-    QTest::newRow("non-local") << QUrl("file://host/foo")
+    BOBUIest::newRow("non-local") << QUrl("file://host/foo")
                                << QString::fromLatin1("//host/foo");
-    QTest::newRow("query-and-fragment") << QUrl("file://user:pass@example.org/a?b=c%20d%23e#frag%23ment")
+    BOBUIest::newRow("query-and-fragment") << QUrl("file://user:pass@example.org/a?b=c%20d%23e#frag%23ment")
                                         << QString::fromLatin1("file://user@example.org/a?b=c d%23e#frag%23ment");
-    QTest::newRow("http")  << QUrl("http://user:pass@example.org/a?b=c%20d%23e#frag%23ment")
+    BOBUIest::newRow("http")  << QUrl("http://user:pass@example.org/a?b=c%20d%23e#frag%23ment")
                            << QString::fromLatin1("http://user@example.org/a?b=c d%23e#frag%23ment");
 }
 
@@ -1437,48 +1437,48 @@ void tst_QUrl::isParentOf()
 
 void tst_QUrl::toLocalFile_data()
 {
-    QTest::addColumn<QString>("theUrl");
-    QTest::addColumn<QString>("theFile");
+    BOBUIest::addColumn<QString>("theUrl");
+    BOBUIest::addColumn<QString>("theFile");
 
-    QTest::newRow("file:/") << QString::fromLatin1("file:/a.txt") << QString::fromLatin1("/a.txt");
-    QTest::newRow("file:///") << QString::fromLatin1("file:///a.txt") << QString::fromLatin1("/a.txt");
-    QTest::newRow("file:////") << QString::fromLatin1("file:////somehost/somedir/somefile") << QString::fromLatin1("//somehost/somedir/somefile");
-    QTest::newRow("FILE:/") << QString::fromLatin1("FILE:/a.txt") << QString::fromLatin1("/a.txt");
+    BOBUIest::newRow("file:/") << QString::fromLatin1("file:/a.txt") << QString::fromLatin1("/a.txt");
+    BOBUIest::newRow("file:///") << QString::fromLatin1("file:///a.txt") << QString::fromLatin1("/a.txt");
+    BOBUIest::newRow("file:////") << QString::fromLatin1("file:////somehost/somedir/somefile") << QString::fromLatin1("//somehost/somedir/somefile");
+    BOBUIest::newRow("FILE:/") << QString::fromLatin1("FILE:/a.txt") << QString::fromLatin1("/a.txt");
 
-    QTest::newRow("path-delimiter") << QString::fromLatin1("file:///Mambo <%235>.mp3") << QString::fromLatin1("/Mambo <#5>.mp3");
-    QTest::newRow("path-brackets-encoded") << u"file:///tmp/%5Btest%5D.txt"_s << u"/tmp/[test].txt"_s;
-    QTest::newRow("path-brackets-decoded") << u"file:///tmp/[test].txt"_s << u"/tmp/[test].txt"_s;
-    QTest::newRow("path-percent") << QString::fromLatin1("file:///a%25.txt") << QString::fromLatin1("/a%.txt");
-    QTest::newRow("path-percent-percent") << QString::fromLatin1("file:///a%25%25.txt") << QString::fromLatin1("/a%%.txt");
-    QTest::newRow("path-percent-a-percent") << QString::fromLatin1("file:///a%25a%25.txt") << QString::fromLatin1("/a%a%.txt");
-    QTest::newRow("path-control-char") << QString::fromLatin1("file:///a%1f.txt") << QString::fromLatin1("/a\x1f.txt");
-    QTest::newRow("path-percent-hex-hex") << QString::fromLatin1("file:///%2580.txt") << QString::fromLatin1("/%80.txt");
+    BOBUIest::newRow("path-delimiter") << QString::fromLatin1("file:///Mambo <%235>.mp3") << QString::fromLatin1("/Mambo <#5>.mp3");
+    BOBUIest::newRow("path-brackets-encoded") << u"file:///tmp/%5Btest%5D.txt"_s << u"/tmp/[test].txt"_s;
+    BOBUIest::newRow("path-brackets-decoded") << u"file:///tmp/[test].txt"_s << u"/tmp/[test].txt"_s;
+    BOBUIest::newRow("path-percent") << QString::fromLatin1("file:///a%25.txt") << QString::fromLatin1("/a%.txt");
+    BOBUIest::newRow("path-percent-percent") << QString::fromLatin1("file:///a%25%25.txt") << QString::fromLatin1("/a%%.txt");
+    BOBUIest::newRow("path-percent-a-percent") << QString::fromLatin1("file:///a%25a%25.txt") << QString::fromLatin1("/a%a%.txt");
+    BOBUIest::newRow("path-control-char") << QString::fromLatin1("file:///a%1f.txt") << QString::fromLatin1("/a\x1f.txt");
+    BOBUIest::newRow("path-percent-hex-hex") << QString::fromLatin1("file:///%2580.txt") << QString::fromLatin1("/%80.txt");
 
-    QTest::newRow("webdavs") << QString::fromLatin1("webdavs://somewebdavhost/somedir/somefile")
-#ifdef Q_OS_WIN // QTBUG-42346, WebDAV is visible as local file on Windows only.
+    BOBUIest::newRow("webdavs") << QString::fromLatin1("webdavs://somewebdavhost/somedir/somefile")
+#ifdef Q_OS_WIN // BOBUIBUG-42346, WebDAV is visible as local file on Windows only.
                              << QString::fromLatin1("//somewebdavhost@SSL/somedir/somefile");
 #else
                              << QString();
 #endif
 #ifdef Q_OS_WIN
-    QTest::newRow("windows-drive-absolute") << QString::fromLatin1("file:///c:/a.txt") << QString::fromLatin1("c:/a.txt");
+    BOBUIest::newRow("windows-drive-absolute") << QString::fromLatin1("file:///c:/a.txt") << QString::fromLatin1("c:/a.txt");
 #else
-    QTest::newRow("windows-drive-absolute") << QString::fromLatin1("file:///c:/a.txt") << QString::fromLatin1("/c:/a.txt");
+    BOBUIest::newRow("windows-drive-absolute") << QString::fromLatin1("file:///c:/a.txt") << QString::fromLatin1("/c:/a.txt");
 #endif
-    QTest::newRow("windows-unc-path") << QString::fromLatin1("file://somehost/somedir/somefile") << QString::fromLatin1("//somehost/somedir/somefile");
-    QTest::newRow("windows-unc-root") << QString::fromLatin1("file://somehost/") << QString::fromLatin1("//somehost/");
-    QTest::newRow("windows-unc-nopath") << QString::fromLatin1("file://somehost") << QString::fromLatin1("//somehost");
-    QTest::newRow("windows-extlen-path") << QString::fromLatin1("file:////%3F/somedir/somefile") << QString::fromLatin1("//?/somedir/somefile");
-    QTest::newRow("windows-wsl-path") << QString::fromLatin1("file:////wsl$/somedir/somefile") << QString::fromLatin1("//wsl$/somedir/somefile");
-    QTest::newRow("windows-device-path") << QString::fromLatin1("file:////./somedir/somefile") << QString::fromLatin1("//./somedir/somefile");
+    BOBUIest::newRow("windows-unc-path") << QString::fromLatin1("file://somehost/somedir/somefile") << QString::fromLatin1("//somehost/somedir/somefile");
+    BOBUIest::newRow("windows-unc-root") << QString::fromLatin1("file://somehost/") << QString::fromLatin1("//somehost/");
+    BOBUIest::newRow("windows-unc-nopath") << QString::fromLatin1("file://somehost") << QString::fromLatin1("//somehost");
+    BOBUIest::newRow("windows-extlen-path") << QString::fromLatin1("file:////%3F/somedir/somefile") << QString::fromLatin1("//?/somedir/somefile");
+    BOBUIest::newRow("windows-wsl-path") << QString::fromLatin1("file:////wsl$/somedir/somefile") << QString::fromLatin1("//wsl$/somedir/somefile");
+    BOBUIest::newRow("windows-device-path") << QString::fromLatin1("file:////./somedir/somefile") << QString::fromLatin1("//./somedir/somefile");
 
     // and some that result in empty (i.e., not local)
-    QTest::newRow("noscheme-absolute") << QString::fromLatin1("/a.txt") << QString();
-    QTest::newRow("noscheme-host") << QString::fromLatin1("//a.txt") << QString();
-    QTest::newRow("noscheme-host-path") << QString::fromLatin1("///a.txt") << QString();
-    QTest::newRow("fooscheme-absolute") << QString::fromLatin1("foo:/a.txt") << QString();
-    QTest::newRow("fooscheme-host") << QString::fromLatin1("foo://a.txt") << QString();
-    QTest::newRow("fooscheme-host-path") << QString::fromLatin1("foo:///a.txt") << QString();
+    BOBUIest::newRow("noscheme-absolute") << QString::fromLatin1("/a.txt") << QString();
+    BOBUIest::newRow("noscheme-host") << QString::fromLatin1("//a.txt") << QString();
+    BOBUIest::newRow("noscheme-host-path") << QString::fromLatin1("///a.txt") << QString();
+    BOBUIest::newRow("fooscheme-absolute") << QString::fromLatin1("foo:/a.txt") << QString();
+    BOBUIest::newRow("fooscheme-host") << QString::fromLatin1("foo://a.txt") << QString();
+    BOBUIest::newRow("fooscheme-host-path") << QString::fromLatin1("foo:///a.txt") << QString();
 }
 
 void tst_QUrl::toLocalFile()
@@ -1508,22 +1508,22 @@ void tst_QUrl::toLocalFile()
 
 void tst_QUrl::fromLocalFile_data()
 {
-    QTest::addColumn<QString>("theFile");
-    QTest::addColumn<QString>("theUrl");
-    QTest::addColumn<QString>("thePath");
+    BOBUIest::addColumn<QString>("theFile");
+    BOBUIest::addColumn<QString>("theUrl");
+    BOBUIest::addColumn<QString>("thePath");
 
-    QTest::newRow("absolute-path") << QString::fromLatin1("/a.txt") << QString::fromLatin1("file:///a.txt") << QString::fromLatin1("/a.txt");
-    QTest::newRow("relative-path") << QString::fromLatin1("a.txt") << QString::fromLatin1("file:a.txt") << QString::fromLatin1("a.txt");
-    QTest::newRow("absolute-two-path") << QString::fromLatin1("/a/b.txt") << QString::fromLatin1("file:///a/b.txt") << QString::fromLatin1("/a/b.txt");
-    QTest::newRow("path-delimiters") << QString::fromLatin1("/Mambo <#5>.mp3") << QString::fromLatin1("file:///Mambo <%235>.mp3")
+    BOBUIest::newRow("absolute-path") << QString::fromLatin1("/a.txt") << QString::fromLatin1("file:///a.txt") << QString::fromLatin1("/a.txt");
+    BOBUIest::newRow("relative-path") << QString::fromLatin1("a.txt") << QString::fromLatin1("file:a.txt") << QString::fromLatin1("a.txt");
+    BOBUIest::newRow("absolute-two-path") << QString::fromLatin1("/a/b.txt") << QString::fromLatin1("file:///a/b.txt") << QString::fromLatin1("/a/b.txt");
+    BOBUIest::newRow("path-delimiters") << QString::fromLatin1("/Mambo <#5>.mp3") << QString::fromLatin1("file:///Mambo <%235>.mp3")
                                      << QString::fromLatin1("/Mambo <#5>.mp3");
-    QTest::newRow("path-brackets") << u"/tmp/[test].txt"_s << u"file:///tmp/%5Btest%5D.txt"_s << u"/tmp/[test].txt"_s;
+    BOBUIest::newRow("path-brackets") << u"/tmp/[test].txt"_s << u"file:///tmp/%5Btest%5D.txt"_s << u"/tmp/[test].txt"_s;
 
     // Windows absolute details
-    QTest::newRow("windows-drive") << QString::fromLatin1("c:/a.txt") << QString::fromLatin1("file:///c:/a.txt") << QString::fromLatin1("/c:/a.txt");
+    BOBUIest::newRow("windows-drive") << QString::fromLatin1("c:/a.txt") << QString::fromLatin1("file:///c:/a.txt") << QString::fromLatin1("/c:/a.txt");
 
     // Handling of Windows roots with relative - note, no normalization!
-    QTest::newRow("windows-drive-above-root")
+    BOBUIest::newRow("windows-drive-above-root")
             << QString::fromLatin1("c:/../a.txt") << QString::fromLatin1("file:///c:/../a.txt") << QString::fromLatin1("/c:/../a.txt");
 
     // Windows UNC paths
@@ -1532,7 +1532,7 @@ void tst_QUrl::fromLocalFile_data()
                 strlen(suffix) == 0 ? "nopath" :
                 strlen(suffix) > 1 ? "path" : "root";
 
-        QTest::addRow("windows-unc-%s", pathDescription)
+        BOBUIest::addRow("windows-unc-%s", pathDescription)
                 << QString("//somehost") + suffix
                 << QString("file://somehost") + suffix
                 << QString(suffix);
@@ -1541,30 +1541,30 @@ void tst_QUrl::fromLocalFile_data()
         QString suffixWithBackslashes(suffix);
         suffixWithBackslashes.replace('/', '\\');
 
-        QTest::addRow("windows-backslash-unc-%s", pathDescription)
+        BOBUIest::addRow("windows-backslash-unc-%s", pathDescription)
                 << QString(QString("\\\\somehost") + suffixWithBackslashes)
                 << QString("file://somehost") + suffix
                 << QString(suffix);
-        QTest::addRow("windows-backslash-extlen-%s", pathDescription)
+        BOBUIest::addRow("windows-backslash-extlen-%s", pathDescription)
                 << QString(QString("\\\\?") + suffixWithBackslashes)
                 << QString("file:////%3F") + suffix
                 << QString("//?") + suffix;
 #endif
-        QTest::addRow("windows-extlen-%s", pathDescription)
+        BOBUIest::addRow("windows-extlen-%s", pathDescription)
                 << QString("//?") + suffix
                 << QString("file:////%3F") + suffix
                 << QString("//?") + suffix;
-        QTest::addRow("windows-wsl-%s", pathDescription)
+        BOBUIest::addRow("windows-wsl-%s", pathDescription)
                 << QString("//wsl$") + suffix
                 << QString("file:////wsl$") + suffix
                 << QString("//wsl$") + suffix;
-        QTest::addRow("windows-device--%s", pathDescription)
+        BOBUIest::addRow("windows-device--%s", pathDescription)
                 << QString("//.") + suffix
                 << QString("file:////.") + suffix
                 << QString("//.") + suffix;
     }
 
-    QTest::newRow("windows-webdav")
+    BOBUIest::newRow("windows-webdav")
             << QString::fromLatin1("//somewebdavhost@SSL/somedir/somefile")
             << QString::fromLatin1("webdavs://somewebdavhost/somedir/somefile")
             << QString::fromLatin1("/somedir/somefile");
@@ -1599,33 +1599,33 @@ void tst_QUrl::fromLocalFile()
 
 void tst_QUrl::fromLocalFileNormalize_data()
 {
-    QTest::addColumn<QString>("theFile"); // should support the fromLocalFile/toLocalFile roundtrip (so no //host or windows path)
-    QTest::addColumn<QString>("theUrl");
-    QTest::addColumn<QString>("urlWithNormalizedPath");
+    BOBUIest::addColumn<QString>("theFile"); // should support the fromLocalFile/toLocalFile roundtrip (so no //host or windows path)
+    BOBUIest::addColumn<QString>("theUrl");
+    BOBUIest::addColumn<QString>("urlWithNormalizedPath");
 
-    QTest::newRow("absolute-path") << QString::fromLatin1("/a.txt") << QString::fromLatin1("file:///a.txt") << QString::fromLatin1("file:///a.txt");
-    QTest::newRow("relative-path") << QString::fromLatin1("a.txt") << QString::fromLatin1("file:a.txt") << QString::fromLatin1("file:a.txt");
+    BOBUIest::newRow("absolute-path") << QString::fromLatin1("/a.txt") << QString::fromLatin1("file:///a.txt") << QString::fromLatin1("file:///a.txt");
+    BOBUIest::newRow("relative-path") << QString::fromLatin1("a.txt") << QString::fromLatin1("file:a.txt") << QString::fromLatin1("file:a.txt");
 
-    QTest::newRow("absolute-path-trailing-slash") << u"/b/"_s << u"file:///b/"_s << u"file:///b/"_s;
-    QTest::newRow("absolute-path-no-trailing-slash") << u"/b"_s << u"file:///b"_s << u"file:///b"_s;
-    QTest::newRow("absolute-path-2-trailing-slashes") << u"/b//"_s << u"file:///b//"_s << u"file:///b/"_s;
+    BOBUIest::newRow("absolute-path-trailing-slash") << u"/b/"_s << u"file:///b/"_s << u"file:///b/"_s;
+    BOBUIest::newRow("absolute-path-no-trailing-slash") << u"/b"_s << u"file:///b"_s << u"file:///b"_s;
+    BOBUIest::newRow("absolute-path-2-trailing-slashes") << u"/b//"_s << u"file:///b//"_s << u"file:///b/"_s;
 
-    QTest::newRow("percent") << QString::fromLatin1("/a%.txt") << QString::fromLatin1("file:///a%25.txt")
+    BOBUIest::newRow("percent") << QString::fromLatin1("/a%.txt") << QString::fromLatin1("file:///a%25.txt")
                              << QString::fromLatin1("file:///a%25.txt");
-    QTest::newRow("percent25") << QString::fromLatin1("/a%25.txt") << QString::fromLatin1("file:///a%2525.txt")
+    BOBUIest::newRow("percent25") << QString::fromLatin1("/a%25.txt") << QString::fromLatin1("file:///a%2525.txt")
                                << QString::fromLatin1("file:///a%2525.txt");
-    QTest::newRow("percent80") << QString::fromLatin1("/%80.txt") << QString::fromLatin1("file:///%2580.txt")
+    BOBUIest::newRow("percent80") << QString::fromLatin1("/%80.txt") << QString::fromLatin1("file:///%2580.txt")
                                << QString::fromLatin1("file:///%2580.txt");
-    QTest::newRow("relative-dot") << QString::fromLatin1("./a.txt") << QString::fromLatin1("file:./a.txt") << QString::fromLatin1("file:a.txt");
-    QTest::newRow("relative-dot-dot") << QString::fromLatin1("././a.txt") << QString::fromLatin1("file:././a.txt") << QString::fromLatin1("file:a.txt");
-    QTest::newRow("relative-path-dotdot") << QString::fromLatin1("b/../a.txt") << QString::fromLatin1("file:b/../a.txt") << QString::fromLatin1("file:a.txt");
-    QTest::newRow("relative-path-dotdot-dotdot") << QString::fromLatin1("b/../../a.txt") << QString::fromLatin1("file:b/../../a.txt") << QString::fromLatin1("file:../a.txt");
-    QTest::newRow("absolute-path-dotdot") << QString::fromLatin1("/b/../a.txt") << QString::fromLatin1("file:///b/../a.txt") << QString::fromLatin1("file:///a.txt");
-    QTest::newRow("absolute-path-dotdot-dotdot") << QString::fromLatin1("/b/../../a.txt") << QString::fromLatin1("file:///b/../../a.txt") << QString::fromLatin1("file:///../a.txt");
-    QTest::newRow("absolute-path-slash") << QString::fromLatin1("/b/") << QString::fromLatin1("file:///b/") << QString::fromLatin1("file:///b/");
-    QTest::newRow("absolute-path-slahs-dot") << QString::fromLatin1("/b/.") << QString::fromLatin1("file:///b/.") << QString::fromLatin1("file:///b/");
-    QTest::newRow("absolute-path-slahs-dot-slash") << QString::fromLatin1("/b/./") << QString::fromLatin1("file:///b/./") << QString::fromLatin1("file:///b/");
-    QTest::newRow("absolute-path-dotdot-slashslash") << QString::fromLatin1("/b/..//") << QString::fromLatin1("file:///b/..//") << QString::fromLatin1("file:////");
+    BOBUIest::newRow("relative-dot") << QString::fromLatin1("./a.txt") << QString::fromLatin1("file:./a.txt") << QString::fromLatin1("file:a.txt");
+    BOBUIest::newRow("relative-dot-dot") << QString::fromLatin1("././a.txt") << QString::fromLatin1("file:././a.txt") << QString::fromLatin1("file:a.txt");
+    BOBUIest::newRow("relative-path-dotdot") << QString::fromLatin1("b/../a.txt") << QString::fromLatin1("file:b/../a.txt") << QString::fromLatin1("file:a.txt");
+    BOBUIest::newRow("relative-path-dotdot-dotdot") << QString::fromLatin1("b/../../a.txt") << QString::fromLatin1("file:b/../../a.txt") << QString::fromLatin1("file:../a.txt");
+    BOBUIest::newRow("absolute-path-dotdot") << QString::fromLatin1("/b/../a.txt") << QString::fromLatin1("file:///b/../a.txt") << QString::fromLatin1("file:///a.txt");
+    BOBUIest::newRow("absolute-path-dotdot-dotdot") << QString::fromLatin1("/b/../../a.txt") << QString::fromLatin1("file:///b/../../a.txt") << QString::fromLatin1("file:///../a.txt");
+    BOBUIest::newRow("absolute-path-slash") << QString::fromLatin1("/b/") << QString::fromLatin1("file:///b/") << QString::fromLatin1("file:///b/");
+    BOBUIest::newRow("absolute-path-slahs-dot") << QString::fromLatin1("/b/.") << QString::fromLatin1("file:///b/.") << QString::fromLatin1("file:///b/");
+    BOBUIest::newRow("absolute-path-slahs-dot-slash") << QString::fromLatin1("/b/./") << QString::fromLatin1("file:///b/./") << QString::fromLatin1("file:///b/");
+    BOBUIest::newRow("absolute-path-dotdot-slashslash") << QString::fromLatin1("/b/..//") << QString::fromLatin1("file:///b/..//") << QString::fromLatin1("file:////");
 }
 
 void tst_QUrl::fromLocalFileNormalize()
@@ -1650,22 +1650,22 @@ void tst_QUrl::fromLocalFileNormalizeNonRoundtrip_data()
     static constexpr bool IsWindows = false;
 #endif
 
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("theUrl");
-    QTest::addColumn<QString>("thePath");
-    QTest::addColumn<QString>("urlWithNormalizedPath");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("theUrl");
+    BOBUIest::addColumn<QString>("thePath");
+    BOBUIest::addColumn<QString>("urlWithNormalizedPath");
 
-    QTest::newRow("server") << u"//server"_s << u"file://server"_s << QString() << u"file://server"_s;
-    QTest::newRow("server/..") << u"//server/.."_s << u"file://server/.."_s << u"/.."_s << u"file://server/.."_s;
-    QTest::newRow("server/share") << u"//server/share"_s << u"file://server/share"_s << u"/share"_s << u"file://server/share"_s;
-    QTest::newRow("server/share/..") << u"//server/share/.."_s << u"file://server/share/.."_s << u"/share/.."_s << u"file://server/"_s;
+    BOBUIest::newRow("server") << u"//server"_s << u"file://server"_s << QString() << u"file://server"_s;
+    BOBUIest::newRow("server/..") << u"//server/.."_s << u"file://server/.."_s << u"/.."_s << u"file://server/.."_s;
+    BOBUIest::newRow("server/share") << u"//server/share"_s << u"file://server/share"_s << u"/share"_s << u"file://server/share"_s;
+    BOBUIest::newRow("server/share/..") << u"//server/share/.."_s << u"file://server/share/.."_s << u"/share/.."_s << u"file://server/"_s;
 
     auto addAbsoluteWindowsPathRow = [](const char *name, const QString &input,
             const QString &unixNormalized, const QString &windowsNormalized) {
         QString thePath = '/' + input;        // fromPercentEncoding, but works for now
         QString theUrl = "file://" + thePath;
         const QString &normalized = IsWindows ? windowsNormalized : unixNormalized;
-        QTest::newRow(name) << input << theUrl << thePath << normalized;
+        BOBUIest::newRow(name) << input << theUrl << thePath << normalized;
     };
     addAbsoluteWindowsPathRow("relative-drive", "c:", "file:///c:", "file:///c:");
     addAbsoluteWindowsPathRow("absolute-drive", "c:/", "file:///c:/", "file:///c:/");
@@ -1733,22 +1733,22 @@ void tst_QUrl::compat_legacy()
     /* others
      */
     {
-        QUrl u( "http://qt-project.org/images/ban/pgs_front.jpg" );
+        QUrl u( "http://bobui-project.org/images/ban/pgs_front.jpg" );
         QCOMPARE( u.path(), QString("/images/ban/pgs_front.jpg") );
     }
     {
-        QUrl tmp( "http://qt-project.org/images/ban/" );
+        QUrl tmp( "http://bobui-project.org/images/ban/" );
         QUrl u = tmp.resolved(QString("pgs_front.jpg"));
         QCOMPARE( u.path(), QString("/images/ban/pgs_front.jpg") );
     }
     {
         QUrl tmp;
-        QUrl u = tmp.resolved(QString("http://qt-project.org/images/ban/pgs_front.jpg"));
+        QUrl u = tmp.resolved(QString("http://bobui-project.org/images/ban/pgs_front.jpg"));
         QCOMPARE( u.path(), QString("/images/ban/pgs_front.jpg") );
     }
     {
         QUrl tmp;
-        QUrl u = tmp.resolved(QString("http://qt-project.org/images/ban/pgs_front.jpg"));
+        QUrl u = tmp.resolved(QString("http://bobui-project.org/images/ban/pgs_front.jpg"));
         QFileInfo fi(u.path());
         u.setPath(fi.path());
         QCOMPARE( u.path(), QString("/images/ban") );
@@ -1757,14 +1757,14 @@ void tst_QUrl::compat_legacy()
 
 void tst_QUrl::compat_constructor_01_data()
 {
-    QTest::addColumn<QString>("urlStr");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<QString>("res");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << QString("Makefile") << QString("Makefile"); // nolonger add file by default
-    QTest::newRow( "data1" )  << QString("Makefile") << QString("Makefile");
-    QTest::newRow( "data2" )  << QString("ftp://ftp.qt-project.org/qt/INSTALL") << QString("ftp://ftp.qt-project.org/qt/INSTALL");
-    QTest::newRow( "data3" )  << QString("ftp://ftp.qt-project.org/qt/INSTALL") << QString("ftp://ftp.qt-project.org/qt/INSTALL");
+    BOBUIest::newRow( "data0" )  << QString("Makefile") << QString("Makefile"); // nolonger add file by default
+    BOBUIest::newRow( "data1" )  << QString("Makefile") << QString("Makefile");
+    BOBUIest::newRow( "data2" )  << QString("ftp://ftp.bobui-project.org/bobui/INSTALL") << QString("ftp://ftp.bobui-project.org/bobui/INSTALL");
+    BOBUIest::newRow( "data3" )  << QString("ftp://ftp.bobui-project.org/bobui/INSTALL") << QString("ftp://ftp.bobui-project.org/bobui/INSTALL");
 }
 
 void tst_QUrl::compat_constructor_01()
@@ -1775,25 +1775,25 @@ void tst_QUrl::compat_constructor_01()
         QUrl empty;
         QUrl u = empty.resolved(urlStr);
 
-        QTEST( u.toString(), "res" );
+        BOBUIEST( u.toString(), "res" );
     }
     {
         QUrl empty;
         QUrl u = empty.resolved(urlStr);
 
-        QTEST( u.toString(), "res" );
+        BOBUIEST( u.toString(), "res" );
     }
 }
 
 void tst_QUrl::compat_constructor_02_data()
 {
-    QTest::addColumn<QString>("urlStr");
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("res");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << QString("ftp://ftp.qt-project.org/qt") << QString("INSTALL") << QString("ftp://ftp.qt-project.org/INSTALL");
-    QTest::newRow( "data1" )  << QString("ftp://ftp.qt-project.org/qt/") << QString("INSTALL") << QString("ftp://ftp.qt-project.org/qt/INSTALL");
+    BOBUIest::newRow( "data0" )  << QString("ftp://ftp.bobui-project.org/bobui") << QString("INSTALL") << QString("ftp://ftp.bobui-project.org/INSTALL");
+    BOBUIest::newRow( "data1" )  << QString("ftp://ftp.bobui-project.org/bobui/") << QString("INSTALL") << QString("ftp://ftp.bobui-project.org/bobui/INSTALL");
 }
 
 void tst_QUrl::compat_constructor_02()
@@ -1804,47 +1804,47 @@ void tst_QUrl::compat_constructor_02()
     QUrl tmp( urlStr );
     QUrl u = tmp.resolved(fileName);
 
-    QTEST( u.toString(), "res" );
+    BOBUIEST( u.toString(), "res" );
 }
 
 void tst_QUrl::compat_constructor_03_data()
 {
-    QTest::addColumn<QString>("urlStr");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<QString>("res");
 
     //next we fill it with data
-    QTest::newRow( "protocol00" )  << QString( "http://qt-project.org/index.html" ) << QString( "http://qt-project.org/index.html" );
-    QTest::newRow( "protocol01" )  << QString( "http://qt-project.org" ) << QString( "http://qt-project.org" );
-    QTest::newRow( "protocol02" )  << QString( "http://qt-project.org/" ) << QString( "http://qt-project.org/" );
-    QTest::newRow( "protocol03" )  << QString( "http://qt-project.org/foo" ) << QString( "http://qt-project.org/foo" );
-    QTest::newRow( "protocol04" )  << QString( "http://qt-project.org/foo/" ) << QString( "http://qt-project.org/foo/" );
-    QTest::newRow( "protocol05" )  << QString( "ftp://ftp.qt-project.org/foo/index.txt" ) << QString( "ftp://ftp.qt-project.org/foo/index.txt" );
+    BOBUIest::newRow( "protocol00" )  << QString( "http://bobui-project.org/index.html" ) << QString( "http://bobui-project.org/index.html" );
+    BOBUIest::newRow( "protocol01" )  << QString( "http://bobui-project.org" ) << QString( "http://bobui-project.org" );
+    BOBUIest::newRow( "protocol02" )  << QString( "http://bobui-project.org/" ) << QString( "http://bobui-project.org/" );
+    BOBUIest::newRow( "protocol03" )  << QString( "http://bobui-project.org/foo" ) << QString( "http://bobui-project.org/foo" );
+    BOBUIest::newRow( "protocol04" )  << QString( "http://bobui-project.org/foo/" ) << QString( "http://bobui-project.org/foo/" );
+    BOBUIest::newRow( "protocol05" )  << QString( "ftp://ftp.bobui-project.org/foo/index.txt" ) << QString( "ftp://ftp.bobui-project.org/foo/index.txt" );
 
-    QTest::newRow( "local00" )  << QString( "/foo" ) << QString( "/foo" );
-    QTest::newRow( "local01" )  << QString( "/foo/" ) << QString( "/foo/" );
-    QTest::newRow( "local02" )  << QString( "/foo/bar" ) << QString( "/foo/bar" );
-    QTest::newRow( "local03" )  << QString( "/foo/bar/" ) << QString( "/foo/bar/" );
-    QTest::newRow( "local04" )  << QString( "foo" ) << QString( "foo" );
-    QTest::newRow( "local05" )  << QString( "foo/" ) << QString( "foo/" );
-    QTest::newRow( "local06" )  << QString( "foo/bar" ) << QString( "foo/bar" );
-    QTest::newRow( "local07" )  << QString( "foo/bar/" ) << QString( "foo/bar/" );
-    QTest::newRow( "local09" )  << QString( "" ) << QString( "" );
+    BOBUIest::newRow( "local00" )  << QString( "/foo" ) << QString( "/foo" );
+    BOBUIest::newRow( "local01" )  << QString( "/foo/" ) << QString( "/foo/" );
+    BOBUIest::newRow( "local02" )  << QString( "/foo/bar" ) << QString( "/foo/bar" );
+    BOBUIest::newRow( "local03" )  << QString( "/foo/bar/" ) << QString( "/foo/bar/" );
+    BOBUIest::newRow( "local04" )  << QString( "foo" ) << QString( "foo" );
+    BOBUIest::newRow( "local05" )  << QString( "foo/" ) << QString( "foo/" );
+    BOBUIest::newRow( "local06" )  << QString( "foo/bar" ) << QString( "foo/bar" );
+    BOBUIest::newRow( "local07" )  << QString( "foo/bar/" ) << QString( "foo/bar/" );
+    BOBUIest::newRow( "local09" )  << QString( "" ) << QString( "" );
 
-    QTest::newRow( "file00" )  << QString( "file:/foo" ) << QString( "file:///foo" );
-    QTest::newRow( "file01" )  << QString( "file:/foo/" ) << QString( "file:///foo/" );
-    QTest::newRow( "file02" )  << QString( "file:/foo/bar" ) << QString( "file:///foo/bar" );
-    QTest::newRow( "file03" )  << QString( "file:/foo/bar/" ) << QString( "file:///foo/bar/" );
-    QTest::newRow( "relProtocol00" )  << QString( "foo:bar" ) << QString( "foo:bar" );
-    QTest::newRow( "relProtocol01" )  << QString( "foo:/bar" ) << QString( "foo:/bar" );
+    BOBUIest::newRow( "file00" )  << QString( "file:/foo" ) << QString( "file:///foo" );
+    BOBUIest::newRow( "file01" )  << QString( "file:/foo/" ) << QString( "file:///foo/" );
+    BOBUIest::newRow( "file02" )  << QString( "file:/foo/bar" ) << QString( "file:///foo/bar" );
+    BOBUIest::newRow( "file03" )  << QString( "file:/foo/bar/" ) << QString( "file:///foo/bar/" );
+    BOBUIest::newRow( "relProtocol00" )  << QString( "foo:bar" ) << QString( "foo:bar" );
+    BOBUIest::newRow( "relProtocol01" )  << QString( "foo:/bar" ) << QString( "foo:/bar" );
 
-    QTest::newRow( "windowsDrive00" )  << QString( "c:/" ) << QString( "c:/" );
-    QTest::newRow( "windowsDrive01" )  << QString( "c:" ) << QString( "c:" );
-    QTest::newRow( "windowsDrive02" )  << QString( "c:/WinNT/" ) << QString( "c:/WinNT/" );
-    QTest::newRow( "windowsDrive03" )  << QString( "c:/autoexec.bat" ) << QString( "c:/autoexec.bat" );
-    QTest::newRow( "windowsDrive04" )  << QString( "c:WinNT/" ) << QString( "c:WinNT/" );
-    QTest::newRow( "windowsDrive05" )  << QString( "c:autoexec.bat" ) << QString( "c:autoexec.bat" );
+    BOBUIest::newRow( "windowsDrive00" )  << QString( "c:/" ) << QString( "c:/" );
+    BOBUIest::newRow( "windowsDrive01" )  << QString( "c:" ) << QString( "c:" );
+    BOBUIest::newRow( "windowsDrive02" )  << QString( "c:/WinNT/" ) << QString( "c:/WinNT/" );
+    BOBUIest::newRow( "windowsDrive03" )  << QString( "c:/autoexec.bat" ) << QString( "c:/autoexec.bat" );
+    BOBUIest::newRow( "windowsDrive04" )  << QString( "c:WinNT/" ) << QString( "c:WinNT/" );
+    BOBUIest::newRow( "windowsDrive05" )  << QString( "c:autoexec.bat" ) << QString( "c:autoexec.bat" );
 
-    QTest::newRow("nopath") << QString("protocol://host") << QString("protocol://host");
+    BOBUIest::newRow("nopath") << QString("protocol://host") << QString("protocol://host");
 }
 
 void tst_QUrl::compat_constructor_03()
@@ -1852,20 +1852,20 @@ void tst_QUrl::compat_constructor_03()
     QFETCH( QString, urlStr );
 
     QUrl u( urlStr );
-    QTEST( u.toString(), "res" );
+    BOBUIEST( u.toString(), "res" );
 }
 
 void tst_QUrl::compat_isValid_01_data()
 {
-    QTest::addColumn<QString>("urlStr");
-    QTest::addColumn<bool>("res");
+    BOBUIest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<bool>("res");
 
-    QTest::newRow( "ok_01" ) << QString("ftp://ftp.qt-project.org/qt/INSTALL") << (bool)true;
-    QTest::newRow( "ok_02" ) << QString( "file:/foo") << (bool)true;
-    QTest::newRow( "ok_03" ) << QString( "file:foo") << (bool)true;
+    BOBUIest::newRow( "ok_01" ) << QString("ftp://ftp.bobui-project.org/bobui/INSTALL") << (bool)true;
+    BOBUIest::newRow( "ok_02" ) << QString( "file:/foo") << (bool)true;
+    BOBUIest::newRow( "ok_03" ) << QString( "file:foo") << (bool)true;
 
-    QTest::newRow( "err_01" ) << QString("#ftp://ftp.qt-project.org/qt/INSTALL") << (bool)true;
-    QTest::newRow( "err_02" ) << QString( "file:/::foo") << (bool)true;
+    BOBUIest::newRow( "err_01" ) << QString("#ftp://ftp.bobui-project.org/bobui/INSTALL") << (bool)true;
+    BOBUIest::newRow( "err_02" ) << QString( "file:/::foo") << (bool)true;
 }
 
 void tst_QUrl::compat_isValid_01()
@@ -1881,33 +1881,33 @@ void tst_QUrl::compat_isValid_01()
 
 void tst_QUrl::compat_isValid_02_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("user");
-    QTest::addColumn<QString>("password");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<int>("port");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("res");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("user");
+    BOBUIest::addColumn<QString>("password");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<int>("port");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("res");
 
     QString n = "";
 
-    QTest::newRow( "ok_01" ) << n     << n     << n     << n                   << -1 << QString("path") << (bool)true;
-    QTest::newRow( "ok_02" ) << QString("ftp") << n     << n     << QString("ftp.qt-project.org") << -1 << n      << (bool)true;
-    QTest::newRow( "ok_03" ) << QString("ftp") << QString("foo") << n     << QString("ftp.qt-project.org") << -1 << n      << (bool)true;
-    QTest::newRow( "ok_04" ) << QString("ftp") << QString("foo") << QString("bar") << QString("ftp.qt-project.org") << -1 << n      << (bool)true;
-    QTest::newRow( "ok_05" ) << QString("ftp") << n     << n     << QString("ftp.qt-project.org") << -1 << QString("/path")<< (bool)true;
-    QTest::newRow( "ok_06" ) << QString("ftp") << QString("foo") << n     << QString("ftp.qt-project.org") << -1 << QString("/path") << (bool)true;
-    QTest::newRow( "ok_07" ) << QString("ftp") << QString("foo") << QString("bar") << QString("ftp.qt-project.org") << -1 << QString("/path")<< (bool)true;
+    BOBUIest::newRow( "ok_01" ) << n     << n     << n     << n                   << -1 << QString("path") << (bool)true;
+    BOBUIest::newRow( "ok_02" ) << QString("ftp") << n     << n     << QString("ftp.bobui-project.org") << -1 << n      << (bool)true;
+    BOBUIest::newRow( "ok_03" ) << QString("ftp") << QString("foo") << n     << QString("ftp.bobui-project.org") << -1 << n      << (bool)true;
+    BOBUIest::newRow( "ok_04" ) << QString("ftp") << QString("foo") << QString("bar") << QString("ftp.bobui-project.org") << -1 << n      << (bool)true;
+    BOBUIest::newRow( "ok_05" ) << QString("ftp") << n     << n     << QString("ftp.bobui-project.org") << -1 << QString("/path")<< (bool)true;
+    BOBUIest::newRow( "ok_06" ) << QString("ftp") << QString("foo") << n     << QString("ftp.bobui-project.org") << -1 << QString("/path") << (bool)true;
+    BOBUIest::newRow( "ok_07" ) << QString("ftp") << QString("foo") << QString("bar") << QString("ftp.bobui-project.org") << -1 << QString("/path")<< (bool)true;
 
-    QTest::newRow( "err_01" ) << n     << n     << n     << n                   << -1 << n << (bool)false;
-    QTest::newRow( "err_02" ) << QString("ftp") << n     << n     << n                   << -1 << n << (bool)true;
-    QTest::newRow( "err_03" ) << n     << QString("foo") << n     << n                   << -1 << n << (bool)true;
-    QTest::newRow( "err_04" ) << n     << n     << QString("bar") << n                   << -1 << n << (bool)true;
-    QTest::newRow( "err_05" ) << n     << n     << n     << QString("ftp.qt-project.org") << -1 << n << (bool)true;
-    QTest::newRow( "err_06" ) << n     << n     << n     << n                   << 80 << n << (bool)true;
-    QTest::newRow( "err_07" ) << QString("ftp") << QString("foo") << n     << n                   << -1 << n << (bool)true;
-    QTest::newRow( "err_08" ) << QString("ftp") << n     << QString("bar") << n                   << -1 << n << (bool)true;
-    QTest::newRow( "err_09" ) << QString("ftp") << QString("foo") << QString("bar") << n                   << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_01" ) << n     << n     << n     << n                   << -1 << n << (bool)false;
+    BOBUIest::newRow( "err_02" ) << QString("ftp") << n     << n     << n                   << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_03" ) << n     << QString("foo") << n     << n                   << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_04" ) << n     << n     << QString("bar") << n                   << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_05" ) << n     << n     << n     << QString("ftp.bobui-project.org") << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_06" ) << n     << n     << n     << n                   << 80 << n << (bool)true;
+    BOBUIest::newRow( "err_07" ) << QString("ftp") << QString("foo") << n     << n                   << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_08" ) << QString("ftp") << n     << QString("bar") << n                   << -1 << n << (bool)true;
+    BOBUIest::newRow( "err_09" ) << QString("ftp") << QString("foo") << QString("bar") << n                   << -1 << n << (bool)true;
 }
 
 void tst_QUrl::compat_isValid_02()
@@ -1941,13 +1941,13 @@ void tst_QUrl::compat_isValid_02()
 
 void tst_QUrl::compat_path_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<QString>("res");
 
-    QTest::newRow( "protocol00" ) << "http://qt-project.org/images/ban/pgs_front.jpg" << "/images/ban/pgs_front.jpg";
+    BOBUIest::newRow( "protocol00" ) << "http://bobui-project.org/images/ban/pgs_front.jpg" << "/images/ban/pgs_front.jpg";
 
 #if defined( Q_OS_WIN32 )
-    QTest::newRow( "winShare00" ) << "//Anarki/homes" << "/homes";
+    BOBUIest::newRow( "winShare00" ) << "//Anarki/homes" << "/homes";
 #endif
 }
 
@@ -1956,25 +1956,25 @@ void tst_QUrl::compat_path()
     QFETCH( QString, url );
 
     QUrl u( url );
-    QTEST( u.path(), "res" );
+    BOBUIEST( u.path(), "res" );
 }
 
 void tst_QUrl::compat_fileName_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<QString>("fileName");
 
 #ifdef Q_OS_WIN32
-    QTest::newRow( "Windows - DrivePathFileName - \\" ) << QString("c:\\windows\\tmp\\filename.txt")<< QString("filename.txt");
-    QTest::newRow( "Windows - DrivePathFileName - /" ) << QString("c:/windows/tmp/filename.txt") << QString("filename.txt");
-    QTest::newRow( "Windows - DrivePathWithSlash - \\" ) << QString("c:\\windows\\tmp\\") << QString();
-    QTest::newRow( "Windows - DrivePathWithSlash - /" ) << QString("c:/windows/tmp/") << QString();
-    QTest::newRow( "Windows - DrivePathWithoutSlash - \\" ) << QString("c:/windows/tmp") << QString("tmp");
-    QTest::newRow( "Windows - DrivePathWithoutSlash - /" ) << QString("c:/windows/tmp") << QString("tmp");
+    BOBUIest::newRow( "Windows - DrivePathFileName - \\" ) << QString("c:\\windows\\tmp\\filename.txt")<< QString("filename.txt");
+    BOBUIest::newRow( "Windows - DrivePathFileName - /" ) << QString("c:/windows/tmp/filename.txt") << QString("filename.txt");
+    BOBUIest::newRow( "Windows - DrivePathWithSlash - \\" ) << QString("c:\\windows\\tmp\\") << QString();
+    BOBUIest::newRow( "Windows - DrivePathWithSlash - /" ) << QString("c:/windows/tmp/") << QString();
+    BOBUIest::newRow( "Windows - DrivePathWithoutSlash - \\" ) << QString("c:/windows/tmp") << QString("tmp");
+    BOBUIest::newRow( "Windows - DrivePathWithoutSlash - /" ) << QString("c:/windows/tmp") << QString("tmp");
 #endif
-    QTest::newRow( "Path00" ) << QString("/") << QString();
-    QTest::newRow( "Path01" ) << QString("/home/dev/test/") << QString();
-    QTest::newRow( "PathFileName00" ) << QString("/home/dev/test") << QString("test");
+    BOBUIest::newRow( "Path00" ) << QString("/") << QString();
+    BOBUIest::newRow( "Path01" ) << QString("/home/dev/test/") << QString();
+    BOBUIest::newRow( "PathFileName00" ) << QString("/home/dev/test") << QString("test");
 }
 
 void tst_QUrl::compat_fileName()
@@ -1988,17 +1988,17 @@ void tst_QUrl::compat_fileName()
 
 void tst_QUrl::compat_decode_data()
 {
-    QTest::addColumn<QByteArray>("encodedString");
-    QTest::addColumn<QString>("decodedString");
+    BOBUIest::addColumn<QByteArray>("encodedString");
+    BOBUIest::addColumn<QString>("decodedString");
 
-    QTest::newRow("NormalString") << QByteArray("filename") << QString("filename");
-    QTest::newRow("NormalStringEncoded") << QByteArray("file%20name") << QString("file name");
-    QTest::newRow("JustEncoded") << QByteArray("%20") << QString(" ");
-    QTest::newRow("HTTPUrl") << QByteArray("http://qt-project.org") << QString("http://qt-project.org");
-    QTest::newRow("HTTPUrlEncoded") << QByteArray("http://qt-project%20org") << QString("http://qt-project org");
-    QTest::newRow("EmptyString") << QByteArray("") << QString("");
-    QTest::newRow("NulByte") << QByteArray("C%00%0A") << QString::fromLatin1("C\0\n", 3);
-    QTest::newRow("Task27166") << QByteArray("Fran%C3%A7aise") << QString::fromUtf8("Française");
+    BOBUIest::newRow("NormalString") << QByteArray("filename") << QString("filename");
+    BOBUIest::newRow("NormalStringEncoded") << QByteArray("file%20name") << QString("file name");
+    BOBUIest::newRow("JustEncoded") << QByteArray("%20") << QString(" ");
+    BOBUIest::newRow("HTTPUrl") << QByteArray("http://bobui-project.org") << QString("http://bobui-project.org");
+    BOBUIest::newRow("HTTPUrlEncoded") << QByteArray("http://bobui-project%20org") << QString("http://bobui-project org");
+    BOBUIest::newRow("EmptyString") << QByteArray("") << QString("");
+    BOBUIest::newRow("NulByte") << QByteArray("C%00%0A") << QString::fromLatin1("C\0\n", 3);
+    BOBUIest::newRow("Task27166") << QByteArray("Fran%C3%A7aise") << QString::fromUtf8("Française");
 }
 
 void tst_QUrl::compat_decode()
@@ -2011,17 +2011,17 @@ void tst_QUrl::compat_decode()
 
 void tst_QUrl::compat_encode_data()
 {
-    QTest::addColumn<QString>("decodedString");
-    QTest::addColumn<QByteArray>("encodedString");
+    BOBUIest::addColumn<QString>("decodedString");
+    BOBUIest::addColumn<QByteArray>("encodedString");
 
-    QTest::newRow("NormalString") << QString("filename") << QByteArray("filename");
-    QTest::newRow("NormalStringEncoded") << QString("file name") << QByteArray("file%20name");
-    QTest::newRow("JustEncoded") << QString(" ") << QByteArray("%20");
-    QTest::newRow("HTTPUrl") << QString("http://qt-project.org") << QByteArray("http%3A//qt-project.org");
-    QTest::newRow("HTTPUrlEncoded") << QString("http://qt-project org") << QByteArray("http%3A//qt-project%20org");
-    QTest::newRow("EmptyString") << QString("") << QByteArray("");
-    QTest::newRow("NulByte") << QString::fromLatin1("C\0\n", 3) << QByteArray("C%00%0A");
-    QTest::newRow("Task27166") << QString::fromUtf8("Française") << QByteArray("Fran%C3%A7aise");
+    BOBUIest::newRow("NormalString") << QString("filename") << QByteArray("filename");
+    BOBUIest::newRow("NormalStringEncoded") << QString("file name") << QByteArray("file%20name");
+    BOBUIest::newRow("JustEncoded") << QString(" ") << QByteArray("%20");
+    BOBUIest::newRow("HTTPUrl") << QString("http://bobui-project.org") << QByteArray("http%3A//bobui-project.org");
+    BOBUIest::newRow("HTTPUrlEncoded") << QString("http://bobui-project org") << QByteArray("http%3A//bobui-project%20org");
+    BOBUIest::newRow("EmptyString") << QString("") << QByteArray("");
+    BOBUIest::newRow("NulByte") << QString::fromLatin1("C\0\n", 3) << QByteArray("C%00%0A");
+    BOBUIest::newRow("Task27166") << QString::fromUtf8("Française") << QByteArray("Fran%C3%A7aise");
 }
 
 void tst_QUrl::compat_encode()
@@ -2051,11 +2051,11 @@ void tst_QUrl::relative()
 void tst_QUrl::percentEncoding_data()
 {
     // This test is limited. It's superseded by componentEncodings below
-    QTest::addColumn<QString>("original");
-    QTest::addColumn<QByteArray>("encoded");
+    BOBUIest::addColumn<QString>("original");
+    BOBUIest::addColumn<QByteArray>("encoded");
 
-    QTest::newRow("test_01") << QString::fromLatin1("sdfsdf") << QByteArray("sdfsdf");
-    QTest::newRow("test_02") << QString::fromUtf8("æss") << QByteArray("%C3%A6ss");
+    BOBUIest::newRow("test_01") << QString::fromLatin1("sdfsdf") << QByteArray("sdfsdf");
+    BOBUIest::newRow("test_02") << QString::fromUtf8("æss") << QByteArray("%C3%A6ss");
 }
 
 void tst_QUrl::percentEncoding()
@@ -2073,28 +2073,28 @@ void tst_QUrl::percentEncoding()
 
 void tst_QUrl::toPercentEncoding_data()
 {
-    QTest::addColumn<QString>("original");
-    QTest::addColumn<QByteArray>("encoded");
-    QTest::addColumn<QByteArray>("excludeInEncoding");
-    QTest::addColumn<QByteArray>("includeInEncoding");
+    BOBUIest::addColumn<QString>("original");
+    BOBUIest::addColumn<QByteArray>("encoded");
+    BOBUIest::addColumn<QByteArray>("excludeInEncoding");
+    BOBUIest::addColumn<QByteArray>("includeInEncoding");
 
-    QTest::newRow("test_01") << QString::fromLatin1("abcdevghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345678-._~")
+    BOBUIest::newRow("test_01") << QString::fromLatin1("abcdevghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345678-._~")
                           << QByteArray("abcdevghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345678-._~")
                           << QByteArray("")
                           << QByteArray("");
-    QTest::newRow("test_02") << QString::fromLatin1("{\t\n\r^\"abc}")
+    BOBUIest::newRow("test_02") << QString::fromLatin1("{\t\n\r^\"abc}")
                           << QByteArray("%7B%09%0A%0D%5E%22abc%7D")
                           << QByteArray("")
                           << QByteArray("");
-    QTest::newRow("test_03") << QString::fromLatin1("://?#[]@!$&'()*+,;=")
+    BOBUIest::newRow("test_03") << QString::fromLatin1("://?#[]@!$&'()*+,;=")
                           << QByteArray("%3A%2F%2F%3F%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D")
                           << QByteArray("")
                           << QByteArray("");
-    QTest::newRow("test_04") << QString::fromLatin1("://?#[]@!$&'()*+,;=")
+    BOBUIest::newRow("test_04") << QString::fromLatin1("://?#[]@!$&'()*+,;=")
                           << QByteArray("%3A%2F%2F%3F%23%5B%5D%40!$&'()*+,;=")
                           << QByteArray("!$&'()*+,;=")
                           << QByteArray("");
-    QTest::newRow("test_05") << QString::fromLatin1("abcd")
+    BOBUIest::newRow("test_05") << QString::fromLatin1("abcd")
                           << QByteArray("a%62%63d")
                           << QByteArray("")
                           << QByteArray("bc");
@@ -2114,9 +2114,9 @@ void tst_QUrl::toPercentEncoding()
 
 void tst_QUrl::swap()
 {
-    QUrl u1(QLatin1String("http://qt-project.org")), u2(QLatin1String("http://www.kdab.com"));
+    QUrl u1(QLatin1String("http://bobui-project.org")), u2(QLatin1String("http://www.kdab.com"));
     u1.swap(u2);
-    QCOMPARE(u2.host(),QLatin1String("qt-project.org"));
+    QCOMPARE(u2.host(),QLatin1String("bobui-project.org"));
     QCOMPARE(u1.host(),QLatin1String("www.kdab.com"));
 }
 
@@ -2133,8 +2133,8 @@ void tst_QUrl::symmetry()
     QCOMPARE(url.query(QUrl::FullyEncoded), QLatin1String("a=b&a=d%C3%B8&a=f"));
     QCOMPARE(url.fragment(), QString::fromUtf8("vræl"));
 
-    QUrl onlyHost("//qt-project.org");
-    QCOMPARE(onlyHost.toString(), QString::fromLatin1("//qt-project.org"));
+    QUrl onlyHost("//bobui-project.org");
+    QCOMPARE(onlyHost.toString(), QString::fromLatin1("//bobui-project.org"));
 
     {
         QString urlString = QString::fromLatin1("http://desktop:33326/upnp/{32f525a6-6f31-426e-91ca-01c2e6c2c57e}");
@@ -2160,43 +2160,43 @@ void tst_QUrl::symmetry()
 
 void tst_QUrl::ipvfuture_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<bool>("isValid");
-    QTest::addColumn<QString>("output");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<bool>("isValid");
+    BOBUIest::addColumn<QString>("output");
 
     // No one uses IPvFuture yet, so we have no clue what it might contain
     // We're just testing that it can hold what the RFC says it should hold:
     //    IPvFuture     = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
-    QTest::newRow("missing-version-dot") << "x://[v]" << false;
-    QTest::newRow("missing-version") << "x://[v.]" << false;
-    QTest::newRow("missing-version-2") << "x://[v.1234]" << false;
-    QTest::newRow("missing-dot") << "x://[v7]" << false;
-    QTest::newRow("missing-dot-2") << "x://[v71234]" << false;
-    QTest::newRow("missing-data") << "x://[v7.]" << false;
-    QTest::newRow("non-hex-version") << "x://[vz.1234]" << false;
+    BOBUIest::newRow("missing-version-dot") << "x://[v]" << false;
+    BOBUIest::newRow("missing-version") << "x://[v.]" << false;
+    BOBUIest::newRow("missing-version-2") << "x://[v.1234]" << false;
+    BOBUIest::newRow("missing-dot") << "x://[v7]" << false;
+    BOBUIest::newRow("missing-dot-2") << "x://[v71234]" << false;
+    BOBUIest::newRow("missing-data") << "x://[v7.]" << false;
+    BOBUIest::newRow("non-hex-version") << "x://[vz.1234]" << false;
 
-    QTest::newRow("digit-ver") << "x://[v7.1]" << true << "x://[v7.1]";
-    QTest::newRow("lowercase-hex-ver-lower") << "x://[va.1]" << true << "x://[vA.1]";
-    QTest::newRow("lowercase-hex-ver-upper") << "x://[vA.1]" << true << "x://[vA.1]";
+    BOBUIest::newRow("digit-ver") << "x://[v7.1]" << true << "x://[v7.1]";
+    BOBUIest::newRow("lowercase-hex-ver-lower") << "x://[va.1]" << true << "x://[vA.1]";
+    BOBUIest::newRow("lowercase-hex-ver-upper") << "x://[vA.1]" << true << "x://[vA.1]";
 
-    QTest::newRow("data-digits") << "x://[v7.1234]" << true << "x://[v7.1234]";
-    QTest::newRow("data-unreserved") << "x://[v7.hello~-WORLD_.com]" << true << "x://[v7.hello~-WORLD_.com]";
-    QTest::newRow("data-sub-delims-colon") << "x://[v7.!$&'()*+,;=:]" << true << "x://[v7.!$&'()*+,;=:]";
+    BOBUIest::newRow("data-digits") << "x://[v7.1234]" << true << "x://[v7.1234]";
+    BOBUIest::newRow("data-unreserved") << "x://[v7.hello~-WORLD_.com]" << true << "x://[v7.hello~-WORLD_.com]";
+    BOBUIest::newRow("data-sub-delims-colon") << "x://[v7.!$&'()*+,;=:]" << true << "x://[v7.!$&'()*+,;=:]";
 
     // we're using the tolerant parser
-    QTest::newRow("data-encoded-digits") << "x://[v7.%31%32%33%34]" << true << "x://[v7.1234]";
-    QTest::newRow("data-encoded-unreserved") << "x://[v7.%7E%2D%54%5f%2E]" << true << "x://[v7.~-T_.]";
-    QTest::newRow("data-encoded-sub-delims-colon") << "x://[v7.%21%24%26%27%28%29%2A%2B%2C%3B%3D%3A]" << true << "x://[v7.!$&'()*+,;=:]";
+    BOBUIest::newRow("data-encoded-digits") << "x://[v7.%31%32%33%34]" << true << "x://[v7.1234]";
+    BOBUIest::newRow("data-encoded-unreserved") << "x://[v7.%7E%2D%54%5f%2E]" << true << "x://[v7.~-T_.]";
+    BOBUIest::newRow("data-encoded-sub-delims-colon") << "x://[v7.%21%24%26%27%28%29%2A%2B%2C%3B%3D%3A]" << true << "x://[v7.!$&'()*+,;=:]";
 
     // should we test "[%76%37%2ex]" -> "[v7.x]" ?
 
-    QTest::newRow("data-invalid-space") << "x://[v7.%20]" << false;
-    QTest::newRow("data-invalid-control") << "x://[v7.\x7f]" << false;
-    QTest::newRow("data-invalid-other-1") << "x://[v7.{1234}]" << false;
-    QTest::newRow("data-invalid-other-2") << "x://[v7.<hello>]" << false;
-    QTest::newRow("data-invalid-unicode") << "x://[v7.æøå]" << false;
-    QTest::newRow("data-invalid-percent") << "x://[v7.%]" << false;
-    QTest::newRow("data-invalid-percent-percent") << "x://[v7.%25]" << false;
+    BOBUIest::newRow("data-invalid-space") << "x://[v7.%20]" << false;
+    BOBUIest::newRow("data-invalid-control") << "x://[v7.\x7f]" << false;
+    BOBUIest::newRow("data-invalid-other-1") << "x://[v7.{1234}]" << false;
+    BOBUIest::newRow("data-invalid-other-2") << "x://[v7.<hello>]" << false;
+    BOBUIest::newRow("data-invalid-unicode") << "x://[v7.æøå]" << false;
+    BOBUIest::newRow("data-invalid-percent") << "x://[v7.%]" << false;
+    BOBUIest::newRow("data-invalid-percent-percent") << "x://[v7.%25]" << false;
 }
 
 void tst_QUrl::ipvfuture()
@@ -2221,66 +2221,66 @@ void tst_QUrl::ipvfuture()
 
 void tst_QUrl::ipv6_data()
 {
-    QTest::addColumn<QString>("ipv6Auth");
-    QTest::addColumn<bool>("isValid");
-    QTest::addColumn<QString>("output");
+    BOBUIest::addColumn<QString>("ipv6Auth");
+    BOBUIest::addColumn<bool>("isValid");
+    BOBUIest::addColumn<QString>("output");
 
-    QTest::newRow("empty") << "//[]" << false << "";
+    BOBUIest::newRow("empty") << "//[]" << false << "";
 
-    QTest::newRow("case 1") << QString::fromLatin1("//[56:56:56:56:56:56:56:56]") << true
+    BOBUIest::newRow("case 1") << QString::fromLatin1("//[56:56:56:56:56:56:56:56]") << true
                             << "//[56:56:56:56:56:56:56:56]";
-    QTest::newRow("case 2") << QString::fromLatin1("//[::56:56:56:56:56:56:56]") << true
+    BOBUIest::newRow("case 2") << QString::fromLatin1("//[::56:56:56:56:56:56:56]") << true
                             << "//[0:56:56:56:56:56:56:56]";
-    QTest::newRow("case 3") << QString::fromLatin1("//[56::56:56:56:56:56:56]") << true
+    BOBUIest::newRow("case 3") << QString::fromLatin1("//[56::56:56:56:56:56:56]") << true
                             << "//[56:0:56:56:56:56:56:56]";
-    QTest::newRow("case 4") << QString::fromLatin1("//[56:56::56:56:56:56:56]") << true
+    BOBUIest::newRow("case 4") << QString::fromLatin1("//[56:56::56:56:56:56:56]") << true
                             << "//[56:56:0:56:56:56:56:56]";
-    QTest::newRow("case 5") << QString::fromLatin1("//[56:56:56::56:56:56:56]") << true
+    BOBUIest::newRow("case 5") << QString::fromLatin1("//[56:56:56::56:56:56:56]") << true
                             << "//[56:56:56:0:56:56:56:56]";
-    QTest::newRow("case 6") << QString::fromLatin1("//[56:56:56:56::56:56:56]") << true
+    BOBUIest::newRow("case 6") << QString::fromLatin1("//[56:56:56:56::56:56:56]") << true
                             << "//[56:56:56:56:0:56:56:56]";
-    QTest::newRow("case 7") << QString::fromLatin1("//[56:56:56:56:56::56:56]") << true
+    BOBUIest::newRow("case 7") << QString::fromLatin1("//[56:56:56:56:56::56:56]") << true
                             << "//[56:56:56:56:56:0:56:56]";
-    QTest::newRow("case 8") << QString::fromLatin1("//[56:56:56:56:56:56::56]") << true
+    BOBUIest::newRow("case 8") << QString::fromLatin1("//[56:56:56:56:56:56::56]") << true
                             << "//[56:56:56:56:56:56:0:56]";
-    QTest::newRow("case 9") << QString::fromLatin1("//[56:56:56:56:56:56:56::]") << true
+    BOBUIest::newRow("case 9") << QString::fromLatin1("//[56:56:56:56:56:56:56::]") << true
                             << "//[56:56:56:56:56:56:56:0]";
-    QTest::newRow("case 4 with one less") << QString::fromLatin1("//[56::56:56:56:56:56]") << true
+    BOBUIest::newRow("case 4 with one less") << QString::fromLatin1("//[56::56:56:56:56:56]") << true
                                           << "//[56::56:56:56:56:56]";
-    QTest::newRow("case 4 with less and ip4") << QString::fromLatin1("//[56::56:56:56:127.0.0.1]") << true
+    BOBUIest::newRow("case 4 with less and ip4") << QString::fromLatin1("//[56::56:56:56:127.0.0.1]") << true
                                               << "//[56::56:56:56:7f00:1]";
-    QTest::newRow("case 7 with one and ip4") << QString::fromLatin1("//[56::255.0.0.0]") << true
+    BOBUIest::newRow("case 7 with one and ip4") << QString::fromLatin1("//[56::255.0.0.0]") << true
                                              << "//[56::ff00:0]";
-    QTest::newRow("case 2 with ip4") << QString::fromLatin1("//[::56:56:56:56:56:0.0.0.255]") << true
+    BOBUIest::newRow("case 2 with ip4") << QString::fromLatin1("//[::56:56:56:56:56:0.0.0.255]") << true
                                      << "//[0:56:56:56:56:56:0:ff]";
-    QTest::newRow("case 2 with half ip4") << QString::fromLatin1("//[::56:56:56:56:56:56:0.255]") << false << "";
-    QTest::newRow("case 4 with less and ip4 and port and useinfo")
+    BOBUIest::newRow("case 2 with half ip4") << QString::fromLatin1("//[::56:56:56:56:56:56:0.255]") << false << "";
+    BOBUIest::newRow("case 4 with less and ip4 and port and useinfo")
             << QString::fromLatin1("//user:pass@[56::56:56:56:127.0.0.1]:99") << true
             << "//user:pass@[56::56:56:56:7f00:1]:99";
-    QTest::newRow("case :,") << QString::fromLatin1("//[:,]") << false << "";
-    QTest::newRow("case ::bla") << QString::fromLatin1("//[::bla]") << false << "";
-    QTest::newRow("case v4-mapped") << "//[0:0:0:0:0:ffff:7f00:1]" << true << "//[::ffff:127.0.0.1]";
+    BOBUIest::newRow("case :,") << QString::fromLatin1("//[:,]") << false << "";
+    BOBUIest::newRow("case ::bla") << QString::fromLatin1("//[::bla]") << false << "";
+    BOBUIest::newRow("case v4-mapped") << "//[0:0:0:0:0:ffff:7f00:1]" << true << "//[::ffff:127.0.0.1]";
 
-    QTest::newRow("encoded-digit") << "//[::%31]" << true << "//[::1]";
-    QTest::newRow("encoded-colon") << "//[%3A%3A]" << true << "//[::]";
+    BOBUIest::newRow("encoded-digit") << "//[::%31]" << true << "//[::1]";
+    BOBUIest::newRow("encoded-colon") << "//[%3A%3A]" << true << "//[::]";
 
-    QTest::newRow("full ipv6 with zone id (decoded %)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%eth0]") << true
+    BOBUIest::newRow("full ipv6 with zone id (decoded %)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%eth0]") << true
             << "//[56:56:56:56:56:56:56:56%25eth0]";
 
-    QTest::newRow("full ipv6 with zone id (encoded %)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%25eth0]") << true
+    BOBUIest::newRow("full ipv6 with zone id (encoded %)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%25eth0]") << true
             << "//[56:56:56:56:56:56:56:56%25eth0]";
 
-    QTest::newRow("full ipv6 with invalid zone id") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%]") << false << "";
+    BOBUIest::newRow("full ipv6 with invalid zone id") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%]") << false << "";
 
-    QTest::newRow("full ipv6 with invalid zone id (encoded)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%25]") << false << "";
+    BOBUIest::newRow("full ipv6 with invalid zone id (encoded)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%25]") << false << "";
 
-    QTest::newRow("full ipv6 with zone id 25 (encoded)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%2525]") << true << "//[56:56:56:56:56:56:56:56%2525]";
+    BOBUIest::newRow("full ipv6 with zone id 25 (encoded)") << QString::fromLatin1("//[56:56:56:56:56:56:56:56%2525]") << true << "//[56:56:56:56:56:56:56:56%2525]";
 
-    QTest::newRow("case 4 with less and ip4 and port and useinfo and zone id")
+    BOBUIest::newRow("case 4 with less and ip4 and port and useinfo and zone id")
             << QString::fromLatin1("//user:pass@[56::56:56:56:127.0.0.1%ethernet_1]:99") << true
             << "//user:pass@[56::56:56:56:7f00:1%25ethernet_1]:99";
 
-    QTest::newRow("encoded-digit including zone id") << "//[::%31%25eth0]" << true << "//[::1%25eth0]";
+    BOBUIest::newRow("encoded-digit including zone id") << "//[::%31%25eth0]" << true << "//[::1%25eth0]";
 }
 
 void tst_QUrl::ipv6()
@@ -2303,13 +2303,13 @@ void tst_QUrl::ipv6()
 
 void tst_QUrl::ipv6_2_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("output");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("output");
 
-    QTest::newRow("[::ffff:129.144.52.38]")
+    BOBUIest::newRow("[::ffff:129.144.52.38]")
         << QString("http://[::ffff:129.144.52.38]/cgi/test.cgi")
         << QString("http://[::ffff:129.144.52.38]/cgi/test.cgi");
-    QTest::newRow("[::FFFF:129.144.52.38]")
+    BOBUIest::newRow("[::FFFF:129.144.52.38]")
         << QString("http://[::FFFF:129.144.52.38]/cgi/test.cgi")
         << QString("http://[::ffff:129.144.52.38]/cgi/test.cgi");
 }
@@ -2334,19 +2334,19 @@ void tst_QUrl::moreIpv6()
 
 void tst_QUrl::isRelative_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("trueFalse");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("trueFalse");
 
-    QTest::newRow("not") << QString::fromLatin1("http://qt-project.org") << false;
-    QTest::newRow("55288") << QString::fromLatin1("node64.html#fig:form:ana") << true;
+    BOBUIest::newRow("not") << QString::fromLatin1("http://bobui-project.org") << false;
+    BOBUIest::newRow("55288") << QString::fromLatin1("node64.html#fig:form:ana") << true;
 
     // kde
-    QTest::newRow("mailto: URL, is relative") << "mailto:faure@kde.org" << false;
-    QTest::newRow("man: URL, is relative") << "man:mmap" << false;
-    QTest::newRow("javascript: URL, is relative") << "javascript:doSomething()" << false;
-    QTest::newRow("file: URL, is relative") << "file:/blah" << false;
-    QTest::newRow("/path, is relative") << "/path" << true;
-    QTest::newRow("something, is relative") << "something" << true;
+    BOBUIest::newRow("mailto: URL, is relative") << "mailto:faure@kde.org" << false;
+    BOBUIest::newRow("man: URL, is relative") << "man:mmap" << false;
+    BOBUIest::newRow("javascript: URL, is relative") << "javascript:doSomething()" << false;
+    BOBUIest::newRow("file: URL, is relative") << "file:/blah" << false;
+    BOBUIest::newRow("/path, is relative") << "/path" << true;
+    BOBUIest::newRow("something, is relative") << "something" << true;
     // end kde
 }
 
@@ -2360,21 +2360,21 @@ void tst_QUrl::isRelative()
 
 void tst_QUrl::hasQuery_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("trueFalse");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("trueFalse");
 
-    QTest::newRow("no query items") << "http://www.foo.bar" << false;
+    BOBUIest::newRow("no query items") << "http://www.foo.bar" << false;
 
-    QTest::newRow("empty query") << "http://www.foo.bar?" << true;
-    QTest::newRow("empty query 2") << "http://www.foo.bar/?" << true;
+    BOBUIest::newRow("empty query") << "http://www.foo.bar?" << true;
+    BOBUIest::newRow("empty query 2") << "http://www.foo.bar/?" << true;
 
-    QTest::newRow("query") << "http://www.foo.bar?query" << true;
-    QTest::newRow("query=") << "http://www.foo.bar?query=" << true;
-    QTest::newRow("query=value") << "http://www.foo.bar?query=value" << true;
+    BOBUIest::newRow("query") << "http://www.foo.bar?query" << true;
+    BOBUIest::newRow("query=") << "http://www.foo.bar?query=" << true;
+    BOBUIest::newRow("query=value") << "http://www.foo.bar?query=value" << true;
 
-    QTest::newRow("%3f") << "http://www.foo.bar/file%3f" << false;
-    QTest::newRow("%3f-query") << "http://www.foo.bar/file%3fquery" << false;
-    QTest::newRow("%3f-query=value") << "http://www.foo.bar/file%3fquery=value" << false;
+    BOBUIest::newRow("%3f") << "http://www.foo.bar/file%3f" << false;
+    BOBUIest::newRow("%3f-query") << "http://www.foo.bar/file%3fquery" << false;
+    BOBUIest::newRow("%3f-query=value") << "http://www.foo.bar/file%3fquery=value" << false;
 }
 
 void tst_QUrl::hasQuery()
@@ -2515,63 +2515,63 @@ void tst_QUrl::isValid()
 
 void tst_QUrl::schemeValidator_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<QString>("scheme");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("scheme");
 
     //    scheme        = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
 
-    QTest::newRow("empty") << QString() << false << QString();
+    BOBUIest::newRow("empty") << QString() << false << QString();
 
     // uncontroversial ones
-    QTest::newRow("ftp") << "ftp://ftp.example.com/" << true << "ftp";
-    QTest::newRow("http") << "http://www.example.com/" << true << "http";
-    QTest::newRow("mailto") << "mailto:smith@example.com" << true << "mailto";
-    QTest::newRow("file-1slash") << "file:/etc/passwd" << true << "file";
-    QTest::newRow("file-2slashes") << "file://server/etc/passwd" << true << "file";
-    QTest::newRow("file-3slashes") << "file:///etc/passwd" << true << "file";
+    BOBUIest::newRow("ftp") << "ftp://ftp.example.com/" << true << "ftp";
+    BOBUIest::newRow("http") << "http://www.example.com/" << true << "http";
+    BOBUIest::newRow("mailto") << "mailto:smith@example.com" << true << "mailto";
+    BOBUIest::newRow("file-1slash") << "file:/etc/passwd" << true << "file";
+    BOBUIest::newRow("file-2slashes") << "file://server/etc/passwd" << true << "file";
+    BOBUIest::newRow("file-3slashes") << "file:///etc/passwd" << true << "file";
 
-    QTest::newRow("mailto+subject") << "mailto:smith@example.com?subject=Hello%20World" << true << "mailto";
-    QTest::newRow("mailto+host") << "mailto://smtp.example.com/smith@example.com" << true << "mailto";
+    BOBUIest::newRow("mailto+subject") << "mailto:smith@example.com?subject=Hello%20World" << true << "mailto";
+    BOBUIest::newRow("mailto+host") << "mailto://smtp.example.com/smith@example.com" << true << "mailto";
 
     // valid, but unexpected
-    QTest::newRow("ftp-nohost") << "ftp:/etc/passwd" << true << "ftp";
-    QTest::newRow("http-nohost") << "http:/etc/passwd" << true << "http";
-    QTest::newRow("mailto-nomail") << "mailto://smtp.example.com" << true << "mailto";
+    BOBUIest::newRow("ftp-nohost") << "ftp:/etc/passwd" << true << "ftp";
+    BOBUIest::newRow("http-nohost") << "http:/etc/passwd" << true << "http";
+    BOBUIest::newRow("mailto-nomail") << "mailto://smtp.example.com" << true << "mailto";
 
     // schemes with numbers
-    QTest::newRow("digits") << "proto2://" << true << "proto2";
+    BOBUIest::newRow("digits") << "proto2://" << true << "proto2";
 
     // schemes with dots, dashes, and pluses
-    QTest::newRow("svn+ssh") << "svn+ssh://svn.example.com" << true << "svn+ssh";
-    QTest::newRow("withdash") << "svn-ssh://svn.example.com" << true << "svn-ssh";
-    QTest::newRow("withdots") << "org.qt-project://qt-project.org" << true << "org.qt-project";
+    BOBUIest::newRow("svn+ssh") << "svn+ssh://svn.example.com" << true << "svn+ssh";
+    BOBUIest::newRow("withdash") << "svn-ssh://svn.example.com" << true << "svn-ssh";
+    BOBUIest::newRow("withdots") << "org.bobui-project://bobui-project.org" << true << "org.bobui-project";
 
     // lowercasing
-    QTest::newRow("FTP") << "FTP://ftp.example.com/" << true << "ftp";
-    QTest::newRow("HTTP") << "HTTP://www.example.com/" << true << "http";
-    QTest::newRow("MAILTO") << "MAILTO:smith@example.com" << true << "mailto";
-    QTest::newRow("FILE") << "FILE:/etc/passwd" << true << "file";
-    QTest::newRow("SVN+SSH") << "SVN+SSH://svn.example.com" << true << "svn+ssh";
-    QTest::newRow("WITHDASH") << "SVN-SSH://svn.example.com" << true << "svn-ssh";
-    QTest::newRow("WITHDOTS") << "ORG.QT-PROJECT://qt-project.org" << true << "org.qt-project";
+    BOBUIest::newRow("FTP") << "FTP://ftp.example.com/" << true << "ftp";
+    BOBUIest::newRow("HTTP") << "HTTP://www.example.com/" << true << "http";
+    BOBUIest::newRow("MAILTO") << "MAILTO:smith@example.com" << true << "mailto";
+    BOBUIest::newRow("FILE") << "FILE:/etc/passwd" << true << "file";
+    BOBUIest::newRow("SVN+SSH") << "SVN+SSH://svn.example.com" << true << "svn+ssh";
+    BOBUIest::newRow("WITHDASH") << "SVN-SSH://svn.example.com" << true << "svn-ssh";
+    BOBUIest::newRow("WITHDOTS") << "ORG.BOBUI-PROJECT://bobui-project.org" << true << "org.bobui-project";
 
     // invalid entries
-    QTest::newRow("start-digit") << "1http://example.com" << false << "1http";
-    QTest::newRow("start-plus") << "+ssh://user@example.com" << false << "+ssh";
-    QTest::newRow("start-dot") << ".org.example:///" << false << ".org.example";
-    QTest::newRow("with-space") << "a b://" << false << "a b";
-    QTest::newRow("with-non-ascii") << "\304\245\305\243\305\245\321\200://example.com" << false << "\304\245\305\243\305\245\321\200";
-    QTest::newRow("with-control1") << "http\1://example.com" << false << "http\1";
-    QTest::newRow("with-control127") << "http\177://example.com" << false << "http\177";
-    QTest::newRow("with-null") << QString::fromLatin1("http\0://example.com", 19) << false << QString::fromLatin1("http\0", 5);
+    BOBUIest::newRow("start-digit") << "1http://example.com" << false << "1http";
+    BOBUIest::newRow("start-plus") << "+ssh://user@example.com" << false << "+ssh";
+    BOBUIest::newRow("start-dot") << ".org.example:///" << false << ".org.example";
+    BOBUIest::newRow("with-space") << "a b://" << false << "a b";
+    BOBUIest::newRow("with-non-ascii") << "\304\245\305\243\305\245\321\200://example.com" << false << "\304\245\305\243\305\245\321\200";
+    BOBUIest::newRow("with-control1") << "http\1://example.com" << false << "http\1";
+    BOBUIest::newRow("with-control127") << "http\177://example.com" << false << "http\177";
+    BOBUIest::newRow("with-null") << QString::fromLatin1("http\0://example.com", 19) << false << QString::fromLatin1("http\0", 5);
 
-    QTest::newRow("percent-encoded") << "%68%74%%74%70://example.com" << false << "%68%74%%74%70";
+    BOBUIest::newRow("percent-encoded") << "%68%74%%74%70://example.com" << false << "%68%74%%74%70";
 
     static const char controls[] = "!\"$&'()*,;<=>[\\]^_`{|}~";
     for (char control : controls) {
         const QString scheme = QLatin1String("pre") + QLatin1Char(control) + QLatin1String("post");
-        QTest::newRow((QByteArrayLiteral("with-") + control).constData())
+        BOBUIest::newRow((QByteArrayLiteral("with-") + control).constData())
             << (scheme + QLatin1String("://example.com/"))
             << false << scheme;
     }
@@ -2602,9 +2602,9 @@ void tst_QUrl::setScheme_data()
     schemeValidator_data();
 
     // a couple more which wouldn't work in parsing a full URL
-    QTest::newRow("with-slash") << QString() << false << "http/";
-    QTest::newRow("with-question") << QString() << false << "http?";
-    QTest::newRow("with-hash") << QString() << false << "http#";
+    BOBUIest::newRow("with-slash") << QString() << false << "http/";
+    BOBUIest::newRow("with-question") << QString() << false << "http?";
+    BOBUIest::newRow("with-hash") << QString() << false << "http#";
 }
 
 void tst_QUrl::setScheme()
@@ -2627,61 +2627,61 @@ void tst_QUrl::setScheme()
 
 void tst_QUrl::strictParser_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("needle");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("needle");
 
     // QUrl doesn't detect an error in the scheme when parsing because
     // it falls back to parsing as a path. So, these errors are path errors
-    QTest::newRow("invalid-scheme") << "ht%://example.com" << "character '%' not permitted";
-    QTest::newRow("empty-scheme") << ":/" << "':' before any '/'";
+    BOBUIest::newRow("invalid-scheme") << "ht%://example.com" << "character '%' not permitted";
+    BOBUIest::newRow("empty-scheme") << ":/" << "':' before any '/'";
 
-    QTest::newRow("invalid-user1") << "http://bad<user_name>@ok-hostname" << "Invalid user name (character '<' not permitted)";
-    QTest::newRow("invalid-user2") << "http://bad%@ok-hostname" << "Invalid user name (character '%' not permitted)";
+    BOBUIest::newRow("invalid-user1") << "http://bad<user_name>@ok-hostname" << "Invalid user name (character '<' not permitted)";
+    BOBUIest::newRow("invalid-user2") << "http://bad%@ok-hostname" << "Invalid user name (character '%' not permitted)";
 
-    QTest::newRow("invalid-password") << "http://user:pass\x7F@ok-hostname" << "Invalid password (character '\x7F' not permitted)";
+    BOBUIest::newRow("invalid-password") << "http://user:pass\x7F@ok-hostname" << "Invalid password (character '\x7F' not permitted)";
 
-    QTest::newRow("invalid-regname") << "http://bad<hostname>" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("invalid-regname-2") << "http://b%61d" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("invalid-ipv6") << "http://[:::]" << "Invalid IPv6 address";
-    QTest::newRow("invalid-ipv6-char1") << "http://[::g]" << "Invalid IPv6 address (character 'g' not permitted)";
-    QTest::newRow("invalid-ipv6-char2") << "http://[z::]" << "Invalid IPv6 address (character 'z' not permitted)";
-    QTest::newRow("invalid-ipvfuture-1") << "http://[v7]" << "Invalid IPvFuture address";
-    QTest::newRow("invalid-ipvfuture-2") << "http://[v7.]" << "Invalid IPvFuture address";
-    QTest::newRow("invalid-ipvfuture-3") << "http://[v789]" << "Invalid IPvFuture address";
-    QTest::newRow("invalid-ipvfuture-char1") << "http://[v7.^]" << "Invalid IPvFuture address";
-    QTest::newRow("invalid-encoded-ipv6") << "x://[%3a%3a%31]" << "Invalid IPv6 address";
-    QTest::newRow("invalid-encoded-ipvfuture") << "x://[v7.%7E%2D%54%5f%2E]" << "Invalid IPvFuture address";
-    QTest::newRow("unbalanced-brackets") << "http://[ff02::1" << "Expected ']' to match '[' in hostname";
+    BOBUIest::newRow("invalid-regname") << "http://bad<hostname>" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("invalid-regname-2") << "http://b%61d" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("invalid-ipv6") << "http://[:::]" << "Invalid IPv6 address";
+    BOBUIest::newRow("invalid-ipv6-char1") << "http://[::g]" << "Invalid IPv6 address (character 'g' not permitted)";
+    BOBUIest::newRow("invalid-ipv6-char2") << "http://[z::]" << "Invalid IPv6 address (character 'z' not permitted)";
+    BOBUIest::newRow("invalid-ipvfuture-1") << "http://[v7]" << "Invalid IPvFuture address";
+    BOBUIest::newRow("invalid-ipvfuture-2") << "http://[v7.]" << "Invalid IPvFuture address";
+    BOBUIest::newRow("invalid-ipvfuture-3") << "http://[v789]" << "Invalid IPvFuture address";
+    BOBUIest::newRow("invalid-ipvfuture-char1") << "http://[v7.^]" << "Invalid IPvFuture address";
+    BOBUIest::newRow("invalid-encoded-ipv6") << "x://[%3a%3a%31]" << "Invalid IPv6 address";
+    BOBUIest::newRow("invalid-encoded-ipvfuture") << "x://[v7.%7E%2D%54%5f%2E]" << "Invalid IPvFuture address";
+    BOBUIest::newRow("unbalanced-brackets") << "http://[ff02::1" << "Expected ']' to match '[' in hostname";
 
     // invalid hostnames happen in TolerantMode too
-    QTest::newRow("invalid-hostname-leading-dot") << "http://.co.uk" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("invalid-hostname-double-dot") << "http://co..uk" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("invalid-hostname-non-LDH") << "http://foo,bar.example.com" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-space") << "http:// " << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-nbsp") << "http://\xc2\xa0" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-control-1f") << "http://\x1f" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-control-7f") << "http://\x7f" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-control-80") << "http://\xc2\x80" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-private-bmp") << "http://\xee\x80\x80" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-private-plane15") << "http://\xf3\xb0\x80\x80" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-private-plane16") << "http://\xf4\x80\x80\x80" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-ffff") << "http://\xef\xbf\xbf" << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-surrogate-1") << "http://" + QString(QChar(0xD800)) << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-surrogate-2") << "http://" + QString(QChar(0xDC00)) << "Invalid hostname (contains invalid characters)";
-    QTest::newRow("idn-prohibited-char-surrogate-3") << "http://" + QString(QChar(0xD800)) + "a" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("invalid-hostname-leading-dot") << "http://.co.uk" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("invalid-hostname-double-dot") << "http://co..uk" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("invalid-hostname-non-LDH") << "http://foo,bar.example.com" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-space") << "http:// " << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-nbsp") << "http://\xc2\xa0" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-control-1f") << "http://\x1f" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-control-7f") << "http://\x7f" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-control-80") << "http://\xc2\x80" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-private-bmp") << "http://\xee\x80\x80" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-private-plane15") << "http://\xf3\xb0\x80\x80" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-private-plane16") << "http://\xf4\x80\x80\x80" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-ffff") << "http://\xef\xbf\xbf" << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-surrogate-1") << "http://" + QString(QChar(0xD800)) << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-surrogate-2") << "http://" + QString(QChar(0xDC00)) << "Invalid hostname (contains invalid characters)";
+    BOBUIest::newRow("idn-prohibited-char-surrogate-3") << "http://" + QString(QChar(0xD800)) + "a" << "Invalid hostname (contains invalid characters)";
     // FIXME: add some tests for prohibited BiDi (RFC 3454 section 6)
 
     // port errors happen in TolerantMode too
-    QTest::newRow("invalid-port-1") << "http://example.com:-1" << "Invalid port";
-    QTest::newRow("invalid-port-2") << "http://example.com:abc" << "Invalid port";
-    QTest::newRow("invalid-port-3") << "http://example.com:9a" << "Invalid port";
-    QTest::newRow("port-range") << "http://example.com:65536" << "out of range";
+    BOBUIest::newRow("invalid-port-1") << "http://example.com:-1" << "Invalid port";
+    BOBUIest::newRow("invalid-port-2") << "http://example.com:abc" << "Invalid port";
+    BOBUIest::newRow("invalid-port-3") << "http://example.com:9a" << "Invalid port";
+    BOBUIest::newRow("port-range") << "http://example.com:65536" << "out of range";
 
-    QTest::newRow("invalid-path") << "foo:/path%\x1F" << "Invalid path (character '%' not permitted)";
+    BOBUIest::newRow("invalid-path") << "foo:/path%\x1F" << "Invalid path (character '%' not permitted)";
 
-    QTest::newRow("invalid-query") << "foo:?\\#" << "Invalid query (character '\\' not permitted)";
+    BOBUIest::newRow("invalid-query") << "foo:?\\#" << "Invalid query (character '\\' not permitted)";
 
-    QTest::newRow("invalid-fragment") << "#{}" << "Invalid fragment (character '{' not permitted)";
+    BOBUIest::newRow("invalid-fragment") << "#{}" << "Invalid fragment (character '{' not permitted)";
 }
 
 void tst_QUrl::strictParser()
@@ -2737,7 +2737,7 @@ void tst_QUrl::tolerantParser()
             QUrl::fromEncoded("http://example.com/testya.php?browser-info=s:1400x1050x24:f:9.0%20r152:t:%u0442%u0435%u0441%u0442");
         QVERIFY(webkit22616.isValid());
 
-        // Qt 5 behaviour change: one broken % means all % are considered broken
+        // BobUI 5 behaviour change: one broken % means all % are considered broken
 //      QCOMPARE(webkit22616.toEncoded().constData(),
 //               "http://example.com/testya.php?browser-info=s:1400x1050x24:f:9.0%20r152:t:%25u0442%25u0435%25u0441%25u0442");
         QCOMPARE(webkit22616.toEncoded().constData(),
@@ -2801,7 +2801,7 @@ void tst_QUrl::tolerantParser()
         const QString tsdgeos = QLatin1String("http://google.com/c?c=Translation+%C2%BB+trunk|");
         QUrl tsdgeosQUrl;
         tsdgeosQUrl.setUrl(tsdgeos, QUrl::TolerantMode);
-        QVERIFY(tsdgeosQUrl.isValid()); // failed in Qt-4.4, works in Qt-4.5
+        QVERIFY(tsdgeosQUrl.isValid()); // failed in BobUI-4.4, works in BobUI-4.5
         QByteArray tsdgeosExpected("http://google.com/c?c=Translation+%C2%BB+trunk%7C");
         QCOMPARE(QString(tsdgeosQUrl.toEncoded()), QString(tsdgeosExpected));
     }
@@ -2823,18 +2823,18 @@ void tst_QUrl::tolerantParser()
 
 void tst_QUrl::correctEncodedMistakes_data()
 {
-    QTest::addColumn<QByteArray>("encodedUrl");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<QString>("toDecoded");
+    BOBUIest::addColumn<QByteArray>("encodedUrl");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("toDecoded");
 
-    QTest::newRow("%") << QByteArray("%") << true << QString("%25");
-    QTest::newRow("3%") << QByteArray("3%") << true << QString("3%25");
-    QTest::newRow("13%") << QByteArray("13%") << true << QString("13%25");
-    QTest::newRow("13%!") << QByteArray("13%!") << true << QString("13%25!");
-    QTest::newRow("13%!!") << QByteArray("13%!!") << true << QString("13%25!!");
-    QTest::newRow("13%a") << QByteArray("13%a") << true << QString("13%25a");
-    QTest::newRow("13%az") << QByteArray("13%az") << true << QString("13%25az");
-    QTest::newRow("13%25") << QByteArray("13%25") << true << QString("13%25");
+    BOBUIest::newRow("%") << QByteArray("%") << true << QString("%25");
+    BOBUIest::newRow("3%") << QByteArray("3%") << true << QString("3%25");
+    BOBUIest::newRow("13%") << QByteArray("13%") << true << QString("13%25");
+    BOBUIest::newRow("13%!") << QByteArray("13%!") << true << QString("13%25!");
+    BOBUIest::newRow("13%!!") << QByteArray("13%!!") << true << QString("13%25!!");
+    BOBUIest::newRow("13%a") << QByteArray("13%a") << true << QString("13%25a");
+    BOBUIest::newRow("13%az") << QByteArray("13%az") << true << QString("13%25az");
+    BOBUIest::newRow("13%25") << QByteArray("13%25") << true << QString("13%25");
 }
 
 void tst_QUrl::correctEncodedMistakes()
@@ -2854,17 +2854,17 @@ void tst_QUrl::correctEncodedMistakes()
 
 void tst_QUrl::correctDecodedMistakes_data()
 {
-    QTest::addColumn<QString>("decodedUrl");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<QString>("toDecoded");
+    BOBUIest::addColumn<QString>("decodedUrl");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("toDecoded");
 
-    QTest::newRow("%") << QString("%") << true << QString("%25");
-    QTest::newRow("3%") << QString("3%") << true << QString("3%25");
-    QTest::newRow("13%") << QString("13%") << true << QString("13%25");
-    QTest::newRow("13%!") << QString("13%!") << true << QString("13%25!");
-    QTest::newRow("13%!!") << QString("13%!!") << true << QString("13%25!!");
-    QTest::newRow("13%a") << QString("13%a") << true << QString("13%25a");
-    QTest::newRow("13%az") << QString("13%az") << true << QString("13%25az");
+    BOBUIest::newRow("%") << QString("%") << true << QString("%25");
+    BOBUIest::newRow("3%") << QString("3%") << true << QString("3%25");
+    BOBUIest::newRow("13%") << QString("13%") << true << QString("13%25");
+    BOBUIest::newRow("13%!") << QString("13%!") << true << QString("13%25!");
+    BOBUIest::newRow("13%!!") << QString("13%!!") << true << QString("13%25!!");
+    BOBUIest::newRow("13%a") << QString("13%a") << true << QString("13%25a");
+    BOBUIest::newRow("13%az") << QString("13%az") << true << QString("13%25az");
 }
 
 void tst_QUrl::correctDecodedMistakes()
@@ -2952,19 +2952,19 @@ void tst_QUrl::emptyQueryOrFragment()
 
 void tst_QUrl::hasFragment_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<bool>("trueFalse");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<bool>("trueFalse");
 
-    QTest::newRow("no fragment") << "http://www.foo.bar" << false;
+    BOBUIest::newRow("no fragment") << "http://www.foo.bar" << false;
 
-    QTest::newRow("empty fragment") << "http://www.foo.bar#" << true;
-    QTest::newRow("empty fragment 2") << "http://www.foo.bar/#" << true;
+    BOBUIest::newRow("empty fragment") << "http://www.foo.bar#" << true;
+    BOBUIest::newRow("empty fragment 2") << "http://www.foo.bar/#" << true;
 
-    QTest::newRow("fragment") << "http://www.foo.bar#baz" << true;
-    QTest::newRow("fragment2") << "http://www.foo.bar/#baz" << true;
+    BOBUIest::newRow("fragment") << "http://www.foo.bar#baz" << true;
+    BOBUIest::newRow("fragment2") << "http://www.foo.bar/#baz" << true;
 
-    QTest::newRow("%23") << "http://www.foo.bar/%23" << false;
-    QTest::newRow("%23-and-something") << "http://www.foo.bar/%23baz" << false;
+    BOBUIest::newRow("%23") << "http://www.foo.bar/%23" << false;
+    BOBUIest::newRow("%23-and-something") << "http://www.foo.bar/%23baz" << false;
 }
 
 void tst_QUrl::hasFragment()
@@ -2979,17 +2979,17 @@ void tst_QUrl::hasFragment()
 
 void tst_QUrl::setFragment_data()
 {
-    QTest::addColumn<QString>("base");
-    QTest::addColumn<QString>("fragment");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("base");
+    BOBUIest::addColumn<QString>("fragment");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("null") << QString::fromLatin1("http://www.kde.org") << QString() << QString::fromLatin1("http://www.kde.org");
-    QTest::newRow("empty") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("") << QString::fromLatin1("http://www.kde.org#");
-    QTest::newRow("basic test") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("abc") << QString::fromLatin1("http://www.kde.org#abc");
-    QTest::newRow("initial url has fragment") << QString::fromLatin1("http://www.kde.org#old") << QString::fromLatin1("new") << QString::fromLatin1("http://www.kde.org#new");
-    QTest::newRow("encoded fragment") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("a%20c") << QString::fromLatin1("http://www.kde.org#a%20c");
-    QTest::newRow("with #") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("a#b") << QString::fromLatin1("http://www.kde.org#a%23b"); // toString uses "a#b"
-    QTest::newRow("unicode") << QString::fromLatin1("http://www.kde.org") << QString::fromUtf8("\xc3\xa9") << QString::fromLatin1("http://www.kde.org#%C3%A9");
+    BOBUIest::newRow("null") << QString::fromLatin1("http://www.kde.org") << QString() << QString::fromLatin1("http://www.kde.org");
+    BOBUIest::newRow("empty") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("") << QString::fromLatin1("http://www.kde.org#");
+    BOBUIest::newRow("basic test") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("abc") << QString::fromLatin1("http://www.kde.org#abc");
+    BOBUIest::newRow("initial url has fragment") << QString::fromLatin1("http://www.kde.org#old") << QString::fromLatin1("new") << QString::fromLatin1("http://www.kde.org#new");
+    BOBUIest::newRow("encoded fragment") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("a%20c") << QString::fromLatin1("http://www.kde.org#a%20c");
+    BOBUIest::newRow("with #") << QString::fromLatin1("http://www.kde.org") << QString::fromLatin1("a#b") << QString::fromLatin1("http://www.kde.org#a%23b"); // toString uses "a#b"
+    BOBUIest::newRow("unicode") << QString::fromLatin1("http://www.kde.org") << QString::fromUtf8("\xc3\xa9") << QString::fromLatin1("http://www.kde.org#%C3%A9");
 }
 
 void tst_QUrl::setFragment()
@@ -3028,21 +3028,21 @@ void tst_QUrl::fromEncoded()
 
 void tst_QUrl::stripTrailingSlash_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<QString>("expectedStrip");     // toString(Strip)
-    QTest::addColumn<QString>("expectedDir");       // toString(RemoveFilename)
-    QTest::addColumn<QString>("expectedDirStrip");  // toString(RemoveFilename|Strip)
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<QString>("expectedStrip");     // toString(Strip)
+    BOBUIest::addColumn<QString>("expectedDir");       // toString(RemoveFilename)
+    BOBUIest::addColumn<QString>("expectedDirStrip");  // toString(RemoveFilename|Strip)
 
-    QTest::newRow("subdir no slash") << "ftp://kde.org/dir/subdir" << "ftp://kde.org/dir/subdir" << "ftp://kde.org/dir/" << "ftp://kde.org/dir";
-    QTest::newRow("ftp no slash") << "ftp://kde.org/dir" << "ftp://kde.org/dir" << "ftp://kde.org/" << "ftp://kde.org/";
-    QTest::newRow("ftp slash") << "ftp://kde.org/dir/" << "ftp://kde.org/dir" << "ftp://kde.org/dir/" << "ftp://kde.org/dir";
-    QTest::newRow("ftp_two_slashes") << "ftp://kde.org/dir//" << "ftp://kde.org/dir" << "ftp://kde.org/dir//" << "ftp://kde.org/dir";
-    QTest::newRow("file slash") << "file:///dir/" << "file:///dir" << "file:///dir/" << "file:///dir";
-    QTest::newRow("file no slash") << "file:///dir" << "file:///dir" << "file:///" << "file:///";
-    QTest::newRow("file root") << "file:///" << "file:///" << "file:///" << "file:///";
-    QTest::newRow("file_root_manyslashes") << "file://///" << "file:///" << "file://///" << "file:///";
-    QTest::newRow("no path") << "remote://" << "remote://" << "remote://" << "remote://";
-    QTest::newRow("no authority") << "/root/test/../foo/bar" << "/root/test/../foo/bar" << "/root/test/../foo/" << "/root/test/../foo";
+    BOBUIest::newRow("subdir no slash") << "ftp://kde.org/dir/subdir" << "ftp://kde.org/dir/subdir" << "ftp://kde.org/dir/" << "ftp://kde.org/dir";
+    BOBUIest::newRow("ftp no slash") << "ftp://kde.org/dir" << "ftp://kde.org/dir" << "ftp://kde.org/" << "ftp://kde.org/";
+    BOBUIest::newRow("ftp slash") << "ftp://kde.org/dir/" << "ftp://kde.org/dir" << "ftp://kde.org/dir/" << "ftp://kde.org/dir";
+    BOBUIest::newRow("ftp_two_slashes") << "ftp://kde.org/dir//" << "ftp://kde.org/dir" << "ftp://kde.org/dir//" << "ftp://kde.org/dir";
+    BOBUIest::newRow("file slash") << "file:///dir/" << "file:///dir" << "file:///dir/" << "file:///dir";
+    BOBUIest::newRow("file no slash") << "file:///dir" << "file:///dir" << "file:///" << "file:///";
+    BOBUIest::newRow("file root") << "file:///" << "file:///" << "file:///" << "file:///";
+    BOBUIest::newRow("file_root_manyslashes") << "file://///" << "file:///" << "file://///" << "file:///";
+    BOBUIest::newRow("no path") << "remote://" << "remote://" << "remote://" << "remote://";
+    BOBUIest::newRow("no authority") << "/root/test/../foo/bar" << "/root/test/../foo/bar" << "/root/test/../foo/" << "/root/test/../foo";
 }
 
 void tst_QUrl::stripTrailingSlash()
@@ -3065,52 +3065,52 @@ void tst_QUrl::stripTrailingSlash()
 
 void tst_QUrl::hosts_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::addColumn<QString>("host");
 
-    QTest::newRow("empty") << QString("") << QString("");
-    QTest::newRow("empty1") << QString("file:///file") << QString("");
-    QTest::newRow("empty2") << QString("file:/file") << QString("");
-    QTest::newRow("empty3") << QString("http:///file") << QString("");
-    QTest::newRow("empty4") << QString("http:/file") << QString("");
+    BOBUIest::newRow("empty") << QString("") << QString("");
+    BOBUIest::newRow("empty1") << QString("file:///file") << QString("");
+    BOBUIest::newRow("empty2") << QString("file:/file") << QString("");
+    BOBUIest::newRow("empty3") << QString("http:///file") << QString("");
+    BOBUIest::newRow("empty4") << QString("http:/file") << QString("");
 
     // numeric hostnames -> decoded as IPv4 as per inet_aton(3)
-    QTest::newRow("http://123/") << QString("http://123/") << QString("0.0.0.123");
-    QTest::newRow("http://456/") << QString("http://456/") << QString("0.0.1.200");
-    QTest::newRow("http://1000/") << QString("http://1000/") << QString("0.0.3.232");
+    BOBUIest::newRow("http://123/") << QString("http://123/") << QString("0.0.0.123");
+    BOBUIest::newRow("http://456/") << QString("http://456/") << QString("0.0.1.200");
+    BOBUIest::newRow("http://1000/") << QString("http://1000/") << QString("0.0.3.232");
 
     // IP literals
-    QTest::newRow("normal-ip-literal") << QString("http://1.2.3.4") << QString("1.2.3.4");
-    QTest::newRow("normal-ip-literal-with-port") << QString("http://1.2.3.4:80")
+    BOBUIest::newRow("normal-ip-literal") << QString("http://1.2.3.4") << QString("1.2.3.4");
+    BOBUIest::newRow("normal-ip-literal-with-port") << QString("http://1.2.3.4:80")
                                                  << QString("1.2.3.4");
-    QTest::newRow("ipv6-literal") << QString("http://[::1]") << QString("::1");
-    QTest::newRow("ipv6-literal-with-port") << QString("http://[::1]:80") << QString("::1");
-    QTest::newRow("long-ipv6-literal") << QString("http://[2001:200:0:8002:203:47ff:fea5:3085]")
+    BOBUIest::newRow("ipv6-literal") << QString("http://[::1]") << QString("::1");
+    BOBUIest::newRow("ipv6-literal-with-port") << QString("http://[::1]:80") << QString("::1");
+    BOBUIest::newRow("long-ipv6-literal") << QString("http://[2001:200:0:8002:203:47ff:fea5:3085]")
                                        << QString("2001:200:0:8002:203:47ff:fea5:3085");
-    QTest::newRow("long-ipv6-literal-with-port") << QString("http://[2001:200:0:8002:203:47ff:fea5:3085]:80")
+    BOBUIest::newRow("long-ipv6-literal-with-port") << QString("http://[2001:200:0:8002:203:47ff:fea5:3085]:80")
                                                  << QString("2001:200:0:8002:203:47ff:fea5:3085");
-    QTest::newRow("ipv6-literal-v4compat") << QString("http://[::255.254.253.252]")
+    BOBUIest::newRow("ipv6-literal-v4compat") << QString("http://[::255.254.253.252]")
                                            << QString("::255.254.253.252");
-    QTest::newRow("ipv6-literal-v4mapped") << QString("http://[::ffff:255.254.253.252]")
+    BOBUIest::newRow("ipv6-literal-v4mapped") << QString("http://[::ffff:255.254.253.252]")
                                            << QString("::ffff:255.254.253.252");
-    QTest::newRow("ipv6-literal-v4mapped-2") << QString("http://[::ffff:fffe:fdfc]")
+    BOBUIest::newRow("ipv6-literal-v4mapped-2") << QString("http://[::ffff:fffe:fdfc]")
                                            << QString("::ffff:255.254.253.252");
 
     // no embedded v4 unless the cases above
-    QTest::newRow("ipv6-literal-v4decoded") << QString("http://[1000::ffff:127.128.129.1]")
+    BOBUIest::newRow("ipv6-literal-v4decoded") << QString("http://[1000::ffff:127.128.129.1]")
                                             << QString("1000::ffff:7f80:8101");
-    QTest::newRow("long-ipv6-literal-v4decoded") << QString("http://[fec0:8000::8002:1000:ffff:200.100.50.250]")
+    BOBUIest::newRow("long-ipv6-literal-v4decoded") << QString("http://[fec0:8000::8002:1000:ffff:200.100.50.250]")
                                                  << QString("fec0:8000:0:8002:1000:ffff:c864:32fa");
-    QTest::newRow("longer-ipv6-literal-v4decoded") << QString("http://[fec0:8000:4000:8002:1000:ffff:200.100.50.250]")
+    BOBUIest::newRow("longer-ipv6-literal-v4decoded") << QString("http://[fec0:8000:4000:8002:1000:ffff:200.100.50.250]")
                                                    << QString("fec0:8000:4000:8002:1000:ffff:c864:32fa");
 
     // normal hostnames
-    QTest::newRow("normal") << QString("http://intern") << QString("intern");
-    QTest::newRow("normal2") << QString("http://qt-project.org") << QString("qt-project.org");
+    BOBUIest::newRow("normal") << QString("http://intern") << QString("intern");
+    BOBUIest::newRow("normal2") << QString("http://bobui-project.org") << QString("bobui-project.org");
 
     // IDN hostnames
-    QTest::newRow("idn") << QString(QLatin1String("http://\345r.no")) << QString(QLatin1String("\345r.no"));
-    QTest::newRow("idn-ace") << QString("http://xn--r-1fa.no") << QString(QLatin1String("\345r.no"));
+    BOBUIest::newRow("idn") << QString(QLatin1String("http://\345r.no")) << QString(QLatin1String("\345r.no"));
+    BOBUIest::newRow("idn-ace") << QString("http://xn--r-1fa.no") << QString(QLatin1String("\345r.no"));
 }
 
 void tst_QUrl::hosts()
@@ -3118,21 +3118,21 @@ void tst_QUrl::hosts()
     QFETCH(QString, url);
 
     QUrl u(url);
-    QTEST(u.host(), "host");
+    BOBUIEST(u.host(), "host");
     QVERIFY(u.isEmpty() || u.isValid());
 }
 
 void tst_QUrl::hostFlags_data()
 {
-    QTest::addColumn<QString>("urlStr");
-    QTest::addColumn<QUrl::FormattingOptions>("options");
-    QTest::addColumn<QString>("expectedHost");
+    BOBUIest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<QUrl::FormattingOptions>("options");
+    BOBUIest::addColumn<QString>("expectedHost");
 
     QString swedish = QString::fromUtf8("http://www.räksmörgås.se/pub?a=b&a=dø&a=f#vræl");
-    QTest::newRow("se_fullydecoded") << swedish << QUrl::FormattingOptions(QUrl::FullyDecoded) << QString::fromUtf8("www.räksmörgås.se");
-    QTest::newRow("se_fullyencoded") << swedish << QUrl::FormattingOptions(QUrl::FullyEncoded) << QString::fromUtf8("www.xn--rksmrgs-5wao1o.se");
-    QTest::newRow("se_prettydecoded") << swedish << QUrl::FormattingOptions(QUrl::PrettyDecoded) << QString::fromUtf8("www.räksmörgås.se");
-    QTest::newRow("se_encodespaces") << swedish << QUrl::FormattingOptions(QUrl::EncodeSpaces) << QString::fromUtf8("www.räksmörgås.se");
+    BOBUIest::newRow("se_fullydecoded") << swedish << QUrl::FormattingOptions(QUrl::FullyDecoded) << QString::fromUtf8("www.räksmörgås.se");
+    BOBUIest::newRow("se_fullyencoded") << swedish << QUrl::FormattingOptions(QUrl::FullyEncoded) << QString::fromUtf8("www.xn--rksmrgs-5wao1o.se");
+    BOBUIest::newRow("se_prettydecoded") << swedish << QUrl::FormattingOptions(QUrl::PrettyDecoded) << QString::fromUtf8("www.räksmörgås.se");
+    BOBUIest::newRow("se_encodespaces") << swedish << QUrl::FormattingOptions(QUrl::EncodeSpaces) << QString::fromUtf8("www.räksmörgås.se");
 }
 
 void tst_QUrl::hostFlags()
@@ -3190,17 +3190,17 @@ void tst_QUrl::setPort()
 
 void tst_QUrl::port_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("port");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<int>("port");
 
-    QTest::newRow("no-port-1")    << "http://example.com" << -1;
-    QTest::newRow("no-port-2")    << "http://example.com/" << -1;
-    QTest::newRow("empty-port-1") << "http://example.com:" << -1;
-    QTest::newRow("empty-port-2") << "http://example.com:/" << -1;
-    QTest::newRow("zero-port-1") << "http://example.com:0" << 0;
-    QTest::newRow("zero-port-2") << "http://example.com:0/" << 0;
-    QTest::newRow("set-port-1")   << "http://example.com:80" << 80;
-    QTest::newRow("set-port-2")   << "http://example.com:80/" << 80;
+    BOBUIest::newRow("no-port-1")    << "http://example.com" << -1;
+    BOBUIest::newRow("no-port-2")    << "http://example.com/" << -1;
+    BOBUIest::newRow("empty-port-1") << "http://example.com:" << -1;
+    BOBUIest::newRow("empty-port-2") << "http://example.com:/" << -1;
+    BOBUIest::newRow("zero-port-1") << "http://example.com:0" << 0;
+    BOBUIest::newRow("zero-port-2") << "http://example.com:0/" << 0;
+    BOBUIest::newRow("set-port-1")   << "http://example.com:80" << 80;
+    BOBUIest::newRow("set-port-2")   << "http://example.com:80/" << 80;
 }
 
 void tst_QUrl::port()
@@ -3215,10 +3215,10 @@ void tst_QUrl::port()
 
 void tst_QUrl::toEncoded_data()
 {
-    QTest::addColumn<QByteArray>("url");
-    QTest::addColumn<QUrl::FormattingOptions>("options");
-    QTest::addColumn<QByteArray>("encoded");
-    QTest::newRow("file:///dir/") << QByteArray("file:///dir/")
+    BOBUIest::addColumn<QByteArray>("url");
+    BOBUIest::addColumn<QUrl::FormattingOptions>("options");
+    BOBUIest::addColumn<QByteArray>("encoded");
+    BOBUIest::newRow("file:///dir/") << QByteArray("file:///dir/")
                                   << QUrl::FormattingOptions(QUrl::StripTrailingSlash)
                                   << QByteArray("file:///dir");
 }
@@ -3234,16 +3234,16 @@ void tst_QUrl::toEncoded()
 
 void tst_QUrl::setAuthority_data()
 {
-    QTest::addColumn<QString>("authority");
-    QTest::addColumn<QString>("url");
-    QTest::newRow("Plain auth") << QString("62.70.27.22:21") << QString("//62.70.27.22:21");
-    QTest::newRow("Yet another plain auth") << QString("192.168.1.1:21") << QString("//192.168.1.1:21");
-    QTest::newRow("Auth without port") << QString("192.168.1.1") << QString("//192.168.1.1");
-    QTest::newRow("Auth w/full hostname without port") << QString("shusaku.troll.no") << QString("//shusaku.troll.no");
-    QTest::newRow("Auth w/hostname without port") << QString("shusaku") << QString("//shusaku");
-    QTest::newRow("Auth w/full hostname that ends with number, without port") << QString("shusaku.troll.no.2") << QString("//shusaku.troll.no.2");
-    QTest::newRow("Auth w/hostname that ends with number, without port") << QString("shusaku2") << QString("//shusaku2");
-    QTest::newRow("Empty auth") << QString() << QString();
+    BOBUIest::addColumn<QString>("authority");
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::newRow("Plain auth") << QString("62.70.27.22:21") << QString("//62.70.27.22:21");
+    BOBUIest::newRow("Yet another plain auth") << QString("192.168.1.1:21") << QString("//192.168.1.1:21");
+    BOBUIest::newRow("Auth without port") << QString("192.168.1.1") << QString("//192.168.1.1");
+    BOBUIest::newRow("Auth w/full hostname without port") << QString("shusaku.troll.no") << QString("//shusaku.troll.no");
+    BOBUIest::newRow("Auth w/hostname without port") << QString("shusaku") << QString("//shusaku");
+    BOBUIest::newRow("Auth w/full hostname that ends with number, without port") << QString("shusaku.troll.no.2") << QString("//shusaku.troll.no.2");
+    BOBUIest::newRow("Auth w/hostname that ends with number, without port") << QString("shusaku2") << QString("//shusaku2");
+    BOBUIest::newRow("Empty auth") << QString() << QString();
 }
 
 void tst_QUrl::setAuthority()
@@ -3257,12 +3257,12 @@ void tst_QUrl::setAuthority()
 
 void tst_QUrl::setEmptyAuthority_data()
 {
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("authority");
-    QTest::addColumn<QString>("expectedUrlString");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("authority");
+    BOBUIest::addColumn<QString>("expectedUrlString");
 
-    QTest::newRow("null host and authority") << QString() << QString() << QString("");
-    QTest::newRow("empty host and authority") << QString("") << QString("") << QString("//");
+    BOBUIest::newRow("null host and authority") << QString() << QString() << QString("");
+    BOBUIest::newRow("empty host and authority") << QString("") << QString("") << QString("//");
 }
 
 void tst_QUrl::setEmptyAuthority()
@@ -3288,37 +3288,37 @@ void tst_QUrl::clear()
 
 void tst_QUrl::binaryData_data()
 {
-    QTest::addColumn<QString>("url");
-    QTest::newRow("username") << "http://%01%0D%0A%7F@foo/";
-    QTest::newRow("username-at") << "http://abc%40_def@foo/";
-    QTest::newRow("username-nul") << "http://abc%00_def@foo/";
-    QTest::newRow("username-colon") << "http://abc%3A_def@foo/";
-    QTest::newRow("username-nonutf8") << "http://abc%E1_def@foo/";
+    BOBUIest::addColumn<QString>("url");
+    BOBUIest::newRow("username") << "http://%01%0D%0A%7F@foo/";
+    BOBUIest::newRow("username-at") << "http://abc%40_def@foo/";
+    BOBUIest::newRow("username-nul") << "http://abc%00_def@foo/";
+    BOBUIest::newRow("username-colon") << "http://abc%3A_def@foo/";
+    BOBUIest::newRow("username-nonutf8") << "http://abc%E1_def@foo/";
 
-    QTest::newRow("password") << "http://user:%01%0D%0A%7F@foo/";
-    QTest::newRow("password-at") << "http://user:abc%40_def@foo/";
-    QTest::newRow("password-nul") << "http://user:abc%00_def@foo/";
-    QTest::newRow("password-nonutf8") << "http://user:abc%E1_def@foo/";
+    BOBUIest::newRow("password") << "http://user:%01%0D%0A%7F@foo/";
+    BOBUIest::newRow("password-at") << "http://user:abc%40_def@foo/";
+    BOBUIest::newRow("password-nul") << "http://user:abc%00_def@foo/";
+    BOBUIest::newRow("password-nonutf8") << "http://user:abc%E1_def@foo/";
 
-    QTest::newRow("file") << "http://foo/%01%0D%0A%7F";
-    QTest::newRow("file-nul") << "http://foo/abc%00_def";
-    QTest::newRow("file-hash") << "http://foo/abc%23_def";
-    QTest::newRow("file-question") << "http://foo/abc%3F_def";
-    QTest::newRow("file-nonutf8") << "http://foo/abc%E1_def";
-    QTest::newRow("file-slash") << "http://foo/abc%2F_def";
+    BOBUIest::newRow("file") << "http://foo/%01%0D%0A%7F";
+    BOBUIest::newRow("file-nul") << "http://foo/abc%00_def";
+    BOBUIest::newRow("file-hash") << "http://foo/abc%23_def";
+    BOBUIest::newRow("file-question") << "http://foo/abc%3F_def";
+    BOBUIest::newRow("file-nonutf8") << "http://foo/abc%E1_def";
+    BOBUIest::newRow("file-slash") << "http://foo/abc%2F_def";
 
-    QTest::newRow("ref") << "http://foo/file#a%01%0D%0A%7F";
-    QTest::newRow("ref-nul") << "http://foo/file#abc%00_def";
-    QTest::newRow("ref-question") << "http://foo/file#abc?_def";
-    QTest::newRow("ref-nonutf8") << "http://foo/file#abc%E1_def";
+    BOBUIest::newRow("ref") << "http://foo/file#a%01%0D%0A%7F";
+    BOBUIest::newRow("ref-nul") << "http://foo/file#abc%00_def";
+    BOBUIest::newRow("ref-question") << "http://foo/file#abc?_def";
+    BOBUIest::newRow("ref-nonutf8") << "http://foo/file#abc%E1_def";
 
-    QTest::newRow("query-value") << "http://foo/query?foo=%01%0D%0A%7F";
-    QTest::newRow("query-value-nul") << "http://foo/query?foo=abc%00_def";
-    QTest::newRow("query-value-nonutf8") << "http://foo/query?foo=abc%E1_def";
+    BOBUIest::newRow("query-value") << "http://foo/query?foo=%01%0D%0A%7F";
+    BOBUIest::newRow("query-value-nul") << "http://foo/query?foo=abc%00_def";
+    BOBUIest::newRow("query-value-nonutf8") << "http://foo/query?foo=abc%E1_def";
 
-    QTest::newRow("query-name") << "http://foo/query/a%01%0D%0A%7Fz=foo";
-    QTest::newRow("query-name-nul") << "http://foo/query/abc%00_def=foo";
-    QTest::newRow("query-name-nonutf8") << "http://foo/query/abc%E1_def=foo";
+    BOBUIest::newRow("query-name") << "http://foo/query/a%01%0D%0A%7Fz=foo";
+    BOBUIest::newRow("query-name-nul") << "http://foo/query/abc%00_def=foo";
+    BOBUIest::newRow("query-name-nonutf8") << "http://foo/query/abc%E1_def=foo";
 }
 
 void tst_QUrl::binaryData()
@@ -3343,80 +3343,80 @@ void tst_QUrl::fromUserInput_data()
     // See qurl.cpp
     //
 
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QUrl>("guessUrlFromString");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QUrl>("guessUrlFromString");
 
     // Null
-    QTest::newRow("null") << QString() << QUrl();
+    BOBUIest::newRow("null") << QString() << QUrl();
 
     // File
     QDirIterator it(QDir::homePath());
     int c = 0;
     while (it.hasNext()) {
         it.next();
-        QTest::newRow(("file-" + QByteArray::number(c++)).constData())
+        BOBUIest::newRow(("file-" + QByteArray::number(c++)).constData())
                       << it.filePath() << QUrl::fromLocalFile(it.filePath());
     }
 
     // basic latin1
-    QTest::newRow("unicode-0") << QString::fromUtf8("\xc3\xa5.com/") << QUrl::fromEncoded(QString::fromUtf8("http://\xc3\xa5.com/").toUtf8(), QUrl::TolerantMode);
-    QTest::newRow("unicode-0b") << QString::fromUtf8("\xc3\xa5.com/") << QUrl::fromEncoded("http://%C3%A5.com/", QUrl::TolerantMode);
-    QTest::newRow("unicode-0c") << QString::fromUtf8("\xc3\xa5.com/") << QUrl::fromEncoded("http://xn--5ca.com/", QUrl::TolerantMode);
+    BOBUIest::newRow("unicode-0") << QString::fromUtf8("\xc3\xa5.com/") << QUrl::fromEncoded(QString::fromUtf8("http://\xc3\xa5.com/").toUtf8(), QUrl::TolerantMode);
+    BOBUIest::newRow("unicode-0b") << QString::fromUtf8("\xc3\xa5.com/") << QUrl::fromEncoded("http://%C3%A5.com/", QUrl::TolerantMode);
+    BOBUIest::newRow("unicode-0c") << QString::fromUtf8("\xc3\xa5.com/") << QUrl::fromEncoded("http://xn--5ca.com/", QUrl::TolerantMode);
     // unicode
-    QTest::newRow("unicode-1") << QString::fromUtf8("\xce\xbb.com/") << QUrl::fromEncoded(QString::fromUtf8("http://\xce\xbb.com/").toUtf8(), QUrl::TolerantMode);
-    QTest::newRow("unicode-1b") << QString::fromUtf8("\xce\xbb.com/") << QUrl::fromEncoded("http://%CE%BB.com/", QUrl::TolerantMode);
-    QTest::newRow("unicode-1c") << QString::fromUtf8("\xce\xbb.com/") << QUrl::fromEncoded("http://xn--wxa.com/", QUrl::TolerantMode);
+    BOBUIest::newRow("unicode-1") << QString::fromUtf8("\xce\xbb.com/") << QUrl::fromEncoded(QString::fromUtf8("http://\xce\xbb.com/").toUtf8(), QUrl::TolerantMode);
+    BOBUIest::newRow("unicode-1b") << QString::fromUtf8("\xce\xbb.com/") << QUrl::fromEncoded("http://%CE%BB.com/", QUrl::TolerantMode);
+    BOBUIest::newRow("unicode-1c") << QString::fromUtf8("\xce\xbb.com/") << QUrl::fromEncoded("http://xn--wxa.com/", QUrl::TolerantMode);
 
     // no scheme
-    QTest::newRow("add scheme-0") << "example.org" << QUrl("http://example.org");
-    QTest::newRow("add scheme-1") << "www.example.org" << QUrl("http://www.example.org");
-    QTest::newRow("add scheme-2") << "ftp.example.org" << QUrl("ftp://ftp.example.org");
-    QTest::newRow("add scheme-3") << "hostname" << QUrl("http://hostname");
-    QTest::newRow("ipv4-1") << "127.0.0.1" << QUrl("http://127.0.0.1");
-    QTest::newRow("ipv6-0") << "::" << QUrl("http://[::]");
-    QTest::newRow("ipv6-1") << "::1" << QUrl("http://[::1]");
-    QTest::newRow("ipv6-2") << "1::1" << QUrl("http://[1::1]");
-    QTest::newRow("ipv6-3") << "1::" << QUrl("http://[1::]");
-    QTest::newRow("ipv6-4") << "c::" << QUrl("http://[c::]");
-    QTest::newRow("ipv6-5") << "c:f00:ba4::" << QUrl("http://[c:f00:ba4::]");
+    BOBUIest::newRow("add scheme-0") << "example.org" << QUrl("http://example.org");
+    BOBUIest::newRow("add scheme-1") << "www.example.org" << QUrl("http://www.example.org");
+    BOBUIest::newRow("add scheme-2") << "ftp.example.org" << QUrl("ftp://ftp.example.org");
+    BOBUIest::newRow("add scheme-3") << "hostname" << QUrl("http://hostname");
+    BOBUIest::newRow("ipv4-1") << "127.0.0.1" << QUrl("http://127.0.0.1");
+    BOBUIest::newRow("ipv6-0") << "::" << QUrl("http://[::]");
+    BOBUIest::newRow("ipv6-1") << "::1" << QUrl("http://[::1]");
+    BOBUIest::newRow("ipv6-2") << "1::1" << QUrl("http://[1::1]");
+    BOBUIest::newRow("ipv6-3") << "1::" << QUrl("http://[1::]");
+    BOBUIest::newRow("ipv6-4") << "c::" << QUrl("http://[c::]");
+    BOBUIest::newRow("ipv6-5") << "c:f00:ba4::" << QUrl("http://[c:f00:ba4::]");
 
     // no host
-    QTest::newRow("nohost-1") << "http://" << QUrl("http://");
-    QTest::newRow("nohost-2") << "smb:" << QUrl("smb:");
+    BOBUIest::newRow("nohost-1") << "http://" << QUrl("http://");
+    BOBUIest::newRow("nohost-2") << "smb:" << QUrl("smb:");
 
     // QUrl's tolerant parser should already handle this
-    QTest::newRow("not-encoded-0") << "http://example.org/test page.html" << QUrl::fromEncoded("http://example.org/test%20page.html");
+    BOBUIest::newRow("not-encoded-0") << "http://example.org/test page.html" << QUrl::fromEncoded("http://example.org/test%20page.html");
 
     // Make sure the :80, i.e. port doesn't screw anything up
     QUrl portUrl("http://example.org");
     portUrl.setPort(80);
-    QTest::newRow("port-0") << "example.org:80" << portUrl;
-    QTest::newRow("port-1") << "http://example.org:80" << portUrl;
+    BOBUIest::newRow("port-0") << "example.org:80" << portUrl;
+    BOBUIest::newRow("port-1") << "http://example.org:80" << portUrl;
     portUrl.setPath("/path");
-    QTest::newRow("port-2") << "example.org:80/path" << portUrl;
-    QTest::newRow("port-3") << "http://example.org:80/path" << portUrl;
+    BOBUIest::newRow("port-2") << "example.org:80/path" << portUrl;
+    BOBUIest::newRow("port-3") << "http://example.org:80/path" << portUrl;
 
     // mailto doesn't have a ://, but is valid
     QUrl mailto("ben@example.net");
     mailto.setScheme("mailto");
-    QTest::newRow("mailto") << "mailto:ben@example.net" << mailto;
+    BOBUIest::newRow("mailto") << "mailto:ben@example.net" << mailto;
 
     // misc
-    QTest::newRow("localhost-1") << "localhost:80" << QUrl("http://localhost:80");
-    QTest::newRow("spaces-0") << "  http://example.org/test page.html " << QUrl("http://example.org/test%20page.html");
-    QTest::newRow("trash-0") << "example.org/test?someData=42%&someOtherData=abcde#anchor" << QUrl::fromEncoded("http://example.org/test?someData=42%25&someOtherData=abcde#anchor");
-    QTest::newRow("other-scheme-0") << "spotify:track:0hO542doVbfGDAGQULMORT" << QUrl("spotify:track:0hO542doVbfGDAGQULMORT");
-    QTest::newRow("other-scheme-1") << "weirdscheme:80:otherstuff" << QUrl("weirdscheme:80:otherstuff");
-    QTest::newRow("number-path-0") << "tel:2147483648" << QUrl("tel:2147483648");
+    BOBUIest::newRow("localhost-1") << "localhost:80" << QUrl("http://localhost:80");
+    BOBUIest::newRow("spaces-0") << "  http://example.org/test page.html " << QUrl("http://example.org/test%20page.html");
+    BOBUIest::newRow("trash-0") << "example.org/test?someData=42%&someOtherData=abcde#anchor" << QUrl::fromEncoded("http://example.org/test?someData=42%25&someOtherData=abcde#anchor");
+    BOBUIest::newRow("other-scheme-0") << "spotify:track:0hO542doVbfGDAGQULMORT" << QUrl("spotify:track:0hO542doVbfGDAGQULMORT");
+    BOBUIest::newRow("other-scheme-1") << "weirdscheme:80:otherstuff" << QUrl("weirdscheme:80:otherstuff");
+    BOBUIest::newRow("number-path-0") << "tel:2147483648" << QUrl("tel:2147483648");
 
     // FYI: The scheme in the resulting url user
     QUrl authUrl("user:pass@domain.com");
-    QTest::newRow("misc-1") << "user:pass@domain.com" << authUrl;
+    BOBUIest::newRow("misc-1") << "user:pass@domain.com" << authUrl;
 
     // FTP with double slashes in path
-    QTest::newRow("ftp-double-slash-no-scheme")
+    BOBUIest::newRow("ftp-double-slash-no-scheme")
         << "ftp.example.com//path" << QUrl("ftp://ftp.example.com/%2Fpath");
-    QTest::newRow("ftp-double-slash-scheme")
+    BOBUIest::newRow("ftp-double-slash-scheme")
         << "ftp://ftp.example.com//path" << QUrl("ftp://ftp.example.com/%2Fpath");
 }
 
@@ -3431,13 +3431,13 @@ void tst_QUrl::fromUserInput()
 
 void tst_QUrl::fromUserInputWithCwd_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QString>("directory");
-    QTest::addColumn<QUrl>("guessedUrlDefault");
-    QTest::addColumn<QUrl>("guessedUrlAssumeLocalFile");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("directory");
+    BOBUIest::addColumn<QUrl>("guessedUrlDefault");
+    BOBUIest::addColumn<QUrl>("guessedUrlAssumeLocalFile");
 
     // Null
-    QTest::newRow("null") << QString() << QString() << QUrl() << QUrl();
+    BOBUIest::newRow("null") << QString() << QString() << QUrl() << QUrl();
 
     // Use a tempdir with files, for testing specific file names
     // We use canonicalPath() on the dir path because ::getcwd() canonicalizes,
@@ -3448,8 +3448,8 @@ void tst_QUrl::fromUserInputWithCwd_data()
     // "."
     {
         const QUrl url = QUrl::fromLocalFile(base); // fromUserInput cleans the path
-        QTest::newRow("dot-in-path") << "." << base << url << url;
-        QTest::newRow("dot-in-dot") << "." << QStringLiteral(".") << url << url;
+        BOBUIest::newRow("dot-in-path") << "." << base << url << url;
+        BOBUIest::newRow("dot-in-dot") << "." << QStringLiteral(".") << url << url;
     }
 
     // Existing files
@@ -3464,32 +3464,32 @@ void tst_QUrl::fromUserInputWithCwd_data()
         file.write("Hello world\n");
 
         const QUrl url = QUrl::fromLocalFile(filePath);
-        QTest::newRow(fileName) << fileName << base << url << url;
-        QTest::newRow(QByteArray(fileName) + "-in-dot") << fileName << QStringLiteral(".") << url << url;
+        BOBUIest::newRow(fileName) << fileName << base << url << url;
+        BOBUIest::newRow(QByteArray(fileName) + "-in-dot") << fileName << QStringLiteral(".") << url << url;
     }
 
     QDir parent(base);
     QVERIFY(parent.cdUp());
     QUrl parentUrl = QUrl::fromLocalFile(parent.path());
-    QTest::newRow("dotdot") << ".." << base << parentUrl << parentUrl;
+    BOBUIest::newRow("dotdot") << ".." << base << parentUrl << parentUrl;
 
-    QTest::newRow("nonexisting") << "nonexisting" << base << QUrl("http://nonexisting") << QUrl::fromLocalFile(base + "/nonexisting");
-    QTest::newRow("short-url") << "example.org" << base << QUrl("http://example.org") << QUrl::fromLocalFile(base + "/example.org");
-    QTest::newRow("full-url") << "http://example.org" << base << QUrl("http://example.org") << QUrl("http://example.org");
-    QTest::newRow("absolute") << "/doesnotexist.txt" << base << QUrl("file:///doesnotexist.txt") << QUrl("file:///doesnotexist.txt");
+    BOBUIest::newRow("nonexisting") << "nonexisting" << base << QUrl("http://nonexisting") << QUrl::fromLocalFile(base + "/nonexisting");
+    BOBUIest::newRow("short-url") << "example.org" << base << QUrl("http://example.org") << QUrl::fromLocalFile(base + "/example.org");
+    BOBUIest::newRow("full-url") << "http://example.org" << base << QUrl("http://example.org") << QUrl("http://example.org");
+    BOBUIest::newRow("absolute") << "/doesnotexist.txt" << base << QUrl("file:///doesnotexist.txt") << QUrl("file:///doesnotexist.txt");
 #ifdef Q_OS_WIN
-    QTest::newRow("windows-absolute") << "c:/doesnotexist.txt" << base << QUrl("file:///c:/doesnotexist.txt") << QUrl("file:///c:/doesnotexist.txt");
+    BOBUIest::newRow("windows-absolute") << "c:/doesnotexist.txt" << base << QUrl("file:///c:/doesnotexist.txt") << QUrl("file:///c:/doesnotexist.txt");
 #endif
 
     // IPv4 & IPv6
     // same as fromUserInput, but needs retesting
-    QTest::newRow("ipv4-1") << "127.0.0.1" << base << QUrl("http://127.0.0.1") << QUrl::fromLocalFile(base + "/127.0.0.1");
-    QTest::newRow("ipv6-0") << "::" << base << QUrl("http://[::]") << QUrl("http://[::]");
-    QTest::newRow("ipv6-1") << "::1" << base << QUrl("http://[::1]") << QUrl("http://[::1]");
-    QTest::newRow("ipv6-2") << "1::1" << base << QUrl("http://[1::1]") << QUrl("http://[1::1]");
-    QTest::newRow("ipv6-3") << "1::" << base << QUrl("http://[1::]") << QUrl("http://[1::]");
-    QTest::newRow("ipv6-4") << "c::" << base << QUrl("http://[c::]") << QUrl("http://[c::]");
-    QTest::newRow("ipv6-5") << "c:f00:ba4::" << base << QUrl("http://[c:f00:ba4::]") << QUrl("http://[c:f00:ba4::]");
+    BOBUIest::newRow("ipv4-1") << "127.0.0.1" << base << QUrl("http://127.0.0.1") << QUrl::fromLocalFile(base + "/127.0.0.1");
+    BOBUIest::newRow("ipv6-0") << "::" << base << QUrl("http://[::]") << QUrl("http://[::]");
+    BOBUIest::newRow("ipv6-1") << "::1" << base << QUrl("http://[::1]") << QUrl("http://[::1]");
+    BOBUIest::newRow("ipv6-2") << "1::1" << base << QUrl("http://[1::1]") << QUrl("http://[1::1]");
+    BOBUIest::newRow("ipv6-3") << "1::" << base << QUrl("http://[1::]") << QUrl("http://[1::]");
+    BOBUIest::newRow("ipv6-4") << "c::" << base << QUrl("http://[c::]") << QUrl("http://[c::]");
+    BOBUIest::newRow("ipv6-5") << "c:f00:ba4::" << base << QUrl("http://[c:f00:ba4::]") << QUrl("http://[c:f00:ba4::]");
 }
 
 void tst_QUrl::fromUserInputWithCwd()
@@ -3508,26 +3508,26 @@ void tst_QUrl::fromUserInputWithCwd()
 
 void tst_QUrl::fileName_data()
 {
-    QTest::addColumn<QString>("urlStr");
-    QTest::addColumn<QString>("expectedDirPath");
-    QTest::addColumn<QString>("expectedPrettyDecodedFileName");
-    QTest::addColumn<QString>("expectedFullyDecodedFileName");
+    BOBUIest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<QString>("expectedDirPath");
+    BOBUIest::addColumn<QString>("expectedPrettyDecodedFileName");
+    BOBUIest::addColumn<QString>("expectedFullyDecodedFileName");
 
-    QTest::newRow("fromDocu") << "http://qt-project.org/support/file.html"
+    BOBUIest::newRow("fromDocu") << "http://bobui-project.org/support/file.html"
                               << "/support/" << "file.html" << "file.html";
-    QTest::newRow("absoluteFile") << "file:///temp/tmp.txt"
+    BOBUIest::newRow("absoluteFile") << "file:///temp/tmp.txt"
                               << "/temp/" << "tmp.txt" << "tmp.txt";
-    QTest::newRow("absoluteDir") << "file:///temp/"
+    BOBUIest::newRow("absoluteDir") << "file:///temp/"
                               << "/temp/" << QString() << QString();
-    QTest::newRow("absoluteInRoot") << "file:///temp"
+    BOBUIest::newRow("absoluteInRoot") << "file:///temp"
                               << "/" << "temp" << "temp";
-    QTest::newRow("relative") << "temp/tmp.txt"
+    BOBUIest::newRow("relative") << "temp/tmp.txt"
                               << "temp/" << "tmp.txt" << "tmp.txt";
-    QTest::newRow("relativeNoSlash") << "tmp.txt"
+    BOBUIest::newRow("relativeNoSlash") << "tmp.txt"
                               << QString() << "tmp.txt" << "tmp.txt";
-    QTest::newRow("encoded") << "print:/specials/Print%20To%20File%20(PDF%252FAcrobat)"
+    BOBUIest::newRow("encoded") << "print:/specials/Print%20To%20File%20(PDF%252FAcrobat)"
                               << "/specials/" << "Print To File (PDF%252FAcrobat)" << "Print To File (PDF%2FAcrobat)";
-    QTest::newRow("endsWithDot") << "file:///temp/."
+    BOBUIest::newRow("endsWithDot") << "file:///temp/."
                               << "/temp/" << "." << ".";
 }
 
@@ -3599,31 +3599,31 @@ void tst_QUrl::resolvedWithAbsoluteSchemes() const
 
 void tst_QUrl::resolvedWithAbsoluteSchemes_data() const
 {
-    QTest::addColumn<QUrl>("base");
-    QTest::addColumn<QUrl>("relative");
-    QTest::addColumn<QUrl>("expected");
+    BOBUIest::addColumn<QUrl>("base");
+    BOBUIest::addColumn<QUrl>("relative");
+    BOBUIest::addColumn<QUrl>("expected");
 
-    QTest::newRow("Absolute file:/// against absolute FTP.")
+    BOBUIest::newRow("Absolute file:/// against absolute FTP.")
         << QUrl::fromEncoded("file:///foo/")
         << QUrl::fromEncoded("ftp://example.com/")
         << QUrl::fromEncoded("ftp://example.com/");
 
-    QTest::newRow("Absolute file:/// against absolute HTTP.")
+    BOBUIest::newRow("Absolute file:/// against absolute HTTP.")
         << QUrl::fromEncoded("file:///foo/")
         << QUrl::fromEncoded("http://example.com/")
         << QUrl::fromEncoded("http://example.com/");
 
-    QTest::newRow("Absolute file:/// against data scheme.")
+    BOBUIest::newRow("Absolute file:/// against data scheme.")
         << QUrl::fromEncoded("file:///foo/")
         << QUrl::fromEncoded("data:application/xml,%3Ce%2F%3E")
         << QUrl::fromEncoded("data:application/xml,%3Ce%2F%3E");
 
-    QTest::newRow("Resolve with base url and port.")
+    BOBUIest::newRow("Resolve with base url and port.")
         << QUrl::fromEncoded("http://www.foo.com:8080/")
         << QUrl::fromEncoded("newfile.html")
         << QUrl::fromEncoded("http://www.foo.com:8080/newfile.html");
 
-    QTest::newRow("Resolve with relative path")
+    BOBUIest::newRow("Resolve with relative path")
         << QUrl::fromEncoded("http://example.com/")
         << QUrl::fromEncoded("http://andreas:hemmelig@www.vg.no/a/../?my=query&your=query#yougotfragged")
         << QUrl::fromEncoded("http://andreas:hemmelig@www.vg.no/?my=query&your=query#yougotfragged");
@@ -3631,10 +3631,10 @@ void tst_QUrl::resolvedWithAbsoluteSchemes_data() const
 
 void tst_QUrl::emptyAuthorityRemovesExistingAuthority_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expected");
-    QTest::newRow("regular") << "foo://example.com/something" << "foo:/something";
-    QTest::newRow("empty") << "foo:///something" << "foo:/something";
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("expected");
+    BOBUIest::newRow("regular") << "foo://example.com/something" << "foo:/something";
+    BOBUIest::newRow("empty") << "foo:///something" << "foo:/something";
 }
 
 void tst_QUrl::emptyAuthorityRemovesExistingAuthority()
@@ -3690,34 +3690,34 @@ void tst_QUrl::lowercasesScheme()
 
 void tst_QUrl::componentEncodings_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<int>("encoding");
-    QTest::addColumn<QString>("userName");
-    QTest::addColumn<QString>("password");
-    QTest::addColumn<QString>("userInfo");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("authority");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("query");
-    QTest::addColumn<QString>("fragment");
-    QTest::addColumn<QString>("toString");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<int>("encoding");
+    BOBUIest::addColumn<QString>("userName");
+    BOBUIest::addColumn<QString>("password");
+    BOBUIest::addColumn<QString>("userInfo");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("authority");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("query");
+    BOBUIest::addColumn<QString>("fragment");
+    BOBUIest::addColumn<QString>("toString");
 
     const int MostDecoded = QUrl::DecodeReserved; // the most decoded mode without being fully decoded
 
-    QTest::newRow("empty") << QUrl() << int(QUrl::FullyEncoded)
+    BOBUIest::newRow("empty") << QUrl() << int(QUrl::FullyEncoded)
                            << QString() << QString() << QString()
                            << QString() << QString()
                            << QString() << QString() << QString() << QString();
 
     // hostname cannot contain spaces
-    QTest::newRow("encoded-space") << QUrl("x://user name:pass word@host/path name?query value#fragment value")
+    BOBUIest::newRow("encoded-space") << QUrl("x://user name:pass word@host/path name?query value#fragment value")
                                    << int(QUrl::EncodeSpaces)
                                    << "user%20name" << "pass%20word" << "user%20name:pass%20word"
                                    << "host" << "user%20name:pass%20word@host"
                                    << "/path%20name" << "query%20value" << "fragment%20value"
                                    << "x://user%20name:pass%20word@host/path%20name?query%20value#fragment%20value";
 
-    QTest::newRow("decoded-space") << QUrl("x://user%20name:pass%20word@host/path%20name?query%20value#fragment%20value")
+    BOBUIest::newRow("decoded-space") << QUrl("x://user%20name:pass%20word@host/path%20name?query%20value#fragment%20value")
                                    << MostDecoded
                                    << "user name" << "pass word" << "user name:pass word"
                                    << "host" << "user name:pass word@host"
@@ -3726,7 +3726,7 @@ void tst_QUrl::componentEncodings_data()
 
     // binary data is always encoded
     // this is also testing non-UTF8 data
-    QTest::newRow("binary") << QUrl("x://%c0%00:%c1%01@host/%c2%02?%c3%03#%d4%04")
+    BOBUIest::newRow("binary") << QUrl("x://%c0%00:%c1%01@host/%c2%02?%c3%03#%d4%04")
                             << MostDecoded
                             << "%C0%00" << "%C1%01" << "%C0%00:%C1%01"
                             << "host" << "%C0%00:%C1%01@host"
@@ -3735,13 +3735,13 @@ void tst_QUrl::componentEncodings_data()
 
     // unicode tests
     // hostnames can participate in this test, but we need a top-level domain that accepts Unicode
-    QTest::newRow("encoded-unicode") << QUrl(QString::fromUtf8("x://\xc2\x80:\xc3\x90@smørbrød.example.no/\xe0\xa0\x80?\xf0\x90\x80\x80#é"))
+    BOBUIest::newRow("encoded-unicode") << QUrl(QString::fromUtf8("x://\xc2\x80:\xc3\x90@smørbrød.example.no/\xe0\xa0\x80?\xf0\x90\x80\x80#é"))
                                      << int(QUrl::EncodeUnicode)
                                      << "%C2%80" << "%C3%90" << "%C2%80:%C3%90"
                                      << "xn--smrbrd-cyad.example.no" << "%C2%80:%C3%90@xn--smrbrd-cyad.example.no"
                                      << "/%E0%A0%80" << "%F0%90%80%80" << "%C3%A9"
                                      << "x://%C2%80:%C3%90@xn--smrbrd-cyad.example.no/%E0%A0%80?%F0%90%80%80#%C3%A9";
-    QTest::newRow("decoded-unicode") << QUrl("x://%C2%80:%C3%90@XN--SMRBRD-cyad.example.NO/%E0%A0%80?%F0%90%80%80#%C3%A9")
+    BOBUIest::newRow("decoded-unicode") << QUrl("x://%C2%80:%C3%90@XN--SMRBRD-cyad.example.NO/%E0%A0%80?%F0%90%80%80#%C3%A9")
                                      << MostDecoded
                                      << QString::fromUtf8("\xc2\x80") << QString::fromUtf8("\xc3\x90")
                                      << QString::fromUtf8("\xc2\x80:\xc3\x90")
@@ -3753,7 +3753,7 @@ void tst_QUrl::componentEncodings_data()
 
     //    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
     // these are always decoded
-    QTest::newRow("decoded-unreserved") << QUrl("x://%61:%71@%41%30%2eexample%2ecom/%7e?%5f#%51")
+    BOBUIest::newRow("decoded-unreserved") << QUrl("x://%61:%71@%41%30%2eexample%2ecom/%7e?%5f#%51")
                                         << int(QUrl::FullyEncoded)
                                         << "a" << "q" << "a:q"
                                         << "a0.example.com" << "a:q@a0.example.com"
@@ -3763,13 +3763,13 @@ void tst_QUrl::componentEncodings_data()
     //    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
     //                  / "*" / "+" / "," / ";" / "="
     // these are always left alone
-    QTest::newRow("decoded-subdelims") << QUrl("x://!$&:'()@host/*+,?$=(+)#;=")
+    BOBUIest::newRow("decoded-subdelims") << QUrl("x://!$&:'()@host/*+,?$=(+)#;=")
                                        << int(QUrl::FullyEncoded)
                                        << "!$&" << "'()" << "!$&:'()"
                                        << "host" << "!$&:'()@host"
                                        << "/*+," << "$=(+)" << ";="
                                        << "x://!$&:'()@host/*+,?$=(+)#;=";
-    QTest::newRow("encoded-subdelims") << QUrl("x://%21%24%26:%27%28%29@host/%2a%2b%2c?%26=%26&%3d=%3d#%3b%3d")
+    BOBUIest::newRow("encoded-subdelims") << QUrl("x://%21%24%26:%27%28%29@host/%2a%2b%2c?%26=%26&%3d=%3d#%3b%3d")
                                        << MostDecoded
                                        << "%21%24%26" << "%27%28%29" << "%21%24%26:%27%28%29"
                                        << "host" << "%21%24%26:%27%28%29@host"
@@ -3783,7 +3783,7 @@ void tst_QUrl::componentEncodings_data()
     // in other positions and the other delimiters are always left untransformed
     // 1) test the delimiters that must appear encoded
     //    (if they were decoded, they'd would change the URL parsing)
-    QTest::newRow("encoded-gendelims-changing") << QUrl("x://%5b%3a%2f%3f%23%40%5d:%5b%2f%3f%23%40%5d@host/%2f%3f%23?%23")
+    BOBUIest::newRow("encoded-gendelims-changing") << QUrl("x://%5b%3a%2f%3f%23%40%5d:%5b%2f%3f%23%40%5d@host/%2f%3f%23?%23")
                                                 << MostDecoded
                                                 << "[:/?#@]" << "[/?#@]" << "[%3A/?#@]:[/?#@]"
                                                 << "host" << "%5B%3A/?#%40%5D:%5B/?#%40%5D@host"
@@ -3791,7 +3791,7 @@ void tst_QUrl::componentEncodings_data()
                                                 << "x://%5B%3A%2F%3F%23%40%5D:%5B%2F%3F%23%40%5D@host/%2F%3F%23?%23";
 
     // 2) test that the other delimiters remain decoded
-    QTest::newRow("decoded-gendelims-unchanging") << QUrl("x://::@host/:@/[]?:/?@[]?#:/?@[]")
+    BOBUIest::newRow("decoded-gendelims-unchanging") << QUrl("x://::@host/:@/[]?:/?@[]?#:/?@[]")
                                                   << int(QUrl::FullyEncoded)
                                                   << "" << ":" << "::"
                                                   << "host" << "::@host"
@@ -3799,7 +3799,7 @@ void tst_QUrl::componentEncodings_data()
                                                   << "x://::@host/:@/[]?:/?@[]?#:/?@[]";
 
     // 3) and test that the same encoded sequences remain encoded
-    QTest::newRow("encoded-gendelims-unchanging") << QUrl("x://:%3A@host/%3A%40%5B%5D?%3A%2F%3F%40%5B%5D#%23%3A%2F%3F%40%5B%5D")
+    BOBUIest::newRow("encoded-gendelims-unchanging") << QUrl("x://:%3A@host/%3A%40%5B%5D?%3A%2F%3F%40%5B%5D#%23%3A%2F%3F%40%5B%5D")
                                                   << MostDecoded
                                                   << "" << "%3A" << ":%3A"
                                                   << "host" << ":%3A@host"
@@ -3810,13 +3810,13 @@ void tst_QUrl::componentEncodings_data()
     // since QUrl doesn't know what chars the user wants to use for the pair and value delimiters,
     // it keeps the delimiters alone except for "#", which must always be encoded.
     // In the following test, all delimiter characters appear both as encoded and as decoded (except for "#")
-    QTest::newRow("unencoded-delims-query") << QUrl("?!$()*+,;=:/?[]@%21%24%26%27%28%29%2a%2b%2c%2f%3a%3b%3d%3f%40%5b%5d")
+    BOBUIest::newRow("unencoded-delims-query") << QUrl("?!$()*+,;=:/?[]@%21%24%26%27%28%29%2a%2b%2c%2f%3a%3b%3d%3f%40%5b%5d")
                                             << int(QUrl::FullyEncoded)
                                             << QString() << QString() << QString()
                                             << QString() << QString()
                                             << QString() << "!$()*+,;=:/?[]@%21%24%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D" << QString()
                                             << "?!$()*+,;=:/?[]@%21%24%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D";
-    QTest::newRow("undecoded-delims-query") << QUrl("?!$()*+,;=:/?[]@%21%24%26%27%28%29%2a%2b%2c%2f%3a%3b%3d%3f%40%5b%5d")
+    BOBUIest::newRow("undecoded-delims-query") << QUrl("?!$()*+,;=:/?[]@%21%24%26%27%28%29%2a%2b%2c%2f%3a%3b%3d%3f%40%5b%5d")
                                             << MostDecoded
                                             << QString() << QString() << QString()
                                             << QString() << QString()
@@ -3825,7 +3825,7 @@ void tst_QUrl::componentEncodings_data()
 
     // reserved characters:  '"' / "<" / ">" / "^" / "\" / "{" / "|" "}"
     // the RFC does not allow them undecoded anywhere, but we do
-    QTest::newRow("encoded-reserved") << QUrl("x://\"<>^\\{|}:\"<>^\\{|}@host/\"<>^\\{|}?\"<>^\\{|}#\"<>^\\{|}")
+    BOBUIest::newRow("encoded-reserved") << QUrl("x://\"<>^\\{|}:\"<>^\\{|}@host/\"<>^\\{|}?\"<>^\\{|}#\"<>^\\{|}")
                                     << int(QUrl::FullyEncoded)
                                     << "%22%3C%3E%5E%5C%7B%7C%7D" << "%22%3C%3E%5E%5C%7B%7C%7D"
                                     << "%22%3C%3E%5E%5C%7B%7C%7D:%22%3C%3E%5E%5C%7B%7C%7D"
@@ -3834,7 +3834,7 @@ void tst_QUrl::componentEncodings_data()
                                     << "%22%3C%3E%5E%5C%7B%7C%7D"
                                     << "x://%22%3C%3E%5E%5C%7B%7C%7D:%22%3C%3E%5E%5C%7B%7C%7D@host/%22%3C%3E%5E%5C%7B%7C%7D"
                                        "?%22%3C%3E%5E%5C%7B%7C%7D#%22%3C%3E%5E%5C%7B%7C%7D";
-    QTest::newRow("decoded-reserved") << QUrl("x://%22%3C%3E%5E%5C%7B%7C%7D:%22%3C%3E%5E%5C%7B%7C%7D@host"
+    BOBUIest::newRow("decoded-reserved") << QUrl("x://%22%3C%3E%5E%5C%7B%7C%7D:%22%3C%3E%5E%5C%7B%7C%7D@host"
                                             "/%22%3C%3E%5E%5C%7B%7C%7D?%22%3C%3E%5E%5C%7B%7C%7D#%22%3C%3E%5E%5C%7B%7C%7D")
                                     << int(QUrl::DecodeReserved)
                                     << "\"<>^\\{|}" << "\"<>^\\{|}" << "\"<>^\\{|}:\"<>^\\{|}"
@@ -3848,7 +3848,7 @@ void tst_QUrl::componentEncodings_data()
 
     // spaces and unicode are considered pretty and are decoded
     // this includes hostnames
-    QTest::newRow("pretty-spaces-unicode") << QUrl("x://%20%c3%a9:%c3%a9%20@XN--SMRBRD-cyad.example.NO/%c3%a9%20?%20%c3%a9#%c3%a9%20")
+    BOBUIest::newRow("pretty-spaces-unicode") << QUrl("x://%20%c3%a9:%c3%a9%20@XN--SMRBRD-cyad.example.NO/%c3%a9%20?%20%c3%a9#%c3%a9%20")
                                            << int(QUrl::PrettyDecoded)
                                            << QString::fromUtf8(" é") << QString::fromUtf8("é ")
                                            << QString::fromUtf8(" é:é ")
@@ -3859,7 +3859,7 @@ void tst_QUrl::componentEncodings_data()
                                            << QString::fromUtf8("x:// é:é @smørbrød.example.no/é ? é#é ");
 
     // the pretty form decodes all unambiguous gen-delims in the individual parts
-    QTest::newRow("pretty-gendelims") << QUrl("x://%5b%3a%40%2f%3f%23%5d:%5b%40%2f%3f%23%5d@host/%3f%23?%23")
+    BOBUIest::newRow("pretty-gendelims") << QUrl("x://%5b%3a%40%2f%3f%23%5d:%5b%40%2f%3f%23%5d@host/%3f%23?%23")
                                       << int(QUrl::PrettyDecoded)
                                       << "[:@/?#]" << "[@/?#]" << "[%3A@/?#]:[@/?#]"
                                       << "host" << "%5B%3A%40/?#%5D:%5B%40/?#%5D@host"
@@ -3868,7 +3868,7 @@ void tst_QUrl::componentEncodings_data()
 
     // the pretty form keeps the other characters decoded everywhere
     // except when rebuilding the full URL, when we only allow "{}" to remain decoded
-    QTest::newRow("pretty-reserved") << QUrl("x://\"<>^\\{|}:\"<>^\\{|}@host/\"<>^\\{|}?\"<>^\\{|}#\"<>^\\{|}")
+    BOBUIest::newRow("pretty-reserved") << QUrl("x://\"<>^\\{|}:\"<>^\\{|}@host/\"<>^\\{|}?\"<>^\\{|}#\"<>^\\{|}")
                                      << int(QUrl::PrettyDecoded)
                                      << "\"<>^\\{|}" << "\"<>^\\{|}" << "\"<>^\\{|}:\"<>^\\{|}"
                                      << "host" << "\"<>^\\{|}:\"<>^\\{|}@host"
@@ -3936,14 +3936,14 @@ enum Component {
 
 void tst_QUrl::setComponents_data()
 {
-    QTest::addColumn<QUrl>("original");
-    QTest::addColumn<int>("component");
-    QTest::addColumn<QString>("newValue");
-    QTest::addColumn<int>("parsingMode");
-    QTest::addColumn<bool>("isValid");
-    QTest::addColumn<int>("encoding");
-    QTest::addColumn<QString>("output");
-    QTest::addColumn<QString>("toString");
+    BOBUIest::addColumn<QUrl>("original");
+    BOBUIest::addColumn<int>("component");
+    BOBUIest::addColumn<QString>("newValue");
+    BOBUIest::addColumn<int>("parsingMode");
+    BOBUIest::addColumn<bool>("isValid");
+    BOBUIest::addColumn<int>("encoding");
+    BOBUIest::addColumn<QString>("output");
+    BOBUIest::addColumn<QString>("toString");
 
     const int Tolerant = QUrl::TolerantMode;
     const int Strict = QUrl::StrictMode;
@@ -3955,237 +3955,237 @@ void tst_QUrl::setComponents_data()
     // there's no empty-but-present scheme or path
     // a URL with an empty scheme is a "URI reference"
     // and the path is always non-empty if it's present
-    QTest::newRow("scheme-null") << QUrl("http://example.com")
+    BOBUIest::newRow("scheme-null") << QUrl("http://example.com")
                                  << int(Scheme) << QString() << Tolerant << true
                                  << PrettyDecoded << QString() << "//example.com";
-    QTest::newRow("scheme-empty") << QUrl("http://example.com")
+    BOBUIest::newRow("scheme-empty") << QUrl("http://example.com")
                                   << int(Scheme) << "" << Tolerant << true
                                   << PrettyDecoded << "" << "//example.com";
-    QTest::newRow("path-null") << QUrl("http://example.com/path")
+    BOBUIest::newRow("path-null") << QUrl("http://example.com/path")
                                << int(Path) << QString() << Tolerant << true
                                << PrettyDecoded << QString() << "http://example.com";
-    QTest::newRow("path-empty") << QUrl("http://example.com/path")
+    BOBUIest::newRow("path-empty") << QUrl("http://example.com/path")
                                 << int(Path) << "" << Tolerant << true
                                 << PrettyDecoded << "" << "http://example.com";
     // If the %3A gets decoded to ":", the URL becomes invalid;
     // see test path-invalid-1 below
-    QTest::newRow("path-%3A-before-slash") << QUrl()
+    BOBUIest::newRow("path-%3A-before-slash") << QUrl()
                                            << int(Path) << "c%3A/" << Tolerant << true
                                            << PrettyDecoded << "c%3A/" << "c%3A/";
-    QTest::newRow("path-doubleslash") << QUrl("http://example.com")
+    BOBUIest::newRow("path-doubleslash") << QUrl("http://example.com")
                                       << int(Path) << "//path" << Tolerant << true
                                       << PrettyDecoded << "//path" << "http://example.com//path";
-    QTest::newRow("path-withdotdot") << QUrl("file:///tmp")
+    BOBUIest::newRow("path-withdotdot") << QUrl("file:///tmp")
                                       << int(Path) << "//tmp/..///root/." << Tolerant << true
                                       << PrettyDecoded << "//tmp/..///root/." << "file:////tmp/..///root/.";
 
     // the other fields can be present and be empty
     // that is, their delimiters would be present, but there would be nothing to one side
-    QTest::newRow("userinfo-null") << QUrl("http://user:pass@example.com")
+    BOBUIest::newRow("userinfo-null") << QUrl("http://user:pass@example.com")
                                    << int(UserInfo) << QString() << Tolerant << true
                                    << PrettyDecoded << QString() << "http://example.com";
-    QTest::newRow("userinfo-empty") << QUrl("http://user:pass@example.com")
+    BOBUIest::newRow("userinfo-empty") << QUrl("http://user:pass@example.com")
                                     << int(UserInfo) << "" << Tolerant << true
                                     << PrettyDecoded << "" << "http://@example.com";
-    QTest::newRow("userinfo-colon") << QUrl("http://user@example.com")
+    BOBUIest::newRow("userinfo-colon") << QUrl("http://user@example.com")
                                     << int(UserInfo) << ":" << Tolerant << true
                                     << PrettyDecoded << ":" << "http://:@example.com";
-    QTest::newRow("username-null") << QUrl("http://user@example.com")
+    BOBUIest::newRow("username-null") << QUrl("http://user@example.com")
                                    << int(UserName) << QString() << Tolerant << true
                                    << PrettyDecoded << QString() << "http://example.com";
-    QTest::newRow("username-empty") << QUrl("http://user@example.com")
+    BOBUIest::newRow("username-empty") << QUrl("http://user@example.com")
                                     << int(UserName) << "" << Tolerant << true
                                     << PrettyDecoded << "" << "http://@example.com";
-    QTest::newRow("username-empty-password-nonempty") << QUrl("http://user:pass@example.com")
+    BOBUIest::newRow("username-empty-password-nonempty") << QUrl("http://user:pass@example.com")
                                                       << int(UserName) << "" << Tolerant << true
                                                       << PrettyDecoded << "" << "http://:pass@example.com";
-    QTest::newRow("username-empty-password-empty") << QUrl("http://user:@example.com")
+    BOBUIest::newRow("username-empty-password-empty") << QUrl("http://user:@example.com")
                                                       << int(UserName) << "" << Tolerant << true
                                                       << PrettyDecoded << "" << "http://:@example.com";
-    QTest::newRow("password-null") << QUrl("http://user:pass@example.com")
+    BOBUIest::newRow("password-null") << QUrl("http://user:pass@example.com")
                                    << int(Password) << QString() << Tolerant << true
                                    << PrettyDecoded << QString() << "http://user@example.com";
-    QTest::newRow("password-empty") << QUrl("http://user:pass@example.com")
+    BOBUIest::newRow("password-empty") << QUrl("http://user:pass@example.com")
                                     << int(Password) << "" << Tolerant << true
                                     << PrettyDecoded << "" << "http://user:@example.com";
-    QTest::newRow("host-null") << QUrl("foo://example.com/path")
+    BOBUIest::newRow("host-null") << QUrl("foo://example.com/path")
                                << int(Host) << QString() << Tolerant << true
                                << PrettyDecoded << QString() << "foo:/path";
-    QTest::newRow("host-empty") << QUrl("foo://example.com/path")
+    BOBUIest::newRow("host-empty") << QUrl("foo://example.com/path")
                                << int(Host) << "" << Tolerant << true
                                << PrettyDecoded << "" << "foo:///path";
-    QTest::newRow("authority-null") << QUrl("foo://example.com/path")
+    BOBUIest::newRow("authority-null") << QUrl("foo://example.com/path")
                                     << int(Authority) << QString() << Tolerant << true
                                     << PrettyDecoded << QString() << "foo:/path";
-    QTest::newRow("authority-empty") << QUrl("foo://example.com/path")
+    BOBUIest::newRow("authority-empty") << QUrl("foo://example.com/path")
                                      << int(Authority) << "" << Tolerant << true
                                      << PrettyDecoded << "" << "foo:///path";
-    QTest::newRow("query-null") << QUrl("http://example.com/?q=foo")
+    BOBUIest::newRow("query-null") << QUrl("http://example.com/?q=foo")
                                    << int(Query) << QString() << Tolerant << true
                                    << PrettyDecoded << QString() << "http://example.com/";
-    QTest::newRow("query-empty") << QUrl("http://example.com/?q=foo")
+    BOBUIest::newRow("query-empty") << QUrl("http://example.com/?q=foo")
                                    << int(Query) << "" << Tolerant << true
                                    << PrettyDecoded << QString() << "http://example.com/?";
-    QTest::newRow("fragment-null") << QUrl("http://example.com/#bar")
+    BOBUIest::newRow("fragment-null") << QUrl("http://example.com/#bar")
                                    << int(Fragment) << QString() << Tolerant << true
                                    << PrettyDecoded << QString() << "http://example.com/";
-    QTest::newRow("fragment-empty") << QUrl("http://example.com/#bar")
+    BOBUIest::newRow("fragment-empty") << QUrl("http://example.com/#bar")
                                    << int(Fragment) << "" << Tolerant << true
                                    << PrettyDecoded << "" << "http://example.com/#";
 
     // -- test some non-valid components --
-    QTest::newRow("invalid-scheme-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-scheme-1") << QUrl("http://example.com")
                                       << int(Scheme) << "1http" << Tolerant << false
                                       << PrettyDecoded << "" << "";
-    QTest::newRow("invalid-scheme-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-scheme-2") << QUrl("http://example.com")
                                       << int(Scheme) << "http%40" << Tolerant << false
                                       << PrettyDecoded << "" << "";
-    QTest::newRow("invalid-scheme-3") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-scheme-3") << QUrl("http://example.com")
                                       << int(Scheme) << "http%61" << Strict << false
                                       << PrettyDecoded << "" << "";
 
-    QTest::newRow("invalid-username-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-username-1") << QUrl("http://example.com")
                                         << int(UserName) << "{}" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-username-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-username-2") << QUrl("http://example.com")
                                         << int(UserName) << "foo/bar" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-username-3") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-username-3") << QUrl("http://example.com")
                                         << int(UserName) << "foo:bar" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-password-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-password-1") << QUrl("http://example.com")
                                         << int(Password) << "{}" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-password-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-password-2") << QUrl("http://example.com")
                                         << int(Password) << "foo/bar" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-password-3") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-password-3") << QUrl("http://example.com")
                                         << int(Password) << "foo:bar" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-userinfo-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-userinfo-1") << QUrl("http://example.com")
                                         << int(UserInfo) << "{}" << Strict << false
                                         << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-userinfo-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-userinfo-2") << QUrl("http://example.com")
                                         << int(UserInfo) << "foo/bar" << Strict << false
                                         << PrettyDecoded << QString() << QString();
 
-    QTest::newRow("invalid-host-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-host-1") << QUrl("http://example.com")
                                     << int(Host) << "-not-valid-" << Tolerant << false
                                     << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-host-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-host-2") << QUrl("http://example.com")
                                     << int(Host) << "%31%30.%30.%30.%31" << Strict << false
                                     << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-authority-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-authority-1") << QUrl("http://example.com")
                                          << int(Authority) << "-not-valid-" << Tolerant << false
                                          << PrettyDecoded << "" << QString();
-    QTest::newRow("invalid-authority-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-authority-2") << QUrl("http://example.com")
                                          << int(Authority) << "%31%30.%30.%30.%31" << Strict << false
                                          << PrettyDecoded << "" << QString();
 
-    QTest::newRow("invalid-path-0") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-path-0") << QUrl("http://example.com")
                                     << int(Path) << "{}" << Strict << false
                                     << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-query-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-query-1") << QUrl("http://example.com")
                                      << int(Query) << "{}" << Strict << false
                                      << PrettyDecoded << QString() << QString();
-    QTest::newRow("invalid-fragment-1") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-fragment-1") << QUrl("http://example.com")
                                         << int(Fragment) << "{}" << Strict << false
                                         << PrettyDecoded << QString() << QString();
 
     // these test cases are "compound invalid":
     // they produces isValid == false, but the original is still available
-    QTest::newRow("invalid-path-1") << QUrl("/relative")
+    BOBUIest::newRow("invalid-path-1") << QUrl("/relative")
                                     << int(Path) << "c:/" << Strict << false
                                     << PrettyDecoded << "c:/" << QString();
-    QTest::newRow("invalid-path-2") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-path-2") << QUrl("http://example.com")
                                     << int(Path) << "relative" << Strict << false
                                     << PrettyDecoded << "relative" << QString();
-    QTest::newRow("invalid-path-3") << QUrl("trash:/")
+    BOBUIest::newRow("invalid-path-3") << QUrl("trash:/")
                                     << int(Path) << "//path" << Tolerant << false
                                     << PrettyDecoded << "//path" << QString();
 
     // -- test bad percent encoding --
     // unnecessary to test the scheme, since percent-decoding is not performed in it;
     // see tests above
-    QTest::newRow("bad-percent-username") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-username") << QUrl("http://example.com")
                                           << int(UserName) << "bar%foo" << Strict << false
                                           << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-password") << QUrl("http://user@example.com")
+    BOBUIest::newRow("bad-percent-password") << QUrl("http://user@example.com")
                                           << int(Password) << "bar%foo" << Strict << false
                                           << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-userinfo-1") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-userinfo-1") << QUrl("http://example.com")
                                             << int(UserInfo) << "bar%foo" << Strict << false
                                             << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-userinfo-2") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-userinfo-2") << QUrl("http://example.com")
                                             << int(UserInfo) << "bar%:foo" << Strict << false
                                             << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-userinfo-3") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-userinfo-3") << QUrl("http://example.com")
                                             << int(UserInfo) << "bar:%foo" << Strict << false
                                             << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-authority-1") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-authority-1") << QUrl("http://example.com")
                                              << int(Authority) << "bar%foo@example.org" << Strict << false
                                              << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-authority-2") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-authority-2") << QUrl("http://example.com")
                                              << int(Authority) << "bar%:foo@example.org" << Strict << false
                                              << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-authority-3") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-authority-3") << QUrl("http://example.com")
                                              << int(Authority) << "bar:%foo@example.org" << Strict << false
                                              << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-authority-4") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-authority-4") << QUrl("http://example.com")
                                              << int(Authority) << "bar:foo@bar%foo" << Strict << false
                                              << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-host") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-host") << QUrl("http://example.com")
                                       << int(Host) << "bar%foo" << Strict << false
                                       << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-path") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-path") << QUrl("http://example.com")
                                       << int(Path) << "/bar%foo" << Strict << false
                                       << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-query") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-query") << QUrl("http://example.com")
                                        << int(Query) << "bar%foo" << Strict << false
                                        << PrettyDecoded << QString() << QString();
-    QTest::newRow("bad-percent-fragment") << QUrl("http://example.com")
+    BOBUIest::newRow("bad-percent-fragment") << QUrl("http://example.com")
                                           << int(Fragment) << "bar%foo" << Strict << false
                                           << PrettyDecoded << QString() << QString();
 
     // -- test decoded behaviour --
     // '%' characters are not permitted in the scheme, this tests that it fails to set anything
-    QTest::newRow("invalid-scheme-encode") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-scheme-encode") << QUrl("http://example.com")
                                            << int(Scheme) << "http%61" << Decoded << false
                                            << PrettyDecoded << "" << "";
-    QTest::newRow("username-encode") << QUrl("http://example.com")
+    BOBUIest::newRow("username-encode") << QUrl("http://example.com")
                                      << int(UserName) << "h%61llo[:]world" << Decoded << true
                                      << PrettyDecoded << "h%2561llo[:]world" << "http://h%2561llo%5B%3A%5Dworld@example.com";
-    QTest::newRow("password-encode") << QUrl("http://example.com")
+    BOBUIest::newRow("password-encode") << QUrl("http://example.com")
                                      << int(Password) << "h%61llo[:]world@" << Decoded << true
                                      << PrettyDecoded << "h%2561llo[:]world@" << "http://:h%2561llo%5B:%5Dworld%40@example.com";
     // '%' characters are not permitted in the hostname, these test that it fails to set anything
-    QTest::newRow("invalid-host-encode") << QUrl("http://example.com")
+    BOBUIest::newRow("invalid-host-encode") << QUrl("http://example.com")
                                          << int(Host) << "ex%61mple.com" << Decoded << false
                                          << PrettyDecoded << QString() << QString();
     // square brackets are force-encoded from decoded forms in the path, query, and fragment
-    QTest::newRow("path-encode") << QUrl("http://example.com/foo")
+    BOBUIest::newRow("path-encode") << QUrl("http://example.com/foo")
                                  << int(Path) << "/ba[r]%23" << Decoded << true
                                  << PrettyDecoded << "/ba%5Br%5D%2523" << "http://example.com/ba%5Br%5D%2523";
-    QTest::newRow("query-encode") << QUrl("http://example.com/foo?q")
+    BOBUIest::newRow("query-encode") << QUrl("http://example.com/foo?q")
                                   << int(Query) << "ba[r]%23" << Decoded << true
                                   << PrettyDecoded << "ba%5Br%5D%2523" << "http://example.com/foo?ba%5Br%5D%2523";
-    QTest::newRow("fragment-encode") << QUrl("http://example.com/foo#z")
+    BOBUIest::newRow("fragment-encode") << QUrl("http://example.com/foo#z")
                                      << int(Fragment) << "ba[r]%23" << Decoded << true
                                      << PrettyDecoded << "ba%5Br%5D%2523" << "http://example.com/foo#ba%5Br%5D%2523";
     // force decoding
-    QTest::newRow("username-decode") << QUrl("http://example.com")
+    BOBUIest::newRow("username-decode") << QUrl("http://example.com")
                                      << int(UserName) << "hello%3Aworld%25" << Tolerant << true
                                      << FullyDecoded << "hello:world%" << "http://hello%3Aworld%25@example.com";
-    QTest::newRow("password-decode") << QUrl("http://example.com")
+    BOBUIest::newRow("password-decode") << QUrl("http://example.com")
                                      << int(Password) << "}}>b9o%25kR(" << Tolerant << true
                                      << FullyDecoded << "}}>b9o%kR(" << "http://:%7D%7D%3Eb9o%25kR(@example.com";
-    QTest::newRow("path-decode") << QUrl("http://example.com/")
+    BOBUIest::newRow("path-decode") << QUrl("http://example.com/")
                                  << int(Path) << "/bar%25[foo]" << Tolerant << true
                                  << FullyDecoded << "/bar%[foo]" << "http://example.com/bar%25[foo]";
-    QTest::newRow("query-decode") << QUrl("http://example.com/foo?qq")
+    BOBUIest::newRow("query-decode") << QUrl("http://example.com/foo?qq")
                                   << int(Query) << "bar%25foo" << Tolerant << true
                                   << FullyDecoded << "bar%foo" << "http://example.com/foo?bar%25foo";
-    QTest::newRow("fragment-decode") << QUrl("http://example.com/foo#qq")
+    BOBUIest::newRow("fragment-decode") << QUrl("http://example.com/foo#qq")
                                      << int(Fragment) << "bar%25foo" << Tolerant << true
                                      << FullyDecoded << "bar%foo" << "http://example.com/foo#bar%25foo";
 }
@@ -4276,16 +4276,16 @@ void tst_QUrl::setComponents()
 
 void tst_QUrl::streaming_data()
 {
-    QTest::addColumn<QString>("urlStr");
+    BOBUIest::addColumn<QString>("urlStr");
 
-    QTest::newRow("origURL") << "http://www.website.com/directory/?#ref";
-    QTest::newRow("urlWithPassAndNoUser") << "ftp://:password@ftp.kde.org/path";
-    QTest::newRow("accentuated") << QString::fromUtf8("trash:/été");
-    QTest::newRow("withPercents") << "http://host/path%25path?%3Fque%25ry#%23ref%25";
-    QTest::newRow("empty") << "";
+    BOBUIest::newRow("origURL") << "http://www.website.com/directory/?#ref";
+    BOBUIest::newRow("urlWithPassAndNoUser") << "ftp://:password@ftp.kde.org/path";
+    BOBUIest::newRow("accentuated") << QString::fromUtf8("trash:/été");
+    BOBUIest::newRow("withPercents") << "http://host/path%25path?%3Fque%25ry#%23ref%25";
+    BOBUIest::newRow("empty") << "";
     QVERIFY(!QUrl("ptal://mlc:usb").isValid());
-    QTest::newRow("invalid") << "ptal://mlc:usb";
-    QTest::newRow("ipv6") << "http://[::ffff:129.144.52.38]:81?query";
+    BOBUIest::newRow("invalid") << "ptal://mlc:usb";
+    BOBUIest::newRow("ipv6") << "http://[::ffff:129.144.52.38]:81?query";
 }
 
 void tst_QUrl::streaming()
@@ -4361,7 +4361,7 @@ void tst_QUrl::testThreadingHelper()
         Q_UNUSED(resolved2);
         QString local = u.toLocalFile();
         Q_UNUSED(local);
-        QTest::qWait(10); // give time for the other threads to start
+        BOBUIest::qWait(10); // give time for the other threads to start
     }
 }
 
@@ -4369,17 +4369,17 @@ void tst_QUrl::testThreading()
 {
     enum { Count = 100 };
 
-    if (QTestPrivate::isRunningArmOnX86())
-        QSKIP("This test fails in QEMU and looks like because of a data race, QTBUG-93176");
+    if (BOBUIestPrivate::isRunningArmOnX86())
+        QSKIP("This test fails in QEMU and looks like because of a data race, BOBUIBUG-93176");
     s_urlStorage = new UrlStorage;
-    QThreadPool::globalInstance()->setMaxThreadCount(Count);
+    BOBUIhreadPool::globalInstance()->setMaxThreadCount(Count);
 
     // Written this way because wasm need the eventloop
     QList<QFuture<void>> futures;
     futures.reserve(Count);
 
     for (int i = 0; i < Count; ++i)
-        futures.push_back(QtConcurrent::run(&tst_QUrl::testThreadingHelper, this));
+        futures.push_back(BobUIConcurrent::run(&tst_QUrl::testThreadingHelper, this));
 
     QEventLoop loop;
     std::atomic<int> remaining = Count;
@@ -4396,49 +4396,49 @@ void tst_QUrl::testThreading()
 
 void tst_QUrl::matches_data()
 {
-    QTest::addColumn<QString>("urlStrOne");
-    QTest::addColumn<QString>("urlStrTwo");
-    QTest::addColumn<uint>("options");
-    QTest::addColumn<bool>("matches");
+    BOBUIest::addColumn<QString>("urlStrOne");
+    BOBUIest::addColumn<QString>("urlStrTwo");
+    BOBUIest::addColumn<uint>("options");
+    BOBUIest::addColumn<bool>("matches");
 
-    QTest::newRow("matchingString-none") << "http://www.website.com/directory/?#ref"
+    BOBUIest::newRow("matchingString-none") << "http://www.website.com/directory/?#ref"
                                          << "http://www.website.com/directory/?#ref"
                                          << uint(QUrl::None) << true;
-    QTest::newRow("nonMatchingString-none") << "http://www.website.com/directory/?#ref"
+    BOBUIest::newRow("nonMatchingString-none") << "http://www.website.com/directory/?#ref"
                                             << "http://www.nomatch.com/directory/?#ref"
                                             << uint(QUrl::None) << false;
-    QTest::newRow("matchingHost-removePath") << "http://www.website.com/directory"
+    BOBUIest::newRow("matchingHost-removePath") << "http://www.website.com/directory"
                                              << "http://www.website.com/differentdir"
                                              << uint(QUrl::RemovePath) << true;
-    QTest::newRow("nonMatchingHost-removePath") << "http://www.website.com/directory"
+    BOBUIest::newRow("nonMatchingHost-removePath") << "http://www.website.com/directory"
                                                 << "http://www.different.com/differentdir"
                                                 << uint(QUrl::RemovePath) << false;
-    QTest::newRow("matchingHost-removePathAuthority") << "http://user:pass@www.website.com/directory"
+    BOBUIest::newRow("matchingHost-removePathAuthority") << "http://user:pass@www.website.com/directory"
                                                       << "http://www.website.com/differentdir"
                                                       << uint(QUrl::RemovePath | QUrl::RemoveAuthority)
                                                       << true;
-    QTest::newRow("nonMatchingHost-removePathAuthority") << "http://user:pass@www.website.com/directory"
+    BOBUIest::newRow("nonMatchingHost-removePathAuthority") << "http://user:pass@www.website.com/directory"
                                                          << "http://user:pass@www.different.com/differentdir"
                                                          << uint(QUrl::RemovePath | QUrl::RemoveAuthority)
                                                          << true;
-    QTest::newRow("matchingHostAuthority-removePathAuthority")
+    BOBUIest::newRow("matchingHostAuthority-removePathAuthority")
         << "http://user:pass@www.website.com/directory" << "http://www.website.com/differentdir"
         << uint(QUrl::RemovePath | QUrl::RemoveAuthority) << true;
-    QTest::newRow("nonMatchingAuthority-removePathAuthority")
+    BOBUIest::newRow("nonMatchingAuthority-removePathAuthority")
         << "http://user:pass@www.website.com/directory"
         << "http://otheruser:otherpass@www.website.com/directory"
         << uint(QUrl::RemovePath | QUrl::RemoveAuthority) << true;
-    QTest::newRow("matchingHost-removePort") << "http://example.com" << "http://example.com"
+    BOBUIest::newRow("matchingHost-removePort") << "http://example.com" << "http://example.com"
                                              << uint(QUrl::RemovePort) << true;
-    QTest::newRow("nonMatchingHost-removePort") << "http://example.com" << "http://example.net"
+    BOBUIest::newRow("nonMatchingHost-removePort") << "http://example.com" << "http://example.net"
                                                 << uint(QUrl::RemovePort) << false;
-    QTest::newRow("matchingHost-removePassword") << "http://example.com" << "http://example.com"
+    BOBUIest::newRow("matchingHost-removePassword") << "http://example.com" << "http://example.com"
                                                  << uint(QUrl::RemovePassword) << true;
-    QTest::newRow("nonMatchingHost-removePassword") << "http://example.com" << "http://example.net"
+    BOBUIest::newRow("nonMatchingHost-removePassword") << "http://example.com" << "http://example.net"
                                                     << uint(QUrl::RemovePassword) << false;
-    QTest::newRow("matchingUserName-removePassword") << "http://user@example.com" << "http://user@example.com"
+    BOBUIest::newRow("matchingUserName-removePassword") << "http://user@example.com" << "http://user@example.com"
                                                  << uint(QUrl::RemovePassword) << true;
-    QTest::newRow("nonMatchingUserName-removePassword") << "http://user@example.com" << "http://user2@example.com"
+    BOBUIest::newRow("nonMatchingUserName-removePassword") << "http://user@example.com" << "http://user2@example.com"
                                                     << uint(QUrl::RemovePassword) << false;
 }
 
@@ -4456,19 +4456,19 @@ void tst_QUrl::matches()
 
 void tst_QUrl::ipv6_zoneId_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<QString>("decodedHost");
-    QTest::addColumn<QString>("prettyHost");
-    QTest::addColumn<QString>("encodedHost");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QString>("decodedHost");
+    BOBUIest::addColumn<QString>("prettyHost");
+    BOBUIest::addColumn<QString>("encodedHost");
 
-    QTest::newRow("digit") << QUrl("x://[::%251]") << "::%1" << "::%251" << "::%251";
-    QTest::newRow("eth0") << QUrl("x://[::%25eth0]") << "::%eth0" << "::%25eth0" << "::%25eth0";
-    QTest::newRow("space") << QUrl("x://[::%25%20]") << "::% " << "::%25 " << "::%25%20";
-    QTest::newRow("subdelims") << QUrl("x://[::%25eth%2B]") << "::%eth+" << "::%25eth%2B" << "::%25eth%2B";
-    QTest::newRow("other") << QUrl("x://[::%25^]") << "::%^" << "::%25%5E" << "::%25%5E";
-    QTest::newRow("control") << QUrl("x://[::%25%7F]") << "::%\x7f" << "::%25%7F" << "::%25%7F";
-    QTest::newRow("unicode") << QUrl("x://[::%25wlán0]") << "::%wlán0" << "::%25wlán0" << "::%25wl%C3%A1n0";
-    QTest::newRow("non-utf8") << QUrl("x://[::%25%80]") << QString("::%") + QChar(QChar::ReplacementCharacter) << "::%25%80" << "::%25%80";
+    BOBUIest::newRow("digit") << QUrl("x://[::%251]") << "::%1" << "::%251" << "::%251";
+    BOBUIest::newRow("eth0") << QUrl("x://[::%25eth0]") << "::%eth0" << "::%25eth0" << "::%25eth0";
+    BOBUIest::newRow("space") << QUrl("x://[::%25%20]") << "::% " << "::%25 " << "::%25%20";
+    BOBUIest::newRow("subdelims") << QUrl("x://[::%25eth%2B]") << "::%eth+" << "::%25eth%2B" << "::%25eth%2B";
+    BOBUIest::newRow("other") << QUrl("x://[::%25^]") << "::%^" << "::%25%5E" << "::%25%5E";
+    BOBUIest::newRow("control") << QUrl("x://[::%25%7F]") << "::%\x7f" << "::%25%7F" << "::%25%7F";
+    BOBUIest::newRow("unicode") << QUrl("x://[::%25wlán0]") << "::%wlán0" << "::%25wlán0" << "::%25wl%C3%A1n0";
+    BOBUIest::newRow("non-utf8") << QUrl("x://[::%25%80]") << QString("::%") + QChar(QChar::ReplacementCharacter) << "::%25%80" << "::%25%80";
   }
 
 void tst_QUrl::ipv6_zoneId()
@@ -4488,58 +4488,58 @@ void tst_QUrl::ipv6_zoneId()
 
 void tst_QUrl::normalizeRemotePaths_data()
 {
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<QString>("expected");
-    QTest::addColumn<QString>("expectedNoFilename");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("expectedNoFilename");
 
-    QTest::newRow("dotdot-slashslash") << QUrl("http://qt-project.org/some/long/..//path")
-                                       << "http://qt-project.org/some//path"
-                                       << "http://qt-project.org/some//";
-    QTest::newRow("slashslash-dotdot") << QUrl("http://qt-project.org/some//../path")
-                                       << "http://qt-project.org/some/path"
-                                       << "http://qt-project.org/some/";
-    QTest::newRow("slashslash-dotdot2") << QUrl("http://qt-project.org/some//path/../")
-                                        << "http://qt-project.org/some//"
-                                        << "http://qt-project.org/some//";
-    QTest::newRow("dot-slash") << QUrl("http://qt-project.org/some/./path")
-                               << "http://qt-project.org/some/path"
-                               << "http://qt-project.org/some/";
-    QTest::newRow("slashslash-dot-slashslash") << QUrl("http://qt-project.org/some//.//path")
-                                               << "http://qt-project.org/some///path"
-                                               << "http://qt-project.org/some///";
-    QTest::newRow("dot-slashslash") << QUrl("http://qt-project.org/some/.//path")
-                                    << "http://qt-project.org/some//path"
-                                    << "http://qt-project.org/some//";
-    QTest::newRow("multiple-slashes") << QUrl("http://qt-project.org/some//path")
-                                      << "http://qt-project.org/some//path"
-                                      << "http://qt-project.org/some//";
-    QTest::newRow("multiple-slashes4") << QUrl("http://qt-project.org/some////path")
-                                       << "http://qt-project.org/some////path"
-                                       << "http://qt-project.org/some////";
-    QTest::newRow("slashes-at-end") << QUrl("http://qt-project.org/some//")
-                                    << "http://qt-project.org/some//"
-                                    << "http://qt-project.org/some//";
-    QTest::newRow("dot-dotdot") << QUrl("http://qt-project.org/path/./../")
-                                << "http://qt-project.org/"
-                                << "http://qt-project.org/";
-    QTest::newRow("slash-dot-slash-dot-slash") << QUrl("http://qt-project.org/path//.//.//")
-                                               << "http://qt-project.org/path////"
-                                               << "http://qt-project.org/path////";
-    QTest::newRow("dotdot") << QUrl("http://qt-project.org/../")
-                            << "http://qt-project.org/"
-                            << "http://qt-project.org/";
-    QTest::newRow("dotdot-tail") << QUrl("http://qt-project.org/root/test/../foo/bar")
-                                 << "http://qt-project.org/root/foo/bar"
-                                 << "http://qt-project.org/root/foo/";
-    QTest::newRow("dotdot-dotdot") << QUrl("http://qt-project.org/path/../../")
-                                   << "http://qt-project.org/"
-                                   << "http://qt-project.org/";
-    QTest::newRow("dot-dotdot-tail") << QUrl("http://qt-project.org/stem/path/./../tail")
-                                     << "http://qt-project.org/stem/tail"
-                                     << "http://qt-project.org/stem/";
-    QTest::newRow("slash-dotdot-slash-tail") << QUrl("http://qt-project.org/stem/path//..//tail")
-                                             << "http://qt-project.org/stem/path//tail"
-                                             << "http://qt-project.org/stem/path//";
+    BOBUIest::newRow("dotdot-slashslash") << QUrl("http://bobui-project.org/some/long/..//path")
+                                       << "http://bobui-project.org/some//path"
+                                       << "http://bobui-project.org/some//";
+    BOBUIest::newRow("slashslash-dotdot") << QUrl("http://bobui-project.org/some//../path")
+                                       << "http://bobui-project.org/some/path"
+                                       << "http://bobui-project.org/some/";
+    BOBUIest::newRow("slashslash-dotdot2") << QUrl("http://bobui-project.org/some//path/../")
+                                        << "http://bobui-project.org/some//"
+                                        << "http://bobui-project.org/some//";
+    BOBUIest::newRow("dot-slash") << QUrl("http://bobui-project.org/some/./path")
+                               << "http://bobui-project.org/some/path"
+                               << "http://bobui-project.org/some/";
+    BOBUIest::newRow("slashslash-dot-slashslash") << QUrl("http://bobui-project.org/some//.//path")
+                                               << "http://bobui-project.org/some///path"
+                                               << "http://bobui-project.org/some///";
+    BOBUIest::newRow("dot-slashslash") << QUrl("http://bobui-project.org/some/.//path")
+                                    << "http://bobui-project.org/some//path"
+                                    << "http://bobui-project.org/some//";
+    BOBUIest::newRow("multiple-slashes") << QUrl("http://bobui-project.org/some//path")
+                                      << "http://bobui-project.org/some//path"
+                                      << "http://bobui-project.org/some//";
+    BOBUIest::newRow("multiple-slashes4") << QUrl("http://bobui-project.org/some////path")
+                                       << "http://bobui-project.org/some////path"
+                                       << "http://bobui-project.org/some////";
+    BOBUIest::newRow("slashes-at-end") << QUrl("http://bobui-project.org/some//")
+                                    << "http://bobui-project.org/some//"
+                                    << "http://bobui-project.org/some//";
+    BOBUIest::newRow("dot-dotdot") << QUrl("http://bobui-project.org/path/./../")
+                                << "http://bobui-project.org/"
+                                << "http://bobui-project.org/";
+    BOBUIest::newRow("slash-dot-slash-dot-slash") << QUrl("http://bobui-project.org/path//.//.//")
+                                               << "http://bobui-project.org/path////"
+                                               << "http://bobui-project.org/path////";
+    BOBUIest::newRow("dotdot") << QUrl("http://bobui-project.org/../")
+                            << "http://bobui-project.org/"
+                            << "http://bobui-project.org/";
+    BOBUIest::newRow("dotdot-tail") << QUrl("http://bobui-project.org/root/test/../foo/bar")
+                                 << "http://bobui-project.org/root/foo/bar"
+                                 << "http://bobui-project.org/root/foo/";
+    BOBUIest::newRow("dotdot-dotdot") << QUrl("http://bobui-project.org/path/../../")
+                                   << "http://bobui-project.org/"
+                                   << "http://bobui-project.org/";
+    BOBUIest::newRow("dot-dotdot-tail") << QUrl("http://bobui-project.org/stem/path/./../tail")
+                                     << "http://bobui-project.org/stem/tail"
+                                     << "http://bobui-project.org/stem/";
+    BOBUIest::newRow("slash-dotdot-slash-tail") << QUrl("http://bobui-project.org/stem/path//..//tail")
+                                             << "http://bobui-project.org/stem/path//tail"
+                                             << "http://bobui-project.org/stem/path//";
 }
 
 void tst_QUrl::normalizeRemotePaths()
@@ -4554,6 +4554,6 @@ void tst_QUrl::normalizeRemotePaths()
     QCOMPARE(url.resolved(QUrl(".")).toString(), expectedNoFilename);
 }
 
-QTEST_MAIN(tst_QUrl)
+BOBUIEST_MAIN(tst_QUrl)
 
 #include "tst_qurl.moc"

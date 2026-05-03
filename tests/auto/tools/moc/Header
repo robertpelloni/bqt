@@ -1,4 +1,4 @@
-#include <QtCore/qobject.h>
+#include <BobUICore/qobject.h>
 
 class Object : public QObject
 {

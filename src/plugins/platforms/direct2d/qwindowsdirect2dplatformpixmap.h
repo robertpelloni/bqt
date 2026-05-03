@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSDIRECT2DPLATFORMPIXMAP_H
 #define QWINDOWSDIRECT2DPLATFORMPIXMAP_H
 
 #include "qwindowsdirect2dpaintengine.h"
-#include <QtGui/qpa/qplatformpixmap.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUIGui/qpa/qplatformpixmap.h>
+#include <BobUICore/qscopedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DPlatformPixmapPrivate;
 class QWindowsDirect2DBitmap;
@@ -24,7 +24,7 @@ public:
     ~QWindowsDirect2DPlatformPixmap();
 
     void resize(int width, int height) override;
-    void fromImage(const QImage &image, Qt::ImageConversionFlags flags) override;
+    void fromImage(const QImage &image, BobUI::ImageConversionFlags flags) override;
 
     int metric(QPaintDevice::PaintDeviceMetric metric) const override;
     void fill(const QColor &color) override;
@@ -45,6 +45,6 @@ private:
     QScopedPointer<QWindowsDirect2DPlatformPixmapPrivate> d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSDIRECT2DPLATFORMPIXMAP_H

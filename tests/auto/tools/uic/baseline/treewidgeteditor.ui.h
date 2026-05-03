@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'treewidgeteditor.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,23 +16,23 @@
 #ifndef TREEWIDGETEDITOR_H
 #define TREEWIDGETEDITOR_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QTreeWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/BOBUIreeWidget>
 #include "iconselector_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -42,16 +42,16 @@ public:
     QGridLayout *gridLayout_3;
     QGroupBox *itemsBox;
     QGridLayout *gridLayout;
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
     QHBoxLayout *horizontalLayout_4;
-    QToolButton *newItemButton;
-    QToolButton *newSubItemButton;
-    QToolButton *deleteItemButton;
+    BOBUIoolButton *newItemButton;
+    BOBUIoolButton *newSubItemButton;
+    BOBUIoolButton *deleteItemButton;
     QSpacerItem *spacerItem;
-    QToolButton *moveItemLeftButton;
-    QToolButton *moveItemRightButton;
-    QToolButton *moveItemUpButton;
-    QToolButton *moveItemDownButton;
+    BOBUIoolButton *moveItemLeftButton;
+    BOBUIoolButton *moveItemRightButton;
+    BOBUIoolButton *moveItemUpButton;
+    BOBUIoolButton *moveItemDownButton;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_2;
     qdesigner_internal::IconSelector *itemIconSelector;
@@ -60,11 +60,11 @@ public:
     QGridLayout *gridLayout_2;
     QListWidget *listWidget;
     QHBoxLayout *horizontalLayout_3;
-    QToolButton *newColumnButton;
-    QToolButton *deleteColumnButton;
+    BOBUIoolButton *newColumnButton;
+    BOBUIoolButton *deleteColumnButton;
     QSpacerItem *spacerItem1;
-    QToolButton *moveColumnUpButton;
-    QToolButton *moveColumnDownButton;
+    BOBUIoolButton *moveColumnUpButton;
+    BOBUIoolButton *moveColumnDownButton;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
     qdesigner_internal::IconSelector *columnIconSelector;
@@ -82,25 +82,25 @@ public:
         itemsBox->setObjectName("itemsBox");
         gridLayout = new QGridLayout(itemsBox);
         gridLayout->setObjectName("gridLayout");
-        treeWidget = new QTreeWidget(itemsBox);
+        treeWidget = new BOBUIreeWidget(itemsBox);
         treeWidget->setObjectName("treeWidget");
-        treeWidget->setFocusPolicy(Qt::FocusPolicy::TabFocus);
+        treeWidget->setFocusPolicy(BobUI::FocusPolicy::TabFocus);
 
         gridLayout->addWidget(treeWidget, 0, 0, 1, 1);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName("horizontalLayout_4");
-        newItemButton = new QToolButton(itemsBox);
+        newItemButton = new BOBUIoolButton(itemsBox);
         newItemButton->setObjectName("newItemButton");
 
         horizontalLayout_4->addWidget(newItemButton);
 
-        newSubItemButton = new QToolButton(itemsBox);
+        newSubItemButton = new BOBUIoolButton(itemsBox);
         newSubItemButton->setObjectName("newSubItemButton");
 
         horizontalLayout_4->addWidget(newSubItemButton);
 
-        deleteItemButton = new QToolButton(itemsBox);
+        deleteItemButton = new BOBUIoolButton(itemsBox);
         deleteItemButton->setObjectName("deleteItemButton");
 
         horizontalLayout_4->addWidget(deleteItemButton);
@@ -109,22 +109,22 @@ public:
 
         horizontalLayout_4->addItem(spacerItem);
 
-        moveItemLeftButton = new QToolButton(itemsBox);
+        moveItemLeftButton = new BOBUIoolButton(itemsBox);
         moveItemLeftButton->setObjectName("moveItemLeftButton");
 
         horizontalLayout_4->addWidget(moveItemLeftButton);
 
-        moveItemRightButton = new QToolButton(itemsBox);
+        moveItemRightButton = new BOBUIoolButton(itemsBox);
         moveItemRightButton->setObjectName("moveItemRightButton");
 
         horizontalLayout_4->addWidget(moveItemRightButton);
 
-        moveItemUpButton = new QToolButton(itemsBox);
+        moveItemUpButton = new BOBUIoolButton(itemsBox);
         moveItemUpButton->setObjectName("moveItemUpButton");
 
         horizontalLayout_4->addWidget(moveItemUpButton);
 
-        moveItemDownButton = new QToolButton(itemsBox);
+        moveItemDownButton = new BOBUIoolButton(itemsBox);
         moveItemDownButton->setObjectName("moveItemDownButton");
 
         horizontalLayout_4->addWidget(moveItemDownButton);
@@ -170,18 +170,18 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(listWidget->sizePolicy().hasHeightForWidth());
         listWidget->setSizePolicy(sizePolicy1);
-        listWidget->setFocusPolicy(Qt::FocusPolicy::TabFocus);
+        listWidget->setFocusPolicy(BobUI::FocusPolicy::TabFocus);
 
         gridLayout_2->addWidget(listWidget, 0, 0, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName("horizontalLayout_3");
-        newColumnButton = new QToolButton(columnsBox);
+        newColumnButton = new BOBUIoolButton(columnsBox);
         newColumnButton->setObjectName("newColumnButton");
 
         horizontalLayout_3->addWidget(newColumnButton);
 
-        deleteColumnButton = new QToolButton(columnsBox);
+        deleteColumnButton = new BOBUIoolButton(columnsBox);
         deleteColumnButton->setObjectName("deleteColumnButton");
 
         horizontalLayout_3->addWidget(deleteColumnButton);
@@ -190,12 +190,12 @@ public:
 
         horizontalLayout_3->addItem(spacerItem1);
 
-        moveColumnUpButton = new QToolButton(columnsBox);
+        moveColumnUpButton = new BOBUIoolButton(columnsBox);
         moveColumnUpButton->setObjectName("moveColumnUpButton");
 
         horizontalLayout_3->addWidget(moveColumnUpButton);
 
-        moveColumnDownButton = new QToolButton(columnsBox);
+        moveColumnDownButton = new BOBUIoolButton(columnsBox);
         moveColumnDownButton->setObjectName("moveColumnDownButton");
 
         horizontalLayout_3->addWidget(moveColumnDownButton);
@@ -227,7 +227,7 @@ public:
 
         buttonBox = new QDialogButtonBox(qdesigner_internal__TreeWidgetEditor);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         gridLayout_3->addWidget(buttonBox, 1, 0, 1, 2);
@@ -256,59 +256,59 @@ public:
     {
         qdesigner_internal__TreeWidgetEditor->setWindowTitle(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Edit Tree Widget", nullptr));
         itemsBox->setTitle(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Tree Items", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = treeWidget->headerItem();
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "1", nullptr));
-#if QT_CONFIG(tooltip)
+        BOBUIreeWidgetItem *___bobuireewidgetitem = treeWidget->headerItem();
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "1", nullptr));
+#if BOBUI_CONFIG(tooltip)
         treeWidget->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Tree Items", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         newItemButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "New Item", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         newItemButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "&New", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         newSubItemButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "New Subitem", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         newSubItemButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "New &Subitem", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         deleteItemButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Delete Item", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         deleteItemButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "&Delete", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveItemLeftButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Move Item Left (before Parent Item)", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveItemLeftButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "L", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveItemRightButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Move Item Right (as a First Subitem of the Next Sibling Item)", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveItemRightButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "R", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveItemUpButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Move Item Up", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveItemUpButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "U", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveItemDownButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Move Item Down", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveItemDownButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "D", nullptr));
         label_2->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Icon", nullptr));
         columnsBox->setTitle(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Columns", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         listWidget->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Tree Columns", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         newColumnButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "New Column", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         newColumnButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "New", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         deleteColumnButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Delete Column", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         deleteColumnButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Delete", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveColumnUpButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Move Column Up", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveColumnUpButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "U", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveColumnDownButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Move Column Down", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveColumnDownButton->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "D", nullptr));
         label->setText(QCoreApplication::translate("qdesigner_internal::TreeWidgetEditor", "Icon", nullptr));
     } // retranslateUi
@@ -323,6 +323,6 @@ namespace Ui {
 } // namespace Ui
 } // namespace qdesigner_internal
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TREEWIDGETEDITOR_H

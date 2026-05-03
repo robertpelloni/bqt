@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mydialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,14 +9,14 @@
 #ifndef MYDIALOG_H
 #define MYDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_MyDialog
 {
@@ -59,9 +59,9 @@ public:
         MyDialog->setWindowTitle(QCoreApplication::translate("MyDialog", "Mach 2!", nullptr));
         aLabel->setText(QCoreApplication::translate("MyDialog", "Join the life in the fastlane; - PCH enable your project today! -", nullptr));
         aButton->setText(QCoreApplication::translate("MyDialog", "&Quit", nullptr));
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         aButton->setShortcut(QCoreApplication::translate("MyDialog", "Alt+Q", nullptr));
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
     } // retranslateUi
 
 };
@@ -70,6 +70,6 @@ namespace Ui {
     class MyDialog: public Ui_MyDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MYDIALOG_H

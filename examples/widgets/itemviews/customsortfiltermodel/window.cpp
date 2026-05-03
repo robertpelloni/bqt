@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 #include "mysortfilterproxymodel.h"
 #include "filterwidget.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [0]
 Window::Window()
@@ -14,7 +14,7 @@ Window::Window()
     //! [0]
 
     //! [1]
-    sourceView = new QTreeView;
+    sourceView = new BOBUIreeView;
     sourceView->setRootIsDecorated(false);
     sourceView->setAlternatingRowColors(true);
     //! [1]
@@ -54,12 +54,12 @@ Window::Window()
     //! [4]
 
     //! [5]
-    proxyView = new QTreeView;
+    proxyView = new BOBUIreeView;
     proxyView->setRootIsDecorated(false);
     proxyView->setAlternatingRowColors(true);
     proxyView->setModel(proxyModel);
     proxyView->setSortingEnabled(true);
-    proxyView->sortByColumn(1, Qt::AscendingOrder);
+    proxyView->sortByColumn(1, BobUI::AscendingOrder);
 
     QGridLayout *proxyLayout = new QGridLayout;
     proxyLayout->addWidget(proxyView, 0, 0, 1, 3);
@@ -115,7 +115,7 @@ void Window::textFilterChanged()
     }
 
     QRegularExpression::PatternOptions options = QRegularExpression::NoPatternOption;
-    if (filterWidget->caseSensitivity() == Qt::CaseInsensitive)
+    if (filterWidget->caseSensitivity() == BobUI::CaseInsensitive)
         options |= QRegularExpression::CaseInsensitiveOption;
     QRegularExpression regularExpression(pattern, options);
     proxyModel->setFilterRegularExpression(regularExpression);

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PIXELDELEGATE_H
 #define PIXELDELEGATE_H
@@ -8,11 +8,11 @@
 #include <QModelIndex>
 #include <QSize>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QObject;
 class QPainter;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 static constexpr int ItemSize = 256;
 

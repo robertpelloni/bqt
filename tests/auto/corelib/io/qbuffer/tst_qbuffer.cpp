@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
 #include <QBuffer>
 #include <QByteArray>
@@ -69,17 +69,17 @@ void tst_QBuffer::open()
 
     QBuffer b;
 
-    QTest::ignoreMessage(QtWarningMsg, "QBuffer::open: Buffer access not specified");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QBuffer::open: Buffer access not specified");
     QVERIFY(!b.open(QIODevice::NotOpen));
     QVERIFY(!b.isOpen());
     b.close();
 
-    QTest::ignoreMessage(QtWarningMsg, "QBuffer::open: Buffer access not specified");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QBuffer::open: Buffer access not specified");
     QVERIFY(!b.open(QIODevice::Text));
     QVERIFY(!b.isOpen());
     b.close();
 
-    QTest::ignoreMessage(QtWarningMsg, "QBuffer::open: Buffer access not specified");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QBuffer::open: Buffer access not specified");
     QVERIFY(!b.open(QIODevice::Unbuffered));
     QVERIFY(!b.isOpen());
     b.close();
@@ -151,7 +151,7 @@ void tst_QBuffer::readBlock()
     QCOMPARE(b.bytesAvailable(), (qint64) arraySize);
     b.open(QIODevice::WriteOnly);
     QCOMPARE(b.bytesAvailable(), (qint64) arraySize);
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::read (QBuffer): WriteOnly device");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::read (QBuffer): WriteOnly device");
     QCOMPARE(b.read(a, arraySize), (qint64) -1); // no read access
     b.close();
 
@@ -195,13 +195,13 @@ void tst_QBuffer::readBlockPastEnd()
 
 void tst_QBuffer::writeBlock_data()
 {
-    QTest::addColumn<QString>("str");
+    BOBUIest::addColumn<QString>("str");
 
-    QTest::newRow( "small_bytearray" ) << QString("Test");
-    QTest::newRow( "large_bytearray" ) << QString(
+    BOBUIest::newRow( "small_bytearray" ) << QString("Test");
+    BOBUIest::newRow( "large_bytearray" ) << QString(
         "The QBuffer class is an I/O device that operates on a QByteArray.\n"
         "QBuffer is used to read and write to a memory buffer. It is normally "
-        "used with a QTextStream or a QDataStream. QBuffer has an associated "
+        "used with a BOBUIextStream or a QDataStream. QBuffer has an associated "
         "QByteArray which holds the buffer data. The size() of the buffer is "
         "automatically adjusted as data is written.\n"
         "The constructor QBuffer(QByteArray) creates a QBuffer using an existing "
@@ -211,19 +211,19 @@ void tst_QBuffer::writeBlock_data()
         "Use open() to open the buffer before use and to set the mode (read-only, "
         "write-only, etc.). close() closes the buffer. The buffer must be closed "
         "before reopening or calling setBuffer().\n"
-        "A common way to use QBuffer is through QDataStream or QTextStream, which "
+        "A common way to use QBuffer is through QDataStream or BOBUIextStream, which "
         "have constructors that take a QBuffer parameter. For convenience, there "
-        "are also QDataStream and QTextStream constructors that take a QByteArray "
+        "are also QDataStream and BOBUIextStream constructors that take a QByteArray "
         "parameter. These constructors create and open an internal QBuffer.\n"
-        "Note that QTextStream can also operate on a QString (a Unicode string); a "
+        "Note that BOBUIextStream can also operate on a QString (a Unicode string); a "
         "QBuffer cannot.\n"
         "You can also use QBuffer directly through the standard QIODevice functions "
         "readBlock(), writeBlock() readLine(), at(), getch(), putch() and ungetch().\n"
-        "See also QFile, QDataStream, QTextStream, QByteArray, Shared Classes, Collection "
+        "See also QFile, QDataStream, BOBUIextStream, QByteArray, Shared Classes, Collection "
         "Classes and Input/Output and Networking.\n\n"
         "The QBuffer class is an I/O device that operates on a QByteArray.\n"
         "QBuffer is used to read and write to a memory buffer. It is normally "
-        "used with a QTextStream or a QDataStream. QBuffer has an associated "
+        "used with a BOBUIextStream or a QDataStream. QBuffer has an associated "
         "QByteArray which holds the buffer data. The size() of the buffer is "
         "automatically adjusted as data is written.\n"
         "The constructor QBuffer(QByteArray) creates a QBuffer using an existing "
@@ -233,19 +233,19 @@ void tst_QBuffer::writeBlock_data()
         "Use open() to open the buffer before use and to set the mode (read-only, "
         "write-only, etc.). close() closes the buffer. The buffer must be closed "
         "before reopening or calling setBuffer().\n"
-        "A common way to use QBuffer is through QDataStream or QTextStream, which "
+        "A common way to use QBuffer is through QDataStream or BOBUIextStream, which "
         "have constructors that take a QBuffer parameter. For convenience, there "
-        "are also QDataStream and QTextStream constructors that take a QByteArray "
+        "are also QDataStream and BOBUIextStream constructors that take a QByteArray "
         "parameter. These constructors create and open an internal QBuffer.\n"
-        "Note that QTextStream can also operate on a QString (a Unicode string); a "
+        "Note that BOBUIextStream can also operate on a QString (a Unicode string); a "
         "QBuffer cannot.\n"
         "You can also use QBuffer directly through the standard QIODevice functions "
         "readBlock(), writeBlock() readLine(), at(), getch(), putch() and ungetch().\n"
-        "See also QFile, QDataStream, QTextStream, QByteArray, Shared Classes, Collection "
+        "See also QFile, QDataStream, BOBUIextStream, QByteArray, Shared Classes, Collection "
         "Classes and Input/Output and Networking.\n\n"
         "The QBuffer class is an I/O device that operates on a QByteArray.\n"
         "QBuffer is used to read and write to a memory buffer. It is normally "
-        "used with a QTextStream or a QDataStream. QBuffer has an associated "
+        "used with a BOBUIextStream or a QDataStream. QBuffer has an associated "
         "QByteArray which holds the buffer data. The size() of the buffer is "
         "automatically adjusted as data is written.\n"
         "The constructor QBuffer(QByteArray) creates a QBuffer using an existing "
@@ -255,15 +255,15 @@ void tst_QBuffer::writeBlock_data()
         "Use open() to open the buffer before use and to set the mode (read-only, "
         "write-only, etc.). close() closes the buffer. The buffer must be closed "
         "before reopening or calling setBuffer().\n"
-        "A common way to use QBuffer is through QDataStream or QTextStream, which "
+        "A common way to use QBuffer is through QDataStream or BOBUIextStream, which "
         "have constructors that take a QBuffer parameter. For convenience, there "
-        "are also QDataStream and QTextStream constructors that take a QByteArray "
+        "are also QDataStream and BOBUIextStream constructors that take a QByteArray "
         "parameter. These constructors create and open an internal QBuffer.\n"
-        "Note that QTextStream can also operate on a QString (a Unicode string); a "
+        "Note that BOBUIextStream can also operate on a QString (a Unicode string); a "
         "QBuffer cannot.\n"
         "You can also use QBuffer directly through the standard QIODevice functions "
         "readBlock(), writeBlock() readLine(), at(), getch(), putch() and ungetch().\n"
-        "See also QFile, QDataStream, QTextStream, QByteArray, Shared Classes, Collection "
+        "See also QFile, QDataStream, BOBUIextStream, QByteArray, Shared Classes, Collection "
         "Classes and Input/Output and Networking.");
 }
 
@@ -349,7 +349,7 @@ void tst_QBuffer::seekTest()
     QCOMPARE(buf.bytesAvailable(), qint64(0)); // we're at the end
     QCOMPARE(buf.size(), qint64(data.size()));
 
-    QTest::ignoreMessage(QtWarningMsg, "QBuffer::seek: Invalid pos: -1");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QBuffer::seek: Invalid pos: -1");
     DO_INVALID_SEEK(-1);
 
     DO_VALID_SEEK(0);
@@ -414,12 +414,12 @@ void tst_QBuffer::isSequential()
 
 void tst_QBuffer::signalTest_data()
 {
-    QTest::addColumn<QByteArray>("sample");
+    BOBUIest::addColumn<QByteArray>("sample");
 
-    QTest::newRow("empty") << QByteArray();
-    QTest::newRow("size 1") << QByteArray("1");
-    QTest::newRow("size 2") << QByteArray("11");
-    QTest::newRow("size 100") << QByteArray(100, '1');
+    BOBUIest::newRow("empty") << QByteArray();
+    BOBUIest::newRow("size 1") << QByteArray("1");
+    BOBUIest::newRow("size 2") << QByteArray("11");
+    BOBUIest::newRow("size 100") << QByteArray(100, '1');
 }
 
 void tst_QBuffer::signalTest()
@@ -439,8 +439,8 @@ void tst_QBuffer::signalTest()
         gotReadyRead = false;
         QCOMPARE(buf.write(sample), qint64(sample.size()));
         if (sample.size() > 0) {
-            QTestEventLoop::instance().enterLoop(5);
-            if (QTestEventLoop::instance().timeout())
+            BOBUIestEventLoop::instance().enterLoop(5);
+            if (BOBUIestEventLoop::instance().timeout())
                 QFAIL("Timed out when waiting for readyRead()");
             QCOMPARE(totalBytesWritten, qint64(sample.size() * (i + 1)));
             QVERIFY(gotReadyRead);
@@ -454,7 +454,7 @@ void tst_QBuffer::signalTest()
 void tst_QBuffer::readyReadSlot()
 {
     gotReadyRead = true;
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QBuffer::bytesWrittenSlot(qint64 written)
@@ -473,16 +473,16 @@ void tst_QBuffer::isClosedAfterClose()
 
 void tst_QBuffer::readLine_data()
 {
-    QTest::addColumn<QByteArray>("src");
-    QTest::addColumn<int>("maxlen");
-    QTest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QByteArray>("src");
+    BOBUIest::addColumn<int>("maxlen");
+    BOBUIest::addColumn<QByteArray>("expected");
 
-    QTest::newRow("1") << QByteArray("line1\nline2\n") << 1024
+    BOBUIest::newRow("1") << QByteArray("line1\nline2\n") << 1024
                     << QByteArray("line1\n");
-    QTest::newRow("2") << QByteArray("hi there") << 1024
+    BOBUIest::newRow("2") << QByteArray("hi there") << 1024
                     << QByteArray("hi there");
-    QTest::newRow("3") << QByteArray("l\n") << 3 << QByteArray("l\n");
-    QTest::newRow("4") << QByteArray("l\n") << 2 << QByteArray("l");
+    BOBUIest::newRow("3") << QByteArray("l\n") << 3 << QByteArray("l\n");
+    BOBUIest::newRow("4") << QByteArray("l\n") << 2 << QByteArray("l");
 }
 
 void tst_QBuffer::readLine()
@@ -510,13 +510,13 @@ void tst_QBuffer::readLine()
 
 void tst_QBuffer::canReadLine_data()
 {
-    QTest::addColumn<QByteArray>("src");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QByteArray>("src");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("1") << QByteArray("no newline") << false;
-    QTest::newRow("2") << QByteArray("two \n lines\n") << true;
-    QTest::newRow("3") << QByteArray("\n") << true;
-    QTest::newRow("4") << QByteArray() << false;
+    BOBUIest::newRow("1") << QByteArray("no newline") << false;
+    BOBUIest::newRow("2") << QByteArray("two \n lines\n") << true;
+    BOBUIest::newRow("3") << QByteArray("\n") << true;
+    BOBUIest::newRow("4") << QByteArray() << false;
 }
 
 void tst_QBuffer::canReadLine()
@@ -636,7 +636,7 @@ void tst_QBuffer::writeOfMoreThan2GiB()
 #if defined Q_OS_WEBOS
     QSKIP("WebOS device will kill the test when using too much memory");
 #endif
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
     try {
         //
@@ -675,7 +675,7 @@ void tst_QBuffer::writeOfMoreThan2GiB()
 
 #else
     QSKIP("This test requires exceptions enabled.");
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 }
 
 void tst_QBuffer::read_null()
@@ -703,5 +703,5 @@ void tst_QBuffer::read_null()
     QCOMPARE(chunk, buffer.mid(16380, chunk.size()));
 }
 
-QTEST_MAIN(tst_QBuffer)
+BOBUIEST_MAIN(tst_QBuffer)
 #include "tst_qbuffer.moc"

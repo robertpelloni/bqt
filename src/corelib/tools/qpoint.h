@@ -1,25 +1,25 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPOINT_H
 #define QPOINT_H
 
-#include <QtCore/qcheckedint_impl.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qnumeric.h>
+#include <BobUICore/qcheckedint_impl.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qnumeric.h>
 
-#include <QtCore/q20type_traits.h>
-#include <QtCore/q23utility.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/q23utility.h>
 
 #if defined(Q_OS_DARWIN) || defined(Q_QDOC)
 struct CGPoint;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_ENABLE_P0846_SEMANTICS_FOR(get)
+BOBUI_ENABLE_P0846_SEMANTICS_FOR(get)
 
 class QDataStream;
 class QLine;
@@ -67,15 +67,15 @@ private:
     friend constexpr inline QPoint operator-(const QPoint &p1, const QPoint &p2) noexcept
     { return QPoint(p1.xp - p2.xp, p1.yp - p2.yp); }
     friend constexpr inline QPoint operator*(const QPoint &p, float factor)
-    { return QPoint(QtPrivate::qSaturateRound(p.x() * factor), QtPrivate::qSaturateRound(p.y() * factor)); }
+    { return QPoint(BobUIPrivate::qSaturateRound(p.x() * factor), BobUIPrivate::qSaturateRound(p.y() * factor)); }
     friend constexpr inline QPoint operator*(const QPoint &p, double factor)
-    { return QPoint(QtPrivate::qSaturateRound(p.x() * factor), QtPrivate::qSaturateRound(p.y() * factor)); }
+    { return QPoint(BobUIPrivate::qSaturateRound(p.x() * factor), BobUIPrivate::qSaturateRound(p.y() * factor)); }
     friend constexpr inline QPoint operator*(const QPoint &p, int factor) noexcept
     { return QPoint(p.xp * factor, p.yp * factor); }
     friend constexpr inline QPoint operator*(float factor, const QPoint &p)
-    { return QPoint(QtPrivate::qSaturateRound(p.x() * factor), QtPrivate::qSaturateRound(p.y() * factor)); }
+    { return QPoint(BobUIPrivate::qSaturateRound(p.x() * factor), BobUIPrivate::qSaturateRound(p.y() * factor)); }
     friend constexpr inline QPoint operator*(double factor, const QPoint &p)
-    { return QPoint(QtPrivate::qSaturateRound(p.x() * factor), QtPrivate::qSaturateRound(p.y() * factor)); }
+    { return QPoint(BobUIPrivate::qSaturateRound(p.x() * factor), BobUIPrivate::qSaturateRound(p.y() * factor)); }
     friend constexpr inline QPoint operator*(int factor, const QPoint &p) noexcept
     { return QPoint(p.xp * factor, p.yp * factor); }
     friend constexpr inline QPoint operator+(const QPoint &p) noexcept
@@ -85,7 +85,7 @@ private:
     friend constexpr inline QPoint operator/(const QPoint &p, qreal c)
     {
         Q_ASSERT(!qFuzzyIsNull(c));
-        return QPoint(QtPrivate::qSaturateRound(p.x() / c), QtPrivate::qSaturateRound(p.y() / c));
+        return QPoint(BobUIPrivate::qSaturateRound(p.x() / c), BobUIPrivate::qSaturateRound(p.y() / c));
     }
 
 public:
@@ -95,7 +95,7 @@ public:
     [[nodiscard]] constexpr inline QPointF toPointF() const noexcept;
 
 private:
-    using Representation = QtPrivate::QCheckedIntegers::QCheckedInt<int>;
+    using Representation = BobUIPrivate::QCheckedIntegers::QCheckedInt<int>;
 
     friend class QRect;
     friend class QLine;
@@ -123,7 +123,7 @@ Q_DECLARE_TYPEINFO(QPoint, Q_PRIMITIVE_TYPE);
 /*****************************************************************************
   QPoint stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QPoint &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QPoint &);
 #endif
@@ -192,15 +192,15 @@ constexpr inline QPoint &QPoint::operator-=(const QPoint &p)
 
 constexpr inline QPoint &QPoint::operator*=(float factor)
 {
-    xp.setValue(QtPrivate::qSaturateRound(x() * factor));
-    yp.setValue(QtPrivate::qSaturateRound(y() * factor));
+    xp.setValue(BobUIPrivate::qSaturateRound(x() * factor));
+    yp.setValue(BobUIPrivate::qSaturateRound(y() * factor));
     return *this;
 }
 
 constexpr inline QPoint &QPoint::operator*=(double factor)
 {
-    xp.setValue(QtPrivate::qSaturateRound(x() * factor));
-    yp.setValue(QtPrivate::qSaturateRound(y() * factor));
+    xp.setValue(BobUIPrivate::qSaturateRound(x() * factor));
+    yp.setValue(BobUIPrivate::qSaturateRound(y() * factor));
     return *this;
 }
 
@@ -219,7 +219,7 @@ constexpr inline QPoint &QPoint::operator/=(qreal c)
     return *this;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QPoint &);
 #endif
 
@@ -262,8 +262,8 @@ public:
 private:
     friend constexpr bool qFuzzyCompare(const QPointF &p1, const QPointF &p2) noexcept
     {
-        return QtPrivate::fuzzyCompare(p1.xp, p2.xp)
-            && QtPrivate::fuzzyCompare(p1.yp, p2.yp);
+        return BobUIPrivate::fuzzyCompare(p1.xp, p2.xp)
+            && BobUIPrivate::fuzzyCompare(p1.yp, p2.yp);
     }
     friend constexpr bool qFuzzyIsNull(const QPointF &point) noexcept
     {
@@ -302,7 +302,7 @@ public:
 #endif
 
 private:
-    friend class QTransform;
+    friend class BOBUIransform;
 
     qreal xp;
     qreal yp;
@@ -327,7 +327,7 @@ size_t qHash(QPointF, size_t seed = 0) = delete;
 /*****************************************************************************
   QPointF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QPointF &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QPointF &);
 #endif
@@ -415,14 +415,14 @@ constexpr QPointF QPoint::toPointF() const noexcept { return *this; }
 
 constexpr inline QPoint QPointF::toPoint() const
 {
-    return QPoint(QtPrivate::qSaturateRound(xp), QtPrivate::qSaturateRound(yp));
+    return QPoint(BobUIPrivate::qSaturateRound(xp), BobUIPrivate::qSaturateRound(yp));
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug d, const QPointF &p);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 /*****************************************************************************
   QPoint/QPointF tuple protocol
@@ -430,18 +430,18 @@ QT_END_NAMESPACE
 
 namespace std {
     template <>
-    class tuple_size<QT_PREPEND_NAMESPACE(QPoint)> : public integral_constant<size_t, 2> {};
+    class tuple_size<BOBUI_PREPEND_NAMESPACE(QPoint)> : public integral_constant<size_t, 2> {};
     template <>
-    class tuple_element<0, QT_PREPEND_NAMESPACE(QPoint)> { public: using type = int; };
+    class tuple_element<0, BOBUI_PREPEND_NAMESPACE(QPoint)> { public: using type = int; };
     template <>
-    class tuple_element<1, QT_PREPEND_NAMESPACE(QPoint)> { public: using type = int; };
+    class tuple_element<1, BOBUI_PREPEND_NAMESPACE(QPoint)> { public: using type = int; };
 
     template <>
-    class tuple_size<QT_PREPEND_NAMESPACE(QPointF)> : public integral_constant<size_t, 2> {};
+    class tuple_size<BOBUI_PREPEND_NAMESPACE(QPointF)> : public integral_constant<size_t, 2> {};
     template <>
-    class tuple_element<0, QT_PREPEND_NAMESPACE(QPointF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<0, BOBUI_PREPEND_NAMESPACE(QPointF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
     template <>
-    class tuple_element<1, QT_PREPEND_NAMESPACE(QPointF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<1, BOBUI_PREPEND_NAMESPACE(QPointF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
 }
 
 #endif // QPOINT_H

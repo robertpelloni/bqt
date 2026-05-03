@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractproxymodel.h"
 #include "qitemselectionmodel.h"
 #include <private/qabstractproxymodel_p.h>
-#include <QtCore/QSize>
-#include <QtCore/QStringList>
-#include <QtCore/QMap>
+#include <BobUICore/QSize>
+#include <BobUICore/QStringList>
+#include <BobUICore/QMap>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \since 4.1
@@ -18,7 +18,7 @@ QT_BEGIN_NAMESPACE
     \brief The QAbstractProxyModel class provides a base class for proxy item
     models that can do sorting, filtering or other data processing tasks.
     \ingroup model-view
-    \inmodule QtCore
+    \inmodule BobUICore
 
     This class defines the standard interface that proxy models must use to be
     able to interoperate correctly with other model/view components. It is not
@@ -62,32 +62,32 @@ void QAbstractProxyModelPrivate::emitHeaderDataChanged()
 
     if (updateHorizontalHeader) {
         if (auto columnCount = q->columnCount(); columnCount > 0)
-            emit q->headerDataChanged(Qt::Horizontal, 0, columnCount - 1);
+            emit q->headerDataChanged(BobUI::Horizontal, 0, columnCount - 1);
     }
 
     if (updateVerticalHeader) {
         if (auto rowCount = q->rowCount(); rowCount > 0)
-            emit q->headerDataChanged(Qt::Vertical, 0, rowCount - 1);
+            emit q->headerDataChanged(BobUI::Vertical, 0, rowCount - 1);
     }
 
     updateHorizontalHeader = false;
     updateVerticalHeader = false;
 }
 
-void QAbstractProxyModelPrivate::scheduleHeaderUpdate(Qt::Orientation orientation)
+void QAbstractProxyModelPrivate::scheduleHeaderUpdate(BobUI::Orientation orientation)
 {
     const bool isUpdateScheduled = updateHorizontalHeader || updateVerticalHeader;
 
-    if (orientation == Qt::Horizontal && !updateHorizontalHeader)
+    if (orientation == BobUI::Horizontal && !updateHorizontalHeader)
         updateHorizontalHeader = true;
-    else if (orientation == Qt::Vertical && !updateVerticalHeader)
+    else if (orientation == BobUI::Vertical && !updateVerticalHeader)
         updateVerticalHeader = true;
     else
         return;
 
     if (!isUpdateScheduled) {
         Q_Q(QAbstractProxyModel);
-        QMetaObject::invokeMethod(q, [this]() { emitHeaderDataChanged(); }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, [this]() { emitHeaderDataChanged(); }, BobUI::QueuedConnection);
     }
 }
 
@@ -103,7 +103,7 @@ void QAbstractProxyModelPrivate::_q_sourceModelRowsInserted(const QModelIndex &p
     if (parent.isValid())
         return;
     if (sourceHadZeroRows)
-        scheduleHeaderUpdate(Qt::Horizontal);
+        scheduleHeaderUpdate(BobUI::Horizontal);
 }
 
 void QAbstractProxyModelPrivate::_q_sourceModelRowsRemoved(const QModelIndex &parent, int, int)
@@ -111,7 +111,7 @@ void QAbstractProxyModelPrivate::_q_sourceModelRowsRemoved(const QModelIndex &pa
     if (parent.isValid())
         return;
     if (model->rowCount() == 0)
-        scheduleHeaderUpdate(Qt::Horizontal);
+        scheduleHeaderUpdate(BobUI::Horizontal);
 }
 
 void QAbstractProxyModelPrivate::_q_sourceModelColumnsAboutToBeInserted(const QModelIndex &parent, int, int)
@@ -126,7 +126,7 @@ void QAbstractProxyModelPrivate::_q_sourceModelColumnsInserted(const QModelIndex
     if (parent.isValid())
         return;
     if (sourceHadZeroColumns)
-        scheduleHeaderUpdate(Qt::Vertical);
+        scheduleHeaderUpdate(BobUI::Vertical);
 }
 
 void QAbstractProxyModelPrivate::_q_sourceModelColumnsRemoved(const QModelIndex &parent, int, int)
@@ -134,7 +134,7 @@ void QAbstractProxyModelPrivate::_q_sourceModelColumnsRemoved(const QModelIndex 
     if (parent.isValid())
         return;
     if (model->columnCount() == 0)
-        scheduleHeaderUpdate(Qt::Vertical);
+        scheduleHeaderUpdate(BobUI::Vertical);
 }
 
 /*!
@@ -315,11 +315,11 @@ QVariant QAbstractProxyModel::data(const QModelIndex &proxyIndex, int role) cons
 /*!
     \reimp
  */
-QVariant QAbstractProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QAbstractProxyModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QAbstractProxyModel);
     int sourceSection = section;
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         if (rowCount() > 0) {
             const QModelIndex proxyIndex = index(0, section);
             sourceSection = mapToSource(proxyIndex).column();
@@ -345,7 +345,7 @@ QMap<int, QVariant> QAbstractProxyModel::itemData(const QModelIndex &proxyIndex)
 /*!
     \reimp
  */
-Qt::ItemFlags QAbstractProxyModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QAbstractProxyModel::flags(const QModelIndex &index) const
 {
     Q_D(const QAbstractProxyModel);
     return d->model->flags(mapToSource(index));
@@ -372,11 +372,11 @@ bool QAbstractProxyModel::setItemData(const QModelIndex &index, const QMap< int,
 /*!
     \reimp
  */
-bool QAbstractProxyModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+bool QAbstractProxyModel::setHeaderData(int section, BobUI::Orientation orientation, const QVariant &value, int role)
 {
     Q_D(QAbstractProxyModel);
     int sourceSection;
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         const QModelIndex proxyIndex = index(0, section);
         sourceSection = mapToSource(proxyIndex).column();
     } else {
@@ -426,7 +426,7 @@ void QAbstractProxyModel::fetchMore(const QModelIndex &parent)
 /*!
     \reimp
  */
-void QAbstractProxyModel::sort(int column, Qt::SortOrder order)
+void QAbstractProxyModel::sort(int column, BobUI::SortOrder order)
 {
     Q_D(QAbstractProxyModel);
     d->model->sort(column, order);
@@ -495,7 +495,7 @@ void QAbstractProxyModelPrivate::mapDropCoordinatesToSource(int row, int column,
     \reimp
     \since 5.4
  */
-bool QAbstractProxyModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QAbstractProxyModel::canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                                           int row, int column, const QModelIndex &parent) const
 {
     Q_D(const QAbstractProxyModel);
@@ -510,7 +510,7 @@ bool QAbstractProxyModel::canDropMimeData(const QMimeData *data, Qt::DropAction 
     \reimp
     \since 5.4
  */
-bool QAbstractProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QAbstractProxyModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                        int row, int column, const QModelIndex &parent)
 {
     Q_D(QAbstractProxyModel);
@@ -533,7 +533,7 @@ QStringList QAbstractProxyModel::mimeTypes() const
 /*!
     \reimp
  */
-Qt::DropActions QAbstractProxyModel::supportedDragActions() const
+BobUI::DropActions QAbstractProxyModel::supportedDragActions() const
 {
     Q_D(const QAbstractProxyModel);
     return d->model->supportedDragActions();
@@ -542,7 +542,7 @@ Qt::DropActions QAbstractProxyModel::supportedDragActions() const
 /*!
     \reimp
  */
-Qt::DropActions QAbstractProxyModel::supportedDropActions() const
+BobUI::DropActions QAbstractProxyModel::supportedDropActions() const
 {
     Q_D(const QAbstractProxyModel);
     return d->model->supportedDropActions();
@@ -578,6 +578,6 @@ QModelIndex QAbstractProxyModel::createSourceIndex(int row, int col, void *inter
     return QModelIndex();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractproxymodel.cpp"

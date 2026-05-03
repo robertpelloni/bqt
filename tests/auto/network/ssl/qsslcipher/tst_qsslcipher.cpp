@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qsslcipher.h>
 
 class tst_QSslCipher : public QObject
 {
     Q_OBJECT
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 private slots:
     void constructing();
 
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 };
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 void tst_QSslCipher::constructing()
 {
@@ -33,7 +33,7 @@ void tst_QSslCipher::constructing()
     QCOMPARE(cipher.protocol(), QSsl::UnknownProtocol);
 }
 
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
-QTEST_MAIN(tst_QSslCipher)
+BOBUIEST_MAIN(tst_QSslCipher)
 #include "tst_qsslcipher.moc"

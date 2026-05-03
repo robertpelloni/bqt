@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMENU_P_H
 #define QMENU_P_H
@@ -9,69 +9,69 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qmenu.h"
-#if QT_CONFIG(menubar)
-#include "QtWidgets/qmenubar.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qmenu.h"
+#if BOBUI_CONFIG(menubar)
+#include "BobUIWidgets/qmenubar.h"
 #endif
-#include "QtWidgets/qstyleoption.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qbasictimer.h"
+#include "BobUIWidgets/qstyleoption.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qmap.h"
+#include "BobUICore/qhash.h"
+#include "BobUICore/qbasictimer.h"
 #include "private/qwidget_p.h"
 
 #include <qpa/qplatformmenu.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <functional>
 
-QT_REQUIRE_CONFIG(menu);
+BOBUI_REQUIRE_CONFIG(menu);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static inline int pick(Qt::Orientation o, const QPoint &pos)
-{ return o == Qt::Horizontal ? pos.x() : pos.y(); }
+static inline int pick(BobUI::Orientation o, const QPoint &pos)
+{ return o == BobUI::Horizontal ? pos.x() : pos.y(); }
 
-static inline int pick(Qt::Orientation o, const QSize &size)
-{ return o == Qt::Horizontal ? size.width() : size.height(); }
+static inline int pick(BobUI::Orientation o, const QSize &size)
+{ return o == BobUI::Horizontal ? size.width() : size.height(); }
 
-static inline int &rpick(Qt::Orientation o, QPoint &pos)
-{ return o == Qt::Horizontal ? pos.rx() : pos.ry(); }
+static inline int &rpick(BobUI::Orientation o, QPoint &pos)
+{ return o == BobUI::Horizontal ? pos.rx() : pos.ry(); }
 
-static inline int &rpick(Qt::Orientation o, QSize &size)
-{ return o == Qt::Horizontal ? size.rwidth() : size.rheight(); }
+static inline int &rpick(BobUI::Orientation o, QSize &size)
+{ return o == BobUI::Horizontal ? size.rwidth() : size.rheight(); }
 
-static inline QSizePolicy::Policy pick(Qt::Orientation o, const QSizePolicy &policy)
-{ return o == Qt::Horizontal ? policy.horizontalPolicy() : policy.verticalPolicy(); }
+static inline QSizePolicy::Policy pick(BobUI::Orientation o, const QSizePolicy &policy)
+{ return o == BobUI::Horizontal ? policy.horizontalPolicy() : policy.verticalPolicy(); }
 
-static inline int perp(Qt::Orientation o, const QPoint &pos)
-{ return o == Qt::Vertical ? pos.x() : pos.y(); }
+static inline int perp(BobUI::Orientation o, const QPoint &pos)
+{ return o == BobUI::Vertical ? pos.x() : pos.y(); }
 
-static inline int perp(Qt::Orientation o, const QSize &size)
-{ return o == Qt::Vertical ? size.width() : size.height(); }
+static inline int perp(BobUI::Orientation o, const QSize &size)
+{ return o == BobUI::Vertical ? size.width() : size.height(); }
 
-static inline int &rperp(Qt::Orientation o, QPoint &pos)
-{ return o == Qt::Vertical ? pos.rx() : pos.ry(); }
+static inline int &rperp(BobUI::Orientation o, QPoint &pos)
+{ return o == BobUI::Vertical ? pos.rx() : pos.ry(); }
 
-static inline int &rperp(Qt::Orientation o, QSize &size)
-{ return o == Qt::Vertical ? size.rwidth() : size.rheight(); }
+static inline int &rperp(BobUI::Orientation o, QSize &size)
+{ return o == BobUI::Vertical ? size.rwidth() : size.rheight(); }
 
-static inline int pick(Qt::Orientation o, const QMargins &m)
-{ return o == Qt::Horizontal ? (m.left() + m.right()) : (m.top() + m.bottom()); }
+static inline int pick(BobUI::Orientation o, const QMargins &m)
+{ return o == BobUI::Horizontal ? (m.left() + m.right()) : (m.top() + m.bottom()); }
 
-static inline int perp(Qt::Orientation o, const QMargins &m)
-{ return o == Qt::Vertical ? (m.left() + m.right()) : (m.top() + m.bottom()); }
+static inline int perp(BobUI::Orientation o, const QMargins &m)
+{ return o == BobUI::Vertical ? (m.left() + m.right()) : (m.top() + m.bottom()); }
 
-class QTornOffMenu;
+class BOBUIornOffMenu;
 class QEventLoop;
 
 template <typename T>
@@ -200,7 +200,7 @@ public:
         }
 
         if (m_uni_directional && !m_first_mouse && resetAction != m_origin_action) {
-            bool left_to_right = m_menu->layoutDirection() == Qt::LeftToRight;
+            bool left_to_right = m_menu->layoutDirection() == BobUI::LeftToRight;
             QRect sub_menu_rect = m_sub_menu->geometry();
             QPoint sub_menu_top =
                     left_to_right? sub_menu_rect.topLeft() : sub_menu_rect.topRight();
@@ -331,7 +331,7 @@ public:
     QPointF mousePopupPos;
 
     QAction *currentAction = nullptr;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     QAction *selectAction = nullptr;
     QAction *cancelAction = nullptr;
 #endif
@@ -422,7 +422,7 @@ public:
     inline int indexOf(QAction *act) const { return q_func()->actions().indexOf(act); }
 
     //tear off support
-    QPointer<QTornOffMenu> tornPopup;
+    QPointer<BOBUIornOffMenu> tornPopup;
 
     QMenuSloppyState sloppyState;
 
@@ -458,7 +458,7 @@ public:
     public:
         enum Type { ScrollUp, ScrollDown };
         ScrollerTearOffItem(Type type, QMenuPrivate *mPrivate,
-                            QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+                            QWidget *parent = nullptr, BobUI::WindowFlags f = BobUI::WindowFlags());
         void paintEvent(QPaintEvent *e) override;
         void updateScrollerRects(const QRect &rect);
 
@@ -515,6 +515,6 @@ public:
     bool doChildEffects : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMENU_P_H

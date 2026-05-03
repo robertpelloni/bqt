@@ -287,6 +287,24 @@ qt_install(FILES
     COMPONENT Devel
 )
 
+include("${CMAKE_CURRENT_LIST_DIR}/QtBobUIHelpers.cmake")
+
+qt_internal_install_bobui_compat_package(
+    "BobUI6"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6Config.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUI"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUIConfig.cmake"
+)
+
+_qt_internal_append_cmake_configure_depends(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QtBobUIHelpers.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUICompatibilityHelpers.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6Config.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUIConfig.cmake"
+)
+
 qt_internal_get_qt_build_private_helpers(__qt_cmake_private_helpers)
 list(TRANSFORM __qt_cmake_private_helpers PREPEND "cmake/")
 list(TRANSFORM __qt_cmake_private_helpers APPEND ".cmake")

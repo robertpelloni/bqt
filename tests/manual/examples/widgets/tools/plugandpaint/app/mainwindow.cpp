@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 
 #include "mainwindow.h"
@@ -18,7 +18,7 @@
 #include <QMessageBox>
 #include <QPluginLoader>
 #include <QScrollArea>
-#include <QTimer>
+#include <BOBUIimer>
 
 MainWindow::MainWindow() : paintArea(new PaintArea)
     , scrollArea(new QScrollArea)
@@ -36,7 +36,7 @@ MainWindow::MainWindow() : paintArea(new PaintArea)
     if (!brushActionGroup->actions().isEmpty())
         brushActionGroup->actions().first()->trigger();
 
-    QTimer::singleShot(500, this, &MainWindow::aboutPlugins);
+    BOBUIimer::singleShot(500, this, &MainWindow::aboutPlugins);
 }
 
 void MainWindow::open()
@@ -134,7 +134,7 @@ void MainWindow::applyFilter()
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("About Plug & Paint"),
-            tr("The <b>Plug & Paint</b> example demonstrates how to write Qt "
+            tr("The <b>Plug & Paint</b> example demonstrates how to write BobUI "
                "applications that can be extended through plugins."));
 }
 
@@ -171,8 +171,8 @@ void MainWindow::createActions()
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
+    aboutBobUIAct = new QAction(tr("About &BobUI"), this);
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 
     aboutPluginsAct = new QAction(tr("About &Plugins"), this);
     connect(aboutPluginsAct, &QAction::triggered, this, &MainWindow::aboutPlugins);
@@ -199,7 +199,7 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
     helpMenu->addAction(aboutPluginsAct);
 }
 

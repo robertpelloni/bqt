@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmopenglcontext.h"
 
@@ -10,15 +10,15 @@
 #include <emscripten/val.h>
 
 namespace {
-void qtDoNothing(emscripten::val) { }
+void bobuiDoNothing(emscripten::val) { }
 } // namespace
 
 EMSCRIPTEN_BINDINGS(qwasmopenglcontext)
 {
-    function("qtDoNothing", &qtDoNothing);
+    function("bobuiDoNothing", &bobuiDoNothing);
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QHash<QPlatformSurface *, EMSCRIPTEN_WEBGL_CONTEXT_HANDLE> QWasmOpenGLContext::s_contexts;
 
@@ -69,7 +69,7 @@ void QWasmOpenGLContext::destroyWebGLContext(EMSCRIPTEN_WEBGL_CONTEXT_HANDLE con
     // that does the removal with a function that does nothing.
     emscripten::val jsEvents = emscripten::val::module_property("JSEvents");
     emscripten::val savedRemoveAllHandlersOnTargetFunction = jsEvents["removeAllHandlersOnTarget"];
-    jsEvents.set("removeAllHandlersOnTarget", emscripten::val::module_property("qtDoNothing"));
+    jsEvents.set("removeAllHandlersOnTarget", emscripten::val::module_property("bobuiDoNothing"));
     emscripten_webgl_destroy_context(contextHandle);
     jsEvents.set("removeAllHandlersOnTarget", savedRemoveAllHandlersOnTargetFunction);
 }
@@ -210,4 +210,4 @@ QFunctionPointer QWasmOpenGLContext::getProcAddress(const char *procName)
     return reinterpret_cast<QFunctionPointer>(eglGetProcAddress(procName));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

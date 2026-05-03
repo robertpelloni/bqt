@@ -1,5 +1,5 @@
 TEMPLATE = app
-QT += core gui widgets
+BOBUI += core gui widgets
 
 SOURCES += main.cpp\
         mainwindow.cpp

@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QEglFSKmsEglDeviceIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QEglFSKmsEglDeviceIntegrationPlugin
+bobui_internal_add_plugin(QEglFSKmsEglDeviceIntegrationPlugin
     OUTPUT_NAME qeglfs-kms-egldevice-integration
     PLUGIN_TYPE egldeviceintegrations
     SOURCES
@@ -14,14 +14,14 @@ qt_internal_add_plugin(QEglFSKmsEglDeviceIntegrationPlugin
         qeglfskmsegldevicemain.cpp
         qeglfskmsegldevicescreen.cpp qeglfskmsegldevicescreen.h
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
     LIBRARIES
         Libdrm::Libdrm
-        Qt::Core
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
-        Qt::EglFsKmsSupportPrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::KmsSupportPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
+        BobUI::EglFsKmsSupportPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::KmsSupportPrivate
 )

@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -202,7 +202,7 @@ void MainWindow::on_comboBox_textActivated(const QString &arg1)
     painter.fillRect(QRectF(0,0,150,100),generateRandomColor());
     painter.fillRect(QRectF(20,30,130,40),generateRandomColor());
     painter.setPen(QPen(generateRandomColor()));
-    painter.drawText(QRect(25,30,130,40),"Qt WebAssembly");
+    painter.drawText(QRect(25,30,130,40),"BobUI WebAssembly");
 
     QByteArray ba;
     QBuffer buffer(&ba);
@@ -224,7 +224,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
-        if (ke->key() == Qt::Key_V && ke->modifiers().testFlag(Qt::ControlModifier)) {
+        if (ke->key() == BobUI::Key_V && ke->modifiers().testFlag(BobUI::ControlModifier)) {
             if (obj == ui->imageLabel) {
                 setImage(clipboardImage());
                 return true;
@@ -298,14 +298,14 @@ void MainWindow::dropEvent(QDropEvent* e)
         int size = e->mimeData()->html().length();
         sizeStr.setNum(size);
         ui->textEdit_2->insertPlainText("    Drop has html data length: " + sizeStr + "\n");
-        for (const auto &line : e->mimeData()->html().split('\n', Qt::SkipEmptyParts))
+        for (const auto &line : e->mimeData()->html().split('\n', BobUI::SkipEmptyParts))
             ui->textEdit_2->insertPlainText("        " + line + "\n");
     }
     if (e->mimeData()->hasText()) {
         int size = e->mimeData()->text().length();
         sizeStr.setNum(size);
         ui->textEdit_2->insertPlainText("    Drop has text data length: " + sizeStr + "\n");
-        for (const auto &line : e->mimeData()->text().split('\n', Qt::SkipEmptyParts))
+        for (const auto &line : e->mimeData()->text().split('\n', BobUI::SkipEmptyParts))
             ui->textEdit_2->insertPlainText("        " + line + "\n");
     }
 

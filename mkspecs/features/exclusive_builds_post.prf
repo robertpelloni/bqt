@@ -1,5 +1,5 @@
 
-load(qt_functions)
+load(bobui_functions)
 
 contains(TEMPLATE, subdirs) {
     for(build, QMAKE_EXCLUSIVE_BUILDS) {
@@ -126,7 +126,7 @@ contains(TEMPLATE, subdirs) {
                 # Suffix output dir
                 $$dir = $$clean_path($$eval($$dir)/$$full_dir_affix)
             } else {
-                # "Compatibility mode" with QTBUG-491
+                # "Compatibility mode" with BOBUIBUG-491
                 for(build, builds) {
                     did_replace = false
                     build_affix = $$eval($${build}.dir_affix)

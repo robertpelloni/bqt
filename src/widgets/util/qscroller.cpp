@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qevent.h"
 #include "qwidget.h"
@@ -12,30 +12,30 @@
 #include "qnumeric.h"
 #include "math.h"
 
-#include <QTime>
+#include <BOBUIime>
 #include <QElapsedTimer>
 #include <QMap>
 #include <QApplication>
 #include <QAbstractScrollArea>
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include <QGraphicsObject>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #endif
 #include <QVector2D>
-#include <QtCore/qmath.h>
-#include <QtGui/qevent.h>
+#include <BobUICore/qmath.h>
+#include <BobUIGui/qevent.h>
 #include <qnumeric.h>
 
-#include <QtDebug>
-#include <QtCore/qloggingcategory.h>
+#include <BobUIDebug>
+#include <BobUICore/qloggingcategory.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcScroller, "qt.widgets.scroller")
+Q_STATIC_LOGGING_CATEGORY(lcScroller, "bobui.widgets.scroller")
 
-bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
+bool bobui_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 
 namespace {
 QDebug &operator<<(QDebug &dbg, const QScrollerPrivate::ScrollSegment &s)
@@ -151,7 +151,7 @@ static qreal progressForValue(const QEasingCurve &curve, qreal value)
 }
 
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
 class QScrollTimer : public QAbstractAnimation
 {
 public:
@@ -188,7 +188,7 @@ private:
     \brief The QScroller class enables kinetic scrolling for any scrolling widget or graphics item.
     \since 5.0
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     With kinetic scrolling, the user can push the widget in a given
     direction and it will continue to scroll in this direction until it is
@@ -223,8 +223,8 @@ private:
 
 typedef QMap<QObject *, QScroller *> ScrollerHash;
 
-Q_GLOBAL_STATIC(ScrollerHash, qt_allScrollers)
-Q_GLOBAL_STATIC(QList<QScroller *>, qt_activeScrollers)
+Q_GLOBAL_STATIC(ScrollerHash, bobui_allScrollers)
+Q_GLOBAL_STATIC(QList<QScroller *>, bobui_activeScrollers)
 
 /*!
     Returns \c true if a QScroller object was already created for \a target; \c false otherwise.
@@ -233,7 +233,7 @@ Q_GLOBAL_STATIC(QList<QScroller *>, qt_activeScrollers)
 */
 bool QScroller::hasScroller(QObject *target)
 {
-    return (qt_allScrollers()->value(target));
+    return (bobui_allScrollers()->value(target));
 }
 
 /*!
@@ -251,11 +251,11 @@ QScroller *QScroller::scroller(QObject *target)
         return nullptr;
     }
 
-    if (qt_allScrollers()->contains(target))
-        return qt_allScrollers()->value(target);
+    if (bobui_allScrollers()->contains(target))
+        return bobui_allScrollers()->value(target);
 
     QScroller *s = new QScroller(target);
-    qt_allScrollers()->insert(target, s);
+    bobui_allScrollers()->insert(target, s);
     return s;
 }
 
@@ -275,7 +275,7 @@ const QScroller *QScroller::scroller(const QObject *target)
 */
 QList<QScroller *> QScroller::activeScrollers()
 {
-    return *qt_activeScrollers();
+    return *bobui_activeScrollers();
 }
 
 /*!
@@ -321,7 +321,7 @@ void QScroller::setScrollerProperties(const QScrollerProperties &sp)
     }
 }
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
 /*!
     Registers a custom scroll gesture recognizer, grabs it for the \a
@@ -344,24 +344,24 @@ void QScroller::setScrollerProperties(const QScrollerProperties &sp)
 
     \sa ungrabGesture(), grabbedGesture()
 */
-Qt::GestureType QScroller::grabGesture(QObject *target, ScrollerGestureType scrollGestureType)
+BobUI::GestureType QScroller::grabGesture(QObject *target, ScrollerGestureType scrollGestureType)
 {
     // ensure that a scroller for target is created
     QScroller *s = scroller(target);
     if (!s)
-        return Qt::GestureType(0);
+        return BobUI::GestureType(0);
 
     QScrollerPrivate *sp = s->d_ptr;
     if (sp->recognizer)
         ungrabGesture(target); // ungrab the old gesture
 
-    Qt::MouseButton button;
+    BobUI::MouseButton button;
     switch (scrollGestureType) {
-    case LeftMouseButtonGesture  : button = Qt::LeftButton; break;
-    case RightMouseButtonGesture : button = Qt::RightButton; break;
-    case MiddleMouseButtonGesture: button = Qt::MiddleButton; break;
+    case LeftMouseButtonGesture  : button = BobUI::LeftButton; break;
+    case RightMouseButtonGesture : button = BobUI::RightButton; break;
+    case MiddleMouseButtonGesture: button = BobUI::MiddleButton; break;
     default                      :
-    case TouchGesture            : button = Qt::NoButton; break; // NoButton == Touch
+    case TouchGesture            : button = BobUI::NoButton; break; // NoButton == Touch
     }
 
     sp->recognizer = new QFlickGestureRecognizer(button);
@@ -371,13 +371,13 @@ Qt::GestureType QScroller::grabGesture(QObject *target, ScrollerGestureType scro
         QWidget *widget = static_cast<QWidget *>(target);
         widget->grabGesture(sp->recognizerType);
         if (scrollGestureType == TouchGesture)
-            widget->setAttribute(Qt::WA_AcceptTouchEvents);
-#if QT_CONFIG(graphicsview)
+            widget->setAttribute(BobUI::WA_AcceptTouchEvents);
+#if BOBUI_CONFIG(graphicsview)
     } else if (QGraphicsObject *go = qobject_cast<QGraphicsObject*>(target)) {
         if (scrollGestureType == TouchGesture)
             go->setAcceptTouchEvents(true);
         go->grabGesture(sp->recognizerType);
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
     }
     return sp->recognizerType;
 }
@@ -388,13 +388,13 @@ Qt::GestureType QScroller::grabGesture(QObject *target, ScrollerGestureType scro
 
     \sa grabGesture(), ungrabGesture()
 */
-Qt::GestureType QScroller::grabbedGesture(QObject *target)
+BobUI::GestureType QScroller::grabbedGesture(QObject *target)
 {
     QScroller *s = scroller(target);
     if (s && s->d_ptr)
         return s->d_ptr->recognizerType;
     else
-        return Qt::GestureType(0);
+        return BobUI::GestureType(0);
 }
 
 /*!
@@ -416,7 +416,7 @@ void QScroller::ungrabGesture(QObject *target)
     if (target->isWidgetType()) {
         QWidget *widget = static_cast<QWidget *>(target);
         widget->ungrabGesture(sp->recognizerType);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     } else if (QGraphicsObject *go = qobject_cast<QGraphicsObject*>(target)) {
         go->ungrabGesture(sp->recognizerType);
 #endif
@@ -427,7 +427,7 @@ void QScroller::ungrabGesture(QObject *target)
     sp->recognizer = nullptr;
 }
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 /*!
     \internal
@@ -447,13 +447,13 @@ QScroller::QScroller(QObject *target)
 QScroller::~QScroller()
 {
     Q_D(QScroller);
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     QGestureRecognizer::unregisterRecognizer(d->recognizerType);
     // do not delete the recognizer. The QGestureManager is doing this.
     d->recognizer = nullptr;
 #endif
-    qt_allScrollers()->remove(d->target);
-    qt_activeScrollers()->removeOne(this);
+    bobui_allScrollers()->remove(d->target);
+    bobui_activeScrollers()->removeOne(this);
 
     delete d_ptr;
 }
@@ -487,8 +487,8 @@ void QScroller::stop()
     Q_D(QScroller);
     if (d->state != Inactive) {
         QPointF here = clampToRect(d->contentPosition, d->contentPosRange);
-        qreal snapX = d->nextSnapPos(here.x(), 0, Qt::Horizontal);
-        qreal snapY = d->nextSnapPos(here.y(), 0, Qt::Vertical);
+        qreal snapX = d->nextSnapPos(here.x(), 0, BobUI::Horizontal);
+        qreal snapY = d->nextSnapPos(here.y(), 0, BobUI::Vertical);
         QPointF snap = here;
         if (!qIsNaN(snapX))
             snap.setX(snapX);
@@ -507,7 +507,7 @@ void QScroller::stop()
     The value is reported for both the x and y axis separately by using a QPointF.
 
     \note Please note that this value should be physically correct. The actual DPI settings
-    that Qt returns for the display may be reported wrongly on purpose by the underlying
+    that BobUI returns for the display may be reported wrongly on purpose by the underlying
     windowing system, for example on \macos.
 */
 QPointF QScroller::pixelPerMeter() const
@@ -515,16 +515,16 @@ QPointF QScroller::pixelPerMeter() const
     Q_D(const QScroller);
     QPointF ppm = d->pixelPerMeter;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (QGraphicsObject *go = qobject_cast<QGraphicsObject *>(d->target)) {
-        QTransform viewtr;
+        BOBUIransform viewtr;
         //TODO: the first view isn't really correct - maybe use an additional field in the prepare event?
         if (const auto *scene = go->scene()) {
             const auto views = scene->views();
             if (!views.isEmpty())
                 viewtr = views.first()->viewportTransform();
         }
-        QTransform tr = go->deviceTransform(viewtr);
+        BOBUIransform tr = go->deviceTransform(viewtr);
         if (tr.isScaling()) {
             QPointF p0 = tr.map(QPointF(0, 0));
             QPointF px = tr.map(QPointF(1, 0));
@@ -533,7 +533,7 @@ QPointF QScroller::pixelPerMeter() const
             ppm.ry() /= QLineF(p0, py).length();
         }
     }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
     return ppm;
 }
 
@@ -593,8 +593,8 @@ QPointF QScroller::velocity() const
 QPointF QScroller::finalPosition() const
 {
     Q_D(const QScroller);
-    return QPointF(d->scrollingSegmentsEndPos(Qt::Horizontal),
-                   d->scrollingSegmentsEndPos(Qt::Vertical));
+    return QPointF(d->scrollingSegmentsEndPos(BobUI::Horizontal),
+                   d->scrollingSegmentsEndPos(BobUI::Vertical));
 }
 
 /*!
@@ -633,8 +633,8 @@ void QScroller::scrollTo(const QPointF &pos, int scrollTime)
         return;
 
     QPointF newpos = clampToRect(pos, d->contentPosRange);
-    qreal snapX = d->nextSnapPos(newpos.x(), 0, Qt::Horizontal);
-    qreal snapY = d->nextSnapPos(newpos.y(), 0, Qt::Vertical);
+    qreal snapX = d->nextSnapPos(newpos.x(), 0, BobUI::Horizontal);
+    qreal snapY = d->nextSnapPos(newpos.y(), 0, BobUI::Vertical);
     if (!qIsNaN(snapX))
         newpos.setX(snapX);
     if (!qIsNaN(snapY))
@@ -652,8 +652,8 @@ void QScroller::scrollTo(const QPointF &pos, int scrollTime)
         scrollTime = 0;
     qreal time = qreal(scrollTime) / 1000;
 
-    d->createScrollToSegments(vel.x(), time, newpos.x(), Qt::Horizontal, QScrollerPrivate::ScrollTypeScrollTo);
-    d->createScrollToSegments(vel.y(), time, newpos.y(), Qt::Vertical, QScrollerPrivate::ScrollTypeScrollTo);
+    d->createScrollToSegments(vel.x(), time, newpos.x(), BobUI::Horizontal, QScrollerPrivate::ScrollTypeScrollTo);
+    d->createScrollToSegments(vel.y(), time, newpos.y(), BobUI::Vertical, QScrollerPrivate::ScrollTypeScrollTo);
 
     if (!scrollTime)
         d->setContentPositionHelperScrolling();
@@ -696,8 +696,8 @@ void QScroller::ensureVisible(const QRectF &rect, qreal xmargin, qreal ymargin, 
         return;
 
     // -- calculate the current pos (or the position after the current scroll)
-    QPointF startPos(d->scrollingSegmentsEndPos(Qt::Horizontal),
-                     d->scrollingSegmentsEndPos(Qt::Vertical));
+    QPointF startPos(d->scrollingSegmentsEndPos(BobUI::Horizontal),
+                     d->scrollingSegmentsEndPos(BobUI::Vertical));
 
     QRectF marginRect(rect.x() - xmargin, rect.y() - ymargin,
                       rect.width() + 2 * xmargin, rect.height() + 2 * ymargin);
@@ -832,9 +832,9 @@ void QScroller::setSnapPositionsY(qreal first, qreal interval)
 
 QScrollerPrivate::QScrollerPrivate(QScroller *q, QObject *_target)
     : target(_target)
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     , recognizer(nullptr)
-    , recognizerType(Qt::CustomGesture)
+    , recognizerType(BobUI::CustomGesture)
 #endif
     , state(QScroller::Inactive)
     , firstScroll(true)
@@ -844,7 +844,7 @@ QScrollerPrivate::QScrollerPrivate(QScroller *q, QObject *_target)
     , snapIntervalX(0.0)
     , snapFirstY(-1.0)
     , snapIntervalY(0.0)
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     , scrollTimer(new QScrollTimer(this))
 #endif
     , q_ptr(q)
@@ -860,7 +860,7 @@ void QScrollerPrivate::init()
 
 void QScrollerPrivate::sendEvent(QObject *o, QEvent *e)
 {
-    qt_sendSpontaneousEvent(o, e);
+    bobui_sendSpontaneousEvent(o, e);
 }
 
 const char *QScrollerPrivate::stateName(QScroller::State state)
@@ -886,7 +886,7 @@ const char *QScrollerPrivate::inputName(QScroller::Input input)
 
 void QScrollerPrivate::targetDestroyed()
 {
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     scrollTimer->stop();
 #endif
     delete q_ptr;
@@ -914,7 +914,7 @@ void QScrollerPrivate::timerTick()
         }
     }
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     scrollTimer->stop();
 #endif
 }
@@ -1040,16 +1040,16 @@ void QScrollerPrivate::updateVelocity(const QPointF &deltaPixelRaw, qint64 delta
 
 void QScrollerPrivate::pushSegment(ScrollType type, qreal deltaTime, qreal stopProgress,
                                    qreal startPos, qreal deltaPos, qreal stopPos,
-                                   QEasingCurve::Type curve, Qt::Orientation orientation)
+                                   QEasingCurve::Type curve, BobUI::Orientation orientation)
 {
     if (startPos == stopPos || deltaPos == 0)
         return;
 
     ScrollSegment s;
-    if (orientation == Qt::Horizontal && !xSegments.isEmpty()) {
+    if (orientation == BobUI::Horizontal && !xSegments.isEmpty()) {
         const auto &lastX = xSegments.constLast();
         s.startTime = lastX.startTime + lastX.deltaTime * lastX.stopProgress;
-    } else if (orientation == Qt::Vertical && !ySegments.isEmpty()) {
+    } else if (orientation == BobUI::Vertical && !ySegments.isEmpty()) {
         const auto &lastY = ySegments.constLast();
         s.startTime = lastY.startTime + lastY.deltaTime * lastY.stopProgress;
     } else {
@@ -1064,7 +1064,7 @@ void QScrollerPrivate::pushSegment(ScrollType type, qreal deltaTime, qreal stopP
     s.curve.setType(curve);
     s.type = type;
 
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         xSegments.enqueue(s);
     else
         ySegments.enqueue(s);
@@ -1084,17 +1084,17 @@ void QScrollerPrivate::recalcScrollingSegments(bool forceRecalc)
     releaseVelocity = q->velocity();
 
     if (forceRecalc ||
-        !scrollingSegmentsValid(Qt::Horizontal) ||
-        !scrollingSegmentsValid(Qt::Vertical))
+        !scrollingSegmentsValid(BobUI::Horizontal) ||
+        !scrollingSegmentsValid(BobUI::Vertical))
         createScrollingSegments(releaseVelocity, contentPosition + overshootPosition, ppm);
 }
 
 /*! \internal
     Returns the end position after the current scroll has finished.
 */
-qreal QScrollerPrivate::scrollingSegmentsEndPos(Qt::Orientation orientation) const
+qreal QScrollerPrivate::scrollingSegmentsEndPos(BobUI::Orientation orientation) const
 {
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         if (xSegments.isEmpty())
             return contentPosition.x() + overshootPosition.x();
         else
@@ -1110,13 +1110,13 @@ qreal QScrollerPrivate::scrollingSegmentsEndPos(Qt::Orientation orientation) con
 /*! \internal
     Checks if the scroller segment end in a valid position.
 */
-bool QScrollerPrivate::scrollingSegmentsValid(Qt::Orientation orientation) const
+bool QScrollerPrivate::scrollingSegmentsValid(BobUI::Orientation orientation) const
 {
     const QQueue<ScrollSegment> *segments;
     qreal minPos;
     qreal maxPos;
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         segments = &xSegments;
         minPos = contentPosRange.left();
         maxPos = contentPosRange.right();
@@ -1156,11 +1156,11 @@ bool QScrollerPrivate::scrollingSegmentsValid(Qt::Orientation orientation) const
    Creates the sections needed to scroll to the specific \a endPos to the segments queue.
 */
 void QScrollerPrivate::createScrollToSegments(qreal v, qreal deltaTime, qreal endPos,
-                                              Qt::Orientation orientation, ScrollType type)
+                                              BobUI::Orientation orientation, ScrollType type)
 {
     Q_UNUSED(v);
 
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         xSegments.clear();
     else
         ySegments.clear();
@@ -1170,7 +1170,7 @@ void QScrollerPrivate::createScrollToSegments(qreal v, qreal deltaTime, qreal en
 
     const QScrollerPropertiesPrivate *sp = properties.d.data();
 
-    qreal startPos = (orientation == Qt::Horizontal) ? contentPosition.x() + overshootPosition.x()
+    qreal startPos = (orientation == BobUI::Horizontal) ? contentPosition.x() + overshootPosition.x()
                                                      : contentPosition.y() + overshootPosition.y();
     qreal deltaPos = (endPos - startPos) / 2;
 
@@ -1184,7 +1184,7 @@ void QScrollerPrivate::createScrollToSegments(qreal v, qreal deltaTime, qreal en
 */
 void QScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
                                                qreal deltaTime, qreal deltaPos,
-                                               Qt::Orientation orientation)
+                                               BobUI::Orientation orientation)
 {
     const QScrollerPropertiesPrivate *sp = properties.d.data();
 
@@ -1193,7 +1193,7 @@ void QScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
     qreal maxPos;
     qreal viewSize;
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         xSegments.clear();
         policy = sp->hOvershootPolicy;
         minPos = contentPosRange.left();
@@ -1257,7 +1257,7 @@ void QScrollerPrivate::createScrollingSegments(qreal v, qreal startPos,
 
         qreal snapDistance = higherSnapPos - lowerSnapPos;
 
-        qreal pressDistance = (orientation == Qt::Horizontal) ?
+        qreal pressDistance = (orientation == BobUI::Horizontal) ?
             lastPosition.x() - pressPosition.x() :
             lastPosition.y() - pressPosition.y();
 
@@ -1363,9 +1363,9 @@ void QScrollerPrivate::createScrollingSegments(const QPointF &v,
                      * deltaTime * deltaTime * qreal(0.5) * sp->decelerationFactor;
 
     createScrollingSegments(v.x(), startPos.x(), deltaTime, deltaPos.x(),
-                            Qt::Horizontal);
+                            BobUI::Horizontal);
     createScrollingSegments(v.y(), startPos.y(), deltaTime, deltaPos.y(),
-                            Qt::Vertical);
+                            BobUI::Vertical);
 }
 
 /*! \internal
@@ -1405,7 +1405,7 @@ bool QScrollerPrivate::prepareScrolling(const QPointF &position)
 
         if (QWidget *w = qobject_cast<QWidget *>(target))
             setDpiFromWidget(w);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         if (QGraphicsObject *go = qobject_cast<QGraphicsObject *>(target)) {
             //TODO: the first view isn't really correct - maybe use an additional field in the prepare event?
             if (const auto *scene = go->scene()) {
@@ -1656,7 +1656,7 @@ void QScrollerPrivate::setState(QScroller::State newstate)
 
     switch (newstate) {
     case QScroller::Inactive:
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
         scrollTimer->stop();
 #endif
 
@@ -1668,7 +1668,7 @@ void QScrollerPrivate::setState(QScroller::State newstate)
         break;
 
     case QScroller::Pressed:
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
         scrollTimer->stop();
 #endif
 
@@ -1678,14 +1678,14 @@ void QScrollerPrivate::setState(QScroller::State newstate)
 
     case QScroller::Dragging:
         dragDistance = QPointF(0, 0);
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
         if (state == QScroller::Pressed)
             startTimer = true;
 #endif
         break;
 
     case QScroller::Scrolling:
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
         startTimer = true;
 #endif
         break;
@@ -1693,7 +1693,7 @@ void QScrollerPrivate::setState(QScroller::State newstate)
 
     qSwap(state, newstate);
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     // Only start the timer after the state has been changed
     if (startTimer)
         scrollTimer->start();
@@ -1704,10 +1704,10 @@ void QScrollerPrivate::setState(QScroller::State newstate)
         firstScroll = true;
     }
     if (state == QScroller::Dragging || state == QScroller::Scrolling) {
-        if (!qt_activeScrollers()->contains(q))
-            qt_activeScrollers()->push_back(q);
+        if (!bobui_activeScrollers()->contains(q))
+            bobui_activeScrollers()->push_back(q);
     } else {
-        qt_activeScrollers()->removeOne(q);
+        bobui_activeScrollers()->removeOne(q);
     }
     emit q->stateChanged(state);
 }
@@ -1845,7 +1845,7 @@ void QScrollerPrivate::setContentPositionHelperScrolling()
     on a snap point.
     Returns the nearest snap position or NaN if no such point could be found.
  */
-qreal QScrollerPrivate::nextSnapPos(qreal p, int dir, Qt::Orientation orientation) const
+qreal QScrollerPrivate::nextSnapPos(qreal p, int dir, BobUI::Orientation orientation) const
 {
     qreal bestSnapPos = Q_QNAN;
     qreal bestSnapPosDist = Q_INFINITY;
@@ -1853,7 +1853,7 @@ qreal QScrollerPrivate::nextSnapPos(qreal p, int dir, Qt::Orientation orientatio
     qreal minPos;
     qreal maxPos;
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         minPos = contentPosRange.left();
         maxPos = contentPosRange.right();
     } else {
@@ -1861,7 +1861,7 @@ qreal QScrollerPrivate::nextSnapPos(qreal p, int dir, Qt::Orientation orientatio
         maxPos = contentPosRange.bottom();
     }
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         // the snap points in the list
         for (qreal snapPos : snapPositionsX) {
             qreal snapPosDist = snapPos - p;
@@ -1908,7 +1908,7 @@ qreal QScrollerPrivate::nextSnapPos(qreal p, int dir, Qt::Orientation orientatio
             }
         }
 
-    } else { // (orientation == Qt::Vertical)
+    } else { // (orientation == BobUI::Vertical)
         // the snap points in the list
         for (qreal snapPos : snapPositionsY) {
             qreal snapPosDist = snapPos - p;
@@ -2000,7 +2000,7 @@ qreal QScrollerPrivate::nextSnapPos(qreal p, int dir, Qt::Orientation orientatio
 
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qscroller.cpp"
 #include "moc_qscroller_p.cpp"

@@ -1,10 +1,10 @@
-Changes for Qt/CE 4.3.x "Conan the Librarian" release.
+Changes for BobUI/CE 4.3.x "Conan the Librarian" release.
 
 ****************************************************************************
 *                           Features                                       *
 ****************************************************************************
 
-- Added QtSql
+- Added BobUISql
 
 - Added QSqlite plugin
 
@@ -21,7 +21,7 @@ Changes for Qt/CE 4.3.x "Conan the Librarian" release.
 ****************************************************************************
 
 - cetest
-   * added -conf option to specify a qt.conf file to be deployed
+   * added -conf option to specify a bobui.conf file to be deployed
    * added -f option to specify a .pro file to be parsed
    * copy in buffered mode
    * deployment rules can use wildcard logic
@@ -43,12 +43,12 @@ Changes for Qt/CE 4.3.x "Conan the Librarian" release.
    * fixed unexpected behaviour due to uninitialized memory
 
 - QFileSystemModel
-   * fixed different behaviour for Qt/CE
+   * fixed different behaviour for BobUI/CE
 
 - QFileSystemWatcher
    * updated documentation
 
-- QtGui
+- BobUIGui
    * fixed floating point issues
 
 - QKeyMapper
@@ -61,7 +61,7 @@ Changes for Qt/CE 4.3.x "Conan the Librarian" release.
 - qmake.exe
    * deployment rules can use wildcard logic
 
-- QTableView
+- BOBUIableView
    * fixed style issue for header item
 
 - shadow build

@@ -51,12 +51,12 @@
     </layout>
    </item>
    <item>
-    <widget class="QTextEdit" name="textEdit"/>
+    <widget class="BOBUIextEdit" name="textEdit"/>
    </item>
    <item>
     <spacer>
      <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
+      <enum>BobUI::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "private/qpaintengine_blitter_p.h"
 
@@ -8,8 +8,8 @@
 #include "private/qpainter_p.h"
 #include "private/qpixmap_blitter_p.h"
 
-#ifndef QT_NO_BLITTABLE
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_BLITTABLE
+BOBUI_BEGIN_NAMESPACE
 
 #define STATE_XFORM_SCALE       0x00000001
 #define STATE_XFORM_COMPLEX     0x00000002
@@ -94,9 +94,9 @@ public:
         return checkStateAgainstMask(capabillitiesState, opacityPixmapMask);
     }
 
-    bool canBlitterDrawCachedGlyphs(const QTransform &transform, QFontEngine::GlyphFormat requestedGlyphFormat, bool complexClip) const
+    bool canBlitterDrawCachedGlyphs(const BOBUIransform &transform, QFontEngine::GlyphFormat requestedGlyphFormat, bool complexClip) const
     {
-        if (transform.type() > QTransform::TxScale)
+        if (transform.type() > BOBUIransform::TxScale)
             return false;
         if (!(m_capabilities & QBlittable::DrawScaledCachedGlyphsCapability))
             return false;
@@ -269,14 +269,14 @@ void QBlitterPaintEnginePrivate::updateCompleteState(QPainterState *s)
 
 void QBlitterPaintEnginePrivate::updatePenState(QPainterState *s)
 {
-    caps.updateState(STATE_PEN_ENABLED, qpen_style(s->pen) != Qt::NoPen);
+    caps.updateState(STATE_PEN_ENABLED, qpen_style(s->pen) != BobUI::NoPen);
 }
 
 void QBlitterPaintEnginePrivate::updateBrushState(QPainterState *s)
 {
-    Qt::BrushStyle style = qbrush_style(s->brush);
+    BobUI::BrushStyle style = qbrush_style(s->brush);
 
-    caps.updateState(STATE_BRUSH_PATTERN, style != Qt::SolidPattern);
+    caps.updateState(STATE_BRUSH_PATTERN, style != BobUI::SolidPattern);
     caps.updateState(STATE_BRUSH_ALPHA,
                         qbrush_color(s->brush).alpha() < 255);
 }
@@ -303,16 +303,16 @@ void QBlitterPaintEnginePrivate::updateRenderHintsState(QPainterState *s)
 
 void QBlitterPaintEnginePrivate::updateTransformState(QPainterState *s)
 {
-    QTransform::TransformationType type = s->matrix.type();
+    BOBUIransform::TransformationType type = s->matrix.type();
 
     // consider scaling operations with a negative factor as "complex" for now.
     // as some blitters could handle axisymmetrical operations, we should improve blitter
     // paint engine to handle them as a capability
-    caps.updateState(STATE_XFORM_COMPLEX, (type > QTransform::TxScale) ||
-        ((type == QTransform::TxScale) && ((s->matrix.m11() < 0.0) || (s->matrix.m22() < 0.0))));
-    caps.updateState(STATE_XFORM_SCALE, type > QTransform::TxTranslate);
+    caps.updateState(STATE_XFORM_COMPLEX, (type > BOBUIransform::TxScale) ||
+        ((type == BOBUIransform::TxScale) && ((s->matrix.m11() < 0.0) || (s->matrix.m22() < 0.0))));
+    caps.updateState(STATE_XFORM_SCALE, type > BOBUIransform::TxTranslate);
 
-    hasXForm = type >= QTransform::TxTranslate;
+    hasXForm = type >= BOBUIransform::TxTranslate;
 }
 
 void QBlitterPaintEnginePrivate::updateClipState(QPainterState *)
@@ -470,7 +470,7 @@ bool QBlitterPaintEngine::begin(QPaintDevice *pdev)
 {
     Q_D(QBlitterPaintEngine);
     bool ok = QRasterPaintEngine::begin(pdev);
-#ifdef QT_BLITTER_RASTEROVERLAY
+#ifdef BOBUI_BLITTER_RASTEROVERLAY
     d->pmData->unmergeOverlay();
 #endif
     d->pdev = pdev;
@@ -479,7 +479,7 @@ bool QBlitterPaintEngine::begin(QPaintDevice *pdev)
 
 bool QBlitterPaintEngine::end()
 {
-#ifdef QT_BLITTER_RASTEROVERLAY
+#ifdef BOBUI_BLITTER_RASTEROVERLAY
     Q_D(QBlitterPaintEngine);
     d->pmData->mergeOverlay();
 #endif
@@ -530,15 +530,15 @@ void QBlitterPaintEngine::fillRect(const QRectF &rect, const QBrush &brush)
 
     Q_D(QBlitterPaintEngine);
 
-    if (qbrush_style(brush) == Qt::SolidPattern
+    if (qbrush_style(brush) == BobUI::SolidPattern
         && d->caps.canBlitterAlphaFillRect()) {
         d->fillRect(rect, qbrush_color(brush), true);
-    } else if (qbrush_style(brush) == Qt::SolidPattern
+    } else if (qbrush_style(brush) == BobUI::SolidPattern
         && qbrush_color(brush).alpha() == 0xff
         && d->caps.canBlitterFillRect()) {
         d->fillRect(rect, qbrush_color(brush), false);
-    } else if ((brush.style() == Qt::TexturePattern) &&
-               (brush.transform().type() <= QTransform::TxTranslate) &&
+    } else if ((brush.style() == BobUI::TexturePattern) &&
+               (brush.transform().type() <= BOBUIransform::TxTranslate) &&
                 ((d->caps.canBlitterDrawPixmapOpacity(brush.texture())) ||
                  (d->caps.canBlitterDrawPixmap(rect, brush.texture(), rect)))) {
         bool rectIsFilled = false;
@@ -708,7 +708,7 @@ void QBlitterPaintEngine::drawImage(const QPointF &pos, const QImage &image)
 }
 
 void QBlitterPaintEngine::drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                                    Qt::ImageConversionFlags flags)
+                                    BobUI::ImageConversionFlags flags)
 {
     Q_D(QBlitterPaintEngine);
     d->lock();
@@ -724,7 +724,7 @@ void QBlitterPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pm, co
     QRasterPaintEngine::drawTiledPixmap(r, pm, sr);
 }
 
-void QBlitterPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &ti)
+void QBlitterPaintEngine::drawTextItem(const QPointF &pos, const BOBUIextItem &ti)
 {
     Q_D(QBlitterPaintEngine);
     d->lock();
@@ -762,7 +762,7 @@ void QBlitterPaintEngine::drawStaticTextItem(QStaticTextItem *sti)
     d->lock();
     QRasterPaintEngine::drawStaticTextItem(sti);
 
-#ifdef QT_BLITTER_RASTEROVERLAY
+#ifdef BOBUI_BLITTER_RASTEROVERLAY
 //#### d->pmData->markRasterOverlay(sti);
     qWarning("not implemented: markRasterOverlay for QStaticTextItem");
 #endif
@@ -790,6 +790,6 @@ bool QBlitterPaintEngine::drawCachedGlyphs(int numGlyphs, const glyph_t *glyphs,
     }
 }
 
-QT_END_NAMESPACE
-#endif //QT_NO_BLITTABLE
+BOBUI_END_NAMESPACE
+#endif //BOBUI_NO_BLITTABLE
 

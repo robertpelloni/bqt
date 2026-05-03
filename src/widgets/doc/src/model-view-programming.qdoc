@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 /*!
     \page model-view-programming.html
-    \ingroup qt-basic-concepts
+    \ingroup bobui-basic-concepts
 
     \title Model/View Programming
-    \brief A guide to Qt's extensible model/view architecture.
+    \brief A guide to BobUI's extensible model/view architecture.
 
     \section1 Introduction to Model/View Programming
 
-    Qt contains a set of item view classes that use a model/view
+    BobUI contains a set of item view classes that use a model/view
     architecture to manage the relationship between data and the way it
     is presented to the user. The separation of functionality introduced by
     this architecture gives developers greater flexibility to customize the
@@ -108,7 +108,7 @@
     The process of subclassing models is discussed in the section on
     \l{Creating New Models}.
 
-    Qt provides some ready-made models that can be used to handle items of
+    BobUI provides some ready-made models that can be used to handle items of
     data:
 
     \list
@@ -128,8 +128,8 @@
     \section3 Views
 
     Complete implementations are provided for different kinds of
-    views: QListView displays a list of items, QTableView displays data
-    from a model in a table, and QTreeView shows model items of data in a
+    views: QListView displays a list of items, BOBUIableView displays data
+    from a model in a table, and BOBUIreeView shows model items of data in a
     hierarchical list. Each of these classes is based on the
     QAbstractItemView abstract base class. Although these classes are
     ready-to-use implementations, they can also be subclassed to provide
@@ -142,12 +142,12 @@
     QAbstractItemDelegate is the abstract base class for delegates in the
     model/view framework. The default delegate implementation is
     provided by QStyledItemDelegate, and this is used as the default delegate
-    by Qt's standard views. However, QStyledItemDelegate and QItemDelegate are
+    by BobUI's standard views. However, QStyledItemDelegate and QItemDelegate are
     independent alternatives to painting and providing editors for items in
     views. The difference between them is that QStyledItemDelegate uses the
     current style to paint its items. We therefore recommend using
     QStyledItemDelegate as the base class when implementing custom delegates or
-    when working with Qt style sheets.
+    when working with BobUI style sheets.
 
     Delegates are described in the section on \l{Delegate Classes}.
 
@@ -158,13 +158,13 @@
     model.
 
     If your model is sortable, i.e, if it reimplements the
-    QAbstractItemModel::sort() function, both QTableView and QTreeView
+    QAbstractItemModel::sort() function, both BOBUIableView and BOBUIreeView
     provide an API that allows you to sort your model data
     programmatically. In addition, you can enable interactive sorting
     (i.e. allowing the users to sort the data by clicking the view's
     headers), by connecting the QHeaderView::sortIndicatorChanged() signal
-    to the QTableView::sortByColumn() slot or the
-    QTreeView::sortByColumn() slot, respectively.
+    to the BOBUIableView::sortByColumn() slot or the
+    BOBUIreeView::sortByColumn() slot, respectively.
 
     The alternative approach, if your model does not have the required
     interface or if you want to use a list view to present your data,
@@ -175,11 +175,11 @@
     \section3 Convenience classes
 
     A number of \e convenience classes are derived from the standard view
-    classes for the benefit of applications that rely on Qt's item-based
+    classes for the benefit of applications that rely on BobUI's item-based
     item view and table classes. They are not intended to be subclassed.
 
-    Examples of such classes include \l QListWidget, \l QTreeWidget, and
-    \l QTableWidget.
+    Examples of such classes include \l QListWidget, \l BOBUIreeWidget, and
+    \l BOBUIableWidget.
 
     These classes are less flexible than the view classes, and cannot be
     used with arbitrary models. We recommend that you use a model/view
@@ -188,18 +188,18 @@
 
     If you wish to take advantage of the features provided by the model/view
     approach while still using an item-based interface, consider using view
-    classes, such as QListView, QTableView, and QTreeView with
+    classes, such as QListView, BOBUIableView, and BOBUIreeView with
     QStandardItemModel.
 
     \section1 Using Models and Views
 
     The following sections explain how to use the model/view pattern
-    in Qt. Each section includes an example and is followed by a
+    in BobUI. Each section includes an example and is followed by a
     section showing how to create new components.
 
-    \section2 Two models included in Qt
+    \section2 Two models included in BobUI
 
-    Two of the standard models provided by Qt are QStandardItemModel and
+    Two of the standard models provided by BobUI are QStandardItemModel and
     QFileSystemModel. QStandardItemModel is a multi-purpose model that can be
     used to represent various different data structures needed by list, table,
     and tree views. This model also holds the items of data.
@@ -214,7 +214,7 @@
 
     \section2 Using views with an existing model
 
-    The QListView and QTreeView classes are the most suitable views
+    The QListView and BOBUIreeView classes are the most suitable views
     to use with QFileSystemModel. The example presented below displays the
     contents of a directory in a tree view next to the same information in
     a list view. The views share the user's selection so that the selected
@@ -268,7 +268,7 @@
     \section2 Basic concepts
 
     In the model/view architecture, the model provides a standard interface
-    that views and delegates use to access data. In Qt, the standard
+    that views and delegates use to access data. In BobUI, the standard
     interface is defined by the QAbstractItemModel class. No matter how the
     items of data are stored in any underlying data structure, all subclasses
     of QAbstractItemModel represent the data as a hierarchical structure
@@ -387,9 +387,9 @@
 
     Items in a model can perform various \e roles for other components,
     allowing different kinds of data to be supplied for different situations.
-    For example, Qt::DisplayRole is used to access a string that can be
+    For example, BobUI::DisplayRole is used to access a string that can be
     displayed as text in a view. Typically, items contain data for a number of
-    different roles, and the standard roles are defined by Qt::ItemDataRole.
+    different roles, and the standard roles are defined by BobUI::ItemDataRole.
 
     We can ask the model for the item's data by passing it the model index
     corresponding to the item, and by specifying a role to obtain the type
@@ -410,7 +410,7 @@
     \endtable
 
     Most common uses for item data are covered by the standard roles defined in
-    Qt::ItemDataRole. By supplying appropriate item data for each role, models
+    BobUI::ItemDataRole. By supplying appropriate item data for each role, models
     can provide hints to views and delegates about how items should be
     presented to the user. Different kinds of views have the freedom to
     interpret or ignore this information as required. It is also possible to
@@ -433,7 +433,7 @@
     \li If an invalid model index is specified for the parent item when an index
        is requested using \l{QAbstractItemModel::index()}{index()}, the index
        returned refers to a top-level item in the model.
-    \li The \l{Qt::ItemDataRole}{role} distinguishes between the
+    \li The \l{BobUI::ItemDataRole}{role} distinguishes between the
        different kinds of data associated with an item.
     \endlist
 
@@ -473,7 +473,7 @@
     of all the items that we want.
     The text stored in each item is retrieved using the model's
     \l{QFileSystemModel::}{data()} function. We specify the model index and
-    the \l{Qt::ItemDataRole}{DisplayRole} to obtain data for the
+    the \l{BobUI::ItemDataRole}{DisplayRole} to obtain data for the
     item in the form of a string.
 
     \snippet simplemodel-use/main.cpp 2
@@ -540,7 +540,7 @@
     \l{Handling Selections in Item Views}{selections} which can be maintained
     separately for each view, or shared between multiple views.
 
-    Some views, such as QTableView and QTreeView, display headers as well
+    Some views, such as BOBUIableView and BOBUIreeView, display headers as well
     as items. These are also implemented by a view class, QHeaderView.
     Headers usually access the same model as the view that contains them.
     They retrieve data from the model using the
@@ -551,12 +551,12 @@
 
     \section2 Using an existing view
 
-    Qt provides three ready-to-use view classes that present data from
+    BobUI provides three ready-to-use view classes that present data from
     models in ways that are familiar to most users.
     QListView can display items from a model as a simple list, or in the
-    form of a classic icon view. QTreeView displays items from a
+    form of a classic icon view. BOBUIreeView displays items from a
     model as a hierarchy of lists, allowing deeply nested structures to be
-    represented in a compact way. QTableView presents items from a model
+    represented in a compact way. BOBUIableView presents items from a model
     in the form of a table, much like the layout of a spreadsheet
     application.
 
@@ -697,10 +697,10 @@
 
     \section2 Using an existing delegate
 
-    The standard views provided with Qt use instances of \l QStyledItemDelegate
+    The standard views provided with BobUI use instances of \l QStyledItemDelegate
     to provide editing facilities. This default implementation of the
     delegate interface renders items in the usual style for each of the
-    standard views: \l QListView, \l QTableView, and \l QTreeView.
+    standard views: \l QListView, \l BOBUIableView, and \l BOBUIreeView.
 
     All the standard roles are handled by the default delegate used by
     the standard views. The way these are interpreted is described in the
@@ -767,7 +767,7 @@
 
     The delegate must provide a function to copy model data into the
     editor. In this example, we read the data stored in the
-    \l{Qt::ItemDataRole}{display role}, and set the value in the
+    \l{BobUI::ItemDataRole}{display role}, and set the value in the
     spin box accordingly.
 
     \snippet qitemdelegate/spinbox-delegate.cpp setEditorData
@@ -848,7 +848,7 @@
     more control over how the editor widget behaves at the cost of
     writing additional code. It is usually easier to install an event
     filter in the delegate if you need to customize the behavior of
-    a standard Qt editor widget.
+    a standard BobUI editor widget.
 
     Delegates do not have to emit these hints, but those that do not will
     be less integrated into applications, and will be less usable than
@@ -1137,8 +1137,8 @@
     The separation of functionality between the model/view components allows
     models to be created that can take advantage of existing views. This
     approach lets us present data from a variety of sources using standard
-    graphical user interface components, such as QListView, QTableView, and
-    QTreeView.
+    graphical user interface components, such as QListView, BOBUIableView, and
+    BOBUIreeView.
 
     The QAbstractItemModel class provides an interface that is flexible
     enough to support data sources that arrange information in hierarchical
@@ -1254,7 +1254,7 @@
     the row number is within the range of items in the string list, and the
     requested role is one that we support.
 
-    Some views, such as QTreeView and QTableView, are able to display headers
+    Some views, such as BOBUIreeView and BOBUIableView, are able to display headers
     along with the item data. If our model is displayed in a view with headers,
     we want the headers to show the row and column numbers. We can provide
     information about the headers by subclassing the
@@ -1273,12 +1273,12 @@
 
     An item can have several roles, giving out different data depending on the
     role specified. The items in our model only have one role,
-    \l{Qt::ItemDataRole}{DisplayRole}, so we return the data
+    \l{BobUI::ItemDataRole}{DisplayRole}, so we return the data
     for items irrespective of the role specified.
     However, we could reuse the data we provide for the
-    \l{Qt::ItemDataRole}{DisplayRole} in
+    \l{BobUI::ItemDataRole}{DisplayRole} in
     other roles, such as the
-    \l{Qt::ItemDataRole}{ToolTipRole} that views can use to
+    \l{BobUI::ItemDataRole}{ToolTipRole} that views can use to
     display information about items in a tooltip.
 
     \section2 An editable model
@@ -1318,9 +1318,9 @@
     can modify the string list, we must make sure that the index is
     valid, the item is of the correct type, and that the role is
     supported. By convention, we insist that the role is the
-    \l{Qt::ItemDataRole}{EditRole} since this is the role used by the
+    \l{BobUI::ItemDataRole}{EditRole} since this is the role used by the
     standard item delegate. For boolean values, however, you can use
-    Qt::CheckStateRole and set the Qt::ItemIsUserCheckable flag; a
+    BobUI::CheckStateRole and set the BobUI::ItemIsUserCheckable flag; a
     checkbox is then used for editing the value. The underlying
     data in this model is the same for all roles, so this detail just
     makes it easier to integrate the model with standard components.
@@ -1331,7 +1331,7 @@
     one item of data has changed, the range of items specified in the signal
     is limited to just one model index.
 
-    Also the data() function needs to be changed to add the Qt::EditRole test:
+    Also the data() function needs to be changed to add the BobUI::EditRole test:
 
     \snippet stringlistmodel/model.cpp 1
 
@@ -1401,8 +1401,8 @@
     \section1 Item View Convenience Classes
 
     The item-based widgets have names which reflect their uses:
-    \c QListWidget provides a list of items, \c QTreeWidget displays a
-    multi-level tree structure, and \c QTableWidget provides a table of cell
+    \c QListWidget provides a list of items, \c BOBUIreeWidget displays a
+    multi-level tree structure, and \c BOBUIableWidget provides a table of cell
     items. Each class inherits the behavior of the \c QAbstractItemView
     class which implements common behavior for item selection and header
     management.
@@ -1436,7 +1436,7 @@
 
     By default, items in a list are presented in the order of their creation.
     Lists of items can be sorted according to the criteria given in
-    \l{Qt::SortOrder} to produce a list of items that is sorted in forward or
+    \l{BobUI::SortOrder} to produce a list of items that is sorted in forward or
     reverse alphabetical order:
 
     \snippet qlistwidget-using/mainwindow.cpp 4
@@ -1444,19 +1444,19 @@
 
     \section2 Tree widgets
 
-    Trees or hierarchical lists of items are provided by the \c QTreeWidget
-    and \c QTreeWidgetItem classes. Each item in the tree widget can have
+    Trees or hierarchical lists of items are provided by the \c BOBUIreeWidget
+    and \c BOBUIreeWidgetItem classes. Each item in the tree widget can have
     child items of its own, and can display a number of columns of
     information. Tree widgets are created just like any other widget:
 
-    \snippet qtreewidget-using/mainwindow.cpp 0
+    \snippet bobuireewidget-using/mainwindow.cpp 0
 
     Before items can be added to the tree widget, the number of columns must
     be set. For example, we could define two columns, and create a header
     to provide labels at the top of each column:
 
-    \snippet qtreewidget-using/mainwindow.cpp 1
-    \snippet qtreewidget-using/mainwindow.cpp 2
+    \snippet bobuireewidget-using/mainwindow.cpp 1
+    \snippet bobuireewidget-using/mainwindow.cpp 2
 
     The easiest way to set up the labels for each section is to supply a string
     list. For more sophisticated headers, you can construct a tree item,
@@ -1467,20 +1467,20 @@
     can ensure that they are listed in a particular order by specifying the
     previous item when constructing each item:
 
-    \snippet qtreewidget-using/mainwindow.cpp 3
+    \snippet bobuireewidget-using/mainwindow.cpp 3
     \codeline
-    \snippet qtreewidget-using/mainwindow.cpp 4
+    \snippet bobuireewidget-using/mainwindow.cpp 4
 
     Tree widgets deal with top-level items slightly differently to other
     items from deeper within the tree. Items can be removed from the top
     level of the tree by calling the tree widget's
-    \l{QTreeWidget::takeTopLevelItem()}{takeTopLevelItem()} function, but
+    \l{BOBUIreeWidget::takeTopLevelItem()}{takeTopLevelItem()} function, but
     items from lower levels are removed by calling their parent item's
-    \l{QTreeWidgetItem::takeChild()}{takeChild()} function.
+    \l{BOBUIreeWidgetItem::takeChild()}{takeChild()} function.
     Items are inserted in the top level of the tree with the
-    \l{QTreeWidget::insertTopLevelItem()}{insertTopLevelItem()} function.
+    \l{BOBUIreeWidget::insertTopLevelItem()}{insertTopLevelItem()} function.
     At lower levels in the tree, the parent item's
-    \l{QTreeWidgetItem::insertChild()}{insertChild()} function is used.
+    \l{BOBUIreeWidgetItem::insertChild()}{insertChild()} function is used.
 
     It is easy to move items around between the top level and lower levels
     in the tree. We just need to check whether the items are top-level items
@@ -1488,35 +1488,35 @@
     function. For example, we can remove the current item in the tree widget
     regardless of its location:
 
-    \snippet qtreewidget-using/mainwindow.cpp 10
+    \snippet bobuireewidget-using/mainwindow.cpp 10
 
     Inserting the item somewhere else in the tree widget follows the same
     pattern:
 
-    \snippet qtreewidget-using/mainwindow.cpp 8
-    \snippet qtreewidget-using/mainwindow.cpp 9
+    \snippet bobuireewidget-using/mainwindow.cpp 8
+    \snippet bobuireewidget-using/mainwindow.cpp 9
 
     \section2 Table widgets
 
     Tables of items similar to those found in spreadsheet applications
-    are constructed with the \c QTableWidget and \c QTableWidgetItem. These
+    are constructed with the \c BOBUIableWidget and \c BOBUIableWidgetItem. These
     provide a scrolling table widget with headers and items to use within it.
 
     Tables can be created with a set number of rows and columns, or these
     can be added to an unsized table as they are needed.
 
     \snippet include/mainwindow.h 0
-    \snippet qtablewidget-using/mainwindow.cpp 0
+    \snippet bobuiablewidget-using/mainwindow.cpp 0
 
     Items are constructed outside the table before being added to the table
     at the required location:
 
-    \snippet qtablewidget-using/mainwindow.cpp 3
+    \snippet bobuiablewidget-using/mainwindow.cpp 3
 
     Horizontal and vertical headers can be added to the table by constructing
     items outside the table and using them as headers:
 
-    \snippet qtablewidget-using/mainwindow.cpp 1
+    \snippet bobuiablewidget-using/mainwindow.cpp 1
 
     Note that the rows and columns in the table begin at zero.
 
@@ -1584,7 +1584,7 @@
     For example, we can find the sum of all the numeric values within a
     list of selected items with the following code:
 
-    \snippet qtablewidget-using/mainwindow.cpp 4
+    \snippet bobuiablewidget-using/mainwindow.cpp 4
 
     Note that for the single selection mode, the current item will be in
     the selection. In the multi-selection and extended selection modes, the
@@ -1599,11 +1599,11 @@
     to make this as consistent and simple as possible.
 
     Items are searched for by the text that they contain according to
-    criteria specified by a selection of values from Qt::MatchFlags.
+    criteria specified by a selection of values from BobUI::MatchFlags.
     We can obtain a list of matching items with the \c findItems()
     function:
 
-    \snippet qtreewidget-using/mainwindow.cpp 7
+    \snippet bobuireewidget-using/mainwindow.cpp 7
 
     The above code causes items in a tree widget to be selected if they
     contain the text given in the search string. This pattern can also be
@@ -1611,7 +1611,7 @@
 
     \section1 Using Drag and Drop with Item Views
 
-    Qt's drag and drop infrastructure is fully supported by the model/view framework.
+    BobUI's drag and drop infrastructure is fully supported by the model/view framework.
     Items in lists, tables, and trees can be dragged within the views, and data can be
     imported and exported as MIME-encoded data.
 
@@ -1630,10 +1630,10 @@
 
     \section2 Using convenience views
 
-    Each of the types of item used with QListWidget, QTableWidget, and QTreeWidget
+    Each of the types of item used with QListWidget, BOBUIableWidget, and BOBUIreeWidget
     is configured to use a different set of flags by default. For example, each
-    QListWidgetItem or QTreeWidgetItem is initially enabled, checkable, selectable,
-    and can be used as the source of a drag and drop operation; each QTableWidgetItem
+    QListWidgetItem or BOBUIreeWidgetItem is initially enabled, checkable, selectable,
+    and can be used as the source of a drag and drop operation; each BOBUIableWidgetItem
     can also be edited and used as the target of a drag and drop operation.
 
     Although all of the standard items have one or both flags set for drag and drop,
@@ -1683,8 +1683,8 @@
 
     \snippet qlistview-dnd/model.cpp 10
 
-    Although any combination of values from Qt::DropActions can be given, the
-    model needs to be written to support them. For example, to allow Qt::MoveAction
+    Although any combination of values from BobUI::DropActions can be given, the
+    model needs to be written to support them. For example, to allow BobUI::MoveAction
     to be used properly with a list model, the model must provide an implementation
     of QAbstractItemModel::removeRows(), either directly or by inheriting the
     implementation from its base class.
@@ -1697,7 +1697,7 @@
 
     For example, a model which provides a simple list based on QAbstractListModel
     can enable drag and drop for each of the items by ensuring that the flags
-    returned contain the \l Qt::ItemIsDragEnabled and \l Qt::ItemIsDropEnabled
+    returned contain the \l BobUI::ItemIsDragEnabled and \l BobUI::ItemIsDropEnabled
     values:
 
     \snippet qlistview-dnd/model.cpp 7
@@ -1850,7 +1850,7 @@
     \section2 Using proxy models
 
     Proxy models can be inserted between an existing model and any number of views.
-    Qt is supplied with a standard proxy model, QSortFilterProxyModel, that is usually
+    BobUI is supplied with a standard proxy model, QSortFilterProxyModel, that is usually
     instantiated and used directly, but can also be subclassed to provide custom filtering
     and sorting behavior. The QSortFilterProxyModel class can be used in the following way:
 
@@ -1950,13 +1950,13 @@
     \row \li \l{QAbstractItemModel::flags()}{flags()}
          \li Used by other components to obtain information about each item provided by
             the model. In many models, the combination of flags should include
-            Qt::ItemIsEnabled and Qt::ItemIsSelectable.
+            BobUI::ItemIsEnabled and BobUI::ItemIsSelectable.
     \row \li \l{QAbstractItemModel::data()}{data()}
          \li Used to supply item data to views and delegates. Generally, models only
-            need to supply data for Qt::DisplayRole and any application-specific user
-            roles, but it is also good practice to provide data for Qt::ToolTipRole,
-            Qt::AccessibleTextRole, and Qt::AccessibleDescriptionRole.
-            See the Qt::ItemDataRole enum documentation for information about the types
+            need to supply data for BobUI::DisplayRole and any application-specific user
+            roles, but it is also good practice to provide data for BobUI::ToolTipRole,
+            BobUI::AccessibleTextRole, and BobUI::AccessibleDescriptionRole.
+            See the BobUI::ItemDataRole enum documentation for information about the types
             associated with each role.
     \row \li \l{QAbstractItemModel::headerData()}{headerData()}
          \li Provides views with information to show in their headers. The information is
@@ -1986,14 +1986,14 @@
     \table 70%
     \row \li \l{QAbstractItemModel::flags()}{flags()}
          \li Must return an appropriate combination of flags for each item. In particular,
-            the value returned by this function must include \l{Qt::ItemIsEditable} in
+            the value returned by this function must include \l{BobUI::ItemIsEditable} in
             addition to the values applied to items in a read-only model.
     \row \li \l{QAbstractItemModel::setData()}{setData()}
          \li Used to modify the item of data associated with a specified model index.
             To be able to accept user input, provided by user interface elements, this
-            function must handle data associated with Qt::EditRole.
+            function must handle data associated with BobUI::EditRole.
             The implementation may also accept data associated with many different kinds
-            of roles specified by Qt::ItemDataRole. After changing the item of data,
+            of roles specified by BobUI::ItemDataRole. After changing the item of data,
             models must emit the \l{QAbstractItemModel::dataChanged()}{dataChanged()}
             signal to inform other components of the change.
     \row \li \l{QAbstractItemModel::setHeaderData()}{setHeaderData()}
@@ -2095,13 +2095,13 @@
     \l{QAbstractItemModel::}{rowCount()} implementation is only called when
     necessary. In such cases, the \l{QAbstractItemModel::}{hasChildren()}
     function can be reimplemented to provide an inexpensive way for views to
-    check for the presence of children and, in the case of QTreeView, draw
+    check for the presence of children and, in the case of BOBUIreeView, draw
     the appropriate decoration for their parent item.
 
     Whether the reimplementation of \l{QAbstractItemModel::}{hasChildren()}
     returns \c true or \c false, it may not be necessary for the view to call
     \l{QAbstractItemModel::}{rowCount()} to find out how many children are
-    present. For example, QTreeView does not need to know how many children
+    present. For example, BOBUIreeView does not need to know how many children
     there are if the parent item has not been expanded to show them.
 
     If it is known that many items will have children, reimplementing
@@ -2234,7 +2234,7 @@
 
     \table 70%
     \row \li \l{QAbstractItemModel::supportedDropActions()}{supportedDropActions()}
-         \li Used to return a combination of \l{Qt::DropActions}{drop actions},
+         \li Used to return a combination of \l{BobUI::DropActions}{drop actions},
             indicating the types of drag and drop operations that the model accepts.
     \row \li \l{QAbstractItemModel::mimeTypes()}{mimeTypes()}
          \li Used to return a list of MIME types that can be decoded and handled by
@@ -2274,10 +2274,10 @@
 
     \section3 Convenience views
 
-    The convenience views (QListWidget, QTableWidget, and QTreeWidget) override
+    The convenience views (QListWidget, BOBUIableWidget, and BOBUIreeWidget) override
     the default drag and drop functionality to provide less flexible, but more
     natural behavior that is appropriate for many applications. For example,
-    since it is more common to drop data into cells in a QTableWidget, replacing
+    since it is more common to drop data into cells in a BOBUIableWidget, replacing
     the existing contents with the data being transferred, the underlying model
     will set the data of the target items rather than insert new rows and columns
     into the model. For more information on drag and drop in convenience views,

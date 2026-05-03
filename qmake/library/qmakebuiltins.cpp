@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "qmakeevaluator.h"
 
@@ -20,10 +20,10 @@
 #include <qregularexpression.h>
 #include <qset.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 
 #ifdef PROEVALUATOR_THREAD_SAFE
-# include <qthreadpool.h>
+# include <bobuihreadpool.h>
 #endif
 #include <qversionnumber.h>
 #ifdef Q_OS_WIN
@@ -41,24 +41,24 @@
 #include <sys/stat.h>
 #include <sys/utsname.h>
 #else
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef Q_OS_WIN32
-#define QT_POPEN _popen
-#define QT_POPEN_READ "rb"
-#define QT_PCLOSE _pclose
+#define BOBUI_POPEN _popen
+#define BOBUI_POPEN_READ "rb"
+#define BOBUI_PCLOSE _pclose
 #else
-#define QT_POPEN popen
-#define QT_POPEN_READ "r"
-#define QT_PCLOSE pclose
+#define BOBUI_POPEN popen
+#define BOBUI_POPEN_READ "r"
+#define BOBUI_PCLOSE pclose
 #endif
 
 using namespace QMakeInternal;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define fL1S(s) QString::fromLatin1(s)
 
@@ -217,7 +217,7 @@ void QMakeEvaluator::initFunctionStatics()
 
 static bool isTrue(const ProString &str)
 {
-    return !str.compare(statics.strtrue, Qt::CaseInsensitive) || str.toInt();
+    return !str.compare(statics.strtrue, BobUI::CaseInsensitive) || str.toInt();
 }
 
 bool
@@ -463,7 +463,7 @@ QMakeEvaluator::writeFile(const QString &ctx, const QString &fn, QIODevice::Open
     return ReturnTrue;
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 void QMakeEvaluator::runProcess(QProcess *proc, const QString &command) const
 {
     proc->setWorkingDirectory(currentDirectory());
@@ -484,13 +484,13 @@ void QMakeEvaluator::runProcess(QProcess *proc, const QString &command) const
 QByteArray QMakeEvaluator::getCommandOutput(const QString &args, int *exitCode) const
 {
     QByteArray out;
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QProcess proc;
     runProcess(&proc, args);
     *exitCode = (proc.exitStatus() == QProcess::NormalExit) ? proc.exitCode() : -1;
     QByteArray errout = proc.readAllStandardError();
 # ifdef PROEVALUATOR_FULL
-    // FIXME: Qt really should have the option to set forwarding per channel
+    // FIXME: BobUI really should have the option to set forwarding per channel
     fputs(errout.constData(), stderr);
 # else
     if (!errout.isEmpty()) {
@@ -503,13 +503,13 @@ QByteArray QMakeEvaluator::getCommandOutput(const QString &args, int *exitCode) 
 # endif
     out = proc.readAllStandardOutput();
 # ifdef Q_OS_WIN
-    // FIXME: Qt's line end conversion on sequential files should really be fixed
+    // FIXME: BobUI's line end conversion on sequential files should really be fixed
     out.replace("\r\n", "\n");
 # endif
 #else
-    if (FILE *proc = QT_POPEN(QString(QLatin1String("cd ")
+    if (FILE *proc = BOBUI_POPEN(QString(QLatin1String("cd ")
                                + IoUtils::shellQuote(QDir::toNativeSeparators(currentDirectory()))
-                               + QLatin1String(" && ") + args).toLocal8Bit().constData(), QT_POPEN_READ)) {
+                               + QLatin1String(" && ") + args).toLocal8Bit().constData(), BOBUI_POPEN_READ)) {
         while (!feof(proc)) {
             char buff[10 * 1024];
             int read_in = int(fread(buff, 1, sizeof(buff), proc));
@@ -517,7 +517,7 @@ QByteArray QMakeEvaluator::getCommandOutput(const QString &args, int *exitCode) 
                 break;
             out += QByteArray(buff, read_in);
         }
-        int ec = QT_PCLOSE(proc);
+        int ec = BOBUI_PCLOSE(proc);
 # ifdef Q_OS_WIN
         *exitCode = ec >= 0 ? ec : -1;
 # else
@@ -746,7 +746,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
         const auto vars = values(map(args.at(0)));
         for (const ProString &var : vars) {
             // FIXME: this is inconsistent with the "there are no empty strings" dogma.
-            const auto splits = var.toQStringView().split(sep, Qt::KeepEmptyParts);
+            const auto splits = var.toQStringView().split(sep, BobUI::KeepEmptyParts);
             for (const auto &splt : splits)
                 ret << ProString(splt).setSource(var);
         }
@@ -817,17 +817,17 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
         bool lines = false;
         bool singleLine = true;
         if (args.size() > 1) {
-            if (!args.at(1).compare(QLatin1String("false"), Qt::CaseInsensitive))
+            if (!args.at(1).compare(QLatin1String("false"), BobUI::CaseInsensitive))
                 singleLine = false;
-            else if (!args.at(1).compare(QLatin1String("blob"), Qt::CaseInsensitive))
+            else if (!args.at(1).compare(QLatin1String("blob"), BobUI::CaseInsensitive))
                 blob = true;
-            else if (!args.at(1).compare(QLatin1String("lines"), Qt::CaseInsensitive))
+            else if (!args.at(1).compare(QLatin1String("lines"), BobUI::CaseInsensitive))
                 lines = true;
         }
         QString fn = filePathEnvArg0(args);
         QFile qfile(fn);
         if (qfile.open(QIODevice::ReadOnly)) {
-            QTextStream stream(&qfile);
+            BOBUIextStream stream(&qfile);
             if (blob) {
                 ret += ProString(stream.readAll());
             } else {
@@ -884,11 +884,11 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
         bool lines = false;
         bool singleLine = true;
         if (args.size() > 1) {
-            if (!args.at(1).compare(QLatin1String("false"), Qt::CaseInsensitive))
+            if (!args.at(1).compare(QLatin1String("false"), BobUI::CaseInsensitive))
                 singleLine = false;
-            else if (!args.at(1).compare(QLatin1String("blob"), Qt::CaseInsensitive))
+            else if (!args.at(1).compare(QLatin1String("blob"), BobUI::CaseInsensitive))
                 blob = true;
-            else if (!args.at(1).compare(QLatin1String("lines"), Qt::CaseInsensitive))
+            else if (!args.at(1).compare(QLatin1String("lines"), BobUI::CaseInsensitive))
                 lines = true;
         }
         int exitCode;
@@ -898,7 +898,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
                     ProStringList(ProString(QString::number(exitCode)));
         }
         if (lines) {
-            QTextStream stream(bytes);
+            BOBUIextStream stream(bytes);
             while (!stream.atEnd())
                 ret += ProString(stream.readLine());
         } else {
@@ -1055,7 +1055,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
         }
         QFile qfile;
         if (qfile.open(stdin, QIODevice::ReadOnly)) {
-            QTextStream t(&qfile);
+            BOBUIextStream t(&qfile);
             const QString &line = t.readLine();
             if (t.atEnd()) {
                 fputs("\n", stderr);
@@ -1207,11 +1207,11 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
     case E_READ_REGISTRY: {
         HKEY tree;
         const auto par = args.at(0);
-        if (!par.compare(QLatin1String("HKCU"), Qt::CaseInsensitive)
-                || !par.compare(QLatin1String("HKEY_CURRENT_USER"), Qt::CaseInsensitive)) {
+        if (!par.compare(QLatin1String("HKCU"), BobUI::CaseInsensitive)
+                || !par.compare(QLatin1String("HKEY_CURRENT_USER"), BobUI::CaseInsensitive)) {
             tree = HKEY_CURRENT_USER;
-        } else if (!par.compare(QLatin1String("HKLM"), Qt::CaseInsensitive)
-                || !par.compare(QLatin1String("HKEY_LOCAL_MACHINE"), Qt::CaseInsensitive)) {
+        } else if (!par.compare(QLatin1String("HKLM"), BobUI::CaseInsensitive)
+                || !par.compare(QLatin1String("HKEY_LOCAL_MACHINE"), BobUI::CaseInsensitive)) {
             tree = HKEY_LOCAL_MACHINE;
         } else {
             evalError(fL1S("read_registry(): invalid or unsupported registry tree %1.")
@@ -1222,10 +1222,10 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
         if (args.count() > 2) {
             const auto opt = args.at(2);
             if (opt == "32"
-                    || !opt.compare(QLatin1String("wow64_32key"), Qt::CaseInsensitive)) {
+                    || !opt.compare(QLatin1String("wow64_32key"), BobUI::CaseInsensitive)) {
                 flags = KEY_WOW64_32KEY;
             } else if (opt == "64"
-                    || !opt.compare(QLatin1String("wow64_64key"), Qt::CaseInsensitive)) {
+                    || !opt.compare(QLatin1String("wow64_64key"), BobUI::CaseInsensitive)) {
                 flags = KEY_WOW64_64KEY;
             } else {
                 evalError(fL1S("read_registry(): invalid option %1.")
@@ -1233,7 +1233,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinExpand(
                 goto allfail;
             }
         }
-        ret << ProString(qt_readRegistryKey(tree, args.at(1).toQString(m_tmp1), flags));
+        ret << ProString(bobui_readRegistryKey(tree, args.at(1).toQString(m_tmp1), flags));
         break;
     }
 #endif
@@ -1313,9 +1313,9 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::testFunc_cache(const ProStringList &
                 if (baseEnv->inProgress && baseEnv->evaluator != this) {
                     // The env is still in the works, but it may be already past the cache
                     // loading. So we need to wait for completion and amend it as usual.
-                    QThreadPool::globalInstance()->releaseThread();
+                    BOBUIhreadPool::globalInstance()->releaseThread();
                     baseEnv->cond.wait(&baseEnv->mutex);
-                    QThreadPool::globalInstance()->reserveThread();
+                    BOBUIhreadPool::globalInstance()->reserveThread();
                 }
                 if (!baseEnv->isOk)
                     break;
@@ -1565,7 +1565,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinConditional(
         if (args.size() == 1)
             return returnBool(isActiveConfig(args.at(0).toQStringView()));
         const auto mutuals = args.at(1).toQStringView().split(QLatin1Char('|'),
-                                                             Qt::SkipEmptyParts);
+                                                             BobUI::SkipEmptyParts);
         const ProStringList &configs = values(statics.strCONFIG);
 
         for (int i = configs.size() - 1; i >= 0; i--) {
@@ -1602,7 +1602,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinConditional(
             }
         } else {
             const auto mutuals = args.at(2).toQStringView().split(QLatin1Char('|'),
-                                                                 Qt::SkipEmptyParts);
+                                                                 BobUI::SkipEmptyParts);
             for (int i = l.size() - 1; i >= 0; i--) {
                 const ProString &val = l[i];
                 for (int mut = 0; mut < mutuals.size(); mut++) {
@@ -1790,7 +1790,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinConditional(
 #ifdef PROEVALUATOR_FULL
         if (m_cumulative) // Anything else would be insanity
             return ReturnFalse;
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
         QProcess proc;
         proc.setProcessChannelMode(QProcess::ForwardedChannels);
         runProcess(&proc, args.at(0).toQString());
@@ -1882,7 +1882,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinConditional(
     case T_CACHE:
         return testFunc_cache(args);
     case T_RELOAD_PROPERTIES:
-#ifdef QT_BUILD_QMAKE
+#ifdef BOBUI_BUILD_QMAKE
         m_option->reloadProperties();
 #endif
         return ReturnTrue;
@@ -1892,4 +1892,4 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::evaluateBuiltinConditional(
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

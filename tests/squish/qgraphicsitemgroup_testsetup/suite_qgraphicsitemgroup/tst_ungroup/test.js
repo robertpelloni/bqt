@@ -1,12 +1,12 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 import * as names from 'names.js';
 
 function main() {
     startApplication("qgraphicsitemgroup");
     test.compare(waitForObjectExists(names.groupBox2UngroupQPushButton).enabled, false);
-    mouseDrag(waitForObject(names.widgetViewQGraphicsView), 220, 80, 357, 315, 1, Qt.LeftButton);
+    mouseDrag(waitForObject(names.widgetViewQGraphicsView), 220, 80, 357, 315, 1, BobUI.LeftButton);
     test.compare(waitForObjectExists(names.groupBox2UngroupQPushButton).enabled, false);
     clickButton(waitForObject(names.groupBoxGroupQPushButton));
     test.compare(waitForObjectExists(names.groupBox2UngroupQPushButton).enabled,true);

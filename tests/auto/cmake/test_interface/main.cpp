@@ -1,11 +1,11 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 
 #include "mainwindow.h"
 
-#if !defined(QT_CORE_LIB) || !defined(QT_GUI_LIB) || !defined(QT_WIDGETS_LIB)
+#if !defined(BOBUI_CORE_LIB) || !defined(BOBUI_GUI_LIB) || !defined(BOBUI_WIDGETS_LIB)
 #error Missing module definitions
 #endif
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTPNETWORKREPLY_H
 #define QHTTPNETWORKREPLY_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qbytedatabuffer_p.h>
+#include <BobUINetwork/private/qbytedatabuffer_p.h>
 
 #include <qplatformdefs.h>
 
-#include <QtNetwork/qtcpsocket.h>
+#include <BobUINetwork/bobuicpsocket.h>
 // it's safe to include these even if SSL support is not enabled
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qsslerror.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qsslerror.h>
 
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkreply.h>
 #include <qbuffer.h>
 
 #include <private/qobject_p.h>
@@ -35,19 +35,19 @@
 #include <private/qauthenticator_p.h>
 #include <private/qringbuffer_p.h>
 
-#ifndef QT_NO_NETWORKPROXY
-Q_MOC_INCLUDE(<QtNetwork/QNetworkProxy>)
+#ifndef BOBUI_NO_NETWORKPROXY
+Q_MOC_INCLUDE(<BobUINetwork/QNetworkProxy>)
 #endif
-Q_MOC_INCLUDE(<QtNetwork/QAuthenticator>)
+Q_MOC_INCLUDE(<BobUINetwork/QAuthenticator>)
 
 #include <private/qdecompresshelper_p.h>
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/qhttpheaders.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttpNetworkConnection;
 class QHttpNetworkConnectionChannel;
@@ -128,7 +128,7 @@ public:
 
     bool isCompressed() const;
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslConfiguration sslConfiguration() const;
     void setSslConfiguration(const QSslConfiguration &config);
     void ignoreSslErrors();
@@ -150,7 +150,7 @@ Q_SIGNALS:
     void dataReadProgress(qint64 done, qint64 total);
     void dataSendProgress(qint64 done, qint64 total);
     void cacheCredentials(const QHttpNetworkRequest &request, QAuthenticator *authenticator);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 #endif
     void authenticationRequired(const QHttpNetworkRequest &request, QAuthenticator *authenticator);
@@ -244,6 +244,6 @@ public:
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHTTPNETWORKREPLY_H

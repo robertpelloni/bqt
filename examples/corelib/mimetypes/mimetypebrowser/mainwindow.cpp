@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "mimetypemodel.h"
@@ -20,11 +20,11 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_model(new MimetypeModel(this))
-    , m_treeView(new QTreeView(this))
-    , m_detailsText(new QTextEdit(this))
+    , m_treeView(new BOBUIreeView(this))
+    , m_detailsText(new BOBUIextEdit(this))
     , m_findIndex(0)
 {
-    setWindowTitle(tr("Qt Mime Database Browser"));
+    setWindowTitle(tr("BobUI Mime Database Browser"));
 
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     QAction *detectFileAction =
@@ -44,13 +44,13 @@ MainWindow::MainWindow(QWidget *parent)
                                                &MainWindow::findPrevious);
     m_findPreviousAction->setShortcuts(QKeySequence::FindPrevious);
 
-    menuBar()->addMenu(tr("&About"))->addAction(tr("&About Qt"), qApp, &QApplication::aboutQt);
+    menuBar()->addMenu(tr("&About"))->addAction(tr("&About BobUI"), qApp, &QApplication::aboutBobUI);
 
     QSplitter *centralSplitter = new QSplitter(this);
     setCentralWidget(centralSplitter);
     m_treeView->setUniformRowHeights(true);
     m_treeView->setModel(m_model);
-    const auto flags = Qt::MatchContains | Qt::MatchFixedString | Qt::MatchRecursive;
+    const auto flags = BobUI::MatchContains | BobUI::MatchFixedString | BobUI::MatchRecursive;
     const auto items = m_model->findItems("application/octet-stream", flags);
     if (!items.isEmpty())
         m_treeView->expand(m_model->indexFromItem(items.constFirst()));
@@ -135,7 +135,7 @@ void MainWindow::find()
 
     m_findMatches.clear();
     m_findIndex = 0;
-    const auto flags = Qt::MatchContains | Qt::MatchFixedString | Qt::MatchRecursive;
+    const auto flags = BobUI::MatchContains | BobUI::MatchFixedString | BobUI::MatchRecursive;
     const QList<QStandardItem *> items = m_model->findItems(value, flags);
     for (const QStandardItem *item : items)
         m_findMatches.append(m_model->indexFromItem(item));

@@ -1,16 +1,16 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(multiview
+bobui_internal_add_manual_test(multiview
     GUI
     SOURCES
         multiview.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
-qt_internal_add_resource(multiview "multiview"
+bobui_internal_add_resource(multiview "multiview"
     PREFIX
         "/"
     FILES

@@ -1,9 +1,9 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QRasterWindow>
-#include <QtGui/QEventPoint>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/QEventPoint>
 
 using namespace MockCompositor;
 
@@ -27,7 +27,7 @@ class tst_seat : public QObject, private SeatCompositor
 {
     Q_OBJECT
 private slots:
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void bindsToSeat();
 
     // Pointer tests
@@ -92,7 +92,7 @@ void tst_seat::usesEnterSerial()
     });
     QCOMPOSITOR_TRY_VERIFY(pointer()->cursorSurface());
 
-    QTRY_COMPARE(setCursorSpy.size(), 1);
+    BOBUIRY_COMPARE(setCursorSpy.size(), 1);
     QCOMPARE(setCursorSpy.takeFirst().at(0).toUInt(), enterSerial);
 }
 
@@ -108,14 +108,14 @@ public:
         QRasterWindow::wheelEvent(event);
 //        qDebug() << event << "angleDelta" << event->angleDelta() << "pixelDelta" << event->pixelDelta();
 
-        if (event->phase() != Qt::ScrollUpdate && event->phase() != Qt::NoScrollPhase) {
+        if (event->phase() != BobUI::ScrollUpdate && event->phase() != BobUI::NoScrollPhase) {
             // Shouldn't have deltas in the these phases
             QCOMPARE(event->angleDelta(), QPoint(0, 0));
             QCOMPARE(event->pixelDelta(), QPoint(0, 0));
         }
 
         // We didn't press any buttons
-        QCOMPARE(event->buttons(), Qt::NoButton);
+        QCOMPARE(event->buttons(), BobUI::NoButton);
 
         m_events.append(Event{event});
     }
@@ -130,10 +130,10 @@ public:
             , inverted(event->inverted())
         {
         }
-        Qt::ScrollPhase phase{};
+        BobUI::ScrollPhase phase{};
         QPoint pixelDelta;
         QPoint angleDelta; // eights of a degree, positive is upwards, left
-        Qt::MouseEventSource source{};
+        BobUI::MouseEventSource source{};
         bool inverted = false;
     };
     QList<Event> m_events;
@@ -141,24 +141,24 @@ public:
 
 void tst_seat::simpleAxis_data()
 {
-    QTest::addColumn<uint>("axis");
-    QTest::addColumn<qreal>("value");
-    QTest::addColumn<QPoint>("angleDelta");
-    QTest::addColumn<bool>("inverted");
+    BOBUIest::addColumn<uint>("axis");
+    BOBUIest::addColumn<qreal>("value");
+    BOBUIest::addColumn<QPoint>("angleDelta");
+    BOBUIest::addColumn<bool>("inverted");
 
     // Directions in regular windows/linux terms (no "natural" scrolling)
-    QTest::newRow("down") << uint(Pointer::axis_vertical_scroll) << 1.0 << QPoint{0, -12} << false;
-    QTest::newRow("up") << uint(Pointer::axis_vertical_scroll) << -1.0 << QPoint{0, 12} << false;
-    QTest::newRow("left") << uint(Pointer::axis_horizontal_scroll) << 1.0 << QPoint{-12, 0} << false;
-    QTest::newRow("right") << uint(Pointer::axis_horizontal_scroll) << -1.0 << QPoint{12, 0} << false;
-    QTest::newRow("up big") << uint(Pointer::axis_vertical_scroll) << -10.0 << QPoint{0, 120} << false;
+    BOBUIest::newRow("down") << uint(Pointer::axis_vertical_scroll) << 1.0 << QPoint{0, -12} << false;
+    BOBUIest::newRow("up") << uint(Pointer::axis_vertical_scroll) << -1.0 << QPoint{0, 12} << false;
+    BOBUIest::newRow("left") << uint(Pointer::axis_horizontal_scroll) << 1.0 << QPoint{-12, 0} << false;
+    BOBUIest::newRow("right") << uint(Pointer::axis_horizontal_scroll) << -1.0 << QPoint{12, 0} << false;
+    BOBUIest::newRow("up big") << uint(Pointer::axis_vertical_scroll) << -10.0 << QPoint{0, 120} << false;
 
     // (natural) scrolling
-    QTest::newRow("down inverted") << uint(Pointer::axis_vertical_scroll) << 1.0 << QPoint{0, -12} << true;
-    QTest::newRow("up inverted") << uint(Pointer::axis_vertical_scroll) << -1.0 << QPoint{0, 12} << true;
-    QTest::newRow("left inverted") << uint(Pointer::axis_horizontal_scroll) << 1.0 << QPoint{-12, 0} << true;
-    QTest::newRow("right inverted") << uint(Pointer::axis_horizontal_scroll) << -1.0 << QPoint{12, 0} << true;
-    QTest::newRow("up big inverted") << uint(Pointer::axis_vertical_scroll) << -10.0 << QPoint{0, 120} << true;
+    BOBUIest::newRow("down inverted") << uint(Pointer::axis_vertical_scroll) << 1.0 << QPoint{0, -12} << true;
+    BOBUIest::newRow("up inverted") << uint(Pointer::axis_vertical_scroll) << -1.0 << QPoint{0, 12} << true;
+    BOBUIest::newRow("left inverted") << uint(Pointer::axis_horizontal_scroll) << 1.0 << QPoint{-12, 0} << true;
+    BOBUIest::newRow("right inverted") << uint(Pointer::axis_horizontal_scroll) << -1.0 << QPoint{12, 0} << true;
+    BOBUIest::newRow("up big inverted") << uint(Pointer::axis_vertical_scroll) << -10.0 << QPoint{0, 120} << true;
 }
 
 void tst_seat::simpleAxis()
@@ -185,15 +185,15 @@ void tst_seat::simpleAxis()
         p->sendFrame(client());
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::NoScrollPhase);
+        QCOMPARE(e.phase, BobUI::NoScrollPhase);
         // Pixel delta should only be set if we know it's a high-res input device (which we don't)
         QCOMPARE(e.pixelDelta, QPoint(0, 0));
         // There has been no information about what created the event.
         // Documentation says not synthesized is appropriate in such cases
-        QCOMPARE(e.source, Qt::MouseEventNotSynthesized);
+        QCOMPARE(e.source, BobUI::MouseEventNotSynthesized);
         QCOMPARE(e.angleDelta, angleDelta);
 
         QCOMPARE(e.inverted, inverted);
@@ -217,34 +217,34 @@ void tst_seat::fingerScroll()
         p->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::ScrollBegin);
+        QCOMPARE(e.phase, BobUI::ScrollBegin);
         QCOMPARE(e.angleDelta, QPoint());
         QCOMPARE(e.pixelDelta, QPoint());
     }
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     // For some reason we send two ScrollBegins, one for each direction, not sure if this is really
-    // necessary, (could be removed from QtBase, hence the conditional below.
-    if (window.m_events.first().phase == Qt::ScrollBegin) {
+    // necessary, (could be removed from BobUIBase, hence the conditional below.
+    if (window.m_events.first().phase == BobUI::ScrollBegin) {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.angleDelta, QPoint());
         QCOMPARE(e.pixelDelta, QPoint());
     }
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::ScrollUpdate);
+        QCOMPARE(e.phase, BobUI::ScrollUpdate);
         QVERIFY(qAbs(e.angleDelta.x()) <= qAbs(e.angleDelta.y())); // Vertical scroll
 //        QCOMPARE(e.angleDelta, angleDelta); // TODO: what should this be?
         QCOMPARE(e.pixelDelta, QPoint(0, -10));
-        QCOMPARE(e.source, Qt::MouseEventSynthesizedBySystem); // A finger is not a wheel
+        QCOMPARE(e.source, BobUI::MouseEventSynthesizedBySystem); // A finger is not a wheel
     }
 
-    QTRY_VERIFY(window.m_events.empty());
+    BOBUIRY_VERIFY(window.m_events.empty());
 
     // Scroll horizontally as well
     exec([&] {
@@ -252,13 +252,13 @@ void tst_seat::fingerScroll()
         pointer()->sendAxis(client(), Pointer::axis_horizontal_scroll, 10);
         pointer()->sendFrame(client());
     });
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::ScrollUpdate);
+        QCOMPARE(e.phase, BobUI::ScrollUpdate);
         QVERIFY(qAbs(e.angleDelta.x()) > qAbs(e.angleDelta.y())); // Horizontal scroll
         QCOMPARE(e.pixelDelta, QPoint(-10, 0));
-        QCOMPARE(e.source, Qt::MouseEventSynthesizedBySystem); // A finger is not a wheel
+        QCOMPARE(e.source, BobUI::MouseEventSynthesizedBySystem); // A finger is not a wheel
     }
 
     // Scroll diagonally
@@ -268,16 +268,16 @@ void tst_seat::fingerScroll()
         pointer()->sendAxis(client(), Pointer::axis_vertical_scroll, 10);
         pointer()->sendFrame(client());
     });
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::ScrollUpdate);
+        QCOMPARE(e.phase, BobUI::ScrollUpdate);
         QCOMPARE(e.pixelDelta, QPoint(-10, -10));
-        QCOMPARE(e.source, Qt::MouseEventSynthesizedBySystem); // A finger is not a wheel
+        QCOMPARE(e.source, BobUI::MouseEventSynthesizedBySystem); // A finger is not a wheel
     }
 
-    // For diagonal events, Qt sends an additional compatibility ScrollUpdate event
-    if (window.m_events.first().phase == Qt::ScrollUpdate) {
+    // For diagonal events, BobUI sends an additional compatibility ScrollUpdate event
+    if (window.m_events.first().phase == BobUI::ScrollUpdate) {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.angleDelta, QPoint());
         QCOMPARE(e.pixelDelta, QPoint());
@@ -291,10 +291,10 @@ void tst_seat::fingerScroll()
         pointer()->sendFrame(client());
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::ScrollEnd);
+        QCOMPARE(e.phase, BobUI::ScrollEnd);
     }
 }
 
@@ -319,12 +319,12 @@ void tst_seat::fingerScrollSlow()
         p->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     QPoint accumulated;
-    while (window.m_events.first().phase != Qt::ScrollEnd) {
+    while (window.m_events.first().phase != BobUI::ScrollEnd) {
         auto e = window.m_events.takeFirst();
         accumulated += e.pixelDelta;
-        QTRY_VERIFY(!window.m_events.empty());
+        BOBUIRY_VERIFY(!window.m_events.empty());
     }
     QCOMPARE(accumulated.y(), -1);
 }
@@ -345,10 +345,10 @@ void tst_seat::highResolutionScroll()
         p->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::NoScrollPhase);
+        QCOMPARE(e.phase, BobUI::NoScrollPhase);
         QVERIFY(qAbs(e.angleDelta.x()) <= qAbs(e.angleDelta.y())); // Vertical scroll
         QCOMPARE(e.angleDelta, QPoint(0, -30));
         // Click scrolls are not continuous and should not have a pixel delta
@@ -364,10 +364,10 @@ void tst_seat::highResolutionScroll()
         p->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::NoScrollPhase);
+        QCOMPARE(e.phase, BobUI::NoScrollPhase);
         QVERIFY(qAbs(e.angleDelta.x()) <= qAbs(e.angleDelta.y())); // Vertical scroll
         QCOMPARE(e.angleDelta, QPoint(0, -90));
         // Click scrolls are not continuous and should not have a pixel delta
@@ -391,12 +391,12 @@ void tst_seat::continuousScroll()
         p->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::NoScrollPhase);
+        QCOMPARE(e.phase, BobUI::NoScrollPhase);
         QCOMPARE(e.pixelDelta, QPoint(5, -10));
-        QCOMPARE(e.source, Qt::MouseEventSynthesizedBySystem); // touchpads are not wheels
+        QCOMPARE(e.source, BobUI::MouseEventSynthesizedBySystem); // touchpads are not wheels
         QCOMPARE(e.inverted, false);
 
     }
@@ -416,7 +416,7 @@ public:
         resize(64, 64);
         show();
     }
-    void touchEvent(QTouchEvent *event) override
+    void touchEvent(BOBUIouchEvent *event) override
     {
         QRasterWindow::touchEvent(event);
         m_events.append(Event{event});
@@ -424,7 +424,7 @@ public:
     struct Event // Because I didn't find a convenient way to copy it entirely
     {
         explicit Event() = default;
-        explicit Event(const QTouchEvent *event)
+        explicit Event(const BOBUIouchEvent *event)
             : type(event->type())
             , touchPointStates(event->touchPointStates())
             , touchPoints(event->points())
@@ -432,7 +432,7 @@ public:
         }
         QEvent::Type type{};
         QEventPoint::States touchPointStates{};
-        QList<QTouchEvent::TouchPoint> touchPoints;
+        QList<BOBUIouchEvent::TouchPoint> touchPoints;
     };
     QList<Event> m_events;
 };
@@ -451,7 +451,7 @@ void tst_seat::singleTap()
         t->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.type, QEvent::TouchBegin);
@@ -482,7 +482,7 @@ void tst_seat::singleTapFloat()
         t->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.type, QEvent::TouchBegin);
@@ -512,8 +512,8 @@ void tst_seat::multiTouch()
         t->sendDown(xdgToplevel()->surface(), {48, 48}, 1);
         t->sendFrame(c);
 
-        // Compositor event order should not change the order of the QTouchEvent::points()
-        // See QTBUG-77014
+        // Compositor event order should not change the order of the BOBUIouchEvent::points()
+        // See BOBUIBUG-77014
         t->sendMotion(c, {49, 48}, 1);
         t->sendMotion(c, {33, 32}, 0);
         t->sendFrame(c);
@@ -525,7 +525,7 @@ void tst_seat::multiTouch()
         t->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.type, QEvent::TouchBegin);
@@ -597,7 +597,7 @@ void tst_seat::multiTouchUpAndMotionFrame()
         t->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.type, QEvent::TouchBegin);
@@ -638,7 +638,7 @@ void tst_seat::tapAndMoveInSameFrame()
         t->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.type, QEvent::TouchBegin);
@@ -648,8 +648,8 @@ void tst_seat::tapAndMoveInSameFrame()
     }
 
     // Make sure we eventually release
-    QTRY_VERIFY(!window.m_events.empty());
-    QTRY_COMPARE(window.m_events.last().touchPoints.first().state(), QEventPoint::State::Released);
+    BOBUIRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_COMPARE(window.m_events.last().touchPoints.first().state(), QEventPoint::State::Released);
 }
 
 void tst_seat::cancelTouch()
@@ -666,7 +666,7 @@ void tst_seat::cancelTouch()
         t->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
         QCOMPARE(e.type, QEvent::TouchBegin);

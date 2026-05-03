@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLCONTEXT_P_H
 #define QOPENGLCONTEXT_P_H
@@ -8,27 +8,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 #include <qopengl.h>
 #include "qopenglcontext.h"
 #include <private/qobject_p.h>
 #include <qmutex.h>
 
-#include <QtCore/QByteArray>
-#include <QtCore/QHash>
-#include <QtCore/QSet>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QHash>
+#include <BobUICore/QSet>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QOpenGLFunctions;
@@ -237,7 +237,7 @@ public:
         return context ? context->d_func() : nullptr;
     }
 
-#if !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_NO_DEBUG)
     static bool toggleMakeCurrentTracker(QOpenGLContext *context, bool value)
     {
         QMutexLocker locker(&makeCurrentTrackerMutex);
@@ -257,10 +257,10 @@ public:
     void _q_screenDestroyed(QObject *object);
 };
 
-Q_GUI_EXPORT void qt_gl_set_global_share_context(QOpenGLContext *context);
-Q_GUI_EXPORT QOpenGLContext *qt_gl_global_share_context();
+Q_GUI_EXPORT void bobui_gl_set_global_share_context(QOpenGLContext *context);
+Q_GUI_EXPORT QOpenGLContext *bobui_gl_global_share_context();
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 #endif // QOPENGLCONTEXT_P_H

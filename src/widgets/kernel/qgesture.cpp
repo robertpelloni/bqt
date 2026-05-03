@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgesture.h"
 #include "private/qgesture_p.h"
 #include "private/qstandardgestures_p.h"
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include "qgraphicsview.h"
 #endif
 
 #include <private/qdebug_p.h>
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(Qt::GestureState, Qt__GestureState)
-QT_IMPL_METATYPE_EXTERN_TAGGED(Qt::GestureType, Qt__GestureType)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPinchGesture::ChangeFlags,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(BobUI::GestureState, BobUI__GestureState)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(BobUI::GestureType, BobUI__GestureType)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPinchGesture::ChangeFlags,
                                QPinchGesture__ChangeFlags)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
                                QGesture__GestureCancelPolicy)
 
  /*!
     \class QGesture
     \since 4.6
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \brief The QGesture class represents a gesture, containing properties that
     describe the corresponding user input.
@@ -34,7 +34,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
     the QGestureRecognizer object that is registered with the application; see
     QGestureRecognizer::registerRecognizer().
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \section1 Gesture Properties
@@ -50,8 +50,8 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
 
     \section1 Lifecycle of a Gesture Object
 
-    A QGesture instance is implicitly created when needed and is owned by Qt.
-    Developers should never destroy them or store them for later use as Qt may
+    A QGesture instance is implicitly created when needed and is owned by BobUI.
+    Developers should never destroy them or store them for later use as BobUI may
     destroy particular instances of them and create new ones to replace them.
 
     The registered gesture recognizer monitors the input events for the target
@@ -62,7 +62,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
     the corresponding gesture is active or has just been canceled. Each event that
     is delivered contains a list of gesture objects, since support for more than
     one gesture may be enabled for the target object. Due to the way events are
-    handled in Qt, gesture events may be filtered by other objects.
+    handled in BobUI, gesture events may be filtered by other objects.
 
     \sa QGestureEvent, QGestureRecognizer
 */
@@ -76,7 +76,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
 QGesture::QGesture(QObject *parent)
     : QObject(*new QGesturePrivate, parent)
 {
-    d_func()->gestureType = Qt::CustomGesture;
+    d_func()->gestureType = BobUI::CustomGesture;
 }
 
 /*!
@@ -122,12 +122,12 @@ QGesture::~QGesture()
     \brief whether the gesture has a hot-spot
 */
 
-Qt::GestureType QGesture::gestureType() const
+BobUI::GestureType QGesture::gestureType() const
 {
     return d_func()->gestureType;
 }
 
-Qt::GestureState QGesture::state() const
+BobUI::GestureState QGesture::state() const
 {
     return d_func()->state;
 }
@@ -158,7 +158,7 @@ void QGesture::unsetHotSpot()
     \property QGesture::gestureCancelPolicy
     \brief the policy for deciding what happens on accepting a gesture
 
-    On accepting one gesture Qt can automatically cancel other gestures
+    On accepting one gesture BobUI can automatically cancel other gestures
     that belong to other targets. The policy is normally set to not cancel
     any other gestures and can be set to cancel all active gestures in the
     context. For example for all child widgets.
@@ -173,7 +173,7 @@ void QGesture::unsetHotSpot()
     \value CancelNone On accepting this gesture no other gestures will be affected.
 
     \value CancelAllInContext On accepting this gesture all gestures that are
-    active in the context (respecting the Qt::GestureFlag that were specified
+    active in the context (respecting the BobUI::GestureFlag that were specified
     when subscribed to the gesture) will be cancelled.
 */
 
@@ -194,11 +194,11 @@ QGesture::GestureCancelPolicy QGesture::gestureCancelPolicy() const
     \since 4.6
     \brief The QPanGesture class describes a panning gesture made by the user.
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image pangesture.png {Demonstration of moving an image with pan gesture}
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \sa QPinchGesture, QSwipeGesture
@@ -265,7 +265,7 @@ QGesture::GestureCancelPolicy QGesture::gestureCancelPolicy() const
 QPanGesture::QPanGesture(QObject *parent)
     : QGesture(*new QPanGesturePrivate, parent)
 {
-    d_func()->gestureType = Qt::PanGesture;
+    d_func()->gestureType = BobUI::PanGesture;
 }
 
 /*!
@@ -317,14 +317,14 @@ void QPanGesture::setAcceleration(qreal value)
     \brief The QPinchGesture class describes a pinch gesture made by the user.
     \ingroup touch
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A pinch gesture is a form of touch user input in which the user typically
     touches two points on the input device with a thumb and finger, before moving
     them closer together or further apart to change the scale factor, zoom, or level
     of detail of the user interface.
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \image pinchgesture.png {Demonstration of pinch gesture with two fingers}
@@ -333,7 +333,7 @@ void QPanGesture::setAcceleration(qreal value)
     continue to touch the input device in one place, and apply a second touch
     to a new point, continuing the gesture. When this occurs, gesture events
     will continue to be delivered to the target object, containing an instance
-    of QPinchGesture in the Qt::GestureUpdated state.
+    of QPinchGesture in the BobUI::GestureUpdated state.
 
     \sa QPanGesture, QSwipeGesture
 */
@@ -462,7 +462,7 @@ void QPanGesture::setAcceleration(qreal value)
 QPinchGesture::QPinchGesture(QObject *parent)
     : QGesture(*new QPinchGesturePrivate, parent)
 {
-    d_func()->gestureType = Qt::PinchGesture;
+    d_func()->gestureType = BobUI::PinchGesture;
 }
 
 /*!
@@ -589,11 +589,11 @@ void QPinchGesture::setRotationAngle(qreal value)
     \since 4.6
     \brief The QSwipeGesture class describes a swipe gesture made by the user.
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image swipegesture.png {Demonstration of swipe gesture}
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \sa QPanGesture, QPinchGesture
@@ -656,7 +656,7 @@ void QPinchGesture::setRotationAngle(qreal value)
 QSwipeGesture::QSwipeGesture(QObject *parent)
     : QGesture(*new QSwipeGesturePrivate, parent)
 {
-    d_func()->gestureType = Qt::SwipeGesture;
+    d_func()->gestureType = BobUI::SwipeGesture;
 }
 
 /*!
@@ -699,89 +699,89 @@ void QSwipeGesture::setSwipeAngle(qreal value)
 }
 
 /*!
-    \class QTapGesture
+    \class BOBUIapGesture
     \since 4.6
-    \brief The QTapGesture class describes a tap gesture made by the user.
+    \brief The BOBUIapGesture class describes a tap gesture made by the user.
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \sa QPanGesture, QPinchGesture
 */
 
 /*!
-    \property QTapGesture::position
+    \property BOBUIapGesture::position
     \brief the position of the tap
 */
 
 /*!
     \internal
 */
-QTapGesture::QTapGesture(QObject *parent)
-    : QGesture(*new QTapGesturePrivate, parent)
+BOBUIapGesture::BOBUIapGesture(QObject *parent)
+    : QGesture(*new BOBUIapGesturePrivate, parent)
 {
-    d_func()->gestureType = Qt::TapGesture;
+    d_func()->gestureType = BobUI::TapGesture;
 }
 
 /*!
     Destructor.
 */
-QTapGesture::~QTapGesture()
+BOBUIapGesture::~BOBUIapGesture()
 {
 }
 
-QPointF QTapGesture::position() const
+QPointF BOBUIapGesture::position() const
 {
     return d_func()->position;
 }
 
-void QTapGesture::setPosition(const QPointF &value)
+void BOBUIapGesture::setPosition(const QPointF &value)
 {
     d_func()->position = value;
 }
 /*!
-    \class QTapAndHoldGesture
+    \class BOBUIapAndHoldGesture
     \since 4.6
-    \brief The QTapAndHoldGesture class describes a tap-and-hold (aka LongTap)
+    \brief The BOBUIapAndHoldGesture class describes a tap-and-hold (aka LongTap)
     gesture made by the user.
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \sa QPanGesture, QPinchGesture
 */
 
 /*!
-    \property QTapAndHoldGesture::position
+    \property BOBUIapAndHoldGesture::position
     \brief the position of the tap
 */
 
 /*!
     \internal
 */
-QTapAndHoldGesture::QTapAndHoldGesture(QObject *parent)
-    : QGesture(*new QTapAndHoldGesturePrivate, parent)
+BOBUIapAndHoldGesture::BOBUIapAndHoldGesture(QObject *parent)
+    : QGesture(*new BOBUIapAndHoldGesturePrivate, parent)
 {
-    d_func()->gestureType = Qt::TapAndHoldGesture;
+    d_func()->gestureType = BobUI::TapAndHoldGesture;
 }
 
 /*!
     Destructor.
 */
-QTapAndHoldGesture::~QTapAndHoldGesture()
+BOBUIapAndHoldGesture::~BOBUIapAndHoldGesture()
 {
 }
 
-QPointF QTapAndHoldGesture::position() const
+QPointF BOBUIapAndHoldGesture::position() const
 {
     return d_func()->position;
 }
 
-void QTapAndHoldGesture::setPosition(const QPointF &value)
+void BOBUIapAndHoldGesture::setPosition(const QPointF &value)
 {
     d_func()->position = value;
 }
@@ -790,27 +790,27 @@ void QTapAndHoldGesture::setPosition(const QPointF &value)
     Set the timeout, in milliseconds, before the gesture triggers.
 
     The recognizer will detect a touch down and if \a msecs
-    later the touch is still down, it will trigger the QTapAndHoldGesture.
+    later the touch is still down, it will trigger the BOBUIapAndHoldGesture.
     The default value is 700 milliseconds.
 */
-void QTapAndHoldGesture::setTimeout(int msecs)
+void BOBUIapAndHoldGesture::setTimeout(int msecs)
 {
-    QTapAndHoldGesturePrivate::Timeout = msecs;
+    BOBUIapAndHoldGesturePrivate::Timeout = msecs;
 }
 
 /*!
     Gets the timeout, in milliseconds, before the gesture triggers.
 
     The recognizer will detect a touch down and if timeout()
-    later the touch is still down, it will trigger the QTapAndHoldGesture.
+    later the touch is still down, it will trigger the BOBUIapAndHoldGesture.
     The default value is 700 milliseconds.
 */
-int QTapAndHoldGesture::timeout()
+int BOBUIapAndHoldGesture::timeout()
 {
-    return QTapAndHoldGesturePrivate::Timeout;
+    return BOBUIapAndHoldGesturePrivate::Timeout;
 }
 
-int QTapAndHoldGesturePrivate::Timeout = 700; // in ms
+int BOBUIapAndHoldGesturePrivate::Timeout = 700; // in ms
 
 
 /*!
@@ -818,7 +818,7 @@ int QTapAndHoldGesturePrivate::Timeout = 700; // in ms
     \since 4.6
     \ingroup events
     \ingroup gestures
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \brief The QGestureEvent class provides the description of triggered gestures.
 
@@ -833,14 +833,14 @@ int QTapAndHoldGesturePrivate::Timeout = 700; // in ms
 
     If the event handler does not accept the event by calling the generic
     QEvent::accept() function, all individual QGesture object that were not
-    accepted and in the Qt::GestureStarted state will be propagated up the
+    accepted and in the BobUI::GestureStarted state will be propagated up the
     parent widget chain until a widget accepts them individually, by calling
     QGestureEvent::accept() for each of them, or an event filter consumes the
     event.
 
     \section1 Further Reading
 
-    For an overview of gesture handling in Qt and information on using gestures
+    For an overview of gesture handling in BobUI and information on using gestures
     in your applications, see the \l{Gestures in Widgets and Graphics View} document.
 
     \sa QGesture, QGestureRecognizer,
@@ -874,7 +874,7 @@ QList<QGesture *> QGestureEvent::gestures() const
 /*!
     Returns a gesture object by \a type.
 */
-QGesture *QGestureEvent::gesture(Qt::GestureType type) const
+QGesture *QGestureEvent::gesture(BobUI::GestureType type) const
 {
     for (int i = 0; i < m_gestures.size(); ++i)
         if (m_gestures.at(i)->gestureType() == type)
@@ -889,7 +889,7 @@ QList<QGesture *> QGestureEvent::activeGestures() const
 {
     QList<QGesture *> gestures;
     for (QGesture *gesture : m_gestures) {
-        if (gesture->state() != Qt::GestureCanceled)
+        if (gesture->state() != BobUI::GestureCanceled)
             gestures.append(gesture);
     }
     return gestures;
@@ -902,7 +902,7 @@ QList<QGesture *> QGestureEvent::canceledGestures() const
 {
     QList<QGesture *> gestures;
     for (QGesture *gesture : m_gestures) {
-        if (gesture->state() == Qt::GestureCanceled)
+        if (gesture->state() == BobUI::GestureCanceled)
             gestures.append(gesture);
     }
     return gestures;
@@ -980,7 +980,7 @@ bool QGestureEvent::isAccepted(QGesture *gesture) const
     \l{QGestureEvent::accept()}{accept(gestureType)}, and cleared with
     \l{QGestureEvent::ignore()}{ignore(gestureType)}.
 */
-void QGestureEvent::setAccepted(Qt::GestureType gestureType, bool value)
+void QGestureEvent::setAccepted(BobUI::GestureType gestureType, bool value)
 {
     setAccepted(false);
     m_accepted[gestureType] = value;
@@ -995,7 +995,7 @@ void QGestureEvent::setAccepted(Qt::GestureType gestureType, bool value)
 
     \sa QGestureEvent::ignore()
 */
-void QGestureEvent::accept(Qt::GestureType gestureType)
+void QGestureEvent::accept(BobUI::GestureType gestureType)
 {
     setAccepted(gestureType, true);
 }
@@ -1009,7 +1009,7 @@ void QGestureEvent::accept(Qt::GestureType gestureType)
 
     \sa QGestureEvent::accept()
 */
-void QGestureEvent::ignore(Qt::GestureType gestureType)
+void QGestureEvent::ignore(BobUI::GestureType gestureType)
 {
     setAccepted(gestureType, false);
 }
@@ -1018,7 +1018,7 @@ void QGestureEvent::ignore(Qt::GestureType gestureType)
     Returns \c true if the gesture of type \a gestureType is accepted; otherwise
     returns \c false.
 */
-bool QGestureEvent::isAccepted(Qt::GestureType gestureType) const
+bool QGestureEvent::isAccepted(BobUI::GestureType gestureType) const
 {
     return m_accepted.value(gestureType, true);
 }
@@ -1041,7 +1041,7 @@ QWidget *QGestureEvent::widget() const
     return m_widget;
 }
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 /*!
     Returns the scene-local coordinates if the \a gesturePoint is inside a
     graphics view.
@@ -1063,17 +1063,17 @@ QPointF QGestureEvent::mapToGraphicsScene(const QPointF &gesturePoint) const
     }
     return QPointF();
 }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 static void formatGestureHeader(QDebug d, const char *className, const QGesture *gesture)
 {
      d << className << "(state=";
-     QtDebugUtils::formatQEnum(d, gesture->state());
+     BobUIDebugUtils::formatQEnum(d, gesture->state());
      if (gesture->hasHotSpot()) {
          d << ",hotSpot=";
-         QtDebugUtils::formatQPoint(d, gesture->hotSpot());
+         BobUIDebugUtils::formatQPoint(d, gesture->hotSpot());
      }
 }
 
@@ -1086,43 +1086,43 @@ Q_WIDGETS_EXPORT QDebug operator<<(QDebug d, const QGesture *gesture)
         return d << "QGesture(0x0)";
 
     switch (gesture->gestureType()) {
-    case Qt::TapGesture:
-        formatGestureHeader(d, "QTapGesture", gesture);
+    case BobUI::TapGesture:
+        formatGestureHeader(d, "BOBUIapGesture", gesture);
         d << ",position=";
-        QtDebugUtils::formatQPoint(d, static_cast<const QTapGesture*>(gesture)->position());
+        BobUIDebugUtils::formatQPoint(d, static_cast<const BOBUIapGesture*>(gesture)->position());
         d << ')';
         break;
-    case Qt::TapAndHoldGesture: {
-        const QTapAndHoldGesture *tap = static_cast<const QTapAndHoldGesture*>(gesture);
-        formatGestureHeader(d, "QTapAndHoldGesture", tap);
+    case BobUI::TapAndHoldGesture: {
+        const BOBUIapAndHoldGesture *tap = static_cast<const BOBUIapAndHoldGesture*>(gesture);
+        formatGestureHeader(d, "BOBUIapAndHoldGesture", tap);
         d << ",position=";
-        QtDebugUtils::formatQPoint(d, tap->position());
+        BobUIDebugUtils::formatQPoint(d, tap->position());
         d << ",timeout=" << tap->timeout() << ')';
     }
         break;
-    case Qt::PanGesture: {
+    case BobUI::PanGesture: {
         const QPanGesture *pan = static_cast<const QPanGesture*>(gesture);
         formatGestureHeader(d, "QPanGesture", pan);
         d << ",lastOffset=";
-        QtDebugUtils::formatQPoint(d, pan->lastOffset());
+        BobUIDebugUtils::formatQPoint(d, pan->lastOffset());
         d << pan->lastOffset();
         d << ",offset=";
-        QtDebugUtils::formatQPoint(d, pan->offset());
+        BobUIDebugUtils::formatQPoint(d, pan->offset());
         d  << ",acceleration=" << pan->acceleration() << ",delta=";
-        QtDebugUtils::formatQPoint(d, pan->delta());
+        BobUIDebugUtils::formatQPoint(d, pan->delta());
         d << ')';
     }
         break;
-    case Qt::PinchGesture: {
+    case BobUI::PinchGesture: {
         const QPinchGesture *pinch = static_cast<const QPinchGesture*>(gesture);
         formatGestureHeader(d, "QPinchGesture", pinch);
         d << ",totalChangeFlags=" << pinch->totalChangeFlags()
           << ",changeFlags=" << pinch->changeFlags() << ",startCenterPoint=";
-        QtDebugUtils::formatQPoint(d, pinch->startCenterPoint());
+        BobUIDebugUtils::formatQPoint(d, pinch->startCenterPoint());
         d << ",lastCenterPoint=";
-        QtDebugUtils::formatQPoint(d, pinch->lastCenterPoint());
+        BobUIDebugUtils::formatQPoint(d, pinch->lastCenterPoint());
         d << ",centerPoint=";
-        QtDebugUtils::formatQPoint(d, pinch->centerPoint());
+        BobUIDebugUtils::formatQPoint(d, pinch->centerPoint());
         d << ",totalScaleFactor=" << pinch->totalScaleFactor()
             << ",lastScaleFactor=" << pinch->lastScaleFactor()
             << ",scaleFactor=" << pinch->scaleFactor()
@@ -1131,13 +1131,13 @@ Q_WIDGETS_EXPORT QDebug operator<<(QDebug d, const QGesture *gesture)
             << ",rotationAngle=" << pinch->rotationAngle() << ')';
     }
         break;
-    case Qt::SwipeGesture: {
+    case BobUI::SwipeGesture: {
         const QSwipeGesture *swipe = static_cast<const QSwipeGesture*>(gesture);
         formatGestureHeader(d, "QSwipeGesture", swipe);
         d << ",horizontalDirection=";
-        QtDebugUtils::formatQEnum(d, swipe->horizontalDirection());
+        BobUIDebugUtils::formatQEnum(d, swipe->horizontalDirection());
         d << ",verticalDirection=";
-        QtDebugUtils::formatQEnum(d, swipe->verticalDirection());
+        BobUIDebugUtils::formatQEnum(d, swipe->verticalDirection());
         d << ",swipeAngle=" << swipe->swipeAngle() << ')';
     }
         break;
@@ -1161,9 +1161,9 @@ Q_WIDGETS_EXPORT QDebug operator<<(QDebug d, const QGestureEvent *gestureEvent)
     return d << ')';
 }
 
-#endif // !QT_NO_DEBUG_STREAM
-QT_END_NAMESPACE
+#endif // !BOBUI_NO_DEBUG_STREAM
+BOBUI_END_NAMESPACE
 
 #include <moc_qgesture.cpp>
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES

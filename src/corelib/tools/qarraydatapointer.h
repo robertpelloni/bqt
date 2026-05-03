@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QARRAYDATAPOINTER_H
 #define QARRAYDATAPOINTER_H
 
-#include <QtCore/qarraydataops.h>
-#include <QtCore/qcontainertools_impl.h>
+#include <BobUICore/qarraydataops.h>
+#include <BobUICore/qcontainertools_impl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <class T>
 struct QArrayDataPointer
 {
 private:
-    typedef QTypedArrayData<T> Data;
+    typedef BOBUIypedArrayData<T> Data;
     typedef QArrayDataOps<T> DataOps;
 
 public:
@@ -45,7 +45,7 @@ public:
     }
 
     Q_NODISCARD_CTOR
-    explicit QArrayDataPointer(std::pair<QTypedArrayData<T> *, T *> adata, qsizetype n = 0) noexcept
+    explicit QArrayDataPointer(std::pair<BOBUIypedArrayData<T> *, T *> adata, qsizetype n = 0) noexcept
         : d(adata.first), ptr(adata.second), size(n)
     {
     }
@@ -79,7 +79,7 @@ public:
     {
     }
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QArrayDataPointer)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QArrayDataPointer)
 
     DataOps &operator*() noexcept
     {
@@ -126,8 +126,8 @@ public:
 
     void swap(QArrayDataPointer &other) noexcept
     {
-        qt_ptr_swap(d, other.d);
-        qt_ptr_swap(ptr, other.ptr);
+        bobui_ptr_swap(d, other.d);
+        bobui_ptr_swap(ptr, other.ptr);
         std::swap(size, other.size);
     }
 
@@ -160,7 +160,7 @@ public:
             Q_ASSERT(!d->isShared());
             d->alloc = d->alloc * sizeof(T) / sizeof(X);
         }
-        auto od = reinterpret_cast<QTypedArrayData<X> *>(std::exchange(d, nullptr));
+        auto od = reinterpret_cast<BOBUIypedArrayData<X> *>(std::exchange(d, nullptr));
         auto optr = reinterpret_cast<X *>(std::exchange(ptr, nullptr));
         return { od, optr, std::exchange(size, 0) };
     }
@@ -216,7 +216,7 @@ public:
     Q_NEVER_INLINE void reallocateAndGrow(QArrayData::GrowthPosition where, qsizetype n,
                                           QArrayDataPointer *old = nullptr)
     {
-        if constexpr (QTypeInfo<T>::isRelocatable && alignof(T) <= alignof(std::max_align_t)) {
+        if constexpr (BOBUIypeInfo<T>::isRelocatable && alignof(T) <= alignof(std::max_align_t)) {
             if (where == QArrayData::GrowsAtEnd && !old && !needsDetach() && n > 0) {
                 (*this)->reallocate(constAllocatedCapacity() - freeSpaceAtEnd() + n, QArrayData::Grow); // fast path
                 return;
@@ -311,9 +311,9 @@ public:
     void relocate(qsizetype offset, const T **data = nullptr)
     {
         T *res = this->ptr + offset;
-        QtPrivate::q_relocate_overlap_n(this->ptr, this->size, res);
+        BobUIPrivate::q_relocate_overlap_n(this->ptr, this->size, res);
         // first update data pointer, then this->ptr
-        if (data && QtPrivate::q_points_into_range(*data, *this))
+        if (data && BobUIPrivate::q_points_into_range(*data, *this))
             *data += offset;
         this->ptr = res;
     }
@@ -444,6 +444,6 @@ inline void swap(QArrayDataPointer<T> &p1, QArrayDataPointer<T> &p2) noexcept
     }())
 /**/
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // include guard

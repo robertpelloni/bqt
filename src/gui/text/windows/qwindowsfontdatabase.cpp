@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qwindowsfontdatabase_p.h"
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
 #  include "qwindowsfontdatabase_ft_p.h" // for default font
 #endif
 #include "qwindowsfontengine_p.h"
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtGui/QFont>
-#include <QtGui/QGuiApplication>
-#include <QtGui/private/qtgui-config_p.h>
+#include <BobUIGui/QFont>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/private/bobuigui-config_p.h>
 
-#include <QtCore/qmath.h>
-#include <QtCore/QDebug>
-#include <QtCore/QFile>
-#include <QtCore/QtEndian>
-#include <QtCore/QStandardPaths>
-#include <QtCore/private/qduplicatetracker_p.h>
-#include <QtCore/private/qwinregistry_p.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/QFile>
+#include <BobUICore/BobUIEndian>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/private/qduplicatetracker_p.h>
+#include <BobUICore/private/qwinregistry_p.h>
 
 #include <wchar.h>
 
-#if QT_CONFIG(directwrite)
-#  if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite)
+#  if BOBUI_CONFIG(directwrite3)
 #    include "qwindowsdirectwritefontdatabase_p.h"
 #  endif
 #  include <dwrite_2.h>
@@ -34,11 +34,11 @@
 
 #include <mutex>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
 static inline bool useDirectWrite(QFont::HintingPreference hintingPreference,
                                   const QString &familyName = QString(),
                                   bool isColorFont = false)
@@ -59,7 +59,7 @@ static inline bool useDirectWrite(QFont::HintingPreference hintingPreference,
         || hintingPreference == QFont::PreferVerticalHinting
         || (!qFuzzyCompare(qApp->devicePixelRatio(), 1.0) && hintingPreference == QFont::PreferDefaultHinting);
 }
-#endif // !QT_NO_DIRECTWRITE
+#endif // !BOBUI_NO_DIRECTWRITE
 
 /*!
     \class QWindowsFontEngineData
@@ -114,7 +114,7 @@ qreal QWindowsFontDatabase::fontSmoothingGamma()
     \class QWindowsFontDatabase
     \brief Font database for Windows
 
-    \note The Qt 4.8 WIndows font database employed a mechanism of
+    \note The BobUI 4.8 WIndows font database employed a mechanism of
     delayed population of the database again passing a font name
     to EnumFontFamiliesEx(), working around the fact that
     EnumFontFamiliesEx() does not list all fonts by default.
@@ -123,7 +123,7 @@ qreal QWindowsFontDatabase::fontSmoothingGamma()
     \internal
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QFontDef &def)
 {
     QDebugStateSaver saver(d);
@@ -153,7 +153,7 @@ QDebug operator<<(QDebug d, const LOGFONT &lf)
     QWindowsFontDatabase::debugFormat(d, lf);
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 static inline QFontDatabase::WritingSystem writingSystemFromCharSet(uchar charSet)
 {
@@ -192,7 +192,7 @@ static inline QFontDatabase::WritingSystem writingSystemFromCharSet(uchar charSe
     return QFontDatabase::Any;
 }
 
-bool qt_localizedName(const QString &name)
+bool bobui_localizedName(const QString &name)
 {
     const QChar *c = name.unicode();
     for (int i = 0; i < name.length(); ++i) {
@@ -214,7 +214,7 @@ static QString readName(bool unicode, const uchar *string, int length)
         out.resize(length);
         QChar *uc = out.data();
         for (int i = 0; i < length; ++i)
-            uc[i] = qt_getUShort(string + 2*i);
+            uc[i] = bobui_getUShort(string + 2*i);
     } else {
         // Apple Roman
 
@@ -239,7 +239,7 @@ enum PlatformFieldValue {
     PlatformId_Microsoft = 3
 };
 
-QFontNames qt_getCanonicalFontNames(const uchar *table, quint32 bytes)
+QFontNames bobui_getCanonicalFontNames(const uchar *table, quint32 bytes)
 {
     QFontNames out;
     const int NameRecordSize = 12;
@@ -253,11 +253,11 @@ QFontNames qt_getCanonicalFontNames(const uchar *table, quint32 bytes)
     if (bytes < 8)
         return out;
 
-    if (qt_getUShort(table) != 0)
+    if (bobui_getUShort(table) != 0)
         return out;
 
-    count = qt_getUShort(table + 2);
-    string_offset = qt_getUShort(table + 4);
+    count = bobui_getUShort(table + 2);
+    string_offset = bobui_getUShort(table + 4);
     names = table + 6;
 
     if (string_offset >= bytes || 6 + count*NameRecordSize > string_offset)
@@ -276,10 +276,10 @@ QFontNames qt_getCanonicalFontNames(const uchar *table, quint32 bytes)
     for (int i = 0; i < count; ++i) {
         // search for the correct name entries
 
-        quint16 platform_id = qt_getUShort(names + i*NameRecordSize);
-        quint16 encoding_id = qt_getUShort(names + 2 + i*NameRecordSize);
-        quint16 language_id = qt_getUShort(names + 4 + i*NameRecordSize);
-        quint16 name_id = qt_getUShort(names + 6 + i*NameRecordSize);
+        quint16 platform_id = bobui_getUShort(names + i*NameRecordSize);
+        quint16 encoding_id = bobui_getUShort(names + 2 + i*NameRecordSize);
+        quint16 language_id = bobui_getUShort(names + 4 + i*NameRecordSize);
+        quint16 name_id = bobui_getUShort(names + 6 + i*NameRecordSize);
 
         PlatformIdType *idType = nullptr;
         int *id = nullptr;
@@ -305,8 +305,8 @@ QFontNames qt_getCanonicalFontNames(const uchar *table, quint32 bytes)
             continue;
         }
 
-        quint16 length = qt_getUShort(names + 8 + i*NameRecordSize);
-        quint16 offset = qt_getUShort(names + 10 + i*NameRecordSize);
+        quint16 length = bobui_getUShort(names + 8 + i*NameRecordSize);
+        quint16 offset = bobui_getUShort(names + 10 + i*NameRecordSize);
         if (DWORD(string_offset + offset + length) > bytes)
             continue;
 
@@ -333,8 +333,8 @@ QFontNames qt_getCanonicalFontNames(const uchar *table, quint32 bytes)
         if (idStatus[i] == NotFound)
             continue;
         int id = ids[i];
-        quint16 length = qt_getUShort(names +  8 + id * NameRecordSize);
-        quint16 offset = qt_getUShort(names + 10 + id * NameRecordSize);
+        quint16 length = bobui_getUShort(names +  8 + id * NameRecordSize);
+        quint16 offset = bobui_getUShort(names + 10 + id * NameRecordSize);
         const unsigned char *string = table + string_offset + offset;
         strings[i] = readName(idStatus[i] != Apple, string, length);
     }
@@ -348,7 +348,7 @@ QFontNames qt_getCanonicalFontNames(const uchar *table, quint32 bytes)
 
 } // namespace
 
-QString qt_getEnglishName(const QString &familyName, bool includeStyle)
+QString bobui_getEnglishName(const QString &familyName, bool includeStyle)
 {
     QString i18n_name;
     QString faceName = familyName;
@@ -387,7 +387,7 @@ QString qt_getEnglishName(const QString &familyName, bool includeStyle)
         goto error;
 
     {
-        const QFontNames names = qt_getCanonicalFontNames(table, bytes);
+        const QFontNames names = bobui_getCanonicalFontNames(table, bytes);
         i18n_name = names.name;
         if (includeStyle)
             i18n_name += u' ' + names.style;
@@ -402,8 +402,8 @@ error:
     return i18n_name;
 }
 
-// Note this duplicates parts of qt_getEnglishName, we should try to unify the two functions.
-QFontNames qt_getCanonicalFontNames(const LOGFONT &lf)
+// Note this duplicates parts of bobui_getEnglishName, we should try to unify the two functions.
+QFontNames bobui_getCanonicalFontNames(const LOGFONT &lf)
 {
     QFontNames fontNames;
     HDC hdc = GetDC(0);
@@ -424,7 +424,7 @@ QFontNames qt_getCanonicalFontNames(const LOGFONT &lf)
         table.resize(bytes);
 
         if (GetFontData(hdc, name_tag, 0, table.data(), bytes) != GDI_ERROR)
-            fontNames = qt_getCanonicalFontNames(reinterpret_cast<const uchar*>(table.constData()), bytes);
+            fontNames = bobui_getCanonicalFontNames(reinterpret_cast<const uchar*>(table.constData()), bytes);
     }
 
     SelectObject(hdc, oldobj);
@@ -475,10 +475,10 @@ static bool addFontToDatabase(QString familyName,
     const QFont::Weight weight = static_cast<QFont::Weight>(textmetric->tmWeight);
     const QFont::Stretch stretch = QFont::Unstretched;
 
-#ifndef QT_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG_OUTPUT
     if (lcQpaFonts().isDebugEnabled()) {
         QString message;
-        QTextStream str(&message);
+        BOBUIextStream str(&message);
         str << __FUNCTION__ << ' ' << familyName << ' ' << charSet << " TTF=" << ttf;
         if (type & DEVICE_FONTTYPE)
             str << " DEVICE";
@@ -498,8 +498,8 @@ static bool addFontToDatabase(QString familyName,
     QString subFamilyName;
     QString subFamilyStyle;
     // Look-up names registered in the font
-    QFontNames canonicalNames = qt_getCanonicalFontNames(logFont);
-    if (qt_localizedName(familyName) && !canonicalNames.name.isEmpty())
+    QFontNames canonicalNames = bobui_getCanonicalFontNames(logFont);
+    if (bobui_localizedName(familyName) && !canonicalNames.name.isEmpty())
         englishName = canonicalNames.name;
     if (!canonicalNames.preferredName.isEmpty()) {
         subFamilyName = familyName;
@@ -577,7 +577,7 @@ static bool addFontToDatabase(QString familyName,
     return true;
 }
 
-static int QT_WIN_CALLBACK storeFont(const LOGFONT *logFont, const TEXTMETRIC *textmetric,
+static int BOBUI_WIN_CALLBACK storeFont(const LOGFONT *logFont, const TEXTMETRIC *textmetric,
                                      DWORD type, LPARAM lparam)
 {
     const ENUMLOGFONTEX *f = reinterpret_cast<const ENUMLOGFONTEX *>(logFont);
@@ -636,7 +636,7 @@ void QWindowsFontDatabase::populateFamily(const QString &familyName)
     ReleaseDC(0, dummy);
 }
 
-static int QT_WIN_CALLBACK populateFontFamilies(const LOGFONT *logFont, const TEXTMETRIC *textmetric,
+static int BOBUI_WIN_CALLBACK populateFontFamilies(const LOGFONT *logFont, const TEXTMETRIC *textmetric,
                                                 DWORD, LPARAM)
 {
     // the "@family" fonts are just the same as "family". Ignore them.
@@ -647,8 +647,8 @@ static int QT_WIN_CALLBACK populateFontFamilies(const LOGFONT *logFont, const TE
         QPlatformFontDatabase::registerFontFamily(faceName);
         // Register current font's english name as alias
         const bool ttf = (textmetric->tmPitchAndFamily & TMPF_TRUETYPE);
-        if (ttf && qt_localizedName(faceName)) {
-            const QString englishName = qt_getEnglishName(faceName);
+        if (ttf && bobui_localizedName(faceName)) {
+            const QString englishName = bobui_getEnglishName(faceName);
             if (!englishName.isEmpty())
                 QPlatformFontDatabase::registerAliasToFontFamily(faceName, englishName);
         }
@@ -720,7 +720,7 @@ void QWindowsFontDatabase::invalidate()
 
 QWindowsFontDatabase::QWindowsFontDatabase()
 {
-    // Properties accessed by QWin32PrintEngine (Qt Print Support)
+    // Properties accessed by QWin32PrintEngine (BobUI Print Support)
     static const int hfontMetaTypeId = qRegisterMetaType<HFONT>();
     static const int logFontMetaTypeId = qRegisterMetaType<LOGFONT>();
     Q_UNUSED(hfontMetaTypeId);
@@ -754,21 +754,21 @@ QFontEngine *QWindowsFontDatabase::fontEngine(const QByteArray &fontData, qreal 
     EmbeddedFont font(fontData);
     QFontEngine *fontEngine = 0;
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     if (!useDirectWrite(hintingPreference))
 #endif
     {
         GUID guid;
         CoCreateGuid(&guid);
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wstrict-aliasing")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wstrict-aliasing")
         QString uniqueFamilyName = u'f'
                 + QString::number(guid.Data1, 36) + u'-'
                 + QString::number(guid.Data2, 36) + u'-'
                 + QString::number(guid.Data3, 36) + u'-'
                 + QString::number(*reinterpret_cast<quint64 *>(guid.Data4), 36);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         QString actualFontName = font.changeFamilyName(uniqueFamilyName);
         if (actualFontName.isEmpty()) {
@@ -816,7 +816,7 @@ QT_WARNING_POP
                         static_cast<QWindowsFontEngine *>(fontEngine)->setUniqueFamilyName(uniqueFamilyName);
                         fontEngine->fontDef.families = QStringList(actualFontName);
                         break;
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
                     case QFontEngine::DirectWrite:
                         static_cast<QWindowsFontEngineDirectWrite *>(fontEngine)->setUniqueFamilyName(uniqueFamilyName);
                         fontEngine->fontDef.families = QStringList(actualFontName);
@@ -844,7 +844,7 @@ QT_WARNING_POP
         if (fontEngine != nullptr)
             font.updateFromOS2Table(fontEngine);
     }
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
     else {
         fontEngine = QWindowsFontDatabaseBase::fontEngine(fontData, pixelSize, hintingPreference);
     }
@@ -945,7 +945,7 @@ static void getFamiliesAndSignatures(const QByteArray &fontData,
                      &table, &length);
         if (!table)
             continue;
-        QFontNames names = qt_getCanonicalFontNames(table, length);
+        QFontNames names = bobui_getCanonicalFontNames(table, length);
         if (names.name.isEmpty())
             continue;
 
@@ -1113,21 +1113,21 @@ void QWindowsFontDatabase::removeApplicationFonts()
     m_eudcFonts.clear();
 }
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
 QWindowsFontDatabase::FontHandle::FontHandle(IDWriteFontFace *face, const QString &name)
     : fontFace(face), faceName(name)
 {
     fontFace->AddRef();
 }
-#endif // !QT_NO_DIRECTWRITE
+#endif // !BOBUI_NO_DIRECTWRITE
 
 
 QWindowsFontDatabase::FontHandle::~FontHandle()
 {
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     if (fontFace != nullptr)
         fontFace->Release();
-#endif // !QT_NO_DIRECTWRITE
+#endif // !BOBUI_NO_DIRECTWRITE
 }
 
 void QWindowsFontDatabase::releaseHandle(void *handle)
@@ -1212,7 +1212,7 @@ QFontEngine *QWindowsFontDatabase::createEngine(const QFontDef &request, const Q
         DeleteObject(hfont);
     }
 
-#if QT_CONFIG(directwrite) && QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(directwrite) && BOBUI_CONFIG(direct2d)
     if (data->directWriteFactory != nullptr) {
         const QString fam = QString::fromWCharArray(lf.lfFaceName);
         const QString nameSubstitute = QWindowsFontEngineDirectWrite::fontNameSubstitute(fam);
@@ -1237,7 +1237,7 @@ QFontEngine *QWindowsFontDatabase::createEngine(const QFontDef &request, const Q
             if (SUCCEEDED(hr)) {
                 bool isColorFont = false;
                 bool needsSimulation = false;
-#if QT_CONFIG(direct2d)
+#if BOBUI_CONFIG(direct2d)
                 IDWriteFontFace2 *directWriteFontFace2 = nullptr;
                 if (SUCCEEDED(directWriteFontFace->QueryInterface(__uuidof(IDWriteFontFace2),
                                                                   reinterpret_cast<void **>(&directWriteFontFace2)))) {
@@ -1270,7 +1270,7 @@ QFontEngine *QWindowsFontDatabase::createEngine(const QFontDef &request, const Q
                 }
                 directWriteFontFace->Release();
             } else if (useDw) {
-                const QString errorString = qt_error_string(int(hr));
+                const QString errorString = bobui_error_string(int(hr));
                 qCWarning(lcQpaFonts).noquote().nospace() << "DirectWrite: CreateFontFaceFromHDC() failed ("
                     << errorString << ") for " << request << ' ' << lf << " dpi=" << dpi;
             }
@@ -1302,4 +1302,4 @@ bool QWindowsFontDatabase::supportsColrv0Fonts() const
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

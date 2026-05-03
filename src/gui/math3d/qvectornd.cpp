@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvectornd.h"
-#include <QtCore/qdatastream.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qvariant.h>
-#include <QtGui/qmatrix4x4.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIGui/qmatrix4x4.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_VECTOR2D
+#ifndef BOBUI_NO_VECTOR2D
 
 /*!
     \class QVector2D
@@ -18,7 +18,7 @@ QT_BEGIN_NAMESPACE
     \since 4.6
     \ingroup painting
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Vectors are one of the main building blocks of 2D representation and
     drawing. They consist of two finite floating-point coordinates,
@@ -37,7 +37,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QVector2D::QVector2D(Qt::Initialization)
+    \fn QVector2D::QVector2D(BobUI::Initialization)
     \since 5.5
     \internal
 
@@ -63,7 +63,7 @@ QT_BEGIN_NAMESPACE
     Constructs a vector with x and y coordinates from a 2D \a point.
 */
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QVector2D::QVector2D(QVector3D vector)
@@ -76,7 +76,7 @@ QT_BEGIN_NAMESPACE
 
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \fn QVector2D::QVector2D(QVector4D vector)
@@ -375,11 +375,11 @@ QT_BEGIN_NAMESPACE
 */
 bool qFuzzyCompare(QVector2D v1, QVector2D v2) noexcept
 {
-    return QtPrivate::fuzzyCompare(v1.v[0], v2.v[0])
-        && QtPrivate::fuzzyCompare(v1.v[1], v2.v[1]);
+    return BobUIPrivate::fuzzyCompare(v1.v[0], v2.v[0])
+        && BobUIPrivate::fuzzyCompare(v1.v[1], v2.v[1]);
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 /*!
     \fn QVector3D QVector2D::toVector3D() const
 
@@ -389,7 +389,7 @@ bool qFuzzyCompare(QVector2D v1, QVector2D v2) noexcept
 */
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 /*!
     \fn QVector4D QVector2D::toVector4D() const
 
@@ -424,7 +424,7 @@ QVector2D::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 QDebug operator<<(QDebug dbg, QVector2D vector)
 {
@@ -435,7 +435,7 @@ QDebug operator<<(QDebug dbg, QVector2D vector)
 
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, QVector2D vector)
@@ -444,7 +444,7 @@ QDebug operator<<(QDebug dbg, QVector2D vector)
     Writes the given \a vector to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, QVector2D vector)
@@ -460,7 +460,7 @@ QDataStream &operator<<(QDataStream &stream, QVector2D vector)
     Reads a 2D vector from the given \a stream into the given \a vector
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QVector2D &vector)
@@ -473,20 +473,20 @@ QDataStream &operator>>(QDataStream &stream, QVector2D &vector)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#endif // QT_NO_VECTOR2D
+#endif // BOBUI_NO_VECTOR2D
 
 
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \class QVector3D
     \brief The QVector3D class represents a vector or vertex in 3D space.
     \since 4.6
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Vectors are one of the main building blocks of 3D representation and
     drawing. They consist of three finite floating-point coordinates,
@@ -505,7 +505,7 @@ QDataStream &operator>>(QDataStream &stream, QVector2D &vector)
 */
 
 /*!
-    \fn QVector3D::QVector3D(Qt::Initialization)
+    \fn QVector3D::QVector3D(BobUI::Initialization)
     \since 5.5
     \internal
 
@@ -533,7 +533,7 @@ QDataStream &operator>>(QDataStream &stream, QVector2D &vector)
     z coordinate of 0.
 */
 
-#ifndef QT_NO_VECTOR2D
+#ifndef BOBUI_NO_VECTOR2D
 
 /*!
     \fn QVector3D::QVector3D(QVector2D vector)
@@ -554,7 +554,7 @@ QDataStream &operator>>(QDataStream &stream, QVector2D &vector)
 */
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \fn QVector3D::QVector3D(QVector4D vector)
@@ -777,7 +777,7 @@ QDataStream &operator>>(QDataStream &stream, QVector2D &vector)
     w equals to 0, it is set to 1.
 
     \note the returned y coordinates are in OpenGL orientation. OpenGL expects
-    the bottom to be 0 whereas for Qt top is 0.
+    the bottom to be 0 whereas for BobUI top is 0.
 
     \sa unproject()
  */
@@ -808,7 +808,7 @@ QVector3D QVector3D::project(const QMatrix4x4 &modelView, const QMatrix4x4 &proj
     w equals to 0, it is set to 1.
 
     \note y coordinates in \a viewport should use OpenGL orientation. OpenGL
-    expects the bottom to be 0 whereas for Qt top is 0.
+    expects the bottom to be 0 whereas for BobUI top is 0.
 
     \sa project()
  */
@@ -980,12 +980,12 @@ QVector3D QVector3D::unproject(const QMatrix4x4 &modelView, const QMatrix4x4 &pr
 */
 bool qFuzzyCompare(QVector3D v1, QVector3D v2) noexcept
 {
-    return QtPrivate::fuzzyCompare(v1.v[0], v2.v[0])
-        && QtPrivate::fuzzyCompare(v1.v[1], v2.v[1])
-        && QtPrivate::fuzzyCompare(v1.v[2], v2.v[2]);
+    return BobUIPrivate::fuzzyCompare(v1.v[0], v2.v[0])
+        && BobUIPrivate::fuzzyCompare(v1.v[1], v2.v[1])
+        && BobUIPrivate::fuzzyCompare(v1.v[2], v2.v[2]);
 }
 
-#ifndef QT_NO_VECTOR2D
+#ifndef BOBUI_NO_VECTOR2D
 
 /*!
     \fn QVector2D QVector3D::toVector2D() const
@@ -997,7 +997,7 @@ bool qFuzzyCompare(QVector3D v1, QVector3D v2) noexcept
 
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \fn QVector4D QVector3D::toVector4D() const
@@ -1052,7 +1052,7 @@ QVector3D::operator QVariant() const
     \sa length(), dotProduct()
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 QDebug operator<<(QDebug dbg, QVector3D vector)
 {
@@ -1064,7 +1064,7 @@ QDebug operator<<(QDebug dbg, QVector3D vector)
 
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, QVector3D vector)
@@ -1073,7 +1073,7 @@ QDebug operator<<(QDebug dbg, QVector3D vector)
     Writes the given \a vector to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, QVector3D vector)
@@ -1089,7 +1089,7 @@ QDataStream &operator<<(QDataStream &stream, QVector3D vector)
     Reads a 3D vector from the given \a stream into the given \a vector
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QVector3D &vector)
@@ -1104,20 +1104,20 @@ QDataStream &operator>>(QDataStream &stream, QVector3D &vector)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#endif // QT_NO_VECTOR3D
+#endif // BOBUI_NO_VECTOR3D
 
 
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \class QVector4D
     \brief The QVector4D class represents a vector or vertex in 4D space.
     \since 4.6
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Vectors are one of the main building blocks of 4D affine representations of
     3D space. They consist of four finite floating-point coordinates,
@@ -1136,7 +1136,7 @@ QDataStream &operator>>(QDataStream &stream, QVector3D &vector)
 */
 
 /*!
-    \fn QVector4D::QVector4D(Qt::Initialization)
+    \fn QVector4D::QVector4D(BobUI::Initialization)
     \since 5.5
     \internal
 
@@ -1164,7 +1164,7 @@ QDataStream &operator>>(QDataStream &stream, QVector3D &vector)
     z and w coordinates of 0.
 */
 
-#ifndef QT_NO_VECTOR2D
+#ifndef BOBUI_NO_VECTOR2D
 
 /*!
     \fn QVector4D::QVector4D(QVector2D vector)
@@ -1187,7 +1187,7 @@ QDataStream &operator>>(QDataStream &stream, QVector3D &vector)
 
 #endif
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QVector4D::QVector4D(QVector3D vector)
@@ -1502,13 +1502,13 @@ QDataStream &operator>>(QDataStream &stream, QVector3D &vector)
 */
 bool qFuzzyCompare(QVector4D v1, QVector4D v2) noexcept
 {
-    return QtPrivate::fuzzyCompare(v1.v[0], v2.v[0])
-        && QtPrivate::fuzzyCompare(v1.v[1], v2.v[1])
-        && QtPrivate::fuzzyCompare(v1.v[2], v2.v[2])
-        && QtPrivate::fuzzyCompare(v1.v[3], v2.v[3]);
+    return BobUIPrivate::fuzzyCompare(v1.v[0], v2.v[0])
+        && BobUIPrivate::fuzzyCompare(v1.v[1], v2.v[1])
+        && BobUIPrivate::fuzzyCompare(v1.v[2], v2.v[2])
+        && BobUIPrivate::fuzzyCompare(v1.v[3], v2.v[3]);
 }
 
-#ifndef QT_NO_VECTOR2D
+#ifndef BOBUI_NO_VECTOR2D
 
 /*!
     \fn QVector2D QVector4D::toVector2D() const
@@ -1530,7 +1530,7 @@ bool qFuzzyCompare(QVector4D v1, QVector4D v2) noexcept
 
 #endif
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QVector3D QVector4D::toVector3D() const
@@ -1577,7 +1577,7 @@ QVector4D::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 QDebug operator<<(QDebug dbg, QVector4D vector)
 {
@@ -1590,7 +1590,7 @@ QDebug operator<<(QDebug dbg, QVector4D vector)
 
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, QVector4D vector)
@@ -1599,7 +1599,7 @@ QDebug operator<<(QDebug dbg, QVector4D vector)
     Writes the given \a vector to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, QVector4D vector)
@@ -1616,7 +1616,7 @@ QDataStream &operator<<(QDataStream &stream, QVector4D vector)
     Reads a 4D vector from the given \a stream into the given \a vector
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QVector4D &vector)
@@ -1633,8 +1633,8 @@ QDataStream &operator>>(QDataStream &stream, QVector4D &vector)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#endif // QT_NO_VECTOR4D
+#endif // BOBUI_NO_VECTOR4D
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = kitchensink
 INCLUDEPATH += .
-QT += widgets gui-private
+BOBUI += widgets gui-private
 CONFIG += cmdline
 CONFIG += c++11
 # Input

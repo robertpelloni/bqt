@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "filedialogpanel.h"
 #include "utils.h"
@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QUrl>
 
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDebug>
 
 const FlagData acceptModeComboData[] =
@@ -46,7 +46,7 @@ const FlagData fileModeComboData[] =
 };
 
 // A line edit for editing the label fields of the dialog, keeping track of whether it has
-// been modified by the user to avoid applying Qt's default texts to native dialogs.
+// been modified by the user to avoid applying BobUI's default texts to native dialogs.
 
 class LabelLineEdit : public QLineEdit
 {
@@ -148,9 +148,9 @@ FileDialogPanel::FileDialogPanel(QWidget *parent)
     int column = 0;
     addButton(tr("Exec modal"), buttonLayout, row, column, this, SLOT(execModal()));
     addButton(tr("Show application modal"), buttonLayout, row, column,
-              [this]() { showModal(Qt::ApplicationModal); });
+              [this]() { showModal(BobUI::ApplicationModal); });
     addButton(tr("Show window modal"), buttonLayout, row, column,
-              [this]() { showModal(Qt::WindowModal); });
+              [this]() { showModal(BobUI::WindowModal); });
     m_deleteModalDialogButton = addButton(tr("Delete modal"), buttonLayout, row, column, this,
                                           SLOT(deleteModalDialog()));
     addButton(tr("Show non-modal"), buttonLayout, row, column, this, SLOT(showNonModal()));
@@ -187,20 +187,20 @@ void FileDialogPanel::execModal()
     QFileDialog dialog(this);
     applySettings(&dialog);
     connect(&dialog, SIGNAL(accepted()), this, SLOT(accepted()));
-    dialog.setWindowTitle(tr("Modal File Dialog Qt %1").arg(QLatin1String(QT_VERSION_STR)));
+    dialog.setWindowTitle(tr("Modal File Dialog BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)));
     dialog.exec();
 }
 
-void FileDialogPanel::showModal(Qt::WindowModality modality)
+void FileDialogPanel::showModal(BobUI::WindowModality modality)
 {
     if (m_modalDialog.isNull()) {
         static int  n = 0;
         m_modalDialog = new QFileDialog(this);
         m_modalDialog->setModal(true);
         connect(m_modalDialog.data(), SIGNAL(accepted()), this, SLOT(accepted()));
-        m_modalDialog->setWindowTitle(tr("Modal File Dialog #%1 Qt %2")
+        m_modalDialog->setWindowTitle(tr("Modal File Dialog #%1 BobUI %2")
                                       .arg(++n)
-                                      .arg(QLatin1String(QT_VERSION_STR)));
+                                      .arg(QLatin1String(BOBUI_VERSION_STR)));
         enableDeleteModalDialogButton();
     }
     m_modalDialog->setWindowModality(modality);
@@ -214,9 +214,9 @@ void FileDialogPanel::showNonModal()
         static int  n = 0;
         m_nonModalDialog = new QFileDialog(this);
         connect(m_nonModalDialog.data(), SIGNAL(accepted()), this, SLOT(accepted()));
-        m_nonModalDialog->setWindowTitle(tr("Non-Modal File Dialog #%1 Qt %2")
+        m_nonModalDialog->setWindowTitle(tr("Non-Modal File Dialog #%1 BobUI %2")
                                          .arg(++n)
-                                         .arg(QLatin1String(QT_VERSION_STR)));
+                                         .arg(QLatin1String(BOBUI_VERSION_STR)));
         enableDeleteNonModalDialogButton();
     }
     applySettings(m_nonModalDialog);
@@ -280,14 +280,14 @@ QFileDialog::Options FileDialogPanel::options() const
 
 QStringList FileDialogPanel::allowedSchemes() const
 {
-    return m_allowedSchemes->text().simplified().split(' ', Qt::SkipEmptyParts);
+    return m_allowedSchemes->text().simplified().split(' ', BobUI::SkipEmptyParts);
 }
 
 void FileDialogPanel::getOpenFileNames()
 {
     QString selectedFilter = m_selectedNameFilter->text().trimmed();
     const QStringList files =
-        QFileDialog::getOpenFileNames(this, tr("getOpenFileNames Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getOpenFileNames(this, tr("getOpenFileNames BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                       m_directory->text(), filterString(), &selectedFilter, options());
     if (!files.isEmpty()) {
         QString result;
@@ -302,7 +302,7 @@ void FileDialogPanel::getOpenFileUrls()
 {
     QString selectedFilter = m_selectedNameFilter->text().trimmed();
     const QList<QUrl> files =
-        QFileDialog::getOpenFileUrls(this, tr("getOpenFileNames Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getOpenFileUrls(this, tr("getOpenFileNames BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                      currentDirectoryUrl(), filterString(), &selectedFilter, options(),
                                       allowedSchemes());
     if (!files.isEmpty()) {
@@ -318,7 +318,7 @@ void FileDialogPanel::getOpenFileName()
 {
     QString selectedFilter = m_selectedNameFilter->text().trimmed();
     const QString file =
-        QFileDialog::getOpenFileName(this, tr("getOpenFileName Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getOpenFileName(this, tr("getOpenFileName BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                       m_directory->text(), filterString(), &selectedFilter, options());
     if (!file.isEmpty()) {
         QString result;
@@ -333,7 +333,7 @@ void FileDialogPanel::getOpenFileUrl()
 {
     QString selectedFilter = m_selectedNameFilter->text().trimmed();
     const QUrl file =
-        QFileDialog::getOpenFileUrl(this, tr("getOpenFileUrl Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getOpenFileUrl(this, tr("getOpenFileUrl BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                     currentDirectoryUrl(), filterString(), &selectedFilter, options(),
                                       allowedSchemes());
     if (file.isValid()) {
@@ -349,7 +349,7 @@ void FileDialogPanel::getSaveFileName()
 {
     QString selectedFilter = m_selectedNameFilter->text().trimmed();
     const QString file =
-        QFileDialog::getSaveFileName(this, tr("getSaveFileName Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getSaveFileName(this, tr("getSaveFileName BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                       m_directory->text(), filterString(), &selectedFilter, options());
     if (!file.isEmpty()) {
         QString result;
@@ -364,7 +364,7 @@ void FileDialogPanel::getSaveFileUrl()
 {
     QString selectedFilter = m_selectedNameFilter->text().trimmed();
     const QUrl file =
-        QFileDialog::getSaveFileUrl(this, tr("getSaveFileName Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getSaveFileUrl(this, tr("getSaveFileName BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                     currentDirectoryUrl(), filterString(), &selectedFilter, options(),
                                     allowedSchemes());
     if (file.isValid()) {
@@ -379,7 +379,7 @@ void FileDialogPanel::getSaveFileUrl()
 void FileDialogPanel::getExistingDirectory()
 {
     const QString dir =
-        QFileDialog::getExistingDirectory(this, tr("getExistingDirectory Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getExistingDirectory(this, tr("getExistingDirectory BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                           m_directory->text(), options() | QFileDialog::ShowDirsOnly);
     if (!dir.isEmpty())
         QMessageBox::information(this, tr("getExistingDirectory"), QLatin1String("Directory: ") + dir, QMessageBox::Ok);
@@ -388,7 +388,7 @@ void FileDialogPanel::getExistingDirectory()
 void FileDialogPanel::getExistingDirectoryUrl()
 {
     const QUrl dir =
-        QFileDialog::getExistingDirectoryUrl(this, tr("getExistingDirectory Qt %1").arg(QLatin1String(QT_VERSION_STR)),
+        QFileDialog::getExistingDirectoryUrl(this, tr("getExistingDirectory BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)),
                                              currentDirectoryUrl(), options() | QFileDialog::ShowDirsOnly,
                                           allowedSchemes());
     if (!dir.isEmpty())
@@ -440,7 +440,7 @@ void FileDialogPanel::applySettings(QFileDialog *d)
     if (!file.isEmpty())
        d->selectFile(file);
     const QString filter = m_selectedNameFilter->text().trimmed();
-    const QStringList filters = m_nameFilters->toPlainText().trimmed().split(QLatin1Char('\n'), Qt::SkipEmptyParts);
+    const QStringList filters = m_nameFilters->toPlainText().trimmed().split(QLatin1Char('\n'), BobUI::SkipEmptyParts);
     if (!m_useMimeTypeFilters->isChecked()) {
         d->setNameFilters(filters);
         if (!filter.isEmpty())
@@ -481,7 +481,7 @@ void FileDialogPanel::accepted()
         << d->directoryUrl() << ", "
         << d->directory().absolutePath()
         << "\nName filter: " << d->selectedNameFilter();
-    QTimer::singleShot(0, this, SLOT(showAcceptedResult())); // Avoid problems with the closing (modal) dialog as parent.
+    BOBUIimer::singleShot(0, this, SLOT(showAcceptedResult())); // Avoid problems with the closing (modal) dialog as parent.
 }
 
 void FileDialogPanel::showAcceptedResult()

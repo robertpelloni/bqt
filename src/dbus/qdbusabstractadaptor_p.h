@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
@@ -20,23 +20,23 @@
 #include <QtDBus/private/qtdbusglobal_p.h>
 #include <qdbusabstractadaptor.h>
 
-#include <QtCore/qbytearrayview.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qbytearrayview.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qvariant.h>
 #include "private/qobject_p.h"
 
 #define QCLASSINFO_DBUS_INTERFACE       "D-Bus Interface"
 #define QCLASSINFO_DBUS_INTROSPECTION   "D-Bus Introspection"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 #ifdef interface
 #  undef interface
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusAbstractAdaptor;
 class QDBusAdaptorConnector;
@@ -102,7 +102,7 @@ Q_DECLARE_TYPEINFO(QDBusAdaptorConnector::AdaptorData, Q_PRIMITIVE_TYPE);
 extern QDBusAdaptorConnector *qDBusFindAdaptorConnector(QObject *object);
 extern QDBusAdaptorConnector *qDBusCreateAdaptorConnector(QObject *object);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif // QDBUSABSTRACTADAPTOR_P_H

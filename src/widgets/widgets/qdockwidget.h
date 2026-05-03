@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDYNAMICDOCKWIDGET_H
 #define QDYNAMICDOCKWIDGET_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(dockwidget);
+BOBUI_REQUIRE_CONFIG(dockwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDockAreaLayout;
 class QDockWidgetPrivate;
@@ -23,16 +23,16 @@ class Q_WIDGETS_EXPORT QDockWidget : public QWidget
 
     Q_PROPERTY(bool floating READ isFloating WRITE setFloating NOTIFY topLevelChanged)
     Q_PROPERTY(DockWidgetFeatures features READ features WRITE setFeatures NOTIFY featuresChanged)
-    Q_PROPERTY(Qt::DockWidgetAreas allowedAreas READ allowedAreas
+    Q_PROPERTY(BobUI::DockWidgetAreas allowedAreas READ allowedAreas
                WRITE setAllowedAreas NOTIFY allowedAreasChanged)
     Q_PROPERTY(QString windowTitle READ windowTitle WRITE setWindowTitle DESIGNABLE true)
-    Q_PROPERTY(Qt::DockWidgetArea dockLocation READ dockLocation WRITE setDockLocation
+    Q_PROPERTY(BobUI::DockWidgetArea dockLocation READ dockLocation WRITE setDockLocation
                NOTIFY dockLocationChanged)
 
 public:
     explicit QDockWidget(const QString &title, QWidget *parent = nullptr,
-                         Qt::WindowFlags flags = Qt::WindowFlags());
-    explicit QDockWidget(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+                         BobUI::WindowFlags flags = BobUI::WindowFlags());
+    explicit QDockWidget(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QDockWidget();
 
     QWidget *widget() const;
@@ -58,32 +58,32 @@ public:
     void setFloating(bool floating);
     inline bool isFloating() const { return isWindow(); }
 
-    void setAllowedAreas(Qt::DockWidgetAreas areas);
-    Qt::DockWidgetAreas allowedAreas() const;
+    void setAllowedAreas(BobUI::DockWidgetAreas areas);
+    BobUI::DockWidgetAreas allowedAreas() const;
 
     void setTitleBarWidget(QWidget *widget);
     QWidget *titleBarWidget() const;
 
-    void setDockLocation(Qt::DockWidgetArea area);
-    Qt::DockWidgetArea dockLocation() const;
+    void setDockLocation(BobUI::DockWidgetArea area);
+    BobUI::DockWidgetArea dockLocation() const;
 
-    inline bool isAreaAllowed(Qt::DockWidgetArea area) const
+    inline bool isAreaAllowed(BobUI::DockWidgetArea area) const
     { return (allowedAreas() & area) == area; }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_WIDGETS_EXPORT QDebug operator<<(QDebug dbg, const QDockWidget *dockWidget);
 #endif
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QAction *toggleViewAction() const;
 #endif
 
 Q_SIGNALS:
     void featuresChanged(QDockWidget::DockWidgetFeatures features);
     void topLevelChanged(bool topLevel);
-    void allowedAreasChanged(Qt::DockWidgetAreas allowedAreas);
-    void visibilityChanged(bool visible); // ### Qt7: Deprecate this. Better listen to hide/show events
-    void dockLocationChanged(Qt::DockWidgetArea area);
+    void allowedAreasChanged(BobUI::DockWidgetAreas allowedAreas);
+    void visibilityChanged(bool visible); // ### BobUI7: Deprecate this. Better listen to hide/show events
+    void dockLocationChanged(BobUI::DockWidgetArea area);
 
 protected:
     void changeEvent(QEvent *event) override;
@@ -104,6 +104,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDockWidget::DockWidgetFeatures)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDYNAMICDOCKWIDGET_H

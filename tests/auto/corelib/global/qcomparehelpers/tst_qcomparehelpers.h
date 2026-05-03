@@ -1,16 +1,16 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QCOMPAREHELPERS_H
 #define TST_QCOMPAREHELPERS_H
 
-#include <QtCore/qcompare.h>
+#include <BobUICore/qcompare.h>
 
-#include <QtTest/qtest.h>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 class tst_QCompareHelpers : public QObject

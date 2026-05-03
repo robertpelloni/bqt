@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -48,13 +48,13 @@ void tst_QLCDNumber::getSetCheck()
 // Test case for undefined behavior when displaying INT_MIN
 void tst_QLCDNumber::displayEdgeCases_data()
 {
-    QTest::addColumn<int>("number");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<int>("number");
+    BOBUIest::addColumn<QString>("expected");
 
     // INT_MIN previously caused UB due to -INT_MIN overflow in int2string().
-    QTest::newRow("INT_MIN") << INT_MIN << QString::number(INT_MIN);
-    QTest::newRow("INT_MAX") << INT_MAX << QString::number(INT_MAX);
-    QTest::newRow("Zero")    << 0       << QStringLiteral("0");
+    BOBUIest::newRow("INT_MIN") << INT_MIN << QString::number(INT_MIN);
+    BOBUIest::newRow("INT_MAX") << INT_MAX << QString::number(INT_MAX);
+    BOBUIest::newRow("Zero")    << 0       << QStringLiteral("0");
 }
 
 void tst_QLCDNumber::displayEdgeCases()
@@ -70,5 +70,5 @@ void tst_QLCDNumber::displayEdgeCases()
     QCOMPARE(result, expected);
 }
 
-QTEST_MAIN(tst_QLCDNumber)
+BOBUIEST_MAIN(tst_QLCDNumber)
 #include "tst_qlcdnumber.moc"

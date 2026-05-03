@@ -4,23 +4,23 @@ CONFIG += no_docs_target
 SUBDIRS = \
     corelib
 
-!contains(TEMPLATE, "vc.*") {    # QTBUG-91033
-    qtHaveModule(dbus): SUBDIRS += dbus
+!contains(TEMPLATE, "vc.*") {    # BOBUIBUG-91033
+    bobuiHaveModule(dbus): SUBDIRS += dbus
 }
-qtHaveModule(network): SUBDIRS += network
-qtHaveModule(testlib): SUBDIRS += qtestlib
-qtHaveModule(concurrent): SUBDIRS += qtconcurrent
-qtHaveModule(sql): SUBDIRS += sql
-qtHaveModule(widgets): SUBDIRS += widgets
-qtHaveModule(xml): SUBDIRS += xml
-qtHaveModule(gui) {
+bobuiHaveModule(network): SUBDIRS += network
+bobuiHaveModule(testlib): SUBDIRS += bobuiestlib
+bobuiHaveModule(concurrent): SUBDIRS += bobuiconcurrent
+bobuiHaveModule(sql): SUBDIRS += sql
+bobuiHaveModule(widgets): SUBDIRS += widgets
+bobuiHaveModule(xml): SUBDIRS += xml
+bobuiHaveModule(gui) {
     SUBDIRS += gui
-    qtConfig(opengl): SUBDIRS += opengl
-    qtConfig(vulkan): SUBDIRS += vulkan
+    bobuiConfig(opengl): SUBDIRS += opengl
+    bobuiConfig(vulkan): SUBDIRS += vulkan
 }
 
 aggregate.files = aggregate/examples.pro
-aggregate.path = $$[QT_INSTALL_EXAMPLES]
+aggregate.path = $$[BOBUI_INSTALL_EXAMPLES]
 readme.files = README
-readme.path = $$[QT_INSTALL_EXAMPLES]
+readme.path = $$[BOBUI_INSTALL_EXAMPLES]
 INSTALLS += aggregate readme

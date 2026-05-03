@@ -1815,8 +1815,8 @@ means tRNS or alpha is present but all pixels in the image are opaque.
    2T    Ct  -   Ct  C   C   t   +   t   -   -   -  CBt CBt  Bt  Bt
    2O    Ct  -   Ct  C   C   t   t   +   -   -   -  CBt CBt  Bt  Bt
     3   [Q]  p  [Q] [Q] [Q]  Q   Q   Q   +   .   .  [Q] [Q]  Q   Q
-   3T   [Qt] p  [Qt][Q] [Q]  Qt  Qt  Qt  t   +   t  [Qt][Qt] Qt  Qt
-   3O   [Qt] p  [Qt][Q] [Q]  Qt  Qt  Qt  t   t   +  [Qt][Qt] Qt  Qt
+   3T   [BobUI] p  [BobUI][Q] [Q]  BobUI  BobUI  BobUI  t   +   t  [BobUI][BobUI] BobUI  BobUI
+   3O   [BobUI] p  [BobUI][Q] [Q]  BobUI  BobUI  BobUI  t   t   +  [BobUI][BobUI] BobUI  BobUI
    4A    lA  G   A   T   T   GA  GT  GT  GA  GT  GT  +   BA  G  GBA
    4O    lA GBA  A   T   T   GA  GT  GT  GA  GT  GT  BA  +  GBA  G
    6A    CA  PA  CA  C   C   A   T  tT   PA  P   P   C  CBA  +   BA

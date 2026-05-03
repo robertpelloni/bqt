@@ -95,7 +95,7 @@
                <number>360</number>
               </property>
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>BobUI::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -127,7 +127,7 @@
                <number>10</number>
               </property>
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>BobUI::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -151,7 +151,7 @@
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>BobUI::Horizontal</enum>
        </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
@@ -212,7 +212,7 @@
              <number>360</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>BobUI::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -247,7 +247,7 @@
              <number>10</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>BobUI::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -293,7 +293,7 @@
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>BobUI::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalsocket.h"
 #include "qlocalsocket_p.h"
@@ -24,11 +24,11 @@
 
 using namespace std::chrono_literals;
 
-#define QT_CONNECT_TIMEOUT 30000
+#define BOBUI_CONNECT_TIMEOUT 30000
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 // determine the full server path
@@ -234,7 +234,7 @@ void QLocalSocket::connectToServer(OpenMode openMode)
     }
 
     // create the socket
-    if (-1 == (d->connectingSocket = qt_safe_socket(PF_UNIX, SOCK_STREAM, 0, O_NONBLOCK))) {
+    if (-1 == (d->connectingSocket = bobui_safe_socket(PF_UNIX, SOCK_STREAM, 0, O_NONBLOCK))) {
         d->setErrorAndEmit(UnsupportedSocketOperationError, "QLocalSocket::connectToServer"_L1);
         return;
     }
@@ -273,7 +273,7 @@ void QLocalSocketPrivate::_q_connectToSocket()
         return;
     }
 
-    QT_SOCKLEN_T addrSize = sizeof(::sockaddr_un);
+    BOBUI_SOCKLEN_T addrSize = sizeof(::sockaddr_un);
     if (options.testFlag(QLocalSocket::AbstractNamespaceOption)) {
         ::memcpy(addr.sun_path + 1, encodedConnectingPathName.constData(),
                  encodedConnectingPathName.size() + 1);
@@ -282,7 +282,7 @@ void QLocalSocketPrivate::_q_connectToSocket()
         ::memcpy(addr.sun_path, encodedConnectingPathName.constData(),
                  encodedConnectingPathName.size() + 1);
     }
-    if (-1 == qt_safe_connect(connectingSocket, (struct sockaddr *)&addr, addrSize)) {
+    if (-1 == bobui_safe_connect(connectingSocket, (struct sockaddr *)&addr, addrSize)) {
         QString function = "QLocalSocket::connectToServer"_L1;
         switch (errno)
         {
@@ -307,11 +307,11 @@ void QLocalSocketPrivate::_q_connectToSocket()
                 q->connect(delayConnect, SIGNAL(activated(QSocketDescriptor)), q, SLOT(_q_connectToSocket()));
             }
             if (!connectTimer) {
-                connectTimer = new QTimer(q);
+                connectTimer = new BOBUIimer(q);
                 q->connect(connectTimer, SIGNAL(timeout()),
                                  q, SLOT(_q_abortConnectionAttempt()),
-                                 Qt::DirectConnection);
-                connectTimer->start(QT_CONNECT_TIMEOUT);
+                                 BobUI::DirectConnection);
+                connectTimer->start(BOBUI_CONNECT_TIMEOUT);
             }
             delayConnect->setEnabled(true);
             break;
@@ -376,7 +376,7 @@ void QLocalSocketPrivate::describeSocket(qintptr socketDescriptor)
     bool abstractAddress = false;
 
     struct ::sockaddr_un addr;
-    QT_SOCKLEN_T len = sizeof(addr);
+    BOBUI_SOCKLEN_T len = sizeof(addr);
     memset(&addr, 0, sizeof(addr));
     const int getpeernameStatus = ::getpeername(socketDescriptor, (sockaddr *)&addr, &len);
     if (getpeernameStatus != 0 || len == offsetof(sockaddr_un, sun_path)) {
@@ -597,13 +597,13 @@ bool QLocalSocket::waitForConnected(int msec)
     if (state() != ConnectingState)
         return (state() == ConnectedState);
 
-    pollfd pfd = qt_make_pollfd(d->connectingSocket, POLLIN);
+    pollfd pfd = bobui_make_pollfd(d->connectingSocket, POLLIN);
 
     QDeadlineTimer deadline{msec};
     auto remainingTime = deadline.remainingTimeAsDuration();
 
     do {
-        const int result = qt_safe_poll(&pfd, 1, deadline);
+        const int result = bobui_safe_poll(&pfd, 1, deadline);
         if (result == -1)
             d->setErrorAndEmit(QLocalSocket::UnknownSocketError,
                                "QLocalSocket::waitForConnected"_L1);
@@ -633,4 +633,4 @@ bool QLocalSocket::waitForReadyRead(int msecs)
     return (d->unixSocket.waitForReadyRead(msecs));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

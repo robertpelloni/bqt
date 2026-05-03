@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSFONTENGINE_H
 #define QWINDOWSFONTENGINE_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qfontengine_p.h>
+#include <BobUIGui/private/qfontengine_p.h>
 
-#include <QtGui/QImage>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QMetaType>
+#include <BobUIGui/QImage>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QMetaType>
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsNativeImage;
 class QWindowsFontEngineData;
@@ -51,14 +51,14 @@ public:
     int stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, ShaperFlags flags) const override;
     void recalcAdvances(QGlyphLayout *glyphs, ShaperFlags) const override;
 
-    void addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, QTextItem::RenderFlags flags) override;
+    void addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, BOBUIextItem::RenderFlags flags) override;
     void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
-                         QPainterPath *path, QTextItem::RenderFlags flags) override;
+                         QPainterPath *path, BOBUIextItem::RenderFlags flags) override;
 
     HGDIOBJ selectDesignFont() const;
 
-    glyph_metrics_t boundingBox(glyph_t g) override { return boundingBox(g, QTransform()); }
-    glyph_metrics_t boundingBox(glyph_t g, const QTransform &t) override;
+    glyph_metrics_t boundingBox(glyph_t g) override { return boundingBox(g, BOBUIransform()); }
+    glyph_metrics_t boundingBox(glyph_t g, const BOBUIransform &t) override;
 
 
     QFixed xHeight() const override;
@@ -68,19 +68,19 @@ public:
     qreal minLeftBearing() const override;
     qreal minRightBearing() const override;
 
-    QImage alphaMapForGlyph(glyph_t t) override { return alphaMapForGlyph(t, QTransform()); }
-    QImage alphaMapForGlyph(glyph_t, const QTransform &xform) override;
+    QImage alphaMapForGlyph(glyph_t t) override { return alphaMapForGlyph(t, BOBUIransform()); }
+    QImage alphaMapForGlyph(glyph_t, const BOBUIransform &xform) override;
     QImage alphaRGBMapForGlyph(glyph_t t,
                                const QFixedPoint &subPixelPosition,
-                               const QTransform &xform) override;
+                               const BOBUIransform &xform) override;
     glyph_metrics_t alphaMapBoundingBox(glyph_t glyph,
                                         const QFixedPoint &,
-                                        const QTransform &matrix,
+                                        const BOBUIransform &matrix,
                                         GlyphFormat) override;
 
     QFontEngine *cloneWithSize(qreal pixelSize) const override;
-    Qt::HANDLE handle() const override;
-    bool supportsTransformation(const QTransform &transform) const override;
+    BobUI::HANDLE handle() const override;
+    bool supportsTransformation(const BOBUIransform &transform) const override;
 
 #ifndef Q_CC_MINGW
     void getGlyphBearings(glyph_t glyph, qreal *leftBearing = nullptr, qreal *rightBearing = nullptr) override;
@@ -91,7 +91,7 @@ public:
     int getGlyphIndexes(const QChar *ch, int numChars, QGlyphLayout *glyphs, int *mappedGlyphs) const;
     void getCMap();
 
-    bool getOutlineMetrics(glyph_t glyph, const QTransform &t, glyph_metrics_t *metrics) const;
+    bool getOutlineMetrics(glyph_t glyph, const BOBUIransform &t, glyph_metrics_t *metrics) const;
 
     const QSharedPointer<QWindowsFontEngineData> &fontEngineData() const { return m_fontEngineData; }
 
@@ -101,7 +101,7 @@ protected:
     void initializeHeightMetrics() const override;
 
 private:
-    QWindowsNativeImage *drawGDIGlyph(HFONT font, glyph_t, int margin, const QTransform &xform,
+    QWindowsNativeImage *drawGDIGlyph(HFONT font, glyph_t, int margin, const BOBUIransform &xform,
                                       QImage::Format mask_format);
     bool hasCFFTable() const;
     bool hasCMapTable() const;
@@ -135,9 +135,9 @@ private:
     mutable int designAdvancesSize = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(HFONT, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(LOGFONT, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(HFONT, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(LOGFONT, Q_GUI_EXPORT)
 
 #endif // QWINDOWSFONTENGINE_H

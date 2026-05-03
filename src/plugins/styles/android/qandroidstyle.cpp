@@ -1,6 +1,6 @@
 // Copyright (C) 2013 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qandroidstyle_p.h"
 
@@ -20,7 +20,7 @@
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformtheme.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
     const quint32 NO_COLOR = 1;
@@ -59,7 +59,7 @@ QAndroidStyle::QAndroidStyle()
         }
 
         QJsonObject item = value.toObject();
-        QAndroidStyle::ItemType itemType = qtControl(key);
+        QAndroidStyle::ItemType itemType = bobuiControl(key);
         if (QC_UnknownType == itemType)
             continue;
 
@@ -102,7 +102,7 @@ QAndroidStyle::~QAndroidStyle()
     qDeleteAll(m_androidControlsHash);
 }
 
-QAndroidStyle::ItemType QAndroidStyle::qtControl(const QString &android)
+QAndroidStyle::ItemType QAndroidStyle::bobuiControl(const QString &android)
 {
     if (android == QLatin1String("buttonStyle"))
         return QC_Button;
@@ -126,7 +126,7 @@ QAndroidStyle::ItemType QAndroidStyle::qtControl(const QString &android)
     return QC_UnknownType;
 }
 
-QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::ComplexControl control)
+QAndroidStyle::ItemType QAndroidStyle::bobuiControl(QStyle::ComplexControl control)
 {
     switch (control) {
     case CC_ComboBox:
@@ -138,7 +138,7 @@ QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::ComplexControl control)
     }
 }
 
-QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::ContentsType contentsType)
+QAndroidStyle::ItemType QAndroidStyle::bobuiControl(QStyle::ContentsType contentsType)
 {
     switch (contentsType) {
     case CT_PushButton:
@@ -168,7 +168,7 @@ QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::ContentsType contentsTy
     }
 }
 
-QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::ControlElement controlElement)
+QAndroidStyle::ItemType QAndroidStyle::bobuiControl(QStyle::ControlElement controlElement)
 {
     switch (controlElement) {
     case CE_PushButton:
@@ -206,7 +206,7 @@ QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::ControlElement controlE
     }
 }
 
-QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::PrimitiveElement primitiveElement)
+QAndroidStyle::ItemType QAndroidStyle::bobuiControl(QStyle::PrimitiveElement primitiveElement)
 {
     switch (primitiveElement) {
     case QStyle::PE_PanelLineEdit:
@@ -227,7 +227,7 @@ QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::PrimitiveElement primit
     }
 }
 
-QAndroidStyle::ItemType QAndroidStyle::qtControl(QStyle::SubElement subElement)
+QAndroidStyle::ItemType QAndroidStyle::bobuiControl(QStyle::SubElement subElement)
 {
     switch (subElement) {
     case QStyle::SE_LineEditContents:
@@ -253,7 +253,7 @@ void QAndroidStyle::drawPrimitive(PrimitiveElement pe,
                                   QPainter *p,
                                   const QWidget *w) const
 {
-    const ItemType itemType = qtControl(pe);
+    const ItemType itemType = bobuiControl(pe);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -290,7 +290,7 @@ void QAndroidStyle::drawControl(QStyle::ControlElement element,
                                 QPainter *p,
                                 const QWidget *w) const
 {
-    const ItemType itemType = qtControl(element);
+    const ItemType itemType = bobuiControl(element);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -352,7 +352,7 @@ QRect QAndroidStyle::subElementRect(SubElement subElement,
                                     const QStyleOption *option,
                                     const QWidget *widget) const
 {
-    const ItemType itemType = qtControl(subElement);
+    const ItemType itemType = bobuiControl(subElement);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -366,7 +366,7 @@ void QAndroidStyle::drawComplexControl(ComplexControl cc,
                                        QPainter *p,
                                        const QWidget *widget) const
 {
-    const ItemType itemType = qtControl(cc);
+    const ItemType itemType = bobuiControl(cc);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -391,7 +391,7 @@ void QAndroidStyle::drawComplexControl(ComplexControl cc,
                 p->save();
                 QRegion region(groupBox->rect);
                 if (!groupBox->text.isEmpty()) {
-                    bool ltr = groupBox->direction == Qt::LeftToRight;
+                    bool ltr = groupBox->direction == BobUI::LeftToRight;
                     QRect finalRect;
                     if (groupBox->subControls & QStyle::SC_GroupBoxCheckBox) {
                         finalRect = checkBoxRect.united(textRect);
@@ -413,9 +413,9 @@ void QAndroidStyle::drawComplexControl(ComplexControl cc,
                     p->setPen(textColor);
                 int alignment = int(groupBox->textAlignment);
                 if (!styleHint(QStyle::SH_UnderlineShortcut, opt, widget))
-                    alignment |= Qt::TextHideMnemonic;
+                    alignment |= BobUI::TextHideMnemonic;
 
-                drawItemText(p, textRect, Qt::TextShowMnemonic | Qt::AlignHCenter | alignment,
+                drawItemText(p, textRect, BobUI::TextShowMnemonic | BobUI::AlignHCenter | alignment,
                              groupBox->palette, groupBox->state & State_Enabled, groupBox->text,
                              textColor.isValid() ? QPalette::NoRole : QPalette::WindowText);
 
@@ -445,7 +445,7 @@ QStyle::SubControl QAndroidStyle::hitTestComplexControl(ComplexControl cc,
                                                         const QPoint &pt,
                                                         const QWidget *widget) const
 {
-    const ItemType itemType = qtControl(cc);
+    const ItemType itemType = bobuiControl(cc);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -475,7 +475,7 @@ QRect QAndroidStyle::subControlRect(ComplexControl cc,
                                     SubControl sc,
                                     const QWidget *widget) const
 {
-    const ItemType itemType = qtControl(cc);
+    const ItemType itemType = bobuiControl(cc);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -579,7 +579,7 @@ QSize QAndroidStyle::sizeFromContents(ContentsType ct,
                         + (hdr->text.isNull() ? 0 : margin) + txt.width() + margin);
             if (hdr->sortIndicator != QStyleOptionHeader::None) {
                 int margin = pixelMetric(QStyle::PM_HeaderMargin, hdr, w);
-                if (hdr->orientation == Qt::Horizontal)
+                if (hdr->orientation == BobUI::Horizontal)
                     sz.rwidth() += sz.height() + margin;
                 else
                     sz.rheight() += sz.width() + margin;
@@ -587,7 +587,7 @@ QSize QAndroidStyle::sizeFromContents(ContentsType ct,
             return sz;
         }
     }
-    const ItemType itemType = qtControl(ct);
+    const ItemType itemType = bobuiControl(ct);
     AndroidControlsHash::const_iterator it = itemType != QC_UnknownType
                                              ? m_androidControlsHash.find(itemType)
                                              : m_androidControlsHash.end();
@@ -634,7 +634,7 @@ int QAndroidStyle::styleHint(QStyle::StyleHint hint, const QStyleOption *option,
 {
     switch (hint) {
     case SH_Slider_AbsoluteSetButtons:
-        return Qt::LeftButton;
+        return BobUI::LeftButton;
 
     case SH_Slider_PageSetButtons:
         return 0;
@@ -657,12 +657,12 @@ QPalette QAndroidStyle::standardPalette() const
 
 void QAndroidStyle::polish(QWidget *widget)
 {
-    widget->setAttribute(Qt::WA_StyledBackground, true);
+    widget->setAttribute(BobUI::WA_StyledBackground, true);
 }
 
 void QAndroidStyle::unpolish(QWidget *widget)
 {
-    widget->setAttribute(Qt::WA_StyledBackground, false);
+    widget->setAttribute(BobUI::WA_StyledBackground, false);
 }
 
 QAndroidStyle::AndroidDrawable::AndroidDrawable(const QVariantMap &drawable,
@@ -833,7 +833,7 @@ void QAndroidStyle::Android9PatchDrawable::draw(QPainter *painter, const QStyleO
 
     const QRect &bounds = opt->rect;
 
-    // shamelessly stolen from Android's sources (NinepatchImpl.cpp) and adapted for Qt
+    // shamelessly stolen from Android's sources (NinepatchImpl.cpp) and adapted for BobUI
     const int pixmapWidth = pixmap.width();
     const int pixmapHeight = pixmap.height();
 
@@ -1065,7 +1065,7 @@ void QAndroidStyle::AndroidGradientDrawable::draw(QPainter *painter, const QStyl
 
     const QBrush &oldBrush = painter->brush();
     const QPen oldPen = painter->pen();
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
     painter->setBrush(m_gradient);
     painter->drawRoundedRect(opt->rect, m_radius, m_radius);
     painter->setBrush(oldBrush);
@@ -1083,7 +1083,7 @@ QAndroidStyle::AndroidClipDrawable::AndroidClipDrawable(const QVariantMap &drawa
 {
     m_drawable = fromMap(drawable.value(QLatin1String("drawable")).toMap(), itemType);
     m_factor = 0;
-    m_orientation = Qt::Horizontal;
+    m_orientation = BobUI::Horizontal;
 }
 
 QAndroidStyle::AndroidClipDrawable::~AndroidClipDrawable()
@@ -1096,7 +1096,7 @@ QAndroidStyle::AndroidDrawableType QAndroidStyle::AndroidClipDrawable::type() co
     return QAndroidStyle::Clip;
 }
 
-void QAndroidStyle::AndroidClipDrawable::setFactor(double factor, Qt::Orientation orientation)
+void QAndroidStyle::AndroidClipDrawable::setFactor(double factor, BobUI::Orientation orientation)
 {
     m_factor = factor;
     m_orientation = orientation;
@@ -1105,7 +1105,7 @@ void QAndroidStyle::AndroidClipDrawable::setFactor(double factor, Qt::Orientatio
 void QAndroidStyle::AndroidClipDrawable::draw(QPainter *painter, const QStyleOption *opt) const
 {
     QStyleOption copy(*opt);
-    if (m_orientation == Qt::Horizontal)
+    if (m_orientation == BobUI::Horizontal)
         copy.rect.setWidth(copy.rect.width() * m_factor);
     else
         copy.rect.setHeight(copy.rect.height() * m_factor);
@@ -1270,7 +1270,7 @@ QAndroidStyle::AndroidLayerDrawable::AndroidLayerDrawable(const QVariantMap &dra
 {
     m_id = 0;
     m_factor = 1;
-    m_orientation = Qt::Horizontal;
+    m_orientation = BobUI::Horizontal;
     const QVariantList layers = drawable.value(QLatin1String("layers")).toList();
     for (const QVariant &layer : layers) {
         QVariantMap layerMap = layer.toMap();
@@ -1295,7 +1295,7 @@ QAndroidStyle::AndroidDrawableType QAndroidStyle::AndroidLayerDrawable::type() c
     return QAndroidStyle::Layer;
 }
 
-void QAndroidStyle::AndroidLayerDrawable::setFactor(int id, double factor, Qt::Orientation orientation)
+void QAndroidStyle::AndroidLayerDrawable::setFactor(int id, double factor, BobUI::Orientation orientation)
 {
     m_id = id;
     m_factor = factor;
@@ -1307,7 +1307,7 @@ void QAndroidStyle::AndroidLayerDrawable::draw(QPainter *painter, const QStyleOp
     for (const LayerType &layer : m_layers) {
         if (layer.first == m_id) {
             QStyleOption copy(*opt);
-            if (m_orientation == Qt::Horizontal)
+            if (m_orientation == BobUI::Horizontal)
                 copy.rect.setWidth(copy.rect.width() * m_factor);
             else
                 copy.rect.setHeight(copy.rect.height() * m_factor);
@@ -1386,9 +1386,9 @@ void QAndroidStyle::AndroidControl::drawControl(const QStyleOption *opt, QPainte
                     int h, s, v;
                     bg.getHsv(&h, &s, &v);
                     if (v >= 128)
-                        p->setPen(Qt::black);
+                        p->setPen(BobUI::black);
                     else
-                        p->setPen(Qt::white);
+                        p->setPen(BobUI::white);
                 } else {
                     p->setPen(opt->palette.windowText().color());
                 }
@@ -1588,7 +1588,7 @@ void QAndroidStyle::AndroidProgressBarControl::drawControl(const QStyleOption *o
         if (m_progressDrawable->type() == QAndroidStyle::Layer) {
             const double fraction = double(qint64(pb->progress) - pb->minimum) / (qint64(pb->maximum) - pb->minimum);
             QAndroidStyle::AndroidDrawable *clipDrawable = static_cast<QAndroidStyle::AndroidLayerDrawable *>(m_progressDrawable)->layer(m_progressId);
-            const Qt::Orientation orientation = pb->state & QStyle::State_Horizontal ? Qt::Horizontal : Qt::Vertical;
+            const BobUI::Orientation orientation = pb->state & QStyle::State_Horizontal ? BobUI::Horizontal : BobUI::Vertical;
             if (clipDrawable->type() == QAndroidStyle::Clip)
                 static_cast<AndroidClipDrawable *>(clipDrawable)->setFactor(fraction, orientation);
             else
@@ -1687,15 +1687,15 @@ void QAndroidStyle::AndroidSeekBarControl::drawControl(const QStyleOption *optio
 
         // Android does not have a vertical slider. To support the vertical orientation, we rotate
         // the painter and pretend that we are horizontal.
-        if (styleOption->orientation == Qt::Vertical)
+        if (styleOption->orientation == BobUI::Vertical)
             factor = 1 - factor;
 
         if (m_progressDrawable->type() == QAndroidStyle::Layer) {
             QAndroidStyle::AndroidDrawable *clipDrawable = static_cast<QAndroidStyle::AndroidLayerDrawable *>(m_progressDrawable)->layer(m_progressId);
             if (clipDrawable->type() == QAndroidStyle::Clip)
-                static_cast<QAndroidStyle::AndroidClipDrawable *>(clipDrawable)->setFactor(factor, Qt::Horizontal);
+                static_cast<QAndroidStyle::AndroidClipDrawable *>(clipDrawable)->setFactor(factor, BobUI::Horizontal);
             else
-                static_cast<QAndroidStyle::AndroidLayerDrawable *>(m_progressDrawable)->setFactor(m_progressId, factor, Qt::Horizontal);
+                static_cast<QAndroidStyle::AndroidLayerDrawable *>(m_progressDrawable)->setFactor(m_progressId, factor, BobUI::Horizontal);
         }
         const AndroidDrawable *drawable = m_seekBarThumb;
         if (drawable->type() == State)
@@ -1704,7 +1704,7 @@ void QAndroidStyle::AndroidSeekBarControl::drawControl(const QStyleOption *optio
 
         p->save();
 
-        if (styleOption->orientation == Qt::Vertical) {
+        if (styleOption->orientation == BobUI::Vertical) {
             // rotate the painter, and transform the rectangle to match
             p->rotate(90);
             copy.rect = QRect(copy.rect.y(), copy.rect.x() - copy.rect.width(), copy.rect.height(), copy.rect.width());
@@ -1752,7 +1752,7 @@ QRect QAndroidStyle::AndroidSeekBarControl::subControlRect(const QStyleOptionCom
         QRect r(option->rect);
         double factor = double(styleOption->sliderPosition - styleOption->minimum)
                 / (styleOption->maximum - styleOption->minimum);
-        if (styleOption->orientation == Qt::Vertical) {
+        if (styleOption->orientation == BobUI::Vertical) {
             int pos = option->rect.height() * (1 - factor) - double(drawable->size().height() / 2);
             r.setY(r.y() + pos);
         } else {
@@ -1783,4 +1783,4 @@ QRect QAndroidStyle::AndroidSpinnerControl::subControlRect(const QStyleOptionCom
     return AndroidControl::subControlRect(option, sc, widget);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

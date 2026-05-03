@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../shared/examplefw.h"
 #include <QElapsedTimer>
@@ -52,13 +52,13 @@ void Window::customInit()
     d.initialUpdates = m_r->nextResourceUpdateBatch();
 
     QImage img(512, 512, QImage::Format_RGBA8888);
-    img.fill(Qt::red);
+    img.fill(BobUI::red);
     d.initialUpdates->uploadTexture(d.texArr, QRhiTextureUploadDescription(QRhiTextureUploadEntry(0, 0, QRhiTextureSubresourceUploadDescription(img))));
-    img.fill(Qt::green);
+    img.fill(BobUI::green);
     d.initialUpdates->uploadTexture(d.texArr, QRhiTextureUploadDescription(QRhiTextureUploadEntry(1, 0, QRhiTextureSubresourceUploadDescription(img))));
-    img.fill(Qt::blue);
+    img.fill(BobUI::blue);
     d.initialUpdates->uploadTexture(d.texArr, QRhiTextureUploadDescription(QRhiTextureUploadEntry(2, 0, QRhiTextureSubresourceUploadDescription(img))));
-    img.fill(Qt::yellow);
+    img.fill(BobUI::yellow);
     d.initialUpdates->uploadTexture(d.texArr, QRhiTextureUploadDescription(QRhiTextureUploadEntry(3, 0, QRhiTextureSubresourceUploadDescription(img))));
 
     d.initialUpdates->generateMips(d.texArr);

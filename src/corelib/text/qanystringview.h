@@ -1,24 +1,24 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 #ifndef QANYSTRINGVIEW_H
 #define QANYSTRINGVIEW_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qlatin1stringview.h>
-#include <QtCore/qstringview.h>
-#include <QtCore/qutf8stringview.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qlatin1stringview.h>
+#include <BobUICore/qstringview.h>
+#include <BobUICore/qutf8stringview.h>
 
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 #include <limits>
 
 class tst_QAnyStringView;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename Tag, typename Result>
 struct wrapped { using type = Result; };
@@ -31,10 +31,10 @@ struct is_compatible_utf32_char : std::false_type {};
 template <> struct is_compatible_utf32_char<char32_t> : std::true_type {};
 template <> struct is_compatible_utf32_char<wchar_t> : std::bool_constant<sizeof(wchar_t) == 4> {};
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0) || defined(QT_BOOTSTRAPPED)
-# define QT_ANYSTRINGVIEW_TAG_IN_LOWER_BITS
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0) || defined(BOBUI_BOOTSTRAPPED)
+# define BOBUI_ANYSTRINGVIEW_TAG_IN_LOWER_BITS
 #endif
 
 class QAnyStringView
@@ -44,7 +44,7 @@ public:
     typedef qsizetype size_type;
 private:
     static constexpr size_t SizeMask = (std::numeric_limits<size_t>::max)() / 4;
-#ifdef QT_ANYSTRINGVIEW_TAG_IN_LOWER_BITS
+#ifdef BOBUI_ANYSTRINGVIEW_TAG_IN_LOWER_BITS
     static constexpr int SizeShift = 2;
     static constexpr size_t Latin1Flag = 1;
 #else
@@ -71,13 +71,13 @@ private:
 
     template <typename Char>
     using if_compatible_utf32_char = std::enable_if_t<
-        QtPrivate::is_compatible_utf32_char<Char>::value
+        BobUIPrivate::is_compatible_utf32_char<Char>::value
     , bool>;
 
     template <typename Char>
     using is_compatible_char = std::disjunction<
-        QtPrivate::IsCompatibleCharType<Char>,
-        QtPrivate::IsCompatibleChar8Type<Char>
+        BobUIPrivate::IsCompatibleCharType<Char>,
+        BobUIPrivate::IsCompatibleChar8Type<Char>
     >;
 
     template <typename Char>
@@ -85,15 +85,15 @@ private:
 
     template <typename Pointer>
     using if_compatible_pointer = std::enable_if_t<std::disjunction_v<
-        QtPrivate::IsCompatiblePointer<Pointer>,
-        QtPrivate::IsCompatiblePointer8<Pointer>
+        BobUIPrivate::IsCompatiblePointer<Pointer>,
+        BobUIPrivate::IsCompatiblePointer8<Pointer>
     >, bool>;
 
 
     template <typename T>
     using if_compatible_container = std::enable_if_t<std::disjunction_v<
-        QtPrivate::IsContainerCompatibleWithQStringView<T>,
-        QtPrivate::IsContainerCompatibleWithQUtf8StringView<T>
+        BobUIPrivate::IsContainerCompatibleWithQStringView<T>,
+        BobUIPrivate::IsContainerCompatibleWithQUtf8StringView<T>
     >, bool>;
 
     template <typename QStringOrQByteArray, typename T>
@@ -146,9 +146,9 @@ private:
     static constexpr qsizetype lengthHelperPointer(const Char *str) noexcept
     {
         if (q20::is_constant_evaluated())
-            return QtPrivate::lengthHelperPointer(str);
+            return BobUIPrivate::lengthHelperPointer(str);
         if constexpr (sizeof(Char) == sizeof(char16_t))
-            return QtPrivate::qustrlen(reinterpret_cast<const char16_t*>(str));
+            return BobUIPrivate::qustrlen(reinterpret_cast<const char16_t*>(str));
         else
             return qsizetype(strlen(reinterpret_cast<const char*>(str)));
     }
@@ -212,15 +212,15 @@ public:
 
     template <typename Container, if_compatible_container<Container> = true>
     Q_ALWAYS_INLINE constexpr QAnyStringView(const Container &c) noexcept
-        : QAnyStringView(std::data(c), QtPrivate::lengthHelperContainer(c)) {}
+        : QAnyStringView(std::data(c), BobUIPrivate::lengthHelperContainer(c)) {}
 
     template <typename Container, if_convertible_to<QString, Container> = true>
-    constexpr QAnyStringView(Container &&c, QtPrivate::wrapped_t<Container, QString> &&capacity = {})
+    constexpr QAnyStringView(Container &&c, BobUIPrivate::wrapped_t<Container, QString> &&capacity = {})
             //noexcept(std::is_nothrow_constructible_v<QString, Container>)
         : QAnyStringView(capacity = std::forward<Container>(c)) {}
 
     template <typename Container, if_convertible_to<QByteArray, Container> = true>
-    constexpr QAnyStringView(Container &&c, QtPrivate::wrapped_t<Container, QByteArray> &&capacity = {})
+    constexpr QAnyStringView(Container &&c, BobUIPrivate::wrapped_t<Container, QByteArray> &&capacity = {})
             //noexcept(std::is_nothrow_constructible_v<QByteArray, Container>)
         : QAnyStringView(capacity = std::forward<Container>(c)) {}
 
@@ -236,11 +236,11 @@ public:
         : QAnyStringView(capacity = QChar::fromUcs4(c)) {}
 
     constexpr QAnyStringView(QStringView v) noexcept
-        : QAnyStringView(std::data(v), QtPrivate::lengthHelperContainer(v)) {}
+        : QAnyStringView(std::data(v), BobUIPrivate::lengthHelperContainer(v)) {}
 
     template <bool UseChar8T>
     constexpr QAnyStringView(QBasicUtf8StringView<UseChar8T> v) noexcept
-        : QAnyStringView(std::data(v), QtPrivate::lengthHelperContainer(v)) {}
+        : QAnyStringView(std::data(v), BobUIPrivate::lengthHelperContainer(v)) {}
 
     template <typename Char, size_t Size, if_compatible_char<Char> = true>
     [[nodiscard]] constexpr static QAnyStringView fromArray(const Char (&string)[Size]) noexcept
@@ -253,7 +253,7 @@ public:
     [[nodiscard]]
     constexpr QAnyStringView mid(qsizetype pos, qsizetype n = -1) const
     {
-        using namespace QtPrivate;
+        using namespace BobUIPrivate;
         auto result = QContainerImplHelper::mid(size(), &pos, &n);
         return result == QContainerImplHelper::Null ? QAnyStringView() : sliced(pos, n);
     }
@@ -302,11 +302,11 @@ public:
     { return qsizetype((m_size >> SizeShift) & SizeMask); }
     [[nodiscard]] constexpr const void *data() const noexcept { return m_data; }
 
-    [[nodiscard]] Q_CORE_EXPORT static int compare(QAnyStringView lhs, QAnyStringView rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+    [[nodiscard]] Q_CORE_EXPORT static int compare(QAnyStringView lhs, QAnyStringView rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
     [[nodiscard]] Q_CORE_EXPORT static bool equal(QAnyStringView lhs, QAnyStringView rhs) noexcept;
 
     static constexpr inline bool detects_US_ASCII_at_compile_time =
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
             true
 #else
             false
@@ -325,11 +325,11 @@ public:
     [[nodiscard]] constexpr qsizetype max_size() const noexcept
     {
         // -1 to deal with the pointer one-past-the-end;
-        return QtPrivate::MaxAllocSize / charSize() - 1;
+        return BobUIPrivate::MaxAllocSize / charSize() - 1;
     }
 
     //
-    // Qt compatibility API:
+    // BobUI compatibility API:
     //
     [[nodiscard]] constexpr bool isNull() const noexcept { return !m_data; }
     [[nodiscard]] constexpr bool isEmpty() const noexcept { return empty(); }
@@ -339,15 +339,15 @@ public:
 private:
     friend bool comparesEqual(const QAnyStringView &lhs, const QAnyStringView &rhs) noexcept
     { return QAnyStringView::equal(lhs, rhs); }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QAnyStringView &lhs, const QAnyStringView &rhs) noexcept
     {
         const int res = QAnyStringView::compare(lhs, rhs);
-        return Qt::compareThreeWay(res, 0);
+        return BobUI::compareThreeWay(res, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QAnyStringView)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     Q_CORE_EXPORT friend QDebug operator<<(QDebug d, QAnyStringView s);
 #endif
 
@@ -394,6 +394,6 @@ template <typename QStringLike, std::enable_if_t<std::disjunction_v<
 [[nodiscard]] inline QAnyStringView qToAnyStringViewIgnoringNull(const QStringLike &s) noexcept
 { return QAnyStringView(s.begin(), s.size()); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* QANYSTRINGVIEW_H */

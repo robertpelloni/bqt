@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QOpenGLFunctions>
 #include <QPaintEvent>
 #include <QPainter>
@@ -25,9 +25,9 @@ QLine drawingCode;
 void SimpleExampleWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.setPen(Qt::blue);
+    painter.setPen(BobUI::blue);
     painter.setFont(QFont("Arial", 30));
-    painter.drawText(rect(), Qt::AlignCenter, "Qt");
+    painter.drawText(rect(), BobUI::AlignCenter, "BobUI");
 }
 //! [0]
 
@@ -96,7 +96,7 @@ namespace QPainterWrapper
 {
     struct QPainter {
         void rotate(qreal angle);
-        void setWorldTransform(QTransform matrix, bool);
+        void setWorldTransform(BOBUIransform matrix, bool);
     };
 } // QPainterWrapper
 
@@ -265,7 +265,7 @@ void MyWidget::wrapper11()
 
     //! [17]
     QPainter painter(this);
-    painter.drawText(rect, Qt::AlignCenter, tr("Qt\nProject"));
+    painter.drawText(rect, BobUI::AlignCenter, tr("BobUI\nProject"));
     //! [17]
 } // MyWidget::wrapper11
 
@@ -315,7 +315,7 @@ void MyWidget::wrapper14()
 {
     //! [21]
     QPainter painter(this);
-    painter.fillRect(0, 0, 128, 128, Qt::green);
+    painter.fillRect(0, 0, 128, 128, BobUI::green);
     painter.beginNativePainting();
 
     glEnable(GL_SCISSOR_TEST);
@@ -344,11 +344,11 @@ void MyWidget::wrapper15()
     painter.drawText(rectangle, 0, tr("Hello"), &boundingRect);
 
     QPen pen = painter.pen();
-    pen.setStyle(Qt::DotLine);
+    pen.setStyle(BobUI::DotLine);
     painter.setPen(pen);
     painter.drawRect(boundingRect.adjusted(0, 0, -pen.width(), -pen.width()));
 
-    pen.setStyle(Qt::DashLine);
+    pen.setStyle(BobUI::DashLine);
     painter.setPen(pen);
     painter.drawRect(rectangle.adjusted(0, 0, -pen.width(), -pen.width()));
     //! [drawText]

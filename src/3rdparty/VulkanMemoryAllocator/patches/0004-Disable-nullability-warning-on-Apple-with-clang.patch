@@ -1,5 +1,5 @@
 From 1d0c960caba0b5aa7e686deafd455d4a3c84db49 Mon Sep 17 00:00:00 2001
-From: Laszlo Agocs <laszlo.agocs@qt.io>
+From: Laszlo Agocs <laszlo.agocs@bobui.io>
 Date: Tue, 18 Oct 2022 13:26:38 +0200
 Subject: [PATCH] Disable nullability warning on Apple with clang
 

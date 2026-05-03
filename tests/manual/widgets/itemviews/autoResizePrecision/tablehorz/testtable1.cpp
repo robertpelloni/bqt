@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QtWidgets>
+#include <BobUIWidgets/BobUIWidgets>
 
 const int rowCount = 2000;
 
@@ -14,7 +14,7 @@ public:
     {
         resize(1000, 233);
         gridLayout = new QGridLayout(this);
-        tableView = new QTableView(this);
+        tableView = new BOBUIableView(this);
 
         gridLayout->addWidget(tableView, 0, 0, 2, 1);
         spinPrecision = new QSpinBox(this);
@@ -54,7 +54,7 @@ protected slots:
     void slotValueChanged(int newval);
 protected:
     QGridLayout *gridLayout;
-    QTableView *tableView;
+    BOBUIableView *tableView;
     QSpinBox *spinPrecision;
     QSpacerItem *verticalSpacer;
     QStandardItemModel model;

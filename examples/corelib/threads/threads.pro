@@ -4,6 +4,6 @@ CONFIG += no_docs_target
 SUBDIRS       = semaphores \
                 waitconditions
 
-qtHaveModule(widgets): SUBDIRS += \
+bobuiHaveModule(widgets): SUBDIRS += \
     mandelbrot \
     queuedcustomtype

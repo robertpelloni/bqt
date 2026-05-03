@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLOCALSERVER_H
 #define QLOCALSERVER_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUINetwork/qabstractsocket.h>
 
-#include <QtCore/qproperty.h>
+#include <BobUICore/qproperty.h>
 
-QT_REQUIRE_CONFIG(localserver);
+BOBUI_REQUIRE_CONFIG(localserver);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLocalSocket;
 class QLocalServerPrivate;
@@ -78,7 +78,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLocalServer::SocketOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOCALSERVER_H
 

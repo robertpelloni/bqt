@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qlocale.h>
 #include <qcollator.h>
@@ -53,7 +53,7 @@ void tst_QCollator::basics()
 
     // posix implementation supports only C and default locale,
     // so update it for Android and INTEGRITY builds
-#if !QT_CONFIG(icu) && !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
+#if !BOBUI_CONFIG(icu) && !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
     c3.setLocale(QLocale());
 #endif
     QCollatorSortKey key1 = c3.sortKey("test");
@@ -88,7 +88,7 @@ void tst_QCollator::moveSemantics()
     // test QCollatorSortKey move assignment
     // posix implementation supports only C and default locale,
     // so update it for Android and INTEGRITY builds
-#if !QT_CONFIG(icu) && !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
+#if !BOBUI_CONFIG(icu) && !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
     c1.setLocale(QLocale());
 #endif
     QCollatorSortKey key1 = c1.sortKey("1");
@@ -104,14 +104,14 @@ void tst_QCollator::moveSemantics()
 
 void tst_QCollator::compare_data()
 {
-    QTest::addColumn<QString>("locale");
-    QTest::addColumn<QString>("s1");
-    QTest::addColumn<QString>("s2");
-    QTest::addColumn<int>("result");
-    QTest::addColumn<int>("caseInsensitiveResult");
-    QTest::addColumn<bool>("numericMode");
-    QTest::addColumn<bool>("ignorePunctuation");
-    QTest::addColumn<int>("punctuationResult"); // Test ignores punctuation *and case*
+    BOBUIest::addColumn<QString>("locale");
+    BOBUIest::addColumn<QString>("s1");
+    BOBUIest::addColumn<QString>("s2");
+    BOBUIest::addColumn<int>("result");
+    BOBUIest::addColumn<int>("caseInsensitiveResult");
+    BOBUIest::addColumn<bool>("numericMode");
+    BOBUIest::addColumn<bool>("ignorePunctuation");
+    BOBUIest::addColumn<int>("punctuationResult"); // Test ignores punctuation *and case*
 
     /*
         It's hard to test English, because it's treated differently
@@ -121,21 +121,21 @@ void tst_QCollator::compare_data()
         comparison of Latin-1 values, although I'm not sure. So I
         just test digits to make sure that it's not totally broken.
     */
-    QTest::newRow("english1") << QString("en_US") << QString("5") << QString("4") << 1 << 1 << false << false << 1;
-    QTest::newRow("english2") << QString("en_US") << QString("4") << QString("6") << -1 << -1 << false << false << -1;
-    QTest::newRow("english3") << QString("en_US") << QString("5") << QString("6") << -1 << -1 << false << false << -1;
-    QTest::newRow("english4") << QString("en_US") << QString("a") << QString("b") << -1 << -1 << false << false << -1;
-    QTest::newRow("english5") << QString("en_US") << QString("test 9") << QString("test 19") << -1 << -1 << true << false << -1;
-    QTest::newRow("english6") << QString("en_US") << QString("test 9") << QString("test_19") << -1 << -1 << true << true << -1;
-    QTest::newRow("english7") << QString("en_US") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
-    QTest::newRow("english8") << QString("en_US") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
-    QTest::newRow("en-empty-word") << QString("en_US") << QString() << QString("non-empty") << -1 << -1 << false << true << -1;
-    QTest::newRow("en-empty-number") << QString("en_US") << QString() << QString("42") << -1 << -1 << true << true << -1;
-    QTest::newRow("en-word-empty") << QString("en_US") << QString("non-empty") << QString() << 1
+    BOBUIest::newRow("english1") << QString("en_US") << QString("5") << QString("4") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("english2") << QString("en_US") << QString("4") << QString("6") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("english3") << QString("en_US") << QString("5") << QString("6") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("english4") << QString("en_US") << QString("a") << QString("b") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("english5") << QString("en_US") << QString("test 9") << QString("test 19") << -1 << -1 << true << false << -1;
+    BOBUIest::newRow("english6") << QString("en_US") << QString("test 9") << QString("test_19") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("english7") << QString("en_US") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
+    BOBUIest::newRow("english8") << QString("en_US") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
+    BOBUIest::newRow("en-empty-word") << QString("en_US") << QString() << QString("non-empty") << -1 << -1 << false << true << -1;
+    BOBUIest::newRow("en-empty-number") << QString("en_US") << QString() << QString("42") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("en-word-empty") << QString("en_US") << QString("non-empty") << QString() << 1
                                    << 1 << false << true << 1;
-    QTest::newRow("en-number-empty")
+    BOBUIest::newRow("en-number-empty")
             << QString("en_US") << QString("42") << QString() << 1 << 1 << true << true << 1;
-    QTest::newRow("en-empty-empty")
+    BOBUIest::newRow("en-empty-empty")
             << QString("en_US") << QString() << QString() << 0 << 0 << false << true << 0;
 
     /*
@@ -143,101 +143,101 @@ void tst_QCollator::compare_data()
         diaresis (E4), which comes before o diaresis (F6), which
         all come after z.
     */
-    QTest::newRow("swedish1") << QString("sv_SE") << QString::fromLatin1("\xe5") << QString::fromLatin1("\xe4") << -1 << -1 << false << false << -1;
-    QTest::newRow("swedish2") << QString("sv_SE") << QString::fromLatin1("\xe4") << QString::fromLatin1("\xf6") << -1 << -1 << false << false << -1;
-    QTest::newRow("swedish3") << QString("sv_SE") << QString::fromLatin1("\xe5") << QString::fromLatin1("\xf6") << -1 << -1 << false << false << -1;
-    QTest::newRow("swedish4") << QString("sv_SE") << QString::fromLatin1("z") << QString::fromLatin1("\xe5") << -1 << -1 << false << false << -1;
-    QTest::newRow("swedish5") << QString("sv_SE") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
-    QTest::newRow("swedish6") << QString("sv_SE") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
-    QTest::newRow("swedish7") << QString("sv_SE") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
-    QTest::newRow("swedish8") << QString("sv_SE") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
-    QTest::newRow("sv-empty-word") << QString("sv_SE") << QString() << QString("mett") << -1 << -1 << false << true << -1;
-    QTest::newRow("sv-empty-number") << QString("sv_SE") << QString() << QString("42") << -1 << -1 << true << true << -1;
-    QTest::newRow("sv-word-empty")
+    BOBUIest::newRow("swedish1") << QString("sv_SE") << QString::fromLatin1("\xe5") << QString::fromLatin1("\xe4") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("swedish2") << QString("sv_SE") << QString::fromLatin1("\xe4") << QString::fromLatin1("\xf6") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("swedish3") << QString("sv_SE") << QString::fromLatin1("\xe5") << QString::fromLatin1("\xf6") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("swedish4") << QString("sv_SE") << QString::fromLatin1("z") << QString::fromLatin1("\xe5") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("swedish5") << QString("sv_SE") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
+    BOBUIest::newRow("swedish6") << QString("sv_SE") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("swedish7") << QString("sv_SE") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
+    BOBUIest::newRow("swedish8") << QString("sv_SE") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
+    BOBUIest::newRow("sv-empty-word") << QString("sv_SE") << QString() << QString("mett") << -1 << -1 << false << true << -1;
+    BOBUIest::newRow("sv-empty-number") << QString("sv_SE") << QString() << QString("42") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("sv-word-empty")
             << QString("sv_SE") << QString("mett") << QString() << 1 << 1 << false << true << 1;
-    QTest::newRow("sv-number-empty")
+    BOBUIest::newRow("sv-number-empty")
             << QString("sv_SE") << QString("42") << QString() << 1 << 1 << true << true << 1;
-    QTest::newRow("sv-empty-empty")
+    BOBUIest::newRow("sv-empty-empty")
             << QString("sv_SE") << QString() << QString() << 0 << 0 << false << true << 0;
 
     /*
         In Norwegian, ae (E6) comes before o with stroke (D8), which
         comes before a with ring above (E5).
     */
-    QTest::newRow("norwegian1") << QString("no_NO") << QString::fromLatin1("\xe6") << QString::fromLatin1("\xd8") << -1 << -1 << false << false << -1;
-    QTest::newRow("norwegian2") << QString("no_NO") << QString::fromLatin1("\xd8") << QString::fromLatin1("\xe5") << -1 << -1 << false << false << -1;
-    QTest::newRow("norwegian3") << QString("no_NO") << QString::fromLatin1("\xe6") << QString::fromLatin1("\xe5") << -1 << -1 << false << false << -1;
-    QTest::newRow("norwegian4") << QString("no_NO") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
-    QTest::newRow("norwegian5") << QString("no_NO") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
-    QTest::newRow("norwegian6") << QString("no_NO") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
-    QTest::newRow("norwegian7") << QString("no_NO") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
-    QTest::newRow("norwegian8") << QString("no_NO") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
-    QTest::newRow("nb-empty-word") << QString("nb_NO") << QString() << QString("mett") << -1 << -1 << false << true << -1;
-    QTest::newRow("nb-empty-number") << QString("nb_NO") << QString() << QString("42") << -1 << -1 << true << true << -1;
-    QTest::newRow("nb-word-empty")
+    BOBUIest::newRow("norwegian1") << QString("no_NO") << QString::fromLatin1("\xe6") << QString::fromLatin1("\xd8") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("norwegian2") << QString("no_NO") << QString::fromLatin1("\xd8") << QString::fromLatin1("\xe5") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("norwegian3") << QString("no_NO") << QString::fromLatin1("\xe6") << QString::fromLatin1("\xe5") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("norwegian4") << QString("no_NO") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
+    BOBUIest::newRow("norwegian5") << QString("no_NO") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("norwegian6") << QString("no_NO") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("norwegian7") << QString("no_NO") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
+    BOBUIest::newRow("norwegian8") << QString("no_NO") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
+    BOBUIest::newRow("nb-empty-word") << QString("nb_NO") << QString() << QString("mett") << -1 << -1 << false << true << -1;
+    BOBUIest::newRow("nb-empty-number") << QString("nb_NO") << QString() << QString("42") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("nb-word-empty")
             << QString("nb_NO") << QString("mett") << QString() << 1 << 1 << false << true << 1;
-    QTest::newRow("nb-number-empty")
+    BOBUIest::newRow("nb-number-empty")
             << QString("nb_NO") << QString("42") << QString() << 1 << 1 << true << true << 1;
-    QTest::newRow("nb-empty-empty")
+    BOBUIest::newRow("nb-empty-empty")
             << QString("nb_NO") << QString() << QString() << 0 << 0 << false << true << 0;
 
     /*
         In German, z comes *after* a with diaresis (E4),
         which comes before o diaresis (F6).
     */
-    QTest::newRow("german1") << QString("de_DE") << QString::fromLatin1("a") << QString::fromLatin1("\xe4") << -1 << -1 << false << false << -1;
-    QTest::newRow("german2") << QString("de_DE") << QString::fromLatin1("b") << QString::fromLatin1("\xe4") << 1 << 1 << false << false << 1;
-    QTest::newRow("german3") << QString("de_DE") << QString::fromLatin1("z") << QString::fromLatin1("\xe4") << 1 << 1 << false << false << 1;
-    QTest::newRow("german4") << QString("de_DE") << QString::fromLatin1("\xe4") << QString::fromLatin1("\xf6") << -1 << -1 << false << false << -1;
-    QTest::newRow("german5") << QString("de_DE") << QString::fromLatin1("z") << QString::fromLatin1("\xf6") << 1 << 1 << false << false << 1;
-    QTest::newRow("german6") << QString("de_DE") << QString::fromLatin1("\xc0") << QString::fromLatin1("\xe0") << 1 << 0 << false << false << 0;
-    QTest::newRow("german7") << QString("de_DE") << QString::fromLatin1("\xd6") << QString::fromLatin1("\xf6") << 1 << 0 << false << false << 0;
-    QTest::newRow("german8") << QString("de_DE") << QString::fromLatin1("oe") << QString::fromLatin1("\xf6") << 1 << 1 << false << false << 1;
-    QTest::newRow("german9") << QString("de_DE") << QString("A") << QString("a") << 1 << 0 << false << false << 0;
-    QTest::newRow("german10") << QString("de_DE") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
-    QTest::newRow("german11") << QString("de_DE") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
-    QTest::newRow("german12") << QString("de_DE") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
-    QTest::newRow("german13") << QString("de_DE") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
-    QTest::newRow("de-empty-word") << QString("de_DE") << QString() << QString("satt") << -1 << -1 << false << true << -1;
-    QTest::newRow("de-empty-number") << QString("de_DE") << QString() << QString("42") << -1 << -1 << true << true << -1;
-    QTest::newRow("de-word-empty")
+    BOBUIest::newRow("german1") << QString("de_DE") << QString::fromLatin1("a") << QString::fromLatin1("\xe4") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("german2") << QString("de_DE") << QString::fromLatin1("b") << QString::fromLatin1("\xe4") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("german3") << QString("de_DE") << QString::fromLatin1("z") << QString::fromLatin1("\xe4") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("german4") << QString("de_DE") << QString::fromLatin1("\xe4") << QString::fromLatin1("\xf6") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("german5") << QString("de_DE") << QString::fromLatin1("z") << QString::fromLatin1("\xf6") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("german6") << QString("de_DE") << QString::fromLatin1("\xc0") << QString::fromLatin1("\xe0") << 1 << 0 << false << false << 0;
+    BOBUIest::newRow("german7") << QString("de_DE") << QString::fromLatin1("\xd6") << QString::fromLatin1("\xf6") << 1 << 0 << false << false << 0;
+    BOBUIest::newRow("german8") << QString("de_DE") << QString::fromLatin1("oe") << QString::fromLatin1("\xf6") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("german9") << QString("de_DE") << QString("A") << QString("a") << 1 << 0 << false << false << 0;
+    BOBUIest::newRow("german10") << QString("de_DE") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
+    BOBUIest::newRow("german11") << QString("de_DE") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("german12") << QString("de_DE") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
+    BOBUIest::newRow("german13") << QString("de_DE") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
+    BOBUIest::newRow("de-empty-word") << QString("de_DE") << QString() << QString("satt") << -1 << -1 << false << true << -1;
+    BOBUIest::newRow("de-empty-number") << QString("de_DE") << QString() << QString("42") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("de-word-empty")
             << QString("de_DE") << QString("satt") << QString() << 1 << 1 << false << true << 1;
-    QTest::newRow("de-number-empty")
+    BOBUIest::newRow("de-number-empty")
             << QString("de_DE") << QString("42") << QString() << 1 << 1 << true << true << 1;
-    QTest::newRow("de-empty-empty")
+    BOBUIest::newRow("de-empty-empty")
             << QString("de_DE") << QString() << QString() << 0 << 0 << false << true << 0;
 
     /*
         French sorting of e and e with acute accent
     */
-    QTest::newRow("french1") << QString("fr_FR") << QString::fromLatin1("\xe9") << QString::fromLatin1("e") << 1 << 1 << false << false << 1;
-    QTest::newRow("french2") << QString("fr_FR") << QString::fromLatin1("\xe9t") << QString::fromLatin1("et") << 1 << 1 << false << false << 1;
-    QTest::newRow("french3") << QString("fr_FR") << QString::fromLatin1("\xe9") << QString::fromLatin1("d") << 1 << 1 << false << false << 1;
-    QTest::newRow("french4") << QString("fr_FR") << QString::fromLatin1("\xe9") << QString::fromLatin1("f") << -1 << -1 << false << false << -1;
-    QTest::newRow("french5") << QString("fr_FR") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
-    QTest::newRow("french6") << QString("fr_FR") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
-    QTest::newRow("french7") << QString("fr_FR") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
-    QTest::newRow("french8") << QString("fr_FR") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
-    QTest::newRow("fr-empty-word") << QString("fr_FR") << QString() << QString("plein") << -1 << -1 << false << true << -1;
-    QTest::newRow("fr-empty-number") << QString("fr_FR") << QString() << QString("42") << -1 << -1 << true << true << -1;
-    QTest::newRow("fr-word-empty")
+    BOBUIest::newRow("french1") << QString("fr_FR") << QString::fromLatin1("\xe9") << QString::fromLatin1("e") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("french2") << QString("fr_FR") << QString::fromLatin1("\xe9t") << QString::fromLatin1("et") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("french3") << QString("fr_FR") << QString::fromLatin1("\xe9") << QString::fromLatin1("d") << 1 << 1 << false << false << 1;
+    BOBUIest::newRow("french4") << QString("fr_FR") << QString::fromLatin1("\xe9") << QString::fromLatin1("f") << -1 << -1 << false << false << -1;
+    BOBUIest::newRow("french5") << QString("fr_FR") << QString("9") << QString("19") << -1 << -1 << true << false << -1;
+    BOBUIest::newRow("french6") << QString("fr_FR") << QString("Test 9") << QString("Test_19") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("french7") << QString("fr_FR") << QString("test_19") << QString("test 19") << 1 << 1 << true << false << 1;
+    BOBUIest::newRow("french8") << QString("fr_FR") << QString("test.19") << QString("test,19") << 1 << 1 << true << true << 0;
+    BOBUIest::newRow("fr-empty-word") << QString("fr_FR") << QString() << QString("plein") << -1 << -1 << false << true << -1;
+    BOBUIest::newRow("fr-empty-number") << QString("fr_FR") << QString() << QString("42") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("fr-word-empty")
             << QString("fr_FR") << QString("plein") << QString() << 1 << 1 << false << true << 1;
-    QTest::newRow("fr-number-empty")
+    BOBUIest::newRow("fr-number-empty")
             << QString("fr_FR") << QString("42") << QString() << 1 << 1 << true << true << 1;
-    QTest::newRow("fr-empty-empty")
+    BOBUIest::newRow("fr-empty-empty")
             << QString("fr_FR") << QString() << QString() << 0 << 0 << false << true << 0;
 
     // C locale: case sensitive [A-Z] < [a-z] but case insensitive [Aa] < [Bb] <...< [Zz]
     const QString C = QStringLiteral("C");
-    QTest::newRow("C:ABBA:AaaA") << C << QStringLiteral("ABBA") << QStringLiteral("AaaA") << -1 << 1 << false << false << 1;
-    QTest::newRow("C:AZa:aAZ") << C << QStringLiteral("AZa") << QStringLiteral("aAZ") << -1 << 1 << false << false << 1;
-    QTest::newRow("C-empty-word") << QString(C) << QString() << QString("non-empty") << -1 << -1 << false << true << -1;
-    QTest::newRow("C-empty-number") << QString(C) << QString() << QString("42") << -1 << -1 << true << true << -1;
-    QTest::newRow("C-word-empty") << QString(C) << QString("non-empty") << QString() << 1 << 1
+    BOBUIest::newRow("C:ABBA:AaaA") << C << QStringLiteral("ABBA") << QStringLiteral("AaaA") << -1 << 1 << false << false << 1;
+    BOBUIest::newRow("C:AZa:aAZ") << C << QStringLiteral("AZa") << QStringLiteral("aAZ") << -1 << 1 << false << false << 1;
+    BOBUIest::newRow("C-empty-word") << QString(C) << QString() << QString("non-empty") << -1 << -1 << false << true << -1;
+    BOBUIest::newRow("C-empty-number") << QString(C) << QString() << QString("42") << -1 << -1 << true << true << -1;
+    BOBUIest::newRow("C-word-empty") << QString(C) << QString("non-empty") << QString() << 1 << 1
                                   << false << true << 1;
-    QTest::newRow("C-number-empty")
+    BOBUIest::newRow("C-number-empty")
             << QString(C) << QString("42") << QString() << 1 << 1 << true << true << 1;
-    QTest::newRow("C-empty-empty")
+    BOBUIest::newRow("C-empty-empty")
             << QString(C) << QString() << QString() << 0 << 0 << false << true << 0;
 }
 
@@ -265,11 +265,11 @@ void tst_QCollator::compare()
         return compared < 0 ? -1 : compared > 0 ? 1 : 0;
     };
 #if defined(Q_OS_WASM)
-    if (strcmp(QTest::currentDataTag(), "english5") == 0
-        || strcmp(QTest::currentDataTag(), "english8") == 0)
+    if (strcmp(BOBUIest::currentDataTag(), "english5") == 0
+        || strcmp(BOBUIest::currentDataTag(), "english8") == 0)
         QSKIP("Some en-us locale tests have issues on WASM");
 #endif // Q_OS_WASM
-#if !QT_CONFIG(icu) && !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
+#if !BOBUI_CONFIG(icu) && !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
     if (collator.locale() != QLocale::c() && collator.locale() != QLocale::system().collation())
         QSKIP("POSIX implementation of collation only supports C and system collation locales");
 #endif
@@ -283,7 +283,7 @@ void tst_QCollator::compare()
 
     // trying to deal with special behavior of different OS-dependent collators
     if (collator.locale() == QLocale("C")) {
-#if !QT_CONFIG(icu) && defined(Q_OS_MACOS)
+#if !BOBUI_CONFIG(icu) && defined(Q_OS_MACOS)
         // for MACOS C-locale is not supported, always providing empty string for sortKey()
         keyCompareResult = 0;
         keyCompareCaseInsensitiveResult = 0;
@@ -296,11 +296,11 @@ void tst_QCollator::compare()
     }
 
     // NOTE: currently QCollatorSortKey::compare is not working
-    // properly without icu: see QTBUG-88704 for details
+    // properly without icu: see BOBUIBUG-88704 for details
     QCOMPARE(asSign(collator.compare(s1, s2)), result);
     if (!numericMode)
         QCOMPARE(asSign(QCollator::defaultCompare(s1, s2)), result);
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
     auto key1 = collator.sortKey(s1);
     auto key2 = collator.sortKey(s2);
     QCOMPARE(asSign(key1.compare(key2)), keyCompareResult);
@@ -310,16 +310,16 @@ void tst_QCollator::compare()
     if (!numericMode)
         QCOMPARE(asSign(key1.compare(key2)), keyCompareResult);
 #endif
-    collator.setCaseSensitivity(Qt::CaseInsensitive);
+    collator.setCaseSensitivity(BobUI::CaseInsensitive);
     QCOMPARE(asSign(collator.compare(s1, s2)), caseInsensitiveResult);
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
     key1 = collator.sortKey(s1);
     key2 = collator.sortKey(s2);
     QCOMPARE(asSign(key1.compare(key2)), keyCompareCaseInsensitiveResult);
 #endif
     collator.setIgnorePunctuation(ignorePunctuation);
     QCOMPARE(asSign(collator.compare(s1, s2)), punctuationResult);
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
     key1 = collator.sortKey(s1);
     key2 = collator.sortKey(s2);
     QCOMPARE(asSign(key1.compare(key2)), keyComparePunctuationResultResult);
@@ -330,12 +330,12 @@ void tst_QCollator::compare()
 void tst_QCollator::state()
 {
     QCollator c;
-    c.setCaseSensitivity(Qt::CaseInsensitive);
+    c.setCaseSensitivity(BobUI::CaseInsensitive);
     c.setLocale(QLocale::German);
 
     c.compare(QString("a"), QString("b"));
 
-    QCOMPARE(c.caseSensitivity(), Qt::CaseInsensitive);
+    QCOMPARE(c.caseSensitivity(), BobUI::CaseInsensitive);
     QCOMPARE(c.locale(), QLocale(QLocale::German));
 
     c.setLocale(QLocale::French);
@@ -343,12 +343,12 @@ void tst_QCollator::state()
     c.setIgnorePunctuation(true);
     c.setLocale(QLocale::NorwegianBokmal);
 
-    QCOMPARE(c.caseSensitivity(), Qt::CaseInsensitive);
+    QCOMPARE(c.caseSensitivity(), BobUI::CaseInsensitive);
     QCOMPARE(c.numericMode(), true);
     QCOMPARE(c.ignorePunctuation(), true);
     QCOMPARE(c.locale(), QLocale(QLocale::NorwegianBokmal));
 }
 
-QTEST_APPLESS_MAIN(tst_QCollator)
+BOBUIEST_APPLESS_MAIN(tst_QCollator)
 
 #include "tst_qcollator.moc"

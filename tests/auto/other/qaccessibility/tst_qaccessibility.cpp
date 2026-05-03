@@ -1,47 +1,47 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 #ifdef Q_OS_WIN
-# include <QtCore/qt_windows.h>
+# include <BobUICore/bobui_windows.h>
 # include <oleacc.h>
 # include <uiautomation.h>
 # include <servprov.h>
 # include <winuser.h>
 #endif
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 #include <math.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformaccessibility.h>
 #ifdef Q_OS_WIN
-#include <QtCore/private/qfunctions_win_p.h>
+#include <BobUICore/private/qfunctions_win_p.h>
 #endif
-#include <QtGui/private/qaccessiblebridgeutils_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/private/qaccessiblecache_p.h>
+#include <BobUIGui/private/qaccessiblebridgeutils_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qaccessiblecache_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtWidgets/private/qdialog_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qdialog_p.h>
 
 #if defined(Q_OS_WIN) && defined(interface)
 #   undef interface
 #endif
 
-#include "QtTest/qtestaccessible.h"
+#include "BobUITest/bobuiestaccessible.h"
 
 #include <algorithm>
 
 #include "accessiblewidgets.h"
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
-using namespace Qt::StringLiterals;
+using namespace BOBUIestPrivate;
+using namespace BobUI::StringLiterals;
 
 static inline bool verifyChild(QWidget *child, QAccessibleInterface *interface,
                                int index, const QRect &domain)
@@ -186,13 +186,13 @@ private slots:
     void applicationTest();
     void mainWindowTest();
     void subWindowTest();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void buttonTest();
 #endif
     void scrollBarTest();
     void tabTest();
     void tabWidgetTest();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void menuTest();
 #endif
     void spinBoxTest();
@@ -224,7 +224,7 @@ private slots:
     void comboBoxTest();
     void accessibleName();
     void accessibleIdentifier();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void labelTest();
     void relationTest();
     void accelerators();
@@ -277,25 +277,25 @@ static bool initAccessibility()
 
 void tst_QAccessibility::initTestCase()
 {
-    QTestAccessibility::initialize();
+    BOBUIestAccessibility::initialize();
     if (!initAccessibility())
         QSKIP("This platform does not support accessibility");
 }
 
 void tst_QAccessibility::cleanupTestCase()
 {
-    QTestAccessibility::cleanup();
+    BOBUIestAccessibility::cleanup();
 }
 
 void tst_QAccessibility::init()
 {
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 #ifdef Q_OS_ANDROID
     // On Android a11y state is not explicitly set by calling
     // QPlatformAccessibility::setActive(), there is another flag that is
     // controlled from the Java side. The state of this flag is queried
     // during event processing, so a11y state can be reset to false while
-    // we do QTest::qWait().
+    // we do BOBUIest::qWait().
     // To overcome the issue in unit-tests, re-enable a11y before each test.
     // A more precise fix will require re-enabling it after every qWait() or
     // processEvents() call, but the current tests pass with such condition.
@@ -305,16 +305,16 @@ void tst_QAccessibility::init()
 
 void tst_QAccessibility::cleanup()
 {
-    const auto list = QTestAccessibility::events();
+    const auto list = BOBUIestAccessibility::events();
     if (!list.isEmpty()) {
         qWarning("%zd accessibility event(s) were not handled in testfunction '%s':", size_t(list.size()),
-                 QString(QTest::currentTestFunction()).toLatin1().constData());
+                 QString(BOBUIest::currentTestFunction()).toLatin1().constData());
         for (int i = 0; i < list.size(); ++i)
             qWarning(" %d: Object: %p Event: '%s' Child: %d", i + 1, list.at(i)->object(),
                      qAccessibleEventString(list.at(i)->type()), list.at(i)->child());
     }
-    QTestAccessibility::clearEvents();
-    QTRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
+    BOBUIestAccessibility::clearEvents();
+    BOBUIRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
 }
 
 void tst_QAccessibility::eventTest()
@@ -328,10 +328,10 @@ void tst_QAccessibility::eventTest()
     button->show();
     QAccessibleEvent showEvent(button, QAccessible::ObjectShow);
     // some platforms might send other events first, (such as state change event active=1)
-    QVERIFY(QTestAccessibility::containsEvent(&showEvent));
-    button->setFocus(Qt::MouseFocusReason);
-    QTestAccessibility::clearEvents();
-    QTest::mouseClick(button, Qt::LeftButton, { });
+    QVERIFY(BOBUIestAccessibility::containsEvent(&showEvent));
+    button->setFocus(BobUI::MouseFocusReason);
+    BOBUIestAccessibility::clearEvents();
+    BOBUIest::mouseClick(button, BobUI::LeftButton, { });
 
     button->setAccessibleName("Olaf the second");
     QAccessibleEvent nameEvent(button, QAccessible::NameChanged);
@@ -343,7 +343,7 @@ void tst_QAccessibility::eventTest()
     button->hide();
     QAccessibleEvent hideEvent(button, QAccessible::ObjectHide);
     // some platforms might send other events first, (such as state change event active=1)
-    QVERIFY(QTestAccessibility::containsEvent(&hideEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&hideEvent));
 
     buttonHolder.reset();
 
@@ -365,7 +365,7 @@ void tst_QAccessibility::eventTest()
     QAccessible::updateAccessibility(&ev3);
     objectHolder.reset();
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::eventWithChildTest()
@@ -398,9 +398,9 @@ void tst_QAccessibility::eventWithChildTest()
 void tst_QAccessibility::customWidget()
 {
     {
-    QtTestAccessibleWidget widget(nullptr, "Heinz");
+    BobUITestAccessibleWidget widget(nullptr, "Heinz");
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     // By default we create QAccessibleWidget
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&widget);
     QVERIFY(iface != 0);
@@ -412,10 +412,10 @@ void tst_QAccessibility::customWidget()
     QCOMPARE(iface->rect().width(), widget.width());
     }
     {
-    QAccessible::installFactory(QtTestAccessibleWidgetIface::ifaceFactory);
-    QtTestAccessibleWidget widget(nullptr, "Heinz");
+    QAccessible::installFactory(BobUITestAccessibleWidgetIface::ifaceFactory);
+    BobUITestAccessibleWidget widget(nullptr, "Heinz");
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&widget);
     QVERIFY(iface != 0);
     QVERIFY(iface->isValid());
@@ -427,21 +427,21 @@ void tst_QAccessibility::customWidget()
     }
     {
     // A subclass of any class should still get the right QAccessibleInterface
-    QtTestAccessibleWidgetSubclass subclassedWidget(nullptr, "Hans");
+    BobUITestAccessibleWidgetSubclass subclassedWidget(nullptr, "Hans");
     QAccessibleInterface *subIface = QAccessible::queryAccessibleInterface(&subclassedWidget);
     QVERIFY(subIface != 0);
     QVERIFY(subIface->isValid());
     QCOMPARE(subIface->object(), (QObject*)&subclassedWidget);
     QCOMPARE(subIface->text(QAccessible::Help), QString("Help yourself"));
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::deletedWidget()
 {
-    auto widgetHolder = std::make_unique<QtTestAccessibleWidget>(nullptr, "Ralf");
+    auto widgetHolder = std::make_unique<BobUITestAccessibleWidget>(nullptr, "Ralf");
     auto widget = widgetHolder.get();
-    QAccessible::installFactory(QtTestAccessibleWidgetIface::ifaceFactory);
+    QAccessible::installFactory(BobUITestAccessibleWidgetIface::ifaceFactory);
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(widget);
     QVERIFY(iface != 0);
     QVERIFY(iface->isValid());
@@ -451,7 +451,7 @@ void tst_QAccessibility::deletedWidget()
 
     // The interface is only valid within the callback
     bool gotEvent = false;
-    QTestAccessibility::setUpdateHandler(
+    BOBUIestAccessibility::setUpdateHandler(
         [iface,&gotEvent](QAccessibleEvent *event) {
             gotEvent = true;
             QCOMPARE(event->type(), QAccessible::ObjectDestroyed);
@@ -459,8 +459,8 @@ void tst_QAccessibility::deletedWidget()
             QCOMPARE(event->accessibleInterface(), iface);
     });
     widgetHolder.reset();
-    QTestAccessibility::setUpdateHandler([](QAccessibleEvent *) { ; });
-    QTRY_VERIFY(gotEvent);
+    BOBUIestAccessibility::setUpdateHandler([](QAccessibleEvent *) { ; });
+    BOBUIRY_VERIFY(gotEvent);
 }
 
 void tst_QAccessibility::subclassedWidget()
@@ -470,7 +470,7 @@ void tst_QAccessibility::subclassedWidget()
     QVERIFY(iface);
     QCOMPARE(iface->object(), (QObject*)&button);
     QCOMPARE(iface->text(QAccessible::Name), button.text());
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::statesStructTest()
@@ -524,7 +524,7 @@ void tst_QAccessibility::sliderTest()
     slider->setSingleStep(2);
     QCOMPARE(valueIface->minimumStepSize().toInt(), 2);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::navigateHierarchy()
@@ -586,7 +586,7 @@ void tst_QAccessibility::navigateHierarchy()
     QVERIFY(parent->isValid());
     QCOMPARE(parent->object(), (QObject*)w3);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 #define QSETCOMPARE(thetypename, elements, otherelements) \
@@ -601,20 +601,20 @@ static QWidget *createWidgets()
     int i = 0;
     box->addWidget(new QComboBox(w));
     box->addWidget(new QPushButton(QLatin1String("widget text ") + QString::number(i++), w));
-    box->addWidget(new QHeaderView(Qt::Vertical, w));
-    box->addWidget(new QTreeView(w));
-    box->addWidget(new QTreeWidget(w));
+    box->addWidget(new QHeaderView(BobUI::Vertical, w));
+    box->addWidget(new BOBUIreeView(w));
+    box->addWidget(new BOBUIreeWidget(w));
     box->addWidget(new QListView(w));
     box->addWidget(new QListWidget(w));
-    box->addWidget(new QTableView(w));
-    box->addWidget(new QTableWidget(w));
+    box->addWidget(new BOBUIableView(w));
+    box->addWidget(new BOBUIableWidget(w));
     box->addWidget(new QCalendarWidget(w));
     box->addWidget(new QDialogButtonBox(w));
     box->addWidget(new QGroupBox(QLatin1String("widget text ") + QString::number(i++), w));
     box->addWidget(new QFrame(w));
     box->addWidget(new QLineEdit(QLatin1String("widget text ") + QString::number(i++), w));
     box->addWidget(new QProgressBar(w));
-    box->addWidget(new QTabWidget(w));
+    box->addWidget(new BOBUIabWidget(w));
     box->addWidget(new QCheckBox(QLatin1String("widget text ") + QString::number(i++), w));
     box->addWidget(new QRadioButton(QLatin1String("widget text ") + QString::number(i++), w));
     box->addWidget(new QDial(w));
@@ -626,14 +626,14 @@ static QWidget *createWidgets()
     box->addWidget(new QLabel(QLatin1String("widget text ") + QString::number(i++), w));
     box->addWidget(new QLCDNumber(w));
     box->addWidget(new QStackedWidget(w));
-    box->addWidget(new QToolBox(w));
+    box->addWidget(new BOBUIoolBox(w));
     box->addWidget(new QLabel(QLatin1String("widget text ") + QString::number(i++), w));
-    box->addWidget(new QTextEdit(QLatin1String("widget text ") + QString::number(i++), w));
+    box->addWidget(new BOBUIextEdit(QLatin1String("widget text ") + QString::number(i++), w));
 
     /* Not in the list
      * QAbstractItemView, QGraphicsView, QScrollArea,
-     * QToolButton, QDockWidget, QFocusFrame, QMainWindow, QMenu, QMenuBar, QSizeGrip, QSplashScreen, QSplitterHandle,
-     * QStatusBar, QSvgWidget, QTabBar, QToolBar, QSplitter
+     * BOBUIoolButton, QDockWidget, QFocusFrame, QMainWindow, QMenu, QMenuBar, QSizeGrip, QSplashScreen, QSplitterHandle,
+     * QStatusBar, QSvgWidget, BOBUIabBar, BOBUIoolBar, QSplitter
      */
     return w;
 }
@@ -643,7 +643,7 @@ void tst_QAccessibility::accessibleName()
     auto holder = std::unique_ptr<QWidget>(createWidgets());
     auto toplevel = holder.get();
     toplevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(toplevel));
 
     QLayout *lout = toplevel->layout();
     for (int i = 0; i < lout->count(); i++) {
@@ -660,7 +660,7 @@ void tst_QAccessibility::accessibleName()
         child->setAccessibleDescription(desc);
         QCOMPARE(acc->text(QAccessible::Description), desc);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::accessibleIdentifier()
@@ -680,32 +680,32 @@ void tst_QAccessibility::accessibleIdentifier()
 
     // explicitly set an accessible ID, verify event and that the ID is set to
     // that exact string (not only containing it) afterwards
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     button.setAccessibleIdentifier(id);
     QAccessibleEvent event(&button, QAccessible::IdentifierChanged);
-    QVERIFY(QTestAccessibility::containsEvent(&event));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&event));
     QCOMPARE(button.accessibleIdentifier(), id);
     QCOMPARE(QAccessibleBridgeUtils::accessibleId(accessible), id);
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     // verify that no event gets triggered when setting the same ID again
     button.setAccessibleIdentifier(id);
-    QVERIFY(QTestAccessibility::events().empty());
+    QVERIFY(BOBUIestAccessibility::events().empty());
     QCOMPARE(button.accessibleIdentifier(), id);
     QCOMPARE(QAccessibleBridgeUtils::accessibleId(accessible), id);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 // note: color should probably always be part of the attributes
 void tst_QAccessibility::textAttributes_data()
 {
-    QTest::addColumn<QFont>("defaultFont");
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<int>("offset");
-    QTest::addColumn<int>("startOffsetResult");
-    QTest::addColumn<int>("endOffsetResult");
-    QTest::addColumn<QStringList>("attributeResult");
+    BOBUIest::addColumn<QFont>("defaultFont");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::addColumn<int>("startOffsetResult");
+    BOBUIest::addColumn<int>("endOffsetResult");
+    BOBUIest::addColumn<QStringList>("attributeResult");
 
     static QFont defaultFont;
     defaultFont.setFamily("");
@@ -762,65 +762,65 @@ void tst_QAccessibility::textAttributes_data()
     static QStringList defaultFontDifferentColor = defaultFontDifferent;
     defaultFontDifferentColor << QLatin1String("color:rgb(240,241,242)") << QLatin1String("background-color:rgb(20,240,30)");
 
-    QTest::newRow("defaults 1") << defaultFont << "hello" << 0 << 0 << 5 << defaults;
-    QTest::newRow("defaults 2") << defaultFont << "hello" << 1 << 0 << 5 << defaults;
-    QTest::newRow("defaults 3") << defaultFont << "hello" << 4 << 0 << 5 << defaults;
-    QTest::newRow("defaults 4") << defaultFont << "hello" << 5 << 0 << 5 << defaults;
-    QTest::newRow("offset -1 length") << defaultFont << "hello" << -1 << 0 << 5 << defaults;
-    QTest::newRow("offset -2 cursor pos") << defaultFont << "hello" << -2 << 0 << 5 << defaults;
-    QTest::newRow("offset -3") << defaultFont << "hello" << -3 << -1 << -1 << QStringList();
-    QTest::newRow("invalid offset 2") << defaultFont << "hello" << 6 << -1 << -1 << QStringList();
-    QTest::newRow("invalid offset 3") << defaultFont << "" << 1 << -1 << -1 << QStringList();
+    BOBUIest::newRow("defaults 1") << defaultFont << "hello" << 0 << 0 << 5 << defaults;
+    BOBUIest::newRow("defaults 2") << defaultFont << "hello" << 1 << 0 << 5 << defaults;
+    BOBUIest::newRow("defaults 3") << defaultFont << "hello" << 4 << 0 << 5 << defaults;
+    BOBUIest::newRow("defaults 4") << defaultFont << "hello" << 5 << 0 << 5 << defaults;
+    BOBUIest::newRow("offset -1 length") << defaultFont << "hello" << -1 << 0 << 5 << defaults;
+    BOBUIest::newRow("offset -2 cursor pos") << defaultFont << "hello" << -2 << 0 << 5 << defaults;
+    BOBUIest::newRow("offset -3") << defaultFont << "hello" << -3 << -1 << -1 << QStringList();
+    BOBUIest::newRow("invalid offset 2") << defaultFont << "hello" << 6 << -1 << -1 << QStringList();
+    BOBUIest::newRow("invalid offset 3") << defaultFont << "" << 1 << -1 << -1 << QStringList();
 
     QString boldText = QLatin1String("<html><b>bold</b>text");
-    QTest::newRow("bold 0") << defaultFont << boldText << 0 << 0 << 4 << bold;
-    QTest::newRow("bold 2") << defaultFont << boldText << 2 << 0 << 4 << bold;
-    QTest::newRow("bold 3") << defaultFont << boldText << 3 << 0 << 4 << bold;
-    QTest::newRow("bold 4") << defaultFont << boldText << 4 << 4 << 8 << defaults;
-    QTest::newRow("bold 6") << defaultFont << boldText << 6 << 4 << 8 << defaults;
+    BOBUIest::newRow("bold 0") << defaultFont << boldText << 0 << 0 << 4 << bold;
+    BOBUIest::newRow("bold 2") << defaultFont << boldText << 2 << 0 << 4 << bold;
+    BOBUIest::newRow("bold 3") << defaultFont << boldText << 3 << 0 << 4 << bold;
+    BOBUIest::newRow("bold 4") << defaultFont << boldText << 4 << 4 << 8 << defaults;
+    BOBUIest::newRow("bold 6") << defaultFont << boldText << 6 << 4 << 8 << defaults;
 
     QString longText = QLatin1String("<html>"
                  "Hello, <b>this</b> is an <i><b>example</b> text</i>."
                  "<span style=\"font-family: monospace\">Multiple fonts are used.</span>"
                  "Multiple <span style=\"font-size: 8pt\">text sizes</span> are used."
-                 "Let's give some color to <span style=\"color:#f0f1f2; background-color:#14f01e\">Qt</span>.");
+                 "Let's give some color to <span style=\"color:#f0f1f2; background-color:#14f01e\">BobUI</span>.");
 
-    QTest::newRow("default 5") << defaultFont << longText << 6 << 0 << 7 << defaults;
-    QTest::newRow("default 6") << defaultFont << longText << 7 << 7 << 11 << bold;
-    QTest::newRow("bold 7") << defaultFont << longText << 10 << 7 << 11 << bold;
-    QTest::newRow("bold 8") << defaultFont << longText << 10 << 7 << 11 << bold;
-    QTest::newRow("bold italic") << defaultFont << longText << 18 << 18 << 25 << boldItalic;
-    QTest::newRow("monospace") << defaultFont << longText << 34 << 31 << 55 << monospace;
-    QTest::newRow("8pt") << defaultFont << longText << 65 << 64 << 74 << font8pt;
-    QTest::newRow("color") << defaultFont << longText << 110 << 109 << 111 << color;
+    BOBUIest::newRow("default 5") << defaultFont << longText << 6 << 0 << 7 << defaults;
+    BOBUIest::newRow("default 6") << defaultFont << longText << 7 << 7 << 11 << bold;
+    BOBUIest::newRow("bold 7") << defaultFont << longText << 10 << 7 << 11 << bold;
+    BOBUIest::newRow("bold 8") << defaultFont << longText << 10 << 7 << 11 << bold;
+    BOBUIest::newRow("bold italic") << defaultFont << longText << 18 << 18 << 25 << boldItalic;
+    BOBUIest::newRow("monospace") << defaultFont << longText << 34 << 31 << 55 << monospace;
+    BOBUIest::newRow("8pt") << defaultFont << longText << 65 << 64 << 74 << font8pt;
+    BOBUIest::newRow("color") << defaultFont << longText << 110 << 109 << 111 << color;
 
     // make sure unset font properties default to those of document's default font
-    QTest::newRow("defaultFont default 5") << defaultComplexFont << longText << 6 << 0 << 7 << defaultFontDifferent;
-    QTest::newRow("defaultFont default 6") << defaultComplexFont << longText << 7 << 7 << 11 << defaultFontDifferent;
-    QTest::newRow("defaultFont bold 7") << defaultComplexFont << longText << 10 << 7 << 11 << defaultFontDifferent;
-    QTest::newRow("defaultFont bold 8") << defaultComplexFont << longText << 10 << 7 << 11 << defaultFontDifferent;
-    QTest::newRow("defaultFont bold italic") << defaultComplexFont << longText << 18 << 18 << 25 << defaultFontDifferentBoldItalic;
-    QTest::newRow("defaultFont monospace") << defaultComplexFont << longText << 34 << 31 << 55 << defaultFontDifferentMonospace;
-    QTest::newRow("defaultFont 8pt") << defaultComplexFont << longText << 65 << 64 << 74 << defaultFontDifferentFont8pt;
-    QTest::newRow("defaultFont color") << defaultComplexFont << longText << 110 << 109 << 111 << defaultFontDifferentColor;
+    BOBUIest::newRow("defaultFont default 5") << defaultComplexFont << longText << 6 << 0 << 7 << defaultFontDifferent;
+    BOBUIest::newRow("defaultFont default 6") << defaultComplexFont << longText << 7 << 7 << 11 << defaultFontDifferent;
+    BOBUIest::newRow("defaultFont bold 7") << defaultComplexFont << longText << 10 << 7 << 11 << defaultFontDifferent;
+    BOBUIest::newRow("defaultFont bold 8") << defaultComplexFont << longText << 10 << 7 << 11 << defaultFontDifferent;
+    BOBUIest::newRow("defaultFont bold italic") << defaultComplexFont << longText << 18 << 18 << 25 << defaultFontDifferentBoldItalic;
+    BOBUIest::newRow("defaultFont monospace") << defaultComplexFont << longText << 34 << 31 << 55 << defaultFontDifferentMonospace;
+    BOBUIest::newRow("defaultFont 8pt") << defaultComplexFont << longText << 65 << 64 << 74 << defaultFontDifferentFont8pt;
+    BOBUIest::newRow("defaultFont color") << defaultComplexFont << longText << 110 << 109 << 111 << defaultFontDifferentColor;
 
     QString rightAligned = QLatin1String("<html><p align=\"right\">right</p>");
-    QTest::newRow("right aligned 1") << defaultFont << rightAligned << 0 << 0 << 5 << rightAlign;
-    QTest::newRow("right aligned 2") << defaultFont << rightAligned << 1 << 0 << 5 << rightAlign;
-    QTest::newRow("right aligned 3") << defaultFont << rightAligned << 5 << 0 << 5 << rightAlign;
+    BOBUIest::newRow("right aligned 1") << defaultFont << rightAligned << 0 << 0 << 5 << rightAlign;
+    BOBUIest::newRow("right aligned 2") << defaultFont << rightAligned << 1 << 0 << 5 << rightAlign;
+    BOBUIest::newRow("right aligned 3") << defaultFont << rightAligned << 5 << 0 << 5 << rightAlign;
 
     // left \n right \n left, make sure bold and alignment borders coincide
     QString leftRightLeftAligned = QLatin1String("<html><p><b>left</b></p><p align=\"right\">right</p><p><b>left</b></p>");
-    QTest::newRow("left right left aligned 1") << defaultFont << leftRightLeftAligned << 1 << 0 << 4 << bold;
-    QTest::newRow("left right left aligned 3") << defaultFont << leftRightLeftAligned << 3 << 0 << 4 << bold;
-    QTest::newRow("left right left aligned 4") << defaultFont << leftRightLeftAligned << 4 << 4 << 5 << defaults;
-    QTest::newRow("left right left aligned 5") << defaultFont << leftRightLeftAligned << 5 << 5 << 10 << rightAlign;
-    QTest::newRow("left right left aligned 8") << defaultFont << leftRightLeftAligned << 8 << 5 << 10 << rightAlign;
-    QTest::newRow("left right left aligned 9") << defaultFont << leftRightLeftAligned << 9 << 5 << 10 << rightAlign;
-    QTest::newRow("left right left aligned 10") << defaultFont << leftRightLeftAligned << 10 << 10 << 11 << rightAlign;
-    QTest::newRow("left right left aligned 11") << defaultFont << leftRightLeftAligned << 11 << 11 << 15 << bold;
-    QTest::newRow("left right left aligned 15") << defaultFont << leftRightLeftAligned << 15 << 11 << 15 << bold;
-    QTest::newRow("empty with no fragments") << defaultFont << QString::fromLatin1("\n\n\n\n") << 0 << 0 << 1 << defaults;
+    BOBUIest::newRow("left right left aligned 1") << defaultFont << leftRightLeftAligned << 1 << 0 << 4 << bold;
+    BOBUIest::newRow("left right left aligned 3") << defaultFont << leftRightLeftAligned << 3 << 0 << 4 << bold;
+    BOBUIest::newRow("left right left aligned 4") << defaultFont << leftRightLeftAligned << 4 << 4 << 5 << defaults;
+    BOBUIest::newRow("left right left aligned 5") << defaultFont << leftRightLeftAligned << 5 << 5 << 10 << rightAlign;
+    BOBUIest::newRow("left right left aligned 8") << defaultFont << leftRightLeftAligned << 8 << 5 << 10 << rightAlign;
+    BOBUIest::newRow("left right left aligned 9") << defaultFont << leftRightLeftAligned << 9 << 5 << 10 << rightAlign;
+    BOBUIest::newRow("left right left aligned 10") << defaultFont << leftRightLeftAligned << 10 << 10 << 11 << rightAlign;
+    BOBUIest::newRow("left right left aligned 11") << defaultFont << leftRightLeftAligned << 11 << 11 << 15 << bold;
+    BOBUIest::newRow("left right left aligned 15") << defaultFont << leftRightLeftAligned << 15 << 11 << 15 << bold;
+    BOBUIest::newRow("empty with no fragments") << defaultFont << QString::fromLatin1("\n\n\n\n") << 0 << 0 << 1 << defaults;
 }
 
 void tst_QAccessibility::textAttributes()
@@ -833,7 +833,7 @@ void tst_QAccessibility::textAttributes()
     QFETCH(int, endOffsetResult);
     QFETCH(QStringList, attributeResult);
 
-    QTextEdit textEdit;
+    BOBUIextEdit textEdit;
     textEdit.document()->setDefaultFont(defaultFont);
     textEdit.setText(text);
     if (textEdit.document()->characterCount() > 1)
@@ -849,12 +849,12 @@ void tst_QAccessibility::textAttributes()
 
     QCOMPARE(startOffset, startOffsetResult);
     QCOMPARE(endOffset, endOffsetResult);
-    QStringList attrList = attributes.split(QChar(';'), Qt::SkipEmptyParts);
+    QStringList attrList = attributes.split(QChar(';'), BobUI::SkipEmptyParts);
     attributeResult.sort();
     attrList.sort();
     QCOMPARE(attrList, attributeResult);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::hideShowTest()
@@ -867,7 +867,7 @@ void tst_QAccessibility::hideShowTest()
     QVERIFY(state(window).invisible);
     QVERIFY(state(child).invisible);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     // show() and veryfy that both window and child are not invisible and get ObjectShow events.
     window->show();
@@ -875,23 +875,23 @@ void tst_QAccessibility::hideShowTest()
     QVERIFY(!state(child).invisible);
 
     QAccessibleEvent show(window, QAccessible::ObjectShow);
-    QVERIFY(QTestAccessibility::containsEvent(&show));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&show));
     QAccessibleEvent showChild(child, QAccessible::ObjectShow);
-    QVERIFY(QTestAccessibility::containsEvent(&showChild));
-    QTestAccessibility::clearEvents();
+    QVERIFY(BOBUIestAccessibility::containsEvent(&showChild));
+    BOBUIestAccessibility::clearEvents();
 
     // hide() and veryfy that both window and child are invisible and get ObjectHide events.
     window->hide();
     QVERIFY(state(window).invisible);
     QVERIFY(state(child).invisible);
     QAccessibleEvent hide(window, QAccessible::ObjectHide);
-    QVERIFY(QTestAccessibility::containsEvent(&hide));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&hide));
     QAccessibleEvent hideChild(child, QAccessible::ObjectHide);
-    QVERIFY(QTestAccessibility::containsEvent(&hideChild));
-    QTestAccessibility::clearEvents();
+    QVERIFY(BOBUIestAccessibility::containsEvent(&hideChild));
+    BOBUIestAccessibility::clearEvents();
 
     windowHolder.reset();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 
@@ -902,7 +902,7 @@ void tst_QAccessibility::actionTest()
 
     auto widgetHolder = std::make_unique<QWidget>();
     auto widget = widgetHolder.get();
-    widget->setFocusPolicy(Qt::NoFocus);
+    widget->setFocusPolicy(BobUI::NoFocus);
     widget->show();
 
     QAccessibleInterface *interface = QAccessible::queryAccessibleInterface(widget);
@@ -913,17 +913,17 @@ void tst_QAccessibility::actionTest()
 
     // no actions by default, except when focusable
     QCOMPARE(actions->actionNames(), QStringList());
-    widget->setFocusPolicy(Qt::StrongFocus);
+    widget->setFocusPolicy(BobUI::StrongFocus);
     QCOMPARE(actions->actionNames(), QStringList(QAccessibleActionInterface::setFocusAction()));
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     {
     auto buttonHolder = std::make_unique<QPushButton>();
     auto button = buttonHolder.get();
     setFrameless(button);
     button->show();
-    QVERIFY(QTest::qWaitForWindowExposed(button));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(button));
     button->clearFocus();
     QCOMPARE(button->hasFocus(), false);
     QAccessibleInterface *interface = QAccessible::queryAccessibleInterface(button);
@@ -934,16 +934,16 @@ void tst_QAccessibility::actionTest()
     QCOMPARE(actions->actionNames(), QStringList() << QAccessibleActionInterface::pressAction() << QAccessibleActionInterface::setFocusAction());
 
     actions->doAction(QAccessibleActionInterface::setFocusAction());
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     QCOMPARE(button->hasFocus(), true);
 
     connect(button, SIGNAL(clicked()), this, SLOT(onClicked()));
     QCOMPARE(click_count, 0);
     actions->doAction(QAccessibleActionInterface::pressAction());
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     QCOMPARE(click_count, 1);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     {
     QCOMPARE(QAccessibleActionInterface::showMenuAction(), QString(QStringLiteral("ShowMenu")));
@@ -961,10 +961,10 @@ void tst_QAccessibility::actionTest()
     QVERIFY(actions);
 
     QCOMPARE(actions->actionNames(), QStringList());
-    widget->setContextMenuPolicy(Qt::ActionsContextMenu);
+    widget->setContextMenuPolicy(BobUI::ActionsContextMenu);
     QCOMPARE(actions->actionNames(), QStringList(QAccessibleActionInterface::showMenuAction()));
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::applicationTest()
@@ -996,7 +996,7 @@ void tst_QAccessibility::applicationTest()
     QWidget widget;
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     QAccessibleInterface *widgetIface = QAccessible::queryAccessibleInterface(&widget);
     QCOMPARE(interface->childCount(), 1);
@@ -1009,7 +1009,7 @@ void tst_QAccessibility::applicationTest()
     QCOMPARE(interface->child(-1), static_cast<QAccessibleInterface*>(0));
     QCOMPARE(interface->child(1), static_cast<QAccessibleInterface*>(0));
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::mainWindowTest()
@@ -1026,35 +1026,35 @@ void tst_QAccessibility::mainWindowTest()
 
     QLatin1String name = QLatin1String("I am the main window");
     mw->setWindowTitle(name);
-    QVERIFY(QTest::qWaitForWindowActive(mw));
+    QVERIFY(BOBUIest::qWaitForWindowActive(mw));
 
     // The order of events is not really that important.
     QAccessibleEvent show(mw, QAccessible::ObjectShow);
-    QVERIFY(QTestAccessibility::containsEvent(&show));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&show));
     QAccessible::State activeState;
     activeState.active = true;
     QAccessibleStateChangeEvent active(mw, activeState);
-    QVERIFY(QTestAccessibility::containsEvent(&active));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&active));
 
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(mw);
     QCOMPARE(iface->text(QAccessible::Name), name);
     QCOMPARE(iface->role(), QAccessible::Window);
     QVERIFY(iface->state().active);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     QLatin1String newName = QLatin1String("Main window with updated title");
     mw->setWindowTitle(newName);
     QCOMPARE(iface->text(QAccessible::Name), QLatin1String(newName));
     QAccessibleEvent event(mw, QAccessible::NameChanged);
-    QVERIFY(QTestAccessibility::containsEvent(&event));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&event));
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     {
     QWindow window;
     window.setGeometry(80, 80, 40, 40);
     window.show();
-    QTRY_COMPARE(QGuiApplication::focusWindow(), &window);
+    BOBUIRY_COMPARE(QGuiApplication::focusWindow(), &window);
 
     // We currently don't have an accessible interface for QWindow
     // the active state is either in the QMainWindow or QQuickView
@@ -1129,7 +1129,7 @@ void tst_QAccessibility::subWindowTest()
     QCOMPARE(dialogIface->parent(), app);
     QCOMPARE(windowIface->parent(), app);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 class CounterButton : public QPushButton {
@@ -1147,7 +1147,7 @@ public Q_SLOTS:
     }
 };
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QAccessibility::buttonTest()
 {
@@ -1172,12 +1172,12 @@ void tst_QAccessibility::buttonTest()
     QRadioButton radio("Radio me!", &window);
 
     // standard toolbutton
-    QToolButton toolbutton(&window);
+    BOBUIoolButton toolbutton(&window);
     toolbutton.setText("Tool");
     toolbutton.setMinimumSize(20,20);
 
     // standard toolbutton
-    QToolButton toggletool(&window);
+    BOBUIoolButton toggletool(&window);
     toggletool.setCheckable(true);
     toggletool.setText("Toggle");
     toggletool.setMinimumSize(20,20);
@@ -1193,7 +1193,7 @@ void tst_QAccessibility::buttonTest()
     QCOMPARE(actionInterface->actionNames(), QStringList() << QAccessibleActionInterface::pressAction() << QAccessibleActionInterface::setFocusAction());
     QCOMPARE(pushButton.clickCount, 0);
     actionInterface->doAction(QAccessibleActionInterface::pressAction());
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     QCOMPARE(pushButton.clickCount, 1);
 
     // test toggle button
@@ -1208,7 +1208,7 @@ void tst_QAccessibility::buttonTest()
     QVERIFY(!toggleButton.isChecked());
     QVERIFY(!interface->state().checked);
     actionInterface->doAction(QAccessibleActionInterface::toggleAction());
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     QVERIFY(toggleButton.isChecked());
     QCOMPARE(actionInterface->actionNames().at(0), QAccessibleActionInterface::toggleAction());
     QVERIFY(interface->state().checked);
@@ -1229,11 +1229,11 @@ void tst_QAccessibility::buttonTest()
     QCOMPARE(interface->actionInterface()->actionNames(), QStringList() << QAccessibleActionInterface::showMenuAction() << QAccessibleActionInterface::setFocusAction());
     // showing the menu enters a new event loop...
 //    interface->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
-//    QTest::qWait(500);
+//    BOBUIest::qWait(500);
     }
 
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     {
     // test check box
     interface = QAccessible::queryAccessibleInterface(&checkBox);
@@ -1246,7 +1246,7 @@ void tst_QAccessibility::buttonTest()
     QVERIFY(!interface->state().checked);
     actionInterface->doAction(QAccessibleActionInterface::toggleAction());
 
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     QCOMPARE(actionInterface->actionNames(),
              QStringList() << QAccessibleActionInterface::toggleAction()
                            << QAccessibleActionInterface::pressAction()
@@ -1269,7 +1269,7 @@ void tst_QAccessibility::buttonTest()
     QCOMPARE(actionInterface->actionNames(), QStringList() << QAccessibleActionInterface::toggleAction() << QAccessibleActionInterface::setFocusAction());
     QVERIFY(!interface->state().checked);
     actionInterface->doAction(QAccessibleActionInterface::toggleAction());
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     QCOMPARE(actionInterface->actionNames(), QStringList() << QAccessibleActionInterface::toggleAction() << QAccessibleActionInterface::setFocusAction());
     QVERIFY(interface->state().checked);
     QVERIFY(radio.isChecked());
@@ -1294,7 +1294,7 @@ void tst_QAccessibility::buttonTest()
 //    QCOMPARE(test->actionText(test->defaultAction(0), QAccessible::Name, 0), QString("Check"));
 //    QCOMPARE(test->state(), (int)QAccessible::Normal);
 //    QVERIFY(test->doAction(QAccessible::Press, 0));
-//    QTest::qWait(500);
+//    BOBUIest::qWait(500);
 //    QCOMPARE(test->actionText(test->defaultAction(0), QAccessible::Name, 0), QString("Uncheck"));
 //    QCOMPARE(test->state(), (int)QAccessible::Checked);
 //    test->release();
@@ -1329,11 +1329,11 @@ void tst_QAccessibility::buttonTest()
 //    test->release();
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QAccessibility::scrollBarTest()
 {
-    auto scrollBarHolder = std::make_unique<QScrollBar>(Qt::Horizontal);
+    auto scrollBarHolder = std::make_unique<QScrollBar>(BobUI::Horizontal);
     auto scrollBar = scrollBarHolder.get();
     QAccessibleInterface * const scrollBarInterface =
                                     QAccessible::queryAccessibleInterface(scrollBar);
@@ -1343,14 +1343,14 @@ void tst_QAccessibility::scrollBarTest()
     scrollBar->show();
     QVERIFY(!scrollBarInterface->state().invisible);
     QAccessibleEvent show(scrollBar, QAccessible::ObjectShow);
-    QVERIFY(QTestAccessibility::containsEvent(&show));
-    QTestAccessibility::clearEvents();
+    QVERIFY(BOBUIestAccessibility::containsEvent(&show));
+    BOBUIestAccessibility::clearEvents();
 
     scrollBar->hide();
     QVERIFY(scrollBarInterface->state().invisible);
     QAccessibleEvent hide(scrollBar, QAccessible::ObjectHide);
-    QVERIFY(QTestAccessibility::containsEvent(&hide));
-    QTestAccessibility::clearEvents();
+    QVERIFY(BOBUIestAccessibility::containsEvent(&hide));
+    BOBUIestAccessibility::clearEvents();
 
     // Test that the left/right subcontrols are set to unavailable when the scrollBar is at the minimum/maximum.
     scrollBar->show();
@@ -1360,7 +1360,7 @@ void tst_QAccessibility::scrollBarTest()
     QAccessibleAttributesInterface *attributesIface = scrollBarInterface->attributesInterface();
     QVERIFY(attributesIface);
     QVERIFY(attributesIface->attributeKeys().contains(QAccessible::Attribute::Orientation));
-    QCOMPARE(attributesIface->attributeValue(QAccessible::Attribute::Orientation), Qt::Horizontal);
+    QCOMPARE(attributesIface->attributeValue(QAccessible::Attribute::Orientation), BobUI::Horizontal);
 
     QAccessibleValueInterface *valueIface = scrollBarInterface->valueInterface();
     QVERIFY(valueIface != 0);
@@ -1378,12 +1378,12 @@ void tst_QAccessibility::scrollBarTest()
     const QRect scrollBarRect = scrollBarInterface->rect();
     QVERIFY(scrollBarRect.isValid());
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::tabTest()
 {
-    auto tabBarHolder = std::make_unique<QTabBar>();
+    auto tabBarHolder = std::make_unique<BOBUIabBar>();
     auto tabBar = tabBarHolder.get();
     setFrameless(tabBar);
     tabBar->show();
@@ -1420,7 +1420,7 @@ void tst_QAccessibility::tabTest()
     tabBar->hide();
 
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QVERIFY(child1->state().invisible);
 
@@ -1448,12 +1448,12 @@ void tst_QAccessibility::tabTest()
     tabBar->setCurrentIndex(1);
     QCOMPARE(interface->text(QAccessible::Name), QLatin1String("AccBar"));
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::tabWidgetTest()
 {
-    auto tabWidgetHolder = std::make_unique<QTabWidget>();
+    auto tabWidgetHolder = std::make_unique<BOBUIabWidget>();
     auto tabWidget = tabWidgetHolder.get();
     tabWidget->show();
 
@@ -1536,10 +1536,10 @@ void tst_QAccessibility::tabWidgetTest()
     QCOMPARE(parent->childCount(), 2);
     QCOMPARE(parent->role(), QAccessible::LayeredPane);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QAccessibility::menuTest()
 {
@@ -1581,7 +1581,7 @@ void tst_QAccessibility::menuTest()
     mw.menuBar()->addMenu(childOfMainWindow);
 
     mw.show(); // triggers layout
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QAccessibleInterface *interface = QAccessible::queryAccessibleInterface(&mw);
     QCOMPARE(verifyHierarchy(interface),  0);
@@ -1636,24 +1636,24 @@ void tst_QAccessibility::menuTest()
     QCOMPARE(iHelp->actionInterface()->actionNames(), QStringList() << QAccessibleActionInterface::showMenuAction());
     QCOMPARE(iAction->actionInterface()->actionNames(), QStringList() << QAccessibleActionInterface::pressAction());
 
-    bool menuFade = qApp->isEffectEnabled(Qt::UI_FadeMenu);
+    bool menuFade = qApp->isEffectEnabled(BobUI::UI_FadeMenu);
     int menuFadeDelay = 300;
     iFile->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
     if(menuFade)
-        QTest::qWait(menuFadeDelay);
-    QTRY_VERIFY(file->isVisible() && !edit->isVisible() && !help->isVisible());
+        BOBUIest::qWait(menuFadeDelay);
+    BOBUIRY_VERIFY(file->isVisible() && !edit->isVisible() && !help->isVisible());
     iEdit->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
     if(menuFade)
-        QTest::qWait(menuFadeDelay);
-    QTRY_VERIFY(!file->isVisible() && edit->isVisible() && !help->isVisible());
+        BOBUIest::qWait(menuFadeDelay);
+    BOBUIRY_VERIFY(!file->isVisible() && edit->isVisible() && !help->isVisible());
     iHelp->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
     if(menuFade)
-        QTest::qWait(menuFadeDelay);
-    QTRY_VERIFY(!file->isVisible() && !edit->isVisible() && help->isVisible());
+        BOBUIest::qWait(menuFadeDelay);
+    BOBUIRY_VERIFY(!file->isVisible() && !edit->isVisible() && help->isVisible());
     iAction->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
     if(menuFade)
-        QTest::qWait(menuFadeDelay);
-    QTRY_VERIFY(!file->isVisible() && !edit->isVisible() && !help->isVisible());
+        BOBUIest::qWait(menuFadeDelay);
+    BOBUIRY_VERIFY(!file->isVisible() && !edit->isVisible() && !help->isVisible());
 
     QVERIFY(interface->actionInterface());
     QCOMPARE(interface->actionInterface()->actionNames(), QStringList());
@@ -1718,20 +1718,20 @@ void tst_QAccessibility::menuTest()
 
     // move mouse pointer away, since that might influence the
     // subsequent tests
-    QTest::mouseMove(&mw, QPoint(-1, -1));
-    QTest::qWait(100);
+    BOBUIest::mouseMove(&mw, QPoint(-1, -1));
+    BOBUIest::qWait(100);
     if (menuFade)
-        QTest::qWait(menuFadeDelay);
+        BOBUIest::qWait(menuFadeDelay);
 
     iFile->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
     iFileNew->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
 
-    QTRY_VERIFY(file->isVisible());
-    QTRY_VERIFY(fileNew->isVisible());
+    BOBUIRY_VERIFY(file->isVisible());
+    BOBUIRY_VERIFY(fileNew->isVisible());
     QVERIFY(!edit->isVisible());
     QVERIFY(!help->isVisible());
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     mw.hide();
 
     // Do not crash if the menu don't have a parent
@@ -1748,10 +1748,10 @@ void tst_QAccessibility::menuTest()
     menu.reset();
 
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QAccessibility::spinBoxTest()
 {
@@ -1765,7 +1765,7 @@ void tst_QAccessibility::spinBoxTest()
     QVERIFY(interface);
     QCOMPARE(interface->role(), QAccessible::SpinBox);
 
-    QVERIFY(QTest::qWaitForWindowExposed(spinBox));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(spinBox));
 
     const QRect widgetRect = spinBox->geometry();
     const QRect accessibleRect = interface->rect();
@@ -1784,11 +1784,11 @@ void tst_QAccessibility::spinBoxTest()
     QCOMPARE(spinBox->value(), 23);
 
     spinBox->setFocus();
-    QTestAccessibility::clearEvents();
-    QTest::keyPress(spinBox, Qt::Key_Up);
-    QTest::qWait(200);
+    BOBUIestAccessibility::clearEvents();
+    BOBUIest::keyPress(spinBox, BobUI::Key_Up);
+    BOBUIest::qWait(200);
     QAccessibleValueChangeEvent expectedEvent(spinBox, spinBox->value());
-    QVERIFY(QTestAccessibility::containsEvent(&expectedEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&expectedEvent));
 
     QAccessibleTextInterface *textIface = interface->textInterface();
     QVERIFY(textIface);
@@ -1802,7 +1802,7 @@ void tst_QAccessibility::spinBoxTest()
     QVERIFY(!interface->state().editable);
     QVERIFY(interface->state().readOnly);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::doubleSpinBoxTest()
@@ -1815,7 +1815,7 @@ void tst_QAccessibility::doubleSpinBoxTest()
     QAccessibleInterface *interface = QAccessible::queryAccessibleInterface(doubleSpinBox);
     QVERIFY(interface);
 
-    QVERIFY(QTest::qWaitForWindowExposed(doubleSpinBox));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(doubleSpinBox));
 
     const QRect widgetRect = doubleSpinBox->geometry();
     const QRect accessibleRect = interface->rect();
@@ -1829,17 +1829,17 @@ void tst_QAccessibility::doubleSpinBoxTest()
         QVERIFY(childRect.isValid());
     }
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
-static QRect characterRect(const QTextEdit &edit, int offset)
+static QRect characterRect(const BOBUIextEdit &edit, int offset)
 {
-    QTextBlock block = edit.document()->findBlock(offset);
-    QTextLayout *layout = block.layout();
+    BOBUIextBlock block = edit.document()->findBlock(offset);
+    BOBUIextLayout *layout = block.layout();
     QPointF layoutPosition = layout->position();
     int relativeOffset = offset - block.position();
-    QTextLine line = layout->lineForTextPosition(relativeOffset);
-    QTextBlock::iterator it = block.begin();
+    BOBUIextLine line = layout->lineForTextPosition(relativeOffset);
+    BOBUIextBlock::iterator it = block.begin();
     while (!it.fragment().contains(offset))
         ++it;
     QFontMetrics fm(it.fragment().charFormat().font());
@@ -1880,7 +1880,7 @@ void tst_QAccessibility::textEditTest()
 {
     for (int pass = 0; pass < 2; ++pass) {
         {
-        QTextEdit edit;
+        BOBUIextEdit edit;
         edit.setMinimumSize(600, 400);
         setFrameless(&edit);
         int startOffset;
@@ -1896,7 +1896,7 @@ void tst_QAccessibility::textEditTest()
         }
 
         edit.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&edit));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&edit));
         QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&edit);
         QCOMPARE(iface->text(QAccessible::Value), edit.toPlainText());
         QVERIFY(iface->state().focusable);
@@ -1954,12 +1954,12 @@ void tst_QAccessibility::textEditTest()
         const QRect expected32 = characterRect(edit, offset);
         QVERIFY2(fuzzyRectCompare(actual32, expected32), msgRectMismatch(actual32, expected32).constData());
 
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
 
         // select text
-        QTextCursor c = edit.textCursor();
+        BOBUIextCursor c = edit.textCursor();
         c.setPosition(2);
-        c.setPosition(4, QTextCursor::KeepAnchor);
+        c.setPosition(4, BOBUIextCursor::KeepAnchor);
         edit.setTextCursor(c);
         QAccessibleTextSelectionEvent sel(&edit, 2, 4);
         QVERIFY_EVENT(&sel);
@@ -1989,10 +1989,10 @@ void tst_QAccessibility::textEditTest()
         QCOMPARE(end, 29);
 
         edit.clear();
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
 
         // make sure we get notifications when typing text
-        QTestEventList keys;
+        BOBUIestEventList keys;
         keys.addKeyClick('A');
         keys.simulate(&edit);
         keys.clear();
@@ -2005,17 +2005,17 @@ void tst_QAccessibility::textEditTest()
         keys.addKeyClick('c');
         keys.simulate(&edit);
         keys.clear();
-        QTRY_COMPARE(edit.toPlainText(), "Ac");
+        BOBUIRY_COMPARE(edit.toPlainText(), "Ac");
 
         QAccessibleTextInsertEvent insertC(&edit, 1, "c");
         QVERIFY_EVENT(&insertC);
         QAccessibleTextCursorEvent move2(&edit, 2);
         QVERIFY_EVENT(&move2);
 
-        keys.addKeyClick(Qt::Key_Backspace);
+        keys.addKeyClick(BobUI::Key_Backspace);
         keys.simulate(&edit);
         keys.clear();
-        QTRY_COMPARE(edit.toPlainText(), "A");
+        BOBUIRY_COMPARE(edit.toPlainText(), "A");
 
         // FIXME this should get a proper string instead of space
         QAccessibleTextRemoveEvent del(&edit, 1, " ");
@@ -2031,14 +2031,14 @@ void tst_QAccessibility::textEditTest()
         QAccessibleTextInsertEvent insert(&edit, 0, "Accessibility rocks");
         QVERIFY_EVENT(&insert);
         }
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
     }
 }
 
 void tst_QAccessibility::textBrowserTest()
 {
     {
-    QTextBrowser textBrowser;
+    BOBUIextBrowser textBrowser;
     QString text = QLatin1String("Hello world\nhow are you today?\n");
     textBrowser.setText(text);
     textBrowser.show();
@@ -2057,7 +2057,7 @@ void tst_QAccessibility::textBrowserTest()
     QCOMPARE(endOffset, 30);
     QCOMPARE(iface->textInterface()->characterCount(), 31);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::mdiAreaTest()
@@ -2068,7 +2068,7 @@ void tst_QAccessibility::mdiAreaTest()
     mdiArea.show();
     const int subWindowCount = 3;
     for (int i = 0; i < subWindowCount; ++i)
-        mdiArea.addSubWindow(new QWidget, Qt::Dialog)->show();
+        mdiArea.addSubWindow(new QWidget, BobUI::Dialog)->show();
 
     QList<QMdiSubWindow *> subWindows = mdiArea.subWindowList();
     QCOMPARE(subWindows.size(), subWindowCount);
@@ -2078,7 +2078,7 @@ void tst_QAccessibility::mdiAreaTest()
     QCOMPARE(interface->childCount(), subWindowCount);
 
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::mdiSubWindowTest()
@@ -2087,13 +2087,13 @@ void tst_QAccessibility::mdiSubWindowTest()
     QMdiArea mdiArea;
     mdiArea.show();
     QApplicationPrivate::setActiveWindow(&mdiArea);
-    QVERIFY(QTest::qWaitForWindowActive(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mdiArea));
 
 
     const int subWindowCount =  5;
     for (int i = 0; i < subWindowCount; ++i) {
         QMdiSubWindow *window = mdiArea.addSubWindow(new QPushButton("QAccessibilityTest"));
-        window->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+        window->setAttribute(BobUI::WA_LayoutUsesWidgetRect);
         window->show();
         // Parts of this test requires that the sub windows are placed next
         // to each other. In order to achieve that QMdiArea must have
@@ -2103,7 +2103,7 @@ void tst_QAccessibility::mdiSubWindowTest()
             mdiArea.resize(mdiArea.size().expandedTo(QSize(minimumWidth, 0)));
 #if defined(Q_OS_UNIX)
             QCoreApplication::processEvents();
-            QTest::qWait(100);
+            BOBUIest::qWait(100);
 #endif
         }
     }
@@ -2177,7 +2177,7 @@ void tst_QAccessibility::mdiSubWindowTest()
     const QPoint globalWidgetPos = QPoint(globalPos.x() + widgetGeometry.x(),
                                           globalPos.y() + widgetGeometry.y());
 #ifdef Q_OS_MAC
-    QSKIP("QTBUG-22812");
+    QSKIP("BOBUIBUG-22812");
 #endif
     QCOMPARE(childRect(interface), QRect(globalWidgetPos, widgetGeometry.size()));
 
@@ -2191,7 +2191,7 @@ void tst_QAccessibility::mdiSubWindowTest()
     QCOMPARE(interface->childAt(globalWidgetPos.x(), globalWidgetPos.y()), static_cast<QAccessibleInterface*>(0));
 
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::lineEditTest()
@@ -2267,14 +2267,14 @@ void tst_QAccessibility::lineEditTest()
 
     QLineEdit *le2 = new QLineEdit(toplevel);
     le2->show();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     le2->activateWindow();
-    QTest::qWait(100);
-    le->setFocus(Qt::TabFocusReason);
-    QTestAccessibility::clearEvents();
-    le2->setFocus(Qt::TabFocusReason);
+    BOBUIest::qWait(100);
+    le->setFocus(BobUI::TabFocusReason);
+    BOBUIestAccessibility::clearEvents();
+    le2->setFocus(BobUI::TabFocusReason);
     QAccessibleEvent ev(le2, QAccessible::Focus);
-    QTRY_VERIFY(QTestAccessibility::containsEvent(&ev));
+    BOBUIRY_VERIFY(BOBUIestAccessibility::containsEvent(&ev));
 
     le->setText(QLatin1String("500"));
     le->setValidator(new QIntValidator());
@@ -2293,14 +2293,14 @@ void tst_QAccessibility::lineEditTest()
     QAccessibleInterface *iface(QAccessible::queryAccessibleInterface(le3));
     QAccessibleTextInterface* textIface = iface->textInterface();
     le3->deselect();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     le3->setCursorPosition(3);
     QCOMPARE(textIface->cursorPosition(), 3);
 
     QAccessibleTextCursorEvent caretEvent(le3, 3);
-    QTRY_VERIFY(QTestAccessibility::containsEvent(&caretEvent));
+    BOBUIRY_VERIFY(BOBUIestAccessibility::containsEvent(&caretEvent));
     QCOMPARE(textIface->selectionCount(), 0);
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     int start, end;
     QCOMPARE(textIface->text(0, 8), QString::fromLatin1("I always"));
@@ -2350,14 +2350,14 @@ void tst_QAccessibility::lineEditTest()
     QCOMPARE(textIface->textBeforeOffset(1, QAccessible::WordBoundary, &start, &end), QString());
     QCOMPARE(textIface->textAfterOffset(1, QAccessible::WordBoundary, &start, &end), QString());
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     }
 
     {
         QLineEdit le(QStringLiteral("My characters have geometries."), toplevel);
         // characterRect()
         le.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&le));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&le));
         QAccessibleInterface *iface(QAccessible::queryAccessibleInterface(&le));
         QAccessibleTextInterface* textIface = iface->textInterface();
         QVERIFY(textIface);
@@ -2366,7 +2366,7 @@ void tst_QAccessibility::lineEditTest()
         for (int i = 0; i < 10; ++i) {
             QVERIFY(lineEditRect.contains(textIface->characterRect(i)));
         }
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
     }
 
     {
@@ -2374,7 +2374,7 @@ void tst_QAccessibility::lineEditTest()
     QString text = "Hello, world";
     QLineEdit *lineEdit = new QLineEdit(text, toplevel);
     lineEdit->show();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     // cursor
     lineEdit->setCursorPosition(5);
     QAccessibleTextCursorEvent cursorEvent(lineEdit, 5);
@@ -2421,101 +2421,101 @@ void tst_QAccessibility::lineEditTest()
     QVERIFY_EVENT(&cursorEvent);
 
     QAccessibleTextInsertEvent e(lineEdit, 0, "foo");
-    QVERIFY(QTestAccessibility::containsEvent(&e));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&e));
 
     lineEdit->setText("bar");
     QAccessibleTextUpdateEvent update(lineEdit, 0, "foo", "bar");
-    QVERIFY(QTestAccessibility::containsEvent(&update));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&update));
 
     // FIXME check what extra events are around and get rid of them
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
-    QTestEventList keys;
+    BOBUIestEventList keys;
     keys.addKeyClick('D');
     keys.simulate(lineEdit);
-    QTRY_COMPARE(lineEdit->text(), "barD");
+    BOBUIRY_COMPARE(lineEdit->text(), "barD");
 
     QAccessibleTextInsertEvent insertD(lineEdit, 3, "D");
     QVERIFY_EVENT(&insertD);
     keys.clear();
     keys.addKeyClick('E');
     keys.simulate(lineEdit);
-    QTRY_COMPARE(lineEdit->text(), "barDE");
+    BOBUIRY_COMPARE(lineEdit->text(), "barDE");
 
     QAccessibleTextInsertEvent insertE(lineEdit, 4, "E");
-    QVERIFY(QTestAccessibility::containsEvent(&insertE));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&insertE));
     keys.clear();
-    keys.addKeyClick(Qt::Key_Left);
-    keys.addKeyClick(Qt::Key_Left);
+    keys.addKeyClick(BobUI::Key_Left);
+    keys.addKeyClick(BobUI::Key_Left);
     keys.simulate(lineEdit);
-    QTRY_COMPARE(lineEdit->cursorPosition(), 3);
+    BOBUIRY_COMPARE(lineEdit->cursorPosition(), 3);
 
     cursorEvent.setCursorPosition(4);
-    QVERIFY(QTestAccessibility::containsEvent(&cursorEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&cursorEvent));
     cursorEvent.setCursorPosition(3);
-    QVERIFY(QTestAccessibility::containsEvent(&cursorEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&cursorEvent));
 
     keys.clear();
     keys.addKeyClick('C');
     keys.simulate(lineEdit);
-    QTRY_COMPARE(lineEdit->text(), "barCDE");
+    BOBUIRY_COMPARE(lineEdit->text(), "barCDE");
 
     QAccessibleTextInsertEvent insertC(lineEdit, 3, "C");
-    QVERIFY(QTestAccessibility::containsEvent(&insertC));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&insertC));
 
     keys.clear();
     keys.addKeyClick('O');
     keys.simulate(lineEdit);
-    QTRY_COMPARE(lineEdit->text(), "barCODE");
+    BOBUIRY_COMPARE(lineEdit->text(), "barCODE");
 
     QAccessibleTextInsertEvent insertO(lineEdit, 4, "O");
-    QVERIFY(QTestAccessibility::containsEvent(&insertO));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&insertO));
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::lineEditTextFunctions_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<int>("textFunction"); // before = 0, at = 1, after = 2
-    QTest::addColumn<int>("boundaryType");
-    QTest::addColumn<int>("cursorPosition");
-    QTest::addColumn<int>("offset");
-    QTest::addColumn<int>("expectedStart");
-    QTest::addColumn<int>("expectedEnd");
-    QTest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<int>("textFunction"); // before = 0, at = 1, after = 2
+    BOBUIest::addColumn<int>("boundaryType");
+    BOBUIest::addColumn<int>("cursorPosition");
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::addColumn<int>("expectedStart");
+    BOBUIest::addColumn<int>("expectedEnd");
+    BOBUIest::addColumn<QString>("expectedText");
 
     // -2 gives cursor position, -1 is length
     // invalid positions will return empty strings and either -1 and -1 or both the cursor position, both is fine
-    QTest::newRow("char before -2") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << -2 << 2 << 3 << "l";
-    QTest::newRow("char at -2") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << -2 << 3 << 4 << "l";
-    QTest::newRow("char after -2") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << -2 << 4 << 5 << "o";
-    QTest::newRow("char before -1") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << -1 << 4 << 5 << "o";
-    QTest::newRow("char at -1") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << -1 << -1 << -1 << "";
-    QTest::newRow("char after -1") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << -1 << -1 << -1 << "";
-    QTest::newRow("char before 0") << "hello" << 0 << (int) QAccessible::CharBoundary << 0 << 0 << -1 << -1 << "";
-    QTest::newRow("char at 0") << "hello" << 1 << (int) QAccessible::CharBoundary << 0 << 0 << 0 << 1 << "h";
-    QTest::newRow("char after 0") << "hello" << 2 << (int) QAccessible::CharBoundary << 0 << 0 << 1 << 2 << "e";
-    QTest::newRow("char before 1") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 1 << 0 << 1 << "h";
-    QTest::newRow("char at 1") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 1 << 1 << 2 << "e";
-    QTest::newRow("char after 1") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 1 << 2 << 3 << "l";
-    QTest::newRow("char before 4") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 4 << 3 << 4 << "l";
-    QTest::newRow("char at 4") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 4 << 4 << 5 << "o";
-    QTest::newRow("char after 4") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 4 << -1 << -1 << "";
-    QTest::newRow("char before 5") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 5 << 4 << 5 << "o";
-    QTest::newRow("char at 5") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 5 << -1 << -1 << "";
-    QTest::newRow("char after 5") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 5 << -1 << -1 << "";
-    QTest::newRow("char before 6") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 6 << -1 << -1 << "";
-    QTest::newRow("char at 6") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 6 << -1 << -1 << "";
-    QTest::newRow("char after 6") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 6 << -1 << -1 << "";
+    BOBUIest::newRow("char before -2") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << -2 << 2 << 3 << "l";
+    BOBUIest::newRow("char at -2") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << -2 << 3 << 4 << "l";
+    BOBUIest::newRow("char after -2") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << -2 << 4 << 5 << "o";
+    BOBUIest::newRow("char before -1") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << -1 << 4 << 5 << "o";
+    BOBUIest::newRow("char at -1") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << -1 << -1 << -1 << "";
+    BOBUIest::newRow("char after -1") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << -1 << -1 << -1 << "";
+    BOBUIest::newRow("char before 0") << "hello" << 0 << (int) QAccessible::CharBoundary << 0 << 0 << -1 << -1 << "";
+    BOBUIest::newRow("char at 0") << "hello" << 1 << (int) QAccessible::CharBoundary << 0 << 0 << 0 << 1 << "h";
+    BOBUIest::newRow("char after 0") << "hello" << 2 << (int) QAccessible::CharBoundary << 0 << 0 << 1 << 2 << "e";
+    BOBUIest::newRow("char before 1") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 1 << 0 << 1 << "h";
+    BOBUIest::newRow("char at 1") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 1 << 1 << 2 << "e";
+    BOBUIest::newRow("char after 1") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 1 << 2 << 3 << "l";
+    BOBUIest::newRow("char before 4") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 4 << 3 << 4 << "l";
+    BOBUIest::newRow("char at 4") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 4 << 4 << 5 << "o";
+    BOBUIest::newRow("char after 4") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 4 << -1 << -1 << "";
+    BOBUIest::newRow("char before 5") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 5 << 4 << 5 << "o";
+    BOBUIest::newRow("char at 5") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 5 << -1 << -1 << "";
+    BOBUIest::newRow("char after 5") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 5 << -1 << -1 << "";
+    BOBUIest::newRow("char before 6") << "hello" << 0 << (int) QAccessible::CharBoundary << 3 << 6 << -1 << -1 << "";
+    BOBUIest::newRow("char at 6") << "hello" << 1 << (int) QAccessible::CharBoundary << 3 << 6 << -1 << -1 << "";
+    BOBUIest::newRow("char after 6") << "hello" << 2 << (int) QAccessible::CharBoundary << 3 << 6 << -1 << -1 << "";
 
     for (int i = -2; i < 6; ++i) {
         const QByteArray iB = QByteArray::number(i);
-        QTest::newRow(("line before " + iB).constData())
+        BOBUIest::newRow(("line before " + iB).constData())
                       << "hello" << 0 << (int) QAccessible::LineBoundary << 3 << i << -1 << -1 << "";
-        QTest::newRow(("line at " + iB).constData())
+        BOBUIest::newRow(("line at " + iB).constData())
                       << "hello" << 1 << (int) QAccessible::LineBoundary << 3 << i << 0 << 5 << "hello";
-        QTest::newRow(("line after " + iB).constData())
+        BOBUIest::newRow(("line after " + iB).constData())
                       << "hello" << 2 << (int) QAccessible::LineBoundary << 3 << i << -1 << -1 << "";
     }
 }
@@ -2560,53 +2560,53 @@ void tst_QAccessibility::lineEditTextFunctions()
     QCOMPARE(start, expectedStart);
     QCOMPARE(end, expectedEnd);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::textInterfaceTest_data()
 {
     lineEditTextFunctions_data();
     QString hello = QStringLiteral("hello\nworld\nend");
-    QTest::newRow("multi line at 0") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 0 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line at 1") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 1 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line at 2") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 2 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line at 5") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 5 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line at 6") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 6 << 6 << 12 << "world\n";
-    QTest::newRow("multi line at 7") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 7 << 6 << 12 << "world\n";
-    QTest::newRow("multi line at 8") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 8 << 6 << 12 << "world\n";
-    QTest::newRow("multi line at 10") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 10 << 6 << 12 << "world\n";
-    QTest::newRow("multi line at 11") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 11 << 6 << 12 << "world\n";
-    QTest::newRow("multi line at 12") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 12 << 12 << 15 << "end";
+    BOBUIest::newRow("multi line at 0") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 0 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line at 1") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 1 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line at 2") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 2 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line at 5") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 5 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line at 6") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 6 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line at 7") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 7 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line at 8") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 8 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line at 10") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 10 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line at 11") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 11 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line at 12") << hello << 1 << (int) QAccessible::LineBoundary << 0 << 12 << 12 << 15 << "end";
 
-    QTest::newRow("multi line before 0") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 0 << -1 << -1 << "";
-    QTest::newRow("multi line before 1") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 1 << -1 << -1 << "";
-    QTest::newRow("multi line before 2") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 2 << -1 << -1 << "";
-    QTest::newRow("multi line before 5") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 5 << -1 << -1 << "";
-    QTest::newRow("multi line before 6") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 6 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line before 7") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 7 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line before 8") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 8 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line before 10") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 10 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line before 11") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 11 << 0 << 6 << "hello\n";
-    QTest::newRow("multi line before 12") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 12 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line before 0") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 0 << -1 << -1 << "";
+    BOBUIest::newRow("multi line before 1") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 1 << -1 << -1 << "";
+    BOBUIest::newRow("multi line before 2") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 2 << -1 << -1 << "";
+    BOBUIest::newRow("multi line before 5") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 5 << -1 << -1 << "";
+    BOBUIest::newRow("multi line before 6") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 6 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line before 7") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 7 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line before 8") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 8 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line before 10") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 10 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line before 11") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 11 << 0 << 6 << "hello\n";
+    BOBUIest::newRow("multi line before 12") << hello << 0 << (int) QAccessible::LineBoundary << 0 << 12 << 6 << 12 << "world\n";
 
-    QTest::newRow("multi line after 0") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 0 << 6 << 12 << "world\n";
-    QTest::newRow("multi line after 1") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 1 << 6 << 12 << "world\n";
-    QTest::newRow("multi line after 2") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 2 << 6 << 12 << "world\n";
-    QTest::newRow("multi line after 5") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 5 << 6 << 12 << "world\n";
-    QTest::newRow("multi line after 6") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 6 << 12 << 15 << "end";
-    QTest::newRow("multi line after 7") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 7 << 12 << 15 << "end";
-    QTest::newRow("multi line after 8") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 8 << 12 << 15 << "end";
-    QTest::newRow("multi line after 10") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 10 << 12 << 15 << "end";
-    QTest::newRow("multi line after 11") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 11 << 12 << 15 << "end";
-    QTest::newRow("multi line after 12") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 12 << -1 << -1 << "";
+    BOBUIest::newRow("multi line after 0") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 0 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line after 1") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 1 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line after 2") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 2 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line after 5") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 5 << 6 << 12 << "world\n";
+    BOBUIest::newRow("multi line after 6") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 6 << 12 << 15 << "end";
+    BOBUIest::newRow("multi line after 7") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 7 << 12 << 15 << "end";
+    BOBUIest::newRow("multi line after 8") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 8 << 12 << 15 << "end";
+    BOBUIest::newRow("multi line after 10") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 10 << 12 << 15 << "end";
+    BOBUIest::newRow("multi line after 11") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 11 << 12 << 15 << "end";
+    BOBUIest::newRow("multi line after 12") << hello << 2 << (int) QAccessible::LineBoundary << 0 << 12 << -1 << -1 << "";
 
-    QTest::newRow("before 4 \\nFoo\\n") << QStringLiteral("\nFoo\n") << 0 << (int) QAccessible::LineBoundary << 0 << 4 << 0 << 1 << "\n";
-    QTest::newRow("at 4 \\nFoo\\n") << QStringLiteral("\nFoo\n") << 1 << (int) QAccessible::LineBoundary << 0 << 4 << 1 << 5 << "Foo\n";
-    QTest::newRow("after 4 \\nFoo\\n") << QStringLiteral("\nFoo\n") << 2 << (int) QAccessible::LineBoundary << 0 << 4 << 5 << 5 << "";
-    QTest::newRow("before 4 Foo\\nBar\\n") << QStringLiteral("Foo\nBar\n") << 0 << (int) QAccessible::LineBoundary << 0 << 7 << 0 << 4 << "Foo\n";
-    QTest::newRow("at 4 Foo\\nBar\\n") << QStringLiteral("Foo\nBar\n") << 1 << (int) QAccessible::LineBoundary << 0 << 7 << 4 << 8 << "Bar\n";
-    QTest::newRow("after 4 Foo\\nBar\\n") << QStringLiteral("Foo\nBar\n") << 2 << (int) QAccessible::LineBoundary << 0 << 7 << 8 << 8 << "";
-    QTest::newRow("at 0 Foo\\n") << QStringLiteral("Foo\n") << 1 << (int) QAccessible::LineBoundary << 0 << 0 << 0 << 4 << "Foo\n";
+    BOBUIest::newRow("before 4 \\nFoo\\n") << QStringLiteral("\nFoo\n") << 0 << (int) QAccessible::LineBoundary << 0 << 4 << 0 << 1 << "\n";
+    BOBUIest::newRow("at 4 \\nFoo\\n") << QStringLiteral("\nFoo\n") << 1 << (int) QAccessible::LineBoundary << 0 << 4 << 1 << 5 << "Foo\n";
+    BOBUIest::newRow("after 4 \\nFoo\\n") << QStringLiteral("\nFoo\n") << 2 << (int) QAccessible::LineBoundary << 0 << 4 << 5 << 5 << "";
+    BOBUIest::newRow("before 4 Foo\\nBar\\n") << QStringLiteral("Foo\nBar\n") << 0 << (int) QAccessible::LineBoundary << 0 << 7 << 0 << 4 << "Foo\n";
+    BOBUIest::newRow("at 4 Foo\\nBar\\n") << QStringLiteral("Foo\nBar\n") << 1 << (int) QAccessible::LineBoundary << 0 << 7 << 4 << 8 << "Bar\n";
+    BOBUIest::newRow("after 4 Foo\\nBar\\n") << QStringLiteral("Foo\nBar\n") << 2 << (int) QAccessible::LineBoundary << 0 << 7 << 8 << 8 << "";
+    BOBUIest::newRow("at 0 Foo\\n") << QStringLiteral("Foo\n") << 1 << (int) QAccessible::LineBoundary << 0 << 0 << 0 << 4 << "Foo\n";
 }
 
 void tst_QAccessibility::textInterfaceTest()
@@ -2651,7 +2651,7 @@ void tst_QAccessibility::textInterfaceTest()
     QCOMPARE(end, expectedEnd);
 
     QAccessible::removeFactory(CustomTextWidgetIface::ifaceFactory);
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::groupBoxTest()
@@ -2684,7 +2684,7 @@ void tst_QAccessibility::groupBoxTest()
     QCOMPARE(relation.first->object(), groupBox);
     QCOMPARE(relation.second, QAccessible::Label);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     {
     auto gbHolder = std::make_unique<QGroupBox>();
     auto groupBox = gbHolder.get();
@@ -2712,7 +2712,7 @@ void tst_QAccessibility::groupBoxTest()
     QAccessibleStateChangeEvent ev2(groupBox, st);
     QVERIFY_EVENT(&ev2);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 bool accessibleInterfaceLeftOf(const QAccessibleInterface *a1, const QAccessibleInterface *a2)
@@ -2730,7 +2730,7 @@ void tst_QAccessibility::dialogButtonBoxTest()
     {
     QDialogButtonBox box(QDialogButtonBox::Reset |
                          QDialogButtonBox::Help |
-                         QDialogButtonBox::Ok, Qt::Horizontal);
+                         QDialogButtonBox::Ok, BobUI::Horizontal);
 
 
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&box);
@@ -2738,7 +2738,7 @@ void tst_QAccessibility::dialogButtonBoxTest()
     box.show();
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif
 
     QApplication::processEvents();
@@ -2778,24 +2778,24 @@ void tst_QAccessibility::dialogButtonBoxTest()
     }
     QCOMPARE(actualOrder, expectedOrder);
     QApplication::processEvents();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     }
 
     {
     QDialogButtonBox box(QDialogButtonBox::Reset |
                          QDialogButtonBox::Help |
-                         QDialogButtonBox::Ok, Qt::Horizontal);
+                         QDialogButtonBox::Ok, BobUI::Horizontal);
     setFrameless(&box);
 
 
     // Test up and down navigation
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&box);
     QVERIFY(iface);
-    box.setOrientation(Qt::Vertical);
+    box.setOrientation(BobUI::Vertical);
     box.show();
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif
 
     QApplication::processEvents();
@@ -2819,7 +2819,7 @@ void tst_QAccessibility::dialogButtonBoxTest()
     QApplication::processEvents();
 
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::dialTest()
@@ -2837,7 +2837,7 @@ void tst_QAccessibility::dialTest()
     QVERIFY(interface);
     QCOMPARE(interface->childCount(), 0);
 
-    QVERIFY(QTest::qWaitForWindowExposed(&dial));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dial));
 
     QCOMPARE(interface->text(QAccessible::Value), QString::number(dial.value()));
     QCOMPARE(interface->rect(), dial.geometry());
@@ -2856,7 +2856,7 @@ void tst_QAccessibility::dialTest()
     valueIface->setCurrentValue(77);
     QCOMPARE(77, dial.value());
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::rubberBandTest()
@@ -2865,7 +2865,7 @@ void tst_QAccessibility::rubberBandTest()
     QAccessibleInterface *interface = QAccessible::queryAccessibleInterface(&rubberBand);
     QVERIFY(interface);
     QCOMPARE(interface->role(), QAccessible::Border);
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::abstractScrollAreaTest()
@@ -2882,7 +2882,7 @@ void tst_QAccessibility::abstractScrollAreaTest()
     abstractScrollArea.show();
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif
     const QRect globalGeometry = QRect(abstractScrollArea.mapToGlobal(QPoint(0, 0)),
                                        abstractScrollArea.size());
@@ -2894,7 +2894,7 @@ void tst_QAccessibility::abstractScrollAreaTest()
     QVERIFY(verifyChild(viewport, interface, 0, globalGeometry));
 
     // Horizontal scrollBar.
-    abstractScrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    abstractScrollArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     QWidget *horizontalScrollBar = abstractScrollArea.horizontalScrollBar();
 
     // On OS X >= 10.9 the scrollbar will be hidden unless explicitly enabled in the preferences
@@ -2907,23 +2907,23 @@ void tst_QAccessibility::abstractScrollAreaTest()
 
     // Horizontal scrollBar widgets.
     QLabel *secondLeftLabel = new QLabel(QLatin1String("L2"));
-    abstractScrollArea.addScrollBarWidget(secondLeftLabel, Qt::AlignLeft);
+    abstractScrollArea.addScrollBarWidget(secondLeftLabel, BobUI::AlignLeft);
     QCOMPARE(interface->childCount(), childCount);
 
     QLabel *firstLeftLabel = new QLabel(QLatin1String("L1"));
-    abstractScrollArea.addScrollBarWidget(firstLeftLabel, Qt::AlignLeft);
+    abstractScrollArea.addScrollBarWidget(firstLeftLabel, BobUI::AlignLeft);
     QCOMPARE(interface->childCount(), childCount);
 
     QLabel *secondRightLabel = new QLabel(QLatin1String("R2"));
-    abstractScrollArea.addScrollBarWidget(secondRightLabel, Qt::AlignRight);
+    abstractScrollArea.addScrollBarWidget(secondRightLabel, BobUI::AlignRight);
     QCOMPARE(interface->childCount(), childCount);
 
     QLabel *firstRightLabel = new QLabel(QLatin1String("R1"));
-    abstractScrollArea.addScrollBarWidget(firstRightLabel, Qt::AlignRight);
+    abstractScrollArea.addScrollBarWidget(firstRightLabel, BobUI::AlignRight);
     QCOMPARE(interface->childCount(), childCount);
 
     // Vertical scrollBar.
-    abstractScrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    abstractScrollArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
     if (scrollBarsVisible)
         ++childCount;
     QCOMPARE(interface->childCount(), childCount);
@@ -2934,19 +2934,19 @@ void tst_QAccessibility::abstractScrollAreaTest()
 
     // Vertical scrollBar widgets.
     QLabel *secondTopLabel = new QLabel(QLatin1String("T2"));
-    abstractScrollArea.addScrollBarWidget(secondTopLabel, Qt::AlignTop);
+    abstractScrollArea.addScrollBarWidget(secondTopLabel, BobUI::AlignTop);
     QCOMPARE(interface->childCount(), childCount);
 
     QLabel *firstTopLabel = new QLabel(QLatin1String("T1"));
-    abstractScrollArea.addScrollBarWidget(firstTopLabel, Qt::AlignTop);
+    abstractScrollArea.addScrollBarWidget(firstTopLabel, BobUI::AlignTop);
     QCOMPARE(interface->childCount(), childCount);
 
     QLabel *secondBottomLabel = new QLabel(QLatin1String("B2"));
-    abstractScrollArea.addScrollBarWidget(secondBottomLabel, Qt::AlignBottom);
+    abstractScrollArea.addScrollBarWidget(secondBottomLabel, BobUI::AlignBottom);
     QCOMPARE(interface->childCount(), childCount);
 
     QLabel *firstBottomLabel = new QLabel(QLatin1String("B1"));
-    abstractScrollArea.addScrollBarWidget(firstBottomLabel, Qt::AlignBottom);
+    abstractScrollArea.addScrollBarWidget(firstBottomLabel, BobUI::AlignBottom);
     QCOMPARE(interface->childCount(), childCount);
 
     // CornerWidget.
@@ -2961,7 +2961,7 @@ void tst_QAccessibility::abstractScrollAreaTest()
 
     }
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::scrollAreaTest()
@@ -2971,13 +2971,13 @@ void tst_QAccessibility::scrollAreaTest()
     scrollArea.show();
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif
     QAccessibleInterface *interface = QAccessible::queryAccessibleInterface(&scrollArea);
     QVERIFY(interface);
     QCOMPARE(interface->childCount(), 1); // The viewport.
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::listTest()
@@ -2991,7 +2991,7 @@ void tst_QAccessibility::listTest()
     model->item(0, 1)->setCheckable(true);
     model->item(1, 1)->setCheckable(true);
     model->item(2, 1)->setCheckable(true);
-    model->item(2, 1)->setCheckState(Qt::Checked);
+    model->item(2, 1)->setCheckState(BobUI::Checked);
     auto lvHolder = std::make_unique<QListView>();
     auto listView = lvHolder.get();
     listView->setModel(model);
@@ -3002,7 +3002,7 @@ void tst_QAccessibility::listTest()
     listView->setToolTip(QLatin1String("This list view will be used to test accessibility"));
     listView->setWhatsThis(QLatin1String("What's this list"));
     listView->show();
-    QVERIFY(QTest::qWaitForWindowExposed(listView));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(listView));
 
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(listView);
     QCOMPARE(verifyHierarchy(iface), 0);
@@ -3040,53 +3040,53 @@ void tst_QAccessibility::listTest()
     QVERIFY(parentIface);
     QVERIFY(parentIface->role() == QAccessible::Application);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     // Check for events
-    QTest::mouseClick(listView->viewport(), Qt::LeftButton, { }, listView->visualRect(model->index(1, listView->modelColumn())).center());
+    BOBUIest::mouseClick(listView->viewport(), BobUI::LeftButton, { }, listView->visualRect(model->index(1, listView->modelColumn())).center());
     QAccessibleEvent selectionEvent(listView, QAccessible::SelectionAdd);
     selectionEvent.setChild(1);
 
-    QVERIFY(QTestAccessibility::containsEvent(&selectionEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&selectionEvent));
     // skip focus event tests on platforms where window focus cannot be ensured
     const bool checkFocus = QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation);
     if (checkFocus) {
-        QVERIFY(QTest::qWaitForWindowActive(listView));
+        QVERIFY(BOBUIest::qWaitForWindowActive(listView));
 
         QAccessibleEvent focusEvent(listView, QAccessible::Focus);
         focusEvent.setChild(1);
-        QVERIFY(QTestAccessibility::containsEvent(&focusEvent));
+        QVERIFY(BOBUIestAccessibility::containsEvent(&focusEvent));
 
         // check the item
         QVERIFY(!iface->child(1)->state().checked);
-        QTest::keyClick(listView, Qt::Key_Space);
+        BOBUIest::keyClick(listView, BobUI::Key_Space);
         QVERIFY(iface->child(1)->state().checked);
         QAccessible::State s;
         s.checked = true;
         QAccessibleStateChangeEvent checkedStateChangedEvent(listView, s);
         checkedStateChangedEvent.setChild(1);
-        QVERIFY(QTestAccessibility::containsEvent(&checkedStateChangedEvent));
+        QVERIFY(BOBUIestAccessibility::containsEvent(&checkedStateChangedEvent));
     }
 
-    QTest::mouseClick(listView->viewport(), Qt::LeftButton, { }, listView->visualRect(model->index(2, listView->modelColumn())).center());
+    BOBUIest::mouseClick(listView->viewport(), BobUI::LeftButton, { }, listView->visualRect(model->index(2, listView->modelColumn())).center());
 
     QAccessibleEvent selectionEvent2(listView, QAccessible::SelectionAdd);
     selectionEvent2.setChild(2);
-    QVERIFY(QTestAccessibility::containsEvent(&selectionEvent2));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&selectionEvent2));
     if (checkFocus) {
         QAccessibleEvent focusEvent2(listView, QAccessible::Focus);
         focusEvent2.setChild(2);
-        QVERIFY(QTestAccessibility::containsEvent(&focusEvent2));
+        QVERIFY(BOBUIestAccessibility::containsEvent(&focusEvent2));
 
         // uncheck the item
         QVERIFY(iface->child(2)->state().checked);
-        QTest::keyClick(listView, Qt::Key_Space);
+        BOBUIest::keyClick(listView, BobUI::Key_Space);
         QVERIFY(!iface->child(2)->state().checked);
         QAccessible::State s;
         s.checked = true;
         QAccessibleStateChangeEvent checkedStateChangedEvent(listView, s);
         checkedStateChangedEvent.setChild(2);
-        QVERIFY(QTestAccessibility::containsEvent(&checkedStateChangedEvent));
+        QVERIFY(BOBUIestAccessibility::containsEvent(&checkedStateChangedEvent));
     }
 
     QAccessibleTableInterface *table = iface->tableInterface();
@@ -3178,12 +3178,12 @@ void tst_QAccessibility::listTest()
     // verify that it doesn't return an invalid item from the cache
     QVERIFY(table2->cellAt(2,0) == 0);
     }
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::treeTest()
 {
-    auto treeView = std::make_unique<QTreeWidget>();
+    auto treeView = std::make_unique<BOBUIreeWidget>();
 
     // Empty model (do not crash, etc)
     treeView->setColumnCount(0);
@@ -3191,41 +3191,41 @@ void tst_QAccessibility::treeTest()
     QCOMPARE(iface->child(0), static_cast<QAccessibleInterface*>(0));
 
     treeView->setColumnCount(2);
-    QTreeWidgetItem *header = new QTreeWidgetItem;
+    BOBUIreeWidgetItem *header = new BOBUIreeWidgetItem;
     header->setText(0, "Artist");
     header->setText(1, "Work");
     treeView->setHeaderItem(header);
 
-    QTreeWidgetItem *root1 = new QTreeWidgetItem;
+    BOBUIreeWidgetItem *root1 = new BOBUIreeWidgetItem;
     root1->setText(0, "Spain");
     treeView->addTopLevelItem(root1);
 
-    QTreeWidgetItem *item1 = new QTreeWidgetItem;
+    BOBUIreeWidgetItem *item1 = new BOBUIreeWidgetItem;
     item1->setText(0, "Picasso");
     item1->setText(1, "Guernica");
-    item1->setCheckState(0, Qt::Unchecked);
+    item1->setCheckState(0, BobUI::Unchecked);
     root1->addChild(item1);
 
-    QTreeWidgetItem *item2 = new QTreeWidgetItem;
+    BOBUIreeWidgetItem *item2 = new BOBUIreeWidgetItem;
     item2->setText(0, "Tapies");
     item2->setText(1, "Ambrosia");
     root1->addChild(item2);
 
-    QTreeWidgetItem *root2 = new QTreeWidgetItem;
+    BOBUIreeWidgetItem *root2 = new BOBUIreeWidgetItem;
     root2->setText(0, "Austria");
     treeView->addTopLevelItem(root2);
 
-    QTreeWidgetItem *item3 = new QTreeWidgetItem;
+    BOBUIreeWidgetItem *item3 = new BOBUIreeWidgetItem;
     item3->setText(0, "Klimt");
     item3->setText(1, "The Kiss");
-    item3->setCheckState(0, Qt::Checked);
+    item3->setCheckState(0, BobUI::Checked);
     root2->addChild(item3);
 
     treeView->resize(400,400);
     treeView->show();
 
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QCOMPARE(verifyHierarchy(iface), 0);
 
@@ -3270,7 +3270,7 @@ void tst_QAccessibility::treeTest()
         headerHidden = !headerHidden;
     } while (!headerHidden);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     // table 2
     QAccessibleTableInterface *table2 = iface->tableInterface();
@@ -3295,7 +3295,7 @@ void tst_QAccessibility::treeTest()
 
     // Need this for indexOfchild to work.
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QCOMPARE(table2->columnCount(), 2);
     QCOMPARE(table2->rowCount(), 5);
@@ -3325,38 +3325,38 @@ void tst_QAccessibility::treeTest()
     // skip accessible state change event tests on platforms where window focus cannot be ensured
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(
                 QPlatformIntegration::WindowActivation)) {
-        QVERIFY(QTest::qWaitForWindowActive(treeView.get()));
+        QVERIFY(BOBUIest::qWaitForWindowActive(treeView.get()));
 
         // check item1 (Picasso)
         QVERIFY(cell1->state().checkable);
         QVERIFY(!cell1->state().checked);
         treeView->setCurrentItem(item1);
-        QTest::keyClick(treeView.get(), Qt::Key_Space);
+        BOBUIest::keyClick(treeView.get(), BobUI::Key_Space);
         QVERIFY(cell1->state().checked);
         {
             QAccessible::State s;
             s.checked = true;
             QAccessibleStateChangeEvent checkedStateChangedEvent(treeView.get(), s);
             checkedStateChangedEvent.setChild(iface->indexOfChild(cell1));
-            QVERIFY(QTestAccessibility::containsEvent(&checkedStateChangedEvent));
+            QVERIFY(BOBUIestAccessibility::containsEvent(&checkedStateChangedEvent));
         }
 
         // uncheck item3 (Klimt)
         QVERIFY(cell2->state().checkable);
         QVERIFY(cell2->state().checked);
         treeView->setCurrentItem(item3);
-        QTest::keyClick(treeView.get(), Qt::Key_Space);
+        BOBUIest::keyClick(treeView.get(), BobUI::Key_Space);
         QVERIFY(!cell2->state().checked);
         {
             QAccessible::State s;
             s.checked = true;
             QAccessibleStateChangeEvent checkedStateChangedEvent(treeView.get(), s);
             checkedStateChangedEvent.setChild(iface->indexOfChild(cell2));
-            QVERIFY(QTestAccessibility::containsEvent(&checkedStateChangedEvent));
+            QVERIFY(BOBUIestAccessibility::containsEvent(&checkedStateChangedEvent));
         }
     }
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 // The table used below is this:
@@ -3366,7 +3366,7 @@ void tst_QAccessibility::treeTest()
 // v3     (12) | 0.2 (13) | 1.2 (14) | 2.2 (15)
 void tst_QAccessibility::tableTest()
 {
-    auto tvHolder = std::make_unique<QTableWidget>(3, 3);
+    auto tvHolder = std::make_unique<BOBUIableWidget>(3, 3);
     auto tableView = tvHolder.get();
     tableView->setColumnCount(3);
     QStringList hHeader;
@@ -3378,15 +3378,15 @@ void tst_QAccessibility::tableTest()
     tableView->setVerticalHeaderLabels(vHeader);
 
     for (int i = 0; i<9; ++i) {
-        QTableWidgetItem *item = new QTableWidgetItem;
+        BOBUIableWidgetItem *item = new BOBUIableWidgetItem;
         item->setText(QString::number(i/3) + QString(".") + QString::number(i%3));
-        item->setCheckState(Qt::Unchecked);
+        item->setCheckState(BobUI::Unchecked);
         tableView->setItem(i/3, i%3, item);
     }
 
     tableView->resize(600,600);
     tableView->show();
-    QVERIFY(QTest::qWaitForWindowExposed(tableView));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(tableView));
 
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(tableView);
     QCOMPARE(verifyHierarchy(iface), 0);
@@ -3433,7 +3433,7 @@ void tst_QAccessibility::tableTest()
     QCOMPARE(child11->text(QAccessible::Name), QString("1.2"));
 
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     // table 2
     QAccessibleTableInterface *table2 = iface->tableInterface();
@@ -3633,15 +3633,15 @@ void tst_QAccessibility::tableTest()
 
 
     {
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
         QModelIndex index00 = tableView->model()->index(1, 1, tableView->rootIndex());
         tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
         tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         tableView->selectionModel()->select(index00, QItemSelectionModel::ClearAndSelect);
         QAccessibleEvent event(tableView, QAccessible::SelectionAdd);
         event.setChild(12);
-        QCOMPARE(QTestAccessibility::containsEvent(&event), true);
-        QTestAccessibility::clearEvents();
+        QCOMPARE(BOBUIestAccessibility::containsEvent(&event), true);
+        BOBUIestAccessibility::clearEvents();
         tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
         tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         tableView->selectionModel()->select(index00, QItemSelectionModel::ClearAndSelect);
@@ -3652,38 +3652,38 @@ void tst_QAccessibility::tableTest()
     // skip accessible state change event tests on platforms where window focus cannot be ensured
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(
                 QPlatformIntegration::WindowActivation)) {
-        QVERIFY(QTest::qWaitForWindowActive(tableView));
+        QVERIFY(BOBUIest::qWaitForWindowActive(tableView));
 
         // check cell (0, 0)
         tableView->setCurrentItem(tableView->item(0, 0));
         QVERIFY(cell00->state().checkable);
         QVERIFY(!cell00->state().checked);
-        QTest::keyClick(tableView, Qt::Key_Space);
+        BOBUIest::keyClick(tableView, BobUI::Key_Space);
         QVERIFY(cell00->state().checked);
         {
             QAccessible::State s;
             s.checked = true;
             QAccessibleStateChangeEvent checkedStateChangedEvent(tableView, s);
             checkedStateChangedEvent.setChild(iface->indexOfChild(cell00));
-            QVERIFY(QTestAccessibility::containsEvent(&checkedStateChangedEvent));
+            QVERIFY(BOBUIestAccessibility::containsEvent(&checkedStateChangedEvent));
         }
 
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
 
         // uncheck cell (0, 0) again
-        QTest::keyClick(tableView, Qt::Key_Space);
+        BOBUIest::keyClick(tableView, BobUI::Key_Space);
         QVERIFY(!cell00->state().checked);
         {
             QAccessible::State s;
             s.checked = true;
             QAccessibleStateChangeEvent checkedStateChangedEvent(tableView, s);
             checkedStateChangedEvent.setChild(iface->indexOfChild(cell00));
-            QVERIFY(QTestAccessibility::containsEvent(&checkedStateChangedEvent));
+            QVERIFY(BOBUIestAccessibility::containsEvent(&checkedStateChangedEvent));
         }
     }
 
     {
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
         auto cell0 = table2->cellAt(0, 2);
         auto cell1 = table2->cellAt(1, 2);
         auto cell2 = table2->cellAt(2, 2);
@@ -3700,7 +3700,7 @@ void tst_QAccessibility::tableTest()
     }
     tvHolder.reset();
     QVERIFY(!QAccessible::accessibleInterface(id00));
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::rootIndexView()
@@ -3725,7 +3725,7 @@ void tst_QAccessibility::rootIndexView()
 
     QListView view;
     view.setModel(&model);
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     QAccessibleInterface *accView = QAccessible::queryAccessibleInterface(&view);
     QVERIFY(accView);
@@ -3736,7 +3736,7 @@ void tst_QAccessibility::rootIndexView()
 
     view.setRootIndex(model.index(0, 0));
     QAccessibleTableModelChangeEvent resetEvent(&view, QAccessibleTableModelChangeEvent::ModelReset);
-    QVERIFY(QTestAccessibility::containsEvent(&resetEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&resetEvent));
 
     QCOMPARE(accTable->rowCount(), 5);
     QCOMPARE(accTable->columnCount(), 1);
@@ -3745,7 +3745,7 @@ void tst_QAccessibility::rootIndexView()
     QCOMPARE(accTable->rowCount(), 10);
     QCOMPARE(accTable->columnCount(), 1);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::uniqueIdTest()
@@ -3769,7 +3769,7 @@ void tst_QAccessibility::uniqueIdTest()
 
 void tst_QAccessibility::calendarWidgetTest()
 {
-#if QT_CONFIG(calendarwidget)
+#if BOBUI_CONFIG(calendarwidget)
     {
     QCalendarWidget calendarWidget;
 
@@ -3783,7 +3783,7 @@ void tst_QAccessibility::calendarWidgetTest()
     calendarWidget.show();
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif
 
     // 1 = navigationBar, 2 = view.
@@ -3795,7 +3795,7 @@ void tst_QAccessibility::calendarWidgetTest()
 
     QWidget *navigationBar = 0;
     for (QObject *child : calendarWidget.children()) {
-        if (child->objectName() == QLatin1String("qt_calendar_navigationbar")) {
+        if (child->objectName() == QLatin1String("bobui_calendar_navigationbar")) {
             navigationBar = static_cast<QWidget *>(child);
             break;
         }
@@ -3805,7 +3805,7 @@ void tst_QAccessibility::calendarWidgetTest()
 
     QAbstractItemView *calendarView = 0;
     for (QObject *child : calendarWidget.children()) {
-        if (child->objectName() == QLatin1String("qt_calendar_calendarview")) {
+        if (child->objectName() == QLatin1String("bobui_calendar_calendarview")) {
             calendarView = static_cast<QAbstractItemView *>(child);
             break;
         }
@@ -3844,13 +3844,13 @@ void tst_QAccessibility::calendarWidgetTest()
     navigationBarInterface = 0;
 
     }
-    QTestAccessibility::clearEvents();
-#endif // QT_CONFIG(calendarwidget)
+    BOBUIestAccessibility::clearEvents();
+#endif // BOBUI_CONFIG(calendarwidget)
 }
 
 void tst_QAccessibility::dockWidgetTest()
 {
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     // Set up a proper main window with two dock widgets
     auto mwHolder = std::make_unique<QMainWindow>();
     auto mw = mwHolder.get();
@@ -3862,20 +3862,20 @@ void tst_QAccessibility::dockWidgetTest()
 
     QDockWidget *dock1 = new QDockWidget(mw);
     dock1->setWindowTitle("Dock 1");
-    mw->addDockWidget(Qt::LeftDockWidgetArea, dock1);
+    mw->addDockWidget(BobUI::LeftDockWidgetArea, dock1);
     QPushButton *pb1 = new QPushButton(tr("Push me"), dock1);
     dock1->setWidget(pb1);
 
     QDockWidget *dock2 = new QDockWidget(mw);
     dock2->setWindowTitle("Dock 2");
-    mw->addDockWidget(Qt::BottomDockWidgetArea, dock2);
+    mw->addDockWidget(BobUI::BottomDockWidgetArea, dock2);
     QPushButton *pb2 = new QPushButton(tr("Push me"), dock2);
     dock2->setWidget(pb2);
     dock2->setFeatures(QDockWidget::DockWidgetClosable);
 
     mw->resize(600,400);
     mw->show();
-    QVERIFY(QTest::qWaitForWindowExposed(mw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(mw));
 
     QAccessibleInterface *accMainWindow = QAccessible::queryAccessibleInterface(mw);
     // 4 children: menu bar, dock1, dock2, and central widget
@@ -3965,7 +3965,7 @@ void tst_QAccessibility::dockWidgetTest()
     // custom title bar widget
     QDockWidget *dock3 = new QDockWidget(mw);
     dock3->setWindowTitle("Dock 3");
-    mw->addDockWidget(Qt::LeftDockWidgetArea, dock3);
+    mw->addDockWidget(BobUI::LeftDockWidgetArea, dock3);
     QPushButton *pb3 = new QPushButton(tr("Push me"), dock3);
     dock3->setWidget(pb3);
     QLabel *titleLabel = new QLabel("I am a title widget");
@@ -3984,14 +3984,14 @@ void tst_QAccessibility::dockWidgetTest()
 
     // check role is changed to QAccessible::Window when dock window is undocked
     // and a corresponding event is sent
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
     dock3->setFloating(true);
     QCOMPARE(accDock3->role(), QAccessible::Window);
     QAccessibleEvent roleChangedEvent(dock3, QAccessible::RoleChanged);
-    QVERIFY(QTestAccessibility::containsEvent(&roleChangedEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&roleChangedEvent));
 
-    QTestAccessibility::clearEvents();
-#endif // QT_CONFIG(dockwidget)
+    BOBUIestAccessibility::clearEvents();
+#endif // BOBUI_CONFIG(dockwidget)
 }
 
 void tst_QAccessibility::comboBoxTest()
@@ -4002,7 +4002,7 @@ void tst_QAccessibility::comboBoxTest()
     // Fully decorated windows have a minimum width of 160 on Windows.
     combo.setMinimumWidth(200);
     combo.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&combo));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&combo));
 
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&combo);
     QCOMPARE(verifyHierarchy(iface), 0);
@@ -4036,7 +4036,7 @@ void tst_QAccessibility::comboBoxTest()
     QVERIFY(iface->actionInterface());
     QCOMPARE(iface->actionInterface()->actionNames(), QStringList() << QAccessibleActionInterface::showMenuAction() << QAccessibleActionInterface::pressAction());
     iface->actionInterface()->doAction(QAccessibleActionInterface::showMenuAction());
-    QTRY_VERIFY(combo.view()->isVisible());
+    BOBUIRY_VERIFY(combo.view()->isVisible());
 
     }
 
@@ -4059,7 +4059,7 @@ void tst_QAccessibility::comboBoxTest()
     QCOMPARE(editIface->role(), QAccessible::EditableText);
     }
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::relationTest()
@@ -4078,11 +4078,11 @@ void tst_QAccessibility::relationTest()
     window->resize(320, 200);
     window->show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
 #endif
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QAccessibleInterface *acc_label = QAccessible::queryAccessibleInterface(label);
     QVERIFY(acc_label);
@@ -4122,10 +4122,10 @@ void tst_QAccessibility::relationTest()
     }
 
     windowHolder.reset();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QAccessibility::labelTest()
 {
@@ -4139,11 +4139,11 @@ void tst_QAccessibility::labelTest()
     window->resize(320, 200);
     window->show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
 #endif
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QAccessibleInterface *acc_label = QAccessible::queryAccessibleInterface(label);
     QVERIFY(acc_label);
@@ -4177,7 +4177,7 @@ void tst_QAccessibility::labelTest()
     }
 
     windowHolder.reset();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     QPixmap testPixmap(50, 50);
     testPixmap.fill();
@@ -4197,21 +4197,21 @@ void tst_QAccessibility::labelTest()
     const QPoint labelPos = imageLabel.mapToGlobal(QPoint(0,0));
     QCOMPARE(imageInterface->imagePosition(), labelPos);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 #if defined(Q_OS_MACOS)
-QT_BEGIN_NAMESPACE
-    extern void qt_set_sequence_auto_mnemonic(bool);
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+    extern void bobui_set_sequence_auto_mnemonic(bool);
+BOBUI_END_NAMESPACE
 #endif
 
 void tst_QAccessibility::accelerators()
 {
 #if defined(Q_OS_MACOS)
-    qt_set_sequence_auto_mnemonic(true);
+    bobui_set_sequence_auto_mnemonic(true);
     const auto resetAutoMnemonic = qScopeGuard([] {
-        qt_set_sequence_auto_mnemonic(false);
+        bobui_set_sequence_auto_mnemonic(false);
     });
 #endif
 
@@ -4227,8 +4227,8 @@ void tst_QAccessibility::accelerators()
     window->show();
 
     QAccessibleInterface *accLineEdit = QAccessible::queryAccessibleInterface(le);
-    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(Qt::ALT | Qt::Key_L).toString(QKeySequence::NativeText));
-    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(Qt::ALT | Qt::Key_L).toString(QKeySequence::NativeText));
+    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(BobUI::ALT | BobUI::Key_L).toString(QKeySequence::NativeText));
+    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(BobUI::ALT | BobUI::Key_L).toString(QKeySequence::NativeText));
     label->setText(tr("Q &"));
     QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QString());
     label->setText(tr("Q &&"));
@@ -4236,27 +4236,27 @@ void tst_QAccessibility::accelerators()
     label->setText(tr("Q && A"));
     QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QString());
     label->setText(tr("Q &&&A"));
-    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(Qt::ALT | Qt::Key_A).toString(QKeySequence::NativeText));
+    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(BobUI::ALT | BobUI::Key_A).toString(QKeySequence::NativeText));
     label->setText(tr("Q &&A"));
     QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QString());
 
-#if !defined(QT_NO_DEBUG)
-    QTest::ignoreMessage(QtWarningMsg, "QKeySequence::mnemonic: \"Q &A&B\" contains multiple occurrences of '&'");
+#if !defined(BOBUI_NO_DEBUG)
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QKeySequence::mnemonic: \"Q &A&B\" contains multiple occurrences of '&'");
 #endif
     label->setText(tr("Q &A&B"));
-    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(Qt::ALT | Qt::Key_A).toString(QKeySequence::NativeText));
+    QCOMPARE(accLineEdit->text(QAccessible::Accelerator), QKeySequence(BobUI::ALT | BobUI::Key_A).toString(QKeySequence::NativeText));
 
 #if defined(Q_OS_UNIX)
     QCoreApplication::processEvents();
 #endif
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     windowHolder.reset();
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-#ifdef QT_SUPPORTS_IACCESSIBLE2
+#ifdef BOBUI_SUPPORTS_IACCESSIBLE2
 static IUnknown *queryIA2(IAccessible *acc, const IID &iid)
 {
     IUnknown *resultInterface = 0;
@@ -4283,16 +4283,16 @@ void tst_QAccessibility::bridgeTest()
     // For now this is a simple test to see if the bridge is working at all.
     // Ideally it should be extended to test all aspects of the bridge.
 #if defined(Q_OS_WIN)
-    auto guard = qScopeGuard([]() { QTestAccessibility::clearEvents(); });
+    auto guard = qScopeGuard([]() { BOBUIestAccessibility::clearEvents(); });
 
     QWidget window;
     QVBoxLayout *lay = new QVBoxLayout(&window);
     QPushButton *button = new QPushButton(tr("Push me"), &window);
-    QTextEdit *te = new QTextEdit(&window);
+    BOBUIextEdit *te = new BOBUIextEdit(&window);
     te->setText(QLatin1String("hello world\nhow are you today?\n"));
 
-    // Add QTableWidget
-    QTableWidget *tableWidget = new QTableWidget(3, 3, &window);
+    // Add BOBUIableWidget
+    BOBUIableWidget *tableWidget = new BOBUIableWidget(3, 3, &window);
     tableWidget->setColumnCount(3);
     QStringList hHeader;
     hHeader << "h1" << "h2" << "h3";
@@ -4303,7 +4303,7 @@ void tst_QAccessibility::bridgeTest()
     tableWidget->setVerticalHeaderLabels(vHeader);
 
     for (int i = 0; i<9; ++i) {
-        QTableWidgetItem *item = new QTableWidgetItem;
+        BOBUIableWidgetItem *item = new BOBUIableWidgetItem;
         item->setText(QString::number(i/3) + QString(".") + QString::number(i%3));
         tableWidget->setItem(i/3, i%3, item);
     }
@@ -4319,7 +4319,7 @@ void tst_QAccessibility::bridgeTest()
     lay->addWidget(label);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
 
     // Validate button position through the accessible interface.
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(button);
@@ -4581,12 +4581,12 @@ class FocusChildTestAccessibleWidget : public QAccessibleWidgetV2
 public:
     static QAccessibleInterface *ifaceFactory(const QString &key, QObject *o)
     {
-        if (key == "QtTestAccessibleWidget")
-            return new FocusChildTestAccessibleWidget(static_cast<QtTestAccessibleWidget *>(o));
+        if (key == "BobUITestAccessibleWidget")
+            return new FocusChildTestAccessibleWidget(static_cast<BobUITestAccessibleWidget *>(o));
         return 0;
     }
 
-    FocusChildTestAccessibleWidget(QtTestAccessibleWidget *w)
+    FocusChildTestAccessibleWidget(BobUITestAccessibleWidget *w)
         : QAccessibleWidgetV2(w)
     {
         m_children.push_back(new FocusChildTestAccessibleInterface(0, false, this));
@@ -4632,9 +4632,9 @@ void tst_QAccessibility::focusChild()
 
     {
         QMainWindow mainWindow;
-        QtTestAccessibleWidget *widget1 = new QtTestAccessibleWidget(0, "Widget1");
+        BobUITestAccessibleWidget *widget1 = new BobUITestAccessibleWidget(0, "Widget1");
         QAccessibleInterface *iface1 = QAccessible::queryAccessibleInterface(widget1);
-        QtTestAccessibleWidget *widget2 = new QtTestAccessibleWidget(0, "Widget2");
+        BobUITestAccessibleWidget *widget2 = new BobUITestAccessibleWidget(0, "Widget2");
         QAccessibleInterface *iface2 = QAccessible::queryAccessibleInterface(widget2);
 
         QWidget *centralWidget = new QWidget;
@@ -4645,7 +4645,7 @@ void tst_QAccessibility::focusChild()
         centralLayout->addWidget(widget2);
 
         mainWindow.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 
         // widget1 has not been focused yet -> it has no active focus nor focus widget.
         QVERIFY(!iface1->focusChild());
@@ -4663,16 +4663,16 @@ void tst_QAccessibility::focusChild()
         QCOMPARE(iface2->focusChild(), iface2);
         QCOMPARE(QAccessible::queryAccessibleInterface(&mainWindow)->focusChild(), iface2);
 
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
     }
 
     {
         QMainWindow mainWindow;
         QAccessible::installFactory(&FocusChildTestAccessibleWidget::ifaceFactory);
-        QtTestAccessibleWidget *widget = new QtTestAccessibleWidget(0, "FocusChildTestWidget");
+        BobUITestAccessibleWidget *widget = new BobUITestAccessibleWidget(0, "FocusChildTestWidget");
         mainWindow.setCentralWidget(widget);
         mainWindow.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 
         QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&mainWindow);
         QVERIFY(!iface->focusChild());
@@ -4680,18 +4680,18 @@ void tst_QAccessibility::focusChild()
         QCOMPARE(iface->focusChild(), QAccessible::queryAccessibleInterface(widget)->child(1));
 
         QAccessible::removeFactory(FocusChildTestAccessibleWidget::ifaceFactory);
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
     }
 
     {
         QMainWindow mainWindow;
-        QTabBar *tabBar = new QTabBar();
+        BOBUIabBar *tabBar = new BOBUIabBar();
         tabBar->insertTab(0, "First tab");
         tabBar->insertTab(1, "Second tab");
         tabBar->insertTab(2, "Third tab");
         mainWindow.setCentralWidget(tabBar);
         mainWindow.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 
         tabBar->setFocus();
         QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&mainWindow);
@@ -4701,11 +4701,11 @@ void tst_QAccessibility::focusChild()
         QCOMPARE(iface->focusChild()->text(QAccessible::Name), QStringLiteral("Second tab"));
         QCOMPARE(iface->focusChild()->role(), QAccessible::PageTab);
 
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
     }
 
     {
-        auto tableView = std::make_unique<QTableWidget>(3, 3);
+        auto tableView = std::make_unique<BOBUIableWidget>(3, 3);
 
         QSignalSpy spy(tableView.get(), SIGNAL(currentCellChanged(int,int,int,int)));
 
@@ -4719,14 +4719,14 @@ void tst_QAccessibility::focusChild()
         tableView->setVerticalHeaderLabels(vHeader);
 
         for (int i = 0; i < 9; ++i) {
-            QTableWidgetItem *item = new QTableWidgetItem;
+            BOBUIableWidgetItem *item = new BOBUIableWidgetItem;
             item->setText(QString::number(i/3) + QString(".") + QString::number(i%3));
             tableView->setItem(i/3, i%3, item);
         }
 
         tableView->resize(600, 600);
         tableView->show();
-        QVERIFY(QTest::qWaitForWindowExposed(tableView.get()));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(tableView.get()));
 
         tableView->setFocus();
 
@@ -4735,7 +4735,7 @@ void tst_QAccessibility::focusChild()
 
         spy.clear();
         tableView->setCurrentCell(2, 1);
-        QTRY_COMPARE(spy.size(), 1);
+        BOBUIRY_COMPARE(spy.size(), 1);
 
         QAccessibleInterface *child = iface->focusChild();
         QVERIFY(child);
@@ -4743,7 +4743,7 @@ void tst_QAccessibility::focusChild()
 
         spy.clear();
         tableView->setCurrentCell(1, 2);
-        QTRY_COMPARE(spy.size(), 1);
+        BOBUIRY_COMPARE(spy.size(), 1);
 
         child = iface->focusChild();
         QVERIFY(child);
@@ -4751,42 +4751,42 @@ void tst_QAccessibility::focusChild()
     }
 
     {
-        auto treeView = std::make_unique<QTreeWidget>();
+        auto treeView = std::make_unique<BOBUIreeWidget>();
 
-        QSignalSpy spy(treeView.get(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+        QSignalSpy spy(treeView.get(), SIGNAL(currentItemChanged(BOBUIreeWidgetItem*,BOBUIreeWidgetItem*)));
 
         treeView->setColumnCount(2);
-        QTreeWidgetItem *header = new QTreeWidgetItem;
+        BOBUIreeWidgetItem *header = new BOBUIreeWidgetItem;
         header->setText(0, "Artist");
         header->setText(1, "Work");
         treeView->setHeaderItem(header);
 
-        QTreeWidgetItem *root1 = new QTreeWidgetItem;
+        BOBUIreeWidgetItem *root1 = new BOBUIreeWidgetItem;
         root1->setText(0, "Spain");
         treeView->addTopLevelItem(root1);
 
-        QTreeWidgetItem *item1 = new QTreeWidgetItem;
+        BOBUIreeWidgetItem *item1 = new BOBUIreeWidgetItem;
         item1->setText(0, "Picasso");
         item1->setText(1, "Guernica");
         root1->addChild(item1);
 
-        QTreeWidgetItem *item2 = new QTreeWidgetItem;
+        BOBUIreeWidgetItem *item2 = new BOBUIreeWidgetItem;
         item2->setText(0, "Tapies");
         item2->setText(1, "Ambrosia");
         root1->addChild(item2);
 
-        QTreeWidgetItem *root2 = new QTreeWidgetItem;
+        BOBUIreeWidgetItem *root2 = new BOBUIreeWidgetItem;
         root2->setText(0, "Austria");
         treeView->addTopLevelItem(root2);
 
-        QTreeWidgetItem *item3 = new QTreeWidgetItem;
+        BOBUIreeWidgetItem *item3 = new BOBUIreeWidgetItem;
         item3->setText(0, "Klimt");
         item3->setText(1, "The Kiss");
         root2->addChild(item3);
 
         treeView->resize(400, 400);
         treeView->show();
-        QVERIFY(QTest::qWaitForWindowExposed(treeView.get()));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(treeView.get()));
 
         treeView->setFocus();
 
@@ -4795,7 +4795,7 @@ void tst_QAccessibility::focusChild()
 
         spy.clear();
         treeView->setCurrentItem(item2);
-        QTRY_COMPARE(spy.size(), 1);
+        BOBUIRY_COMPARE(spy.size(), 1);
 
         QAccessibleInterface *child = iface->focusChild();
         QVERIFY(child);
@@ -4803,7 +4803,7 @@ void tst_QAccessibility::focusChild()
 
         spy.clear();
         treeView->setCurrentItem(item3);
-        QTRY_COMPARE(spy.size(), 1);
+        BOBUIRY_COMPARE(spy.size(), 1);
 
         child = iface->focusChild();
         QVERIFY(child);
@@ -4825,27 +4825,27 @@ void tst_QAccessibility::focusChild()
         window.setLayout(&vbox);
 
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTestAccessibility::clearEvents();
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIestAccessibility::clearEvents();
         QAccessibleInterface *iface = nullptr;
 
         comboBox.setFocus();
-        QTRY_VERIFY(comboBox.hasFocus());
+        BOBUIRY_VERIFY(comboBox.hasFocus());
         {
             QAccessibleEvent focusEvent(&comboBox, QAccessible::Focus);
-            QVERIFY(QTestAccessibility::containsEvent(&focusEvent));
+            QVERIFY(BOBUIestAccessibility::containsEvent(&focusEvent));
         }
         iface = QAccessible::queryAccessibleInterface(&comboBox);
         QVERIFY(iface);
         QCOMPARE(iface->focusChild(), nullptr);
 
         editableComboBox.setFocus();
-        QTRY_VERIFY(editableComboBox.hasFocus());
-        // Qt updates about the editable combobox, not the lineedit, as the
+        BOBUIRY_VERIFY(editableComboBox.hasFocus());
+        // BobUI updates about the editable combobox, not the lineedit, as the
         // combobox is the lineedit's focus proxy.
         {
             QAccessibleEvent focusEvent(&editableComboBox, QAccessible::Focus);
-            QVERIFY(QTestAccessibility::containsEvent(&focusEvent));
+            QVERIFY(BOBUIestAccessibility::containsEvent(&focusEvent));
         }
         iface = QAccessible::queryAccessibleInterface(&editableComboBox);
         QVERIFY(iface);
@@ -4856,16 +4856,16 @@ void tst_QAccessibility::focusChild()
 
 void tst_QAccessibility::messageBoxTest_data()
 {
-    QTest::addColumn<QMessageBox::Icon>("icon");
-    QTest::addColumn<QMessageBox::StandardButtons>("buttons");
-    QTest::addColumn<QString>("title");
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QString>("infoText");
-    QTest::addColumn<QString>("details");
-    QTest::addColumn<bool>("checkbox");
-    QTest::addColumn<bool>("textInteractive");
+    BOBUIest::addColumn<QMessageBox::Icon>("icon");
+    BOBUIest::addColumn<QMessageBox::StandardButtons>("buttons");
+    BOBUIest::addColumn<QString>("title");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("infoText");
+    BOBUIest::addColumn<QString>("details");
+    BOBUIest::addColumn<bool>("checkbox");
+    BOBUIest::addColumn<bool>("textInteractive");
 
-    QTest::addRow("Information") << QMessageBox::Information
+    BOBUIest::addRow("Information") << QMessageBox::Information
                                  << QMessageBox::StandardButtons(QMessageBox::Ok)
                                  << "Information"
                                  << "Here, have some information."
@@ -4874,7 +4874,7 @@ void tst_QAccessibility::messageBoxTest_data()
                                  << false
                                  << false;
 
-    QTest::addRow("Warning") << QMessageBox::Warning
+    BOBUIest::addRow("Warning") << QMessageBox::Warning
                                  << QMessageBox::StandardButtons(QMessageBox::Ok | QMessageBox::Cancel)
                                  << "Warning"
                                  << "This is a dangerous operation!"
@@ -4883,7 +4883,7 @@ void tst_QAccessibility::messageBoxTest_data()
                                  << true
                                  << false;
 
-    QTest::addRow("Error") << QMessageBox::Critical
+    BOBUIest::addRow("Error") << QMessageBox::Critical
                                  << QMessageBox::StandardButtons(QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Ignore)
                                  << "Error"
                                  << "Operation failed for http://example.com"
@@ -4910,7 +4910,7 @@ void tst_QAccessibility::messageBoxTest()
 
     box.show();
     QAccessibleEvent showEvent(&box, QAccessible::DialogStart);
-    QVERIFY(QTestAccessibility::containsEvent(&showEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&showEvent));
 
     QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(&box);
     QVERIFY(iface);
@@ -4924,7 +4924,7 @@ void tst_QAccessibility::messageBoxTest()
     QCOMPARE(iface->childCount(), expectedChildCount);
 
     if (textInteractive)
-        box.setTextInteractionFlags(Qt::TextBrowserInteraction);
+        box.setTextInteractionFlags(BobUI::TextBrowserInteraction);
 
     if (!infoText.isEmpty()) {
         box.setInformativeText(infoText);
@@ -4941,13 +4941,13 @@ void tst_QAccessibility::messageBoxTest()
         QCOMPARE(iface->childCount(), ++expectedChildCount);
     }
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 
     box.hide();
     QAccessibleEvent hideEvent(&box, QAccessible::DialogEnd);
-    QVERIFY(QTestAccessibility::containsEvent(&hideEvent));
+    QVERIFY(BOBUIestAccessibility::containsEvent(&hideEvent));
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::widgetLocaleTest()
@@ -4966,7 +4966,7 @@ void tst_QAccessibility::widgetLocaleTest()
     box->addWidget(chineseLabel);
 
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 
     // verify that locale is the default locale if none was set explicitly
     QAccessibleInterface *labelAcc = QAccessible::queryAccessibleInterface(label);
@@ -4990,7 +4990,7 @@ void tst_QAccessibility::widgetLocaleTest()
     QVERIFY(chineseLocaleVariant.isValid() && chineseLocaleVariant.canConvert<QLocale>());
     QCOMPARE(chineseLocaleVariant.toLocale(), chinese);
 
-    QTestAccessibility::clearEvents();
+    BOBUIestAccessibility::clearEvents();
 }
 
 void tst_QAccessibility::noInterfacesBeforeSetActive()
@@ -5023,22 +5023,22 @@ void tst_QAccessibility::parentChangedEvent()
     {
         QMainWindow mainWindow;
         QWidget w;
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
 
         w.setParent(&mainWindow);
         QAccessibleEvent parentChangedEvent(&w, QAccessible::ParentChanged);
-        QVERIFY(QTestAccessibility::containsEvent(&parentChangedEvent));
+        QVERIFY(BOBUIestAccessibility::containsEvent(&parentChangedEvent));
     }
     {
         QWindow mainWindow;
         QWindow w;
-        QTestAccessibility::clearEvents();
+        BOBUIestAccessibility::clearEvents();
 
         w.setParent(&mainWindow);
         QAccessibleEvent parentChangedEvent(&w, QAccessible::ParentChanged);
-        QVERIFY(QTestAccessibility::containsEvent(&parentChangedEvent));
+        QVERIFY(BOBUIestAccessibility::containsEvent(&parentChangedEvent));
     }
 }
 
-QTEST_MAIN(tst_QAccessibility)
+BOBUIEST_MAIN(tst_QAccessibility)
 #include "tst_qaccessibility.moc"

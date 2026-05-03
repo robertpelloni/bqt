@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLISTWIDGET_H
 #define QLISTWIDGET_H
 
-#include <QtWidgets/qlistview.h>
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qitemselectionmodel.h>
-#include <QtCore/qvariant.h>
+#include <BobUIWidgets/qlistview.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qitemselectionmodel.h>
+#include <BobUICore/qvariant.h>
 
-QT_REQUIRE_CONFIG(listwidget);
+BOBUI_REQUIRE_CONFIG(listwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QListWidget;
 class QListModel;
@@ -43,80 +43,80 @@ public:
     inline void setHidden(bool hide);
     inline bool isHidden() const;
 
-    inline Qt::ItemFlags flags() const { return itemFlags; }
-    void setFlags(Qt::ItemFlags flags);
+    inline BobUI::ItemFlags flags() const { return itemFlags; }
+    void setFlags(BobUI::ItemFlags flags);
 
     inline QString text() const
-        { return data(Qt::DisplayRole).toString(); }
+        { return data(BobUI::DisplayRole).toString(); }
     inline void setText(const QString &text);
 
     inline QIcon icon() const
-        { return qvariant_cast<QIcon>(data(Qt::DecorationRole)); }
+        { return qvariant_cast<QIcon>(data(BobUI::DecorationRole)); }
     inline void setIcon(const QIcon &icon);
 
     inline QString statusTip() const
-        { return data(Qt::StatusTipRole).toString(); }
+        { return data(BobUI::StatusTipRole).toString(); }
     inline void setStatusTip(const QString &statusTip);
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     inline QString toolTip() const
-        { return data(Qt::ToolTipRole).toString(); }
+        { return data(BobUI::ToolTipRole).toString(); }
     inline void setToolTip(const QString &toolTip);
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     inline QString whatsThis() const
-        { return data(Qt::WhatsThisRole).toString(); }
+        { return data(BobUI::WhatsThisRole).toString(); }
     inline void setWhatsThis(const QString &whatsThis);
 #endif
 
     inline QFont font() const
-        { return qvariant_cast<QFont>(data(Qt::FontRole)); }
+        { return qvariant_cast<QFont>(data(BobUI::FontRole)); }
     inline void setFont(const QFont &font);
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     inline int textAlignment() const
-        { return data(Qt::TextAlignmentRole).toInt(); }
+        { return data(BobUI::TextAlignmentRole).toInt(); }
 #else
-    inline Qt::Alignment textAlignment() const
-    { return qvariant_cast<Qt::Alignment>(data(Qt::TextAlignmentRole)); }
+    inline BobUI::Alignment textAlignment() const
+    { return qvariant_cast<BobUI::Alignment>(data(BobUI::TextAlignmentRole)); }
 #endif
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("Use the overload taking Qt::Alignment")
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use the overload taking BobUI::Alignment")
     inline void setTextAlignment(int alignment)
-        { setData(Qt::TextAlignmentRole, alignment); }
-    inline void setTextAlignment(Qt::AlignmentFlag alignment)
-        { setData(Qt::TextAlignmentRole, QVariant::fromValue(Qt::Alignment(alignment))); }
+        { setData(BobUI::TextAlignmentRole, alignment); }
+    inline void setTextAlignment(BobUI::AlignmentFlag alignment)
+        { setData(BobUI::TextAlignmentRole, QVariant::fromValue(BobUI::Alignment(alignment))); }
 #endif
-    inline void setTextAlignment(Qt::Alignment alignment)
-        { setData(Qt::TextAlignmentRole, QVariant::fromValue(alignment)); }
+    inline void setTextAlignment(BobUI::Alignment alignment)
+        { setData(BobUI::TextAlignmentRole, QVariant::fromValue(alignment)); }
 
     inline QBrush background() const
-        { return qvariant_cast<QBrush>(data(Qt::BackgroundRole)); }
+        { return qvariant_cast<QBrush>(data(BobUI::BackgroundRole)); }
     inline void setBackground(const QBrush &brush)
-        { setData(Qt::BackgroundRole, brush.style() != Qt::NoBrush ? QVariant(brush) : QVariant()); }
+        { setData(BobUI::BackgroundRole, brush.style() != BobUI::NoBrush ? QVariant(brush) : QVariant()); }
 
     inline QBrush foreground() const
-        { return qvariant_cast<QBrush>(data(Qt::ForegroundRole)); }
+        { return qvariant_cast<QBrush>(data(BobUI::ForegroundRole)); }
     inline void setForeground(const QBrush &brush)
-        { setData(Qt::ForegroundRole, brush.style() != Qt::NoBrush ? QVariant(brush) : QVariant()); }
+        { setData(BobUI::ForegroundRole, brush.style() != BobUI::NoBrush ? QVariant(brush) : QVariant()); }
 
-    inline Qt::CheckState checkState() const
-        { return qvariant_cast<Qt::CheckState>(data(Qt::CheckStateRole)); }
-    inline void setCheckState(Qt::CheckState state)
-        { setData(Qt::CheckStateRole, static_cast<int>(state)); }
+    inline BobUI::CheckState checkState() const
+        { return qvariant_cast<BobUI::CheckState>(data(BobUI::CheckStateRole)); }
+    inline void setCheckState(BobUI::CheckState state)
+        { setData(BobUI::CheckStateRole, static_cast<int>(state)); }
 
     inline QSize sizeHint() const
-        { return qvariant_cast<QSize>(data(Qt::SizeHintRole)); }
+        { return qvariant_cast<QSize>(data(BobUI::SizeHintRole)); }
     inline void setSizeHint(const QSize &size)
-        { setData(Qt::SizeHintRole, size.isValid() ? QVariant(size) : QVariant()); }
+        { setData(BobUI::SizeHintRole, size.isValid() ? QVariant(size) : QVariant()); }
 
     virtual QVariant data(int role) const;
     virtual void setData(int role, const QVariant &value);
 
     virtual bool operator<(const QListWidgetItem &other) const;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     virtual void read(QDataStream &in);
     virtual void write(QDataStream &out) const;
 #endif
@@ -129,32 +129,32 @@ private:
     int rtti;
     QListWidget *view;
     QListWidgetItemPrivate *d;
-    Qt::ItemFlags itemFlags;
+    BobUI::ItemFlags itemFlags;
 };
 
 inline void QListWidgetItem::setText(const QString &atext)
-{ setData(Qt::DisplayRole, atext); }
+{ setData(BobUI::DisplayRole, atext); }
 
 inline void QListWidgetItem::setIcon(const QIcon &aicon)
-{ setData(Qt::DecorationRole, aicon); }
+{ setData(BobUI::DecorationRole, aicon); }
 
 inline void QListWidgetItem::setStatusTip(const QString &astatusTip)
-{ setData(Qt::StatusTipRole, astatusTip); }
+{ setData(BobUI::StatusTipRole, astatusTip); }
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
 inline void QListWidgetItem::setToolTip(const QString &atoolTip)
-{ setData(Qt::ToolTipRole, atoolTip); }
+{ setData(BobUI::ToolTipRole, atoolTip); }
 #endif
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 inline void QListWidgetItem::setWhatsThis(const QString &awhatsThis)
-{ setData(Qt::WhatsThisRole, awhatsThis); }
+{ setData(BobUI::WhatsThisRole, awhatsThis); }
 #endif
 
 inline void QListWidgetItem::setFont(const QFont &afont)
-{ setData(Qt::FontRole, afont); }
+{ setData(BobUI::FontRole, afont); }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_WIDGETS_EXPORT QDataStream &operator<<(QDataStream &out, const QListWidgetItem &item);
 Q_WIDGETS_EXPORT QDataStream &operator>>(QDataStream &in, QListWidgetItem &item);
 #endif
@@ -168,8 +168,8 @@ class Q_WIDGETS_EXPORT QListWidget : public QListView
     Q_PROPERTY(int currentRow READ currentRow WRITE setCurrentRow NOTIFY currentRowChanged
                USER true)
     Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
-#if QT_CONFIG(draganddrop)
-    Q_PROPERTY(Qt::DropActions supportedDragActions READ supportedDragActions WRITE setSupportedDragActions)
+#if BOBUI_CONFIG(draganddrop)
+    Q_PROPERTY(BobUI::DropActions supportedDragActions READ supportedDragActions WRITE setSupportedDragActions)
 #endif
 
     friend class QListWidgetItem;
@@ -203,7 +203,7 @@ public:
     inline QListWidgetItem *itemAt(int x, int y) const;
     QRect visualItemRect(const QListWidgetItem *item) const;
 
-    void sortItems(Qt::SortOrder order = Qt::AscendingOrder);
+    void sortItems(BobUI::SortOrder order = BobUI::AscendingOrder);
     void setSortingEnabled(bool enable);
     bool isSortingEnabled() const;
 
@@ -218,19 +218,19 @@ public:
     inline void removeItemWidget(QListWidgetItem *item);
 
     QList<QListWidgetItem*> selectedItems() const;
-    QList<QListWidgetItem*> findItems(const QString &text, Qt::MatchFlags flags) const;
+    QList<QListWidgetItem*> findItems(const QString &text, BobUI::MatchFlags flags) const;
 
     QList<QListWidgetItem*> items(const QMimeData *data) const;
 
     QModelIndex indexFromItem(const QListWidgetItem *item) const;
     QListWidgetItem *itemFromIndex(const QModelIndex &index) const;
 
-#if QT_CONFIG(draganddrop)
-    void setSupportedDragActions(Qt::DropActions actions);
-    Qt::DropActions supportedDragActions() const;
+#if BOBUI_CONFIG(draganddrop)
+    void setSupportedDragActions(BobUI::DropActions actions);
+    BobUI::DropActions supportedDragActions() const;
 #endif
 protected:
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dropEvent(QDropEvent *event) override;
 #endif
 public Q_SLOTS:
@@ -255,14 +255,14 @@ protected:
     bool event(QEvent *e) override;
     virtual QStringList mimeTypes() const;
     virtual QMimeData *mimeData(const QList<QListWidgetItem *> &items) const;
-#if QT_CONFIG(draganddrop)
-    virtual bool dropMimeData(int index, const QMimeData *data, Qt::DropAction action);
-    virtual Qt::DropActions supportedDropActions() const;
+#if BOBUI_CONFIG(draganddrop)
+    virtual bool dropMimeData(int index, const QMimeData *data, BobUI::DropAction action);
+    virtual BobUI::DropActions supportedDropActions() const;
 #endif
 
 private:
     void setModel(QAbstractItemModel *model) override;
-    Qt::SortOrder sortOrder() const;
+    BobUI::SortOrder sortOrder() const;
 
     Q_DECLARE_PRIVATE(QListWidget)
     Q_DISABLE_COPY(QListWidget)
@@ -283,6 +283,6 @@ inline void QListWidgetItem::setHidden(bool ahide)
 inline bool QListWidgetItem::isHidden() const
 { return (view ? view->isRowHidden(view->row(this)) : false); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLISTWIDGET_H

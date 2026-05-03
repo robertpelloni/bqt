@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qgenericplugin.h>
-#include <QtInputSupport/private/qevdevtabletmanager_p.h>
+#include <BobUIGui/qgenericplugin.h>
+#include <BobUIInputSupport/private/qevdevtabletmanager_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEvdevTabletPlugin : public QGenericPlugin
 {
@@ -24,12 +24,12 @@ QEvdevTabletPlugin::QEvdevTabletPlugin()
 QObject* QEvdevTabletPlugin::create(const QString &key,
                                     const QString &spec)
 {
-    if (!key.compare(QLatin1String("EvdevTablet"), Qt::CaseInsensitive))
+    if (!key.compare(QLatin1String("EvdevTablet"), BobUI::CaseInsensitive))
         return new QEvdevTabletManager(key, spec);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

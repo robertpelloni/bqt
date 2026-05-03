@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "connectionwidget.h"
 
 #include <QAction>
 #include <QHeaderView>
 #include <QSqlDatabase>
-#include <QTreeWidget>
+#include <BOBUIreeWidget>
 #include <QVBoxLayout>
 
 ConnectionWidget::ConnectionWidget(QWidget *parent)
     : QWidget(parent)
-    , tree(new QTreeWidget(this))
+    , tree(new BOBUIreeWidget(this))
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins({});
@@ -23,13 +23,13 @@ ConnectionWidget::ConnectionWidget(QWidget *parent)
     connect(metaDataAction, &QAction::triggered, this, &ConnectionWidget::showMetaData);
     tree->addAction(refreshAction);
     tree->addAction(metaDataAction);
-    tree->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree->setContextMenuPolicy(BobUI::ActionsContextMenu);
 
     layout->addWidget(tree);
 
-    connect(tree, &QTreeWidget::itemActivated,
+    connect(tree, &BOBUIreeWidget::itemActivated,
             this, &ConnectionWidget::onItemActivated);
-    connect(tree, &QTreeWidget::currentItemChanged,
+    connect(tree, &BOBUIreeWidget::currentItemChanged,
             this, &ConnectionWidget::onCurrentItemChanged);
 }
 
@@ -52,7 +52,7 @@ void ConnectionWidget::refresh()
 
     bool gotActiveDb = false;
     for (const auto &connectionName : connectionNames) {
-        QTreeWidgetItem *root = new QTreeWidgetItem(tree);
+        BOBUIreeWidgetItem *root = new BOBUIreeWidgetItem(tree);
         QSqlDatabase db = QSqlDatabase::database(connectionName, false);
         root->setText(0, qDBCaption(db));
         if (connectionName == activeDb) {
@@ -62,7 +62,7 @@ void ConnectionWidget::refresh()
         if (db.isOpen()) {
             QStringList tables = db.tables();
             for (int t = 0; t < tables.count(); ++t) {
-                QTreeWidgetItem *table = new QTreeWidgetItem(root);
+                BOBUIreeWidgetItem *table = new BOBUIreeWidgetItem(root);
                 table->setText(0, tables.at(t));
             }
         }
@@ -80,9 +80,9 @@ QSqlDatabase ConnectionWidget::currentDatabase() const
     return QSqlDatabase::database(activeDb);
 }
 
-void ConnectionWidget::setActive(QTreeWidgetItem *item)
+void ConnectionWidget::setActive(BOBUIreeWidgetItem *item)
 {
-    const auto qSetBold = [](QTreeWidgetItem *item, bool bold)
+    const auto qSetBold = [](BOBUIreeWidgetItem *item, bool bold)
     {
         QFont font = item->font(0);
         font.setBold(bold);
@@ -101,7 +101,7 @@ void ConnectionWidget::setActive(QTreeWidgetItem *item)
     activeDb = QSqlDatabase::connectionNames().value(tree->indexOfTopLevelItem(item));
 }
 
-void ConnectionWidget::onItemActivated(QTreeWidgetItem *item)
+void ConnectionWidget::onItemActivated(BOBUIreeWidgetItem *item)
 {
     if (!item)
         return;
@@ -116,14 +116,14 @@ void ConnectionWidget::onItemActivated(QTreeWidgetItem *item)
 
 void ConnectionWidget::showMetaData()
 {
-    QTreeWidgetItem *cItem = tree->currentItem();
+    BOBUIreeWidgetItem *cItem = tree->currentItem();
     if (!cItem || !cItem->parent())
         return;
     setActive(cItem->parent());
     emit metaDataRequested(cItem->text(0));
 }
 
-void ConnectionWidget::onCurrentItemChanged(QTreeWidgetItem *current)
+void ConnectionWidget::onCurrentItemChanged(BOBUIreeWidgetItem *current)
 {
     metaDataAction->setEnabled(current && current->parent());
 }

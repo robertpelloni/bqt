@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -8,13 +8,13 @@
 #include <QModelIndex>
 
 class TreeModelCompleter;
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QComboBox;
 class QLabel;
 class QLineEdit;
-class QTreeView;
-QT_END_NAMESPACE
+class BOBUIreeView;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class MainWindow : public QMainWindow
@@ -37,7 +37,7 @@ private:
     void createMenu();
     QAbstractItemModel *modelFromFile(const QString &fileName);
 
-    QTreeView *treeView = nullptr;
+    BOBUIreeView *treeView = nullptr;
     QComboBox *caseCombo = nullptr;
     QComboBox *modeCombo = nullptr;
     QLabel *contentsLabel = nullptr;

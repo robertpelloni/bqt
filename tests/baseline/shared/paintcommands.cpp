@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "paintcommands.h"
 
 #include <qdir.h>
@@ -8,14 +8,14 @@
 #include <qpainter.h>
 #include <qpainterpath.h>
 #include <qbitmap.h>
-#include <qtextstream.h>
-#include <qtextlayout.h>
+#include <bobuiextstream.h>
+#include <bobuiextlayout.h>
 #include <qdebug.h>
 #include <QStaticText>
-#include <QTextDocument>
+#include <BOBUIextDocument>
 #include <private/qimage_p.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include <QOpenGLFramebufferObjectFormat>
 #include <QOpenGLContext>
 #include <QOpenGLPaintDevice>
@@ -452,9 +452,9 @@ void PaintCommands::staticInit()
                       "drawStaticText 10 10 \"my text\"");
     DECL_PAINTCOMMAND("drawGlyphRun", command_drawGlyphRun,
                       "^drawGlyphRun\\s+(-?\\w*)\\s+(-?\\w*)\\s+\"(.*)\"$",
-                      "drawGlyphRun <x> <y> <text> - Will create glyph run using QTextLayout and draw this",
+                      "drawGlyphRun <x> <y> <text> - Will create glyph run using BOBUIextLayout and draw this",
                       "drawGlyphRun 10 10 \"my text\"");
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     DECL_PAINTCOMMAND("drawTextDocument", command_drawTextDocument,
                       "^drawTextDocument\\s+(-?\\w*)\\s+(-?\\w*)\\s+\"(.*)\"$",
                       "drawTextDocument <x> <y> <html>",
@@ -786,14 +786,14 @@ void PaintCommands::runCommands()
     // paint background
     if (m_checkers_background) {
         QPixmap pm(20, 20);
-        pm.fill(Qt::white);
+        pm.fill(BobUI::white);
         QPainter pt(&pm);
         pt.fillRect(0, 0, 10, 10, QColor::fromRgba(0xffdfdfdf));
         pt.fillRect(10, 10, 10, 10, QColor::fromRgba(0xffdfdfdf));
         pt.end();
         m_painter->drawTiledPixmap(0, 0, width, height, pm);
     } else {
-        m_painter->fillRect(0, 0, width, height, Qt::white);
+        m_painter->fillRect(0, 0, width, height, BobUI::white);
     }
 
     // run each command
@@ -823,13 +823,13 @@ double PaintCommands::convertToDouble(const QString &str)
 {
     static QRegularExpression re("cp([0-9])([xy])");
     if (str.toLower() == "width") {
-        if (m_painter->device()->devType() == Qt::Widget)
+        if (m_painter->device()->devType() == BobUI::Widget)
             return m_painter->window().width();
         else
             return 800;
     }
     if (str.toLower() == "height") {
-        if (m_painter->device()->devType() == Qt::Widget)
+        if (m_painter->device()->devType() == BobUI::Widget)
             return m_painter->window().height();
         else
             return 800;
@@ -922,7 +922,7 @@ void PaintCommands::command_import(QRegularExpressionMatch re)
     m_commands[m_currentCommandIndex] = QLatin1String("# import file (") + fileinfo.fileName()
         + QLatin1String(") start");
     QString rawContent = QString::fromUtf8(file->readAll());
-    QStringList importedData = rawContent.split('\n', Qt::SkipEmptyParts);
+    QStringList importedData = rawContent.split('\n', BobUI::SkipEmptyParts);
     importedData.append(QLatin1String("# import file (") + fileinfo.fileName() + QLatin1String(") end ---"));
     insertAt(m_currentCommandIndex, importedData);
 
@@ -1009,7 +1009,7 @@ void PaintCommands::command_drawLine(QRegularExpressionMatch re)
 void PaintCommands::command_drawLines(QRegularExpressionMatch re)
 {
     static QRegularExpression separators("\\s");
-    QStringList numbers = re.captured(1).split(separators, Qt::SkipEmptyParts);
+    QStringList numbers = re.captured(1).split(separators, BobUI::SkipEmptyParts);
 
     QList<QLineF> array;
     for (int i = 0; i + 3 < numbers.size(); i += 4) {
@@ -1197,7 +1197,7 @@ void PaintCommands::command_drawPolygon(QRegularExpressionMatch re)
     static QRegularExpression separators("\\s");
     QStringList caps = re.capturedTexts();
     QString cap = caps.at(1);
-    QStringList numbers = cap.split(separators, Qt::SkipEmptyParts);
+    QStringList numbers = cap.split(separators, BobUI::SkipEmptyParts);
 
     QPolygonF array;
     for (int i=0; i + 1<numbers.size(); i+=2)
@@ -1206,14 +1206,14 @@ void PaintCommands::command_drawPolygon(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) drawPolygon(size=%zd)\n", size_t(array.size()));
 
-    m_painter->drawPolygon(array, caps.at(2).toLower() == "winding" ? Qt::WindingFill : Qt::OddEvenFill);
+    m_painter->drawPolygon(array, caps.at(2).toLower() == "winding" ? BobUI::WindingFill : BobUI::OddEvenFill);
 }
 
 /***************************************************************************************************/
 void PaintCommands::command_drawPolyline(QRegularExpressionMatch re)
 {
     static QRegularExpression separators("\\s");
-    QStringList numbers = re.captured(1).split(separators, Qt::SkipEmptyParts);
+    QStringList numbers = re.captured(1).split(separators, BobUI::SkipEmptyParts);
 
     QPolygonF array;
     for (int i=0; i + 1<numbers.size(); i+=2)
@@ -1253,12 +1253,12 @@ void PaintCommands::command_drawRoundedRect(QRegularExpressionMatch re)
 
     int mode = translateEnum(sizeModeTable, caps.at(7), sizeof(sizeModeTable)/sizeof(char *));
     if (mode < 0)
-        mode = Qt::AbsoluteSize;
+        mode = BobUI::AbsoluteSize;
 
     if (m_verboseMode)
         printf(" -(lance) drawRoundRect(%f, %f, %f, %f, %f, %f, %s)\n", x, y, w, h, xr, yr, mode ? "RelativeSize" : "AbsoluteSize");
 
-    m_painter->drawRoundedRect(QRectF(x, y, w, h), xr, yr, Qt::SizeMode(mode));
+    m_painter->drawRoundedRect(QRectF(x, y, w, h), xr, yr, BobUI::SizeMode(mode));
 }
 
 /***************************************************************************************************/
@@ -1275,10 +1275,10 @@ void PaintCommands::command_drawRoundRect(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) drawRoundRect(%d, %d, %d, %d, [%d, %d])\n", x, y, w, h, xs, ys);
 
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    m_painter->drawRoundedRect(x, y, w, h, xs, ys, Qt::RelativeSize);
-    QT_WARNING_POP
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
+    m_painter->drawRoundedRect(x, y, w, h, xs, ys, BobUI::RelativeSize);
+    BOBUI_WARNING_POP
 }
 
 /***************************************************************************************************/
@@ -1411,13 +1411,13 @@ void PaintCommands::command_drawGlyphRun(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) drawGlyphRun(%d, %d, %s)\n", x, y, qPrintable(txt));
 
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setFont(m_painter->font());
     layout.setText(txt);
     layout.beginLayout();
     qreal lineY = 0.0;
     forever {
-        QTextLine line = layout.createLine();
+        BOBUIextLine line = layout.createLine();
         if (!line.isValid())
             break;
         line.setPosition(QPointF(0.0, lineY));
@@ -1431,7 +1431,7 @@ void PaintCommands::command_drawGlyphRun(QRegularExpressionMatch re)
         m_painter->drawGlyphRun(QPointF(x, y), glyphRun);
 }
 
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
 void PaintCommands::command_drawTextDocument(QRegularExpressionMatch re)
 {
     if (!m_shouldDrawText)
@@ -1444,7 +1444,7 @@ void PaintCommands::command_drawTextDocument(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) drawTextDocument(%d, %d, %s)\n", x, y, qPrintable(txt));
 
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.setBaseUrl(QUrl::fromLocalFile(QDir::currentPath() + QLatin1String("/")));
     doc.setHtml(txt);
 
@@ -1648,7 +1648,7 @@ void PaintCommands::command_path_addPolygon(QRegularExpressionMatch re)
     QStringList caps = re.capturedTexts();
     QString name = caps.at(1);
     QString cap = caps.at(2);
-    QStringList numbers = cap.split(separators, Qt::SkipEmptyParts);
+    QStringList numbers = cap.split(separators, BobUI::SkipEmptyParts);
 
     QPolygonF array;
     for (int i=0; i + 1<numbers.size(); i+=2)
@@ -1758,7 +1758,7 @@ void PaintCommands::command_path_setFillRule(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) path_setFillRule(name=%s, winding=%d)\n", qPrintable(name), winding);
 
-    m_pathMap[name].setFillRule(winding ? Qt::WindingFill : Qt::OddEvenFill);
+    m_pathMap[name].setFillRule(winding ? BobUI::WindingFill : BobUI::OddEvenFill);
 }
 
 /***************************************************************************************************/
@@ -1786,7 +1786,7 @@ void PaintCommands::command_path_getClipPath(QRegularExpressionMatch re)
 }
 
 /***************************************************************************************************/
-static void qt_debug_path(const QPainterPath &path, const QString &name)
+static void bobui_debug_path(const QPainterPath &path, const QString &name)
 {
     const char *names[] = {
         "MoveTo     ",
@@ -1808,7 +1808,7 @@ void PaintCommands::command_path_debugPrint(QRegularExpressionMatch re)
 {
     QStringList caps = re.capturedTexts();
     QString name = caps.at(1);
-    qt_debug_path(m_pathMap[name], name);
+    bobui_debug_path(m_pathMap[name], name);
 }
 
 /***************************************************************************************************/
@@ -1899,8 +1899,8 @@ void PaintCommands::command_rotate_x(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) rotate_x(%.2f)\n", angle);
 
-    QTransform transform;
-    transform.rotate(angle, Qt::XAxis);
+    BOBUIransform transform;
+    transform.rotate(angle, BobUI::XAxis);
     m_painter->setTransform(transform, true);
 }
 
@@ -1913,8 +1913,8 @@ void PaintCommands::command_rotate_y(QRegularExpressionMatch re)
     if (m_verboseMode)
         printf(" -(lance) rotate_y(%.2f)\n", angle);
 
-    QTransform transform;
-    transform.rotate(angle, Qt::YAxis);
+    BOBUIransform transform;
+    transform.rotate(angle, BobUI::YAxis);
     m_painter->setTransform(transform, true);
 }
 
@@ -1964,9 +1964,9 @@ void PaintCommands::command_mapQuadToQuad(QRegularExpressionMatch re)
                ",%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f)\n",
                x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, x7, y7, x8, y8);
 
-    QTransform trans;
+    BOBUIransform trans;
 
-    if (!QTransform::quadToQuad(poly1, poly2, trans)) {
+    if (!BOBUIransform::quadToQuad(poly1, poly2, trans)) {
         qWarning("Couldn't perform quad to quad transformation!");
     }
 
@@ -1991,7 +1991,7 @@ void PaintCommands::command_setMatrix(QRegularExpressionMatch re)
         printf(" -(lance) setMatrix(%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f)\n",
                m11, m12, m13, m21, m22, m23, m31, m32, m33);
 
-    QTransform trans;
+    BOBUIransform trans;
     trans.setMatrix(m11, m12, m13,
                     m21, m22, m23,
                     m31, m32, m33);
@@ -2020,14 +2020,14 @@ void PaintCommands::command_setBackground(QRegularExpressionMatch re)
     QColor color = convertToColor(caps.at(1));
     QString pattern = caps.at(2);
 
-    int style = translateEnum(brushStyleTable, pattern, Qt::LinearGradientPattern);
+    int style = translateEnum(brushStyleTable, pattern, BobUI::LinearGradientPattern);
     if (style < 0)
-        style = Qt::SolidPattern;
+        style = BobUI::SolidPattern;
 
     if (m_verboseMode)
         printf(" -(lance) setBackground(%s, %s)\n", qPrintable(color.name()), qPrintable(pattern));
 
-    m_painter->setBackground(QBrush(color, Qt::BrushStyle(style)));
+    m_painter->setBackground(QBrush(color, BobUI::BrushStyle(style)));
 }
 
 /***************************************************************************************************/
@@ -2046,12 +2046,12 @@ void PaintCommands::command_setOpacity(QRegularExpressionMatch re)
 void PaintCommands::command_setBgMode(QRegularExpressionMatch re)
 {
     QString cap = re.captured(2);
-    Qt::BGMode mode = Qt::TransparentMode;
+    BobUI::BGMode mode = BobUI::TransparentMode;
     if (cap.toLower() == QLatin1String("opaquemode") || cap.toLower() == QLatin1String("opaque"))
-        mode = Qt::OpaqueMode;
+        mode = BobUI::OpaqueMode;
 
     if (m_verboseMode)
-        printf(" -(lance) setBackgroundMode(%s)\n", mode == Qt::OpaqueMode ? "OpaqueMode" : "TransparentMode");
+        printf(" -(lance) setBackgroundMode(%s)\n", mode == BobUI::OpaqueMode ? "OpaqueMode" : "TransparentMode");
 
     m_painter->setBackgroundMode(mode);
 }
@@ -2071,21 +2071,21 @@ void PaintCommands::command_setBrush(QRegularExpressionMatch re)
 
         m_painter->setBrush(QBrush(img));
     } else if (caps.at(1).toLower() == "nobrush") {
-        m_painter->setBrush(Qt::NoBrush);
+        m_painter->setBrush(BobUI::NoBrush);
         if (m_verboseMode)
-            printf(" -(lance) setBrush(Qt::NoBrush)\n");
+            printf(" -(lance) setBrush(BobUI::NoBrush)\n");
     } else {
         QColor color = convertToColor(caps.at(1));
         QString pattern = caps.at(2);
 
-        int style = translateEnum(brushStyleTable, pattern, Qt::LinearGradientPattern);
+        int style = translateEnum(brushStyleTable, pattern, BobUI::LinearGradientPattern);
         if (style < 0)
-            style = Qt::SolidPattern;
+            style = BobUI::SolidPattern;
 
         if (m_verboseMode)
             printf(" -(lance) setBrush(%s, %s (%d))\n", qPrintable(color.name()), qPrintable(pattern), style);
 
-        m_painter->setBrush(QBrush(color, Qt::BrushStyle(style)));
+        m_painter->setBrush(QBrush(color, BobUI::BrushStyle(style)));
     }
 }
 
@@ -2112,7 +2112,7 @@ void PaintCommands::command_brushTranslate(QRegularExpressionMatch re)
         printf(" -(lance) brushTranslate(%f, %f)\n", dx, dy);
 
     QBrush new_brush = m_painter->brush();
-    QTransform brush_matrix = new_brush.transform();
+    BOBUIransform brush_matrix = new_brush.transform();
     brush_matrix.translate(dx, dy);
     new_brush.setTransform(brush_matrix);
     m_painter->setBrush(new_brush);
@@ -2129,7 +2129,7 @@ void PaintCommands::command_brushScale(QRegularExpressionMatch re)
         printf(" -(lance) brushScale(%f, %f)\n", sx, sy);
 
     QBrush new_brush = m_painter->brush();
-    QTransform brush_matrix = new_brush.transform();
+    BOBUIransform brush_matrix = new_brush.transform();
     brush_matrix.scale(sx, sy);
     new_brush.setTransform(brush_matrix);
     m_painter->setBrush(new_brush);
@@ -2145,7 +2145,7 @@ void PaintCommands::command_brushRotate(QRegularExpressionMatch re)
         printf(" -(lance) brushScale(%f)\n", rot);
 
     QBrush new_brush = m_painter->brush();
-    QTransform brush_matrix = new_brush.transform();
+    BOBUIransform brush_matrix = new_brush.transform();
     brush_matrix.rotate(rot);
     new_brush.setTransform(brush_matrix);
     m_painter->setBrush(new_brush);
@@ -2162,7 +2162,7 @@ void PaintCommands::command_brushShear(QRegularExpressionMatch re)
         printf(" -(lance) brushShear(%f, %f)\n", sx, sy);
 
     QBrush new_brush = m_painter->brush();
-    QTransform brush_matrix = new_brush.transform();
+    BOBUIransform brush_matrix = new_brush.transform();
     brush_matrix.shear(sx, sy);
     new_brush.setTransform(brush_matrix);
     m_painter->setBrush(new_brush);
@@ -2188,14 +2188,14 @@ void PaintCommands::command_setClipRect(QRegularExpressionMatch re)
     int w = convertToInt(caps.at(3));
     int h = convertToInt(caps.at(4));
 
-    int combine = translateEnum(clipOperationTable, caps.at(5), Qt::IntersectClip + 1);
+    int combine = translateEnum(clipOperationTable, caps.at(5), BobUI::IntersectClip + 1);
     if (combine == -1)
-        combine = Qt::ReplaceClip;
+        combine = BobUI::ReplaceClip;
 
     if (m_verboseMode)
         printf(" -(lance) setClipRect(%d, %d, %d, %d), %s\n", x, y, w, h, clipOperationTable[combine]);
 
-    m_painter->setClipRect(x, y, w, h, Qt::ClipOperation(combine));
+    m_painter->setClipRect(x, y, w, h, BobUI::ClipOperation(combine));
 }
 
 /***************************************************************************************************/
@@ -2207,37 +2207,37 @@ void PaintCommands::command_setClipRectF(QRegularExpressionMatch re)
     double w = convertToDouble(caps.at(3));
     double h = convertToDouble(caps.at(4));
 
-    int combine = translateEnum(clipOperationTable, caps.at(5), Qt::IntersectClip + 1);
+    int combine = translateEnum(clipOperationTable, caps.at(5), BobUI::IntersectClip + 1);
     if (combine == -1)
-        combine = Qt::ReplaceClip;
+        combine = BobUI::ReplaceClip;
 
     if (m_verboseMode)
         printf(" -(lance) setClipRectF(%f, %f, %f, %f), %s\n", x, y, w, h, clipOperationTable[combine]);
 
-    m_painter->setClipRect(QRectF(x, y, w, h), Qt::ClipOperation(combine));
+    m_painter->setClipRect(QRectF(x, y, w, h), BobUI::ClipOperation(combine));
 }
 
 /***************************************************************************************************/
 void PaintCommands::command_setClipPath(QRegularExpressionMatch re)
 {
-    int combine = translateEnum(clipOperationTable, re.captured(2), Qt::IntersectClip + 1);
+    int combine = translateEnum(clipOperationTable, re.captured(2), BobUI::IntersectClip + 1);
     if (combine == -1)
-        combine = Qt::ReplaceClip;
+        combine = BobUI::ReplaceClip;
 
     if (m_verboseMode)
         printf(" -(lance) setClipPath(name=%s), %s\n", qPrintable(re.captured(1)), clipOperationTable[combine]);
 
     if (!m_pathMap.contains(re.captured(1)))
         fprintf(stderr, " - setClipPath, no such path");
-    m_painter->setClipPath(m_pathMap[re.captured(1)], Qt::ClipOperation(combine));
+    m_painter->setClipPath(m_pathMap[re.captured(1)], BobUI::ClipOperation(combine));
 }
 
 /***************************************************************************************************/
 void PaintCommands::command_setClipRegion(QRegularExpressionMatch re)
 {
-    int combine = translateEnum(clipOperationTable, re.captured(2), Qt::IntersectClip + 1);
+    int combine = translateEnum(clipOperationTable, re.captured(2), BobUI::IntersectClip + 1);
     if (combine == -1)
-        combine = Qt::ReplaceClip;
+        combine = BobUI::ReplaceClip;
     QRegion r = m_regionMap[re.captured(1)];
 
     if (m_verboseMode)
@@ -2249,7 +2249,7 @@ void PaintCommands::command_setClipRegion(QRegularExpressionMatch re)
                r.boundingRect().height(),
                clipOperationTable[combine]);
 
-    m_painter->setClipRegion(m_regionMap[re.captured(1)], Qt::ClipOperation(combine));
+    m_painter->setClipRegion(m_regionMap[re.captured(1)], BobUI::ClipOperation(combine));
 }
 
 /***************************************************************************************************/
@@ -2314,12 +2314,12 @@ void PaintCommands::command_setFont(QRegularExpressionMatch re)
 void PaintCommands::command_setPen(QRegularExpressionMatch re)
 {
     QString cap = re.captured(1);
-    int style = translateEnum(penStyleTable, cap, Qt::DashDotDotLine + 1);
+    int style = translateEnum(penStyleTable, cap, BobUI::DashDotDotLine + 1);
     if (style >= 0) {
         if (m_verboseMode)
             printf(" -(lance) setPen(%s)\n", qPrintable(cap));
 
-        m_painter->setPen(Qt::PenStyle(style));
+        m_painter->setPen(BobUI::PenStyle(style));
     } else if (cap.toLower() == "brush") {
         QPen pen(m_painter->brush(), 0);
         if (m_verboseMode) {
@@ -2349,21 +2349,21 @@ void PaintCommands::command_setPen2(QRegularExpressionMatch re)
         brush = convertToColor(caps.at(1));
 
     double width = convertToDouble(caps.at(2));
-    int penStyle = translateEnum(penStyleTable, caps.at(3), Qt::DashDotDotLine + 1);
+    int penStyle = translateEnum(penStyleTable, caps.at(3), BobUI::DashDotDotLine + 1);
     if (penStyle < 0)
-        penStyle = Qt::SolidLine;
+        penStyle = BobUI::SolidLine;
 
-    Qt::PenCapStyle capStyle = Qt::SquareCap;
-    if (caps.at(4).toLower() == "flatcap") capStyle = Qt::FlatCap;
-    else if (caps.at(4).toLower() == "squarecap") capStyle = Qt::SquareCap;
-    else if (caps.at(4).toLower() == "roundcap") capStyle = Qt::RoundCap;
+    BobUI::PenCapStyle capStyle = BobUI::SquareCap;
+    if (caps.at(4).toLower() == "flatcap") capStyle = BobUI::FlatCap;
+    else if (caps.at(4).toLower() == "squarecap") capStyle = BobUI::SquareCap;
+    else if (caps.at(4).toLower() == "roundcap") capStyle = BobUI::RoundCap;
     else if (!caps.at(4).isEmpty())
         fprintf(stderr, "ERROR: setPen, unknown capStyle: %s\n", qPrintable(caps.at(4)));
 
-    Qt::PenJoinStyle joinStyle = Qt::BevelJoin;
-    if (caps.at(5).toLower() == "miterjoin") joinStyle = Qt::MiterJoin;
-    else if (caps.at(5).toLower() == "beveljoin") joinStyle = Qt::BevelJoin;
-    else if (caps.at(5).toLower() == "roundjoin") joinStyle = Qt::RoundJoin;
+    BobUI::PenJoinStyle joinStyle = BobUI::BevelJoin;
+    if (caps.at(5).toLower() == "miterjoin") joinStyle = BobUI::MiterJoin;
+    else if (caps.at(5).toLower() == "beveljoin") joinStyle = BobUI::BevelJoin;
+    else if (caps.at(5).toLower() == "roundjoin") joinStyle = BobUI::RoundJoin;
     else if (!caps.at(5).isEmpty())
         fprintf(stderr, "ERROR: setPen, unknown joinStyle: %s\n", qPrintable(caps.at(5)));
 
@@ -2371,7 +2371,7 @@ void PaintCommands::command_setPen2(QRegularExpressionMatch re)
         printf(" -(lance) setPen(%s, width=%f, style=%d, cap=%d, join=%d)\n",
                qPrintable(brush.color().name()), width, penStyle, capStyle, joinStyle);
 
-    m_painter->setPen(QPen(brush, width, Qt::PenStyle(penStyle), capStyle, joinStyle));
+    m_painter->setPen(QPen(brush, width, BobUI::PenStyle(penStyle), capStyle, joinStyle));
 }
 
 /***************************************************************************************************/
@@ -2454,7 +2454,7 @@ void PaintCommands::command_pixmap_load(QRegularExpressionMatch re)
         name = fileName;
 
     QImage im = image_load<QImage>(fileName);
-    QPixmap px = QPixmap::fromImage(im, Qt::OrderedDither | Qt::OrderedAlphaDither);
+    QPixmap px = QPixmap::fromImage(im, BobUI::OrderedDither | BobUI::OrderedAlphaDither);
 
     if (m_verboseMode)
         printf(" -(lance) pixmap_load(%s as %s), size=[%d, %d], depth=%d\n",
@@ -2623,7 +2623,7 @@ void PaintCommands::command_gradient_setLinear(QRegularExpressionMatch re)
     lg.setSpread(m_gradientSpread);
     lg.setCoordinateMode(m_gradientCoordinate);
     QBrush brush(lg);
-    QTransform brush_matrix = m_painter->brush().transform();
+    BOBUIransform brush_matrix = m_painter->brush().transform();
     brush.setTransform(brush_matrix);
     m_painter->setBrush(brush);
 }
@@ -2670,7 +2670,7 @@ void PaintCommands::command_gradient_setRadial(QRegularExpressionMatch re)
     rg.setSpread(m_gradientSpread);
     rg.setCoordinateMode(m_gradientCoordinate);
     QBrush brush(rg);
-    QTransform brush_matrix = m_painter->brush().transform();
+    BOBUIransform brush_matrix = m_painter->brush().transform();
     brush.setTransform(brush_matrix);
     m_painter->setBrush(brush);
 }
@@ -2696,7 +2696,7 @@ void PaintCommands::command_gradient_setRadialExtended(QRegularExpressionMatch r
     rg.setSpread(m_gradientSpread);
     rg.setCoordinateMode(m_gradientCoordinate);
     QBrush brush(rg);
-    QTransform brush_matrix = m_painter->brush().transform();
+    BOBUIransform brush_matrix = m_painter->brush().transform();
     brush.setTransform(brush_matrix);
     m_painter->setBrush(brush);
 }
@@ -2719,7 +2719,7 @@ void PaintCommands::command_gradient_setConical(QRegularExpressionMatch re)
     cg.setSpread(m_gradientSpread);
     cg.setCoordinateMode(m_gradientCoordinate);
     QBrush brush(cg);
-    QTransform brush_matrix = m_painter->brush().transform();
+    BOBUIransform brush_matrix = m_painter->brush().transform();
     brush.setTransform(brush_matrix);
     m_painter->setBrush(brush);
 }
@@ -2766,7 +2766,7 @@ void PaintCommands::command_surface_begin(QRegularExpressionMatch re)
     m_surface_painter = m_painter;
 
     if (m_type == OpenGLType || m_type == OpenGLBufferType) {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         m_default_glcontext = QOpenGLContext::currentContext();
         m_surface_glcontext = new QOpenGLContext();
         // Pick up the format from the current context; this is especially
@@ -2783,13 +2783,13 @@ void PaintCommands::command_surface_begin(QRegularExpressionMatch re)
         m_painter = new QPainter(m_surface_glpaintdevice);
         m_painter->save();
         m_painter->setCompositionMode(QPainter::CompositionMode_Clear);
-        m_painter->fillRect(QRect(0, 0, qRound(w), qRound(h)), Qt::transparent);
+        m_painter->fillRect(QRect(0, 0, qRound(w), qRound(h)), BobUI::transparent);
         m_painter->restore();
 #endif
     } else {
         QImage::Format surface_format;
         if (QImage::toPixelFormat(m_format).alphaUsage() != QPixelFormat::UsesAlpha)
-            surface_format = qt_alphaVersion(m_format);
+            surface_format = bobui_alphaVersion(m_format);
         else
             surface_format = m_format;
 
@@ -2821,7 +2821,7 @@ void PaintCommands::command_surface_end(QRegularExpressionMatch)
     m_surface_painter = 0;
 
     if (m_type == OpenGLType || m_type == OpenGLBufferType) {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         QImage new_image = m_surface_glbuffer->toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
 
         delete m_surface_glpaintdevice;
@@ -2866,7 +2866,7 @@ void PaintCommands::command_image_convertToFormat(QRegularExpressionMatch re)
 
     QImage src = m_imageMap[srcName];
     QImage dest = src.convertToFormat(QImage::Format(format),
-                                      Qt::OrderedAlphaDither | Qt::OrderedDither);
+                                      BobUI::OrderedAlphaDither | BobUI::OrderedDither);
 
     if (m_verboseMode) {
         printf(" -(lance) convertToFormat %s:%d -> %s:%d\n",
@@ -2892,13 +2892,13 @@ void PaintCommands::command_textlayout_draw(QRegularExpressionMatch re)
     QFont copy = m_painter->font();
     copy.setPointSize(10);
 
-    QTextLayout layout(text, copy, m_painter->device());
+    BOBUIextLayout layout(text, copy, m_painter->device());
     layout.beginLayout();
 
     double y_offset = 0;
 
     while (true) {
-        QTextLine line = layout.createLine();
+        BOBUIextLine line = layout.createLine();
         if (!line.isValid())
             break;
         line.setLineWidth(width);
@@ -2930,7 +2930,7 @@ void PaintCommands::command_pen_setDashPattern(QRegularExpressionMatch re)
     static QRegularExpression separators("\\s");
     QStringList caps = re.capturedTexts();
     QString cap = caps.at(1);
-    QStringList numbers = cap.split(separators, Qt::SkipEmptyParts);
+    QStringList numbers = cap.split(separators, BobUI::SkipEmptyParts);
 
     QList<qreal> pattern;
     for (int i=0; i<numbers.size(); ++i)
@@ -2966,7 +2966,7 @@ void PaintCommands::command_drawConvexPolygon(QRegularExpressionMatch re)
     static QRegularExpression separators("\\s");
     QStringList caps = re.capturedTexts();
     QString cap = caps.at(1);
-    QStringList numbers = cap.split(separators, Qt::SkipEmptyParts);
+    QStringList numbers = cap.split(separators, BobUI::SkipEmptyParts);
 
     QPolygonF array;
     for (int i=0; i + 1<numbers.size(); i+=2)

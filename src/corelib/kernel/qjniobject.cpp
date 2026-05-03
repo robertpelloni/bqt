@@ -1,25 +1,25 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qjniobject.h"
 
 #include "qjnihelpers_p.h"
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qreadwritelock.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qreadwritelock.h>
+#include <BobUICore/qloggingcategory.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcJniThreadCheck, "qt.core.jni.threadcheck")
+Q_LOGGING_CATEGORY(lcJniThreadCheck, "bobui.core.jni.threadcheck")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QJniObject
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.1
     \brief A convenience wrapper around the Java Native Interface (JNI).
 
@@ -28,7 +28,7 @@ using namespace Qt::StringLiterals;
     (member, static) and fields (setter, getter).  It eliminates much
     boiler-plate that would normally be needed, with direct JNI access, for
     every operation. Exceptions thrown by called Java methods are cleared by
-    default, but can since Qt 6.11 also be handled by the caller.
+    default, but can since BobUI 6.11 also be handled by the caller.
 
     \note This API has been designed and tested for use with Android.
     It has not been tested for other platforms.
@@ -50,11 +50,11 @@ using namespace Qt::StringLiterals;
     signature from the actual argument types. Only the return type needs to be
     provided explicitly. QJniObject can deduce the signature string for
     functions that take \l {JNI types}, and for types that have been declared
-    with the QtJniTypes type mapping.
+    with the BobUIJniTypes type mapping.
 
     \code
     // Java class
-    package org.qtproject.qt;
+    package org.bobuiproject.bobui;
     class TestClass
     {
         static TestClass create() { ... }
@@ -65,10 +65,10 @@ using namespace Qt::StringLiterals;
 
     \code
     // C++ code
-    Q_DECLARE_JNI_CLASS(TestClass, "org/qtproject/qt/TestClass")
+    Q_DECLARE_JNI_CLASS(TestClass, "org/bobuiproject/bobui/TestClass")
 
     // ...
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
     TestClass testClass = TestClass::callStaticMethod<TestClass>("create");
     \endcode
 
@@ -91,7 +91,7 @@ using namespace Qt::StringLiterals;
     The signature structure is \c "(ArgumentsTypes)ReturnType". Array types in the signature
     must have the \c {[} prefix, and the fully-qualified \c Object type names must have the
     \c L prefix and the \c ; suffix. The signature for the \c create function is
-    \c {"()Lorg/qtproject/qt/TestClass;}. The signatures for the second and third functions
+    \c {"()Lorg/bobuiproject/bobui/TestClass;}. The signatures for the second and third functions
     are \c {"(I)Ljava/lang/String;"} and
     \c {"(Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;"}, respectively.
 
@@ -99,9 +99,9 @@ using namespace Qt::StringLiterals;
 
     \code
     // C++ code
-    QJniObject testClass = QJniObject::callStaticObjectMethod("org/qtproject/qt/TestClass",
+    QJniObject testClass = QJniObject::callStaticObjectMethod("org/bobuiproject/bobui/TestClass",
                                                               "create",
-                                                              "()Lorg/qtproject/qt/TestClass;");
+                                                              "()Lorg/bobuiproject/bobui/TestClass;");
     \endcode
 
     For the second and third function we can rely on QJniObject's template methods to create
@@ -109,7 +109,7 @@ using namespace Qt::StringLiterals;
 
     \code
     // C++ code
-    QJniObject stringNumber = QJniObject::callStaticObjectMethod("org/qtproject/qt/TestClass",
+    QJniObject stringNumber = QJniObject::callStaticObjectMethod("org/bobuiproject/bobui/TestClass",
                                                                  "fromNumber",
                                                                  "(I)Ljava/lang/String;", 10);
     \endcode
@@ -121,7 +121,7 @@ using namespace Qt::StringLiterals;
     QJniObject string1 = QJniObject::fromString("String1");
     QJniObject string2 = QJniObject::fromString("String2");
     QJniObject stringArray = QJniObject::callStaticObjectMethod<jobjectArray>(
-                                                                "org/qtproject/qt/TestClass",
+                                                                "org/bobuiproject/bobui/TestClass",
                                                                 "stringArray",
                                                                 string1.object<jstring>(),
                                                                 string2.object<jstring>());
@@ -140,7 +140,7 @@ using namespace Qt::StringLiterals;
     are thrown by the method as a way of reporting errors or returning failure
     information.
 
-    From Qt 6.11 on, client code can opt in to handle exceptions explicitly in
+    From BobUI 6.11 on, client code can opt in to handle exceptions explicitly in
     each call. To do so, use \c{std::expected} from C++ 23 as the return type,
     with the value type as the expected, and \c{jthrowable} as the error type.
     For instance, trying to read a setting value via the
@@ -149,7 +149,7 @@ using namespace Qt::StringLiterals;
 
     \code
     Q_DECLARE_JNI_CLASS(SettingsSecure, "android/provider/Settings$Secure")
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
 
     QString enabledInputMethods()
     {
@@ -404,7 +404,7 @@ bool QJniObjectPrivate::isJString(JNIEnv *env) const
     if (m_is_jstring != IsJString::Unknown)
         return m_is_jstring == IsJString::Yes;
 
-    static constexpr auto stringSignature = QtJniTypes::Traits<jstring>::className();
+    static constexpr auto stringSignature = BobUIJniTypes::Traits<jstring>::className();
     if (!m_className.isEmpty()) {
         m_is_jstring = m_className == stringSignature
                      ? IsJString::Yes
@@ -441,9 +441,9 @@ jclass loadClassHelper(const QByteArray &className, JNIEnv *env)
 {
     Q_ASSERT(env);
     QByteArray classNameArray(className);
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (classNameArray.contains('.')) {
-        qWarning("QtAndroidPrivate::findClass: className '%s' should use slash separators!",
+        qWarning("BobUIAndroidPrivate::findClass: className '%s' should use slash separators!",
                  className.constData());
     }
 #endif
@@ -473,7 +473,7 @@ jclass loadClassHelper(const QByteArray &className, JNIEnv *env)
 
     if (!clazz) {
         // Wrong class loader, try our own
-        jobject classLoader = QtAndroidPrivate::classLoader();
+        jobject classLoader = BobUIAndroidPrivate::classLoader();
         if (!classLoader)
             return nullptr;
 
@@ -486,7 +486,7 @@ jclass loadClassHelper(const QByteArray &className, JNIEnv *env)
                                  "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
             env->DeleteLocalRef(classLoaderClass);
             if (!cachedClasses->loadClassMethod) {
-                qCritical("Couldn't find the 'loadClass' method in the Qt class loader");
+                qCritical("Couldn't find the 'loadClass' method in the BobUI class loader");
                 return nullptr;
             }
         }
@@ -506,7 +506,7 @@ jclass loadClassHelper(const QByteArray &className, JNIEnv *env)
             env->DeleteLocalRef(classObject);
         }
         // Clearing the exception is the caller's responsibility (see
-        // QtAndroidPrivate::findClass()) and QJniObject::loadClass{KeepExceptions}
+        // BobUIAndroidPrivate::findClass()) and QJniObject::loadClass{KeepExceptions}
     }
 
     if (clazz)
@@ -521,7 +521,7 @@ jclass loadClassHelper(const QByteArray &className, JNIEnv *env)
     \internal
     \a className must be slash-encoded
 */
-jclass QtAndroidPrivate::findClass(const char *className, JNIEnv *env)
+jclass BobUIAndroidPrivate::findClass(const char *className, JNIEnv *env)
 {
     jclass clazz = loadClassHelper(className, env);
     if (!clazz)
@@ -531,7 +531,7 @@ jclass QtAndroidPrivate::findClass(const char *className, JNIEnv *env)
 
 jclass QJniObject::loadClass(const QByteArray &className, JNIEnv *env)
 {
-    return QtAndroidPrivate::findClass(className, env);
+    return BobUIAndroidPrivate::findClass(className, env);
 }
 
 jclass QJniObject::loadClassKeepExceptions(const QByteArray &className, JNIEnv *env)
@@ -742,7 +742,7 @@ QJniObject::QJniObject(const char *className, const char *signature, ...)
 
     \code
     QJniEnvironment env;
-    jclass myClazz = env.findClass("org/qtproject/qt/TestClass");
+    jclass myClazz = env.findClass("org/bobuiproject/bobui/TestClass");
     QJniObject(myClazz, "(I)V", 3);
     \endcode
 */
@@ -768,7 +768,7 @@ QJniObject::QJniObject(jclass clazz, const char *signature, ...)
 
     \code
     QJniEnvironment env;
-    jclass myClazz = env.findClass("org/qtproject/qt/TestClass");
+    jclass myClazz = env.findClass("org/bobuiproject/bobui/TestClass");
     QJniObject(myClazz, 3);
     \endcode
 */
@@ -938,7 +938,7 @@ QByteArray QJniObject::className() const
     is a jobject type, then the returned value will be a QJniObject.
 
     \code
-    QJniObject myJavaString("org/qtproject/qt/TestClass");
+    QJniObject myJavaString("org/bobuiproject/bobui/TestClass");
     jint index = myJavaString.callMethod<jint>("indexOf", "(I)I", 0x0051);
     \endcode
 */
@@ -952,7 +952,7 @@ QByteArray QJniObject::className() const
     will be a QJniObject.
 
     \code
-    QJniObject myJavaString("org/qtproject/qt/TestClass");
+    QJniObject myJavaString("org/bobuiproject/bobui/TestClass");
     jint size = myJavaString.callMethod<jint>("length");
     \endcode
 
@@ -1256,7 +1256,7 @@ QJniObject QJniObject::callStaticObjectMethod(jclass clazz, jmethodID methodId, 
     Retrieves the value of the field \a fieldName.
 
     \code
-    QJniObject volumeControl("org/qtproject/qt/TestClass");
+    QJniObject volumeControl("org/bobuiproject/bobui/TestClass");
     jint fieldValue = volumeControl.getField<jint>("FIELD_NAME");
     \endcode
 */
@@ -1451,9 +1451,9 @@ QJniObject QJniObject::getObjectField(const char *fieldName, const char *signatu
 QJniObject QJniObject::fromString(const QString &string)
 {
     JNIEnv *env = QJniEnvironment::getJniEnv();
-    jstring stringRef = QtJniTypes::Detail::fromQString(string, env);
+    jstring stringRef = BobUIJniTypes::Detail::fromQString(string, env);
     QJniObject stringObject = getCleanJniObject(stringRef, env);
-    stringObject.d->m_className = QtJniTypes::Traits<jstring>::className();
+    stringObject.d->m_className = BobUIJniTypes::Traits<jstring>::className();
     stringObject.d->m_is_jstring = QJniObjectPrivate::IsJString::Yes;
     return stringObject;
 }
@@ -1479,10 +1479,10 @@ QString QJniObject::toString() const
 
     JNIEnv *env = jniEnv();
     if (d->isJString(env))
-        return QtJniTypes::Detail::toQString(object<jstring>(), env);
+        return BobUIJniTypes::Detail::toQString(object<jstring>(), env);
 
     const QJniObject string = callMethod<jstring>("toString");
-    return QtJniTypes::Detail::toQString(string.object<jstring>(), env);
+    return BobUIJniTypes::Detail::toQString(string.object<jstring>(), env);
 }
 
 /*!
@@ -1582,23 +1582,23 @@ jobject QJniObject::javaObject() const
 }
 
 /*!
-    \class QtJniTypes::JObjectBase
-    \brief The JObjectBase in the QtJniTypes namespace is the base of all declared Java types.
-    \inmodule QtCore
+    \class BobUIJniTypes::JObjectBase
+    \brief The JObjectBase in the BobUIJniTypes namespace is the base of all declared Java types.
+    \inmodule BobUICore
     \internal
 */
 
 /*!
-    \class QtJniTypes::JObject
-    \inmodule QtCore
-    \brief The JObject template in the QtJniTypes namespace is the base of declared Java types.
-    \since Qt 6.8
+    \class BobUIJniTypes::JObject
+    \inmodule BobUICore
+    \brief The JObject template in the BobUIJniTypes namespace is the base of declared Java types.
+    \since BobUI 6.8
 
     JObject\<Type\> is a template class where \a Type specifies the Java type
     being represented.
 
     This template gets specialized when using the Q_DECLARE_JNI_CLASS macro. The
-    specialization produces a unique type in the QtJniTypes namespace. This
+    specialization produces a unique type in the BobUIJniTypes namespace. This
     allows the type system to deduce the correct signature in JNI calls when an
     instance of the specialized type is passed as a parameter.
 
@@ -1612,32 +1612,32 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> QtJniTypes::JObject<Type>::JObject()
+    \fn template <typename Type> BobUIJniTypes::JObject<Type>::JObject()
 
     Default-constructs the JObject instance. This also default-constructs an
     instance of the represented Java type.
 */
 
 /*!
-    \fn template <typename Type> QtJniTypes::JObject<Type>::JObject(const QJniObject &other)
+    \fn template <typename Type> BobUIJniTypes::JObject<Type>::JObject(const QJniObject &other)
 
     Constructs a JObject instance that holds a reference to the same jobject as \a other.
 */
 
 /*!
-    \fn template <typename Type> QtJniTypes::JObject<Type>::JObject(jobject other)
+    \fn template <typename Type> BobUIJniTypes::JObject<Type>::JObject(jobject other)
 
     Constructs a JObject instance that holds a reference to \a other.
 */
 
 /*!
-    \fn template <typename Type> QtJniTypes::JObject<Type>::JObject(QJniObject &&other)
+    \fn template <typename Type> BobUIJniTypes::JObject<Type>::JObject(QJniObject &&other)
 
     Move-constructs a JObject instance from \a other.
 */
 
 /*!
-    \fn template <typename Type> bool QtJniTypes::JObject<Type>::isValid() const
+    \fn template <typename Type> bool BobUIJniTypes::JObject<Type>::isValid() const
 
     Returns whether the JObject instance holds a valid reference to a jobject.
 
@@ -1645,7 +1645,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> jclass QtJniTypes::JObject<Type>::objectClass() const
+    \fn template <typename Type> jclass BobUIJniTypes::JObject<Type>::objectClass() const
 
     Returns the Java class that this JObject is an instance of as a jclass.
 
@@ -1653,7 +1653,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> QString QtJniTypes::JObject<Type>::toString() const
+    \fn template <typename Type> QString BobUIJniTypes::JObject<Type>::toString() const
 
     Returns a QString with a string representation of the Java object.
 
@@ -1661,7 +1661,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> QByteArray QtJniTypes::JObject<Type>::className() const
+    \fn template <typename Type> QByteArray BobUIJniTypes::JObject<Type>::className() const
 
     Returns the name of the Java class that this object is an instance of.
 
@@ -1669,7 +1669,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> bool QtJniTypes::JObject<Type>::isClassAvailable()
+    \fn template <typename Type> bool BobUIJniTypes::JObject<Type>::isClassAvailable()
 
     Returns whether the class that this JObject specialization represents is
     available.
@@ -1678,27 +1678,27 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> JObject QtJniTypes::JObject<Type>::fromJObject(jobject object)
+    \fn template <typename Type> JObject BobUIJniTypes::JObject<Type>::fromJObject(jobject object)
 
     Constructs a JObject instance from \a object and returns that instance.
 */
 
 /*!
-    \fn template <typename Type> template <typename ...Args> JObject QtJniTypes::JObject<Type>::construct(Args &&...args)
+    \fn template <typename Type> template <typename ...Args> JObject BobUIJniTypes::JObject<Type>::construct(Args &&...args)
 
     Constructs a Java object from \a args and returns a JObject instance that
     holds a reference to that Java object.
 */
 
 /*!
-    \fn template <typename Type> JObject QtJniTypes::JObject<Type>::fromLocalRef(jobject ref)
+    \fn template <typename Type> JObject BobUIJniTypes::JObject<Type>::fromLocalRef(jobject ref)
 
     Constructs a JObject that holds a local reference to \a ref, and returns
     that object.
 */
 
 /*!
-    \fn template <typename Type> template <typename Ret, typename ...Args> auto QtJniTypes::JObject<Type>::callStaticMethod(const char *methodName, Args &&...args)
+    \fn template <typename Type> template <typename Ret, typename ...Args> auto BobUIJniTypes::JObject<Type>::callStaticMethod(const char *methodName, Args &&...args)
 
     Calls the static method \a methodName with arguments \a args, and returns
     the result of type Ret (unless Ret is \c void). If Ret is a
@@ -1708,7 +1708,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> bool QtJniTypes::JObject<Type>::registerNativeMethods(std::initializer_list<JNINativeMethod> methods)
+    \fn template <typename Type> bool BobUIJniTypes::JObject<Type>::registerNativeMethods(std::initializer_list<JNINativeMethod> methods)
 
     Registers the Java methods in \a methods with the Java class represented by
     the JObject specialization, and returns whether the registration was successful.
@@ -1717,7 +1717,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> template <typename T> auto QtJniTypes::JObject<Type>::getStaticField(const char *field)
+    \fn template <typename Type> template <typename T> auto BobUIJniTypes::JObject<Type>::getStaticField(const char *field)
 
     Returns the value of the static field \a field.
 
@@ -1725,7 +1725,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> template <typename Ret, typename T> auto QtJniTypes::JObject<Type>::setStaticField(const char *field, T &&value)
+    \fn template <typename Type> template <typename Ret, typename T> auto BobUIJniTypes::JObject<Type>::setStaticField(const char *field, T &&value)
 
     Sets the static field \a field to \a value.
 
@@ -1733,7 +1733,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> template <typename Ret, typename ...Args> auto QtJniTypes::JObject<Type>::callMethod(const char *method, Args &&...args) const
+    \fn template <typename Type> template <typename Ret, typename ...Args> auto BobUIJniTypes::JObject<Type>::callMethod(const char *method, Args &&...args) const
 
     Calls the instance method \a method with arguments \a args, and returns
     the result of type Ret (unless Ret is \c void). If Ret is a
@@ -1743,7 +1743,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> template <typename T> auto QtJniTypes::JObject<Type>::getField(const char *field) const
+    \fn template <typename Type> template <typename T> auto BobUIJniTypes::JObject<Type>::getField(const char *field) const
 
     Returns the value of the instance field \a field.
 
@@ -1751,7 +1751,7 @@ jobject QJniObject::javaObject() const
 */
 
 /*!
-    \fn template <typename Type> template <typename Ret, typename T> auto QtJniTypes::JObject<Type>::setField(const char *field, T &&value)
+    \fn template <typename Type> template <typename Ret, typename T> auto BobUIJniTypes::JObject<Type>::setField(const char *field, T &&value)
 
     Sets the value of the instance field \a field to \a value.
 
@@ -1759,4 +1759,4 @@ jobject QJniObject::javaObject() const
 */
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

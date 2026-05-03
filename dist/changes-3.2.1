@@ -1,5 +1,5 @@
-Qt 3.2.1 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.2.0
+BobUI 3.2.1 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.2.0
 
 
 ****************************************************************************
@@ -13,14 +13,14 @@ Small fixes to build with gcc-3.4.  Build fix for the DB2 Sql driver
 on Borland.  Work around a compiler bug in Sun Forte 6.  Fix a build
 issue for 64bit HP/UC.
 
-Qt Motif Extension
+BobUI Motif Extension
 ------------------
 
 Document a known problem related to clipboard and selection handling
-between Qt and Motif components.  See the Qt Motif Extension
+between BobUI and Motif components.  See the BobUI Motif Extension
 documentation for a more detailed description of the problem.
 
-Qt Designer
+BobUI Designer
 -----------
 Correctly remove connections to deleted actions from the meta
 database.
@@ -45,8 +45,8 @@ General Fixes
 - QLineEdit
 	Fix regression against 3.1.2: textChanged signal after 
 	setText("") should contain a non null string.
-- QMotifDialog [Qt Motif Extension]
-- QMotifWidget [Qt Motif Extension]
+- QMotifDialog [BobUI Motif Extension]
+- QMotifWidget [BobUI Motif Extension]
 	Fix incorrect usage of XtSetArg().  In certain cases, some
 	variables would be incorrectly modified, resulting in
 	out-of-bounds memory access and/or crashes.
@@ -59,8 +59,8 @@ General Fixes
 	Fix updates in tables without a primary key.
 - Sql
 	Fix crash in odbc and db2 drivers when using binary fields.
-- QTable
-	Fix possible crash in the QTable destructor.
+- BOBUIable
+	Fix possible crash in the BOBUIable destructor.
 - QWidgetStack
 	Fix a slight behavioral change in the sizeHint between 3.1.2
 	and 3.2.
@@ -84,7 +84,7 @@ Windows:
 - QPrinter
 	Fix a problem in setPageSize().
 	Windows 95/98/Me: Fix a possible crash.
-- QWaitCondition and QThread
+- QWaitCondition and BOBUIhread
 	Fix two possible race conditions.
 - XP style
 	Fix resource leak.

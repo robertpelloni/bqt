@@ -1,25 +1,25 @@
 // Copyright (C) 2018 Intel Corporation.
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #define CBOR_NO_ENCODER_API
 #define CBOR_NO_PARSER_API
 #include "qcborcommon_p.h"
 
-#include <QtCore/qdatastream.h>
+#include <BobUICore/qdatastream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QCborTag)
+BOBUI_IMPL_METATYPE_EXTERN(QCborTag)
 
 #include <cborerrorstrings.c>
 
 /*!
-   \headerfile <QtCborCommon>
-   \inmodule QtCore
-   \ingroup qtserialization
-   \brief The <QtCborCommon> header contains definitions common to both the
+   \headerfile <BobUICborCommon>
+   \inmodule BobUICore
+   \ingroup bobuiserialization
+   \brief The <BobUICborCommon> header contains definitions common to both the
    streaming classes (QCborStreamReader and QCborStreamWriter) and to
    QCborValue.
 
@@ -28,7 +28,7 @@ QT_IMPL_METATYPE_EXTERN(QCborTag)
 
 /*!
    \enum QCborSimpleType
-   \relates <QtCborCommon>
+   \relates <BobUICborCommon>
 
    This enum contains the possible "Simple Types" for CBOR. Simple Types range
    from 0 to 255 and are types that carry no further value.
@@ -40,7 +40,7 @@ QT_IMPL_METATYPE_EXTERN(QCborTag)
    \value Null              Absence of value (null).
    \value Undefined         Missing or deleted value, usually an error.
 
-   Qt CBOR API supports encoding and decoding any Simple Type, whether one of
+   BobUI CBOR API supports encoding and decoding any Simple Type, whether one of
    those above or any other value.
 
    Applications should only use further values if a corresponding specification
@@ -55,7 +55,7 @@ QT_IMPL_METATYPE_EXTERN(QCborTag)
        QCborStreamReader::toSimpleType(), QCborValue::isSimpleType(), QCborValue::toSimpleType()
  */
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 QDataStream &operator<<(QDataStream &ds, QCborSimpleType st)
 {
     return ds << quint8(st);
@@ -72,7 +72,7 @@ QDataStream &operator>>(QDataStream &ds, QCborSimpleType &st)
 
 /*!
    \enum QCborTag
-   \relates <QtCborCommon>
+   \relates <BobUICborCommon>
 
    This enum contains no enumeration and is used only to provide type-safe
    access to a CBOR tag.
@@ -94,11 +94,11 @@ QDataStream &operator>>(QDataStream &ds, QCborSimpleType &st)
 
 /*!
    \enum QCborKnownTags
-   \relates <QtCborCommon>
+   \relates <BobUICborCommon>
 
-   This enum contains a list of CBOR tags, known at the time of the Qt
+   This enum contains a list of CBOR tags, known at the time of the BobUI
    implementation. This list is not meant to be complete and contains only
-   tags that are either backed by an RFC or specifically used by the Qt
+   tags that are either backed by an RFC or specifically used by the BobUI
    implementation.
 
    The authoritative list is maintained by IANA in the
@@ -106,8 +106,8 @@ QDataStream &operator>>(QDataStream &ds, QCborSimpleType &st)
    registry}.
 
    \value DateTimeString        A date and time string, formatted according to RFC 3339, as refined
-                                by RFC 4287. It is the same format as Qt::ISODate and
-                                Qt::ISODateWithMs.
+                                by RFC 4287. It is the same format as BobUI::ISODate and
+                                BobUI::ISODateWithMs.
    \value UnixTime_t            A numerical representation of seconds elapsed since
                                 1970-01-01T00:00Z.
    \value PositiveBignum        A positive number of arbitrary length, encoded as a byte array in
@@ -152,7 +152,7 @@ QDataStream &operator>>(QDataStream &ds, QCborSimpleType &st)
                                 tag in a CBOR stream as the file header.
 
    The following tags are interpreted by QCborValue during decoding and will
-   produce objects with extended Qt types, and it will use those tags when
+   produce objects with extended BobUI types, and it will use those tags when
    encoding the same extended types.
 
    \value DateTimeString        \l QDateTime
@@ -172,8 +172,8 @@ QDataStream &operator>>(QDataStream &ds, QCborSimpleType &st)
 
 /*!
    \class QCborError
-   \inmodule QtCore
-   \inheaderfile QtCborCommon
+   \inmodule BobUICore
+   \inheaderfile BobUICborCommon
    \reentrant
    \since 5.12
 
@@ -210,7 +210,7 @@ QDataStream &operator>>(QDataStream &ds, QCborSimpleType &st)
                             corrupt and the error is not recoverable).
    \value InvalidUtf8String The CBOR stream contains a text string that does not decode properly
                             as UTF-8 (data is corrupt and the error is not recoverable).
-   \value DataTooLarge      CBOR string, map or array is too big and cannot be parsed by Qt
+   \value DataTooLarge      CBOR string, map or array is too big and cannot be parsed by BobUI
                             (internal limitation, but the error is not recoverable).
    \value NestingTooDeep    Too many levels of arrays or maps encountered while processing the
                             input (internal limitation, but the error is not recoverable).
@@ -293,8 +293,8 @@ QString QCborError::toString() const
     return QString::fromLatin1(cbor_error_string(err));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "moc_qcborcommon.cpp"
 #endif

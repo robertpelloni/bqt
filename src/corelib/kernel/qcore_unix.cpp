@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qbasicatomic.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qbasicatomic.h>
 #include "qcore_unix_p.h"
 
 #include <stdlib.h>
@@ -18,9 +18,9 @@
 #include <mach/mach_time.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void qt_ignore_sigpipe() noexcept // noexcept: sigaction(2) is not a Posix Cancellation Point
+void bobui_ignore_sigpipe() noexcept // noexcept: sigaction(2) is not a Posix Cancellation Point
 {
     // Set to ignore SIGPIPE once only.
     Q_CONSTINIT static QBasicAtomicInt atom = Q_BASIC_ATOMIC_INITIALIZER(0);
@@ -35,14 +35,14 @@ void qt_ignore_sigpipe() noexcept // noexcept: sigaction(2) is not a Posix Cance
     }
 }
 
-QByteArray qt_readlink(const char *path)
+QByteArray bobui_readlink(const char *path)
 {
 #ifndef PATH_MAX
     // suitably large value that won't consume too much memory
 #  define PATH_MAX  1024*1024
 #endif
 
-    QByteArray buf(256, Qt::Uninitialized);
+    QByteArray buf(256, BobUI::Uninitialized);
 
     ssize_t len = ::readlink(path, buf.data(), buf.size());
     while (len == buf.size()) {
@@ -71,16 +71,16 @@ QByteArray qt_readlink(const char *path)
 // the wrong permissions. So we bypass the glibc implementation and go straight
 // for the syscall. See
 // https://sourceware.org/git/?p=glibc.git;a=commit;h=65f6f938cd562a614a68e15d0581a34b177ec29d
-int qt_open64(const char *pathname, int flags, mode_t mode)
+int bobui_open64(const char *pathname, int flags, mode_t mode)
 {
     return syscall(SYS_open, pathname, flags | O_LARGEFILE, mode);
 }
 #  endif
 #endif
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 
-#if QT_CONFIG(poll_pollts)
+#if BOBUI_CONFIG(poll_pollts)
 #  define ppoll pollts
 #endif
 
@@ -95,16 +95,16 @@ static inline int timespecToMillisecs(const struct timespec *ts)
 }
 
 // defined in qpoll.cpp
-int qt_poll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts);
+int bobui_poll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts);
 
-static inline int qt_ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts)
+static inline int bobui_ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts)
 {
-#if QT_CONFIG(poll_ppoll) || QT_CONFIG(poll_pollts)
+#if BOBUI_CONFIG(poll_ppoll) || BOBUI_CONFIG(poll_pollts)
     return ::ppoll(fds, nfds, timeout_ts, nullptr);
-#elif QT_CONFIG(poll_poll)
+#elif BOBUI_CONFIG(poll_poll)
     return ::poll(fds, nfds, timespecToMillisecs(timeout_ts));
-#elif QT_CONFIG(poll_select)
-    return qt_poll(fds, nfds, timeout_ts);
+#elif BOBUI_CONFIG(poll_select)
+    return bobui_poll(fds, nfds, timeout_ts);
 #else
     // configure.json reports an error when everything is not available
 #endif
@@ -118,12 +118,12 @@ static inline int qt_ppoll(struct pollfd *fds, nfds_t nfds, const struct timespe
     using select(2) where necessary. In that case, returns -1 and sets errno
     to EINVAL if passed any descriptor greater than or equal to FD_SETSIZE.
 */
-int qt_safe_poll(struct pollfd *fds, nfds_t nfds, QDeadlineTimer deadline)
+int bobui_safe_poll(struct pollfd *fds, nfds_t nfds, QDeadlineTimer deadline)
 {
     if (deadline.isForever()) {
         // no timeout -> block forever
         int ret;
-        QT_EINTR_LOOP(ret, qt_ppoll(fds, nfds, nullptr));
+        BOBUI_EINTR_LOOP(ret, bobui_ppoll(fds, nfds, nullptr));
         return ret;
     }
 
@@ -132,7 +132,7 @@ int qt_safe_poll(struct pollfd *fds, nfds_t nfds, QDeadlineTimer deadline)
     // loop and recalculate the timeout as needed
     do {
         timespec ts = durationToTimespec(remaining);
-        const int ret = qt_ppoll(fds, nfds, &ts);
+        const int ret = bobui_ppoll(fds, nfds, &ts);
         if (ret != -1 || errno != EINTR)
             return ret;
         remaining = deadline.remainingTimeAsDuration();
@@ -141,6 +141,6 @@ int qt_safe_poll(struct pollfd *fds, nfds_t nfds, QDeadlineTimer deadline)
     return 0;
 }
 
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

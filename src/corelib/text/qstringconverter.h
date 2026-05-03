@@ -1,21 +1,21 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #if 0
-// keep existing syncqt header working after the move of the class
+// keep existing syncbobui header working after the move of the class
 // into qstringconverter_base
-#pragma qt_class(QStringConverter)
+#pragma bobui_class(QStringConverter)
 #endif
 
 #ifndef QSTRINGCONVERTER_H
 #define QSTRINGCONVERTER_H
 
-#include <QtCore/qstringconverter_base.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringbuilder.h>
+#include <BobUICore/qstringconverter_base.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringbuilder.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStringEncoder : public QStringConverter
 {
@@ -78,7 +78,7 @@ private:
     }
     QByteArray encodeAsByteArrayImpl(QStringView in)
     {
-        QByteArray result(iface->fromUtf16Len(in.size()), Qt::Uninitialized);
+        QByteArray result(iface->fromUtf16Len(in.size()), BobUI::Uninitialized);
         char *out = result.data();
         out = iface->fromUtf16(out, in, &state);
         result.truncate(out - result.constData());
@@ -165,7 +165,7 @@ private:
     }
     QString decodeAsStringImpl(QByteArrayView in)
     {
-        QString result(iface->toUtf16Len(in.size()), Qt::Uninitialized);
+        QString result(iface->toUtf16Len(in.size()), BobUI::Uninitialized);
         const QChar *out = iface->toUtf16(result.data(), in, &state);
         result.truncate(out - result.constData());
         return result;
@@ -177,7 +177,7 @@ private:
 };
 
 
-#if defined(QT_USE_FAST_OPERATOR_PLUS) || defined(QT_USE_QSTRINGBUILDER)
+#if defined(BOBUI_USE_FAST_OPERATOR_PLUS) || defined(BOBUI_USE_QSTRINGBUILDER)
 template <typename T>
 struct QConcatenable<QStringDecoder::EncodedData<T>>
         : private QAbstractConcatenable
@@ -289,6 +289,6 @@ void QString::assign_helper_char8(InputIterator first, InputIterator last)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

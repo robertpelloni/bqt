@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QREADWRITELOCK_P_H
 #define QREADWRITELOCK_P_H
@@ -10,21 +10,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the implementation.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qlocking_p.h>
-#include <QtCore/private/qwaitcondition_p.h>
-#include <QtCore/qreadwritelock.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/private/qlocking_p.h>
+#include <BobUICore/private/qwaitcondition_p.h>
+#include <BobUICore/qreadwritelock.h>
+#include <BobUICore/qvarlengtharray.h>
 
-QT_REQUIRE_CONFIG(thread);
+BOBUI_REQUIRE_CONFIG(thread);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QReadWriteLockStates {
 enum {
@@ -46,10 +46,10 @@ public:
     explicit QReadWriteLockPrivate(bool isRecursive = false)
         : recursive(isRecursive) {}
 
-    alignas(QtPrivate::IdealMutexAlignment) std::condition_variable writerCond;
+    alignas(BobUIPrivate::IdealMutexAlignment) std::condition_variable writerCond;
     std::condition_variable readerCond;
 
-    alignas(QtPrivate::IdealMutexAlignment) std::mutex mutex;
+    alignas(BobUIPrivate::IdealMutexAlignment) std::mutex mutex;
     int readerCount = 0;
     int writerCount = 0;
     int waitingReaders = 0;
@@ -67,10 +67,10 @@ public:
     static QReadWriteLockPrivate *allocate();
 
     // Recursive mutex handling
-    Qt::HANDLE currentWriter = {};
+    BobUI::HANDLE currentWriter = {};
 
     struct Reader {
-        Qt::HANDLE handle;
+        BobUI::HANDLE handle;
         int recursionLevel;
     };
 
@@ -99,7 +99,7 @@ QReadWriteLockPrivate::stateForWaitCondition(const QReadWriteLock *q)
 
     if (!d)
         return Unlocked;
-    const auto lock = qt_scoped_lock(d->mutex);
+    const auto lock = bobui_scoped_lock(d->mutex);
     if (d->writerCount > 1)
         return RecursivelyLocked;
     else if (d->writerCount == 1)
@@ -108,6 +108,6 @@ QReadWriteLockPrivate::stateForWaitCondition(const QReadWriteLock *q)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QREADWRITELOCK_P_H

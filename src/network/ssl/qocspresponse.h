@@ -1,22 +1,22 @@
 // Copyright (C) 2011 Richard J. Moore <rich@kde.org>
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QOCSPRESPONSE_H
 #define QOCSPRESPONSE_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtCore/qshareddata.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qobject.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qobject.h>
 
 #ifndef Q_QDOC
-QT_REQUIRE_CONFIG(ssl);
+BOBUI_REQUIRE_CONFIG(ssl);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum class QOcspCertificateStatus
 {
@@ -38,7 +38,7 @@ enum class QOcspRevocationReason
     RemoveFromCRL
 };
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 class TlsCryptographOpenSSL;
 }
 
@@ -69,7 +69,7 @@ public:
 private:
     bool isEqual(const QOcspResponse &other) const;
 
-    friend class QTlsPrivate::TlsCryptographOpenSSL;
+    friend class BOBUIlsPrivate::TlsCryptographOpenSSL;
     friend bool operator==(const QOcspResponse &lhs, const QOcspResponse &rhs)
     { return lhs.isEqual(rhs); }
     friend bool operator!=(const QOcspResponse &lhs, const QOcspResponse &rhs)
@@ -82,8 +82,8 @@ private:
 
 Q_DECLARE_SHARED(QOcspResponse)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QOcspResponse, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QOcspResponse, Q_NETWORK_EXPORT)
 
 #endif // QOCSPRESPONSE_H

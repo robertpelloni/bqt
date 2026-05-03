@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /****************************************************************************
 **
 ** In addition, as a special exception, the copyright holders listed above give
-** permission to link the code of its release of Qt with the OpenSSL project's
+** permission to link the code of its release of BobUI with the OpenSSL project's
 ** "OpenSSL" library (or modified versions of the "OpenSSL" library that use the
 ** same license as the original version), and distribute the linked executables.
 **
@@ -25,15 +25,15 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QSslSocket API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qmap.h>
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUICore/qmap.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 #include "qsslconfiguration.h"
 #include "qlist.h"
 #include "qsslcertificate.h"
@@ -42,7 +42,7 @@
 #include "qsslellipticcurve.h"
 #include "qssldiffiehellmanparameters.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslConfigurationPrivate: public QSharedData
 {
@@ -102,19 +102,19 @@ public:
     QByteArray nextNegotiatedProtocol;
     QSslConfiguration::NextProtocolNegotiationStatus nextProtocolNegotiationStatus;
 
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
     bool dtlsCookieEnabled = true;
 #else
     const bool dtlsCookieEnabled = false;
 #endif // dtls
 
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
     bool ocspStaplingEnabled = false;
 #else
     const bool ocspStaplingEnabled = false;
 #endif
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     bool reportFromCallback = false;
     bool missingCertIsFatal = false;
 #else
@@ -137,6 +137,6 @@ inline QSslConfiguration::QSslConfiguration(QSslConfigurationPrivate *dd)
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

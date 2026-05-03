@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDATETIMEEDIT_H
 #define QDATETIMEEDIT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qtimezone.h>
-#include <QtCore/qcalendar.h>
-#include <QtCore/qvariant.h>
-#include <QtWidgets/qabstractspinbox.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/bobuiimezone.h>
+#include <BobUICore/qcalendar.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIWidgets/qabstractspinbox.h>
 
-QT_REQUIRE_CONFIG(datetimeedit);
+BOBUI_REQUIRE_CONFIG(datetimeedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDateTimeEditPrivate;
 class QStyleOptionSpinBox;
@@ -25,25 +25,25 @@ class Q_WIDGETS_EXPORT QDateTimeEdit : public QAbstractSpinBox
 
     Q_PROPERTY(QDateTime dateTime READ dateTime WRITE setDateTime NOTIFY dateTimeChanged USER true)
     Q_PROPERTY(QDate date READ date WRITE setDate NOTIFY dateChanged)
-    Q_PROPERTY(QTime time READ time WRITE setTime NOTIFY timeChanged)
+    Q_PROPERTY(BOBUIime time READ time WRITE setTime NOTIFY timeChanged)
     Q_PROPERTY(QDateTime maximumDateTime READ maximumDateTime WRITE setMaximumDateTime
                RESET clearMaximumDateTime)
     Q_PROPERTY(QDateTime minimumDateTime READ minimumDateTime WRITE setMinimumDateTime
                RESET clearMinimumDateTime)
     Q_PROPERTY(QDate maximumDate READ maximumDate WRITE setMaximumDate RESET clearMaximumDate)
     Q_PROPERTY(QDate minimumDate READ minimumDate WRITE setMinimumDate RESET clearMinimumDate)
-    Q_PROPERTY(QTime maximumTime READ maximumTime WRITE setMaximumTime RESET clearMaximumTime)
-    Q_PROPERTY(QTime minimumTime READ minimumTime WRITE setMinimumTime RESET clearMinimumTime)
+    Q_PROPERTY(BOBUIime maximumTime READ maximumTime WRITE setMaximumTime RESET clearMaximumTime)
+    Q_PROPERTY(BOBUIime minimumTime READ minimumTime WRITE setMinimumTime RESET clearMinimumTime)
     Q_PROPERTY(Section currentSection READ currentSection WRITE setCurrentSection)
     Q_PROPERTY(Sections displayedSections READ displayedSections)
     Q_PROPERTY(QString displayFormat READ displayFormat WRITE setDisplayFormat)
     Q_PROPERTY(bool calendarPopup READ calendarPopup WRITE setCalendarPopup)
     Q_PROPERTY(int currentSectionIndex READ currentSectionIndex WRITE setCurrentSectionIndex)
     Q_PROPERTY(int sectionCount READ sectionCount)
-#if QT_DEPRECATED_SINCE(6, 10)
-    Q_PROPERTY(Qt::TimeSpec timeSpec READ timeSpec WRITE setTimeSpec)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
+    Q_PROPERTY(BobUI::TimeSpec timeSpec READ timeSpec WRITE setTimeSpec)
 #endif
-    Q_PROPERTY(QTimeZone timeZone READ timeZone WRITE setTimeZone)
+    Q_PROPERTY(BOBUIimeZone timeZone READ timeZone WRITE setTimeZone)
 public:
     enum Section { // a sub-type of QDateTimeParser's like-named enum.
         NoSection = 0x0000,
@@ -66,12 +66,12 @@ public:
     explicit QDateTimeEdit(QWidget *parent = nullptr);
     explicit QDateTimeEdit(const QDateTime &dt, QWidget *parent = nullptr);
     explicit QDateTimeEdit(QDate d, QWidget *parent = nullptr);
-    explicit QDateTimeEdit(QTime t, QWidget *parent = nullptr);
+    explicit QDateTimeEdit(BOBUIime t, QWidget *parent = nullptr);
     ~QDateTimeEdit();
 
     QDateTime dateTime() const;
     QDate date() const;
-    QTime time() const;
+    BOBUIime time() const;
 
     QCalendar calendar() const;
     void setCalendar(QCalendar calendar);
@@ -96,15 +96,15 @@ public:
 
     void setDateRange(QDate min, QDate max);
 
-    QTime minimumTime() const;
-    void setMinimumTime(QTime min);
+    BOBUIime minimumTime() const;
+    void setMinimumTime(BOBUIime min);
     void clearMinimumTime();
 
-    QTime maximumTime() const;
-    void setMaximumTime(QTime max);
+    BOBUIime maximumTime() const;
+    void setMaximumTime(BOBUIime max);
     void clearMaximumTime();
 
-    void setTimeRange(QTime min, QTime max);
+    void setTimeRange(BOBUIime min, BOBUIime max);
 
     Sections displayedSections() const;
     Section currentSection() const;
@@ -129,14 +129,14 @@ public:
     bool calendarPopup() const;
     void setCalendarPopup(bool enable);
 
-#if QT_DEPRECATED_SINCE(6, 10)
-    QT_DEPRECATED_VERSION_X_6_10("Use timeZone() instead")
-    Qt::TimeSpec timeSpec() const;
-    QT_DEPRECATED_VERSION_X_6_10("Use setTimeZone() instead")
-    void setTimeSpec(Qt::TimeSpec spec);
+#if BOBUI_DEPRECATED_SINCE(6, 10)
+    BOBUI_DEPRECATED_VERSION_X_6_10("Use timeZone() instead")
+    BobUI::TimeSpec timeSpec() const;
+    BOBUI_DEPRECATED_VERSION_X_6_10("Use setTimeZone() instead")
+    void setTimeSpec(BobUI::TimeSpec spec);
 #endif
-    QTimeZone timeZone() const;
-    void setTimeZone(const QTimeZone &zone);
+    BOBUIimeZone timeZone() const;
+    void setTimeZone(const BOBUIimeZone &zone);
 
     QSize sizeHint() const override;
 
@@ -146,17 +146,17 @@ public:
     bool event(QEvent *event) override;
 Q_SIGNALS:
     void dateTimeChanged(const QDateTime &dateTime);
-    void timeChanged(QTime time);
+    void timeChanged(BOBUIime time);
     void dateChanged(QDate date);
 
 public Q_SLOTS:
     void setDateTime(const QDateTime &dateTime);
     void setDate(QDate date);
-    void setTime(QTime time);
+    void setTime(BOBUIime time);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void focusInEvent(QFocusEvent *event) override;
@@ -179,17 +179,17 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_resetButton())
 };
 
-class Q_WIDGETS_EXPORT QTimeEdit : public QDateTimeEdit
+class Q_WIDGETS_EXPORT BOBUIimeEdit : public QDateTimeEdit
 {
     Q_OBJECT
-    Q_PROPERTY(QTime time READ time WRITE setTime NOTIFY userTimeChanged USER true)
+    Q_PROPERTY(BOBUIime time READ time WRITE setTime NOTIFY userTimeChanged USER true)
 public:
-    explicit QTimeEdit(QWidget *parent = nullptr);
-    explicit QTimeEdit(QTime time, QWidget *parent = nullptr);
-    ~QTimeEdit();
+    explicit BOBUIimeEdit(QWidget *parent = nullptr);
+    explicit BOBUIimeEdit(BOBUIime time, QWidget *parent = nullptr);
+    ~BOBUIimeEdit();
 
 Q_SIGNALS:
-    void userTimeChanged(QTime time);
+    void userTimeChanged(BOBUIime time);
 };
 
 class Q_WIDGETS_EXPORT QDateEdit : public QDateTimeEdit
@@ -207,6 +207,6 @@ Q_SIGNALS:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimeEdit::Sections)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATETIMEEDIT_H

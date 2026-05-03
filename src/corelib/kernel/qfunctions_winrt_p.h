@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFUNCTIONS_WINRT_P_H
 #define QFUNCTIONS_WINRT_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 
 #if defined(Q_OS_WIN) && defined(Q_CC_MSVC)
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QThread>
-#include <QtCore/QAbstractEventDispatcher>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/qt_windows.h>
-#include <QtCore/private/qcomptr_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QAbstractEventDispatcher>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/bobui_windows.h>
+#include <BobUICore/private/qcomptr_p.h>
 
 #include <windows.foundation.h>
 
@@ -51,9 +51,9 @@
 #define RETURN_VOID_IF_FAILED_WITH_ARGS(msg, ...) RETURN_IF_FAILED_WITH_ARGS(msg, return, __VA_ARGS__)
 
 #define Q_ASSERT_SUCCEEDED(hr) \
-    Q_ASSERT_X(SUCCEEDED(hr), Q_FUNC_INFO, qPrintable(qt_error_string(hr)));
+    Q_ASSERT_X(SUCCEEDED(hr), Q_FUNC_INFO, qPrintable(bobui_error_string(hr)));
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QWinRTFunctions {
 
@@ -91,7 +91,7 @@ static inline HRESULT _await_impl(const ComPtr<T> &asyncOp, AwaitStyle awaitStyl
         }
         break;
     case ProcessThreadEvents:
-        if (QAbstractEventDispatcher *dispatcher = QThread::currentThread()->eventDispatcher()) {
+        if (QAbstractEventDispatcher *dispatcher = BOBUIhread::currentThread()->eventDispatcher()) {
             while (SUCCEEDED(hr = asyncInfo->get_Status(&status)) && status == AsyncStatus::Started) {
                 dispatcher->processEvents(QEventLoop::AllEvents);
                 if (func && func())
@@ -105,7 +105,7 @@ static inline HRESULT _await_impl(const ComPtr<T> &asyncOp, AwaitStyle awaitStyl
     default:
     case YieldThread:
         while (SUCCEEDED(hr = asyncInfo->get_Status(&status)) && status == AsyncStatus::Started) {
-            QThread::yieldCurrentThread();
+            BOBUIhread::yieldCurrentThread();
             if (timeout && t.hasExpired(timeout))
                 return HRESULT_FROM_WIN32(ERROR_TIMEOUT);
         }
@@ -151,7 +151,7 @@ static inline HRESULT await(const ComPtr<T> &asyncOp, U *results,
 
 } // QWinRTFunctions
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_OS_WIN && Q_CC_MSVC
 

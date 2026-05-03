@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../../../shared/highdpi.h"
 
-#include <QTest>
-#include <QTimeZone>
+#include <BOBUIest>
+#include <BOBUIimeZone>
 #include <QDateTime>
-#include <QTimer>
-#include <QTestEventLoop>
+#include <BOBUIimer>
+#include <BOBUIestEventLoop>
 #include <QSignalSpy>
 
 #include <qabstractitemview.h>
@@ -16,31 +16,31 @@
 #include <qdatetimeedit.h>
 #include <qspinbox.h>
 #include <qlistview.h>
-#include <qtableview.h>
-#include <qtreeview.h>
+#include <bobuiableview.h>
+#include <bobuireeview.h>
 #include <qheaderview.h>
 #include <qitemeditorfactory.h>
 #include <qlineedit.h>
 #include <qvalidator.h>
-#include <qtablewidget.h>
-#include <qtreewidget.h>
+#include <bobuiablewidget.h>
+#include <bobuireewidget.h>
 
 #include <QItemDelegate>
 #include <QComboBox>
 #include <QAbstractItemDelegate>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QPlainTextEdit>
 #include <QDialog>
 
 #include <qscreen.h>
 
-#include <QtWidgets/private/qabstractitemdelegate_p.h>
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qabstractitemdelegate_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 Q_DECLARE_METATYPE(QAbstractItemDelegate::EndEditHint)
 
 #if defined (Q_OS_WIN)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #define Q_CHECK_PAINTEVENTS \
     if (::SwitchDesktop(::GetThreadDesktop(::GetCurrentThreadId())) == 0) \
         QSKIP("The widgets don't get the paint events");
@@ -148,7 +148,7 @@ public:
         static QPixmap pixmap(size);
         static QImage image(size, QImage::Format_Mono);
         static QIcon icon(pixmap);
-        static QColor color(Qt::green);
+        static QColor color(BobUI::green);
 
         switch (role) {
         case PixmapTestRole: return pixmap;
@@ -201,19 +201,19 @@ private slots:
     void testLineEditValidation();
 
     void task257859_finalizeEdit();
-    void QTBUG4435_keepSelectionOnCheck();
+    void BOBUIBUG4435_keepSelectionOnCheck();
 
-    void QTBUG16469_textForRole();
+    void BOBUIBUG16469_textForRole();
     void dateTextForRole_data();
     void dateTextForRole();
 
     void reuseEditor();
 
 private:
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     struct RoleDelegate : public QItemDelegate
     {
-        QString textForRole(Qt::ItemDataRole role, const QVariant &value, const QLocale &locale)
+        QString textForRole(BobUI::ItemDataRole role, const QVariant &value, const QLocale &locale)
         {
             QAbstractItemDelegatePrivate *d = reinterpret_cast<QAbstractItemDelegatePrivate *>(qGetPtrHelper(d_ptr));
             return d->textForRole(role, value, locale);
@@ -256,11 +256,11 @@ void tst_QItemDelegate::textRectangle_data()
     int margins = 2 * (pm + 1); // margin on each side of the text
     int height = fontMetrics.height();
 
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QRect>("rect");
-    QTest::addColumn<QRect>("expected");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<QRect>("expected");
 
-    QTest::newRow("empty") << QString()
+    BOBUIest::newRow("empty") << QString()
                            << QRect()
                            << QRect(0, 0, margins, height);
 }
@@ -280,12 +280,12 @@ void tst_QItemDelegate::textRectangle()
 
 void tst_QItemDelegate::sizeHint_data()
 {
-    QTest::addColumn<QSize>("expected");
+    BOBUIest::addColumn<QSize>("expected");
 
     QFont font;
     QFontMetrics fontMetrics(font);
     //int m = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
         << QSize(0, fontMetrics.height());
 
 }
@@ -304,10 +304,10 @@ void tst_QItemDelegate::sizeHint()
 
 void tst_QItemDelegate::editorKeyPress_data()
 {
-    QTest::addColumn<QString>("initial");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("initial");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("foo bar")
+    BOBUIest::newRow("foo bar")
         << QString("foo")
         << QString("bar");
 }
@@ -334,10 +334,10 @@ void tst_QItemDelegate::editorKeyPress()
     QLineEdit *editor = lineEditors.at(0);
     QCOMPARE(editor->selectedText(), initial);
 
-    QTest::keyClicks(editor, expected);
-    QTest::keyClick(editor, Qt::Key_Enter);
+    BOBUIest::keyClicks(editor, expected);
+    BOBUIest::keyClick(editor, BobUI::Key_Enter);
 
-    QTRY_COMPARE(index.data().toString(), expected);
+    BOBUIRY_COMPARE(index.data().toString(), expected);
 }
 
 void tst_QItemDelegate::doubleEditorNegativeInput()
@@ -345,7 +345,7 @@ void tst_QItemDelegate::doubleEditorNegativeInput()
     QStandardItemModel model;
 
     QStandardItem *item = new QStandardItem;
-    item->setData(10.0, Qt::DisplayRole);
+    item->setData(10.0, BobUI::DisplayRole);
     model.appendRow(item);
 
     QListView view;
@@ -362,13 +362,13 @@ void tst_QItemDelegate::doubleEditorNegativeInput()
     QDoubleSpinBox *editor = editors.at(0);
     QCOMPARE(editor->value(), double(10));
 
-    QTest::keyClick(editor, Qt::Key_Minus);
-    QTest::keyClick(editor, Qt::Key_1);
-    QTest::keyClick(editor, Qt::Key_0);
-    QTest::keyClick(editor, Qt::Key_Comma); //support both , and . locales
-    QTest::keyClick(editor, Qt::Key_Period);
-    QTest::keyClick(editor, Qt::Key_0);
-    QTest::keyClick(editor, Qt::Key_Enter);
+    BOBUIest::keyClick(editor, BobUI::Key_Minus);
+    BOBUIest::keyClick(editor, BobUI::Key_1);
+    BOBUIest::keyClick(editor, BobUI::Key_0);
+    BOBUIest::keyClick(editor, BobUI::Key_Comma); //support both , and . locales
+    BOBUIest::keyClick(editor, BobUI::Key_Period);
+    BOBUIest::keyClick(editor, BobUI::Key_0);
+    BOBUIest::keyClick(editor, BobUI::Key_Enter);
     QApplication::processEvents();
 
     QCOMPARE(index.data().toString(), QString("-10"));
@@ -376,16 +376,16 @@ void tst_QItemDelegate::doubleEditorNegativeInput()
 
 void tst_QItemDelegate::font_data()
 {
-    QTest::addColumn<QString>("itemText");
-    QTest::addColumn<QString>("properties");
-    QTest::addColumn<QFont>("itemFont");
-    QTest::addColumn<QFont>("viewFont");
+    BOBUIest::addColumn<QString>("itemText");
+    BOBUIest::addColumn<QString>("properties");
+    BOBUIest::addColumn<QFont>("itemFont");
+    BOBUIest::addColumn<QFont>("viewFont");
 
     QFont itemFont;
     itemFont.setItalic(true);
     QFont viewFont;
 
-    QTest::newRow("foo italic")
+    BOBUIest::newRow("foo italic")
         << QString("foo")
         << QString("italic")
         << itemFont
@@ -393,7 +393,7 @@ void tst_QItemDelegate::font_data()
 
     itemFont.setItalic(true);
 
-    QTest::newRow("foo bold")
+    BOBUIest::newRow("foo bold")
         << QString("foo")
         << QString("bold")
         << itemFont
@@ -401,7 +401,7 @@ void tst_QItemDelegate::font_data()
 
     itemFont.setFamily(itemFont.defaultFamily());
 
-    QTest::newRow("foo family")
+    BOBUIest::newRow("foo family")
         << QString("foo")
         << QString("family")
         << itemFont
@@ -417,22 +417,22 @@ void tst_QItemDelegate::font()
     QFETCH(QFont, itemFont);
     QFETCH(QFont, viewFont);
 
-    QTableWidget table(1, 1);
+    BOBUIableWidget table(1, 1);
     table.setFont(viewFont);
 
     TestItemDelegate *delegate = new TestItemDelegate(&table);
     table.setItemDelegate(delegate);
     table.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&table));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&table));
 
-    QTableWidgetItem *item = new QTableWidgetItem;
+    BOBUIableWidgetItem *item = new BOBUIableWidgetItem;
     item->setText(itemText);
     item->setFont(itemFont);
     table.setItem(0, 0, item);
 
     QApplication::processEvents();
 
-    QTRY_COMPARE(delegate->displayText, item->text());
+    BOBUIRY_COMPARE(delegate->displayText, item->text());
     if (properties.contains("italic")) {
         QCOMPARE(delegate->displayFont.italic(), item->font().italic());
     }
@@ -450,16 +450,16 @@ void tst_QItemDelegate::font()
 
 void tst_QItemDelegate::doLayout_data()
 {
-    QTest::addColumn<int>("position");
-    QTest::addColumn<int>("direction");
-    QTest::addColumn<bool>("hint");
-    QTest::addColumn<QRect>("itemRect");
-    QTest::addColumn<QRect>("checkRect");
-    QTest::addColumn<QRect>("pixmapRect");
-    QTest::addColumn<QRect>("textRect");
-    QTest::addColumn<QRect>("expectedCheckRect");
-    QTest::addColumn<QRect>("expectedPixmapRect");
-    QTest::addColumn<QRect>("expectedTextRect");
+    BOBUIest::addColumn<int>("position");
+    BOBUIest::addColumn<int>("direction");
+    BOBUIest::addColumn<bool>("hint");
+    BOBUIest::addColumn<QRect>("itemRect");
+    BOBUIest::addColumn<QRect>("checkRect");
+    BOBUIest::addColumn<QRect>("pixmapRect");
+    BOBUIest::addColumn<QRect>("textRect");
+    BOBUIest::addColumn<QRect>("expectedCheckRect");
+    BOBUIest::addColumn<QRect>("expectedPixmapRect");
+    BOBUIest::addColumn<QRect>("expectedTextRect");
 
     int m = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
     //int item = 400;
@@ -467,9 +467,9 @@ void tst_QItemDelegate::doLayout_data()
     //int pixmap = 1000;
     //int text = 400;
 
-    QTest::newRow("top, left to right, hint")
+    BOBUIest::newRow("top, left to right, hint")
         << (int)QStyleOptionViewItem::Top
-        << (int)Qt::LeftToRight
+        << (int)BobUI::LeftToRight
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -479,9 +479,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(50 + 2*m, 0, 1000 + 2*m, 1000 + m)
         << QRect(50 + 2*m, 1000 + m, 1000 + 2*m, 400);
     /*
-    QTest::newRow("top, left to right, limited")
+    BOBUIest::newRow("top, left to right, limited")
         << (int)QStyleOptionViewItem::Top
-        << (int)Qt::LeftToRight
+        << (int)BobUI::LeftToRight
         << false
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -491,9 +491,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(50 + 2*m, 0, 1000, 1000)
         << QRect(50 + 2*m, 1000 + m, 400 - (50 + 2*m), 400 - 1000 - m);
     */
-    QTest::newRow("top, right to left, hint")
+    BOBUIest::newRow("top, right to left, hint")
         << (int)QStyleOptionViewItem::Top
-        << (int)Qt::RightToLeft
+        << (int)BobUI::RightToLeft
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -503,9 +503,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(0, 0, 1000 + 2 * m, 1000 + m)
         << QRect(0, 1000 + m, 1000 + 2 * m, 400);
 
-    QTest::newRow("bottom, left to right, hint")
+    BOBUIest::newRow("bottom, left to right, hint")
         << (int)QStyleOptionViewItem::Bottom
-        << (int)Qt::LeftToRight
+        << (int)BobUI::LeftToRight
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -515,9 +515,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(50 + 2 * m, 400 + m, 1000 + 2 * m, 1000)
         << QRect(50 + 2 * m, 0, 1000 + 2 * m, 400 + m);
 
-    QTest::newRow("bottom, right to left, hint")
+    BOBUIest::newRow("bottom, right to left, hint")
         << (int)QStyleOptionViewItem::Bottom
-        << (int)Qt::RightToLeft
+        << (int)BobUI::RightToLeft
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -527,9 +527,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(0, 400 + m, 1000 + 2 * m, 1000)
         << QRect(0, 0, 1000 + 2 * m, 400 + m);
 
-    QTest::newRow("left, left to right, hint")
+    BOBUIest::newRow("left, left to right, hint")
         << (int)QStyleOptionViewItem::Left
-        << (int)Qt::LeftToRight
+        << (int)BobUI::LeftToRight
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -539,9 +539,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(50 + 2 * m, 0, 1000 + 2 * m, 1000)
         << QRect(1050 + 4 * m, 0, 400 + 2 * m, 1000);
 
-    QTest::newRow("left, right to left, hint")
+    BOBUIest::newRow("left, right to left, hint")
         << (int)QStyleOptionViewItem::Left
-        << (int)Qt::RightToLeft
+        << (int)BobUI::RightToLeft
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -551,9 +551,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(400 + 2 * m, 0, 1000 + 2 * m, 1000)
         << QRect(0, 0, 400 + 2 * m, 1000);
 
-    QTest::newRow("right, left to right, hint")
+    BOBUIest::newRow("right, left to right, hint")
         << (int)QStyleOptionViewItem::Right
-        << (int)Qt::LeftToRight
+        << (int)BobUI::LeftToRight
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -563,9 +563,9 @@ void tst_QItemDelegate::doLayout_data()
         << QRect(450 + 4 * m, 0, 1000 + 2 * m, 1000)
         << QRect(50 + 2 * m, 0, 400 + 2 * m, 1000);
 
-    QTest::newRow("right, right to left, hint")
+    BOBUIest::newRow("right, right to left, hint")
         << (int)QStyleOptionViewItem::Right
-        << (int)Qt::RightToLeft
+        << (int)BobUI::RightToLeft
         << true
         << QRect(0, 0, 400, 400)
         << QRect(0, 0, 50, 50)
@@ -594,7 +594,7 @@ void tst_QItemDelegate::doLayout()
 
     option.rect = itemRect;
     option.decorationPosition = (QStyleOptionViewItem::Position)position;
-    option.direction = (Qt::LayoutDirection)direction;
+    option.direction = (BobUI::LayoutDirection)direction;
 
     delegate.doLayout(option, &checkRect, &pixmapRect, &textRect, hint);
 
@@ -605,31 +605,31 @@ void tst_QItemDelegate::doLayout()
 
 void tst_QItemDelegate::rect_data()
 {
-    QTest::addColumn<int>("role");
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<QRect>("expected");
+    BOBUIest::addColumn<int>("role");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<QRect>("expected");
 
-    QTest::newRow("pixmap")
+    BOBUIest::newRow("pixmap")
         << (int)TestItemModel::PixmapTestRole
         << QSize(200, 300)
         << QRect(0, 0, 200, 300);
 
-    QTest::newRow("image")
+    BOBUIest::newRow("image")
         << (int)TestItemModel::ImageTestRole
         << QSize(200, 300)
         << QRect(0, 0, 200, 300);
 
-    QTest::newRow("icon")
+    BOBUIest::newRow("icon")
         << (int)TestItemModel::IconTestRole
         << QSize(200, 300)
         << QRect(0, 0, 200, 300);
 
-    QTest::newRow("color")
+    BOBUIest::newRow("color")
         << (int)TestItemModel::ColorTestRole
         << QSize(200, 300)
         << QRect(0, 0, 200, 300);
 
-    QTest::newRow("double")
+    BOBUIest::newRow("double")
             << (int)TestItemModel::DoubleTestRole
             << QSize()
             << QRect();
@@ -656,7 +656,7 @@ void tst_QItemDelegate::rect()
 }
 
 //TODO : Add a test for the keyPress event
-//with Qt::Key_Enter and Qt::Key_Return
+//with BobUI::Key_Enter and BobUI::Key_Return
 void tst_QItemDelegate::testEventFilter()
 {
     TestItemDelegate delegate;
@@ -672,25 +672,25 @@ void tst_QItemDelegate::testEventFilter()
 
     //Subtest KeyPress
     //For each test we send a key event and check if signals were emitted.
-    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier);
+    event = new QKeyEvent(QEvent::KeyPress, BobUI::Key_Tab, BobUI::NoModifier);
     QVERIFY(delegate.eventFilter(&widget, event));
     QCOMPARE(closeEditorSpy.size(), 1);
     QCOMPARE(commitDataSpy.size(), 1);
     delete event;
 
-    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Backtab, Qt::NoModifier);
+    event = new QKeyEvent(QEvent::KeyPress, BobUI::Key_Backtab, BobUI::NoModifier);
     QVERIFY(delegate.eventFilter(&widget, event));
     QCOMPARE(closeEditorSpy.size(), 2);
     QCOMPARE(commitDataSpy.size(), 2);
     delete event;
 
-    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Escape, Qt::NoModifier);
+    event = new QKeyEvent(QEvent::KeyPress, BobUI::Key_Escape, BobUI::NoModifier);
     QVERIFY(delegate.eventFilter(&widget, event));
     QCOMPARE(closeEditorSpy.size(), 3);
     QCOMPARE(commitDataSpy.size(), 2);
     delete event;
 
-    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier);
+    event = new QKeyEvent(QEvent::KeyPress, BobUI::Key_A, BobUI::NoModifier);
     QVERIFY(!delegate.eventFilter(&widget, event));
     QCOMPARE(closeEditorSpy.size(), 3);
     QCOMPARE(commitDataSpy.size(), 2);
@@ -706,11 +706,11 @@ void tst_QItemDelegate::testEventFilter()
 
 void tst_QItemDelegate::dateTimeEditor_data()
 {
-    QTest::addColumn<QTime>("time");
-    QTest::addColumn<QDate>("date");
+    BOBUIest::addColumn<BOBUIime>("time");
+    BOBUIest::addColumn<QDate>("date");
 
-    QTest::newRow("data")
-        << QTime(7, 16, 34)
+    BOBUIest::newRow("data")
+        << BOBUIime(7, 16, 34)
         << QDate(2006, 10, 31);
 }
 
@@ -726,36 +726,36 @@ static QDateTimeEdit *findDateTimeEdit(const QWidget *widget)
 
 void tst_QItemDelegate::dateTimeEditor()
 {
-    QFETCH(QTime, time);
+    QFETCH(BOBUIime, time);
     QFETCH(QDate, date);
 
-    QTableWidgetItem *item1 = new QTableWidgetItem;
-    item1->setData(Qt::DisplayRole, time);
+    BOBUIableWidgetItem *item1 = new BOBUIableWidgetItem;
+    item1->setData(BobUI::DisplayRole, time);
 
-    QTableWidgetItem *item2 = new QTableWidgetItem;
-    item2->setData(Qt::DisplayRole, date);
+    BOBUIableWidgetItem *item2 = new BOBUIableWidgetItem;
+    item2->setData(BobUI::DisplayRole, date);
 
-    QTableWidgetItem *item3 = new QTableWidgetItem;
-    item3->setData(Qt::DisplayRole, QDateTime(date, time));
+    BOBUIableWidgetItem *item3 = new BOBUIableWidgetItem;
+    item3->setData(BobUI::DisplayRole, QDateTime(date, time));
 
-    QTableWidget widget(1, 3);
-    widget.setWindowTitle(QLatin1String(QTest::currentTestFunction())
+    BOBUIableWidget widget(1, 3);
+    widget.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction())
                           + QLatin1String("::")
-                          + QLatin1String(QTest::currentDataTag()));
+                          + QLatin1String(BOBUIest::currentDataTag()));
     widget.setItem(0, 0, item1);
     widget.setItem(0, 1, item2);
     widget.setItem(0, 2, item3);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     widget.editItem(item1);
 
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
 
 
-    QTimeEdit *timeEditor = nullptr;
+    BOBUIimeEdit *timeEditor = nullptr;
     auto viewport = widget.viewport();
-    QTRY_VERIFY( (timeEditor = viewport->findChild<QTimeEdit *>()) );
+    BOBUIRY_VERIFY( (timeEditor = viewport->findChild<BOBUIimeEdit *>()) );
     QCOMPARE(timeEditor->time(), time);
     // The data must actually be different in order for the model
     // to be updated.
@@ -766,7 +766,7 @@ void tst_QItemDelegate::dateTimeEditor()
     widget.editItem(item2);
 
     QDateEdit *dateEditor = nullptr;
-    QTRY_VERIFY( (dateEditor = viewport->findChild<QDateEdit *>()) );
+    BOBUIRY_VERIFY( (dateEditor = viewport->findChild<QDateEdit *>()) );
     QCOMPARE(dateEditor->date(), date);
     dateEditor->setDate(date.addDays(60));
 
@@ -774,18 +774,18 @@ void tst_QItemDelegate::dateTimeEditor()
     widget.setFocus();
     widget.editItem(item3);
 
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
 
     QDateTimeEdit *dateTimeEditor = nullptr;
-    QTRY_VERIFY( (dateTimeEditor = findDateTimeEdit(viewport)) );
+    BOBUIRY_VERIFY( (dateTimeEditor = findDateTimeEdit(viewport)) );
     QCOMPARE(dateTimeEditor->date(), date);
     QCOMPARE(dateTimeEditor->time(), time);
     dateTimeEditor->setTime(time.addSecs(600));
     widget.clearFocus();
 
-    QCOMPARE(item1->data(Qt::EditRole).userType(), int(QMetaType::QTime));
-    QCOMPARE(item2->data(Qt::EditRole).userType(), int(QMetaType::QDate));
-    QCOMPARE(item3->data(Qt::EditRole).userType(), int(QMetaType::QDateTime));
+    QCOMPARE(item1->data(BobUI::EditRole).userType(), int(QMetaType::BOBUIime));
+    QCOMPARE(item2->data(BobUI::EditRole).userType(), int(QMetaType::QDate));
+    QCOMPARE(item3->data(BobUI::EditRole).userType(), int(QMetaType::QDateTime));
 }
 
 // A delegate where we can either enforce a certain widget or use the standard widget.
@@ -816,9 +816,9 @@ private:
     mutable QPointer<QWidget> m_editor;
 };
 
-// We could (nearly) use a normal QTableView but in order not to add many seconds to the autotest
+// We could (nearly) use a normal BOBUIableView but in order not to add many seconds to the autotest
 // (and save a few lines) we do this
-class FastEditItemView : public QTableView
+class FastEditItemView : public BOBUIableView
 {
 public:
     QWidget* fastEdit(const QModelIndex &i) // Consider this as QAbstractItemView::edit( )
@@ -846,34 +846,34 @@ void tst_QItemDelegate::dateAndTimeEditorTest2()
     w.setModel(&s);
     ChooseEditorDelegate *d = new ChooseEditorDelegate(&w);
     w.setItemDelegate(d);
-    const QTime time1(3, 13, 37);
+    const BOBUIime time1(3, 13, 37);
     const QDate date1(2013, 3, 7);
 
-    QPointer<QTimeEdit> timeEdit;
+    QPointer<BOBUIimeEdit> timeEdit;
     QPointer<QDateEdit> dateEdit;
     QPointer<QDateTimeEdit> dateTimeEdit;
 
     // Do some checks
-    // a. Open time editor on empty cell + write QTime data
+    // a. Open time editor on empty cell + write BOBUIime data
     const QModelIndex i1 = s.index(0, 0);
-    timeEdit = new QTimeEdit();
+    timeEdit = new BOBUIimeEdit();
     d->setNextOpenEditor(timeEdit);
     QCOMPARE(w.fastEdit(i1), timeEdit.data());
     timeEdit->setTime(time1);
     d->setModelData(timeEdit, &s, i1);
-    QCOMPARE(s.data(i1).metaType().id(), QMetaType::QTime); // ensure that we wrote a time variant.
+    QCOMPARE(s.data(i1).metaType().id(), QMetaType::BOBUIime); // ensure that we wrote a time variant.
     QCOMPARE(s.data(i1).toTime(), time1);        // ensure that it is the correct time.
     w.doCloseEditor(timeEdit);
     QVERIFY(d->currentEditor() == 0); // should happen at doCloseEditor. We only test this once.
 
-    // b. Test that automatic edit of a QTime value is QTimeEdit (and not QDateTimeEdit)
+    // b. Test that automatic edit of a BOBUIime value is BOBUIimeEdit (and not QDateTimeEdit)
     QWidget *editor = w.fastEdit(i1);
-    timeEdit = qobject_cast<QTimeEdit*>(editor);
+    timeEdit = qobject_cast<BOBUIimeEdit*>(editor);
     QVERIFY(timeEdit);
     QCOMPARE(timeEdit->time(), time1);
     w.doCloseEditor(timeEdit);
 
-    const QTime time2(4, 14, 37);
+    const BOBUIime time2(4, 14, 37);
     const QDate date2(2014, 4, 7);
     const QDateTime datetime1(date1, time1);
     const QDateTime datetime2(date2, time2);
@@ -881,7 +881,7 @@ void tst_QItemDelegate::dateAndTimeEditorTest2()
     // c. Test that the automatic open of an QDateTime is QDateTimeEdit + value check + set check
     s.setData(i1, datetime2);
     editor = w.fastEdit(i1);
-    timeEdit = qobject_cast<QTimeEdit*>(editor);
+    timeEdit = qobject_cast<BOBUIimeEdit*>(editor);
     QVERIFY(!timeEdit);
     dateEdit = qobject_cast<QDateEdit*>(editor);
     QVERIFY(!dateEdit);
@@ -921,13 +921,13 @@ void tst_QItemDelegate::uintEdit()
     {
         QStandardItem *data=new QStandardItem;
         data->setEditable(true);
-        data->setData(QVariant((uint)1), Qt::DisplayRole);
+        data->setData(QVariant((uint)1), BobUI::DisplayRole);
         model.setItem(0, 0, data);
     }
     {
         QStandardItem *data=new QStandardItem;
         data->setEditable(true);
-        data->setData(QVariant((uint)1), Qt::DisplayRole);
+        data->setData(QVariant((uint)1), BobUI::DisplayRole);
         model.setItem(1, 0, data);
     }
 
@@ -936,7 +936,7 @@ void tst_QItemDelegate::uintEdit()
 
     const QModelIndex firstCell = model.index(0, 0);
 
-    QCOMPARE(firstCell.data(Qt::DisplayRole).userType(), static_cast<int>(QMetaType::UInt));
+    QCOMPARE(firstCell.data(BobUI::DisplayRole).userType(), static_cast<int>(QMetaType::UInt));
 
     view.selectionModel()->setCurrentIndex(model.index(0, 0), QItemSelectionModel::Select);
     view.edit(firstCell);
@@ -950,8 +950,8 @@ void tst_QItemDelegate::uintEdit()
     const QModelIndex secondCell = model.index(1, 0);
     view.selectionModel()->setCurrentIndex(secondCell, QItemSelectionModel::Select);
 
-    QCOMPARE(firstCell.data(Qt::DisplayRole).userType(), static_cast<int>(QMetaType::UInt));
-    QCOMPARE(firstCell.data(Qt::DisplayRole).toUInt(), static_cast<uint>(2));
+    QCOMPARE(firstCell.data(BobUI::DisplayRole).userType(), static_cast<int>(QMetaType::UInt));
+    QCOMPARE(firstCell.data(BobUI::DisplayRole).toUInt(), static_cast<uint>(2));
 
 
     view.edit(secondCell);
@@ -969,42 +969,42 @@ void tst_QItemDelegate::uintEdit()
     // Select another index to trigger the end of editing.
     view.selectionModel()->setCurrentIndex(firstCell, QItemSelectionModel::Select);
 
-    QCOMPARE(secondCell.data(Qt::DisplayRole).userType(), static_cast<int>(QMetaType::UInt));
-    QCOMPARE(secondCell.data(Qt::DisplayRole).toUInt(), static_cast<uint>(0));
+    QCOMPARE(secondCell.data(BobUI::DisplayRole).userType(), static_cast<int>(QMetaType::UInt));
+    QCOMPARE(secondCell.data(BobUI::DisplayRole).toUInt(), static_cast<uint>(0));
 }
 
 void tst_QItemDelegate::decoration_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<QSize>("expected");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<QSize>("expected");
 
     int pm = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
 
-    QTest::newRow("pixmap 30x30")
+    BOBUIest::newRow("pixmap 30x30")
         << (int)QMetaType::QPixmap
         << QSize(30, 30)
         << QSize(30, 30);
 
-    QTest::newRow("image 30x30")
+    BOBUIest::newRow("image 30x30")
         << (int)QMetaType::QImage
         << QSize(30, 30)
         << QSize(30, 30);
 
 //The default engine scales pixmaps down if required, but never up. For WinCE we need bigger IconSize than 30
-    QTest::newRow("icon 30x30")
+    BOBUIest::newRow("icon 30x30")
         << (int)QMetaType::QIcon
         << QSize(60, 60)
         << QSize(pm, pm);
 
-    QTest::newRow("color 30x30")
+    BOBUIest::newRow("color 30x30")
         << (int)QMetaType::QColor
         << QSize(30, 30)
         << QSize(pm, pm);
 
     // This demands too much memory and potentially hangs. Feel free to uncomment
     // for your own testing.
-//    QTest::newRow("pixmap 30x30 big")
+//    BOBUIest::newRow("pixmap 30x30 big")
 //        << (int)QMetaType::QPixmap
 //        << QSize(1024, 1024)        // Over 1M
 //        << QSize(1024, 1024);
@@ -1012,7 +1012,7 @@ void tst_QItemDelegate::decoration_data()
 
 void tst_QItemDelegate::decoration()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     Q_CHECK_PAINTEVENTS
@@ -1021,17 +1021,17 @@ void tst_QItemDelegate::decoration()
     QFETCH(QSize, size);
     QFETCH(QSize, expected);
 
-    QTableWidget table(1, 1);
+    BOBUIableWidget table(1, 1);
     TestItemDelegate delegate;
     table.setItemDelegate(&delegate);
     table.show();
-    QVERIFY(QTest::qWaitForWindowActive(&table));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&table));
 
     QVariant value;
     switch (type) {
     case QMetaType::QPixmap: {
         QPixmap pm(size);
-        pm.fill(Qt::black);
+        pm.fill(BobUI::black);
         value = pm;
         break;
     }
@@ -1043,151 +1043,151 @@ void tst_QItemDelegate::decoration()
     }
     case QMetaType::QIcon: {
         QPixmap pm(size);
-        pm.fill(Qt::black);
+        pm.fill(BobUI::black);
         value = QIcon(pm);
         break;
     }
     case QMetaType::QColor:
-        value = QColor(Qt::green);
+        value = QColor(BobUI::green);
         break;
     default:
         break;
     }
 
-    QTableWidgetItem *item = new QTableWidgetItem;
-    item->setData(Qt::DecorationRole, value);
+    BOBUIableWidgetItem *item = new BOBUIableWidgetItem;
+    item->setData(BobUI::DecorationRole, value);
     table.setItem(0, 0, item);
     item->setSelected(true);
 
     QApplication::processEvents();
 
-    QTRY_COMPARE(delegate.decorationRect.size(), expected);
+    BOBUIRY_COMPARE(delegate.decorationRect.size(), expected);
 }
 
 void tst_QItemDelegate::editorEvent_data()
 {
-    QTest::addColumn<int>("checkState");
-    QTest::addColumn<int>("flags");
-    QTest::addColumn<bool>("inCheck");
-    QTest::addColumn<int>("type");
-    QTest::addColumn<int>("button");
-    QTest::addColumn<bool>("edited");
-    QTest::addColumn<int>("expectedCheckState");
+    BOBUIest::addColumn<int>("checkState");
+    BOBUIest::addColumn<int>("flags");
+    BOBUIest::addColumn<bool>("inCheck");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<int>("button");
+    BOBUIest::addColumn<bool>("edited");
+    BOBUIest::addColumn<int>("expectedCheckState");
 
-    const int defaultFlags = (int)(Qt::ItemIsEditable
-            |Qt::ItemIsSelectable
-            |Qt::ItemIsUserCheckable
-            |Qt::ItemIsEnabled
-            |Qt::ItemIsDragEnabled
-            |Qt::ItemIsDropEnabled);
+    const int defaultFlags = (int)(BobUI::ItemIsEditable
+            |BobUI::ItemIsSelectable
+            |BobUI::ItemIsUserCheckable
+            |BobUI::ItemIsEnabled
+            |BobUI::ItemIsDragEnabled
+            |BobUI::ItemIsDropEnabled);
 
-    QTest::newRow("unchecked, checkable, release")
-        << (int)(Qt::Unchecked)
+    BOBUIest::newRow("unchecked, checkable, release")
+        << (int)(BobUI::Unchecked)
         << defaultFlags
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Checked);
+        << (int)(BobUI::Checked);
 
-    QTest::newRow("checked, checkable, release")
-        << (int)(Qt::Checked)
+    BOBUIest::newRow("checked, checkable, release")
+        << (int)(BobUI::Checked)
         << defaultFlags
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Unchecked);
+        << (int)(BobUI::Unchecked);
 
-    QTest::newRow("unchecked, checkable, release")
-        << (int)(Qt::Unchecked)
+    BOBUIest::newRow("unchecked, checkable, release")
+        << (int)(BobUI::Unchecked)
         << defaultFlags
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Checked);
+        << (int)(BobUI::Checked);
 
-    QTest::newRow("unchecked, checkable, release, right button")
-        << (int)(Qt::Unchecked)
+    BOBUIest::newRow("unchecked, checkable, release, right button")
+        << (int)(BobUI::Unchecked)
         << defaultFlags
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::RightButton)
+        << (int)(BobUI::RightButton)
         << false
-        << (int)(Qt::Unchecked);
+        << (int)(BobUI::Unchecked);
 
-    QTest::newRow("unchecked, checkable, release outside")
-        << (int)(Qt::Unchecked)
+    BOBUIest::newRow("unchecked, checkable, release outside")
+        << (int)(BobUI::Unchecked)
         << defaultFlags
         << false
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << false
-        << (int)(Qt::Unchecked);
+        << (int)(BobUI::Unchecked);
 
-    QTest::newRow("unchecked, checkable, dblclick")
-        << (int)(Qt::Unchecked)
+    BOBUIest::newRow("unchecked, checkable, dblclick")
+        << (int)(BobUI::Unchecked)
         << defaultFlags
         << true
         << (int)(QEvent::MouseButtonDblClick)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Unchecked);
+        << (int)(BobUI::Unchecked);
 
-    QTest::newRow("unchecked, tristate, release")
-        << (int)(Qt::Unchecked)
-        << (int)(defaultFlags | Qt::ItemIsAutoTristate)
+    BOBUIest::newRow("unchecked, tristate, release")
+        << (int)(BobUI::Unchecked)
+        << (int)(defaultFlags | BobUI::ItemIsAutoTristate)
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Checked);
+        << (int)(BobUI::Checked);
 
-    QTest::newRow("partially checked, tristate, release")
-        << (int)(Qt::PartiallyChecked)
-        << (int)(defaultFlags | Qt::ItemIsAutoTristate)
+    BOBUIest::newRow("partially checked, tristate, release")
+        << (int)(BobUI::PartiallyChecked)
+        << (int)(defaultFlags | BobUI::ItemIsAutoTristate)
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Checked);
+        << (int)(BobUI::Checked);
 
-    QTest::newRow("checked, tristate, release")
-        << (int)(Qt::Checked)
-        << (int)(defaultFlags | Qt::ItemIsAutoTristate)
+    BOBUIest::newRow("checked, tristate, release")
+        << (int)(BobUI::Checked)
+        << (int)(defaultFlags | BobUI::ItemIsAutoTristate)
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Unchecked);
+        << (int)(BobUI::Unchecked);
 
-    QTest::newRow("unchecked, user-tristate, release")
-        << (int)(Qt::Unchecked)
-        << (int)(defaultFlags | Qt::ItemIsUserTristate)
+    BOBUIest::newRow("unchecked, user-tristate, release")
+        << (int)(BobUI::Unchecked)
+        << (int)(defaultFlags | BobUI::ItemIsUserTristate)
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::PartiallyChecked);
+        << (int)(BobUI::PartiallyChecked);
 
-    QTest::newRow("partially checked, user-tristate, release")
-        << (int)(Qt::PartiallyChecked)
-        << (int)(defaultFlags | Qt::ItemIsUserTristate)
+    BOBUIest::newRow("partially checked, user-tristate, release")
+        << (int)(BobUI::PartiallyChecked)
+        << (int)(defaultFlags | BobUI::ItemIsUserTristate)
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Checked);
+        << (int)(BobUI::Checked);
 
-    QTest::newRow("checked, user-tristate, release")
-        << (int)(Qt::Checked)
-        << (int)(defaultFlags | Qt::ItemIsUserTristate)
+    BOBUIest::newRow("checked, user-tristate, release")
+        << (int)(BobUI::Checked)
+        << (int)(defaultFlags | BobUI::ItemIsUserTristate)
         << true
         << (int)(QEvent::MouseButtonRelease)
-        << (int)(Qt::LeftButton)
+        << (int)(BobUI::LeftButton)
         << true
-        << (int)(Qt::Unchecked);
+        << (int)(BobUI::Unchecked);
 }
 
 void tst_QItemDelegate::editorEvent()
@@ -1206,24 +1206,24 @@ void tst_QItemDelegate::editorEvent()
 
     QStandardItem *item = model.itemFromIndex(index);
     item->setText("foo");
-    item->setCheckState((Qt::CheckState)checkState);
-    item->setFlags((Qt::ItemFlags)flags);
+    item->setCheckState((BobUI::CheckState)checkState);
+    item->setFlags((BobUI::ItemFlags)flags);
 
     QStyleOptionViewItem option;
     option.rect = QRect(0, 0, 20, 20);
     option.state |= QStyle::State_Enabled;
     // mimic QStyledItemDelegate::initStyleOption logic
     option.features |= QStyleOptionViewItem::HasCheckIndicator | QStyleOptionViewItem::HasDisplay;
-    option.checkState = Qt::CheckState(checkState);
+    option.checkState = BobUI::CheckState(checkState);
 
     const int checkMargin = qApp->style()->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, 0) + 1;
     QPoint pos = inCheck ? qApp->style()->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &option, 0).center() + QPoint(checkMargin, 0) : QPoint(200,200);
 
     QEvent *event = new QMouseEvent((QEvent::Type)type,
                                     pos, pos,
-                                    (Qt::MouseButton)button,
-                                    (Qt::MouseButton)button,
-                                    Qt::NoModifier);
+                                    (BobUI::MouseButton)button,
+                                    (BobUI::MouseButton)button,
+                                    BobUI::NoModifier);
     TestItemDelegate delegate;
     bool wasEdited = delegate.editorEvent(event, &model, option, index);
     delete event;
@@ -1231,7 +1231,7 @@ void tst_QItemDelegate::editorEvent()
     QApplication::processEvents();
 
     QCOMPARE(wasEdited, edited);
-    QCOMPARE(index.data(Qt::CheckStateRole).toInt(), expectedCheckState);
+    QCOMPARE(index.data(BobUI::CheckStateRole).toInt(), expectedCheckState);
 }
 
 enum WidgetType
@@ -1244,29 +1244,29 @@ Q_DECLARE_METATYPE(WidgetType);
 
 void tst_QItemDelegate::enterKey_data()
 {
-    QTest::addColumn<WidgetType>("widget");
-    QTest::addColumn<int>("key");
-    QTest::addColumn<bool>("expectedFocus");
+    BOBUIest::addColumn<WidgetType>("widget");
+    BOBUIest::addColumn<int>("key");
+    BOBUIest::addColumn<bool>("expectedFocus");
 
-    QTest::newRow("lineedit enter") << LineEdit << int(Qt::Key_Enter) << false;
-    QTest::newRow("lineedit return") << LineEdit << int(Qt::Key_Return) << false;
-    QTest::newRow("lineedit tab") << LineEdit << int(Qt::Key_Tab) << false;
-    QTest::newRow("lineedit backtab") << LineEdit << int(Qt::Key_Backtab) << false;
+    BOBUIest::newRow("lineedit enter") << LineEdit << int(BobUI::Key_Enter) << false;
+    BOBUIest::newRow("lineedit return") << LineEdit << int(BobUI::Key_Return) << false;
+    BOBUIest::newRow("lineedit tab") << LineEdit << int(BobUI::Key_Tab) << false;
+    BOBUIest::newRow("lineedit backtab") << LineEdit << int(BobUI::Key_Backtab) << false;
 
-    QTest::newRow("textedit enter") << TextEdit << int(Qt::Key_Enter) << true;
-    QTest::newRow("textedit return") << TextEdit << int(Qt::Key_Return) << true;
-    QTest::newRow("textedit tab") << TextEdit << int(Qt::Key_Tab) << true;
-    QTest::newRow("textedit backtab") << TextEdit << int(Qt::Key_Backtab) << false;
+    BOBUIest::newRow("textedit enter") << TextEdit << int(BobUI::Key_Enter) << true;
+    BOBUIest::newRow("textedit return") << TextEdit << int(BobUI::Key_Return) << true;
+    BOBUIest::newRow("textedit tab") << TextEdit << int(BobUI::Key_Tab) << true;
+    BOBUIest::newRow("textedit backtab") << TextEdit << int(BobUI::Key_Backtab) << false;
 
-    QTest::newRow("plaintextedit enter") << PlainTextEdit << int(Qt::Key_Enter) << true;
-    QTest::newRow("plaintextedit return") << PlainTextEdit << int(Qt::Key_Return) << true;
-    QTest::newRow("plaintextedit tab") << PlainTextEdit << int(Qt::Key_Tab) << true;
-    QTest::newRow("plaintextedit backtab") << PlainTextEdit << int(Qt::Key_Backtab) << false;
+    BOBUIest::newRow("plaintextedit enter") << PlainTextEdit << int(BobUI::Key_Enter) << true;
+    BOBUIest::newRow("plaintextedit return") << PlainTextEdit << int(BobUI::Key_Return) << true;
+    BOBUIest::newRow("plaintextedit tab") << PlainTextEdit << int(BobUI::Key_Tab) << true;
+    BOBUIest::newRow("plaintextedit backtab") << PlainTextEdit << int(BobUI::Key_Backtab) << false;
 }
 
 void tst_QItemDelegate::enterKey()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(WidgetType, widget);
@@ -1280,7 +1280,7 @@ void tst_QItemDelegate::enterKey()
     view.setModel(&model);
     view.show();
     view.setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     struct TestDelegate : public QItemDelegate
     {
@@ -1293,7 +1293,7 @@ void tst_QItemDelegate::enterKey()
                     editor = new QLineEdit(parent);
                     break;
                 case TextEdit:
-                    editor = new QTextEdit(parent);
+                    editor = new BOBUIextEdit(parent);
                     break;
                 case PlainTextEdit:
                     editor = new QPlainTextEdit(parent);
@@ -1317,19 +1317,19 @@ void tst_QItemDelegate::enterKey()
     QPointer<QWidget> editor = lineEditors.at(0);
     QCOMPARE(editor->hasFocus(), true);
 
-    QTest::keyClick(editor, Qt::Key(key));
+    BOBUIest::keyClick(editor, BobUI::Key(key));
 
     if (expectedFocus) {
         QVERIFY(!editor.isNull());
         QVERIFY(editor->hasFocus());
     } else {
-        QTRY_VERIFY(editor.isNull()); // editor deletion happens via deleteLater
+        BOBUIRY_VERIFY(editor.isNull()); // editor deletion happens via deleteLater
     }
 }
 
 void tst_QItemDelegate::task257859_finalizeEdit()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStandardItemModel model;
@@ -1339,7 +1339,7 @@ void tst_QItemDelegate::task257859_finalizeEdit()
     view.setModel(&model);
     view.show();
     view.setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QModelIndex index = model.index(0, 0);
     view.edit(index);
@@ -1351,60 +1351,60 @@ void tst_QItemDelegate::task257859_finalizeEdit()
     QCOMPARE(editor->hasFocus(), true);
 
     QDialog dialog;
-    QTimer::singleShot(500, &dialog, SLOT(close()));
+    BOBUIimer::singleShot(500, &dialog, SLOT(close()));
     dialog.exec();
-    QTRY_VERIFY(!editor);
+    BOBUIRY_VERIFY(!editor);
 }
 
-void tst_QItemDelegate::QTBUG4435_keepSelectionOnCheck()
+void tst_QItemDelegate::BOBUIBUG4435_keepSelectionOnCheck()
 {
     QStandardItemModel model(3, 1);
     for (int i = 0; i < 3; ++i) {
         QStandardItem *item = new QStandardItem(QLatin1String("Item ") + QString::number(i));
         item->setCheckable(true);
-        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+        item->setFlags(BobUI::ItemIsSelectable | BobUI::ItemIsUserCheckable | BobUI::ItemIsEnabled);
         model.setItem(i, item);
     }
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
     view.setSelectionMode(QAbstractItemView::MultiSelection);
     view.setItemDelegate(new TestItemDelegate(&view));
     view.show();
     view.selectAll();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QStyleOptionViewItem option;
     option.rect = view.visualRect(model.index(0, 0));
     // mimic QStyledItemDelegate::initStyleOption logic
     option.features = QStyleOptionViewItem::HasDisplay | QStyleOptionViewItem::HasCheckIndicator;
-    option.checkState = Qt::CheckState(model.index(0, 0).data(Qt::CheckStateRole).toInt());
+    option.checkState = BobUI::CheckState(model.index(0, 0).data(BobUI::CheckStateRole).toInt());
     const int checkMargin = qApp->style()->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, 0) + 1;
     QRect checkRect = qApp->style()->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &option, 0);
     checkRect.translate(checkMargin, 0);
     // click into the check mark checks, but doesn't change selection
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, checkRect.center());
-    QCOMPARE(model.item(0)->checkState(), Qt::Checked);
-    QTRY_VERIFY(view.selectionModel()->isColumnSelected(0, QModelIndex()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, checkRect.center());
+    QCOMPARE(model.item(0)->checkState(), BobUI::Checked);
+    BOBUIRY_VERIFY(view.selectionModel()->isColumnSelected(0, QModelIndex()));
     // click outside the check mark doesn't check, and changes selection
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier,
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier,
                       checkRect.center() + QPoint(checkRect.width(), 0));
-    QTRY_VERIFY(!view.selectionModel()->isColumnSelected(0, QModelIndex()));
+    BOBUIRY_VERIFY(!view.selectionModel()->isColumnSelected(0, QModelIndex()));
 }
 
 void tst_QItemDelegate::comboBox()
 {
-    QTableWidgetItem *item1 = new QTableWidgetItem;
-    item1->setData(Qt::DisplayRole, true);
+    BOBUIableWidgetItem *item1 = new BOBUIableWidgetItem;
+    item1->setData(BobUI::DisplayRole, true);
 
-    QTableWidget widget(1, 1);
+    BOBUIableWidget widget(1, 1);
     widget.setItem(0, 0, item1);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     QApplicationPrivate::setActiveWindow(&widget);
 
     widget.editItem(item1);
 
     QComboBox *boolEditor = nullptr;
-    QTRY_VERIFY( (boolEditor = widget.viewport()->findChild<QComboBox*>()) );
+    BOBUIRY_VERIFY( (boolEditor = widget.viewport()->findChild<QComboBox*>()) );
     QCOMPARE(boolEditor->currentIndex(), 1); // True is selected initially.
     // The data must actually be different in order for the model
     // to be updated.
@@ -1414,25 +1414,25 @@ void tst_QItemDelegate::comboBox()
     widget.clearFocus();
     widget.setFocus();
 
-    QVariant data = item1->data(Qt::EditRole);
+    QVariant data = item1->data(BobUI::EditRole);
     QCOMPARE(data.userType(), (int)QMetaType::Bool);
     QCOMPARE(data.toBool(), false);
 }
 
 void tst_QItemDelegate::testLineEditValidation_data()
 {
-    QTest::addColumn<int>("key");
+    BOBUIest::addColumn<int>("key");
 
-    QTest::newRow("enter") << int(Qt::Key_Enter);
-    QTest::newRow("return") << int(Qt::Key_Return);
-    QTest::newRow("tab") << int(Qt::Key_Tab);
-    QTest::newRow("backtab") << int(Qt::Key_Backtab);
-    QTest::newRow("escape") << int(Qt::Key_Escape);
+    BOBUIest::newRow("enter") << int(BobUI::Key_Enter);
+    BOBUIest::newRow("return") << int(BobUI::Key_Return);
+    BOBUIest::newRow("tab") << int(BobUI::Key_Tab);
+    BOBUIest::newRow("backtab") << int(BobUI::Key_Backtab);
+    BOBUIest::newRow("escape") << int(BobUI::Key_Escape);
 }
 
 void tst_QItemDelegate::testLineEditValidation()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(int, key);
@@ -1464,7 +1464,7 @@ void tst_QItemDelegate::testLineEditValidation()
     view.setItemDelegate(&delegate);
     view.show();
     view.setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QPointer<QLineEdit> editor;
     QPersistentModelIndex index = model.indexFromItem(item);
@@ -1480,133 +1480,133 @@ void tst_QItemDelegate::testLineEditValidation()
     editor->clear();
 
     // first try to set a valid text
-    QTest::keyClicks(editor, QStringLiteral("foo,bar"));
+    BOBUIest::keyClicks(editor, QStringLiteral("foo,bar"));
 
     // close the editor
-    QTest::keyClick(editor, Qt::Key(key));
+    BOBUIest::keyClick(editor, BobUI::Key(key));
 
-    QTRY_VERIFY(editor.isNull());
-    if (key != Qt::Key_Escape)
-        QCOMPARE(item->data(Qt::DisplayRole).toString(), QStringLiteral("foo,bar"));
+    BOBUIRY_VERIFY(editor.isNull());
+    if (key != BobUI::Key_Escape)
+        QCOMPARE(item->data(BobUI::DisplayRole).toString(), QStringLiteral("foo,bar"));
     else
-        QCOMPARE(item->data(Qt::DisplayRole).toString(), QStringLiteral("abc,def"));
+        QCOMPARE(item->data(BobUI::DisplayRole).toString(), QStringLiteral("abc,def"));
 
     // now an invalid (but partially matching) text
     view.setCurrentIndex(index);
     view.edit(index);
 
-    QTRY_COMPARE(findEditors().size(), 1);
+    BOBUIRY_COMPARE(findEditors().size(), 1);
     editor = findEditors().at(0);
     editor->clear();
 
     // edit
-    QTest::keyClicks(editor, QStringLiteral("foobar"));
+    BOBUIest::keyClicks(editor, QStringLiteral("foobar"));
 
     // try to close the editor
-    QTest::keyClick(editor, Qt::Key(key));
+    BOBUIest::keyClick(editor, BobUI::Key(key));
 
-    if (key != Qt::Key_Escape) {
+    if (key != BobUI::Key_Escape) {
         QVERIFY(!editor.isNull());
         QCOMPARE(qApp->focusWidget(), editor.data());
         QCOMPARE(editor->text(), QStringLiteral("foobar"));
-        QCOMPARE(item->data(Qt::DisplayRole).toString(), QStringLiteral("foo,bar"));
+        QCOMPARE(item->data(BobUI::DisplayRole).toString(), QStringLiteral("foo,bar"));
     } else {
-        QTRY_VERIFY(editor.isNull());
-        QCOMPARE(item->data(Qt::DisplayRole).toString(), QStringLiteral("abc,def"));
+        BOBUIRY_VERIFY(editor.isNull());
+        QCOMPARE(item->data(BobUI::DisplayRole).toString(), QStringLiteral("abc,def"));
     }
 
     // reset the view to forcibly close the editor
     view.reset();
-    QTRY_COMPARE(findEditors().size(), 0);
+    BOBUIRY_COMPARE(findEditors().size(), 0);
 
     // set a valid text again
     view.setCurrentIndex(index);
     view.edit(index);
 
-    QTRY_COMPARE(findEditors().size(), 1);
+    BOBUIRY_COMPARE(findEditors().size(), 1);
     editor = findEditors().at(0);
     editor->clear();
 
     // set a valid text
-    QTest::keyClicks(editor, QStringLiteral("gender,bender"));
+    BOBUIest::keyClicks(editor, QStringLiteral("gender,bender"));
 
     // close the editor
-    QTest::keyClick(editor, Qt::Key(key));
+    BOBUIest::keyClick(editor, BobUI::Key(key));
 
-    QTRY_VERIFY(editor.isNull());
-    if (key != Qt::Key_Escape)
-        QCOMPARE(item->data(Qt::DisplayRole).toString(), QStringLiteral("gender,bender"));
+    BOBUIRY_VERIFY(editor.isNull());
+    if (key != BobUI::Key_Escape)
+        QCOMPARE(item->data(BobUI::DisplayRole).toString(), QStringLiteral("gender,bender"));
     else
-        QCOMPARE(item->data(Qt::DisplayRole).toString(), QStringLiteral("abc,def"));
+        QCOMPARE(item->data(BobUI::DisplayRole).toString(), QStringLiteral("abc,def"));
 }
 
-void tst_QItemDelegate::QTBUG16469_textForRole()
+void tst_QItemDelegate::BOBUIBUG16469_textForRole()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires a developer build");
 #else
     RoleDelegate delegate;
     QLocale locale;
 
     const float f = 123.456f;
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, f, locale), locale.toString(f));
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, f, locale), locale.toString(f));
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, f, locale), locale.toString(f));
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, f, locale), locale.toString(f));
     const double d = 123.456;
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, d, locale), locale.toString(d, 'g', 6));
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, d, locale), locale.toString(d, 'g', 6));
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, d, locale), locale.toString(d, 'g', 6));
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, d, locale), locale.toString(d, 'g', 6));
     const int i = 1234567;
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, i, locale), locale.toString(i));
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, i, locale), locale.toString(i));
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, i, locale), locale.toString(i));
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, i, locale), locale.toString(i));
     const qlonglong ll = 1234567;
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, ll, locale), locale.toString(ll));
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, ll, locale), locale.toString(ll));
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, ll, locale), locale.toString(ll));
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, ll, locale), locale.toString(ll));
     const uint ui = 1234567;
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, ui, locale), locale.toString(ui));
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, ui, locale), locale.toString(ui));
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, ui, locale), locale.toString(ui));
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, ui, locale), locale.toString(ui));
     const qulonglong ull = 1234567;
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, ull, locale), locale.toString(ull));
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, ull, locale), locale.toString(ull));
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, ull, locale), locale.toString(ull));
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, ull, locale), locale.toString(ull));
 
     const QString text("text");
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, text, locale), text);
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, text, locale), text);
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, text, locale), text);
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, text, locale), text);
     const QString multipleLines("multiple\nlines");
     QString multipleLines2 = multipleLines;
     multipleLines2.replace(QLatin1Char('\n'), QChar::LineSeparator);
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, multipleLines, locale), multipleLines2);
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, multipleLines, locale), multipleLines);
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, multipleLines, locale), multipleLines2);
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, multipleLines, locale), multipleLines);
 #endif
 }
 
 void tst_QItemDelegate::dateTextForRole_data()
 {
-#ifdef QT_BUILD_INTERNAL
-    QTest::addColumn<QDateTime>("when");
+#ifdef BOBUI_BUILD_INTERNAL
+    BOBUIest::addColumn<QDateTime>("when");
 
-    QTest::newRow("now") << QDateTime::currentDateTime(); // It's a local time
+    BOBUIest::newRow("now") << QDateTime::currentDateTime(); // It's a local time
     QDate date(2013, 12, 11);
-    QTime time(10, 9, 8, 765);
+    BOBUIime time(10, 9, 8, 765);
     // Ensure we exercise every time-spec variant:
-    QTest::newRow("local") << QDateTime(date, time);
-    QTest::newRow("UTC") << QDateTime(date, time, QTimeZone::UTC);
-#  if QT_CONFIG(timezone)
-    QTest::newRow("zone") << QDateTime(date, time, QTimeZone("Europe/Dublin"));
+    BOBUIest::newRow("local") << QDateTime(date, time);
+    BOBUIest::newRow("UTC") << QDateTime(date, time, BOBUIimeZone::UTC);
+#  if BOBUI_CONFIG(timezone)
+    BOBUIest::newRow("zone") << QDateTime(date, time, BOBUIimeZone("Europe/Dublin"));
 #  endif
-    QTest::newRow("offset") << QDateTime(date, time, QTimeZone::fromSecondsAheadOfUtc(36000));
+    BOBUIest::newRow("offset") << QDateTime(date, time, BOBUIimeZone::fromSecondsAheadOfUtc(36000));
 #endif
 }
 
 void tst_QItemDelegate::dateTextForRole()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires a developer build");
 #else
     QFETCH(QDateTime, when);
     RoleDelegate delegate;
     QLocale locale;
 # define CHECK(value) \
-    QCOMPARE(delegate.textForRole(Qt::DisplayRole, value, locale), locale.toString(value, QLocale::ShortFormat)); \
-    QCOMPARE(delegate.textForRole(Qt::ToolTipRole, value, locale), locale.toString(value, QLocale::LongFormat))
+    QCOMPARE(delegate.textForRole(BobUI::DisplayRole, value, locale), locale.toString(value, QLocale::ShortFormat)); \
+    QCOMPARE(delegate.textForRole(BobUI::ToolTipRole, value, locale), locale.toString(value, QLocale::LongFormat))
 
     CHECK(when);
     CHECK(when.date());
@@ -1641,7 +1641,7 @@ void tst_QItemDelegate::reuseEditor()
         const override
         {
             auto *cb = qobject_cast<QComboBox*>(editor);
-            cb->setCurrentText(index.data(Qt::DisplayRole).toString());
+            cb->setCurrentText(index.data(BobUI::DisplayRole).toString());
         }
 
         void setModelData(QWidget* editor,
@@ -1649,7 +1649,7 @@ void tst_QItemDelegate::reuseEditor()
                           const QModelIndex& index) const override
         {
             auto *cb = qobject_cast<QComboBox*>(editor);
-            model->setData(index, cb->currentText(), Qt::DisplayRole);
+            model->setData(index, cb->currentText(), BobUI::DisplayRole);
         }
 
         void destroyEditor(QWidget* editor, const QModelIndex&) const override
@@ -1671,15 +1671,15 @@ void tst_QItemDelegate::reuseEditor()
 
     ReusingDelegate delegate;
 
-    QTreeView tree;
+    BOBUIreeView tree;
     tree.setModel(&model);
     tree.setItemDelegate(&delegate);
 
     tree.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tree));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tree));
 
     tree.edit(model.index(0, 0));
-    QTRY_VERIFY(qobject_cast<QComboBox *>(tree.focusWidget()));
+    BOBUIRY_VERIFY(qobject_cast<QComboBox *>(tree.focusWidget()));
 
     tree.close();
 }
@@ -1703,5 +1703,5 @@ void tst_QItemDelegate::reuseEditor()
 // rect for icon
 // rect for check
 
-QTEST_MAIN(tst_QItemDelegate)
+BOBUIEST_MAIN(tst_QItemDelegate)
 #include "tst_qitemdelegate.moc"

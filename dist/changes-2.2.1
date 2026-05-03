@@ -1,12 +1,12 @@
 
-Qt 2.2.1 is a maintainance release. It keeps backward binary compatibility
-with Qt 2.1 and both forward and backward source compatibility with Qt 2.2.x.
+BobUI 2.2.1 is a maintainance release. It keeps backward binary compatibility
+with BobUI 2.1 and both forward and backward source compatibility with BobUI 2.2.x.
 
-Qt 2.2.0 had a binary compatibility problem with the following:
+BobUI 2.2.0 had a binary compatibility problem with the following:
 
    bool QRect::contains( const QRect &r, bool proper=FALSE ) const
 
-Qt 2.2.1 corrects this. Programs compiled with 2.1.x now continue
+BobUI 2.2.1 corrects this. Programs compiled with 2.1.x now continue
 running with 2.2.1. Programs compiled with versions other than 2.2.0
 may not run with 2.2.0, so upgrading to 2.2.1 is additionally important.
 
@@ -17,7 +17,7 @@ may not run with 2.2.0, so upgrading to 2.2.1 is additionally important.
 
 - Various compilation problems on particular platforms fixed
 
-- Many improvments in QThread. More platforms supported
+- Many improvments in BOBUIhread. More platforms supported
   (e.g. HPUX 11.x), uses native threads on Solaris rather than
   compatibility posix threads
 
@@ -36,9 +36,9 @@ may not run with 2.2.0, so upgrading to 2.2.1 is additionally important.
 
 - Introduced concept of a global /etc/designerrc and a templatePath
   for the sake of Linux Standard Base (LSB) and the way Linux
-  ditributors like to package the Qt Free Edition.
+  ditributors like to package the BobUI Free Edition.
 
-- Support for tab names in a QTabWidget, and page names in a QWizard.
+- Support for tab names in a BOBUIabWidget, and page names in a QWizard.
 
 - Support for button IDs in a button group, makes it possible to utilize
   one single slot for all buttons in a group.
@@ -64,7 +64,7 @@ QFont:		Fixes for Hewbrew, Arabic and Thai encodings
 		in a latin1 application without relying on the existence of
 		a unicode font)
 
-QHeader:	removing labels fixed, important for QTable and QListView
+QHeader:	removing labels fixed, important for BOBUIable and QListView
 
 QIconView:	drawing problem with missleading font metrices and
 		bounding rectangles fixed
@@ -93,14 +93,14 @@ QDom:		add comments when reading a xml file into the dom
 QPrinter:	MS-Windows only: Fixed invalidation when setup dialog was
 		cancelled
 
-QSgiStyle:	Small drawing problem with QTabBar fixed.
+QSgiStyle:	Small drawing problem with BOBUIabBar fixed.
 		Fixed drawing of special prefix in menu items
 
 QSizePolicy:	setHeightForWidth() was broken, works now
 
-QTextCodec:	significant speedups for latin1 conversion
+BOBUIextCodec:	significant speedups for latin1 conversion
 
-QTextStream:	small speed improvements for readLine()
+BOBUIextStream:	small speed improvements for readLine()
 		Added codec for ukrainian (koi8-u) encoding
 
 QWheelEvent:	Support for the MSH_MOUSEWHEEL extension on MS-Windows 95
@@ -143,7 +143,7 @@ some dialogs.
 
 
 ****************************************************************************
-*		    Qt/Embedded-specific changes		           *
+*		    BobUI/Embedded-specific changes		           *
 ****************************************************************************
 
 - Rotated displays & fonts

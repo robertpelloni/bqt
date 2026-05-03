@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QJSON_P_H
 #define QJSON_P_H
@@ -10,7 +10,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -21,12 +21,12 @@
 #include <qcborvalue.h>
 #include <private/qcborvalue_p.h>
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 #  include <qjsonarray.h>
 #  include <qjsonobject.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QJsonPrivate {
 
@@ -151,8 +151,8 @@ inline bool operator==(
     return a.elementsIterator() == b.elementsIterator();
 }
 
-using KeyIterator = ObjectIterator<QtCbor::Element, QList<QtCbor::Element>::iterator>;
-using ConstKeyIterator = ObjectIterator<const QtCbor::Element, QList<QtCbor::Element>::const_iterator>;
+using KeyIterator = ObjectIterator<BobUICbor::Element, QList<BobUICbor::Element>::iterator>;
+using ConstKeyIterator = ObjectIterator<const BobUICbor::Element, QList<BobUICbor::Element>::const_iterator>;
 
 template<>
 inline KeyIterator::reference &KeyIterator::reference::operator=(const KeyIterator::value_type &value)
@@ -176,7 +176,7 @@ public:
     static QCborContainerPrivate *container(const QCborValue &v) { return v.container; }
     static const QCborContainerPrivate *container(QJsonValueConstRef r) noexcept
     {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
         return (r.is_object ? r.o->o : r.a->a).data();
 #else
         return r.d;
@@ -193,7 +193,7 @@ public:
             index = index * 2 + 1;
         return index;
     }
-    static const QtCbor::Element &elementHelper(QJsonValueConstRef r) noexcept
+    static const BobUICbor::Element &elementHelper(QJsonValueConstRef r) noexcept
     {
         return container(r)->elements.at(indexHelper(r));
     }
@@ -215,6 +215,6 @@ public:
 
 } // namespace QJsonPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJSON_P_H

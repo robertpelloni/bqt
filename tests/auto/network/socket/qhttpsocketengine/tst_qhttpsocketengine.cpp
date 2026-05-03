@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtTest/QTest>
-#include <QtTest/QTestEventLoop>
-#include <QtCore/QQueue>
-#include <QtCore/QString>
-#include <QtCore/QCoreApplication>
+#include <BobUITest/BOBUIest>
+#include <BobUITest/BOBUIestEventLoop>
+#include <BobUICore/QQueue>
+#include <BobUICore/QString>
+#include <BobUICore/QCoreApplication>
 
 #include <private/qhttpsocketengine_p.h>
 #include <qhostinfo.h>
 #include <qhostaddress.h>
-#include <qtcpsocket.h>
+#include <bobuicpsocket.h>
 #include <qdebug.h>
 #include <qelapsedtimer.h>
-#include <qtcpserver.h>
+#include <bobuicpserver.h>
 
 #include "../../../network-settings.h"
 
@@ -50,17 +50,17 @@ protected slots:
     void downloadBigFileSlot();
 
 private:
-    QTcpSocket *tcpSocketNonBlocking_socket;
+    BOBUIcpSocket *tcpSocketNonBlocking_socket;
     QStringList tcpSocketNonBlocking_data;
     qint64 tcpSocketNonBlocking_totalWritten;
-    QTcpSocket *tmpSocket;
+    BOBUIcpSocket *tmpSocket;
     qint64 bytesAvailable;
 };
 
-class MiniHttpServer: public QTcpServer
+class MiniHttpServer: public BOBUIcpServer
 {
     Q_OBJECT
-    QTcpSocket *client;
+    BOBUIcpSocket *client;
     QList<QByteArray> dataToTransmit;
 
 public:
@@ -100,13 +100,13 @@ public slots:
 
 void tst_QHttpSocketEngine::initTestCase()
 {
-#ifdef QT_TEST_SERVER
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3128));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1080));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 80));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::imapServerName(), 143));
+#ifdef BOBUI_TEST_SERVER
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3128));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1080));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 80));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::imapServerName(), 143));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 }
@@ -137,69 +137,69 @@ void tst_QHttpSocketEngine::construction()
     QCOMPARE(socketDevice.peerPort(), quint16(0));
     QCOMPARE(socketDevice.error(), QAbstractSocket::UnknownSocketError);
 
-    //QTest::ignoreMessage(QtWarningMsg, "QSocketLayer::bytesAvailable() was called in QAbstractSocket::UnconnectedState");
+    //BOBUIest::ignoreMessage(BobUIWarningMsg, "QSocketLayer::bytesAvailable() was called in QAbstractSocket::UnconnectedState");
     QCOMPARE(socketDevice.bytesAvailable(), 0);
 
-    //QTest::ignoreMessage(QtWarningMsg, "QSocketLayer::hasPendingDatagrams() was called in QAbstractSocket::UnconnectedState");
+    //BOBUIest::ignoreMessage(BobUIWarningMsg, "QSocketLayer::hasPendingDatagrams() was called in QAbstractSocket::UnconnectedState");
     QVERIFY(!socketDevice.hasPendingDatagrams());
 }
 
 //---------------------------------------------------------------------------
 void tst_QHttpSocketEngine::errorTest_data()
 {
-    QTest::addColumn<QString>("hostname");
-    QTest::addColumn<int>("port");
-    QTest::addColumn<QString>("username");
-    QTest::addColumn<QString>("response");
-    QTest::addColumn<int>("expectedError");
+    BOBUIest::addColumn<QString>("hostname");
+    BOBUIest::addColumn<int>("port");
+    BOBUIest::addColumn<QString>("username");
+    BOBUIest::addColumn<QString>("response");
+    BOBUIest::addColumn<int>("expectedError");
 
     QQueue<QByteArray> responses;
-    QTest::newRow("proxy-host-not-found") << "this-host-does-not-exist." << 1080 << QString()
+    BOBUIest::newRow("proxy-host-not-found") << "this-host-does-not-exist." << 1080 << QString()
                                           << QString()
                                           << int(QAbstractSocket::ProxyNotFoundError);
-    QTest::newRow("proxy-connection-refused") << QtNetworkSettings::socksProxyServerName() << 2 << QString()
+    BOBUIest::newRow("proxy-connection-refused") << BobUINetworkSettings::socksProxyServerName() << 2 << QString()
                                               << QString()
                                               << int(QAbstractSocket::ProxyConnectionRefusedError);
 
-    QTest::newRow("garbage1") << QString() << 0 << QString()
+    BOBUIest::newRow("garbage1") << QString() << 0 << QString()
                               << "This is not HTTP\r\n\r\n"
                               << int(QAbstractSocket::ProxyProtocolError);
 
-    QTest::newRow("garbage2") << QString() << 0 << QString()
+    BOBUIest::newRow("garbage2") << QString() << 0 << QString()
                               << "This is not HTTP"
                               << int(QAbstractSocket::ProxyProtocolError);
 
-    QTest::newRow("garbage3") << QString() << 0 << QString()
+    BOBUIest::newRow("garbage3") << QString() << 0 << QString()
                               << ""
                               << int(QAbstractSocket::ProxyConnectionClosedError);
 
-    QTest::newRow("forbidden") << QString() << 0 << QString()
+    BOBUIest::newRow("forbidden") << QString() << 0 << QString()
                                << "HTTP/1.0 403 Forbidden\r\n\r\n"
                                << int(QAbstractSocket::SocketAccessError);
 
-    QTest::newRow("method-not-allowed") << QString() << 0 << QString()
+    BOBUIest::newRow("method-not-allowed") << QString() << 0 << QString()
                                         << "HTTP/1.0 405 Method Not Allowed\r\n\r\n"
                                         << int(QAbstractSocket::SocketAccessError);
 
-    QTest::newRow("proxy-authentication-too-short")
+    BOBUIest::newRow("proxy-authentication-too-short")
         << QString() << 0 << "foo"
         << "HTTP/1.0 407 Proxy Authentication Required\r\n\r\n"
         << int(QAbstractSocket::ProxyProtocolError);
 
-    QTest::newRow("proxy-authentication-invalid-method")
+    BOBUIest::newRow("proxy-authentication-invalid-method")
         << QString() << 0 << "foo"
         << "HTTP/1.0 407 Proxy Authentication Required\r\n"
            "Proxy-Authenticate: Frobnicator\r\n\r\n"
         << int(QAbstractSocket::ProxyProtocolError);
 
-    QTest::newRow("proxy-authentication-required")
+    BOBUIest::newRow("proxy-authentication-required")
         << QString() << 0 << "foo"
         << "HTTP/1.0 407 Proxy Authentication Required\r\n"
            "Proxy-Connection: close\r\n"
            "Proxy-Authenticate: Basic, realm=wonderland\r\n\r\n"
         << int(QAbstractSocket::ProxyAuthenticationRequiredError);
 
-    QTest::newRow("proxy-authentication-required2")
+    BOBUIest::newRow("proxy-authentication-required2")
         << QString() << 0 << "foo"
         << "HTTP/1.0 407 Proxy Authentication Required\r\n"
            "Proxy-Connection: keep-alive\r\n"
@@ -209,22 +209,22 @@ void tst_QHttpSocketEngine::errorTest_data()
            "Proxy-Authenticate: Basic, realm=wonderland\r\n\r\n"
         << int(QAbstractSocket::ProxyAuthenticationRequiredError);
 
-    QTest::newRow("proxy-authentication-required-noclose")
+    BOBUIest::newRow("proxy-authentication-required-noclose")
         << QString() << 0 << "foo"
         << "HTTP/1.0 407 Proxy Authentication Required\r\n"
            "Proxy-Authenticate: Basic\r\n"
            "\r\n"
         << int(QAbstractSocket::ProxyAuthenticationRequiredError);
 
-    QTest::newRow("connection-refused") << QString() << 0 << QString()
+    BOBUIest::newRow("connection-refused") << QString() << 0 << QString()
                                         << "HTTP/1.0 503 Service Unavailable\r\n\r\n"
                                         << int(QAbstractSocket::ConnectionRefusedError);
 
-    QTest::newRow("host-not-found") << QString() << 0 << QString()
+    BOBUIest::newRow("host-not-found") << QString() << 0 << QString()
                                     << "HTTP/1.0 404 Not Found\r\n\r\n"
                                     << int(QAbstractSocket::HostNotFoundError);
 
-    QTest::newRow("weird-http-reply") << QString() << 0 << QString()
+    BOBUIest::newRow("weird-http-reply") << QString() << 0 << QString()
                                       << "HTTP/1.0 206 Partial Content\r\n\r\n"
                                       << int(QAbstractSocket::ProxyProtocolError);
 }
@@ -243,14 +243,14 @@ void tst_QHttpSocketEngine::errorTest()
         hostname = "127.0.0.1";
         port = server.serverPort();
     }
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     socket.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, hostname, port, username, username));
     socket.connectToHost("0.1.2.3", 12345);
 
     connect(&socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
-            &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(30);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+            &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(30);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(int(socket.error()), expectedError);
 }
@@ -264,12 +264,12 @@ void tst_QHttpSocketEngine::simpleConnectToIMAP()
     QVERIFY(socketDevice.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv4Protocol));
     QCOMPARE(socketDevice.state(), QAbstractSocket::UnconnectedState);
 
-    socketDevice.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, QtNetworkSettings::httpProxyServerName(), 3128));
-    QVERIFY(!socketDevice.connectToHost(QtNetworkSettings::imapServerIp(), 143));
+    socketDevice.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, BobUINetworkSettings::httpProxyServerName(), 3128));
+    QVERIFY(!socketDevice.connectToHost(BobUINetworkSettings::imapServerIp(), 143));
     QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectingState);
     QVERIFY(socketDevice.waitForWrite());
     QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectedState);
-    QCOMPARE(socketDevice.peerAddress(), QtNetworkSettings::imapServerIp());
+    QCOMPARE(socketDevice.peerAddress(), BobUINetworkSettings::imapServerIp());
     QVERIFY(!socketDevice.localAddress().isNull());
     QVERIFY(socketDevice.localPort() > 0);
 
@@ -284,7 +284,7 @@ void tst_QHttpSocketEngine::simpleConnectToIMAP()
     QVERIFY(socketDevice.read(array.data(), array.size()) == available);
 
     // Check that the greeting is what we expect it to be
-    QVERIFY2(QtNetworkSettings::compareReplyIMAP(array), array.constData());
+    QVERIFY2(BobUINetworkSettings::compareReplyIMAP(array), array.constData());
 
 
     // Write a logout message
@@ -320,10 +320,10 @@ void tst_QHttpSocketEngine::simpleErrorsAndStates()
         // Initialize device
         QVERIFY(socketDevice.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv4Protocol));
 
-        socketDevice.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, QtNetworkSettings::httpProxyServerName(), 3128));
+        socketDevice.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, BobUINetworkSettings::httpProxyServerName(), 3128));
 
         QCOMPARE(socketDevice.state(), QAbstractSocket::UnconnectedState);
-        QVERIFY(!socketDevice.connectToHost(QHostAddress(QtNetworkSettings::socksProxyServerName()), 8088));
+        QVERIFY(!socketDevice.connectToHost(QHostAddress(BobUINetworkSettings::socksProxyServerName()), 8088));
         QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectingState);
         if (socketDevice.waitForWrite(30s)) {
             QVERIFY(socketDevice.state() == QAbstractSocket::ConnectedState ||
@@ -339,7 +339,7 @@ void tst_QHttpSocketEngine::simpleErrorsAndStates()
 //---------------------------------------------------------------------------
 void tst_QHttpSocketEngine::tcpLoopbackPerformance()
 {
-    QTcpServer server;
+    BOBUIcpServer server;
 
     // Bind to any port on all interfaces
     QVERIFY(server.bind(QHostAddress("0.0.0.0"), 0));
@@ -404,17 +404,17 @@ void tst_QHttpSocketEngine::tcpSocketBlockingTest()
 {
     QHttpSocketEngineHandler http;
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
 
     // Connect
-    socket.connectToHost(QtNetworkSettings::imapServerName(), 143);
+    socket.connectToHost(BobUINetworkSettings::imapServerName(), 143);
     QVERIFY(socket.waitForConnected());
-    QCOMPARE(socket.state(), QTcpSocket::ConnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::ConnectedState);
 
     // Read greeting
     QVERIFY(socket.waitForReadyRead(30000));
     QString s = socket.readLine();
-    QVERIFY2(QtNetworkSettings::compareReplyIMAP(s.toLatin1()), qPrintable(s));
+    QVERIFY2(BobUINetworkSettings::compareReplyIMAP(s.toLatin1()), qPrintable(s));
 
     // Write NOOP
     QCOMPARE((int) socket.write("1 NOOP\r\n", 8), 8);
@@ -446,7 +446,7 @@ void tst_QHttpSocketEngine::tcpSocketBlockingTest()
     socket.close();
 
     // Check that it's closed
-    QCOMPARE(socket.state(), QTcpSocket::UnconnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::UnconnectedState);
 }
 
 //----------------------------------------------------------------------------------
@@ -455,7 +455,7 @@ void tst_QHttpSocketEngine::tcpSocketNonBlockingTest()
 {
     QHttpSocketEngineHandler http;
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     connect(&socket, SIGNAL(hostFound()), SLOT(tcpSocketNonBlocking_hostFound()));
     connect(&socket, SIGNAL(connected()), SLOT(tcpSocketNonBlocking_connected()));
     connect(&socket, SIGNAL(disconnected()), SLOT(tcpSocketNonBlocking_closed()));
@@ -464,33 +464,33 @@ void tst_QHttpSocketEngine::tcpSocketNonBlockingTest()
     tcpSocketNonBlocking_socket = &socket;
 
     // Connect
-    socket.connectToHost(QtNetworkSettings::imapServerName(), 143);
-    QVERIFY(socket.state() == QTcpSocket::HostLookupState ||
-            socket.state() == QTcpSocket::ConnectingState);
+    socket.connectToHost(BobUINetworkSettings::imapServerName(), 143);
+    QVERIFY(socket.state() == BOBUIcpSocket::HostLookupState ||
+            socket.state() == BOBUIcpSocket::ConnectingState);
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout()) {
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout()) {
         QFAIL("Timed out");
     }
 
-    if (socket.state() == QTcpSocket::ConnectingState) {
-        QTestEventLoop::instance().enterLoop(30);
-        if (QTestEventLoop::instance().timeout()) {
+    if (socket.state() == BOBUIcpSocket::ConnectingState) {
+        BOBUIestEventLoop::instance().enterLoop(30);
+        if (BOBUIestEventLoop::instance().timeout()) {
             QFAIL("Timed out");
         }
     }
 
-    QCOMPARE(socket.state(), QTcpSocket::ConnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::ConnectedState);
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout()) {
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout()) {
         QFAIL("Timed out");
     }
 
     // Read greeting
     QVERIFY(!tcpSocketNonBlocking_data.isEmpty());
     QByteArray data = tcpSocketNonBlocking_data.at(0).toLatin1();
-    QVERIFY2(QtNetworkSettings::compareReplyIMAP(data), data.constData());
+    QVERIFY2(BobUINetworkSettings::compareReplyIMAP(data), data.constData());
 
 
     tcpSocketNonBlocking_data.clear();
@@ -501,16 +501,16 @@ void tst_QHttpSocketEngine::tcpSocketNonBlockingTest()
     QCOMPARE((int) socket.write("1 NOOP\r\n", 8), 8);
 
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout()) {
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout()) {
         QFAIL("Timed out");
     }
 
     QCOMPARE(tcpSocketNonBlocking_totalWritten, 8);
 
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout()) {
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout()) {
         QFAIL("Timed out");
     }
 
@@ -526,16 +526,16 @@ void tst_QHttpSocketEngine::tcpSocketNonBlockingTest()
     // Write LOGOUT
     QCOMPARE((int) socket.write("2 LOGOUT\r\n", 10), 10);
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout()) {
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout()) {
         QFAIL("Timed out");
     }
 
     QCOMPARE(tcpSocketNonBlocking_totalWritten, 10);
 
     // Wait for greeting
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout()) {
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout()) {
         QFAIL("Timed out");
     }
 
@@ -548,17 +548,17 @@ void tst_QHttpSocketEngine::tcpSocketNonBlockingTest()
     socket.close();
 
     // Check that it's closed
-    QCOMPARE(socket.state(), QTcpSocket::UnconnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::UnconnectedState);
 }
 
 void tst_QHttpSocketEngine::tcpSocketNonBlocking_hostFound()
 {
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QHttpSocketEngine::tcpSocketNonBlocking_connected()
 {
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QHttpSocketEngine::tcpSocketNonBlocking_readyRead()
@@ -566,13 +566,13 @@ void tst_QHttpSocketEngine::tcpSocketNonBlocking_readyRead()
     while (tcpSocketNonBlocking_socket->canReadLine())
         tcpSocketNonBlocking_data.append(tcpSocketNonBlocking_socket->readLine());
 
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QHttpSocketEngine::tcpSocketNonBlocking_bytesWritten(qint64 written)
 {
     tcpSocketNonBlocking_totalWritten += written;
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QHttpSocketEngine::tcpSocketNonBlocking_closed()
@@ -587,20 +587,20 @@ void tst_QHttpSocketEngine::downloadBigFile()
 
     if (tmpSocket)
         delete tmpSocket;
-    tmpSocket = new QTcpSocket;
+    tmpSocket = new BOBUIcpSocket;
 
     connect(tmpSocket, SIGNAL(connected()), SLOT(exitLoopSlot()));
     connect(tmpSocket, SIGNAL(readyRead()), SLOT(downloadBigFileSlot()));
 
-    tmpSocket->connectToHost(QtNetworkSettings::httpServerName(), 80);
+    tmpSocket->connectToHost(BobUINetworkSettings::httpServerName(), 80);
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Network operation timed out");
 
-    QByteArray hostName = QtNetworkSettings::httpServerName().toLatin1();
+    QByteArray hostName = BobUINetworkSettings::httpServerName().toLatin1();
     QCOMPARE(tmpSocket->state(), QAbstractSocket::ConnectedState);
-    QVERIFY(tmpSocket->write("GET /qtest/mediumfile HTTP/1.0\r\n") > 0);
+    QVERIFY(tmpSocket->write("GET /bobuiest/mediumfile HTTP/1.0\r\n") > 0);
     QVERIFY(tmpSocket->write("Host: ") > 0);
     QVERIFY(tmpSocket->write(hostName.data()) > 0);
     QVERIFY(tmpSocket->write("\r\n") > 0);
@@ -611,8 +611,8 @@ void tst_QHttpSocketEngine::downloadBigFile()
     QElapsedTimer stopWatch;
     stopWatch.start();
 
-    QTestEventLoop::instance().enterLoop(60);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(60);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Network operation timed out");
 
     QVERIFY(bytesAvailable >= 10000000);
@@ -630,7 +630,7 @@ void tst_QHttpSocketEngine::downloadBigFile()
 
 void tst_QHttpSocketEngine::exitLoopSlot()
 {
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 
@@ -638,7 +638,7 @@ void tst_QHttpSocketEngine::downloadBigFileSlot()
 {
     bytesAvailable += tmpSocket->readAll().size();
     if (bytesAvailable >= 10000000)
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QHttpSocketEngine::passwordAuth()
@@ -649,13 +649,13 @@ void tst_QHttpSocketEngine::passwordAuth()
     QVERIFY(socketDevice.initialize(QAbstractSocket::TcpSocket, QAbstractSocket::IPv4Protocol));
     QCOMPARE(socketDevice.state(), QAbstractSocket::UnconnectedState);
 
-    socketDevice.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, QtNetworkSettings::httpProxyServerName(), 3128, "qsockstest", "password"));
+    socketDevice.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, BobUINetworkSettings::httpProxyServerName(), 3128, "qsockstest", "password"));
 
-    QVERIFY(!socketDevice.connectToHost(QtNetworkSettings::imapServerIp(), 143));
+    QVERIFY(!socketDevice.connectToHost(BobUINetworkSettings::imapServerIp(), 143));
     QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectingState);
     QVERIFY(socketDevice.waitForWrite());
     QCOMPARE(socketDevice.state(), QAbstractSocket::ConnectedState);
-    QCOMPARE(socketDevice.peerAddress(), QtNetworkSettings::imapServerIp());
+    QCOMPARE(socketDevice.peerAddress(), BobUINetworkSettings::imapServerIp());
 
     // Wait for the greeting
     QVERIFY(socketDevice.waitForRead());
@@ -668,7 +668,7 @@ void tst_QHttpSocketEngine::passwordAuth()
     QVERIFY(socketDevice.read(array.data(), array.size()) == available);
 
     // Check that the greeting is what we expect it to be
-    QVERIFY2(QtNetworkSettings::compareReplyIMAP(array), array.constData());
+    QVERIFY2(BobUINetworkSettings::compareReplyIMAP(array), array.constData());
 
 
     // Write a logout message
@@ -704,44 +704,44 @@ void tst_QHttpSocketEngine::ensureEofTriggersNotification()
     serverData << "HTTP/1.0 200 Connection established\r\n\r\n" << "0";
     MiniHttpServer server(serverData);
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     connect(&socket, SIGNAL(connected()), SLOT(exitLoopSlot()));
     socket.setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, server.serverAddress().toString(),
                                   server.serverPort()));
     socket.connectToHost("0.1.2.3", 12345);
 
-    QTestEventLoop::instance().enterLoop(5);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(5);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Connect timed out");
 
-    QCOMPARE(socket.state(), QTcpSocket::ConnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::ConnectedState);
     // Disable read notification on server response
     socket.setReadBufferSize(1);
     socket.putChar(0);
 
     // Wait for the response
     connect(&socket, SIGNAL(readyRead()), SLOT(exitLoopSlot()));
-    QTestEventLoop::instance().enterLoop(5);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(5);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Read timed out");
 
-    QCOMPARE(socket.state(), QTcpSocket::ConnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::ConnectedState);
     QCOMPARE(socket.bytesAvailable(), 1);
     // Trigger a read notification
     socket.readAll();
     // Check for pending EOF at input
     QCOMPARE(socket.bytesAvailable(), 0);
-    QCOMPARE(socket.state(), QTcpSocket::ConnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::ConnectedState);
 
     // Try to read EOF
     connect(&socket, SIGNAL(disconnected()), SLOT(exitLoopSlot()));
-    QTestEventLoop::instance().enterLoop(5);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(5);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Disconnect timed out");
 
     // Check that it's closed
-    QCOMPARE(socket.state(), QTcpSocket::UnconnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::UnconnectedState);
 }
 
-QTEST_MAIN(tst_QHttpSocketEngine)
+BOBUIEST_MAIN(tst_QHttpSocketEngine)
 #include "tst_qhttpsocketengine.moc"

@@ -1,47 +1,47 @@
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qpixmapstyle_p.h"
 #include "qpixmapstyle_p_p.h"
 
 #include <QDebug>
-#if QT_CONFIG(textedit)
-#include <QTextEdit>
+#if BOBUI_CONFIG(textedit)
+#include <BOBUIextEdit>
 #endif
 #include <QStringBuilder>
 #include <QPainter>
 #include <QPixmapCache>
 #include <QStyleOption>
 #include <QString>
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
 #include <QProgressBar>
 #endif
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 #include <QSlider>
 #endif
 #include <QEvent>
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 #include <QComboBox>
 #endif
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include <QAbstractItemView>
 #include <QStyledItemDelegate>
 #endif
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 #include <QListView>
 #endif
 #include <QAbstractScrollArea>
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 #include <QScrollBar>
 #endif
-#if QT_CONFIG(scroller)
+#if BOBUI_CONFIG(scroller)
 #include <qscroller.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPixmapStyle
@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
     \since 5.7
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 
     This is a convenience class that enables the implementation of a widget style using
@@ -104,29 +104,29 @@ void QPixmapStyle::polish(QWidget *widget)
 {
     Q_D(QPixmapStyle);
 
-    // Don't fill the interior of the QTextEdit
-#if QT_CONFIG(textedit)
-    if (qobject_cast<QTextEdit*>(widget)) {
+    // Don't fill the interior of the BOBUIextEdit
+#if BOBUI_CONFIG(textedit)
+    if (qobject_cast<BOBUIextEdit*>(widget)) {
         QPalette p = widget->palette();
-        p.setBrush(QPalette::Base, Qt::NoBrush);
+        p.setBrush(QPalette::Base, BobUI::NoBrush);
         widget->setPalette(p);
     }
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
     if (QProgressBar *pb = qobject_cast<QProgressBar*>(widget)) {
         // Center the text in the progress bar
-        pb->setAlignment(Qt::AlignCenter);
+        pb->setAlignment(BobUI::AlignCenter);
         // Change the font size if needed, as it's used to compute the minimum size
         QFont font = pb->font();
         font.setPixelSize(d->descriptors.value(PB_HBackground).size.height()/2);
         pb->setFont(font);
     }
 #endif
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     if (qobject_cast<QSlider*>(widget))
         widget->installEventFilter(this);
 #endif
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
     if (QComboBox *cb = qobject_cast<QComboBox*>(widget)) {
         widget->installEventFilter(this);
         // NOTE: This will break if the private API of QComboBox changes drastically
@@ -135,12 +135,12 @@ void QPixmapStyle::polish(QWidget *widget)
         list->setProperty("_pixmap_combobox_list", true);
         list->setItemDelegate(new QStyledItemDelegate(list));
         QPalette p = list->palette();
-        p.setBrush(QPalette::Active, QPalette::Base, QBrush(Qt::transparent) );
-        p.setBrush(QPalette::Active, QPalette::AlternateBase, QBrush(Qt::transparent) );
-        p.setBrush(QPalette::Inactive, QPalette::Base, QBrush(Qt::transparent) );
-        p.setBrush(QPalette::Inactive, QPalette::AlternateBase, QBrush(Qt::transparent) );
-        p.setBrush(QPalette::Disabled, QPalette::Base, QBrush(Qt::transparent) );
-        p.setBrush(QPalette::Disabled, QPalette::AlternateBase, QBrush(Qt::transparent) );
+        p.setBrush(QPalette::Active, QPalette::Base, QBrush(BobUI::transparent) );
+        p.setBrush(QPalette::Active, QPalette::AlternateBase, QBrush(BobUI::transparent) );
+        p.setBrush(QPalette::Inactive, QPalette::Base, QBrush(BobUI::transparent) );
+        p.setBrush(QPalette::Inactive, QPalette::AlternateBase, QBrush(BobUI::transparent) );
+        p.setBrush(QPalette::Disabled, QPalette::Base, QBrush(BobUI::transparent) );
+        p.setBrush(QPalette::Disabled, QPalette::AlternateBase, QBrush(BobUI::transparent) );
         list->setPalette(p);
 
         QFrame *frame = qobject_cast<QFrame*>(list->parent());
@@ -149,32 +149,32 @@ void QPixmapStyle::polish(QWidget *widget)
             const QPixmapStylePixmap &pix = d->pixmaps.value(DD_ItemSeparator);
             frame->setContentsMargins(pix.margins.left(), desc.margins.top(),
                                       pix.margins.right(), desc.margins.bottom());
-            frame->setAttribute(Qt::WA_TranslucentBackground);
+            frame->setAttribute(BobUI::WA_TranslucentBackground);
         }
     }
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
     if (qstrcmp(widget->metaObject()->className(),"QComboBoxPrivateContainer") == 0)
         widget->installEventFilter(this);
 
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
     if (QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>(widget)) {
         scrollArea->viewport()->setAutoFillBackground(false);
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
         if (QAbstractItemView *view = qobject_cast<QAbstractItemView*>(scrollArea)) {
             view->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
             view->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
         }
 #endif
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
         QScroller::grabGesture(scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
     }
-#endif // QT_CONFIG(scrollarea)
-#if QT_CONFIG(scrollbar)
+#endif // BOBUI_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollbar)
     if (qobject_cast<QScrollBar*>(widget))
-        widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
+        widget->setAttribute(BobUI::WA_OpaquePaintEvent, false);
 #endif
-#if !QT_CONFIG(progressbar) && !QT_CONFIG(combobox)
+#if !BOBUI_CONFIG(progressbar) && !BOBUI_CONFIG(combobox)
     Q_UNUSED(d);
 #endif
     QCommonStyle::polish(widget);
@@ -194,12 +194,12 @@ void QPixmapStyle::unpolish(QApplication *application)
 void QPixmapStyle::unpolish(QWidget *widget)
 {
     if (
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
         qobject_cast<QSlider*>(widget)
 #else
         false
 #endif
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
           ||  qobject_cast<QComboBox*>(widget)
 #endif
         ) {
@@ -209,7 +209,7 @@ void QPixmapStyle::unpolish(QWidget *widget)
     if (qstrcmp(widget->metaObject()->className(),"QComboBoxPrivateContainer") == 0)
         widget->removeEventFilter(this);
 
-#if QT_CONFIG(gestures) && QT_CONFIG(scrollarea) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scrollarea) && BOBUI_CONFIG(scroller)
     if (QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>(widget))
         QScroller::ungrabGesture(scrollArea->viewport());
 #endif
@@ -235,9 +235,9 @@ void QPixmapStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *o
         drawLineEdit(option, painter, widget);
         break;
     case PE_Frame:
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     case PE_FrameDefaultButton:
-        if (qobject_cast<const QTextEdit*>(widget))
+        if (qobject_cast<const BOBUIextEdit*>(widget))
             drawTextEdit(option, painter, widget);
         break;
 #endif
@@ -248,7 +248,7 @@ void QPixmapStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *o
         drawRadioButton(option, painter, widget);
         break;
     case PE_PanelItemViewItem:
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
         if (qobject_cast<const QListView*>(widget))
             drawPanelItemViewItem(option, painter, widget);
         else
@@ -398,8 +398,8 @@ int QPixmapStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
     case PM_ButtonShiftVertical:
         return 0;
     case PM_DefaultFrameWidth:
-#if QT_CONFIG(textedit)
-        if (qobject_cast<const QTextEdit*>(widget)) {
+#if BOBUI_CONFIG(textedit)
+        if (qobject_cast<const BOBUIextEdit*>(widget)) {
             const QPixmapStyleDescriptor &desc = d->descriptors.value(LE_Enabled);
             return qMax(qMax(desc.margins.left(), desc.margins.right()),
                         qMax(desc.margins.top(), desc.margins.bottom()));
@@ -426,14 +426,14 @@ int QPixmapStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
         return qMax(qMax(pix.margins.left(), pix.margins.right()),
                     qMax(pix.margins.top(), pix.margins.bottom()));
     }
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     case PM_SliderThickness:
         if (const QStyleOptionSlider *slider =
                     qstyleoption_cast<const QStyleOptionSlider*>(option)) {
             const QPixmapStyleDescriptor desc =
-                d->descriptors.value(slider->orientation == Qt::Horizontal
+                d->descriptors.value(slider->orientation == BobUI::Horizontal
                                      ? SG_HEnabled : SG_VEnabled);
-            return slider->orientation == Qt::Horizontal
+            return slider->orientation == BobUI::Horizontal
                                                 ? desc.size.height() : desc.size.width();
         }
         break;
@@ -441,9 +441,9 @@ int QPixmapStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
         if (const QStyleOptionSlider *slider =
                     qstyleoption_cast<const QStyleOptionSlider*>(option)) {
             const QPixmapStylePixmap pix =
-                    d->pixmaps.value(slider->orientation == Qt::Horizontal
+                    d->pixmaps.value(slider->orientation == BobUI::Horizontal
                                      ? SH_HEnabled : SH_VEnabled);
-            return slider->orientation == Qt::Horizontal
+            return slider->orientation == BobUI::Horizontal
                                                 ? pix.pixmap.height() : pix.pixmap.width();
         }
         break;
@@ -451,9 +451,9 @@ int QPixmapStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
         if (const QStyleOptionSlider *slider =
                     qstyleoption_cast<const QStyleOptionSlider*>(option)) {
             const QPixmapStylePixmap pix =
-                    d->pixmaps.value(slider->orientation == Qt::Horizontal
+                    d->pixmaps.value(slider->orientation == BobUI::Horizontal
                                      ? SH_HEnabled : SH_VEnabled);
-            return slider->orientation == Qt::Horizontal
+            return slider->orientation == BobUI::Horizontal
                                                 ? pix.pixmap.width() : pix.pixmap.height();
         }
         break;
@@ -461,13 +461,13 @@ int QPixmapStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
         if (const QStyleOptionSlider *slider =
                     qstyleoption_cast<const QStyleOptionSlider*>(option)) {
             const QPixmapStyleDescriptor desc =
-                    d->descriptors.value(slider->orientation == Qt::Horizontal
+                    d->descriptors.value(slider->orientation == BobUI::Horizontal
                                          ? SB_Horizontal : SB_Vertical);
-            return slider->orientation == Qt::Horizontal
+            return slider->orientation == BobUI::Horizontal
                                                 ? desc.size.height() : desc.size.width();
         }
         break;
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
     case PM_ScrollBarSliderMin:
         return 0;
     default: ;
@@ -518,7 +518,7 @@ QStyle::SubControl QPixmapStyle::hitTestComplexControl(QStyle::ComplexControl co
 bool QPixmapStyle::eventFilter(QObject *watched, QEvent *event)
 {
     Q_D(QPixmapStyle);
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     if (QSlider *slider = qobject_cast<QSlider*>(watched)) {
         switch (event->type()) {
         case QEvent::MouseButtonPress:
@@ -529,8 +529,8 @@ bool QPixmapStyle::eventFilter(QObject *watched, QEvent *event)
         default: ;
         }
     }
-#endif // QT_CONFIG(slider)
-#if QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(slider)
+#if BOBUI_CONFIG(combobox)
     if (QComboBox *comboBox = qobject_cast<QComboBox*>(watched)) {
         switch (event->type()) {
         case QEvent::MouseButtonPress:
@@ -551,7 +551,7 @@ bool QPixmapStyle::eventFilter(QObject *watched, QEvent *event)
         default: ;
         }
     }
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
     if (qstrcmp(watched->metaObject()->className(),"QComboBoxPrivateContainer") == 0) {
         if (event->type() == QEvent::Show) {
@@ -572,7 +572,7 @@ bool QPixmapStyle::eventFilter(QObject *watched, QEvent *event)
 }
 
 /*!
-    \fn void QPixmapStyle::addDescriptor(QPixmapStyle::ControlDescriptor control, const QString &fileName, QMargins margins, QTileRules tileRules)
+    \fn void QPixmapStyle::addDescriptor(QPixmapStyle::ControlDescriptor control, const QString &fileName, QMargins margins, BOBUIileRules tileRules)
 
     Associates the pixmap having the given \a fileName with the given \a control. The \a margins parameter describe the boundaries
     of the pixmap's top-left, top-right, bottom-left and bottom-right corners, as well as the left, right, top and bottorm segments
@@ -586,7 +586,7 @@ bool QPixmapStyle::eventFilter(QObject *watched, QEvent *event)
 
 */
 void QPixmapStyle::addDescriptor(QPixmapStyle::ControlDescriptor control, const QString &fileName,
-                                 QMargins margins, QTileRules tileRules)
+                                 QMargins margins, BOBUIileRules tileRules)
 {
     Q_D(QPixmapStyle);
 
@@ -701,7 +701,7 @@ void QPixmapStyle::drawLineEdit(const QStyleOption *option,
                                 QPainter *painter, const QWidget *widget) const
 {
     // Don't draw for the line edit inside a combobox
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
     if (widget && qobject_cast<const QComboBox*>(widget->parentWidget()))
         return;
 #else
@@ -804,7 +804,7 @@ void QPixmapStyle::drawProgressBarLabel(const QStyleOption *option,
         if (!vertical) {
             QPalette::ColorRole textRole = QPalette::ButtonText;
             proxy()->drawItemText(painter, pb->rect,
-                                  Qt::AlignCenter | Qt::TextSingleLine, pb->palette,
+                                  BobUI::AlignCenter | BobUI::TextSingleLine, pb->palette,
                                   pb->state & State_Enabled, pb->text, textRole);
         }
     }
@@ -816,7 +816,7 @@ void QPixmapStyle::drawProgressBarFill(const QStyleOption *option,
     const QStyleOptionProgressBar *pbar =
                 qstyleoption_cast<const QStyleOptionProgressBar*>(option);
     const bool vertical = !(pbar->state & QStyle::State_Horizontal);
-    const bool flip = (pbar->direction == Qt::RightToLeft) ^ pbar->invertedAppearance;
+    const bool flip = (pbar->direction == BobUI::RightToLeft) ^ pbar->invertedAppearance;
 
     if (pbar->progress == pbar->maximum) {
         drawCachedPixmap(vertical ? PB_VComplete : PB_HComplete, option->rect, painter);
@@ -851,7 +851,7 @@ void QPixmapStyle::drawProgressBarFill(const QStyleOption *option,
 void QPixmapStyle::drawSlider(const QStyleOptionComplex *option,
                               QPainter *painter, const QWidget *widget) const
 {
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     Q_D(const QPixmapStyle);
 
     const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider*>(option);
@@ -860,7 +860,7 @@ void QPixmapStyle::drawSlider(const QStyleOptionComplex *option,
 
     const bool enabled = option->state & State_Enabled;
     const bool pressed = option->state & State_Sunken;
-    const Qt::Orientation orient = slider->orientation;
+    const BobUI::Orientation orient = slider->orientation;
 
     const QRect handle = proxy()->subControlRect(CC_Slider, option, SC_SliderHandle, widget);
     if (option->subControls & SC_SliderGroove) {
@@ -868,14 +868,14 @@ void QPixmapStyle::drawSlider(const QStyleOptionComplex *option,
         if (groove.isValid()) {
             // Draw the background
             ControlDescriptor control;
-            if (orient == Qt::Horizontal)
+            if (orient == BobUI::Horizontal)
                 control = enabled ? SG_HEnabled : SG_HDisabled;
             else
                 control = enabled ? SG_VEnabled : SG_VDisabled;
             drawCachedPixmap(control, groove, painter);
 
             // Draw the active part
-            if (orient == Qt::Horizontal) {
+            if (orient == BobUI::Horizontal) {
                 control = enabled ? (pressed ? SG_HActivePressed : SG_HActiveEnabled )
                                   : SG_HActiveDisabled;
             } else {
@@ -885,7 +885,7 @@ void QPixmapStyle::drawSlider(const QStyleOptionComplex *option,
             const QPixmapStyleDescriptor &desc = d->descriptors.value(control);
             const QPixmap pix = d->getCachedPixmap(control, desc, groove.size());
             if (!pix.isNull()) {
-                groove.setRight(orient == Qt::Horizontal
+                groove.setRight(orient == BobUI::Horizontal
                                ? handle.center().x() : handle.center().y());
                 painter->drawPixmap(groove, pix, groove);
             }
@@ -894,7 +894,7 @@ void QPixmapStyle::drawSlider(const QStyleOptionComplex *option,
     if (option->subControls & SC_SliderHandle) {
         if (handle.isValid()) {
             ControlPixmap pix;
-            if (orient == Qt::Horizontal)
+            if (orient == BobUI::Horizontal)
                 pix = enabled ? (pressed ? SH_HPressed : SH_HEnabled) : SH_HDisabled;
             else
                 pix = enabled ? (pressed ? SH_VPressed : SH_VEnabled) : SH_VDisabled;
@@ -905,7 +905,7 @@ void QPixmapStyle::drawSlider(const QStyleOptionComplex *option,
     Q_UNUSED(option);
     Q_UNUSED(painter);
     Q_UNUSED(widget);
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 }
 
 void QPixmapStyle::drawComboBox(const QStyleOptionComplex *option,
@@ -932,7 +932,7 @@ void QPixmapStyle::drawComboBox(const QStyleOptionComplex *option,
 void QPixmapStyle::drawScrollBar(const QStyleOptionComplex *option,
                                  QPainter *painter, const QWidget *widget) const
 {
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     if (const QStyleOptionSlider *slider =
                     qstyleoption_cast<const QStyleOptionSlider*>(option)) {
         // Do not draw the scrollbar
@@ -940,7 +940,7 @@ void QPixmapStyle::drawScrollBar(const QStyleOptionComplex *option,
             return;
 
         QRect rect = scrollBarSubControlRect(option, SC_ScrollBarSlider, widget);
-        ControlDescriptor control = slider->orientation == Qt::Horizontal
+        ControlDescriptor control = slider->orientation == BobUI::Horizontal
                 ? SB_Horizontal : SB_Vertical;
         drawCachedPixmap(control, rect, painter);
     }
@@ -948,7 +948,7 @@ void QPixmapStyle::drawScrollBar(const QStyleOptionComplex *option,
     Q_UNUSED(option);
     Q_UNUSED(painter);
     Q_UNUSED(widget);
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 }
 
 QSize QPixmapStyle::pushButtonSizeFromContents(const QStyleOption *option,
@@ -1007,7 +1007,7 @@ QSize QPixmapStyle::sliderSizeFromContents(const QStyleOption *option,
                                            const QSize &contentsSize,
                                            const QWidget *widget) const
 {
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     Q_D(const QPixmapStyle);
 
     const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider*>(option);
@@ -1016,19 +1016,19 @@ QSize QPixmapStyle::sliderSizeFromContents(const QStyleOption *option,
 
     QSize result = QCommonStyle::sizeFromContents(CT_Slider, option, contentsSize, widget);
 
-    const QPixmapStyleDescriptor desc = d->descriptors.value(slider->orientation == Qt::Horizontal
+    const QPixmapStyleDescriptor desc = d->descriptors.value(slider->orientation == BobUI::Horizontal
                                                 ? SG_HEnabled : SG_VEnabled);
 
-    if (slider->orientation == Qt::Horizontal)
+    if (slider->orientation == BobUI::Horizontal)
         return QSize(result.width(), desc.size.height());
     else
         return QSize(desc.size.width(), result.height());
-#else // QT_CONFIG(slider)
+#else // BOBUI_CONFIG(slider)
     Q_UNUSED(option);
     Q_UNUSED(contentsSize);
     Q_UNUSED(widget);
     return QSize();
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 }
 
 QSize QPixmapStyle::comboBoxSizeFromContents(const QStyleOption *option,
@@ -1096,10 +1096,10 @@ QRect QPixmapStyle::comboBoxSubControlRect(const QStyleOptionComplex *option,
 QRect QPixmapStyle::scrollBarSubControlRect(const QStyleOptionComplex *option,
                                             QStyle::SubControl sc, const QWidget *) const
 {
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     if (const QStyleOptionSlider *slider =
                 qstyleoption_cast<const QStyleOptionSlider*>(option)) {
-        int length = (slider->orientation == Qt::Horizontal)
+        int length = (slider->orientation == BobUI::Horizontal)
                 ? slider->rect.width() : slider->rect.height();
         int page = length * slider->pageStep
                 / (slider->maximum - slider->minimum + slider->pageStep);
@@ -1109,7 +1109,7 @@ QRect QPixmapStyle::scrollBarSubControlRect(const QStyleOptionComplex *option,
 
         QRect rect = slider->rect;
 
-        if (slider->orientation == Qt::Horizontal) {
+        if (slider->orientation == BobUI::Horizontal) {
             switch (sc) {
             case SC_ScrollBarAddPage:
                 rect.setLeft(pos+page);
@@ -1146,7 +1146,7 @@ QRect QPixmapStyle::scrollBarSubControlRect(const QStyleOptionComplex *option,
 #else
     Q_UNUSED(option);
     Q_UNUSED(sc);
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
     return QRect();
 }
 
@@ -1187,13 +1187,13 @@ QPixmap QPixmapStylePrivate::getCachedPixmap(QPixmapStyle::ControlDescriptor con
 
 QSize QPixmapStylePrivate::computeSize(const QPixmapStyleDescriptor &desc, int width, int height) const
 {
-    if (desc.tileRules.horizontal != Qt::RepeatTile)
+    if (desc.tileRules.horizontal != BobUI::RepeatTile)
         width = qMax(width, desc.size.width());
-    if (desc.tileRules.vertical != Qt::RepeatTile)
+    if (desc.tileRules.vertical != BobUI::RepeatTile)
         height = qMax(height, desc.size.height());
     return QSize(width, height);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpixmapstyle_p.cpp"

@@ -1,52 +1,52 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "nativewindowdump.h"
 #include "qwindowdump.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QList>
-#include <QtCore/QRect>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QTextStream>
+#include <BobUICore/QDebug>
+#include <BobUICore/QList>
+#include <BobUICore/QRect>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/BOBUIextStream>
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
 #ifndef WS_EX_NOREDIRECTIONBITMAP
 #  define WS_EX_NOREDIRECTIONBITMAP 0x00200000L
 #endif
 
-using namespace Qt;
+using namespace BobUI;
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 struct DumpContext {
     DumpContext() : indentation(0), parent(0) {}
 
     int indentation;
     HWND parent;
-    QSharedPointer<QTextStream> stream;
+    QSharedPointer<BOBUIextStream> stream;
 };
 
 #define debugWinStyle(str, style, styleConstant) \
 if (style & styleConstant) \
     str << ' ' << #styleConstant;
 
-static QTextStream &operator<<(QTextStream &str, const QPoint &p)
+static BOBUIextStream &operator<<(BOBUIextStream &str, const QPoint &p)
 {
     str << p.x() << ", " << p.y();
     return str;
 }
 
-static QTextStream &operator<<(QTextStream &str, const QSize &s)
+static BOBUIextStream &operator<<(BOBUIextStream &str, const QSize &s)
 {
     str << s.width() << 'x' << s.height();
     return str;
 }
 
-static QTextStream &operator<<(QTextStream &str, const QRect &rect)
+static BOBUIextStream &operator<<(BOBUIextStream &str, const QRect &rect)
 {
-    str << rect.size() << Qt::forcesign << rect.x() << rect.y() << Qt::noforcesign;
+    str << rect.size() << BobUI::forcesign << rect.x() << rect.y() << BobUI::noforcesign;
     return str;
 }
 
@@ -85,9 +85,9 @@ static bool isTopLevel(HWND hwnd)
     return !parent || parent == GetDesktopWindow();
 }
 
-static void formatNativeWindow(HWND hwnd, QTextStream &str)
+static void formatNativeWindow(HWND hwnd, BOBUIextStream &str)
 {
-    str << Qt::hex << Qt::showbase << quintptr(hwnd) << Qt::noshowbase << Qt::dec;
+    str << BobUI::hex << BobUI::showbase << quintptr(hwnd) << BobUI::noshowbase << BobUI::dec;
 
     const bool topLevel = isTopLevel(hwnd);
     if (topLevel)
@@ -113,7 +113,7 @@ static void formatNativeWindow(HWND hwnd, QTextStream &str)
     if (GetClassName(hwnd, buf, sizeof(buf)/sizeof(buf[0])))
         str << '"' << QString::fromWCharArray(buf) << '"';
 
-    str << Qt::hex << Qt::showbase;
+    str << BobUI::hex << BobUI::showbase;
     if (const LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE)) {
         str << " style=" << style;
         debugWinStyle(str, style, WS_OVERLAPPED)
@@ -185,7 +185,7 @@ static void formatNativeWindow(HWND hwnd, QTextStream &str)
     if (const ULONG_PTR wndProc = GetClassLongPtr(hwnd, GCLP_WNDPROC))
         str << " wndProc=" << wndProc;
 
-    str << Qt::noshowbase << Qt::dec;
+    str << BobUI::noshowbase << BobUI::dec;
 
     if (GetWindowModuleFileName(hwnd, buf, sizeof(buf)/sizeof(buf[0])))
         str << " module=\"" << QString::fromWCharArray(buf) << '"';
@@ -234,7 +234,7 @@ static void dumpNativeWindows(const WIdVector& wins)
 {
     DumpContext dc;
     QString s;
-    dc.stream = QSharedPointer<QTextStream>(new QTextStream(&s));
+    dc.stream = QSharedPointer<BOBUIextStream>(new BOBUIextStream(&s));
     for (WId win : wins)
         dumpNativeWindowRecursion(reinterpret_cast<HWND>(win), &dc);
     qDebug().noquote() << s;
@@ -246,29 +246,29 @@ void dumpNativeWindows(WId rootIn)
     dumpNativeWindows(WIdVector(1, root));
 }
 
-BOOL CALLBACK findQtTopLevelEnumChildProc(HWND hwnd, LPARAM lParam)
+BOOL CALLBACK findBobUITopLevelEnumChildProc(HWND hwnd, LPARAM lParam)
 {
     WIdVector *v = reinterpret_cast<WIdVector *>(lParam);
     wchar_t buf[512];
     if (GetClassName(hwnd, buf, sizeof(buf)/sizeof(buf[0]))) {
-        if (wcsstr(buf, L"Qt"))
+        if (wcsstr(buf, L"BobUI"))
             v->append(reinterpret_cast<WId>(hwnd));
     }
     return TRUE;
 }
 
-static WIdVector findQtTopLevels()
+static WIdVector findBobUITopLevels()
 {
     WIdVector result;
     EnumChildWindows(GetDesktopWindow(),
-                     findQtTopLevelEnumChildProc,
+                     findBobUITopLevelEnumChildProc,
                      reinterpret_cast<LPARAM>(&result));
     return result;
 }
 
-void dumpNativeQtTopLevels()
+void dumpNativeBobUITopLevels()
 {
-    dumpNativeWindows(findQtTopLevels());
+    dumpNativeWindows(findBobUITopLevels());
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

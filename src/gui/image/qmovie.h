@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMOVIE_H
 #define QMOVIE_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#include <QtCore/qobject.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qlist.h>
-#include <QtGui/qimagereader.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qlist.h>
+#include <BobUIGui/qimagereader.h>
 
-QT_REQUIRE_CONFIG(movie);
+BOBUI_REQUIRE_CONFIG(movie);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArray;
 class QColor;
@@ -109,6 +109,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_loadNextFrame())
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMOVIE_H

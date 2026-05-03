@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 /*!
     \page layout.html
     \title Layout Management
-    \ingroup qt-basic-concepts
-    \ingroup qt-gui-concepts
+    \ingroup bobui-basic-concepts
+    \ingroup bobui-gui-concepts
     \brief A tour of the standard layout managers and an introduction to custom
     layouts.
 
-    \previouspage Qt Widgets
+    \previouspage BobUI Widgets
     \nextpage {Styles and Style Aware Widgets}{Styles}
 
     \ingroup frameworks-technologies
 
-    The Qt layout system provides a simple and powerful way of automatically
+    The BobUI layout system provides a simple and powerful way of automatically
     arranging child widgets within a widget to ensure that they make good use
     of the available space.
 
     \section1 Introduction
 
-    Qt includes a set of layout management classes that are used to describe
+    BobUI includes a set of layout management classes that are used to describe
     how widgets are laid out in an application's user interface. These layouts
     automatically position and resize widgets when the amount of space
     available for them changes, ensuring that they are consistently arranged
@@ -42,9 +42,9 @@
         \endlist
     \endlist
 
-    \section1 Qt's Layout Classes
+    \section1 BobUI's Layout Classes
 
-    Qt's layout classes were designed for hand-written C++ code, allowing
+    BobUI's layout classes were designed for hand-written C++ code, allowing
     measurements to be specified in pixels for simplicity, so they are easy to
     understand and use. The code generated for forms created using \QD also
     uses the layout classes. \QD is useful to use when experimenting with the
@@ -196,7 +196,7 @@
     \section1 Custom Widgets in Layouts
 
     When you make your own widget class, you should also communicate its layout
-    properties. If the widget uses one of Qt's layouts, this is already taken
+    properties. If the widget uses one of BobUI's layouts, this is already taken
     care of. If the widget does not have any child widgets, or uses a manual
     layout, you can change the behavior of the widget using any or all of the
     following mechanisms:
@@ -225,8 +225,8 @@
     provide a reasonable sizeHint().
 
     For further guidance when implementing these functions, see the
-    \e{Qt Quarterly} article
-    \l{http://doc.qt.io/archives/qq/qq04-height-for-width.html}
+    \e{BobUI Quarterly} article
+    \l{http://doc.bobui.io/archives/qq/qq04-height-for-width.html}
     {Trading Height for Width}.
 
 
@@ -234,7 +234,7 @@
 
     The use of rich text in a label widget can introduce some problems to the
     layout of its parent widget. Problems occur due to the way rich text is
-    handled by Qt's layout managers when the label is word wrapped.
+    handled by BobUI's layout managers when the label is word wrapped.
 
     In certain cases the parent layout is put into QLayout::FreeResize mode,
     meaning that it will not adapt the layout of its contents to fit inside
@@ -366,7 +366,7 @@
 
     \section1 Layout Examples
 
-    Many Qt Widgets \l{Qt Widgets Examples}{examples} already use layouts,
+    Many BobUI Widgets \l{BobUI Widgets Examples}{examples} already use layouts,
     however, several examples exist to showcase various layouts.
 
     \annotatedlist examples-layout

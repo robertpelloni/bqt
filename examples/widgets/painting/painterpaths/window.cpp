@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "renderarea.h"
 #include "window.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include <qmath.h>
 
@@ -69,7 +69,7 @@ Window::Window()
     QPainterPath textPath;
     QFont timesFont("Times", 50);
     timesFont.setStyleStrategy(QFont::ForceOutline);
-    textPath.addText(10, 70, timesFont, tr("Qt"));
+    textPath.addText(10, 70, timesFont, tr("BobUI"));
 //! [7]
 
 //! [8]
@@ -102,8 +102,8 @@ Window::Window()
 
 //! [11]
     fillRuleComboBox = new QComboBox;
-    fillRuleComboBox->addItem(tr("Odd Even"), Qt::OddEvenFill);
-    fillRuleComboBox->addItem(tr("Winding"), Qt::WindingFill);
+    fillRuleComboBox->addItem(tr("Odd Even"), BobUI::OddEvenFill);
+    fillRuleComboBox->addItem(tr("Winding"), BobUI::WindingFill);
 
     fillRuleLabel = new QLabel(tr("Fill &Rule:"));
     fillRuleLabel->setBuddy(fillRuleComboBox);
@@ -202,7 +202,7 @@ Window::Window()
 //! [19]
 void Window::fillRuleChanged()
 {
-    Qt::FillRule rule = (Qt::FillRule)currentItemData(fillRuleComboBox).toInt();
+    BobUI::FillRule rule = (BobUI::FillRule)currentItemData(fillRuleComboBox).toInt();
 
     for (RenderArea *area : std::as_const(renderAreas))
         area->setFillRule(rule);

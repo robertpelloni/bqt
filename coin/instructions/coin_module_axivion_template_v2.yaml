@@ -5,17 +5,17 @@ analysis_instructions_axivion: &analysis_instructions_axivion
       instructions:
       - type: EnvironmentVariable
         variableName: AXIVION_CHAINLOAD_TOOLCHAIN_FILE
-        variableValue: "{{.AgentWorkingDir}}/install/lib/cmake/Qt6/qt.toolchain.cmake"
+        variableValue: "{{.AgentWorkingDir}}/install/lib/cmake/BobUI6/bobui.toolchain.cmake"
       - type: EnvironmentVariable
         variableName: AXIVION_DIVIDED_MODULES
-        variableValue: "qtbase_qtdeclarative_qtconnectivity_qtgrpc_qttools_qtwayland"
+        variableValue: "bobuibase_bobuideclarative_bobuiconnectivity_bobuigrpc_bobuitools_bobuiwayland"
       - type: EnvironmentVariable
         variableName: CMAKE_PREFIX_PATH
         variableValue: "{{.AgentWorkingDir}}/install/lib/cmake"
         enable_if:
           condition: runtime
           env_var: TESTED_MODULE_COIN
-          not_equals_value: "qtbase"
+          not_equals_value: "bobuibase"
       - type: EnvironmentVariable
         variableName: TESTED_MODULE_BRANCH_COIN
         variableValue: "unknown"
@@ -70,7 +70,7 @@ build_environment_axivion: &build_environment_axivion
     - type: ChangeDirectory
       directory: "{{.SourceDir}}"
     - type: ExecuteCommand
-      command: ["git", "clone", "--jobs={{.NumCPU}}", "-n","--depth=50", "git://{{.Env.QT_COIN_GIT_DAEMON}}/qt-project/qt/{{.Env.TESTED_MODULE_COIN}}","."]
+      command: ["git", "clone", "--jobs={{.NumCPU}}", "-n","--depth=50", "git://{{.Env.BOBUI_COIN_GIT_DAEMON}}/bobui-project/bobui/{{.Env.TESTED_MODULE_COIN}}","."]
       maxTimeInSeconds: 900
       maxTimeBetweenOutput: 900
       userMessageOnFailure: "Failed to clone repository"
@@ -91,22 +91,22 @@ build_environment_axivion: &build_environment_axivion
       userMessageOnFailure: "Failed to initialize git submodules"
     - type: Group
       instructions:
-      - !include "{{qt/qtbase}}/cmake_module_build_instructions.yaml"
+      - !include "{{bobui/bobuibase}}/cmake_module_build_instructions.yaml"
       enable_if:
         condition: runtime
         env_var: TESTED_MODULE_COIN
-        not_equals_value: "qtbase"
+        not_equals_value: "bobuibase"
     - type: Group
       instructions:
-      - !include "{{qt/qtbase}}/cmake_qtbase_build_instructions.yaml"
+      - !include "{{bobui/bobuibase}}/cmake_bobuibase_build_instructions.yaml"
       enable_if:
         condition: runtime
         env_var: TESTED_MODULE_COIN
-        equals_value: "qtbase"
+        equals_value: "bobuibase"
 
 type: Group
 instructions:
-  - !include "{{qt/qtbase}}/prepare_building_env.yaml"
+  - !include "{{bobui/bobuibase}}/prepare_building_env.yaml"
   - *build_environment_axivion
   - *analysis_instructions_axivion
 enable_if:

@@ -1,10 +1,10 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QtCore>
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/BobUICore>
+#include <BobUICore/private/qstdweb_p.h>
 
-#include <qtwasmtestlib.h>
+#include <bobuiwasmtestlib.h>
 
 #include "emscripten.h"
 
@@ -37,7 +37,7 @@ ArrayBuffer createTestArrayBuffer(int size)
 void WasmIoDevicesTest::blobIODevice()
 {
     if (!qstdweb::canBlockCallingThread()) {
-        QtWasmTest::completeTestFunction(QtWasmTest::TestResult::Skip, "requires asyncify");
+        BobUIWasmTest::completeTestFunction(BobUIWasmTest::TestResult::Skip, "requires asyncify");
         return;
     }
 
@@ -95,7 +95,7 @@ void WasmIoDevicesTest::uint8ArrayIODevice()
 int main(int argc, char **argv)
 {
     auto testObject = std::make_shared<WasmIoDevicesTest>();
-    QtWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
+    BobUIWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
     return 0;
 }
 

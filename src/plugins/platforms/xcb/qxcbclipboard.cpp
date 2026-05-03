@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbclipboard.h"
 
@@ -12,13 +12,13 @@
 #include <private/qguiapplication_p.h>
 #include <QElapsedTimer>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 class QXcbClipboardMime : public QXcbMime
 {
@@ -177,7 +177,7 @@ bool QXcbClipboardTransaction::updateIncrementalProperty(const xcb_property_noti
 }
 
 
-void QXcbClipboardTransaction::timerEvent(QTimerEvent *ev)
+void QXcbClipboardTransaction::timerEvent(BOBUIimerEvent *ev)
 {
     if (ev->id() == m_abortTimer.id()) {
         // this can happen when the X client we are sending data
@@ -203,9 +203,9 @@ QXcbClipboard::QXcbClipboard(QXcbConnection *c)
         const uint32_t mask = XCB_XFIXES_SELECTION_EVENT_MASK_SET_SELECTION_OWNER |
                 XCB_XFIXES_SELECTION_EVENT_MASK_SELECTION_WINDOW_DESTROY |
                 XCB_XFIXES_SELECTION_EVENT_MASK_SELECTION_CLIENT_CLOSE;
-        xcb_xfixes_select_selection_input_checked(xcb_connection(), connection()->qtSelectionOwner(),
+        xcb_xfixes_select_selection_input_checked(xcb_connection(), connection()->bobuiSelectionOwner(),
                                                   XCB_ATOM_PRIMARY, mask);
-        xcb_xfixes_select_selection_input_checked(xcb_connection(), connection()->qtSelectionOwner(),
+        xcb_xfixes_select_selection_input_checked(xcb_connection(), connection()->bobuiSelectionOwner(),
                                                   atom(QXcbAtom::AtomCLIPBOARD), mask);
     }
 
@@ -223,15 +223,15 @@ QXcbClipboard::~QXcbClipboard()
         // First we check if there is a clipboard manager.
         if (connection()->selectionOwner(atom(QXcbAtom::AtomCLIPBOARD_MANAGER)) != XCB_NONE) {
             // we delete the property so the manager saves all TARGETS.
-            xcb_delete_property(xcb_connection(), connection()->qtSelectionOwner(),
-                                atom(QXcbAtom::Atom_QT_SELECTION));
-            xcb_convert_selection(xcb_connection(), connection()->qtSelectionOwner(),
+            xcb_delete_property(xcb_connection(), connection()->bobuiSelectionOwner(),
+                                atom(QXcbAtom::Atom_BOBUI_SELECTION));
+            xcb_convert_selection(xcb_connection(), connection()->bobuiSelectionOwner(),
                                   atom(QXcbAtom::AtomCLIPBOARD_MANAGER), atom(QXcbAtom::AtomSAVE_TARGETS),
-                                  atom(QXcbAtom::Atom_QT_SELECTION), connection()->time());
+                                  atom(QXcbAtom::Atom_BOBUI_SELECTION), connection()->time());
             connection()->sync();
 
             // waiting until the clipboard manager fetches the content.
-            if (auto event = waitForClipboardEvent(connection()->qtSelectionOwner(),
+            if (auto event = waitForClipboardEvent(connection()->bobuiSelectionOwner(),
                                                    XCB_SELECTION_NOTIFY, true)) {
                 free(event);
             } else {
@@ -285,7 +285,7 @@ QMimeData * QXcbClipboard::mimeData(QClipboard::Mode mode)
         return nullptr;
 
     xcb_window_t clipboardOwner = connection()->selectionOwner(atomForMode(mode));
-    if (clipboardOwner == connection()->qtSelectionOwner()) {
+    if (clipboardOwner == connection()->bobuiSelectionOwner()) {
         return m_clientClipboard[mode];
     } else {
         if (!m_xClipboard[mode])
@@ -327,7 +327,7 @@ void QXcbClipboard::setMimeData(QMimeData *data, QClipboard::Mode mode)
         connection()->setTime(connection()->getTimestamp());
 
     if (data) {
-        newOwner = connection()->qtSelectionOwner();
+        newOwner = connection()->bobuiSelectionOwner();
 
         m_clientClipboard[mode] = data;
         m_timestamp[mode] = connection()->time();
@@ -351,11 +351,11 @@ bool QXcbClipboard::supportsMode(QClipboard::Mode mode) const
 
 bool QXcbClipboard::ownsMode(QClipboard::Mode mode) const
 {
-    if (connection()->qtSelectionOwner() == XCB_NONE || mode > QClipboard::Selection)
+    if (connection()->bobuiSelectionOwner() == XCB_NONE || mode > QClipboard::Selection)
         return false;
 
     Q_ASSERT(m_timestamp[mode] == XCB_CURRENT_TIME
-             || connection()->selectionOwner(atomForMode(mode)) == connection()->qtSelectionOwner());
+             || connection()->selectionOwner(atomForMode(mode)) == connection()->bobuiSelectionOwner());
 
     return m_timestamp[mode] != XCB_CURRENT_TIME;
 }
@@ -386,7 +386,7 @@ xcb_window_t QXcbClipboard::requestor() const
                           nullptr);                              // value list
 
         QXcbWindow::setWindowTitle(connection(), window,
-                                   QStringLiteral("Qt Clipboard Requestor Window"));
+                                   QStringLiteral("BobUI Clipboard Requestor Window"));
 
         uint32_t mask = XCB_EVENT_MASK_PROPERTY_CHANGE;
         xcb_change_window_attributes(xcb_connection(), window, XCB_CW_EVENT_MASK, &mask);
@@ -444,7 +444,7 @@ xcb_atom_t QXcbClipboard::sendSelection(QMimeData *d, xcb_atom_t target, xcb_win
         // Motif clients (since Motif doesn't support INCR)
         static xcb_atom_t motif_clip_temporary = atom(QXcbAtom::AtomCLIP_TEMPORARY);
         bool allow_incr = property != motif_clip_temporary;
-        // This 'bool' can be removed once there is a proper fix for QTBUG-32853
+        // This 'bool' can be removed once there is a proper fix for BOBUIBUG-32853
         if (m_clipboard_closing)
             allow_incr = false;
 
@@ -629,7 +629,7 @@ void QXcbClipboard::handleXFixesSelectionRequest(xcb_xfixes_selection_notify_eve
     // Note1: Here we care only about the xfixes events that come from other processes.
     // Note2: If the QClipboard::clear() is issued, event->owner is XCB_NONE,
     // so we check selection_timestamp to not handle our own QClipboard::clear().
-    if (event->owner != connection()->qtSelectionOwner() && event->selection_timestamp > m_timestamp[mode]) {
+    if (event->owner != connection()->bobuiSelectionOwner() && event->selection_timestamp > m_timestamp[mode]) {
         if (!m_xClipboard[mode]) {
             m_xClipboard[mode].reset(new QXcbClipboardMime(mode, this));
         } else {
@@ -849,7 +849,7 @@ std::optional<QByteArray> QXcbClipboard::clipboardReadIncrementalProperty(xcb_wi
 
 std::optional<QByteArray> QXcbClipboard::getDataInFormat(xcb_atom_t modeAtom, xcb_atom_t fmtAtom)
 {
-    return getSelection(modeAtom, fmtAtom, atom(QXcbAtom::Atom_QT_SELECTION));
+    return getSelection(modeAtom, fmtAtom, atom(QXcbAtom::Atom_BOBUI_SELECTION));
 }
 
 std::optional<QByteArray> QXcbClipboard::getSelection(xcb_atom_t selection, xcb_atom_t target, xcb_atom_t property, xcb_timestamp_t time)
@@ -883,9 +883,9 @@ std::optional<QByteArray> QXcbClipboard::getSelection(xcb_atom_t selection, xcb_
     return std::nullopt;
 }
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbclipboard.cpp"
 #include "qxcbclipboard.moc"

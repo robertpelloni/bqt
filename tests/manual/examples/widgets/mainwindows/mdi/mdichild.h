@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MDICHILD_H
 #define MDICHILD_H
 
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
-class MdiChild : public QTextEdit
+class MdiChild : public BOBUIextEdit
 {
     Q_OBJECT
 

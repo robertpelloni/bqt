@@ -1,5 +1,5 @@
-Qt 3.1.1 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.1.0
+BobUI 3.1.1 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.1.0
 
 
 ****************************************************************************
@@ -14,7 +14,7 @@ compatibility (source and binary) with Qt 3.1.0
 
 - The installer and reconfigure tools on Windows have been fixed.
 
-- Look'n'Feel improvements have been made in the Qt/Mac version.
+- Look'n'Feel improvements have been made in the BobUI/Mac version.
 
 
 ****************************************************************************
@@ -134,7 +134,7 @@ compatibility (source and binary) with Qt 3.1.0
 	Don't propagate accepted contents mouse events.
 
 - QSettings
-	X11 only: Don't read Qt specific settings if application is
+	X11 only: Don't read BobUI specific settings if application is
 	not desktop-settings-aware.
 	Windows only: Handle null-terminations correctly on
 	Win95/98/Me. Fixed a resource leak.
@@ -148,22 +148,22 @@ compatibility (source and binary) with Qt 3.1.0
 - QStyle
 	Make better use of the style flags.
 
-- QTabBar
+- BOBUIabBar
 	Fixed focus handling for dynamically created tab widgets.
 
-- QTable
+- BOBUIable
 	Make sizeHint implementation depend on header
 	visibility. Update the geometry of cell widgets in
 	setRowHeight() and setColumnWidth().
 
-- QTableItem
+- BOBUIableItem
 	Fixed sizeHint() for items with wordwrap and items with
 	newlines in the text.
 
-- QTextCodecFactory
+- BOBUIextCodecFactory
 	Load plugins correctly.
 
-- QTextEdit
+- BOBUIextEdit
 	Fixed rendering of selections in inactive windows. Return the
 	string with format tags in LogText mode. Non-breaking
 	whitespaces (0xA0) are no longer converted to spaces in text().
@@ -192,10 +192,10 @@ compatibility (source and binary) with Qt 3.1.0
 	and row labeling. Don't generate code for database specific
 	properties.
 
-- Qt Designer
+- BobUI Designer
 	Fixed reported crashes.
   
-- Qt Assistant
+- BobUI Assistant
 	Flush stdout to make sure that clients get the correct port
 	number.
 
@@ -204,9 +204,9 @@ compatibility (source and binary) with Qt 3.1.0
 *			       Extensions				   *
 ****************************************************************************
 
-- ActiveQt
+- ActiveBobUI
 	Fixed null-pointer crashes for QVariant parameters. Try harder
-	to convert types. Fixed Qt control placement and property
+	to convert types. Fixed BobUI control placement and property
 	handling in Visual Basic. Improved workaround for Word
 	type library problems. Integrated hosted controls in tab focus
-	chain. Support property overloading in Qt controls.
+	chain. Support property overloading in BobUI controls.

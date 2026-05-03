@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QABSTRACTSOCKET_DEBUG
 
@@ -13,14 +13,14 @@
 
     \reentrant
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
-    QAbstractSocket is the base class for QTcpSocket and QUdpSocket
+    QAbstractSocket is the base class for BOBUIcpSocket and QUdpSocket
     and contains all common functionality of these two classes. If
     you need a socket, you have two options:
 
     \list
-    \li  Instantiate QTcpSocket or QUdpSocket.
+    \li  Instantiate BOBUIcpSocket or QUdpSocket.
     \li  Create a native socket descriptor, instantiate
         QAbstractSocket, and call setSocketDescriptor() to wrap the
         native socket.
@@ -59,7 +59,7 @@
     convenience functions readLine() and readAll(). QAbstractSocket
     also inherits getChar(), putChar(), and ungetChar() from
     QIODevice, which work on single bytes. The bytesWritten() signal
-    is emitted when data has been written to the socket. Note that Qt does
+    is emitted when data has been written to the socket. Note that BobUI does
     not limit the write buffer size. You can monitor its size by listening
     to this signal.
 
@@ -121,12 +121,12 @@
     \note We discourage the use of the blocking functions together
     with signals. One of the two possibilities should be used.
 
-    QAbstractSocket can be used with QTextStream and QDataStream's
+    QAbstractSocket can be used with BOBUIextStream and QDataStream's
     stream operators (operator<<() and operator>>()). There is one
     issue to be aware of, though: You must make sure that enough data
     is available before attempting to read it using operator>>().
 
-    \sa QNetworkAccessManager, QTcpServer
+    \sa QNetworkAccessManager, BOBUIcpServer
 */
 
 /*!
@@ -135,7 +135,7 @@
     This signal is emitted after connectToHost() has been called and
     the host lookup has succeeded.
 
-    \note Since Qt 4.6.3 QAbstractSocket may emit hostFound()
+    \note Since BobUI 4.6.3 QAbstractSocket may emit hostFound()
     directly from the connectToHost() call since a DNS result could have been
     cached.
 
@@ -182,7 +182,7 @@
     connections, you will have to register it with Q_DECLARE_METATYPE() and
     qRegisterMetaType().
 
-    \sa error(), errorString(), {Creating Custom Qt Types}
+    \sa error(), errorString(), {Creating Custom BobUI Types}
 */
 
 /*!
@@ -195,7 +195,7 @@
     connections, you will have to register it with Q_DECLARE_METATYPE() and
     qRegisterMetaType().
 
-    \sa state(), {Creating Custom Qt Types}
+    \sa state(), {Creating Custom BobUI Types}
 */
 
 /*!
@@ -217,7 +217,7 @@
 /*!
     \enum QAbstractSocket::NetworkLayerProtocol
 
-    This enum describes the network layer protocol values used in Qt.
+    This enum describes the network layer protocol values used in BobUI.
 
     \value IPv4Protocol IPv4
     \value IPv6Protocol IPv6
@@ -324,10 +324,10 @@
     This enum represents the options that can be set on a socket.  If
     desired, they can be set after having received the connected()
     signal from the socket or after having received a new socket from
-    a QTcpServer.
+    a BOBUIcpServer.
 
     \value LowDelayOption Try to optimize the socket for low
-    latency. For a QTcpSocket this would set the TCP_NODELAY option
+    latency. For a BOBUIcpSocket this would set the TCP_NODELAY option
     and disable Nagle's algorithm. Set this to 1 to enable.
 
     \value KeepAliveOption Set this to 1 to enable the SO_KEEPALIVE
@@ -346,34 +346,34 @@
     \value SendBufferSizeSocketOption Sets the socket send buffer size
     in bytes at the OS level. This maps to the SO_SNDBUF socket option.
     This option does not affect the QIODevice or QAbstractSocket buffers.
-    This enum value has been introduced in Qt 5.3.
+    This enum value has been introduced in BobUI 5.3.
 
     \value ReceiveBufferSizeSocketOption Sets the socket receive
     buffer size in bytes at the OS level.
     This maps to the SO_RCVBUF socket option.
     This option does not affect the QIODevice or QAbstractSocket buffers
     (see \l{QAbstractSocket::}{setReadBufferSize()}).
-    This enum value has been introduced in Qt 5.3.
+    This enum value has been introduced in BobUI 5.3.
 
     \value PathMtuSocketOption Retrieves the Path Maximum Transmission Unit
     (PMTU) value currently known by the IP stack, if any. Some IP stacks also
     allow setting the MTU for transmission.
-    This enum value was introduced in Qt 5.11.
+    This enum value was introduced in BobUI 5.11.
 
     \value KeepAliveIdleOption The time in seconds the connection needs to
     remain idle before TCP starts sending keepalive probes if
     KeepAliveOption is enabled.
-    This enum value was introduced in Qt 6.11.
+    This enum value was introduced in BobUI 6.11.
 
     \value KeepAliveIntervalOption The time in seconds between individual
     keepalive probes, if KeepAliveOption is enabled. This option is not
     supported in all OSes.
-    This enum value was introduced in Qt 6.11.
+    This enum value was introduced in BobUI 6.11.
 
     \value KeepAliveCountOption The maximum number of keepalive probes to
     send before TCP drops the connection, if KeepAliveOption is enabled.
     This option is not supported in all OSes.
-    This enum value was introduced in Qt 6.11.
+    This enum value was introduced in BobUI 6.11.
 
     Possible values for \e{TypeOfServiceOption} are:
 
@@ -438,12 +438,12 @@
     The only notification currently supported is QSslSocket::sslErrors().
 
     \value PauseNever Do not pause data transfer on the socket. This is the
-    default and matches the behavior of Qt 4.
+    default and matches the behavior of BobUI 4.
     \value PauseOnSslErrors Pause data transfer on the socket upon receiving an
     SSL error notification. I.E. QSslSocket::sslErrors().
 */
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qabstractsocket.h"
 #include "qabstractsocket_p.h"
@@ -453,17 +453,17 @@
 #include "private/qhostinfo_p.h"
 
 #include <qabstracteventdispatcher.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 #include <qhostaddress.h>
 #include <qhostinfo.h>
 #include <qmetaobject.h>
 #include <qpointer.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qdeadlinetimer.h>
 #include <qscopedvaluerollback.h>
 #include <qvarlengtharray.h>
 
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 #ifdef QABSTRACTSOCKET_DEBUG
 #include <qdebug.h>
@@ -479,13 +479,13 @@
 #define QABSTRACTSOCKET_BUFFERSIZE 32768
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketState, QAbstractSocket__SocketState)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketError, QAbstractSocket__SocketError)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketState, QAbstractSocket__SocketState)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketError, QAbstractSocket__SocketError)
 
 static constexpr auto DefaultConnectTimeout = 30s;
 
@@ -553,7 +553,7 @@ void QAbstractSocketPrivate::resetSocketLayer()
 */
 bool QAbstractSocketPrivate::initSocketLayer(QAbstractSocket::NetworkLayerProtocol protocol)
 {
-#ifdef QT_NO_NETWORKPROXY
+#ifdef BOBUI_NO_NETWORKPROXY
     // this is here to avoid a duplication of the call to createSocketEngine below
     static const QNetworkProxy &proxyInUse = *(QNetworkProxy *)0;
 #endif
@@ -604,7 +604,7 @@ bool QAbstractSocketPrivate::initSocketLayer(QAbstractSocket::NetworkLayerProtoc
 */
 void QAbstractSocketPrivate::configureCreatedSocket()
 {
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
     Q_Q(QAbstractSocket);
     // Set single stream mode for unbuffered SCTP socket
     if (socketEngine && q->socketType() == QAbstractSocket::SctpSocket)
@@ -661,7 +661,7 @@ bool QAbstractSocketPrivate::canReadNotification()
             return true;
         }
         if (!isUdpSocket
-#if QT_CONFIG(udpsocket)
+#if BOBUI_CONFIG(udpsocket)
             || socketEngine->hasPendingDatagrams()
 #endif
         ) {
@@ -716,7 +716,7 @@ void QAbstractSocketPrivate::canCloseNotification()
             // closeNotification below.
             emitReadyRead();
 
-            QMetaObject::invokeMethod(socketEngine, "closeNotification", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(socketEngine, "closeNotification", BobUI::QueuedConnection);
         }
     } else if ((socketType == QAbstractSocket::TcpSocket ||
                 socketType == QAbstractSocket::SctpSocket) && socketEngine) {
@@ -839,7 +839,7 @@ bool QAbstractSocketPrivate::flush()
     return dataWasWritten;
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 /*! \internal
 
     Resolve the proxy to its final value.
@@ -884,9 +884,9 @@ void QAbstractSocketPrivate::resolveProxy(const QString &hostname, quint16 port)
     // DefaultProxy here will raise an error
     proxyInUse = QNetworkProxy();
 }
-#endif // !QT_NO_NETWORKPROXY
+#endif // !BOBUI_NO_NETWORKPROXY
 
-#if !defined(QT_NO_NETWORKPROXY)
+#if !defined(BOBUI_NO_NETWORKPROXY)
 /*!
     \internal
 
@@ -928,7 +928,7 @@ void QAbstractSocketPrivate::startConnectingByName(const QString &host)
     emit q->stateChanged(state);
 }
 
-#endif // !QT_NO_NETWORKPROXY
+#endif // !BOBUI_NO_NETWORKPROXY
 
 /*! \internal
 
@@ -1079,10 +1079,10 @@ void QAbstractSocketPrivate::_q_connectToNextAddress()
         // Start the connect timer.
         if (threadData.loadRelaxed()->hasEventDispatcher()) {
             if (!connectTimer) {
-                connectTimer = new QTimer(q);
+                connectTimer = new BOBUIimer(q);
                 QObject::connect(connectTimer, SIGNAL(timeout()),
                                  q, SLOT(_q_abortConnectionAttempt()),
-                                 Qt::DirectConnection);
+                                 BobUI::DirectConnection);
             }
             connectTimer->start(DefaultConnectTimeout);
         }
@@ -1422,7 +1422,7 @@ QAbstractSocket::QAbstractSocket(SocketType socketType,
     Creates a new abstract socket of type \a socketType. The \a
     parent argument is passed to QObject's constructor.
 
-    \sa socketType(), QTcpSocket, QUdpSocket
+    \sa socketType(), BOBUIcpSocket, QUdpSocket
 */
 QAbstractSocket::QAbstractSocket(SocketType socketType, QObject *parent)
     : QAbstractSocket(socketType, *new QAbstractSocketPrivate, parent)
@@ -1553,7 +1553,7 @@ bool QAbstractSocketPrivate::bind(const QHostAddress &address, quint16 port, QAb
         socketEngine->setOption(QAbstractSocketEngine::BindExclusively, 0);
 #endif
     }
-#if QT_CONFIG(networkinterface)
+#if BOBUI_CONFIG(networkinterface)
     if (iface && iface->isValid())
         socketEngine->setOption(QAbstractSocketEngine::BindInterfaceIndex, iface->index());
 #endif
@@ -1600,7 +1600,7 @@ bool QAbstractSocketPrivate::bind(const QHostAddress &address, quint16 port, QAb
     By default, the socket is bound using the DefaultForPlatform BindMode.
     If a port is not specified, a random port is chosen.
 */
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 bool QAbstractSocket::bind(quint16 port, BindMode mode)
 {
     return bind(QHostAddress::Any, port, mode);
@@ -1681,7 +1681,7 @@ void QAbstractSocket::connectToHost(const QString &hostName, quint16 port,
         d->hostLookupId = -1;
     }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     // Get the proxy information
     d->resolveProxy(hostName, port);
     if (d->proxyInUse.type() == QNetworkProxy::DefaultProxy) {
@@ -1710,7 +1710,7 @@ void QAbstractSocket::connectToHost(const QString &hostName, quint16 port,
         QHostInfo info;
         info.setAddresses(QList<QHostAddress>() << temp);
         d->_q_startConnecting(info);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     } else if (d->proxyInUse.capabilities() & QNetworkProxy::HostNameLookupCapability) {
         // the proxy supports connection by name, so use it
         d->startConnectingByName(hostName);
@@ -1721,7 +1721,7 @@ void QAbstractSocket::connectToHost(const QString &hostName, quint16 port,
             // this internal API for QHostInfo either immediately gives us the desired
             // QHostInfo from cache or later calls the _q_startConnecting slot.
             bool immediateResultValid = false;
-            QHostInfo hostInfo = qt_qhostinfo_lookup(hostName,
+            QHostInfo hostInfo = bobui_qhostinfo_lookup(hostName,
                                                      this,
                                                      SLOT(_q_startConnecting(QHostInfo)),
                                                      &immediateResultValid,
@@ -2464,7 +2464,7 @@ qint64 QAbstractSocket::readData(char *data, qint64 maxSize)
 
 #if defined (QABSTRACTSOCKET_DEBUG)
     qDebug("QAbstractSocket::readData(%p \"%s\", %lli) == %lld [engine]", data,
-           QtDebugUtils::toPrintable(data, readBytes, 32).constData(), maxSize, readBytes);
+           BobUIDebugUtils::toPrintable(data, readBytes, 32).constData(), maxSize, readBytes);
 #endif
     return readBytes;
 }
@@ -2489,7 +2489,7 @@ qint64 QAbstractSocket::writeData(const char *data, qint64 size)
 
     if (!d->isBuffered && d->socketType == TcpSocket
         && d->socketEngine && d->writeBuffer.isEmpty()) {
-        // This code is for the new Unbuffered QTcpSocket use case
+        // This code is for the new Unbuffered BOBUIcpSocket use case
         qint64 written = size ? d->socketEngine->write(data, size) : Q_INT64_C(0);
         if (written < 0) {
             d->setError(d->socketEngine->error(), d->socketEngine->errorString());
@@ -2502,7 +2502,7 @@ qint64 QAbstractSocket::writeData(const char *data, qint64 size)
 
 #if defined (QABSTRACTSOCKET_DEBUG)
         qDebug("QAbstractSocket::writeData(%p \"%s\", %lli) == %lli", data,
-               QtDebugUtils::toPrintable(data, size, 32).constData(), size, written);
+               BobUIDebugUtils::toPrintable(data, size, 32).constData(), size, written);
 #endif
         return written; // written = actually written + what has been buffered
     } else if (!d->isBuffered && d->socketType != TcpSocket) {
@@ -2513,15 +2513,15 @@ qint64 QAbstractSocket::writeData(const char *data, qint64 size)
 
 #if defined (QABSTRACTSOCKET_DEBUG)
     qDebug("QAbstractSocket::writeData(%p \"%s\", %lli) == %lli", data,
-           QtDebugUtils::toPrintable(data, size, 32).constData(), size, written);
+           BobUIDebugUtils::toPrintable(data, size, 32).constData(), size, written);
 #endif
         if (written >= 0)
             d->emitBytesWritten(written);
         return written;
     }
 
-    // This is the code path for normal buffered QTcpSocket or
-    // unbuffered QTcpSocket when there was already something in the
+    // This is the code path for normal buffered BOBUIcpSocket or
+    // unbuffered BOBUIcpSocket when there was already something in the
     // write buffer and therefore we could not do a direct engine write.
     // We just write to our write buffer and enable the write notifier
     // The write notifier then flush()es the buffer.
@@ -2534,7 +2534,7 @@ qint64 QAbstractSocket::writeData(const char *data, qint64 size)
 
 #if defined (QABSTRACTSOCKET_DEBUG)
     qDebug("QAbstractSocket::writeData(%p \"%s\", %lli) == %lli", data,
-           QtDebugUtils::toPrintable(data, size, 32).constData(), size, written);
+           BobUIDebugUtils::toPrintable(data, size, 32).constData(), size, written);
 #endif
     return written;
 }
@@ -2782,7 +2782,7 @@ qint64 QAbstractSocket::readBufferSize() const
     want to protect your socket against receiving too much data,
     which may eventually cause your application to run out of memory.
 
-    Only QTcpSocket uses QAbstractSocket's internal buffer; QUdpSocket
+    Only BOBUIcpSocket uses QAbstractSocket's internal buffer; QUdpSocket
     does not use any buffering at all, but rather relies on the
     implicit buffering provided by the operating system.
     Because of this, calling this function on QUdpSocket has no
@@ -2829,7 +2829,7 @@ void QAbstractSocket::setSocketState(SocketState state)
 /*!
     Returns the socket type (TCP, UDP, or other).
 
-    \sa QTcpSocket, QUdpSocket
+    \sa BOBUIcpSocket, QUdpSocket
 */
 QAbstractSocket::SocketType QAbstractSocket::socketType() const
 {
@@ -2856,7 +2856,7 @@ void QAbstractSocket::setSocketError(SocketError socketError)
     d_func()->socketError = socketError;
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 /*!
     \since 4.1
 
@@ -2928,8 +2928,8 @@ void QAbstractSocket::setProtocolTag(const QString &tag)
     d->protocolTag = tag;
 }
 
-#endif // QT_NO_NETWORKPROXY
+#endif // BOBUI_NO_NETWORKPROXY
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractsocket.cpp"

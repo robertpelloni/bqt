@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
@@ -13,7 +13,7 @@
 #include <QSqlQuery>
 #include <QSqlRelationalDelegate>
 #include <QSqlTableModel>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 //! [Set up widgets]
 Window::Window(QWidget *parent)
@@ -24,7 +24,7 @@ Window::Window(QWidget *parent)
     nameLabel = new QLabel(tr("Na&me:"));
     nameEdit = new QLineEdit();
     addressLabel = new QLabel(tr("&Address:"));
-    addressEdit = new QTextEdit();
+    addressEdit = new BOBUIextEdit();
     typeLabel = new QLabel(tr("&Type:"));
     typeComboBox = new QComboBox();
     nextButton = new QPushButton(tr("&Next"));
@@ -81,7 +81,7 @@ void Window::setupModel()
         QMessageBox::critical(0, tr("Cannot open database"),
             tr("Unable to establish a database connection.\n"
                "This example needs SQLite support. Please read "
-               "the Qt SQL driver documentation for information how "
+               "the BobUI SQL driver documentation for information how "
                "to build it."), QMessageBox::Cancel);
         return;
     }
@@ -90,17 +90,17 @@ void Window::setupModel()
     query.exec("create table person (id int primary key, "
                "name varchar(20), address varchar(200), typeid int)");
     query.exec("insert into person values(1, 'Alice', "
-               "'<qt>123 Main Street<br/>Market Town</qt>', 101)");
+               "'<bobui>123 Main Street<br/>Market Town</bobui>', 101)");
     query.exec("insert into person values(2, 'Bob', "
-               "'<qt>PO Box 32<br/>Mail Handling Service"
-               "<br/>Service City</qt>', 102)");
+               "'<bobui>PO Box 32<br/>Mail Handling Service"
+               "<br/>Service City</bobui>', 102)");
     query.exec("insert into person values(3, 'Carol', "
-               "'<qt>The Lighthouse<br/>Remote Island</qt>', 103)");
+               "'<bobui>The Lighthouse<br/>Remote Island</bobui>', 103)");
     query.exec("insert into person values(4, 'Donald', "
-               "'<qt>47338 Park Avenue<br/>Big City</qt>', 101)");
+               "'<bobui>47338 Park Avenue<br/>Big City</bobui>', 101)");
     query.exec("insert into person values(5, 'Emma', "
-               "'<qt>Research Station<br/>Base Camp<br/>"
-               "Big Mountain</qt>', 103)");
+               "'<bobui>Research Station<br/>Base Camp<br/>"
+               "Big Mountain</bobui>', 103)");
 //! [Set up the main table]
 
 //! [Set up the address type table]

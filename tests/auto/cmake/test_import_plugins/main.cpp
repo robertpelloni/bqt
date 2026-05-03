@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Kitware, Inc.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QList>
 #include <QPluginLoader>
@@ -14,7 +14,7 @@ extern std::size_t numExpectedPlugins;
 
 int main(int argc, char **argv)
 {
-#ifdef QT_STATIC
+#ifdef BOBUI_STATIC
     QSet<QString> expectedPluginSet;
     for (std::size_t i = 0; i < numExpectedPlugins; i++) {
         expectedPluginSet.insert(expectedPlugins[i]);

@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QENDIAN_H
 #define QENDIAN_H
 
 #if 0
-#pragma qt_class(QtEndian)
+#pragma bobui_class(BobUIEndian)
 #endif
 
-#include <QtCore/qfloat16.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qfloat16.h>
+#include <BobUICore/qglobal.h>
 
 #include <limits>
 
@@ -23,7 +23,7 @@
 #undef max
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * ENDIAN FUNCTIONS
@@ -105,7 +105,7 @@ inline constexpr T qbswap(T source)
     return T(qbswap_helper(typename QIntegerForSizeof<T>::Unsigned(source)));
 }
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 // extra definitions for q(u)int128, in case std::is_integral_v<~~> == false
 inline constexpr quint128 qbswap(quint128 source)
 {
@@ -382,12 +382,12 @@ template<typename T>
 using QBEInteger = QSpecialInteger<QBigEndianStorageType<T>>;
 #endif
 template <typename T>
-class QTypeInfo<QLEInteger<T> >
-    : public QTypeInfoMerger<QLEInteger<T>, T> {};
+class BOBUIypeInfo<QLEInteger<T> >
+    : public BOBUIypeInfoMerger<QLEInteger<T>, T> {};
 
 template <typename T>
-class QTypeInfo<QBEInteger<T> >
-    : public QTypeInfoMerger<QBEInteger<T>, T> {};
+class BOBUIypeInfo<QBEInteger<T> >
+    : public BOBUIypeInfoMerger<QBEInteger<T>, T> {};
 
 typedef QLEInteger<qint16> qint16_le;
 typedef QLEInteger<qint32> qint32_le;
@@ -403,6 +403,6 @@ typedef QBEInteger<quint16> quint16_be;
 typedef QBEInteger<quint32> quint32_be;
 typedef QBEInteger<quint64> quint64_be;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QENDIAN_H

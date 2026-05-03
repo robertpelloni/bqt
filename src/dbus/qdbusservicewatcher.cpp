@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusservicewatcher.h"
 #include "qdbusconnection.h"
@@ -12,9 +12,9 @@
 #include <private/qobject_p.h>
 #include <private/qdbusconnection_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusServiceWatcherPrivate: public QObjectPrivate
 {
@@ -100,7 +100,7 @@ void QDBusServiceWatcherPrivate::removeService(const QString &service,
 /*!
     \class QDBusServiceWatcher
     \since 4.6
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBusServiceWatcher class allows the user to watch for a bus service change.
 
@@ -379,8 +379,8 @@ void QDBusServiceWatcher::setConnection(const QDBusConnection &connection)
     d->setConnection(d->watchedServicesData, connection, d->watchMode);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 
 #include "moc_qdbusservicewatcher.cpp"

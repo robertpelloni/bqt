@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrasterizer_p.h"
 
@@ -10,11 +10,11 @@
 #include <private/qdatabuffer_p.h>
 #include <private/qdrawhelper_p.h>
 
-#include <QtGui/qpainterpath.h>
+#include <BobUIGui/qpainterpath.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if Q_PROCESSOR_WORDSIZE == 8
 typedef qint64 QScFixed;
@@ -36,9 +36,9 @@ typedef int QScFixed;
 #define COORD_ROUNDING 1 // 0: round up, 1: round down
 #define COORD_OFFSET 32 // 26.6, 32 is half a pixel
 
-static inline QT_FT_Vector PointToVector(const QPointF &p)
+static inline BOBUI_FT_Vector PointToVector(const QPointF &p)
 {
-    QT_FT_Vector result = { QT_FT_Pos(p.x() * 64), QT_FT_Pos(p.y() * 64) };
+    BOBUI_FT_Vector result = { BOBUI_FT_Pos(p.x() * 64), BOBUI_FT_Pos(p.y() * 64) };
     return result;
 }
 
@@ -84,7 +84,7 @@ private:
         m_spanCount = 0;
     }
 
-    QT_FT_Span m_spans[SPAN_BUFFER_SIZE];
+    BOBUI_FT_Span m_spans[SPAN_BUFFER_SIZE];
     int m_spanCount;
 
     ProcessSpans m_blend;
@@ -101,12 +101,12 @@ public:
     ~QScanConverter();
 
     void begin(int top, int bottom, int left, int right,
-               Qt::FillRule fillRule, QSpanBuffer *spanBuffer);
+               BobUI::FillRule fillRule, QSpanBuffer *spanBuffer);
     void end();
 
-    void mergeCurve(const QT_FT_Vector &a, const QT_FT_Vector &b,
-                    const QT_FT_Vector &c, const QT_FT_Vector &d);
-    void mergeLine(QT_FT_Vector a, QT_FT_Vector b);
+    void mergeCurve(const BOBUI_FT_Vector &a, const BOBUI_FT_Vector &b,
+                    const BOBUI_FT_Vector &c, const BOBUI_FT_Vector &d);
+    void mergeLine(BOBUI_FT_Vector a, BOBUI_FT_Vector b);
 
     struct Line
     {
@@ -191,7 +191,7 @@ QScanConverter::~QScanConverter()
 }
 
 void QScanConverter::begin(int top, int bottom, int left, int right,
-                           Qt::FillRule fillRule,
+                           BobUI::FillRule fillRule,
                            QSpanBuffer *spanBuffer)
 {
     m_top = top;
@@ -201,7 +201,7 @@ void QScanConverter::begin(int top, int bottom, int left, int right,
 
     m_lines.reset();
 
-    m_fillRuleMask = fillRule == Qt::WindingFill ? ~0x0 : 0x1;
+    m_fillRuleMask = fillRule == BobUI::WindingFill ? ~0x0 : 0x1;
     m_spanBuffer = spanBuffer;
 }
 
@@ -244,12 +244,12 @@ void QScanConverter::emitSpans(int chunk)
 
 // split control points b[0] ... b[3] into
 // left (b[0] ... b[3]) and right (b[3] ... b[6])
-static void split(QT_FT_Vector *b)
+static void split(BOBUI_FT_Vector *b)
 {
     b[6] = b[3];
 
     {
-        const QT_FT_Pos temp = (b[1].x + b[2].x)/2;
+        const BOBUI_FT_Pos temp = (b[1].x + b[2].x)/2;
 
         b[1].x = (b[0].x + b[1].x)/2;
         b[5].x = (b[2].x + b[3].x)/2;
@@ -258,7 +258,7 @@ static void split(QT_FT_Vector *b)
         b[3].x = (b[2].x + b[4].x)/2;
     }
     {
-        const QT_FT_Pos temp = (b[1].y + b[2].y)/2;
+        const BOBUI_FT_Pos temp = (b[1].y + b[2].y)/2;
 
         b[1].y = (b[0].y + b[1].y)/2;
         b[5].y = (b[2].y + b[3].y)/2;
@@ -436,24 +436,24 @@ inline void QScanConverter::mergeIntersection(Intersection *it, const Intersecti
     current->winding += isect.winding;
 }
 
-void QScanConverter::mergeCurve(const QT_FT_Vector &pa, const QT_FT_Vector &pb,
-                                const QT_FT_Vector &pc, const QT_FT_Vector &pd)
+void QScanConverter::mergeCurve(const BOBUI_FT_Vector &pa, const BOBUI_FT_Vector &pb,
+                                const BOBUI_FT_Vector &pc, const BOBUI_FT_Vector &pd)
 {
     // make room for 32 splits
-    QT_FT_Vector beziers[4 + 3 * 32];
+    BOBUI_FT_Vector beziers[4 + 3 * 32];
 
-    QT_FT_Vector *b = beziers;
+    BOBUI_FT_Vector *b = beziers;
 
     b[0] = pa;
     b[1] = pb;
     b[2] = pc;
     b[3] = pd;
 
-    const QT_FT_Pos flatness = 16;
+    const BOBUI_FT_Pos flatness = 16;
 
     while (b >= beziers) {
-        QT_FT_Vector delta = { b[3].x - b[0].x, b[3].y - b[0].y };
-        QT_FT_Pos l = qAbs(delta.x) + qAbs(delta.y);
+        BOBUI_FT_Vector delta = { b[3].x - b[0].x, b[3].y - b[0].y };
+        BOBUI_FT_Pos l = qAbs(delta.x) + qAbs(delta.y);
 
         bool belowThreshold;
         if (l > 64) {
@@ -466,7 +466,7 @@ void QScanConverter::mergeCurve(const QT_FT_Vector &pa, const QT_FT_Vector &pb,
 
             belowThreshold = (d <= qlonglong(flatness) * qlonglong(l));
         } else {
-            QT_FT_Pos d = qAbs(b[0].x-b[1].x) + qAbs(b[0].y-b[1].y) +
+            BOBUI_FT_Pos d = qAbs(b[0].x-b[1].x) + qAbs(b[0].y-b[1].y) +
                           qAbs(b[0].x-b[2].x) + qAbs(b[0].y-b[2].y);
 
             belowThreshold = (d <= flatness);
@@ -548,7 +548,7 @@ inline bool QScanConverter::clip(QScFixed &xFP, int &iTop, int &iBottom, QScFixe
     return false;
 }
 
-void QScanConverter::mergeLine(QT_FT_Vector a, QT_FT_Vector b)
+void QScanConverter::mergeLine(BOBUI_FT_Vector a, BOBUI_FT_Vector b)
 {
     int winding = 1;
 
@@ -1163,21 +1163,21 @@ void QRasterizer::rasterizeLine(const QPointF &a, const QPointF &b, qreal width,
     }
 }
 
-void QRasterizer::rasterize(const QT_FT_Outline *outline, Qt::FillRule fillRule)
+void QRasterizer::rasterize(const BOBUI_FT_Outline *outline, BobUI::FillRule fillRule)
 {
     if (outline->n_points < 3 || outline->n_contours == 0)
         return;
 
-    const QT_FT_Vector *points = outline->points;
+    const BOBUI_FT_Vector *points = outline->points;
 
     QSpanBuffer buffer(d->blend, d->data, d->clipRect);
 
-    // ### QT_FT_Outline already has a bounding rect which is
+    // ### BOBUI_FT_Outline already has a bounding rect which is
     // ### precomputed at this point, so we should probably just be
     // ### using that instead...
-    QT_FT_Pos min_y = points[0].y, max_y = points[0].y;
+    BOBUI_FT_Pos min_y = points[0].y, max_y = points[0].y;
     for (int i = 1; i < outline->n_points; ++i) {
-        const QT_FT_Vector &p = points[i];
+        const BOBUI_FT_Vector &p = points[i];
         min_y = qMin(p.y, min_y);
         max_y = qMax(p.y, max_y);
     }
@@ -1194,8 +1194,8 @@ void QRasterizer::rasterize(const QT_FT_Outline *outline, Qt::FillRule fillRule)
     for (int i = 0; i < outline->n_contours; ++i) {
         const int last = outline->contours[i];
         for (int j = first; j < last; ++j) {
-            if (outline->tags[j+1] == QT_FT_CURVE_TAG_CUBIC) {
-                Q_ASSERT(outline->tags[j+2] == QT_FT_CURVE_TAG_CUBIC);
+            if (outline->tags[j+1] == BOBUI_FT_CURVE_TAG_CUBIC) {
+                Q_ASSERT(outline->tags[j+2] == BOBUI_FT_CURVE_TAG_CUBIC);
                 d->scanConverter.mergeCurve(points[j], points[j+1], points[j+2], points[j+3]);
                 j += 2;
             } else {
@@ -1209,7 +1209,7 @@ void QRasterizer::rasterize(const QT_FT_Outline *outline, Qt::FillRule fillRule)
     d->scanConverter.end();
 }
 
-void QRasterizer::rasterize(const QPainterPath &path, Qt::FillRule fillRule)
+void QRasterizer::rasterize(const QPainterPath &path, BobUI::FillRule fillRule)
 {
     if (path.isEmpty())
         return;
@@ -1227,13 +1227,13 @@ void QRasterizer::rasterize(const QPainterPath &path, Qt::FillRule fillRule)
     d->scanConverter.begin(iTopBound, iBottomBound, d->clipRect.left(), d->clipRect.right(), fillRule, &buffer);
 
     int subpathStart = 0;
-    QT_FT_Vector last = { 0, 0 };
+    BOBUI_FT_Vector last = { 0, 0 };
     for (int i = 0; i < path.elementCount(); ++i) {
         switch (path.elementAt(i).type) {
         case QPainterPath::LineToElement:
             {
-                QT_FT_Vector p1 = last;
-                QT_FT_Vector p2 = PointToVector(path.elementAt(i));
+                BOBUI_FT_Vector p1 = last;
+                BOBUI_FT_Vector p2 = PointToVector(path.elementAt(i));
                 d->scanConverter.mergeLine(p1, p2);
                 last = p2;
                 break;
@@ -1241,7 +1241,7 @@ void QRasterizer::rasterize(const QPainterPath &path, Qt::FillRule fillRule)
         case QPainterPath::MoveToElement:
             {
                 if (i != 0) {
-                    QT_FT_Vector first = PointToVector(path.elementAt(subpathStart));
+                    BOBUI_FT_Vector first = PointToVector(path.elementAt(subpathStart));
                     // close previous subpath
                     if (first.x != last.x || first.y != last.y)
                         d->scanConverter.mergeLine(last, first);
@@ -1252,10 +1252,10 @@ void QRasterizer::rasterize(const QPainterPath &path, Qt::FillRule fillRule)
             }
         case QPainterPath::CurveToElement:
             {
-                QT_FT_Vector p1 = last;
-                QT_FT_Vector p2 = PointToVector(path.elementAt(i));
-                QT_FT_Vector p3 = PointToVector(path.elementAt(++i));
-                QT_FT_Vector p4 = PointToVector(path.elementAt(++i));
+                BOBUI_FT_Vector p1 = last;
+                BOBUI_FT_Vector p2 = PointToVector(path.elementAt(i));
+                BOBUI_FT_Vector p3 = PointToVector(path.elementAt(++i));
+                BOBUI_FT_Vector p4 = PointToVector(path.elementAt(++i));
                 d->scanConverter.mergeCurve(p1, p2, p3, p4);
                 last = p4;
                 break;
@@ -1266,7 +1266,7 @@ void QRasterizer::rasterize(const QPainterPath &path, Qt::FillRule fillRule)
         }
     }
 
-    QT_FT_Vector first = PointToVector(path.elementAt(subpathStart));
+    BOBUI_FT_Vector first = PointToVector(path.elementAt(subpathStart));
 
     // close path
     if (first.x != last.x || first.y != last.y)
@@ -1275,4 +1275,4 @@ void QRasterizer::rasterize(const QPainterPath &path, Qt::FillRule fillRule)
     d->scanConverter.end();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

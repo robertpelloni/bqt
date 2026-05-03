@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLAYOUTPOLICY_H
 #define QLAYOUTPOLICY_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qnamespace.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qnamespace.h>
 
-#ifndef QT_NO_DATASTREAM
-# include <QtCore/qdatastream.h>
+#ifndef BOBUI_NO_DATASTREAM
+# include <BobUICore/qdatastream.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QVariant;
@@ -86,12 +86,12 @@ public:
     void setVerticalPolicy(Policy d) { bits.verPolicy = d; }
     Q_GUI_EXPORT void setControlType(ControlType type);
 
-    Qt::Orientations expandingDirections() const {
-        Qt::Orientations result;
+    BobUI::Orientations expandingDirections() const {
+        BobUI::Orientations result;
         if (verticalPolicy() & ExpandFlag)
-            result |= Qt::Vertical;
+            result |= BobUI::Vertical;
         if (horizontalPolicy() & ExpandFlag)
-            result |= Qt::Horizontal;
+            result |= BobUI::Horizontal;
         return result;
     }
 
@@ -112,7 +112,7 @@ public:
 
 
 private:
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend QDataStream &operator<<(QDataStream &, const QLayoutPolicy &);
     friend QDataStream &operator>>(QDataStream &, QLayoutPolicy &);
 #endif
@@ -136,12 +136,12 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLayoutPolicy::Policy)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLayoutPolicy::ControlTypes)
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &, const QLayoutPolicy &);
 QDataStream &operator>>(QDataStream &, QLayoutPolicy &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QLayoutPolicy &);
 #endif
 
@@ -156,6 +156,6 @@ inline void QLayoutPolicy::transpose() {
     setVerticalStretch(hStretch);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLAYOUTPOLICY_H

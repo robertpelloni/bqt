@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qboxlayout.h"
@@ -11,7 +11,7 @@
 #include "qlayout_p.h"
 #include "qlayoutengine_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QBoxLayoutItem
 {
@@ -76,7 +76,7 @@ public:
     QSize minSize;
     QSize maxSize;
     int leftMargin, topMargin, rightMargin, bottomMargin;
-    Qt::Orientations expanding;
+    BobUI::Orientations expanding;
     uint hasHfw : 1;
     uint dirty : 1;
     QBoxLayout::Direction dir;
@@ -137,8 +137,8 @@ void QBoxLayoutPrivate::effectiveMargins(int *left, int *top, int *right, int *b
                     rightDelta = w->geometry().right() - itm->geometry().right();
             }
             QWidget *w = q->parentWidget();
-            Qt::LayoutDirection layoutDirection = w ? w->layoutDirection() : QGuiApplication::layoutDirection();
-            if (layoutDirection == Qt::RightToLeft)
+            BobUI::LayoutDirection layoutDirection = w ? w->layoutDirection() : QGuiApplication::layoutDirection();
+            if (layoutDirection == BobUI::RightToLeft)
                 qSwap(leftDelta, rightDelta);
 
             l = qMax(l, leftDelta);
@@ -254,7 +254,7 @@ void QBoxLayoutPrivate::setupGeom()
         QSize max = box->item->maximumSize();
         QSize min = box->item->minimumSize();
         QSize hint = box->item->sizeHint();
-        Qt::Orientations exp = box->item->expandingDirections();
+        BobUI::Orientations exp = box->item->expandingDirections();
         bool empty = box->item->isEmpty();
         int spacing = 0;
 
@@ -282,7 +282,7 @@ void QBoxLayoutPrivate::setupGeom()
 
                     if (style) {
                         spacing = style->combinedLayoutSpacing(actual1, actual2,
-                                             horz(dir) ? Qt::Horizontal : Qt::Vertical,
+                                             horz(dir) ? BobUI::Horizontal : BobUI::Vertical,
                                              nullptr, q->parentWidget());
                         if (spacing < 0)
                             spacing = 0;
@@ -298,14 +298,14 @@ void QBoxLayoutPrivate::setupGeom()
         bool ignore = empty && box->item->widget(); // ignore hidden widgets
         bool dummy = true;
         if (horz(dir)) {
-            bool expand = (exp & Qt::Horizontal || box->stretch > 0);
+            bool expand = (exp & BobUI::Horizontal || box->stretch > 0);
             horexp = horexp || expand;
             maxw += spacing + max.width();
             minw += spacing + min.width();
             hintw += spacing + hint.width();
             if (!ignore)
                 qMaxExpCalc(maxh, verexp, dummy,
-                            max.height(), exp & Qt::Vertical, box->item->isEmpty());
+                            max.height(), exp & BobUI::Vertical, box->item->isEmpty());
             minh = qMax(minh, min.height());
             hinth = qMax(hinth, hint.height());
 
@@ -315,14 +315,14 @@ void QBoxLayoutPrivate::setupGeom()
             a[i].expansive = expand;
             a[i].stretch = box->stretch ? box->stretch : box->hStretch();
         } else {
-            bool expand = (exp & Qt::Vertical || box->stretch > 0);
+            bool expand = (exp & BobUI::Vertical || box->stretch > 0);
             verexp = verexp || expand;
             maxh += spacing + max.height();
             minh += spacing + min.height();
             hinth += spacing + hint.height();
             if (!ignore)
                 qMaxExpCalc(maxw, horexp, dummy,
-                            max.width(), exp & Qt::Horizontal, box->item->isEmpty());
+                            max.width(), exp & BobUI::Horizontal, box->item->isEmpty());
             minw = qMax(minw, min.width());
             hintw = qMax(hintw, hint.width());
 
@@ -340,9 +340,9 @@ void QBoxLayoutPrivate::setupGeom()
 
     geomArray = a;
 
-    expanding = (Qt::Orientations)
-                       ((horexp ? Qt::Horizontal : 0)
-                         | (verexp ? Qt::Vertical : 0));
+    expanding = (BobUI::Orientations)
+                       ((horexp ? BobUI::Horizontal : 0)
+                         | (verexp ? BobUI::Vertical : 0));
 
     minSize = QSize(minw, minh);
     maxSize = QSize(maxw, maxh).expandedTo(minSize);
@@ -426,7 +426,7 @@ int QBoxLayoutPrivate::validateIndex(int index) const
     vertically.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QBoxLayout takes the space it gets (from its parent layout or from
     the parentWidget()), divides it up into a row of boxes, and makes
@@ -434,7 +434,7 @@ int QBoxLayoutPrivate::validateIndex(int index) const
 
     \image qhboxlayout-with-5-children.png {Five buttons in horizontal layout}
 
-    If the QBoxLayout's orientation is Qt::Horizontal the boxes are
+    If the QBoxLayout's orientation is BobUI::Horizontal the boxes are
     placed in a row, with suitable sizes. Each widget (or other box)
     will get at least its minimum size and at most its maximum size.
     Any excess space is shared according to the stretch factors (more
@@ -442,12 +442,12 @@ int QBoxLayoutPrivate::validateIndex(int index) const
 
     \image qvboxlayout-with-5-children.png {Five buttons in vertical layout}
 
-    If the QBoxLayout's orientation is Qt::Vertical, the boxes are
+    If the QBoxLayout's orientation is BobUI::Vertical, the boxes are
     placed in a column, again with suitable sizes.
 
     The easiest way to create a QBoxLayout is to use one of the
-    convenience classes, e.g. QHBoxLayout (for Qt::Horizontal boxes)
-    or QVBoxLayout (for Qt::Vertical boxes). You can also use the
+    convenience classes, e.g. QHBoxLayout (for BobUI::Horizontal boxes)
+    or QVBoxLayout (for BobUI::Vertical boxes). You can also use the
     QBoxLayout constructor directly, specifying its direction as
     LeftToRight, RightToLeft, TopToBottom, or BottomToTop.
 
@@ -490,7 +490,7 @@ int QBoxLayoutPrivate::validateIndex(int index) const
     \endlist
 
     The margin default is provided by the style. The default margin
-    most Qt styles specify is 9 for child widgets and 11 for windows.
+    most BobUI styles specify is 9 for child widgets and 11 for windows.
     The spacing defaults to the same as the margin width for a
     top-level layout, or to the same as the parent layout.
 
@@ -617,9 +617,9 @@ QSize QBoxLayout::maximumSize() const
 
     QSize s = d->maxSize.boundedTo(QSize(QLAYOUTSIZE_MAX, QLAYOUTSIZE_MAX));
 
-    if (alignment() & Qt::AlignHorizontal_Mask)
+    if (alignment() & BobUI::AlignHorizontal_Mask)
         s.setWidth(QLAYOUTSIZE_MAX);
-    if (alignment() & Qt::AlignVertical_Mask)
+    if (alignment() & BobUI::AlignVertical_Mask)
         s.setHeight(QLAYOUTSIZE_MAX);
     return s;
 }
@@ -721,7 +721,7 @@ QLayoutItem *QBoxLayout::takeAt(int index)
 /*!
     \reimp
 */
-Qt::Orientations QBoxLayout::expandingDirections() const
+BobUI::Orientations QBoxLayout::expandingDirections() const
 {
     Q_D(const QBoxLayout);
     if (d->dirty)
@@ -945,7 +945,7 @@ void QBoxLayout::insertLayout(int index, QLayout *layout, int stretch)
     \sa addWidget(), insertItem()
 */
 void QBoxLayout::insertWidget(int index, QWidget *widget, int stretch,
-                              Qt::Alignment alignment)
+                              BobUI::Alignment alignment)
 {
     Q_D(QBoxLayout);
     if (!d->checkWidget(widget))
@@ -1019,7 +1019,7 @@ void QBoxLayout::addSpacerItem(QSpacerItem *spacerItem)
     \sa insertWidget(), addItem(), addLayout(), addStretch(),
         addSpacing(), addStrut()
 */
-void QBoxLayout::addWidget(QWidget *widget, int stretch, Qt::Alignment alignment)
+void QBoxLayout::addWidget(QWidget *widget, int stretch, BobUI::Alignment alignment)
 {
     insertWidget(-1, widget, stretch, alignment);
 }
@@ -1155,7 +1155,7 @@ void QBoxLayout::setDirection(Direction direction)
             if (box->magic) {
                 QSpacerItem *sp = box->item->spacerItem();
                 if (sp) {
-                    if (sp->expandingDirections() == Qt::Orientations{} /*No Direction*/) {
+                    if (sp->expandingDirections() == BobUI::Orientations{} /*No Direction*/) {
                         //spacing or strut
                         QSize s = sp->sizeHint();
                         sp->changeSize(s.height(), s.width(),
@@ -1199,7 +1199,7 @@ QBoxLayout::Direction QBoxLayout::direction() const
     \brief The QHBoxLayout class lines up widgets horizontally.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This class is used to construct horizontal box layout objects. See
     QBoxLayout for details.
@@ -1273,7 +1273,7 @@ QHBoxLayout::~QHBoxLayout()
     \brief The QVBoxLayout class lines up widgets vertically.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This class is used to construct vertical box layout objects. See
     QBoxLayout for details.
@@ -1339,6 +1339,6 @@ QVBoxLayout::~QVBoxLayout()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qboxlayout.cpp"

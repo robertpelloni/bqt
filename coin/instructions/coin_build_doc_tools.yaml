@@ -1,24 +1,24 @@
 type: Group
 instructions:
-  # Build outside of qtbase source dir, to avoid REUSE missing license warnings for the built files.
+  # Build outside of bobuibase source dir, to avoid REUSE missing license warnings for the built files.
   - type: SetBuildDirectory
     directory: "{{.AgentWorkingDir}}"
   - type: ChangeDirectory
     directory: "{{.BuildDir}}"
 
-  - !include "{{qt/qtbase}}/prepare_building_env.yaml"
+  - !include "{{bobui/bobuibase}}/prepare_building_env.yaml"
 
   # This tells the script where to install the doc tools, and what files the archive will contain.
   - type: EnvironmentVariable
-    variableName: QT_CI_DOC_TOOLS_INSTALL_DIR
+    variableName: BOBUI_CI_DOC_TOOLS_INSTALL_DIR
     variableValue: "{{.BuildDir}}/doc_tools_build/install"
 
   # Tell Coin to fetch latest refs of required repos.
   - type: UpdateRepo
-    repos: [qt/qt5, qt/qttools, qt/qtbase, qt/qtshadertools, qt/qtdeclarative, qt/qtsvg, qt/qtimageformats, qt/qtactiveqt, qt/qtlanguageserver]
+    repos: [bobui/bobui5, bobui/bobuitools, bobui/bobuibase, bobui/bobuishadertools, bobui/bobuideclarative, bobui/bobuisvg, bobui/bobuiimageformats, bobui/bobuiactivebobui, bobui/bobuilanguageserver]
 
   - type: ExecuteCommand
-    command: "{{.Env.ENV_PREFIX}} cmake -P {{.SourceDir}}/cmake/QtBuildStaticDocToolsScript.cmake"
+    command: "{{.Env.ENV_PREFIX}} cmake -P {{.SourceDir}}/cmake/BobUIBuildStaticDocToolsScript.cmake"
     executeCommandArgumentSplitingBehavior: SplitAfterVariableSubstitution
     maxTimeInSeconds: 6000
     maxTimeBetweenOutput: 1200
@@ -27,11 +27,11 @@ instructions:
     enable_if:
       condition: runtime
       env_var: TESTED_MODULE_COIN
-      contains_value: qtbase
+      contains_value: bobuibase
 
-  # For non-qtbase repos, call the build script from the installed folder.
+  # For non-bobuibase repos, call the build script from the installed folder.
   - type: ExecuteCommand
-    command: "{{.Env.ENV_PREFIX}} cmake -P {{.Env.COIN_CMAKE_INSTALL_DIR}}/lib/cmake/Qt6/QtBuildStaticDocToolsScript.cmake"
+    command: "{{.Env.ENV_PREFIX}} cmake -P {{.Env.COIN_CMAKE_INSTALL_DIR}}/lib/cmake/BobUI6/BobUIBuildStaticDocToolsScript.cmake"
     executeCommandArgumentSplitingBehavior: SplitAfterVariableSubstitution
     maxTimeInSeconds: 6000
     maxTimeBetweenOutput: 1200
@@ -40,10 +40,10 @@ instructions:
     disable_if:
       condition: runtime
       env_var: TESTED_MODULE_COIN
-      contains_value: qtbase
+      contains_value: bobuibase
 
   - type: UploadArtifact
-    archiveDirectory: "{{.Env.QT_CI_DOC_TOOLS_INSTALL_DIR}}"
+    archiveDirectory: "{{.Env.BOBUI_CI_DOC_TOOLS_INSTALL_DIR}}"
     transferType: GenericArtifactWithName
     filename: "static_doc_tools_{{.Env.TESTED_MODULE_COIN}}.tar.gz"
     maxTimeInSeconds: 1200

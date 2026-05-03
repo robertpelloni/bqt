@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDBRCMEGLINTEGRATION_H
 #define QWAYLANDBRCMEGLINTEGRATION_H
 
-#include <QtWaylandClient/private/qwaylandclientbufferintegration_p.h>
-#include <QtWaylandClient/private/wayland-wayland-client-protocol.h>
+#include <BobUIWaylandClient/private/qwaylandclientbufferintegration_p.h>
+#include <BobUIWaylandClient/private/wayland-wayland-client-protocol.h>
 #include <wayland-client-core.h>
 
 #include <EGL/egl.h>
@@ -13,15 +13,15 @@
 
 #include <EGL/eglext_brcm.h>
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-struct qt_brcm;
+struct bobui_brcm;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindow;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandWindow;
 
@@ -42,7 +42,7 @@ public:
 
     EGLDisplay eglDisplay() const;
 
-    struct qt_brcm *waylandBrcm() const;
+    struct bobui_brcm *waylandBrcm() const;
 
     PFNEGLFLUSHBRCMPROC eglFlushBRCM;
     PFNEGLCREATEGLOBALIMAGEBRCMPROC eglCreateGlobalImageBRCM;
@@ -55,7 +55,7 @@ private:
     static void wlDisplayHandleGlobal(void *data, struct ::wl_registry *registry, uint32_t id, const QString &interface, uint32_t version);
 
     struct wl_display *m_waylandDisplay = nullptr;
-    struct qt_brcm *m_waylandBrcm = nullptr;
+    struct bobui_brcm *m_waylandBrcm = nullptr;
 
     EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
 
@@ -64,6 +64,6 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDBRCMEGLINTEGRATION_H

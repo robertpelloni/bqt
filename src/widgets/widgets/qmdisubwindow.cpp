@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QMdiSubWindow
@@ -8,7 +8,7 @@
     QMdiArea.
     \since 4.3
     \ingroup mainwindow-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QMdiSubWindow represents a top-level window in a QMdiArea, and consists
     of a title bar with window decorations, an internal widget, and
@@ -93,7 +93,7 @@
 */
 
 /*!
-    \fn QMdiSubWindow::windowStateChanged(Qt::WindowStates oldState, Qt::WindowStates newState)
+    \fn QMdiSubWindow::windowStateChanged(BobUI::WindowStates oldState, BobUI::WindowStates newState)
 
     QMdiSubWindow emits this signal after the window state changes. \a
     oldState is the window state before it changed, and \a newState is the
@@ -117,30 +117,30 @@
 #include <QStylePainter>
 #include <QVBoxLayout>
 #include <QMouseEvent>
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include <QWhatsThis>
 #endif
-#if QT_CONFIG(tooltip)
-#include <QToolTip>
+#if BOBUI_CONFIG(tooltip)
+#include <BOBUIoolTip>
 #endif
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 #include <QMainWindow>
 #endif
 #include <QScrollBar>
 #include <QDebug>
 #include <QMdiArea>
 #include <QScopedValueRollback>
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #  include <qaction.h>
 #endif
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <QMenu>
 #endif
 #include <QProxyStyle>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 using namespace QMdi;
@@ -159,14 +159,14 @@ static const QStyle::SubControl SubControls[] =
 };
 static const int NumSubControls = sizeof(SubControls) / sizeof(SubControls[0]);
 
-static const Qt::WindowFlags CustomizeWindowFlags =
-      Qt::FramelessWindowHint
-    | Qt::CustomizeWindowHint
-    | Qt::WindowTitleHint
-    | Qt::WindowSystemMenuHint
-    | Qt::WindowMinimizeButtonHint
-    | Qt::WindowMaximizeButtonHint
-    | Qt::WindowMinMaxButtonsHint;
+static const BobUI::WindowFlags CustomizeWindowFlags =
+      BobUI::FramelessWindowHint
+    | BobUI::CustomizeWindowHint
+    | BobUI::WindowTitleHint
+    | BobUI::WindowSystemMenuHint
+    | BobUI::WindowMinimizeButtonHint
+    | BobUI::WindowMaximizeButtonHint
+    | BobUI::WindowMinMaxButtonsHint;
 
 
 static const int BoundaryMargin = 5;
@@ -225,7 +225,7 @@ static inline bool isChildOfTabbedQMdiArea(const QMdiSubWindow *child)
 template<typename T>
 static inline ControlElement<T> *ptr(QWidget *widget)
 {
-    if (widget && widget->qt_metacast("ControlElement")
+    if (widget && widget->bobui_metacast("ControlElement")
             && strcmp(widget->metaObject()->className(), T::staticMetaObject.className()) == 0) {
         return static_cast<ControlElement<T> *>(widget);
     }
@@ -235,13 +235,13 @@ static inline ControlElement<T> *ptr(QWidget *widget)
 QString QMdiSubWindowPrivate::originalWindowTitleHelper() const
 {
     Q_Q(const QMdiSubWindow);
-    // QTBUG-92240: When DontMaximizeSubWindowOnActivation is set and
+    // BOBUIBUG-92240: When DontMaximizeSubWindowOnActivation is set and
     // there is another subwindow maximized, use its original title.
     if (auto *mdiArea = q->mdiArea()) {
         const auto &subWindows = mdiArea->subWindowList();
         for (auto *subWindow : subWindows) {
             if (subWindow != q && subWindow->isMaximized()) {
-                auto *subWindowD = static_cast<QMdiSubWindowPrivate *>(qt_widget_private(subWindow));
+                auto *subWindowD = static_cast<QMdiSubWindowPrivate *>(bobui_widget_private(subWindow));
                 if (!subWindowD->originalTitle.isNull())
                     return subWindowD->originalTitle;
             }
@@ -287,7 +287,7 @@ static inline bool isHoverControl(QStyle::SubControl control)
     return control != QStyle::SC_None && control != QStyle::SC_TitleBarLabel;
 }
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
 static void showToolTip(QHelpEvent *helpEvent, QWidget *widget, const QStyleOptionComplex &opt,
                         QStyle::ComplexControl complexControl, QStyle::SubControl subControl)
 {
@@ -350,9 +350,9 @@ static void showToolTip(QHelpEvent *helpEvent, QWidget *widget, const QStyleOpti
     }
 
     const QRect rect = widget->style()->subControlRect(complexControl, &opt, subControl, widget);
-    QToolTip::showText(helpEvent->globalPos(), toolTip, widget, rect);
+    BOBUIoolTip::showText(helpEvent->globalPos(), toolTip, widget, rect);
 }
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
 
 namespace QMdi {
 /*
@@ -388,7 +388,7 @@ private:
 ControlLabel::ControlLabel(QWidget *parent)
     : QWidget(parent), isPressed(false)
 {
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
     updateWindowIcon();
     setFixedSize(label.deviceIndependentSize().toSize());
 }
@@ -412,7 +412,7 @@ bool ControlLabel::event(QEvent *event)
         updateWindowIcon();
         setFixedSize(label.size());
     }
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     else if (event->type() == QEvent::ToolTip) {
         QStyleOptionTitleBar options;
         options.initFrom(this);
@@ -437,7 +437,7 @@ void ControlLabel::paintEvent(QPaintEvent * /*paintEvent*/)
 */
 void ControlLabel::mousePressEvent(QMouseEvent *mouseEvent)
 {
-    if (mouseEvent->button() != Qt::LeftButton) {
+    if (mouseEvent->button() != BobUI::LeftButton) {
         mouseEvent->ignore();
         return;
     }
@@ -449,7 +449,7 @@ void ControlLabel::mousePressEvent(QMouseEvent *mouseEvent)
 */
 void ControlLabel::mouseDoubleClickEvent(QMouseEvent *mouseEvent)
 {
-    if (mouseEvent->button() != Qt::LeftButton) {
+    if (mouseEvent->button() != BobUI::LeftButton) {
         mouseEvent->ignore();
         return;
     }
@@ -462,7 +462,7 @@ void ControlLabel::mouseDoubleClickEvent(QMouseEvent *mouseEvent)
 */
 void ControlLabel::mouseReleaseEvent(QMouseEvent *mouseEvent)
 {
-    if (mouseEvent->button() != Qt::LeftButton) {
+    if (mouseEvent->button() != BobUI::LeftButton) {
         mouseEvent->ignore();
         return;
     }
@@ -540,7 +540,7 @@ ControllerWidget::ControllerWidget(QWidget *parent)
       hoverControl(QStyle::SC_None),
       visibleControls(QStyle::SC_None)
 {
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     setMouseTracking(true);
 }
@@ -599,7 +599,7 @@ void ControllerWidget::paintEvent(QPaintEvent * /*paintEvent*/)
 */
 void ControllerWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::LeftButton) {
+    if (event->button() != BobUI::LeftButton) {
         event->ignore();
         return;
     }
@@ -612,7 +612,7 @@ void ControllerWidget::mousePressEvent(QMouseEvent *event)
 */
 void ControllerWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::LeftButton) {
+    if (event->button() != BobUI::LeftButton) {
         event->ignore();
         return;
     }
@@ -665,14 +665,14 @@ void ControllerWidget::leaveEvent(QEvent * /*event*/)
 */
 bool ControllerWidget::event(QEvent *event)
 {
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     if (event->type() == QEvent::ToolTip) {
         QStyleOptionComplex opt;
         initStyleOption(&opt);
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
         showToolTip(helpEvent, this, opt, QStyle::CC_MdiControls, getSubControl(helpEvent->pos()));
     }
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
     return QWidget::event(event);
 }
 
@@ -693,7 +693,7 @@ ControlContainer::ControlContainer(QMdiSubWindow *mdiChild)
     : QObject(mdiChild),
       previousLeft(nullptr),
       previousRight(nullptr),
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
       m_menuBar(nullptr),
 #endif
       mdiChild(mdiChild)
@@ -707,7 +707,7 @@ ControlContainer::ControlContainer(QMdiSubWindow *mdiChild)
 
     m_menuLabel = new ControlElement<ControlLabel>(mdiChild);
     m_menuLabel->setWindowIcon(mdiChild->windowIcon());
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     connect(m_menuLabel, SIGNAL(_q_clicked()), mdiChild, SLOT(showSystemMenu()));
 #endif
     connect(m_menuLabel, SIGNAL(_q_doubleClicked()), mdiChild, SLOT(close()));
@@ -715,7 +715,7 @@ ControlContainer::ControlContainer(QMdiSubWindow *mdiChild)
 
 ControlContainer::~ControlContainer()
 {
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     removeButtonsFromMenuBar();
 #endif
     delete m_menuLabel;
@@ -724,13 +724,13 @@ ControlContainer::~ControlContainer()
     m_controllerWidget = nullptr;
 }
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 /*
     \internal
 */
 QMenuBar *QMdiSubWindowPrivate::menuBar() const
 {
-#if !QT_CONFIG(mainwindow)
+#if !BOBUI_CONFIG(mainwindow)
     return nullptr;
 #else
     Q_Q(const QMdiSubWindow);
@@ -749,27 +749,27 @@ QMenuBar *QMdiSubWindowPrivate::menuBar() const
 */
 void ControlContainer::showButtonsInMenuBar(QMenuBar *menuBar)
 {
-    if (!menuBar || !mdiChild || mdiChild->windowFlags() & Qt::FramelessWindowHint)
+    if (!menuBar || !mdiChild || mdiChild->windowFlags() & BobUI::FramelessWindowHint)
         return;
     m_menuBar = menuBar;
 
-    if (m_menuLabel && mdiChild->windowFlags() & Qt::WindowSystemMenuHint) {
-        QWidget *currentLeft = menuBar->cornerWidget(Qt::TopLeftCorner);
+    if (m_menuLabel && mdiChild->windowFlags() & BobUI::WindowSystemMenuHint) {
+        QWidget *currentLeft = menuBar->cornerWidget(BobUI::TopLeftCorner);
         if (currentLeft)
             currentLeft->hide();
         if (currentLeft != m_menuLabel) {
-            menuBar->setCornerWidget(m_menuLabel, Qt::TopLeftCorner);
+            menuBar->setCornerWidget(m_menuLabel, BobUI::TopLeftCorner);
             previousLeft = currentLeft;
         }
         m_menuLabel->show();
     }
     ControllerWidget *controllerWidget = qobject_cast<ControllerWidget *>(m_controllerWidget);
     if (controllerWidget && controllerWidget->hasVisibleControls()) {
-        QWidget *currentRight = menuBar->cornerWidget(Qt::TopRightCorner);
+        QWidget *currentRight = menuBar->cornerWidget(BobUI::TopRightCorner);
         if (currentRight)
             currentRight->hide();
         if (currentRight != m_controllerWidget) {
-            menuBar->setCornerWidget(m_controllerWidget, Qt::TopRightCorner);
+            menuBar->setCornerWidget(m_controllerWidget, BobUI::TopRightCorner);
             previousRight = currentRight;
         }
         m_controllerWidget->show();
@@ -789,12 +789,12 @@ void ControlContainer::removeButtonsFromMenuBar(QMenuBar *menuBar)
         m_menuBar = menuBar;
     }
 
-    if (!m_menuBar || !mdiChild || qt_widget_private(mdiChild->window())->data.in_destructor)
+    if (!m_menuBar || !mdiChild || bobui_widget_private(mdiChild->window())->data.in_destructor)
         return;
 
     QMdiSubWindow *child = nullptr;
     if (m_controllerWidget) {
-        QWidget *currentRight = m_menuBar->cornerWidget(Qt::TopRightCorner);
+        QWidget *currentRight = m_menuBar->cornerWidget(BobUI::TopRightCorner);
         if (currentRight == m_controllerWidget) {
             if (ControlElement<ControllerWidget> *ce = ptr<ControllerWidget>(previousRight)) {
                 if (!ce->mdiChild || !ce->mdiChild->isMaximized())
@@ -802,7 +802,7 @@ void ControlContainer::removeButtonsFromMenuBar(QMenuBar *menuBar)
                 else
                     child = ce->mdiChild;
             }
-            m_menuBar->setCornerWidget(previousRight, Qt::TopRightCorner);
+            m_menuBar->setCornerWidget(previousRight, BobUI::TopRightCorner);
             if (previousRight) {
                 previousRight->show();
                 previousRight = nullptr;
@@ -812,7 +812,7 @@ void ControlContainer::removeButtonsFromMenuBar(QMenuBar *menuBar)
         m_controllerWidget->setParent(nullptr);
     }
     if (m_menuLabel) {
-        QWidget *currentLeft = m_menuBar->cornerWidget(Qt::TopLeftCorner);
+        QWidget *currentLeft = m_menuBar->cornerWidget(BobUI::TopLeftCorner);
         if (currentLeft == m_menuLabel) {
             if (ControlElement<ControlLabel> *ce = ptr<ControlLabel>(previousLeft)) {
                 if (!ce->mdiChild || !ce->mdiChild->isMaximized())
@@ -820,7 +820,7 @@ void ControlContainer::removeButtonsFromMenuBar(QMenuBar *menuBar)
                 else if (!child)
                     child = mdiChild;
             }
-            m_menuBar->setCornerWidget(previousLeft, Qt::TopLeftCorner);
+            m_menuBar->setCornerWidget(previousLeft, BobUI::TopLeftCorner);
             if (previousLeft) {
                 previousLeft->show();
                 previousLeft = nullptr;
@@ -836,7 +836,7 @@ void ControlContainer::removeButtonsFromMenuBar(QMenuBar *menuBar)
         mdiChild->window()->setWindowTitle(mdiChild->d_func()->originalWindowTitle());
 }
 
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
 
 void ControlContainer::updateWindowIcon(const QIcon &windowIcon)
 {
@@ -851,17 +851,17 @@ QMdiSubWindowPrivate::QMdiSubWindowPrivate()
     : baseWidget(nullptr),
       restoreFocusWidget(nullptr),
       controlContainer(nullptr),
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
       sizeGrip(nullptr),
 #endif
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
       rubberBand(nullptr),
 #endif
       userMinimumSize(0,0),
       resizeEnabled(true),
       moveEnabled(true),
       isInInteractiveMode(false),
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
       isInRubberBandMode(false),
 #endif
       isShadeMode(false),
@@ -878,7 +878,7 @@ QMdiSubWindowPrivate::QMdiSubWindowPrivate()
       currentOperation(None),
       hoveredSubControl(QStyle::SC_None),
       activeSubControl(QStyle::SC_None),
-      focusInReason(Qt::ActiveWindowFocusReason)
+      focusInReason(BobUI::ActiveWindowFocusReason)
 {
     initOperationMap();
 }
@@ -888,18 +888,18 @@ QMdiSubWindowPrivate::QMdiSubWindowPrivate()
 */
 void QMdiSubWindowPrivate::_q_updateStaysOnTopHint()
 {
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     Q_Q(QMdiSubWindow);
     if (QAction *senderAction = qobject_cast<QAction *>(q->sender())) {
         if (senderAction->isChecked()) {
-            q->setWindowFlags(q->windowFlags() | Qt::WindowStaysOnTopHint);
+            q->setWindowFlags(q->windowFlags() | BobUI::WindowStaysOnTopHint);
             q->raise();
         } else {
-            q->setWindowFlags(q->windowFlags() & ~Qt::WindowStaysOnTopHint);
+            q->setWindowFlags(q->windowFlags() & ~BobUI::WindowStaysOnTopHint);
             q->lower();
         }
     }
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 }
 
 /*!
@@ -907,7 +907,7 @@ void QMdiSubWindowPrivate::_q_updateStaysOnTopHint()
 */
 void QMdiSubWindowPrivate::_q_enterInteractiveMode()
 {
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     Q_Q(QMdiSubWindow);
     QAction *action = qobject_cast<QAction *>(q->sender());
     if (!action)
@@ -927,24 +927,24 @@ void QMdiSubWindowPrivate::_q_enterInteractiveMode()
     }
 
     updateCursor();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     q->cursor().setPos(q->mapToGlobal(pressPos));
 #endif
     mousePressPosition = q->mapToParent(pressPos);
     oldGeometry = q->geometry();
     isInInteractiveMode = true;
     q->setFocus();
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if ((q->testOption(QMdiSubWindow::RubberBandResize)
             && (currentOperation == BottomRightResize || currentOperation == BottomLeftResize))
             || (q->testOption(QMdiSubWindow::RubberBandMove) && currentOperation == Move)) {
         enterRubberBandMode();
     } else
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
     {
         q->grabMouse();
     }
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 }
 
 /*!
@@ -967,7 +967,7 @@ void QMdiSubWindowPrivate::_q_processFocusChanged(QWidget *old, QWidget *now)
 void QMdiSubWindowPrivate::leaveInteractiveMode()
 {
     Q_Q(QMdiSubWindow);
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (isInRubberBandMode)
         leaveRubberBandMode();
     else
@@ -1000,7 +1000,7 @@ void QMdiSubWindowPrivate::removeBaseWidget()
         q->setWindowModified(false);
     }
     lastChildWindowTitle.clear();
-    // QTBUG-47993: parent widget can be reset before this call
+    // BOBUIBUG-47993: parent widget can be reset before this call
     if (baseWidget->parentWidget() == q)
         baseWidget->setParent(nullptr);
     baseWidget = nullptr;
@@ -1012,21 +1012,21 @@ void QMdiSubWindowPrivate::removeBaseWidget()
 */
 void QMdiSubWindowPrivate::initOperationMap()
 {
-    operationMap.insert(Move, OperationInfo(HMove | VMove, Qt::ArrowCursor, false));
-    operationMap.insert(TopResize, OperationInfo(VMove | VResize | VResizeReverse, Qt::SizeVerCursor));
-    operationMap.insert(BottomResize, OperationInfo(VResize, Qt::SizeVerCursor));
-    operationMap.insert(LeftResize, OperationInfo(HMove | HResize | HResizeReverse, Qt::SizeHorCursor));
-    operationMap.insert(RightResize, OperationInfo(HResize, Qt::SizeHorCursor));
+    operationMap.insert(Move, OperationInfo(HMove | VMove, BobUI::ArrowCursor, false));
+    operationMap.insert(TopResize, OperationInfo(VMove | VResize | VResizeReverse, BobUI::SizeVerCursor));
+    operationMap.insert(BottomResize, OperationInfo(VResize, BobUI::SizeVerCursor));
+    operationMap.insert(LeftResize, OperationInfo(HMove | HResize | HResizeReverse, BobUI::SizeHorCursor));
+    operationMap.insert(RightResize, OperationInfo(HResize, BobUI::SizeHorCursor));
     operationMap.insert(TopLeftResize, OperationInfo(HMove | VMove | HResize | VResize | VResizeReverse
-                                                     | HResizeReverse, Qt::SizeFDiagCursor));
+                                                     | HResizeReverse, BobUI::SizeFDiagCursor));
     operationMap.insert(TopRightResize, OperationInfo(VMove | HResize | VResize
-                                                      | VResizeReverse, Qt::SizeBDiagCursor));
+                                                      | VResizeReverse, BobUI::SizeBDiagCursor));
     operationMap.insert(BottomLeftResize, OperationInfo(HMove | HResize | VResize | HResizeReverse,
-                                                        Qt::SizeBDiagCursor));
-    operationMap.insert(BottomRightResize, OperationInfo(HResize | VResize, Qt::SizeFDiagCursor));
+                                                        BobUI::SizeBDiagCursor));
+    operationMap.insert(BottomRightResize, OperationInfo(HResize | VResize, BobUI::SizeFDiagCursor));
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 
 /*!
     \internal
@@ -1053,7 +1053,7 @@ void QMdiSubWindowPrivate::createSystemMenu()
     systemMenu->addSeparator();
     addToSystemMenu(CloseAction, QMdiSubWindow::tr("&Close"), SLOT(close()));
     actions[CloseAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarCloseButton, nullptr, q));
-#if !defined(QT_NO_SHORTCUT)
+#if !defined(BOBUI_NO_SHORTCUT)
     actions[CloseAction]->setShortcuts(QKeySequence::Close);
 #endif
     updateActions();
@@ -1065,7 +1065,7 @@ void QMdiSubWindowPrivate::createSystemMenu()
 */
 void QMdiSubWindowPrivate::updateCursor()
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     Q_Q(QMdiSubWindow);
     if (isMacStyle(q->style()))
         return;
@@ -1114,7 +1114,7 @@ void QMdiSubWindowPrivate::updateGeometryConstraints()
         resizeEnabled = false;
     } else {
         moveEnabled = true;
-        if ((q->windowFlags() & Qt::MSWindowsFixedSizeDialogHint) || q->isShaded())
+        if ((q->windowFlags() & BobUI::MSWindowsFixedSizeDialogHint) || q->isShaded())
             resizeEnabled = false;
         else
             resizeEnabled = true;
@@ -1135,7 +1135,7 @@ void QMdiSubWindowPrivate::updateMask()
         return;
 
     if ((q->isMaximized() && !drawTitleBarWhenMaximized())
-        || q->windowFlags() & Qt::FramelessWindowHint)
+        || q->windowFlags() & BobUI::FramelessWindowHint)
         return;
 
     if (!resizeTimer.isActive())
@@ -1223,18 +1223,18 @@ void QMdiSubWindowPrivate::setMinimizeMode()
     Q_Q(QMdiSubWindow);
     Q_ASSERT(parent);
 
-    ensureWindowState(Qt::WindowMinimized);
+    ensureWindowState(BobUI::WindowMinimized);
     isShadeRequestFromMinimizeMode = true;
     q->showShaded();
     isShadeRequestFromMinimizeMode = false;
 
     moveEnabled = false;
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     setEnabled(MoveAction, moveEnabled);
 #endif
 
-    Q_ASSERT(q->windowState() & Qt::WindowMinimized);
-    Q_ASSERT(!(q->windowState() & Qt::WindowMaximized));
+    Q_ASSERT(q->windowState() & BobUI::WindowMinimized);
+    Q_ASSERT(!(q->windowState() & BobUI::WindowMaximized));
     // This should be a valid assert, but people can actually re-implement
     // setVisible and do crazy stuff, so we're not guaranteed that
     // the widget is hidden after calling hide().
@@ -1254,8 +1254,8 @@ void QMdiSubWindowPrivate::setNormalMode()
     isShadeMode = false;
     isMaximizeMode = false;
 
-    ensureWindowState(Qt::WindowNoState);
-#if QT_CONFIG(menubar)
+    ensureWindowState(BobUI::WindowNoState);
+#if BOBUI_CONFIG(menubar)
     removeButtonsFromMenuBar();
 #endif
 
@@ -1289,24 +1289,24 @@ void QMdiSubWindowPrivate::setNormalMode()
     restoreSize.setWidth(-1);
     restoreSize.setHeight(-1);
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     setSizeGripVisible(true);
 #endif
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     setEnabled(MoveAction, true);
     setEnabled(MaximizeAction, true);
     setEnabled(MinimizeAction, true);
     setEnabled(RestoreAction, false);
     setEnabled(ResizeAction, resizeEnabled);
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
-    Q_ASSERT(!(q_func()->windowState() & Qt::WindowMinimized));
+    Q_ASSERT(!(q_func()->windowState() & BobUI::WindowMinimized));
     // This sub-window can be maximized when shown above if not the
     // QMdiArea::DontMaximizeSubWindowOnActionvation is set. Make sure
-    // the Qt::WindowMaximized flag is set accordingly.
-    Q_ASSERT((isMaximizeMode && q_func()->windowState() & Qt::WindowMaximized)
-             || (!isMaximizeMode && !(q_func()->windowState() & Qt::WindowMaximized)));
+    // the BobUI::WindowMaximized flag is set accordingly.
+    Q_ASSERT((isMaximizeMode && q_func()->windowState() & BobUI::WindowMaximized)
+             || (!isMaximizeMode && !(q_func()->windowState() & BobUI::WindowMaximized)));
     Q_ASSERT(!isShadeMode);
 
     setActive(true);
@@ -1330,13 +1330,13 @@ void QMdiSubWindowPrivate::setMaximizeMode()
     Q_Q(QMdiSubWindow);
     Q_ASSERT(parent);
 
-    ensureWindowState(Qt::WindowMaximized);
+    ensureWindowState(BobUI::WindowMaximized);
     isShadeMode = false;
     isMaximizeMode = true;
 
     storeFocusWidget();
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     setSizeGripVisible(false);
 #endif
 
@@ -1362,7 +1362,7 @@ void QMdiSubWindowPrivate::setMaximizeMode()
     updateGeometryConstraints();
 
     if (wasVisible) {
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         if (QMenuBar *mBar = menuBar())
             showButtonsInMenuBar(mBar);
         else
@@ -1386,8 +1386,8 @@ void QMdiSubWindowPrivate::setMaximizeMode()
     }
 
     setNewGeometry(&availableRect);
-    // QWidget::setGeometry will reset Qt::WindowMaximized so we have to update it here.
-    ensureWindowState(Qt::WindowMaximized);
+    // QWidget::setGeometry will reset BobUI::WindowMaximized so we have to update it here.
+    ensureWindowState(BobUI::WindowMaximized);
 
     if (wasVisible)
         q->setVisible(true);
@@ -1395,16 +1395,16 @@ void QMdiSubWindowPrivate::setMaximizeMode()
     resizeEnabled = false;
     moveEnabled = false;
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     setEnabled(MoveAction, moveEnabled);
     setEnabled(MaximizeAction, false);
     setEnabled(MinimizeAction, true);
     setEnabled(RestoreAction, true);
     setEnabled(ResizeAction, resizeEnabled);
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
-    Q_ASSERT(q->windowState() & Qt::WindowMaximized);
-    Q_ASSERT(!(q->windowState() & Qt::WindowMinimized));
+    Q_ASSERT(q->windowState() & BobUI::WindowMaximized);
+    Q_ASSERT(!(q->windowState() & BobUI::WindowMinimized));
 
     restoreFocus();
     updateMask();
@@ -1422,10 +1422,10 @@ void QMdiSubWindowPrivate::setActive(bool activate, bool changeFocus)
     if (activate && !isActive && q->isEnabled()) {
         isActive = true;
         isExplicitlyDeactivated = false;
-        Qt::WindowStates oldWindowState = q->windowState();
-        ensureWindowState(Qt::WindowActive);
+        BobUI::WindowStates oldWindowState = q->windowState();
+        ensureWindowState(BobUI::WindowActive);
         emit q->aboutToActivate();
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         if (QMenuBar *mBar = menuBar())
             showButtonsInMenuBar(mBar);
 #endif
@@ -1433,8 +1433,8 @@ void QMdiSubWindowPrivate::setActive(bool activate, bool changeFocus)
         emit q->windowStateChanged(oldWindowState, q->windowState());
     } else if (!activate && isActive) {
         isActive = false;
-        Qt::WindowStates oldWindowState = q->windowState();
-        q->overrideWindowState(q->windowState() & ~Qt::WindowActive);
+        BobUI::WindowStates oldWindowState = q->windowState();
+        q->overrideWindowState(q->windowState() & ~BobUI::WindowActive);
         if (changeFocus) {
             storeFocusWidget();
             QWidget *focusWidget = QApplication::focusWidget();
@@ -1442,7 +1442,7 @@ void QMdiSubWindowPrivate::setActive(bool activate, bool changeFocus)
                 focusWidget->clearFocus();
         }
         if (baseWidget)
-            baseWidget->overrideWindowState(baseWidget->windowState() & ~Qt::WindowActive);
+            baseWidget->overrideWindowState(baseWidget->windowState() & ~BobUI::WindowActive);
         Q_ASSERT(!isActive);
         emit q->windowStateChanged(oldWindowState, q->windowState());
     }
@@ -1451,7 +1451,7 @@ void QMdiSubWindowPrivate::setActive(bool activate, bool changeFocus)
             && !q->isAncestorOf(QApplication::focusWidget())) {
         if (changeFocus)
             setFocusWidget();
-        ensureWindowState(Qt::WindowActive);
+        ensureWindowState(BobUI::WindowActive);
     }
 
     int frameWidth = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth, nullptr, q);
@@ -1478,7 +1478,7 @@ void QMdiSubWindowPrivate::processClickedSubControl()
     Q_Q(QMdiSubWindow);
     switch (activeSubControl) {
     case QStyle::SC_TitleBarContextHelpButton:
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         QWhatsThis::enterWhatsThisMode();
 #endif
         break;
@@ -1605,7 +1605,7 @@ QMdiSubWindowPrivate::Operation QMdiSubWindowPrivate::getOperation(const QPoint 
     return None;
 }
 
-extern QString qt_setWindowTitle_helperHelper(const QString&, const QWidget*);
+extern QString bobui_setWindowTitle_helperHelper(const QString&, const QWidget*);
 
 /*!
     \internal
@@ -1657,7 +1657,7 @@ QStyleOptionTitleBar QMdiSubWindowPrivate::titleBarOptions() const
         int width = q->style()->subControlRect(QStyle::CC_TitleBar, &titleBarOptions,
                                                QStyle::SC_TitleBarLabel, q).width();
         // Set elided text if we don't have enough space for the entire title.
-        titleBarOptions.text = titleBarOptions.fontMetrics.elidedText(windowTitle, Qt::ElideRight, width);
+        titleBarOptions.text = titleBarOptions.fontMetrics.elidedText(windowTitle, BobUI::ElideRight, width);
     }
     return titleBarOptions;
 }
@@ -1665,32 +1665,32 @@ QStyleOptionTitleBar QMdiSubWindowPrivate::titleBarOptions() const
 /*!
     \internal
 */
-void QMdiSubWindowPrivate::ensureWindowState(Qt::WindowState state)
+void QMdiSubWindowPrivate::ensureWindowState(BobUI::WindowState state)
 {
     Q_Q(QMdiSubWindow);
-    Qt::WindowStates windowStates = q->windowState() | state;
+    BobUI::WindowStates windowStates = q->windowState() | state;
     switch (state) {
-    case Qt::WindowMinimized:
-        windowStates &= ~Qt::WindowMaximized;
-        windowStates &= ~Qt::WindowFullScreen;
-        windowStates &= ~Qt::WindowNoState;
+    case BobUI::WindowMinimized:
+        windowStates &= ~BobUI::WindowMaximized;
+        windowStates &= ~BobUI::WindowFullScreen;
+        windowStates &= ~BobUI::WindowNoState;
         break;
-    case Qt::WindowMaximized:
-        windowStates &= ~Qt::WindowMinimized;
-        windowStates &= ~Qt::WindowFullScreen;
-        windowStates &= ~Qt::WindowNoState;
+    case BobUI::WindowMaximized:
+        windowStates &= ~BobUI::WindowMinimized;
+        windowStates &= ~BobUI::WindowFullScreen;
+        windowStates &= ~BobUI::WindowNoState;
         break;
-    case Qt::WindowNoState:
-        windowStates &= ~Qt::WindowMinimized;
-        windowStates &= ~Qt::WindowMaximized;
-        windowStates &= ~Qt::WindowFullScreen;
+    case BobUI::WindowNoState:
+        windowStates &= ~BobUI::WindowMinimized;
+        windowStates &= ~BobUI::WindowMaximized;
+        windowStates &= ~BobUI::WindowFullScreen;
         break;
     default:
         break;
     }
     if (baseWidget) {
-        if (!(baseWidget->windowState() & Qt::WindowActive) && windowStates & Qt::WindowActive)
-            baseWidget->overrideWindowState(windowStates & ~Qt::WindowActive);
+        if (!(baseWidget->windowState() & BobUI::WindowActive) && windowStates & BobUI::WindowActive)
+            baseWidget->overrideWindowState(windowStates & ~BobUI::WindowActive);
         else
             baseWidget->overrideWindowState(windowStates);
     }
@@ -1703,7 +1703,7 @@ void QMdiSubWindowPrivate::ensureWindowState(Qt::WindowState state)
 int QMdiSubWindowPrivate::titleBarHeight(const QStyleOptionTitleBar &options) const
 {
     Q_Q(const QMdiSubWindow);
-    if (!parent || q->windowFlags() & Qt::FramelessWindowHint
+    if (!parent || q->windowFlags() & BobUI::FramelessWindowHint
         || (q->isMaximized() && !drawTitleBarWhenMaximized())) {
         return 0;
     }
@@ -1720,8 +1720,8 @@ int QMdiSubWindowPrivate::titleBarHeight(const QStyleOptionTitleBar &options) co
 void QMdiSubWindowPrivate::sizeParameters(int *margin, int *minWidth) const
 {
     Q_Q(const QMdiSubWindow);
-    Qt::WindowFlags flags = q->windowFlags();
-    if (!parent || flags & Qt::FramelessWindowHint) {
+    BobUI::WindowFlags flags = q->windowFlags();
+    if (!parent || flags & BobUI::FramelessWindowHint) {
         *margin = 0;
         *minWidth = 0;
         return;
@@ -1753,7 +1753,7 @@ void QMdiSubWindowPrivate::sizeParameters(int *margin, int *minWidth) const
 bool QMdiSubWindowPrivate::drawTitleBarWhenMaximized() const
 {
     Q_Q(const QMdiSubWindow);
-    if (q->window()->testAttribute(Qt::WA_CanHostQMdiSubWindowTitleBar))
+    if (q->window()->testAttribute(BobUI::WA_CanHostQMdiSubWindowTitleBar))
         return false;
 
     if (isChildOfTabbedQMdiArea(q))
@@ -1761,7 +1761,7 @@ bool QMdiSubWindowPrivate::drawTitleBarWhenMaximized() const
 
     if (q->style()->styleHint(QStyle::SH_Workspace_FillSpaceOnMaximize, nullptr, q))
         return true;
-#if !QT_CONFIG(menubar) || !QT_CONFIG(mainwindow)
+#if !BOBUI_CONFIG(menubar) || !BOBUI_CONFIG(mainwindow)
     Q_UNUSED(isChildOfQMdiSubWindow);
     return true;
 #else
@@ -1774,7 +1774,7 @@ bool QMdiSubWindowPrivate::drawTitleBarWhenMaximized() const
 #endif
 }
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 
 /*!
     \internal
@@ -1826,7 +1826,7 @@ void QMdiSubWindowPrivate::removeButtonsFromMenuBar()
         return;
 
     QMenuBar *currentMenuBar = nullptr;
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
     if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(q->window())) {
         // NB! We can't use menuBar() here because that one will actually create
         // a menubar for us if not set. That's not what we want :-)
@@ -1845,7 +1845,7 @@ void QMdiSubWindowPrivate::removeButtonsFromMenuBar()
     originalTitle.clear();
 }
 
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
 
 void QMdiSubWindowPrivate::updateWindowTitle(bool isRequestFromChild)
 {
@@ -1870,7 +1870,7 @@ void QMdiSubWindowPrivate::updateWindowTitle(bool isRequestFromChild)
     ignoreWindowTitleChange = false;
 }
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 void QMdiSubWindowPrivate::enterRubberBandMode()
 {
     Q_Q(QMdiSubWindow);
@@ -1881,7 +1881,7 @@ void QMdiSubWindowPrivate::enterRubberBandMode()
     if (!rubberBand) {
         rubberBand = new QRubberBand(QRubberBand::Rectangle, q->parentWidget());
         // For accessibility to identify this special widget.
-        rubberBand->setObjectName("qt_rubberband"_L1);
+        rubberBand->setObjectName("bobui_rubberband"_L1);
     }
     QPoint rubberBandPos = q->mapToParent(QPoint(0, 0));
     rubberBand->setGeometry(rubberBandPos.x(), rubberBandPos.y(),
@@ -1902,7 +1902,7 @@ void QMdiSubWindowPrivate::leaveRubberBandMode()
     rubberBand->hide();
     currentOperation = None;
 }
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
 
 // Taken from the old QWorkspace (::readColors())
 QPalette QMdiSubWindowPrivate::desktopPalette() const
@@ -1926,19 +1926,19 @@ QPalette QMdiSubWindowPrivate::desktopPalette() const
 
 void QMdiSubWindowPrivate::updateActions()
 {
-    Qt::WindowFlags windowFlags = q_func()->windowFlags();
+    BobUI::WindowFlags windowFlags = q_func()->windowFlags();
     // Hide all
     for (int i = 0; i < NumWindowStateActions; ++i)
         setVisible(WindowStateAction(i), false);
 
-#if defined(Q_OS_MACOS) && QT_CONFIG(action)
+#if defined(Q_OS_MACOS) && BOBUI_CONFIG(action)
     if (q_func()->style()->inherits("QMacStyle"))
         for (int i = 0; i < NumWindowStateActions; ++i)
             if (QAction *action = actions[i])
                 action->setIconVisibleInMenu(false);
 #endif
 
-    if (windowFlags & Qt::FramelessWindowHint)
+    if (windowFlags & BobUI::FramelessWindowHint)
         return;
 
     setVisible(StayOnTopAction, true);
@@ -1946,19 +1946,19 @@ void QMdiSubWindowPrivate::updateActions()
     setVisible(ResizeAction, resizeEnabled);
 
     // CloseAction
-    if (windowFlags & Qt::WindowSystemMenuHint)
+    if (windowFlags & BobUI::WindowSystemMenuHint)
         setVisible(CloseAction, true);
 
     // RestoreAction
-    if (windowFlags & (Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint))
+    if (windowFlags & (BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint))
         setVisible(RestoreAction, true);
 
     // MinimizeAction
-    if (windowFlags & Qt::WindowMinimizeButtonHint)
+    if (windowFlags & BobUI::WindowMinimizeButtonHint)
         setVisible(MinimizeAction, true);
 
     // MaximizeAction
-    if (windowFlags & Qt::WindowMaximizeButtonHint)
+    if (windowFlags & BobUI::WindowMaximizeButtonHint)
         setVisible(MaximizeAction, true);
 }
 
@@ -1972,25 +1972,25 @@ void QMdiSubWindowPrivate::setFocusWidget()
 
     // This will give focus to the next child if possible, otherwise
     // do nothing, hence it's not possible to tab between windows with
-    // just hitting tab (unless Qt::TabFocus is removed from the focus policy).
-    if (focusInReason == Qt::TabFocusReason) {
+    // just hitting tab (unless BobUI::TabFocus is removed from the focus policy).
+    if (focusInReason == BobUI::TabFocusReason) {
         q->focusNextChild();
         return;
     }
 
     // Same as above, but gives focus to the previous child.
-    if (focusInReason == Qt::BacktabFocusReason) {
+    if (focusInReason == BobUI::BacktabFocusReason) {
         q->focusPreviousChild();
         return;
     }
 
-    if (!(q->windowState() & Qt::WindowMinimized) && restoreFocus())
+    if (!(q->windowState() & BobUI::WindowMinimized) && restoreFocus())
         return;
 
     if (QWidget *focusWidget = baseWidget->focusWidget()) {
         if (!focusWidget->hasFocus() && q->isAncestorOf(focusWidget)
                 && focusWidget->isVisible() && !q->isMinimized()
-                && focusWidget->focusPolicy() != Qt::NoFocus) {
+                && focusWidget->focusPolicy() != BobUI::NoFocus) {
             focusWidget->setFocus();
         } else {
             q->setFocus();
@@ -1999,11 +1999,11 @@ void QMdiSubWindowPrivate::setFocusWidget()
     }
 
     QWidget *focusWidget = q->nextInFocusChain();
-    while (focusWidget && focusWidget != q && focusWidget->focusPolicy() == Qt::NoFocus)
+    while (focusWidget && focusWidget != q && focusWidget->focusPolicy() == BobUI::NoFocus)
         focusWidget = focusWidget->nextInFocusChain();
     if (focusWidget && q->isAncestorOf(focusWidget))
         focusWidget->setFocus();
-    else if (baseWidget->focusPolicy() != Qt::NoFocus)
+    else if (baseWidget->focusPolicy() != BobUI::NoFocus)
         baseWidget->setFocus();
     else if (!q->hasFocus())
         q->setFocus();
@@ -2017,7 +2017,7 @@ bool QMdiSubWindowPrivate::restoreFocus()
     restoreFocusWidget.clear();
     if (!candidate->hasFocus() && q_func()->isAncestorOf(candidate)
         && candidate->isVisible()
-        && candidate->focusPolicy() != Qt::NoFocus) {
+        && candidate->focusPolicy() != BobUI::NoFocus) {
         candidate->setFocus();
         return true;
     }
@@ -2027,7 +2027,7 @@ bool QMdiSubWindowPrivate::restoreFocus()
 /*!
     \internal
 */
-void QMdiSubWindowPrivate::setWindowFlags(Qt::WindowFlags windowFlags)
+void QMdiSubWindowPrivate::setWindowFlags(BobUI::WindowFlags windowFlags)
 {
     Q_Q(QMdiSubWindow);
 
@@ -2036,33 +2036,33 @@ void QMdiSubWindowPrivate::setWindowFlags(Qt::WindowFlags windowFlags)
         return;
     }
 
-    Qt::WindowFlags windowType = windowFlags & Qt::WindowType_Mask;
-    if (windowType == Qt::Dialog || windowFlags & Qt::MSWindowsFixedSizeDialogHint)
-        windowFlags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint;
+    BobUI::WindowFlags windowType = windowFlags & BobUI::WindowType_Mask;
+    if (windowType == BobUI::Dialog || windowFlags & BobUI::MSWindowsFixedSizeDialogHint)
+        windowFlags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint;
 
     // Set standard flags if none of the customize flags are set
     if (!(windowFlags & CustomizeWindowFlags))
-        windowFlags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint;
-    else if (windowFlags & Qt::FramelessWindowHint && windowFlags & Qt::WindowStaysOnTopHint)
-        windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
-    else if (windowFlags & Qt::FramelessWindowHint)
-        windowFlags = Qt::FramelessWindowHint;
+        windowFlags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint;
+    else if (windowFlags & BobUI::FramelessWindowHint && windowFlags & BobUI::WindowStaysOnTopHint)
+        windowFlags = BobUI::FramelessWindowHint | BobUI::WindowStaysOnTopHint;
+    else if (windowFlags & BobUI::FramelessWindowHint)
+        windowFlags = BobUI::FramelessWindowHint;
 
     windowFlags &= ~windowType;
-    windowFlags &= ~Qt::WindowFullscreenButtonHint;
-    windowFlags |= Qt::SubWindow;
+    windowFlags &= ~BobUI::WindowFullscreenButtonHint;
+    windowFlags |= BobUI::SubWindow;
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     if (QAction *stayOnTopAction = actions[QMdiSubWindowPrivate::StayOnTopAction]) {
-        if (windowFlags & Qt::WindowStaysOnTopHint)
+        if (windowFlags & BobUI::WindowStaysOnTopHint)
             stayOnTopAction->setChecked(true);
         else
             stayOnTopAction->setChecked(false);
     }
 #endif
 
-#if QT_CONFIG(sizegrip)
-    if ((windowFlags & Qt::FramelessWindowHint) && sizeGrip)
+#if BOBUI_CONFIG(sizegrip)
+    if ((windowFlags & BobUI::FramelessWindowHint) && sizeGrip)
         delete sizeGrip;
 #endif
 
@@ -2078,7 +2078,7 @@ void QMdiSubWindowPrivate::setWindowFlags(Qt::WindowFlags windowFlags)
 
 void QMdiSubWindowPrivate::setVisible(WindowStateAction action, bool visible)
 {
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     if (actions[action])
         actions[action]->setVisible(visible);
 #endif
@@ -2094,14 +2094,14 @@ void QMdiSubWindowPrivate::setVisible(WindowStateAction action, bool visible)
     q->update();
 }
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 void QMdiSubWindowPrivate::setEnabled(WindowStateAction action, bool enable)
 {
     if (actions[action])
         actions[action]->setEnabled(enable);
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 void QMdiSubWindowPrivate::addToSystemMenu(WindowStateAction action, const QString &text,
                                            const char *slot)
 {
@@ -2110,7 +2110,7 @@ void QMdiSubWindowPrivate::addToSystemMenu(WindowStateAction action, const QStri
     actions[action] = systemMenu->addAction(text, q_func(), slot);
 }
 #endif
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
 /*!
     \internal
@@ -2118,12 +2118,12 @@ void QMdiSubWindowPrivate::addToSystemMenu(WindowStateAction action, const QStri
 QSize QMdiSubWindowPrivate::iconSize() const
 {
     Q_Q(const QMdiSubWindow);
-    if (!parent || q->windowFlags() & Qt::FramelessWindowHint)
+    if (!parent || q->windowFlags() & BobUI::FramelessWindowHint)
         return QSize(-1, -1);
     return QSize(q->style()->pixelMetric(QStyle::PM_MdiSubWindowMinimizedWidth, nullptr, q), titleBarHeight());
 }
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 
 /*!
     \internal
@@ -2131,7 +2131,7 @@ QSize QMdiSubWindowPrivate::iconSize() const
 void QMdiSubWindowPrivate::setSizeGrip(QSizeGrip *newSizeGrip)
 {
     Q_Q(QMdiSubWindow);
-    if (!newSizeGrip || sizeGrip || q->windowFlags() & Qt::FramelessWindowHint)
+    if (!newSizeGrip || sizeGrip || q->windowFlags() & BobUI::FramelessWindowHint)
         return;
 
     if (layout && layout->indexOf(newSizeGrip) != -1)
@@ -2142,7 +2142,7 @@ void QMdiSubWindowPrivate::setSizeGrip(QSizeGrip *newSizeGrip)
         putSizeGripInLayout = false;
     if (putSizeGripInLayout) {
         layout->addWidget(newSizeGrip);
-        layout->setAlignment(newSizeGrip, Qt::AlignBottom | Qt::AlignRight);
+        layout->setAlignment(newSizeGrip, BobUI::AlignBottom | BobUI::AlignRight);
     } else {
         newSizeGrip->setParent(q);
         newSizeGrip->move(q->isLeftToRight() ? q->width() - newSizeGrip->width() : 0,
@@ -2165,7 +2165,7 @@ void QMdiSubWindowPrivate::setSizeGripVisible(bool visible) const
         grip->setVisible(visible);
 }
 
-#endif // QT_CONFIG(sizegrip)
+#endif // BOBUI_CONFIG(sizegrip)
 
 /*!
     \internal
@@ -2177,7 +2177,7 @@ void QMdiSubWindowPrivate::updateInternalWindowTitle()
         windowTitle = q->windowTitle();
         windowTitle.replace("[*]"_L1, "*"_L1);
     } else {
-        windowTitle = qt_setWindowTitle_helperHelper(q->windowTitle(), q);
+        windowTitle = bobui_setWindowTitle_helperHelper(q->windowTitle(), q);
     }
     q->update(0, 0, q->width(), titleBarHeight());
 }
@@ -2195,16 +2195,16 @@ void QMdiSubWindowPrivate::updateInternalWindowTitle()
     \code
         //bad code
         QMdiArea mdiArea;
-        QTextEdit editor(&mdiArea); // invalid child widget
+        BOBUIextEdit editor(&mdiArea); // invalid child widget
     \endcode
 
     \sa QMdiArea::addSubWindow()
 */
-QMdiSubWindow::QMdiSubWindow(QWidget *parent, Qt::WindowFlags flags)
+QMdiSubWindow::QMdiSubWindow(QWidget *parent, BobUI::WindowFlags flags)
     : QWidget(*new QMdiSubWindowPrivate, parent, { })
 {
     Q_D(QMdiSubWindow);
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     d->createSystemMenu();
     addActions(d->systemMenu->actions());
 #endif
@@ -2213,10 +2213,10 @@ QMdiSubWindow::QMdiSubWindow(QWidget *parent, Qt::WindowFlags flags)
     setAutoFillBackground(true);
     setMouseTracking(true);
     setLayout(new QVBoxLayout);
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(BobUI::StrongFocus);
     layout()->setContentsMargins(QMargins());
     d->updateGeometryConstraints();
-    setAttribute(Qt::WA_Resized, false);
+    setAttribute(BobUI::WA_Resized, false);
     d->titleBarPalette = d->desktopPalette();
     d->font = QApplication::font("QMdiSubWindowTitleBar");
     // We don't want the menu icon by default on mac.
@@ -2238,7 +2238,7 @@ QMdiSubWindow::QMdiSubWindow(QWidget *parent, Qt::WindowFlags flags)
 QMdiSubWindow::~QMdiSubWindow()
 {
     Q_D(QMdiSubWindow);
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     d->removeButtonsFromMenuBar();
 #endif
     d->setActive(false);
@@ -2269,7 +2269,7 @@ void QMdiSubWindow::setWidget(QWidget *widget)
         return;
     }
 
-    bool wasResized = testAttribute(Qt::WA_Resized);
+    bool wasResized = testAttribute(BobUI::WA_Resized);
     d->removeBaseWidget();
 
     if (QLayout *layout = this->layout())
@@ -2277,7 +2277,7 @@ void QMdiSubWindow::setWidget(QWidget *widget)
     else
         widget->setParent(this);
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QSizeGrip *sizeGrip = widget->findChild<QSizeGrip *>();
     if (sizeGrip)
         sizeGrip->installEventFilter(this);
@@ -2303,8 +2303,8 @@ void QMdiSubWindow::setWidget(QWidget *widget)
         setWindowIcon(d->baseWidget->windowIcon());
 
     d->updateGeometryConstraints();
-    if (!wasResized && testAttribute(Qt::WA_Resized))
-        setAttribute(Qt::WA_Resized, false);
+    if (!wasResized && testAttribute(BobUI::WA_Resized))
+        setAttribute(BobUI::WA_Resized, false);
 }
 
 /*!
@@ -2366,7 +2366,7 @@ void QMdiSubWindow::setOption(SubWindowOption option, bool on)
     Q_D(QMdiSubWindow);
     d->options.setFlag(option, on);
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if ((option & (RubberBandResize | RubberBandMove)) && !on && d->isInRubberBandMode)
         d->leaveRubberBandMode();
 #endif
@@ -2436,7 +2436,7 @@ void QMdiSubWindow::setKeyboardPageStep(int step)
     d_func()->keyboardPageStep = step;
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 /*!
     Sets \a systemMenu as the current system menu for this subwindow.
 
@@ -2516,7 +2516,7 @@ void QMdiSubWindow::showSystemMenu()
         globalPopupPos -= QPoint(d->systemMenu->sizeHint().width(), 0);
     d->systemMenu->popup(globalPopupPos);
 }
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
 /*!
     \since 4.4
@@ -2568,20 +2568,20 @@ void QMdiSubWindow::showShaded()
 
     if (!d->isShadeRequestFromMinimizeMode) {
         d->isShadeMode = true;
-        d->ensureWindowState(Qt::WindowMinimized);
+        d->ensureWindowState(BobUI::WindowMinimized);
     }
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     d->removeButtonsFromMenuBar();
 #endif
 
-    // showMinimized() will reset Qt::WindowActive, which makes sense
+    // showMinimized() will reset BobUI::WindowActive, which makes sense
     // for top level widgets, but in MDI it makes sense to have an
     // active window which is minimized.
     if (hasFocus() || isAncestorOf(QApplication::focusWidget()))
-        d->ensureWindowState(Qt::WindowActive);
+        d->ensureWindowState(BobUI::WindowActive);
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     d->setSizeGripVisible(false);
 #endif
 
@@ -2606,7 +2606,7 @@ void QMdiSubWindow::showShaded()
     resize(d->internalMinimumSize);
 
     // Hide the internal widget if not already hidden by the user.
-    if (d->baseWidget && !d->baseWidget->isHidden() && !(windowFlags() & Qt::FramelessWindowHint)) {
+    if (d->baseWidget && !d->baseWidget->isHidden() && !(windowFlags() & BobUI::FramelessWindowHint)) {
         d->baseWidget->hide();
         d->isWidgetHiddenByUs = true;
     }
@@ -2620,7 +2620,7 @@ void QMdiSubWindow::showShaded()
     d->updateDirtyRegions();
     d->updateMask();
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     d->setEnabled(QMdiSubWindowPrivate::MinimizeAction, false);
     d->setEnabled(QMdiSubWindowPrivate::ResizeAction, d->resizeEnabled);
     d->setEnabled(QMdiSubWindowPrivate::MaximizeAction, true);
@@ -2638,7 +2638,7 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
     if (!object)
         return QWidget::eventFilter(object, event);
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     // System menu events.
     if (d->systemMenu && d->systemMenu == object) {
         if (event->type() == QEvent::MouseButtonDblClick) {
@@ -2657,7 +2657,7 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
     }
 #endif
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (object != d->baseWidget && parent() && qobject_cast<QSizeGrip *>(object)) {
         if (event->type() != QEvent::MouseButtonPress || !testOption(QMdiSubWindow::RubberBandResize))
             return QWidget::eventFilter(object, event);
@@ -2666,7 +2666,7 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
         d->oldGeometry = geometry();
         d->currentOperation = isLeftToRight() ? QMdiSubWindowPrivate::BottomRightResize
                                               : QMdiSubWindowPrivate::BottomLeftResize;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         d->enterRubberBandMode();
 #endif
         return true;
@@ -2688,13 +2688,13 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
         QWindowStateChangeEvent *changeEvent = static_cast<QWindowStateChangeEvent*>(event);
         if (changeEvent->isOverride())
             break;
-        Qt::WindowStates oldState = changeEvent->oldState();
-        Qt::WindowStates newState = d->baseWidget->windowState();
-        if (!(oldState & Qt::WindowMinimized) && (newState & Qt::WindowMinimized))
+        BobUI::WindowStates oldState = changeEvent->oldState();
+        BobUI::WindowStates newState = d->baseWidget->windowState();
+        if (!(oldState & BobUI::WindowMinimized) && (newState & BobUI::WindowMinimized))
             showMinimized();
-        else if (!(oldState & Qt::WindowMaximized) && (newState & Qt::WindowMaximized))
+        else if (!(oldState & BobUI::WindowMaximized) && (newState & BobUI::WindowMaximized))
             showMaximized();
-        else if (!(newState & (Qt::WindowMaximized | Qt::WindowMinimized | Qt::WindowFullScreen)))
+        else if (!(newState & (BobUI::WindowMaximized | BobUI::WindowMinimized | BobUI::WindowFullScreen)))
             showNormal();
         break;
     }
@@ -2711,9 +2711,9 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
         if (object == d->baseWidget) {
             d->updateWindowTitle(true);
             d->lastChildWindowTitle = d->baseWidget->windowTitle();
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         } else if (maximizedButtonsWidget() && d->controlContainer->menuBar() && d->controlContainer->menuBar()
-                   ->cornerWidget(Qt::TopRightCorner) == maximizedButtonsWidget()) {
+                   ->cornerWidget(BobUI::TopRightCorner) == maximizedButtonsWidget()) {
             d->originalTitle.clear();
             if (d->baseWidget && d->baseWidget->windowTitle() == windowTitle())
                 d->updateWindowTitle(true);
@@ -2773,14 +2773,14 @@ bool QMdiSubWindow::event(QEvent *event)
         d->setActive(false);
         break;
     case QEvent::ParentChange: {
-        bool wasResized = testAttribute(Qt::WA_Resized);
-#if QT_CONFIG(menubar)
+        bool wasResized = testAttribute(BobUI::WA_Resized);
+#if BOBUI_CONFIG(menubar)
         d->removeButtonsFromMenuBar();
 #endif
         d->currentOperation = QMdiSubWindowPrivate::None;
         d->activeSubControl = QStyle::SC_None;
         d->hoveredSubControl = QStyle::SC_None;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         if (d->isInRubberBandMode)
             d->leaveRubberBandMode();
 #endif
@@ -2788,7 +2788,7 @@ bool QMdiSubWindow::event(QEvent *event)
         d->isMaximizeMode = false;
         d->isWidgetHiddenByUs = false;
         if (!parent()) {
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
             if (isMacStyle(style()))
                 delete d->sizeGrip;
 #endif
@@ -2803,8 +2803,8 @@ bool QMdiSubWindow::event(QEvent *event)
         d->updateMask();
         d->updateDirtyRegions();
         d->updateActions();
-        if (!wasResized && testAttribute(Qt::WA_Resized))
-            setAttribute(Qt::WA_Resized, false);
+        if (!wasResized && testAttribute(BobUI::WA_Resized))
+            setAttribute(BobUI::WA_Resized, false);
         break;
     }
     case QEvent::WindowActivate:
@@ -2831,12 +2831,12 @@ bool QMdiSubWindow::event(QEvent *event)
     case QEvent::ModifiedChange:
         if (!windowTitle().contains("[*]"_L1))
             break;
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         if (maximizedButtonsWidget() && d->controlContainer->menuBar() && d->controlContainer->menuBar()
-                ->cornerWidget(Qt::TopRightCorner) == maximizedButtonsWidget()) {
+                ->cornerWidget(BobUI::TopRightCorner) == maximizedButtonsWidget()) {
             window()->setWindowModified(isWindowModified());
         }
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
         d->updateInternalWindowTitle();
         break;
     case QEvent::LayoutDirectionChange:
@@ -2863,13 +2863,13 @@ bool QMdiSubWindow::event(QEvent *event)
     case QEvent::FontChange:
         d->font = font();
         break;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     case QEvent::ToolTip:
         showToolTip(static_cast<QHelpEvent *>(event), this, d->titleBarOptions(),
                     QStyle::CC_TitleBar, d->hoveredSubControl);
         break;
 #endif
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     case QEvent::ActionAdded:
     case QEvent::ActionChanged:
     case QEvent::ActionRemoved:
@@ -2893,9 +2893,9 @@ void QMdiSubWindow::showEvent(QShowEvent *showEvent)
         return;
     }
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (isMacStyle(style()) && !d->sizeGrip
-            && !(windowFlags() & Qt::FramelessWindowHint)) {
+            && !(windowFlags() & BobUI::FramelessWindowHint)) {
         d->setSizeGrip(new QSizeGrip(this));
         Q_ASSERT(d->sizeGrip);
         if (isMinimized())
@@ -2909,10 +2909,10 @@ void QMdiSubWindow::showEvent(QShowEvent *showEvent)
     d->updateDirtyRegions();
     // Show buttons in the menu bar if they're already not there.
     // We want to do this when QMdiSubWindow becomes visible after being hidden.
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     if (d->controlContainer) {
         if (QMenuBar *menuBar = d->menuBar()) {
-            if (menuBar->cornerWidget(Qt::TopRightCorner) != maximizedButtonsWidget())
+            if (menuBar->cornerWidget(BobUI::TopRightCorner) != maximizedButtonsWidget())
                 d->showButtonsInMenuBar(menuBar);
         }
     }
@@ -2925,7 +2925,7 @@ void QMdiSubWindow::showEvent(QShowEvent *showEvent)
 */
 void QMdiSubWindow::hideEvent(QHideEvent * /*hideEvent*/)
 {
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     d_func()->removeButtonsFromMenuBar();
 #endif
 }
@@ -2951,8 +2951,8 @@ void QMdiSubWindow::changeEvent(QEvent *changeEvent)
         return;
     }
 
-    Qt::WindowStates oldState = event->oldState();
-    Qt::WindowStates newState = windowState();
+    BobUI::WindowStates oldState = event->oldState();
+    BobUI::WindowStates newState = windowState();
     if (oldState == newState) {
         changeEvent->ignore();
         return;
@@ -2963,25 +2963,25 @@ void QMdiSubWindow::changeEvent(QEvent *changeEvent)
     // setWindowState() returns.
     Q_D(QMdiSubWindow);
     if (!isVisible()) {
-        d->ensureWindowState(Qt::WindowNoState);
+        d->ensureWindowState(BobUI::WindowNoState);
         setVisible(true);
     }
 
     if (!d->oldGeometry.isValid())
         d->oldGeometry = geometry();
 
-    if ((oldState & Qt::WindowActive) && (newState & Qt::WindowActive))
+    if ((oldState & BobUI::WindowActive) && (newState & BobUI::WindowActive))
         d->currentOperation = QMdiSubWindowPrivate::None;
 
-    if (!(oldState & Qt::WindowMinimized) && (newState & Qt::WindowMinimized))
+    if (!(oldState & BobUI::WindowMinimized) && (newState & BobUI::WindowMinimized))
         d->setMinimizeMode();
-    else if (!(oldState & Qt::WindowMaximized) && (newState & Qt::WindowMaximized))
+    else if (!(oldState & BobUI::WindowMaximized) && (newState & BobUI::WindowMaximized))
         d->setMaximizeMode();
-    else if (!(newState & (Qt::WindowMaximized | Qt::WindowMinimized | Qt::WindowFullScreen)))
+    else if (!(newState & (BobUI::WindowMaximized | BobUI::WindowMinimized | BobUI::WindowFullScreen)))
         d->setNormalMode();
 
     if (d->isActive)
-        d->ensureWindowState(Qt::WindowActive);
+        d->ensureWindowState(BobUI::WindowActive);
     if (d->activationEnabled)
         emit windowStateChanged(oldState, windowState());
 }
@@ -2999,11 +2999,11 @@ void QMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
         closeEvent->ignore();
         return;
     }
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     d->removeButtonsFromMenuBar();
 #endif
     d->setActive(false);
-    if (parentWidget() && testAttribute(Qt::WA_DeleteOnClose)) {
+    if (parentWidget() && testAttribute(BobUI::WA_DeleteOnClose)) {
         QChildEvent childRemoved(QEvent::ChildRemoved, this);
         QCoreApplication::sendEvent(parentWidget(), &childRemoved);
     }
@@ -3031,7 +3031,7 @@ void QMdiSubWindow::leaveEvent(QEvent * /*leaveEvent*/)
 void QMdiSubWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     Q_D(QMdiSubWindow);
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (d->sizeGrip) {
         d->sizeGrip->move(isLeftToRight() ? width() - d->sizeGrip->width() : 0,
                           height() - d->sizeGrip->height());
@@ -3044,7 +3044,7 @@ void QMdiSubWindow::resizeEvent(QResizeEvent *resizeEvent)
     }
 
     if (d->isMaximizeMode)
-        d->ensureWindowState(Qt::WindowMaximized);
+        d->ensureWindowState(BobUI::WindowMaximized);
 
     d->updateMask();
     if (!isVisible())
@@ -3058,7 +3058,7 @@ void QMdiSubWindow::resizeEvent(QResizeEvent *resizeEvent)
 /*!
     \reimp
 */
-void QMdiSubWindow::timerEvent(QTimerEvent *timerEvent)
+void QMdiSubWindow::timerEvent(BOBUIimerEvent *timerEvent)
 {
     Q_D(QMdiSubWindow);
     if (timerEvent->id() == d->resizeTimer.id()) {
@@ -3079,7 +3079,7 @@ void QMdiSubWindow::moveEvent(QMoveEvent *moveEvent)
 
     Q_D(QMdiSubWindow);
     if (d->isMaximizeMode)
-        d->ensureWindowState(Qt::WindowMaximized);
+        d->ensureWindowState(BobUI::WindowMaximized);
 }
 
 /*!
@@ -3087,7 +3087,7 @@ void QMdiSubWindow::moveEvent(QMoveEvent *moveEvent)
 */
 void QMdiSubWindow::paintEvent(QPaintEvent *paintEvent)
 {
-    if (!parent() || (windowFlags() & Qt::FramelessWindowHint)) {
+    if (!parent() || (windowFlags() & BobUI::FramelessWindowHint)) {
         QWidget::paintEvent(paintEvent);
         return;
     }
@@ -3104,7 +3104,7 @@ void QMdiSubWindow::paintEvent(QPaintEvent *paintEvent)
             int width = style()->subControlRect(QStyle::CC_TitleBar, &d->cachedStyleOptions,
                                                 QStyle::SC_TitleBarLabel, this).width();
             d->cachedStyleOptions.text = d->cachedStyleOptions.fontMetrics
-                                         .elidedText(d->windowTitle, Qt::ElideRight, width);
+                                         .elidedText(d->windowTitle, BobUI::ElideRight, width);
         }
     } else {
         // Force full update.
@@ -3116,7 +3116,7 @@ void QMdiSubWindow::paintEvent(QPaintEvent *paintEvent)
     frameOptions.initFrom(this);
     frameOptions.state.setFlag(QStyle::State_Active, d->isActive);
     if (isMaximized() && !d->drawTitleBarWhenMaximized()) {
-        if (!autoFillBackground() && (!widget() || !qt_widget_private(widget())->isOpaque)) {
+        if (!autoFillBackground() && (!widget() || !bobui_widget_private(widget())->isOpaque)) {
             // make sure we paint all pixels of a maximized QMdiSubWindow if no-one else does
             painter.drawPrimitive(QStyle::PE_FrameWindow, frameOptions);
         }
@@ -3152,12 +3152,12 @@ void QMdiSubWindow::mousePressEvent(QMouseEvent *mouseEvent)
     Q_D(QMdiSubWindow);
     if (d->isInInteractiveMode)
         d->leaveInteractiveMode();
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (d->isInRubberBandMode)
         d->leaveRubberBandMode();
 #endif
 
-    if (mouseEvent->button() != Qt::LeftButton) {
+    if (mouseEvent->button() != BobUI::LeftButton) {
         mouseEvent->ignore();
         return;
     }
@@ -3167,7 +3167,7 @@ void QMdiSubWindow::mousePressEvent(QMouseEvent *mouseEvent)
         d->mousePressPosition = mapToParent(mouseEvent->position().toPoint());
         if (d->resizeEnabled || d->moveEnabled)
             d->oldGeometry = geometry();
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         if ((testOption(QMdiSubWindow::RubberBandResize) && d->isResizeOperation())
             || (testOption(QMdiSubWindow::RubberBandMove) && d->isMoveOperation())) {
             d->enterRubberBandMode();
@@ -3177,7 +3177,7 @@ void QMdiSubWindow::mousePressEvent(QMouseEvent *mouseEvent)
     }
 
     d->activeSubControl = d->hoveredSubControl;
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (d->activeSubControl == QStyle::SC_TitleBarSysMenu)
         showSystemMenu();
     else
@@ -3195,38 +3195,38 @@ void QMdiSubWindow::mouseDoubleClickEvent(QMouseEvent *mouseEvent)
         return;
     }
 
-    if (mouseEvent->button() != Qt::LeftButton) {
+    if (mouseEvent->button() != BobUI::LeftButton) {
         mouseEvent->ignore();
         return;
     }
 
     Q_D(QMdiSubWindow);
     if (!d->isMoveOperation()) {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
         if (d->hoveredSubControl == QStyle::SC_TitleBarSysMenu)
             close();
 #endif
         return;
     }
 
-    Qt::WindowFlags flags = windowFlags();
+    BobUI::WindowFlags flags = windowFlags();
     if (isMinimized()) {
-        if ((isShaded() && (flags & Qt::WindowShadeButtonHint))
-            || (flags & Qt::WindowMinimizeButtonHint)) {
+        if ((isShaded() && (flags & BobUI::WindowShadeButtonHint))
+            || (flags & BobUI::WindowMinimizeButtonHint)) {
             showNormal();
         }
         return;
     }
 
     if (isMaximized()) {
-       if (flags & Qt::WindowMaximizeButtonHint)
+       if (flags & BobUI::WindowMaximizeButtonHint)
            showNormal();
        return;
     }
 
-    if (flags & Qt::WindowShadeButtonHint)
+    if (flags & BobUI::WindowShadeButtonHint)
         showShaded();
-    else if (flags & Qt::WindowMaximizeButtonHint)
+    else if (flags & BobUI::WindowMaximizeButtonHint)
         showMaximized();
 }
 
@@ -3240,14 +3240,14 @@ void QMdiSubWindow::mouseReleaseEvent(QMouseEvent *mouseEvent)
         return;
     }
 
-    if (mouseEvent->button() != Qt::LeftButton) {
+    if (mouseEvent->button() != BobUI::LeftButton) {
         mouseEvent->ignore();
         return;
     }
 
     Q_D(QMdiSubWindow);
     if (d->currentOperation != QMdiSubWindowPrivate::None) {
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         if (d->isInRubberBandMode && !d->isInInteractiveMode)
             d->leaveRubberBandMode();
 #endif
@@ -3299,7 +3299,7 @@ void QMdiSubWindow::mouseMoveEvent(QMouseEvent *mouseEvent)
             update(hoverRegion);
     }
 
-    if ((mouseEvent->buttons() & Qt::LeftButton) || d->isInInteractiveMode) {
+    if ((mouseEvent->buttons() & BobUI::LeftButton) || d->isInInteractiveMode) {
         if ((d->isResizeOperation() && d->resizeEnabled) || (d->isMoveOperation() && d->moveEnabled)) {
             // As setNewGeometry moves the window, it invalidates the pos() value of any mouse move events that are
             // currently queued in the event loop. Map to parent using globalPos() instead.
@@ -3328,33 +3328,33 @@ void QMdiSubWindow::keyPressEvent(QKeyEvent *keyEvent)
 
     QPoint delta;
     switch (keyEvent->key()) {
-    case Qt::Key_Right:
-        if (keyEvent->modifiers() & Qt::ShiftModifier)
+    case BobUI::Key_Right:
+        if (keyEvent->modifiers() & BobUI::ShiftModifier)
             delta = QPoint(d->keyboardPageStep, 0);
         else
             delta = QPoint(d->keyboardSingleStep, 0);
         break;
-    case Qt::Key_Up:
-        if (keyEvent->modifiers() & Qt::ShiftModifier)
+    case BobUI::Key_Up:
+        if (keyEvent->modifiers() & BobUI::ShiftModifier)
             delta = QPoint(0, -d->keyboardPageStep);
         else
             delta = QPoint(0, -d->keyboardSingleStep);
         break;
-    case Qt::Key_Left:
-        if (keyEvent->modifiers() & Qt::ShiftModifier)
+    case BobUI::Key_Left:
+        if (keyEvent->modifiers() & BobUI::ShiftModifier)
             delta = QPoint(-d->keyboardPageStep, 0);
         else
             delta = QPoint(-d->keyboardSingleStep, 0);
         break;
-    case Qt::Key_Down:
-        if (keyEvent->modifiers() & Qt::ShiftModifier)
+    case BobUI::Key_Down:
+        if (keyEvent->modifiers() & BobUI::ShiftModifier)
             delta = QPoint(0, d->keyboardPageStep);
         else
             delta = QPoint(0, d->keyboardSingleStep);
         break;
-    case Qt::Key_Escape:
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
+    case BobUI::Key_Escape:
+    case BobUI::Key_Return:
+    case BobUI::Key_Enter:
         d->leaveInteractiveMode();
         return;
     default:
@@ -3362,16 +3362,16 @@ void QMdiSubWindow::keyPressEvent(QKeyEvent *keyEvent)
         return;
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QPoint newPosition = parentWidget()->mapFromGlobal(cursor().pos() + delta);
     QRect oldGeometry =
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         d->isInRubberBandMode ? d->rubberBand->geometry() :
 #endif
         geometry();
     d->setNewGeometry(newPosition);
     QRect currentGeometry =
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         d->isInRubberBandMode ? d->rubberBand->geometry() :
 #endif
         geometry();
@@ -3397,7 +3397,7 @@ void QMdiSubWindow::keyPressEvent(QKeyEvent *keyEvent)
 #endif
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -3416,7 +3416,7 @@ void QMdiSubWindow::contextMenuEvent(QContextMenuEvent *contextMenuEvent)
         contextMenuEvent->ignore();
     }
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*!
     \reimp
@@ -3441,7 +3441,7 @@ void QMdiSubWindow::childEvent(QChildEvent *childEvent)
 {
     if (childEvent->type() != QEvent::ChildPolished)
         return;
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (QSizeGrip *sizeGrip = qobject_cast<QSizeGrip *>(childEvent->child()))
         d_func()->setSizeGrip(sizeGrip);
 #endif
@@ -3499,7 +3499,7 @@ QSize QMdiSubWindow::minimumSizeHint() const
         }
     }
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     // SizeGrip
     int sizeGripHeight = 0;
     if (d->sizeGrip && d->sizeGrip->isVisibleTo(const_cast<QMdiSubWindow *>(this)))
@@ -3512,7 +3512,7 @@ QSize QMdiSubWindow::minimumSizeHint() const
     return QSize(minWidth, minHeight);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmdisubwindow.cpp"
 #include "qmdisubwindow.moc"

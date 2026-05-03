@@ -1,5 +1,5 @@
 From aca24b15fbb6b47c35cbd7cd31a3db840df52ded Mon Sep 17 00:00:00 2001
-From: Laszlo Agocs <laszlo.agocs@qt.io>
+From: Laszlo Agocs <laszlo.agocs@bobui.io>
 Date: Mon, 17 Oct 2022 16:33:50 +0200
 Subject: [PATCH] Disable some warnings for gcc and clang
 

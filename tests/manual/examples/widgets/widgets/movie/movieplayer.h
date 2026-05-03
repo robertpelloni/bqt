@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MOVIEPLAYER_H
 #define MOVIEPLAYER_H
 
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCheckBox;
 class QGridLayout;
 class QHBoxLayout;
@@ -14,9 +14,9 @@ class QLabel;
 class QMovie;
 class QSlider;
 class QSpinBox;
-class QToolButton;
+class BOBUIoolButton;
 class QVBoxLayout;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class MoviePlayer : public QWidget
 {
@@ -40,11 +40,11 @@ private:
     QString currentMovieDirectory;
     QLabel *movieLabel;
     QMovie *movie;
-    QToolButton *openButton;
-    QToolButton *playButton;
-    QToolButton *pauseButton;
-    QToolButton *stopButton;
-    QToolButton *quitButton;
+    BOBUIoolButton *openButton;
+    BOBUIoolButton *playButton;
+    BOBUIoolButton *pauseButton;
+    BOBUIoolButton *stopButton;
+    BOBUIoolButton *quitButton;
     QCheckBox *fitCheckBox;
     QSlider *frameSlider;
     QSpinBox *speedSpinBox;

@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \headerfile <QtProcessorDetection>
-    \inmodule QtCore
+    \headerfile <BobUIProcessorDetection>
+    \inmodule BobUICore
     \title Architecture-specific Macro Definitions
     \ingroup funclists
 
-    \brief The <QtProcessorDetection> header file includes various
+    \brief The <BobUIProcessorDetection> header file includes various
     architecture-specific macros.
 
-    The <QtProcessorDetection> header file declares a range of macros
+    The <BobUIProcessorDetection> header file declares a range of macros
     (Q_PROCESSOR_*) that are defined if the application is compiled for
     specified processor architectures. For example, the Q_PROCESSOR_X86 macro is
     defined if the application is compiled for x86 processors.
@@ -21,7 +21,7 @@
 
 /*!
     \macro Q_PROCESSOR_ALPHA
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for Alpha processors.
 
@@ -30,9 +30,9 @@
 
 /*!
     \macro Q_PROCESSOR_ARM
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for ARM processors. Qt currently
+    Defined if the application is compiled for ARM processors. BobUI currently
     supports three optional ARM revisions: \l Q_PROCESSOR_ARM_V5, \l
     Q_PROCESSOR_ARM_V6, and \l Q_PROCESSOR_ARM_V7.
 
@@ -40,7 +40,7 @@
 */
 /*!
     \macro Q_PROCESSOR_ARM_V5
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for ARMv5 processors. The \l
     Q_PROCESSOR_ARM macro is also defined when Q_PROCESSOR_ARM_V5 is defined.
@@ -49,7 +49,7 @@
 */
 /*!
     \macro Q_PROCESSOR_ARM_V6
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for ARMv6 processors. The \l
     Q_PROCESSOR_ARM and \l Q_PROCESSOR_ARM_V5 macros are also defined when
@@ -59,7 +59,7 @@
 */
 /*!
     \macro Q_PROCESSOR_ARM_V7
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for ARMv7 processors. The \l
     Q_PROCESSOR_ARM, \l Q_PROCESSOR_ARM_V5, and \l Q_PROCESSOR_ARM_V6 macros
@@ -70,7 +70,7 @@
 
 /*!
     \macro Q_PROCESSOR_AVR32
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for AVR32 processors.
 
@@ -79,7 +79,7 @@
 
 /*!
     \macro Q_PROCESSOR_BLACKFIN
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for Blackfin processors.
 
@@ -88,7 +88,7 @@
 
 /*!
     \macro Q_PROCESSOR_HPPA
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for PA-RISC processors.
 
@@ -97,7 +97,7 @@
 
 /*!
     \macro Q_PROCESSOR_IA64
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for IA-64 processors. This includes
     all Itanium and Itanium 2 processors.
@@ -107,7 +107,7 @@
 
 /*!
     \macro Q_PROCESSOR_LOONGARCH
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
     \since 6.5
 
     Defined if the application is compiled for LoongArch processors.
@@ -117,7 +117,7 @@
 
 /*!
     \macro Q_PROCESSOR_LOONGARCH_32
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
     \since 6.5
 
     Defined if the application is compiled for 32-bit LoongArch processors.
@@ -129,7 +129,7 @@
 
 /*!
     \macro Q_PROCESSOR_LOONGARCH_64
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
     \since 6.5
 
     Defined if the application is compiled for 64-bit LoongArch processors.
@@ -141,7 +141,7 @@
 
 /*!
     \macro Q_PROCESSOR_M68K
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for Motorola 68000 processors.
 
@@ -150,9 +150,9 @@
 
 /*!
     \macro Q_PROCESSOR_MIPS
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for MIPS processors. Qt currently
+    Defined if the application is compiled for MIPS processors. BobUI currently
     supports seven MIPS revisions: \l Q_PROCESSOR_MIPS_I, \l
     Q_PROCESSOR_MIPS_II, \l Q_PROCESSOR_MIPS_III, \l Q_PROCESSOR_MIPS_IV, \l
     Q_PROCESSOR_MIPS_V, \l Q_PROCESSOR_MIPS_32, and \l Q_PROCESSOR_MIPS_64.
@@ -161,7 +161,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_I
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS-I processors. The \l
     Q_PROCESSOR_MIPS macro is also defined when Q_PROCESSOR_MIPS_I is defined.
@@ -170,7 +170,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_II
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS-II processors. The \l
     Q_PROCESSOR_MIPS and \l Q_PROCESSOR_MIPS_I macros are also defined when
@@ -180,7 +180,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_32
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS32 processors. The \l
     Q_PROCESSOR_MIPS, \l Q_PROCESSOR_MIPS_I, and \l Q_PROCESSOR_MIPS_II macros
@@ -190,7 +190,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_III
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS-III processors. The \l
     Q_PROCESSOR_MIPS, \l Q_PROCESSOR_MIPS_I, and \l Q_PROCESSOR_MIPS_II macros
@@ -200,7 +200,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_IV
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS-IV processors. The \l
     Q_PROCESSOR_MIPS, \l Q_PROCESSOR_MIPS_I, \l Q_PROCESSOR_MIPS_II, and \l
@@ -211,7 +211,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_V
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS-V processors. The \l
     Q_PROCESSOR_MIPS, \l Q_PROCESSOR_MIPS_I, \l Q_PROCESSOR_MIPS_II, \l
@@ -222,7 +222,7 @@
 */
 /*!
     \macro Q_PROCESSOR_MIPS_64
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for MIPS64 processors. The \l
     Q_PROCESSOR_MIPS, \l Q_PROCESSOR_MIPS_I, \l Q_PROCESSOR_MIPS_II, \l
@@ -234,9 +234,9 @@
 
 /*!
     \macro Q_PROCESSOR_POWER
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for POWER processors. Qt currently
+    Defined if the application is compiled for POWER processors. BobUI currently
     supports two Power variants: \l Q_PROCESSOR_POWER_32 and \l
     Q_PROCESSOR_POWER_64.
 
@@ -244,7 +244,7 @@
 */
 /*!
     \macro Q_PROCESSOR_POWER_32
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for 32-bit Power processors. The \l
     Q_PROCESSOR_POWER macro is also defined when Q_PROCESSOR_POWER_32 is
@@ -254,7 +254,7 @@
 */
 /*!
     \macro Q_PROCESSOR_POWER_64
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for 64-bit Power processors. The \l
     Q_PROCESSOR_POWER macro is also defined when Q_PROCESSOR_POWER_64 is
@@ -265,10 +265,10 @@
 
 /*!
     \macro Q_PROCESSOR_RISCV
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
     \since 5.13
 
-    Defined if the application is compiled for RISC-V processors. Qt currently
+    Defined if the application is compiled for RISC-V processors. BobUI currently
     supports two RISC-V variants: \l Q_PROCESSOR_RISCV_32 and \l
     Q_PROCESSOR_RISCV_64.
 
@@ -277,7 +277,7 @@
 
 /*!
     \macro Q_PROCESSOR_RISCV_32
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
     \since 5.13
 
     Defined if the application is compiled for 32-bit RISC-V processors. The \l
@@ -289,7 +289,7 @@
 
 /*!
     \macro Q_PROCESSOR_RISCV_64
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
     \since 5.13
 
     Defined if the application is compiled for 64-bit RISC-V processors. The \l
@@ -301,16 +301,16 @@
 
 /*!
     \macro Q_PROCESSOR_S390
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for S/390 processors. Qt supports
+    Defined if the application is compiled for S/390 processors. BobUI supports
     one optional variant of S/390: Q_PROCESSOR_S390_X.
 
     \sa QSysInfo::buildCpuArchitecture()
 */
 /*!
     \macro Q_PROCESSOR_S390_X
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for S/390x processors. The \l
     Q_PROCESSOR_S390 macro is also defined when Q_PROCESSOR_S390_X is defined.
@@ -320,16 +320,16 @@
 
 /*!
     \macro Q_PROCESSOR_SH
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for SuperH processors. Qt currently
+    Defined if the application is compiled for SuperH processors. BobUI currently
     supports one SuperH revision: \l Q_PROCESSOR_SH_4A.
 
     \sa QSysInfo::buildCpuArchitecture()
 */
 /*!
     \macro Q_PROCESSOR_SH_4A
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for SuperH 4A processors. The \l
     Q_PROCESSOR_SH macro is also defined when Q_PROCESSOR_SH_4A is defined.
@@ -339,16 +339,16 @@
 
 /*!
     \macro Q_PROCESSOR_SPARC
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for SPARC processors. Qt currently
+    Defined if the application is compiled for SPARC processors. BobUI currently
     supports one optional SPARC revision: \l Q_PROCESSOR_SPARC_V9.
 
     \sa QSysInfo::buildCpuArchitecture()
 */
 /*!
     \macro Q_PROCESSOR_SPARC_V9
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for SPARC V9 processors. The \l
     Q_PROCESSOR_SPARC macro is also defined when Q_PROCESSOR_SPARC_V9 is
@@ -359,16 +359,16 @@
 
 /*!
     \macro Q_PROCESSOR_X86
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
-    Defined if the application is compiled for x86 processors. Qt currently
+    Defined if the application is compiled for x86 processors. BobUI currently
     supports two x86 variants: \l Q_PROCESSOR_X86_32 and \l Q_PROCESSOR_X86_64.
 
     \sa QSysInfo::buildCpuArchitecture()
 */
 /*!
     \macro Q_PROCESSOR_X86_32
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for 32-bit x86 processors. This
     includes all i386, i486, i586, and i686 processors. The \l Q_PROCESSOR_X86
@@ -378,7 +378,7 @@
 */
 /*!
     \macro Q_PROCESSOR_X86_64
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     Defined if the application is compiled for 64-bit x86 processors. This
     includes all AMD64, Intel 64, and other x86_64/x64 processors. The \l
@@ -389,11 +389,11 @@
 
 /*!
     \macro Q_BYTE_ORDER
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     This macro can be used to determine the byte order your system
     uses for storing data in memory. i.e., whether your system is
-    little-endian or big-endian. It is set by Qt to one of the macros
+    little-endian or big-endian. It is set by BobUI to one of the macros
     Q_LITTLE_ENDIAN or Q_BIG_ENDIAN. You normally won't need to worry
     about endian-ness, but you might, for example if you need to know
     which byte of an integer or UTF-16 character is stored in the
@@ -410,7 +410,7 @@
 
 /*!
     \macro Q_LITTLE_ENDIAN
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     This macro represents a value you can compare to the macro
     Q_BYTE_ORDER to determine the endian-ness of your system.  In a
@@ -425,7 +425,7 @@
 
 /*!
     \macro Q_BIG_ENDIAN
-    \relates <QtProcessorDetection>
+    \relates <BobUIProcessorDetection>
 
     This macro represents a value you can compare to the macro
     Q_BYTE_ORDER to determine the endian-ness of your system.  In a
@@ -439,8 +439,8 @@
 */
 
 /*!
-    \macro QT_POINTER_SIZE
-    \relates <QtProcessorDetection>
+    \macro BOBUI_POINTER_SIZE
+    \relates <BobUIProcessorDetection>
 
     Expands to the size of a pointer in bytes (4 or 8). This is
     equivalent to \c sizeof(void *) but can be used in a preprocessor

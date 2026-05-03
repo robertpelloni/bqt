@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef IMAGECOMPOSER_H
 #define IMAGECOMPOSER_H
@@ -7,11 +7,11 @@
 #include <QPainter>
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
-class QToolButton;
-QT_END_NAMESPACE
+class BOBUIoolButton;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class ImageComposer : public QWidget
@@ -30,13 +30,13 @@ private slots:
 //! [1]
 private:
     void addOp(QPainter::CompositionMode mode, const QString &name);
-    void chooseImage(const QString &title, QImage *image, QToolButton *button);
-    void loadImage(const QString &fileName, QImage *image, QToolButton *button);
+    void chooseImage(const QString &title, QImage *image, BOBUIoolButton *button);
+    void loadImage(const QString &fileName, QImage *image, BOBUIoolButton *button);
     QPainter::CompositionMode currentMode() const;
     QPoint imagePos(const QImage &image) const;
 
-    QToolButton *sourceButton;
-    QToolButton *destinationButton;
+    BOBUIoolButton *sourceButton;
+    BOBUIoolButton *destinationButton;
     QComboBox *operatorComboBox;
     QLabel *equalLabel;
     QLabel *resultLabel;

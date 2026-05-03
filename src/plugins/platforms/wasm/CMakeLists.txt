@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QWasmIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QWasmIntegrationPlugin
+bobui_internal_add_plugin(QWasmIntegrationPlugin
     OUTPUT_NAME qwasm
-    DEFAULT_IF "wasm" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "wasm" IN_LIST BOBUI_QPA_PLATFORMS
     PLUGIN_TYPE platforms
     SOURCES
         main.cpp
@@ -35,67 +35,67 @@ qt_internal_add_plugin(QWasmIntegrationPlugin
         qwasmwindowstack.h
         qwasmfiledialoghelper.cpp qwasmfiledialoghelper.h
     DEFINES
-        QT_EGL_NO_X11
-        QT_NO_FOREACH
+        BOBUI_EGL_NO_X11
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
     ATTRIBUTION_FILE_DIR_PATHS
         ../../../3rdparty/wasm
-    QT_LICENSE_ID QT_COMMERCIAL_OR_GPL3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_GPL3
 )
 
 # Resources:
 set(wasmfonts_resource_files
-    "${QtBase_SOURCE_DIR}/src/3rdparty/wasm/DejaVuSans.ttf"
-    "${QtBase_SOURCE_DIR}/src/3rdparty/wasm/DejaVuSansMono.ttf"
+    "${BobUIBase_SOURCE_DIR}/src/3rdparty/wasm/DejaVuSans.ttf"
+    "${BobUIBase_SOURCE_DIR}/src/3rdparty/wasm/DejaVuSansMono.ttf"
 )
 
-qt_internal_add_resource(QWasmIntegrationPlugin "wasmfonts"
+bobui_internal_add_resource(QWasmIntegrationPlugin "wasmfonts"
     PREFIX
         "/fonts"
     BASE
-        "${QtBase_SOURCE_DIR}/src/3rdparty/wasm"
+        "${BobUIBase_SOURCE_DIR}/src/3rdparty/wasm"
     FILES
         ${wasmfonts_resource_files}
 )
 
-qt_internal_extend_target(QWasmIntegrationPlugin CONDITION QT_FEATURE_clipboard
+bobui_internal_extend_target(QWasmIntegrationPlugin CONDITION BOBUI_FEATURE_clipboard
     SOURCES
         qwasmclipboard.cpp qwasmclipboard.h
 )
 
-qt_internal_extend_target(QWasmIntegrationPlugin CONDITION QT_FEATURE_draganddrop
+bobui_internal_extend_target(QWasmIntegrationPlugin CONDITION BOBUI_FEATURE_draganddrop
     SOURCES
         qwasmdrag.cpp qwasmdrag.h
 )
 
-qt_internal_extend_target(QWasmIntegrationPlugin CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(QWasmIntegrationPlugin CONDITION BOBUI_FEATURE_opengl
     SOURCES
         qwasmbackingstore.cpp qwasmbackingstore.h
     LIBRARIES
-        Qt::OpenGL
-        Qt::OpenGLPrivate
+        BobUI::OpenGL
+        BobUI::OpenGLPrivate
 )
 
 # PLUGIN_EXTENDS = "-"
 
 set(wasm_support_files
     wasm_shell.html
-    qtloader.js
-    resources/qtlogo.svg
+    bobuiloader.js
+    resources/bobuilogo.svg
 )
 
 set(wasmwindow_resource_files
     "resources/maximize.svg"
-    "resources/qtlogo.svg"
+    "resources/bobuilogo.svg"
     "resources/restore.svg"
     "resources/x.svg"
 )
 
-qt_internal_add_resource(QWasmIntegrationPlugin "wasmwindow"
+bobui_internal_add_resource(QWasmIntegrationPlugin "wasmwindow"
     PREFIX
         "/wasm-window"
     BASE
@@ -104,15 +104,15 @@ qt_internal_add_resource(QWasmIntegrationPlugin "wasmwindow"
         ${wasmwindow_resource_files}
 )
 
-qt_path_join(destination ${QT_INSTALL_DIR} "plugins/platforms")
-qt_copy_or_install(FILES
+bobui_path_join(destination ${BOBUI_INSTALL_DIR} "plugins/platforms")
+bobui_copy_or_install(FILES
     ${wasm_support_files}
     DESTINATION "${destination}"
 )
 # Need to copy the support files to the build dir in a top-level prefix build
-# So _qt_internal_wasm_add_target_helpers finds them.
-if(QT_WILL_INSTALL)
+# So _bobui_internal_wasm_add_target_helpers finds them.
+if(BOBUI_WILL_INSTALL)
     foreach(wasm_support_file ${wasm_support_files})
-        file(COPY "${wasm_support_file}" DESTINATION "${QT_BUILD_DIR}/plugins/platforms")
+        file(COPY "${wasm_support_file}" DESTINATION "${BOBUI_BUILD_DIR}/plugins/platforms")
     endforeach()
 endif()

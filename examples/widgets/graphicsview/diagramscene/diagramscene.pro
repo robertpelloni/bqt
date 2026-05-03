@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(fontcombobox))
+BOBUI += widgets
+requires(bobuiConfig(fontcombobox))
 
 HEADERS	    =   mainwindow.h \
 		diagramitem.h \
@@ -16,5 +16,5 @@ RESOURCES   =	diagramscene.qrc
 
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/diagramscene
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/diagramscene
 INSTALLS += target

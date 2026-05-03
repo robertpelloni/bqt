@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (c) 2007-2008, Apple, Inc.
 // SPDX-License-Identifier: BSD-3-Clause
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 #ifndef QEVENTDISPATCHER_MAC_P_H
 #define QEVENTDISPATCHER_MAC_P_H
@@ -10,27 +10,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qabstracteventdispatcher.h>
-#include <QtCore/qstack.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/private/qabstracteventdispatcher_p.h>
-#include <QtCore/private/qcfsocketnotifier_p.h>
-#include <QtCore/private/qtimerinfo_unix_p.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/qabstracteventdispatcher.h>
+#include <BobUICore/qstack.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/private/qabstracteventdispatcher_p.h>
+#include <BobUICore/private/qcfsocketnotifier_p.h>
+#include <BobUICore/private/bobuiimerinfo_unix_p.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qpointer.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSWindow);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcEventDispatcher);
 
@@ -57,19 +57,19 @@ public:
     void registerSocketNotifier(QSocketNotifier *notifier) override;
     void unregisterSocketNotifier(QSocketNotifier *notifier) override;
 
-    void registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType,
+    void registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType,
                        QObject *object) final;
-    bool unregisterTimer(Qt::TimerId timerId) final;
+    bool unregisterTimer(BobUI::TimerId timerId) final;
     bool unregisterTimers(QObject *object) final;
     QList<TimerInfoV2> timersForObject(QObject *object) const final;
-    Duration remainingTime(Qt::TimerId timerId) const final;
+    Duration remainingTime(BobUI::TimerId timerId) const final;
 
     void wakeUp() override;
     void interrupt() override;
 
     static void clearCurrentThreadCocoaEventDispatcherInterruptFlag();
 
-    friend void qt_mac_maybeCancelWaitForMoreEventsForwarder(QAbstractEventDispatcher *eventDispatcher);
+    friend void bobui_mac_maybeCancelWaitForMoreEventsForwarder(QAbstractEventDispatcher *eventDispatcher);
 };
 
 class QCocoaEventDispatcherPrivate : public QAbstractEventDispatcherPrivate
@@ -83,7 +83,7 @@ public:
     uint processEventsFlags;
 
     // timer handling
-    QTimerInfoList timerInfoList;
+    BOBUIimerInfoList timerInfoList;
     CFRunLoopTimerRef runLoopTimerRef;
     CFRunLoopSourceRef activateTimersSourceRef;
     void maybeStartCFRunLoopTimer();
@@ -93,14 +93,14 @@ public:
     bool processTimers();
 
     // Set 'blockSendPostedEvents' to true if you _really_ need
-    // to make sure that qt events are not posted while calling
+    // to make sure that bobui events are not posted while calling
     // low-level cocoa functions (like beginModalForWindow). And
     // use a QScopedValueRollback to be safe:
     bool blockSendPostedEvents;
     // The following variables help organizing modal sessions:
     QStack<QCocoaModalSessionInfo> cocoaModalSessionStack;
     bool currentExecIsNSAppRun;
-    bool nsAppRunCalledByQt;
+    bool nsAppRunCalledByBobUI;
     bool initializingNSApplication = false;
     bool cleanupModalSessionsNeeded;
     uint processEventsCalled;
@@ -132,19 +132,19 @@ public:
     void processPostedEvents();
 };
 
-class QtCocoaInterruptDispatcher : public QObject
+class BobUICocoaInterruptDispatcher : public QObject
 {
-    static QtCocoaInterruptDispatcher *instance;
+    static BobUICocoaInterruptDispatcher *instance;
     bool cancelled;
 
-    QtCocoaInterruptDispatcher();
-    ~QtCocoaInterruptDispatcher();
+    BobUICocoaInterruptDispatcher();
+    ~BobUICocoaInterruptDispatcher();
 
     public:
     static void interruptLater();
     static void cancelInterruptLater();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_MAC_P_H

@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsystemsemaphore.h"
 #include "qsystemsemaphore_p.h"
 #include "qcoreapplication.h"
 #include <qdebug.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
 
 void QSystemSemaphorePrivate::setWindowsErrorString(QLatin1StringView function)
 {
@@ -32,7 +32,7 @@ void QSystemSemaphorePrivate::setWindowsErrorString(QLatin1StringView function)
         break;
     default:
         errorString = QCoreApplication::translate("QSystemSemaphore", "%1: unknown error: %2")
-                .arg(function, qt_error_string(windowsError));
+                .arg(function, bobui_error_string(windowsError));
         error = QSystemSemaphore::UnknownError;
 #if defined QSYSTEMSEMAPHORE_DEBUG
         qDebug() << errorString << "key" << key;
@@ -94,6 +94,6 @@ bool QSystemSemaphoreWin32::modifySemaphore(QSystemSemaphorePrivate *self, int c
     return true;
 }
 
-#endif // QT_CONFIG(systemsemaphore)
+#endif // BOBUI_CONFIG(systemsemaphore)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

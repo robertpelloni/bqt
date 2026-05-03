@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qpermissions_p.h>
 #include <private/qstdweb_p.h>
@@ -10,7 +10,7 @@
 #include <qnamespace.h>
 #include <qmetatype.h>
 #include <qstring.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qhash.h>
 
 #include <emscripten.h>
@@ -21,7 +21,7 @@
 #include <string>
 #include <queue>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QPermissions::Private;
 using namespace emscripten;
@@ -75,7 +75,7 @@ namespace
 
     void bootstrapCheckPermissions()
     {
-        QTimer::singleShot(0, []{checkPermissions();});
+        BOBUIimer::singleShot(0, []{checkPermissions();});
     }
 
     Q_CONSTRUCTOR_FUNCTION(bootstrapCheckPermissions);
@@ -94,21 +94,21 @@ namespace
         return -1;
     }
 
-    Qt::PermissionStatus permissionStatusFromString(const std::string &state)
+    BobUI::PermissionStatus permissionStatusFromString(const std::string &state)
     {
         if (state == wapiGranted)
-            return Qt::PermissionStatus::Granted;
+            return BobUI::PermissionStatus::Granted;
         if (state == wapiDenied)
-            return Qt::PermissionStatus::Denied;
+            return BobUI::PermissionStatus::Denied;
         if (state == wapiPrompt)
-            return Qt::PermissionStatus::Undetermined;
+            return BobUI::PermissionStatus::Undetermined;
 
         qCWarning(lcPermissions, "Unknown permission state '%s'", state.c_str());
 
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
     }
 
-    using PermissionHash = QHash<int, Qt::PermissionStatus>;
+    using PermissionHash = QHash<int, BobUI::PermissionStatus>;
     Q_GLOBAL_STATIC(PermissionHash, permissionStatuses);
 
     void updatePermission(const std::string &name, const std::string &state, PermissionCallback callback)
@@ -132,7 +132,7 @@ namespace
 
         val mediaDevices = val::global("navigator")["mediaDevices"];
         if (mediaDevices.isUndefined())
-            return cb(Qt::PermissionStatus::Denied);
+            return cb(BobUI::PermissionStatus::Denied);
 
         qstdweb::PromiseCallbacks queryCallbacks;
         queryCallbacks.thenFunc = [device, cb](val)
@@ -197,9 +197,9 @@ namespace
         processNextGeolocationRequest();
     }
 
-    EMSCRIPTEN_BINDINGS(qt_permissions) {
-        function("qtLocationSuccess", &geolocationSuccess);
-        function("qtLocationError", &geolocationError);
+    EMSCRIPTEN_BINDINGS(bobui_permissions) {
+        function("bobuiLocationSuccess", &geolocationSuccess);
+        function("bobuiLocationError", &geolocationError);
     }
 
     void processNextGeolocationRequest()
@@ -222,8 +222,8 @@ namespace
 
         val options = val::object();
         options.set("enableHighAccuracy", highAccuracy ? true : false);
-        geolocation.call<void>("getCurrentPosition", val::module_property("qtLocationSuccess"),
-                               val::module_property("qtLocationError"), options);
+        geolocation.call<void>("getCurrentPosition", val::module_property("bobuiLocationSuccess"),
+                               val::module_property("bobuiLocationError"), options);
     }
 
     void requestGeolocationPermission(const QPermission &permission, const PermissionCallback &cb)
@@ -234,7 +234,7 @@ namespace
 
         val geolocation = val::global("navigator")["geolocation"];
         if (geolocation.isUndefined() || geolocation.isNull())
-            return cb(Qt::PermissionStatus::Denied);
+            return cb(BobUI::PermissionStatus::Denied);
 
         if (processingLocationRequest)
             qCWarning(lcPermissions, "Permission to access location requested, while another request is in progress");
@@ -246,10 +246,10 @@ namespace
 
 namespace QPermissions::Private
 {
-    Qt::PermissionStatus checkPermission(const QPermission &permission)
+    BobUI::PermissionStatus checkPermission(const QPermission &permission)
     {
         const auto it = permissionStatuses->find(permission.type().id());
-        return it != permissionStatuses->end() ? it.value() : Qt::PermissionStatus::Undetermined;
+        return it != permissionStatuses->end() ? it.value() : BobUI::PermissionStatus::Undetermined;
     }
 
     void requestPermission(const QPermission &permission, const PermissionCallback &callback)
@@ -258,7 +258,7 @@ namespace QPermissions::Private
         Q_ASSERT(callback);
 
         const auto status = checkPermission(permission);
-        if (status != Qt::PermissionStatus::Undetermined)
+        if (status != BobUI::PermissionStatus::Undetermined)
             return callback(status);
 
         const int requestedTypeId = permission.type().id();
@@ -271,9 +271,9 @@ namespace QPermissions::Private
         if (requestedTypeId == qMetaTypeId<QLocationPermission>())
             return requestGeolocationPermission(permission, callback);
 
-        (*permissionStatuses)[requestedTypeId] = Qt::PermissionStatus::Denied;
-        callback(Qt::PermissionStatus::Denied);
+        (*permissionStatuses)[requestedTypeId] = BobUI::PermissionStatus::Denied;
+        callback(BobUI::PermissionStatus::Denied);
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

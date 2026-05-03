@@ -1,37 +1,37 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTYLEOPTION_H
 #define QSTYLEOPTION_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qlocale.h>
-#include <QtCore/qvariant.h>
-#if QT_CONFIG(spinbox)
-#include <QtWidgets/qabstractspinbox.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qvariant.h>
+#if BOBUI_CONFIG(spinbox)
+#include <BobUIWidgets/qabstractspinbox.h>
 #endif
-#include <QtGui/qicon.h>
-#include <QtGui/qtransform.h>
-#if QT_CONFIG(slider)
-#include <QtWidgets/qslider.h>
+#include <BobUIGui/qicon.h>
+#include <BobUIGui/bobuiransform.h>
+#if BOBUI_CONFIG(slider)
+#include <BobUIWidgets/qslider.h>
 #endif
-#include <QtWidgets/qstyle.h>
-#if QT_CONFIG(tabbar)
-#include <QtWidgets/qtabbar.h>
+#include <BobUIWidgets/qstyle.h>
+#if BOBUI_CONFIG(tabbar)
+#include <BobUIWidgets/bobuiabbar.h>
 #endif
-#if QT_CONFIG(tabwidget)
-#include <QtWidgets/qtabwidget.h>
+#if BOBUI_CONFIG(tabwidget)
+#include <BobUIWidgets/bobuiabwidget.h>
 #endif
-#if QT_CONFIG(rubberband)
-#include <QtWidgets/qrubberband.h>
+#if BOBUI_CONFIG(rubberband)
+#include <BobUIWidgets/qrubberband.h>
 #endif
-#include <QtWidgets/qframe.h>
-#if QT_CONFIG(itemviews)
-#   include <QtCore/qabstractitemmodel.h>
+#include <BobUIWidgets/qframe.h>
+#if BOBUI_CONFIG(itemviews)
+#   include <BobUICore/qabstractitemmodel.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDebug;
@@ -58,7 +58,7 @@ public:
     int version;
     int type;
     QStyle::State state;
-    Qt::LayoutDirection direction;
+    BobUI::LayoutDirection direction;
     QRect rect;
     QFontMetrics fontMetrics;
     QPalette palette;
@@ -115,7 +115,7 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionFrame::FrameFeatures)
 
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
 class Q_WIDGETS_EXPORT QStyleOptionTabWidgetFrame : public QStyleOption
 {
 public:
@@ -124,7 +124,7 @@ public:
 
     int lineWidth;
     int midLineWidth;
-    QTabBar::Shape shape;
+    BOBUIabBar::Shape shape;
     QSize tabBarSize;
     QSize rightCornerWidgetSize;
     QSize leftCornerWidgetSize;
@@ -140,17 +140,17 @@ protected:
     QStyleOptionTabWidgetFrame(int version);
 };
 
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
 
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 class Q_WIDGETS_EXPORT QStyleOptionTabBarBase : public QStyleOption
 {
 public:
     enum StyleOptionType { Type = SO_TabBarBase };
     enum StyleOptionVersion { Version = 1 };
 
-    QTabBar::Shape shape;
+    BOBUIabBar::Shape shape;
     QRect tabBarRect;
     QRect selectedTabRect;
     bool documentMode;
@@ -163,7 +163,7 @@ protected:
     QStyleOptionTabBarBase(int version);
 };
 
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 class Q_WIDGETS_EXPORT QStyleOptionHeader : public QStyleOption
 {
@@ -178,13 +178,13 @@ public:
 
     int section;
     QString text;
-    Qt::Alignment textAlignment;
+    BobUI::Alignment textAlignment;
     QIcon icon;
-    Qt::Alignment iconAlignment;
+    BobUI::Alignment iconAlignment;
     SectionPosition position;
     SelectedPosition selectedPosition;
     SortIndicator sortIndicator;
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
 
     QStyleOptionHeader();
     QStyleOptionHeader(const QStyleOptionHeader &other) : QStyleOption(Version, Type) { *this = other; }
@@ -194,7 +194,7 @@ protected:
     QStyleOptionHeader(int version);
 };
 
-// ### Qt7: merge with QStyleOptionHeader
+// ### BobUI7: merge with QStyleOptionHeader
 class Q_WIDGETS_EXPORT QStyleOptionHeaderV2 : public QStyleOptionHeader
 {
 public:
@@ -205,7 +205,7 @@ public:
     QStyleOptionHeaderV2(const QStyleOptionHeaderV2 &other) : QStyleOptionHeader(Version) { *this = other; }
     QStyleOptionHeaderV2 &operator=(const QStyleOptionHeaderV2 &) = default;
 
-    Qt::TextElideMode textElideMode:2;
+    BobUI::TextElideMode textElideMode:2;
     bool isSectionDragTarget:1;
     int unused:29;
 
@@ -238,7 +238,7 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionButton::ButtonFeatures)
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 class Q_WIDGETS_EXPORT QStyleOptionTab : public QStyleOption
 {
 public:
@@ -253,7 +253,7 @@ public:
     Q_DECLARE_FLAGS(CornerWidgets, CornerWidget)
     Q_DECLARE_FLAGS(TabFeatures, TabFeature)
 
-    QTabBar::Shape shape;
+    BOBUIabBar::Shape shape;
     QString text;
     QIcon icon;
     int row;
@@ -277,10 +277,10 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionTab::CornerWidgets)
 
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
 
 class Q_WIDGETS_EXPORT QStyleOptionToolBar : public QStyleOption
 {
@@ -292,7 +292,7 @@ public:
     Q_DECLARE_FLAGS(ToolBarFeatures, ToolBarFeature)
     ToolBarPosition positionOfLine; // The toolbar line position
     ToolBarPosition positionWithinLine; // The position within a toolbar
-    Qt::ToolBarArea toolBarArea; // The toolbar docking area
+    BobUI::ToolBarArea toolBarArea; // The toolbar docking area
     ToolBarFeatures features;
     int lineWidth;
     int midLineWidth;
@@ -306,7 +306,7 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionToolBar::ToolBarFeatures)
 
-#endif // QT_CONFIG(toolbar)
+#endif // BOBUI_CONFIG(toolbar)
 
 class Q_WIDGETS_EXPORT QStyleOptionProgressBar : public QStyleOption
 {
@@ -318,7 +318,7 @@ public:
     int maximum;
     int progress;
     QString text;
-    Qt::Alignment textAlignment;
+    BobUI::Alignment textAlignment;
     bool textVisible;
     bool invertedAppearance;
     bool bottomToTop;
@@ -338,7 +338,7 @@ public:
     enum StyleOptionVersion { Version = 1 };
 
     enum MenuItemType { Normal, DefaultItem, Separator, SubMenu, Scroller, TearOff,
-#if QT_DEPRECATED_SINCE(6, 11)
+#if BOBUI_DEPRECATED_SINCE(6, 11)
                         Margin Q_DECL_ENUMERATOR_DEPRECATED_X("Not used anywhere"),
 #endif
                         EmptyArea };
@@ -363,7 +363,7 @@ protected:
     QStyleOptionMenuItem(int version);
 };
 
-// ### Qt7: merge with QStyleOptionMenuItem
+// ### BobUI7: merge with QStyleOptionMenuItem
 class QStyleOptionMenuItemV2 : public QStyleOptionMenuItem
 {
 public:
@@ -400,7 +400,7 @@ protected:
     QStyleOptionDockWidget(int version);
 };
 
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 
 class Q_WIDGETS_EXPORT QStyleOptionViewItem : public QStyleOption
 {
@@ -410,9 +410,9 @@ public:
 
     enum Position { Left, Right, Top, Bottom };
 
-    Qt::Alignment displayAlignment;
-    Qt::Alignment decorationAlignment;
-    Qt::TextElideMode textElideMode;
+    BobUI::Alignment displayAlignment;
+    BobUI::Alignment decorationAlignment;
+    BobUI::TextElideMode textElideMode;
     Position decorationPosition;
     QSize decorationSize;
     QFont font;
@@ -438,7 +438,7 @@ public:
     enum ViewItemPosition { Invalid, Beginning, Middle, End, OnlyOne };
 
     QModelIndex index;
-    Qt::CheckState checkState;
+    BobUI::CheckState checkState;
     QIcon icon;
     QString text;
     ViewItemPosition viewItemPosition;
@@ -454,7 +454,7 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionViewItem::ViewItemFeatures)
 
-#endif // QT_CONFIG(itemviews)
+#endif // BOBUI_CONFIG(itemviews)
 
 class Q_WIDGETS_EXPORT QStyleOptionToolBox : public QStyleOption
 {
@@ -479,7 +479,7 @@ protected:
     QStyleOptionToolBox(int version);
 };
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 class Q_WIDGETS_EXPORT QStyleOptionRubberBand : public QStyleOption
 {
 public:
@@ -496,7 +496,7 @@ public:
 protected:
     QStyleOptionRubberBand(int version);
 };
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
 
 // -------------------------- Complex style options -------------------------------
 class Q_WIDGETS_EXPORT QStyleOptionComplex : public QStyleOption
@@ -513,14 +513,14 @@ public:
     QStyleOptionComplex &operator=(const QStyleOptionComplex &) = default;
 };
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 class Q_WIDGETS_EXPORT QStyleOptionSlider : public QStyleOptionComplex
 {
 public:
     enum StyleOptionType { Type = SO_Slider };
     enum StyleOptionVersion { Version = 1 };
 
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     int minimum;
     int maximum;
     QSlider::TickPosition tickPosition;
@@ -532,7 +532,7 @@ public:
     int pageStep;
     qreal notchTarget;
     bool dialWrapping;
-    Qt::KeyboardModifiers keyboardModifiers;
+    BobUI::KeyboardModifiers keyboardModifiers;
 
     QStyleOptionSlider();
     QStyleOptionSlider(const QStyleOptionSlider &other) : QStyleOptionComplex(Version, Type) { *this = other; }
@@ -541,9 +541,9 @@ public:
 protected:
     QStyleOptionSlider(int version);
 };
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 class Q_WIDGETS_EXPORT QStyleOptionSpinBox : public QStyleOptionComplex
 {
 public:
@@ -561,9 +561,9 @@ public:
 protected:
     QStyleOptionSpinBox(int version);
 };
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
 class Q_WIDGETS_EXPORT QStyleOptionToolButton : public QStyleOptionComplex
 {
 public:
@@ -578,8 +578,8 @@ public:
     QIcon icon;
     QSize iconSize;
     QString text;
-    Qt::ArrowType arrowType;
-    Qt::ToolButtonStyle toolButtonStyle;
+    BobUI::ArrowType arrowType;
+    BobUI::ToolButtonStyle toolButtonStyle;
     QPoint pos;
     QFont font;
 
@@ -592,7 +592,7 @@ protected:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionToolButton::ToolButtonFeatures)
-#endif  // QT_CONFIG(toolbutton)
+#endif  // BOBUI_CONFIG(toolbutton)
 
 class Q_WIDGETS_EXPORT QStyleOptionComboBox : public QStyleOptionComplex
 {
@@ -606,7 +606,7 @@ public:
     QString currentText;
     QIcon currentIcon;
     QSize iconSize;
-    Qt::Alignment textAlignment = Qt::AlignLeft | Qt::AlignVCenter;
+    BobUI::Alignment textAlignment = BobUI::AlignLeft | BobUI::AlignVCenter;
 
     QStyleOptionComboBox();
     QStyleOptionComboBox(const QStyleOptionComboBox &other) : QStyleOptionComplex(Version, Type) { *this = other; }
@@ -625,7 +625,7 @@ public:
     QString text;
     QIcon icon;
     int titleBarState;
-    Qt::WindowFlags titleBarFlags;
+    BobUI::WindowFlags titleBarFlags;
 
     QStyleOptionTitleBar();
     QStyleOptionTitleBar(const QStyleOptionTitleBar &other) : QStyleOptionComplex(Version, Type) { *this = other; }
@@ -643,7 +643,7 @@ public:
 
     QStyleOptionFrame::FrameFeatures features;
     QString text;
-    Qt::Alignment textAlignment;
+    BobUI::Alignment textAlignment;
     QColor textColor;
     int lineWidth;
     int midLineWidth;
@@ -661,7 +661,7 @@ public:
     enum StyleOptionType { Type = SO_SizeGrip };
     enum StyleOptionVersion { Version = 1 };
 
-    Qt::Corner corner;
+    BobUI::Corner corner;
 
     QStyleOptionSizeGrip();
     QStyleOptionSizeGrip(const QStyleOptionSizeGrip &other) : QStyleOptionComplex(Version, Type) { *this = other; }
@@ -681,7 +681,7 @@ public:
     QStyleOptionGraphicsItem();
     QStyleOptionGraphicsItem(const QStyleOptionGraphicsItem &other) : QStyleOption(Version, Type) { *this = other; }
     QStyleOptionGraphicsItem &operator=(const QStyleOptionGraphicsItem &) = default;
-    static qreal levelOfDetailFromTransform(const QTransform &worldTransform);
+    static qreal levelOfDetailFromTransform(const BOBUIransform &worldTransform);
 protected:
     QStyleOptionGraphicsItem(int version);
 };
@@ -769,11 +769,11 @@ T qstyleoption_cast(QStyleHintReturn *hint)
     return nullptr;
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType);
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, const QStyleOption &option);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTYLEOPTION_H

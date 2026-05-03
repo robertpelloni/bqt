@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsplitter.h"
 
@@ -11,12 +11,12 @@
 #include "qlayout.h"
 #include "qlist.h"
 #include "qpainter.h"
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 #include "qrubberband.h"
 #endif
 #include "qstyle.h"
 #include "qstyleoption.h"
-#include "qtextstream.h"
+#include "bobuiextstream.h"
 #include "qvarlengtharray.h"
 #include "private/qlayoutengine_p.h"
 #include "private/qsplitter_p.h"
@@ -24,9 +24,9 @@
 
 #include <ctype.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //#define QSPLITTER_DEBUG
 
@@ -39,7 +39,7 @@ QSplitterPrivate::~QSplitterPrivate()
     \brief The QSplitterHandle class provides handle functionality for the splitter.
 
     \ingroup organizers
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QSplitterHandle is typically what people think about when they think about
     a splitter. It is the handle that is used to resize the widgets.
@@ -83,7 +83,7 @@ QSplitterPrivate::~QSplitterPrivate()
     Creates a QSplitter handle with the given \a orientation and
     \a parent.
 */
-QSplitterHandle::QSplitterHandle(Qt::Orientation orientation, QSplitter *parent)
+QSplitterHandle::QSplitterHandle(BobUI::Orientation orientation, QSplitter *parent)
     : QWidget(*new QSplitterHandlePrivate, parent, { })
 {
     Q_D(QSplitterHandle);
@@ -104,12 +104,12 @@ QSplitterHandle::~QSplitterHandle()
 
     \sa QSplitter::setOrientation()
 */
-void QSplitterHandle::setOrientation(Qt::Orientation orientation)
+void QSplitterHandle::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QSplitterHandle);
     d->orient = orientation;
-#ifndef QT_NO_CURSOR
-    setCursor(orientation == Qt::Horizontal ? Qt::SplitHCursor : Qt::SplitVCursor);
+#ifndef BOBUI_NO_CURSOR
+    setCursor(orientation == BobUI::Horizontal ? BobUI::SplitHCursor : BobUI::SplitVCursor);
 #endif
 }
 
@@ -118,7 +118,7 @@ void QSplitterHandle::setOrientation(Qt::Orientation orientation)
 
    \sa QSplitter::orientation()
 */
-Qt::Orientation QSplitterHandle::orientation() const
+BobUI::Orientation QSplitterHandle::orientation() const
 {
     Q_D(const QSplitterHandle);
     return d->orient;
@@ -161,7 +161,7 @@ QSplitter *QSplitterHandle::splitter() const
 void QSplitterHandle::moveSplitter(int pos)
 {
     Q_D(QSplitterHandle);
-    if (d->s->isRightToLeft() && d->orient == Qt::Horizontal)
+    if (d->s->isRightToLeft() && d->orient == BobUI::Horizontal)
         pos = d->s->contentsRect().width() - pos;
     d->s->moveSplitter(pos, d->s->indexOf(this));
 }
@@ -178,7 +178,7 @@ int QSplitterHandle::closestLegalPosition(int pos)
 {
     Q_D(QSplitterHandle);
     QSplitter *s = d->s;
-    if (s->isRightToLeft() && d->orient == Qt::Horizontal) {
+    if (s->isRightToLeft() && d->orient == BobUI::Horizontal) {
         int w = s->contentsRect().width();
         return w - s->closestLegalPosition(w - pos, s->indexOf(this));
     }
@@ -213,9 +213,9 @@ void QSplitterHandle::resizeEvent(QResizeEvent *event)
     // We simply use the contents margins for draggin and only
     // paint the mask area
     const bool useTinyMode = handleMargin > 0;
-    setAttribute(Qt::WA_MouseNoMask, useTinyMode);
+    setAttribute(BobUI::WA_MouseNoMask, useTinyMode);
     if (useTinyMode) {
-        if (orientation() == Qt::Horizontal)
+        if (orientation() == BobUI::Horizontal)
             setContentsMargins(handleMargin, 0, handleMargin, 0);
         else
             setContentsMargins(0, handleMargin, 0, handleMargin);
@@ -273,7 +273,7 @@ void QSplitterHandle::mouseMoveEvent(QMouseEvent *e)
 void QSplitterHandle::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QSplitterHandle);
-    if (e->button() == Qt::LeftButton) {
+    if (e->button() == BobUI::LeftButton) {
         d->mouseOffset = d->pick(e->position().toPoint());
         d->pressed = true;
         update();
@@ -310,7 +310,7 @@ void QSplitterHandle::paintEvent(QPaintEvent *)
     QStyleOption opt(0);
     opt.rect = contentsRect();
     opt.palette = palette();
-    if (orientation() == Qt::Horizontal)
+    if (orientation() == BobUI::Horizontal)
         opt.state = QStyle::State_Horizontal;
     else
         opt.state = QStyle::State_None;
@@ -324,26 +324,26 @@ void QSplitterHandle::paintEvent(QPaintEvent *)
 }
 
 
-int QSplitterLayoutStruct::getWidgetSize(Qt::Orientation orient)
+int QSplitterLayoutStruct::getWidgetSize(BobUI::Orientation orient)
 {
     if (sizer == -1) {
         QSize s = widget->sizeHint();
         const int presizer = pick(s, orient);
         const int realsize = pick(widget->size(), orient);
-        if (!s.isValid() || (widget->testAttribute(Qt::WA_Resized) && (realsize > presizer))) {
+        if (!s.isValid() || (widget->testAttribute(BobUI::WA_Resized) && (realsize > presizer))) {
             sizer = pick(widget->size(), orient);
         } else {
             sizer = presizer;
         }
         QSizePolicy p = widget->sizePolicy();
-        int sf = (orient == Qt::Horizontal) ? p.horizontalStretch() : p.verticalStretch();
+        int sf = (orient == BobUI::Horizontal) ? p.horizontalStretch() : p.verticalStretch();
         if (sf > 1)
             sizer *= sf;
     }
     return sizer;
 }
 
-int QSplitterLayoutStruct::getHandleSize(Qt::Orientation orient)
+int QSplitterLayoutStruct::getHandleSize(BobUI::Orientation orient)
 {
     return pick(handle->sizeHint(), orient);
 }
@@ -352,10 +352,10 @@ void QSplitterPrivate::init()
 {
     Q_Q(QSplitter);
     QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    if (orient == Qt::Vertical)
+    if (orient == BobUI::Vertical)
         sp.transpose();
     q->setSizePolicy(sp);
-    q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+    q->setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
 }
 
 void QSplitterPrivate::recalc(bool update)
@@ -431,7 +431,7 @@ void QSplitterPrivate::recalc(bool update)
         maxt = mint;
 
     if (update) {
-        if (orient == Qt::Horizontal) {
+        if (orient == BobUI::Horizontal) {
             q->setMaximumSize(maxl, maxt);
             if (q->isWindow())
                 q->setMinimumSize(minl,mint);
@@ -458,7 +458,7 @@ void QSplitterPrivate::doResize()
     bool noStretchFactorsSet = true;
     for (i = 0; i < n; ++i) {
         QSizePolicy p = list.at(i)->widget->sizePolicy();
-        int sf = orient == Qt::Horizontal ? p.horizontalStretch() : p.verticalStretch();
+        int sf = orient == BobUI::Horizontal ? p.horizontalStretch() : p.verticalStretch();
         if (sf != 0) {
             noStretchFactorsSet = false;
             break;
@@ -493,7 +493,7 @@ void QSplitterPrivate::doResize()
             bool stretch = noStretchFactorsSet;
             if (!stretch) {
                 QSizePolicy p = s->widget->sizePolicy();
-                int sf = orient == Qt::Horizontal ? p.horizontalStretch() : p.verticalStretch();
+                int sf = orient == BobUI::Horizontal ? p.horizontalStretch() : p.verticalStretch();
                 stretch = (sf != 0);
             }
             if (stretch) {
@@ -718,7 +718,7 @@ void QSplitterPrivate::setGeo(QSplitterLayoutStruct *sls, int p, int s, bool all
     QWidget *w = sls->widget;
     QRect r;
     QRect contents = q->contentsRect();
-    if (orient == Qt::Horizontal) {
+    if (orient == BobUI::Horizontal) {
         r.setRect(p, contents.y(), s, contents.height());
     } else {
         r.setRect(contents.x(), p, contents.width(), s);
@@ -727,7 +727,7 @@ void QSplitterPrivate::setGeo(QSplitterLayoutStruct *sls, int p, int s, bool all
 
     int minSize = pick(qSmartMinSize(w));
 
-    if (orient == Qt::Horizontal && q->isRightToLeft())
+    if (orient == BobUI::Horizontal && q->isRightToLeft())
         r.moveRight(contents.width() - r.left());
 
     if (allowCollapse)
@@ -744,7 +744,7 @@ void QSplitterPrivate::setGeo(QSplitterLayoutStruct *sls, int p, int s, bool all
         QSplitterHandle *h = sls->handle;
         QSize hs = h->sizeHint();
         const QMargins m = h->contentsMargins();
-        if (orient==Qt::Horizontal) {
+        if (orient==BobUI::Horizontal) {
             if (q->isRightToLeft())
                 p = contents.width() - p + hs.width();
             h->setGeometry(p-hs.width() - m.left(), contents.y(), hs.width() + m.left() + m.right(), contents.height());
@@ -844,7 +844,7 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     } else {
         sls = new QSplitterLayoutStruct;
         QSplitterHandle *newHandle = q->createHandle();
-        newHandle->setObjectName("qt_splithandle_"_L1 + w->objectName());
+        newHandle->setObjectName("bobui_splithandle_"_L1 + w->objectName());
         sls->handle = newHandle;
         sls->widget = w;
         w->lower();
@@ -862,7 +862,7 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     \brief The QSplitter class implements a splitter widget.
 
     \ingroup organizers
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
 
     A splitter lets the user control the size of child widgets by dragging the
@@ -870,8 +870,8 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     single splitter. The typical use of a QSplitter is to create several
     widgets and add them using insertWidget() or addWidget().
 
-    The following example will show a QListView, QTreeView, and
-    QTextEdit side by side, with two splitter handles:
+    The following example will show a QListView, BOBUIreeView, and
+    BOBUIextEdit side by side, with two splitter handles:
 
     \snippet splitter/splitter.cpp 0
 
@@ -881,7 +881,7 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     widget(), and count() to get access to the widgets inside the splitter.
 
     A default QSplitter lays out its children horizontally (side by side); you
-    can use setOrientation(Qt::Vertical) to lay its
+    can use setOrientation(BobUI::Vertical) to lay its
     children out vertically.
 
     By default, all widgets can be as large or as small as the user
@@ -906,7 +906,7 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     setLayout() or making the QSplitter a parent of the QLayout); use addWidget()
     instead (see example above).
 
-    \sa QSplitterHandle, QHBoxLayout, QVBoxLayout, QTabWidget
+    \sa QSplitterHandle, QHBoxLayout, QVBoxLayout, BOBUIabWidget
 */
 
 
@@ -917,7 +917,7 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     \sa setOrientation()
 */
 QSplitter::QSplitter(QWidget *parent)
-    : QSplitter(Qt::Horizontal, parent)
+    : QSplitter(BobUI::Horizontal, parent)
 {
 }
 
@@ -927,7 +927,7 @@ QSplitter::QSplitter(QWidget *parent)
 
     \sa setOrientation()
 */
-QSplitter::QSplitter(Qt::Orientation orientation, QWidget *parent)
+QSplitter::QSplitter(BobUI::Orientation orientation, QWidget *parent)
     : QFrame(*new QSplitterPrivate, parent)
 {
     Q_D(QSplitter);
@@ -943,7 +943,7 @@ QSplitter::QSplitter(Qt::Orientation orientation, QWidget *parent)
 QSplitter::~QSplitter()
 {
     Q_D(QSplitter);
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     delete d->rubberBand;
 #endif
     while (!d->list.isEmpty())
@@ -966,20 +966,20 @@ void QSplitter::refresh()
 
     By default, the orientation is horizontal (i.e., the widgets are
     laid out side by side). The possible orientations are
-    Qt::Horizontal and Qt::Vertical.
+    BobUI::Horizontal and BobUI::Vertical.
 
     \sa QSplitterHandle::orientation()
 */
 
-void QSplitter::setOrientation(Qt::Orientation orientation)
+void QSplitter::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QSplitter);
     if (d->orient == orientation)
         return;
 
-    if (!testAttribute(Qt::WA_WState_OwnSizePolicy)) {
+    if (!testAttribute(BobUI::WA_WState_OwnSizePolicy)) {
         setSizePolicy(sizePolicy().transposed());
-        setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+        setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     }
 
     d->orient = orientation;
@@ -991,7 +991,7 @@ void QSplitter::setOrientation(Qt::Orientation orientation)
     d->recalc(isVisible());
 }
 
-Qt::Orientation QSplitter::orientation() const
+BobUI::Orientation QSplitter::orientation() const
 {
     Q_D(const QSplitter);
     return d->orient;
@@ -1300,7 +1300,7 @@ void QSplitter::childEvent(QChildEvent *c)
 
 void QSplitter::setRubberBand(int pos)
 {
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     Q_D(QSplitter);
     if (pos < 0) {
         if (d->rubberBand)
@@ -1314,10 +1314,10 @@ void QSplitter::setRubberBand(int pos)
         QScopedValueRollback b(d->blockChildAdd, true);
         d->rubberBand = new QRubberBand(QRubberBand::Line, this);
         // For accessibility to identify this special widget.
-        d->rubberBand->setObjectName("qt_rubberband"_L1);
+        d->rubberBand->setObjectName("bobui_rubberband"_L1);
     }
 
-    const QRect newGeom = d->orient == Qt::Horizontal ? QRect(QPoint(pos + hw / 2 - rBord, r.y()), QSize(2 * rBord, r.height()))
+    const QRect newGeom = d->orient == BobUI::Horizontal ? QRect(QPoint(pos + hw / 2 - rBord, r.y()), QSize(2 * rBord, r.height()))
                                                       : QRect(QPoint(r.x(), pos + hw / 2 - rBord), QSize(r.width(), 2 * rBord));
     d->rubberBand->setGeometry(newGeom);
     d->rubberBand->show();
@@ -1503,7 +1503,7 @@ QSize QSplitter::sizeHint() const
             t = qMax(t, d->trans(s));
         }
     }
-    return orientation() == Qt::Horizontal ? QSize(l, t) : QSize(t, l);
+    return orientation() == BobUI::Horizontal ? QSize(l, t) : QSize(t, l);
 }
 
 
@@ -1537,7 +1537,7 @@ QSize QSplitter::minimumSizeHint() const
             t = qMax(t, d->trans(splitterSize));
         }
     }
-    return orientation() == Qt::Horizontal ? QSize(l, t) : QSize(t, l);
+    return orientation() == BobUI::Horizontal ? QSize(l, t) : QSize(t, l);
 }
 
 
@@ -1658,7 +1658,7 @@ QByteArray QSplitter::saveState() const
     int version = 1;
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
 
     stream << qint32(SplitterMagic);
     stream << qint32(version);
@@ -1700,7 +1700,7 @@ bool QSplitter::restoreState(const QByteArray &state)
     int version = 1;
     QByteArray sd = state;
     QDataStream stream(&sd, QIODevice::ReadOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
     QList<int> list;
     bool b;
     qint32 i;
@@ -1725,7 +1725,7 @@ bool QSplitter::restoreState(const QByteArray &state)
     setOpaqueResize(b);
 
     stream >> i;
-    setOrientation(Qt::Orientation(i));
+    setOrientation(BobUI::Orientation(i));
     d->doResize();
 
     if (v >= 1)
@@ -1761,6 +1761,6 @@ void QSplitter::setStretchFactor(int index, int stretch)
     widget->setSizePolicy(sp);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsplitter.cpp"

@@ -1,18 +1,18 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2021 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/qtesteventloop.h>
+#include <BOBUIest>
+#include <BobUITest/bobuiesteventloop.h>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qsemaphore.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qvector.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtNetwork/qlocalsocket.h>
-#include <QtNetwork/qlocalserver.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qsemaphore.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qvector.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUINetwork/qlocalsocket.h>
+#include <BobUINetwork/qlocalserver.h>
 
 using namespace std::chrono_literals;
 
@@ -27,7 +27,7 @@ private slots:
     void dataExchange();
 };
 
-class ServerThread : public QThread
+class ServerThread : public BOBUIhread
 {
 public:
     QSemaphore running;
@@ -53,7 +53,7 @@ public:
             });
         });
 
-        // TODO QTBUG-95136: on failure, remove the socket file and retry.
+        // TODO BOBUIBUG-95136: on failure, remove the socket file and retry.
         QVERIFY2(server.listen("foo"), qPrintable(server.errorString()));
 
         running.release();
@@ -112,9 +112,9 @@ protected:
 
 void tst_QLocalSocket::pingPong_data()
 {
-    QTest::addColumn<int>("connections");
+    BOBUIest::addColumn<int>("connections");
     for (int value : {10, 50, 100, 1000, 5000})
-        QTest::addRow("connections: %d", value) << value;
+        BOBUIest::addRow("connections: %d", value) << value;
 }
 
 void tst_QLocalSocket::pingPong()
@@ -130,7 +130,7 @@ void tst_QLocalSocket::pingPong()
     QVERIFY(serverThread.running.tryAcquire(1, 3000));
 
     SocketFactory factory(1, connections);
-    QTestEventLoop eventLoop;
+    BOBUIestEventLoop eventLoop;
     QVector<qint64> bytesToRead;
     QElapsedTimer timer;
 
@@ -147,13 +147,13 @@ void tst_QLocalSocket::pingPong()
 
     timer.start();
     emit factory.start();
-    // QtTestLib's Watchdog defaults to 300 seconds; we want to give up before
+    // BobUITestLib's Watchdog defaults to 300 seconds; we want to give up before
     // it bites.
     eventLoop.enterLoop(290);
 
     if (eventLoop.timeout())
         qDebug("Timed out after %.1f s", timer.elapsed() / 1000.0);
-    else if (!QTest::currentTestFailed())
+    else if (!BOBUIest::currentTestFailed())
         qDebug("Elapsed time: %.1f s", timer.elapsed() / 1000.0);
     serverThread.quit();
     serverThread.wait();
@@ -161,11 +161,11 @@ void tst_QLocalSocket::pingPong()
 
 void tst_QLocalSocket::dataExchange_data()
 {
-    QTest::addColumn<int>("connections");
-    QTest::addColumn<int>("chunkSize");
+    BOBUIest::addColumn<int>("connections");
+    BOBUIest::addColumn<int>("chunkSize");
     for (int connections : {1, 5, 10}) {
         for (int chunkSize : {100, 1000, 10000, 100000}) {
-            QTest::addRow("connections: %d, chunk size: %d",
+            BOBUIest::addRow("connections: %d, chunk size: %d",
                           connections, chunkSize) << connections << chunkSize;
         }
     }
@@ -185,7 +185,7 @@ void tst_QLocalSocket::dataExchange()
     QVERIFY(serverThread.running.tryAcquire(1, 3000));
 
     SocketFactory factory(chunkSize, connections);
-    QTestEventLoop eventLoop;
+    BOBUIestEventLoop eventLoop;
     qint64 totalReceived = 0;
     QElapsedTimer timer;
 
@@ -203,12 +203,12 @@ void tst_QLocalSocket::dataExchange()
     emit factory.start();
     eventLoop.enterLoop(timeToTest * 2);
 
-    if (!QTest::currentTestFailed())
+    if (!BOBUIest::currentTestFailed())
         qDebug("Transfer rate: %.1f MB/s", totalReceived / 1048.576 / timer.elapsed());
     serverThread.quit();
     serverThread.wait();
 }
 
-QTEST_MAIN(tst_QLocalSocket)
+BOBUIEST_MAIN(tst_QLocalSocket)
 
 #include "tst_qlocalsocket.moc"

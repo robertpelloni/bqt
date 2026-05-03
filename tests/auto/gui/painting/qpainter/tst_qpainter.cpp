@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qpainter.h>
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 #include <qdrawutil.h>
 #include <qwidget.h>
 #endif
@@ -11,7 +11,7 @@
 #include <qfontmetrics.h>
 #include <qbitmap.h>
 #include <qimage.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <limits.h>
 #include <math.h>
 #include <qpaintengine.h>
@@ -24,7 +24,7 @@
 #include <qqueue.h>
 #include <qscreen.h>
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 #include <qgraphicsview.h>
 #include <qgraphicsscene.h>
 #include <qgraphicsproxywidget.h>
@@ -49,14 +49,14 @@ public:
 private slots:
     void cleanupTestCase();
     void getSetCheck();
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void drawPixmap_comp_data();
     void drawPixmap_comp();
 #endif
     void saveAndRestore_data();
     void saveAndRestore();
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void drawBorderPixmap();
 #endif
     void drawPixmapFragments();
@@ -148,7 +148,7 @@ private slots:
 
     void drawhelper_blend_color();
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void childWidgetViewport();
 #endif
 
@@ -163,15 +163,15 @@ private slots:
     void gradientPixelFormat_data();
     void gradientPixelFormat();
 
-#if QT_CONFIG(raster_64bit)
+#if BOBUI_CONFIG(raster_64bit)
     void linearGradientRgb30_data();
     void linearGradientRgb30();
     void radialGradientRgb30_data();
     void radialGradientRgb30();
 #endif
 
-    void radialGradient_QTBUG120332_ubsan();
-    void radialGradient_QTBUG130992_crash();
+    void radialGradient_BOBUIBUG120332_ubsan();
+    void radialGradient_BOBUIBUG130992_crash();
     void fpe_pixmapTransform();
     void fpe_zeroLengthLines();
     void fpe_divByZero();
@@ -199,12 +199,12 @@ private slots:
     void drawImage_task217400();
     void drawImage_1x1();
     void drawImage_task258776();
-    void drawImage_QTBUG28324();
+    void drawImage_BOBUIBUG28324();
     void drawRect_task215378();
     void drawRect_task247505();
 
 #if defined(Q_OS_MAC)
-    void drawText_subPixelPositionsInRaster_qtbug5053();
+    void drawText_subPixelPositionsInRaster_bobuibug5053();
 #endif
 
     void drawImage_data();
@@ -232,31 +232,31 @@ private slots:
     void clippingBug();
     void emptyClip();
 
-    void taskQT4444_dontOverflowDashOffset();
+    void taskBOBUI4444_dontOverflowDashOffset();
 
     void painterBegin();
     void setPenColorOnImage();
     void setPenColorOnPixmap();
 
-#ifndef QT_NO_WIDGETS
-    void QTBUG5939_attachPainterPrivate();
+#ifndef BOBUI_NO_WIDGETS
+    void BOBUIBUG5939_attachPainterPrivate();
 #endif
 
     void drawPointScaled();
 
-    void QTBUG14614_gradientCacheRaceCondition();
+    void BOBUIBUG14614_gradientCacheRaceCondition();
     void drawTextOpacity();
     void drawPathOpacity();
 
-    void QTBUG17053_zeroDashPattern();
+    void BOBUIBUG17053_zeroDashPattern();
 
-    void QTBUG38781_NoBrushAndQBitmap();
+    void BOBUIBUG38781_NoBrushAndQBitmap();
 
     void drawTextOutsideGuiThread();
 
     void drawTextWithComplexBrush();
-    void QTBUG26013_squareCapStroke();
-    void QTBUG25153_drawLine();
+    void BOBUIBUG26013_squareCapStroke();
+    void BOBUIBUG25153_drawLine();
 
     void cosmeticStrokerClipping_data();
     void cosmeticStrokerClipping();
@@ -270,12 +270,12 @@ private slots:
     void drawPolyline_data();
     void drawPolyline();
 
-    void QTBUG50153_drawImage_assert();
+    void BOBUIBUG50153_drawImage_assert();
 
     void rotateImage_data();
     void rotateImage();
 
-    void QTBUG56252();
+    void BOBUIBUG56252();
 
     void blendNullRGB32();
     void toRGB64();
@@ -285,7 +285,7 @@ private slots:
     void textOnArgb32();
     void drawImageAtPointF();
     void scaledDashes();
-#if QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_fp)
     void hdrColors();
 #endif
 
@@ -337,7 +337,7 @@ void tst_QPainter::getSetCheck()
 
     // const QPen & QPainter::pen()
     // void QPainter::setPen(const QPen &)
-    QPen var3(Qt::red);
+    QPen var3(BobUI::red);
     obj1.setPen(var3);
     QCOMPARE(var3, obj1.pen());
     obj1.setPen(QPen());
@@ -345,7 +345,7 @@ void tst_QPainter::getSetCheck()
 
     // const QBrush & QPainter::brush()
     // void QPainter::setBrush(const QBrush &)
-    QBrush var4(Qt::red);
+    QBrush var4(BobUI::red);
     obj1.setBrush(var4);
     QCOMPARE(var4, obj1.brush());
     obj1.setBrush(QBrush());
@@ -353,7 +353,7 @@ void tst_QPainter::getSetCheck()
 
     // const QBrush & QPainter::background()
     // void QPainter::setBackground(const QBrush &)
-    QBrush var5(Qt::yellow);
+    QBrush var5(BobUI::yellow);
     obj1.setBackground(var5);
     QCOMPARE(var5, obj1.background());
     obj1.setBackground(QBrush());
@@ -377,7 +377,7 @@ void tst_QPainter::getSetCheck()
 
 tst_QPainter::tst_QPainter()
 {
-    // QtTestCase sets this to false, but this turns off alpha pixmaps on Unix.
+    // BobUITestCase sets this to false, but this turns off alpha pixmaps on Unix.
     QGuiApplication::setDesktopSettingsAware(true);
 }
 
@@ -388,32 +388,32 @@ void tst_QPainter::cleanupTestCase()
     QFile::remove(QLatin1String("foo.png"));
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 void tst_QPainter::drawPixmap_comp_data()
 {
     if (QGuiApplication::primaryScreen()->depth() < 24)
         QSKIP("Test only works on 32 bit displays");
 
-    QTest::addColumn<uint>("dest");
-    QTest::addColumn<uint>("source");
+    BOBUIest::addColumn<uint>("dest");
+    BOBUIest::addColumn<uint>("source");
 
-    QTest::newRow("0% on 0%, 1")           << 0x00000000u<< 0x00000000u;
-    QTest::newRow("0% on 0%, 2")           << 0x00007fffu << 0x00ff007fu;
+    BOBUIest::newRow("0% on 0%, 1")           << 0x00000000u<< 0x00000000u;
+    BOBUIest::newRow("0% on 0%, 2")           << 0x00007fffu << 0x00ff007fu;
 
-    QTest::newRow("50% on a=0%")           << 0x00000000u << 0x7fff0000u;
-    QTest::newRow("50% on a=50%")          << 0x7f000000u << 0x7fff0000u;
-    QTest::newRow("50% on deadbeef")      << 0xdeafbeefu <<  0x7fff0000u;
-    QTest::newRow("deadbeef on a=0%")      << 0x00000000u << 0xdeadbeefu;
-    QTest::newRow("deadbeef on a=50%")     << 0x7f000000u << 0xdeadbeefu;
-    QTest::newRow("50% blue on 50% red")   << 0x7fff0000u << 0x7f0000ffu;
-    QTest::newRow("50% blue on 50% green") << 0x7f00ff00u << 0x7f0000ffu;
-    QTest::newRow("50% red on 50% green")  << 0x7f00ff00u << 0x7fff0000u;
-    QTest::newRow("0% on 50%")             << 0x7fff00ffu << 0x00ffffffu;
-    QTest::newRow("100% on deadbeef")      << 0xdeafbeefu << 0xffabcdefu;
-    QTest::newRow("100% on a=0%")           << 0x00000000u << 0xffabcdefu;
+    BOBUIest::newRow("50% on a=0%")           << 0x00000000u << 0x7fff0000u;
+    BOBUIest::newRow("50% on a=50%")          << 0x7f000000u << 0x7fff0000u;
+    BOBUIest::newRow("50% on deadbeef")      << 0xdeafbeefu <<  0x7fff0000u;
+    BOBUIest::newRow("deadbeef on a=0%")      << 0x00000000u << 0xdeadbeefu;
+    BOBUIest::newRow("deadbeef on a=50%")     << 0x7f000000u << 0xdeadbeefu;
+    BOBUIest::newRow("50% blue on 50% red")   << 0x7fff0000u << 0x7f0000ffu;
+    BOBUIest::newRow("50% blue on 50% green") << 0x7f00ff00u << 0x7f0000ffu;
+    BOBUIest::newRow("50% red on 50% green")  << 0x7f00ff00u << 0x7fff0000u;
+    BOBUIest::newRow("0% on 50%")             << 0x7fff00ffu << 0x00ffffffu;
+    BOBUIest::newRow("100% on deadbeef")      << 0xdeafbeefu << 0xffabcdefu;
+    BOBUIest::newRow("100% on a=0%")           << 0x00000000u << 0xffabcdefu;
 }
 
-QRgb qt_compose_alpha(QRgb source, QRgb dest)
+QRgb bobui_compose_alpha(QRgb source, QRgb dest)
 {
     int r1 = qRed(dest), g1 = qGreen(dest), b1 = qBlue(dest), a1 = qAlpha(dest);
     int r2 = qRed(source), g2 = qGreen(source), b2 = qBlue(source), a2 = qAlpha(source);
@@ -439,7 +439,7 @@ void tst_QPainter::drawPixmap_comp()
     QFETCH(uint, dest);
     QFETCH(uint, source);
 
-    QRgb expected = qt_compose_alpha(source, dest);
+    QRgb expected = bobui_compose_alpha(source, dest);
 
     QColor c1(qRed(dest), qGreen(dest), qBlue(dest), qAlpha(dest));
     QColor c2(qRed(source), qGreen(source), qBlue(source), qAlpha(source));
@@ -482,15 +482,15 @@ void tst_QPainter::drawPixmap_comp()
 
 void tst_QPainter::saveAndRestore_data()
 {
-    QTest::addColumn<QFont>("font");
-    QTest::addColumn<QPen>("pen");
-    QTest::addColumn<QBrush>("brush");
-    QTest::addColumn<QColor>("backgroundColor");
-    QTest::addColumn<int>("backgroundMode");
-    QTest::addColumn<QPoint>("brushOrigin");
-    QTest::addColumn<QRegion>("clipRegion");
-    QTest::addColumn<QRect>("window");
-    QTest::addColumn<QRect>("viewport");
+    BOBUIest::addColumn<QFont>("font");
+    BOBUIest::addColumn<QPen>("pen");
+    BOBUIest::addColumn<QBrush>("brush");
+    BOBUIest::addColumn<QColor>("backgroundColor");
+    BOBUIest::addColumn<int>("backgroundMode");
+    BOBUIest::addColumn<QPoint>("brushOrigin");
+    BOBUIest::addColumn<QRegion>("clipRegion");
+    BOBUIest::addColumn<QRect>("window");
+    BOBUIest::addColumn<QRect>("viewport");
 
     QPixmap pixmap(1, 1);
     QPainter p(&pixmap);
@@ -498,28 +498,28 @@ void tst_QPainter::saveAndRestore_data()
     QPen pen = p.pen();
     QBrush brush = p.brush();
     QColor backgroundColor = p.background().color();
-    Qt::BGMode backgroundMode = p.backgroundMode();
+    BobUI::BGMode backgroundMode = p.backgroundMode();
     QPoint brushOrigin = p.brushOrigin();
     QRegion clipRegion = p.clipRegion();
     QRect window = p.window();
     QRect viewport = p.viewport();
 
-    QTest::newRow("Original") << font << pen << brush << backgroundColor << int(backgroundMode)
+    BOBUIest::newRow("Original") << font << pen << brush << backgroundColor << int(backgroundMode)
             << brushOrigin << clipRegion << window << viewport;
 
     QFont font2 = font;
     font2.setPointSize( 24 );
-    QTest::newRow("Modified font.pointSize, brush, backgroundColor, backgroundMode")
-            << font2 << pen << QBrush(Qt::red) << QColor(Qt::blue) << int(Qt::TransparentMode)
+    BOBUIest::newRow("Modified font.pointSize, brush, backgroundColor, backgroundMode")
+            << font2 << pen << QBrush(BobUI::red) << QColor(BobUI::blue) << int(BobUI::TransparentMode)
             << brushOrigin << clipRegion << window << viewport;
 
     font2 = font;
     font2.setPixelSize( 20 );
-    QTest::newRow("Modified font.pixelSize, brushOrigin, pos")
+    BOBUIest::newRow("Modified font.pixelSize, brushOrigin, pos")
             << font2 << pen << brush << backgroundColor << int(backgroundMode)
             << QPoint( 50, 32 ) << clipRegion << window << viewport;
 
-    QTest::newRow("Modified clipRegion, window, viewport")
+    BOBUIest::newRow("Modified clipRegion, window, viewport")
             << font << pen << brush << backgroundColor << int(backgroundMode)
             << brushOrigin << clipRegion.subtracted(QRect(10,10,50,30))
             << QRect(-500, -500, 500, 500 ) << QRect( 0, 0, 50, 50 );
@@ -544,7 +544,7 @@ void tst_QPainter::saveAndRestore()
     QPen pen_org = painter.pen();
     QBrush brush_org = painter.brush();
     QColor backgroundColor_org = painter.background().color();
-    Qt::BGMode backgroundMode_org = painter.backgroundMode();
+    BobUI::BGMode backgroundMode_org = painter.backgroundMode();
     QPoint brushOrigin_org = painter.brushOrigin();
     QRegion clipRegion_org = painter.clipRegion();
     QRect window_org = painter.window();
@@ -555,7 +555,7 @@ void tst_QPainter::saveAndRestore()
     painter.setPen( QPen(pen) );
     painter.setBrush( brush );
     painter.setBackground( backgroundColor );
-    painter.setBackgroundMode( (Qt::BGMode)backgroundMode );
+    painter.setBackgroundMode( (BobUI::BGMode)backgroundMode );
     painter.setBrushOrigin( brushOrigin );
     painter.setClipRegion( clipRegion );
     painter.setWindow( window );
@@ -664,18 +664,18 @@ static QRect getPaintedSize(const QPixmap &pm, const QColor &background)
     return getPaintedSize(pm.toImage(), background);
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 
 void tst_QPainter::drawBorderPixmap()
 {
     QPixmap src(79,79);
-    src.fill(Qt::transparent);
+    src.fill(BobUI::transparent);
 
     QImage pm(200,200,QImage::Format_RGB32);
     QPainter p(&pm);
-    p.setTransform(QTransform(-1,0,0,-1,173.5,153.5));
+    p.setTransform(BOBUIransform(-1,0,0,-1,173.5,153.5));
     qDrawBorderPixmap(&p, QRect(0,0,75,105), QMargins(39,39,39,39), src, QRect(0,0,79,79), QMargins(39,39,39,39),
-                       QTileRules(Qt::StretchTile,Qt::StretchTile), { });
+                       BOBUIileRules(BobUI::StretchTile,BobUI::StretchTile), { });
 }
 #endif
 
@@ -689,10 +689,10 @@ void tst_QPainter::drawPixmapFragments()
                                               { 5,  5, 10, 10, 10, 10, 1, 1, 0, 1} };
     {
         QPainter p(&origPixmap);
-        p.fillRect(0, 0, 10, 10, Qt::red);
-        p.fillRect(10, 0, 10, 10, Qt::green);
-        p.fillRect(0, 10, 10, 10, Qt::blue);
-        p.fillRect(10, 10, 10, 10, Qt::yellow);
+        p.fillRect(0, 0, 10, 10, BobUI::red);
+        p.fillRect(10, 0, 10, 10, BobUI::green);
+        p.fillRect(0, 10, 10, 10, BobUI::blue);
+        p.fillRect(10, 10, 10, 10, BobUI::yellow);
     }
     {
         QPainter p(&resPixmap);
@@ -768,16 +768,16 @@ void tst_QPainter::drawPixmapRounding()
 
 void tst_QPainter::drawLine_data()
 {
-    QTest::addColumn<QLine>("line");
+    BOBUIest::addColumn<QLine>("line");
 
-    QTest::newRow("0-45") << QLine(0, 20, 100, 0);
-    QTest::newRow("45-90") << QLine(0, 100, 20, 0);
-    QTest::newRow("90-135") << QLine(20, 100, 0, 0);
-    QTest::newRow("135-180") << QLine(100, 20, 0, 0);
-    QTest::newRow("180-225") << QLine(100, 0, 0, 20);
-    QTest::newRow("225-270") << QLine(20, 0, 0, 100);
-    QTest::newRow("270-315") << QLine(0, 0, 20, 100);
-    QTest::newRow("315-360") << QLine(0, 0, 100, 20);
+    BOBUIest::newRow("0-45") << QLine(0, 20, 100, 0);
+    BOBUIest::newRow("45-90") << QLine(0, 100, 20, 0);
+    BOBUIest::newRow("90-135") << QLine(20, 100, 0, 0);
+    BOBUIest::newRow("135-180") << QLine(100, 20, 0, 0);
+    BOBUIest::newRow("180-225") << QLine(100, 0, 0, 20);
+    BOBUIest::newRow("225-270") << QLine(20, 0, 0, 100);
+    BOBUIest::newRow("270-315") << QLine(0, 0, 20, 100);
+    BOBUIest::newRow("315-360") << QLine(0, 0, 100, 20);
 }
 
 void tst_QPainter::drawLine()
@@ -793,14 +793,14 @@ void tst_QPainter::drawLine()
                             + 2*offset + qAbs(line.dy()));
 
     { // unclipped
-        pixmapUnclipped.fill(Qt::white);
+        pixmapUnclipped.fill(BobUI::white);
         QPainter p(&pixmapUnclipped);
         p.translate(offset, offset);
-        p.setPen(QPen(Qt::black));
+        p.setPen(QPen(BobUI::black));
         p.drawLine(line);
         p.end();
 
-        const QRect painted = getPaintedSize(pixmapUnclipped, Qt::white);
+        const QRect painted = getPaintedSize(pixmapUnclipped, BobUI::white);
 
         QLine l = line;
         l.translate(offset, offset);
@@ -819,11 +819,11 @@ void tst_QPainter::drawLine()
     { // clipped
         const QRect clip = QRect::span(line.p1(), line.p2());
 
-        pixmapClipped.fill(Qt::white);
+        pixmapClipped.fill(BobUI::white);
         QPainter p(&pixmapClipped);
         p.translate(offset, offset);
         p.setClipRect(clip);
-        p.setPen(QPen(Qt::black));
+        p.setPen(QPen(BobUI::black));
         p.drawLine(line);
         p.end();
     }
@@ -839,7 +839,7 @@ void tst_QPainter::drawLine_clipped()
     image.fill(0x0);
 
     QPainter p(&image);
-    p.setPen(QPen(Qt::black, 10));
+    p.setPen(QPen(BobUI::black, 10));
 
     // this should fill the whole image
     p.drawLine(-1, -1, 17, 1);
@@ -851,7 +851,7 @@ void tst_QPainter::drawLine_clipped()
 
 void tst_QPainter::drawLine_task121143()
 {
-    QPen pen(Qt::black);
+    QPen pen(BobUI::black);
 
     QImage image(5, 5, QImage::Format_ARGB32_Premultiplied);
     image.fill(0xffffffff);
@@ -870,11 +870,11 @@ void tst_QPainter::drawLine_task121143()
 
 void tst_QPainter::drawLine_task190634()
 {
-    QPen pen(Qt::black, 3);
+    QPen pen(BobUI::black, 3);
 
     QImage image(32, 32, QImage::Format_ARGB32_Premultiplied);
     QPainter p(&image);
-    p.fillRect(0, 0, image.width(), image.height(), Qt::white);
+    p.fillRect(0, 0, image.width(), image.height(), BobUI::white);
 
     p.setPen(pen);
     p.drawLine(QLineF(2, -1.6, 10, -1.6));
@@ -886,7 +886,7 @@ void tst_QPainter::drawLine_task190634()
         QCOMPARE(data[i], 0xffffffff);
 
     p.begin(&image);
-    p.fillRect(0, 0, image.width(), image.height(), Qt::white);
+    p.fillRect(0, 0, image.width(), image.height(), BobUI::white);
 
     p.setPen(pen);
     p.drawLine(QLineF(-1.6, 2, -1.6, 10));
@@ -898,7 +898,7 @@ void tst_QPainter::drawLine_task190634()
         QCOMPARE(data[i], 0xffffffff);
 
     p.begin(&image);
-    p.fillRect(0, 0, image.width(), image.height(), Qt::white);
+    p.fillRect(0, 0, image.width(), image.height(), BobUI::white);
 
     p.setPen(pen);
     p.drawLine( QPoint(2,-2), QPoint(3,-5) );
@@ -914,7 +914,7 @@ void tst_QPainter::drawLine_task229459()
 {
     QImage image(32, 32, QImage::Format_ARGB32_Premultiplied);
     image.fill(0x0);
-    QPen pen(Qt::black, 64);
+    QPen pen(BobUI::black, 64);
 
     QPainter p(&image);
     p.setPen(pen);
@@ -958,7 +958,7 @@ void tst_QPainter::drawLine_task216948()
     p.end();
 
     for (int i = 0; i < img.height(); ++i)
-        QCOMPARE(img.pixel(0, i), QColor(Qt::black).rgba());
+        QCOMPARE(img.pixel(0, i), QColor(BobUI::black).rgba());
 }
 
 void tst_QPainter::drawLineEndPoints()
@@ -1013,16 +1013,16 @@ void tst_QPainter::drawRect()
     QPixmap pixmap(rect.x() + rect.width() + 10,
                    rect.y() + rect.height() + 10);
     {
-        pixmap.fill(Qt::white);
+        pixmap.fill(BobUI::white);
         QPainter p(&pixmap);
-        p.setPen(usePen ? QPen(Qt::black) : QPen(Qt::NoPen));
-        p.setBrush(Qt::black);
+        p.setPen(usePen ? QPen(BobUI::black) : QPen(BobUI::NoPen));
+        p.setBrush(BobUI::black);
         p.drawRect(rect);
         p.end();
 
         int increment = usePen ? 1 : 0;
 
-        const QRect painted = getPaintedSize(pixmap, Qt::white);
+        const QRect painted = getPaintedSize(pixmap, BobUI::white);
         QCOMPARE(painted.width(), rect.width() + increment);
         QCOMPARE(painted.height(), rect.height() + increment);
     }
@@ -1034,16 +1034,16 @@ void tst_QPainter::drawRect2()
     {
         image.fill(0xffffffff);
 
-        QTransform transform(0.368567, 0, 0, 0, 0.368567, 0, 0.0289, 0.0289, 1);
+        BOBUIransform transform(0.368567, 0, 0, 0, 0.368567, 0, 0.0289, 0.0289, 1);
 
         QPainter p(&image);
         p.setTransform(transform);
-        p.setBrush(Qt::red);
-        p.setPen(Qt::NoPen);
+        p.setBrush(BobUI::red);
+        p.setPen(BobUI::NoPen);
         p.drawRect(QRect(14, 14, 39, 39));
         p.end();
 
-        QRect fill = getPaintedSize(image, Qt::white);
+        QRect fill = getPaintedSize(image, BobUI::white);
         image.fill(0xffffffff);
 
         p.begin(&image);
@@ -1051,19 +1051,19 @@ void tst_QPainter::drawRect2()
         p.drawRect(QRect(14, 14, 39, 39));
         p.end();
 
-        QRect stroke = getPaintedSize(image, Qt::white);
+        QRect stroke = getPaintedSize(image, BobUI::white);
         QCOMPARE(stroke.adjusted(1, 1, 0, 0), fill.adjusted(1, 1, 0, 0));
     }
 }
 
 void tst_QPainter::fillRect_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("argb32pm") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("rgba8888pm") << QImage::Format_RGBA8888_Premultiplied;
-    QTest::newRow("rgba64pm") << QImage::Format_RGBA64_Premultiplied;
-    QTest::newRow("rgbaFP16pm") << QImage::Format_RGBA16FPx4_Premultiplied;
+    BOBUIest::newRow("argb32pm") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("rgba8888pm") << QImage::Format_RGBA8888_Premultiplied;
+    BOBUIest::newRow("rgba64pm") << QImage::Format_RGBA64_Premultiplied;
+    BOBUIest::newRow("rgbaFP16pm") << QImage::Format_RGBA16FPx4_Premultiplied;
 }
 
 void tst_QPainter::fillRect()
@@ -1094,14 +1094,14 @@ void tst_QPainter::fillRect()
 
 void tst_QPainter::fillRect2_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("argb32") << QImage::Format_ARGB32;
-    QTest::newRow("argb32pm") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("rgba8888") << QImage::Format_RGBA8888;
-    QTest::newRow("rgba8888pm") << QImage::Format_RGBA8888_Premultiplied;
-    QTest::newRow("a2rgb30pm") << QImage::Format_A2RGB30_Premultiplied;
-    QTest::newRow("a2bgr30pm") << QImage::Format_A2BGR30_Premultiplied;
+    BOBUIest::newRow("argb32") << QImage::Format_ARGB32;
+    BOBUIest::newRow("argb32pm") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("rgba8888") << QImage::Format_RGBA8888;
+    BOBUIest::newRow("rgba8888pm") << QImage::Format_RGBA8888_Premultiplied;
+    BOBUIest::newRow("a2rgb30pm") << QImage::Format_A2RGB30_Premultiplied;
+    BOBUIest::newRow("a2bgr30pm") << QImage::Format_A2BGR30_Premultiplied;
 }
 
 void tst_QPainter::fillRect2()
@@ -1116,7 +1116,7 @@ void tst_QPainter::fillRect2()
     QPainter p(&img);
 
     QRectF rect(0, 1, 1.2, 18);
-    p.fillRect(rect, Qt::yellow);
+    p.fillRect(rect, BobUI::yellow);
 
     p.end();
 
@@ -1125,7 +1125,7 @@ void tst_QPainter::fillRect2()
 
     QCOMPARE(img.pixel(0, 1), img.pixel(0, 2));
     QCOMPARE(img.pixel(0, img.height() - 2), img.pixel(0, img.height() - 3));
-    QCOMPARE(img.pixel(0, 1), QColor(Qt::yellow).rgba());
+    QCOMPARE(img.pixel(0, 1), QColor(BobUI::yellow).rgba());
 }
 
 void tst_QPainter::fillRect3()
@@ -1133,11 +1133,11 @@ void tst_QPainter::fillRect3()
     QFETCH(QImage::Format, format);
 
     QImage img(1, 1, format);
-    img.fill(QColor(Qt::black).rgba());
+    img.fill(QColor(BobUI::black).rgba());
 
     QPainter p(&img);
     p.setCompositionMode(QPainter::CompositionMode_Source);
-    p.fillRect(img.rect(), Qt::transparent);
+    p.fillRect(img.rect(), BobUI::transparent);
     p.end();
 
     QCOMPARE(img.pixel(0, 0), 0U);
@@ -1155,10 +1155,10 @@ void tst_QPainter::fillRect4()
 
     QPainter p(&image);
     p.scale(1.1, 1);
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
 
     for (int i = 0; i < 33; ++i)
-        p.fillRect(QRectF(3 * i, 0, 3, 1), Qt::white);
+        p.fillRect(QRectF(3 * i, 0, 3, 1), BobUI::white);
 
     p.end();
 
@@ -1167,23 +1167,23 @@ void tst_QPainter::fillRect4()
 
 void tst_QPainter::fillRectNonPremul_data()
 {
-    QTest::addColumn<QImage::Format>("format");
-    QTest::addColumn<uint>("color");
+    BOBUIest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<uint>("color");
 
-    QTest::newRow("argb32 7f1f3f7f") << QImage::Format_ARGB32 << qRgba(31, 63, 127, 127);
-    QTest::newRow("rgba8888 7f1f3f7f") << QImage::Format_RGBA8888 << qRgba(31, 63, 127, 127);
+    BOBUIest::newRow("argb32 7f1f3f7f") << QImage::Format_ARGB32 << qRgba(31, 63, 127, 127);
+    BOBUIest::newRow("rgba8888 7f1f3f7f") << QImage::Format_RGBA8888 << qRgba(31, 63, 127, 127);
 
-    QTest::newRow("argb32 3f1f3f7f") << QImage::Format_ARGB32 << qRgba(31, 63, 127, 63);
-    QTest::newRow("rgba8888 3f1f3f7f") << QImage::Format_RGBA8888 << qRgba(31, 63, 127, 63);
+    BOBUIest::newRow("argb32 3f1f3f7f") << QImage::Format_ARGB32 << qRgba(31, 63, 127, 63);
+    BOBUIest::newRow("rgba8888 3f1f3f7f") << QImage::Format_RGBA8888 << qRgba(31, 63, 127, 63);
 
-    QTest::newRow("argb32 070375f4") << QImage::Format_ARGB32 << qRgba(3, 117, 244, 7);
-    QTest::newRow("rgba8888 070375f4") << QImage::Format_RGBA8888 << qRgba(3, 117, 244, 7);
+    BOBUIest::newRow("argb32 070375f4") << QImage::Format_ARGB32 << qRgba(3, 117, 244, 7);
+    BOBUIest::newRow("rgba8888 070375f4") << QImage::Format_RGBA8888 << qRgba(3, 117, 244, 7);
 
-    QTest::newRow("argb32 0301fe0c") << QImage::Format_ARGB32 << qRgba(1, 254, 12, 3);
-    QTest::newRow("rgba8888 0301fe0c") << QImage::Format_RGBA8888 << qRgba(1, 254, 12, 3);
+    BOBUIest::newRow("argb32 0301fe0c") << QImage::Format_ARGB32 << qRgba(1, 254, 12, 3);
+    BOBUIest::newRow("rgba8888 0301fe0c") << QImage::Format_RGBA8888 << qRgba(1, 254, 12, 3);
 
-    QTest::newRow("argb32 01804010") << QImage::Format_ARGB32 << qRgba(128, 64, 32, 1);
-    QTest::newRow("rgba8888 01804010") << QImage::Format_RGBA8888 << qRgba(128, 64, 32, 1);
+    BOBUIest::newRow("argb32 01804010") << QImage::Format_ARGB32 << qRgba(128, 64, 32, 1);
+    BOBUIest::newRow("rgba8888 01804010") << QImage::Format_RGBA8888 << qRgba(128, 64, 32, 1);
 }
 
 void tst_QPainter::fillRectNonPremul()
@@ -1195,7 +1195,7 @@ void tst_QPainter::fillRectNonPremul()
     QRectF rect(0, 0, 1, 1);
 
     // Fill with CompositionMode_SourceOver tests blend_color
-    image.fill(Qt::transparent);
+    image.fill(BobUI::transparent);
     QPainter painter(&image);
     painter.fillRect(rect, QColor::fromRgba(color));
     painter.end();
@@ -1215,11 +1215,11 @@ void tst_QPainter::fillRectNonPremul()
 
 void tst_QPainter::fillRectRGB30_data()
 {
-    QTest::addColumn<uint>("color");
+    BOBUIest::addColumn<uint>("color");
 
-    QTest::newRow("17|43|259") << (0xc0000000 | (17 << 20) | (43 << 10) | 259);
-    QTest::newRow("2|33|444") << (0xc0000000 | (2 << 20) | (33 << 10) | 444);
-    QTest::newRow("1000|1000|1000") << (0xc0000000 | (1000 << 20) | (1000 << 10) | 1000);
+    BOBUIest::newRow("17|43|259") << (0xc0000000 | (17 << 20) | (43 << 10) | 259);
+    BOBUIest::newRow("2|33|444") << (0xc0000000 | (2 << 20) | (33 << 10) | 444);
+    BOBUIest::newRow("1000|1000|1000") << (0xc0000000 | (1000 << 20) | (1000 << 10) | 1000);
 }
 
 void tst_QPainter::fillRectRGB30()
@@ -1229,7 +1229,7 @@ void tst_QPainter::fillRectRGB30()
 
     // Fill with CompositionMode_SourceOver tests blend_color
     QImage image1(1, 1, QImage::Format_A2BGR30_Premultiplied);
-    image1.fill(Qt::transparent);
+    image1.fill(BobUI::transparent);
     QPainter painter(&image1);
     painter.fillRect(rect, QColor::fromRgba64(qConvertA2rgb30ToRgb64<PixelOrderBGR>(color)));
     painter.end();
@@ -1250,39 +1250,39 @@ void tst_QPainter::fillRectRGB30()
 
 void tst_QPainter::drawPath_data()
 {
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QRect>("expectedBounds");
-    QTest::addColumn<int>("expectedPixels");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QRect>("expectedBounds");
+    BOBUIest::addColumn<int>("expectedPixels");
 
     {
         QPainterPath p;
         p.addRect(2, 2, 10, 10);
-        QTest::newRow("int-aligned rect") << p << QRect(2, 2, 10, 10) << 10 * 10;
+        BOBUIest::newRow("int-aligned rect") << p << QRect(2, 2, 10, 10) << 10 * 10;
     }
 
     {
         QPainterPath p;
         p.addRect(2.25, 2.25, 10, 10);
-        QTest::newRow("non-aligned rect") << p << QRect(2, 2, 10, 10) << 10 * 10;
+        BOBUIest::newRow("non-aligned rect") << p << QRect(2, 2, 10, 10) << 10 * 10;
     }
 
     {
         QPainterPath p;
         p.addRect(2.25, 2.25, 10.5, 10.5);
-        QTest::newRow("non-aligned rect 2") << p << QRect(2, 2, 11, 11) << 11 * 11;
+        BOBUIest::newRow("non-aligned rect 2") << p << QRect(2, 2, 11, 11) << 11 * 11;
     }
 
     {
         QPainterPath p;
         p.addRect(2.5, 2.5, 10, 10);
-        QTest::newRow("non-aligned rect 3") << p << QRect(3, 3, 10, 10) << 10 * 10;
+        BOBUIest::newRow("non-aligned rect 3") << p << QRect(3, 3, 10, 10) << 10 * 10;
     }
 
     {
         QPainterPath p;
         p.addRect(2, 2, 10, 10);
         p.addRect(4, 4, 6, 6);
-        QTest::newRow("rect-in-rect") << p << QRect(2, 2, 10, 10) << 10 * 10 - 6 * 6;
+        BOBUIest::newRow("rect-in-rect") << p << QRect(2, 2, 10, 10) << 10 * 10 - 6 * 6;
     }
 
     {
@@ -1290,7 +1290,7 @@ void tst_QPainter::drawPath_data()
         p.addRect(2, 2, 10, 10);
         p.addRect(4, 4, 6, 6);
         p.addRect(6, 6, 2, 2);
-        QTest::newRow("rect-in-rect-in-rect") << p << QRect(2, 2, 10, 10) << 10 * 10 - 6 * 6 + 2 * 2;
+        BOBUIest::newRow("rect-in-rect-in-rect") << p << QRect(2, 2, 10, 10) << 10 * 10 - 6 * 6 + 2 * 2;
     }
 }
 
@@ -1304,16 +1304,16 @@ void tst_QPainter::drawPath()
 
     QImage image(expectedBounds.width() + 2 * offset, expectedBounds.height() + 2 * offset,
                  QImage::Format_ARGB32_Premultiplied);
-    image.fill(QColor(Qt::white).rgb());
+    image.fill(QColor(BobUI::white).rgb());
 
     QPainter p(&image);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::black);
     p.translate(offset - expectedBounds.left(), offset - expectedBounds.top());
     p.drawPath(path);
     p.end();
 
-    const QRect paintedBounds = getPaintedSize(image, Qt::white);
+    const QRect paintedBounds = getPaintedSize(image, BobUI::white);
 
     QCOMPARE(paintedBounds.x(), offset);
     QCOMPARE(paintedBounds.y(), offset);
@@ -1321,7 +1321,7 @@ void tst_QPainter::drawPath()
     QCOMPARE(paintedBounds.height(), expectedBounds.height());
 
     if (expectedPixels != -1) {
-        int paintedPixels = getPaintedPixels(image, Qt::white);
+        int paintedPixels = getPaintedPixels(image, BobUI::white);
         QCOMPARE(paintedPixels, expectedPixels);
     }
 }
@@ -1342,26 +1342,26 @@ void tst_QPainter::drawPath2()
 
         QImage image(w + 2 * offset, h + 2 * offset,
                      QImage::Format_ARGB32_Premultiplied);
-        image.fill(QColor(Qt::white).rgb());
+        image.fill(QColor(BobUI::white).rgb());
 
         QPainter p(&image);
-        p.setPen(Qt::NoPen);
-        p.setBrush(Qt::black);
+        p.setPen(BobUI::NoPen);
+        p.setBrush(BobUI::black);
         p.translate(offset, offset);
         p.drawPath(p1);
         p.end();
 
-        const int p1Pixels = getPaintedPixels(image, Qt::white);
+        const int p1Pixels = getPaintedPixels(image, BobUI::white);
 
-        image.fill(QColor(Qt::white).rgb());
+        image.fill(QColor(BobUI::white).rgb());
         p.begin(&image);
-        p.setPen(Qt::NoPen);
-        p.setBrush(Qt::black);
+        p.setPen(BobUI::NoPen);
+        p.setBrush(BobUI::black);
         p.translate(offset, offset);
         p.drawPath(p2);
         p.end();
 
-        const int p2Pixels = getPaintedPixels(image, Qt::white);
+        const int p2Pixels = getPaintedPixels(image, BobUI::white);
 
         QCOMPARE(p1Pixels + p2Pixels, w * h);
     }
@@ -1384,8 +1384,8 @@ void tst_QPainter::drawPath3()
     }
 
     QPainter p(&imgB);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::black);
 
     p.drawPath(path);
     p.end();
@@ -1396,8 +1396,8 @@ void tst_QPainter::drawPath3()
     imgB.fill(0xffffff);
 
     p.begin(&imgB);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::black);
 
     QRectF rect(0, 0, imgA.width(), imgA.height());
     path.addRect(rect.adjusted(-10, -10, 10, 10));
@@ -1406,24 +1406,24 @@ void tst_QPainter::drawPath3()
 
     QCOMPARE(imgA, imgB);
 
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
     imgB.fill(0xffffff);
 
     p.begin(&imgB);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::black);
     QRect clip = rect.adjusted(10, 10, -10, -10).toRect();
     p.setClipRect(clip);
     p.drawPath(path);
     p.end();
 
-    QCOMPARE(getPaintedPixels(imgB, Qt::white), clip.width() * clip.height());
+    QCOMPARE(getPaintedPixels(imgB, BobUI::white), clip.width() * clip.height());
 }
 
 void tst_QPainter::drawEllipse_data()
 {
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<bool>("usePen");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<bool>("usePen");
 
     // The current drawEllipse algorithm (drawEllipse_midpoint_i in
     // qpaintengine_raster.cpp) draws ellipses that are too wide if the
@@ -1433,8 +1433,8 @@ void tst_QPainter::drawEllipse_data()
         const QByteArray wB = QByteArray::number(w);
         for (int h = w/2; h < qMin(2*w, 128); h += 13) {
             const QByteArray sB = wB + 'x' + QByteArray::number(h);
-            QTest::newRow((sB + " with pen").constData()) << QSize(w, h) << true;
-            QTest::newRow((sB + " no pen").constData()) << QSize(w, h) << false;
+            BOBUIest::newRow((sB + " with pen").constData()) << QSize(w, h) << true;
+            BOBUIest::newRow((sB + " no pen").constData()) << QSize(w, h) << false;
         }
     }
 }
@@ -1449,17 +1449,17 @@ void tst_QPainter::drawEllipse()
 
     QImage image(size.width() + 2 * offset, size.height() + 2 * offset,
                  QImage::Format_ARGB32_Premultiplied);
-    image.fill(QColor(Qt::white).rgb());
+    image.fill(QColor(BobUI::white).rgb());
 
     QPainter p(&image);
-    p.setPen(usePen ? QPen(Qt::black) : QPen(Qt::NoPen));
-    p.setBrush(Qt::black);
+    p.setPen(usePen ? QPen(BobUI::black) : QPen(BobUI::NoPen));
+    p.setBrush(BobUI::black);
     p.drawEllipse(rect);
     p.end();
 
     QPixmap pixmap = QPixmap::fromImage(image);
 
-    const QRect painted = getPaintedSize(pixmap, Qt::white);
+    const QRect painted = getPaintedSize(pixmap, BobUI::white);
 
     QCOMPARE(painted.x(), rect.x());
     QCOMPARE(painted.y(), rect.y() + (usePen ? 0 : 1));
@@ -1469,20 +1469,20 @@ void tst_QPainter::drawEllipse()
 
 void tst_QPainter::drawClippedEllipse_data()
 {
-    QTest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<QRect>("rect");
 
     for (int w = 20; w < 128; w += 7) {
         const QByteArray wB = QByteArray::number(w);
         for (int h = w/2; h < qMin(2*w, 128); h += 13) {
             const QByteArray sB = wB + 'x' + QByteArray::number(h);
-            QTest::newRow((sB + " top").constData()) << QRect(0, -h/2, w, h);
-            QTest::newRow((sB + " topright").constData()) << QRect(w/2, -h/2, w, h);
-            QTest::newRow((sB + " right").constData()) << QRect(w/2, 0, w, h);
-            QTest::newRow((sB + " bottomright").constData()) << QRect(w/2, h/2, w, h);
-            QTest::newRow((sB + " bottom").constData()) << QRect(0, h/2, w, h);
-            QTest::newRow((sB + " bottomleft").constData()) << QRect(-w/2, h/2, w, h);
-            QTest::newRow((sB + " left").constData()) << QRect(-w/2, 0, w, h);
-            QTest::newRow((sB + " topleft").constData()) << QRect(-w/2, -h/2, w, h);
+            BOBUIest::newRow((sB + " top").constData()) << QRect(0, -h/2, w, h);
+            BOBUIest::newRow((sB + " topright").constData()) << QRect(w/2, -h/2, w, h);
+            BOBUIest::newRow((sB + " right").constData()) << QRect(w/2, 0, w, h);
+            BOBUIest::newRow((sB + " bottomright").constData()) << QRect(w/2, h/2, w, h);
+            BOBUIest::newRow((sB + " bottom").constData()) << QRect(0, h/2, w, h);
+            BOBUIest::newRow((sB + " bottomleft").constData()) << QRect(-w/2, h/2, w, h);
+            BOBUIest::newRow((sB + " left").constData()) << QRect(-w/2, 0, w, h);
+            BOBUIest::newRow((sB + " topleft").constData()) << QRect(-w/2, -h/2, w, h);
         }
     }
 }
@@ -1498,13 +1498,13 @@ void tst_QPainter::drawClippedEllipse()
                      & QRect(0, 0, image.width(), image.height());
 
 
-    image.fill(QColor(Qt::white).rgb());
+    image.fill(QColor(BobUI::white).rgb());
     QPainter p(&image);
     p.drawEllipse(rect);
     p.end();
 
     QPixmap pixmap = QPixmap::fromImage(image);
-    const QRect painted = getPaintedSize(pixmap, Qt::white);
+    const QRect painted = getPaintedSize(pixmap, BobUI::white);
 
     QCOMPARE(painted.x(), expected.x());
     QCOMPARE(painted.y(), expected.y());
@@ -1519,29 +1519,29 @@ void tst_QPainter::drawRoundedRect()
     QFETCH(bool, usePen);
 
 #ifdef Q_OS_DARWIN
-    if (QTest::currentDataTag() == QByteArray("rect(6, 12, 3, 14) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(6, 17, 3, 25) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(10, 6, 10, 3) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(10, 12, 10, 14) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(13, 45, 17, 80) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(13, 50, 17, 91) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(17, 6, 24, 3) with pen") ||
-        QTest::currentDataTag() == QByteArray("rect(24, 12, 38, 14) with pen"))
+    if (BOBUIest::currentDataTag() == QByteArray("rect(6, 12, 3, 14) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(6, 17, 3, 25) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(10, 6, 10, 3) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(10, 12, 10, 14) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(13, 45, 17, 80) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(13, 50, 17, 91) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(17, 6, 24, 3) with pen") ||
+        BOBUIest::currentDataTag() == QByteArray("rect(24, 12, 38, 14) with pen"))
         QSKIP("The Mac paint engine is off-by-one on certain rect sizes");
 #endif
     QPixmap pixmap(rect.x() + rect.width() + 10,
                    rect.y() + rect.height() + 10);
     {
-        pixmap.fill(Qt::white);
+        pixmap.fill(BobUI::white);
         QPainter p(&pixmap);
-        p.setPen(usePen ? QPen(Qt::black) : QPen(Qt::NoPen));
-        p.setBrush(Qt::black);
-        p.drawRoundedRect(rect, 25, 25, Qt::RelativeSize);
+        p.setPen(usePen ? QPen(BobUI::black) : QPen(BobUI::NoPen));
+        p.setBrush(BobUI::black);
+        p.drawRoundedRect(rect, 25, 25, BobUI::RelativeSize);
         p.end();
 
         int increment = usePen ? 1 : 0;
 
-        const QRect painted = getPaintedSize(pixmap, Qt::white);
+        const QRect painted = getPaintedSize(pixmap, BobUI::white);
         QCOMPARE(painted.width(), rect.width() + increment);
         QCOMPARE(painted.height(), rect.height() + increment);
     }
@@ -1549,21 +1549,21 @@ void tst_QPainter::drawRoundedRect()
 
 void tst_QPainter::qimageFormats_data()
 {
-    QTest::addColumn<QImage::Format>("format");
-    QTest::newRow("QImage::Format_RGB32") << QImage::Format_RGB32;
-    QTest::newRow("QImage::Format_ARGB32") << QImage::Format_ARGB32;
-    QTest::newRow("QImage::Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("QImage::Format_RGB16") << QImage::Format_RGB16;
-    QTest::newRow("Qimage::Format_ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied;
-    QTest::newRow("Qimage::Format_RGB666") << QImage::Format_RGB666;
-    QTest::newRow("Qimage::Format_RGB555") << QImage::Format_RGB555;
-    QTest::newRow("Qimage::Format_ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied;
-    QTest::newRow("Qimage::Format_RGB888") << QImage::Format_RGB888;
-    QTest::newRow("Qimage::Format_BGR888") << QImage::Format_BGR888;
-    QTest::newRow("Qimage::Format_A2RGB30_Premultiplied") << QImage::Format_A2RGB30_Premultiplied;
-    QTest::newRow("Qimage::Format_RGB30") << QImage::Format_RGB30;
-    QTest::newRow("QImage::Format_RGBX16FPx4") << QImage::Format_RGBX16FPx4;
-    QTest::newRow("QImage::Format_RGBA32FPx4_Premultiplied") << QImage::Format_RGBA32FPx4_Premultiplied;
+    BOBUIest::addColumn<QImage::Format>("format");
+    BOBUIest::newRow("QImage::Format_RGB32") << QImage::Format_RGB32;
+    BOBUIest::newRow("QImage::Format_ARGB32") << QImage::Format_ARGB32;
+    BOBUIest::newRow("QImage::Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("QImage::Format_RGB16") << QImage::Format_RGB16;
+    BOBUIest::newRow("Qimage::Format_ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied;
+    BOBUIest::newRow("Qimage::Format_RGB666") << QImage::Format_RGB666;
+    BOBUIest::newRow("Qimage::Format_RGB555") << QImage::Format_RGB555;
+    BOBUIest::newRow("Qimage::Format_ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied;
+    BOBUIest::newRow("Qimage::Format_RGB888") << QImage::Format_RGB888;
+    BOBUIest::newRow("Qimage::Format_BGR888") << QImage::Format_BGR888;
+    BOBUIest::newRow("Qimage::Format_A2RGB30_Premultiplied") << QImage::Format_A2RGB30_Premultiplied;
+    BOBUIest::newRow("Qimage::Format_RGB30") << QImage::Format_RGB30;
+    BOBUIest::newRow("QImage::Format_RGBX16FPx4") << QImage::Format_RGBX16FPx4;
+    BOBUIest::newRow("QImage::Format_RGBA32FPx4_Premultiplied") << QImage::Format_RGBA32FPx4_Premultiplied;
 }
 
 /*
@@ -1577,7 +1577,7 @@ void tst_QPainter::qimageFormats()
     QImage image(size, format);
     image.fill(0);
 
-    const QColor testColor(Qt::red);
+    const QColor testColor(BobUI::red);
     QPainter p(&image);
     QVERIFY(p.isActive());
     p.setBrush(QBrush(testColor));
@@ -1587,8 +1587,8 @@ void tst_QPainter::qimageFormats()
 
 void tst_QPainter::fillData()
 {
-    QTest::addColumn<QRect>("rect");
-    QTest::addColumn<bool>("usePen");
+    BOBUIest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<bool>("usePen");
 
     for (int w = 3; w < 50; w += 7) {
         const QByteArray wB = QByteArray::number(w);
@@ -1597,8 +1597,8 @@ void tst_QPainter::fillData()
             int y = h/2 + 5;
             const QByteArray rB = "rect(" + QByteArray::number(x) + ", " + QByteArray::number(y)
                 + ", " + QByteArray::number(w) + ", " + QByteArray::number(h) + ')';
-            QTest::newRow((rB + " with pen").constData()) << QRect(x, y, w, h) << true;
-            QTest::newRow((rB + " no pen").constData()) << QRect(x, y, w, h) << false;
+            BOBUIest::newRow((rB + " with pen").constData()) << QRect(x, y, w, h) << true;
+            BOBUIest::newRow((rB + " no pen").constData()) << QRect(x, y, w, h) << false;
         }
     }
 }
@@ -1609,13 +1609,13 @@ void tst_QPainter::fillData()
 void tst_QPainter::setWindow()
 {
     QPixmap pixmap(600, 600);
-    pixmap.fill(QColor(Qt::white));
+    pixmap.fill(QColor(BobUI::white));
 
     QPainter painter(&pixmap);
     painter.setWindow(0, 0, 28, 28);
     painter.drawLine(10, 10, 18, 18);
 
-    const QRect painted = getPaintedSize(pixmap, Qt::white);
+    const QRect painted = getPaintedSize(pixmap, BobUI::white);
     QVERIFY(195 < painted.y() && painted.y() < 205); // correct value is around 200
     QVERIFY(195 < painted.height() && painted.height() < 205); // correct value is around 200
 }
@@ -1630,7 +1630,7 @@ void tst_QPainter::combinedTransform()
 
     p.translate(0.5, 0.5);
 
-    QTransform ct = p.combinedTransform();
+    BOBUIransform ct = p.combinedTransform();
     QPointF pt = QPointF(0, 0) * ct;
 
     QCOMPARE(pt.x(), 48.0);
@@ -1702,10 +1702,10 @@ void testClipping(QImage &img)
     img.fill(0x0);
     p.begin(&img);
     p.setClipPath(a);
-    p.setClipPath(b, Qt::IntersectClip);
+    p.setClipPath(b, BobUI::IntersectClip);
 
     p.setClipping(false);
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setBrush(QColor(0xff0000));
     p.drawRect(T(0, 0, 10, 10));
 
@@ -1732,7 +1732,7 @@ void tst_QPainter::setClipRect()
     {
         QPainter p(&img);
         p.setClipRect(-10, -10, 100, 100);
-        p.fillRect(-10, -10, 100, 100, QBrush(QColor(Qt::red)));
+        p.fillRect(-10, -10, 100, 100, QBrush(QColor(BobUI::red)));
     }
 
     // rects with negative width/height
@@ -1752,19 +1752,19 @@ void tst_QPainter::setClipRect()
     // crashed with a failed assert due to an integer overflow
     {
         QPainter p(&img);
-        p.setTransform(QTransform(37.7, 0., 0.,
+        p.setTransform(BOBUIransform(37.7, 0., 0.,
                                   0., 233., 0.,
                                   18.85, -163099999883.5, 1.));
-        p.setClipRect(QRect(0, 0, 10, 1), Qt::ReplaceClip);
+        p.setClipRect(QRect(0, 0, 10, 1), BobUI::ReplaceClip);
     }
 
     // the same extreme transform, edited to overflow on the x-axis instead
     {
         QPainter p(&img);
-        p.setTransform(QTransform(233., 0., 0.,
+        p.setTransform(BOBUIransform(233., 0., 0.,
                                   0., 37.7, 0.,
                                   -163099999883.5, 18.85, 1.));
-        p.setClipRect(QRect(0, 0, 1, 10), Qt::ReplaceClip);
+        p.setClipRect(QRect(0, 0, 1, 10), BobUI::ReplaceClip);
     }
 }
 
@@ -1774,7 +1774,7 @@ void tst_QPainter::setClipRect()
     The red outline should be covered by the blue rect on top,
     while it should be clipped on the other edges and thus the red outline be visible
 
-    See: QTBUG-83229, modified by QTBUG-100329
+    See: BOBUIBUG-83229, modified by BOBUIBUG-100329
 */
 void tst_QPainter::clipRect()
 {
@@ -1790,19 +1790,19 @@ void tst_QPainter::clipRect()
     QRectF clipRect = QRectF(halfWidth - halfWidth / 2.0, halfHeight - halfHeight / 2.0,
                              halfWidth / 2.0, halfHeight / 2.0);
 
-    p.fillRect(rect, Qt::white);
-    p.setPen(Qt::red);
+    p.fillRect(rect, BobUI::white);
+    p.setPen(BobUI::red);
     p.drawRect(clipRect);
 
-    p.setClipRect(clipRect, Qt::ReplaceClip);
-    p.fillRect(rect, Qt::blue);
+    p.setClipRect(clipRect, BobUI::ReplaceClip);
+    p.fillRect(rect, BobUI::blue);
 
     p.end();
 
-    QCOMPARE(image.pixelColor(clipRect.left() + 1, clipRect.top()), QColor(Qt::blue));
-    QCOMPARE(image.pixelColor(clipRect.left(), clipRect.top() + 1), QColor(Qt::red));
-    QCOMPARE(image.pixelColor(clipRect.left() + 1, clipRect.bottom()), QColor(Qt::red));
-    QCOMPARE(image.pixelColor(clipRect.right(), clipRect.top() + 1), QColor(Qt::red));
+    QCOMPARE(image.pixelColor(clipRect.left() + 1, clipRect.top()), QColor(BobUI::blue));
+    QCOMPARE(image.pixelColor(clipRect.left(), clipRect.top() + 1), QColor(BobUI::red));
+    QCOMPARE(image.pixelColor(clipRect.left() + 1, clipRect.bottom()), QColor(BobUI::red));
+    QCOMPARE(image.pixelColor(clipRect.right(), clipRect.top() + 1), QColor(BobUI::red));
 }
 
 /*
@@ -1812,11 +1812,11 @@ void tst_QPainter::clipRect()
 */
 void tst_QPainter::setEqualClipRegionAndPath_data()
 {
-    QTest::addColumn<QSize>("deviceSize");
-    QTest::addColumn<QRegion>("region");
+    BOBUIest::addColumn<QSize>("deviceSize");
+    BOBUIest::addColumn<QRegion>("region");
 
-    QTest::newRow("empty") << QSize(100, 100) << QRegion();
-    QTest::newRow("simple rect") << QSize(100, 100)
+    BOBUIest::newRow("empty") << QSize(100, 100) << QRegion();
+    BOBUIest::newRow("simple rect") << QSize(100, 100)
                                  << QRegion(QRect(5, 5, 10, 10));
 
     QList<QRect> rects;
@@ -1824,34 +1824,34 @@ void tst_QPainter::setEqualClipRegionAndPath_data()
 
     rects << QRect(5, 5, 10, 10) << QRect(20, 20, 10, 10);
     region.setRects(rects.constData(), rects.size());
-    QTest::newRow("two rects") << QSize(100, 100) << region;
+    BOBUIest::newRow("two rects") << QSize(100, 100) << region;
 
     rects.clear();
     rects << QRect(5, 5, 10, 10) << QRect(20, 5, 10, 10);
     region.setRects(rects.constData(), rects.size());
-    QTest::newRow("two x-adjacent rects") << QSize(100, 100) << region;
+    BOBUIest::newRow("two x-adjacent rects") << QSize(100, 100) << region;
 
     rects.clear();
     rects << QRect(0, 0, 10, 100) << QRect(12, 0, 10, 100);
     region.setRects(rects.constData(), rects.size());
-    QTest::newRow("two x-adjacent rects 2") << QSize(100, 100) << region;
+    BOBUIest::newRow("two x-adjacent rects 2") << QSize(100, 100) << region;
 
     rects.clear();
     rects << QRect(0, 0, 10, 100) << QRect(12, 0, 10, 100);
     region.setRects(rects.constData(), rects.size());
-    QTest::newRow("two x-adjacent rects 3") << QSize(50, 50) << region;
+    BOBUIest::newRow("two x-adjacent rects 3") << QSize(50, 50) << region;
 
     rects.clear();
     rects << QRect(0, 0, 10, 100) << QRect(12, 0, 10, 100);
     region.setRects(rects.constData(), rects.size());
-    QTest::newRow("two x-adjacent rects 4") << QSize(101, 101) << region;
+    BOBUIest::newRow("two x-adjacent rects 4") << QSize(101, 101) << region;
 
     region = QRegion(QRect(0, 0, 200, 200), QRegion::Ellipse);
 
-    QTest::newRow("ellipse") << QSize(190, 200) << region;
+    BOBUIest::newRow("ellipse") << QSize(190, 200) << region;
 
     region ^= QRect(50, 50, 50, 50);
-    QTest::newRow("ellipse 2") << QSize(200, 200) << region;
+    BOBUIest::newRow("ellipse 2") << QSize(200, 200) << region;
 }
 
 void tst_QPainter::setEqualClipRegionAndPath()
@@ -1872,12 +1872,12 @@ void tst_QPainter::setEqualClipRegionAndPath()
     {
         QPainter p(&img1);
         p.setClipRegion(region);
-        p.fillRect(0, 0, img1.width(), img1.height(), QColor(Qt::red));
+        p.fillRect(0, 0, img1.width(), img1.height(), QColor(BobUI::red));
     }
     {
         QPainter p(&img2);
         p.setClipPath(path);
-        p.fillRect(0, 0, img2.width(), img2.height(), QColor(Qt::red));
+        p.fillRect(0, 0, img2.width(), img2.height(), QColor(BobUI::red));
     }
 
     QCOMPARE(img1, img2);
@@ -1890,13 +1890,13 @@ void tst_QPainter::setEqualClipRegionAndPath()
         QPainter p(&img1);
         p.rotate(25);
         p.setClipRegion(region);
-        p.fillRect(0, 0, img1.width(), img1.height(), QColor(Qt::red));
+        p.fillRect(0, 0, img1.width(), img1.height(), QColor(BobUI::red));
     }
     {
         QPainter p(&img2);
         p.rotate(25);
         p.setClipPath(path);
-        p.fillRect(0, 0, img2.width(), img2.height(), QColor(Qt::red));
+        p.fillRect(0, 0, img2.width(), img2.height(), QColor(BobUI::red));
     }
 
     QCOMPARE(img1, img2);
@@ -1910,14 +1910,14 @@ void tst_QPainter::setEqualClipRegionAndPath()
     {
         QPainter p(&img1);
         p.setClipRegion(region);
-        p.setClipRegion(region, Qt::IntersectClip);
-        p.fillRect(0, 0, img1.width(), img1.height(), QColor(Qt::red));
+        p.setClipRegion(region, BobUI::IntersectClip);
+        p.fillRect(0, 0, img1.width(), img1.height(), QColor(BobUI::red));
     }
     {
         QPainter p(&img2);
         p.setClipPath(path);
-        p.setClipPath(path, Qt::IntersectClip);
-        p.fillRect(0, 0, img2.width(), img2.height(), QColor(Qt::red));
+        p.setClipPath(path, BobUI::IntersectClip);
+        p.fillRect(0, 0, img2.width(), img2.height(), QColor(BobUI::red));
     }
     QCOMPARE(img1, img2);
 
@@ -1926,14 +1926,14 @@ void tst_QPainter::setEqualClipRegionAndPath()
     {
         QPainter p(&img1);
         p.setClipPath(path);
-        p.setClipRegion(region, Qt::IntersectClip);
-        p.fillRect(0, 0, img1.width(), img1.height(), QColor(Qt::red));
+        p.setClipRegion(region, BobUI::IntersectClip);
+        p.fillRect(0, 0, img1.width(), img1.height(), QColor(BobUI::red));
     }
     {
         QPainter p(&img2);
         p.setClipRegion(region);
-        p.setClipPath(path, Qt::IntersectClip);
-        p.fillRect(0, 0, img2.width(), img2.height(), QColor(Qt::red));
+        p.setClipPath(path, BobUI::IntersectClip);
+        p.fillRect(0, 0, img2.width(), img2.height(), QColor(BobUI::red));
     }
     QCOMPARE(img1, img2);
 
@@ -1941,15 +1941,15 @@ void tst_QPainter::setEqualClipRegionAndPath()
 
 void tst_QPainter::clippedFillPath_data()
 {
-    QTest::addColumn<QSize>("imageSize");
-    QTest::addColumn<QPainterPath>("path");
-    QTest::addColumn<QRect>("clipRect");
-    QTest::addColumn<QBrush>("brush");
-    QTest::addColumn<QPen>("pen");
+    BOBUIest::addColumn<QSize>("imageSize");
+    BOBUIest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QRect>("clipRect");
+    BOBUIest::addColumn<QBrush>("brush");
+    BOBUIest::addColumn<QPen>("pen");
 
     QLinearGradient gradient(QPoint(0, 0), QPoint(100, 100));
-    gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(1, Qt::blue);
+    gradient.setColorAt(0, BobUI::red);
+    gradient.setColorAt(1, BobUI::blue);
 
 
     QPen pen2(QColor(223, 223, 0, 223));
@@ -1957,69 +1957,69 @@ void tst_QPainter::clippedFillPath_data()
 
     QPainterPath path;
     path.addRect(QRect(15, 15, 50, 50));
-    QTest::newRow("simple rect 0") << QSize(100, 100) << path
+    BOBUIest::newRow("simple rect 0") << QSize(100, 100) << path
                                    << QRect(15, 15, 49, 49)
-                                   << QBrush(Qt::NoBrush)
-                                   << QPen(Qt::black);
-    QTest::newRow("simple rect 1") << QSize(100, 100) << path
+                                   << QBrush(BobUI::NoBrush)
+                                   << QPen(BobUI::black);
+    BOBUIest::newRow("simple rect 1") << QSize(100, 100) << path
                                    << QRect(15, 15, 50, 50)
-                                   << QBrush(Qt::NoBrush)
-                                   << QPen(Qt::black);
-    QTest::newRow("simple rect 2") << QSize(100, 100) << path
+                                   << QBrush(BobUI::NoBrush)
+                                   << QPen(BobUI::black);
+    BOBUIest::newRow("simple rect 2") << QSize(100, 100) << path
                                    << QRect(15, 15, 51, 51)
-                                   << QBrush(Qt::NoBrush)
-                                   << QPen(Qt::black);
-    QTest::newRow("simple rect 3") << QSize(100, 100) << path
+                                   << QBrush(BobUI::NoBrush)
+                                   << QPen(BobUI::black);
+    BOBUIest::newRow("simple rect 3") << QSize(100, 100) << path
                                    << QRect(15, 15, 51, 51)
-                                   << QBrush(QColor(Qt::blue))
-                                   << QPen(Qt::NoPen);
-    QTest::newRow("simple rect 4") << QSize(100, 100) << path
+                                   << QBrush(QColor(BobUI::blue))
+                                   << QPen(BobUI::NoPen);
+    BOBUIest::newRow("simple rect 4") << QSize(100, 100) << path
                                    << QRect(15, 15, 51, 51)
                                    << QBrush(gradient)
                                    << pen2;
 
     path = QPainterPath();
     path.addEllipse(QRect(15, 15, 50, 50));
-    QTest::newRow("ellipse 0") << QSize(100, 100) << path
+    BOBUIest::newRow("ellipse 0") << QSize(100, 100) << path
                                << QRect(15, 15, 49, 49)
-                               << QBrush(Qt::NoBrush)
-                               << QPen(Qt::black);
-    QTest::newRow("ellipse 1") << QSize(100, 100) << path
+                               << QBrush(BobUI::NoBrush)
+                               << QPen(BobUI::black);
+    BOBUIest::newRow("ellipse 1") << QSize(100, 100) << path
                                << QRect(15, 15, 50, 50)
-                               << QBrush(Qt::NoBrush)
-                               << QPen(Qt::black);
-    QTest::newRow("ellipse 2") << QSize(100, 100) << path
+                               << QBrush(BobUI::NoBrush)
+                               << QPen(BobUI::black);
+    BOBUIest::newRow("ellipse 2") << QSize(100, 100) << path
                                << QRect(15, 15, 51, 51)
-                               << QBrush(Qt::NoBrush)
-                               << QPen(Qt::black);
-    QTest::newRow("ellipse 3") << QSize(100, 100) << path
+                               << QBrush(BobUI::NoBrush)
+                               << QPen(BobUI::black);
+    BOBUIest::newRow("ellipse 3") << QSize(100, 100) << path
                                << QRect(15, 15, 51, 51)
-                               << QBrush(QColor(Qt::blue))
-                               << QPen(Qt::NoPen);
-    QTest::newRow("ellipse 4") << QSize(100, 100) << path
+                               << QBrush(QColor(BobUI::blue))
+                               << QPen(BobUI::NoPen);
+    BOBUIest::newRow("ellipse 4") << QSize(100, 100) << path
                                << QRect(15, 15, 51, 51)
                                << QBrush(gradient)
                                << pen2;
 
     path = QPainterPath();
-    path.addRoundedRect(QRect(15, 15, 50, 50), 20, Qt::RelativeSize);
-    QTest::newRow("round rect 0") << QSize(100, 100) << path
+    path.addRoundedRect(QRect(15, 15, 50, 50), 20, BobUI::RelativeSize);
+    BOBUIest::newRow("round rect 0") << QSize(100, 100) << path
                                   << QRect(15, 15, 49, 49)
-                                  << QBrush(Qt::NoBrush)
-                                  << QPen(Qt::black);
-    QTest::newRow("round rect 1") << QSize(100, 100) << path
+                                  << QBrush(BobUI::NoBrush)
+                                  << QPen(BobUI::black);
+    BOBUIest::newRow("round rect 1") << QSize(100, 100) << path
                                   << QRect(15, 15, 50, 50)
-                                  << QBrush(Qt::NoBrush)
-                                  << QPen(Qt::black);
-    QTest::newRow("round rect 2") << QSize(100, 100) << path
+                                  << QBrush(BobUI::NoBrush)
+                                  << QPen(BobUI::black);
+    BOBUIest::newRow("round rect 2") << QSize(100, 100) << path
                                   << QRect(15, 15, 51, 51)
-                                  << QBrush(Qt::NoBrush)
-                                  << QPen(Qt::black);
-    QTest::newRow("round rect 3") << QSize(100, 100) << path
+                                  << QBrush(BobUI::NoBrush)
+                                  << QPen(BobUI::black);
+    BOBUIest::newRow("round rect 3") << QSize(100, 100) << path
                                   << QRect(15, 15, 51, 51)
-                                  << QBrush(QColor(Qt::blue))
-                                  << QPen(Qt::NoPen);
-    QTest::newRow("round rect 4") << QSize(100, 100) << path
+                                  << QBrush(QColor(BobUI::blue))
+                                  << QPen(BobUI::NoPen);
+    BOBUIest::newRow("round rect 4") << QSize(100, 100) << path
                                   << QRect(15, 15, 51, 51)
                                   << QBrush(gradient)
                                   << pen2;
@@ -2028,23 +2028,23 @@ void tst_QPainter::clippedFillPath_data()
     path.moveTo(15, 50);
     path.cubicTo(40, 50, 40, 15, 65, 50);
     path.lineTo(15, 50);
-    QTest::newRow("cubic 0") << QSize(100, 100) << path
+    BOBUIest::newRow("cubic 0") << QSize(100, 100) << path
                              << QRect(15, 15, 49, 49)
-                             << QBrush(Qt::NoBrush)
-                             << QPen(Qt::black);
-    QTest::newRow("cubic 1") << QSize(100, 100) << path
+                             << QBrush(BobUI::NoBrush)
+                             << QPen(BobUI::black);
+    BOBUIest::newRow("cubic 1") << QSize(100, 100) << path
                              << QRect(15, 15, 50, 50)
-                             << QBrush(Qt::NoBrush)
-                             << QPen(Qt::black);
-    QTest::newRow("cubic 2") << QSize(100, 100) << path
+                             << QBrush(BobUI::NoBrush)
+                             << QPen(BobUI::black);
+    BOBUIest::newRow("cubic 2") << QSize(100, 100) << path
                              << QRect(15, 15, 51, 51)
-                             << QBrush(Qt::NoBrush)
-                             << QPen(Qt::black);
-    QTest::newRow("cubic 3") << QSize(100, 100) << path
+                             << QBrush(BobUI::NoBrush)
+                             << QPen(BobUI::black);
+    BOBUIest::newRow("cubic 3") << QSize(100, 100) << path
                              << QRect(15, 15, 51, 51)
-                             << QBrush(QColor(Qt::blue))
-                             << QPen(Qt::NoPen);
-    QTest::newRow("cubic 4") << QSize(100, 100) << path
+                             << QBrush(QColor(BobUI::blue))
+                             << QPen(BobUI::NoPen);
+    BOBUIest::newRow("cubic 4") << QSize(100, 100) << path
                              << QRect(15, 15, 51, 51)
                              << QBrush(gradient)
                              << pen2;
@@ -2112,10 +2112,10 @@ void tst_QPainter::clippedFillPath()
 
 void tst_QPainter::clippedLines_data()
 {
-    QTest::addColumn<QSize>("imageSize");
-    QTest::addColumn<QLineF>("line");
-    QTest::addColumn<QRect>("clipRect");
-    QTest::addColumn<QPen>("pen");
+    BOBUIest::addColumn<QSize>("imageSize");
+    BOBUIest::addColumn<QLineF>("line");
+    BOBUIest::addColumn<QRect>("clipRect");
+    BOBUIest::addColumn<QPen>("pen");
 
     QPen pen2(QColor(223, 223, 0, 223));
     pen2.setWidth(2);
@@ -2140,19 +2140,19 @@ void tst_QPainter::clippedLines_data()
             + ", " + QByteArray::number(line.y1()) + ", "
             + QByteArray::number(line.x2()) + ", " + QByteArray::number(line.y2())
             + ") ";
-        QTest::newRow((desc + '0').constData()) << QSize(100, 100) << line
+        BOBUIest::newRow((desc + '0').constData()) << QSize(100, 100) << line
                                    << QRect(15, 15, 49, 49)
-                                   << QPen(Qt::black);
-        QTest::newRow((desc + '1').constData()) << QSize(100, 100) << line
+                                   << QPen(BobUI::black);
+        BOBUIest::newRow((desc + '1').constData()) << QSize(100, 100) << line
                                    << QRect(15, 15, 50, 50)
-                                   << QPen(Qt::black);
-        QTest::newRow((desc + '2').constData()) << QSize(100, 100) << line
+                                   << QPen(BobUI::black);
+        BOBUIest::newRow((desc + '2').constData()) << QSize(100, 100) << line
                                    << QRect(15, 15, 51, 51)
-                                   << QPen(Qt::black);
-        QTest::newRow((desc + '3').constData()) << QSize(100, 100) << line
+                                   << QPen(BobUI::black);
+        BOBUIest::newRow((desc + '3').constData()) << QSize(100, 100) << line
                                    << QRect(15, 15, 51, 51)
-                                   << QPen(Qt::NoPen);
-        QTest::newRow((desc + '4').constData()) << QSize(100, 100) << line
+                                   << QPen(BobUI::NoPen);
+        BOBUIest::newRow((desc + '4').constData()) << QSize(100, 100) << line
                                    << QRect(15, 15, 51, 51)
                                    << pen2;
     }
@@ -2225,7 +2225,7 @@ void tst_QPainter::clippedPolygon()
 {
     QFETCH(QSize, imageSize);
     QFETCH(QPainterPath, path);
-    QPolygonF polygon = path.toFillPolygon(QTransform());
+    QPolygonF polygon = path.toFillPolygon(BOBUIransform());
     QFETCH(QRect, clipRect);
     QPainterPath clipPath;
     clipPath.addRect(clipRect);
@@ -2310,7 +2310,7 @@ void tst_QPainter::clippedText()
         {
             QPainter painter(&image);
             painter.setFont(f);
-            painter.setPen(Qt::black);
+            painter.setPen(BobUI::black);
 
             painter.drawText(0, 0, QChar(ch));
         }
@@ -2319,7 +2319,7 @@ void tst_QPainter::clippedText()
         {
             QPainter painter(&image);
             painter.setFont(f);
-            painter.setPen(Qt::black);
+            painter.setPen(BobUI::black);
 
             painter.drawText(-imageRect.topLeft(), QChar(ch));
         }
@@ -2343,151 +2343,151 @@ void tst_QPainter::clippedText()
 
 void tst_QPainter::setOpacity_data()
 {
-    QTest::addColumn<QImage::Format>("destFormat");
-    QTest::addColumn<QImage::Format>("srcFormat");
+    BOBUIest::addColumn<QImage::Format>("destFormat");
+    BOBUIest::addColumn<QImage::Format>("srcFormat");
 
-    QTest::newRow("ARGB32P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB32P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                         << QImage::Format_ARGB32_Premultiplied;
 
-    QTest::newRow("ARGB32 on ARGB32") << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB32 on ARGB32") << QImage::Format_ARGB32
                                       << QImage::Format_ARGB32;
 
-    QTest::newRow("RGB32 on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("RGB32 on RGB32") << QImage::Format_RGB32
                                     << QImage::Format_RGB32;
 
-    QTest::newRow("RGB16 on RGB16") << QImage::Format_RGB16
+    BOBUIest::newRow("RGB16 on RGB16") << QImage::Format_RGB16
                                     << QImage::Format_RGB16;
 
-    QTest::newRow("ARGB8565_Premultiplied on ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied
+    BOBUIest::newRow("ARGB8565_Premultiplied on ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied
                                                                       << QImage::Format_ARGB8565_Premultiplied;
 
-    QTest::newRow("RGB555 on RGB555") << QImage::Format_RGB555
+    BOBUIest::newRow("RGB555 on RGB555") << QImage::Format_RGB555
                                       << QImage::Format_RGB555;
 
-    QTest::newRow("RGB666 on RGB666") << QImage::Format_RGB666
+    BOBUIest::newRow("RGB666 on RGB666") << QImage::Format_RGB666
                                       << QImage::Format_RGB666;
 
-    QTest::newRow("ARGB8555_Premultiplied on ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied
+    BOBUIest::newRow("ARGB8555_Premultiplied on ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied
                                                                       << QImage::Format_ARGB8555_Premultiplied;
 
-    QTest::newRow("RGB888 on RGB888") << QImage::Format_RGB888
+    BOBUIest::newRow("RGB888 on RGB888") << QImage::Format_RGB888
                                       << QImage::Format_RGB888;
 
-    QTest::newRow("RGB32 on RGB16") << QImage::Format_RGB16
+    BOBUIest::newRow("RGB32 on RGB16") << QImage::Format_RGB16
                                     << QImage::Format_RGB32;
 
-    QTest::newRow("RGB32 on ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied
+    BOBUIest::newRow("RGB32 on ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied
                                                      << QImage::Format_RGB32;
 
-    QTest::newRow("RGB32 on RGB666") << QImage::Format_RGB666
+    BOBUIest::newRow("RGB32 on RGB666") << QImage::Format_RGB666
                                      << QImage::Format_RGB32;
 
-    QTest::newRow("RGB32 on RGB555") << QImage::Format_RGB555
+    BOBUIest::newRow("RGB32 on RGB555") << QImage::Format_RGB555
                                      << QImage::Format_RGB32;
 
-    QTest::newRow("RGB32 on ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied
+    BOBUIest::newRow("RGB32 on ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied
                                                      << QImage::Format_RGB32;
 
-    QTest::newRow("RGB32 on RGB888") << QImage::Format_RGB888
+    BOBUIest::newRow("RGB32 on RGB888") << QImage::Format_RGB888
                                      << QImage::Format_RGB32;
 
-    QTest::newRow("RGB16 on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("RGB16 on RGB32") << QImage::Format_RGB32
                                     << QImage::Format_RGB16;
 
-    QTest::newRow("ARGB8565_Premultiplied on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("ARGB8565_Premultiplied on RGB32") << QImage::Format_RGB32
                                                      << QImage::Format_ARGB8565_Premultiplied;
 
-    QTest::newRow("RGB666 on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("RGB666 on RGB32") << QImage::Format_RGB32
                                      << QImage::Format_RGB666;
 
-    QTest::newRow("RGB555 on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("RGB555 on RGB32") << QImage::Format_RGB32
                                      << QImage::Format_RGB555;
 
-    QTest::newRow("ARGB8555_Premultiplied on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("ARGB8555_Premultiplied on RGB32") << QImage::Format_RGB32
                                                      << QImage::Format_ARGB8555_Premultiplied;
 
-    QTest::newRow("RGB888 on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("RGB888 on RGB32") << QImage::Format_RGB32
                                      << QImage::Format_RGB888;
 
-    QTest::newRow("RGB555 on RGB888") << QImage::Format_RGB888
+    BOBUIest::newRow("RGB555 on RGB888") << QImage::Format_RGB888
                                       << QImage::Format_RGB555;
 
-    QTest::newRow("RGB666 on RGB888") << QImage::Format_RGB888
+    BOBUIest::newRow("RGB666 on RGB888") << QImage::Format_RGB888
                                       << QImage::Format_RGB666;
 
-    QTest::newRow("RGB444 on RGB444") << QImage::Format_RGB444
+    BOBUIest::newRow("RGB444 on RGB444") << QImage::Format_RGB444
                                       << QImage::Format_RGB444;
 
-    QTest::newRow("RGBA8888P on RGBA8888P") << QImage::Format_RGBA8888_Premultiplied
+    BOBUIest::newRow("RGBA8888P on RGBA8888P") << QImage::Format_RGBA8888_Premultiplied
                                             << QImage::Format_RGBA8888_Premultiplied;
 
-    QTest::newRow("RGBA8888 on RGBA8888") << QImage::Format_RGBA8888
+    BOBUIest::newRow("RGBA8888 on RGBA8888") << QImage::Format_RGBA8888
                                           << QImage::Format_RGBA8888;
 
-    QTest::newRow("RGBx8888 on RGBx8888") << QImage::Format_RGBX8888
+    BOBUIest::newRow("RGBx8888 on RGBx8888") << QImage::Format_RGBX8888
                                           << QImage::Format_RGBX8888;
 
-    QTest::newRow("RGBA8888P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("RGBA8888P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                           << QImage::Format_RGBA8888_Premultiplied;
 
-    QTest::newRow("RGBx8888 on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("RGBx8888 on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                          << QImage::Format_RGBX8888;
 
-    QTest::newRow("ARGB32P on RGBA8888P") << QImage::Format_RGBA8888_Premultiplied
+    BOBUIest::newRow("ARGB32P on RGBA8888P") << QImage::Format_RGBA8888_Premultiplied
                                           << QImage::Format_ARGB32_Premultiplied;
 
-    QTest::newRow("RGB32 on RGBx8888") << QImage::Format_RGBX8888
+    BOBUIest::newRow("RGB32 on RGBx8888") << QImage::Format_RGBX8888
                                        << QImage::Format_RGB32;
 
-    QTest::newRow("RGB30 on RGB32") << QImage::Format_RGB32
+    BOBUIest::newRow("RGB30 on RGB32") << QImage::Format_RGB32
                                     << QImage::Format_BGR30;
 
-    QTest::newRow("BGR30 on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("BGR30 on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                       << QImage::Format_BGR30;
 
-    QTest::newRow("A2RGB30P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("A2RGB30P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                          << QImage::Format_A2BGR30_Premultiplied;
 
-    QTest::newRow("A2RGB30P on A2RGB30P") << QImage::Format_A2RGB30_Premultiplied
+    BOBUIest::newRow("A2RGB30P on A2RGB30P") << QImage::Format_A2RGB30_Premultiplied
                                           << QImage::Format_A2RGB30_Premultiplied;
 
-    QTest::newRow("ARGB32P on A2RGB30P") << QImage::Format_A2RGB30_Premultiplied
+    BOBUIest::newRow("ARGB32P on A2RGB30P") << QImage::Format_A2RGB30_Premultiplied
                                          << QImage::Format_ARGB32_Premultiplied;
 
-    QTest::newRow("RGB32 on A2BGR30P") << QImage::Format_A2BGR30_Premultiplied
+    BOBUIest::newRow("RGB32 on A2BGR30P") << QImage::Format_A2BGR30_Premultiplied
                                        << QImage::Format_RGB32;
 
-    QTest::newRow("RGB30 on A2BGR30P") << QImage::Format_A2BGR30_Premultiplied
+    BOBUIest::newRow("RGB30 on A2BGR30P") << QImage::Format_A2BGR30_Premultiplied
                                        << QImage::Format_RGB30;
 
-    QTest::newRow("A2RGB30P on A2BGR30P") << QImage::Format_A2BGR30_Premultiplied
+    BOBUIest::newRow("A2RGB30P on A2BGR30P") << QImage::Format_A2BGR30_Premultiplied
                                           << QImage::Format_A2RGB30_Premultiplied;
 
-    QTest::newRow("ARGB32P on BGR30") << QImage::Format_BGR30
+    BOBUIest::newRow("ARGB32P on BGR30") << QImage::Format_BGR30
                                       << QImage::Format_ARGB32_Premultiplied;
 
-    QTest::newRow("ARGB32P on RGB30") << QImage::Format_RGB30
+    BOBUIest::newRow("ARGB32P on RGB30") << QImage::Format_RGB30
                                       << QImage::Format_ARGB32_Premultiplied;
 
-    QTest::newRow("A2RGB30P on RGB30") << QImage::Format_RGB30
+    BOBUIest::newRow("A2RGB30P on RGB30") << QImage::Format_RGB30
                                        << QImage::Format_A2RGB30_Premultiplied;
 
-    QTest::newRow("RGBA64P on RGBA64P") << QImage::Format_RGBA64_Premultiplied
+    BOBUIest::newRow("RGBA64P on RGBA64P") << QImage::Format_RGBA64_Premultiplied
                                         << QImage::Format_RGBA64_Premultiplied;
 
-    QTest::newRow("RGBA64 on RGBA64") << QImage::Format_RGBA64
+    BOBUIest::newRow("RGBA64 on RGBA64") << QImage::Format_RGBA64
                                       << QImage::Format_RGBA64;
 
-    QTest::newRow("RGBx64 on RGBx64") << QImage::Format_RGBX64
+    BOBUIest::newRow("RGBx64 on RGBx64") << QImage::Format_RGBX64
                                       << QImage::Format_RGBX64;
 
-    QTest::newRow("RGBA64P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("RGBA64P on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                         << QImage::Format_RGBA64_Premultiplied;
 
-    QTest::newRow("RGBx64 on ARGB32P") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("RGBx64 on ARGB32P") << QImage::Format_ARGB32_Premultiplied
                                        << QImage::Format_RGBX64;
 
-    QTest::newRow("ARGB32P on RGBA64P") << QImage::Format_RGBA64_Premultiplied
+    BOBUIest::newRow("ARGB32P on RGBA64P") << QImage::Format_RGBA64_Premultiplied
                                         << QImage::Format_ARGB32_Premultiplied;
 
 }
@@ -2499,8 +2499,8 @@ void tst_QPainter::setOpacity()
 
     const QSize imageSize(12, 12);
     const QRect imageRect(QPoint(0, 0), imageSize);
-    QColor destColor = Qt::black;
-    QColor srcColor = Qt::white;
+    QColor destColor = BobUI::black;
+    QColor srcColor = BobUI::white;
 
     QImage dest(imageSize, destFormat);
     QImage src(imageSize, srcFormat);
@@ -2552,7 +2552,7 @@ void tst_QPainter::drawhelper_blend_untransformed()
     const QRect paintRect(1, 0, size - 2, size); // needs alignment and tailing
 
     QColor destColor(127, 127, 127);
-    QColor srcColor(Qt::white);
+    QColor srcColor(BobUI::white);
 
     QImage dest(imageSize, destFormat);
     QImage src(imageSize, srcFormat);
@@ -2605,7 +2605,7 @@ void tst_QPainter::drawhelper_blend_tiled_untransformed()
     const QRect paintRect(1, 0, size - 2, size); // needs alignment and tailing
 
     QColor destColor(127, 127, 127);
-    QColor srcColor(Qt::white);
+    QColor srcColor(BobUI::white);
 
     QImage dest(imageSize, destFormat);
     QImage src(imageSize / 2, srcFormat);
@@ -2670,15 +2670,15 @@ public:
 
 static bool success;
 
-void porterDuff_warningChecker(QtMsgType type, const QMessageLogContext &, const QString &msg)
+void porterDuff_warningChecker(BobUIMsgType type, const QMessageLogContext &, const QString &msg)
 {
-    if (type == QtWarningMsg && msg == QLatin1String("QPainter::setCompositionMode: PorterDuff modes not supported on device"))
+    if (type == BobUIWarningMsg && msg == QLatin1String("QPainter::setCompositionMode: PorterDuff modes not supported on device"))
         success = false;
 }
 
 void tst_QPainter::porterDuff_warning()
 {
-    QtMessageHandler old = qInstallMessageHandler(porterDuff_warningChecker);
+    BobUIMessageHandler old = qInstallMessageHandler(porterDuff_warningChecker);
     DummyPaintEngine dummy;
     QPainter p(&dummy);
 
@@ -2714,7 +2714,7 @@ void tst_QPainter::drawhelper_blend_color()
     QCOMPARE(dest, expected);
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 class ViewportTestWidget : public QWidget
 {
 public:
@@ -2762,8 +2762,8 @@ void tst_QPainter::fillRect_objectBoundingModeGradient()
     QImage b = a;
 
     QLinearGradient g(QPoint(0, 0), QPoint(0, 1));
-    g.setColorAt(0, Qt::red);
-    g.setColorAt(1, Qt::blue);
+    g.setColorAt(0, BobUI::red);
+    g.setColorAt(1, BobUI::blue);
     g.setCoordinateMode(QGradient::ObjectBoundingMode);
 
     QPainter p(&a);
@@ -2797,10 +2797,10 @@ void tst_QPainter::fillRect_stretchToDeviceMode()
 
 void tst_QPainter::monoImages()
 {
-    Qt::GlobalColor colorPairs[][2] = {
-        { Qt::white, Qt::black },
-        { Qt::color0, Qt::color1 },
-        { Qt::red, Qt::blue }
+    BobUI::GlobalColor colorPairs[][2] = {
+        { BobUI::white, BobUI::black },
+        { BobUI::color0, BobUI::color1 },
+        { BobUI::red, BobUI::blue }
     };
 
     const int numColorPairs = sizeof(colorPairs) / sizeof(QRgb[2]);
@@ -2924,7 +2924,7 @@ void fpe_rasterizeLine_task232012()
     img.fill(0x0);
     QPainter p(&img);
 
-    p.setBrush(Qt::black);
+    p.setBrush(BobUI::black);
     p.drawRect(QRectF(0, 0, 5, 0));
     p.drawRect(QRectF(0, 0, 0, 5));
 }
@@ -2940,8 +2940,8 @@ void fpe_pixmapTransform()
     const qreal scaleFactor = 0.001;
     const int translateDistance = 1000000;
 
-    p.setPen(Qt::red);
-    p.setBrush(QBrush(Qt::red,Qt::Dense6Pattern));
+    p.setPen(BobUI::red);
+    p.setBrush(QBrush(BobUI::red,BobUI::Dense6Pattern));
 
     for (int i = 0; i < 2; ++i) {
         p.setRenderHint(QPainter::SmoothPixmapTransform, i);
@@ -2965,7 +2965,7 @@ void fpe_zeroLengthLines()
 
     QPainter p(&img);
 
-    p.setPen(QPen(Qt::black, 3));
+    p.setPen(QPen(BobUI::black, 3));
     p.drawLine(64, 64, 64, 64);
 }
 
@@ -2985,11 +2985,11 @@ void fpe_divByZero()
     p.drawRect(QRect(10, 10, 100, 0));
     p.drawRect(QRect(10, 10, 0, 100));
 
-    p.fillRect(QRectF(10, 10, 100, 0), Qt::black);
-    p.fillRect(QRectF(10, 10, 0, 100), Qt::black);
+    p.fillRect(QRectF(10, 10, 100, 0), BobUI::black);
+    p.fillRect(QRectF(10, 10, 0, 100), BobUI::black);
 
-    p.fillRect(QRect(10, 10, 100, 0), Qt::black);
-    p.fillRect(QRect(10, 10, 0, 100), Qt::black);
+    p.fillRect(QRect(10, 10, 100, 0), BobUI::black);
+    p.fillRect(QRect(10, 10, 0, 100), BobUI::black);
 }
 
 void fpe_steepSlopes()
@@ -2998,13 +2998,13 @@ void fpe_steepSlopes()
 
     QImage img(1024, 1024, QImage::Format_ARGB32_Premultiplied);
 
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QLineF, line);
     QFETCH(bool, antialiased);
 
     QPainter p(&img);
 
-    p.setPen(QPen(Qt::black, 1));
+    p.setPen(QPen(BobUI::black, 1));
     p.setRenderHint(QPainter::Antialiasing, antialiased);
     p.setTransform(transform);
 
@@ -3022,7 +3022,7 @@ void fpe_radialGradients()
 
     QPainter p(&img);
     p.setRenderHints(QPainter::Antialiasing);
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setBrush(QRadialGradient(m, m, m));
     p.drawEllipse(img.rect());
 }
@@ -3049,52 +3049,52 @@ FPE_TEST(fpe_radialGradients)
 
 void tst_QPainter::fpe_steepSlopes_data()
 {
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QLineF>("line");
-    QTest::addColumn<bool>("antialiased");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QLineF>("line");
+    BOBUIest::addColumn<bool>("antialiased");
 
     {
         const qreal dsin = 0.000014946676875461832484392500630665523431162000633776187896728515625;
         const qreal dcos = 0.9999999998882984630910186751862056553363800048828125;
 
-        const QTransform transform = QTransform(dcos, dsin, -dsin, dcos, 64, 64);
+        const BOBUIransform transform = BOBUIransform(dcos, dsin, -dsin, dcos, 64, 64);
         const QLineF line(2, 2, 2, 6);
 
-        QTest::newRow("task 207147 aa") << transform << line << true;
-        QTest::newRow("task 207147 no aa") << transform << line << false;
+        BOBUIest::newRow("task 207147 aa") << transform << line << true;
+        BOBUIest::newRow("task 207147 no aa") << transform << line << false;
     }
 
     {
-        QTransform transform;
+        BOBUIransform transform;
         transform.rotate(0.0000001);
         const QLineF line(5, 5, 10, 5);
 
-        QTest::newRow("task 166702 aa") << transform << line << true;
-        QTest::newRow("task 166702 no aa") << transform << line << false;
+        BOBUIest::newRow("task 166702 aa") << transform << line << true;
+        BOBUIest::newRow("task 166702 no aa") << transform << line << false;
     }
 
     {
-        const QTransform transform;
+        const BOBUIransform transform;
         const QLineF line(2.5, 2.5, 2.5 + 1/256., 60000.5);
 
-        QTest::newRow("steep line aa") << transform << line << true;
-        QTest::newRow("steep line no aa") << transform << line << false;
+        BOBUIest::newRow("steep line aa") << transform << line << true;
+        BOBUIest::newRow("steep line no aa") << transform << line << false;
     }
 
     {
-        const QTransform transform;
+        const BOBUIransform transform;
         const QLineF line(2.5, 2.5, 2.5 + 1/256., 1024);
 
-        QTest::newRow("steep line 2 aa") << transform << line << true;
-        QTest::newRow("steep line 2 no aa") << transform << line << false;
+        BOBUIest::newRow("steep line 2 aa") << transform << line << true;
+        BOBUIest::newRow("steep line 2 no aa") << transform << line << false;
     }
 
     {
-        const QTransform transform;
+        const BOBUIransform transform;
         const QLineF line(2.5, 2.5, 2.5 + 1/64., 1024);
 
-        QTest::newRow("steep line 3 aa") << transform << line << true;
-        QTest::newRow("steep line 3 no aa") << transform << line << false;
+        BOBUIest::newRow("steep line 3 aa") << transform << line << true;
+        BOBUIest::newRow("steep line 3 no aa") << transform << line << false;
     }
 }
 
@@ -3120,7 +3120,7 @@ void tst_QPainter::rasterizer_asserts()
     QRectF right = middle.translated(middle.width(), 0);
 
     QPainter p(&img);
-    img.fill(Qt::white);
+    img.fill(BobUI::white);
     p.setCompositionMode(QPainter::CompositionMode_Destination);
     for (int i = 0; i < 100000; ++i) {
         QPainterPath path;
@@ -3128,7 +3128,7 @@ void tst_QPainter::rasterizer_asserts()
         path.lineTo(randInRect(left));
         path.lineTo(randInRect(right));
 
-        p.fillPath(path, Qt::black);
+        p.fillPath(path, BobUI::black);
     }
 }
 
@@ -3141,7 +3141,7 @@ void tst_QPainter::rasterizer_negativeCoords()
 
     QPainter p(&img);
     p.rotate(90);
-    p.fillRect(0, 0, 70, 50, Qt::black);
+    p.fillRect(0, 0, 70, 50, BobUI::black);
 
     // image should not have changed
     QCOMPARE(img.pixel(0, 0), 0x0U);
@@ -3150,19 +3150,19 @@ void tst_QPainter::rasterizer_negativeCoords()
 
 void tst_QPainter::blendOverFlow_data()
 {
-    QTest::addColumn<QImage::Format>("format");
-    QTest::addColumn<int>("width");
-    QTest::addColumn<int>("height");
+    BOBUIest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<int>("width");
+    BOBUIest::addColumn<int>("height");
 
     QImage::Format format = QImage::Format_ARGB8555_Premultiplied;
-    QTest::newRow("555,1,1") << format << 1 << 1;
-    QTest::newRow("555,2,2") << format << 2 << 2;
-    QTest::newRow("555,10,10") << format << 10 << 10;
+    BOBUIest::newRow("555,1,1") << format << 1 << 1;
+    BOBUIest::newRow("555,2,2") << format << 2 << 2;
+    BOBUIest::newRow("555,10,10") << format << 10 << 10;
 
     format = QImage::Format_ARGB8565_Premultiplied;
-    QTest::newRow("565,1,1") << format << 1 << 1;
-    QTest::newRow("565,2,2") << format << 2 << 2;
-    QTest::newRow("565,10,10") << format << 10 << 10;
+    BOBUIest::newRow("565,1,1") << format << 1 << 1;
+    BOBUIest::newRow("565,2,2") << format << 2 << 2;
+    BOBUIest::newRow("565,10,10") << format << 10 << 10;
 }
 
 void tst_QPainter::blendOverFlow()
@@ -3176,7 +3176,7 @@ void tst_QPainter::blendOverFlow()
 
     {
         QPainter p(&dest);
-        p.fillRect(0, 0, width, height, Qt::green);
+        p.fillRect(0, 0, width, height, BobUI::green);
     }
     QImage expected = dest;
 
@@ -3197,14 +3197,14 @@ void tst_QPainter::blendOverFlow()
 
 void tst_QPainter::largeImagePainting_data()
 {
-    QTest::addColumn<int>("width");
-    QTest::addColumn<int>("height");
-    QTest::addColumn<bool>("antialiased");
+    BOBUIest::addColumn<int>("width");
+    BOBUIest::addColumn<int>("height");
+    BOBUIest::addColumn<bool>("antialiased");
 
-    QTest::newRow("tall") << 1 << 32767 << false;
-    QTest::newRow("tall aa") << 1 << 32767 << true;
-    QTest::newRow("wide") << 32767 << 1 << false;
-    QTest::newRow("wide aa") << 32767 << 1 << true;
+    BOBUIest::newRow("tall") << 1 << 32767 << false;
+    BOBUIest::newRow("tall aa") << 1 << 32767 << true;
+    BOBUIest::newRow("wide") << 32767 << 1 << false;
+    BOBUIest::newRow("wide aa") << 32767 << 1 << true;
 }
 
 void tst_QPainter::largeImagePainting()
@@ -3222,8 +3222,8 @@ void tst_QPainter::largeImagePainting()
     img.fill(0x0);
 
     QPainter p(&img);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::white);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::white);
 
     p.setRenderHint(QPainter::Antialiasing, antialiased);
 
@@ -3343,8 +3343,8 @@ void tst_QPainter::outlineFillConsistency()
     QPolygonF poly;
     poly << QPointF(5, -100) << QPointF(-70, 20) << QPointF(95, 25);
 
-    QPen pen(Qt::red);
-    QBrush brush(Qt::black);
+    QPen pen(BobUI::red);
+    QBrush brush(BobUI::black);
 
     QRgb background = 0xffffffff;
     for (int i = 0; i < 360; ++i) {
@@ -3355,7 +3355,7 @@ void tst_QPainter::outlineFillConsistency()
 
         QPolygonF copy = poly;
         for (int j = 0; j < copy.size(); ++j)
-            copy[j] = QTransform().rotate(i).map(copy[j]);
+            copy[j] = BOBUIransform().rotate(i).map(copy[j]);
 
         p.setPen(pen);
         p.setBrush(brush);
@@ -3368,14 +3368,14 @@ void tst_QPainter::outlineFillConsistency()
 
 void tst_QPainter::drawImage_task217400_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("444") << QImage::Format_ARGB4444_Premultiplied;
-    QTest::newRow("555") << QImage::Format_ARGB8555_Premultiplied;
-    QTest::newRow("565") << QImage::Format_ARGB8565_Premultiplied;
-//    QTest::newRow("666") << QImage::Format_ARGB6666_Premultiplied;
-    QTest::newRow("888p") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("888") << QImage::Format_ARGB32;
+    BOBUIest::newRow("444") << QImage::Format_ARGB4444_Premultiplied;
+    BOBUIest::newRow("555") << QImage::Format_ARGB8555_Premultiplied;
+    BOBUIest::newRow("565") << QImage::Format_ARGB8565_Premultiplied;
+//    BOBUIest::newRow("666") << QImage::Format_ARGB6666_Premultiplied;
+    BOBUIest::newRow("888p") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("888") << QImage::Format_ARGB32;
 }
 
 void tst_QPainter::drawImage_task217400()
@@ -3389,7 +3389,7 @@ void tst_QPainter::drawImage_task217400()
     QImage expected(src.size(), format);
     {
         QPainter p(&expected);
-        p.fillRect(0, 0, expected.width(), expected.height(), Qt::white);
+        p.fillRect(0, 0, expected.width(), expected.height(), BobUI::white);
         p.drawImage(0, 0, src);
     }
 
@@ -3397,7 +3397,7 @@ void tst_QPainter::drawImage_task217400()
         QImage dest(src.width() + i, src.height(), format);
         {
             QPainter p(&dest);
-            p.fillRect(0, 0, dest.width(), dest.height(), Qt::white);
+            p.fillRect(0, 0, dest.width(), dest.height(), BobUI::white);
             p.drawImage(i, 0, src);
         }
 
@@ -3432,7 +3432,7 @@ void tst_QPainter::drawImage_task258776()
     QCOMPARE(dest, expected);
 }
 
-void tst_QPainter::drawImage_QTBUG28324()
+void tst_QPainter::drawImage_BOBUIBUG28324()
 {
     QImage dest(512, 512, QImage::Format_ARGB32_Premultiplied);
     dest.fill(0x0);
@@ -3459,30 +3459,30 @@ void tst_QPainter::clipRectSaveRestore()
     QPainter p(&img);
     p.setClipRect(QRect(0, 0, 10, 10));
     p.save();
-    p.setClipRect(QRect(5, 5, 5, 5), Qt::IntersectClip);
+    p.setClipRect(QRect(5, 5, 5, 5), BobUI::IntersectClip);
     p.restore();
-    p.fillRect(0, 0, 64, 64, Qt::black);
+    p.fillRect(0, 0, 64, 64, BobUI::black);
     p.end();
 
-    QCOMPARE(img.pixel(0, 0), QColor(Qt::black).rgba());
+    QCOMPARE(img.pixel(0, 0), QColor(BobUI::black).rgba());
 }
 
 void tst_QPainter::clipStateSaveRestore()
 {
     QImage img(16, 16, QImage::Format_RGB32);
-    img.fill(Qt::blue);
+    img.fill(BobUI::blue);
     {
         QPainter p(&img);
         p.setClipRect(QRect(5, 5, 10, 10));
         p.save();
         p.setClipping(false);
         p.restore();
-        p.fillRect(0, 0, 16, 16, Qt::red);
+        p.fillRect(0, 0, 16, 16, BobUI::red);
         p.end();
-        QCOMPARE(img.pixel(0, 0), QColor(Qt::blue).rgb());
+        QCOMPARE(img.pixel(0, 0), QColor(BobUI::blue).rgb());
     }
 
-    img.fill(Qt::blue);
+    img.fill(BobUI::blue);
     {
         QPainter p(&img);
         p.setClipRect(QRect(5, 5, 10, 10));
@@ -3490,9 +3490,9 @@ void tst_QPainter::clipStateSaveRestore()
         p.save();
         p.setClipping(true);
         p.restore();
-        p.fillRect(0, 0, 16, 16, Qt::red);
+        p.fillRect(0, 0, 16, 16, BobUI::red);
         p.end();
-        QCOMPARE(img.pixel(0, 0), QColor(Qt::red).rgb());
+        QCOMPARE(img.pixel(0, 0), QColor(BobUI::red).rgb());
     }
 }
 
@@ -3502,7 +3502,7 @@ void tst_QPainter::clippedImage()
     img.fill(0x0);
 
     QImage src(16, 16, QImage::Format_RGB32);
-    src.fill(QColor(Qt::red).rgba());
+    src.fill(QColor(BobUI::red).rgba());
 
     QPainter p(&img);
     p.setClipRect(QRect(1, 1, 14, 14));
@@ -3520,7 +3520,7 @@ void tst_QPainter::stateResetBetweenQPainters()
     {
         QPainter p(&img);
         p.setCompositionMode(QPainter::CompositionMode_Source);
-        p.fillRect(0, 0, 16, 16, Qt::red);
+        p.fillRect(0, 0, 16, 16, BobUI::red);
     }
 
     {
@@ -3538,7 +3538,7 @@ void tst_QPainter::stateResetBetweenQPainters()
 void tst_QPainter::drawRect_task215378()
 {
     QImage img(11, 11, QImage::Format_ARGB32_Premultiplied);
-    img.fill(QColor(Qt::white).rgba());
+    img.fill(QColor(BobUI::white).rgba());
 
     QPainter p(&img);
     p.setPen(QColor(127, 127, 127, 127));
@@ -3557,13 +3557,13 @@ void tst_QPainter::drawRect_task247505()
     QImage b = a;
 
     QPainter p(&a);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::black);
     p.drawRect(QRectF(10, 0, -10, 10));
     p.end();
     p.begin(&b);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setPen(BobUI::NoPen);
+    p.setBrush(BobUI::black);
     p.drawRect(QRectF(0, 0, 10, 10));
     p.end();
 
@@ -3572,12 +3572,12 @@ void tst_QPainter::drawRect_task247505()
 
 void tst_QPainter::drawImage_data()
 {
-    QTest::addColumn<int>("x");
-    QTest::addColumn<int>("y");
-    QTest::addColumn<int>("w");
-    QTest::addColumn<int>("h");
-    QTest::addColumn<QImage::Format>("srcFormat");
-    QTest::addColumn<QImage::Format>("dstFormat");
+    BOBUIest::addColumn<int>("x");
+    BOBUIest::addColumn<int>("y");
+    BOBUIest::addColumn<int>("w");
+    BOBUIest::addColumn<int>("h");
+    BOBUIest::addColumn<QImage::Format>("srcFormat");
+    BOBUIest::addColumn<QImage::Format>("dstFormat");
 
     for (int srcFormat = QImage::Format_Mono; srcFormat < QImage::NImageFormats; ++srcFormat) {
         for (int dstFormat = QImage::Format_Mono; dstFormat < QImage::NImageFormats; ++dstFormat) {
@@ -3590,7 +3590,7 @@ void tst_QPainter::drawImage_data()
 
             for (int odd_x = 0; odd_x <= 1; ++odd_x) {
                 for (int odd_width = 0; odd_width <= 1; ++odd_width) {
-                    QTest::addRow("srcFormat %d, dstFormat %d, odd x: %d, odd width: %d",
+                    BOBUIest::addRow("srcFormat %d, dstFormat %d, odd x: %d, odd width: %d",
                                   srcFormat, dstFormat, odd_x, odd_width)
                         << (10 + odd_x) << 10 << (20 + odd_width) << 20
                         << QImage::Format(srcFormat)
@@ -3650,7 +3650,7 @@ void tst_QPainter::imageCoordinateLimit()
     QImage img(64, 40000, QImage::Format_MonoLSB);
     QPainter p(&img);
     p.drawText(10, 36000, QLatin1String("foo"));
-    p.setPen(QPen(Qt::black, 2));
+    p.setPen(QPen(BobUI::black, 2));
     p.drawLine(10, 0, 60, 40000);
 
     p.setRenderHint(QPainter::Antialiasing);
@@ -3660,23 +3660,23 @@ void tst_QPainter::imageCoordinateLimit()
 
 void tst_QPainter::imageBlending_data()
 {
-    QTest::addColumn<QImage::Format>("sourceFormat");
-    QTest::addColumn<QImage::Format>("destFormat");
-    QTest::addColumn<int>("error");
+    BOBUIest::addColumn<QImage::Format>("sourceFormat");
+    BOBUIest::addColumn<QImage::Format>("destFormat");
+    BOBUIest::addColumn<int>("error");
 
     int error_rgb565 = ((1<<3) + (1<<2) + (1<<3));
-    QTest::newRow("rgb565_on_rgb565") << QImage::Format_RGB16
+    BOBUIest::newRow("rgb565_on_rgb565") << QImage::Format_RGB16
                                       << QImage::Format_RGB16
                                       << 0;
-    QTest::newRow("argb8565_on_rgb565") << QImage::Format_ARGB8565_Premultiplied
+    BOBUIest::newRow("argb8565_on_rgb565") << QImage::Format_ARGB8565_Premultiplied
                                         << QImage::Format_RGB16
                                         << error_rgb565;
 
-    QTest::newRow("rgb32_on_rgb565") << QImage::Format_RGB32
+    BOBUIest::newRow("rgb32_on_rgb565") << QImage::Format_RGB32
                                      << QImage::Format_RGB16
                                      << error_rgb565;
 
-    QTest::newRow("argb32pm_on_rgb565") << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("argb32pm_on_rgb565") << QImage::Format_ARGB32_Premultiplied
                                         << QImage::Format_RGB16
                                         << error_rgb565;
 }
@@ -3774,12 +3774,12 @@ void tst_QPainter::imageBlending_clipped()
 {
     QImage src(20, 20, QImage::Format_RGB16);
     QPainter p(&src);
-    p.fillRect(src.rect(), Qt::red);
+    p.fillRect(src.rect(), BobUI::red);
     p.end();
 
     QImage dst(40, 20, QImage::Format_RGB16);
     p.begin(&dst);
-    p.fillRect(dst.rect(), Qt::white);
+    p.fillRect(dst.rect(), BobUI::white);
     p.end();
 
     QImage expected = dst;
@@ -3813,15 +3813,15 @@ void tst_QPainter::checkCompositionMode()
 {
     QImage refImage(50,50,QImage::Format_ARGB32);
     QPainter painter(&refImage);
-    painter.fillRect(QRect(0,0,50,50),Qt::blue);
+    painter.fillRect(QRect(0,0,50,50),BobUI::blue);
 
     QImage testImage(50,50,QImage::Format_ARGB32);
     QPainter p(&testImage);
-    p.fillRect(QRect(0,0,50,50),Qt::red);
+    p.fillRect(QRect(0,0,50,50),BobUI::red);
     p.save();
     p.setCompositionMode(QPainter::CompositionMode_SourceOut);
     p.restore();
-    p.fillRect(QRect(0,0,50,50),Qt::blue);
+    p.fillRect(QRect(0,0,50,50),BobUI::blue);
 
     QCOMPARE(refImage.pixel(20,20),testImage.pixel(20,20));
 }
@@ -3842,27 +3842,27 @@ static QLinearGradient inverseGradient(QLinearGradient g)
 
 void tst_QPainter::linearGradientSymmetry_data()
 {
-    QTest::addColumn<QGradientStops>("stops");
+    BOBUIest::addColumn<QGradientStops>("stops");
 
     if (sizeof(qreal) != sizeof(float)) {
-        QGradientStops stops = {{qreal(0.0), QColor(Qt::blue)},
+        QGradientStops stops = {{qreal(0.0), QColor(BobUI::blue)},
                                 {qreal(0.2), QColor(220, 220, 220, 0)},
-                                {qreal(0.6), QColor(Qt::red)},
+                                {qreal(0.6), QColor(BobUI::red)},
                                 {qreal(0.9), QColor(220, 220, 220, 255)},
-                                {qreal(1.0), QColor(Qt::black)}};
-        QTest::newRow("multiple stops") << stops;
+                                {qreal(1.0), QColor(BobUI::black)}};
+        BOBUIest::newRow("multiple stops") << stops;
     }
 
     {
-        QGradientStops stops = {{qreal(0.0), QColor(Qt::blue)},
-                                {qreal(1.0), QColor(Qt::black)}};
-        QTest::newRow("two stops") << stops;
+        QGradientStops stops = {{qreal(0.0), QColor(BobUI::blue)},
+                                {qreal(1.0), QColor(BobUI::black)}};
+        BOBUIest::newRow("two stops") << stops;
     }
 
     if (sizeof(qreal) != sizeof(float)) {
-        QGradientStops stops = {{qreal(0.3), QColor(Qt::blue)},
-                                {qreal(0.6), QColor(Qt::black)}};
-        QTest::newRow("two stops 2") << stops;
+        QGradientStops stops = {{qreal(0.3), QColor(BobUI::blue)},
+                                {qreal(0.6), QColor(BobUI::black)}};
+        BOBUIest::newRow("two stops 2") << stops;
     }
 }
 
@@ -3887,22 +3887,22 @@ void tst_QPainter::linearGradientSymmetry()
     pb.fillRect(b.rect(), inverseGradient(gradient));
     pb.end();
 
-    b = b.flipped(Qt::Horizontal | Qt::Vertical);
+    b = b.flipped(BobUI::Horizontal | BobUI::Vertical);
     QCOMPARE(a, b);
 }
 
 void tst_QPainter::gradientPixelFormat_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("argb32") << QImage::Format_ARGB32;
-    QTest::newRow("rgb32") << QImage::Format_RGB32;
-    QTest::newRow("rgb888") << QImage::Format_RGB888;
-    QTest::newRow("rgbx8888") << QImage::Format_RGBX8888;
-    QTest::newRow("rgba8888") << QImage::Format_RGBA8888;
-    QTest::newRow("rgba8888_pm") << QImage::Format_RGBA8888_Premultiplied;
-    QTest::newRow("rgbx64") << QImage::Format_RGBX64;
-    QTest::newRow("rgba64_pm") << QImage::Format_RGBA64_Premultiplied;
+    BOBUIest::newRow("argb32") << QImage::Format_ARGB32;
+    BOBUIest::newRow("rgb32") << QImage::Format_RGB32;
+    BOBUIest::newRow("rgb888") << QImage::Format_RGB888;
+    BOBUIest::newRow("rgbx8888") << QImage::Format_RGBX8888;
+    BOBUIest::newRow("rgba8888") << QImage::Format_RGBA8888;
+    BOBUIest::newRow("rgba8888_pm") << QImage::Format_RGBA8888_Premultiplied;
+    BOBUIest::newRow("rgbx64") << QImage::Format_RGBX64;
+    BOBUIest::newRow("rgba64_pm") << QImage::Format_RGBA64_Premultiplied;
 }
 
 void tst_QPainter::gradientPixelFormat()
@@ -3912,10 +3912,10 @@ void tst_QPainter::gradientPixelFormat()
     QImage a(8, 64, QImage::Format_ARGB32_Premultiplied);
     QImage b(8, 64, format);
 
-    QGradientStops stops = {{qreal(0.0), QColor(Qt::blue)},
-                            {qreal(0.3), QColor(Qt::red)},
-                            {qreal(0.6), QColor(Qt::green)},
-                            {qreal(1.0), QColor(Qt::black)}};
+    QGradientStops stops = {{qreal(0.0), QColor(BobUI::blue)},
+                            {qreal(0.3), QColor(BobUI::red)},
+                            {qreal(0.6), QColor(BobUI::green)},
+                            {qreal(1.0), QColor(BobUI::black)}};
 
     a.fill(0);
     b.fill(0);
@@ -3934,7 +3934,7 @@ void tst_QPainter::gradientPixelFormat()
     QCOMPARE(a, b.convertToFormat(QImage::Format_ARGB32_Premultiplied));
 }
 
-void tst_QPainter::radialGradient_QTBUG120332_ubsan()
+void tst_QPainter::radialGradient_BOBUIBUG120332_ubsan()
 {
     // Check if Radial Gradient will cause division by zero or not when
     // the center point coincide with the focal point.
@@ -3944,12 +3944,12 @@ void tst_QPainter::radialGradient_QTBUG120332_ubsan()
     QPointF center(0.5, 0.5);
     QPointF focal(0.5, 0.5);
     QRadialGradient gradient(center, 0.5, focal, 0.5);
-    gradient.setColorAt(0, Qt::blue);
-    gradient.setColorAt(1, Qt::red);
+    gradient.setColorAt(0, BobUI::blue);
+    gradient.setColorAt(1, BobUI::red);
     painter.fillRect(image.rect(), QBrush(gradient));
 }
 
-void tst_QPainter::radialGradient_QTBUG130992_crash()
+void tst_QPainter::radialGradient_BOBUIBUG130992_crash()
 {
     // Check if Radial Gradient will crash on extreme values
     // The crash was found by oss-fuzz, see
@@ -3969,7 +3969,7 @@ void tst_QPainter::gradientInterpolation()
 
     QLinearGradient gradient(QRectF(image.rect()).topLeft(), QRectF(image.rect()).topRight());
     gradient.setColorAt(0.0, QColor(255, 0, 0, 0));
-    gradient.setColorAt(1.0, Qt::blue);
+    gradient.setColorAt(1.0, BobUI::blue);
 
     image.fill(0);
     painter.begin(&image);
@@ -4005,15 +4005,15 @@ void tst_QPainter::gradientInterpolation()
     }
 }
 
-#if QT_CONFIG(raster_64bit)
+#if BOBUI_CONFIG(raster_64bit)
 void tst_QPainter::linearGradientRgb30_data()
 {
-    QTest::addColumn<QColor>("stop0");
-    QTest::addColumn<QColor>("stop1");
+    BOBUIest::addColumn<QColor>("stop0");
+    BOBUIest::addColumn<QColor>("stop1");
 
-    QTest::newRow("white->black") << QColor(Qt::white) << QColor(Qt::black);
-    QTest::newRow("blue->black") << QColor(Qt::blue) << QColor(Qt::black);
-    QTest::newRow("white->red") << QColor(Qt::white) << QColor(Qt::red);
+    BOBUIest::newRow("white->black") << QColor(BobUI::white) << QColor(BobUI::black);
+    BOBUIest::newRow("blue->black") << QColor(BobUI::blue) << QColor(BobUI::black);
+    BOBUIest::newRow("white->red") << QColor(BobUI::white) << QColor(BobUI::red);
 }
 
 void tst_QPainter::linearGradientRgb30()
@@ -4082,8 +4082,8 @@ void tst_QPainter::drawPolygon()
     img.fill(0xffffffff);
     QPainter p(&img);
     p.setRenderHint(QPainter::Antialiasing);
-    p.setBrush(Qt::red);
-    p.setPen(Qt::NoPen);
+    p.setBrush(BobUI::red);
+    p.setPen(BobUI::NoPen);
     p.drawPolygon(poly);
     p.translate(64, 64);
     p.drawPolygon(poly);
@@ -4094,8 +4094,8 @@ void tst_QPainter::drawPolygon()
     img.fill(0xffffffff);
     p.begin(&img);
     p.setRenderHint(QPainter::Antialiasing);
-    p.setBrush(Qt::red);
-    p.setPen(Qt::NoPen);
+    p.setBrush(BobUI::red);
+    p.setPen(BobUI::NoPen);
     p.translate(64, 64);
     p.drawPolygon(poly);
     p.resetTransform();
@@ -4119,18 +4119,18 @@ void tst_QPainter::inactivePainter()
     p.restore();
 
     p.background();
-    p.setBackground(QBrush(Qt::blue));
+    p.setBackground(QBrush(BobUI::blue));
 
     p.brush();
-    p.setBrush(Qt::red);
-    p.setBrush(Qt::NoBrush);
-    p.setBrush(QBrush(Qt::white, Qt::DiagCrossPattern));
+    p.setBrush(BobUI::red);
+    p.setBrush(BobUI::NoBrush);
+    p.setBrush(QBrush(BobUI::white, BobUI::DiagCrossPattern));
 
     p.backgroundMode();
-    p.setBackgroundMode(Qt::OpaqueMode);
+    p.setBackgroundMode(BobUI::OpaqueMode);
 
-    p.boundingRect(QRectF(0, 0, 100, 20), Qt::AlignCenter, QLatin1String("Hello, World!"));
-    p.boundingRect(QRect(0, 0, 100, 20), Qt::AlignCenter, QLatin1String("Hello, World!"));
+    p.boundingRect(QRectF(0, 0, 100, 20), BobUI::AlignCenter, QLatin1String("Hello, World!"));
+    p.boundingRect(QRect(0, 0, 100, 20), BobUI::AlignCenter, QLatin1String("Hello, World!"));
 
     p.brushOrigin();
     p.setBrushOrigin(QPointF(12, 34));
@@ -4160,15 +4160,15 @@ void tst_QPainter::inactivePainter()
     p.fontMetrics();
 
     p.layoutDirection();
-    p.setLayoutDirection(Qt::RightToLeft);
+    p.setLayoutDirection(BobUI::RightToLeft);
 
     p.opacity();
     p.setOpacity(0.75);
 
     p.pen();
-    p.setPen(QPen(Qt::red));
-    p.setPen(Qt::green);
-    p.setPen(Qt::NoPen);
+    p.setPen(QPen(BobUI::red));
+    p.setPen(BobUI::green);
+    p.setPen(BobUI::NoPen);
 
     p.renderHints();
     p.setRenderHint(QPainter::Antialiasing, true);
@@ -4190,15 +4190,15 @@ void tst_QPainter::inactivePainter()
     p.setWindow(QRect(10, 10, 620, 460));
 
     p.worldTransform();
-    p.setWorldTransform(QTransform().translate(43, 21), true);
+    p.setWorldTransform(BOBUIransform().translate(43, 21), true);
 
     p.setWorldMatrixEnabled(true);
 
     p.transform();
-    p.setTransform(QTransform().translate(12, 34), true);
+    p.setTransform(BOBUIransform().translate(12, 34), true);
 
     p.worldTransform();
-    p.setWorldTransform(QTransform().scale(0.5, 0.5), true);
+    p.setWorldTransform(BOBUIransform().scale(0.5, 0.5), true);
 }
 
 bool testCompositionMode(int src, int dst, int expected, QPainter::CompositionMode op, qreal opacity = 1.0)
@@ -4348,7 +4348,7 @@ void tst_QPainter::clippingBug()
 
     QImage expected = img;
     QPainter p(&expected);
-    p.fillRect(1, 1, 30, 30, Qt::red);
+    p.fillRect(1, 1, 30, 30, BobUI::red);
     p.end();
 
     QPainterPath path;
@@ -4358,7 +4358,7 @@ void tst_QPainter::clippingBug()
 
     p.begin(&img);
     p.setClipPath(path);
-    p.fillRect(0, 0, 32, 32, Qt::red);
+    p.fillRect(0, 0, 32, 32, BobUI::red);
     p.end();
 
     QCOMPARE(img, expected);
@@ -4370,7 +4370,7 @@ void tst_QPainter::emptyClip()
     QPainter p(&img);
     p.setRenderHints(QPainter::Antialiasing);
     p.setClipRect(0, 32, 64, 0);
-    p.fillRect(0, 0, 64, 64, Qt::white);
+    p.fillRect(0, 0, 64, 64, BobUI::white);
 
     QPainterPath path;
     path.lineTo(64, 0);
@@ -4379,7 +4379,7 @@ void tst_QPainter::emptyClip()
     path.lineTo(40, 80);
     path.lineTo(0, 80);
 
-    p.fillPath(path, Qt::green);
+    p.fillPath(path, BobUI::green);
 }
 
 void tst_QPainter::drawImage_1x1()
@@ -4396,19 +4396,19 @@ void tst_QPainter::drawImage_1x1()
     QImage expected = img;
     expected.fill(0xff000000);
     p.begin(&expected);
-    p.fillRect(1, 1, 31, 31, Qt::white);
+    p.fillRect(1, 1, 31, 31, BobUI::white);
     p.end();
 
     QCOMPARE(img, expected);
 }
 
-void tst_QPainter::taskQT4444_dontOverflowDashOffset()
+void tst_QPainter::taskBOBUI4444_dontOverflowDashOffset()
 {
     QPainter p;
 
     QPen pen;
     pen.setWidth(2);
-    pen.setStyle(Qt::DashDotLine);
+    pen.setStyle(BobUI::DashDotLine);
 
     QPointF point[4];
     point[0] = QPointF(182.50868749707968,347.78457234212630);
@@ -4465,20 +4465,20 @@ void tst_QPainter::painterBegin()
 
 void tst_QPainter::setPenColor(QPainter& p)
 {
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
 
     // Setting color, then style
     // Should work even though the pen is "NoPen with color", temporarily.
     QPen newPen(p.pen());
-    newPen.setColor(Qt::red);
+    newPen.setColor(BobUI::red);
     QCOMPARE(p.pen().style(), newPen.style());
-    QCOMPARE(p.pen().style(), Qt::NoPen);
+    QCOMPARE(p.pen().style(), BobUI::NoPen);
     p.setPen(newPen);
 
     QCOMPARE(p.pen().color().name(), QString("#ff0000"));
 
     QPen newPen2(p.pen());
-    newPen2.setStyle(Qt::SolidLine);
+    newPen2.setStyle(BobUI::SolidLine);
     p.setPen(newPen2);
 
     QCOMPARE(p.pen().color().name(), QString("#ff0000"));
@@ -4498,7 +4498,7 @@ void tst_QPainter::setPenColorOnPixmap()
     setPenColor(p);
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 class TestProxy : public QGraphicsProxyWidget
 {
 public:
@@ -4508,7 +4508,7 @@ public:
         QGraphicsProxyWidget::paint(painter, option, widget);
         deviceTransform = painter->deviceTransform();
     }
-    QTransform deviceTransform;
+    BOBUIransform deviceTransform;
 };
 
 class TestWidget : public QWidget
@@ -4523,12 +4523,12 @@ public:
         worldTransform = p.worldTransform();
         painted = true;
     }
-    QTransform deviceTransform;
-    QTransform worldTransform;
+    BOBUIransform deviceTransform;
+    BOBUIransform worldTransform;
     bool painted;
 };
 
-void tst_QPainter::QTBUG5939_attachPainterPrivate()
+void tst_QPainter::BOBUIBUG5939_attachPainterPrivate()
 {
     QWidget *w = new QWidget();
     QGraphicsScene *scene = new QGraphicsScene();
@@ -4538,11 +4538,11 @@ void tst_QPainter::QTBUG5939_attachPainterPrivate()
     TestWidget *widget = new TestWidget();
     proxy->setWidget(widget);
     scene->addItem(proxy);
-    proxy->setTransform(QTransform().rotate(45));
+    proxy->setTransform(BOBUIransform().rotate(45));
     w->resize(scene->sceneRect().size().toSize());
 
     w->show();
-    QTRY_VERIFY(widget->painted);
+    BOBUIRY_VERIFY(widget->painted);
 
     QVERIFY(widget->worldTransform.isIdentity());
     QCOMPARE(widget->deviceTransform, proxy->deviceTransform);
@@ -4559,7 +4559,7 @@ void tst_QPainter::clipBoundingRect()
     p.setClipRect(100, 100, 200, 100);
     QVERIFY(p.clipBoundingRect().contains(QRectF(100, 100, 200, 100)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(50, 50, 300, 200)));
-    p.setClipRect(120, 120, 20, 20, Qt::IntersectClip);
+    p.setClipRect(120, 120, 20, 20, BobUI::IntersectClip);
     QVERIFY(p.clipBoundingRect().contains(QRect(120, 120, 20, 20)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(100, 100, 200, 100)));
 
@@ -4567,7 +4567,7 @@ void tst_QPainter::clipBoundingRect()
     p.setClipRect(QRectF(100, 100, 200, 100));
     QVERIFY(p.clipBoundingRect().contains(QRectF(100, 100, 200, 100)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(50, 50, 300, 200)));
-    p.setClipRect(QRectF(120, 120, 20, 20), Qt::IntersectClip);
+    p.setClipRect(QRectF(120, 120, 20, 20), BobUI::IntersectClip);
     QVERIFY(p.clipBoundingRect().contains(QRect(120, 120, 20, 20)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(100, 100, 200, 100)));
 
@@ -4577,7 +4577,7 @@ void tst_QPainter::clipBoundingRect()
     p.setClipPath(path);
     QVERIFY(p.clipBoundingRect().contains(QRectF(100, 100, 200, 100)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(50, 50, 300, 200)));
-    p.setClipRegion(QRegion(120, 120, 20, 20), Qt::IntersectClip);
+    p.setClipRegion(QRegion(120, 120, 20, 20), BobUI::IntersectClip);
     QVERIFY(p.clipBoundingRect().contains(QRect(120, 120, 20, 20)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(100, 100, 200, 100)));
 
@@ -4585,7 +4585,7 @@ void tst_QPainter::clipBoundingRect()
     p.translate(250, 250);
     for (int i=0; i<360; ++i) {
         p.rotate(1);
-        p.setClipRect(-100, -100, 200, 200, Qt::IntersectClip);
+        p.setClipRect(-100, -100, 200, 200, BobUI::IntersectClip);
     }
     QVERIFY(p.clipBoundingRect().contains(QRectF(-100, -100, 200, 200)));
     QVERIFY(!p.clipBoundingRect().contains(QRectF(-250, -250, 500, 500)));
@@ -4597,58 +4597,58 @@ void tst_QPainter::transformedClip()
     QImage img(8, 4, QImage::Format_ARGB32_Premultiplied);
     QImage img2(img.size(), img.format());
     QRect clip(0, 0, 2, 1);
-    QTransform xf;
+    BOBUIransform xf;
     xf.translate(0.2, 0);
     xf.scale(2.2, 1);
     // setClipRect(QRectF)
     {
-        img.fill(Qt::green);
+        img.fill(BobUI::green);
         QPainter p(&img);
         p.setTransform(xf);
         p.setClipRect(QRectF(clip));
-        p.fillRect(img.rect(), Qt::white);
+        p.fillRect(img.rect(), BobUI::white);
     }
     // setClipRect(QRect)
     {
-        img2.fill(Qt::green);
+        img2.fill(BobUI::green);
         QPainter p(&img2);
         p.setTransform(xf);
         p.setClipRect(clip);
-        p.fillRect(img2.rect(), Qt::white);
+        p.fillRect(img2.rect(), BobUI::white);
         QCOMPARE(img, img2);
     }
     // setClipRegion
     {
-        img2.fill(Qt::green);
+        img2.fill(BobUI::green);
         QPainter p(&img2);
         p.setTransform(xf);
         p.setClipRegion(QRegion(clip) + QRect(0, 3, 1, 1));  // dummy extra rect to avoid single-rect codepath
-        p.fillRect(img2.rect(), Qt::white);
+        p.fillRect(img2.rect(), BobUI::white);
         QCOMPARE(img.copy(0, 0, 8, 2), img2.copy(0, 0, 8, 2));
     }
     // setClipPath
     {
-        img2.fill(Qt::green);
+        img2.fill(BobUI::green);
         QPainter p(&img2);
         p.setTransform(xf);
         QPainterPath path;
         path.addRect(clip);
         p.setClipPath(path);
-        p.fillRect(img2.rect(), Qt::white);
+        p.fillRect(img2.rect(), BobUI::white);
         QCOMPARE(img, img2);
     }
 }
 
 void tst_QPainter::scaledClipConsistency_data()
 {
-    QTest::addColumn<ClipType>("clipType");
+    BOBUIest::addColumn<ClipType>("clipType");
 
-    QTest::newRow("clipRect") << ClipRect;
-    QTest::newRow("clipRectF") << ClipRectF;
-    QTest::newRow("clipRegionSingle") << ClipRegionSingle;
-    QTest::newRow("clipRegionMulti") << ClipRegionMulti;
-    QTest::newRow("clipPathR") << ClipPathR;
-    QTest::newRow("clipPath") << ClipPath;
+    BOBUIest::newRow("clipRect") << ClipRect;
+    BOBUIest::newRow("clipRectF") << ClipRectF;
+    BOBUIest::newRow("clipRegionSingle") << ClipRegionSingle;
+    BOBUIest::newRow("clipRegionMulti") << ClipRegionMulti;
+    BOBUIest::newRow("clipPathR") << ClipPathR;
+    BOBUIest::newRow("clipPath") << ClipPath;
 }
 
 void tst_QPainter::scaledClipConsistency()
@@ -4672,13 +4672,13 @@ void tst_QPainter::scaledClipConsistency()
     for (const QRect &clipRect : clipRects)
         multiRegion += clipRect;
 
-    QColor fillColor(Qt::black);
+    QColor fillColor(BobUI::black);
     fillColor.setAlphaF(0.5);
 
     for (int i = 100; i <= 300; i++) {
         qreal dpr = qreal(i) / 100.0;
         QImage img(QSize(16, 16) * dpr, QImage::Format_RGB32);
-        img.fill(Qt::white);
+        img.fill(BobUI::white);
         img.setDevicePixelRatio(dpr);
 
         for (const QRect &clipRect : clipRects) {
@@ -4714,29 +4714,29 @@ void tst_QPainter::scaledClipConsistency()
                 break; // once is enough, we're not using the clipRect anyway
         }
 
-        int qtWidth = img.width() / 4;
-        int qtHeight = img.height() / 4;
+        int bobuiWidth = img.width() / 4;
+        int bobuiHeight = img.height() / 4;
         QPoint imgCenter = img.rect().center();
-        const QRgb targetColor = img.pixel(qtWidth, qtHeight);
+        const QRgb targetColor = img.pixel(bobuiWidth, bobuiHeight);
 
         // Test that there are no gaps or overlaps where the cliprects meet
         for (int offset = -2; offset <= 2; offset++) {
-            QCOMPARE(img.pixel(imgCenter.x() + offset, qtHeight), targetColor);
-            QCOMPARE(img.pixel(imgCenter.x() + offset, img.height() - qtHeight), targetColor);
-            QCOMPARE(img.pixel(qtWidth, imgCenter.y() + offset), targetColor);
-            QCOMPARE(img.pixel(img.width() - qtWidth, imgCenter.y() + offset), targetColor);
+            QCOMPARE(img.pixel(imgCenter.x() + offset, bobuiHeight), targetColor);
+            QCOMPARE(img.pixel(imgCenter.x() + offset, img.height() - bobuiHeight), targetColor);
+            QCOMPARE(img.pixel(bobuiWidth, imgCenter.y() + offset), targetColor);
+            QCOMPARE(img.pixel(img.width() - bobuiWidth, imgCenter.y() + offset), targetColor);
         }
     }
 }
 
 #if defined(Q_OS_MAC)
 // Only Mac supports sub pixel positions in raster engine currently
-void tst_QPainter::drawText_subPixelPositionsInRaster_qtbug5053()
+void tst_QPainter::drawText_subPixelPositionsInRaster_bobuibug5053()
 {
     QFontMetricsF fm(qApp->font());
 
     QImage baseLine(fm.horizontalAdvance(QChar::fromLatin1('e')), fm.height(), QImage::Format_RGB32);
-    baseLine.fill(Qt::white);
+    baseLine.fill(BobUI::white);
     {
         QPainter p(&baseLine);
         p.drawText(0, fm.ascent(), QString::fromLatin1("e"));
@@ -4745,7 +4745,7 @@ void tst_QPainter::drawText_subPixelPositionsInRaster_qtbug5053()
     bool foundDifferentRasterization = false;
     for (int i=1; i<12; ++i) {
         QImage comparison(baseLine.size(), QImage::Format_RGB32);
-        comparison.fill(Qt::white);
+        comparison.fill(BobUI::white);
 
         {
             QPainter p(&comparison);
@@ -4773,7 +4773,7 @@ void tst_QPainter::drawPointScaled()
 
     QPen pen;
     pen.setWidth(1000);
-    pen.setColor(Qt::red);
+    pen.setColor(BobUI::red);
 
     p.setPen(pen);
     p.drawPoint(0, 0);
@@ -4782,7 +4782,7 @@ void tst_QPainter::drawPointScaled()
     QCOMPARE(image.pixel(16, 16), 0xffff0000);
 }
 
-class GradientProducer : public QThread
+class GradientProducer : public BOBUIhread
 {
 protected:
     void run() override;
@@ -4796,13 +4796,13 @@ void GradientProducer::run()
     for (int i = 0; i < 1000; ++i) {
         QLinearGradient g;
         g.setColorAt(0, QColor(i % 256, 0, 0));
-        g.setColorAt(1, Qt::white);
+        g.setColorAt(1, BobUI::white);
 
         p.fillRect(image.rect(), g);
     }
 }
 
-void tst_QPainter::QTBUG14614_gradientCacheRaceCondition()
+void tst_QPainter::BOBUIBUG14614_gradientCacheRaceCondition()
 {
     const int threadCount = 16;
     GradientProducer producers[threadCount];
@@ -4820,7 +4820,7 @@ void tst_QPainter::drawTextOpacity()
     QPainter p(&image);
     p.setPen(QColor("#6F6F6F"));
     p.setOpacity(0.5);
-    p.drawText(5, 30, QLatin1String("Qt"));
+    p.drawText(5, 30, QLatin1String("BobUI"));
     p.end();
 
     QImage copy = image;
@@ -4830,7 +4830,7 @@ void tst_QPainter::drawTextOpacity()
     p.setPen(QColor("#6F6F6F"));
     p.drawLine(-10, -10, -1, -1);
     p.setOpacity(0.5);
-    p.drawText(5, 30, QLatin1String("Qt"));
+    p.drawText(5, 30, QLatin1String("BobUI"));
     p.end();
 
     QCOMPARE(image, copy);
@@ -4841,11 +4841,11 @@ void tst_QPainter::drawPathOpacity()
     // make sure that drawing a non-opaque QPainterPath will yield the same
     // result as drawing its fill and outline separately, i.e. that the fill's
     // edge can be seen through the translucent outline
-    // qtsvg relies on this behavior, so please inform its developers in
+    // bobuisvg relies on this behavior, so please inform its developers in
     // case you change it
 
     QImage image(32, 32, QImage::Format_RGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
     QPainter p(&image);
     p.setOpacity(0.5);
 
@@ -4856,7 +4856,7 @@ void tst_QPainter::drawPathOpacity()
     pp.closeSubpath();
 
     // only fill
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setBrush(QColor("blue"));
     p.drawPath(pp);
 
@@ -4865,12 +4865,12 @@ void tst_QPainter::drawPathOpacity()
     pen.setColor(QColor("yellow"));
     pen.setWidthF(8.);
     p.setPen(pen);
-    p.setBrush(Qt::NoBrush);
+    p.setBrush(BobUI::NoBrush);
     p.drawPath(pp);
     const QImage drawnInTwoPasses = image;
 
     // draw in one pass
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
     p.setPen(pen);
     p.setBrush(QColor("blue"));
     p.drawPath(pp);
@@ -4878,7 +4878,7 @@ void tst_QPainter::drawPathOpacity()
     QCOMPARE(image, drawnInTwoPasses);
 }
 
-void tst_QPainter::QTBUG17053_zeroDashPattern()
+void tst_QPainter::BOBUIBUG17053_zeroDashPattern()
 {
     QImage image(32, 32, QImage::Format_RGB32);
     image.fill(0xffffffff);
@@ -4889,7 +4889,7 @@ void tst_QPainter::QTBUG17053_zeroDashPattern()
     pattern << qreal(0) << qreal(0);
 
     QPainter p(&image);
-    QPen pen(Qt::black, 2.0);
+    QPen pen(BobUI::black, 2.0);
     pen.setDashPattern(pattern);
 
     p.setPen(pen);
@@ -4898,14 +4898,14 @@ void tst_QPainter::QTBUG17053_zeroDashPattern()
     QCOMPARE(image, original);
 }
 
-void tst_QPainter::QTBUG38781_NoBrushAndQBitmap()
+void tst_QPainter::BOBUIBUG38781_NoBrushAndQBitmap()
 {
     QBitmap bitmap(10, 10);
-    bitmap.fill(Qt::color0);
+    bitmap.fill(BobUI::color0);
     QPainter p(&bitmap);
-    p.setPen(Qt::color1);
+    p.setPen(BobUI::color1);
     p.drawLine(0, 1, 9, 1); // at horizontal line at y=1
-    p.setBrush(Qt::NoBrush);
+    p.setBrush(BobUI::NoBrush);
     p.drawRect(0, 0, 9, 9); // a rect all around
 
     QRgb white = qRgb(0xff, 0xff, 0xff);
@@ -4918,7 +4918,7 @@ void tst_QPainter::QTBUG38781_NoBrushAndQBitmap()
     QCOMPARE(image.pixel(5, 1), black);
 }
 
-class TextDrawerThread : public QThread
+class TextDrawerThread : public BOBUIhread
 {
 public:
     void run() override;
@@ -4930,8 +4930,8 @@ void TextDrawerThread::run()
     rendering = QImage(100, 100, QImage::Format_ARGB32_Premultiplied);
     rendering.fill(0);
     QPainter p(&rendering);
-    p.fillRect(10, 10, 100, 100, Qt::blue);
-    p.setPen(Qt::green);
+    p.fillRect(10, 10, 100, 100, BobUI::blue);
+    p.setPen(BobUI::green);
     p.drawText(20, 20, "some text");
     p.end();
 }
@@ -4941,8 +4941,8 @@ void tst_QPainter::drawTextOutsideGuiThread()
     QImage referenceRendering(100, 100, QImage::Format_ARGB32_Premultiplied);
     referenceRendering.fill(0);
     QPainter p(&referenceRendering);
-    p.fillRect(10, 10, 100, 100, Qt::blue);
-    p.setPen(Qt::green);
+    p.fillRect(10, 10, 100, 100, BobUI::blue);
+    p.setPen(BobUI::green);
     p.drawText(20, 20, "some text");
     p.end();
 
@@ -4956,31 +4956,31 @@ void tst_QPainter::drawTextOutsideGuiThread()
 void tst_QPainter::drawTextWithComplexBrush()
 {
     QImage texture(10, 10, QImage::Format_ARGB32_Premultiplied);
-    texture.fill(Qt::red);
+    texture.fill(BobUI::red);
 
     QImage image(100, 100, QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
     QPainter p(&image);
     QFont f = p.font();
     f.setPixelSize(70);
     p.setFont(f);
 
-    QBrush brush(Qt::white);
+    QBrush brush(BobUI::white);
     brush.setTextureImage(texture);
     p.setPen(QPen(brush, 2));
 
     p.drawText(10, 10, "Hello World");
 
-    int paintedPixels = getPaintedPixels(image, Qt::white);
+    int paintedPixels = getPaintedPixels(image, BobUI::white);
     QVERIFY(paintedPixels > 0);
 }
 
-void tst_QPainter::QTBUG26013_squareCapStroke()
+void tst_QPainter::BOBUIBUG26013_squareCapStroke()
 {
     QImage image(4, 4, QImage::Format_RGB32);
 
     QPainter p(&image);
-    p.setPen(QPen(Qt::black, 0, Qt::SolidLine, Qt::SquareCap));
+    p.setPen(QPen(BobUI::black, 0, BobUI::SolidLine, BobUI::SquareCap));
 
     for (int i = 0; i < 3; ++i) {
         qreal d = i / 3.0;
@@ -5003,14 +5003,14 @@ void tst_QPainter::QTBUG26013_squareCapStroke()
     }
 }
 
-void tst_QPainter::QTBUG25153_drawLine()
+void tst_QPainter::BOBUIBUG25153_drawLine()
 {
     QImage image(2, 2, QImage::Format_RGB32);
 
-    for (Qt::PenCapStyle style : {Qt::FlatCap, Qt::SquareCap, Qt::RoundCap}) {
+    for (BobUI::PenCapStyle style : {BobUI::FlatCap, BobUI::SquareCap, BobUI::RoundCap}) {
         image.fill(0xffffffff);
         QPainter p(&image);
-        p.setPen(QPen(Qt::black, 0, Qt::SolidLine, style));
+        p.setPen(QPen(BobUI::black, 0, BobUI::SolidLine, style));
         p.drawLine(QLineF(0, 0, 0, 0));
         p.end();
 
@@ -5022,116 +5022,116 @@ void tst_QPainter::QTBUG25153_drawLine()
 
 void tst_QPainter::blendARGBonRGB_data()
 {
-    QTest::addColumn<QImage::Format>("dst_format");
-    QTest::addColumn<QImage::Format>("src_format");
-    QTest::addColumn<QPainter::CompositionMode>("compositionMode");
-    QTest::addColumn<QRgb>("color");
-    QTest::addColumn<int>("expected_red");
+    BOBUIest::addColumn<QImage::Format>("dst_format");
+    BOBUIest::addColumn<QImage::Format>("src_format");
+    BOBUIest::addColumn<QPainter::CompositionMode>("compositionMode");
+    BOBUIest::addColumn<QRgb>("color");
+    BOBUIest::addColumn<int>("expected_red");
 
-    QTest::newRow("ARGB over ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32
                                       << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 127 ;
-    QTest::newRow("ARGB_PM over ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32_Premultiplied
                                          << QPainter::CompositionMode_SourceOver<< qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32
                                         << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 255;
-    QTest::newRow("ARGB_PM source ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32_Premultiplied
                                            << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 255;
-    QTest::newRow("ARGB source-in ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32
                                            << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 255 ;
-    QTest::newRow("ARGB_PM source-in ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in ARGB32") << QImage::Format_ARGB32 << QImage::Format_ARGB32_Premultiplied
                                               << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 255;
-    QTest::newRow("ARGB over RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32
                                         << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM over RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32_Premultiplied
                                            << QPainter::CompositionMode_SourceOver << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32
                                           << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 255;
-    QTest::newRow("ARGB_PM source RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32_Premultiplied
                                              << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 255;
-    QTest::newRow("ARGB source-in RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32
                                              << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 255;
-    QTest::newRow("ARGB_PM source-in RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGBA8888") << QImage::Format_RGBA8888 << QImage::Format_ARGB32_Premultiplied
                                                 << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 255;
     // Only ARGB32 and RGBA8888 does inverse premultiply, on the rest over and source gives similar results:
-    QTest::newRow("ARGB over RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32
                                      << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM over RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32_Premultiplied
                                         << QPainter::CompositionMode_SourceOver << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32
                                        << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM source RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32_Premultiplied
                                           << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source-in RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32
                                           << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM source-in RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGB32") << QImage::Format_RGB32 << QImage::Format_ARGB32_Premultiplied
                                              << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB over RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32
                                       << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM over RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32_Premultiplied
                                          << QPainter::CompositionMode_SourceOver << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32
                                         << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM source RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32_Premultiplied
                                            << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source-in RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32
                                            << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM source-in RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGB888") << QImage::Format_RGB888 << QImage::Format_ARGB32_Premultiplied
                                               << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB over RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32
                                         << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM over RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32_Premultiplied
                                            << QPainter::CompositionMode_SourceOver << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32
                                           << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM source RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32_Premultiplied
                                              << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB source-in RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32
                                              << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 127;
-    QTest::newRow("ARGB_PM source-in RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGBx8888") << QImage::Format_RGBX8888 << QImage::Format_ARGB32_Premultiplied
                                                 << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 127;
-    QTest::newRow("ARGB over RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32
                                      << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 123;
-    QTest::newRow("ARGB_PM over RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32_Premultiplied
                                         << QPainter::CompositionMode_SourceOver << qRgba(127, 0, 0, 127) << 123;
-    QTest::newRow("ARGB source RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32
                                        << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 123;
-    QTest::newRow("ARGB_PM source RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32_Premultiplied
                                           << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 123;
-    QTest::newRow("ARGB source-in RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32
                                           << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 123;
-    QTest::newRow("ARGB_PM source-in RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGB16") << QImage::Format_RGB16 << QImage::Format_ARGB32_Premultiplied
                                              << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 123;
-    QTest::newRow("ARGB over RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32
                                       << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 127) << 125;
-    QTest::newRow("ARGB_PM over RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32_Premultiplied
                                          << QPainter::CompositionMode_SourceOver << qRgba(127, 0, 0, 127) << 125;
-    QTest::newRow("ARGB source RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32
                                         << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 127) << 125;
-    QTest::newRow("ARGB_PM source RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32_Premultiplied
                                            << QPainter::CompositionMode_Source << qRgba(127, 0, 0, 127) << 125;
-    QTest::newRow("ARGB source-in RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32
                                            << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 127) << 125;
-    QTest::newRow("ARGB_PM source-in RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGB666") << QImage::Format_RGB666 << QImage::Format_ARGB32_Premultiplied
                                               << QPainter::CompositionMode_SourceIn << qRgba(127, 0, 0, 127) << 125;
-    QTest::newRow("ARGB over RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB over RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
                                      << QPainter::CompositionMode_SourceOver << qRgba(255, 0, 0, 85) << 85;
-    QTest::newRow("ARGB_PM over RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM over RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
                                         << QPainter::CompositionMode_SourceOver << qRgba(85, 0, 0, 85) << 85;
-#if QT_CONFIG(raster_64bit)
-    QTest::newRow("ARGB@85 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
+#if BOBUI_CONFIG(raster_64bit)
+    BOBUIest::newRow("ARGB@85 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
                                           << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 85) << 85;
-    QTest::newRow("ARGB@120 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB@120 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
                                            << QPainter::CompositionMode_Source << qRgba(255, 0, 0, 120) << 85;
 #endif
-    QTest::newRow("ARGB_PM@85 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM@85 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
                                              << QPainter::CompositionMode_Source << qRgba(85, 0, 0, 85) << 85;
-#if QT_CONFIG(raster_64bit)
-    QTest::newRow("ARGB_PM@180 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
+#if BOBUI_CONFIG(raster_64bit)
+    BOBUIest::newRow("ARGB_PM@180 source RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
                                               << QPainter::CompositionMode_Source << qRgba(180, 0, 0, 180) << 170;
 #endif
-    QTest::newRow("ARGB source-in RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
+    BOBUIest::newRow("ARGB source-in RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32
                                           << QPainter::CompositionMode_SourceIn << qRgba(255, 0, 0, 85) << 85;
-    QTest::newRow("ARGB_PM source-in RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
+    BOBUIest::newRow("ARGB_PM source-in RGB30") << QImage::Format_RGB30 << QImage::Format_ARGB32_Premultiplied
                                              << QPainter::CompositionMode_SourceIn << qRgba(85, 0, 0, 85) << 85;
 }
 
@@ -5149,7 +5149,7 @@ void tst_QPainter::blendARGBonRGB()
 
     imageArgb.fill(color);
 
-    imageRgb.fill(Qt::black);
+    imageRgb.fill(BobUI::black);
     painter.begin(&imageRgb);
     painter.setCompositionMode(compositionMode);
     painter.drawImage(0, 0, imageArgb);
@@ -5169,12 +5169,12 @@ static void paint_func(QPainter *p, CosmeticStrokerPaint type)
     p->save();
     switch (type) {
     case Antialiasing:
-        p->setPen(Qt::black);
+        p->setPen(BobUI::black);
         p->setRenderHint(QPainter::Antialiasing);
         p->drawLine(4, 8, 42, 42);
         break;
     case Dashing:
-        p->setPen(QPen(Qt::black, 1, Qt::DashLine, Qt::RoundCap, Qt::MiterJoin));
+        p->setPen(QPen(BobUI::black, 1, BobUI::DashLine, BobUI::RoundCap, BobUI::MiterJoin));
         p->drawLine(8, 8, 42, 8);
         p->drawLine(42, 8, 42, 42);
         p->drawLine(42, 42, 8, 42);
@@ -5191,10 +5191,10 @@ Q_DECLARE_METATYPE(CosmeticStrokerPaint)
 
 void tst_QPainter::cosmeticStrokerClipping_data()
 {
-    QTest::addColumn<CosmeticStrokerPaint>("paint");
+    BOBUIest::addColumn<CosmeticStrokerPaint>("paint");
 
-    QTest::newRow("antialiasing_paint") << Antialiasing;
-    QTest::newRow("dashing_paint") << Dashing;
+    BOBUIest::newRow("antialiasing_paint") << Antialiasing;
+    BOBUIest::newRow("dashing_paint") << Dashing;
 }
 
 void tst_QPainter::cosmeticStrokerClipping()
@@ -5202,7 +5202,7 @@ void tst_QPainter::cosmeticStrokerClipping()
     QFETCH(CosmeticStrokerPaint, paint);
 
     QImage image(50, 50, QImage::Format_RGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     QPainter p(&image);
     paint_func(&p, paint);
@@ -5213,7 +5213,7 @@ void tst_QPainter::cosmeticStrokerClipping()
     image.paintEngine()->setSystemClip(QRect(10, 0, image.width() - 10, image.height()));
 
     p.begin(&image);
-    p.fillRect(image.rect(), Qt::white);
+    p.fillRect(image.rect(), BobUI::white);
     paint_func(&p, paint);
 
     // doing same paint operation again with different system clip should not change the image
@@ -5222,7 +5222,7 @@ void tst_QPainter::cosmeticStrokerClipping()
     old = image;
 
     p.setClipRect(QRect(20, 20, 30, 30));
-    p.fillRect(image.rect(), Qt::white);
+    p.fillRect(image.rect(), BobUI::white);
     paint_func(&p, paint);
 
     // ditto for regular clips
@@ -5232,12 +5232,12 @@ void tst_QPainter::cosmeticStrokerClipping()
 void tst_QPainter::RasterOp_NotDestination()
 {
     QImage image(3, 3, QImage::Format_RGB32);
-    image.fill(Qt::red);
+    image.fill(BobUI::red);
 
     {
         QPainter p(&image);
         p.setCompositionMode(QPainter::RasterOp_NotDestination);
-        p.fillRect(image.rect(), Qt::black);
+        p.fillRect(image.rect(), BobUI::black);
     }
 
     uint pixel = image.pixel(1, 1);
@@ -5261,17 +5261,17 @@ void tst_QPainter::drawTextNoHinting()
 
 void tst_QPainter::drawPolyline_data()
 {
-    QTest::addColumn<QList<QPointF>>("points");
+    BOBUIest::addColumn<QList<QPointF>>("points");
 
-    QTest::newRow("basic") << (QList<QPointF>()
+    BOBUIest::newRow("basic") << (QList<QPointF>()
                                << QPointF(10, 10) << QPointF(20, 10) << QPointF(20, 20));
-    QTest::newRow("clipped") << (QList<QPointF>()
+    BOBUIest::newRow("clipped") << (QList<QPointF>()
                                  << QPoint(-10, 100) << QPoint(-1, 100) << QPoint(-1, -2)
-                                 << QPoint(100, -2) << QPoint(100, 40)); // QTBUG-31579
-    QTest::newRow("shortsegment") << (QList<QPointF>()
+                                 << QPoint(100, -2) << QPoint(100, 40)); // BOBUIBUG-31579
+    BOBUIest::newRow("shortsegment") << (QList<QPointF>()
                                       << QPoint(20, 100) << QPoint(20, 99) << QPoint(21, 99)
-                                      << QPoint(21, 104)); // QTBUG-42398
-    QTest::newRow("edge") << (QList<QPointF>() << QPointF(4.5, 121.6) << QPointF(9.4, 150.9)
+                                      << QPoint(21, 104)); // BOBUIBUG-42398
+    BOBUIest::newRow("edge") << (QList<QPointF>() << QPointF(4.5, 121.6) << QPointF(9.4, 150.9)
                                                << QPointF(14.2, 184.8) << QPointF(19.1, 130.4));
 }
 
@@ -5282,9 +5282,9 @@ void tst_QPainter::drawPolyline()
 
     for (int r = 0; r < 2; r++) {
         images[r] = QImage(150, 150, QImage::Format_ARGB32);
-        images[r].fill(Qt::white);
+        images[r].fill(BobUI::white);
         QPainter p(images + r);
-        QPen pen(Qt::red, 0, Qt::SolidLine, Qt::FlatCap);
+        QPen pen(BobUI::red, 0, BobUI::SolidLine, BobUI::FlatCap);
         p.setPen(pen);
         QVERIFY(p.pen().isCosmetic());
         if (r) {
@@ -5299,7 +5299,7 @@ void tst_QPainter::drawPolyline()
     QCOMPARE(images[0], images[1]);
 }
 
-void tst_QPainter::QTBUG50153_drawImage_assert()
+void tst_QPainter::BOBUIBUG50153_drawImage_assert()
 {
     QImage::Format formats[] = {
         QImage::Format_RGB32,  // fetchTransformedBilinearARGB32PM
@@ -5312,7 +5312,7 @@ void tst_QPainter::QTBUG50153_drawImage_assert()
         QImage backingStore(image.size(), QImage::Format_ARGB32);
         QPainter backingStorePainter(&backingStore);
 
-        QTransform transform;
+        BOBUIransform transform;
         transform.scale( 0.999987, 0.999987 );
 
         backingStorePainter.setTransform(transform);
@@ -5325,8 +5325,8 @@ void tst_QPainter::QTBUG50153_drawImage_assert()
 
 void tst_QPainter::rotateImage_data()
 {
-    QTest::addColumn<QImage>("image");
-    QTest::addColumn<bool>("smooth");
+    BOBUIest::addColumn<QImage>("image");
+    BOBUIest::addColumn<bool>("smooth");
 
     QImage image(128, 128, QImage::Format_RGB32);
     for (int y = 0; y < 128; ++y) {
@@ -5335,8 +5335,8 @@ void tst_QPainter::rotateImage_data()
         }
     }
 
-    QTest::newRow("fast") << image << false;
-    QTest::newRow("smooth") << image << true;
+    BOBUIest::newRow("fast") << image << false;
+    BOBUIest::newRow("smooth") << image << true;
 }
 
 void tst_QPainter::rotateImage()
@@ -5345,10 +5345,10 @@ void tst_QPainter::rotateImage()
     QFETCH(bool, smooth);
 
     QImage dest(184, 184, QImage::Format_ARGB32_Premultiplied);
-    dest.fill(Qt::transparent);
+    dest.fill(BobUI::transparent);
 
     QPainter painter(&dest);
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(92, 0);
     transform.rotate(45);
     painter.setTransform(transform);
@@ -5381,11 +5381,11 @@ void tst_QPainter::rotateImage()
 
 }
 
-void tst_QPainter::QTBUG56252()
+void tst_QPainter::BOBUIBUG56252()
 {
     QImage sourceImage(1770, 1477, QImage::Format_RGB32);
     QImage rotatedImage(1478, 1771, QImage::Format_RGB32);
-    QTransform transformCenter;
+    BOBUIransform transformCenter;
     transformCenter.translate(739.0, 885.5);
     transformCenter.rotate(270.0);
     transformCenter.translate(-885.0, -738.5);
@@ -5404,7 +5404,7 @@ void tst_QPainter::blendNullRGB32()
 
     QImage nullImage((const uchar*)data, 16, 1,  QImage::Format_RGB32);
     QImage image(16, 1, QImage::Format_RGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     QPainter paint(&image);
     paint.setCompositionMode(QPainter::CompositionMode_Source);
@@ -5420,27 +5420,27 @@ void tst_QPainter::toRGB64()
 {
     QImage dst(10, 1, QImage::Format_BGR30);
     QImage src(10, 1, QImage::Format_RGB16);
-    src.fill(Qt::white);
+    src.fill(BobUI::white);
 
     QPainter paint(&dst);
     paint.drawImage(0, 0, src);
     paint.end();
 
     for (int i=0; i < dst.width(); ++i) {
-        QVERIFY(dst.pixelColor(i,0) == QColor(Qt::white));
+        QVERIFY(dst.pixelColor(i,0) == QColor(BobUI::white));
     }
 }
 
 void tst_QPainter::fillPolygon()
 {
     QImage image(50, 50, QImage::Format_RGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     QPainter painter(&image);
-    QBrush brush(Qt::black, Qt::SolidPattern);
+    QBrush brush(BobUI::black, BobUI::SolidPattern);
     painter.setBrush(brush);
 
-    QPen pen(Qt::red, 0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+    QPen pen(BobUI::red, 0, BobUI::SolidLine, BobUI::FlatCap, BobUI::MiterJoin);
     painter.setPen(pen);
 
     const QPoint diamondpoints[5] = {
@@ -5456,7 +5456,7 @@ void tst_QPainter::fillPolygon()
     {
         for (int j = 0; j < 16 ; j++)
         {
-            image.fill(Qt::white);
+            image.fill(BobUI::white);
             painter.resetTransform();
             painter.translate(25 + i/16., 25 + j/16.);
             painter.drawPolygon(diamondpoints, 5);
@@ -5467,33 +5467,33 @@ void tst_QPainter::fillPolygon()
                     QRgb c = image.pixel(x, y);
                     switch (state) {
                     case Outside1:
-                        if (c == QColor(Qt::red).rgb())
+                        if (c == QColor(BobUI::red).rgb())
                             state = Border1;
                         else
-                            QCOMPARE(c, QColor(Qt::white).rgb());
+                            QCOMPARE(c, QColor(BobUI::white).rgb());
                         break;
                     case Border1:
-                        if (c == QColor(Qt::black).rgb())
+                        if (c == QColor(BobUI::black).rgb())
                             state = Inside;
-                        else if (c == QColor(Qt::white).rgb())
+                        else if (c == QColor(BobUI::white).rgb())
                             state = Outside2;
                         else
-                            QCOMPARE(c, QColor(Qt::red).rgb());
+                            QCOMPARE(c, QColor(BobUI::red).rgb());
                         break;
                     case Inside:
-                        if (c == QColor(Qt::red).rgb())
+                        if (c == QColor(BobUI::red).rgb())
                             state = Border2;
                         else
-                            QCOMPARE(c, QColor(Qt::black).rgb());
+                            QCOMPARE(c, QColor(BobUI::black).rgb());
                         break;
                     case Border2:
-                        if (c == QColor(Qt::white).rgb())
+                        if (c == QColor(BobUI::white).rgb())
                             state = Outside2;
                         else
-                            QCOMPARE(c, QColor(Qt::red).rgb());
+                            QCOMPARE(c, QColor(BobUI::red).rgb());
                         break;
                     case Outside2:
-                        QCOMPARE(c, QColor(Qt::white).rgb());
+                        QCOMPARE(c, QColor(BobUI::white).rgb());
                     }
                 }
             }
@@ -5503,33 +5503,33 @@ void tst_QPainter::fillPolygon()
                     QRgb c = image.pixel(x, y);
                     switch (state) {
                     case Outside1:
-                        if (c == QColor(Qt::red).rgb())
+                        if (c == QColor(BobUI::red).rgb())
                             state = Border1;
                         else
-                            QCOMPARE(c, QColor(Qt::white).rgb());
+                            QCOMPARE(c, QColor(BobUI::white).rgb());
                         break;
                     case Border1:
-                        if (c == QColor(Qt::black).rgb())
+                        if (c == QColor(BobUI::black).rgb())
                             state = Inside;
-                        else if (c == QColor(Qt::white).rgb())
+                        else if (c == QColor(BobUI::white).rgb())
                             state = Outside2;
                         else
-                            QCOMPARE(c, QColor(Qt::red).rgb());
+                            QCOMPARE(c, QColor(BobUI::red).rgb());
                         break;
                     case Inside:
-                        if (c == QColor(Qt::red).rgb())
+                        if (c == QColor(BobUI::red).rgb())
                             state = Border2;
                         else
-                            QCOMPARE(c, QColor(Qt::black).rgb());
+                            QCOMPARE(c, QColor(BobUI::black).rgb());
                         break;
                     case Border2:
-                        if (c == QColor(Qt::white).rgb())
+                        if (c == QColor(BobUI::white).rgb())
                             state = Outside2;
                         else
-                            QCOMPARE(c, QColor(Qt::red).rgb());
+                            QCOMPARE(c, QColor(BobUI::red).rgb());
                         break;
                     case Outside2:
-                        QCOMPARE(c, QColor(Qt::white).rgb());
+                        QCOMPARE(c, QColor(BobUI::white).rgb());
                     }
                 }
             }
@@ -5540,15 +5540,15 @@ void tst_QPainter::fillPolygon()
 void tst_QPainter::textOnArgb32()
 {
     QImage backing(100, 20, QImage::Format_RGB32);
-    backing.fill(Qt::white);
+    backing.fill(BobUI::white);
     QImage img(100, 20, QImage::Format_ARGB32);
-    img.fill(Qt::transparent); // Filled with transparent black
+    img.fill(BobUI::transparent); // Filled with transparent black
 
     QPainter imagePainter(&img);
-    imagePainter.setPen(Qt::red);
+    imagePainter.setPen(BobUI::red);
     imagePainter.setFont(QFontDatabase::systemFont(QFontDatabase::GeneralFont));
     imagePainter.setRenderHints(QPainter::TextAntialiasing);
-    imagePainter.drawText(img.rect(), Qt::AlignCenter,"Text example");
+    imagePainter.drawText(img.rect(), BobUI::AlignCenter,"Text example");
     imagePainter.end();
     imagePainter.begin(&backing);
     imagePainter.drawImage(backing.rect(), img);
@@ -5584,7 +5584,7 @@ void tst_QPainter::scaledDashes()
     QImage image(5, 32, QImage::Format_RGB32);
     image.fill(back);
     QPainter p(&image);
-    QPen pen(QColor(fore), 3, Qt::DotLine);
+    QPen pen(QColor(fore), 3, BobUI::DotLine);
     p.setPen(pen);
     p.scale(1, 2);
     p.drawLine(2, 0, 2, 16);
@@ -5606,11 +5606,11 @@ void tst_QPainter::scaledDashes()
     QVERIFY(backFound);
 }
 
-#if QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_fp)
 void tst_QPainter::hdrColors()
 {
     QImage img(10, 10, QImage::Format_RGBA32FPx4_Premultiplied);
-    img.fill(Qt::transparent);
+    img.fill(BobUI::transparent);
 
     QColor color = QColor::fromRgbF(2.0f, -0.25f, 1.5f);
     img.setPixelColor(2, 2, color);
@@ -5638,7 +5638,7 @@ void tst_QPainter::hdrColors()
     QCOMPARE(img.pixelColor(4, 4), color);
 
     QImage img2(10, 10, QImage::Format_RGBX32FPx4);
-    img2.fill(Qt::black); // fill to avoid random FP values like Inf which can break SourceOver composition
+    img2.fill(BobUI::black); // fill to avoid random FP values like Inf which can break SourceOver composition
     {
         QPainter p(&img2);
         p.drawImage(0, 0, img);
@@ -5651,7 +5651,7 @@ void tst_QPainter::hdrColors()
 
 void tst_QPainter::alphaBlitToNonAlphaFormats_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
     for (int i = QImage::Format_Invalid; i < QImage::NImageFormats; ++i) {
         auto imageFormat = QImage::Format(i);
@@ -5660,7 +5660,7 @@ void tst_QPainter::alphaBlitToNonAlphaFormats_data()
             continue;
         if (pixelFormat.alphaUsage() == QPixelFormat::UsesAlpha)
             continue;
-        QTest::addRow("%s", QDebug::toBytes(imageFormat).mid(15).data()) << imageFormat;
+        BOBUIest::addRow("%s", QDebug::toBytes(imageFormat).mid(15).data()) << imageFormat;
     }
 }
 
@@ -5703,7 +5703,7 @@ void tst_QPainter::alphaBlitToNonAlphaFormats()
         // chosen for images wider than 4-16 pixels according to Allan.
         auto size = i ? 32 : 1;
         QImage image(size, size, format);
-        image.fill(Qt::black);
+        image.fill(BobUI::black);
         QCOMPARE(image.pixelColor(0, 0).alphaF(), 1.0);
 
         static const auto semiTransparentColor = QColor::fromRgbF(0.2, 0.4, 0.6, 0.8);
@@ -5723,7 +5723,7 @@ void tst_QPainter::alphaBlitToNonAlphaFormats()
             QCOMPARE(qAlpha(reinterpret_cast<const QRgb *>(argbImage.constBits())[0]), 255);
         };
 
-        QTest::ThrowOnFailEnabler throwOnFail;
+        BOBUIest::ThrowOnFailEnabler throwOnFail;
 
         // Test consistent reporting of alpha 1.0 after drawLine with
         // semi-transparent pen color and source composition mode.
@@ -5772,6 +5772,6 @@ void tst_QPainter::floatRounding()
     p.drawPolygon(poly);
 }
 
-QTEST_MAIN(tst_QPainter)
+BOBUIEST_MAIN(tst_QPainter)
 
 #include "tst_qpainter.moc"

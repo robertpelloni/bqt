@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /* Copyright 1985, 1987, 1990, 1998  The Open Group
 
@@ -57,18 +57,18 @@
  XConvertCase() was renamed to xkbcommon_XConvertCase(), to not confuse it
  with Xlib's XConvertCase().
 
- UCSConvertCase() was renamed to qt_UCSConvertCase() and function's body was
- replaced to use Qt APIs for doing case conversion, which should give us better
+ UCSConvertCase() was renamed to bobui_UCSConvertCase() and function's body was
+ replaced to use BobUI APIs for doing case conversion, which should give us better
  results instead of using the less complete version from keysym.c
 */
 
 #include "qxkbcommon_p.h"
 
-#include <QtCore/QChar>
+#include <BobUICore/QChar>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static void qt_UCSConvertCase(uint32_t code, xkb_keysym_t *lower, xkb_keysym_t *upper)
+static void bobui_UCSConvertCase(uint32_t code, xkb_keysym_t *lower, xkb_keysym_t *upper)
 {
     *lower = QChar::toLower(code);
     *upper = QChar::toUpper(code);
@@ -78,13 +78,13 @@ void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, x
 {
     /* Latin 1 keysym */
     if (sym < 0x100) {
-        qt_UCSConvertCase(sym, lower, upper);
+        bobui_UCSConvertCase(sym, lower, upper);
         return;
     }
 
     /* Unicode keysym */
     if ((sym & 0xff000000) == 0x01000000) {
-        qt_UCSConvertCase((sym & 0x00ffffff), lower, upper);
+        bobui_UCSConvertCase((sym & 0x00ffffff), lower, upper);
         *upper |= 0x01000000;
         *lower |= 0x01000000;
         return;
@@ -185,4 +185,4 @@ void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, x
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

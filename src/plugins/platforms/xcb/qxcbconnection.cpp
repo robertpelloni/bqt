@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtCore/QDebug>
-#include <QtCore/QCoreApplication>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/QCoreApplication>
 
 #include "qxcbconnection.h"
 #include "qxcbkeyboard.h"
 #include "qxcbwindow.h"
 #include "qxcbclipboard.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qxcbdrag.h"
 #endif
 #include "qxcbwmsupport.h"
@@ -36,23 +36,23 @@
 #undef explicit
 #include <xcb/xinput.h>
 
-#if QT_CONFIG(xcb_xlib)
-#include "qt_xlib_wrapper.h"
+#if BOBUI_CONFIG(xcb_xlib)
+#include "bobui_xlib_wrapper.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcQpaXInput, "qt.qpa.input")
-Q_LOGGING_CATEGORY(lcQpaXInputEvents, "qt.qpa.input.events")
-Q_LOGGING_CATEGORY(lcQpaScreen, "qt.qpa.screen")
-Q_LOGGING_CATEGORY(lcQpaEvents, "qt.qpa.events")
-Q_LOGGING_CATEGORY(lcQpaEventReader, "qt.qpa.events.reader")
-Q_LOGGING_CATEGORY(lcQpaPeeker, "qt.qpa.peeker")
-Q_LOGGING_CATEGORY(lcQpaKeyboard, "qt.qpa.xkeyboard")
-Q_LOGGING_CATEGORY(lcQpaClipboard, "qt.qpa.clipboard")
-Q_LOGGING_CATEGORY(lcQpaXDnd, "qt.qpa.xdnd")
+Q_LOGGING_CATEGORY(lcQpaXInput, "bobui.qpa.input")
+Q_LOGGING_CATEGORY(lcQpaXInputEvents, "bobui.qpa.input.events")
+Q_LOGGING_CATEGORY(lcQpaScreen, "bobui.qpa.screen")
+Q_LOGGING_CATEGORY(lcQpaEvents, "bobui.qpa.events")
+Q_LOGGING_CATEGORY(lcQpaEventReader, "bobui.qpa.events.reader")
+Q_LOGGING_CATEGORY(lcQpaPeeker, "bobui.qpa.peeker")
+Q_LOGGING_CATEGORY(lcQpaKeyboard, "bobui.qpa.xkeyboard")
+Q_LOGGING_CATEGORY(lcQpaClipboard, "bobui.qpa.clipboard")
+Q_LOGGING_CATEGORY(lcQpaXDnd, "bobui.qpa.xdnd")
 
 QXcbConnection::QXcbConnection(QXcbNativeInterface *nativeInterface, bool canGrabServer, xcb_visualid_t defaultVisualId, const char *displayName)
     : QXcbBasicConnection(displayName)
@@ -78,10 +78,10 @@ QXcbConnection::QXcbConnection(QXcbNativeInterface *nativeInterface, bool canGra
 
     m_wmSupport.reset(new QXcbWMSupport(this));
     m_keyboard = new QXcbKeyboard(this);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     m_clipboard = new QXcbClipboard(this);
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     m_drag = new QXcbDrag(this);
 #endif
 
@@ -94,7 +94,7 @@ QXcbConnection::QXcbConnection(QXcbNativeInterface *nativeInterface, bool canGra
     m_focusInTimer.setInterval(focusInDelay);
     m_focusInTimer.callOnTimeout(this, []() {
         // No FocusIn events for us, proceed with FocusOut normally.
-        QWindowSystemInterface::handleFocusWindowChanged(nullptr, Qt::ActiveWindowFocusReason);
+        QWindowSystemInterface::handleFocusWindowChanged(nullptr, BobUI::ActiveWindowFocusReason);
     });
 
     sync();
@@ -102,10 +102,10 @@ QXcbConnection::QXcbConnection(QXcbNativeInterface *nativeInterface, bool canGra
 
 QXcbConnection::~QXcbConnection()
 {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     delete m_clipboard;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     delete m_drag;
 #endif
     if (m_eventQueue)
@@ -232,7 +232,7 @@ void QXcbConnection::printXcbEvent(const QLoggingCategory &log, const char *mess
     CASE_PRINT_AND_RETURN( XCB_MAPPING_NOTIFY );
     case XCB_GE_GENERIC: {
         if (hasXInput2() && isXIEvent(event)) {
-            auto *xiDeviceEvent = reinterpret_cast<const xcb_input_button_press_event_t*>(event); // qt_xcb_input_device_event_t
+            auto *xiDeviceEvent = reinterpret_cast<const xcb_input_button_press_event_t*>(event); // bobui_xcb_input_device_event_t
             switch (xiDeviceEvent->event_type) {
             XI_CASE_PRINT_AND_RETURN( XCB_INPUT_KEY_PRESS );
             XI_CASE_PRINT_AND_RETURN( XCB_INPUT_KEY_RELEASE );
@@ -461,56 +461,56 @@ void QXcbConnection::printXcbError(const char *message, xcb_generic_error_t *err
             int(error->minor_code));
 }
 
-static Qt::MouseButtons translateMouseButtons(int s)
+static BobUI::MouseButtons translateMouseButtons(int s)
 {
-    Qt::MouseButtons ret;
+    BobUI::MouseButtons ret;
     if (s & XCB_BUTTON_MASK_1)
-        ret |= Qt::LeftButton;
+        ret |= BobUI::LeftButton;
     if (s & XCB_BUTTON_MASK_2)
-        ret |= Qt::MiddleButton;
+        ret |= BobUI::MiddleButton;
     if (s & XCB_BUTTON_MASK_3)
-        ret |= Qt::RightButton;
+        ret |= BobUI::RightButton;
     return ret;
 }
 
-void QXcbConnection::setButtonState(Qt::MouseButton button, bool down)
+void QXcbConnection::setButtonState(BobUI::MouseButton button, bool down)
 {
     m_buttonState.setFlag(button, down);
     m_button = button;
 }
 
-Qt::MouseButton QXcbConnection::translateMouseButton(xcb_button_t s)
+BobUI::MouseButton QXcbConnection::translateMouseButton(xcb_button_t s)
 {
     switch (s) {
-    case 1: return Qt::LeftButton;
-    case 2: return Qt::MiddleButton;
-    case 3: return Qt::RightButton;
+    case 1: return BobUI::LeftButton;
+    case 2: return BobUI::MiddleButton;
+    case 3: return BobUI::RightButton;
     // Button values 4-7 were already handled as Wheel events, and won't occur here.
-    case 8: return Qt::BackButton;      // Also known as Qt::ExtraButton1
-    case 9: return Qt::ForwardButton;   // Also known as Qt::ExtraButton2
-    case 10: return Qt::ExtraButton3;
-    case 11: return Qt::ExtraButton4;
-    case 12: return Qt::ExtraButton5;
-    case 13: return Qt::ExtraButton6;
-    case 14: return Qt::ExtraButton7;
-    case 15: return Qt::ExtraButton8;
-    case 16: return Qt::ExtraButton9;
-    case 17: return Qt::ExtraButton10;
-    case 18: return Qt::ExtraButton11;
-    case 19: return Qt::ExtraButton12;
-    case 20: return Qt::ExtraButton13;
-    case 21: return Qt::ExtraButton14;
-    case 22: return Qt::ExtraButton15;
-    case 23: return Qt::ExtraButton16;
-    case 24: return Qt::ExtraButton17;
-    case 25: return Qt::ExtraButton18;
-    case 26: return Qt::ExtraButton19;
-    case 27: return Qt::ExtraButton20;
-    case 28: return Qt::ExtraButton21;
-    case 29: return Qt::ExtraButton22;
-    case 30: return Qt::ExtraButton23;
-    case 31: return Qt::ExtraButton24;
-    default: return Qt::NoButton;
+    case 8: return BobUI::BackButton;      // Also known as BobUI::ExtraButton1
+    case 9: return BobUI::ForwardButton;   // Also known as BobUI::ExtraButton2
+    case 10: return BobUI::ExtraButton3;
+    case 11: return BobUI::ExtraButton4;
+    case 12: return BobUI::ExtraButton5;
+    case 13: return BobUI::ExtraButton6;
+    case 14: return BobUI::ExtraButton7;
+    case 15: return BobUI::ExtraButton8;
+    case 16: return BobUI::ExtraButton9;
+    case 17: return BobUI::ExtraButton10;
+    case 18: return BobUI::ExtraButton11;
+    case 19: return BobUI::ExtraButton12;
+    case 20: return BobUI::ExtraButton13;
+    case 21: return BobUI::ExtraButton14;
+    case 22: return BobUI::ExtraButton15;
+    case 23: return BobUI::ExtraButton16;
+    case 24: return BobUI::ExtraButton17;
+    case 25: return BobUI::ExtraButton18;
+    case 26: return BobUI::ExtraButton19;
+    case 27: return BobUI::ExtraButton20;
+    case 28: return BobUI::ExtraButton21;
+    case 29: return BobUI::ExtraButton22;
+    case 30: return BobUI::ExtraButton23;
+    case 31: return BobUI::ExtraButton24;
+    default: return BobUI::NoButton;
     }
 }
 
@@ -601,7 +601,7 @@ void QXcbConnection::handleXcbEvent(xcb_generic_event_t *event)
         auto clientMessage = reinterpret_cast<xcb_client_message_event_t *>(event);
         if (clientMessage->format != 32)
             return;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         if (clientMessage->type == atom(QXcbAtom::AtomXdndStatus))
             drag()->handleStatus(clientMessage);
         else if (clientMessage->type == atom(QXcbAtom::AtomXdndFinished))
@@ -653,17 +653,17 @@ void QXcbConnection::handleXcbEvent(xcb_generic_event_t *event)
         break;
     case XCB_SELECTION_REQUEST:
     {
-#if QT_CONFIG(draganddrop) || QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(draganddrop) || BOBUI_CONFIG(clipboard)
         auto selectionRequest = reinterpret_cast<xcb_selection_request_event_t *>(event);
         setTime(selectionRequest->time);
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         if (selectionRequest->selection == atom(QXcbAtom::AtomXdndSelection))
             m_drag->handleSelectionRequest(selectionRequest);
         else
 #endif
         {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
             m_clipboard->handleSelectionRequest(selectionRequest);
 #endif
         }
@@ -671,7 +671,7 @@ void QXcbConnection::handleXcbEvent(xcb_generic_event_t *event)
     }
     case XCB_SELECTION_CLEAR:
         setTime((reinterpret_cast<xcb_selection_clear_event_t *>(event))->time);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         m_clipboard->handleSelectionClearRequest(reinterpret_cast<xcb_selection_clear_event_t *>(event));
 #endif
         break;
@@ -682,7 +682,7 @@ void QXcbConnection::handleXcbEvent(xcb_generic_event_t *event)
     {
         auto propertyNotify = reinterpret_cast<xcb_property_notify_event_t *>(event);
         setTime(propertyNotify->time);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         if (m_clipboard->handlePropertyNotify(event))
             break;
 #endif
@@ -714,7 +714,7 @@ void QXcbConnection::handleXcbEvent(xcb_generic_event_t *event)
     if (isXFixesType(response_type, XCB_XFIXES_SELECTION_NOTIFY)) {
         auto notify_event = reinterpret_cast<xcb_xfixes_selection_notify_event_t *>(event);
         setTime(notify_event->timestamp);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         m_clipboard->handleXFixesSelectionRequest(notify_event);
 #endif
         for (QXcbVirtualDesktop *virtualDesktop : std::as_const(m_virtualDesktops))
@@ -822,7 +822,7 @@ xcb_timestamp_t QXcbConnection::getTimestamp()
 {
     // send a dummy event to myself to get the timestamp from X server.
     xcb_window_t window = rootWindow();
-    xcb_atom_t dummyAtom = atom(QXcbAtom::Atom_QT_GET_TIMESTAMP);
+    xcb_atom_t dummyAtom = atom(QXcbAtom::Atom_BOBUI_GET_TIMESTAMP);
     xcb_change_property(xcb_connection(), XCB_PROP_MODE_REPLACE, window, dummyAtom,
                         XCB_ATOM_INTEGER, 32, 0, nullptr);
 
@@ -869,16 +869,16 @@ xcb_window_t QXcbConnection::selectionOwner(xcb_atom_t atom) const
     return reply->owner;
 }
 
-xcb_window_t QXcbConnection::qtSelectionOwner()
+xcb_window_t QXcbConnection::bobuiSelectionOwner()
 {
-    if (!m_qtSelectionOwner) {
+    if (!m_bobuiSelectionOwner) {
         xcb_screen_t *xcbScreen = primaryVirtualDesktop()->screen();
         int16_t x = 0, y = 0;
         uint16_t w = 3, h = 3;
-        m_qtSelectionOwner = xcb_generate_id(xcb_connection());
+        m_bobuiSelectionOwner = xcb_generate_id(xcb_connection());
         xcb_create_window(xcb_connection(),
                           XCB_COPY_FROM_PARENT,               // depth -- same as root
-                          m_qtSelectionOwner,                 // window id
+                          m_bobuiSelectionOwner,                 // window id
                           xcbScreen->root,                    // parent window id
                           x, y, w, h,
                           0,                                  // border width
@@ -887,10 +887,10 @@ xcb_window_t QXcbConnection::qtSelectionOwner()
                           0,                                  // value mask
                           nullptr);                           // value list
 
-        QXcbWindow::setWindowTitle(connection(), m_qtSelectionOwner,
-                                   "Qt Selection Owner for "_L1 + QCoreApplication::applicationName());
+        QXcbWindow::setWindowTitle(connection(), m_bobuiSelectionOwner,
+                                   "BobUI Selection Owner for "_L1 + QCoreApplication::applicationName());
     }
-    return m_qtSelectionOwner;
+    return m_bobuiSelectionOwner;
 }
 
 xcb_window_t QXcbConnection::rootWindow()
@@ -927,7 +927,7 @@ xcb_window_t QXcbConnection::clientLeader()
                             1,
                             &m_clientLeader);
 
-#if QT_CONFIG(xcb_sm)
+#if BOBUI_CONFIG(xcb_sm)
         // If we are session managed, inform the window manager about it
         QByteArray session = qGuiApp->sessionId().toLatin1();
         if (!session.isEmpty()) {
@@ -956,12 +956,12 @@ xcb_window_t QXcbConnection::clientLeader()
        queue while waiting on unresponsive GUI thread.
     2) Use QAbstractNativeEventFilter to get all events from X connection. This is not optimal
        because it requires working with native event types.
-    3) Or add public API to Qt for disabling event compression QTBUG-44964
+    3) Or add public API to BobUI for disabling event compression BOBUIBUG-44964
 
 */
 bool QXcbConnection::compressEvent(xcb_generic_event_t *event) const
 {
-    if (!QCoreApplication::testAttribute(Qt::AA_CompressHighFrequencyEvents))
+    if (!QCoreApplication::testAttribute(BobUI::AA_CompressHighFrequencyEvents))
         return false;
 
     uint responseType = event->response_type & ~0x80;
@@ -981,12 +981,12 @@ bool QXcbConnection::compressEvent(xcb_generic_event_t *event) const
 
         // compress XI_Motion
         if (isXIType(event, XCB_INPUT_MOTION)) {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
             auto xdev = reinterpret_cast<xcb_input_motion_event_t *>(event);
-            if (!QCoreApplication::testAttribute(Qt::AA_CompressTabletEvents) &&
+            if (!QCoreApplication::testAttribute(BobUI::AA_CompressTabletEvents) &&
                     const_cast<QXcbConnection *>(this)->tabletDataForDevice(xdev->sourceid))
                 return false;
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
             return m_eventQueue->peek(QXcbEventQueue::PeekRetainMatch,
                                       [this](xcb_generic_event_t *next, int) {
                 return isXIType(next, XCB_INPUT_MOTION);
@@ -1089,12 +1089,12 @@ void QXcbConnection::processXcbEvents(QEventLoop::ProcessEventsFlags flags)
 
         // The lock-based solution used to free the lock inside this loop,
         // hence allowing for more events to arrive. ### Check if we want
-        // this flush here after QTBUG-70095
+        // this flush here after BOBUIBUG-70095
         m_eventQueue->flushBufferedEvents();
     }
 
-#if QT_CONFIG(xcb_xlib)
-    qt_XFlush(static_cast<Display *>(xlib_display()));
+#if BOBUI_CONFIG(xcb_xlib)
+    bobui_XFlush(static_cast<Display *>(xlib_display()));
 #endif
 
     xcb_flush(xcb_connection());
@@ -1135,7 +1135,7 @@ QXcbSystemTrayTracker *QXcbConnection::systemTrayTracker() const
     return m_systemTrayTracker;
 }
 
-Qt::MouseButtons QXcbConnection::queryMouseButtons() const
+BobUI::MouseButtons QXcbConnection::queryMouseButtons() const
 {
     int stateMask = 0;
     QXcbCursor::queryPointer(connection(), nullptr, nullptr, &stateMask);
@@ -1149,9 +1149,9 @@ QXcbGlIntegration *QXcbConnection::glIntegration() const
 
     QStringList glIntegrationNames;
     glIntegrationNames << QStringLiteral("xcb_glx") << QStringLiteral("xcb_egl");
-    QString glIntegrationName = QString::fromLocal8Bit(qgetenv("QT_XCB_GL_INTEGRATION"));
+    QString glIntegrationName = QString::fromLocal8Bit(qgetenv("BOBUI_XCB_GL_INTEGRATION"));
     if (!glIntegrationName.isEmpty()) {
-        qCDebug(lcQpaGl) << "QT_XCB_GL_INTEGRATION is set to" << glIntegrationName;
+        qCDebug(lcQpaGl) << "BOBUI_XCB_GL_INTEGRATION is set to" << glIntegrationName;
         if (glIntegrationName != "none"_L1) {
             glIntegrationNames.removeAll(glIntegrationName);
             glIntegrationNames.prepend(glIntegrationName);
@@ -1220,6 +1220,6 @@ void QXcbConnectionGrabber::release()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbconnection.cpp"

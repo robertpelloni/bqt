@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtWidgets/qgraphicseffect.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qgraphicsscene.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BOBUIest>
+#include <BobUIWidgets/qgraphicseffect.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#include <BobUIWidgets/qgraphicsscene.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qstyleoption.h>
 
 #include <private/qgraphicseffect_p.h>
 
@@ -73,9 +73,9 @@ public:
     {
         ++numRepaints;
         if (storeDeviceDependentStuff) {
-            deviceCoordinatesPixmap = source()->pixmap(Qt::DeviceCoordinates);
+            deviceCoordinatesPixmap = source()->pixmap(BobUI::DeviceCoordinates);
             deviceRect = QRect(0, 0, painter->device()->width(), painter->device()->height());
-            sourceDeviceBoundingRect = source()->boundingRect(Qt::DeviceCoordinates);
+            sourceDeviceBoundingRect = source()->boundingRect(BobUI::DeviceCoordinates);
         }
         if (doNothingInDraw)
             return;
@@ -141,7 +141,7 @@ void tst_QGraphicsEffectSource::initTestCase()
     scene->addItem(item);
     view = new QGraphicsView(scene);
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view));
 }
 
 void tst_QGraphicsEffectSource::cleanupTestCase()
@@ -178,8 +178,8 @@ void tst_QGraphicsEffectSource::styleOption()
     QCOMPARE(item->numRepaints, 0);
     QCOMPARE(effect->numRepaints, 0);
     item->update();
-    QTRY_COMPARE(item->numRepaints, 1);
-    QTRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
 }
 
 void tst_QGraphicsEffectSource::isPixmap()
@@ -200,7 +200,7 @@ void tst_QGraphicsEffectSource::isPixmap()
 void tst_QGraphicsEffectSource::draw()
 {
     // The source can only draw as a result of QGraphicsEffect::draw.
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsEffectSource::draw: Can only begin as a result of QGraphicsEffect::draw");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsEffectSource::draw: Can only begin as a result of QGraphicsEffect::draw");
     QPixmap dummyPixmap(10, 10);
     QPainter dummyPainter(&dummyPixmap);
     effect->source()->draw(&dummyPainter);
@@ -213,14 +213,14 @@ void tst_QGraphicsEffectSource::update()
 
     effect->source()->update();
 
-    QTRY_COMPARE(item->numRepaints, 1);
-    QTRY_COMPARE(effect->numRepaints, 1);
+    BOBUIRY_COMPARE(item->numRepaints, 1);
+    BOBUIRY_COMPARE(effect->numRepaints, 1);
 }
 
 void tst_QGraphicsEffectSource::boundingRect()
 {
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsEffectSource::boundingRect: Not yet implemented, lacking device context");
-    QCOMPARE(effect->source()->boundingRect(Qt::DeviceCoordinates), QRectF());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsEffectSource::boundingRect: Not yet implemented, lacking device context");
+    QCOMPARE(effect->source()->boundingRect(BobUI::DeviceCoordinates), QRectF());
 
     QRectF itemBoundingRect = item->boundingRect();
     if (!item->childItems().isEmpty())
@@ -229,13 +229,13 @@ void tst_QGraphicsEffectSource::boundingRect()
     // We can at least check that the device bounding rect was correct in QGraphicsEffect::draw.
     effect->storeDeviceDependentStuff = true;
     effect->source()->update();
-    const QTransform deviceTransform = item->deviceTransform(view->viewportTransform());
-    QTRY_COMPARE(effect->sourceDeviceBoundingRect, deviceTransform.mapRect(itemBoundingRect));
+    const BOBUIransform deviceTransform = item->deviceTransform(view->viewportTransform());
+    BOBUIRY_COMPARE(effect->sourceDeviceBoundingRect, deviceTransform.mapRect(itemBoundingRect));
 
     // Bounding rect in logical coordinates is of course fine.
-    QTRY_COMPARE(effect->source()->boundingRect(Qt::LogicalCoordinates), itemBoundingRect);
-    // Make sure default value is Qt::LogicalCoordinates.
-    QTRY_COMPARE(effect->source()->boundingRect(), itemBoundingRect);
+    BOBUIRY_COMPARE(effect->source()->boundingRect(BobUI::LogicalCoordinates), itemBoundingRect);
+    // Make sure default value is BobUI::LogicalCoordinates.
+    BOBUIRY_COMPARE(effect->source()->boundingRect(), itemBoundingRect);
 }
 
 void tst_QGraphicsEffectSource::clippedBoundingRect()
@@ -244,36 +244,36 @@ void tst_QGraphicsEffectSource::clippedBoundingRect()
     item->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 
     QGraphicsRectItem *child = new QGraphicsRectItem(-1000, -1000, 2000, 2000);
-    child->setBrush(Qt::red);
+    child->setBrush(BobUI::red);
     child->setParentItem(item);
 
     effect->storeDeviceDependentStuff = true;
     effect->source()->update();
-    QTRY_COMPARE(effect->source()->boundingRect(Qt::LogicalCoordinates), itemBoundingRect);
+    BOBUIRY_COMPARE(effect->source()->boundingRect(BobUI::LogicalCoordinates), itemBoundingRect);
 }
 
 void tst_QGraphicsEffectSource::deviceRect()
 {
     effect->storeDeviceDependentStuff = true;
     effect->source()->update();
-    QTRY_COMPARE(effect->deviceRect, view->viewport()->rect());
+    BOBUIRY_COMPARE(effect->deviceRect, view->viewport()->rect());
 }
 
 void tst_QGraphicsEffectSource::pixmap()
 {
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsEffectSource::pixmap: Not yet implemented, lacking device context");
-    QCOMPARE(effect->source()->pixmap(Qt::DeviceCoordinates), QPixmap());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsEffectSource::pixmap: Not yet implemented, lacking device context");
+    QCOMPARE(effect->source()->pixmap(BobUI::DeviceCoordinates), QPixmap());
 
     // We can at least verify a valid pixmap from QGraphicsEffect::draw.
     effect->storeDeviceDependentStuff = true;
     effect->source()->update();
-    QTRY_VERIFY(!effect->deviceCoordinatesPixmap.isNull());
+    BOBUIRY_VERIFY(!effect->deviceCoordinatesPixmap.isNull());
 
     // Pixmaps in logical coordinates we can do fine.
-    QPixmap pixmap1 = effect->source()->pixmap(Qt::LogicalCoordinates);
+    QPixmap pixmap1 = effect->source()->pixmap(BobUI::LogicalCoordinates);
     QVERIFY(!pixmap1.isNull());
 
-    // Make sure default value is Qt::LogicalCoordinates.
+    // Make sure default value is BobUI::LogicalCoordinates.
     QPixmap pixmap2 = effect->source()->pixmap();
     QCOMPARE(pixmap1, pixmap2);
 }
@@ -298,43 +298,43 @@ public:
     QPixmap pix;
     QPoint offset;
     QGraphicsEffect::PixmapPadMode padMode;
-    Qt::CoordinateSystem coordinateMode;
+    BobUI::CoordinateSystem coordinateMode;
 };
 
 void tst_QGraphicsEffectSource::pixmapPadding_data()
 {
-    QTest::addColumn<int>("coordinateMode");
-    QTest::addColumn<int>("padMode");
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<QPoint>("offset");
-    QTest::addColumn<uint>("ulPixel");
+    BOBUIest::addColumn<int>("coordinateMode");
+    BOBUIest::addColumn<int>("padMode");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<QPoint>("offset");
+    BOBUIest::addColumn<uint>("ulPixel");
 
-    QTest::newRow("log,nopad") << int(Qt::LogicalCoordinates)
+    BOBUIest::newRow("log,nopad") << int(BobUI::LogicalCoordinates)
                                << int(QGraphicsEffect::NoPad)
                                << QSize(10, 10) << QPoint(0, 0)
                                << 0xffff0000u;
 
-    QTest::newRow("log,transparent") << int(Qt::LogicalCoordinates)
+    BOBUIest::newRow("log,transparent") << int(BobUI::LogicalCoordinates)
                                      << int(QGraphicsEffect::PadToTransparentBorder)
                                      << QSize(14, 14) << QPoint(-2, -2)
                                      << 0x00000000u;
 
-    QTest::newRow("log,effectrect") << int(Qt::LogicalCoordinates)
+    BOBUIest::newRow("log,effectrect") << int(BobUI::LogicalCoordinates)
                                     << int(QGraphicsEffect::PadToEffectiveBoundingRect)
                                     << QSize(20, 20) << QPoint(-5, -5)
                                     << 0x00000000u;
 
-    QTest::newRow("dev,nopad") << int(Qt::DeviceCoordinates)
+    BOBUIest::newRow("dev,nopad") << int(BobUI::DeviceCoordinates)
                                << int(QGraphicsEffect::NoPad)
                                << QSize(20, 20) << QPoint(40, 40)
                                << 0xffff0000u;
 
-    QTest::newRow("dev,transparent") << int(Qt::DeviceCoordinates)
+    BOBUIest::newRow("dev,transparent") << int(BobUI::DeviceCoordinates)
                                      << int(QGraphicsEffect::PadToTransparentBorder)
                                      << QSize(24, 24) << QPoint(38, 38)
                                      << 0x00000000u;
 
-    QTest::newRow("dev,effectrect") << int(Qt::DeviceCoordinates)
+    BOBUIest::newRow("dev,effectrect") << int(BobUI::DeviceCoordinates)
                                     << int(QGraphicsEffect::PadToEffectiveBoundingRect)
                                     << QSize(40, 40) << QPoint(30, 30)
                                     << 0x00000000u;
@@ -349,7 +349,7 @@ void tst_QGraphicsEffectSource::pixmapPadding()
     dummyPainter.scale(2, 2);
 
     QPixmap pm(10, 10);
-    pm.fill(Qt::red);
+    pm.fill(BobUI::red);
 
     QGraphicsScene scene;
     PaddingEffect *effect = new PaddingEffect(&scene);
@@ -364,7 +364,7 @@ void tst_QGraphicsEffectSource::pixmapPadding()
     QFETCH(uint, ulPixel);
 
     effect->padMode = (QGraphicsEffect::PixmapPadMode) padMode;
-    effect->coordinateMode = (Qt::CoordinateSystem) coordinateMode;
+    effect->coordinateMode = (BobUI::CoordinateSystem) coordinateMode;
 
     scene.render(&dummyPainter, scene.itemsBoundingRect(), scene.itemsBoundingRect());
 
@@ -373,6 +373,6 @@ void tst_QGraphicsEffectSource::pixmapPadding()
     QCOMPARE(effect->pix.toImage().pixel(0, 0), ulPixel);
 }
 
-QTEST_MAIN(tst_QGraphicsEffectSource)
+BOBUIEST_MAIN(tst_QGraphicsEffectSource)
 #include "tst_qgraphicseffectsource.moc"
 

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QCompleter
     \brief The QCompleter class provides completions based on an item model.
     \since 4.2
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    You can use QCompleter to provide auto completions in any Qt
+    You can use QCompleter to provide auto completions in any BobUI
     widget, such as QLineEdit and QComboBox.
     When the user starts typing a word, QCompleter suggests possible ways of
     completing the word, based on a word list. The word list is
@@ -33,7 +33,7 @@
     To set the model on which QCompleter should operate, call
     setModel(). By default, QCompleter will attempt to match the \l
     {completionPrefix}{completion prefix} (i.e., the word that the
-    user has started typing) against the Qt::EditRole data stored in
+    user has started typing) against the BobUI::EditRole data stored in
     column 0 in the  model case sensitively. This can be changed
     using setCompletionRole(), setCompletionColumn(), and
     setCaseSensitivity().
@@ -44,7 +44,7 @@
     QCompleter::CaseInsensitivelySortedModel as the argument. On large models,
     this can lead to significant performance improvements, because QCompleter
     can then use binary search instead of linear search. The binary search only
-    works when the filterMode is Qt::MatchStartsWith.
+    works when the filterMode is BobUI::MatchStartsWith.
 
     The model can be a \l{QAbstractListModel}{list model},
     a \l{QAbstractTableModel}{table model}, or a
@@ -98,7 +98,7 @@
 
     To provide completions, QCompleter needs to know the path from an index.
     This is provided by pathFromIndex(). The default implementation of
-    pathFromIndex(), returns the data for the \l{Qt::EditRole}{edit role}
+    pathFromIndex(), returns the data for the \l{BobUI::EditRole}{edit role}
     for list models and the absolute file path if the mode is a QFileSystemModel.
 
     \sa QAbstractItemModel, QLineEdit, QComboBox, {Completer Example}
@@ -106,32 +106,32 @@
 
 #include "qcompleter_p.h"
 
-#include "QtWidgets/qscrollbar.h"
-#include "QtCore/qdir.h"
-#if QT_CONFIG(stringlistmodel)
-#include "QtCore/qstringlistmodel.h"
+#include "BobUIWidgets/qscrollbar.h"
+#include "BobUICore/qdir.h"
+#if BOBUI_CONFIG(stringlistmodel)
+#include "BobUICore/qstringlistmodel.h"
 #endif
-#if QT_CONFIG(filesystemmodel)
-#include "QtGui/qfilesystemmodel.h"
+#if BOBUI_CONFIG(filesystemmodel)
+#include "BobUIGui/qfilesystemmodel.h"
 #endif
-#include "QtWidgets/qheaderview.h"
-#if QT_CONFIG(listview)
-#include "QtWidgets/qlistview.h"
+#include "BobUIWidgets/qheaderview.h"
+#if BOBUI_CONFIG(listview)
+#include "BobUIWidgets/qlistview.h"
 #endif
-#include "QtWidgets/qapplication.h"
-#include "QtGui/qevent.h"
+#include "BobUIWidgets/qapplication.h"
+#include "BobUIGui/qevent.h"
 #include <private/qapplication_p.h>
 #include <private/qwidget_p.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformwindow_p.h>
-#if QT_CONFIG(lineedit)
-#include "QtWidgets/qlineedit.h"
+#if BOBUI_CONFIG(lineedit)
+#include "BobUIWidgets/qlineedit.h"
 #endif
-#include "QtCore/qdir.h"
+#include "BobUICore/qdir.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QCompletionModel::QCompletionModel(QCompleterPrivate *c, QObject *parent)
     : QAbstractProxyModel(*new QCompletionModelPrivate, parent),
@@ -173,16 +173,16 @@ void QCompletionModel::setSourceModel(QAbstractItemModel *source)
 void QCompletionModel::createEngine()
 {
     bool sortedEngine = false;
-    if (c->filterMode == Qt::MatchStartsWith) {
+    if (c->filterMode == BobUI::MatchStartsWith) {
         switch (c->sorting) {
         case QCompleter::UnsortedModel:
             sortedEngine = false;
             break;
         case QCompleter::CaseSensitivelySortedModel:
-            sortedEngine = c->cs == Qt::CaseSensitive;
+            sortedEngine = c->cs == BobUI::CaseSensitive;
             break;
         case QCompleter::CaseInsensitivelySortedModel:
-            sortedEngine = c->cs == Qt::CaseInsensitive;
+            sortedEngine = c->cs == BobUI::CaseInsensitive;
             break;
         }
     }
@@ -436,7 +436,7 @@ QMatchData QCompletionEngine::filterHistory()
     if (curParts.size() <= 1 || c->proxy->showAll || !source)
         return QMatchData();
 
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
     const bool isFsModel = (qobject_cast<QFileSystemModel *>(source) != nullptr);
 #else
     const bool isFsModel = false;
@@ -471,7 +471,7 @@ bool QCompletionEngine::matchHint(const QString &part, const QModelIndex &parent
     const CacheItem& map = *cit;
     const auto mapEnd = map.end();
 
-    QString key = c->cs == Qt::CaseInsensitive ? part.toLower() : part;
+    QString key = c->cs == BobUI::CaseInsensitive ? part.toLower() : part;
 
     while (!key.isEmpty()) {
         key.chop(1);
@@ -496,7 +496,7 @@ bool QCompletionEngine::lookupCache(const QString &part, const QModelIndex &pare
 
     const CacheItem& map = *cit;
 
-    const QString key = c->cs == Qt::CaseInsensitive ? part.toLower() : part;
+    const QString key = c->cs == BobUI::CaseInsensitive ? part.toLower() : part;
 
     const auto it = map.find(key);
     if (it == map.end())
@@ -509,7 +509,7 @@ bool QCompletionEngine::lookupCache(const QString &part, const QModelIndex &pare
 // When the cache size exceeds 1MB, it clears out about 1/2 of the cache.
 void QCompletionEngine::saveInCache(QString part, const QModelIndex& parent, const QMatchData& m)
 {
-    if (c->filterMode == Qt::MatchEndsWith)
+    if (c->filterMode == BobUI::MatchEndsWith)
         return;
     QMatchData old = cache[parent].take(part);
     cost = cost + m.indices.cost() - old.indices.cost();
@@ -533,17 +533,17 @@ void QCompletionEngine::saveInCache(QString part, const QModelIndex& parent, con
         }
     }
 
-    if (c->cs == Qt::CaseInsensitive)
+    if (c->cs == BobUI::CaseInsensitive)
         part = std::move(part).toLower();
     cache[parent][part] = m;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-QIndexMapper QSortedModelEngine::indexHint(QString part, const QModelIndex& parent, Qt::SortOrder order)
+QIndexMapper QSortedModelEngine::indexHint(QString part, const QModelIndex& parent, BobUI::SortOrder order)
 {
     const QAbstractItemModel *model = c->proxy->sourceModel();
 
-    if (c->cs == Qt::CaseInsensitive)
+    if (c->cs == BobUI::CaseInsensitive)
         part = std::move(part).toLower();
 
     const CacheItem& map = cache[parent];
@@ -558,7 +558,7 @@ QIndexMapper QSortedModelEngine::indexHint(QString part, const QModelIndex& pare
         --it1;
         const QMatchData& value = it1.value();
         if (value.isValid()) {
-            if (order == Qt::AscendingOrder) {
+            if (order == BobUI::AscendingOrder) {
                 from = value.indices.last() + 1;
             } else {
                 to = value.indices.first() - 1;
@@ -571,7 +571,7 @@ QIndexMapper QSortedModelEngine::indexHint(QString part, const QModelIndex& pare
     for(CacheItem::const_iterator it2 = it; it2 != map.constEnd(); ++it2) {
         const QMatchData& value = it2.value();
         if (value.isValid() && !it2.key().startsWith(part)) {
-            if (order == Qt::AscendingOrder) {
+            if (order == BobUI::AscendingOrder) {
                 to = value.indices.first() - 1;
             } else {
                 from = value.indices.first() + 1;
@@ -583,16 +583,16 @@ QIndexMapper QSortedModelEngine::indexHint(QString part, const QModelIndex& pare
     return QIndexMapper(from, to);
 }
 
-Qt::SortOrder QSortedModelEngine::sortOrder(const QModelIndex &parent) const
+BobUI::SortOrder QSortedModelEngine::sortOrder(const QModelIndex &parent) const
 {
     const QAbstractItemModel *model = c->proxy->sourceModel();
 
     int rowCount = model->rowCount(parent);
     if (rowCount < 2)
-        return Qt::AscendingOrder;
+        return BobUI::AscendingOrder;
     QString first = model->data(model->index(0, c->column, parent), c->role).toString();
     QString last = model->data(model->index(rowCount - 1, c->column, parent), c->role).toString();
-    return QString::compare(first, last, c->cs) <= 0 ? Qt::AscendingOrder : Qt::DescendingOrder;
+    return QString::compare(first, last, c->cs) <= 0 ? BobUI::AscendingOrder : BobUI::DescendingOrder;
 }
 
 QMatchData QSortedModelEngine::filter(const QString& part, const QModelIndex& parent, int)
@@ -604,7 +604,7 @@ QMatchData QSortedModelEngine::filter(const QString& part, const QModelIndex& pa
         return hint;
 
     QIndexMapper indices;
-    Qt::SortOrder order = sortOrder(parent);
+    BobUI::SortOrder order = sortOrder(parent);
 
     if (matchHint(part, parent, &hint)) {
         if (!hint.isValid())
@@ -627,21 +627,21 @@ QMatchData QSortedModelEngine::filter(const QString& part, const QModelIndex& pa
         probeIndex = model->index(probe, c->column, parent);
         probeData = model->data(probeIndex, c->role).toString();
         const int cmp = QString::compare(probeData, part, c->cs);
-        if ((order == Qt::AscendingOrder && cmp >= 0)
-            || (order == Qt::DescendingOrder && cmp < 0)) {
+        if ((order == BobUI::AscendingOrder && cmp >= 0)
+            || (order == BobUI::DescendingOrder && cmp < 0)) {
             high = probe;
         } else {
             low = probe;
         }
     }
 
-    if ((order == Qt::AscendingOrder && low == indices.to())
-        || (order == Qt::DescendingOrder && high == indices.from())) { // not found
+    if ((order == BobUI::AscendingOrder && low == indices.to())
+        || (order == BobUI::DescendingOrder && high == indices.from())) { // not found
         saveInCache(part, parent, QMatchData());
         return QMatchData();
     }
 
-    probeIndex = model->index(order == Qt::AscendingOrder ? low+1 : high-1, c->column, parent);
+    probeIndex = model->index(order == BobUI::AscendingOrder ? low+1 : high-1, c->column, parent);
     probeData = model->data(probeIndex, c->role).toString();
     if (!probeData.startsWith(part, c->cs)) {
         saveInCache(part, parent, QMatchData());
@@ -649,11 +649,11 @@ QMatchData QSortedModelEngine::filter(const QString& part, const QModelIndex& pa
     }
 
     const bool exactMatch = QString::compare(probeData, part, c->cs) == 0;
-    int emi =  exactMatch ? (order == Qt::AscendingOrder ? low+1 : high-1) : -1;
+    int emi =  exactMatch ? (order == BobUI::AscendingOrder ? low+1 : high-1) : -1;
 
     int from = 0;
     int to = 0;
-    if (order == Qt::AscendingOrder) {
+    if (order == BobUI::AscendingOrder) {
         from = low + 1;
         high = indices.to() + 1;
         low = from;
@@ -669,15 +669,15 @@ QMatchData QSortedModelEngine::filter(const QString& part, const QModelIndex& pa
         probeIndex = model->index(probe, c->column, parent);
         probeData = model->data(probeIndex, c->role).toString();
         const bool startsWith = probeData.startsWith(part, c->cs);
-        if ((order == Qt::AscendingOrder && startsWith)
-            || (order == Qt::DescendingOrder && !startsWith)) {
+        if ((order == BobUI::AscendingOrder && startsWith)
+            || (order == BobUI::DescendingOrder && !startsWith)) {
             low = probe;
         } else {
             high = probe;
         }
     }
 
-    QMatchData m(order == Qt::AscendingOrder ? QIndexMapper(from, high - 1) : QIndexMapper(low+1, to), emi, false);
+    QMatchData m(order == BobUI::AscendingOrder ? QIndexMapper(from, high - 1) : QIndexMapper(low+1, to), emi, false);
     saveInCache(part, parent, m);
     return m;
 }
@@ -694,31 +694,31 @@ int QUnsortedModelEngine::buildIndices(const QString& str, const QModelIndex& pa
     for (i = 0; i < indices.count() && count != n; ++i) {
         QModelIndex idx = model->index(indices[i], c->column, parent);
 
-        if (!(model->flags(idx) & Qt::ItemIsSelectable))
+        if (!(model->flags(idx) & BobUI::ItemIsSelectable))
             continue;
 
         QString data = model->data(idx, c->role).toString();
 
         switch (c->filterMode) {
-        case Qt::MatchStartsWith:
+        case BobUI::MatchStartsWith:
             if (!data.startsWith(str, c->cs))
                 continue;
             break;
-        case Qt::MatchContains:
+        case BobUI::MatchContains:
             if (!data.contains(str, c->cs))
                 continue;
             break;
-        case Qt::MatchEndsWith:
+        case BobUI::MatchEndsWith:
             if (!data.endsWith(str, c->cs))
                 continue;
             break;
-        case Qt::MatchExactly:
-        case Qt::MatchFixedString:
-        case Qt::MatchCaseSensitive:
-        case Qt::MatchRegularExpression:
-        case Qt::MatchWildcard:
-        case Qt::MatchWrap:
-        case Qt::MatchRecursive:
+        case BobUI::MatchExactly:
+        case BobUI::MatchFixedString:
+        case BobUI::MatchCaseSensitive:
+        case BobUI::MatchRegularExpression:
+        case BobUI::MatchWildcard:
+        case BobUI::MatchWrap:
+        case BobUI::MatchRecursive:
             Q_UNREACHABLE();
             break;
         }
@@ -792,9 +792,9 @@ QCompleterPrivate::QCompleterPrivate()
     : widget(nullptr),
       proxy(nullptr),
       popup(nullptr),
-      filterMode(Qt::MatchStartsWith),
-      cs(Qt::CaseSensitive),
-      role(Qt::EditRole),
+      filterMode(BobUI::MatchStartsWith),
+      cs(BobUI::CaseSensitive),
+      role(BobUI::EditRole),
       column(0),
       maxVisibleItems(7),
       sorting(QCompleter::UnsortedModel),
@@ -810,11 +810,11 @@ void QCompleterPrivate::init(QAbstractItemModel *m)
     proxy = new QCompletionModel(this, q);
     QObject::connect(proxy, SIGNAL(rowsAdded()), q, SLOT(_q_autoResizePopup()));
     q->setModel(m);
-#if !QT_CONFIG(listview)
+#if !BOBUI_CONFIG(listview)
     q->setCompletionMode(QCompleter::InlineCompletion);
 #else
     q->setCompletionMode(QCompleter::PopupCompletion);
-#endif // QT_CONFIG(listview)
+#endif // BOBUI_CONFIG(listview)
 }
 
 void QCompleterPrivate::setCurrentIndex(QModelIndex index, bool select)
@@ -856,12 +856,12 @@ void QCompleterPrivate::_q_complete(QModelIndex index, bool highlighted)
         completion = prefix;
         index = QModelIndex();
     } else {
-        if (!(index.flags() & Qt::ItemIsEnabled))
+        if (!(index.flags() & BobUI::ItemIsEnabled))
             return;
         QModelIndex si = proxy->mapToSource(index);
         si = si.sibling(si.row(), column); // for clicked()
         completion = q->pathFromIndex(si);
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
         // add a trailing separator in inline
         if (mode == QCompleter::InlineCompletion) {
             if (qobject_cast<QFileSystemModel *>(proxy->sourceModel()) && QFileInfo(completion).isDir())
@@ -889,7 +889,7 @@ void QCompleterPrivate::_q_autoResizePopup()
 void QCompleterPrivate::showPopup(const QRect& rect)
 {
     const QRect screen = widget->screen()->availableGeometry();
-    Qt::LayoutDirection dir = widget->layoutDirection();
+    BobUI::LayoutDirection dir = widget->layoutDirection();
     QPoint pos;
     int rh, w;
     int h = (popup->sizeHintForRow(0) * qMin(maxVisibleItems, popup->model()->rowCount()) + 3) + 3;
@@ -900,7 +900,7 @@ void QCompleterPrivate::showPopup(const QRect& rect)
     if (rect.isValid()) {
         rh = rect.height();
         w = rect.width();
-        pos = widget->mapToGlobal(dir == Qt::RightToLeft ? rect.bottomRight() : rect.bottomLeft());
+        pos = widget->mapToGlobal(dir == BobUI::RightToLeft ? rect.bottomRight() : rect.bottomLeft());
     } else {
         rh = widget->height();
         pos = widget->mapToGlobal(QPoint(0, widget->height() - 2));
@@ -927,7 +927,7 @@ void QCompleterPrivate::showPopup(const QRect& rect)
     popup->setGeometry(pos.x(), pos.y(), w, h);
 
     if (!popup->isVisible()) {
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
         popup->createWinId();
         if (auto waylandWindow = dynamic_cast<QNativeInterface::Private::QWaylandWindow*>(popup->windowHandle()->handle())) {
             popup->windowHandle()->setTransientParent(widget->window()->windowHandle());
@@ -944,7 +944,7 @@ void QCompleterPrivate::showPopup(const QRect& rect)
     }
 }
 
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
 static bool isRoot(const QFileSystemModel *model, const QString &path)
 {
     const auto index = model->index(path);
@@ -954,7 +954,7 @@ static bool isRoot(const QFileSystemModel *model, const QString &path)
 static bool completeOnLoaded(const QFileSystemModel *model,
                              const QString &nativePrefix,
                              const QString &path,
-                             Qt::CaseSensitivity caseSensitivity)
+                             BobUI::CaseSensitivity caseSensitivity)
 {
     const auto pathSize = path.size();
     const auto prefixSize = nativePrefix.size();
@@ -975,7 +975,7 @@ void QCompleterPrivate::_q_fileSystemModelDirectoryLoaded(const QString &path)
     // Slot called when QFileSystemModel has finished loading.
     // If we hide the popup because there was no match because the model was not loaded yet,
     // we re-start the completion when we get the results (unless triggered by
-    // something else, see QTBUG-14292).
+    // something else, see BOBUIBUG-14292).
     if (hiddenBecauseNoMatch && widget) {
         if (auto model = qobject_cast<const QFileSystemModel *>(proxy->sourceModel())) {
             if (completeOnLoaded(model, prefix, path, cs))
@@ -983,7 +983,7 @@ void QCompleterPrivate::_q_fileSystemModelDirectoryLoaded(const QString &path)
         }
     }
 }
-#else // QT_CONFIG(filesystemmodel)
+#else // BOBUI_CONFIG(filesystemmodel)
 void QCompleterPrivate::_q_fileSystemModelDirectoryLoaded(const QString &) {}
 #endif
 
@@ -1008,7 +1008,7 @@ QCompleter::QCompleter(QAbstractItemModel *model, QObject *parent)
     d->init(model);
 }
 
-#if QT_CONFIG(stringlistmodel)
+#if BOBUI_CONFIG(stringlistmodel)
 /*!
     Constructs a QCompleter object with the given \a parent that uses the specified
     \a list as a source of possible completions.
@@ -1019,7 +1019,7 @@ QCompleter::QCompleter(const QStringList& list, QObject *parent)
     Q_D(QCompleter);
     d->init(new QStringListModel(list, this));
 }
-#endif // QT_CONFIG(stringlistmodel)
+#endif // BOBUI_CONFIG(stringlistmodel)
 
 /*!
     Destroys the completer object.
@@ -1072,7 +1072,7 @@ QWidget *QCompleter::widget() const
     and it has the QCompleter as its parent, it is deleted.
 
     For convenience, if \a model is a QFileSystemModel, QCompleter switches its
-    caseSensitivity to Qt::CaseInsensitive on Windows and Qt::CaseSensitive
+    caseSensitivity to BobUI::CaseInsensitive on Windows and BobUI::CaseSensitive
     on other platforms.
 
     \sa completionModel(), modelSorting, {Handling Tree Models}
@@ -1083,27 +1083,27 @@ void QCompleter::setModel(QAbstractItemModel *model)
     QAbstractItemModel *oldModel = d->proxy->sourceModel();
     if (oldModel == model)
         return;
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
     if (qobject_cast<const QFileSystemModel *>(oldModel))
-        setCompletionRole(Qt::EditRole); // QTBUG-54642, clear FileNameRole set by QFileSystemModel
+        setCompletionRole(BobUI::EditRole); // BOBUIBUG-54642, clear FileNameRole set by QFileSystemModel
 #endif
     d->proxy->setSourceModel(model);
     if (d->popup)
         setPopup(d->popup); // set the model and make new connections
     if (oldModel && oldModel->QObject::parent() == this)
         delete oldModel;
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
     QFileSystemModel *fsModel = qobject_cast<QFileSystemModel *>(model);
     if (fsModel) {
 #if defined(Q_OS_WIN)
-        setCaseSensitivity(Qt::CaseInsensitive);
+        setCaseSensitivity(BobUI::CaseInsensitive);
 #else
-        setCaseSensitivity(Qt::CaseSensitive);
+        setCaseSensitivity(BobUI::CaseSensitive);
 #endif
         setCompletionRole(QFileSystemModel::FileNameRole);
         connect(fsModel, SIGNAL(directoryLoaded(QString)), this, SLOT(_q_fileSystemModelDirectoryLoaded(QString)));
     }
-#endif // QT_CONFIG(filesystemmodel)
+#endif // BOBUI_CONFIG(filesystemmodel)
 }
 
 /*!
@@ -1165,31 +1165,31 @@ QCompleter::CompletionMode QCompleter::completionMode() const
     \brief This property controls how filtering is performed.
     \since 5.2
 
-    If filterMode is set to Qt::MatchStartsWith, only those entries that start
-    with the typed characters will be displayed. Qt::MatchContains will display
-    the entries that contain the typed characters, and Qt::MatchEndsWith the
+    If filterMode is set to BobUI::MatchStartsWith, only those entries that start
+    with the typed characters will be displayed. BobUI::MatchContains will display
+    the entries that contain the typed characters, and BobUI::MatchEndsWith the
     ones that end with the typed characters.
 
-    Setting filterMode to any other Qt::MatchFlag will issue a warning, and no
-    action will be performed. Because of this, the \c Qt::MatchCaseSensitive
+    Setting filterMode to any other BobUI::MatchFlag will issue a warning, and no
+    action will be performed. Because of this, the \c BobUI::MatchCaseSensitive
     flag has no effect. Use the \l caseSensitivity property to control case
     sensitivity.
 
-    The default mode is Qt::MatchStartsWith.
+    The default mode is BobUI::MatchStartsWith.
 
     \sa caseSensitivity
 */
 
-void QCompleter::setFilterMode(Qt::MatchFlags filterMode)
+void QCompleter::setFilterMode(BobUI::MatchFlags filterMode)
 {
     Q_D(QCompleter);
 
     if (d->filterMode == filterMode)
         return;
 
-    if (Q_UNLIKELY(filterMode != Qt::MatchStartsWith &&
-                   filterMode != Qt::MatchContains &&
-                   filterMode != Qt::MatchEndsWith)) {
+    if (Q_UNLIKELY(filterMode != BobUI::MatchStartsWith &&
+                   filterMode != BobUI::MatchContains &&
+                   filterMode != BobUI::MatchEndsWith)) {
         qWarning("Unhandled QCompleter::filterMode flag is used.");
         return;
     }
@@ -1199,7 +1199,7 @@ void QCompleter::setFilterMode(Qt::MatchFlags filterMode)
     d->proxy->invalidate();
 }
 
-Qt::MatchFlags QCompleter::filterMode() const
+BobUI::MatchFlags QCompleter::filterMode() const
 {
     Q_D(const QCompleter);
     return d->filterMode;
@@ -1228,8 +1228,8 @@ void QCompleter::setPopup(QAbstractItemView *popup)
         return;
 
     // Remember existing widget's focus policy, default to NoFocus
-    const Qt::FocusPolicy origPolicy = d->widget ? d->widget->focusPolicy()
-                                                 : Qt::NoFocus;
+    const BobUI::FocusPolicy origPolicy = d->widget ? d->widget->focusPolicy()
+                                                 : BobUI::NoFocus;
 
     // If popup existed already, disconnect signals and delete object
     if (d->popup) {
@@ -1250,15 +1250,15 @@ void QCompleter::setPopup(QAbstractItemView *popup)
     // QWidgetPrivate::adjustQuitOnCloseAttribute(), and causes an application not to exit if the
     // popup ends up being the last window.
     d->popup->setParent(nullptr);
-    d->popup->setWindowFlag(Qt::Popup);
-    d->popup->setFocusPolicy(Qt::NoFocus);
+    d->popup->setWindowFlag(BobUI::Popup);
+    d->popup->setFocusPolicy(BobUI::NoFocus);
     if (d->widget)
         d->widget->setFocusPolicy(origPolicy);
 
     d->popup->setFocusProxy(d->widget);
     d->popup->installEventFilter(this);
     d->popup->setItemDelegate(new QCompleterItemDelegate(d->popup));
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
     if (QListView *listView = qobject_cast<QListView *>(d->popup)) {
         listView->setModelColumn(d->column);
     }
@@ -1281,18 +1281,18 @@ void QCompleter::setPopup(QAbstractItemView *popup)
 QAbstractItemView *QCompleter::popup() const
 {
     Q_D(const QCompleter);
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
     if (!d->popup && completionMode() != QCompleter::InlineCompletion) {
         QListView *listView = new QListView;
         listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        listView->setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
         listView->setSelectionBehavior(QAbstractItemView::SelectRows);
         listView->setSelectionMode(QAbstractItemView::SingleSelection);
         listView->setModelColumn(d->column);
         QCompleter *that = const_cast<QCompleter*>(this);
         that->setPopup(listView);
     }
-#endif // QT_CONFIG(listview)
+#endif // BOBUI_CONFIG(listview)
     return d->popup;
 }
 
@@ -1342,7 +1342,7 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
 
         const int key = ke->key();
         // In UnFilteredPopup mode, select the current item
-        if ((key == Qt::Key_Up || key == Qt::Key_Down) && selList.isEmpty() && curIndex.isValid()
+        if ((key == BobUI::Key_Up || key == BobUI::Key_Down) && selList.isEmpty() && curIndex.isValid()
             && d->mode == QCompleter::UnfilteredPopupCompletion) {
               d->setCurrentIndex(curIndex);
               return true;
@@ -1351,13 +1351,13 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
         // Handle popup navigation keys. These are hardcoded because up/down might make the
         // widget do something else (lineedit cursor moves to home/end on mac, for instance)
         switch (key) {
-        case Qt::Key_End:
-        case Qt::Key_Home:
-            if (ke->modifiers() & Qt::ControlModifier)
+        case BobUI::Key_End:
+        case BobUI::Key_Home:
+            if (ke->modifiers() & BobUI::ControlModifier)
                 return false;
             break;
 
-        case Qt::Key_Up:
+        case BobUI::Key_Up:
             if (!curIndex.isValid()) {
                 int rowCount = d->proxy->rowCount();
                 QModelIndex lastIndex = d->proxy->index(rowCount - 1, d->column);
@@ -1370,7 +1370,7 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
             }
             return false;
 
-        case Qt::Key_Down:
+        case BobUI::Key_Down:
             if (!curIndex.isValid()) {
                 QModelIndex firstIndex = d->proxy->index(0, d->column);
                 d->setCurrentIndex(firstIndex);
@@ -1382,8 +1382,8 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
             }
             return false;
 
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
+        case BobUI::Key_PageUp:
+        case BobUI::Key_PageDown:
             return false;
         }
 
@@ -1397,7 +1397,7 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
         if (!d->widget || e->isAccepted() || !d->popup->isVisible()) {
             // widget lost focus, hide the popup
             if (d->widget && (!d->widget->hasFocus()
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
                 || (QApplicationPrivate::keypadNavigationEnabled() && !d->widget->hasEditFocus())
 #endif
                 ))
@@ -1407,32 +1407,32 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
         }
 
         // default implementation for keys not handled by the widget when popup is open
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         if (ke->matches(QKeySequence::Cancel)) {
             d->popup->hide();
             return true;
         }
 #endif
         switch (key) {
-#ifdef QT_KEYPAD_NAVIGATION
-        case Qt::Key_Select:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+        case BobUI::Key_Select:
             if (!QApplicationPrivate::keypadNavigationEnabled())
                 break;
 #endif
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-        case Qt::Key_Tab:
+        case BobUI::Key_Return:
+        case BobUI::Key_Enter:
+        case BobUI::Key_Tab:
             d->popup->hide();
             if (curIndex.isValid())
                 d->_q_complete(curIndex);
             break;
 
-        case Qt::Key_F4:
-            if (ke->modifiers() & Qt::AltModifier)
+        case BobUI::Key_F4:
+            if (ke->modifiers() & BobUI::AltModifier)
                 d->popup->hide();
             break;
 
-        case Qt::Key_Backtab:
+        case BobUI::Key_Backtab:
             d->popup->hide();
             break;
 
@@ -1443,15 +1443,15 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
         return true;
     }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     case QEvent::KeyRelease: {
         if (d->widget &&
-            QApplicationPrivate::keypadNavigationEnabled() && ke->key() == Qt::Key_Back) {
+            QApplicationPrivate::keypadNavigationEnabled() && ke->key() == BobUI::Key_Back) {
             QKeyEvent *ke = static_cast<QKeyEvent *>(e);
             // Send the event to the 'widget'. This is what we did for KeyPress, so we need
             // to do the same for KeyRelease, in case the widget's KeyPress event set
             // up something (such as a timer) that is relying on also receiving the
-            // key release. I see this as a bug in Qt, and should really set it up for all
+            // key release. I see this as a bug in BobUI, and should really set it up for all
             // the affected keys. However, it is difficult to tell how this will affect
             // existing code, and I can't test for every combination!
             d->eatFocusOut = false;
@@ -1463,7 +1463,7 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
 #endif
 
     case QEvent::MouseButtonPress: {
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (d->widget
             && QApplicationPrivate::keypadNavigationEnabled()) {
             // if we've clicked in the widget (or its descendant), let it handle the click
@@ -1645,7 +1645,7 @@ void QCompleter::setCompletionColumn(int column)
     Q_D(QCompleter);
     if (d->column == column)
         return;
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
     if (QListView *listView = qobject_cast<QListView *>(d->popup))
         listView->setModelColumn(column);
 #endif
@@ -1663,7 +1663,7 @@ int QCompleter::completionColumn() const
     \property QCompleter::completionRole
     \brief the item role to be used to query the contents of items for matching.
 
-    The default role is Qt::EditRole.
+    The default role is BobUI::EditRole.
 
     \sa completionColumn, caseSensitivity
 */
@@ -1731,11 +1731,11 @@ void QCompleter::setMaxVisibleItems(int maxItems)
     \property QCompleter::caseSensitivity
     \brief the case sensitivity of the matching
 
-    The default value is \c Qt::CaseSensitive.
+    The default value is \c BobUI::CaseSensitive.
 
     \sa completionColumn, completionRole, modelSorting, filterMode
 */
-void QCompleter::setCaseSensitivity(Qt::CaseSensitivity cs)
+void QCompleter::setCaseSensitivity(BobUI::CaseSensitivity cs)
 {
     Q_D(QCompleter);
     if (d->cs == cs)
@@ -1745,7 +1745,7 @@ void QCompleter::setCaseSensitivity(Qt::CaseSensitivity cs)
     d->proxy->invalidate();
 }
 
-Qt::CaseSensitivity QCompleter::caseSensitivity() const
+BobUI::CaseSensitivity QCompleter::caseSensitivity() const
 {
     Q_D(const QCompleter);
     return d->cs;
@@ -1816,7 +1816,7 @@ QAbstractItemModel *QCompleter::completionModel() const
     Returns the path for the given \a index. The completer object uses this to
     obtain the completion text from the underlying model.
 
-    The default implementation returns the \l{Qt::EditRole}{edit role} of the
+    The default implementation returns the \l{BobUI::EditRole}{edit role} of the
     item for list models. It returns the absolute file path if the model is a
     QFileSystemModel.
 
@@ -1833,7 +1833,7 @@ QString QCompleter::pathFromIndex(const QModelIndex& index) const
     if (!sourceModel)
         return QString();
     bool isFsModel = false;
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
     isFsModel = qobject_cast<QFileSystemModel *>(d->proxy->sourceModel()) != nullptr;
 #endif
     if (!isFsModel)
@@ -1843,7 +1843,7 @@ QString QCompleter::pathFromIndex(const QModelIndex& index) const
     QStringList list;
     do {
         QString t;
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
         t = sourceModel->data(idx, QFileSystemModel::FileNameRole).toString();
 #endif
         list.prepend(t);
@@ -1875,7 +1875,7 @@ QString QCompleter::pathFromIndex(const QModelIndex& index) const
 QStringList QCompleter::splitPath(const QString& path) const
 {
     bool isFsModel = false;
-#if QT_CONFIG(filesystemmodel)
+#if BOBUI_CONFIG(filesystemmodel)
     Q_D(const QCompleter);
     isFsModel = qobject_cast<QFileSystemModel *>(d->proxy->sourceModel()) != nullptr;
 #endif
@@ -1940,7 +1940,7 @@ QStringList QCompleter::splitPath(const QString& path) const
     set to QCompleter::InlineCompletion. The item's \a text is given.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcompleter.cpp"
 

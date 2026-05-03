@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_db2_p.h"
 #include <qcoreapplication.h>
@@ -13,9 +13,9 @@
 #include <qstringlist.h>
 #include <qvarlengtharray.h>
 #include <QDebug>
-#include <QtSql/private/qsqldriver_p.h>
-#include <QtSql/private/qsqlresult_p.h>
-#include "private/qtools_p.h"
+#include <BobUISql/private/qsqldriver_p.h>
+#include <BobUISql/private/qsqlresult_p.h>
+#include "private/bobuiools_p.h"
 
 #if defined(Q_CC_BOR)
 // DB2's sqlsystm.h (included through sqlcli1.h) defines the SQL_BIGINT_TYPE
@@ -29,9 +29,9 @@
 
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const int COLNAMESIZE = 255;
 // Based on what is mentioned in the documentation here:
@@ -228,7 +228,7 @@ static QMetaType qDecodeDB2Type(SQLSMALLINT sqltype)
         break;
     case SQL_TIME:
     case SQL_TYPE_TIME:
-        type = QMetaType::QTime;
+        type = QMetaType::BOBUIime;
         break;
     case SQL_TIMESTAMP:
     case SQL_TYPE_TIMESTAMP:
@@ -659,11 +659,11 @@ bool QDB2Result::exec()
                                      *ind == SQL_NULL_DATA ? ind : NULL);
                 tmpStorage.append(ba);
                 break; }
-            case QMetaType::QTime: {
+            case QMetaType::BOBUIime: {
                 QByteArray ba;
                 ba.resize(sizeof(TIME_STRUCT));
                 TIME_STRUCT *dt = (TIME_STRUCT *)ba.constData();
-                QTime qdt = values.at(i).toTime();
+                BOBUIime qdt = values.at(i).toTime();
                 dt->hour = qdt.hour();
                 dt->minute = qdt.minute();
                 dt->second = qdt.second();
@@ -835,14 +835,14 @@ bool QDB2Result::exec()
                 DATE_STRUCT ds = *((DATE_STRUCT *)tmpStorage.takeFirst().constData());
                 values[i] = QVariant(QDate(ds.year, ds.month, ds.day));
                 break; }
-            case QMetaType::QTime: {
+            case QMetaType::BOBUIime: {
                 TIME_STRUCT dt = *((TIME_STRUCT *)tmpStorage.takeFirst().constData());
-                values[i] = QVariant(QTime(dt.hour, dt.minute, dt.second));
+                values[i] = QVariant(BOBUIime(dt.hour, dt.minute, dt.second));
                 break; }
             case QMetaType::QDateTime: {
                 TIMESTAMP_STRUCT dt = *((TIMESTAMP_STRUCT *)tmpStorage.takeFirst().constData());
                 values[i] = QVariant(QDateTime(QDate(dt.year, dt.month, dt.day),
-                              QTime(dt.hour, dt.minute, dt.second, dt.fraction / 1000000)));
+                              BOBUIime(dt.hour, dt.minute, dt.second, dt.fraction / 1000000)));
                 break; }
             case QMetaType::Int:
             case QMetaType::Double:
@@ -1011,7 +1011,7 @@ QVariant QDB2Result::data(int field)
                 isNull = true;
             }
             break; }
-        case QMetaType::QTime: {
+        case QMetaType::BOBUIime: {
             TIME_STRUCT tbuf;
             r = SQLGetData(d->hStmt,
                             field + 1,
@@ -1020,9 +1020,9 @@ QVariant QDB2Result::data(int field)
                             0,
                             &lengthIndicator);
             if ((r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO) && (lengthIndicator != SQL_NULL_DATA)) {
-                v = new QVariant(QTime(tbuf.hour, tbuf.minute, tbuf.second));
+                v = new QVariant(BOBUIime(tbuf.hour, tbuf.minute, tbuf.second));
             } else {
-                v = new QVariant(QTime());
+                v = new QVariant(BOBUIime());
                 isNull = true;
             }
             break; }
@@ -1036,7 +1036,7 @@ QVariant QDB2Result::data(int field)
                             &lengthIndicator);
             if ((r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO) && (lengthIndicator != SQL_NULL_DATA)) {
                 v = new QVariant(QDateTime(QDate(dtbuf.year, dtbuf.month, dtbuf.day),
-                                             QTime(dtbuf.hour, dtbuf.minute, dtbuf.second, dtbuf.fraction / 1000000)));
+                                             BOBUIime(dtbuf.hour, dtbuf.minute, dtbuf.second, dtbuf.fraction / 1000000)));
             } else {
                 v = new QVariant(QDateTime());
                 isNull = true;
@@ -1162,7 +1162,7 @@ QDB2Driver::QDB2Driver(QObject* parent)
 {
 }
 
-QDB2Driver::QDB2Driver(Qt::HANDLE env, Qt::HANDLE con, QObject* parent)
+QDB2Driver::QDB2Driver(BobUI::HANDLE env, BobUI::HANDLE con, QObject* parent)
     : QSqlDriver(*new QDB2DriverPrivate, parent)
 {
     Q_D(QDB2Driver);
@@ -1206,7 +1206,7 @@ bool QDB2Driver::open(const QString& db, const QString& user, const QString& pas
 
     QString protocol;
     // Set connection attributes
-    const QStringList opts(connOpts.split(u';', Qt::SkipEmptyParts));
+    const QStringList opts(connOpts.split(u';', BobUI::SkipEmptyParts));
     for (int i = 0; i < opts.count(); ++i) {
         const QString tmp(opts.at(i));
         int idx;
@@ -1235,7 +1235,7 @@ bool QDB2Driver::open(const QString& db, const QString& user, const QString& pas
         } else if (opt == "SQL_ATTR_LOGIN_TIMEOUT"_L1) {
             v = val.toUInt();
             r = SQLSetConnectAttr(d->hDbc, SQL_ATTR_LOGIN_TIMEOUT, reinterpret_cast<SQLPOINTER>(v), 0);
-        } else if (opt.compare("PROTOCOL"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (opt.compare("PROTOCOL"_L1, BobUI::CaseInsensitive) == 0) {
                         protocol = tmp;
         }
         else {
@@ -1628,7 +1628,7 @@ QString QDB2Driver::formatValue(const QSqlField &field, bool trimStrings) const
             // Use an escape sequence for the datetime fields
             if (field.value().toDateTime().isValid()) {
                 QDate dt = field.value().toDateTime().date();
-                QTime tm = field.value().toDateTime().time();
+                BOBUIime tm = field.value().toDateTime().time();
                 // Dateformat has to be "yyyy-MM-dd hh:mm:ss", with leading zeroes if month or day < 10
                 return u'\'' + QString::number(dt.year()) + u'-'
                        + QString::number(dt.month()) + u'-'
@@ -1651,8 +1651,8 @@ QString QDB2Driver::formatValue(const QSqlField &field, bool trimStrings) const
             r += "BLOB(X'"_L1;
             for (const char c : ba) {
                 const uchar s = uchar(c);
-                r += QLatin1Char(QtMiscUtils::toHexLower(s >> 4));
-                r += QLatin1Char(QtMiscUtils::toHexLower(s & 0x0f));
+                r += QLatin1Char(BobUIMiscUtils::toHexLower(s >> 4));
+                r += QLatin1Char(BobUIMiscUtils::toHexLower(s & 0x0f));
             }
             r += "')"_L1;
             return r;
@@ -1679,6 +1679,6 @@ QString QDB2Driver::escapeIdentifier(const QString &identifier, IdentifierType) 
     return res;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_db2_p.cpp"

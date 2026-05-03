@@ -1,5 +1,5 @@
 ********* Start testing of MaxWarnings *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : MaxWarnings::initTestCase()
 QWARN  : MaxWarnings::warn() 0
 QWARN  : MaxWarnings::warn() 1

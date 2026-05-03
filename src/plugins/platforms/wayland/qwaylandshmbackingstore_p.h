@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDSHMBACKINGSTORE_H
 #define QWAYLANDSHMBACKINGSTORE_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/private/qwaylandbuffer_p.h>
+#include <BobUIWaylandClient/private/qwaylandbuffer_p.h>
 
 #include <qpa/qplatformbackingstore.h>
-#include <QtGui/QImage>
+#include <BobUIGui/QImage>
 #include <qpa/qplatformwindow.h>
 #include <QMutex>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandAbstractDecoration;
@@ -79,7 +79,7 @@ public:
     QWaylandWindow *waylandWindow() const;
     void iterateBuffer();
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     QImage toImage() const override;
 #endif
 
@@ -98,12 +98,12 @@ private:
     QMutex mMutex;
 
     QSize mRequestedSize;
-    Qt::WindowFlags mCurrentWindowFlags;
+    BobUI::WindowFlags mCurrentWindowFlags;
     struct wl_event_queue *mEventQueue = nullptr;
 };
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

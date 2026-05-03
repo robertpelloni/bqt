@@ -1,8 +1,8 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtNetwork>
+#include <BobUIWidgets>
+#include <BobUINetwork>
 
 #include "client.h"
 
@@ -12,7 +12,7 @@ Client::Client(QWidget *parent)
     , hostCombo(new QComboBox)
     , portLineEdit(new QLineEdit)
     , getFortuneButton(new QPushButton(tr("Get Fortune")))
-    , tcpSocket(new QTcpSocket(this))
+    , tcpSocket(new BOBUIcpSocket(this))
 {
 //! [0]
     hostCombo->setEditable(true);
@@ -60,7 +60,7 @@ Client::Client(QWidget *parent)
 
 //! [1]
     in.setDevice(tcpSocket);
-    in.setVersion(QDataStream::Qt_6_5);
+    in.setVersion(QDataStream::BobUI_6_5);
 //! [1]
 
     connect(hostCombo, &QComboBox::editTextChanged,
@@ -130,7 +130,7 @@ void Client::readFortune()
         return;
 
     if (nextFortune == currentFortune) {
-        QTimer::singleShot(0, this, &Client::requestNewFortune);
+        BOBUIimer::singleShot(0, this, &Client::requestNewFortune);
         return;
     }
 

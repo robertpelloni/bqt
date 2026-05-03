@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QFlag
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QFlag class is a helper data type for QFlags.
 
     It is equivalent to a plain \c int, except with respect to
@@ -55,7 +55,7 @@
 
 /*!
     \class QFlags
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QFlags class provides a type-safe way of storing
     OR-combinations of enum values.
 
@@ -63,7 +63,7 @@
     \ingroup tools
 
     QFlags\<Enum\> is a template class where \a Enum is an enumeration type.
-    QFlags is used throughout Qt for storing combinations of enum values.
+    QFlags is used throughout BobUI for storing combinations of enum values.
 
     The traditional C++ approach for storing OR-combinations of enum
     values is to use an \c int or \c uint variable. The inconvenience
@@ -71,17 +71,17 @@
     enum value can be OR'd with any other enum value and passed on to
     a function that takes an \c int or \c uint.
 
-    Since Qt 6.9, QFlags supports 64-bit enumerations. It is recommended to use
+    Since BobUI 6.9, QFlags supports 64-bit enumerations. It is recommended to use
     explicit (fixed) underlying types when going above 32 bits, to ensure
     neither the enumeration nor the QFlags type change sizes if an enumerator
     is removed. Some compilers will also only make the \c enum type larger than
     32 bits with explicit underlying types.
 
-    Qt uses QFlags to provide type safety. For example, the
-    Qt::Alignment type is simply a typedef for
-    QFlags<Qt::AlignmentFlag>. QLabel::setAlignment() takes a
-    Qt::Alignment parameter, which means that any combination of
-    Qt::AlignmentFlag values, or \c{{ }}, is legal:
+    BobUI uses QFlags to provide type safety. For example, the
+    BobUI::Alignment type is simply a typedef for
+    QFlags<BobUI::AlignmentFlag>. QLabel::setAlignment() takes a
+    BobUI::Alignment parameter, which means that any combination of
+    BobUI::AlignmentFlag values, or \c{{ }}, is legal:
 
     \snippet code/src_corelib_global_qglobal_widgets.cpp 0
 
@@ -103,7 +103,7 @@
     \section1 Flags and the Meta-Object System
 
     The Q_DECLARE_FLAGS() macro does not expose the flags to the meta-object
-    system, so they cannot be used by Qt Script or edited in \QD.
+    system, so they cannot be used by BobUI Script or edited in \QD.
     To make the flags available for these purposes, the Q_FLAG() macro must
     be used:
 
@@ -125,7 +125,7 @@
 
     Typedef for the integer type used for storage as well as for
     implicit conversion. Either \c qintXX or \c quintXX, depending on
-    whether the enum's underlying type is signed or unsigned and, since Qt 6.9,
+    whether the enum's underlying type is signed or unsigned and, since BobUI 6.9,
     the enum's size. Typically, it will be \c qint32 (\c{int}) or \c quint32
     (\c{unsigned}).
 */
@@ -200,7 +200,7 @@
     result in this QFlags object. Returns a reference to this object.
 
 //! [unsafe-integer]
-    This operator is disabled if the \c{QT_TYPESAFE_FLAGS} macro is defined.
+    This operator is disabled if the \c{BOBUI_TYPESAFE_FLAGS} macro is defined.
     Note that it is not extended to 64-bit for 64-bit QFlags either: for 64-bit
     support, use the type-safe overload.
 //! [unsafe-integer]

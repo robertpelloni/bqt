@@ -1,20 +1,20 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_bench_lancebench Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_lancebench
+bobui_internal_add_benchmark(tst_bench_lancebench
     SOURCES
         ../../../../baseline/shared/paintcommands.cpp ../../../../baseline/shared/paintcommands.h
         tst_lancebench.cpp
     INCLUDE_DIRECTORIES
         ../../../../baseline/shared
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Test
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Test
 )
 
 # Resources:
@@ -52,7 +52,7 @@ set(images_resource_files
 
 list(TRANSFORM images_resource_files PREPEND "../../../../baseline/painting/")
 
-qt_internal_add_resource(tst_bench_lancebench "images"
+bobui_internal_add_resource(tst_bench_lancebench "images"
     PREFIX
         "/"
     BASE
@@ -64,7 +64,7 @@ qt_internal_add_resource(tst_bench_lancebench "images"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_bench_lancebench CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(tst_bench_lancebench CONDITION BOBUI_FEATURE_opengl
     LIBRARIES
-        Qt::OpenGL
+        BobUI::OpenGL
 )

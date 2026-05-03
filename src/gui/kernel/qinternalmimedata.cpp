@@ -1,16 +1,16 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qinternalmimedata_p.h"
 
-#include <QtCore/qbuffer.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qimagereader.h>
-#include <QtGui/qimagewriter.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qimagereader.h>
+#include <BobUIGui/qimagewriter.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QStringList imageMimeFormats(const QList<QByteArray> &imageFormats)
 {
@@ -49,7 +49,7 @@ QInternalMimeData::~QInternalMimeData()
 bool QInternalMimeData::hasFormat(const QString &mimeType) const
 {
     bool foundFormat = hasFormat_sys(mimeType);
-    if (!foundFormat && mimeType == "application/x-qt-image"_L1) {
+    if (!foundFormat && mimeType == "application/x-bobui-image"_L1) {
         QStringList imageFormats = imageReadMimeFormats();
         for (int i = 0; i < imageFormats.size(); ++i) {
             if ((foundFormat = hasFormat_sys(imageFormats.at(i))))
@@ -62,11 +62,11 @@ bool QInternalMimeData::hasFormat(const QString &mimeType) const
 QStringList QInternalMimeData::formats() const
 {
     QStringList realFormats = formats_sys();
-    if (!realFormats.contains("application/x-qt-image"_L1)) {
+    if (!realFormats.contains("application/x-bobui-image"_L1)) {
         QStringList imageFormats = imageReadMimeFormats();
         for (int i = 0; i < imageFormats.size(); ++i) {
             if (realFormats.contains(imageFormats.at(i))) {
-                realFormats += "application/x-qt-image"_L1;
+                realFormats += "application/x-bobui-image"_L1;
                 break;
             }
         }
@@ -77,7 +77,7 @@ QStringList QInternalMimeData::formats() const
 QVariant QInternalMimeData::retrieveData(const QString &mimeType, QMetaType type) const
 {
     QVariant data = retrieveData_sys(mimeType, type);
-    if (mimeType == "application/x-qt-image"_L1) {
+    if (mimeType == "application/x-bobui-image"_L1) {
         if (data.isNull() || (data.metaType().id() == QMetaType::QByteArray && data.toByteArray().isEmpty())) {
             // try to find an image
             QStringList imageFormats = imageReadMimeFormats();
@@ -105,7 +105,7 @@ QVariant QInternalMimeData::retrieveData(const QString &mimeType, QMetaType type
                       qreal(colBuf[3]) / qreal(0xFFFF));
             data = c;
         } else {
-            qWarning("Qt: Invalid color format");
+            qWarning("BobUI: Invalid color format");
         }
     } else if (data.metaType() != type && data.metaType().id() == QMetaType::QByteArray) {
         // try to use mime data's internal conversion stuf.
@@ -126,7 +126,7 @@ bool QInternalMimeData::canReadData(const QString &mimeType)
 QStringList QInternalMimeData::formatsHelper(const QMimeData *data)
 {
     QStringList realFormats = data->formats();
-    if (realFormats.contains("application/x-qt-image"_L1)) {
+    if (realFormats.contains("application/x-bobui-image"_L1)) {
         // add all supported image formats
         QStringList imageFormats = imageWriteMimeFormats();
         for (int i = 0; i < imageFormats.size(); ++i) {
@@ -142,7 +142,7 @@ bool QInternalMimeData::hasFormatHelper(const QString &mimeType, const QMimeData
 
     bool foundFormat = data->hasFormat(mimeType);
     if (!foundFormat) {
-        if (mimeType == "application/x-qt-image"_L1) {
+        if (mimeType == "application/x-bobui-image"_L1) {
             // check all supported image formats
             QStringList imageFormats = imageWriteMimeFormats();
             for (int i = 0; i < imageFormats.size(); ++i) {
@@ -181,7 +181,7 @@ QByteArray QInternalMimeData::renderDataHelper(const QString &mimeType, const QM
     } else {
         ba = data->data(mimeType);
         if (ba.isEmpty()) {
-            if (mimeType == "application/x-qt-image"_L1 && data->hasImage()) {
+            if (mimeType == "application/x-bobui-image"_L1 && data->hasImage()) {
                 QImage image = qvariant_cast<QImage>(data->imageData());
                 QBuffer buf(&ba);
                 buf.open(QBuffer::WriteOnly);
@@ -199,6 +199,6 @@ QByteArray QInternalMimeData::renderDataHelper(const QString &mimeType, const QM
     return ba;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qinternalmimedata_p.cpp"

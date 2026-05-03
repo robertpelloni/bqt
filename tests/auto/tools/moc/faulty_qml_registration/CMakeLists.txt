@@ -1,4 +1,4 @@
-# Copyright (C) 2025 The Qt Company Ltd.
+# Copyright (C) 2025 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # This folder is intentionally not added in the parent directory
@@ -8,11 +8,11 @@ cmake_minimum_required(VERSION 3.16)
 
 project(test_add_resource_options)
 
-find_package(Qt6Core REQUIRED)
+find_package(BobUI6Core REQUIRED)
 
-qt_wrap_cpp(faulty_registration.h)
+bobui_wrap_cpp(faulty_registration.h)
 
 
-qt6_add_executable(faulty_registration faulty_registration.h faulty_registration.cpp)
-target_link_libraries(faulty_registration PRIVATE Qt::Core)
+bobui6_add_executable(faulty_registration faulty_registration.h faulty_registration.cpp)
+target_link_libraries(faulty_registration PRIVATE BobUI::Core)
 

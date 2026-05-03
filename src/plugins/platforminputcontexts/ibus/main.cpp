@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qpa/qplatforminputcontextplugin_p.h>
-#include <QtCore/QStringList>
+#include <BobUICore/QStringList>
 #include <QDBusMetaType>
 #include "qibusplatforminputcontext.h"
 #include "qibustypes.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QIbusPlatformInputContextPlugin : public QPlatformInputContextPlugin
 {
@@ -25,7 +25,7 @@ QIBusPlatformInputContext *QIbusPlatformInputContextPlugin::create(const QString
 {
     Q_UNUSED(paramList);
 
-    if (system.compare(system, "ibus"_L1, Qt::CaseInsensitive) == 0) {
+    if (system.compare(system, "ibus"_L1, BobUI::CaseInsensitive) == 0) {
         qDBusRegisterMetaType<QIBusAttribute>();
         qDBusRegisterMetaType<QIBusAttributeList>();
         qDBusRegisterMetaType<QIBusText>();
@@ -37,6 +37,6 @@ QIBusPlatformInputContext *QIbusPlatformInputContextPlugin::create(const QString
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

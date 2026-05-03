@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef OPTION_H
 #define OPTION_H
@@ -7,7 +7,7 @@
 #include <qstring.h>
 #include <qdir.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct Option
 {
@@ -30,7 +30,7 @@ struct Option
     unsigned int forceStringConnectionSyntax: 1;
     unsigned int useStarImports: 1;
     unsigned int rcPrefix: 1; // Python: Generate "rc_file" instead of "file_rc" import
-    unsigned int qtNamespace: 1;
+    unsigned int bobuiNamespace: 1;
 
     QString inputFile;
     QString outputFile;
@@ -58,7 +58,7 @@ struct Option
           forceStringConnectionSyntax(0),
           useStarImports(0),
           rcPrefix(0),
-          qtNamespace(1),
+          bobuiNamespace(1),
           prefix(QLatin1StringView("Ui_"))
     { indent.fill(u' ', 4); }
 
@@ -70,6 +70,6 @@ struct Option
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // OPTION_H

@@ -1,27 +1,27 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFUTURE_H
 #error Do not include qfuture_impl.h directly
 #endif
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qfunctionaltools_impl.h>
-#include <QtCore/qfutureinterface.h>
-#include <QtCore/qthreadpool.h>
-#include <QtCore/qexception.h>
-#include <QtCore/qpromise.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qfunctionaltools_impl.h>
+#include <BobUICore/qfutureinterface.h>
+#include <BobUICore/bobuihreadpool.h>
+#include <BobUICore/qexception.h>
+#include <BobUICore/qpromise.h>
+#include <BobUICore/qvariant.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 // forward declarations
@@ -33,7 +33,7 @@ class QFutureInterface;
 template<class T>
 class QPromise;
 
-namespace QtFuture {
+namespace BobUIFuture {
 
 enum class Launch { Sync, Async, Inherit };
 
@@ -49,7 +49,7 @@ template<class T>
 WhenAnyResult(qsizetype, const QFuture<T> &) -> WhenAnyResult<T>;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 // implemented in qfutureinterface.cpp
 Q_CORE_EXPORT void qfutureWarnIfUnusedResults(qsizetype numResults);
@@ -119,7 +119,7 @@ auto createTuple(Arg &&arg, Args &&... args)
 {
     using TupleType = std::tuple<std::decay_t<Arg>, std::decay_t<Args>...>;
     constexpr auto Size = sizeof...(Args); // One less than the size of all arguments
-    if constexpr (QtPrivate::IsPrivateSignalArg<std::tuple_element_t<Size, TupleType>>) {
+    if constexpr (BobUIPrivate::IsPrivateSignalArg<std::tuple_element_t<Size, TupleType>>) {
         if constexpr (Size == 1) {
             return std::forward<Arg>(arg);
         } else {
@@ -248,7 +248,7 @@ struct ArgResolver<R (Class::* const)(Args...) const noexcept> : public ArgsType
 
 template<class Class, class Callable>
 using EnableIfInvocable = std::enable_if_t<
-        QtPrivate::ArgResolver<Callable>::template CanInvokeWithArgs<Class, Callable>>;
+        BobUIPrivate::ArgResolver<Callable>::template CanInvokeWithArgs<Class, Callable>>;
 
 template<class T>
 inline constexpr bool isQFutureV = false;
@@ -305,7 +305,7 @@ public:
 
     template<typename F = Function>
     CompactContinuation(F &&func, const QFuture<ParentResultType> &f, QPromise<ResultType> &&p,
-                 QThreadPool *pool)
+                 BOBUIhreadPool *pool)
         : Storage{std::forward<F>(func)}, promise(std::move(p)), parentFuture(f),
           threadPool(pool), type(Type::Async)
     {
@@ -324,11 +324,11 @@ public:
 
     template<typename F = Function>
     static void create(F &&func, QFuture<ParentResultType> *f, QFutureInterface<ResultType> &fi,
-                       QtFuture::Launch policy);
+                       BobUIFuture::Launch policy);
 
     template<typename F = Function>
     static void create(F &&func, QFuture<ParentResultType> *f, QFutureInterface<ResultType> &fi,
-                       QThreadPool *pool);
+                       BOBUIhreadPool *pool);
 
     template<typename F = Function>
     static void create(F &&func, QFuture<ParentResultType> *f, QFutureInterface<ResultType> &fi,
@@ -349,7 +349,7 @@ protected:
             runFunction();
         } else {
             Q_ASSERT(runObj);
-            QThreadPool *pool = threadPool ? threadPool : QThreadPool::globalInstance();
+            BOBUIhreadPool *pool = threadPool ? threadPool : BOBUIhreadPool::globalInstance();
             pool->start(runObj);
         }
     }
@@ -364,12 +364,12 @@ protected:
 
     QPromise<ResultType> promise;
     QFuture<ParentResultType> parentFuture;
-    QThreadPool *threadPool = nullptr;
+    BOBUIhreadPool *threadPool = nullptr;
     QRunnable *runObj = nullptr;
     const Type type;
 };
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
 template<class Function, class ResultType>
 class FailureHandler
@@ -412,7 +412,7 @@ void CompactContinuation<Function, ResultType, ParentResultType>::runFunction()
 
     Q_ASSERT(parentFuture.isFinished());
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     try {
 #endif
         if constexpr (!std::is_void_v<ResultType>) {
@@ -443,7 +443,7 @@ void CompactContinuation<Function, ResultType, ParentResultType>::runFunction()
                 this->object()(parentFuture);
             }
         }
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     } catch (...) {
         promise.setException(std::current_exception());
     }
@@ -457,7 +457,7 @@ bool CompactContinuation<Function, ResultType, ParentResultType>::execute()
     Q_ASSERT(parentFuture.isFinished());
 
     if (parentFuture.d.isChainCanceled()) {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
         if (parentFuture.d.hasException()) {
             // If the continuation doesn't take a QFuture argument, propagate the exception
             // to the caller, by reporting it. If the continuation takes a QFuture argument,
@@ -512,14 +512,14 @@ template<typename F>
 void CompactContinuation<Function, ResultType, ParentResultType>::create(F &&func,
                                                                   QFuture<ParentResultType> *f,
                                                                   QFutureInterface<ResultType> &fi,
-                                                                  QtFuture::Launch policy)
+                                                                  BobUIFuture::Launch policy)
 {
     Q_ASSERT(f);
 
-    QThreadPool *pool = nullptr;
+    BOBUIhreadPool *pool = nullptr;
 
-    bool launchAsync = (policy == QtFuture::Launch::Async);
-    if (policy == QtFuture::Launch::Inherit) {
+    bool launchAsync = (policy == BobUIFuture::Launch::Async);
+    if (policy == BobUIFuture::Launch::Inherit) {
         launchAsync = f->d.launchAsync();
 
         // If the parent future was using a custom thread pool, inherit it as well.
@@ -563,7 +563,7 @@ template<typename F>
 void CompactContinuation<Function, ResultType, ParentResultType>::create(F &&func,
                                                                   QFuture<ParentResultType> *f,
                                                                   QFutureInterface<ResultType> &fi,
-                                                                  QThreadPool *pool)
+                                                                  BOBUIhreadPool *pool)
 {
     Q_ASSERT(f);
 
@@ -668,7 +668,7 @@ void fulfillPromise(QPromise<T> &promise, Function &&handler)
         promise.addResult(handler());
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
 template<class Function, class ResultType>
 template<class F>
@@ -717,7 +717,7 @@ void FailureHandler<Function, ResultType>::run()
     promise.start();
 
     if (parentFuture.d.hasException()) {
-        using ArgType = typename QtPrivate::ArgResolver<Function>::First;
+        using ArgType = typename BobUIPrivate::ArgResolver<Function>::First;
         if constexpr (std::is_void_v<ArgType>) {
             handleAllExceptions();
         } else {
@@ -726,7 +726,7 @@ void FailureHandler<Function, ResultType>::run()
     } else if (parentFuture.d.isChainCanceled()) {
         promise.future().cancel();
     } else {
-        QtPrivate::fulfillPromise(promise, parentFuture);
+        BobUIPrivate::fulfillPromise(promise, parentFuture);
     }
     promise.finish();
 }
@@ -763,14 +763,14 @@ void FailureHandler<Function, ResultType>::handleAllExceptions()
         parentFuture.d.exceptionStore().rethrowException();
     } catch (...) {
         try {
-            QtPrivate::fulfillPromise(promise, std::forward<Function>(handler));
+            BobUIPrivate::fulfillPromise(promise, std::forward<Function>(handler));
         } catch (...) {
             promise.setException(std::current_exception());
         }
     }
 }
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
 template<class Function, class ResultType>
 class CanceledHandler
@@ -812,22 +812,22 @@ public:
         promise.start();
 
         if (parentFuture.isCanceled()) {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
             if (parentFuture.d.hasException()) {
                 // Propagate the exception to the result future
                 promise.setException(parentFuture.d.exceptionStore().exception());
             } else {
                 try {
 #endif
-                    QtPrivate::fulfillPromise(promise, std::forward<F>(handler));
-#ifndef QT_NO_EXCEPTIONS
+                    BobUIPrivate::fulfillPromise(promise, std::forward<F>(handler));
+#ifndef BOBUI_NO_EXCEPTIONS
                 } catch (...) {
                     promise.setException(std::current_exception());
                 }
             }
 #endif
         } else {
-            QtPrivate::fulfillPromise(promise, parentFuture);
+            BobUIPrivate::fulfillPromise(promise, parentFuture);
         }
 
         promise.finish();
@@ -841,8 +841,8 @@ struct UnwrapHandler
     {
         Q_ASSERT(outer);
 
-        using ResultType = typename QtPrivate::Future<std::decay_t<T>>::type;
-        using NestedType = typename QtPrivate::Future<ResultType>::type;
+        using ResultType = typename BobUIPrivate::Future<std::decay_t<T>>::type;
+        using NestedType = typename BobUIPrivate::Future<ResultType>::type;
         QFutureInterface<NestedType> promise(QFutureInterfaceBase::State::Pending);
 
         auto chain = outer->then([promise](const QFuture<ResultType> &outerFuture) mutable {
@@ -850,7 +850,7 @@ struct UnwrapHandler
             // (where outerFuture == *outer), to propagate the exception if the
             // outer future has failed.
             Q_ASSERT(outerFuture.isFinished());
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
             if (outerFuture.d.hasException()) {
                 promise.reportStarted();
                 promise.reportException(outerFuture.d.exceptionStore().exception());
@@ -863,7 +863,7 @@ struct UnwrapHandler
             ResultType nestedFuture = outerFuture.result();
 
             nestedFuture.then([promise] (const QFuture<NestedType> &nested) mutable {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
                 if (nested.d.hasException()) {
                     promise.reportException(nested.d.exceptionStore().exception());
                 } else
@@ -904,14 +904,14 @@ QFuture<ValueType> makeReadyRangeFutureImpl(const QList<ValueType> &values)
     return promise.future();
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-namespace QtFuture {
+namespace BobUIFuture {
 
 template<class Signal>
-using ArgsType = typename QtPrivate::ArgResolver<Signal>::AllArgs;
+using ArgsType = typename BobUIPrivate::ArgResolver<Signal>::AllArgs;
 
-template<class Sender, class Signal, typename = QtPrivate::EnableIfInvocable<Sender, Signal>>
+template<class Sender, class Signal, typename = BobUIPrivate::EnableIfInvocable<Sender, Signal>>
 static QFuture<ArgsType<Signal>> connect(Sender *sender, Signal signal)
 {
     using ArgsType = ArgsType<Signal>;
@@ -933,12 +933,12 @@ static QFuture<ArgsType<Signal>> connect(Sender *sender, Signal signal)
                     QObject::disconnect(connections->second);
                     promise.reportFinished();
                 });
-    } else if constexpr (QtPrivate::ArgResolver<Signal>::HasExtraArgs) {
+    } else if constexpr (BobUIPrivate::ArgResolver<Signal>::HasExtraArgs) {
         connections->first = QObject::connect(sender, signal, sender,
                                               [promise, connections](auto... values) mutable {
                                                   QObject::disconnect(connections->first);
                                                   QObject::disconnect(connections->second);
-                                                  promise.reportResult(QtPrivate::createTuple(
+                                                  promise.reportResult(BobUIPrivate::createTuple(
                                                           std::move(values)...));
                                                   promise.reportFinished();
                                               });
@@ -971,7 +971,7 @@ static QFuture<ArgsType<Signal>> connect(Sender *sender, Signal signal)
 
 template<typename Container>
 using if_container_with_input_iterators =
-        std::enable_if_t<QtPrivate::HasInputIterator<Container>::value, bool>;
+        std::enable_if_t<BobUIPrivate::HasInputIterator<Container>::value, bool>;
 
 template<typename Container>
 using ContainedType =
@@ -985,9 +985,9 @@ static QFuture<ContainedType<Container>> makeReadyRangeFuture(Container &&contai
     // as an input
     using ValueType = ContainedType<Container>;
     if constexpr (std::is_convertible_v<q20::remove_cvref_t<Container>, QList<ValueType>>) {
-        return QtPrivate::makeReadyRangeFutureImpl(container);
+        return BobUIPrivate::makeReadyRangeFutureImpl(container);
     } else {
-        return QtPrivate::makeReadyRangeFutureImpl(QList<ValueType>{std::cbegin(container),
+        return BobUIPrivate::makeReadyRangeFutureImpl(QList<ValueType>{std::cbegin(container),
                                                                     std::cend(container)});
     }
 }
@@ -995,7 +995,7 @@ static QFuture<ContainedType<Container>> makeReadyRangeFuture(Container &&contai
 template<typename ValueType>
 static QFuture<ValueType> makeReadyRangeFuture(std::initializer_list<ValueType> values)
 {
-    return QtPrivate::makeReadyRangeFutureImpl(QList<ValueType>{values});
+    return BobUIPrivate::makeReadyRangeFutureImpl(QList<ValueType>{values});
 }
 
 template<typename T>
@@ -1011,9 +1011,9 @@ static QFuture<std::decay_t<T>> makeReadyValueFuture(T &&value)
 
 Q_CORE_EXPORT QFuture<void> makeReadyVoidFuture(); // implemented in qfutureinterface.cpp
 
-#if QT_DEPRECATED_SINCE(6, 10)
-template<typename T, typename = QtPrivate::EnableForNonVoid<T>>
-QT_DEPRECATED_VERSION_X(6, 10, "Use makeReadyValueFuture() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 10)
+template<typename T, typename = BobUIPrivate::EnableForNonVoid<T>>
+BOBUI_DEPRECATED_VERSION_X(6, 10, "Use makeReadyValueFuture() instead.")
 static QFuture<std::decay_t<T>> makeReadyFuture(T &&value)
 {
     return makeReadyValueFuture(std::forward<T>(value));
@@ -1023,14 +1023,14 @@ static QFuture<std::decay_t<T>> makeReadyFuture(T &&value)
 // uses makeReadyVoidFuture() and required QFuture<void> to be defined.
 
 template<typename T>
-QT_DEPRECATED_VERSION_X(6, 10, "Use makeReadyRangeFuture() instead.")
+BOBUI_DEPRECATED_VERSION_X(6, 10, "Use makeReadyRangeFuture() instead.")
 static QFuture<T> makeReadyFuture(const QList<T> &values)
 {
     return makeReadyRangeFuture(values);
 }
-#endif // QT_DEPRECATED_SINCE(6, 10)
+#endif // BOBUI_DEPRECATED_SINCE(6, 10)
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
 template<typename T = void>
 static QFuture<T> makeExceptionalFuture(std::exception_ptr exception)
@@ -1054,11 +1054,11 @@ static QFuture<T> makeExceptionalFuture(const QException &exception)
     Q_UNREACHABLE();
 }
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
-} // namespace QtFuture
+} // namespace BobUIFuture
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template<typename ResultFutures>
 struct WhenAllContext
@@ -1133,9 +1133,9 @@ QFuture<OutputSequence> whenAllImpl(InputIt first, InputIt last)
 {
     const qsizetype size = std::distance(first, last);
     if (size == 0)
-        return QtFuture::makeReadyValueFuture(OutputSequence());
+        return BobUIFuture::makeReadyValueFuture(OutputSequence());
 
-    const auto context = std::make_shared<QtPrivate::WhenAllContext<OutputSequence>>(size);
+    const auto context = std::make_shared<BobUIPrivate::WhenAllContext<OutputSequence>>(size);
     context->futures.resize(size);
     context->promise.start();
 
@@ -1155,11 +1155,11 @@ template<typename OutputSequence, typename... Futures>
 QFuture<OutputSequence> whenAllImpl(Futures &&... futures)
 {
     constexpr qsizetype size = sizeof...(Futures);
-    const auto context = std::make_shared<QtPrivate::WhenAllContext<OutputSequence>>(size);
+    const auto context = std::make_shared<BobUIPrivate::WhenAllContext<OutputSequence>>(size);
     context->futures.resize(size);
     context->promise.start();
 
-    QtPrivate::addCompletionHandlers(context, std::make_tuple(std::forward<Futures>(futures)...));
+    BobUIPrivate::addCompletionHandlers(context, std::make_tuple(std::forward<Futures>(futures)...));
 
     return context->promise.future();
 }
@@ -1167,28 +1167,28 @@ QFuture<OutputSequence> whenAllImpl(Futures &&... futures)
 template<typename InputIt, typename ValueType,
          std::enable_if_t<std::conjunction_v<IsForwardIterable<InputIt>, isQFuture<ValueType>>,
                           bool> = true>
-QFuture<QtFuture::WhenAnyResult<typename Future<ValueType>::type>> whenAnyImpl(InputIt first,
+QFuture<BobUIFuture::WhenAnyResult<typename Future<ValueType>::type>> whenAnyImpl(InputIt first,
                                                                                InputIt last)
 {
     using PackagedType = typename Future<ValueType>::type;
-    using ResultType = QtFuture::WhenAnyResult<PackagedType>;
+    using ResultType = BobUIFuture::WhenAnyResult<PackagedType>;
 
     const qsizetype size = std::distance(first, last);
     if (size == 0) {
-        return QtFuture::makeReadyValueFuture(
-                QtFuture::WhenAnyResult { qsizetype(-1), QFuture<PackagedType>() });
+        return BobUIFuture::makeReadyValueFuture(
+                BobUIFuture::WhenAnyResult { qsizetype(-1), QFuture<PackagedType>() });
     }
 
-    const auto context = std::make_shared<QtPrivate::WhenAnyContext<ResultType>>();
+    const auto context = std::make_shared<BobUIPrivate::WhenAnyContext<ResultType>>();
     context->promise.start();
 
     qsizetype idx = 0;
     for (auto it = first; it != last; ++it, ++idx) {
         // Need context=context so that the compiler does not infer the captured variable's type as 'const'
         it->then([context=context, idx](const ValueType &f) {
-            context->checkForCompletion(idx, QtFuture::WhenAnyResult { idx, f });
+            context->checkForCompletion(idx, BobUIFuture::WhenAnyResult { idx, f });
         }).onCanceled([context=context, idx, f = *it] {
-            context->checkForCompletion(idx, QtFuture::WhenAnyResult { idx, f });
+            context->checkForCompletion(idx, BobUIFuture::WhenAnyResult { idx, f });
         });
     }
     return context->promise.future();
@@ -1199,14 +1199,14 @@ QFuture<std::variant<std::decay_t<Futures>...>> whenAnyImpl(Futures &&... future
 {
     using ResultType = std::variant<std::decay_t<Futures>...>;
 
-    const auto context = std::make_shared<QtPrivate::WhenAnyContext<ResultType>>();
+    const auto context = std::make_shared<BobUIPrivate::WhenAnyContext<ResultType>>();
     context->promise.start();
 
-    QtPrivate::addCompletionHandlers(context, std::make_tuple(std::forward<Futures>(futures)...));
+    BobUIPrivate::addCompletionHandlers(context, std::make_tuple(std::forward<Futures>(futures)...));
 
     return context->promise.future();
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

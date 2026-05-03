@@ -1,7 +1,7 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(qglyphrun
+bobui_internal_add_manual_test(qglyphrun
     GUI
     SOURCES
         main.cpp
@@ -10,8 +10,8 @@ qt_internal_add_manual_test(qglyphrun
         glyphruninspector.h glyphruninspector.cpp
         singleglyphrun.h singleglyphrun.cpp singleglyphrun.ui
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
     ENABLE_AUTOGEN_TOOLS
         uic
 )

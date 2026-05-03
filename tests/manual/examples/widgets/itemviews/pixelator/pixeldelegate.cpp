@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "pixeldelegate.h"
 
@@ -23,7 +23,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 //! [3]
     const int size = qMin(option.rect.width(), option.rect.height());
 //! [3] //! [4]
-    const int brightness = index.model()->data(index, Qt::DisplayRole).toInt();
+    const int brightness = index.model()->data(index, BobUI::DisplayRole).toInt();
     const double radius = (size / 2.0) - (brightness / 255.0 * size / 2.0);
     if (qFuzzyIsNull(radius))
         return;
@@ -34,7 +34,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 //! [5] //! [6]
     painter->setRenderHint(QPainter::Antialiasing, true);
 //! [6] //! [7]
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
 //! [7] //! [8]
     if (option.state & QStyle::State_Selected)
 //! [8] //! [9]

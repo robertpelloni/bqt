@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdtls_base_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QDtlsBasePrivate::setDtlsError(QDtlsError code, const QString &description)
 {
@@ -64,11 +64,11 @@ QDtlsBasePrivate::cookieGeneratorParameters() const
 bool QDtlsBasePrivate::isDtlsProtocol(QSsl::SslProtocol protocol)
 {
     switch (protocol) {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     case QSsl::DtlsV1_0:
     case QSsl::DtlsV1_0OrLater:
-QT_WARNING_POP
+BOBUI_WARNING_POP
     case QSsl::DtlsV1_2:
     case QSsl::DtlsV1_2OrLater:
         return true;
@@ -77,4 +77,4 @@ QT_WARNING_POP
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

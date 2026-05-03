@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGL_H
 #define QOPENGL_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 // On Windows we need to ensure that APIENTRY and WINGDIAPI are defined before
 // we can include gl.h. But we do not want to include <windows.h> in this public
-// Qt header, as it pollutes the global namespace with macros.
+// BobUI header, as it pollutes the global namespace with macros.
 #if defined(Q_OS_WIN)
 # ifndef APIENTRY
 #  define APIENTRY __stdcall
@@ -20,7 +20,7 @@
 #  define WINGDIAPI __declspec(dllimport)
 #  define Q_UNDEF_WINGDIAPI
 # endif // WINGDIAPI
-# define QT_APIENTRY __stdcall
+# define BOBUI_APIENTRY __stdcall
 #endif
 
 // Note: Apple is a "controlled platform" for OpenGL ABI so we
@@ -37,9 +37,9 @@
 // access to additional functionality the drivers may expose but
 // which the system headers do not.
 
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
 # if defined(Q_OS_IOS) || defined(Q_OS_TVOS)
-#  if QT_CONFIG(opengles3)
+#  if BOBUI_CONFIG(opengles3)
 #   include <OpenGLES/ES3/gl.h>
 #   include <OpenGLES/ES3/glext.h>
 #  else
@@ -57,13 +57,13 @@ typedef void* GLeglImageOES;
 
 # elif !defined(Q_OS_DARWIN) // "uncontrolled" ES2 platforms
 
-// In "es2" builds (QT_CONFIG(opengles2)) additional defines indicate GLES 3.0 or
+// In "es2" builds (BOBUI_CONFIG(opengles2)) additional defines indicate GLES 3.0 or
 // higher is available *at build time*. In this case include the corresponding
 // header. These are backwards compatible and it should be safe to include
 // headers on top of each other, meaning that applications can include gl2.h
 // even if gl31.h gets included here.
 
-// NB! The fact that Qt was built against an SDK with GLES 2 only does not mean
+// NB! The fact that BobUI was built against an SDK with GLES 2 only does not mean
 // applications cannot be deployed on a GLES 3 system. Therefore
 // QOpenGLFunctions and friends must do everything dynamically and must not rely
 // on these macros, except in special cases for controlled build/run environments.
@@ -75,11 +75,11 @@ typedef void* GLeglImageOES;
 #   define QGL_TEMP_GLEXT_PROTO
 #  endif
 
-#  if QT_CONFIG(opengles32)
+#  if BOBUI_CONFIG(opengles32)
 #   include <GLES3/gl32.h>
-#  elif QT_CONFIG(opengles31)
+#  elif BOBUI_CONFIG(opengles31)
 #   include <GLES3/gl31.h>
-#  elif QT_CONFIG(opengles3)
+#  elif BOBUI_CONFIG(opengles3)
 #   include <GLES3/gl3.h>
 #  else
 #   include <GLES2/gl2.h>
@@ -98,7 +98,7 @@ typedef void* GLeglImageOES;
 */
 typedef char GLchar;
 
-#  include <QtGui/qopengles2ext.h>
+#  include <BobUIGui/qopengles2ext.h>
 # endif
 #else // non-ES2 platforms
 # if defined(Q_OS_MACOS)
@@ -117,32 +117,32 @@ typedef char GLchar;
 #  else
 #   include <GL/gl.h>
 #  endif
-#  include <QtGui/qopenglext.h>
+#  include <BobUIGui/qopenglext.h>
 # endif
-#endif // !QT_CONFIG(opengles2)
+#endif // !BOBUI_CONFIG(opengles2)
 
 // Desktops can support OpenGL 4.
-#if !QT_CONFIG(opengles2)
-#define QT_OPENGL_3
-#define QT_OPENGL_3_2
-#define QT_OPENGL_4
+#if !BOBUI_CONFIG(opengles2)
+#define BOBUI_OPENGL_3
+#define BOBUI_OPENGL_3_2
+#define BOBUI_OPENGL_4
 # if !defined(Q_OS_MAC)
-#  define QT_OPENGL_4_3
+#  define BOBUI_OPENGL_4_3
 # endif
 #endif
 
 
 // When all else fails we provide sensible fallbacks - this is needed to
 // allow compilation on OS X 10.6
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
 
 // OS X 10.6 doesn't define these which are needed below
 // OS X 10.7 and later define them in gl3.h
-#ifndef QT_APIENTRY
-#define QT_APIENTRY
+#ifndef BOBUI_APIENTRY
+#define BOBUI_APIENTRY
 #endif
-#ifndef QT_APIENTRYP
-#define QT_APIENTRYP QT_APIENTRY *
+#ifndef BOBUI_APIENTRYP
+#define BOBUI_APIENTRYP BOBUI_APIENTRY *
 #endif
 #ifndef GLAPI
 #define GLAPI extern
@@ -241,15 +241,15 @@ struct _cl_event;
 #endif
 
 #ifndef GL_ARB_debug_output
-typedef void (QT_APIENTRY *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const GLvoid *userParam);
+typedef void (BOBUI_APIENTRY *GLDEBUGPROCARB)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const GLvoid *userParam);
 #endif
 
 #ifndef GL_AMD_debug_output
-typedef void (QT_APIENTRY *GLDEBUGPROCAMD)(GLuint id,GLenum category,GLenum severity,GLsizei length,const GLchar *message,GLvoid *userParam);
+typedef void (BOBUI_APIENTRY *GLDEBUGPROCAMD)(GLuint id,GLenum category,GLenum severity,GLsizei length,const GLchar *message,GLvoid *userParam);
 #endif
 
 #ifndef GL_KHR_debug
-typedef void (QT_APIENTRY *GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const GLvoid *userParam);
+typedef void (BOBUI_APIENTRY *GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const GLvoid *userParam);
 #endif
 
 #ifndef GL_NV_vdpau_interop
@@ -259,15 +259,15 @@ typedef GLintptr GLvdpauSurfaceNV;
 // End of block copied from glext.h
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Types that aren't defined in all system's gl.h files.
 typedef ptrdiff_t qopengl_GLintptr;
 typedef ptrdiff_t qopengl_GLsizeiptr;
 
 
-#if defined(QT_APIENTRY) && !defined(QOPENGLF_APIENTRY)
-#   define QOPENGLF_APIENTRY QT_APIENTRY
+#if defined(BOBUI_APIENTRY) && !defined(QOPENGLF_APIENTRY)
+#   define QOPENGLF_APIENTRY BOBUI_APIENTRY
 #endif
 
 # ifndef QOPENGLF_APIENTRYP
@@ -279,7 +279,7 @@ typedef ptrdiff_t qopengl_GLsizeiptr;
 #   endif
 # endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #ifdef Q_UNDEF_WINGDIAPI
 # undef WINGDIAPI
@@ -290,6 +290,6 @@ QT_END_NAMESPACE
 # undef Q_UNDEF_APIENTRY
 #endif
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGL_H

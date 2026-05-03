@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMATH_H
 #define QMATH_H
 
 #if 0
-#pragma qt_class(QtMath)
+#pragma bobui_class(BobUIMath)
 #endif
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qalgorithms.h>
-#include <QtCore/qnumeric.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qalgorithms.h>
+#include <BobUICore/qnumeric.h>
 
 #if __has_include(<bit>) && __cplusplus > 201703L
 #include <bit>
@@ -18,22 +18,22 @@
 
 #include <cmath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#define QT_SINE_TABLE_SIZE 256
+#define BOBUI_SINE_TABLE_SIZE 256
 
-extern Q_CORE_EXPORT const qreal qt_sine_table[QT_SINE_TABLE_SIZE];
+extern Q_CORE_EXPORT const qreal bobui_sine_table[BOBUI_SINE_TABLE_SIZE];
 
 template <typename T> int qCeil(T v)
 {
     using std::ceil;
-    return QtPrivate::qCheckedFPConversionToInteger<int>(ceil(v));
+    return BobUIPrivate::qCheckedFPConversionToInteger<int>(ceil(v));
 }
 
 template <typename T> int qFloor(T v)
 {
     using std::floor;
-    return QtPrivate::qCheckedFPConversionToInteger<int>(floor(v));
+    return BobUIPrivate::qCheckedFPConversionToInteger<int>(floor(v));
 }
 
 template <typename T> auto qFabs(T v)
@@ -90,7 +90,7 @@ template <typename T> auto qSqrt(T v)
     return sqrt(v);
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename R, typename F> // For qfloat16 to specialize
 struct QHypotType { using type = decltype(std::hypot(R(1), F(1))); };
 
@@ -130,12 +130,12 @@ public:
         return QHypotHelper<R>(scale, total + ratio * ratio);
     }
 };
-} // QtPrivate
+} // BobUIPrivate
 
 template<typename F, typename ...Fs>
 auto qHypot(F first, Fs... rest)
 {
-    return QtPrivate::QHypotHelper<F>(first).add(rest...).result();
+    return BobUIPrivate::QHypotHelper<F>(first).add(rest...).result();
 }
 
 // However, where possible, use the standard library implementations:
@@ -174,7 +174,7 @@ template <typename T1, typename T2> auto qPow(T1 x, T2 y)
     return pow(x, y);
 }
 
-// TODO: use template variables (e.g. Qt::pi<type>) for these once we have C++14 support:
+// TODO: use template variables (e.g. BobUI::pi<type>) for these once we have C++14 support:
 
 #ifndef M_E
 #define M_E (2.7182818284590452354)
@@ -230,22 +230,22 @@ template <typename T1, typename T2> auto qPow(T1 x, T2 y)
 
 inline qreal qFastSin(qreal x)
 {
-    int si = int(x * (0.5 * QT_SINE_TABLE_SIZE / M_PI)); // Would be more accurate with qRound, but slower.
-    qreal d = x - si * (2.0 * M_PI / QT_SINE_TABLE_SIZE);
-    int ci = si + QT_SINE_TABLE_SIZE / 4;
-    si &= QT_SINE_TABLE_SIZE - 1;
-    ci &= QT_SINE_TABLE_SIZE - 1;
-    return qt_sine_table[si] + (qt_sine_table[ci] - 0.5 * qt_sine_table[si] * d) * d;
+    int si = int(x * (0.5 * BOBUI_SINE_TABLE_SIZE / M_PI)); // Would be more accurate with qRound, but slower.
+    qreal d = x - si * (2.0 * M_PI / BOBUI_SINE_TABLE_SIZE);
+    int ci = si + BOBUI_SINE_TABLE_SIZE / 4;
+    si &= BOBUI_SINE_TABLE_SIZE - 1;
+    ci &= BOBUI_SINE_TABLE_SIZE - 1;
+    return bobui_sine_table[si] + (bobui_sine_table[ci] - 0.5 * bobui_sine_table[si] * d) * d;
 }
 
 inline qreal qFastCos(qreal x)
 {
-    int ci = int(x * (0.5 * QT_SINE_TABLE_SIZE / M_PI)); // Would be more accurate with qRound, but slower.
-    qreal d = x - ci * (2.0 * M_PI / QT_SINE_TABLE_SIZE);
-    int si = ci + QT_SINE_TABLE_SIZE / 4;
-    si &= QT_SINE_TABLE_SIZE - 1;
-    ci &= QT_SINE_TABLE_SIZE - 1;
-    return qt_sine_table[si] - (qt_sine_table[ci] + 0.5 * qt_sine_table[si] * d) * d;
+    int ci = int(x * (0.5 * BOBUI_SINE_TABLE_SIZE / M_PI)); // Would be more accurate with qRound, but slower.
+    qreal d = x - ci * (2.0 * M_PI / BOBUI_SINE_TABLE_SIZE);
+    int si = ci + BOBUI_SINE_TABLE_SIZE / 4;
+    si &= BOBUI_SINE_TABLE_SIZE - 1;
+    ci &= BOBUI_SINE_TABLE_SIZE - 1;
+    return bobui_sine_table[si] - (bobui_sine_table[ci] + 0.5 * bobui_sine_table[si] * d) * d;
 }
 
 constexpr inline float qDegreesToRadians(float degrees)
@@ -320,6 +320,6 @@ constexpr inline unsigned long qNextPowerOfTwo(long v)
     return qNextPowerOfTwo(QIntegerForSizeof<long>::Unsigned(v));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMATH_H

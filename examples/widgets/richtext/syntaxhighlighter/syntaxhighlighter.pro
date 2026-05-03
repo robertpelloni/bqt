@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS         = highlighter.h \
                   mainwindow.h
@@ -8,5 +8,5 @@ SOURCES         = highlighter.cpp \
                   main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/richtext/syntaxhighlighter
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/richtext/syntaxhighlighter
 INSTALLS += target

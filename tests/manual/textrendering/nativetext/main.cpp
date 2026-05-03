@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #ifdef Q_OS_DARWIN
 #include <private/qcoregraphics_p.h>
@@ -19,7 +19,7 @@ class TextRenderer : public QWidget
 {
     Q_OBJECT
 public:
-    enum RenderingMode { QtRendering, NativeRendering };
+    enum RenderingMode { BobUIRendering, NativeRendering };
     Q_ENUM(RenderingMode);
 
     TextRenderer(qreal pointSize, const QString &text, const QColor &textColor = QColor(), const QColor &bgColor = QColor())
@@ -83,8 +83,8 @@ public:
         p.drawLine(QPoint(0, ascent), QPoint(width(), ascent));
         p.end();
 
-        if (s_mode == QtRendering)
-            renderQtText(image);
+        if (s_mode == BobUIRendering)
+            renderBobUIText(image);
         else
             renderNativeText(image);
 
@@ -92,7 +92,7 @@ public:
         wp.drawImage(QPoint(0, 0), image);
     }
 
-    void renderQtText(QImage &image)
+    void renderBobUIText(QImage &image)
     {
         QPainter p(&image);
 
@@ -151,7 +151,7 @@ public:
 
 public:
 
-    RenderingMode m_mode = QtRendering;
+    RenderingMode m_mode = BobUIRendering;
     QString m_text;
 };
 
@@ -175,11 +175,11 @@ public:
             QPair<QColor, QColor> color = [i] {
                 switch (i) {
                 case 0: return qMakePair(QColor(), QColor());
-                case 1: return qMakePair(QColor(Qt::black), QColor(Qt::white));
-                case 2: return qMakePair(QColor(Qt::white), QColor(Qt::black));
-                case 3: return qMakePair(QColor(Qt::magenta), QColor(Qt::green));
-                case 4: return qMakePair(QColor(0, 0, 0, 128), QColor(Qt::white));
-                case 5: return qMakePair(QColor(255, 255, 255, 128), QColor(Qt::black));
+                case 1: return qMakePair(QColor(BobUI::black), QColor(BobUI::white));
+                case 2: return qMakePair(QColor(BobUI::white), QColor(BobUI::black));
+                case 3: return qMakePair(QColor(BobUI::magenta), QColor(BobUI::green));
+                case 4: return qMakePair(QColor(0, 0, 0, 128), QColor(BobUI::white));
+                case 5: return qMakePair(QColor(255, 255, 255, 128), QColor(BobUI::black));
                 default: return qMakePair(QColor(), QColor());
                 }
             }();
@@ -252,7 +252,7 @@ public:
         connect(trakButton, &QCheckBox::checkStateChanged, [&](auto state) {
             for (TextRenderer *renderer : m_previews->findChildren<TextRenderer *>()) {
                 QFont font = renderer->font();
-                font.setFeature("trak", state == Qt::Checked);
+                font.setFeature("trak", state == BobUI::Checked);
                 renderer->setFont(font);
             }
         });
@@ -269,15 +269,15 @@ public:
         auto *menuBar = new QMenuBar(this);
         menuBar->addMenu("Edit");
 
-        setMode(TextRenderer::QtRendering);
-        setFocusPolicy(Qt::StrongFocus);
+        setMode(TextRenderer::BobUIRendering);
+        setFocusPolicy(BobUI::StrongFocus);
         setFocus();
     }
 
     void setMode(TextRenderer::RenderingMode mode)
     {
         s_mode = mode;
-        setWindowTitle((s_mode == TextRenderer::QtRendering ? "Qt" : "Native")
+        setWindowTitle((s_mode == TextRenderer::BobUIRendering ? "BobUI" : "Native")
             + QLatin1String(" (") + m_previews->font().family() + QLatin1String(")"));
 
         for (TextRenderer *renderer : m_previews->findChildren<TextRenderer *>())
@@ -291,7 +291,7 @@ public:
 
     void keyPressEvent(QKeyEvent *e) override
     {
-        if (e->key() == Qt::Key_Space)
+        if (e->key() == BobUI::Key_Space)
             setMode(TextRenderer::RenderingMode(!s_mode));
     }
 
@@ -300,7 +300,7 @@ public:
 
 int main(int argc, char **argv)
 {
-    qputenv("QT_MAX_CACHED_GLYPH_SIZE", "97");
+    qputenv("BOBUI_MAX_CACHED_GLYPH_SIZE", "97");
     QApplication app(argc, argv);
 
     TestWidget widget;

@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformopenglcontext.h"
 
 #include <QOpenGLFunctions>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformOpenGLContext
@@ -23,7 +23,7 @@ QT_BEGIN_NAMESPACE
     The only place to retrieve a QPlatformOpenGLContext from is through a QPlatformWindow.
 
     The context which is current for a specific thread can be collected by the currentContext()
-    function. This is how QPlatformOpenGLContext also makes it possible to use the Qt GUI module
+    function. This is how QPlatformOpenGLContext also makes it possible to use the BobUI GUI module
     withhout using QOpenGLWidget. When using QOpenGLContext::currentContext(), it will ask
     QPlatformOpenGLContext for the currentContext. Then a corresponding QOpenGLContext will be returned,
     which maps to the QPlatformOpenGLContext.
@@ -38,7 +38,7 @@ QT_BEGIN_NAMESPACE
 /*! \fn QFunctionPointer QPlatformOpenGLContext::getProcAddress(const char *procName)
 
     Reimplement in subclass to allow dynamic querying of OpenGL symbols. As opposed to e.g. the wglGetProcAddress
-    function on Windows, Qt expects this methods to be able to return valid function pointers even for standard
+    function on Windows, BobUI expects this methods to be able to return valid function pointers even for standard
     OpenGL symbols.
 */
 
@@ -145,4 +145,4 @@ void QPlatformOpenGLContext::endFrame()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

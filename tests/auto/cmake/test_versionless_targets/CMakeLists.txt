@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
@@ -7,7 +7,7 @@ project(versionless_targets)
 
 function(check_versionless_targets)
     set(known_interface_properties
-        QT_MAJOR_VERSION
+        BOBUI_MAJOR_VERSION
         AUTOMOC_MACRO_NAMES
         AUTOUIC_OPTIONS
         COMPILE_DEFINITIONS
@@ -29,34 +29,34 @@ function(check_versionless_targets)
         SYSTEM_INCLUDE_DIRECTORIES
     )
 
-    set(known_qt_exported_properties
+    set(known_bobui_exported_properties
         MODULE_PLUGIN_TYPES
-        QT_DISABLED_PRIVATE_FEATURES
-        QT_DISABLED_PUBLIC_FEATURES
-        QT_ENABLED_PRIVATE_FEATURES
-        QT_ENABLED_PUBLIC_FEATURES
-        QT_QMAKE_PRIVATE_CONFIG
-        QT_QMAKE_PUBLIC_CONFIG
-        QT_QMAKE_PUBLIC_QT_CONFIG
-        _qt_config_module_name
-        _qt_is_public_module
-        _qt_module_has_headers
-        _qt_module_has_private_headers
-        _qt_module_has_public_headers
-        _qt_module_has_qpa_headers
-        _qt_module_has_rhi_headers
-        _qt_module_include_name
-        _qt_module_interface_name
-        _qt_package_name
-        _qt_package_version
-        _qt_private_module_target_name
+        BOBUI_DISABLED_PRIVATE_FEATURES
+        BOBUI_DISABLED_PUBLIC_FEATURES
+        BOBUI_ENABLED_PRIVATE_FEATURES
+        BOBUI_ENABLED_PUBLIC_FEATURES
+        BOBUI_QMAKE_PRIVATE_CONFIG
+        BOBUI_QMAKE_PUBLIC_CONFIG
+        BOBUI_QMAKE_PUBLIC_BOBUI_CONFIG
+        _bobui_config_module_name
+        _bobui_is_public_module
+        _bobui_module_has_headers
+        _bobui_module_has_private_headers
+        _bobui_module_has_public_headers
+        _bobui_module_has_qpa_headers
+        _bobui_module_has_rhi_headers
+        _bobui_module_include_name
+        _bobui_module_interface_name
+        _bobui_package_name
+        _bobui_package_version
+        _bobui_private_module_target_name
     )
 
     foreach(prop ${known_interface_properties})
         set(versionless_prop "")
         set(versioned_prop "")
-        get_target_property(versionless_prop Qt::Core INTERFACE_${prop})
-        get_target_property(versioned_prop Qt6::Core INTERFACE_${prop})
+        get_target_property(versionless_prop BobUI::Core INTERFACE_${prop})
+        get_target_property(versioned_prop BobUI6::Core INTERFACE_${prop})
         if(NOT versionless_prop AND NOT versioned_prop)
             continue()
         endif()
@@ -67,11 +67,11 @@ function(check_versionless_targets)
         endif()
     endforeach()
 
-    foreach(prop ${known_qt_exported_properties})
+    foreach(prop ${known_bobui_exported_properties})
         set(versionless_prop "")
         set(versioned_prop "")
-        get_target_property(versionless_prop Qt::Core ${prop})
-        get_target_property(versioned_prop Qt6::Core ${prop})
+        get_target_property(versionless_prop BobUI::Core ${prop})
+        get_target_property(versioned_prop BobUI6::Core ${prop})
         if(NOT versionless_prop AND NOT versioned_prop)
             continue()
         endif()
@@ -85,8 +85,8 @@ function(check_versionless_targets)
     foreach(conf "" _RELEASE _DEBUG _RELWITHDEBINFO _MINSIZEREL)
         set(versionless_prop "")
         set(versioned_prop "")
-        get_target_property(versionless_prop Qt::Core IMPORTED_LOCATION${conf})
-        get_target_property(versioned_prop Qt6::Core IMPORTED_LOCATION${conf})
+        get_target_property(versionless_prop BobUI::Core IMPORTED_LOCATION${conf})
+        get_target_property(versioned_prop BobUI6::Core IMPORTED_LOCATION${conf})
         if(NOT versionless_prop AND NOT versioned_prop)
             continue()
         endif()

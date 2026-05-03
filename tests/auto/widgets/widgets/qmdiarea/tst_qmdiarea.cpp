@@ -1,39 +1,39 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtTest/qtest.h>
-#include <QtTest/qsignalspy.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/qsignalspy.h>
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qdockwidget.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtWidgets/qmainwindow.h>
-#include <QtWidgets/qmdiarea.h>
-#include <QtWidgets/qmdisubwindow.h>
-#include <QtWidgets/qmenubar.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qscrollbar.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtWidgets/qtextedit.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qboxlayout.h>
+#include <BobUIWidgets/qdockwidget.h>
+#include <BobUIWidgets/qlineedit.h>
+#include <BobUIWidgets/qmainwindow.h>
+#include <BobUIWidgets/qmdiarea.h>
+#include <BobUIWidgets/qmdisubwindow.h>
+#include <BobUIWidgets/qmenubar.h>
+#include <BobUIWidgets/qpushbutton.h>
+#include <BobUIWidgets/qscrollbar.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIWidgets/bobuiextedit.h>
 
-#include <QtGui/qstylehints.h>
-#ifndef QT_NO_OPENGL
-#  include <QtGui/qopenglcontext.h>
+#include <BobUIGui/qstylehints.h>
+#ifndef BOBUI_NO_OPENGL
+#  include <BobUIGui/qopenglcontext.h>
 #endif
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static const Qt::WindowFlags DefaultWindowFlags
-    = Qt::SubWindow | Qt::WindowSystemMenuHint
-      | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint;
+static const BobUI::WindowFlags DefaultWindowFlags
+    = BobUI::SubWindow | BobUI::WindowSystemMenuHint
+      | BobUI::WindowTitleHint | BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint;
 
 Q_DECLARE_METATYPE(QMdiArea::WindowOrder)
-Q_DECLARE_METATYPE(QTabWidget::TabPosition)
+Q_DECLARE_METATYPE(BOBUIabWidget::TabPosition)
 
 static bool tabBetweenSubWindowsIn(QMdiArea *mdiArea, int tabCount = -1, bool reverse = false)
 {
@@ -61,21 +61,21 @@ static bool tabBetweenSubWindowsIn(QMdiArea *mdiArea, int tabCount = -1, bool re
         return false;
     }
 
-    Qt::KeyboardModifiers modifiers = reverse ? Qt::ShiftModifier : Qt::NoModifier;
-    Qt::Key key;
+    BobUI::KeyboardModifiers modifiers = reverse ? BobUI::ShiftModifier : BobUI::NoModifier;
+    BobUI::Key key;
 #ifdef Q_OS_MAC
-    key = Qt::Key_Meta;
-    modifiers |= Qt::MetaModifier;
+    key = BobUI::Key_Meta;
+    modifiers |= BobUI::MetaModifier;
 #else
-    key = Qt::Key_Control;
-    modifiers |= Qt::ControlModifier;
+    key = BobUI::Key_Control;
+    modifiers |= BobUI::ControlModifier;
 #endif
 
-    QTest::keyPress(focusWidget, key, modifiers);
+    BOBUIest::keyPress(focusWidget, key, modifiers);
     for (int i = 0; i < tabCount; ++i) {
-        QTest::keyPress(focusWidget, reverse ? Qt::Key_Backtab : Qt::Key_Tab, modifiers);
+        BOBUIest::keyPress(focusWidget, reverse ? BobUI::Key_Backtab : BobUI::Key_Tab, modifiers);
         if (tabCount > 1)
-            QTest::qWait(500);
+            BOBUIest::qWait(500);
         if (walkThrough) {
             QRubberBand *rubberBand = mdiArea->findChild<QRubberBand *>();
             if (!rubberBand) {
@@ -91,23 +91,23 @@ static bool tabBetweenSubWindowsIn(QMdiArea *mdiArea, int tabCount = -1, bool re
         }
         qApp->processEvents();
     }
-    QTest::keyRelease(focusWidget, key);
+    BOBUIest::keyRelease(focusWidget, key);
 
     return true;
 }
 
-static inline QTabBar::Shape tabBarShapeFrom(QTabWidget::TabShape shape, QTabWidget::TabPosition position)
+static inline BOBUIabBar::Shape tabBarShapeFrom(BOBUIabWidget::TabShape shape, BOBUIabWidget::TabPosition position)
 {
-    const bool rounded = (shape == QTabWidget::Rounded);
-    if (position == QTabWidget::North)
-        return rounded ? QTabBar::RoundedNorth : QTabBar::TriangularNorth;
-    if (position == QTabWidget::South)
-        return rounded ? QTabBar::RoundedSouth : QTabBar::TriangularSouth;
-    if (position == QTabWidget::East)
-        return rounded ? QTabBar::RoundedEast : QTabBar::TriangularEast;
-    if (position == QTabWidget::West)
-        return rounded ? QTabBar::RoundedWest : QTabBar::TriangularWest;
-    return QTabBar::RoundedNorth;
+    const bool rounded = (shape == BOBUIabWidget::Rounded);
+    if (position == BOBUIabWidget::North)
+        return rounded ? BOBUIabBar::RoundedNorth : BOBUIabBar::TriangularNorth;
+    if (position == BOBUIabWidget::South)
+        return rounded ? BOBUIabBar::RoundedSouth : BOBUIabBar::TriangularSouth;
+    if (position == BOBUIabWidget::East)
+        return rounded ? BOBUIabBar::RoundedEast : BOBUIabBar::TriangularEast;
+    if (position == BOBUIabWidget::West)
+        return rounded ? BOBUIabBar::RoundedWest : BOBUIabBar::TriangularWest;
+    return BOBUIabBar::RoundedNorth;
 }
 
 static int cascadedDeltaY(const QMdiArea *area)
@@ -260,8 +260,8 @@ private slots:
     void nativeSubWindows();
     void task_209615();
     void task_236750();
-    void qtbug92240_title_data();
-    void qtbug92240_title();
+    void bobuibug92240_title_data();
+    void bobuibug92240_title();
     void tabbedview_singleSubWindow();
     void tabbedview_activefirst();
     void tabbedview_activesecond();
@@ -292,12 +292,12 @@ void tst_QMdiArea::activeChanged(QMdiSubWindow *child)
 void tst_QMdiArea::subWindowActivated_data()
 {
     // define the test elements we're going to use
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("count");
 
     // create a first testdata instance and fill it with data
-    QTest::newRow( "data0" ) << 0;
-    QTest::newRow( "data1" ) << 1;
-    QTest::newRow( "data2" ) << 2;
+    BOBUIest::newRow( "data0" ) << 0;
+    BOBUIest::newRow( "data1" ) << 1;
+    BOBUIest::newRow( "data2" ) << 2;
 }
 
 void tst_QMdiArea::subWindowActivated()
@@ -317,7 +317,7 @@ void tst_QMdiArea::subWindowActivated()
 
     for ( i = 0; i < count; ++i ) {
         QWidget *widget = new QWidget(workspace, {});
-        widget->setAttribute(Qt::WA_DeleteOnClose);
+        widget->setAttribute(BobUI::WA_DeleteOnClose);
         widget->setFocus();
         workspace->addSubWindow(widget)->show();
         widget->show();
@@ -363,7 +363,7 @@ void tst_QMdiArea::subWindowActivated()
     {
         workspace->hide();
         QWidget *widget = new QWidget(workspace);
-        widget->setAttribute(Qt::WA_DeleteOnClose);
+        widget->setAttribute(BobUI::WA_DeleteOnClose);
         QMdiSubWindow *window = workspace->addSubWindow(widget);
         widget->show();
         QCOMPARE(spy.size(), 0);
@@ -381,7 +381,7 @@ void tst_QMdiArea::subWindowActivated()
     {
         workspace->hide();
         QWidget *widget = new QWidget(workspace);
-        widget->setAttribute(Qt::WA_DeleteOnClose);
+        widget->setAttribute(BobUI::WA_DeleteOnClose);
         QMdiSubWindow *window = workspace->addSubWindow(widget);
         widget->showMaximized();
         qApp->sendPostedEvents();
@@ -400,7 +400,7 @@ void tst_QMdiArea::subWindowActivated()
 
     {
         QWidget *widget = new QWidget(workspace);
-        widget->setAttribute(Qt::WA_DeleteOnClose);
+        widget->setAttribute(BobUI::WA_DeleteOnClose);
         QMdiSubWindow *window = workspace->addSubWindow(widget);
         widget->showMinimized();
         QCOMPARE(spy.size(), 1);
@@ -418,7 +418,7 @@ void tst_QMdiArea::subWindowActivated()
 
 void tst_QMdiArea::subWindowActivated2()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMdiArea mdiArea;
@@ -428,16 +428,16 @@ void tst_QMdiArea::subWindowActivated2()
     QCOMPARE(spy.size(), 0);
     mdiArea.show();
     mdiArea.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mdiArea));
 
-    QTRY_COMPARE(spy.size(), 5);
+    BOBUIRY_COMPARE(spy.size(), 5);
     QCOMPARE(mdiArea.activeSubWindow(), mdiArea.subWindowList().back());
     spy.clear();
 
     // Just to make sure another widget is on top wrt. stacking order.
     // This will typically become the active window if things are broken.
     QMdiSubWindow *staysOnTopWindow = mdiArea.subWindowList().at(3);
-    staysOnTopWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
+    staysOnTopWindow->setWindowFlags(BobUI::WindowStaysOnTopHint);
     mdiArea.setActiveSubWindow(staysOnTopWindow);
     QCOMPARE(spy.size(), 1);
     QCOMPARE(mdiArea.activeSubWindow(), staysOnTopWindow);
@@ -452,18 +452,18 @@ void tst_QMdiArea::subWindowActivated2()
     // Check that we only emit _one_ signal and the active window
     // is unchanged after hide/show.
     mdiArea.hide();
-    QTest::qWait(100);
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIest::qWait(100);
+    BOBUIRY_COMPARE(spy.size(), 1);
     QVERIFY(!mdiArea.activeSubWindow());
     QCOMPARE(mdiArea.currentSubWindow(), activeSubWindow);
     spy.clear();
 
     mdiArea.show();
     mdiArea.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&mdiArea));
-    QTRY_VERIFY(!spy.isEmpty()); // Normally 1, but 2 events might be received on some X11 window managers
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mdiArea));
+    BOBUIRY_VERIFY(!spy.isEmpty()); // Normally 1, but 2 events might be received on some X11 window managers
     QVERIFY(mdiArea.currentSubWindow());
-    QTRY_COMPARE(mdiArea.activeSubWindow(), activeSubWindow);
+    BOBUIRY_COMPARE(mdiArea.activeSubWindow(), activeSubWindow);
     spy.clear();
 
     if (qGuiApp->styleHints()->showIsFullScreen())
@@ -473,11 +473,11 @@ void tst_QMdiArea::subWindowActivated2()
     // is unchanged after showMinimized/showNormal.
     mdiArea.showMinimized();
 #ifdef Q_OS_MAC
-    QSKIP("QTBUG-25298: This test is unstable on Mac.");
+    QSKIP("BOBUIBUG-25298: This test is unstable on Mac.");
 #endif
-    if (!QGuiApplication::platformName().compare(QLatin1String("xcb"), Qt::CaseInsensitive))
-        QSKIP("QTBUG-25298: Unstable on some X11 window managers");
-    QTRY_COMPARE(spy.size(), 1);
+    if (!QGuiApplication::platformName().compare(QLatin1String("xcb"), BobUI::CaseInsensitive))
+        QSKIP("BOBUIBUG-25298: Unstable on some X11 window managers");
+    BOBUIRY_COMPARE(spy.size(), 1);
     QVERIFY(!mdiArea.activeSubWindow());
     QCOMPARE(mdiArea.currentSubWindow(), activeSubWindow);
     spy.clear();
@@ -486,8 +486,8 @@ void tst_QMdiArea::subWindowActivated2()
     // showing it again. QMdiArea has no active sub window if it is inactive itself.
     mdiArea.showNormal();
     mdiArea.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&mdiArea));
-    QTRY_COMPARE(spy.size(), 1);
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mdiArea));
+    BOBUIRY_COMPARE(spy.size(), 1);
     QCOMPARE(mdiArea.activeSubWindow(), activeSubWindow);
     spy.clear();
 }
@@ -503,10 +503,10 @@ void tst_QMdiArea::subWindowActivatedWithMinimize()
     connect( workspace, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(activeChanged(QMdiSubWindow*)) );
     mw.show();
     QWidget *widget = new QWidget(workspace);
-    widget->setAttribute(Qt::WA_DeleteOnClose);
+    widget->setAttribute(BobUI::WA_DeleteOnClose);
     QMdiSubWindow *window1 = workspace->addSubWindow(widget);
     QWidget *widget2 = new QWidget(workspace);
-    widget2->setAttribute(Qt::WA_DeleteOnClose);
+    widget2->setAttribute(BobUI::WA_DeleteOnClose);
     QMdiSubWindow *window2 = workspace->addSubWindow(widget2);
 
     widget->showMinimized();
@@ -597,7 +597,7 @@ void tst_QMdiArea::changeWindowTitle()
     mw->setCentralWidget( ws );
     mw->menuBar()->setNativeMenuBar(false);
     mw->show();
-    QVERIFY(QTest::qWaitForWindowExposed(mw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(mw));
 
     QWidget *widget = new QWidget( ws );
     widget->setWindowTitle( wc );
@@ -608,25 +608,25 @@ void tst_QMdiArea::changeWindowTitle()
 #ifdef USE_SHOW
     widget->showMaximized();
 #else
-    widget->setWindowState(Qt::WindowMaximized);
+    widget->setWindowState(BobUI::WindowMaximized);
 #endif
 #if !defined(Q_OS_DARWIN)
-    QTRY_COMPARE( mw->windowTitle(), windowTitle(mwc, wc) );
+    BOBUIRY_COMPARE( mw->windowTitle(), windowTitle(mwc, wc) );
 #endif
 
     mw->hide();
     qApp->processEvents();
     mw->show();
-    QVERIFY(QTest::qWaitForWindowExposed(mw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(mw));
 
 #if !defined(Q_OS_DARWIN)
-    QTRY_COMPARE( mw->windowTitle(), windowTitle(mwc, wc) );
+    BOBUIRY_COMPARE( mw->windowTitle(), windowTitle(mwc, wc) );
 #endif
 
 #ifdef USE_SHOW
     widget->showNormal();
 #else
-    widget->setWindowState(Qt::WindowNoState);
+    widget->setWindowState(BobUI::WindowNoState);
 #endif
     qApp->processEvents();
     QCOMPARE( mw->windowTitle(), mwc );
@@ -634,11 +634,11 @@ void tst_QMdiArea::changeWindowTitle()
 #ifdef USE_SHOW
     widget->showMaximized();
 #else
-    widget->setWindowState(Qt::WindowMaximized);
+    widget->setWindowState(BobUI::WindowMaximized);
 #endif
     qApp->processEvents();
 #if !defined(Q_OS_DARWIN)
-    QTRY_COMPARE( mw->windowTitle(), windowTitle(mwc, wc) );
+    BOBUIRY_COMPARE( mw->windowTitle(), windowTitle(mwc, wc) );
     widget->setWindowTitle( wc2 );
     QCOMPARE( mw->windowTitle(), windowTitle(mwc, wc2) );
     mw->setWindowTitle( mwc2 );
@@ -650,7 +650,7 @@ void tst_QMdiArea::changeWindowTitle()
 #ifdef USE_SHOW
     mw->showFullScreen();
 #else
-    mw->setWindowState(Qt::WindowFullScreen);
+    mw->setWindowState(BobUI::WindowFullScreen);
 #endif
 
     qApp->processEvents();
@@ -660,7 +660,7 @@ void tst_QMdiArea::changeWindowTitle()
 #ifdef USE_SHOW
     widget->showNormal();
 #else
-    widget->setWindowState(Qt::WindowNoState);
+    widget->setWindowState(BobUI::WindowNoState);
 #endif
     qApp->processEvents();
 #if defined(Q_OS_DARWIN)
@@ -672,7 +672,7 @@ void tst_QMdiArea::changeWindowTitle()
 #ifdef USE_SHOW
     widget->showMaximized();
 #else
-    widget->setWindowState(Qt::WindowMaximized);
+    widget->setWindowState(BobUI::WindowMaximized);
 #endif
     qApp->processEvents();
 #if !defined(Q_OS_DARWIN)
@@ -682,13 +682,13 @@ void tst_QMdiArea::changeWindowTitle()
 #ifdef USE_SHOW
     mw->showNormal();
 #else
-    mw->setWindowState(Qt::WindowNoState);
+    mw->setWindowState(BobUI::WindowNoState);
 #endif
     qApp->processEvents();
 #ifdef USE_SHOW
     widget->showNormal();
 #else
-    widget->setWindowState(Qt::WindowNoState);
+    widget->setWindowState(BobUI::WindowNoState);
 #endif
 
     delete mw;
@@ -712,28 +712,28 @@ void tst_QMdiArea::changeModified()
 
     QCOMPARE( mw->isWindowModified(), false);
     QCOMPARE( widget->isWindowModified(), false);
-    widget->setWindowState(Qt::WindowMaximized);
+    widget->setWindowState(BobUI::WindowMaximized);
     QCOMPARE( mw->isWindowModified(), false);
     QCOMPARE( widget->isWindowModified(), false);
 
-    widget->setWindowState(Qt::WindowNoState);
+    widget->setWindowState(BobUI::WindowNoState);
     QCOMPARE( mw->isWindowModified(), false);
     QCOMPARE( widget->isWindowModified(), false);
 
     widget->setWindowModified(true);
     QCOMPARE( mw->isWindowModified(), false);
     QCOMPARE( widget->isWindowModified(), true);
-    widget->setWindowState(Qt::WindowMaximized);
+    widget->setWindowState(BobUI::WindowMaximized);
 #if !defined(Q_OS_DARWIN)
     QCOMPARE( mw->isWindowModified(), true);
 #endif
     QCOMPARE( widget->isWindowModified(), true);
 
-    widget->setWindowState(Qt::WindowNoState);
+    widget->setWindowState(BobUI::WindowNoState);
     QCOMPARE( mw->isWindowModified(), false);
     QCOMPARE( widget->isWindowModified(), true);
 
-    widget->setWindowState(Qt::WindowMaximized);
+    widget->setWindowState(BobUI::WindowMaximized);
 #if !defined(Q_OS_DARWIN)
     QCOMPARE( mw->isWindowModified(), true);
 #endif
@@ -749,7 +749,7 @@ void tst_QMdiArea::changeModified()
 #endif
     QCOMPARE( widget->isWindowModified(), true);
 
-    widget->setWindowState(Qt::WindowNoState);
+    widget->setWindowState(BobUI::WindowNoState);
     QCOMPARE( mw->isWindowModified(), false);
     QCOMPARE( widget->isWindowModified(), true);
 
@@ -860,8 +860,8 @@ void tst_QMdiArea::minimumSizeHint()
     subWindow->show();
     QCOMPARE(workspace.minimumSizeHint(), expectedSize.expandedTo(subWindow->minimumSizeHint()));
 
-    workspace.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    workspace.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    workspace.setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    workspace.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     QCOMPARE(workspace.minimumSizeHint(), expectedSize);
 }
 
@@ -925,14 +925,14 @@ void tst_QMdiArea::setActiveSubWindow()
 
     // Activate widget which is not child of any window inside workspace
     QMdiSubWindow fakeWindow;
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea::setActiveSubWindow: window is not inside workspace");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea::setActiveSubWindow: window is not inside workspace");
     workspace.setActiveSubWindow(&fakeWindow);
 
 }
 
 void tst_QMdiArea::activeSubWindow()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMainWindow mainWindow;
@@ -943,13 +943,13 @@ void tst_QMdiArea::activeSubWindow()
     mainWindow.setCentralWidget(mdiArea);
 
     QDockWidget *dockWidget = new QDockWidget(QLatin1String("Dock Widget"), &mainWindow);
-    dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+    dockWidget->setAllowedAreas(BobUI::LeftDockWidgetArea);
     QLineEdit *dockWidgetLineEdit = new QLineEdit;
     dockWidget->setWidget(dockWidgetLineEdit);
-    mainWindow.addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+    mainWindow.addDockWidget(BobUI::LeftDockWidgetArea, dockWidget);
 
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mainWindow));
     QCOMPARE(mdiArea->activeSubWindow(), subWindow);
     QCOMPARE(qApp->focusWidget(), (QWidget *)subWindowLineEdit);
 
@@ -969,7 +969,7 @@ void tst_QMdiArea::activeSubWindow()
 
     QLineEdit dummyTopLevel;
     dummyTopLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dummyTopLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dummyTopLevel));
 
     QCOMPARE(mdiArea->activeSubWindow(), subWindow);
 
@@ -985,7 +985,7 @@ void tst_QMdiArea::currentSubWindow()
 {
     QMdiArea mdiArea;
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     for (int i = 0; i < 5; ++i)
         mdiArea.addSubWindow(new QLineEdit)->show();
@@ -1001,8 +1001,8 @@ void tst_QMdiArea::currentSubWindow()
 
     QLineEdit dummyTopLevel;
     dummyTopLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dummyTopLevel));
-    QVERIFY(QTest::qWaitForWindowActive(&dummyTopLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dummyTopLevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&dummyTopLevel));
 
     // Move focus to another top-level and check that we still
     // have an active window.
@@ -1056,7 +1056,7 @@ void tst_QMdiArea::addAndRemoveWindows()
     QMdiArea workspace(&topLevel);
     workspace.resize(800, 600);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     { // addSubWindow with large widget
     QCOMPARE(workspace.subWindowList().size(), 0);
@@ -1092,7 +1092,7 @@ void tst_QMdiArea::addAndRemoveWindows()
     }
 
     { // addSubWindow with 0 pointer
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea::addSubWindow: null pointer to widget");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea::addSubWindow: null pointer to widget");
     QWidget *window = workspace.addSubWindow(0);
     QVERIFY(!window);
     QCOMPARE(workspace.subWindowList().size(), 3);
@@ -1105,12 +1105,12 @@ void tst_QMdiArea::addAndRemoveWindows()
     QCOMPARE(window->windowFlags(), DefaultWindowFlags);
     window->setWidget(new QWidget);
     QCOMPARE(workspace.subWindowList().size(), 4);
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea::addSubWindow: window is already added");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea::addSubWindow: window is already added");
     workspace.addSubWindow(window);
     }
 
     { // addChildWindow with 0 pointer
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea::addSubWindow: null pointer to widget");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea::addSubWindow: null pointer to widget");
     workspace.addSubWindow(0);
     QCOMPARE(workspace.subWindowList().size(), 4);
     }
@@ -1124,7 +1124,7 @@ void tst_QMdiArea::addAndRemoveWindows()
     QCOMPARE(workspace.subWindowList().size(), 0);
 
     // removeSubWindow with 0 pointer
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea::removeSubWindow: null pointer to widget");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea::removeSubWindow: null pointer to widget");
     workspace.removeSubWindow(0);
 
     workspace.addSubWindow(new QPushButton(QLatin1String("Dummy to make workspace non-empty")));
@@ -1132,7 +1132,7 @@ void tst_QMdiArea::addAndRemoveWindows()
     QCOMPARE(workspace.subWindowList().size(), 1);
 
     // removeSubWindow with window not inside workspace
-    QTest::ignoreMessage(QtWarningMsg,"QMdiArea::removeSubWindow: window is not inside workspace");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QMdiArea::removeSubWindow: window is not inside workspace");
     QMdiSubWindow *fakeWindow = new QMdiSubWindow;
     workspace.removeSubWindow(fakeWindow);
     delete fakeWindow;
@@ -1182,7 +1182,7 @@ void tst_QMdiArea::addAndRemoveWindowsWithReparenting()
     QCOMPARE(workspace.subWindowList().size(), 1);
     QCOMPARE(window.windowFlags(), DefaultWindowFlags);
 
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea::addSubWindow: window is already added");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea::addSubWindow: window is already added");
     workspace.addSubWindow(&window);
     QCOMPARE(workspace.subWindowList().size(), 1);
 }
@@ -1340,19 +1340,19 @@ void tst_QMdiArea::activateNextAndPreviousWindow()
 
 void tst_QMdiArea::subWindowList_data()
 {
-    QTest::addColumn<QMdiArea::WindowOrder>("windowOrder");
-    QTest::addColumn<int>("windowCount");
-    QTest::addColumn<int>("activeSubWindow");
-    QTest::addColumn<int>("staysOnTop1");
-    QTest::addColumn<int>("staysOnTop2");
+    BOBUIest::addColumn<QMdiArea::WindowOrder>("windowOrder");
+    BOBUIest::addColumn<int>("windowCount");
+    BOBUIest::addColumn<int>("activeSubWindow");
+    BOBUIest::addColumn<int>("staysOnTop1");
+    BOBUIest::addColumn<int>("staysOnTop2");
 
-    QTest::newRow("CreationOrder") << QMdiArea::CreationOrder << 10 << 4 << 8 << 5;
-    QTest::newRow("StackingOrder") << QMdiArea::StackingOrder << 10 << 6 << 3 << 9;
-    QTest::newRow("ActivationHistoryOrder") << QMdiArea::ActivationHistoryOrder << 10 << 7 << 2 << 1;
+    BOBUIest::newRow("CreationOrder") << QMdiArea::CreationOrder << 10 << 4 << 8 << 5;
+    BOBUIest::newRow("StackingOrder") << QMdiArea::StackingOrder << 10 << 6 << 3 << 9;
+    BOBUIest::newRow("ActivationHistoryOrder") << QMdiArea::ActivationHistoryOrder << 10 << 7 << 2 << 1;
 }
 void tst_QMdiArea::subWindowList()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QMdiArea::WindowOrder, windowOrder);
@@ -1363,7 +1363,7 @@ void tst_QMdiArea::subWindowList()
 
     QMdiArea workspace;
     workspace.show();
-    QVERIFY(QTest::qWaitForWindowActive(&workspace));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&workspace));
 
     QList<QMdiSubWindow *> activationOrder;
     QList<QMdiSubWindow *> windows;
@@ -1380,9 +1380,9 @@ void tst_QMdiArea::subWindowList()
         QCOMPARE(widgets.at(i), windows[i]);
     }
 
-    windows[staysOnTop1]->setWindowFlags(windows[staysOnTop1]->windowFlags() | Qt::WindowStaysOnTopHint);
+    windows[staysOnTop1]->setWindowFlags(windows[staysOnTop1]->windowFlags() | BobUI::WindowStaysOnTopHint);
     workspace.setActiveSubWindow(windows[activeSubWindow]);
-    QTRY_COMPARE(workspace.activeSubWindow(), windows[activeSubWindow]);
+    BOBUIRY_COMPARE(workspace.activeSubWindow(), windows[activeSubWindow]);
     activationOrder.move(activationOrder.indexOf(windows[activeSubWindow]), windowCount - 1);
 
     QList<QMdiSubWindow *> subWindows = workspace.subWindowList(windowOrder);
@@ -1402,13 +1402,13 @@ void tst_QMdiArea::subWindowList()
         QCOMPARE(subWindows, activationOrder);
     }
 
-    windows[staysOnTop2]->setWindowFlags(windows[staysOnTop2]->windowFlags() | Qt::WindowStaysOnTopHint);
+    windows[staysOnTop2]->setWindowFlags(windows[staysOnTop2]->windowFlags() | BobUI::WindowStaysOnTopHint);
     workspace.setActiveSubWindow(windows[staysOnTop2]);
-    QTRY_COMPARE(workspace.activeSubWindow(), windows[staysOnTop2]);
+    BOBUIRY_COMPARE(workspace.activeSubWindow(), windows[staysOnTop2]);
     activationOrder.move(activationOrder.indexOf(windows[staysOnTop2]), windowCount - 1);
 
     workspace.setActiveSubWindow(windows[activeSubWindow]);
-    QTRY_COMPARE(workspace.activeSubWindow(), windows[activeSubWindow]);
+    BOBUIRY_COMPARE(workspace.activeSubWindow(), windows[activeSubWindow]);
     activationOrder.move(activationOrder.indexOf(windows[activeSubWindow]), windowCount - 1);
 
     QList<QMdiSubWindow *> widgets = workspace.subWindowList(windowOrder);
@@ -1462,14 +1462,14 @@ void tst_QMdiArea::setBackground()
 {
     QMdiArea workspace;
     QCOMPARE(workspace.background(), workspace.palette().brush(QPalette::Dark));
-    workspace.setBackground(QBrush(Qt::green));
-    QCOMPARE(workspace.background(), QBrush(Qt::green));
+    workspace.setBackground(QBrush(BobUI::green));
+    QCOMPARE(workspace.background(), QBrush(BobUI::green));
 }
 
 void tst_QMdiArea::setViewport()
 {
 #ifdef Q_OS_MACOS
-    QSKIP("Sometimes crashes in the CI, see QTBUG-58520");
+    QSKIP("Sometimes crashes in the CI, see BOBUIBUG-58520");
 #endif
 
     QMdiArea workspace;
@@ -1511,7 +1511,7 @@ void tst_QMdiArea::setViewport()
     //    QVERIFY(!window->isMaximized());
     //    }
 
-    QTest::ignoreMessage(QtWarningMsg, "QMdiArea: Deleting the view port is undefined, "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMdiArea: Deleting the view port is undefined, "
                                        "use setViewport instead.");
     delete workspace.viewport();
     qApp->processEvents();
@@ -1522,13 +1522,13 @@ void tst_QMdiArea::setViewport()
 
 void tst_QMdiArea::tileSubWindows()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMdiArea workspace;
     workspace.resize(600,480);
     workspace.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&workspace));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&workspace));
 
     const int windowCount = 10;
     for (int i = 0; i < windowCount; ++i) {
@@ -1620,8 +1620,8 @@ void tst_QMdiArea::tileSubWindows()
     workspace.setActiveSubWindow(windows.at(5));
     workspace.resize(workspace.size() - QSize(10, 10));
     workspace.setActiveSubWindow(0);
-    QTest::qWait(250); // delayed re-arrange of minimized windows
-    QTRY_COMPARE(workspace.viewport()->childrenRect(), workspace.viewport()->rect());
+    BOBUIest::qWait(250); // delayed re-arrange of minimized windows
+    BOBUIRY_COMPARE(workspace.viewport()->childrenRect(), workspace.viewport()->rect());
 
     // Add another window and verify that the views are not tiled anymore.
     workspace.addSubWindow(new QPushButton(QLatin1String("I'd like to mess up tiled views")))->show();
@@ -1643,7 +1643,7 @@ void tst_QMdiArea::tileSubWindows()
     // Make sure the active window does not move position after a tile regardless
     // of whether we have any windows with staysOnTopHint or not.
     workspace.tileSubWindows();
-    windows.at(3)->setWindowFlags(windows.at(3)->windowFlags() | Qt::WindowStaysOnTopHint);
+    windows.at(3)->setWindowFlags(windows.at(3)->windowFlags() | BobUI::WindowStaysOnTopHint);
     QMdiSubWindow *activeSubWindow = windows.at(6);
     workspace.setActiveSubWindow(activeSubWindow);
     QCOMPARE(workspace.activeSubWindow(), activeSubWindow);
@@ -1655,7 +1655,7 @@ void tst_QMdiArea::tileSubWindows()
     // It's important that tiled windows are NOT overlapping.
     workspace.resize(350, 150);
     qApp->processEvents();
-    QTRY_COMPARE(workspace.size(), QSize(350, 150));
+    BOBUIRY_COMPARE(workspace.size(), QSize(350, 150));
 
     const QSize minSize(600, 130);
     const auto subWindows = workspace.subWindowList();
@@ -1665,10 +1665,10 @@ void tst_QMdiArea::tileSubWindows()
     QCOMPARE(workspace.size(), QSize(350, 150));
 
     // Prevent scrollbars from messing up the expected viewport calculation below
-    workspace.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    workspace.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    QCOMPARE(workspace.horizontalScrollBarPolicy(), Qt::ScrollBarAlwaysOff);
-    QCOMPARE(workspace.verticalScrollBarPolicy(), Qt::ScrollBarAlwaysOff);
+    workspace.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    workspace.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    QCOMPARE(workspace.horizontalScrollBarPolicy(), BobUI::ScrollBarAlwaysOff);
+    QCOMPARE(workspace.verticalScrollBarPolicy(), BobUI::ScrollBarAlwaysOff);
 
     workspace.tileSubWindows();
     // The sub-windows are now tiled like this:
@@ -1685,43 +1685,43 @@ void tst_QMdiArea::tileSubWindows()
         frameWidth = workspace.style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     const int spacing = 2 * frameWidth + 2;
     const QSize expectedViewportSize(3 * minSize.width() + spacing, 3 * minSize.height() + spacing);
-    QTRY_COMPARE(workspace.viewport()->rect().size(), expectedViewportSize);
+    BOBUIRY_COMPARE(workspace.viewport()->rect().size(), expectedViewportSize);
 
-    // Enable scroll bar for test below (default property for QMdiArea is Qt::ScrollBarAlwaysOff)
-    workspace.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    workspace.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    QCOMPARE(workspace.horizontalScrollBarPolicy(), Qt::ScrollBarAsNeeded);
-    QCOMPARE(workspace.verticalScrollBarPolicy(), Qt::ScrollBarAsNeeded);
+    // Enable scroll bar for test below (default property for QMdiArea is BobUI::ScrollBarAlwaysOff)
+    workspace.setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    workspace.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    QCOMPARE(workspace.horizontalScrollBarPolicy(), BobUI::ScrollBarAsNeeded);
+    QCOMPARE(workspace.verticalScrollBarPolicy(), BobUI::ScrollBarAsNeeded);
 
     // Not enough space for all sub-windows to be visible -> provide scroll bars.
     workspace.resize(160, 150);
     qApp->processEvents();
-    QTRY_COMPARE(workspace.size(), QSize(160, 150));
+    BOBUIRY_COMPARE(workspace.size(), QSize(160, 150));
 
     // Horizontal scroll bar.
     QScrollBar *hBar = workspace.horizontalScrollBar();
-    QCOMPARE(workspace.horizontalScrollBarPolicy(), Qt::ScrollBarAsNeeded);
-    QTRY_VERIFY(hBar->isVisible());
+    QCOMPARE(workspace.horizontalScrollBarPolicy(), BobUI::ScrollBarAsNeeded);
+    BOBUIRY_VERIFY(hBar->isVisible());
     QCOMPARE(hBar->value(), 0);
     QCOMPARE(hBar->minimum(), 0);
 
     // Vertical scroll bar.
     QScrollBar *vBar = workspace.verticalScrollBar();
-    QCOMPARE(workspace.verticalScrollBarPolicy(), Qt::ScrollBarAsNeeded);
+    QCOMPARE(workspace.verticalScrollBarPolicy(), BobUI::ScrollBarAsNeeded);
     QVERIFY(vBar->isVisible());
     QCOMPARE(vBar->value(), 0);
     QCOMPARE(vBar->minimum(), 0);
 
     // Tile windows with scroll bars enabled.
     workspace.tileSubWindows();
-    QVERIFY(QTest::qWaitForWindowExposed(&workspace));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&workspace));
     qApp->processEvents();
 
     // Workspace should not have changed size after tile.
-    QTRY_VERIFY(workspace.size() == QSize(160, 150));
+    BOBUIRY_VERIFY(workspace.size() == QSize(160, 150));
     // Scroll bars should be visible.
-    QTRY_VERIFY(vBar->isVisible());
-    QTRY_VERIFY(hBar->isVisible());
+    BOBUIRY_VERIFY(vBar->isVisible());
+    BOBUIRY_VERIFY(hBar->isVisible());
 }
 
 void tst_QMdiArea::cascadeAndTileSubWindows()
@@ -1729,7 +1729,7 @@ void tst_QMdiArea::cascadeAndTileSubWindows()
     QMdiArea workspace;
     workspace.resize(400, 400);
     workspace.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&workspace));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&workspace));
 
     const int windowCount = 10;
     QList<QMdiSubWindow *> windows;
@@ -1753,7 +1753,7 @@ void tst_QMdiArea::cascadeAndTileSubWindows()
     // Check dy between two cascaded windows
     const int dy = cascadedDeltaY(&workspace);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-25298", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-25298", Abort);
 #endif
     QCOMPARE(windows.at(2)->geometry().top() - windows.at(1)->geometry().top(), dy);
 
@@ -1772,11 +1772,11 @@ void tst_QMdiArea::cascadeAndTileSubWindows()
 
 void tst_QMdiArea::resizeMaximizedChildWindows_data()
 {
-    QTest::addColumn<int>("startSize");
-    QTest::addColumn<int>("increment");
-    QTest::addColumn<int>("windowCount");
+    BOBUIest::addColumn<int>("startSize");
+    BOBUIest::addColumn<int>("increment");
+    BOBUIest::addColumn<int>("windowCount");
 
-    QTest::newRow("multiple children") << 400 << 20 << 10;
+    BOBUIest::newRow("multiple children") << 400 << 20 << 10;
 }
 
 void tst_QMdiArea::resizeMaximizedChildWindows()
@@ -1788,7 +1788,7 @@ void tst_QMdiArea::resizeMaximizedChildWindows()
     QWidget topLevel;
     QMdiArea workspace(&topLevel);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     workspace.resize(startSize, startSize);
     workspace.setOption(QMdiArea::DontMaximizeSubWindowOnActivation);
     QSize workspaceSize = workspace.size();
@@ -1801,17 +1801,17 @@ void tst_QMdiArea::resizeMaximizedChildWindows()
         windows.append(window);
         qApp->processEvents();
         window->showMaximized();
-        QTest::qWait(100);
+        BOBUIest::qWait(100);
         QVERIFY(window->isMaximized());
         QSize windowSize = window->size();
         QVERIFY(windowSize.isValid());
         QCOMPARE(window->rect(), workspace.contentsRect());
 
         workspace.resize(workspaceSize + QSize(increment, increment));
-        QTest::qWait(100);
+        BOBUIest::qWait(100);
         qApp->processEvents();
-        QTRY_COMPARE(workspace.size(), workspaceSize + QSize(increment, increment));
-        QTRY_COMPARE(window->size(), windowSize + QSize(increment, increment));
+        BOBUIRY_COMPARE(workspace.size(), workspaceSize + QSize(increment, increment));
+        BOBUIRY_COMPARE(window->size(), windowSize + QSize(increment, increment));
         workspaceSize = workspace.size();
     }
 
@@ -1850,7 +1850,7 @@ void tst_QMdiArea::dontMaximizeSubWindowOnActivation()
 {
     QMdiArea mdiArea;
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     // Add one maximized window.
     mdiArea.addSubWindow(new QWidget)->showMaximized();
@@ -1955,7 +1955,7 @@ void tst_QMdiArea::delayedPlacement()
 
     mdiArea.resize(window3->minimumSizeHint().width() * 3, 400);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     QCOMPARE(window1->geometry().topLeft(), QPoint(0, 0));
     QCOMPARE(window2->geometry().topLeft(), window1->geometry().topRight() + QPoint(1, 0));
@@ -1972,12 +1972,12 @@ void tst_QMdiArea::iconGeometryInMenuBar()
     QMdiSubWindow *subWindow = mdiArea->addSubWindow(new QWidget);
     mainWindow.setCentralWidget(mdiArea);
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 
     subWindow->showMaximized();
     QVERIFY(subWindow->isMaximized());
 
-    QWidget *leftCornerWidget = menuBar->cornerWidget(Qt::TopLeftCorner);
+    QWidget *leftCornerWidget = menuBar->cornerWidget(BobUI::TopLeftCorner);
     QVERIFY(leftCornerWidget);
     int topMargin = (menuBar->height() - leftCornerWidget->height()) / 2;
     int leftMargin = qApp->style()->pixelMetric(QStyle::PM_MenuBarHMargin)
@@ -2017,13 +2017,13 @@ private:
 
 void tst_QMdiArea::resizeTimer()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMdiArea mdiArea;
     QMdiSubWindow *subWindow = mdiArea.addSubWindow(new QWidget);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mdiArea));
 
     int time = 250;
 
@@ -2031,31 +2031,31 @@ void tst_QMdiArea::resizeTimer()
     QCOMPARE(timerEventSpy.count(), 0);
 
     mdiArea.tileSubWindows();
-    QTest::qWait(time); // Wait for timer events to occur.
+    BOBUIest::qWait(time); // Wait for timer events to occur.
     QCOMPARE(timerEventSpy.count(), 1);
     timerEventSpy.clear();
 
     mdiArea.resize(mdiArea.size() + QSize(2, 2));
-    QTest::qWait(time); // Wait for timer events to occur.
+    BOBUIest::qWait(time); // Wait for timer events to occur.
     QCOMPARE(timerEventSpy.count(), 1);
     timerEventSpy.clear();
 
     // Check that timers are killed.
-    QTest::qWait(time); // Wait for timer events to occur.
+    BOBUIest::qWait(time); // Wait for timer events to occur.
     QCOMPARE(timerEventSpy.count(), 0);
 }
 
 void tst_QMdiArea::updateScrollBars()
 {
     QMdiArea mdiArea;
-    mdiArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    mdiArea.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    mdiArea.setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    mdiArea.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
 
     QMdiSubWindow *subWindow1 = mdiArea.addSubWindow(new QWidget);
     QMdiSubWindow *subWindow2 = mdiArea.addSubWindow(new QWidget);
 
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     qApp->processEvents();
 
     QScrollBar *hbar = mdiArea.horizontalScrollBar();
@@ -2082,7 +2082,7 @@ void tst_QMdiArea::updateScrollBars()
 
     // We still shouldn't get any scroll bars.
     mdiArea.resize(mdiArea.size() - QSize(20, 20));
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     qApp->processEvents();
     QVERIFY(subWindow1->isMaximized());
     QVERIFY(hbar->style()->styleHint(QStyle::SH_ScrollBar_Transient) || !hbar->isVisible());
@@ -2104,17 +2104,17 @@ void tst_QMdiArea::updateScrollBars()
 
 void tst_QMdiArea::setActivationOrder_data()
 {
-    QTest::addColumn<QMdiArea::WindowOrder>("activationOrder");
-    QTest::addColumn<int>("subWindowCount");
-    QTest::addColumn<int>("staysOnTopIndex");
-    QTest::addColumn<int>("firstActiveIndex");
-    QTest::addColumn<QList<int> >("expectedActivationIndices");
+    BOBUIest::addColumn<QMdiArea::WindowOrder>("activationOrder");
+    BOBUIest::addColumn<int>("subWindowCount");
+    BOBUIest::addColumn<int>("staysOnTopIndex");
+    BOBUIest::addColumn<int>("firstActiveIndex");
+    BOBUIest::addColumn<QList<int> >("expectedActivationIndices");
     // The order of expectedCascadeIndices:
     // window 1 -> (index 0)
     //   window 2 -> (index 1)
     //     window 3 -> (index 2)
     // ....
-    QTest::addColumn<QList<int> >("expectedCascadeIndices");
+    BOBUIest::addColumn<QList<int> >("expectedCascadeIndices");
 
     // The order of expectedTileIndices (the same as reading a book LTR).
     // +--------------------+--------------------+--------------------+
@@ -2122,7 +2122,7 @@ void tst_QMdiArea::setActivationOrder_data()
     // |                    +--------------------+--------------------+
     // |          (index 3) | window 4 (index 4) | window 5 (index 5) |
     // +--------------------------------------------------------------+
-    QTest::addColumn<QList<int> >("expectedTileIndices");
+    BOBUIest::addColumn<QList<int> >("expectedTileIndices");
 
     QList<int> list;
     QList<int> list2;
@@ -2131,7 +2131,7 @@ void tst_QMdiArea::setActivationOrder_data()
     list << 2 << 1 << 0 << 1 << 2 << 3 << 4;
     list2 << 0 << 1 << 2 << 3 << 4;
     list3 << 4 << 3 << 2 << 4 << 1 << 0; // Most recently created window is in top-left position
-    QTest::newRow("CreationOrder") << QMdiArea::CreationOrder << 5 << 3 << 1 << list << list2 << list3;
+    BOBUIest::newRow("CreationOrder") << QMdiArea::CreationOrder << 5 << 3 << 1 << list << list2 << list3;
 
     list = QList<int>();
     list << 3 << 1 << 4 << 3 << 1 << 2 << 0;
@@ -2139,7 +2139,7 @@ void tst_QMdiArea::setActivationOrder_data()
     list2 << 0 << 2 << 4 << 1 << 3;
     list3 = QList<int>();
     list3 << 3 << 1 << 4 << 3 << 2 << 0; // Window with "stays-on-top" flag set will be in the top-left position
-    QTest::newRow("StackingOrder") << QMdiArea::StackingOrder << 5 << 3 << 1 << list << list2 << list3;
+    BOBUIest::newRow("StackingOrder") << QMdiArea::StackingOrder << 5 << 3 << 1 << list << list2 << list3;
 
     list = QList<int>();
     list << 0 << 1 << 0 << 1 << 4 << 3 << 2;
@@ -2147,7 +2147,7 @@ void tst_QMdiArea::setActivationOrder_data()
     list2 << 0 << 2 << 3 << 4 << 1;
     list3 = QList<int>();
     list3 << 1 << 4 << 3 << 1 << 2 << 0;
-    QTest::newRow("ActivationHistoryOrder") << QMdiArea::ActivationHistoryOrder << 5 << 3 << 1 << list << list2 << list3;
+    BOBUIest::newRow("ActivationHistoryOrder") << QMdiArea::ActivationHistoryOrder << 5 << 3 << 1 << list << list2 << list3;
 }
 
 void tst_QMdiArea::setActivationOrder()
@@ -2174,7 +2174,7 @@ void tst_QMdiArea::setActivationOrder()
     QCOMPARE(mdiArea.subWindowList(activationOrder), subWindows);
 
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     for (int i = 0; i < subWindows.size(); ++i) {
         mdiArea.activateNextSubWindow();
@@ -2183,7 +2183,7 @@ void tst_QMdiArea::setActivationOrder()
     }
 
     QMdiSubWindow *staysOnTop = subWindows.at(staysOnTopIndex);
-    staysOnTop->setWindowFlags(staysOnTop->windowFlags() | Qt::WindowStaysOnTopHint);
+    staysOnTop->setWindowFlags(staysOnTop->windowFlags() | BobUI::WindowStaysOnTopHint);
     staysOnTop->raise();
 
     mdiArea.setActiveSubWindow(subWindows.at(firstActiveIndex));
@@ -2191,15 +2191,15 @@ void tst_QMdiArea::setActivationOrder()
 
     // Verify the actual arrangement/geometry.
     mdiArea.tileSubWindows();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(verifyArrangement(&mdiArea, Tiled, expectedTileIndices));
 
     mdiArea.cascadeSubWindows();
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-25298", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-25298", Abort);
 #endif
     QVERIFY(verifyArrangement(&mdiArea, Cascaded, expectedCascadeIndices));
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     mdiArea.activateNextSubWindow();
     QCOMPARE(mdiArea.activeSubWindow(), subWindows.at(expectedActivationIndices.takeFirst()));
@@ -2233,17 +2233,17 @@ void tst_QMdiArea::tabBetweenSubWindows()
         subWindows << mdiArea.addSubWindow(new QLineEdit);
 
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     QWidget *focusWidget = subWindows.back()->widget();
-    QTRY_COMPARE(qApp->focusWidget(), focusWidget);
+    BOBUIRY_COMPARE(qApp->focusWidget(), focusWidget);
 
     QSignalSpy spy(&mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)));
     QCOMPARE(spy.size(), 0);
 
     // Walk through the entire list of sub windows.
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-25298", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-25298", Abort);
 #endif
     QVERIFY(tabBetweenSubWindowsIn(&mdiArea));
     QCOMPARE(mdiArea.activeSubWindow(), subWindows.back());
@@ -2278,7 +2278,7 @@ void tst_QMdiArea::setViewMode()
     QMdiArea mdiArea;
 
     QPixmap iconPixmap(16, 16);
-    iconPixmap.fill(Qt::red);
+    iconPixmap.fill(BobUI::red);
     for (int i = 0; i < 5; ++i) {
         QMdiSubWindow *subWindow = mdiArea.addSubWindow(new QWidget);
         subWindow->setWindowTitle(QLatin1String("Title ") + QString::number(i));
@@ -2286,21 +2286,21 @@ void tst_QMdiArea::setViewMode()
     }
 
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     QMdiSubWindow *activeSubWindow = mdiArea.activeSubWindow();
     const QList<QMdiSubWindow *> subWindows = mdiArea.subWindowList();
 
     // Default.
     QVERIFY(!activeSubWindow->isMaximized());
-    QTabBar *tabBar = mdiArea.findChild<QTabBar *>();
+    BOBUIabBar *tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(!tabBar);
     QCOMPARE(mdiArea.viewMode(), QMdiArea::SubWindowView);
 
     // Tabbed view.
     mdiArea.setViewMode(QMdiArea::TabbedView);
     QCOMPARE(mdiArea.viewMode(), QMdiArea::TabbedView);
-    tabBar = mdiArea.findChild<QTabBar *>();
+    tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(tabBar);
     QVERIFY(tabBar->isVisible());
 
@@ -2318,7 +2318,7 @@ void tst_QMdiArea::setViewMode()
     // Check that tabText and tabIcon are updated.
     activeSubWindow->setWindowTitle(QLatin1String("Dude, I want another window title"));
     QCOMPARE(tabBar->tabText(tabBar->currentIndex()), activeSubWindow->windowTitle());
-    iconPixmap.fill(Qt::green);
+    iconPixmap.fill(BobUI::green);
     activeSubWindow->setWindowIcon(iconPixmap);
     QCOMPARE(tabBar->tabIcon(tabBar->currentIndex()), activeSubWindow->windowIcon());
 
@@ -2369,7 +2369,7 @@ void tst_QMdiArea::setViewMode()
     // Go back to default (QMdiArea::SubWindowView).
     mdiArea.setViewMode(QMdiArea::SubWindowView);
     QVERIFY(!activeSubWindow->isMaximized());
-    tabBar = mdiArea.findChild<QTabBar *>();
+    tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(!tabBar);
     QCOMPARE(mdiArea.viewMode(), QMdiArea::SubWindowView);
 }
@@ -2383,14 +2383,14 @@ void tst_QMdiArea::setTabsClosable()
     QCOMPARE(mdiArea.tabsClosable(), false);
 
     // change value before tab bar exists
-    QTabBar *tabBar = mdiArea.findChild<QTabBar *>();
+    BOBUIabBar *tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(!tabBar);
     mdiArea.setTabsClosable(true);
     QCOMPARE(mdiArea.tabsClosable(), true);
 
     // force tab bar creation
     mdiArea.setViewMode(QMdiArea::TabbedView);
-    tabBar = mdiArea.findChild<QTabBar *>();
+    tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(tabBar);
 
     // value must've been propagated
@@ -2413,14 +2413,14 @@ void tst_QMdiArea::setTabsMovable()
     QCOMPARE(mdiArea.tabsMovable(), false);
 
     // change value before tab bar exists
-    QTabBar *tabBar = mdiArea.findChild<QTabBar *>();
+    BOBUIabBar *tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(!tabBar);
     mdiArea.setTabsMovable(true);
     QCOMPARE(mdiArea.tabsMovable(), true);
 
     // force tab bar creation
     mdiArea.setViewMode(QMdiArea::TabbedView);
-    tabBar = mdiArea.findChild<QTabBar *>();
+    tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(tabBar);
 
     // value must've been propagated
@@ -2450,44 +2450,44 @@ void tst_QMdiArea::setTabShape()
     QMdiArea mdiArea;
     mdiArea.addSubWindow(new QWidget);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     // Default.
-    QCOMPARE(mdiArea.tabShape(), QTabWidget::Rounded);
+    QCOMPARE(mdiArea.tabShape(), BOBUIabWidget::Rounded);
 
     // Triangular.
-    mdiArea.setTabShape(QTabWidget::Triangular);
-    QCOMPARE(mdiArea.tabShape(), QTabWidget::Triangular);
+    mdiArea.setTabShape(BOBUIabWidget::Triangular);
+    QCOMPARE(mdiArea.tabShape(), BOBUIabWidget::Triangular);
 
     mdiArea.setViewMode(QMdiArea::TabbedView);
 
-    QTabBar *tabBar = mdiArea.findChild<QTabBar *>();
+    BOBUIabBar *tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(tabBar);
-    QCOMPARE(tabBar->shape(), QTabBar::TriangularNorth);
+    QCOMPARE(tabBar->shape(), BOBUIabBar::TriangularNorth);
 
     // Back to default (Rounded).
-    mdiArea.setTabShape(QTabWidget::Rounded);
-    QCOMPARE(mdiArea.tabShape(), QTabWidget::Rounded);
-    QCOMPARE(tabBar->shape(), QTabBar::RoundedNorth);
+    mdiArea.setTabShape(BOBUIabWidget::Rounded);
+    QCOMPARE(mdiArea.tabShape(), BOBUIabWidget::Rounded);
+    QCOMPARE(tabBar->shape(), BOBUIabBar::RoundedNorth);
 }
 
 void tst_QMdiArea::setTabPosition_data()
 {
-    QTest::addColumn<QTabWidget::TabPosition>("tabPosition");
-    QTest::addColumn<bool>("hasLeftMargin");
-    QTest::addColumn<bool>("hasTopMargin");
-    QTest::addColumn<bool>("hasRightMargin");
-    QTest::addColumn<bool>("hasBottomMargin");
+    BOBUIest::addColumn<BOBUIabWidget::TabPosition>("tabPosition");
+    BOBUIest::addColumn<bool>("hasLeftMargin");
+    BOBUIest::addColumn<bool>("hasTopMargin");
+    BOBUIest::addColumn<bool>("hasRightMargin");
+    BOBUIest::addColumn<bool>("hasBottomMargin");
 
-    QTest::newRow("North") << QTabWidget::North << false << true << false << false;
-    QTest::newRow("South") << QTabWidget::South << false << false << false << true;
-    QTest::newRow("East") << QTabWidget::East << false << false << true << false;
-    QTest::newRow("West") << QTabWidget::West << true << false << false << false;
+    BOBUIest::newRow("North") << BOBUIabWidget::North << false << true << false << false;
+    BOBUIest::newRow("South") << BOBUIabWidget::South << false << false << false << true;
+    BOBUIest::newRow("East") << BOBUIabWidget::East << false << false << true << false;
+    BOBUIest::newRow("West") << BOBUIabWidget::West << true << false << false << false;
 }
 
 void tst_QMdiArea::setTabPosition()
 {
-    QFETCH(QTabWidget::TabPosition, tabPosition);
+    QFETCH(BOBUIabWidget::TabPosition, tabPosition);
     QFETCH(bool, hasLeftMargin);
     QFETCH(bool, hasTopMargin);
     QFETCH(bool, hasRightMargin);
@@ -2496,24 +2496,24 @@ void tst_QMdiArea::setTabPosition()
     QMdiArea mdiArea;
     mdiArea.addSubWindow(new QWidget);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     // Make sure there are no margins.
     mdiArea.setContentsMargins(0, 0, 0, 0);
 
     // Default.
-    QCOMPARE(mdiArea.tabPosition(), QTabWidget::North);
+    QCOMPARE(mdiArea.tabPosition(), BOBUIabWidget::North);
     mdiArea.setViewMode(QMdiArea::TabbedView);
-    QTabBar *tabBar = mdiArea.findChild<QTabBar *>();
+    BOBUIabBar *tabBar = mdiArea.findChild<BOBUIabBar *>();
     QVERIFY(tabBar);
-    QCOMPARE(tabBar->shape(), QTabBar::RoundedNorth);
+    QCOMPARE(tabBar->shape(), BOBUIabBar::RoundedNorth);
 
     // New position.
     mdiArea.setTabPosition(tabPosition);
     QCOMPARE(mdiArea.tabPosition(), tabPosition);
-    QCOMPARE(tabBar->shape(), tabBarShapeFrom(QTabWidget::Rounded, tabPosition));
+    QCOMPARE(tabBar->shape(), tabBarShapeFrom(BOBUIabWidget::Rounded, tabPosition));
 
-    const Qt::LayoutDirection originalLayoutDirection = qApp->layoutDirection();
+    const BobUI::LayoutDirection originalLayoutDirection = qApp->layoutDirection();
 
     // Check that we have correct geometry in both RightToLeft and LeftToRight.
     for (int i = 0; i < 2; ++i) {
@@ -2539,7 +2539,7 @@ void tst_QMdiArea::setTabPosition()
         QCOMPARE(QRegion(tabBar->geometry()), expectedTabBarGeometry);
 
         if (i == 0)
-            qApp->setLayoutDirection(originalLayoutDirection == Qt::LeftToRight ? Qt::RightToLeft : Qt::LeftToRight);
+            qApp->setLayoutDirection(originalLayoutDirection == BobUI::LeftToRight ? BobUI::RightToLeft : BobUI::LeftToRight);
         qApp->processEvents();
     }
 
@@ -2551,16 +2551,16 @@ void tst_QMdiArea::nativeSubWindows()
     const QString platformName = QGuiApplication::platformName();
     if (platformName != QLatin1String("xcb") && platformName != QLatin1String("windows"))
         QSKIP(qPrintable(QString::fromLatin1("nativeSubWindows() does not work on this platform (%1).").arg(platformName)));
-#if defined(Q_OS_WIN) && !defined(QT_NO_OPENGL)
+#if defined(Q_OS_WIN) && !defined(BOBUI_NO_OPENGL)
     if (QOpenGLContext::openGLModuleType() != QOpenGLContext::LibGL)
-        QSKIP("nativeSubWindows() does not work with ANGLE on Windows, QTBUG-28545.");
+        QSKIP("nativeSubWindows() does not work with ANGLE on Windows, BOBUIBUG-28545.");
 #endif
     { // Add native widgets after show.
     QMdiArea mdiArea;
     mdiArea.addSubWindow(new QWidget);
     mdiArea.addSubWindow(new QWidget);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     // No native widgets.
     QVERIFY(!mdiArea.viewport()->internalWinId());
@@ -2598,7 +2598,7 @@ void tst_QMdiArea::nativeSubWindows()
     (void)nativeWidget->winId();
     mdiArea.addSubWindow(nativeWidget);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     // The viewport and all the sub-windows must be native.
     QVERIFY(mdiArea.viewport()->internalWinId());
@@ -2614,7 +2614,7 @@ void tst_QMdiArea::nativeSubWindows()
     mdiArea.addSubWindow(new QWidget);
     mdiArea.addSubWindow(new QWidget);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
 
     QMdiSubWindow *nativeSubWindow = mdiArea.subWindowList().last();
     QVERIFY(!nativeSubWindow->internalWinId());
@@ -2632,7 +2632,7 @@ void tst_QMdiArea::nativeSubWindows()
 
 void tst_QMdiArea::task_209615()
 {
-    QTabWidget tabWidget;
+    BOBUIabWidget tabWidget;
     QMdiArea *mdiArea1 = new QMdiArea;
     QMdiArea *mdiArea2 = new QMdiArea;
     QMdiSubWindow *subWindow = mdiArea1->addSubWindow(new QLineEdit);
@@ -2651,26 +2651,26 @@ void tst_QMdiArea::task_209615()
 void tst_QMdiArea::task_236750()
 {
     QMdiArea mdiArea;
-    QMdiSubWindow *subWindow = mdiArea.addSubWindow(new QTextEdit);
+    QMdiSubWindow *subWindow = mdiArea.addSubWindow(new BOBUIextEdit);
     mdiArea.show();
 
-    subWindow->setWindowFlags(subWindow->windowFlags() | Qt::FramelessWindowHint);
+    subWindow->setWindowFlags(subWindow->windowFlags() | BobUI::FramelessWindowHint);
     // Please do not crash (floating point exception).
     subWindow->showMinimized();
 }
 
-// QTBUG-92240: When subwindows are maximized, their title is supposed to
+// BOBUIBUG-92240: When subwindows are maximized, their title is supposed to
 // appear on the main window. When DontMaximizeSubWindowOnActivation was set,
 // titles of previously created maximized windows interfered, resulting in
-// "QTBUG-92240 - [1] - [2]".
-void tst_QMdiArea::qtbug92240_title_data()
+// "BOBUIBUG-92240 - [1] - [2]".
+void tst_QMdiArea::bobuibug92240_title_data()
 {
-    QTest::addColumn<bool>("dontMaximize");
-    QTest::newRow("default") << false;
-    QTest::newRow("dontMaximize") << true;
+    BOBUIest::addColumn<bool>("dontMaximize");
+    BOBUIest::newRow("default") << false;
+    BOBUIest::newRow("dontMaximize") << true;
 }
 
-void tst_QMdiArea::qtbug92240_title()
+void tst_QMdiArea::bobuibug92240_title()
 {
     QFETCH(bool, dontMaximize);
 
@@ -2679,7 +2679,7 @@ void tst_QMdiArea::qtbug92240_title()
 #endif
 
     QMainWindow w;
-    const QString title = QStringLiteral("QTBUG-92240");
+    const QString title = QStringLiteral("BOBUIBUG-92240");
     w.setWindowTitle(title);
     w.menuBar()->addMenu(QStringLiteral("File"));
     w.show();
@@ -2691,11 +2691,11 @@ void tst_QMdiArea::qtbug92240_title()
     auto *sw1 = mdiArea->addSubWindow(new QWidget);
     sw1->setWindowTitle(QStringLiteral("1"));
     sw1->showMaximized();
-    QTRY_COMPARE(w.windowTitle(), QLatin1String("QTBUG-92240 - [1]"));
+    BOBUIRY_COMPARE(w.windowTitle(), QLatin1String("BOBUIBUG-92240 - [1]"));
     auto *sw2 = mdiArea->addSubWindow(new QWidget);
     sw2->setWindowTitle(QStringLiteral("2"));
     sw2->showMaximized();
-    QTRY_COMPARE(w.windowTitle(), QLatin1String("QTBUG-92240 - [2]"));
+    BOBUIRY_COMPARE(w.windowTitle(), QLatin1String("BOBUIBUG-92240 - [2]"));
 }
 
 void tst_QMdiArea::tabbedview_singleSubWindow()
@@ -2707,7 +2707,7 @@ void tst_QMdiArea::tabbedview_singleSubWindow()
     auto *w = new QWidget(&mdiArea);
     mdiArea.addSubWindow(w);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     auto *sub = mdiArea.subWindowList().at(0);
     QCOMPARE(mdiArea.activeSubWindow(), sub);
     QVERIFY(sub->isMaximized());
@@ -2738,7 +2738,7 @@ void tst_QMdiArea::tabbedview_activefirst()
     auto sub0 = mdiArea.subWindowList().at(0);
     mdiArea.setActiveSubWindow(sub0);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     QCOMPARE(mdiArea.activeSubWindow(), sub0);
 }
 
@@ -2750,7 +2750,7 @@ void tst_QMdiArea::tabbedview_activesecond()
     auto sub1 = mdiArea.subWindowList().at(1);
     mdiArea.setActiveSubWindow(sub1);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     QCOMPARE(mdiArea.activeSubWindow(), sub1);
 }
 
@@ -2762,7 +2762,7 @@ void tst_QMdiArea::tabbedview_activethird()
     auto sub2 = mdiArea.subWindowList().at(2);
     mdiArea.setActiveSubWindow(sub2);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     QCOMPARE(mdiArea.activeSubWindow(), sub2);
 }
 
@@ -2772,7 +2772,7 @@ void tst_QMdiArea::tabbedview_closeInactive()
     auto createNewWindow = [&mdiArea](const QString &name){
         QMdiSubWindow *subWindow = new QMdiSubWindow;
         subWindow->setObjectName(name);
-        subWindow->setAttribute(Qt::WA_DeleteOnClose);
+        subWindow->setAttribute(BobUI::WA_DeleteOnClose);
         subWindow->setWindowTitle(name);
         mdiArea.addSubWindow(subWindow);
         subWindow->show();
@@ -2781,32 +2781,32 @@ void tst_QMdiArea::tabbedview_closeInactive()
 
     mdiArea.setViewMode(QMdiArea::TabbedView);
     mdiArea.setTabsClosable(true);
-    mdiArea.setTabPosition(QTabWidget::South);
+    mdiArea.setTabPosition(BOBUIabWidget::South);
     mdiArea.setOption(QMdiArea::DontMaximizeSubWindowOnActivation, true);
     mdiArea.setActivationOrder(QMdiArea::ActivationHistoryOrder);
 
     mdiArea.resize(800, 600);
     mdiArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
     // This is needed for QMdiAreaPrivate::updateTabBarGeometry to update the
     // viewport margins.
     mdiArea.setStyleSheet(uR"qss(
-        QTabBar::tab:bottom:selected {
+        BOBUIabBar::tab:bottom:selected {
             border-bottom: 1px solid;
         }
     )qss"_s);
 
     QPointer<QMdiSubWindow> mdi1 = createNewWindow(u"mdi1"_s);
     QPointer<QMdiSubWindow> mdi2 = createNewWindow(u"mdi2"_s);
-    QTRY_COMPARE(mdiArea.subWindowList().size() , 2);
+    BOBUIRY_COMPARE(mdiArea.subWindowList().size() , 2);
     QCOMPARE(mdiArea.activeSubWindow(), mdi2.data());
 
     mdi1->close();
 
-    QTRY_COMPARE(mdiArea.subWindowList().size() , 1);
-    QTRY_VERIFY(!mdi1);
+    BOBUIRY_COMPARE(mdiArea.subWindowList().size() , 1);
+    BOBUIRY_VERIFY(!mdi1);
 }
 
-QTEST_MAIN(tst_QMdiArea)
+BOBUIEST_MAIN(tst_QMdiArea)
 #include "tst_qmdiarea.moc"
 

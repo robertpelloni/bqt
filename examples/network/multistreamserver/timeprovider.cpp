@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "timeprovider.h"
 #include <QDataStream>
-#include <QTime>
+#include <BOBUIime>
 #include <QByteArray>
 
 TimeProvider::TimeProvider(QObject *parent)
@@ -14,8 +14,8 @@ TimeProvider::TimeProvider(QObject *parent)
 void TimeProvider::readDatagram(QSctpSocket &from, const QByteArray &ba)
 {
     QDataStream in_ds(ba);
-    QTime curTime = QTime::currentTime();
-    QTime clientTime;
+    BOBUIime curTime = BOBUIime::currentTime();
+    BOBUIime clientTime;
 
     in_ds >> clientTime;
     // Send response only if a displayed part of the time is changed.

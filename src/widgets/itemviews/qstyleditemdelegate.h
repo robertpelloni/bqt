@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTYLEDITEMDELEGATE_H
 #define QSTYLEDITEMDELEGATE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractitemdelegate.h>
-#include <QtCore/qstring.h>
-#include <QtGui/qpixmap.h>
-#include <QtCore/qvariant.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractitemdelegate.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUICore/qvariant.h>
 
-QT_REQUIRE_CONFIG(itemviews);
+BOBUI_REQUIRE_CONFIG(itemviews);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStyledItemDelegatePrivate;
 class QItemEditorFactory;
@@ -65,6 +65,6 @@ private:
     Q_DISABLE_COPY(QStyledItemDelegate)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTYLEDITEMDELEGATE_H

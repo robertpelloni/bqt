@@ -1,20 +1,20 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgraphicsframecapture_p.h"
-#if (defined (Q_OS_WIN) || defined(Q_OS_LINUX)) && QT_CONFIG(library)
+#if (defined (Q_OS_WIN) || defined(Q_OS_LINUX)) && BOBUI_CONFIG(library)
 #include "qgraphicsframecapturerenderdoc_p_p.h"
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
 #include "qgraphicsframecapturemetal_p_p.h"
 #else
 #include "qgraphicsframecapture_p_p.h"
 #endif
 
-#include <QtCore/qstandardpaths.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qstandardpaths.h>
+#include <BobUICore/qcoreapplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QGraphicsFrameCapturePrivate::QGraphicsFrameCapturePrivate()
     : m_capturePath(QStandardPaths::writableLocation(QStandardPaths::TempLocation) +
@@ -27,9 +27,9 @@ QGraphicsFrameCapturePrivate::QGraphicsFrameCapturePrivate()
 
 QGraphicsFrameCapture::QGraphicsFrameCapture()
 {
-#if (defined (Q_OS_WIN) || defined(Q_OS_LINUX)) && QT_CONFIG(library)
+#if (defined (Q_OS_WIN) || defined(Q_OS_LINUX)) && BOBUI_CONFIG(library)
     d.reset(new QGraphicsFrameCaptureRenderDoc);
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     d.reset(new QGraphicsFrameCaptureMetal);
 #endif
 }
@@ -121,4 +121,4 @@ void QGraphicsFrameCapture::openCapture() const
         d->openCapture();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

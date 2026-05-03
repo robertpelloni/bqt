@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include "qbuttongroup.h"
@@ -14,12 +14,12 @@
 #include <qradiobutton.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
-#include <qtoolbutton.h>
+#include <bobuioolbutton.h>
 #ifdef Q_OS_MAC
 #include <qsettings.h>
 #endif
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class SpecialRadioButton: public QRadioButton
 {
@@ -31,7 +31,7 @@ protected:
     void focusInEvent(QFocusEvent *) override
     {
         QCoreApplication::postEvent(this, new QKeyEvent(QEvent::KeyPress,
-                                                        Qt::Key_Down, Qt::NoModifier));
+                                                        BobUI::Key_Down, BobUI::NoModifier));
     }
 };
 
@@ -74,17 +74,17 @@ private slots:
     void task209485_removeFromGroupInEventHandler();
 };
 
-QT_BEGIN_NAMESPACE
-extern bool Q_GUI_EXPORT qt_tab_all_widgets();
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+extern bool Q_GUI_EXPORT bobui_tab_all_widgets();
+BOBUI_END_NAMESPACE
 
 
 void tst_QButtonGroup::arrowKeyNavigation()
 {
-    if (!qt_tab_all_widgets())
+    if (!bobui_tab_all_widgets())
         QSKIP("This test requires full keyboard control to be enabled.");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QDialog dlg(0);
@@ -122,43 +122,43 @@ void tst_QButtonGroup::arrowKeyNavigation()
     layout.addWidget(&g2);
 
     dlg.show();
-    QVERIFY(QTest::qWaitForWindowActive(&dlg));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&dlg));
 
     bt1.setFocus();
 
-    QTRY_VERIFY(bt1.hasFocus());
+    BOBUIRY_VERIFY(bt1.hasFocus());
 
-    QTest::keyClick(&bt1, Qt::Key_Right);
+    BOBUIest::keyClick(&bt1, BobUI::Key_Right);
     QVERIFY(pb.hasFocus());
-    QTest::keyClick(&pb, Qt::Key_Right);
+    BOBUIest::keyClick(&pb, BobUI::Key_Right);
     QVERIFY(bt2.hasFocus());
-    QTest::keyClick(&bt2, Qt::Key_Right);
+    BOBUIest::keyClick(&bt2, BobUI::Key_Right);
     QVERIFY(bt2.hasFocus());
-    QTest::keyClick(&bt2, Qt::Key_Left);
+    BOBUIest::keyClick(&bt2, BobUI::Key_Left);
     QVERIFY(pb.hasFocus());
-    QTest::keyClick(&pb, Qt::Key_Left);
+    BOBUIest::keyClick(&pb, BobUI::Key_Left);
     QVERIFY(bt1.hasFocus());
 
-    QTest::keyClick(&bt1, Qt::Key_Tab);
+    BOBUIest::keyClick(&bt1, BobUI::Key_Tab);
     QVERIFY(pb.hasFocus());
-    QTest::keyClick(&pb, Qt::Key_Tab);
+    BOBUIest::keyClick(&pb, BobUI::Key_Tab);
 
     QVERIFY(le.hasFocus());
     QCOMPARE(le.selectedText(), le.text());
-    QTest::keyClick(&le, Qt::Key_Tab);
+    BOBUIest::keyClick(&le, BobUI::Key_Tab);
 
     QVERIFY(bt2.hasFocus());
-    QTest::keyClick(&bt2, Qt::Key_Tab);
+    BOBUIest::keyClick(&bt2, BobUI::Key_Tab);
     QVERIFY(bt3.hasFocus());
 
-    QTest::keyClick(&bt3, Qt::Key_Down);
+    BOBUIest::keyClick(&bt3, BobUI::Key_Down);
     QVERIFY(bt4.hasFocus());
-    QTest::keyClick(&bt4, Qt::Key_Down);
+    BOBUIest::keyClick(&bt4, BobUI::Key_Down);
     QVERIFY(bt4.hasFocus());
 
-    QTest::keyClick(&bt4, Qt::Key_Up);
+    BOBUIest::keyClick(&bt4, BobUI::Key_Up);
     QVERIFY(bt3.hasFocus());
-    QTest::keyClick(&bt3, Qt::Key_Up);
+    BOBUIest::keyClick(&bt3, BobUI::Key_Up);
     QVERIFY(bt3.hasFocus());
 }
 
@@ -171,7 +171,7 @@ void tst_QButtonGroup::arrowKeyNavigation()
 */
 void tst_QButtonGroup::keyNavigationPushButtons()
 {
-    if (!qt_tab_all_widgets())
+    if (!bobui_tab_all_widgets())
         QSKIP("This test requires full keyboard control to be enabled.");
 
     QDialog dlg(nullptr);
@@ -203,27 +203,27 @@ void tst_QButtonGroup::keyNavigationPushButtons()
     buttonGroup->addButton(pb3);
 
     dlg.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&dlg));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&dlg));
 
     QVERIFY2(le1->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Tab);
     QVERIFY2(pb1->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
     QVERIFY2(pb1->isChecked(), qPrintable(buttonGroup->checkedButton()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Down);
     QVERIFY2(pb2->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
     QVERIFY2(pb2->isChecked(), qPrintable(buttonGroup->checkedButton()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Down);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Down);
     QVERIFY2(pb3->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
     QVERIFY2(pb3->isChecked(), qPrintable(buttonGroup->checkedButton()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Up);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Up);
     QVERIFY2(pb2->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
     QVERIFY2(pb2->isChecked(), qPrintable(buttonGroup->checkedButton()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Tab);
     QVERIFY2(le2->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Backtab);
     QVERIFY2(pb2->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
     QVERIFY2(pb2->isChecked(), qPrintable(buttonGroup->checkedButton()->objectName()));
-    QTest::keyClick(qApp->focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyClick(qApp->focusWidget(), BobUI::Key_Backtab);
     QVERIFY2(le1->hasFocus(), qPrintable(qApp->focusWidget()->objectName()));
 }
 
@@ -237,9 +237,9 @@ void tst_QButtonGroup::exclusiveWithActions()
     action2->setCheckable(true);
     QAction *action3 = new QAction("Action 3", &dlg);
     action3->setCheckable(true);
-    QToolButton *toolButton1 = new QToolButton(&dlg);
-    QToolButton *toolButton2 = new QToolButton(&dlg);
-    QToolButton *toolButton3 = new QToolButton(&dlg);
+    BOBUIoolButton *toolButton1 = new BOBUIoolButton(&dlg);
+    BOBUIoolButton *toolButton2 = new BOBUIoolButton(&dlg);
+    BOBUIoolButton *toolButton3 = new BOBUIoolButton(&dlg);
     toolButton1->setDefaultAction(action1);
     toolButton2->setDefaultAction(action2);
     toolButton3->setDefaultAction(action3);
@@ -253,7 +253,7 @@ void tst_QButtonGroup::exclusiveWithActions()
     buttonGroup->addButton(toolButton3, 3);
     dlg.show();
 
-    QTest::mouseClick(toolButton1, Qt::LeftButton);
+    BOBUIest::mouseClick(toolButton1, BobUI::LeftButton);
     QVERIFY(toolButton1->isChecked());
     QVERIFY(action1->isChecked());
     QVERIFY(!toolButton2->isChecked());
@@ -261,7 +261,7 @@ void tst_QButtonGroup::exclusiveWithActions()
     QVERIFY(!action2->isChecked());
     QVERIFY(!action3->isChecked());
 
-    QTest::mouseClick(toolButton2, Qt::LeftButton);
+    BOBUIest::mouseClick(toolButton2, BobUI::LeftButton);
     QVERIFY(toolButton2->isChecked());
     QVERIFY(action2->isChecked());
     QVERIFY(!toolButton1->isChecked());
@@ -269,7 +269,7 @@ void tst_QButtonGroup::exclusiveWithActions()
     QVERIFY(!action1->isChecked());
     QVERIFY(!action3->isChecked());
 
-    QTest::mouseClick(toolButton3, Qt::LeftButton);
+    BOBUIest::mouseClick(toolButton3, BobUI::LeftButton);
     QVERIFY(toolButton3->isChecked());
     QVERIFY(action3->isChecked());
     QVERIFY(!toolButton1->isChecked());
@@ -277,7 +277,7 @@ void tst_QButtonGroup::exclusiveWithActions()
     QVERIFY(!action1->isChecked());
     QVERIFY(!action2->isChecked());
 
-    QTest::mouseClick(toolButton2, Qt::LeftButton);
+    BOBUIest::mouseClick(toolButton2, BobUI::LeftButton);
     QVERIFY(toolButton2->isChecked());
     QVERIFY(action2->isChecked());
     QVERIFY(!toolButton1->isChecked());
@@ -306,22 +306,22 @@ void tst_QButtonGroup::exclusive()
     buttonGroup->addButton(pushButton3, 3);
     dlg.show();
 
-    QTest::mouseClick(pushButton1, Qt::LeftButton);
+    BOBUIest::mouseClick(pushButton1, BobUI::LeftButton);
     QVERIFY(pushButton1->isChecked());
     QVERIFY(!pushButton2->isChecked());
     QVERIFY(!pushButton3->isChecked());
 
-    QTest::mouseClick(pushButton2, Qt::LeftButton);
+    BOBUIest::mouseClick(pushButton2, BobUI::LeftButton);
     QVERIFY(pushButton2->isChecked());
     QVERIFY(!pushButton1->isChecked());
     QVERIFY(!pushButton3->isChecked());
 
-    QTest::mouseClick(pushButton3, Qt::LeftButton);
+    BOBUIest::mouseClick(pushButton3, BobUI::LeftButton);
     QVERIFY(pushButton3->isChecked());
     QVERIFY(!pushButton1->isChecked());
     QVERIFY(!pushButton2->isChecked());
 
-    QTest::mouseClick(pushButton2, Qt::LeftButton);
+    BOBUIest::mouseClick(pushButton2, BobUI::LeftButton);
     QVERIFY(pushButton2->isChecked());
     QVERIFY(!pushButton1->isChecked());
     QVERIFY(!pushButton3->isChecked());
@@ -346,7 +346,7 @@ void tst_QButtonGroup::testSignals()
     QSignalSpy releasedIdSpy(&buttons, SIGNAL(idReleased(int)));
 
     pb1.animateClick();
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
 
     QCOMPARE(clickedSpy.size(), 1);
     QCOMPARE(clickedIdSpy.size(), 1);
@@ -369,7 +369,7 @@ void tst_QButtonGroup::testSignals()
     releasedIdSpy.clear();
 
     pb2.animateClick();
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
 
     QCOMPARE(clickedSpy.size(), 1);
     QCOMPARE(clickedIdSpy.size(), 1);
@@ -427,16 +427,16 @@ void tst_QButtonGroup::task106609()
     buttons->addButton(radio3, 3);
     vbox->addWidget(radio3);
     dlg.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dlg));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dlg));
 
     qRegisterMetaType<QAbstractButton*>("QAbstractButton*");
     QSignalSpy spy1(buttons, SIGNAL(buttonClicked(QAbstractButton*)));
 
-    QTRY_COMPARE(QApplication::activeWindow(), static_cast<QWidget*>(&dlg));
+    BOBUIRY_COMPARE(QApplication::activeWindow(), static_cast<QWidget*>(&dlg));
 
     radio1->setFocus();
     radio1->setChecked(true);
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
 
     QCOMPARE(spy1.size(), 2);
 }
@@ -475,10 +475,10 @@ void tst_QButtonGroup::checkedButton()
 
 void tst_QButtonGroup::task209485_removeFromGroupInEventHandler_data()
 {
-    QTest::addColumn<bool>("deleteButton");
-    QTest::addColumn<int>("signalCount");
-    QTest::newRow("buttonPress 1") << true << 1;
-    QTest::newRow("buttonPress 2") << false << 1;
+    BOBUIest::addColumn<bool>("deleteButton");
+    BOBUIest::addColumn<int>("signalCount");
+    BOBUIest::newRow("buttonPress 1") << true << 1;
+    BOBUIest::newRow("buttonPress 2") << false << 1;
 }
 
 void tst_QButtonGroup::task209485_removeFromGroupInEventHandler()
@@ -499,7 +499,7 @@ void tst_QButtonGroup::task209485_removeFromGroupInEventHandler()
     QSignalSpy spy1(&group, SIGNAL(buttonClicked(QAbstractButton*)));
 
     // NOTE: Reintroducing the bug of this task will cause the following line to crash:
-    QTest::mouseClick(&button, Qt::LeftButton);
+    BOBUIest::mouseClick(&button, BobUI::LeftButton);
 
     QCOMPARE(spy1.size(), signalCount);
 }
@@ -533,5 +533,5 @@ void tst_QButtonGroup::autoIncrementId()
     dlg.show();
 }
 
-QTEST_MAIN(tst_QButtonGroup)
+BOBUIEST_MAIN(tst_QButtonGroup)
 #include "tst_qbuttongroup.moc"

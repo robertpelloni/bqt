@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "controllerwindow.h"
 #include "controls.h"
@@ -18,7 +18,7 @@
 #include <QMoveEvent>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QTabWidget>
+#include <BOBUIabWidget>
 #include <QWindow>
 
 ControllerWidget::ControllerWidget(QWidget *parent)
@@ -41,7 +41,7 @@ ControllerWidget::ControllerWidget(QWidget *parent)
 
     hintsControl = new HintControl;
     hintsControl->setHints(previewWidget->windowFlags());
-    connect(hintsControl, SIGNAL(changed(Qt::WindowFlags)), this, SLOT(updatePreview()));
+    connect(hintsControl, SIGNAL(changed(BobUI::WindowFlags)), this, SLOT(updatePreview()));
 
     statesControl = new WindowStatesControl;
     statesControl->setStates(previewWidget->windowState());
@@ -50,7 +50,7 @@ ControllerWidget::ControllerWidget(QWidget *parent)
 
     typeControl = new TypeControl;
     typeControl->setType(previewWidget->windowFlags());
-    connect(typeControl, SIGNAL(changed(Qt::WindowFlags)), this, SLOT(updatePreview()));
+    connect(typeControl, SIGNAL(changed(BobUI::WindowFlags)), this, SLOT(updatePreview()));
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(widgetTypeGroupBox);
@@ -82,14 +82,14 @@ void ControllerWidget::updatePreview(PreviewWindow *preview)
     if (recreateCheckbox->isChecked())
         activePreview->destroy();
 
-    const Qt::WindowFlags flags = typeControl->type() | hintsControl->hints();
+    const BobUI::WindowFlags flags = typeControl->type() | hintsControl->hints();
 
     if (modalWindowCheckBox->isChecked()) {
         parentWindow->show();
-        preview->setModality(Qt::WindowModal);
+        preview->setModality(BobUI::WindowModal);
         preview->setParent(parentWindow->windowHandle());
     } else {
-        preview->setModality(Qt::NonModal);
+        preview->setModality(BobUI::NonModal);
         preview->setParent(0);
         parentWindow->hide();
     }
@@ -118,14 +118,14 @@ void ControllerWidget::updatePreview(QWidget *preview)
     if (activePreview && recreateCheckbox->isChecked())
         activePreview->destroy();
 
-    const Qt::WindowFlags flags = typeControl->type() | hintsControl->hints();
+    const BobUI::WindowFlags flags = typeControl->type() | hintsControl->hints();
 
     if (modalWindowCheckBox->isChecked()) {
         parentWindow->show();
-        preview->setWindowModality(Qt::WindowModal);
+        preview->setWindowModality(BobUI::WindowModal);
         preview->setParent(parentWindow);
     } else {
-        preview->setWindowModality(Qt::NonModal);
+        preview->setWindowModality(BobUI::NonModal);
         preview->setParent(0);
         parentWindow->hide();
     }
@@ -213,16 +213,16 @@ static bool isTopLevel(const QObject *o)
     return false;
 }
 
-static Qt::WindowStates windowState(const QObject *o)
+static BobUI::WindowStates windowState(const QObject *o)
 {
     if (o->isWidgetType()) {
-        Qt::WindowStates states = static_cast<const QWidget *>(o)->windowState();
-        states &= ~Qt::WindowActive;
+        BobUI::WindowStates states = static_cast<const QWidget *>(o)->windowState();
+        states &= ~BobUI::WindowActive;
         return states;
     }
     if (o->isWindowType())
         return static_cast<const QWindow *>(o)->windowStates();
-    return Qt::WindowNoState;
+    return BobUI::WindowNoState;
 }
 
 class EventFilter : public QObject {
@@ -266,9 +266,9 @@ private:
 
 LogWidget *LogWidget::m_instance = 0;
 
-static QtMessageHandler originalMessageHandler = nullptr;
+static BobUIMessageHandler originalMessageHandler = nullptr;
 
-static void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &text)
+static void messageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &text)
 {
     if (LogWidget *lw = LogWidget::instance())
         lw->appendText(text);
@@ -311,12 +311,12 @@ void LogWidget::appendText(const QString &message)
 
 ControllerWindow::ControllerWindow()
 {
-    setWindowTitle(tr("Window Flags (Qt version %1, %2)")
+    setWindowTitle(tr("Window Flags (BobUI version %1, %2)")
                    .arg(QLatin1String(qVersion()),
                         qApp->platformName()));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    QTabWidget *tabWidget = new QTabWidget(this);
+    BOBUIabWidget *tabWidget = new BOBUIabWidget(this);
     ControllerWidget *controllerWidget = new ControllerWidget(tabWidget);
     tabWidget->addTab(controllerWidget, tr("Control"));
     LogWidget *logWidget = new LogWidget(tabWidget);
@@ -334,7 +334,7 @@ ControllerWindow::ControllerWindow()
     bottomLayout->addWidget(clearLogButton);
     QPushButton *quitButton = new QPushButton(tr("&Quit"));
     connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
-    quitButton->setShortcut(Qt::CTRL | Qt::Key_Q);
+    quitButton->setShortcut(BobUI::CTRL | BobUI::Key_Q);
     bottomLayout->addWidget(quitButton);
 }
 

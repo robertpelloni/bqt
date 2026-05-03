@@ -1,6 +1,6 @@
 // Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB)
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMFILEDIALOGHELPER_H
 #define QANDROIDPLATFORMFILEDIALOGHELPER_H
@@ -8,15 +8,15 @@
 #include <jni.h>
 
 #include <QEventLoop>
-#include <QtCore/QJniObject>
-#include <QtCore/private/qjnihelpers_p.h>
+#include <BobUICore/QJniObject>
+#include <BobUICore/private/qjnihelpers_p.h>
 #include <qpa/qplatformdialoghelper.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtAndroidFileDialogHelper {
+namespace BobUIAndroidFileDialogHelper {
 
-class QAndroidPlatformFileDialogHelper: public QPlatformFileDialogHelper, public QtAndroidPrivate::ActivityResultListener
+class QAndroidPlatformFileDialogHelper: public QPlatformFileDialogHelper, public BobUIAndroidPrivate::ActivityResultListener
 {
     Q_OBJECT
 
@@ -24,7 +24,7 @@ public:
     QAndroidPlatformFileDialogHelper();
 
     void exec() override;
-    bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent) override;
     void hide() override;
 
     QString selectedNameFilter() const override { return QString(); }
@@ -54,6 +54,6 @@ private:
 };
 
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDPLATFORMFILEDIALOGHELPER_H

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTPREVIEWDIALOG_H
 #define QPRINTPREVIEWDIALOG_H
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(printpreviewdialog);
+BOBUI_REQUIRE_CONFIG(printpreviewdialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsView;
 class QPrintPreviewDialogPrivate;
@@ -23,9 +23,9 @@ class Q_PRINTSUPPORT_EXPORT QPrintPreviewDialog : public QDialog
     Q_DECLARE_PRIVATE(QPrintPreviewDialog)
 
 public:
-    explicit QPrintPreviewDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    explicit QPrintPreviewDialog(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     explicit QPrintPreviewDialog(QPrinter *printer, QWidget *parent = nullptr,
-                                 Qt::WindowFlags flags = Qt::WindowFlags());
+                                 BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QPrintPreviewDialog();
 
     using QDialog::open;
@@ -53,6 +53,6 @@ private:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTPREVIEWDIALOG_H

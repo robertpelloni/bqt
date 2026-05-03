@@ -17,7 +17,7 @@ version: '2.1'
 # You can run `docker images` to list all the tags of available images:
 # For example:
 # REPOSITORY              TAG
-# qt-test-server-apache2  537fe302f61851d1663f41495230d8e3554a4a13
+# bobui-test-server-apache2  537fe302f61851d1663f41495230d8e3554a4a13
 
 #
 # Configuration in this file is used solely to configure Docker properly
@@ -34,7 +34,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-apache2
+        container_name: bobui-test-server-apache2
         hostname: ${HOST_NAME:-apache2}
         ports:
             - "172.31.1.1:80:80"
@@ -42,7 +42,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-apache2:latest
+                provisioningImage: bobui-test-server-apache2:latest
                 shareDir: ./common
                 serviceDir: ./apache2
         entrypoint: service/startup.sh
@@ -52,7 +52,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-squid
+        container_name: bobui-test-server-squid
         hostname: ${HOST_NAME:-squid}
         ports:
             - "172.31.1.1:3128:3128"
@@ -69,7 +69,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-squid:latest
+                provisioningImage: bobui-test-server-squid:latest
                 shareDir: ./common
                 serviceDir: ./squid
         entrypoint: service/startup.sh
@@ -79,7 +79,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-vsftpd
+        container_name: bobui-test-server-vsftpd
         hostname: ${HOST_NAME:-vsftpd}
         ports:
             - "172.31.1.1:20:20"
@@ -87,7 +87,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-vsftpd:latest
+                provisioningImage: bobui-test-server-vsftpd:latest
                 shareDir: ./common
                 serviceDir: ./vsftpd
         entrypoint: service/startup.sh
@@ -97,7 +97,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-ftp-proxy
+        container_name: bobui-test-server-ftp-proxy
         hostname: ${HOST_NAME:-ftp-proxy}
         ports:
             - "172.31.1.1:2121:2121"
@@ -108,7 +108,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-ftp-proxy:latest
+                provisioningImage: bobui-test-server-ftp-proxy:latest
                 shareDir: ./common
                 serviceDir: ./ftp-proxy
         entrypoint: service/startup.sh
@@ -118,7 +118,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-danted
+        container_name: bobui-test-server-danted
         hostname: ${HOST_NAME:-danted}
         ports:
             - "172.31.1.1:1080:1080"
@@ -136,7 +136,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-danted:latest
+                provisioningImage: bobui-test-server-danted:latest
                 shareDir: ./common
                 serviceDir: ./danted
         entrypoint: service/startup.sh
@@ -146,7 +146,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-cyrus
+        container_name: bobui-test-server-cyrus
         hostname: ${HOST_NAME:-cyrus}
         ports:
             - "172.31.1.1:143:143"
@@ -154,7 +154,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-cyrus:latest
+                provisioningImage: bobui-test-server-cyrus:latest
                 shareDir: ./common
                 serviceDir: ./cyrus
         entrypoint: service/startup.sh
@@ -164,14 +164,14 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-iptables
+        container_name: bobui-test-server-iptables
         hostname: ${HOST_NAME:-iptables}
         ports:
             - "172.31.1.1:1357:1357"
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-iptables:latest
+                provisioningImage: bobui-test-server-iptables:latest
                 shareDir: ./common
                 serviceDir: ./iptables
         entrypoint: service/startup.sh
@@ -184,7 +184,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-echo
+        container_name: bobui-test-server-echo
         hostname: ${HOST_NAME:-echo}
         ports:
             - "172.31.1.1:13:13"
@@ -193,7 +193,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-echo:latest
+                provisioningImage: bobui-test-server-echo:latest
                 shareDir: ./common
                 serviceDir: ./echo
         entrypoint: service/startup.sh

@@ -1,6 +1,6 @@
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL && !QT_CONFIG(opengles2)
+#endif // BOBUI_NO_OPENGL && !BOBUI_CONFIG(opengles2)
 
 #endif

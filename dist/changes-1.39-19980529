@@ -104,11 +104,11 @@ src/kernel/qregion.h    2.11  eiriken  +2 -3
 src/kernel/qregion.cpp    2.12  hanord  +18 -56
 
   New region serializing code, writes only raw rectangles.
-  In Qt pre 2.0, we write a sort of recursive structure for backward
-  compatibility. It's large and inefficient. In Qt 2.0, we start using
+  In BobUI pre 2.0, we write a sort of recursive structure for backward
+  compatibility. It's large and inefficient. In BobUI 2.0, we start using
   a much slimmer structure and the reading code for this has already
-  been added for Qt 1.40.  I.e. Qt 1.3x programs won't be able to read
-  regions serialized with Qt 2.x.
+  been added for BobUI 1.40.  I.e. BobUI 1.3x programs won't be able to read
+  regions serialized with BobUI 2.x.
 
 
 src/kernel/qregion.h    2.12  hanord  +2 -7
@@ -211,7 +211,7 @@ src/widgets/qstatusbar.cpp    2.8  agulbra  +9 -4
   nothing in it.
 
 
-src/widgets/qtablevw.cpp    2.46  agulbra  +4 -4
+src/widgets/bobuiablevw.cpp    2.46  agulbra  +4 -4
 
   last{Row,Col}Visible() could return >= num{Row,Col}s.  no more.
 

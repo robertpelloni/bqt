@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "expectedeventlist.h"
 #include <QDebug>
 #include <QCoreApplication>
 #include <QAbstractEventDispatcher>
-#include <QTest>
+#include <BOBUIest>
 
 ExpectedEventList::ExpectedEventList(QObject *target)
     : QObject(target), eventCount(0)
@@ -27,7 +27,7 @@ void ExpectedEventList::append(QEvent *e)
     ++eventCount;
 }
 
-void ExpectedEventList::timerEvent(QTimerEvent *)
+void ExpectedEventList::timerEvent(BOBUIimerEvent *)
 {
     timer.stop();
     QAbstractEventDispatcher::instance()->interrupt();
@@ -75,7 +75,7 @@ void ExpectedEventList::compareMouseEvents(QEvent *received, QEvent *expected)
     }
 
     // INVARIANT: The two events are not equal. So we fail. Depending
-    // on whether debug mode is no or not, we let QTest fail. Otherwise
+    // on whether debug mode is no or not, we let BOBUIest fail. Otherwise
     // we let the test continue for debugging puposes.
     int eventListNr = eventCount - eventList.size();
     if (debug == 0) {
@@ -109,7 +109,7 @@ void ExpectedEventList::compareKeyEvents(QEvent *received, QEvent *expected)
     }
 
     // INVARIANT: The two events are not equal. So we fail. Depending
-    // on whether debug mode is no or not, we let QTest fail. Otherwise
+    // on whether debug mode is no or not, we let BOBUIest fail. Otherwise
     // we let the test continue for debugging puposes.
     int eventListNr = eventCount - eventList.size();
     if (debug == 0) {

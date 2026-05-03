@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qbytearray.h"
 #include "qbytearraymatcher.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 #include "qhashfunctions.h"
 #include "qlist.h"
 #include "qlocale_p.h"
@@ -22,7 +22,7 @@
 #include "private/qstdweb_p.h"
 #endif
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 #include <zconf.h>
 #include <zlib.h>
 #include <qxpfunctional.h>
@@ -33,18 +33,18 @@
 #include <stdlib.h>
 
 #include <algorithm>
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 #include <string>
 
 #ifdef Q_OS_WIN
-#  if !defined(QT_BOOTSTRAPPED) && (defined(QT_NO_CAST_FROM_ASCII) || defined(QT_NO_CAST_FROM_BYTEARRAY))
+#  if !defined(BOBUI_BOOTSTRAPPED) && (defined(BOBUI_NO_CAST_FROM_ASCII) || defined(BOBUI_NO_CAST_FROM_BYTEARRAY))
 // MSVC requires this, but let's apply it to MinGW compilers too, just in case
-#    error "This file cannot be compiled with QT_NO_CAST_{TO,FROM}_ASCII, " \
+#    error "This file cannot be compiled with BOBUI_NO_CAST_{TO,FROM}_ASCII, " \
            "otherwise some QByteArray functions will not get exported."
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_CONSTINIT const char QByteArray::_empty = '\0';
 
@@ -74,7 +74,7 @@ static constexpr inline uchar asciiLower(uchar c)
 */
 const void *qmemrchr(const void *s, int needle, size_t size) noexcept
 {
-#if QT_CONFIG(memrchr)
+#if BOBUI_CONFIG(memrchr)
     return memrchr(s, needle, size);
 #endif
     auto b = static_cast<const uchar *>(s);
@@ -267,7 +267,7 @@ int qstricmp(const char *str1, const char *str2)
         max += offset;
         do {
             uchar c = s1[offset];
-            if (int res = QtMiscUtils::caseCompareAscii(c, s2[offset]))
+            if (int res = BobUIMiscUtils::caseCompareAscii(c, s2[offset]))
                 return res;
             if (!c)
                 return 0;
@@ -350,7 +350,7 @@ int qstrnicmp(const char *str1, const char *str2, size_t len)
         return s1 ? 1 : (s2 ? -1 : 0);
     for (; len--; ++s1, ++s2) {
         const uchar c = *s1;
-        if (int res = QtMiscUtils::caseCompareAscii(c, *s2))
+        if (int res = BobUIMiscUtils::caseCompareAscii(c, *s2))
             return res;
         if (!c)                                // strings are equal
             break;
@@ -391,7 +391,7 @@ int qstrnicmp(const char *str1, qsizetype len1, const char *str2, qsizetype len2
             if (!c)
                 return 1;
 
-            if (int res = QtMiscUtils::caseCompareAscii(s1[i], c))
+            if (int res = BobUIMiscUtils::caseCompareAscii(s1[i], c))
                 return res;
         }
         return s2[i] ? -1 : 0;
@@ -399,7 +399,7 @@ int qstrnicmp(const char *str1, qsizetype len1, const char *str2, qsizetype len2
         // not null-terminated
         const qsizetype len = qMin(len1, len2);
         for (qsizetype i = 0; i < len; ++i) {
-            if (int res = QtMiscUtils::caseCompareAscii(s1[i], s2[i]))
+            if (int res = BobUIMiscUtils::caseCompareAscii(s1[i], s2[i]))
                 return res;
         }
         if (len1 == len2)
@@ -411,7 +411,7 @@ int qstrnicmp(const char *str1, qsizetype len1, const char *str2, qsizetype len2
 /*!
     \internal
  */
-int QtPrivate::compareMemory(QByteArrayView lhs, QByteArrayView rhs)
+int BobUIPrivate::compareMemory(QByteArrayView lhs, QByteArrayView rhs)
 {
     if (!lhs.isNull() && !rhs.isNull()) {
         int ret = memcmp(lhs.data(), rhs.data(), qMin(lhs.size(), rhs.size()));
@@ -427,7 +427,7 @@ int QtPrivate::compareMemory(QByteArrayView lhs, QByteArrayView rhs)
 /*!
     \internal
 */
-bool QtPrivate::isValidUtf8(QByteArrayView s) noexcept
+bool BobUIPrivate::isValidUtf8(QByteArrayView s) noexcept
 {
     return QUtf8::isValidUtf8(s).isValidUtf8;
 }
@@ -484,19 +484,19 @@ static const quint16 crc_tbl[16] = {
 
     The checksum is independent of the byte order (endianness) and will
     be calculated accorded to the algorithm published in \a standard.
-    By default the algorithm published in ISO 3309 (Qt::ChecksumIso3309) is used.
+    By default the algorithm published in ISO 3309 (BobUI::ChecksumIso3309) is used.
 
     \note This function is a 16-bit cache conserving (16 entry table)
     implementation of the CRC-16-CCITT algorithm.
 */
-quint16 qChecksum(QByteArrayView data, Qt::ChecksumType standard)
+quint16 qChecksum(QByteArrayView data, BobUI::ChecksumType standard)
 {
     quint16 crc = 0x0000;
     switch (standard) {
-    case Qt::ChecksumIso3309:
+    case BobUI::ChecksumIso3309:
         crc = 0xffff;
         break;
-    case Qt::ChecksumItuV41:
+    case BobUI::ChecksumItuV41:
         crc = 0x6363;
         break;
     }
@@ -510,10 +510,10 @@ quint16 qChecksum(QByteArrayView data, Qt::ChecksumType standard)
         crc = ((crc >> 4) & 0x0fff) ^ crc_tbl[((crc ^ c) & 15)];
     }
     switch (standard) {
-    case Qt::ChecksumIso3309:
+    case BobUI::ChecksumIso3309:
         crc = ~crc;
         break;
-    case Qt::ChecksumItuV41:
+    case BobUI::ChecksumItuV41:
         break;
     }
     return crc & 0xffff;
@@ -549,7 +549,7 @@ quint16 qChecksum(QByteArrayView data, Qt::ChecksumType standard)
     \a compressionLevel and returns the compressed data in a new byte array.
 */
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 using CompressSizeHint_t = quint32; // 32-bit BE, historically
 
 enum class ZLibOp : bool { Compression, Decompression };
@@ -754,7 +754,7 @@ QByteArray qCompress(const uchar* data, qsizetype nbytes, int compressionLevel)
     Returns an empty QByteArray if the input data was corrupt.
 
     This function will uncompress data compressed with qCompress()
-    from this and any earlier Qt version, back to Qt 3.1 when this
+    from this and any earlier BobUI version, back to BobUI 3.1 when this
     feature was added.
 
     \b{Note:} If you want to use this function to uncompress external
@@ -769,13 +769,13 @@ QByteArray qCompress(const uchar* data, qsizetype nbytes, int compressionLevel)
     header, this function, on 64-bit platforms, can produce more than
     4GiB of output.
 
-    \note In Qt versions prior to Qt 6.5, more than 2GiB of data
-    worked unreliably; in Qt versions prior to Qt 6.0, not at all.
+    \note In BobUI versions prior to BobUI 6.5, more than 2GiB of data
+    worked unreliably; in BobUI versions prior to BobUI 6.0, not at all.
 
     \sa qCompress()
 */
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 /*! \relates QByteArray
 
     \overload
@@ -823,7 +823,7 @@ QByteArray qUncompress(const uchar* data, qsizetype nbytes)
 
 /*!
     \class QByteArray
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QByteArray class provides an array of bytes.
 
     \ingroup tools
@@ -847,14 +847,14 @@ QByteArray qUncompress(const uchar* data, qsizetype nbytes)
     terminator, and uses \l{implicit sharing} (copy-on-write) to
     reduce memory usage and avoid needless copying of data.
 
-    In addition to QByteArray, Qt also provides the QString class to store
+    In addition to QByteArray, BobUI also provides the QString class to store
     string data. For most purposes, QString is the class you want to use. It
     understands its content as Unicode text (encoded using UTF-16) where
     QByteArray aims to avoid assumptions about the encoding or semantics of the
     bytes it stores (aside from a few legacy cases where it uses ASCII).
-    Furthermore, QString is used throughout in the Qt API. The two main cases
+    Furthermore, QString is used throughout in the BobUI API. The two main cases
     where QByteArray is appropriate are when you need to store raw binary data,
-    and when memory conservation is critical (e.g., with Qt for Embedded Linux).
+    and when memory conservation is critical (e.g., with BobUI for Embedded Linux).
 
     One way to initialize a QByteArray is simply to pass a \c{const
     char *} to its constructor. For example, the following code
@@ -1009,7 +1009,7 @@ QByteArray qUncompress(const uchar* data, qsizetype nbytes)
 
     When memory allocation fails, QByteArray throws a \c std::bad_alloc
     exception if the application is being compiled with exception support.
-    Out of memory conditions in Qt containers are the only case where Qt
+    Out of memory conditions in BobUI containers are the only case where BobUI
     will throw exceptions. If exceptions are disabled, then running out of
     memory is undefined behavior.
 
@@ -1090,10 +1090,10 @@ QByteArray qUncompress(const uchar* data, qsizetype nbytes)
                               data.
     \value IgnoreBase64DecodingErrors  When decoding Base64-encoded data, ignores errors
                                        in the input; invalid characters are simply skipped.
-                                       This enum value has been added in Qt 5.15.
+                                       This enum value has been added in BobUI 5.15.
     \value AbortOnBase64DecodingErrors When decoding Base64-encoded data, stops at the first
                                        decoding error.
-                                       This enum value has been added in Qt 5.15.
+                                       This enum value has been added in BobUI 5.15.
 
     QByteArray::fromBase64Encoding() and QByteArray::fromBase64()
     ignore the KeepTrailingEquals and OmitTrailingEquals options. If
@@ -1515,7 +1515,7 @@ QByteArray &QByteArray::operator=(const char *str)
     that accepts a \c{const char *}.
 
     You can disable this operator by defining \c
-    QT_NO_CAST_FROM_BYTEARRAY when you compile your applications.
+    BOBUI_NO_CAST_FROM_BYTEARRAY when you compile your applications.
 
     Note: A QByteArray can store any byte values including '\\0's,
     but most functions that take \c{char *} arguments assume that the
@@ -1525,13 +1525,13 @@ QByteArray &QByteArray::operator=(const char *str)
 */
 
 /*!
-  \macro QT_NO_CAST_FROM_BYTEARRAY
+  \macro BOBUI_NO_CAST_FROM_BYTEARRAY
   \relates QByteArray
 
   Disables automatic conversions from QByteArray to
   const char * or const void *.
 
-  \sa QT_NO_CAST_TO_ASCII, QT_NO_CAST_FROM_ASCII
+  \sa BOBUI_NO_CAST_TO_ASCII, BOBUI_NO_CAST_FROM_ASCII
 */
 
 /*! \fn char *QByteArray::data()
@@ -1803,7 +1803,7 @@ void QByteArray::chop(qsizetype n)
     Example:
     \snippet code/src_corelib_text_qbytearray.cpp 13
 
-    Qt makes a distinction between null byte arrays and empty byte
+    BobUI makes a distinction between null byte arrays and empty byte
     arrays for historical reasons. For most applications, what
     matters is whether or not a byte array contains any data,
     and this can be determined using isEmpty().
@@ -1873,11 +1873,11 @@ QByteArray::QByteArray(qsizetype size, char ch)
 
     For example:
     \code
-    QByteArray buffer(123, Qt::Uninitialized);
+    QByteArray buffer(123, BobUI::Uninitialized);
     \endcode
 */
 
-QByteArray::QByteArray(qsizetype size, Qt::Initialization)
+QByteArray::QByteArray(qsizetype size, BobUI::Initialization)
 {
     if (size <= 0) {
         d = DataPointer::fromRawData(&_empty, 0);
@@ -2336,7 +2336,7 @@ QByteArray &QByteArray::insert(qsizetype i, QByteArrayView data)
         return *this;
     }
 
-    if (!d->needsDetach() && QtPrivate::q_points_into_range(str, d)) {
+    if (!d->needsDetach() && BobUIPrivate::q_points_into_range(str, d)) {
         QVarLengthArray a(str, str + size);
         return insert(i, a);
     }
@@ -2449,7 +2449,7 @@ QByteArray &QByteArray::remove(qsizetype pos, qsizetype len)
         d->erase(toRemove_start, len);
         d.data()[d.size] = '\0';
     } else {
-        QByteArray copy{size() - len, Qt::Uninitialized};
+        QByteArray copy{size() - len, BobUI::Uninitialized};
         copy.d->copyRanges({{d.begin(), toRemove_start},
                            {toRemove_start + len, d.end()}});
         swap(copy);
@@ -2550,8 +2550,8 @@ QByteArray &QByteArray::replace(qsizetype pos, qsizetype len, QByteArrayView aft
         QByteArrayView tail{beforeEnd, oldEnd};
         QByteArrayView prefix = after;
         QByteArrayView suffix;
-        if (QtPrivate::q_points_into_range(after.cend() - 1, tail)) {
-            if (QtPrivate::q_points_into_range(after.cbegin(), tail)) {
+        if (BobUIPrivate::q_points_into_range(after.cend() - 1, tail)) {
+            if (BobUIPrivate::q_points_into_range(after.cbegin(), tail)) {
                 // `after` fully contained inside `tail`
                 prefix = {};
                 suffix = QByteArrayView{after.cbegin(), after.cend()};
@@ -2622,7 +2622,7 @@ QByteArray &QByteArray::replace(QByteArrayView before, QByteArrayView after)
 
     // protect against `after` being part of this
     std::string pinnedReplacement;
-    if (QtPrivate::q_points_into_range(a, d)) {
+    if (BobUIPrivate::q_points_into_range(a, d)) {
         pinnedReplacement.assign(a, a + asize);
         after = pinnedReplacement;
     }
@@ -2665,7 +2665,7 @@ QByteArray &QByteArray::replace(char before, char after)
     if (before != after) {
         if (const auto pos = indexOf(before); pos >= 0) {
             if (d.needsDetach()) {
-                QByteArray tmp(size(), Qt::Uninitialized);
+                QByteArray tmp(size(), BobUI::Uninitialized);
                 auto dst = tmp.d.data();
                 dst = std::copy(d.data(), d.data() + pos, dst);
                 *dst++ = after;
@@ -2809,7 +2809,7 @@ static qsizetype lastIndexOfHelper(const char *haystack, qsizetype l, const char
     return -1;
 }
 
-qsizetype QtPrivate::lastIndexOf(QByteArrayView haystack, qsizetype from, QByteArrayView needle) noexcept
+qsizetype BobUIPrivate::lastIndexOf(QByteArrayView haystack, qsizetype from, QByteArrayView needle) noexcept
 {
     if (haystack.isEmpty()) {
         if (needle.isEmpty() && from == 0)
@@ -2818,7 +2818,7 @@ qsizetype QtPrivate::lastIndexOf(QByteArrayView haystack, qsizetype from, QByteA
     }
     const auto ol = needle.size();
     if (ol == 1)
-        return QtPrivate::lastIndexOf(haystack, from, needle.front());
+        return BobUIPrivate::lastIndexOf(haystack, from, needle.front());
 
     return lastIndexOfHelper(haystack.data(), haystack.size(), needle.data(), ol, from);
 }
@@ -2886,7 +2886,7 @@ static inline qsizetype countCharHelper(QByteArrayView haystack, char needle) no
     return num;
 }
 
-qsizetype QtPrivate::count(QByteArrayView haystack, QByteArrayView needle) noexcept
+qsizetype BobUIPrivate::count(QByteArrayView haystack, QByteArrayView needle) noexcept
 {
     if (needle.size() == 0)
         return haystack.size() + 1;
@@ -2929,7 +2929,7 @@ qsizetype QByteArray::count(char ch) const
     return countCharHelper(*this, ch);
 }
 
-#if QT_DEPRECATED_SINCE(6, 4)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
 /*! \fn qsizetype QByteArray::count() const
     \deprecated [6.4] Use size() or length() instead.
     \overload
@@ -2939,7 +2939,7 @@ qsizetype QByteArray::count(char ch) const
 #endif
 
 /*!
-    \fn int QByteArray::compare(QByteArrayView bv, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    \fn int QByteArray::compare(QByteArrayView bv, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     \since 6.0
 
     Returns an integer less than, equal to, or greater than zero depending on
@@ -2950,7 +2950,7 @@ qsizetype QByteArray::count(char ch) const
     \sa operator==, {Character Case}
 */
 
-bool QtPrivate::startsWith(QByteArrayView haystack, QByteArrayView needle) noexcept
+bool BobUIPrivate::startsWith(QByteArrayView haystack, QByteArrayView needle) noexcept
 {
     if (haystack.size() < needle.size())
         return false;
@@ -2979,7 +2979,7 @@ bool QtPrivate::startsWith(QByteArrayView haystack, QByteArrayView needle) noexc
     \c false.
 */
 
-bool QtPrivate::endsWith(QByteArrayView haystack, QByteArrayView needle) noexcept
+bool BobUIPrivate::endsWith(QByteArrayView haystack, QByteArrayView needle) noexcept
 {
     if (haystack.size() < needle.size())
         return false;
@@ -3122,7 +3122,7 @@ QByteArray QByteArray::mid(qsizetype pos, qsizetype len) const &
 {
     qsizetype p = pos;
     qsizetype l = len;
-    using namespace QtPrivate;
+    using namespace BobUIPrivate;
     switch (QContainerImplHelper::mid(size(), &p, &l)) {
     case QContainerImplHelper::Null:
         return QByteArray();
@@ -3142,7 +3142,7 @@ QByteArray QByteArray::mid(qsizetype pos, qsizetype len) &&
 {
     qsizetype p = pos;
     qsizetype l = len;
-    using namespace QtPrivate;
+    using namespace BobUIPrivate;
     switch (QContainerImplHelper::mid(size(), &p, &l)) {
     case QContainerImplHelper::Null:
         return QByteArray();
@@ -3351,14 +3351,14 @@ void QByteArray::clear()
     d.clear();
 }
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 
 /*! \relates QByteArray
 
     Writes byte array \a ba to the stream \a out and returns a reference
     to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &out, const QByteArray &ba)
@@ -3375,7 +3375,7 @@ QDataStream &operator<<(QDataStream &out, const QByteArray &ba)
     Reads a byte array into \a ba from the stream \a in and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &in, QByteArray &ba)
@@ -3410,7 +3410,7 @@ QDataStream &operator>>(QDataStream &in, QByteArray &ba)
 
     return in;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*! \fn bool QByteArray::operator==(const QByteArray &lhs, const QByteArray &rhs)
     \overload
@@ -3686,7 +3686,7 @@ QByteArray QByteArray::trimmed_helper(QByteArray &a)
     return QStringAlgorithms<QByteArray>::trimmed_helper(a);
 }
 
-QByteArrayView QtPrivate::trimmed(QByteArrayView view) noexcept
+QByteArrayView BobUIPrivate::trimmed(QByteArrayView view) noexcept
 {
     const auto [start, stop] = QStringAlgorithms<QByteArrayView>::trimmed_helper_positions(view);
     return QByteArrayView(start, stop);
@@ -3766,9 +3766,9 @@ QByteArray QByteArray::rightJustified(qsizetype width, char fill, bool truncate)
     return result;
 }
 
-auto QtPrivate::toSignedInteger(QByteArrayView data, int base) -> ParsedNumber<qlonglong>
+auto BobUIPrivate::toSignedInteger(QByteArrayView data, int base) -> ParsedNumber<qlonglong>
 {
-#if defined(QT_CHECK_RANGE)
+#if defined(BOBUI_CHECK_RANGE)
     if (base != 0 && (base < 2 || base > 36)) {
         qWarning("QByteArray::toIntegral: Invalid base %d", base);
         base = 10;
@@ -3783,9 +3783,9 @@ auto QtPrivate::toSignedInteger(QByteArrayView data, int base) -> ParsedNumber<q
     return {};
 }
 
-auto QtPrivate::toUnsignedInteger(QByteArrayView data, int base) -> ParsedNumber<qulonglong>
+auto BobUIPrivate::toUnsignedInteger(QByteArrayView data, int base) -> ParsedNumber<qulonglong>
 {
-#if defined(QT_CHECK_RANGE)
+#if defined(BOBUI_CHECK_RANGE)
     if (base != 0 && (base < 2 || base > 36)) {
         qWarning("QByteArray::toIntegral: Invalid base %d", base);
         base = 10;
@@ -3820,14 +3820,14 @@ auto QtPrivate::toUnsignedInteger(QByteArrayView data, int base) -> ParsedNumber
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 
 qlonglong QByteArray::toLongLong(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<qlonglong>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<qlonglong>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -3850,14 +3850,14 @@ qlonglong QByteArray::toLongLong(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 
 qulonglong QByteArray::toULongLong(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<qulonglong>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<qulonglong>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -3882,14 +3882,14 @@ qulonglong QByteArray::toULongLong(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 
 int QByteArray::toInt(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<int>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<int>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -3912,14 +3912,14 @@ int QByteArray::toInt(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 
 uint QByteArray::toUInt(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<uint>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<uint>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -3946,13 +3946,13 @@ uint QByteArray::toUInt(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 long QByteArray::toLong(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<long>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<long>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -3977,13 +3977,13 @@ long QByteArray::toLong(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 ulong QByteArray::toULong(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<ulong>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<ulong>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -4006,14 +4006,14 @@ ulong QByteArray::toULong(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 
 short QByteArray::toShort(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<short>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<short>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -4036,14 +4036,14 @@ short QByteArray::toShort(bool *ok, int base) const
     regardless of the user's locale. Use QLocale to perform locale-aware
     conversions between numbers and strings.
 
-    \note Support for the "0b" prefix was added in Qt 6.4.
+    \note Support for the "0b" prefix was added in BobUI 6.4.
 
     \sa number()
 */
 
 ushort QByteArray::toUShort(bool *ok, int base) const
 {
-    return QtPrivate::toIntegral<ushort>(qToByteArrayViewIgnoringNull(*this), ok, base);
+    return BobUIPrivate::toIntegral<ushort>(qToByteArrayViewIgnoringNull(*this), ok, base);
 }
 
 /*!
@@ -4076,10 +4076,10 @@ double QByteArray::toDouble(bool *ok) const
     return QByteArrayView(*this).toDouble(ok);
 }
 
-auto QtPrivate::toDouble(QByteArrayView a) noexcept -> ParsedNumber<double>
+auto BobUIPrivate::toDouble(QByteArrayView a) noexcept -> ParsedNumber<double>
 {
     a = a.trimmed();
-    auto r = qt_asciiToDouble(a.data(), a.size());
+    auto r = bobui_asciiToDouble(a.data(), a.size());
     if (r.ok())
         return ParsedNumber{r.result};
     else
@@ -4116,7 +4116,7 @@ float QByteArray::toFloat(bool *ok) const
     return QLocaleData::convertDoubleToFloat(toDouble(ok), ok);
 }
 
-auto QtPrivate::toFloat(QByteArrayView a) noexcept -> ParsedNumber<float>
+auto BobUIPrivate::toFloat(QByteArrayView a) noexcept -> ParsedNumber<float>
 {
     if (const auto r = toDouble(a)) {
         bool ok = true;
@@ -4150,7 +4150,7 @@ QByteArray QByteArray::toBase64(Base64Options options) const
 
     const qsizetype sz = size();
 
-    QByteArray tmp((sz + 2) / 3 * 4, Qt::Uninitialized);
+    QByteArray tmp((sz + 2) / 3 * 4, BobUI::Uninitialized);
 
     qsizetype i = 0;
     char *out = tmp.data();
@@ -4415,7 +4415,7 @@ QByteArray QByteArray::number(double n, char format, int precision)
 {
     QLocaleData::DoubleForm form = QLocaleData::DFDecimal;
 
-    switch (QtMiscUtils::toAsciiLower(format)) {
+    switch (BobUIMiscUtils::toAsciiLower(format)) {
         case 'f':
             form = QLocaleData::DFDecimal;
             break;
@@ -4426,7 +4426,7 @@ QByteArray QByteArray::number(double n, char format, int precision)
             form = QLocaleData::DFSignificantDigits;
             break;
         default:
-#if defined(QT_CHECK_RANGE)
+#if defined(BOBUI_CHECK_RANGE)
             qWarning("QByteArray::setNum: Invalid format char '%c'", format);
 #endif
             break;
@@ -4616,7 +4616,7 @@ QByteArray::FromBase64Result QByteArray::fromBase64Encoding(QByteArray &&base64,
 QByteArray::FromBase64Result QByteArray::fromBase64Encoding(const QByteArray &base64, Base64Options options)
 {
     const auto base64Size = base64.size();
-    QByteArray result((base64Size * 3) / 4, Qt::Uninitialized);
+    QByteArray result((base64Size * 3) / 4, BobUI::Uninitialized);
     const auto base64result = fromBase64_helper(base64.data(),
                                                 base64Size,
                                                 const_cast<char *>(result.constData()),
@@ -4669,13 +4669,13 @@ QByteArray QByteArray::fromBase64(const QByteArray &base64, Base64Options option
 */
 QByteArray QByteArray::fromHex(const QByteArray &hexEncoded)
 {
-    QByteArray res((hexEncoded.size() + 1)/ 2, Qt::Uninitialized);
+    QByteArray res((hexEncoded.size() + 1)/ 2, BobUI::Uninitialized);
     uchar *result = (uchar *)res.data() + res.size();
 
     bool odd_digit = true;
     for (qsizetype i = hexEncoded.size() - 1; i >= 0; --i) {
         uchar ch = uchar(hexEncoded.at(i));
-        int tmp = QtMiscUtils::fromHex(ch);
+        int tmp = BobUIMiscUtils::fromHex(ch);
         if (tmp == -1)
             continue;
         if (odd_digit) {
@@ -4712,12 +4712,12 @@ QByteArray QByteArray::toHex(char separator) const
         return QByteArray();
 
     const qsizetype length = separator ? (size() * 3 - 1) : (size() * 2);
-    QByteArray hex(length, Qt::Uninitialized);
+    QByteArray hex(length, BobUI::Uninitialized);
     char *hexData = hex.data();
     const uchar *data = (const uchar *)this->data();
     for (qsizetype i = 0, o = 0; i < size(); ++i) {
-        hexData[o++] = QtMiscUtils::toHexLower(data[i] >> 4);
-        hexData[o++] = QtMiscUtils::toHexLower(data[i] & 0xf);
+        hexData[o++] = BobUIMiscUtils::toHexLower(data[i] >> 4);
+        hexData[o++] = BobUIMiscUtils::toHexLower(data[i] & 0xf);
 
         if ((separator) && (o < length))
             hexData[o++] = separator;
@@ -4735,9 +4735,9 @@ static qsizetype q_fromPercentEncoding(QByteArrayView src, char percent, QSpan<c
     while (i < len) {
         char c = inputPtr[i];
         if (c == percent && i + 2 < len) {
-            if (int a = QtMiscUtils::fromHex(uchar(inputPtr[++i])); a != -1)
+            if (int a = BobUIMiscUtils::fromHex(uchar(inputPtr[++i])); a != -1)
                 *data = a << 4;
-            if (int b = QtMiscUtils::fromHex(uchar(inputPtr[++i])); b != -1)
+            if (int b = BobUIMiscUtils::fromHex(uchar(inputPtr[++i])); b != -1)
                 *data |= b;
         } else {
             *data = c;
@@ -4794,7 +4794,7 @@ QByteArray QByteArray::fromPercentEncoding(const QByteArray &input, char percent
     if (input.isEmpty())
         return input; // Preserves isNull().
 
-    QByteArray out{input.size(), Qt::Uninitialized};
+    QByteArray out{input.size(), BobUI::Uninitialized};
     qsizetype len = q_fromPercentEncoding(input, percent, out);
     out.truncate(len);
     return out;
@@ -4917,8 +4917,8 @@ QByteArray QByteArray::toPercentEncoding(const QByteArray &exclude, const QByteA
                 output = result.data();
             }
             output[length++] = percent;
-            output[length++] = QtMiscUtils::toHexUpper((c & 0xf0) >> 4);
-            output[length++] = QtMiscUtils::toHexUpper(c & 0xf);
+            output[length++] = BobUIMiscUtils::toHexUpper((c & 0xf0) >> 4);
+            output[length++] = BobUIMiscUtils::toHexUpper(c & 0xf);
         }
     }
     if (output)
@@ -5077,13 +5077,13 @@ emscripten::val QByteArray::toEcmaUint8Array()
     \sa QStringLiteral
 */
 
-#if QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
 /*!
-  \fn QtLiterals::operator""_qba(const char *str, size_t size)
+  \fn BobUILiterals::operator""_qba(const char *str, size_t size)
 
   \relates QByteArray
   \since 6.2
-  \deprecated [6.8] Use \c _ba from Qt::StringLiterals namespace instead.
+  \deprecated [6.8] Use \c _ba from BobUI::StringLiterals namespace instead.
 
   Literal operator that creates a QByteArray out of the first \a size characters
   in the char string literal \a str.
@@ -5099,12 +5099,12 @@ emscripten::val QByteArray::toEcmaUint8Array()
   auto str = "hello"_qba;
   \endcode
 
-  \sa QByteArrayLiteral, QtLiterals::operator""_qs(const char16_t *str, size_t size)
+  \sa QByteArrayLiteral, BobUILiterals::operator""_qs(const char16_t *str, size_t size)
 */
-#endif // QT_DEPRECATED_SINCE(6, 8)
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 
 /*!
-    \fn Qt::Literals::StringLiterals::operator""_ba(const char *str, size_t size)
+    \fn BobUI::Literals::StringLiterals::operator""_ba(const char *str, size_t size)
 
     \relates QByteArray
     \since 6.4
@@ -5120,17 +5120,17 @@ emscripten::val QByteArray::toEcmaUint8Array()
 
     The following code creates a QByteArray:
     \code
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
     auto str = "hello"_ba;
     \endcode
 
-    \sa Qt::Literals::StringLiterals
+    \sa BobUI::Literals::StringLiterals
 */
 
 /*!
     \class QByteArray::FromBase64Result
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup tools
     \since 5.15
 
@@ -5225,4 +5225,4 @@ size_t qHash(const QByteArray::FromBase64Result &key, size_t seed) noexcept
     \sa erase
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

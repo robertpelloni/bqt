@@ -1,0 +1,31 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUIOpenGL
+    \title BobUI OpenGL C++ Classes
+    \ingroup modules
+    \bobuicmakepackage OpenGL
+    \bobuivariable opengl
+
+    \brief The BobUI OpenGL module offers classes that make it easy to
+    use OpenGL in BobUI applications.
+
+    The \l{BobUI OpenGL} page contains information about how to use the module.
+
+    A separate \l{BobUI OpenGL Widgets C++ Classes}{BobUI OpenGL Widgets} library
+    provides a C++ widget class for rendering OpenGL graphics into widgets UIs.
+
+    \generatelist classesbymodule BobUIOpenGLWidgets
+*/
+
+/*
+    This "module" only exists so that classes in that separate library have
+    the correct build system documentation.
+*/
+/*!
+    \module BobUIOpenGLWidgets
+    \title BobUI OpenGL Widgets C++ Classes
+    \bobuicmakepackage OpenGLWidgets
+    \bobuivariable openglwidgets
+*/

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'chatdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,24 +9,24 @@
 #ifndef CHATDIALOG_H
 #define CHATDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_ChatDialog
 {
 public:
     QVBoxLayout *vboxLayout;
     QHBoxLayout *hboxLayout;
-    QTextEdit *textEdit;
+    BOBUIextEdit *textEdit;
     QListWidget *listWidget;
     QHBoxLayout *hboxLayout1;
     QLabel *label;
@@ -53,9 +53,9 @@ public:
         hboxLayout->setContentsMargins(0, 0, 0, 0);
 #endif
         hboxLayout->setObjectName("hboxLayout");
-        textEdit = new QTextEdit(ChatDialog);
+        textEdit = new BOBUIextEdit(ChatDialog);
         textEdit->setObjectName("textEdit");
-        textEdit->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        textEdit->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
         textEdit->setReadOnly(true);
 
         hboxLayout->addWidget(textEdit);
@@ -63,7 +63,7 @@ public:
         listWidget = new QListWidget(ChatDialog);
         listWidget->setObjectName("listWidget");
         listWidget->setMaximumSize(QSize(180, 16777215));
-        listWidget->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        listWidget->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
 
         hboxLayout->addWidget(listWidget);
 
@@ -107,6 +107,6 @@ namespace Ui {
     class ChatDialog: public Ui_ChatDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CHATDIALOG_H

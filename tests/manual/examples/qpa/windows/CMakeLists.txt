@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(windows LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/qpa/windows")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(windows
+bobui_add_executable(windows
     main.cpp
     window.cpp window.h
 )
@@ -25,10 +25,10 @@ set_target_properties(windows PROPERTIES
 )
 
 target_link_libraries(windows PRIVATE
-    Qt6::Core
-    Qt6::CorePrivate
-    Qt6::Gui
-    Qt6::GuiPrivate
+    BobUI6::Core
+    BobUI6::CorePrivate
+    BobUI6::Gui
+    BobUI6::GuiPrivate
 )
 
 install(TARGETS windows

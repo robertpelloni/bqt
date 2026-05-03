@@ -1,15 +1,15 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvsp2blendingdevice.h"
 #include <qeglfskmshelpers_p.h>
 
 #include <QDebug>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
 #include <drm_fourcc.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
 
@@ -316,4 +316,4 @@ bool QVsp2BlendingDevice::setInputFormat(int i, const QRect &bufferGeometry, uin
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

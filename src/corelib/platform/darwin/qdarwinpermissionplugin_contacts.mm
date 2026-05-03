@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdarwinpermissionplugin_p_p.h"
 
@@ -10,30 +10,30 @@
 @end
 
 @implementation QDarwinContactsPermissionHandler
-- (Qt::PermissionStatus)checkPermission:(QPermission)permission
+- (BobUI::PermissionStatus)checkPermission:(QPermission)permission
 {
     Q_UNUSED(permission);
     return [self currentStatus];
 }
 
-- (Qt::PermissionStatus)currentStatus
+- (BobUI::PermissionStatus)currentStatus
 {
     const auto status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
     switch (status) {
     case CNAuthorizationStatusAuthorized:
-#if (defined(Q_OS_IOS) && QT_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(180000)) || defined(Q_OS_VISIONOS)
+#if (defined(Q_OS_IOS) && BOBUI_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(180000)) || defined(Q_OS_VISIONOS)
     case CNAuthorizationStatusLimited:
 #endif
-        return Qt::PermissionStatus::Granted;
+        return BobUI::PermissionStatus::Granted;
     case CNAuthorizationStatusDenied:
     case CNAuthorizationStatusRestricted:
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
     case CNAuthorizationStatusNotDetermined:
-        return Qt::PermissionStatus::Undetermined;
+        return BobUI::PermissionStatus::Undetermined;
     }
     qCWarning(lcPermissions) << "Unknown permission status" << status << "detected in"
-        << QT_STRINGIFY(QT_DARWIN_PERMISSION_PLUGIN);
-    return Qt::PermissionStatus::Denied;
+        << BOBUI_STRINGIFY(BOBUI_DARWIN_PERMISSION_PLUGIN);
+    return BobUI::PermissionStatus::Denied;
 }
 
 - (QStringList)usageDescriptionsFor:(QPermission)permission

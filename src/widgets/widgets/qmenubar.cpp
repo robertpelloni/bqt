@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qmenubar.h>
 
 #include <qstyle.h>
 #include <qlayout.h>
 #include <qapplication.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 # include <qaccessible.h>
 #endif
 #include <qpainter.h>
 #include <qstylepainter.h>
 #include <qevent.h>
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 #include <qmainwindow.h>
 #endif
-#if QT_CONFIG(toolbutton)
-#include <qtoolbutton.h>
+#if BOBUI_CONFIG(toolbutton)
+#include <bobuioolbutton.h>
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include <qwhatsthis.h>
 #endif
 #include <qpa/qplatformtheme.h>
@@ -31,11 +31,11 @@
 #include <private/qscreen_p.h>
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-class QMenuBarExtension : public QToolButton
+class QMenuBarExtension : public BOBUIoolButton
 {
 public:
     explicit QMenuBarExtension(QWidget *parent);
@@ -45,12 +45,12 @@ public:
 };
 
 QMenuBarExtension::QMenuBarExtension(QWidget *parent)
-    : QToolButton(parent)
+    : BOBUIoolButton(parent)
 {
-    setObjectName("qt_menubar_ext_button"_L1);
+    setObjectName("bobui_menubar_ext_button"_L1);
     setAutoRaise(true);
-#if QT_CONFIG(menu)
-    setPopupMode(QToolButton::InstantPopup);
+#if BOBUI_CONFIG(menu)
+    setPopupMode(BOBUIoolButton::InstantPopup);
 #endif
     setIcon(style()->standardIcon(QStyle::SP_ToolBarHorizontalExtensionButton, nullptr, parentWidget()));
 }
@@ -161,7 +161,7 @@ void QMenuBarPrivate::updateGeometries()
 #endif
     calcActionRects(q_width, q_start);
     currentAction = nullptr;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (itemsDirty) {
         for(int j = 0; j < shortcutIndexMap.size(); ++j)
             q->releaseShortcut(shortcutIndexMap.value(j));
@@ -257,13 +257,13 @@ void QMenuBarPrivate::setKeyboardMode(bool b)
         if (fw && fw != q && fw->window() != QApplication::activePopupWidget())
             keyboardFocusWidget = fw;
         focusFirstAction();
-        q->setFocus(Qt::MenuBarFocusReason);
+        q->setFocus(BobUI::MenuBarFocusReason);
     } else {
         if (!popupState)
             setCurrentAction(nullptr);
         if (keyboardFocusWidget) {
             if (QApplication::focusWidget() == q)
-                keyboardFocusWidget->setFocus(Qt::MenuBarFocusReason);
+                keyboardFocusWidget->setFocus(BobUI::MenuBarFocusReason);
             keyboardFocusWidget = nullptr;
         }
     }
@@ -351,7 +351,7 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
         hoverAction = nullptr;
         if (popup) {
             fw = q->window()->focusWidget();
-            q->setFocus(Qt::NoFocusReason);
+            q->setFocus(BobUI::NoFocusReason);
         }
         menu->hide();
     }
@@ -360,7 +360,7 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
         q->update(actionRect(currentAction));
 
     popupState = popup;
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
     QAction *previousAction = currentAction;
 #endif
     currentAction = action;
@@ -369,7 +369,7 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
         if (popup)
             popupAction(action, activateFirst);
         q->update(actionRect(action));
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
     }  else if (previousAction) {
         QString empty;
         QStatusTipEvent tip(empty);
@@ -377,7 +377,7 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
 #endif
     }
     if (fw)
-        fw->setFocus(Qt::NoFocusReason);
+        fw->setFocus(BobUI::NoFocusReason);
 }
 
 void QMenuBarPrivate::calcActionRects(int max_width, int start) const
@@ -420,7 +420,7 @@ void QMenuBarPrivate::calcActionRects(int max_width, int start) const
             if (!is.isNull())
                 sz = sz.expandedTo(QSize(icone, icone));
             else if (!s.isEmpty())
-                sz = fm.size(Qt::TextShowMnemonic, s);
+                sz = fm.size(BobUI::TextShowMnemonic, s);
         }
 
         //let the style modify the above size..
@@ -505,14 +505,14 @@ void QMenuBarPrivate::_q_actionHovered()
     Q_Q(QMenuBar);
     if (QAction *action = qobject_cast<QAction *>(q->sender())) {
         emit q->hovered(action);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (QAccessible::isActive()) {
             int actionIndex = actions.indexOf(action);
             QAccessibleEvent focusEvent(q, QAccessible::Focus);
             focusEvent.setChild(actionIndex);
             QAccessible::updateAccessibility(&focusEvent);
         }
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
     }
 }
 
@@ -559,7 +559,7 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     \brief The QMenuBar class provides a horizontal menu bar.
 
     \ingroup mainwindow-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A menu bar consists of a list of pull-down menu items. You add
     menu items with addMenu(). For example, assuming that \c menubar
@@ -606,10 +606,10 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     On \macos and on certain Linux desktop environments such as
     Ubuntu Unity, QMenuBar is a wrapper for using the system-wide menu bar.
     If you have multiple menu bars in one dialog the outermost menu bar
-    (normally inside a widget with widget flag Qt::Window) will
+    (normally inside a widget with widget flag BobUI::Window) will
     be used for the system-wide menu bar.
 
-    Qt for \macos also provides a menu bar merging feature to make
+    BobUI for \macos also provides a menu bar merging feature to make
     QMenuBar conform more closely to accepted \macos menu bar layout.
     If an entry is moved its slots will still fire as if it was in the
     original place.
@@ -651,11 +651,11 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
 
     \b{Note:} The text used for the application name in the \macos menu
     bar is obtained from the value set in the \c{Info.plist} file in
-    the application's bundle. See \l{Qt for macOS - Deployment}
+    the application's bundle. See \l{BobUI for macOS - Deployment}
     for more information.
 
     \b{Note:} On Linux, if the com.canonical.AppMenu.Registrar
-    service is available on the D-Bus session bus, then Qt will
+    service is available on the D-Bus session bus, then BobUI will
     communicate with it to install the application's menus into the
     global menu bar, as described.
 
@@ -675,9 +675,9 @@ void QMenuBarPrivate::init()
 {
     Q_Q(QMenuBar);
     q->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    q->setAttribute(Qt::WA_CustomWhatsThis);
+    q->setAttribute(BobUI::WA_CustomWhatsThis);
 
-    if (!QCoreApplication::testAttribute(Qt::AA_DontUseNativeMenuBar))
+    if (!QCoreApplication::testAttribute(BobUI::AA_DontUseNativeMenuBar))
         platformMenuBar = QGuiApplicationPrivate::platformTheme()->createPlatformMenuBar();
 
     if (platformMenuBar)
@@ -687,7 +687,7 @@ void QMenuBarPrivate::init()
     q->setMouseTracking(q->style()->styleHint(QStyle::SH_MenuBar_MouseTracking, nullptr, q));
 
     extension = new QMenuBarExtension(q);
-    extension->setFocusPolicy(Qt::NoFocus);
+    extension->setFocusPolicy(BobUI::NoFocus);
     extension->hide();
 }
 
@@ -963,7 +963,7 @@ void QMenuBar::setVisible(bool visible)
 void QMenuBar::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QMenuBar);
-    if (e->button() != Qt::LeftButton)
+    if (e->button() != BobUI::LeftButton)
         return;
 
     d->mouseDown = true;
@@ -971,7 +971,7 @@ void QMenuBar::mousePressEvent(QMouseEvent *e)
     QAction *action = d->actionAt(e->position().toPoint());
     if (!action || !d->isVisible(action) || !action->isEnabled()) {
         d->setCurrentAction(nullptr);
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         if (QWhatsThis::inWhatsThisMode())
             QWhatsThis::showText(e->globalPosition().toPoint(), d->whatsThis, this);
 #endif
@@ -981,7 +981,7 @@ void QMenuBar::mousePressEvent(QMouseEvent *e)
     if (d->currentAction == action && d->popupState) {
         if (QMenu *menu = d->activeMenu) {
             d->activeMenu = nullptr;
-            menu->setAttribute(Qt::WA_NoMouseReplay);
+            menu->setAttribute(BobUI::WA_NoMouseReplay);
             menu->hide();
             grabMouse();    // otherwise we don't get the corresponding mouseReleaseEvent...
         }
@@ -998,7 +998,7 @@ void QMenuBar::mousePressEvent(QMouseEvent *e)
 void QMenuBar::mouseReleaseEvent(QMouseEvent *e)
 {
     Q_D(QMenuBar);
-    if (e->button() != Qt::LeftButton)
+    if (e->button() != BobUI::LeftButton)
         return;
 
     releaseMouse();
@@ -1030,28 +1030,28 @@ void QMenuBar::keyPressEvent(QKeyEvent *e)
     d->updateGeometries();
     int key = e->key();
     if (isRightToLeft()) {  // in reverse mode open/close key for submenues are reversed
-        if (key == Qt::Key_Left)
-            key = Qt::Key_Right;
-        else if (key == Qt::Key_Right)
-            key = Qt::Key_Left;
+        if (key == BobUI::Key_Left)
+            key = BobUI::Key_Right;
+        else if (key == BobUI::Key_Right)
+            key = BobUI::Key_Left;
     }
-    if (key == Qt::Key_Tab) //means right
-        key = Qt::Key_Right;
-    else if (key == Qt::Key_Backtab) //means left
-        key = Qt::Key_Left;
+    if (key == BobUI::Key_Tab) //means right
+        key = BobUI::Key_Right;
+    else if (key == BobUI::Key_Backtab) //means left
+        key = BobUI::Key_Left;
 
     bool key_consumed = false;
     switch(key) {
-    case Qt::Key_Up:
-    case Qt::Key_Down:
-    case Qt::Key_Enter:
-    case Qt::Key_Space:
-    case Qt::Key_Return: {
+    case BobUI::Key_Up:
+    case BobUI::Key_Down:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Space:
+    case BobUI::Key_Return: {
         if (!style()->styleHint(QStyle::SH_MenuBar_AltKeyNavigation, nullptr, this) || !d->currentAction)
            break;
         if (d->currentAction->menu()) {
             d->popupAction(d->currentAction, true);
-        } else if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space) {
+        } else if (key == BobUI::Key_Enter || key == BobUI::Key_Return || key == BobUI::Key_Space) {
             d->activateAction(d->currentAction, QAction::Trigger);
             d->setCurrentAction(d->currentAction, false);
             d->setKeyboardMode(false);
@@ -1059,11 +1059,11 @@ void QMenuBar::keyPressEvent(QKeyEvent *e)
         key_consumed = true;
         break; }
 
-    case Qt::Key_Right:
-    case Qt::Key_Left: {
+    case BobUI::Key_Right:
+    case BobUI::Key_Left: {
         if (d->currentAction) {
             int index = d->actions.indexOf(d->currentAction);
-            if (QAction *nextAction = d->getNextAction(index, key == Qt::Key_Left ? -1 : +1)) {
+            if (QAction *nextAction = d->getNextAction(index, key == BobUI::Key_Left ? -1 : +1)) {
                 d->setCurrentAction(nextAction, d->popupState, true);
                 key_consumed = true;
             }
@@ -1074,7 +1074,7 @@ void QMenuBar::keyPressEvent(QKeyEvent *e)
         key_consumed = false;
     }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (!key_consumed && e->matches(QKeySequence::Cancel)) {
         d->setCurrentAction(nullptr);
         d->setKeyboardMode(false);
@@ -1084,7 +1084,7 @@ void QMenuBar::keyPressEvent(QKeyEvent *e)
 
     if (!key_consumed &&
        (!e->modifiers() ||
-        (e->modifiers()&(Qt::MetaModifier|Qt::AltModifier))) && e->text().size()==1 && !d->popupState) {
+        (e->modifiers()&(BobUI::MetaModifier|BobUI::AltModifier))) && e->text().size()==1 && !d->popupState) {
         int clashCount = 0;
         QAction *first = nullptr, *currentSelected = nullptr, *firstAfterCurrent = nullptr;
         {
@@ -1134,12 +1134,12 @@ void QMenuBar::keyPressEvent(QKeyEvent *e)
 void QMenuBar::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QMenuBar);
-    if (!(e->buttons() & Qt::LeftButton)) {
+    if (!(e->buttons() & BobUI::LeftButton)) {
         d->mouseDown = false;
         // We receive mouse move and mouse press on touch.
         // Mouse move will open the menu and mouse press
         // will close it, so ignore mouse move.
-        if (e->source() != Qt::MouseEventNotSynthesized)
+        if (e->source() != BobUI::MouseEventNotSynthesized)
             return;
     }
 
@@ -1291,7 +1291,7 @@ void QMenuBar::focusOutEvent(QFocusEvent *)
 /*!
   \reimp
  */
-void QMenuBar::timerEvent (QTimerEvent *e)
+void QMenuBar::timerEvent (BOBUIimerEvent *e)
 {
     Q_D(QMenuBar);
     if (e->timerId() == d->autoReleaseTimer.timerId()) {
@@ -1398,13 +1398,13 @@ bool QMenuBar::event(QEvent *e)
             return ;
         }
 #endif
-        if (ke->key() == Qt::Key_Tab || ke->key() == Qt::Key_Backtab) {
+        if (ke->key() == BobUI::Key_Tab || ke->key() == BobUI::Key_Backtab) {
             keyPressEvent(ke);
             return true;
         }
 
     } break;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     case QEvent::Shortcut: {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         int shortcutId = se->shortcutId();
@@ -1417,7 +1417,7 @@ bool QMenuBar::event(QEvent *e)
     case QEvent::Show:
         d->_q_updateLayout();
     break;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     case QEvent::ShortcutOverride: {
         QKeyEvent *kev = static_cast<QKeyEvent *>(e);
         //we only filter out escape if there is a current action
@@ -1428,7 +1428,7 @@ bool QMenuBar::event(QEvent *e)
     }
     break;
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     case QEvent::QueryWhatsThis:
         e->setAccepted(d->whatsThis.size());
         if (QAction *action = d->actionAt(static_cast<QHelpEvent*>(e)->pos())) {
@@ -1484,7 +1484,7 @@ bool QMenuBar::eventFilter(QObject *object, QEvent *event)
             case QEvent::KeyRelease:
             {
                 QKeyEvent *kev = static_cast<QKeyEvent*>(event);
-                if (kev->key() == Qt::Key_Alt || kev->key() == Qt::Key_Meta) {
+                if (kev->key() == BobUI::Key_Alt || kev->key() == BobUI::Key_Meta) {
                     if (event->type() == QEvent::KeyPress) // Alt-press does not interest us, we have the shortcut-override event
                         break;
                     d->setKeyboardMode(!d->keyboardState);
@@ -1507,8 +1507,8 @@ bool QMenuBar::eventFilter(QObject *object, QEvent *event)
         } else if (isVisible()) {
             if (event->type() == QEvent::ShortcutOverride) {
                 QKeyEvent *kev = static_cast<QKeyEvent*>(event);
-                if ((kev->key() == Qt::Key_Alt || kev->key() == Qt::Key_Meta)
-                    && kev->modifiers() == Qt::AltModifier) {
+                if ((kev->key() == BobUI::Key_Alt || kev->key() == BobUI::Key_Meta)
+                    && kev->modifiers() == BobUI::AltModifier) {
                     d->altPressed = true;
                     qApp->installEventFilter(this);
                 }
@@ -1718,7 +1718,7 @@ void QMenuBarPrivate::_q_updateLayout()
 }
 
 /*!
-    \fn void QMenuBar::setCornerWidget(QWidget *widget, Qt::Corner corner)
+    \fn void QMenuBar::setCornerWidget(QWidget *widget, BobUI::Corner corner)
 
     This sets the given \a widget to be shown directly on the left of the first
     menu item, or on the right of the last menu item, depending on \a corner.
@@ -1727,19 +1727,19 @@ void QMenuBarPrivate::_q_updateLayout()
     However, if the \a corner already contains a widget, this previous widget
     will no longer be managed and will still be a visible child of the menu bar.
 
-   \note Using a corner other than Qt::TopRightCorner or Qt::TopLeftCorner
+   \note Using a corner other than BobUI::TopRightCorner or BobUI::TopLeftCorner
     will result in a warning.
 */
-void QMenuBar::setCornerWidget(QWidget *w, Qt::Corner corner)
+void QMenuBar::setCornerWidget(QWidget *w, BobUI::Corner corner)
 {
     Q_D(QMenuBar);
     switch (corner) {
-    case Qt::TopLeftCorner:
+    case BobUI::TopLeftCorner:
         if (d->leftWidget)
             d->leftWidget->removeEventFilter(this);
         d->leftWidget = w;
         break;
-    case Qt::TopRightCorner:
+    case BobUI::TopRightCorner:
         if (d->rightWidget)
             d->rightWidget->removeEventFilter(this);
         d->rightWidget = w;
@@ -1761,18 +1761,18 @@ void QMenuBar::setCornerWidget(QWidget *w, Qt::Corner corner)
     Returns the widget on the left of the first or on the right of the last menu
     item, depending on \a corner.
 
-   \note Using a corner other than Qt::TopRightCorner or Qt::TopLeftCorner
+   \note Using a corner other than BobUI::TopRightCorner or BobUI::TopLeftCorner
     will result in a warning.
 */
-QWidget *QMenuBar::cornerWidget(Qt::Corner corner) const
+QWidget *QMenuBar::cornerWidget(BobUI::Corner corner) const
 {
     Q_D(const QMenuBar);
     QWidget *w = nullptr;
     switch(corner) {
-    case Qt::TopLeftCorner:
+    case BobUI::TopLeftCorner:
         w = d->leftWidget;
         break;
-    case Qt::TopRightCorner:
+    case BobUI::TopRightCorner:
         w = d->rightWidget;
         break;
     default:
@@ -1795,7 +1795,7 @@ QWidget *QMenuBar::cornerWidget(Qt::Corner corner) const
     its parent; if \c false the menubar remains in the window. On other platforms,
     setting this attribute has no effect, and reading this attribute will always return \c false.
 
-    The default is to follow whether the Qt::AA_DontUseNativeMenuBar attribute
+    The default is to follow whether the BobUI::AA_DontUseNativeMenuBar attribute
     is set for the application. Explicitly setting this property overrides
     the presence (or absence) of the attribute.
 */
@@ -1864,6 +1864,6 @@ QPlatformMenuBar *QMenuBar::platformMenuBar()
 
 // for private slots
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include <moc_qmenubar.cpp>

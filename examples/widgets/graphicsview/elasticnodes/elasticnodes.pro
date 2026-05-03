@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS += \
         edge.h \
@@ -12,5 +12,5 @@ SOURCES += \
         graphwidget.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/elasticnodes
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/elasticnodes
 INSTALLS += target

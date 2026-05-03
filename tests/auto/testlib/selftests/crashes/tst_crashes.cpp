@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #else
 #include <sys/resource.h>
 #endif
@@ -29,12 +29,12 @@ void tst_Crashes::crash()
     */
     int *i = 0;
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Warray-bounds")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Warray-bounds")
     i[1] = 1;
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
-QTEST_MAIN(tst_Crashes)
+BOBUIEST_MAIN(tst_Crashes)
 
 #include "tst_crashes.moc"

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
-#include <QtCore/qvariant.h>
+#include <bobuiest.h>
+#include <BobUICore/qvariant.h>
 
 #define ITERATION_COUNT 1e5
 
@@ -31,14 +31,14 @@ tst_QGuiVariant::~tst_QGuiVariant()
 
 void tst_QGuiVariant::createGuiType_data()
 {
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<int>("typeId");
     for (int i = QMetaType::FirstGuiType; i <= QMetaType::LastGuiType; ++i) {
         if (QMetaType metaType(i); metaType.isValid())
-            QTest::newRow(metaType.name()) << i;
+            BOBUIest::newRow(metaType.name()) << i;
     }
 }
 
-// Tests how fast a Qt GUI type can be default-constructed by a
+// Tests how fast a BobUI GUI type can be default-constructed by a
 // QVariant. The purpose of this benchmark is to measure the overhead
 // of creating (and destroying) a QVariant compared to creating the
 // type directly.
@@ -56,7 +56,7 @@ void tst_QGuiVariant::createGuiTypeCopy_data()
     createGuiType_data();
 }
 
-// Tests how fast a Qt GUI type can be copy-constructed by a
+// Tests how fast a BobUI GUI type can be copy-constructed by a
 // QVariant. The purpose of this benchmark is to measure the overhead
 // of creating (and destroying) a QVariant compared to creating the
 // type directly.
@@ -71,5 +71,5 @@ void tst_QGuiVariant::createGuiTypeCopy()
     }
 }
 
-QTEST_MAIN(tst_QGuiVariant)
+BOBUIEST_MAIN(tst_QGuiVariant)
 #include "tst_qguivariant.moc"

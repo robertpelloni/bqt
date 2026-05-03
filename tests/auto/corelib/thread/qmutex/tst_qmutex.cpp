@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSemaphore>
 
 #include <qatomic.h>
 #include <qcoreapplication.h>
 #include <qelapsedtimer.h>
 #include <qmutex.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qvarlengtharray.h>
 #include <qwaitcondition.h>
 #include <private/qvolatile_p.h>
@@ -73,7 +73,7 @@ static constexpr std::chrono::milliseconds waitTimeAsDuration(waitTime);
 
 void tst_QMutex::tryLock_non_recursive()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
@@ -132,7 +132,7 @@ void tst_QMutex::tryLock_non_recursive()
             normalMutex.unlock();
             testsTurn.release();
 
-            // TEST 7 overflow: thread can acquire lock, timeout = 3000 (QTBUG-24795)
+            // TEST 7 overflow: thread can acquire lock, timeout = 3000 (BOBUIBUG-24795)
             threadsTurn.acquire();
             timer.start();
             QVERIFY(normalMutex.tryLock(3000));
@@ -183,11 +183,11 @@ void tst_QMutex::tryLock_non_recursive()
     normalMutex.unlock();
     threadsTurn.release();
 
-    qDebug("TEST 7: thread can acquire lock, timeout = 3000   (QTBUG-24795)");
+    qDebug("TEST 7: thread can acquire lock, timeout = 3000   (BOBUIBUG-24795)");
     testsTurn.acquire();
     normalMutex.lock();
     threadsTurn.release();
-    QThread::sleep(100ms);
+    BOBUIhread::sleep(100ms);
     normalMutex.unlock();
 
     // wait for thread to finish
@@ -198,7 +198,7 @@ void tst_QMutex::tryLock_non_recursive()
 
 void tst_QMutex::try_lock_for_non_recursive()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
@@ -257,7 +257,7 @@ void tst_QMutex::try_lock_for_non_recursive()
             normalMutex.unlock();
             testsTurn.release();
 
-            // TEST 7 overflow: thread can acquire lock, timeout = 3000 (QTBUG-24795)
+            // TEST 7 overflow: thread can acquire lock, timeout = 3000 (BOBUIBUG-24795)
             threadsTurn.acquire();
             timer.start();
             QVERIFY(normalMutex.try_lock_for(std::chrono::milliseconds(3000)));
@@ -308,11 +308,11 @@ void tst_QMutex::try_lock_for_non_recursive()
     normalMutex.unlock();
     threadsTurn.release();
 
-    // TEST 7: thread can acquire lock, timeout = 3000   (QTBUG-24795)
+    // TEST 7: thread can acquire lock, timeout = 3000   (BOBUIBUG-24795)
     testsTurn.acquire();
     normalMutex.lock();
     threadsTurn.release();
-    QThread::sleep(100ms);
+    BOBUIhread::sleep(100ms);
     normalMutex.unlock();
 
     // wait for thread to finish
@@ -323,7 +323,7 @@ void tst_QMutex::try_lock_for_non_recursive()
 
 void tst_QMutex::try_lock_until_non_recursive()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
@@ -382,7 +382,7 @@ void tst_QMutex::try_lock_until_non_recursive()
             normalMutex.unlock();
             testsTurn.release();
 
-            // TEST 7 overflow: thread can acquire lock, timeout = 3000 (QTBUG-24795)
+            // TEST 7 overflow: thread can acquire lock, timeout = 3000 (BOBUIBUG-24795)
             threadsTurn.acquire();
             endTimePoint = std::chrono::steady_clock::now() + std::chrono::milliseconds(3000);
             QVERIFY(normalMutex.try_lock_until(endTimePoint));
@@ -433,11 +433,11 @@ void tst_QMutex::try_lock_until_non_recursive()
     normalMutex.unlock();
     threadsTurn.release();
 
-    // TEST 7: thread can acquire lock, timeout = 3000   (QTBUG-24795)
+    // TEST 7: thread can acquire lock, timeout = 3000   (BOBUIBUG-24795)
     testsTurn.acquire();
     normalMutex.lock();
     threadsTurn.release();
-    QThread::sleep(100ms);
+    BOBUIhread::sleep(100ms);
     normalMutex.unlock();
 
     // wait for thread to finish
@@ -448,7 +448,7 @@ void tst_QMutex::try_lock_until_non_recursive()
 
 void tst_QMutex::tryLock_recursive()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
@@ -572,7 +572,7 @@ void tst_QMutex::tryLock_recursive()
 
 void tst_QMutex::try_lock_for_recursive()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
@@ -696,7 +696,7 @@ void tst_QMutex::try_lock_for_recursive()
 
 void tst_QMutex::try_lock_until_recursive()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
@@ -819,7 +819,7 @@ void tst_QMutex::try_lock_until_recursive()
     thread.wait();
 }
 
-class mutex_Thread : public QThread
+class mutex_Thread : public BOBUIhread
 {
 public:
     QMutex mutex;
@@ -844,7 +844,7 @@ public:
     }
 };
 
-class rmutex_Thread : public QThread
+class rmutex_Thread : public BOBUIhread
 {
 public:
     QMutex mutex;
@@ -945,7 +945,7 @@ void tst_QMutex::lock_unlock_locked_tryLock()
 constexpr int one_minute = 6 * 1000; // not really one minute, but else it is too long.
 constexpr int threadCount = 10;
 
-class StressTestThread : public QThread
+class StressTestThread : public BOBUIhread
 {
     QElapsedTimer t;
 public:
@@ -956,7 +956,7 @@ public:
     void start()
     {
         t.start();
-        QThread::start();
+        BOBUIhread::start();
     }
     void run() override
     {
@@ -992,7 +992,7 @@ void tst_QMutex::stressTest()
     qDebug("locked %d times", int(StressTestThread::lockCount.loadRelaxed()));
 }
 
-class TryLockRaceThread : public QThread
+class TryLockRaceThread : public BOBUIhread
 {
 public:
     static QMutex mutex;
@@ -1027,7 +1027,7 @@ void tst_QMutex::tryLockRace()
     TryLockRaceThread::mutex.unlock();
 }
 
-// The following is a regression test for QTBUG-16115, where QMutex could
+// The following is a regression test for BOBUIBUG-16115, where QMutex could
 // deadlock after calling tryLock repeatedly.
 
 // Variable that will be protected by the mutex. Volatile so that the
@@ -1040,16 +1040,16 @@ static int tryLockDeadlockFailureCount = 0;
 void tst_QMutex::tryLockDeadlock()
 {
     //Used to deadlock on unix
-    struct TrylockThread : QThread {
+    struct TrylockThread : BOBUIhread {
         TrylockThread(QMutex &mut) : mut(mut) {}
         QMutex &mut;
         void run() override
         {
             for (int i = 0; i < 100000; ++i) {
                 if (mut.tryLock(0)) {
-                    if (QtPrivate::volatilePreIncrement(tryLockDeadlockCounter) != 1)
+                    if (BobUIPrivate::volatilePreIncrement(tryLockDeadlockCounter) != 1)
                         ++tryLockDeadlockFailureCount;
-                    if (QtPrivate::volatilePreDecrement(tryLockDeadlockCounter) != 0)
+                    if (BobUIPrivate::volatilePreDecrement(tryLockDeadlockCounter) != 0)
                         ++tryLockDeadlockFailureCount;
                     mut.unlock();
                 }
@@ -1066,9 +1066,9 @@ void tst_QMutex::tryLockDeadlock()
 
     for (int i = 0; i < 100000; ++i) {
         mut.lock();
-        if (QtPrivate::volatilePreIncrement(tryLockDeadlockCounter) != 1)
+        if (BobUIPrivate::volatilePreIncrement(tryLockDeadlockCounter) != 1)
             ++tryLockDeadlockFailureCount;
-        if (QtPrivate::volatilePreDecrement(tryLockDeadlockCounter) != 0)
+        if (BobUIPrivate::volatilePreDecrement(tryLockDeadlockCounter) != 0)
             ++tryLockDeadlockFailureCount;
         mut.unlock();
     }
@@ -1080,17 +1080,17 @@ void tst_QMutex::tryLockDeadlock()
 
 void tst_QMutex::tryLockNegative_data()
 {
-    QTest::addColumn<int>("timeout");
-    QTest::newRow("-1") << -1;
-    QTest::newRow("-2") << -2;
-    QTest::newRow("INT_MIN/2") << INT_MIN/2;
-    QTest::newRow("INT_MIN") << INT_MIN;
+    BOBUIest::addColumn<int>("timeout");
+    BOBUIest::newRow("-1") << -1;
+    BOBUIest::newRow("-2") << -2;
+    BOBUIest::newRow("INT_MIN/2") << INT_MIN/2;
+    BOBUIest::newRow("INT_MIN") << INT_MIN;
 }
 
 void tst_QMutex::tryLockNegative()
 {
     // the documentation says tryLock() with a negative number is the same as lock()
-    struct TrylockThread : QThread {
+    struct TrylockThread : BOBUIhread {
         TrylockThread(QMutex &mut, int timeout)
             : mut(mut), timeout(timeout), tryLockResult(-1)
         {}
@@ -1119,7 +1119,7 @@ void tst_QMutex::tryLockNegative()
 
     // after we unlock the mutex, the thread should succeed in locking, then
     // unlock and exit. Do this before more tests to avoid deadlocking due to
-    // ~QThread waiting forever on a thread that won't exit.
+    // ~BOBUIhread waiting forever on a thread that won't exit.
     mutex.unlock();
 
     QVERIFY(thr.wait());
@@ -1127,7 +1127,7 @@ void tst_QMutex::tryLockNegative()
 }
 
 
-class MoreStressTestThread : public QThread
+class MoreStressTestThread : public BOBUIhread
 {
     QElapsedTimer t;
 public:
@@ -1138,7 +1138,7 @@ public:
     void start()
     {
         t.start();
-        QThread::start();
+        BOBUIhread::start();
     }
     void run() override
     {
@@ -1180,7 +1180,7 @@ QAtomicInt MoreStressTestThread::errorCount = 0;
 
 void tst_QMutex::moreStress()
 {
-    QVarLengthArray<MoreStressTestThread, threadCount> threads(qMin(QThread::idealThreadCount(),
+    QVarLengthArray<MoreStressTestThread, threadCount> threads(qMin(BOBUIhread::idealThreadCount(),
                                                                     int(threadCount)));
     for (auto &thread : threads)
         thread.start();
@@ -1192,5 +1192,5 @@ void tst_QMutex::moreStress()
 }
 
 
-QTEST_MAIN(tst_QMutex)
+BOBUIEST_MAIN(tst_QMutex)
 #include "tst_qmutex.moc"

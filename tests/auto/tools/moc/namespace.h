@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef NAMESPACE_H
 #define NAMESPACE_H
@@ -50,8 +50,8 @@ namespace FooNamespace {
 }
 
 #ifdef Q_MOC_RUN
-namespace __identifier("<AtlImplementationDetails>") {} // QTBUG-56634
-using namespace __identifier("<AtlImplementationDetails>"); // QTBUG-63772
+namespace __identifier("<AtlImplementationDetails>") {} // BOBUIBUG-56634
+using namespace __identifier("<AtlImplementationDetails>"); // BOBUIBUG-63772
 #endif
 
 #endif // NAMESPACE_H

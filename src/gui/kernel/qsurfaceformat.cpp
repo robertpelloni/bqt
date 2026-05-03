@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsurfaceformat.h"
 
-#include <QtCore/qatomic.h>
-#include <QtCore/QDebug>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/QDebug>
 #include <QOpenGLContext>
-#include <QtGui/qcolorspace.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qcolorspace.h>
+#include <BobUIGui/qguiapplication.h>
 
-#ifndef QT_NO_OPENGL
-#include <QtGui/private/qopenglcontext_p.h>
+#ifndef BOBUI_NO_OPENGL
+#include <BobUIGui/private/qopenglcontext_p.h>
 #endif
 
 #ifdef major
@@ -21,7 +21,7 @@
 #undef minor
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSurfaceFormatPrivate
 {
@@ -87,7 +87,7 @@ public:
     \class QSurfaceFormat
     \since 5.0
     \brief The QSurfaceFormat class represents the format of a QSurface.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The format includes the size of the color buffers, red, green, and blue;
     the size of the alpha buffer; the size of the depth and stencil buffers;
@@ -97,7 +97,7 @@ public:
     behaviour.
 
     \note When troubleshooting context or window format issues, it can be
-    helpful to enable the logging category \c{qt.qpa.gl}. Depending on the
+    helpful to enable the logging category \c{bobui.qpa.gl}. Depending on the
     platform, this may print useful debug information when it comes to OpenGL
     initialization and the native visual or framebuffer configurations which
     QSurfaceFormat gets mapped to.
@@ -722,7 +722,7 @@ void QSurfaceFormat::setColorSpace(const QColorSpace &colorSpace)
     }
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \overload
     \deprecated [6.0] Use setColorSpace(QColorSpace) instead.
@@ -744,7 +744,7 @@ void QSurfaceFormat::setColorSpace(ColorSpace colorSpace)
         break;
     }
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*!
     \return the color space.
@@ -758,7 +758,7 @@ const QColorSpace &QSurfaceFormat::colorSpace() const
     return d->colorSpace;
 }
 
-Q_GLOBAL_STATIC(QSurfaceFormat, qt_default_surface_format)
+Q_GLOBAL_STATIC(QSurfaceFormat, bobui_default_surface_format)
 
 /*!
     Sets the global default surface \a format.
@@ -771,7 +771,7 @@ Q_GLOBAL_STATIC(QSurfaceFormat, qt_default_surface_format)
     set the format for all windows once at the start of the application. It also
     guarantees proper behavior in cases where shared contexts are required,
     because setting the format via this function guarantees that all contexts
-    and surfaces, even the ones created internally by Qt, will use the same
+    and surfaces, even the ones created internally by BobUI, will use the same
     format.
 
     \since 5.4
@@ -779,9 +779,9 @@ Q_GLOBAL_STATIC(QSurfaceFormat, qt_default_surface_format)
  */
 void QSurfaceFormat::setDefaultFormat(const QSurfaceFormat &format)
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (qApp) {
-        QOpenGLContext *globalContext = qt_gl_global_share_context();
+        QOpenGLContext *globalContext = bobui_gl_global_share_context();
         if (globalContext && globalContext->isValid()) {
             qWarning("Warning: Setting a new default format with a different version or profile "
                      "after the global shared context is created may cause issues with context "
@@ -789,7 +789,7 @@ void QSurfaceFormat::setDefaultFormat(const QSurfaceFormat &format)
         }
     }
 #endif
-    *qt_default_surface_format() = format;
+    *bobui_default_surface_format() = format;
 }
 
 /*!
@@ -802,7 +802,7 @@ void QSurfaceFormat::setDefaultFormat(const QSurfaceFormat &format)
  */
 QSurfaceFormat QSurfaceFormat::defaultFormat()
 {
-    return *qt_default_surface_format();
+    return *bobui_default_surface_format();
 }
 
 /*!
@@ -839,7 +839,7 @@ bool QSurfaceFormat::equals(const QSurfaceFormat& other) const noexcept
         && d->swapInterval == other.d->swapInterval);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSurfaceFormat &f)
 {
     const QSurfaceFormatPrivate * const d = f.d;
@@ -865,6 +865,6 @@ QDebug operator<<(QDebug dbg, const QSurfaceFormat &f)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsurfaceformat.cpp"

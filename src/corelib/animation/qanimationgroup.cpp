@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QAnimationGroup
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAnimationGroup class is an abstract base class for groups of animations.
     \since 4.6
     \ingroup animation
@@ -13,7 +13,7 @@
     QAbstractAnimation). A group is usually responsible for managing
     the \l{QAbstractAnimation::State}{state} of its animations, i.e.,
     it decides when to start, stop, resume, and pause them. Currently,
-    Qt provides two such groups: QParallelAnimationGroup and
+    BobUI provides two such groups: QParallelAnimationGroup and
     QSequentialAnimationGroup. Look up their class descriptions for
     details.
 
@@ -47,13 +47,13 @@
 */
 
 #include "qanimationgroup.h"
-#include <QtCore/qdebug.h>
-#include <QtCore/qcoreevent.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qcoreevent.h>
 #include "qanimationgroup_p.h"
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 /*!
@@ -286,6 +286,6 @@ void QAnimationGroupPrivate::animationRemoved(qsizetype index, QAbstractAnimatio
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qanimationgroup.cpp"

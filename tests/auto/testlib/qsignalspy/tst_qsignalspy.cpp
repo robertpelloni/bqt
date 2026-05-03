@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QTimer>
+#include <BOBUIimer>
 
 #include <qdatetime.h>
 
 using namespace std::chrono_literals;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QSignalSpy : public QObject
 {
@@ -22,9 +22,9 @@ private slots:
     void spyWithoutArgs();
     void spyWithBasicArgs();
     void spyWithPointers();
-    void spyWithQtClasses();
-    void spyWithBasicQtClasses();
-    void spyWithQtTypedefs();
+    void spyWithBobUIClasses();
+    void spyWithBasicBobUIClasses();
+    void spyWithBobUITypedefs();
 
     void wait_signalEmitted();
     void wait_timeout();
@@ -35,10 +35,10 @@ private slots:
     void spyFunctionPointerWithoutArgs();
     void spyFunctionPointerWithBasicArgs();
     void spyFunctionPointerWithPointers();
-    void spyFunctionPointerWithQtClasses();
+    void spyFunctionPointerWithBobUIClasses();
     void spyFunctionPointerWithCustomClass();
-    void spyFunctionPointerWithBasicQtClasses();
-    void spyFunctionPointerWithQtTypedefs();
+    void spyFunctionPointerWithBasicBobUIClasses();
+    void spyFunctionPointerWithBobUITypedefs();
 
     void waitFunctionPointer_signalEmitted();
     void waitFunctionPointer_timeout();
@@ -56,12 +56,12 @@ private slots:
 
 struct CustomType {};
 
-class QtTestObject: public QObject
+class BobUITestObject: public QObject
 {
     Q_OBJECT
 
 public:
-    QtTestObject();
+    BobUITestObject();
 
 signals:
     void sig0();
@@ -74,13 +74,13 @@ public:
     friend class tst_QSignalSpy;
 };
 
-QtTestObject::QtTestObject()
+BobUITestObject::BobUITestObject()
 {
 }
 
 void tst_QSignalSpy::spyWithoutArgs()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
     QSignalSpy spy(&obj, SIGNAL(sig0()));
     QCOMPARE(spy.size(), 0);
@@ -96,7 +96,7 @@ void tst_QSignalSpy::spyWithoutArgs()
 
 void tst_QSignalSpy::spyWithBasicArgs()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
     QSignalSpy spy(&obj, SIGNAL(sig1(int,int)));
 
     emit obj.sig1(1, 2);
@@ -121,7 +121,7 @@ void tst_QSignalSpy::spyWithPointers()
 {
     qRegisterMetaType<int *>("int*");
 
-    QtTestObject obj;
+    BobUITestObject obj;
     QSignalSpy spy(&obj, SIGNAL(sig2(int*,int*)));
 
     int i1 = 1;
@@ -138,7 +138,7 @@ void tst_QSignalSpy::spyWithPointers()
 
 struct CustomType2;
 
-class QtTestObject2: public QObject
+class BobUITestObject2: public QObject
 {
     Q_OBJECT
     friend class tst_QSignalSpy;
@@ -153,9 +153,9 @@ signals:
     void sig7(CustomType2 *);
 };
 
-void tst_QSignalSpy::spyWithBasicQtClasses()
+void tst_QSignalSpy::spyWithBasicBobUIClasses()
 {
-    QtTestObject2 obj;
+    BobUITestObject2 obj;
 
     QSignalSpy spy(&obj, SIGNAL(sig(QString)));
     emit obj.sig(QString("bubu"));
@@ -172,9 +172,9 @@ void tst_QSignalSpy::spyWithBasicQtClasses()
     QCOMPARE(qvariant_cast<QVariant>(spy2.at(0).at(0)), val);
 }
 
-void tst_QSignalSpy::spyWithQtClasses()
+void tst_QSignalSpy::spyWithBobUIClasses()
 {
-    QtTestObject2 obj;
+    BobUITestObject2 obj;
 
 
     QSignalSpy spy(&obj, SIGNAL(sig2(QDateTime)));
@@ -197,7 +197,7 @@ void tst_QSignalSpy::spyWithQtClasses()
     QCOMPARE(qvariant_cast<QChar>(spy3.value(0).value(0)), QChar('A'));
 }
 
-class QtTestObject3: public QObject
+class BobUITestObject3: public QObject
 {
     Q_OBJECT
     friend class tst_QSignalSpy;
@@ -208,9 +208,9 @@ signals:
     void sig3(qint64, quint64);
 };
 
-void tst_QSignalSpy::spyWithQtTypedefs()
+void tst_QSignalSpy::spyWithBobUITypedefs()
 {
-    QtTestObject3 obj;
+    BobUITestObject3 obj;
 
 //    QSignalSpy spy1(&obj, SIGNAL(sig1(quint16)));
 //    emit obj.sig1(42);
@@ -229,7 +229,7 @@ void tst_QSignalSpy::spyWithQtTypedefs()
 
 void tst_QSignalSpy::wait_signalEmitted()
 {
-    QTimer::singleShot(0, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(0, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, SIGNAL(sigFoo()));
     QVERIFY(spy.wait(1));
 }
@@ -242,39 +242,39 @@ void tst_QSignalSpy::wait_timeout()
 
 void tst_QSignalSpy::wait_signalEmittedLater()
 {
-    QTimer::singleShot(500, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(500, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, SIGNAL(sigFoo()));
     QVERIFY(spy.wait(1000));
 }
 
 void tst_QSignalSpy::wait_signalEmittedTooLate()
 {
-    QTimer::singleShot(500, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(500, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, SIGNAL(sigFoo()));
     QVERIFY(!spy.wait(200));
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
 }
 
 void tst_QSignalSpy::wait_signalEmittedMultipleTimes()
 {
-    QTimer::singleShot(100, this, SIGNAL(sigFoo()));
-    QTimer::singleShot(800, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(100, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(800, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, SIGNAL(sigFoo()));
     QVERIFY(spy.wait());
     QCOMPARE(spy.size(), 1); // we don't wait for the second signal...
     QVERIFY(spy.wait());
     QCOMPARE(spy.size(), 2);
     QVERIFY(!spy.wait(1));
-    QTimer::singleShot(10, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(10, this, SIGNAL(sigFoo()));
     QVERIFY(spy.wait());
     QCOMPARE(spy.size(), 3);
 }
 
 void tst_QSignalSpy::spyFunctionPointerWithoutArgs()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
-    QSignalSpy spy(&obj, &QtTestObject::sig0);
+    QSignalSpy spy(&obj, &BobUITestObject::sig0);
     QCOMPARE(spy.size(), 0);
 
     emit obj.sig0();
@@ -288,8 +288,8 @@ void tst_QSignalSpy::spyFunctionPointerWithoutArgs()
 
 void tst_QSignalSpy::spyFunctionPointerWithBasicArgs()
 {
-    QtTestObject obj;
-    QSignalSpy spy(&obj, &QtTestObject::sig1);
+    BobUITestObject obj;
+    QSignalSpy spy(&obj, &BobUITestObject::sig1);
 
     emit obj.sig1(1, 2);
     QCOMPARE(spy.size(), 1);
@@ -299,7 +299,7 @@ void tst_QSignalSpy::spyFunctionPointerWithBasicArgs()
     QCOMPARE(args.at(0).toInt(), 1);
     QCOMPARE(args.at(1).toInt(), 2);
 
-    QSignalSpy spyl(&obj, &QtTestObject::sigLong);
+    QSignalSpy spyl(&obj, &BobUITestObject::sigLong);
 
     emit obj.sigLong(1l, 2l);
     args = spyl.takeFirst();
@@ -313,8 +313,8 @@ void tst_QSignalSpy::spyFunctionPointerWithPointers()
 {
     qRegisterMetaType<int *>("int*");
 
-    QtTestObject obj;
-    QSignalSpy spy(&obj, &QtTestObject::sig2);
+    BobUITestObject obj;
+    QSignalSpy spy(&obj, &BobUITestObject::sig2);
 
     int i1 = 1;
     int i2 = 2;
@@ -328,17 +328,17 @@ void tst_QSignalSpy::spyFunctionPointerWithPointers()
     QCOMPARE(*static_cast<int * const *>(args.at(1).constData()), &i2);
 }
 
-void tst_QSignalSpy::spyFunctionPointerWithBasicQtClasses()
+void tst_QSignalSpy::spyFunctionPointerWithBasicBobUIClasses()
 {
-    QtTestObject2 obj;
+    BobUITestObject2 obj;
 
-    QSignalSpy spy(&obj, &QtTestObject2::sig);
+    QSignalSpy spy(&obj, &BobUITestObject2::sig);
     emit obj.sig(QString("bubu"));
     QCOMPARE(spy.size(), 1);
     QCOMPARE(spy.at(0).size(), 1);
     QCOMPARE(spy.at(0).at(0).toString(), QString("bubu"));
 
-    QSignalSpy spy2(&obj, &QtTestObject2::sig5);
+    QSignalSpy spy2(&obj, &BobUITestObject2::sig5);
     QVariant val(45);
     emit obj.sig5(val);
     QCOMPARE(spy2.size(), 1);
@@ -347,11 +347,11 @@ void tst_QSignalSpy::spyFunctionPointerWithBasicQtClasses()
     QCOMPARE(qvariant_cast<QVariant>(spy2.at(0).at(0)), val);
 }
 
-void tst_QSignalSpy::spyFunctionPointerWithQtClasses()
+void tst_QSignalSpy::spyFunctionPointerWithBobUIClasses()
 {
-    QtTestObject2 obj;
+    BobUITestObject2 obj;
 
-    QSignalSpy spy(&obj, &QtTestObject2::sig2);
+    QSignalSpy spy(&obj, &BobUITestObject2::sig2);
     QDateTime dt = QDateTime::currentDateTime();
     emit obj.sig2(dt);
     QCOMPARE(spy.size(), 1);
@@ -360,22 +360,22 @@ void tst_QSignalSpy::spyFunctionPointerWithQtClasses()
     QCOMPARE(*static_cast<const QDateTime *>(spy.at(0).at(0).constData()), dt);
     QCOMPARE(spy.at(0).at(0).toDateTime(), dt);
 
-    QSignalSpy spy2(&obj, &QtTestObject2::sig3);
+    QSignalSpy spy2(&obj, &BobUITestObject2::sig3);
     emit obj.sig3(this);
     QCOMPARE(*static_cast<QObject * const *>(spy2.value(0).value(0).constData()),
             (QObject *)this);
     QCOMPARE(qvariant_cast<QObject *>(spy2.value(0).value(0)), (QObject*)this);
 
-    QSignalSpy spy3(&obj, &QtTestObject2::sig4);
+    QSignalSpy spy3(&obj, &BobUITestObject2::sig4);
     emit obj.sig4(QChar('A'));
     QCOMPARE(qvariant_cast<QChar>(spy3.value(0).value(0)), QChar('A'));
 }
 
 void tst_QSignalSpy::spyFunctionPointerWithCustomClass()
 {
-    QtTestObject2 obj;
+    BobUITestObject2 obj;
     {
-        QSignalSpy spy(&obj, &QtTestObject2::sig6);
+        QSignalSpy spy(&obj, &BobUITestObject2::sig6);
         emit obj.sig6({});
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.at(0).size(), 1);
@@ -383,16 +383,16 @@ void tst_QSignalSpy::spyFunctionPointerWithCustomClass()
     }
 
     {
-        QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QSignalSpy: Unable to handle parameter '' of type 'CustomType2*' of method 'sig7', use qRegisterMetaType to register it.");
-        QSignalSpy spy(&obj, &QtTestObject2::sig7);
+        BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QSignalSpy: Unable to handle parameter '' of type 'CustomType2*' of method 'sig7', use qRegisterMetaType to register it.");
+        QSignalSpy spy(&obj, &BobUITestObject2::sig7);
     }
 }
 
-void tst_QSignalSpy::spyFunctionPointerWithQtTypedefs()
+void tst_QSignalSpy::spyFunctionPointerWithBobUITypedefs()
 {
-    QtTestObject3 obj;
+    BobUITestObject3 obj;
 
-    QSignalSpy spy2(&obj, &QtTestObject3::sig2);
+    QSignalSpy spy2(&obj, &BobUITestObject3::sig2);
     emit obj.sig2(42, 43);
     QCOMPARE(spy2.value(0).value(0).toInt(), 42);
     QCOMPARE(spy2.value(0).value(1).toInt(), 43);
@@ -400,7 +400,7 @@ void tst_QSignalSpy::spyFunctionPointerWithQtTypedefs()
 
 void tst_QSignalSpy::waitFunctionPointer_signalEmitted()
 {
-    QTimer::singleShot(0, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(0, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, &tst_QSignalSpy::sigFoo);
     QVERIFY(spy.wait(1));
 }
@@ -413,31 +413,31 @@ void tst_QSignalSpy::waitFunctionPointer_timeout()
 
 void tst_QSignalSpy::waitFunctionPointer_signalEmittedLater()
 {
-    QTimer::singleShot(500, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(500, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, &tst_QSignalSpy::sigFoo);
     QVERIFY(spy.wait(1000));
 }
 
 void tst_QSignalSpy::waitFunctionPointer_signalEmittedTooLate()
 {
-    QTimer::singleShot(500, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(500, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, &tst_QSignalSpy::sigFoo);
     QVERIFY(!spy.wait(200));
-    QTest::qWait(400);
+    BOBUIest::qWait(400);
     QCOMPARE(spy.size(), 1);
 }
 
 void tst_QSignalSpy::waitFunctionPointer_signalEmittedMultipleTimes()
 {
-    QTimer::singleShot(100, this, SIGNAL(sigFoo()));
-    QTimer::singleShot(800, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(100, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(800, this, SIGNAL(sigFoo()));
     QSignalSpy spy(this, &tst_QSignalSpy::sigFoo);
     QVERIFY(spy.wait());
     QCOMPARE(spy.size(), 1); // we don't wait for the second signal...
     QVERIFY(spy.wait());
     QCOMPARE(spy.size(), 2);
     QVERIFY(!spy.wait(1));
-    QTimer::singleShot(10, this, SIGNAL(sigFoo()));
+    BOBUIimer::singleShot(10, this, SIGNAL(sigFoo()));
     QVERIFY(spy.wait());
     QCOMPARE(spy.size(), 3);
 }
@@ -468,34 +468,34 @@ void tst_QSignalSpy::spyOnMetaMethod_invalid()
     QFETCH(QObject*, object);
     QFETCH(QMetaMethod, signal);
 
-    QTest::ignoreMessage(QtWarningMsg, message.data());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, message.data());
     QSignalSpy spy(object, signal);
     QVERIFY(!spy.isValid());
 }
 
 void tst_QSignalSpy::spyOnMetaMethod_invalid_data()
 {
-    QTest::addColumn<QByteArray>("message");
-    QTest::addColumn<QObject*>("object");
-    QTest::addColumn<QMetaMethod>("signal");
+    BOBUIest::addColumn<QByteArray>("message");
+    BOBUIest::addColumn<QObject*>("object");
+    BOBUIest::addColumn<QMetaMethod>("signal");
 
-    QTest::addRow("Invalid object")
+    BOBUIest::addRow("Invalid object")
         << "QSignalSpy: Cannot spy on a null object"_ba
         << static_cast<QObject*>(nullptr)
         << QMetaMethod();
 
-    QTest::addRow("Empty signal")
+    BOBUIest::addRow("Empty signal")
         << "QSignalSpy: Null signal is not valid"_ba
         << new QObject(this)
         << QMetaMethod();
 
-    QTest::addRow("Method is not a signal")
+    BOBUIest::addRow("Method is not a signal")
         << "QSignalSpy: Not a signal: 'deleteLater()'"_ba
         << new QObject(this)
         << QObject::staticMetaObject.method(QObject::staticMetaObject.indexOfMethod("deleteLater()"));
 }
 
-class EmitSignal_Thread : public QThread
+class EmitSignal_Thread : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -521,5 +521,5 @@ void tst_QSignalSpy::signalSpyDoesNotRaceOnCrossThreadSignal()
     QVERIFY(thread.wait(5s));
 }
 
-QTEST_MAIN(tst_QSignalSpy)
+BOBUIEST_MAIN(tst_QSignalSpy)
 #include "tst_qsignalspy.moc"

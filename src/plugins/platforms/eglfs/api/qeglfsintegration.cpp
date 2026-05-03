@@ -1,77 +1,77 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qtextstream.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qplatformwindow.h>
-#include <QtGui/QSurfaceFormat>
-#include <QtGui/QScreen>
-#ifndef QT_NO_OPENGL
-# include <QtGui/QOpenGLContext>
-# include <QtGui/QOffscreenSurface>
+#include <BobUIGui/QSurfaceFormat>
+#include <BobUIGui/QScreen>
+#ifndef BOBUI_NO_OPENGL
+# include <BobUIGui/QOpenGLContext>
+# include <BobUIGui/QOffscreenSurface>
 #endif
-#include <QtGui/QWindow>
-#include <QtCore/QLoggingCategory>
+#include <BobUIGui/QWindow>
+#include <BobUICore/QLoggingCategory>
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 
 #include "qeglfsintegration_p.h"
 #include "qeglfswindow_p.h"
 #include "qeglfshooks_p.h"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 # include "qeglfscontext_p.h"
 # include "qeglfscursor_p.h"
 #endif
 #include "qeglfsoffscreenwindow_p.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
-#ifndef QT_NO_OPENGL
-# include <QtGui/private/qeglplatformcontext_p.h>
-# include <QtGui/private/qeglpbuffer_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#ifndef BOBUI_NO_OPENGL
+# include <BobUIGui/private/qeglplatformcontext_p.h>
+# include <BobUIGui/private/qeglpbuffer_p.h>
 #endif
 
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
-#include <QtGui/private/qgenericunixtheme_p.h>
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
-#include <QtFbSupport/private/qfbvthandler_p.h>
-#ifndef QT_NO_OPENGL
-# include <QtOpenGL/private/qopenglcompositorbackingstore_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qgenericunixtheme_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIFbSupport/private/qfbvthandler_p.h>
+#ifndef BOBUI_NO_OPENGL
+# include <BobUIOpenGL/private/qopenglcompositorbackingstore_p.h>
 #endif
 #include <qpa/qplatformservices.h>
 
-#if QT_CONFIG(libinput)
-#include <QtInputSupport/private/qlibinputhandler_p.h>
+#if BOBUI_CONFIG(libinput)
+#include <BobUIInputSupport/private/qlibinputhandler_p.h>
 #endif
 
-#if QT_CONFIG(evdev)
-#include <QtInputSupport/private/qevdevmousemanager_p.h>
-#include <QtInputSupport/private/qevdevkeyboardmanager_p.h>
-#include <QtInputSupport/private/qevdevtouchmanager_p.h>
-#elif QT_CONFIG(vxworksevdev)
-#include <QtInputSupport/private/qvxkeyboardmanager_p.h>
-#include <QtInputSupport/private/qvxmousemanager_p.h>
-#include <QtInputSupport/private/qvxtouchmanager_p.h>
+#if BOBUI_CONFIG(evdev)
+#include <BobUIInputSupport/private/qevdevmousemanager_p.h>
+#include <BobUIInputSupport/private/qevdevkeyboardmanager_p.h>
+#include <BobUIInputSupport/private/qevdevtouchmanager_p.h>
+#elif BOBUI_CONFIG(vxworksevdev)
+#include <BobUIInputSupport/private/qvxkeyboardmanager_p.h>
+#include <BobUIInputSupport/private/qvxmousemanager_p.h>
+#include <BobUIInputSupport/private/qvxtouchmanager_p.h>
 #endif
 
-#if QT_CONFIG(tslib)
-#include <QtInputSupport/private/qtslib_p.h>
+#if BOBUI_CONFIG(tslib)
+#include <BobUIInputSupport/private/bobuislib_p.h>
 #endif
 
-#if QT_CONFIG(integrityhid)
-#include <QtInputSupport/qintegrityhidmanager.h>
+#if BOBUI_CONFIG(integrityhid)
+#include <BobUIInputSupport/qintegrityhidmanager.h>
 #endif
 
 static void initResources()
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     Q_INIT_RESOURCE(cursor);
 #endif
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QEglFSIntegration::QEglFSIntegration()
     : m_display(EGL_NO_DISPLAY),
@@ -79,16 +79,16 @@ QEglFSIntegration::QEglFSIntegration()
       m_fontDb(new QGenericUnixFontDatabase),
       m_disableInputHandlers(false)
 {
-    m_disableInputHandlers = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DISABLE_INPUT");
+    m_disableInputHandlers = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_DISABLE_INPUT");
 
     initResources();
 }
 
 void QEglFSIntegration::initialize()
 {
-    qt_egl_device_integration()->platformInit();
+    bobui_egl_device_integration()->platformInit();
 
-    m_display = qt_egl_device_integration()->createDisplay(nativeDisplay());
+    m_display = bobui_egl_device_integration()->createDisplay(nativeDisplay());
     if (Q_UNLIKELY(m_display == EGL_NO_DISPLAY))
         qFatal("Could not open egl display");
 
@@ -100,10 +100,10 @@ void QEglFSIntegration::initialize()
 
     m_vtHandler.reset(new QFbVtHandler);
 
-    if (qt_egl_device_integration()->usesDefaultScreen())
+    if (bobui_egl_device_integration()->usesDefaultScreen())
         QWindowSystemInterface::handleScreenAdded(new QEglFSScreen(display()));
     else
-        qt_egl_device_integration()->screenInit();
+        bobui_egl_device_integration()->screenInit();
 
     // Input code may rely on the screens, so do it only after the screen init.
     if (!m_disableInputHandlers)
@@ -116,12 +116,12 @@ void QEglFSIntegration::destroy()
     for (QWindow *w : toplevels)
         w->destroy();
 
-    qt_egl_device_integration()->screenDestroy();
+    bobui_egl_device_integration()->screenDestroy();
 
     if (m_display != EGL_NO_DISPLAY)
         eglTerminate(m_display);
 
-    qt_egl_device_integration()->platformDestroy();
+    bobui_egl_device_integration()->platformDestroy();
 }
 
 QAbstractEventDispatcher *QEglFSIntegration::createEventDispatcher() const
@@ -149,7 +149,7 @@ QPlatformTheme *QEglFSIntegration::createPlatformTheme(const QString &name) cons
 
 QPlatformBackingStore *QEglFSIntegration::createPlatformBackingStore(QWindow *window) const
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLCompositorBackingStore *bs = new QOpenGLCompositorBackingStore(window);
     if (!window->handle())
         window->create();
@@ -165,7 +165,7 @@ QPlatformBackingStore *QEglFSIntegration::createPlatformBackingStore(QWindow *wi
 QPlatformWindow *QEglFSIntegration::createPlatformWindow(QWindow *window) const
 {
     QWindowSystemInterface::flushWindowSystemEvents(QEventLoop::ExcludeUserInputEvents);
-    QEglFSWindow *w = qt_egl_device_integration()->createWindow(window);
+    QEglFSWindow *w = bobui_egl_device_integration()->createWindow(window);
     w->create();
 
     const auto showWithoutActivating = window->property("_q_showWithoutActivating");
@@ -173,7 +173,7 @@ QPlatformWindow *QEglFSIntegration::createPlatformWindow(QWindow *window) const
         return w;
 
     // Activate only the window for the primary screen to make input work
-    if (window->type() != Qt::ToolTip && window->screen() == QGuiApplication::primaryScreen())
+    if (window->type() != BobUI::ToolTip && window->screen() == QGuiApplication::primaryScreen())
         w->requestActivateWindow();
 
     if (window->isTopLevel())
@@ -182,14 +182,14 @@ QPlatformWindow *QEglFSIntegration::createPlatformWindow(QWindow *window) const
     return w;
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 QPlatformOpenGLContext *QEglFSIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     EGLDisplay dpy = context->screen() ? static_cast<QEglFSScreen *>(context->screen()->handle())->display() : display();
     QPlatformOpenGLContext *share = context->shareHandle();
 
     QEglFSContext *ctx;
-    QSurfaceFormat adjustedFormat = qt_egl_device_integration()->surfaceFormatFor(context->format());
+    QSurfaceFormat adjustedFormat = bobui_egl_device_integration()->surfaceFormatFor(context->format());
     EGLConfig config = QEglFSDeviceIntegration::chooseConfig(dpy, adjustedFormat);
     ctx = new QEglFSContext(adjustedFormat, share, dpy, &config);
 
@@ -204,10 +204,10 @@ QOpenGLContext *QEglFSIntegration::createOpenGLContext(EGLContext context, EGLDi
 QPlatformOffscreenSurface *QEglFSIntegration::createPlatformOffscreenSurface(QOffscreenSurface *surface) const
 {
     EGLDisplay dpy = surface->screen() ? static_cast<QEglFSScreen *>(surface->screen()->handle())->display() : display();
-    QSurfaceFormat fmt = qt_egl_device_integration()->surfaceFormatFor(surface->requestedFormat());
-    if (qt_egl_device_integration()->supportsPBuffers()) {
+    QSurfaceFormat fmt = bobui_egl_device_integration()->surfaceFormatFor(surface->requestedFormat());
+    if (bobui_egl_device_integration()->supportsPBuffers()) {
         QEGLPlatformContext::Flags flags;
-        if (!qt_egl_device_integration()->supportsSurfacelessContexts())
+        if (!bobui_egl_device_integration()->supportsSurfacelessContexts())
             flags |= QEGLPlatformContext::NoSurfaceless;
         return new QEGLPbuffer(dpy, fmt, surface, flags);
     } else {
@@ -215,17 +215,17 @@ QPlatformOffscreenSurface *QEglFSIntegration::createPlatformOffscreenSurface(QOf
     }
     // Never return null. Multiple QWindows are not supported by this plugin.
 }
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 bool QEglFSIntegration::hasCapability(QPlatformIntegration::Capability cap) const
 {
     // We assume that devices will have more and not less capabilities
-    if (qt_egl_device_integration()->hasCapability(cap))
+    if (bobui_egl_device_integration()->hasCapability(cap))
         return true;
 
     switch (cap) {
     case ThreadedPixmaps: return true;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     case OpenGL: return true;
     case ThreadedOpenGL: return true;
 #else
@@ -288,10 +288,10 @@ void *QEglFSIntegration::nativeResourceForIntegration(const QByteArray &resource
         result = reinterpret_cast<void*>(nativeDisplay());
         break;
     case WaylandDisplay:
-        result = qt_egl_device_integration()->wlDisplay();
+        result = bobui_egl_device_integration()->wlDisplay();
         break;
     default:
-        result = qt_egl_device_integration()->nativeResourceForIntegration(resource);
+        result = bobui_egl_device_integration()->nativeResourceForIntegration(resource);
         break;
     }
 
@@ -309,7 +309,7 @@ void *QEglFSIntegration::nativeResourceForScreen(const QByteArray &resource, QSc
         result = reinterpret_cast<void*>(nativeDisplay());
         break;
     default:
-        result = qt_egl_device_integration()->nativeResourceForScreen(resource, screen);
+        result = bobui_egl_device_integration()->nativeResourceForScreen(resource, screen);
         break;
     }
 
@@ -342,7 +342,7 @@ void *QEglFSIntegration::nativeResourceForWindow(const QByteArray &resource, QWi
     return result;
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 void *QEglFSIntegration::nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context)
 {
     void *result = nullptr;
@@ -381,8 +381,8 @@ static void *eglContextForContext(QOpenGLContext *context)
 
 QPlatformNativeInterface::NativeResourceForContextFunction QEglFSIntegration::nativeResourceFunctionForContext(const QByteArray &resource)
 {
-#ifndef QT_NO_OPENGL
-    if (resource.compare("get_egl_context", Qt::CaseInsensitive) == 0)
+#ifndef BOBUI_NO_OPENGL
+    if (resource.compare("get_egl_context", BobUI::CaseInsensitive) == 0)
         return NativeResourceForContextFunction(eglContextForContext);
 #else
     Q_UNUSED(resource);
@@ -392,7 +392,7 @@ QPlatformNativeInterface::NativeResourceForContextFunction QEglFSIntegration::na
 
 QFunctionPointer QEglFSIntegration::platformFunction(const QByteArray &function) const
 {
-    return qt_egl_device_integration()->platformFunction(function);
+    return bobui_egl_device_integration()->platformFunction(function);
 }
 
 QVariant QEglFSIntegration::styleHint(QPlatformIntegration::StyleHint hint) const
@@ -403,7 +403,7 @@ QVariant QEglFSIntegration::styleHint(QPlatformIntegration::StyleHint hint) cons
     return QPlatformIntegration::styleHint(hint);
 }
 
-#if QT_CONFIG(evdev) || QT_CONFIG(vxworksevdev)
+#if BOBUI_CONFIG(evdev) || BOBUI_CONFIG(vxworksevdev)
 void QEglFSIntegration::loadKeymap(const QString &filename)
 {
     if (m_kbdMgr)
@@ -423,40 +423,40 @@ void QEglFSIntegration::switchLang()
 
 void QEglFSIntegration::createInputHandlers()
 {
-#if QT_CONFIG(libinput)
-    if (!qEnvironmentVariableIntValue("QT_QPA_EGLFS_NO_LIBINPUT")) {
+#if BOBUI_CONFIG(libinput)
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_NO_LIBINPUT")) {
         new QLibInputHandler("libinput"_L1, QString());
         return;
     }
 #endif
 
-#if QT_CONFIG(tslib)
-    bool useTslib = qEnvironmentVariableIntValue("QT_QPA_EGLFS_TSLIB");
+#if BOBUI_CONFIG(tslib)
+    bool useTslib = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_TSLIB");
     if (useTslib)
-        new QTsLibMouseHandler("TsLib"_L1, QString() /* spec */);
+        new BOBUIsLibMouseHandler("TsLib"_L1, QString() /* spec */);
 #endif
 
-#if QT_CONFIG(evdev)
+#if BOBUI_CONFIG(evdev)
     m_kbdMgr = new QEvdevKeyboardManager("EvdevKeyboard"_L1, QString() /* spec */, this);
     new QEvdevMouseManager("EvdevMouse"_L1, QString() /* spec */, this);
-#if QT_CONFIG(tslib)
+#if BOBUI_CONFIG(tslib)
     if (!useTslib)
 #endif
         new QEvdevTouchManager("EvdevTouch"_L1, QString() /* spec */, this);
-#elif QT_CONFIG(vxworksevdev)
+#elif BOBUI_CONFIG(vxworksevdev)
     m_kbdMgr = new QVxKeyboardManager("VxKeyboard"_L1, QString() /* spec */, this);
     new QVxMouseManager("VxMouse"_L1, QString() /* spec */, this);
     new QVxTouchManager("VxTouch"_L1, QString() /* spec */, this);
 #endif
 
-#if QT_CONFIG(integrityhid)
+#if BOBUI_CONFIG(integrityhid)
    new QIntegrityHIDManager("HID", "", this);
 #endif
 }
 
 EGLNativeDisplayType QEglFSIntegration::nativeDisplay() const
 {
-    return qt_egl_device_integration()->platformDisplay();
+    return bobui_egl_device_integration()->platformDisplay();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

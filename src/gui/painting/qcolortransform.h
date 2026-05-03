@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOLORTRANSFORM_H
 #define QCOLORTRANSFORM_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qrgb.h>
-#include <QtCore/qshareddata.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qrgb.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QColor;
 class QRgba64;
@@ -20,7 +20,7 @@ class QRgbaFloat;
 typedef QRgbaFloat<qfloat16> QRgbaFloat16;
 typedef QRgbaFloat<float> QRgbaFloat32;
 
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QColorTransformPrivate, Q_GUI_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QColorTransformPrivate, Q_GUI_EXPORT)
 
 class QColorTransform
 {
@@ -34,7 +34,7 @@ public:
         QColorTransform{other}.swap(*this);
         return *this;
     }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QColorTransform)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QColorTransform)
 
     void swap(QColorTransform &other) noexcept { d.swap(other.d); }
     Q_GUI_EXPORT bool isIdentity() const noexcept;
@@ -60,6 +60,6 @@ private:
 
 Q_DECLARE_SHARED(QColorTransform)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLORTRANSFORM_H

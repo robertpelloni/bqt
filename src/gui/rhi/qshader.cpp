@@ -1,39 +1,39 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qshader_p.h"
 #include <QDataStream>
 #include <QBuffer>
 
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QShader
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Contains multiple versions of a shader translated to multiple shading languages,
     together with reflection metadata.
 
     QShader is the entry point to shader code in the graphics API agnostic
-    Qt world. Instead of using GLSL shader sources, as was the custom with Qt
+    BobUI world. Instead of using GLSL shader sources, as was the custom with BobUI
     5.x, new graphics systems with backends for multiple graphics APIs, such
     as, Vulkan, Metal, Direct3D, and OpenGL, take QShader as their input
     whenever a shader needs to be specified.
 
-    \warning The QRhi family of classes in the Qt Gui module, including QShader
+    \warning The QRhi family of classes in the BobUI Gui module, including QShader
     and QShaderDescription, offer limited compatibility guarantees. There are
     no source or binary compatibility guarantees for these classes, meaning the
-    API is only guaranteed to work with the Qt version the application was
+    API is only guaranteed to work with the BobUI version the application was
     developed against. Source incompatible changes are however aimed to be kept
     at a minimum and will only be made in minor releases (6.7, 6.8, and so on).
     To use these classes in an application, link to
-    \c{Qt::GuiPrivate} (if using CMake), and include the headers with the \c
+    \c{BobUI::GuiPrivate} (if using CMake), and include the headers with the \c
     rhi prefix, for example \c{#include <rhi/qshader.h>}.
 
     A QShader instance is empty and thus invalid by default. To get a useful
@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 
     \endlist
 
-    When used together with the Qt Rendering Hardware Interface and its
+    When used together with the BobUI Rendering Hardware Interface and its
     classes, like QRhiGraphicsPipeline, no further action is needed from the
     application's side as these classes are prepared to consume a QShader
     whenever a shader needs to be specified for a given stage of the graphics
@@ -79,7 +79,7 @@ QT_BEGIN_NAMESPACE
     as the source for generating the various versions and variants that are
     included in it.
 
-    QShader uses implicit sharing similarly to many core Qt types, and so
+    QShader uses implicit sharing similarly to many core BobUI types, and so
     can be returned or passed by value. Detach happens implicitly when calling
     a setter.
 
@@ -118,7 +118,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QShaderVersion
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Specifies the shading language version.
@@ -159,7 +159,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QShaderKey
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Specifies the shading language, the version with flags, and the variant.
@@ -191,7 +191,7 @@ QT_BEGIN_NAMESPACE
 
     \value StandardShader The normal, unmodified version of the shader code.
 
-    \value BatchableVertexShader Vertex shader rewritten to be suitable for Qt Quick scenegraph batching.
+    \value BatchableVertexShader Vertex shader rewritten to be suitable for BobUI Quick scenegraph batching.
 
     \value UInt16IndexedVertexAsComputeShader A vertex shader meant to be used
     in a Metal pipeline with tessellation in combination with indexed draw
@@ -217,7 +217,7 @@ QT_BEGIN_NAMESPACE
     the need for three dedicated variants.
 
     \value [since 6.10] HdrCapableFragmentShader A fragment shader rewritten to support high
-    dynamic range rendering in a Qt Quick scenegraph.
+    dynamic range rendering in a BobUI Quick scenegraph.
  */
 
 /*!
@@ -227,24 +227,24 @@ QT_BEGIN_NAMESPACE
     The default value for the \c version argument of serialized() is \c Latest.
     This is sufficient in the vast majority of cases. Specifying another value
     is needed only when the intention is to generate serialized data that can
-    be loaded by earlier Qt versions. For example, the \c qsb tool uses these
+    be loaded by earlier BobUI versions. For example, the \c qsb tool uses these
     enum values when the \c{--qsbversion} command-line argument is given.
 
     \note Targeting earlier versions will make certain features disfunctional
     with the generated asset. This is not an issue when using the asset with
-    the specified, older Qt version, given that that Qt version does not have
-    the newer features in newer Qt versions that rely on additional data
+    the specified, older BobUI version, given that that BobUI version does not have
+    the newer features in newer BobUI versions that rely on additional data
     generated in the QShader and the serialized data stream, but may become a
-    problem if the generated asset is then used with a newer Qt version.
+    problem if the generated asset is then used with a newer BobUI version.
 
-    \value Latest The current Qt version
-    \value Qt_6_5 Qt 6.5
-    \value Qt_6_4 Qt 6.4
+    \value Latest The current BobUI version
+    \value BobUI_6_5 BobUI 6.5
+    \value BobUI_6_4 BobUI 6.4
  */
 
 /*!
     \class QShaderCode
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Contains source or binary code for a shader and additional metadata.
@@ -444,11 +444,11 @@ static void writeShaderKey(QDataStream *ds, const QShaderKey &k)
     QShader, suitable for writing to files or other I/O devices.
 
     By default the latest serialization format is used. Use \a version
-    parameter to serialize for a compatibility Qt version. Only when it is
+    parameter to serialize for a compatibility BobUI version. Only when it is
     known that the generated data stream must be made compatible with an older
-    Qt version at the expense of making it incompatible with features
-    introduced since that Qt version, should another value (for example,
-    \l{SerializedFormatVersion}{Qt_6_5} for Qt 6.5) be used.
+    BobUI version at the expense of making it incompatible with features
+    introduced since that BobUI version, should another value (for example,
+    \l{SerializedFormatVersion}{BobUI_6_5} for BobUI 6.5) be used.
 
     \sa fromSerialized()
  */
@@ -459,11 +459,11 @@ QByteArray QShader::serialized(SerializedFormatVersion version) const
 
     QBuffer buf;
     QDataStream ds(&buf);
-    ds.setVersion(QDataStream::Qt_5_10);
+    ds.setVersion(QDataStream::BobUI_5_10);
     if (!buf.open(QIODevice::WriteOnly))
         return QByteArray();
 
-    const int qsbVersion = QShaderPrivate::qtQsbVersion(version);
+    const int qsbVersion = QShaderPrivate::bobuiQsbVersion(version);
     ds << qsbVersion;
 
     ds << int(dd->stage);
@@ -552,7 +552,7 @@ QShader QShader::fromSerialized(const QByteArray &data)
     QByteArray udata = qUncompress(data);
     QBuffer buf(&udata);
     QDataStream ds(&buf);
-    ds.setVersion(QDataStream::Qt_5_10);
+    ds.setVersion(QDataStream::BobUI_5_10);
     if (!buf.open(QIODevice::ReadOnly))
         return QShader();
 
@@ -812,7 +812,7 @@ bool operator==(const QShader &lhs, const QShader &rhs) noexcept
 size_t qHash(const QShader &s, size_t seed) noexcept
 {
     if (s.d) {
-        QtPrivate::QHashCombineWithSeed hash(seed);
+        BobUIPrivate::QHashCombineWithSeed hash(seed);
         seed = hash(seed, s.stage());
         if (!s.d->shaders.isEmpty()) {
             seed = hash(seed, s.d->shaders.firstKey());
@@ -952,7 +952,7 @@ size_t qHash(const QShaderCode &k, size_t seed) noexcept
     return qHash(k.shader(), seed);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QShader &bs)
 {
     const QShaderPrivate *d = bs.d;
@@ -986,7 +986,7 @@ QDebug operator<<(QDebug dbg, const QShaderVersion &v)
     dbg.nospace() << "Version(" << v.version() << " " << v.flags() << ")";
     return dbg;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 /*!
     \typedef QShader::NativeResourceBindingMap
@@ -1075,7 +1075,7 @@ void QShader::removeResourceBindingMap(const QShaderKey &key)
 
 /*!
     \struct QShader::SeparateToCombinedImageSamplerMapping
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief Mapping metadata for sampler uniforms.
 
     Describes a mapping from a traditional combined image sampler uniform to
@@ -1150,7 +1150,7 @@ void QShader::removeSeparateToCombinedImageSamplerMappingList(const QShaderKey &
 
 /*!
     \struct QShader::NativeShaderInfo
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief Additional metadata about the native shader code.
 
     Describes information about the native shader code, if applicable. This
@@ -1225,4 +1225,4 @@ void QShader::removeNativeShaderInfo(const QShaderKey &key)
     d->nativeShaderInfoMap.erase(it);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

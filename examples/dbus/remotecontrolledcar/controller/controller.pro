@@ -1,4 +1,4 @@
-QT += dbus widgets
+BOBUI += dbus widgets
 
 DBUS_INTERFACES += ../common/car.xml
 HEADERS += controller.h
@@ -9,5 +9,5 @@ RESOURCES += icons.qrc
 CONFIG += no_batch
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/dbus/remotecontrolledcar/controller
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/dbus/remotecontrolledcar/controller
 INSTALLS += target

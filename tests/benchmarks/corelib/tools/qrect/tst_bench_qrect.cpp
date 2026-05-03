@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 // This file contains benchmarks for QRect/QRectF functions.
 
 #include <QDebug>
-#include <qtest.h>
+#include <bobuiest.h>
 
 class tst_QRect : public QObject
 {
@@ -72,14 +72,14 @@ static QList<RectRectCombination> createRectRectCombinations()
 
 static void addRectRectData(bool includeProperArg = false)
 {
-    QTest::addColumn<QRectF>("rf1");
-    QTest::addColumn<QRectF>("rf2");
+    BOBUIest::addColumn<QRectF>("rf1");
+    BOBUIest::addColumn<QRectF>("rf2");
     if (includeProperArg)
-        QTest::addColumn<bool>("proper");
+        BOBUIest::addColumn<bool>("proper");
     for (int i = 0; i < (includeProperArg ? 2 : 1); ++i) {
         const QList<RectRectCombination> combinations = createRectRectCombinations();
         for (const RectRectCombination &c : combinations) {
-            QTestData &testData = QTest::newRow(c.tag.toLatin1().data());
+            BOBUIestData &testData = BOBUIest::newRow(c.tag.toLatin1().data());
             QRectF r1(c.x1, c.y1, c.w1, c.h1);
             QRectF r2(c.x2, c.y2, c.w2, c.h2);
             testData << r1 << r2;
@@ -117,14 +117,14 @@ static QList<RectPointCombination> createRectPointCombinations()
 
 static void addRectPointData(bool includeProperArg = false)
 {
-    QTest::addColumn<QRectF>("rf");
-    QTest::addColumn<QPointF>("pf");
+    BOBUIest::addColumn<QRectF>("rf");
+    BOBUIest::addColumn<QPointF>("pf");
     if (includeProperArg)
-        QTest::addColumn<bool>("proper");
+        BOBUIest::addColumn<bool>("proper");
     for (int i = 0; i < (includeProperArg ? 2 : 1); ++i) {
         const QList<RectPointCombination> combinations = createRectPointCombinations();
         for (const RectPointCombination &c : combinations) {
-            QTestData &testData = QTest::newRow(c.tag.toLatin1().data());
+            BOBUIestData &testData = BOBUIest::newRow(c.tag.toLatin1().data());
             QRectF r(c.x, c.y, c.w, c.h);
             QPointF p(c.px, c.py);
             testData << r << p;
@@ -286,6 +286,6 @@ void tst_QRect::united_f()
     }
 }
 
-QTEST_MAIN(tst_QRect)
+BOBUIEST_MAIN(tst_QRect)
 
 #include "tst_bench_qrect.moc"

@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui>
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui>
 
 class EventTarget : public QObject
 {
@@ -9,7 +9,7 @@ protected:
     bool event(QEvent *evt)
     {
         if (evt->type() == QEvent::User) {
-            qDebug() << "User event on thread" << QThread::currentThread();
+            qDebug() << "User event on thread" << BOBUIhread::currentThread();
             return true;
         }
         return QObject::event(evt);
@@ -30,10 +30,10 @@ public:
     }
 
     void mousePressEvent(QMouseEvent *) override {
-        qDebug() << "Posting events from thread" << QThread::currentThread();
+        qDebug() << "Posting events from thread" << BOBUIhread::currentThread();
         QGuiApplication::postEvent(m_target, new QEvent(QEvent::User));
-        QTimer::singleShot(500, m_target, []() {
-            qDebug() << "Timer event on secondary thread" << QThread::currentThread();
+        BOBUIimer::singleShot(500, m_target, []() {
+            qDebug() << "Timer event on secondary thread" << BOBUIhread::currentThread();
         });
     }
 
@@ -41,11 +41,11 @@ public:
     EventTarget *m_target;
 };
 
-class SecondaryThread : public QThread
+class SecondaryThread : public BOBUIhread
 {
 public:
     void run() override {
-        qDebug() << "exec on secondary thread" << QThread::currentThread();
+        qDebug() << "exec on secondary thread" << BOBUIhread::currentThread();
         exec();
     }
 };
@@ -63,10 +63,10 @@ int main(int argc, char **argv)
     SecondaryThread thread;
     eventTarget.moveToThread(&thread);
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     thread.start();
 #else
-    qDebug() << "Warning: This test requires a multithreaded build of Qt for WebAssembly";
+    qDebug() << "Warning: This test requires a multithreaded build of BobUI for WebAssembly";
 #endif
 
     return app.exec();

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformwindow.h"
 #include "qplatformwindow_p.h"
@@ -7,13 +7,13 @@
 
 #include <private/qguiapplication_p.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qscreen.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qscreen.h>
 #include <private/qhighdpiscaling_p.h>
 #include <private/qwindow_p.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     Constructs a platform window with the given top level window.
@@ -80,7 +80,7 @@ QSurfaceFormat QPlatformWindow::format() const
 }
 
 /*!
-    This function is called by Qt whenever a window is moved or resized using the QWindow API.
+    This function is called by BobUI whenever a window is moved or resized using the QWindow API.
 
     Unless you also override QPlatformWindow::geometry(), you need to call the baseclass
     implementation of this function in any override of QPlatformWindow::setGeometry(), as
@@ -89,13 +89,13 @@ QSurfaceFormat QPlatformWindow::format() const
     via QWindowSystemInterface::handleGeometryChange().
 
     Window move/resizes can also be triggered spontaneously by the window manager, or as a
-    response to an earlier requested move/resize via the Qt APIs. There is no need to call
+    response to an earlier requested move/resize via the BobUI APIs. There is no need to call
     this function from the window manager callback, instead call
     QWindowSystemInterface::handleGeometryChange().
 
     The position(x, y) part of the rect might be inclusive or exclusive of the window frame
     as returned by frameMargins(). You can detect this in the plugin by checking
-    qt_window_private(window())->positionPolicy.
+    bobui_window_private(window())->positionPolicy.
 */
 void QPlatformWindow::setGeometry(const QRect &rect)
 {
@@ -157,7 +157,7 @@ void QPlatformWindow::setVisible(bool visible)
     Requests setting the window flags of this surface
     to \a flags.
 */
-void QPlatformWindow::setWindowFlags(Qt::WindowFlags flags)
+void QPlatformWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
     Q_UNUSED(flags);
 }
@@ -202,7 +202,7 @@ bool QPlatformWindow::isAncestorOf(const QPlatformWindow *child) const
 }
 
 /*!
-    Returns \c true if the window is a child of a non-Qt window.
+    Returns \c true if the window is a child of a non-BobUI window.
 
     A embedded window has no parent platform window as reflected
     though parent(), but will have a native parent window.
@@ -266,9 +266,9 @@ QPoint QPlatformWindow::mapFromGlobal(const QPoint &pos) const
     Requests setting the window state of this surface
     to \a type.
 
-    Qt::WindowActive can be ignored.
+    BobUI::WindowActive can be ignored.
 */
-void QPlatformWindow::setWindowState(Qt::WindowStates)
+void QPlatformWindow::setWindowState(BobUI::WindowStates)
 {
 }
 
@@ -349,12 +349,12 @@ bool QPlatformWindow::close()
 }
 
 /*!
-  Reimplement to be able to let Qt raise windows to the top of the desktop
+  Reimplement to be able to let BobUI raise windows to the top of the desktop
 */
 void QPlatformWindow::raise() { qWarning("This plugin does not support raise()"); }
 
 /*!
-  Reimplement to be able to let Qt lower windows to the bottom of the desktop
+  Reimplement to be able to let BobUI lower windows to the bottom of the desktop
 */
 void QPlatformWindow::lower() { qWarning("This plugin does not support lower()"); }
 
@@ -367,7 +367,7 @@ void QPlatformWindow::lower() { qWarning("This plugin does not support lower()")
 void QPlatformWindow::propagateSizeHints() {qWarning("This plugin does not support propagateSizeHints()"); }
 
 /*!
-  Reimplement to be able to let Qt set the opacity level of a window
+  Reimplement to be able to let BobUI set the opacity level of a window
 */
 void QPlatformWindow::setOpacity(qreal level)
 {
@@ -376,7 +376,7 @@ void QPlatformWindow::setOpacity(qreal level)
 }
 
 /*!
-  Reimplement to  be able to let Qt set the mask of a window
+  Reimplement to  be able to let BobUI set the mask of a window
 */
 
 void QPlatformWindow::setMask(const QRegion &region)
@@ -386,7 +386,7 @@ void QPlatformWindow::setMask(const QRegion &region)
 }
 
 /*!
-  Reimplement to let Qt be able to request activation/focus for a window
+  Reimplement to let BobUI be able to request activation/focus for a window
 
   Some window systems will probably not have callbacks for this functionality,
   and then calling QWindowSystemInterface::handleFocusWindowChanged(QWindow *w)
@@ -412,7 +412,7 @@ void QPlatformWindow::requestActivateWindow()
 
   \sa QWindow::reportContentOrientationChange()
 */
-void QPlatformWindow::handleContentOrientationChange(Qt::ScreenOrientation orientation)
+void QPlatformWindow::handleContentOrientationChange(BobUI::ScreenOrientation orientation)
 {
     Q_UNUSED(orientation);
 }
@@ -444,7 +444,7 @@ bool QPlatformWindow::setMouseGrabEnabled(bool grab)
 }
 
 /*!
-    Reimplement to be able to let Qt indicate that the window has been
+    Reimplement to be able to let BobUI indicate that the window has been
     modified. Return true if the native window supports setting the modified
     flag, false otherwise.
 */
@@ -468,7 +468,7 @@ bool QPlatformWindow::windowEvent(QEvent *event)
     Q_D(QPlatformWindow);
 
     if (event->type() == QEvent::Timer) {
-        if (static_cast<QTimerEvent *>(event)->timerId() == d->updateTimer.timerId()) {
+        if (static_cast<BOBUIimerEvent *>(event)->timerId() == d->updateTimer.timerId()) {
             deliverUpdateRequest();
             // Delivery of the update request may be circumvented temporarily by the
             // platform window, or the user may request another update during the
@@ -492,7 +492,7 @@ bool QPlatformWindow::windowEvent(QEvent *event)
     \since 5.15
 */
 
-bool QPlatformWindow::startSystemResize(Qt::Edges edges)
+bool QPlatformWindow::startSystemResize(BobUI::Edges edges)
 {
     Q_UNUSED(edges);
     return false;
@@ -627,7 +627,7 @@ bool QPlatformWindow::isAlertState() const
 
 // Return the effective screen for the initial geometry of a window. In a
 // multimonitor-setup, try to find the right screen by checking the transient
-// parent or the mouse cursor for parentless windows (cf QTBUG-34204,
+// parent or the mouse cursor for parentless windows (cf BOBUIBUG-34204,
 // QDialog::adjustPosition()), unless a non-primary screen has been set,
 // in which case we try to respect that.
 static inline const QScreen *effectiveScreen(const QWindow *window)
@@ -639,7 +639,7 @@ static inline const QScreen *effectiveScreen(const QWindow *window)
         return QGuiApplication::primaryScreen();
     if (screen != QGuiApplication::primaryScreen())
         return screen;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     const QList<QScreen *> siblings = screen->virtualSiblings();
     if (siblings.size() > 1) {
         const QPoint referencePoint = window->transientParent() ? window->transientParent()->geometry().center() : QCursor::pos();
@@ -706,8 +706,8 @@ QRect QPlatformWindow::initialGeometry(const QWindow *w, const QRect &initialGeo
                                defaultWidth, defaultHeight);
         return QRect(initialGeometry.topLeft(), QHighDpi::toNative(deviceIndependentSize, factor));
     }
-    const auto *wp = qt_window_private(const_cast<QWindow*>(w));
-    const bool positionAutomatic = wp->positionAutomatic && w->type() != Qt::Popup;
+    const auto *wp = bobui_window_private(const_cast<QWindow*>(w));
+    const bool positionAutomatic = wp->positionAutomatic && w->type() != BobUI::Popup;
     if (!positionAutomatic && !wp->resizeAutomatic)
         return initialGeometry;
     const QScreen *screen = positionAutomatic
@@ -763,7 +763,7 @@ void QPlatformWindow::requestUpdate()
     Q_D(QPlatformWindow);
 
     static bool customUpdateIntervalValid = false;
-    static int customUpdateInterval = qEnvironmentVariableIntValue("QT_QPA_UPDATE_IDLE_TIME",
+    static int customUpdateInterval = qEnvironmentVariableIntValue("BOBUI_QPA_UPDATE_IDLE_TIME",
                                                                    &customUpdateIntervalValid);
     int updateInterval = customUpdateInterval;
     if (!customUpdateIntervalValid) {
@@ -777,7 +777,7 @@ void QPlatformWindow::requestUpdate()
 
     // Start or restart the timer (in case we're called during update
     // request delivery).
-    d->updateTimer.start(updateInterval, Qt::PreciseTimer, window());
+    d->updateTimer.start(updateInterval, BobUI::PreciseTimer, window());
 }
 
 /*!
@@ -787,7 +787,7 @@ void QPlatformWindow::requestUpdate()
 */
 bool QPlatformWindow::hasPendingUpdateRequest() const
 {
-    return qt_window_private(window())->updateRequestPending;
+    return bobui_window_private(window())->updateRequestPending;
 }
 
 /*!
@@ -816,14 +816,14 @@ void QPlatformWindow::deliverUpdateRequest()
     Q_ASSERT(hasPendingUpdateRequest());
 
     QWindow *w = window();
-    QWindowPrivate *wp = qt_window_private(w);
+    QWindowPrivate *wp = bobui_window_private(w);
 
     // We expect that the platform plugins send DevicePixelRatioChange events.
     // As a fail-safe make a final check here to make sure the cached DPR value is
     // always up to date before delivering the update request.
     if (wp->updateDevicePixelRatio()) {
         qWarning() << "The cached device pixel ratio value was stale on window update. "
-                   << "Please file a QTBUG which explains how to reproduce.";
+                   << "Please file a BOBUIBUG which explains how to reproduce.";
     }
 
     wp->updateRequestPending = false;
@@ -897,7 +897,7 @@ QRect QPlatformWindow::windowFrameGeometry() const
 QRectF QPlatformWindow::closestAcceptableGeometry(const QWindow *qWindow, const QRectF &nativeRect)
 {
     const QRectF rectF = QHighDpi::fromNativeWindowGeometry(nativeRect, qWindow);
-    const QRectF correctedGeometryF = qt_window_private(const_cast<QWindow *>(qWindow))->closestAcceptableGeometry(rectF);
+    const QRectF correctedGeometryF = bobui_window_private(const_cast<QWindow *>(qWindow))->closestAcceptableGeometry(rectF);
     return !correctedGeometryF.isEmpty() && rectF != correctedGeometryF
         ? QHighDpi::toNativeWindowGeometry(correctedGeometryF, qWindow) : nativeRect;
 }
@@ -920,8 +920,8 @@ QRectF QPlatformWindow::windowClosestAcceptableGeometry(const QRectF &nativeRect
     created by calling the createPlatformWindow function in the loaded QPlatformIntegration
     instance.
 
-    QPlatformWindow is used to signal to the windowing system, how Qt perceives its frame.
-    However, it is not concerned with how Qt renders into the window it represents.
+    QPlatformWindow is used to signal to the windowing system, how BobUI perceives its frame.
+    However, it is not concerned with how BobUI renders into the window it represents.
 
     Visible QWindows will always have a QPlatformWindow. However, it is not necessary for
     all windows to have a QBackingStore. This is the case for QOpenGLWindow. And could be the case for
@@ -935,7 +935,7 @@ QRectF QPlatformWindow::windowClosestAcceptableGeometry(const QRectF &nativeRect
     \section1 Implementation Aspects
 
     \list 1
-        \li Mouse grab: Qt expects windows to automatically grab the mouse if the user presses
+        \li Mouse grab: BobUI expects windows to automatically grab the mouse if the user presses
             a button until the button is released.
             Automatic grab should be released if some window is explicitly grabbed.
         \li Enter/Leave events: If there is a window explicitly grabbing mouse events
@@ -972,4 +972,4 @@ QRectF QPlatformWindow::windowClosestAcceptableGeometry(const QRectF &nativeRect
     \sa QBackingStore, QWindow
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

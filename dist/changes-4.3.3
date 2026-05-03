@@ -1,9 +1,9 @@
-Qt 4.3.3 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.3.0 through Qt 4.3.2.
+BobUI 4.3.3 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.3.0 through BobUI 4.3.2.
 
-The Qt version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
-4.0.x series. Applications compiled for Qt 4.0, 4.1 or 4.2 will continue to
-run with Qt 4.3.
+The BobUI version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
+4.0.x series. Applications compiled for BobUI 4.0, 4.1 or 4.2 will continue to
+run with BobUI 4.3.
 
 ****************************************************************************
 *                           General                                        *
@@ -16,11 +16,11 @@ General Improvements
 
     * This version adds the Common Development and Distribution License
       (CDDL) to the GPL Exception for developers using the Open Source
-      Edition of Qt.
+      Edition of BobUI.
       See the GPL Exception Version 1.1 page in the documentation
       for more information.
-    * This version upgrades the Qt Commercial License to version 3.4,
-      the Qtopia Core Commercial License to 1.2 and the Qt Academic
+    * This version upgrades the BobUI Commercial License to version 3.4,
+      the BobUIopia Core Commercial License to 1.2 and the BobUI Academic
       License to 1.4
 
 Build System
@@ -84,7 +84,7 @@ Build System
     * [182501] Fixed regression that caused stretched sections to use the
       minimum size when not visible.
 
-- QTableView
+- BOBUIableView
     * [175328] Fixed grid drawing errors in table views containing spanned
       items.
 
@@ -92,7 +92,7 @@ Build System
     * [184204] Fixed broken layout in right-to-left mode with no horizontal
       scroll bar.
 
-- QTreeView
+- BOBUIreeView
     * [182041] Fixed problem with drag and drop in cases where the columns
       were swapped.
     * [186624] Fixed branch expanding animation.
@@ -110,7 +110,7 @@ Build System
       authentication.
 
 - QLabel
-    * [173188] Fixed QLabel::setAlignment(Qt::AlignJustify) to have the
+    * [173188] Fixed QLabel::setAlignment(BobUI::AlignJustify) to have the
       desired effect.
 
 - QMainWindow
@@ -137,7 +137,7 @@ Build System
     * [180836] Fixed issue with defunct processes on Unix.
 
 - QPainter
-    * Made the QPainter::drawText() overload with the QTextOption argument
+    * Made the QPainter::drawText() overload with the BOBUIextOption argument
       support justified text.
     * [179726] Fixed a problem with the bounds calculation for handling
       fallback in certain painting operations. This could be perceived as a
@@ -187,19 +187,19 @@ Build System
     * [180184] Fixed a bug that prevented sorting from updating persistent
       model indexes.
 
-- QTableView
+- BOBUIableView
     * [182210] Fixed a bug which caused the table view to hang when it had
       views with 100,000,000 rows.
 
-- QTextBrowser
+- BOBUIextBrowser
     * [176042] Fixed incorrect behavior with selectAll() that caused it to
       select all links if a link had the focus.
 
-- QTextDocument
+- BOBUIextDocument
     * [177489] Fixed a bug in page breaking of text frames which could cause
       missing page breaks and overdrawing.
 
-- QTreeView
+- BOBUIreeView
     * Fixed a possible crash that could occur when setting scrollPerPixel
       while height was 0.
     * [178771] Fixed an assertion that could occur when pressing the left or
@@ -299,7 +299,7 @@ Mac OS X
     * [281331] Fixed a bug that caused a QDialog with a modal parent to not
       be modal.
     * [279513] Fixed a bug that could occur when using the
-      Qt::WindowStaysOnTopHint flag on dialogs that would cause the drop down
+      BobUI::WindowStaysOnTopHint flag on dialogs that would cause the drop down
       menu to be hidden.
 
 - [180466] Ensured that an Embedded HIWebView in a floating window will
@@ -315,13 +315,13 @@ Mac OS X
 - [179882] Fixed a regression where applications with both full-screen and
   non-full-screen windows could get into an indeterminate state.
 
-- [182908] Fixed a crash on PPC which was caused by using a static Qt in a
+- [182908] Fixed a crash on PPC which was caused by using a static BobUI in a
   plugin in another application.
 
-Qtopia Core
+BobUIopia Core
 -----------
 
-    * [179060] Fixed a potential crash when Qtopia Core is compiled without
+    * [179060] Fixed a potential crash when BobUIopia Core is compiled without
       FreeType support.
     * [187589] Fixed a problem that caused windows not to appear on screen
       when using gcc 4.1.1 ARM EABI toolchains.
@@ -329,7 +329,7 @@ Qtopia Core
       areas of some windows when they are shown for the first time.
     * [180487] Fixed the use of FreeType fonts for unprivileged processes
       in a LIDS environment.
-    * [179883] Fixed the use of -D QT_QWS_DEPTH_GENERIC configure options
+    * [179883] Fixed the use of -D BOBUI_QWS_DEPTH_GENERIC configure options
       when using a transformed screen driver.
     * [182150] Fixed the use of incorrect colors that resulted from using
       the VNC driver on top of the Linux framebuffer driver on big-endian
@@ -346,11 +346,11 @@ Qtopia Core
       when converting an image having a stride that is not a multiple of 4.
     * [186266] Fixed a race condition which could result in painting errors
       around the window decoration under certain circumstances.
-    * [186409] Fixed string to number conversions in QtScript when
-      configured with -D QT_QLOCALE_USES_FCVT.
+    * [186409] Fixed string to number conversions in BobUIScript when
+      configured with -D BOBUI_QLOCALE_USES_FCVT.
     * [186611] Fixed color conversion in QScreen::solidFill() (used when
       drawing the screen background) when configured with
-      -D QT_QWS_DEPTH_GENERIC.
+      -D BOBUI_QWS_DEPTH_GENERIC.
     * [125481] Fixed a painting error with RGBA framebuffers and partially
       transparent windows.
     * Fixed inconsistency in 16-bit alpha blending which caused the

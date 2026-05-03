@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-/* This is the default Qt style sheet.
+/* This is the default BobUI style sheet.
 
    IMPORTANT: This style sheet is primarily meant for defining feature
    capabilities of styles. Do NOT add default styling rules here. When in
@@ -13,15 +13,15 @@
 */
 
 #include "qstylesheetstyle_p.h"
-#if QT_CONFIG(cssparser)
+#if BOBUI_CONFIG(cssparser)
 #include "private/qcssparser_p.h"
 #endif
 
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace QCss;
 
 // This is the class name of the selector.
@@ -128,16 +128,16 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
 
 
     /*QLineEdit {
-        -qt-background-role: base;
+        -bobui-background-role: base;
         border: native;
-        -qt-style-features: background-color;
+        -bobui-style-features: background-color;
     }*/
     {
         SET_ELEMENT_NAME("QLineEdit"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Base);
         ADD_DECLARATION;
 
@@ -145,7 +145,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Native);
         ADD_DECLARATION;
 
-        SET_PROPERTY("-qt-style-features"_L1, QtStyleFeatures);
+        SET_PROPERTY("-bobui-style-features"_L1, BobUIStyleFeatures);
         ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-color"));
         ADD_DECLARATION;
 
@@ -183,7 +183,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_STYLE_RULE;
     }
 
-    /*QLabel, QToolBox {
+    /*QLabel, BOBUIoolBox {
         background: none;
         border-image: none;
     }*/
@@ -192,7 +192,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_ELEMENT_NAME("QToolBox"_L1);
+        SET_ELEMENT_NAME("BOBUIoolBox"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
@@ -223,16 +223,16 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     }
 
 
-    /*QToolTip {
-        -qt-background-role: window;
+    /*BOBUIoolTip {
+        -bobui-background-role: window;
         border: native;
     }*/
     {
-        SET_ELEMENT_NAME("QToolTip"_L1);
+        SET_ELEMENT_NAME("BOBUIoolTip"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Window);
         ADD_DECLARATION;
 
@@ -243,16 +243,16 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_STYLE_RULE;
     }
 
-    /*QPushButton, QToolButton {
+    /*QPushButton, BOBUIoolButton {
         border-style: native;
-        -qt-style-features: background-color;  //only for not pixmap based styles
+        -bobui-style-features: background-color;  //only for not pixmap based styles
     }*/
     {
         SET_ELEMENT_NAME("QPushButton"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_ELEMENT_NAME("QToolButton"_L1);
+        SET_ELEMENT_NAME("BOBUIoolButton"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
@@ -261,7 +261,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_DECLARATION;
 
         if (!styleIsPixmapBased) {
-            SET_PROPERTY("-qt-style-features"_L1, QtStyleFeatures);
+            SET_PROPERTY("-bobui-style-features"_L1, BobUIStyleFeatures);
             ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-color"));
             ADD_DECLARATION;
         }
@@ -273,8 +273,8 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
 
     /*QComboBox {
         border: native;
-        -qt-style-features: background-color background-gradient;   //only for not pixmap based styles
-        -qt-background-role: base;
+        -bobui-style-features: background-color background-gradient;   //only for not pixmap based styles
+        -bobui-background-role: base;
     }*/
 
     {
@@ -287,13 +287,13 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_DECLARATION;
 
         if (!styleIsPixmapBased) {
-            SET_PROPERTY("-qt-style-features"_L1, QtStyleFeatures);
+            SET_PROPERTY("-bobui-style-features"_L1, BobUIStyleFeatures);
             ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-color"));
             ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-gradient"));
             ADD_DECLARATION;
         }
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Base);
         ADD_DECLARATION;
 
@@ -304,7 +304,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     QComboBox[style="QFusionStyle"][readOnly="true"],
     QComboBox[style="QCleanlooksStyle"][readOnly="true"]
     {
-        -qt-background-role: button;
+        -bobui-background-role: button;
     }*/
     if (baseStyle()->inherits("QFusionStyle"))
     {
@@ -313,7 +313,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Button);
         ADD_DECLARATION;
 
@@ -322,8 +322,8 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
 
     /*QAbstractSpinBox {
         border: native;
-        -qt-style-features: background-color;
-        -qt-background-role: base;
+        -bobui-style-features: background-color;
+        -bobui-background-role: base;
     }*/
     {
         SET_ELEMENT_NAME("QAbstractSpinBox"_L1);
@@ -334,11 +334,11 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Native);
         ADD_DECLARATION;
 
-        SET_PROPERTY("-qt-style-features"_L1, QtStyleFeatures);
+        SET_PROPERTY("-bobui-style-features"_L1, BobUIStyleFeatures);
         ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-color"));
         ADD_DECLARATION;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Base);
         ADD_DECLARATION;
 
@@ -346,21 +346,21 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     }
 
     /*QMenu {
-        -qt-background-role: window;
+        -bobui-background-role: window;
     }*/
     {
         SET_ELEMENT_NAME("QMenu"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Window);
         ADD_DECLARATION;
 
         ADD_STYLE_RULE;
     }
     /*QMenu::item {
-        -qt-style-features: background-color;
+        -bobui-style-features: background-color;
     }*/
     if (!styleIsPixmapBased) {
         SET_ELEMENT_NAME("QMenu"_L1);
@@ -368,7 +368,7 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-style-features"_L1, QtStyleFeatures);
+        SET_PROPERTY("-bobui-style-features"_L1, BobUIStyleFeatures);
         ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-color"));
         ADD_DECLARATION;
 
@@ -376,27 +376,27 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     }
 
     /*QHeaderView {
-        -qt-background-role: window;
+        -bobui-background-role: window;
     }*/
     {
         SET_ELEMENT_NAME("QHeaderView"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Window);
         ADD_DECLARATION;
 
         ADD_STYLE_RULE;
     }
 
-    /*QTableCornerButton::section, QHeaderView::section {
-        -qt-background-role: button;
-        -qt-style-features: background-color; //if style is not pixmap based
+    /*BOBUIableCornerButton::section, QHeaderView::section {
+        -bobui-background-role: button;
+        -bobui-style-features: background-color; //if style is not pixmap based
         border: native;
     }*/
     {
-        SET_ELEMENT_NAME("QTableCornerButton"_L1);
+        SET_ELEMENT_NAME("BOBUIableCornerButton"_L1);
         ADD_PSEUDO("section"_L1, PseudoClass_Unknown);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
@@ -406,12 +406,12 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Button);
         ADD_DECLARATION;
 
         if (!styleIsPixmapBased) {
-            SET_PROPERTY("-qt-style-features"_L1, QtStyleFeatures);
+            SET_PROPERTY("-bobui-style-features"_L1, BobUIStyleFeatures);
             ADD_VALUE(QCss::Value::Identifier, QString::fromLatin1("background-color"));
             ADD_DECLARATION;
         }
@@ -424,14 +424,14 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     }
 
     /*QProgressBar {
-        -qt-background-role: base;
+        -bobui-background-role: base;
     }*/
     {
         SET_ELEMENT_NAME("QProgressBar"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Base);
         ADD_DECLARATION;
 
@@ -439,14 +439,14 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     }
 
     /*QScrollBar {
-        -qt-background-role: window;
+        -bobui-background-role: window;
     }*/
     {
         SET_ELEMENT_NAME("QScrollBar"_L1);
         ADD_BASIC_SELECTOR;
         ADD_SELECTOR;
 
-        SET_PROPERTY("-qt-background-role"_L1, QtBackgroundRole);
+        SET_PROPERTY("-bobui-background-role"_L1, BobUIBackgroundRole);
         ADD_VALUE(QCss::Value::KnownIdentifier, Value_Window);
         ADD_DECLARATION;
 
@@ -473,6 +473,6 @@ StyleSheet QStyleSheetStyle::getDefaultStyleSheet() const
     return sheet;
 }
 
-#endif // #ifndef QT_NO_STYLE_STYLESHEET
+#endif // #ifndef BOBUI_NO_STYLE_STYLESHEET
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

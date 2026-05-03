@@ -1,16 +1,16 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDAPKFILEENGINE_H
 #define QANDROIDAPKFILEENGINE_H
 
-#include <QtCore/private/qabstractfileengine_p.h>
-#include <QtCore/qjnitypes.h>
-#include <QtCore/QJniObject>
+#include <BobUICore/private/qabstractfileengine_p.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/QJniObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_DECLARE_JNI_CLASS(QtApkFileEngine, "org/qtproject/qt/android/QtApkFileEngine")
+Q_DECLARE_JNI_CLASS(BobUIApkFileEngine, "org/bobuiproject/bobui/android/BobUIApkFileEngine")
 
 class QAndroidApkFileEngine : public QAbstractFileEngine
 {
@@ -44,7 +44,7 @@ public:
     static QString apkPath();
     static QString relativePath(const QString &filePath);
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
     IteratorUniquePtr beginEntryList(const QString &, QDirListing::IteratorFlags filters,
                                      const QStringList &filterNames) override;
 #endif
@@ -52,10 +52,10 @@ public:
 private:
     QString m_fileName;
     FileInfo *m_fileInfo = nullptr;
-    QtJniTypes::QtApkFileEngine m_apkFileEngine;
+    BobUIJniTypes::BobUIApkFileEngine m_apkFileEngine;
 };
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 class QAndroidApkFileEngineIterator : public QAbstractFileEngineIterator
 {
 public:
@@ -83,6 +83,6 @@ public:
     std::unique_ptr<QAbstractFileEngine> create(const QString &fileName) const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDAPKFILEENGINE_H

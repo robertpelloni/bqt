@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qsignaldumper_p.h>
+#include <BobUITest/private/qsignaldumper_p.h>
 
-#include <QtCore/qlist.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qvariant.h>
 
-#include <QtTest/private/qtestlog_p.h>
+#include <BobUITest/private/bobuiestlog_p.h>
 
-#include <QtCore/private/qmetaobject_p.h>
+#include <BobUICore/private/qmetaobject_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTest
+namespace BOBUIest
 {
 
 inline static void qPrintMessage(const QByteArray &ba)
 {
-    QTestLog::info(ba.constData(), nullptr, 0);
+    BOBUIestLog::info(ba.constData(), nullptr, 0);
 }
 
 Q_GLOBAL_STATIC(QList<QByteArray>, ignoreClasses)
@@ -50,12 +50,12 @@ static void qSignalDumperCallback(QObject *caller, int signal_index, void **argv
     Q_ASSERT(member.isValid());
 
     if (classIsIgnored(mo->className())) {
-        ++QTest::ignoreLevel;
+        ++BOBUIest::ignoreLevel;
         return;
     }
 
     QByteArray str;
-    str.fill(' ', QTest::iLevel++ * QTest::IndentSpacesCount);
+    str.fill(' ', BOBUIest::iLevel++ * BOBUIest::IndentSpacesCount);
     str += "Signal: ";
     str += mo->className();
     str += '(';
@@ -109,11 +109,11 @@ static void qSignalDumperCallbackSlot(QObject *caller, int method_index, void **
     if (!member.isValid())
         return;
 
-    if (QTest::ignoreLevel || classIsIgnored(mo->className()))
+    if (BOBUIest::ignoreLevel || classIsIgnored(mo->className()))
         return;
 
     QByteArray str;
-    str.fill(' ', QTest::iLevel * QTest::IndentSpacesCount);
+    str.fill(' ', BOBUIest::iLevel * BOBUIest::IndentSpacesCount);
     str += "Slot: ";
     str += mo->className();
     str += '(';
@@ -133,12 +133,12 @@ static void qSignalDumperCallbackEndSignal(QObject *caller, int /*signal_index*/
 {
     Q_ASSERT(caller); Q_ASSERT(caller->metaObject());
     if (classIsIgnored(caller->metaObject()->className())) {
-        --QTest::ignoreLevel;
-        Q_ASSERT(QTest::ignoreLevel >= 0);
+        --BOBUIest::ignoreLevel;
+        Q_ASSERT(BOBUIest::ignoreLevel >= 0);
         return;
     }
-    --QTest::iLevel;
-    Q_ASSERT(QTest::iLevel >= 0);
+    --BOBUIest::iLevel;
+    Q_ASSERT(BOBUIest::iLevel >= 0);
 }
 
 }
@@ -153,30 +153,30 @@ void QSignalDumper::startDump()
     if (!s_isEnabled)
         return;
 
-    static QSignalSpyCallbackSet set = { QTest::qSignalDumperCallback,
-        QTest::qSignalDumperCallbackSlot, QTest::qSignalDumperCallbackEndSignal, nullptr };
-    qt_register_signal_spy_callbacks(&set);
+    static QSignalSpyCallbackSet set = { BOBUIest::qSignalDumperCallback,
+        BOBUIest::qSignalDumperCallbackSlot, BOBUIest::qSignalDumperCallbackEndSignal, nullptr };
+    bobui_register_signal_spy_callbacks(&set);
 }
 
 void QSignalDumper::endDump()
 {
-    qt_register_signal_spy_callbacks(nullptr);
+    bobui_register_signal_spy_callbacks(nullptr);
 }
 
 void QSignalDumper::ignoreClass(const QByteArray &klass)
 {
-    QMutexLocker locker(&QTest::ignoreClassesMutex);
-    if (QTest::ignoreClasses())
-        QTest::ignoreClasses()->append(klass);
+    QMutexLocker locker(&BOBUIest::ignoreClassesMutex);
+    if (BOBUIest::ignoreClasses())
+        BOBUIest::ignoreClasses()->append(klass);
 }
 
 void QSignalDumper::clearIgnoredClasses()
 {
-    QMutexLocker locker(&QTest::ignoreClassesMutex);
-    if (QTest::ignoreClasses.exists())
-        QTest::ignoreClasses()->clear();
+    QMutexLocker locker(&BOBUIest::ignoreClassesMutex);
+    if (BOBUIest::ignoreClasses.exists())
+        BOBUIest::ignoreClasses()->clear();
 }
 
 bool QSignalDumper::s_isEnabled = false;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

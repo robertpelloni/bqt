@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'backside.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,22 +9,22 @@
 #ifndef BACKSIDE_H
 #define BACKSIDE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDateTimeEdit>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDateTimeEdit>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSlider>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_BackSide
 {
@@ -42,7 +42,7 @@ public:
     QDateTimeEdit *dateTimeEdit;
     QGroupBox *groupBox_2;
     QHBoxLayout *horizontalLayout_2;
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
 
     void setupUi(QWidget *BackSide)
     {
@@ -82,7 +82,7 @@ public:
         horizontalSlider = new QSlider(groupBox);
         horizontalSlider->setObjectName("horizontalSlider");
         horizontalSlider->setValue(42);
-        horizontalSlider->setOrientation(Qt::Orientation::Horizontal);
+        horizontalSlider->setOrientation(BobUI::Orientation::Horizontal);
 
         horizontalLayout->addWidget(horizontalSlider);
 
@@ -109,18 +109,18 @@ public:
         groupBox_2->setCheckable(true);
         horizontalLayout_2 = new QHBoxLayout(groupBox_2);
         horizontalLayout_2->setObjectName("horizontalLayout_2");
-        treeWidget = new QTreeWidget(groupBox_2);
-        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem(treeWidget);
-        QTreeWidgetItem *__qtreewidgetitem1 = new QTreeWidgetItem(__qtreewidgetitem);
-        new QTreeWidgetItem(__qtreewidgetitem1);
-        new QTreeWidgetItem(__qtreewidgetitem1);
-        new QTreeWidgetItem(__qtreewidgetitem1);
-        QTreeWidgetItem *__qtreewidgetitem2 = new QTreeWidgetItem(treeWidget);
-        QTreeWidgetItem *__qtreewidgetitem3 = new QTreeWidgetItem(__qtreewidgetitem2);
-        new QTreeWidgetItem(__qtreewidgetitem3);
-        QTreeWidgetItem *__qtreewidgetitem4 = new QTreeWidgetItem(treeWidget);
-        QTreeWidgetItem *__qtreewidgetitem5 = new QTreeWidgetItem(__qtreewidgetitem4);
-        new QTreeWidgetItem(__qtreewidgetitem5);
+        treeWidget = new BOBUIreeWidget(groupBox_2);
+        BOBUIreeWidgetItem *__bobuireewidgetitem = new BOBUIreeWidgetItem(treeWidget);
+        BOBUIreeWidgetItem *__bobuireewidgetitem1 = new BOBUIreeWidgetItem(__bobuireewidgetitem);
+        new BOBUIreeWidgetItem(__bobuireewidgetitem1);
+        new BOBUIreeWidgetItem(__bobuireewidgetitem1);
+        new BOBUIreeWidgetItem(__bobuireewidgetitem1);
+        BOBUIreeWidgetItem *__bobuireewidgetitem2 = new BOBUIreeWidgetItem(treeWidget);
+        BOBUIreeWidgetItem *__bobuireewidgetitem3 = new BOBUIreeWidgetItem(__bobuireewidgetitem2);
+        new BOBUIreeWidgetItem(__bobuireewidgetitem3);
+        BOBUIreeWidgetItem *__bobuireewidgetitem4 = new BOBUIreeWidgetItem(treeWidget);
+        BOBUIreeWidgetItem *__bobuireewidgetitem5 = new BOBUIreeWidgetItem(__bobuireewidgetitem4);
+        new BOBUIreeWidgetItem(__bobuireewidgetitem5);
         treeWidget->setObjectName("treeWidget");
 
         horizontalLayout_2->addWidget(treeWidget);
@@ -151,33 +151,33 @@ public:
         label_2->setText(QCoreApplication::translate("BackSide", "Modified:", nullptr));
         label_3->setText(QCoreApplication::translate("BackSide", "Extent", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("BackSide", "Other input", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = treeWidget->headerItem();
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("BackSide", "Widgets On Graphics View", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem = treeWidget->headerItem();
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("BackSide", "Widgets On Graphics View", nullptr));
 
         const bool __sortingEnabled = treeWidget->isSortingEnabled();
         treeWidget->setSortingEnabled(false);
-        QTreeWidgetItem *___qtreewidgetitem1 = treeWidget->topLevelItem(0);
-        ___qtreewidgetitem1->setText(0, QCoreApplication::translate("BackSide", "QGraphicsProxyWidget", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem2 = ___qtreewidgetitem1->child(0);
-        ___qtreewidgetitem2->setText(0, QCoreApplication::translate("BackSide", "QGraphicsWidget", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem3 = ___qtreewidgetitem2->child(0);
-        ___qtreewidgetitem3->setText(0, QCoreApplication::translate("BackSide", "QObject", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem4 = ___qtreewidgetitem2->child(1);
-        ___qtreewidgetitem4->setText(0, QCoreApplication::translate("BackSide", "QGraphicsItem", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem5 = ___qtreewidgetitem2->child(2);
-        ___qtreewidgetitem5->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayoutItem", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem6 = treeWidget->topLevelItem(1);
-        ___qtreewidgetitem6->setText(0, QCoreApplication::translate("BackSide", "QGraphicsGridLayout", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem7 = ___qtreewidgetitem6->child(0);
-        ___qtreewidgetitem7->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayout", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem8 = ___qtreewidgetitem7->child(0);
-        ___qtreewidgetitem8->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayoutItem", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem9 = treeWidget->topLevelItem(2);
-        ___qtreewidgetitem9->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLinearLayout", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem10 = ___qtreewidgetitem9->child(0);
-        ___qtreewidgetitem10->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayout", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem11 = ___qtreewidgetitem10->child(0);
-        ___qtreewidgetitem11->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayoutItem", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem1 = treeWidget->topLevelItem(0);
+        ___bobuireewidgetitem1->setText(0, QCoreApplication::translate("BackSide", "QGraphicsProxyWidget", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem2 = ___bobuireewidgetitem1->child(0);
+        ___bobuireewidgetitem2->setText(0, QCoreApplication::translate("BackSide", "QGraphicsWidget", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem3 = ___bobuireewidgetitem2->child(0);
+        ___bobuireewidgetitem3->setText(0, QCoreApplication::translate("BackSide", "QObject", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem4 = ___bobuireewidgetitem2->child(1);
+        ___bobuireewidgetitem4->setText(0, QCoreApplication::translate("BackSide", "QGraphicsItem", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem5 = ___bobuireewidgetitem2->child(2);
+        ___bobuireewidgetitem5->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayoutItem", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem6 = treeWidget->topLevelItem(1);
+        ___bobuireewidgetitem6->setText(0, QCoreApplication::translate("BackSide", "QGraphicsGridLayout", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem7 = ___bobuireewidgetitem6->child(0);
+        ___bobuireewidgetitem7->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayout", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem8 = ___bobuireewidgetitem7->child(0);
+        ___bobuireewidgetitem8->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayoutItem", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem9 = treeWidget->topLevelItem(2);
+        ___bobuireewidgetitem9->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLinearLayout", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem10 = ___bobuireewidgetitem9->child(0);
+        ___bobuireewidgetitem10->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayout", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem11 = ___bobuireewidgetitem10->child(0);
+        ___bobuireewidgetitem11->setText(0, QCoreApplication::translate("BackSide", "QGraphicsLayoutItem", nullptr));
         treeWidget->setSortingEnabled(__sortingEnabled);
 
     } // retranslateUi
@@ -188,6 +188,6 @@ namespace Ui {
     class BackSide: public Ui_BackSide {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // BACKSIDE_H

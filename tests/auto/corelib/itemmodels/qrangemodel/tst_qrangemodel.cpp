@@ -1,19 +1,19 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "data.h"
 
-#include <QTest>
-#include <QtCore/qrangemodel.h>
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qstringlistmodel.h>
-#include <QtTest/qsignalspy.h>
+#include <BOBUIest>
+#include <BobUICore/qrangemodel.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qjsonarray.h>
+#include <BobUICore/qstringlistmodel.h>
+#include <BobUITest/qsignalspy.h>
 
-#include <QtGui/qcolor.h>
+#include <BobUIGui/qcolor.h>
 
-#if QT_CONFIG(itemmodeltester)
-#include <QtTest/qabstractitemmodeltester.h>
+#if BOBUI_CONFIG(itemmodeltester)
+#include <BobUITest/qabstractitemmodeltester.h>
 #endif
 
 #if defined(__cpp_lib_ranges)
@@ -205,11 +205,11 @@ void tst_QRangeModel::createTestData()
 
     createTree();
 
-    QTest::addColumn<Factory>("factory");
-    QTest::addColumn<int>("expectedRowCount");
-    QTest::addColumn<int>("expectedColumnCount");
-    QTest::addColumn<ChangeActions>("changeActions");
-    QTest::addColumn<QVariant>("headerValue");
+    BOBUIest::addColumn<Factory>("factory");
+    BOBUIest::addColumn<int>("expectedRowCount");
+    BOBUIest::addColumn<int>("expectedColumnCount");
+    BOBUIest::addColumn<ChangeActions>("changeActions");
+    BOBUIest::addColumn<QVariant>("headerValue");
 
     // The entire test data is recreated for each test function, but test
     // functions must not change data structures other than the one tested.
@@ -298,7 +298,7 @@ void tst_QRangeModel::createTestData()
     ADD_COPY(stdTableOfIntRolesWithSharedRows, 1, ChangeAction::All | ChangeAction::SetItemData,
              1);
 
-    QTest::addRow("Moved table") << Factory([]{
+    BOBUIest::addRow("Moved table") << Factory([]{
         QList<std::vector<QString>> movedTable = {
             {"0/0", "0/1", "0/2", "0/3"},
             {"1/0", "1/1", "1/2", "1/3"},
@@ -309,7 +309,7 @@ void tst_QRangeModel::createTestData()
     }) << 4 << 4 << ChangeActions(ChangeAction::All) << QVariant(1);
 
     // moved list of pointers -> model takes ownership
-    QTest::addRow("movedListOfObjects") << Factory([]{
+    BOBUIest::addRow("movedListOfObjects") << Factory([]{
         std::list<Object *> movedListOfObjects = {
             new Object, new Object, new Object,
             new Object, new Object, new Object
@@ -321,12 +321,12 @@ void tst_QRangeModel::createTestData()
     }) << 6 << 2 << (ChangeAction::ChangeRows | ChangeAction::SetData) << QVariant(u"string"_s);
 
     // special case: tree
-    QTest::addRow("value tree (ref)") << Factory([this]{
+    BOBUIest::addRow("value tree (ref)") << Factory([this]{
         return std::unique_ptr<QAbstractItemModel>(new QRangeModel(std::ref(*m_data->m_tree)));
     }) << int(std::size(*m_data->m_tree.get())) << int(std::tuple_size_v<tree_row>)
        << (ChangeAction::ChangeRows | ChangeAction::SetData) << QVariant(u"QString"_s);
 
-    QTest::addRow("pointer tree") << Factory([this]{
+    BOBUIest::addRow("pointer tree") << Factory([this]{
         return std::unique_ptr<QAbstractItemModel>(
             new QRangeModel(m_data->m_pointer_tree.get(), tree_row::ProtocolPointerImpl{})
         );
@@ -336,7 +336,7 @@ void tst_QRangeModel::createTestData()
 
 void tst_QRangeModel::basics()
 {
-#if QT_CONFIG(itemmodeltester)
+#if BOBUI_CONFIG(itemmodeltester)
     QFETCH(Factory, factory);
     auto model = factory();
 
@@ -350,18 +350,18 @@ using ModelFromData = std::function<std::unique_ptr<QAbstractItemModel>(std::vec
 
 void tst_QRangeModel::modifies_data()
 {
-    QTest::addColumn<ModelFromData>("modelFromData");
-    QTest::addColumn<bool>("modifiesOriginal");
+    BOBUIest::addColumn<ModelFromData>("modelFromData");
+    BOBUIest::addColumn<bool>("modifiesOriginal");
 
-    QTest::newRow("copy") << ModelFromData([](std::vector<int> &numbers){
+    BOBUIest::newRow("copy") << ModelFromData([](std::vector<int> &numbers){
         return std::unique_ptr<QAbstractItemModel>(new QRangeModel(numbers));
     }) << false;
 
-    QTest::newRow("reference_wrapper") << ModelFromData([](std::vector<int> &numbers){
+    BOBUIest::newRow("reference_wrapper") << ModelFromData([](std::vector<int> &numbers){
         return std::unique_ptr<QAbstractItemModel>(new QRangeModel(std::ref(numbers)));
     }) << true;
 
-    QTest::newRow("pointer") << ModelFromData([](std::vector<int> &numbers){
+    BOBUIest::newRow("pointer") << ModelFromData([](std::vector<int> &numbers){
         return std::unique_ptr<QAbstractItemModel>(new QRangeModel(&numbers));
     }) << true;
 }
@@ -436,7 +436,7 @@ void tst_QRangeModel::minimalIterator()
     for (int row = model.rowCount() - 1; row >= 0; --row) {
         const QModelIndex index = model.index(row, 0);
         QCOMPARE(index.data(), QString::number(row));
-        QVERIFY(!index.flags().testFlag(Qt::ItemIsEditable));
+        QVERIFY(!index.flags().testFlag(BobUI::ItemIsEditable));
     }
 }
 
@@ -611,25 +611,25 @@ void tst_QRangeModel::overrideRoleNames()
         QHash<int, QByteArray> roleNames() const override
         {
             return {
-                {Qt::UserRole, "string"},
-                {Qt::UserRole + 1, "number"}
+                {BobUI::UserRole, "string"},
+                {BobUI::UserRole + 1, "number"}
             };
         }
     };
 
     RoleModel model;
-    const QList<int> expectedKeys = {Qt::UserRole, Qt::UserRole + 1};
+    const QList<int> expectedKeys = {BobUI::UserRole, BobUI::UserRole + 1};
     QCOMPARE(model.roleNames().size(), expectedKeys.size());
 
     const QModelIndex index = model.index(0, 0);
-    QVERIFY(model.setData(index, "string value", Qt::UserRole));
-    QVERIFY(model.setData(index, 42, Qt::UserRole + 1));
+    QVERIFY(model.setData(index, "string value", BobUI::UserRole));
+    QVERIFY(model.setData(index, 42, BobUI::UserRole + 1));
     QVERIFY(!model.setData(index, "display"));
 
     const auto itemData = model.itemData(index);
     QCOMPARE(itemData.keys(), expectedKeys);
-    QCOMPARE(itemData.value(Qt::UserRole), "string value");
-    QCOMPARE(itemData.value(Qt::UserRole + 1), 42);
+    QCOMPARE(itemData.value(BobUI::UserRole), "string value");
+    QCOMPARE(itemData.value(BobUI::UserRole + 1), 42);
 
     QVERIFY(model.setItemData(model.index(1, 0), itemData));
 }
@@ -639,9 +639,9 @@ void tst_QRangeModel::setRoleNames()
     QRangeModel model(QStringList{});
 
     const QHash<int, QByteArray> expectedRoleNames = {
-        {Qt::DisplayRole, "display"},
-        {Qt::EditRole, "edit"},
-        {Qt::RangeModelDataRole, "modelData"},
+        {BobUI::DisplayRole, "display"},
+        {BobUI::EditRole, "edit"},
+        {BobUI::RangeModelDataRole, "modelData"},
     };
 
     QSignalSpy spy(&model, &QRangeModel::roleNamesChanged);
@@ -649,8 +649,8 @@ void tst_QRangeModel::setRoleNames()
     QVERIFY(spy.isEmpty());
 
     const QHash<int, QByteArray> roleNames = {
-        {Qt::UserRole, "one"},
-        {Qt::UserRole + 1, "two"},
+        {BobUI::UserRole, "one"},
+        {BobUI::UserRole + 1, "two"},
     };
     model.setRoleNames(roleNames);
     QCOMPARE(spy.count(), 1);
@@ -668,9 +668,9 @@ void tst_QRangeModel::defaultRoleNames()
 
     [qaimRoleNames]{
         const QHash<int, QByteArray> expectedRoleNames = {
-            {Qt::RangeModelDataRole, "modelData"},
-            {Qt::UserRole, "string"},
-            {Qt::UserRole + 1, "number"},
+            {BobUI::RangeModelDataRole, "modelData"},
+            {BobUI::UserRole, "string"},
+            {BobUI::UserRole + 1, "number"},
         };
 
         QCOMPARE(QRangeModel(QList<Object *>{}).roleNames(),
@@ -683,10 +683,10 @@ void tst_QRangeModel::defaultRoleNames()
 
     [qaimRoleNames]{
         const QHash<int, QByteArray> expectedRoleNames = {
-            {Qt::RangeModelDataRole, "modelData"},
-            {Qt::DisplayRole, "display"},
-            {Qt::DecorationRole, "decoration"},
-            {Qt::ToolTipRole, "toolTip"},
+            {BobUI::RangeModelDataRole, "modelData"},
+            {BobUI::DisplayRole, "display"},
+            {BobUI::DecorationRole, "decoration"},
+            {BobUI::ToolTipRole, "toolTip"},
         };
         QCOMPARE(QRangeModel(QList<Item>{}).roleNames(),
                  qaimRoleNames);
@@ -707,11 +707,11 @@ void tst_QRangeModel::defaultRoleNames()
             Tree empty;
         };
         const QHash<int, QByteArray> expectedRoleNames = {
-            {Qt::RangeModelDataRole, "modelData"},
-            {Qt::DisplayRole, "display"},
-            {Qt::DecorationRole, "decoration"},
-            {Qt::UserRole, "number"},
-            {Qt::UserRole + 1, "user"},
+            {BobUI::RangeModelDataRole, "modelData"},
+            {BobUI::DisplayRole, "display"},
+            {BobUI::DecorationRole, "decoration"},
+            {BobUI::UserRole, "number"},
+            {BobUI::UserRole + 1, "user"},
         };
         QCOMPARE(QRangeModel(QList<MultiRoleGadget>{}).roleNames(),
                  expectedRoleNames);
@@ -725,9 +725,9 @@ void tst_QRangeModel::defaultRoleNames()
 
     [qaimRoleNames]{
         const QHash<int, QByteArray> singleValueRoleNames = {
-            {Qt::DisplayRole, "display"},
-            {Qt::EditRole, "edit"},
-            {Qt::RangeModelDataRole, "modelData"},
+            {BobUI::DisplayRole, "display"},
+            {BobUI::EditRole, "edit"},
+            {BobUI::RangeModelDataRole, "modelData"},
         };
 
         QCOMPARE(QRangeModel(QList<Row>{}).roleNames(), qaimRoleNames);
@@ -756,10 +756,10 @@ struct QRangeModel::RowOptions<MultiRoleObject>
 
 void tst_QRangeModel::autoConnectPolicy_data()
 {
-    QTest::addColumn<QRangeModel::AutoConnectPolicy>("policy");
+    BOBUIest::addColumn<QRangeModel::AutoConnectPolicy>("policy");
 
-    QTest::addRow("Full") << QRangeModel::AutoConnectPolicy::Full;
-    QTest::addRow("OnRead") << QRangeModel::AutoConnectPolicy::OnRead;
+    BOBUIest::addRow("Full") << QRangeModel::AutoConnectPolicy::Full;
+    BOBUIest::addRow("OnRead") << QRangeModel::AutoConnectPolicy::OnRead;
 }
 
 void tst_QRangeModel::autoConnectPolicy()
@@ -784,13 +784,13 @@ void tst_QRangeModel::autoConnectPolicy()
             QCOMPARE(dataChangedSpy.size(), ++emissions);
             QCOMPARE(dataChangedSpy.at(0).at(0), model.index(0, 0));
             QCOMPARE(dataChangedSpy.at(0).at(1), model.index(0, 0));
-            QCOMPARE(dataChangedSpy.at(0).at(2), QVariant::fromValue(QList<int>{Qt::UserRole}));
+            QCOMPARE(dataChangedSpy.at(0).at(2), QVariant::fromValue(QList<int>{BobUI::UserRole}));
         }
 
         if (policy == QRangeModel::AutoConnectPolicy::OnRead) {
             QVERIFY(!objectList.at(1)->isConnected(&Object::stringChanged));
             QVERIFY(!objectList.at(1)->isConnected(&Object::numberChanged));
-            model.data(model.index(1, 0), Qt::UserRole + 1);
+            model.data(model.index(1, 0), BobUI::UserRole + 1);
             QVERIFY(!objectList.at(1)->isConnected(&Object::stringChanged));
             QVERIFY(objectList.at(1)->isConnected(&Object::numberChanged));
             model.itemData(model.index(1, 0));
@@ -801,7 +801,7 @@ void tst_QRangeModel::autoConnectPolicy()
         QCOMPARE(dataChangedSpy.size(), ++emissions);
         QCOMPARE(dataChangedSpy.at(emissions - 1).at(0), model.index(1, 0));
         QCOMPARE(dataChangedSpy.at(emissions - 1).at(1), model.index(1, 0));
-        QCOMPARE(dataChangedSpy.at(emissions - 1).at(2), QVariant::fromValue(QList<int>{Qt::UserRole + 1}));
+        QCOMPARE(dataChangedSpy.at(emissions - 1).at(2), QVariant::fromValue(QList<int>{BobUI::UserRole + 1}));
 
         QVERIFY(model.insertRow(0));
         QCOMPARE(objectList.at(1)->isConnected(&Object::numberChanged),
@@ -892,22 +892,22 @@ void tst_QRangeModel::autoConnectPolicy()
 
         const QModelIndex index = model.index(0, 0);
         dataChangedSpy.clear();
-        QVERIFY(model.setData(index, "string", Qt::UserRole));
+        QVERIFY(model.setData(index, "string", BobUI::UserRole));
         QCOMPARE(dataChangedSpy.count(), 1);
         QCOMPARE(dataChangedSpy.back().at(2),
-                 QVariant::fromValue(QList<int>{Qt::UserRole}));
+                 QVariant::fromValue(QList<int>{BobUI::UserRole}));
         // this will right now emit dataChanged three times:
         QVERIFY(model.setItemData(index, QMap<int, QVariant>{
-            {Qt::UserRole, QVariant("string")},
-            {Qt::UserRole + 1, QVariant(42)},
+            {BobUI::UserRole, QVariant("string")},
+            {BobUI::UserRole + 1, QVariant(42)},
         }));
         QCOMPARE(dataChangedSpy.count(), 2);
         QCOMPARE(dataChangedSpy.back().at(2),
-                 QVariant::fromValue(QList<int>{Qt::UserRole, Qt::UserRole + 1}));
-        QVERIFY(model.setData(index, 42, Qt::UserRole + 1));
+                 QVariant::fromValue(QList<int>{BobUI::UserRole, BobUI::UserRole + 1}));
+        QVERIFY(model.setData(index, 42, BobUI::UserRole + 1));
         QCOMPARE(dataChangedSpy.count(), 3);
         QCOMPARE(dataChangedSpy.back().at(2),
-                 QVariant::fromValue(QList<int>{Qt::UserRole + 1}));
+                 QVariant::fromValue(QList<int>{BobUI::UserRole + 1}));
     }();
 
     [policy]{
@@ -953,14 +953,14 @@ void tst_QRangeModel::autoConnectPolicy()
         const QModelIndex root0 = model.index(0, 0);
         const QModelIndex child01Index = model.index(0, 0, root0);
         if (policy == QRangeModel::AutoConnectPolicy::OnRead)
-            QVERIFY(model.data(child01Index, Qt::UserRole + 1).isValid());
+            QVERIFY(model.data(child01Index, BobUI::UserRole + 1).isValid());
 
         child01->setNumber(42);
         QCOMPARE(dataChangedSpy.size(), 1);
 
         QCOMPARE(dataChangedSpy.at(0).at(0).value<QModelIndex>(), child01Index);
         QCOMPARE(dataChangedSpy.at(0).at(1).value<QModelIndex>(), child01Index);
-        QCOMPARE(dataChangedSpy.at(0).at(2), QVariant::fromValue(QList{Qt::UserRole + 1}));
+        QCOMPARE(dataChangedSpy.at(0).at(2), QVariant::fromValue(QList{BobUI::UserRole + 1}));
     }();
 
     // build tests
@@ -1034,9 +1034,9 @@ void tst_QRangeModel::flags()
     const QModelIndex last = model->index(model->rowCount() - 1, model->columnCount() - 1);
     QVERIFY(last.isValid());
 
-    QCOMPARE(first.flags().testFlag(Qt::ItemIsEditable),
+    QCOMPARE(first.flags().testFlag(BobUI::ItemIsEditable),
              changeActions.testFlags(ChangeAction::SetData));
-    QCOMPARE(last.flags().testFlag(Qt::ItemIsEditable),
+    QCOMPARE(last.flags().testFlag(BobUI::ItemIsEditable),
              changeActions.testFlags(ChangeAction::SetData));
 }
 
@@ -1046,7 +1046,7 @@ void tst_QRangeModel::headerData()
     QFETCH(QVariant, headerValue);
     auto model = factory();
 
-    QCOMPARE(model->headerData(0, Qt::Horizontal), headerValue);
+    QCOMPARE(model->headerData(0, BobUI::Horizontal), headerValue);
 }
 
 void tst_QRangeModel::data()
@@ -1072,10 +1072,10 @@ void tst_QRangeModel::multiData()
 
     const QModelIndex index = model->index(0, 0);
     QVERIFY(index.isValid());
-    QModelRoleData displayData(Qt::DisplayRole);
+    QModelRoleData displayData(BobUI::DisplayRole);
     model->multiData(index, displayData);
 
-    QCOMPARE(displayData.data(), model->data(index, Qt::DisplayRole));
+    QCOMPARE(displayData.data(), model->data(index, BobUI::DisplayRole));
 }
 
 void tst_QRangeModel::setData()
@@ -1101,14 +1101,14 @@ void tst_QRangeModel::setData()
 
     // don't crash for invalid role values, but ignore return value - it will
     // work with items that are backed by a map.
-    model->setData(first, oldValue, Qt::UserRole + 255);
+    model->setData(first, oldValue, BobUI::UserRole + 255);
 }
 
 static constexpr bool fakedRole(int role)
 {
-    return role == Qt::EditRole
-        || role == Qt::RangeModelDataRole
-        || role == Qt::RangeModelDataRole + 1;
+    return role == BobUI::EditRole
+        || role == BobUI::RangeModelDataRole
+        || role == BobUI::RangeModelDataRole + 1;
 }
 
 void tst_QRangeModel::itemData()
@@ -1120,7 +1120,7 @@ void tst_QRangeModel::itemData()
 
     const QModelIndex index = model->index(0, 0);
     const QMap<int, QVariant> itemData = model->itemData(index);
-    for (int role = 0; role < Qt::UserRole; ++role) {
+    for (int role = 0; role < BobUI::UserRole; ++role) {
         // we fake those in data()
         if (fakedRole(role))
             continue;
@@ -1140,8 +1140,8 @@ void tst_QRangeModel::setItemData()
     QMap<int, QVariant> itemData = model->itemData(index);
     // we only care about multi-role models
     const auto roles = itemData.keys();
-    if (roles == QList<int>{Qt::DisplayRole, Qt::EditRole}
-     || roles == QList<int>{Qt::DisplayRole, Qt::EditRole, Qt::RangeModelDataRole}) {
+    if (roles == QList<int>{BobUI::DisplayRole, BobUI::EditRole}
+     || roles == QList<int>{BobUI::DisplayRole, BobUI::EditRole, BobUI::RangeModelDataRole}) {
         QSKIP("Can't test setItemData on models with single values!");
      }
 
@@ -1149,8 +1149,8 @@ void tst_QRangeModel::setItemData()
     for (int role : roles) {
         if (fakedRole(role)) // faked
             continue;
-        QVariant data = role != Qt::DecorationRole ? QVariant(QStringLiteral("%1").arg(role))
-                                                   : QVariant(QColor(Qt::magenta));
+        QVariant data = role != BobUI::DecorationRole ? QVariant(QStringLiteral("%1").arg(role))
+                                                   : QVariant(QColor(BobUI::magenta));
         itemData.insert(role, data);
     }
 
@@ -1162,7 +1162,7 @@ void tst_QRangeModel::setItemData()
 
     {
         auto newItemData = model->itemData(index);
-        newItemData.take(Qt::EditRole); // faked
+        newItemData.take(BobUI::EditRole); // faked
         auto diagnostics = qScopeGuard([&]{
             qDebug() << "Mismatch";
             qDebug() << "     Actual:" << newItemData;
@@ -1172,13 +1172,13 @@ void tst_QRangeModel::setItemData()
         diagnostics.dismiss();
     }
 
-    for (int role = 0; role < Qt::UserRole; ++role) {
+    for (int role = 0; role < BobUI::UserRole; ++role) {
         if (fakedRole(role))
             continue;
 
         QVariant data = index.data(role);
         auto diagnostics = qScopeGuard([&]{
-            qDebug() << "Mismatch for" << Qt::ItemDataRole(role);
+            qDebug() << "Mismatch for" << BobUI::ItemDataRole(role);
             qDebug() << "     Actual:" << data;
             qDebug() << "   Expected:" << itemData.value(role);
         });
@@ -1213,9 +1213,9 @@ void tst_QRangeModel::modelData()
     const auto roleNames = model->roleNames();
     // models must support RangeModelDataRole if it's part of roleNames;
     // otherwise, we still might support it for certain columns.
-    const bool promisesRangeModelData = roleNames.contains(Qt::RangeModelDataRole);
+    const bool promisesRangeModelData = roleNames.contains(BobUI::RangeModelDataRole);
     const QModelIndex index = model->index(0, 0);
-    const QVariant data = model->data(index, Qt::RangeModelDataRole);
+    const QVariant data = model->data(index, BobUI::RangeModelDataRole);
     QVERIFY(data.isValid() || !promisesRangeModelData);
 
     bool setDataResult = false;
@@ -1224,16 +1224,16 @@ void tst_QRangeModel::modelData()
     if (changeActions.testFlag(ChangeAction::SetData) && data.isValid()) {
         QEXPECT_FAIL("listOfMetaObjectTupleCopy", "Can't replace QObject items", Continue);
         QEXPECT_FAIL("arrayOfUniqueMultiObjectTuplesRef", "Can't replace QObject items", Continue);
-        setDataResult = model->setData(index, data, Qt::RangeModelDataRole);
+        setDataResult = model->setData(index, data, BobUI::RangeModelDataRole);
         QVERIFY(setDataResult || !promisesRangeModelData);
         if (setDataResult) {
             // if we could setData (with an unchanged value), then try with a
             // different row, and verify that the DisplayRole changes.
             if (model->rowCount() > 1) {
                 const QModelIndex index2 = model->index(1, 0);
-                const QVariant data2 = model->data(index2, Qt::RangeModelDataRole);
-                QVERIFY(model->setData(index, data2, Qt::RangeModelDataRole));
-                QCOMPARE(model->data(index, Qt::DisplayRole), model->data(index2, Qt::DisplayRole));
+                const QVariant data2 = model->data(index2, BobUI::RangeModelDataRole);
+                QVERIFY(model->setData(index, data2, BobUI::RangeModelDataRole));
+                QCOMPARE(model->data(index, BobUI::DisplayRole), model->data(index2, BobUI::DisplayRole));
             } else {
                 QSKIP("Cannot test changing of modelData with a model with only one row");
             }
@@ -1257,8 +1257,8 @@ void tst_QRangeModel::rangeModelDataInTable()
     QCOMPARE(model.data(topLeft), table.at(topLeft.row())->string());
     QCOMPARE(model.data(bottomRight), table.at(bottomRight.row())->number());
 
-    QVERIFY(model.setData(topLeft, "fortyTwo", Qt::RangeModelDataRole));
-    QVERIFY(model.setData(bottomRight, 42, Qt::RangeModelDataRole));
+    QVERIFY(model.setData(topLeft, "fortyTwo", BobUI::RangeModelDataRole));
+    QVERIFY(model.setData(bottomRight, 42, BobUI::RangeModelDataRole));
 }
 
 void tst_QRangeModel::insertRows()
@@ -1280,7 +1280,7 @@ void tst_QRangeModel::insertRows()
         "stdTableOfIntRolesWithSharedRows",
     };
     const auto it = std::find_if(associativeContainers.begin(), associativeContainers.end(),
-                [current = QByteArrayView(QTest::currentDataTag())](const QByteArrayView &tag) {
+                [current = QByteArrayView(BOBUIest::currentDataTag())](const QByteArrayView &tag) {
         if (tag == current)
             return true;
         for (auto suffix : { "Pointer", "Copy", "Ref", "UPtr", "SPtr" }) {
@@ -1485,8 +1485,8 @@ void tst_QRangeModel::moveColumns()
 
 void tst_QRangeModel::inconsistentColumnCount()
 {
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtCriticalMsg, "QRangeModel: "
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUICriticalMsg, "QRangeModel: "
         "Column-range at row 1 is not large enough!");
 #endif
 
@@ -1651,37 +1651,37 @@ void tst_QRangeModel::tree_data()
     m_data.reset(new Data);
     createTree();
 
-    QTest::addColumn<TreeProtocol>("protocol");
-    QTest::addColumn<int>("expectedRootRowCount");
-    QTest::addColumn<int>("expectedColumnCount");
-    QTest::addColumn<QList<int>>("rowsWithChildren");
-    QTest::addColumn<ChangeActions>("changeActions");
+    BOBUIest::addColumn<TreeProtocol>("protocol");
+    BOBUIest::addColumn<int>("expectedRootRowCount");
+    BOBUIest::addColumn<int>("expectedColumnCount");
+    BOBUIest::addColumn<QList<int>>("rowsWithChildren");
+    BOBUIest::addColumn<ChangeActions>("changeActions");
 
     const int expectedRootRowCount = int(m_data->m_tree->size());
     const int expectedColumnCount = int(std::tuple_size_v<tree_row>);
     const auto rowsWithChildren = QList{1};
 
-    QTest::addRow("ValueImplicit")
+    BOBUIest::addRow("ValueImplicit")
         << TreeProtocol::ValueImplicit
         << expectedRootRowCount << expectedColumnCount << rowsWithChildren
         << ChangeActions(ChangeAction::All);
-    QTest::addRow("ValueReadOnly")
+    BOBUIest::addRow("ValueReadOnly")
         << TreeProtocol::ValueReadOnly
         << expectedRootRowCount << expectedColumnCount << rowsWithChildren
         << ChangeActions(ChangeAction::ReadOnly);
-    QTest::addRow("PointerExplicit")
+    BOBUIest::addRow("PointerExplicit")
         << TreeProtocol::PointerExplicit
         << expectedRootRowCount << expectedColumnCount << rowsWithChildren
         << ChangeActions(ChangeAction::All);
-    QTest::addRow("PointerExplicitMoved")
+    BOBUIest::addRow("PointerExplicitMoved")
         << TreeProtocol::PointerExplicitMoved
         << expectedRootRowCount << expectedColumnCount << rowsWithChildren
         << ChangeActions(ChangeAction::All);
-    QTest::addRow("ChildrenVector")
+    BOBUIest::addRow("ChildrenVector")
         << TreeProtocol::ChildrenVector
         << expectedRootRowCount << expectedColumnCount << rowsWithChildren
         << ChangeActions(ChangeAction::All);
-    QTest::addRow("ChildrenVectorPtr")
+    BOBUIest::addRow("ChildrenVectorPtr")
         << TreeProtocol::ChildrenVectorPtr
         << expectedRootRowCount << expectedColumnCount << rowsWithChildren
         << ChangeActions(ChangeAction::All);
@@ -1749,7 +1749,7 @@ void tst_QRangeModel::tree()
 
     QCOMPARE(model->rowCount(), expectedRootRowCount);
     QCOMPARE(model->columnCount(), expectedColumnCount);
-    QCOMPARE(model->flags(model->index(0, 0)).testFlag(Qt::ItemIsEditable),
+    QCOMPARE(model->flags(model->index(0, 0)).testFlag(BobUI::ItemIsEditable),
              !!(changeActions & ChangeAction::SetData));
 
     for (int row = 0; row < model->rowCount(); ++row) {
@@ -1770,7 +1770,7 @@ void tst_QRangeModel::tree()
             QCOMPARE(child.parent(), QModelIndex());
     }
 
-#if QT_CONFIG(itemmodeltester)
+#if BOBUI_CONFIG(itemmodeltester)
     QAbstractItemModelTester modelTest(model.get());
 #endif
 }
@@ -1781,7 +1781,7 @@ void tst_QRangeModel::gadgetTree()
     QRangeModel model(&tree);
     QCOMPARE(model.columnCount(), GadgetTreeItem::staticMetaObject.propertyCount());
     for (int c = 0; c < model.columnCount(); ++c) {
-        QCOMPARE(model.headerData(c, Qt::Horizontal),
+        QCOMPARE(model.headerData(c, BobUI::Horizontal),
                  GadgetTreeItem::staticMetaObject.property(c).name());
     }
 }
@@ -1843,7 +1843,7 @@ void tst_QRangeModel::treeModifyBranch()
         QCOMPARE(model->rowCount(parent), --oldRowCount);
     }
 
-#if QT_CONFIG(itemmodeltester)
+#if BOBUI_CONFIG(itemmodeltester)
     QAbstractItemModelTester modelTest(model.get());
 #endif
 }
@@ -1854,7 +1854,7 @@ void tst_QRangeModel::treeCreateBranch()
     QFETCH(QList<int>, rowsWithChildren);
     QFETCH(const ChangeActions, changeActions);
 
-#if QT_CONFIG(itemmodeltester)
+#if BOBUI_CONFIG(itemmodeltester)
     QAbstractItemModelTester modelTest(model.get());
 #endif
 
@@ -1887,7 +1887,7 @@ void tst_QRangeModel::treeRemoveBranch()
     QFETCH(QList<int>, rowsWithChildren);
     QFETCH(const ChangeActions, changeActions);
 
-#if QT_CONFIG(itemmodeltester)
+#if BOBUI_CONFIG(itemmodeltester)
     QAbstractItemModelTester modelTest(model.get());
 #endif
 
@@ -1939,7 +1939,7 @@ void tst_QRangeModel::treeMoveRowBranches()
     QFETCH(const QList<int>, rowsWithChildren);
     QFETCH(const ChangeActions, changeActions);
 
-#if QT_CONFIG(itemmodeltester)
+#if BOBUI_CONFIG(itemmodeltester)
     QAbstractItemModelTester modelTest(model.get());
 #endif
 
@@ -2013,13 +2013,13 @@ struct Value
     template <typename V = Value>
     friend auto refTo(const V &)
     {
-        static_assert(QtPrivate::type_dependent_false<V>(),
+        static_assert(BobUIPrivate::type_dependent_false<V>(),
                       "refTo should never be found through ADL.");
     }
     template <typename V = Value>
     friend auto pointerTo(const V &)
     {
-        static_assert(QtPrivate::type_dependent_false<V>(),
+        static_assert(BobUIPrivate::type_dependent_false<V>(),
                       "pointerTo should never be found through ADL.");
     }
 };
@@ -2085,7 +2085,7 @@ void tst_QRangeModel::adlTest()
     QVERIFY(ADLTest::Range::sizeCalled);
 }
 
-QTEST_MAIN(tst_QRangeModel)
+BOBUIEST_MAIN(tst_QRangeModel)
 #include "tst_qrangemodel.moc"
 
 #undef ADD_COPY

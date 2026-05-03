@@ -1,6 +1,6 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(QT_FEATURE_private_tests)
+if(BOBUI_FEATURE_private_tests)
     add_subdirectory(qhostinfo)
 endif()

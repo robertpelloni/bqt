@@ -1,67 +1,67 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2013 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOBJECT_H
 #define QOBJECT_H
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qlist.h>
-#ifdef QT_INCLUDE_COMPAT
-#include <QtCore/qcoreevent.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qlist.h>
+#ifdef BOBUI_INCLUDE_COMPAT
+#include <BobUICore/qcoreevent.h>
 #endif
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qmetatype.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qmetatype.h>
 
-#include <QtCore/qobject_impl.h>
-#include <QtCore/qbindingstorage.h>
-#include <QtCore/qtcoreexports.h>
+#include <BobUICore/qobject_impl.h>
+#include <BobUICore/qbindingstorage.h>
+#include <BobUICore/bobuicoreexports.h>
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 template <typename T> class QBindable;
 class QEvent;
-class QTimerEvent;
+class BOBUIimerEvent;
 class QChildEvent;
 struct QMetaObject;
 class QVariant;
 class QObjectPrivate;
 class QObject;
-class QThread;
+class BOBUIhread;
 class QWidget;
 class QAccessibleWidget;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 class QRegularExpression;
 #endif
 struct QDynamicMetaObjectData;
 
 typedef QList<QObject*> QObjectList;
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
-Q_CORE_EXPORT void qt_qFindChildren_helper(const QObject *parent, const QString &name,
-                                           const QMetaObject &mo, QList<void *> *list, Qt::FindChildOptions options);
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+Q_CORE_EXPORT void bobui_qFindChildren_helper(const QObject *parent, const QString &name,
+                                           const QMetaObject &mo, QList<void *> *list, BobUI::FindChildOptions options);
 #endif
-Q_CORE_EXPORT void qt_qFindChildren_helper(const QObject *parent, QAnyStringView name,
+Q_CORE_EXPORT void bobui_qFindChildren_helper(const QObject *parent, QAnyStringView name,
                                            const QMetaObject &mo, QList<void *> *list,
-                                           Qt::FindChildOptions options);
-#if QT_CORE_REMOVED_SINCE(6, 7)
-Q_CORE_EXPORT void qt_qFindChildren_helper(const QObject *parent, const QMetaObject &mo,
-                                           QList<void *> *list, Qt::FindChildOptions options);
+                                           BobUI::FindChildOptions options);
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+Q_CORE_EXPORT void bobui_qFindChildren_helper(const QObject *parent, const QMetaObject &mo,
+                                           QList<void *> *list, BobUI::FindChildOptions options);
 #endif
-Q_CORE_EXPORT void qt_qFindChildren_helper(const QObject *parent, const QRegularExpression &re,
-                                           const QMetaObject &mo, QList<void *> *list, Qt::FindChildOptions options);
-#if QT_CORE_REMOVED_SINCE(6, 7)
-Q_CORE_EXPORT QObject *qt_qFindChild_helper(const QObject *parent, const QString &name, const QMetaObject &mo, Qt::FindChildOptions options);
+Q_CORE_EXPORT void bobui_qFindChildren_helper(const QObject *parent, const QRegularExpression &re,
+                                           const QMetaObject &mo, QList<void *> *list, BobUI::FindChildOptions options);
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+Q_CORE_EXPORT QObject *bobui_qFindChild_helper(const QObject *parent, const QString &name, const QMetaObject &mo, BobUI::FindChildOptions options);
 #endif
-Q_CORE_EXPORT QObject *qt_qFindChild_helper(const QObject *parent, QAnyStringView name,
-                                            const QMetaObject &mo, Qt::FindChildOptions options);
+Q_CORE_EXPORT QObject *bobui_qFindChild_helper(const QObject *parent, QAnyStringView name,
+                                            const QMetaObject &mo, BobUI::FindChildOptions options);
 
 class Q_CORE_EXPORT QObjectData
 {
@@ -90,13 +90,13 @@ public:
     QDynamicMetaObjectData *metaObject;
     QBindingStorage bindingStorage;
 
-#if QT_CORE_REMOVED_SINCE(6, 9) && defined(Q_COMPILER_MANGLES_RETURN_TYPE)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9) && defined(Q_COMPILER_MANGLES_RETURN_TYPE)
     QMetaObject *dynamicMetaObject() const;
 #else
     const QMetaObject *dynamicMetaObject() const;
 #endif
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     enum { CheckForParentChildLoopsWarnDepth = 4096 };
 #endif
 };
@@ -116,13 +116,13 @@ public:
     virtual bool event(QEvent *event);
     virtual bool eventFilter(QObject *watched, QEvent *event);
 
-#if defined(QT_NO_TRANSLATION) || defined(Q_QDOC)
+#if defined(BOBUI_NO_TRANSLATION) || defined(Q_QDOC)
     static QString tr(const char *sourceText, const char * = nullptr, int = -1)
         { return QString::fromUtf8(sourceText); }
-#endif // QT_NO_TRANSLATION
+#endif // BOBUI_NO_TRANSLATION
 
     QString objectName() const;
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     void setObjectName(const QString &name);
 #endif
     Q_WEAK_OVERLOAD
@@ -138,68 +138,68 @@ public:
     inline bool signalsBlocked() const noexcept { return d_ptr->blockSig; }
     bool blockSignals(bool b) noexcept;
 
-    QThread *thread() const;
-#if QT_CORE_REMOVED_SINCE(6, 7)
-    void moveToThread(QThread *thread);
+    BOBUIhread *thread() const;
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+    void moveToThread(BOBUIhread *thread);
 #endif
-    bool moveToThread(QThread *thread QT6_DECL_NEW_OVERLOAD_TAIL);
+    bool moveToThread(BOBUIhread *thread BOBUI6_DECL_NEW_OVERLOAD_TAIL);
 
-    int startTimer(int interval, Qt::TimerType timerType = Qt::CoarseTimer);
+    int startTimer(int interval, BobUI::TimerType timerType = BobUI::CoarseTimer);
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
-    int startTimer(std::chrono::milliseconds time, Qt::TimerType timerType = Qt::CoarseTimer);
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
+    int startTimer(std::chrono::milliseconds time, BobUI::TimerType timerType = BobUI::CoarseTimer);
 #endif
-    int startTimer(std::chrono::nanoseconds time, Qt::TimerType timerType = Qt::CoarseTimer);
+    int startTimer(std::chrono::nanoseconds time, BobUI::TimerType timerType = BobUI::CoarseTimer);
 
     void killTimer(int id);
-    void killTimer(Qt::TimerId id);
+    void killTimer(BobUI::TimerId id);
 
     template<typename T>
-    T findChild(QAnyStringView aName, Qt::FindChildOptions options = Qt::FindChildrenRecursively) const
+    T findChild(QAnyStringView aName, BobUI::FindChildOptions options = BobUI::FindChildrenRecursively) const
     {
         typedef typename std::remove_cv<typename std::remove_pointer<T>::type>::type ObjType;
-        static_assert(QtPrivate::HasQ_OBJECT_Macro<ObjType>::Value,
+        static_assert(BobUIPrivate::HasQ_OBJECT_Macro<ObjType>::Value,
                           "No Q_OBJECT in the class passed to QObject::findChild");
-        return static_cast<T>(qt_qFindChild_helper(this, aName, ObjType::staticMetaObject, options));
+        return static_cast<T>(bobui_qFindChild_helper(this, aName, ObjType::staticMetaObject, options));
     }
 
     template<typename T>
-    QList<T> findChildren(QAnyStringView aName, Qt::FindChildOptions options = Qt::FindChildrenRecursively) const
+    QList<T> findChildren(QAnyStringView aName, BobUI::FindChildOptions options = BobUI::FindChildrenRecursively) const
     {
         typedef typename std::remove_cv<typename std::remove_pointer<T>::type>::type ObjType;
-        static_assert(QtPrivate::HasQ_OBJECT_Macro<ObjType>::Value,
+        static_assert(BobUIPrivate::HasQ_OBJECT_Macro<ObjType>::Value,
                           "No Q_OBJECT in the class passed to QObject::findChildren");
         QList<T> list;
-        qt_qFindChildren_helper(this, aName, ObjType::staticMetaObject,
+        bobui_qFindChildren_helper(this, aName, ObjType::staticMetaObject,
                                 reinterpret_cast<QList<void *> *>(&list), options);
         return list;
     }
 
     template<typename T>
-    T findChild(Qt::FindChildOptions options = Qt::FindChildrenRecursively) const
+    T findChild(BobUI::FindChildOptions options = BobUI::FindChildrenRecursively) const
     {
         return findChild<T>({}, options);
     }
 
     template<typename T>
-    QList<T> findChildren(Qt::FindChildOptions options = Qt::FindChildrenRecursively) const
+    QList<T> findChildren(BobUI::FindChildOptions options = BobUI::FindChildrenRecursively) const
     {
         return findChildren<T>(QAnyStringView{}, options);
     }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     template<typename T>
-    inline QList<T> findChildren(const QRegularExpression &re, Qt::FindChildOptions options = Qt::FindChildrenRecursively) const
+    inline QList<T> findChildren(const QRegularExpression &re, BobUI::FindChildOptions options = BobUI::FindChildrenRecursively) const
     {
         typedef typename std::remove_cv<typename std::remove_pointer<T>::type>::type ObjType;
-        static_assert(QtPrivate::HasQ_OBJECT_Macro<ObjType>::Value,
+        static_assert(BobUIPrivate::HasQ_OBJECT_Macro<ObjType>::Value,
                           "No Q_OBJECT in the class passed to QObject::findChildren");
         QList<T> list;
-        qt_qFindChildren_helper(this, re, ObjType::staticMetaObject,
+        bobui_qFindChildren_helper(this, re, ObjType::staticMetaObject,
                                 reinterpret_cast<QList<void *> *>(&list), options);
         return list;
     }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
     inline const QObjectList &children() const { return d_ptr->children; }
 
@@ -208,47 +208,47 @@ public:
     void removeEventFilter(QObject *obj);
 
     static QMetaObject::Connection connect(const QObject *sender, const char *signal,
-                        const QObject *receiver, const char *member, Qt::ConnectionType = Qt::AutoConnection);
+                        const QObject *receiver, const char *member, BobUI::ConnectionType = BobUI::AutoConnection);
 
     static QMetaObject::Connection connect(const QObject *sender, const QMetaMethod &signal,
                         const QObject *receiver, const QMetaMethod &method,
-                        Qt::ConnectionType type = Qt::AutoConnection);
+                        BobUI::ConnectionType type = BobUI::AutoConnection);
 
     inline QMetaObject::Connection connect(const QObject *sender, const char *signal,
-                        const char *member, Qt::ConnectionType type = Qt::AutoConnection) const;
+                        const char *member, BobUI::ConnectionType type = BobUI::AutoConnection) const;
 
 #ifdef Q_QDOC
     template<typename PointerToMemberFunction>
-    static QMetaObject::Connection connect(const QObject *sender, PointerToMemberFunction signal, const QObject *receiver, PointerToMemberFunction method, Qt::ConnectionType type = Qt::AutoConnection);
+    static QMetaObject::Connection connect(const QObject *sender, PointerToMemberFunction signal, const QObject *receiver, PointerToMemberFunction method, BobUI::ConnectionType type = BobUI::AutoConnection);
     template<typename PointerToMemberFunction, typename Functor>
     static QMetaObject::Connection connect(const QObject *sender, PointerToMemberFunction signal, Functor functor);
     template<typename PointerToMemberFunction, typename Functor>
-    static QMetaObject::Connection connect(const QObject *sender, PointerToMemberFunction signal, const QObject *context, Functor functor, Qt::ConnectionType type = Qt::AutoConnection);
+    static QMetaObject::Connection connect(const QObject *sender, PointerToMemberFunction signal, const QObject *context, Functor functor, BobUI::ConnectionType type = BobUI::AutoConnection);
 #else
     //connect with context
     template <typename Func1, typename Func2>
     static inline QMetaObject::Connection
-        connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
-                const typename QtPrivate::ContextTypeForFunctor<Func2>::ContextType *context, Func2 &&slot,
-                Qt::ConnectionType type = Qt::AutoConnection)
+        connect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+                const typename BobUIPrivate::ContextTypeForFunctor<Func2>::ContextType *context, Func2 &&slot,
+                BobUI::ConnectionType type = BobUI::AutoConnection)
     {
-        typedef QtPrivate::FunctionPointer<Func1> SignalType;
-        typedef QtPrivate::FunctionPointer<std::decay_t<Func2>> SlotType;
+        typedef BobUIPrivate::FunctionPointer<Func1> SignalType;
+        typedef BobUIPrivate::FunctionPointer<std::decay_t<Func2>> SlotType;
 
         if constexpr (SlotType::ArgumentCount != -1) {
-            static_assert((QtPrivate::AreArgumentsCompatible<typename SlotType::ReturnType, typename SignalType::ReturnType>::value),
+            static_assert((BobUIPrivate::AreArgumentsCompatible<typename SlotType::ReturnType, typename SignalType::ReturnType>::value),
                             "Return type of the slot is not compatible with the return type of the signal.");
         } else {
-            constexpr int FunctorArgumentCount = QtPrivate::ComputeFunctorArgumentCount<std::decay_t<Func2>, typename SignalType::Arguments>::Value;
+            constexpr int FunctorArgumentCount = BobUIPrivate::ComputeFunctorArgumentCount<std::decay_t<Func2>, typename SignalType::Arguments>::Value;
             [[maybe_unused]]
             constexpr int SlotArgumentCount = (FunctorArgumentCount >= 0) ? FunctorArgumentCount : 0;
-            typedef typename QtPrivate::FunctorReturnType<std::decay_t<Func2>, typename QtPrivate::List_Left<typename SignalType::Arguments, SlotArgumentCount>::Value>::type SlotReturnType;
+            typedef typename BobUIPrivate::FunctorReturnType<std::decay_t<Func2>, typename BobUIPrivate::List_Left<typename SignalType::Arguments, SlotArgumentCount>::Value>::type SlotReturnType;
 
-            static_assert((QtPrivate::AreArgumentsCompatible<SlotReturnType, typename SignalType::ReturnType>::value),
+            static_assert((BobUIPrivate::AreArgumentsCompatible<SlotReturnType, typename SignalType::ReturnType>::value),
                             "Return type of the slot is not compatible with the return type of the signal.");
         }
 
-        static_assert(QtPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
+        static_assert(BobUIPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
                           "No Q_OBJECT in the class with the signal");
 
         //compilation error if the arguments does not match.
@@ -256,32 +256,32 @@ public:
                           "The slot requires more arguments than the signal provides.");
 
         const int *types = nullptr;
-        if (type == Qt::QueuedConnection || type == Qt::BlockingQueuedConnection)
-            types = QtPrivate::ConnectionTypes<typename SignalType::Arguments>::types();
+        if (type == BobUI::QueuedConnection || type == BobUI::BlockingQueuedConnection)
+            types = BobUIPrivate::ConnectionTypes<typename SignalType::Arguments>::types();
 
         void **pSlot = nullptr;
         if constexpr (std::is_member_function_pointer_v<std::decay_t<Func2>>) {
             pSlot = const_cast<void **>(reinterpret_cast<void *const *>(&slot));
         } else {
-            Q_ASSERT_X((type & Qt::UniqueConnection) == 0, "",
+            Q_ASSERT_X((type & BobUI::UniqueConnection) == 0, "",
                        "QObject::connect: Unique connection requires the slot to be a pointer to "
                        "a member function of a QObject subclass.");
         }
 
         return connectImpl(sender, reinterpret_cast<void **>(&signal), context, pSlot,
-                           QtPrivate::makeCallableObject<Func1>(std::forward<Func2>(slot)),
+                           BobUIPrivate::makeCallableObject<Func1>(std::forward<Func2>(slot)),
                            type, types, &SignalType::Object::staticMetaObject);
     }
 
-#ifndef QT_NO_CONTEXTLESS_CONNECT
+#ifndef BOBUI_NO_CONTEXTLESS_CONNECT
     //connect without context
     template <typename Func1, typename Func2>
     static inline QMetaObject::Connection
-        connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal, Func2 &&slot)
+        connect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal, Func2 &&slot)
     {
-        return connect(sender, signal, sender, std::forward<Func2>(slot), Qt::DirectConnection);
+        return connect(sender, signal, sender, std::forward<Func2>(slot), BobUI::DirectConnection);
     }
-#endif // QT_NO_CONTEXTLESS_CONNECT
+#endif // BOBUI_NO_CONTEXTLESS_CONNECT
 #endif //Q_QDOC
 
     static bool disconnect(const QObject *sender, const char *signal,
@@ -300,31 +300,31 @@ public:
     static bool disconnect(const QObject *sender, PointerToMemberFunction signal, const QObject *receiver, PointerToMemberFunction method);
 #else
     template <typename Func1, typename Func2>
-    static inline bool disconnect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
-                                  const typename QtPrivate::FunctionPointer<Func2>::Object *receiver, Func2 slot)
+    static inline bool disconnect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+                                  const typename BobUIPrivate::FunctionPointer<Func2>::Object *receiver, Func2 slot)
     {
-        typedef QtPrivate::FunctionPointer<Func1> SignalType;
-        typedef QtPrivate::FunctionPointer<Func2> SlotType;
+        typedef BobUIPrivate::FunctionPointer<Func1> SignalType;
+        typedef BobUIPrivate::FunctionPointer<Func2> SlotType;
 
-        static_assert(QtPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
+        static_assert(BobUIPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
                           "No Q_OBJECT in the class with the signal");
 
         //compilation error if the arguments does not match.
-        static_assert((QtPrivate::CheckCompatibleArguments<typename SignalType::Arguments, typename SlotType::Arguments>::value),
+        static_assert((BobUIPrivate::CheckCompatibleArguments<typename SignalType::Arguments, typename SlotType::Arguments>::value),
                           "Signal and slot arguments are not compatible.");
 
         return disconnectImpl(sender, reinterpret_cast<void **>(&signal), receiver, reinterpret_cast<void **>(&slot),
                               &SignalType::Object::staticMetaObject);
     }
     template <typename Func1>
-    static inline bool disconnect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+    static inline bool disconnect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
                                   const QObject *receiver, void **zero)
     {
         // This is the overload for when one wish to disconnect a signal from any slot. (slot=nullptr)
         // Since the function template parameter cannot be deduced from '0', we use a
         // dummy void ** parameter that must be equal to 0
         Q_ASSERT(!zero);
-        typedef QtPrivate::FunctionPointer<Func1> SignalType;
+        typedef BobUIPrivate::FunctionPointer<Func1> SignalType;
         return disconnectImpl(sender, reinterpret_cast<void **>(&signal), receiver, zero,
                               &SignalType::Object::staticMetaObject);
     }
@@ -333,7 +333,7 @@ public:
     void dumpObjectTree() const;
     void dumpObjectInfo() const;
 
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     bool setProperty(const char *name, const QVariant &value);
     inline bool setProperty(const char *name, QVariant &&value);
     QVariant property(const char *name) const;
@@ -350,7 +350,7 @@ public:
 
     inline bool inherits(const char *classname) const
     {
-        return const_cast<QObject *>(this)->qt_metacast(classname) != nullptr;
+        return const_cast<QObject *>(this)->bobui_metacast(classname) != nullptr;
     }
 
 public Q_SLOTS:
@@ -362,7 +362,7 @@ protected:
     int receivers(const char *signal) const;
     bool isSignalConnected(const QMetaMethod &signal) const;
 
-    virtual void timerEvent(QTimerEvent *event);
+    virtual void timerEvent(BOBUIimerEvent *event);
     virtual void childEvent(QChildEvent *event);
     virtual void customEvent(QEvent *event);
 
@@ -384,11 +384,11 @@ protected:
     friend class QCoreApplicationPrivate;
     friend class QWidget;
     friend class QAccessibleWidget;
-    friend class QThreadData;
+    friend class BOBUIhreadData;
 
 private:
     void doSetObjectName(const QString &name);
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
     bool doSetProperty(const char *name, const QVariant *lvalue, QVariant *rvalue);
 #endif
     bool doSetProperty(const char *name, const QVariant &value, QVariant *rvalue);
@@ -398,7 +398,7 @@ private:
 private:
     static QMetaObject::Connection connectImpl(const QObject *sender, void **signal,
                                                const QObject *receiver, void **slotPtr,
-                                               QtPrivate::QSlotObjectBase *slot, Qt::ConnectionType type,
+                                               BobUIPrivate::QSlotObjectBase *slot, BobUI::ConnectionType type,
                                                const int *types, const QMetaObject *senderMetaObject);
 
     static bool disconnectImpl(const QObject *sender, void **signal, const QObject *receiver, void **slot,
@@ -407,10 +407,10 @@ private:
 };
 
 inline QMetaObject::Connection QObject::connect(const QObject *asender, const char *asignal,
-                                            const char *amember, Qt::ConnectionType atype) const
+                                            const char *amember, BobUI::ConnectionType atype) const
 { return connect(asender, asignal, this, amember, atype); }
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 6)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 6)
 bool QObject::setProperty(const char *name, const QVariant &value)
 {
     return doSetProperty(name, value, nullptr);
@@ -424,7 +424,7 @@ bool QObject::setProperty(const char *name, QVariant &&value)
 template <class T>
 inline T qobject_cast(QObject *object)
 {
-    return QtPrivate::qobject_cast_helper<T>(object);
+    return BobUIPrivate::qobject_cast_helper<T>(object);
 }
 
 template <class T>
@@ -432,14 +432,14 @@ inline T qobject_cast(const QObject *object)
 {
     static_assert(std::is_const_v<std::remove_pointer_t<T>>,
                   "qobject_cast cannot cast away constness (use const_cast)");
-    return QtPrivate::qobject_cast_helper<T>(object);
+    return BobUIPrivate::qobject_cast_helper<T>(object);
 }
 
 template <class T> constexpr const char * qobject_interface_iid() = delete;
 template <class T> inline T *
 qobject_iid_cast(QObject *object, const char *IId = qobject_interface_iid<T *>())
 {
-    return reinterpret_cast<T *>((object ? object->qt_metacast(IId) : nullptr));
+    return reinterpret_cast<T *>((object ? object->bobui_metacast(IId) : nullptr));
 }
 template <class T> inline std::enable_if_t<std::is_const<T>::value, T *>
 qobject_iid_cast(const QObject *object)
@@ -470,7 +470,7 @@ inline QBindingStorage *qGetBindingStorage(QObject *o)
     return o->bindingStorage();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QObject *);
 #endif
 
@@ -559,13 +559,13 @@ void QSignalBlocker::dismiss() noexcept
     m_o = nullptr;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     inline QObject & deref_for_methodcall(QObject &o) { return  o; }
     inline QObject & deref_for_methodcall(QObject *o) { return *o; }
 }
-#define Q_SET_OBJECT_NAME(obj) QT_PREPEND_NAMESPACE(QtPrivate)::deref_for_methodcall(obj).setObjectName(QLatin1StringView(#obj))
+#define Q_SET_OBJECT_NAME(obj) BOBUI_PREPEND_NAMESPACE(BobUIPrivate)::deref_for_methodcall(obj).setObjectName(QLatin1StringView(#obj))
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

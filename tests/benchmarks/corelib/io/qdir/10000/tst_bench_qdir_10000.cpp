@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDirIterator>
 
 #ifdef Q_OS_WIN
-#   include <qt_windows.h>
+#   include <bobui_windows.h>
 #else
 #   include <sys/stat.h>
 #   include <sys/types.h>
@@ -177,6 +177,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(tst_QDir_10000)
+BOBUIEST_MAIN(tst_QDir_10000)
 
 #include "tst_bench_qdir_10000.moc"

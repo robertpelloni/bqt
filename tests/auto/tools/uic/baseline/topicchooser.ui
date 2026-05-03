@@ -47,7 +47,7 @@
      <item>
       <spacer name="Horizontal Spacing2">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="sizeType">
         <enum>QSizePolicy::Policy::Expanding</enum>

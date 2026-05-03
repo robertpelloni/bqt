@@ -1,11 +1,11 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QCOMPAREHELPERS_WRAPPERTYPES_H
 #define TST_QCOMPAREHELPERS_WRAPPERTYPES_H
 
-#include <QtCore/qanystringview.h>
-#include <QtCore/qcompare.h>
+#include <BobUICore/qanystringview.h>
+#include <BobUICore/qcompare.h>
 
 class IntWrapper
 {
@@ -20,14 +20,14 @@ public:
 private:
     friend bool comparesEqual(const IntWrapper &lhs, const IntWrapper &rhs) noexcept
     { return lhs.m_val == rhs.m_val; }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const IntWrapper &lhs, const IntWrapper &rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.m_val, rhs.m_val);
+        return BobUI::compareThreeWay(lhs.m_val, rhs.m_val);
     }
     friend bool comparesEqual(const IntWrapper &lhs, int rhs) noexcept
     { return lhs.m_val == rhs; }
-    friend Qt::strong_ordering compareThreeWay(const IntWrapper &lhs, int rhs) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const IntWrapper &lhs, int rhs) noexcept
     { return compareThreeWay(lhs, IntWrapper(rhs)); }
 
     Q_DECLARE_STRONGLY_ORDERED(IntWrapper)
@@ -45,21 +45,21 @@ public:
 private:
     friend bool comparesEqual(const DoubleWrapper &lhs, const DoubleWrapper &rhs) noexcept
     { return lhs.m_val == rhs.m_val; }
-    friend Qt::partial_ordering
+    friend BobUI::partial_ordering
     compareThreeWay(const DoubleWrapper &lhs, const DoubleWrapper &rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.m_val, rhs.m_val);
+        return BobUI::compareThreeWay(lhs.m_val, rhs.m_val);
     }
     friend bool comparesEqual(const DoubleWrapper &lhs, const IntWrapper &rhs) noexcept
     { return comparesEqual(lhs, DoubleWrapper(rhs.value())); }
-    friend Qt::partial_ordering
+    friend BobUI::partial_ordering
     compareThreeWay(const DoubleWrapper &lhs, const IntWrapper &rhs) noexcept
     { return compareThreeWay(lhs, DoubleWrapper(rhs.value())); }
     friend bool comparesEqual(const DoubleWrapper &lhs, double rhs) noexcept
     { return lhs.m_val == rhs; }
-    friend Qt::partial_ordering compareThreeWay(const DoubleWrapper &lhs, double rhs) noexcept
+    friend BobUI::partial_ordering compareThreeWay(const DoubleWrapper &lhs, double rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.m_val, rhs);
+        return BobUI::compareThreeWay(lhs.m_val, rhs);
     }
 
     Q_DECLARE_PARTIALLY_ORDERED(DoubleWrapper)
@@ -78,17 +78,17 @@ public:
 
 private:
     static bool equalsHelper(QAnyStringView lhs, QAnyStringView rhs) noexcept
-    { return QAnyStringView::compare(lhs, rhs, Qt::CaseInsensitive) == 0; }
+    { return QAnyStringView::compare(lhs, rhs, BobUI::CaseInsensitive) == 0; }
 
-    static Qt::weak_ordering compareHelper(QAnyStringView lhs, QAnyStringView rhs) noexcept
+    static BobUI::weak_ordering compareHelper(QAnyStringView lhs, QAnyStringView rhs) noexcept
     {
-        const int res = QAnyStringView::compare(lhs, rhs, Qt::CaseInsensitive);
+        const int res = QAnyStringView::compare(lhs, rhs, BobUI::CaseInsensitive);
         if (res < 0)
-            return Qt::weak_ordering::less;
+            return BobUI::weak_ordering::less;
         else if (res > 0)
-            return Qt::weak_ordering::greater;
+            return BobUI::weak_ordering::greater;
         else
-            return Qt::weak_ordering::equivalent;
+            return BobUI::weak_ordering::equivalent;
     }
 
     // Some of the helper functions are intentionally NOT marked as noexcept
@@ -97,14 +97,14 @@ private:
     friend bool comparesEqual(const StringWrapper<T> &lhs, const StringWrapper<T> &rhs) noexcept
     { return StringWrapper<T>::equalsHelper(lhs.m_val, rhs.m_val); }
     template <typename T>
-    friend Qt::weak_ordering
+    friend BobUI::weak_ordering
     compareThreeWay(const StringWrapper<T> &lhs, const StringWrapper<T> &rhs) noexcept
     { return StringWrapper<T>::compareHelper(lhs.m_val, rhs.m_val); }
     template <typename T>
     friend bool comparesEqual(const StringWrapper<T> &lhs, QAnyStringView rhs)
     { return StringWrapper<T>::equalsHelper(lhs.m_val, rhs); }
     template <typename T>
-    friend Qt::weak_ordering compareThreeWay(const StringWrapper<T> &lhs, QAnyStringView rhs)
+    friend BobUI::weak_ordering compareThreeWay(const StringWrapper<T> &lhs, QAnyStringView rhs)
     { return StringWrapper<T>::compareHelper(lhs.m_val, rhs); }
 
     Q_DECLARE_WEAKLY_ORDERED(StringWrapper)

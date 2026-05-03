@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*! \class QFutureSynchronizer
     \since 4.4
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QFutureSynchronizer class is a convenience class that simplifies
     QFuture synchronization.
@@ -30,7 +30,7 @@
     You can query the status of the cancel-on-wait feature using the
     cancelOnWait() function.
 
-    \sa QFuture, QFutureWatcher, {Qt Concurrent}
+    \sa QFuture, QFutureWatcher, {BobUI Concurrent}
 */
 
 /*!

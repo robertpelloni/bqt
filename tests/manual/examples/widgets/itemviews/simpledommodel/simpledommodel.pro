@@ -5,10 +5,10 @@ SOURCES     = domitem.cpp \
               dommodel.cpp \
               main.cpp \
               mainwindow.cpp
-QT      += xml widgets
-requires(qtConfig(filedialog))
+BOBUI      += xml widgets
+requires(bobuiConfig(filedialog))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/simpledommodel
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/simpledommodel
 INSTALLS += target
 

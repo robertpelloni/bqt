@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qblittable_p.h"
 
-#ifndef QT_NO_BLITTABLE
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_BLITTABLE
+BOBUI_BEGIN_NAMESPACE
 
 class QBlittablePrivate
 {
@@ -68,6 +68,6 @@ bool QBlittable::isLocked() const
     return d->locked;
 }
 
-QT_END_NAMESPACE
-#endif //QT_NO_BLITTABLE
+BOBUI_END_NAMESPACE
+#endif //BOBUI_NO_BLITTABLE
 

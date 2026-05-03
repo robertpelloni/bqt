@@ -1,10 +1,10 @@
 // Copyright (C) 2021 Intel Corportaion.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef THEOLDPLUGIN_H
 #define THEOLDPLUGIN_H
 
 #include <QObject>
-#include <QtPlugin>
+#include <BobUIPlugin>
 #include "plugininterface.h"
 
 class TheOldPlugin : public QObject, public PluginInterface

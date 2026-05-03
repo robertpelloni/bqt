@@ -1,10 +1,10 @@
 [defaultFamily:cursive]
 centos
-b2qt
+b2bobui
 [defaultFamily:fantasy]
 centos
-b2qt
-# QTBUG-130738
+b2bobui
+# BOBUIBUG-130738
 [familyNameWithCommaQuote:weird]
 vxworks
 [familyNameWithCommaQuote:commaSeparatedWeird]

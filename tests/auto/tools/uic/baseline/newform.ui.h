@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'newform.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,27 +16,27 @@
 #ifndef NEWFORM_H
 #define NEWFORM_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_NewForm
 {
 public:
     QVBoxLayout *vboxLayout;
     QHBoxLayout *hboxLayout;
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
     QLabel *lblPreview;
     QFrame *horizontalLine;
     QCheckBox *chkShowOnStartup;
@@ -61,7 +61,7 @@ public:
 #endif
         hboxLayout->setContentsMargins(1, 1, 1, 1);
         hboxLayout->setObjectName("hboxLayout");
-        treeWidget = new QTreeWidget(NewForm);
+        treeWidget = new BOBUIreeWidget(NewForm);
         treeWidget->setObjectName("treeWidget");
         treeWidget->setIconSize(QSize(128, 128));
         treeWidget->setRootIsDecorated(false);
@@ -77,7 +77,7 @@ public:
         sizePolicy.setHeightForWidth(lblPreview->sizePolicy().hasHeightForWidth());
         lblPreview->setSizePolicy(sizePolicy);
         lblPreview->setLineWidth(1);
-        lblPreview->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        lblPreview->setAlignment(BobUI::AlignmentFlag::AlignCenter);
         lblPreview->setMargin(5);
 
         hboxLayout->addWidget(lblPreview);
@@ -111,8 +111,8 @@ public:
     void retranslateUi(QDialog *NewForm)
     {
         NewForm->setWindowTitle(QCoreApplication::translate("NewForm", "New Form", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = treeWidget->headerItem();
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("NewForm", "0", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem = treeWidget->headerItem();
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("NewForm", "0", nullptr));
         lblPreview->setText(QCoreApplication::translate("NewForm", "Choose a template for a preview", nullptr));
         chkShowOnStartup->setText(QCoreApplication::translate("NewForm", "Show this Dialog on Startup", nullptr));
     } // retranslateUi
@@ -123,6 +123,6 @@ namespace Ui {
     class NewForm: public Ui_NewForm {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // NEWFORM_H

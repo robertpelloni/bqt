@@ -1,18 +1,18 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QDebug>
-#include <QtCore/QMimeData>
-#include <QtGui/QDrag>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPixmap>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMimeData>
+#include <BobUIGui/QDrag>
+#include <BobUIGui/QMouseEvent>
+#include <BobUIGui/QPixmap>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-using namespace Qt::Literals;
+using namespace BobUI::Literals;
 
 class DraggableLabel : public QLabel
 {
@@ -51,7 +51,7 @@ protected:
         drag->setPixmap(pixmap);
         drag->setHotSpot(event->pos() - this->rect().topLeft());
 
-        drag->exec(Qt::CopyAction | Qt::MoveAction);
+        drag->exec(BobUI::CopyAction | BobUI::MoveAction);
     }
 
 private:
@@ -68,7 +68,7 @@ public:
         setMinimumSize(200, 200);
         setAutoFillBackground(true);
         QPalette pal = palette();
-        pal.setColor(QPalette::Window, Qt::lightGray);
+        pal.setColor(QPalette::Window, BobUI::lightGray);
         setPalette(pal);
     }
 
@@ -85,7 +85,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override
     {
         qDebug() << "DropArea: Mouse Move Event at:" << event->pos();
-        if (!(event->buttons() & Qt::LeftButton))
+        if (!(event->buttons() & BobUI::LeftButton))
             return;
         if ((event->pos() - m_dragStartPosition).manhattanLength()
             < QApplication::startDragDistance())
@@ -98,7 +98,7 @@ protected:
         drag->setMimeData(mimeData);
 
         qDebug() << "DropArea: Starting drag...";
-        drag->exec(Qt::CopyAction | Qt::MoveAction);
+        drag->exec(BobUI::CopyAction | BobUI::MoveAction);
     }
 
     void mouseReleaseEvent(QMouseEvent *event) override
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
     layout->addWidget(dragDropWidget);
 
     w.setCentralWidget(centralWidget);
-    w.setWindowTitle(u"Qt Drag and Drop Test"_s);
+    w.setWindowTitle(u"BobUI Drag and Drop Test"_s);
     w.show();
 
     return a.exec();

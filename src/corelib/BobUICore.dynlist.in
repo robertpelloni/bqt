@@ -1,0 +1,8 @@
+{
+     extern "C" {
+         "bobui_startup_hook@BOBUI_NAMESPACE_MANGLE_SUFFIX@";
+     };
+     extern "C++" {
+         "@BOBUI_NAMESPACE_PREFIX@QEventLoop::exec(@BOBUI_NAMESPACE_PREFIX@QFlags<@BOBUI_NAMESPACE_PREFIX@QEventLoop::ProcessEventsFlag>)";
+     };
+};

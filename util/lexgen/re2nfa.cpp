@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "re2nfa.h"
 #include "tokenizer.cpp"
 
-RE2NFA::RE2NFA(const QMap<QString, NFA> &macros, const QSet<InputType> &maxInputSet, Qt::CaseSensitivity cs)
+RE2NFA::RE2NFA(const QMap<QString, NFA> &macros, const QSet<InputType> &maxInputSet, BobUI::CaseSensitivity cs)
     : macros(macros), index(0), errorColumn(-1), maxInputSet(maxInputSet), caseSensitivity(cs)
 {
 }
@@ -177,7 +177,7 @@ NFA RE2NFA::parseSet()
                     qSwap(ch, last);
 
                 for (ushort i = ch.unicode(); i <= last.unicode(); ++i) {
-                    if (caseSensitivity == Qt::CaseInsensitive) {
+                    if (caseSensitivity == BobUI::CaseInsensitive) {
                         set.insert(QChar(i).toLower().unicode());
                     } else {
                         set.insert(i);
@@ -191,7 +191,7 @@ NFA RE2NFA::parseSet()
         }
 
         if (!rangeFound) {
-            if (caseSensitivity == Qt::CaseInsensitive) {
+            if (caseSensitivity == BobUI::CaseInsensitive) {
                 set.insert(ch.toLower().unicode());
             } else {
                 set.insert(ch.unicode());
@@ -237,7 +237,7 @@ NFA RE2NFA::parseSet2()
                 qSwap(ch, last);
 
             for (ushort i = ch.unicode(); i <= last.unicode(); ++i) {
-                if (caseSensitivity == Qt::CaseInsensitive) {
+                if (caseSensitivity == BobUI::CaseInsensitive) {
                     set.insert(QChar(i).toLower().unicode());
                 } else {
                     set.insert(i);
@@ -248,7 +248,7 @@ NFA RE2NFA::parseSet2()
         }
 
         if (!rangeFound) {
-            if (caseSensitivity == Qt::CaseInsensitive) {
+            if (caseSensitivity == BobUI::CaseInsensitive) {
                 set.insert(ch.toLower().unicode());
             } else {
                 set.insert(ch.unicode());
@@ -268,7 +268,7 @@ NFA RE2NFA::createCharNFA()
 {
     NFA nfa;
     // ####
-    if (caseSensitivity == Qt::CaseInsensitive) {
+    if (caseSensitivity == BobUI::CaseInsensitive) {
         nfa = NFA::createStringNFA(symbol().lexem.toLower().toLatin1());
     } else {
         nfa = NFA::createStringNFA(symbol().lexem.toLatin1());

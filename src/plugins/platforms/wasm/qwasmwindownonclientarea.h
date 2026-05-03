@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMWINDOWNONCLIENTAREA_H
 #define QWASMWINDOWNONCLIENTAREA_H
 
-#include <QtCore/qrect.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/qnamespace.h>
 
 #include <emscripten/val.h>
 
@@ -15,7 +15,7 @@
 #include <string_view>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qstdweb {
 class EventCallback;
@@ -40,7 +40,7 @@ public:
 private:
     void updateResizability();
 
-    emscripten::val m_qtWindowElement;
+    emscripten::val m_bobuiWindowElement;
     std::unique_ptr<Resizer> m_resizer;
     std::unique_ptr<TitleBar> m_titleBar;
 };
@@ -103,31 +103,31 @@ public:
     class ResizerElement
     {
     public:
-        static constexpr const char *cssClassNameForEdges(Qt::Edges edges)
+        static constexpr const char *cssClassNameForEdges(BobUI::Edges edges)
         {
             switch (edges) {
-            case Qt::TopEdge | Qt::LeftEdge:;
+            case BobUI::TopEdge | BobUI::LeftEdge:;
                 return "nw";
-            case Qt::TopEdge:
+            case BobUI::TopEdge:
                 return "n";
-            case Qt::TopEdge | Qt::RightEdge:
+            case BobUI::TopEdge | BobUI::RightEdge:
                 return "ne";
-            case Qt::LeftEdge:
+            case BobUI::LeftEdge:
                 return "w";
-            case Qt::RightEdge:
+            case BobUI::RightEdge:
                 return "e";
-            case Qt::BottomEdge | Qt::LeftEdge:
+            case BobUI::BottomEdge | BobUI::LeftEdge:
                 return "sw";
-            case Qt::BottomEdge:
+            case BobUI::BottomEdge:
                 return "s";
-            case Qt::BottomEdge | Qt::RightEdge:
+            case BobUI::BottomEdge | BobUI::RightEdge:
                 return "se";
             default:
                 return "";
             }
         }
 
-        ResizerElement(emscripten::val parentElement, Qt::Edges edges, Resizer *resizer);
+        ResizerElement(emscripten::val parentElement, BobUI::Edges edges, Resizer *resizer);
         ~ResizerElement();
         ResizerElement(const ResizerElement &other) = delete;
         ResizerElement(ResizerElement &&other);
@@ -143,7 +143,7 @@ public:
 
         int m_capturedPointerId = -1;
 
-        const Qt::Edges m_edges;
+        const BobUI::Edges m_edges;
 
         Resizer *m_resizer;
 
@@ -161,13 +161,13 @@ public:
 
 private:
     void onInteraction();
-    void startResize(Qt::Edges resizeEdges, const PointerEvent &event);
+    void startResize(BobUI::Edges resizeEdges, const PointerEvent &event);
     void continueResize(const PointerEvent &event);
     void finishResize();
 
     struct ResizeData
     {
-        Qt::Edges edges = Qt::Edges::fromInt(0);
+        BobUI::Edges edges = BobUI::Edges::fromInt(0);
         QPointF originInScreenCoords;
         QPoint minShrink;
         QPoint maxGrow;
@@ -223,5 +223,5 @@ private:
     std::unique_ptr<qstdweb::EventCallback> m_doubleClickEvent;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QWASMWINDOWNONCLIENTAREA_H

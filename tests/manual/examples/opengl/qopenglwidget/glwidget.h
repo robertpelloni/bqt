@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
@@ -16,9 +16,9 @@
 class Bubble;
 class MainWindow;
 
-QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
-QT_FORWARD_DECLARE_CLASS(QOpenGLShader)
-QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLTexture)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLShader)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -41,7 +41,7 @@ protected:
 
 private:
     void paintTexturedCube();
-    void paintQtLogo();
+    void paintBobUILogo();
     void createGeometry();
     void createBubbles(int number);
     void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
@@ -54,7 +54,7 @@ private:
     bool m_showBubbles = true;
     QList<QVector3D> m_vertices;
     QList<QVector3D> m_normals;
-    bool m_qtLogo = true;
+    bool m_bobuiLogo = true;
     QList<Bubble *> m_bubbles;
     int m_frames = 0;
     QElapsedTimer m_time;

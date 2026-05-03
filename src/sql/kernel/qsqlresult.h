@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLRESULT_H
 #define QSQLRESULT_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qcontainerfwd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QString;
@@ -65,11 +65,11 @@ protected:
     QSql::ParamType bindValueType(const QString& placeholder) const;
     QSql::ParamType bindValueType(int pos) const;
     int boundValueCount() const;
-#if QT_SQL_REMOVED_SINCE(6, 6)
+#if BOBUI_SQL_REMOVED_SINCE(6, 6)
     QList<QVariant> &boundValues() const;
 #endif
-    QVariantList &boundValues(QT6_DECL_NEW_OVERLOAD);
-    QVariantList boundValues(QT6_DECL_NEW_OVERLOAD) const;
+    QVariantList &boundValues(BOBUI6_DECL_NEW_OVERLOAD);
+    QVariantList boundValues(BOBUI6_DECL_NEW_OVERLOAD) const;
 
     QString executedQuery() const;
     QStringList boundValueNames() const;
@@ -109,6 +109,6 @@ private:
     Q_DISABLE_COPY(QSqlResult)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLRESULT_H

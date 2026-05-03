@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # Copyright (C) 2022 Mimer Information Technology
 # SPDX-License-Identifier: BSD-3-Clause
 

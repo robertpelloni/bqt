@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'buttongroup.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,22 +9,22 @@
 #ifndef BUTTONGROUP_H
 #define BUTTONGROUP_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QButtonGroup>
+#include <BobUIWidgets/QDoubleSpinBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QGraphicsView>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Form
 {
@@ -63,7 +63,7 @@ public:
         sizePolicy.setHeightForWidth(easingCurvePicker->sizePolicy().hasHeightForWidth());
         easingCurvePicker->setSizePolicy(sizePolicy);
         easingCurvePicker->setMaximumSize(QSize(16777215, 120));
-        easingCurvePicker->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+        easingCurvePicker->setVerticalScrollBarPolicy(BobUI::ScrollBarPolicy::ScrollBarAlwaysOff);
         easingCurvePicker->setMovement(QListView::Movement::Static);
         easingCurvePicker->setProperty("isWrapping", QVariant(false));
         easingCurvePicker->setViewMode(QListView::ViewMode::IconMode);
@@ -84,7 +84,7 @@ public:
         buttonGroup->addButton(lineRadio);
         lineRadio->setObjectName("lineRadio");
         lineRadio->setMaximumSize(QSize(16777215, 40));
-        lineRadio->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        lineRadio->setLayoutDirection(BobUI::LayoutDirection::LeftToRight);
         lineRadio->setChecked(true);
 
         gridLayout_2->addWidget(lineRadio, 0, 0, 1, 1);
@@ -211,6 +211,6 @@ namespace Ui {
     class Form: public Ui_Form {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // BUTTONGROUP_H

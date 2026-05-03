@@ -1,13 +1,13 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#define QT_GUI_BUILD_REMOVED_API
+#define BOBUI_GUI_BUILD_REMOVED_API
 
-#include "qtguiglobal.h"
+#include "bobuiguiglobal.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-#if QT_GUI_REMOVED_SINCE(6, 4)
+#if BOBUI_GUI_REMOVED_SINCE(6, 4)
 
 #include "qpagesize.h" // removed duplicate declaration of op==
                        // (still caused an symbol on some platforms)
@@ -16,9 +16,9 @@ QT_USE_NAMESPACE
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_GUI_REMOVED_SINCE(6, 4)
+#endif // BOBUI_GUI_REMOVED_SINCE(6, 4)
 
-#if QT_GUI_REMOVED_SINCE(6, 6)
+#if BOBUI_GUI_REMOVED_SINCE(6, 6)
 
 #include "qpixmapcache.h" // inlined API
 
@@ -26,24 +26,24 @@ QT_USE_NAMESPACE
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_GUI_REMOVED_SINCE(6, 6)
+#endif // BOBUI_GUI_REMOVED_SINCE(6, 6)
 
-#if QT_GUI_REMOVED_SINCE(6, 7)
+#if BOBUI_GUI_REMOVED_SINCE(6, 7)
 
-#include "qtextdocument.h"
+#include "bobuiextdocument.h"
 
-bool Qt::mightBeRichText(const QString& text)
+bool BobUI::mightBeRichText(const QString& text)
 {
-    return Qt::mightBeRichText(qToStringViewIgnoringNull(text));
+    return BobUI::mightBeRichText(qToStringViewIgnoringNull(text));
 }
 
 // #include "qotherheader.h"
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_GUI_REMOVED_SINCE(6, 7)
+#endif // BOBUI_GUI_REMOVED_SINCE(6, 7)
 
-#if QT_GUI_REMOVED_SINCE(6, 8)
+#if BOBUI_GUI_REMOVED_SINCE(6, 8)
 
 #include "qpagelayout.h"
 
@@ -72,24 +72,24 @@ bool QPageLayout::setBottomMargin(qreal bottomMargin)
     return setBottomMargin(bottomMargin, OutOfBoundsPolicy::Reject);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 #include <qpa/qwindowsysteminterface.h>
 void QWindowSystemInterface::handleContextMenuEvent(QWindow *window, bool mouseTriggered,
                                                     const QPoint &pos, const QPoint &globalPos,
-                                                    Qt::KeyboardModifiers modifiers)
+                                                    BobUI::KeyboardModifiers modifiers)
 {
     handleContextMenuEvent<QWindowSystemInterface::DefaultDelivery>(
         window, mouseTriggered, pos, globalPos, modifiers);
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 // #include "qotherheader.h"
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_GUI_REMOVED_SINCE(6, 8)
+#endif // BOBUI_GUI_REMOVED_SINCE(6, 8)
 
-#if QT_GUI_REMOVED_SINCE(6, 11)
+#if BOBUI_GUI_REMOVED_SINCE(6, 11)
 
 #include "qpainter.h" // inlined API
 
@@ -100,4 +100,4 @@ void QWindowSystemInterface::handleContextMenuEvent(QWindow *window, bool mouseT
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_GUI_REMOVED_SINCE(6, 11)
+#endif // BOBUI_GUI_REMOVED_SINCE(6, 11)

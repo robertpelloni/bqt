@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRIDLAYOUT_H
 #define QGRIDLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qlayout.h>
-#ifdef QT_INCLUDE_COMPAT
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qlayout.h>
+#ifdef BOBUI_INCLUDE_COMPAT
+#include <BobUIWidgets/qwidget.h>
 #endif
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QGridLayoutPrivate;
@@ -59,17 +59,17 @@ public:
     int heightForWidth(int) const override;
     int minimumHeightForWidth(int) const override;
 
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     void invalidate() override;
 
     inline void addWidget(QWidget *w) { QLayout::addWidget(w); }
-    void addWidget(QWidget *, int row, int column, Qt::Alignment = Qt::Alignment());
-    void addWidget(QWidget *, int row, int column, int rowSpan, int columnSpan, Qt::Alignment = Qt::Alignment());
-    void addLayout(QLayout *, int row, int column, Qt::Alignment = Qt::Alignment());
-    void addLayout(QLayout *, int row, int column, int rowSpan, int columnSpan, Qt::Alignment = Qt::Alignment());
+    void addWidget(QWidget *, int row, int column, BobUI::Alignment = BobUI::Alignment());
+    void addWidget(QWidget *, int row, int column, int rowSpan, int columnSpan, BobUI::Alignment = BobUI::Alignment());
+    void addLayout(QLayout *, int row, int column, BobUI::Alignment = BobUI::Alignment());
+    void addLayout(QLayout *, int row, int column, int rowSpan, int columnSpan, BobUI::Alignment = BobUI::Alignment());
 
-    void setOriginCorner(Qt::Corner);
-    Qt::Corner originCorner() const;
+    void setOriginCorner(BobUI::Corner);
+    BobUI::Corner originCorner() const;
 
     QLayoutItem *itemAt(int index) const override;
     QLayoutItem *itemAtPosition(int row, int column) const;
@@ -77,9 +77,9 @@ public:
     int count() const override;
     void setGeometry(const QRect&) override;
 
-    void addItem(QLayoutItem *item, int row, int column, int rowSpan = 1, int columnSpan = 1, Qt::Alignment = Qt::Alignment());
+    void addItem(QLayoutItem *item, int row, int column, int rowSpan = 1, int columnSpan = 1, BobUI::Alignment = BobUI::Alignment());
 
-    void setDefaultPositioning(int n, Qt::Orientation orient);
+    void setDefaultPositioning(int n, BobUI::Orientation orient);
     void getItemPosition(int idx, int *row, int *column, int *rowSpan, int *columnSpan) const;
 
 protected:
@@ -90,6 +90,6 @@ private:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRIDLAYOUT_H

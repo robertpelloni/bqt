@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QGraphicsView>
@@ -15,7 +15,7 @@ public:
         startTimer(500);
     }
 protected:
-    void timerEvent(QTimerEvent *)
+    void timerEvent(BOBUIimerEvent *)
     {
         itemToToggle->setVisible(!itemToToggle->isVisible());
     }
@@ -29,11 +29,11 @@ int main(int argc, char *argv[])
     QGraphicsView gv;
     QGraphicsScene *scene = new QGraphicsScene(&gv);
     gv.setScene(scene);
-    QGraphicsItem *rect = scene->addRect(0, 0, 200, 200, QPen(Qt::NoPen), QBrush(Qt::yellow));
+    QGraphicsItem *rect = scene->addRect(0, 0, 200, 200, QPen(BobUI::NoPen), QBrush(BobUI::yellow));
     rect->setFlag(QGraphicsItem::ItemHasNoContents);
     rect->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 
-    QGraphicsItem *childRect = scene->addRect(0, 0, 100, 100, QPen(Qt::NoPen), QBrush(Qt::red));
+    QGraphicsItem *childRect = scene->addRect(0, 0, 100, 100, QPen(BobUI::NoPen), QBrush(BobUI::red));
     childRect->setParentItem(rect);
     gv.show();
     MyObject o(rect);

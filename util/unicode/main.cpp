@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include <qbytearray.h>
 #include <qchar.h>
@@ -17,20 +17,20 @@
 #endif
 
 #include <array>
-#include <QtCore/qxpfunctional.h>
-#include <QtCore/q26numeric.h>
+#include <BobUICore/qxpfunctional.h>
+#include <BobUICore/q26numeric.h>
 #include <vector>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 9, 0)
 // QSpan, QIODevice::readLineInto()
 // QHash heterogeneous lookup
-#  error This tool needs Qt >= 6.9, even if you are building tables for Qt 6.5 or 6.8.
+#  error This tool needs BobUI >= 6.9, even if you are building tables for BobUI 6.5 or 6.8.
 #endif
 
 #define DATA_VERSION_S "16.0"
 #define DATA_VERSION_STR "QChar::Unicode_16_0"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #ifndef qPrintableView
 // expands to x.size(), x.data() for use with "%.*s"
@@ -939,7 +939,7 @@ static const char *idna_status_string =
     "};\n\n";
 
 // Resolved IDNA status as it goes into the database.
-// Qt extends host name validity rules to allow underscores
+// BobUI extends host name validity rules to allow underscores
 // NOTE: The members here should come in the same order and have the same values
 // as in IdnaRawStatus
 enum class IdnaStatus : unsigned int {
@@ -1030,38 +1030,38 @@ static const char *property_string =
     "    ushort reserved            : 16; /* makes sizeof a nice round 16 bytes */\n"
     "};\n\n"
     "Q_DECL_CONST_FUNCTION\n"
-    "Q_CORE_EXPORT const Properties * QT_FASTCALL properties(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT const Properties * BOBUI_FASTCALL properties(char32_t ucs4) noexcept;\n"
     "\n"
     "Q_DECL_CONST_FUNCTION Q_CORE_EXPORT\n"
-    "QSpan<const CaseConversion, NumCases> QT_FASTCALL caseConversion(char32_t ucs4) noexcept;\n"
+    "QSpan<const CaseConversion, NumCases> BOBUI_FASTCALL caseConversion(char32_t ucs4) noexcept;\n"
     "\n";
 
 static const char *methods =
-    "Q_CORE_EXPORT GraphemeBreakClass QT_FASTCALL graphemeBreakClass(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT GraphemeBreakClass BOBUI_FASTCALL graphemeBreakClass(char32_t ucs4) noexcept;\n"
     "inline GraphemeBreakClass graphemeBreakClass(QChar ch) noexcept\n"
     "{ return graphemeBreakClass(ch.unicode()); }\n"
     "\n"
-    "Q_CORE_EXPORT WordBreakClass QT_FASTCALL wordBreakClass(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT WordBreakClass BOBUI_FASTCALL wordBreakClass(char32_t ucs4) noexcept;\n"
     "inline WordBreakClass wordBreakClass(QChar ch) noexcept\n"
     "{ return wordBreakClass(ch.unicode()); }\n"
     "\n"
-    "Q_CORE_EXPORT SentenceBreakClass QT_FASTCALL sentenceBreakClass(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT SentenceBreakClass BOBUI_FASTCALL sentenceBreakClass(char32_t ucs4) noexcept;\n"
     "inline SentenceBreakClass sentenceBreakClass(QChar ch) noexcept\n"
     "{ return sentenceBreakClass(ch.unicode()); }\n"
     "\n"
-    "Q_CORE_EXPORT LineBreakClass QT_FASTCALL lineBreakClass(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT LineBreakClass BOBUI_FASTCALL lineBreakClass(char32_t ucs4) noexcept;\n"
     "inline LineBreakClass lineBreakClass(QChar ch) noexcept\n"
     "{ return lineBreakClass(ch.unicode()); }\n"
     "\n"
-    "Q_CORE_EXPORT IdnaStatus QT_FASTCALL idnaStatus(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT IdnaStatus BOBUI_FASTCALL idnaStatus(char32_t ucs4) noexcept;\n"
     "inline IdnaStatus idnaStatus(QChar ch) noexcept\n"
     "{ return idnaStatus(ch.unicode()); }\n"
     "\n"
-    "Q_CORE_EXPORT QStringView QT_FASTCALL idnaMapping(char32_t usc4) noexcept;\n"
+    "Q_CORE_EXPORT QStringView BOBUI_FASTCALL idnaMapping(char32_t usc4) noexcept;\n"
     "inline QStringView idnaMapping(QChar ch) noexcept\n"
     "{ return idnaMapping(ch.unicode()); }\n"
     "\n"
-    "Q_CORE_EXPORT EastAsianWidth QT_FASTCALL eastAsianWidth(char32_t ucs4) noexcept;\n"
+    "Q_CORE_EXPORT EastAsianWidth BOBUI_FASTCALL eastAsianWidth(char32_t ucs4) noexcept;\n"
     "inline EastAsianWidth eastAsianWidth(QChar ch) noexcept\n"
     "{ return eastAsianWidth(ch.unicode()); }\n"
     "\n";
@@ -1372,7 +1372,7 @@ void readUnicodeFile(const char *fileName,
         if (line.isEmpty())
             continue;
         fields.clear();
-        qTokenize(QLatin1StringView{line}, u';', Qt::KeepEmptyParts)
+        qTokenize(QLatin1StringView{line}, u';', BobUI::KeepEmptyParts)
                 .toContainer(fields);
         for (auto &field: fields)
             field = field.trimmed();
@@ -1396,7 +1396,7 @@ template <typename Sep = char16_t>
 QVarLengthArray<int, 4> parseHexList(QByteArrayView input, Location loc, Sep sep = u' ')
 {
     QVarLengthArray<int, 4> result;
-    const auto sb = sep == u' ' ? Qt::SkipEmptyParts : Qt::KeepEmptyParts;
+    const auto sb = sep == u' ' ? BobUI::SkipEmptyParts : BobUI::KeepEmptyParts;
     for (auto e : qTokenize(QLatin1StringView{input}, sep, sb))
         result.push_back(parseHex(e, loc));
     return result;
@@ -1585,7 +1585,7 @@ static void readBidiMirroring()
         const int mirror = parseHex(pair[1], loc);
 
         if (QChar::requiresSurrogates(codepoint) || QChar::requiresSurrogates(mirror)) {
-            loc.die("QTextEngine assumes that no mirrored pairs exist beyond the BMP, "
+            loc.die("BOBUIextEngine assumes that no mirrored pairs exist beyond the BMP, "
                     "but U+%05x and U+%05x do. Fix the implementation.",
                     codepoint, mirror);
         }
@@ -1653,7 +1653,7 @@ static void readDerivedAge()
         const auto [from, to] = parseHexRange(l[0], loc);
 
         QChar::UnicodeVersion age = age_map.value(l[1], QChar::Unicode_Unassigned);
-        //qDebug() << Qt::hex << from << ".." << to << ba << age;
+        //qDebug() << BobUI::hex << from << ".." << to << ba << age;
         if (age == QChar::Unicode_Unassigned)
             loc.die("Unassigned or unhandled age value \"%.*s\".", qPrintableView(l[1]));
 
@@ -1851,7 +1851,7 @@ static void readSpecialCasing()
         // lower/upper/title casing code and case folding code
         Q_ASSERT(!QChar::requiresSurrogates(codepoint));
 
-//         qDebug() << "codepoint" << Qt::hex << codepoint;
+//         qDebug() << "codepoint" << BobUI::hex << codepoint;
 //         qDebug() << line;
 
         const auto lowerMap = parseHexList(l[1], loc);
@@ -1892,7 +1892,7 @@ static void readCaseFolding()
         if (l[1] == "F" || l[1] == "T")
             return;
 
-//         qDebug() << "codepoint" << Qt::hex << codepoint;
+//         qDebug() << "codepoint" << BobUI::hex << codepoint;
 //         qDebug() << line;
         const auto foldMap = parseHexList(l[2], loc);
 
@@ -1915,7 +1915,7 @@ static void readCaseFolding()
             }
         } else {
             qFatal("we currently don't support full case foldings");
-//             qDebug() << "special" << Qt::hex << foldMap;
+//             qDebug() << "special" << BobUI::hex << foldMap;
             ud.p.caseFoldSpecial = true;
             ud.p.caseFoldDiff = appendToSpecialCaseMap(foldMap);
         }
@@ -2286,8 +2286,8 @@ static void readIdnaMappingTable()
 /*
     Resolve IDNA status by deciding whether to allow STD3 violations
 
-    Underscores are normally prohibited by STD3 rules but Qt allows underscores
-    to be used inside URLs (see QTBUG-7434 for example). This code changes the
+    Underscores are normally prohibited by STD3 rules but BobUI allows underscores
+    to be used inside URLs (see BOBUIBUG-7434 for example). This code changes the
     underscore status to Valid. The same is done to mapped codepoints that
     map to underscores combined with other Valid codepoints.
 
@@ -2547,7 +2547,7 @@ static QByteArray createIdnaMapping()
 
     out +=
         "};\n\n"
-        "Q_CORE_EXPORT QStringView QT_FASTCALL idnaMapping(char32_t ucs4) noexcept\n"
+        "Q_CORE_EXPORT QStringView BOBUI_FASTCALL idnaMapping(char32_t ucs4) noexcept\n"
         "{\n"
         "    auto i = std::lower_bound(std::begin(idnaMap), std::end(idnaMap), ucs4,\n"
         "                              [](const auto &p, char32_t c) { return p.codePoint < c; });\n"
@@ -2897,42 +2897,42 @@ static QByteArray createPropertyInfo()
            + QByteArray::number(SMP_BLOCKSIZE - 1, 16) + ")];\n"
            "}\n"
            "\n"
-           "const Properties * QT_FASTCALL properties(char32_t ucs4) noexcept\n"
+           "const Properties * BOBUI_FASTCALL properties(char32_t ucs4) noexcept\n"
            "{\n"
            "    return qGetProp(ucs4);\n"
            "}\n"
            "\n"
-           "QSpan<const CaseConversion, NumCases> QT_FASTCALL caseConversion(char32_t ucs4) noexcept\n"
+           "QSpan<const CaseConversion, NumCases> BOBUI_FASTCALL caseConversion(char32_t ucs4) noexcept\n"
            "{\n"
            "    return caseConversions[qGetProp(ucs4)->caseIndex];\n"
            "}\n\n";
 
-    out += "Q_CORE_EXPORT GraphemeBreakClass QT_FASTCALL graphemeBreakClass(char32_t ucs4) noexcept\n"
+    out += "Q_CORE_EXPORT GraphemeBreakClass BOBUI_FASTCALL graphemeBreakClass(char32_t ucs4) noexcept\n"
            "{\n"
            "    return static_cast<GraphemeBreakClass>(qGetProp(ucs4)->graphemeBreakClass);\n"
            "}\n"
            "\n"
-           "Q_CORE_EXPORT WordBreakClass QT_FASTCALL wordBreakClass(char32_t ucs4) noexcept\n"
+           "Q_CORE_EXPORT WordBreakClass BOBUI_FASTCALL wordBreakClass(char32_t ucs4) noexcept\n"
            "{\n"
            "    return static_cast<WordBreakClass>(qGetProp(ucs4)->wordBreakClass);\n"
            "}\n"
            "\n"
-           "Q_CORE_EXPORT SentenceBreakClass QT_FASTCALL sentenceBreakClass(char32_t ucs4) noexcept\n"
+           "Q_CORE_EXPORT SentenceBreakClass BOBUI_FASTCALL sentenceBreakClass(char32_t ucs4) noexcept\n"
            "{\n"
            "    return static_cast<SentenceBreakClass>(qGetProp(ucs4)->sentenceBreakClass);\n"
            "}\n"
            "\n"
-           "Q_CORE_EXPORT LineBreakClass QT_FASTCALL lineBreakClass(char32_t ucs4) noexcept\n"
+           "Q_CORE_EXPORT LineBreakClass BOBUI_FASTCALL lineBreakClass(char32_t ucs4) noexcept\n"
            "{\n"
            "    return static_cast<LineBreakClass>(qGetProp(ucs4)->lineBreakClass);\n"
            "}\n"
            "\n"
-           "Q_CORE_EXPORT IdnaStatus QT_FASTCALL idnaStatus(char32_t ucs4) noexcept\n"
+           "Q_CORE_EXPORT IdnaStatus BOBUI_FASTCALL idnaStatus(char32_t ucs4) noexcept\n"
            "{\n"
            "    return static_cast<IdnaStatus>(qGetProp(ucs4)->idnaStatus);\n"
            "}\n"
            "\n"
-           "Q_CORE_EXPORT EastAsianWidth QT_FASTCALL eastAsianWidth(char32_t ucs4) noexcept\n"
+           "Q_CORE_EXPORT EastAsianWidth BOBUI_FASTCALL eastAsianWidth(char32_t ucs4) noexcept\n"
            "{\n"
            "    return static_cast<EastAsianWidth>(qGetProp(ucs4)->eastAsianWidth);\n"
            "}\n"
@@ -3435,9 +3435,9 @@ int main(int, char **)
 
     // REUSE-IgnoreStart
     QByteArray header =
-        "// Copyright (C) 2020 The Qt Company Ltd.\n"
+        "// Copyright (C) 2020 The BobUI Company Ltd.\n"
         "// SPDX-License-Identifier: Unicode-3.0\n"
-        "// Qt-Security score:significant reason:default\n"
+        "// BobUI-Security score:significant reason:default\n"
         "\n";
     // REUSE-IgnoreEnd
 
@@ -3449,7 +3449,7 @@ int main(int, char **)
         "//  W A R N I N G\n"
         "//  -------------\n"
         "//\n"
-        "// This file is not part of the Qt API.  It exists for the convenience\n"
+        "// This file is not part of the BobUI API.  It exists for the convenience\n"
         "// of internal files.  This header file may change from version to version\n"
         "// without notice, or even be removed.\n"
         "//\n"
@@ -3462,7 +3462,7 @@ int main(int, char **)
     f.write(header);
     f.write(note);
     f.write("#include \"qunicodetables_p.h\"\n\n");
-    f.write("QT_BEGIN_NAMESPACE\n\n");
+    f.write("BOBUI_BEGIN_NAMESPACE\n\n");
     f.write("namespace QUnicodeTables {\n");
     f.write(caseConv.data());
     f.write(properties);
@@ -3474,7 +3474,7 @@ int main(int, char **)
     f.write(idnaMapping);
     f.write("} // namespace QUnicodeTables\n\n");
     f.write("using namespace QUnicodeTables;\n\n");
-    f.write("QT_END_NAMESPACE\n");
+    f.write("BOBUI_END_NAMESPACE\n");
     f.close();
 
     f.setFileName("../../src/corelib/text/qunicodetables_p.h");
@@ -3485,12 +3485,12 @@ int main(int, char **)
     f.write(warning);
     f.write("#ifndef QUNICODETABLES_P_H\n"
             "#define QUNICODETABLES_P_H\n\n"
-            "#include <QtCore/private/qglobal_p.h>\n\n"
-            "#include <QtCore/qchar.h>\n\n"
-            "#include <QtCore/qspan.h>\n\n"
+            "#include <BobUICore/private/qglobal_p.h>\n\n"
+            "#include <BobUICore/qchar.h>\n\n"
+            "#include <BobUICore/qspan.h>\n\n"
             "#include <array>\n"
             "\n"
-            "QT_BEGIN_NAMESPACE\n\n");
+            "BOBUI_BEGIN_NAMESPACE\n\n");
     f.write("#define UNICODE_DATA_VERSION " DATA_VERSION_STR "\n\n");
     f.write("namespace QUnicodeTables {\n\n");
     f.write(property_string);
@@ -3504,7 +3504,7 @@ int main(int, char **)
     f.write(emoji_flags_string);
     f.write(methods);
     f.write("} // namespace QUnicodeTables\n\n"
-            "QT_END_NAMESPACE\n\n"
+            "BOBUI_END_NAMESPACE\n\n"
             "#endif // QUNICODETABLES_P_H\n");
     f.close();
 

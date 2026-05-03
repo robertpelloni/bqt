@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
@@ -26,7 +26,7 @@ static bool createConnection()
         QMessageBox::critical(nullptr, QObject::tr("Cannot open database"),
             QObject::tr("Unable to establish a database connection.\n"
                         "This example needs SQLite support. Please read "
-                        "the Qt SQL driver documentation for information how "
+                        "the BobUI SQL driver documentation for information how "
                         "to build it.\n\n"
                         "Click Cancel to exit."), QMessageBox::Cancel);
         return false;
@@ -46,33 +46,33 @@ static bool createConnection()
                                              "itemtype varchar(20),"
                                              "description varchar(100))");
     query.exec("insert into items "
-               "values(0, 0, 'Qt',"
-               "'Qt is a full development framework with tools designed to "
+               "values(0, 0, 'BobUI',"
+               "'BobUI is a full development framework with tools designed to "
                "streamline the creation of stunning applications and  "
                "amazing user interfaces for desktop, embedded and mobile "
                "platforms.')");
     query.exec("insert into items "
-               "values(1, 1, 'Qt Quick',"
-               "'Qt Quick is a collection of techniques designed to help "
+               "values(1, 1, 'BobUI Quick',"
+               "'BobUI Quick is a collection of techniques designed to help "
                "developers create intuitive, modern-looking, and fluid "
                "user interfaces using a CSS & JavaScript like language.')");
     query.exec("insert into items "
-               "values(2, 2, 'Qt Creator',"
-               "'Qt Creator is a powerful cross-platform integrated "
+               "values(2, 2, 'BobUI Creator',"
+               "'BobUI Creator is a powerful cross-platform integrated "
                "development environment (IDE), including UI design tools "
                "and on-device debugging.')");
     query.exec("insert into items "
-               "values(3, 3, 'Qt Project',"
-               "'The Qt Project governs the open source development of Qt, "
+               "values(3, 3, 'BobUI Project',"
+               "'The BobUI Project governs the open source development of BobUI, "
                "allowing anyone wanting to contribute to join the effort "
                "through a meritocratic structure of approvers and "
                "maintainers.')");
 
     query.exec("create table images (itemid int, file varchar(20))");
-    query.exec("insert into images values(0, 'images/qt-logo.png')");
-    query.exec("insert into images values(1, 'images/qt-quick.png')");
-    query.exec("insert into images values(2, 'images/qt-creator.png')");
-    query.exec("insert into images values(3, 'images/qt-project.png')");
+    query.exec("insert into images values(0, 'images/bobui-logo.png')");
+    query.exec("insert into images values(1, 'images/bobui-quick.png')");
+    query.exec("insert into images values(2, 'images/bobui-creator.png')");
+    query.exec("insert into images values(3, 'images/bobui-project.png')");
 
     return true;
 }

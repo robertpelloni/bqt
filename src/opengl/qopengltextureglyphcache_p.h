@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLTEXTUREGLYPHCACHE_P_H
 #define QOPENGLTEXTUREGLYPHCACHE_P_H
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtOpenGL/qtopenglglobal.h>
-#include <private/qtextureglyphcache_p.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
+#include <private/bobuiextureglyphcache_p.h>
 #include <private/qopenglcontext_p.h>
 #include <qopenglshaderprogram.h>
 #include <qopenglfunctions.h>
 #include <qopenglbuffer.h>
 #include <qopenglvertexarrayobject.h>
 
-// #define QT_GL_TEXTURE_GLYPH_CACHE_DEBUG
+// #define BOBUI_GL_TEXTURE_GLYPH_CACHE_DEBUG
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGL2PaintEngineExPrivate;
 
@@ -40,7 +40,7 @@ public:
         if (!ctx->d_func()->workaround_brokenFBOReadBack)
             QOpenGLFunctions(ctx).glGenFramebuffers(1, &m_fbo);
 
-#ifdef QT_GL_TEXTURE_GLYPH_CACHE_DEBUG
+#ifdef BOBUI_GL_TEXTURE_GLYPH_CACHE_DEBUG
         qDebug(" -> QOpenGLGlyphTexture() %p for context %p.", this, ctx);
 #endif
     }
@@ -48,7 +48,7 @@ public:
     void freeResource(QOpenGLContext *context) override
     {
         QOpenGLContext *ctx = context;
-#ifdef QT_GL_TEXTURE_GLYPH_CACHE_DEBUG
+#ifdef BOBUI_GL_TEXTURE_GLYPH_CACHE_DEBUG
         qDebug("~QOpenGLGlyphTexture() %p for context %p.", this, ctx);
 #endif
         if (!ctx->d_func()->workaround_brokenFBOReadBack)
@@ -74,7 +74,7 @@ public:
 class Q_OPENGL_EXPORT QOpenGLTextureGlyphCache : public QImageTextureGlyphCache
 {
 public:
-    QOpenGLTextureGlyphCache(QFontEngine::GlyphFormat glyphFormat, const QTransform &matrix, const QColor &color = QColor());
+    QOpenGLTextureGlyphCache(QFontEngine::GlyphFormat glyphFormat, const BOBUIransform &matrix, const QColor &color = QColor());
     ~QOpenGLTextureGlyphCache();
 
     virtual void createTextureData(int width, int height) override;
@@ -141,7 +141,7 @@ private:
     QOpenGLVertexArrayObject m_vao;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENGLTEXTUREGLYPHCACHE_P_H
 

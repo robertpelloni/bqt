@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2013 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qobject.h"
 #include "qobject_p.h"
 #include "qobject_p_p.h"
 #include "qmetaobject_p.h"
 
-#include <QtCore/private/qtclasshelper_p.h>
-#include <QtCore/qspan.h>
+#include <BobUICore/private/bobuiclasshelper_p.h>
+#include <BobUICore/qspan.h>
 #include "qabstracteventdispatcher.h"
 #include "qabstracteventdispatcher_p.h"
 #include "qcoreapplication.h"
@@ -18,22 +18,22 @@
 #include "qloggingcategory.h"
 #include "qvariant.h"
 #include "qmetaobject.h"
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #  include <qregularexpression.h>
 #endif
-#include <qthread.h>
-#include <private/qthread_p.h>
+#include <bobuihread.h>
+#include <private/bobuihread_p.h>
 #include <qdebug.h>
 #include <qvarlengtharray.h>
 #include <qscopeguard.h>
 #include <qset.h>
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #include <private/qlatch_p.h>
 #endif
 
 #include <private/qorderedmutexlocker_p.h>
 #include <private/qhooks_p.h>
-#include <qtcore_tracepoints_p.h>
+#include <bobuicore_tracepoints_p.h>
 
 #include <new>
 #include <mutex>
@@ -42,29 +42,29 @@
 #include <ctype.h>
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_TRACE_POINT(qtcore, QObject_ctor, QObject *object);
-Q_TRACE_POINT(qtcore, QObject_dtor, QObject *object);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_entry, QObject *sender, int signalIndex);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_exit);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_slot_entry, QObject *receiver, int slotIndex);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_slot_exit);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_slot_functor_entry, void *slotObject);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_slot_functor_exit);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_declarative_signal_entry, QObject *sender, int signalIndex);
-Q_TRACE_POINT(qtcore, QMetaObject_activate_declarative_signal_exit);
+Q_TRACE_POINT(bobuicore, QObject_ctor, QObject *object);
+Q_TRACE_POINT(bobuicore, QObject_dtor, QObject *object);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_entry, QObject *sender, int signalIndex);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_exit);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_slot_entry, QObject *receiver, int slotIndex);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_slot_exit);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_slot_functor_entry, void *slotObject);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_slot_functor_exit);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_declarative_signal_entry, QObject *sender, int signalIndex);
+Q_TRACE_POINT(bobuicore, QMetaObject_activate_declarative_signal_exit);
 
 static int DIRECT_CONNECTION_ONLY = 0;
 
-Q_STATIC_LOGGING_CATEGORY(lcConnectSlotsByName, "qt.core.qmetaobject.connectslotsbyname")
-Q_STATIC_LOGGING_CATEGORY(lcConnect, "qt.core.qobject.connect")
+Q_STATIC_LOGGING_CATEGORY(lcConnectSlotsByName, "bobui.core.qmetaobject.connectslotsbyname")
+Q_STATIC_LOGGING_CATEGORY(lcConnect, "bobui.core.qobject.connect")
 
-Q_CORE_EXPORT QBasicAtomicPointer<QSignalSpyCallbackSet> qt_signal_spy_callback_set = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
+Q_CORE_EXPORT QBasicAtomicPointer<QSignalSpyCallbackSet> bobui_signal_spy_callback_set = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
 
-void qt_register_signal_spy_callbacks(QSignalSpyCallbackSet *callback_set)
+void bobui_register_signal_spy_callbacks(QSignalSpyCallbackSet *callback_set)
 {
-    qt_signal_spy_callback_set.storeRelease(callback_set);
+    bobui_signal_spy_callback_set.storeRelease(callback_set);
 }
 
 QDynamicMetaObjectData::~QDynamicMetaObjectData()
@@ -103,7 +103,7 @@ static int *queuedConnectionTypes(const QMetaMethod &method)
     return typeIds;
 }
 
-// ### Future work: replace with an array of QMetaType or QtPrivate::QMetaTypeInterface *
+// ### Future work: replace with an array of QMetaType or BobUIPrivate::QMetaTypeInterface *
 static int *queuedConnectionTypes(QSpan<const QArgumentType> argumentTypes)
 {
     const int argc = int(argumentTypes.size());
@@ -188,7 +188,7 @@ QObjectPrivate::~QObjectPrivate()
 {
     auto thisThreadData = threadData.loadRelaxed();
     if (extraData && !extraData->runningTimers.isEmpty()) {
-        if (Q_LIKELY(thisThreadData->thread.loadAcquire() == QThread::currentThread())) {
+        if (Q_LIKELY(thisThreadData->thread.loadAcquire() == BOBUIhread::currentThread())) {
             // unregister pending timers
             if (thisThreadData->hasEventDispatcher())
                 thisThreadData->eventDispatcher.loadRelaxed()->unregisterTimers(q_ptr);
@@ -306,12 +306,12 @@ void QObjectPrivate::ConnectionData::removeConnection(QObjectPrivate::Connection
     Q_ASSERT(c->receiver.loadRelaxed());
     ConnectionList &connections = signalVector.loadRelaxed()->at(c->signal_index);
     c->receiver.storeRelaxed(nullptr);
-    QThreadData *td = c->receiverThreadData.loadRelaxed();
+    BOBUIhreadData *td = c->receiverThreadData.loadRelaxed();
     if (td)
         td->deref();
     c->receiverThreadData.storeRelaxed(nullptr);
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     bool found = false;
     for (Connection *cc = connections.first.loadRelaxed(); cc; cc = cc->nextConnectionList.loadRelaxed()) {
         if (cc == c) {
@@ -354,7 +354,7 @@ void QObjectPrivate::ConnectionData::removeConnection(QObjectPrivate::Connection
         c->nextInOrphanList = o;
     } while (!orphaned.compare_exchange_strong(o, TaggedSignalVector(c), std::memory_order_release));
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     found = false;
     for (Connection *cc = connections.first.loadRelaxed(); cc; cc = cc->nextConnectionList.loadRelaxed()) {
         if (cc == c) {
@@ -477,7 +477,7 @@ void QObjectPrivate::reinitBindingStorageAfterThreadMove()
  */
 QAbstractMetaCallEvent::~QAbstractMetaCallEvent()
 {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     if (latch)
         latch->countDown();
 #endif
@@ -504,11 +504,11 @@ QMetaCallEvent::QMetaCallEvent(ushort method_offset, ushort method_relative,
     Used for blocking queued connections, just passes \a args through without
     allocating any memory.
  */
-QMetaCallEvent::QMetaCallEvent(QtPrivate::QSlotObjectBase *slotO,
+QMetaCallEvent::QMetaCallEvent(BobUIPrivate::QSlotObjectBase *slotO,
                                const QObject *sender, int signalId,
                                void **args, QLatch *latch)
     : QAbstractMetaCallEvent(sender, signalId, latch),
-      d{QtPrivate::SlotObjUniquePtr{slotO}, args, nullptr, 0, 0, ushort(-1)}
+      d{BobUIPrivate::SlotObjUniquePtr{slotO}, args, nullptr, 0, 0, ushort(-1)}
 {
     if (d.slotObj_)
         d.slotObj_->ref();
@@ -520,7 +520,7 @@ QMetaCallEvent::QMetaCallEvent(QtPrivate::QSlotObjectBase *slotO,
     Used for blocking queued connections, just passes \a args through without
     allocating any memory.
  */
-QMetaCallEvent::QMetaCallEvent(QtPrivate::SlotObjUniquePtr slotO,
+QMetaCallEvent::QMetaCallEvent(BobUIPrivate::SlotObjUniquePtr slotO,
                                const QObject *sender, int signalId,
                                void **args, QLatch *latch)
     : QAbstractMetaCallEvent(sender, signalId, latch),
@@ -560,7 +560,7 @@ void QMetaCallEvent::placeMetaCall(QObject *object)
 QQueuedMetaCallEvent::QQueuedMetaCallEvent(ushort method_offset, ushort method_relative,
                                            QObjectPrivate::StaticMetaCallFunction callFunction,
                                            const QObject *sender, int signalId, int argCount,
-                                           const QtPrivate::QMetaTypeInterface * const *argTypes,
+                                           const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                                            const void * const *argValues)
     : QMetaCallEvent(sender, signalId, {nullptr, nullptr, callFunction, argCount,
                      method_offset, method_relative}),
@@ -574,11 +574,11 @@ QQueuedMetaCallEvent::QQueuedMetaCallEvent(ushort method_offset, ushort method_r
 
     Constructs a QQueuedMetaCallEvent by copying the argument values using their meta-types.
  */
-QQueuedMetaCallEvent::QQueuedMetaCallEvent(QtPrivate::QSlotObjectBase *slotObj,
+QQueuedMetaCallEvent::QQueuedMetaCallEvent(BobUIPrivate::QSlotObjectBase *slotObj,
                                            const QObject *sender, int signalId, int argCount,
-                                           const QtPrivate::QMetaTypeInterface * const *argTypes,
+                                           const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                                            const void * const *argValues)
-    : QMetaCallEvent(sender, signalId, {QtPrivate::SlotObjUniquePtr(slotObj), nullptr, nullptr, argCount,
+    : QMetaCallEvent(sender, signalId, {BobUIPrivate::SlotObjUniquePtr(slotObj), nullptr, nullptr, argCount,
                      0, ushort(-1)}),
       prealloc_()
 {
@@ -592,9 +592,9 @@ QQueuedMetaCallEvent::QQueuedMetaCallEvent(QtPrivate::QSlotObjectBase *slotObj,
 
     Constructs a QQueuedMetaCallEvent by copying the argument values using their meta-types.
  */
-QQueuedMetaCallEvent::QQueuedMetaCallEvent(QtPrivate::SlotObjUniquePtr slotObj,
+QQueuedMetaCallEvent::QQueuedMetaCallEvent(BobUIPrivate::SlotObjUniquePtr slotObj,
                                            const QObject *sender, int signalId, int argCount,
-                                           const QtPrivate::QMetaTypeInterface * const *argTypes,
+                                           const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                                            const void * const *argValues)
     : QMetaCallEvent(sender, signalId, {std::move(slotObj), nullptr, nullptr, argCount,
                      0, ushort(-1)}),
@@ -624,7 +624,7 @@ QQueuedMetaCallEvent::~QQueuedMetaCallEvent()
     }
     if (d.nargs_) {
         if (static_cast<void *>(d.args_) != prealloc_)
-            QtPrivate::sizedFree(d.args_, d.nargs_, PtrAndTypeSize);
+            BobUIPrivate::sizedFree(d.args_, d.nargs_, PtrAndTypeSize);
     }
 }
 
@@ -646,7 +646,7 @@ inline void QQueuedMetaCallEvent::allocArgs()
 /*!
     \internal
  */
-inline void QQueuedMetaCallEvent::copyArgValues(int argCount, const QtPrivate::QMetaTypeInterface * const *argTypes,
+inline void QQueuedMetaCallEvent::copyArgValues(int argCount, const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                                                 const void * const *argValues)
 {
     allocArgs();
@@ -688,7 +688,7 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     \brief Exception-safe wrapper around QObject::blockSignals().
     \since 5.3
     \ingroup objectmodel
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \reentrant
 
@@ -779,14 +779,14 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
 
 /*!
     \class QObject
-    \inmodule QtCore
-    \brief The QObject class is the base class of all Qt objects.
+    \inmodule BobUICore
+    \brief The QObject class is the base class of all BobUI objects.
 
     \ingroup objectmodel
 
     \reentrant
 
-    QObject is the heart of the Qt \l{Object Model}. The central
+    QObject is the heart of the BobUI \l{Object Model}. The central
     feature in this model is a very powerful mechanism for seamless
     object communication called \l{signals and slots}. You can
     connect a signal to a slot with connect() and destroy the
@@ -818,7 +818,7 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     to catch child events.
 
     Last but not least, QObject provides the basic timer support in
-    Qt; see QChronoTimer for high-level support for timers.
+    BobUI; see QChronoTimer for high-level support for timers.
 
     Notice that the Q_OBJECT macro is mandatory for any object that
     implements signals, slots or properties. You also need to run the
@@ -828,7 +828,7 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     properties, since failure to do so may lead certain functions to
     exhibit strange behavior.
 
-    All Qt widgets inherit QObject. The convenience function
+    All BobUI widgets inherit QObject. The convenience function
     isWidgetType() returns whether an object is actually a widget. It
     is much faster than
     \l{qobject_cast()}{qobject_cast}<QWidget *>(\e{obj}) or
@@ -841,7 +841,7 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
 
     A QObject instance is said to have a \e{thread affinity}, or that
     it \e{lives} in a certain thread. When a QObject receives a
-    \l{Qt::QueuedConnection}{queued signal} or a \l{The Event
+    \l{BobUI::QueuedConnection}{queued signal} or a \l{The Event
     System#Sending Events}{posted event}, the slot or event handler
     will run in the thread that the object lives in.
 
@@ -861,9 +861,9 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     \li When a QObject is moved to another thread, all its children
         will be automatically moved too.
     \li moveToThread() will fail if the QObject has a parent.
-    \li If QObjects are created within QThread::run(), they cannot
-        become children of the QThread object because the QThread does
-        not live in the thread that calls QThread::run().
+    \li If QObjects are created within BOBUIhread::run(), they cannot
+        become children of the BOBUIhread object because the BOBUIhread does
+        not live in the thread that calls BOBUIhread::run().
     \endlist
 
     \note A QObject's member variables \e{do not} automatically become
@@ -878,10 +878,10 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     QObject has neither a copy constructor nor an assignment operator.
     This is by design. Actually, they are declared, but in a
     \c{private} section with the macro Q_DISABLE_COPY(). In fact, all
-    Qt classes derived from QObject (direct or indirect) use this
+    BobUI classes derived from QObject (direct or indirect) use this
     macro to declare their copy constructor and assignment operator to
     be private. The reasoning is found in the discussion on
-    \l{Identity vs Value} {Identity vs Value} on the Qt \l{Object
+    \l{Identity vs Value} {Identity vs Value} on the BobUI \l{Object
     Model} page.
 
     The main consequence is that you should use pointers to QObject
@@ -893,7 +893,7 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
 
     \section1 Auto-Connection
 
-    Qt's meta-object system provides a mechanism to automatically connect
+    BobUI's meta-object system provides a mechanism to automatically connect
     signals and slots between QObject subclasses and their children. As long
     as objects are defined with suitable object names, and slots follow a
     simple naming convention, this connection can be performed at run-time
@@ -903,7 +903,7 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     auto-connection to be performed between widgets on forms created
     with \e{\QD}. More information about using auto-connection with \e{\QD} is
     given in the \l{Using a Designer UI File in Your Application} section of
-    the \l{Qt Widgets Designer Manual}{\QD} manual.
+    the \l{BobUI Widgets Designer Manual}{\QD} manual.
 
     \section1 Dynamic Properties
 
@@ -914,13 +914,13 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
     and setProperty() to write them.
 
     Dynamic properties are supported by
-    \l{Qt Widgets Designer's Widget Editing Mode#The Property Editor}{\QD},
-    and both standard Qt widgets and user-created forms can be given dynamic
+    \l{BobUI Widgets Designer's Widget Editing Mode#The Property Editor}{\QD},
+    and both standard BobUI widgets and user-created forms can be given dynamic
     properties.
 
     \section1 Internationalization (I18n)
 
-    All QObject subclasses support Qt's translation features, making it possible
+    All QObject subclasses support BobUI's translation features, making it possible
     to translate an application's user interface into different languages.
 
     To make user-visible text translatable, it must be wrapped in calls to
@@ -937,19 +937,19 @@ inline bool QQueuedMetaCallEvent::typeFitsInPlace(const QMetaType type)
 
 // check the constructor's parent thread argument
 static bool check_parent_thread(QObject *parent,
-                                QThreadData *parentThreadData,
-                                QThreadData *currentThreadData)
+                                BOBUIhreadData *parentThreadData,
+                                BOBUIhreadData *currentThreadData)
 {
     if (parent && parentThreadData != currentThreadData) {
-        QThread *parentThread = parentThreadData->thread.loadAcquire();
-        QThread *currentThread = currentThreadData->thread.loadAcquire();
+        BOBUIhread *parentThread = parentThreadData->thread.loadAcquire();
+        BOBUIhread *currentThread = currentThreadData->thread.loadAcquire();
         qWarning("QObject: Cannot create children for a parent that is in a different thread.\n"
                  "(Parent is %s(%p), parent's thread is %s(%p), current thread is %s(%p)",
                  parent->metaObject()->className(),
                  parent,
-                 parentThread ? parentThread->metaObject()->className() : "QThread",
+                 parentThread ? parentThread->metaObject()->className() : "BOBUIhread",
                  parentThread,
-                 currentThread ? currentThread->metaObject()->className() : "QThread",
+                 currentThread ? currentThread->metaObject()->className() : "BOBUIhread",
                  currentThread);
         return false;
     }
@@ -986,11 +986,11 @@ QObject::QObject(QObjectPrivate &dd, QObject *parent)
 
     Q_D(QObject);
     d_ptr->q_ptr = this;
-    auto threadData = (parent && !parent->thread()) ? parent->d_func()->threadData.loadRelaxed() : QThreadData::current();
+    auto threadData = (parent && !parent->thread()) ? parent->d_func()->threadData.loadRelaxed() : BOBUIhreadData::current();
     threadData->ref();
     d->threadData.storeRelaxed(threadData);
     if (parent) {
-        QT_TRY {
+        BOBUI_TRY {
             if (!check_parent_thread(parent, parent ? parent->d_func()->threadData.loadRelaxed() : nullptr, threadData))
                 parent = nullptr;
             if (d->willBeWidget) {
@@ -1002,13 +1002,13 @@ QObject::QObject(QObjectPrivate &dd, QObject *parent)
             } else {
                 setParent(parent);
             }
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
             threadData->deref();
-            QT_RETHROW;
+            BOBUI_RETHROW;
         }
     }
-    if (Q_UNLIKELY(qtHookData[QHooks::AddQObject]))
-        reinterpret_cast<QHooks::AddQObjectCallback>(qtHookData[QHooks::AddQObject])(this);
+    if (Q_UNLIKELY(bobuiHookData[QHooks::AddQObject]))
+        reinterpret_cast<QHooks::AddQObjectCallback>(bobuiHookData[QHooks::AddQObject])(this);
     Q_TRACE(QObject_ctor, this);
 }
 
@@ -1050,8 +1050,8 @@ QObject::~QObject()
     if (!d->bindingStorage.isValid()) {
         // this might be the case after an incomplete thread-move
         // remove this object from the pending list in that case
-        if (QThread *ownThread = thread()) {
-            auto *privThread = static_cast<QThreadPrivate *>(
+        if (BOBUIhread *ownThread = thread()) {
+            auto *privThread = static_cast<BOBUIhreadPrivate *>(
                         QObjectPrivate::get(ownThread));
             privThread->removeObjectWithPendingBindingStatusChange(this);
         }
@@ -1061,7 +1061,7 @@ QObject::~QObject()
     // as the corresponding properties are no longer useful
     d->clearBindingStorage();
 
-    QtSharedPointer::ExternalRefCountData *sharedRefcount = d->sharedRefcount.loadRelaxed();
+    BobUISharedPointer::ExternalRefCountData *sharedRefcount = d->sharedRefcount.loadRelaxed();
     if (sharedRefcount) {
         if (sharedRefcount->strongref.loadRelaxed() > 0) {
             qWarning("QObject: shared QObject was deleted directly. The program is malformed and may crash.");
@@ -1132,7 +1132,7 @@ QObject::~QObject()
             QObjectPrivate::ConnectionData *senderData = sender->d_func()->connections.loadRelaxed();
             Q_ASSERT(senderData);
 
-            QtPrivate::QSlotObjectBase *slotObj = nullptr;
+            BobUIPrivate::QSlotObjectBase *slotObj = nullptr;
             if (node->isSlotObject) {
                 slotObj = node->slotObj;
                 node->isSlotObject = false;
@@ -1175,8 +1175,8 @@ QObject::~QObject()
     if (!d->children.isEmpty())
         d->deleteChildren();
 
-    if (Q_UNLIKELY(qtHookData[QHooks::RemoveQObject]))
-        reinterpret_cast<QHooks::RemoveQObjectCallback>(qtHookData[QHooks::RemoveQObject])(this);
+    if (Q_UNLIKELY(bobuiHookData[QHooks::RemoveQObject]))
+        reinterpret_cast<QHooks::RemoveQObjectCallback>(bobuiHookData[QHooks::RemoveQObject])(this);
 
     Q_TRACE(QObject_dtor, this);
 
@@ -1313,11 +1313,11 @@ inline QObjectPrivate::Connection::~Connection()
 QString QObject::objectName() const
 {
     Q_D(const QObject);
-#if QT_CONFIG(thread)
-    if (QThread::currentThreadId() != d->threadData.loadRelaxed()->threadId.loadRelaxed()) // Unsafe code path
+#if BOBUI_CONFIG(thread)
+    if (BOBUIhread::currentThreadId() != d->threadData.loadRelaxed()->threadId.loadRelaxed()) // Unsafe code path
         return d->extraData ? d->extraData->objectName.valueBypassingBindings() : QString();
 #endif
-    if (!d->extraData && QtPrivate::isAnyBindingEvaluating()) {
+    if (!d->extraData && BobUIPrivate::isAnyBindingEvaluating()) {
         QObjectPrivate *dd = const_cast<QObjectPrivate *>(d);
         // extraData is mutable, so this should be safe
         dd->extraData = new QObjectPrivate::ExtraData(dd);
@@ -1451,7 +1451,7 @@ bool QObject::event(QEvent *e)
 {
     switch (e->type()) {
     case QEvent::Timer:
-        timerEvent((QTimerEvent *)e);
+        timerEvent((BOBUIimerEvent *)e);
         break;
 
     case QEvent::ChildAdded:
@@ -1482,7 +1482,7 @@ bool QObject::event(QEvent *e)
 
     case QEvent::ThreadChange: {
         Q_D(QObject);
-        QThreadData *threadData = d->threadData.loadRelaxed();
+        BOBUIhreadData *threadData = d->threadData.loadRelaxed();
         QAbstractEventDispatcher *eventDispatcher = threadData->eventDispatcher.loadRelaxed();
         if (eventDispatcher) {
             QList<QAbstractEventDispatcher::TimerInfoV2> timers = eventDispatcher->timersForObject(this);
@@ -1498,7 +1498,7 @@ bool QObject::event(QEvent *e)
                     for (const auto &ti : timers)
                         eventDispatcher->registerTimer(ti.timerId, ti.interval, ti.timerType, this);
                 };
-                QMetaObject::invokeMethod(this, std::move(reRegisterTimers), Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, std::move(reRegisterTimers), BobUI::QueuedConnection);
             }
         }
         break;
@@ -1515,7 +1515,7 @@ bool QObject::event(QEvent *e)
 }
 
 /*!
-    \fn void QObject::timerEvent(QTimerEvent *event)
+    \fn void QObject::timerEvent(BOBUIimerEvent *event)
 
     This event handler can be reimplemented in a subclass to receive
     timer events for the object.
@@ -1527,7 +1527,7 @@ bool QObject::event(QEvent *e)
     \sa startTimer(), killTimer(), event()
 */
 
-void QObject::timerEvent(QTimerEvent *)
+void QObject::timerEvent(BOBUIimerEvent *)
 {
 }
 
@@ -1606,7 +1606,7 @@ void QObject::customEvent(QEvent * /* event */)
     propagation.
 
     \warning If you delete the receiver object in this function, be
-    sure to return true. Otherwise, Qt will forward the event to the
+    sure to return true. Otherwise, BobUI will forward the event to the
     deleted object and the program might crash.
 
     \sa installEventFilter()
@@ -1655,7 +1655,7 @@ bool QObject::blockSignals(bool block) noexcept
 
     \sa moveToThread()
 */
-QThread *QObject::thread() const
+BOBUIhread *QObject::thread() const
 {
     return d_func()->threadData.loadRelaxed()->thread.loadAcquire();
 }
@@ -1698,11 +1698,11 @@ QThread *QObject::thread() const
     however: objects with no thread affinity can be "pulled" to the
     current thread.
 
-    In Qt versions prior to 6.7, this function had no return value (\c void).
+    In BobUI versions prior to 6.7, this function had no return value (\c void).
 
     \sa thread()
  */
-bool QObject::moveToThread(QThread *targetThread QT6_IMPL_NEW_OVERLOAD_TAIL)
+bool QObject::moveToThread(BOBUIhread *targetThread BOBUI6_IMPL_NEW_OVERLOAD_TAIL)
 {
     Q_D(QObject);
 
@@ -1724,9 +1724,9 @@ bool QObject::moveToThread(QThread *targetThread QT6_IMPL_NEW_OVERLOAD_TAIL)
         return false;
     }
 
-    QThreadData *currentData = QThreadData::current();
-    QThreadData *targetData = targetThread ? QThreadData::get2(targetThread) : nullptr;
-    QThreadData *thisThreadData = d->threadData.loadAcquire();
+    BOBUIhreadData *currentData = BOBUIhreadData::current();
+    BOBUIhreadData *targetData = targetThread ? BOBUIhreadData::get2(targetThread) : nullptr;
+    BOBUIhreadData *thisThreadData = d->threadData.loadAcquire();
     if (!thisThreadData->thread.loadRelaxed() && currentData == targetData) {
         // one exception to the rule: we allow moving objects with no thread affinity to the current thread
         currentData = thisThreadData;
@@ -1736,8 +1736,8 @@ bool QObject::moveToThread(QThread *targetThread QT6_IMPL_NEW_OVERLOAD_TAIL)
                  currentData->thread.loadRelaxed(), thisThreadData->thread.loadRelaxed(), targetData ? targetData->thread.loadRelaxed() : nullptr);
 
 #ifdef Q_OS_DARWIN
-        qWarning("You might be loading two sets of Qt binaries into the same process. "
-                 "Check that all plugins are compiled against the right Qt binaries. Export "
+        qWarning("You might be loading two sets of BobUI binaries into the same process. "
+                 "Check that all plugins are compiled against the right BobUI binaries. Export "
                  "DYLD_PRINT_LIBRARIES=1 and check that only one set of binaries are being loaded.");
 #endif
 
@@ -1748,7 +1748,7 @@ bool QObject::moveToThread(QThread *targetThread QT6_IMPL_NEW_OVERLOAD_TAIL)
     d->moveToThread_helper();
 
     if (!targetData)
-        targetData = new QThreadData(0);
+        targetData = new BOBUIhreadData(0);
 
     // make sure nobody adds/removes connections to this object while we're moving it
     QMutexLocker l(signalSlotLock(this));
@@ -1761,7 +1761,7 @@ bool QObject::moveToThread(QThread *targetThread QT6_IMPL_NEW_OVERLOAD_TAIL)
 
     // move the object
     auto threadPrivate =  targetThread
-        ? static_cast<QThreadPrivate *>(QThreadPrivate::get(targetThread))
+        ? static_cast<BOBUIhreadPrivate *>(BOBUIhreadPrivate::get(targetThread))
         : nullptr;
     QBindingStatus *bindingStatus = threadPrivate
         ? threadPrivate->bindingStatus()
@@ -1790,7 +1790,7 @@ void QObjectPrivate::moveToThread_helper()
     }
 }
 
-void QObjectPrivate::setThreadData_helper(QThreadData *currentData, QThreadData *targetData, QBindingStatus *status)
+void QObjectPrivate::setThreadData_helper(BOBUIhreadData *currentData, BOBUIhreadData *targetData, QBindingStatus *status)
 {
     Q_Q(QObject);
 
@@ -1833,7 +1833,7 @@ void QObjectPrivate::setThreadData_helper(QThreadData *currentData, QThreadData 
                 if (r) {
                     Q_ASSERT(r == q);
                     targetData->ref();
-                    QThreadData *old = c->receiverThreadData.loadRelaxed();
+                    BOBUIhreadData *old = c->receiverThreadData.loadRelaxed();
                     if (old)
                         old->deref();
                     c->receiverThreadData.storeRelaxed(targetData);
@@ -1864,7 +1864,7 @@ void QObjectPrivate::setThreadData_helper(QThreadData *currentData, QThreadData 
 //
 
 /*!
-    \fn int QObject::startTimer(int interval, Qt::TimerType timerType)
+    \fn int QObject::startTimer(int interval, BobUI::TimerType timerType)
 
     This is an overloaded function that will start a timer of type
     \a timerType and a timeout of \a interval milliseconds. This is
@@ -1878,7 +1878,7 @@ void QObjectPrivate::setThreadData_helper(QThreadData *currentData, QThreadData 
     \sa timerEvent(), killTimer(), QChronoTimer, QBasicTimer
 */
 
-int QObject::startTimer(int interval, Qt::TimerType timerType)
+int QObject::startTimer(int interval, BobUI::TimerType timerType)
 {
     // no overflow can happen here:
     // 2^31 ms * 1,000,000 always fits a 64-bit signed integer type
@@ -1899,11 +1899,11 @@ int QObject::startTimer(int interval, Qt::TimerType timerType)
 
     \include timers-common.qdocinc negative-intervals-not-allowed
 
-    The virtual timerEvent() function is called with the QTimerEvent
+    The virtual timerEvent() function is called with the BOBUIimerEvent
     event parameter class when a timer event occurs. Reimplement this
     function to get timer events.
 
-    If multiple timers are running, the QTimerEvent::id() method can be
+    If multiple timers are running, the BOBUIimerEvent::id() method can be
     used to find out which timer was activated.
 
     Example:
@@ -1914,30 +1914,30 @@ int QObject::startTimer(int interval, Qt::TimerType timerType)
     system and hardware.
 
     The \a timerType argument allows you to customize the accuracy of
-    the timer. See Qt::TimerType for information on the different timer types.
+    the timer. See BobUI::TimerType for information on the different timer types.
     Most platforms support an accuracy of 20 milliseconds; some provide more.
-    If Qt is unable to deliver the requested number of timer events, it will
+    If BobUI is unable to deliver the requested number of timer events, it will
     silently discard some.
 
-    The QTimer and QChronoTimer classes provide a high-level programming
+    The BOBUIimer and QChronoTimer classes provide a high-level programming
     interface with single-shot timers and timer signals instead of
     events. There is also a QBasicTimer class that is more lightweight than
     QChronoTimer but less clumsy than using timer IDs directly.
 
-    \note Starting from Qt 6.8 the type of \a interval
+    \note Starting from BobUI 6.8 the type of \a interval
     is \c std::chrono::nanoseconds, prior to that it was \c
     std::chrono::milliseconds. This change is backwards compatible with
-    older releases of Qt.
+    older releases of BobUI.
 
-    \note In Qt 6.8, QObject was changed to use Qt::TimerId to represent timer
+    \note In BobUI 6.8, QObject was changed to use BobUI::TimerId to represent timer
     IDs. This method converts the TimerId to int for backwards compatibility
-    reasons, however you can use Qt::TimerId to check the value returned by
+    reasons, however you can use BobUI::TimerId to check the value returned by
     this method, for example:
     \snippet code/src_corelib_kernel_qobject.cpp invalid-timer-id
 
     \sa timerEvent(), killTimer(), QChronoTimer, QBasicTimer
 */
-int QObject::startTimer(std::chrono::nanoseconds interval, Qt::TimerType timerType)
+int QObject::startTimer(std::chrono::nanoseconds interval, BobUI::TimerType timerType)
 {
     Q_D(QObject);
 
@@ -1950,7 +1950,7 @@ int QObject::startTimer(std::chrono::nanoseconds interval, Qt::TimerType timerTy
     }
 
     auto thisThreadData = d->threadData.loadRelaxed();
-    if (Q_UNLIKELY(thisThreadData != QThreadData::current())) {
+    if (Q_UNLIKELY(thisThreadData != BOBUIhreadData::current())) {
         qWarning("QObject::startTimer: Timers cannot be started from another thread");
         return 0;
     }
@@ -1961,7 +1961,7 @@ int QObject::startTimer(std::chrono::nanoseconds interval, Qt::TimerType timerTy
         return 0;
     }
 
-    Qt::TimerId timerId = dispatcher->registerTimer(interval, timerType, this);
+    BobUI::TimerId timerId = dispatcher->registerTimer(interval, timerType, this);
     d->ensureExtraData();
     d->extraData->runningTimers.append(timerId);
     return int(timerId);
@@ -1978,21 +1978,21 @@ int QObject::startTimer(std::chrono::nanoseconds interval, Qt::TimerType timerTy
 
 void QObject::killTimer(int id)
 {
-    killTimer(Qt::TimerId{id});
+    killTimer(BobUI::TimerId{id});
 }
 
 /*!
     \since 6.8
     \overload
 */
-void QObject::killTimer(Qt::TimerId id)
+void QObject::killTimer(BobUI::TimerId id)
 {
     Q_D(QObject);
-    if (Q_UNLIKELY(thread() != QThread::currentThread())) {
+    if (Q_UNLIKELY(thread() != BOBUIhread::currentThread())) {
         qWarning("QObject::killTimer: Timers cannot be stopped from another thread");
         return;
     }
-    if (id > Qt::TimerId::Invalid) {
+    if (id > BobUI::TimerId::Invalid) {
         qsizetype at = d->extraData ? d->extraData->runningTimers.indexOf(id) : -1;
         if (at == -1) {
             // timer isn't owned by this object
@@ -2046,7 +2046,7 @@ void QObject::killTimer(Qt::TimerId id)
 
 
 /*!
-    \fn template<typename T> T *QObject::findChild(QAnyStringView name, Qt::FindChildOptions options) const
+    \fn template<typename T> T *QObject::findChild(QAnyStringView name, BobUI::FindChildOptions options) const
 
     Returns the child of this object that can be cast into type T and
     that is called \a name, or \nullptr if there is no such object.
@@ -2080,14 +2080,14 @@ void QObject::killTimer(Qt::TimerId id)
 
     \snippet code/src_corelib_kernel_qobject.cpp 42
 
-    \note In Qt versions prior to 6.7, this function took \a name as
+    \note In BobUI versions prior to 6.7, this function took \a name as
     \c{QString}, not \c{QAnyStringView}.
 
     \sa findChildren()
 */
 
 /*!
-    \fn template<typename T> T *QObject::findChild(Qt::FindChildOptions options) const
+    \fn template<typename T> T *QObject::findChild(BobUI::FindChildOptions options) const
     \overload
     \since 6.7
 
@@ -2105,7 +2105,7 @@ void QObject::killTimer(Qt::TimerId id)
 */
 
 /*!
-    \fn template<typename T> QList<T> QObject::findChildren(QAnyStringView name, Qt::FindChildOptions options) const
+    \fn template<typename T> QList<T> QObject::findChildren(QAnyStringView name, BobUI::FindChildOptions options) const
 
     Returns all children of this object with the given \a name that can be
     cast to type T, or an empty list if there are no such objects.
@@ -2127,14 +2127,14 @@ void QObject::killTimer(Qt::TimerId id)
 
     \snippet code/src_corelib_kernel_qobject.cpp 43
 
-    \note In Qt versions prior to 6.7, this function took \a name as
+    \note In BobUI versions prior to 6.7, this function took \a name as
     \c{QString}, not \c{QAnyStringView}.
 
     \sa findChild()
 */
 
 /*!
-    \fn template<typename T> QList<T> QObject::findChildren(Qt::FindChildOptions options) const
+    \fn template<typename T> QList<T> QObject::findChildren(BobUI::FindChildOptions options) const
     \overload
     \since 6.3
 
@@ -2147,7 +2147,7 @@ void QObject::killTimer(Qt::TimerId id)
 */
 
 /*!
-    \fn template<typename T> QList<T> QObject::findChildren(const QRegularExpression &re, Qt::FindChildOptions options) const
+    \fn template<typename T> QList<T> QObject::findChildren(const QRegularExpression &re, BobUI::FindChildOptions options) const
     \overload findChildren()
 
     \since 5.0
@@ -2201,25 +2201,25 @@ static bool matches_objectName_non_null(QObject *obj, QAnyStringView name)
 /*!
     \internal
 */
-void qt_qFindChildren_helper(const QObject *parent, QAnyStringView name,
-                             const QMetaObject &mo, QList<void*> *list, Qt::FindChildOptions options)
+void bobui_qFindChildren_helper(const QObject *parent, QAnyStringView name,
+                             const QMetaObject &mo, QList<void*> *list, BobUI::FindChildOptions options)
 {
     Q_ASSERT(parent);
     Q_ASSERT(list);
     for (QObject *obj : parent->children()) {
         if (mo.cast(obj) && (name.isNull() || matches_objectName_non_null(obj, name)))
             list->append(obj);
-        if (options & Qt::FindChildrenRecursively)
-            qt_qFindChildren_helper(obj, name, mo, list, options);
+        if (options & BobUI::FindChildrenRecursively)
+            bobui_qFindChildren_helper(obj, name, mo, list, options);
     }
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \internal
 */
-void qt_qFindChildren_helper(const QObject *parent, const QRegularExpression &re,
-                             const QMetaObject &mo, QList<void*> *list, Qt::FindChildOptions options)
+void bobui_qFindChildren_helper(const QObject *parent, const QRegularExpression &re,
+                             const QMetaObject &mo, QList<void*> *list, BobUI::FindChildOptions options)
 {
     Q_ASSERT(parent);
     Q_ASSERT(list);
@@ -2229,25 +2229,25 @@ void qt_qFindChildren_helper(const QObject *parent, const QRegularExpression &re
             if (m.hasMatch())
                 list->append(obj);
         }
-        if (options & Qt::FindChildrenRecursively)
-            qt_qFindChildren_helper(obj, re, mo, list, options);
+        if (options & BobUI::FindChildrenRecursively)
+            bobui_qFindChildren_helper(obj, re, mo, list, options);
     }
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 /*!
     \internal
 */
-QObject *qt_qFindChild_helper(const QObject *parent, QAnyStringView name, const QMetaObject &mo, Qt::FindChildOptions options)
+QObject *bobui_qFindChild_helper(const QObject *parent, QAnyStringView name, const QMetaObject &mo, BobUI::FindChildOptions options)
 {
     Q_ASSERT(parent);
     for (QObject *obj : parent->children()) {
         if (mo.cast(obj) && (name.isNull() || matches_objectName_non_null(obj, name)))
            return obj;
     }
-    if (options & Qt::FindChildrenRecursively) {
+    if (options & BobUI::FindChildrenRecursively) {
         for (QObject *child : parent->children()) {
-            if (QObject *obj = qt_qFindChild_helper(child, name, mo, options))
+            if (QObject *obj = bobui_qFindChild_helper(child, name, mo, options))
                 return obj;
         }
     }
@@ -2287,7 +2287,7 @@ void QObjectPrivate::setParent_helper(QObject *o)
 {
     Q_Q(QObject);
     Q_ASSERT_X(q != o, Q_FUNC_INFO, "Cannot parent a QObject to itself");
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     const auto checkForParentChildLoops = qScopeGuard([&](){
         int depth = 0;
         auto p = parent;
@@ -2390,7 +2390,7 @@ void QObjectPrivate::setParent_helper(QObject *o)
     shortcut key presses.
 
     \warning If you delete the receiver object in your eventFilter()
-    function, be sure to return true. If you return false, Qt sends
+    function, be sure to return true. If you return false, BobUI sends
     the event to the deleted object and the program will crash.
 
     Note that the filtering object must be in the same thread as this
@@ -2475,31 +2475,31 @@ void QObject::removeEventFilter(QObject *obj)
     thread with no running event loop, the object will be destroyed when the
     thread finishes.
 
-    A common pattern when using a worker \c QObject in a \c QThread
+    A common pattern when using a worker \c QObject in a \c BOBUIhread
     is to connect the thread's \c finished() signal to the worker's
     \c deleteLater() slot to ensure it is safely deleted:
 
     \code
-    connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(thread, &BOBUIhread::finished, worker, &QObject::deleteLater);
     \endcode
 
     Note that entering and leaving a new event loop (e.g., by opening a modal
     dialog) will \e not perform the deferred deletion; for the object to be
     deleted, the control must return to the event loop from which deleteLater()
     was called. This does not apply to objects deleted while a previous, nested
-    event loop was still running: the Qt event loop will delete those objects
+    event loop was still running: the BobUI event loop will delete those objects
     as soon as the new nested event loop starts.
 
-    In situations where Qt is not driving the event dispatcher via e.g.
+    In situations where BobUI is not driving the event dispatcher via e.g.
     QCoreApplication::exec() or QEventLoop::exec(), deferred deletes
     will not be processed automatically. To ensure deferred deletion in
     this scenario, the following workaround can be used:
 
     \code
-    const auto *eventDispatcher = QThread::currentThread()->eventDispatcher();
+    const auto *eventDispatcher = BOBUIhread::currentThread()->eventDispatcher();
     QObject::connect(eventDispatcher, &QAbstractEventDispatcher::aboutToBlock,
-        QThread::currentThread(), []{
-            if (QThread::currentThread()->loopLevel() == 0)
+        BOBUIhread::currentThread(), []{
+            if (BOBUIhread::currentThread()->loopLevel() == 0)
                 QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
         }
     );
@@ -2509,7 +2509,7 @@ void QObject::removeEventFilter(QObject *obj)
 */
 void QObject::deleteLater()
 {
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (qApp == this)
         qWarning("You are deferring the delete of QCoreApplication, this may not work as expected.");
 #endif
@@ -2536,11 +2536,11 @@ void QObject::deleteLater()
     int scopeLevel = 0;
 
     auto *objectThreadData = eventListLocker.threadData;
-    if (objectThreadData == QThreadData::current()) {
+    if (objectThreadData == BOBUIhreadData::current()) {
         // Remember the current running eventloop for deleteLater
         // calls in the object's own thread.
 
-        // Events sent by non-Qt event handlers (such as glib) may not
+        // Events sent by non-BobUI event handlers (such as glib) may not
         // have the scopeLevel set correctly. The scope level makes sure that
         // code like this:
         //     foo->deleteLater();
@@ -2586,7 +2586,7 @@ void QObject::deleteLater()
     \dots
 
     See \l{Writing Source Code for Translation} for a detailed description of
-    Qt's translation mechanisms in general, and the
+    BobUI's translation mechanisms in general, and the
     \l{Writing Source Code for Translation#Disambiguate Identical Text}
     {Disambiguate Identical Text} section for information on disambiguation.
 
@@ -2595,7 +2595,7 @@ void QObject::deleteLater()
     translators while performing translations is not supported. Doing
     so will probably result in crashes or other undesirable behavior.
 
-    \sa QCoreApplication::translate(), {Internationalization with Qt}
+    \sa QCoreApplication::translate(), {Internationalization with BobUI}
 */
 
 /*****************************************************************************
@@ -2671,21 +2671,21 @@ static bool check_method_code(int code, const QObject *object, const char *metho
     return true;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 static void check_and_warn_non_slot(const char *func, const char *method, int membcode,
                                     const QMetaObject *rmeta, const QMetaMethod &rmethod)
 {
     if (membcode == QSLOT_CODE && rmethod.methodType() != QMetaMethod::Slot) {
-        // In Qt7 QMetaObject::indexOfSlot{,relative} will return -1 if `method`
+        // In BobUI7 QMetaObject::indexOfSlot{,relative} will return -1 if `method`
         // isn't a slot.
         qCWarning(lcConnect,
                   "QObject::%s: the SLOT() macro is used with a non-slot function: %s::%s. "
-                  "This currently works due to backwards-compatibility reasons. In Qt7 the "
+                  "This currently works due to backwards-compatibility reasons. In BobUI7 the "
                   "SLOT() macro will work only for methods marked as slots.",
                   func, rmeta->className(), method);
     }
 }
-#endif // QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#endif // BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 
 Q_DECL_COLD_FUNCTION
 static void err_method_notfound(const QObject *object,
@@ -2760,7 +2760,7 @@ static void connectWarning(const QObject *sender,
     when many signals are connected to a single slot.
 
     \warning As mentioned above, the return value of this function is
-    not valid when the slot is called via a Qt::DirectConnection from
+    not valid when the slot is called via a BobUI::DirectConnection from
     a thread different from this object's thread. Do not use this
     function in this type of scenario.
 
@@ -2803,7 +2803,7 @@ QObject *QObject::sender() const
     when many signals are connected to a single slot.
 
     \warning The return value of this function is not valid when the slot
-    is called via a Qt::DirectConnection from a thread different from this
+    is called via a BobUI::DirectConnection from a thread different from this
     object's thread. Do not use this function in this type of scenario.
 
     \sa sender(), QMetaObject::indexOfSignal(), QMetaObject::method()
@@ -2862,14 +2862,14 @@ int QObject::receivers(const char *signal) const
     if (signal) {
         QByteArray signal_name = QMetaObject::normalizedSignature(signal);
         signal = signal_name;
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         if (!check_signal_macro(this, signal, "receivers", "bind"))
             return 0;
 #endif
         signal++; // skip code
         int signal_index = d->signalIndex(signal);
         if (signal_index < 0) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             err_method_notfound(this, signal - 1, "receivers");
 #endif
             return 0;
@@ -2990,7 +2990,7 @@ void QMetaObjectPrivate::memberIndexes(const QObject *obj,
     }
 }
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
 static inline void check_and_warn_compat(const QMetaObject *sender, const QMetaMethod &signal,
                                          const QMetaObject *receiver, const QMetaMethod &method)
 {
@@ -3053,19 +3053,19 @@ static inline void check_and_warn_compat(const QMetaObject *sender, const QMetaM
     By default, a signal is emitted for every connection you make;
     two signals are emitted for duplicate connections. You can break
     all of these connections with a single disconnect() call.
-    If you pass the Qt::UniqueConnection \a type, the connection will only
+    If you pass the BobUI::UniqueConnection \a type, the connection will only
     be made if it is not a duplicate. If there is already a duplicate
     (exact same signal to the exact same slot on the same objects),
     the connection will fail and connect will return an invalid QMetaObject::Connection.
 
-    \note Qt::UniqueConnections do not work for lambdas, non-member functions
+    \note BobUI::UniqueConnections do not work for lambdas, non-member functions
     and functors; they only apply to connecting to member functions.
 
     The optional \a type parameter describes the type of connection
     to establish. In particular, it determines whether a particular
     signal is delivered to a slot immediately or queued for delivery
     at a later time. If the signal is queued, the parameters must be
-    of types that are known to Qt's meta-object system, because Qt
+    of types that are known to BobUI's meta-object system, because BobUI
     needs to copy the arguments to store them in an event behind the
     scenes. If you try to use a queued connection and get the error
     message
@@ -3080,7 +3080,7 @@ static inline void check_and_warn_compat(const QMetaObject *sender, const QMetaM
 */
 QMetaObject::Connection QObject::connect(const QObject *sender, const char *signal,
                                          const QObject *receiver, const char *method,
-                                         Qt::ConnectionType type)
+                                         BobUI::ConnectionType type)
 {
     if (sender == nullptr || receiver == nullptr || signal == nullptr || method == nullptr) {
         qCWarning(lcConnect, "QObject::connect: Cannot connect %s::%s to %s::%s",
@@ -3185,17 +3185,17 @@ QMetaObject::Connection QObject::connect(const QObject *sender, const char *sign
     // ### Future work: attempt get the metatypes from the meta object first
     // because it's possible they're all registered.
     int *types = nullptr;
-    if (type == Qt::QueuedConnection && !(types = queuedConnectionTypes(signalTypes))) {
+    if (type == BobUI::QueuedConnection && !(types = queuedConnectionTypes(signalTypes))) {
         return QMetaObject::Connection(nullptr);
     }
 
     QMetaMethod rmethod = rmeta->method(method_index_relative + rmeta->methodOffset());
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     QMetaMethod smethod = QMetaObjectPrivate::signal(smeta, signal_index);
     check_and_warn_compat(smeta, smethod, rmeta, rmethod);
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     check_and_warn_non_slot("connect", method, membcode, rmeta, rmethod);
 #endif
 
@@ -3219,14 +3219,14 @@ QMetaObject::Connection QObject::connect(const QObject *sender, const char *sign
     This function works in the same way as
     \c {connect(const QObject *sender, const char *signal,
             const QObject *receiver, const char *method,
-            Qt::ConnectionType type)}
+            BobUI::ConnectionType type)}
     but it uses QMetaMethod to specify signal and method.
 
-    \sa connect(const QObject *sender, const char *signal, const QObject *receiver, const char *method, Qt::ConnectionType type)
+    \sa connect(const QObject *sender, const char *signal, const QObject *receiver, const char *method, BobUI::ConnectionType type)
  */
 QMetaObject::Connection QObject::connect(const QObject *sender, const QMetaMethod &signal,
                                      const QObject *receiver, const QMetaMethod &method,
-                                     Qt::ConnectionType type)
+                                     BobUI::ConnectionType type)
 {
     if (sender == nullptr
             || receiver == nullptr
@@ -3272,10 +3272,10 @@ QMetaObject::Connection QObject::connect(const QObject *sender, const QMetaMetho
     }
 
     int *types = nullptr;
-    if ((type == Qt::QueuedConnection) && !(types = queuedConnectionTypes(signal)))
+    if ((type == BobUI::QueuedConnection) && !(types = queuedConnectionTypes(signal)))
         return QMetaObject::Connection(nullptr);
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     check_and_warn_compat(smeta, signal, rmeta, method);
 #endif
     QMetaObject::Connection handle = QMetaObject::Connection(QMetaObjectPrivate::connect(
@@ -3284,7 +3284,7 @@ QMetaObject::Connection QObject::connect(const QObject *sender, const QMetaMetho
 }
 
 /*!
-    \fn bool QObject::connect(const QObject *sender, const char *signal, const char *method, Qt::ConnectionType type) const
+    \fn bool QObject::connect(const QObject *sender, const char *signal, const char *method, BobUI::ConnectionType type) const
     \overload connect()
     \threadsafe
 
@@ -3472,7 +3472,7 @@ bool QObject::disconnect(const QObject *sender, const char *signal,
                 if (rmeta != receiver->metaObject())
                     method_index = getMethodIndex(membcode, rmeta, methodName, methodTypes);
                 if (method_index >= 0) {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
                     check_and_warn_non_slot("disconnect", method, membcode, rmeta,
                                             rmeta->method(method_index));
 #endif
@@ -3751,7 +3751,7 @@ QObjectPrivate::Connection *QMetaObjectPrivate::connect(const QObject *sender,
                                signalSlotLock(receiver));
 
     QObjectPrivate::ConnectionData *scd  = QObjectPrivate::get(s)->connections.loadRelaxed();
-    if (type & Qt::UniqueConnection && scd) {
+    if (type & BobUI::UniqueConnection && scd) {
         if (scd->signalVectorCount() > signal_index) {
             const QObjectPrivate::Connection *c2 = scd->signalVector.loadRelaxed()->at(signal_index).first.loadRelaxed();
 
@@ -3764,10 +3764,10 @@ QObjectPrivate::Connection *QMetaObjectPrivate::connect(const QObject *sender,
             }
         }
     }
-    type &= ~Qt::UniqueConnection;
+    type &= ~BobUI::UniqueConnection;
 
-    const bool isSingleShot = type & Qt::SingleShotConnection;
-    type &= ~Qt::SingleShotConnection;
+    const bool isSingleShot = type & BobUI::SingleShotConnection;
+    type &= ~BobUI::SingleShotConnection;
 
     Q_ASSERT(type >= 0);
     Q_ASSERT(type <= 3);
@@ -3776,7 +3776,7 @@ QObjectPrivate::Connection *QMetaObjectPrivate::connect(const QObject *sender,
     c->sender = s;
     c->signal_index = signal_index;
     c->receiver.storeRelaxed(r);
-    QThreadData *td = r->d_func()->threadData.loadAcquire();
+    BOBUIhreadData *td = r->d_func()->threadData.loadAcquire();
     td->ref();
     c->receiverThreadData.storeRelaxed(td);
     c->method_relative = method_index;
@@ -4062,7 +4062,7 @@ void QMetaObject::connectSlotsByName(QObject *o)
 
 /*!
     \fn template<typename PointerToMemberFunction> QMetaObject::Connection QMetaObject::connect(
-        const QObject *sender, const QMetaMethod &signal, const QObject *receiver, PointerToMemberFunction method, Qt::ConnectionType type)
+        const QObject *sender, const QMetaMethod &signal, const QObject *receiver, PointerToMemberFunction method, BobUI::ConnectionType type)
 
     \threadsafe
     \overload connect()
@@ -4095,7 +4095,7 @@ void QMetaObject::connectSlotsByName(QObject *o)
 
 /*!
     \fn template<typename Functor> QMetaObject::Connection QMetaObject::connect(
-        const QObject *sender, const QMetaMethod &signal, const QObject *context, Functor functor, Qt::ConnectionType type)
+        const QObject *sender, const QMetaMethod &signal, const QObject *context, Functor functor, BobUI::ConnectionType type)
 
     \threadsafe
     \overload connect()
@@ -4110,7 +4110,7 @@ void QMetaObject::connectSlotsByName(QObject *o)
     This can be useful for connecting a signal retrieved from
     meta-object introspection to a lambda capturing local variables.
 
-    \note Qt::UniqueConnections do not work for lambdas, non-member
+    \note BobUI::UniqueConnections do not work for lambdas, non-member
     functions and functors; they only apply to member functions.
 
     The slot function can be any function or functor with with equal
@@ -4131,9 +4131,9 @@ void QMetaObject::connectSlotsByName(QObject *o)
  */
 QMetaObject::Connection QMetaObject::connectImpl(const QObject *sender, const QMetaMethod &signal,
                                              const QObject *receiver, void **slot,
-                                             QtPrivate::QSlotObjectBase *slotObjRaw, Qt::ConnectionType type)
+                                             BobUIPrivate::QSlotObjectBase *slotObjRaw, BobUI::ConnectionType type)
 {
-    QtPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
+    BobUIPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
 
     const QMetaObject *senderMetaObject = sender->metaObject();
     if (!signal.isValid() || signal.methodType() != QMetaMethod::Signal) {
@@ -4166,22 +4166,22 @@ struct SlotObjectGuard {
     SlotObjectGuard() = default;
     // move would be fine, but we do not need it currently
     Q_DISABLE_COPY_MOVE(SlotObjectGuard)
-    Q_NODISCARD_CTOR explicit SlotObjectGuard(QtPrivate::QSlotObjectBase *slotObject)
+    Q_NODISCARD_CTOR explicit SlotObjectGuard(BobUIPrivate::QSlotObjectBase *slotObject)
         : m_slotObject(slotObject)
     {
         if (m_slotObject)
             m_slotObject->ref();
     }
 
-    QtPrivate::QSlotObjectBase const *operator->() const
+    BobUIPrivate::QSlotObjectBase const *operator->() const
     { return m_slotObject.get(); }
 
-    QtPrivate::QSlotObjectBase *operator->()
+    BobUIPrivate::QSlotObjectBase *operator->()
     { return m_slotObject.get(); }
 
     ~SlotObjectGuard() = default;
 private:
-    QtPrivate::SlotObjUniquePtr m_slotObject;
+    BobUIPrivate::SlotObjUniquePtr m_slotObject;
 };
 
 /*!
@@ -4219,7 +4219,7 @@ static void queued_activate(QObject *sender, int signal, QObjectPrivate::Connect
     SlotObjectGuard slotObjectGuard { c->isSlotObject ? c->slotObj : nullptr };
     locker.unlock();
 
-    QVarLengthArray<const QtPrivate::QMetaTypeInterface *, 16> argTypes;
+    QVarLengthArray<const BobUIPrivate::QMetaTypeInterface *, 16> argTypes;
     argTypes.reserve(nargs);
     argTypes.emplace_back(nullptr); // return type
     for (int n = 1; n < nargs; ++n) {
@@ -4263,7 +4263,7 @@ void doActivate(QObject *sender, int signal_index, void **argv)
                                                 signal_index, argv);
     }
 
-    const QSignalSpyCallbackSet *signal_spy_set = callbacks_enabled ? qt_signal_spy_callback_set.loadAcquire() : nullptr;
+    const QSignalSpyCallbackSet *signal_spy_set = callbacks_enabled ? bobui_signal_spy_callback_set.loadAcquire() : nullptr;
 
     void *empty_argv[] = { nullptr };
     if (!argv)
@@ -4293,7 +4293,7 @@ void doActivate(QObject *sender, int signal_index, void **argv)
     else
         list = &signalVector->at(-1);
 
-    Qt::HANDLE currentThreadId = QThread::currentThreadId();
+    BobUI::HANDLE currentThreadId = BOBUIhread::currentThreadId();
     bool inSenderThread = currentThreadId == QObjectPrivate::get(sender)->threadData.loadRelaxed()->threadId.loadRelaxed();
 
     // We need to check against the highest connection id to ensure that signals added
@@ -4309,7 +4309,7 @@ void doActivate(QObject *sender, int signal_index, void **argv)
             if (!receiver)
                 continue;
 
-            QThreadData *td = c->receiverThreadData.loadRelaxed();
+            BOBUIhreadData *td = c->receiverThreadData.loadRelaxed();
             if (!td)
                 continue;
 
@@ -4325,14 +4325,14 @@ void doActivate(QObject *sender, int signal_index, void **argv)
 
             // determine if this connection should be sent immediately or
             // put into the event queue
-            if ((c->connectionType == Qt::AutoConnection && !receiverInSameThread)
-                || (c->connectionType == Qt::QueuedConnection)) {
+            if ((c->connectionType == BobUI::AutoConnection && !receiverInSameThread)
+                || (c->connectionType == BobUI::QueuedConnection)) {
                 queued_activate(sender, signal_index, c, argv);
                 continue;
-#if QT_CONFIG(thread)
-            } else if (c->connectionType == Qt::BlockingQueuedConnection) {
+#if BOBUI_CONFIG(thread)
+            } else if (c->connectionType == BobUI::BlockingQueuedConnection) {
                 if (receiverInSameThread) {
-                    qWarning("Qt: Dead lock detected while activating a BlockingQueuedConnection: "
+                    qWarning("BobUI: Dead lock detected while activating a BlockingQueuedConnection: "
                     "Sender is %s(%p), receiver is %s(%p)",
                     sender->metaObject()->className(), sender,
                     receiver->metaObject()->className(), receiver);
@@ -4426,7 +4426,7 @@ void QMetaObject::activate(QObject *sender, const QMetaObject *m, int local_sign
 {
     int signal_index = local_signal_index + QMetaObjectPrivate::signalOffset(m);
 
-    if (Q_UNLIKELY(qt_signal_spy_callback_set.loadRelaxed()))
+    if (Q_UNLIKELY(bobui_signal_spy_callback_set.loadRelaxed()))
         doActivate<true>(sender, signal_index, argv);
     else
         doActivate<false>(sender, signal_index, argv);
@@ -4439,7 +4439,7 @@ void QMetaObject::activate(QObject *sender, int signalOffset, int local_signal_i
 {
     int signal_index = signalOffset + local_signal_index;
 
-    if (Q_UNLIKELY(qt_signal_spy_callback_set.loadRelaxed()))
+    if (Q_UNLIKELY(bobui_signal_spy_callback_set.loadRelaxed()))
         doActivate<true>(sender, signal_index, argv);
     else
         doActivate<false>(sender, signal_index, argv);
@@ -4553,7 +4553,7 @@ bool QObject::doSetProperty(const char *name, const QVariant &value, QVariant *r
         return false;
     }
     QMetaProperty p = meta->property(id);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!p.isWritable())
         qWarning("%s::setProperty: Property \"%s\" invalid,"
                  " read-only or does not exist", metaObject()->className(), name);
@@ -4586,7 +4586,7 @@ QVariant QObject::property(const char *name) const
         return d->extraData->propertyValues.value(i);
     }
     QMetaProperty p = meta->property(id);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!p.isReadable())
         qWarning("%s::property: Property \"%s\" invalid or does not exist",
                  metaObject()->className(), name);
@@ -4633,7 +4633,7 @@ static void dumpRecursive(int level, const QObject *object)
 /*!
     Dumps a tree of children to the debug output.
 
-    \note Before Qt 5.9, this function was not const.
+    \note Before BobUI 5.9, this function was not const.
 
     \sa dumpObjectInfo()
 */
@@ -4647,7 +4647,7 @@ void QObject::dumpObjectTree() const
     Dumps information about signal connections, etc. for this object
     to the debug output.
 
-    \note Before Qt 5.9, this function was not const.
+    \note Before BobUI 5.9, this function was not const.
 
     \sa dumpObjectTree()
 */
@@ -4719,7 +4719,7 @@ void QObject::dumpObjectInfo() const
 }
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 void QObjectPrivate::writeToDebugStream(QDebug &dbg) const
 {
     Q_Q(const QObject);
@@ -4753,14 +4753,14 @@ QDebug operator<<(QDebug dbg, const QObject *o)
 
     \snippet code/src_corelib_kernel_qobject.cpp 35
 
-    Qt makes use of the macro in \l{Qt D-Bus} and \l{Qt Qml} modules.
+    BobUI makes use of the macro in \l{BobUI D-Bus} and \l{BobUI Qml} modules.
     For instance, when defining \l{QML Object Types} in C++, you can
     designate a property as the \e default one:
 
     \snippet code/doc_src_properties.cpp 7
 
     \sa QMetaObject::classInfo()
-    \sa {Using Qt D-Bus Adaptors}
+    \sa {Using BobUI D-Bus Adaptors}
     \sa {Defining QML Types from C++}
 */
 
@@ -4768,10 +4768,10 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \macro Q_INTERFACES(...)
     \relates QObject
 
-    This macro tells Qt which interfaces the class implements. This
+    This macro tells BobUI which interfaces the class implements. This
     is used when implementing plugins.
 
-    \sa Q_DECLARE_INTERFACE(), Q_PLUGIN_METADATA(), {How to Create Qt Plugins}
+    \sa Q_DECLARE_INTERFACE(), Q_PLUGIN_METADATA(), {How to Create BobUI Plugins}
 */
 
 /*!
@@ -4796,9 +4796,9 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \snippet code/src_corelib_kernel_qobject.cpp 37
 
     For more details about how to use this macro, and a more detailed
-    example of its use, see the discussion on \l {Qt's Property System}.
+    example of its use, see the discussion on \l {BobUI's Property System}.
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 /*!
@@ -4818,7 +4818,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     defining it. In addition, the class \e defining the enum has to
     inherit QObject as well as declare the enum using Q_ENUMS().
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 /*!
@@ -4838,7 +4838,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     In new code, you should prefer the use of the Q_FLAG() macro, which makes the
     type available also to the meta type system.
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 /*!
@@ -4857,7 +4857,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     Enumerations that are declared with Q_ENUM have their QMetaEnum registered in the
     enclosing QMetaObject. You can also use QMetaEnum::fromType() to get the QMetaEnum.
 
-    Registered enumerations are automatically registered also to the Qt meta
+    Registered enumerations are automatically registered also to the BobUI meta
     type system, making them known to QMetaType without the need to use
     Q_DECLARE_METATYPE(). This will enable useful features; for example, if used
     in a QVariant, you can convert them to strings. Likewise, passing them to
@@ -4869,7 +4869,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     the meta object system. QML, for example, does access registered enumerations through
     the meta object system.
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 
@@ -4907,7 +4907,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     with the meta-object system, so it is unnecessary to use Q_ENUM()
     in addition to this macro.
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 /*!
@@ -4924,7 +4924,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     registered in the enclosing QMetaObject. You can also use
     QMetaEnum::fromType() to get the QMetaEnum.
 
-    Registered enumerations are automatically registered also to the Qt meta
+    Registered enumerations are automatically registered also to the BobUI meta
     type system, making them known to QMetaType without the need to use
     Q_DECLARE_METATYPE(). This will enable useful features; for example, if
     used in a QVariant, you can convert them to strings. Likewise, passing them
@@ -4936,7 +4936,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     the meta object system. QML, for example, does access registered enumerations through
     the meta object system.
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 
@@ -4957,7 +4957,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     values with the meta-object system, so it is unnecessary to use
     Q_ENUM_NS() in addition to this macro.
 
-    \sa {Qt's Property System}
+    \sa {BobUI's Property System}
 */
 
 /*!
@@ -4969,7 +4969,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
 
     You can add the Q_OBJECT macro to any section of a class definition that
     declares its own signals and slots or that uses other services provided by
-    Qt's meta-object system.
+    BobUI's meta-object system.
 
 //! [qobject-macros-private-access-specifier]
     \note This macro expansion ends with a \c private: access specifier. If you
@@ -4989,7 +4989,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     Q_GADGET or Q_GADGET_EXPORT instead of Q_OBJECT to enable the meta object
     system's support for enums in a class that is not a QObject subclass.
 
-    \sa {Meta-Object System}, {Signals and Slots}, {Qt's Property System}
+    \sa {Meta-Object System}, {Signals and Slots}, {BobUI's Property System}
 */
 
 /*!
@@ -5111,7 +5111,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \relates QObject
 
     Use this macro to replace the \c signals keyword in class
-    declarations, when you want to use Qt Signals and Slots with a
+    declarations, when you want to use BobUI Signals and Slots with a
     \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
 
     The macro is normally used when \c no_keywords is specified with
@@ -5129,7 +5129,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     signals or \c Q_SIGNALS groups.
 
     Use this macro to replace the \c signals keyword in class
-    declarations, when you want to use Qt Signals and Slots with a
+    declarations, when you want to use BobUI Signals and Slots with a
     \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
 
     The macro is normally used when \c no_keywords is specified with
@@ -5142,7 +5142,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \relates QObject
 
     Use this macro to replace the \c slots keyword in class
-    declarations, when you want to use Qt Signals and Slots with a
+    declarations, when you want to use BobUI Signals and Slots with a
     \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
 
     The macro is normally used when \c no_keywords is specified with
@@ -5160,7 +5160,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     slots or \c Q_SLOTS groups.
 
     Use this macro to replace the \c slots keyword in class
-    declarations, when you want to use Qt Signals and Slots with a
+    declarations, when you want to use BobUI Signals and Slots with a
     \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
 
     The macro is normally used when \c no_keywords is specified with
@@ -5173,7 +5173,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \relates QObject
 
     Use this macro to replace the \c emit keyword for emitting
-    signals, when you want to use Qt Signals and Slots with a
+    signals, when you want to use BobUI Signals and Slots with a
     \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
 
     The macro is normally used when \c no_keywords is specified with
@@ -5199,7 +5199,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
 
     If an invokable member function returns a pointer to a QObject or a
     subclass of QObject and it is invoked from QML, special ownership rules
-    apply. See \l{qtqml-cppintegration-data.html}{Data Type Conversion Between QML and C++}
+    apply. See \l{bobuiqml-cppintegration-data.html}{Data Type Conversion Between QML and C++}
     for more information.
 */
 
@@ -5232,7 +5232,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     version and the second parameter is the minor version.
 
     This tag is not used by the meta-object system itself. Currently this is only
-    used by the QtQml module.
+    used by the BobUIQml module.
 
     For a more generic string tag, see \l QMetaMethod::tag()
 
@@ -5253,7 +5253,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
 */
 
 /*!
-    \macro QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+    \macro BOBUI_NO_NARROWING_CONVERSIONS_IN_CONNECT
     \relates QObject
     \since 5.8
 
@@ -5266,7 +5266,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
 */
 
 /*!
-    \macro QT_NO_CONTEXTLESS_CONNECT
+    \macro BOBUI_NO_CONTEXTLESS_CONNECT
     \relates QObject
     \since 6.7
 
@@ -5284,7 +5284,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     cause issues in multithreaded scenarios (for instance, if the
     signal is emitted from another thread).
 
-    \sa QObject::connect, Qt::ConnectionType
+    \sa QObject::connect, BobUI::ConnectionType
 */
 
 /*!
@@ -5295,7 +5295,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
 */
 
 /*!
-    \fn template<typename PointerToMemberFunction> QMetaObject::Connection QObject::connect(const QObject *sender, PointerToMemberFunction signal, const QObject *receiver, PointerToMemberFunction method, Qt::ConnectionType type)
+    \fn template<typename PointerToMemberFunction> QMetaObject::Connection QObject::connect(const QObject *sender, PointerToMemberFunction signal, const QObject *receiver, PointerToMemberFunction method, BobUI::ConnectionType type)
     \overload connect()
     \threadsafe
 
@@ -5335,7 +5335,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     By default, a signal is emitted for every connection you make;
     two signals are emitted for duplicate connections. You can break
     all of these connections with a single disconnect() call.
-    If you pass the Qt::UniqueConnection \a type, the connection will only
+    If you pass the BobUI::UniqueConnection \a type, the connection will only
     be made if it is not a duplicate. If there is already a duplicate
     (exact same signal to the exact same slot on the same objects),
     the connection will fail and connect will return an invalid QMetaObject::Connection.
@@ -5344,7 +5344,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     to establish. In particular, it determines whether a particular
     signal is delivered to a slot immediately or queued for delivery
     at a later time. If the signal is queued, the parameters must be
-    of types that are known to Qt's meta-object system, because Qt
+    of types that are known to BobUI's meta-object system, because BobUI
     needs to copy the arguments to store them in an event behind the
     scenes. If you try to use a queued connection and get the error
     message
@@ -5390,14 +5390,14 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     For this reason, it is recommended to use the overload of connect()
     that also takes a QObject as a receiver/context. It is possible
     to disable the usage of the context-less overload by defining the
-    \c{QT_NO_CONTEXTLESS_CONNECT} macro.
+    \c{BOBUI_NO_CONTEXTLESS_CONNECT} macro.
 
     Overloaded functions can be resolved with help of \l qOverload.
 
  */
 
 /*!
-    \fn template<typename PointerToMemberFunction, typename Functor> QMetaObject::Connection QObject::connect(const QObject *sender, PointerToMemberFunction signal, const QObject *context, Functor functor, Qt::ConnectionType type)
+    \fn template<typename PointerToMemberFunction, typename Functor> QMetaObject::Connection QObject::connect(const QObject *sender, PointerToMemberFunction signal, const QObject *context, Functor functor, BobUI::ConnectionType type)
 
     \threadsafe
     \overload connect()
@@ -5408,7 +5408,7 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \a sender object to \a functor to be placed in a specific event
     loop of \a context, and returns a handle to the connection.
 
-    \note Qt::UniqueConnections do not work for lambdas, non-member functions
+    \note BobUI::UniqueConnections do not work for lambdas, non-member functions
     and functors; they only apply to connecting to member functions.
 
     The signal must be a function declared as a signal in the header.
@@ -5445,8 +5445,8 @@ QDebug operator<<(QDebug dbg, const QObject *o)
     \a signal is a pointer to a pointer to a member signal of the sender
     \a receiver is the receiver object, may not be \nullptr, will be equal to sender when
                 connecting to a static function or a functor
-    \a slot a pointer only used when using Qt::UniqueConnection
-    \a type the Qt::ConnectionType passed as argument to connect
+    \a slot a pointer only used when using BobUI::UniqueConnection
+    \a type the BobUI::ConnectionType passed as argument to connect
     \a types an array of integer with the metatype id of the parameter of the signal
              to be used with queued connection
              must stay valid at least for the whole time of the connection, this function
@@ -5458,10 +5458,10 @@ QDebug operator<<(QDebug dbg, const QObject *o)
  */
 QMetaObject::Connection QObject::connectImpl(const QObject *sender, void **signal,
                                              const QObject *receiver, void **slot,
-                                             QtPrivate::QSlotObjectBase *slotObjRaw, Qt::ConnectionType type,
+                                             BobUIPrivate::QSlotObjectBase *slotObjRaw, BobUI::ConnectionType type,
                                              const int *types, const QMetaObject *senderMetaObject)
 {
-    QtPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
+    BobUIPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
     if (!signal) {
         connectWarning(sender, senderMetaObject, receiver, "invalid nullptr parameter");
         return QMetaObject::Connection();
@@ -5491,17 +5491,17 @@ QMetaObject::Connection QObject::connectImpl(const QObject *sender, void **signa
  */
 QMetaObject::Connection QObjectPrivate::connectImpl(const QObject *sender, int signal_index,
                                              const QObject *receiver, void **slot,
-                                             QtPrivate::QSlotObjectBase *slotObjRaw, int type,
+                                             BobUIPrivate::QSlotObjectBase *slotObjRaw, int type,
                                              const int *types, const QMetaObject *senderMetaObject)
 {
-    QtPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
+    BobUIPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
 
     if (!sender || !receiver || !slotObj || !senderMetaObject) {
         connectWarning(sender, senderMetaObject, receiver, "invalid nullptr parameter");
         return QMetaObject::Connection();
     }
 
-    if (type & Qt::UniqueConnection && !slot) {
+    if (type & BobUI::UniqueConnection && !slot) {
         connectWarning(sender, senderMetaObject, receiver, "unique connections require a pointer to member function of a QObject subclass");
         return QMetaObject::Connection();
     }
@@ -5512,7 +5512,7 @@ QMetaObject::Connection QObjectPrivate::connectImpl(const QObject *sender, int s
     QOrderedMutexLocker locker(signalSlotLock(sender),
                                signalSlotLock(receiver));
 
-    if (type & Qt::UniqueConnection) {
+    if (type & BobUI::UniqueConnection) {
         QObjectPrivate::ConnectionData *connections = QObjectPrivate::get(s)->connections.loadRelaxed();
         if (connections && connections->signalVectorCount() > signal_index) {
             const QObjectPrivate::Connection *c2 = connections->signalVector.loadRelaxed()->at(signal_index).first.loadRelaxed();
@@ -5524,10 +5524,10 @@ QMetaObject::Connection QObjectPrivate::connectImpl(const QObject *sender, int s
             }
         }
     }
-    type &= ~Qt::UniqueConnection;
+    type &= ~BobUI::UniqueConnection;
 
-    const bool isSingleShot = type & Qt::SingleShotConnection;
-    type &= ~Qt::SingleShotConnection;
+    const bool isSingleShot = type & BobUI::SingleShotConnection;
+    type &= ~BobUI::SingleShotConnection;
 
     Q_ASSERT(type >= 0);
     Q_ASSERT(type <= 3);
@@ -5535,7 +5535,7 @@ QMetaObject::Connection QObjectPrivate::connectImpl(const QObject *sender, int s
     std::unique_ptr<QObjectPrivate::Connection> c{new QObjectPrivate::Connection};
     c->sender = s;
     c->signal_index = signal_index;
-    QThreadData *td = r->d_func()->threadData.loadAcquire();
+    BOBUIhreadData *td = r->d_func()->threadData.loadAcquire();
     td->ref();
     c->receiverThreadData.storeRelaxed(td);
     c->receiver.storeRelaxed(r);
@@ -5678,7 +5678,7 @@ bool QObject::disconnectImpl(const QObject *sender, void **signal, const QObject
 
  The signal_index is an index relative to the number of methods.
  */
-QMetaObject::Connection QObjectPrivate::connect(const QObject *sender, int signal_index, QtPrivate::QSlotObjectBase *slotObj, Qt::ConnectionType type)
+QMetaObject::Connection QObjectPrivate::connect(const QObject *sender, int signal_index, BobUIPrivate::QSlotObjectBase *slotObj, BobUI::ConnectionType type)
 {
     return QObjectPrivate::connect(sender, signal_index, sender, slotObj, type);
 }
@@ -5695,10 +5695,10 @@ QMetaObject::Connection QObjectPrivate::connect(const QObject *sender, int signa
  */
 QMetaObject::Connection QObjectPrivate::connect(const QObject *sender, int signal_index,
                                                 const QObject *receiver,
-                                                QtPrivate::QSlotObjectBase *slotObjRaw,
-                                                Qt::ConnectionType type)
+                                                BobUIPrivate::QSlotObjectBase *slotObjRaw,
+                                                BobUI::ConnectionType type)
 {
-    QtPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
+    BobUIPrivate::SlotObjUniquePtr slotObj(slotObjRaw);
     if (!sender) {
         connectWarning(sender, nullptr, receiver, "invalid nullptr parameter");
         return QMetaObject::Connection();
@@ -5793,7 +5793,7 @@ inline bool QObjectPrivate::removeConnection(QObjectPrivate::Connection *c)
 
  Used by QPropertyAdaptorSlotObject to get an existing instance for a property, if available
  */
-QtPrivate::QPropertyAdaptorSlotObject *
+BobUIPrivate::QPropertyAdaptorSlotObject *
 QObjectPrivate::getPropertyAdaptorSlotObject(const QMetaProperty &property)
 {
     if (auto conns = connections.loadAcquire()) {
@@ -5806,7 +5806,7 @@ QObjectPrivate::getPropertyAdaptorSlotObject(const QMetaProperty &property)
         for (auto c = connectionList.first.loadRelaxed(); c;
              c = c->nextConnectionList.loadRelaxed()) {
             if (c->isSlotObject) {
-                if (auto p = QtPrivate::QPropertyAdaptorSlotObject::cast(c->slotObj,
+                if (auto p = BobUIPrivate::QPropertyAdaptorSlotObject::cast(c->slotObj,
                                                                          property.propertyIndex()))
                     return p;
             }
@@ -5816,7 +5816,7 @@ QObjectPrivate::getPropertyAdaptorSlotObject(const QMetaProperty &property)
 }
 
 /*! \class QMetaObject::Connection
-    \inmodule QtCore
+    \inmodule BobUICore
      Represents a handle to a signal-slot (or signal-functor) connection.
 
      It can be used to check if the connection is valid and to disconnect it using
@@ -5886,6 +5886,6 @@ bool QMetaObject::Connection::isConnected_helper() const
     the signal or the slot, or if the arguments do not match.
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qobject.cpp"

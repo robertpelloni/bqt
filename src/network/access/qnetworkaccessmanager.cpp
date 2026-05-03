@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qnetworkaccessmanager.h"
 #include "qnetworkaccessmanager_p.h"
@@ -15,9 +15,9 @@
 #include "qhstspolicy.h"
 #include "qhsts_p.h"
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include "qhstsstore_p.h"
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 
 #include "qnetworkaccessfilebackend_p.h"
 #include "qnetworkaccessdebugpipebackend_p.h"
@@ -28,29 +28,29 @@
 #include "qnetworkaccessbackend_p.h"
 #include "qnetworkreplyimpl_p.h"
 
-#include "QtCore/qbuffer.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qurl.h"
-#include "QtNetwork/private/qauthenticator_p.h"
-#include "QtNetwork/qsslconfiguration.h"
+#include "BobUICore/qbuffer.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qurl.h"
+#include "BobUINetwork/private/qauthenticator_p.h"
+#include "BobUINetwork/qsslconfiguration.h"
 
-#if QT_CONFIG(http)
-#include "QtNetwork/private/http2protocol_p.h"
+#if BOBUI_CONFIG(http)
+#include "BobUINetwork/private/http2protocol_p.h"
 #include "qhttpmultipart.h"
 #include "qhttpmultipart_p.h"
 #include "qnetworkreplyhttpimpl_p.h"
 #endif
 
-#include "qthread.h"
+#include "bobuihread.h"
 
 #include <QHostInfo>
 
-#include "QtCore/qapplicationstatic.h"
-#include "QtCore/qloggingcategory.h"
-#include <QtCore/private/qfactoryloader_p.h>
+#include "BobUICore/qapplicationstatic.h"
+#include "BobUICore/qloggingcategory.h"
+#include <BobUICore/private/qfactoryloader_p.h>
 
 #if defined(Q_OS_MACOS)
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreServices/CoreServices.h>
 #include <SystemConfiguration/SystemConfiguration.h>
@@ -65,18 +65,18 @@
 #include <mutex>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 #if defined(Q_OS_MACOS)
-Q_STATIC_LOGGING_CATEGORY(lcQnam, "qt.network.access.manager")
+Q_STATIC_LOGGING_CATEGORY(lcQnam, "bobui.network.access.manager")
 #endif
 
 Q_APPLICATION_STATIC(QNetworkAccessFileBackendFactory, fileBackend)
 
-#if QT_CONFIG(private_tests)
+#if BOBUI_CONFIG(private_tests)
 Q_GLOBAL_STATIC(QNetworkAccessDebugPipeBackendFactory, debugpipeBackend)
 #endif
 
@@ -86,13 +86,13 @@ Q_APPLICATION_STATIC(QFactoryLoader, qnabfLoader, QNetworkAccessBackendFactory_i
 bool getProxyAuth(const QString& proxyHostname, const QString &scheme, QString& username, QString& password)
 {
     CFStringRef protocolType = nullptr;
-    if (scheme.compare("ftp"_L1, Qt::CaseInsensitive) == 0) {
+    if (scheme.compare("ftp"_L1, BobUI::CaseInsensitive) == 0) {
         protocolType = kSecAttrProtocolFTPProxy;
-    } else if (scheme.compare("http"_L1, Qt::CaseInsensitive) == 0
-               || scheme.compare("preconnect-http"_L1, Qt::CaseInsensitive) == 0) {
+    } else if (scheme.compare("http"_L1, BobUI::CaseInsensitive) == 0
+               || scheme.compare("preconnect-http"_L1, BobUI::CaseInsensitive) == 0) {
         protocolType = kSecAttrProtocolHTTPProxy;
-    } else if (scheme.compare("https"_L1,Qt::CaseInsensitive)==0
-               || scheme.compare("preconnect-https"_L1, Qt::CaseInsensitive) == 0) {
+    } else if (scheme.compare("https"_L1,BobUI::CaseInsensitive)==0
+               || scheme.compare("preconnect-https"_L1, BobUI::CaseInsensitive) == 0) {
         protocolType = kSecAttrProtocolHTTPSProxy;
     } else {
         qCWarning(lcQnam) << "Cannot query user name and password for a proxy, unnknown protocol:"
@@ -156,7 +156,7 @@ bool getProxyAuth(const QString& proxyHostname, const QString &scheme, QString& 
 
 static void ensureInitialized()
 {
-#if QT_CONFIG(private_tests)
+#if BOBUI_CONFIG(private_tests)
     (void) debugpipeBackend();
 #endif
 
@@ -171,7 +171,7 @@ static void ensureInitialized()
     \since 4.4
 
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \reentrant
 
     The Network Access API is constructed around one QNetworkAccessManager
@@ -179,7 +179,7 @@ static void ensureInitialized()
     it sends. It contains the proxy and cache configuration, as well as the
     signals related to such issues, and reply signals that can be used to
     monitor the progress of a network operation. One QNetworkAccessManager
-    instance should be enough for the whole Qt application. Since
+    instance should be enough for the whole BobUI application. Since
     QNetworkAccessManager is based on QObject, it can only be used from the
     thread it belongs to.
 
@@ -216,7 +216,7 @@ static void ensureInitialized()
     can be:
     \snippet code/src_network_access_qnetworkaccessmanager.cpp 1
 
-    Since Qt 6.11 the defaults of the TCP Keepalive parameters used by
+    Since BobUI 6.11 the defaults of the TCP Keepalive parameters used by
     QNetworkAccessManager have been changed. With the current settings
     the connection will be terminated after 2 minutes of inactivity.
 
@@ -420,16 +420,16 @@ QNetworkAccessManager::QNetworkAccessManager(QObject *parent)
     d_func()->ensureBackendPluginsLoaded();
 
     qRegisterMetaType<QNetworkReply::NetworkError>();
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     qRegisterMetaType<QNetworkProxy>();
 #endif
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     qRegisterMetaType<QList<QSslError> >();
     qRegisterMetaType<QSslConfiguration>();
     qRegisterMetaType<QSslPreSharedKeyAuthenticator *>();
 #endif
     qRegisterMetaType<QList<std::pair<QByteArray, QByteArray>>>();
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     qRegisterMetaType<QHttpNetworkRequest>();
 #endif
     qRegisterMetaType<QNetworkReply::NetworkError>();
@@ -445,7 +445,7 @@ QNetworkAccessManager::QNetworkAccessManager(QObject *parent)
 */
 QNetworkAccessManager::~QNetworkAccessManager()
 {
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     delete d_func()->proxyFactory;
 #endif
 
@@ -459,7 +459,7 @@ QNetworkAccessManager::~QNetworkAccessManager()
     // properly watch the cache deletion, e.g. via a QWeakPointer.
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 /*!
     Returns the QNetworkProxy that the requests sent using this
     QNetworkAccessManager object will use. The default value for the
@@ -574,7 +574,7 @@ QAbstractNetworkCache *QNetworkAccessManager::cache() const
     \note QNetworkAccessManager takes ownership of the \a cache object.
 
     QNetworkAccessManager by default does not have a set cache.
-    Qt provides a simple disk cache, QNetworkDiskCache, which can be used.
+    BobUI provides a simple disk cache, QNetworkDiskCache, which can be used.
 
     \sa cache(), QNetworkRequest::CacheLoadControl
 */
@@ -703,7 +703,7 @@ bool QNetworkAccessManager::isStrictTransportSecurityEnabled() const
 
 void QNetworkAccessManager::enableStrictTransportSecurityStore(bool enabled, const QString &storeDir)
 {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     Q_D(QNetworkAccessManager);
     d->stsStore.reset(enabled ? new QHstsStore(storeDir) : nullptr);
     d->stsCache.setStore(d->stsStore.get());
@@ -711,7 +711,7 @@ void QNetworkAccessManager::enableStrictTransportSecurityStore(bool enabled, con
     Q_UNUSED(enabled);
     Q_UNUSED(storeDir);
     qWarning("HSTS permanent store requires the feature 'settings' enabled");
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 }
 
 /*!
@@ -725,12 +725,12 @@ void QNetworkAccessManager::enableStrictTransportSecurityStore(bool enabled, con
 
 bool QNetworkAccessManager::isStrictTransportSecurityStoreEnabled() const
 {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     Q_D(const QNetworkAccessManager);
     return bool(d->stsStore);
 #else
     return false;
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 }
 
 /*!
@@ -887,7 +887,7 @@ QNetworkReply *QNetworkAccessManager::post(const QNetworkRequest &request, const
     a new QNetworkReply object.
 */
 
-#if QT_CONFIG(http) || defined(Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined(Q_OS_WASM)
 /*!
     \since 4.8
 
@@ -927,7 +927,7 @@ QNetworkReply *QNetworkAccessManager::put(const QNetworkRequest &request, QHttpM
     QNetworkReply *reply = put(newRequest, device);
     return reply;
 }
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
 
 /*!
     Uploads the contents of \a data to the destination \a request and
@@ -996,7 +996,7 @@ QNetworkReply *QNetworkAccessManager::deleteResource(const QNetworkRequest &requ
     return d_func()->postProcess(createRequest(QNetworkAccessManager::DeleteOperation, request));
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 /*!
     \since 5.2
 
@@ -1165,7 +1165,7 @@ QNetworkReply *QNetworkAccessManager::sendCustomRequest(const QNetworkRequest &r
     return reply;
 }
 
-#if QT_CONFIG(http) || defined(Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined(Q_OS_WASM)
 /*!
     \since 5.8
 
@@ -1187,7 +1187,7 @@ QNetworkReply *QNetworkAccessManager::sendCustomRequest(const QNetworkRequest &r
     QNetworkReply *reply = sendCustomRequest(newRequest, verb, device);
     return reply;
 }
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
 
 /*!
     Returns a new QNetworkReply object to handle the operation \a op
@@ -1214,7 +1214,7 @@ QNetworkReply *QNetworkAccessManager::createRequest(QNetworkAccessManager::Opera
         req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, redirectPolicy());
     }
 
-#if QT_CONFIG(http) || defined (Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined (Q_OS_WASM)
     if (req.transferTimeoutAsDuration() == 0ms)
         req.setTransferTimeout(transferTimeoutAsDuration());
 #endif
@@ -1256,7 +1256,7 @@ QNetworkReply *QNetworkAccessManager::createRequest(QNetworkAccessManager::Opera
                 req.attribute(QNetworkRequest::CacheLoadControlAttribute,
                               QNetworkRequest::PreferNetwork).toInt());
         if (mode == QNetworkRequest::AlwaysCache) {
-            // FIXME Implement a QNetworkReplyCacheImpl instead, see QTBUG-15106
+            // FIXME Implement a QNetworkReplyCacheImpl instead, see BOBUIBUG-15106
             QNetworkReplyImpl *reply = new QNetworkReplyImpl(this);
             QNetworkReplyImplPrivate *priv = reply->d_func();
             priv->manager = this;
@@ -1302,20 +1302,20 @@ QNetworkReply *QNetworkAccessManager::createRequest(QNetworkAccessManager::Opera
     }
 #endif
 
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     constexpr char16_t httpSchemes[][17] = {
         u"http",
         u"preconnect-http",
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         u"https",
         u"preconnect-https",
 #endif
         u"unix+http",
     };
-    // Since Qt 5 we use the new QNetworkReplyHttpImpl
+    // Since BobUI 5 we use the new QNetworkReplyHttpImpl
     if (std::find(std::begin(httpSchemes), std::end(httpSchemes), scheme) != std::end(httpSchemes)) {
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         const bool isLocalSocket = scheme.startsWith("unix"_L1);
         if (!isLocalSocket && isStrictTransportSecurityEnabled()
             && d->stsCache.isKnownHost(request.url())) {
@@ -1338,7 +1338,7 @@ QNetworkReply *QNetworkAccessManager::createRequest(QNetworkAccessManager::Opera
         QNetworkReplyHttpImpl *reply = new QNetworkReplyHttpImpl(this, request, op, outgoingData);
         return reply;
     }
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
 
     // first step: create the reply
     QNetworkReplyImpl *reply = new QNetworkReplyImpl(this);
@@ -1357,7 +1357,7 @@ QNetworkReply *QNetworkAccessManager::createRequest(QNetworkAccessManager::Opera
         priv->backend->setReplyPrivate(priv);
     }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     reply->setSslConfiguration(request.sslConfiguration());
 #endif
 
@@ -1380,7 +1380,7 @@ QStringList QNetworkAccessManager::supportedSchemes() const
 {
     QStringList schemes;
     QNetworkAccessManager *self = const_cast<QNetworkAccessManager *>(this); // We know we call a const slot
-    QMetaObject::invokeMethod(self, "supportedSchemesImplementation", Qt::DirectConnection,
+    QMetaObject::invokeMethod(self, "supportedSchemesImplementation", BobUI::DirectConnection,
                               Q_RETURN_ARG(QStringList, schemes));
     schemes.removeDuplicates();
     return schemes;
@@ -1396,7 +1396,7 @@ QStringList QNetworkAccessManager::supportedSchemes() const
     QNetworkAccessManager::supportedSchemes() instead.
 
     Because of binary compatibility constraints, the supportedSchemes()
-    method (introduced in Qt 5.2) was not virtual in Qt 5, but now it
+    method (introduced in BobUI 5.2) was not virtual in BobUI 5, but now it
     is. Override the supportedSchemes method rather than this one.
 
     \sa supportedSchemes()
@@ -1407,11 +1407,11 @@ QStringList QNetworkAccessManager::supportedSchemesImplementation() const
 
     QStringList schemes = d->backendSupportedSchemes();
     // Those ones don't exist in backends
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     schemes << QStringLiteral("http");
     schemes << QStringLiteral("unix+http");
     schemes << QStringLiteral("local+http");
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (QSslSocket::supportsSsl())
         schemes << QStringLiteral("https");
 #endif
@@ -1545,12 +1545,12 @@ void QNetworkAccessManagerPrivate::_q_replyFinished(QNetworkReply *reply)
 
     emit q->finished(reply);
     if (reply->request().attribute(QNetworkRequest::AutoDeleteReplyOnFinishAttribute, false).toBool())
-        QMetaObject::invokeMethod(reply, [reply] { reply->deleteLater(); }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(reply, [reply] { reply->deleteLater(); }, BobUI::QueuedConnection);
 }
 
 void QNetworkAccessManagerPrivate::_q_replyEncrypted(QNetworkReply *reply)
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     Q_Q(QNetworkAccessManager);
     emit q->encrypted(reply);
 #else
@@ -1560,7 +1560,7 @@ void QNetworkAccessManagerPrivate::_q_replyEncrypted(QNetworkReply *reply)
 
 void QNetworkAccessManagerPrivate::_q_replySslErrors(const QList<QSslError> &errors)
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     Q_Q(QNetworkAccessManager);
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(q->sender());
     if (reply)
@@ -1570,7 +1570,7 @@ void QNetworkAccessManagerPrivate::_q_replySslErrors(const QList<QSslError> &err
 #endif
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QNetworkAccessManagerPrivate::_q_replyPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *authenticator)
 {
     Q_Q(QNetworkAccessManager);
@@ -1586,7 +1586,7 @@ QNetworkReply *QNetworkAccessManagerPrivate::postProcess(QNetworkReply *reply)
     QNetworkReplyPrivate::setManager(reply, q);
     q->connect(reply, &QNetworkReply::finished, reply,
                [this, reply]() { _q_replyFinished(reply); });
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     /* In case we're compiled without SSL support, we don't have this signal and we need to
      * avoid getting a connection error. */
     q->connect(reply, &QNetworkReply::encrypted, reply,
@@ -1654,7 +1654,7 @@ void QNetworkAccessManagerPrivate::authenticationRequired(QAuthenticator *authen
         authenticationManager->cacheCredentials(url, authenticator);
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void QNetworkAccessManagerPrivate::proxyAuthenticationRequired(const QUrl &url,
                                                                const QNetworkProxy &proxy,
                                                                bool synchronous,
@@ -1738,10 +1738,10 @@ QNetworkAccessManagerPrivate::~QNetworkAccessManagerPrivate()
     destroyThread();
 }
 
-QThread * QNetworkAccessManagerPrivate::createThread()
+BOBUIhread * QNetworkAccessManagerPrivate::createThread()
 {
     if (!thread) {
-        thread = new QThread;
+        thread = new BOBUIhread;
         thread->setObjectName(QStringLiteral("QNetworkAccessManager thread"));
         thread->start();
     }
@@ -1763,7 +1763,7 @@ void QNetworkAccessManagerPrivate::destroyThread()
 }
 
 
-#if QT_CONFIG(http) || defined(Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined(Q_OS_WASM)
 
 QNetworkRequest QNetworkAccessManagerPrivate::prepareMultipart(const QNetworkRequest &request, QHttpMultiPart *multiPart)
 {
@@ -1814,7 +1814,7 @@ QNetworkRequest QNetworkAccessManagerPrivate::prepareMultipart(const QNetworkReq
 
     return newRequest;
 }
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
 
 /*!
     \internal
@@ -1827,7 +1827,7 @@ void QNetworkAccessManagerPrivate::ensureBackendPluginsLoaded()
     std::unique_lock locker(mutex);
     if (!qnabfLoader())
         return;
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     qnabfLoader->update();
 #endif
     int index = 0;
@@ -1835,6 +1835,6 @@ void QNetworkAccessManagerPrivate::ensureBackendPluginsLoaded()
         ++index;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkaccessmanager.cpp"

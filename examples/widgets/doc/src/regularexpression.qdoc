@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example tools/regularexpression
@@ -7,12 +7,12 @@
     \examplecategory {User Interface Components}
     \ingroup examples-widgets-tools
 
-    \brief The QRegularExpression example shows how regular expressions in Qt are
+    \brief The QRegularExpression example shows how regular expressions in BobUI are
     applied to text by providing an environment in which new regular expressions can be
     created and tested on custom text strings.
 
     The example makes usage of the QRegularExpression class, which has been
-    introduced in Qt 5.0. QRegularExpression implements Perl-compatible regular
+    introduced in BobUI 5.0. QRegularExpression implements Perl-compatible regular
     expressions, supporting a number of advanced matching features, such as
     case insensitive matching, multiline matching, Unicode properties selectors
     and partial/incremental matching.

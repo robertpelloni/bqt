@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTest {
+namespace BOBUIest {
 
 struct QBenchmarkMetricKey {
     int metric;
@@ -52,7 +52,7 @@ static const int NumEntries = sizeof(entries) / sizeof(entries[0]);
 }
 
 /*!
-  \enum QTest::QBenchmarkMetric
+  \enum BOBUIest::QBenchmarkMetric
   \since 4.7
 
   This enum lists all the things that can be benchmarked.
@@ -89,21 +89,21 @@ static const int NumEntries = sizeof(entries) / sizeof(entries[0]);
   \value AlignmentFaults        Faults caused due to misalignment
   \value EmulationFaults        Faults that needed software emulation
 
-  \sa QTest::benchmarkMetricName(), QTest::benchmarkMetricUnit()
+  \sa BOBUIest::benchmarkMetricName(), BOBUIest::benchmarkMetricUnit()
 
   Note that \c WalltimeNanoseconds and \c BytesAllocated are
   only provided for use via \l setBenchmarkResult(), and results
   in those metrics are not able to be provided automatically
-  by the QTest framework.
+  by the BOBUIest framework.
  */
 
 /*!
   \since 4.7
   Returns the enum value \a metric as a character string.
  */
-const char * QTest::benchmarkMetricName(QBenchmarkMetric metric)
+const char * BOBUIest::benchmarkMetricName(QBenchmarkMetric metric)
 {
-    if (unsigned(metric) < unsigned(QTest::NumEntries))
+    if (unsigned(metric) < unsigned(BOBUIest::NumEntries))
         return entries[metric].name;
 
     return "";
@@ -113,12 +113,12 @@ const char * QTest::benchmarkMetricName(QBenchmarkMetric metric)
   \since 4.7
   Returns the units of measure for the specified \a metric.
  */
-const char * QTest::benchmarkMetricUnit(QBenchmarkMetric metric)
+const char * BOBUIest::benchmarkMetricUnit(QBenchmarkMetric metric)
 {
-    if (unsigned(metric) < unsigned(QTest::NumEntries))
+    if (unsigned(metric) < unsigned(BOBUIest::NumEntries))
         return entries[metric].unit;
 
     return "";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

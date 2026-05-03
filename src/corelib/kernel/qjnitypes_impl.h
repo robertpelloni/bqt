@@ -1,23 +1,23 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QJNITYPES_IMPL_H
 #define QJNITYPES_IMPL_H
 
-#include <QtCore/qstring.h>
+#include <BobUICore/qstring.h>
 
-#include <QtCore/q26numeric.h>
-#include <QtCore/q20type_traits.h>
-#include <QtCore/q20utility.h>
+#include <BobUICore/q26numeric.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/q20utility.h>
 
 #if defined(Q_QDOC) || defined(Q_OS_ANDROID)
 #include <jni.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QJniObject;
 
-namespace QtJniTypes
+namespace BobUIJniTypes
 {
 
 namespace Detail
@@ -34,7 +34,7 @@ static inline QString toQString(jstring string, JNIEnv *env)
 {
     Q_ASSERT(string);
     const jsize length = env->GetStringLength(string);
-    QString res(length, Qt::Uninitialized);
+    QString res(length, BobUI::Uninitialized);
     env->GetStringRegion(string, 0, length, reinterpret_cast<jchar *>(res.data_ptr().data()));
     return res;
 }
@@ -261,8 +261,8 @@ struct Traits {
 };
 
 template <typename Have, typename Want>
-static constexpr bool sameTypeForJni = (QtJniTypes::Traits<Have>::signature()
-                                        == QtJniTypes::Traits<Want>::signature())
+static constexpr bool sameTypeForJni = (BobUIJniTypes::Traits<Have>::signature()
+                                        == BobUIJniTypes::Traits<Want>::signature())
                                     && (sizeof(Have) == sizeof(Want));
 
 template <typename, typename = void>
@@ -371,7 +371,7 @@ static constexpr auto methodSignature()
 template<typename T, IfValidSignatureTypes<T> = true>
 static constexpr auto fieldSignature()
 {
-    return QtJniTypes::Traits<T>::signature();
+    return BobUIJniTypes::Traits<T>::signature();
 }
 
 template<typename ...Args, IfValidSignatureTypes<Args...> = true>
@@ -392,9 +392,9 @@ static constexpr auto nativeMethodSignature(Ret (*)(JNIEnv *, jclass, Args...))
     return methodSignature<Ret, Args...>();
 }
 
-} // namespace QtJniTypes
+} // namespace BobUIJniTypes
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

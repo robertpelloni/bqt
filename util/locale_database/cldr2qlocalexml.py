@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 """Convert CLDR data to QLocaleXML
 
 The CLDR data can be downloaded as a zip-file from CLDR_, which has a
@@ -20,7 +20,7 @@ it or use '-' to select the standard output. This file is the input
 needed by ``./qlocalexml2cpp.py``
 
 When you update the CLDR data, be sure to also update
-src/corelib/text/qt_attribution.json's entry for unicode-cldr. Check
+src/corelib/text/bobui_attribution.json's entry for unicode-cldr. Check
 this script's output for unknown language, territory or script messages;
 if any can be resolved, use their entry in common/main/en.xml to
 append new entries to enumdata.py's lists and update documentation in

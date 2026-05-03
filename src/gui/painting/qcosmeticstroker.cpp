@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcosmeticstroker_p.h"
 #include "private/qpainterpath_p.h"
 #include "private/qrgba64_p.h"
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if 0
 inline QString capString(int caps)
@@ -174,28 +174,28 @@ static StrokeLine strokeLine(int strokeSelection)
 
     switch (strokeSelection) {
     case Aliased|Solid|RegularDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLine)<drawPixel, NoDasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLine)<drawPixel, NoDasher>;
         break;
     case Aliased|Solid|FastDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLine)<drawPixelARGB32Opaque, NoDasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLine)<drawPixelARGB32Opaque, NoDasher>;
         break;
     case Aliased|Dashed|RegularDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLine)<drawPixel, Dasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLine)<drawPixel, Dasher>;
         break;
     case Aliased|Dashed|FastDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLine)<drawPixelARGB32Opaque, Dasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLine)<drawPixelARGB32Opaque, Dasher>;
         break;
     case AntiAliased|Solid|RegularDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLineAA)<drawPixel, NoDasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLineAA)<drawPixel, NoDasher>;
         break;
     case AntiAliased|Solid|FastDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLineAA)<drawPixelARGB32, NoDasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLineAA)<drawPixelARGB32, NoDasher>;
         break;
     case AntiAliased|Dashed|RegularDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLineAA)<drawPixel, Dasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLineAA)<drawPixel, Dasher>;
         break;
     case AntiAliased|Dashed|FastDraw:
-        stroke = &QT_PREPEND_NAMESPACE(drawLineAA)<drawPixelARGB32, Dasher>;
+        stroke = &BOBUI_PREPEND_NAMESPACE(drawLineAA)<drawPixelARGB32, Dasher>;
         break;
     default:
         Q_ASSERT(false);
@@ -260,7 +260,7 @@ void QCosmeticStroker::setup()
         opacity = static_cast<int>(256 * width * state->txscale);
     opacity = qBound(0, opacity, 256);
 
-    drawCaps = state->lastPen.capStyle() != Qt::FlatCap;
+    drawCaps = state->lastPen.capStyle() != BobUI::FlatCap;
 
     if (strokeSelection & FastDraw) {
         color = multiplyAlpha256(state->penData.solidColor.rgba64(), opacity).toArgb32();
@@ -1050,4 +1050,4 @@ static bool drawLineAA(QCosmeticStroker *stroker, qreal rx1, qreal ry1, qreal rx
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

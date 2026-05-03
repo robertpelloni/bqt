@@ -1,19 +1,19 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcomposeplatforminputcontext.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/qvarlengtharray.h>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QGuiApplication>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUIGui/QKeyEvent>
+#include <BobUIGui/QGuiApplication>
 
 #include <locale.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcXkbCompose, "qt.xkb.compose")
+Q_LOGGING_CATEGORY(lcXkbCompose, "bobui.xkb.compose")
 
 QComposeInputContext::QComposeInputContext()
 {
@@ -130,11 +130,11 @@ void QComposeInputContext::reset()
         xkb_compose_state_reset(m_composeState);
 }
 
-void QComposeInputContext::update(Qt::InputMethodQueries q)
+void QComposeInputContext::update(BobUI::InputMethodQueries q)
 {
     QPlatformInputContext::update(q);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcomposeplatforminputcontext.cpp"

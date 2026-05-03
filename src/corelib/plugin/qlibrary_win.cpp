@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #include "qplatformdefs.h"
 #include "qlibrary_p.h"
@@ -10,13 +10,13 @@
 #include "qfileinfo.h"
 #include <private/qfilesystementry_p.h>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-extern QString qt_error_string(int code);
+extern QString bobui_error_string(int code);
 
 QStringList QLibraryPrivate::suffixes_sys(const QString& fullVersion)
 {
@@ -68,7 +68,7 @@ bool QLibraryPrivate::load_sys()
     locker.relock();
     if (!hnd) {
         errorString = QLibrary::tr("Cannot load library %1: %2").arg(
-                    QDir::toNativeSeparators(fileName), qt_error_string());
+                    QDir::toNativeSeparators(fileName), bobui_error_string());
     } else {
         // Query the actual name of the library that was loaded
         errorString.clear();
@@ -103,7 +103,7 @@ bool QLibraryPrivate::unload_sys()
 {
     if (!FreeLibrary(pHnd.loadAcquire())) {
         errorString = QLibrary::tr("Cannot unload library %1: %2").arg(
-                    QDir::toNativeSeparators(fileName),  qt_error_string());
+                    QDir::toNativeSeparators(fileName),  bobui_error_string());
         return false;
     }
     errorString.clear();
@@ -115,4 +115,4 @@ QFunctionPointer QLibraryPrivate::resolve_sys(const char *symbol)
     FARPROC address = GetProcAddress(pHnd.loadAcquire(), symbol);
     return QFunctionPointer(address);
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

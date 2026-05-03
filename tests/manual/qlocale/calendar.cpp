@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "calendar.h"
 
@@ -10,7 +10,7 @@
 #include <QLabel>
 #include <QDateEdit>
 #include <QCheckBox>
-#include <QTextCharFormat>
+#include <BOBUIextCharFormat>
 
 CalendarWidget::CalendarWidget()
 {
@@ -42,7 +42,7 @@ void CalendarWidget::localeChanged(QLocale locale)
 
 void CalendarWidget::firstDayChanged(int index)
 {
-    calendar->setFirstDayOfWeek(Qt::DayOfWeek(
+    calendar->setFirstDayOfWeek(BobUI::DayOfWeek(
                                 firstDayCombo->itemData(index).toInt()));
 }
 
@@ -81,25 +81,25 @@ void CalendarWidget::maximumDateChanged(QDate date)
     minimumDateEdit->setDate(calendar->minimumDate());
 }
 
-bool CalendarWidget::isWeekendDay(Qt::DayOfWeek day) {
-    QList<Qt::DayOfWeek> week = calendar->locale().weekdays();
+bool CalendarWidget::isWeekendDay(BobUI::DayOfWeek day) {
+    QList<BobUI::DayOfWeek> week = calendar->locale().weekdays();
     return !week.contains(day);
 }
 
 void CalendarWidget::updateWeekendDays() {
-    QTextCharFormat weekFormat, weekendFormat;
+    BOBUIextCharFormat weekFormat, weekendFormat;
     weekFormat.setForeground(qvariant_cast<QColor>(
         weekdayColorCombo->itemData(weekdayColorCombo->currentIndex())));
     weekendFormat.setForeground(qvariant_cast<QColor>(
         weekendColorCombo->itemData(weekendColorCombo->currentIndex())));
 
-    calendar->setWeekdayTextFormat(Qt::Monday, isWeekendDay(Qt::Monday) ? weekendFormat : weekFormat);
-    calendar->setWeekdayTextFormat(Qt::Tuesday, isWeekendDay(Qt::Tuesday) ? weekendFormat : weekFormat);
-    calendar->setWeekdayTextFormat(Qt::Wednesday, isWeekendDay(Qt::Wednesday) ? weekendFormat : weekFormat);
-    calendar->setWeekdayTextFormat(Qt::Thursday, isWeekendDay(Qt::Thursday) ? weekendFormat : weekFormat);
-    calendar->setWeekdayTextFormat(Qt::Friday, isWeekendDay(Qt::Friday) ? weekendFormat : weekFormat);
-    calendar->setWeekdayTextFormat(Qt::Saturday, isWeekendDay(Qt::Saturday) ? weekendFormat : weekFormat);
-    calendar->setWeekdayTextFormat(Qt::Sunday, isWeekendDay(Qt::Sunday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Monday, isWeekendDay(BobUI::Monday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Tuesday, isWeekendDay(BobUI::Tuesday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Wednesday, isWeekendDay(BobUI::Wednesday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Thursday, isWeekendDay(BobUI::Thursday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Friday, isWeekendDay(BobUI::Friday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Saturday, isWeekendDay(BobUI::Saturday) ? weekendFormat : weekFormat);
+    calendar->setWeekdayTextFormat(BobUI::Sunday, isWeekendDay(BobUI::Sunday) ? weekendFormat : weekFormat);
 }
 
 void CalendarWidget::weekdayFormatChanged()
@@ -115,14 +115,14 @@ void CalendarWidget::weekendFormatChanged()
 void CalendarWidget::reformatHeaders()
 {
     QString text = headerTextFormatCombo->currentText();
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
 
     if (text == tr("Bold")) {
         format.setFontWeight(QFont::Bold);
     } else if (text == tr("Italic")) {
         format.setFontItalic(true);
     } else if (text == tr("Green")) {
-        format.setForeground(Qt::green);
+        format.setForeground(BobUI::green);
     }
     calendar->setHeaderTextFormat(format);
 }
@@ -131,18 +131,18 @@ void CalendarWidget::reformatCalendarPage()
 {
     if (firstFridayCheckBox->isChecked()) {
         QDate firstFriday(calendar->yearShown(), calendar->monthShown(), 1);
-        while (firstFriday.dayOfWeek() != Qt::Friday)
+        while (firstFriday.dayOfWeek() != BobUI::Friday)
             firstFriday = firstFriday.addDays(1);
-        QTextCharFormat firstFridayFormat;
-        firstFridayFormat.setForeground(Qt::blue);
+        BOBUIextCharFormat firstFridayFormat;
+        firstFridayFormat.setForeground(BobUI::blue);
         calendar->setDateTextFormat(firstFriday, firstFridayFormat);
     }
 
     //May First in Red takes precedence
     if (mayFirstCheckBox->isChecked()) {
         const QDate mayFirst(calendar->yearShown(), 5, 1);
-        QTextCharFormat mayFirstFormat;
-        mayFirstFormat.setForeground(Qt::red);
+        BOBUIextCharFormat mayFirstFormat;
+        mayFirstFormat.setForeground(BobUI::red);
         calendar->setDateTextFormat(mayFirst, mayFirstFormat);
     }
 }
@@ -160,7 +160,7 @@ void CalendarWidget::createPreviewGroupBox()
             this, SLOT(reformatCalendarPage()));
 
     previewLayout = new QGridLayout;
-    previewLayout->addWidget(calendar, 0, 0, Qt::AlignCenter);
+    previewLayout->addWidget(calendar, 0, 0, BobUI::AlignCenter);
     previewGroupBox->setLayout(previewLayout);
 }
 
@@ -169,13 +169,13 @@ void CalendarWidget::createGeneralOptionsGroupBox()
     generalOptionsGroupBox = new QGroupBox(tr("General Options"));
 
     firstDayCombo = new QComboBox;
-    firstDayCombo->addItem(tr("Monday"), Qt::Monday);
-    firstDayCombo->addItem(tr("Tuesday"), Qt::Tuesday);
-    firstDayCombo->addItem(tr("Wednesday"), Qt::Wednesday);
-    firstDayCombo->addItem(tr("Thursday"), Qt::Thursday);
-    firstDayCombo->addItem(tr("Friday"), Qt::Friday);
-    firstDayCombo->addItem(tr("Saturday"), Qt::Saturday);
-    firstDayCombo->addItem(tr("Sunday"), Qt::Sunday);
+    firstDayCombo->addItem(tr("Monday"), BobUI::Monday);
+    firstDayCombo->addItem(tr("Tuesday"), BobUI::Tuesday);
+    firstDayCombo->addItem(tr("Wednesday"), BobUI::Wednesday);
+    firstDayCombo->addItem(tr("Thursday"), BobUI::Thursday);
+    firstDayCombo->addItem(tr("Friday"), BobUI::Friday);
+    firstDayCombo->addItem(tr("Saturday"), BobUI::Saturday);
+    firstDayCombo->addItem(tr("Sunday"), BobUI::Sunday);
 
     firstDayLabel = new QLabel(tr("Wee&k starts on:"));
     firstDayLabel->setBuddy(firstDayCombo);
@@ -367,9 +367,9 @@ void CalendarWidget::createTextFormatsGroupBox()
 QComboBox *CalendarWidget::createColorComboBox()
 {
     QComboBox *comboBox = new QComboBox;
-    comboBox->addItem(tr("Red"), QColor(Qt::red));
-    comboBox->addItem(tr("Blue"), QColor(Qt::blue));
-    comboBox->addItem(tr("Black"), QColor(Qt::black));
-    comboBox->addItem(tr("Magenta"), QColor(Qt::magenta));
+    comboBox->addItem(tr("Red"), QColor(BobUI::red));
+    comboBox->addItem(tr("Blue"), QColor(BobUI::blue));
+    comboBox->addItem(tr("Black"), QColor(BobUI::black));
+    comboBox->addItem(tr("Magenta"), QColor(BobUI::magenta));
     return comboBox;
 }

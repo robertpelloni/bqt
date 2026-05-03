@@ -1,13 +1,13 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qbytearray.h>
-#include <QtConcurrent/qtconcurrentrun.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUIConcurrent/bobuiconcurrentrun.h>
 
 int main(int argc, char **argv)
 {
     QByteArray bytearray = "hello world";
-    auto result = QtConcurrent::run(&QByteArray::split, bytearray, ',');
+    auto result = BobUIConcurrent::run(&QByteArray::split, bytearray, ',');
     Q_UNUSED(result);
 
     return 0;

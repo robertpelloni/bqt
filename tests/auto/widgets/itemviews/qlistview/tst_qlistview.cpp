@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QListWidget>
@@ -9,21 +9,21 @@
 #include <QStringListModel>
 #include <QStyledItemDelegate>
 #include <QStyleFactory>
-#include <QTest>
-#include <QTimer>
-#include <QtMath>
+#include <BOBUIest>
+#include <BOBUIimer>
+#include <BobUIMath>
 #include <QProxyStyle>
 #include <QVBoxLayout>
 #include <QDialog>
 
-#include <QtTest/private/qtesthelpers_p.h>
-#include <QtWidgets/private/qlistview_p.h>
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
+#include <BobUIWidgets/private/qlistview_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 #if defined(Q_OS_WIN)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <QDialog>
 #  include <QGuiApplication>
 #  include <QVBoxLayout>
@@ -127,33 +127,33 @@ private slots:
     void shiftSelectionWithItemAlignment();
     void clickOnViewportClearsSelection();
     void task262152_setModelColumnNavigate();
-    void taskQTBUG_2233_scrollHiddenItems_data();
-    void taskQTBUG_2233_scrollHiddenItems();
-    void taskQTBUG_633_changeModelData();
-    void taskQTBUG_435_deselectOnViewportClick();
-    void taskQTBUG_2678_spacingAndWrappedText();
-    void taskQTBUG_5877_skippingItemInPageDownUp();
-    void taskQTBUG_9455_wrongScrollbarRanges();
+    void taskBOBUIBUG_2233_scrollHiddenItems_data();
+    void taskBOBUIBUG_2233_scrollHiddenItems();
+    void taskBOBUIBUG_633_changeModelData();
+    void taskBOBUIBUG_435_deselectOnViewportClick();
+    void taskBOBUIBUG_2678_spacingAndWrappedText();
+    void taskBOBUIBUG_5877_skippingItemInPageDownUp();
+    void taskBOBUIBUG_9455_wrongScrollbarRanges();
     void styleOptionViewItem();
-    void taskQTBUG_12308_artihmeticException();
-    void taskQTBUG_12308_wrongFlowLayout();
-    void taskQTBUG_21115_scrollToAndHiddenItems_data();
-    void taskQTBUG_21115_scrollToAndHiddenItems();
+    void taskBOBUIBUG_12308_artihmeticException();
+    void taskBOBUIBUG_12308_wrongFlowLayout();
+    void taskBOBUIBUG_21115_scrollToAndHiddenItems_data();
+    void taskBOBUIBUG_21115_scrollToAndHiddenItems();
     void draggablePaintPairs_data();
     void draggablePaintPairs();
-    void taskQTBUG_21804_hiddenItemsAndScrollingWithKeys_data();
-    void taskQTBUG_21804_hiddenItemsAndScrollingWithKeys();
+    void taskBOBUIBUG_21804_hiddenItemsAndScrollingWithKeys_data();
+    void taskBOBUIBUG_21804_hiddenItemsAndScrollingWithKeys();
     void spacing_data();
     void spacing();
     void testScrollToWithHidden();
     void testViewOptions();
-    void taskQTBUG_39902_mutualScrollBars_data();
-    void taskQTBUG_39902_mutualScrollBars();
+    void taskBOBUIBUG_39902_mutualScrollBars_data();
+    void taskBOBUIBUG_39902_mutualScrollBars();
     void horizontalScrollingByVerticalWheelEvents();
-    void taskQTBUG_7232_AllowUserToControlSingleStep();
-    void taskQTBUG_58749_adjustToContent();
-    void taskQTBUG_51086_skippingIndexesInSelectedIndexes();
-    void taskQTBUG_47694_indexOutOfBoundBatchLayout();
+    void taskBOBUIBUG_7232_AllowUserToControlSingleStep();
+    void taskBOBUIBUG_58749_adjustToContent();
+    void taskBOBUIBUG_51086_skippingIndexesInSelectedIndexes();
+    void taskBOBUIBUG_47694_indexOutOfBoundBatchLayout();
     void moveLastRow();
     void itemAlignment();
     void internalDragDropMove_data();
@@ -243,20 +243,20 @@ void tst_QListView::getSetCheck()
     QCOMPARE(true, obj1. wordWrap());
 }
 
-class QtTestModel: public QAbstractListModel
+class BobUITestModel: public QAbstractListModel
 {
     Q_OBJECT
 public:
-    QtTestModel(int rc, int cc, QObject *parent = nullptr)
+    BobUITestModel(int rc, int cc, QObject *parent = nullptr)
       : QAbstractListModel(parent), rCount(rc), cCount(cc) {}
     int rowCount(const QModelIndex &) const override { return rCount; }
     int columnCount(const QModelIndex &) const override { return cCount; }
 
     QVariant data(const QModelIndex &idx, int role) const override
     {
-        if (!m_icon.isNull() && role == Qt::DecorationRole)
+        if (!m_icon.isNull() && role == BobUI::DecorationRole)
             return m_icon;
-        if (role != Qt::DisplayRole)
+        if (role != BobUI::DisplayRole)
             return QVariant();
 
         if (idx.row() < 0 || idx.column() < 0 || idx.column() >= cCount
@@ -306,17 +306,17 @@ public:
 
 void tst_QListView::cleanup()
 {
-    QTRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
+    BOBUIRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
 }
 
 void tst_QListView::noDelegate()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
     QListView view;
     view.setModel(&model);
     view.setItemDelegate(nullptr);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
 void tst_QListView::noModel()
@@ -330,7 +330,7 @@ void tst_QListView::noModel()
 
 void tst_QListView::emptyModel()
 {
-    QtTestModel model(0, 0);
+    BobUITestModel model(0, 0);
     QListView view;
     view.setModel(&model);
     view.show();
@@ -339,7 +339,7 @@ void tst_QListView::emptyModel()
 
 void tst_QListView::removeRows()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
     QListView view;
     view.setModel(&model);
     view.show();
@@ -368,7 +368,7 @@ void tst_QListView::cursorMove()
             QModelIndex index = model.index(i, j);
             model.setData(index, QLatin1Char('[') + QString::number(i) + postfix);
             view.setCurrentIndex(index);
-            QTRY_COMPARE(view.currentIndex(), index);
+            BOBUIRY_COMPARE(view.currentIndex(), index);
         }
     }
 
@@ -384,11 +384,11 @@ void tst_QListView::cursorMove()
     view.doItemsLayout();
     topLevel.show();
 
-    static const Qt::Key keymoves[] {
-        Qt::Key_Up, Qt::Key_Up, Qt::Key_Right, Qt::Key_Right, Qt::Key_Up,
-        Qt::Key_Left, Qt::Key_Left, Qt::Key_Up, Qt::Key_Down, Qt::Key_Up,
-        Qt::Key_Up, Qt::Key_Up, Qt::Key_Up, Qt::Key_Up, Qt::Key_Up,
-        Qt::Key_Left, Qt::Key_Left, Qt::Key_Up, Qt::Key_Down
+    static const BobUI::Key keymoves[] {
+        BobUI::Key_Up, BobUI::Key_Up, BobUI::Key_Right, BobUI::Key_Right, BobUI::Key_Up,
+        BobUI::Key_Left, BobUI::Key_Left, BobUI::Key_Up, BobUI::Key_Down, BobUI::Key_Up,
+        BobUI::Key_Up, BobUI::Key_Up, BobUI::Key_Up, BobUI::Key_Up, BobUI::Key_Up,
+        BobUI::Key_Left, BobUI::Key_Left, BobUI::Key_Up, BobUI::Key_Down
     };
 
     int lastRow = rows / displayColumns - 1;
@@ -398,16 +398,16 @@ void tst_QListView::cursorMove()
     int displayColumn = lastColumn - (rows % displayColumns);
 
     QCoreApplication::processEvents();
-    for (Qt::Key key : keymoves) {
-        QTest::keyClick(&view, key);
+    for (BobUI::Key key : keymoves) {
+        BOBUIest::keyClick(&view, key);
         switch (key) {
-        case Qt::Key_Up:
+        case BobUI::Key_Up:
             displayRow = qMax(0, displayRow - 1);
             break;
-        case Qt::Key_Down:
+        case BobUI::Key_Down:
             displayRow = qMin(rows / displayColumns - 1, displayRow + 1);
             break;
-        case Qt::Key_Left:
+        case BobUI::Key_Left:
             if (displayColumn > 0) {
                 displayColumn--;
             } else {
@@ -417,7 +417,7 @@ void tst_QListView::cursorMove()
                 }
             }
             break;
-        case Qt::Key_Right:
+        case BobUI::Key_Right:
             if (displayColumn < lastColumn) {
                 displayColumn++;
             } else {
@@ -444,7 +444,7 @@ void tst_QListView::cursorMove()
 
 void tst_QListView::hideRows()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
     QListView view;
     view.setModel(&model);
     view.show();
@@ -495,25 +495,25 @@ void tst_QListView::hideRows()
 
 void tst_QListView::moveCursor()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
     QListView view;
     view.setModel(&model);
 
-    QTest::keyClick(&view, Qt::Key_Down);
+    BOBUIest::keyClick(&view, BobUI::Key_Down);
 
     view.setModel(nullptr);
     view.setModel(&model);
     view.setRowHidden(0, true);
 
-    QTest::keyClick(&view, Qt::Key_Down);
+    BOBUIest::keyClick(&view, BobUI::Key_Down);
     QCOMPARE(view.selectionModel()->currentIndex(), model.index(1, 0));
 }
 
 void tst_QListView::moveCursor2()
 {
-    QtTestModel model(100, 1);
+    BobUITestModel model(100, 1);
     QPixmap pm(32, 32);
-    pm.fill(Qt::green);
+    pm.fill(BobUI::green);
     model.setDataIcon(QIcon(pm));
 
     PublicListView vu;
@@ -532,9 +532,9 @@ void tst_QListView::moveCursor2()
     vu.selectionModel()->setCurrentIndex(model.index(0,0), QItemSelectionModel::SelectCurrent);
     QCoreApplication::processEvents();
 
-    QModelIndex idx = vu.moveCursor(PublicListView::MoveHome, Qt::NoModifier);
+    QModelIndex idx = vu.moveCursor(PublicListView::MoveHome, BobUI::NoModifier);
     QCOMPARE(idx, model.index(0, 0));
-    idx = vu.moveCursor(PublicListView::MoveDown, Qt::NoModifier);
+    idx = vu.moveCursor(PublicListView::MoveDown, BobUI::NoModifier);
     QCOMPARE(idx, model.index(8, 0));
 }
 
@@ -556,13 +556,13 @@ void tst_QListView::moveCursor3()
     view.setCurrentIndex(model.index(0, 0));
 
     QCOMPARE(view.selectionModel()->currentIndex(), model.index(0, 0));
-    QTest::keyClick(&view, Qt::Key_Down);
+    BOBUIest::keyClick(&view, BobUI::Key_Down);
     QCOMPARE(view.selectionModel()->currentIndex(), model.index(1, 0));
-    QTest::keyClick(&view, Qt::Key_Down);
+    BOBUIest::keyClick(&view, BobUI::Key_Down);
     QCOMPARE(view.selectionModel()->currentIndex(), model.index(2, 0));
-    QTest::keyClick(&view, Qt::Key_Up);
+    BOBUIest::keyClick(&view, BobUI::Key_Up);
     QCOMPARE(view.selectionModel()->currentIndex(), model.index(1, 0));
-    QTest::keyClick(&view, Qt::Key_Up);
+    BOBUIest::keyClick(&view, BobUI::Key_Up);
     QCOMPARE(view.selectionModel()->currentIndex(), model.index(0, 0));
 }
 
@@ -585,12 +585,12 @@ void tst_QListView::moveCursor4()
     model.item(0)->setFont(font);
     listView.setModel(&model);
     listView.setFixedSize(200, 200);
-    listView.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    listView.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    listView.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    listView.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     listView.show();
     listView.selectionModel()->setCurrentIndex(model.index(0, 0), QItemSelectionModel::SelectCurrent);
 
-    QModelIndex idx = listView.moveCursor(PublicListView::MovePageDown, Qt::NoModifier);
+    QModelIndex idx = listView.moveCursor(PublicListView::MovePageDown, BobUI::NoModifier);
 
     int actualIndex = 0;
     int indexHeight = 0;
@@ -598,13 +598,13 @@ void tst_QListView::moveCursor4()
         indexHeight +=  listView.visualRect(model.item(actualIndex)->index()).height();
         actualIndex++;
     }
-    QTRY_COMPARE(idx, model.index(actualIndex - 2, 0));
-    idx = listView.moveCursor(PublicListView::MoveUp, Qt::NoModifier);
-    QTRY_COMPARE(idx, model.index(0, 0));
+    BOBUIRY_COMPARE(idx, model.index(actualIndex - 2, 0));
+    idx = listView.moveCursor(PublicListView::MoveUp, BobUI::NoModifier);
+    BOBUIRY_COMPARE(idx, model.index(0, 0));
 
     listView.setCurrentIndex(model.index(indexCount - 2, 0));
-    idx = listView.moveCursor(PublicListView::MovePageDown, Qt::NoModifier);
-    QTRY_COMPARE(idx, model.index(99, 0));
+    idx = listView.moveCursor(PublicListView::MovePageDown, BobUI::NoModifier);
+    BOBUIRY_COMPARE(idx, model.index(99, 0));
 
     listView.setCurrentIndex(model.index(3, 0));
     actualIndex = 3;
@@ -613,8 +613,8 @@ void tst_QListView::moveCursor4()
         indexHeight +=  listView.visualRect(model.item(actualIndex)->index()).height();
         actualIndex++;
     }
-    idx = listView.moveCursor(PublicListView::MovePageDown, Qt::NoModifier);
-    QTRY_COMPARE(idx, model.index(actualIndex - 2, 0));
+    idx = listView.moveCursor(PublicListView::MovePageDown, BobUI::NoModifier);
+    BOBUIRY_COMPARE(idx, model.index(actualIndex - 2, 0));
 }
 
 void tst_QListView::moveCursor5()
@@ -631,10 +631,10 @@ void tst_QListView::moveCursor5()
     listView.setViewMode(QListView::IconMode);
     listView.setCurrentIndex(model.index(0, 0));
 
-    QModelIndex idx = listView.moveCursor(PublicListView::MovePageDown, Qt::NoModifier);
-    QTRY_COMPARE(idx, model.index(1, 0));
-    idx = listView.moveCursor(PublicListView::MovePageUp, Qt::NoModifier);
-    QTRY_COMPARE(idx, model.index(0, 0));
+    QModelIndex idx = listView.moveCursor(PublicListView::MovePageDown, BobUI::NoModifier);
+    BOBUIRY_COMPARE(idx, model.index(1, 0));
+    idx = listView.moveCursor(PublicListView::MovePageUp, BobUI::NoModifier);
+    BOBUIRY_COMPARE(idx, model.index(0, 0));
 }
 
 class QListViewShowEventListener : public QListView
@@ -660,7 +660,7 @@ public:
 
 void tst_QListView::indexAt()
 {
-    QtTestModel model(2, 1);
+    BobUITestModel model(2, 1);
     QListView view;
     view.setModel(&model);
     view.setViewMode(QListView::ListMode);
@@ -699,8 +699,8 @@ void tst_QListView::indexAt()
     view2.setWrapping(true);
     // We really want to make sure it is shown, because the layout won't be known until it is shown
     view2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view2));
-    QTRY_VERIFY(view2.m_shown);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view2));
+    BOBUIRY_VERIFY(view2.m_shown);
 
     QVERIFY(view2.m_index.isValid());
     QVERIFY(view2.m_index.row() != 0);
@@ -708,11 +708,11 @@ void tst_QListView::indexAt()
 
 void tst_QListView::clicked()
 {
-    QtTestModel model(10, 2);
+    BobUITestModel model(10, 2);
     QListView view;
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex firstIndex = model.index(0, 0, QModelIndex());
     QVERIFY(firstIndex.isValid());
@@ -725,7 +725,7 @@ void tst_QListView::clicked()
         if (!index.isValid())
             continue;
         QSignalSpy spy(&view, &QListView::clicked);
-        QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, p);
+        BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
         QCOMPARE(spy.size(), 1);
     }
 }
@@ -843,7 +843,7 @@ void tst_QListView::hideFirstRow()
     view.setUniformItemSizes(true);
     view.setRowHidden(0, true);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
 static int modelIndexCount(const QAbstractItemView *view)
@@ -867,7 +867,7 @@ void tst_QListView::batchedMode()
     QStringListModel model(generateList(QLatin1String("item "), rowCount));
 
     QListView view;
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setModel(&model);
     view.setUniformItemSizes(true);
     view.setViewMode(QListView::ListMode);
@@ -875,9 +875,9 @@ void tst_QListView::batchedMode()
     view.setBatchSize(2);
     view.resize(200, 400);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_COMPARE(modelIndexCount(&view), rowCount);
+    BOBUIRY_COMPARE(modelIndexCount(&view), rowCount);
 
     // Test the dynamic listview too.
     view.setViewMode(QListView::IconMode);
@@ -885,7 +885,7 @@ void tst_QListView::batchedMode()
     view.setFlow(QListView::TopToBottom);
     view.setBatchSize(2);
 
-    QTRY_COMPARE(modelIndexCount(&view), rowCount);
+    BOBUIRY_COMPARE(modelIndexCount(&view), rowCount);
 }
 
 void tst_QListView::setCurrentIndex()
@@ -951,17 +951,17 @@ public:
 
 void tst_QListView::selection_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<QListView::ViewMode>("viewMode");
-    QTest::addColumn<QListView::Flow>("flow");
-    QTest::addColumn<bool>("wrapping");
-    QTest::addColumn<int>("spacing");
-    QTest::addColumn<QSize>("gridSize");
-    QTest::addColumn<IntList>("hiddenRows");
-    QTest::addColumn<QRect>("selectionRect");
-    QTest::addColumn<IntList>("expectedItems");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<QListView::ViewMode>("viewMode");
+    BOBUIest::addColumn<QListView::Flow>("flow");
+    BOBUIest::addColumn<bool>("wrapping");
+    BOBUIest::addColumn<int>("spacing");
+    BOBUIest::addColumn<QSize>("gridSize");
+    BOBUIest::addColumn<IntList>("hiddenRows");
+    BOBUIest::addColumn<QRect>("selectionRect");
+    BOBUIest::addColumn<IntList>("expectedItems");
 
-    QTest::newRow("select all")
+    BOBUIest::newRow("select all")
         << 4                                    // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -972,7 +972,7 @@ void tst_QListView::selection_data()
         << QRect(0, 0, 10, 200)                 // selection rectangle
         << (IntList() << 0 << 1 << 2 << 3);     // expected items
 
-    QTest::newRow("select below, (on viewport)")
+    BOBUIest::newRow("select below, (on viewport)")
         << 4                                    // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -983,7 +983,7 @@ void tst_QListView::selection_data()
         << QRect(10, 250, 1, 1)                 // selection rectangle
         << IntList();                           // expected items
 
-    QTest::newRow("select below 2, (on viewport)")
+    BOBUIest::newRow("select below 2, (on viewport)")
         << 4                                    // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -994,7 +994,7 @@ void tst_QListView::selection_data()
         << QRect(10, 250, 1, 1)                 // selection rectangle
         << IntList();                           // expected items
 
-    QTest::newRow("select to the right, (on viewport)")
+    BOBUIest::newRow("select to the right, (on viewport)")
         << 40                                   // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -1005,7 +1005,7 @@ void tst_QListView::selection_data()
         << QRect(300, 10, 1, 1)                 // selection rectangle
         << IntList();                           // expected items
 
-    QTest::newRow("select to the right 2, (on viewport)")
+    BOBUIest::newRow("select to the right 2, (on viewport)")
         << 40                                   // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -1016,7 +1016,7 @@ void tst_QListView::selection_data()
         << QRect(300, 0, 1, 300)                // selection rectangle
         << IntList();                           // expected items
 
-    QTest::newRow("select inside contents, (on viewport)")
+    BOBUIest::newRow("select inside contents, (on viewport)")
         << 35                                   // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -1027,7 +1027,7 @@ void tst_QListView::selection_data()
         << QRect(175, 275, 1, 1)                // selection rectangle
         << IntList();                           // expected items
 
-    QTest::newRow("select a tall rect in LeftToRight flow, wrap items")
+    BOBUIest::newRow("select a tall rect in LeftToRight flow, wrap items")
         << 70                                   // itemCount
         << QListView::ListMode
         << QListView::LeftToRight
@@ -1041,7 +1041,7 @@ void tst_QListView::selection_data()
                 << 20 << 21 << 22 << 23 << 24 << 25 << 26 << 27 << 28 << 29
                 << 30 << 31);
 
-    QTest::newRow("select a wide rect in LeftToRight, wrap items")
+    BOBUIest::newRow("select a wide rect in LeftToRight, wrap items")
         << 70                                   // itemCount
         << QListView::ListMode
         << QListView::LeftToRight
@@ -1053,7 +1053,7 @@ void tst_QListView::selection_data()
         << (IntList()                           // expected items
                       << 11 << 12 << 13 << 14 << 15);
 
-    QTest::newRow("select a wide negative rect in LeftToRight flow, wrap items")
+    BOBUIest::newRow("select a wide negative rect in LeftToRight flow, wrap items")
         << 70                                   // itemCount
         << QListView::ListMode
         << QListView::LeftToRight
@@ -1065,7 +1065,7 @@ void tst_QListView::selection_data()
         << (IntList()                           // expected items
                       << 11 << 12 << 13 << 14 << 15);
 
-    QTest::newRow("select a tall rect in TopToBottom flow, wrap items")
+    BOBUIest::newRow("select a tall rect in TopToBottom flow, wrap items")
         << 70                                   // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -1079,7 +1079,7 @@ void tst_QListView::selection_data()
                       << 12
                       << 13);
 
-    QTest::newRow("select a tall negative rect in TopToBottom flow, wrap items")
+    BOBUIest::newRow("select a tall negative rect in TopToBottom flow, wrap items")
         << 70                                   // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -1093,7 +1093,7 @@ void tst_QListView::selection_data()
                       << 12
                       << 13);
 
-    QTest::newRow("select a wide rect in TopToBottom, wrap items")
+    BOBUIest::newRow("select a wide rect in TopToBottom, wrap items")
         << 70                                   // itemCount
         << QListView::ListMode
         << QListView::TopToBottom
@@ -1129,11 +1129,11 @@ void tst_QListView::selection()
 
     QWidget topLevel;
     PublicListView v(&topLevel);
-    QtTestModel model(itemCount, 1);
+    BobUITestModel model(itemCount, 1);
 
     // avoid scrollbar size mismatches among different styles
-    v.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    v.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    v.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    v.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
 
     v.setItemDelegate(new TestDelegate(&v));
     v.setModel(&model);
@@ -1150,7 +1150,7 @@ void tst_QListView::selection()
     v.resize(525, 525);
 
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     v.setSelection(selectionRect, QItemSelectionModel::ClearAndSelect);
 
@@ -1202,7 +1202,7 @@ void tst_QListView::scrollTo()
     lv.setFixedSize(110, 200);
 
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     //by default, the list view scrolls per item and has no wrapping
     QModelIndex index = model.index(6, 0);
@@ -1214,16 +1214,16 @@ void tst_QListView::scrollTo()
 
     //we click the item
     QPoint p = lv.visualRect(index).center();
-    QTest::mouseClick(lv.viewport(), Qt::LeftButton, Qt::NoModifier, p);
+    BOBUIest::mouseClick(lv.viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
     //let's wait because the scrolling is delayed
-    QTRY_COMPARE(lv.visualRect(index).y(), 0);
+    BOBUIRY_COMPARE(lv.visualRect(index).y(), 0);
 
     //we scroll down. As the item is to tall for the view, it will disappear
-    QTest::keyClick(lv.viewport(), Qt::Key_Down, Qt::NoModifier);
-    QTRY_COMPARE(lv.visualRect(index).y(), -itemsize.height());
+    BOBUIest::keyClick(lv.viewport(), BobUI::Key_Down, BobUI::NoModifier);
+    BOBUIRY_COMPARE(lv.visualRect(index).y(), -itemsize.height());
 
-    QTest::keyClick(lv.viewport(), Qt::Key_Up, Qt::NoModifier);
-    QTRY_COMPARE(lv.visualRect(index).y(), 0);
+    BOBUIest::keyClick(lv.viewport(), BobUI::Key_Up, BobUI::NoModifier);
+    BOBUIRY_COMPARE(lv.visualRect(index).y(), 0);
 
     //Let's enable wrapping
 
@@ -1232,15 +1232,15 @@ void tst_QListView::scrollTo()
 
     //we click the item
     p = lv.visualRect(index).center();
-    QTest::mouseClick(lv.viewport(), Qt::LeftButton, Qt::NoModifier, p);
-    QTRY_COMPARE(lv.visualRect(index).x(), 0);
+    BOBUIest::mouseClick(lv.viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
+    BOBUIRY_COMPARE(lv.visualRect(index).x(), 0);
 
     //we scroll right. As the item is too wide for the view, it will disappear
-    QTest::keyClick(lv.viewport(), Qt::Key_Right, Qt::NoModifier);
-    QTRY_COMPARE(lv.visualRect(index).x(), -itemsize.width());
+    BOBUIest::keyClick(lv.viewport(), BobUI::Key_Right, BobUI::NoModifier);
+    BOBUIRY_COMPARE(lv.visualRect(index).x(), -itemsize.width());
 
-    QTest::keyClick(lv.viewport(), Qt::Key_Left, Qt::NoModifier);
-    QTRY_COMPARE(lv.visualRect(index).x(), 0);
+    BOBUIest::keyClick(lv.viewport(), BobUI::Key_Left, BobUI::NoModifier);
+    BOBUIRY_COMPARE(lv.visualRect(index).x(), 0);
 
     lv.setWrapping(false);
     QCoreApplication::processEvents(); //let the layout happen
@@ -1251,16 +1251,16 @@ void tst_QListView::scrollTo()
 
     //we click the item
     p = lv.visualRect(index).center();
-    QTest::mouseClick(lv.viewport(), Qt::LeftButton, Qt::NoModifier, p);
+    BOBUIest::mouseClick(lv.viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
     //let's wait because the scrolling is delayed
-    QTest::qWait(QApplication::doubleClickInterval() + 150);
-    QTRY_COMPARE(lv.visualRect(index).y(), 0);
+    BOBUIest::qWait(QApplication::doubleClickInterval() + 150);
+    BOBUIRY_COMPARE(lv.visualRect(index).y(), 0);
 
     //we scroll down. As the item is too tall for the view, it will partially disappear
-    QTest::keyClick(lv.viewport(), Qt::Key_Down, Qt::NoModifier);
+    BOBUIest::keyClick(lv.viewport(), BobUI::Key_Down, BobUI::NoModifier);
     QVERIFY(lv.visualRect(index).y() < 0);
 
-    QTest::keyClick(lv.viewport(), Qt::Key_Up, Qt::NoModifier);
+    BOBUIest::keyClick(lv.viewport(), BobUI::Key_Up, BobUI::NoModifier);
     QCOMPARE(lv.visualRect(index).y(), 0);
 }
 
@@ -1284,22 +1284,22 @@ void tst_QListView::scrollBarRanges()
         lv.resize(250, h);
         int visibleRowCount = lv.viewport()->size().height() / rowHeight;
         int invisibleRowCount = rowCount - visibleRowCount;
-        QTRY_COMPARE(lv.verticalScrollBar()->maximum(), invisibleRowCount);
+        BOBUIRY_COMPARE(lv.verticalScrollBar()->maximum(), invisibleRowCount);
     }
 }
 
 void tst_QListView::scrollBarAsNeeded_data()
 {
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<QAbstractItemView::ScrollMode>("verticalScrollMode");
-    QTest::addColumn<QMargins>("viewportMargins");
-    QTest::addColumn<QSize>("delegateSize");
-    QTest::addColumn<QListView::Flow>("flow");
-    QTest::addColumn<bool>("horizontalScrollBarVisible");
-    QTest::addColumn<bool>("verticalScrollBarVisible");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<QAbstractItemView::ScrollMode>("verticalScrollMode");
+    BOBUIest::addColumn<QMargins>("viewportMargins");
+    BOBUIest::addColumn<QSize>("delegateSize");
+    BOBUIest::addColumn<QListView::Flow>("flow");
+    BOBUIest::addColumn<bool>("horizontalScrollBarVisible");
+    BOBUIest::addColumn<bool>("verticalScrollBarVisible");
 
-    QTest::newRow("TopToBottom, count:0")
+    BOBUIest::newRow("TopToBottom, count:0")
             << QSize(200, 100)
             << 0
             << QListView::ScrollPerItem
@@ -1308,7 +1308,7 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << false;
 
-    QTest::newRow("TopToBottom, count:1")
+    BOBUIest::newRow("TopToBottom, count:1")
             << QSize(200, 100)
             << 1
             << QListView::ScrollPerItem
@@ -1317,7 +1317,7 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << false;
 
-    QTest::newRow("TopToBottom, count:20")
+    BOBUIest::newRow("TopToBottom, count:20")
             << QSize(200, 100)
             << 20
             << QListView::ScrollPerItem
@@ -1326,7 +1326,7 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << true;
 
-    QTest::newRow("TopToBottom, fixed size, count:4")
+    BOBUIest::newRow("TopToBottom, fixed size, count:4")
             << QSize(200, 200)
             << 4
             << QListView::ScrollPerPixel
@@ -1335,8 +1335,8 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << false;
 
-    // QTBUG-61383, vertical case: take viewport margins into account
-    QTest::newRow("TopToBottom, fixed size, vertical margins, count:4")
+    // BOBUIBUG-61383, vertical case: take viewport margins into account
+    BOBUIest::newRow("TopToBottom, fixed size, vertical margins, count:4")
             << QSize(200, 200)
             << 4
             << QListView::ScrollPerPixel
@@ -1345,8 +1345,8 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << true;
 
-    // QTBUG-61383, horizontal case: take viewport margins into account
-    QTest::newRow("TopToBottom, fixed size, horizontal margins, count:4")
+    // BOBUIBUG-61383, horizontal case: take viewport margins into account
+    BOBUIest::newRow("TopToBottom, fixed size, horizontal margins, count:4")
             << QSize(200, 200)
             << 4
             << QListView::ScrollPerPixel
@@ -1355,7 +1355,7 @@ void tst_QListView::scrollBarAsNeeded_data()
             << true
             << false;
 
-    QTest::newRow("LeftToRight, count:0")
+    BOBUIest::newRow("LeftToRight, count:0")
             << QSize(200, 100)
             << 0
             << QListView::ScrollPerItem
@@ -1364,7 +1364,7 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << false;
 
-    QTest::newRow("LeftToRight, count:1")
+    BOBUIest::newRow("LeftToRight, count:1")
             << QSize(200, 100)
             << 1
             << QListView::ScrollPerItem
@@ -1373,7 +1373,7 @@ void tst_QListView::scrollBarAsNeeded_data()
             << false
             << false;
 
-    QTest::newRow("LeftToRight, count:20")
+    BOBUIest::newRow("LeftToRight, count:20")
             << QSize(200, 100)
             << 20
             << QListView::ScrollPerItem
@@ -1387,7 +1387,7 @@ void tst_QListView::scrollBarAsNeeded_data()
 
 void tst_QListView::scrollBarAsNeeded()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QSize, size);
@@ -1403,11 +1403,11 @@ void tst_QListView::scrollBarAsNeeded()
     constexpr int rowCounts[3] = {0, 1, 20};
 
     QWidget topLevel;
-    topLevel.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QStringLiteral("::")
-                            + QLatin1String(QTest::currentDataTag()));
+    topLevel.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QStringLiteral("::")
+                            + QLatin1String(BOBUIest::currentDataTag()));
     PublicListView lv(&topLevel);
-    lv.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    lv.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    lv.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    lv.setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     lv.setVerticalScrollMode(verticalScrollMode);
     lv.setViewportMargins(viewportMargins);
     lv.setFlow(flow);
@@ -1418,14 +1418,14 @@ void tst_QListView::scrollBarAsNeeded()
     lv.setModel(&model);
     lv.resize(size);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
 
     for (uint r = 0; r < sizeof(rowCounts) / sizeof(int); ++r) {
         model.setStringList(generateList(QLatin1String("Item "), rowCounts[r]));
         model.setStringList(generateList(QLatin1String("Item "), itemCount));
 
-        QTRY_COMPARE(lv.horizontalScrollBar()->isVisible(), horizontalScrollBarVisible);
-        QTRY_COMPARE(lv.verticalScrollBar()->isVisible(), verticalScrollBarVisible);
+        BOBUIRY_COMPARE(lv.horizontalScrollBar()->isVisible(), horizontalScrollBarVisible);
+        BOBUIRY_COMPARE(lv.verticalScrollBar()->isVisible(), verticalScrollBarVisible);
     }
 }
 
@@ -1458,8 +1458,8 @@ void tst_QListView::moveItems()
 void tst_QListView::wordWrap()
 {
     QListView lv;
-    lv.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    lv.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    lv.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    lv.setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     QStringListModel model(&lv);
     QStringList list;
     list << "Short item 1";
@@ -1479,8 +1479,8 @@ void tst_QListView::wordWrap()
     lv.setFixedSize(400, 150);
     lv.showNormal();
 
-    QTRY_COMPARE(lv.horizontalScrollBar()->isVisible(), false);
-    QTRY_COMPARE(lv.verticalScrollBar()->isVisible(), true);
+    BOBUIRY_COMPARE(lv.horizontalScrollBar()->isVisible(), false);
+    BOBUIRY_COMPARE(lv.verticalScrollBar()->isVisible(), true);
 }
 
 #if defined(Q_OS_WIN)
@@ -1490,7 +1490,7 @@ class SetCurrentIndexAfterAppendRowCrashDialog : public QDialog
 public:
     SetCurrentIndexAfterAppendRowCrashDialog()
     {
-        setWindowTitle(QTest::currentTestFunction());
+        setWindowTitle(BOBUIest::currentTestFunction());
         listView = new QListView(this);
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->addWidget(listView);
@@ -1499,8 +1499,8 @@ public:
         model = new QStandardItemModel(this);
         listView->setModel(model);
 
-        timer = new QTimer(this);
-        connect(timer, &QTimer::timeout,
+        timer = new BOBUIimer(this);
+        connect(timer, &BOBUIimer::timeout,
                 this, &SetCurrentIndexAfterAppendRowCrashDialog::buttonClicked);
         timer->start(1000);
     }
@@ -1527,7 +1527,7 @@ private slots:
 private:
     QListView *listView;
     QStandardItemModel *model;
-    QTimer *timer;
+    BOBUIimer *timer;
 };
 
 void tst_QListView::setCurrentIndexAfterAppendRowCrash()
@@ -1570,7 +1570,7 @@ void tst_QListView::task203585_selectAll()
 
 void tst_QListView::task228566_infiniteRelayout()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QListView view;
@@ -1591,8 +1591,8 @@ void tst_QListView::task228566_infiniteRelayout()
 
     view.setFixedHeight(itemHeight * 12);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTest::qWait(100); //make sure the layout is done once
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIest::qWait(100); //make sure the layout is done once
 
     QSignalSpy spy(view.horizontalScrollBar(), &QScrollBar::rangeChanged);
 
@@ -1608,8 +1608,8 @@ void tst_QListView::task248430_crashWith0SizedItem()
     QStringListModel model({QLatin1String("item1"), QString()});
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTest::qWait(20);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIest::qWait(20);
 }
 
 void tst_QListView::task250446_scrollChanged()
@@ -1621,20 +1621,20 @@ void tst_QListView::task250446_scrollChanged()
     QVERIFY(index.isValid());
     view.setCurrentIndex(index);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     const int scrollValue = view.verticalScrollBar()->maximum();
     view.verticalScrollBar()->setValue(scrollValue);
-    QTRY_COMPARE(view.verticalScrollBar()->value(), scrollValue);
-    QTRY_COMPARE(view.currentIndex(), index);
+    BOBUIRY_COMPARE(view.verticalScrollBar()->value(), scrollValue);
+    BOBUIRY_COMPARE(view.currentIndex(), index);
 
     view.showMinimized();
-    QTRY_COMPARE(view.verticalScrollBar()->value(), scrollValue);
-    QTRY_COMPARE(view.currentIndex(), index);
+    BOBUIRY_COMPARE(view.verticalScrollBar()->value(), scrollValue);
+    BOBUIRY_COMPARE(view.currentIndex(), index);
 
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_COMPARE(view.verticalScrollBar()->value(), scrollValue);
-    QTRY_COMPARE(view.currentIndex(), index);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_COMPARE(view.verticalScrollBar()->value(), scrollValue);
+    BOBUIRY_COMPARE(view.currentIndex(), index);
 }
 
 void tst_QListView::task196118_visualRegionForSelection()
@@ -1656,7 +1656,7 @@ void tst_QListView::task196118_visualRegionForSelection()
 
 void tst_QListView::task254449_draggingItemToNegativeCoordinates()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     //we'll check that the items are painted correctly
@@ -1668,7 +1668,7 @@ void tst_QListView::task254449_draggingItemToNegativeCoordinates()
     list.setViewMode(QListView::IconMode);
     list.show();
     list.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&list));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&list));
 
 
     class MyItemDelegate : public QStyledItemDelegate
@@ -1685,20 +1685,20 @@ void tst_QListView::task254449_draggingItemToNegativeCoordinates()
         mutable int numPaints = 0;
     } delegate;
     list.setItemDelegate(&delegate);
-    QTRY_VERIFY(delegate.numPaints > 0);  //makes sure the layout is done
+    BOBUIRY_VERIFY(delegate.numPaints > 0);  //makes sure the layout is done
 
     //we'll make sure the item is repainted
     delegate.numPaints = 0;
     const QPoint topLeft(-6, 0);
     list.setPositionForIndex(topLeft, index);
-    QTRY_COMPARE(delegate.numPaints, 1);
+    BOBUIRY_COMPARE(delegate.numPaints, 1);
     QCOMPARE(list.visualRect(index).topLeft(), topLeft);
 }
 
 
 void tst_QListView::keyboardSearch()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStringListModel model({"AB", "AC", "BA", "BB", "BD", "KAFEINE",
@@ -1707,16 +1707,16 @@ void tst_QListView::keyboardSearch()
     QListView view;
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
-    QTest::keyClick(&view, Qt::Key_K);
-    QTRY_COMPARE(view.currentIndex() , model.index(5, 0)); //KAFEINE
+    BOBUIest::keyClick(&view, BobUI::Key_K);
+    BOBUIRY_COMPARE(view.currentIndex() , model.index(5, 0)); //KAFEINE
 
-    QTest::keyClick(&view, Qt::Key_O);
-    QTRY_COMPARE(view.currentIndex() , model.index(6, 0)); //KONQUEROR
+    BOBUIest::keyClick(&view, BobUI::Key_O);
+    BOBUIRY_COMPARE(view.currentIndex() , model.index(6, 0)); //KONQUEROR
 
-    QTest::keyClick(&view, Qt::Key_N);
-    QTRY_COMPARE(view.currentIndex() , model.index(6, 0)); //KONQUEROR
+    BOBUIest::keyClick(&view, BobUI::Key_N);
+    BOBUIRY_COMPARE(view.currentIndex() , model.index(6, 0)); //KONQUEROR
 }
 
 void tst_QListView::shiftSelectionWithNonUniformItemSizes()
@@ -1734,7 +1734,7 @@ void tst_QListView::shiftSelectionWithNonUniformItemSizes()
         view.setViewMode(QListView::IconMode);
         view.setModel(&model);
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
         // Verfify that item sizes are non-uniform
         QVERIFY(view.sizeHintForIndex(model.index(0, 0)).height() > view.sizeHintForIndex(model.index(1, 0)).height());
@@ -1743,8 +1743,8 @@ void tst_QListView::shiftSelectionWithNonUniformItemSizes()
         view.setCurrentIndex(index);
         QCOMPARE(view.currentIndex(), index);
 
-        QTest::keyClick(&view, Qt::Key_Up, Qt::ShiftModifier);
-        QTRY_COMPARE(view.currentIndex(), model.index(1, 0));
+        BOBUIest::keyClick(&view, BobUI::Key_Up, BobUI::ShiftModifier);
+        BOBUIRY_COMPARE(view.currentIndex(), model.index(1, 0));
 
         QModelIndexList selected = view.selectionModel()->selectedIndexes();
         QCOMPARE(selected.size(), 3);
@@ -1761,7 +1761,7 @@ void tst_QListView::shiftSelectionWithNonUniformItemSizes()
         view.setViewMode(QListView::IconMode);
         view.setModel(&model);
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
         // Verfify that item sizes are non-uniform
         QVERIFY(view.sizeHintForIndex(model.index(0, 0)).width() > view.sizeHintForIndex(model.index(1, 0)).width());
@@ -1770,8 +1770,8 @@ void tst_QListView::shiftSelectionWithNonUniformItemSizes()
         view.setCurrentIndex(index);
         QCOMPARE(view.currentIndex(), index);
 
-        QTest::keyClick(&view, Qt::Key_Left, Qt::ShiftModifier);
-        QTRY_COMPARE(view.currentIndex(), model.index(1, 0));
+        BOBUIest::keyClick(&view, BobUI::Key_Left, BobUI::ShiftModifier);
+        BOBUIRY_COMPARE(view.currentIndex(), model.index(1, 0));
 
         QModelIndexList selected = view.selectionModel()->selectedIndexes();
         QCOMPARE(selected.size(), 3);
@@ -1781,7 +1781,7 @@ void tst_QListView::shiftSelectionWithNonUniformItemSizes()
 
 void tst_QListView::shiftSelectionWithItemAlignment()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStringList items;
@@ -1796,7 +1796,7 @@ void tst_QListView::shiftSelectionWithItemAlignment()
     QListView view;
     view.setFlow(QListView::TopToBottom);
     view.setWrapping(true);
-    view.setItemAlignment(Qt::AlignLeft);
+    view.setItemAlignment(BobUI::AlignLeft);
     view.setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     QStringListModel model(items);
@@ -1808,20 +1808,20 @@ void tst_QListView::shiftSelectionWithItemAlignment()
     view.resize(300, view.sizeHintForRow(0) * items.size() / 2 + view.horizontalScrollBar()->height());
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(static_cast<QWidget *>(&view), QApplication::activeWindow());
 
     QModelIndex index1 = view.model()->index(items.size() / 4, 0);
     QPoint p = view.visualRect(index1).center();
     QVERIFY(view.viewport()->rect().contains(p));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, p);
     QCOMPARE(view.currentIndex(), index1);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 1);
 
     QModelIndex index2 = view.model()->index(items.size() / 4 * 3, 0);
     p = view.visualRect(index2).center();
     QVERIFY(view.viewport()->rect().contains(p));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, p);
     QCOMPARE(view.currentIndex(), index2);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), index2.row() - index1.row() + 1);
 }
@@ -1841,19 +1841,19 @@ void tst_QListView::clickOnViewportClearsSelection()
     //we try to click outside of the index
     const QPoint point = view.visualRect(index).bottomRight() + QPoint(10,10);
 
-    QTest::mousePress(view.viewport(), Qt::LeftButton, {}, point);
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, {}, point);
     //at this point, the selection shouldn't have changed
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 1);
     QVERIFY(view.selectionModel()->isSelected(index));
 
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, {}, point);
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, {}, point);
     //now the selection should be cleared
     QVERIFY(!view.selectionModel()->hasSelection());
 }
 
 void tst_QListView::task262152_setModelColumnNavigate()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QListView view;
@@ -1866,23 +1866,23 @@ void tst_QListView::task262152_setModelColumnNavigate()
     view.setModelColumn(1);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(&view, QApplication::activeWindow());
-    QTest::keyClick(&view, Qt::Key_Down);
-    QTRY_COMPARE(view.currentIndex(), model.index(1, 1));
-    QTest::keyClick(&view, Qt::Key_Down);
-    QTRY_COMPARE(view.currentIndex(), model.index(2, 1));
+    BOBUIest::keyClick(&view, BobUI::Key_Down);
+    BOBUIRY_COMPARE(view.currentIndex(), model.index(1, 1));
+    BOBUIest::keyClick(&view, BobUI::Key_Down);
+    BOBUIRY_COMPARE(view.currentIndex(), model.index(2, 1));
 }
 
-void tst_QListView::taskQTBUG_2233_scrollHiddenItems_data()
+void tst_QListView::taskBOBUIBUG_2233_scrollHiddenItems_data()
 {
-    QTest::addColumn<QListView::Flow>("flow");
+    BOBUIest::addColumn<QListView::Flow>("flow");
 
-    QTest::newRow("TopToBottom") << QListView::TopToBottom;
-    QTest::newRow("LeftToRight") << QListView::LeftToRight;
+    BOBUIest::newRow("TopToBottom") << QListView::TopToBottom;
+    BOBUIest::newRow("LeftToRight") << QListView::LeftToRight;
 }
 
-void tst_QListView::taskQTBUG_2233_scrollHiddenItems()
+void tst_QListView::taskBOBUIBUG_2233_scrollHiddenItems()
 {
     QFETCH(QListView::Flow, flow);
     const int rowCount = 200;
@@ -1909,9 +1909,9 @@ void tst_QListView::taskQTBUG_2233_scrollHiddenItems()
         QCOMPARE(index.row(), 2 * i + 1);
     }
 
-    //QTBUG-7929  should not crash
+    //BOBUIBUG-7929  should not crash
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     QScrollBar *bar = view.flow() == QListView::TopToBottom
             ? view.verticalScrollBar() : view.horizontalScrollBar();
 
@@ -1920,11 +1920,11 @@ void tst_QListView::taskQTBUG_2233_scrollHiddenItems()
     bar->setValue(bar->maximum());
     for (int i = rowCount; i > rowCount / 2; i--)
         view.setRowHidden(i, true);
-    QTRY_COMPARE(bar->maximum(), rowCount / 4 - nbVisibleItem);
+    BOBUIRY_COMPARE(bar->maximum(), rowCount / 4 - nbVisibleItem);
     QCOMPARE(bar->value(), bar->maximum());
 }
 
-void tst_QListView::taskQTBUG_633_changeModelData()
+void tst_QListView::taskBOBUIBUG_633_changeModelData()
 {
     QListView view;
     view.setFlow(QListView::LeftToRight);
@@ -1934,17 +1934,17 @@ void tst_QListView::taskQTBUG_633_changeModelData()
 
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     model.setData( model.index(1, 0), QLatin1String("long long text"));
     const auto longTextDoesNotIntersectNextItem = [&]() {
         QRect rectLongText = view.visualRect(model.index(1,0));
         QRect rect2 = view.visualRect(model.index(2,0));
         return !rectLongText.intersects(rect2);
     };
-    QTRY_VERIFY(longTextDoesNotIntersectNextItem());
+    BOBUIRY_VERIFY(longTextDoesNotIntersectNextItem());
 }
 
-void tst_QListView::taskQTBUG_435_deselectOnViewportClick()
+void tst_QListView::taskBOBUIBUG_435_deselectOnViewportClick()
 {
     QListView view;
     QStringListModel model({"1", "2", "3", "4"});
@@ -1957,18 +1957,18 @@ void tst_QListView::taskQTBUG_435_deselectOnViewportClick()
     const QRect itemRect = view.visualRect(model.index(model.rowCount() - 1));
     QPoint p = view.visualRect(model.index(model.rowCount() - 1)).center() + QPoint(0, itemRect.height());
     //first the left button
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, p);
     QVERIFY(!view.selectionModel()->hasSelection());
 
     view.selectAll();
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), model.rowCount());
 
     //and now the right button
-    QTest::mouseClick(view.viewport(), Qt::RightButton, {}, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::RightButton, {}, p);
     QVERIFY(!view.selectionModel()->hasSelection());
 }
 
-void tst_QListView::taskQTBUG_2678_spacingAndWrappedText()
+void tst_QListView::taskBOBUIBUG_2678_spacingAndWrappedText()
 {
     static const QString lorem("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
     QStringListModel model({lorem, lorem, "foo", lorem, "bar", lorem, lorem});
@@ -1978,13 +1978,13 @@ void tst_QListView::taskQTBUG_2678_spacingAndWrappedText()
     w.setWordWrap(true);
     w.setSpacing(10);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QCOMPARE(w.horizontalScrollBar()->minimum(), w.horizontalScrollBar()->maximum());
 }
 
-void tst_QListView::taskQTBUG_5877_skippingItemInPageDownUp()
+void tst_QListView::taskBOBUIBUG_5877_skippingItemInPageDownUp()
 {
-    QtTestModel model(100, 1);
+    BobUITestModel model(100, 1);
 
     static const int currentItemIndexes[] =
         {0, 6, 16, 25, 34, 42, 57, 68, 77, 83, 91, 94};
@@ -1992,7 +1992,7 @@ void tst_QListView::taskQTBUG_5877_skippingItemInPageDownUp()
     vu.setModel(&model);
     vu.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&vu));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&vu));
 
     int itemHeight = vu.visualRect(model.index(0, 0)).height();
     int visibleRowCount = vu.viewport()->height() / itemHeight;
@@ -2002,17 +2002,17 @@ void tst_QListView::taskQTBUG_5877_skippingItemInPageDownUp()
         vu.selectionModel()->setCurrentIndex(model.index(currentItemIndex, 0),
                                              QItemSelectionModel::SelectCurrent);
 
-        QModelIndex idx = vu.moveCursor(PublicListView::MovePageDown, Qt::NoModifier);
+        QModelIndex idx = vu.moveCursor(PublicListView::MovePageDown, BobUI::NoModifier);
         int newCurrent = qMin(currentItemIndex + scrolledRowCount, 99);
         QCOMPARE(idx, model.index(newCurrent, 0));
 
-        idx = vu.moveCursor(PublicListView::MovePageUp, Qt::NoModifier);
+        idx = vu.moveCursor(PublicListView::MovePageUp, BobUI::NoModifier);
         newCurrent = qMax(currentItemIndex - scrolledRowCount, 0);
         QCOMPARE(idx, model.index(newCurrent, 0));
     }
 }
 
-void tst_QListView::taskQTBUG_9455_wrongScrollbarRanges()
+void tst_QListView::taskBOBUIBUG_9455_wrongScrollbarRanges()
 {
     QStringListModel model(generateList("item ", 8));
     PublicListView w;
@@ -2023,7 +2023,7 @@ void tst_QListView::taskQTBUG_9455_wrongScrollbarRanges()
     w.setMovement(QListView::Static);
     w.setSpacing(200);
     w.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QCOMPARE(w.verticalScrollBar()->maximum(),
              w.contentsSize().height() - w.viewport()->geometry().height());
 }
@@ -2057,10 +2057,10 @@ void tst_QListView::styleOptionViewItem()
 
     // Run test
     view.showMaximized();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
-void tst_QListView::taskQTBUG_12308_artihmeticException()
+void tst_QListView::taskBOBUIBUG_12308_artihmeticException()
 {
     QListWidget lw;
     lw.setLayoutMode(QListView::Batched);
@@ -2072,7 +2072,7 @@ void tst_QListView::taskQTBUG_12308_artihmeticException()
         item->setHidden(true);
     }
     lw.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lw));
     // No crash, it's all right.
 }
 
@@ -2089,7 +2089,7 @@ public:
     }
 };
 
-void tst_QListView::taskQTBUG_12308_wrongFlowLayout()
+void tst_QListView::taskBOBUIBUG_12308_wrongFlowLayout()
 {
     QListWidget lw;
     Delegate12308 delegate;
@@ -2104,17 +2104,17 @@ void tst_QListView::taskQTBUG_12308_wrongFlowLayout()
             item->setHidden(true);
     }
     lw.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lw));
 }
 
-void tst_QListView::taskQTBUG_21115_scrollToAndHiddenItems_data()
+void tst_QListView::taskBOBUIBUG_21115_scrollToAndHiddenItems_data()
 {
-    QTest::addColumn<QListView::Flow>("flow");
-    QTest::newRow("flow TopToBottom") << QListView::TopToBottom;
-    QTest::newRow("flow LeftToRight") << QListView::LeftToRight;
+    BOBUIest::addColumn<QListView::Flow>("flow");
+    BOBUIest::newRow("flow TopToBottom") << QListView::TopToBottom;
+    BOBUIest::newRow("flow LeftToRight") << QListView::LeftToRight;
 }
 
-void tst_QListView::taskQTBUG_21115_scrollToAndHiddenItems()
+void tst_QListView::taskBOBUIBUG_21115_scrollToAndHiddenItems()
 {
     QFETCH(QListView::Flow, flow);
 
@@ -2126,7 +2126,7 @@ void tst_QListView::taskQTBUG_21115_scrollToAndHiddenItems()
     model.setStringList(generateList(QString(), 30));
     lv.setModel(&model);
     lv.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     // Save first item rect for reference
     QRect firstItemRect = lv.visualRect(model.index(0, 0));
@@ -2135,7 +2135,7 @@ void tst_QListView::taskQTBUG_21115_scrollToAndHiddenItems()
     QModelIndex index = model.index(2, 0);
     lv.setCurrentIndex(index);
     lv.scrollTo(index, QAbstractItemView::PositionAtTop);
-    QTRY_COMPARE(lv.visualRect(index), firstItemRect);
+    BOBUIRY_COMPARE(lv.visualRect(index), firstItemRect);
 
     // Hide some rows and scroll to selection
     for (int i = 0; i < 5; i++) {
@@ -2144,15 +2144,15 @@ void tst_QListView::taskQTBUG_21115_scrollToAndHiddenItems()
         lv.setRowHidden(i, true);
     }
     lv.scrollTo(index, QAbstractItemView::PositionAtTop);
-    QTRY_COMPARE(lv.visualRect(index), firstItemRect);
+    BOBUIRY_COMPARE(lv.visualRect(index), firstItemRect);
 }
 
 void tst_QListView::draggablePaintPairs_data()
 {
-    QTest::addColumn<int>("row");
+    BOBUIest::addColumn<int>("row");
 
     for (int row = 0; row < 30; ++row)
-      QTest::newRow("row-" + QByteArray::number(row)) << row;
+      BOBUIest::newRow("row-" + QByteArray::number(row)) << row;
 }
 
 void tst_QListView::draggablePaintPairs()
@@ -2166,7 +2166,7 @@ void tst_QListView::draggablePaintPairs()
     view.setModel(&model);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex expectedIndex = model.index(row, 0);
     QListViewPrivate *privateClass = static_cast<QListViewPrivate *>(QListViewPrivate::get(&view));
@@ -2181,17 +2181,17 @@ void tst_QListView::draggablePaintPairs()
     }
 }
 
-void tst_QListView::taskQTBUG_21804_hiddenItemsAndScrollingWithKeys_data()
+void tst_QListView::taskBOBUIBUG_21804_hiddenItemsAndScrollingWithKeys_data()
 {
-    QTest::addColumn<QListView::Flow>("flow");
-    QTest::addColumn<int>("spacing");
-    QTest::newRow("flow TopToBottom no spacing") << QListView::TopToBottom << 0;
-    QTest::newRow("flow TopToBottom with spacing") << QListView::TopToBottom << 5;
-    QTest::newRow("flow LeftToRight no spacing") << QListView::LeftToRight << 0;
-    QTest::newRow("flow LeftToRight with spacing") << QListView::LeftToRight << 5;
+    BOBUIest::addColumn<QListView::Flow>("flow");
+    BOBUIest::addColumn<int>("spacing");
+    BOBUIest::newRow("flow TopToBottom no spacing") << QListView::TopToBottom << 0;
+    BOBUIest::newRow("flow TopToBottom with spacing") << QListView::TopToBottom << 5;
+    BOBUIest::newRow("flow LeftToRight no spacing") << QListView::LeftToRight << 0;
+    BOBUIest::newRow("flow LeftToRight with spacing") << QListView::LeftToRight << 5;
 }
 
-void tst_QListView::taskQTBUG_21804_hiddenItemsAndScrollingWithKeys()
+void tst_QListView::taskBOBUIBUG_21804_hiddenItemsAndScrollingWithKeys()
 {
     QFETCH(QListView::Flow, flow);
     QFETCH(int, spacing);
@@ -2206,7 +2206,7 @@ void tst_QListView::taskQTBUG_21804_hiddenItemsAndScrollingWithKeys()
     lv.setSpacing(spacing);
     lv.setModel(&model);
     lv.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     // hide every odd number row
     for (int i = 1; i < model.rowCount(); i+=2)
@@ -2216,48 +2216,48 @@ void tst_QListView::taskQTBUG_21804_hiddenItemsAndScrollingWithKeys()
     int visibleItemCount = model.rowCount() / 2;
     for (int i = 0; i < visibleItemCount; i++) {
         if (flow == QListView::TopToBottom)
-            QTest::keyClick(&lv, Qt::Key_Down);
+            BOBUIest::keyClick(&lv, BobUI::Key_Down);
         else
-            QTest::keyClick(&lv, Qt::Key_Right);
-        QTRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
+            BOBUIest::keyClick(&lv, BobUI::Key_Right);
+        BOBUIRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
     }
 
     // scroll backward
     for (int i = 0; i < visibleItemCount; i++) {
         if (flow == QListView::TopToBottom)
-            QTest::keyClick(&lv, Qt::Key_Up);
+            BOBUIest::keyClick(&lv, BobUI::Key_Up);
         else
-            QTest::keyClick(&lv, Qt::Key_Left);
-        QTRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
+            BOBUIest::keyClick(&lv, BobUI::Key_Left);
+        BOBUIRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
     }
 
     // scroll forward only half way
     for (int i = 0; i < visibleItemCount / 2; i++) {
         if (flow == QListView::TopToBottom)
-            QTest::keyClick(&lv, Qt::Key_Down);
+            BOBUIest::keyClick(&lv, BobUI::Key_Down);
         else
-            QTest::keyClick(&lv, Qt::Key_Right);
-        QTRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
+            BOBUIest::keyClick(&lv, BobUI::Key_Right);
+        BOBUIRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
     }
 
     // scroll backward again
     for (int i = 0; i < visibleItemCount / 2; i++) {
         if (flow == QListView::TopToBottom)
-            QTest::keyClick(&lv, Qt::Key_Up);
+            BOBUIest::keyClick(&lv, BobUI::Key_Up);
         else
-            QTest::keyClick(&lv, Qt::Key_Left);
-        QTRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
+            BOBUIest::keyClick(&lv, BobUI::Key_Left);
+        BOBUIRY_VERIFY(lv.rect().contains(lv.visualRect(lv.currentIndex())));
     }
 }
 
 void tst_QListView::spacing_data()
 {
-    QTest::addColumn<QListView::Flow>("flow");
-    QTest::addColumn<int>("spacing");
-    QTest::newRow("flow=TopToBottom spacing=0") << QListView::TopToBottom << 0;
-    QTest::newRow("flow=TopToBottom spacing=10") << QListView::TopToBottom << 10;
-    QTest::newRow("flow=LeftToRight spacing=0") << QListView::LeftToRight << 0;
-    QTest::newRow("flow=LeftToRight spacing=10") << QListView::LeftToRight << 10;
+    BOBUIest::addColumn<QListView::Flow>("flow");
+    BOBUIest::addColumn<int>("spacing");
+    BOBUIest::newRow("flow=TopToBottom spacing=0") << QListView::TopToBottom << 0;
+    BOBUIest::newRow("flow=TopToBottom spacing=10") << QListView::TopToBottom << 10;
+    BOBUIest::newRow("flow=LeftToRight spacing=0") << QListView::LeftToRight << 0;
+    BOBUIest::newRow("flow=LeftToRight spacing=10") << QListView::LeftToRight << 10;
 }
 
 void tst_QListView::spacing()
@@ -2275,7 +2275,7 @@ void tst_QListView::spacing()
     lv.setModel(&model);
     lv.setSpacing(spacing);
     lv.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     // check size and position of first two items
     QRect item1 = lv.visualRect(lv.model()->index(0, 0));
@@ -2303,7 +2303,7 @@ void tst_QListView::testScrollToWithHidden()
     lv.setSpacing(5);
 
     lv.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     QCOMPARE(lv.verticalScrollBar()->value(), 0);
 
@@ -2350,21 +2350,21 @@ private:
     QStyle *m_oldStyle;
 };
 
-void tst_QListView::taskQTBUG_39902_mutualScrollBars_data()
+void tst_QListView::taskBOBUIBUG_39902_mutualScrollBars_data()
 {
-    QTest::addColumn<QAbstractItemView::ScrollMode>("horizontalScrollMode");
-    QTest::addColumn<QAbstractItemView::ScrollMode>("verticalScrollMode");
-    QTest::newRow("per item / per item") << QAbstractItemView::ScrollPerItem
+    BOBUIest::addColumn<QAbstractItemView::ScrollMode>("horizontalScrollMode");
+    BOBUIest::addColumn<QAbstractItemView::ScrollMode>("verticalScrollMode");
+    BOBUIest::newRow("per item / per item") << QAbstractItemView::ScrollPerItem
                                          << QAbstractItemView::ScrollPerItem;
-    QTest::newRow("per pixel / per item") << QAbstractItemView::ScrollPerPixel
+    BOBUIest::newRow("per pixel / per item") << QAbstractItemView::ScrollPerPixel
                                           << QAbstractItemView::ScrollPerItem;
-    QTest::newRow("per item / per pixel") << QAbstractItemView::ScrollPerItem
+    BOBUIest::newRow("per item / per pixel") << QAbstractItemView::ScrollPerItem
                                           << QAbstractItemView::ScrollPerPixel;
-    QTest::newRow("per pixel / per pixel") << QAbstractItemView::ScrollPerPixel
+    BOBUIest::newRow("per pixel / per pixel") << QAbstractItemView::ScrollPerPixel
                                            << QAbstractItemView::ScrollPerPixel;
 }
 
-void tst_QListView::taskQTBUG_39902_mutualScrollBars()
+void tst_QListView::taskBOBUIBUG_39902_mutualScrollBars()
 {
     QFETCH(QAbstractItemView::ScrollMode, horizontalScrollMode);
     QFETCH(QAbstractItemView::ScrollMode, verticalScrollMode);
@@ -2377,24 +2377,24 @@ void tst_QListView::taskQTBUG_39902_mutualScrollBars()
     QStandardItemModel model(200, 1);
     const QSize itemSize(100, 20);
     for (int i = 0; i < model.rowCount(); ++i)
-        model.setData(model.index(i, 0), itemSize, Qt::SizeHintRole);
+        model.setData(model.index(i, 0), itemSize, BobUI::SizeHintRole);
     view->setModel(&model);
 
     view->setVerticalScrollMode(verticalScrollMode);
     view->setHorizontalScrollMode(horizontalScrollMode);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
     // make sure QListView is done with layouting the items (1/10 sec, like QListView)
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     model.setRowCount(2);
     for (int i = 0; i < model.rowCount(); ++i)
-        model.setData(model.index(i, 0), itemSize, Qt::SizeHintRole);
+        model.setData(model.index(i, 0), itemSize, BobUI::SizeHintRole);
     view->resize(itemSize.width() + view->frameWidth() * 2,
                  model.rowCount() * itemSize.height() + view->frameWidth() * 2);
-    // this will end up in a stack overflow, if QTBUG-39902 is not fixed
-    QTest::qWait(100);
+    // this will end up in a stack overflow, if BOBUIBUG-39902 is not fixed
+    BOBUIest::qWait(100);
 
     // these tests do not apply with transient scroll bars enabled
     QVERIFY (!view->style()->styleHint(QStyle::SH_ScrollBar_Transient,
@@ -2403,72 +2403,72 @@ void tst_QListView::taskQTBUG_39902_mutualScrollBars()
     // make it double as large, no scroll bars should be visible
     view->resize((itemSize.width() + view->frameWidth() * 2) * 2,
                  (model.rowCount() * itemSize.height() + view->frameWidth() * 2) * 2);
-    QTRY_VERIFY(!view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(!view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->verticalScrollBar()->isVisible());
 
     // make it half the size, both scroll bars should be visible
     view->resize((itemSize.width() + view->frameWidth() * 2) / 2,
                  (model.rowCount() * itemSize.height() + view->frameWidth() * 2) / 2);
-    QTRY_VERIFY(view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->verticalScrollBar()->isVisible());
 
     // make it double as large, no scroll bars should be visible
     view->resize((itemSize.width() + view->frameWidth() * 2) * 2,
                  (model.rowCount() * itemSize.height() + view->frameWidth() * 2) * 2);
-    QTRY_VERIFY(!view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(!view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->verticalScrollBar()->isVisible());
 
     // now, coming from the double size, resize it to the exactly matching size, still no scroll bars should be visible again
     view->resize(itemSize.width() + view->frameWidth() * 2,
                  model.rowCount() * itemSize.height() + view->frameWidth() * 2);
-    QTRY_VERIFY(!view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(!view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->verticalScrollBar()->isVisible());
 
     // now remove just one single pixel in height -> both scroll bars will show up since they depend on each other
     view->resize(itemSize.width() + view->frameWidth() * 2,
                  model.rowCount() * itemSize.height() + view->frameWidth() * 2 - 1);
-    QTRY_VERIFY(view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->verticalScrollBar()->isVisible());
 
     // now remove just one single pixel in width -> both scroll bars will show up since they depend on each other
     view->resize(itemSize.width() + view->frameWidth() * 2 - 1,
                  model.rowCount() * itemSize.height() + view->frameWidth() * 2);
-    QTRY_VERIFY(view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->verticalScrollBar()->isVisible());
 
     // finally, coming from a size being to small, resize back to the exactly matching size -> both scroll bars should disappear again
     view->resize(itemSize.width() + view->frameWidth() * 2,
                  model.rowCount() * itemSize.height() + view->frameWidth() * 2);
-    QTRY_VERIFY(!view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(!view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view->verticalScrollBar()->isVisible());
 
    // now remove just one single pixel in height -> both scroll bars will show up since they depend on each other
     view->resize(itemSize.width() + view->frameWidth() * 2,
                  model.rowCount() * itemSize.height() + view->frameWidth() * 2 - 1);
-    QTRY_VERIFY(view->horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(view->verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(view->verticalScrollBar()->isVisible());
 }
 
 void tst_QListView::horizontalScrollingByVerticalWheelEvents()
 {
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     QListView lv;
     lv.setWrapping(true);
 
     lv.setItemDelegate(new TestDelegate(&lv, QSize(100, 100)));
 
-    QtTestModel model(100, 1);
+    BobUITestModel model(100, 1);
     lv.setModel(&model);
     lv.resize(300, 300);
     lv.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     QPoint globalPos = lv.geometry().center();
     QPoint pos = lv.viewport()->geometry().center();
 
-    QWheelEvent wheelDownEvent(pos, globalPos, QPoint(0, 0), QPoint(0, -120), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
-    QWheelEvent wheelUpEvent(pos, globalPos, QPoint(0, 0), QPoint(0, 120), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
-    QWheelEvent wheelLeftDownEvent(pos, globalPos, QPoint(0, 0), QPoint(120, -120), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+    QWheelEvent wheelDownEvent(pos, globalPos, QPoint(0, 0), QPoint(0, -120), BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
+    QWheelEvent wheelUpEvent(pos, globalPos, QPoint(0, 0), QPoint(0, 120), BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
+    QWheelEvent wheelLeftDownEvent(pos, globalPos, QPoint(0, 0), QPoint(120, -120), BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
 
     int hValue = lv.horizontalScrollBar()->value();
     QCoreApplication::sendEvent(lv.viewport(), &wheelDownEvent);
@@ -2483,7 +2483,7 @@ void tst_QListView::horizontalScrollingByVerticalWheelEvents()
     // ensure that vertical wheel events are not converted when vertical
     // scroll bar is not visible but vertical scrolling is possible
     lv.setWrapping(false);
-    lv.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    lv.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     QCoreApplication::processEvents();
 
     int vValue = lv.verticalScrollBar()->value();
@@ -2494,14 +2494,14 @@ void tst_QListView::horizontalScrollingByVerticalWheelEvents()
 #endif
 }
 
-void tst_QListView::taskQTBUG_7232_AllowUserToControlSingleStep()
+void tst_QListView::taskBOBUIBUG_7232_AllowUserToControlSingleStep()
 {
     // When we set the scrollMode to ScrollPerPixel it will adjust the scrollbars singleStep automatically
     // Setting a singlestep on a scrollbar should however imply that the user takes control.
     // Setting a singlestep to -1 return to an automatic control of the singleStep.
     QListView lv;
-    lv.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    lv.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    lv.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
+    lv.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOn);
 
     QStandardItemModel model(1000, 100);
     QString str = QString::fromLatin1("This is a long string made to ensure that we get some horizontal scroll (and we want scroll)");
@@ -2511,7 +2511,7 @@ void tst_QListView::taskQTBUG_7232_AllowUserToControlSingleStep()
     lv.show();
     lv.setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     lv.setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    QVERIFY(QTest::qWaitForWindowExposed(&lv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lv));
 
     int vStep1 = lv.verticalScrollBar()->singleStep();
     int hStep1 = lv.horizontalScrollBar()->singleStep();
@@ -2532,7 +2532,7 @@ void tst_QListView::taskQTBUG_7232_AllowUserToControlSingleStep()
     QCOMPARE(hStep1, lv.horizontalScrollBar()->singleStep());
 }
 
-void tst_QListView::taskQTBUG_58749_adjustToContent()
+void tst_QListView::taskBOBUIBUG_58749_adjustToContent()
 {
     QStandardItemModel model;
     model.setRowCount(20);
@@ -2551,7 +2551,7 @@ void tst_QListView::taskQTBUG_58749_adjustToContent()
     l->addWidget(view);
     l->setSizeConstraint(QLayout::SetFixedSize);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     const QString longText = "Here we have a row text that is somewhat longer ...";
 
@@ -2572,7 +2572,7 @@ void tst_QListView::taskQTBUG_58749_adjustToContent()
     QCOMPARE_GE(view->width(), itemRect.width());
 }
 
-void tst_QListView::taskQTBUG_51086_skippingIndexesInSelectedIndexes()
+void tst_QListView::taskBOBUIBUG_51086_skippingIndexesInSelectedIndexes()
 {
     QStandardItemModel data(10, 1);
     QItemSelectionModel selections(&data);
@@ -2592,7 +2592,7 @@ void tst_QListView::taskQTBUG_51086_skippingIndexesInSelectedIndexes()
     QVERIFY(!indexes.contains(data.index(8, 0)));
 }
 
-void tst_QListView::taskQTBUG_47694_indexOutOfBoundBatchLayout()
+void tst_QListView::taskBOBUIBUG_47694_indexOutOfBoundBatchLayout()
 {
     QListView view;
     view.setLayoutMode(QListView::Batched);
@@ -2645,7 +2645,7 @@ public:
     stale QBspTree by returning a 0 column count for indexes without
     children, which changes the column count after moving the last row.
 
-    See QTBUG_95463.
+    See BOBUIBUG_95463.
 */
 class TstMoveModel : public QAbstractItemModel
 {
@@ -2655,16 +2655,16 @@ public:
         : QAbstractItemModel(parent)
     {
         rootItem = new TstMoveItem;
-        rootItem->data.insert(Qt::DisplayRole, "root");
+        rootItem->data.insert(BobUI::DisplayRole, "root");
 
         TstMoveItem *itm = new TstMoveItem(rootItem);
-        itm->data.insert(Qt::DisplayRole, "parentItem1");
+        itm->data.insert(BobUI::DisplayRole, "parentItem1");
 
         TstMoveItem *itmCh = new TstMoveItem(itm);
-        itmCh->data.insert(Qt::DisplayRole, "childItem");
+        itmCh->data.insert(BobUI::DisplayRole, "childItem");
 
         itm = new TstMoveItem(rootItem);
-        itm->data.insert(Qt::DisplayRole, "parentItem2");
+        itm->data.insert(BobUI::DisplayRole, "parentItem2");
     }
 
     ~TstMoveModel()
@@ -2728,10 +2728,10 @@ public:
         return cnt;
     }
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override
+    BobUI::ItemFlags flags(const QModelIndex &index) const override
     {
         Q_UNUSED(index)
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return BobUI::ItemIsEnabled | BobUI::ItemIsSelectable;
     }
 
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override
@@ -2747,7 +2747,7 @@ public:
         return ret;
     }
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override
     {
         QVariant dt;
         if (index.isValid()) {
@@ -2811,13 +2811,13 @@ void tst_QListView::moveLastRow()
     view.setViewMode(QListView::IconMode);
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QModelIndex sourceParent = model.index(0, 0);
     QModelIndex destinationParent = model.index(1, 0);
     // must not crash when paint event is processed
     model.moveRow(sourceParent, 0, destinationParent, 0);
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 }
 
 void tst_QListView::itemAlignment()
@@ -2832,12 +2832,12 @@ void tst_QListView::itemAlignment()
     w.setModel(&model);
     w.setWrapping(true);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QVERIFY(w.visualRect(item1->index()).width() > 0);
     QVERIFY(w.visualRect(item1->index()).width() == w.visualRect(item2->index()).width());
 
-    w.setItemAlignment(Qt::AlignLeft);
+    w.setItemAlignment(BobUI::AlignLeft);
     QCoreApplication::processEvents();
 
     QVERIFY(w.visualRect(item1->index()).width() < w.visualRect(item2->index()).width());
@@ -2845,18 +2845,18 @@ void tst_QListView::itemAlignment()
 
 void tst_QListView::internalDragDropMove_data()
 {
-    QTest::addColumn<QListView::ViewMode>("viewMode");
-    QTest::addColumn<QAbstractItemView::DragDropMode>("dragDropMode");
-    QTest::addColumn<Qt::DropActions>("supportedDropActions");
-    QTest::addColumn<Qt::DropAction>("defaultDropAction");
-    QTest::addColumn<Qt::ItemFlags>("itemFlags");
-    QTest::addColumn<bool>("modelMoves");
-    QTest::addColumn<QStringList>("expectedData");
+    BOBUIest::addColumn<QListView::ViewMode>("viewMode");
+    BOBUIest::addColumn<QAbstractItemView::DragDropMode>("dragDropMode");
+    BOBUIest::addColumn<BobUI::DropActions>("supportedDropActions");
+    BOBUIest::addColumn<BobUI::DropAction>("defaultDropAction");
+    BOBUIest::addColumn<BobUI::ItemFlags>("itemFlags");
+    BOBUIest::addColumn<bool>("modelMoves");
+    BOBUIest::addColumn<QStringList>("expectedData");
 
-    const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
-                                     | Qt::ItemIsEnabled
-                                     | Qt::ItemIsEditable
-                                     | Qt::ItemIsDragEnabled;
+    const BobUI::ItemFlags defaultFlags = BobUI::ItemIsSelectable
+                                     | BobUI::ItemIsEnabled
+                                     | BobUI::ItemIsEditable
+                                     | BobUI::ItemIsDragEnabled;
 
     const QStringList unchanged = QStringList{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
     const QStringList reordered = QStringList{"0", "2", "3", "4", "5", "6", "7", "8", "9", "1"};
@@ -2866,32 +2866,32 @@ void tst_QListView::internalDragDropMove_data()
         for (auto modelMoves : { true, false } ) {
             QByteArray rowName = viewMode == QListView::IconMode ? "icon" : "list" ;
             rowName += modelMoves ? ", model moves" : ", model doesn't move";
-            QTest::newRow((rowName + ", copy&move").constData())
+            BOBUIest::newRow((rowName + ", copy&move").constData())
                 << viewMode
                 << QAbstractItemView::InternalMove
-                << (Qt::CopyAction|Qt::MoveAction)
-                << Qt::MoveAction
+                << (BobUI::CopyAction|BobUI::MoveAction)
+                << BobUI::MoveAction
                 << defaultFlags
                 << modelMoves
                 // listview in IconMode doesn't change the model
                 << ((viewMode == QListView::IconMode && !modelMoves) ? unchanged : reordered);
 
-            QTest::newRow((rowName + ", only move").constData())
+            BOBUIest::newRow((rowName + ", only move").constData())
                 << viewMode
                 << QAbstractItemView::InternalMove
-                << (Qt::IgnoreAction|Qt::MoveAction)
-                << Qt::MoveAction
+                << (BobUI::IgnoreAction|BobUI::MoveAction)
+                << BobUI::MoveAction
                 << defaultFlags
                 << modelMoves
                 // listview in IconMode doesn't change the model
                 << ((viewMode == QListView::IconMode && !modelMoves) ? unchanged : reordered);
 
-            QTest::newRow((rowName + ", replace item").constData())
+            BOBUIest::newRow((rowName + ", replace item").constData())
                 << viewMode
                 << QAbstractItemView::InternalMove
-                << (Qt::IgnoreAction|Qt::MoveAction)
-                << Qt::MoveAction
-                << (defaultFlags | Qt::ItemIsDropEnabled)
+                << (BobUI::IgnoreAction|BobUI::MoveAction)
+                << BobUI::MoveAction
+                << (defaultFlags | BobUI::ItemIsDropEnabled)
                 << modelMoves
                 << replaced;
         }
@@ -2906,7 +2906,7 @@ void tst_QListView::internalDragDropMove_data()
 
     Test QListView in both icon and list view modes.
 
-    See QTBUG-67440, QTBUG-83084, QTBUG-87057
+    See BOBUIBUG-67440, BOBUIBUG-83084, BOBUIBUG-87057
 */
 void tst_QListView::internalDragDropMove()
 {
@@ -2916,9 +2916,9 @@ void tst_QListView::internalDragDropMove()
 
     QFETCH(QListView::ViewMode, viewMode);
     QFETCH(QAbstractItemView::DragDropMode, dragDropMode);
-    QFETCH(Qt::DropActions, supportedDropActions);
-    QFETCH(Qt::DropAction, defaultDropAction);
-    QFETCH(Qt::ItemFlags, itemFlags);
+    QFETCH(BobUI::DropActions, supportedDropActions);
+    QFETCH(BobUI::DropAction, defaultDropAction);
+    QFETCH(BobUI::ItemFlags, itemFlags);
     QFETCH(bool, modelMoves);
     QFETCH(QStringList, expectedData);
 
@@ -2934,8 +2934,8 @@ void tst_QListView::internalDragDropMove()
             setStringList(list);
         }
 
-        Qt::DropActions supportedDropActions() const override { return m_supportedDropActions; }
-        Qt::ItemFlags flags(const QModelIndex &index) const override
+        BobUI::DropActions supportedDropActions() const override { return m_supportedDropActions; }
+        BobUI::ItemFlags flags(const QModelIndex &index) const override
         {
             if (!index.isValid())
                 return QStringListModel::flags(index);
@@ -2951,23 +2951,23 @@ void tst_QListView::internalDragDropMove()
         }
         bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &values) override
         {
-            return QStringListModel::setData(index, values.value(Qt::DisplayRole), Qt::DisplayRole);
+            return QStringListModel::setData(index, values.value(BobUI::DisplayRole), BobUI::DisplayRole);
         }
         QVariant data(const QModelIndex &index, int role) const override
         {
-            if (role == Qt::DecorationRole)
-                return QColor(Qt::GlobalColor(index.row() + 1));
+            if (role == BobUI::DecorationRole)
+                return QColor(BobUI::GlobalColor(index.row() + 1));
             return QStringListModel::data(index, role);
         }
         QMap<int, QVariant> itemData(const QModelIndex &index) const override
         {
             auto item = QStringListModel::itemData(index);
-            item[Qt::DecorationRole] = data(index, Qt::DecorationRole);
+            item[BobUI::DecorationRole] = data(index, BobUI::DecorationRole);
             return item;
         }
 
-        Qt::DropActions m_supportedDropActions;
-        Qt::ItemFlags m_itemFlags;
+        BobUI::DropActions m_supportedDropActions;
+        BobUI::ItemFlags m_itemFlags;
         bool m_modelMoves;
     };
 
@@ -2978,7 +2978,7 @@ void tst_QListView::internalDragDropMove()
 
     QItemSelectionModel selections(&data);
     PublicListView list;
-    list.setWindowTitle(QTest::currentTestFunction());
+    list.setWindowTitle(BOBUIest::currentTestFunction());
     list.setViewMode(viewMode);
     list.setDragDropMode(dragDropMode);
     list.setDefaultDropAction(defaultDropAction);
@@ -2991,54 +2991,54 @@ void tst_QListView::internalDragDropMove()
     auto getSelectedTexts = [&]() -> QStringList {
         QStringList selectedTexts;
         for (auto index : selections.selectedIndexes())
-            selectedTexts << data.itemData(index).value(Qt::DisplayRole).toString();
+            selectedTexts << data.itemData(index).value(BobUI::DisplayRole).toString();
         return selectedTexts;
     };
     // The test relies on the global position of mouse events; make sure
     // the window is properly mapped on X11.
-    QVERIFY(QTest::qWaitForWindowActive(&list));
-    QVERIFY(QTest::qWaitFor([&]() { return list.m_gotValidResizeEvent; }));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&list));
+    QVERIFY(BOBUIest::qWaitFor([&]() { return list.m_gotValidResizeEvent; }));
     // execute as soon as the eventloop is running again
     // which is the case inside list.startDrag()
-    QTimer::singleShot(0, [&]()
+    BOBUIimer::singleShot(0, [&]()
     {
         QPoint droppos;
         // take into account subtle differences between icon and list mode in QListView's drop placement
-        if (itemFlags & Qt::ItemIsDropEnabled)
+        if (itemFlags & BobUI::ItemIsDropEnabled)
             droppos = list.rectForIndex(data.index(5, 0)).center();
         else if (viewMode == QListView::IconMode)
             droppos = list.rectForIndex(data.index(9, 0)).bottomRight() + QPoint(30, 30);
         else
             droppos = list.rectForIndex(data.index(9, 0)).bottomRight();
 
-        QMouseEvent mouseMove(QEvent::MouseMove, droppos, list.mapToGlobal(droppos), Qt::NoButton, {}, {});
+        QMouseEvent mouseMove(QEvent::MouseMove, droppos, list.mapToGlobal(droppos), BobUI::NoButton, {}, {});
         QCoreApplication::sendEvent(&list, &mouseMove);
-        QMouseEvent mouseRelease(QEvent::MouseButtonRelease, droppos, list.mapToGlobal(droppos), Qt::LeftButton, {}, {});
+        QMouseEvent mouseRelease(QEvent::MouseButtonRelease, droppos, list.mapToGlobal(droppos), BobUI::LeftButton, {}, {});
         QCoreApplication::sendEvent(&list, &mouseRelease);
     });
 
     const QStringList expectedSelected = getSelectedTexts();
 
-    list.startDrag(Qt::MoveAction);
+    list.startDrag(BobUI::MoveAction);
 
-    QTRY_COMPARE(data.stringList(), expectedData);
+    BOBUIRY_COMPARE(data.stringList(), expectedData);
 
      // if the model doesn't implement moveRows, or if items are replaced, then selection is lost
-    if (modelMoves && !(itemFlags & Qt::ItemIsDropEnabled)) {
+    if (modelMoves && !(itemFlags & BobUI::ItemIsDropEnabled)) {
         const QStringList actualSelected = getSelectedTexts();
-        QTRY_COMPARE(actualSelected, expectedSelected);
+        BOBUIRY_COMPARE(actualSelected, expectedSelected);
     }
 }
 
 /*!
-    Verify fix for QTBUG-92366
+    Verify fix for BOBUIBUG-92366
 */
 void tst_QListView::spacingWithWordWrap_data()
 {
-    QTest::addColumn<bool>("scrollBarOverlap");
+    BOBUIest::addColumn<bool>("scrollBarOverlap");
 
-    QTest::addRow("Without overlap") << false;
-    QTest::addRow("With overlap") << true;
+    BOBUIest::addRow("Without overlap") << false;
+    BOBUIest::addRow("With overlap") << true;
 }
 
 void tst_QListView::spacingWithWordWrap()
@@ -3074,8 +3074,8 @@ void tst_QListView::spacingWithWordWrap()
     window.resize(300, 200);
     QListView lv(&window);
 
-    lv.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    lv.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    lv.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    lv.setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     lv.setFlow(QListView::TopToBottom);
     lv.setWordWrap(true);
     lv.setSpacing(0);
@@ -3089,7 +3089,7 @@ void tst_QListView::spacingWithWordWrap()
     model.appendRow(it2);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
 
     QVERIFY(!lv.verticalScrollBar()->isVisible());
     for (int i = 0; i < listViewResizeCount; ++i) {
@@ -3108,7 +3108,7 @@ void tst_QListView::spacingWithWordWrap()
     }
 
     // test whether the height of item is correct if the vbar is shown.
-    QTRY_VERIFY(lv.verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(lv.verticalScrollBar()->isVisible());
     for (int i = 0; i < listViewResizeCount; ++i) {
         lv.resize(lv.width() + 1, lv.height());
         QRect rectForRowOne = lv.visualRect(model.index(0, 0));
@@ -3120,8 +3120,8 @@ void tst_QListView::spacingWithWordWrap()
 
 void tst_QListView::scrollOnRemove_data()
 {
-    QTest::addColumn<QListView::ViewMode>("viewMode");
-    QTest::addColumn<QAbstractItemView::SelectionMode>("selectionMode");
+    BOBUIest::addColumn<QListView::ViewMode>("viewMode");
+    BOBUIest::addColumn<QAbstractItemView::SelectionMode>("selectionMode");
 
     const QMetaObject &mo = QListView::staticMetaObject;
     const auto viewModeEnum = mo.enumerator(mo.indexOfEnumerator("ViewMode"));
@@ -3131,7 +3131,7 @@ void tst_QListView::scrollOnRemove_data()
         for (int index = 0; index < selectionModeEnum.keyCount(); ++index) {
             const auto selectionMode = QAbstractItemView::SelectionMode(selectionModeEnum.value(index));
             const char *selectionModeName = selectionModeEnum.valueToKey(selectionMode);
-            QTest::addRow("%s, %s", viewModeName, selectionModeName) << viewMode << selectionMode;
+            BOBUIest::addRow("%s, %s", viewModeName, selectionModeName) << viewMode << selectionMode;
         }
     }
 }
@@ -3144,7 +3144,7 @@ void tst_QListView::scrollOnRemove()
     QPixmap pixmap;
     if (viewMode == QListView::IconMode) {
         pixmap = QPixmap(25, 25);
-        pixmap.fill(Qt::red);
+        pixmap.fill(BobUI::red);
     }
 
     QStandardItemModel model;
@@ -3165,23 +3165,23 @@ void tst_QListView::scrollOnRemove()
     view.setViewMode(viewMode);
 
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     QCOMPARE(view.verticalScrollBar()->value(), 0);
     const QModelIndex item25 = model.index(25, 0);
     view.scrollTo(item25);
-    QTRY_VERIFY(view.verticalScrollBar()->value() > 0); // layout and scrolling are delayed
+    BOBUIRY_VERIFY(view.verticalScrollBar()->value() > 0); // layout and scrolling are delayed
     const int item25Position = view.verticalScrollBar()->value();
     // selecting a fully visible item shouldn't scroll
     view.selectionModel()->setCurrentIndex(item25, QItemSelectionModel::SelectCurrent);
-    QTRY_COMPARE(view.verticalScrollBar()->value(), item25Position);
+    BOBUIRY_COMPARE(view.verticalScrollBar()->value(), item25Position);
 
     // removing the selected item might scroll if another item is selected
     model.removeRow(25);
 
     // if nothing is selected now, then the view should not have scrolled
     if (!view.selectionModel()->selectedIndexes().size())
-        QTRY_COMPARE(view.verticalScrollBar()->value(), item25Position);
+        BOBUIRY_COMPARE(view.verticalScrollBar()->value(), item25Position);
 }
 
 void tst_QListView::wordWrapNullIcon()
@@ -3201,5 +3201,5 @@ void tst_QListView::wordWrapNullIcon()
 }
 
 
-QTEST_MAIN(tst_QListView)
+BOBUIEST_MAIN(tst_QListView)
 #include "tst_qlistview.moc"

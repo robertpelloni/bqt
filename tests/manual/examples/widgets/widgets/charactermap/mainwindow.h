@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -7,14 +7,14 @@
 #include <QMainWindow>
 #include <QString>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QClipboard;
 class QComboBox;
 class QFontComboBox;
 class QLineEdit;
 class QScrollArea;
 class QCheckBox;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 class CharacterWidget;
 
 //! [0]
@@ -30,7 +30,7 @@ public slots:
     void findStyles(const QFont &font);
     void findSizes(const QFont &font);
     void insertCharacter(const QString &character);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void updateClipboard();
 #endif
     void showInfo();

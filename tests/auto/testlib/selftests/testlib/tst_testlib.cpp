@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QtMath>
-#include <QtCore/QtNumeric>
+#include <BOBUIest>
+#include <BobUICore/BobUIMath>
+#include <BobUICore/BobUINumeric>
 
-/* Test QTest functions not covered by other parts of the selftest.  Tests that
+/* Test BOBUIest functions not covered by other parts of the selftest.  Tests that
  * involve crashing or exiting should be added as separate tests in their own
  * right.  Tests that form a coherent group on a related theme should also go in
- * their own directory.  Tests that fail in order to exercise QTest internals
+ * their own directory.  Tests that fail in order to exercise BOBUIest internals
  * are fine.
  */
 
@@ -36,40 +36,40 @@ tst_TestLib::tst_TestLib()
 
 void tst_TestLib::basics() const
 {
-    QVERIFY(QByteArray(QTest::currentAppName()).contains("testlib"));
+    QVERIFY(QByteArray(BOBUIest::currentAppName()).contains("testlib"));
 
-    QCOMPARE(QTest::testObject(), nullptr); // last, because it should fail
+    QCOMPARE(BOBUIest::testObject(), nullptr); // last, because it should fail
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTest {
-    // Defined; not declared in the public header, but used by qtdeclarative.
+namespace BOBUIest {
+    // Defined; not declared in the public header, but used by bobuideclarative.
     int defaultKeyDelay();
     int defaultMouseDelay();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_TestLib::delays() const
 {
-    QVERIFY(QTest::defaultMouseDelay() >= 0);
-    QVERIFY(QTest::defaultKeyDelay() >= 0);
+    QVERIFY(BOBUIest::defaultMouseDelay() >= 0);
+    QVERIFY(BOBUIest::defaultKeyDelay() >= 0);
 }
 
 void tst_TestLib::reals_data() const
 {
-    QTest::addColumn<double>("actual");
-    QTest::addColumn<double>("expected");
+    BOBUIest::addColumn<double>("actual");
+    BOBUIest::addColumn<double>("expected");
 
-    QTest::newRow("zero") << 0.0 << 0.0;
-#define ADDROW(func) QTest::addRow("self-%s", #func) << func() << func()
+    BOBUIest::newRow("zero") << 0.0 << 0.0;
+#define ADDROW(func) BOBUIest::addRow("self-%s", #func) << func() << func()
     ADDROW(qQNaN);
     ADDROW(qInf);
 #undef ADDROW // Just used so as to exercise addRow()
-    QTest::newRow("infineg") << -qInf() << -qInf();
-    QTest::newRow("Sin(turn/4)") << qSin(9 * M_PI_2) << 1.0;
-    QTest::newRow("Cos(turn/2)") << qCos(15 * M_PI) << -1.0;
+    BOBUIest::newRow("infineg") << -qInf() << -qInf();
+    BOBUIest::newRow("Sin(turn/4)") << qSin(9 * M_PI_2) << 1.0;
+    BOBUIest::newRow("Cos(turn/2)") << qCos(15 * M_PI) << -1.0;
 }
 
 void tst_TestLib::reals() const
@@ -79,6 +79,6 @@ void tst_TestLib::reals() const
     QCOMPARE(actual, expected);
 }
 
-QTEST_APPLESS_MAIN(tst_TestLib)
+BOBUIEST_APPLESS_MAIN(tst_TestLib)
 
 #include "tst_testlib.moc"

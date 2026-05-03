@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMOBJECT_P_H
 #define QCOMOBJECT_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
 
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename... TInterfaces>
 struct QComObjectTraits
@@ -35,7 +35,7 @@ struct QComObjectTraits
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 // NOTE: In order to be able to query the intermediate interface, i.e. the one you do not specify in
 // QComObject interface list (TFirstInterface, TInterfaces) but that is a base for any of them
@@ -49,7 +49,7 @@ struct QComObjectTraits
 // ...
 // };
 //
-// namespace QtPrivate {
+// namespace BobUIPrivate {
 //
 // template <>
 // struct QComObjectTraits<IMFSampleGrabberSinkCallback>
@@ -114,7 +114,7 @@ private:
     template <typename TInterface, typename... TRest>
     HRESULT tryQueryInterface(REFIID riid, void **ppvObject)
     {
-        if (QtPrivate::QComObjectTraits<TInterface>::isGuidOf(riid)) {
+        if (BobUIPrivate::QComObjectTraits<TInterface>::isGuidOf(riid)) {
             *ppvObject = static_cast<TInterface *>(this);
             AddRef();
 
@@ -130,7 +130,7 @@ private:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_OS_WIN
 

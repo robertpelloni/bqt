@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QCocoaIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QCocoaIntegrationPlugin
+bobui_internal_add_plugin(QCocoaIntegrationPlugin
     OUTPUT_NAME qcocoa
-    DEFAULT_IF "cocoa" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "cocoa" IN_LIST BOBUI_QPA_PLATFORMS
     PLUGIN_TYPE platforms
     SOURCES
         main.mm
@@ -56,7 +56,7 @@ qt_internal_add_plugin(QCocoaIntegrationPlugin
         qcocoafontdialoghelper.h qcocoafontdialoghelper.mm
         qcocoamessagedialog.h qcocoamessagedialog.mm
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     PRECOMPILED_HEADER
         $<$<COMPILE_LANGUAGE:OBJCXX>:qcocoa_plugin_pch.h>
     LIBRARIES
@@ -70,10 +70,10 @@ qt_internal_add_plugin(QCocoaIntegrationPlugin
         ${FWMetal}
         ${FWQuartzCore}
         ${FWUniformTypeIdentifiers}
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 # compiled as part of qnsview.mm
@@ -92,7 +92,7 @@ set_property(SOURCE
         HEADER_FILE_ONLY TRUE
 )
 
-qt_disable_apple_app_extension_api_only(QCocoaIntegrationPlugin)
+bobui_disable_apple_app_extension_api_only(QCocoaIntegrationPlugin)
 
 # Resources:
 set(qcocoaresources_resource_files
@@ -101,9 +101,9 @@ set(qcocoaresources_resource_files
     "images/waitcursor.png"
 )
 
-qt_internal_add_resource(QCocoaIntegrationPlugin "qcocoaresources"
+bobui_internal_add_resource(QCocoaIntegrationPlugin "qcocoaresources"
     PREFIX
-        "/qt-project.org/mac/cursors"
+        "/bobui-project.org/mac/cursors"
     FILES
         ${qcocoaresources_resource_files}
 )
@@ -116,29 +116,29 @@ endif()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QCocoaIntegrationPlugin CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(QCocoaIntegrationPlugin CONDITION BOBUI_FEATURE_opengl
     SOURCES
         qcocoaglcontext.h qcocoaglcontext.mm
 )
 
-qt_internal_extend_target(QCocoaIntegrationPlugin CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(QCocoaIntegrationPlugin CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         qcocoavulkaninstance.h qcocoavulkaninstance.mm
 )
 
-qt_internal_extend_target(QCocoaIntegrationPlugin CONDITION QT_FEATURE_accessibility
+bobui_internal_extend_target(QCocoaIntegrationPlugin CONDITION BOBUI_FEATURE_accessibility
     SOURCES
         qcocoaaccessibility.h qcocoaaccessibility.mm
         qcocoaaccessibilityelement.h qcocoaaccessibilityelement.mm
 )
 
-qt_internal_extend_target(QCocoaIntegrationPlugin CONDITION QT_FEATURE_sessionmanager
+bobui_internal_extend_target(QCocoaIntegrationPlugin CONDITION BOBUI_FEATURE_sessionmanager
     SOURCES
         qcocoasessionmanager.cpp qcocoasessionmanager.h
 )
 
 # Work around CMake issue 23464
-if(CMAKE_VERSION VERSION_LESS "3.25" AND NOT QT_FEATURE_sessionmanager)
+if(CMAKE_VERSION VERSION_LESS "3.25" AND NOT BOBUI_FEATURE_sessionmanager)
     set_target_properties(QCocoaIntegrationPlugin PROPERTIES
         DISABLE_PRECOMPILE_HEADERS ON
     )

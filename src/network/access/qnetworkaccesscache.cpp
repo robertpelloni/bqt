@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkaccesscache_p.h"
-#include "QtCore/qpointer.h"
-#include "QtCore/qdeadlinetimer.h"
+#include "BobUICore/qpointer.h"
+#include "BobUICore/qdeadlinetimer.h"
 
 //#define DEBUG_ACCESSCACHE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum ExpiryTimeEnum {
     ExpiryTime = 120
@@ -36,7 +36,7 @@ QNetworkAccessCache::CacheableObject::CacheableObject(Options options)
 
 QNetworkAccessCache::CacheableObject::~CacheableObject()
 {
-#if 0 //def QT_DEBUG
+#if 0 //def BOBUI_DEBUG
     if (!key.isEmpty() && Ptr()->hasEntry(key))
         qWarning() << "QNetworkAccessCache: object" << (void*)this << "key" << key
                    << "destroyed without being removed from cache first!";
@@ -172,11 +172,11 @@ void QNetworkAccessCache::updateTimer()
     // Plus 10 msec so we don't spam timer events if date comparisons are too fuzzy.
     // This code used to do (broken) rounding, but for ConnectionCacheExpiryTimeoutSecondsAttribute
     // to work we cannot do this.
-    // See discussion in https://codereview.qt-project.org/c/qt/qtbase/+/337464
+    // See discussion in https://codereview.bobui-project.org/c/bobui/bobuibase/+/337464
     timer.start(interval + 10, this);
 }
 
-void QNetworkAccessCache::timerEvent(QTimerEvent *)
+void QNetworkAccessCache::timerEvent(BOBUIimerEvent *)
 {
     while (firstExpiringNode && firstExpiringNode->timer.hasExpired()) {
         Node *next = firstExpiringNode->next;
@@ -294,6 +294,6 @@ void QNetworkAccessCache::removeEntry(const QByteArray &key)
     delete node;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkaccesscache_p.cpp"

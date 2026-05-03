@@ -1,13 +1,13 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsignalspy.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QSignalSpy
-    \inmodule QtTest
+    \inmodule BobUITest
 
     \brief The QSignalSpy class enables introspection of signal emission.
 
@@ -88,7 +88,7 @@ QT_BEGIN_NAMESPACE
     will be output using qWarning() and subsequent calls to \c isValid() will
     return false.
 
-    This constructor is convenient to use when Qt's meta-object system is
+    This constructor is convenient to use when BobUI's meta-object system is
     heavily used in a test.
 
     Basic usage example:
@@ -240,7 +240,7 @@ class QSignalSpyPrivate : public QObject
 public:
     explicit QSignalSpyPrivate(QSignalSpy *qq) : q(qq) {}
 
-    int qt_metacall(QMetaObject::Call call, int methodId, void **a) override;
+    int bobui_metacall(QMetaObject::Call call, int methodId, void **a) override;
 };
 
 QSignalSpy::QSignalSpy(ObjectSignal os)
@@ -255,7 +255,7 @@ QSignalSpy::QSignalSpy(ObjectSignal os)
     const auto signalIndex = os.sig.methodIndex();
     const auto slotIndex = QObject::staticMetaObject.methodCount();
     if (!QMetaObject::connect(os.obj, signalIndex,
-                              i.get(), slotIndex, Qt::DirectConnection)) {
+                              i.get(), slotIndex, BobUI::DirectConnection)) {
         qWarning("QSignalSpy: QMetaObject::connect returned false. Unable to connect.");
         return;
     }
@@ -293,9 +293,9 @@ void QSignalSpy::appendArgs(void **a)
     \reimp
     \internal
 */
-int QSignalSpyPrivate::qt_metacall(QMetaObject::Call call, int methodId, void **a)
+int QSignalSpyPrivate::bobui_metacall(QMetaObject::Call call, int methodId, void **a)
 {
-    methodId = QObject::qt_metacall(call, methodId, a);
+    methodId = QObject::bobui_metacall(call, methodId, a);
     if (methodId < 0)
         return methodId;
 
@@ -308,4 +308,4 @@ int QSignalSpyPrivate::qt_metacall(QMetaObject::Call call, int methodId, void **
     return methodId;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

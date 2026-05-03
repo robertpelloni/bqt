@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qdir Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qdir LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
@@ -76,27 +76,27 @@ set(android_testdata_resource_files
 
 
 if (WASM)
-    qt_internal_add_test(tst_qdir
+    bobui_internal_add_test(tst_qdir
         SOURCES
             tst_qdir.cpp
         LIBRARIES
-            Qt::CorePrivate
-            Qt::TestPrivate
+            BobUI::CorePrivate
+            BobUI::TestPrivate
         TESTDATA
     )
-    qt_internal_add_resource(tst_qdir "tst_qdir"
+    bobui_internal_add_resource(tst_qdir "tst_qdir"
         PREFIX
             "/tst_qdir"
         FILES
             ${test_data_files}
     )
 elseif (ANDROID)
-    qt_internal_add_test(tst_qdir
+    bobui_internal_add_test(tst_qdir
         SOURCES
             tst_qdir.cpp
         LIBRARIES
-            Qt::CorePrivate
-            Qt::TestPrivate
+            BobUI::CorePrivate
+            BobUI::TestPrivate
         TESTDATA ${test_data_dirs}
     )
 
@@ -105,14 +105,14 @@ elseif (ANDROID)
         "resources/entryList/"
     )
 
-    qt_internal_add_resource(tst_qdir "qdir"
+    bobui_internal_add_resource(tst_qdir "qdir"
         PREFIX
             "/tst_qdir/"
         FILES
             ${qdir_resource_files}
     )
 
-    qt_internal_add_resource(tst_qdir "android_testdata"
+    bobui_internal_add_resource(tst_qdir "android_testdata"
         PREFIX
             "/android_testdata"
         FILES
@@ -121,12 +121,12 @@ elseif (ANDROID)
 
 else()
 
-    qt_internal_add_test(tst_qdir
+    bobui_internal_add_test(tst_qdir
         SOURCES
             tst_qdir.cpp
         LIBRARIES
-            Qt::CorePrivate
-            Qt::TestPrivate
+            BobUI::CorePrivate
+            BobUI::TestPrivate
         TESTDATA ${test_data_dirs}
     )
 
@@ -135,7 +135,7 @@ else()
         "resources/entryList/"
     )
 
-    qt_internal_add_resource(tst_qdir "qdir"
+    bobui_internal_add_resource(tst_qdir "qdir"
         PREFIX
             "/tst_qdir/"
         FILES
@@ -146,7 +146,7 @@ endif()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qdir CONDITION CONFIG___contains___builtin_testdata
+bobui_internal_extend_target(tst_qdir CONDITION CONFIG___contains___builtin_testdata
     DEFINES
         BUILTIN_TESTDATA
 )

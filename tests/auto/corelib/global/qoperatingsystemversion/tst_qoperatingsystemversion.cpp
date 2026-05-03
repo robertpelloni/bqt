@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qoperatingsystemversion.h>
 
 class tst_QOperatingSystemVersion : public QObject
@@ -28,16 +28,16 @@ private slots:
 
 void tst_QOperatingSystemVersion::construction_data()
 {
-    QTest::addColumn<QOperatingSystemVersion::OSType>("osType");
-    QTest::addColumn<int>("majorVersion");
-    QTest::addColumn<int>("minorVersion");
-    QTest::addColumn<int>("microVersion");
-    QTest::addColumn<int>("segmentCount");
+    BOBUIest::addColumn<QOperatingSystemVersion::OSType>("osType");
+    BOBUIest::addColumn<int>("majorVersion");
+    BOBUIest::addColumn<int>("minorVersion");
+    BOBUIest::addColumn<int>("microVersion");
+    BOBUIest::addColumn<int>("segmentCount");
 
-    QTest::newRow("Major only") << QOperatingSystemVersion::OSType::Windows << 1 << -1 << -1 << 1;
-    QTest::newRow("Major and minor") << QOperatingSystemVersion::OSType::MacOS
+    BOBUIest::newRow("Major only") << QOperatingSystemVersion::OSType::Windows << 1 << -1 << -1 << 1;
+    BOBUIest::newRow("Major and minor") << QOperatingSystemVersion::OSType::MacOS
                                      << 1 << 2 << -1 << 2;
-    QTest::newRow("Major, minor and micro") << QOperatingSystemVersion::OSType::Android
+    BOBUIest::newRow("Major, minor and micro") << QOperatingSystemVersion::OSType::Android
                                             << 1 << 2 << 3 << 3;
 }
 
@@ -61,10 +61,10 @@ void tst_QOperatingSystemVersion::construction()
 
 void tst_QOperatingSystemVersion::globals_data()
 {
-    QTest::addColumn<QOperatingSystemVersion>("osver");
-    QTest::addColumn<QOperatingSystemVersion::OSType>("osType");
+    BOBUIest::addColumn<QOperatingSystemVersion>("osver");
+    BOBUIest::addColumn<QOperatingSystemVersion::OSType>("osType");
 
-#define ADDROW(os)  QTest::newRow(#os) << QOperatingSystemVersion(QOperatingSystemVersion::os)
+#define ADDROW(os)  BOBUIest::newRow(#os) << QOperatingSystemVersion(QOperatingSystemVersion::os)
     // legacy ones (global variables)
     ADDROW(Windows7) << QOperatingSystemVersion::Windows;
     ADDROW(Windows10) << QOperatingSystemVersion::Windows;
@@ -107,54 +107,54 @@ void tst_QOperatingSystemVersion::anyOf()
 
 void tst_QOperatingSystemVersion::comparison_data()
 {
-    QTest::addColumn<QOperatingSystemVersion::OSType>("lhsType");
-    QTest::addColumn<int>("lhsMajor");
-    QTest::addColumn<int>("lhsMinor");
-    QTest::addColumn<int>("lhsMicro");
+    BOBUIest::addColumn<QOperatingSystemVersion::OSType>("lhsType");
+    BOBUIest::addColumn<int>("lhsMajor");
+    BOBUIest::addColumn<int>("lhsMinor");
+    BOBUIest::addColumn<int>("lhsMicro");
 
-    QTest::addColumn<QOperatingSystemVersion::OSType>("rhsType");
-    QTest::addColumn<int>("rhsMajor");
-    QTest::addColumn<int>("rhsMinor");
-    QTest::addColumn<int>("rhsMicro");
+    BOBUIest::addColumn<QOperatingSystemVersion::OSType>("rhsType");
+    BOBUIest::addColumn<int>("rhsMajor");
+    BOBUIest::addColumn<int>("rhsMinor");
+    BOBUIest::addColumn<int>("rhsMicro");
 
-    QTest::addColumn<Qt::partial_ordering>("expectedResult");
+    BOBUIest::addColumn<BobUI::partial_ordering>("expectedResult");
 
-    QTest::addRow("mismatching types") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
+    BOBUIest::addRow("mismatching types") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
                                        << QOperatingSystemVersion::OSType::MacOS << 1 << 2 << 3
-                                       << Qt::partial_ordering::unordered;
+                                       << BobUI::partial_ordering::unordered;
 
-    QTest::addRow("equal versions") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
+    BOBUIest::addRow("equal versions") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
                                     << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
-                                    << Qt::partial_ordering::equivalent;
+                                    << BobUI::partial_ordering::equivalent;
 
-    QTest::addRow("lhs micro less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 2
+    BOBUIest::addRow("lhs micro less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 2
                                     << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
-                                    << Qt::partial_ordering::less;
+                                    << BobUI::partial_ordering::less;
 
-    QTest::addRow("rhs micro less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 2
+    BOBUIest::addRow("rhs micro less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 2
                                     << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 1
-                                    << Qt::partial_ordering::greater;
+                                    << BobUI::partial_ordering::greater;
 
-    QTest::addRow("lhs minor less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
+    BOBUIest::addRow("lhs minor less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
                                     << QOperatingSystemVersion::OSType::Windows << 1 << 3 << 3
-                                    << Qt::partial_ordering::less;
+                                    << BobUI::partial_ordering::less;
 
-    QTest::addRow("rhs minor less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 2
+    BOBUIest::addRow("rhs minor less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 2
                                     << QOperatingSystemVersion::OSType::Windows << 1 << 1 << 3
-                                    << Qt::partial_ordering::greater;
+                                    << BobUI::partial_ordering::greater;
 
-    QTest::addRow("lhs major less") << QOperatingSystemVersion::OSType::Windows << 0 << 5 << 6
+    BOBUIest::addRow("lhs major less") << QOperatingSystemVersion::OSType::Windows << 0 << 5 << 6
                                     << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
-                                    << Qt::partial_ordering::less;
+                                    << BobUI::partial_ordering::less;
 
-    QTest::addRow("rhs major less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
+    BOBUIest::addRow("rhs major less") << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
                                     << QOperatingSystemVersion::OSType::Windows << 0 << 2 << 3
-                                    << Qt::partial_ordering::greater;
+                                    << BobUI::partial_ordering::greater;
 
-    QTest::addRow("different segmentCount")
+    BOBUIest::addRow("different segmentCount")
             << QOperatingSystemVersion::OSType::Windows << 1 << 2 << 3
             << QOperatingSystemVersion::OSType::Windows << 1 << 2 << -1
-            << Qt::partial_ordering::equivalent;
+            << BobUI::partial_ordering::equivalent;
 }
 
 void tst_QOperatingSystemVersion::comparison()
@@ -173,7 +173,7 @@ void tst_QOperatingSystemVersion::comparison()
 
     const QOperatingSystemVersion rhsSystemInfo(rhsType, rhsMajor, rhsMinor, rhsMicro);
 
-    QFETCH(const Qt::partial_ordering, expectedResult);
+    QFETCH(const BobUI::partial_ordering, expectedResult);
 
     QCOMPARE_EQ(lhsSystemInfo < rhsSystemInfo, is_lt(expectedResult));
     QCOMPARE_EQ(lhsSystemInfo <= rhsSystemInfo, is_lteq(expectedResult));
@@ -186,41 +186,41 @@ void tst_QOperatingSystemVersion::comparison()
 
 void tst_QOperatingSystemVersion::comparison2_data()
 {
-    QTest::addColumn<QOperatingSystemVersion>("lhs");
-    QTest::addColumn<QOperatingSystemVersion>("rhs");
-    QTest::addColumn<Qt::partial_ordering>("result");
+    BOBUIest::addColumn<QOperatingSystemVersion>("lhs");
+    BOBUIest::addColumn<QOperatingSystemVersion>("rhs");
+    BOBUIest::addColumn<BobUI::partial_ordering>("result");
 
 #define ADDROW(os1, os2)    \
-    QTest::newRow(#os1 "-vs-" #os2) << QOperatingSystemVersion(QOperatingSystemVersion::os1) \
+    BOBUIest::newRow(#os1 "-vs-" #os2) << QOperatingSystemVersion(QOperatingSystemVersion::os1) \
                                     << QOperatingSystemVersion(QOperatingSystemVersion::os2)
 
     // Cross-OS testing: not comparables.
-    ADDROW(Windows10, MacOSMonterey) << Qt::partial_ordering::unordered;
-    ADDROW(Windows11, MacOSMonterey) << Qt::partial_ordering::unordered;
-    ADDROW(MacOSMonterey, Windows10) << Qt::partial_ordering::unordered;
-    ADDROW(MacOSMonterey, Windows11) << Qt::partial_ordering::unordered;
-    ADDROW(Windows10, MacOSVentura) << Qt::partial_ordering::unordered;
-    ADDROW(Windows11, MacOSVentura) << Qt::partial_ordering::unordered;
-    ADDROW(MacOSVentura, Windows10) << Qt::partial_ordering::unordered;
-    ADDROW(MacOSVentura, Windows11) << Qt::partial_ordering::unordered;
-    ADDROW(Windows10, Android10) << Qt::partial_ordering::unordered;
-    ADDROW(Windows11, Android11) << Qt::partial_ordering::unordered;
+    ADDROW(Windows10, MacOSMonterey) << BobUI::partial_ordering::unordered;
+    ADDROW(Windows11, MacOSMonterey) << BobUI::partial_ordering::unordered;
+    ADDROW(MacOSMonterey, Windows10) << BobUI::partial_ordering::unordered;
+    ADDROW(MacOSMonterey, Windows11) << BobUI::partial_ordering::unordered;
+    ADDROW(Windows10, MacOSVentura) << BobUI::partial_ordering::unordered;
+    ADDROW(Windows11, MacOSVentura) << BobUI::partial_ordering::unordered;
+    ADDROW(MacOSVentura, Windows10) << BobUI::partial_ordering::unordered;
+    ADDROW(MacOSVentura, Windows11) << BobUI::partial_ordering::unordered;
+    ADDROW(Windows10, Android10) << BobUI::partial_ordering::unordered;
+    ADDROW(Windows11, Android11) << BobUI::partial_ordering::unordered;
 
     // Same-OS tests. This list does not have to be exhaustive.
-    ADDROW(Windows7, Windows7) << Qt::partial_ordering::equivalent;
-    ADDROW(Windows7, Windows8) << Qt::partial_ordering::less;
-    ADDROW(Windows8, Windows7) << Qt::partial_ordering::greater;
-    ADDROW(Windows8, Windows10) << Qt::partial_ordering::less;
-    ADDROW(Windows10, Windows8) << Qt::partial_ordering::greater;
-    ADDROW(Windows10, Windows10_21H1) << Qt::partial_ordering::less;
-    ADDROW(Windows10_21H1, Windows10) << Qt::partial_ordering::greater;
-    ADDROW(Windows10, Windows11) << Qt::partial_ordering::less;
-    ADDROW(MacOSCatalina, MacOSCatalina) << Qt::partial_ordering::equivalent;
-    ADDROW(MacOSCatalina, MacOSBigSur) << Qt::partial_ordering::less;
-    ADDROW(MacOSBigSur, MacOSCatalina) << Qt::partial_ordering::greater;
-    ADDROW(MacOSMonterey, MacOSVentura) << Qt::partial_ordering::less;
-    ADDROW(MacOSVentura, MacOSVentura) << Qt::partial_ordering::equivalent;
-    ADDROW(MacOSVentura, MacOSMonterey) << Qt::partial_ordering::greater;
+    ADDROW(Windows7, Windows7) << BobUI::partial_ordering::equivalent;
+    ADDROW(Windows7, Windows8) << BobUI::partial_ordering::less;
+    ADDROW(Windows8, Windows7) << BobUI::partial_ordering::greater;
+    ADDROW(Windows8, Windows10) << BobUI::partial_ordering::less;
+    ADDROW(Windows10, Windows8) << BobUI::partial_ordering::greater;
+    ADDROW(Windows10, Windows10_21H1) << BobUI::partial_ordering::less;
+    ADDROW(Windows10_21H1, Windows10) << BobUI::partial_ordering::greater;
+    ADDROW(Windows10, Windows11) << BobUI::partial_ordering::less;
+    ADDROW(MacOSCatalina, MacOSCatalina) << BobUI::partial_ordering::equivalent;
+    ADDROW(MacOSCatalina, MacOSBigSur) << BobUI::partial_ordering::less;
+    ADDROW(MacOSBigSur, MacOSCatalina) << BobUI::partial_ordering::greater;
+    ADDROW(MacOSMonterey, MacOSVentura) << BobUI::partial_ordering::less;
+    ADDROW(MacOSVentura, MacOSVentura) << BobUI::partial_ordering::equivalent;
+    ADDROW(MacOSVentura, MacOSMonterey) << BobUI::partial_ordering::greater;
 #undef ADDROW
 }
 
@@ -228,14 +228,14 @@ void tst_QOperatingSystemVersion::comparison2()
 {
     QFETCH(QOperatingSystemVersion, lhs);
     QFETCH(QOperatingSystemVersion, rhs);
-    QFETCH(const Qt::partial_ordering, result);
+    QFETCH(const BobUI::partial_ordering, result);
 
-    QEXPECT_FAIL("Windows10-vs-Windows10_21H1", "QTBUG-107907: Unexpected behavior", Abort);
-    QEXPECT_FAIL("Windows10-vs-Windows11", "QTBUG-107907: Unexpected behavior", Abort);
+    QEXPECT_FAIL("Windows10-vs-Windows10_21H1", "BOBUIBUG-107907: Unexpected behavior", Abort);
+    QEXPECT_FAIL("Windows10-vs-Windows11", "BOBUIBUG-107907: Unexpected behavior", Abort);
 
-    const bool comparable = (result != Qt::partial_ordering::unordered);
+    const bool comparable = (result != BobUI::partial_ordering::unordered);
     QCOMPARE_EQ(lhs < rhs, is_lt(result) && comparable);
-    QEXPECT_FAIL("Windows10_21H1-vs-Windows10", "QTBUG-107907: Unexpected behavior", Abort);
+    QEXPECT_FAIL("Windows10_21H1-vs-Windows10", "BOBUIBUG-107907: Unexpected behavior", Abort);
     QCOMPARE_EQ(lhs <= rhs, is_lteq(result) && comparable);
     QCOMPARE_EQ(lhs > rhs, is_gt(result) && comparable);
     QCOMPARE_EQ(lhs >= rhs, is_gteq(result) && comparable);
@@ -255,25 +255,25 @@ void tst_QOperatingSystemVersion::mixedComparison()
 
 void tst_QOperatingSystemVersion::constantsSemantics_data()
 {
-    QTest::addColumn<QOperatingSystemVersionBase>("referenceVersion");
-    QTest::addColumn<int>("segmentCount");
+    BOBUIest::addColumn<QOperatingSystemVersionBase>("referenceVersion");
+    BOBUIest::addColumn<int>("segmentCount");
 
     // OSX/macOS 10.x
-    QTest::newRow("Mavericks") << QOperatingSystemVersionBase(QOperatingSystemVersion::OSXMavericks) << 2;
-    QTest::newRow("Yosemite") << QOperatingSystemVersionBase(QOperatingSystemVersion::OSXYosemite) << 2;
-    QTest::newRow("El Capitan") << QOperatingSystemVersionBase(QOperatingSystemVersion::OSXElCapitan) << 2;
-    QTest::newRow("Sierra") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSSierra) << 2;
-    QTest::newRow("High Sierra") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSHighSierra) << 2;
-    QTest::newRow("Mojave") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSMojave) << 2;
-    QTest::newRow("Catalina") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSCatalina) << 2;
+    BOBUIest::newRow("Mavericks") << QOperatingSystemVersionBase(QOperatingSystemVersion::OSXMavericks) << 2;
+    BOBUIest::newRow("Yosemite") << QOperatingSystemVersionBase(QOperatingSystemVersion::OSXYosemite) << 2;
+    BOBUIest::newRow("El Capitan") << QOperatingSystemVersionBase(QOperatingSystemVersion::OSXElCapitan) << 2;
+    BOBUIest::newRow("Sierra") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSSierra) << 2;
+    BOBUIest::newRow("High Sierra") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSHighSierra) << 2;
+    BOBUIest::newRow("Mojave") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSMojave) << 2;
+    BOBUIest::newRow("Catalina") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSCatalina) << 2;
 
     // macOS 11+
-    QTest::newRow("Big Sur") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSBigSur) << 1;
-    QTest::newRow("Monterey") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSMonterey) << 1;
-    QTest::newRow("Ventura") << QOperatingSystemVersion::MacOSVentura << 1;
-    QTest::newRow("Sonoma") << QOperatingSystemVersion::MacOSSonoma << 1;
-    QTest::newRow("Sequoia") << QOperatingSystemVersion::MacOSSequoia << 1;
-    QTest::newRow("Tahoe") << QOperatingSystemVersion::MacOSTahoe << 1;
+    BOBUIest::newRow("Big Sur") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSBigSur) << 1;
+    BOBUIest::newRow("Monterey") << QOperatingSystemVersionBase(QOperatingSystemVersion::MacOSMonterey) << 1;
+    BOBUIest::newRow("Ventura") << QOperatingSystemVersion::MacOSVentura << 1;
+    BOBUIest::newRow("Sonoma") << QOperatingSystemVersion::MacOSSonoma << 1;
+    BOBUIest::newRow("Sequoia") << QOperatingSystemVersion::MacOSSequoia << 1;
+    BOBUIest::newRow("Tahoe") << QOperatingSystemVersion::MacOSTahoe << 1;
 }
 
 void tst_QOperatingSystemVersion::constantsSemantics()
@@ -309,5 +309,5 @@ void tst_QOperatingSystemVersion::constantsSemantics()
     }
 }
 
-QTEST_MAIN(tst_QOperatingSystemVersion)
+BOBUIEST_MAIN(tst_QOperatingSystemVersion)
 #include "tst_qoperatingsystemversion.moc"

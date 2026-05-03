@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef SCROLLER_P_H
 #define SCROLLER_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,7 +16,7 @@
 //
 
 #include <QPoint>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QElapsedTimer>
 
 #include "scroller.h"
@@ -47,7 +47,7 @@ public:
     State m_state;
     QElapsedTimer m_lastCursorTime;
     QElapsedTimer m_lastFrameTime;
-    QTimer m_scrollTimer;
+    BOBUIimer m_scrollTimer;
     int m_scrollSlowAccum;
 
 private Q_SLOTS:

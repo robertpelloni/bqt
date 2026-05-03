@@ -1,13 +1,13 @@
 // Copyright (C) 2013 Ruslan Nigmatullin <euroelessar@yandex.ru>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #ifndef QMESSAGEAUTHENTICATIONCODE_H
 #define QMESSAGEAUTHENTICATIONCODE_H
 
-#include <QtCore/qcryptographichash.h>
+#include <BobUICore/qcryptographichash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QMessageAuthenticationCodePrivate;
@@ -17,7 +17,7 @@ class QIODevice;
 class Q_CORE_EXPORT QMessageAuthenticationCode
 {
 public:
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     explicit QMessageAuthenticationCode(QCryptographicHash::Algorithm method,
                                         const QByteArray &key);
 #endif
@@ -28,19 +28,19 @@ public:
         : d{std::exchange(other.d, nullptr)} {}
     ~QMessageAuthenticationCode();
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMessageAuthenticationCode)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMessageAuthenticationCode)
     void swap(QMessageAuthenticationCode &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
     void reset() noexcept;
 
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     void setKey(const QByteArray &key);
 #endif
     void setKey(QByteArrayView key) noexcept;
 
     void addData(const char *data, qsizetype length);
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     void addData(const QByteArray &data);
 #endif
     void addData(QByteArrayView data) noexcept;
@@ -49,7 +49,7 @@ public:
     QByteArrayView resultView() const noexcept;
     QByteArray result() const;
 
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     static QByteArray hash(const QByteArray &message, const QByteArray &key,
                            QCryptographicHash::Algorithm method);
 #endif
@@ -85,6 +85,6 @@ private:
     QMessageAuthenticationCodePrivate *d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

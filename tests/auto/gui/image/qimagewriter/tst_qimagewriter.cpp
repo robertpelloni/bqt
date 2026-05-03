@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
 #include <QFile>
 #include <QImage>
@@ -9,8 +9,8 @@
 #include <QImageWriter>
 #include <QPainter>
 #include <QSet>
-#include <QTemporaryDir>
-#include <QTemporaryFile>
+#include <BOBUIemporaryDir>
+#include <BOBUIemporaryFile>
 #include <QSaveFile>
 
 #ifdef Q_OS_UNIX // for geteuid()
@@ -60,7 +60,7 @@ private slots:
     void writeEmpty();
 
 private:
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
     QString prefix;
     QString writePrefix;
 };
@@ -129,19 +129,19 @@ void tst_QImageWriter::getSetCheck()
 
 void tst_QImageWriter::writeImage_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("lossy");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<bool>("lossy");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("BMP: colorful") << QString("colorful.bmp") << false << QByteArray("bmp");
-    QTest::newRow("BMP: font") << QString("font.bmp") << false << QByteArray("bmp");
-    QTest::newRow("XPM: marble") << QString("marble.xpm") << false << QByteArray("xpm");
-    QTest::newRow("PNG: kollada") << QString("kollada.png") << false << QByteArray("png");
-    QTest::newRow("PPM: teapot") << QString("teapot.ppm") << false << QByteArray("ppm");
-    QTest::newRow("PBM: ship63") << QString("ship63.pbm") << true << QByteArray("pbm");
-    QTest::newRow("XBM: gnus") << QString("gnus.xbm") << false << QByteArray("xbm");
-    QTest::newRow("JPEG: beavis") << QString("beavis.jpg") << true << QByteArray("jpeg");
-    QTest::newRow("ICO: App") << QString("App.ico") << true << QByteArray("ico");
+    BOBUIest::newRow("BMP: colorful") << QString("colorful.bmp") << false << QByteArray("bmp");
+    BOBUIest::newRow("BMP: font") << QString("font.bmp") << false << QByteArray("bmp");
+    BOBUIest::newRow("XPM: marble") << QString("marble.xpm") << false << QByteArray("xpm");
+    BOBUIest::newRow("PNG: kollada") << QString("kollada.png") << false << QByteArray("png");
+    BOBUIest::newRow("PPM: teapot") << QString("teapot.ppm") << false << QByteArray("ppm");
+    BOBUIest::newRow("PBM: ship63") << QString("ship63.pbm") << true << QByteArray("pbm");
+    BOBUIest::newRow("XBM: gnus") << QString("gnus.xbm") << false << QByteArray("xbm");
+    BOBUIest::newRow("JPEG: beavis") << QString("beavis.jpg") << true << QByteArray("jpeg");
+    BOBUIest::newRow("ICO: App") << QString("App.ico") << true << QByteArray("ico");
 }
 
 void tst_QImageWriter::writeImage()
@@ -198,9 +198,9 @@ void tst_QImageWriter::writeImage()
 
 void tst_QImageWriter::writeImage2_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
-    QTest::addColumn<QImage>("image");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QImage>("image");
 
     static const QLatin1String formats[] = {
         QLatin1String("bmp"),
@@ -212,7 +212,7 @@ void tst_QImageWriter::writeImage2_data()
     };
 
     QImage image0(70, 70, QImage::Format_RGB32);
-    image0.fill(QColor(Qt::red).rgb());
+    image0.fill(QColor(BobUI::red).rgb());
 
     QImage::Format imgFormat = QImage::Format_Mono;
     while (imgFormat != QImage::NImageFormats) {
@@ -221,7 +221,7 @@ void tst_QImageWriter::writeImage2_data()
         for (QLatin1String format : formats) {
             const QString fileName = QLatin1String("solidcolor_")
                 + QString::number(imgFormat) + QLatin1Char('.') + format;
-            QTest::newRow(fileName.toLatin1()) << writePrefix + fileName
+            BOBUIest::newRow(fileName.toLatin1()) << writePrefix + fileName
                                                << QByteArray(format.data(), format.size())
                                                << image;
         }
@@ -368,7 +368,7 @@ void tst_QImageWriter::testCanWrite()
 
     {
         // check if canWrite won't leave an empty file
-        QTemporaryDir dir;
+        BOBUIemporaryDir dir;
         QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
         QString fileName(dir.path() + QLatin1String("/001.garble"));
         QVERIFY(!QFileInfo(fileName).exists());
@@ -381,10 +381,10 @@ void tst_QImageWriter::testCanWrite()
 
 void tst_QImageWriter::supportsOption_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QIntList>("options");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QIntList>("options");
 
-    QTest::newRow("png") << QString("gen-black.png")
+    BOBUIest::newRow("png") << QString("gen-black.png")
                          << (QIntList() << QImageIOHandler::Gamma
                               << QImageIOHandler::Description
                               << QImageIOHandler::Quality
@@ -394,7 +394,7 @@ void tst_QImageWriter::supportsOption_data()
 
 void tst_QImageWriter::supportsOption()
 {
-    SKIP_IF_UNSUPPORTED(QTest::currentDataTag());
+    SKIP_IF_UNSUPPORTED(BOBUIest::currentDataTag());
 
     QFETCH(QString, fileName);
     QFETCH(QIntList, options);
@@ -424,17 +424,17 @@ void tst_QImageWriter::supportsOption()
 
 void tst_QImageWriter::saveWithNoFormat_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
-    QTest::addColumn<QImageWriter::ImageWriterError>("error");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QImageWriter::ImageWriterError>("error");
 
-    QTest::newRow("garble") << writePrefix + QString("gen-out.garble") << QByteArray("jpeg") << QImageWriter::UnsupportedFormatError;
-    QTest::newRow("bmp") << writePrefix + QString("gen-out.bmp") << QByteArray("bmp") << QImageWriter::ImageWriterError(0);
-    QTest::newRow("xbm") << writePrefix + QString("gen-out.xbm") << QByteArray("xbm") << QImageWriter::ImageWriterError(0);
-    QTest::newRow("xpm") << writePrefix + QString("gen-out.xpm") << QByteArray("xpm") << QImageWriter::ImageWriterError(0);
-    QTest::newRow("png") << writePrefix + QString("gen-out.png") << QByteArray("png") << QImageWriter::ImageWriterError(0);
-    QTest::newRow("ppm") << writePrefix + QString("gen-out.ppm") << QByteArray("ppm") << QImageWriter::ImageWriterError(0);
-    QTest::newRow("pbm") << writePrefix + QString("gen-out.pbm") << QByteArray("pbm") << QImageWriter::ImageWriterError(0);
+    BOBUIest::newRow("garble") << writePrefix + QString("gen-out.garble") << QByteArray("jpeg") << QImageWriter::UnsupportedFormatError;
+    BOBUIest::newRow("bmp") << writePrefix + QString("gen-out.bmp") << QByteArray("bmp") << QImageWriter::ImageWriterError(0);
+    BOBUIest::newRow("xbm") << writePrefix + QString("gen-out.xbm") << QByteArray("xbm") << QImageWriter::ImageWriterError(0);
+    BOBUIest::newRow("xpm") << writePrefix + QString("gen-out.xpm") << QByteArray("xpm") << QImageWriter::ImageWriterError(0);
+    BOBUIest::newRow("png") << writePrefix + QString("gen-out.png") << QByteArray("png") << QImageWriter::ImageWriterError(0);
+    BOBUIest::newRow("ppm") << writePrefix + QString("gen-out.ppm") << QByteArray("ppm") << QImageWriter::ImageWriterError(0);
+    BOBUIest::newRow("pbm") << writePrefix + QString("gen-out.pbm") << QByteArray("pbm") << QImageWriter::ImageWriterError(0);
 }
 
 void tst_QImageWriter::saveWithNoFormat()
@@ -473,7 +473,7 @@ void tst_QImageWriter::saveToTemporaryFile()
 
     {
         // 1) Via QImageWriter's API, with a standard temp file name
-        QTemporaryFile file;
+        BOBUIemporaryFile file;
         QVERIFY2(file.open(), qPrintable(file.errorString()));
         QImageWriter writer(&file, "PNG");
         if (writer.canWrite())
@@ -484,7 +484,7 @@ void tst_QImageWriter::saveToTemporaryFile()
     }
     {
         // 2) Via QImage's API, with a standard temp file name
-        QTemporaryFile file;
+        BOBUIemporaryFile file;
         QVERIFY2(file.open(), qPrintable(file.errorString()));
         QVERIFY(image.save(&file, "PNG"));
         file.reset();
@@ -494,7 +494,7 @@ void tst_QImageWriter::saveToTemporaryFile()
     }
     {
         // 3) Via QImageWriter's API, with a named temp file
-        QTemporaryFile file(writePrefix + QLatin1String("tempXXXXXX"));
+        BOBUIemporaryFile file(writePrefix + QLatin1String("tempXXXXXX"));
         QVERIFY2(file.open(), qPrintable(file.errorString()));
         QImageWriter writer(&file, "PNG");
         QVERIFY(writer.write(image));
@@ -502,7 +502,7 @@ void tst_QImageWriter::saveToTemporaryFile()
     }
     {
         // 4) Via QImage's API, with a named temp file
-        QTemporaryFile file(writePrefix + QLatin1String("tempXXXXXX"));
+        BOBUIemporaryFile file(writePrefix + QLatin1String("tempXXXXXX"));
         QVERIFY2(file.open(), qPrintable(file.errorString()));
         QVERIFY(image.save(&file, "PNG"));
         file.reset();
@@ -568,7 +568,7 @@ void tst_QImageWriter::saveToSaveFile()
 void tst_QImageWriter::writeEmpty()
 {
     // check writing a null QImage errors gracefully
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
     QString fileName(dir.path() + QLatin1String("/testimage.bmp"));
     QVERIFY(!QFileInfo(fileName).exists());
@@ -578,5 +578,5 @@ void tst_QImageWriter::writeEmpty()
     QVERIFY(!QFileInfo(fileName).exists());
 }
 
-QTEST_MAIN(tst_QImageWriter)
+BOBUIEST_MAIN(tst_QImageWriter)
 #include "tst_qimagewriter.moc"

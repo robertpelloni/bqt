@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalserver.h"
 #include "qlocalserver_p.h"
 #include "qlocalsocket.h"
 #include "qlocalsocket_p.h"
 #include "qnet_unix_p.h"
-#include "qtemporarydir.h"
+#include "bobuiemporarydir.h"
 
 #include <stddef.h>
 #include <sys/socket.h>
@@ -23,9 +23,9 @@
 #  include <selectLib.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 QLocalServer::SocketOptions optionsForPlatform(QLocalServer::SocketOptions srcOptions)
@@ -82,7 +82,7 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
 
     QByteArray encodedTempPath;
     const QByteArray encodedFullServerName = QFile::encodeName(fullServerName);
-    std::optional<QTemporaryDir> tempDir;
+    std::optional<BOBUIemporaryDir> tempDir;
 
     if (options & QLocalServer::WorldAccessOption) {
         QFileInfo serverNameFileInfo(fullServerName);
@@ -95,7 +95,7 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
     }
 
     // create the unix socket
-    listenSocket = qt_safe_socket(PF_UNIX, SOCK_STREAM, 0);
+    listenSocket = bobui_safe_socket(PF_UNIX, SOCK_STREAM, 0);
     if (-1 == listenSocket) {
         setError("QLocalServer::listen"_L1);
         closeServer();
@@ -117,7 +117,7 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
         return false;
     }
 
-    QT_SOCKLEN_T addrSize = sizeof(::sockaddr_un);
+    BOBUI_SOCKLEN_T addrSize = sizeof(::sockaddr_un);
     if (options.testFlag(QLocalServer::AbstractNamespaceOption)) {
         // Abstract socket address is distinguished by the fact
         // that sun_path[0] is a null byte ('\0')
@@ -138,11 +138,11 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
     }
 
     // bind
-    if (-1 == QT_SOCKET_BIND(listenSocket, (sockaddr *)&addr, addrSize)) {
+    if (-1 == BOBUI_SOCKET_BIND(listenSocket, (sockaddr *)&addr, addrSize)) {
         setError("QLocalServer::listen"_L1);
         // if address is in use already, just close the socket, but do not delete the file
         if (errno == EADDRINUSE)
-            QT_CLOSE(listenSocket);
+            BOBUI_CLOSE(listenSocket);
         // otherwise, close the socket and delete the file
         else
             closeServer();
@@ -151,7 +151,7 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
     }
 
     // listen for connections
-    if (-1 == qt_safe_listen(listenSocket, listenBacklog)) {
+    if (-1 == bobui_safe_listen(listenSocket, listenBacklog)) {
         setError("QLocalServer::listen"_L1);
         closeServer();
         return false;
@@ -203,7 +203,7 @@ bool QLocalServerPrivate::listen(qintptr socketDescriptor)
 
     bool abstractAddress = false;
     struct ::sockaddr_un addr;
-    QT_SOCKLEN_T len = sizeof(addr);
+    BOBUI_SOCKLEN_T len = sizeof(addr);
     memset(&addr, 0, sizeof(addr));
     if (::getsockname(socketDescriptor, (sockaddr *)&addr, &len) == 0) {
 #if defined(Q_OS_QNX)
@@ -240,7 +240,7 @@ void QLocalServerPrivate::closeServer()
     }
 
     if (-1 != listenSocket)
-        QT_CLOSE(listenSocket);
+        BOBUI_CLOSE(listenSocket);
     listenSocket = -1;
 
     if (!fullServerName.isEmpty()
@@ -265,8 +265,8 @@ void QLocalServerPrivate::_q_onNewConnection()
         return;
 
     ::sockaddr_un addr;
-    QT_SOCKLEN_T length = sizeof(sockaddr_un);
-    int connectedSocket = qt_safe_accept(listenSocket, (sockaddr *)&addr, &length);
+    BOBUI_SOCKLEN_T length = sizeof(sockaddr_un);
+    int connectedSocket = bobui_safe_accept(listenSocket, (sockaddr *)&addr, &length);
     if (-1 == connectedSocket) {
         setError("QLocalSocket::activated"_L1);
         closeServer();
@@ -279,8 +279,8 @@ void QLocalServerPrivate::_q_onNewConnection()
 
 void QLocalServerPrivate::waitForNewConnection(int msec, bool *timedOut)
 {
-    pollfd pfd = qt_make_pollfd(listenSocket, POLLIN);
-    switch (qt_safe_poll(&pfd, 1, QDeadlineTimer(msec))) {
+    pollfd pfd = bobui_make_pollfd(listenSocket, POLLIN);
+    switch (bobui_safe_poll(&pfd, 1, QDeadlineTimer(msec))) {
     case 0:
         if (timedOut)
             *timedOut = true;
@@ -335,4 +335,4 @@ void QLocalServerPrivate::setError(const QString &function)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

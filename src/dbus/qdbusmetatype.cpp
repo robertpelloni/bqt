@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdbusmetatype.h"
 #include "qdbusmetatype_p.h"
@@ -21,18 +21,18 @@
 #include "qdbusargument_p.h"
 #include "qdbusutil_p.h"
 #include "qdbusunixfiledescriptor.h"
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "qdbusmessage.h"
 #endif
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 #ifndef DBUS_TYPE_UNIX_FD
 # define DBUS_TYPE_UNIX_FD int('h')
 # define DBUS_TYPE_UNIX_FD_AS_STRING "h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusCustomTypeInfo
 {
@@ -54,7 +54,7 @@ void QDBusMetaTypeId::init()
     // reentrancy is not a problem since everything else is locked on their own
     // set the guard variable at the end
     if (!initialized.loadRelaxed()) {
-        // register our types with Qt Core
+        // register our types with BobUI Core
         message().registerType();
         argument().registerType();
         variant().registerType();
@@ -64,9 +64,9 @@ void QDBusMetaTypeId::init()
         unixfd().registerType();
 
 #ifndef QDBUS_NO_SPECIALTYPES
-        // and register Qt Core's with us
+        // and register BobUI Core's with us
         qDBusRegisterMetaType<QDate>();
-        qDBusRegisterMetaType<QTime>();
+        qDBusRegisterMetaType<BOBUIime>();
         qDBusRegisterMetaType<QDateTime>();
         qDBusRegisterMetaType<QRect>();
         qDBusRegisterMetaType<QRectF>();
@@ -111,7 +111,7 @@ Q_GLOBAL_STATIC(QDBusCustomTypes, customTypes)
 
 /*!
     \class QDBusMetaType
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Meta-type registration system for the Qt D-Bus module.
     \internal
 
@@ -119,14 +119,14 @@ Q_GLOBAL_STATIC(QDBusCustomTypes, customTypes)
     marshalling and demarshalling over D-Bus. D-Bus supports a very
     limited set of primitive types, but allows one to extend the type
     system by creating compound types, such as arrays (lists) and
-    structs. In order to use them with Qt D-Bus, those types must be
+    structs. In order to use them with BobUI D-Bus, those types must be
     registered.
 
-    See \l {qdbustypesystem.html}{Qt D-Bus Type System} for more
+    See \l {qdbustypesystem.html}{BobUI D-Bus Type System} for more
     information on the type system and how to register additional
     types.
 
-    \sa {qdbustypesystem.html}{Qt D-Bus Type System},
+    \sa {qdbustypesystem.html}{BobUI D-Bus Type System},
     qDBusRegisterMetaType(), QMetaType, QVariant, QDBusArgument
 */
 
@@ -137,7 +137,7 @@ Q_GLOBAL_STATIC(QDBusCustomTypes, customTypes)
     \since 4.2
 
     Registers \c{T} with the
-    \l {qdbustypesystem.html}{Qt D-Bus Type System} and the Qt \l
+    \l {qdbustypesystem.html}{BobUI D-Bus Type System} and the BobUI \l
     {QMetaType}{meta-type system}, if it's not already registered.
 
     To register a type, it must be declared as a meta-type with the
@@ -149,24 +149,24 @@ Q_GLOBAL_STATIC(QDBusCustomTypes, customTypes)
     \snippet code/src_qdbus_qdbusmetatype.cpp 0-1
 
     If \c{T} isn't one of
-    Qt's \l{container classes}, the \c{operator<<} and
+    BobUI's \l{container classes}, the \c{operator<<} and
     \c{operator>>} streaming operators between \c{T} and QDBusArgument
-    must be already declared. See the \l {qdbustypesystem.html}{Qt D-Bus
+    must be already declared. See the \l {qdbustypesystem.html}{BobUI D-Bus
     Type System} page for more information on how to declare such
     types.
 
-    This function returns the Qt meta type id for the type (the same
+    This function returns the BobUI meta type id for the type (the same
     value that is returned from qRegisterMetaType()).
 
     \note The feature that a \c{T} inheriting a streamable type (including
     the containers QList, QHash or QMap) can be streamed without providing
-    custom \c{operator<<} and \c{operator>>} is deprecated as of Qt 5.7,
+    custom \c{operator<<} and \c{operator>>} is deprecated as of BobUI 5.7,
     because it ignores everything in \c{T} except the base class. There is
     no diagnostic. You should always provide these operators for all types
-    you wish to stream and not rely on Qt-provided stream operators for
+    you wish to stream and not rely on BobUI-provided stream operators for
     base classes.
 
-    \sa {qdbustypesystem.html}{Qt D-Bus Type System}, qRegisterMetaType(), QMetaType
+    \sa {qdbustypesystem.html}{BobUI D-Bus Type System}, qRegisterMetaType(), QMetaType
 */
 
 /*!
@@ -266,7 +266,7 @@ bool QDBusMetaType::demarshall(const QDBusArgument &arg, QMetaType metaType, voi
         } else
             df = info.demarshall;
     }
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QDBusArgument copy = arg;
     df(copy, data);
 #else
@@ -281,7 +281,7 @@ bool QDBusMetaType::demarshall(const QDBusArgument &arg, QMetaType metaType, voi
     \fn QDBusMetaType::signatureToType(const char *signature)
     \internal
 
-    Returns the Qt meta type id for the given D-Bus signature for exactly one full type, given
+    Returns the BobUI meta type id for the given D-Bus signature for exactly one full type, given
     by \a signature.
 
     Note: this function only handles the basic D-Bus types.
@@ -483,6 +483,6 @@ const char *QDBusMetaType::typeToSignature(QMetaType type)
     return info->signature;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

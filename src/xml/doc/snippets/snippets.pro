@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += xml
+BOBUI += xml
 #! [qmake_use]

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSPLITTER_P_H
 #define QSPLITTER_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qframe_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(splitter);
+BOBUI_REQUIRE_CONFIG(splitter);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const uint Default = 2;
 
@@ -39,10 +39,10 @@ public:
 
     QSplitterLayoutStruct() : sizer(-1), collapsed(false), collapsible(Default), widget(nullptr), handle(nullptr) {}
     ~QSplitterLayoutStruct() { delete handle; }
-    int getWidgetSize(Qt::Orientation orient);
-    int getHandleSize(Qt::Orientation orient);
-    int pick(const QSize &size, Qt::Orientation orient)
-    { return (orient == Qt::Horizontal) ? size.width() : size.height(); }
+    int getWidgetSize(BobUI::Orientation orient);
+    int getHandleSize(BobUI::Orientation orient);
+    int pick(const QSize &size, BobUI::Orientation orient)
+    { return (orient == BobUI::Horizontal) ? size.width() : size.height(); }
 };
 
 class QSplitterPrivate : public QFramePrivate
@@ -50,18 +50,18 @@ class QSplitterPrivate : public QFramePrivate
     Q_DECLARE_PUBLIC(QSplitter)
 public:
     QSplitterPrivate() :
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
                          rubberBand(nullptr),
 #endif
                          opaque(true), firstShow(true),
                          childrenCollapsible(true), compatMode(false), handleWidth(-1), blockChildAdd(false), opaqueResizeSet(false) {}
     ~QSplitterPrivate();
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     QPointer<QRubberBand> rubberBand;
 #endif
     mutable QList<QSplitterLayoutStruct *> list;
-    Qt::Orientation orient;
+    BobUI::Orientation orient;
     bool opaque : 8;
     bool firstShow : 8;
     bool childrenCollapsible : 8;
@@ -71,14 +71,14 @@ public:
     bool opaqueResizeSet;
 
     inline int pick(const QPoint &pos) const
-    { return orient == Qt::Horizontal ? pos.x() : pos.y(); }
+    { return orient == BobUI::Horizontal ? pos.x() : pos.y(); }
     inline int pick(const QSize &s) const
-    { return orient == Qt::Horizontal ? s.width() : s.height(); }
+    { return orient == BobUI::Horizontal ? s.width() : s.height(); }
 
     inline int trans(const QPoint &pos) const
-    { return orient == Qt::Vertical ? pos.x() : pos.y(); }
+    { return orient == BobUI::Vertical ? pos.x() : pos.y(); }
     inline int trans(const QSize &s) const
-    { return orient == Qt::Vertical ? s.width() : s.height(); }
+    { return orient == BobUI::Vertical ? s.width() : s.height(); }
 
     void init();
     void recalc(bool update = false);
@@ -107,19 +107,19 @@ class QSplitterHandlePrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QSplitterHandle)
 public:
-    QSplitterHandlePrivate() : s(nullptr), orient(Qt::Horizontal), mouseOffset(0), opaq(false), hover(false), pressed(false) {}
+    QSplitterHandlePrivate() : s(nullptr), orient(BobUI::Horizontal), mouseOffset(0), opaq(false), hover(false), pressed(false) {}
 
     inline int pick(const QPoint &pos) const
-    { return orient == Qt::Horizontal ? pos.x() : pos.y(); }
+    { return orient == BobUI::Horizontal ? pos.x() : pos.y(); }
 
     QSplitter *s;
-    Qt::Orientation orient;
+    BobUI::Orientation orient;
     int mouseOffset;
     bool opaq    : 1;
     bool hover   : 1;
     bool pressed : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

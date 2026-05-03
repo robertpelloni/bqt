@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qobject.h>
 #include <qmetaobject.h>
@@ -41,7 +41,7 @@ class tst_QMetaProperty : public Base
     Q_PROPERTY(QMap<int, int> map MEMBER map)
     Q_PROPERTY(CustomType custom MEMBER custom)
     Q_PROPERTY(int propWithInheritedSig READ propWithInheritedSig NOTIFY baseSignal)
-    Q_PROPERTY(QFlags<Qt::AlignmentFlag> qflags_value MEMBER qflags_value)
+    Q_PROPERTY(QFlags<BobUI::AlignmentFlag> qflags_value MEMBER qflags_value)
 
 private slots:
     void hasStdCppSet();
@@ -73,7 +73,7 @@ public:
     QString value7;
     QMap<int, int> map;
     CustomType custom;
-    QFlags<Qt::AlignmentFlag> qflags_value;
+    QFlags<BobUI::AlignmentFlag> qflags_value;
 };
 
 void tst_QMetaProperty::hasStdCppSet()
@@ -195,7 +195,7 @@ namespace MySpace {
     };
 };
 
-namespace MyQtSpace {
+namespace MyBobUISpace {
     Q_NAMESPACE
     enum NamespacedEnum {
         NamespacedEnumValue1,
@@ -231,8 +231,8 @@ class EnumFlagsTester : public QObject
 
     Q_PROPERTY(FreeEnum freeEnumProperty READ freeEnumProperty WRITE setFreeEnumProperty)
     Q_PROPERTY(MySpace::NamespacedEnum namespacedEnumProperty READ namespacedEnumProperty WRITE setNamespacedEnumProperty)
-    Q_PROPERTY(MyQtSpace::NamespacedEnum qtNamespacedEnumProperty READ qtNamespacedEnumProperty WRITE setQtNamespacedEnumProperty)
-    Q_PROPERTY(MyQtSpace::NamespacedFlags qtNamespacedFlagProperty READ qtNamespacedFlagProperty WRITE setQtNamespacedFlagProperty)
+    Q_PROPERTY(MyBobUISpace::NamespacedEnum bobuiNamespacedEnumProperty READ bobuiNamespacedEnumProperty WRITE setBobUINamespacedEnumProperty)
+    Q_PROPERTY(MyBobUISpace::NamespacedFlags bobuiNamespacedFlagProperty READ bobuiNamespacedFlagProperty WRITE setBobUINamespacedFlagProperty)
 
     Q_PROPERTY(SeparateEnumNamespace::Enum sepEnum READ sepEnum WRITE setSepEnum)
     Q_PROPERTY(SeparateFlagsNamespace::Flags sepFlags READ sepFlags WRITE setSepFlags)
@@ -274,11 +274,11 @@ public:
     MySpace::NamespacedEnum namespacedEnumProperty() const { return m_namespacedEnum; }
     void setNamespacedEnumProperty(MySpace::NamespacedEnum e) { m_namespacedEnum = e; }
 
-    MyQtSpace::NamespacedEnum qtNamespacedEnumProperty() const { return m_qtNamespaceEnum; }
-    void setQtNamespacedEnumProperty(MyQtSpace::NamespacedEnum e) { m_qtNamespaceEnum = e; }
+    MyBobUISpace::NamespacedEnum bobuiNamespacedEnumProperty() const { return m_bobuiNamespaceEnum; }
+    void setBobUINamespacedEnumProperty(MyBobUISpace::NamespacedEnum e) { m_bobuiNamespaceEnum = e; }
 
-    MyQtSpace::NamespacedFlags qtNamespacedFlagProperty() const { return m_qtNamespaceFlags; }
-    void setQtNamespacedFlagProperty(MyQtSpace::NamespacedFlags f) { m_qtNamespaceFlags = f; }
+    MyBobUISpace::NamespacedFlags bobuiNamespacedFlagProperty() const { return m_bobuiNamespaceFlags; }
+    void setBobUINamespacedFlagProperty(MyBobUISpace::NamespacedFlags f) { m_bobuiNamespaceFlags = f; }
 
     SeparateEnumNamespace::Enum sepEnum() const { return m_sepEnum; }
     void setSepEnum(SeparateEnumNamespace::Enum e) { m_sepEnum = e; }
@@ -296,8 +296,8 @@ private:
 
     FreeEnum m_freeEnum = FreeEnum::FreeEnumValue1;
     MySpace::NamespacedEnum m_namespacedEnum = MySpace::NamespacedEnumValue1;
-    MyQtSpace::NamespacedEnum m_qtNamespaceEnum = MyQtSpace::NamespacedEnumValue1;
-    MyQtSpace::NamespacedFlags m_qtNamespaceFlags;
+    MyBobUISpace::NamespacedEnum m_bobuiNamespaceEnum = MyBobUISpace::NamespacedEnumValue1;
+    MyBobUISpace::NamespacedFlags m_bobuiNamespaceFlags;
 
     SeparateEnumNamespace::Enum m_sepEnum = SeparateEnumNamespace::Value1;
     SeparateFlagsNamespace::Flags m_sepFlags;
@@ -379,8 +379,8 @@ void tst_QMetaProperty::conversion()
 
 void tst_QMetaProperty::enumsFlags()
 {
-    // QTBUG-83689, verify that enumerations and flags can be assigned from int,
-    // which is important for Qt Widgets Designer.
+    // BOBUIBUG-83689, verify that enumerations and flags can be assigned from int,
+    // which is important for BobUI Widgets Designer.
     EnumFlagsTester t;
 
     auto mo = t.metaObject();
@@ -470,21 +470,21 @@ void tst_QMetaProperty::enumsFlags()
     QCOMPARE(t.namespacedEnumProperty(), MySpace::NamespacedEnumValue2);
     QVERIFY(!namespacedEnumProperty.enumerator().isValid()); // Not using Q_NAMESPACE/Q_ENUM_NS
 
-    const int qtNamespacedEnumIndex = mo->indexOfProperty("qtNamespacedEnumProperty");
-    QVERIFY(qtNamespacedEnumIndex >= 0);
-    auto qtNamespacedEnumProperty = mo->property(qtNamespacedEnumIndex);
-    QVERIFY(qtNamespacedEnumProperty.metaType().flags().testFlag(QMetaType::IsEnumeration));
-    QVERIFY(qtNamespacedEnumProperty.write(&t, QVariant(MyQtSpace::NamespacedEnumValue2)));
-    QCOMPARE(t.qtNamespacedEnumProperty(), MyQtSpace::NamespacedEnumValue2);
-    QVERIFY(qtNamespacedEnumProperty.enumerator().isValid()); // OK: Q_ENUM_NS
+    const int bobuiNamespacedEnumIndex = mo->indexOfProperty("bobuiNamespacedEnumProperty");
+    QVERIFY(bobuiNamespacedEnumIndex >= 0);
+    auto bobuiNamespacedEnumProperty = mo->property(bobuiNamespacedEnumIndex);
+    QVERIFY(bobuiNamespacedEnumProperty.metaType().flags().testFlag(QMetaType::IsEnumeration));
+    QVERIFY(bobuiNamespacedEnumProperty.write(&t, QVariant(MyBobUISpace::NamespacedEnumValue2)));
+    QCOMPARE(t.bobuiNamespacedEnumProperty(), MyBobUISpace::NamespacedEnumValue2);
+    QVERIFY(bobuiNamespacedEnumProperty.enumerator().isValid()); // OK: Q_ENUM_NS
 
-    const int qtNamespacedFlagIndex = mo->indexOfProperty("qtNamespacedFlagProperty");
-    QVERIFY(qtNamespacedFlagIndex >= 0);
-    auto qtNamespacedFlagProperty = mo->property(qtNamespacedFlagIndex);
-    QVERIFY(qtNamespacedFlagProperty.metaType().flags().testFlag(QMetaType::IsEnumeration));
-    QVERIFY(qtNamespacedFlagProperty.write(&t, QVariant(MyQtSpace::NamespacedFlags(MyQtSpace::NamespacedEnumValue2))));
-    QCOMPARE(t.qtNamespacedFlagProperty(), MyQtSpace::NamespacedFlags(MyQtSpace::NamespacedEnumValue2));
-    QVERIFY(qtNamespacedFlagProperty.enumerator().isValid()); // OK: Q_FLAG
+    const int bobuiNamespacedFlagIndex = mo->indexOfProperty("bobuiNamespacedFlagProperty");
+    QVERIFY(bobuiNamespacedFlagIndex >= 0);
+    auto bobuiNamespacedFlagProperty = mo->property(bobuiNamespacedFlagIndex);
+    QVERIFY(bobuiNamespacedFlagProperty.metaType().flags().testFlag(QMetaType::IsEnumeration));
+    QVERIFY(bobuiNamespacedFlagProperty.write(&t, QVariant(MyBobUISpace::NamespacedFlags(MyBobUISpace::NamespacedEnumValue2))));
+    QCOMPARE(t.bobuiNamespacedFlagProperty(), MyBobUISpace::NamespacedFlags(MyBobUISpace::NamespacedEnumValue2));
+    QVERIFY(bobuiNamespacedFlagProperty.enumerator().isValid()); // OK: Q_FLAG
 
     const int sepEnumIndex = mo->indexOfProperty("sepEnum");
     QVERIFY(sepEnumIndex >= 0);
@@ -518,5 +518,5 @@ void tst_QMetaProperty::notifySignalIndex()
     QCOMPARE(notifySignal.parameterCount(), 1);
 }
 
-QTEST_MAIN(tst_QMetaProperty)
+BOBUIEST_MAIN(tst_QMetaProperty)
 #include "tst_qmetaproperty.moc"

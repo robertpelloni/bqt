@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "winmakefile.h"
 #include "option.h"
 #include "project.h"
 #include "meta.h"
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qstring.h>
 #include <qhash.h>
 #include <qregularexpression.h>
@@ -15,7 +15,7 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 ProString Win32MakefileGenerator::fixLibFlag(const ProString &lib)
 {
@@ -285,9 +285,9 @@ void Win32MakefileGenerator::processRcFileVar()
         || !project->values("QMAKE_WRITE_DEFAULT_RC").isEmpty()){
 
         QByteArray rcString;
-        QTextStream ts(&rcString, QFile::WriteOnly);
+        BOBUIextStream ts(&rcString, QFile::WriteOnly);
 
-        QStringList vers = project->first("VERSION").toQString().split(".", Qt::SkipEmptyParts);
+        QStringList vers = project->first("VERSION").toQString().split(".", BobUI::SkipEmptyParts);
         for (int i = vers.size(); i < 4; i++)
             vers += "0";
         QString versionString = vers.join('.');
@@ -338,11 +338,11 @@ void Win32MakefileGenerator::processRcFileVar()
         int rcCodePage = project->intValue("RC_CODEPAGE", 1200);    // default: Unicode
 
         ts << "#include <windows.h>\n";
-        ts << Qt::endl;
+        ts << BobUI::endl;
         if (!rcIcons.isEmpty()) {
             for (int i = 0; i < rcIcons.size(); ++i)
-                ts << QString("IDI_ICON%1\tICON\t%2").arg(i + 1).arg(cQuoted(rcIcons[i])) << Qt::endl;
-            ts << Qt::endl;
+                ts << QString("IDI_ICON%1\tICON\t%2").arg(i + 1).arg(cQuoted(rcIcons[i])) << BobUI::endl;
+            ts << BobUI::endl;
         }
         if (!manifestFile.isEmpty()) {
             QString manifestResourceId;
@@ -353,8 +353,8 @@ void Win32MakefileGenerator::processRcFileVar()
             ts << manifestResourceId << " RT_MANIFEST \"" << manifestFile << "\"\n";
         }
         ts << "VS_VERSION_INFO VERSIONINFO\n";
-        ts << "\tFILEVERSION " << QString(versionString).replace(".", ",") << Qt::endl;
-        ts << "\tPRODUCTVERSION " << QString(versionString).replace(".", ",") << Qt::endl;
+        ts << "\tFILEVERSION " << QString(versionString).replace(".", ",") << BobUI::endl;
+        ts << "\tPRODUCTVERSION " << QString(versionString).replace(".", ",") << BobUI::endl;
         ts << "\tFILEFLAGSMASK 0x3fL\n";
         ts << "#ifdef _DEBUG\n";
         ts << "\tFILEFLAGS VS_FF_DEBUG\n";
@@ -390,11 +390,11 @@ void Win32MakefileGenerator::processRcFileVar()
         ts << "\t\tBEGIN\n";
         ts << "\t\t\tVALUE \"Translation\", "
            << QString("0x%1").arg(rcLang, 4, 16, QLatin1Char('0'))
-           << ", " << QString("%1").arg(rcCodePage, 4) << Qt::endl;
+           << ", " << QString("%1").arg(rcCodePage, 4) << BobUI::endl;
         ts << "\t\tEND\n";
         ts << "\tEND\n";
         ts << "/* End of Version info */\n";
-        ts << Qt::endl;
+        ts << BobUI::endl;
 
         ts.flush();
 
@@ -462,7 +462,7 @@ void Win32MakefileGenerator::processRcFileVar()
     }
 }
 
-void Win32MakefileGenerator::writeCleanParts(QTextStream &t)
+void Win32MakefileGenerator::writeCleanParts(BOBUIextStream &t)
 {
     t << "clean: compiler_clean " << depVar("CLEAN_DEPS");
     {
@@ -491,7 +491,7 @@ void Win32MakefileGenerator::writeCleanParts(QTextStream &t)
             }
         }
     }
-    t << Qt::endl << Qt::endl;
+    t << BobUI::endl << BobUI::endl;
 
     t << "distclean: clean " << depVar("DISTCLEAN_DEPS");
     {
@@ -524,12 +524,12 @@ void Win32MakefileGenerator::writeCleanParts(QTextStream &t)
     {
         QString ofile = fileFixify(Option::output.fileName());
         if(!ofile.isEmpty())
-            t << "\t-$(DEL_FILE) " << escapeFilePath(ofile) << Qt::endl;
+            t << "\t-$(DEL_FILE) " << escapeFilePath(ofile) << BobUI::endl;
     }
-    t << Qt::endl;
+    t << BobUI::endl;
 }
 
-void Win32MakefileGenerator::writeIncPart(QTextStream &t)
+void Win32MakefileGenerator::writeIncPart(BOBUIextStream &t)
 {
     t << "INCPATH       = ";
 
@@ -540,37 +540,37 @@ void Win32MakefileGenerator::writeIncPart(QTextStream &t)
         if(!inc.isEmpty())
             t << "-I" << escapeFilePath(inc) << ' ';
     }
-    t << Qt::endl;
+    t << BobUI::endl;
 }
 
-void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
+void Win32MakefileGenerator::writeStandardParts(BOBUIextStream &t)
 {
     writeExportedVariables(t);
 
     t << "####### Compiler, tools and options\n\n";
-    t << "CC            = " << var("QMAKE_CC") << Qt::endl;
-    t << "CXX           = " << var("QMAKE_CXX") << Qt::endl;
+    t << "CC            = " << var("QMAKE_CC") << BobUI::endl;
+    t << "CXX           = " << var("QMAKE_CXX") << BobUI::endl;
     t << "DEFINES       = "
       << varGlue("PRL_EXPORT_DEFINES","-D"," -D"," ")
-      << varGlue("DEFINES","-D"," -D","") << Qt::endl;
+      << varGlue("DEFINES","-D"," -D","") << BobUI::endl;
     t << "CFLAGS        = " << var("QMAKE_CFLAGS") << " $(DEFINES)\n";
     t << "CXXFLAGS      = " << var("QMAKE_CXXFLAGS") << " $(DEFINES)\n";
 
     writeIncPart(t);
     writeLibsPart(t);
     writeDefaultVariables(t);
-    t << Qt::endl;
+    t << BobUI::endl;
 
     t << "####### Output directory\n\n";
     if(!project->values("OBJECTS_DIR").isEmpty())
-        t << "OBJECTS_DIR   = " << escapeFilePath(var("OBJECTS_DIR").remove(QRegularExpression("\\\\$"))) << Qt::endl;
+        t << "OBJECTS_DIR   = " << escapeFilePath(var("OBJECTS_DIR").remove(QRegularExpression("\\\\$"))) << BobUI::endl;
     else
         t << "OBJECTS_DIR   = . \n";
-    t << Qt::endl;
+    t << BobUI::endl;
 
     t << "####### Files\n\n";
     t << "SOURCES       = " << valList(escapeFilePaths(project->values("SOURCES")))
-      << " " << valList(escapeFilePaths(project->values("GENERATED_SOURCES"))) << Qt::endl;
+      << " " << valList(escapeFilePaths(project->values("GENERATED_SOURCES"))) << BobUI::endl;
 
     // do this here so we can set DEST_TARGET to be the complete path to the final target if it is needed.
     QString orgDestDir = var("DESTDIR");
@@ -586,14 +586,14 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
     writeExtraVariables(t);
 
     t << "DIST          = " << fileVarList("DISTFILES") << ' '
-      << fileVarList("HEADERS") << ' ' << fileVarList("SOURCES") << Qt::endl;
-    t << "QMAKE_TARGET  = " << fileVar("QMAKE_ORIG_TARGET") << Qt::endl;  // unused
+      << fileVarList("HEADERS") << ' ' << fileVarList("SOURCES") << BobUI::endl;
+    t << "QMAKE_TARGET  = " << fileVar("QMAKE_ORIG_TARGET") << BobUI::endl;  // unused
     // The comment is important to maintain variable compatibility with Unix
     // Makefiles, while not interpreting a trailing-slash as a linebreak
     t << "DESTDIR        = " << escapeFilePath(destDir) << " #avoid trailing-slash linebreak\n";
-    t << "TARGET         = " << escapeFilePath(target) << Qt::endl;
-    t << "DESTDIR_TARGET = " << fileVar("DEST_TARGET") << Qt::endl;
-    t << Qt::endl;
+    t << "TARGET         = " << escapeFilePath(target) << BobUI::endl;
+    t << "DESTDIR_TARGET = " << fileVar("DEST_TARGET") << BobUI::endl;
+    t << BobUI::endl;
 
     writeImplicitRulesPart(t);
 
@@ -605,10 +605,10 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
             const ProStringList &dlldirs = project->values("DLLDESTDIR");
             for (ProStringList::ConstIterator dlldir = dlldirs.begin(); dlldir != dlldirs.end(); ++dlldir) {
                 t << "\t-$(COPY_FILE) $(DESTDIR_TARGET) "
-                  << escapeFilePath(Option::fixPathToTargetOS((*dlldir).toQString(), false)) << Qt::endl;
+                  << escapeFilePath(Option::fixPathToTargetOS((*dlldir).toQString(), false)) << BobUI::endl;
             }
         }
-        t << Qt::endl;
+        t << BobUI::endl;
 
         writeRcFilePart(t);
     }
@@ -641,44 +641,44 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
             }
         }
     }
-    t << Qt::endl << Qt::endl;
+    t << BobUI::endl << BobUI::endl;
 
     writeCleanParts(t);
     writeExtraTargets(t);
     writeExtraCompilerTargets(t);
-    t << Qt::endl << Qt::endl;
+    t << BobUI::endl << BobUI::endl;
 }
 
-void Win32MakefileGenerator::writeLibsPart(QTextStream &t)
+void Win32MakefileGenerator::writeLibsPart(BOBUIextStream &t)
 {
     if(project->isActiveConfig("staticlib") && project->first("TEMPLATE") == "lib") {
-        t << "LIBAPP        = " << var("QMAKE_LIB") << Qt::endl;
-        t << "LIBFLAGS      = " << var("QMAKE_LIBFLAGS") << Qt::endl;
+        t << "LIBAPP        = " << var("QMAKE_LIB") << BobUI::endl;
+        t << "LIBFLAGS      = " << var("QMAKE_LIBFLAGS") << BobUI::endl;
     } else {
-        t << "LINKER        = " << var("QMAKE_LINK") << Qt::endl;
-        t << "LFLAGS        = " << var("QMAKE_LFLAGS") << Qt::endl;
+        t << "LINKER        = " << var("QMAKE_LINK") << BobUI::endl;
+        t << "LFLAGS        = " << var("QMAKE_LFLAGS") << BobUI::endl;
         t << "LIBS          = " << fixLibFlags("LIBS").join(' ') << ' '
                                 << fixLibFlags("LIBS_PRIVATE").join(' ') << ' '
                                 << fixLibFlags("QMAKE_LIBS").join(' ') << ' '
-                                << fixLibFlags("QMAKE_LIBS_PRIVATE").join(' ') << Qt::endl;
+                                << fixLibFlags("QMAKE_LIBS_PRIVATE").join(' ') << BobUI::endl;
     }
 }
 
-void Win32MakefileGenerator::writeObjectsPart(QTextStream &t)
+void Win32MakefileGenerator::writeObjectsPart(BOBUIextStream &t)
 {
     // Used in both deps and commands.
-    t << "OBJECTS       = " << valList(escapeDependencyPaths(project->values("OBJECTS"))) << Qt::endl;
+    t << "OBJECTS       = " << valList(escapeDependencyPaths(project->values("OBJECTS"))) << BobUI::endl;
 }
 
-void Win32MakefileGenerator::writeImplicitRulesPart(QTextStream &)
+void Win32MakefileGenerator::writeImplicitRulesPart(BOBUIextStream &)
 {
 }
 
-void Win32MakefileGenerator::writeBuildRulesPart(QTextStream &)
+void Win32MakefileGenerator::writeBuildRulesPart(BOBUIextStream &)
 {
 }
 
-void Win32MakefileGenerator::writeRcFilePart(QTextStream &t)
+void Win32MakefileGenerator::writeRcFilePart(BOBUIextStream &t)
 {
     if(!project->values("RC_FILE").isEmpty()) {
         const ProString res_file = project->first("RES_FILE");
@@ -713,7 +713,7 @@ void Win32MakefileGenerator::writeRcFilePart(QTextStream &t)
           << var("QMAKE_RC") << (project->isActiveConfig("debug") ? " -D_DEBUG" : "")
           << defines << incPathStr << " -fo " << escapeFilePath(res_file)
           << ' ' << escapeFilePath(rc_file);
-        t << Qt::endl << Qt::endl;
+        t << BobUI::endl << BobUI::endl;
     }
 }
 
@@ -806,18 +806,18 @@ QString Win32MakefileGenerator::defaultInstall(const QString &t)
     return ret;
 }
 
-void Win32MakefileGenerator::writeDefaultVariables(QTextStream &t)
+void Win32MakefileGenerator::writeDefaultVariables(BOBUIextStream &t)
 {
     MakefileGenerator::writeDefaultVariables(t);
     t << "IDC           = " << (project->isEmpty("QMAKE_IDC") ? QString("idc") : var("QMAKE_IDC"))
-                            << Qt::endl;
+                            << BobUI::endl;
     t << "IDL           = " << (project->isEmpty("QMAKE_IDL") ? QString("midl") : var("QMAKE_IDL"))
-                            << Qt::endl;
-    t << "ZIP           = " << var("QMAKE_ZIP") << Qt::endl;
-    t << "DEF_FILE      = " << fileVar("DEF_FILE") << Qt::endl;
-    t << "RES_FILE      = " << fileVar("RES_FILE") << Qt::endl; // Not on mingw, can't see why not though...
-    t << "SED           = " << var("QMAKE_STREAM_EDITOR") << Qt::endl;
-    t << "MOVE          = " << var("QMAKE_MOVE") << Qt::endl;
+                            << BobUI::endl;
+    t << "ZIP           = " << var("QMAKE_ZIP") << BobUI::endl;
+    t << "DEF_FILE      = " << fileVar("DEF_FILE") << BobUI::endl;
+    t << "RES_FILE      = " << fileVar("RES_FILE") << BobUI::endl; // Not on mingw, can't see why not though...
+    t << "SED           = " << var("QMAKE_STREAM_EDITOR") << BobUI::endl;
+    t << "MOVE          = " << var("QMAKE_MOVE") << BobUI::endl;
 }
 
 QString Win32MakefileGenerator::escapeFilePath(const QString &path) const
@@ -858,4 +858,4 @@ ProKey Win32MakefileGenerator::fullTargetVariable() const
     return "DEST_TARGET";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

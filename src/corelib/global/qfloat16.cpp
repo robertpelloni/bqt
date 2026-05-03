@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfloat16.h"
 #include "private/qsimd_p.h"
 #include <cmath> // for fpclassify()'s return values
 
-#include <QtCore/qdatastream.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qtextstream.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/bobuiextstream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 Q_CORE_EXPORT int qRegisterNormalizedMetaType_qfloat16(const QByteArray &)
 {
     return QMetaType::Float16;
@@ -23,7 +23,7 @@ Q_CORE_EXPORT int qRegisterNormalizedMetaType_qfloat16(const QByteArray &)
     \class qfloat16
     \keyword 16-bit Floating Point Support
     \ingroup funclists
-    \inmodule QtCore
+    \inmodule BobUICore
     \inheaderfile QFloat16
     \brief Provides 16-bit floating point support.
 
@@ -32,7 +32,7 @@ Q_CORE_EXPORT int qRegisterNormalizedMetaType_qfloat16(const QByteArray &)
                   qint32 quint32 long {unsigned long} qint64 quint64
     \endcompareswith
     \compareswith partial qint128 quint128
-    Comparison with 128-bit integral types is only supported if Qt provides
+    Comparison with 128-bit integral types is only supported if BobUI provides
     these types.
     \endcompareswith
 
@@ -57,7 +57,7 @@ Q_CORE_EXPORT int qRegisterNormalizedMetaType_qfloat16(const QByteArray &)
 */
 
 /*!
-    \fn qfloat16::qfloat16(Qt::Initialization)
+    \fn qfloat16::qfloat16(BobUI::Initialization)
     \since 6.1
 
     Constructs a qfloat16 without initializing the value.
@@ -184,7 +184,7 @@ int qfloat16::fpClassify() const noexcept
     exactness is stronger the smaller the numbers are.
  */
 
-#if QT_COMPILER_SUPPORTS_HERE(F16C)
+#if BOBUI_COMPILER_SUPPORTS_HERE(F16C)
 static inline bool hasFastF16()
 {
     // qsimd.cpp:detectProcessorFeatures() turns off this feature if AVX
@@ -192,14 +192,14 @@ static inline bool hasFastF16()
     return qCpuHasFeature(F16C);
 }
 
-#if QT_COMPILER_SUPPORTS_HERE(AVX512VL) && QT_COMPILER_SUPPORTS_HERE(AVX512BW)
+#if BOBUI_COMPILER_SUPPORTS_HERE(AVX512VL) && BOBUI_COMPILER_SUPPORTS_HERE(AVX512BW)
 static bool hasFastF16Avx256()
 {
     // 256-bit AVX512 don't have a performance penalty (see qstring.cpp for more info)
     return qCpuHasFeature(ArchSkylakeAvx512);
 }
 
-static QT_FUNCTION_TARGET(ARCH_SKYLAKE_AVX512)
+static BOBUI_FUNCTION_TARGET(ARCH_SKYLAKE_AVX512)
 void qFloatToFloat16_tail_avx256(quint16 *out, const float *in, qsizetype len) noexcept
 {
     __mmask16 mask = _bzhi_u32(-1, len);
@@ -208,7 +208,7 @@ void qFloatToFloat16_tail_avx256(quint16 *out, const float *in, qsizetype len) n
     _mm_mask_storeu_epi16(out, mask, f16);
 };
 
-static QT_FUNCTION_TARGET(ARCH_SKYLAKE_AVX512)
+static BOBUI_FUNCTION_TARGET(ARCH_SKYLAKE_AVX512)
 void qFloatFromFloat16_tail_avx256(float *out, const quint16 *in, qsizetype len) noexcept
 {
     __mmask16 mask = _bzhi_u32(-1, len);
@@ -218,7 +218,7 @@ void qFloatFromFloat16_tail_avx256(float *out, const quint16 *in, qsizetype len)
 };
 #endif
 
-QT_FUNCTION_TARGET(F16C)
+BOBUI_FUNCTION_TARGET(F16C)
 static void qFloatToFloat16_fast(quint16 *out, const float *in, qsizetype len) noexcept
 {
     constexpr qsizetype Step = sizeof(__m256i) / sizeof(float);
@@ -226,7 +226,7 @@ static void qFloatToFloat16_fast(quint16 *out, const float *in, qsizetype len) n
     qsizetype i = 0;
 
     if (len >= Step) {
-        auto convertOneChunk = [=](qsizetype offset) QT_FUNCTION_TARGET(F16C) {
+        auto convertOneChunk = [=](qsizetype offset) BOBUI_FUNCTION_TARGET(F16C) {
             __m256 f32 = _mm256_loadu_ps(in + offset);
             __m128i f16 = _mm256_cvtps_ph(f32, _MM_FROUND_TO_NEAREST_INT);
             _mm_storeu_si128(reinterpret_cast<__m128i *>(out + offset), f16);
@@ -241,13 +241,13 @@ static void qFloatToFloat16_fast(quint16 *out, const float *in, qsizetype len) n
         return convertOneChunk(len - Step);
     }
 
-#if QT_COMPILER_SUPPORTS_HERE(AVX512VL) && QT_COMPILER_SUPPORTS_HERE(AVX512BW)
+#if BOBUI_COMPILER_SUPPORTS_HERE(AVX512VL) && BOBUI_COMPILER_SUPPORTS_HERE(AVX512BW)
     if (hasFastF16Avx256())
         return qFloatToFloat16_tail_avx256(out, in, len);
 #endif
 
     if (len >= HalfStep) {
-        auto convertOneChunk = [=](qsizetype offset) QT_FUNCTION_TARGET(F16C) {
+        auto convertOneChunk = [=](qsizetype offset) BOBUI_FUNCTION_TARGET(F16C) {
             __m128 f32 = _mm_loadu_ps(in + offset);
             __m128i f16 = _mm_cvtps_ph(f32, _MM_FROUND_TO_NEAREST_INT);
             _mm_storel_epi64(reinterpret_cast<__m128i *>(out + offset), f16);
@@ -263,7 +263,7 @@ static void qFloatToFloat16_fast(quint16 *out, const float *in, qsizetype len) n
         out[i] = _mm_extract_epi16(_mm_cvtps_ph(_mm_set_ss(in[i]), 0), 0);
 }
 
-QT_FUNCTION_TARGET(F16C)
+BOBUI_FUNCTION_TARGET(F16C)
 static void qFloatFromFloat16_fast(float *out, const quint16 *in, qsizetype len) noexcept
 {
     constexpr qsizetype Step = sizeof(__m256i) / sizeof(float);
@@ -271,7 +271,7 @@ static void qFloatFromFloat16_fast(float *out, const quint16 *in, qsizetype len)
     qsizetype i = 0;
 
     if (len >= Step) {
-        auto convertOneChunk = [=](qsizetype offset) QT_FUNCTION_TARGET(F16C) {
+        auto convertOneChunk = [=](qsizetype offset) BOBUI_FUNCTION_TARGET(F16C) {
             __m128i f16 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(in + offset));
             __m256 f32 = _mm256_cvtph_ps(f16);
             _mm256_storeu_ps(out + offset, f32);
@@ -286,13 +286,13 @@ static void qFloatFromFloat16_fast(float *out, const quint16 *in, qsizetype len)
         return convertOneChunk(len - Step);
     }
 
-#if QT_COMPILER_SUPPORTS_HERE(AVX512VL) && QT_COMPILER_SUPPORTS_HERE(AVX512BW)
+#if BOBUI_COMPILER_SUPPORTS_HERE(AVX512VL) && BOBUI_COMPILER_SUPPORTS_HERE(AVX512BW)
     if (hasFastF16Avx256())
         return qFloatFromFloat16_tail_avx256(out, in, len);
 #endif
 
     if (len >= HalfStep) {
-        auto convertOneChunk = [=](qsizetype offset) QT_FUNCTION_TARGET(F16C) {
+        auto convertOneChunk = [=](qsizetype offset) BOBUI_FUNCTION_TARGET(F16C) {
             __m128i f16 = _mm_loadl_epi64(reinterpret_cast<const __m128i *>(in + offset));
             __m128 f32 = _mm_cvtph_ps(f16);
             _mm_storeu_ps(out + offset, f32);
@@ -392,13 +392,13 @@ Q_CORE_EXPORT void qFloatFromFloat16(float *out, const qfloat16 *in, qsizetype l
     \since 6.5.3
     \qhash{qfloat16}
 
-    \note In Qt versions before 6.5, this operation was provided by the
-    qHash(float) overload. In Qt versions 6.5.0 to 6.5.2, this functionality
-    was broken in various ways. In Qt versions 6.5.3 and 6.6 onwards, this
-    overload restores the Qt 6.4 behavior.
+    \note In BobUI versions before 6.5, this operation was provided by the
+    qHash(float) overload. In BobUI versions 6.5.0 to 6.5.2, this functionality
+    was broken in various ways. In BobUI versions 6.5.3 and 6.6 onwards, this
+    overload restores the BobUI 6.4 behavior.
 */
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn qfloat16::operator<<(QDataStream &ds, qfloat16 f)
     \relates QDataStream
@@ -407,7 +407,7 @@ Q_CORE_EXPORT void qFloatFromFloat16(float *out, const qfloat16 *in, qsizetype l
     Writes a floating point number, \a f, to the stream \a ds using
     the standard IEEE 754 format. Returns a reference to the stream.
 
-    \note In Qt versions prior to 6.3, this was a member function on
+    \note In BobUI versions prior to 6.3, this was a member function on
     QDataStream.
 */
 QDataStream &operator<<(QDataStream &ds, qfloat16 f)
@@ -424,7 +424,7 @@ QDataStream &operator<<(QDataStream &ds, qfloat16 f)
     using the standard IEEE 754 format. Returns a reference to the
     stream.
 
-    \note In Qt versions prior to 6.3, this was a member function on
+    \note In BobUI versions prior to 6.3, this was a member function on
     QDataStream.
 */
 QDataStream &operator>>(QDataStream &ds, qfloat16 &f)
@@ -433,7 +433,7 @@ QDataStream &operator>>(QDataStream &ds, qfloat16 &f)
 }
 #endif
 
-QTextStream &operator>>(QTextStream &ts, qfloat16 &f16)
+BOBUIextStream &operator>>(BOBUIextStream &ts, qfloat16 &f16)
 {
     float f;
     ts >> f;
@@ -441,11 +441,11 @@ QTextStream &operator>>(QTextStream &ts, qfloat16 &f16)
     return ts;
 }
 
-QTextStream &operator<<(QTextStream &ts, qfloat16 f)
+BOBUIextStream &operator<<(BOBUIextStream &ts, qfloat16 f)
 {
     return ts << float(f);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qfloat16tables.cpp"

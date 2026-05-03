@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qspi_constant_mappings_p.h"
@@ -15,8 +15,8 @@
 //  "ruler"    "autocomplete"  "edit bar" "embedded component"  "entry"    "caption"
 //  "heading"  "page"  "section"  "redundant object"  "form"  "input method window"  "menu"
 
-#if QT_CONFIG(accessibility)
-QT_BEGIN_NAMESPACE
+#if BOBUI_CONFIG(accessibility)
+BOBUI_BEGIN_NAMESPACE
 
 quint64 spiStatesFromQState(QAccessible::State state)
 {
@@ -110,7 +110,7 @@ quint64 spiStatesFromSpiStateSet(QSpiUIntList stateSet)
 
 AtspiRelationType qAccessibleRelationToAtSpiRelation(QAccessible::Relation relation)
 {
-    // direction of the relation is "inversed" in Qt and AT-SPI
+    // direction of the relation is "inversed" in BobUI and AT-SPI
     switch (relation) {
     case QAccessible::Label:
         return ATSPI_RELATION_LABELLED_BY;
@@ -134,5 +134,5 @@ AtspiRelationType qAccessibleRelationToAtSpiRelation(QAccessible::Relation relat
     return ATSPI_RELATION_NULL;
 }
 
-QT_END_NAMESPACE
-#endif // QT_CONFIG(accessibility)
+BOBUI_END_NAMESPACE
+#endif // BOBUI_CONFIG(accessibility)

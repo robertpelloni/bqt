@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## OpenGL Module:
 #####################################################################
 
-qt_internal_add_module(OpenGL
+bobui_internal_add_module(OpenGL
     SOURCES
         compat/removed_api.cpp
         qopengl2pexvertexarray.cpp qopengl2pexvertexarray_p.h
@@ -33,46 +33,46 @@ qt_internal_add_module(OpenGL
         qopenglversionprofile.cpp qopenglversionprofile.h
         qopenglvertexarrayobject.cpp qopenglvertexarrayobject.h qopenglvertexarrayobject_p.h
         qopenglwindow.cpp qopenglwindow.h
-        qtopenglglobal.h
+        bobuiopenglglobal.h
     NO_UNITY_BUILD_SOURCES
         qopengltextureblitter.cpp       # qDebug()<< ambiguities
     NO_PCH_SOURCES
         compat/removed_api.cpp
     DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_NO_USING_NAMESPACE
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_USING_NAMESPACE
+        BOBUI_USE_NODISCARD_FILE_OPEN
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
     PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
+        BobUI::Core
+        BobUI::Gui
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
 )
 
-if (QT_FEATURE_opengles2)
+if (BOBUI_FEATURE_opengles2)
     set_source_files_properties(qopengltimerquery.h PROPERTIES SKIP_AUTOMOC TRUE)
 endif()
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(OpenGL CONDITION APPLE
+bobui_internal_extend_target(OpenGL CONDITION APPLE
     NO_UNITY_BUILD_SOURCES
         qopenglversionfunctionsfactory.cpp
 )
 
-qt_internal_extend_target(OpenGL CONDITION QT_FEATURE_opengles2
+bobui_internal_extend_target(OpenGL CONDITION BOBUI_FEATURE_opengles2
     SOURCES
         qopenglfunctions_es2.cpp qopenglfunctions_es2.h
 )
 
-qt_internal_extend_target(OpenGL CONDITION NOT QT_FEATURE_opengles2
+bobui_internal_extend_target(OpenGL CONDITION NOT BOBUI_FEATURE_opengles2
     SOURCES
         qopenglfunctions_1_0.cpp qopenglfunctions_1_0.h
         qopenglfunctions_1_1.cpp qopenglfunctions_1_1.h
@@ -104,27 +104,27 @@ qt_internal_extend_target(OpenGL CONDITION NOT QT_FEATURE_opengles2
         qopengltimerquery.cpp
 )
 
-qt_internal_extend_target(OpenGL CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(OpenGL CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         qvkconvenience.cpp qvkconvenience_p.h
 )
-if(QT_FEATURE_vulkan)
-    qt_internal_add_target_include_dirs_and_optionally_propagate(
+if(BOBUI_FEATURE_vulkan)
+    bobui_internal_add_target_include_dirs_and_optionally_propagate(
         OpenGL WrapVulkanHeaders::WrapVulkanHeaders)
 endif()
 
-qt_internal_extend_target(OpenGL CONDITION QT_FEATURE_egl
+bobui_internal_extend_target(OpenGL CONDITION BOBUI_FEATURE_egl
     SOURCES
         qopenglcompositor.cpp qopenglcompositor_p.h
         qopenglcompositorbackingstore.cpp qopenglcompositorbackingstore_p.h
 )
 
-qt_internal_generate_tracepoints(OpenGL opengl
+bobui_internal_generate_tracepoints(OpenGL opengl
     SOURCES
         qopenglframebufferobject.cpp
         qopenglpaintengine.cpp
         qopengltexturecache.cpp
 )
-qt_internal_add_docs(OpenGL
-    doc/qtopengl.qdocconf
+bobui_internal_add_docs(OpenGL
+    doc/bobuiopengl.qdocconf
 )

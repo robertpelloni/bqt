@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QVector
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QVector is an alias for QList.
 
     QVector\<T\> is a template class where \a T specifies the element type.
@@ -13,7 +13,7 @@
 
 /*!
     \class QList
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QList class is a template class that provides a dynamic array.
 
     \ingroup tools
@@ -21,10 +21,10 @@
 
     \reentrant
 
-    QList\<T\> is one of Qt's generic \l{container classes}, where \a T
+    QList\<T\> is one of BobUI's generic \l{container classes}, where \a T
     specifies the type of elements stored in the list. It stores its items
     in adjacent memory locations and provides fast index-based access. QVector\<T\> used to be a different class in
-    Qt 5, but is now a simple alias to QList.
+    BobUI 5, but is now a simple alias to QList.
 
     QList\<T\> and QVarLengthArray\<T\>
     provide similar APIs and functionality. They are often interchangeable,
@@ -42,9 +42,9 @@
 
     \note QList and QVarLengthArray both guarantee C-compatible
     array layout.
-    \note QList in Qt 5 did not always have a C-compatible array layout and
+    \note QList in BobUI 5 did not always have a C-compatible array layout and
     we often recommended to use QVector instead for more predictable
-    performance. This is not the case in Qt 6 anymore, where both classes
+    performance. This is not the case in BobUI 6 anymore, where both classes
     now share an implementation and can be used interchangeably.
 
     Here's an example of a QList that stores integers and a QList
@@ -134,16 +134,16 @@
     For iterating over the items, see \l {Iterating over Containers}.
     For using QList with functions from \c {<algorithm>} header, such as
     \c {std::sort()}, \c {std::reverse()}, and \c {std::count_if()},
-    see \l {Qt containers and std algorithms}.
+    see \l {BobUI containers and std algorithms}.
 
-    In addition to QList, Qt also provides QVarLengthArray, a very
+    In addition to QList, BobUI also provides QVarLengthArray, a very
     low-level class with little functionality that is optimized for
     speed.
 
-    \section2 More Information on Using Qt Containers
+    \section2 More Information on Using BobUI Containers
 
-    For a detailed discussion comparing Qt containers with each other and
-    with STL containers, see \l {Understand the Qt Containers}.
+    For a detailed discussion comparing BobUI containers with each other and
+    with STL containers, see \l {Understand the BobUI Containers}.
 
     \section1 Maximum size and out-of-memory conditions
 
@@ -163,7 +163,7 @@
     Note that the operating system may impose further limits on applications
     holding a lot of allocated memory, especially large, contiguous blocks.
     Such considerations, the configuration of such behavior or any mitigation
-    are outside the scope of the Qt API.
+    are outside the scope of the BobUI API.
 */
 
 /*!
@@ -252,7 +252,7 @@
     \sa resize()
 */
 
-/*! \fn template <typename T> QList<T>::QList(qsizetype size, Qt::Initialization)
+/*! \fn template <typename T> QList<T>::QList(qsizetype size, BobUI::Initialization)
     \since 6.8
 
     Constructs a list with an initial size of \a size elements.
@@ -264,7 +264,7 @@
 
     \list
 
-    \li if \c{T} has a constructor that accepts \c{Qt::Uninitialized},
+    \li if \c{T} has a constructor that accepts \c{BobUI::Uninitialized},
     that constructor will be used to initialize the elements;
 
     \li otherwise, each element is default constructed. For
@@ -475,7 +475,7 @@
     If this list is not shared, the capacity() is preserved. Use squeeze()
     to shed excess capacity.
 
-    \note In Qt versions prior to 5.7 (for QVector; QList lacked a resize()
+    \note In BobUI versions prior to 5.7 (for QVector; QList lacked a resize()
     until 6.0), this function released the memory used by the list instead of
     preserving the capacity.
 
@@ -611,7 +611,7 @@
     If this list is not shared, the capacity() is preserved. Use squeeze() to
     shed excess capacity.
 
-    \note In Qt versions prior to 5.7 (for QVector) and 6.0 (for QList), this
+    \note In BobUI versions prior to 5.7 (for QVector) and 6.0 (for QList), this
     function released the memory used by the list instead of preserving the
     capacity.
 
@@ -1433,7 +1433,7 @@
 */
 
 /*! \class QList::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Provides an STL-style non-const iterator for QList and QStack.
 
     QList provides both \l{STL-style iterators} and \l{Java-style
@@ -1454,7 +1454,7 @@
 */
 
 /*! \class QList::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Provides an STL-style const iterator for QList and QStack.
 
     QList provides both \l{STL-style iterators} and \l{Java-style
@@ -1489,12 +1489,12 @@
 
 /*! \typedef QList::Iterator
 
-    Qt-style synonym for QList::iterator.
+    BobUI-style synonym for QList::iterator.
 */
 
 /*! \typedef QList::ConstIterator
 
-    Qt-style synonym for QList::const_iterator.
+    BobUI-style synonym for QList::const_iterator.
 */
 
 /*! \typedef QList::const_pointer
@@ -1544,8 +1544,8 @@
     \fn template <typename T> QList<T> QList<T>::toVector() const
     \deprecated
 
-    A no-op in Qt 6. Provided for backwards compatibility with
-    Qt 5, where QList and QVector where two different types.
+    A no-op in BobUI 6. Provided for backwards compatibility with
+    BobUI 5, where QList and QVector where two different types.
 
     Returns this list.
 */
@@ -1554,8 +1554,8 @@
     \fn template <typename T> QList<T> QList<T>::fromVector(const QList<T> &list)
     \deprecated
 
-    A no-op in Qt 6. Provided for backwards compatibility with
-    Qt 5, where QList and QVector were two different types.
+    A no-op in BobUI 6. Provided for backwards compatibility with
+    BobUI 5, where QList and QVector were two different types.
 
     Returns this list.
 */
@@ -1567,7 +1567,7 @@
 
     This function requires the value type to implement \c operator<<().
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 /*! \fn template <typename T> QDataStream &operator>>(QDataStream &in, QList<T> &list)
@@ -1577,7 +1577,7 @@
 
     This function requires the value type to implement \c operator>>().
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 /*! \fn template <typename T, typename AT> qsizetype erase(QList<T> &list, const AT &t)

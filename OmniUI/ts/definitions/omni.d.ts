@@ -11,6 +11,18 @@ declare namespace Omni {
     export class Application {
         static instance(): Application;
         quit(): void;
+
+        // Multi-Input methods
+        getDevices(): InputDevice[];
+        onDeviceConnected: (device: InputDevice) => void;
+        onDeviceDisconnected: (device: InputDevice) => void;
+    }
+
+    export interface InputDevice {
+        id: string;
+        name: string;
+        type: "mouse" | "keyboard" | "touch" | "gamepad";
+        cursorPosition?: { x: number; y: number };
     }
 
     export class Button implements Widget {

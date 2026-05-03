@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdarwinpermissionplugin_p_p.h"
 
@@ -23,27 +23,27 @@
     return self;
 }
 
-- (Qt::PermissionStatus)checkPermission:(QPermission)permission
+- (BobUI::PermissionStatus)checkPermission:(QPermission)permission
 {
     Q_UNUSED(permission);
     return [self currentStatus];
 }
 
-- (Qt::PermissionStatus)currentStatus
+- (BobUI::PermissionStatus)currentStatus
 {
     auto status = CBCentralManager.authorization;
     switch (status) {
     case CBManagerAuthorizationNotDetermined:
-        return Qt::PermissionStatus::Undetermined;
+        return BobUI::PermissionStatus::Undetermined;
     case CBManagerAuthorizationRestricted:
     case CBManagerAuthorizationDenied:
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
     case CBManagerAuthorizationAllowedAlways:
-        return Qt::PermissionStatus::Granted;
+        return BobUI::PermissionStatus::Granted;
     }
 
     qCWarning(lcPermissions) << "Unknown permission status" << status << "detected in" << self;
-    return Qt::PermissionStatus::Denied;
+    return BobUI::PermissionStatus::Denied;
 }
 
 - (void)requestPermission:(QPermission)permission withCallback:(PermissionCallback)callback

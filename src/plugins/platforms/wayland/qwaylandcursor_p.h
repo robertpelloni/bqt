@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDCURSOR_H
 #define QWAYLANDCURSOR_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,12 +16,12 @@
 //
 
 #include <qpa/qplatformcursor.h>
-#include <QtCore/QMap>
-#include <QtWaylandClient/qtwaylandclientglobal.h>
-#include <QtWaylandClient/private/qwayland-cursor-shape-v1.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/QMap>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
+#include <BobUIWaylandClient/private/qwayland-cursor-shape-v1.h>
+#include <BobUICore/private/qglobal_p.h>
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 
 #include <memory>
 
@@ -29,9 +29,9 @@ struct wl_cursor;
 struct wl_cursor_image;
 struct wl_cursor_theme;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandBuffer;
 class QWaylandDisplay;
@@ -43,11 +43,11 @@ class Q_WAYLANDCLIENT_EXPORT QWaylandCursorTheme
 public:
     static std::unique_ptr<QWaylandCursorTheme> create(QWaylandShm *shm, int size, const QString &themeName);
     ~QWaylandCursorTheme();
-    ::wl_cursor *cursor(Qt::CursorShape shape);
+    ::wl_cursor *cursor(BobUI::CursorShape shape);
 
 protected:
     enum WaylandCursor {
-        ArrowCursor = Qt::ArrowCursor,
+        ArrowCursor = BobUI::ArrowCursor,
         UpArrowCursor,
         CrossCursor,
         WaitCursor,
@@ -69,8 +69,8 @@ protected:
         DragCopyCursor,
         DragMoveCursor,
         DragLinkCursor,
-        // The following are used for cursors that don't have equivalents in Qt
-        ResizeNorthCursor = Qt::CustomCursor + 1,
+        // The following are used for cursors that don't have equivalents in BobUI
+        ResizeNorthCursor = BobUI::CustomCursor + 1,
         ResizeSouthCursor,
         ResizeEastCursor,
         ResizeWestCursor,
@@ -88,12 +88,12 @@ protected:
     wl_cursor *m_cursors[NumWaylandCursors] = {};
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandCursorShape : public QtWayland::wp_cursor_shape_device_v1
+class Q_WAYLANDCLIENT_EXPORT QWaylandCursorShape : public BobUIWayland::wp_cursor_shape_device_v1
 {
 public:
     QWaylandCursorShape(struct ::wp_cursor_shape_device_v1 *object);
     ~QWaylandCursorShape();
-    void setShape(uint32_t serial, Qt::CursorShape shape);
+    void setShape(uint32_t serial, BobUI::CursorShape shape);
 };
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandCursor : public QPlatformCursor
@@ -118,7 +118,7 @@ protected:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // cursor
 #endif // QWAYLANDCURSOR_H

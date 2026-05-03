@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmimedata.h"
 
@@ -8,16 +8,16 @@
 #include "qstringlist.h"
 #include "qstringconverter.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline QString textUriListLiteral() { return u"text/uri-list"_s; }
 static inline QString textHtmlLiteral() { return u"text/html"_s; }
 static inline QString textPlainLiteral() { return u"text/plain"_s; }
 static inline QString textPlainUtf8Literal() { return u"text/plain;charset=utf-8"_s; }
 static inline QString applicationXColorLiteral() { return u"application/x-color"_s; }
-static inline QString applicationXQtImageLiteral() { return u"application/x-qt-image"_s; }
+static inline QString applicationXBobUIImageLiteral() { return u"application/x-bobui-image"_s; }
 
 struct QMimeDataStruct
 {
@@ -170,7 +170,7 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QMetaType ty
         }
         case QMetaType::QUrl: {
             auto bav = data.view<QByteArrayView>();
-            // Qt 3.x will send text/uri-list with a trailing
+            // BobUI 3.x will send text/uri-list with a trailing
             // null-terminator (that is *not* sent for any other
             // text/* mime-type), so chop it off
             if (bav.endsWith('\0'))
@@ -215,7 +215,7 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QMetaType ty
 
 /*!
     \class QMimeData
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMimeData class provides a container for data that records information
     about its MIME type.
 
@@ -227,7 +227,7 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QMetaType ty
     copied around within the same application.
 
     QMimeData objects are usually created using \c new and supplied
-    to QDrag or QClipboard objects. This is to enable Qt to manage
+    to QDrag or QClipboard objects. This is to enable BobUI to manage
     the memory that they use.
 
     A single QMimeData object can store the same data using several
@@ -276,7 +276,7 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QMetaType ty
     \section1 Platform-Specific MIME Types
 
     On Windows, formats() will also return custom formats available
-    in the MIME data, using the \c{x-qt-windows-mime} subtype to
+    in the MIME data, using the \c{x-bobui-windows-mime} subtype to
     indicate that they represent data in non-standard formats.
     The formats will take the following form:
 
@@ -295,7 +295,7 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QMetaType ty
     \snippet code/src_corelib_kernel_qmimedata.cpp 8
 
     On Windows, the MIME format does not always map directly to the
-    clipboard formats. Qt provides QWindowsMimeConverter to map clipboard
+    clipboard formats. BobUI provides QWindowsMimeConverter to map clipboard
     formats to open-standard MIME formats. Similarly, the
     QUtiMimeConverter maps MIME to Uniform Type Identifiers on macOS and iOS.
 
@@ -347,7 +347,7 @@ QList<QUrl> QMimeData::urls() const
 
     URLs correspond to the MIME type \c text/uri-list.
 
-    Since Qt 5.0, setUrls also exports the urls as plain text, if setText
+    Since BobUI 5.0, setUrls also exports the urls as plain text, if setText
     was not called before, to make it possible to drop them into any lineedit
     and text editor.
 
@@ -454,8 +454,8 @@ bool QMimeData::hasHtml() const
     Returns a QVariant storing a QImage if the object can return an
     image; otherwise returns a null variant.
 
-    A QVariant is used because QMimeData belongs to the Qt Core
-    module, whereas QImage belongs to Qt GUI. To convert the
+    A QVariant is used because QMimeData belongs to the BobUI Core
+    module, whereas QImage belongs to BobUI GUI. To convert the
     QVariant to a QImage, simply use qvariant_cast(). For example:
 
     \snippet code/src_corelib_kernel_qmimedata.cpp 5
@@ -465,14 +465,14 @@ bool QMimeData::hasHtml() const
 QVariant QMimeData::imageData() const
 {
     Q_D(const QMimeData);
-    return d->retrieveTypedData(applicationXQtImageLiteral(), QMetaType(QMetaType::QImage));
+    return d->retrieveTypedData(applicationXBobUIImageLiteral(), QMetaType(QMetaType::QImage));
 }
 
 /*!
     Sets the data in the object to the given \a image.
 
-    A QVariant is used because QMimeData belongs to the Qt Core
-    module, whereas QImage belongs to Qt GUI. The conversion
+    A QVariant is used because QMimeData belongs to the BobUI Core
+    module, whereas QImage belongs to BobUI GUI. The conversion
     from QImage to QVariant is implicit. For example:
 
     \snippet code/src_corelib_kernel_qmimedata.cpp 6
@@ -482,7 +482,7 @@ QVariant QMimeData::imageData() const
 void QMimeData::setImageData(const QVariant &image)
 {
     Q_D(QMimeData);
-    d->setData(applicationXQtImageLiteral(), image);
+    d->setData(applicationXBobUIImageLiteral(), image);
 }
 
 /*!
@@ -493,7 +493,7 @@ void QMimeData::setImageData(const QVariant &image)
 */
 bool QMimeData::hasImage() const
 {
-    return hasFormat(applicationXQtImageLiteral());
+    return hasFormat(applicationXBobUIImageLiteral());
 }
 
 /*!
@@ -501,8 +501,8 @@ bool QMimeData::hasImage() const
     color (MIME type \c application/x-color); otherwise returns a
     null variant.
 
-    A QVariant is used because QMimeData belongs to the Qt Core
-    module, whereas QColor belongs to Qt GUI. To convert the
+    A QVariant is used because QMimeData belongs to the BobUI Core
+    module, whereas QColor belongs to BobUI GUI. To convert the
     QVariant to a QColor, simply use qvariant_cast(). For example:
 
     \snippet code/src_corelib_kernel_qmimedata.cpp 7
@@ -564,7 +564,7 @@ QByteArray QMimeData::data(const QString &mimeType) const
     setColorData() instead.
 
     Note that if you want to use a custom data type in an item view drag and drop
-    operation, you must register it as a Qt \l{QMetaType}{meta type}, using the
+    operation, you must register it as a BobUI \l{QMetaType}{meta type}, using the
     Q_DECLARE_METATYPE() macro, and implement stream operators for it.
 
     \sa hasFormat(), QMetaType, {QMetaType::}{Q_DECLARE_METATYPE()}
@@ -663,6 +663,6 @@ void QMimeData::removeFormat(const QString &mimeType)
     d->removeData(mimeType);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmimedata.cpp"

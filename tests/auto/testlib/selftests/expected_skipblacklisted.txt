@@ -1,5 +1,5 @@
 ********* Start testing of tst_SkipBlacklisted *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_SkipBlacklisted::initTestCase()
 PASS   : tst_SkipBlacklisted::pass()
 SKIP   : tst_SkipBlacklisted::blacklisted() Skipping blacklisted test since -skipblacklisted option is set.

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKACCESSCACHE_P_H
 #define QNETWORKACCESSCACHE_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include "QtCore/qobject.h"
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qbytearray.h"
-#include <QtCore/qflags.h>
-#include "QtCore/qhash.h"
-#include "QtCore/qmetatype.h"
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include "BobUICore/qobject.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qbytearray.h"
+#include <BobUICore/qflags.h>
+#include "BobUICore/qhash.h"
+#include "BobUICore/qmetatype.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkRequest;
 class QUrl;
@@ -50,7 +50,7 @@ public:
             Expires = 0x01,
             Shareable = 0x02,
         };
-        typedef QFlags<Option> Options; // #### QTBUG-127269
+        typedef QFlags<Option> Options; // #### BOBUIBUG-127269
 
         virtual ~CacheableObject();
         virtual void dispose() = 0;
@@ -70,7 +70,7 @@ public:
     void removeEntry(const QByteArray &key);
 
 protected:
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
 
 private:
     // idea copied from qcache.h
@@ -87,6 +87,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QNetworkAccessCache::CacheableObject::Options)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

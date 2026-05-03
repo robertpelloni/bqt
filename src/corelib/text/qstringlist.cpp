@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qstringlist.h>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #  include <qregularexpression.h>
 #endif
 #include <private/qduplicatetracker_p.h>
-#include <QtCore/qlatin1stringmatcher.h>
+#include <BobUICore/qlatin1stringmatcher.h>
 
 #include <algorithm>
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \typedef QStringListIterator
     \relates QStringList
@@ -40,7 +40,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QStringList
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStringList class provides a list of strings.
 
     \ingroup tools
@@ -185,12 +185,12 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QStringList::sort(Qt::CaseSensitivity cs)
+    \fn void QStringList::sort(BobUI::CaseSensitivity cs)
 
     Sorts the list of strings in ascending order.
 
 //! [comparison-case-sensitivity]
-    If \a cs is \l Qt::CaseSensitive (the default), the string comparison
+    If \a cs is \l BobUI::CaseSensitive (the default), the string comparison
     is case sensitive; otherwise the comparison is case insensitive.
 //! [comparison-case-sensitivity]
 
@@ -205,13 +205,13 @@ QT_BEGIN_NAMESPACE
     integer index.
 */
 
-void QtPrivate::QStringList_sort(QStringList *that, Qt::CaseSensitivity cs)
+void BobUIPrivate::QStringList_sort(QStringList *that, BobUI::CaseSensitivity cs)
 {
-    if (cs == Qt::CaseSensitive) {
+    if (cs == BobUI::CaseSensitive) {
         std::sort(that->begin(), that->end());
     } else {
         auto CISCompare = [](const auto &s1, const auto &s2) {
-            return s1.compare(s2, Qt::CaseInsensitive) < 0;
+            return s1.compare(s2, BobUI::CaseInsensitive) < 0;
         };
         std::sort(that->begin(), that->end(), CISCompare);
     }
@@ -219,7 +219,7 @@ void QtPrivate::QStringList_sort(QStringList *that, Qt::CaseSensitivity cs)
 
 
 /*!
-    \fn QStringList QStringList::filter(const QString &str, Qt::CaseSensitivity cs) const
+    \fn QStringList QStringList::filter(const QString &str, BobUI::CaseSensitivity cs) const
 
     Returns a list of all the strings containing the substring \a str.
 
@@ -237,7 +237,7 @@ void QtPrivate::QStringList_sort(QStringList *that, Qt::CaseSensitivity cs)
 */
 
 template <typename String>
-static QStringList filter_helper(const QStringList &that, const String &needle, Qt::CaseSensitivity cs)
+static QStringList filter_helper(const QStringList &that, const String &needle, BobUI::CaseSensitivity cs)
 {
     QStringList res;
     for (const auto &s : that) {
@@ -248,12 +248,12 @@ static QStringList filter_helper(const QStringList &that, const String &needle, 
 }
 
 /*!
-    \fn QStringList QStringList::filter(QStringView str, Qt::CaseSensitivity cs) const
+    \fn QStringList QStringList::filter(QStringView str, BobUI::CaseSensitivity cs) const
     \overload
     \since 5.14
 */
-QStringList QtPrivate::QStringList_filter(const QStringList *that, QStringView str,
-                                          Qt::CaseSensitivity cs)
+QStringList BobUIPrivate::QStringList_filter(const QStringList *that, QStringView str,
+                                          BobUI::CaseSensitivity cs)
 {
     return filter_helper(*that, str, cs);
 }
@@ -291,7 +291,7 @@ QStringList QtPrivate::QStringList_filter(const QStringList *that, QStringView s
 
     \sa contains(), filter(const QStringMatcher &)
 */
-QStringList QtPrivate::QStringList_filter(const QStringList &that, const QStringMatcher &matcher)
+QStringList BobUIPrivate::QStringList_filter(const QStringList &that, const QStringMatcher &matcher)
 {
     QStringList res;
     for (const auto &s : that) {
@@ -301,7 +301,7 @@ QStringList QtPrivate::QStringList_filter(const QStringList &that, const QString
     return res;
 }
 
-QStringList QtPrivate::QStringList_filter(const QStringList &that, const QLatin1StringMatcher &matcher)
+QStringList BobUIPrivate::QStringList_filter(const QStringList &that, const QLatin1StringMatcher &matcher)
 {
     QStringList res;
     for (const auto &s : that) {
@@ -312,19 +312,19 @@ QStringList QtPrivate::QStringList_filter(const QStringList &that, const QLatin1
 }
 
 /*!
-    \fn QStringList QStringList::filter(QLatin1StringView str, Qt::CaseSensitivity cs) const
+    \fn QStringList QStringList::filter(QLatin1StringView str, BobUI::CaseSensitivity cs) const
     \since 6.7
     \overload
 */
 
-QStringList QtPrivate::QStringList_filter(const QStringList &that, QLatin1StringView needle,
-                                          Qt::CaseSensitivity cs)
+QStringList BobUIPrivate::QStringList_filter(const QStringList &that, QLatin1StringView needle,
+                                          BobUI::CaseSensitivity cs)
 {
     return filter_helper(that, needle, cs);
 }
 
 template<typename T>
-static bool stringList_contains(const QStringList &stringList, const T &str, Qt::CaseSensitivity cs)
+static bool stringList_contains(const QStringList &stringList, const T &str, BobUI::CaseSensitivity cs)
 {
     for (const auto &string : stringList) {
         if (string.size() == str.size() && string.compare(str, cs) == 0)
@@ -335,7 +335,7 @@ static bool stringList_contains(const QStringList &stringList, const T &str, Qt:
 
 
 /*!
-    \fn bool QStringList::contains(const QString &str, Qt::CaseSensitivity cs) const
+    \fn bool QStringList::contains(const QString &str, BobUI::CaseSensitivity cs) const
 
     Returns \c true if the list contains the string \a str; otherwise
     returns \c false.
@@ -346,7 +346,7 @@ static bool stringList_contains(const QStringList &stringList, const T &str, Qt:
  */
 
 /*!
-    \fn bool QStringList::contains(QStringView str, Qt::CaseSensitivity cs) const
+    \fn bool QStringList::contains(QStringView str, BobUI::CaseSensitivity cs) const
     \overload
     \since 5.12
 
@@ -355,14 +355,14 @@ static bool stringList_contains(const QStringList &stringList, const T &str, Qt:
 
     \include qstringlist.cpp comparison-case-sensitivity
  */
-bool QtPrivate::QStringList_contains(const QStringList *that, QStringView str,
-                                     Qt::CaseSensitivity cs)
+bool BobUIPrivate::QStringList_contains(const QStringList *that, QStringView str,
+                                     BobUI::CaseSensitivity cs)
 {
     return stringList_contains(*that, str, cs);
 }
 
 /*!
-    \fn bool QStringList::contains(QLatin1StringView str, Qt::CaseSensitivity cs) const
+    \fn bool QStringList::contains(QLatin1StringView str, BobUI::CaseSensitivity cs) const
     \overload
     \since 5.10
 
@@ -373,14 +373,14 @@ bool QtPrivate::QStringList_contains(const QStringList *that, QStringView str,
 
     \sa indexOf(), lastIndexOf(), QString::contains()
  */
-bool QtPrivate::QStringList_contains(const QStringList *that, QLatin1StringView str,
-                                     Qt::CaseSensitivity cs)
+bool BobUIPrivate::QStringList_contains(const QStringList *that, QLatin1StringView str,
+                                     BobUI::CaseSensitivity cs)
 {
     return stringList_contains(*that, str, cs);
 }
 
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \fn QStringList QStringList::filter(const QRegularExpression &re) const
     \overload
@@ -389,7 +389,7 @@ bool QtPrivate::QStringList_contains(const QStringList *that, QLatin1StringView 
     Returns a list of all the strings that match the regular
     expression \a re.
 */
-QStringList QtPrivate::QStringList_filter(const QStringList *that, const QRegularExpression &re)
+QStringList BobUIPrivate::QStringList_filter(const QStringList *that, const QRegularExpression &re)
 {
     QStringList res;
     for (const auto &str : *that) {
@@ -398,10 +398,10 @@ QStringList QtPrivate::QStringList_filter(const QStringList *that, const QRegula
     }
     return res;
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 /*!
-    \fn QStringList &QStringList::replaceInStrings(const QString &before, const QString &after, Qt::CaseSensitivity cs)
+    \fn QStringList &QStringList::replaceInStrings(const QString &before, const QString &after, BobUI::CaseSensitivity cs)
 
     Returns a string list where every string has had the \a before
     text replaced with the \a after text wherever the \a before text
@@ -421,24 +421,24 @@ QStringList QtPrivate::QStringList_filter(const QStringList *that, const QRegula
 */
 
 /*!
-    \fn QStringList &QStringList::replaceInStrings(QStringView before, const QString &after, Qt::CaseSensitivity cs)
+    \fn QStringList &QStringList::replaceInStrings(QStringView before, const QString &after, BobUI::CaseSensitivity cs)
     \overload
     \since 5.14
 */
 
 /*!
-    \fn QStringList &QStringList::replaceInStrings(const QString &before, QStringView after, Qt::CaseSensitivity cs)
+    \fn QStringList &QStringList::replaceInStrings(const QString &before, QStringView after, BobUI::CaseSensitivity cs)
     \overload
     \since 5.14
 */
 
 /*!
-    \fn QStringList &QStringList::replaceInStrings(QStringView before, QStringView after, Qt::CaseSensitivity cs)
+    \fn QStringList &QStringList::replaceInStrings(QStringView before, QStringView after, BobUI::CaseSensitivity cs)
     \overload
     \since 5.14
 */
-void QtPrivate::QStringList_replaceInStrings(QStringList *that, QStringView before,
-                                             QStringView after, Qt::CaseSensitivity cs)
+void BobUIPrivate::QStringList_replaceInStrings(QStringList *that, QStringView before,
+                                             QStringView after, BobUI::CaseSensitivity cs)
 {
     // Before potentially detaching "that" list, check if any string contains "before"
     qsizetype i = -1;
@@ -455,7 +455,7 @@ void QtPrivate::QStringList_replaceInStrings(QStringList *that, QStringView befo
         (*that)[i].replace(before.data(), before.size(), after.data(), after.size(), cs);
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \fn QStringList &QStringList::replaceInStrings(const QRegularExpression &re, const QString &after)
     \overload
@@ -479,7 +479,7 @@ void QtPrivate::QStringList_replaceInStrings(QStringList *that, QStringView befo
     \snippet qstringlist/main.cpp 5
     \snippet qstringlist/main.cpp 17
 */
-void QtPrivate::QStringList_replaceInStrings(QStringList *that, const QRegularExpression &re,
+void BobUIPrivate::QStringList_replaceInStrings(QStringList *that, const QRegularExpression &re,
                                              const QString &after)
 {
     // Before potentially detaching "that" list, check if any string contains "before"
@@ -496,7 +496,7 @@ void QtPrivate::QStringList_replaceInStrings(QStringList *that, const QRegularEx
     for (; i < that->size(); ++i)
         (*that)[i].replace(re, after);
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 static qsizetype accumulatedSize(const QStringList &list, qsizetype seplen)
 {
@@ -524,7 +524,7 @@ static qsizetype accumulatedSize(const QStringList &list, qsizetype seplen)
     \since 5.0
     \overload join()
 */
-QString QtPrivate::QStringList_join(const QStringList *that, const QChar *sep, qsizetype seplen)
+QString BobUIPrivate::QStringList_join(const QStringList *that, const QChar *sep, qsizetype seplen)
 {
     const qsizetype totalLength = accumulatedSize(*that, seplen);
     const qsizetype size = that->size();
@@ -546,7 +546,7 @@ QString QtPrivate::QStringList_join(const QStringList *that, const QChar *sep, q
     \since 5.8
     \overload join()
 */
-QString QtPrivate::QStringList_join(const QStringList &list, QLatin1StringView sep)
+QString BobUIPrivate::QStringList_join(const QStringList &list, QLatin1StringView sep)
 {
     QString result;
     if (!list.isEmpty()) {
@@ -567,7 +567,7 @@ QString QtPrivate::QStringList_join(const QStringList &list, QLatin1StringView s
     \overload
     \since 5.14
 */
-QString QtPrivate::QStringList_join(const QStringList *that, QStringView sep)
+QString BobUIPrivate::QStringList_join(const QStringList *that, QStringView sep)
 {
     return QStringList_join(that, sep.data(), sep.size());
 }
@@ -610,9 +610,9 @@ QString QtPrivate::QStringList_join(const QStringList *that, QStringView sep)
 */
 
 /*!
-    \fn qsizetype QStringList::indexOf(const QString &str, qsizetype from, Qt::CaseSensitivity cs) const
-    \fn qsizetype QStringList::indexOf(QStringView str, qsizetype from, Qt::CaseSensitivity cs) const
-    \fn qsizetype QStringList::indexOf(QLatin1StringView str, qsizetype from, Qt::CaseSensitivity cs) const
+    \fn qsizetype QStringList::indexOf(const QString &str, qsizetype from, BobUI::CaseSensitivity cs) const
+    \fn qsizetype QStringList::indexOf(QStringView str, qsizetype from, BobUI::CaseSensitivity cs) const
+    \fn qsizetype QStringList::indexOf(QLatin1StringView str, qsizetype from, BobUI::CaseSensitivity cs) const
 
     Returns the index position of the first match of \a str in the list,
     searching forward from index position \a from. Returns -1 if no item
@@ -621,7 +621,7 @@ QString QtPrivate::QStringList_join(const QStringList *that, QStringView sep)
     \include qstringlist.cpp comparison-case-sensitivity
 
 //! [overloading-base-class-methods]
-    \note The \a cs parameter was added in Qt 6.7, i.e. these methods now overload
+    \note The \a cs parameter was added in BobUI 6.7, i.e. these methods now overload
     the methods inherited from the base class. Prior to that these methods only
     had two parameters. This change is source compatible and existing code should
     continue to work.
@@ -632,7 +632,7 @@ QString QtPrivate::QStringList_join(const QStringList *that, QStringView sep)
 
 template <typename String>
 qsizetype indexOf_helper(const QStringList &that, String needle, qsizetype from,
-                         Qt::CaseSensitivity cs)
+                         BobUI::CaseSensitivity cs)
 {
     if (from < 0) // Historical behavior
         from = qMax(from + that.size(), 0);
@@ -647,22 +647,22 @@ qsizetype indexOf_helper(const QStringList &that, String needle, qsizetype from,
     return -1;
 }
 
-qsizetype QtPrivate::QStringList_indexOf(const QStringList &that, QStringView needle,
-                                         qsizetype from, Qt::CaseSensitivity cs)
+qsizetype BobUIPrivate::QStringList_indexOf(const QStringList &that, QStringView needle,
+                                         qsizetype from, BobUI::CaseSensitivity cs)
 {
     return indexOf_helper(that, needle, from, cs);
 }
 
-qsizetype QtPrivate::QStringList_indexOf(const QStringList &that, QLatin1StringView needle,
-                                         qsizetype from, Qt::CaseSensitivity cs)
+qsizetype BobUIPrivate::QStringList_indexOf(const QStringList &that, QLatin1StringView needle,
+                                         qsizetype from, BobUI::CaseSensitivity cs)
 {
     return indexOf_helper(that, needle, from, cs);
 }
 
 /*!
-    \fn qsizetype QStringList::lastIndexOf(const QString &str, qsizetype from, Qt::CaseSensitivity cs) const
-    \fn qsizetype QStringList::lastIndexOf(QStringView str, qsizetype from, Qt::CaseSensitivity cs) const
-    \fn qsizetype QStringList::lastIndexOf(QLatin1StringView str, qsizetype from, Qt::CaseSensitivity cs) const
+    \fn qsizetype QStringList::lastIndexOf(const QString &str, qsizetype from, BobUI::CaseSensitivity cs) const
+    \fn qsizetype QStringList::lastIndexOf(QStringView str, qsizetype from, BobUI::CaseSensitivity cs) const
+    \fn qsizetype QStringList::lastIndexOf(QLatin1StringView str, qsizetype from, BobUI::CaseSensitivity cs) const
 
     Returns the index position of the last match of \a str in the list,
     searching backward from index position \a from. If \a from is -1 (the
@@ -678,7 +678,7 @@ qsizetype QtPrivate::QStringList_indexOf(const QStringList &that, QLatin1StringV
 
 template <typename String>
 qsizetype lastIndexof_helper(const QStringList &that, String needle, qsizetype from,
-                             Qt::CaseSensitivity cs)
+                             BobUI::CaseSensitivity cs)
 {
     if (from < 0)
         from += that.size();
@@ -693,19 +693,19 @@ qsizetype lastIndexof_helper(const QStringList &that, String needle, qsizetype f
     return -1;
 }
 
-qsizetype QtPrivate::QStringList_lastIndexOf(const QStringList &that, QLatin1StringView needle,
-                                            qsizetype from, Qt::CaseSensitivity cs)
+qsizetype BobUIPrivate::QStringList_lastIndexOf(const QStringList &that, QLatin1StringView needle,
+                                            qsizetype from, BobUI::CaseSensitivity cs)
 {
     return lastIndexof_helper(that, needle, from, cs);
 }
 
-qsizetype QtPrivate::QStringList_lastIndexOf(const QStringList &that, QStringView needle,
-                                             qsizetype from, Qt::CaseSensitivity cs)
+qsizetype BobUIPrivate::QStringList_lastIndexOf(const QStringList &that, QStringView needle,
+                                             qsizetype from, BobUI::CaseSensitivity cs)
 {
     return lastIndexof_helper(that, needle, from, cs);
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \fn qsizetype QStringList::indexOf(const QRegularExpression &re, qsizetype from) const
     \overload
@@ -717,7 +717,7 @@ qsizetype QtPrivate::QStringList_lastIndexOf(const QStringList &that, QStringVie
 
     \sa lastIndexOf()
 */
-qsizetype QtPrivate::QStringList_indexOf(const QStringList *that, const QRegularExpression &re, qsizetype from)
+qsizetype BobUIPrivate::QStringList_indexOf(const QStringList *that, const QRegularExpression &re, qsizetype from)
 {
     if (from < 0)
         from = qMax(from + that->size(), qsizetype(0));
@@ -745,7 +745,7 @@ qsizetype QtPrivate::QStringList_indexOf(const QStringList *that, const QRegular
 
     \sa indexOf()
 */
-qsizetype QtPrivate::QStringList_lastIndexOf(const QStringList *that, const QRegularExpression &re, qsizetype from)
+qsizetype BobUIPrivate::QStringList_lastIndexOf(const QStringList *that, const QRegularExpression &re, qsizetype from)
 {
     if (from < 0)
         from += that->size();
@@ -762,7 +762,7 @@ qsizetype QtPrivate::QStringList_lastIndexOf(const QStringList *that, const QReg
     }
     return -1;
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 /*!
     \fn qsizetype QStringList::removeDuplicates()
@@ -775,10 +775,10 @@ qsizetype QtPrivate::QStringList_lastIndexOf(const QStringList *that, const QReg
 
     Returns the number of removed entries.
 */
-qsizetype QtPrivate::QStringList_removeDuplicates(QStringList *that)
+qsizetype BobUIPrivate::QStringList_removeDuplicates(QStringList *that)
 {
     QDuplicateTracker<QString> seen(that->size());
     return that->removeIf([&](const QString &s) { return seen.hasSeen(s); });
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

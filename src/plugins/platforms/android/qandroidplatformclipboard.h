@@ -1,19 +1,19 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMCLIPBOARD_H
 #define QANDROIDPLATFORMCLIPBOARD_H
 
 #include <qpa/qplatformclipboard.h>
 #include <QMimeData>
-#include <QtCore/qjnitypes.h>
+#include <BobUICore/qjnitypes.h>
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_DECLARE_JNI_CLASS(QtClipboardManager, "org/qtproject/qt/android/QtClipboardManager");
+Q_DECLARE_JNI_CLASS(BobUIClipboardManager, "org/bobuiproject/bobui/android/BobUIClipboardManager");
 
 class QAndroidPlatformClipboard : public QPlatformClipboard
 {
@@ -35,10 +35,10 @@ private:
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(onClipboardDataChanged)
 
     QMimeData *data = nullptr;
-    QtJniTypes::QtClipboardManager m_clipboardManager = nullptr;
+    BobUIJniTypes::BobUIClipboardManager m_clipboardManager = nullptr;
 };
 
-QT_END_NAMESPACE
-#endif // QT_NO_CLIPBOARD
+BOBUI_END_NAMESPACE
+#endif // BOBUI_NO_CLIPBOARD
 
 #endif // QANDROIDPLATFORMCLIPBOARD_H

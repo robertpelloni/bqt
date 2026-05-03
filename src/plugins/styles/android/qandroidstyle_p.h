@@ -1,6 +1,6 @@
 // Copyright (C) 2013 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QANDROIDSTYLE_P_H
 #define QANDROIDSTYLE_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qstylefactory.cpp.  This header may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtWidgets/private/qfusionstyle_p.h>
-#include <QtCore/QList>
-#include <QtCore/QMargins>
-#include <QtCore/QHash>
-#include <QtCore/QVariantMap>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIWidgets/private/qfusionstyle_p.h>
+#include <BobUICore/QList>
+#include <BobUICore/QMargins>
+#include <BobUICore/QHash>
+#include <BobUICore/QVariantMap>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_WIDGETS_EXPORT QAndroidStyle : public QFusionStyle
 {
@@ -171,12 +171,12 @@ public:
         AndroidClipDrawable(const QVariantMap &drawable, ItemType itemType);
         ~AndroidClipDrawable();
         virtual AndroidDrawableType type() const;
-        virtual void setFactor(double factor, Qt::Orientation orientation);
+        virtual void setFactor(double factor, BobUI::Orientation orientation);
         virtual void draw(QPainter *painter, const QStyleOption *opt) const;
 
     private:
         double m_factor;
-        Qt::Orientation m_orientation;
+        BobUI::Orientation m_orientation;
         const AndroidDrawable *m_drawable;
     };
 
@@ -202,7 +202,7 @@ public:
         AndroidLayerDrawable(const QVariantMap &drawable, QAndroidStyle::ItemType itemType);
         ~AndroidLayerDrawable();
         virtual AndroidDrawableType type() const;
-        virtual void setFactor(int id, double factor, Qt::Orientation orientation);
+        virtual void setFactor(int id, double factor, BobUI::Orientation orientation);
         virtual void draw(QPainter *painter, const QStyleOption *opt) const;
         AndroidDrawable *layer(int id) const;
         QSize size() const;
@@ -211,7 +211,7 @@ public:
         QList<LayerType> m_layers;
         int m_id;
         double m_factor;
-        Qt::Orientation m_orientation;
+        BobUI::Orientation m_orientation;
     };
 
     class AndroidControl
@@ -337,12 +337,12 @@ public:
 
 private:
     Q_DISABLE_COPY_MOVE(QAndroidStyle)
-    static ItemType qtControl(QStyle::ComplexControl control);
-    static ItemType qtControl(QStyle::ContentsType contentsType);
-    static ItemType qtControl(QStyle::ControlElement controlElement);
-    static ItemType qtControl(QStyle::PrimitiveElement primitiveElement);
-    static ItemType qtControl(QStyle::SubElement subElement);
-    static ItemType qtControl(const QString &android);
+    static ItemType bobuiControl(QStyle::ComplexControl control);
+    static ItemType bobuiControl(QStyle::ContentsType contentsType);
+    static ItemType bobuiControl(QStyle::ControlElement controlElement);
+    static ItemType bobuiControl(QStyle::PrimitiveElement primitiveElement);
+    static ItemType bobuiControl(QStyle::SubElement subElement);
+    static ItemType bobuiControl(const QString &android);
 
 private:
     typedef QHash<int, AndroidControl *> AndroidControlsHash;
@@ -351,6 +351,6 @@ private:
     AndroidCompoundButtonControl *checkBoxControl;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDSTYLE_P_H

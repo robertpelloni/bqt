@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WINDOW_H
 #define WINDOW_H
 
 #include <QWidget>
 
-QT_FORWARD_DECLARE_CLASS(QComboBox)
-QT_FORWARD_DECLARE_CLASS(QDataWidgetMapper)
-QT_FORWARD_DECLARE_CLASS(QItemSelectionModel)
-QT_FORWARD_DECLARE_CLASS(QLabel)
-QT_FORWARD_DECLARE_CLASS(QLineEdit)
-QT_FORWARD_DECLARE_CLASS(QPushButton)
-QT_FORWARD_DECLARE_CLASS(QSqlRelationalTableModel)
-QT_FORWARD_DECLARE_CLASS(QStandardItemModel)
-QT_FORWARD_DECLARE_CLASS(QStringListModel)
-QT_FORWARD_DECLARE_CLASS(QTextEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QComboBox)
+BOBUI_FORWARD_DECLARE_CLASS(QDataWidgetMapper)
+BOBUI_FORWARD_DECLARE_CLASS(QItemSelectionModel)
+BOBUI_FORWARD_DECLARE_CLASS(QLabel)
+BOBUI_FORWARD_DECLARE_CLASS(QLineEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QPushButton)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlRelationalTableModel)
+BOBUI_FORWARD_DECLARE_CLASS(QStandardItemModel)
+BOBUI_FORWARD_DECLARE_CLASS(QStringListModel)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextEdit)
 
 //! [Window definition]
 class Window : public QWidget
@@ -35,7 +35,7 @@ private:
     QLabel *addressLabel;
     QLabel *typeLabel;
     QLineEdit *nameEdit;
-    QTextEdit *addressEdit;
+    BOBUIextEdit *addressEdit;
     QComboBox *typeComboBox;
     QPushButton *nextButton;
     QPushButton *previousButton;

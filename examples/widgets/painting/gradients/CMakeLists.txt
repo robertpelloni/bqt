@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(gradients LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(gradients
+bobui_add_executable(gradients
     gradients.cpp gradients.h
     main.cpp
 )
@@ -23,9 +23,9 @@ if(NOT TARGET painting_shared::painting_shared)
 endif()
 
 target_link_libraries(gradients PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
     painting_shared::painting_shared
 )
 
@@ -68,7 +68,7 @@ set(shared_resource_files
     "../shared/images/title_stretch.png"
 )
 
-qt_add_resources(gradients "shared"
+bobui_add_resources(gradients "shared"
     PREFIX
         "/res"
     BASE
@@ -82,7 +82,7 @@ set(gradients_resource_files
     "gradients.html"
 )
 
-qt_add_resources(gradients "gradients"
+bobui_add_resources(gradients "gradients"
     PREFIX
         "/res/gradients"
     FILES
@@ -95,7 +95,7 @@ install(TARGETS gradients
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-qt_generate_deploy_app_script(
+bobui_generate_deploy_app_script(
     TARGET gradients
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR

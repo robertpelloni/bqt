@@ -1,5 +1,5 @@
 From 57f112e8a8b826a761bb3af272cd33a76ee3c861 Mon Sep 17 00:00:00 2001
-From: Laszlo Agocs <laszlo.agocs@qt.io>
+From: Laszlo Agocs <laszlo.agocs@bobui.io>
 Date: Sat, 21 Jan 2023 20:07:00 +0100
 Subject: [PATCH] Eliminate warnings in D3D12MA
 

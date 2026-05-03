@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlibinputpointer_p.h"
 #include <libinput.h>
-#include <QtCore/QEvent>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qinputdevicemanager_p.h>
+#include <BobUICore/QEvent>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qinputdevicemanager_p.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qhighdpiscaling_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(qLcLibInputMouse, "qt.qpa.input.mouse")
+Q_STATIC_LOGGING_CATEGORY(qLcLibInputMouse, "bobui.qpa.input.mouse")
 
 QLibInputPointer::QLibInputPointer()
-    : m_buttons(Qt::NoButton)
+    : m_buttons(BobUI::NoButton)
 {
 }
 
@@ -25,30 +25,30 @@ void QLibInputPointer::processButton(libinput_event_pointer *e)
     const uint32_t b = libinput_event_pointer_get_button(e);
     const bool pressed = libinput_event_pointer_get_button_state(e) == LIBINPUT_BUTTON_STATE_PRESSED;
 
-    Qt::MouseButton button = Qt::NoButton;
+    BobUI::MouseButton button = BobUI::NoButton;
     switch (b) {
-    case 0x110: button = Qt::LeftButton; break;    // BTN_LEFT
-    case 0x111: button = Qt::RightButton; break;
-    case 0x112: button = Qt::MiddleButton; break;
-    case 0x113: button = Qt::ExtraButton1; break;  // AKA Qt::BackButton
-    case 0x114: button = Qt::ExtraButton2; break;  // AKA Qt::ForwardButton
-    case 0x115: button = Qt::ExtraButton3; break;  // AKA Qt::TaskButton
-    case 0x116: button = Qt::ExtraButton4; break;
-    case 0x117: button = Qt::ExtraButton5; break;
-    case 0x118: button = Qt::ExtraButton6; break;
-    case 0x119: button = Qt::ExtraButton7; break;
-    case 0x11a: button = Qt::ExtraButton8; break;
-    case 0x11b: button = Qt::ExtraButton9; break;
-    case 0x11c: button = Qt::ExtraButton10; break;
-    case 0x11d: button = Qt::ExtraButton11; break;
-    case 0x11e: button = Qt::ExtraButton12; break;
-    case 0x11f: button = Qt::ExtraButton13; break;
+    case 0x110: button = BobUI::LeftButton; break;    // BTN_LEFT
+    case 0x111: button = BobUI::RightButton; break;
+    case 0x112: button = BobUI::MiddleButton; break;
+    case 0x113: button = BobUI::ExtraButton1; break;  // AKA BobUI::BackButton
+    case 0x114: button = BobUI::ExtraButton2; break;  // AKA BobUI::ForwardButton
+    case 0x115: button = BobUI::ExtraButton3; break;  // AKA BobUI::TaskButton
+    case 0x116: button = BobUI::ExtraButton4; break;
+    case 0x117: button = BobUI::ExtraButton5; break;
+    case 0x118: button = BobUI::ExtraButton6; break;
+    case 0x119: button = BobUI::ExtraButton7; break;
+    case 0x11a: button = BobUI::ExtraButton8; break;
+    case 0x11b: button = BobUI::ExtraButton9; break;
+    case 0x11c: button = BobUI::ExtraButton10; break;
+    case 0x11d: button = BobUI::ExtraButton11; break;
+    case 0x11e: button = BobUI::ExtraButton12; break;
+    case 0x11f: button = BobUI::ExtraButton13; break;
     }
 
     m_buttons.setFlag(button, pressed);
 
     QEvent::Type type = pressed ? QEvent::MouseButtonPress : QEvent::MouseButtonRelease;
-    Qt::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
+    BobUI::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
 
     qCDebug(qLcLibInputMouse) << "processButton" << type << button << m_buttons << m_pos << mods;
     QWindowSystemInterface::handleMouseEvent(nullptr, m_pos, m_pos, m_buttons, button, type, mods);
@@ -64,11 +64,11 @@ void QLibInputPointer::processMotion(libinput_event_pointer *e)
     m_pos.setX(qBound(g.left(), qRound(m_pos.x() + dx), g.right()));
     m_pos.setY(qBound(g.top(), qRound(m_pos.y() + dy), g.bottom()));
 
-    Qt::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
+    BobUI::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
 
     qCDebug(qLcLibInputMouse) << "processMotion" << m_pos << mods;
     QWindowSystemInterface::handleMouseEvent(nullptr, m_pos, m_pos, m_buttons,
-                                             Qt::NoButton, QEvent::MouseMove, mods);
+                                             BobUI::NoButton, QEvent::MouseMove, mods);
 }
 
 void QLibInputPointer::processAbsMotion(libinput_event_pointer *e)
@@ -82,11 +82,11 @@ void QLibInputPointer::processAbsMotion(libinput_event_pointer *e)
     m_pos.setX(qBound(g.left(), qRound(g.left() + x), g.right()));
     m_pos.setY(qBound(g.top(), qRound(g.top() + y), g.bottom()));
 
-    Qt::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
+    BobUI::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
 
     qCDebug(qLcLibInputMouse) << "processAbsMotion" << m_pos << mods;
     QWindowSystemInterface::handleMouseEvent(nullptr, m_pos, m_pos, m_buttons,
-                                             Qt::NoButton, QEvent::MouseMove, mods);
+                                             BobUI::NoButton, QEvent::MouseMove, mods);
 
 }
 
@@ -94,7 +94,7 @@ void QLibInputPointer::processAxis(libinput_event_pointer *e)
 {
     double value; // default axis value is 15 degrees per wheel click
     QPoint angleDelta;
-#if !QT_CONFIG(libinput_axis_api)
+#if !BOBUI_CONFIG(libinput_axis_api)
     value = libinput_event_pointer_get_axis_value(e);
     if (libinput_event_pointer_get_axis(e) == LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL)
         angleDelta.setY(qRound(value));
@@ -102,7 +102,7 @@ void QLibInputPointer::processAxis(libinput_event_pointer *e)
         angleDelta.setX(qRound(value));
 #else
     if (libinput_event_pointer_has_axis(e, LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL)) {
-#if QT_CONFIG(libinput_hires_wheel_support)
+#if BOBUI_CONFIG(libinput_hires_wheel_support)
         value = libinput_event_pointer_get_scroll_value_v120(e, LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL);
 #else
         value = libinput_event_pointer_get_axis_value(e, LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL);
@@ -110,7 +110,7 @@ void QLibInputPointer::processAxis(libinput_event_pointer *e)
         angleDelta.setY(qRound(value));
     }
     if (libinput_event_pointer_has_axis(e, LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL)) {
-#if QT_CONFIG(libinput_hires_wheel_support)
+#if BOBUI_CONFIG(libinput_hires_wheel_support)
         value = libinput_event_pointer_get_scroll_value_v120(e, LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL);
 #else
         value = libinput_event_pointer_get_axis_value(e, LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL);
@@ -118,13 +118,13 @@ void QLibInputPointer::processAxis(libinput_event_pointer *e)
         angleDelta.setX(qRound(value));
     }
 #endif
-#if QT_CONFIG(libinput_hires_wheel_support)
+#if BOBUI_CONFIG(libinput_hires_wheel_support)
     const int factor = -1;
 #else
     const int factor = -8;
 #endif
     angleDelta *= factor;
-    Qt::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
+    BobUI::KeyboardModifiers mods = QGuiApplicationPrivate::inputDeviceManager()->keyboardModifiers();
     qCDebug(qLcLibInputMouse) << "processAxis" << angleDelta << m_pos << mods;
     QWindowSystemInterface::handleWheelEvent(nullptr, m_pos, m_pos, QPoint(), angleDelta, mods);
 }
@@ -139,4 +139,4 @@ void QLibInputPointer::setPos(const QPoint &pos)
     qCDebug(qLcLibInputMouse) << "setPos" << pos << "bounded:" << m_pos;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

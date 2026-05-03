@@ -1,74 +1,74 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwidgettextcontrol_p.h"
 #include "qwidgettextcontrol_p_p.h"
 
-#ifndef QT_NO_TEXTCONTROL
+#ifndef BOBUI_NO_TEXTCONTROL
 
 #include <qfont.h>
 #include <qpainter.h>
 #include <qevent.h>
 #include <qdebug.h>
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qdrag.h>
 #endif
 #include <qclipboard.h>
 #include <qstyle.h>
 #include "private/qapplication_p.h"
-#include "private/qtextdocumentlayout_p.h"
+#include "private/bobuiextdocumentlayout_p.h"
 #include "private/qabstracttextdocumentlayout_p.h"
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "private/qmenu_p.h"
 #endif
-#include "qtextdocument.h"
-#include "private/qtextdocument_p.h"
-#include "private/qtextdocumentfragment_p.h"
-#include "qtextlist.h"
+#include "bobuiextdocument.h"
+#include "private/bobuiextdocument_p.h"
+#include "private/bobuiextdocumentfragment_p.h"
+#include "bobuiextlist.h"
 #include "private/qwidgettextcontrol_p.h"
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
 #  include "private/qstylesheetstyle_p.h"
 #endif
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include "qgraphicssceneevent.h"
 #endif
 #include "qpagedpaintdevice.h"
 #include "private/qpagedpaintdevice_p.h"
-#include "qtextdocumentwriter.h"
+#include "bobuiextdocumentwriter.h"
 #include "qstylehints.h"
-#include "private/qtextcursor_p.h"
+#include "private/bobuiextcursor_p.h"
 
-#include <qtextformat.h>
+#include <bobuiextformat.h>
 #include <qdatetime.h>
 #include <qbuffer.h>
 #include <qapplication.h>
 #include <limits.h>
-#include <qtexttable.h>
+#include <bobuiexttable.h>
 #include <qvariant.h>
 #include <qurl.h>
 #include <qdesktopservices.h>
 #include <qinputmethod.h>
-#if QT_CONFIG(tooltip)
-#include <qtooltip.h>
+#if BOBUI_CONFIG(tooltip)
+#include <bobuiooltip.h>
 #endif
 #include <qstyleoption.h>
-#if QT_CONFIG(lineedit)
-#include <QtWidgets/qlineedit.h>
+#if BOBUI_CONFIG(lineedit)
+#include <BobUIWidgets/qlineedit.h>
 #endif
-#include <QtGui/qaccessible.h>
-#include <QtCore/qmetaobject.h>
+#include <BobUIGui/qaccessible.h>
+#include <BobUICore/qmetaobject.h>
 #ifdef Q_OS_WASM
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/private/qstdweb_p.h>
 #endif
 
 #include <private/qoffsetstringarray_p.h>
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #include "private/qapplication_p.h"
 #include "private/qshortcutmap_p.h"
 #include <qkeysequence.h>
-#define ACCEL_KEY(k) (!QCoreApplication::testAttribute(Qt::AA_DontShowShortcutsInContextMenus) \
+#define ACCEL_KEY(k) (!QCoreApplication::testAttribute(BobUI::AA_DontShowShortcutsInContextMenus) \
                       && !QGuiApplicationPrivate::instance()->shortcutMap.hasShortcutForKeySequence(k) ? \
                       u'\t' + QKeySequence(k).toString(QKeySequence::NativeText) : QString())
 
@@ -78,20 +78,20 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-// could go into QTextCursor...
-static QTextLine currentTextLine(const QTextCursor &cursor)
+// could go into BOBUIextCursor...
+static BOBUIextLine currentTextLine(const BOBUIextCursor &cursor)
 {
-    const QTextBlock block = cursor.block();
+    const BOBUIextBlock block = cursor.block();
     if (!block.isValid())
-        return QTextLine();
+        return BOBUIextLine();
 
-    const QTextLayout *layout = block.layout();
+    const BOBUIextLayout *layout = block.layout();
     if (!layout)
-        return QTextLine();
+        return BOBUIextLine();
 
     const int relativePos = cursor.position() - block.position();
     return layout->lineForTextPosition(relativePos);
@@ -100,12 +100,12 @@ static QTextLine currentTextLine(const QTextCursor &cursor)
 QWidgetTextControlPrivate::QWidgetTextControlPrivate()
     : doc(nullptr), cursorOn(false), cursorVisible(false), cursorIsFocusIndicator(false),
 #ifndef Q_OS_ANDROID
-      interactionFlags(Qt::TextEditorInteraction),
+      interactionFlags(BobUI::TextEditorInteraction),
 #else
-      interactionFlags(Qt::TextEditable | Qt::TextSelectableByKeyboard),
+      interactionFlags(BobUI::TextEditable | BobUI::TextSelectableByKeyboard),
 #endif
       dragEnabled(true),
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
       mousePressed(false), mightStartDrag(false),
 #endif
       lastSelectionPosition(0), lastSelectionAnchor(0),
@@ -114,7 +114,7 @@ QWidgetTextControlPrivate::QWidgetTextControlPrivate()
       acceptRichText(true),
       preeditCursor(0), hideCursor(false),
       hasFocus(false),
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
       hasEditFocus(false),
 #endif
       isEnabled(true),
@@ -126,7 +126,7 @@ QWidgetTextControlPrivate::QWidgetTextControlPrivate()
 
 bool QWidgetTextControlPrivate::cursorMoveKeyEvent(QKeyEvent *e)
 {
-#ifdef QT_NO_SHORTCUT
+#ifdef BOBUI_NO_SHORTCUT
     Q_UNUSED(e);
 #endif
 
@@ -134,116 +134,116 @@ bool QWidgetTextControlPrivate::cursorMoveKeyEvent(QKeyEvent *e)
     if (cursor.isNull())
         return false;
 
-    const QTextCursor oldSelection = cursor;
+    const BOBUIextCursor oldSelection = cursor;
     const int oldCursorPos = cursor.position();
 
-    QTextCursor::MoveMode mode = QTextCursor::MoveAnchor;
-    QTextCursor::MoveOperation op = QTextCursor::NoMove;
+    BOBUIextCursor::MoveMode mode = BOBUIextCursor::MoveAnchor;
+    BOBUIextCursor::MoveOperation op = BOBUIextCursor::NoMove;
 
     if (false) {
     }
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (e == QKeySequence::MoveToNextChar) {
-            op = QTextCursor::Right;
+            op = BOBUIextCursor::Right;
     }
     else if (e == QKeySequence::MoveToPreviousChar) {
-            op = QTextCursor::Left;
+            op = BOBUIextCursor::Left;
     }
     else if (e == QKeySequence::SelectNextChar) {
-           op = QTextCursor::Right;
-           mode = QTextCursor::KeepAnchor;
+           op = BOBUIextCursor::Right;
+           mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectPreviousChar) {
-            op = QTextCursor::Left;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::Left;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectNextWord) {
-            op = QTextCursor::WordRight;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::WordRight;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectPreviousWord) {
-            op = QTextCursor::WordLeft;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::WordLeft;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectStartOfLine) {
-            op = QTextCursor::StartOfLine;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::StartOfLine;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectEndOfLine) {
-            op = QTextCursor::EndOfLine;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::EndOfLine;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectStartOfBlock) {
-            op = QTextCursor::StartOfBlock;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::StartOfBlock;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectEndOfBlock) {
-            op = QTextCursor::EndOfBlock;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::EndOfBlock;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectStartOfDocument) {
-            op = QTextCursor::Start;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::Start;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectEndOfDocument) {
-            op = QTextCursor::End;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::End;
+            mode = BOBUIextCursor::KeepAnchor;
     }
     else if (e == QKeySequence::SelectPreviousLine) {
-            op = QTextCursor::Up;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::Up;
+            mode = BOBUIextCursor::KeepAnchor;
             {
-                QTextBlock block = cursor.block();
-                QTextLine line = currentTextLine(cursor);
+                BOBUIextBlock block = cursor.block();
+                BOBUIextLine line = currentTextLine(cursor);
                 if (!block.previous().isValid()
                     && line.isValid()
                     && line.lineNumber() == 0)
-                    op = QTextCursor::Start;
+                    op = BOBUIextCursor::Start;
             }
     }
     else if (e == QKeySequence::SelectNextLine) {
-            op = QTextCursor::Down;
-            mode = QTextCursor::KeepAnchor;
+            op = BOBUIextCursor::Down;
+            mode = BOBUIextCursor::KeepAnchor;
             {
-                QTextBlock block = cursor.block();
-                QTextLine line = currentTextLine(cursor);
+                BOBUIextBlock block = cursor.block();
+                BOBUIextLine line = currentTextLine(cursor);
                 if (!block.next().isValid()
                     && line.isValid()
                     && line.lineNumber() == block.layout()->lineCount() - 1)
-                    op = QTextCursor::End;
+                    op = BOBUIextCursor::End;
             }
     }
     else if (e == QKeySequence::MoveToNextWord) {
-            op = QTextCursor::WordRight;
+            op = BOBUIextCursor::WordRight;
     }
     else if (e == QKeySequence::MoveToPreviousWord) {
-            op = QTextCursor::WordLeft;
+            op = BOBUIextCursor::WordLeft;
     }
     else if (e == QKeySequence::MoveToEndOfBlock) {
-            op = QTextCursor::EndOfBlock;
+            op = BOBUIextCursor::EndOfBlock;
     }
     else if (e == QKeySequence::MoveToStartOfBlock) {
-            op = QTextCursor::StartOfBlock;
+            op = BOBUIextCursor::StartOfBlock;
     }
     else if (e == QKeySequence::MoveToNextLine) {
-            op = QTextCursor::Down;
+            op = BOBUIextCursor::Down;
     }
     else if (e == QKeySequence::MoveToPreviousLine) {
-            op = QTextCursor::Up;
+            op = BOBUIextCursor::Up;
     }
     else if (e == QKeySequence::MoveToStartOfLine) {
-            op = QTextCursor::StartOfLine;
+            op = BOBUIextCursor::StartOfLine;
     }
     else if (e == QKeySequence::MoveToEndOfLine) {
-            op = QTextCursor::EndOfLine;
+            op = BOBUIextCursor::EndOfLine;
     }
     else if (e == QKeySequence::MoveToStartOfDocument) {
-            op = QTextCursor::Start;
+            op = BOBUIextCursor::Start;
     }
     else if (e == QKeySequence::MoveToEndOfDocument) {
-            op = QTextCursor::End;
+            op = BOBUIextCursor::End;
     }
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
     else {
         return false;
     }
@@ -265,15 +265,15 @@ bool QWidgetTextControlPrivate::cursorMoveKeyEvent(QKeyEvent *e)
     q->ensureCursorVisible();
 
     bool ignoreNavigationEvents = ignoreUnusedNavigationEvents;
-    bool isNavigationEvent = e->key() == Qt::Key_Up || e->key() == Qt::Key_Down;
+    bool isNavigationEvent = e->key() == BobUI::Key_Up || e->key() == BobUI::Key_Down;
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     ignoreNavigationEvents = ignoreNavigationEvents || QApplicationPrivate::keypadNavigationEnabled();
     isNavigationEvent = isNavigationEvent ||
-                        (QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional
-                         && (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right));
+                        (QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional
+                         && (e->key() == BobUI::Key_Left || e->key() == BobUI::Key_Right));
 #else
-    isNavigationEvent = isNavigationEvent || e->key() == Qt::Key_Left || e->key() == Qt::Key_Right;
+    isNavigationEvent = isNavigationEvent || e->key() == BobUI::Key_Left || e->key() == BobUI::Key_Right;
 #endif
 
     if (moved) {
@@ -284,7 +284,7 @@ bool QWidgetTextControlPrivate::cursorMoveKeyEvent(QKeyEvent *e)
         return false;
     }
 
-    selectionChanged(/*forceEmitSelectionChanged =*/(mode == QTextCursor::KeepAnchor));
+    selectionChanged(/*forceEmitSelectionChanged =*/(mode == BOBUIextCursor::KeepAnchor));
 
     repaintOldAndNewSelection(oldSelection);
 
@@ -295,7 +295,7 @@ void QWidgetTextControlPrivate::updateCurrentCharFormat()
 {
     Q_Q(QWidgetTextControl);
 
-    QTextCharFormat fmt = cursor.charFormat();
+    BOBUIextCharFormat fmt = cursor.charFormat();
     if (fmt == lastCharFormat)
         return;
     lastCharFormat = fmt;
@@ -306,15 +306,15 @@ void QWidgetTextControlPrivate::updateCurrentCharFormat()
 
 void QWidgetTextControlPrivate::indent()
 {
-    QTextBlockFormat blockFmt = cursor.blockFormat();
+    BOBUIextBlockFormat blockFmt = cursor.blockFormat();
 
-    QTextList *list = cursor.currentList();
+    BOBUIextList *list = cursor.currentList();
     if (!list) {
-        QTextBlockFormat modifier;
+        BOBUIextBlockFormat modifier;
         modifier.setIndent(blockFmt.indent() + 1);
         cursor.mergeBlockFormat(modifier);
     } else {
-        QTextListFormat format = list->format();
+        BOBUIextListFormat format = list->format();
         format.setIndent(format.indent() + 1);
 
         if (list->itemNumber(cursor.block()) == 1)
@@ -326,16 +326,16 @@ void QWidgetTextControlPrivate::indent()
 
 void QWidgetTextControlPrivate::outdent()
 {
-    QTextBlockFormat blockFmt = cursor.blockFormat();
+    BOBUIextBlockFormat blockFmt = cursor.blockFormat();
 
-    QTextList *list = cursor.currentList();
+    BOBUIextList *list = cursor.currentList();
 
     if (!list) {
-        QTextBlockFormat modifier;
+        BOBUIextBlockFormat modifier;
         modifier.setIndent(blockFmt.indent() - 1);
         cursor.mergeBlockFormat(modifier);
     } else {
-        QTextListFormat listFmt = list->format();
+        BOBUIextListFormat listFmt = list->format();
         listFmt.setIndent(listFmt.indent() - 1);
         list->setFormat(listFmt);
     }
@@ -343,8 +343,8 @@ void QWidgetTextControlPrivate::outdent()
 
 void QWidgetTextControlPrivate::gotoNextTableCell()
 {
-    QTextTable *table = cursor.currentTable();
-    QTextTableCell cell = table->cellAt(cursor);
+    BOBUIextTable *table = cursor.currentTable();
+    BOBUIextTableCell cell = table->cellAt(cursor);
 
     int newColumn = cell.column() + cell.columnSpan();
     int newRow = cell.row();
@@ -362,8 +362,8 @@ void QWidgetTextControlPrivate::gotoNextTableCell()
 
 void QWidgetTextControlPrivate::gotoPreviousTableCell()
 {
-    QTextTable *table = cursor.currentTable();
-    QTextTableCell cell = table->cellAt(cursor);
+    BOBUIextTable *table = cursor.currentTable();
+    BOBUIextTableCell cell = table->cellAt(cursor);
 
     int newColumn = cell.column() - 1;
     int newRow = cell.row();
@@ -383,10 +383,10 @@ void QWidgetTextControlPrivate::createAutoBulletList()
 {
     cursor.beginEditBlock();
 
-    QTextBlockFormat blockFmt = cursor.blockFormat();
+    BOBUIextBlockFormat blockFmt = cursor.blockFormat();
 
-    QTextListFormat listFmt;
-    listFmt.setStyle(QTextListFormat::ListDisc);
+    BOBUIextListFormat listFmt;
+    listFmt.setStyle(BOBUIextListFormat::ListDisc);
     listFmt.setIndent(blockFmt.indent() + 1);
 
     blockFmt.setIndent(0);
@@ -397,22 +397,22 @@ void QWidgetTextControlPrivate::createAutoBulletList()
     cursor.endEditBlock();
 }
 
-void QWidgetTextControlPrivate::init(Qt::TextFormat format, const QString &text, QTextDocument *document)
+void QWidgetTextControlPrivate::init(BobUI::TextFormat format, const QString &text, BOBUIextDocument *document)
 {
     Q_Q(QWidgetTextControl);
     setContent(format, text, document);
 
-    doc->setUndoRedoEnabled(interactionFlags & Qt::TextEditable);
+    doc->setUndoRedoEnabled(interactionFlags & BobUI::TextEditable);
     q->setCursorWidth(-1);
 }
 
-void QWidgetTextControlPrivate::setContent(Qt::TextFormat format, const QString &text, QTextDocument *document)
+void QWidgetTextControlPrivate::setContent(BobUI::TextFormat format, const QString &text, BOBUIextDocument *document)
 {
     Q_Q(QWidgetTextControl);
 
     // for use when called from setPlainText. we may want to re-use the currently
     // set char format then.
-    const QTextCharFormat charFormatForInsertion = cursor.charFormat();
+    const BOBUIextCharFormat charFormatForInsertion = cursor.charFormat();
 
     bool clearDocument = true;
     if (!doc) {
@@ -420,27 +420,27 @@ void QWidgetTextControlPrivate::setContent(Qt::TextFormat format, const QString 
             doc = document;
         } else {
             palette = QApplication::palette("QWidgetTextControl");
-            doc = new QTextDocument(q);
+            doc = new BOBUIextDocument(q);
         }
         clearDocument = false;
         _q_documentLayoutChanged();
-        cursor = QTextCursor(doc);
+        cursor = BOBUIextCursor(doc);
 
 // ####        doc->documentLayout()->setPaintDevice(viewport);
 
-        QObjectPrivate::connect(doc, &QTextDocument::contentsChanged, this,
+        QObjectPrivate::connect(doc, &BOBUIextDocument::contentsChanged, this,
                                 &QWidgetTextControlPrivate::_q_updateCurrentCharFormatAndSelection);
-        QObjectPrivate::connect(doc, &QTextDocument::cursorPositionChanged, this,
+        QObjectPrivate::connect(doc, &BOBUIextDocument::cursorPositionChanged, this,
                                 &QWidgetTextControlPrivate::_q_emitCursorPosChanged);
-        QObjectPrivate::connect(doc, &QTextDocument::documentLayoutChanged, this,
+        QObjectPrivate::connect(doc, &BOBUIextDocument::documentLayoutChanged, this,
                                 &QWidgetTextControlPrivate::_q_documentLayoutChanged);
 
         // convenience signal forwards
-        QObject::connect(doc, &QTextDocument::undoAvailable, q, &QWidgetTextControl::undoAvailable);
-        QObject::connect(doc, &QTextDocument::redoAvailable, q, &QWidgetTextControl::redoAvailable);
-        QObject::connect(doc, &QTextDocument::modificationChanged, q,
+        QObject::connect(doc, &BOBUIextDocument::undoAvailable, q, &QWidgetTextControl::undoAvailable);
+        QObject::connect(doc, &BOBUIextDocument::redoAvailable, q, &QWidgetTextControl::redoAvailable);
+        QObject::connect(doc, &BOBUIextDocument::modificationChanged, q,
                          &QWidgetTextControl::modificationChanged);
-        QObject::connect(doc, &QTextDocument::blockCountChanged, q,
+        QObject::connect(doc, &BOBUIextDocument::blockCountChanged, q,
                          &QWidgetTextControl::blockCountChanged);
     }
 
@@ -449,7 +449,7 @@ void QWidgetTextControlPrivate::setContent(Qt::TextFormat format, const QString 
         doc->setUndoRedoEnabled(false);
 
     //Saving the index save some time.
-    static int contentsChangedIndex = QMetaMethod::fromSignal(&QTextDocument::contentsChanged).methodIndex();
+    static int contentsChangedIndex = QMetaMethod::fromSignal(&BOBUIextDocument::contentsChanged).methodIndex();
     static int textChangedIndex = QMetaMethod::fromSignal(&QWidgetTextControl::textChanged).methodIndex();
     // avoid multiple textChanged() signals being emitted
     QMetaObject::disconnect(doc, contentsChangedIndex, q, textChangedIndex);
@@ -461,32 +461,32 @@ void QWidgetTextControlPrivate::setContent(Qt::TextFormat format, const QString 
         // at the end of the document after loading and when
         // positioning the cursor again to the start of the
         // document.
-        cursor = QTextCursor();
-        if (format == Qt::PlainText) {
-            QTextCursor formatCursor(doc);
+        cursor = BOBUIextCursor();
+        if (format == BobUI::PlainText) {
+            BOBUIextCursor formatCursor(doc);
             // put the setPlainText and the setCharFormat into one edit block,
             // so that the syntax highlight triggers only /once/ for the entire
             // document, not twice.
             formatCursor.beginEditBlock();
             doc->setPlainText(text);
             doc->setUndoRedoEnabled(false);
-            formatCursor.select(QTextCursor::Document);
+            formatCursor.select(BOBUIextCursor::Document);
             formatCursor.setCharFormat(charFormatForInsertion);
             formatCursor.endEditBlock();
-#if QT_CONFIG(textmarkdownreader)
-        } else if (format == Qt::MarkdownText) {
+#if BOBUI_CONFIG(textmarkdownreader)
+        } else if (format == BobUI::MarkdownText) {
             doc->setMarkdown(text);
             doc->setUndoRedoEnabled(false);
 #endif
         } else {
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
             doc->setHtml(text);
 #else
             doc->setPlainText(text);
 #endif
             doc->setUndoRedoEnabled(false);
         }
-        cursor = QTextCursor(doc);
+        cursor = BOBUIextCursor(doc);
     } else if (clearDocument) {
         doc->clear();
     }
@@ -503,8 +503,8 @@ void QWidgetTextControlPrivate::setContent(Qt::TextFormat format, const QString 
     q->ensureCursorVisible();
     emit q->cursorPositionChanged();
 
-    QObjectPrivate::connect(doc, &QTextDocument::contentsChange, this,
-                            &QWidgetTextControlPrivate::_q_contentsChanged, Qt::UniqueConnection);
+    QObjectPrivate::connect(doc, &BOBUIextDocument::contentsChange, this,
+                            &QWidgetTextControlPrivate::_q_contentsChanged, BobUI::UniqueConnection);
 }
 
 void QWidgetTextControlPrivate::startDrag()
@@ -516,7 +516,7 @@ void QWidgetTextControlPrivate::startDrag()
         return;
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     Q_Q(QWidgetTextControl);
     mousePressed = false;
     if (!contextWidget)
@@ -526,16 +526,16 @@ void QWidgetTextControlPrivate::startDrag()
     QDrag *drag = new QDrag(contextWidget);
     drag->setMimeData(data);
 
-    Qt::DropActions actions = Qt::CopyAction;
-    Qt::DropAction action;
-    if (interactionFlags & Qt::TextEditable) {
-        actions |= Qt::MoveAction;
-        action = drag->exec(actions, Qt::MoveAction);
+    BobUI::DropActions actions = BobUI::CopyAction;
+    BobUI::DropAction action;
+    if (interactionFlags & BobUI::TextEditable) {
+        actions |= BobUI::MoveAction;
+        action = drag->exec(actions, BobUI::MoveAction);
     } else {
-        action = drag->exec(actions, Qt::CopyAction);
+        action = drag->exec(actions, BobUI::CopyAction);
     }
 
-    if (action == Qt::MoveAction && drag->target() != contextWidget)
+    if (action == BobUI::MoveAction && drag->target() != contextWidget)
         cursor.removeSelectedText();
 #endif
 }
@@ -543,19 +543,19 @@ void QWidgetTextControlPrivate::startDrag()
 void QWidgetTextControlPrivate::setCursorPosition(const QPointF &pos)
 {
     Q_Q(QWidgetTextControl);
-    const int cursorPos = q->hitTest(pos, Qt::FuzzyHit);
+    const int cursorPos = q->hitTest(pos, BobUI::FuzzyHit);
     if (cursorPos == -1)
         return;
     cursor.setPosition(cursorPos);
 }
 
-void QWidgetTextControlPrivate::setCursorPosition(int pos, QTextCursor::MoveMode mode)
+void QWidgetTextControlPrivate::setCursorPosition(int pos, BOBUIextCursor::MoveMode mode)
 {
     cursor.setPosition(pos, mode);
 
-    if (mode != QTextCursor::KeepAnchor) {
-        selectedWordOnDoubleClick = QTextCursor();
-        selectedBlockOnTrippleClick = QTextCursor();
+    if (mode != BOBUIextCursor::KeepAnchor) {
+        selectedWordOnDoubleClick = BOBUIextCursor();
+        selectedBlockOnTrippleClick = BOBUIextCursor();
     }
 }
 
@@ -565,7 +565,7 @@ void QWidgetTextControlPrivate::repaintCursor()
     emit q->updateRequest(cursorRectPlusUnicodeDirectionMarkers(cursor));
 }
 
-void QWidgetTextControlPrivate::repaintOldAndNewSelection(const QTextCursor &oldSelection)
+void QWidgetTextControlPrivate::repaintOldAndNewSelection(const BOBUIextCursor &oldSelection)
 {
     Q_Q(QWidgetTextControl);
     if (cursor.hasSelection()
@@ -575,9 +575,9 @@ void QWidgetTextControlPrivate::repaintOldAndNewSelection(const QTextCursor &old
         && !oldSelection.hasComplexSelection()
         && cursor.anchor() == oldSelection.anchor()
         ) {
-        QTextCursor differenceSelection(doc);
+        BOBUIextCursor differenceSelection(doc);
         differenceSelection.setPosition(oldSelection.position());
-        differenceSelection.setPosition(cursor.position(), QTextCursor::KeepAnchor);
+        differenceSelection.setPosition(cursor.position(), BOBUIextCursor::KeepAnchor);
         emit q->updateRequest(q->selectionRect(differenceSelection));
     } else {
         if (!oldSelection.isNull())
@@ -591,7 +591,7 @@ void QWidgetTextControlPrivate::selectionChanged(bool forceEmitSelectionChanged 
     Q_Q(QWidgetTextControl);
     if (forceEmitSelectionChanged) {
         emit q->selectionChanged();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (q->parent() && q->parent()->isWidgetType()) {
             QAccessibleTextSelectionEvent ev(q->parent(), cursor.anchor(), cursor.position());
             QAccessible::updateAccessibility(&ev);
@@ -614,7 +614,7 @@ void QWidgetTextControlPrivate::selectionChanged(bool forceEmitSelectionChanged 
                 && (cursor.position() != lastSelectionPosition
                     || cursor.anchor() != lastSelectionAnchor)))) {
         emit q->selectionChanged();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (q->parent() && q->parent()->isWidgetType()) {
             QAccessibleTextSelectionEvent ev(q->parent(), cursor.anchor(), cursor.position());
             QAccessible::updateAccessibility(&ev);
@@ -632,7 +632,7 @@ void QWidgetTextControlPrivate::_q_updateCurrentCharFormatAndSelection()
     selectionChanged();
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void QWidgetTextControlPrivate::setClipboardSelection()
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
@@ -644,7 +644,7 @@ void QWidgetTextControlPrivate::setClipboardSelection()
 }
 #endif
 
-void QWidgetTextControlPrivate::_q_emitCursorPosChanged(const QTextCursor &someCursor)
+void QWidgetTextControlPrivate::_q_emitCursorPosChanged(const BOBUIextCursor &someCursor)
 {
     Q_Q(QWidgetTextControl);
     if (someCursor.isCopyOf(cursor)) {
@@ -655,15 +655,15 @@ void QWidgetTextControlPrivate::_q_emitCursorPosChanged(const QTextCursor &someC
 
 void QWidgetTextControlPrivate::_q_contentsChanged(int from, int charsRemoved, int charsAdded)
 {
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     Q_Q(QWidgetTextControl);
 
     if (QAccessible::isActive() && q->parent() && q->parent()->isWidgetType()) {
-        QTextCursor tmp(doc);
+        BOBUIextCursor tmp(doc);
         tmp.setPosition(from);
         // when setting a new text document the length is off
-        // QTBUG-32583 - characterCount is off by 1 requires the -1
-        tmp.setPosition(qMin(doc->characterCount() - 1, from + charsAdded), QTextCursor::KeepAnchor);
+        // BOBUIBUG-32583 - characterCount is off by 1 requires the -1
+        tmp.setPosition(qMin(doc->characterCount() - 1, from + charsAdded), BOBUIextCursor::KeepAnchor);
         QString newText = tmp.selectedText();
 
         // always report the right number of removed chars, but in lack of the real string use spaces
@@ -737,27 +737,27 @@ void QWidgetTextControlPrivate::extendWordwiseSelection(int suggestedNewPosition
         return;
     }
 
-    QTextCursor curs = selectedWordOnDoubleClick;
-    curs.setPosition(suggestedNewPosition, QTextCursor::KeepAnchor);
+    BOBUIextCursor curs = selectedWordOnDoubleClick;
+    curs.setPosition(suggestedNewPosition, BOBUIextCursor::KeepAnchor);
 
-    if (!curs.movePosition(QTextCursor::StartOfWord))
+    if (!curs.movePosition(BOBUIextCursor::StartOfWord))
         return;
     const int wordStartPos = curs.position();
 
     const int blockPos = curs.block().position();
     const QPointF blockCoordinates = q->blockBoundingRect(curs.block()).topLeft();
 
-    QTextLine line = currentTextLine(curs);
+    BOBUIextLine line = currentTextLine(curs);
     if (!line.isValid())
         return;
 
     const qreal wordStartX = line.cursorToX(curs.position() - blockPos) + blockCoordinates.x();
 
-    if (!curs.movePosition(QTextCursor::EndOfWord))
+    if (!curs.movePosition(BOBUIextCursor::EndOfWord))
         return;
     const int wordEndPos = curs.position();
 
-    const QTextLine otherLine = currentTextLine(curs);
+    const BOBUIextLine otherLine = currentTextLine(curs);
     if (otherLine.textStart() != line.textStart()
         || wordEndPos == wordStartPos)
         return;
@@ -770,10 +770,10 @@ void QWidgetTextControlPrivate::extendWordwiseSelection(int suggestedNewPosition
     if (wordSelectionEnabled) {
         if (suggestedNewPosition < selectedWordOnDoubleClick.position()) {
             cursor.setPosition(selectedWordOnDoubleClick.selectionEnd());
-            setCursorPosition(wordStartPos, QTextCursor::KeepAnchor);
+            setCursorPosition(wordStartPos, BOBUIextCursor::KeepAnchor);
         } else {
             cursor.setPosition(selectedWordOnDoubleClick.selectionStart());
-            setCursorPosition(wordEndPos, QTextCursor::KeepAnchor);
+            setCursorPosition(wordEndPos, BOBUIextCursor::KeepAnchor);
         }
     } else {
         // keep the already selected word even when moving to the left
@@ -787,13 +787,13 @@ void QWidgetTextControlPrivate::extendWordwiseSelection(int suggestedNewPosition
         const qreal differenceToEnd = wordEndX - mouseXPosition;
 
         if (differenceToStart < differenceToEnd)
-            setCursorPosition(wordStartPos, QTextCursor::KeepAnchor);
+            setCursorPosition(wordStartPos, BOBUIextCursor::KeepAnchor);
         else
-            setCursorPosition(wordEndPos, QTextCursor::KeepAnchor);
+            setCursorPosition(wordEndPos, BOBUIextCursor::KeepAnchor);
     }
 
-    if (interactionFlags & Qt::TextSelectableByMouse) {
-#ifndef QT_NO_CLIPBOARD
+    if (interactionFlags & BobUI::TextSelectableByMouse) {
+#ifndef BOBUI_NO_CLIPBOARD
         setClipboardSelection();
 #endif
         selectionChanged(true);
@@ -813,17 +813,17 @@ void QWidgetTextControlPrivate::extendBlockwiseSelection(int suggestedNewPositio
 
     if (suggestedNewPosition < selectedBlockOnTrippleClick.position()) {
         cursor.setPosition(selectedBlockOnTrippleClick.selectionEnd());
-        cursor.setPosition(suggestedNewPosition, QTextCursor::KeepAnchor);
-        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
+        cursor.setPosition(suggestedNewPosition, BOBUIextCursor::KeepAnchor);
+        cursor.movePosition(BOBUIextCursor::StartOfBlock, BOBUIextCursor::KeepAnchor);
     } else {
         cursor.setPosition(selectedBlockOnTrippleClick.selectionStart());
-        cursor.setPosition(suggestedNewPosition, QTextCursor::KeepAnchor);
-        cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        cursor.setPosition(suggestedNewPosition, BOBUIextCursor::KeepAnchor);
+        cursor.movePosition(BOBUIextCursor::EndOfBlock, BOBUIextCursor::KeepAnchor);
+        cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
     }
 
-    if (interactionFlags & Qt::TextSelectableByMouse) {
-#ifndef QT_NO_CLIPBOARD
+    if (interactionFlags & BobUI::TextSelectableByMouse) {
+#ifndef BOBUI_NO_CLIPBOARD
         setClipboardSelection();
 #endif
         selectionChanged(true);
@@ -832,7 +832,7 @@ void QWidgetTextControlPrivate::extendBlockwiseSelection(int suggestedNewPositio
 
 void QWidgetTextControlPrivate::_q_deleteSelected()
 {
-    if (!(interactionFlags & Qt::TextEditable) || !cursor.hasSelection())
+    if (!(interactionFlags & BobUI::TextEditable) || !cursor.hasSelection())
         return;
     cursor.removeSelectedText();
 }
@@ -872,21 +872,21 @@ QWidgetTextControl::QWidgetTextControl(const QString &text, QObject *parent)
     : QInputControl(QInputControl::TextEdit, *new QWidgetTextControlPrivate, parent)
 {
     Q_D(QWidgetTextControl);
-    d->init(Qt::RichText, text);
+    d->init(BobUI::RichText, text);
 }
 
-QWidgetTextControl::QWidgetTextControl(QTextDocument *doc, QObject *parent)
+QWidgetTextControl::QWidgetTextControl(BOBUIextDocument *doc, QObject *parent)
     : QInputControl(QInputControl::TextEdit, *new QWidgetTextControlPrivate, parent)
 {
     Q_D(QWidgetTextControl);
-    d->init(Qt::RichText, QString(), doc);
+    d->init(BobUI::RichText, QString(), doc);
 }
 
 QWidgetTextControl::~QWidgetTextControl()
 {
 }
 
-void QWidgetTextControl::setDocument(QTextDocument *document)
+void QWidgetTextControl::setDocument(BOBUIextDocument *document)
 {
     Q_D(QWidgetTextControl);
     if (d->doc == document)
@@ -900,31 +900,31 @@ void QWidgetTextControl::setDocument(QTextDocument *document)
         delete d->doc;
 
     d->doc = nullptr;
-    d->setContent(Qt::RichText, QString(), document);
+    d->setContent(BobUI::RichText, QString(), document);
 }
 
-QTextDocument *QWidgetTextControl::document() const
+BOBUIextDocument *QWidgetTextControl::document() const
 {
     Q_D(const QWidgetTextControl);
     return d->doc;
 }
 
-void QWidgetTextControl::setTextCursor(const QTextCursor &cursor, bool selectionClipboard)
+void QWidgetTextControl::setTextCursor(const BOBUIextCursor &cursor, bool selectionClipboard)
 {
     Q_D(QWidgetTextControl);
     d->cursorIsFocusIndicator = false;
     const bool posChanged = cursor.position() != d->cursor.position();
-    const QTextCursor oldSelection = d->cursor;
+    const BOBUIextCursor oldSelection = d->cursor;
     d->cursor = cursor;
     d->cursorOn = d->hasFocus
-            && (d->interactionFlags & (Qt::TextSelectableByKeyboard | Qt::TextEditable));
+            && (d->interactionFlags & (BobUI::TextSelectableByKeyboard | BobUI::TextEditable));
     d->_q_updateCurrentCharFormatAndSelection();
     ensureCursorVisible();
     d->repaintOldAndNewSelection(oldSelection);
     if (posChanged)
         emit cursorPositionChanged();
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     if (selectionClipboard)
         d->setClipboardSelection();
 #else
@@ -932,18 +932,18 @@ void QWidgetTextControl::setTextCursor(const QTextCursor &cursor, bool selection
 #endif
 }
 
-QTextCursor QWidgetTextControl::textCursor() const
+BOBUIextCursor QWidgetTextControl::textCursor() const
 {
     Q_D(const QWidgetTextControl);
     return d->cursor;
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 void QWidgetTextControl::cut()
 {
     Q_D(QWidgetTextControl);
-    if (!(d->interactionFlags & Qt::TextEditable) || !d->cursor.hasSelection())
+    if (!(d->interactionFlags & BobUI::TextEditable) || !d->cursor.hasSelection())
         return;
     copy();
     d->cursor.removeSelectedText();
@@ -980,7 +980,7 @@ void QWidgetTextControl::selectAll()
     Q_D(QWidgetTextControl);
     const int selectionLength = qAbs(d->cursor.position() - d->cursor.anchor());
     const int oldCursorPos = d->cursor.position();
-    d->cursor.select(QTextCursor::Document);
+    d->cursor.select(BOBUIextCursor::Document);
     d->selectionChanged(selectionLength != qAbs(d->cursor.position() - d->cursor.anchor()));
     d->cursorIsFocusIndicator = false;
     if (d->cursor.position() != oldCursorPos)
@@ -990,15 +990,15 @@ void QWidgetTextControl::selectAll()
 
 void QWidgetTextControl::processEvent(QEvent *e, const QPointF &coordinateOffset, QWidget *contextWidget)
 {
-    QTransform t;
+    BOBUIransform t;
     t.translate(coordinateOffset.x(), coordinateOffset.y());
     processEvent(e, t, contextWidget);
 }
 
-void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QWidget *contextWidget)
+void QWidgetTextControl::processEvent(QEvent *e, const BOBUIransform &transform, QWidget *contextWidget)
 {
     Q_D(QWidgetTextControl);
-    if (d->interactionFlags == Qt::NoTextInteraction) {
+    if (d->interactionFlags == BobUI::NoTextInteraction) {
         e->ignore();
         return;
     }
@@ -1007,7 +1007,7 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
 
     if (!d->contextWidget) {
         switch (e->type()) {
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
             case QEvent::GraphicsSceneMouseMove:
             case QEvent::GraphicsSceneMousePress:
             case QEvent::GraphicsSceneMouseRelease:
@@ -1025,7 +1025,7 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
                 d->contextWidget = ev->widget();
                 break;
             }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
             default: break;
         };
     }
@@ -1057,12 +1057,12 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
         case QEvent::InputMethod:
             d->inputMethodEvent(static_cast<QInputMethodEvent *>(e));
             break;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     case QEvent::ContextMenu: {
             QContextMenuEvent *ev = static_cast<QContextMenuEvent *>(e);
             d->contextMenuEvent(ev->globalPos(), transform.map(ev->pos()), contextWidget);
             break; }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
         case QEvent::FocusIn:
         case QEvent::FocusOut:
             d->focusEvent(static_cast<QFocusEvent *>(e));
@@ -1072,15 +1072,15 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
             d->isEnabled = e->isAccepted();
             break;
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         case QEvent::ToolTip: {
             QHelpEvent *ev = static_cast<QHelpEvent *>(e);
             d->showToolTip(ev->globalPos(), transform.map(ev->pos()), contextWidget);
             break;
         }
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         case QEvent::DragEnter: {
             QDragEnterEvent *ev = static_cast<QDragEnterEvent *>(e);
             if (d->dragEnterEvent(e, ev->mimeData()))
@@ -1104,7 +1104,7 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
         }
 #endif
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         case QEvent::GraphicsSceneMousePress: {
             QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
             d->mousePressEvent(ev, ev->button(), transform.map(ev->pos()), ev->modifiers(), ev->buttons(),
@@ -1132,7 +1132,7 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
 
         case QEvent::GraphicsSceneHoverMove: {
             QGraphicsSceneHoverEvent *ev = static_cast<QGraphicsSceneHoverEvent *>(e);
-            d->mouseMoveEvent(ev, Qt::NoButton, transform.map(ev->pos()), ev->modifiers(),Qt::NoButton,
+            d->mouseMoveEvent(ev, BobUI::NoButton, transform.map(ev->pos()), ev->modifiers(),BobUI::NoButton,
                               ev->screenPos());
             break; }
 
@@ -1154,8 +1154,8 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
             if (d->dropEvent(ev->mimeData(), transform.map(ev->pos()), ev->dropAction(), ev->source()))
                 ev->accept();
             break; }
-#endif // QT_CONFIG(graphicsview)
-#ifdef QT_KEYPAD_NAVIGATION
+#endif // BOBUI_CONFIG(graphicsview)
+#ifdef BOBUI_KEYPAD_NAVIGATION
         case QEvent::EnterEditFocus:
         case QEvent::LeaveEditFocus:
             if (QApplicationPrivate::keypadNavigationEnabled())
@@ -1163,7 +1163,7 @@ void QWidgetTextControl::processEvent(QEvent *e, const QTransform &transform, QW
             break;
 #endif
         case QEvent::ShortcutOverride:
-            if (d->interactionFlags & Qt::TextEditable) {
+            if (d->interactionFlags & BobUI::TextEditable) {
                 QKeyEvent* ke = static_cast<QKeyEvent *>(e);
                 if (isCommonTextEditShortcut(ke))
                     ke->accept();
@@ -1179,7 +1179,7 @@ bool QWidgetTextControl::event(QEvent *e)
     return QObject::event(e);
 }
 
-void QWidgetTextControl::timerEvent(QTimerEvent *e)
+void QWidgetTextControl::timerEvent(BOBUIimerEvent *e)
 {
     Q_D(QWidgetTextControl);
     if (e->timerId() == d->cursorBlinkTimer.timerId()) {
@@ -1198,53 +1198,53 @@ void QWidgetTextControl::timerEvent(QTimerEvent *e)
 void QWidgetTextControl::setPlainText(const QString &text)
 {
     Q_D(QWidgetTextControl);
-    d->setContent(Qt::PlainText, text);
+    d->setContent(BobUI::PlainText, text);
 }
 
-#if QT_CONFIG(textmarkdownreader)
+#if BOBUI_CONFIG(textmarkdownreader)
 void QWidgetTextControl::setMarkdown(const QString &text)
 {
     Q_D(QWidgetTextControl);
-    d->setContent(Qt::MarkdownText, text);
+    d->setContent(BobUI::MarkdownText, text);
 }
 #endif
 
 void QWidgetTextControl::setHtml(const QString &text)
 {
     Q_D(QWidgetTextControl);
-    d->setContent(Qt::RichText, text);
+    d->setContent(BobUI::RichText, text);
 }
 
 void QWidgetTextControlPrivate::keyPressEvent(QKeyEvent *e)
 {
     Q_Q(QWidgetTextControl);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (e == QKeySequence::SelectAll) {
             e->accept();
             q->selectAll();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
             setClipboardSelection();
 #endif
             return;
     }
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     else if (e == QKeySequence::Copy) {
             e->accept();
             q->copy();
             return;
     }
 #endif
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
-    if (interactionFlags & Qt::TextSelectableByKeyboard
+    if (interactionFlags & BobUI::TextSelectableByKeyboard
         && cursorMoveKeyEvent(e))
         goto accept;
 
-    if (interactionFlags & Qt::LinksAccessibleByKeyboard) {
-        if ((e->key() == Qt::Key_Return
-             || e->key() == Qt::Key_Enter
-#ifdef QT_KEYPAD_NAVIGATION
-             || e->key() == Qt::Key_Select
+    if (interactionFlags & BobUI::LinksAccessibleByKeyboard) {
+        if ((e->key() == BobUI::Key_Return
+             || e->key() == BobUI::Key_Enter
+#ifdef BOBUI_KEYPAD_NAVIGATION
+             || e->key() == BobUI::Key_Select
 #endif
              )
             && cursor.hasSelection()) {
@@ -1255,14 +1255,14 @@ void QWidgetTextControlPrivate::keyPressEvent(QKeyEvent *e)
         }
     }
 
-    if (!(interactionFlags & Qt::TextEditable)) {
+    if (!(interactionFlags & BobUI::TextEditable)) {
         e->ignore();
         return;
     }
 
-    if (e->key() == Qt::Key_Direction_L || e->key() == Qt::Key_Direction_R) {
-        QTextBlockFormat fmt;
-        fmt.setLayoutDirection((e->key() == Qt::Key_Direction_L) ? Qt::LeftToRight : Qt::RightToLeft);
+    if (e->key() == BobUI::Key_Direction_L || e->key() == BobUI::Key_Direction_R) {
+        BOBUIextBlockFormat fmt;
+        fmt.setLayoutDirection((e->key() == BobUI::Key_Direction_L) ? BobUI::LeftToRight : BobUI::RightToLeft);
         cursor.mergeBlockFormat(fmt);
         goto accept;
     }
@@ -1273,23 +1273,23 @@ void QWidgetTextControlPrivate::keyPressEvent(QKeyEvent *e)
     // example)
     repaintSelection();
 
-    if (e->key() == Qt::Key_Backspace && !(e->modifiers() & ~(Qt::ShiftModifier | Qt::GroupSwitchModifier))) {
-        QTextBlockFormat blockFmt = cursor.blockFormat();
-        QTextList *list = cursor.currentList();
+    if (e->key() == BobUI::Key_Backspace && !(e->modifiers() & ~(BobUI::ShiftModifier | BobUI::GroupSwitchModifier))) {
+        BOBUIextBlockFormat blockFmt = cursor.blockFormat();
+        BOBUIextList *list = cursor.currentList();
         if (list && cursor.atBlockStart() && !cursor.hasSelection()) {
             list->remove(cursor.block());
         } else if (cursor.atBlockStart() && blockFmt.indent() > 0) {
             blockFmt.setIndent(blockFmt.indent() - 1);
             cursor.setBlockFormat(blockFmt);
         } else {
-            QTextCursor localCursor = cursor;
+            BOBUIextCursor localCursor = cursor;
             localCursor.deletePreviousChar();
             if (cursor.d)
                 cursor.d->setX();
         }
         goto accept;
     }
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
       else if (e == QKeySequence::InsertParagraphSeparator) {
         insertParagraphSeparator();
         e->accept();
@@ -1302,55 +1302,55 @@ void QWidgetTextControlPrivate::keyPressEvent(QKeyEvent *e)
 #endif
     if (false) {
     }
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     else if (e == QKeySequence::Undo) {
             q->undo();
     }
     else if (e == QKeySequence::Redo) {
            q->redo();
     }
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     else if (e == QKeySequence::Cut) {
            q->cut();
     }
     else if (e == QKeySequence::Paste) {
         QClipboard::Mode mode = QClipboard::Clipboard;
         if (QGuiApplication::clipboard()->supportsSelection()) {
-            if (e->modifiers() == (Qt::CTRL | Qt::SHIFT) && e->key() == Qt::Key_Insert)
+            if (e->modifiers() == (BobUI::CTRL | BobUI::SHIFT) && e->key() == BobUI::Key_Insert)
                 mode = QClipboard::Selection;
         }
         q->paste(mode);
     }
 #endif
     else if (e == QKeySequence::Delete) {
-        QTextCursor localCursor = cursor;
+        BOBUIextCursor localCursor = cursor;
         localCursor.deleteChar();
         if (cursor.d)
             cursor.d->setX();
     } else if (e == QKeySequence::Backspace) {
-        QTextCursor localCursor = cursor;
+        BOBUIextCursor localCursor = cursor;
         localCursor.deletePreviousChar();
         if (cursor.d)
             cursor.d->setX();
     }else if (e == QKeySequence::DeleteEndOfWord) {
         if (!cursor.hasSelection())
-            cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
+            cursor.movePosition(BOBUIextCursor::NextWord, BOBUIextCursor::KeepAnchor);
         cursor.removeSelectedText();
     }
     else if (e == QKeySequence::DeleteStartOfWord) {
         if (!cursor.hasSelection())
-            cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+            cursor.movePosition(BOBUIextCursor::PreviousWord, BOBUIextCursor::KeepAnchor);
         cursor.removeSelectedText();
     }
     else if (e == QKeySequence::DeleteEndOfLine) {
-        QTextBlock block = cursor.block();
+        BOBUIextBlock block = cursor.block();
         if (cursor.position() == block.position() + block.length() - 2)
-            cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+            cursor.movePosition(BOBUIextCursor::Right, BOBUIextCursor::KeepAnchor);
         else
-            cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+            cursor.movePosition(BOBUIextCursor::EndOfBlock, BOBUIextCursor::KeepAnchor);
         cursor.removeSelectedText();
     }
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
     else {
         goto process;
     }
@@ -1376,7 +1376,7 @@ process:
 
  accept:
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     setClipboardSelection();
 #endif
 
@@ -1395,7 +1395,7 @@ QVariant QWidgetTextControl::loadResource(int type, const QUrl &name)
     return QVariant();
 }
 
-void QWidgetTextControlPrivate::_q_updateBlock(const QTextBlock &block)
+void QWidgetTextControlPrivate::_q_updateBlock(const BOBUIextBlock &block)
 {
     Q_Q(QWidgetTextControl);
     QRectF br = q->blockBoundingRect(block);
@@ -1406,11 +1406,11 @@ void QWidgetTextControlPrivate::_q_updateBlock(const QTextBlock &block)
 QRectF QWidgetTextControlPrivate::rectForPosition(int position) const
 {
     Q_Q(const QWidgetTextControl);
-    const QTextBlock block = doc->findBlock(position);
+    const BOBUIextBlock block = doc->findBlock(position);
     if (!block.isValid())
         return QRectF();
     const QAbstractTextDocumentLayout *docLayout = doc->documentLayout();
-    const QTextLayout *layout = block.layout();
+    const BOBUIextLayout *layout = block.layout();
     const QPointF layoutPos = q->blockBoundingRect(block).topLeft();
     int relativePos = position - block.position();
     if (preeditCursor != 0) {
@@ -1420,7 +1420,7 @@ QRectF QWidgetTextControlPrivate::rectForPosition(int position) const
         else if (relativePos > preeditPos)
             relativePos += layout->preeditAreaText().size();
     }
-    QTextLine line = layout->lineForTextPosition(relativePos);
+    BOBUIextLine line = layout->lineForTextPosition(relativePos);
 
     int cursorWidth;
     {
@@ -1439,7 +1439,7 @@ QRectF QWidgetTextControlPrivate::rectForPosition(int position) const
             if (relativePos < line.textLength() - line.textStart())
                 w = line.cursorToX(relativePos + 1) - x;
             else
-                w = QFontMetrics(block.layout()->font()).horizontalAdvance(u' '); // in sync with QTextLine::draw()
+                w = QFontMetrics(block.layout()->font()).horizontalAdvance(u' '); // in sync with BOBUIextLine::draw()
         }
         r = QRectF(layoutPos.x() + x, layoutPos.y() + line.y(),
                    cursorWidth + w, line.height());
@@ -1451,73 +1451,73 @@ QRectF QWidgetTextControlPrivate::rectForPosition(int position) const
 }
 
 namespace {
-struct QTextFrameComparator {
-    bool operator()(QTextFrame *frame, int position) { return frame->firstPosition() < position; }
-    bool operator()(int position, QTextFrame *frame) { return position < frame->firstPosition(); }
+struct BOBUIextFrameComparator {
+    bool operator()(BOBUIextFrame *frame, int position) { return frame->firstPosition() < position; }
+    bool operator()(int position, BOBUIextFrame *frame) { return position < frame->firstPosition(); }
 };
 }
 
-static QRectF boundingRectOfFloatsInSelection(const QTextCursor &cursor)
+static QRectF boundingRectOfFloatsInSelection(const BOBUIextCursor &cursor)
 {
     QRectF r;
-    QTextFrame *frame = cursor.currentFrame();
-    const QList<QTextFrame *> children = frame->childFrames();
+    BOBUIextFrame *frame = cursor.currentFrame();
+    const QList<BOBUIextFrame *> children = frame->childFrames();
 
-    const QList<QTextFrame *>::ConstIterator firstFrame = std::lower_bound(children.constBegin(), children.constEnd(),
-                                                                           cursor.selectionStart(), QTextFrameComparator());
-    const QList<QTextFrame *>::ConstIterator lastFrame = std::upper_bound(children.constBegin(), children.constEnd(),
-                                                                          cursor.selectionEnd(), QTextFrameComparator());
-    for (QList<QTextFrame *>::ConstIterator it = firstFrame; it != lastFrame; ++it) {
-        if ((*it)->frameFormat().position() != QTextFrameFormat::InFlow)
+    const QList<BOBUIextFrame *>::ConstIterator firstFrame = std::lower_bound(children.constBegin(), children.constEnd(),
+                                                                           cursor.selectionStart(), BOBUIextFrameComparator());
+    const QList<BOBUIextFrame *>::ConstIterator lastFrame = std::upper_bound(children.constBegin(), children.constEnd(),
+                                                                          cursor.selectionEnd(), BOBUIextFrameComparator());
+    for (QList<BOBUIextFrame *>::ConstIterator it = firstFrame; it != lastFrame; ++it) {
+        if ((*it)->frameFormat().position() != BOBUIextFrameFormat::InFlow)
             r |= frame->document()->documentLayout()->frameBoundingRect(*it);
     }
     return r;
 }
 
-QRectF QWidgetTextControl::selectionRect(const QTextCursor &cursor) const
+QRectF QWidgetTextControl::selectionRect(const BOBUIextCursor &cursor) const
 {
     Q_D(const QWidgetTextControl);
 
     QRectF r = d->rectForPosition(cursor.selectionStart());
 
     if (cursor.hasComplexSelection() && cursor.currentTable()) {
-        QTextTable *table = cursor.currentTable();
+        BOBUIextTable *table = cursor.currentTable();
 
         r = d->doc->documentLayout()->frameBoundingRect(table);
         /*
         int firstRow, numRows, firstColumn, numColumns;
         cursor.selectedTableCells(&firstRow, &numRows, &firstColumn, &numColumns);
 
-        const QTextTableCell firstCell = table->cellAt(firstRow, firstColumn);
-        const QTextTableCell lastCell = table->cellAt(firstRow + numRows - 1, firstColumn + numColumns - 1);
+        const BOBUIextTableCell firstCell = table->cellAt(firstRow, firstColumn);
+        const BOBUIextTableCell lastCell = table->cellAt(firstRow + numRows - 1, firstColumn + numColumns - 1);
 
         const QAbstractTextDocumentLayout * const layout = doc->documentLayout();
 
         QRectF tableSelRect = layout->blockBoundingRect(firstCell.firstCursorPosition().block());
 
         for (int col = firstColumn; col < firstColumn + numColumns; ++col) {
-            const QTextTableCell cell = table->cellAt(firstRow, col);
+            const BOBUIextTableCell cell = table->cellAt(firstRow, col);
             const qreal y = layout->blockBoundingRect(cell.firstCursorPosition().block()).top();
 
             tableSelRect.setTop(qMin(tableSelRect.top(), y));
         }
 
         for (int row = firstRow; row < firstRow + numRows; ++row) {
-            const QTextTableCell cell = table->cellAt(row, firstColumn);
+            const BOBUIextTableCell cell = table->cellAt(row, firstColumn);
             const qreal x = layout->blockBoundingRect(cell.firstCursorPosition().block()).left();
 
             tableSelRect.setLeft(qMin(tableSelRect.left(), x));
         }
 
         for (int col = firstColumn; col < firstColumn + numColumns; ++col) {
-            const QTextTableCell cell = table->cellAt(firstRow + numRows - 1, col);
+            const BOBUIextTableCell cell = table->cellAt(firstRow + numRows - 1, col);
             const qreal y = layout->blockBoundingRect(cell.lastCursorPosition().block()).bottom();
 
             tableSelRect.setBottom(qMax(tableSelRect.bottom(), y));
         }
 
         for (int row = firstRow; row < firstRow + numRows; ++row) {
-            const QTextTableCell cell = table->cellAt(row, firstColumn + numColumns - 1);
+            const BOBUIextTableCell cell = table->cellAt(row, firstColumn + numColumns - 1);
             const qreal x = layout->blockBoundingRect(cell.lastCursorPosition().block()).right();
 
             tableSelRect.setRight(qMax(tableSelRect.right(), x));
@@ -1528,15 +1528,15 @@ QRectF QWidgetTextControl::selectionRect(const QTextCursor &cursor) const
     } else if (cursor.hasSelection()) {
         const int position = cursor.selectionStart();
         const int anchor = cursor.selectionEnd();
-        const QTextBlock posBlock = d->doc->findBlock(position);
-        const QTextBlock anchorBlock = d->doc->findBlock(anchor);
+        const BOBUIextBlock posBlock = d->doc->findBlock(position);
+        const BOBUIextBlock anchorBlock = d->doc->findBlock(anchor);
         if (posBlock == anchorBlock && posBlock.isValid() && posBlock.layout()->lineCount()) {
-            const QTextLine posLine = posBlock.layout()->lineForTextPosition(position - posBlock.position());
-            const QTextLine anchorLine = anchorBlock.layout()->lineForTextPosition(anchor - anchorBlock.position());
+            const BOBUIextLine posLine = posBlock.layout()->lineForTextPosition(position - posBlock.position());
+            const BOBUIextLine anchorLine = anchorBlock.layout()->lineForTextPosition(anchor - anchorBlock.position());
 
             const int firstLine = qMin(posLine.lineNumber(), anchorLine.lineNumber());
             const int lastLine = qMax(posLine.lineNumber(), anchorLine.lineNumber());
-            const QTextLayout *layout = posBlock.layout();
+            const BOBUIextLayout *layout = posBlock.layout();
             r = QRectF();
             for (int i = firstLine; i <= lastLine; ++i) {
                 r |= layout->lineAt(i).rect();
@@ -1564,14 +1564,14 @@ QRectF QWidgetTextControl::selectionRect() const
     return selectionRect(d->cursor);
 }
 
-void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
-                                          Qt::MouseButtons buttons, const QPoint &globalPos)
+void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos, BobUI::KeyboardModifiers modifiers,
+                                          BobUI::MouseButtons buttons, const QPoint &globalPos)
 {
     Q_Q(QWidgetTextControl);
 
     mousePressPos = pos.toPoint();
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     mightStartDrag = false;
 #endif
 
@@ -1580,7 +1580,7 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
         return;
     }
 
-    if (interactionFlags & Qt::LinksAccessibleByMouse) {
+    if (interactionFlags & BobUI::LinksAccessibleByMouse) {
         anchorOnMousePress = q->anchorAt(pos);
 
         if (cursorIsFocusIndicator) {
@@ -1589,8 +1589,8 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
             cursor.clearSelection();
         }
     }
-    if (!(button & Qt::LeftButton) ||
-        !((interactionFlags & Qt::TextSelectableByMouse) || (interactionFlags & Qt::TextEditable))) {
+    if (!(button & BobUI::LeftButton) ||
+        !((interactionFlags & BobUI::TextSelectableByMouse) || (interactionFlags & BobUI::TextEditable))) {
             e->ignore();
             return;
     }
@@ -1601,37 +1601,37 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
 
 
     cursorIsFocusIndicator = false;
-    const QTextCursor oldSelection = cursor;
+    const BOBUIextCursor oldSelection = cursor;
     const int oldCursorPos = cursor.position();
 
-    mousePressed = (interactionFlags & Qt::TextSelectableByMouse);
+    mousePressed = (interactionFlags & BobUI::TextSelectableByMouse);
 
     commitPreedit();
 
     if (trippleClickTimer.isActive()
         && ((pos - trippleClickPoint).toPoint().manhattanLength() < QApplication::startDragDistance())) {
 
-        cursor.movePosition(QTextCursor::StartOfBlock);
-        cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        cursor.movePosition(BOBUIextCursor::StartOfBlock);
+        cursor.movePosition(BOBUIextCursor::EndOfBlock, BOBUIextCursor::KeepAnchor);
+        cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
         selectedBlockOnTrippleClick = cursor;
 
         anchorOnMousePress = QString();
-        blockWithMarkerUnderMouse = QTextBlock();
+        blockWithMarkerUnderMouse = BOBUIextBlock();
         emit q->blockMarkerHovered(blockWithMarkerUnderMouse);
 
         trippleClickTimer.stop();
     } else {
-        int cursorPos = q->hitTest(pos, Qt::FuzzyHit);
+        int cursorPos = q->hitTest(pos, BobUI::FuzzyHit);
         if (cursorPos == -1) {
             e->ignore();
             return;
         }
 
-        if (modifiers == Qt::ShiftModifier && (interactionFlags & Qt::TextSelectableByMouse)) {
+        if (modifiers == BobUI::ShiftModifier && (interactionFlags & BobUI::TextSelectableByMouse)) {
             if (wordSelectionEnabled && !selectedWordOnDoubleClick.hasSelection()) {
                 selectedWordOnDoubleClick = cursor;
-                selectedWordOnDoubleClick.select(QTextCursor::WordUnderCursor);
+                selectedWordOnDoubleClick.select(BOBUIextCursor::WordUnderCursor);
             }
 
             if (selectedBlockOnTrippleClick.hasSelection())
@@ -1639,7 +1639,7 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
             else if (selectedWordOnDoubleClick.hasSelection())
                 extendWordwiseSelection(cursorPos, pos.x());
             else if (!wordSelectionEnabled)
-                setCursorPosition(cursorPos, QTextCursor::KeepAnchor);
+                setCursorPosition(cursorPos, BOBUIextCursor::KeepAnchor);
         } else {
 
             if (dragEnabled
@@ -1647,8 +1647,8 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
                 && !cursorIsFocusIndicator
                 && cursorPos >= cursor.selectionStart()
                 && cursorPos <= cursor.selectionEnd()
-                && q->hitTest(pos, Qt::ExactHit) != -1) {
-#if QT_CONFIG(draganddrop)
+                && q->hitTest(pos, BobUI::ExactHit) != -1) {
+#if BOBUI_CONFIG(draganddrop)
                 mightStartDrag = true;
 #endif
                 return;
@@ -1658,7 +1658,7 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
         }
     }
 
-    if (interactionFlags & Qt::TextEditable) {
+    if (interactionFlags & BobUI::TextEditable) {
         q->ensureCursorVisible();
         if (cursor.position() != oldCursorPos)
             emit q->cursorPositionChanged();
@@ -1674,12 +1674,12 @@ void QWidgetTextControlPrivate::mousePressEvent(QEvent *e, Qt::MouseButton butto
     hadSelectionOnMousePress = cursor.hasSelection();
 }
 
-void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &mousePos, Qt::KeyboardModifiers modifiers,
-                                         Qt::MouseButtons buttons, const QPoint &globalPos)
+void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, BobUI::MouseButton button, const QPointF &mousePos, BobUI::KeyboardModifiers modifiers,
+                                         BobUI::MouseButtons buttons, const QPoint &globalPos)
 {
     Q_Q(QWidgetTextControl);
 
-    if (interactionFlags & Qt::LinksAccessibleByMouse) {
+    if (interactionFlags & BobUI::LinksAccessibleByMouse) {
         QString anchor = q->anchorAt(mousePos);
         if (anchor != highlightedAnchor) {
             highlightedAnchor = anchor;
@@ -1687,8 +1687,8 @@ void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button
         }
     }
 
-    if (buttons & Qt::LeftButton) {
-        const bool editable = interactionFlags & Qt::TextEditable;
+    if (buttons & BobUI::LeftButton) {
+        const bool editable = interactionFlags & BobUI::TextEditable;
 
         if (!(mousePressed
               || editable
@@ -1697,7 +1697,7 @@ void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button
               || selectedBlockOnTrippleClick.hasSelection()))
             return;
 
-        const QTextCursor oldSelection = cursor;
+        const BOBUIextCursor oldSelection = cursor;
         const int oldCursorPos = cursor.position();
 
         if (mightStartDrag) {
@@ -1708,17 +1708,17 @@ void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button
 
         const qreal mouseX = qreal(mousePos.x());
 
-        int newCursorPos = q->hitTest(mousePos, Qt::FuzzyHit);
+        int newCursorPos = q->hitTest(mousePos, BobUI::FuzzyHit);
 
         if (isPreediting()) {
             // note: oldCursorPos not including preedit
-            int selectionStartPos = q->hitTest(mousePressPos, Qt::FuzzyHit);
+            int selectionStartPos = q->hitTest(mousePressPos, BobUI::FuzzyHit);
 
             if (newCursorPos != selectionStartPos) {
                 commitPreedit();
                 // commit invalidates positions
-                newCursorPos = q->hitTest(mousePos, Qt::FuzzyHit);
-                selectionStartPos = q->hitTest(mousePressPos, Qt::FuzzyHit);
+                newCursorPos = q->hitTest(mousePos, BobUI::FuzzyHit);
+                selectionStartPos = q->hitTest(mousePressPos, BobUI::FuzzyHit);
                 setCursorPosition(selectionStartPos);
             }
         }
@@ -1728,7 +1728,7 @@ void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button
 
         if (mousePressed && wordSelectionEnabled && !selectedWordOnDoubleClick.hasSelection()) {
             selectedWordOnDoubleClick = cursor;
-            selectedWordOnDoubleClick.select(QTextCursor::WordUnderCursor);
+            selectedWordOnDoubleClick.select(BOBUIextCursor::WordUnderCursor);
         }
 
         if (selectedBlockOnTrippleClick.hasSelection())
@@ -1736,19 +1736,19 @@ void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button
         else if (selectedWordOnDoubleClick.hasSelection())
             extendWordwiseSelection(newCursorPos, mouseX);
         else if (mousePressed && !isPreediting())
-            setCursorPosition(newCursorPos, QTextCursor::KeepAnchor);
+            setCursorPosition(newCursorPos, BOBUIextCursor::KeepAnchor);
 
-        if (interactionFlags & Qt::TextEditable) {
+        if (interactionFlags & BobUI::TextEditable) {
             // don't call ensureVisible for the visible cursor to avoid jumping
             // scrollbars. the autoscrolling ensures smooth scrolling if necessary.
             //q->ensureCursorVisible();
             if (cursor.position() != oldCursorPos)
                 emit q->cursorPositionChanged();
             _q_updateCurrentCharFormatAndSelection();
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
             if (contextWidget)
-                QGuiApplication::inputMethod()->update(Qt::ImQueryInput);
-#endif //QT_NO_IM
+                QGuiApplication::inputMethod()->update(BobUI::ImQueryInput);
+#endif //BOBUI_NO_IM
         } else {
             //emit q->visibilityRequest(QRectF(mousePos, QSizeF(1, 1)));
             if (cursor.position() != oldCursorPos) {
@@ -1768,12 +1768,12 @@ void QWidgetTextControlPrivate::mouseMoveEvent(QEvent *e, Qt::MouseButton button
     sendMouseEventToInputContext(e, QEvent::MouseMove, button, mousePos, modifiers, buttons, globalPos);
 }
 
-void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
-                                            Qt::MouseButtons buttons, const QPoint &globalPos)
+void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos, BobUI::KeyboardModifiers modifiers,
+                                            BobUI::MouseButtons buttons, const QPoint &globalPos)
 {
     Q_Q(QWidgetTextControl);
 
-    const QTextCursor oldSelection = cursor;
+    const BOBUIextCursor oldSelection = cursor;
     if (sendMouseEventToInputContext(
             e, QEvent::MouseButtonRelease, button, pos, modifiers, buttons, globalPos)) {
         repaintOldAndNewSelection(oldSelection);
@@ -1782,8 +1782,8 @@ void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton but
 
     const int oldCursorPos = cursor.position();
 
-#if QT_CONFIG(draganddrop)
-    if (mightStartDrag && (button & Qt::LeftButton)) {
+#if BOBUI_CONFIG(draganddrop)
+    if (mightStartDrag && (button & BobUI::LeftButton)) {
         mousePressed = false;
         setCursorPosition(pos);
         cursor.clearSelection();
@@ -1792,11 +1792,11 @@ void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton but
 #endif
     if (mousePressed) {
         mousePressed = false;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         setClipboardSelection();
         selectionChanged(true);
-    } else if (button == Qt::MiddleButton
-               && (interactionFlags & Qt::TextEditable)
+    } else if (button == BobUI::MiddleButton
+               && (interactionFlags & BobUI::TextEditable)
                && QGuiApplication::clipboard()->supportsSelection()) {
         setCursorPosition(pos);
         const QMimeData *md = QGuiApplication::clipboard()->mimeData(QClipboard::Selection);
@@ -1813,17 +1813,17 @@ void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton but
     }
 
     // toggle any checkbox that the user clicks
-    if ((interactionFlags & Qt::TextEditable) && (button & Qt::LeftButton) &&
+    if ((interactionFlags & BobUI::TextEditable) && (button & BobUI::LeftButton) &&
             (blockWithMarkerUnderMouse.isValid()) && !cursor.hasSelection()) {
-        QTextBlock markerBlock = q->blockWithMarkerAt(pos);
+        BOBUIextBlock markerBlock = q->blockWithMarkerAt(pos);
         if (markerBlock == blockWithMarkerUnderMouse) {
             auto fmt = blockWithMarkerUnderMouse.blockFormat();
             switch (fmt.marker()) {
-            case QTextBlockFormat::MarkerType::Unchecked :
-                fmt.setMarker(QTextBlockFormat::MarkerType::Checked);
+            case BOBUIextBlockFormat::MarkerType::Unchecked :
+                fmt.setMarker(BOBUIextBlockFormat::MarkerType::Checked);
                 break;
-            case QTextBlockFormat::MarkerType::Checked:
-                fmt.setMarker(QTextBlockFormat::MarkerType::Unchecked);
+            case BOBUIextBlockFormat::MarkerType::Checked:
+                fmt.setMarker(BOBUIextBlockFormat::MarkerType::Unchecked);
                 break;
             default:
                 break;
@@ -1832,10 +1832,10 @@ void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton but
         }
     }
 
-    if (interactionFlags & Qt::LinksAccessibleByMouse) {
+    if (interactionFlags & BobUI::LinksAccessibleByMouse) {
 
         // Ignore event unless left button has been pressed
-        if (!(button & Qt::LeftButton)) {
+        if (!(button & BobUI::LeftButton)) {
             e->ignore();
             return;
         }
@@ -1851,7 +1851,7 @@ void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton but
         if (!cursor.hasSelection()
             || (anchor == anchorOnMousePress && hadSelectionOnMousePress)) {
 
-            const int anchorPos = q->hitTest(pos, Qt::ExactHit);
+            const int anchorPos = q->hitTest(pos, BobUI::ExactHit);
 
             // Ignore event without valid anchor position
             if (anchorPos < 0) {
@@ -1867,26 +1867,26 @@ void QWidgetTextControlPrivate::mouseReleaseEvent(QEvent *e, Qt::MouseButton but
     }
 }
 
-void QWidgetTextControlPrivate::mouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos,
-                                                      Qt::KeyboardModifiers modifiers, Qt::MouseButtons buttons,
+void QWidgetTextControlPrivate::mouseDoubleClickEvent(QEvent *e, BobUI::MouseButton button, const QPointF &pos,
+                                                      BobUI::KeyboardModifiers modifiers, BobUI::MouseButtons buttons,
                                                       const QPoint &globalPos)
 {
     Q_Q(QWidgetTextControl);
 
-    if (button == Qt::LeftButton
-        && (interactionFlags & Qt::TextSelectableByMouse)) {
+    if (button == BobUI::LeftButton
+        && (interactionFlags & BobUI::TextSelectableByMouse)) {
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         mightStartDrag = false;
 #endif
         commitPreedit();
 
-        const QTextCursor oldSelection = cursor;
+        const BOBUIextCursor oldSelection = cursor;
         setCursorPosition(pos);
-        QTextLine line = currentTextLine(cursor);
+        BOBUIextLine line = currentTextLine(cursor);
         bool doEmit = false;
         if (line.isValid() && line.textLength()) {
-            cursor.select(QTextCursor::WordUnderCursor);
+            cursor.select(BOBUIextCursor::WordUnderCursor);
             doEmit = true;
         }
         repaintOldAndNewSelection(oldSelection);
@@ -1898,7 +1898,7 @@ void QWidgetTextControlPrivate::mouseDoubleClickEvent(QEvent *e, Qt::MouseButton
         trippleClickTimer.start(QApplication::doubleClickInterval(), q);
         if (doEmit) {
             selectionChanged();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
             setClipboardSelection();
 #endif
             emit q->cursorPositionChanged();
@@ -1910,8 +1910,8 @@ void QWidgetTextControlPrivate::mouseDoubleClickEvent(QEvent *e, Qt::MouseButton
 }
 
 bool QWidgetTextControlPrivate::sendMouseEventToInputContext(
-        QEvent *e, QEvent::Type eventType, Qt::MouseButton button, const QPointF &pos,
-        Qt::KeyboardModifiers modifiers, Qt::MouseButtons buttons, const QPoint &globalPos)
+        QEvent *e, QEvent::Type eventType, BobUI::MouseButton button, const QPointF &pos,
+        BobUI::KeyboardModifiers modifiers, BobUI::MouseButtons buttons, const QPoint &globalPos)
 {
     Q_UNUSED(eventType);
     Q_UNUSED(button);
@@ -1919,12 +1919,12 @@ bool QWidgetTextControlPrivate::sendMouseEventToInputContext(
     Q_UNUSED(modifiers);
     Q_UNUSED(buttons);
     Q_UNUSED(globalPos);
-#if !defined(QT_NO_IM)
+#if !defined(BOBUI_NO_IM)
     Q_Q(QWidgetTextControl);
 
     if (isPreediting()) {
-        QTextLayout *layout = cursor.block().layout();
-        int cursorPos = q->hitTest(pos, Qt::FuzzyHit) - cursor.position();
+        BOBUIextLayout *layout = cursor.block().layout();
+        int cursorPos = q->hitTest(pos, BobUI::FuzzyHit) - cursor.position();
 
         if (cursorPos < 0 || cursorPos > layout->preeditAreaText().size())
             cursorPos = -1;
@@ -1945,7 +1945,7 @@ bool QWidgetTextControlPrivate::sendMouseEventToInputContext(
 
 void QWidgetTextControlPrivate::contextMenuEvent(const QPoint &screenPos, const QPointF &docPos, QWidget *contextWidget)
 {
-#ifdef QT_NO_CONTEXTMENU
+#ifdef BOBUI_NO_CONTEXTMENU
     Q_UNUSED(screenPos);
     Q_UNUSED(docPos);
     Q_UNUSED(contextWidget);
@@ -1954,7 +1954,7 @@ void QWidgetTextControlPrivate::contextMenuEvent(const QPoint &screenPos, const 
     QMenu *menu = q->createStandardContextMenu(docPos, contextWidget);
     if (!menu)
         return;
-    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->setAttribute(BobUI::WA_DeleteOnClose);
 
     if (auto *widget = qobject_cast<QWidget *>(parent)) {
         if (auto *window = widget->window()->windowHandle())
@@ -1968,12 +1968,12 @@ void QWidgetTextControlPrivate::contextMenuEvent(const QPoint &screenPos, const 
 bool QWidgetTextControlPrivate::dragEnterEvent(QEvent *e, const QMimeData *mimeData)
 {
     Q_Q(QWidgetTextControl);
-    if (!(interactionFlags & Qt::TextEditable) || !q->canInsertFromMimeData(mimeData)) {
+    if (!(interactionFlags & BobUI::TextEditable) || !q->canInsertFromMimeData(mimeData)) {
         e->ignore();
         return false;
     }
 
-    dndFeedbackCursor = QTextCursor();
+    dndFeedbackCursor = BOBUIextCursor();
 
     return true; // accept proposed action
 }
@@ -1983,7 +1983,7 @@ void QWidgetTextControlPrivate::dragLeaveEvent()
     Q_Q(QWidgetTextControl);
 
     const QRectF crect = q->cursorRect(dndFeedbackCursor);
-    dndFeedbackCursor = QTextCursor();
+    dndFeedbackCursor = BOBUIextCursor();
 
     if (crect.isValid())
         emit q->updateRequest(crect);
@@ -1992,12 +1992,12 @@ void QWidgetTextControlPrivate::dragLeaveEvent()
 bool QWidgetTextControlPrivate::dragMoveEvent(QEvent *e, const QMimeData *mimeData, const QPointF &pos)
 {
     Q_Q(QWidgetTextControl);
-    if (!(interactionFlags & Qt::TextEditable) || !q->canInsertFromMimeData(mimeData)) {
+    if (!(interactionFlags & BobUI::TextEditable) || !q->canInsertFromMimeData(mimeData)) {
         e->ignore();
         return false;
     }
 
-    const int cursorPos = q->hitTest(pos, Qt::FuzzyHit);
+    const int cursorPos = q->hitTest(pos, BobUI::FuzzyHit);
     if (cursorPos != -1) {
         QRectF crect = q->cursorRect(dndFeedbackCursor);
         if (crect.isValid())
@@ -2013,20 +2013,20 @@ bool QWidgetTextControlPrivate::dragMoveEvent(QEvent *e, const QMimeData *mimeDa
     return true; // accept proposed action
 }
 
-bool QWidgetTextControlPrivate::dropEvent(const QMimeData *mimeData, const QPointF &pos, Qt::DropAction dropAction, QObject *source)
+bool QWidgetTextControlPrivate::dropEvent(const QMimeData *mimeData, const QPointF &pos, BobUI::DropAction dropAction, QObject *source)
 {
     Q_Q(QWidgetTextControl);
-    dndFeedbackCursor = QTextCursor();
+    dndFeedbackCursor = BOBUIextCursor();
 
-    if (!(interactionFlags & Qt::TextEditable) || !q->canInsertFromMimeData(mimeData))
+    if (!(interactionFlags & BobUI::TextEditable) || !q->canInsertFromMimeData(mimeData))
         return false;
 
     repaintSelection();
 
-    QTextCursor insertionCursor = q->cursorForPosition(pos);
+    BOBUIextCursor insertionCursor = q->cursorForPosition(pos);
     insertionCursor.beginEditBlock();
 
-    if (dropAction == Qt::MoveAction && source == contextWidget)
+    if (dropAction == BobUI::MoveAction && source == contextWidget)
         cursor.removeSelectedText();
 
     cursor = insertionCursor;
@@ -2039,7 +2039,7 @@ bool QWidgetTextControlPrivate::dropEvent(const QMimeData *mimeData, const QPoin
 void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
 {
     Q_Q(QWidgetTextControl);
-    if (!(interactionFlags & (Qt::TextEditable | Qt::TextSelectableByMouse)) || cursor.isNull()) {
+    if (!(interactionFlags & (BobUI::TextEditable | BobUI::TextSelectableByMouse)) || cursor.isNull()) {
         e->ignore();
         return;
     }
@@ -2059,7 +2059,7 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
         cursor.removeSelectedText();
     }
 
-    QTextBlock block;
+    BOBUIextBlock block;
 
     // insert commit string
     if (!e->commitString().isEmpty() || e->replacementLength()) {
@@ -2069,9 +2069,9 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
         } else {
             if (e->commitString().endsWith(QChar::LineFeed))
                 block = cursor.block(); // Remember the block where the preedit text is
-            QTextCursor c = cursor;
+            BOBUIextCursor c = cursor;
             c.setPosition(c.position() + e->replacementStart());
-            c.setPosition(c.position() + e->replacementLength(), QTextCursor::KeepAnchor);
+            c.setPosition(c.position() + e->replacementLength(), BOBUIextCursor::KeepAnchor);
             c.insertText(e->commitString());
         }
     }
@@ -2079,10 +2079,10 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
     for (int i = 0; i < e->attributes().size(); ++i) {
         const QInputMethodEvent::Attribute &a = e->attributes().at(i);
         if (a.type == QInputMethodEvent::Selection) {
-            QTextCursor oldCursor = cursor;
+            BOBUIextCursor oldCursor = cursor;
             int blockStart = a.start + cursor.block().position();
-            cursor.setPosition(blockStart, QTextCursor::MoveAnchor);
-            cursor.setPosition(blockStart + a.length, QTextCursor::KeepAnchor);
+            cursor.setPosition(blockStart, BOBUIextCursor::MoveAnchor);
+            cursor.setPosition(blockStart + a.length, BOBUIextCursor::KeepAnchor);
             q->ensureCursorVisible();
             repaintOldAndNewSelection(oldCursor);
         }
@@ -2090,10 +2090,10 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
 
     if (!block.isValid())
         block = cursor.block();
-    QTextLayout *layout = block.layout();
+    BOBUIextLayout *layout = block.layout();
     if (isGettingInput)
         layout->setPreeditArea(cursor.position() - block.position(), e->preeditString());
-    QList<QTextLayout::FormatRange> overrides;
+    QList<BOBUIextLayout::FormatRange> overrides;
     overrides.reserve(e->attributes().size());
     const int oldPreeditCursor = preeditCursor;
     preeditCursor = e->preeditString().size();
@@ -2104,18 +2104,18 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
             preeditCursor = a.start;
             hideCursor = !a.length;
         } else if (a.type == QInputMethodEvent::TextFormat) {
-            QTextCharFormat f = cursor.charFormat();
-            f.merge(qvariant_cast<QTextFormat>(a.value).toCharFormat());
+            BOBUIextCharFormat f = cursor.charFormat();
+            f.merge(qvariant_cast<BOBUIextFormat>(a.value).toCharFormat());
             if (f.isValid()) {
-                QTextLayout::FormatRange o;
+                BOBUIextLayout::FormatRange o;
                 o.start = a.start + cursor.position() - block.position();
                 o.length = a.length;
                 o.format = f;
 
                 // Make sure list is sorted by start index
-                QList<QTextLayout::FormatRange>::iterator it = overrides.end();
+                QList<BOBUIextLayout::FormatRange>::iterator it = overrides.end();
                 while (it != overrides.begin()) {
-                    QList<QTextLayout::FormatRange>::iterator previous = it - 1;
+                    QList<BOBUIextLayout::FormatRange>::iterator previous = it - 1;
                     if (o.start >= previous->start) {
                         overrides.insert(it, o);
                         break;
@@ -2133,12 +2133,12 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
         int start = cursor.position() - block.position();
         int end = start + e->preeditString().size();
 
-        QList<QTextLayout::FormatRange>::iterator it = overrides.begin();
+        QList<BOBUIextLayout::FormatRange>::iterator it = overrides.begin();
         while (it != overrides.end()) {
-            QTextLayout::FormatRange range = *it;
+            BOBUIextLayout::FormatRange range = *it;
             int rangeStart = range.start;
             if (rangeStart > start) {
-                QTextLayout::FormatRange o;
+                BOBUIextLayout::FormatRange o;
                 o.start = start;
                 o.length = rangeStart - start;
                 o.format = cursor.charFormat();
@@ -2150,7 +2150,7 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
         }
 
         if (start < end) {
-            QTextLayout::FormatRange o;
+            BOBUIextLayout::FormatRange o;
             o.start = start;
             o.length = end - start;
             o.format = cursor.charFormat();
@@ -2169,63 +2169,63 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
         emit q->microFocusChanged();
 }
 
-QVariant QWidgetTextControl::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant QWidgetTextControl::inputMethodQuery(BobUI::InputMethodQuery property, QVariant argument) const
 {
     Q_D(const QWidgetTextControl);
-    QTextBlock block = d->cursor.block();
+    BOBUIextBlock block = d->cursor.block();
     switch(property) {
-    case Qt::ImCursorRectangle:
+    case BobUI::ImCursorRectangle:
         return cursorRect();
-    case Qt::ImAnchorRectangle:
+    case BobUI::ImAnchorRectangle:
         return d->rectForPosition(d->cursor.anchor());
-    case Qt::ImFont:
+    case BobUI::ImFont:
         return QVariant(d->cursor.charFormat().font());
-    case Qt::ImCursorPosition: {
+    case BobUI::ImCursorPosition: {
         const QPointF pt = argument.toPointF();
         if (!pt.isNull())
             return QVariant(cursorForPosition(pt).position() - block.position());
         return QVariant(d->cursor.position() - block.position()); }
-    case Qt::ImSurroundingText:
+    case BobUI::ImSurroundingText:
         return QVariant(block.text());
-    case Qt::ImCurrentSelection: {
+    case BobUI::ImCurrentSelection: {
         QMimeData *mimeData = createMimeDataFromSelection();
         mimeData->deleteLater();
         return QInputControl::selectionWrapper(mimeData);
     }
-    case Qt::ImMaximumTextLength:
+    case BobUI::ImMaximumTextLength:
         return QVariant(); // No limit.
-    case Qt::ImAnchorPosition:
+    case BobUI::ImAnchorPosition:
         return QVariant(d->cursor.anchor() - block.position());
-    case Qt::ImAbsolutePosition: {
+    case BobUI::ImAbsolutePosition: {
         const QPointF pt = argument.toPointF();
         if (!pt.isNull())
             return QVariant(cursorForPosition(pt).position());
         return QVariant(d->cursor.position()); }
-    case Qt::ImTextAfterCursor:
+    case BobUI::ImTextAfterCursor:
     {
         int maxLength = argument.isValid() ? argument.toInt() : 1024;
-        QTextCursor tmpCursor = d->cursor;
+        BOBUIextCursor tmpCursor = d->cursor;
         int localPos = d->cursor.position() - block.position();
         QString result = block.text().mid(localPos);
         while (result.size() < maxLength) {
             int currentBlock = tmpCursor.blockNumber();
-            tmpCursor.movePosition(QTextCursor::NextBlock);
+            tmpCursor.movePosition(BOBUIextCursor::NextBlock);
             if (tmpCursor.blockNumber() == currentBlock)
                 break;
             result += u'\n' + tmpCursor.block().text();
         }
         return QVariant(result);
     }
-    case Qt::ImTextBeforeCursor:
+    case BobUI::ImTextBeforeCursor:
     {
         int maxLength = argument.isValid() ? argument.toInt() : 1024;
-        QTextCursor tmpCursor = d->cursor;
+        BOBUIextCursor tmpCursor = d->cursor;
         int localPos = d->cursor.position() - block.position();
         int numBlocks = 0;
         int resultLen = localPos;
         while (resultLen < maxLength) {
             int currentBlock = tmpCursor.blockNumber();
-            tmpCursor.movePosition(QTextCursor::PreviousBlock);
+            tmpCursor.movePosition(BOBUIextCursor::PreviousBlock);
             if (tmpCursor.blockNumber() == currentBlock)
                 break;
             numBlocks++;
@@ -2234,7 +2234,7 @@ QVariant QWidgetTextControl::inputMethodQuery(Qt::InputMethodQuery property, QVa
         QString result;
         while (numBlocks) {
             result += tmpCursor.block().text() + u'\n';
-            tmpCursor.movePosition(QTextCursor::NextBlock);
+            tmpCursor.movePosition(BOBUIextCursor::NextBlock);
             --numBlocks;
         }
         result += QStringView{block.text()}.mid(0, localPos);
@@ -2245,7 +2245,7 @@ QVariant QWidgetTextControl::inputMethodQuery(Qt::InputMethodQuery property, QVa
     }
 }
 
-void QWidgetTextControl::setFocus(bool focus, Qt::FocusReason reason)
+void QWidgetTextControl::setFocus(bool focus, BobUI::FocusReason reason)
 {
     QFocusEvent ev(focus ? QEvent::FocusIn : QEvent::FocusOut,
                    reason);
@@ -2257,14 +2257,14 @@ void QWidgetTextControlPrivate::focusEvent(QFocusEvent *e)
     Q_Q(QWidgetTextControl);
     emit q->updateRequest(q->selectionRect());
     if (e->gotFocus()) {
-#ifdef QT_KEYPAD_NAVIGATION
-        if (!QApplicationPrivate::keypadNavigationEnabled() || (hasEditFocus && (e->reason() == Qt::PopupFocusReason))) {
+#ifdef BOBUI_KEYPAD_NAVIGATION
+        if (!QApplicationPrivate::keypadNavigationEnabled() || (hasEditFocus && (e->reason() == BobUI::PopupFocusReason))) {
 #endif
-        cursorOn = (interactionFlags & (Qt::TextSelectableByKeyboard | Qt::TextEditable));
-        if (interactionFlags & Qt::TextEditable) {
+        cursorOn = (interactionFlags & (BobUI::TextSelectableByKeyboard | BobUI::TextEditable));
+        if (interactionFlags & BobUI::TextEditable) {
             setCursorVisible(true);
         }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         }
 #endif
     } else {
@@ -2272,8 +2272,8 @@ void QWidgetTextControlPrivate::focusEvent(QFocusEvent *e)
         cursorOn = false;
 
         if (cursorIsFocusIndicator
-            && e->reason() != Qt::ActiveWindowFocusReason
-            && e->reason() != Qt::PopupFocusReason
+            && e->reason() != BobUI::ActiveWindowFocusReason
+            && e->reason() != BobUI::PopupFocusReason
             && cursor.hasSelection()) {
             cursor.clearSelection();
         }
@@ -2281,30 +2281,30 @@ void QWidgetTextControlPrivate::focusEvent(QFocusEvent *e)
     hasFocus = e->gotFocus();
 }
 
-QString QWidgetTextControlPrivate::anchorForCursor(const QTextCursor &anchorCursor) const
+QString QWidgetTextControlPrivate::anchorForCursor(const BOBUIextCursor &anchorCursor) const
 {
     if (anchorCursor.hasSelection()) {
-        QTextCursor cursor = anchorCursor;
+        BOBUIextCursor cursor = anchorCursor;
         if (cursor.selectionStart() != cursor.position())
             cursor.setPosition(cursor.selectionStart());
-        cursor.movePosition(QTextCursor::NextCharacter);
-        QTextCharFormat fmt = cursor.charFormat();
-        if (fmt.isAnchor() && fmt.hasProperty(QTextFormat::AnchorHref))
-            return fmt.stringProperty(QTextFormat::AnchorHref);
+        cursor.movePosition(BOBUIextCursor::NextCharacter);
+        BOBUIextCharFormat fmt = cursor.charFormat();
+        if (fmt.isAnchor() && fmt.hasProperty(BOBUIextFormat::AnchorHref))
+            return fmt.stringProperty(BOBUIextFormat::AnchorHref);
     }
     return QString();
 }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
 void QWidgetTextControlPrivate::editFocusEvent(QEvent *e)
 {
     Q_Q(QWidgetTextControl);
 
     if (QApplicationPrivate::keypadNavigationEnabled()) {
-        if (e->type() == QEvent::EnterEditFocus && interactionFlags & Qt::TextEditable) {
-            const QTextCursor oldSelection = cursor;
+        if (e->type() == QEvent::EnterEditFocus && interactionFlags & BobUI::TextEditable) {
+            const BOBUIextCursor oldSelection = cursor;
             const int oldCursorPos = cursor.position();
-            const bool moved = cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+            const bool moved = cursor.movePosition(BOBUIextCursor::End, BOBUIextCursor::MoveAnchor);
             q->ensureCursorVisible();
             if (moved) {
                 if (cursor.position() != oldCursorPos)
@@ -2323,7 +2323,7 @@ void QWidgetTextControlPrivate::editFocusEvent(QEvent *e)
 }
 #endif
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 void setActionIcon(QAction *action, const QString &name)
 {
     const QIcon icon = QIcon::fromTheme(name);
@@ -2335,7 +2335,7 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
 {
     Q_D(QWidgetTextControl);
 
-    const bool showTextSelectionActions = d->interactionFlags & (Qt::TextEditable | Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse);
+    const bool showTextSelectionActions = d->interactionFlags & (BobUI::TextEditable | BobUI::TextSelectableByKeyboard | BobUI::TextSelectableByMouse);
 
     d->linkToCopy = QString();
     if (!pos.isNull())
@@ -2347,7 +2347,7 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
     QMenu *menu = new QMenu(parent);
     QAction *a;
 
-    if (d->interactionFlags & Qt::TextEditable) {
+    if (d->interactionFlags & BobUI::TextEditable) {
         a = menu->addAction(tr("&Undo") + ACCEL_KEY(QKeySequence::Undo), this, SLOT(undo()));
         a->setEnabled(d->doc->isUndoAvailable());
         a->setObjectName(QStringLiteral("edit-undo"));
@@ -2358,7 +2358,7 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
         setActionIcon(a, QStringLiteral("edit-redo"));
         menu->addSeparator();
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         a = menu->addAction(tr("Cu&t") + ACCEL_KEY(QKeySequence::Cut), this, SLOT(cut()));
         a->setEnabled(d->cursor.hasSelection());
         a->setObjectName(QStringLiteral("edit-cut"));
@@ -2366,7 +2366,7 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
 #endif
     }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     if (showTextSelectionActions) {
         a = menu->addAction(tr("&Copy") + ACCEL_KEY(QKeySequence::Copy), this, SLOT(copy()));
         a->setEnabled(d->cursor.hasSelection());
@@ -2374,17 +2374,17 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
         setActionIcon(a, QStringLiteral("edit-copy"));
     }
 
-    if ((d->interactionFlags & Qt::LinksAccessibleByKeyboard)
-            || (d->interactionFlags & Qt::LinksAccessibleByMouse)) {
+    if ((d->interactionFlags & BobUI::LinksAccessibleByKeyboard)
+            || (d->interactionFlags & BobUI::LinksAccessibleByMouse)) {
 
         a = menu->addAction(tr("Copy &Link Location"), this, SLOT(_q_copyLink()));
         a->setEnabled(!d->linkToCopy.isEmpty());
         a->setObjectName(QStringLiteral("link-copy"));
     }
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD
 
-    if (d->interactionFlags & Qt::TextEditable) {
-#ifndef QT_NO_CLIPBOARD
+    if (d->interactionFlags & BobUI::TextEditable) {
+#ifndef BOBUI_NO_CLIPBOARD
         a = menu->addAction(tr("&Paste") + ACCEL_KEY(QKeySequence::Paste), this, SLOT(paste()));
         a->setEnabled(canPaste());
         a->setObjectName(QStringLiteral("edit-paste"));
@@ -2405,7 +2405,7 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
         setActionIcon(a, QStringLiteral("edit-select-all"));
     }
 
-    if ((d->interactionFlags & Qt::TextEditable) && QGuiApplication::styleHints()->useRtlExtensions()) {
+    if ((d->interactionFlags & BobUI::TextEditable) && QGuiApplication::styleHints()->useRtlExtensions()) {
         menu->addSeparator();
         QUnicodeControlCharacterMenu *ctrlCharacterMenu = new QUnicodeControlCharacterMenu(this, menu);
         menu->addMenu(ctrlCharacterMenu);
@@ -2413,20 +2413,20 @@ QMenu *QWidgetTextControl::createStandardContextMenu(const QPointF &pos, QWidget
 
     return menu;
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-QTextCursor QWidgetTextControl::cursorForPosition(const QPointF &pos) const
+BOBUIextCursor QWidgetTextControl::cursorForPosition(const QPointF &pos) const
 {
     Q_D(const QWidgetTextControl);
-    int cursorPos = hitTest(pos, Qt::FuzzyHit);
+    int cursorPos = hitTest(pos, BobUI::FuzzyHit);
     if (cursorPos == -1)
         cursorPos = 0;
-    QTextCursor c(d->doc);
+    BOBUIextCursor c(d->doc);
     c.setPosition(cursorPos);
     return c;
 }
 
-QRectF QWidgetTextControl::cursorRect(const QTextCursor &cursor) const
+QRectF QWidgetTextControl::cursorRect(const BOBUIextCursor &cursor) const
 {
     Q_D(const QWidgetTextControl);
     if (cursor.isNull())
@@ -2441,7 +2441,7 @@ QRectF QWidgetTextControl::cursorRect() const
     return cursorRect(d->cursor);
 }
 
-QRectF QWidgetTextControlPrivate::cursorRectPlusUnicodeDirectionMarkers(const QTextCursor &cursor) const
+QRectF QWidgetTextControlPrivate::cursorRectPlusUnicodeDirectionMarkers(const BOBUIextCursor &cursor) const
 {
     if (cursor.isNull())
         return QRectF();
@@ -2462,7 +2462,7 @@ QString QWidgetTextControl::anchorAtCursor() const
     return d->anchorForCursor(d->cursor);
 }
 
-QTextBlock QWidgetTextControl::blockWithMarkerAt(const QPointF &pos) const
+BOBUIextBlock QWidgetTextControl::blockWithMarkerAt(const QPointF &pos) const
 {
     Q_D(const QWidgetTextControl);
     return d->doc->documentLayout()->blockWithMarkerAt(pos);
@@ -2507,9 +2507,9 @@ void QWidgetTextControl::setAcceptRichText(bool accept)
     d->acceptRichText = accept;
 }
 
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
 
-void QWidgetTextControl::setExtraSelections(const QList<QTextEdit::ExtraSelection> &selections)
+void QWidgetTextControl::setExtraSelections(const QList<BOBUIextEdit::ExtraSelection> &selections)
 {
     Q_D(QWidgetTextControl);
 
@@ -2520,7 +2520,7 @@ void QWidgetTextControl::setExtraSelections(const QList<QTextEdit::ExtraSelectio
     }
 
     for (int i = 0; i < selections.size(); ++i) {
-        const QTextEdit::ExtraSelection &sel = selections.at(i);
+        const BOBUIextEdit::ExtraSelection &sel = selections.at(i);
         const auto it = hash.constFind(sel.cursor.anchor());
         if (it != hash.cend()) {
             const QAbstractTextDocumentLayout::Selection &esel = d->extraSelections.at(it.value());
@@ -2531,7 +2531,7 @@ void QWidgetTextControl::setExtraSelections(const QList<QTextEdit::ExtraSelectio
             }
         }
         QRectF r = selectionRect(sel.cursor);
-        if (sel.format.boolProperty(QTextFormat::FullWidthSelection)) {
+        if (sel.format.boolProperty(BOBUIextFormat::FullWidthSelection)) {
             r.setLeft(0);
             r.setWidth(qreal(INT_MAX));
         }
@@ -2541,7 +2541,7 @@ void QWidgetTextControl::setExtraSelections(const QList<QTextEdit::ExtraSelectio
     for (auto it = hash.cbegin(); it != hash.cend(); ++it) {
         const QAbstractTextDocumentLayout::Selection &esel = d->extraSelections.at(it.value());
         QRectF r = selectionRect(esel.cursor);
-        if (esel.format.boolProperty(QTextFormat::FullWidthSelection)) {
+        if (esel.format.boolProperty(BOBUIextFormat::FullWidthSelection)) {
             r.setLeft(0);
             r.setWidth(qreal(INT_MAX));
         }
@@ -2555,14 +2555,14 @@ void QWidgetTextControl::setExtraSelections(const QList<QTextEdit::ExtraSelectio
     }
 }
 
-QList<QTextEdit::ExtraSelection> QWidgetTextControl::extraSelections() const
+QList<BOBUIextEdit::ExtraSelection> QWidgetTextControl::extraSelections() const
 {
     Q_D(const QWidgetTextControl);
-    QList<QTextEdit::ExtraSelection> selections;
+    QList<BOBUIextEdit::ExtraSelection> selections;
     const int numExtraSelections = d->extraSelections.size();
     selections.reserve(numExtraSelections);
     for (int i = 0; i < numExtraSelections; ++i) {
-        QTextEdit::ExtraSelection sel;
+        BOBUIextEdit::ExtraSelection sel;
         const QAbstractTextDocumentLayout::Selection &sel2 = d->extraSelections.at(i);
         sel.cursor = sel2.cursor;
         sel.format = sel2.format;
@@ -2571,7 +2571,7 @@ QList<QTextEdit::ExtraSelection> QWidgetTextControl::extraSelections() const
     return selections;
 }
 
-#endif // QT_CONFIG(textedit)
+#endif // BOBUI_CONFIG(textedit)
 
 void QWidgetTextControl::setTextWidth(qreal width)
 {
@@ -2615,10 +2615,10 @@ void QWidgetTextControl::setIgnoreUnusedNavigationEvents(bool ignore)
     d->ignoreUnusedNavigationEvents = ignore;
 }
 
-void QWidgetTextControl::moveCursor(QTextCursor::MoveOperation op, QTextCursor::MoveMode mode)
+void QWidgetTextControl::moveCursor(BOBUIextCursor::MoveOperation op, BOBUIextCursor::MoveMode mode)
 {
     Q_D(QWidgetTextControl);
-    const QTextCursor oldSelection = d->cursor;
+    const BOBUIextCursor oldSelection = d->cursor;
     const bool moved = d->cursor.movePosition(op, mode);
     d->_q_updateCurrentCharFormatAndSelection();
     ensureCursorVisible();
@@ -2629,9 +2629,9 @@ void QWidgetTextControl::moveCursor(QTextCursor::MoveOperation op, QTextCursor::
 
 bool QWidgetTextControl::canPaste() const
 {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     Q_D(const QWidgetTextControl);
-    if (d->interactionFlags & Qt::TextEditable) {
+    if (d->interactionFlags & BobUI::TextEditable) {
         const QMimeData *md = QGuiApplication::clipboard()->mimeData();
         return md && canInsertFromMimeData(md);
     }
@@ -2682,24 +2682,24 @@ bool QWidgetTextControl::isPreediting()
     return d_func()->isPreediting();
 }
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 void QWidgetTextControl::print(QPagedPaintDevice *printer) const
 {
     Q_D(const QWidgetTextControl);
     if (!printer)
         return;
-    QTextDocument *tempDoc = nullptr;
-    const QTextDocument *doc = d->doc;
+    BOBUIextDocument *tempDoc = nullptr;
+    const BOBUIextDocument *doc = d->doc;
     if (QPagedPaintDevicePrivate::get(printer)->printSelectionOnly) {
         if (!d->cursor.hasSelection())
             return;
-        tempDoc = new QTextDocument(const_cast<QTextDocument *>(doc));
+        tempDoc = new BOBUIextDocument(const_cast<BOBUIextDocument *>(doc));
         tempDoc->setResourceProvider(doc->resourceProvider());
-        tempDoc->setMetaInformation(QTextDocument::DocumentTitle, doc->metaInformation(QTextDocument::DocumentTitle));
+        tempDoc->setMetaInformation(BOBUIextDocument::DocumentTitle, doc->metaInformation(BOBUIextDocument::DocumentTitle));
         tempDoc->setPageSize(doc->pageSize());
         tempDoc->setDefaultFont(doc->defaultFont());
         tempDoc->setUseDesignMetrics(doc->useDesignMetrics());
-        QTextCursor(tempDoc).insertFragment(d->cursor.selection());
+        BOBUIextCursor(tempDoc).insertFragment(d->cursor.selection());
         doc = tempDoc;
 
         // copy the custom object handlers
@@ -2713,8 +2713,8 @@ void QWidgetTextControl::print(QPagedPaintDevice *printer) const
 QMimeData *QWidgetTextControl::createMimeDataFromSelection() const
 {
     Q_D(const QWidgetTextControl);
-    const QTextDocumentFragment fragment(d->cursor);
-    return new QTextEditMimeData(fragment);
+    const BOBUIextDocumentFragment fragment(d->cursor);
+    return new BOBUIextEditMimeData(fragment);
 }
 
 bool QWidgetTextControl::canInsertFromMimeData(const QMimeData *source) const
@@ -2724,7 +2724,7 @@ bool QWidgetTextControl::canInsertFromMimeData(const QMimeData *source) const
         return (source->hasText() && !source->text().isEmpty())
             || source->hasHtml()
             || source->hasFormat("application/x-qrichtext"_L1)
-            || source->hasFormat("application/x-qt-richtext"_L1);
+            || source->hasFormat("application/x-bobui-richtext"_L1);
     else
         return source->hasText() && !source->text().isEmpty();
 }
@@ -2732,35 +2732,35 @@ bool QWidgetTextControl::canInsertFromMimeData(const QMimeData *source) const
 void QWidgetTextControl::insertFromMimeData(const QMimeData *source)
 {
     Q_D(QWidgetTextControl);
-    if (!(d->interactionFlags & Qt::TextEditable) || !source)
+    if (!(d->interactionFlags & BobUI::TextEditable) || !source)
         return;
 
     bool hasData = false;
-    QTextDocumentFragment fragment;
-#if QT_CONFIG(textmarkdownreader)
+    BOBUIextDocumentFragment fragment;
+#if BOBUI_CONFIG(textmarkdownreader)
     const auto formats = source->formats();
     if (formats.size() && formats.first() == "text/markdown"_L1) {
         auto s = QString::fromUtf8(source->data("text/markdown"_L1));
-        fragment = QTextDocumentFragment::fromMarkdown(s);
+        fragment = BOBUIextDocumentFragment::fromMarkdown(s);
         hasData = true;
     } else
 #endif
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     if (source->hasFormat("application/x-qrichtext"_L1) && d->acceptRichText) {
-        // x-qrichtext is always UTF-8 (taken from Qt3 since we don't use it anymore).
+        // x-qrichtext is always UTF-8 (taken from BobUI3 since we don't use it anymore).
         const QString richtext = "<meta name=\"qrichtext\" content=\"1\" />"_L1
                 + QString::fromUtf8(source->data("application/x-qrichtext"_L1));
-        fragment = QTextDocumentFragment::fromHtml(richtext, d->doc);
+        fragment = BOBUIextDocumentFragment::fromHtml(richtext, d->doc);
         hasData = true;
     } else if (source->hasHtml() && d->acceptRichText) {
-        fragment = QTextDocumentFragment::fromHtml(source->html(), d->doc);
+        fragment = BOBUIextDocumentFragment::fromHtml(source->html(), d->doc);
         hasData = true;
     }
-#endif // QT_NO_TEXTHTMLPARSER
+#endif // BOBUI_NO_TEXTHTMLPARSER
     if (!hasData) {
         const QString text = source->text();
         if (!text.isNull()) {
-            fragment = QTextDocumentFragment::fromPlainText(text);
+            fragment = BOBUIextDocumentFragment::fromPlainText(text);
             hasData = true;
         }
     }
@@ -2770,7 +2770,7 @@ void QWidgetTextControl::insertFromMimeData(const QMimeData *source)
     ensureCursorVisible();
 }
 
-bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool next, QTextCursor &newAnchor)
+bool QWidgetTextControl::findNextPrevAnchor(const BOBUIextCursor &startCursor, bool next, BOBUIextCursor &newAnchor)
 {
     Q_D(QWidgetTextControl);
 
@@ -2781,8 +2781,8 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
     if (next) {
         const int startPos = startCursor.selectionEnd();
 
-        QTextBlock block = d->doc->findBlock(startPos);
-        QTextBlock::Iterator it = block.begin();
+        BOBUIextBlock block = d->doc->findBlock(startPos);
+        BOBUIextBlock::Iterator it = block.begin();
 
         while (!it.atEnd() && it.fragment().position() < startPos)
             ++it;
@@ -2792,10 +2792,10 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
 
             // find next anchor
             for (; !it.atEnd(); ++it) {
-                const QTextFragment fragment = it.fragment();
-                const QTextCharFormat fmt = fragment.charFormat();
+                const BOBUIextFragment fragment = it.fragment();
+                const BOBUIextCharFormat fmt = fragment.charFormat();
 
-                if (fmt.isAnchor() && fmt.hasProperty(QTextFormat::AnchorHref)) {
+                if (fmt.isAnchor() && fmt.hasProperty(BOBUIextFormat::AnchorHref)) {
                     anchorStart = fragment.position();
                     anchorHref = fmt.anchorHref();
                     break;
@@ -2807,8 +2807,8 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
 
                 // find next non-anchor fragment
                 for (; !it.atEnd(); ++it) {
-                    const QTextFragment fragment = it.fragment();
-                    const QTextCharFormat fmt = fragment.charFormat();
+                    const BOBUIextFragment fragment = it.fragment();
+                    const BOBUIextCharFormat fmt = fragment.charFormat();
 
                     if (!fmt.isAnchor() || fmt.anchorHref() != anchorHref) {
                         anchorEnd = fragment.position();
@@ -2831,17 +2831,17 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
         if (startPos > 0)
             --startPos;
 
-        QTextBlock block = d->doc->findBlock(startPos);
-        QTextBlock::Iterator blockStart = block.begin();
-        QTextBlock::Iterator it = block.end();
+        BOBUIextBlock block = d->doc->findBlock(startPos);
+        BOBUIextBlock::Iterator blockStart = block.begin();
+        BOBUIextBlock::Iterator it = block.end();
 
         if (startPos == block.position()) {
             it = block.begin();
         } else {
             do {
                 if (it == blockStart) {
-                    it = QTextBlock::Iterator();
-                    block = QTextBlock();
+                    it = BOBUIextBlock::Iterator();
+                    block = BOBUIextBlock();
                 } else {
                     --it;
                 }
@@ -2853,17 +2853,17 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
 
             if (!it.atEnd()) {
                 do {
-                    const QTextFragment fragment = it.fragment();
-                    const QTextCharFormat fmt = fragment.charFormat();
+                    const BOBUIextFragment fragment = it.fragment();
+                    const BOBUIextCharFormat fmt = fragment.charFormat();
 
-                    if (fmt.isAnchor() && fmt.hasProperty(QTextFormat::AnchorHref)) {
+                    if (fmt.isAnchor() && fmt.hasProperty(BOBUIextFormat::AnchorHref)) {
                         anchorStart = fragment.position() + fragment.length();
                         anchorHref = fmt.anchorHref();
                         break;
                     }
 
                     if (it == blockStart)
-                        it = QTextBlock::Iterator();
+                        it = BOBUIextBlock::Iterator();
                     else
                         --it;
                 } while (!it.atEnd());
@@ -2873,8 +2873,8 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
                 anchorEnd = -1;
 
                 do {
-                    const QTextFragment fragment = it.fragment();
-                    const QTextCharFormat fmt = fragment.charFormat();
+                    const BOBUIextFragment fragment = it.fragment();
+                    const BOBUIextCharFormat fmt = fragment.charFormat();
 
                     if (!fmt.isAnchor() || fmt.anchorHref() != anchorHref) {
                         anchorEnd = fragment.position() + fragment.length();
@@ -2882,7 +2882,7 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
                     }
 
                     if (it == blockStart)
-                        it = QTextBlock::Iterator();
+                        it = BOBUIextBlock::Iterator();
                     else
                         --it;
                 } while (!it.atEnd());
@@ -2905,7 +2905,7 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
     if (anchorStart != -1 && anchorEnd != -1) {
         newAnchor = d->cursor;
         newAnchor.setPosition(anchorStart);
-        newAnchor.setPosition(anchorEnd, QTextCursor::KeepAnchor);
+        newAnchor.setPosition(anchorEnd, BOBUIextCursor::KeepAnchor);
         return true;
     }
 
@@ -2914,27 +2914,27 @@ bool QWidgetTextControl::findNextPrevAnchor(const QTextCursor &startCursor, bool
 
 void QWidgetTextControlPrivate::activateLinkUnderCursor(QString href)
 {
-    QTextCursor oldCursor = cursor;
+    BOBUIextCursor oldCursor = cursor;
 
     if (href.isEmpty()) {
-        QTextCursor tmp = cursor;
+        BOBUIextCursor tmp = cursor;
         if (tmp.selectionStart() != tmp.position())
             tmp.setPosition(tmp.selectionStart());
-        tmp.movePosition(QTextCursor::NextCharacter);
+        tmp.movePosition(BOBUIextCursor::NextCharacter);
         href = tmp.charFormat().anchorHref();
     }
     if (href.isEmpty())
         return;
 
     if (!cursor.hasSelection()) {
-        QTextBlock block = cursor.block();
+        BOBUIextBlock block = cursor.block();
         const int cursorPos = cursor.position();
 
-        QTextBlock::Iterator it = block.begin();
-        QTextBlock::Iterator linkFragment;
+        BOBUIextBlock::Iterator it = block.begin();
+        BOBUIextBlock::Iterator linkFragment;
 
         for (; !it.atEnd(); ++it) {
-            QTextFragment fragment = it.fragment();
+            BOBUIextFragment fragment = it.fragment();
             const int fragmentPos = fragment.position();
             if (fragmentPos <= cursorPos &&
                 fragmentPos + fragment.length() > cursorPos) {
@@ -2949,7 +2949,7 @@ void QWidgetTextControlPrivate::activateLinkUnderCursor(QString href)
             if (it != block.begin()) {
                 do {
                     --it;
-                    QTextFragment fragment = it.fragment();
+                    BOBUIextFragment fragment = it.fragment();
                     if (fragment.charFormat().anchorHref() != href)
                         break;
                     cursor.setPosition(fragment.position());
@@ -2957,10 +2957,10 @@ void QWidgetTextControlPrivate::activateLinkUnderCursor(QString href)
             }
 
             for (it = linkFragment; !it.atEnd(); ++it) {
-                QTextFragment fragment = it.fragment();
+                BOBUIextFragment fragment = it.fragment();
                 if (fragment.charFormat().anchorHref() != href)
                     break;
-                cursor.setPosition(fragment.position() + fragment.length(), QTextCursor::KeepAnchor);
+                cursor.setPosition(fragment.position() + fragment.length(), BOBUIextCursor::KeepAnchor);
             }
         }
     }
@@ -2973,7 +2973,7 @@ void QWidgetTextControlPrivate::activateLinkUnderCursor(QString href)
     }
     repaintOldAndNewSelection(oldCursor);
 
-#ifndef QT_NO_DESKTOPSERVICES
+#ifndef BOBUI_NO_DESKTOPSERVICES
     if (openExternalLinks)
         QDesktopServices::openUrl(QUrl{href});
     else
@@ -2981,19 +2981,19 @@ void QWidgetTextControlPrivate::activateLinkUnderCursor(QString href)
         emit q_func()->linkActivated(href);
 }
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
 void QWidgetTextControlPrivate::showToolTip(const QPoint &globalPos, const QPointF &pos, QWidget *contextWidget)
 {
     const QString toolTip = q_func()->cursorForPosition(pos).charFormat().toolTip();
     if (toolTip.isEmpty())
         return;
-    QToolTip::showText(globalPos, toolTip, contextWidget);
+    BOBUIoolTip::showText(globalPos, toolTip, contextWidget);
 }
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
 
 bool QWidgetTextControlPrivate::isPreediting() const
 {
-    QTextLayout *layout = cursor.block().layout();
+    BOBUIextLayout *layout = cursor.block().layout();
     if (layout && !layout->preeditAreaText().isEmpty())
         return true;
 
@@ -3012,8 +3012,8 @@ void QWidgetTextControlPrivate::commitPreedit()
 
     cursor.beginEditBlock();
     preeditCursor = 0;
-    QTextBlock block = cursor.block();
-    QTextLayout *layout = block.layout();
+    BOBUIextBlock block = cursor.block();
+    BOBUIextLayout *layout = block.layout();
     layout->setPreeditArea(-1, QString());
     layout->clearFormats();
     cursor.endEditBlock();
@@ -3023,7 +3023,7 @@ bool QWidgetTextControl::setFocusToNextOrPreviousAnchor(bool next)
 {
     Q_D(QWidgetTextControl);
 
-    if (!(d->interactionFlags & Qt::LinksAccessibleByKeyboard))
+    if (!(d->interactionFlags & BobUI::LinksAccessibleByKeyboard))
         return false;
 
     QRectF crect = selectionRect();
@@ -3031,14 +3031,14 @@ bool QWidgetTextControl::setFocusToNextOrPreviousAnchor(bool next)
 
     // If we don't have a current anchor, we start from the start/end
     if (!d->cursor.hasSelection()) {
-        d->cursor = QTextCursor(d->doc);
+        d->cursor = BOBUIextCursor(d->doc);
         if (next)
-            d->cursor.movePosition(QTextCursor::Start);
+            d->cursor.movePosition(BOBUIextCursor::Start);
         else
-            d->cursor.movePosition(QTextCursor::End);
+            d->cursor.movePosition(BOBUIextCursor::End);
     }
 
-    QTextCursor newAnchor;
+    BOBUIextCursor newAnchor;
     if (findNextPrevAnchor(d->cursor, next, newAnchor)) {
         d->cursor = newAnchor;
         d->cursorIsFocusIndicator = true;
@@ -3056,11 +3056,11 @@ bool QWidgetTextControl::setFocusToNextOrPreviousAnchor(bool next)
     }
 }
 
-bool QWidgetTextControl::setFocusToAnchor(const QTextCursor &newCursor)
+bool QWidgetTextControl::setFocusToAnchor(const BOBUIextCursor &newCursor)
 {
     Q_D(QWidgetTextControl);
 
-    if (!(d->interactionFlags & Qt::LinksAccessibleByKeyboard))
+    if (!(d->interactionFlags & BobUI::LinksAccessibleByKeyboard))
         return false;
 
     // Verify that this is an anchor.
@@ -3073,7 +3073,7 @@ bool QWidgetTextControl::setFocusToAnchor(const QTextCursor &newCursor)
     emit updateRequest(crect);
 
     d->cursor.setPosition(newCursor.selectionStart());
-    d->cursor.setPosition(newCursor.selectionEnd(), QTextCursor::KeepAnchor);
+    d->cursor.setPosition(newCursor.selectionEnd(), BOBUIextCursor::KeepAnchor);
     d->cursorIsFocusIndicator = true;
 
     crect = selectionRect();
@@ -3082,7 +3082,7 @@ bool QWidgetTextControl::setFocusToAnchor(const QTextCursor &newCursor)
     return true;
 }
 
-void QWidgetTextControl::setTextInteractionFlags(Qt::TextInteractionFlags flags)
+void QWidgetTextControl::setTextInteractionFlags(BobUI::TextInteractionFlags flags)
 {
     Q_D(QWidgetTextControl);
     if (flags == d->interactionFlags)
@@ -3090,30 +3090,30 @@ void QWidgetTextControl::setTextInteractionFlags(Qt::TextInteractionFlags flags)
     d->interactionFlags = flags;
 
     if (d->hasFocus)
-        d->setCursorVisible(flags & Qt::TextEditable);
+        d->setCursorVisible(flags & BobUI::TextEditable);
 }
 
-Qt::TextInteractionFlags QWidgetTextControl::textInteractionFlags() const
+BobUI::TextInteractionFlags QWidgetTextControl::textInteractionFlags() const
 {
     Q_D(const QWidgetTextControl);
     return d->interactionFlags;
 }
 
-void QWidgetTextControl::mergeCurrentCharFormat(const QTextCharFormat &modifier)
+void QWidgetTextControl::mergeCurrentCharFormat(const BOBUIextCharFormat &modifier)
 {
     Q_D(QWidgetTextControl);
     d->cursor.mergeCharFormat(modifier);
     d->updateCurrentCharFormat();
 }
 
-void QWidgetTextControl::setCurrentCharFormat(const QTextCharFormat &format)
+void QWidgetTextControl::setCurrentCharFormat(const BOBUIextCharFormat &format)
 {
     Q_D(QWidgetTextControl);
     d->cursor.setCharFormat(format);
     d->updateCurrentCharFormat();
 }
 
-QTextCharFormat QWidgetTextControl::currentCharFormat() const
+BOBUIextCharFormat QWidgetTextControl::currentCharFormat() const
 {
     Q_D(const QWidgetTextControl);
     return d->cursor.charFormat();
@@ -3125,13 +3125,13 @@ void QWidgetTextControl::insertPlainText(const QString &text)
     d->cursor.insertText(text);
 }
 
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
 void QWidgetTextControl::insertHtml(const QString &text)
 {
     Q_D(QWidgetTextControl);
     d->cursor.insertHtml(text);
 }
-#endif // QT_NO_TEXTHTMLPARSER
+#endif // BOBUI_NO_TEXTHTMLPARSER
 
 QPointF QWidgetTextControl::anchorPosition(const QString &name) const
 {
@@ -3140,19 +3140,19 @@ QPointF QWidgetTextControl::anchorPosition(const QString &name) const
         return QPointF();
 
     QRectF r;
-    for (QTextBlock block = d->doc->begin(); block.isValid(); block = block.next()) {
-        QTextCharFormat format = block.charFormat();
+    for (BOBUIextBlock block = d->doc->begin(); block.isValid(); block = block.next()) {
+        BOBUIextCharFormat format = block.charFormat();
         if (format.isAnchor() && format.anchorNames().contains(name)) {
             r = d->rectForPosition(block.position());
             break;
         }
 
-        for (QTextBlock::Iterator it = block.begin(); !it.atEnd(); ++it) {
-            QTextFragment fragment = it.fragment();
+        for (BOBUIextBlock::Iterator it = block.begin(); !it.atEnd(); ++it) {
+            BOBUIextFragment fragment = it.fragment();
             format = fragment.charFormat();
             if (format.isAnchor() && format.anchorNames().contains(name)) {
                 r = d->rectForPosition(fragment.position());
-                block = QTextBlock();
+                block = BOBUIextBlock();
                 break;
             }
         }
@@ -3168,10 +3168,10 @@ void QWidgetTextControl::adjustSize()
     d->doc->adjustSize();
 }
 
-bool QWidgetTextControl::find(const QString &exp, QTextDocument::FindFlags options)
+bool QWidgetTextControl::find(const QString &exp, BOBUIextDocument::FindFlags options)
 {
     Q_D(QWidgetTextControl);
-    QTextCursor search = d->doc->find(exp, d->cursor, options);
+    BOBUIextCursor search = d->doc->find(exp, d->cursor, options);
     if (search.isNull())
         return false;
 
@@ -3179,11 +3179,11 @@ bool QWidgetTextControl::find(const QString &exp, QTextDocument::FindFlags optio
     return true;
 }
 
-#if QT_CONFIG(regularexpression)
-bool QWidgetTextControl::find(const QRegularExpression &exp, QTextDocument::FindFlags options)
+#if BOBUI_CONFIG(regularexpression)
+bool QWidgetTextControl::find(const QRegularExpression &exp, BOBUIextDocument::FindFlags options)
 {
     Q_D(QWidgetTextControl);
-    QTextCursor search = d->doc->find(exp, d->cursor, options);
+    BOBUIextCursor search = d->doc->find(exp, d->cursor, options);
     if (search.isNull())
         return false;
 
@@ -3197,15 +3197,15 @@ QString QWidgetTextControl::toPlainText() const
     return document()->toPlainText();
 }
 
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
 QString QWidgetTextControl::toHtml() const
 {
     return document()->toHtml();
 }
 #endif
 
-#if QT_CONFIG(textmarkdownwriter)
-QString QWidgetTextControl::toMarkdown(QTextDocument::MarkdownFeatures features) const
+#if BOBUI_CONFIG(textmarkdownwriter)
+QString QWidgetTextControl::toMarkdown(BOBUIextDocument::MarkdownFeatures features) const
 {
     return document()->toMarkdown(features);
 }
@@ -3220,27 +3220,27 @@ void QWidgetTextControlPrivate::insertParagraphSeparator()
     // - the next checklist item after a checked item should be unchecked
     auto blockFmt = cursor.blockFormat();
     auto charFmt = cursor.charFormat();
-    blockFmt.clearProperty(QTextFormat::BlockTrailingHorizontalRulerWidth);
-    if (blockFmt.hasProperty(QTextFormat::HeadingLevel)) {
-        blockFmt.clearProperty(QTextFormat::HeadingLevel);
-        charFmt = QTextCharFormat();
+    blockFmt.clearProperty(BOBUIextFormat::BlockTrailingHorizontalRulerWidth);
+    if (blockFmt.hasProperty(BOBUIextFormat::HeadingLevel)) {
+        blockFmt.clearProperty(BOBUIextFormat::HeadingLevel);
+        charFmt = BOBUIextCharFormat();
     }
     if (cursor.currentList()) {
         auto existingFmt = cursor.blockFormat();
-        existingFmt.clearProperty(QTextBlockFormat::BlockBottomMargin);
+        existingFmt.clearProperty(BOBUIextBlockFormat::BlockBottomMargin);
         cursor.setBlockFormat(existingFmt);
-        if (blockFmt.marker() == QTextBlockFormat::MarkerType::Checked)
-            blockFmt.setMarker(QTextBlockFormat::MarkerType::Unchecked);
+        if (blockFmt.marker() == BOBUIextBlockFormat::MarkerType::Checked)
+            blockFmt.setMarker(BOBUIextBlockFormat::MarkerType::Unchecked);
     }
 
     // After a blank line, reset block and char formats. I.e. you can end a list,
     // block quote, etc. by hitting enter twice, and get back to normal paragraph style.
     if (cursor.block().text().isEmpty() &&
-            !cursor.blockFormat().hasProperty(QTextFormat::BlockTrailingHorizontalRulerWidth) &&
-            !cursor.blockFormat().hasProperty(QTextFormat::BlockCodeLanguage)) {
-        blockFmt = QTextBlockFormat();
+            !cursor.blockFormat().hasProperty(BOBUIextFormat::BlockTrailingHorizontalRulerWidth) &&
+            !cursor.blockFormat().hasProperty(BOBUIextFormat::BlockCodeLanguage)) {
+        blockFmt = BOBUIextBlockFormat();
         const bool blockFmtChanged = (cursor.blockFormat() != blockFmt);
-        charFmt = QTextCharFormat();
+        charFmt = BOBUIextCharFormat();
         cursor.setBlockFormat(blockFmt);
         cursor.setCharFormat(charFmt);
         // If the user hit enter twice just to get back to default format,
@@ -3254,11 +3254,11 @@ void QWidgetTextControlPrivate::insertParagraphSeparator()
     cursor.insertBlock(blockFmt, charFmt);
 }
 
-void QWidgetTextControlPrivate::append(const QString &text, Qt::TextFormat format)
+void QWidgetTextControlPrivate::append(const QString &text, BobUI::TextFormat format)
 {
-    QTextCursor tmp(doc);
+    BOBUIextCursor tmp(doc);
     tmp.beginEditBlock();
-    tmp.movePosition(QTextCursor::End);
+    tmp.movePosition(BOBUIextCursor::End);
 
     if (!doc->isEmpty())
         tmp.insertBlock(cursor.blockFormat(), cursor.charFormat());
@@ -3266,10 +3266,10 @@ void QWidgetTextControlPrivate::append(const QString &text, Qt::TextFormat forma
         tmp.setCharFormat(cursor.charFormat());
 
     // preserve the char format
-    QTextCharFormat oldCharFormat = cursor.charFormat();
+    BOBUIextCharFormat oldCharFormat = cursor.charFormat();
 
-#ifndef QT_NO_TEXTHTMLPARSER
-    if (format == Qt::RichText || (format == Qt::AutoText && Qt::mightBeRichText(text))) {
+#ifndef BOBUI_NO_TEXTHTMLPARSER
+    if (format == BobUI::RichText || (format == BobUI::AutoText && BobUI::mightBeRichText(text))) {
         tmp.insertHtml(text);
     } else {
         tmp.insertText(text);
@@ -3277,7 +3277,7 @@ void QWidgetTextControlPrivate::append(const QString &text, Qt::TextFormat forma
 #else
     Q_UNUSED(format);
     tmp.insertText(text);
-#endif // QT_NO_TEXTHTMLPARSER
+#endif // BOBUI_NO_TEXTHTMLPARSER
     if (!cursor.hasSelection())
         cursor.setCharFormat(oldCharFormat);
 
@@ -3287,19 +3287,19 @@ void QWidgetTextControlPrivate::append(const QString &text, Qt::TextFormat forma
 void QWidgetTextControl::append(const QString &text)
 {
     Q_D(QWidgetTextControl);
-    d->append(text, Qt::AutoText);
+    d->append(text, BobUI::AutoText);
 }
 
 void QWidgetTextControl::appendHtml(const QString &html)
 {
     Q_D(QWidgetTextControl);
-    d->append(html, Qt::RichText);
+    d->append(html, BobUI::RichText);
 }
 
 void QWidgetTextControl::appendPlainText(const QString &text)
 {
     Q_D(QWidgetTextControl);
-    d->append(text, Qt::PlainText);
+    d->append(text, BobUI::PlainText);
 }
 
 
@@ -3331,9 +3331,9 @@ QAbstractTextDocumentLayout::PaintContext QWidgetTextControl::getPaintContext(QW
 
     ctx.selections = d->extraSelections;
     ctx.palette = d->palette;
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     if (widget) {
-        if (auto cssStyle = qt_styleSheet(widget->style())) {
+        if (auto cssStyle = bobui_styleSheet(widget->style())) {
             QStyleOption option;
             option.initFrom(widget);
             cssStyle->styleSheetPalette(widget, &option, &ctx.palette);
@@ -3351,7 +3351,7 @@ QAbstractTextDocumentLayout::PaintContext QWidgetTextControl::getPaintContext(QW
 
     if (!d->dndFeedbackCursor.isNull())
         ctx.cursorPosition = d->dndFeedbackCursor.position();
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (!QApplicationPrivate::keypadNavigationEnabled() || d->hasEditFocus)
 #endif
     if (d->cursor.hasSelection()) {
@@ -3365,7 +3365,7 @@ QAbstractTextDocumentLayout::PaintContext QWidgetTextControl::getPaintContext(QW
             if (widget)
                 style = widget->style();
             style->styleHint(QStyle::SH_TextControl_FocusIndicatorTextCharFormat, &opt, widget, &ret);
-            selection.format = qvariant_cast<QTextFormat>(ret.variant).toCharFormat();
+            selection.format = qvariant_cast<BOBUIextFormat>(ret.variant).toCharFormat();
         } else {
             QPalette::ColorGroup cg = d->hasFocus ? QPalette::Active : QPalette::Inactive;
             selection.format.setBackground(ctx.palette.brush(cg, QPalette::Highlight));
@@ -3377,7 +3377,7 @@ QAbstractTextDocumentLayout::PaintContext QWidgetTextControl::getPaintContext(QW
                 style = widget->style();
             }
             if (style->styleHint(QStyle::SH_RichText_FullWidthSelection, &opt, widget))
-                selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+                selection.format.setProperty(BOBUIextFormat::FullWidthSelection, true);
         }
         ctx.selections.append(selection);
     }
@@ -3391,7 +3391,7 @@ void QWidgetTextControl::drawContents(QPainter *p, const QRectF &rect, QWidget *
     p->save();
     QAbstractTextDocumentLayout::PaintContext ctx = getPaintContext(widget);
     if (rect.isValid())
-        p->setClipRect(rect, Qt::IntersectClip);
+        p->setClipRect(rect, BobUI::IntersectClip);
     ctx.clip = rect;
 
     d->doc->documentLayout()->draw(p, ctx);
@@ -3400,45 +3400,45 @@ void QWidgetTextControl::drawContents(QPainter *p, const QRectF &rect, QWidget *
 
 void QWidgetTextControlPrivate::_q_copyLink()
 {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QMimeData *md = new QMimeData;
     md->setText(linkToCopy);
     QGuiApplication::clipboard()->setMimeData(md);
 #endif
 }
 
-int QWidgetTextControl::hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const
+int QWidgetTextControl::hitTest(const QPointF &point, BobUI::HitTestAccuracy accuracy) const
 {
     Q_D(const QWidgetTextControl);
     return d->doc->documentLayout()->hitTest(point, accuracy);
 }
 
-QRectF QWidgetTextControl::blockBoundingRect(const QTextBlock &block) const
+QRectF QWidgetTextControl::blockBoundingRect(const BOBUIextBlock &block) const
 {
     Q_D(const QWidgetTextControl);
     return d->doc->documentLayout()->blockBoundingRect(block);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 #define NUM_CONTROL_CHARACTERS 14
 const struct QUnicodeControlCharacter {
     const char *text;
     ushort character;
-} qt_controlCharacters[NUM_CONTROL_CHARACTERS] = {
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRM Left-to-right mark"), 0x200e },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLM Right-to-left mark"), 0x200f },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "ZWJ Zero width joiner"), 0x200d },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "ZWNJ Zero width non-joiner"), 0x200c },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "ZWSP Zero width space"), 0x200b },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRE Start of left-to-right embedding"), 0x202a },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLE Start of right-to-left embedding"), 0x202b },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRO Start of left-to-right override"), 0x202d },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLO Start of right-to-left override"), 0x202e },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "PDF Pop directional formatting"), 0x202c },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRI Left-to-right isolate"), 0x2066 },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLI Right-to-left isolate"), 0x2067 },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "FSI First strong isolate"), 0x2068 },
-    { QT_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "PDI Pop directional isolate"), 0x2069 }
+} bobui_controlCharacters[NUM_CONTROL_CHARACTERS] = {
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRM Left-to-right mark"), 0x200e },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLM Right-to-left mark"), 0x200f },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "ZWJ Zero width joiner"), 0x200d },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "ZWNJ Zero width non-joiner"), 0x200c },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "ZWSP Zero width space"), 0x200b },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRE Start of left-to-right embedding"), 0x202a },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLE Start of right-to-left embedding"), 0x202b },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRO Start of left-to-right override"), 0x202d },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLO Start of right-to-left override"), 0x202e },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "PDF Pop directional formatting"), 0x202c },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "LRI Left-to-right isolate"), 0x2066 },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "RLI Right-to-left isolate"), 0x2067 },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "FSI First strong isolate"), 0x2068 },
+    { BOBUI_TRANSLATE_NOOP("QUnicodeControlCharacterMenu", "PDI Pop directional isolate"), 0x2069 }
 };
 
 QUnicodeControlCharacterMenu::QUnicodeControlCharacterMenu(QObject *_editWidget, QWidget *parent)
@@ -3446,7 +3446,7 @@ QUnicodeControlCharacterMenu::QUnicodeControlCharacterMenu(QObject *_editWidget,
 {
     setTitle(tr("Insert Unicode control character"));
     for (int i = 0; i < NUM_CONTROL_CHARACTERS; ++i) {
-        addAction(tr(qt_controlCharacters[i].text), this, SLOT(menuActionTriggered()));
+        addAction(tr(bobui_controlCharacters[i].text), this, SLOT(menuActionTriggered()));
     }
 }
 
@@ -3456,11 +3456,11 @@ void QUnicodeControlCharacterMenu::menuActionTriggered()
     int idx = actions().indexOf(a);
     if (idx < 0 || idx >= NUM_CONTROL_CHARACTERS)
         return;
-    QChar c(qt_controlCharacters[idx].character);
+    QChar c(bobui_controlCharacters[idx].character);
     QString str(c);
 
-#if QT_CONFIG(textedit)
-    if (QTextEdit *edit = qobject_cast<QTextEdit *>(editWidget)) {
+#if BOBUI_CONFIG(textedit)
+    if (BOBUIextEdit *edit = qobject_cast<BOBUIextEdit *>(editWidget)) {
         edit->insertPlainText(str);
         return;
     }
@@ -3468,23 +3468,23 @@ void QUnicodeControlCharacterMenu::menuActionTriggered()
     if (QWidgetTextControl *control = qobject_cast<QWidgetTextControl *>(editWidget)) {
         control->insertPlainText(str);
     }
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
     if (QLineEdit *edit = qobject_cast<QLineEdit *>(editWidget)) {
         edit->insert(str);
         return;
     }
 #endif
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 static constexpr auto supportedMimeTypes = qOffsetStringArray(
     "text/plain",
     "text/plain;charset=utf-8",
     "text/html"
-#if QT_CONFIG(textmarkdownwriter)
+#if BOBUI_CONFIG(textmarkdownwriter)
     , "text/markdown"
 #endif
-#if QT_CONFIG(textodfwriter)
+#if BOBUI_CONFIG(textodfwriter)
     , "application/vnd.oasis.opendocument.text"
 #endif
 );
@@ -3492,7 +3492,7 @@ static constexpr auto supportedMimeTypes = qOffsetStringArray(
 /*! \internal
     \reimp
 */
-QStringList QTextEditMimeData::formats() const
+QStringList BOBUIextEditMimeData::formats() const
 {
     if (!fragment.isEmpty()) {
         constexpr auto size = supportedMimeTypes.count();
@@ -3510,7 +3510,7 @@ QStringList QTextEditMimeData::formats() const
 /*! \internal
     \reimp
 */
-bool QTextEditMimeData::hasFormat(const QString &format) const
+bool BOBUIextEditMimeData::hasFormat(const QString &format) const
 {
     if (!fragment.isEmpty()) {
         constexpr auto size = supportedMimeTypes.count();
@@ -3524,26 +3524,26 @@ bool QTextEditMimeData::hasFormat(const QString &format) const
     return QMimeData::hasFormat(format);
 }
 
-QVariant QTextEditMimeData::retrieveData(const QString &mimeType, QMetaType type) const
+QVariant BOBUIextEditMimeData::retrieveData(const QString &mimeType, QMetaType type) const
 {
     if (!fragment.isEmpty())
         setup();
     return QMimeData::retrieveData(mimeType, type);
 }
 
-void QTextEditMimeData::setup() const
+void BOBUIextEditMimeData::setup() const
 {
-    QTextEditMimeData *that = const_cast<QTextEditMimeData *>(this);
-#ifndef QT_NO_TEXTHTMLPARSER
+    BOBUIextEditMimeData *that = const_cast<BOBUIextEditMimeData *>(this);
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     that->setData("text/html"_L1, fragment.toHtml().toUtf8());
 #endif
-#if QT_CONFIG(textmarkdownwriter)
+#if BOBUI_CONFIG(textmarkdownwriter)
     that->setData("text/markdown"_L1, fragment.toMarkdown().toUtf8());
 #endif
-#ifndef QT_NO_TEXTODFWRITER
+#ifndef BOBUI_NO_TEXTODFWRITER
     {
         QBuffer buffer;
-        QTextDocumentWriter writer(&buffer, "ODF");
+        BOBUIextDocumentWriter writer(&buffer, "ODF");
         writer.write(fragment);
         buffer.close();
         that->setData("application/vnd.oasis.opendocument.text"_L1, buffer.data());
@@ -3551,11 +3551,11 @@ void QTextEditMimeData::setup() const
 #endif
     that->setText(fragment.toPlainText());
     that->setData("text/plain;charset=utf-8"_L1, fragment.toRawText().toUtf8());
-    fragment = QTextDocumentFragment();
+    fragment = BOBUIextDocumentFragment();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwidgettextcontrol_p.cpp"
 
-#endif // QT_NO_TEXTCONTROL
+#endif // BOBUI_NO_TEXTCONTROL

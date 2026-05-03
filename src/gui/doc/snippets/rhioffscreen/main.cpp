@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
 #include <QGuiApplication>
@@ -11,17 +11,17 @@ int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance inst;
 #endif
     std::unique_ptr<QRhi> rhi;
 #if defined(Q_OS_WIN)
     QRhiD3D12InitParams params;
     rhi.reset(QRhi::create(QRhi::D3D12, &params));
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     QRhiMetalInitParams params;
     rhi.reset(QRhi::create(QRhi::Metal, &params));
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     inst.setExtensions(QRhiVulkanInitParams::preferredInstanceExtensions());
     if (inst.create()) {
         QRhiVulkanInitParams params;
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
             opacity = qBound(0.0f, opacity, 1.0f);
         }
 
-        cb->beginPass(rt.get(), Qt::green, { 1.0f, 0 }, u);
+        cb->beginPass(rt.get(), BobUI::green, { 1.0f, 0 }, u);
         cb->setGraphicsPipeline(ps.get());
         cb->setViewport({ 0, 0, 1280, 720 });
         cb->setShaderResources();

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 /***************************************************************************/
 /*                                                                         */
@@ -25,14 +25,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 */
 
-#include <qtconfigmacros.h>
+#include <bobuiconfigmacros.h>
 
 #ifdef __cplusplus
   extern "C" {
@@ -44,20 +44,20 @@
   /*************************************************************************/
   /*                                                                       */
   /* To make ftgrays.h independent from configuration files we check       */
-  /* whether QT_FT_EXPORT_VAR has been defined already.                    */
+  /* whether BOBUI_FT_EXPORT_VAR has been defined already.                    */
   /*                                                                       */
   /* On some systems and compilers (Win32 mostly), an extra keyword is     */
   /* necessary to compile the library as a DLL.                            */
   /*                                                                       */
-#ifndef QT_FT_EXPORT_VAR
-#define QT_FT_EXPORT_VAR( x )  extern  x
+#ifndef BOBUI_FT_EXPORT_VAR
+#define BOBUI_FT_EXPORT_VAR( x )  extern  x
 #endif
 
 /* Minimum buffer size for raster object, that accounts
    for TWorker and TCell sizes.*/
 #define MINIMUM_POOL_SIZE 8192
 
-  QT_FT_EXPORT_VAR( const QT_FT_Raster_Funcs )  QT_MANGLE_NAMESPACE(qt_ft_grays_raster);
+  BOBUI_FT_EXPORT_VAR( const BOBUI_FT_Raster_Funcs )  BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster);
 
 
 #ifdef __cplusplus

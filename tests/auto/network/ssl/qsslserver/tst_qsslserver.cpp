@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
 #include <QSignalSpy>
-#include <QTimer>
+#include <BOBUIimer>
 
-#include <QtNetwork/QSslServer>
-#include <QtNetwork/QSslKey>
-#include "private/qtlsbackend_p.h"
+#include <BobUINetwork/QSslServer>
+#include <BobUINetwork/QSslKey>
+#include "private/bobuilsbackend_p.h"
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
 class tst_QSslServer : public QObject
 {
@@ -21,7 +21,7 @@ private slots:
     void testOneSuccessfulConnection();
     void testSelfSignedCertificateRejectedByServer();
     void testSelfSignedCertificateRejectedByClient();
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
     void testHandshakeInterruptedOnError();
     void testPreSharedKeyAuthenticationRequired();
 #endif
@@ -80,7 +80,7 @@ void tst_QSslServer::initTestCase()
     if (!testDataDir.endsWith(QLatin1String("/")))
         testDataDir += QLatin1String("/");
 
-    const QString openSslBackend = QTlsBackend::builtinBackendNames[QTlsBackend::nameIndexOpenSSL];
+    const QString openSslBackend = BOBUIlsBackend::builtinBackendNames[BOBUIlsBackend::nameIndexOpenSSL];
     const auto &tlsBackends = QSslSocket::availableBackends();
     if (tlsBackends.contains(openSslBackend)) {
         isTestingOpenSsl = true;
@@ -127,7 +127,7 @@ QSslConfiguration tst_QSslServer::createQSslConfiguration(QString keyFileName,
 
 void tst_QSslServer::testOneSuccessfulConnection()
 {
-    if (QTestPrivate::isSecureTransportBlockingTest())
+    if (BOBUIestPrivate::isSecureTransportBlockingTest())
         QSKIP("SecureTransport will block this test while requesting keychain access");
     // Setup server
     QSslConfiguration serverConfiguration = selfSignedServerQSslConfiguration();
@@ -183,11 +183,11 @@ void tst_QSslServer::testOneSuccessfulConnection()
         if (!--waitFor)
             loop.quit();
     });
-    connect(&server.server, &QTcpServer::pendingConnectionAvailable, [&loop, &waitFor]() {
+    connect(&server.server, &BOBUIcpServer::pendingConnectionAvailable, [&loop, &waitFor]() {
         if (!--waitFor)
             loop.quit();
     });
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     // Check that one encrypted connection has occurred without error
@@ -208,7 +208,7 @@ void tst_QSslServer::testOneSuccessfulConnection()
 
 void tst_QSslServer::testSelfSignedCertificateRejectedByServer()
 {
-    if (QTestPrivate::isSecureTransportBlockingTest())
+    if (BOBUIestPrivate::isSecureTransportBlockingTest())
         QSKIP("SecureTransport will block this test while requesting keychain access");
     // Set up server that verifies client
     QSslConfiguration serverConfiguration = selfSignedServerQSslConfiguration();
@@ -226,7 +226,7 @@ void tst_QSslServer::testSelfSignedCertificateRejectedByServer()
 
     QEventLoop loop;
     QObject::connect(&client, SIGNAL(disconnected()), &loop, SLOT(quit()));
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     // Check that one encrypted connection has failed
@@ -263,7 +263,7 @@ void tst_QSslServer::testSelfSignedCertificateRejectedByServer()
 
 void tst_QSslServer::testSelfSignedCertificateRejectedByClient()
 {
-    if (QTestPrivate::isSecureTransportBlockingTest())
+    if (BOBUIestPrivate::isSecureTransportBlockingTest())
         QSKIP("SecureTransport will block this test while requesting keychain access");
     // Set up server without verification of client
     QSslConfiguration serverConfiguration = selfSignedServerQSslConfiguration();
@@ -287,7 +287,7 @@ void tst_QSslServer::testSelfSignedCertificateRejectedByClient()
     client.connectToHostEncrypted(QHostAddress(QHostAddress::LocalHost).toString(),
                                   server.server.serverPort());
     QEventLoop loop;
-    QTimer::singleShot(1000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(1000, &loop, SLOT(quit()));
     loop.exec();
 
     // Type of socket error to expect
@@ -295,7 +295,7 @@ void tst_QSslServer::testSelfSignedCertificateRejectedByClient()
             ? QAbstractSocket::SocketError::SslHandshakeFailedError
             : QAbstractSocket::SocketError::RemoteHostClosedError;
 
-    QTcpSocket *connection = server.server.nextPendingConnection();
+    BOBUIcpSocket *connection = server.server.nextPendingConnection();
     if (connection == nullptr) {
         // Client disconnected before connection accepted by server
         QCOMPARE(server.sslErrorsSpy.size(), 0);
@@ -345,7 +345,7 @@ void tst_QSslServer::testSelfSignedCertificateRejectedByClient()
     QCOMPARE(client.state(), QAbstractSocket::UnconnectedState);
 }
 
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
 
 void tst_QSslServer::testHandshakeInterruptedOnError()
 {
@@ -368,7 +368,7 @@ void tst_QSslServer::testHandshakeInterruptedOnError()
 
     QEventLoop loop;
     QObject::connect(&client, SIGNAL(disconnected()), &loop, SLOT(quit()));
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     // Check that client certificate causes handshake interrupted signal to be emitted
@@ -426,7 +426,7 @@ void tst_QSslServer::testPreSharedKeyAuthenticationRequired()
 
     QEventLoop loop;
     QObject::connect(&client, SIGNAL(encrypted()), &loop, SLOT(quit()));
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     // Check that server is connected
@@ -453,11 +453,11 @@ void tst_QSslServer::plaintextClient()
     SslServerSpy server(serverConfiguration);
     QVERIFY(server.server.listen());
 
-    QTcpSocket socket;
-    QSignalSpy socketDisconnectedSpy(&socket, &QTcpSocket::disconnected);
+    BOBUIcpSocket socket;
+    QSignalSpy socketDisconnectedSpy(&socket, &BOBUIcpSocket::disconnected);
     socket.connectToHost(QHostAddress::LocalHost, server.server.serverPort());
     QVERIFY(socket.waitForConnected());
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     // No disconnect from short break...:
     QCOMPARE(socket.state(), QAbstractSocket::SocketState::ConnectedState);
 
@@ -465,7 +465,7 @@ void tst_QSslServer::plaintextClient()
     socket.write("Hello World!");
     socket.waitForBytesWritten();
     // ... and quickly get disconnected:
-    QTRY_COMPARE_GT(socketDisconnectedSpy.size(), 0);
+    BOBUIRY_COMPARE_GT(socketDisconnectedSpy.size(), 0);
     QCOMPARE(socket.state(), QAbstractSocket::SocketState::UnconnectedState);
 }
 
@@ -483,8 +483,8 @@ void tst_QSslServer::quietClient()
     QObject::connect(&server.server, &QSslServer::errorOccurred, &server.server,
                      grabServerPeerPort);
 
-    QTcpSocket socket;
-    QSignalSpy socketDisconnectedSpy(&socket, &QTcpSocket::disconnected);
+    BOBUIcpSocket socket;
+    QSignalSpy socketDisconnectedSpy(&socket, &BOBUIcpSocket::disconnected);
     socket.connectToHost(QHostAddress::LocalHost, server.server.serverPort());
     quint16 clientLocalPort = socket.localPort();
     QVERIFY(socket.waitForConnected());
@@ -498,7 +498,7 @@ void tst_QSslServer::quietClient()
 
 void tst_QSslServer::twoGoodAndManyBadClients()
 {
-    if (QTestPrivate::isSecureTransportBlockingTest())
+    if (BOBUIestPrivate::isSecureTransportBlockingTest())
         QSKIP("SecureTransport will block this test while requesting keychain access");
 
     QSslConfiguration serverConfiguration = selfSignedServerQSslConfiguration();
@@ -518,10 +518,10 @@ void tst_QSslServer::twoGoodAndManyBadClients()
     connectGoodClient(&tlsSocket);
 
     // Then we connect a bunch of TCP sockets who will not send any data at all
-    std::array<QTcpSocket, size_t(ExpectedConnections) * 2> sockets;
-    for (QTcpSocket &socket : sockets)
+    std::array<BOBUIcpSocket, size_t(ExpectedConnections) * 2> sockets;
+    for (BOBUIcpSocket &socket : sockets)
         socket.connectToHost(QHostAddress::LocalHost, server.server.serverPort());
-    QTest::qWait(500); // some leeway to let connections try to connect...
+    BOBUIest::qWait(500); // some leeway to let connections try to connect...
 
     // I happen to know the sockets are all children of the server, so let's see
     // how many are created:
@@ -534,9 +534,9 @@ void tst_QSslServer::twoGoodAndManyBadClients()
     // all the bad actors tried to connect:
     QSslSocket goodClient;
     connectGoodClient(&goodClient);
-    QTRY_COMPARE(server.pendingConnectionAvailableSpy.size(), 2);
+    BOBUIRY_COMPARE(server.pendingConnectionAvailableSpy.size(), 2);
 }
 
-QTEST_MAIN(tst_QSslServer)
+BOBUIEST_MAIN(tst_QSslServer)
 
 #include "tst_qsslserver.moc"

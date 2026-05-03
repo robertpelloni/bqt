@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #### Inputs
@@ -7,26 +7,26 @@
 
 #### Libraries
 
-qt_feature_vcpkg_scope(network)
-qt_find_package(WrapBrotli MODULE
+bobui_feature_vcpkg_scope(network)
+bobui_find_package(WrapBrotli MODULE
     PROVIDED_TARGETS WrapBrotli::WrapBrotliDec MODULE_NAME network QMAKE_LIB brotli
     VCPKG_PORT brotli
     VCPKG_ADD_TO_FEATURE brotli
 )
-qt_find_package(Libproxy MODULE
+bobui_find_package(Libproxy MODULE
     PROVIDED_TARGETS PkgConfig::Libproxy MODULE_NAME network QMAKE_LIB libproxy)
-qt_find_package(GSSAPI MODULE PROVIDED_TARGETS GSSAPI::GSSAPI MODULE_NAME network QMAKE_LIB gssapi)
-qt_find_package(GLIB2 MODULE
+bobui_find_package(GSSAPI MODULE PROVIDED_TARGETS GSSAPI::GSSAPI MODULE_NAME network QMAKE_LIB gssapi)
+bobui_find_package(GLIB2 MODULE
     OPTIONAL_COMPONENTS GOBJECT PROVIDED_TARGETS GLIB2::GOBJECT MODULE_NAME core QMAKE_LIB gobject)
-qt_find_package(GLIB2 MODULE
+bobui_find_package(GLIB2 MODULE
     OPTIONAL_COMPONENTS GIO PROVIDED_TARGETS GLIB2::GIO MODULE_NAME core QMAKE_LIB gio)
-qt_find_package(WrapResolv MODULE
+bobui_find_package(WrapResolv MODULE
     PROVIDED_TARGETS WrapResolv::WrapResolv MODULE_NAME network QMAKE_LIB libresolv)
 
 #### Tests
 
 # getifaddrs
-qt_config_compile_test(getifaddrs
+bobui_config_compile_test(getifaddrs
     LABEL "getifaddrs()"
     CODE
 "#include <sys/types.h>
@@ -47,7 +47,7 @@ freeifaddrs(list);
 )
 
 # ipv6ifname
-qt_config_compile_test(ipv6ifname
+bobui_config_compile_test(ipv6ifname
     LABEL "IPv6 ifname"
     CODE
 "#include <sys/types.h>
@@ -68,7 +68,7 @@ if_freenameindex(if_nameindex());
 )
 
 # linux-netlink
-qt_config_compile_test(linux_netlink
+bobui_config_compile_test(linux_netlink
     LABEL "Linux AF_NETLINK sockets"
     CODE
 "#include <asm/types.h>
@@ -94,7 +94,7 @@ ci.ifa_prefered = ci.ifa_valid = 0;
 ")
 
 # res_setserver
-qt_config_compile_test(res_setservers
+bobui_config_compile_test(res_setservers
     LABEL "res_setservers()"
     LIBRARIES
         WrapResolv::WrapResolv
@@ -113,7 +113,7 @@ int main()
 )
 
 # sctp
-qt_config_compile_test(sctp
+bobui_config_compile_test(sctp
     LABEL "SCTP support"
     CODE
 "#include <sys/types.h>
@@ -135,7 +135,7 @@ socklen_t sctpInitMsgSize = sizeof(sctpInitMsg);
 )
 
 # dtls
-qt_config_compile_test(dtls
+bobui_config_compile_test(dtls
     LABEL "DTLS support in OpenSSL"
     LIBRARIES
         WrapOpenSSLHeaders::WrapOpenSSLHeaders
@@ -154,7 +154,7 @@ int main(void)
 ")
 
 # ocsp
-qt_config_compile_test(ocsp
+bobui_config_compile_test(ocsp
     LABEL "OCSP stapling support in OpenSSL"
     LIBRARIES
         WrapOpenSSLHeaders::WrapOpenSSLHeaders
@@ -174,7 +174,7 @@ int main(void)
 ")
 
 # networklistmanager
-qt_config_compile_test(networklistmanager
+bobui_config_compile_test(networklistmanager
     LABEL "Network List Manager"
     CODE
 "#include <netlistmgr.h>
@@ -200,196 +200,196 @@ connectionPointContainer->FindConnectionPoint(IID_INetworkConnectionEvents, &con
 
 #### Features
 
-qt_feature("getifaddrs" PUBLIC
+bobui_feature("getifaddrs" PUBLIC
     LABEL "getifaddrs()"
-    CONDITION VXWORKS OR UNIX AND NOT QT_FEATURE_linux_netlink AND TEST_getifaddrs
+    CONDITION VXWORKS OR UNIX AND NOT BOBUI_FEATURE_linux_netlink AND TEST_getifaddrs
 )
-qt_feature_definition("getifaddrs" "QT_NO_GETIFADDRS" NEGATE VALUE "1")
-qt_feature("ipv6ifname" PUBLIC
+bobui_feature_definition("getifaddrs" "BOBUI_NO_GETIFADDRS" NEGATE VALUE "1")
+bobui_feature("ipv6ifname" PUBLIC
     LABEL "IPv6 ifname"
-    CONDITION VXWORKS OR UNIX AND NOT QT_FEATURE_linux_netlink AND TEST_ipv6ifname
+    CONDITION VXWORKS OR UNIX AND NOT BOBUI_FEATURE_linux_netlink AND TEST_ipv6ifname
 )
-qt_feature_definition("ipv6ifname" "QT_NO_IPV6IFNAME" NEGATE VALUE "1")
-qt_feature("libresolv" PRIVATE
+bobui_feature_definition("ipv6ifname" "BOBUI_NO_IPV6IFNAME" NEGATE VALUE "1")
+bobui_feature("libresolv" PRIVATE
     LABEL "libresolv"
     CONDITION WrapResolv_FOUND
     AUTODETECT UNIX
 )
-qt_feature("libproxy" PRIVATE
+bobui_feature("libproxy" PRIVATE
     LABEL "libproxy"
     AUTODETECT OFF
     CONDITION Libproxy_FOUND
 )
-qt_feature("linux-netlink" PRIVATE
+bobui_feature("linux-netlink" PRIVATE
     LABEL "Linux AF_NETLINK"
     CONDITION LINUX AND NOT ANDROID AND TEST_linux_netlink
 )
-qt_feature("res_setservers" PRIVATE
+bobui_feature("res_setservers" PRIVATE
     LABEL "res_setservers()"
-    CONDITION QT_FEATURE_libresolv AND TEST_res_setservers
+    CONDITION BOBUI_FEATURE_libresolv AND TEST_res_setservers
 )
-qt_feature("securetransport" PUBLIC
+bobui_feature("securetransport" PUBLIC
     LABEL "SecureTransport"
     CONDITION APPLE
     DISABLE INPUT_ssl STREQUAL 'no'
 )
-qt_feature_definition("securetransport" "QT_SECURETRANSPORT")
-qt_feature("schannel" PUBLIC
+bobui_feature_definition("securetransport" "BOBUI_SECURETRANSPORT")
+bobui_feature("schannel" PUBLIC
     LABEL "Schannel"
     CONDITION WIN32
     DISABLE INPUT_ssl STREQUAL 'no'
 )
-qt_feature_definition("schannel" "QT_SCHANNEL")
-qt_feature("ssl" PUBLIC
+bobui_feature_definition("schannel" "BOBUI_SCHANNEL")
+bobui_feature("ssl" PUBLIC
     LABEL "SSL"
-    CONDITION QT_FEATURE_securetransport OR QT_FEATURE_openssl OR QT_FEATURE_schannel
+    CONDITION BOBUI_FEATURE_securetransport OR BOBUI_FEATURE_openssl OR BOBUI_FEATURE_schannel
 )
-qt_feature_definition("ssl" "QT_NO_SSL" NEGATE VALUE "1")
-qt_feature("dtls" PUBLIC
+bobui_feature_definition("ssl" "BOBUI_NO_SSL" NEGATE VALUE "1")
+bobui_feature("dtls" PUBLIC
     SECTION "Networking"
     LABEL "DTLS"
     PURPOSE "Provides a DTLS implementation"
-    CONDITION QT_FEATURE_ssl AND QT_FEATURE_openssl AND QT_FEATURE_udpsocket AND TEST_dtls
+    CONDITION BOBUI_FEATURE_ssl AND BOBUI_FEATURE_openssl AND BOBUI_FEATURE_udpsocket AND TEST_dtls
 )
-qt_feature("ocsp" PUBLIC
+bobui_feature("ocsp" PUBLIC
     SECTION "Networking"
     LABEL "OCSP-stapling"
     PURPOSE "Provides OCSP stapling support"
-    CONDITION QT_FEATURE_openssl AND TEST_ocsp
+    CONDITION BOBUI_FEATURE_openssl AND TEST_ocsp
 )
-qt_feature("sctp" PUBLIC
+bobui_feature("sctp" PUBLIC
     LABEL "SCTP"
     AUTODETECT OFF
     CONDITION TEST_sctp
 )
-qt_feature_definition("sctp" "QT_NO_SCTP" NEGATE VALUE "1")
-qt_feature("system-proxies" PRIVATE
+bobui_feature_definition("sctp" "BOBUI_NO_SCTP" NEGATE VALUE "1")
+bobui_feature("system-proxies" PRIVATE
     LABEL "Use system proxies"
 )
-qt_feature("http" PUBLIC
+bobui_feature("http" PUBLIC
     SECTION "Networking"
     LABEL "HTTP"
     PURPOSE "Provides support for the Hypertext Transfer Protocol in QNetworkAccessManager."
-    CONDITION QT_FEATURE_thread
+    CONDITION BOBUI_FEATURE_thread
 )
-qt_feature_definition("http" "QT_NO_HTTP" NEGATE VALUE "1")
-qt_feature("udpsocket" PUBLIC
+bobui_feature_definition("http" "BOBUI_NO_HTTP" NEGATE VALUE "1")
+bobui_feature("udpsocket" PUBLIC
     SECTION "Networking"
     LABEL "QUdpSocket"
     PURPOSE "Provides access to UDP sockets."
 )
-qt_feature_definition("udpsocket" "QT_NO_UDPSOCKET" NEGATE VALUE "1")
-qt_feature("networkproxy" PUBLIC
+bobui_feature_definition("udpsocket" "BOBUI_NO_UDPSOCKET" NEGATE VALUE "1")
+bobui_feature("networkproxy" PUBLIC
     SECTION "Networking"
     LABEL "QNetworkProxy"
     PURPOSE "Provides network proxy support."
 )
-qt_feature_definition("networkproxy" "QT_NO_NETWORKPROXY" NEGATE VALUE "1")
-qt_feature("socks5" PUBLIC
+bobui_feature_definition("networkproxy" "BOBUI_NO_NETWORKPROXY" NEGATE VALUE "1")
+bobui_feature("socks5" PUBLIC
     SECTION "Networking"
     LABEL "SOCKS5"
     PURPOSE "Provides SOCKS5 support in QNetworkProxy."
-    CONDITION QT_FEATURE_networkproxy
+    CONDITION BOBUI_FEATURE_networkproxy
 )
-qt_feature_definition("socks5" "QT_NO_SOCKS5" NEGATE VALUE "1")
-qt_feature("networkinterface" PUBLIC
+bobui_feature_definition("socks5" "BOBUI_NO_SOCKS5" NEGATE VALUE "1")
+bobui_feature("networkinterface" PUBLIC
     SECTION "Networking"
     LABEL "QNetworkInterface"
     PURPOSE "Supports enumerating a host's IP addresses and network interfaces."
     CONDITION NOT WASM
 )
-qt_feature_definition("networkinterface" "QT_NO_NETWORKINTERFACE" NEGATE VALUE "1")
-qt_feature("networkdiskcache" PUBLIC
+bobui_feature_definition("networkinterface" "BOBUI_NO_NETWORKINTERFACE" NEGATE VALUE "1")
+bobui_feature("networkdiskcache" PUBLIC
     SECTION "Networking"
     LABEL "QNetworkDiskCache"
     PURPOSE "Provides a disk cache for network resources."
-    CONDITION QT_FEATURE_temporaryfile
+    CONDITION BOBUI_FEATURE_temporaryfile
 )
-qt_feature_definition("networkdiskcache" "QT_NO_NETWORKDISKCACHE" NEGATE VALUE "1")
-qt_feature("brotli" PUBLIC
+bobui_feature_definition("networkdiskcache" "BOBUI_NO_NETWORKDISKCACHE" NEGATE VALUE "1")
+bobui_feature("brotli" PUBLIC
     SECTION "Networking"
     LABEL "Brotli Decompression Support"
     PURPOSE "Support for downloading and decompressing resources compressed with Brotli through QNetworkAccessManager."
     CONDITION WrapBrotli_FOUND
 )
-qt_feature_definition("brotli" "QT_NO_BROTLI" NEGATE VALUE "1")
-qt_feature("localserver" PUBLIC
+bobui_feature_definition("brotli" "BOBUI_NO_BROTLI" NEGATE VALUE "1")
+bobui_feature("localserver" PUBLIC
     SECTION "Networking"
     LABEL "QLocalServer"
     PURPOSE "Provides a local socket based server."
-    CONDITION QT_FEATURE_temporaryfile AND NOT VXWORKS
+    CONDITION BOBUI_FEATURE_temporaryfile AND NOT VXWORKS
 )
-qt_feature_definition("localserver" "QT_NO_LOCALSERVER" NEGATE VALUE "1")
-qt_feature("dnslookup" PUBLIC
+bobui_feature_definition("localserver" "BOBUI_NO_LOCALSERVER" NEGATE VALUE "1")
+bobui_feature("dnslookup" PUBLIC
     SECTION "Networking"
     LABEL "QDnsLookup"
     PURPOSE "Provides API for DNS lookups."
-    CONDITION QT_FEATURE_thread AND NOT INTEGRITY
+    CONDITION BOBUI_FEATURE_thread AND NOT INTEGRITY
 )
-qt_feature("gssapi" PUBLIC
+bobui_feature("gssapi" PUBLIC
     SECTION "Networking"
     LABEL "GSSAPI"
     PURPOSE "Enable SPNEGO authentication through GSSAPI"
     CONDITION NOT WIN32 AND GSSAPI_FOUND
 )
-qt_feature_definition("gssapi" "QT_NO_GSSAPI" NEGATE VALUE "1")
-qt_feature("sspi" PUBLIC
+bobui_feature_definition("gssapi" "BOBUI_NO_GSSAPI" NEGATE VALUE "1")
+bobui_feature("sspi" PUBLIC
     SECTION "Networking"
     LABEL "SSPI"
     PURPOSE "Enable NTLM/SPNEGO authentication through SSPI"
     CONDITION WIN32
 )
-qt_feature_definition("sspi" "QT_NO_SSPI" NEGATE VALUE "1")
-qt_feature("networklistmanager" PRIVATE
+bobui_feature_definition("sspi" "BOBUI_NO_SSPI" NEGATE VALUE "1")
+bobui_feature("networklistmanager" PRIVATE
     SECTION "Networking"
     LABEL "Network List Manager"
     PURPOSE "Use Network List Manager to keep track of network connectivity"
     CONDITION WIN32 AND TEST_networklistmanager
 )
-qt_feature("topleveldomain" PUBLIC
+bobui_feature("topleveldomain" PUBLIC
     SECTION "Networking"
     LABEL "qIsEffectiveTLD()"
     PURPOSE "Provides support for checking if a domain is a top level domain. If enabled, a binary dump of the Public Suffix List (http://www.publicsuffix.org, Mozilla License) is included. The data is used in QNetworkCookieJar."
     AUTODETECT NOT WASM
     DISABLE INPUT_publicsuffix STREQUAL "no"
 )
-qt_feature("publicsuffix-qt" PRIVATE
+bobui_feature("publicsuffix-bobui" PRIVATE
     LABEL "  Built-in publicsuffix database"
-    CONDITION QT_FEATURE_topleveldomain
-    ENABLE INPUT_publicsuffix STREQUAL "qt" OR INPUT_publicsuffix STREQUAL "all"
+    CONDITION BOBUI_FEATURE_topleveldomain
+    ENABLE INPUT_publicsuffix STREQUAL "bobui" OR INPUT_publicsuffix STREQUAL "all"
     DISABLE INPUT_publicsuffix STREQUAL "system"
 )
-qt_feature("publicsuffix-system" PRIVATE
+bobui_feature("publicsuffix-system" PRIVATE
     LABEL "  System publicsuffix database"
-    CONDITION QT_FEATURE_topleveldomain
+    CONDITION BOBUI_FEATURE_topleveldomain
     AUTODETECT LINUX OR HURD
     ENABLE INPUT_publicsuffix STREQUAL "system" OR INPUT_publicsuffix STREQUAL "all"
-    DISABLE INPUT_publicsuffix STREQUAL "qt"
+    DISABLE INPUT_publicsuffix STREQUAL "bobui"
 )
 
-qt_configure_add_summary_section(NAME "Qt Network")
-qt_configure_add_summary_entry(ARGS "getifaddrs")
-qt_configure_add_summary_entry(ARGS "ipv6ifname")
-qt_configure_add_summary_entry(ARGS "libproxy")
-qt_configure_add_summary_entry(
+bobui_configure_add_summary_section(NAME "BobUI Network")
+bobui_configure_add_summary_entry(ARGS "getifaddrs")
+bobui_configure_add_summary_entry(ARGS "ipv6ifname")
+bobui_configure_add_summary_entry(ARGS "libproxy")
+bobui_configure_add_summary_entry(
     ARGS "linux-netlink"
     CONDITION LINUX
 )
-qt_configure_add_summary_entry(
+bobui_configure_add_summary_entry(
     ARGS "securetransport"
     CONDITION APPLE
 )
-qt_configure_add_summary_entry(
+bobui_configure_add_summary_entry(
     ARGS "schannel"
     CONDITION WIN32
 )
-qt_configure_add_summary_entry(ARGS "dtls")
-qt_configure_add_summary_entry(ARGS "ocsp")
-qt_configure_add_summary_entry(ARGS "sctp")
-qt_configure_add_summary_entry(ARGS "system-proxies")
-qt_configure_add_summary_entry(ARGS "gssapi")
-qt_configure_add_summary_entry(ARGS "brotli")
-qt_configure_add_summary_entry(ARGS "topleveldomain")
-qt_configure_add_summary_entry(ARGS "publicsuffix-qt")
-qt_configure_add_summary_entry(ARGS "publicsuffix-system")
-qt_configure_end_summary_section() # end of "Qt Network" section
+bobui_configure_add_summary_entry(ARGS "dtls")
+bobui_configure_add_summary_entry(ARGS "ocsp")
+bobui_configure_add_summary_entry(ARGS "sctp")
+bobui_configure_add_summary_entry(ARGS "system-proxies")
+bobui_configure_add_summary_entry(ARGS "gssapi")
+bobui_configure_add_summary_entry(ARGS "brotli")
+bobui_configure_add_summary_entry(ARGS "topleveldomain")
+bobui_configure_add_summary_entry(ARGS "publicsuffix-bobui")
+bobui_configure_add_summary_entry(ARGS "publicsuffix-system")
+bobui_configure_end_summary_section() # end of "BobUI Network" section

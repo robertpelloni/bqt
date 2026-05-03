@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## uic Tool:
 #####################################################################
 
-qt_get_tool_target_name(target_name uic)
-qt_internal_add_tool(${target_name}
+bobui_get_tool_target_name(target_name uic)
+bobui_internal_add_tool(${target_name}
     TRY_RUN
-    TARGET_DESCRIPTION "Qt User Interface Compiler"
+    TARGET_DESCRIPTION "BobUI User Interface Compiler"
     INSTALL_DIR "${INSTALL_LIBEXECDIR}"
     TOOLS_TARGET Widgets
     SOURCES
@@ -30,11 +30,11 @@ qt_internal_add_tool(${target_name}
         utils.h
         validator.cpp validator.h
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_USE_NODISCARD_FILE_OPEN
-        QT_UIC
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_USE_NODISCARD_FILE_OPEN
+        BOBUI_UIC
     INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}
         # ${PROJECT_BINARY_DIR}/src/tools/uic # special case remove
@@ -42,4 +42,4 @@ qt_internal_add_tool(${target_name}
         python
         shared
 )
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()

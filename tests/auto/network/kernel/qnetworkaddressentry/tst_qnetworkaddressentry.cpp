@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qcoreapplication.h>
 #include <qnetworkinterface.h>
 
@@ -52,37 +52,37 @@ void tst_QNetworkAddressEntry::getSetCheck()
 
 void tst_QNetworkAddressEntry::prefixAndNetmask_data()
 {
-    QTest::addColumn<QHostAddress>("ip");
-    QTest::addColumn<QHostAddress>("netmask");
-    QTest::addColumn<int>("prefix");
+    BOBUIest::addColumn<QHostAddress>("ip");
+    BOBUIest::addColumn<QHostAddress>("netmask");
+    BOBUIest::addColumn<int>("prefix");
 
     // IPv4 set:
     QHostAddress ipv4(QHostAddress::LocalHost);
-    QTest::newRow("v4/0") << ipv4 << QHostAddress(QHostAddress::AnyIPv4) << 0;
-    QTest::newRow("v4/32") << ipv4 << QHostAddress("255.255.255.255") << 32;
-    QTest::newRow("v4/24") << ipv4 << QHostAddress("255.255.255.0") << 24;
-    QTest::newRow("v4/23") << ipv4 << QHostAddress("255.255.254.0") << 23;
-    QTest::newRow("v4/20") << ipv4 << QHostAddress("255.255.240.0") << 20;
-    QTest::newRow("v4/invalid1") << ipv4 << QHostAddress(QHostAddress::LocalHost) << -1;
-    QTest::newRow("v4/invalid2") << ipv4 << QHostAddress(QHostAddress::AnyIPv6) << -1;
-    QTest::newRow("v4/invalid3") << ipv4 << QHostAddress("255.255.253.0") << -1;
-    QTest::newRow("v4/invalid4") << ipv4 << QHostAddress() << -2;
-    QTest::newRow("v4/invalid5") << ipv4 << QHostAddress() << 33;
+    BOBUIest::newRow("v4/0") << ipv4 << QHostAddress(QHostAddress::AnyIPv4) << 0;
+    BOBUIest::newRow("v4/32") << ipv4 << QHostAddress("255.255.255.255") << 32;
+    BOBUIest::newRow("v4/24") << ipv4 << QHostAddress("255.255.255.0") << 24;
+    BOBUIest::newRow("v4/23") << ipv4 << QHostAddress("255.255.254.0") << 23;
+    BOBUIest::newRow("v4/20") << ipv4 << QHostAddress("255.255.240.0") << 20;
+    BOBUIest::newRow("v4/invalid1") << ipv4 << QHostAddress(QHostAddress::LocalHost) << -1;
+    BOBUIest::newRow("v4/invalid2") << ipv4 << QHostAddress(QHostAddress::AnyIPv6) << -1;
+    BOBUIest::newRow("v4/invalid3") << ipv4 << QHostAddress("255.255.253.0") << -1;
+    BOBUIest::newRow("v4/invalid4") << ipv4 << QHostAddress() << -2;
+    BOBUIest::newRow("v4/invalid5") << ipv4 << QHostAddress() << 33;
 
     // IPv6 set:
     QHostAddress ipv6(QHostAddress::LocalHostIPv6);
-    QTest::newRow("v6/0") << ipv6 << QHostAddress(QHostAddress::AnyIPv6) << 0;
-    QTest::newRow("v6/128") << ipv6 << QHostAddress("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff") << 128;
-    QTest::newRow("v6/64") << ipv6 << QHostAddress("ffff:ffff:ffff:ffff::") << 64;
-    QTest::newRow("v6/63") << ipv6 << QHostAddress("ffff:ffff:ffff:fffe::") << 63;
-    QTest::newRow("v6/60") << ipv6 << QHostAddress("ffff:ffff:ffff:fff0::") << 60;
-    QTest::newRow("v6/48") << ipv6 << QHostAddress("ffff:ffff:ffff::") << 48;
-    QTest::newRow("v6/3") << ipv6 << QHostAddress("e000::") << 3;
-    QTest::newRow("v6/invalid1") << ipv6 << QHostAddress(QHostAddress::LocalHostIPv6) << -1;
-    QTest::newRow("v6/invalid2") << ipv6 << QHostAddress(QHostAddress::Any) << -1;
-    QTest::newRow("v6/invalid3") << ipv6 << QHostAddress("fffd::") << -1;
-    QTest::newRow("v6/invalid4") << ipv6 << QHostAddress() << -2;
-    QTest::newRow("v6/invalid5") << ipv6 << QHostAddress() << 129;
+    BOBUIest::newRow("v6/0") << ipv6 << QHostAddress(QHostAddress::AnyIPv6) << 0;
+    BOBUIest::newRow("v6/128") << ipv6 << QHostAddress("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff") << 128;
+    BOBUIest::newRow("v6/64") << ipv6 << QHostAddress("ffff:ffff:ffff:ffff::") << 64;
+    BOBUIest::newRow("v6/63") << ipv6 << QHostAddress("ffff:ffff:ffff:fffe::") << 63;
+    BOBUIest::newRow("v6/60") << ipv6 << QHostAddress("ffff:ffff:ffff:fff0::") << 60;
+    BOBUIest::newRow("v6/48") << ipv6 << QHostAddress("ffff:ffff:ffff::") << 48;
+    BOBUIest::newRow("v6/3") << ipv6 << QHostAddress("e000::") << 3;
+    BOBUIest::newRow("v6/invalid1") << ipv6 << QHostAddress(QHostAddress::LocalHostIPv6) << -1;
+    BOBUIest::newRow("v6/invalid2") << ipv6 << QHostAddress(QHostAddress::Any) << -1;
+    BOBUIest::newRow("v6/invalid3") << ipv6 << QHostAddress("fffd::") << -1;
+    BOBUIest::newRow("v6/invalid4") << ipv6 << QHostAddress() << -2;
+    BOBUIest::newRow("v6/invalid5") << ipv6 << QHostAddress() << 129;
 }
 
 void tst_QNetworkAddressEntry::prefixAndNetmask()
@@ -141,6 +141,6 @@ void tst_QNetworkAddressEntry::prefixAndNetmask()
     QCOMPARE(entry.prefixLength(), -1);
 }
 
-QTEST_MAIN(tst_QNetworkAddressEntry)
+BOBUIEST_MAIN(tst_QNetworkAddressEntry)
 #include "tst_qnetworkaddressentry.moc"
 

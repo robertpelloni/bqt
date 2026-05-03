@@ -1,18 +1,18 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QGuiApplication>
 #include <QVulkanInstance>
 #include <QLoggingCategory>
 #include "hellovulkantexture.h"
 
-Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
+Q_LOGGING_CATEGORY(lcVk, "bobui.vulkan")
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
+    QLoggingCategory::setFilterRules(QStringLiteral("bobui.vulkan=true"));
 
     QVulkanInstance inst;
     inst.setLayers({ "VK_LAYER_KHRONOS_validation" });

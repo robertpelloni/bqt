@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILESYSTEMWATCHER_WIN_P_H
 #define QFILESYSTEMWATCHER_WIN_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,20 +18,20 @@
 
 #include "qfilesystemwatcher_p.h"
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/bobuihread.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsFileSystemWatcherEngineThread;
 class QWindowsRemovableDriveListener;
 
-// Even though QWindowsFileSystemWatcherEngine is derived of QThread
+// Even though QWindowsFileSystemWatcherEngine is derived of BOBUIhread
 // via QFileSystemWatcher, it does not start a thread.
 // Instead QWindowsFileSystemWatcher creates QWindowsFileSystemWatcherEngineThreads
 // to do the actually watching.
@@ -48,7 +48,7 @@ public:
     class Handle
     {
     public:
-        Qt::HANDLE handle;
+        BobUI::HANDLE handle;
         uint flags;
 
         Handle();
@@ -100,7 +100,7 @@ public:
     QFileSystemWatcherPathKey() {}
     explicit QFileSystemWatcherPathKey(const QString &other) : QString(other) {}
     QFileSystemWatcherPathKey(const QFileSystemWatcherPathKey &other) : QString(other) {}
-    bool operator==(const QFileSystemWatcherPathKey &other) const { return !compare(other, Qt::CaseInsensitive); }
+    bool operator==(const QFileSystemWatcherPathKey &other) const { return !compare(other, BobUI::CaseInsensitive); }
 };
 
 Q_DECLARE_TYPEINFO(QFileSystemWatcherPathKey, Q_RELOCATABLE_TYPE);
@@ -110,7 +110,7 @@ inline size_t qHash(const QFileSystemWatcherPathKey &key, size_t seed = 0)
     return qHash(key.toCaseFolded(), seed);
 }
 
-class QWindowsFileSystemWatcherEngineThread : public QThread
+class QWindowsFileSystemWatcherEngineThread : public BOBUIhread
 {
     Q_OBJECT
 
@@ -125,18 +125,18 @@ public:
     void wakeup();
 
     QMutex mutex;
-    QList<Qt::HANDLE> handles;
+    QList<BobUI::HANDLE> handles;
     int msg;
 
     HandleForDirHash handleForDir;
 
-    QHash<Qt::HANDLE, PathInfoHash> pathInfoForHandle;
+    QHash<BobUI::HANDLE, PathInfoHash> pathInfoForHandle;
 
 Q_SIGNALS:
     void fileChanged(const QString &path, bool removed);
     void directoryChanged(const QString &path, bool removed);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILESYSTEMWATCHER_WIN_P_H

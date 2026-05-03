@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
-#include <QtCore/QVariant>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
+#include <BobUICore/QVariant>
 #include "qwayland-drm-egl-server-buffer.h"
-#include <QtWaylandClient/private/qwaylandserverbufferintegration_p.h>
+#include <BobUIWaylandClient/private/qwaylandserverbufferintegration_p.h>
 
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtCore/QTextStream>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUICore/BOBUIextStream>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -23,9 +23,9 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLDESTROYIMAGEKHRPROC) (EGLDisplay dpy, EGL
 typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) (GLenum target, GLeglImageOES image);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class DrmEglServerBufferIntegration;
 
@@ -43,18 +43,18 @@ private:
 
 class DrmEglServerBufferIntegration
     : public QWaylandServerBufferIntegration
-    , public QtWayland::qt_drm_egl_server_buffer
+    , public BobUIWayland::bobui_drm_egl_server_buffer
 {
 public:
     void initialize(QWaylandDisplay *display) override;
 
-    QWaylandServerBuffer *serverBuffer(struct qt_server_buffer *buffer) override;
+    QWaylandServerBuffer *serverBuffer(struct bobui_server_buffer *buffer) override;
 
     inline EGLImageKHR eglCreateImageKHR(EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);
     inline EGLBoolean eglDestroyImageKHR (EGLImageKHR image);
     inline void glEGLImageTargetTexture2DOES (GLenum target, GLeglImageOES image);
 protected:
-    void drm_egl_server_buffer_server_buffer_created(struct ::qt_server_buffer *id, int32_t name, int32_t width, int32_t height, int32_t stride, int32_t format) override;
+    void drm_egl_server_buffer_server_buffer_created(struct ::bobui_server_buffer *id, int32_t name, int32_t width, int32_t height, int32_t stride, int32_t format) override;
 private:
     static void wlDisplayHandleGlobal(void *data, struct ::wl_registry *registry, uint32_t id,
                                       const QString &interface, uint32_t version);
@@ -99,4 +99,4 @@ void DrmEglServerBufferIntegration::glEGLImageTargetTexture2DOES (GLenum target,
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

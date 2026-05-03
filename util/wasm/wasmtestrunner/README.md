@@ -1,4 +1,4 @@
-# qtwasmtestrunner
+# bobuiwasmtestrunner
 This is a utility that launches a small webserver and\
 either a browser or a webdriver (only chrome/chromedriver at the time of writing)\
 This allows running wasm tests and printing the output to stdout like a normal test.

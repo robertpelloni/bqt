@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsidebar_p.h"
 
 #include <qaction.h>
 #include <qurl.h>
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
 #include <qmimedata.h>
@@ -16,9 +16,9 @@
 #include <qabstractfileiconprovider.h>
 #include <qfiledialog.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void QSideBarDelegate::initStyleOption(QStyleOptionViewItem *option,
                                          const QModelIndex &index) const
@@ -52,12 +52,12 @@ QUrlModel::~QUrlModel()
 
 constexpr char uriListMimeType[] = "text/uri-list";
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 static bool hasSupportedFormat(const QMimeData *data)
 {
     return data->hasFormat(QLatin1StringView(uriListMimeType));
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \reimp
@@ -70,17 +70,17 @@ QStringList QUrlModel::mimeTypes() const
 /*!
     \reimp
 */
-Qt::ItemFlags QUrlModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QUrlModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = QStandardItemModel::flags(index);
+    BobUI::ItemFlags flags = QStandardItemModel::flags(index);
     if (index.isValid()) {
-        flags &= ~Qt::ItemIsEditable;
+        flags &= ~BobUI::ItemIsEditable;
         // ### some future version could support "moving" urls onto a folder
-        flags &= ~Qt::ItemIsDropEnabled;
+        flags &= ~BobUI::ItemIsDropEnabled;
     }
 
-    if (index.data(Qt::DecorationRole).isNull())
-        flags &= ~Qt::ItemIsEnabled;
+    if (index.data(BobUI::DecorationRole).isNull())
+        flags &= ~BobUI::ItemIsEnabled;
 
     return flags;
 }
@@ -100,7 +100,7 @@ QMimeData *QUrlModel::mimeData(const QModelIndexList &indexes) const
     return data;
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*!
     Decide based upon the data if it should be accepted or not
@@ -124,7 +124,7 @@ bool QUrlModel::canDrop(QDragEnterEvent *event)
 /*!
     \reimp
 */
-bool QUrlModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QUrlModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                  int row, int column, const QModelIndex &parent)
 {
     if (!hasSupportedFormat(data))
@@ -136,7 +136,7 @@ bool QUrlModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     return true;
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \reimp
@@ -152,11 +152,11 @@ bool QUrlModel::setData(const QModelIndex &index, const QVariant &value, int rol
         if (showFullPath)
             QStandardItemModel::setData(index, QDir::toNativeSeparators(fileSystemModel->data(dirIndex, QFileSystemModel::FilePathRole).toString()));
         else {
-            QStandardItemModel::setData(index, QDir::toNativeSeparators(fileSystemModel->data(dirIndex, QFileSystemModel::FilePathRole).toString()), Qt::ToolTipRole);
+            QStandardItemModel::setData(index, QDir::toNativeSeparators(fileSystemModel->data(dirIndex, QFileSystemModel::FilePathRole).toString()), BobUI::ToolTipRole);
             QStandardItemModel::setData(index, fileSystemModel->data(dirIndex).toString());
         }
-        QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, Qt::DecorationRole),
-                                               Qt::DecorationRole);
+        QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, BobUI::DecorationRole),
+                                               BobUI::DecorationRole);
         QStandardItemModel::setData(index, url, UrlRole);
         return true;
     }
@@ -168,7 +168,7 @@ void QUrlModel::setUrl(const QModelIndex &index, const QUrl &url, const QModelIn
     setData(index, url, UrlRole);
     if (url.path().isEmpty()) {
         setData(index, fileSystemModel->myComputer());
-        setData(index, fileSystemModel->myComputer(Qt::DecorationRole), Qt::DecorationRole);
+        setData(index, fileSystemModel->myComputer(BobUI::DecorationRole), BobUI::DecorationRole);
     } else {
         QString newName;
         if (showFullPath) {
@@ -178,7 +178,7 @@ void QUrlModel::setUrl(const QModelIndex &index, const QUrl &url, const QModelIn
             newName = dirIndex.data().toString();
         }
 
-        QIcon newIcon = qvariant_cast<QIcon>(dirIndex.data(Qt::DecorationRole));
+        QIcon newIcon = qvariant_cast<QIcon>(dirIndex.data(BobUI::DecorationRole));
         if (!dirIndex.isValid()) {
             const QAbstractFileIconProvider *provider = fileSystemModel->iconProvider();
             if (provider)
@@ -201,16 +201,16 @@ void QUrlModel::setUrl(const QModelIndex &index, const QUrl &url, const QModelIn
                 const auto widget = qobject_cast<QWidget *>(parent());
                 const auto dpr = widget ? widget->devicePixelRatio() : qApp->devicePixelRatio();
                 const auto smallPixmap = newIcon.pixmap(QSize(32, 32), dpr);
-                const auto newPixmap = smallPixmap.scaledToWidth(32 * dpr, Qt::SmoothTransformation);
+                const auto newPixmap = smallPixmap.scaledToWidth(32 * dpr, BobUI::SmoothTransformation);
                 newIcon.addPixmap(newPixmap);
             }
         }
 
         if (index.data().toString() != newName)
             setData(index, newName);
-        QIcon oldIcon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+        QIcon oldIcon = qvariant_cast<QIcon>(index.data(BobUI::DecorationRole));
         if (oldIcon.cacheKey() != newIcon.cacheKey())
-            setData(index, newIcon, Qt::DecorationRole);
+            setData(index, newIcon, BobUI::DecorationRole);
     }
 }
 
@@ -246,9 +246,9 @@ void QUrlModel::addUrls(const QList<QUrl> &list, int row, bool move)
         for (int j = 0; move && j < rowCount(); ++j) {
             QString local = index(j, 0).data(UrlRole).toUrl().toLocalFile();
 #if defined(Q_OS_WIN)
-            const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+            const BobUI::CaseSensitivity cs = BobUI::CaseInsensitive;
 #else
-            const Qt::CaseSensitivity cs = Qt::CaseSensitive;
+            const BobUI::CaseSensitivity cs = BobUI::CaseSensitive;
 #endif
             if (!cleanUrl.compare(local, cs)) {
                 removeRow(j);
@@ -362,7 +362,7 @@ void QUrlModel::changed(const QString &path)
 
 /*!
     \class QSidebar
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 QSidebar::QSidebar(QWidget *parent) : QListView(parent)
@@ -379,11 +379,11 @@ void QSidebar::setModelAndUrls(QFileSystemModel *model, const QList<QUrl> &newUr
 
     connect(selectionModel(), &QItemSelectionModel::currentChanged,
             this, &QSidebar::clicked);
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     setDragDropMode(QAbstractItemView::DragDrop);
 #endif
-#if QT_CONFIG(menu)
-    setContextMenuPolicy(Qt::CustomContextMenu);
+#if BOBUI_CONFIG(menu)
+    setContextMenuPolicy(BobUI::CustomContextMenu);
     connect(this, &QSidebar::customContextMenuRequested,
             this, &QSidebar::showContextMenu);
 #endif
@@ -395,13 +395,13 @@ QSidebar::~QSidebar()
 {
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QSidebar::dragEnterEvent(QDragEnterEvent *event)
 {
     if (urlModel->canDrop(event))
         QListView::dragEnterEvent(event);
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 QSize QSidebar::sizeHint() const
 {
@@ -429,7 +429,7 @@ void QSidebar::selectUrl(const QUrl &url)
             this, &QSidebar::clicked);
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 /*!
     \internal
 
@@ -448,7 +448,7 @@ void QSidebar::showContextMenu(const QPoint &position)
     if (actions.size() > 0)
         QMenu::exec(actions, mapToGlobal(position));
 }
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
 /*!
     \internal
@@ -495,7 +495,7 @@ bool QSidebar::event(QEvent * event)
 {
     if (event->type() == QEvent::KeyRelease) {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
-        if (ke->key() == Qt::Key_Delete) {
+        if (ke->key() == BobUI::Key_Delete) {
             removeEntry();
             return true;
         }
@@ -503,6 +503,6 @@ bool QSidebar::event(QEvent * event)
     return QListView::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsidebar_p.cpp"

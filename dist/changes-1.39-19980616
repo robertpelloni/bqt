@@ -21,8 +21,8 @@ examples/hello/hello.cpp    2.5  warwick  +2 -2
 examples/hello/main.cpp    2.6  warwick  +2 -2
 examples/layout/layout.cpp    1.6  warwick  +6 -6
 examples/layouts/layouts.cpp    1.5  warwick  +6 -6
-examples/layouts/qtbuttonrow.cpp    1.4  warwick  +4 -3
-examples/layouts/qthbox.cpp    1.4  warwick  +2 -2
+examples/layouts/bobuibuttonrow.cpp    1.4  warwick  +4 -3
+examples/layouts/bobuihbox.cpp    1.4  warwick  +2 -2
 examples/life/life.cpp    2.5  warwick  +4 -4
 examples/life/lifedlg.cpp    2.8  warwick  +5 -5
 examples/life/main.cpp    2.3  warwick  +2 -2
@@ -57,8 +57,8 @@ examples/table/main.cpp    1.4  warwick  +3 -3
 examples/table/table.h    1.5  warwick  +2 -2
 examples/tetrix/qdragapp.cpp    2.3  warwick  +5 -4
 examples/tetrix/qdragapp.h    2.3  warwick  +2 -2
-examples/tetrix/qtetrix.cpp    2.7  warwick  +3 -3
-examples/tetrix/qtetrix.h    2.4  warwick  +3 -3
+examples/tetrix/bobuietrix.cpp    2.7  warwick  +3 -3
+examples/tetrix/bobuietrix.h    2.4  warwick  +3 -3
 examples/tictac/main.cpp    2.3  warwick  +2 -2
 examples/tictac/tictac.cpp    2.8  warwick  +6 -6
 examples/tictac/tictac.h    2.3  warwick  +2 -2
@@ -73,7 +73,7 @@ examples/xform/xform.cpp    2.9  warwick  +8 -8
 extensions/imageio/src/qjpegio.cpp    1.5  warwick  +2 -2
 extensions/imageio/src/qpngio.cpp    1.7  warwick  +2 -2
 extensions/nsplugin/examples/grapher/grapher.cpp    1.10  warwick  +3 -3
-extensions/nsplugin/examples/qtimage/qtimage.cpp    1.6  warwick  +2 -2
+extensions/nsplugin/examples/bobuiimage/bobuiimage.cpp    1.6  warwick  +2 -2
 extensions/nsplugin/examples/trivial/trivial.cpp    1.7  warwick  +1 -1
 extensions/nsplugin/src/qnp.cpp    1.19  warwick  +9 -9
 extensions/opengl/examples/box/globjwin.cpp    1.4  warwick  +4 -4
@@ -82,12 +82,12 @@ extensions/opengl/examples/gear/gear.cpp    1.6  warwick  +1 -1
 extensions/opengl/examples/sharedbox/globjwin.cpp    1.2  warwick  +4 -4
 extensions/opengl/examples/sharedbox/main.cpp    1.2  warwick  +1 -1
 extensions/xt/examples/mainlyMotif/editor.cpp    1.3  warwick  +2 -2
-extensions/xt/examples/mainlyQt/editor.cpp    1.2  warwick  +2 -2
+extensions/xt/examples/mainlyBobUI/editor.cpp    1.2  warwick  +2 -2
 extensions/xt/examples/mainlyXt/editor.cpp    1.2  warwick  +2 -2
 extensions/xt/src/qxt.cpp    1.3  warwick  +6 -6
 extensions/xt/src/qxt.h    1.2  warwick  +2 -2
-src/qt.pro    2.26  warwick  +110 -110
-src/qtinternal.pro    2.7  warwick  +5 -5
+src/bobui.pro    2.26  warwick  +110 -110
+src/bobuiinternal.pro    2.7  warwick  +5 -5
 src/dialogs/qfiledialog.cpp    2.71  warwick  +12 -12
 src/dialogs/qfiledialog.h    2.18  warwick  +4 -4
 src/dialogs/qfiledlg.cpp    2.71  warwick  +1 -1
@@ -105,10 +105,10 @@ src/dialogs/qprogdlg.cpp    2.27  warwick  +1 -1
 src/dialogs/qprogdlg.h    2.14  warwick  +2 -75
 src/dialogs/qprogressdialog.cpp    2.27  warwick  +6 -6
 src/dialogs/qprogressdialog.h    2.14  warwick  +6 -6
-src/dialogs/qtabdialog.cpp    2.41  warwick  +7 -6
-src/dialogs/qtabdialog.h    2.19  warwick  +4 -4
-src/dialogs/qtabdlg.cpp    2.41  warwick  +1 -1
-src/dialogs/qtabdlg.h    2.19  warwick  +1 -84
+src/dialogs/bobuiabdialog.cpp    2.41  warwick  +7 -6
+src/dialogs/bobuiabdialog.h    2.19  warwick  +4 -4
+src/dialogs/bobuiabdlg.cpp    2.41  warwick  +1 -1
+src/dialogs/bobuiabdlg.h    2.19  warwick  +1 -84
 src/kernel/qaccel.cpp    2.13  warwick  +2 -2
 src/kernel/qapp.cpp    2.57  warwick  +1 -1
 src/kernel/qapp.h    2.27  warwick  +1 -205
@@ -252,9 +252,9 @@ src/kernel/qsocketnotifier.cpp    2.7  warwick  +3 -3
 src/kernel/qsocketnotifier.h    2.4  warwick  +4 -4
 src/kernel/qsocknot.cpp    2.7  warwick  +1 -1
 src/kernel/qsocknot.h    2.4  warwick  +2 -60
-src/kernel/qt_x11.cpp    2.4  warwick  +1 -1
-src/kernel/qthread.h    1.5  warwick  +2 -2
-src/kernel/qtimer.cpp    2.9  warwick  +4 -3
+src/kernel/bobui_x11.cpp    2.4  warwick  +1 -1
+src/kernel/bobuihread.h    1.5  warwick  +2 -2
+src/kernel/bobuiimer.cpp    2.9  warwick  +4 -3
 src/kernel/qwid_os2.cpp    2.6  warwick  +3 -2
 src/kernel/qwid_win.cpp    2.56  warwick  +1 -1
 src/kernel/qwid_x11.cpp    2.96  warwick  +1 -1
@@ -318,10 +318,10 @@ src/tools/qiodevice.h    2.5  warwick  +4 -4
 src/tools/qstring.cpp    2.21  warwick  +2 -2
 src/tools/qstrlist.h    2.11  warwick  +2 -2
 src/tools/qstrvec.h    2.4  warwick  +2 -2
-src/tools/qtextstream.cpp    2.15  warwick  +4 -4
-src/tools/qtextstream.h    2.7  warwick  +5 -5
-src/tools/qtstream.cpp    2.15  warwick  +1 -1
-src/tools/qtstream.h    2.7  warwick  +2 -216
+src/tools/bobuiextstream.cpp    2.15  warwick  +4 -4
+src/tools/bobuiextstream.h    2.7  warwick  +5 -5
+src/tools/bobuistream.cpp    2.15  warwick  +1 -1
+src/tools/bobuistream.h    2.7  warwick  +2 -216
 src/widgets/qbttngrp.cpp    2.13  warwick  +1 -1
 src/widgets/qbttngrp.h    2.6  warwick  +2 -61
 src/widgets/qbutton.cpp    2.61  warwick  +3 -3
@@ -398,13 +398,13 @@ src/widgets/qspinbox.cpp    2.35  warwick  +3 -3
 src/widgets/qspinbox.h    2.20  warwick  +2 -2
 src/widgets/qsplitter.cpp    1.16  warwick  +2 -2
 src/widgets/qstatusbar.cpp    2.14  warwick  +3 -3
-src/widgets/qtableview.cpp    2.49  warwick  +5 -5
-src/widgets/qtableview.h    2.10  warwick  +4 -4
-src/widgets/qtablevw.cpp    2.49  warwick  +1 -1
-src/widgets/qtablevw.h    2.10  warwick  +2 -241
-src/widgets/qtoolbar.cpp    2.23  warwick  +5 -4
-src/widgets/qtoolbutton.cpp    2.28  warwick  +3 -3
-src/widgets/qtooltip.cpp    2.47  warwick  +4 -4
+src/widgets/bobuiableview.cpp    2.49  warwick  +5 -5
+src/widgets/bobuiableview.h    2.10  warwick  +4 -4
+src/widgets/bobuiablevw.cpp    2.49  warwick  +1 -1
+src/widgets/bobuiablevw.h    2.10  warwick  +2 -241
+src/widgets/bobuioolbar.cpp    2.23  warwick  +5 -4
+src/widgets/bobuioolbutton.cpp    2.28  warwick  +3 -3
+src/widgets/bobuiooltip.cpp    2.47  warwick  +4 -4
 src/widgets/qwellarray.cpp    1.4  warwick  +4 -3
 src/widgets/qwellarray.h    1.5  warwick  +2 -2
 src/widgets/qwhatsthis.cpp    2.15  warwick  +3 -3
@@ -470,7 +470,7 @@ src/dialogs/qfiledlg.h    2.19  warwick  +0 -0
 src/dialogs/qmsgbox.h    2.27  warwick  +0 -0
 src/dialogs/qprndlg.h    2.10  warwick  +0 -0
 src/dialogs/qprogdlg.h    2.15  warwick  +0 -0
-src/dialogs/qtabdlg.h    2.20  warwick  +0 -0
+src/dialogs/bobuiabdlg.h    2.20  warwick  +0 -0
 src/kernel/qapp.h    2.28  warwick  +0 -0
 src/kernel/qclipbrd.h    2.6  warwick  +0 -0
 src/kernel/qconnect.h    2.6  warwick  +0 -0
@@ -497,7 +497,7 @@ src/tools/qfiledef.h    2.9  warwick  +0 -0
 src/tools/qfileinf.h    2.4  warwick  +0 -0
 src/tools/qintcach.h    2.4  warwick  +0 -0
 src/tools/qiodev.h    2.6  warwick  +0 -0
-src/tools/qtstream.h    2.8  warwick  +0 -0
+src/tools/bobuistream.h    2.8  warwick  +0 -0
 src/widgets/qbttngrp.h    2.7  warwick  +0 -0
 src/widgets/qchkbox.h    2.7  warwick  +0 -0
 src/widgets/qcombo.h    2.28  warwick  +0 -0
@@ -512,7 +512,7 @@ src/widgets/qpushbt.h    2.9  warwick  +0 -0
 src/widgets/qradiobt.h    2.9  warwick  +0 -0
 src/widgets/qrangect.h    2.4  warwick  +0 -0
 src/widgets/qscrbar.h    2.7  warwick  +0 -0
-src/widgets/qtablevw.h    2.11  warwick  +0 -0
+src/widgets/bobuiablevw.h    2.11  warwick  +0 -0
 
   Move compatibility files out of the way.
 
@@ -646,7 +646,7 @@ src/widgets/qlistview.cpp    2.115  agulbra  +93 -22
 src/widgets/qlistview.h    2.50  agulbra  +4 -1
 src/widgets/qwhatsthis.cpp    2.14  agulbra  +152 -29
 
-  doc, doc, doc.  this round pushes qt over 3250 documented functions.
+  doc, doc, doc.  this round pushes bobui over 3250 documented functions.
   the next milestone is five megs of html doc (sixty-odd k left).
 
 
@@ -793,12 +793,12 @@ src/widgets/qsplitter.cpp    1.14  paul  +10 -10
   Fixed off-by-one error
 
 
-src/widgets/qtabbar.h    2.11  agulbra  +2 -1
+src/widgets/bobuiabbar.h    2.11  agulbra  +2 -1
 
   one variable wasn't initialized.  initialize it.
 
 
-src/widgets/qtooltip.cpp    2.46  agulbra  +3 -3
+src/widgets/bobuiooltip.cpp    2.46  agulbra  +3 -3
 
   stay up for ten seconds, not four.
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "tabletcanvas.h"
@@ -19,7 +19,7 @@ MainWindow::MainWindow(TabletCanvas *canvas)
     createMenus();
     setWindowTitle(tr("Tablet Example"));
     setCentralWidget(m_canvas);
-    QCoreApplication::setAttribute(Qt::AA_CompressHighFrequencyEvents);
+    QCoreApplication::setAttribute(BobUI::AA_CompressHighFrequencyEvents);
 }
 //! [0]
 
@@ -59,7 +59,7 @@ void MainWindow::setSaturationValuator(QAction *action)
 
 void MainWindow::setEventCompression(bool compress)
 {
-    QCoreApplication::setAttribute(Qt::AA_CompressTabletEvents, compress);
+    QCoreApplication::setAttribute(BobUI::AA_CompressTabletEvents, compress);
 }
 
 //! [5]
@@ -100,7 +100,7 @@ void MainWindow::clear()
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Tablet Example"),
-                       tr("This example shows how to use a graphics drawing tablet in Qt."));
+                       tr("This example shows how to use a graphics drawing tablet in BobUI."));
 }
 //! [7]
 
@@ -201,5 +201,5 @@ void MainWindow::createMenus()
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(tr("A&bout"), this, &MainWindow::about);
-    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
 }

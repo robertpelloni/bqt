@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef _GLINFO_
 #define _GLINFO_
 
-#include <QtCore/QtGlobal>
+#include <BobUICore/BobUIGlobal>
 
-QT_FORWARD_DECLARE_CLASS(QObject)
-QT_FORWARD_DECLARE_CLASS(QString)
+BOBUI_FORWARD_DECLARE_CLASS(QObject)
+BOBUI_FORWARD_DECLARE_CLASS(QString)
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 QString glInfo(const QObject *o);
 
-} // namespace QtDiag
+} // namespace BobUIDiag
 
 #endif

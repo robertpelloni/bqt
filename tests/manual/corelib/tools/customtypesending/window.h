@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -7,7 +7,7 @@
 #include <QWidget>
 #include "message.h"
 
-QT_FORWARD_DECLARE_CLASS(QTextEdit)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextEdit)
 
 //! [Window class definition]
 class Window : public QWidget
@@ -28,7 +28,7 @@ private slots:
 
 private:
     Message thisMessage;
-    QTextEdit *editor;
+    BOBUIextEdit *editor;
 };
 //! [Window class definition]
 

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 #include "scribblearea.h"
@@ -107,8 +107,8 @@ void MainWindow::createActions()
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
+    aboutBobUIAct = new QAction(tr("About &BobUI"), this);
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 }
 //! [14]
 
@@ -131,7 +131,7 @@ void MainWindow::createMenus()
 
     helpMenu = new QMenu(tr("&Help"), this);
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
 
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(optionMenu);

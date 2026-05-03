@@ -1,23 +1,23 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QSignalSpy>
 
-#include <QtCore/QProcess>
-#include <QtCore/QDir>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QFile>
-#include <QtCore/QThread>
-#include <QtCore/QTemporaryDir>
-#include <QtCore/QRegularExpression>
-#include <QtCore/QDebug>
-#include <QtCore/QMetaType>
-#include <QtCore/QScopeGuard>
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtNetwork/QHostInfo>
+#include <BobUICore/QProcess>
+#include <BobUICore/QDir>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QFile>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/BOBUIemporaryDir>
+#include <BobUICore/QRegularExpression>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMetaType>
+#include <BobUICore/QScopeGuard>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUINetwork/QHostInfo>
 
 #include <qplatformdefs.h>
 #ifdef Q_OS_UNIX
@@ -31,13 +31,13 @@
 #  include <winerror.h>
 #endif
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
 #include <stdlib.h>
 
 #include "crasher.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 typedef void (QProcess::*QProcessErrorSignal)(QProcess::ProcessError);
 
@@ -186,21 +186,21 @@ private:
     QString nonExistentFileName = u"/this/file/cant/exist/hopefully"_s;
 
     qint64 bytesAvailable;
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
     bool haveWorkingVFork = false;
 };
 
 void tst_QProcess::initTestCase()
 {
-#if defined(QT_ASAN_ENABLED)
-    QSKIP("Skipping QProcess tests under ASAN as they are flaky (QTBUG-109329)");
+#if defined(BOBUI_ASAN_ENABLED)
+    QSKIP("Skipping QProcess tests under ASAN as they are flaky (BOBUIBUG-109329)");
 #endif
     QVERIFY2(m_temporaryDir.isValid(), qPrintable(m_temporaryDir.errorString()));
     // chdir to our testdata path and execute helper apps relative to that.
     QString testdata_dir = QFileInfo(QFINDTESTDATA("testProcessNormal")).absolutePath();
     QVERIFY2(QDir::setCurrent(testdata_dir), qPrintable("Could not chdir to " + testdata_dir));
 
-#if defined(Q_OS_LINUX) && QT_CONFIG(forkfd_pidfd)
+#if defined(Q_OS_LINUX) && BOBUI_CONFIG(forkfd_pidfd)
     // see detect_clone_pidfd_support() in forkfd_linux.c for explanation
     waitid(/*P_PIDFD*/ idtype_t(3), INT_MAX, NULL, WEXITED|WNOHANG);
     haveWorkingVFork = (errno == EBADF);
@@ -287,7 +287,7 @@ void tst_QProcess::simpleStart()
         QCOMPARE(process->state(), QProcess::Running);
     QVERIFY2(process->waitForStarted(5000), qPrintable(process->errorString()));
     QCOMPARE(process->state(), QProcess::Running);
-    QTRY_COMPARE(process->state(), QProcess::NotRunning);
+    BOBUIRY_COMPARE(process->state(), QProcess::NotRunning);
 
     process.reset();
 
@@ -317,15 +317,15 @@ void tst_QProcess::startCommandEmptyString()
             "QProcess::startCommand: empty or whitespace-only command was provided";
     QProcess process;
 
-    QTest::ignoreMessage(QtWarningMsg, warningMsg);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warningMsg);
     process.startCommand("");
     QVERIFY(!process.waitForStarted());
 
-    QTest::ignoreMessage(QtWarningMsg, warningMsg);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warningMsg);
     process.startCommand("   ");
     QVERIFY(!process.waitForStarted());
 
-    QTest::ignoreMessage(QtWarningMsg, warningMsg);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warningMsg);
     process.startCommand("\t\n");
     QVERIFY(!process.waitForStarted());
 }
@@ -333,7 +333,7 @@ void tst_QProcess::startCommandEmptyString()
 void tst_QProcess::startWithOpen()
 {
     QProcess p;
-    QTest::ignoreMessage(QtWarningMsg, "QProcess::start: program not set");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QProcess::start: program not set");
     QCOMPARE(p.open(QIODevice::ReadOnly), false);
 
     p.setProgram("testProcessNormal/testProcessNormal");
@@ -381,17 +381,17 @@ void tst_QProcess::startDetached()
 
 void tst_QProcess::simpleStartFail_data()
 {
-    QTest::addColumn<bool>("detached");
-    QTest::addColumn<bool>("unixCloseFileDescriptors");
+    BOBUIest::addColumn<bool>("detached");
+    BOBUIest::addColumn<bool>("unixCloseFileDescriptors");
 
-    QTest::addRow("normal") << false << false;
-    QTest::addRow("detached") << true << false;
+    BOBUIest::addRow("normal") << false << false;
+    BOBUIest::addRow("detached") << true << false;
 
 #ifdef Q_OS_UNIX
     // make sure UnixProcessFlag::CloseFileDescriptors doesn't affect our
     // error reporting
-    QTest::addRow("normal+closefds") << false << true;
-    QTest::addRow("detached+closefds") << true << true;
+    BOBUIest::addRow("normal+closefds") << false << true;
+    BOBUIest::addRow("detached+closefds") << true << true;
 #endif
 }
 
@@ -436,7 +436,7 @@ void tst_QProcess::simpleStartFail()
     // value happens to match ENOENT, but that's a coincidence
     int errorcode = ERROR_FILE_NOT_FOUND;
 #endif
-    QVERIFY2(process.errorString().contains(qt_error_string(errorcode)),
+    QVERIFY2(process.errorString().contains(bobui_error_string(errorcode)),
              process.errorString().toLocal8Bit());
 }
 
@@ -502,8 +502,8 @@ void tst_QProcess::crashTest2()
 
     QObject::connect(&process, &QProcess::finished, this, &tst_QProcess::exitLoopSlot);
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Failed to detect crash : operation timed out");
 
     QCOMPARE(spy.size(), 1);
@@ -517,16 +517,16 @@ void tst_QProcess::crashTest2()
 
 void tst_QProcess::echoTest_data()
 {
-    QTest::addColumn<QByteArray>("input");
+    BOBUIest::addColumn<QByteArray>("input");
 
-    QTest::newRow("1") << QByteArray("H");
-    QTest::newRow("2") << QByteArray("He");
-    QTest::newRow("3") << QByteArray("Hel");
-    QTest::newRow("4") << QByteArray("Hell");
-    QTest::newRow("5") << QByteArray("Hello");
-    QTest::newRow("100 bytes") << QByteArray(100, '@');
-    QTest::newRow("1000 bytes") << QByteArray(1000, '@');
-    QTest::newRow("10000 bytes") << QByteArray(10000, '@');
+    BOBUIest::newRow("1") << QByteArray("H");
+    BOBUIest::newRow("2") << QByteArray("He");
+    BOBUIest::newRow("3") << QByteArray("Hel");
+    BOBUIest::newRow("4") << QByteArray("Hell");
+    BOBUIest::newRow("5") << QByteArray("Hello");
+    BOBUIest::newRow("100 bytes") << QByteArray(100, '@');
+    BOBUIest::newRow("1000 bytes") << QByteArray(1000, '@');
+    BOBUIest::newRow("10000 bytes") << QByteArray(10000, '@');
 }
 
 void tst_QProcess::echoTest()
@@ -545,7 +545,7 @@ void tst_QProcess::echoTest()
     stopWatch.start();
     do {
         QVERIFY(process.isOpen());
-        QTestEventLoop::instance().enterLoop(2);
+        BOBUIestEventLoop::instance().enterLoop(2);
     } while (stopWatch.elapsed() < 60000 && process.bytesAvailable() < input.size());
     if (stopWatch.elapsed() >= 60000)
         QFAIL("Timed out");
@@ -572,7 +572,7 @@ void tst_QProcess::echoTest()
 
 void tst_QProcess::exitLoopSlot()
 {
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QProcess::processApplicationEvents()
@@ -603,7 +603,7 @@ void tst_QProcess::echoTest2()
     QElapsedTimer stopWatch;
     stopWatch.start();
     forever {
-        QTestEventLoop::instance().enterLoop(1);
+        BOBUIestEventLoop::instance().enterLoop(1);
         if (stopWatch.elapsed() >= 30000)
             QFAIL("Timed out");
         process.setReadChannel(QProcess::StandardOutput);
@@ -662,11 +662,11 @@ void tst_QProcess::testSetNamedPipeHandleState()
 #if defined(Q_OS_WIN)
 void tst_QProcess::batFiles_data()
 {
-    QTest::addColumn<QString>("batFile");
-    QTest::addColumn<QByteArray>("output");
+    BOBUIest::addColumn<QString>("batFile");
+    BOBUIest::addColumn<QByteArray>("output");
 
-    QTest::newRow("simple") << QFINDTESTDATA("testBatFiles/simple.bat") << QByteArray("Hello");
-    QTest::newRow("with space") << QFINDTESTDATA("testBatFiles/with space.bat") << QByteArray("Hello");
+    BOBUIest::newRow("simple") << QFINDTESTDATA("testBatFiles/simple.bat") << QByteArray("Hello");
+    BOBUIest::newRow("with space") << QFINDTESTDATA("testBatFiles/with space.bat") << QByteArray("Hello");
 }
 
 void tst_QProcess::batFiles()
@@ -690,21 +690,21 @@ void tst_QProcess::batFiles()
 
 void tst_QProcess::exitStatus_data()
 {
-    QTest::addColumn<QStringList>("processList");
-    QTest::addColumn<QList<QProcess::ExitStatus> >("exitStatus");
+    BOBUIest::addColumn<QStringList>("processList");
+    BOBUIest::addColumn<QList<QProcess::ExitStatus> >("exitStatus");
 
-    QTest::newRow("normal") << (QStringList() << "testProcessNormal/testProcessNormal")
+    BOBUIest::newRow("normal") << (QStringList() << "testProcessNormal/testProcessNormal")
                             << (QList<QProcess::ExitStatus>() << QProcess::NormalExit);
-    QTest::newRow("crash") << (QStringList() << "testProcessCrash/testProcessCrash")
+    BOBUIest::newRow("crash") << (QStringList() << "testProcessCrash/testProcessCrash")
                             << (QList<QProcess::ExitStatus>() << QProcess::CrashExit);
 
-    QTest::newRow("normal-crash") << (QStringList()
+    BOBUIest::newRow("normal-crash") << (QStringList()
                                       << "testProcessNormal/testProcessNormal"
                                       << "testProcessCrash/testProcessCrash")
                                   << (QList<QProcess::ExitStatus>()
                                       << QProcess::NormalExit
                                       << QProcess::CrashExit);
-    QTest::newRow("crash-normal") << (QStringList()
+    BOBUIest::newRow("crash-normal") << (QStringList()
                                       << "testProcessCrash/testProcessCrash"
                                       << "testProcessNormal/testProcessNormal")
                                   << (QList<QProcess::ExitStatus>()
@@ -953,14 +953,14 @@ void tst_QProcess::emitReadyReadOnlyWhenNewDataArrives()
 
     proc.write("A");
 
-    QTestEventLoop::instance().enterLoop(5);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(5);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Operation timed out");
 
     QCOMPARE(spy.size(), 1);
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(BOBUIestEventLoop::instance().timeout());
     QVERIFY(!proc.waitForReadyRead(250));
 
     QObject::disconnect(&proc, &QIODevice::readyRead, nullptr, nullptr);
@@ -1106,20 +1106,20 @@ private:
 
 void tst_QProcess::softExitInSlots_data()
 {
-    QTest::addColumn<QString>("appName");
-    QTest::addColumn<int>("signalToConnect");
+    BOBUIest::addColumn<QString>("appName");
+    BOBUIest::addColumn<int>("signalToConnect");
 
     QByteArray dataTagPrefix("gui app ");
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     for (int i = 0; i < 6; ++i) {
-        QTest::newRow(dataTagPrefix + QByteArray::number(i))
+        BOBUIest::newRow(dataTagPrefix + QByteArray::number(i))
                 << "testGuiProcess/testGuiProcess" << i;
     }
 #endif
 
     dataTagPrefix = "console app ";
     for (int i = 0; i < 6; ++i) {
-        QTest::newRow(dataTagPrefix + QByteArray::number(i))
+        BOBUIest::newRow(dataTagPrefix + QByteArray::number(i))
                 << "testProcessEcho2/testProcessEcho2" << i;
     }
 }
@@ -1132,7 +1132,7 @@ void tst_QProcess::softExitInSlots()
     SoftExitProcess proc(signalToConnect);
     proc.writeAfterStart("OLEBOLE", 8); // include the \0
     proc.start(appName);
-    QTRY_VERIFY_WITH_TIMEOUT(proc.waitedForFinished, 60000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(proc.waitedForFinished, 60000);
     QCOMPARE(proc.state(), QProcess::NotRunning);
 }
 
@@ -1151,7 +1151,7 @@ void tst_QProcess::mergedChannels()
         while (process.bytesAvailable() < 6)
             QVERIFY(process.waitForReadyRead(5000));
         QCOMPARE(process.readAllStandardOutput(), QByteArray("aabbcc"));
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
             "QProcess::readAllStandardError: Called with MergedChannels");
         QCOMPARE(process.readAllStandardError(), QByteArray());
     }
@@ -1171,37 +1171,37 @@ void tst_QProcess::mergedChannels()
 
 void tst_QProcess::forwardedChannels_data()
 {
-    QTest::addColumn<bool>("detach");
-    QTest::addColumn<int>("mode");
-    QTest::addColumn<int>("inmode");
-    QTest::addColumn<QByteArray>("outdata");
-    QTest::addColumn<QByteArray>("errdata");
+    BOBUIest::addColumn<bool>("detach");
+    BOBUIest::addColumn<int>("mode");
+    BOBUIest::addColumn<int>("inmode");
+    BOBUIest::addColumn<QByteArray>("outdata");
+    BOBUIest::addColumn<QByteArray>("errdata");
 
-    QTest::newRow("separate")
+    BOBUIest::newRow("separate")
             << false
             << int(QProcess::SeparateChannels) << int(QProcess::ManagedInputChannel)
             << QByteArray() << QByteArray();
-    QTest::newRow("forwarded")
+    BOBUIest::newRow("forwarded")
             << false
             << int(QProcess::ForwardedChannels) << int(QProcess::ManagedInputChannel)
             << QByteArray("forwarded") << QByteArray("forwarded");
-    QTest::newRow("stdout")
+    BOBUIest::newRow("stdout")
             << false
             << int(QProcess::ForwardedOutputChannel) << int(QProcess::ManagedInputChannel)
             << QByteArray("forwarded") << QByteArray();
-    QTest::newRow("stderr")
+    BOBUIest::newRow("stderr")
             << false
             << int(QProcess::ForwardedErrorChannel) << int(QProcess::ManagedInputChannel)
             << QByteArray() << QByteArray("forwarded");
-    QTest::newRow("fwdinput")
+    BOBUIest::newRow("fwdinput")
             << false
             << int(QProcess::ForwardedErrorChannel) << int(QProcess::ForwardedInputChannel)
             << QByteArray() << QByteArray("input");
-    QTest::newRow("detached-default-forwarding")
+    BOBUIest::newRow("detached-default-forwarding")
             << true
             << int(QProcess::SeparateChannels) << int(QProcess::ManagedInputChannel)
             << QByteArray("out data") << QByteArray("err data");
-    QTest::newRow("detached-merged-forwarding")
+    BOBUIest::newRow("detached-merged-forwarding")
             << true
             << int(QProcess::MergedChannels) << int(QProcess::ManagedInputChannel)
             << QByteArray("out data" "err data") << QByteArray();
@@ -1254,7 +1254,7 @@ void tst_QProcess::atEnd()
     while (process.bytesAvailable() < 8)
         QVERIFY(process.waitForReadyRead(5000));
 
-    QTextStream stream(&process);
+    BOBUIextStream stream(&process);
     QVERIFY(!stream.atEnd());
     QString tmp = stream.readLine();
     QVERIFY(stream.atEnd());
@@ -1266,7 +1266,7 @@ void tst_QProcess::atEnd()
     QCOMPARE(process.exitCode(), 0);
 }
 
-class TestThread : public QThread
+class TestThread : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -1281,7 +1281,7 @@ protected:
         exitCode = 90210;
 
         QProcess process;
-        connect(&process, &QProcess::finished, this, &TestThread::catchExitCode, Qt::DirectConnection);
+        connect(&process, &QProcess::finished, this, &TestThread::catchExitCode, BobUI::DirectConnection);
 
         process.start("testProcessEcho/testProcessEcho");
 
@@ -1312,7 +1312,7 @@ void tst_QProcess::processInAThread()
 
 void tst_QProcess::processesInMultipleThreads()
 {
-    if (QTestPrivate::isRunningArmOnX86())
+    if (BOBUIestPrivate::isRunningArmOnX86())
         QSKIP("Test is too slow to run on emulator");
 
 #if defined(Q_OS_QNX)
@@ -1324,7 +1324,7 @@ void tst_QProcess::processesInMultipleThreads()
         // with more threads than the ideal
         int threadCount = i;
         if (i > 7)
-            threadCount = qMax(threadCount, QThread::idealThreadCount() + 2);
+            threadCount = qMax(threadCount, BOBUIhread::idealThreadCount() + 2);
 
         QList<TestThread *> threads(threadCount);
         QScopeGuard cleanup([&threads]() { qDeleteAll(threads); });
@@ -1366,8 +1366,8 @@ void tst_QProcess::waitForReadyReadInAReadyReadSlot()
     QSignalSpy spy(&process, &QProcess::readyRead);
     QVERIFY(spy.isValid());
     process.write("foo");
-    QTestEventLoop::instance().enterLoop(30);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(30);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spy.size(), 1);
 
@@ -1387,7 +1387,7 @@ void tst_QProcess::waitForReadyReadInAReadyReadSlotSlot()
     QVERIFY(process->waitForReadyRead(5000));
     QVERIFY(process->bytesAvailable() > bytesAvailable);
     bytesAvailable = process->bytesAvailable();
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QProcess::waitForBytesWrittenInABytesWrittenSlot()
@@ -1402,8 +1402,8 @@ void tst_QProcess::waitForBytesWrittenInABytesWrittenSlot()
     QSignalSpy spy(&process, &QProcess::bytesWritten);
     QVERIFY(spy.isValid());
     process.write("f");
-    QTestEventLoop::instance().enterLoop(30);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(30);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QCOMPARE(spy.size(), 1);
     process.write("", 1);
@@ -1419,49 +1419,49 @@ void tst_QProcess::waitForBytesWrittenInABytesWrittenSlotSlot()
     QVERIFY(process);
     process->write("b");
     QVERIFY(process->waitForBytesWritten(5000));
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QProcess::spaceArgsTest_data()
 {
-    QTest::addColumn<QStringList>("args");
-    QTest::addColumn<QString>("stringArgs");
+    BOBUIest::addColumn<QStringList>("args");
+    BOBUIest::addColumn<QString>("stringArgs");
 
     // arg1 | arg2
-    QTest::newRow("arg1 arg2") << (QStringList() << QString::fromLatin1("arg1") << QString::fromLatin1("arg2"))
+    BOBUIest::newRow("arg1 arg2") << (QStringList() << QString::fromLatin1("arg1") << QString::fromLatin1("arg2"))
                                << QString::fromLatin1("arg1 arg2");
     // "arg1" | ar "g2
-    QTest::newRow("\"\"\"\"arg1\"\"\"\" \"ar \"\"\"g2\"") << (QStringList() << QString::fromLatin1("\"arg1\"") << QString::fromLatin1("ar \"g2"))
+    BOBUIest::newRow("\"\"\"\"arg1\"\"\"\" \"ar \"\"\"g2\"") << (QStringList() << QString::fromLatin1("\"arg1\"") << QString::fromLatin1("ar \"g2"))
                                                           << QString::fromLatin1("\"\"\"\"arg1\"\"\"\" \"ar \"\"\"g2\"");
     // ar g1 | a rg 2
-    QTest::newRow("\"ar g1\" \"a rg 2\"") << (QStringList() << QString::fromLatin1("ar g1") << QString::fromLatin1("a rg 2"))
+    BOBUIest::newRow("\"ar g1\" \"a rg 2\"") << (QStringList() << QString::fromLatin1("ar g1") << QString::fromLatin1("a rg 2"))
                                           << QString::fromLatin1("\"ar g1\" \"a rg 2\"");
     // -lar g1 | -l"ar g2"
-    QTest::newRow("\"-lar g1\" \"-l\"\"\"ar g2\"\"\"\"") << (QStringList() << QString::fromLatin1("-lar g1") << QString::fromLatin1("-l\"ar g2\""))
+    BOBUIest::newRow("\"-lar g1\" \"-l\"\"\"ar g2\"\"\"\"") << (QStringList() << QString::fromLatin1("-lar g1") << QString::fromLatin1("-l\"ar g2\""))
                                                          << QString::fromLatin1("\"-lar g1\" \"-l\"\"\"ar g2\"\"\"\"");
     // ar"g1
-    QTest::newRow("ar\"\"\"\"g1") << (QStringList() << QString::fromLatin1("ar\"g1"))
+    BOBUIest::newRow("ar\"\"\"\"g1") << (QStringList() << QString::fromLatin1("ar\"g1"))
                                   << QString::fromLatin1("ar\"\"\"\"g1");
     // ar/g1
-    QTest::newRow("ar\\g1") << (QStringList() << QString::fromLatin1("ar\\g1"))
+    BOBUIest::newRow("ar\\g1") << (QStringList() << QString::fromLatin1("ar\\g1"))
                             << QString::fromLatin1("ar\\g1");
     // ar\g"1
-    QTest::newRow("ar\\g\"\"\"\"1") << (QStringList() << QString::fromLatin1("ar\\g\"1"))
+    BOBUIest::newRow("ar\\g\"\"\"\"1") << (QStringList() << QString::fromLatin1("ar\\g\"1"))
                                     << QString::fromLatin1("ar\\g\"\"\"\"1");
     // arg\"1
-    QTest::newRow("arg\\\"\"\"1") << (QStringList() << QString::fromLatin1("arg\\\"1"))
+    BOBUIest::newRow("arg\\\"\"\"1") << (QStringList() << QString::fromLatin1("arg\\\"1"))
                                   << QString::fromLatin1("arg\\\"\"\"1");
     // """"
-    QTest::newRow("\"\"\"\"\"\"\"\"\"\"\"\"") << (QStringList() << QString::fromLatin1("\"\"\"\""))
+    BOBUIest::newRow("\"\"\"\"\"\"\"\"\"\"\"\"") << (QStringList() << QString::fromLatin1("\"\"\"\""))
                                               << QString::fromLatin1("\"\"\"\"\"\"\"\"\"\"\"\"");
     // """" | "" ""
-    QTest::newRow("\"\"\"\"\"\"\"\"\"\"\"\" \"\"\"\"\"\"\" \"\"\"\"\"\"\"") << (QStringList() << QString::fromLatin1("\"\"\"\"") << QString::fromLatin1("\"\" \"\""))
+    BOBUIest::newRow("\"\"\"\"\"\"\"\"\"\"\"\" \"\"\"\"\"\"\" \"\"\"\"\"\"\"") << (QStringList() << QString::fromLatin1("\"\"\"\"") << QString::fromLatin1("\"\" \"\""))
                                                                             << QString::fromLatin1("\"\"\"\"\"\"\"\"\"\"\"\" \"\"\"\"\"\"\" \"\"\"\"\"\"\"");
     // ""  ""
-    QTest::newRow("\"\"\"\"\"\"\" \"\" \"\"\"\"\"\"\" (bogus double quotes)") << (QStringList() << QString::fromLatin1("\"\"  \"\""))
+    BOBUIest::newRow("\"\"\"\"\"\"\" \"\" \"\"\"\"\"\"\" (bogus double quotes)") << (QStringList() << QString::fromLatin1("\"\"  \"\""))
                                                                               << QString::fromLatin1("\"\"\"\"\"\"\" \"\" \"\"\"\"\"\"\"");
     // ""  ""
-    QTest::newRow(" \"\"\"\"\"\"\" \"\" \"\"\"\"\"\"\"   (bogus double quotes)") << (QStringList() << QString::fromLatin1("\"\"  \"\""))
+    BOBUIest::newRow(" \"\"\"\"\"\"\" \"\" \"\"\"\"\"\"\"   (bogus double quotes)") << (QStringList() << QString::fromLatin1("\"\"  \"\""))
                                                                                  << QString::fromLatin1(" \"\"\"\"\"\"\" \"\" \"\"\"\"\"\"\"   ");
 }
 
@@ -1597,28 +1597,28 @@ struct DisableCrashLogger
     }
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_AUTOTEST_EXPORT bool _qprocessUsingVfork() noexcept;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 static constexpr char messageFromChildProcess[] = "Message from the child process";
 static_assert(std::char_traits<char>::length(messageFromChildProcess) <= PIPE_BUF);
 static void childProcessModifier(int fd)
 {
-    QT_WRITE(fd, messageFromChildProcess, strlen(messageFromChildProcess));
-    QT_CLOSE(fd);
+    BOBUI_WRITE(fd, messageFromChildProcess, strlen(messageFromChildProcess));
+    BOBUI_CLOSE(fd);
 }
 
 void tst_QProcess::setChildProcessModifier_data()
 {
-    QTest::addColumn<bool>("detached");
-    QTest::addColumn<bool>("useVfork");
-    QTest::newRow("normal") << false << false;
-    QTest::newRow("detached") << true << false;
+    BOBUIest::addColumn<bool>("detached");
+    BOBUIest::addColumn<bool>("useVfork");
+    BOBUIest::newRow("normal") << false << false;
+    BOBUIest::newRow("detached") << true << false;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     if (_qprocessUsingVfork()) {
-        QTest::newRow("normal-vfork") << false << true;
-        QTest::newRow("detached-vfork") << true << true;
+        BOBUIest::newRow("normal-vfork") << false << true;
+        BOBUIest::newRow("detached-vfork") << true << true;
     }
 #endif
 }
@@ -1628,7 +1628,7 @@ void tst_QProcess::setChildProcessModifier()
     QFETCH(bool, detached);
     QFETCH(bool, useVfork);
     int pipes[2] = { -1 , -1 };
-    QVERIFY(qt_safe_pipe(pipes) == 0);
+    QVERIFY(bobui_safe_pipe(pipes) == 0);
 
     QProcess process;
     if (useVfork)
@@ -1650,10 +1650,10 @@ void tst_QProcess::setChildProcessModifier()
     }
 
     char buf[sizeof messageFromChildProcess] = {};
-    qt_safe_close(pipes[1]);
-    QCOMPARE(qt_safe_read(pipes[0], buf, sizeof(buf)), qint64(sizeof(messageFromChildProcess)) - 1);
+    bobui_safe_close(pipes[1]);
+    QCOMPARE(bobui_safe_read(pipes[0], buf, sizeof(buf)), qint64(sizeof(messageFromChildProcess)) - 1);
     QCOMPARE(buf, messageFromChildProcess);
-    qt_safe_close(pipes[0]);
+    bobui_safe_close(pipes[0]);
 }
 
 void tst_QProcess::failChildProcessModifier()
@@ -1729,16 +1729,16 @@ void tst_QProcess::throwInChildProcessModifier()
 void tst_QProcess::terminateInChildProcessModifier_data()
 {
     using F = std::function<void(void)>;
-    QTest::addColumn<F>("function");
-    QTest::addColumn<QProcess::ExitStatus>("exitStatus");
-    QTest::addColumn<bool>("stderrIsEmpty");
+    BOBUIest::addColumn<F>("function");
+    BOBUIest::addColumn<QProcess::ExitStatus>("exitStatus");
+    BOBUIest::addColumn<bool>("stderrIsEmpty");
 
-    QTest::newRow("_exit") << F([]() { _exit(0); }) << QProcess::NormalExit << true;
-    QTest::newRow("abort") << F(std::abort) << QProcess::CrashExit << true;
-    QTest::newRow("sigkill") << F([]() { raise(SIGKILL); }) << QProcess::CrashExit << true;
-    QTest::newRow("terminate") << F(std::terminate) << QProcess::CrashExit
+    BOBUIest::newRow("_exit") << F([]() { _exit(0); }) << QProcess::NormalExit << true;
+    BOBUIest::newRow("abort") << F(std::abort) << QProcess::CrashExit << true;
+    BOBUIest::newRow("sigkill") << F([]() { raise(SIGKILL); }) << QProcess::CrashExit << true;
+    BOBUIest::newRow("terminate") << F(std::terminate) << QProcess::CrashExit
                                << (std::get_terminate() == std::abort);
-    QTest::newRow("crash") << F([]() { tst_QProcessCrash::crash(); }) << QProcess::CrashExit << true;
+    BOBUIest::newRow("crash") << F([]() { tst_QProcessCrash::crash(); }) << QProcess::CrashExit << true;
 }
 
 void tst_QProcess::terminateInChildProcessModifier()
@@ -1754,7 +1754,7 @@ void tst_QProcess::terminateInChildProcessModifier()
     process.setProgram("testForwardingHelper/testForwardingHelper");
     process.setArguments({ "/dev/null" });
 
-    // temporarily disable QTest's crash logger while starting the child process
+    // temporarily disable BOBUIest's crash logger while starting the child process
     {
         DisableCrashLogger d;
         process.start();
@@ -1775,7 +1775,7 @@ void tst_QProcess::terminateInChildProcessModifier()
             return; // Swift's crash reporting is printed to stderr
     }
 #else
-    if (QTestPrivate::isRunningArmOnX86())
+    if (BOBUIestPrivate::isRunningArmOnX86())
         return;
 #endif
 
@@ -1786,7 +1786,7 @@ void tst_QProcess::terminateInChildProcessModifier()
 
 void tst_QProcess::raiseInChildProcessModifier()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     // This is similar to the above, but knowing that raise() doesn't unblock
     // signals, unlike abort(), this implies that
     //  1) the raise() in the child modifier will not run our handler
@@ -1798,10 +1798,10 @@ void tst_QProcess::raiseInChildProcessModifier()
     // Note for maintenance: if in the future this test causes the parent
     // process to die with SIGUSR1, it means the C library is buggy and is
     // using a cached PID in the child process after vfork().
-    if (!QT_PREPEND_NAMESPACE(_qprocessUsingVfork()))
+    if (!BOBUI_PREPEND_NAMESPACE(_qprocessUsingVfork()))
         QSKIP("QProcess will only block Unix signals when using vfork()");
 
-    // we use SIGUSR1 because QtTest doesn't log it and because its default
+    // we use SIGUSR1 because BobUITest doesn't log it and because its default
     // action is termination, not core dumping
     struct SigUsr1Handler {
         SigUsr1Handler()
@@ -1843,25 +1843,25 @@ void tst_QProcess::raiseInChildProcessModifier()
     QCOMPARE(process.readAllStandardOutput(), messageFromChildProcess);
 
     // some environments print extra stuff to stderr when we crash
-    if (!QTestPrivate::isRunningArmOnX86()) {
+    if (!BOBUIestPrivate::isRunningArmOnX86()) {
         // and write() from the SIGUSR1 handler did not
         QCOMPARE(process.readAllStandardError(), QByteArray());
     }
 #else
-    QSKIP("Requires QT_BUILD_INTERNAL symbols");
+    QSKIP("Requires BOBUI_BUILD_INTERNAL symbols");
 #endif
 }
 
 void tst_QProcess::unixProcessParameters_data()
 {
-    QTest::addColumn<QProcess::UnixProcessParameters>("params");
-    QTest::addColumn<QString>("cmd");
-    QTest::newRow("defaults") << QProcess::UnixProcessParameters{} << QString();
+    BOBUIest::addColumn<QProcess::UnixProcessParameters>("params");
+    BOBUIest::addColumn<QString>("cmd");
+    BOBUIest::newRow("defaults") << QProcess::UnixProcessParameters{} << QString();
 
     auto addRow = [](const char *cmd, QProcess::UnixProcessFlags flags) {
         QProcess::UnixProcessParameters params = {};
         params.flags = flags;
-        QTest::addRow("%s", cmd) << params << cmd;
+        BOBUIest::addRow("%s", cmd) << params << cmd;
     };
     using P = QProcess::UnixProcessFlag;
     addRow("reset-sighand", P::ResetSignalHandlers);
@@ -1968,8 +1968,8 @@ void tst_QProcess::unixProcessParameters()
 void tst_QProcess::impossibleUnixProcessParameters_data()
 {
     using P = QProcess::UnixProcessParameters;
-    QTest::addColumn<P>("params");
-    QTest::newRow("setsid") << P{ QProcess::UnixProcessFlag::CreateNewSession };
+    BOBUIest::addColumn<P>("params");
+    BOBUIest::newRow("setsid") << P{ QProcess::UnixProcessFlag::CreateNewSession };
 }
 
 void tst_QProcess::impossibleUnixProcessParameters()
@@ -2000,7 +2000,7 @@ void tst_QProcess::unixProcessParametersAndChildModifier()
 
     pid_t oldpgid = getpgrp();
 
-    QVERIFY2(pipe(pipes) == 0, qPrintable(qt_error_string()));
+    QVERIFY2(pipe(pipes) == 0, qPrintable(bobui_error_string()));
     auto pipeGuard0 = qScopeGuard([=] { close(pipes[0]); });
     {
         auto pipeGuard1 = qScopeGuard([=] { close(pipes[1]); });
@@ -2029,7 +2029,7 @@ void tst_QProcess::unixProcessParametersAndChildModifier()
 
     char buf[2 * sizeof(message)];
     int r = read(pipes[0], buf, sizeof(buf));
-    QVERIFY2(r >= 0, qPrintable(qt_error_string()));
+    QVERIFY2(r >= 0, qPrintable(bobui_error_string()));
     QCOMPARE(QByteArrayView(buf, r), message);
 
     if (haveWorkingVFork)
@@ -2179,7 +2179,7 @@ void tst_QProcess::failToStartWithEventLoop()
     QVERIFY(finishedSpy.isValid());
 
     // The error signal may be emitted before start() returns
-    connect(&process, &QProcess::errorOccurred, &loop, &QEventLoop::quit, Qt::QueuedConnection);
+    connect(&process, &QProcess::errorOccurred, &loop, &QEventLoop::quit, BobUI::QueuedConnection);
 
 
     for (int i = 0; i < 50; ++i) {
@@ -2195,9 +2195,9 @@ void tst_QProcess::failToStartWithEventLoop()
 
 void tst_QProcess::failToStartEmptyArgs_data()
 {
-    QTest::addColumn<int>("startOverload");
-    QTest::newRow("start(QString, QStringList, OpenMode)") << 0;
-    QTest::newRow("start(OpenMode)") << 1;
+    BOBUIest::addColumn<int>("startOverload");
+    BOBUIest::newRow("start(QString, QStringList, OpenMode)") << 0;
+    BOBUIest::newRow("start(OpenMode)") << 1;
 }
 
 void tst_QProcess::failToStartEmptyArgs()
@@ -2245,18 +2245,18 @@ void tst_QProcess::removeFileWhileProcessIsRunning()
 
 void tst_QProcess::setEnvironment_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("setting-empty") << "tst_QProcess" << "";
-    QTest::newRow("setting") << "tst_QProcess" << "value";
+    BOBUIest::newRow("setting-empty") << "tst_QProcess" << "";
+    BOBUIest::newRow("setting") << "tst_QProcess" << "value";
 
 #ifdef Q_OS_WIN
-    QTest::newRow("unsetting") << "PROMPT" << QString();
-    QTest::newRow("overriding") << "PROMPT" << "value";
+    BOBUIest::newRow("unsetting") << "PROMPT" << QString();
+    BOBUIest::newRow("overriding") << "PROMPT" << "value";
 #else
-    QTest::newRow("unsetting") << "PATH" << QString();
-    QTest::newRow("overriding") << "PATH" << "value";
+    BOBUIest::newRow("unsetting") << "PATH" << QString();
+    BOBUIest::newRow("overriding") << "PATH" << "value";
 #endif
 }
 
@@ -2421,7 +2421,7 @@ void tst_QProcess::lockupsInStartDetached()
 {
     // Check that QProcess doesn't cause a lock up at this program's
     // exit if a thread was started and we tried to run a program that
-    // doesn't exist. Before Qt 4.2, this used to lock up on Unix due
+    // doesn't exist. Before BobUI 4.2, this used to lock up on Unix due
     // to calling ::exit instead of ::_exit if execve failed.
 
     QObject *dummy = new QObject(this);
@@ -2523,28 +2523,28 @@ void tst_QProcess::setStandardInputFileFailure()
 
 void tst_QProcess::setStandardOutputFile_data()
 {
-    QTest::addColumn<QProcess::ProcessChannel>("channelToTest");
-    QTest::addColumn<QProcess::ProcessChannelMode>("channelMode");
-    QTest::addColumn<bool>("append");
+    BOBUIest::addColumn<QProcess::ProcessChannel>("channelToTest");
+    BOBUIest::addColumn<QProcess::ProcessChannelMode>("channelMode");
+    BOBUIest::addColumn<bool>("append");
 
-    QTest::newRow("stdout-truncate") << QProcess::StandardOutput
+    BOBUIest::newRow("stdout-truncate") << QProcess::StandardOutput
                                      << QProcess::SeparateChannels
                                      << false;
-    QTest::newRow("stdout-append") << QProcess::StandardOutput
+    BOBUIest::newRow("stdout-append") << QProcess::StandardOutput
                                    << QProcess::SeparateChannels
                                    << true;
 
-    QTest::newRow("stderr-truncate") << QProcess::StandardError
+    BOBUIest::newRow("stderr-truncate") << QProcess::StandardError
                                      << QProcess::SeparateChannels
                                      << false;
-    QTest::newRow("stderr-append") << QProcess::StandardError
+    BOBUIest::newRow("stderr-append") << QProcess::StandardError
                                    << QProcess::SeparateChannels
                                    << true;
 
-    QTest::newRow("merged-truncate") << QProcess::StandardOutput
+    BOBUIest::newRow("merged-truncate") << QProcess::StandardOutput
                                      << QProcess::MergedChannels
                                      << false;
-    QTest::newRow("merged-append") << QProcess::StandardOutput
+    BOBUIest::newRow("merged-append") << QProcess::StandardOutput
                                    << QProcess::MergedChannels
                                    << true;
 }
@@ -2561,7 +2561,7 @@ void tst_QProcess::setStandardOutputFile()
     QIODevice::OpenMode mode = append ? QIODevice::Append : QIODevice::Truncate;
 
     // create the destination file with data
-    QFile file(m_temporaryDir.path() + QLatin1String("/data-stdof-") + QLatin1String(QTest::currentDataTag()));
+    QFile file(m_temporaryDir.path() + QLatin1String("/data-stdof-") + QLatin1String(BOBUIest::currentDataTag()));
     QVERIFY(file.open(QIODevice::WriteOnly));
     file.write(data, sizeof data - 1);
     file.close();
@@ -2678,11 +2678,11 @@ void tst_QProcess::setStandardOutputFileAndWaitForBytesWritten()
 
 void tst_QProcess::setStandardOutputProcess_data()
 {
-    QTest::addColumn<bool>("merged");
-    QTest::addColumn<bool>("waitForBytesWritten");
-    QTest::newRow("separate") << false << false;
-    QTest::newRow("separate with waitForBytesWritten") << false << true;
-    QTest::newRow("merged") << true << false;
+    BOBUIest::addColumn<bool>("merged");
+    BOBUIest::addColumn<bool>("waitForBytesWritten");
+    BOBUIest::newRow("separate") << false << false;
+    BOBUIest::newRow("separate with waitForBytesWritten") << false << true;
+    BOBUIest::newRow("merged") << true << false;
 }
 
 void tst_QProcess::setStandardOutputProcess()
@@ -2757,10 +2757,10 @@ void tst_QProcess::fileWriterProcess()
 
 void tst_QProcess::detachedProcessParameters_data()
 {
-    QTest::addColumn<QString>("outChannel");
-    QTest::newRow("none") << QString();
-    QTest::newRow("stdout") << QString("stdout");
-    QTest::newRow("stderr") << QString("stderr");
+    BOBUIest::addColumn<QString>("outChannel");
+    BOBUIest::newRow("none") << QString();
+    BOBUIest::newRow("stdout") << QString("stdout");
+    BOBUIest::newRow("stderr") << QString("stderr");
 }
 
 void tst_QProcess::detachedProcessParameters()
@@ -2809,7 +2809,7 @@ void tst_QProcess::detachedProcessParameters()
     //The guard counter ensures the test does not hang if the sub process fails.
     //Instead, the test will fail when trying to open & verify the sub process output file.
     for (int guard = 0; guard < 100 && fi.size() == 0; guard++) {
-        QTest::qSleep(100);
+        BOBUIest::qSleep(100);
     }
 
     QVERIFY(infoFile.open(QIODevice::ReadOnly | QIODevice::Text));
@@ -2956,7 +2956,7 @@ void tst_QProcess::setNonExistentWorkingDirectory()
 #else
     int errorcode = ERROR_DIRECTORY;
 #endif
-    QVERIFY2(process.errorString().contains(qt_error_string(errorcode)),
+    QVERIFY2(process.errorString().contains(bobui_error_string(errorcode)),
              process.errorString().toLocal8Bit());
 }
 
@@ -2981,9 +2981,9 @@ void tst_QProcess::startFinishStartFinish()
 
 void tst_QProcess::invalidProgramString_data()
 {
-    QTest::addColumn<QString>("programString");
-    QTest::newRow("null string") << QString();
-    QTest::newRow("empty string") << QString("");
+    BOBUIest::addColumn<QString>("programString");
+    BOBUIest::newRow("null string") << QString();
+    BOBUIest::newRow("empty string") << QString("");
 }
 
 void tst_QProcess::invalidProgramString()
@@ -3042,7 +3042,7 @@ public:
 public slots:
     void block()
     {
-        QThread::sleep(std::chrono::seconds{1});
+        BOBUIhread::sleep(std::chrono::seconds{1});
     }
 };
 
@@ -3056,7 +3056,7 @@ void tst_QProcess::finishProcessBeforeReadingDone()
     QVERIFY(process.waitForStarted());
     loop.exec();
     QStringList lines = QString::fromLocal8Bit(process.readAllStandardOutput()).split(
-            QRegularExpression(QStringLiteral("[\r\n]")), Qt::SkipEmptyParts);
+            QRegularExpression(QStringLiteral("[\r\n]")), BobUI::SkipEmptyParts);
     QVERIFY(!lines.isEmpty());
     QCOMPARE(lines.last(), QStringLiteral("10239 -this is a number"));
     QCOMPARE(process.exitStatus(), QProcess::NormalExit);
@@ -3094,14 +3094,14 @@ void tst_QProcess::startStopStartStop()
 //-----------------------------------------------------------------------------
 void tst_QProcess::startStopStartStopBuffers_data()
 {
-    QTest::addColumn<QProcess::ProcessChannelMode>("channelMode1");
-    QTest::addColumn<QProcess::ProcessChannelMode>("channelMode2");
+    BOBUIest::addColumn<QProcess::ProcessChannelMode>("channelMode1");
+    BOBUIest::addColumn<QProcess::ProcessChannelMode>("channelMode2");
 
-    QTest::newRow("separate-separate") << QProcess::SeparateChannels << QProcess::SeparateChannels;
-    QTest::newRow("separate-merged")   << QProcess::SeparateChannels << QProcess::MergedChannels;
-    QTest::newRow("merged-separate")   << QProcess::MergedChannels   << QProcess::SeparateChannels;
-    QTest::newRow("merged-merged")     << QProcess::MergedChannels   << QProcess::MergedChannels;
-    QTest::newRow("merged-forwarded")  << QProcess::MergedChannels   << QProcess::ForwardedChannels;
+    BOBUIest::newRow("separate-separate") << QProcess::SeparateChannels << QProcess::SeparateChannels;
+    BOBUIest::newRow("separate-merged")   << QProcess::SeparateChannels << QProcess::MergedChannels;
+    BOBUIest::newRow("merged-separate")   << QProcess::MergedChannels   << QProcess::SeparateChannels;
+    BOBUIest::newRow("merged-merged")     << QProcess::MergedChannels   << QProcess::MergedChannels;
+    BOBUIest::newRow("merged-forwarded")  << QProcess::MergedChannels   << QProcess::ForwardedChannels;
 }
 
 void tst_QProcess::startStopStartStopBuffers()
@@ -3178,15 +3178,15 @@ void tst_QProcess::startStopStartStopBuffers()
 
 void tst_QProcess::processEventsInAReadyReadSlot_data()
 {
-    QTest::addColumn<bool>("callWaitForReadyRead");
+    BOBUIest::addColumn<bool>("callWaitForReadyRead");
 
-    QTest::newRow("no waitForReadyRead") << false;
-    QTest::newRow("waitForReadyRead") << true;
+    BOBUIest::newRow("no waitForReadyRead") << false;
+    BOBUIest::newRow("waitForReadyRead") << true;
 }
 
 void tst_QProcess::processEventsInAReadyReadSlot()
 {
-    // Test whether processing events in a readyReadXXX slot crashes. (QTBUG-48697)
+    // Test whether processing events in a readyReadXXX slot crashes. (BOBUIBUG-48697)
     QFETCH(bool, callWaitForReadyRead);
     QProcess process;
     QObject::connect(&process, &QProcess::readyReadStandardOutput,
@@ -3211,9 +3211,9 @@ Q_DECLARE_METATYPE(ChdirMode)
 void tst_QProcess::startFromCurrentWorkingDir_data()
 {
     qRegisterMetaType<ChdirMode>();
-    QTest::addColumn<QString>("programPrefix");
-    QTest::addColumn<ChdirMode>("chdirMode");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<QString>("programPrefix");
+    BOBUIest::addColumn<ChdirMode>("chdirMode");
+    BOBUIest::addColumn<bool>("success");
 
     constexpr bool IsWindows = true
 #ifdef Q_OS_UNIX
@@ -3222,21 +3222,21 @@ void tst_QProcess::startFromCurrentWorkingDir_data()
             ;
 
     // baseline: trying to execute the directory, this can't possibly succeed!
-    QTest::newRow("plain-same-cwd") << QString() << ChdirMode::None << false;
+    BOBUIest::newRow("plain-same-cwd") << QString() << ChdirMode::None << false;
 
     // cross-platform behavior: neither OS searches the setWorkingDirectory()
     // dir without "./"
-    QTest::newRow("plain-child-chdir") << QString() << ChdirMode::InChild << false;
+    BOBUIest::newRow("plain-child-chdir") << QString() << ChdirMode::InChild << false;
 
     // cross-platform behavior: both OSes search the parent's CWD with "./"
-    QTest::newRow("prefixed-parent-chdir") << "./" << ChdirMode::InParent << true;
+    BOBUIest::newRow("prefixed-parent-chdir") << "./" << ChdirMode::InParent << true;
 
     // opposite behaviors: Windows searches the parent's CWD and Unix searches
     // the child's with "./"
-    QTest::newRow("prefixed-child-chdir") << "./" << ChdirMode::InChild << !IsWindows;
+    BOBUIest::newRow("prefixed-child-chdir") << "./" << ChdirMode::InChild << !IsWindows;
 
     // Windows searches the parent's CWD without "./"
-    QTest::newRow("plain-parent-chdir") << QString() << ChdirMode::InParent << IsWindows;
+    BOBUIest::newRow("plain-parent-chdir") << QString() << ChdirMode::InParent << IsWindows;
 }
 
 void tst_QProcess::startFromCurrentWorkingDir()
@@ -3292,9 +3292,9 @@ void tst_QProcess::startFromCurrentWorkingDir()
 
 void tst_QProcess::syscallsAreRestartedInParent_data()
 {
-    QTest::addColumn<QString>("mode");
-    QTest::newRow("normal") << "normal";
-    QTest::newRow("detached") << "detached";
+    BOBUIest::addColumn<QString>("mode");
+    BOBUIest::newRow("normal") << "normal";
+    BOBUIest::newRow("detached") << "detached";
 }
 
 void tst_QProcess::syscallsAreRestartedInParent()
@@ -3334,9 +3334,9 @@ void tst_QProcess::syscallsAreRestartedInParent()
 
     // RACE CONDITION: we need the child to be in a system call
     constexpr std::chrono::milliseconds wait(100);
-    QTest::qSleep(wait);
+    BOBUIest::qSleep(wait);
     kill(grandchildPid, SIGTERM);
-    QTest::qSleep(wait);
+    BOBUIest::qSleep(wait);
 
     const char msg[] = "Content from parent\n";
     proc.write(msg, strlen(msg));
@@ -3352,5 +3352,5 @@ void tst_QProcess::syscallsAreRestartedInParent()
     stderrPrinter.dismiss();
 }
 
-QTEST_MAIN(tst_QProcess)
+BOBUIEST_MAIN(tst_QProcess)
 #include "tst_qprocess.moc"

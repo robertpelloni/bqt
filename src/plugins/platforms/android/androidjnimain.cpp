@@ -1,6 +1,6 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <dlfcn.h>
 #include <pthread.h>
@@ -17,10 +17,10 @@
 #include "qandroideventdispatcher.h"
 #include "qandroidplatformdialoghelpers.h"
 #include "qandroidplatformintegration.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qandroidplatformclipboard.h"
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "androidjniaccessibility.h"
 #endif
 #include "qandroidplatformscreen.h"
@@ -30,33 +30,33 @@
 #include <android/asset_manager_jni.h>
 #include <android/bitmap.h>
 
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/qbasicatomic.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qprocess.h>
-#include <QtCore/qresource.h>
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qthread.h>
-#include <QtCore/private/qandroiditemmodelproxy_p.h>
-#include <QtCore/private/qandroidmodelindexproxy_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/qbasicatomic.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qprocess.h>
+#include <BobUICore/qresource.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/private/qandroiditemmodelproxy_p.h>
+#include <BobUICore/private/qandroidmodelindexproxy_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
 #include <qpa/qwindowsysteminterface.h>
 
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static jclass m_applicationClass  = nullptr;
 static AAssetManager *m_assetManager = nullptr;
 static jobject m_assets = nullptr;
 static jobject m_resourcesObj = nullptr;
 
-static jclass m_qtActivityClass = nullptr;
-static jclass m_qtServiceClass = nullptr;
+static jclass m_bobuiActivityClass = nullptr;
+static jclass m_bobuiServiceClass = nullptr;
 
 static int m_pendingApplicationState = -1;
 static QBasicMutex m_platformMutex;
@@ -71,7 +71,7 @@ static jmethodID m_bitmapDrawableConstructorMethodID = nullptr;
 
 extern "C" typedef int (*Main)(int, char **); //use the standard main method to start the application
 static Main m_main = nullptr;
-static sem_t m_exitSemaphore, m_stopQtSemaphore;
+static sem_t m_exitSemaphore, m_stopBobUISemaphore;
 
 static QAndroidPlatformIntegration *m_androidPlatformIntegration = nullptr;
 
@@ -83,20 +83,20 @@ static QAndroidApkFileEngineHandler *m_androidApkFileEngineHandler = nullptr;
 
 static AndroidBackendRegister *m_backendRegister = nullptr;
 
-static const char m_qtTag[] = "Qt";
+static const char m_bobuiTag[] = "BobUI";
 static const char m_classErrorMsg[] = "Can't find class \"%s\"";
 static const char m_methodErrorMsg[] = "Can't find method \"%s%s\"";
 static const char m_staticFieldErrorMsg[] = "Can't find static field \"%s\"";
 
-Q_CONSTINIT static QBasicAtomicInt startQtAndroidPluginCalled = Q_BASIC_ATOMIC_INITIALIZER(0);
+Q_CONSTINIT static QBasicAtomicInt startBobUIAndroidPluginCalled = Q_BASIC_ATOMIC_INITIALIZER(0);
 
-#if QT_CONFIG(accessibility)
-Q_DECLARE_JNI_CLASS(QtAccessibilityInterface, "org/qtproject/qt/android/QtAccessibilityInterface");
+#if BOBUI_CONFIG(accessibility)
+Q_DECLARE_JNI_CLASS(BobUIAccessibilityInterface, "org/bobuiproject/bobui/android/BobUIAccessibilityInterface");
 #endif
 
-Q_DECLARE_JNI_CLASS(QtThread, "org/qtproject/qt/android/QtThread");
+Q_DECLARE_JNI_CLASS(BobUIThread, "org/bobuiproject/bobui/android/BobUIThread");
 
-namespace QtAndroid
+namespace BobUIAndroid
 {
     QBasicMutex *platformInterfaceMutex()
     {
@@ -106,15 +106,15 @@ namespace QtAndroid
     void setAndroidPlatformIntegration(QAndroidPlatformIntegration *androidPlatformIntegration)
     {
         m_androidPlatformIntegration = androidPlatformIntegration;
-        QtAndroid::notifyNativePluginIntegrationReady((bool)m_androidPlatformIntegration);
+        BobUIAndroid::notifyNativePluginIntegrationReady((bool)m_androidPlatformIntegration);
 
         // flush the pending state if necessary.
         if (m_androidPlatformIntegration && (m_pendingApplicationState != -1)) {
-            if (m_pendingApplicationState == Qt::ApplicationActive)
-                QtAndroidPrivate::handleResume();
-            else if (m_pendingApplicationState == Qt::ApplicationInactive)
-                QtAndroidPrivate::handlePause();
-            QWindowSystemInterface::handleApplicationStateChanged(Qt::ApplicationState(m_pendingApplicationState));
+            if (m_pendingApplicationState == BobUI::ApplicationActive)
+                BobUIAndroidPrivate::handleResume();
+            else if (m_pendingApplicationState == BobUI::ApplicationInactive)
+                BobUIAndroidPrivate::handlePause();
+            QWindowSystemInterface::handleApplicationStateChanged(BobUI::ApplicationState(m_pendingApplicationState));
         }
 
         m_pendingApplicationState = -1;
@@ -162,73 +162,73 @@ namespace QtAndroid
         return m_applicationClass;
     }
 
-    bool isQtApplication()
+    bool isBobUIApplication()
     {
-        // Returns true if the app is a Qt app, i.e. Qt controls the whole app and
-        // the Activity/Service is created by Qt. Returns false if instead Qt is
+        // Returns true if the app is a BobUI app, i.e. BobUI controls the whole app and
+        // the Activity/Service is created by BobUI. Returns false if instead BobUI is
         // embedded into a native Android app, where the Activity/Service is created
-        // by the user, outside of Qt, and Qt content is added as a view.
+        // by the user, outside of BobUI, and BobUI content is added as a view.
         JNIEnv *env = QJniEnvironment::getJniEnv();
-        auto activity = QtAndroidPrivate::activity();
+        auto activity = BobUIAndroidPrivate::activity();
         if (activity.isValid())
-            return env->IsInstanceOf(activity.object(), m_qtActivityClass);
-        auto service = QtAndroidPrivate::service();
+            return env->IsInstanceOf(activity.object(), m_bobuiActivityClass);
+        auto service = BobUIAndroidPrivate::service();
         if (service.isValid())
-            return env->IsInstanceOf(QtAndroidPrivate::service().object(), m_qtServiceClass);
-        // return true as default as Qt application is our default use case.
+            return env->IsInstanceOf(BobUIAndroidPrivate::service().object(), m_bobuiServiceClass);
+        // return true as default as BobUI application is our default use case.
         // famous last words: we should not end up here
         return true;
     }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     void notifyAccessibilityLocationChange(uint accessibilityObjectId)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyLocationChange", accessibilityObjectId);
     }
 
     void notifyObjectHide(uint accessibilityObjectId, uint parentObjectId)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyObjectHide", accessibilityObjectId, parentObjectId);
     }
 
     void notifyObjectShow(uint parentObjectId)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyObjectShow", parentObjectId);
     }
 
     void notifyObjectFocus(uint accessibilityObjectId)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyObjectFocus", accessibilityObjectId);
     }
 
     void notifyValueChanged(uint accessibilityObjectId, jstring value)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyValueChanged", accessibilityObjectId, value);
     }
 
     void notifyDescriptionOrNameChanged(uint accessibilityObjectId, const QString &value)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyDescriptionOrNameChanged", accessibilityObjectId, value);
     }
 
     void notifyScrolledEvent(uint accessibilityObjectId)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyScrolledEvent", accessibilityObjectId);
     }
 
     void notifyAnnouncementEvent(uint accessibilityObjectId, const QString &message)
     {
-        m_backendRegister->callInterface<QtJniTypes::QtAccessibilityInterface, void>(
+        m_backendRegister->callInterface<BobUIJniTypes::BobUIAccessibilityInterface, void>(
                 "notifyAnnouncementEvent", accessibilityObjectId, message);
     }
-#endif //QT_CONFIG(accessibility)
+#endif //BOBUI_CONFIG(accessibility)
 
     void notifyNativePluginIntegrationReady(bool ready)
     {
@@ -323,9 +323,9 @@ namespace QtAndroid
         return m_staticFieldErrorMsg;
     }
 
-    const char *qtTagText()
+    const char *bobuiTagText()
     {
-        return m_qtTag;
+        return m_bobuiTag;
     }
 
     QString deviceName()
@@ -347,7 +347,7 @@ namespace QtAndroid
 
     bool blockEventLoopsWhenSuspended()
     {
-        static bool block = qEnvironmentVariableIntValue("QT_BLOCK_EVENT_LOOPS_WHEN_SUSPENDED");
+        static bool block = qEnvironmentVariableIntValue("BOBUI_BLOCK_EVENT_LOOPS_WHEN_SUSPENDED");
         return block;
     }
 
@@ -361,7 +361,7 @@ namespace QtAndroid
         return m_backendRegister;
     }
 
-} // namespace QtAndroid
+} // namespace BobUIAndroid
 
 static bool initJavaReferences(QJniEnvironment &env);
 
@@ -371,10 +371,10 @@ static bool initAndroidQpaPlugin(JNIEnv *jenv, jobject object)
     Q_UNUSED(object)
 
     // Init all the Java refs, if they haven't already been initialized. They get initialized
-    // when the library is loaded, but in case Qt is terminated, they are cleared, and in case
-    // Qt is then started again JNI_OnLoad will not be called again, since the library is already
+    // when the library is loaded, but in case BobUI is terminated, they are cleared, and in case
+    // BobUI is then started again JNI_OnLoad will not be called again, since the library is already
     // loaded - in that case we need to init again here, hence the check.
-    // TODO QTBUG-130614 QtCore also inits some Java references in qjnihelpers - we probably
+    // TODO BOBUIBUG-130614 BobUICore also inits some Java references in qjnihelpers - we probably
     // want to reset those, too.
     QJniEnvironment qEnv;
     if (!qEnv.isValid()) {
@@ -394,15 +394,15 @@ static bool initAndroidQpaPlugin(JNIEnv *jenv, jobject object)
 
     m_backendRegister = new AndroidBackendRegister();
 
-    if (sem_init(&m_exitSemaphore, 0, 0) == -1 && sem_init(&m_stopQtSemaphore, 0, 0) == -1) {
-        qCritical() << "Failed to init Qt application cleanup semaphores";
+    if (sem_init(&m_exitSemaphore, 0, 0) == -1 && sem_init(&m_stopBobUISemaphore, 0, 0) == -1) {
+        qCritical() << "Failed to init BobUI application cleanup semaphores";
         return false;
     }
 
     return true;
 }
 
-static void startQtNativeApplication(JNIEnv *jenv, jobject object, jstring paramsString)
+static void startBobUINativeApplication(JNIEnv *jenv, jobject object, jstring paramsString)
 {
     Q_UNUSED(jenv)
     Q_UNUSED(object)
@@ -411,7 +411,7 @@ static void startQtNativeApplication(JNIEnv *jenv, jobject object, jstring param
         JNIEnv* env = nullptr;
         JavaVMAttachArgs args;
         args.version = JNI_VERSION_1_6;
-        args.name = "QtMainThread";
+        args.name = "BobUIMainThread";
         args.group = NULL;
         JavaVM *vm = QJniEnvironment::javaVM();
         if (vm)
@@ -449,19 +449,19 @@ static void startQtNativeApplication(JNIEnv *jenv, jobject object, jstring param
     }
 
     if (Q_UNLIKELY(!m_main)) {
-        qCritical() << "dlsym failed:" << dlerror() << Qt::endl
+        qCritical() << "dlsym failed:" << dlerror() << BobUI::endl
                     << "Could not find main method";
         return;
     }
 
     // Register type for invokeMethod() calls.
-    qRegisterMetaType<Qt::ScreenOrientation>("Qt::ScreenOrientation");
+    qRegisterMetaType<BobUI::ScreenOrientation>("BobUI::ScreenOrientation");
 
     // Register resources if they are available
     if (QFile{QStringLiteral("assets:/android_rcc_bundle.rcc")}.exists())
         QResource::registerResource(QStringLiteral("assets:/android_rcc_bundle.rcc"));
 
-    startQtAndroidPluginCalled.fetchAndAddRelease(1);
+    startBobUIAndroidPluginCalled.fetchAndAddRelease(1);
 
     const int ret = m_main(argc, argv.data());
     qInfo() << "main() returned" << ret;
@@ -473,28 +473,28 @@ static void startQtNativeApplication(JNIEnv *jenv, jobject object, jstring param
     }
 
     QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {
-        QtNative::callStaticMethod("setStarted", false);
+        BobUINative::callStaticMethod("setStarted", false);
 
-        if (QtAndroid::isQtApplication()) {
-            // Now, that the Qt application has exited, tear down the Activity and Service
-            auto activity = QtAndroidPrivate::activity();
+        if (BobUIAndroid::isBobUIApplication()) {
+            // Now, that the BobUI application has exited, tear down the Activity and Service
+            auto activity = BobUIAndroidPrivate::activity();
             if (activity.isValid())
                 activity.callMethod("finish");
-            auto service = QtAndroidPrivate::service();
+            auto service = BobUIAndroidPrivate::service();
             if (service.isValid())
                 service.callMethod("stopSelf");
         } else {
-            // For the embedded case, we only need to terminate Qt
-            QtNative::callStaticMethod("terminateQtNativeApplication");
+            // For the embedded case, we only need to terminate BobUI
+            BobUINative::callStaticMethod("terminateBobUINativeApplication");
         }
     });
 
-    sem_post(&m_stopQtSemaphore);
+    sem_post(&m_stopBobUISemaphore);
     sem_wait(&m_exitSemaphore);
     sem_destroy(&m_exitSemaphore);
 
     // We must call exit() to ensure that all global objects will be destructed
-    if (!qEnvironmentVariableIsSet("QT_ANDROID_NO_EXIT_CALL"))
+    if (!qEnvironmentVariableIsSet("BOBUI_ANDROID_NO_EXIT_CALL"))
         exit(ret);
 }
 
@@ -528,13 +528,13 @@ static void clearJavaReferences(JNIEnv *env)
         env->DeleteGlobalRef(m_assets);
         m_assets = nullptr;
     }
-    if (m_qtActivityClass) {
-        env->DeleteGlobalRef(m_qtActivityClass);
-        m_qtActivityClass = nullptr;
+    if (m_bobuiActivityClass) {
+        env->DeleteGlobalRef(m_bobuiActivityClass);
+        m_bobuiActivityClass = nullptr;
     }
-    if (m_qtServiceClass) {
-        env->DeleteGlobalRef(m_qtServiceClass);
-        m_qtServiceClass = nullptr;
+    if (m_bobuiServiceClass) {
+        env->DeleteGlobalRef(m_bobuiServiceClass);
+        m_bobuiServiceClass = nullptr;
     }
 }
 
@@ -543,25 +543,25 @@ static void waitForServiceSetup(JNIEnv *env, jclass /*clazz*/)
     Q_UNUSED(env);
     // The service must wait until the QCoreApplication starts otherwise onBind will be
     // called too early
-    if (QtAndroidPrivate::service().isValid() && QtAndroid::isQtApplication())
-        QtAndroidPrivate::waitForServiceSetup();
+    if (BobUIAndroidPrivate::service().isValid() && BobUIAndroid::isBobUIApplication())
+        BobUIAndroidPrivate::waitForServiceSetup();
 }
 
-static void terminateQtNativeApplication(JNIEnv *env, jclass /*clazz*/)
+static void terminateBobUINativeApplication(JNIEnv *env, jclass /*clazz*/)
 {
     // QAndroidEventDispatcherStopper is stopped when the user uses the task manager
     // to kill the application. Also, in case of a service ensure to call quit().
     if (QAndroidEventDispatcherStopper::instance()->stopped()
-        || QtAndroidPrivate::service().isValid()) {
+        || BobUIAndroidPrivate::service().isValid()) {
         QAndroidEventDispatcherStopper::instance()->startAll();
         QCoreApplication::quit();
         QAndroidEventDispatcherStopper::instance()->goingToStop(false);
     }
 
-    if (startQtAndroidPluginCalled.loadAcquire())
-        sem_wait(&m_stopQtSemaphore);
+    if (startBobUIAndroidPluginCalled.loadAcquire())
+        sem_wait(&m_stopBobUISemaphore);
 
-    sem_destroy(&m_stopQtSemaphore);
+    sem_destroy(&m_stopBobUISemaphore);
 
     clearJavaReferences(env);
 
@@ -576,8 +576,8 @@ static void terminateQtNativeApplication(JNIEnv *env, jclass /*clazz*/)
     m_backendRegister = nullptr;
     sem_post(&m_exitSemaphore);
 
-    // Terminate the QtThread
-    QtNative::callStaticMethod<QtThread>("getQtThread").callMethod("exit");
+    // Terminate the BobUIThread
+    BobUINative::callStaticMethod<BobUIThread>("getBobUIThread").callMethod("exit");
 }
 
 static void handleLayoutSizeChanged(JNIEnv * /*env*/, jclass /*clazz*/,
@@ -604,15 +604,15 @@ static void updateApplicationState(JNIEnv */*env*/, jobject /*thiz*/, jint state
     // We're about to call user code from the Android thread, since we don't know
     //the side effects we'll unlock first!
     lock.unlock();
-    if (state == Qt::ApplicationActive)
-        QtAndroidPrivate::handleResume();
-    else if (state == Qt::ApplicationInactive)
-        QtAndroidPrivate::handlePause();
+    if (state == BobUI::ApplicationActive)
+        BobUIAndroidPrivate::handleResume();
+    else if (state == BobUI::ApplicationInactive)
+        BobUIAndroidPrivate::handlePause();
     lock.relock();
     if (!m_androidPlatformIntegration)
         return;
 
-    if (state <= Qt::ApplicationInactive) {
+    if (state <= BobUI::ApplicationInactive) {
         // NOTE: sometimes we will receive two consecutive suspended notifications,
         // In the second suspended notification, QWindowSystemInterface::flushWindowSystemEvents()
         // will deadlock since the dispatcher has been stopped in the first suspended notification.
@@ -622,12 +622,12 @@ static void updateApplicationState(JNIEnv */*env*/, jobject /*thiz*/, jint state
 
         // Don't send timers and sockets events anymore if we are going to hide all windows
         QAndroidEventDispatcherStopper::instance()->goingToStop(true);
-        QWindowSystemInterface::handleApplicationStateChanged(Qt::ApplicationState(state));
-        if (state == Qt::ApplicationSuspended)
+        QWindowSystemInterface::handleApplicationStateChanged(BobUI::ApplicationState(state));
+        if (state == BobUI::ApplicationSuspended)
             QAndroidEventDispatcherStopper::instance()->stopAll();
     } else {
         QAndroidEventDispatcherStopper::instance()->startAll();
-        QWindowSystemInterface::handleApplicationStateChanged(Qt::ApplicationState(state));
+        QWindowSystemInterface::handleApplicationStateChanged(BobUI::ApplicationState(state));
         QAndroidEventDispatcherStopper::instance()->goingToStop(false);
     }
 }
@@ -642,11 +642,11 @@ static void handleOrientationChanged(JNIEnv */*env*/, jobject /*thiz*/, jint new
 {
     // Array of orientations rotated in 90 degree increments, counterclockwise
     // (same direction as Android measures angles)
-    static const Qt::ScreenOrientation orientations[] = {
-        Qt::PortraitOrientation,
-        Qt::LandscapeOrientation,
-        Qt::InvertedPortraitOrientation,
-        Qt::InvertedLandscapeOrientation
+    static const BobUI::ScreenOrientation orientations[] = {
+        BobUI::PortraitOrientation,
+        BobUI::LandscapeOrientation,
+        BobUI::InvertedPortraitOrientation,
+        BobUI::InvertedLandscapeOrientation
     };
 
     // The Android API defines the following constants:
@@ -660,8 +660,8 @@ static void handleOrientationChanged(JNIEnv */*env*/, jobject /*thiz*/, jint new
     // and newRotation is how much the current orientation is rotated relative to nativeOrientation
 
     // which means that we can be really clever here :)
-    Qt::ScreenOrientation screenOrientation = orientations[(nativeOrientation - 1 + newRotation) % 4];
-    Qt::ScreenOrientation native = orientations[nativeOrientation - 1];
+    BobUI::ScreenOrientation screenOrientation = orientations[(nativeOrientation - 1 + newRotation) % 4];
+    BobUI::ScreenOrientation native = orientations[nativeOrientation - 1];
 
     QAndroidPlatformIntegration::setScreenOrientation(screenOrientation, native);
     QMutexLocker lock(&m_platformMutex);
@@ -670,8 +670,8 @@ static void handleOrientationChanged(JNIEnv */*env*/, jobject /*thiz*/, jint new
         // Use invokeMethod to keep the certain order of the "geometry change"
         // and "orientation change" event handling.
         if (screen) {
-            QMetaObject::invokeMethod(screen, "setOrientation", Qt::AutoConnection,
-                                      Q_ARG(Qt::ScreenOrientation, screenOrientation));
+            QMetaObject::invokeMethod(screen, "setOrientation", BobUI::AutoConnection,
+                                      Q_ARG(BobUI::ScreenOrientation, screenOrientation));
         }
     }
 }
@@ -708,7 +708,7 @@ Q_DECLARE_JNI_NATIVE_METHOD(handleScreenRemoved)
 static void handleUiDarkModeChanged(JNIEnv */*env*/, jobject /*thiz*/, jint newUiMode)
 {
     QAndroidPlatformIntegration::updateColorScheme(
-        (newUiMode == 1 ) ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
+        (newUiMode == 1 ) ? BobUI::ColorScheme::Dark : BobUI::ColorScheme::Light);
 }
 Q_DECLARE_JNI_NATIVE_METHOD(handleUiDarkModeChanged)
 
@@ -723,23 +723,23 @@ static void onActivityResult(JNIEnv */*env*/, jclass /*cls*/,
                              jint resultCode,
                              jobject data)
 {
-    QtAndroidPrivate::handleActivityResult(requestCode, resultCode, data);
+    BobUIAndroidPrivate::handleActivityResult(requestCode, resultCode, data);
 }
 
 static void onNewIntent(JNIEnv *env, jclass /*cls*/, jobject data)
 {
-    QtAndroidPrivate::handleNewIntent(env, data);
+    BobUIAndroidPrivate::handleNewIntent(env, data);
 }
 
 static jobject onBind(JNIEnv */*env*/, jclass /*cls*/, jobject intent)
 {
-    return QtAndroidPrivate::callOnBindListener(intent);
+    return BobUIAndroidPrivate::callOnBindListener(intent);
 }
 
 static JNINativeMethod methods[] = {
     { "initAndroidQpaPlugin", "()Z", (void *)initAndroidQpaPlugin },
-    { "startQtNativeApplication", "(Ljava/lang/String;)V", (void *)startQtNativeApplication },
-    { "terminateQtNativeApplication", "()V", (void *)terminateQtNativeApplication },
+    { "startBobUINativeApplication", "(Ljava/lang/String;)V", (void *)startBobUINativeApplication },
+    { "terminateBobUINativeApplication", "()V", (void *)terminateBobUINativeApplication },
     { "waitForServiceSetup", "()V", (void *)waitForServiceSetup },
     { "updateApplicationState", "(I)V", (void *)updateApplicationState },
     { "onActivityResult", "(IILandroid/content/Intent;)V", (void *)onActivityResult },
@@ -751,46 +751,46 @@ static JNINativeMethod methods[] = {
 #define FIND_AND_CHECK_CLASS(CLASS_NAME) \
 clazz = env->FindClass(CLASS_NAME); \
 if (!clazz) { \
-    __android_log_print(ANDROID_LOG_FATAL, m_qtTag, m_classErrorMsg, CLASS_NAME); \
+    __android_log_print(ANDROID_LOG_FATAL, m_bobuiTag, m_classErrorMsg, CLASS_NAME); \
     return false; \
 }
 
 #define GET_AND_CHECK_METHOD(VAR, CLASS, METHOD_NAME, METHOD_SIGNATURE) \
 VAR = env->GetMethodID(CLASS, METHOD_NAME, METHOD_SIGNATURE); \
 if (!VAR) { \
-    __android_log_print(ANDROID_LOG_FATAL, m_qtTag, m_methodErrorMsg, METHOD_NAME, METHOD_SIGNATURE); \
+    __android_log_print(ANDROID_LOG_FATAL, m_bobuiTag, m_methodErrorMsg, METHOD_NAME, METHOD_SIGNATURE); \
     return false; \
 }
 
 #define GET_AND_CHECK_STATIC_METHOD(VAR, CLASS, METHOD_NAME, METHOD_SIGNATURE) \
 VAR = env->GetStaticMethodID(CLASS, METHOD_NAME, METHOD_SIGNATURE); \
 if (!VAR) { \
-    __android_log_print(ANDROID_LOG_FATAL, m_qtTag, m_methodErrorMsg, METHOD_NAME, METHOD_SIGNATURE); \
+    __android_log_print(ANDROID_LOG_FATAL, m_bobuiTag, m_methodErrorMsg, METHOD_NAME, METHOD_SIGNATURE); \
     return false; \
 }
 
 #define GET_AND_CHECK_FIELD(VAR, CLASS, FIELD_NAME, FIELD_SIGNATURE) \
 VAR = env->GetFieldID(CLASS, FIELD_NAME, FIELD_SIGNATURE); \
 if (!VAR) { \
-    __android_log_print(ANDROID_LOG_FATAL, m_qtTag, m_methodErrorMsg, FIELD_NAME, FIELD_SIGNATURE); \
+    __android_log_print(ANDROID_LOG_FATAL, m_bobuiTag, m_methodErrorMsg, FIELD_NAME, FIELD_SIGNATURE); \
     return false; \
 }
 
 #define GET_AND_CHECK_STATIC_FIELD(VAR, CLASS, FIELD_NAME, FIELD_SIGNATURE) \
 VAR = env->GetStaticFieldID(CLASS, FIELD_NAME, FIELD_SIGNATURE); \
 if (!VAR) { \
-    __android_log_print(ANDROID_LOG_FATAL, m_qtTag, m_methodErrorMsg, FIELD_NAME, FIELD_SIGNATURE); \
+    __android_log_print(ANDROID_LOG_FATAL, m_bobuiTag, m_methodErrorMsg, FIELD_NAME, FIELD_SIGNATURE); \
     return false; \
 }
 
-Q_DECLARE_JNI_CLASS(QtDisplayManager, "org/qtproject/qt/android/QtDisplayManager")
+Q_DECLARE_JNI_CLASS(BobUIDisplayManager, "org/bobuiproject/bobui/android/BobUIDisplayManager")
 
 static bool registerNatives(QJniEnvironment &env)
 {
     bool success = env.registerNativeMethods(m_applicationClass,
                    methods, sizeof(methods) / sizeof(methods[0]));
     success &= env.registerNativeMethods(
-            QtJniTypes::Traits<QtJniTypes::QtDisplayManager>::className(),
+            BobUIJniTypes::Traits<BobUIJniTypes::BobUIDisplayManager>::className(),
             {
                     Q_JNI_NATIVE_METHOD(handleLayoutSizeChanged),
                     Q_JNI_NATIVE_METHOD(handleOrientationChanged),
@@ -803,17 +803,17 @@ static bool registerNatives(QJniEnvironment &env)
             });
 
     success = success
-        && QtAndroidInput::registerNatives(env)
-        && QtAndroidMenu::registerNatives(env)
-#if QT_CONFIG(accessibility)
-        && QtAndroidAccessibility::registerNatives(env)
+        && BobUIAndroidInput::registerNatives(env)
+        && BobUIAndroidMenu::registerNatives(env)
+#if BOBUI_CONFIG(accessibility)
+        && BobUIAndroidAccessibility::registerNatives(env)
 #endif
-        && QtAndroidDialogHelpers::registerNatives(env)
-#if QT_CONFIG(clipboard)
+        && BobUIAndroidDialogHelpers::registerNatives(env)
+#if BOBUI_CONFIG(clipboard)
         && QAndroidPlatformClipboard::registerNatives(env)
 #endif
         && QAndroidPlatformWindow::registerNatives(env)
-        && QtAndroidWindowEmbedding::registerNatives(env)
+        && BobUIAndroidWindowEmbedding::registerNatives(env)
         && AndroidBackendRegister::registerNatives()
         && QAndroidModelIndexProxy::registerNatives(env)
         && QAndroidItemModelProxy::registerAbstractNatives(env)
@@ -828,7 +828,7 @@ static bool initJavaReferences(QJniEnvironment &env)
         return true;
 
     jclass clazz;
-    FIND_AND_CHECK_CLASS("org/qtproject/qt/android/QtNative");
+    FIND_AND_CHECK_CLASS("org/bobuiproject/bobui/android/BobUINative");
     m_applicationClass = static_cast<jclass>(env->NewGlobalRef(clazz));
 
     jmethodID methodID;
@@ -841,7 +841,7 @@ static bool initJavaReferences(QJniEnvironment &env)
     }
 
     if (!contextObject) {
-        __android_log_print(ANDROID_LOG_FATAL,"Qt", "Failed to get Activity or Service object");
+        __android_log_print(ANDROID_LOG_FATAL,"BobUI", "Failed to get Activity or Service object");
         return false;
     }
     const auto releaseContextObject = qScopeGuard([&env, contextObject]{
@@ -873,20 +873,20 @@ static bool initJavaReferences(QJniEnvironment &env)
                          m_bitmapDrawableClass,
                          "<init>", "(Landroid/content/res/Resources;Landroid/graphics/Bitmap;)V");
 
-    FIND_AND_CHECK_CLASS("org/qtproject/qt/android/QtActivityBase");
-    m_qtActivityClass = static_cast<jclass>(env->NewGlobalRef(clazz));
-    FIND_AND_CHECK_CLASS("org/qtproject/qt/android/QtServiceBase");
-    m_qtServiceClass = static_cast<jclass>(env->NewGlobalRef(clazz));
+    FIND_AND_CHECK_CLASS("org/bobuiproject/bobui/android/BobUIActivityBase");
+    m_bobuiActivityClass = static_cast<jclass>(env->NewGlobalRef(clazz));
+    FIND_AND_CHECK_CLASS("org/bobuiproject/bobui/android/BobUIServiceBase");
+    m_bobuiServiceClass = static_cast<jclass>(env->NewGlobalRef(clazz));
 
-    // The current thread will be the Qt thread, name it accordingly
-    QThread::currentThread()->setObjectName("QtMainLoopThread");
+    // The current thread will be the BobUI thread, name it accordingly
+    BOBUIhread::currentThread()->setObjectName("BobUIMainLoopThread");
 
     QWindowSystemInterfacePrivate::TabletEvent::setPlatformSynthesizesMouse(false);
 
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM */*vm*/, void */*reserved*/)
 {
@@ -895,11 +895,11 @@ Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM */*vm*/, void */*reserved*/)
         return JNI_VERSION_1_6;
     initialized = true;
 
-    QT_USE_NAMESPACE
+    BOBUI_USE_NAMESPACE
 
     QJniEnvironment env;
     if (!env.isValid()) {
-        __android_log_print(ANDROID_LOG_FATAL, "Qt", "Failed to initialize the JNI Environment");
+        __android_log_print(ANDROID_LOG_FATAL, "BobUI", "Failed to initialize the JNI Environment");
         return JNI_ERR;
     }
 
@@ -907,10 +907,10 @@ Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM */*vm*/, void */*reserved*/)
         return JNI_ERR;
 
     if (!registerNatives(env)) {
-        __android_log_print(ANDROID_LOG_FATAL, "Qt", "registerNatives failed");
+        __android_log_print(ANDROID_LOG_FATAL, "BobUI", "registerNatives failed");
         return JNI_ERR;
     }
 
-    __android_log_print(ANDROID_LOG_INFO, "Qt", "Qt platform plugin started");
+    __android_log_print(ANDROID_LOG_INFO, "BobUI", "BobUI platform plugin started");
     return JNI_VERSION_1_6;
 }

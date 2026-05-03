@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
-#include <QtCore/QTimer>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
+#include <BobUICore/BOBUIimer>
 
 using namespace std::chrono_literals;
 
-// Tests for QTestEventLoop (and some QTRY_* details)
+// Tests for BOBUIestEventLoop (and some BOBUIRY_* details)
 class tst_EventLoop: public QObject
 {
 Q_OBJECT
@@ -30,7 +30,7 @@ public:
     explicit DeferredFlag(bool initial = false) : m_flag(initial)
     {
         if (!initial)
-            QTimer::singleShot(50, this, &DeferredFlag::onTimeOut);
+            BOBUIimer::singleShot(50, this, &DeferredFlag::onTimeOut);
     }
     explicit operator bool() const { return m_flag; }
     bool operator!() const { return !m_flag; }
@@ -49,17 +49,17 @@ char *toString(const DeferredFlag &val)
 
 void tst_EventLoop::cleanup()
 {
-    // QTBUG-104441: looping didn't happen in cleanup() if test failed or skipped.
+    // BOBUIBUG-104441: looping didn't happen in cleanup() if test failed or skipped.
     {
         DeferredFlag flag;
-        auto &loop = QTestEventLoop::instance();
+        auto &loop = BOBUIestEventLoop::instance();
         loop.enterLoop(100ms);
-        QVERIFY2(loop.timeout(), "QTestEventLoop exited prematurely in cleanup()");
+        QVERIFY2(loop.timeout(), "BOBUIestEventLoop exited prematurely in cleanup()");
         QVERIFY(flag);
     }
     {
         DeferredFlag flag;
-        QTRY_VERIFY2(flag, "QTRY_* loop exited prematurely in cleanup()");
+        BOBUIRY_VERIFY2(flag, "BOBUIRY_* loop exited prematurely in cleanup()");
     }
 
     m_inTestFunction = false;
@@ -82,17 +82,17 @@ void tst_EventLoop::pass()
     QVERIFY2(!std::exchange(m_inTestFunction, true), "Earlier test failed to clean up");
     {
         DeferredFlag flag;
-        auto &loop = QTestEventLoop::instance();
+        auto &loop = BOBUIestEventLoop::instance();
         loop.enterLoop(100ms);
         QVERIFY(loop.timeout());
         QVERIFY(flag);
     }
     {
         DeferredFlag flag;
-        QTRY_VERIFY(flag);
+        BOBUIRY_VERIFY(flag);
     }
     DeferredFlag flag;
-    QTestEventLoop loop(this);
+    BOBUIestEventLoop loop(this);
     QVERIFY(!flag);
     loop.enterLoop(1ms);
     QVERIFY(loop.timeout());
@@ -102,5 +102,5 @@ void tst_EventLoop::pass()
     QVERIFY(flag);
 }
 
-QTEST_MAIN(tst_EventLoop)
+BOBUIEST_MAIN(tst_EventLoop)
 #include "tst_eventloop.moc"

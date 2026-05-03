@@ -1,5 +1,5 @@
 // Copyright (C) 2022 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_FRACTIONALSCALE_H
 #define MOCKCOMPOSITOR_FRACTIONALSCALE_H
@@ -11,7 +11,7 @@ namespace MockCompositor {
 
 class FractionalScale;
 
-class FractionalScaleManager : public Global, public QtWaylandServer::wp_fractional_scale_manager_v1
+class FractionalScaleManager : public Global, public BobUIWaylandServer::wp_fractional_scale_manager_v1
 {
     Q_OBJECT
 public:
@@ -22,7 +22,7 @@ protected:
     void wp_fractional_scale_manager_v1_get_fractional_scale(Resource *resource, uint32_t id, wl_resource *surface) override;
 };
 
-class FractionalScale : public QObject, public QtWaylandServer::wp_fractional_scale_v1
+class FractionalScale : public QObject, public BobUIWaylandServer::wp_fractional_scale_v1
 {
     Q_OBJECT
 public:

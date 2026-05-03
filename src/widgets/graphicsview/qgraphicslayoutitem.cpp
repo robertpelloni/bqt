@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qglobal.h"
 
@@ -12,9 +12,9 @@
 #include "qgraphicswidget.h"
 #include "qgraphicsitem_p.h"
 
-#include <QtDebug>
+#include <BobUIDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     COMBINE_SIZE() is identical to combineSize(), except that it
@@ -111,16 +111,16 @@ QSizeF *QGraphicsLayoutItemPrivate::effectiveSizeHints(const QSizeF &constraint)
         sizeHintCache = cachedSizeHints;
     }
 
-    for (int i = 0; i < Qt::NSizeHints; ++i) {
+    for (int i = 0; i < BobUI::NSizeHints; ++i) {
         sizeHintCache[i] = constraint;
         if (userSizeHints)
             combineSize(sizeHintCache[i], userSizeHints[i]);
     }
 
-    QSizeF &minS = sizeHintCache[Qt::MinimumSize];
-    QSizeF &prefS = sizeHintCache[Qt::PreferredSize];
-    QSizeF &maxS = sizeHintCache[Qt::MaximumSize];
-    QSizeF &descentS = sizeHintCache[Qt::MinimumDescent];
+    QSizeF &minS = sizeHintCache[BobUI::MinimumSize];
+    QSizeF &prefS = sizeHintCache[BobUI::PreferredSize];
+    QSizeF &maxS = sizeHintCache[BobUI::MaximumSize];
+    QSizeF &descentS = sizeHintCache[BobUI::MinimumDescent];
 
     normalizeHints(minS.rwidth(), prefS.rwidth(), maxS.rwidth(), descentS.rwidth());
     normalizeHints(minS.rheight(), prefS.rheight(), maxS.rheight(), descentS.rheight());
@@ -128,23 +128,23 @@ QSizeF *QGraphicsLayoutItemPrivate::effectiveSizeHints(const QSizeF &constraint)
     // if the minimum, preferred and maximum sizes contradict each other
     // (e.g. the minimum is larger than the maximum) we give priority to
     // the maximum size, then the minimum size and finally the preferred size
-    COMBINE_SIZE(maxS, q->sizeHint(Qt::MaximumSize, maxS));
+    COMBINE_SIZE(maxS, q->sizeHint(BobUI::MaximumSize, maxS));
     combineSize(maxS, QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
     expandSize(maxS, prefS);
     expandSize(maxS, minS);
     boundSize(maxS, QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
 
-    COMBINE_SIZE(minS, q->sizeHint(Qt::MinimumSize, minS));
+    COMBINE_SIZE(minS, q->sizeHint(BobUI::MinimumSize, minS));
     expandSize(minS, QSizeF(0, 0));
     boundSize(minS, prefS);
     boundSize(minS, maxS);
 
-    COMBINE_SIZE(prefS, q->sizeHint(Qt::PreferredSize, prefS));
+    COMBINE_SIZE(prefS, q->sizeHint(BobUI::PreferredSize, prefS));
     expandSize(prefS, minS);
     boundSize(prefS, maxS);
 
     // Not supported yet
-    // COMBINE_SIZE(descentS, q->sizeHint(Qt::MinimumDescent, constraint));
+    // COMBINE_SIZE(descentS, q->sizeHint(BobUI::MinimumDescent, constraint));
 
     if (hasConstraint) {
         cachedConstraint = constraint;
@@ -192,7 +192,7 @@ QGraphicsItem *QGraphicsLayoutItemPrivate::parentItem() const
 void QGraphicsLayoutItemPrivate::ensureUserSizeHints()
 {
     if (!userSizeHints)
-        userSizeHints = new QSizeF[Qt::NSizeHints];
+        userSizeHints = new QSizeF[BobUI::NSizeHints];
 }
 
 /*!
@@ -200,7 +200,7 @@ void QGraphicsLayoutItemPrivate::ensureUserSizeHints()
 
     Sets the user size hint \a which to \a size. Use an invalid size to unset the size hint.
  */
-void QGraphicsLayoutItemPrivate::setSize(Qt::SizeHint which, const QSizeF &size)
+void QGraphicsLayoutItemPrivate::setSize(BobUI::SizeHint which, const QSizeF &size)
 {
     Q_Q(QGraphicsLayoutItem);
 
@@ -222,7 +222,7 @@ void QGraphicsLayoutItemPrivate::setSize(Qt::SizeHint which, const QSizeF &size)
     Sets the width of the user size hint \a which to \a width.
  */
 void QGraphicsLayoutItemPrivate::setSizeComponent(
-    Qt::SizeHint which, SizeComponent component, qreal value)
+    BobUI::SizeHint which, SizeComponent component, qreal value)
 {
     Q_Q(QGraphicsLayoutItem);
     ensureUserSizeHints();
@@ -282,7 +282,7 @@ bool QGraphicsLayoutItemPrivate::hasWidthForHeight() const
     items to be managed by layouts.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsLayoutItem is an abstract class that defines a set of virtual
     functions describing sizes, size policies, and size hints for any object
@@ -321,7 +321,7 @@ bool QGraphicsLayoutItemPrivate::hasWidthForHeight() const
     component if desired.
 
     The effectiveSizeHint() function, on the other hand, returns a size hint
-    for any given Qt::SizeHint, and guarantees that the returned size is bound
+    for any given BobUI::SizeHint, and guarantees that the returned size is bound
     to the minimum and maximum sizes and size hints. You can set the item's
     vertical and horizontal size policy by calling setSizePolicy(). The
     sizePolicy property is used by the layout system to describe how this item
@@ -339,9 +339,9 @@ bool QGraphicsLayoutItemPrivate::hasWidthForHeight() const
     isLayout() returns \c true if the QGraphicsLayoutItem subclass is itself a
     layout, or false otherwise.
 
-    Qt uses QGraphicsLayoutItem to provide layout functionality in the
+    BobUI uses QGraphicsLayoutItem to provide layout functionality in the
     \l{Graphics View Framework}, but in the future its use may spread
-    throughout Qt itself.
+    throughout BobUI itself.
 
     \sa QGraphicsWidget, QGraphicsLayout, QGraphicsLinearLayout,
     QGraphicsGridLayout
@@ -391,7 +391,7 @@ QGraphicsLayoutItem::~QGraphicsLayoutItem()
 }
 
 /*!
-    \fn virtual QSizeF QGraphicsLayoutItem::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const = 0;
+    \fn virtual QSizeF QGraphicsLayoutItem::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const = 0;
 
     This pure virtual function returns the size hint for \a which of the
     QGraphicsLayoutItem, using the width or height of \a constraint to
@@ -452,16 +452,16 @@ QSizePolicy QGraphicsLayoutItem::sizePolicy() const
 
 /*!
     Sets the minimum size to \a size. This property overrides sizeHint() for
-    Qt::MinimumSize and ensures that effectiveSizeHint() will never return
+    BobUI::MinimumSize and ensures that effectiveSizeHint() will never return
     a size smaller than \a size. In order to unset the minimum size, use an
     invalid size.
 
-    \sa minimumSize(), maximumSize(), preferredSize(), Qt::MinimumSize,
+    \sa minimumSize(), maximumSize(), preferredSize(), BobUI::MinimumSize,
     sizeHint(), setMinimumWidth(), setMinimumHeight()
 */
 void QGraphicsLayoutItem::setMinimumSize(const QSizeF &size)
 {
-    d_ptr->setSize(Qt::MinimumSize, size);
+    d_ptr->setSize(BobUI::MinimumSize, size);
 }
 
 /*!
@@ -476,12 +476,12 @@ void QGraphicsLayoutItem::setMinimumSize(const QSizeF &size)
 /*!
     Returns the minimum size.
 
-    \sa setMinimumSize(), preferredSize(), maximumSize(), Qt::MinimumSize,
+    \sa setMinimumSize(), preferredSize(), maximumSize(), BobUI::MinimumSize,
     sizeHint()
 */
 QSizeF QGraphicsLayoutItem::minimumSize() const
 {
-    return effectiveSizeHint(Qt::MinimumSize);
+    return effectiveSizeHint(BobUI::MinimumSize);
 }
 
 /*!
@@ -491,7 +491,7 @@ QSizeF QGraphicsLayoutItem::minimumSize() const
 */
 void QGraphicsLayoutItem::setMinimumWidth(qreal width)
 {
-    d_ptr->setSizeComponent(Qt::MinimumSize, d_ptr->Width, width);
+    d_ptr->setSizeComponent(BobUI::MinimumSize, d_ptr->Width, width);
 }
 
 /*!
@@ -501,21 +501,21 @@ void QGraphicsLayoutItem::setMinimumWidth(qreal width)
 */
 void QGraphicsLayoutItem::setMinimumHeight(qreal height)
 {
-    d_ptr->setSizeComponent(Qt::MinimumSize, d_ptr->Height, height);
+    d_ptr->setSizeComponent(BobUI::MinimumSize, d_ptr->Height, height);
 }
 
 
 /*!
     Sets the preferred size to \a size. This property overrides sizeHint() for
-    Qt::PreferredSize and provides the default value for effectiveSizeHint().
+    BobUI::PreferredSize and provides the default value for effectiveSizeHint().
     In order to unset the preferred size, use an invalid size.
 
-    \sa preferredSize(), minimumSize(), maximumSize(), Qt::PreferredSize,
+    \sa preferredSize(), minimumSize(), maximumSize(), BobUI::PreferredSize,
     sizeHint()
 */
 void QGraphicsLayoutItem::setPreferredSize(const QSizeF &size)
 {
-    d_ptr->setSize(Qt::PreferredSize, size);
+    d_ptr->setSize(BobUI::PreferredSize, size);
 }
 
 /*!
@@ -530,12 +530,12 @@ void QGraphicsLayoutItem::setPreferredSize(const QSizeF &size)
 /*!
     Returns the preferred size.
 
-    \sa setPreferredSize(), minimumSize(), maximumSize(), Qt::PreferredSize,
+    \sa setPreferredSize(), minimumSize(), maximumSize(), BobUI::PreferredSize,
     sizeHint()
 */
 QSizeF QGraphicsLayoutItem::preferredSize() const
 {
-    return effectiveSizeHint(Qt::PreferredSize);
+    return effectiveSizeHint(BobUI::PreferredSize);
 }
 
 /*!
@@ -545,7 +545,7 @@ QSizeF QGraphicsLayoutItem::preferredSize() const
 */
 void QGraphicsLayoutItem::setPreferredHeight(qreal height)
 {
-    d_ptr->setSizeComponent(Qt::PreferredSize, d_ptr->Height, height);
+    d_ptr->setSizeComponent(BobUI::PreferredSize, d_ptr->Height, height);
 }
 
 /*!
@@ -555,21 +555,21 @@ void QGraphicsLayoutItem::setPreferredHeight(qreal height)
 */
 void QGraphicsLayoutItem::setPreferredWidth(qreal width)
 {
-    d_ptr->setSizeComponent(Qt::PreferredSize, d_ptr->Width, width);
+    d_ptr->setSizeComponent(BobUI::PreferredSize, d_ptr->Width, width);
 }
 
 /*!
     Sets the maximum size to \a size. This property overrides sizeHint() for
-    Qt::MaximumSize and ensures that effectiveSizeHint() will never return a
+    BobUI::MaximumSize and ensures that effectiveSizeHint() will never return a
     size larger than \a size. In order to unset the maximum size, use an
     invalid size.
 
-    \sa maximumSize(), minimumSize(), preferredSize(), Qt::MaximumSize,
+    \sa maximumSize(), minimumSize(), preferredSize(), BobUI::MaximumSize,
     sizeHint()
 */
 void QGraphicsLayoutItem::setMaximumSize(const QSizeF &size)
 {
-    d_ptr->setSize(Qt::MaximumSize, size);
+    d_ptr->setSize(BobUI::MaximumSize, size);
 }
 
 /*!
@@ -584,12 +584,12 @@ void QGraphicsLayoutItem::setMaximumSize(const QSizeF &size)
 /*!
     Returns the maximum size.
 
-    \sa setMaximumSize(), minimumSize(), preferredSize(), Qt::MaximumSize,
+    \sa setMaximumSize(), minimumSize(), preferredSize(), BobUI::MaximumSize,
     sizeHint()
 */
 QSizeF QGraphicsLayoutItem::maximumSize() const
 {
-    return effectiveSizeHint(Qt::MaximumSize);
+    return effectiveSizeHint(BobUI::MaximumSize);
 }
 
 /*!
@@ -599,7 +599,7 @@ QSizeF QGraphicsLayoutItem::maximumSize() const
 */
 void QGraphicsLayoutItem::setMaximumWidth(qreal width)
 {
-    d_ptr->setSizeComponent(Qt::MaximumSize, d_ptr->Width, width);
+    d_ptr->setSizeComponent(BobUI::MaximumSize, d_ptr->Width, width);
 }
 
 /*!
@@ -609,7 +609,7 @@ void QGraphicsLayoutItem::setMaximumWidth(qreal width)
 */
 void QGraphicsLayoutItem::setMaximumHeight(qreal height)
 {
-    d_ptr->setSizeComponent(Qt::MaximumSize, d_ptr->Height, height);
+    d_ptr->setSizeComponent(BobUI::MaximumSize, d_ptr->Height, height);
 }
 
 /*!
@@ -680,8 +680,8 @@ void QGraphicsLayoutItem::setMaximumHeight(qreal height)
 void QGraphicsLayoutItem::setGeometry(const QRectF &rect)
 {
     Q_D(QGraphicsLayoutItem);
-    QSizeF effectiveSize = rect.size().expandedTo(effectiveSizeHint(Qt::MinimumSize))
-                                .boundedTo(effectiveSizeHint(Qt::MaximumSize));
+    QSizeF effectiveSize = rect.size().expandedTo(effectiveSizeHint(BobUI::MinimumSize))
+                                .boundedTo(effectiveSizeHint(BobUI::MaximumSize));
     d->geom = QRectF(rect.topLeft(), effectiveSize);
 }
 
@@ -765,7 +765,7 @@ QRectF QGraphicsLayoutItem::contentsRect() const
 
     \sa sizeHint()
 */
-QSizeF QGraphicsLayoutItem::effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF QGraphicsLayoutItem::effectiveSizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_D(const QGraphicsLayoutItem);
 
@@ -913,4 +913,4 @@ void QGraphicsLayoutItem::setGraphicsItem(QGraphicsItem *item)
     d_func()->graphicsItem = item;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

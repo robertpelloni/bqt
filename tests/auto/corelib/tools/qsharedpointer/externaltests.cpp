@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include "externaltests.h"
 
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QTemporaryDir>
-#if QT_CONFIG(process)
-# include <QtCore/QProcess>
+#include <BobUICore/BOBUIemporaryFile>
+#include <BobUICore/BOBUIemporaryDir>
+#if BOBUI_CONFIG(process)
+# include <BobUICore/QProcess>
 #endif
-#include <QtCore/QByteArray>
-#include <QtCore/QString>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QtCore/QDirIterator>
-#include <QtCore/QDateTime>
-#include <QtCore/QDebug>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QThread>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QString>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QDir>
+#include <BobUICore/QDirIterator>
+#include <BobUICore/QDateTime>
+#include <BobUICore/QDebug>
+#include <BobUICore/QLibraryInfo>
+#include <BobUICore/BOBUIhread>
 
 #ifndef DEFAULT_MAKESPEC
 # error DEFAULT_MAKESPEC not defined
@@ -48,14 +48,14 @@ static QString makespec()
     return QString::fromLatin1(p + 1);
 }
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
-#if QT_CONFIG(process)
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
+#if BOBUI_CONFIG(process)
     static void ensureStopped(QProcess &process)
     {
         if (process.state() == QProcess::Running) {
             process.terminate();
-            QThread::sleep(std::chrono::milliseconds{20});
+            BOBUIhread::sleep(std::chrono::milliseconds{20});
             if (process.state() == QProcess::Running)
                 process.kill();
         }
@@ -83,13 +83,13 @@ namespace QTest {
 #  else
     using QExternalProcess = QProcess;
 #  endif
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
     class QExternalTestPrivate
     {
     public:
         QExternalTestPrivate()
-            : qtModules(QExternalTest::QtCore | QExternalTest::QtGui | QExternalTest::QtTest),
+            : bobuiModules(QExternalTest::BobUICore | QExternalTest::BobUIGui | QExternalTest::BobUITest),
               appType(QExternalTest::AutoApplication),
               temporaryDir(0), exitCode(-1)
         {
@@ -104,11 +104,11 @@ namespace QTest {
         QList<QByteArray> qmakeLines;
         QStringList extraProgramSources;
         QByteArray programHeader;
-        QExternalTest::QtModules qtModules;
+        QExternalTest::BobUIModules bobuiModules;
         QExternalTest::ApplicationType appType;
 
         QString temporaryDirPath;
-        QTemporaryDir *temporaryDir;
+        BOBUIemporaryDir *temporaryDir;
         QByteArray sourceCode;
         QByteArray std_out;
         QByteArray std_err;
@@ -150,14 +150,14 @@ namespace QTest {
         d->qmakeLines = settings;
     }
 
-    QExternalTest::QtModules QExternalTest::qtModules() const
+    QExternalTest::BobUIModules QExternalTest::bobuiModules() const
     {
-        return d->qtModules;
+        return d->bobuiModules;
     }
 
-    void QExternalTest::setQtModules(QtModules modules)
+    void QExternalTest::setBobUIModules(BobUIModules modules)
     {
-        d->qtModules = modules;
+        d->bobuiModules = modules;
     }
 
     QExternalTest::ApplicationType QExternalTest::applicationType() const
@@ -298,32 +298,32 @@ namespace QTest {
 
         sourceCode += programHeader;
 
-        // Add Qt header includes
-        if (qtModules & QExternalTest::QtCore)
-            sourceCode += "#include <QtCore/QtCore>\n";
-        if (qtModules & QExternalTest::QtGui)
-            sourceCode += "#include <QtGui/QtGui>\n";
-        if (qtModules & QExternalTest::QtNetwork)
-            sourceCode += "#include <QtNetwork/QtNetwork>\n";
-        if (qtModules & QExternalTest::QtXml)
-            sourceCode += "#include <QtXml/QtXml>\n";
-        if (qtModules & QExternalTest::QtXmlPatterns)
-            sourceCode += "#include <QtXmlPatterns/QtXmlPatterns>\n";
-        if (qtModules & QExternalTest::QtOpenGL)
-            sourceCode += "#include <QtOpenGL/QtOpenGL>\n";
-        if (qtModules & QExternalTest::QtSql)
-            sourceCode += "#include <QtSql/QtSql>\n";
-        if (qtModules & QExternalTest::QtSvg)
-            sourceCode += "#include <QtSvg/QtSvg>\n";
-        if (qtModules & QExternalTest::QtScript)
-            sourceCode += "#include <QtScript/QtScript>\n";
-        if (qtModules & QExternalTest::QtTest)
-            sourceCode += "#include <QTest>\n";
-        if (qtModules & QExternalTest::QtDBus)
-            sourceCode += "#include <QtDBus/QtDBus>\n";
-        if (qtModules & QExternalTest::QtWebKit)
-            sourceCode += "#include <QtWebKit/QtWebKit>\n";
-        if (qtModules & QExternalTest::Phonon)
+        // Add BobUI header includes
+        if (bobuiModules & QExternalTest::BobUICore)
+            sourceCode += "#include <BobUICore/BobUICore>\n";
+        if (bobuiModules & QExternalTest::BobUIGui)
+            sourceCode += "#include <BobUIGui/BobUIGui>\n";
+        if (bobuiModules & QExternalTest::BobUINetwork)
+            sourceCode += "#include <BobUINetwork/BobUINetwork>\n";
+        if (bobuiModules & QExternalTest::BobUIXml)
+            sourceCode += "#include <BobUIXml/BobUIXml>\n";
+        if (bobuiModules & QExternalTest::BobUIXmlPatterns)
+            sourceCode += "#include <BobUIXmlPatterns/BobUIXmlPatterns>\n";
+        if (bobuiModules & QExternalTest::BobUIOpenGL)
+            sourceCode += "#include <BobUIOpenGL/BobUIOpenGL>\n";
+        if (bobuiModules & QExternalTest::BobUISql)
+            sourceCode += "#include <BobUISql/BobUISql>\n";
+        if (bobuiModules & QExternalTest::BobUISvg)
+            sourceCode += "#include <BobUISvg/BobUISvg>\n";
+        if (bobuiModules & QExternalTest::BobUIScript)
+            sourceCode += "#include <BobUIScript/BobUIScript>\n";
+        if (bobuiModules & QExternalTest::BobUITest)
+            sourceCode += "#include <BOBUIest>\n";
+        if (bobuiModules & QExternalTest::BobUIDBus)
+            sourceCode += "#include <BobUIDBus/BobUIDBus>\n";
+        if (bobuiModules & QExternalTest::BobUIWebKit)
+            sourceCode += "#include <BobUIWebKit/BobUIWebKit>\n";
+        if (bobuiModules & QExternalTest::Phonon)
             sourceCode += "#include <Phonon/Phonon>\n";
         sourceCode +=
             "#include <stdlib.h>\n"
@@ -337,7 +337,7 @@ namespace QTest {
             "}\n"
             "\n"
             "#ifdef Q_OS_WIN\n"
-            "#include <qt_windows.h>\n"
+            "#include <bobui_windows.h>\n"
             "#if defined(Q_CC_MSVC)\n"
             "#include <crtdbg.h>\n"
             "#endif\n"
@@ -354,7 +354,7 @@ namespace QTest {
             "#endif\n"
             "int main(int argc, char **argv)\n"
             "{\n"
-            "#if defined(Q_CC_MSVC) && defined(QT_DEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)\n"
+            "#if defined(Q_CC_MSVC) && defined(BOBUI_DEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)\n"
             "    _CrtSetReportHook2(_CRT_RPTHOOK_INSTALL, CrtDbgHook);\n"
             "#endif\n";
 
@@ -384,11 +384,11 @@ namespace QTest {
             break;
 
         case QExternalTest::AutoApplication:
-            if (qtModules & QExternalTest::QtWidgets)
+            if (bobuiModules & QExternalTest::BobUIWidgets)
                 goto widgetsapplication;
-            if (qtModules & QExternalTest::QtGui)
+            if (bobuiModules & QExternalTest::BobUIGui)
                 goto guiapplication;
-            if (qtModules == 0)
+            if (bobuiModules == 0)
                 goto applicationless;
             goto coreapplication;
         }
@@ -421,7 +421,7 @@ namespace QTest {
     bool QExternalTestPrivate::createTemporaryDirectory()
     {
         delete temporaryDir;
-        temporaryDir = new QTemporaryDir;
+        temporaryDir = new BOBUIemporaryDir;
         if (temporaryDir->isValid()) {
             temporaryDirPath = temporaryDir->path();
             return true;
@@ -456,7 +456,7 @@ namespace QTest {
             "RCC_DIR  = .\n"
             "HEADERS  +=\n"
             "SOURCES  += project.cpp\n"
-            "QT       -= core gui\n"
+            "BOBUI       -= core gui\n"
             "INCLUDEPATH += . ");
 
         QString workingDir = QDir::currentPath();
@@ -464,7 +464,7 @@ namespace QTest {
             workingDir = QFileInfo(extraProgramSources.first()).absolutePath();
         projectFile.write(QFile::encodeName(workingDir));
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             projectFile.write("\nCONFIG  += debug\n");
 #else
             projectFile.write("\nCONFIG  += release\n");
@@ -477,33 +477,33 @@ namespace QTest {
             projectFile.putChar('\n');
         }
 
-        // Add Qt modules
-        if (qtModules & QExternalTest::QtCore)
-            projectFile.write("QT += core\n");
-        if (qtModules & QExternalTest::QtGui)
-            projectFile.write("QT += gui\n");
-        if (qtModules & QExternalTest::QtNetwork)
-            projectFile.write("QT += network\n");
-        if (qtModules & QExternalTest::QtXml)
-            projectFile.write("QT += xml\n");
-        if (qtModules & QExternalTest::QtXmlPatterns)
-            projectFile.write("QT += xmlpatterns\n");
-        if (qtModules & QExternalTest::QtOpenGL)
-            projectFile.write("QT += opengl\n");
-        if (qtModules & QExternalTest::QtSql)
-            projectFile.write("QT += sql\n");
-        if (qtModules & QExternalTest::QtSvg)
-            projectFile.write("QT += svg\n");
-        if (qtModules & QExternalTest::QtScript)
-            projectFile.write("QT += script\n");
-        if (qtModules & QExternalTest::QtTest)
-            projectFile.write("QT += testlib\n");
-        if (qtModules & QExternalTest::QtDBus)
-            projectFile.write("QT += dbus\n");
-        if (qtModules & QExternalTest::QtWebKit)
-            projectFile.write("QT += webkit\n");
-        if (qtModules & QExternalTest::Phonon)
-            projectFile.write("QT += phonon\n");
+        // Add BobUI modules
+        if (bobuiModules & QExternalTest::BobUICore)
+            projectFile.write("BOBUI += core\n");
+        if (bobuiModules & QExternalTest::BobUIGui)
+            projectFile.write("BOBUI += gui\n");
+        if (bobuiModules & QExternalTest::BobUINetwork)
+            projectFile.write("BOBUI += network\n");
+        if (bobuiModules & QExternalTest::BobUIXml)
+            projectFile.write("BOBUI += xml\n");
+        if (bobuiModules & QExternalTest::BobUIXmlPatterns)
+            projectFile.write("BOBUI += xmlpatterns\n");
+        if (bobuiModules & QExternalTest::BobUIOpenGL)
+            projectFile.write("BOBUI += opengl\n");
+        if (bobuiModules & QExternalTest::BobUISql)
+            projectFile.write("BOBUI += sql\n");
+        if (bobuiModules & QExternalTest::BobUISvg)
+            projectFile.write("BOBUI += svg\n");
+        if (bobuiModules & QExternalTest::BobUIScript)
+            projectFile.write("BOBUI += script\n");
+        if (bobuiModules & QExternalTest::BobUITest)
+            projectFile.write("BOBUI += testlib\n");
+        if (bobuiModules & QExternalTest::BobUIDBus)
+            projectFile.write("BOBUI += dbus\n");
+        if (bobuiModules & QExternalTest::BobUIWebKit)
+            projectFile.write("BOBUI += webkit\n");
+        if (bobuiModules & QExternalTest::Phonon)
+            projectFile.write("BOBUI += phonon\n");
 
         projectFile.write("\n### User-specified settings start ###\n");
         foreach (QByteArray line, qmakeLines) {
@@ -549,7 +549,7 @@ namespace QTest {
 
     bool QExternalTestPrivate::runQmake()
     {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
         if (temporaryDirPath.isEmpty())
             qWarning() << "Temporary directory is expected to be non-empty";
 
@@ -587,21 +587,21 @@ namespace QTest {
             ok = qmake.waitForFinished(QMakeTimeout);
             exitCode = qmake.exitCode();
             if (!ok)
-                QTest::ensureStopped(qmake);
+                BOBUIest::ensureStopped(qmake);
 
             std_out += qmake.readAllStandardOutput();
             std_err += qmake.readAllStandardError();
         }
 
         return ok && exitCode == 0;
-#else // QT_CONFIG(process)
+#else // BOBUI_CONFIG(process)
         return false;
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
     }
 
     bool QExternalTestPrivate::runMake(Target target, int timeout)
     {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
         return false;
 #else
         if (temporaryDirPath.isEmpty())
@@ -619,7 +619,7 @@ namespace QTest {
         if (target == Compile) {
             args << QLatin1String("test_compile");
         } else if (target == Run) {
-            QByteArray run = qgetenv("QTEST_EXTERNAL_RUN");
+            QByteArray run = qgetenv("BOBUIEST_EXTERNAL_RUN");
             if (run == "valgrind")
                 args << QLatin1String("test_valgrind");
             else if (run == "debug")
@@ -654,13 +654,13 @@ namespace QTest {
         make.closeWriteChannel();
         bool ok = make.waitForFinished(channelMode == QProcess::ForwardedChannels ? -1 : timeout);
         if (!ok)
-            QTest::ensureStopped(make);
+            BOBUIest::ensureStopped(make);
         exitCode = make.exitCode();
         std_out += make.readAllStandardOutput();
         std_err += make.readAllStandardError();
 
         return ok;
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
     }
 
     bool QExternalTestPrivate::commonSetup(const QByteArray &body)
@@ -714,4 +714,4 @@ namespace QTest {
         return runMake(Run, RunTimeout);
     }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_TestA : public QObject
 {
@@ -42,11 +42,11 @@ int main()
     int argc = 2;
 
     tst_TestA testA;
-    QTest::qExec(&testA, argc, argv);
-    QTest::qExec(&testA, argc, argv);
+    BOBUIest::qExec(&testA, argc, argv);
+    BOBUIest::qExec(&testA, argc, argv);
 
     tst_TestB testB;
-    QTest::qExec(&testB, argc, argv);
+    BOBUIest::qExec(&testB, argc, argv);
 
     return 0;
 }

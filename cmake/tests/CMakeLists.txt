@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # These macros are inspired by ECM:
@@ -48,4 +48,4 @@ macro(add_cmake_test_generate name)
 endmacro()
 
 add_cmake_test_generate(features)
-add_cmake_test_generate(qt_make_output_file)
+add_cmake_test_generate(bobui_make_output_file)

@@ -1,8 +1,8 @@
 ********* Start testing of FindTestData *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : FindTestData::initTestCase()
 WARNING: FindTestData::paths() testdata testfile could not be located!
-   Loc: [qtbase/tests/auto/testlib/selftests/findtestdata/findtestdata.cpp(0)]
+   Loc: [bobuibase/tests/auto/testlib/selftests/findtestdata/findtestdata.cpp(0)]
 PASS   : FindTestData::paths()
 PASS   : FindTestData::cleanupTestCase()
 Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted, 0ms

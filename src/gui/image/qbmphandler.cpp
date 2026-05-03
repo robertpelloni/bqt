@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "private/qbmphandler_p.h"
 
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
 
 #include <qimage.h>
 #include <qlist.h>
 #include <qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static void swapPixel01(QImage *image)        // 1-bpp: swap 0 and 1 pixels
 {
@@ -581,7 +581,7 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, qint64 datapos,
     return true;
 }
 
-bool qt_write_dib(QDataStream &s, const QImage &image, int bpl, int bpl_bmp, int nbits)
+bool bobui_write_dib(QDataStream &s, const QImage &image, int bpl, int bpl_bmp, int nbits)
 {
     QIODevice* d = s.device();
     if (!d->isWritable())
@@ -752,7 +752,7 @@ bool QBmpHandler::read(QImage *image)
     if (m_format == BmpFormat) {
         datapos += fileHeader.bfOffBits;
     } else {
-        // QTBUG-100351: We have no file header when reading dib format so we have to depend on the size of the
+        // BOBUIBUG-100351: We have no file header when reading dib format so we have to depend on the size of the
         // buffer and the biSizeImage value to find where the pixel data starts since there's sometimes optional
         // color mask values after biSize, like for example when pasting from the windows snipping tool.
         if (infoHeader.biSizeImage > 0 && infoHeader.biSizeImage < d->size()) {
@@ -827,7 +827,7 @@ bool QBmpHandler::write(const QImage &img)
     if (m_format == DibFormat) {
         QDataStream dibStream(device());
         dibStream.setByteOrder(QDataStream::LittleEndian); // Intel byte order
-        return qt_write_dib(dibStream, img, bpl, bpl_bmp, nbits);
+        return bobui_write_dib(dibStream, img, bpl, bpl_bmp, nbits);
     }
 
     QIODevice *d = device();
@@ -850,7 +850,7 @@ bool QBmpHandler::write(const QImage &img)
     s << bf;
 
     // write image
-    return qt_write_dib(s, image, bpl, bpl_bmp, nbits);
+    return bobui_write_dib(s, image, bpl, bpl_bmp, nbits);
 }
 
 bool QBmpHandler::supportsOption(ImageOption option) const
@@ -900,6 +900,6 @@ void QBmpHandler::setOption(ImageOption option, const QVariant &value)
     Q_UNUSED(value);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_IMAGEFORMAT_BMP
+#endif // BOBUI_NO_IMAGEFORMAT_BMP

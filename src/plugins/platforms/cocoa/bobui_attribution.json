@@ -1,0 +1,14 @@
+{
+    "Id": "cocoa-platform-plugin",
+    "Name": "Cocoa Platform Plugin",
+    "QDocModule": "bobuigui",
+    "BobUIUsage": "Code used in the BobUI Platform Abstraction (QPA) for macOS.",
+    "Files": "qcocoaapplication.h qcocoaapplication.mm qcocoaapplicationdelegate.h qcocoaapplicationdelegate.mm qcocoaeventdispatcher.h qcocoaeventdispatcher.mm qcocoaintrospection.h qcocoaintrospection.mm qcocoasystemtrayicon.mm",
+
+    "Description": "Allows BobUI to integrate into Apple's Cocoa API.",
+    "LicenseId": "BSD-3-Clause",
+    "License": "BSD 3-clause \"New\" or \"Revised\" License",
+    "LicenseFile": "LICENSE.COCOA.txt",
+    "Copyright": "Copyright (c) 2007-2008, Apple, Inc.",
+    "Comment": "no relevant CPE or PURL found"
+}

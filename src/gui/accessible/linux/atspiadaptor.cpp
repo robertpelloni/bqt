@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "atspiadaptor_p.h"
 #include "qspiaccessiblebridge_p.h"
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qdbusmessage.h>
 #include <qdbusreply.h>
 #include <qclipboard.h>
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qtversion.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/bobuiversion.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "socket_interface.h"
 #include "qspi_constant_mappings_p.h"
-#include <QtCore/private/qstringiterator_p.h>
-#include <QtGui/private/qaccessiblebridgeutils_p.h>
+#include <BobUICore/private/qstringiterator_p.h>
+#include <BobUIGui/private/qaccessiblebridgeutils_p.h>
 
 #include "qspiapplicationadaptor_p.h"
 /*!
@@ -27,7 +27,7 @@
     \brief AtSpiAdaptor is the main class to forward between QAccessibleInterface and AT-SPI DBus
 
     AtSpiAdaptor implements the functions specified in all at-spi interfaces.
-    It sends notifications coming from Qt via dbus and listens to incoming dbus requests.
+    It sends notifications coming from BobUI via dbus and listens to incoming dbus requests.
 */
 
 // ATSPI_COORD_TYPE_PARENT was added in at-spi 2.30, define here for older versions
@@ -42,13 +42,13 @@
 #define ATSPI_LIVE_ASSERTIVE 2
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtGuiPrivate; // for D-Bus accessibility wrappers
+using namespace BobUI::StringLiterals;
+using namespace BobUIGuiPrivate; // for D-Bus accessibility wrappers
 
-Q_STATIC_LOGGING_CATEGORY(lcAccessibilityAtspi, "qt.accessibility.atspi")
-Q_STATIC_LOGGING_CATEGORY(lcAccessibilityAtspiCreation, "qt.accessibility.atspi.creation")
+Q_STATIC_LOGGING_CATEGORY(lcAccessibilityAtspi, "bobui.accessibility.atspi")
+Q_STATIC_LOGGING_CATEGORY(lcAccessibilityAtspiCreation, "bobui.accessibility.atspi.creation")
 
 AtSpiAdaptor::AtSpiAdaptor(QAtSpiDBusConnection *connection, QObject *parent)
     : QDBusVirtualObject(parent), m_dbus(connection)
@@ -138,24 +138,24 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    <property access=\"read\" type=\"s\" name=\"Description\"/>\n"
                 "    <property access=\"read\" type=\"s\" name=\"HelpText\"/>\n"
                 "    <property access=\"read\" type=\"(so)\" name=\"Parent\">\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
                 "    </property>\n"
                 "    <property access=\"read\" type=\"i\" name=\"ChildCount\"/>\n"
                 "    <method name=\"GetChildAtIndex\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"index\"/>\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetChildren\">\n"
                 "      <arg direction=\"out\" type=\"a(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReferenceArray\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReferenceArray\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetIndexInParent\">\n"
                 "      <arg direction=\"out\" type=\"i\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetRelationSet\">\n"
                 "      <arg direction=\"out\" type=\"a(ua(so))\"/>\n"
-                "      <annotation value=\"QSpiRelationArray\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiRelationArray\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetRole\">\n"
                 "      <arg direction=\"out\" type=\"u\"/>\n"
@@ -168,15 +168,15 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    </method>\n"
                 "    <method name=\"GetState\">\n"
                 "      <arg direction=\"out\" type=\"au\"/>\n"
-                "      <annotation value=\"QSpiUIntList\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiUIntList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetAttributes\">\n"
                 "      <arg direction=\"out\" type=\"a{ss}\"/>\n"
-                "      <annotation value=\"QSpiAttributeSet\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiAttributeSet\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetApplication\">\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetAccessibleId\">\n"
                 "      <arg direction=\"out\" type=\"s\"/>\n"
@@ -201,7 +201,7 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    </method>\n"
                 "    <method name=\"GetActions\">\n"
                 "      <arg direction=\"out\" type=\"a(sss)\" name=\"index\"/>\n"
-                "      <annotation value=\"QSpiActionArray\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiActionArray\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"DoAction\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"index\"/>\n"
@@ -229,41 +229,41 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "  <interface name=\"org.a11y.atspi.Collection\">\n"
                 "    <method name=\"GetMatches\">\n"
                 "      <arg direction=\"in\" name=\"rule\" type=\"(aiia{ss}iaiiasib)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.In0\" value=\"QSpiMatchRule\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\" value=\"QSpiMatchRule\"/>\n"
                 "      <arg direction=\"in\" name=\"sortby\" type=\"u\"/>\n"
                 "      <arg direction=\"in\" name=\"count\" type=\"i\"/>\n"
                 "      <arg direction=\"in\" name=\"traverse\" type=\"b\"/>\n"
                 "      <arg direction=\"out\" type=\"a(so)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetMatchesTo\">\n"
                 "      <arg direction=\"in\" name=\"current_object\" type=\"o\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.In0\" value=\"QSpiObjectReference\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\" value=\"QSpiObjectReference\"/>\n"
                 "      <arg direction=\"in\" name=\"rule\" type=\"(aiia{ss}iaiiasib)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.In1\" value=\"QSpiMatchRule\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In1\" value=\"QSpiMatchRule\"/>\n"
                 "      <arg direction=\"in\" name=\"sortby\" type=\"u\"/>\n"
                 "      <arg direction=\"in\" name=\"tree\" type=\"u\"/>\n"
                 "      <arg direction=\"in\" name=\"limit_scope\" type=\"b\"/>\n"
                 "      <arg direction=\"in\" name=\"count\" type=\"i\"/>\n"
                 "      <arg direction=\"in\" name=\"traverse\" type=\"b\"/>\n"
                 "      <arg direction=\"out\" type=\"a(so)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetMatchesFrom\">\n"
                 "      <arg direction=\"in\" name=\"current_object\" type=\"o\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.In0\" value=\"QSpiObjectReference\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\" value=\"QSpiObjectReference\"/>\n"
                 "      <arg direction=\"in\" name=\"rule\" type=\"(aiia{ss}iaiiasib)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.In1\" value=\"QSpiMatchRule\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In1\" value=\"QSpiMatchRule\"/>\n"
                 "      <arg direction=\"in\" name=\"sortby\" type=\"u\"/>\n"
                 "      <arg direction=\"in\" name=\"tree\" type=\"u\"/>\n"
                 "      <arg direction=\"in\" name=\"count\" type=\"i\"/>\n"
                 "      <arg direction=\"in\" name=\"traverse\" type=\"b\"/>\n"
                 "      <arg direction=\"out\" type=\"a(so)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetActiveDescendant\">\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QSpiReferenceSet\"/>\n"
                 "    </method>\n"
                 "  </interface>\n"
                 ""_L1;
@@ -281,12 +281,12 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "      <arg direction=\"in\" type=\"i\" name=\"y\"/>\n"
                 "      <arg direction=\"in\" type=\"u\" name=\"coord_type\"/>\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetExtents\">\n"
                 "      <arg direction=\"in\" type=\"u\" name=\"coord_type\"/>\n"
                 "      <arg direction=\"out\" type=\"(iiii)\"/>\n"
-                "      <annotation value=\"QSpiRect\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiRect\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetPosition\">\n"
                 "      <arg direction=\"in\" type=\"u\" name=\"coord_type\"/>\n"
@@ -370,7 +370,7 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    <method name=\"GetSelectedChild\">\n"
                 "      <arg direction=\"in\" name=\"selectedChildIndex\" type=\"i\"/>\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QSpiObjectReference\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QSpiObjectReference\"/>\n"
                 "    </method>\n"
                 "    <method name=\"SelectChild\">\n"
                 "      <arg direction=\"in\" name=\"childIndex\" type=\"i\"/>\n"
@@ -402,10 +402,10 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    <property access=\"read\" type=\"i\" name=\"NRows\"/>\n"
                 "    <property access=\"read\" type=\"i\" name=\"NColumns\"/>\n"
                 "    <property access=\"read\" type=\"(so)\" name=\"Caption\">\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
                 "    </property>\n"
                 "    <property access=\"read\" type=\"(so)\" name=\"Summary\">\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
                 "    </property>\n"
                 "    <property access=\"read\" type=\"i\" name=\"NSelectedRows\"/>\n"
                 "    <property access=\"read\" type=\"i\" name=\"NSelectedColumns\"/>\n"
@@ -413,7 +413,7 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "      <arg direction=\"in\" type=\"i\" name=\"row\"/>\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"column\"/>\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetIndexAt\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"row\"/>\n"
@@ -449,20 +449,20 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    <method name=\"GetRowHeader\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"row\"/>\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetColumnHeader\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"column\"/>\n"
                 "      <arg direction=\"out\" type=\"(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReference\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReference\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetSelectedRows\">\n"
                 "      <arg direction=\"out\" type=\"ai\"/>\n"
-                "      <annotation value=\"QSpiIntList\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiIntList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetSelectedColumns\">\n"
                 "      <arg direction=\"out\" type=\"ai\"/>\n"
-                "      <annotation value=\"QSpiIntList\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiIntList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"IsRowSelected\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"row\"/>\n"
@@ -509,11 +509,11 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "  <interface name=\"org.a11y.atspi.TableCell\">\n"
                 "    <property access=\"read\" name=\"ColumnSpan\" type=\"i\" />\n"
                 "    <property access=\"read\" name=\"Position\" type=\"(ii)\">\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName\" value=\"QPoint\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName\" value=\"QPoint\"/>\n"
                 "    </property>\n"
                 "    <property access=\"read\" name=\"RowSpan\" type=\"i\" />\n"
                 "    <property access=\"read\" name=\"Table\" type=\"(so)\" >\n"
-                "      <annotation name=\"org.qtproject.QtDBus.QtTypeName\" value=\"QSpiObjectReference\"/>\n"
+                "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName\" value=\"QSpiObjectReference\"/>\n"
                 "    </property>\n"
                 "    <method name=\"GetRowColumnSpan\">\n"
                 "      <arg direction=\"out\" type=\"b\" />\n"
@@ -524,11 +524,11 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "    </method>\n"
                 "    <method name=\"GetColumnHeaderCells\">\n"
                 "      <arg direction=\"out\" type=\"a(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReferenceArray\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReferenceArray\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetRowHeaderCells\">\n"
                 "      <arg direction=\"out\" type=\"a(so)\"/>\n"
-                "      <annotation value=\"QSpiObjectReferenceArray\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiObjectReferenceArray\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "  </interface>\n"
                 ""_L1;
@@ -588,11 +588,11 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "      <arg direction=\"out\" type=\"a{ss}\"/>\n"
                 "      <arg direction=\"out\" type=\"i\" name=\"startOffset\"/>\n"
                 "      <arg direction=\"out\" type=\"i\" name=\"endOffset\"/>\n"
-                "      <annotation value=\"QSpiAttributeSet\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiAttributeSet\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetDefaultAttributes\">\n"
                 "      <arg direction=\"out\" type=\"a{ss}\"/>\n"
-                "      <annotation value=\"QSpiAttributeSet\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiAttributeSet\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetCharacterExtents\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"offset\"/>\n"
@@ -649,7 +649,7 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "      <arg direction=\"in\" type=\"u\" name=\"xClipType\"/>\n"
                 "      <arg direction=\"in\" type=\"u\" name=\"yClipType\"/>\n"
                 "      <arg direction=\"out\" type=\"a(iisv)\"/>\n"
-                "      <annotation value=\"QSpiRangeList\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiRangeList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetAttributeRun\">\n"
                 "      <arg direction=\"in\" type=\"i\" name=\"offset\"/>\n"
@@ -657,11 +657,11 @@ QString AtSpiAdaptor::introspect(const QString &path) const
                 "      <arg direction=\"out\" type=\"a{ss}\"/>\n"
                 "      <arg direction=\"out\" type=\"i\" name=\"startOffset\"/>\n"
                 "      <arg direction=\"out\" type=\"i\" name=\"endOffset\"/>\n"
-                "      <annotation value=\"QSpiAttributeSet\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiAttributeSet\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"GetDefaultAttributeSet\">\n"
                 "      <arg direction=\"out\" type=\"a{ss}\"/>\n"
-                "      <annotation value=\"QSpiAttributeSet\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+                "      <annotation value=\"QSpiAttributeSet\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
                 "    </method>\n"
                 "    <method name=\"ScrollSubstringTo\">\n"
                 "      <arg direction=\"in\" name=\"startOffset\" type=\"i\"/>\n"
@@ -1006,7 +1006,7 @@ void AtSpiAdaptor::sendAnnouncement(QAccessibleAnnouncementEvent *event)
 }
 
 /*!
-    This function gets called when Qt notifies about accessibility updates.
+    This function gets called when BobUI notifies about accessibility updates.
 */
 void AtSpiAdaptor::notify(QAccessibleEvent *event)
 {
@@ -1588,7 +1588,7 @@ bool AtSpiAdaptor::applicationInterface(QAccessibleInterface *interface, const Q
     }
     if (function == "GetToolkitName"_L1) {
         Q_ASSERT(message.signature() == "ss"_L1);
-        QDBusMessage reply = message.createReply(QVariant::fromValue(QDBusVariant("Qt"_L1)));
+        QDBusMessage reply = message.createReply(QVariant::fromValue(QDBusVariant("BobUI"_L1)));
         return connection.send(reply);
     }
     if (function == "GetVersion"_L1) {
@@ -1692,10 +1692,10 @@ bool AtSpiAdaptor::accessibleInterface(QAccessibleInterface *interface, const QS
             const QVariant orientationVariant =
                     attributesIface->attributeValue(QAccessible::Attribute::Orientation);
             if (orientationVariant.isValid()) {
-                Q_ASSERT(orientationVariant.canConvert<Qt::Orientation>());
-                const Qt::Orientation orientation = orientationVariant.value<Qt::Orientation>();
+                Q_ASSERT(orientationVariant.canConvert<BobUI::Orientation>());
+                const BobUI::Orientation orientation = orientationVariant.value<BobUI::Orientation>();
                 setSpiStateBit(&spiState,
-                               orientation == Qt::Horizontal ? ATSPI_STATE_HORIZONTAL
+                               orientation == BobUI::Horizontal ? ATSPI_STATE_HORIZONTAL
                                                              : ATSPI_STATE_VERTICAL);
             }
         }
@@ -2488,9 +2488,9 @@ QVariantList AtSpiAdaptor::getAttributes(QAccessibleInterface *interface, int of
     int endOffset;
 
     QString joined = interface->textInterface()->attributes(offset, &startOffset, &endOffset);
-    const QStringList attributes = joined.split(u';', Qt::SkipEmptyParts, Qt::CaseSensitive);
+    const QStringList attributes = joined.split(u';', BobUI::SkipEmptyParts, BobUI::CaseSensitive);
     for (const QString &attr : attributes) {
-        QStringList items = attr.split(u':', Qt::SkipEmptyParts, Qt::CaseSensitive);
+        QStringList items = attr.split(u':', BobUI::SkipEmptyParts, BobUI::CaseSensitive);
         if (items.count() == 2)
         {
             AtSpiAttribute attribute = atspiTextAttribute(items[0], items[1]);
@@ -2514,10 +2514,10 @@ QString AtSpiAdaptor::getAttributeValue(QAccessibleInterface *interface, int off
     int endOffset;
 
     joined = interface->textInterface()->attributes(offset, &startOffset, &endOffset);
-    const QStringList attributes = joined.split (u';', Qt::SkipEmptyParts, Qt::CaseSensitive);
+    const QStringList attributes = joined.split (u';', BobUI::SkipEmptyParts, BobUI::CaseSensitive);
     for (const QString& attr : attributes) {
         QStringList items;
-        items = attr.split(u':', Qt::SkipEmptyParts, Qt::CaseSensitive);
+        items = attr.split(u':', BobUI::SkipEmptyParts, BobUI::CaseSensitive);
         AtSpiAttribute attribute = atspiTextAttribute(items[0], items[1]);
         if (!attribute.isNull())
             map[attribute.name] = attribute.value;
@@ -2623,7 +2623,7 @@ static void replaceTextFallback(QAccessibleInterface *accessible, long startOffs
 bool AtSpiAdaptor::editableTextInterface(QAccessibleInterface *interface, const QString &function, const QDBusMessage &message, const QDBusConnection &connection)
 {
     if (function == "CopyText"_L1) {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         int startOffset = message.arguments().at(0).toInt();
         int endOffset = message.arguments().at(1).toInt();
         const QString t = textForRange(interface, startOffset, endOffset);
@@ -2631,7 +2631,7 @@ bool AtSpiAdaptor::editableTextInterface(QAccessibleInterface *interface, const 
 #endif
         connection.send(message.createReply(true));
     } else if (function == "CutText"_L1) {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         int startOffset = message.arguments().at(0).toInt();
         int endOffset = message.arguments().at(1).toInt();
         const QString t = textForRange(interface, startOffset, endOffset);
@@ -2661,7 +2661,7 @@ bool AtSpiAdaptor::editableTextInterface(QAccessibleInterface *interface, const 
             replaceTextFallback(interface, position, position, text);
         connection.send(message.createReply(true));
     } else if (function == "PasteText"_L1) {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         int position = message.arguments().at(0).toInt();
         const QString txt = QGuiApplication::clipboard()->text();
         if (QAccessibleEditableTextInterface *editableTextIface = interface->editableTextInterface())
@@ -2787,7 +2787,7 @@ bool AtSpiAdaptor::selectionInterface(QAccessibleInterface *interface, const QSt
 bool AtSpiAdaptor::tableInterface(QAccessibleInterface *interface, const QString &function, const QDBusMessage &message, const QDBusConnection &connection)
 {
     if (!(interface->tableInterface() || interface->tableCellInterface())) {
-        qCWarning(lcAccessibilityAtspi) << "Qt AtSpiAdaptor: Could not find table interface for:" << message.path() << interface;
+        qCWarning(lcAccessibilityAtspi) << "BobUI AtSpiAdaptor: Could not find table interface for:" << message.path() << interface;
         return false;
     }
 
@@ -3066,7 +3066,7 @@ bool AtSpiAdaptor::tableCellInterface(QAccessibleInterface *interface, const QSt
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_atspiadaptor_p.cpp"
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

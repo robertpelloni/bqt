@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRAWFONTPRIVATE_P_H
 #define QRAWFONTPRIVATE_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qrawfont.h"
 
 #include "qfontengine_p.h"
-#include <QtCore/qthread.h>
-#include <QtCore/qthreadstorage.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/bobuihreadstorage.h>
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace { class CustomFontFileLoader; }
 class Q_GUI_EXPORT QRawFontPrivate
@@ -41,8 +41,8 @@ public:
         , hintingPreference(other.hintingPreference)
         , thread(other.thread)
     {
-#ifndef QT_NO_DEBUG
-        Q_ASSERT(fontEngine == nullptr || thread == QThread::currentThread());
+#ifndef BOBUI_NO_DEBUG
+        Q_ASSERT(fontEngine == nullptr || thread == BOBUIhread::currentThread());
 #endif
         if (fontEngine != nullptr)
             fontEngine->ref.ref();
@@ -50,7 +50,7 @@ public:
 
     ~QRawFontPrivate()
     {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         Q_ASSERT(ref.loadRelaxed() == 0);
 #endif
         cleanUp();
@@ -64,16 +64,16 @@ public:
 
     inline bool isValid() const
     {
-#ifndef QT_NO_DEBUG
-        Q_ASSERT(fontEngine == nullptr || thread == QThread::currentThread());
+#ifndef BOBUI_NO_DEBUG
+        Q_ASSERT(fontEngine == nullptr || thread == BOBUIhread::currentThread());
 #endif
         return fontEngine != nullptr;
     }
 
     inline void setFontEngine(QFontEngine *engine)
     {
-#ifndef QT_NO_DEBUG
-        Q_ASSERT(fontEngine == nullptr || thread == QThread::currentThread());
+#ifndef BOBUI_NO_DEBUG
+        Q_ASSERT(fontEngine == nullptr || thread == BOBUIhread::currentThread());
 #endif
         if (fontEngine == engine)
             return;
@@ -81,7 +81,7 @@ public:
         if (fontEngine != nullptr) {
             if (!fontEngine->ref.deref())
                 delete fontEngine;
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             thread = nullptr;
 #endif
         }
@@ -90,8 +90,8 @@ public:
 
         if (fontEngine != nullptr) {
             fontEngine->ref.ref();
-#ifndef QT_NO_DEBUG
-            thread = QThread::currentThread();
+#ifndef BOBUI_NO_DEBUG
+            thread = BOBUIhread::currentThread();
             Q_ASSERT(thread);
 #endif
         }
@@ -108,11 +108,11 @@ public:
     QAtomicInt ref;
 
 private:
-    QThread *thread;
+    BOBUIhread *thread;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
 #endif // QRAWFONTPRIVATE_P_H

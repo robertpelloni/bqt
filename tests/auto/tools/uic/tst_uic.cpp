@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QDir>
-#include <QtCore/QString>
-#include <QTest>
-#include <QtCore/QProcess>
-#include <QtCore/QByteArray>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QTemporaryDir>
-#include <QtCore/QRegularExpression>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QList>
+#include <BobUICore/QDir>
+#include <BobUICore/QString>
+#include <BOBUIest>
+#include <BobUICore/QProcess>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QLibraryInfo>
+#include <BobUICore/BOBUIemporaryDir>
+#include <BobUICore/QRegularExpression>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/QList>
 
 #include <cstdio>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const char keepEnvVar[] = "UIC_KEEP_GENERATED_FILES";
 static const char diffToStderrEnvVar[] = "UIC_STDERR_DIFF";
@@ -72,14 +72,14 @@ private:
 
     const QString m_command;
     QString m_baseline;
-    QTemporaryDir m_generated;
+    BOBUIemporaryDir m_generated;
     TestEntries m_testEntries;
     QRegularExpression m_versionRegexp;
     QString m_python;
 };
 
 static const char versionRegexp[] =
-    R"([*#][*#] Created by: Qt User Interface Compiler version \d{1,2}\.\d{1,2}\.\d{1,2})";
+    R"([*#][*#] Created by: BobUI User Interface Compiler version \d{1,2}\.\d{1,2}\.\d{1,2})";
 
 tst_uic::tst_uic()
     : m_command(QLibraryInfo::path(QLibraryInfo::LibraryExecutablesPath) + "/uic"_L1)
@@ -94,8 +94,8 @@ static QByteArray msgProcessStartFailed(const QString &command, const QString &w
     return result.toLocal8Bit();
 }
 
-// Locate Python and check whether Qt for Python is installed
-static QString locatePython(QTemporaryDir &generatedDir)
+// Locate Python and check whether BobUI for Python is installed
+static QString locatePython(BOBUIemporaryDir &generatedDir)
 {
     const QString python = QStandardPaths::findExecutable("python"_L1);
     if (python.isEmpty()) {
@@ -106,8 +106,8 @@ static QString locatePython(QTemporaryDir &generatedDir)
     if (!importTestFile.open(QIODevice::WriteOnly| QIODevice::Text))
         return {};
     importTestFile.write("import PySide");
-    importTestFile.write(QByteArray::number(QT_VERSION_MAJOR));
-    importTestFile.write(".QtCore\n");
+    importTestFile.write(QByteArray::number(BOBUI_VERSION_MAJOR));
+    importTestFile.write(".BobUICore\n");
     importTestFile.close();
     QProcess process;
     process.start(python, {importTestFile.fileName()});
@@ -163,7 +163,7 @@ void tst_uic::populateTestEntries()
         // qprintsettingsoutput: variable named 'from' clashes with Python
         if (baseName == "qprintsettingsoutput"_L1)
             entry.flags.setFlag(TestEntry::DontTestPythonCompile);
-        else if (baseName  == "qttrid"_L1)
+        else if (baseName  == "bobuitrid"_L1)
             entry.flags.setFlag(TestEntry::IdBasedTranslation);
         entry.name = baseName.toLocal8Bit();
         entry.uiFileName = baselineFile.absoluteFilePath();
@@ -241,9 +241,9 @@ void tst_uic::run()
 
 void tst_uic::run_data() const
 {
-    QTest::addColumn<QString>("originalFile");
-    QTest::addColumn<QString>("generatedFile");
-    QTest::addColumn<QStringList>("options");
+    BOBUIest::addColumn<QString>("originalFile");
+    BOBUIest::addColumn<QString>("generatedFile");
+    BOBUIest::addColumn<QStringList>("options");
 
     for (const TestEntry &te : m_testEntries) {
         QStringList options;
@@ -251,7 +251,7 @@ void tst_uic::run_data() const
             options.append("-idbased"_L1);
         if (te.flags.testFlag(TestEntry::Python))
             options << "-g"_L1 << "python"_L1;
-        QTest::newRow(te.name.constData()) << te.uiFileName
+        BOBUIest::newRow(te.name.constData()) << te.uiFileName
             << te.generatedFileName << options;
     }
 }
@@ -325,11 +325,11 @@ void tst_uic::compare()
 
 void tst_uic::compare_data() const
 {
-    QTest::addColumn<QString>("originalFile");
-    QTest::addColumn<QString>("generatedFile");
+    BOBUIest::addColumn<QString>("originalFile");
+    BOBUIest::addColumn<QString>("generatedFile");
 
     for (const TestEntry &te : m_testEntries) {
-        QTest::newRow(te.name.constData()) << te.baseLineFileName
+        BOBUIest::newRow(te.name.constData()) << te.baseLineFileName
             << te.generatedFileName;
     }
 }
@@ -386,7 +386,7 @@ void tst_uic::runCompare()
 
 // Let uic generate Python code and verify that it is syntactically
 // correct by compiling it into .pyc. This test is executed only
-// when python with an installed Qt for Python is detected (see locatePython()).
+// when python with an installed BobUI for Python is detected (see locatePython()).
 
 static inline QByteArray msgCompilePythonFailed(const QByteArray &error)
 {
@@ -408,15 +408,15 @@ static inline QByteArray msgCompilePythonFailed(const QByteArray &error)
 // Test Python code generation by compiling the file
 void tst_uic::pythonCompile_data() const
 {
-    QTest::addColumn<QString>("originalFile");
-    QTest::addColumn<QString>("generatedFile");
+    BOBUIest::addColumn<QString>("originalFile");
+    BOBUIest::addColumn<QString>("generatedFile");
 
     const auto size = m_python.isEmpty()
         ? qMin(qsizetype(1), m_testEntries.size()) : m_testEntries.size();
     for (qsizetype i = 0; i < size; ++i) {
         const TestEntry &te = m_testEntries.at(i);
         if (!te.flags.testFlag(TestEntry::DontTestPythonCompile)) {
-            QTest::newRow(te.name.constData())
+            BOBUIest::newRow(te.name.constData())
                 << te.uiFileName
                 << te.generatedFileName;
         }
@@ -451,5 +451,5 @@ void tst_uic::pythonCompile()
     QVERIFY2(compiled, msgCompilePythonFailed(process.readAllStandardError()).constData());
 }
 
-QTEST_MAIN(tst_uic)
+BOBUIEST_MAIN(tst_uic)
 #include "tst_uic.moc"

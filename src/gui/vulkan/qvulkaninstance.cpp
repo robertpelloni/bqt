@@ -1,19 +1,19 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvulkaninstance_p.h"
 #include <qpa/qplatformvulkaninstance.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformnativeinterface.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QVulkanInstance
     \since 5.10
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QVulkanInstance class represents a native Vulkan instance, enabling
     Vulkan rendering onto a QSurface.
@@ -30,13 +30,13 @@ QT_BEGIN_NAMESPACE
     all of them will support Vulkan, however. When running on such a platform,
     create() will fail and always return \c false.
 
-    \note Vulkan support may get automatically disabled for a given Qt build due
+    \note Vulkan support may get automatically disabled for a given BobUI build due
     to not having the necessary Vulkan headers available at build time. When
     this is the case, and the output of \c configure indicates Vulkan support is
     disabled, the QVulkan* classes will be unavailable.
 
     \note Some functions changed their signature between the various Vulkan
-    header revisions. When building Qt and only headers with the old,
+    header revisions. When building BobUI and only headers with the old,
     conflicting signatures are present in a system, Vulkan support will get
     disabled. It is recommended to use headers from Vulkan 1.0.39 or newer.
 
@@ -117,7 +117,7 @@ QT_BEGIN_NAMESPACE
     functions() and deviceFunctions().
 
     \note QVulkanFunctions and QVulkanDeviceFunctions are generated from the
-    Vulkan API XML specifications when building the Qt libraries. Therefore no
+    Vulkan API XML specifications when building the BobUI libraries. Therefore no
     documentation is provided for them. They contain the Vulkan 1.2 functions
     with the same signatures as described in the
     \l{https://www.khronos.org/registry/vulkan/specs/1.2/html/}{Vulkan API
@@ -148,11 +148,11 @@ QT_BEGIN_NAMESPACE
     Besides returning \c false from create() or \c 0 from surfaceForWindow(),
     critical errors will also get printed to the debug output via qWarning().
     Additional logging can be requested by enabling debug output for the
-    logging category \c{qt.vulkan}. The actual Vulkan error code from instance
+    logging category \c{bobui.vulkan}. The actual Vulkan error code from instance
     creation can be retrieved by calling errorCode() after a failing create().
 
     In some special cases it may be necessary to override the Vulkan
-    library name. This can be achieved by setting the \c{QT_VULKAN_LIB}
+    library name. This can be achieved by setting the \c{BOBUI_VULKAN_LIB}
     environment variable.
 
     \section1 Example
@@ -169,7 +169,7 @@ QT_BEGIN_NAMESPACE
 
     \section1 Using C++ Bindings for Vulkan
 
-    Combining Qt's Vulkan enablers with a C++ Vulkan wrapper, for example
+    Combining BobUI's Vulkan enablers with a C++ Vulkan wrapper, for example
     \l{https://github.com/KhronosGroup/Vulkan-Hpp}{Vulkan-Hpp}, is possible as
     well. The pre-requisite here is that the C++ layer must be able to adopt
     native handles (VkInstance, VkSurfaceKHR) in its classes without taking
@@ -178,13 +178,13 @@ QT_BEGIN_NAMESPACE
 
     \list
 
-    \li Some wrappers require exception support to be enabled. Qt does not use
+    \li Some wrappers require exception support to be enabled. BobUI does not use
     exceptions. To enable exceptions for the application, add \c{CONFIG += exceptions}
     to the \c{.pro} file.
 
     \li Some wrappers call Vulkan functions directly, assuming \c{vulkan.h}
     provides prototypes and the application links to a Vulkan library exporting
-    all necessary symbols. Qt may not directly link to a Vulkan library.
+    all necessary symbols. BobUI may not directly link to a Vulkan library.
     Therefore, on some platforms it may be necessary to add
     \c{LIBS += -lvulkan} or similar in the application's \c{.pro} file.
 
@@ -255,7 +255,7 @@ QVulkanInstance::~QVulkanInstance()
 
 /*!
     \class QVulkanLayer
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief Represents information about a Vulkan layer.
  */
 
@@ -306,7 +306,7 @@ QVulkanInstance::~QVulkanInstance()
 
 /*!
     \class QVulkanExtension
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief Represents information about a Vulkan extension.
  */
 
@@ -347,7 +347,7 @@ QVulkanInstance::~QVulkanInstance()
 
 /*!
     \class QVulkanInfoVector
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief A specialized QList for QVulkanLayer and QVulkanExtension.
 
     QVulkanInfoVector\<T\> is a template class where \a T is either
@@ -480,12 +480,12 @@ void QVulkanInstance::setLayers(const QByteArrayList &layers)
     safe to specify unsupported extensions as well because these get ignored
     when not supported at run time.
 
-    \note The surface-related extensions required by Qt (for example, \c
+    \note The surface-related extensions required by BobUI (for example, \c
     VK_KHR_win32_surface) will always be added automatically, no need to
     include them in this list.
 
     \note \c VK_KHR_portability_enumeration is added automatically unless the
-    NoPortabilityDrivers flag is set. This value was introduced in Qt 6.5.
+    NoPortabilityDrivers flag is set. This value was introduced in BobUI 6.5.
 
     \note This function can only be called before create() and has no effect if
     called afterwards.
@@ -830,7 +830,7 @@ void QVulkanInstance::presentQueued(QWindow *window)
 
     Returning \c true suppresses the printing of the message.
 
-    \note Starting with Qt 6.5 \c{VK_EXT_debug_utils} is used instead of the
+    \note Starting with BobUI 6.5 \c{VK_EXT_debug_utils} is used instead of the
     deprecated \c{VK_EXT_debug_report}. The callback signature is based on
     VK_EXT_debug_report. Therefore, not all arguments can be expected to be
     valid anymore. Avoid relying on arguments other than \c pMessage, \c
@@ -891,7 +891,7 @@ void QVulkanInstance::removeDebugOutputFilter(DebugFilter filter)
 
     The \c message argument is a pointer to the
     VkDebugUtilsMessengerCallbackDataEXT structure. Refer to the documentation
-    of \c{VK_EXT_debug_utils} for details. The Qt headers do not use the real
+    of \c{VK_EXT_debug_utils} for details. The BobUI headers do not use the real
     type in order to avoid introducing a dependency on post-1.0 Vulkan headers.
 
     Returning \c true suppresses the printing of the message.
@@ -958,7 +958,7 @@ void QVulkanInstance::clearDebugOutputFilters()
     }
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QVulkanLayer &layer)
 {
     QDebugStateSaver saver(dbg);
@@ -975,4 +975,4 @@ QDebug operator<<(QDebug dbg, const QVulkanExtension &extension)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

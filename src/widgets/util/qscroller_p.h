@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCROLLER_P_H
 #define QSCROLLER_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include <QObject>
 #include <QPointer>
 #include <QQueue>
@@ -29,17 +29,17 @@
 #include <qscroller.h>
 #include <qscrollerproperties.h>
 #include <private/qscrollerproperties_p.h>
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
 #include <QAbstractAnimation>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 class QFlickGestureRecognizer;
 #endif
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
 class QScrollTimer;
 #endif
 class QScrollerPrivate : public QObject
@@ -91,20 +91,20 @@ public:
     void setDpiFromWidget(QWidget *widget);
 
     void updateVelocity(const QPointF &deltaPixelRaw, qint64 deltaTime);
-    void pushSegment(ScrollType type, qreal deltaTime, qreal stopProgress, qreal startPos, qreal deltaPos, qreal stopPos, QEasingCurve::Type curve, Qt::Orientation orientation);
+    void pushSegment(ScrollType type, qreal deltaTime, qreal stopProgress, qreal startPos, qreal deltaPos, qreal stopPos, QEasingCurve::Type curve, BobUI::Orientation orientation);
     void recalcScrollingSegments(bool forceRecalc = false);
-    qreal scrollingSegmentsEndPos(Qt::Orientation orientation) const;
-    bool scrollingSegmentsValid(Qt::Orientation orientation) const;
-    void createScrollToSegments(qreal v, qreal deltaTime, qreal endPos, Qt::Orientation orientation, ScrollType type);
+    qreal scrollingSegmentsEndPos(BobUI::Orientation orientation) const;
+    bool scrollingSegmentsValid(BobUI::Orientation orientation) const;
+    void createScrollToSegments(qreal v, qreal deltaTime, qreal endPos, BobUI::Orientation orientation, ScrollType type);
     void createScrollingSegments(qreal v, qreal startPos,
                                  qreal deltaTime, qreal deltaPos,
-                                 Qt::Orientation orientation);
+                                 BobUI::Orientation orientation);
     void createScrollingSegments(const QPointF &v, const QPointF &startPos, const QPointF &ppm);
 
     void setContentPositionHelperDragging(const QPointF &deltaPos);
     void setContentPositionHelperScrolling();
 
-    qreal nextSnapPos(qreal p, int dir, Qt::Orientation orientation) const;
+    qreal nextSnapPos(qreal p, int dir, BobUI::Orientation orientation) const;
     static qreal nextSegmentPosition(QQueue<ScrollSegment> &segments, qint64 now, qreal oldPos);
 
     inline int frameRateSkip() const { return properties.d.data()->frameRate; }
@@ -119,9 +119,9 @@ public:
     // non static
     QObject *target;
     QScrollerProperties properties;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     QFlickGestureRecognizer *recognizer;
-    Qt::GestureType recognizerType;
+    BobUI::GestureType recognizerType;
 #endif
 
     // scroller state:
@@ -163,18 +163,18 @@ public:
     QElapsedTimer monotonicTimer;
 
     QPointF releaseVelocity; // the starting velocity of the scrolling state
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     QScrollTimer *scrollTimer;
 #endif
 
     QScroller *q_ptr;
 };
 template <>
-class QTypeInfo<QScrollerPrivate::ScrollSegment>
-    : public QTypeInfoMerger<QScrollerPrivate::ScrollSegment, QEasingCurve> {};
+class BOBUIypeInfo<QScrollerPrivate::ScrollSegment>
+    : public BOBUIypeInfoMerger<QScrollerPrivate::ScrollSegment, QEasingCurve> {};
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCROLLER_P_H
 

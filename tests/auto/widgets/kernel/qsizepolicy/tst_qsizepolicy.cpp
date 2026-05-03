@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qsizepolicy.h>
 
-Q_DECLARE_METATYPE(Qt::Orientations)
+Q_DECLARE_METATYPE(BobUI::Orientations)
 Q_DECLARE_METATYPE(QSizePolicy::Policy)
 Q_DECLARE_METATYPE(QSizePolicy::ControlType)
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_QSizePolicy : public QObject
 {
@@ -15,7 +15,7 @@ class tst_QSizePolicy : public QObject
 
 private Q_SLOTS:
     void cleanup() { QVERIFY(QApplication::topLevelWidgets().isEmpty()); }
-    void qtest();
+    void bobuiest();
     void constExpr();
     void defaultValues();
     void getSetCheck_data() { data(); }
@@ -37,14 +37,14 @@ struct PrettyPrint {
     template <typename T>
     explicit PrettyPrint(const T &t) : m_s(nullptr)
     {
-        using QT_PREPEND_NAMESPACE(QTest)::toString;
+        using BOBUI_PREPEND_NAMESPACE(BOBUIest)::toString;
         m_s = toString(t);
     }
     ~PrettyPrint() { delete[] m_s; }
     const char* s() const { return m_s ? m_s : "<null>" ; }
 };
 
-void tst_QSizePolicy::qtest()
+void tst_QSizePolicy::bobuiest()
 {
 #define CHECK(x) QCOMPARE(PrettyPrint(QSizePolicy::x).s(), #x)
     // Policy:
@@ -92,9 +92,9 @@ void tst_QSizePolicy::constExpr()
     { constexpr QSizePolicy sp = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding, QSizePolicy::DefaultType);
       constexpr QSizePolicy tp = sp.transposed(); Q_UNUSED(tp); }
     {
-      // QTBUG-69983: For ControlType != QSizePolicy::DefaultType, qCountTrailingZeroBits()
+      // BOBUIBUG-69983: For ControlType != QSizePolicy::DefaultType, qCountTrailingZeroBits()
       // is used, which MSVC 15.8.1 does not consider constexpr due to built-ins
-#  if defined(QT_HAS_CONSTEXPR_BITOPS)
+#  if defined(BOBUI_HAS_CONSTEXPR_BITOPS)
       constexpr auto sp = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed, QSizePolicy::CheckBox);
 #  else
       constexpr auto sp = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding, QSizePolicy::DefaultType);
@@ -131,7 +131,7 @@ void tst_QSizePolicy::defaultValues()
     QFETCH(QSizePolicy::ControlType, ct); \
     QFETCH(bool, hfw); \
     QFETCH(bool, wfh); \
-    QFETCH(Qt::Orientations, ed)
+    QFETCH(BobUI::Orientations, ed)
 
 
 // Testing get/set functions
@@ -171,13 +171,13 @@ void tst_QSizePolicy::transposed()
     QCOMPARE(sp, tr);
 }
 
-static const char *edToString(Qt::Orientations orients)
+static const char *edToString(BobUI::Orientations orients)
 {
-    if (orients.testFlags(Qt::Horizontal | Qt::Vertical))
+    if (orients.testFlags(BobUI::Horizontal | BobUI::Vertical))
         return "HV";
-    if (orients.testFlag(Qt::Horizontal))
+    if (orients.testFlag(BobUI::Horizontal))
         return "H_";
-    if (orients.testFlag(Qt::Vertical))
+    if (orients.testFlag(BobUI::Vertical))
         return "_V";
     return "__";
 }
@@ -185,9 +185,9 @@ static const char *edToString(Qt::Orientations orients)
 static void makeRow(QSizePolicy sp,
                     QSizePolicy::Policy hp, QSizePolicy::Policy vp,
                     int hst, int vst, QSizePolicy::ControlType ct, bool hfw, bool wfh,
-                    Qt::Orientations orients, int spId)
+                    BobUI::Orientations orients, int spId)
 {
-    QTest::addRow("H:%s-V:%s-%d-%d-%s-hfw:%d-wfh:%d-ed:%s-spId:%d",
+    BOBUIest::addRow("H:%s-V:%s-%d-%d-%s-hfw:%d-wfh:%d-ed:%s-spId:%d",
                   PrettyPrint(hp).s(), PrettyPrint(vp).s(),
                   hst, vst,
                   PrettyPrint(ct).s(),
@@ -199,15 +199,15 @@ static void makeRow(QSizePolicy sp,
 
 void tst_QSizePolicy::data() const
 {
-    QTest::addColumn<QSizePolicy>("sp");
-    QTest::addColumn<QSizePolicy::Policy>("hp");
-    QTest::addColumn<QSizePolicy::Policy>("vp");
-    QTest::addColumn<int>("hst");
-    QTest::addColumn<int>("vst");
-    QTest::addColumn<QSizePolicy::ControlType>("ct");
-    QTest::addColumn<bool>("hfw");
-    QTest::addColumn<bool>("wfh");
-    QTest::addColumn<Qt::Orientations>("ed");
+    BOBUIest::addColumn<QSizePolicy>("sp");
+    BOBUIest::addColumn<QSizePolicy::Policy>("hp");
+    BOBUIest::addColumn<QSizePolicy::Policy>("vp");
+    BOBUIest::addColumn<int>("hst");
+    BOBUIest::addColumn<int>("vst");
+    BOBUIest::addColumn<QSizePolicy::ControlType>("ct");
+    BOBUIest::addColumn<bool>("hfw");
+    BOBUIest::addColumn<bool>("wfh");
+    BOBUIest::addColumn<BobUI::Orientations>("ed");
 
     {
         static const QSizePolicy::Policy policies[3] = {
@@ -226,7 +226,7 @@ void tst_QSizePolicy::data() const
         QSizePolicy sp;
         std::optional<QSizePolicy> oldsp;
 #ifdef GENERATE_BASELINE
-        QFile out(QString::fromAscii("qsizepolicy-Qt%1%2.txt").arg((QT_VERSION >> 16) & 0xff).arg((QT_VERSION) >> 8 & 0xff));
+        QFile out(QString::fromAscii("qsizepolicy-BobUI%1%2.txt").arg((BOBUI_VERSION >> 16) & 0xff).arg((BOBUI_VERSION) >> 8 & 0xff));
         if (out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QDataStream stream(&out);
 #endif
@@ -259,11 +259,11 @@ void tst_QSizePolicy::data() const
                                         }
                                         // FIXME these will never be set,
                                         //   they need QSizePolicy::Expanding or MinimumExpanding.
-                                        Qt::Orientations orients;
+                                        BobUI::Orientations orients;
                                         if (sp.horizontalPolicy() & QSizePolicy::ExpandFlag)
-                                            orients |= Qt::Horizontal;
+                                            orients |= BobUI::Horizontal;
                                         if (sp.verticalPolicy() & QSizePolicy::ExpandFlag)
-                                            orients |= Qt::Vertical;
+                                            orients |= BobUI::Vertical;
                                         if (oldsp)
                                             makeRow(sp,
                                                     i >= 0 ? hp  : oldsp->horizontalPolicy(),
@@ -367,5 +367,5 @@ void tst_QSizePolicy::qhash()
 
 #undef FETCH_TEST_DATA
 
-QTEST_MAIN(tst_QSizePolicy)
+BOBUIEST_MAIN(tst_QSizePolicy)
 #include "tst_qsizepolicy.moc"

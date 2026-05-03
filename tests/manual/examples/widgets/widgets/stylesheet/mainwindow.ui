@@ -51,7 +51,7 @@
           <string>Profession:</string>
          </property>
          <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+          <set>BobUI::AlignRight|BobUI::AlignTop|BobUI::AlignTrailing</set>
          </property>
          <property name="buddy" >
           <cstring>professionList</cstring>
@@ -64,7 +64,7 @@
           <string>&amp;Name:</string>
          </property>
          <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
          </property>
          <property name="buddy" >
           <cstring>nameCombo</cstring>
@@ -87,7 +87,7 @@
           <string>&amp;Password:</string>
          </property>
          <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
          </property>
          <property name="buddy" >
           <cstring>passwordEdit</cstring>
@@ -148,7 +148,7 @@
           <string>&amp;Age:</string>
          </property>
          <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
          </property>
          <property name="buddy" >
           <cstring>ageSpinBox</cstring>
@@ -161,7 +161,7 @@
           <string>Country:</string>
          </property>
          <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
          </property>
          <property name="buddy" >
           <cstring>countryCombo</cstring>
@@ -174,7 +174,7 @@
           <string>Gender:</string>
          </property>
          <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -233,7 +233,7 @@
        <item row="1" column="4" >
         <spacer>
          <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -246,7 +246,7 @@
        <item row="2" column="3" colspan="2" >
         <spacer>
          <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -259,7 +259,7 @@
        <item row="7" column="3" colspan="2" >
         <widget class="QDialogButtonBox" name="buttonBox" >
          <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+          <enum>BobUI::Horizontal</enum>
          </property>
          <property name="standardButtons" >
           <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
@@ -324,7 +324,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="aboutAction" />
-    <addaction name="aboutQtAction" />
+    <addaction name="aboutBobUIAction" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Help" />
@@ -335,9 +335,9 @@
     <string>&amp;Exit</string>
    </property>
   </action>
-  <action name="aboutQtAction" >
+  <action name="aboutBobUIAction" >
    <property name="text" >
-    <string>About Qt</string>
+    <string>About BobUI</string>
    </property>
   </action>
   <action name="editStyleAction" >

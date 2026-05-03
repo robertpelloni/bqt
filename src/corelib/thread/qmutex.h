@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMUTEX_H
 #define QMUTEX_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qdeadlinetimer.h>
-#include <QtCore/qtsan_impl.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qdeadlinetimer.h>
+#include <BobUICore/bobuisan_impl.h>
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(thread) || defined(Q_QDOC)
+#if BOBUI_CONFIG(thread) || defined(Q_QDOC)
 
 class QMutex;
 class QRecursiveMutex;
 class QMutexPrivate;
 
-class QT6_ONLY(Q_CORE_EXPORT) QBasicMutex
+class BOBUI6_ONLY(Q_CORE_EXPORT) QBasicMutex
 {
     Q_DISABLE_COPY_MOVE(QBasicMutex)
 protected:
@@ -39,19 +39,19 @@ public:
 
     // BasicLockable concept
     inline void lock() noexcept(FutexAlwaysAvailable) {
-        QtTsan::mutexPreLock(this, 0u);
+        BobUITsan::mutexPreLock(this, 0u);
 
         if (!fastTryLock())
             lockInternal();
 
-        QtTsan::mutexPostLock(this, 0u, 0);
+        BobUITsan::mutexPostLock(this, 0u, 0);
     }
 
     // BasicLockable concept
     inline void unlock() noexcept {
         Q_ASSERT(d_ptr.loadRelaxed()); //mutex must be locked
 
-        QtTsan::mutexPreUnlock(this, 0u);
+        BobUITsan::mutexPreUnlock(this, 0u);
 
         if constexpr (FutexAlwaysAvailable) {
             // we always unlock if we have futexes
@@ -63,18 +63,18 @@ public:
                 unlockInternal(d);          // was contended
         }
 
-        QtTsan::mutexPostUnlock(this, 0u);
+        BobUITsan::mutexPostUnlock(this, 0u);
     }
 
     bool tryLock() noexcept {
-        unsigned tsanFlags = QtTsan::TryLock;
-        QtTsan::mutexPreLock(this, tsanFlags);
+        unsigned tsanFlags = BobUITsan::TryLock;
+        BobUITsan::mutexPreLock(this, tsanFlags);
 
         const bool success = fastTryLock();
 
         if (!success)
-            tsanFlags |= QtTsan::TryLockFailed;
-        QtTsan::mutexPostLock(this, tsanFlags, 0);
+            tsanFlags |= BobUITsan::TryLockFailed;
+        BobUITsan::mutexPostLock(this, tsanFlags, 0);
 
         return success;
     }
@@ -89,28 +89,28 @@ private:
             return false;
         return d_ptr.testAndSetAcquire(nullptr, dummyLocked());
     }
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
     inline bool fastTryUnlock() noexcept {
         return d_ptr.testAndSetRelease(dummyLocked(), nullptr);
     }
 #endif
 
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     void lockInternal() noexcept(FutexAlwaysAvailable);
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     bool lockInternal(QDeadlineTimer timeout) noexcept(FutexAlwaysAvailable);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     bool lockInternal(int timeout) noexcept(FutexAlwaysAvailable);
     void unlockInternal() noexcept;
 #endif
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     void unlockInternalFutex(void *d) noexcept;
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     void unlockInternal(void *d) noexcept;
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
     void destroyInternal(QMutexPrivate *d);
 #endif
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     void destroyInternal(void *d);
 
     QBasicAtomicPointer<QMutexPrivate> d_ptr;
@@ -122,7 +122,7 @@ private:
     friend class QMutexPrivate;
 };
 
-class QT6_ONLY(Q_CORE_EXPORT) QMutex : public QBasicMutex
+class BOBUI6_ONLY(Q_CORE_EXPORT) QMutex : public QBasicMutex
 {
 public:
     constexpr QMutex() = default;
@@ -151,21 +151,21 @@ public:
 
     bool tryLock(QDeadlineTimer timeout) noexcept(FutexAlwaysAvailable)
     {
-        unsigned tsanFlags = QtTsan::TryLock;
-        QtTsan::mutexPreLock(this, tsanFlags);
+        unsigned tsanFlags = BobUITsan::TryLock;
+        BobUITsan::mutexPreLock(this, tsanFlags);
 
         bool success = fastTryLock();
 
         if (success) {
-            QtTsan::mutexPostLock(this, tsanFlags, 0);
+            BobUITsan::mutexPostLock(this, tsanFlags, 0);
             return success;
         }
 
         success = lockInternal(timeout);
 
         if (!success)
-            tsanFlags |= QtTsan::TryLockFailed;
-        QtTsan::mutexPostLock(this, tsanFlags, 0);
+            tsanFlags |= BobUITsan::TryLockFailed;
+        BobUITsan::mutexPostLock(this, tsanFlags, 0);
 
         return success;
     }
@@ -185,7 +185,7 @@ public:
     }
 };
 
-class QT6_ONLY(Q_CORE_EXPORT) QRecursiveMutex
+class BOBUI6_ONLY(Q_CORE_EXPORT) QRecursiveMutex
 {
     Q_DISABLE_COPY_MOVE(QRecursiveMutex)
     // written to by the thread that first owns 'mutex';
@@ -198,19 +198,19 @@ class QT6_ONLY(Q_CORE_EXPORT) QRecursiveMutex
 
 public:
     constexpr QRecursiveMutex() = default;
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     ~QRecursiveMutex();
 
 
     // BasicLockable concept
     void lock() noexcept(LockIsNoexcept)
     { tryLock(QDeadlineTimer(QDeadlineTimer::Forever)); }
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     bool tryLock(int timeout) noexcept(LockIsNoexcept);
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     bool tryLock(QDeadlineTimer timer = {}) noexcept(LockIsNoexcept);
     // BasicLockable concept
-    QT7_ONLY(Q_CORE_EXPORT)
+    BOBUI7_ONLY(Q_CORE_EXPORT)
     void unlock() noexcept;
 
     // Lockable concept
@@ -231,7 +231,7 @@ public:
     }
 };
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 6)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 6)
 bool QRecursiveMutex::tryLock(int timeout) noexcept(LockIsNoexcept)
 {
     return tryLock(QDeadlineTimer(timeout));
@@ -264,7 +264,7 @@ public:
           m_isLocked(std::exchange(other.m_isLocked, false))
     {}
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMutexLocker)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMutexLocker)
 
     inline ~QMutexLocker()
     {
@@ -293,7 +293,7 @@ public:
 
     inline void swap(QMutexLocker &other) noexcept
     {
-        qt_ptr_swap(m_mutex, other.m_mutex);
+        bobui_ptr_swap(m_mutex, other.m_mutex);
         std::swap(m_isLocked, other.m_isLocked);
     }
 
@@ -308,7 +308,7 @@ private:
     bool m_isLocked = false;
 };
 
-#else // !QT_CONFIG(thread) && !Q_QDOC
+#else // !BOBUI_CONFIG(thread) && !Q_QDOC
 
 class QMutex
 {
@@ -359,8 +359,8 @@ private:
 
 typedef QMutex QBasicMutex;
 
-#endif // !QT_CONFIG(thread) && !Q_QDOC
+#endif // !BOBUI_CONFIG(thread) && !Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMUTEX_H

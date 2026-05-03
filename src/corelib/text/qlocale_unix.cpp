@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlocale_p.h"
 
@@ -10,11 +10,11 @@
 #include "qvariant.h"
 #include "qreadwritelock.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 namespace {
 struct QSystemLocaleData
 {
@@ -240,9 +240,9 @@ QVariant QSystemLocale::query(QueryType type, QVariant &&in) const
     }
     case MeasurementSystem: {
         const QString meas_locale = QString::fromLatin1(d->lc_measurement_var);
-        if (meas_locale.compare("Metric"_L1, Qt::CaseInsensitive) == 0)
+        if (meas_locale.compare("Metric"_L1, BobUI::CaseInsensitive) == 0)
             return QLocale::MetricSystem;
-        if (meas_locale.compare("Other"_L1, Qt::CaseInsensitive) == 0)
+        if (meas_locale.compare("Other"_L1, BobUI::CaseInsensitive) == 0)
             return QLocale::MetricSystem;
         return QVariant((int)QLocale(meas_locale).measurementSystem());
     }
@@ -260,7 +260,7 @@ QVariant QSystemLocale::query(QueryType type, QVariant &&in) const
 
         for (const QString &e : std::as_const(lst)) {
             QStringView language, script, territory;
-            if (qt_splitLocaleName(e, &language, &script, &territory)) {
+            if (bobui_splitLocaleName(e, &language, &script, &territory)) {
                 QString joined = language.isEmpty() ? u"und"_s : language.toString();
                 if (!script.isEmpty())
                     joined += u'-' + script;
@@ -290,6 +290,6 @@ QVariant QSystemLocale::query(QueryType type, QVariant &&in) const
     }
     return QVariant();
 }
-#endif // QT_NO_SYSTEMLOCALE
+#endif // BOBUI_NO_SYSTEMLOCALE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

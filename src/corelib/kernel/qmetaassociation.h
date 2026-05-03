@@ -1,21 +1,21 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETAASSOCIATION_H
 #define QMETAASSOCIATION_H
 
 #if 0
-#pragma qt_class(QMetaAssociation)
+#pragma bobui_class(QMetaAssociation)
 #endif
 
-#include <QtCore/qiterable.h>
-#include <QtCore/qiterable_impl.h>
-#include <QtCore/qmetacontainer.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qiterable.h>
+#include <BobUICore/qiterable_impl.h>
+#include <BobUICore/qmetacontainer.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtMetaContainerPrivate {
+namespace BobUIMetaContainerPrivate {
 
 class AssociativeIterator : public QIterator<QMetaAssociation>
 {
@@ -33,7 +33,7 @@ public:
     key_type key() const
     {
         const QMetaAssociation meta = metaContainer();
-        return QtIterablePrivate::retrieveElement(meta.keyMetaType(), [&](void *dataPtr) {
+        return BobUIIterablePrivate::retrieveElement(meta.keyMetaType(), [&](void *dataPtr) {
             meta.keyAtIterator(constIterator(), dataPtr);
         });
     }
@@ -58,7 +58,7 @@ public:
     key_type key() const
     {
         const QMetaAssociation meta = metaContainer();
-        return QtIterablePrivate::retrieveElement(meta.keyMetaType(), [&](void *dataPtr) {
+        return BobUIIterablePrivate::retrieveElement(meta.keyMetaType(), [&](void *dataPtr) {
             meta.keyAtConstIterator(constIterator(), dataPtr);
         });
     }
@@ -69,56 +69,56 @@ public:
     pointer operator->() const { return pointer(*this); }
 };
 
-} // namespace QtMetaContainerPrivate
+} // namespace BobUIMetaContainerPrivate
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template<typename Indirect>
 QVariant associativeIteratorToVariant(const Indirect &referred)
 {
     const auto metaAssociation = referred.metaContainer();
     const QMetaType metaType(metaAssociation.mappedMetaType());
-    if (metaType.isValid(QT6_CALL_NEW_OVERLOAD)) {
-        return QtIterablePrivate::retrieveElement(metaType, [&](void *dataPtr) {
+    if (metaType.isValid(BOBUI6_CALL_NEW_OVERLOAD)) {
+        return BobUIIterablePrivate::retrieveElement(metaType, [&](void *dataPtr) {
             metaAssociation.mappedAtConstIterator(referred.constIterator(), dataPtr);
         });
     }
 
-    return QtIterablePrivate::retrieveElement(metaType, [&](void *dataPtr) {
+    return BobUIIterablePrivate::retrieveElement(metaType, [&](void *dataPtr) {
         metaAssociation.keyAtConstIterator(referred.constIterator(), dataPtr);
     });
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<>
-inline QVariant::Reference<QtMetaContainerPrivate::AssociativeIterator>::operator QVariant() const
+inline QVariant::Reference<BobUIMetaContainerPrivate::AssociativeIterator>::operator QVariant() const
 {
-    return QtPrivate::associativeIteratorToVariant(m_referred);
+    return BobUIPrivate::associativeIteratorToVariant(m_referred);
 }
 
 template<>
-inline QVariant::Reference<QtMetaContainerPrivate::AssociativeIterator> &
-QVariant::Reference<QtMetaContainerPrivate::AssociativeIterator>::operator=(const QVariant &value)
+inline QVariant::Reference<BobUIMetaContainerPrivate::AssociativeIterator> &
+QVariant::Reference<BobUIMetaContainerPrivate::AssociativeIterator>::operator=(const QVariant &value)
 {
     const auto metaAssociation = m_referred.metaContainer();
     const QMetaType metaType(metaAssociation.mappedMetaType());
-    if (!metaType.isValid(QT6_CALL_NEW_OVERLOAD))
+    if (!metaType.isValid(BOBUI6_CALL_NEW_OVERLOAD))
         return *this;
 
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     metaAssociation.setMappedAtIterator(
             m_referred.constIterator(), coercer.coerce(value, metaType));
     return *this;
 }
 
 template<>
-inline QVariant::ConstReference<QtMetaContainerPrivate::AssociativeConstIterator>::operator QVariant() const
+inline QVariant::ConstReference<BobUIMetaContainerPrivate::AssociativeConstIterator>::operator QVariant() const
 {
-    return QtPrivate::associativeIteratorToVariant(m_referred);
+    return BobUIPrivate::associativeIteratorToVariant(m_referred);
 }
 
-namespace QtMetaContainerPrivate {
+namespace BobUIMetaContainerPrivate {
 inline AssociativeConstIterator::mapped_type AssociativeConstIterator::operator*() const
 {
     return reference(*this);
@@ -128,26 +128,26 @@ class Association : public QIterable<QMetaAssociation>
 {
 public:
     using Iterator
-            = QTaggedIterator<AssociativeIterator, void>;
+            = BOBUIaggedIterator<AssociativeIterator, void>;
     using RandomAccessIterator
-            = QTaggedIterator<AssociativeIterator, std::random_access_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeIterator, std::random_access_iterator_tag>;
     using BidirectionalIterator
-            = QTaggedIterator<AssociativeIterator, std::bidirectional_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeIterator, std::bidirectional_iterator_tag>;
     using ForwardIterator
-            = QTaggedIterator<AssociativeIterator, std::forward_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeIterator, std::forward_iterator_tag>;
     using InputIterator
-            = QTaggedIterator<AssociativeIterator, std::input_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeIterator, std::input_iterator_tag>;
 
     using ConstIterator
-            = QTaggedIterator<AssociativeConstIterator, void>;
+            = BOBUIaggedIterator<AssociativeConstIterator, void>;
     using RandomAccessConstIterator
-            = QTaggedIterator<AssociativeConstIterator, std::random_access_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeConstIterator, std::random_access_iterator_tag>;
     using BidirectionalConstIterator
-            = QTaggedIterator<AssociativeConstIterator, std::bidirectional_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeConstIterator, std::bidirectional_iterator_tag>;
     using ForwardConstIterator
-            = QTaggedIterator<AssociativeConstIterator, std::forward_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeConstIterator, std::forward_iterator_tag>;
     using InputConstIterator
-            = QTaggedIterator<AssociativeConstIterator, std::input_iterator_tag>;
+            = BOBUIaggedIterator<AssociativeConstIterator, std::input_iterator_tag>;
 
     using iterator = Iterator;
     using const_iterator = ConstIterator;
@@ -198,7 +198,7 @@ public:
     ConstIterator find(const QVariant &key) const
     {
         const QMetaAssociation meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer coercer;
+        BobUIPrivate::QVariantTypeCoercer coercer;
         if (const void *keyData = coercer.convert(key, meta.keyMetaType())) {
             return ConstIterator(QConstIterator<QMetaAssociation>(
                     this, meta.createConstIteratorAtKey(constIterable(), keyData)));
@@ -211,7 +211,7 @@ public:
     Iterator mutableFind(const QVariant &key)
     {
         const QMetaAssociation meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer coercer;
+        BobUIPrivate::QVariantTypeCoercer coercer;
         if (const void *keyData = coercer.convert(key, meta.keyMetaType()))
             return Iterator(QIterator(this, meta.createIteratorAtKey(mutableIterable(), keyData)));
         return mutableEnd();
@@ -220,7 +220,7 @@ public:
     bool containsKey(const QVariant &key) const
     {
         const QMetaAssociation meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer keyCoercer;
+        BobUIPrivate::QVariantTypeCoercer keyCoercer;
         if (const void *keyData = keyCoercer.convert(key, meta.keyMetaType()))
             return meta.containsKey(constIterable(), keyData);
         return false;
@@ -229,22 +229,22 @@ public:
     void insertKey(const QVariant &key)
     {
         const QMetaAssociation meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer keyCoercer;
+        BobUIPrivate::QVariantTypeCoercer keyCoercer;
         meta.insertKey(mutableIterable(), keyCoercer.coerce(key, meta.keyMetaType()));
     }
 
     void removeKey(const QVariant &key)
     {
         const QMetaAssociation meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer keyCoercer;
+        BobUIPrivate::QVariantTypeCoercer keyCoercer;
         meta.removeKey(mutableIterable(), keyCoercer.coerce(key, meta.keyMetaType()));
     }
 
     QVariant value(const QVariant &key) const
     {
         const QMetaAssociation meta = metaContainer();
-        return QtIterablePrivate::retrieveElement(meta.mappedMetaType(), [&](void *dataPtr) {
-            QtPrivate::QVariantTypeCoercer coercer;
+        return BobUIIterablePrivate::retrieveElement(meta.mappedMetaType(), [&](void *dataPtr) {
+            BobUIPrivate::QVariantTypeCoercer coercer;
             meta.mappedAtKey(constIterable(), coercer.coerce(key, meta.keyMetaType()), dataPtr);
         });
     }
@@ -252,15 +252,15 @@ public:
     void setValue(const QVariant &key, const QVariant &mapped)
     {
         const QMetaAssociation meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer keyCoercer;
-        QtPrivate::QVariantTypeCoercer mappedCoercer;
+        BobUIPrivate::QVariantTypeCoercer keyCoercer;
+        BobUIPrivate::QVariantTypeCoercer mappedCoercer;
         meta.setMappedAtKey(mutableIterable(), keyCoercer.coerce(key, meta.keyMetaType()),
                             mappedCoercer.coerce(mapped, meta.mappedMetaType()));
     }
 };
 
-} // namespace QtMetaContainerPrivate
+} // namespace BobUIMetaContainerPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMETAASSOCIATION_H

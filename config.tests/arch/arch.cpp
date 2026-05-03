@@ -1,4 +1,4 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // SPDX-License-Identifier: BSD-3-Clause
 
@@ -7,10 +7,10 @@
 #include <stdio.h>
 
 extern const char msg[];
-const char msg[] = "==Qt=magic=Qt== Architecture:" ARCH_PROCESSOR;
+const char msg[] = "==BobUI=magic=BobUI== Architecture:" ARCH_PROCESSOR;
 
 extern const char msg2[];
-const char msg2[] = "==Qt=magic=Qt== Sub-architecture:"
+const char msg2[] = "==BobUI=magic=BobUI== Sub-architecture:"
         // This is the list of features found in GCC or MSVC
         // We don't use all of them, but this is ready for future expansion
 
@@ -287,7 +287,7 @@ const char msg2[] = "==Qt=magic=Qt== Sub-architecture:"
                    "";
 
 extern const char msg3[];
-const char msg3[] = "==Qt=magic=Qt== Build-ABI:" ARCH_FULL;
+const char msg3[] = "==BobUI=magic=BobUI== Build-ABI:" ARCH_FULL;
 
 int main()
 {

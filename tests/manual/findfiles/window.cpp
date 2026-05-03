@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "window.h"
 
 //! [17]
-enum { absoluteFileNameRole = Qt::UserRole + 1 };
+enum { absoluteFileNameRole = BobUI::UserRole + 1 };
 //! [17]
 
 //! [18]
-static inline QString fileNameOfItem(const QTableWidgetItem *item)
+static inline QString fileNameOfItem(const BOBUIableWidgetItem *item)
 {
     return item->data(absoluteFileNameRole).toString();
 }
@@ -152,12 +152,12 @@ QStringList Window::findFiles(const QStringList &files, const QString &text)
         QFile file(fileName);
         if (file.open(QIODevice::ReadOnly)) {
             QString line;
-            QTextStream in(&file);
+            BOBUIextStream in(&file);
             while (!in.atEnd()) {
                 if (progressDialog.wasCanceled())
                     break;
                 line = in.readLine();
-                if (line.contains(text, Qt::CaseInsensitive)) {
+                if (line.contains(text, BobUI::CaseInsensitive)) {
                     foundFiles << files[i];
                     break;
                 }
@@ -175,15 +175,15 @@ void Window::showFiles(const QStringList &paths)
         const QString toolTip = QDir::toNativeSeparators(filePath);
         const QString relativePath = QDir::toNativeSeparators(currentDir.relativeFilePath(filePath));
         const qint64 size = QFileInfo(filePath).size();
-        QTableWidgetItem *fileNameItem = new QTableWidgetItem(relativePath);
+        BOBUIableWidgetItem *fileNameItem = new BOBUIableWidgetItem(relativePath);
         fileNameItem->setData(absoluteFileNameRole, QVariant(filePath));
         fileNameItem->setToolTip(toolTip);
-        fileNameItem->setFlags(fileNameItem->flags() ^ Qt::ItemIsEditable);
-        QTableWidgetItem *sizeItem = new QTableWidgetItem(QLocale().formattedDataSize(size));
+        fileNameItem->setFlags(fileNameItem->flags() ^ BobUI::ItemIsEditable);
+        BOBUIableWidgetItem *sizeItem = new BOBUIableWidgetItem(QLocale().formattedDataSize(size));
         sizeItem->setData(absoluteFileNameRole, QVariant(filePath));
         sizeItem->setToolTip(toolTip);
-        sizeItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        sizeItem->setFlags(sizeItem->flags() ^ Qt::ItemIsEditable);
+        sizeItem->setTextAlignment(BobUI::AlignRight | BobUI::AlignVCenter);
+        sizeItem->setFlags(sizeItem->flags() ^ BobUI::ItemIsEditable);
 
         int row = filesTable->rowCount();
         filesTable->insertRow(row);
@@ -209,7 +209,7 @@ QComboBox *Window::createComboBox(const QString &text)
 //! [11]
 void Window::createFilesTable()
 {
-    filesTable = new QTableWidget(0, 2);
+    filesTable = new BOBUIableWidget(0, 2);
     filesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     QStringList labels;
@@ -219,10 +219,10 @@ void Window::createFilesTable()
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(false);
 //! [15]
-    filesTable->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(filesTable, &QTableWidget::customContextMenuRequested,
+    filesTable->setContextMenuPolicy(BobUI::CustomContextMenu);
+    connect(filesTable, &BOBUIableWidget::customContextMenuRequested,
             this, &Window::contextMenu);
-    connect(filesTable, &QTableWidget::cellActivated,
+    connect(filesTable, &BOBUIableWidget::cellActivated,
             this, &Window::openFileOfItem);
 //! [15]
 }
@@ -233,7 +233,7 @@ void Window::createFilesTable()
 
 void Window::openFileOfItem(int row, int /* column */)
 {
-    const QTableWidgetItem *item = filesTable->item(row, 0);
+    const BOBUIableWidgetItem *item = filesTable->item(row, 0);
     openFile(fileNameOfItem(item));
 }
 
@@ -242,11 +242,11 @@ void Window::openFileOfItem(int row, int /* column */)
 //! [16]
 void Window::contextMenu(const QPoint &pos)
 {
-    const QTableWidgetItem *item = filesTable->itemAt(pos);
+    const BOBUIableWidgetItem *item = filesTable->itemAt(pos);
     if (!item)
         return;
     QMenu menu;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QAction *copyAction = menu.addAction("Copy Name");
 #endif
     QAction *openAction = menu.addAction("Open");
@@ -256,7 +256,7 @@ void Window::contextMenu(const QPoint &pos)
     const QString fileName = fileNameOfItem(item);
     if (action == openAction)
         openFile(fileName);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     else if (action == copyAction)
         QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
 #endif

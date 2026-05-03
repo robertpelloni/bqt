@@ -1,22 +1,22 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrandomaccessasyncfile_p_p.h"
 
 #include "qiooperation_p.h"
 #include "qiooperation_p_p.h"
 
-#include <QtCore/qfile.h> // QtPrivate::toFilesystemPath
-#include <QtCore/qtypes.h>
-#include <QtCore/private/qioring_p.h>
+#include <BobUICore/qfile.h> // BobUIPrivate::toFilesystemPath
+#include <BobUICore/bobuiypes.h>
+#include <BobUICore/private/qioring_p.h>
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcQRandomAccessIORing, "qt.core.qrandomaccessasyncfile.ioring",
-                          QtCriticalMsg);
+Q_STATIC_LOGGING_CATEGORY(lcQRandomAccessIORing, "bobui.core.qrandomaccessasyncfile.ioring",
+                          BobUICriticalMsg);
 
 QRandomAccessAsyncFileNativeBackend::QRandomAccessAsyncFileNativeBackend(QRandomAccessAsyncFile *owner)
     : QRandomAccessAsyncFileBackend(owner)
@@ -61,12 +61,12 @@ void QRandomAccessAsyncFileNativeBackend::queueCompletion(QIOOperationPrivate *p
     // @todo: Look into making it emit only if synchronously completed
     QMetaObject::invokeMethod(priv->q_ptr, [priv, error](){
         priv->operationComplete(error);
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 }
 
 QIOOperation *QRandomAccessAsyncFileNativeBackend::open(const QString &path, QIODeviceBase::OpenMode mode)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage();
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage();
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->type = QIOOperation::Type::Open;
@@ -80,7 +80,7 @@ QIOOperation *QRandomAccessAsyncFileNativeBackend::open(const QString &path, QIO
     m_fileState = FileState::OpenPending;
 
     QIORingRequest<QIORing::Operation::Open> openOperation;
-    openOperation.path = QtPrivate::toFilesystemPath(path);
+    openOperation.path = BobUIPrivate::toFilesystemPath(path);
     openOperation.flags = mode;
     openOperation.setCallback([this, op,
                                priv](const QIORingRequest<QIORing::Operation::Open> &request) {
@@ -166,7 +166,7 @@ qint64 QRandomAccessAsyncFileNativeBackend::size() const
 
 QIOOperation *QRandomAccessAsyncFileNativeBackend::flush()
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage();
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage();
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->type = QIOOperation::Type::Flush;
@@ -238,7 +238,7 @@ QIOReadOperation *QRandomAccessAsyncFileNativeBackend::read(qint64 offset, qint6
 {
     QByteArray array;
     array.resizeForOverwrite(maxSize);
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(std::move(array));
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(std::move(array));
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -293,7 +293,7 @@ void QRandomAccessAsyncFileNativeBackend::startWriteFromSingle(QIOOperation *op,
 
 QIOWriteOperation *QRandomAccessAsyncFileNativeBackend::write(qint64 offset, QByteArray &&data)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(std::move(data));
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(std::move(data));
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -310,7 +310,7 @@ QIOWriteOperation *QRandomAccessAsyncFileNativeBackend::write(qint64 offset, QBy
 QIOVectoredReadOperation *QRandomAccessAsyncFileNativeBackend::readInto(qint64 offset,
                                                                   QSpan<std::byte> buffer)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(
             QSpan<const QSpan<std::byte>>{ buffer });
 
     auto *priv = new QIOOperationPrivate(dataStorage);
@@ -328,7 +328,7 @@ QIOVectoredReadOperation *QRandomAccessAsyncFileNativeBackend::readInto(qint64 o
 QIOVectoredWriteOperation *QRandomAccessAsyncFileNativeBackend::writeFrom(qint64 offset,
                                                                     QSpan<const std::byte> buffer)
 {
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(
             QSpan<const QSpan<const std::byte>>{ buffer });
 
     auto *priv = new QIOOperationPrivate(dataStorage);
@@ -346,9 +346,9 @@ QIOVectoredWriteOperation *QRandomAccessAsyncFileNativeBackend::writeFrom(qint64
 QIOVectoredReadOperation *
 QRandomAccessAsyncFileNativeBackend::readInto(qint64 offset, QSpan<const QSpan<std::byte>> buffers)
 {
-    if (!QIORing::supportsOperation(QtPrivate::Operation::VectoredRead))
+    if (!QIORing::supportsOperation(BobUIPrivate::Operation::VectoredRead))
         return nullptr;
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(buffers);
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(buffers);
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -398,9 +398,9 @@ QRandomAccessAsyncFileNativeBackend::readInto(qint64 offset, QSpan<const QSpan<s
 QIOVectoredWriteOperation *
 QRandomAccessAsyncFileNativeBackend::writeFrom(qint64 offset, QSpan<const QSpan<const std::byte>> buffers)
 {
-    if (!QIORing::supportsOperation(QtPrivate::Operation::VectoredWrite))
+    if (!QIORing::supportsOperation(BobUIPrivate::Operation::VectoredWrite))
         return nullptr;
-    auto *dataStorage = new QtPrivate::QIOOperationDataStorage(buffers);
+    auto *dataStorage = new BobUIPrivate::QIOOperationDataStorage(buffers);
 
     auto *priv = new QIOOperationPrivate(dataStorage);
     priv->offset = offset;
@@ -438,4 +438,4 @@ QRandomAccessAsyncFileNativeBackend::writeFrom(qint64 offset, QSpan<const QSpan<
     return op;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

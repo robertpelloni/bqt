@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 #ifndef QGTK3JSON_P_H
 #define QGTK3JSON_P_H
 
-#include <QtCore/QCache>
-#include <QtCore/QJsonArray>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QMap>
-#include <QtCore/QString>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QPalette>
+#include <BobUICore/QCache>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonObject>
+#include <BobUICore/QMap>
+#include <BobUICore/QString>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QPalette>
 
 #include <qpa/qplatformtheme.h>
 #include "qgtk3interface_p.h"
@@ -26,14 +26,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGtk3Json
 {
@@ -51,7 +51,7 @@ public:
     static QLatin1String fromGdkSource(QGtk3Interface::QGtkColorSource source);
     static QLatin1String fromSourceType(QGtk3Storage::SourceType sourceType);
     static QLatin1String fromWidgetType(QGtk3Interface::QGtkWidget widgetType);
-    static QLatin1String fromColorScheme(Qt::ColorScheme colorScheme);
+    static QLatin1String fromColorScheme(BobUI::ColorScheme colorScheme);
 
     // Convert strings to enums
     static QPlatformTheme::Palette toPalette(const QString &palette);
@@ -62,10 +62,10 @@ public:
     static QGtk3Interface::QGtkColorSource toGdkSource(const QString &source);
     static QGtk3Storage::SourceType toSourceType(const QString &sourceType);
     static QGtk3Interface::QGtkWidget toWidgetType(const QString &widgetType);
-    static Qt::ColorScheme toColorScheme(const QString &colorScheme);
+    static BobUI::ColorScheme toColorScheme(const QString &colorScheme);
 
     // Json keys
-    static constexpr QLatin1StringView cePalettes = "QtGtk3Palettes"_L1;
+    static constexpr QLatin1StringView cePalettes = "BobUIGtk3Palettes"_L1;
     static constexpr QLatin1StringView cePalette = "PaletteType"_L1;
     static constexpr QLatin1StringView ceGtkState = "GtkStateType"_L1;
     static constexpr QLatin1StringView ceGtkWidget = "GtkWidgetType"_L1;
@@ -99,5 +99,5 @@ public:
     static bool load(QGtk3Storage::PaletteMap &map, const QJsonDocument &doc);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QGTK3JSON_P_H

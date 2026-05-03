@@ -1,25 +1,25 @@
 // Copyright (C) 2013 David Faure <faure+bluesystems@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "private/qlockfile_p.h"
 #include "private/qfilesystementry_p.h"
 #include "wcharhelpers_win_p.h"
 
-#include "QtCore/qdatetime.h"
-#include "QtCore/qdir.h"
-#include "QtCore/qdebug.h"
-#include "QtCore/qfileinfo.h"
-#include "QtCore/qthread.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qdir.h"
+#include "BobUICore/qdebug.h"
+#include "BobUICore/qfileinfo.h"
+#include "BobUICore/bobuihread.h"
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <psapi.h>
 #include <io.h>
 #include <fcntl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline bool fileExists(const wchar_t *fileName)
 {
@@ -31,7 +31,7 @@ static bool deleteFile(const QString &fileName)
 {
     const DWORD dwShareMode = 0;    // no sharing
     SECURITY_ATTRIBUTES securityAtts = { sizeof(SECURITY_ATTRIBUTES), NULL, FALSE };
-    HANDLE fh = CreateFile(qt_castToWchar(QDir::toNativeSeparators(fileName)),
+    HANDLE fh = CreateFile(bobui_castToWchar(QDir::toNativeSeparators(fileName)),
                            GENERIC_READ | GENERIC_WRITE,
                            dwShareMode,
                            &securityAtts,
@@ -179,7 +179,7 @@ void QLockFile::unlock()
     static const int maxAttempts = 500; // 500ms
     while (!deleteFile(d->fileName) && ++attempts < maxAttempts) {
         // Someone is reading the lock file right now (on Windows this prevents deleting it).
-        QThread::msleep(1);
+        BOBUIhread::msleep(1);
     }
     if (attempts == maxAttempts) {
         qWarning() << "Could not remove our own lock file" << d->fileName
@@ -192,4 +192,4 @@ void QLockFile::unlock()
     d->isLocked = false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

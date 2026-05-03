@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSWINDOWCLASSDESCRIPTION_H
 #define QWINDOWSWINDOWCLASSDESCRIPTION_H
 
-#include "qtwindowsglobal.h"
+#include "bobuiwindowsglobal.h"
 
-#include <QtCore/qstring.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindow;
 
@@ -33,15 +33,15 @@ struct QWindowsWindowClassDescription
     bool shouldAddPrefix{ true };
 
 private:
-    static QString classNameSuffix(Qt::WindowFlags type, unsigned int style, bool hasIcon);
-    static bool computeHasIcon(Qt::WindowFlags flags, Qt::WindowFlags type);
-    static unsigned int computeWindowStyles(Qt::WindowFlags flags, Qt::WindowFlags type, WindowStyleOptions options);
+    static QString classNameSuffix(BobUI::WindowFlags type, unsigned int style, bool hasIcon);
+    static bool computeHasIcon(BobUI::WindowFlags flags, BobUI::WindowFlags type);
+    static unsigned int computeWindowStyles(BobUI::WindowFlags flags, BobUI::WindowFlags type, WindowStyleOptions options);
 
     friend QDebug operator<<(QDebug dbg, const QWindowsWindowClassDescription &description);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QWindowsWindowClassDescription::WindowStyleOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSWINDOWCLASSDESCRIPTION_H

@@ -1,26 +1,26 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qcomplextext Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qcomplextext LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
 list(APPEND test_data "data")
 
-qt_internal_add_test(tst_qcomplextext
+bobui_internal_add_test(tst_qcomplextext
     SOURCES
         tst_qcomplextext.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
     TESTDATA ${test_data}
 )
 
@@ -34,7 +34,7 @@ if(ANDROID)
         "data/BidiTest.txt"
     )
 
-    qt_internal_add_resource(tst_qcomplextext "android_testdata"
+    bobui_internal_add_resource(tst_qcomplextext "android_testdata"
         PREFIX
             "/android_testdata"
         FILES
@@ -42,7 +42,7 @@ if(ANDROID)
     )
 endif()
 
-qt_internal_extend_target(tst_qcomplextext CONDITION builtin_testdata
+bobui_internal_extend_target(tst_qcomplextext CONDITION builtin_testdata
     DEFINES
         BUILTIN_TESTDATA
 )

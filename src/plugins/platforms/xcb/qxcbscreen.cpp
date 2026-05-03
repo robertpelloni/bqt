@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbscreen.h"
 #include "qxcbwindow.h"
@@ -12,13 +12,13 @@
 #include <stdio.h>
 
 #include <QDebug>
-#include <QtAlgorithms>
+#include <BobUIAlgorithms>
 
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qmath_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QXcbVirtualDesktop::QXcbVirtualDesktop(QXcbConnection *connection, xcb_screen_t *screen, int number)
     : QXcbObject(connection)
@@ -154,7 +154,7 @@ void QXcbVirtualDesktop::subscribeToXFixesSelectionNotify()
         const uint32_t mask = XCB_XFIXES_SELECTION_EVENT_MASK_SET_SELECTION_OWNER |
                               XCB_XFIXES_SELECTION_EVENT_MASK_SELECTION_WINDOW_DESTROY |
                               XCB_XFIXES_SELECTION_EVENT_MASK_SELECTION_CLIENT_CLOSE;
-        xcb_xfixes_select_selection_input_checked(xcb_connection(), connection()->qtSelectionOwner(), m_net_wm_cm_atom, mask);
+        xcb_xfixes_select_selection_input_checked(xcb_connection(), connection()->bobuiSelectionOwner(), m_net_wm_cm_atom, mask);
     }
 }
 
@@ -215,7 +215,7 @@ void QXcbVirtualDesktop::handleScreenChange(xcb_randr_screen_change_notify_event
         m_screen->height_in_millimeters = change_event->mwidth;
         break;
     // We don't need to do anything with these, since QScreen doesn't store reflection state,
-    // and Qt-based applications probably don't need to care about it anyway.
+    // and BobUI-based applications probably don't need to care about it anyway.
     case XCB_RANDR_ROTATION_REFLECT_X: break;
     case XCB_RANDR_ROTATION_REFLECT_Y: break;
     }
@@ -231,12 +231,12 @@ void QXcbVirtualDesktop::handleScreenChange(xcb_randr_screen_change_notify_event
     Using _NET_WORKAREA to calculate the available desktop geometry on multi-head systems (systems
     with more than one monitor) is unreliable. Different WMs have different interpretations of what
     _NET_WORKAREA means with multiple attached monitors. This gets worse when monitors have
-    different dimensions and/or screens are not virtually aligned. In Qt we want the available
+    different dimensions and/or screens are not virtually aligned. In BobUI we want the available
     geometry per monitor (QScreen), not desktop (represented by _NET_WORKAREA). WM specification
     does not have an atom for this. Thus, QScreen is limited by the lack of support from the
     underlying system.
 
-    One option could be that Qt does WM's job of calculating this by subtracting geometries of
+    One option could be that BobUI does WM's job of calculating this by subtracting geometries of
     _NET_WM_STRUT_PARTIAL and windows where _NET_WM_WINDOW_TYPE(ATOM) = _NET_WM_WINDOW_TYPE_DOCK.
     But this won't work on Gnome 3 shell as it seems that on this desktop environment the tool panel
     is painted directly on the root window. Maybe there is some Gnome/GTK API that could be used
@@ -837,7 +837,7 @@ void QXcbScreen::sendStartupMessage(const QByteArray &message) const
 
 QRect QXcbScreen::availableGeometry() const
 {
-    static bool enforceNetWorkarea = !qEnvironmentVariableIsEmpty("QT_RELY_ON_NET_WORKAREA_ATOM");
+    static bool enforceNetWorkarea = !qEnvironmentVariableIsEmpty("BOBUI_RELY_ON_NET_WORKAREA_ATOM");
     bool isMultiHeadSystem = virtualSiblings().size() > 1;
     bool useScreenGeometry = isMultiHeadSystem && !enforceNetWorkarea;
     return useScreenGeometry ? m_geometry : m_availableGeometry;
@@ -847,7 +847,7 @@ QImage::Format QXcbScreen::format() const
 {
     QImage::Format format;
     bool needsRgbSwap;
-    qt_xcb_imageFormatForVisual(connection(), screen()->root_depth, visualForId(screen()->root_visual), &format, &needsRgbSwap);
+    bobui_xcb_imageFormatForVisual(connection(), screen()->root_depth, visualForId(screen()->root_visual), &format, &needsRgbSwap);
     // We are ignoring needsRgbSwap here and just assumes the backing-store will handle it.
     if (format != QImage::Format_Invalid)
         return format;
@@ -905,26 +905,26 @@ void QXcbScreen::updateGeometry(xcb_timestamp_t timestamp)
 
 void QXcbScreen::updateGeometry(const QRect &geometry, uint8_t rotation)
 {
-    const Qt::ScreenOrientation oldOrientation = m_orientation;
+    const BobUI::ScreenOrientation oldOrientation = m_orientation;
 
     switch (rotation) {
     case XCB_RANDR_ROTATION_ROTATE_0: // xrandr --rotate normal
-        m_orientation = Qt::LandscapeOrientation;
+        m_orientation = BobUI::LandscapeOrientation;
         if (!m_monitor)
             m_sizeMillimeters = m_outputSizeMillimeters;
         break;
     case XCB_RANDR_ROTATION_ROTATE_90: // xrandr --rotate left
-        m_orientation = Qt::PortraitOrientation;
+        m_orientation = BobUI::PortraitOrientation;
         if (!m_monitor)
             m_sizeMillimeters = m_outputSizeMillimeters.transposed();
         break;
     case XCB_RANDR_ROTATION_ROTATE_180: // xrandr --rotate inverted
-        m_orientation = Qt::InvertedLandscapeOrientation;
+        m_orientation = BobUI::InvertedLandscapeOrientation;
         if (!m_monitor)
             m_sizeMillimeters = m_outputSizeMillimeters;
         break;
     case XCB_RANDR_ROTATION_ROTATE_270: // xrandr --rotate right
-        m_orientation = Qt::InvertedPortraitOrientation;
+        m_orientation = BobUI::InvertedPortraitOrientation;
         if (!m_monitor)
             m_sizeMillimeters = m_outputSizeMillimeters.transposed();
         break;
@@ -1059,7 +1059,7 @@ QPixmap QXcbScreen::grabWindow(WId window, int xIn, int yIn, int width, int heig
 
     xcb_copy_area(xcb_connection(), window, pixmap, gc, x, y, 0, 0, width, height);
 
-    QPixmap result = qt_xcb_pixmapFromXPixmap(connection(), pixmap, width, height, effectiveDepth, visual);
+    QPixmap result = bobui_xcb_pixmapFromXPixmap(connection(), pixmap, width, height, effectiveDepth, visual);
     xcb_free_gc(xcb_connection(), gc);
     xcb_free_pixmap(xcb_connection(), pixmap);
 
@@ -1106,7 +1106,7 @@ QByteArray QXcbScreen::getEdid() const
 static inline void formatRect(QDebug &debug, const QRect r)
 {
     debug << r.width() << 'x' << r.height()
-        << Qt::forcesign << r.x() << r.y() << Qt::noforcesign;
+        << BobUI::forcesign << r.x() << r.y() << BobUI::noforcesign;
 }
 
 static inline void formatSizeF(QDebug &debug, const QSizeF s)
@@ -1120,7 +1120,7 @@ QDebug operator<<(QDebug debug, const QXcbScreen *screen)
     debug.nospace();
     debug << "QXcbScreen(" << (const void *)screen;
     if (screen) {
-        debug << Qt::fixed << qSetRealNumberPrecision(1);
+        debug << BobUI::fixed << qSetRealNumberPrecision(1);
         debug << ", name=" << screen->name();
         debug << ", geometry=";
         formatRect(debug, screen->geometry());
@@ -1138,11 +1138,11 @@ QDebug operator<<(QDebug debug, const QXcbScreen *screen)
         debug << "), orientation=" << screen->orientation();
         debug << ", depth=" << screen->depth();
         debug << ", refreshRate=" << screen->refreshRate();
-        debug << ", root=" << Qt::hex << screen->root();
+        debug << ", root=" << BobUI::hex << screen->root();
         debug << ", windowManagerName=" << screen->windowManagerName();
     }
     debug << ')';
     return debug;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

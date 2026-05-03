@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS       = controllerwindow.h \
                 previewwindow.h
@@ -7,5 +7,5 @@ SOURCES       = controllerwindow.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/windowflags
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/windowflags
 INSTALLS += target

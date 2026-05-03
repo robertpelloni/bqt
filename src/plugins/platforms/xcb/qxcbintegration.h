@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformopenglcontext.h>
@@ -13,7 +13,7 @@
 
 #include <xcb/xcb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbConnection;
 class QAbstractEventDispatcher;
@@ -21,11 +21,11 @@ class QXcbNativeInterface;
 class QXcbUnixServices;
 
 class Q_XCB_EXPORT QXcbIntegration : public QPlatformIntegration
-#ifndef QT_NO_OPENGL
-# if QT_CONFIG(xcb_glx_plugin)
+#ifndef BOBUI_NO_OPENGL
+# if BOBUI_CONFIG(xcb_glx_plugin)
     , public QNativeInterface::Private::QGLXIntegration
 # endif
-# if QT_CONFIG(egl)
+# if BOBUI_CONFIG(egl)
     , public QNativeInterface::Private::QEGLIntegration
 # endif
 #endif
@@ -37,12 +37,12 @@ public:
     QPlatformPixmap *createPlatformPixmap(QPlatformPixmap::PixelType type) const override;
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformWindow *createForeignWindow(QWindow *window, WId nativeHandle) const override;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
-# if QT_CONFIG(xcb_glx_plugin)
+# if BOBUI_CONFIG(xcb_glx_plugin)
     QOpenGLContext *createOpenGLContext(GLXContext context, void *visualInfo, QOpenGLContext *shareContext) const override;
 # endif
-# if QT_CONFIG(egl)
+# if BOBUI_CONFIG(egl)
     QOpenGLContext *createOpenGLContext(EGLContext context, EGLDisplay display, QOpenGLContext *shareContext) const override;
 # endif
 #endif
@@ -60,16 +60,16 @@ public:
 
     QPlatformNativeInterface *nativeInterface()const override;
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QPlatformClipboard *clipboard() const override;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPlatformDrag *drag() const override;
 #endif
 
     QPlatformInputContext *inputContext() const override;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QPlatformAccessibility *accessibility() const override;
 #endif
 
@@ -86,7 +86,7 @@ public:
 
     QByteArray wmClass() const;
 
-#if QT_CONFIG(xcb_sm)
+#if BOBUI_CONFIG(xcb_sm)
     QPlatformSessionManager *createPlatformSessionManager(const QString &id, const QString &key) const override;
 #endif
 
@@ -94,7 +94,7 @@ public:
 
     void beep() const override;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const override;
 #endif
 
@@ -110,7 +110,7 @@ private:
 
     QScopedPointer<QPlatformInputContext> m_inputContext;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     mutable QScopedPointer<QPlatformAccessibility> m_accessibility;
 #endif
 
@@ -124,4 +124,4 @@ private:
     static QXcbIntegration *m_instance;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

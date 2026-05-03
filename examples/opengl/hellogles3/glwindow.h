@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
@@ -9,10 +9,10 @@
 #include <QVector3D>
 #include "../hellogl2/logo.h"
 
-QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
-QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
-QT_FORWARD_DECLARE_CLASS(QOpenGLBuffer)
-QT_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLTexture)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLBuffer)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
 
 class GLWindow : public QOpenGLWindow
 {

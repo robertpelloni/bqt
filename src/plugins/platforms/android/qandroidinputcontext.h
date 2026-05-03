@@ -1,6 +1,6 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDINPUTCONTEXT_H
 #define ANDROIDINPUTCONTEXT_H
@@ -10,10 +10,10 @@
 #include <jni.h>
 #include <qevent.h>
 
-#include <QtCore/qpointer.h>
-#include <QTimer>
+#include <BobUICore/qpointer.h>
+#include <BOBUIimer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidInputContext: public QPlatformInputContext
 {
@@ -68,7 +68,7 @@ public:
 
     void reset() override;
     void commit() override;
-    void update(Qt::InputMethodQueries queries) override;
+    void update(BobUI::InputMethodQueries queries) override;
     void invokeAction(QInputMethod::Action action, int cursorPosition) override;
     QRectF keyboardRect() const override;
     bool isAnimating() const override;
@@ -106,7 +106,7 @@ public:
     jboolean fullscreenMode();
 
 public slots:
-    void safeCall(const std::function<void()> &func, Qt::ConnectionType conType = Qt::BlockingQueuedConnection);
+    void safeCall(const std::function<void()> &func, BobUI::ConnectionType conType = BobUI::BlockingQueuedConnection);
     void updateCursorPosition();
     void updateSelectionHandles();
     void handleLocationChanged(int handleId, int x, int y);
@@ -116,12 +116,12 @@ public slots:
     void hideSelectionHandles();
 
 private slots:
-    void showInputPanelLater(Qt::ApplicationState);
+    void showInputPanelLater(BobUI::ApplicationState);
 
 private:
     bool isImhNoTextHandlesSet();
     void sendInputMethodEvent(QInputMethodEvent *event);
-    QSharedPointer<QInputMethodQueryEvent> focusObjectInputMethodQuery(Qt::InputMethodQueries queries = Qt::ImQueryAll);
+    QSharedPointer<QInputMethodQueryEvent> focusObjectInputMethodQuery(BobUI::InputMethodQueries queries = BobUI::ImQueryAll);
     bool focusObjectIsComposing() const;
     void focusObjectStartComposing();
     bool focusObjectStopComposing();
@@ -135,10 +135,10 @@ private:
     HandleModes m_handleMode;
     int m_batchEditNestingLevel;
     QPointer<QObject> m_focusObject;
-    QTimer m_hideCursorHandleTimer;
+    BOBUIimer m_hideCursorHandleTimer;
     bool m_fullScreenMode;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAndroidInputContext::HandleModes)
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDINPUTCONTEXT_H

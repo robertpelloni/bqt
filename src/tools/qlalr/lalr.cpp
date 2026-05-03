@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "lalr.h"
 
@@ -14,21 +14,21 @@
 #define QLALR_NO_DEBUG_INCLUDES
 #define QLALR_NO_DEBUG_LOOKAHEADS
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_BEGIN_NAMESPACE
-QTextStream &qerr()
+BOBUI_BEGIN_NAMESPACE
+BOBUIextStream &qerr()
 {
-    static QTextStream result(stderr, QTextStream::WriteOnly);
+    static BOBUIextStream result(stderr, BOBUIextStream::WriteOnly);
     return result;
 }
 
-QTextStream &qout()
+BOBUIextStream &qout()
 {
-    static QTextStream result(stdout, QTextStream::WriteOnly);
+    static BOBUIextStream result(stdout, BOBUIextStream::WriteOnly);
     return result;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 namespace std {
 bool operator < (Name a, Name b)
@@ -71,12 +71,12 @@ bool Lookback::operator < (const Lookback &other) const
   return state < other.state;
 }
 
-QTextStream &operator << (QTextStream &out, const Name &n)
+BOBUIextStream &operator << (BOBUIextStream &out, const Name &n)
 {
   return out << *n;
 }
 
-QTextStream &operator << (QTextStream &out, const Rule &r)
+BOBUIextStream &operator << (BOBUIextStream &out, const Rule &r)
 {
   out << *r.lhs << " ::=";
 
@@ -86,7 +86,7 @@ QTextStream &operator << (QTextStream &out, const Rule &r)
   return out;
 }
 
-QTextStream &operator << (QTextStream &out, const NameSet &ns)
+BOBUIextStream &operator << (BOBUIextStream &out, const NameSet &ns)
 {
   out << "{";
 
@@ -113,7 +113,7 @@ Item Item::next () const
   return n;
 }
 
-QTextStream &operator << (QTextStream &out, const Item &item)
+BOBUIextStream &operator << (BOBUIextStream &out, const Item &item)
 {
   RulePointer r = item.rule;
 
@@ -292,7 +292,7 @@ void Automaton::buildNullables ()
     }
 
 #ifndef QLALR_NO_DEBUG_NULLABLES
-  qerr() << "nullables = {" << nullables << Qt::endl;
+  qerr() << "nullables = {" << nullables << BobUI::endl;
 #endif
 }
 
@@ -435,7 +435,7 @@ void Automaton::buildLookbackSets ()
               lookbacks.insert (item, Lookback (p, A));
 
 #ifndef QLALR_NO_DEBUG_LOOKBACKS
-              qerr() << "*** (" << id (q) << ", " << *rule << ") lookback (" << id (p) << ", " << *A << ")" << Qt::endl;
+              qerr() << "*** (" << id (q) << ", " << *rule << ") lookback (" << id (p) << ", " << *A << ")" << BobUI::endl;
 #endif
             }
         }
@@ -466,7 +466,7 @@ void Automaton::buildDirectReads ()
 
 #ifndef QLALR_NO_DEBUG_DIRECT_READS
       for (QMap<Name, NameSet>::iterator dr = q->reads.begin (); dr != q->reads.end (); ++dr)
-        qerr() << "*** DR(" << id (q) << ", " << dr.key () << ") = " << dr.value () << Qt::endl;
+        qerr() << "*** DR(" << id (q) << ", " << dr.key () << ") = " << dr.value () << BobUI::endl;
 #endif
     }
 }
@@ -499,7 +499,7 @@ void Automaton::buildReadsDigraph ()
               dump (qerr(), source);
               qerr() << " reads ";
               dump (qerr(), target);
-              qerr() << Qt::endl;
+              qerr() << BobUI::endl;
 #endif
             }
         }
@@ -534,7 +534,7 @@ void Automaton::visitReadNode (ReadNode node)
   _M_reads_stack.push (node);
 
 #ifndef QLALR_NO_DEBUG_INCLUDES
-  // qerr() << "*** Debug. visit node (" << id (node->data.state) << ", " << node->data.nt << ")  N = " << N << Qt::endl;
+  // qerr() << "*** Debug. visit node (" << id (node->data.state) << ", " << node->data.nt << ")  N = " << N << BobUI::endl;
 #endif
 
   for (ReadsGraph::edge_iterator edge = node->begin (); edge != node->end (); ++edge)
@@ -614,7 +614,7 @@ void Automaton::buildIncludesDigraph ()
                       source->insertEdge (target);
 
 #ifndef QLALR_NO_DEBUG_INCLUDES
-                      qerr() << "*** (" << id (p) << ", " << *A << ") includes (" << id (pp) << ", " << *name << ")" << Qt::endl;
+                      qerr() << "*** (" << id (p) << ", " << *A << ") includes (" << id (pp) << ", " << *name << ")" << BobUI::endl;
 #endif // QLALR_NO_DEBUG_INCLUDES
 
                       continue;
@@ -636,7 +636,7 @@ void Automaton::buildIncludesDigraph ()
                   source->insertEdge (target);
 
 #ifndef QLALR_NO_DEBUG_INCLUDES
-                  qerr() << "*** (" << id (p) << ", " << *A << ") includes (" << id (pp) << ", " << *name << ")" << Qt::endl;
+                  qerr() << "*** (" << id (p) << ", " << *A << ") includes (" << id (pp) << ", " << *name << ")" << BobUI::endl;
 #endif // QLALR_NO_DEBUG_INCLUDES
                 }
             }
@@ -653,7 +653,7 @@ void Automaton::visitIncludeNode (IncludeNode node)
   _M_includes_stack.push (node);
 
 #ifndef QLALR_NO_DEBUG_INCLUDES
-  // qerr() << "*** Debug. visit node (" << id (node->data.state) << ", " << node->data.nt << ")  N = " << N << Qt::endl;
+  // qerr() << "*** Debug. visit node (" << id (node->data.state) << ", " << node->data.nt << ")  N = " << N << BobUI::endl;
 #endif
 
   for (IncludesGraph::edge_iterator edge = node->begin (); edge != node->end (); ++edge)
@@ -669,7 +669,7 @@ void Automaton::visitIncludeNode (IncludeNode node)
       dump (qerr(), node);
       qerr() << " += follows";
       dump (qerr(), r);
-      qerr() << Qt::endl;
+      qerr() << BobUI::endl;
 #endif
 
       NameSet &dst = node->data.state->follows [node->data.nt];
@@ -705,7 +705,7 @@ void Automaton::buildLookaheads ()
 #ifndef QLALR_NO_DEBUG_LOOKAHEADS
               qerr() << "(" << id (p) << ", " << *item->rule << ") lookbacks ";
               dump (qerr(), lookback);
-              qerr() << " with follows (" << id (q) << ", " << lookback.nt << ") = " << q->follows [lookback.nt] << Qt::endl;
+              qerr() << " with follows (" << id (q) << ", " << lookback.nt << ") = " << q->follows [lookback.nt] << BobUI::endl;
 #endif
 
               lookaheads [item].insert (q->follows [lookback.nt].begin (), q->follows [lookback.nt].end ());
@@ -749,17 +749,17 @@ void Automaton::buildDefaultReduceActions ()
     }
 }
 
-void Automaton::dump (QTextStream &out, IncludeNode incl)
+void Automaton::dump (BOBUIextStream &out, IncludeNode incl)
 {
   out << "(" << id (incl->data.state) << ", " << incl->data.nt << ")";
 }
 
-void Automaton::dump (QTextStream &out, ReadNode rd)
+void Automaton::dump (BOBUIextStream &out, ReadNode rd)
 {
   out << "(" << id (rd->data.state) << ", " << rd->data.nt << ")";
 }
 
-void Automaton::dump (QTextStream &out, const Lookback &lp)
+void Automaton::dump (BOBUIextStream &out, const Lookback &lp)
 {
   out << "(" << id (lp.state) << ", " << lp.nt << ")";
 }

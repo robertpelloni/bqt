@@ -1,20 +1,20 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QASSERT_H
 #define QASSERT_H
 
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qtnoop.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/bobuinoop.h>
 
 #if 0
-#pragma qt_class(QtAssert)
-#pragma qt_sync_stop_processing
+#pragma bobui_class(BobUIAssert)
+#pragma bobui_sync_stop_processing
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if defined(__cplusplus)
 
@@ -22,13 +22,13 @@ QT_BEGIN_NAMESPACE
 Q_NORETURN
 #endif
 Q_DECL_COLD_FUNCTION
-Q_CORE_EXPORT void qt_assert(const char *assertion, const char *file, int line) noexcept;
+Q_CORE_EXPORT void bobui_assert(const char *assertion, const char *file, int line) noexcept;
 
 #if !defined(Q_ASSERT)
-#  if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
+#  if defined(BOBUI_NO_DEBUG) && !defined(BOBUI_FORCE_ASSERTS)
 #    define Q_ASSERT(cond) static_cast<void>(false && (cond))
 #  else
-#    define Q_ASSERT(cond) ((cond) ? static_cast<void>(0) : QT_PREPEND_NAMESPACE(qt_assert)(#cond, __FILE__, __LINE__))
+#    define Q_ASSERT(cond) ((cond) ? static_cast<void>(0) : BOBUI_PREPEND_NAMESPACE(bobui_assert)(#cond, __FILE__, __LINE__))
 #  endif
 #endif
 
@@ -37,15 +37,15 @@ Q_NORETURN
 #endif
 Q_DECL_COLD_FUNCTION
 Q_CORE_EXPORT
-void qt_assert_x(const char *where, const char *what, const char *file, int line) noexcept;
-inline bool qt_no_assert_x(bool, const char *, const char *) noexcept { return false; }
+void bobui_assert_x(const char *where, const char *what, const char *file, int line) noexcept;
+inline bool bobui_no_assert_x(bool, const char *, const char *) noexcept { return false; }
 
 #if !defined(Q_ASSERT_X)
-#  if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
+#  if defined(BOBUI_NO_DEBUG) && !defined(BOBUI_FORCE_ASSERTS)
 #    define Q_ASSERT_X(cond, where, what) \
-        static_cast<void>(false && QT_PREPEND_NAMESPACE(qt_no_assert_x)(bool(cond), where, what))
+        static_cast<void>(false && BOBUI_PREPEND_NAMESPACE(bobui_no_assert_x)(bool(cond), where, what))
 #  else
-#    define Q_ASSERT_X(cond, where, what) ((cond) ? static_cast<void>(0) : QT_PREPEND_NAMESPACE(qt_assert_x)(where, what, __FILE__, __LINE__))
+#    define Q_ASSERT_X(cond, where, what) ((cond) ? static_cast<void>(0) : BOBUI_PREPEND_NAMESPACE(bobui_assert_x)(where, what, __FILE__, __LINE__))
 #  endif
 #endif
 
@@ -59,18 +59,18 @@ inline bool qt_no_assert_x(bool, const char *, const char *) noexcept { return f
     Q_ASSERT_X(cond, Q_FUNC_INFO, what) /* for now... */
 #endif
 
-Q_NORETURN Q_CORE_EXPORT void qt_check_pointer(const char *, int) noexcept;
+Q_NORETURN Q_CORE_EXPORT void bobui_check_pointer(const char *, int) noexcept;
 Q_NORETURN Q_DECL_COLD_FUNCTION
 Q_CORE_EXPORT void qBadAlloc();
 
-#ifdef QT_NO_EXCEPTIONS
-#  if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
-#    define Q_CHECK_PTR(p) qt_noop()
+#ifdef BOBUI_NO_EXCEPTIONS
+#  if defined(BOBUI_NO_DEBUG) && !defined(BOBUI_FORCE_ASSERTS)
+#    define Q_CHECK_PTR(p) bobui_noop()
 #  else
-#    define Q_CHECK_PTR(p) do {if (!(p)) QT_PREPEND_NAMESPACE(qt_check_pointer)(__FILE__,__LINE__);} while (false)
+#    define Q_CHECK_PTR(p) do {if (!(p)) BOBUI_PREPEND_NAMESPACE(bobui_check_pointer)(__FILE__,__LINE__);} while (false)
 #  endif
 #else
-#  define Q_CHECK_PTR(p) do { if (!(p)) QT_PREPEND_NAMESPACE(qBadAlloc)(); } while (false)
+#  define Q_CHECK_PTR(p) do { if (!(p)) BOBUI_PREPEND_NAMESPACE(qBadAlloc)(); } while (false)
 #endif
 
 template <typename T>
@@ -93,12 +93,12 @@ inline T *q_check_ptr(T *p) { Q_CHECK_PTR(p); return p; }
 
 Q_DECL_DEPRECATED_X("Q_ASSUME() is deprecated because it can produce worse code than when it's absent; "
                     "use C++23 [[assume]] instead")
-inline bool qt_assume_is_deprecated(bool cond) noexcept { return cond; }
+inline bool bobui_assume_is_deprecated(bool cond) noexcept { return cond; }
 #define Q_ASSUME(Expr) \
     [] (bool valueOfExpression) {\
         Q_ASSERT_X(valueOfExpression, "Q_ASSUME()", "Assumption in Q_ASSUME(\"" #Expr "\") was not correct");\
         Q_ASSUME_IMPL(valueOfExpression);\
-    }(qt_assume_is_deprecated(Expr))
+    }(bobui_assume_is_deprecated(Expr))
 
 
 #if __has_builtin(__builtin_assume)
@@ -142,6 +142,6 @@ inline bool qt_assume_is_deprecated(bool cond) noexcept { return cond; }
 #  define Q_STATIC_ASSERT_X(Condition, Message) Q_STATIC_ASSERT(Condition)
 #endif // __cplusplus
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QASSERT_H

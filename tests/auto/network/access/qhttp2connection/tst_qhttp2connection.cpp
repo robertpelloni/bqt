@@ -1,19 +1,19 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
-#include <QtTest/QSignalSpy>
+#include <BobUITest/BOBUIest>
+#include <BobUITest/QSignalSpy>
 
-#include <QtNetwork/private/qhttp2connection_p.h>
-#include <QtNetwork/private/hpack_p.h>
-#include <QtNetwork/private/bitstreams_p.h>
+#include <BobUINetwork/private/qhttp2connection_p.h>
+#include <BobUINetwork/private/hpack_p.h>
+#include <BobUINetwork/private/bitstreams_p.h>
 
-#include <QtCore/qregularexpression.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/bobuihread.h>
 
 #include <limits>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QHttp2Connection : public QObject
 {
@@ -165,7 +165,7 @@ bool tst_QHttp2Connection::waitForSettingsExchange(QHttp2Connection *client,
 
     client->handleReadyRead(); // handle incoming frames, send response
 
-    bool success = QTest::qWaitFor([&]() {
+    bool success = BOBUIest::qWaitFor([&]() {
         return settingsFrameReceived && serverSettingsFrameReceived
                 && !client->waitingForSettingsACK && !server->waitingForSettingsACK;
     });
@@ -212,10 +212,10 @@ void tst_QHttp2Connection::constructStream()
 
 void tst_QHttp2Connection::streamConfiguration_data()
 {
-    QTest::addColumn<bool>("useDownloadBuffer");
+    BOBUIest::addColumn<bool>("useDownloadBuffer");
 
-    QTest::addRow("useDownloadBuffer=true") << true;
-    QTest::addRow("useDownloadBuffer=false") << false;
+    BOBUIest::addRow("useDownloadBuffer=true") << true;
+    BOBUIest::addRow("useDownloadBuffer=false") << false;
 }
 
 void tst_QHttp2Connection::streamConfiguration()
@@ -402,7 +402,7 @@ void tst_QHttp2Connection::maxHeaderTableSize()
         builder.append(nextSize);
         builder.write(*server->out);
 
-        QVERIFY(QTest::qWaitFor([&]() { return !serverConnection->waitingForSettingsACK; }));
+        QVERIFY(BOBUIest::qWaitFor([&]() { return !serverConnection->waitingForSettingsACK; }));
     }
 
     // Now we have to send another HEADER block without extra field, so we can see that the size of
@@ -625,21 +625,21 @@ void tst_QHttp2Connection::resetAfterClose()
     QVERIFY(clientHeaderReceivedSpy.wait());
     QCOMPARE(clientStream->state(), QHttp2Stream::State::Closed);
 
-    QTest::qWait(10); // Just needs to process events basically
+    BOBUIest::qWait(10); // Just needs to process events basically
     QCOMPARE(errorSpy.count(), 0);
 }
 
 void tst_QHttp2Connection::testBadFrameSize_data()
 {
-    QTest::addColumn<uchar>("frametype");
-    QTest::addColumn<int>("loadsize");
-    QTest::addColumn<bool>("rst_received");
-    QTest::addColumn<int>("goaway_received");
+    BOBUIest::addColumn<uchar>("frametype");
+    BOBUIest::addColumn<int>("loadsize");
+    BOBUIest::addColumn<bool>("rst_received");
+    BOBUIest::addColumn<int>("goaway_received");
 
-    QTest::newRow("priority_correct") << uchar(Http2::FrameType::PRIORITY) << 5 << false << 0;
-    QTest::newRow("priority_bad") << uchar(Http2::FrameType::PRIORITY) << 6 << true << 0;
-    QTest::newRow("ping_correct") << uchar(Http2::FrameType::PING) << 8 << false << 0;
-    QTest::newRow("ping_bad") << uchar(Http2::FrameType::PING) << 13 << false << 1;
+    BOBUIest::newRow("priority_correct") << uchar(Http2::FrameType::PRIORITY) << 5 << false << 0;
+    BOBUIest::newRow("priority_bad") << uchar(Http2::FrameType::PRIORITY) << 6 << true << 0;
+    BOBUIest::newRow("ping_correct") << uchar(Http2::FrameType::PING) << 8 << false << 0;
+    BOBUIest::newRow("ping_bad") << uchar(Http2::FrameType::PING) << 13 << false << 1;
 }
 
 void tst_QHttp2Connection::testBadFrameSize()
@@ -794,9 +794,9 @@ void tst_QHttp2Connection::testDataFrameAfterRSTOutgoing()
 
 void tst_QHttp2Connection::headerFrameAfterRSTOutgoing_data()
 {
-    QTest::addColumn<bool>("deleteStream");
-    QTest::addRow("retain-stream") << false;
-    QTest::addRow("delete-stream") << true;
+    BOBUIest::addColumn<bool>("deleteStream");
+    BOBUIest::addRow("retain-stream") << false;
+    BOBUIest::addRow("delete-stream") << true;
 }
 
 void tst_QHttp2Connection::headerFrameAfterRSTOutgoing()
@@ -833,9 +833,9 @@ void tst_QHttp2Connection::headerFrameAfterRSTOutgoing()
     const HPack::HttpHeader StandardReply{ { ":status", "200" }, { "x-whatever", "some info" } };
     serverStream->sendHEADERS(StandardReply, true);
 
-    // With the bug in QTBUG-135800 we would ignore the RST frame, not processing it at all.
+    // With the bug in BOBUIBUG-135800 we would ignore the RST frame, not processing it at all.
     // This caused the HPACK lookup tables to be out of sync between server and client, eventually
-    // causing an error on Qt's side.
+    // causing an error on BobUI's side.
     QVERIFY(serverRSTReceivedSpy.wait());
 
     // We don't emit any headers for a reset stream
@@ -944,7 +944,7 @@ void tst_QHttp2Connection::WINDOW_UPDATE()
             headersReceived = clientHeaderReceivedSpy.front().front().value<HPack::HttpHeader>();
     QCOMPARE(headersReceived, ExpectedResponseHeaders);
 
-    QTRY_COMPARE_GT(clientDataReceivedSpy.count(), 0);
+    BOBUIRY_COMPARE_GT(clientDataReceivedSpy.count(), 0);
     QCOMPARE(clientDataReceivedSpy.count(), 1); // Only one DATA frame since our window is larger
     QCOMPARE(clientDataReceivedSpy.front().front().value<QByteArray>(), uploadedData);
 
@@ -1116,11 +1116,11 @@ void tst_QHttp2Connection::testCONTINUATIONFrame()
 
 void tst_QHttp2Connection::goaway_data()
 {
-    QTest::addColumn<bool>("endStreamOnHEADERS");
-    QTest::addColumn<bool>("createNewStreamAfterDelay");
-    QTest::addRow("end-on-headers") << true << false;
-    QTest::addRow("end-after-data") << false << false;
-    QTest::addRow("end-after-new-late-stream") << false << true;
+    BOBUIest::addColumn<bool>("endStreamOnHEADERS");
+    BOBUIest::addColumn<bool>("createNewStreamAfterDelay");
+    BOBUIest::addRow("end-on-headers") << true << false;
+    BOBUIest::addRow("end-after-data") << false << false;
+    BOBUIest::addRow("end-after-new-late-stream") << false << true;
 }
 
 void tst_QHttp2Connection::goaway()
@@ -1199,7 +1199,7 @@ void tst_QHttp2Connection::goaway()
             QCOMPARE(spy.first().at(1).template value<QString>(), errMsg);
         };
         QLatin1StringView serverErrorMsg("DATA on invalid stream");
-        QTest::ignoreMessage(QtCriticalMsg, QRegularExpression(".*" + serverErrorMsg + ".*"));
+        BOBUIest::ignoreMessage(BobUICriticalMsg, QRegularExpression(".*" + serverErrorMsg + ".*"));
         QSignalSpy clientStreamErrorSpy(clientStream, &QHttp2Stream::errorOccurred);
         QSignalSpy secondclientStreamErrorSpy(ignoredClientStream, &QHttp2Stream::errorOccurred);
         QSignalSpy serverStreamErrorSpy(serverStream, &QHttp2Stream::errorOccurred);
@@ -1207,14 +1207,14 @@ void tst_QHttp2Connection::goaway()
         // Triggers a connectionError of 'ENHANCE_YOUR_CALM' on the server
         // (more activity after END_STREAM)
         ignoredClientStream->sendDATA("my data", true);
-        QTRY_COMPARE(serverClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(serverClosedSpy.count(), 1);
         tstStream(serverStreamErrorSpy, Http2::ENHANCE_YOUR_CALM, serverErrorMsg);
 
-        QTRY_COMPARE(clientGoawaySpy.count(), 1);
+        BOBUIRY_COMPARE(clientGoawaySpy.count(), 1);
         QCOMPARE(clientGoawaySpy.first().at(0).value<Http2::Http2Error>(),
                  Http2::ENHANCE_YOUR_CALM);
         QCOMPARE(clientGoawaySpy.first().at(1).value<quint32>(), clientStream->streamID());
-        QTRY_COMPARE(clientClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(clientClosedSpy.count(), 1);
         QLatin1StringView clientErrorMsg("Received GOAWAY");
         tstStream(clientStreamErrorSpy, Http2::ENHANCE_YOUR_CALM, clientErrorMsg);
         tstStream(secondclientStreamErrorSpy, Http2::ENHANCE_YOUR_CALM, clientErrorMsg);
@@ -1228,11 +1228,11 @@ void tst_QHttp2Connection::goaway()
     nextStreamId += 2;
     QHttp2Stream *rejectedStream = connection->createStreamInternal_impl(nextStreamId);
     // Sleep until the grace period is over:
-    QTRY_VERIFY(serverConnection->m_goawayGraceTimer.hasExpired());
+    BOBUIRY_VERIFY(serverConnection->m_goawayGraceTimer.hasExpired());
 
     QVERIFY(rejectedStream->sendHEADERS(headers, true));
 
-    QTest::ignoreMessage(QtCriticalMsg,
+    BOBUIest::ignoreMessage(BobUICriticalMsg,
                          QRegularExpression(u".*Connection error: Peer refused to GOAWAY\\..*"_s));
     QVERIFY(clientGoawaySpy.wait());
     QCOMPARE(clientGoawaySpy.size(), 1);
@@ -1243,11 +1243,11 @@ void tst_QHttp2Connection::goaway()
 
 void tst_QHttp2Connection::serverInitiatedGoaways_data()
 {
-    QTest::addColumn<QString>("scenario");
+    BOBUIest::addColumn<QString>("scenario");
 
-    QTest::newRow("graceful-shutdown") << u"graceful-shutdown"_s;
-    QTest::newRow("graceful-then-error") << u"graceful-then-error"_s;
-    QTest::newRow("increasing-lastStreamId") << u"increasing-lastStreamId"_s;
+    BOBUIest::newRow("graceful-shutdown") << u"graceful-shutdown"_s;
+    BOBUIest::newRow("graceful-then-error") << u"graceful-then-error"_s;
+    BOBUIest::newRow("increasing-lastStreamId") << u"increasing-lastStreamId"_s;
 }
 
 void tst_QHttp2Connection::serverInitiatedGoaways()
@@ -1301,13 +1301,13 @@ void tst_QHttp2Connection::serverInitiatedGoaways()
 
     if (scenario == "increasing-lastStreamId"_L1) {
         QLatin1StringView errMsg("Repeated GOAWAY with invalid last stream ID");
-        QTest::ignoreMessage(QtCriticalMsg, QRegularExpression(".*" + errMsg + ".*"));
+        BOBUIest::ignoreMessage(BobUICriticalMsg, QRegularExpression(".*" + errMsg + ".*"));
 
         // Send GOAWAY with higher lastStreamId than the final one (protocol violation)
         const quint32 invalidHigherId = finalLastStreamId + 2;
         serverConn->sendGOAWAYFrame(Http2::HTTP2_NO_ERROR, invalidHigherId);
 
-        QTRY_COMPARE(clientErrorSpy.count(), 1);
+        BOBUIRY_COMPARE(clientErrorSpy.count(), 1);
         QCOMPARE(clientErrorSpy.count(), 1);
         QCOMPARE(clientErrorSpy.first().first().value<Http2::Http2Error>(), Http2::PROTOCOL_ERROR);
         QCOMPARE(clientErrorSpy.first().last().value<QString>(), errMsg);
@@ -1316,29 +1316,29 @@ void tst_QHttp2Connection::serverInitiatedGoaways()
         QVERIFY(serverGoawaySpy.wait());
         QCOMPARE(serverGoawaySpy.last().at(0).value<Http2::Http2Error>(), Http2::PROTOCOL_ERROR);
 
-        QTRY_COMPARE(clientClosedSpy.count(), 1);
-        QTRY_COMPARE(serverClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(clientClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(serverClosedSpy.count(), 1);
         return;
     } else if (scenario == "graceful-then-error") {
         // RFC 9113 6.8: An endpoint MAY send multiple GOAWAY frames if circumstances change
         serverConn->close(Http2::INTERNAL_ERROR);
 
         // Client receives error GOAWAY
-        QTRY_COMPARE(clientGoawaySpy.count(), 3);
+        BOBUIRY_COMPARE(clientGoawaySpy.count(), 3);
         QCOMPARE(clientGoawaySpy.at(2).at(0).value<Http2::Http2Error>(), Http2::INTERNAL_ERROR);
 
         // Error GOAWAY lastStreamId must not exceed previous
         QVERIFY(clientGoawaySpy.at(2).at(1).value<quint32>() <= finalLastStreamId);
 
         // Server closes immediately after error
-        QTRY_COMPARE(serverClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(serverClosedSpy.count(), 1);
 
         // Client stream should receive error
         QVERIFY(!clientStream->isActive());
-        QTRY_COMPARE(clientErrorSpy.count(), 1);
+        BOBUIRY_COMPARE(clientErrorSpy.count(), 1);
         QCOMPARE(clientErrorSpy.count(), 1);
         QCOMPARE(clientErrorSpy.first().first().value<Http2::Http2Error>(), Http2::INTERNAL_ERROR);
-        QTRY_COMPARE(clientClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(clientClosedSpy.count(), 1);
 
         // Additional close() calls should be ignored
         serverConn->close();
@@ -1359,8 +1359,8 @@ void tst_QHttp2Connection::serverInitiatedGoaways()
         QCOMPARE(clientStream->state(), QHttp2Stream::State::Closed);
 
         // Connection closes after all streams complete
-        QTRY_COMPARE(serverClosedSpy.count(), 1);
-        QTRY_COMPARE(clientClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(serverClosedSpy.count(), 1);
+        BOBUIRY_COMPARE(clientClosedSpy.count(), 1);
 
         // No additional GOAWAYs
         QCOMPARE(clientGoawaySpy.count(), 2);
@@ -1425,12 +1425,12 @@ void tst_QHttp2Connection::clientInitiatedGoaway()
     QCOMPARE(clientStream->state(), QHttp2Stream::State::Closed);
     QCOMPARE(serverStream->state(), QHttp2Stream::State::Closed);
 
-    QTRY_COMPARE(clientClosedSpy.count(), 1);
+    BOBUIRY_COMPARE(clientClosedSpy.count(), 1);
 
     QCOMPARE(serverGoawaySpy.count(), 1);
-    QTRY_COMPARE(serverClosedSpy.count(), 1);
+    BOBUIRY_COMPARE(serverClosedSpy.count(), 1);
 }
 
-QTEST_MAIN(tst_QHttp2Connection)
+BOBUIEST_MAIN(tst_QHttp2Connection)
 
 #include "tst_qhttp2connection.moc"

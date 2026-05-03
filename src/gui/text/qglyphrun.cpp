@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qglobal.h"
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
 #include "qglyphrun.h"
 #include "qglyphrun_p.h"
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QGlyphRun
     \brief The QGlyphRun class provides direct access to the internal glyphs in a font.
     \since 4.8
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup text
     \ingroup shared
 
-    When Qt displays a string of text encoded in Unicode, it will first convert the Unicode points
+    When BobUI displays a string of text encoded in Unicode, it will first convert the Unicode points
     into a list of glyph indexes and a list of positions based on one or more fonts. The Unicode
     representation of the text and the QFont object will in this case serve as a convenient
     abstraction that hides the details of what actually takes place when displaying the text
@@ -30,14 +30,14 @@ QT_BEGIN_NAMESPACE
 
     Under certain circumstances, it can be useful as an application developer to have more low-level
     control over which glyphs in a specific font are drawn to the screen. This could for instance
-    be the case in applications that use an external font engine and text shaper together with Qt.
+    be the case in applications that use an external font engine and text shaper together with BobUI.
     QGlyphRun provides an interface to the raw data needed to get text on the screen. It
     contains a list of glyph indexes, a position for each glyph and a font.
 
     It is the user's responsibility to ensure that the selected font actually contains the
     provided glyph indexes.
 
-    QTextLayout::glyphRuns() or QTextFragment::glyphRuns() can be used to convert unicode encoded
+    BOBUIextLayout::glyphRuns() or BOBUIextFragment::glyphRuns() can be used to convert unicode encoded
     text into a list of QGlyphRun objects, and QPainter::drawGlyphRun() can be used to draw the
     glyphs.
 
@@ -69,8 +69,8 @@ QT_BEGIN_NAMESPACE
   to retrieve the area covered by glyphs that correspond to the characters represented by the
   glyph run. When visualizing the glyphs, care needs to be taken to clip to this bounding rect to
   ensure that only the corresponding part of the ligature is painted. In particular, this can be
-  the case when retrieving a glyph run from a QTextLayout for a specific character range, e.g.
-  when retrieving the selected area of a QTextLayout.
+  the case when retrieving a glyph run from a BOBUIextLayout for a specific character range, e.g.
+  when retrieving the selected area of a BOBUIextLayout.
 */
 
 /*!
@@ -402,7 +402,7 @@ void QGlyphRun::setFlags(GlyphRunFlags flags)
   \note Unless you are implementing text shaping, you should not have to use this function.
   It is used specifically when the QGlyphRun should represent an area which is smaller than the
   area of the glyphs it contains. This could happen e.g. if the glyph run is retrieved by calling
-  QTextLayout::glyphRuns() and the specified range only includes part of a ligature (where two or
+  BOBUIextLayout::glyphRuns() and the specified range only includes part of a ligature (where two or
   more characters are combined to a single glyph.) When this is the case, the bounding rect should
   only include the appropriate part of the ligature glyph, based on a calculation of the average
   width of the characters in the ligature.
@@ -490,7 +490,7 @@ bool QGlyphRun::isEmpty() const
 
     The string indexes correspond to the string, optionally available through sourceString().
 
-    \sa setStringIndexes(), sourceString(), QTextLayout::glyphRuns()
+    \sa setStringIndexes(), sourceString(), BOBUIextLayout::glyphRuns()
 */
 QList<qsizetype> QGlyphRun::stringIndexes() const
 {
@@ -518,7 +518,7 @@ void QGlyphRun::setStringIndexes(const QList<qsizetype> &stringIndexes)
     Returns the string corresponding to the glyph run, if the glyph run has been created from
     a string and the string has been requested from the layout.
 
-    \sa setSourceString(), stringIndexes(), QTextLayout::glyphRuns()
+    \sa setSourceString(), stringIndexes(), BOBUIextLayout::glyphRuns()
  */
 QString QGlyphRun::sourceString() const
 {
@@ -539,6 +539,6 @@ void QGlyphRun::setSourceString(const QString &sourceString)
     d->sourceString = sourceString;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT

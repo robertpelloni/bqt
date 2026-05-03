@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
     <category>[.<type>] = true|false
@@ -17,5 +17,5 @@
 //! [2]
 
 //! [3]
-    QT_LOGGING_RULES=*.debug=false;driver.usb.debug=true
+    BOBUI_LOGGING_RULES=*.debug=false;driver.usb.debug=true
 //! [3]

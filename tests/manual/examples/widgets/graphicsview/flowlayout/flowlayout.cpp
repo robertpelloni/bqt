@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "flowlayout.h"
 
-#include <QtMath>
+#include <BobUIMath>
 
 FlowLayout::FlowLayout(QGraphicsLayoutItem *parent) : QGraphicsLayout(parent)
 {
@@ -37,16 +37,16 @@ void FlowLayout::removeAt(int index)
     invalidate();
 }
 
-qreal FlowLayout::spacing(Qt::Orientation o) const
+qreal FlowLayout::spacing(BobUI::Orientation o) const
 {
     return m_spacing[int(o) - 1];
 }
 
-void FlowLayout::setSpacing(Qt::Orientations o, qreal spacing)
+void FlowLayout::setSpacing(BobUI::Orientations o, qreal spacing)
 {
-    if (o & Qt::Horizontal)
+    if (o & BobUI::Horizontal)
         m_spacing[0] = spacing;
-    if (o & Qt::Vertical)
+    if (o & BobUI::Vertical)
         m_spacing[1] = spacing;
 }
 
@@ -67,7 +67,7 @@ qreal FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const
     qreal maxRowHeight = 0;
     QSizeF pref;
     for (QGraphicsLayoutItem *item : m_items) {
-        pref = item->effectiveSizeHint(Qt::PreferredSize);
+        pref = item->effectiveSizeHint(BobUI::PreferredSize);
         maxRowHeight = qMax(maxRowHeight, pref.height());
 
         qreal next_x;
@@ -79,13 +79,13 @@ qreal FlowLayout::doLayout(const QRectF &geom, bool applyNewGeometry) const
                 x = 0;
                 next_x = pref.width();
             }
-            y += maxRowHeight + spacing(Qt::Vertical);
+            y += maxRowHeight + spacing(BobUI::Vertical);
             maxRowHeight = 0;
         }
 
         if (applyNewGeometry)
             item->setGeometry(QRectF(QPointF(left + x, top + y), pref));
-        x = next_x + spacing(Qt::Horizontal);
+        x = next_x + spacing(BobUI::Horizontal);
     }
     maxRowHeight = qMax(maxRowHeight, pref.height());
     return top + y + maxRowHeight + bottom;
@@ -103,7 +103,7 @@ QSizeF FlowLayout::minSize(const QSizeF &constraint) const
         // not supported
     } else {
         for (const QGraphicsLayoutItem *item : std::as_const(m_items))
-            size = size.expandedTo(item->effectiveSizeHint(Qt::MinimumSize));
+            size = size.expandedTo(item->effectiveSizeHint(BobUI::MinimumSize));
         size += QSizeF(left + right, top + bottom);
     }
     return size;
@@ -118,12 +118,12 @@ QSizeF FlowLayout::prefSize() const
     qreal totalWidth = 0;
     for (const QGraphicsLayoutItem *item : std::as_const(m_items)) {
         if (totalWidth > 0)
-            totalWidth += spacing(Qt::Horizontal);
-        QSizeF pref = item->effectiveSizeHint(Qt::PreferredSize);
+            totalWidth += spacing(BobUI::Horizontal);
+        QSizeF pref = item->effectiveSizeHint(BobUI::PreferredSize);
         totalWidth += pref.width();
         maxh = qMax(maxh, pref.height());
     }
-    maxh += spacing(Qt::Vertical);
+    maxh += spacing(BobUI::Vertical);
 
     const qreal goldenAspectRatio = 1.61803399;
     qreal w = qSqrt(totalWidth * maxh * goldenAspectRatio) + left + right;
@@ -137,10 +137,10 @@ QSizeF FlowLayout::maxSize() const
     qreal totalHeight = 0;
     for (const QGraphicsLayoutItem *item : std::as_const(m_items)) {
         if (totalWidth > 0)
-            totalWidth += spacing(Qt::Horizontal);
+            totalWidth += spacing(BobUI::Horizontal);
         if (totalHeight > 0)
-            totalHeight += spacing(Qt::Vertical);
-        QSizeF pref = item->effectiveSizeHint(Qt::PreferredSize);
+            totalHeight += spacing(BobUI::Vertical);
+        QSizeF pref = item->effectiveSizeHint(BobUI::PreferredSize);
         totalWidth += pref.width();
         totalHeight += pref.height();
     }
@@ -150,17 +150,17 @@ QSizeF FlowLayout::maxSize() const
     return QSizeF(left + totalWidth + right, top + totalHeight + bottom);
 }
 
-QSizeF FlowLayout::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF FlowLayout::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     QSizeF sh = constraint;
     switch (which) {
-    case Qt::PreferredSize:
+    case BobUI::PreferredSize:
         sh = prefSize();
         break;
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         sh = minSize(constraint);
         break;
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         sh = maxSize();
         break;
     default:

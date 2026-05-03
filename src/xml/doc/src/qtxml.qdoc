@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \module QtXml
+    \module BobUIXml
     \title Qt XML C++ Classes
     \ingroup modules
     \qtcmakepackage Xml

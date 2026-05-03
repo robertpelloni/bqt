@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qstyleoption.h>
 #include <qpainter.h>
@@ -10,7 +10,7 @@
 #include <private/qmath_p.h>
 #include <private/qstyle_p.h>
 #include <qmath.h>
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 #include <qscrollbar.h>
 #endif
 #include <qabstractscrollarea.h>
@@ -20,16 +20,16 @@
 #include "qstylehelper_p.h"
 #include <qstringbuilder.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_GUI_EXPORT int qt_defaultDpiX();
+Q_GUI_EXPORT int bobui_defaultDpiX();
 
 namespace QStyleHelper {
 
 static inline bool usePixmapCache(const QStyleOption *opt)
 {
     if (QWidget *widget = qobject_cast<QWidget *>(opt->styleObject))
-        return !widget->testAttribute(Qt::WA_StyleSheetTarget);
+        return !widget->testAttribute(BobUI::WA_StyleSheetTarget);
     return true;
 }
 
@@ -47,13 +47,13 @@ QString uniqueName(const QString &key, const QStyleOption *option, const QSize &
                       % HexString<uint>(size.height())
                       % HexString<qreal>(dpr);
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     if (const QStyleOptionSpinBox *spinBox = qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
         tmp = tmp % HexString<uint>(spinBox->buttonSymbols)
                   % HexString<uint>(spinBox->stepEnabled)
                   % QChar(spinBox->frame ? u'1' : u'0');
     }
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
     return tmp;
 }
@@ -69,7 +69,7 @@ Q_WIDGETS_EXPORT qreal dpi(const QStyleOption *option)
 #ifndef Q_OS_DARWIN
     // Prioritize the application override, except for on macOS where
     // we have historically not supported the AA_Use96Dpi flag.
-    if (QCoreApplication::testAttribute(Qt::AA_Use96Dpi))
+    if (QCoreApplication::testAttribute(BobUI::AA_Use96Dpi))
         return 96;
 #endif
 
@@ -77,12 +77,12 @@ Q_WIDGETS_EXPORT qreal dpi(const QStyleOption *option)
     if (option)
         return option->fontMetrics.fontDpi();
 
-    // Fall back to historical Qt behavior: hardocded 72 DPI on mac,
+    // Fall back to historical BobUI behavior: hardocded 72 DPI on mac,
     // primary screen DPI on other platforms.
 #ifdef Q_OS_DARWIN
     return qstyleBaseDpi;
 #else
-    return qt_defaultDpiX();
+    return bobui_defaultDpiX();
 #endif
 }
 
@@ -101,7 +101,7 @@ Q_WIDGETS_EXPORT qreal dpiScaled(qreal value, const QStyleOption *option)
     return dpiScaled(value, dpi(option));
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 bool isInstanceOf(QObject *obj, QAccessible::Role role)
 {
     bool match = false;
@@ -122,10 +122,10 @@ bool hasAncestor(QObject *obj, QAccessible::Role role)
     }
     return found;
 }
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 
-#if QT_CONFIG(dial)
+#if BOBUI_CONFIG(dial)
 
 int calcBigLineSize(int radius)
 {
@@ -203,7 +203,7 @@ QPolygonF calcLines(const QStyleOptionSlider *dial)
     qreal xc = width / 2 + 0.5;
     qreal yc = height / 2 + 0.5;
     const int ns = dial->tickInterval;
-    if (!ns) // Invalid values may be set by Qt Widgets Designer.
+    if (!ns) // Invalid values may be set by BobUI Widgets Designer.
         return poly;
     int notches = (dial->maximum + ns - 1 - dial->minimum) / ns;
     if (notches <= 0)
@@ -286,9 +286,9 @@ void drawDial(const QStyleOptionSlider *option, QPainter *painter)
                                            shadowRect.center().y(), shadowRect.width()/2.0,
                                            shadowRect.center().x(), shadowRect.center().y());
             shadowGradient.setColorAt(qreal(0.91), QColor(0, 0, 0, 40));
-            shadowGradient.setColorAt(qreal(1.0), Qt::transparent);
+            shadowGradient.setColorAt(qreal(1.0), BobUI::transparent);
             p->setBrush(shadowGradient);
-            p->setPen(Qt::NoPen);
+            p->setPen(BobUI::NoPen);
             p->translate(shadowSize, shadowSize);
             p->drawEllipse(shadowRect);
             p->translate(-shadowSize, -shadowSize);
@@ -303,12 +303,12 @@ void drawDial(const QStyleOptionSlider *option, QPainter *painter)
             gradient.setColorAt(1, buttonColor.darker(115));
             p->setBrush(gradient);
         } else {
-            p->setBrush(Qt::NoBrush);
+            p->setBrush(BobUI::NoBrush);
         }
 
         p->setPen(buttonColor.darker(280));
         p->drawEllipse(br);
-        p->setBrush(Qt::NoBrush);
+        p->setBrush(BobUI::NoBrush);
         p->setPen(buttonColor.lighter(110));
         p->drawEllipse(br.adjusted(1, 1, -1, -1));
 
@@ -319,7 +319,7 @@ void drawDial(const QStyleOptionSlider *option, QPainter *painter)
                              qMax(230, highlight.value()));
             highlight.setAlpha(127);
             p->setPen(QPen(highlight, 2.0));
-            p->setBrush(Qt::NoBrush);
+            p->setBrush(BobUI::NoBrush);
             p->drawEllipse(br.adjusted(-1, -1, 1, 1));
         }
     }
@@ -349,7 +349,7 @@ void drawDial(const QStyleOptionSlider *option, QPainter *painter)
     painter->drawEllipse(dialRect);
     painter->restore();
 }
-#endif //QT_CONFIG(dial)
+#endif //BOBUI_CONFIG(dial)
 
 void drawBorderPixmap(const QPixmap &pixmap, QPainter *painter, const QRect &rect,
                      int left, int top, int right,
@@ -410,7 +410,7 @@ void drawBorderPixmap(const QPixmap &pixmap, QPainter *painter, const QRect &rec
 
 QColor backgroundColor(const QPalette &pal, const QWidget* widget)
 {
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
     if (qobject_cast<const QScrollBar *>(widget) && widget->parent() &&
             qobject_cast<const QAbstractScrollArea *>(widget->parent()->parent()))
         return widget->parentWidget()->parentWidget()->palette().color(QPalette::Base);
@@ -423,11 +423,11 @@ QColor backgroundColor(const QPalette &pal, const QWidget* widget)
 WidgetSizePolicy widgetSizePolicy(const QWidget *widget, const QStyleOption *opt)
 {
     while (widget) {
-        if (widget->testAttribute(Qt::WA_MacMiniSize)) {
+        if (widget->testAttribute(BobUI::WA_MacMiniSize)) {
             return SizeMini;
-        } else if (widget->testAttribute(Qt::WA_MacSmallSize)) {
+        } else if (widget->testAttribute(BobUI::WA_MacSmallSize)) {
             return SizeSmall;
-        } else if (widget->testAttribute(Qt::WA_MacNormalSize)) {
+        } else if (widget->testAttribute(BobUI::WA_MacNormalSize)) {
             return SizeLarge;
         }
         widget = widget->parentWidget();
@@ -442,4 +442,4 @@ WidgetSizePolicy widgetSizePolicy(const QWidget *widget, const QStyleOption *opt
 }
 
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

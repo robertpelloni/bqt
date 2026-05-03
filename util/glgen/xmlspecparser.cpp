@@ -1,5 +1,5 @@
 // Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "xmlspecparser.h"
 
@@ -7,13 +7,13 @@
 #include <QFile>
 #include <QRegularExpression>
 #include <QStringList>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QXmlStreamReader>
 
 #ifdef SPECPARSER_DEBUG
 #define qXmlSpecParserDebug qDebug
 #else
-#define qXmlSpecParserDebug QT_NO_QDEBUG_MACRO
+#define qXmlSpecParserDebug BOBUI_NO_QDEBUG_MACRO
 #endif
 
 bool XmlSpecParser::parse()

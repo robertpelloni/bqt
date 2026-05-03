@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTITEMMODEL_H
 #define QABSTRACTITEMMODEL_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qvariant.h>
 
-QT_REQUIRE_CONFIG(itemmodel);
+BOBUI_REQUIRE_CONFIG(itemmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QModelRoleData
 {
@@ -41,7 +41,7 @@ Q_DECLARE_TYPEINFO(QModelRoleData, Q_RELOCATABLE_TYPE);
 
 class QModelRoleDataSpan;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T, typename Enable = void>
 struct IsContainerCompatibleWithModelRoleDataSpan : std::false_type {};
 
@@ -62,7 +62,7 @@ struct IsContainerCompatibleWithModelRoleDataSpan<T, std::enable_if_t<std::conju
             // Don't make an accidental copy constructor
             std::negation<std::is_same<std::decay_t<T>, QModelRoleDataSpan>>
         >>> : std::true_type {};
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class QModelRoleDataSpan
 {
@@ -70,7 +70,7 @@ class QModelRoleDataSpan
     qsizetype m_len = 0;
 
     template <typename T>
-    using if_compatible_container = std::enable_if_t<QtPrivate::IsContainerCompatibleWithModelRoleDataSpan<T>::value, bool>;
+    using if_compatible_container = std::enable_if_t<BobUIPrivate::IsContainerCompatibleWithModelRoleDataSpan<T>::value, bool>;
 
 public:
     constexpr QModelRoleDataSpan() noexcept {}
@@ -137,9 +137,9 @@ public:
     inline QModelIndex sibling(int row, int column) const;
     inline QModelIndex siblingAtColumn(int column) const;
     inline QModelIndex siblingAtRow(int row) const;
-    inline QVariant data(int role = Qt::DisplayRole) const;
+    inline QVariant data(int role = BobUI::DisplayRole) const;
     inline void multiData(QModelRoleDataSpan roleDataSpan) const;
-    inline Qt::ItemFlags flags() const;
+    inline BobUI::ItemFlags flags() const;
     constexpr inline const QAbstractItemModel *model() const noexcept { return m.get(); }
     constexpr inline bool isValid() const noexcept { return (r >= 0) && (c >= 0) && (m != nullptr); }
 
@@ -148,17 +148,17 @@ private:
     {
         return lhs.r == rhs.r && lhs.c == rhs.c && lhs.i == rhs.i && lhs.m == rhs.m;
     }
-    friend constexpr Qt::strong_ordering compareThreeWay(const QModelIndex &lhs, const QModelIndex &rhs) noexcept
+    friend constexpr BobUI::strong_ordering compareThreeWay(const QModelIndex &lhs, const QModelIndex &rhs) noexcept
     {
-        if (auto val = Qt::compareThreeWay(lhs.r, rhs.r); !is_eq(val))
+        if (auto val = BobUI::compareThreeWay(lhs.r, rhs.r); !is_eq(val))
             return val;
-        if (auto val = Qt::compareThreeWay(lhs.c, rhs.c); !is_eq(val))
+        if (auto val = BobUI::compareThreeWay(lhs.c, rhs.c); !is_eq(val))
             return val;
-        if (auto val = Qt::compareThreeWay(lhs.i, rhs.i); !is_eq(val))
+        if (auto val = BobUI::compareThreeWay(lhs.i, rhs.i); !is_eq(val))
             return val;
-        if (auto val = Qt::compareThreeWay(lhs.m, rhs.m); !is_eq(val))
+        if (auto val = BobUI::compareThreeWay(lhs.m, rhs.m); !is_eq(val))
             return val;
-        return Qt::strong_ordering::equivalent;
+        return BobUI::strong_ordering::equivalent;
     }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QModelIndex)
 private:
@@ -168,11 +168,11 @@ private:
         : r(arow), c(acolumn), i(id), m(amodel) {}
     int r, c;
     quintptr i;
-    Qt::totally_ordered_wrapper<const QAbstractItemModel *> m;
+    BobUI::totally_ordered_wrapper<const QAbstractItemModel *> m;
 };
 Q_DECLARE_TYPEINFO(QModelIndex, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QModelIndex &);
 #endif
 
@@ -188,7 +188,7 @@ public:
     QPersistentModelIndex(const QModelIndex &index);
     QPersistentModelIndex(const QPersistentModelIndex &other);
     ~QPersistentModelIndex();
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator<(const QPersistentModelIndex &other) const noexcept;
     bool operator==(const QPersistentModelIndex &other) const noexcept;
     inline bool operator!=(const QPersistentModelIndex &other) const noexcept
@@ -197,9 +197,9 @@ public:
     QPersistentModelIndex &operator=(const QPersistentModelIndex &other);
     inline QPersistentModelIndex(QPersistentModelIndex &&other) noexcept
         : d(std::exchange(other.d, nullptr)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPersistentModelIndex)
-    void swap(QPersistentModelIndex &other) noexcept { qt_ptr_swap(d, other.d); }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPersistentModelIndex)
+    void swap(QPersistentModelIndex &other) noexcept { bobui_ptr_swap(d, other.d); }
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QModelIndex &other) const noexcept;
     bool operator!=(const QModelIndex &other) const noexcept;
 #endif
@@ -212,9 +212,9 @@ public:
     quintptr internalId() const;
     QModelIndex parent() const;
     QModelIndex sibling(int row, int column) const;
-    QVariant data(int role = Qt::DisplayRole) const;
+    QVariant data(int role = BobUI::DisplayRole) const;
     void multiData(QModelRoleDataSpan roleDataSpan) const;
-    Qt::ItemFlags flags() const;
+    BobUI::ItemFlags flags() const;
     const QAbstractItemModel *model() const;
     bool isValid() const;
 private:
@@ -226,15 +226,15 @@ private:
     comparesEqual(const QPersistentModelIndex &lhs, const QPersistentModelIndex &rhs) noexcept;
     friend Q_CORE_EXPORT bool
     comparesEqual(const QPersistentModelIndex &lhs, const QModelIndex &rhs) noexcept;
-    friend Q_CORE_EXPORT Qt::strong_ordering // ### Qt 7: partial_ordering?
+    friend Q_CORE_EXPORT BobUI::strong_ordering // ### BobUI 7: partial_ordering?
     compareThreeWay(const QPersistentModelIndex &lhs, const QPersistentModelIndex &rhs) noexcept;
-    friend Q_CORE_EXPORT Qt::strong_ordering // ### Qt 7: partial_ordering?
+    friend Q_CORE_EXPORT BobUI::strong_ordering // ### BobUI 7: partial_ordering?
     compareThreeWay(const QPersistentModelIndex &lhs, const QModelIndex &rhs) noexcept;
-#if !QT_CORE_REMOVED_SINCE(6, 8)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_DECLARE_STRONGLY_ORDERED(QPersistentModelIndex)
     Q_DECLARE_STRONGLY_ORDERED(QPersistentModelIndex, QModelIndex)
 #endif
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_CORE_EXPORT QDebug operator<<(QDebug, const QPersistentModelIndex &);
 #endif
 };
@@ -244,7 +244,7 @@ inline size_t qHash(const QPersistentModelIndex &index, size_t seed) noexcept
 { return qHash(index.d, seed); }
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QPersistentModelIndex &);
 #endif
 
@@ -252,7 +252,7 @@ typedef QList<QModelIndex> QModelIndexList;
 
 class QMimeData;
 class QAbstractItemModelPrivate;
-class QTransposeProxyModelPrivate;
+class BOBUIransposeProxyModelPrivate;
 template <class Key, class T> class QMap;
 
 
@@ -278,13 +278,13 @@ public:
     Q_INVOKABLE virtual int columnCount(const QModelIndex &parent = QModelIndex()) const = 0;
     Q_INVOKABLE virtual bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
 
-    Q_INVOKABLE virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
-    Q_INVOKABLE virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    Q_INVOKABLE virtual QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const = 0;
+    Q_INVOKABLE virtual bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole);
 
-    Q_INVOKABLE virtual QVariant headerData(int section, Qt::Orientation orientation,
-                                int role = Qt::DisplayRole) const;
-    virtual bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-                               int role = Qt::EditRole);
+    Q_INVOKABLE virtual QVariant headerData(int section, BobUI::Orientation orientation,
+                                int role = BobUI::DisplayRole) const;
+    virtual bool setHeaderData(int section, BobUI::Orientation orientation, const QVariant &value,
+                               int role = BobUI::EditRole);
 
     virtual QMap<int, QVariant> itemData(const QModelIndex &index) const;
     virtual bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles);
@@ -292,12 +292,12 @@ public:
 
     virtual QStringList mimeTypes() const;
     virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
-    virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
+    virtual bool canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                                  int row, int column, const QModelIndex &parent) const;
-    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+    virtual bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                               int row, int column, const QModelIndex &parent);
-    virtual Qt::DropActions supportedDropActions() const;
-    virtual Qt::DropActions supportedDragActions() const;
+    virtual BobUI::DropActions supportedDropActions() const;
+    virtual BobUI::DropActions supportedDragActions() const;
 
     Q_INVOKABLE Q_REVISION(6, 4) virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
     Q_INVOKABLE Q_REVISION(6, 4) virtual bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex());
@@ -319,13 +319,13 @@ public:
 
     Q_INVOKABLE virtual void fetchMore(const QModelIndex &parent);
     Q_INVOKABLE virtual bool canFetchMore(const QModelIndex &parent) const;
-    Q_INVOKABLE virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-    Q_INVOKABLE Q_REVISION(6, 4) virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
+    Q_INVOKABLE virtual BobUI::ItemFlags flags(const QModelIndex &index) const;
+    Q_INVOKABLE Q_REVISION(6, 4) virtual void sort(int column, BobUI::SortOrder order = BobUI::AscendingOrder);
     virtual QModelIndex buddy(const QModelIndex &index) const;
     Q_INVOKABLE virtual QModelIndexList match(const QModelIndex &start, int role,
                                               const QVariant &value, int hits = 1,
-                                              Qt::MatchFlags flags =
-                                              Qt::MatchFlags(Qt::MatchStartsWith|Qt::MatchWrap)) const;
+                                              BobUI::MatchFlags flags =
+                                              BobUI::MatchFlags(BobUI::MatchStartsWith|BobUI::MatchWrap)) const;
     virtual QSize span(const QModelIndex &index) const;
 
     virtual QHash<int,QByteArray> roleNames() const;
@@ -356,7 +356,7 @@ public:
 Q_SIGNALS:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
                      const QList<int> &roles = QList<int>());
-    void headerDataChanged(Qt::Orientation orientation, int first, int last);
+    void headerDataChanged(BobUI::Orientation orientation, int first, int last);
     void layoutChanged(const QList<QPersistentModelIndex> &parents = QList<QPersistentModelIndex>(), QAbstractItemModel::LayoutChangeHint hint = QAbstractItemModel::NoLayoutChangeHint);
     void layoutAboutToBeChanged(const QList<QPersistentModelIndex> &parents = QList<QPersistentModelIndex>(), QAbstractItemModel::LayoutChangeHint hint = QAbstractItemModel::NoLayoutChangeHint);
 
@@ -458,10 +458,10 @@ public:
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex sibling(int row, int column, const QModelIndex &idx) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                       int row, int column, const QModelIndex &parent) override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
     using QObject::parent;
 
@@ -484,10 +484,10 @@ public:
 
     QModelIndex index(int row, int column = 0, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex sibling(int row, int column, const QModelIndex &idx) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                       int row, int column, const QModelIndex &parent) override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
     using QObject::parent;
 
@@ -521,20 +521,20 @@ inline QVariant QModelIndex::data(int arole) const
 inline void QModelIndex::multiData(QModelRoleDataSpan roleDataSpan) const
 { if (m) m->multiData(*this, roleDataSpan); }
 
-inline Qt::ItemFlags QModelIndex::flags() const
-{ return m ? m->flags(*this) : Qt::ItemFlags(); }
+inline BobUI::ItemFlags QModelIndex::flags() const
+{ return m ? m->flags(*this) : BobUI::ItemFlags(); }
 
 inline size_t qHash(const QModelIndex &index, size_t seed = 0) noexcept
 {
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
     return qHashMulti(seed, index.row(), index.column(), index.internalId());
 #else
     return size_t((size_t(index.row()) << 4) + size_t(index.column()) + index.internalId()) ^ seed;
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QModelIndexList, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QModelIndexList, Q_CORE_EXPORT)
 
 #endif // QABSTRACTITEMMODEL_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "glwidget.h"
 #include <QOpenGLShaderProgram>
@@ -127,9 +127,9 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     int dx = event->position().toPoint().x() - lastPos.x();
     int dy = event->position().toPoint().y() - lastPos.y();
 
-    if (event->buttons() & Qt::LeftButton) {
+    if (event->buttons() & BobUI::LeftButton) {
         rotateBy(8 * dy, 8 * dx, 0);
-    } else if (event->buttons() & Qt::RightButton) {
+    } else if (event->buttons() & BobUI::RightButton) {
         rotateBy(8 * dy, 0, 8 * dx);
     }
     lastPos = event->position().toPoint();

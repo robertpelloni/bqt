@@ -1,0 +1,7 @@
+QAbstractItemView::item
+{
+    background: grey;
+}
+BOBUIreeWidget::indicator:checked {
+    background: green
+}

@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeventdispatcher_glib_p.h"
 #include "qeventdispatcher_unix_p.h"
 
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 #include "qcoreapplication.h"
 #include "qsocketnotifier.h"
 
-#include <QtCore/qlist.h>
+#include <BobUICore/qlist.h>
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
 #include <glib.h>
 
 using namespace std::chrono;
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct GPollFDWithQSocketNotifier
 {
@@ -92,7 +92,7 @@ Q_CONSTINIT static GSourceFuncs socketNotifierSourceFuncs = {
 struct GTimerSource
 {
     GSource source;
-    QTimerInfoList timerList;
+    BOBUIimerInfoList timerList;
     QEventLoop::ProcessEventsFlags processEventsFlags;
     bool runWithIdlePriority;
 };
@@ -219,7 +219,7 @@ struct GPostEventSource
 
 static gboolean postEventSourcePrepare(GSource *s, gint *timeout)
 {
-    QThreadData *data = QThreadData::current();
+    BOBUIhreadData *data = BOBUIhreadData::current();
     if (!data)
         return false;
 
@@ -262,7 +262,7 @@ QEventDispatcherGlibPrivate::QEventDispatcherGlibPrivate(GMainContext *context)
     : mainContext(context)
 {
 #if GLIB_MAJOR_VERSION == 2 && GLIB_MINOR_VERSION < 32
-    if (qEnvironmentVariableIsEmpty("QT_NO_THREADED_GLIB")) {
+    if (qEnvironmentVariableIsEmpty("BOBUI_NO_THREADED_GLIB")) {
         Q_CONSTINIT static QBasicMutex mutex;
         QMutexLocker locker(&mutex);
         if (!g_thread_supported())
@@ -274,7 +274,7 @@ QEventDispatcherGlibPrivate::QEventDispatcherGlibPrivate(GMainContext *context)
         g_main_context_ref(mainContext);
     } else {
         QCoreApplication *app = QCoreApplication::instance();
-        if (app && QThread::currentThread() == app->thread()) {
+        if (app && BOBUIhread::currentThread() == app->thread()) {
             mainContext = g_main_context_default();
             g_main_context_ref(mainContext);
         } else {
@@ -288,7 +288,7 @@ QEventDispatcherGlibPrivate::QEventDispatcherGlibPrivate(GMainContext *context)
 
     // setup post event source
     GSource *source = g_source_new(&postEventSourceFuncs, sizeof(GPostEventSource));
-    g_source_set_name(source, "[Qt] GPostEventSource");
+    g_source_set_name(source, "[BobUI] GPostEventSource");
     postEventSource = reinterpret_cast<GPostEventSource *>(source);
 
     postEventSource->serialNumber.storeRelaxed(1);
@@ -298,7 +298,7 @@ QEventDispatcherGlibPrivate::QEventDispatcherGlibPrivate(GMainContext *context)
 
     // setup socketNotifierSource
     source = g_source_new(&socketNotifierSourceFuncs, sizeof(GSocketNotifierSource));
-    g_source_set_name(source, "[Qt] GSocketNotifierSource");
+    g_source_set_name(source, "[BobUI] GSocketNotifierSource");
     socketNotifierSource = reinterpret_cast<GSocketNotifierSource *>(source);
     (void) new (&socketNotifierSource->pollfds) QList<GPollFDWithQSocketNotifier *>();
     g_source_set_can_recurse(&socketNotifierSource->source, true);
@@ -306,16 +306,16 @@ QEventDispatcherGlibPrivate::QEventDispatcherGlibPrivate(GMainContext *context)
 
     // setup normal and idle timer sources
     source = g_source_new(&timerSourceFuncs, sizeof(GTimerSource));
-    g_source_set_name(source, "[Qt] GTimerSource");
+    g_source_set_name(source, "[BobUI] GTimerSource");
     timerSource = reinterpret_cast<GTimerSource *>(source);
-    (void) new (&timerSource->timerList) QTimerInfoList();
+    (void) new (&timerSource->timerList) BOBUIimerInfoList();
     timerSource->processEventsFlags = QEventLoop::AllEvents;
     timerSource->runWithIdlePriority = false;
     g_source_set_can_recurse(&timerSource->source, true);
     g_source_attach(&timerSource->source, mainContext);
 
     source = g_source_new(&idleTimerSourceFuncs, sizeof(GIdleTimerSource));
-    g_source_set_name(source, "[Qt] GIdleTimerSource");
+    g_source_set_name(source, "[BobUI] GIdleTimerSource");
     idleTimerSource = reinterpret_cast<GIdleTimerSource *>(source);
     idleTimerSource->timerSource = timerSource;
     g_source_set_can_recurse(&idleTimerSource->source, true);
@@ -345,7 +345,7 @@ QEventDispatcherGlib::~QEventDispatcherGlib()
 
     // destroy all timer sources
     d->timerSource->timerList.clearTimers();
-    d->timerSource->timerList.~QTimerInfoList();
+    d->timerSource->timerList.~BOBUIimerInfoList();
     g_source_destroy(&d->timerSource->source);
     g_source_unref(&d->timerSource->source);
     d->timerSource = nullptr;
@@ -413,12 +413,12 @@ void QEventDispatcherGlib::registerSocketNotifier(QSocketNotifier *notifier)
     Q_ASSERT(notifier);
     int sockfd = int(notifier->socket());
     int type = notifier->type();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (sockfd < 0) {
         qWarning("QSocketNotifier: Internal error");
         return;
     } else if (notifier->thread() != thread()
-               || thread() != QThread::currentThread()) {
+               || thread() != BOBUIhread::currentThread()) {
         qWarning("QSocketNotifier: socket notifiers cannot be enabled from another thread");
         return;
     }
@@ -450,12 +450,12 @@ void QEventDispatcherGlib::registerSocketNotifier(QSocketNotifier *notifier)
 void QEventDispatcherGlib::unregisterSocketNotifier(QSocketNotifier *notifier)
 {
     Q_ASSERT(notifier);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (notifier->socket() < 0) {
         qWarning("QSocketNotifier: Internal error");
         return;
     } else if (notifier->thread() != thread()
-               || thread() != QThread::currentThread()) {
+               || thread() != BOBUIhread::currentThread()) {
         qWarning("QSocketNotifier: socket notifiers cannot be disabled from another thread");
         return;
     }
@@ -481,14 +481,14 @@ void QEventDispatcherGlib::unregisterSocketNotifier(QSocketNotifier *notifier)
     }
 }
 
-void QEventDispatcherGlib::registerTimer(Qt::TimerId timerId, Duration interval,
-                                         Qt::TimerType timerType, QObject *object)
+void QEventDispatcherGlib::registerTimer(BobUI::TimerId timerId, Duration interval,
+                                         BobUI::TimerType timerType, QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1 || interval < 0ns || !object) {
         qWarning("QEventDispatcherGlib::registerTimer: invalid arguments");
         return;
-    } else if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherGlib::registerTimer: timers cannot be started from another thread");
         return;
     }
@@ -498,13 +498,13 @@ void QEventDispatcherGlib::registerTimer(Qt::TimerId timerId, Duration interval,
     d->timerSource->timerList.registerTimer(timerId, interval, timerType, object);
 }
 
-bool QEventDispatcherGlib::unregisterTimer(Qt::TimerId timerId)
+bool QEventDispatcherGlib::unregisterTimer(BobUI::TimerId timerId)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QEventDispatcherGlib::unregisterTimer: invalid argument");
         return false;
-    } else if (thread() != QThread::currentThread()) {
+    } else if (thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherGlib::unregisterTimer: timers cannot be stopped from another thread");
         return false;
     }
@@ -516,11 +516,11 @@ bool QEventDispatcherGlib::unregisterTimer(Qt::TimerId timerId)
 
 bool QEventDispatcherGlib::unregisterTimers(QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherGlib::unregisterTimers: invalid argument");
         return false;
-    } else if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherGlib::unregisterTimers: timers cannot be stopped from another thread");
         return false;
     }
@@ -532,7 +532,7 @@ bool QEventDispatcherGlib::unregisterTimers(QObject *object)
 
 QList<QEventDispatcherGlib::TimerInfoV2> QEventDispatcherGlib::timersForObject(QObject *object) const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherGlib:timersForObject: invalid argument");
         return {};
@@ -543,9 +543,9 @@ QList<QEventDispatcherGlib::TimerInfoV2> QEventDispatcherGlib::timersForObject(Q
     return d->timerSource->timerList.registeredTimers(object);
 }
 
-QEventDispatcherGlib::Duration QEventDispatcherGlib::remainingTime(Qt::TimerId timerId) const
+QEventDispatcherGlib::Duration QEventDispatcherGlib::remainingTime(BobUI::TimerId timerId) const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QEventDispatcherGlib::remainingTimeTime: invalid argument");
         return Duration::min();
@@ -582,6 +582,6 @@ QEventDispatcherGlib::QEventDispatcherGlib(QEventDispatcherGlibPrivate &dd, QObj
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventdispatcher_glib_p.cpp"

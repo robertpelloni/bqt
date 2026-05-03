@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qundogroup.h"
 #include "qundostack.h"
 #include "qundostack_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QUndoGroupPrivate : public QObjectPrivate
 {
@@ -22,9 +22,9 @@ public:
     \class QUndoGroup
     \brief The QUndoGroup class is a group of QUndoStack objects.
     \since 4.2
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    For an overview of the Qt's undo framework, see the
+    For an overview of the BobUI's undo framework, see the
     \l{qundo.html}{overview}.
 
     An application often has multiple undo stacks, one for each opened document. At the
@@ -218,7 +218,7 @@ QUndoStack *QUndoGroup::activeStack() const
     return d->active;
 }
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 
 /*!
     Creates an undo QAction object with parent \a parent.
@@ -230,7 +230,7 @@ QUndoStack *QUndoGroup::activeStack() const
     be disabled.
 
     If \a prefix is empty, the default template "Undo %1" is used instead of prefix.
-    Before Qt 4.8, the prefix "Undo" was used by default.
+    Before BobUI 4.8, the prefix "Undo" was used by default.
 
     \sa createRedoAction(), canUndo(), QUndoCommand::text()
 */
@@ -268,7 +268,7 @@ QAction *QUndoGroup::createUndoAction(QObject *parent, const QString &prefix) co
     be disabled.
 
     If \a prefix is empty, the default template "Redo %1" is used instead of prefix.
-    Before Qt 4.8, the prefix "Redo" was used by default.
+    Before BobUI 4.8, the prefix "Redo" was used by default.
 
     \sa createUndoAction(), canRedo(), QUndoCommand::text()
 */
@@ -295,7 +295,7 @@ QAction *QUndoGroup::createRedoAction(QObject *parent, const QString &prefix) co
     return action;
 }
 
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
 /*!
     Calls QUndoStack::undo() on the active stack.
@@ -475,6 +475,6 @@ bool QUndoGroup::isClean() const
     \sa QUndoStack::redoTextChanged(), setActiveStack()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qundogroup.cpp"

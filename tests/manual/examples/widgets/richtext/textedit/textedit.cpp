@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "textedit.h"
 
@@ -15,27 +15,27 @@
 #include <QFontDatabase>
 #include <QMenu>
 #include <QMenuBar>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QStatusBar>
-#include <QToolBar>
-#include <QTextCursor>
-#include <QTextDocumentWriter>
-#include <QTextList>
-#include <QTimer>
-#include <QtDebug>
+#include <BOBUIoolBar>
+#include <BOBUIextCursor>
+#include <BOBUIextDocumentWriter>
+#include <BOBUIextList>
+#include <BOBUIimer>
+#include <BobUIDebug>
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QMimeDatabase>
 #include <QStringDecoder>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printer)
-#if QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printer)
+#if BOBUI_CONFIG(printdialog)
 #include <QPrintDialog>
 #endif
 #include <QPrinter>
-#if QT_CONFIG(printpreviewdialog)
+#if BOBUI_CONFIG(printpreviewdialog)
 #include <QPrintPreviewDialog>
 #endif
 #endif
@@ -55,14 +55,14 @@ TextEdit::TextEdit(QWidget *parent)
 #endif
     setWindowTitle(QCoreApplication::applicationName());
 
-    textEdit = new QTextEdit(this);
-    connect(textEdit, &QTextEdit::currentCharFormatChanged,
+    textEdit = new BOBUIextEdit(this);
+    connect(textEdit, &BOBUIextEdit::currentCharFormatChanged,
             this, &TextEdit::currentCharFormatChanged);
-    connect(textEdit, &QTextEdit::cursorPositionChanged,
+    connect(textEdit, &BOBUIextEdit::cursorPositionChanged,
             this, &TextEdit::cursorPositionChanged);
     setCentralWidget(textEdit);
 
-    setToolButtonStyle(Qt::ToolButtonFollowStyle);
+    setToolButtonStyle(BobUI::ToolButtonFollowStyle);
     setupFileActions();
     setupEditActions();
     setupTextActions();
@@ -70,7 +70,7 @@ TextEdit::TextEdit(QWidget *parent)
     {
         QMenu *helpMenu = menuBar()->addMenu(tr("Help"));
         helpMenu->addAction(tr("About"), this, &TextEdit::about);
-        helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+        helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
     }
 
     QFont textFont("Helvetica");
@@ -81,13 +81,13 @@ TextEdit::TextEdit(QWidget *parent)
     alignmentChanged(textEdit->alignment());
 
     auto *document = textEdit->document();
-    connect(document, &QTextDocument::modificationChanged,
+    connect(document, &BOBUIextDocument::modificationChanged,
             actionSave, &QAction::setEnabled);
-    connect(document, &QTextDocument::modificationChanged,
+    connect(document, &BOBUIextDocument::modificationChanged,
             this, &QWidget::setWindowModified);
-    connect(document, &QTextDocument::undoAvailable,
+    connect(document, &BOBUIextDocument::undoAvailable,
             actionUndo, &QAction::setEnabled);
-    connect(document, &QTextDocument::redoAvailable,
+    connect(document, &BOBUIextDocument::redoAvailable,
             actionRedo, &QAction::setEnabled);
 
     setWindowModified(document->isModified());
@@ -95,11 +95,11 @@ TextEdit::TextEdit(QWidget *parent)
     actionUndo->setEnabled(document->isUndoAvailable());
     actionRedo->setEnabled(document->isRedoAvailable());
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     actionCut->setEnabled(false);
-    connect(textEdit, &QTextEdit::copyAvailable, actionCut, &QAction::setEnabled);
+    connect(textEdit, &BOBUIextEdit::copyAvailable, actionCut, &QAction::setEnabled);
     actionCopy->setEnabled(false);
-    connect(textEdit, &QTextEdit::copyAvailable, actionCopy, &QAction::setEnabled);
+    connect(textEdit, &BOBUIextEdit::copyAvailable, actionCopy, &QAction::setEnabled);
 
     connect(QGuiApplication::clipboard(), &QClipboard::dataChanged,
             this, &TextEdit::clipboardDataChanged);
@@ -111,8 +111,8 @@ TextEdit::TextEdit(QWidget *parent)
 #ifdef Q_OS_MACOS
     // Use dark text on light background on macOS, also in dark mode.
     QPalette pal = textEdit->palette();
-    pal.setColor(QPalette::Base, QColor(Qt::white));
-    pal.setColor(QPalette::Text, QColor(Qt::black));
+    pal.setColor(QPalette::Base, QColor(BobUI::white));
+    pal.setColor(QPalette::Text, QColor(BobUI::black));
     textEdit->setPalette(pal);
 #endif
 }
@@ -132,7 +132,7 @@ void TextEdit::closeEvent(QCloseEvent *e)
 
 void TextEdit::setupFileActions()
 {
-    QToolBar *tb = addToolBar(tr("File Actions"));
+    BOBUIoolBar *tb = addToolBar(tr("File Actions"));
     QMenu *menu = menuBar()->addMenu(tr("&File"));
 
     const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(rsrcPath + "/filenew.png"));
@@ -160,7 +160,7 @@ void TextEdit::setupFileActions()
     a->setPriority(QAction::LowPriority);
     menu->addSeparator();
 
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printer)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printer)
     const QIcon printIcon = QIcon::fromTheme(QIcon::ThemeIcon::DocumentPrint, QIcon(rsrcPath + "/fileprint.png"));
     a = menu->addAction(printIcon, tr("&Print..."), this, &TextEdit::filePrint);
     a->setPriority(QAction::LowPriority);
@@ -173,48 +173,48 @@ void TextEdit::setupFileActions()
     const QIcon exportPdfIcon = QIcon::fromTheme("document-export", QIcon(rsrcPath + "/exportpdf.png"));
     a = menu->addAction(exportPdfIcon, tr("&Export PDF..."), this, &TextEdit::filePrintPdf);
     a->setPriority(QAction::LowPriority);
-    a->setShortcut(Qt::CTRL | Qt::Key_D);
+    a->setShortcut(BobUI::CTRL | BobUI::Key_D);
     tb->addAction(a);
 
     menu->addSeparator();
 #endif
 
     a = menu->addAction(tr("&Quit"), qApp, &QCoreApplication::quit);
-    a->setShortcut(Qt::CTRL | Qt::Key_Q);
+    a->setShortcut(BobUI::CTRL | BobUI::Key_Q);
 }
 
 void TextEdit::setupEditActions()
 {
-    QToolBar *tb = addToolBar(tr("Edit Actions"));
+    BOBUIoolBar *tb = addToolBar(tr("Edit Actions"));
     QMenu *menu = menuBar()->addMenu(tr("&Edit"));
 
     const QIcon undoIcon = QIcon::fromTheme("edit-undo", QIcon(rsrcPath + "/editundo.png"));
-    actionUndo = menu->addAction(undoIcon, tr("&Undo"), textEdit, &QTextEdit::undo);
+    actionUndo = menu->addAction(undoIcon, tr("&Undo"), textEdit, &BOBUIextEdit::undo);
     actionUndo->setShortcut(QKeySequence::Undo);
     tb->addAction(actionUndo);
 
     const QIcon redoIcon = QIcon::fromTheme("edit-redo", QIcon(rsrcPath + "/editredo.png"));
-    actionRedo = menu->addAction(redoIcon, tr("&Redo"), textEdit, &QTextEdit::redo);
+    actionRedo = menu->addAction(redoIcon, tr("&Redo"), textEdit, &BOBUIextEdit::redo);
     actionRedo->setPriority(QAction::LowPriority);
     actionRedo->setShortcut(QKeySequence::Redo);
     tb->addAction(actionRedo);
     menu->addSeparator();
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     const QIcon cutIcon = QIcon::fromTheme("edit-cut", QIcon(rsrcPath + "/editcut.png"));
-    actionCut = menu->addAction(cutIcon, tr("Cu&t"), textEdit, &QTextEdit::cut);
+    actionCut = menu->addAction(cutIcon, tr("Cu&t"), textEdit, &BOBUIextEdit::cut);
     actionCut->setPriority(QAction::LowPriority);
     actionCut->setShortcut(QKeySequence::Cut);
     tb->addAction(actionCut);
 
     const QIcon copyIcon = QIcon::fromTheme("edit-copy", QIcon(rsrcPath + "/editcopy.png"));
-    actionCopy = menu->addAction(copyIcon, tr("&Copy"), textEdit, &QTextEdit::copy);
+    actionCopy = menu->addAction(copyIcon, tr("&Copy"), textEdit, &BOBUIextEdit::copy);
     actionCopy->setPriority(QAction::LowPriority);
     actionCopy->setShortcut(QKeySequence::Copy);
     tb->addAction(actionCopy);
 
     const QIcon pasteIcon = QIcon::fromTheme("edit-paste", QIcon(rsrcPath + "/editpaste.png"));
-    actionPaste = menu->addAction(pasteIcon, tr("&Paste"), textEdit, &QTextEdit::paste);
+    actionPaste = menu->addAction(pasteIcon, tr("&Paste"), textEdit, &BOBUIextEdit::paste);
     actionPaste->setPriority(QAction::LowPriority);
     actionPaste->setShortcut(QKeySequence::Paste);
     tb->addAction(actionPaste);
@@ -225,12 +225,12 @@ void TextEdit::setupEditActions()
 
 void TextEdit::setupTextActions()
 {
-    QToolBar *tb = addToolBar(tr("Format Actions"));
+    BOBUIoolBar *tb = addToolBar(tr("Format Actions"));
     QMenu *menu = menuBar()->addMenu(tr("F&ormat"));
 
     const QIcon boldIcon = QIcon::fromTheme("format-text-bold", QIcon(rsrcPath + "/textbold.png"));
     actionTextBold = menu->addAction(boldIcon, tr("&Bold"), this, &TextEdit::textBold);
-    actionTextBold->setShortcut(Qt::CTRL | Qt::Key_B);
+    actionTextBold->setShortcut(BobUI::CTRL | BobUI::Key_B);
     actionTextBold->setPriority(QAction::LowPriority);
     QFont bold;
     bold.setBold(true);
@@ -241,7 +241,7 @@ void TextEdit::setupTextActions()
     const QIcon italicIcon = QIcon::fromTheme("format-text-italic", QIcon(rsrcPath + "/textitalic.png"));
     actionTextItalic = menu->addAction(italicIcon, tr("&Italic"), this, &TextEdit::textItalic);
     actionTextItalic->setPriority(QAction::LowPriority);
-    actionTextItalic->setShortcut(Qt::CTRL | Qt::Key_I);
+    actionTextItalic->setShortcut(BobUI::CTRL | BobUI::Key_I);
     QFont italic;
     italic.setItalic(true);
     actionTextItalic->setFont(italic);
@@ -250,7 +250,7 @@ void TextEdit::setupTextActions()
 
     const QIcon underlineIcon = QIcon::fromTheme("format-text-underline", QIcon(rsrcPath + "/textunder.png"));
     actionTextUnderline = menu->addAction(underlineIcon, tr("&Underline"), this, &TextEdit::textUnderline);
-    actionTextUnderline->setShortcut(Qt::CTRL | Qt::Key_U);
+    actionTextUnderline->setShortcut(BobUI::CTRL | BobUI::Key_U);
     actionTextUnderline->setPriority(QAction::LowPriority);
     QFont underline;
     underline.setUnderline(true);
@@ -262,31 +262,31 @@ void TextEdit::setupTextActions()
 
     const QIcon leftIcon = QIcon::fromTheme("format-justify-left", QIcon(rsrcPath + "/textleft.png"));
     actionAlignLeft = new QAction(leftIcon, tr("&Left"), this);
-    actionAlignLeft->setShortcut(Qt::CTRL | Qt::Key_L);
+    actionAlignLeft->setShortcut(BobUI::CTRL | BobUI::Key_L);
     actionAlignLeft->setCheckable(true);
     actionAlignLeft->setPriority(QAction::LowPriority);
     const QIcon centerIcon = QIcon::fromTheme("format-justify-center", QIcon(rsrcPath + "/textcenter.png"));
     actionAlignCenter = new QAction(centerIcon, tr("C&enter"), this);
-    actionAlignCenter->setShortcut(Qt::CTRL | Qt::Key_E);
+    actionAlignCenter->setShortcut(BobUI::CTRL | BobUI::Key_E);
     actionAlignCenter->setCheckable(true);
     actionAlignCenter->setPriority(QAction::LowPriority);
     const QIcon rightIcon = QIcon::fromTheme("format-justify-right", QIcon(rsrcPath + "/textright.png"));
     actionAlignRight = new QAction(rightIcon, tr("&Right"), this);
-    actionAlignRight->setShortcut(Qt::CTRL | Qt::Key_R);
+    actionAlignRight->setShortcut(BobUI::CTRL | BobUI::Key_R);
     actionAlignRight->setCheckable(true);
     actionAlignRight->setPriority(QAction::LowPriority);
     const QIcon fillIcon = QIcon::fromTheme("format-justify-fill", QIcon(rsrcPath + "/textjustify.png"));
     actionAlignJustify = new QAction(fillIcon, tr("&Justify"), this);
-    actionAlignJustify->setShortcut(Qt::CTRL | Qt::Key_J);
+    actionAlignJustify->setShortcut(BobUI::CTRL | BobUI::Key_J);
     actionAlignJustify->setCheckable(true);
     actionAlignJustify->setPriority(QAction::LowPriority);
     const QIcon indentMoreIcon = QIcon::fromTheme("format-indent-more", QIcon(rsrcPath + "/format-indent-more.png"));
     actionIndentMore = menu->addAction(indentMoreIcon, tr("&Indent"), this, &TextEdit::indent);
-    actionIndentMore->setShortcut(Qt::CTRL | Qt::Key_BracketRight);
+    actionIndentMore->setShortcut(BobUI::CTRL | BobUI::Key_BracketRight);
     actionIndentMore->setPriority(QAction::LowPriority);
     const QIcon indentLessIcon = QIcon::fromTheme("format-indent-less", QIcon(rsrcPath + "/format-indent-less.png"));
     actionIndentLess = menu->addAction(indentLessIcon, tr("&Unindent"), this, &TextEdit::unindent);
-    actionIndentLess->setShortcut(Qt::CTRL | Qt::Key_BracketLeft);
+    actionIndentLess->setShortcut(BobUI::CTRL | BobUI::Key_BracketLeft);
     actionIndentLess->setPriority(QAction::LowPriority);
 
     // Make sure the alignLeft is always left of the alignRight
@@ -314,7 +314,7 @@ void TextEdit::setupTextActions()
     menu->addSeparator();
 
     QPixmap pix(16, 16);
-    pix.fill(Qt::black);
+    pix.fill(BobUI::black);
     actionTextColor = menu->addAction(pix, tr("&Color..."), this, &TextEdit::textColor);
     tb->addAction(actionTextColor);
 
@@ -326,14 +326,14 @@ void TextEdit::setupTextActions()
 
     const QIcon checkboxIcon = QIcon::fromTheme("status-checkbox-checked", QIcon(rsrcPath + "/checkbox-checked.png"));
     actionToggleCheckState = menu->addAction(checkboxIcon, tr("Chec&ked"), this, &TextEdit::setChecked);
-    actionToggleCheckState->setShortcut(Qt::CTRL | Qt::Key_K);
+    actionToggleCheckState->setShortcut(BobUI::CTRL | BobUI::Key_K);
     actionToggleCheckState->setCheckable(true);
     actionToggleCheckState->setPriority(QAction::LowPriority);
     tb->addAction(actionToggleCheckState);
 
     tb = addToolBar(tr("Format Actions"));
-    tb->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-    addToolBarBreak(Qt::TopToolBarArea);
+    tb->setAllowedAreas(BobUI::TopToolBarArea | BobUI::BottomToolBarArea);
+    addToolBarBreak(BobUI::TopToolBarArea);
     addToolBar(tb);
 
     comboStyle = new QComboBox(tb);
@@ -392,7 +392,7 @@ bool TextEdit::load(const QString &f)
         QUrl fileUrl = f.startsWith(u':') ? QUrl(f) : QUrl::fromLocalFile(f);
         textEdit->document()->setBaseUrl(fileUrl.adjusted(QUrl::RemoveFilename));
         textEdit->setHtml(str);
-#if QT_CONFIG(textmarkdownreader)
+#if BOBUI_CONFIG(textmarkdownreader)
     } else if (mimeTypeName == u"text/markdown") {
         textEdit->setMarkdown(QString::fromUtf8(data));
 #endif
@@ -409,7 +409,7 @@ void TextEdit::maybeSave(SaveContinuation continuation)
     if (!textEdit->document()->isModified()) {
         // Execute continuation as soon as control has returned to the event loop so  that existing
         // dialogs do not get in the way of closing the window.
-        QTimer::singleShot(0, [this, continuation]() { fileSaveComplete(continuation); });
+        BOBUIimer::singleShot(0, [this, continuation]() { fileSaveComplete(continuation); });
         return;
     }
 
@@ -427,7 +427,7 @@ void TextEdit::maybeSave(SaveContinuation continuation)
         fileSaveComplete(result == QMessageBox::Discard ? continuation : SaveContinuation::None);
     });
 
-    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setAttribute(BobUI::WA_DeleteOnClose);
     msgBox->open();
 }
 
@@ -457,10 +457,10 @@ void TextEdit::fileOpen()
     fileDialog->setAcceptMode(QFileDialog::AcceptOpen);
     fileDialog->setFileMode(QFileDialog::ExistingFile);
     fileDialog->setMimeTypeFilters({
-#if QT_CONFIG(texthtmlparser)
+#if BOBUI_CONFIG(texthtmlparser)
                                    "text/html",
 #endif
-#if QT_CONFIG(textmarkdownreader)
+#if BOBUI_CONFIG(textmarkdownreader)
 
                                    "text/markdown",
 #endif
@@ -471,7 +471,7 @@ void TextEdit::fileOpen()
                 load(file) ? tr(R"(Opened "%1")").arg(QDir::toNativeSeparators(file))
                            : tr(R"(Could not open "%1")").arg(QDir::toNativeSeparators(file)));
     });
-    fileDialog->setAttribute(Qt::WA_DeleteOnClose);
+    fileDialog->setAttribute(BobUI::WA_DeleteOnClose);
     fileDialog->open();
 }
 
@@ -480,7 +480,7 @@ void TextEdit::fileSave(SaveContinuation continuation)
     if (fileName.isEmpty() || fileName.startsWith(u":/"))
         return fileSaveAs(continuation);
 
-    QTextDocumentWriter writer(fileName);
+    BOBUIextDocumentWriter writer(fileName);
     bool success = writer.write(textEdit->document());
     if (success) {
         textEdit->document()->setModified(false);
@@ -497,15 +497,15 @@ void TextEdit::fileSaveAs(SaveContinuation continuation)
     QFileDialog *fileDialog = new QFileDialog(this, tr("Save as..."));
     fileDialog->setAcceptMode(QFileDialog::AcceptSave);
     QStringList mimeTypes{"text/plain",
-#if QT_CONFIG(textodfwriter)
+#if BOBUI_CONFIG(textodfwriter)
                           "application/vnd.oasis.opendocument.text",
 #endif
-#if QT_CONFIG(textmarkdownwriter)
+#if BOBUI_CONFIG(textmarkdownwriter)
                            "text/markdown",
 #endif
                            "text/html"};
     fileDialog->setMimeTypeFilters(mimeTypes);
-#if QT_CONFIG(textodfwriter)
+#if BOBUI_CONFIG(textodfwriter)
     fileDialog->setDefaultSuffix("odt");
 #endif
     connect(fileDialog, &QFileDialog::finished, [this, continuation, fileDialog](int result) {
@@ -514,7 +514,7 @@ void TextEdit::fileSaveAs(SaveContinuation continuation)
         setCurrentFileName(fileDialog->selectedFiles().constFirst());
         fileSave(continuation);
     });
-    fileDialog->setAttribute(Qt::WA_DeleteOnClose);
+    fileDialog->setAttribute(BobUI::WA_DeleteOnClose);
     fileDialog->open();
 }
 
@@ -537,13 +537,13 @@ void TextEdit::fileSaveComplete(SaveContinuation continuation)
 
 void TextEdit::filePrint()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     auto printer = std::make_shared<QPrinter>(QPrinter::HighResolution);
     QPrintDialog *dlg = new QPrintDialog(printer.get(), this);
     if (textEdit->textCursor().hasSelection())
         dlg->setOption(QAbstractPrintDialog::PrintSelection);
     dlg->setWindowTitle(tr("Print Document"));
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setAttribute(BobUI::WA_DeleteOnClose);
     connect(dlg, qOverload<QPrinter *>(&QPrintDialog::accepted),
             [this](QPrinter *printer) { textEdit->print(printer); });
     connect(dlg, &QPrintDialog::finished, [printer]() mutable { printer.reset(); });
@@ -553,11 +553,11 @@ void TextEdit::filePrint()
 
 void TextEdit::filePrintPreview()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printpreviewdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printpreviewdialog)
     auto printer = std::make_shared<QPrinter>(QPrinter::HighResolution);
     QPrintPreviewDialog *preview = new QPrintPreviewDialog(printer.get(), this);
-    preview->setAttribute(Qt::WA_DeleteOnClose);
-    connect(preview, &QPrintPreviewDialog::paintRequested, textEdit, &QTextEdit::print);
+    preview->setAttribute(BobUI::WA_DeleteOnClose);
+    connect(preview, &QPrintPreviewDialog::paintRequested, textEdit, &BOBUIextEdit::print);
     connect(preview, &QPrintPreviewDialog::finished, [printer]() mutable { printer.reset(); });
     preview->open();
 #endif
@@ -565,12 +565,12 @@ void TextEdit::filePrintPreview()
 
 void TextEdit::filePrintPdf()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printer)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printer)
     QFileDialog *fileDialog = new QFileDialog(this, tr("Export PDF"));
     fileDialog->setAcceptMode(QFileDialog::AcceptSave);
     fileDialog->setMimeTypeFilters(QStringList("application/pdf"));
     fileDialog->setDefaultSuffix("pdf");
-    fileDialog->setAttribute(Qt::WA_DeleteOnClose);
+    fileDialog->setAttribute(BobUI::WA_DeleteOnClose);
     connect(fileDialog, &QFileDialog::fileSelected, [this](const QString &file) {
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
@@ -585,28 +585,28 @@ void TextEdit::filePrintPdf()
 
 void TextEdit::textBold()
 {
-    QTextCharFormat fmt;
+    BOBUIextCharFormat fmt;
     fmt.setFontWeight(actionTextBold->isChecked() ? QFont::Bold : QFont::Normal);
     mergeFormatOnWordOrSelection(fmt);
 }
 
 void TextEdit::textUnderline()
 {
-    QTextCharFormat fmt;
+    BOBUIextCharFormat fmt;
     fmt.setFontUnderline(actionTextUnderline->isChecked());
     mergeFormatOnWordOrSelection(fmt);
 }
 
 void TextEdit::textItalic()
 {
-    QTextCharFormat fmt;
+    BOBUIextCharFormat fmt;
     fmt.setFontItalic(actionTextItalic->isChecked());
     mergeFormatOnWordOrSelection(fmt);
 }
 
 void TextEdit::textFamily(const QString &f)
 {
-    QTextCharFormat fmt;
+    BOBUIextCharFormat fmt;
     fmt.setFontFamilies({f});
     mergeFormatOnWordOrSelection(fmt);
 }
@@ -615,7 +615,7 @@ void TextEdit::textSize(const QString &p)
 {
     qreal pointSize = p.toFloat();
     if (pointSize > 0) {
-        QTextCharFormat fmt;
+        BOBUIextCharFormat fmt;
         fmt.setFontPointSize(pointSize);
         mergeFormatOnWordOrSelection(fmt);
     }
@@ -623,48 +623,48 @@ void TextEdit::textSize(const QString &p)
 
 void TextEdit::textStyle(int styleIndex)
 {
-    QTextCursor cursor = textEdit->textCursor();
-    QTextListFormat::Style style = QTextListFormat::ListStyleUndefined;
-    QTextBlockFormat::MarkerType marker = QTextBlockFormat::MarkerType::NoMarker;
+    BOBUIextCursor cursor = textEdit->textCursor();
+    BOBUIextListFormat::Style style = BOBUIextListFormat::ListStyleUndefined;
+    BOBUIextBlockFormat::MarkerType marker = BOBUIextBlockFormat::MarkerType::NoMarker;
 
     switch (styleIndex) {
     case 1:
-        style = QTextListFormat::ListDisc;
+        style = BOBUIextListFormat::ListDisc;
         break;
     case 2:
-        style = QTextListFormat::ListCircle;
+        style = BOBUIextListFormat::ListCircle;
         break;
     case 3:
-        style = QTextListFormat::ListSquare;
+        style = BOBUIextListFormat::ListSquare;
         break;
     case 4:
         if (cursor.currentList())
             style = cursor.currentList()->format().style();
         else
-            style = QTextListFormat::ListDisc;
-        marker = QTextBlockFormat::MarkerType::Unchecked;
+            style = BOBUIextListFormat::ListDisc;
+        marker = BOBUIextBlockFormat::MarkerType::Unchecked;
         break;
     case 5:
         if (cursor.currentList())
             style = cursor.currentList()->format().style();
         else
-            style = QTextListFormat::ListDisc;
-        marker = QTextBlockFormat::MarkerType::Checked;
+            style = BOBUIextListFormat::ListDisc;
+        marker = BOBUIextBlockFormat::MarkerType::Checked;
         break;
     case 6:
-        style = QTextListFormat::ListDecimal;
+        style = BOBUIextListFormat::ListDecimal;
         break;
     case 7:
-        style = QTextListFormat::ListLowerAlpha;
+        style = BOBUIextListFormat::ListLowerAlpha;
         break;
     case 8:
-        style = QTextListFormat::ListUpperAlpha;
+        style = BOBUIextListFormat::ListUpperAlpha;
         break;
     case 9:
-        style = QTextListFormat::ListLowerRoman;
+        style = BOBUIextListFormat::ListLowerRoman;
         break;
     case 10:
-        style = QTextListFormat::ListUpperRoman;
+        style = BOBUIextListFormat::ListUpperRoman;
         break;
     default:
         break;
@@ -672,25 +672,25 @@ void TextEdit::textStyle(int styleIndex)
 
     cursor.beginEditBlock();
 
-    QTextBlockFormat blockFmt = cursor.blockFormat();
+    BOBUIextBlockFormat blockFmt = cursor.blockFormat();
 
-    if (style == QTextListFormat::ListStyleUndefined) {
+    if (style == BOBUIextListFormat::ListStyleUndefined) {
         blockFmt.setObjectIndex(-1);
         int headingLevel = styleIndex >= 11 ? styleIndex - 11 + 1 : 0; // H1 to H6, or Standard
         blockFmt.setHeadingLevel(headingLevel);
         cursor.setBlockFormat(blockFmt);
 
         int sizeAdjustment = headingLevel ? 4 - headingLevel : 0; // H1 to H6: +3 to -2
-        QTextCharFormat fmt;
+        BOBUIextCharFormat fmt;
         fmt.setFontWeight(headingLevel ? QFont::Bold : QFont::Normal);
-        fmt.setProperty(QTextFormat::FontSizeAdjustment, sizeAdjustment);
-        cursor.select(QTextCursor::LineUnderCursor);
+        fmt.setProperty(BOBUIextFormat::FontSizeAdjustment, sizeAdjustment);
+        cursor.select(BOBUIextCursor::LineUnderCursor);
         cursor.mergeCharFormat(fmt);
         textEdit->mergeCurrentCharFormat(fmt);
     } else {
         blockFmt.setMarker(marker);
         cursor.setBlockFormat(blockFmt);
-        QTextListFormat listFmt;
+        BOBUIextListFormat listFmt;
         if (cursor.currentList()) {
             listFmt = cursor.currentList()->format();
         } else {
@@ -712,12 +712,12 @@ void TextEdit::textColor()
     connect(dlg, &QColorDialog::colorSelected, [this](const QColor &color) {
         if (!color.isValid())
             return;
-        QTextCharFormat fmt;
+        BOBUIextCharFormat fmt;
         fmt.setForeground(color);
         mergeFormatOnWordOrSelection(fmt);
         colorChanged(color);
     });
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setAttribute(BobUI::WA_DeleteOnClose);
     dlg->open();
 }
 
@@ -728,25 +728,25 @@ void TextEdit::underlineColor()
     connect(dlg, &QColorDialog::colorSelected, [this](const QColor &color) {
         if (!color.isValid())
             return;
-        QTextCharFormat fmt;
+        BOBUIextCharFormat fmt;
         fmt.setUnderlineColor(color);
         mergeFormatOnWordOrSelection(fmt);
         colorChanged(color);
     });
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setAttribute(BobUI::WA_DeleteOnClose);
     dlg->open();
 }
 
 void TextEdit::textAlign(QAction *a)
 {
     if (a == actionAlignLeft)
-        textEdit->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
+        textEdit->setAlignment(BobUI::AlignLeft | BobUI::AlignAbsolute);
     else if (a == actionAlignCenter)
-        textEdit->setAlignment(Qt::AlignHCenter);
+        textEdit->setAlignment(BobUI::AlignHCenter);
     else if (a == actionAlignRight)
-        textEdit->setAlignment(Qt::AlignRight | Qt::AlignAbsolute);
+        textEdit->setAlignment(BobUI::AlignRight | BobUI::AlignAbsolute);
     else if (a == actionAlignJustify)
-        textEdit->setAlignment(Qt::AlignJustify);
+        textEdit->setAlignment(BobUI::AlignJustify);
 }
 
 void TextEdit::setChecked(bool checked)
@@ -766,14 +766,14 @@ void TextEdit::unindent()
 
 void TextEdit::modifyIndentation(int amount)
 {
-    QTextCursor cursor = textEdit->textCursor();
+    BOBUIextCursor cursor = textEdit->textCursor();
     cursor.beginEditBlock();
     if (cursor.currentList()) {
-        QTextListFormat listFmt = cursor.currentList()->format();
+        BOBUIextListFormat listFmt = cursor.currentList()->format();
         // See whether the line above is the list we want to move this item into,
         // or whether we need a new list.
-        QTextCursor above(cursor);
-        above.movePosition(QTextCursor::Up);
+        BOBUIextCursor above(cursor);
+        above.movePosition(BOBUIextCursor::Up);
         if (above.currentList() && listFmt.indent() + amount == above.currentList()->format().indent()) {
             above.currentList()->add(cursor.block());
         } else {
@@ -781,14 +781,14 @@ void TextEdit::modifyIndentation(int amount)
             cursor.createList(listFmt);
         }
     } else {
-        QTextBlockFormat blockFmt = cursor.blockFormat();
+        BOBUIextBlockFormat blockFmt = cursor.blockFormat();
         blockFmt.setIndent(blockFmt.indent() + amount);
         cursor.setBlockFormat(blockFmt);
     }
     cursor.endEditBlock();
 }
 
-void TextEdit::currentCharFormatChanged(const QTextCharFormat &format)
+void TextEdit::currentCharFormatChanged(const BOBUIextCharFormat &format)
 {
     fontChanged(format.font());
     colorChanged(format.foreground().color());
@@ -797,31 +797,31 @@ void TextEdit::currentCharFormatChanged(const QTextCharFormat &format)
 void TextEdit::cursorPositionChanged()
 {
     alignmentChanged(textEdit->alignment());
-    QTextList *list = textEdit->textCursor().currentList();
+    BOBUIextList *list = textEdit->textCursor().currentList();
     if (list) {
         switch (list->format().style()) {
-        case QTextListFormat::ListDisc:
+        case BOBUIextListFormat::ListDisc:
             comboStyle->setCurrentIndex(1);
             break;
-        case QTextListFormat::ListCircle:
+        case BOBUIextListFormat::ListCircle:
             comboStyle->setCurrentIndex(2);
             break;
-        case QTextListFormat::ListSquare:
+        case BOBUIextListFormat::ListSquare:
             comboStyle->setCurrentIndex(3);
             break;
-        case QTextListFormat::ListDecimal:
+        case BOBUIextListFormat::ListDecimal:
             comboStyle->setCurrentIndex(6);
             break;
-        case QTextListFormat::ListLowerAlpha:
+        case BOBUIextListFormat::ListLowerAlpha:
             comboStyle->setCurrentIndex(7);
             break;
-        case QTextListFormat::ListUpperAlpha:
+        case BOBUIextListFormat::ListUpperAlpha:
             comboStyle->setCurrentIndex(8);
             break;
-        case QTextListFormat::ListLowerRoman:
+        case BOBUIextListFormat::ListLowerRoman:
             comboStyle->setCurrentIndex(9);
             break;
-        case QTextListFormat::ListUpperRoman:
+        case BOBUIextListFormat::ListUpperRoman:
             comboStyle->setCurrentIndex(10);
             break;
         default:
@@ -829,14 +829,14 @@ void TextEdit::cursorPositionChanged()
             break;
         }
         switch (textEdit->textCursor().block().blockFormat().marker()) {
-        case QTextBlockFormat::MarkerType::NoMarker:
+        case BOBUIextBlockFormat::MarkerType::NoMarker:
             actionToggleCheckState->setChecked(false);
             break;
-        case QTextBlockFormat::MarkerType::Unchecked:
+        case BOBUIextBlockFormat::MarkerType::Unchecked:
             comboStyle->setCurrentIndex(4);
             actionToggleCheckState->setChecked(false);
             break;
-        case QTextBlockFormat::MarkerType::Checked:
+        case BOBUIextBlockFormat::MarkerType::Checked:
             comboStyle->setCurrentIndex(5);
             actionToggleCheckState->setChecked(true);
             break;
@@ -849,7 +849,7 @@ void TextEdit::cursorPositionChanged()
 
 void TextEdit::clipboardDataChanged()
 {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     if (const QMimeData *md = QGuiApplication::clipboard()->mimeData())
         actionPaste->setEnabled(md->hasText());
 #endif
@@ -859,18 +859,18 @@ void TextEdit::about()
 {
     QMessageBox *msgBox =
             new QMessageBox(QMessageBox::Icon::Information, tr("About"),
-                            tr("This example demonstrates Qt's rich text editing facilities in "
+                            tr("This example demonstrates BobUI's rich text editing facilities in "
                                "action, providing an example document for you to experiment with."),
                             QMessageBox::NoButton, this);
-    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setAttribute(BobUI::WA_DeleteOnClose);
     msgBox->open();
 }
 
-void TextEdit::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
+void TextEdit::mergeFormatOnWordOrSelection(const BOBUIextCharFormat &format)
 {
-    QTextCursor cursor = textEdit->textCursor();
+    BOBUIextCursor cursor = textEdit->textCursor();
     if (!cursor.hasSelection())
-        cursor.select(QTextCursor::WordUnderCursor);
+        cursor.select(BOBUIextCursor::WordUnderCursor);
     cursor.mergeCharFormat(format);
     textEdit->mergeCurrentCharFormat(format);
 }
@@ -891,15 +891,15 @@ void TextEdit::colorChanged(const QColor &c)
     actionTextColor->setIcon(pix);
 }
 
-void TextEdit::alignmentChanged(Qt::Alignment a)
+void TextEdit::alignmentChanged(BobUI::Alignment a)
 {
-    if (a.testFlag(Qt::AlignLeft))
+    if (a.testFlag(BobUI::AlignLeft))
         actionAlignLeft->setChecked(true);
-    else if (a.testFlag(Qt::AlignHCenter))
+    else if (a.testFlag(BobUI::AlignHCenter))
         actionAlignCenter->setChecked(true);
-    else if (a.testFlag(Qt::AlignRight))
+    else if (a.testFlag(BobUI::AlignRight))
         actionAlignRight->setChecked(true);
-    else if (a.testFlag(Qt::AlignJustify))
+    else if (a.testFlag(BobUI::AlignJustify))
         actionAlignJustify->setChecked(true);
 }
 

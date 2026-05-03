@@ -1,6 +1,6 @@
 
-Qt 3.1.2 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.1.1
+BobUI 3.1.2 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.1.1
 
 
 ****************************************************************************
@@ -65,7 +65,7 @@ falling back to the scrolling).
 	will be sent in the same style as Windows/X11 to make the platforms
 	more consistent, additionally mapping of Ctrl+Click to RightButton has
 	been added to allow easy context menu handling. Added warnings when a
-	Qt application is run outside of an application bundle (in GUI mode)
+	BobUI application is run outside of an application bundle (in GUI mode)
 	this will prevent accidental starving from events. Correct state when a
 	modal dialog is shown (to disable the menubar) is used now, and is
 	emulated to feel like Carbon applications. Fixed bug so that
@@ -116,7 +116,7 @@ falling back to the scrolling).
 	Fixed addYears() for days missing in certain years.
 
 - QDateTimeEdit
-	Compute an improved layout for the QDateEdit and QTimeEdit
+	Compute an improved layout for the QDateEdit and BOBUIimeEdit
 	components of the QDateTimeEdit (based on the size hints). Set
 	the size policy of the QDateTimeEdit to (Minimum, Fixed).
 	In time edit: If the display is AM/PM, do not accept 13-24 as
@@ -359,11 +359,11 @@ falling back to the scrolling).
 	a freed memory access problem with floating items on
 	destruction. When copying rich application/x-qrichtext, include
 	format information for the initial characters until the first
-	complete span. Make text="color" attributes in qt and body
+	complete span. Make text="color" attributes in bobui and body
 	tags work again.
 
 - QScrollView
-	Restored the Qt 3 default sizeHint() that depends on the
+	Restored the BobUI 3 default sizeHint() that depends on the
 	scroll view's content, restricted within a 'sane' range (this
 	has no impact on most child classes, which already reimplement
 	sizeHint()).
@@ -448,13 +448,13 @@ falling back to the scrolling).
 	left one. Support Key_Enter in addition to Key_Return as the
 	documentation always stated.
 
-- QTabBar
+- BOBUIabBar
 	Let arrow buttons react correctly on style changes.
 
-- QTabDialog
+- BOBUIabDialog
 	Fix reverse layout for right to left languages.
 
-- QTable
+- BOBUIable
 	Catch hideColumn() on tables with too few columns. Fixed an
 	endless recursion when swapping header sections. Fixed SingleRow
 	selection when using the vertical header. Emit the
@@ -463,15 +463,15 @@ falling back to the scrolling).
 	mode is NoSelection. Fix selection drawing for focusStyle ==
 	FollowFocus. Fixed a memory leak.
 
-- QTableItem
+- BOBUIableItem
 	Use virtual text() method for calculations instead of accessing the
 	data member directly. Do not crash when destroying a table item that
 	is not in a table.
 
-- QTextCodec:
+- BOBUIextCodec:
 	Fixed a bug in the Unicode -> jisx0208 conversion table.
 
-- QTextEdit
+- BOBUIextEdit
 	Made setFormat() much faster when undo/redo is
 	disabled. Fixed double deletion crash when clearing a document
 	with floating custom items. AccelOverride events with Shift
@@ -480,25 +480,25 @@ falling back to the scrolling).
 	background redraw issue. Stop scrollbar from disappearing
 	due to laying out the document incorrectly.
 
-- QThread
+- BOBUIhread
 	Unix only: Do not rely on PTHREAD_MUTEX_INITIALIZER and
 	PTHREAD_COND_INITIALIZER. Fixed timeout calculation in
 	sleep().
 
-- QTimeEdit
+- BOBUIimeEdit
 	Typing in input for the first time now overwrites the existing
 	value.
 
-- QToolButton
+- BOBUIoolButton
 	Fixed width calculation for multiline text.
 
-- QTooltip
+- BOBUIooltip
 	Try hard to avoid tooltips for widgets in inactive
 	windows. Use screen geometry rather than available geometry
 	for positioning. Avoid the mouse cursor covering part of the
 	tooltip.
 
-- QTranslator
+- BOBUIranslator
 	Notify main windows when installing an empty translator.
 
 - QUrlOperator
@@ -543,7 +543,7 @@ falling back to the scrolling).
 	onto a different window. Fixed painting errors when a widget is
 	interactively moved off screen. showNormal() will now toggle
 	correctly when a window is minimized, additionally toggling between
-	showMaximized()/showNormal() will operate as expected. Qt will now
+	showMaximized()/showNormal() will operate as expected. BobUI will now
 	try to prevent placing a window partially offscreen. This will not
 	over-ride explicit window positioning, but it will correct default
 	placement.
@@ -569,7 +569,7 @@ falling back to the scrolling).
 *                                Tools                                     *
 ****************************************************************************
 
-- Qt Designer
+- BobUI Designer
 	Some small usability improvements and crash fixes. Fixed
 	editing properties of multiple selected widgets for custom
 	widgets. Fixed some problems with pixmaps, when using a pixmap
@@ -583,7 +583,7 @@ falling back to the scrolling).
 	arguments. Do not save invalid pixmaps. whatsThis properties
 	can now be edited with the richtext editor.
 
-- Qt Assistant
+- BobUI Assistant
 	Fixed crash when printing to file was cancelled. Fixed
 	mimesource settings when a link is opened in a new window.
 	Added missing translator. Fixed reloading pages when the
@@ -607,8 +607,8 @@ falling back to the scrolling).
 	additionally the argument parser has been improved to allow functions
 	calling functions. Qmake now has support for ProjectBuilder 2.1, it
 	will no longer respect OBJECTS_DIR in ProjectBuilder (as this exposed
-	a bug in ProjectBuilder itself). It will automatically detect qt-mt
-	(when linking against Qt) so "CONFIG += thread" is not necessary,
+	a bug in ProjectBuilder itself). It will automatically detect bobui-mt
+	(when linking against BobUI) so "CONFIG += thread" is not necessary,
 	however this will not turn on Q_THREAD_SUPPORT. A new test operator
 	has been added 'equals()' to allow testing for equality to a variable.
 	In 'project mode' qmake will now detect TRANSLATIONS files
@@ -625,7 +625,7 @@ falling back to the scrolling).
 	The Netscape Plugin is supported again, now on both Netscape 4.x and
 	current versions based on the Mozilla code.
 
-- ActiveQt
+- ActiveBobUI
 	Activate socket notifiers and process config requests even if
-	Qt does not own the event loop.
+	BobUI does not own the event loop.
 

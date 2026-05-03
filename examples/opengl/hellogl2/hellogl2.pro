@@ -8,8 +8,8 @@ SOURCES       = glwidget.cpp \
                 mainwindow.cpp \
                 logo.cpp
 
-QT += widgets opengl openglwidgets
+BOBUI += widgets opengl openglwidgets
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/hellogl2
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/hellogl2
 INSTALLS += target

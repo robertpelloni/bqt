@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 from argparse import ArgumentParser, RawTextHelpFormatter
 import os
@@ -61,7 +61,7 @@ class Cleaner (object):
     changes to what they say when they do fail; but we don't care
     exactly what line of what file the failing line of code now
     occupies, nor do we care how many milliseconds each test took to
-    run; and changes to the Qt version number mean nothing to us.
+    run; and changes to the BobUI version number mean nothing to us.
 
     Create one singleton instance; it'll do mildly expensive things
     once and you can use its .clean() method to tidy up your test
@@ -73,19 +73,19 @@ class Cleaner (object):
         Saves the directory of this
         script as self.sourceDir, so client can find tst_selftests.cpp
         there.  Checks here does look as expected in a build tree -
-        raising Fail() if not - then retrieves the Qt
+        raising Fail() if not - then retrieves the BobUI
         version (saved as .version for the benefit of clients) and
         prepares the sequence of (regex, replace) pairs that .clean()
         needs to do its job."""
         self.version, self.sourceDir, self.__replace = self.__getPatterns()
 
     @staticmethod
-    def _read_qt_version(qtbase_dir):
-        cmake_conf_file = os.path.join(qtbase_dir, '.cmake.conf')
+    def _read_bobui_version(bobuibase_dir):
+        cmake_conf_file = os.path.join(bobuibase_dir, '.cmake.conf')
         with open(cmake_conf_file) as f:
             for line in f:
-                # set(QT_REPO_MODULE_VERSION "6.1.0")
-                if 'set(QT_REPO_MODULE_VERSION' in line:
+                # set(BOBUI_REPO_MODULE_VERSION "6.1.0")
+                if 'set(BOBUI_REPO_MODULE_VERSION' in line:
                     return line.strip().split('"')[1]
 
         raise RuntimeError("Someone broke .cmake.conf formatting again")
@@ -101,9 +101,9 @@ class Cleaner (object):
             (r'[0-9,.]+( (?:CPU ticks|msecs) per iteration \(total:) [0-9,.]+ ', r'0\1 0, '), # txt
             (r'(<BenchmarkResult metric="(?:CPUTicks|WalltimeMilliseconds)".*\bvalue=)"[^"]+"', r'\1"0"'), # xml, lightxml
             # Build details:
-            (r'(Config: Using QtTest library).*', r'\1'), # txt
-            (r'( *<QtBuild)>[^<]+</QtBuild>', r'\1/>'), # xml, lightxml
-            (r'(<property name="QtBuild" value=")[^"]+"', r'\1"'), # junitxml
+            (r'(Config: Using BobUITest library).*', r'\1'), # txt
+            (r'( *<BobUIBuild)>[^<]+</BobUIBuild>', r'\1/>'), # xml, lightxml
+            (r'(<property name="BobUIBuild" value=")[^"]+"', r'\1"'), # junitxml
             (r'(<testsuite .*? hostname=")[^"]+(".*>)', r'\1@HOSTNAME@\2'), # junit
             # Line numbers in source files:
             (r'(ASSERT: ("|&quot;).*("|&quot;) in file .*, line) \d+', r'\1 0'), # lightxml
@@ -130,17 +130,17 @@ class Cleaner (object):
         # Are we being run from the right place ?
         scriptPath = os.path.dirname(os.path.abspath(__file__))
         hereNames, depth = scriptPath.split(os.path.sep), 5
-        hereNames = hereNames[-depth:] # path components from qtbase down
-        # don't check hereNames[0]: the qtbase checkout might not be named 'qtbase'
+        hereNames = hereNames[-depth:] # path components from bobuibase down
+        # don't check hereNames[0]: the bobuibase checkout might not be named 'bobuibase'
         assert hereNames[1] == 'tests', ('Script moved: please correct depth', hereNames)
         assert hereNames[2] == 'auto', ('Script moved: please correct depth', hereNames)
         assert hereNames[3] == 'testlib', ('Script moved: please correct depth', hereNames)
         assert hereNames[4] == 'selftests', ('Script moved: please correct depth', hereNames)
-        qtbase_dir = os.path.realpath(os.path.join(scriptPath, '..', '..', '..', '..'))
-        qtver = Cleaner._read_qt_version(qtbase_dir)
+        bobuibase_dir = os.path.realpath(os.path.join(scriptPath, '..', '..', '..', '..'))
+        bobuiver = Cleaner._read_bobui_version(bobuibase_dir)
         hereNames = tuple(hereNames)
         # Add path to specific sources and to tst_*.cpp if missing (for in-source builds):
-        patterns += ((r'(^|[^/])\b(qtestcase.cpp)\b', r'\1qtbase/src/testlib/\2'),
+        patterns += ((r'(^|[^/])\b(bobuiestcase.cpp)\b', r'\1bobuibase/src/testlib/\2'),
                      # Add more special cases here, if they show up !
                      (r'([\[" ])\.\./(counting/tst_counting.cpp)\b',
                       r'\1' + os.path.sep.join(hereNames + (r'\2',))),
@@ -148,21 +148,21 @@ class Cleaner (object):
                      (r'(^|[^/])\b(tst_)?([a-z]+\d*)\.cpp\b',
                       r'\1' + os.path.sep.join(hereNames + (r'\3', r'\2\3.cpp'))))
 
-        sentinel = os.path.sep + hereNames[0] + os.path.sep # '/qtbase/'
-        # Identify the path prefix of our qtbase ancestor directory
+        sentinel = os.path.sep + hereNames[0] + os.path.sep # '/bobuibase/'
+        # Identify the path prefix of our bobuibase ancestor directory
         # (source, build and $PWD, when different); trim such prefixes
         # off all paths we see.
         roots = tuple(r[:r.find(sentinel) + 1].encode('unicode-escape').decode('utf-8')
                       for r in set((os.getcwd(), scriptPath, os.environ.get('PWD', '')))
                       if sentinel in r)
         patterns += tuple((root, r'') for root in roots) + (
-            (r'\.'.join(qtver.split('.')), r'@INSERT_QT_VERSION_HERE@'),)
+            (r'\.'.join(bobuiver.split('.')), r'@INSERT_BOBUI_VERSION_HERE@'),)
         if any('-' in r for r in roots):
             # Our xml formats replace hyphens with a character entity:
             patterns += tuple((root.replace('-', '&#x0*2D;'), r'')
                               for root in roots if '-' in root)
 
-        return qtver, scriptPath, tuple((precook(p), r) for p, r in patterns)
+        return bobuiver, scriptPath, tuple((precook(p), r) for p, r in patterns)
 
     def clean(self, data):
         """Remove volatile details from test output.
@@ -215,13 +215,13 @@ del re
 
 # Keep in sync with tst_selftests.cpp's testEnvironment():
 def baseEnv(platname=None,
-            keep=('PATH', 'QT_QPA_PLATFORM', 'QTEST_THROW_ON_FAIL', 'QTEST_THROW_ON_SKIP', 'ASAN_OPTIONS'),
+            keep=('PATH', 'BOBUI_QPA_PLATFORM', 'BOBUIEST_THROW_ON_FAIL', 'BOBUIEST_THROW_ON_SKIP', 'ASAN_OPTIONS'),
             posix=('HOME', 'USER', 'QEMU_SET_ENV', 'QEMU_LD_PREFIX'),
             nonapple=('DISPLAY', 'XAUTHORITY', 'XAUTHLOCALHOSTNAME'), # and XDG_*
             # Don't actually know how to test for QNX, so this is ignored:
             qnx=('GRAPHICS_ROOT', 'TZ'),
             # Probably not actually relevant
-            preserveLib=('QT_PLUGIN_PATH', 'LD_LIBRARY_PATH'),
+            preserveLib=('BOBUI_PLUGIN_PATH', 'LD_LIBRARY_PATH'),
             # Shall be modified on first call (a *copy* is returned):
             cached={}):
     """Lazily-evaluated standard environment for sub-tests to run in.
@@ -240,15 +240,15 @@ def baseEnv(platname=None,
             if platname != 'darwin':
                 keep += nonapple
                 xdg = True
-        if 'QT_PRESERVE_TESTLIB_PATH' in os.environ:
+        if 'BOBUI_PRESERVE_TESTLIB_PATH' in os.environ:
             keep += preserveLib
 
         cached = dict(
             LC_ALL = 'C.UTF-8', # Use standard locale
-            # Avoid interference from any qtlogging.ini files, e.g. in
-            # /etc/xdg/QtProject/, (must match tst_selftests.cpp's
+            # Avoid interference from any bobuilogging.ini files, e.g. in
+            # /etc/xdg/BobUIProject/, (must match tst_selftests.cpp's
             # processEnvironment()'s value):
-            QT_LOGGING_RULES = '*.debug=true;qt.*=false')
+            BOBUI_LOGGING_RULES = '*.debug=true;bobui.*=false')
 
         for k, v in os.environ.items():
             if k in keep or (xdg and k.startswith('XDG_')):
@@ -259,9 +259,9 @@ def baseEnv(platname=None,
 def testEnv(testname,
             # Make sure this matches tst_Selftests::doRunSubTest():
             extraEnv = {
-        "crashers": { "QTEST_DISABLE_CORE_DUMP": "1",
-                      "QTEST_DISABLE_STACK_DUMP": "1" },
-        "watchdog": { "QTEST_FUNCTION_TIMEOUT": "100" },
+        "crashers": { "BOBUIEST_DISABLE_CORE_DUMP": "1",
+                      "BOBUIEST_DISABLE_STACK_DUMP": "1" },
+        "watchdog": { "BOBUIEST_FUNCTION_TIMEOUT": "100" },
         },
             # Must match tst_Selftests::runSubTest_data():
             crashers = ("assert", "crashes", "crashedterminate",

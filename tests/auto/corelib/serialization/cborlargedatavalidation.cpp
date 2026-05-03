@@ -1,8 +1,8 @@
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtEndian>
+#include <BOBUIest>
+#include <BobUIEndian>
 
 #include <cbor.h>
 
@@ -55,23 +55,23 @@ void addValidationLargeData(qsizetype minInvalid, qsizetype maxInvalid)
         bool overflows = v > std::numeric_limits<qsizetype>::max() - 1 - qsizetype(sizeof(v));
         CborError err = overflows ? CborErrorDataTooLarge : CborErrorUnexpectedEOF;
 
-        QTest::addRow("bytearray-too-big-for-qbytearray-%zx", size_t(v))
+        BOBUIest::addRow("bytearray-too-big-for-qbytearray-%zx", size_t(v))
                 << QByteArray(toolong, sizeof(toolong)) << 0 << err;
-        QTest::addRow("bytearray-chunked-too-big-for-qbytearray-%zx", size_t(v))
+        BOBUIest::addRow("bytearray-chunked-too-big-for-qbytearray-%zx", size_t(v))
                 << ('\x5f' + QByteArray(toolong, sizeof(toolong)) + '\xff')
                 << 0 << err;
-        QTest::addRow("bytearray-2chunked-too-big-for-qbytearray-%zx", size_t(v))
+        BOBUIest::addRow("bytearray-2chunked-too-big-for-qbytearray-%zx", size_t(v))
                 << ("\x5f\x40" + QByteArray(toolong, sizeof(toolong)) + '\xff')
                 << 0 << err;
         toolong[0] |= 0x20;
 
         // QCborStreamReader::readString copies to a QByteArray first
-        QTest::addRow("string-too-big-for-qbytearray-%zx", size_t(v))
+        BOBUIest::addRow("string-too-big-for-qbytearray-%zx", size_t(v))
                 << QByteArray(toolong, sizeof(toolong)) << 0 << err;
-        QTest::addRow("string-chunked-too-big-for-qbytearray-%zx", size_t(v))
+        BOBUIest::addRow("string-chunked-too-big-for-qbytearray-%zx", size_t(v))
                 << ('\x7f' + QByteArray(toolong, sizeof(toolong)) + '\xff')
                 << 0 << err;
-        QTest::addRow("string-2chunked-too-big-for-qbytearray-%zx", size_t(v))
+        BOBUIest::addRow("string-2chunked-too-big-for-qbytearray-%zx", size_t(v))
                 << ("\x7f\x60" + QByteArray(toolong, sizeof(toolong)) + '\xff')
                 << 0 << err;
     }
@@ -80,9 +80,9 @@ void addValidationLargeData(qsizetype minInvalid, qsizetype maxInvalid)
 void addValidationHugeDevice(qsizetype byteArrayInvalid, qsizetype stringInvalid)
 {
     qRegisterMetaType<QSharedPointer<QIODevice>>();
-    QTest::addColumn<QSharedPointer<QIODevice>>("device");
-    QTest::addColumn<CborError>("expectedError");
-    QTest::addColumn<CborError>("expectedValidationError");
+    BOBUIest::addColumn<QSharedPointer<QIODevice>>("device");
+    BOBUIest::addColumn<CborError>("expectedError");
+    BOBUIest::addColumn<CborError>("expectedValidationError");
 
     char buf[1 + sizeof(quint64)];
     auto device = [&buf](QCborStreamReader::Type t, quint64 size) {
@@ -95,20 +95,20 @@ void addValidationHugeDevice(qsizetype byteArrayInvalid, qsizetype stringInvalid
     };
 
     // do the exact limits
-    QTest::newRow("bytearray-just-too-big")
+    BOBUIest::newRow("bytearray-just-too-big")
             << device(QCborStreamReader::ByteArray, byteArrayInvalid)
             << CborErrorDataTooLarge << CborNoError;
-    QTest::newRow("string-just-too-big")
+    BOBUIest::newRow("string-just-too-big")
             << device(QCborStreamReader::String, stringInvalid)
             << CborErrorDataTooLarge << CborErrorDataTooLarge;
 
     auto addSize = [=](const char *sizename, qint64 size) {
         if (byteArrayInvalid < size)
-            QTest::addRow("bytearray-%s", sizename)
+            BOBUIest::addRow("bytearray-%s", sizename)
                 << device(QCborStreamReader::ByteArray, size)
                 << CborErrorDataTooLarge << CborNoError;
         if (stringInvalid < size)
-            QTest::addRow("string-%s", sizename)
+            BOBUIest::addRow("string-%s", sizename)
                 << device(QCborStreamReader::String, size)
                 << CborErrorDataTooLarge << CborErrorDataTooLarge;
     };

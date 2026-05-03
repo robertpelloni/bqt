@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicswidget.h>
 #include <qgraphicsscene.h>
 #include <qgraphicssceneevent.h>
@@ -18,7 +18,7 @@
 #include <qscreen.h>
 #include <qsignalspy.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 typedef QList<QGraphicsItem *> QGraphicsItemList;
 
@@ -143,9 +143,9 @@ private slots:
     void task236127_bspTreeIndexFails();
     void task243004_setStyleCrash();
     void task250119_shortcutContext();
-    void QT_BUG_6544_tabFocusFirstUnsetWhenRemovingItems();
-    void QT_BUG_12056_tabFocusFirstUnsetWhenRemovingItems();
-    void QTBUG_45867_send_itemChildAddedChange_to_parent();
+    void BOBUI_BUG_6544_tabFocusFirstUnsetWhenRemovingItems();
+    void BOBUI_BUG_12056_tabFocusFirstUnsetWhenRemovingItems();
+    void BOBUIBUG_45867_send_itemChildAddedChange_to_parent();
 
 private:
     static bool hasWindowActivation();
@@ -159,7 +159,7 @@ bool tst_QGraphicsWidget::hasWindowActivation()
 // Subclass that exposes the protected functions.
 class SubQGraphicsWidget : public QGraphicsWidget {
 public:
-    SubQGraphicsWidget(QGraphicsItem *parent = nullptr, Qt::WindowFlags windowFlags = { })
+    SubQGraphicsWidget(QGraphicsItem *parent = nullptr, BobUI::WindowFlags windowFlags = { })
         : QGraphicsWidget(parent, windowFlags), eventCount(0)
         { }
 
@@ -205,24 +205,24 @@ public:
     void call_showEvent(QShowEvent* event)
         { return QGraphicsWidget::showEvent(event); }
 
-    QSizeF call_sizeHint(Qt::SizeHint which, QSizeF const& constraint = QSizeF()) const
+    QSizeF call_sizeHint(BobUI::SizeHint which, QSizeF const& constraint = QSizeF()) const
         { return QGraphicsWidget::sizeHint(which, constraint); }
 
     void call_updateGeometry()
         { return QGraphicsWidget::updateGeometry(); }
 
-    Qt::WindowFrameSection call_windowFrameSectionAt(const QPointF &pos) const
+    BobUI::WindowFrameSection call_windowFrameSectionAt(const QPointF &pos) const
         { return QGraphicsWidget::windowFrameSectionAt(pos); }
 
     int eventCount;
-    Qt::LayoutDirection m_painterLayoutDirection;
+    BobUI::LayoutDirection m_painterLayoutDirection;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override
     {
         m_painterLayoutDirection = painter->layoutDirection();
         QGraphicsWidget::paint(painter, option, widget);
         if (hasFocus()) {
-            painter->setPen(Qt::DotLine);
+            painter->setPen(BobUI::DotLine);
             painter->drawRect(rect());
         }
         //painter->drawText(QPointF(0,15), data(0).toString());
@@ -239,24 +239,24 @@ protected:
 class SizeHinter : public QGraphicsWidget
 {
 public:
-    SizeHinter(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = { },
+    SizeHinter(QGraphicsItem *parent = nullptr, BobUI::WindowFlags wFlags = { },
                 const QSizeF &min = QSizeF(5,5),
                 const QSizeF &pref = QSizeF(50, 50),
                 const QSizeF &max = QSizeF(500, 500))
         : QGraphicsWidget(parent, wFlags)
     {
-        m_sizes[Qt::MinimumSize] = min;
-        m_sizes[Qt::PreferredSize] = pref;
-        m_sizes[Qt::MaximumSize] = max;
+        m_sizes[BobUI::MinimumSize] = min;
+        m_sizes[BobUI::PreferredSize] = pref;
+        m_sizes[BobUI::MaximumSize] = max;
 
     }
-    void setSizeHint(Qt::SizeHint which, const QSizeF &newSizeHint)
+    void setSizeHint(BobUI::SizeHint which, const QSizeF &newSizeHint)
     {
         m_sizes[which] = newSizeHint;
     }
 
 protected:
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
         Q_UNUSED(constraint);
         return m_sizes[which];
@@ -273,21 +273,21 @@ void tst_QGraphicsWidget::qgraphicswidget()
     QVERIFY(!widget.isWindow());
     QCOMPARE(widget.boundingRect(), QRectF(0, 0, 0, 0));
     QCOMPARE(widget.focusWidget(), nullptr);
-    QCOMPARE(widget.focusPolicy(), Qt::NoFocus);
+    QCOMPARE(widget.focusPolicy(), BobUI::NoFocus);
     QCOMPARE(widget.font(), QFont());
     QCOMPARE(widget.geometry(), QRectF(widget.pos(), widget.size()));
     QCOMPARE(widget.layout(), nullptr);
-    QCOMPARE(widget.layoutDirection(), Qt::LeftToRight);
+    QCOMPARE(widget.layoutDirection(), BobUI::LeftToRight);
     QCOMPARE(widget.palette(), QPalette());
     QCOMPARE(widget.parentWidget(), nullptr);
     QCOMPARE(widget.rect(), QRectF(QPointF(), widget.size()));
     QCOMPARE(widget.size(), QSizeF(0, 0));
     QVERIFY(widget.style() != (QStyle*)0);
-    QCOMPARE(widget.testAttribute(Qt::WA_AcceptDrops), false);
+    QCOMPARE(widget.testAttribute(BobUI::WA_AcceptDrops), false);
     QCOMPARE(widget.topLevelWidget(), (QGraphicsWidget*)&widget);
     QCOMPARE(widget.type(), (int)QGraphicsWidget::Type);
     QCOMPARE(widget.call_propertyChange(QString(), QVariant()), QVariant());
-    widget.call_sizeHint(Qt::PreferredSize, QSizeF());
+    widget.call_sizeHint(BobUI::PreferredSize, QSizeF());
 
     QGraphicsWidget parent;
     SizeHinter *child = new SizeHinter(&parent);
@@ -298,8 +298,8 @@ void tst_QGraphicsWidget::qgraphicswidget()
 void tst_QGraphicsWidget::activation()
 {
     QGraphicsWidget *widget = new QGraphicsWidget;
-    QGraphicsWidget *window1 = new QGraphicsWidget(0, Qt::Window);
-    QGraphicsWidget *window2 = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *window1 = new QGraphicsWidget(0, BobUI::Window);
+    QGraphicsWidget *window2 = new QGraphicsWidget(0, BobUI::Window);
     QVERIFY(!widget->isActiveWindow());
     QVERIFY(!window1->isActiveWindow());
     QVERIFY(!window2->isActiveWindow());
@@ -335,9 +335,9 @@ void tst_QGraphicsWidget::activation()
 
 void tst_QGraphicsWidget::boundingRect_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::newRow("null") << QSizeF(0, 0);
-    QTest::newRow("avg") << QSizeF(10, 10);
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::newRow("null") << QSizeF(0, 0);
+    BOBUIest::newRow("avg") << QSizeF(10, 10);
 }
 
 // QRectF boundingRect() const public
@@ -352,12 +352,12 @@ void tst_QGraphicsWidget::boundingRect()
 
 void tst_QGraphicsWidget::dumpFocusChain_data()
 {
-    QTest::addColumn<bool>("scene");
-    QTest::addColumn<int>("children");
-    QTest::addColumn<bool>("setFocus");
-    QTest::newRow("empty world") << false << 0 << false;
-    QTest::newRow("one world") << true << 2 << false;
-    QTest::newRow("one world w/focus") << true << 2 << true;
+    BOBUIest::addColumn<bool>("scene");
+    BOBUIest::addColumn<int>("children");
+    BOBUIest::addColumn<bool>("setFocus");
+    BOBUIest::newRow("empty world") << false << 0 << false;
+    BOBUIest::newRow("one world") << true << 2 << false;
+    BOBUIest::newRow("one world w/focus") << true << 2 << true;
 }
 
 // void dumpFocusChain(QGraphicsScene* scene) public (static)
@@ -388,11 +388,11 @@ void tst_QGraphicsWidget::dumpFocusChain()
 
 void tst_QGraphicsWidget::focusWidget_data()
 {
-    QTest::addColumn<int>("childCount");
-    QTest::addColumn<int>("childWithFocus");
-    QTest::newRow("none") << 0 << 0;
-    QTest::newRow("first") << 3 << 0;
-    QTest::newRow("last") << 3 << 2;
+    BOBUIest::addColumn<int>("childCount");
+    BOBUIest::addColumn<int>("childWithFocus");
+    BOBUIest::newRow("none") << 0 << 0;
+    BOBUIest::newRow("first") << 3 << 0;
+    BOBUIest::newRow("last") << 3 << 2;
 }
 
 // QGraphicsWidget* focusWidget() const public
@@ -416,7 +416,7 @@ void tst_QGraphicsWidget::focusWidget()
         QFETCH(int, childWithFocus);
         SubQGraphicsWidget *widget = children[childWithFocus];
         widget->setFocus();
-        QTRY_VERIFY(widget->hasFocus());
+        BOBUIRY_VERIFY(widget->hasFocus());
         QCOMPARE(parent->focusWidget(), static_cast<QGraphicsWidget*>(widget));
     }
 }
@@ -433,43 +433,43 @@ void tst_QGraphicsWidget::focusWidget2()
 
     scene.addItem(widget);
 
-    QTRY_VERIFY(!widget->hasFocus());
-    widget->setFocusPolicy(Qt::StrongFocus);
-    QTRY_VERIFY(!widget->hasFocus());
+    BOBUIRY_VERIFY(!widget->hasFocus());
+    widget->setFocusPolicy(BobUI::StrongFocus);
+    BOBUIRY_VERIFY(!widget->hasFocus());
 
     QGraphicsWidget *subWidget = new QGraphicsWidget(widget);
-    QTRY_VERIFY(!subWidget->hasFocus());
+    BOBUIRY_VERIFY(!subWidget->hasFocus());
 
     scene.setFocus();
 
-    QTRY_VERIFY(!widget->hasFocus());
-    QTRY_VERIFY(!subWidget->hasFocus());
+    BOBUIRY_VERIFY(!widget->hasFocus());
+    BOBUIRY_VERIFY(!subWidget->hasFocus());
 
     widget->setFocus();
 
-    QTRY_VERIFY(widget->hasFocus());
-    QTRY_COMPARE(focusInSpy.count(), 1);
-    QTRY_VERIFY(!subWidget->hasFocus());
+    BOBUIRY_VERIFY(widget->hasFocus());
+    BOBUIRY_COMPARE(focusInSpy.count(), 1);
+    BOBUIRY_VERIFY(!subWidget->hasFocus());
 
     QGraphicsWidget *otherSubWidget = new QGraphicsWidget;
     EventSpy otherFocusInSpy(otherSubWidget, QEvent::FocusIn);
     EventSpy otherFocusOutSpy(otherSubWidget, QEvent::FocusOut);
 
-    otherSubWidget->setFocusPolicy(Qt::StrongFocus);
+    otherSubWidget->setFocusPolicy(BobUI::StrongFocus);
     otherSubWidget->setParentItem(widget);
 
-    QTRY_VERIFY(widget->hasFocus());
+    BOBUIRY_VERIFY(widget->hasFocus());
     QCOMPARE(scene.focusItem(), (QGraphicsItem *)widget);
-    QTRY_VERIFY(!subWidget->hasFocus());
-    QTRY_VERIFY(!otherSubWidget->hasFocus());
+    BOBUIRY_VERIFY(!subWidget->hasFocus());
+    BOBUIRY_VERIFY(!otherSubWidget->hasFocus());
 
     widget->hide();
-    QTRY_VERIFY(!widget->hasFocus()); // lose but still has subfocus
+    BOBUIRY_VERIFY(!widget->hasFocus()); // lose but still has subfocus
     QCOMPARE(focusInSpy.count(), 1);
     QCOMPARE(focusOutSpy.count(), 1);
 
     widget->show();
-    QTRY_VERIFY(!widget->hasFocus()); // no regain
+    BOBUIRY_VERIFY(!widget->hasFocus()); // no regain
     QCOMPARE(focusInSpy.count(), 1);
     QCOMPARE(focusOutSpy.count(), 1);
 
@@ -477,24 +477,24 @@ void tst_QGraphicsWidget::focusWidget2()
 
     // try to setup subFocus on item that can't take focus
     subWidget->setFocus();
-    QTRY_VERIFY(!subWidget->hasFocus());
+    BOBUIRY_VERIFY(!subWidget->hasFocus());
     QVERIFY(!scene.focusItem()); // but isn't the scene's focus item
 
     // try to setup subFocus on item that can take focus
     otherSubWidget->setFocus();
-    QTRY_VERIFY(!otherSubWidget->hasFocus());
+    BOBUIRY_VERIFY(!otherSubWidget->hasFocus());
     QCOMPARE(widget->focusWidget(), otherSubWidget);
     QVERIFY(!scene.focusItem()); // but isn't the scene's focus item
 
     widget->show();
 
-    QTRY_COMPARE(scene.focusItem(), (QGraphicsItem *)otherSubWidget); // but isn't the scene's focus item
+    BOBUIRY_COMPARE(scene.focusItem(), (QGraphicsItem *)otherSubWidget); // but isn't the scene's focus item
     QCOMPARE(otherFocusInSpy.count(), 1);
     QCOMPARE(otherFocusOutSpy.count(), 0);
 
     delete otherSubWidget;
 
-    QTRY_COMPARE(otherFocusOutSpy.count(), 1);
+    BOBUIRY_COMPARE(otherFocusOutSpy.count(), 1);
     QVERIFY(!scene.focusItem());
     QVERIFY(!widget->focusWidget());
 }
@@ -520,13 +520,13 @@ void tst_QGraphicsWidget::focusWidget3()
 
     QGraphicsWidget *widget = new QGraphicsWidget;
     FocusWatchWidget *subWidget = new FocusWatchWidget(widget);
-    subWidget->setFocusPolicy(Qt::StrongFocus);
+    subWidget->setFocusPolicy(BobUI::StrongFocus);
 
     scene.addItem(widget);
     widget->show();
 
-    QTRY_VERIFY(!widget->hasFocus());
-    QTRY_VERIFY(!subWidget->hasFocus());
+    BOBUIRY_VERIFY(!widget->hasFocus());
+    BOBUIRY_VERIFY(!subWidget->hasFocus());
 
     subWidget->setFocus();
     QCOMPARE(subWidget->gotFocusInCount, 1);
@@ -535,32 +535,32 @@ void tst_QGraphicsWidget::focusWidget3()
     QCOMPARE(subWidget->gotFocusOutCount, 1);
 }
 
-Q_DECLARE_METATYPE(Qt::FocusPolicy)
+Q_DECLARE_METATYPE(BobUI::FocusPolicy)
 void tst_QGraphicsWidget::focusPolicy_data()
 {
-    QTest::addColumn<Qt::FocusPolicy>("focusPolicy1");
-    QTest::addColumn<Qt::FocusPolicy>("focusPolicy2");
+    BOBUIest::addColumn<BobUI::FocusPolicy>("focusPolicy1");
+    BOBUIest::addColumn<BobUI::FocusPolicy>("focusPolicy2");
 
     for (int i = 0; i < 25; ++i) {
-        QTestData &data = QTest::newRow(QByteArray::number(i).constData());
+        BOBUIestData &data = BOBUIest::newRow(QByteArray::number(i).constData());
         switch(i % 5) {
-        case 0: data << Qt::TabFocus; break;
-        case 1: data << Qt::ClickFocus; break;
-        case 2: data << Qt::StrongFocus; break;
-        case 3: data << Qt::WheelFocus; break;
-        case 4: data << Qt::NoFocus; break;
+        case 0: data << BobUI::TabFocus; break;
+        case 1: data << BobUI::ClickFocus; break;
+        case 2: data << BobUI::StrongFocus; break;
+        case 3: data << BobUI::WheelFocus; break;
+        case 4: data << BobUI::NoFocus; break;
         }
         switch(i / 5) {
-        case 0: data << Qt::TabFocus; break;
-        case 1: data << Qt::ClickFocus; break;
-        case 2: data << Qt::StrongFocus; break;
-        case 3: data << Qt::WheelFocus; break;
-        case 4: data << Qt::NoFocus; break;
+        case 0: data << BobUI::TabFocus; break;
+        case 1: data << BobUI::ClickFocus; break;
+        case 2: data << BobUI::StrongFocus; break;
+        case 3: data << BobUI::WheelFocus; break;
+        case 4: data << BobUI::NoFocus; break;
         }
     }
 }
 
-// Qt::FocusPolicy focusPolicy() const public
+// BobUI::FocusPolicy focusPolicy() const public
 void tst_QGraphicsWidget::focusPolicy()
 {
     QGraphicsScene scene;
@@ -569,29 +569,29 @@ void tst_QGraphicsWidget::focusPolicy()
 
     SubQGraphicsWidget *widget = new SubQGraphicsWidget;
     scene.addItem(widget);
-    QTRY_COMPARE(Qt::NoFocus, widget->focusPolicy());
+    BOBUIRY_COMPARE(BobUI::NoFocus, widget->focusPolicy());
 
-    QFETCH(Qt::FocusPolicy, focusPolicy1);
+    QFETCH(BobUI::FocusPolicy, focusPolicy1);
     widget->setFocusPolicy(focusPolicy1);
-    QTRY_COMPARE(widget->focusPolicy(), focusPolicy1);
+    BOBUIRY_COMPARE(widget->focusPolicy(), focusPolicy1);
     bool isFocusable = widget->flags() & QGraphicsItem::ItemIsFocusable;
     bool wasFocusable = isFocusable;
-    QTRY_VERIFY(isFocusable == (focusPolicy1 != Qt::NoFocus));
+    BOBUIRY_VERIFY(isFocusable == (focusPolicy1 != BobUI::NoFocus));
     widget->setFocus();
-    QTRY_COMPARE(widget->hasFocus(), isFocusable);
+    BOBUIRY_COMPARE(widget->hasFocus(), isFocusable);
 
-    QFETCH(Qt::FocusPolicy, focusPolicy2);
+    QFETCH(BobUI::FocusPolicy, focusPolicy2);
     widget->setFocusPolicy(focusPolicy2);
     QCOMPARE(widget->focusPolicy(), focusPolicy2);
     isFocusable = widget->flags() & QGraphicsItem::ItemIsFocusable;
-    QVERIFY(isFocusable == (focusPolicy2 != Qt::NoFocus));
+    QVERIFY(isFocusable == (focusPolicy2 != BobUI::NoFocus));
     QCOMPARE(widget->hasFocus(), wasFocusable && isFocusable);
 }
 
 void tst_QGraphicsWidget::font_data()
 {
-    QTest::addColumn<QString>("fontName");
-    QTest::newRow("Helvetica") << "Helvetica";
+    BOBUIest::addColumn<QString>("fontName");
+    BOBUIest::newRow("Helvetica") << "Helvetica";
 }
 
 // QFont font() const public
@@ -625,7 +625,7 @@ void tst_QGraphicsWidget::fontPropagatesResolveToChildren()
     QGraphicsView view;
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(font.resolveMask(), uint(QFont::StyleResolved));
     QCOMPARE(root->font().resolveMask(), uint(QFont::StyleResolved));
@@ -660,7 +660,7 @@ void tst_QGraphicsWidget::fontPropagatesResolveToGrandChildren()
     QGraphicsView view;
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(font.resolveMask(), uint(QFont::StyleResolved));
     QCOMPARE(grandChild1->font().resolveMask(), uint(QFont::StyleResolved));
@@ -696,7 +696,7 @@ void tst_QGraphicsWidget::fontPropagatesResolveViaNonWidget()
     QGraphicsView view;
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(font.resolveMask(), uint(QFont::StyleResolved));
     QCOMPARE(grandChild1->font().resolveMask(), uint(QFont::StyleResolved));
@@ -732,7 +732,7 @@ void tst_QGraphicsWidget::fontPropagatesResolveFromScene()
     QGraphicsView view;
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(font.resolveMask(), uint(QFont::StyleResolved));
     QCOMPARE(root->font().resolveMask(), uint(QFont::StyleResolved));
@@ -780,7 +780,7 @@ void tst_QGraphicsWidget::fontPropagatesResolveInParentChange()
     QGraphicsView view;
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QVERIFY(grandChild1->font().italic());
     QVERIFY(!grandChild1->font().bold());
@@ -867,21 +867,21 @@ void tst_QGraphicsWidget::fontChangedEvent()
 
     EventSpy rootSpyFont(root, QEvent::FontChange);
     EventSpy rootSpyPolish(root, QEvent::Polish);
-    QTRY_COMPARE(rootSpyFont.count(), 0);
-    QTRY_COMPARE(rootSpyPolish.count(), 1);
+    BOBUIRY_COMPARE(rootSpyFont.count(), 0);
+    BOBUIRY_COMPARE(rootSpyPolish.count(), 1);
     //The font is still the same so no fontChangeEvent
-    QTRY_COMPARE(rootSpyFont.count(), 0);
+    BOBUIRY_COMPARE(rootSpyFont.count(), 0);
 
     QFont font;
     font.setPointSize(43);
     root->setFont(font);
     //The font changed
-    QTRY_COMPARE(rootSpyFont.count(), 1);
+    BOBUIRY_COMPARE(rootSpyFont.count(), 1);
 
     //then roll back to the default one.
     root->setFont(appFont);
     //The font changed
-    QTRY_COMPARE(rootSpyFont.count(), 2);
+    BOBUIRY_COMPARE(rootSpyFont.count(), 2);
 }
 
 void tst_QGraphicsWidget::fontPropagationWidgetItemWidget()
@@ -931,11 +931,11 @@ void tst_QGraphicsWidget::fontPropagationSceneChange()
 
 void tst_QGraphicsWidget::geometry_data()
 {
-    QTest::addColumn<QPointF>("pos");
-    QTest::addColumn<QSizeF>("size");
-    QTest::newRow("null, null") << QPointF() << QSizeF(0, 0);
-    QTest::newRow("null, normal") << QPointF() << QSizeF(10, 10);
-    QTest::newRow("neg, normal") << QPointF(-5, -5) << QSizeF(10, 10);
+    BOBUIest::addColumn<QPointF>("pos");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::newRow("null, null") << QPointF() << QSizeF(0, 0);
+    BOBUIest::newRow("null, normal") << QPointF() << QSizeF(10, 10);
+    BOBUIest::newRow("neg, normal") << QPointF(-5, -5) << QSizeF(10, 10);
 }
 
 // QRectF geometry() const public
@@ -998,13 +998,13 @@ void tst_QGraphicsWidget::height()
 
 void tst_QGraphicsWidget::getContentsMargins_data()
 {
-    QTest::addColumn<qreal>("left");
-    QTest::addColumn<qreal>("top");
-    QTest::addColumn<qreal>("right");
-    QTest::addColumn<qreal>("bottom");
-    QTest::newRow("null") << (qreal)0 << (qreal)0 << (qreal)0 << (qreal)0;
-    QTest::newRow("something") << (qreal)10 << (qreal)5 << (qreal)3 << (qreal)7;
-    QTest::newRow("real") << (qreal)1.7 << (qreal)5.9 << (qreal)3.2 << (qreal)9.7;
+    BOBUIest::addColumn<qreal>("left");
+    BOBUIest::addColumn<qreal>("top");
+    BOBUIest::addColumn<qreal>("right");
+    BOBUIest::addColumn<qreal>("bottom");
+    BOBUIest::newRow("null") << (qreal)0 << (qreal)0 << (qreal)0 << (qreal)0;
+    BOBUIest::newRow("something") << (qreal)10 << (qreal)5 << (qreal)3 << (qreal)7;
+    BOBUIest::newRow("real") << (qreal)1.7 << (qreal)5.9 << (qreal)3.2 << (qreal)9.7;
 }
 
 // void getContentsMargins(qreal* left, qreal* top, qreal* right, qreal* bottom) const public
@@ -1036,19 +1036,19 @@ void tst_QGraphicsWidget::getContentsMargins()
     QCOMPARE(gbottom, bottom);
 }
 
-Q_DECLARE_METATYPE(Qt::LayoutDirection)
+Q_DECLARE_METATYPE(BobUI::LayoutDirection)
 void tst_QGraphicsWidget::initStyleOption_data()
 {
-    QTest::addColumn<bool>("enabled");
-    QTest::addColumn<bool>("focus");
-    QTest::addColumn<bool>("underMouse");
-    QTest::addColumn<Qt::LayoutDirection>("layoutDirection");
-    QTest::addColumn<QSizeF>("size");
-    QTest::addColumn<QPalette>("palette");
-    QTest::addColumn<QString>("fontName");
-    QTest::newRow("none") << false << false << false << Qt::LeftToRight << QSizeF(0, 0) << QPalette() << QString();
-    QTest::newRow("all") << true << true << true << Qt::RightToLeft << QSizeF(300, 300) << QPalette(Qt::magenta) << "Helvetica";
-    QTest::newRow("rand") << true << false << false << Qt::RightToLeft << QSizeF(1, 0) << QPalette(Qt::darkCyan) << "Times";
+    BOBUIest::addColumn<bool>("enabled");
+    BOBUIest::addColumn<bool>("focus");
+    BOBUIest::addColumn<bool>("underMouse");
+    BOBUIest::addColumn<BobUI::LayoutDirection>("layoutDirection");
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::addColumn<QPalette>("palette");
+    BOBUIest::addColumn<QString>("fontName");
+    BOBUIest::newRow("none") << false << false << false << BobUI::LeftToRight << QSizeF(0, 0) << QPalette() << QString();
+    BOBUIest::newRow("all") << true << true << true << BobUI::RightToLeft << QSizeF(300, 300) << QPalette(BobUI::magenta) << "Helvetica";
+    BOBUIest::newRow("rand") << true << false << false << BobUI::RightToLeft << QSizeF(1, 0) << QPalette(BobUI::darkCyan) << "Times";
 }
 
 // void initStyleOption(QStyleOption* option) const public
@@ -1059,11 +1059,11 @@ void tst_QGraphicsWidget::initStyleOption()
     view.resize(300, 300);
     view.show();
     if (hasWindowActivation())
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     else
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    view.setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    view.setAlignment(BobUI::AlignTop | BobUI::AlignLeft);
     SubQGraphicsWidget *widget = new SubQGraphicsWidget;
     widget->setAcceptHoverEvents(true);
     QStyleOption option;
@@ -1086,7 +1086,7 @@ void tst_QGraphicsWidget::initStyleOption()
     if (underMouse) {
         const auto pos = view.viewport()->mapToGlobal(view.mapFromScene(widget->mapToScene(widget->boundingRect().center())));
         QCursor::setPos(pos);
-        if (!QTest::qWaitFor([pos]{ return QCursor::pos() == pos; }))
+        if (!BOBUIest::qWaitFor([pos]{ return QCursor::pos() == pos; }))
             QSKIP("Cannot move cursor");
     }
 
@@ -1107,7 +1107,7 @@ void tst_QGraphicsWidget::initStyleOption()
     }
     bool isUnderMouse = option.state & QStyle::State_MouseOver;
     QCOMPARE(isUnderMouse, underMouse);
-    // if (layoutDirection != Qt::LeftToRight)
+    // if (layoutDirection != BobUI::LeftToRight)
     //QEXPECT_FAIL("", "QApplicaiton::layoutDirection doesn't propagate to QGraphicsWidget", Continue);
     //QCOMPARE(option.direction, layoutDirection);
     QCOMPARE(option.rect, QRectF(QPointF(), size).toRect());
@@ -1117,9 +1117,9 @@ void tst_QGraphicsWidget::initStyleOption()
 
 void tst_QGraphicsWidget::layout_data()
 {
-    QTest::addColumn<int>("childCount");
-    QTest::newRow("empty") << 0;
-    QTest::newRow("10") << 10;
+    BOBUIest::addColumn<int>("childCount");
+    BOBUIest::newRow("empty") << 0;
+    BOBUIest::newRow("10") << 10;
 }
 
 // QGraphicsLayout* layout() const public
@@ -1140,7 +1140,7 @@ void tst_QGraphicsWidget::layout()
     QSignalSpy spy(&widget, SIGNAL(layoutChanged()));
     widget.setLayout(layout);
 
-    QTRY_COMPARE(widget.layout(), static_cast<QGraphicsLayout*>(layout));
+    BOBUIRY_COMPARE(widget.layout(), static_cast<QGraphicsLayout*>(layout));
     for (int i = 0; i < children.size(); ++i) {
         SubQGraphicsWidget *item = children[i];
         QCOMPARE(item->parentWidget(), (QGraphicsWidget *)&widget);
@@ -1153,37 +1153,37 @@ void tst_QGraphicsWidget::layout()
 
 void tst_QGraphicsWidget::layoutDirection_data()
 {
-    QTest::addColumn<Qt::LayoutDirection>("layoutDirection");
-    QTest::newRow("rtl") << Qt::RightToLeft;
-    QTest::newRow("ltr") << Qt::LeftToRight;
+    BOBUIest::addColumn<BobUI::LayoutDirection>("layoutDirection");
+    BOBUIest::newRow("rtl") << BobUI::RightToLeft;
+    BOBUIest::newRow("ltr") << BobUI::LeftToRight;
 }
 
-// Qt::LayoutDirection layoutDirection() const public
+// BobUI::LayoutDirection layoutDirection() const public
 void tst_QGraphicsWidget::layoutDirection()
 {
-    QFETCH(Qt::LayoutDirection, layoutDirection);
+    QFETCH(BobUI::LayoutDirection, layoutDirection);
     QGraphicsScene scene;
     QScopedPointer<QGraphicsView> view(new QGraphicsView(&scene));
     SubQGraphicsWidget widget;
     scene.addItem(&widget);
-    QCOMPARE(widget.layoutDirection(), Qt::LeftToRight);
-    QCOMPARE(widget.testAttribute(Qt::WA_SetLayoutDirection), false);
+    QCOMPARE(widget.layoutDirection(), BobUI::LeftToRight);
+    QCOMPARE(widget.testAttribute(BobUI::WA_SetLayoutDirection), false);
 
     QList<SubQGraphicsWidget*> children;
     for (int i = 0; i < 10; ++i) {
         SubQGraphicsWidget *item = new SubQGraphicsWidget(&widget);
         children.append(item);
-        QCOMPARE(item->testAttribute(Qt::WA_SetLayoutDirection), false);
+        QCOMPARE(item->testAttribute(BobUI::WA_SetLayoutDirection), false);
     }
     widget.setLayoutDirection(layoutDirection);
-    QCOMPARE(widget.testAttribute(Qt::WA_SetLayoutDirection), true);
+    QCOMPARE(widget.testAttribute(BobUI::WA_SetLayoutDirection), true);
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.data()));
     for (int i = 0; i < children.size(); ++i) {
-        QTRY_COMPARE(children[i]->layoutDirection(), layoutDirection);
-        QTRY_COMPARE(children[i]->testAttribute(Qt::WA_SetLayoutDirection), false);
+        BOBUIRY_COMPARE(children[i]->layoutDirection(), layoutDirection);
+        BOBUIRY_COMPARE(children[i]->testAttribute(BobUI::WA_SetLayoutDirection), false);
         view->update();
-        QTRY_COMPARE(children[i]->m_painterLayoutDirection, layoutDirection);
+        BOBUIRY_COMPARE(children[i]->m_painterLayoutDirection, layoutDirection);
     }
 }
 
@@ -1270,10 +1270,10 @@ void tst_QGraphicsWidget::palettePropagation()
 
 void tst_QGraphicsWidget::parentWidget_data()
 {
-    QTest::addColumn<int>("childrenCount");
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
-    QTest::newRow("10") << 10;
+    BOBUIest::addColumn<int>("childrenCount");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("10") << 10;
 }
 
 // QGraphicsWidget* parentWidget() const public
@@ -1298,10 +1298,10 @@ void tst_QGraphicsWidget::parentWidget()
 
 void tst_QGraphicsWidget::resize_data()
 {
-    QTest::addColumn<QSizeF>("size");
-    QTest::newRow("null") << QSizeF();
-    QTest::newRow("10x10") << QSizeF(10, 10);
-    QTest::newRow("10x-1") << QSizeF(10, -1);
+    BOBUIest::addColumn<QSizeF>("size");
+    BOBUIest::newRow("null") << QSizeF();
+    BOBUIest::newRow("10x10") << QSizeF(10, 10);
+    BOBUIest::newRow("10x-1") << QSizeF(10, -1);
 }
 
 // void resize(qreal w, qreal h) public
@@ -1319,21 +1319,21 @@ void tst_QGraphicsWidget::resize()
     QCOMPARE(widget.size(), boundedSize);
 }
 
-Q_DECLARE_METATYPE(Qt::WidgetAttribute)
+Q_DECLARE_METATYPE(BobUI::WidgetAttribute)
 void tst_QGraphicsWidget::setAttribute_data()
 {
-    QTest::addColumn<Qt::WidgetAttribute>("attribute");
-    QTest::addColumn<bool>("supported");
-    QTest::newRow("WA_SetLayoutDirection") << Qt::WA_SetLayoutDirection << true;
-    QTest::newRow("WA_RightToLeft") << Qt::WA_RightToLeft << true;
-    QTest::newRow("WA_SetStyle") << Qt::WA_SetStyle << true;
-    QTest::newRow("WA_Resized") << Qt::WA_Resized << true;
+    BOBUIest::addColumn<BobUI::WidgetAttribute>("attribute");
+    BOBUIest::addColumn<bool>("supported");
+    BOBUIest::newRow("WA_SetLayoutDirection") << BobUI::WA_SetLayoutDirection << true;
+    BOBUIest::newRow("WA_RightToLeft") << BobUI::WA_RightToLeft << true;
+    BOBUIest::newRow("WA_SetStyle") << BobUI::WA_SetStyle << true;
+    BOBUIest::newRow("WA_Resized") << BobUI::WA_Resized << true;
 }
 
-// void setAttribute(Qt::WidgetAttribute attribute, bool on = true) public
+// void setAttribute(BobUI::WidgetAttribute attribute, bool on = true) public
 void tst_QGraphicsWidget::setAttribute()
 {
-    QFETCH(Qt::WidgetAttribute, attribute);
+    QFETCH(BobUI::WidgetAttribute, attribute);
     QFETCH(bool, supported);
     SubQGraphicsWidget widget;
     widget.setAttribute(attribute);
@@ -1342,9 +1342,9 @@ void tst_QGraphicsWidget::setAttribute()
 
 void tst_QGraphicsWidget::setStyle_data()
 {
-    QTest::addColumn<QString>("style");
-    QTest::newRow("null") << "";
-    QTest::newRow("fusion") << "Fusion";
+    BOBUIest::addColumn<QString>("style");
+    BOBUIest::newRow("null") << "";
+    BOBUIest::newRow("fusion") << "Fusion";
 }
 
 // void setStyle(QStyle* style) public
@@ -1368,7 +1368,7 @@ void tst_QGraphicsWidget::setStyle()
         QVERIFY(widget.style() != nullptr);
     }
     QCOMPARE(widget.eventCount, oldEventCounts + 1);
-    QCOMPARE(widget.testAttribute(Qt::WA_SetStyle), !style.isEmpty());
+    QCOMPARE(widget.testAttribute(BobUI::WA_SetStyle), !style.isEmpty());
 
     // cleanup
     widget.setStyle(0);
@@ -1379,10 +1379,10 @@ void tst_QGraphicsWidget::setStyle()
 
 void tst_QGraphicsWidget::setTabOrder_data()
 {
-    QTest::addColumn<int>("childrenCount");
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
-    QTest::newRow("10") << 10;
+    BOBUIest::addColumn<int>("childrenCount");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("10") << 10;
 }
 
 // void setTabOrder(QGraphicsWidget* first, QGraphicsWidget* second) public
@@ -1392,16 +1392,16 @@ void tst_QGraphicsWidget::setTabOrder()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QGraphicsWidget *lastItem = nullptr;
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsWidget::setTabOrder(0, 0) is undefined");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsWidget::setTabOrder(0, 0) is undefined");
     QGraphicsWidget::setTabOrder(0, 0);
 
     QList<SubQGraphicsWidget*> children;
     for (int i = 0; i < childrenCount; ++i) {
         SubQGraphicsWidget *item = new SubQGraphicsWidget();
-        item->setFocusPolicy(Qt::TabFocus);
+        item->setFocusPolicy(BobUI::TabFocus);
         children.append(item);
         scene.addItem(item);
         if (lastItem)
@@ -1412,7 +1412,7 @@ void tst_QGraphicsWidget::setTabOrder()
     if (!children.isEmpty()) {
         QGraphicsWidget *first = children.first();
         view.viewport()->setFocus();
-        QTRY_VERIFY(view.viewport()->hasFocus());
+        BOBUIRY_VERIFY(view.viewport()->hasFocus());
         first->setFocus();
         QVERIFY(first->hasFocus());
         QVERIFY(scene.hasFocus());
@@ -1420,7 +1420,7 @@ void tst_QGraphicsWidget::setTabOrder()
 
         int currentItem = 0;
         while (currentItem < children.size() - 1) {
-            QTest::keyPress(view.viewport(), Qt::Key_Tab);
+            BOBUIest::keyPress(view.viewport(), BobUI::Key_Tab);
             ++currentItem;
             QVERIFY(children[currentItem % children.size()]->hasFocus());
         }
@@ -1445,7 +1445,7 @@ bool compareFocusChain(QGraphicsView *view,
             return false;
         }
         if (i != last)
-            QTest::keyPress(view, Qt::Key_Tab);
+            BOBUIest::keyPress(view, BobUI::Key_Tab);
     }
     scene->setFocusItem(oldFocusItem);
     return true;
@@ -1463,25 +1463,25 @@ void tst_QGraphicsWidget::setTabOrderAndReparent()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
     QCOMPARE(QApplication::activeWindow(), (QWidget*)&view);
 
     QGraphicsWidget *w[4];
     for (int i = 0; i < 3; ++i) {
         w[i] = new QGraphicsWidget;
-        w[i]->setFocusPolicy(Qt::StrongFocus);
+        w[i]->setFocusPolicy(BobUI::StrongFocus);
         w[i]->setData(0, 'w' + QByteArray::number(i + 1));
         scene.addItem(w[i]);
     }
 
     w[0]->setFocus();
-    QTRY_VERIFY(w[0]->hasFocus());
+    BOBUIRY_VERIFY(w[0]->hasFocus());
     QByteArray errorMessage;
     QVERIFY2(compareFocusChain(&view, w, w + 3, &errorMessage), errorMessage.constData());
 
     QGraphicsWidget *p = new QGraphicsWidget;
     p->setData(0, QLatin1String("parent"));
-    p->setFocusPolicy(Qt::StrongFocus);
+    p->setFocusPolicy(BobUI::StrongFocus);
 
     w[0]->setFocus();
     QVERIFY2(compareFocusChain(&view, w, w + 3, &errorMessage), errorMessage.constData());
@@ -1505,7 +1505,7 @@ void tst_QGraphicsWidget::setTabOrderAndReparent()
 
     for (int i = 0; i < 4; ++i) {
         w[i] = new QGraphicsWidget;
-        w[i]->setFocusPolicy(Qt::StrongFocus);
+        w[i]->setFocusPolicy(BobUI::StrongFocus);
         w[i]->setData(0, 'w' + QByteArray::number(i + 1));
         scene.addItem(w[i]);
     }
@@ -1518,7 +1518,7 @@ void tst_QGraphicsWidget::setTabOrderAndReparent()
 
     p = new QGraphicsWidget;
     p->setData(0, QLatin1String("parent"));
-    p->setFocusPolicy(Qt::StrongFocus);
+    p->setFocusPolicy(BobUI::StrongFocus);
 
     w[0]->setParentItem(p);
     w[1]->setFocus();
@@ -1532,8 +1532,8 @@ void tst_QGraphicsWidget::setTabOrderAndReparent()
 
 void tst_QGraphicsWidget::topLevelWidget_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::newRow("test one") << "foo";
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::newRow("test one") << "foo";
 }
 
 // QGraphicsWidget* topLevelWidget() const public
@@ -1546,18 +1546,18 @@ void tst_QGraphicsWidget::topLevelWidget()
 
 void tst_QGraphicsWidget::unsetLayoutDirection_data()
 {
-    QTest::addColumn<Qt::LayoutDirection>("layoutDirection");
-    QTest::newRow("rtl") << Qt::RightToLeft;
-    QTest::newRow("ltr") << Qt::LeftToRight;
+    BOBUIest::addColumn<BobUI::LayoutDirection>("layoutDirection");
+    BOBUIest::newRow("rtl") << BobUI::RightToLeft;
+    BOBUIest::newRow("ltr") << BobUI::LeftToRight;
 }
 
 // void unsetLayoutDirection() public
 void tst_QGraphicsWidget::unsetLayoutDirection()
 {
-    QApplication::setLayoutDirection(Qt::LeftToRight);
-    QFETCH(Qt::LayoutDirection, layoutDirection);
+    QApplication::setLayoutDirection(BobUI::LeftToRight);
+    QFETCH(BobUI::LayoutDirection, layoutDirection);
     SubQGraphicsWidget widget;
-    QCOMPARE(Qt::LeftToRight, widget.layoutDirection());
+    QCOMPARE(BobUI::LeftToRight, widget.layoutDirection());
 
     QList<SubQGraphicsWidget*> children;
     for (int i = 0; i < 10; ++i) {
@@ -1566,16 +1566,16 @@ void tst_QGraphicsWidget::unsetLayoutDirection()
     }
     widget.setLayoutDirection(layoutDirection);
     widget.unsetLayoutDirection();
-    QCOMPARE(widget.testAttribute(Qt::WA_SetLayoutDirection), false);
+    QCOMPARE(widget.testAttribute(BobUI::WA_SetLayoutDirection), false);
     for (int i = 0; i < children.size(); ++i) {
-        QCOMPARE(children[i]->layoutDirection(), Qt::LeftToRight);
+        QCOMPARE(children[i]->layoutDirection(), BobUI::LeftToRight);
     }
 }
 
 void tst_QGraphicsWidget::focusNextPrevChild_data()
 {
-    QTest::addColumn<QString>("str");
-    QTest::newRow("test one") << "foo";
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::newRow("test one") << "foo";
 }
 
 // bool focusNextPrevChild(bool next) protected
@@ -1592,14 +1592,14 @@ void tst_QGraphicsWidget::verifyFocusChain()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
 
     {
         // parent/child focus
-        SubQGraphicsWidget *w = new SubQGraphicsWidget(0, Qt::Window);
-        w->setFocusPolicy(Qt::StrongFocus);
+        SubQGraphicsWidget *w = new SubQGraphicsWidget(0, BobUI::Window);
+        w->setFocusPolicy(BobUI::StrongFocus);
         SubQGraphicsWidget *w1_1 = new SubQGraphicsWidget(w);
-        w1_1->setFocusPolicy(Qt::StrongFocus);
+        w1_1->setFocusPolicy(BobUI::StrongFocus);
         scene.addItem(w);
         w->setFocus();
         QVERIFY(w->hasFocus());
@@ -1610,13 +1610,13 @@ void tst_QGraphicsWidget::verifyFocusChain()
 
     {
         // delete item in focus chain and verify chain
-        SubQGraphicsWidget *w = new SubQGraphicsWidget(0, Qt::Window);
+        SubQGraphicsWidget *w = new SubQGraphicsWidget(0, BobUI::Window);
         SubQGraphicsWidget *w1_1 = new SubQGraphicsWidget(w);
         SubQGraphicsWidget *w1_2 = new SubQGraphicsWidget(w);
         SubQGraphicsWidget *w1_3 = new SubQGraphicsWidget(w);
-        w1_1->setFocusPolicy(Qt::StrongFocus);
-        w1_2->setFocusPolicy(Qt::StrongFocus);
-        w1_3->setFocusPolicy(Qt::StrongFocus);
+        w1_1->setFocusPolicy(BobUI::StrongFocus);
+        w1_2->setFocusPolicy(BobUI::StrongFocus);
+        w1_3->setFocusPolicy(BobUI::StrongFocus);
         scene.addItem(w);
         w1_1->setFocus();
         QVERIFY(w1_1->hasFocus());
@@ -1632,10 +1632,10 @@ void tst_QGraphicsWidget::verifyFocusChain()
     }
     {
         // parent/child focus
-        SubQGraphicsWidget *w = new SubQGraphicsWidget(0, Qt::Window);
-        w->setFocusPolicy(Qt::StrongFocus);
+        SubQGraphicsWidget *w = new SubQGraphicsWidget(0, BobUI::Window);
+        w->setFocusPolicy(BobUI::StrongFocus);
         SubQGraphicsWidget *w1_1 = new SubQGraphicsWidget(w);
-        w1_1->setFocusPolicy(Qt::StrongFocus);
+        w1_1->setFocusPolicy(BobUI::StrongFocus);
         scene.addItem(w);
         w->setFocus();
         QVERIFY(w->hasFocus());
@@ -1644,15 +1644,15 @@ void tst_QGraphicsWidget::verifyFocusChain()
         delete w;
     }
     {
-        // QTBUG-30923:
+        // BOBUIBUG-30923:
         // Child QGraphicsWidget with tabFocusFirst gets removed & deleted should not crash.
-        // This case simulates what QtQuick1 does when you have QGraphicsObject based
+        // This case simulates what BobUIQuick1 does when you have QGraphicsObject based
         // item in different qml views that are loaded one after another.
         QGraphicsItem *parent1 = new QGraphicsRectItem(0); // root item
         scene.addItem(parent1);
         for (int i = 0; i < 2; i++) {
             SubQGraphicsWidget *w1 = new SubQGraphicsWidget(parent1);
-            w1->setFocusPolicy(Qt::StrongFocus);
+            w1->setFocusPolicy(BobUI::StrongFocus);
             w1->setFocus();
             QVERIFY(w1->hasFocus());
             scene.removeItem(w1);
@@ -1675,56 +1675,56 @@ void tst_QGraphicsWidget::verifyFocusChain()
         SubQGraphicsWidget *w1_1 = new SubQGraphicsWidget;
         w1_1->setData(0, "w1_1");
         w1_1->setGeometry(0,0,25, 25);
-        w1_1->setFocusPolicy(Qt::StrongFocus);
+        w1_1->setFocusPolicy(BobUI::StrongFocus);
         scene.addItem(w1_1);
         SubQGraphicsWidget *w1_2 = new SubQGraphicsWidget;
         w1_2->setData(0, "w1_2");
         w1_2->setGeometry(25,0,25, 25);
-        w1_2->setFocusPolicy(Qt::StrongFocus);
+        w1_2->setFocusPolicy(BobUI::StrongFocus);
         scene.addItem(w1_2);
         window->show();
-        QVERIFY(QTest::qWaitForWindowActive(window.data()));
+        QVERIFY(BOBUIest::qWaitForWindowActive(window.data()));
 
         lineEdit->setFocus();
-        QTRY_VERIFY(lineEdit->hasFocus());
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
-        QTRY_VERIFY(w1_1->hasFocus());
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
-        QTRY_VERIFY(w1_2->hasFocus());
+        BOBUIRY_VERIFY(lineEdit->hasFocus());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
+        BOBUIRY_VERIFY(w1_1->hasFocus());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
+        BOBUIRY_VERIFY(w1_2->hasFocus());
 
         // remove the tabFocusFirst and insert new item
         delete w1_1;            // calls _q_removeItemLater
         SubQGraphicsWidget *w1_3 = new SubQGraphicsWidget;
-        w1_3->setFocusPolicy(Qt::StrongFocus);
+        w1_3->setFocusPolicy(BobUI::StrongFocus);
         w1_3->setData(0, "w1_3");
         w1_3->setGeometry(50,0,25, 25);
         scene.addItem(w1_3);
-        QTRY_VERIFY(w1_2->hasFocus());
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
-        QTRY_VERIFY(lineEdit->hasFocus());
+        BOBUIRY_VERIFY(w1_2->hasFocus());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
+        BOBUIRY_VERIFY(lineEdit->hasFocus());
         // tabFocusFirst should now point to w1_2
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
-        QTRY_VERIFY(w1_2->hasFocus());
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
-        QTRY_VERIFY(w1_3->hasFocus());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
+        BOBUIRY_VERIFY(w1_2->hasFocus());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
+        BOBUIRY_VERIFY(w1_3->hasFocus());
         scene.removeItem(w1_2);   // does not call _q_removeItemLater
         delete w1_2;            // calls _q_removeItemLater
 
         SubQGraphicsWidget *w1_4 = new SubQGraphicsWidget;
-        w1_4->setFocusPolicy(Qt::StrongFocus);
+        w1_4->setFocusPolicy(BobUI::StrongFocus);
         w1_4->setData(0, "w1_4");
         w1_4->setGeometry(75,0,25, 25);
         scene.addItem(w1_4);
-        QTRY_VERIFY(w1_3->hasFocus());
+        BOBUIRY_VERIFY(w1_3->hasFocus());
         QByteArray errorMessage;
         const QGraphicsItemList expected = QGraphicsItemList() << w1_3 << w1_4;
-        QTRY_VERIFY2(compareFocusChain(view, expected, &errorMessage), errorMessage.constData());
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
-        QTRY_VERIFY(lineEdit->hasFocus());
+        BOBUIRY_VERIFY2(compareFocusChain(view, expected, &errorMessage), errorMessage.constData());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
+        BOBUIRY_VERIFY(lineEdit->hasFocus());
         // tabFocusFirst should now point to w1_3
-        QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
-        QTRY_VERIFY(w1_3->hasFocus());
-        QTRY_VERIFY2(compareFocusChain(view, expected, &errorMessage), errorMessage.constData());
+        BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
+        BOBUIRY_VERIFY(w1_3->hasFocus());
+        BOBUIRY_VERIFY2(compareFocusChain(view, expected, &errorMessage), errorMessage.constData());
     }
 }
 
@@ -1740,16 +1740,16 @@ void tst_QGraphicsWidget::updateFocusChainWhenChildDie()
     view.move(availableGeometry.topLeft() + QPoint(50, 50));
     view.show();
     view.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     // delete item in focus chain with no focus and verify chain
-    SubQGraphicsWidget *parent = new SubQGraphicsWidget(0, Qt::Window);
-    SubQGraphicsWidget *w = new SubQGraphicsWidget(0, Qt::Window);
+    SubQGraphicsWidget *parent = new SubQGraphicsWidget(0, BobUI::Window);
+    SubQGraphicsWidget *w = new SubQGraphicsWidget(0, BobUI::Window);
     w->resize(50,50);
     w->resize(100,100);
     SubQGraphicsWidget *w1_1 = new SubQGraphicsWidget(w);
-    w1_1->setFocusPolicy(Qt::StrongFocus);
-    w->setFocusPolicy(Qt::StrongFocus);
+    w1_1->setFocusPolicy(BobUI::StrongFocus);
+    w->setFocusPolicy(BobUI::StrongFocus);
     scene.addItem(w);
     scene.addItem(parent);
     w1_1->setFocus();
@@ -1762,25 +1762,25 @@ void tst_QGraphicsWidget::updateFocusChainWhenChildDie()
     myWidget.move(availableGeometry.topLeft() + QPoint(350, 50));
     myWidget.show();
     edit.setFocus();
-    QTRY_VERIFY(edit.hasFocus());
+    BOBUIRY_VERIFY(edit.hasFocus());
     delete w1_1;
     myWidget.hide();
     w->setParentItem(parent);
     //We don't crash perfect
     QVERIFY(w);
     view.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_COMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_COMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(w));
 }
 
 void tst_QGraphicsWidget::sizeHint_data()
 {
-    QTest::addColumn<bool>("layout");
-    QTest::newRow("no layout") << false;
-    QTest::newRow("layout") << true;
+    BOBUIest::addColumn<bool>("layout");
+    BOBUIest::newRow("no layout") << false;
+    BOBUIest::newRow("layout") << true;
 }
 
-// QSizeF sizeHint(Qt::SizeHint which, QSizeF const& constraint = QSizeF()) const protected
+// QSizeF sizeHint(BobUI::SizeHint which, QSizeF const& constraint = QSizeF()) const protected
 void tst_QGraphicsWidget::sizeHint()
 {
     QFETCH(bool, layout);
@@ -1790,19 +1790,19 @@ void tst_QGraphicsWidget::sizeHint()
         QGraphicsLinearLayout *layout = new QGraphicsLinearLayout;
         widget.setLayout(layout);
     }
-    widget.call_sizeHint(Qt::MinimumSize, QSizeF());
+    widget.call_sizeHint(BobUI::MinimumSize, QSizeF());
 }
 
 void tst_QGraphicsWidget::consistentPosSizeGeometry_data()
 {
-    QTest::addColumn<QSizeF>("minSize");
-    QTest::addColumn<QSizeF>("maxSize");
-    QTest::addColumn<QRectF>("geometry");
-    QTest::addColumn<QRectF>("expectedGeometry");
+    BOBUIest::addColumn<QSizeF>("minSize");
+    BOBUIest::addColumn<QSizeF>("maxSize");
+    BOBUIest::addColumn<QRectF>("geometry");
+    BOBUIest::addColumn<QRectF>("expectedGeometry");
 
-    QTest::newRow("size is valid") << QSizeF(0, 0) << QSizeF(200, 200) << QRectF(0, 0, 100, 100) << QRectF(0, 0, 100, 100);
-    QTest::newRow("size is larger than max") << QSizeF(0, 0) << QSizeF(50, 50) << QRectF(0, 0, 100, 100) << QRectF(0, 0, 50, 50);
-    QTest::newRow("size is smaller than min") << QSizeF(50, 50) << QSizeF(150, 150) << QRectF(0, 0, 10, 10) << QRectF(0, 0, 50, 50);
+    BOBUIest::newRow("size is valid") << QSizeF(0, 0) << QSizeF(200, 200) << QRectF(0, 0, 100, 100) << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("size is larger than max") << QSizeF(0, 0) << QSizeF(50, 50) << QRectF(0, 0, 100, 100) << QRectF(0, 0, 50, 50);
+    BOBUIest::newRow("size is smaller than min") << QSizeF(50, 50) << QSizeF(150, 150) << QRectF(0, 0, 10, 10) << QRectF(0, 0, 50, 50);
 }
 
 void tst_QGraphicsWidget::consistentPosSizeGeometry()
@@ -1864,49 +1864,49 @@ using Inst = std::pair<int, QVariant>;
 void tst_QGraphicsWidget::setSizes_data()
 {
 
-    QTest::addColumn<QList<Inst>>("inputInstructions");
-    QTest::addColumn<QList<Inst>>("compareInstructions");
+    BOBUIest::addColumn<QList<Inst>>("inputInstructions");
+    BOBUIest::addColumn<QList<Inst>>("compareInstructions");
 
-    QTest::newRow("minSize1") << (QList<Inst>()
+    BOBUIest::newRow("minSize1") << (QList<Inst>()
                                   << Inst(WidgetSize, QSize(25, 25)) << Inst(MinimumSize, QSize(10, 10)))
                               << (QList<Inst>() << Inst(WidgetSize, QSize(25, 25)));
-    QTest::newRow("minSize2") << (QList<Inst>() << Inst(WidgetSize, QSizeF(20, 20))
+    BOBUIest::newRow("minSize2") << (QList<Inst>() << Inst(WidgetSize, QSizeF(20, 20))
                                                 << Inst(MinimumSize, QSizeF(25, 25)))
                               << (QList<Inst>() << Inst(WidgetSize, QSizeF(25, 25)));
-    QTest::newRow("minWidth1") << (QList<Inst>()
+    BOBUIest::newRow("minWidth1") << (QList<Inst>()
                                    << Inst(WidgetSize, QSizeF(20, 20)) << Inst(MinimumWidth, 5.0))
                                << (QList<Inst>() << Inst(WidgetSize, QSizeF(20, 20)));
-    QTest::newRow("minWidth2") << (QList<Inst>()
+    BOBUIest::newRow("minWidth2") << (QList<Inst>()
                                    << Inst(WidgetSize, QSizeF(20, 20)) << Inst(MinimumWidth, 25.0))
                                << (QList<Inst>() << Inst(WidgetSize, QSizeF(25, 20)));
-    QTest::newRow("minHeight1") << (QList<Inst>()
+    BOBUIest::newRow("minHeight1") << (QList<Inst>()
                                     << Inst(WidgetSize, QSizeF(20, 20)) << Inst(MinimumHeight, 5.0))
                                 << (QList<Inst>() << Inst(WidgetSize, QSizeF(20, 20)));
-    QTest::newRow("minHeight2") << (QList<Inst>()
+    BOBUIest::newRow("minHeight2") << (QList<Inst>()
                                     << Inst(WidgetSize, QSizeF(20, 20)) << Inst(MinimumHeight, 25.0))
                                 << (QList<Inst>() << Inst(WidgetSize, QSizeF(20, 25)));
-    QTest::newRow("maxSize1") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
+    BOBUIest::newRow("maxSize1") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
                                                 << Inst(MaximumSize, QSizeF(30, 30)))
                               << (QList<Inst>() << Inst(WidgetSize, QSizeF(30, 30)));
-    QTest::newRow("maxSize2") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
+    BOBUIest::newRow("maxSize2") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
                                                 << Inst(MaximumSize, QSizeF(30, -1)))
                               << (QList<Inst>() << Inst(WidgetSize, QSizeF(30, 40)));
-    QTest::newRow("maxSize3") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
+    BOBUIest::newRow("maxSize3") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
                                                 << Inst(MaximumSize, QSizeF(-1, 30)))
                               << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 30)));
-    QTest::newRow("maxWidth1") << (QList<Inst>()
+    BOBUIest::newRow("maxWidth1") << (QList<Inst>()
                                    << Inst(WidgetSize, QSizeF(40, 40)) << Inst(MaximumWidth, 30))
                                << (QList<Inst>() << Inst(WidgetSize, QSizeF(30, 40)));
-    QTest::newRow("maxHeight") << (QList<Inst>()
+    BOBUIest::newRow("maxHeight") << (QList<Inst>()
                                    << Inst(WidgetSize, QSizeF(40, 40)) << Inst(MaximumHeight, 20))
                                << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 20)));
-    QTest::newRow("unsetMinSize") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
+    BOBUIest::newRow("unsetMinSize") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
                                                     << Inst(MinimumSize, QSizeF(-1, -1)))
                                   << (QList<Inst>() << Inst(MinimumSize, QSizeF(5, 5)));
-    QTest::newRow("unsetMaxSize") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
+    BOBUIest::newRow("unsetMaxSize") << (QList<Inst>() << Inst(WidgetSize, QSizeF(40, 40))
                                                     << Inst(MaximumSize, QSizeF(-1, -1)))
                                   << (QList<Inst>() << Inst(MaximumSize, QSizeF(500, 500)));
-    QTest::newRow("unsetMinSize, expand size to minimumSizeHint")
+    BOBUIest::newRow("unsetMinSize, expand size to minimumSizeHint")
             << (QList<Inst>() << Inst(MinimumSize, QSize(0, 0)) << Inst(WidgetSize, QSize(1, 1))
                               << Inst(MinimumSize, QSize(-1.0, -1.0)))
             << (QList<Inst>() << Inst(WidgetSize, QSize(5, 5)) << Inst(MinimumSize, QSize(5, 5)));
@@ -1919,7 +1919,7 @@ void tst_QGraphicsWidget::setSizes()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    SizeHinter *widget = new SizeHinter(0, Qt::Window);
+    SizeHinter *widget = new SizeHinter(0, BobUI::Window);
     QSizeF min = QSizeF(10, 10);
     QSizeF pref = QSizeF(25, 25);
     QSizeF max = QSizeF(50, 50);
@@ -1961,13 +1961,13 @@ void tst_QGraphicsWidget::setSizes()
                 widget->setMaximumHeight(qreal(input.second.toDouble()));
                 break;
             case MinimumSizeHint:
-                widget->setSizeHint(Qt::MinimumSize, input.second.toSizeF());
+                widget->setSizeHint(BobUI::MinimumSize, input.second.toSizeF());
                 break;
             case PreferredSizeHint:
-                widget->setSizeHint(Qt::PreferredSize, input.second.toSizeF());
+                widget->setSizeHint(BobUI::PreferredSize, input.second.toSizeF());
                 break;
             case MaximumSizeHint:
-                widget->setSizeHint(Qt::MaximumSize, input.second.toSizeF());
+                widget->setSizeHint(BobUI::MaximumSize, input.second.toSizeF());
                 break;
             default:
                 qWarning("instruction not implemented");
@@ -1983,25 +1983,25 @@ void tst_QGraphicsWidget::setSizes()
         Inst input = compareInstructions.at(i);
         switch (input.first) {
             case MinimumSize:
-                QTRY_COMPARE(widget->minimumSize(), input.second.toSizeF());
+                BOBUIRY_COMPARE(widget->minimumSize(), input.second.toSizeF());
                 break;
             case PreferredSize:
-                QTRY_COMPARE(widget->preferredSize(), input.second.toSizeF());
+                BOBUIRY_COMPARE(widget->preferredSize(), input.second.toSizeF());
                 break;
             case MaximumSize:
-                QTRY_COMPARE(widget->maximumSize(), input.second.toSizeF());
+                BOBUIRY_COMPARE(widget->maximumSize(), input.second.toSizeF());
                 break;
             case WidgetSize:
-                QTRY_COMPARE(widget->size(), input.second.toSizeF());
+                BOBUIRY_COMPARE(widget->size(), input.second.toSizeF());
                 break;
             case MinimumWidth:
-                QTRY_COMPARE(widget->minimumWidth(), qreal(input.second.toDouble()));
+                BOBUIRY_COMPARE(widget->minimumWidth(), qreal(input.second.toDouble()));
                 break;
             case PreferredWidth:
-                QTRY_COMPARE(widget->preferredWidth(), qreal(input.second.toDouble()));
+                BOBUIRY_COMPARE(widget->preferredWidth(), qreal(input.second.toDouble()));
                 break;
             case MaximumWidth:
-                QTRY_COMPARE(widget->maximumWidth(), qreal(input.second.toDouble()));
+                BOBUIRY_COMPARE(widget->maximumWidth(), qreal(input.second.toDouble()));
                 break;
             default:
                 qWarning("instruction not implemented");
@@ -2013,7 +2013,7 @@ void tst_QGraphicsWidget::setSizes()
 
 void tst_QGraphicsWidget::closePopupOnOutsideClick()
 {
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Popup);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Popup);
     widget->resize(100, 100);
 
     QGraphicsScene scene;
@@ -2053,14 +2053,14 @@ void tst_QGraphicsWidget::task236127_bspTreeIndexFails()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_VERIFY(scene.items(QPointF(25, 25)).isEmpty());
+    BOBUIRY_VERIFY(scene.items(QPointF(25, 25)).isEmpty());
     widget->setGeometry(0, 112, 360, 528);
-    QTRY_COMPARE(scene.items(QPointF(15, 120)).value(0, nullptr), (QGraphicsItem *)widget);
+    BOBUIRY_COMPARE(scene.items(QPointF(15, 120)).value(0, nullptr), (QGraphicsItem *)widget);
     widget2->setGeometry(0, 573, 360, 67);
-    QTRY_COMPARE(scene.items(QPointF(15, 120)).value(0, nullptr), (QGraphicsItem *)widget);
-    QTRY_COMPARE(scene.items(QPointF(50, 585)).value(0, nullptr), (QGraphicsItem *)widget2);
+    BOBUIRY_COMPARE(scene.items(QPointF(15, 120)).value(0, nullptr), (QGraphicsItem *)widget);
+    BOBUIRY_COMPARE(scene.items(QPointF(50, 585)).value(0, nullptr), (QGraphicsItem *)widget2);
 }
 
 void tst_QGraphicsWidget::defaultSize()
@@ -2072,7 +2072,7 @@ void tst_QGraphicsWidget::defaultSize()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QSizeF initialSize = widget->size();
 
     widget->resize(initialSize);
@@ -2083,7 +2083,7 @@ void tst_QGraphicsWidget::defaultSize()
     widget->setMaximumSize(110, 110);
     widget->setVisible(true);
     // should still have its size set to initialsize
-    QTRY_COMPARE(widget->geometry().size(), initialSize);
+    BOBUIRY_COMPARE(widget->geometry().size(), initialSize);
 
 }
 
@@ -2094,10 +2094,10 @@ void tst_QGraphicsWidget::explicitMouseGrabber()
     EventSpy widgetUngrabEventSpy(widget, QEvent::UngrabMouse);
 
     // Grab without scene
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsItem::grabMouse: cannot grab mouse without scene");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsItem::grabMouse: cannot grab mouse without scene");
     widget->grabMouse();
     QCOMPARE(widgetGrabEventSpy.count(), 0);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsItem::ungrabMouse: cannot ungrab mouse without scene");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsItem::ungrabMouse: cannot ungrab mouse without scene");
     widget->ungrabMouse();
     QCOMPARE(widgetUngrabEventSpy.count(), 0);
 
@@ -2106,7 +2106,7 @@ void tst_QGraphicsWidget::explicitMouseGrabber()
     scene.addItem(widget);
 
     // Ungrab while not grabber
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsItem::ungrabMouse: not a mouse grabber");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsItem::ungrabMouse: not a mouse grabber");
     widget->ungrabMouse();
 
     // Simple grab with scene
@@ -2121,7 +2121,7 @@ void tst_QGraphicsWidget::explicitMouseGrabber()
     // Grab while grabbing
     widget->grabMouse();
     QCOMPARE(widgetGrabEventSpy.count(), 2);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsItem::grabMouse: already a mouse grabber");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsItem::grabMouse: already a mouse grabber");
     widget->grabMouse();
     QCOMPARE(widgetGrabEventSpy.count(), 2);
     QCOMPARE(widgetUngrabEventSpy.count(), 1);
@@ -2195,7 +2195,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2204,7 +2204,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2218,7 +2218,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2227,7 +2227,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2242,7 +2242,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2253,7 +2253,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2280,7 +2280,7 @@ void tst_QGraphicsWidget::implicitMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(250, 50));
         qApp->sendEvent(&scene, &event);
     }
@@ -2349,8 +2349,8 @@ void tst_QGraphicsWidget::doubleClickAfterExplicitMouseGrab()
 
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         event.ignore();
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
@@ -2360,7 +2360,7 @@ void tst_QGraphicsWidget::doubleClickAfterExplicitMouseGrab()
     QCOMPARE(item->ngrab, 1);
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setButtons({});
         event.ignore();
         event.setScenePos(QPointF(50, 50));
@@ -2371,8 +2371,8 @@ void tst_QGraphicsWidget::doubleClickAfterExplicitMouseGrab()
     QCOMPARE(item->nungrab, 1);
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         event.ignore();
         event.setScenePos(QPointF(50, 50));
         qApp->sendEvent(&scene, &event);
@@ -2382,7 +2382,7 @@ void tst_QGraphicsWidget::doubleClickAfterExplicitMouseGrab()
     QCOMPARE(item->ngrab, 2);
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setButtons({});
         event.ignore();
         event.setScenePos(QPointF(50, 50));
@@ -2396,7 +2396,7 @@ void tst_QGraphicsWidget::doubleClickAfterExplicitMouseGrab()
 void tst_QGraphicsWidget::popupMouseGrabber()
 {
     QGraphicsScene scene;
-    QGraphicsWidget *widget = new QGraphicsWidget(0, Qt::Popup);
+    QGraphicsWidget *widget = new QGraphicsWidget(0, BobUI::Popup);
     widget->setFlag(QGraphicsItem::ItemIsMovable); // can grab mouse
     widget->resize(200, 200);
     EventSpy widgetGrabEventSpy(widget, QEvent::GrabMouse);
@@ -2418,12 +2418,12 @@ void tst_QGraphicsWidget::popupMouseGrabber()
     QCOMPARE(scene.mouseGrabberItem(), (QGraphicsItem *)widget);
 
     // Add two popups
-    QGraphicsWidget *widget2 = new QGraphicsWidget(0, Qt::Popup);
+    QGraphicsWidget *widget2 = new QGraphicsWidget(0, BobUI::Popup);
     widget2->setFlag(QGraphicsItem::ItemIsMovable); // can grab mouse
     widget2->resize(200, 200);
     EventSpy widget2GrabEventSpy(widget2, QEvent::GrabMouse);
     EventSpy widget2UngrabEventSpy(widget2, QEvent::UngrabMouse);
-    QGraphicsWidget *widget3 = new QGraphicsWidget(0, Qt::Popup);
+    QGraphicsWidget *widget3 = new QGraphicsWidget(0, BobUI::Popup);
     widget3->setFlag(QGraphicsItem::ItemIsMovable); // can grab mouse
     widget3->resize(200, 200);
     EventSpy widget3GrabEventSpy(widget3, QEvent::GrabMouse);
@@ -2456,7 +2456,7 @@ void tst_QGraphicsWidget::popupMouseGrabber()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.ignore();
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setScenePos(QPointF(500, 500)); // outside
         qApp->sendEvent(&scene, &event);
     }
@@ -2487,32 +2487,32 @@ void tst_QGraphicsWidget::popupMouseGrabber()
 
 void tst_QGraphicsWidget::windowFlags_data()
 {
-    QTest::addColumn<int>("inputFlags");
-    QTest::addColumn<int>("outputFlags");
+    BOBUIest::addColumn<int>("inputFlags");
+    BOBUIest::addColumn<int>("outputFlags");
 
-    QTest::newRow("nil") << 0 << 0;
+    BOBUIest::newRow("nil") << 0 << 0;
 
     // Window types
-    QTest::newRow("Qt::Window") << int(Qt::Window)
-                                << int(Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                                       | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint);
-    QTest::newRow("Qt::SubWindow") << int(Qt::SubWindow)
-                                   << int(Qt::SubWindow | Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                                          | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint);
-    QTest::newRow("Qt::Dialog") << int(Qt::Dialog)
-                                << int(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                                       | Qt::WindowContextHelpButtonHint);
-    QTest::newRow("Qt::Sheet") << int(Qt::Sheet)
-                               << int(Qt::Sheet | Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                                      | Qt::WindowContextHelpButtonHint);
-    QTest::newRow("Qt::Tool") << int(Qt::Tool)
-                              << int(Qt::Tool | Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
+    BOBUIest::newRow("BobUI::Window") << int(BobUI::Window)
+                                << int(BobUI::Window | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                                       | BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint);
+    BOBUIest::newRow("BobUI::SubWindow") << int(BobUI::SubWindow)
+                                   << int(BobUI::SubWindow | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                                          | BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint);
+    BOBUIest::newRow("BobUI::Dialog") << int(BobUI::Dialog)
+                                << int(BobUI::Dialog | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                                       | BobUI::WindowContextHelpButtonHint);
+    BOBUIest::newRow("BobUI::Sheet") << int(BobUI::Sheet)
+                               << int(BobUI::Sheet | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                                      | BobUI::WindowContextHelpButtonHint);
+    BOBUIest::newRow("BobUI::Tool") << int(BobUI::Tool)
+                              << int(BobUI::Tool | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint);
 
     // Custom window flags
-    QTest::newRow("Qt::FramelessWindowHint") << int(Qt::FramelessWindowHint)
-                                             << int(Qt::FramelessWindowHint);
-    QTest::newRow("Qt::CustomizeWindowHint") << int(Qt::CustomizeWindowHint)
-                                             << int(Qt::CustomizeWindowHint);
+    BOBUIest::newRow("BobUI::FramelessWindowHint") << int(BobUI::FramelessWindowHint)
+                                             << int(BobUI::FramelessWindowHint);
+    BOBUIest::newRow("BobUI::CustomizeWindowHint") << int(BobUI::CustomizeWindowHint)
+                                             << int(BobUI::CustomizeWindowHint);
 }
 
 void tst_QGraphicsWidget::windowFlags()
@@ -2521,45 +2521,45 @@ void tst_QGraphicsWidget::windowFlags()
     QFETCH(int, outputFlags);
 
     // Construct with flags set already
-    QGraphicsWidget widget(0, Qt::WindowFlags(inputFlags));
-    QCOMPARE(widget.windowFlags(), Qt::WindowFlags(outputFlags));
+    QGraphicsWidget widget(0, BobUI::WindowFlags(inputFlags));
+    QCOMPARE(widget.windowFlags(), BobUI::WindowFlags(outputFlags));
 
     // Set flags after construction
     QGraphicsWidget widget2;
-    widget2.setWindowFlags(Qt::WindowFlags(inputFlags));
-    QCOMPARE(widget2.windowFlags(), Qt::WindowFlags(outputFlags));
+    widget2.setWindowFlags(BobUI::WindowFlags(inputFlags));
+    QCOMPARE(widget2.windowFlags(), BobUI::WindowFlags(outputFlags));
 
     // Reset flags
     widget2.setWindowFlags({});
     QVERIFY(!widget2.windowFlags());
 
     // Set flags back again
-    widget2.setWindowFlags(Qt::WindowFlags(inputFlags));
-    QCOMPARE(widget2.windowFlags(), Qt::WindowFlags(outputFlags));
+    widget2.setWindowFlags(BobUI::WindowFlags(inputFlags));
+    QCOMPARE(widget2.windowFlags(), BobUI::WindowFlags(outputFlags));
 
     // Construct with custom flags set already
-    QGraphicsWidget widget3(0, Qt::WindowFlags(inputFlags | Qt::FramelessWindowHint));
-    QCOMPARE(widget3.windowFlags(), Qt::WindowFlags(inputFlags | Qt::FramelessWindowHint));
+    QGraphicsWidget widget3(0, BobUI::WindowFlags(inputFlags | BobUI::FramelessWindowHint));
+    QCOMPARE(widget3.windowFlags(), BobUI::WindowFlags(inputFlags | BobUI::FramelessWindowHint));
 
     // Set custom flags after construction
     QGraphicsWidget widget4;
-    widget4.setWindowFlags(Qt::WindowFlags(inputFlags | Qt::FramelessWindowHint));
-    QCOMPARE(widget4.windowFlags(), Qt::WindowFlags(inputFlags | Qt::FramelessWindowHint));
+    widget4.setWindowFlags(BobUI::WindowFlags(inputFlags | BobUI::FramelessWindowHint));
+    QCOMPARE(widget4.windowFlags(), BobUI::WindowFlags(inputFlags | BobUI::FramelessWindowHint));
 
     // Reset flags
     widget4.setWindowFlags({});
     QVERIFY(!widget4.windowFlags());
 
     // Set custom flags back again
-    widget4.setWindowFlags(Qt::WindowFlags(inputFlags | Qt::FramelessWindowHint));
-    QCOMPARE(widget4.windowFlags(), Qt::WindowFlags(inputFlags | Qt::FramelessWindowHint));
+    widget4.setWindowFlags(BobUI::WindowFlags(inputFlags | BobUI::FramelessWindowHint));
+    QCOMPARE(widget4.windowFlags(), BobUI::WindowFlags(inputFlags | BobUI::FramelessWindowHint));
 
     QGraphicsWidget *widget5 = new QGraphicsWidget;
-    widget5->setWindowFlags(Qt::WindowFlags(inputFlags));
-    QCOMPARE(widget5->windowFlags(), Qt::WindowFlags(outputFlags));
-    QGraphicsWidget window(nullptr, Qt::Window);
+    widget5->setWindowFlags(BobUI::WindowFlags(inputFlags));
+    QCOMPARE(widget5->windowFlags(), BobUI::WindowFlags(outputFlags));
+    QGraphicsWidget window(nullptr, BobUI::Window);
     widget5->setParentItem(&window);
-    QCOMPARE(widget5->windowFlags(), Qt::WindowFlags(outputFlags));
+    QCOMPARE(widget5->windowFlags(), BobUI::WindowFlags(outputFlags));
 }
 
 void tst_QGraphicsWidget::shortcutsDeletion()
@@ -2569,8 +2569,8 @@ void tst_QGraphicsWidget::shortcutsDeletion()
     widget->setMinimumSize(40, 40);
     QWidgetAction *del = new QWidgetAction(widget.get());
     del->setIcon(QIcon("edit-delete"));
-    del->setShortcut(Qt::Key_Delete);
-    del->setShortcutContext(Qt::WidgetShortcut);
+    del->setShortcut(BobUI::Key_Delete);
+    del->setShortcutContext(BobUI::WidgetShortcut);
     widget2->addAction(del);
     widget2->addAction(del);
     widget.reset();
@@ -2579,7 +2579,7 @@ void tst_QGraphicsWidget::shortcutsDeletion()
 class MessUpPainterWidget : public QGraphicsWidget
 {
 public:
-    MessUpPainterWidget(QGraphicsItem * parent = nullptr, Qt::WindowFlags wFlags = { })
+    MessUpPainterWidget(QGraphicsItem * parent = nullptr, BobUI::WindowFlags wFlags = { })
     : QGraphicsWidget(parent, wFlags)
     {}
 
@@ -2600,12 +2600,12 @@ public:
 
 void tst_QGraphicsWidget::painterStateProtectionOnWindowFrame()
 {
-    MessUpPainterWidget *widget = new MessUpPainterWidget(0, Qt::Window);
+    MessUpPainterWidget *widget = new MessUpPainterWidget(0, BobUI::Window);
     QGraphicsScene scene(0, 0, 300, 300);
     QGraphicsView view(&scene);
     scene.addItem(widget);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
 class ProxyStyle : public QCommonStyle
@@ -2661,7 +2661,7 @@ public:
     GraphicsWidget_task250119()
         : shortcutEvents(0)
     {
-        setFocusPolicy(Qt::StrongFocus);
+        setFocusPolicy(BobUI::StrongFocus);
         resize(100, 100);
     }
 
@@ -2678,11 +2678,11 @@ private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
     {
         if (hasFocus()) {
-            painter->setPen(QPen(Qt::black, 0, Qt::DashLine));
+            painter->setPen(QPen(BobUI::black, 0, BobUI::DashLine));
             painter->drawRect(rect());
         }
-        painter->setPen(QPen(Qt::black, 0, Qt::SolidLine));
-        painter->fillRect(rect().adjusted(2, 2, -2, -2), Qt::yellow);
+        painter->setPen(QPen(BobUI::black, 0, BobUI::SolidLine));
+        painter->fillRect(rect().adjusted(2, 2, -2, -2), BobUI::yellow);
         painter->drawRect(rect().adjusted(2, 2, -2, -2));
     }
 };
@@ -2693,7 +2693,7 @@ void tst_QGraphicsWidget::task250119_shortcutContext()
     QGraphicsView view;
     view.setScene(&scene);
     view.show();
-    QTRY_COMPARE(QApplication::activeWindow(), (QWidget*)&view);
+    BOBUIRY_COMPARE(QApplication::activeWindow(), (QWidget*)&view);
 
 
     // *** Event: ***
@@ -2701,15 +2701,15 @@ void tst_QGraphicsWidget::task250119_shortcutContext()
     GraphicsWidget_task250119 w_event;
     scene.addItem(&w_event);
 
-    const int id = w_event.grabShortcut(Qt::Key_A, Qt::WidgetWithChildrenShortcut);
+    const int id = w_event.grabShortcut(BobUI::Key_A, BobUI::WidgetWithChildrenShortcut);
     w_event.setShortcutEnabled(id, true);
 
     w_event.setFocus();
-    QTest::keyPress(&view, Qt::Key_A);
+    BOBUIest::keyPress(&view, BobUI::Key_A);
     QCOMPARE(w_event.shortcutEvents, 1);
 
     w_event.clearFocus();
-    QTest::keyPress(&view, Qt::Key_A);
+    BOBUIest::keyPress(&view, BobUI::Key_A);
     QCOMPARE(w_event.shortcutEvents, 1);
 
     scene.removeItem(&w_event);
@@ -2721,18 +2721,18 @@ void tst_QGraphicsWidget::task250119_shortcutContext()
     scene.addItem(&w_signal);
 
     QAction action(0);
-    action.setShortcut(Qt::Key_B);
-    action.setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    action.setShortcut(BobUI::Key_B);
+    action.setShortcutContext(BobUI::WidgetWithChildrenShortcut);
     QSignalSpy spy(&action, SIGNAL(triggered()));
 
     w_signal.addAction(&action);
 
     w_signal.setFocus();
-    QTest::keyPress(&view, Qt::Key_B);
+    BOBUIest::keyPress(&view, BobUI::Key_B);
     QCOMPARE(spy.size(), 1);
 
     w_signal.clearFocus();
-    QTest::keyPress(&view, Qt::Key_B);
+    BOBUIest::keyPress(&view, BobUI::Key_B);
     QCOMPARE(spy.size(), 1);
 
     scene.removeItem(&w_signal);
@@ -2757,7 +2757,7 @@ class RectWidget : public QGraphicsWidget
 {
 public:
 
-    RectWidget(Qt::GlobalColor color, QGraphicsItem *parent=0) : QGraphicsWidget(parent), mColor(color) {}
+    RectWidget(BobUI::GlobalColor color, QGraphicsItem *parent=0) : QGraphicsWidget(parent), mColor(color) {}
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
     {
@@ -2765,14 +2765,14 @@ public:
         painter->drawRect(boundingRect());
     }
 
-    Qt::GlobalColor mColor;
+    BobUI::GlobalColor mColor;
 };
 
 class RectItem : public QGraphicsItem
 {
 public:
 
-    RectItem(Qt::GlobalColor color, QGraphicsItem *parent=0) : QGraphicsItem(parent), mColor(color) {}
+    RectItem(BobUI::GlobalColor color, QGraphicsItem *parent=0) : QGraphicsItem(parent), mColor(color) {}
 
     QRectF boundingRect() const override
     {return QRectF(10,10,50,50);}
@@ -2783,7 +2783,7 @@ public:
         painter->drawRect(boundingRect());
     }
 
-    Qt::GlobalColor mColor;
+    BobUI::GlobalColor mColor;
 };
 
 void tst_QGraphicsWidget::ensureClipping()
@@ -2792,27 +2792,27 @@ void tst_QGraphicsWidget::ensureClipping()
     scene.setSceneRect(-50, -50, 200, 200);
 
     //A root that clip children
-    RectWidget *clipWidget = new RectWidget(Qt::black);
+    RectWidget *clipWidget = new RectWidget(BobUI::black);
     scene.addItem(clipWidget);
 
     clipWidget->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 
     //a child
-    RectWidget *childWidget = new RectWidget(Qt::red, clipWidget);
+    RectWidget *childWidget = new RectWidget(BobUI::red, clipWidget);
     clipWidget->setGeometry(QRectF(10, 10, 100, 100));
     childWidget->setGeometry(QRectF(25, 25, 50, 50));
 
     //We put a QGraphicsItem to be sure this one is also paint
-    RectItem *childitem = new RectItem(Qt::blue, clipWidget);
+    RectItem *childitem = new RectItem(BobUI::blue, clipWidget);
 
     QGraphicsView view(&scene);
     view.setOptimizationFlag(QGraphicsView::IndirectPainting);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QList<QGraphicsItem *> expected;
     expected << clipWidget << childWidget << childitem;
-    QTRY_VERIFY(scene.drawnItems.contains(clipWidget));
+    BOBUIRY_VERIFY(scene.drawnItems.contains(clipWidget));
     QVERIFY(scene.drawnItems.contains(childWidget));
     QVERIFY(scene.drawnItems.contains(childitem));
 }
@@ -2890,7 +2890,7 @@ void tst_QGraphicsWidget::widgetSendsGeometryChanges()
 class HFWWidget : public QGraphicsWidget
 {
 public:
-    HFWWidget() : QGraphicsWidget(0, Qt::Window)
+    HFWWidget() : QGraphicsWidget(0, BobUI::Window)
     {
         QSizePolicy sp;
         sp.setHeightForWidth(true);
@@ -2903,17 +2903,17 @@ public:
         Q_UNUSED(widget);
         qreal w = rect().width();
         QRectF box(0, 0, w, 2400/w);
-        painter->drawRoundedRect(box, 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(box, 25, 25, BobUI::RelativeSize);
         painter->drawLine(box.topLeft(), box.bottomRight());
         painter->drawLine(box.bottomLeft(), box.topRight());
     }
 
 protected:
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
         qreal w = constraint.width();
         switch (which) {
-        case Qt::MinimumSize:
+        case BobUI::MinimumSize:
             if (w >= 0 && constraint.height() < 0) {
                 // keep the same area of 60x40 = 2400
                 return QSizeF(w, 2400.0/w);
@@ -2921,7 +2921,7 @@ protected:
                 return QSizeF(10, 10);
             }
             break;
-        case Qt::PreferredSize:
+        case BobUI::PreferredSize:
             return QSizeF(48.989794, 48.989794);
             default:
             break;
@@ -2941,34 +2941,34 @@ void tst_QGraphicsWidget::respectHFW()
 
     view->show();
     window->setGeometry(0, 0, 70, 70);
-    QVERIFY(QTest::qWaitForWindowActive(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(view.data()));
 
     {   // here we go - simulate a interactive resize of the window
-        QTest::mouseMove(view.data(), view->mapFromScene(71, 71)); // bottom right corner
+        BOBUIest::mouseMove(view.data(), view->mapFromScene(71, 71)); // bottom right corner
 
-        QTest::mousePress(view->viewport(), Qt::LeftButton, {}, view->mapFromScene(71, 71), 200);
+        BOBUIest::mousePress(view->viewport(), BobUI::LeftButton, {}, view->mapFromScene(71, 71), 200);
         view->grabMouse();
         // move both mouse cursor and set correct event in order to emulate resize
-        QTest::mouseMove(view->viewport(), view->mapFromScene(60, 30), 200);
+        BOBUIest::mouseMove(view->viewport(), view->mapFromScene(60, 30), 200);
         auto pos = view->mapFromScene(60, 20);
         QMouseEvent e(QEvent::MouseMove, pos, view->mapToGlobal(pos),
-                      Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
+                      BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier);
         QApplication::sendEvent(view->viewport(), &e);
         view->releaseMouse();
     }
     const QSizeF winSize = window->size();
-    qreal minHFW = window->effectiveSizeHint(Qt::MinimumSize, QSizeF(winSize.width(), -1)).height();
+    qreal minHFW = window->effectiveSizeHint(BobUI::MinimumSize, QSizeF(winSize.width(), -1)).height();
 #ifdef Q_OS_DARWIN
     QEXPECT_FAIL("", "This test is known to fail on Apple platforms.", Continue);
 #endif
-    QTRY_VERIFY(qAbs(minHFW - winSize.height()) < 1);
+    BOBUIRY_VERIFY(qAbs(minHFW - winSize.height()) < 1);
 }
 
 class PolishWidget : public QGraphicsWidget
 {
 public:
 
-    PolishWidget(Qt::GlobalColor color, QGraphicsItem *parent=0) :
+    PolishWidget(BobUI::GlobalColor color, QGraphicsItem *parent=0) :
     QGraphicsWidget(parent), mColor(color)
     {
     }
@@ -2983,12 +2983,12 @@ public:
     {
         if (!parentWidget()) {
             //We add a child in the polish event for the parent
-            PolishWidget *childWidget = new PolishWidget(Qt::black, this);
+            PolishWidget *childWidget = new PolishWidget(BobUI::black, this);
             childWidget->setGeometry(QRectF(10,10,30,30));
         }
 
         QGraphicsWidget::polishEvent();
-        mColor = Qt::red;
+        mColor = BobUI::red;
         update();
         numberOfPolish++;
     }
@@ -2996,7 +2996,7 @@ public:
     static int numberOfPolish;
 
 private:
-    Qt::GlobalColor mColor;
+    BobUI::GlobalColor mColor;
 };
 
 int PolishWidget::numberOfPolish = 0;
@@ -3005,14 +3005,14 @@ void tst_QGraphicsWidget::addChildInpolishEvent()
 {
     QGraphicsScene scene;
 
-    PolishWidget *parentWidget = new PolishWidget(Qt::white);
+    PolishWidget *parentWidget = new PolishWidget(BobUI::white);
     scene.addItem(parentWidget);
 
     QGraphicsView view(&scene);
     view.resize(200, 200);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_COMPARE(PolishWidget::numberOfPolish, 2);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_COMPARE(PolishWidget::numberOfPolish, 2);
 }
 
 void tst_QGraphicsWidget::polishEvent()
@@ -3033,10 +3033,10 @@ void tst_QGraphicsWidget::polishEvent()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Make sure the item is painted.
-    QTRY_VERIFY(widget->events.contains(QEvent::Paint));
+    BOBUIRY_VERIFY(widget->events.contains(QEvent::Paint));
 
     // Make sure the item got polish before paint.
     QCOMPARE(widget->events.at(0), QEvent::Polish);
@@ -3060,7 +3060,7 @@ void tst_QGraphicsWidget::polishEvent2()
     widget->events.clear();
 
     // Make sure the item got polish event.
-    QTRY_VERIFY(widget->events.contains(QEvent::Polish));
+    BOBUIRY_VERIFY(widget->events.contains(QEvent::Polish));
 }
 
 void tst_QGraphicsWidget::autoFillBackground()
@@ -3070,7 +3070,7 @@ void tst_QGraphicsWidget::autoFillBackground()
     widget->setAutoFillBackground(true);
     QCOMPARE(widget->autoFillBackground(), true);
 
-    const QColor color(Qt::red);
+    const QColor color(BobUI::red);
     const QRect rect(0, 0, 1, 1);
 
     QGraphicsScene scene;
@@ -3108,10 +3108,10 @@ void tst_QGraphicsWidget::initialShow()
     dummyScene.addItem(new QGraphicsRectItem(0, 0, 100, 100));
 
     QScopedPointer<QGraphicsView> dummyView(new QGraphicsView(&dummyScene));
-    dummyView->setWindowFlags(Qt::X11BypassWindowManagerHint);
+    dummyView->setWindowFlags(BobUI::X11BypassWindowManagerHint);
     EventSpy paintSpy(dummyView->viewport(), QEvent::Paint);
     dummyView->show();
-    QVERIFY(QTest::qWaitForWindowExposed(dummyView.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(dummyView.data()));
     const int expectedRepaintCount = paintSpy.count();
     dummyView.reset();
 
@@ -3122,11 +3122,11 @@ void tst_QGraphicsWidget::initialShow()
     scene.addItem(widget);
 
     QGraphicsView view(&scene);
-    view.setWindowFlags(view.windowFlags()|Qt::X11BypassWindowManagerHint);
+    view.setWindowFlags(view.windowFlags()|BobUI::X11BypassWindowManagerHint);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_COMPARE(widget->repaints, expectedRepaintCount);
+    BOBUIRY_COMPARE(widget->repaints, expectedRepaintCount);
 }
 
 void tst_QGraphicsWidget::itemChangeEvents()
@@ -3150,7 +3150,7 @@ void tst_QGraphicsWidget::itemChangeEvents()
                 valueDuringEvents.insert(QEvent::ParentChange, QVariant::fromValue(parentItem()));
                 break;
             }
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             case QEvent::CursorChange: {
                 valueDuringEvents.insert(QEvent::CursorChange, int(cursor().shape()));
                 break;
@@ -3181,41 +3181,41 @@ void tst_QGraphicsWidget::itemChangeEvents()
     QGraphicsWidget *parent = new QGraphicsWidget;
     scene.addItem(parent);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     TestGraphicsWidget *item = new TestGraphicsWidget;
     item->setParentItem(parent);
     // ParentAboutToChange should be triggered before the parent has changed
-    QTRY_COMPARE(qvariant_cast<QGraphicsItem *>(item->valueDuringEvents.value(QEvent::ParentAboutToChange)),
+    BOBUIRY_COMPARE(qvariant_cast<QGraphicsItem *>(item->valueDuringEvents.value(QEvent::ParentAboutToChange)),
              static_cast<QGraphicsItem *>(0));
     // ParentChange should be triggered after the parent has changed
-    QTRY_COMPARE(qvariant_cast<QGraphicsItem *>(item->valueDuringEvents.value(QEvent::ParentChange)),
+    BOBUIRY_COMPARE(qvariant_cast<QGraphicsItem *>(item->valueDuringEvents.value(QEvent::ParentChange)),
              static_cast<QGraphicsItem *>(parent));
 
     // ShowEvent should be triggered before the item is shown
-    QTRY_VERIFY(!item->valueDuringEvents.value(QEvent::Show).toBool());
+    BOBUIRY_VERIFY(!item->valueDuringEvents.value(QEvent::Show).toBool());
 
     // HideEvent should be triggered after the item is hidden
     QVERIFY(item->isVisible());
     item->setVisible(false);
     QVERIFY(!item->isVisible());
-    QTRY_VERIFY(!item->valueDuringEvents.value(QEvent::Hide).toBool());
+    BOBUIRY_VERIFY(!item->valueDuringEvents.value(QEvent::Hide).toBool());
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     // CursorChange should be triggered after the cursor has changed
-    item->setCursor(Qt::PointingHandCursor);
-    QTRY_COMPARE(item->valueDuringEvents.value(QEvent::CursorChange).toInt(), int(item->cursor().shape()));
+    item->setCursor(BobUI::PointingHandCursor);
+    BOBUIRY_COMPARE(item->valueDuringEvents.value(QEvent::CursorChange).toInt(), int(item->cursor().shape()));
 #endif
 
     // ToolTipChange should be triggered after the tooltip has changed
     item->setToolTip("tooltipText");
-    QTRY_COMPARE(item->valueDuringEvents.value(QEvent::ToolTipChange).toString(), item->toolTip());
+    BOBUIRY_COMPARE(item->valueDuringEvents.value(QEvent::ToolTipChange).toString(), item->toolTip());
 
     // EnabledChange should be triggered after the enabled state has changed
     QVERIFY(item->isEnabled());
     item->setEnabled(false);
     QVERIFY(!item->isEnabled());
-    QTRY_VERIFY(!item->valueDuringEvents.value(QEvent::EnabledChange).toBool());
+    BOBUIRY_VERIFY(!item->valueDuringEvents.value(QEvent::EnabledChange).toBool());
 }
 
 void tst_QGraphicsWidget::itemSendGeometryPosChangesDeactivated()
@@ -3225,9 +3225,9 @@ void tst_QGraphicsWidget::itemSendGeometryPosChangesDeactivated()
     QGraphicsWidget *item = new QGraphicsWidget;
     scene.addItem(item);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     item->setGeometry(QRectF(0, 0, 50, 50));
-    QTRY_COMPARE(item->geometry(), QRectF(0, 0, 50, 50));
+    BOBUIRY_COMPARE(item->geometry(), QRectF(0, 0, 50, 50));
 
     item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
     item->setGeometry(QRectF(0, 0, 60, 60));
@@ -3251,13 +3251,13 @@ class TabFocusWidget : public QGraphicsWidget
 public:
     TabFocusWidget(const QString &name, QGraphicsItem *parent = nullptr)
         : QGraphicsWidget(parent)
-    { setFocusPolicy(Qt::TabFocus); setData(0, name); }
+    { setFocusPolicy(BobUI::TabFocus); setData(0, name); }
 };
 
 void verifyTabFocus(QGraphicsScene *scene, const QList<QGraphicsWidget *> &chain, bool wrapsAround)
 {
-    QKeyEvent tabEvent(QEvent::KeyPress, Qt::Key_Tab, {});
-    QKeyEvent backtabEvent(QEvent::KeyPress, Qt::Key_Backtab, {});
+    QKeyEvent tabEvent(QEvent::KeyPress, BobUI::Key_Tab, {});
+    QKeyEvent backtabEvent(QEvent::KeyPress, BobUI::Key_Backtab, {});
 
     for (int i = 0; i < chain.size(); ++i)
         chain.at(i)->clearFocus();
@@ -3318,7 +3318,7 @@ void tst_QGraphicsWidget::tabFocus()
     widget5->setParentItem(widget3);
     verifyTabFocus(&scene, QList<QGraphicsWidget *>() << widget3 << widget4, true);
 
-    widget5->setFocusPolicy(Qt::TabFocus);
+    widget5->setFocusPolicy(BobUI::TabFocus);
     verifyTabFocus(&scene, QList<QGraphicsWidget *>() << widget3 << widget4 << widget5, true);
 
     TabFocusWidget *widget6 = new TabFocusWidget("6");
@@ -3348,26 +3348,26 @@ void tst_QGraphicsWidget::windowFrameSectionAt()
     widget.setWindowFrameMargins(5, 5, 5, 5);
     widget.setGeometry(0, 0, 200, 200);
 
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(50, 50)), Qt::NoSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, -2)), Qt::TopLeftSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 10)), Qt::TopLeftSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 30)), Qt::LeftSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 170)), Qt::LeftSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 198)), Qt::BottomLeftSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 202)), Qt::BottomLeftSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(50, 50)), BobUI::NoSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, -2)), BobUI::TopLeftSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 10)), BobUI::TopLeftSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 30)), BobUI::LeftSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 170)), BobUI::LeftSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 198)), BobUI::BottomLeftSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(-2, 202)), BobUI::BottomLeftSection);
 
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, -2)), Qt::TopRightSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 10)), Qt::TopRightSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 30)), Qt::RightSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 170)), Qt::RightSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 198)), Qt::BottomRightSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 202)), Qt::BottomRightSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, -2)), BobUI::TopRightSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 10)), BobUI::TopRightSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 30)), BobUI::RightSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 170)), BobUI::RightSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 198)), BobUI::BottomRightSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(202, 202)), BobUI::BottomRightSection);
 
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(50, -2)), Qt::TopSection);
-    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(50, 202)), Qt::BottomSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(50, -2)), BobUI::TopSection);
+    QCOMPARE(widget.call_windowFrameSectionAt(QPointF(50, 202)), BobUI::BottomSection);
 }
 
-void tst_QGraphicsWidget::QT_BUG_6544_tabFocusFirstUnsetWhenRemovingItems()
+void tst_QGraphicsWidget::BOBUI_BUG_6544_tabFocusFirstUnsetWhenRemovingItems()
 {
     QGraphicsScene scene;
     QGraphicsWidget* parent1 = new QGraphicsWidget;
@@ -3397,7 +3397,7 @@ void tst_QGraphicsWidget::QT_BUG_6544_tabFocusFirstUnsetWhenRemovingItems()
 
     //This should not crash
 }
-void tst_QGraphicsWidget::QT_BUG_12056_tabFocusFirstUnsetWhenRemovingItems()
+void tst_QGraphicsWidget::BOBUI_BUG_12056_tabFocusFirstUnsetWhenRemovingItems()
 {
     QGraphicsScene scene;
     QGraphicsWidget* item1 = new QGraphicsWidget;
@@ -3417,7 +3417,7 @@ void tst_QGraphicsWidget::QT_BUG_12056_tabFocusFirstUnsetWhenRemovingItems()
     //This should not crash
 }
 
-void tst_QGraphicsWidget::QTBUG_45867_send_itemChildAddedChange_to_parent()
+void tst_QGraphicsWidget::BOBUIBUG_45867_send_itemChildAddedChange_to_parent()
 {
     class GraphicsItem : public QGraphicsItem
     {
@@ -3448,5 +3448,5 @@ void tst_QGraphicsWidget::QTBUG_45867_send_itemChildAddedChange_to_parent()
     QCOMPARE(item.m_itemChildAddedChangeNotificationsCount, 1);
 }
 
-QTEST_MAIN(tst_QGraphicsWidget)
+BOBUIEST_MAIN(tst_QGraphicsWidget)
 #include "tst_qgraphicswidget.moc"

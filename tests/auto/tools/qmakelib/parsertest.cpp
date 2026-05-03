@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qmakelib.h"
 
@@ -29,12 +29,12 @@ private:
 #define S(s) ProString(QString::fromWCharArray(s))
 #define HS(s) ProKey(QString::fromWCharArray(s))
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4003)  // "not enough actual parameters for macro TS()"
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4003)  // "not enough actual parameters for macro TS()"
 
 void tst_qmakelib::addParseOperators()
 {
-    QTest::newRow("assign none")
+    BOBUIest::newRow("assign none")
             << "VAR ="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -44,7 +44,7 @@ void tst_qmakelib::addParseOperators()
             << ""
             << true;
 
-    QTest::newRow("append none")
+    BOBUIest::newRow("append none")
             << "VAR +="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -54,7 +54,7 @@ void tst_qmakelib::addParseOperators()
             << ""
             << true;
 
-    QTest::newRow("unique append none")
+    BOBUIest::newRow("unique append none")
             << "VAR *="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -64,7 +64,7 @@ void tst_qmakelib::addParseOperators()
             << ""
             << true;
 
-    QTest::newRow("remove none")
+    BOBUIest::newRow("remove none")
             << "VAR -="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -74,7 +74,7 @@ void tst_qmakelib::addParseOperators()
             << ""
             << true;
 
-    QTest::newRow("replace empty")
+    BOBUIest::newRow("replace empty")
             << "VAR ~="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -84,7 +84,7 @@ void tst_qmakelib::addParseOperators()
             << ""
             << true;
 
-    QTest::newRow("assignment without variable")
+    BOBUIest::newRow("assignment without variable")
             << "="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -93,7 +93,7 @@ void tst_qmakelib::addParseOperators()
             << "in:1: Assignment needs exactly one word on the left hand side."
             << false;
 
-    QTest::newRow("assignment with multiple variables")
+    BOBUIest::newRow("assignment with multiple variables")
             << "VAR VAR ="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -110,7 +110,7 @@ void tst_qmakelib::addParseValues()
         << H(TokHashLiteral) << HS(L"VAR") \
         << H(TokAssign) << H(h)
 
-    QTest::newRow("one literal")
+    BOBUIest::newRow("one literal")
             << "VAR = val"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -119,7 +119,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("one literal (squeezed)")
+    BOBUIest::newRow("one literal (squeezed)")
             << "VAR=val"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -128,7 +128,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("many literals")
+    BOBUIest::newRow("many literals")
             << "VAR = foo barbaz bak hello"
             << TS(
     /*     0 */ << ASSIGN_VAR(4)
@@ -140,7 +140,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("many literals (tab-separated")
+    BOBUIest::newRow("many literals (tab-separated")
             << "VAR\t=\tfoo\tbarbaz\tbak\thello"
             << TS(
     /*     0 */ << ASSIGN_VAR(4)
@@ -152,7 +152,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("one quoted literal")
+    BOBUIest::newRow("one quoted literal")
             << "VAR = \"val ue\""
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -161,7 +161,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("quoted literal with missing quote")
+    BOBUIest::newRow("quoted literal with missing quote")
             << "VAR = val \"ue"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -171,7 +171,7 @@ void tst_qmakelib::addParseValues()
             << "in:1: Missing closing \" quote"
             << false;
 
-    QTest::newRow("many quoted literals")
+    BOBUIest::newRow("many quoted literals")
             << "VAR = \"foo\" barbaz    'bak hello' \"\""
             << TS(
     /*     0 */ << ASSIGN_VAR(3)
@@ -182,7 +182,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("many quoted literals (with tabs)")
+    BOBUIest::newRow("many quoted literals (with tabs)")
             << "VAR\t=\t\"foo\"\tbarbaz\t'bak\thello'"
             << TS(
     /*     0 */ << ASSIGN_VAR(3)
@@ -193,7 +193,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("quoted and unquoted spaces")
+    BOBUIest::newRow("quoted and unquoted spaces")
             << "  VAR = \"val ue   \"   "
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -202,7 +202,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("funny literals")
+    BOBUIest::newRow("funny literals")
             << "VAR = foo:bar|!baz(blam!, ${foo})"
             << TS(
     /*     0 */ << ASSIGN_VAR(2)
@@ -212,7 +212,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("literals with escapes")
+    BOBUIest::newRow("literals with escapes")
             << "VAR = \\{hi\\} \\[ho\\] \\)uh\\( \"\\\\oh\\$\"\\' \\$\\${FOO}"
             << TS(
     /*     0 */ << ASSIGN_VAR(5)
@@ -225,7 +225,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("magic variables")
+    BOBUIest::newRow("magic variables")
             << "VAR = $$LITERAL_HASH $$LITERAL_DOLLAR $$LITERAL_WHITESPACE $$_FILE_ $$_LINE_"
             << TS(
     /*     0 */ << ASSIGN_VAR(5)
@@ -238,7 +238,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("continuations and comments")
+    BOBUIest::newRow("continuations and comments")
             << "VAR = foo \\\n  bar\n  \n"
                "GAR = foo \\ # comment\n  bar \\\n   # comment\n baz \\\n"
                     "\"quoted \\ #comment\n    escape\" \\\n    right\\\n      after \\\n    gorilla!\n \n\n"
@@ -285,7 +285,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("accidental continuation")
+    BOBUIest::newRow("accidental continuation")
             << "VAR0 = \\\n    this \\\n    is \\\n    ok\n"
                "VAR1 = \\\n    this \\\n    is=still \\\n    ok\n"
                "VAR2 = \\\n    this \\\n    is \\\n"
@@ -318,7 +318,7 @@ void tst_qmakelib::addParseValues()
             << "WARNING: in:12: Possible accidental line continuation"
             << true;
 
-    QTest::newRow("plain variable expansion")
+    BOBUIest::newRow("plain variable expansion")
             << "VAR = $$bar"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -327,7 +327,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("braced variable expansion")
+    BOBUIest::newRow("braced variable expansion")
             << "VAR = $${foo/bar}"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -336,7 +336,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("bogus variable expansion")
+    BOBUIest::newRow("bogus variable expansion")
             << "VAR = $$  "
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -345,7 +345,7 @@ void tst_qmakelib::addParseValues()
             << "WARNING: in:1: Missing name in expansion"
             << true;
 
-    QTest::newRow("bogus braced variable expansion")
+    BOBUIest::newRow("bogus braced variable expansion")
             << "VAR = $${}"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -354,7 +354,7 @@ void tst_qmakelib::addParseValues()
             << "WARNING: in:1: Missing name in expansion"
             << true;
 
-    QTest::newRow("unterminated braced variable expansion")
+    BOBUIest::newRow("unterminated braced variable expansion")
             << "VAR = $${FOO"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -365,7 +365,7 @@ void tst_qmakelib::addParseValues()
             << "in:1: Missing } terminator [found end-of-line]"
             << false;
 
-    QTest::newRow("invalid identifier in braced variable expansion")
+    BOBUIest::newRow("invalid identifier in braced variable expansion")
             << "VAR = $${FOO/BAR+BAZ}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -377,7 +377,7 @@ void tst_qmakelib::addParseValues()
             << "in:1: Missing } terminator [found +]"
             << false;
 
-    QTest::newRow("property expansion")
+    BOBUIest::newRow("property expansion")
             << "VAR = $$[bar]"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -386,7 +386,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("environment expansion")
+    BOBUIest::newRow("environment expansion")
             << "VAR = $$(bar)"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -395,7 +395,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("plain function call")
+    BOBUIest::newRow("plain function call")
             << "VAR = $$bar()"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -405,7 +405,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("braced function call")
+    BOBUIest::newRow("braced function call")
             << "VAR = $${bar()}"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -415,7 +415,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("function call with one argument")
+    BOBUIest::newRow("function call with one argument")
             << "VAR = $$bar(blubb)"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -426,7 +426,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("function call with multiple arguments")
+    BOBUIest::newRow("function call with multiple arguments")
             << "VAR = $$bar(  blubb blubb, hey  ,$$you)"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -442,7 +442,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("nested function call")
+    BOBUIest::newRow("nested function call")
             << "VAR = $$foo(yo, $$bar(blubb))"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -458,7 +458,7 @@ void tst_qmakelib::addParseValues()
             << true;
 
     // This is a rather questionable "feature"
-    QTest::newRow("function call with parenthesized argument")
+    BOBUIest::newRow("function call with parenthesized argument")
             << "VAR = $$bar(blubb (yo, man) blabb, nope)"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -474,7 +474,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("separate literal and expansion")
+    BOBUIest::newRow("separate literal and expansion")
             << "VAR = foo $$bar"
             << TS(
     /*     0 */ << ASSIGN_VAR(2)
@@ -484,7 +484,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("separate expansion and literal")
+    BOBUIest::newRow("separate expansion and literal")
             << "VAR = $$bar foo"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -494,7 +494,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("joined literal and expansion")
+    BOBUIest::newRow("joined literal and expansion")
             << "VAR = foo$$bar"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -504,7 +504,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("joined expansion and literal")
+    BOBUIest::newRow("joined expansion and literal")
             << "VAR = $${bar}foo"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -514,7 +514,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("plain variable expansion with funny name and literal")
+    BOBUIest::newRow("plain variable expansion with funny name and literal")
             << "VAR = $$az_AZ_09.dot/nix"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -524,7 +524,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("braced variable expansion with funny name")
+    BOBUIest::newRow("braced variable expansion with funny name")
             << "VAR = $${az_AZ_09.dot/nix}"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -533,7 +533,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("quoted joined literal and expansion")
+    BOBUIest::newRow("quoted joined literal and expansion")
             << "VAR = 'foo$$bar'"
             << TS(
     /*     0 */ << ASSIGN_VAR(0)
@@ -543,7 +543,7 @@ void tst_qmakelib::addParseValues()
             << ""
             << true;
 
-    QTest::newRow("assignment with expansion in variable name")
+    BOBUIest::newRow("assignment with expansion in variable name")
             << "VAR$$EXTRA ="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -557,7 +557,7 @@ void tst_qmakelib::addParseValues()
 
 void tst_qmakelib::addParseConditions()
 {
-    QTest::newRow("one test")
+    BOBUIest::newRow("one test")
             << "foo"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -566,7 +566,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("wildcard-test")
+    BOBUIest::newRow("wildcard-test")
             << "foo-*"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -576,7 +576,7 @@ void tst_qmakelib::addParseConditions()
             << true;
 
     // This is a rather questionable "feature"
-    QTest::newRow("one quoted test")
+    BOBUIest::newRow("one quoted test")
             << "\"foo\""
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -585,7 +585,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("two tests")
+    BOBUIest::newRow("two tests")
             << "foo\nbar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -597,13 +597,13 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("bogus two tests")
+    BOBUIest::newRow("bogus two tests")
             << "foo bar\nbaz"
             << TS()
             << "in:1: Extra characters after test expression."
             << false;
 
-    QTest::newRow("test-AND-test")
+    BOBUIest::newRow("test-AND-test")
             << "foo:bar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -615,7 +615,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-OR-test")
+    BOBUIest::newRow("test-OR-test")
             << "  foo  | bar "
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -627,7 +627,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("NOT-test")
+    BOBUIest::newRow("NOT-test")
             << "!foo"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -637,7 +637,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("NOT-NOT-test")
+    BOBUIest::newRow("NOT-NOT-test")
             << "!!foo"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -647,7 +647,7 @@ void tst_qmakelib::addParseConditions()
             << true;
 
     // This is a rather questionable "feature"
-    QTest::newRow("quoted-NOT-test")
+    BOBUIest::newRow("quoted-NOT-test")
             << "\"!foo\""
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -658,7 +658,7 @@ void tst_qmakelib::addParseConditions()
             << true;
 
     // This is a rather questionable "feature"
-    QTest::newRow("NOT-quoted-test")
+    BOBUIest::newRow("NOT-quoted-test")
             << "!\"foo\""
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -668,7 +668,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-NOT-test")
+    BOBUIest::newRow("test-AND-NOT-test")
             << "foo:!bar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -681,7 +681,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-assignment")
+    BOBUIest::newRow("test-assignment")
             << "foo\nVAR="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -694,7 +694,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-assignment")
+    BOBUIest::newRow("test-AND-assignment")
             << "foo: VAR ="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -710,7 +710,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-else-test")
+    BOBUIest::newRow("test-else-test")
             << "foo\nelse: bar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -726,7 +726,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("function-else-test")
+    BOBUIest::newRow("function-else-test")
             << "foo()\nelse: bar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -743,7 +743,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-test-else-test")
+    BOBUIest::newRow("test-AND-test-else-test")
             << "foo:bar\nelse: baz"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -762,7 +762,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-test-else-test-else-test-function")
+    BOBUIest::newRow("test-AND-test-else-test-else-test-function")
             << "foo:bar\nelse: baz\nelse: bak\nbuzz()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -792,7 +792,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-assignment-else-assignment")
+    BOBUIest::newRow("test-assignment-else-assignment")
             << "foo: VAR =\nelse: VAR="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -813,7 +813,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-else-test-assignment")
+    BOBUIest::newRow("test-else-test-assignment")
             << "foo\nelse: bar: VAR ="
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -836,7 +836,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("one function")
+    BOBUIest::newRow("one function")
             << "foo()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -846,7 +846,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("one function (with spaces)")
+    BOBUIest::newRow("one function (with spaces)")
             << " foo(  ) "
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -856,13 +856,13 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("unterminated function call")
+    BOBUIest::newRow("unterminated function call")
             << "foo(\nfoo"
             << TS()
             << "in:1: Missing closing parenthesis in function call"
             << false;
 
-    QTest::newRow("function with arguments")
+    BOBUIest::newRow("function with arguments")
             << "foo(blah, hi ho)"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -876,7 +876,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("function with empty arguments")
+    BOBUIest::newRow("function with empty arguments")
             << "foo(,)"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -887,7 +887,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("function with funny arguments")
+    BOBUIest::newRow("function with funny arguments")
             << "foo(blah\\, \"hi ,  \\ho\" ,uh\\  ,\\oh  ,,   )"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -909,7 +909,7 @@ void tst_qmakelib::addParseConditions()
                "WARNING: in:1: Unescaped backslashes are deprecated"
             << true;
 
-    QTest::newRow("function with nested call")
+    BOBUIest::newRow("function with nested call")
             << "foo($$blah(hi ho))"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -923,7 +923,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("stand-alone parentheses")
+    BOBUIest::newRow("stand-alone parentheses")
             << "()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -932,7 +932,7 @@ void tst_qmakelib::addParseConditions()
             << "in:1: Opening parenthesis without prior test name."
             << false;
 
-    QTest::newRow("bogus test and function")
+    BOBUIest::newRow("bogus test and function")
             << "foo bar()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -942,7 +942,7 @@ void tst_qmakelib::addParseConditions()
             << false;
 
     // This is a rather questionable "feature"
-    QTest::newRow("two functions")
+    BOBUIest::newRow("two functions")
             << "foo() bar()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -955,7 +955,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("function-AND-test")
+    BOBUIest::newRow("function-AND-test")
             << "foo():bar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -968,7 +968,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-function")
+    BOBUIest::newRow("test-AND-function")
             << "foo:bar()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -981,7 +981,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("NOT-function-AND-test")
+    BOBUIest::newRow("NOT-function-AND-test")
             << "!foo():bar"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -995,7 +995,7 @@ void tst_qmakelib::addParseConditions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-NOT-function")
+    BOBUIest::newRow("test-AND-NOT-function")
             << "foo:!bar()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1012,7 +1012,7 @@ void tst_qmakelib::addParseConditions()
 
 void tst_qmakelib::addParseControlStatements()
 {
-    QTest::newRow("for(VAR, LIST) loop")
+    BOBUIest::newRow("for(VAR, LIST) loop")
             << "for(VAR, LIST)"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1025,7 +1025,7 @@ void tst_qmakelib::addParseControlStatements()
             << ""
             << true;
 
-    QTest::newRow("for(ever) loop")
+    BOBUIest::newRow("for(ever) loop")
             << "for(ever)"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1039,7 +1039,7 @@ void tst_qmakelib::addParseControlStatements()
             << true;
 
     // This is a rather questionable "feature"
-    QTest::newRow("for($$blub) loop")
+    BOBUIest::newRow("for($$blub) loop")
             << "for($$blub)"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1052,7 +1052,7 @@ void tst_qmakelib::addParseControlStatements()
             << ""
             << true;
 
-    QTest::newRow("test-for-test-else-test")
+    BOBUIest::newRow("test-for-test-else-test")
             << "true:for(VAR, LIST): true\nelse: true"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1078,7 +1078,7 @@ void tst_qmakelib::addParseControlStatements()
             << ""
             << true;
 
-    QTest::newRow("next()")
+    BOBUIest::newRow("next()")
             << "for(ever): next()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1093,7 +1093,7 @@ void tst_qmakelib::addParseControlStatements()
             << ""
             << true;
 
-    QTest::newRow("break()")
+    BOBUIest::newRow("break()")
             << "for(ever): break()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1108,7 +1108,7 @@ void tst_qmakelib::addParseControlStatements()
             << ""
             << true;
 
-    QTest::newRow("top-level return()")
+    BOBUIest::newRow("top-level return()")
             << "return()"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1116,13 +1116,13 @@ void tst_qmakelib::addParseControlStatements()
             << ""
             << true;
 
-    QTest::newRow("else")
+    BOBUIest::newRow("else")
             << "else"
             << TS()
             << "in:1: Unexpected 'else'."
             << false;
 
-    QTest::newRow("test-{else}")
+    BOBUIest::newRow("test-{else}")
             << "test { else }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1135,7 +1135,7 @@ void tst_qmakelib::addParseControlStatements()
             << "in:1: Unexpected 'else'."
             << false;
 
-    QTest::newRow("defineTest-{else}")
+    BOBUIest::newRow("defineTest-{else}")
             << "defineTest(fn) { else }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1145,7 +1145,7 @@ void tst_qmakelib::addParseControlStatements()
             << "in:1: Unexpected 'else'."
             << false;
 
-    QTest::newRow("for-else")
+    BOBUIest::newRow("for-else")
             << "for(ever) { else }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1158,7 +1158,7 @@ void tst_qmakelib::addParseControlStatements()
             << "in:1: Unexpected 'else'."
             << false;
 
-    QTest::newRow("double-test-else")
+    BOBUIest::newRow("double-test-else")
             << "foo bar\nelse"
             << TS(
     /*     0 */ << H(TokBranch)
@@ -1168,7 +1168,7 @@ void tst_qmakelib::addParseControlStatements()
             << "in:1: Extra characters after test expression."
             << false;
 
-    QTest::newRow("test-function-else")
+    BOBUIest::newRow("test-function-else")
             << "foo bar()\nelse"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1184,25 +1184,25 @@ void tst_qmakelib::addParseControlStatements()
 
 void tst_qmakelib::addParseBraces()
 {
-    QTest::newRow("{}")
+    BOBUIest::newRow("{}")
             << "{ }"
             << TS()
             << ""
             << true;
 
-    QTest::newRow("{}-newlines")
+    BOBUIest::newRow("{}-newlines")
             << "\n\n{ }\n\n"
             << TS()
             << ""
             << true;
 
-    QTest::newRow("{")
+    BOBUIest::newRow("{")
             << "{"
             << TS()
             << "in:2: Missing closing brace(s)."
             << false;
 
-    QTest::newRow("test {")
+    BOBUIest::newRow("test {")
             << "test {"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1215,13 +1215,13 @@ void tst_qmakelib::addParseBraces()
             << "in:2: Missing closing brace(s)."
             << false;
 
-    QTest::newRow("}")
+    BOBUIest::newRow("}")
             << "}"
             << TS()
             << "in:1: Excess closing brace."
             << false;
 
-    QTest::newRow("{test}")
+    BOBUIest::newRow("{test}")
             << "{ true }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1230,7 +1230,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("{test-newlines}")
+    BOBUIest::newRow("{test-newlines}")
             << "{\ntrue\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(2)
@@ -1239,7 +1239,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("{assignment-test}-test")
+    BOBUIest::newRow("{assignment-test}-test")
             << "{ VAR = { foo } bar } true"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1255,7 +1255,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("assignment with excess opening brace")
+    BOBUIest::newRow("assignment with excess opening brace")
             << "VAR = { { foo }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1269,7 +1269,7 @@ void tst_qmakelib::addParseBraces()
             << "WARNING: in:1: Possible braces mismatch"
             << true;
 
-    QTest::newRow("test-{}")
+    BOBUIest::newRow("test-{}")
             << "true {}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1282,7 +1282,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{newlines}")
+    BOBUIest::newRow("test-{newlines}")
             << "true {\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1295,7 +1295,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{test}")
+    BOBUIest::newRow("test-{test}")
             << "true { true }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1310,7 +1310,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test:-{test}")
+    BOBUIest::newRow("test:-{test}")
             << "true: { true }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1325,7 +1325,7 @@ void tst_qmakelib::addParseBraces()
             << "WARNING: in:1: Excess colon in front of opening brace."
             << true;
 
-    QTest::newRow("test-{test-newlines}")
+    BOBUIest::newRow("test-{test-newlines}")
             << "true {\ntrue\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1341,7 +1341,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test:-{test-newlines}")
+    BOBUIest::newRow("test:-{test-newlines}")
             << "true: {\ntrue\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1357,7 +1357,7 @@ void tst_qmakelib::addParseBraces()
             << "WARNING: in:1: Excess colon in front of opening brace."
             << true;
 
-    QTest::newRow("test-{assignment}")
+    BOBUIest::newRow("test-{assignment}")
             << "true { VAR = {foo} }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1374,7 +1374,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{test-assignment}")
+    BOBUIest::newRow("test-{test-assignment}")
             << "true { true: VAR = {foo} }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1397,7 +1397,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{assignment-newlines}")
+    BOBUIest::newRow("test-{assignment-newlines}")
             << "true {\nVAR = {foo}\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1415,7 +1415,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{}-else-test-{}")
+    BOBUIest::newRow("test-{}-else-test-{}")
             << "true {} else: true {}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1436,7 +1436,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{}-else-test-{}-newlines")
+    BOBUIest::newRow("test-{}-else-test-{}-newlines")
             << "true {\n}\nelse: true {\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1457,7 +1457,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-{test}-else-test-{}-newlines")
+    BOBUIest::newRow("test-{test}-else-test-{}-newlines")
             << "true {\ntrue\n}\nelse: true {\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1481,7 +1481,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("for-{next}")
+    BOBUIest::newRow("for-{next}")
             << "for(ever) { next() }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1496,7 +1496,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("for:-{next}")
+    BOBUIest::newRow("for:-{next}")
             << "for(ever): { next() }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1511,7 +1511,7 @@ void tst_qmakelib::addParseBraces()
             << "WARNING: in:1: Excess colon in front of opening brace."
             << true;
 
-    QTest::newRow("test-for-{test-else-test-newlines}")
+    BOBUIest::newRow("test-for-{test-else-test-newlines}")
             << "true:for(VAR, LIST) {\ntrue\nelse: true\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1540,7 +1540,7 @@ void tst_qmakelib::addParseBraces()
             << ""
             << true;
 
-    QTest::newRow("test-for-{test-else-test}")
+    BOBUIest::newRow("test-for-{test-else-test}")
             << "true:for(VAR, LIST) { true\nelse: true }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1572,7 +1572,7 @@ void tst_qmakelib::addParseBraces()
 
 void tst_qmakelib::addParseCustomFunctions()
 {
-    QTest::newRow("defineTest-{newlines}")
+    BOBUIest::newRow("defineTest-{newlines}")
             << "defineTest(test) {\n}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1582,7 +1582,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("defineTest:-test")
+    BOBUIest::newRow("defineTest:-test")
             << "defineTest(test): test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1595,7 +1595,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("defineTest-{test}")
+    BOBUIest::newRow("defineTest-{test}")
             << "defineTest(test) { test }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1608,7 +1608,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("defineTest-{return}")
+    BOBUIest::newRow("defineTest-{return}")
             << "defineTest(test) { return() }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1620,7 +1620,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("defineReplace-{return-stuff}")
+    BOBUIest::newRow("defineReplace-{return-stuff}")
             << "defineReplace(stuff) { return(foo bar) }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1634,7 +1634,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-defineTest-{}")
+    BOBUIest::newRow("test-AND-defineTest-{}")
             << "test: defineTest(test) {}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1647,7 +1647,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("test-OR-defineTest-{}")
+    BOBUIest::newRow("test-OR-defineTest-{}")
             << "test| defineTest(test) {}"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1660,7 +1660,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("bypassNesting()-{return}")
+    BOBUIest::newRow("bypassNesting()-{return}")
             << "defineTest(test) { bypassNesting() { return(true) } }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1677,7 +1677,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("test-AND-bypassNesting()-{}")
+    BOBUIest::newRow("test-AND-bypassNesting()-{}")
             << "defineTest(test) { test: bypassNesting() {} }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1694,7 +1694,7 @@ void tst_qmakelib::addParseCustomFunctions()
             << ""
             << true;
 
-    QTest::newRow("test-OR-bypassNesting()-{}")
+    BOBUIest::newRow("test-OR-bypassNesting()-{}")
             << "defineTest(test) { test| bypassNesting() {} }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1714,73 +1714,73 @@ void tst_qmakelib::addParseCustomFunctions()
 
 void tst_qmakelib::addParseAbuse()
 {
-    QTest::newRow("!")
+    BOBUIest::newRow("!")
             << ""
             << TS()
             << ""
             << true;
 
-    QTest::newRow("|")
+    BOBUIest::newRow("|")
             << ""
             << TS()
             << ""
             << true;
 
-    QTest::newRow(":")
+    BOBUIest::newRow(":")
             << ""
             << TS()
             << ""
             << true;
 
-    QTest::newRow("NOT-assignment")
+    BOBUIest::newRow("NOT-assignment")
             << "!VAR ="
             << TS()
             << "in:1: Unexpected NOT operator in front of assignment."
             << false;
 
-    QTest::newRow("NOT-{}")
+    BOBUIest::newRow("NOT-{}")
             << "!{}"
             << TS()
             << "in:1: Unexpected NOT operator in front of opening brace."
             << false;
 
-    QTest::newRow("NOT-else")
+    BOBUIest::newRow("NOT-else")
             << "test\n!else {}"
             << TS()
             << "in:2: Unexpected NOT operator in front of else."
             << false;
 
-    QTest::newRow("NOT-for-{}")
+    BOBUIest::newRow("NOT-for-{}")
             << "!for(ever) {}"
             << TS()
             << "in:1: Unexpected NOT operator in front of for()."
             << false;
 
-    QTest::newRow("NOT-defineTest-{}")
+    BOBUIest::newRow("NOT-defineTest-{}")
             << "!defineTest(test) {}"
             << TS()
             << "in:1: Unexpected NOT operator in front of function definition."
             << false;
 
-    QTest::newRow("outer-bypassNesting()-{}")
+    BOBUIest::newRow("outer-bypassNesting()-{}")
             << "bypassNesting() {}"
             << TS()
             << "in:1: Unexpected bypassNesting()."
             << false;
 
-    QTest::newRow("bypassNesting(arg)-{}")
+    BOBUIest::newRow("bypassNesting(arg)-{}")
             << "defineTest(test) { bypassNesting(arg) {} }"
             << TS()
             << "in:1: bypassNesting() requires zero arguments."
             << false;
 
-    QTest::newRow("NOT-bypassNesting()-{}")
+    BOBUIest::newRow("NOT-bypassNesting()-{}")
             << "defineTest(test) { !bypassNesting() {} }"
             << TS()
             << "in:1: Unexpected NOT operator in front of bypassNesting()."
             << false;
 
-    QTest::newRow("AND-test")
+    BOBUIest::newRow("AND-test")
             << ":test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1789,7 +1789,7 @@ void tst_qmakelib::addParseAbuse()
             << "in:1: AND operator without prior condition."
             << false;
 
-    QTest::newRow("test-AND-else")
+    BOBUIest::newRow("test-AND-else")
             << "test:else"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1798,7 +1798,7 @@ void tst_qmakelib::addParseAbuse()
             << "in:1: Unexpected AND operator in front of else."
             << false;
 
-    QTest::newRow("test-AND-AND-test")
+    BOBUIest::newRow("test-AND-AND-test")
             << "test::test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1810,7 +1810,7 @@ void tst_qmakelib::addParseAbuse()
             << "WARNING: in:1: Stray AND operator in front of AND operator."
             << true;
 
-    QTest::newRow("test-AND-OR-test")
+    BOBUIest::newRow("test-AND-OR-test")
             << "test:|test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1822,7 +1822,7 @@ void tst_qmakelib::addParseAbuse()
             << "WARNING: in:1: Stray AND operator in front of OR operator."
             << true;
 
-    QTest::newRow("test-{AND-test}")
+    BOBUIest::newRow("test-{AND-test}")
             << "test { :test }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1837,25 +1837,25 @@ void tst_qmakelib::addParseAbuse()
             << "in:1: AND operator without prior condition."
             << false;
 
-    QTest::newRow("test-OR-assignment")
+    BOBUIest::newRow("test-OR-assignment")
             << "foo| VAR ="
             << TS()
             << "in:1: Unexpected OR operator in front of assignment."
             << false;
 
-    QTest::newRow("test-OR-{}")
+    BOBUIest::newRow("test-OR-{}")
             << "foo|{}"
             << TS()
             << "in:1: Unexpected OR operator in front of opening brace."
             << false;
 
-    QTest::newRow("test-OR-for")
+    BOBUIest::newRow("test-OR-for")
             << "foo|for(ever) {}"
             << TS()
             << "in:1: Unexpected OR operator in front of for()."
             << false;
 
-    QTest::newRow("OR-test")
+    BOBUIest::newRow("OR-test")
             << "|test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1864,7 +1864,7 @@ void tst_qmakelib::addParseAbuse()
             << "in:1: OR operator without prior condition."
             << false;
 
-    QTest::newRow("test-OR-else")
+    BOBUIest::newRow("test-OR-else")
             << "test|else"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1873,7 +1873,7 @@ void tst_qmakelib::addParseAbuse()
             << "in:1: Unexpected OR operator in front of else."
             << false;
 
-    QTest::newRow("test-OR-OR-test")
+    BOBUIest::newRow("test-OR-OR-test")
             << "test||test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1885,7 +1885,7 @@ void tst_qmakelib::addParseAbuse()
             << "WARNING: in:1: Stray OR operator in front of OR operator."
             << true;
 
-    QTest::newRow("test-OR-AND-test")
+    BOBUIest::newRow("test-OR-AND-test")
             << "test|:test"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1897,7 +1897,7 @@ void tst_qmakelib::addParseAbuse()
             << "WARNING: in:1: Stray OR operator in front of AND operator."
             << true;
 
-    QTest::newRow("test-{OR-test}")
+    BOBUIest::newRow("test-{OR-test}")
             << "test { |test }"
             << TS(
     /*     0 */ << H(TokLine) << H(1)
@@ -1913,7 +1913,7 @@ void tst_qmakelib::addParseAbuse()
             << false;
 
     // Token buffer overflow. Verify with Valgrind or asan.
-    QTest::newRow("QTCREATORBUG-16508")
+    BOBUIest::newRow("BOBUICREATORBUG-16508")
             << "a{b{c{d{"
             << TS()
             << "in:2: Missing closing brace(s)."
@@ -1922,18 +1922,18 @@ void tst_qmakelib::addParseAbuse()
 
 void tst_qmakelib::proParser_data()
 {
-    QTest::addColumn<QString>("in");
-    QTest::addColumn<QString>("out");
-    QTest::addColumn<QString>("msgs");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QString>("in");
+    BOBUIest::addColumn<QString>("out");
+    BOBUIest::addColumn<QString>("msgs");
+    BOBUIest::addColumn<bool>("ok");
 
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
             << ""
             << TS()
             << ""
             << true;
 
-    QTest::newRow("empty (whitespace)")
+    BOBUIest::newRow("empty (whitespace)")
             << "  \t   \t"
             << TS()
             << ""
@@ -1955,44 +1955,44 @@ void tst_qmakelib::proParser_data()
 
     // option() (these produce no tokens)
 
-    QTest::newRow("option(host_build)")
+    BOBUIest::newRow("option(host_build)")
             << "option(host_build)"
             << TS()
             << ""
             << true;
 
-    QTest::newRow("option()")
+    BOBUIest::newRow("option()")
             << "option()"
             << TS()
             << "in:1: option() requires one literal argument."
             << false;
 
-    QTest::newRow("option(host_build magic)")
+    BOBUIest::newRow("option(host_build magic)")
             << "option(host_build magic)"
             << TS()
             << "in:1: option() requires one literal argument."
             << false;
 
-    QTest::newRow("option(host_build, magic)")
+    BOBUIest::newRow("option(host_build, magic)")
             << "option(host_build, magic)"
             << TS()
             << "in:1: option() requires one literal argument."
             << false;
 
-    QTest::newRow("option($$OPTION)")
+    BOBUIest::newRow("option($$OPTION)")
             << "option($$OPTION)"
             << TS()
             << "in:1: option() requires one literal argument."
             << false;
 
-    QTest::newRow("{option(host_build)}")
+    BOBUIest::newRow("{option(host_build)}")
             << "{option(host_build)}"
             << TS()
             << "in:1: option() must appear outside any control structures."
             << false;
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 void tst_qmakelib::proParser()
 {
@@ -2003,7 +2003,7 @@ void tst_qmakelib::proParser()
 
     bool verified = true;
     QMakeTestHandler handler;
-    handler.setExpectedMessages(msgs.split('\n', Qt::SkipEmptyParts));
+    handler.setExpectedMessages(msgs.split('\n', BobUI::SkipEmptyParts));
     QMakeVfs vfs;
     QMakeParser parser(0, &vfs, &handler);
     ProFile *pro = parser.parsedProBlock(QStringView{ in }, 0, "in", 1, QMakeParser::FullGrammar);

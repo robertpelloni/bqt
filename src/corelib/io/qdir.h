@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIR_H
 #define QDIR_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qdirlisting.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qdirlisting.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirIterator;
 class QDirPrivate;
@@ -32,8 +32,8 @@ public:
                   Writable    = 0x020,
                   Executable  = 0x040,
                   PermissionMask    = 0x070,
-#if QT_DEPRECATED_SINCE(6, 11)
-                  Modified QT_DEPRECATED_VERSION_X_6_11("This flag is not handled in QDir; you can simply remove it from your code.") = 0x080,
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+                  Modified BOBUI_DEPRECATED_VERSION_X_6_11("This flag is not handled in QDir; you can simply remove it from your code.") = 0x080,
 #endif
                   Hidden      = 0x100,
                   System      = 0x200,
@@ -74,22 +74,22 @@ public:
     QDir(const std::filesystem::path &path);
     QDir(const std::filesystem::path &path, const QString &nameFilter,
          SortFlags sort = SortFlags(Name | IgnoreCase), Filters filter = AllEntries);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
-    QDir(const T &path) : QDir(QtPrivate::fromFilesystemPath(path))
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
+    QDir(const T &path) : QDir(BobUIPrivate::fromFilesystemPath(path))
     {
     }
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     QDir(const T &path, const QString &nameFilter,
          SortFlags sort = SortFlags(Name | IgnoreCase), Filters filter = AllEntries)
-         : QDir(QtPrivate::fromFilesystemPath(path), nameFilter, sort, filter)
+         : QDir(BobUIPrivate::fromFilesystemPath(path), nameFilter, sort, filter)
     {
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
     ~QDir();
 
     QDir &operator=(const QDir &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QDir)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QDir)
 
     void swap(QDir &other) noexcept
     { d_ptr.swap(other.d_ptr); }
@@ -97,39 +97,39 @@ public:
     void setPath(const QString &path);
 #ifdef Q_QDOC
     void setPath(const std::filesystem::path &path);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     void setPath(const T &path)
     {
-        setPath(QtPrivate::fromFilesystemPath(path));
+        setPath(BobUIPrivate::fromFilesystemPath(path));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
     QString path() const;
     QString absolutePath() const;
     QString canonicalPath() const;
-#if QT_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
+#if BOBUI_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
     std::filesystem::path filesystemPath() const
-    { return QtPrivate::toFilesystemPath(path()); }
+    { return BobUIPrivate::toFilesystemPath(path()); }
     std::filesystem::path filesystemAbsolutePath() const
-    { return QtPrivate::toFilesystemPath(absolutePath()); }
+    { return BobUIPrivate::toFilesystemPath(absolutePath()); }
     std::filesystem::path filesystemCanonicalPath() const
-    { return QtPrivate::toFilesystemPath(canonicalPath()); }
-#endif // QT_CONFIG(cxx17_filesystem)
+    { return BobUIPrivate::toFilesystemPath(canonicalPath()); }
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     static void setSearchPaths(const QString &prefix, const QStringList &searchPaths);
     static void addSearchPath(const QString &prefix, const QString &path);
 #ifdef Q_QDOC
     static void addSearchPath(const QString &prefix, const std::filesystem::path &path);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static void addSearchPath(const QString &prefix, const T &path)
     {
-        addSearchPath(prefix, QtPrivate::fromFilesystemPath(path));
+        addSearchPath(prefix, BobUIPrivate::fromFilesystemPath(path));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
     static QStringList searchPaths(const QString &prefix);
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
     QString dirName() const;
     QString filePath(const QString &fileName) const;
@@ -150,13 +150,13 @@ public:
     SortFlags sorting() const;
     void setSorting(SortFlags sort);
 
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
     uint count() const;
 #endif
-    qsizetype count(QT6_DECL_NEW_OVERLOAD) const;
+    qsizetype count(BOBUI6_DECL_NEW_OVERLOAD) const;
     bool isEmpty(Filters filters = Filters(AllEntries | NoDotAndDotDot)) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 5) && QT_POINTER_SIZE != 4
+#if BOBUI_CORE_REMOVED_SINCE(6, 5) && BOBUI_POINTER_SIZE != 4
     QString operator[](int) const;
 #endif
     QString operator[](qsizetype) const;
@@ -171,13 +171,13 @@ public:
     QFileInfoList entryInfoList(const QStringList &nameFilters, Filters filters = NoFilter,
                                 SortFlags sort = NoSort) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
     bool mkdir(const QString &dirName) const;
     bool mkdir(const QString &dirName, QFile::Permissions permissions) const;
 #endif
     bool mkdir(const QString &dirName, std::optional<QFile::Permissions> p = std::nullopt) const;
     bool rmdir(const QString &dirName) const;
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
     bool mkpath(const QString &dirPath) const;
 #endif
     bool mkpath(const QString &dirPath, std::optional<QFile::Permissions> p = std::nullopt) const;
@@ -195,7 +195,7 @@ public:
     inline bool isAbsolute() const { return !isRelative(); }
     bool makeAbsolute();
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QDir &dir) const;
     inline bool operator!=(const QDir &dir) const { return !operator==(dir); }
 #endif
@@ -235,7 +235,7 @@ public:
     static inline QDir temp() { return QDir(tempPath()); }
     static QString tempPath();
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     static bool match(const QStringList &filters, const QString &fileName);
     static bool match(const QString &filter, const QString &fileName);
 #endif
@@ -263,12 +263,12 @@ Q_DECLARE_SHARED(QDir)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::SortFlags)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, QDir::Filters filters);
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QDir &dir);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIR_H

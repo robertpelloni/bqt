@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtSql/QtSql>
+#include <BOBUIest>
+#include <BobUISql/BobUISql>
 
 #include "../../kernel/qsqldatabase/tst_databases.h"
 
@@ -91,7 +91,7 @@ void tst_QSqlRelationalTableModel::initTestCase_data()
 {
     QVERIFY(dbs.open());
     if (dbs.fillTestTable() == 0)
-        QSKIP("No database drivers are available in this Qt configuration");
+        QSKIP("No database drivers are available in this BobUI configuration");
 }
 
 void tst_QSqlRelationalTableModel::recreateTestTables(const QSqlDatabase &db)
@@ -180,8 +180,8 @@ void tst_QSqlRelationalTableModel::dropTestTables(const QSqlDatabase &db)
     tst_Databases::safeDropTables( db, tableNames );
 
     QSqlQuery q(db);
-    q.exec("DROP SCHEMA " + qTableName("QTBUG_5373", __FILE__, db) + " CASCADE");
-    q.exec("DROP SCHEMA " + qTableName("QTBUG_5373_s2", __FILE__, db) + " CASCADE");
+    q.exec("DROP SCHEMA " + qTableName("BOBUIBUG_5373", __FILE__, db) + " CASCADE");
+    q.exec("DROP SCHEMA " + qTableName("BOBUIBUG_5373_s2", __FILE__, db) + " CASCADE");
 }
 
 void tst_QSqlRelationalTableModel::init()
@@ -247,7 +247,7 @@ void tst_QSqlRelationalTableModel::setData()
         QSqlRelationalTableModel model(0, db);
 
         model.setTable(reltest1);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
         QVERIFY_SQL(model, select());
 
@@ -270,7 +270,7 @@ void tst_QSqlRelationalTableModel::setData()
     { //verify values
         QSqlRelationalTableModel model(0, db);
         model.setTable(reltest1);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QCOMPARE(model.data(model.index(0, 1)).toString(), QString("harry2"));
@@ -290,7 +290,7 @@ void tst_QSqlRelationalTableModel::setData()
         QSqlRelationalTableModel model(0, db);
         model.setTable(reltest1);
         model.setEditStrategy(QSqlTableModel::OnFieldChange);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
         QVERIFY_SQL(model, select());
 
@@ -303,7 +303,7 @@ void tst_QSqlRelationalTableModel::setData()
     { //verify values
         QSqlRelationalTableModel model(0, db);
         model.setTable(reltest1);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QCOMPARE(model.data(model.index(1, 1)).toString(), QString("trond2"));
@@ -327,7 +327,7 @@ void tst_QSqlRelationalTableModel::setData()
             model.setRelation(3, QSqlRelation(reltest2, "id", "title"));
 
         model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QVERIFY(model.setData(model.index(2, 1), QString("vohi2")));
@@ -346,7 +346,7 @@ void tst_QSqlRelationalTableModel::setData()
     { //verify values
         QSqlRelationalTableModel model(0, db);
         model.setTable(reltest1);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QCOMPARE(model.data(model.index(2, 1)).toString(), QString("vohi2"));
@@ -391,7 +391,7 @@ void tst_QSqlRelationalTableModel::setData()
         model.setRelation(1, QSqlRelation(reltest5, "title", "abbrev"));
         model.setEditStrategy(QSqlTableModel::OnManualSubmit);
         model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QCOMPARE(model.data(model.index(0,1)).toString(), QString("Mr"));
@@ -408,7 +408,7 @@ void tst_QSqlRelationalTableModel::setData()
 
         model.setTable(reltest1);
         model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QVERIFY(model.setData(model.index(0, 1), QString("harry2")));
@@ -436,7 +436,7 @@ void tst_QSqlRelationalTableModel::multipleRelation()
     model.setTable(reltest1);
     model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
     model.setRelation(3, QSqlRelation(reltest4, "id", "name"));
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.data(model.index(2, 0)).toInt(), 3);
@@ -450,7 +450,7 @@ void tst_QSqlRelationalTableModel::multipleRelation()
     model.setTable(reltest1);
     model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
     model.setRelation(3, QSqlRelation(reltest4, "id", "name"));
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
     QVERIFY_SQL(model, select());
 
@@ -473,7 +473,7 @@ void tst_QSqlRelationalTableModel::insertRecord()
 
     model.setTable(reltest1);
     model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     constexpr auto fkTitleKey = 4711;
@@ -546,7 +546,7 @@ void tst_QSqlRelationalTableModel::setRecord()
 
     model.setTable(reltest1);
     model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QSqlRecord rec;
@@ -580,7 +580,7 @@ void tst_QSqlRelationalTableModel::setRecord()
     QCOMPARE(model.data(model.index(1, 1)).toString(), QString("tester"));
     QCOMPARE(model.data(model.index(1, 2)).toString(), QString("herr"));
 
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, submit());
 
     if (model.editStrategy() != QSqlTableModel::OnManualSubmit) {
@@ -608,7 +608,7 @@ void tst_QSqlRelationalTableModel::insertWithStrategies()
 
     model.setTable(reltest1);
     model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
 
     if (dbType != QSqlDriver::Sybase)
         model.setRelation(3, QSqlRelation(reltest2, "id", "title"));
@@ -781,7 +781,7 @@ void tst_QSqlRelationalTableModel::sort()
     if (dbType != QSqlDriver::Sybase)
         model.setRelation(3, QSqlRelation(reltest2, "id", "title"));
 
-    model.setSort(2, Qt::DescendingOrder);
+    model.setSort(2, BobUI::DescendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.rowCount(), 4);
@@ -791,7 +791,7 @@ void tst_QSqlRelationalTableModel::sort()
     QCOMPARE(model.data(model.index(3, 2)).toString(), QString("herr"));
 
 
-    model.setSort(3, Qt::AscendingOrder);
+    model.setSort(3, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
      if (dbType != QSqlDriver::Sybase) {
@@ -809,7 +809,7 @@ void tst_QSqlRelationalTableModel::sort()
 
     // redo same test in LeftJoin mode
     model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
-    model.setSort(2, Qt::DescendingOrder);
+    model.setSort(2, BobUI::DescendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.rowCount(), 6);
@@ -824,7 +824,7 @@ void tst_QSqlRelationalTableModel::sort()
     for (int i = 0; i < 6; ++i)
         QCOMPARE(model.data(model.index(i, 2)).toString(), stringsInDatabaseOrder.at(i));
 
-    model.setSort(3, Qt::AscendingOrder);
+    model.setSort(3, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     // PostgreSQL puts the null ones (from the table with the original value) first in descending order
@@ -851,14 +851,14 @@ static void testRevert(QSqlRelationalTableModel &model)
 {
     /* revert single row */
     QCOMPARE(model.data(model.index(0, 2)).toString(), QString("herr"));
-    QVERIFY(model.setData(model.index(0, 2), 2, Qt::EditRole));
+    QVERIFY(model.setData(model.index(0, 2), 2, BobUI::EditRole));
 
     QCOMPARE(model.data(model.index(0, 2)).toString(), QString("mister"));
     model.revertRow(0);
     QCOMPARE(model.data(model.index(0, 2)).toString(), QString("herr"));
 
     /* revert all */
-    QVERIFY(model.setData(model.index(0, 2), 2, Qt::EditRole));
+    QVERIFY(model.setData(model.index(0, 2), 2, BobUI::EditRole));
 
     QCOMPARE(model.data(model.index(0, 2)).toString(), QString("mister"));
     model.revertAll();
@@ -880,15 +880,15 @@ static void testRevert(QSqlRelationalTableModel &model)
     QVERIFY(model.data(model.index(7, 2)).toString().isEmpty());
 
     /* Set some values */
-    QVERIFY(model.setData(model.index(4, 0), 42, Qt::EditRole));
-    QVERIFY(model.setData(model.index(5, 0), 43, Qt::EditRole));
-    QVERIFY(model.setData(model.index(6, 0), 44, Qt::EditRole));
-    QVERIFY(model.setData(model.index(7, 0), 45, Qt::EditRole));
+    QVERIFY(model.setData(model.index(4, 0), 42, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(5, 0), 43, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(6, 0), 44, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(7, 0), 45, BobUI::EditRole));
 
-    QVERIFY(model.setData(model.index(4, 2), 2, Qt::EditRole));
-    QVERIFY(model.setData(model.index(5, 2), 2, Qt::EditRole));
-    QVERIFY(model.setData(model.index(6, 2), 1, Qt::EditRole));
-    QVERIFY(model.setData(model.index(7, 2), 2, Qt::EditRole));
+    QVERIFY(model.setData(model.index(4, 2), 2, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(5, 2), 2, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(6, 2), 1, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(7, 2), 2, BobUI::EditRole));
 
     /* Now revert the newly inserted rows */
     model.revertAll();
@@ -917,13 +917,13 @@ void tst_QSqlRelationalTableModel::revert()
     model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
     model.setRelation(3, QSqlRelation(reltest4, "id", "name"));
 
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
 
     QVERIFY_SQL(model, select());
     QCOMPARE(model.data(model.index(0, 0)).toString(), QString("1"));
 
     testRevert(model);
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
@@ -957,7 +957,7 @@ void tst_QSqlRelationalTableModel::clearDisplayValuesCache()
 
     if (dbType != QSqlDriver::Sybase)
         model.setRelation(3, QSqlRelation(reltest2, "id", "title"));
-    model.setSort(1, Qt::AscendingOrder);
+    model.setSort(1, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     QVERIFY_SQL(model, select());
@@ -971,10 +971,10 @@ void tst_QSqlRelationalTableModel::clearDisplayValuesCache()
         QCOMPARE(model.data(model.index(3, 3)).toInt(), 2 );
 
     model.insertRow(model.rowCount());
-    QVERIFY(model.setData(model.index(4, 0), 7, Qt::EditRole));
-    QVERIFY(model.setData(model.index(4, 1), "anders", Qt::EditRole));
-    QVERIFY(model.setData(model.index(4, 2), 1, Qt::EditRole));
-    QVERIFY(model.setData(model.index(4, 3), 1, Qt::EditRole));
+    QVERIFY(model.setData(model.index(4, 0), 7, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(4, 1), "anders", BobUI::EditRole));
+    QVERIFY(model.setData(model.index(4, 2), 1, BobUI::EditRole));
+    QVERIFY(model.setData(model.index(4, 3), 1, BobUI::EditRole));
     model.submitAll();
 
     QCOMPARE(model.data(model.index(0, 0)).toInt(), 7);
@@ -1008,7 +1008,7 @@ void tst_QSqlRelationalTableModel::insertRecordDuplicateFieldNames()
     QSqlRelationalTableModel model(0, db);
     model.setTable(reltest3);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
 
     // Duplication of "name", used in both reltest3 and reltest4.
     model.setRelation(2, QSqlRelation(reltest4, "id", "name"));
@@ -1279,7 +1279,7 @@ void tst_QSqlRelationalTableModel::escapedTableName()
         QSqlRelationalTableModel model(0, db);
 
         model.setTable(escapeTableName(db, reltest1));
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
         QVERIFY_SQL(model, select());
 
@@ -1302,7 +1302,7 @@ void tst_QSqlRelationalTableModel::escapedTableName()
     { //verify values
         QSqlRelationalTableModel model(0, db);
         model.setTable(reltest1);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QCOMPARE(model.data(model.index(0, 1)).toString(), QString("harry2"));
@@ -1322,7 +1322,7 @@ void tst_QSqlRelationalTableModel::escapedTableName()
         QSqlRelationalTableModel model(0, db);
 
         model.setTable(escapeTableName(db, reltest1));
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         model.setRelation(2, QSqlRelation(reltest2, "id", "title"));
         model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
         QVERIFY_SQL(model, select());
@@ -1346,7 +1346,7 @@ void tst_QSqlRelationalTableModel::escapedTableName()
     { //verify values
         QSqlRelationalTableModel model(0, db);
         model.setTable(reltest1);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
         QVERIFY_SQL(model, select());
 
@@ -1372,7 +1372,7 @@ void tst_QSqlRelationalTableModel::whiteSpaceInIdentifiers()
 
     QSqlRelationalTableModel model(0, db);
     model.setTable(qTableName("rel test6", __FILE__, db));
-    model.setSort(0, Qt::DescendingOrder);
+    model.setSort(0, BobUI::DescendingOrder);
     model.setRelation(1, QSqlRelation(qTableName("rel test7", __FILE__, db),
                         db.driver()->escapeIdentifier("city id", QSqlDriver::FieldName),
                         db.driver()->escapeIdentifier("city name", QSqlDriver::FieldName)));
@@ -1460,15 +1460,15 @@ void tst_QSqlRelationalTableModel::psqlSchemaTest()
 
     QSqlRelationalTableModel model(0, db);
     QSqlQuery q(db);
-    QVERIFY_SQL(q, exec("create schema " + qTableName("QTBUG_5373", __FILE__, db)));
-    QVERIFY_SQL(q, exec("create schema " + qTableName("QTBUG_5373_s2", __FILE__, db)));
-    QVERIFY_SQL(q, exec("create table " + qTableName("QTBUG_5373", __FILE__, db) + QLatin1Char('.') + qTableName("document", __FILE__, db) +
+    QVERIFY_SQL(q, exec("create schema " + qTableName("BOBUIBUG_5373", __FILE__, db)));
+    QVERIFY_SQL(q, exec("create schema " + qTableName("BOBUIBUG_5373_s2", __FILE__, db)));
+    QVERIFY_SQL(q, exec("create table " + qTableName("BOBUIBUG_5373", __FILE__, db) + QLatin1Char('.') + qTableName("document", __FILE__, db) +
                         "(document_id int primary key, relatingid int, userid int)"));
-    QVERIFY_SQL(q, exec("create table " + qTableName("QTBUG_5373_s2", __FILE__, db) + QLatin1Char('.') + qTableName("user", __FILE__, db) +
+    QVERIFY_SQL(q, exec("create table " + qTableName("BOBUIBUG_5373_s2", __FILE__, db) + QLatin1Char('.') + qTableName("user", __FILE__, db) +
                         "(userid int primary key, username char(40))"));
-    model.setTable(qTableName("QTBUG_5373", __FILE__, db) + QLatin1Char('.') + qTableName("document", __FILE__, db));
-    model.setRelation(1, QSqlRelation(qTableName("QTBUG_5373_s2", __FILE__, db) + QLatin1Char('.') + qTableName("user", __FILE__, db), "userid", "username"));
-    model.setRelation(2, QSqlRelation(qTableName("QTBUG_5373_s2", __FILE__, db) + QLatin1Char('.') + qTableName("user", __FILE__, db), "userid", "username"));
+    model.setTable(qTableName("BOBUIBUG_5373", __FILE__, db) + QLatin1Char('.') + qTableName("document", __FILE__, db));
+    model.setRelation(1, QSqlRelation(qTableName("BOBUIBUG_5373_s2", __FILE__, db) + QLatin1Char('.') + qTableName("user", __FILE__, db), "userid", "username"));
+    model.setRelation(2, QSqlRelation(qTableName("BOBUIBUG_5373_s2", __FILE__, db) + QLatin1Char('.') + qTableName("user", __FILE__, db), "userid", "username"));
     QVERIFY_SQL(model, select());
 
     model.setJoinMode(QSqlRelationalTableModel::LeftJoin);
@@ -1499,7 +1499,7 @@ void tst_QSqlRelationalTableModel::selectAfterUpdate()
 }
 
 /**
-  This test case verifies bug fix for QTBUG-20038.
+  This test case verifies bug fix for BOBUIBUG-20038.
   */
 void tst_QSqlRelationalTableModel::relationOnFirstColumn()
 {
@@ -1508,8 +1508,8 @@ void tst_QSqlRelationalTableModel::relationOnFirstColumn()
     CHECK_DATABASE(db);
     fixupTableNamesForDb(db);
 
-    QString testTable1 = qTableName("QTBUG_20038_test1", __FILE__, db);
-    QString testTable2 = qTableName("QTBUG_20038_test2", __FILE__, db);
+    QString testTable1 = qTableName("BOBUIBUG_20038_test1", __FILE__, db);
+    QString testTable2 = qTableName("BOBUIBUG_20038_test2", __FILE__, db);
     tst_Databases::safeDropTables(db, QStringList() << testTable1 << testTable2);
 
     //prepare test1 table
@@ -1603,5 +1603,5 @@ void tst_QSqlRelationalTableModel::setMultipleRelations()
     QVERIFY(relationModel->select());
 }
 
-QTEST_MAIN(tst_QSqlRelationalTableModel)
+BOBUIEST_MAIN(tst_QSqlRelationalTableModel)
 #include "tst_qsqlrelationaltablemodel.moc"

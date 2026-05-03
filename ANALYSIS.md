@@ -1,0 +1,18 @@
+# BobQ Go Port Coverage Analysis
+
+## Current C++ Component List
+- **Layouts & Containers:** `BobQBox`, `BobQGrid`, `OmniFlowPane`, `OmniGridPane`, `OmniStackPane`, `OmniTilePane`, `OmniSplitView`, `OmniDockArea`.
+- **Widgets:** `OmniButton`, `OmniCalendar`, `OmniCheckBox`, `OmniComboBox`, `OmniDial`, `OmniListView`, `OmniProgressBar`, `OmniSlider`, `OmniTabBar`, `OmniTextField`, `OmniTreeView`, `OmniTerminal`, `OmniCodeEditor`, `OmniMarkdownView`.
+- **Visuals & Rendering:** `OmniImGuiCanvas`, `OmniRhiNode`, `OmniRaymarcher`, `OmniShaderEffect`, `OmniDropShadow`, `OmniParticleSystem`, `OmniParticles`.
+- **Audio & DSP (JUCE Parity):** `BobQJuceHost`, `OmniJuceView`, `JuceWidget`, `OmniAudioGraph`, `OmniAudioPlayer`, `OmniGain`, `OmniMidiHandler`, `OmniOscilloscope`, `OmniSequencer`, `OmniSpatialAudio`, `OmniSynthesizer`, `OmniVoiceEngine`, `OmniPluginManager`, `OmniPluginInterface`.
+- **System & Logic:** `OmniAction`, `OmniApp`, `OmniAssetManager`, `OmniClipboard`, `OmniDatabase`, `OmniFileSystem`, `OmniHttpClient`, `OmniIPC`, `OmniInputManager`, `OmniMacroRecorder`, `OmniMasterClock`, `OmniMeshNode`, `OmniNeuralEngine`, `OmniNotificationCenter`, `OmniTimeMachine`, `OmniUndoStack`, `OmniUserManager`, `OmniVM`, `OmniValueTree`, `OmniWebSocket`, `OmniWebSocketServer`, `OmniWindow`, `OmniRustBridge`.
+
+## Current Go Component List (`internal/ui/widgets`)
+- **Implemented:** `admin.go`, `auth.go`, `calendar.go`, `controls.go`, `demo_surface.go`, `dialog.go`, `docking.go`, `drawer.go`, `editor.go`, `explorer.go`, `glow.go`, `grid.go`, `login.go`, `markdown.go`, `menu.go`, `node_editor.go`, `notifications.go`, `particles.go`, `plot.go`, `popup.go`, `raymarcher.go`, `rewind.go`, `rhi_node.go`, `scene3d.go`, `scrollbar.go`, `scrollview.go`, `shaders.go`, `shell.go`, `splitview.go`, `studio.go`, `tabbar.go`, `table.go`, `terminal.go`, `tooltip.go`, `touch.go`, `vector.go`, `webview.go`, `window.go`.
+
+## Missing Go Parity
+Based on the massive structural refactor occurring in the C++ base, the following modules exist natively but have no equivalent Go counterpart:
+1. **GTK Parity Layouts:** No pure Go equivalent for `BobQBox` (Sequential Packing) exists natively aside from manual Gio `layout.Flex` operations.
+2. **Audio/DSP:** The entire Audio stack (`OmniAudioGraph`, `OmniSynthesizer`, `OmniSequencer`, `OmniVoiceEngine`, `OmniSpatialAudio`) has zero pure Go implementation.
+3. **JUCE Host Bridge:** While `BobQJuceHost` bridges JUCE to C++, the Go layer lacks a CGO bridge to access JUCE plugin interfaces (`OmniJuceView`, `JuceWidget`).
+4. **Data/Systems:** `OmniTimeMachine`, `OmniNeuralEngine`, `OmniMeshNode`, and `OmniValueTree` lack 1:1 representations in `internal/ui/` (though some logic might exist in `internal/data/`).

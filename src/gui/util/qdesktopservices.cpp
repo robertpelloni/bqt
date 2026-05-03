@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdesktopservices.h"
 
-#ifndef QT_NO_DESKTOPSERVICES
+#ifndef BOBUI_NO_DESKTOPSERVICES
 
 #include <qdebug.h>
 
@@ -19,7 +19,7 @@
 #include <qpa/qplatformintegration.h>
 #include <qdir.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenUrlHandlerRegistry
 {
@@ -44,7 +44,7 @@ Q_GLOBAL_STATIC(QOpenUrlHandlerRegistry, handlerRegistry)
     \brief The QDesktopServices class provides methods for accessing common desktop services.
     \since 4.2
     \ingroup desktop
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Many desktop environments provide services that can be used by applications to
     perform common tasks, such as opening a web page, in a way that is both consistent
@@ -137,8 +137,8 @@ Q_GLOBAL_STATIC(QOpenUrlHandlerRegistry, handlerRegistry)
 
     \note For Android Nougat (SDK 24) and above, URLs with a \c file scheme
     are opened using \l {Android: FileProvider}{FileProvider} which tries to obtain
-    a shareable \c content scheme URI first. For that reason, Qt for Android defines
-    a file provider with the authority \c ${applicationId}.qtprovider, with \c applicationId
+    a shareable \c content scheme URI first. For that reason, BobUI for Android defines
+    a file provider with the authority \c ${applicationId}.bobuiprovider, with \c applicationId
     being the app's package name to avoid name conflicts. For more information, also see
     \l {Android: Setting up file sharing}{Setting up file sharing}.
 
@@ -154,7 +154,7 @@ bool QDesktopServices::openUrl(const QUrl &url)
         QOpenUrlHandlerRegistry::HandlerHash::ConstIterator handler = registry->handlers.constFind(url.scheme());
         if (handler != registry->handlers.constEnd()) {
             insideOpenUrlHandler = true;
-            bool result = QMetaObject::invokeMethod(handler->receiver, handler->name.constData(), Qt::DirectConnection, Q_ARG(QUrl, url));
+            bool result = QMetaObject::invokeMethod(handler->receiver, handler->name.constData(), BobUI::DirectConnection, Q_ARG(QUrl, url));
             insideOpenUrlHandler = false;
             return result; // ### support bool slot return type
         }
@@ -298,6 +298,6 @@ void QDesktopServices::unsetUrlHandler(const QString &scheme)
     setUrlHandler(scheme, nullptr, nullptr);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DESKTOPSERVICES
+#endif // BOBUI_NO_DESKTOPSERVICES

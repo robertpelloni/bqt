@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QIMAGEIOHANDLER_H
 #define QIMAGEIOHANDLER_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qimage.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qplugin.h>
-#include <QtCore/qfactoryinterface.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qimage.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qplugin.h>
+#include <BobUICore/qfactoryinterface.h>
+#include <BobUICore/qscopedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QImage;
@@ -94,9 +94,9 @@ private:
     Q_DISABLE_COPY(QImageIOHandler)
 };
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
 
-#define QImageIOHandlerFactoryInterface_iid "org.qt-project.Qt.QImageIOHandlerFactoryInterface"
+#define QImageIOHandlerFactoryInterface_iid "org.bobui-project.BobUI.QImageIOHandlerFactoryInterface"
 
 class Q_GUI_EXPORT QImageIOPlugin : public QObject
 {
@@ -118,8 +118,8 @@ public:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QImageIOPlugin::Capabilities)
 
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIMAGEIOHANDLER_H

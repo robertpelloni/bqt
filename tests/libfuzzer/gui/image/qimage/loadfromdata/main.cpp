@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGuiApplication>
 #include <QImage>
-#include <QtGlobal>
+#include <BobUIGlobal>
 
 // silence warnings
-static QtMessageHandler mh = qInstallMessageHandler([](QtMsgType, const QMessageLogContext &,
+static BobUIMessageHandler mh = qInstallMessageHandler([](BobUIMsgType, const QMessageLogContext &,
                                                        const QString &) {});
 
 extern "C" int LLVMFuzzerTestOneInput(const char *Data, size_t Size) {

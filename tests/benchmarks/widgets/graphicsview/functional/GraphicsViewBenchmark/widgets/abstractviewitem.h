@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef ABSTRACTVIEWITEM_H
 #define ABSTRACTVIEWITEM_H
@@ -33,11 +33,11 @@ public:
 
     virtual void setSubtreeCacheEnabled(bool enabled);
 
-    virtual QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
+    virtual QSizeF effectiveSizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 
     virtual void setModel(QAbstractItemModel *model) = 0;
     virtual QVariant data(int role) const = 0;
-    virtual void setData(const QVariant &value, int role = Qt::DisplayRole) = 0;
+    virtual void setData(const QVariant &value, int role = BobUI::DisplayRole) = 0;
     virtual void setTwoColumns(const bool enabled) = 0;
 
 protected:

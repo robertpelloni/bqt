@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS       = mainwindow.h \
                 mdichild.h
@@ -9,5 +9,5 @@ SOURCES       = main.cpp \
 RESOURCES     = mdi.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/mainwindows/mdi
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/mainwindows/mdi
 INSTALLS += target

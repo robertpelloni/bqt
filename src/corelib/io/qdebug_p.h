@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parsing
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parsing
 
 #ifndef QDEBUG_P_H
 #define QDEBUG_P_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include "QtCore/qdebug.h"
-#include "QtCore/qmetaobject.h"
-#include "QtCore/qflags.h"
-#include "QtCore/qbytearray.h"
+#include <BobUICore/private/qglobal_p.h>
+#include "BobUICore/qdebug.h"
+#include "BobUICore/qmetaobject.h"
+#include "BobUICore/qflags.h"
+#include "BobUICore/qbytearray.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRect;
 
-namespace QtDebugUtils {
+namespace BobUIDebugUtils {
 
 Q_CORE_EXPORT QByteArray toPrintable(const char *data, qint64 len, qsizetype maxSize);
 
@@ -69,12 +69,12 @@ static inline void formatQMargins(QDebug &debug, const Margins &margins)
         << ", " << margins.bottom();
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 template <class QEnum>
 static inline void formatQEnum(QDebug &debug, QEnum value)
 {
-    const QMetaObject *metaObject = qt_getEnumMetaObject(value);
-    const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(qt_getEnumName(value)));
+    const QMetaObject *metaObject = bobui_getEnumMetaObject(value);
+    const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(bobui_getEnumName(value)));
     if (const char *key = me.valueToKey(int(value)))
         debug << key;
     else
@@ -108,10 +108,10 @@ static inline void formatNonNullQFlags(QDebug &debug, const char *prefix, const 
     }
 }
 
-#endif // !QT_NO_QOBJECT
+#endif // !BOBUI_NO_QOBJECT
 
-} // namespace QtDebugUtils
+} // namespace BobUIDebugUtils
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDEBUG_P_H

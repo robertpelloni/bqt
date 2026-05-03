@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QMainWindow>
@@ -28,12 +28,12 @@ protected:
     {
         if (event->type() == QEvent::Gesture) {
             QGestureEvent *ge = static_cast<QGestureEvent *>(event);
-            if (QPanGesture *pan = static_cast<QPanGesture *>(ge->gesture(Qt::PanGesture))) {
+            if (QPanGesture *pan = static_cast<QPanGesture *>(ge->gesture(BobUI::PanGesture))) {
                 switch (pan->state()) {
-                case Qt::GestureStarted: qDebug("view: Pan: started"); break;
-                case Qt::GestureFinished: qDebug("view: Pan: finished"); break;
-                case Qt::GestureCanceled: qDebug("view: Pan: canceled"); break;
-                case Qt::GestureUpdated: break;
+                case BobUI::GestureStarted: qDebug("view: Pan: started"); break;
+                case BobUI::GestureFinished: qDebug("view: Pan: finished"); break;
+                case BobUI::GestureCanceled: qDebug("view: Pan: canceled"); break;
+                case BobUI::GestureUpdated: break;
                 default: qDebug("view: Pan: <unknown state>"); break;
                 }
 
@@ -77,7 +77,7 @@ public:
         scene = new QGraphicsScene(this);
         scene->setSceneRect(-2000, -2000, 4000, 4000);
         view = new GraphicsView(scene, 0);
-        view->viewport()->grabGesture(Qt::PanGesture);
+        view->viewport()->grabGesture(BobUI::PanGesture);
         view->viewport()->grabGesture(ThreeFingerSlideGesture::Type);
         QVBoxLayout *l = new QVBoxLayout(this);
         l->addWidget(view);
@@ -97,7 +97,7 @@ public:
         scene = new QGraphicsScene(this);
         scene->setSceneRect(-2000, -2000, 4000, 4000);
         view = new QGraphicsView(scene, 0);
-        view->viewport()->grabGesture(Qt::PanGesture);
+        view->viewport()->grabGesture(BobUI::PanGesture);
         view->viewport()->grabGesture(ThreeFingerSlideGesture::Type);
         QVBoxLayout *l = new QVBoxLayout(this);
         l->addWidget(view);
@@ -115,7 +115,7 @@ public:
     void setDirectory(const QString &path);
 
 private:
-    QTabWidget *tabWidget;
+    BOBUIabWidget *tabWidget;
     StandardGestures *standardGestures;
     GlobalViewGestures *globalViewGestures;
     GraphicsItemGestures *graphicsItemGestures;
@@ -126,7 +126,7 @@ MainWindow::MainWindow()
     (void)QGestureRecognizer::registerRecognizer(new MousePanGestureRecognizer);
     ThreeFingerSlideGesture::Type = QGestureRecognizer::registerRecognizer(new ThreeFingerSlideGestureRecognizer);
 
-    tabWidget = new QTabWidget;
+    tabWidget = new BOBUIabWidget;
 
     standardGestures = new StandardGestures;
     tabWidget->addTab(standardGestures, "Standard gestures");

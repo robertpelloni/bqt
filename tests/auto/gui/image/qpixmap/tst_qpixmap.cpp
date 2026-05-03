@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QSet>
-#include <QTemporaryFile>
+#include <BOBUIemporaryFile>
 #include <QBuffer>
-#include <QTest>
+#include <BOBUIest>
 #include <QPixmap>
 #include <QBitmap>
 #include <QImage>
 #include <QImageReader>
 #include <QPaintEngine>
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 #include <QSplashScreen>
 #endif
 
@@ -21,7 +21,7 @@
 #include <private/qdrawhelper_p.h>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
 
@@ -107,7 +107,7 @@ private slots:
 
     void load();
     void loadFromData();
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
     void loadFromDataStream();
 #endif
 
@@ -124,7 +124,7 @@ private slots:
     void fromImageReaderAnimatedGif();
 
     void preserveDepth();
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void splash_crash();
 #endif
 
@@ -132,8 +132,8 @@ private slots:
 
     void loadAsBitmapOrPixmap();
 
-    void scaled_QTBUG19157();
-    void detachOnLoad_QTBUG29639();
+    void scaled_BOBUIBUG19157();
+    void detachOnLoad_BOBUIBUG29639();
 
     void copyOnNonAlignedBoundary();
     void devicePixelRatio();
@@ -143,7 +143,7 @@ private:
     const QString m_prefix;
     const QString m_convertFromImage;
     const QString m_loadFromData;
-    const QTemporaryDir m_tempDir;
+    const BOBUIemporaryDir m_tempDir;
 };
 
 static bool lenientCompare(const QPixmap &actual, const QPixmap &expected)
@@ -201,8 +201,8 @@ void tst_QPixmap::cleanupTestCase()
 void tst_QPixmap::swap()
 {
     QPixmap p1( 16, 16 ), p2( 32, 32 );
-    p1.fill( Qt::white );
-    p2.fill( Qt::black );
+    p1.fill( BobUI::white );
+    p2.fill( BobUI::black );
     const qint64 p1k = p1.cacheKey();
     const qint64 p2k = p2.cacheKey();
     p1.swap(p2);
@@ -218,17 +218,17 @@ void tst_QPixmap::fromImage_data()
     if (QPixmap::defaultDepth() == 16)
         is16bit = true;
 
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("Format_Mono") << QImage::Format_Mono;
-    QTest::newRow("Format_MonoLSB") << QImage::Format_MonoLSB;
-//    QTest::newRow("Format_Indexed8") << QImage::Format_Indexed8;
+    BOBUIest::newRow("Format_Mono") << QImage::Format_Mono;
+    BOBUIest::newRow("Format_MonoLSB") << QImage::Format_MonoLSB;
+//    BOBUIest::newRow("Format_Indexed8") << QImage::Format_Indexed8;
     if (!is16bit)
-        QTest::newRow("Format_RGB32") << QImage::Format_RGB32;
-    QTest::newRow("Format_ARGB32") << QImage::Format_ARGB32;
-    QTest::newRow("Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
+        BOBUIest::newRow("Format_RGB32") << QImage::Format_RGB32;
+    BOBUIest::newRow("Format_ARGB32") << QImage::Format_ARGB32;
+    BOBUIest::newRow("Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
     if (!is16bit)
-        QTest::newRow("Format_RGB16") << QImage::Format_RGB16;
+        BOBUIest::newRow("Format_RGB16") << QImage::Format_RGB16;
 }
 
 void tst_QPixmap::fromImage()
@@ -238,8 +238,8 @@ void tst_QPixmap::fromImage()
     QImage image(37, 16, format);
 
     if (image.colorCount() == 2) {
-        image.setColor(0, QColor(Qt::color0).rgba());
-        image.setColor(1, QColor(Qt::color1).rgba());
+        image.setColor(0, QColor(BobUI::color0).rgba());
+        image.setColor(1, QColor(BobUI::color1).rgba());
     }
     image.fill(0x7f7f7f7f);
 
@@ -252,15 +252,15 @@ void tst_QPixmap::fromImage()
 
 void tst_QPixmap::fromUninitializedImage_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("Format_Mono") << QImage::Format_Mono;
-    QTest::newRow("Format_MonoLSB") << QImage::Format_MonoLSB;
-    QTest::newRow("Format_Indexed8") << QImage::Format_Indexed8;
-    QTest::newRow("Format_RGB32") << QImage::Format_RGB32;
-    QTest::newRow("Format_ARGB32") << QImage::Format_ARGB32;
-    QTest::newRow("Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("Format_RGB16") << QImage::Format_RGB16;
+    BOBUIest::newRow("Format_Mono") << QImage::Format_Mono;
+    BOBUIest::newRow("Format_MonoLSB") << QImage::Format_MonoLSB;
+    BOBUIest::newRow("Format_Indexed8") << QImage::Format_Indexed8;
+    BOBUIest::newRow("Format_RGB32") << QImage::Format_RGB32;
+    BOBUIest::newRow("Format_ARGB32") << QImage::Format_ARGB32;
+    BOBUIest::newRow("Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("Format_RGB16") << QImage::Format_RGB16;
 }
 
 void tst_QPixmap::fromUninitializedImage()
@@ -277,8 +277,8 @@ void tst_QPixmap::fromUninitializedImage()
 
 void tst_QPixmap::convertFromImage_data()
 {
-    QTest::addColumn<QImage>("img1");
-    QTest::addColumn<QImage>("img2");
+    BOBUIest::addColumn<QImage>("img1");
+    BOBUIest::addColumn<QImage>("img2");
 
     {
         QImage img1;
@@ -287,14 +287,14 @@ void tst_QPixmap::convertFromImage_data()
         QVERIFY(img2.load(m_convertFromImage + "/task31722_0/img2.png"));
         QVERIFY(img1.load(m_convertFromImage + "/task31722_0/img1.png"));
         QVERIFY(img2.load(m_convertFromImage + "/task31722_0/img2.png"));
-        QTest::newRow("Task 31722 0") << img1 << img2;
+        BOBUIest::newRow("Task 31722 0") << img1 << img2;
     }
     {
         QImage img1;
         QImage img2;
         QVERIFY(img1.load(m_convertFromImage + "/task31722_1/img1.png"));
         QVERIFY(img2.load(m_convertFromImage + "/task31722_1/img2.png"));
-        QTest::newRow("Task 31722 1") << img1 << img2;
+        BOBUIest::newRow("Task 31722 1") << img1 << img2;
     }
 }
 
@@ -325,64 +325,64 @@ void tst_QPixmap::convertFromImageShouldDetach()
 
 void tst_QPixmap::scroll_data()
 {
-    QTest::addColumn<QImage>("input");
-    QTest::addColumn<int>("dx");
-    QTest::addColumn<int>("dy");
-    QTest::addColumn<QRect>("rect");
-    QTest::addColumn<QRegion>("exposed");
-    QTest::addColumn<bool>("newPix");
+    BOBUIest::addColumn<QImage>("input");
+    BOBUIest::addColumn<int>("dx");
+    BOBUIest::addColumn<int>("dy");
+    BOBUIest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<QRegion>("exposed");
+    BOBUIest::addColumn<bool>("newPix");
 
     QImage input(":/images/designer.png");
 
     // Noop tests
-    QTest::newRow("null") << QImage() << 0 << 0 << QRect() << QRegion() << false;
-    QTest::newRow("dx_0_dy_0_null") << input << 0 << 0 << QRect() << QRegion() << false;
-    QTest::newRow("dx_1_dy_0_null") << input << 1 << 0 << QRect() << QRegion() << false;
-    QTest::newRow("dx_0_dy_1_null") << input << 0 << 1 << QRect() << QRegion() << false;
-    QTest::newRow("dx_0_dy_0_x_y_w_h") << input << 0 << 0 << input.rect() << QRegion() << false;
+    BOBUIest::newRow("null") << QImage() << 0 << 0 << QRect() << QRegion() << false;
+    BOBUIest::newRow("dx_0_dy_0_null") << input << 0 << 0 << QRect() << QRegion() << false;
+    BOBUIest::newRow("dx_1_dy_0_null") << input << 1 << 0 << QRect() << QRegion() << false;
+    BOBUIest::newRow("dx_0_dy_1_null") << input << 0 << 1 << QRect() << QRegion() << false;
+    BOBUIest::newRow("dx_0_dy_0_x_y_w_h") << input << 0 << 0 << input.rect() << QRegion() << false;
 
     QRegion r;
     // Scroll whole pixmap
     r = QRegion(); r += QRect(0, 0, 128, 10);
-    QTest::newRow("dx_0_dy_10_x_y_w_h") << input << 0 << 10 << input.rect() << r << true;
+    BOBUIest::newRow("dx_0_dy_10_x_y_w_h") << input << 0 << 10 << input.rect() << r << true;
     r = QRegion(); r += QRect(0, 0, 10, 128);
-    QTest::newRow("dx_10_dy_0_x_y_w_h") << input << 10 << 0 << input.rect() << r << true;
+    BOBUIest::newRow("dx_10_dy_0_x_y_w_h") << input << 10 << 0 << input.rect() << r << true;
     r = QRegion(); r += QRect(0, 0, 128, 10); r += QRect(0, 10, 10, 118);
-    QTest::newRow("dx_10_dy_10_x_y_w_h") << input << 10 << 10 << input.rect() << r << true;
+    BOBUIest::newRow("dx_10_dy_10_x_y_w_h") << input << 10 << 10 << input.rect() << r << true;
     r = QRegion(); r += QRect(118, 0, 10, 128);
-    QTest::newRow("dx_-10_dy_0_x_y_w_h") << input << -10 << 0 << input.rect() << r << true;
+    BOBUIest::newRow("dx_-10_dy_0_x_y_w_h") << input << -10 << 0 << input.rect() << r << true;
     r = QRegion(); r += QRect(0, 118, 128, 10);
-    QTest::newRow("dx_0_dy_-10_x_y_w_h") << input << 0 << -10 << input.rect() << r << true;
+    BOBUIest::newRow("dx_0_dy_-10_x_y_w_h") << input << 0 << -10 << input.rect() << r << true;
     r = QRegion(); r += QRect(118, 0, 10, 118); r += QRect(0, 118, 128, 10);
-    QTest::newRow("dx_-10_dy_-10_x_y_w_h") << input << -10 << -10 << input.rect() << r << true;
+    BOBUIest::newRow("dx_-10_dy_-10_x_y_w_h") << input << -10 << -10 << input.rect() << r << true;
 
     // Scroll part of pixmap
-    QTest::newRow("dx_0_dy_0_50_50_100_100") << input << 0 << 0 << QRect(50, 50, 100, 100) << QRegion() << false;
+    BOBUIest::newRow("dx_0_dy_0_50_50_100_100") << input << 0 << 0 << QRect(50, 50, 100, 100) << QRegion() << false;
     r = QRegion(); r += QRect(50, 50, 10, 78);
-    QTest::newRow("dx_10_dy_0_50_50_100_100") << input << 10 << 0 << QRect(50, 50, 100, 100) << r << true;
+    BOBUIest::newRow("dx_10_dy_0_50_50_100_100") << input << 10 << 0 << QRect(50, 50, 100, 100) << r << true;
     r = QRegion(); r += QRect(50, 50, 78, 10);
-    QTest::newRow("dx_0_dy_10_50_50_100_100") << input << 0 << 10 << QRect(50, 50, 100, 100) << r << true;
+    BOBUIest::newRow("dx_0_dy_10_50_50_100_100") << input << 0 << 10 << QRect(50, 50, 100, 100) << r << true;
     r = QRegion(); r += QRect(50, 50, 78, 10); r += QRect(50, 60, 10, 68);
-    QTest::newRow("dx_10_dy_10_50_50_100_100") << input << 10 << 10 << QRect(50, 50, 100, 100) << r << true;
+    BOBUIest::newRow("dx_10_dy_10_50_50_100_100") << input << 10 << 10 << QRect(50, 50, 100, 100) << r << true;
     r = QRegion(); r += QRect(118, 50, 10, 78);
-    QTest::newRow("dx_-10_dy_0_50_50_100_100") << input << -10 << 0 << QRect(50, 50, 100, 100) << r << true;
+    BOBUIest::newRow("dx_-10_dy_0_50_50_100_100") << input << -10 << 0 << QRect(50, 50, 100, 100) << r << true;
     r = QRegion(); r += QRect(50, 118, 78, 10);
-    QTest::newRow("dx_0_dy_-10_50_50_100_100") << input << 0 << -10 << QRect(50, 50, 100, 100) << r << true;
+    BOBUIest::newRow("dx_0_dy_-10_50_50_100_100") << input << 0 << -10 << QRect(50, 50, 100, 100) << r << true;
     r = QRegion(); r += QRect(118, 50, 10, 68); r += QRect(50, 118, 78, 10);
-    QTest::newRow("dx_-10_dy_-10_50_50_100_100") << input << -10 << -10 << QRect(50, 50, 100, 100) << r << true;
+    BOBUIest::newRow("dx_-10_dy_-10_50_50_100_100") << input << -10 << -10 << QRect(50, 50, 100, 100) << r << true;
 
     // Scroll away the whole pixmap
     r = input.rect();
-    QTest::newRow("dx_128_dy_0_x_y_w_h") << input << 128 << 0 << input.rect() << r << false;
-    QTest::newRow("dx_0_dy_128_x_y_w_h") << input << 0 << 128 << input.rect() << r << false;
-    QTest::newRow("dx_128_dy_128_x_y_w_h") << input << 128 << 128 << input.rect() << r << false;
-    QTest::newRow("dx_-128_dy_0_x_y_w_h") << input << -128 << 0 << input.rect() << r << false;
-    QTest::newRow("dx_0_dy_-128_x_y_w_h") << input << 0 << -128 << input.rect() << r << false;
-    QTest::newRow("dx_-128_dy_-128_x_y_w_h") << input << -128 << -128 << input.rect() << r << false;
+    BOBUIest::newRow("dx_128_dy_0_x_y_w_h") << input << 128 << 0 << input.rect() << r << false;
+    BOBUIest::newRow("dx_0_dy_128_x_y_w_h") << input << 0 << 128 << input.rect() << r << false;
+    BOBUIest::newRow("dx_128_dy_128_x_y_w_h") << input << 128 << 128 << input.rect() << r << false;
+    BOBUIest::newRow("dx_-128_dy_0_x_y_w_h") << input << -128 << 0 << input.rect() << r << false;
+    BOBUIest::newRow("dx_0_dy_-128_x_y_w_h") << input << 0 << -128 << input.rect() << r << false;
+    BOBUIest::newRow("dx_-128_dy_-128_x_y_w_h") << input << -128 << -128 << input.rect() << r << false;
 
     // Scroll away part of the pixmap
     r = QRegion(); r += QRect(64, 64, 64, 64);
-    QTest::newRow("dx_128_dy_128_64_64_128_128") << input << 128 << 128 << QRect(64, 64, 128, 128) << r << false;
+    BOBUIest::newRow("dx_128_dy_128_64_64_128_128") << input << 128 << 128 << QRect(64, 64, 128, 128) << r << false;
 }
 
 void tst_QPixmap::scroll()
@@ -403,7 +403,7 @@ void tst_QPixmap::scroll()
     else
         QVERIFY(pixmap.cacheKey() != oldKey);
 
-    const QString fileName = QLatin1String(":/images/") + QLatin1String(QTest::currentDataTag())
+    const QString fileName = QLatin1String(":/images/") + QLatin1String(BOBUIest::currentDataTag())
         + QLatin1String(".png");
     QPixmap output(fileName);
     QCOMPARE(input.isNull(), output.isNull());
@@ -413,26 +413,26 @@ void tst_QPixmap::scroll()
 
 void tst_QPixmap::fill_data()
 {
-    QTest::addColumn<uint>("pixel");
-    QTest::addColumn<bool>("syscolor");
-    QTest::addColumn<bool>("bitmap");
-    for (int color = Qt::black; color < Qt::darkYellow; ++color)
-        QTest::newRow(("syscolor_" + QByteArray::number(color)).constData())
+    BOBUIest::addColumn<uint>("pixel");
+    BOBUIest::addColumn<bool>("syscolor");
+    BOBUIest::addColumn<bool>("bitmap");
+    for (int color = BobUI::black; color < BobUI::darkYellow; ++color)
+        BOBUIest::newRow(("syscolor_" + QByteArray::number(color)).constData())
             << uint(color) << true << false;
 
     QPixmap pixmap(1, 1);
-    QTest::newRow("alpha_7f_red")   << 0x7fff0000u << false << false;
-    QTest::newRow("alpha_3f_blue")  << 0x3f0000ffu << false << false;
-    QTest::newRow("alpha_b7_green") << 0xbf00ff00u << false << false;
-    QTest::newRow("alpha_7f_white") << 0x7fffffffu << false << false;
-    QTest::newRow("alpha_3f_white") << 0x3fffffffu << false << false;
-    QTest::newRow("alpha_b7_white") << 0xb7ffffffu << false << false;
-    QTest::newRow("alpha_7f_black") << 0x7f000000u << false << false;
-    QTest::newRow("alpha_3f_black") << 0x3f000000u << false << false;
-    QTest::newRow("alpha_b7_black") << 0xbf000000u << false << false;
+    BOBUIest::newRow("alpha_7f_red")   << 0x7fff0000u << false << false;
+    BOBUIest::newRow("alpha_3f_blue")  << 0x3f0000ffu << false << false;
+    BOBUIest::newRow("alpha_b7_green") << 0xbf00ff00u << false << false;
+    BOBUIest::newRow("alpha_7f_white") << 0x7fffffffu << false << false;
+    BOBUIest::newRow("alpha_3f_white") << 0x3fffffffu << false << false;
+    BOBUIest::newRow("alpha_b7_white") << 0xb7ffffffu << false << false;
+    BOBUIest::newRow("alpha_7f_black") << 0x7f000000u << false << false;
+    BOBUIest::newRow("alpha_3f_black") << 0x3f000000u << false << false;
+    BOBUIest::newRow("alpha_b7_black") << 0xbf000000u << false << false;
 
-    QTest::newRow("bitmap_color0") << uint(Qt::color0) << true << true;
-    QTest::newRow("bitmap_color1") << uint(Qt::color1) << true << true;
+    BOBUIest::newRow("bitmap_color0") << uint(BobUI::color0) << true << true;
+    BOBUIest::newRow("bitmap_color1") << uint(BobUI::color1) << true << true;
 }
 
 void tst_QPixmap::fill()
@@ -444,14 +444,14 @@ void tst_QPixmap::fill()
     QColor color;
 
     if (syscolor)
-        color = QColor(Qt::GlobalColor(pixel));
+        color = QColor(BobUI::GlobalColor(pixel));
     else
         color = QColor(qRed(pixel), qGreen(pixel), qBlue(pixel), qAlpha(pixel));
 
     QColor compareColor = color;
     if (bitmap && syscolor) {
         // special case color0 and color1 for bitmaps.
-        if (pixel == Qt::color0)
+        if (pixel == BobUI::color0)
             compareColor.setRgb(255, 255, 255);
         else
             compareColor.setRgb(0, 0, 0);
@@ -471,7 +471,7 @@ void tst_QPixmap::fill()
 
     QImage image = pm.toImage();
     if (bitmap && syscolor) {
-        int pixelindex = (pixel == Qt::color0) ? 0 : 1;
+        int pixelindex = (pixel == BobUI::color0) ? 0 : 1;
         QCOMPARE(image.pixelIndex(0,0), pixelindex);
     }
     QImage::Format format = compareColor.alpha() != 255
@@ -489,7 +489,7 @@ void tst_QPixmap::fill()
 void tst_QPixmap::fill_transparent()
 {
     QPixmap pixmap(10, 10);
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     QVERIFY(pixmap.hasAlphaChannel());
 }
 
@@ -533,29 +533,29 @@ void tst_QPixmap::mask()
 void tst_QPixmap::bitmapMask()
 {
     QImage image(3, 3, QImage::Format_Mono);
-    image.setColor(0, Qt::color0);
-    image.setColor(1, Qt::color1);
-    image.fill(Qt::color0);
-    image.setPixel(1, 1, Qt::color1);
-    image.setPixel(0, 0, Qt::color1);
+    image.setColor(0, BobUI::color0);
+    image.setColor(1, BobUI::color1);
+    image.fill(BobUI::color0);
+    image.setPixel(1, 1, BobUI::color1);
+    image.setPixel(0, 0, BobUI::color1);
 
     QImage image_mask(3, 3, QImage::Format_Mono);
-    image_mask.setColor(0, Qt::color0);
-    image_mask.setColor(1, Qt::color1);
-    image_mask.fill(Qt::color0);
-    image_mask.setPixel(1, 1, Qt::color1);
-    image_mask.setPixel(2, 0, Qt::color1);
+    image_mask.setColor(0, BobUI::color0);
+    image_mask.setColor(1, BobUI::color1);
+    image_mask.fill(BobUI::color0);
+    image_mask.setPixel(1, 1, BobUI::color1);
+    image_mask.setPixel(2, 0, BobUI::color1);
 
     QBitmap pm = QBitmap::fromImage(image);
     QBitmap pm_mask = QBitmap::fromImage(image_mask);
     pm.setMask(pm_mask);
 
     image = pm.toImage();
-    image.setColor(0, Qt::color0);
-    image.setColor(1, Qt::color1);
+    image.setColor(0, BobUI::color0);
+    image.setColor(1, BobUI::color1);
     image_mask = pm_mask.toImage();
-    image_mask.setColor(0, Qt::color0);
-    image_mask.setColor(1, Qt::color1);
+    image_mask.setColor(0, BobUI::color0);
+    image_mask.setColor(1, BobUI::color1);
 
     QVERIFY(!image.pixel(0, 0));
     QVERIFY(!image.pixel(2, 0));
@@ -566,11 +566,11 @@ void tst_QPixmap::bitmapFromImageRvalue()
 {
     auto makeImage = [](){
         QImage image(3, 3, QImage::Format_MonoLSB);
-        image.setColor(0, Qt::color0);
-        image.setColor(1, Qt::color1);
-        image.fill(Qt::color0);
-        image.setPixel(1, 1, Qt::color1);
-        image.setPixel(0, 0, Qt::color1);
+        image.setColor(0, BobUI::color0);
+        image.setColor(1, BobUI::color1);
+        image.fill(BobUI::color0);
+        image.setPixel(1, 1, BobUI::color1);
+        image.setPixel(0, 0, BobUI::color1);
         return image;
     };
 
@@ -585,28 +585,28 @@ void tst_QPixmap::bitmapFromImageRvalue()
 
 void tst_QPixmap::setGetMask_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QBitmap>("mask");
-    QTest::addColumn<QBitmap>("expected");
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QBitmap>("mask");
+    BOBUIest::addColumn<QBitmap>("expected");
 
     QPixmap pixmap(10, 10);
     QBitmap mask(10, 10);
     QPainter p;
 
     p.begin(&pixmap);
-    p.fillRect(0, 0, 10, 10, QColor(Qt::black));
+    p.fillRect(0, 0, 10, 10, QColor(BobUI::black));
     p.end();
 
-    QTest::newRow("nullmask 0") << QPixmap() << QBitmap() << QBitmap();
-    QTest::newRow("nullmask 1") << pixmap << QBitmap() << QBitmap();
+    BOBUIest::newRow("nullmask 0") << QPixmap() << QBitmap() << QBitmap();
+    BOBUIest::newRow("nullmask 1") << pixmap << QBitmap() << QBitmap();
     mask.clear();
-    QTest::newRow("nullmask 2") << pixmap << mask << mask;
-    QTest::newRow("nullmask 3") << QPixmap(QBitmap()) << QBitmap() << QBitmap();
+    BOBUIest::newRow("nullmask 2") << pixmap << mask << mask;
+    BOBUIest::newRow("nullmask 3") << QPixmap(QBitmap()) << QBitmap() << QBitmap();
 
     p.begin(&mask);
-    p.fillRect(1, 1, 5, 5, QColor(Qt::color1));
+    p.fillRect(1, 1, 5, 5, QColor(BobUI::color1));
     p.end();
-    QTest::newRow("simple mask 0") << pixmap << mask << mask;
+    BOBUIest::newRow("simple mask 0") << pixmap << mask << mask;
 }
 
 void tst_QPixmap::setGetMask()
@@ -658,14 +658,14 @@ void tst_QPixmap::createMaskFromColor()
     image.setPixel(1, 1, 3);
 
     QImage im_mask = image.createMaskFromColor(0xffff0000);
-    QCOMPARE((uint) im_mask.pixel(0, 1), QColor(Qt::color0).rgba());
-    QCOMPARE((uint) im_mask.pixel(0, 1), QColor(Qt::color0).rgba());
+    QCOMPARE((uint) im_mask.pixel(0, 1), QColor(BobUI::color0).rgba());
+    QCOMPARE((uint) im_mask.pixel(0, 1), QColor(BobUI::color0).rgba());
 
     QPixmap pixmap = QPixmap::fromImage(image);
-    QBitmap mask = pixmap.createMaskFromColor(Qt::red);
-    QBitmap inv_mask = pixmap.createMaskFromColor(Qt::red, Qt::MaskOutColor);
-    QCOMPARE((uint) mask.toImage().pixel(0, 1), QColor(Qt::color0).rgba());
-    QCOMPARE((uint) inv_mask.toImage().pixel(0, 1), QColor(Qt::color1).rgba());
+    QBitmap mask = pixmap.createMaskFromColor(BobUI::red);
+    QBitmap inv_mask = pixmap.createMaskFromColor(BobUI::red, BobUI::MaskOutColor);
+    QCOMPARE((uint) mask.toImage().pixel(0, 1), QColor(BobUI::color0).rgba());
+    QCOMPARE((uint) inv_mask.toImage().pixel(0, 1), QColor(BobUI::color1).rgba());
 }
 
 
@@ -689,17 +689,17 @@ void tst_QPixmap::cacheKey()
 void tst_QPixmap::drawBitmap()
 {
     QBitmap bitmap(10,10);
-    bitmap.fill(Qt::color1);
+    bitmap.fill(BobUI::color1);
 
     QPixmap pixmap(10,10);
     QPainter painter2(&pixmap);
-    painter2.fillRect(0,0,10,10, QBrush(Qt::green));
-    painter2.setPen(Qt::red);
+    painter2.fillRect(0,0,10,10, QBrush(BobUI::green));
+    painter2.setPen(BobUI::red);
     painter2.drawPixmap(0,0,10,10, bitmap);
     painter2.end();
 
     QPixmap expected(10, 10);
-    expected.fill(Qt::red);
+    expected.fill(BobUI::red);
 
     QVERIFY(lenientCompare(pixmap, expected));
 }
@@ -769,7 +769,7 @@ void tst_QPixmap::convertFromImageNoDetach2()
         QSKIP("Test only valid for platforms with RGB32 pixmaps");
 
     QImage orig(100,100, QImage::Format_ARGB32_Premultiplied);
-    orig.fill(Qt::white);
+    orig.fill(BobUI::white);
 
     const uchar *origBits = orig.constBits();
 
@@ -821,24 +821,24 @@ void tst_QPixmap::convertFromImageCacheKey()
 
 #if defined(Q_OS_WIN)
 
-QT_BEGIN_NAMESPACE
-Q_GUI_EXPORT HBITMAP qt_createIconMask(const QBitmap &bitmap);
-Q_GUI_EXPORT HBITMAP qt_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat = 0);
-Q_GUI_EXPORT QPixmap qt_pixmapFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat = 0);
-Q_GUI_EXPORT HICON qt_pixmapToWinHICON(const QPixmap &p);
-Q_GUI_EXPORT QImage qt_imageFromWinHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h);
-Q_GUI_EXPORT QPixmap qt_pixmapFromWinHICON(HICON icon);
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+Q_GUI_EXPORT HBITMAP bobui_createIconMask(const QBitmap &bitmap);
+Q_GUI_EXPORT HBITMAP bobui_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat = 0);
+Q_GUI_EXPORT QPixmap bobui_pixmapFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat = 0);
+Q_GUI_EXPORT HICON bobui_pixmapToWinHICON(const QPixmap &p);
+Q_GUI_EXPORT QImage bobui_imageFromWinHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h);
+Q_GUI_EXPORT QPixmap bobui_pixmapFromWinHICON(HICON icon);
+BOBUI_END_NAMESPACE
 
 void tst_QPixmap::toWinHBITMAP_data()
 {
-    QTest::addColumn<int>("red");
-    QTest::addColumn<int>("green");
-    QTest::addColumn<int>("blue");
+    BOBUIest::addColumn<int>("red");
+    BOBUIest::addColumn<int>("green");
+    BOBUIest::addColumn<int>("blue");
 
-    QTest::newRow("red")   << 255 << 0 << 0;
-    QTest::newRow("green") << 0 << 255 << 0;
-    QTest::newRow("blue")  << 0 << 0 << 255;
+    BOBUIest::newRow("red")   << 255 << 0 << 0;
+    BOBUIest::newRow("green") << 0 << 255 << 0;
+    BOBUIest::newRow("blue")  << 0 << 0 << 255;
 }
 
 void tst_QPixmap::toWinHBITMAP()
@@ -850,7 +850,7 @@ void tst_QPixmap::toWinHBITMAP()
     QPixmap pm(100, 100);
     pm.fill(QColor(red, green, blue));
 
-    HBITMAP bitmap = qt_pixmapToWinHBITMAP(pm);
+    HBITMAP bitmap = bobui_pixmapToWinHBITMAP(pm);
 
     QVERIFY(bitmap != 0);
 
@@ -902,7 +902,7 @@ void tst_QPixmap::fromWinHBITMAP()
     HGDIOBJ old_brush = SelectObject(bitmap_dc, CreateSolidBrush(RGB(red, green, blue)));
     Rectangle(bitmap_dc, 0, 0, 100, 100);
 
-    QPixmap pixmap = qt_pixmapFromWinHBITMAP(bitmap);
+    QPixmap pixmap = bobui_pixmapFromWinHBITMAP(bitmap);
     QCOMPARE(pixmap.width(), 100);
     QCOMPARE(pixmap.height(), 100);
 
@@ -955,20 +955,20 @@ static bool compareImages(const QImage &actualImage, const QImage &expectedImage
 
 void tst_QPixmap::toWinHICON_data()
 {
-    QTest::addColumn<QString>("image");
-    QTest::addColumn<int>("width");
-    QTest::addColumn<int>("height");
+    BOBUIest::addColumn<QString>("image");
+    BOBUIest::addColumn<int>("width");
+    BOBUIest::addColumn<int>("height");
 
     const QString prefix = QFINDTESTDATA("convertFromToHICON");
 
-    QTest::newRow("32bpp_16x16") << prefix + QLatin1String("/icon_32bpp") << 16 << 16;
-    QTest::newRow("32bpp_32x32") << prefix + QLatin1String("/icon_32bpp") << 32 << 32;
-    QTest::newRow("32bpp_48x48") << prefix + QLatin1String("/icon_32bpp") << 48 << 48;
-    QTest::newRow("32bpp_256x256") << prefix + QLatin1String("/icon_32bpp") << 256 << 256;
+    BOBUIest::newRow("32bpp_16x16") << prefix + QLatin1String("/icon_32bpp") << 16 << 16;
+    BOBUIest::newRow("32bpp_32x32") << prefix + QLatin1String("/icon_32bpp") << 32 << 32;
+    BOBUIest::newRow("32bpp_48x48") << prefix + QLatin1String("/icon_32bpp") << 48 << 48;
+    BOBUIest::newRow("32bpp_256x256") << prefix + QLatin1String("/icon_32bpp") << 256 << 256;
 
-    QTest::newRow("8bpp_16x16") << prefix + QLatin1String("/icon_8bpp") << 16 << 16;
-    QTest::newRow("8bpp_32x32") << prefix + QLatin1String("/icon_8bpp") << 32 << 32;
-    QTest::newRow("8bpp_48x48") << prefix + QLatin1String("/icon_8bpp") << 48 << 48;
+    BOBUIest::newRow("8bpp_16x16") << prefix + QLatin1String("/icon_8bpp") << 16 << 16;
+    BOBUIest::newRow("8bpp_32x32") << prefix + QLatin1String("/icon_8bpp") << 32 << 32;
+    BOBUIest::newRow("8bpp_48x48") << prefix + QLatin1String("/icon_8bpp") << 48 << 48;
 }
 
 void tst_QPixmap::toWinHICON()
@@ -980,11 +980,11 @@ void tst_QPixmap::toWinHICON()
     QFETCH(QString, image);
 
     QPixmap empty(width, height);
-    empty.fill(Qt::transparent);
+    empty.fill(BobUI::transparent);
 
     HDC display_dc = GetDC(0);
     HDC bitmap_dc = CreateCompatibleDC(display_dc);
-    HBITMAP bitmap = qt_pixmapToWinHBITMAP(empty, Alpha);
+    HBITMAP bitmap = bobui_pixmapToWinHBITMAP(empty, Alpha);
     SelectObject(bitmap_dc, bitmap);
 
     const QString fileName = image + QLatin1Char('_') + QString::number(width) + QLatin1Char('x')
@@ -992,14 +992,14 @@ void tst_QPixmap::toWinHICON()
     QImage imageFromFile(fileName);
     imageFromFile = imageFromFile.convertToFormat(QImage::Format_ARGB32_Premultiplied);
 
-    HICON icon = qt_pixmapToWinHICON(QPixmap::fromImage(imageFromFile));
+    HICON icon = bobui_pixmapToWinHICON(QPixmap::fromImage(imageFromFile));
 
     DrawIconEx(bitmap_dc, 0, 0, icon, width, height, 0, 0, DI_NORMAL);
 
     DestroyIcon(icon);
     DeleteDC(bitmap_dc);
 
-    QImage imageFromHICON = qt_pixmapFromWinHBITMAP(bitmap, Alpha).toImage();
+    QImage imageFromHICON = bobui_pixmapFromWinHBITMAP(bitmap, Alpha).toImage();
 
     ReleaseDC(0, display_dc);
 
@@ -1021,7 +1021,7 @@ void tst_QPixmap::fromWinHICON()
     QFETCH(QString, image);
 
     HICON icon = (HICON)LoadImage(0, (wchar_t*)(image + QLatin1String(".ico")).utf16(), IMAGE_ICON, width, height, LR_LOADFROMFILE);
-    QImage imageFromHICON = qt_pixmapFromWinHICON(icon).toImage();
+    QImage imageFromHICON = bobui_pixmapFromWinHICON(icon).toImage();
     DestroyIcon(icon);
 
     const QString fileName = image + QLatin1Char('_') + QString::number(width) + QLatin1Char('x')
@@ -1039,22 +1039,22 @@ void tst_QPixmap::fromWinHICON()
 
 void tst_QPixmap::onlyNullPixmapsOutsideGuiThread()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         void run() override
         {
-            QTest::ignoreMessage(QtWarningMsg,
+            BOBUIest::ignoreMessage(BobUIWarningMsg,
                                  "QPixmap: It is not safe to use pixmaps outside the GUI thread");
             QPixmap pixmap;
             QVERIFY(pixmap.isNull());
 
-            QTest::ignoreMessage(QtWarningMsg,
+            BOBUIest::ignoreMessage(BobUIWarningMsg,
                                  "QPixmap: It is not safe to use pixmaps outside the GUI thread");
             QPixmap pixmap1(100, 100);
             QVERIFY(pixmap1.isNull());
 
-            QTest::ignoreMessage(QtWarningMsg,
+            BOBUIest::ignoreMessage(BobUIWarningMsg,
                                  "QPixmap: It is not safe to use pixmaps outside the GUI thread");
             QPixmap pixmap2(pixmap1);
             QVERIFY(pixmap2.isNull());
@@ -1083,7 +1083,7 @@ void tst_QPixmap::refUnref()
         QPixmap b;
         {
             QPixmap a(10, 10);
-            a.fill(Qt::color0);
+            a.fill(BobUI::color0);
             b = a;
         }
     }
@@ -1091,10 +1091,10 @@ void tst_QPixmap::refUnref()
         QBitmap mask;
         {
             QBitmap bitmap(10, 10);
-            bitmap.fill(Qt::color1);
+            bitmap.fill(BobUI::color1);
             mask = bitmap.mask();
         }
-        mask.fill(Qt::color0);
+        mask.fill(BobUI::color0);
     }
 
 }
@@ -1104,18 +1104,18 @@ void tst_QPixmap::copy()
     QPixmap src(32, 32);
     {
         QPainter p(&src);
-        p.fillRect(0, 0, 32, 32, Qt::red);
-        p.fillRect(10, 10, 10, 10, Qt::blue);
+        p.fillRect(0, 0, 32, 32, BobUI::red);
+        p.fillRect(10, 10, 10, 10, BobUI::blue);
     }
 
     QPixmap dest = src.copy(10, 10, 10, 10);
 
     QPixmap expected(10, 10);
-    expected.fill(Qt::blue);
+    expected.fill(BobUI::blue);
     QVERIFY(lenientCompare(dest, expected));
 
     QPixmap trans;
-    trans.fill(Qt::transparent);
+    trans.fill(BobUI::transparent);
 
     QPixmap transCopy = trans.copy();
     QCOMPARE(trans, transCopy);
@@ -1135,14 +1135,14 @@ void tst_QPixmap::move()
     QVERIFY(!moveConstructed.isNull());
 }
 
-// QTBUG-58653: Force a deep copy of a pixmap by
+// BOBUIBUG-58653: Force a deep copy of a pixmap by
 // having a QPainter and check whether DevicePixelRatio is preserved
 void tst_QPixmap::deepCopyPreservesDpr()
 {
     const qreal dpr = 2;
     QPixmap src(32, 32);
     src.setDevicePixelRatio(dpr);
-    src.fill(Qt::red);
+    src.fill(BobUI::red);
     QPainter painter(&src);
     const QPixmap dest = src.copy();
     QCOMPARE(dest.devicePixelRatio(), dpr);
@@ -1155,9 +1155,9 @@ void tst_QPixmap::fillPreservesDpr()
     const qreal dpr = 2;
     QPixmap src(32, 32);
     src.setDevicePixelRatio(dpr);
-    src.fill(Qt::red);
+    src.fill(BobUI::red);
     QPixmap dest = src;
-    dest.fill(Qt::blue);
+    dest.fill(BobUI::blue);
     QCOMPARE(dest.devicePixelRatio(), dpr);
 }
 
@@ -1166,7 +1166,7 @@ void tst_QPixmap::dprPassthrough()
     const qreal dpr = 2;
     QPixmap src(32, 32);
     src.setDevicePixelRatio(dpr);
-    src.fill(Qt::transparent);
+    src.fill(BobUI::transparent);
     QCOMPARE(src.devicePixelRatio(), dpr);
 
     QImage img = src.toImage();
@@ -1176,12 +1176,12 @@ void tst_QPixmap::dprPassthrough()
     pm.convertFromImage(img);
     QCOMPARE(pm.devicePixelRatio(), dpr);
 
-#ifndef QT_NO_IMAGE_HEURISTIC_MASK
+#ifndef BOBUI_NO_IMAGE_HEURISTIC_MASK
     QBitmap heuristicMask = src.createHeuristicMask();
     QCOMPARE(heuristicMask.devicePixelRatio(), dpr);
 #endif
 
-    QBitmap maskFromColor = src.createMaskFromColor(Qt::white);
+    QBitmap maskFromColor = src.createMaskFromColor(BobUI::white);
     QCOMPARE(maskFromColor.devicePixelRatio(), dpr);
 
     QBitmap mask = src.mask();
@@ -1190,7 +1190,7 @@ void tst_QPixmap::dprPassthrough()
     QPixmap scaled = src.scaled(16, 16);
     QCOMPARE(scaled.devicePixelRatio(), dpr);
 
-    QTransform t;
+    BOBUIransform t;
     t.rotate(90);
     QPixmap transformed = src.transformed(t);
     QCOMPARE(transformed.devicePixelRatio(), dpr);
@@ -1207,7 +1207,7 @@ void tst_QPixmap::depthOfNullObjects()
 void tst_QPixmap::transformed()
 {
     QPixmap p1(20, 10);
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
     {
         QPainter p(&p1);
         p.drawRect(0, 0, p1.width() - 1, p1.height() - 1);
@@ -1234,9 +1234,9 @@ void tst_QPixmap::transformed()
         p.drawPixmap(-p1.width(), 0, p1);
     }
 
-    QPixmap p1_90 = p1.transformed(QTransform().rotate(90));
-    QPixmap p1_180 = p1.transformed(QTransform().rotate(180));
-    QPixmap p1_270 = p1.transformed(QTransform().rotate(270));
+    QPixmap p1_90 = p1.transformed(BOBUIransform().rotate(90));
+    QPixmap p1_180 = p1.transformed(BOBUIransform().rotate(180));
+    QPixmap p1_270 = p1.transformed(BOBUIransform().rotate(270));
 
     QVERIFY(lenientCompare(p1_90, p2));
     QVERIFY(lenientCompare(p1_180, p3));
@@ -1246,22 +1246,22 @@ void tst_QPixmap::transformed()
 void tst_QPixmap::transformed2()
 {
     QPixmap pm(3, 3);
-    pm.fill(Qt::red);
+    pm.fill(BobUI::red);
     QPainter p(&pm);
-    p.fillRect(0, 0, 3, 3, QBrush(Qt::Dense4Pattern));
+    p.fillRect(0, 0, 3, 3, QBrush(BobUI::Dense4Pattern));
     p.end();
 
-    QTransform transform;
+    BOBUIransform transform;
     transform.rotate(-90);
     transform.scale(3, 3);
 
     QPixmap actual = pm.transformed(transform);
 
     QPixmap expected(9, 9);
-    expected.fill(Qt::red);
+    expected.fill(BobUI::red);
     p.begin(&expected);
-    p.setBrush(Qt::black);
-    p.setPen(Qt::NoPen);
+    p.setBrush(BobUI::black);
+    p.setPen(BobUI::NoPen);
     p.drawRect(3, 0, 3, 3);
     p.drawRect(0, 3, 3, 3);
     p.drawRect(6, 3, 3, 3);
@@ -1308,7 +1308,7 @@ void tst_QPixmap::loadFromData()
     QVERIFY(dest.isNull());
 }
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 void tst_QPixmap::loadFromDataStream()
 {
     const QString filePath = m_prefix + QLatin1String("designer.png");
@@ -1339,7 +1339,7 @@ void tst_QPixmap::loadFromDataStream()
     }
     QVERIFY(dest.isNull());
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 void tst_QPixmap::fromImage_crash()
 {
@@ -1351,8 +1351,8 @@ void tst_QPixmap::fromImage_crash()
     delete img;
 }
 
-#ifndef QT_NO_WIDGETS
-//This is testing QPlatformPixmap::createCompatiblePlatformPixmap - see QTBUG-5977
+#ifndef BOBUI_NO_WIDGETS
+//This is testing QPlatformPixmap::createCompatiblePlatformPixmap - see BOBUIBUG-5977
 void tst_QPixmap::splash_crash()
 {
     QPixmap pix;
@@ -1404,17 +1404,17 @@ void tst_QPixmap::loadFromDataNullValues()
 
 void tst_QPixmap::loadFromDataImage_data()
 {
-    QTest::addColumn<QString>("imagePath");
+    BOBUIest::addColumn<QString>("imagePath");
 
-    QTest::newRow("designer_argb32.png") << m_loadFromData + "/designer_argb32.png";
+    BOBUIest::newRow("designer_argb32.png") << m_loadFromData + "/designer_argb32.png";
     // When no extension is provided we try all extensions that has been registered by image providers
-    QTest::newRow("designer_argb32") << m_loadFromData + "/designer_argb32.png";
-    QTest::newRow("designer_indexed8_no_alpha.png") << m_loadFromData + "/designer_indexed8_no_alpha.png";
-    QTest::newRow("designer_indexed8_with_alpha.png") << m_loadFromData + "/designer_indexed8_with_alpha.png";
-    QTest::newRow("designer_rgb32.png") << m_loadFromData + "/designer_rgb32.png";
-    QTest::newRow("designer_indexed8_no_alpha.gif") << m_loadFromData + "/designer_indexed8_no_alpha.gif";
-    QTest::newRow("designer_indexed8_with_alpha.gif") << m_loadFromData + "/designer_indexed8_with_alpha.gif";
-    QTest::newRow("designer_rgb32.jpg") << m_loadFromData + "/designer_rgb32.jpg";
+    BOBUIest::newRow("designer_argb32") << m_loadFromData + "/designer_argb32.png";
+    BOBUIest::newRow("designer_indexed8_no_alpha.png") << m_loadFromData + "/designer_indexed8_no_alpha.png";
+    BOBUIest::newRow("designer_indexed8_with_alpha.png") << m_loadFromData + "/designer_indexed8_with_alpha.png";
+    BOBUIest::newRow("designer_rgb32.png") << m_loadFromData + "/designer_rgb32.png";
+    BOBUIest::newRow("designer_indexed8_no_alpha.gif") << m_loadFromData + "/designer_indexed8_no_alpha.gif";
+    BOBUIest::newRow("designer_indexed8_with_alpha.gif") << m_loadFromData + "/designer_indexed8_with_alpha.gif";
+    BOBUIest::newRow("designer_rgb32.jpg") << m_loadFromData + "/designer_rgb32.jpg";
 }
 
 void tst_QPixmap::loadFromDataImage()
@@ -1436,17 +1436,17 @@ void tst_QPixmap::loadFromDataImage()
 
 void tst_QPixmap::fromImageReader_data()
 {
-    QTest::addColumn<QString>("imagePath");
+    BOBUIest::addColumn<QString>("imagePath");
 
-    QTest::newRow("designer_argb32.png") << m_loadFromData + "/designer_argb32.png";
-    QTest::newRow("designer_indexed8_no_alpha.png") << m_loadFromData + "/designer_indexed8_no_alpha.png";
-    QTest::newRow("designer_indexed8_with_alpha.png") << m_loadFromData + "/designer_indexed8_with_alpha.png";
-    QTest::newRow("designer_rgb32.png") << m_loadFromData + "/designer_rgb32.png";
-    QTest::newRow("designer_indexed8_no_alpha.gif") << m_loadFromData + "/designer_indexed8_no_alpha.gif";
-    QTest::newRow("designer_indexed8_with_alpha.gif") << m_loadFromData + "/designer_indexed8_with_alpha.gif";
-    QTest::newRow("designer_rgb32.jpg") << m_loadFromData + "/designer_rgb32.jpg";
-    QTest::newRow("designer_indexed8_with_alpha_animated") << m_loadFromData + "/designer_indexed8_with_alpha_animated.gif";
-    QTest::newRow("designer_indexed8_no_alpha_animated") << m_loadFromData + "/designer_indexed8_no_alpha_animated.gif";
+    BOBUIest::newRow("designer_argb32.png") << m_loadFromData + "/designer_argb32.png";
+    BOBUIest::newRow("designer_indexed8_no_alpha.png") << m_loadFromData + "/designer_indexed8_no_alpha.png";
+    BOBUIest::newRow("designer_indexed8_with_alpha.png") << m_loadFromData + "/designer_indexed8_with_alpha.png";
+    BOBUIest::newRow("designer_rgb32.png") << m_loadFromData + "/designer_rgb32.png";
+    BOBUIest::newRow("designer_indexed8_no_alpha.gif") << m_loadFromData + "/designer_indexed8_no_alpha.gif";
+    BOBUIest::newRow("designer_indexed8_with_alpha.gif") << m_loadFromData + "/designer_indexed8_with_alpha.gif";
+    BOBUIest::newRow("designer_rgb32.jpg") << m_loadFromData + "/designer_rgb32.jpg";
+    BOBUIest::newRow("designer_indexed8_with_alpha_animated") << m_loadFromData + "/designer_indexed8_with_alpha_animated.gif";
+    BOBUIest::newRow("designer_indexed8_no_alpha_animated") << m_loadFromData + "/designer_indexed8_no_alpha_animated.gif";
 }
 
 void tst_QPixmap::fromImageReader()
@@ -1465,9 +1465,9 @@ void tst_QPixmap::fromImageReader()
 
 void tst_QPixmap::fromImageReaderAnimatedGif_data()
 {
-    QTest::addColumn<QString>("imagePath");
-    QTest::newRow("gif with alpha") << QString::fromLatin1("/designer_indexed8_with_alpha_animated.gif");
-    QTest::newRow("gif without alpha") << QString::fromLatin1("/designer_indexed8_no_alpha_animated.gif");
+    BOBUIest::addColumn<QString>("imagePath");
+    BOBUIest::newRow("gif with alpha") << QString::fromLatin1("/designer_indexed8_with_alpha_animated.gif");
+    BOBUIest::newRow("gif without alpha") << QString::fromLatin1("/designer_indexed8_no_alpha_animated.gif");
 }
 
 void tst_QPixmap::fromImageReaderAnimatedGif()
@@ -1495,7 +1495,7 @@ void tst_QPixmap::task_246446()
 {
     // This crashed without the bugfix in 246446
     QPixmap pm(10, 10);
-    pm.fill(Qt::transparent); // force 32-bit depth
+    pm.fill(BobUI::transparent); // force 32-bit depth
     QBitmap bm;
     pm.setMask(bm);
     {
@@ -1516,10 +1516,10 @@ void tst_QPixmap::task_51271()
 void tst_QPixmap::preserveDepth()
 {
     QPixmap target(64, 64);
-    target.fill(Qt::transparent);
+    target.fill(BobUI::transparent);
 
     QPixmap source(64, 64);
-    source.fill(Qt::white);
+    source.fill(BobUI::white);
 
     int depth = source.depth();
 
@@ -1588,7 +1588,7 @@ void tst_QPixmap::loadAsBitmapOrPixmap()
     QVERIFY(bitmap.isNull());
     QVERIFY(bitmap.isQBitmap());
 
-    QTemporaryFile garbage;
+    BOBUIemporaryFile garbage;
     QVERIFY(garbage.open());
     const QString garbagePath = garbage.fileName();
     garbage.write(reinterpret_cast<const char *>(&garbage), sizeof garbage);
@@ -1603,12 +1603,12 @@ void tst_QPixmap::loadAsBitmapOrPixmap()
 void tst_QPixmap::toImageDeepCopy()
 {
     QPixmap pixmap(64, 64);
-    pixmap.fill(Qt::white);
+    pixmap.fill(BobUI::white);
 
     QPainter painter(&pixmap);
     QImage first = pixmap.toImage();
 
-    painter.setBrush(Qt::black);
+    painter.setBrush(BobUI::black);
     painter.drawEllipse(pixmap.rect());
 
     QImage second = pixmap.toImage();
@@ -1616,14 +1616,14 @@ void tst_QPixmap::toImageDeepCopy()
     QVERIFY(first != second);
 }
 
-void tst_QPixmap::scaled_QTBUG19157()
+void tst_QPixmap::scaled_BOBUIBUG19157()
 {
     QPixmap foo(5000, 1);
-    foo = foo.scaled(1024, 1024, Qt::KeepAspectRatio);
+    foo = foo.scaled(1024, 1024, BobUI::KeepAspectRatio);
     QVERIFY(!foo.isNull());
 }
 
-void tst_QPixmap::detachOnLoad_QTBUG29639()
+void tst_QPixmap::detachOnLoad_BOBUIBUG29639()
 {
     QPixmap a;
     a.load(m_convertFromImage + "/task31722_0/img1.png");
@@ -1639,7 +1639,7 @@ void tst_QPixmap::copyOnNonAlignedBoundary()
 {
     QImage img(8, 2, QImage::Format_RGB16);
 
-    QPixmap pm1 = QPixmap::fromImage(img, Qt::NoFormatConversion);
+    QPixmap pm1 = QPixmap::fromImage(img, BobUI::NoFormatConversion);
     QPixmap pm2 = pm1.copy(QRect(5, 0, 3, 2)); // When copying second line: 2 bytes too many are read which might cause an access violation.
 }
 
@@ -1648,7 +1648,7 @@ void tst_QPixmap::devicePixelRatio()
 {
     // create pixmap
     QPixmap a(64, 64);
-    a.fill(Qt::white);
+    a.fill(BobUI::white);
     QCOMPARE(a.devicePixelRatio(), qreal(1.0));
     QCOMPARE(a.isDetached(), true);
 
@@ -1672,12 +1672,12 @@ void tst_QPixmap::devicePixelRatio()
 
 void tst_QPixmap::deviceIndependentSize() {
     QPixmap a(64, 64);
-    a.fill(Qt::white);
+    a.fill(BobUI::white);
     a.setDevicePixelRatio(1.0);
     QCOMPARE(a.deviceIndependentSize(), QSizeF(64, 64));
     a.setDevicePixelRatio(2.0);
     QCOMPARE(a.deviceIndependentSize(), QSizeF(32, 32));
 }
 
-QTEST_MAIN(tst_QPixmap)
+BOBUIEST_MAIN(tst_QPixmap)
 #include "tst_qpixmap.moc"

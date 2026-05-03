@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui>
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui>
 
-// This example demonstrates how the standard Qt main()
+// This example demonstrates how the standard BobUI main()
 // pattern works on Emscripten/WebAssambly, where exec()
 // does not return.
 

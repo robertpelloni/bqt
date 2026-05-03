@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(listwidget))
+BOBUI += widgets
+requires(bobuiConfig(listwidget))
 
 HEADERS = window.h \
           animation.h
@@ -11,5 +11,5 @@ FORMS   = form.ui
 RESOURCES = easing.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/animation/easing
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/animation/easing
 INSTALLS += target

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 //#define QPROCESS_DEBUG
 #include <qdebug.h>
@@ -19,7 +19,7 @@
 #include <qwineventnotifier.h>
 #include <qscopedvaluerollback.h>
 #include <private/qsystemlibrary_p.h>
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 #include "private/qfsfileengine_p.h" // for longFileName
 
@@ -27,11 +27,11 @@
 #define PIPE_REJECT_REMOTE_CLIENTS 0x08
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 constexpr UINT KillProcessExitCode = 0xf291;
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QProcessEnvironment QProcessEnvironment::systemEnvironment()
 {
@@ -55,7 +55,7 @@ QProcessEnvironment QProcessEnvironment::systemEnvironment()
     return env;
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 
 namespace {
 struct QProcessPoller
@@ -97,7 +97,7 @@ int QProcessPoller::poll(const QDeadlineTimer &deadline)
 }
 } // anonymous namespace
 
-static bool qt_create_pipe(Q_PIPE *pipe, bool isInputPipe, BOOL defInheritFlag)
+static bool bobui_create_pipe(Q_PIPE *pipe, bool isInputPipe, BOOL defInheritFlag)
 {
     // Anomymous pipes do not support asynchronous I/O. Thus we
     // create named pipes for redirecting stdout, stderr and stdin.
@@ -113,7 +113,7 @@ static bool qt_create_pipe(Q_PIPE *pipe, bool isInputPipe, BOOL defInheritFlag)
     unsigned int attempts = 1000;
     forever {
         _snwprintf(pipeName, sizeof(pipeName) / sizeof(pipeName[0]),
-                L"\\\\.\\pipe\\qt-%lX-%X", long(QCoreApplication::applicationPid()),
+                L"\\\\.\\pipe\\bobui-%lX-%X", long(QCoreApplication::applicationPid()),
                 QRandomGenerator::global()->generate());
 
         DWORD dwOpenMode = FILE_FLAG_OVERLAPPED;
@@ -208,8 +208,8 @@ bool QProcessPrivate::openChannel(Channel &channel)
     case Channel::Normal: {
         // we're piping this channel to our own process
         if (&channel == &stdinChannel) {
-            if (!qt_create_pipe(channel.pipe, true, FALSE)) {
-                setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + qt_error_string(errno));
+            if (!bobui_create_pipe(channel.pipe, true, FALSE)) {
+                setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + bobui_error_string(errno));
                 return false;
             }
             return true;
@@ -223,8 +223,8 @@ bool QProcessPrivate::openChannel(Channel &channel)
             QObjectPrivate::connect(channel.reader, &QWindowsPipeReader::readyRead,
                                     this, receiver);
         }
-        if (!qt_create_pipe(channel.pipe, false, FALSE)) {
-            setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + qt_error_string(errno));
+        if (!bobui_create_pipe(channel.pipe, false, FALSE)) {
+            setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + bobui_error_string(errno));
             return false;
         }
 
@@ -291,8 +291,8 @@ bool QProcessPrivate::openChannel(Channel &channel)
         Q_ASSERT(source == &stdoutChannel);
         Q_ASSERT(sink->process == this && sink->type == Channel::PipeSink);
 
-        if (!qt_create_pipe(source->pipe, /* in = */ false, TRUE)) { // source is stdout
-            setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + qt_error_string(errno));
+        if (!bobui_create_pipe(source->pipe, /* in = */ false, TRUE)) { // source is stdout
+            setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + bobui_error_string(errno));
             return false;
         }
 
@@ -313,8 +313,8 @@ bool QProcessPrivate::openChannel(Channel &channel)
         Q_ASSERT(sink == &stdinChannel);
         Q_ASSERT(source->process == this && source->type == Channel::PipeSource);
 
-        if (!qt_create_pipe(sink->pipe, /* in = */ true, TRUE)) { // sink is stdin
-            setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + qt_error_string(errno));
+        if (!bobui_create_pipe(sink->pipe, /* in = */ true, TRUE)) { // sink is stdin
+            setErrorAndEmit(QProcess::FailedToStart, "pipe: "_L1 + bobui_error_string(errno));
             return false;
         }
 
@@ -366,7 +366,7 @@ void QProcessPrivate::cleanup()
     }
 }
 
-static QString qt_create_commandline(const QString &program, const QStringList &arguments,
+static QString bobui_create_commandline(const QString &program, const QStringList &arguments,
                                      const QString &nativeArguments)
 {
     QString args;
@@ -416,7 +416,7 @@ static QString qt_create_commandline(const QString &program, const QStringList &
     return args;
 }
 
-static QByteArray qt_create_environment(const QProcessEnvironmentPrivate::Map &environment)
+static QByteArray bobui_create_environment(const QProcessEnvironmentPrivate::Map &environment)
 {
     QByteArray envlist;
     QProcessEnvironmentPrivate::Map copy = environment;
@@ -548,10 +548,10 @@ void QProcessPrivate::startProcess()
         return;
     }
 
-    QString args = qt_create_commandline(program, arguments, nativeArguments);
+    QString args = bobui_create_commandline(program, arguments, nativeArguments);
     QByteArray envlist;
     if (!environment.inheritsFromParent())
-        envlist = qt_create_environment(environment.d.constData()->vars);
+        envlist = bobui_create_environment(environment.d.constData()->vars);
 
 #if defined QPROCESS_DEBUG
     qDebug("Creating process");
@@ -580,7 +580,7 @@ void QProcessPrivate::startProcess()
 
     if (!callCreateProcess(&cpargs)) {
         // Capture the error string before we do CloseHandle below
-        QString errorString = qt_error_string();
+        QString errorString = bobui_error_string();
         cleanup();
         setErrorAndEmit(QProcess::FailedToStart,
                         QProcess::tr("Process failed to start: %1").arg(errorString));
@@ -635,7 +635,7 @@ qint64 QProcessPrivate::readFromChannel(const Channel *channel, char *data, qint
     return channel->reader->read(data, maxlen);
 }
 
-static BOOL QT_WIN_CALLBACK qt_terminateApp(HWND hwnd, LPARAM procId)
+static BOOL BOBUI_WIN_CALLBACK bobui_terminateApp(HWND hwnd, LPARAM procId)
 {
     DWORD currentProcId = 0;
     GetWindowThreadProcessId(hwnd, &currentProcId);
@@ -648,7 +648,7 @@ static BOOL QT_WIN_CALLBACK qt_terminateApp(HWND hwnd, LPARAM procId)
 void QProcessPrivate::terminateProcess()
 {
     if (pid) {
-        EnumWindows(qt_terminateApp, (LPARAM)pid->dwProcessId);
+        EnumWindows(bobui_terminateApp, (LPARAM)pid->dwProcessId);
         PostThreadMessage(pid->dwThreadId, WM_CLOSE, 0, 0);
     }
 }
@@ -824,7 +824,7 @@ qint64 QProcess::writeData(const char *data, qint64 len)
     if (d->stdinChannel.closed) {
 #if defined QPROCESS_DEBUG
         qDebug("QProcess::writeData(%p \"%s\", %lld) == 0 (write channel closing)",
-               data, QtDebugUtils::toPrintable(data, len, 16).constData(), len);
+               data, BobUIDebugUtils::toPrintable(data, len, 16).constData(), len);
 #endif
         return 0;
     }
@@ -844,7 +844,7 @@ qint64 QProcess::writeData(const char *data, qint64 len)
 
 #if defined QPROCESS_DEBUG
     qDebug("QProcess::writeData(%p \"%s\", %lld) == %lld (written to buffer)",
-           data, QtDebugUtils::toPrintable(data, len, 16).constData(), len, len);
+           data, BobUIDebugUtils::toPrintable(data, len, 16).constData(), len, len);
 #endif
     return len;
 }
@@ -878,7 +878,7 @@ static bool startDetachedUacPrompt(const QString &programIn, const QStringList &
                                    const QString &nativeArguments,
                                    const QString &workingDir, qint64 *pid)
 {
-    const QString args = qt_create_commandline(QString(),                   // needs arguments only
+    const QString args = bobui_create_commandline(QString(),                   // needs arguments only
                                                arguments, nativeArguments);
     SHELLEXECUTEINFOW shellExecuteExInfo;
     memset(&shellExecuteExInfo, 0, sizeof(SHELLEXECUTEINFOW));
@@ -912,14 +912,14 @@ bool QProcessPrivate::startDetached(qint64 *pid)
         return false;
     }
 
-    QString args = qt_create_commandline(program, arguments, nativeArguments);
+    QString args = bobui_create_commandline(program, arguments, nativeArguments);
     bool success = false;
     PROCESS_INFORMATION pinfo;
 
     void *envPtr = nullptr;
     QByteArray envlist;
     if (!environment.inheritsFromParent()) {
-        envlist = qt_create_environment(environment.d.constData()->vars);
+        envlist = bobui_create_environment(environment.d.constData()->vars);
         envPtr = envlist.data();
     }
 
@@ -953,7 +953,7 @@ bool QProcessPrivate::startDetached(qint64 *pid)
     if (!success) {
         if (pid)
             *pid = -1;
-        QString errorString = qt_error_string();
+        QString errorString = bobui_error_string();
         setErrorAndEmit(QProcess::FailedToStart,
                         QProcess::tr("Process failed to start: %1").arg(errorString));
     }
@@ -962,6 +962,6 @@ bool QProcessPrivate::startDetached(qint64 *pid)
     return success;
 }
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

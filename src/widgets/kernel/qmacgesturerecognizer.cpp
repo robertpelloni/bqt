@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qmacgesturerecognizer_p.h"
 #include "qgesture.h"
@@ -8,11 +8,11 @@
 #include "qevent.h"
 #include "qwidget.h"
 #include "qdebug.h"
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QMacSwipeGestureRecognizer::QMacSwipeGestureRecognizer()
 {
@@ -29,7 +29,7 @@ QMacSwipeGestureRecognizer::recognize(QGesture *gesture, QObject *obj, QEvent *e
     if (event->type() == QEvent::NativeGesture && obj->isWidgetType()) {
         QNativeGestureEvent *ev = static_cast<QNativeGestureEvent*>(event);
         switch (ev->gestureType()) {
-            case Qt::SwipeNativeGesture: {
+            case BobUI::SwipeNativeGesture: {
                 QSwipeGesture *g = static_cast<QSwipeGesture *>(gesture);
                 g->setSwipeAngle(ev->value());
                 g->setHotSpot(ev->globalPosition());
@@ -68,7 +68,7 @@ QMacPinchGestureRecognizer::recognize(QGesture *gesture, QObject *obj, QEvent *e
         QPinchGesture *g = static_cast<QPinchGesture *>(gesture);
         QNativeGestureEvent *ev = static_cast<QNativeGestureEvent*>(event);
         switch (ev->gestureType()) {
-        case Qt::BeginNativeGesture:
+        case BobUI::BeginNativeGesture:
             reset(gesture);
             g->setStartCenterPoint(static_cast<QWidget*>(obj)->mapFromGlobal(ev->globalPosition().toPoint()));
             g->setCenterPoint(g->startCenterPoint());
@@ -76,7 +76,7 @@ QMacPinchGestureRecognizer::recognize(QGesture *gesture, QObject *obj, QEvent *e
             g->setTotalChangeFlags(g->totalChangeFlags() | g->changeFlags());
             g->setHotSpot(ev->globalPosition());
             return QGestureRecognizer::MayBeGesture | QGestureRecognizer::ConsumeEventHint;
-        case Qt::RotateNativeGesture:
+        case BobUI::RotateNativeGesture:
             g->setLastScaleFactor(g->scaleFactor());
             g->setLastRotationAngle(g->rotationAngle());
             g->setRotationAngle(g->rotationAngle() + ev->value());
@@ -84,7 +84,7 @@ QMacPinchGestureRecognizer::recognize(QGesture *gesture, QObject *obj, QEvent *e
             g->setTotalChangeFlags(g->totalChangeFlags() | g->changeFlags());
             g->setHotSpot(ev->globalPosition());
             return QGestureRecognizer::TriggerGesture | QGestureRecognizer::ConsumeEventHint;
-        case Qt::ZoomNativeGesture:
+        case BobUI::ZoomNativeGesture:
             g->setLastScaleFactor(g->scaleFactor());
             g->setLastRotationAngle(g->rotationAngle());
             g->setScaleFactor(1 + ev->value());
@@ -93,7 +93,7 @@ QMacPinchGestureRecognizer::recognize(QGesture *gesture, QObject *obj, QEvent *e
             g->setTotalChangeFlags(g->totalChangeFlags() | g->changeFlags());
             g->setHotSpot(ev->globalPosition());
             return QGestureRecognizer::TriggerGesture | QGestureRecognizer::ConsumeEventHint;
-        case Qt::SmartZoomNativeGesture:
+        case BobUI::SmartZoomNativeGesture:
             g->setLastScaleFactor(g->scaleFactor());
             g->setLastRotationAngle(g->rotationAngle());
             g->setScaleFactor(ev->value() ? 1.7f : 1.0f);
@@ -101,7 +101,7 @@ QMacPinchGestureRecognizer::recognize(QGesture *gesture, QObject *obj, QEvent *e
             g->setTotalChangeFlags(g->totalChangeFlags() | g->changeFlags());
             g->setHotSpot(ev->globalPosition());
             return QGestureRecognizer::TriggerGesture | QGestureRecognizer::ConsumeEventHint;
-        case Qt::EndNativeGesture:
+        case BobUI::EndNativeGesture:
             return QGestureRecognizer::FinishGesture | QGestureRecognizer::ConsumeEventHint;
         default:
             break;
@@ -140,14 +140,14 @@ QGesture *QMacPanGestureRecognizer::create(QObject *target)
         return new QPanGesture;
 
     if (QWidget *w = qobject_cast<QWidget *>(target)) {
-        w->setAttribute(Qt::WA_AcceptTouchEvents);
-        w->setAttribute(Qt::WA_TouchPadAcceptSingleTouchEvents);
+        w->setAttribute(BobUI::WA_AcceptTouchEvents);
+        w->setAttribute(BobUI::WA_TouchPadAcceptSingleTouchEvents);
         return new QPanGesture;
     }
     return nullptr;
 }
 
-void QMacPanGestureRecognizer::timerEvent(QTimerEvent *ev)
+void QMacPanGestureRecognizer::timerEvent(BOBUIimerEvent *ev)
 {
     if (ev->timerId() == _panTimer.timerId()) {
         if (_panTimer.isActive())
@@ -167,7 +167,7 @@ QMacPanGestureRecognizer::recognize(QGesture *gesture, QObject *target, QEvent *
 
     switch (event->type()) {
     case QEvent::TouchBegin: {
-        const QTouchEvent *ev = static_cast<const QTouchEvent*>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent*>(event);
         if (ev->points().size() == 1) {
             reset(gesture);
             _startPos = QCursor::pos();
@@ -181,7 +181,7 @@ QMacPanGestureRecognizer::recognize(QGesture *gesture, QObject *target, QEvent *
         if (_panCanceled)
             break;
 
-        const QTouchEvent *ev = static_cast<const QTouchEvent*>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent*>(event);
         if (ev->points().size() == 1)
             return QGestureRecognizer::FinishGesture;
         break;}
@@ -189,7 +189,7 @@ QMacPanGestureRecognizer::recognize(QGesture *gesture, QObject *target, QEvent *
         if (_panCanceled)
             break;
 
-        const QTouchEvent *ev = static_cast<const QTouchEvent*>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent*>(event);
         if (ev->points().size() == 1) {
             if (_panTimer.isActive()) {
                 // INVARIANT: Still in maybeGesture. Check if the user
@@ -217,7 +217,7 @@ QMacPanGestureRecognizer::recognize(QGesture *gesture, QObject *target, QEvent *
         }
         break;}
     case QEvent::Timer: {
-        QTimerEvent *ev = static_cast<QTimerEvent *>(event);
+        BOBUIimerEvent *ev = static_cast<BOBUIimerEvent *>(event);
         if (ev->timerId() == _panTimer.timerId()) {
             if (_panCanceled)
                 break;
@@ -246,6 +246,6 @@ void QMacPanGestureRecognizer::reset(QGesture *gesture)
     QGestureRecognizer::reset(gesture);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES

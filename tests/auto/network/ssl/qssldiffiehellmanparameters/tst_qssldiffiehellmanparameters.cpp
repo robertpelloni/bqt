@@ -1,26 +1,26 @@
 // Copyright (C) 2015 Mikkel Krautz <mikkel@krautz.dk>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
 #include <QSslDiffieHellmanParameters>
 #include <QSslSocket>
 #include <QByteArray>
 
 // Default DH parameters, exported by qssldiffiehellmanparameters.cpp.
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 extern Q_AUTOTEST_EXPORT const char qssl_dhparams_default_base64[];
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 class tst_QSslDiffieHellmanParameters : public QObject
 {
     Q_OBJECT
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 private Q_SLOTS:
     void initTestCase();
     void constructionEmpty();
@@ -33,7 +33,7 @@ private Q_SLOTS:
 #endif // Feature 'ssl'.
 };
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 
 void tst_QSslDiffieHellmanParameters::initTestCase()
 {
@@ -83,8 +83,8 @@ void tst_QSslDiffieHellmanParameters::constructionPEM()
     // Uniquely generated with 'openssl dhparam -outform PEM -out out.pem -check -2 4096'
     const auto dh = QSslDiffieHellmanParameters::fromEncoded(QByteArrayLiteral(
         "-----BEGIN DH PARAMETERS-----\n"
-        "MIICCAKCAgEA9QTdqhQkbGuhWzBsW5X475AjjrITpg1BHX5+mp1sstUd84Lshq1T\n"
-        "+S2QQQtdl25EPoUblpyyLAf8krFSH4YwR7jjLWklA8paDOwRYod0zLmVZ1Wx6og3\n"
+        "MIICCAKCAgEA9BOBUIdqhQkbGuhWzBsW5X475AjjrITpg1BHX5+mp1sstUd84Lshq1T\n"
+        "+S2QQBobUIdl25EPoUblpyyLAf8krFSH4YwR7jjLWklA8paDOwRYod0zLmVZ1Wx6og3\n"
         "PRc8P+SCs+6gKTXfv//bJJhiJXnM73lDFsGHbSqN+msf20ei/zy5Rwey2t8dPjLC\n"
         "Q+qkb/avlovi2t2rsUWcxMT1875TQ4HuApayqw3R3lTQe9u05b9rTrinmT7AE4mm\n"
         "xGqO9FZJdXYE2sOKwwJkpM48KFyV90uJANmqJnQrkgdukaGTHwxZxgAyO6ur/RWC\n"
@@ -156,5 +156,5 @@ void tst_QSslDiffieHellmanParameters::defaultIsValid()
 
 #endif // Feature 'ssl'.
 
-QTEST_MAIN(tst_QSslDiffieHellmanParameters)
+BOBUIEST_MAIN(tst_QSslDiffieHellmanParameters)
 #include "tst_qssldiffiehellmanparameters.moc"

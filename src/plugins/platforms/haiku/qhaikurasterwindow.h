@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QHAIKURASTERWINDOW_H
 #define QHAIKURASTERWINDOW_H
@@ -8,7 +8,7 @@
 
 #include <View.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class HaikuViewProxy : public QObject, public BView
 {
@@ -26,16 +26,16 @@ public:
     void KeyUp(const char *bytes, int32 numBytes) override;
 
 Q_SIGNALS:
-    void mouseEvent(const QPoint &localPosition, const QPoint &globalPosition, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source);
-    void wheelEvent(const QPoint &localPosition, const QPoint &globalPosition, int delta, Qt::Orientation orientation, Qt::KeyboardModifiers modifiers);
-    void keyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text);
+    void mouseEvent(const QPoint &localPosition, const QPoint &globalPosition, BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source);
+    void wheelEvent(const QPoint &localPosition, const QPoint &globalPosition, int delta, BobUI::Orientation orientation, BobUI::KeyboardModifiers modifiers);
+    void keyEvent(QEvent::Type type, int key, BobUI::KeyboardModifiers modifiers, const QString &text);
     void enteredView();
     void exitedView();
     void drawRequest(const QRect &rect);
 
 private:
-    Qt::MouseButtons keyStateToMouseButtons(uint32 keyState) const;
-    Qt::KeyboardModifiers keyStateToModifiers(uint32 keyState) const;
+    BobUI::MouseButtons keyStateToMouseButtons(uint32 keyState) const;
+    BobUI::KeyboardModifiers keyStateToModifiers(uint32 keyState) const;
     void handleKeyEvent(QEvent::Type type, BMessage *message);
 };
 
@@ -53,6 +53,6 @@ private:
     HaikuViewProxy *m_view;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

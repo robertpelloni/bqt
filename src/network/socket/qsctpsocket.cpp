@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QSCTPSOCKET_DEBUG
 
@@ -11,7 +11,7 @@
     \brief The QSctpSocket class provides an SCTP socket.
 
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     SCTP (Stream Control Transmission Protocol) is a transport layer
     protocol serving in a similar role as the popular protocols TCP
@@ -36,7 +36,7 @@
     can have alternate IP addresses associated with it in order to
     route around network failure or changing conditions.
 
-    QSctpSocket is a convenience subclass of QTcpSocket that allows
+    QSctpSocket is a convenience subclass of BOBUIcpSocket that allows
     you to emulate TCP data stream over SCTP or establish an SCTP
     connection for reliable datagram service.
 
@@ -49,7 +49,7 @@
 
     To set a continuous byte stream mode, instantiate QSctpSocket and
     call setMaximumChannelCount() with a negative value. This gives the
-    ability to use QSctpSocket as a regular buffered QTcpSocket. You
+    ability to use QSctpSocket as a regular buffered BOBUIcpSocket. You
     can call connectToHost() to initiate connection with endpoint,
     write() to transmit and read() to receive data from the peer, but
     you cannot distinguish message boundaries.
@@ -77,7 +77,7 @@
 
     \note This class is not supported on the Windows platform.
 
-    \sa QSctpServer, QTcpSocket, QAbstractSocket
+    \sa QSctpServer, BOBUIcpSocket, QAbstractSocket
 */
 
 #include "qsctpsocket.h"
@@ -89,7 +89,7 @@
 #include <qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \internal
 */
@@ -115,7 +115,7 @@ bool QSctpSocketPrivate::canReadNotification()
 
     // Handle TCP emulation mode in the base implementation.
     if (!q->isInDatagramMode())
-        return QTcpSocketPrivate::canReadNotification();
+        return BOBUIcpSocketPrivate::canReadNotification();
 
     const int savedCurrentChannel = currentReadChannel;
     bool currentChannelRead = false;
@@ -213,7 +213,7 @@ bool QSctpSocketPrivate::writeToSocket()
 
     // Handle TCP emulation mode in the base implementation.
     if (!q->isInDatagramMode())
-        return QTcpSocketPrivate::writeToSocket();
+        return BOBUIcpSocketPrivate::writeToSocket();
 
     if (!socketEngine)
         return false;
@@ -307,7 +307,7 @@ void QSctpSocketPrivate::configureCreatedSocket()
     \sa socketType(), setMaximumChannelCount()
 */
 QSctpSocket::QSctpSocket(QObject *parent)
-    : QTcpSocket(SctpSocket, *new QSctpSocketPrivate, parent)
+    : BOBUIcpSocket(SctpSocket, *new QSctpSocketPrivate, parent)
 {
 #if defined(QSCTPSOCKET_DEBUG)
     qDebug("QSctpSocket::QSctpSocket()");
@@ -337,7 +337,7 @@ qint64 QSctpSocket::readData(char *data, qint64 maxSize)
     if (d->currentReadChannel < d->readHeaders.size())
         d->readHeaders[d->currentReadChannel].clear();
 
-    return QTcpSocket::readData(data, maxSize);
+    return BOBUIcpSocket::readData(data, maxSize);
 }
 
 /*! \reimp
@@ -350,14 +350,14 @@ qint64 QSctpSocket::readLineData(char *data, qint64 maxlen)
     if (d->currentReadChannel < d->readHeaders.size())
         d->readHeaders[d->currentReadChannel].clear();
 
-    return QTcpSocket::readLineData(data, maxlen);
+    return BOBUIcpSocket::readLineData(data, maxlen);
 }
 
 /*! \reimp
 */
 void QSctpSocket::close()
 {
-    QTcpSocket::close();
+    BOBUIcpSocket::close();
     d_func()->readHeaders.clear();
 }
 
@@ -367,7 +367,7 @@ void QSctpSocket::disconnectFromHost()
 {
     Q_D(QSctpSocket);
 
-    QTcpSocket::disconnectFromHost();
+    BOBUIcpSocket::disconnectFromHost();
     if (d->state == QAbstractSocket::UnconnectedState) {
         d->incomingDatagram.clear();
         d->writeHeaders.clear();
@@ -508,6 +508,6 @@ bool QSctpSocket::writeDatagram(const QNetworkDatagram &datagram)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsctpsocket.cpp"

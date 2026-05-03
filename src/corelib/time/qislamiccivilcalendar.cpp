@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qglobal.h"
 #include "qislamiccivilcalendar_p.h"
 #include "qcalendarmath_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QRoundingDown;
 
@@ -14,7 +14,7 @@ using namespace QRoundingDown;
     \internal
 
     \class QIslamicCivilCalendar
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Implements a commonly-used computed version of the Islamic calendar.
 
     \section1 Civil Islamic Calendar
@@ -91,4 +91,4 @@ QCalendar::YearMonthDay QIslamicCivilCalendar::julianDayToDate(qint64 jd) const
     return QCalendar::YearMonthDay(y > 0 ? y : y - 1, month, day);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

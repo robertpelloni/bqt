@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parsing
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parsing
 
 #include "qdebug.h"
 #include "private/qdebug_p.h"
 #include "qmetaobject.h"
 #include <private/qlogging_p.h>
-#include <private/qtextstream_p.h>
-#include <private/qtools_p.h>
+#include <private/bobuiextstream_p.h>
+#include <private/bobuiools_p.h>
 
 #include <array>
 #include <q20chrono.h>
 #include <cstdio>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 /*
     Returns a human readable representation of the first \a maxSize
     characters in \a data. The size, \a len, is a 64-bit quantity to
     avoid truncation due to implicit conversions in callers.
 */
-QByteArray QtDebugUtils::toPrintable(const char *data, qint64 len, qsizetype maxSize)
+QByteArray BobUIDebugUtils::toPrintable(const char *data, qint64 len, qsizetype maxSize)
 {
     if (!data)
         return "(null)";
@@ -68,7 +68,7 @@ QByteArray QtDebugUtils::toPrintable(const char *data, qint64 len, qsizetype max
 
 /*!
     \class QDebug
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup shared
 
     \brief The QDebug class provides an output stream for debugging information.
@@ -83,8 +83,8 @@ QByteArray QtDebugUtils::toPrintable(const char *data, qint64 len, qsizetype max
 
     \snippet qdebug/qdebugsnippet.cpp 1
 
-    This constructs a QDebug object using the constructor that accepts a QtMsgType
-    value of QtDebugMsg. Similarly, the qInfo(), qWarning(), qCritical() and qFatal()
+    This constructs a QDebug object using the constructor that accepts a BobUIMsgType
+    value of BobUIDebugMsg. Similarly, the qInfo(), qWarning(), qCritical() and qFatal()
     functions also return QDebug objects for the corresponding message types.
 
     The class also provides several constructors for other situations, including
@@ -98,7 +98,7 @@ QByteArray QtDebugUtils::toPrintable(const char *data, qint64 len, qsizetype max
     between arguments, and adds quotes around QString, QByteArray, QChar arguments.
 
     You can tweak these options through the space(), nospace() and quote(), noquote()
-    methods. Furthermore, \l{QTextStream manipulators} can be piped into a QDebug
+    methods. Furthermore, \l{BOBUIextStream manipulators} can be piped into a QDebug
     stream.
 
     QDebugStateSaver limits changes to the formatting to the current scope.
@@ -106,14 +106,14 @@ QByteArray QtDebugUtils::toPrintable(const char *data, qint64 len, qsizetype max
 
     \section1 Writing Custom Types to a Stream
 
-    Many standard types can be written to QDebug objects, and Qt provides support for
-    most Qt value types. To add support for custom types, you need to implement a
+    Many standard types can be written to QDebug objects, and BobUI provides support for
+    most BobUI value types. To add support for custom types, you need to implement a
     streaming operator, as in the following example:
 
     \snippet qdebug/qdebugsnippet.cpp 0
 
     This is described in the \l{Debugging Techniques} and
-    \l{Creating Custom Qt Types#Making the Type Printable}{Creating Custom Qt Types}
+    \l{Creating Custom BobUI Types#Making the Type Printable}{Creating Custom BobUI Types}
     documents.
 */
 
@@ -140,13 +140,13 @@ QByteArray QtDebugUtils::toPrintable(const char *data, qint64 len, qsizetype max
 
     With objects instantiated with this constructor, the data may be buffered
     and won't be written to the byte array until the stream is flushed, for
-    example, by using \l Qt::flush.
+    example, by using \l BobUI::flush.
 
-    \sa {QTextStream manipulators}
+    \sa {BOBUIextStream manipulators}
 */
 
 /*!
-    \fn QDebug::QDebug(QtMsgType t)
+    \fn QDebug::QDebug(BobUIMsgType t)
 
     Constructs a debug stream that writes to the handler for the message type \a t.
 */
@@ -176,7 +176,7 @@ QDebug::~QDebug()
             stream->buffer.chop(1);
         if (stream->message_output) {
             QInternalMessageLogContext ctxt(stream->context);
-            qt_message_output(stream->type,
+            bobui_message_output(stream->type,
                               ctxt,
                               stream->buffer);
         }
@@ -191,7 +191,7 @@ void QDebug::putUcs4(uint ucs4)
 {
     maybeQuote('\'');
     if (ucs4 < 0x20) {
-        stream->ts << "\\x" << Qt::hex << ucs4 << Qt::reset;
+        stream->ts << "\\x" << BobUI::hex << ucs4 << BobUI::reset;
     } else if (ucs4 < 0x80) {
         stream->ts << char(ucs4);
     } else {
@@ -199,7 +199,7 @@ void QDebug::putUcs4(uint ucs4)
             stream->ts << "\\u" << qSetFieldWidth(4);
         else
             stream->ts << "\\U" << qSetFieldWidth(8);
-        stream->ts << Qt::hex << qSetPadChar(u'0') << ucs4 << Qt::reset;
+        stream->ts << BobUI::hex << qSetPadChar(u'0') << ucs4 << BobUI::reset;
     }
     maybeQuote('\'');
 }
@@ -213,7 +213,7 @@ static inline bool isPrintable(uchar c)
 { return isAsciiPrintable(c); }
 
 template <typename Char>
-static inline void putEscapedString(QTextStreamPrivate *d, const Char *begin, size_t length, bool isUnicode = true)
+static inline void putEscapedString(BOBUIextStreamPrivate *d, const Char *begin, size_t length, bool isUnicode = true)
 {
     constexpr char16_t quotes[] = uR"("")";
     constexpr char16_t quote = quotes[0];
@@ -322,16 +322,16 @@ static inline void putEscapedString(QTextStreamPrivate *d, const Char *begin, si
 
 /*!
     \internal
-    Duplicated from QtTest::toPrettyUnicode().
+    Duplicated from BobUITest::toPrettyUnicode().
 */
 void QDebug::putString(const QChar *begin, size_t length)
 {
     if (stream->noQuotes) {
         // no quotes, write the string directly too (no pretty-printing)
-        // this respects the QTextStream state, though
+        // this respects the BOBUIextStream state, though
         stream->ts.d_ptr->putString(QStringView{begin, qsizetype(length)});
     } else {
-        // we'll reset the QTextStream formatting mechanisms, so save the state
+        // we'll reset the BOBUIextStream formatting mechanisms, so save the state
         QDebugStateSaver saver(*this);
         stream->ts.d_ptr->params.reset();
         putEscapedString(stream->ts.d_ptr.get(), reinterpret_cast<const char16_t *>(begin), length);
@@ -340,13 +340,13 @@ void QDebug::putString(const QChar *begin, size_t length)
 
 /*!
     \internal
-    Duplicated from QtTest::toPrettyCString().
+    Duplicated from BobUITest::toPrettyCString().
 */
 void QDebug::putByteArray(const char *begin, size_t length, Latin1Content content)
 {
     if (stream->noQuotes) {
         // no quotes, write the string directly too (no pretty-printing)
-        // this respects the QTextStream state, though
+        // this respects the BOBUIextStream state, though
         switch (content) {
         case Latin1Content::ContainsLatin1:
             stream->ts.d_ptr->putString(QLatin1StringView{begin, qsizetype(length)});
@@ -356,7 +356,7 @@ void QDebug::putByteArray(const char *begin, size_t length, Latin1Content conten
             break;
         }
     } else {
-        // we'll reset the QTextStream formatting mechanisms, so save the state
+        // we'll reset the BOBUIextStream formatting mechanisms, so save the state
         QDebugStateSaver saver(*this);
         stream->ts.d_ptr->params.reset();
         putEscapedString(stream->ts.d_ptr.get(), reinterpret_cast<const uchar *>(begin),
@@ -455,7 +455,7 @@ void QDebug::putTimeUnit(qint64 num, qint64 den)
 
 namespace {
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 
 constexpr char Q_INT128_MIN_STR[] = "-170141183460469231731687303715884105728";
 
@@ -477,12 +477,12 @@ static char *i128ToStringHelper(Int128Buffer &buffer, quint128 n)
     }
     return dst;
 }
-#endif // QT_SUPPORTS_INT128
+#endif // BOBUI_SUPPORTS_INT128
 
 [[maybe_unused]]
 static const char *int128Warning()
 {
-    const char *msg = "Qt was not compiled with int128 support.";
+    const char *msg = "BobUI was not compiled with int128 support.";
     qWarning("%s", msg);
     return msg;
 }
@@ -496,7 +496,7 @@ static const char *int128Warning()
  */
 void QDebug::putInt128([[maybe_unused]] const void *p)
 {
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     Q_ASSERT(p);
     qint128 i;
     memcpy(&i, p, sizeof(i)); // alignment paranoia
@@ -511,7 +511,7 @@ void QDebug::putInt128([[maybe_unused]] const void *p)
         stream->ts << dst;
     }
     return;
-#endif // QT_SUPPORTS_INT128
+#endif // BOBUI_SUPPORTS_INT128
     stream->ts << int128Warning();
 }
 
@@ -522,51 +522,51 @@ void QDebug::putInt128([[maybe_unused]] const void *p)
  */
 void QDebug::putUInt128([[maybe_unused]] const void *p)
 {
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     Q_ASSERT(p);
     quint128 i;
     memcpy(&i, p, sizeof(i)); // alignment paranoia
     Int128Buffer buffer;
     stream->ts << i128ToStringHelper(buffer, i);
     return;
-#endif // QT_SUPPORTS_INT128
+#endif // BOBUI_SUPPORTS_INT128
     stream->ts << int128Warning();
 }
 
 /*!
     \since 6.9
     \internal
-    Helper to the <Std/Qt>::<>_ordering debug output.
+    Helper to the <Std/BobUI>::<>_ordering debug output.
     It generates the string in following format:
-    <Qt/Std>::<weak/partial/strong>_ordering::<less/equal/greater/unordered>
+    <BobUI/Std>::<weak/partial/strong>_ordering::<less/equal/greater/unordered>
  */
-void QDebug::putQtOrdering(QtOrderingPrivate::QtOrderingTypeFlag flags, Qt::partial_ordering order)
+void QDebug::putBobUIOrdering(BobUIOrderingPrivate::BobUIOrderingTypeFlag flags, BobUI::partial_ordering order)
 {
-    using QtOrderingPrivate::QtOrderingType;
+    using BobUIOrderingPrivate::BobUIOrderingType;
     std::string result;
-    if ((flags & QtOrderingType::StdOrder) == QtOrderingType::StdOrder)
+    if ((flags & BobUIOrderingType::StdOrder) == BobUIOrderingType::StdOrder)
         result += "std";
-    else if ((flags & QtOrderingType::QtOrder) == QtOrderingType::QtOrder)
-        result += "Qt";
+    else if ((flags & BobUIOrderingType::BobUIOrder) == BobUIOrderingType::BobUIOrder)
+        result += "BobUI";
 
     result += "::";
-    const bool isStrong = ((flags & QtOrderingType::Strong) == QtOrderingType::Strong);
+    const bool isStrong = ((flags & BobUIOrderingType::Strong) == BobUIOrderingType::Strong);
     if (isStrong)
         result += "strong";
-    else if ((flags & QtOrderingType::Weak) == QtOrderingType::Weak)
+    else if ((flags & BobUIOrderingType::Weak) == BobUIOrderingType::Weak)
         result += "weak";
-    else if ((flags & QtOrderingType::Partial) == QtOrderingType::Partial)
+    else if ((flags & BobUIOrderingType::Partial) == BobUIOrderingType::Partial)
         result += "partial";
     result += "_ordering::";
 
-    if (order == Qt::partial_ordering::equivalent) {
+    if (order == BobUI::partial_ordering::equivalent) {
         if (isStrong)
             result += "equal";
         else
             result += "equivalent";
-    } else if (order == Qt::partial_ordering::greater) {
+    } else if (order == BobUI::partial_ordering::greater) {
         result += "greater";
-    } else if (order == Qt::partial_ordering::less) {
+    } else if (order == BobUI::partial_ordering::less) {
         result += "less";
     } else {
         result += "unordered";
@@ -999,21 +999,21 @@ QDebug &QDebug::resetFormat()
 */
 
 /*!
-    \fn QDebug &QDebug::operator<<(QTextStreamFunction f)
+    \fn QDebug &QDebug::operator<<(BOBUIextStreamFunction f)
     \internal
 */
 
 /*!
-    \fn QDebug &QDebug::operator<<(QTextStreamManipulator m)
+    \fn QDebug &QDebug::operator<<(BOBUIextStreamManipulator m)
     \internal
 */
 
 /*!
     \fn template <typename T, QDebug::if_ordering_type<T>> QDebug::operator<<(QDebug debug, T t)
     \since 6.9
-    Prints the Qt or std ordering value \a t to the \a debug object.
+    Prints the BobUI or std ordering value \a t to the \a debug object.
 
-    \constraints \c T is one of <Qt/Std>::<weak/partial/strong>_ordering.
+    \constraints \c T is one of <BobUI/Std>::<weak/partial/strong>_ordering.
 */
 
 /*!
@@ -1053,14 +1053,14 @@ QDebug &QDebug::resetFormat()
 
     Prints the textual representation of the 128-bit integer \a i.
 
-    \note This operator is only available if Qt supports 128-bit integer types.
-    If 128-bit integer types are available in your build, but the Qt libraries
+    \note This operator is only available if BobUI supports 128-bit integer types.
+    If 128-bit integer types are available in your build, but the BobUI libraries
     were compiled without, the operator will print a warning instead.
 
     \note Because the operator is a function template, no implicit conversions
     are performed on its argument. It must be exactly qint128/quint128.
 
-    \sa QT_SUPPORTS_INT128
+    \sa BOBUI_SUPPORTS_INT128
 */
 
 /*!
@@ -1342,7 +1342,7 @@ QDebug &QDebug::putTupleLikeImplImpl(const char *ns, const char *what,
 
 /*!
     \class QDebugStateSaver
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Convenience class for custom QDebug operators.
 
     Saves the settings used by QDebug, and restores them upon destruction,
@@ -1352,8 +1352,8 @@ QDebug &QDebug::putTupleLikeImplImpl(const char *ns, const char *what,
     The automatic insertion of spaces between writes is one of the settings
     that QDebugStateSaver stores for the duration of the current block.
 
-    The settings of the internal QTextStream are also saved and restored,
-    so that using << Qt::hex in a QDebug operator doesn't affect other QDebug
+    The settings of the internal BOBUIextStream are also saved and restored,
+    so that using << BobUI::hex in a QDebug operator doesn't affect other QDebug
     operators.
 
     QDebugStateSaver is typically used in the implementation of an operator<<() for debugging:
@@ -1397,8 +1397,8 @@ public:
     const bool m_noQuotes;
     const int m_verbosity;
 
-    // QTextStream state
-    const QTextStreamPrivate::Params m_streamParams;
+    // BOBUIextStream state
+    const BOBUIextStreamPrivate::Params m_streamParams;
 };
 
 
@@ -1432,22 +1432,22 @@ QDebugStateSaver::~QDebugStateSaver()
 
     Just call the generic version so the two don't get out of sync.
 */
-void qt_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, uint value)
+void bobui_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, uint value)
 {
-    qt_QMetaEnum_flagDebugOperator(debug, sizeofT, quint64(value));
+    bobui_QMetaEnum_flagDebugOperator(debug, sizeofT, quint64(value));
 }
 
 /*!
     \internal
     Ditto, for 64-bit.
 */
-void qt_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, quint64 value)
+void bobui_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, quint64 value)
 {
-    qt_QMetaEnum_flagDebugOperator<quint64>(debug, sizeofT, value);
+    bobui_QMetaEnum_flagDebugOperator<quint64>(debug, sizeofT, value);
 }
 
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 /*!
     \internal
 
@@ -1483,7 +1483,7 @@ void qt_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, quint64 value
          MyNamespace::MyClass::MyScopedEnum::Enum3
          MyNamespace::MyClass::MyScopedEnum(456)
  */
-QDebug qt_QMetaEnum_debugOperator(QDebug &dbg, qint64 value, const QMetaObject *meta, const char *name)
+QDebug bobui_QMetaEnum_debugOperator(QDebug &dbg, qint64 value, const QMetaObject *meta, const char *name)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
@@ -1509,7 +1509,7 @@ QDebug qt_QMetaEnum_debugOperator(QDebug &dbg, qint64 value, const QMetaObject *
 }
 
 /*!
-    \fn QDebug qt_QMetaEnum_flagDebugOperator(QDebug &, quint64 value, const QMetaObject *, const char *name)
+    \fn QDebug bobui_QMetaEnum_flagDebugOperator(QDebug &, quint64 value, const QMetaObject *, const char *name)
     \internal
 
     Formats the given flag \a value for debug output.
@@ -1537,7 +1537,7 @@ QDebug qt_QMetaEnum_debugOperator(QDebug &dbg, qint64 value, const QMetaObject *
          QFlags<MyNamespace::MyClass::MyScopedFlag>(MyFlag2)
          QFlags<MyNamespace::MyClass::MyScopedFlag>(MyFlag2|MyFlag3)
  */
-QDebug qt_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaObject *meta, const char *name)
+QDebug bobui_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaObject *meta, const char *name)
 {
     const int verbosity = debug.verbosity();
 
@@ -1590,7 +1590,7 @@ QDebug qt_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaO
     formatting to make the debug message easier to read. See the
      \l{Formatting Options}{formatting options} documentation for more details.
 
-    This function does nothing if \c QT_NO_DEBUG_OUTPUT was defined during
+    This function does nothing if \c BOBUI_NO_DEBUG_OUTPUT was defined during
     compilation.
 
     \sa {qDebug(const char *, ...)}, qCDebug()
@@ -1614,7 +1614,7 @@ QDebug qt_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaO
     formatting to make the debug message easier to read. See the
     \l{Formatting Options}{formatting options} documentation for more details.
 
-    This function does nothing if \c QT_NO_INFO_OUTPUT was defined during
+    This function does nothing if \c BOBUI_NO_INFO_OUTPUT was defined during
     compilation.
 
     \sa {qInfo(const char *, ...)}, qCInfo()
@@ -1638,13 +1638,13 @@ QDebug qt_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaO
     formatting to make the debug message easier to read. See the
     \l{Formatting Options}{formatting options} documentation for more details.
 
-    This function does nothing if \c QT_NO_WARNING_OUTPUT was defined during
+    This function does nothing if \c BOBUI_NO_WARNING_OUTPUT was defined during
     compilation.
 
     For debugging purposes, it is sometimes convenient to let the
     program abort for warning messages. This allows you then
     to inspect the core dump, or attach a debugger - see also \l{qFatal()}.
-    To enable this, set the environment variable \c{QT_FATAL_WARNINGS}
+    To enable this, set the environment variable \c{BOBUI_FATAL_WARNINGS}
     to a number \c n. The program terminates then for the n-th warning.
     That is, if the environment variable is set to 1, it will terminate
     on the first call; if it contains the value 10, it will exit on the 10th
@@ -1674,7 +1674,7 @@ QDebug qt_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaO
     For debugging purposes, it is sometimes convenient to let the
     program abort for critical messages. This allows you then
     to inspect the core dump, or attach a debugger - see also \l{qFatal()}.
-    To enable this, set the environment variable \c{QT_FATAL_CRITICALS}
+    To enable this, set the environment variable \c{BOBUI_FATAL_CRITICALS}
     to a number \c n. The program terminates then for the n-th critical
     message.
     That is, if the environment variable is set to 1, it will terminate
@@ -1706,6 +1706,6 @@ QDebug qt_QMetaEnum_flagDebugOperator(QDebug &debug, quint64 value, const QMetaO
     \sa {qFatal(const char *, ...)}, qCFatal()
 */
 
-#endif // !QT_NO_QOBJECT
+#endif // !BOBUI_NO_QOBJECT
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

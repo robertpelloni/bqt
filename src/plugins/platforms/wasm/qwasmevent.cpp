@@ -1,15 +1,15 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmevent.h"
 
 #include "qwasmkeytranslator.h"
 
-#include <QtCore/private/qmakearray_p.h>
-#include <QtCore/private/qstringiterator_p.h>
-#include <QtCore/qregularexpression.h>
+#include <BobUICore/private/qmakearray_p.h>
+#include <BobUICore/private/qstringiterator_p.h>
+#include <BobUICore/qregularexpression.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 constexpr std::string_view WebDeadKeyValue = "Dead";
@@ -19,9 +19,9 @@ bool isDeadKeyEvent(const char *key)
     return qstrncmp(key, WebDeadKeyValue.data(), WebDeadKeyValue.size()) == 0;
 }
 
-Qt::Key getKeyFromCode(const std::string &code)
+BobUI::Key getKeyFromCode(const std::string &code)
 {
-    if (auto mapping = QWasmKeyTranslator::mapWebKeyTextToQtKey(code.c_str()))
+    if (auto mapping = QWasmKeyTranslator::mapWebKeyTextToBobUIKey(code.c_str()))
         return *mapping;
 
     static QRegularExpression regex(QString(QStringLiteral(R"re((?:Key|Digit)(\w))re")));
@@ -29,67 +29,67 @@ Qt::Key getKeyFromCode(const std::string &code)
     const auto match = regex.match(codeQString);
 
     if (!match.hasMatch())
-        return Qt::Key_unknown;
+        return BobUI::Key_unknown;
 
     constexpr size_t CharacterIndex = 1;
-    return static_cast<Qt::Key>(match.capturedView(CharacterIndex).at(0).toLatin1());
+    return static_cast<BobUI::Key>(match.capturedView(CharacterIndex).at(0).toLatin1());
 }
 
-Qt::Key webKeyToQtKey(const std::string &code, const std::string &key, bool isDeadKey,
-                      QFlags<Qt::KeyboardModifier> modifiers)
+BobUI::Key webKeyToBobUIKey(const std::string &code, const std::string &key, bool isDeadKey,
+                      QFlags<BobUI::KeyboardModifier> modifiers)
 {
     if (isDeadKey) {
         auto mapped = getKeyFromCode(code);
         switch (mapped) {
-        case Qt::Key_U:
-            return Qt::Key_Dead_Diaeresis;
-        case Qt::Key_E:
-            return Qt::Key_Dead_Acute;
-        case Qt::Key_I:
-            return Qt::Key_Dead_Circumflex;
-        case Qt::Key_N:
-            return Qt::Key_Dead_Tilde;
-        case Qt::Key_QuoteLeft:
-            return modifiers.testFlag(Qt::ShiftModifier) ? Qt::Key_Dead_Tilde : Qt::Key_Dead_Grave;
-        case Qt::Key_6:
-            return Qt::Key_Dead_Circumflex;
-        case Qt::Key_Apostrophe:
-            return modifiers.testFlag(Qt::ShiftModifier) ? Qt::Key_Dead_Diaeresis
-                                                         : Qt::Key_Dead_Acute;
-        case Qt::Key_AsciiTilde:
-            return Qt::Key_Dead_Tilde;
+        case BobUI::Key_U:
+            return BobUI::Key_Dead_Diaeresis;
+        case BobUI::Key_E:
+            return BobUI::Key_Dead_Acute;
+        case BobUI::Key_I:
+            return BobUI::Key_Dead_Circumflex;
+        case BobUI::Key_N:
+            return BobUI::Key_Dead_Tilde;
+        case BobUI::Key_QuoteLeft:
+            return modifiers.testFlag(BobUI::ShiftModifier) ? BobUI::Key_Dead_Tilde : BobUI::Key_Dead_Grave;
+        case BobUI::Key_6:
+            return BobUI::Key_Dead_Circumflex;
+        case BobUI::Key_Apostrophe:
+            return modifiers.testFlag(BobUI::ShiftModifier) ? BobUI::Key_Dead_Diaeresis
+                                                         : BobUI::Key_Dead_Acute;
+        case BobUI::Key_AsciiTilde:
+            return BobUI::Key_Dead_Tilde;
         default:
-            return Qt::Key_unknown;
+            return BobUI::Key_unknown;
         }
-    } else if (auto mapping = QWasmKeyTranslator::mapWebKeyTextToQtKey(key.c_str())) {
-        if (modifiers.testFlag(Qt::ShiftModifier) && (*mapping == Qt::Key::Key_Tab))
-            *mapping = Qt::Key::Key_Backtab;
+    } else if (auto mapping = QWasmKeyTranslator::mapWebKeyTextToBobUIKey(key.c_str())) {
+        if (modifiers.testFlag(BobUI::ShiftModifier) && (*mapping == BobUI::Key::Key_Tab))
+            *mapping = BobUI::Key::Key_Backtab;
         return *mapping;
     }
 
     // cast to unicode key
     QString str = QString::fromUtf8(key.c_str()).toUpper();
     if (str.length() > 1)
-        return Qt::Key_unknown;
+        return BobUI::Key_unknown;
 
     QStringIterator i(str);
-    return static_cast<Qt::Key>(i.next(0));
+    return static_cast<BobUI::Key>(i.next(0));
 }
 
-QFlags<Qt::KeyboardModifier> getKeyboardModifiers(const emscripten::val &event)
+QFlags<BobUI::KeyboardModifier> getKeyboardModifiers(const emscripten::val &event)
 {
-    QFlags<Qt::KeyboardModifier> keyModifier = Qt::NoModifier;
+    QFlags<BobUI::KeyboardModifier> keyModifier = BobUI::NoModifier;
     if (event["shiftKey"].as<bool>())
-        keyModifier |= Qt::ShiftModifier;
+        keyModifier |= BobUI::ShiftModifier;
     if (event["ctrlKey"].as<bool>())
-        keyModifier |= platform() == Platform::MacOS ? Qt::MetaModifier : Qt::ControlModifier;
+        keyModifier |= platform() == Platform::MacOS ? BobUI::MetaModifier : BobUI::ControlModifier;
     if (event["altKey"].as<bool>())
-        keyModifier |= Qt::AltModifier;
+        keyModifier |= BobUI::AltModifier;
     if (event["metaKey"].as<bool>())
-        keyModifier |= platform() == Platform::MacOS ? Qt::ControlModifier : Qt::MetaModifier;
+        keyModifier |= platform() == Platform::MacOS ? BobUI::ControlModifier : BobUI::MetaModifier;
     if (event["constructor"]["name"].as<std::string>() == "KeyboardEvent" &&
         event["location"].as<unsigned int>() == DOM_KEY_LOCATION_NUMPAD) {
-        keyModifier |= Qt::KeypadModifier;
+        keyModifier |= BobUI::KeypadModifier;
     }
     return keyModifier;
 }
@@ -104,9 +104,9 @@ Event::Event(EventType type, emscripten::val webEvent)
 bool Event::isTargetedForElement(emscripten::val element) const
 {
     // Check event target via composedPath, which returns the true path even
-    // if the browser retargets the event for Qt's shadow DOM container. This
+    // if the browser retargets the event for BobUI's shadow DOM container. This
     // is needed to avoid capturing the pointer in cases where foreign html
-    // elements are embedded inside Qt's shadow DOM.
+    // elements are embedded inside BobUI's shadow DOM.
     emscripten::val topTarget = webEvent.call<emscripten::val>("composedPath")[0];
     return element == topTarget;
 }
@@ -118,7 +118,7 @@ KeyEvent::KeyEvent(EventType type, emscripten::val event) : Event(type, event)
     deadKey = isDeadKeyEvent(webKey.c_str());
     autoRepeat = event["repeat"].as<bool>();
     modifiers = getKeyboardModifiers(event);
-    key = webKeyToQtKey(code, webKey, deadKey, modifiers);
+    key = webKeyToBobUIKey(code, webKey, deadKey, modifiers);
     isComposing = event["isComposing"].as<bool>();
     keyCode = event["keyCode"].as<int>();
 
@@ -128,13 +128,13 @@ KeyEvent::KeyEvent(EventType type, emscripten::val event) : Event(type, event)
     // The individual numbers shall not be inserted but
     // on some platforms they are if numlock is
     // activated
-    if ((modifiers & Qt::AltModifier) && (modifiers & Qt::KeypadModifier))
+    if ((modifiers & BobUI::AltModifier) && (modifiers & BobUI::KeypadModifier))
         text.clear();
 
     if (text.size() > 1)
         text.clear();
 
-    if (key == Qt::Key_Tab)
+    if (key == BobUI::Key_Tab)
         text = "\t";
 }
 
@@ -144,7 +144,7 @@ MouseEvent::MouseEvent(EventType type, emscripten::val event) : Event(type, even
     mouseButtons = MouseEvent::buttonsFromWeb(event["buttons"].as<unsigned short>());
     // The current button state (event.buttons) may be out of sync for some PointerDown
     // events where the "down" state is very brief, for example taps on Apple trackpads.
-    // Qt expects that the current button state is in sync with the event, so we sync
+    // BobUI expects that the current button state is in sync with the event, so we sync
     // it up here.
     if (type == EventType::PointerDown)
         mouseButtons |= mouseButton;
@@ -183,12 +183,12 @@ DragEvent::DragEvent(EventType type, emscripten::val event, QWindow *window)
         const std::string effect = event["dataTransfer"]["dropEffect"].as<std::string>();
 
         if (effect == "copy")
-            return Qt::CopyAction;
+            return BobUI::CopyAction;
         else if (effect == "move")
-            return Qt::MoveAction;
+            return BobUI::MoveAction;
         else if (effect == "link")
-            return Qt::LinkAction;
-        return Qt::IgnoreAction;
+            return BobUI::LinkAction;
+        return BobUI::IgnoreAction;
     })();
 }
 
@@ -227,4 +227,4 @@ WheelEvent::WheelEvent(EventType type, emscripten::val event) : MouseEvent(type,
     webkitDirectionInvertedFromDevice = event["webkitDirectionInvertedFromDevice"].as<bool>();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

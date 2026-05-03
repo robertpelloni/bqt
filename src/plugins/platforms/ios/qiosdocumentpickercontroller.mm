@@ -1,14 +1,14 @@
 // Copyright (C) 2020 Harald Meyer.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
 #include "qiosdocumentpickercontroller.h"
 
-#include <QtCore/qpointer.h>
-#include <QtCore/private/qdarwinsecurityscopedfileengine_p.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/private/qdarwinsecurityscopedfileengine_p.h>
 
 @implementation QIOSDocumentPickerController {
     QPointer<QIOSFileDialog> m_fileDialog;
@@ -93,7 +93,7 @@
 
     QList<QUrl> files;
     for (NSURL* url in urls)
-        files.append(qt_apple_urlFromPossiblySecurityScopedURL(url));
+        files.append(bobui_apple_urlFromPossiblySecurityScopedURL(url));
 
     m_fileDialog->selectedFilesChanged(files);
     emit m_fileDialog->accept();
@@ -138,7 +138,7 @@
         if (filter.count(u'*') != 1)
             continue;
 
-        auto extensions = filter.split('.', Qt::SkipEmptyParts);
+        auto extensions = filter.split('.', BobUI::SkipEmptyParts);
         fileTypes += extensions.last();
     }
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylanddatasource_p.h"
 #include "qwaylanddataoffer_p.h"
@@ -7,20 +7,20 @@
 #include "qwaylandinputdevice_p.h"
 #include "qwaylandmimehelper_p.h"
 
-#include <QtCore/QFile>
+#include <BobUICore/QFile>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 #include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandDataSource::QWaylandDataSource(QWaylandDataDeviceManager *dataDeviceManager, QMimeData *mimeData)
-    : QtWayland::wl_data_source(dataDeviceManager->create_data_source())
+    : BobUIWayland::wl_data_source(dataDeviceManager->create_data_source())
     , m_mime_data(mimeData)
 {
     if (!mimeData)
@@ -75,14 +75,14 @@ void QWaylandDataSource::data_source_target(const QString &mime_type)
 
 void QWaylandDataSource::data_source_action(uint32_t action)
 {
-    Qt::DropAction qtAction = Qt::IgnoreAction;
+    BobUI::DropAction bobuiAction = BobUI::IgnoreAction;
 
     if (action == WL_DATA_DEVICE_MANAGER_DND_ACTION_MOVE)
-        qtAction = Qt::MoveAction;
+        bobuiAction = BobUI::MoveAction;
     else if (action == WL_DATA_DEVICE_MANAGER_DND_ACTION_COPY)
-        qtAction = Qt::CopyAction;
+        bobuiAction = BobUI::CopyAction;
 
-    m_dropAction = qtAction;
+    m_dropAction = bobuiAction;
     Q_EMIT dndResponseUpdated(m_accepted, m_dropAction);
 }
 
@@ -99,6 +99,6 @@ void QWaylandDataSource::data_source_dnd_drop_performed()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylanddatasource_p.cpp"

@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QList>
-#include <QTest>
+#include <BOBUIest>
 
 #include <utility>
 
@@ -48,13 +48,13 @@ struct MyComplex : public MyBase
     MyComplex(int i_ = -1) : MyBase(i_) {}
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_TYPEINFO(MyPrimitive, Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(MyMovable, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(MyComplex, Q_COMPLEX_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 class tst_QList: public QObject
@@ -77,7 +77,7 @@ private Q_SLOTS:
     void appendOne_complex_data() const { commonBenchmark_data<MyComplex>(); }
     void appendOne_QString_data() const { commonBenchmark_data<QString>(); }
 
-    void appendOne_int() const { appendOne_impl<QList, int>(); } // QTBUG-87330
+    void appendOne_int() const { appendOne_impl<QList, int>(); } // BOBUIBUG-87330
     void appendOne_primitive() const { appendOne_impl<QList, MyPrimitive>(); }
     void appendOne_movable() const { appendOne_impl<QList, MyMovable>(); }
     void appendOne_complex() const { appendOne_impl<QList, MyComplex>(); }
@@ -241,21 +241,21 @@ void tst_QList::removeAll_primitive_data()
 {
     qRegisterMetaType<QList<int> >();
 
-    QTest::addColumn<QList<int> >("i10");
-    QTest::addColumn<int>("itemsToRemove");
+    BOBUIest::addColumn<QList<int> >("i10");
+    BOBUIest::addColumn<int>("itemsToRemove");
 
-    QTest::newRow("0%")   << QList<int>(10, 0) << 0;
-    QTest::newRow("10%")  << (QList<int>() << 0 << 0 << 0 << 0 << 5 << 0 << 0 << 0 << 0 << 0) << 1;
-    QTest::newRow("90%")  << (QList<int>() << 5 << 5 << 5 << 5 << 0 << 5 << 5 << 5 << 5 << 5) << 9;
-    QTest::newRow("100%") << QList<int>(10, 5) << 10;
+    BOBUIest::newRow("0%")   << QList<int>(10, 0) << 0;
+    BOBUIest::newRow("10%")  << (QList<int>() << 0 << 0 << 0 << 0 << 5 << 0 << 0 << 0 << 0 << 0) << 1;
+    BOBUIest::newRow("90%")  << (QList<int>() << 5 << 5 << 5 << 5 << 0 << 5 << 5 << 5 << 5 << 5) << 9;
+    BOBUIest::newRow("100%") << QList<int>(10, 5) << 10;
 }
 
 template<typename T>
 void tst_QList::commonBenchmark_data(int max) const
 {
-    QTest::addColumn<int>("elemCount");
+    BOBUIest::addColumn<int>("elemCount");
 
-    const auto addRow = [](int count, const char *text) { QTest::newRow(text) << count; };
+    const auto addRow = [](int count, const char *text) { BOBUIest::newRow(text) << count; };
 
     const auto p = [](int i, const char *text) { return std::make_pair(i, text); };
 
@@ -405,6 +405,6 @@ void tst_QList::removeFirstSpecial_impl() const
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QList)
+BOBUIEST_APPLESS_MAIN(tst_QList)
 
 #include "tst_bench_qlist.moc"

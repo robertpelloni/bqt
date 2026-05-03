@@ -1,17 +1,17 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qnetworkreplywasmimpl_p.h"
 #include "qnetworkrequest.h"
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qthread.h>
-#include <QtCore/private/qwasmglobal_p.h>
-#include <QtCore/private/qoffsetstringarray_p.h>
-#include <QtCore/private/qtools_p.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/private/qwasmglobal_p.h>
+#include <BobUICore/private/qoffsetstringarray_p.h>
+#include <BobUICore/private/bobuiools_p.h>
 
 #include <private/qnetworkaccessmanager_p.h>
 #include <private/qnetworkfile_p.h>
@@ -19,9 +19,9 @@
 #include <emscripten.h>
 #include <emscripten/fetch.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 
@@ -50,9 +50,9 @@ static constexpr auto BannedHeaders = qOffsetStringArray(
 
 bool isUnsafeHeader(QLatin1StringView header) noexcept
 {
-    return header.startsWith("proxy-"_L1, Qt::CaseInsensitive)
-        || header.startsWith("sec-"_L1, Qt::CaseInsensitive)
-        || BannedHeaders.contains(header, Qt::CaseInsensitive);
+    return header.startsWith("proxy-"_L1, BobUI::CaseInsensitive)
+        || header.startsWith("sec-"_L1, BobUI::CaseInsensitive)
+        || BannedHeaders.contains(header, BobUI::CaseInsensitive);
 }
 } // namespace
 
@@ -321,7 +321,7 @@ void QNetworkReplyWasmImplPrivate::doSendRequest()
                 }
             }
             if (!trimmedHeaders.isEmpty()) {
-                qWarning() << "Qt has trimmed the following forbidden headers from the request:"
+                qWarning() << "BobUI has trimmed the following forbidden headers from the request:"
                            << trimmedHeaders.join(QLatin1StringView(", "));
             }
             customHeaders[i] = nullptr;
@@ -389,7 +389,7 @@ static int parseHeaderName(const QByteArray &headerName)
         return qstrnicmp(headerName.data(), headerName.size(), what) == 0;
     };
 
-    switch (QtMiscUtils::toAsciiLower(headerName.front())) {
+    switch (BobUIMiscUtils::toAsciiLower(headerName.front())) {
     case 'c':
         if (is("content-type"))
             return QNetworkRequest::ContentTypeHeader;
@@ -562,7 +562,7 @@ void QNetworkReplyWasmImplPrivate::stateChange(emscripten_fetch_t *fetch)
     if (reply && reply->state != QNetworkReplyPrivate::Aborted) {
         if (fetch->readyState == /*HEADERS_RECEIVED*/ 2) {
             size_t headerLength = emscripten_fetch_get_response_headers_length(fetch);
-            QByteArray str(headerLength, Qt::Uninitialized);
+            QByteArray str(headerLength, BobUI::Uninitialized);
             emscripten_fetch_get_response_headers(fetch, str.data(), str.size());
             reply->headersReceived(str);
         }
@@ -691,6 +691,6 @@ QNetworkReply::NetworkError QNetworkReplyWasmImplPrivate::statusCodeFromHttp(int
     return code;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkreplywasmimpl_p.cpp"

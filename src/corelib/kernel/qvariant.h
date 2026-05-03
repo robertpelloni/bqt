@@ -1,36 +1,36 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QVARIANT_H
 #define QVARIANT_H
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qmetatype.h>
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qmetatype.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
 #endif
 
 #include <memory>
-#include <QtCore/q20type_traits.h>
-#include <QtCore/q23utility.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/q23utility.h>
 #include <variant>
 
-#if !defined(QT_LEAN_HEADERS) || QT_LEAN_HEADERS < 1
-#  include <QtCore/qlist.h>
-#  include <QtCore/qstringlist.h>
-#  include <QtCore/qbytearraylist.h>
-#  include <QtCore/qhash.h>
-#  include <QtCore/qmap.h>
-#  include <QtCore/qobject.h>
+#if !defined(BOBUI_LEAN_HEADERS) || BOBUI_LEAN_HEADERS < 1
+#  include <BobUICore/qlist.h>
+#  include <BobUICore/qstringlist.h>
+#  include <BobUICore/qbytearraylist.h>
+#  include <BobUICore/qhash.h>
+#  include <BobUICore/qmap.h>
+#  include <BobUICore/qobject.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_ENABLE_P0846_SEMANTICS_FOR(get_if)
-QT_ENABLE_P0846_SEMANTICS_FOR(get)
+BOBUI_ENABLE_P0846_SEMANTICS_FOR(get_if)
+BOBUI_ENABLE_P0846_SEMANTICS_FOR(get)
 
 class QBitArray;
 class QDataStream;
@@ -49,20 +49,20 @@ class QRectF;
 class QRegularExpression;
 class QSize;
 class QSizeF;
-class QTextFormat;
-class QTextLength;
-class QTime;
-class QTransform;
+class BOBUIextFormat;
+class BOBUIextLength;
+class BOBUIime;
+class BOBUIransform;
 class QUrl;
 class QVariant;
 
 template<typename T>
 inline T qvariant_cast(const QVariant &);
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template<> constexpr inline bool qIsRelocatable<QVariant> = true;
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class Q_CORE_EXPORT QVariant
 {
@@ -102,8 +102,8 @@ public:
         static constexpr size_t MaxInternalSize = 3 * sizeof(void *);
         template <size_t S> static constexpr bool FitsInInternalSize = S <= MaxInternalSize;
         template<typename T> static constexpr bool CanUseInternalSpace =
-                (QTypeInfo<T>::isRelocatable && FitsInInternalSize<sizeof(T)> && alignof(T) <= alignof(double));
-        static constexpr bool canUseInternalSpace(const QtPrivate::QMetaTypeInterface *type)
+                (BOBUIypeInfo<T>::isRelocatable && FitsInInternalSize<sizeof(T)> && alignof(T) <= alignof(double));
+        static constexpr bool canUseInternalSpace(const BobUIPrivate::QMetaTypeInterface *type)
         {
             Q_ASSERT(type);
             return QMetaType::TypeFlags(type->flags) & QMetaType::RelocatableType &&
@@ -121,7 +121,7 @@ public:
         quintptr packedType : sizeof(QMetaType) * 8 - 2;
 
         constexpr Private() noexcept : is_shared(false), is_null(true), packedType(0) {}
-        explicit Private(const QtPrivate::QMetaTypeInterface *iface) noexcept;
+        explicit Private(const BobUIPrivate::QMetaTypeInterface *iface) noexcept;
         template <typename T> explicit Private(std::piecewise_construct_t, const T &t);
 
         const void *storage() const
@@ -130,9 +130,9 @@ public:
         template<typename T> const T &get() const
         { return *static_cast<const T *>(storage()); }
 
-        inline const QtPrivate::QMetaTypeInterface *typeInterface() const
+        inline const BobUIPrivate::QMetaTypeInterface *typeInterface() const
         {
-            return reinterpret_cast<const QtPrivate::QMetaTypeInterface *>(packedType << 2);
+            return reinterpret_cast<const BobUIPrivate::QMetaTypeInterface *>(packedType << 2);
         }
 
         inline QMetaType type() const
@@ -141,8 +141,8 @@ public:
         }
     };
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    enum QT_DEPRECATED_VERSION_X_6_0("Use QMetaType::Type instead.") Type
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    enum BOBUI_DEPRECATED_VERSION_X_6_0("Use QMetaType::Type instead.") Type
     {
         Invalid = QMetaType::UnknownType,
         Bool = QMetaType::Bool,
@@ -159,7 +159,7 @@ public:
         ByteArray = QMetaType::QByteArray,
         BitArray = QMetaType::QBitArray,
         Date = QMetaType::QDate,
-        Time = QMetaType::QTime,
+        Time = QMetaType::BOBUIime,
         DateTime = QMetaType::QDateTime,
         Url = QMetaType::QUrl,
         Locale = QMetaType::QLocale,
@@ -171,15 +171,15 @@ public:
         LineF = QMetaType::QLineF,
         Point = QMetaType::QPoint,
         PointF = QMetaType::QPointF,
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         RegularExpression = QMetaType::QRegularExpression,
 #endif
         Hash = QMetaType::QVariantHash,
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
         EasingCurve = QMetaType::QEasingCurve,
 #endif
         Uuid = QMetaType::QUuid,
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
         ModelIndex = QMetaType::QModelIndex,
         PersistentModelIndex = QMetaType::QPersistentModelIndex,
 #endif
@@ -195,13 +195,13 @@ public:
         Region = QMetaType::QRegion,
         Bitmap = QMetaType::QBitmap,
         Cursor = QMetaType::QCursor,
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         KeySequence = QMetaType::QKeySequence,
 #endif
         Pen = QMetaType::QPen,
-        TextLength = QMetaType::QTextLength,
-        TextFormat = QMetaType::QTextFormat,
-        Transform = QMetaType::QTransform,
+        TextLength = QMetaType::BOBUIextLength,
+        TextFormat = QMetaType::BOBUIextFormat,
+        Transform = QMetaType::BOBUIransform,
         Matrix4x4 = QMetaType::QMatrix4x4,
         Vector2D = QMetaType::QVector2D,
         Vector3D = QMetaType::QVector3D,
@@ -427,7 +427,7 @@ public:
     // trivial, trivially-copyable or COW
     QVariant(QChar qchar) noexcept;
     QVariant(QDate date) noexcept;
-    QVariant(QTime time) noexcept;
+    QVariant(BOBUIime time) noexcept;
     QVariant(const QBitArray &bitarray) noexcept;
     QVariant(const QByteArray &bytearray) noexcept;
     QVariant(const QDateTime &datetime) noexcept;
@@ -461,8 +461,8 @@ public:
     QVariant(const QJsonDocument &jsonDocument) noexcept(false);
     QVariant(const QPersistentModelIndex &modelIndex) noexcept(false);
 
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN QVariant(const char *str) noexcept(false)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN QVariant(const char *str) noexcept(false)
         : QVariant(QString::fromUtf8(str))
     {}
 #endif
@@ -477,7 +477,7 @@ public:
     QVariant(const volatile void *) = delete;
 #endif
 
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
     QVariant(const QSize &size);
     QVariant(const QSizeF &size);
     QVariant(const QPoint &pt);
@@ -492,7 +492,7 @@ public:
     QVariant& operator=(const QVariant &other);
     inline QVariant(QVariant &&other) noexcept : d(other.d)
     { other.d = Private(); }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QVariant)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QVariant)
 
     inline void swap(QVariant &other) noexcept { std::swap(d, other.d); }
 
@@ -500,7 +500,7 @@ public:
     int typeId() const
     {
         // QVariant types are always registered (see fromMetaType())
-        const QtPrivate::QMetaTypeInterface *mt = metaType().iface();
+        const BobUIPrivate::QMetaTypeInterface *mt = metaType().iface();
         if (!mt)
             return 0;
         int id = mt->typeId.loadRelaxed();
@@ -508,9 +508,9 @@ public:
         return id;
     }
 
-    QT_CORE_INLINE_SINCE(6, 10)
+    BOBUI_CORE_INLINE_SINCE(6, 10)
     const char *typeName() const;
-    QT_CORE_INLINE_SINCE(6, 10)
+    BOBUI_CORE_INLINE_SINCE(6, 10)
     QMetaType metaType() const;
 
     bool canConvert(QMetaType targetType) const
@@ -520,11 +520,11 @@ public:
     bool canView(QMetaType targetType) const
     { return QMetaType::canView(d.type(), targetType); }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_6_0
     bool canConvert(int targetTypeId) const
     { return QMetaType::canConvert(d.type(), QMetaType(targetTypeId)); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     bool convert(int targetTypeId)
     { return convert(QMetaType(targetTypeId)); }
 #endif
@@ -551,7 +551,7 @@ public:
     QStringList toStringList() const;
     QChar toChar() const;
     QDate toDate() const;
-    QTime toTime() const;
+    BOBUIime toTime() const;
     QDateTime toDateTime() const;
     QList<QVariant> toList() const;
     QMap<QString, QVariant> toMap() const;
@@ -566,10 +566,10 @@ public:
     QLineF toLineF() const;
     QRectF toRectF() const;
     QLocale toLocale() const;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression toRegularExpression() const;
-#endif // QT_CONFIG(regularexpression)
-#if QT_CONFIG(easingcurve)
+#endif // BOBUI_CONFIG(regularexpression)
+#if BOBUI_CONFIG(easingcurve)
     QEasingCurve toEasingCurve() const;
 #endif
     QUuid toUuid() const;
@@ -578,38 +578,38 @@ public:
     QJsonObject toJsonObject() const;
     QJsonArray toJsonArray() const;
     QJsonDocument toJsonDocument() const;
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
     QModelIndex toModelIndex() const;
     QPersistentModelIndex toPersistentModelIndex() const;
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     void load(QDataStream &ds);
     void save(QDataStream &ds) const;
 #endif
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    QT_DEPRECATED_VERSION_X_6_0("Use the constructor taking a QMetaType instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use the constructor taking a QMetaType instead.")
     explicit QVariant(Type type)
         : QVariant(QMetaType(int(type)))
     {}
-    QT_DEPRECATED_VERSION_X_6_0("Use typeId() or metaType().")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use typeId() or metaType().")
     Type type() const
     {
         int type = d.type().id();
         return type >= QMetaType::User ? UserType : static_cast<Type>(type);
     }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static const char *typeToName(int typeId)
     { return QMetaType(typeId).name(); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static Type nameToType(const char *name)
     {
         int metaType = QMetaType::fromName(name).id();
         return metaType <= int(UserType) ? QVariant::Type(metaType) : UserType;
     }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 
     void *data();
@@ -784,7 +784,7 @@ private:
     { return a.equals(b); }
     Q_DECLARE_EQUALITY_COMPARABLE_NON_NOEXCEPT(QVariant)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     template <typename T>
     friend auto operator<<(const QDebug &debug, const T &variant) -> std::enable_if_t<std::is_same_v<T, QVariant>, QDebug> {
         return  variant.qdebugHelper(debug);
@@ -860,13 +860,13 @@ private:
     // These constructors don't create QVariants of the type associated
     // with the enum, as expected, but they would create a QVariant of
     // type int with the value of the enum value.
-    // Use QVariant v = QColor(Qt::red) instead of QVariant v = Qt::red for
+    // Use QVariant v = QColor(BobUI::red) instead of QVariant v = BobUI::red for
     // example.
-    QVariant(Qt::GlobalColor) = delete;
-    QVariant(Qt::BrushStyle) = delete;
-    QVariant(Qt::PenStyle) = delete;
-    QVariant(Qt::CursorShape) = delete;
-#ifdef QT_NO_CAST_FROM_ASCII
+    QVariant(BobUI::GlobalColor) = delete;
+    QVariant(BobUI::BrushStyle) = delete;
+    QVariant(BobUI::PenStyle) = delete;
+    QVariant(BobUI::CursorShape) = delete;
+#ifdef BOBUI_NO_CAST_FROM_ASCII
     // force compile error when implicit conversion is not wanted
     inline QVariant(const char *) = delete;
 #endif
@@ -878,17 +878,17 @@ public:
 
 inline bool QVariant::isValid() const
 {
-    return d.type().isValid(QT6_CALL_NEW_OVERLOAD);
+    return d.type().isValid(BOBUI6_CALL_NEW_OVERLOAD);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &s, QVariant &p);
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &s, const QVariant &p);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+BOBUI_DEPRECATED_VERSION_6_0
 inline QDataStream &operator>>(QDataStream &s, QVariant::Type &p)
 {
     quint32 u;
@@ -896,18 +896,18 @@ inline QDataStream &operator>>(QDataStream &s, QVariant::Type &p)
     p = static_cast<QVariant::Type>(u);
     return s;
 }
-QT_DEPRECATED_VERSION_6_0
+BOBUI_DEPRECATED_VERSION_6_0
 inline QDataStream &operator<<(QDataStream &s, const QVariant::Type p)
 {
     s << static_cast<quint32>(p);
     return s;
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
 
 #endif
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 10)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 10)
 QMetaType QVariant::metaType() const
 {
     return d.type();
@@ -932,16 +932,16 @@ inline QVariant::ConstReference<Indirect>::ConstReference(const Reference<Indire
 {
 }
 
-#ifndef QT_MOC
+#ifndef BOBUI_MOC
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template<typename T> inline T qvariant_cast_qmetatype_converted(const QVariant &v, QMetaType targetType)
 {
     T t{};
     QMetaType::convert(v.metaType(), v.constData(), targetType, &t);
     return t;
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<typename T> inline T qvariant_cast(const QVariant &v)
 {
@@ -955,7 +955,7 @@ template<typename T> inline T qvariant_cast(const QVariant &v)
             return v.d.get<nonConstT>();
     }
 
-    return QtPrivate::qvariant_cast_qmetatype_converted<T>(v, targetType);
+    return BobUIPrivate::qvariant_cast_qmetatype_converted<T>(v, targetType);
 }
 
 template<typename T> inline T qvariant_cast(QVariant &&v)
@@ -964,7 +964,7 @@ template<typename T> inline T qvariant_cast(QVariant &&v)
     if (v.d.type() == targetType) {
         if constexpr (QVariant::Private::FitsInInternalSize<sizeof(T)>) {
             // If T in principle fits into the internal space, it may be using
-            // it (depending on e.g. QTypeInfo, which, generally, can change
+            // it (depending on e.g. BOBUIypeInfo, which, generally, can change
             // from version to version, so we need to check is_shared:
             if (!v.d.is_shared)
                 return std::move(*reinterpret_cast<T *>(v.d.data.data));
@@ -987,10 +987,10 @@ template<typename T> inline T qvariant_cast(QVariant &&v)
             return v.d.get<nonConstT>();
     }
 
-    return QtPrivate::qvariant_cast_qmetatype_converted<T>(v, targetType);
+    return BobUIPrivate::qvariant_cast_qmetatype_converted<T>(v, targetType);
 }
 
-#  ifndef QT_NO_VARIANT
+#  ifndef BOBUI_NO_VARIANT
 template<> inline QVariant qvariant_cast<QVariant>(const QVariant &v)
 {
     if (v.metaType().id() == QMetaType::QVariant)
@@ -999,23 +999,23 @@ template<> inline QVariant qvariant_cast<QVariant>(const QVariant &v)
 }
 #  endif
 
-#endif // QT_MOC
+#endif // BOBUI_MOC
 
-#ifndef QT_NO_DEBUG_STREAM
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-QT_DEPRECATED_VERSION_6_0
+#ifndef BOBUI_NO_DEBUG_STREAM
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+BOBUI_DEPRECATED_VERSION_6_0
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QVariant::Type);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
 #endif
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class Q_CORE_EXPORT QVariantTypeCoercer
 {
 public:
-    // ### Qt7: Pass QMetaType as value rather than const ref.
+    // ### BobUI7: Pass QMetaType as value rather than const ref.
     const void *convert(const QVariant &value, const QMetaType &type);
     const void *coerce(const QVariant &value, const QMetaType &type);
 
@@ -1024,12 +1024,12 @@ private:
 };
 }
 
-#if QT_DEPRECATED_SINCE(6, 15)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 template<typename Pointer> class
-QT_DEPRECATED_VERSION_X_6_15("Use QVariant::Reference instead.")
+BOBUI_DEPRECATED_VERSION_X_6_15("Use QVariant::Reference instead.")
 QVariantRef
 {
 private:
@@ -1055,7 +1055,7 @@ public:
 };
 
 class
-QT_DEPRECATED_VERSION_X_6_15("Use QVariant::ConstPointer instead.")
+BOBUI_DEPRECATED_VERSION_X_6_15("Use QVariant::ConstPointer instead.")
 QVariantConstPointer
 {
 private:
@@ -1069,7 +1069,7 @@ public:
 };
 
 template<typename Pointer> class
-QT_DEPRECATED_VERSION_X_6_15("Use QVariant::Pointer instead.")
+BOBUI_DEPRECATED_VERSION_X_6_15("Use QVariant::Pointer instead.")
 QVariantPointer
 {
 private:
@@ -1081,9 +1081,9 @@ public:
     Pointer operator->() const { return *m_pointer; }
 };
 
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 15)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVARIANT_H

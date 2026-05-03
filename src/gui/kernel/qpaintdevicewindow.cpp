@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpaintdevicewindow_p.h"
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QScreen>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPaintDeviceWindowPrivate::QPaintDeviceWindowPrivate()
     = default;
@@ -16,7 +16,7 @@ QPaintDeviceWindowPrivate::~QPaintDeviceWindowPrivate()
 
 /*!
     \class QPaintDeviceWindow
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.4
     \brief Convenience subclass of QWindow that is also a QPaintDevice.
 
@@ -199,6 +199,6 @@ QPaintEngine *QPaintDeviceWindow::paintEngine() const
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpaintdevicewindow.cpp"

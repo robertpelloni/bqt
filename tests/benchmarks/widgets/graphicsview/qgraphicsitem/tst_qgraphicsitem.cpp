@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QTextDocument>
+#include <BOBUIextDocument>
 
 class tst_QGraphicsItem : public QObject
 {
@@ -54,7 +54,7 @@ static inline void processEvents()
 void tst_QGraphicsItem::initTestCase()
 {
     processEvents();
-    QTest::qWait(1500);
+    BOBUIest::qWait(1500);
     processEvents();
 }
 
@@ -116,11 +116,11 @@ void tst_QGraphicsItem::deleteItemWithManyChildren()
 
 void tst_QGraphicsItem::setPos_data()
 {
-    QTest::addColumn<QPointF>("pos");
+    BOBUIest::addColumn<QPointF>("pos");
 
-    QTest::newRow("0, 0") << QPointF(0, 0);
-    QTest::newRow("10, 10") << QPointF(10, 10);
-    QTest::newRow("-10, -10") << QPointF(-10, -10);
+    BOBUIest::newRow("0, 0") << QPointF(0, 0);
+    BOBUIest::newRow("10, 10") << QPointF(10, 10);
+    BOBUIest::newRow("-10, -10") << QPointF(-10, -10);
 }
 
 void tst_QGraphicsItem::setPos()
@@ -138,18 +138,18 @@ void tst_QGraphicsItem::setPos()
 
 void tst_QGraphicsItem::setTransform_data()
 {
-    QTest::addColumn<QTransform>("transform");
+    BOBUIest::addColumn<BOBUIransform>("transform");
 
-    QTest::newRow("rotate 45z") << QTransform().rotate(45);
-    QTest::newRow("scale 2x2") << QTransform().scale(2, 2);
-    QTest::newRow("translate 100, 100") << QTransform().translate(100, 100);
-    QTest::newRow("rotate 45x 45y 45z") << QTransform().rotate(45, Qt::XAxis)
-        .rotate(45, Qt::YAxis).rotate(45, Qt::ZAxis);
+    BOBUIest::newRow("rotate 45z") << BOBUIransform().rotate(45);
+    BOBUIest::newRow("scale 2x2") << BOBUIransform().scale(2, 2);
+    BOBUIest::newRow("translate 100, 100") << BOBUIransform().translate(100, 100);
+    BOBUIest::newRow("rotate 45x 45y 45z") << BOBUIransform().rotate(45, BobUI::XAxis)
+        .rotate(45, BobUI::YAxis).rotate(45, BobUI::ZAxis);
 }
 
 void tst_QGraphicsItem::setTransform()
 {
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
 
     QGraphicsScene scene;
     QGraphicsRectItem *item = scene.addRect(QRectF(0, 0, 100, 100));
@@ -166,7 +166,7 @@ void tst_QGraphicsItem::rotate()
     QGraphicsItem *item = scene.addRect(QRectF(0, 0, 100, 100));
     processEvents();
 
-    const QTransform rotate(QTransform().rotate(45));
+    const BOBUIransform rotate(BOBUIransform().rotate(45));
     QBENCHMARK {
         item->setTransform(rotate, true);
     }
@@ -178,7 +178,7 @@ void tst_QGraphicsItem::scale()
     QGraphicsItem *item = scene.addRect(QRectF(0, 0, 100, 100));
     processEvents();
 
-    const QTransform scale(QTransform::fromScale(2, 2));
+    const BOBUIransform scale(BOBUIransform::fromScale(2, 2));
     QBENCHMARK {
         item->setTransform(scale, true);
     }
@@ -190,7 +190,7 @@ void tst_QGraphicsItem::shear()
     QGraphicsItem *item = scene.addRect(QRectF(0, 0, 100, 100));
     processEvents();
 
-    const QTransform shear = QTransform().shear(1.5, 1.5);
+    const BOBUIransform shear = BOBUIransform().shear(1.5, 1.5);
     QBENCHMARK {
         item->setTransform(shear, true);
     }
@@ -202,7 +202,7 @@ void tst_QGraphicsItem::translate()
     QGraphicsItem *item = scene.addRect(QRectF(0, 0, 100, 100));
     processEvents();
 
-    const QTransform translate = QTransform::fromTranslate(100, 100);
+    const BOBUIransform translate = BOBUIransform::fromTranslate(100, 100);
     QBENCHMARK {
         item->setTransform(translate, true);
     }
@@ -228,12 +228,12 @@ void tst_QGraphicsItem::createTextItemNoLayouting()
         item.document()->setLayoutEnabled(false);
         // Prepare everything
         item.setPlainText(text);
-        QTextOption option = item.document()->defaultTextOption();
-        option.setAlignment(Qt::AlignHCenter);
+        BOBUIextOption option = item.document()->defaultTextOption();
+        option.setAlignment(BobUI::AlignHCenter);
         item.document()->setDefaultTextOption(option);
         // And (in a real app) enable layouting here
     }
 }
 
-QTEST_MAIN(tst_QGraphicsItem)
+BOBUIEST_MAIN(tst_QGraphicsItem)
 #include "tst_qgraphicsitem.moc"

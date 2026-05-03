@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "mainwindow.h"
 #include <QDebug>
 
@@ -23,7 +23,7 @@ void MainWindow::toggleVisible()
         m_window->setTransientParent(windowHandle());
         m_window->setMinimumSize(QSize(200, 100));
         m_window->setTitle("Transient Window");
-        m_window->setFlags(Qt::Dialog);
+        m_window->setFlags(BobUI::Dialog);
     }
     m_window->setVisible(!m_window->isVisible());
 }

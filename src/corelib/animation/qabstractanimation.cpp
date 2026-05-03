@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QAbstractAnimation
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup animation
     \brief The QAbstractAnimation class is the base of all animations.
     \since 4.6
@@ -109,39 +109,39 @@
 #include "qabstractanimation.h"
 #include "qanimationgroup.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #include "qabstractanimation_p.h"
 
 #if defined(Q_OS_WASM)
-#include <QtCore/private/qwasmanimationdriver_p.h>
+#include <BobUICore/private/qwasmanimationdriver_p.h>
 #endif
 
-#include <QtCore/qmath.h>
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
 #define DEFAULT_TIMER_INTERVAL 16
 #define PAUSE_TIMER_COARSE_THRESHOLD 2000
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 typedef QList<QAbstractAnimationTimer*>::ConstIterator TimerListConstIt;
 typedef QList<QAbstractAnimation*>::ConstIterator AnimationListConstIt;
 
 /*!
   \class QAbstractAnimationTimer
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief QAbstractAnimationTimer is the base class for animation timers.
   \internal
 
   Subclass QAbstractAnimationTimer to provide an animation timer that is run by
   QUnifiedTimer and can in turn be used to run any number of animations.
 
-  Currently two subclasses have been implemented: QAnimationTimer to drive the Qt C++
+  Currently two subclasses have been implemented: QAnimationTimer to drive the BobUI C++
   animation framework (QAbstractAnimation and subclasses) and QDeclarativeAnimationTimer
-  to drive the Qt QML animation framework.
+  to drive the BobUI QML animation framework.
 */
 
 /*!
@@ -172,11 +172,11 @@ typedef QList<QAbstractAnimation*>::ConstIterator AnimationListConstIt;
 
 /*!
     \class QUnifiedTimer
-    \inmodule QtCore
-    \brief QUnifiedTimer provides a unified timing mechanism for animations in Qt C++ and QML.
+    \inmodule BobUICore
+    \brief QUnifiedTimer provides a unified timing mechanism for animations in BobUI C++ and QML.
     \internal
 
-    QUnifiedTimer allows animations run by Qt to share a single timer. This keeps animations
+    QUnifiedTimer allows animations run by BobUI to share a single timer. This keeps animations
     visually in sync, as well as being more efficient than running numerous timers.
 
     QUnifiedTimer drives animations indirectly, via QAbstractAnimationTimer.
@@ -320,7 +320,7 @@ void QUnifiedTimer::localRestart()
         driver->stop();
         int closestTimeToFinish = closestPausedAnimationTimerTimeToFinish();
         // use a precise timer if the pause will be short
-        Qt::TimerType timerType = closestTimeToFinish < PAUSE_TIMER_COARSE_THRESHOLD ? Qt::PreciseTimer : Qt::CoarseTimer;
+        BobUI::TimerType timerType = closestTimeToFinish < PAUSE_TIMER_COARSE_THRESHOLD ? BobUI::PreciseTimer : BobUI::CoarseTimer;
         pauseTimer.start(closestTimeToFinish, timerType, this);
     } else if (!driver->isRunning()) {
         if (pauseTimer.isActive())
@@ -381,7 +381,7 @@ void QUnifiedTimer::stopTimer()
     }
 }
 
-void QUnifiedTimer::timerEvent(QTimerEvent *event)
+void QUnifiedTimer::timerEvent(BOBUIimerEvent *event)
 {
     //in the case of consistent timing we make sure the order in which events come is always the same
     //for that purpose we do as if the startstoptimer would always fire before the animation timer
@@ -409,7 +409,7 @@ void QUnifiedTimer::startAnimationTimer(QAbstractAnimationTimer *timer)
     inst->animationTimersToStart << timer;
     if (!inst->startTimersPending) {
         inst->startTimersPending = true;
-        QMetaObject::invokeMethod(inst, "startTimers", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(inst, "startTimers", BobUI::QueuedConnection);
     }
 }
 
@@ -433,7 +433,7 @@ void QUnifiedTimer::stopAnimationTimer(QAbstractAnimationTimer *timer)
 
             if (inst->animationTimers.isEmpty() && !inst->stopTimerPending) {
                 inst->stopTimerPending = true;
-                QMetaObject::invokeMethod(inst, "stopTimer", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(inst, "stopTimer", BobUI::QueuedConnection);
             }
         } else {
             inst->animationTimersToStart.removeOne(timer);
@@ -533,7 +533,7 @@ QAnimationTimer::~QAnimationTimer()
 QAnimationTimer *QAnimationTimer::instance(bool create)
 {
     QAnimationTimer *inst;
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     static thread_local std::unique_ptr<QAnimationTimer> animationTimer;
     if (create && !animationTimer) {
         inst = new QAnimationTimer;
@@ -640,7 +640,7 @@ void QAnimationTimer::registerAnimation(QAbstractAnimation *animation, bool isTo
         inst->animationsToStart << animation;
         if (!inst->startAnimationPending) {
             inst->startAnimationPending = true;
-            QMetaObject::invokeMethod(inst, "startAnimations", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(inst, "startAnimations", BobUI::QueuedConnection);
         }
     }
 }
@@ -666,7 +666,7 @@ void QAnimationTimer::unregisterAnimation(QAbstractAnimation *animation)
 
             if (inst->animations.isEmpty() && !inst->stopTimerPending) {
                 inst->stopTimerPending = true;
-                QMetaObject::invokeMethod(inst, "stopTimer", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(inst, "stopTimer", BobUI::QueuedConnection);
             }
         } else {
             inst->animationsToStart.removeOne(animation);
@@ -718,7 +718,7 @@ int QAnimationTimer::closestPauseAnimationTimeToFinish()
 
 /*!
    \class QAnimationDriver
-   \inmodule QtCore
+   \inmodule BobUICore
 
    \brief The QAnimationDriver class is used to exchange the mechanism that drives animations.
 
@@ -874,7 +874,7 @@ QDefaultAnimationDriver::~QDefaultAnimationDriver()
     disconnect(this, &QAnimationDriver::stopped, this, &QDefaultAnimationDriver::stopTimer);
 }
 
-void QDefaultAnimationDriver::timerEvent(QTimerEvent *e)
+void QDefaultAnimationDriver::timerEvent(BOBUIimerEvent *e)
 {
     Q_ASSERT(e->id() == m_timer.id());
     Q_UNUSED(e); // if the assertions are disabled
@@ -884,7 +884,7 @@ void QDefaultAnimationDriver::timerEvent(QTimerEvent *e)
 void QDefaultAnimationDriver::startTimer()
 {
     // always use a precise timer to drive animations
-    m_timer.start(m_unified_timer->timingInterval, Qt::PreciseTimer, this);
+    m_timer.start(m_unified_timer->timingInterval, BobUI::PreciseTimer, this);
 }
 
 void QDefaultAnimationDriver::stopTimer()
@@ -1509,7 +1509,7 @@ void QAbstractAnimation::updateDirection(QAbstractAnimation::Direction direction
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractanimation.cpp"
 #include "moc_qabstractanimation_p.cpp"

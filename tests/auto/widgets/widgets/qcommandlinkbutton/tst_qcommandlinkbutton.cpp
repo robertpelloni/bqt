@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 
 #include "qcommandlinkbutton.h"
@@ -10,7 +10,7 @@
 
 #include <qcommandlinkbutton.h>
 #include <qmenu.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <QDialog>
 #include <QGridLayout>
 #include <QPainter>
@@ -29,7 +29,7 @@ private slots:
 
     void getSetCheck();
     void pressed();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void setAccel();
 #endif
     void isCheckable();
@@ -89,9 +89,9 @@ void tst_QCommandLinkButton::initTestCase()
     testWidget->setObjectName("testWidget");
     testWidget->resize( 200, 200 );
     testWidget->show();
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
-    QVERIFY(QTest::qWaitForWindowActive(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(testWidget));
 
     connect( testWidget, SIGNAL(clicked()), this, SLOT(onClicked()) );
     connect( testWidget, SIGNAL(pressed()), this, SLOT(onPressed()) );
@@ -112,7 +112,7 @@ void tst_QCommandLinkButton::init()
     testWidget->setText("Test");
     testWidget->setDescription("Description text.");
     testWidget->setEnabled( true );
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QKeySequence seq;
     testWidget->setShortcut( seq );
 #endif
@@ -154,7 +154,7 @@ void tst_QCommandLinkButton::setAutoRepeat()
     // deactivate to avoid a race condition here. We can't add this to the end
     // of the defaultAndAutoDefault test, since any failure in that test will
     // return out of that function.
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 
     // If this changes, this test must be completely revised.
     QVERIFY( !testWidget->isCheckable() );
@@ -176,7 +176,7 @@ void tst_QCommandLinkButton::setAutoRepeat()
     // check that the button is down if we press space and not in autorepeat
     testWidget->setDown( false );
     testWidget->setAutoRepeat( false );
-    QTest::keyPress( testWidget, Qt::Key_Space );
+    BOBUIest::keyPress( testWidget, BobUI::Key_Space );
 
     QVERIFY( testWidget->isDown() );
     QVERIFY( toggle_count == 0 );
@@ -184,18 +184,18 @@ void tst_QCommandLinkButton::setAutoRepeat()
     QVERIFY( release_count == 0 );
     QVERIFY( click_count == 0 );
 
-    QTest::keyRelease( testWidget, Qt::Key_Space );
+    BOBUIest::keyRelease( testWidget, BobUI::Key_Space );
     resetCounters();
 
     // check that the button is down if we press space while in autorepeat
 
     testWidget->setDown( false );
     testWidget->setAutoRepeat( true );
-    QTest::keyPress( testWidget, Qt::Key_Space );
-    QTRY_VERIFY(press_count > 10);
+    BOBUIest::keyPress( testWidget, BobUI::Key_Space );
+    BOBUIRY_VERIFY(press_count > 10);
     QVERIFY( testWidget->isDown() );
     QVERIFY( toggle_count == 0 );
-    QTest::keyRelease( testWidget, Qt::Key_Space );
+    BOBUIest::keyRelease( testWidget, BobUI::Key_Space );
     QCOMPARE(press_count, release_count);
     QCOMPARE(release_count, click_count);
 
@@ -207,25 +207,25 @@ void tst_QCommandLinkButton::setAutoRepeat()
     // Skip after reset if ButtonPressKeys has Key_Enter
     const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                          ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                         .value<QList<Qt::Key>>();
-    if (buttonPressKeys.contains(Qt::Key_Enter)) {
+                                         .value<QList<BobUI::Key>>();
+    if (buttonPressKeys.contains(BobUI::Key_Enter)) {
         return;
     }
     testWidget->setAutoRepeat( false );
-    QTest::keyPress( testWidget, Qt::Key_Enter );
+    BOBUIest::keyPress( testWidget, BobUI::Key_Enter );
 
     QVERIFY( !testWidget->isDown() );
     QVERIFY( toggle_count == 0 );
     QVERIFY( press_count == 0 );
     QVERIFY( release_count == 0 );
     QVERIFY( click_count == 0 );
-    QTest::keyRelease( testWidget, Qt::Key_Enter );
+    BOBUIest::keyRelease( testWidget, BobUI::Key_Enter );
 
     // check that pressing ENTER has no effect
     resetCounters();
     testWidget->setDown( false );
     testWidget->setAutoRepeat( true );
-    QTest::keyClick( testWidget, Qt::Key_Enter );
+    BOBUIest::keyClick( testWidget, BobUI::Key_Enter );
     QVERIFY( !testWidget->isDown() );
     QVERIFY( toggle_count == 0 );
     QVERIFY( press_count == 0 );
@@ -235,28 +235,28 @@ void tst_QCommandLinkButton::setAutoRepeat()
 
 void tst_QCommandLinkButton::pressed()
 {
-    QTest::keyPress( testWidget, ' ' );
+    BOBUIest::keyPress( testWidget, ' ' );
     QCOMPARE( press_count, (uint)1 );
     QCOMPARE( release_count, (uint)0 );
 
-    QTest::keyRelease( testWidget, ' ' );
+    BOBUIest::keyRelease( testWidget, ' ' );
     QCOMPARE( press_count, (uint)1 );
     QCOMPARE( release_count, (uint)1 );
 
     // Skip if ButtonPressKeys has Key_Enter
     const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                          ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                         .value<QList<Qt::Key>>();
-    if (buttonPressKeys.contains(Qt::Key_Enter)) {
+                                         .value<QList<BobUI::Key>>();
+    if (buttonPressKeys.contains(BobUI::Key_Enter)) {
         return;
     }
 
-    QTest::keyPress( testWidget,Qt::Key_Enter );
+    BOBUIest::keyPress( testWidget,BobUI::Key_Enter );
     QCOMPARE( press_count, (uint)1 );
     QCOMPARE( release_count, (uint)1 );
 
     testWidget->setAutoDefault(true);
-    QTest::keyPress( testWidget,Qt::Key_Enter );
+    BOBUIest::keyPress( testWidget,BobUI::Key_Enter );
     QCOMPARE( press_count, (uint)2 );
     QCOMPARE( release_count, (uint)2 );
     testWidget->setAutoDefault(false);
@@ -276,7 +276,7 @@ void tst_QCommandLinkButton::setDown()
     QVERIFY( testWidget->isDown() );
 
     testWidget->setDown( true );
-    QTest::keyClick( testWidget, Qt::Key_Escape );
+    BOBUIest::keyClick( testWidget, BobUI::Key_Escape );
     QVERIFY( !testWidget->isDown() );
 }
 
@@ -315,15 +315,15 @@ void tst_QCommandLinkButton::toggled()
 
     // finally check that we can toggle using the mouse
     resetCounters();
-    QTest::mousePress( testWidget, Qt::LeftButton );
+    BOBUIest::mousePress( testWidget, BobUI::LeftButton );
     QVERIFY( toggle_count == 0 );
     QVERIFY( click_count == 0 );
 
-    QTest::mouseRelease( testWidget, Qt::LeftButton );
+    BOBUIest::mouseRelease( testWidget, BobUI::LeftButton );
     QVERIFY( click_count == 1 );
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 /*
     If we press an accelerator key we ONLY get a pressed signal and
@@ -333,16 +333,16 @@ void tst_QCommandLinkButton::toggled()
 void tst_QCommandLinkButton::setAccel()
 {
     testWidget->setText("&AccelTest");
-    QKeySequence seq( Qt::ALT | Qt::Key_A );
+    QKeySequence seq( BobUI::ALT | BobUI::Key_A );
     testWidget->setShortcut( seq );
 
     // The shortcut will not be activated unless the button is in a active
     // window and has focus
     testWidget->setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(testWidget));
 
-    QTest::keyClick( testWidget, 'A', Qt::AltModifier );
-    QTest::qWait( 500 );
+    BOBUIest::keyClick( testWidget, 'A', BobUI::AltModifier );
+    BOBUIest::qWait( 500 );
     QVERIFY( click_count == 1 );
     QVERIFY( press_count == 1 );
     QVERIFY( release_count == 1 );
@@ -350,18 +350,18 @@ void tst_QCommandLinkButton::setAccel()
 
     // wait 200 ms because setAccel uses animateClick.
     // if we don't wait this may screw up a next test.
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QCommandLinkButton::clicked()
 {
-    QTest::mousePress( testWidget, Qt::LeftButton );
+    BOBUIest::mousePress( testWidget, BobUI::LeftButton );
     QVERIFY( press_count == 1 );
     QVERIFY( release_count == 0 );
 
-    QTest::mouseRelease( testWidget, Qt::LeftButton );
+    BOBUIest::mouseRelease( testWidget, BobUI::LeftButton );
     QCOMPARE( press_count, (uint)1 );
     QCOMPARE( release_count, (uint)1 );
 
@@ -369,7 +369,7 @@ void tst_QCommandLinkButton::clicked()
     release_count = 0;
     testWidget->setDown(false);
     for (uint i=0; i<10; i++)
-        QTest::mouseClick( testWidget, Qt::LeftButton );
+        BOBUIest::mouseClick( testWidget, BobUI::LeftButton );
     QCOMPARE( press_count, (uint)10 );
     QCOMPARE( release_count, (uint)10 );
 }
@@ -386,7 +386,7 @@ void tst_QCommandLinkButton::popupCrash()
     pb = new QCommandLinkButton("foo", "description");
     QMenu *menu = new QMenu("bar", pb);
     pb->setMenu(menu);
-    QTimer::singleShot(1000, this, SLOT(helperSlotDelete()));
+    BOBUIimer::singleShot(1000, this, SLOT(helperSlotDelete()));
     pb->show();
     pb->click();
 }
@@ -415,7 +415,7 @@ void tst_QCommandLinkButton::defaultAndAutoDefault()
     QVERIFY(dialog.isVisible());
 
     QObject::connect(&button1, SIGNAL(clicked()), &dialog, SLOT(hide()));
-    QTest::keyClick(&dialog, Qt::Key_Return);
+    BOBUIest::keyClick(&dialog, BobUI::Key_Return);
     QVERIFY(!dialog.isVisible());
     }
 
@@ -455,7 +455,7 @@ void tst_QCommandLinkButton::defaultAndAutoDefault()
     QVERIFY(dialog.isVisible());
 
     QObject::connect(&button1, SIGNAL(clicked()), &dialog, SLOT(hide()));
-    QTest::keyClick(&dialog, Qt::Key_Return);
+    BOBUIest::keyClick(&dialog, BobUI::Key_Return);
     QVERIFY(!dialog.isVisible());
     }
 
@@ -470,7 +470,7 @@ void tst_QCommandLinkButton::defaultAndAutoDefault()
     // No default button is set, and button2 is the first autoDefault button
     // that is next in the tab order
     QObject::connect(&button2, SIGNAL(clicked()), &dialog, SLOT(hide()));
-    QTest::keyClick(&dialog, Qt::Key_Return);
+    BOBUIest::keyClick(&dialog, BobUI::Key_Return);
     QVERIFY(!dialog.isVisible());
 
     // Reparenting
@@ -493,9 +493,9 @@ void tst_QCommandLinkButton::heightForWithWithIcon()
 
     QPixmap pixmap(64, 64);
     {
-        pixmap.fill(Qt::white);
+        pixmap.fill(BobUI::white);
         QPainter painter(&pixmap);
-        painter.setBrush(Qt::black);
+        painter.setBrush(BobUI::black);
         painter.drawEllipse(0, 0, 63, 63);
     }
 
@@ -510,10 +510,10 @@ void tst_QCommandLinkButton::heightForWithWithIcon()
     layout->addStretch();
     mainWin.setLayout(layout);
     mainWin.showMaximized();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWin));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWin));
     QVERIFY(largeIconButton->height() > 68);  //enough room for the icon
 
 }
 
-QTEST_MAIN(tst_QCommandLinkButton)
+BOBUIEST_MAIN(tst_QCommandLinkButton)
 #include "tst_qcommandlinkbutton.moc"

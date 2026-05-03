@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef OPTIONSWIDGET_H
 #define OPTIONSWIDGET_H
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 class OptionsWidget : public QWidget
 {
@@ -58,7 +58,7 @@ public:
         connect(m_enableTextToSpeach, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()));
 
 
-        m_scale = new QSlider(Qt::Horizontal);
+        m_scale = new QSlider(BobUI::Horizontal);
 //        m_layout->addWidget(m_scale);
         m_scale->setRange(5, 30);
         m_scale->setValue(1);

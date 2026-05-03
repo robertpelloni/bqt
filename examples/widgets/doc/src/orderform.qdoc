@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example richtext/orderform
@@ -12,9 +12,9 @@
 
     \brief The Order Form example shows how to generate rich text documents by
     combining a simple template with data input by the user in a dialog. Data
-    is extracted from a \c DetailsDialog object and displayed on a QTextEdit
-    with a QTextCursor, using various formats. Each form generated is added
-    to a QTabWidget for easy access.
+    is extracted from a \c DetailsDialog object and displayed on a BOBUIextEdit
+    with a BOBUIextCursor, using various formats. Each form generated is added
+    to a BOBUIabWidget for easy access.
 
     \image orderform-example.png
            {Application showing a completed order form for a customer}
@@ -37,7 +37,7 @@
     QDialogButtonBox are defined; the former to provide the user with the
     option to receive information on products and offers, and the latter
     to ensure that buttons used are arranged according to the user's native
-    platform. In addition, a QTableWidget, \c itemsTable, is used to hold
+    platform. In addition, a BOBUIableWidget, \c itemsTable, is used to hold
     order details.
 
     The screenshot below shows the \c DetailsDialog we intend to create.
@@ -61,12 +61,12 @@
 
     \snippet richtext/orderform/detailsdialog.cpp 1
 
-    The \c setupItemsTable() function instantiates the QTableWidget object,
+    The \c setupItemsTable() function instantiates the BOBUIableWidget object,
     \c itemsTable, and sets the number of rows based on the QStringList
     object, \c items, which holds the type of items ordered. The number of
     columns is set to 2, providing a "name" and "quantity" layout. A \c for
     loop is used to populate the \c itemsTable and the \c name item's flag
-    is set to Qt::ItemIsEnabled or Qt::ItemIsSelectable. For demonstration
+    is set to BobUI::ItemIsEnabled or BobUI::ItemIsSelectable. For demonstration
     purposes, the \c quantity item is set to a 1 and all items in the
     \c itemsTable have this value for quantity; but this can be modified by
     editing the contents of the cells at run time.
@@ -85,7 +85,7 @@
     \snippet richtext/orderform/detailsdialog.cpp 4
 
     The \c senderAddress() function is used to return the value of the
-    QTextEdit containing the address for the order form.
+    BOBUIextEdit containing the address for the order form.
 
     \snippet richtext/orderform/detailsdialog.cpp 5
 
@@ -107,7 +107,7 @@
 
     The \c MainWindow class is a subclass of QMainWindow, implementing two
     slots - \c openDialog() and \c printFile(). It also contains a private
-    instance of QTabWidget, \c letters.
+    instance of BOBUIabWidget, \c letters.
 
     \snippet richtext/orderform/mainwindow.h 0
 
@@ -116,21 +116,21 @@
     The \c MainWindow constructor sets up the \c fileMenu and the required
     actions, \c newAction and \c printAction. These actions' \c triggered()
     signals are connected to the additionally implemented openDialog() slot
-    and the default close() slot. The QTabWidget, \c letters, is
+    and the default close() slot. The BOBUIabWidget, \c letters, is
     instantiated and set as the window's central widget.
 
     \snippet richtext/orderform/mainwindow.cpp 0
 
-    The \c createLetter() function creates a new QTabWidget with a QTextEdit,
+    The \c createLetter() function creates a new BOBUIabWidget with a BOBUIextEdit,
     \c editor, as the parent. This function accepts four parameters that
     correspond to we obtained through \c DetailsDialog, in order to "fill"
     the \c editor.
 
     \snippet richtext/orderform/mainwindow.cpp 1
 
-    We then obtain the cursor for the \c editor using QTextEdit::textCursor().
+    We then obtain the cursor for the \c editor using BOBUIextEdit::textCursor().
     The \c cursor is then moved to the start of the document using
-    QTextCursor::Start.
+    BOBUIextCursor::Start.
 
     \snippet richtext/orderform/mainwindow.cpp 2
 
@@ -186,9 +186,9 @@
             \li block \li \c{Big City}
     \endtable
 
-    For spacing purposes, we invoke \l{QTextCursor::insertBlock()}
+    For spacing purposes, we invoke \l{BOBUIextCursor::insertBlock()}
     {insertBlock()} twice. The \l{QDate::currentDate()}{currentDate()} is
-    obtained and displayed. We use \l{QTextFrameFormat::setWidth()}
+    obtained and displayed. We use \l{BOBUIextFrameFormat::setWidth()}
     {setWidth()} to increase the width of \c bodyFrameFormat and we insert
     a new frame with that width.
 
@@ -221,12 +221,12 @@
             \li block
     \endtable
 
-    A QTextTableFormat object, \c orderTableFormat, is used to hold the type
+    A BOBUIextTableFormat object, \c orderTableFormat, is used to hold the type
     of item and the quantity ordered.
 
     \snippet richtext/orderform/mainwindow.cpp 8
 
-    We use \l{QTextTable::cellAt()}{cellAt()} to set the headers for the
+    We use \l{BOBUIextTable::cellAt()}{cellAt()} to set the headers for the
     \c orderTable.
 
     \snippet richtext/orderform/mainwindow.cpp 9
@@ -264,13 +264,13 @@
     \endtable
 
     The \c cursor is then moved back to \c{topFrame}'s
-    \l{QTextFrame::lastPosition()}{lastPosition()} and more standard text
+    \l{BOBUIextFrame::lastPosition()}{lastPosition()} and more standard text
     is inserted.
 
     \snippet richtext/orderform/mainwindow.cpp 11
     \snippet richtext/orderform/mainwindow.cpp 12
 
-    Another QTextTable is inserted, to display the customer's
+    Another BOBUIextTable is inserted, to display the customer's
     preference regarding offers.
 
     \snippet richtext/orderform/mainwindow.cpp 13
@@ -334,7 +334,7 @@
     \snippet richtext/orderform/mainwindow.cpp 17
 
     This function also allows the user to print a selected area with
-    QTextCursor::hasSelection(), instead of printing the entire document.
+    BOBUIextCursor::hasSelection(), instead of printing the entire document.
 
     \section1 \c main() Function
 

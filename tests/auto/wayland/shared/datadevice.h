@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_DATADEVICE_H
 #define MOCKCOMPOSITOR_DATADEVICE_H
@@ -11,12 +11,12 @@ namespace MockCompositor {
 
 class DataOffer;
 
-class DataDeviceManager : public Global, public QtWaylandServer::wl_data_device_manager
+class DataDeviceManager : public Global, public BobUIWaylandServer::wl_data_device_manager
 {
     Q_OBJECT
 public:
     explicit DataDeviceManager(CoreCompositor *compositor, int version = 1)
-        : QtWaylandServer::wl_data_device_manager(compositor->m_display, version)
+        : BobUIWaylandServer::wl_data_device_manager(compositor->m_display, version)
         , m_version(version)
         , m_compositor(compositor)
     {}
@@ -33,7 +33,7 @@ protected:
     void data_device_manager_create_data_source(Resource *resource, uint32_t id) override;
 };
 
-class DataDevice : public QObject, public QtWaylandServer::wl_data_device
+class DataDevice : public QObject, public BobUIWaylandServer::wl_data_device
 {
     Q_OBJECT
 public:
@@ -87,12 +87,12 @@ protected:
     }
 };
 
-class DataOffer : public QObject, public QtWaylandServer::wl_data_offer
+class DataOffer : public QObject, public BobUIWaylandServer::wl_data_offer
 {
     Q_OBJECT
 public:
     explicit DataOffer(DataDevice *dataDevice, ::wl_client *client, int version)
-        : QtWaylandServer::wl_data_offer (client, 0, version)
+        : BobUIWaylandServer::wl_data_offer (client, 0, version)
         , m_dataDevice(dataDevice)
     {}
 

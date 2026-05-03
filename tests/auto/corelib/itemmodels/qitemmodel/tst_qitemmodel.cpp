@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtCore/QCoreApplication>
+#include <BobUICore/QCoreApplication>
 #include <qdebug.h>
 #include "modelstotest.cpp"
 #include <QMetaType>
@@ -11,10 +11,10 @@
 /*!
     See modelstotest.cpp for instructions on how to have your model tested with these tests.
 
-    Each test such as rowCount have a _data() function which populate the QTest data with
+    Each test such as rowCount have a _data() function which populate the BOBUIest data with
     the tests specified by modelstotest.cpp and any extra data needed for that particular test.
 
-    setupWithNoTestData() fills the QTest data with just the tests and is used by most tests.
+    setupWithNoTestData() fills the BOBUIest data with just the tests and is used by most tests.
  */
 class tst_QItemModel : public QObject
 {
@@ -122,14 +122,14 @@ void tst_QItemModel::cleanup()
 void tst_QItemModel::setupWithNoTestData()
 {
     ModelsToTest modelsToTest;
-    QTest::addColumn<QString>("modelType");
-    QTest::addColumn<bool>("readOnly");
-    QTest::addColumn<bool>("isEmpty");
+    BOBUIest::addColumn<QString>("modelType");
+    BOBUIest::addColumn<bool>("readOnly");
+    BOBUIest::addColumn<bool>("isEmpty");
     for (int i = 0; i < modelsToTest.tests.size(); ++i) {
         ModelsToTest::test t = modelsToTest.tests.at(i);
         bool readOnly = (t.read == ModelsToTest::ReadOnly);
         bool isEmpty = (t.contains == ModelsToTest::Empty);
-        QTest::newRow(t.modelType.toLatin1().data()) << t.modelType << readOnly << isEmpty;
+        BOBUIest::newRow(t.modelType.toLatin1().data()) << t.modelType << readOnly << isEmpty;
     }
 }
 
@@ -153,11 +153,11 @@ void tst_QItemModel::nonDestructiveBasicTest()
     QVERIFY(currentModel->columnCount(QModelIndex()) >= 0);
     QCOMPARE(currentModel->data(QModelIndex()), QVariant());
     currentModel->fetchMore(QModelIndex());
-    Qt::ItemFlags flags = currentModel->flags(QModelIndex());
-    QVERIFY(flags == Qt::ItemIsDropEnabled || flags == 0);
+    BobUI::ItemFlags flags = currentModel->flags(QModelIndex());
+    QVERIFY(flags == BobUI::ItemIsDropEnabled || flags == 0);
     currentModel->hasChildren(QModelIndex());
     currentModel->hasIndex(0, 0);
-    currentModel->headerData(0, Qt::Horizontal);
+    currentModel->headerData(0, BobUI::Horizontal);
     currentModel->index(0,0);
     currentModel->itemData(QModelIndex());
     QVariant cache;
@@ -167,9 +167,9 @@ void tst_QItemModel::nonDestructiveBasicTest()
     QVERIFY(currentModel->rowCount() >= 0);
     QVariant variant;
     currentModel->setData(QModelIndex(), variant, -1);
-    currentModel->setHeaderData(-1, Qt::Horizontal, QVariant());
-    currentModel->setHeaderData(0, Qt::Horizontal, QVariant());
-    currentModel->setHeaderData(currentModel->columnCount() + 100, Qt::Horizontal, QVariant());
+    currentModel->setHeaderData(-1, BobUI::Horizontal, QVariant());
+    currentModel->setHeaderData(0, BobUI::Horizontal, QVariant());
+    currentModel->setHeaderData(currentModel->columnCount() + 100, BobUI::Horizontal, QVariant());
     QMap<int, QVariant> roles;
     currentModel->setItemData(QModelIndex(), roles);
     currentModel->sibling(0,0,QModelIndex());
@@ -418,7 +418,7 @@ void checkChildren(QAbstractItemModel *currentModel, const QModelIndex &parent, 
             QCOMPARE(index.model(), currentModel);
             QCOMPARE(index.row(), r);
             QCOMPARE(index.column(), c);
-            QCOMPARE(currentModel->data(index, Qt::DisplayRole).isValid(), true);
+            QCOMPARE(currentModel->data(index, BobUI::DisplayRole).isValid(), true);
 
             // If the next test fails here is some somewhat useful debug you play with.
             /*
@@ -426,10 +426,10 @@ void checkChildren(QAbstractItemModel *currentModel, const QModelIndex &parent, 
                 qDebug() << r << c << currentDepth << currentModel->data(index).toString()
                          << currentModel->data(parent).toString();
                 qDebug() << index << parent << currentModel->parent(index);
-                QTreeView view;
+                BOBUIreeView view;
                 view.setModel(currentModel);
                 view.show();
-                QTest::qWait(9000);
+                BOBUIest::qWait(9000);
             }*/
             QCOMPARE(currentModel->parent(index), parent);
 
@@ -438,7 +438,7 @@ void checkChildren(QAbstractItemModel *currentModel, const QModelIndex &parent, 
                 checkChildren(currentModel, index, ++currentDepth);
                 // Because this is recursive we will return at the first failure rather then
                 // reporting it over and over
-                if (QTest::currentTestFailed())
+                if (BOBUIest::currentTestFailed())
                     return;
             }
 
@@ -519,56 +519,56 @@ void tst_QItemModel::data()
     QVERIFY(currentModel->index(0,0).isValid());
 
     // General Purpose roles
-    QVariant variant = currentModel->data(currentModel->index(0,0), Qt::ToolTipRole);
+    QVariant variant = currentModel->data(currentModel->index(0,0), BobUI::ToolTipRole);
     if (variant.isValid()) {
         QVERIFY(variant.canConvert<QString>());
     }
-    variant = currentModel->data(currentModel->index(0,0), Qt::StatusTipRole);
+    variant = currentModel->data(currentModel->index(0,0), BobUI::StatusTipRole);
     if (variant.isValid()) {
         QVERIFY(variant.canConvert<QString>());
     }
-    variant = currentModel->data(currentModel->index(0,0), Qt::WhatsThisRole);
+    variant = currentModel->data(currentModel->index(0,0), BobUI::WhatsThisRole);
     if (variant.isValid()) {
         QVERIFY(variant.canConvert<QString>());
     }
 
-    variant = currentModel->data(currentModel->index(0,0), Qt::SizeHintRole);
+    variant = currentModel->data(currentModel->index(0,0), BobUI::SizeHintRole);
     if (variant.isValid()) {
         QVERIFY(variant.canConvert<QSize>());
     }
 
 
     // Appearance roles
-    QVariant fontVariant = currentModel->data(currentModel->index(0,0), Qt::FontRole);
+    QVariant fontVariant = currentModel->data(currentModel->index(0,0), BobUI::FontRole);
     if (fontVariant.isValid()) {
         QVERIFY(fontVariant.canConvert<QFont>());
     }
 
-    QVariant textAlignmentVariant = currentModel->data(currentModel->index(0,0), Qt::TextAlignmentRole);
+    QVariant textAlignmentVariant = currentModel->data(currentModel->index(0,0), BobUI::TextAlignmentRole);
     if (textAlignmentVariant.isValid()) {
         int alignment = textAlignmentVariant.toInt();
-        QVERIFY(alignment == Qt::AlignLeft ||
-                alignment == Qt::AlignRight ||
-                alignment == Qt::AlignHCenter ||
-                alignment == Qt::AlignJustify);
+        QVERIFY(alignment == BobUI::AlignLeft ||
+                alignment == BobUI::AlignRight ||
+                alignment == BobUI::AlignHCenter ||
+                alignment == BobUI::AlignJustify);
     }
 
-    QVariant colorVariant = currentModel->data(currentModel->index(0,0), Qt::BackgroundRole);
+    QVariant colorVariant = currentModel->data(currentModel->index(0,0), BobUI::BackgroundRole);
     if (colorVariant.isValid()) {
         QVERIFY(colorVariant.canConvert<QColor>());
     }
 
-    colorVariant = currentModel->data(currentModel->index(0,0), Qt::ForegroundRole);
+    colorVariant = currentModel->data(currentModel->index(0,0), BobUI::ForegroundRole);
     if (colorVariant.isValid()) {
         QVERIFY(colorVariant.canConvert<QColor>());
     }
 
-    QVariant checkStateVariant = currentModel->data(currentModel->index(0,0), Qt::CheckStateRole);
+    QVariant checkStateVariant = currentModel->data(currentModel->index(0,0), BobUI::CheckStateRole);
     if (checkStateVariant.isValid()) {
         int state = checkStateVariant.toInt();
-        QVERIFY(state == Qt::Unchecked ||
-                state == Qt::PartiallyChecked ||
-                state == Qt::Checked);
+        QVERIFY(state == BobUI::Unchecked ||
+                state == BobUI::PartiallyChecked ||
+                state == BobUI::Checked);
     }
 }
 
@@ -605,8 +605,8 @@ void tst_QItemModel::setData()
 
     spy.clear();
     QString text = "Index private pointers should always be the same";
-    QCOMPARE(currentModel->setData(index, text, Qt::EditRole), true);
-    QCOMPARE(index.data(Qt::EditRole).toString(), text);
+    QCOMPARE(currentModel->setData(index, text, BobUI::EditRole), true);
+    QCOMPARE(index.data(BobUI::EditRole).toString(), text);
 
     // Changing the text shouldn't change the layout, parent, pointer etc.
     QModelIndex changedIndex = currentModel->index(0, 0, topIndex);
@@ -628,8 +628,8 @@ void tst_QItemModel::setHeaderData()
     currentModel = testModels->createModel(modelType);
     QVERIFY(currentModel);
 
-    QCOMPARE(currentModel->setHeaderData(-1, Qt::Horizontal, QVariant()), false);
-    QCOMPARE(currentModel->setHeaderData(-1, Qt::Vertical, QVariant()), false);
+    QCOMPARE(currentModel->setHeaderData(-1, BobUI::Horizontal, QVariant()), false);
+    QCOMPARE(currentModel->setHeaderData(-1, BobUI::Vertical, QVariant()), false);
 
     QFETCH(bool, isEmpty);
     if (isEmpty)
@@ -645,19 +645,19 @@ void tst_QItemModel::setHeaderData()
     QModelIndex index = currentModel->index(0, 0, topIndex);
     QVERIFY(index.isValid());
 
-    qRegisterMetaType<Qt::Orientation>("Qt::Orientation");
+    qRegisterMetaType<BobUI::Orientation>("BobUI::Orientation");
     QSignalSpy spy(currentModel, &QAbstractItemModel::headerDataChanged);
     QVERIFY(spy.isValid());
 
     QString text = "Index private pointers should always be the same";
     int signalCount = 0;
     for (int i = 0; i < 4; ++i){
-        if(currentModel->setHeaderData(i, Qt::Horizontal, text)) {
-            QCOMPARE(currentModel->headerData(i, Qt::Horizontal).toString(), text);
+        if(currentModel->setHeaderData(i, BobUI::Horizontal, text)) {
+            QCOMPARE(currentModel->headerData(i, BobUI::Horizontal).toString(), text);
             ++signalCount;
         }
-        if(currentModel->setHeaderData(i, Qt::Vertical, text)) {
-            QCOMPARE(currentModel->headerData(i, Qt::Vertical).toString(), text);
+        if(currentModel->setHeaderData(i, BobUI::Vertical, text)) {
+            QCOMPARE(currentModel->headerData(i, BobUI::Vertical).toString(), text);
             ++signalCount;
         }
     }
@@ -717,26 +717,26 @@ void tst_QItemModel::sort()
 void tst_QItemModel::remove_data()
 {
     ModelsToTest modelsToTest;
-    QTest::addColumn<QString>("modelType");
-    QTest::addColumn<bool>("readOnly");
-    QTest::addColumn<bool>("isEmpty");
+    BOBUIest::addColumn<QString>("modelType");
+    BOBUIest::addColumn<bool>("readOnly");
+    BOBUIest::addColumn<bool>("isEmpty");
 
-    QTest::addColumn<int>("start");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("start");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::addColumn<int>("numberOfRowsAboutToBeRemovedSignals");
-    QTest::addColumn<int>("numberOfColumnsAboutToBeRemovedSignals");
-    QTest::addColumn<int>("numberOfRowsRemovedSignals");
-    QTest::addColumn<int>("numberOfColumnsRemovedSignals");
+    BOBUIest::addColumn<int>("numberOfRowsAboutToBeRemovedSignals");
+    BOBUIest::addColumn<int>("numberOfColumnsAboutToBeRemovedSignals");
+    BOBUIest::addColumn<int>("numberOfRowsRemovedSignals");
+    BOBUIest::addColumn<int>("numberOfColumnsRemovedSignals");
 
-    QTest::addColumn<bool>("recursive");
-    QTest::addColumn<int>("recursiveRow");
-    QTest::addColumn<int>("recursiveCount");
+    BOBUIest::addColumn<bool>("recursive");
+    BOBUIest::addColumn<int>("recursiveRow");
+    BOBUIest::addColumn<int>("recursiveCount");
 
-    QTest::addColumn<bool>("shouldSucceed");
+    BOBUIest::addColumn<bool>("shouldSucceed");
 
 #define makeTestRow(testName, start, count, sar, srr, sac, src, r, rr, rc, s) \
-        QTest::newRow((t.modelType + testName).toLatin1().data()) << t.modelType << readOnly << isEmpty << \
+        BOBUIest::newRow((t.modelType + testName).toLatin1().data()) << t.modelType << readOnly << isEmpty << \
         start << count << \
         sar << srr << sac << src << \
         r << rr << rc << \
@@ -1063,26 +1063,26 @@ void tst_QItemModel::slot_columnsRemoved(const QModelIndex &parent)
 void tst_QItemModel::insert_data()
 {
     ModelsToTest modelsToTest;
-    QTest::addColumn<QString>("modelType");
-    QTest::addColumn<bool>("readOnly");
-    QTest::addColumn<bool>("isEmpty");
+    BOBUIest::addColumn<QString>("modelType");
+    BOBUIest::addColumn<bool>("readOnly");
+    BOBUIest::addColumn<bool>("isEmpty");
 
-    QTest::addColumn<int>("start");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("start");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::addColumn<int>("numberOfRowsAboutToBeInsertedSignals");
-    QTest::addColumn<int>("numberOfColumnsAboutToBeInsertedSignals");
-    QTest::addColumn<int>("numberOfRowsInsertedSignals");
-    QTest::addColumn<int>("numberOfColumnsInsertedSignals");
+    BOBUIest::addColumn<int>("numberOfRowsAboutToBeInsertedSignals");
+    BOBUIest::addColumn<int>("numberOfColumnsAboutToBeInsertedSignals");
+    BOBUIest::addColumn<int>("numberOfRowsInsertedSignals");
+    BOBUIest::addColumn<int>("numberOfColumnsInsertedSignals");
 
-    QTest::addColumn<bool>("recursive");
-    QTest::addColumn<int>("recursiveRow");
-    QTest::addColumn<int>("recursiveCount");
+    BOBUIest::addColumn<bool>("recursive");
+    BOBUIest::addColumn<int>("recursiveRow");
+    BOBUIest::addColumn<int>("recursiveCount");
 
-    QTest::addColumn<bool>("shouldSucceed");
+    BOBUIest::addColumn<bool>("shouldSucceed");
 
 #define makeTestRow(testName, start, count, sar, srr, sac, src, r, rr, rc, s) \
-        QTest::newRow((t.modelType + testName).toLatin1().data()) << t.modelType << readOnly << isEmpty << \
+        BOBUIest::newRow((t.modelType + testName).toLatin1().data()) << t.modelType << readOnly << isEmpty << \
         start << count << \
         sar << srr << sac << src << \
         r << rr << rc << \
@@ -1367,5 +1367,5 @@ void tst_QItemModel::slot_columnsInserted(const QModelIndex &parent)
     verifyState(currentModel);
 }
 
-QTEST_MAIN(tst_QItemModel)
+BOBUIEST_MAIN(tst_QItemModel)
 #include "tst_qitemmodel.moc"

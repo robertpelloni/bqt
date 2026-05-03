@@ -1,10 +1,10 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWASMSUSPENDRESUMECONTROL_P_H
 #define QWASMSUSPENDRESUMECONTROL_P_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 #include <emscripten/val.h>
 #include <map>
 #include <functional>
@@ -14,7 +14,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -52,7 +52,7 @@ public:
     }
 
 private:
-    friend void qtSendPendingEvents();
+    friend void bobuiSendPendingEvents();
 
     static QWasmSuspendResumeControl *s_suspendResumeControl;
     std::map<int, std::function<void(emscripten::val)>> m_eventHandlers;

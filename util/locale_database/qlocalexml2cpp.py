@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 """Script to generate C++ code from CLDR data in QLocaleXML form
 
 See ``cldr2qlocalexml.py`` for how to generate the QLocaleXML data itself.
 Pass the output file from that as first parameter to this script; pass the ISO
 639-3 data file as second parameter. You can optionally pass the root of the
-qtbase check-out as third parameter; it defaults to the root of the qtbase
+bobuibase check-out as third parameter; it defaults to the root of the bobuibase
 check-out containing this script.
 
 The ISO 639-3 data file can be downloaded from the SIL website:
@@ -188,7 +188,7 @@ class LocaleSourceEditor (SourceFileEditor):
 
     Do not edit this section: instead regenerate it using
     cldr2qlocalexml.py and qlocalexml2cpp.py on updated (or
-    edited) CLDR data; see qtbase/util/locale_database/.
+    edited) CLDR data; see bobuibase/util/locale_database/.
 */
 
 """)
@@ -361,7 +361,7 @@ class TimeZoneDataWriter (LocaleSourceEditor):
 
     # Implementation details:
     def __beginNonIcuFeatureTZL(self) -> None:
-        self.writer.write('\n#if QT_CONFIG(timezone_locale) && !QT_CONFIG(icu)\n')
+        self.writer.write('\n#if BOBUI_CONFIG(timezone_locale) && !BOBUI_CONFIG(icu)\n')
     def __endNonIcuFeatureTZL(self) -> None:
         self.writer.write('\n#endif // timezone_locale but not ICU\n')
 
@@ -403,7 +403,7 @@ class LocaleZoneDataWriter (LocaleSourceEditor):
                    names: list[tuple[int, int, int]]) -> None:
         assert len(names) == len(locales), 'Names should just be a sorted list of locale.keys()'
         # Tables need a terminal row whose localeIndex is len(names) for the
-        # sake of an assertion in QTZL.cpp's findTableEntryFor(); the end() of
+        # sake of an assertion in BOBUIZL.cpp's findTableEntryFor(); the end() of
         # each locale's range of rows must be a valid row.
         out: Callable[[str], int] = self.writer.write
 
@@ -668,8 +668,8 @@ class LocaleDataWriter (LocaleSourceEditor):
                           'plus  '
                           ' exp  '
                           # Quotation marks
-                          'qtOpn '
-                          'qtEnd '
+                          'bobuiOpn '
+                          'bobuiEnd '
                           'altQO '
                           'altQE '
                           'lDFmt ' # Date format
@@ -701,7 +701,7 @@ class LocaleDataWriter (LocaleSourceEditor):
                           '   currISO   '
                           # Width 6 + comma
                           'curDgt ' # Currency digits
-                          'curRnd ' # Currencty rounding (unused: QTBUG-81343)
+                          'curRnd ' # Currencty rounding (unused: BOBUIBUG-81343)
                           'dow1st ' # First day of week
                           ' wknd+ ' # Week-end start/end days
                           ' wknd- '
@@ -774,7 +774,7 @@ class LocaleDataWriter (LocaleSourceEditor):
                         tuple(r.length for r in ranges) +
                         (currencyIsoCodeData(locale.currencyIsoCode),
                          locale.currencyDigits,
-                         locale.currencyRounding, # unused (QTBUG-81343)
+                         locale.currencyRounding, # unused (BOBUIBUG-81343)
                          locale.firstDayOfWeek, locale.weekendStart, locale.weekendEnd,
                          locale.groupTop, locale.groupHigher, locale.groupLeast) ))
                               + f', // {locale.language}/{locale.script}/{locale.territory}\n')
@@ -940,7 +940,7 @@ class LocaleHeaderWriter (SourceFileEditor):
         self.writer.write('\n')
 
     def territories(self, territories: dict[int, tuple[str, str, str]]) -> None:
-        self.writer.write("    // ### Qt 7: Rename to Territory\n")
+        self.writer.write("    // ### BobUI 7: Rename to Territory\n")
         self.__enum('Country', territories, self.__territory, 'Territory')
 
     def scripts(self, scripts: dict[int, tuple[str, str, str]]) -> None:
@@ -971,7 +971,7 @@ class LocaleHeaderWriter (SourceFileEditor):
             + f',\n\n        Last{suffix} = {member}')
 
         # for "LastCountry = LastTerritory"
-        # ### Qt 7: Remove
+        # ### BobUI 7: Remove
         if suffix != name:
             out(f',\n        Last{name} = Last{suffix}')
 
@@ -984,15 +984,15 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
     Takes sys.argv, sys.stdout, sys.stderr (or equivalents) as
     arguments. In argv[1:] it expects the QLocaleXML file as first
     parameter and the ISO 639-3 data table as second
-    parameter. Accepts the root of the qtbase checkout as third
+    parameter. Accepts the root of the bobuibase checkout as third
     parameter (default is inferred from this script's path) and a
     --calendars option to select which calendars to support (all
     available by default).
 
-    Updates various src/corelib/t*/q*_data_p.h files within the qtbase
+    Updates various src/corelib/t*/q*_data_p.h files within the bobuibase
     checkout to contain data extracted from the QLocaleXML file."""
     calendars_map: dict[str, str] = {
-        # CLDR name: Qt file name fragment
+        # CLDR name: BobUI file name fragment
         'gregorian': 'roman',
         'persian': 'jalali',
         'islamic': 'hijri',
@@ -1007,8 +1007,8 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
                         metavar='input-file.xml')
     parser.add_argument('iso_path', help='path to the ISO 639-3 data file',
                         metavar='iso-639-3.tab')
-    parser.add_argument('qtbase_path', help='path to the root of the qtbase source tree',
-                        nargs='?', default=qtbase_root)
+    parser.add_argument('bobuibase_path', help='path to the root of the bobuibase source tree',
+                        nargs='?', default=bobuibase_root)
     parser.add_argument('--calendars', help='select calendars to emit data for',
                         nargs='+', metavar='CALENDAR',
                         choices=all_calendars, default=all_calendars)
@@ -1020,13 +1020,13 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
     mutter: Callable[[AnyStr], int] = (lambda *x: 0) if args.verbose < 0 else out.write
 
     qlocalexml: str = args.input_file
-    qtsrcdir = Path(args.qtbase_path)
+    bobuisrcdir = Path(args.bobuibase_path)
     calendars: dict[str, str] = {cal: calendars_map[cal] for cal in args.calendars}
 
-    if not (qtsrcdir.is_dir()
-            and all(qtsrcdir.joinpath('src/corelib/text', leaf).is_file()
+    if not (bobuisrcdir.is_dir()
+            and all(bobuisrcdir.joinpath('src/corelib/text', leaf).is_file()
                     for leaf in ('qlocale_data_p.h', 'qlocale.h', 'qlocale.qdoc'))):
-        parser.error(f'Missing expected files under qtbase source root {qtsrcdir}')
+        parser.error(f'Missing expected files under bobuibase source root {bobuisrcdir}')
 
     reader = QLocaleXmlReader(qlocalexml)
     locale_map = dict(reader.loadLocaleMap(calendars, err.write))
@@ -1037,8 +1037,8 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
     code_data = LanguageCodeData(args.iso_path)
 
     try:
-        with LocaleDataWriter(qtsrcdir.joinpath('src/corelib/text/qlocale_data_p.h'),
-                              qtsrcdir, reader.cldrVersion) as writer:
+        with LocaleDataWriter(bobuisrcdir.joinpath('src/corelib/text/qlocale_data_p.h'),
+                              bobuisrcdir, reader.cldrVersion) as writer:
             writer.likelySubtags(reader.likelyMap())
             writer.localeIndex(reader.languageIndices(tuple(k[0] for k in locale_map)))
             writer.localeData(locale_map, locale_keys)
@@ -1056,8 +1056,8 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
     for calendar, stem in calendars.items():
         try:
             with CalendarDataWriter(
-                    qtsrcdir.joinpath(f'src/corelib/time/q{stem}calendar_data_p.h'),
-                    qtsrcdir, reader.cldrVersion) as writer:
+                    bobuisrcdir.joinpath(f'src/corelib/time/q{stem}calendar_data_p.h'),
+                    bobuisrcdir, reader.cldrVersion) as writer:
                 writer.write(calendar, locale_map, locale_keys)
         except Exception as e:
             err.write(f'\nError updating {calendar} locale data: {e}\n')
@@ -1067,8 +1067,8 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
 
     # qlocale.h
     try:
-        with LocaleHeaderWriter(qtsrcdir.joinpath('src/corelib/text/qlocale.h'),
-                                qtsrcdir, reader.enumify) as writer:
+        with LocaleHeaderWriter(bobuisrcdir.joinpath('src/corelib/text/qlocale.h'),
+                                bobuisrcdir, reader.enumify) as writer:
             writer.languages(reader.languages)
             writer.scripts(reader.scripts)
             writer.territories(reader.territories)
@@ -1080,7 +1080,7 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
 
     # qlocale.qdoc
     try:
-        with Transcriber(qtsrcdir.joinpath('src/corelib/text/qlocale.qdoc'), qtsrcdir) as qdoc:
+        with Transcriber(bobuisrcdir.joinpath('src/corelib/text/qlocale.qdoc'), bobuisrcdir) as qdoc:
             DOCSTRING = "    QLocale's data is based on Common Locale Data Repository "
             for line in qdoc.reader:
                 if DOCSTRING in line:
@@ -1095,9 +1095,9 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
 
     # Locale-independent timezone data
     try:
-        with TimeZoneDataWriter(qtsrcdir.joinpath(
-                'src/corelib/time/qtimezoneprivate_data_p.h'),
-                                qtsrcdir, reader.cldrVersion) as writer:
+        with TimeZoneDataWriter(bobuisrcdir.joinpath(
+                'src/corelib/time/bobuiimezoneprivate_data_p.h'),
+                                bobuisrcdir, reader.cldrVersion) as writer:
             writer.aliasToIana(reader.aliasToIana())
             writer.msLandIanas(reader.msLandIanas())
             writer.msToIana(reader.msToIana())
@@ -1108,7 +1108,7 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
             ianaNames, metaNames = writer.nameTables(locale_map.values())
             writer.writeTables()
     except Exception as e:
-        err.write(f'\nError updating qtimezoneprivate_data_p.h: {e}\n')
+        err.write(f'\nError updating bobuiimezoneprivate_data_p.h: {e}\n')
         if args.verbose > 0:
             raise
         return 1
@@ -1116,12 +1116,12 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
     # Locale-dependent timezone data
     try:
         with LocaleZoneDataWriter(
-                qtsrcdir.joinpath('src/corelib/time/qtimezonelocale_data_p.h'),
-                qtsrcdir, reader.cldrVersion, ianaNames, metaNames) as writer:
+                bobuisrcdir.joinpath('src/corelib/time/bobuiimezonelocale_data_p.h'),
+                bobuisrcdir, reader.cldrVersion, ianaNames, metaNames) as writer:
             writer.localeData(locale_map, locale_keys)
             writer.writeTables()
     except Exception as e:
-        err.write(f'\nError updating qtimezonelocale_data_p.h: {e}\n')
+        err.write(f'\nError updating bobuiimezonelocale_data_p.h: {e}\n')
         if args.verbose > 0:
             raise
         return 1
@@ -1129,7 +1129,7 @@ def main(argv: list[str], out: TextIO, err: TextIO) -> int:
     # ./testlocales/localemodel.cpp
     try:
         path = 'util/locale_database/testlocales/localemodel.cpp'
-        with TestLocaleWriter(qtsrcdir.joinpath(path), qtsrcdir,
+        with TestLocaleWriter(bobuisrcdir.joinpath(path), bobuisrcdir,
                               reader.cldrVersion) as test:
             test.localeList(locale_keys)
     except Exception as e:

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAINPUTCONTEXT_H
 #define QCOCOAINPUTCONTEXT_H
 
 #include <qpa/qplatforminputcontext.h>
-#include <QtCore/QLocale>
-#include <QtCore/QPointer>
+#include <BobUICore/QLocale>
+#include <BobUICore/QPointer>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaInputContext : public QPlatformInputContext
 {
@@ -36,6 +36,6 @@ private:
     QMacNotificationObserver m_inputSourceObserver;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOCOAINPUTCONTEXT_H

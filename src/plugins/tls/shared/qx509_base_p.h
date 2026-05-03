@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QX509CERTIFICATE_BASE_P_H
 #define QX509CERTIFICATE_BASE_P_H
@@ -9,27 +9,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtNetwork/private/qtlsbackend_p.h>
+#include <BobUINetwork/private/bobuilsbackend_p.h>
 
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/qssl.h>
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 class X509CertificateBase : public X509Certificate
 {
@@ -83,8 +83,8 @@ protected:
     QList<X509CertificateExtension> extensions;
 };
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QX509CERTIFICATE_BASE_P_H

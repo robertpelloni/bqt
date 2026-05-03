@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTFILEENGINE_P_H
 #define QABSTRACTFILEENGINE_P_H
@@ -9,17 +9,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include "QtCore/qfile.h"
-#include "QtCore/qdir.h"
-#include "QtCore/qdirlisting.h"
+#include <BobUICore/private/qglobal_p.h>
+#include "BobUICore/qfile.h"
+#include "BobUICore/qdir.h"
+#include "BobUICore/qdirlisting.h"
 
 #include <memory>
 #include <optional>
@@ -28,7 +28,7 @@
 #error qabstractfileengine_p.h must be included before any header file that defines open
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVariant;
 class QAbstractFileEngineIterator;
@@ -255,8 +255,8 @@ public:
     Q_DECLARE_PUBLIC(QAbstractFileEngine)
 };
 
-std::unique_ptr<QAbstractFileEngine> qt_custom_file_engine_handler_create(const QString &path);
+std::unique_ptr<QAbstractFileEngine> bobui_custom_file_engine_handler_create(const QString &path);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTFILEENGINE_P_H

@@ -1,4 +1,4 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2000-2016 by David Turner, Robert Wilhelm, and Werner Lemberg.
 // SPDX-License-Identifier: FTL OR GPL-2.0-only
 
@@ -36,8 +36,8 @@
   /*     cc -c -D_STANDALONE_ ftgrays.c                                    */
   /*                                                                       */
   /* The renderer can be initialized with a call to                        */
-  /* `qt_ft_gray_raster.raster_new'; an anti-aliased bitmap can be generated  */
-  /* with a call to `qt_ft_gray_raster.raster_render'.                        */
+  /* `bobui_ft_gray_raster.raster_new'; an anti-aliased bitmap can be generated  */
+  /* with a call to `bobui_ft_gray_raster.raster_render'.                        */
   /*                                                                       */
   /* See the comments and documentation in the file `ftimage.h' for more   */
   /* details on how the raster works.                                      */
@@ -86,23 +86,23 @@
 
   /*************************************************************************/
   /*                                                                       */
-  /* The macro QT_FT_COMPONENT is used in trace mode.  It is an implicit      */
-  /* parameter of the QT_FT_TRACE() and QT_FT_ERROR() macros, used to print/log  */
+  /* The macro BOBUI_FT_COMPONENT is used in trace mode.  It is an implicit      */
+  /* parameter of the BOBUI_FT_TRACE() and BOBUI_FT_ERROR() macros, used to print/log  */
   /* messages during execution.                                            */
   /*                                                                       */
-#undef  QT_FT_COMPONENT
-#define QT_FT_COMPONENT  trace_smooth
+#undef  BOBUI_FT_COMPONENT
+#define BOBUI_FT_COMPONENT  trace_smooth
 
 
 /* Auxiliary macros for token concatenation. */
-#define QT_FT_ERR_XCAT( x, y )  x ## y
-#define QT_FT_ERR_CAT( x, y )   QT_FT_ERR_XCAT( x, y )
+#define BOBUI_FT_ERR_XCAT( x, y )  x ## y
+#define BOBUI_FT_ERR_CAT( x, y )   BOBUI_FT_ERR_XCAT( x, y )
 
-#define QT_FT_BEGIN_STMNT  do {
-#define QT_FT_END_STMNT    } while ( 0 )
+#define BOBUI_FT_BEGIN_STMNT  do {
+#define BOBUI_FT_END_STMNT    } while ( 0 )
 
-#define QT_FT_MAX( a, b )  ( (a) > (b) ? (a) : (b) )
-#define QT_FT_ABS( a )     ( (a) < 0 ? -(a) : (a) )
+#define BOBUI_FT_MAX( a, b )  ( (a) > (b) ? (a) : (b) )
+#define BOBUI_FT_ABS( a )     ( (a) < 0 ? -(a) : (a) )
 
 
 /*
@@ -110,9 +110,9 @@
  *  algorithm.  We use alpha = 1, beta = 3/8, giving us results with a
  *  largest error less than 7% compared to the exact value.
  */
-#define QT_FT_HYPOT( x, y )                 \
-        ( x = QT_FT_ABS( x ),             \
-          y = QT_FT_ABS( y ),             \
+#define BOBUI_FT_HYPOT( x, y )                 \
+        ( x = BOBUI_FT_ABS( x ),             \
+          y = BOBUI_FT_ABS( y ),             \
           x > y ? x + ( 3 * y >> 3 )   \
                 : y + ( 3 * x >> 3 ) )
 
@@ -121,20 +121,20 @@
 #if defined(VXWORKS)
 #  include <vxWorksCommon.h>    /* needed for setjmp.h */
 #endif
-#include <string.h>             /* for qt_ft_memcpy() */
+#include <string.h>             /* for bobui_ft_memcpy() */
 #include <setjmp.h>
 #include <limits.h>
 
-#define QT_FT_UINT_MAX  UINT_MAX
+#define BOBUI_FT_UINT_MAX  UINT_MAX
 
-#define qt_ft_memset   memset
+#define bobui_ft_memset   memset
 
-#define qt_ft_setjmp   setjmp
-#define qt_ft_longjmp  longjmp
-#define qt_ft_jmp_buf  jmp_buf
+#define bobui_ft_setjmp   setjmp
+#define bobui_ft_longjmp  longjmp
+#define bobui_ft_jmp_buf  jmp_buf
 
 #include <stddef.h>
-typedef ptrdiff_t  QT_FT_PtrDist;
+typedef ptrdiff_t  BOBUI_FT_PtrDist;
 
 #define ErrRaster_Invalid_Mode      -2
 #define ErrRaster_Invalid_Outline   -1
@@ -142,32 +142,32 @@ typedef ptrdiff_t  QT_FT_PtrDist;
 #define ErrRaster_Memory_Overflow   -4
 #define ErrRaster_OutOfMemory       -6
 
-#define QT_FT_BEGIN_HEADER
-#define QT_FT_END_HEADER
+#define BOBUI_FT_BEGIN_HEADER
+#define BOBUI_FT_END_HEADER
 
 #include <private/qrasterdefs_p.h>
 #include <private/qgrayraster_p.h>
 
 #include <qcompilerdetection.h>
-#include <qtconfigmacros.h>
+#include <bobuiconfigmacros.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
-#define QT_FT_UNUSED( x )  (void) x
+#define BOBUI_FT_UNUSED( x )  (void) x
 
-#define QT_FT_TRACE5( x )  do { } while ( 0 )     /* nothing */
-#define QT_FT_TRACE7( x )  do { } while ( 0 )     /* nothing */
-#define QT_FT_ERROR( x )   do { } while ( 0 )     /* nothing */
-#define QT_FT_THROW( e )   QT_FT_ERR_CAT( ErrRaster_, e )
+#define BOBUI_FT_TRACE5( x )  do { } while ( 0 )     /* nothing */
+#define BOBUI_FT_TRACE7( x )  do { } while ( 0 )     /* nothing */
+#define BOBUI_FT_ERROR( x )   do { } while ( 0 )     /* nothing */
+#define BOBUI_FT_THROW( e )   BOBUI_FT_ERR_CAT( ErrRaster_, e )
 
-#ifndef QT_FT_MEM_SET
-#define QT_FT_MEM_SET( d, s, c )  qt_ft_memset( d, s, c )
+#ifndef BOBUI_FT_MEM_SET
+#define BOBUI_FT_MEM_SET( d, s, c )  bobui_ft_memset( d, s, c )
 #endif
 
-#ifndef QT_FT_MEM_ZERO
-#define QT_FT_MEM_ZERO( dest, count )  QT_FT_MEM_SET( dest, 0, count )
+#ifndef BOBUI_FT_MEM_ZERO
+#define BOBUI_FT_MEM_ZERO( dest, count )  BOBUI_FT_MEM_SET( dest, 0, count )
 #endif
 
 
@@ -197,8 +197,8 @@ typedef ptrdiff_t  QT_FT_PtrDist;
 /* Compute `dividend / divisor' and return both its quotient and     */
 /* remainder, cast to a specific type.  This macro also ensures that */
 /* the remainder is always positive.                                 */
-#define QT_FT_DIV_MOD( type, dividend, divisor, quotient, remainder ) \
-QT_FT_BEGIN_STMNT                                                   \
+#define BOBUI_FT_DIV_MOD( type, dividend, divisor, quotient, remainder ) \
+BOBUI_FT_BEGIN_STMNT                                                   \
   (quotient)  = (type)( (dividend) / (divisor) );                \
   (remainder) = (type)( (dividend) % (divisor) );                \
   if ( (remainder) < 0 )                                         \
@@ -206,13 +206,13 @@ QT_FT_BEGIN_STMNT                                                   \
     (quotient)--;                                                \
     (remainder) += (type)(divisor);                              \
   }                                                              \
-QT_FT_END_STMNT
+BOBUI_FT_END_STMNT
 
   /* These macros speed up repetitive divisions by replacing them */
   /* with multiplications and right shifts.                       */
-#define QT_FT_UDIVPREP( b )                                       \
+#define BOBUI_FT_UDIVPREP( b )                                       \
   long  b ## _r = (long)( ULONG_MAX >> PIXEL_BITS ) / ( b )
-#define QT_FT_UDIV( a, b )                                        \
+#define BOBUI_FT_UDIV( a, b )                                        \
   ( ( (unsigned long)( a ) * (unsigned long)( b ## _r ) ) >>   \
     ( sizeof( long ) * CHAR_BIT - PIXEL_BITS ) )
 
@@ -222,7 +222,7 @@ QT_FT_END_STMNT
   /*   TYPE DEFINITIONS                                                    */
   /*                                                                       */
 
-  /* don't change the following types to QT_FT_Int or QT_FT_Pos, since we might */
+  /* don't change the following types to BOBUI_FT_Int or BOBUI_FT_Pos, since we might */
   /* need to define them to "float" or "double" when experimenting with   */
   /* new algorithms                                                       */
 
@@ -231,7 +231,7 @@ QT_FT_END_STMNT
   typedef long   TArea ;   /* cell areas, coordinate products   */
 
   /* maximal number of gray spans in a call to the span callback */
-#define QT_FT_MAX_GRAY_SPANS  256
+#define BOBUI_FT_MAX_GRAY_SPANS  256
 
 
   typedef struct TCell_*  PCell;
@@ -258,25 +258,25 @@ QT_FT_END_STMNT
     int     invalid;
 
     PCell   cells;
-    QT_FT_PtrDist     max_cells;
-    QT_FT_PtrDist     num_cells;
+    BOBUI_FT_PtrDist     max_cells;
+    BOBUI_FT_PtrDist     num_cells;
 
     TPos    x,  y;
 
-    QT_FT_Outline  outline;
-    QT_FT_Bitmap   target;
-    QT_FT_BBox     clip_box;
+    BOBUI_FT_Outline  outline;
+    BOBUI_FT_Bitmap   target;
+    BOBUI_FT_BBox     clip_box;
 
-    QT_FT_Span     gray_spans[QT_FT_MAX_GRAY_SPANS];
+    BOBUI_FT_Span     gray_spans[BOBUI_FT_MAX_GRAY_SPANS];
     int         num_gray_spans;
 
-    QT_FT_Raster_Span_Func  render_span;
+    BOBUI_FT_Raster_Span_Func  render_span;
     void*                render_span_data;
 
     int  band_size;
     int  band_shoot;
 
-    qt_ft_jmp_buf  jump_buffer;
+    bobui_ft_jmp_buf  jump_buffer;
 
     void*       buffer;
     long        buffer_size;
@@ -299,7 +299,7 @@ QT_FT_END_STMNT
 
   } TRaster, *PRaster;
 
-  int QT_MANGLE_NAMESPACE(q_gray_rendered_spans)(TRaster *raster)
+  int BOBUI_MANGLE_NAMESPACE(q_gray_rendered_spans)(TRaster *raster)
   {
     if ( raster && raster->worker )
       return raster->worker->skip_spans > 0 ? 0 : -raster->worker->skip_spans;
@@ -334,9 +334,9 @@ QT_FT_END_STMNT
   static void
   gray_compute_cbox( RAS_ARG )
   {
-    QT_FT_Outline*  outline = &ras.outline;
-    QT_FT_Vector*   vec     = outline->points;
-    QT_FT_Vector*   limit   = vec + outline->n_points;
+    BOBUI_FT_Outline*  outline = &ras.outline;
+    BOBUI_FT_Vector*   vec     = outline->points;
+    BOBUI_FT_Vector*   limit   = vec + outline->n_points;
 
 
     if ( outline->n_points <= 0 )
@@ -399,7 +399,7 @@ QT_FT_END_STMNT
     }
 
     if ( ras.num_cells >= ras.max_cells )
-      qt_ft_longjmp( ras.jump_buffer, 1 );
+      bobui_ft_longjmp( ras.jump_buffer, 1 );
 
     cell        = ras.cells + ras.num_cells++;
     cell->x     = x;
@@ -553,7 +553,7 @@ QT_FT_END_STMNT
       dx    = -dx;
     }
 
-    QT_FT_DIV_MOD( TCoord, p, dx, delta, mod );
+    BOBUI_FT_DIV_MOD( TCoord, p, dx, delta, mod );
 
     ras.area  += (TArea)( fx1 + first ) * delta;
     ras.cover += delta;
@@ -567,7 +567,7 @@ QT_FT_END_STMNT
 
 
       p = ONE_PIXEL * dy;
-      QT_FT_DIV_MOD( TCoord, p, dx, lift, rem );
+      BOBUI_FT_DIV_MOD( TCoord, p, dx, lift, rem );
 
       do
       {
@@ -719,7 +719,7 @@ QT_FT_END_STMNT
 
     /* the fractional part of x-delta is mod/dy. It is essential to */
     /* keep track of its accumulation for accurate rendering.       */
-    QT_FT_DIV_MOD( TCoord, p, dy, delta, mod );
+    BOBUI_FT_DIV_MOD( TCoord, p, dy, delta, mod );
 
     x = ras.x + delta;
     gray_render_scanline( RAS_VAR_ ey1, ras.x, fy1, x, (TCoord)first );
@@ -733,7 +733,7 @@ QT_FT_END_STMNT
 
 
       p    = ONE_PIXEL * dx;
-      QT_FT_DIV_MOD( TCoord, p, dy, lift, rem );
+      BOBUI_FT_DIV_MOD( TCoord, p, dy, lift, rem );
 
       do
       {
@@ -829,8 +829,8 @@ QT_FT_END_STMNT
     else                                  /* any other line */
     {
       TArea  prod = dx * fy1 - dy * fx1;
-      QT_FT_UDIVPREP( dx );
-      QT_FT_UDIVPREP( dy );
+      BOBUI_FT_UDIVPREP( dx );
+      BOBUI_FT_UDIVPREP( dy );
 
 
       /* The fundamental value `prod' determines which side and the  */
@@ -842,7 +842,7 @@ QT_FT_END_STMNT
                   prod - dx * ONE_PIXEL                  >  0 ) /* left */
         {
           fx2 = 0;
-          fy2 = (TPos)QT_FT_UDIV( -prod, -dx );
+          fy2 = (TPos)BOBUI_FT_UDIV( -prod, -dx );
           prod -= dy * ONE_PIXEL;
           ras.cover += ( fy2 - fy1 );
           ras.area  += ( fy2 - fy1 ) * ( fx1 + fx2 );
@@ -854,7 +854,7 @@ QT_FT_END_STMNT
                   prod - dx * ONE_PIXEL + dy * ONE_PIXEL >  0 ) /* up */
         {
           prod -= dx * ONE_PIXEL;
-          fx2 = (TPos)QT_FT_UDIV( -prod, dy );
+          fx2 = (TPos)BOBUI_FT_UDIV( -prod, dy );
           fy2 = ONE_PIXEL;
           ras.cover += ( fy2 - fy1 );
           ras.area  += ( fy2 - fy1 ) * ( fx1 + fx2 );
@@ -867,7 +867,7 @@ QT_FT_END_STMNT
         {
           prod += dy * ONE_PIXEL;
           fx2 = ONE_PIXEL;
-          fy2 = (TPos)QT_FT_UDIV( prod, dx );
+          fy2 = (TPos)BOBUI_FT_UDIV( prod, dx );
           ras.cover += ( fy2 - fy1 );
           ras.area  += ( fy2 - fy1 ) * ( fx1 + fx2 );
           fx1 = 0;
@@ -877,7 +877,7 @@ QT_FT_END_STMNT
         else /* ( prod                  + dy * ONE_PIXEL <  0 &&
                   prod                                   >  0 )    down */
         {
-          fx2 = (TPos)QT_FT_UDIV( prod, -dy );
+          fx2 = (TPos)BOBUI_FT_UDIV( prod, -dy );
           fy2 = 0;
           prod += dx * ONE_PIXEL;
           ras.cover += ( fy2 - fy1 );
@@ -905,7 +905,7 @@ QT_FT_END_STMNT
 #endif
 
   static void
-  gray_split_conic( QT_FT_Vector*  base )
+  gray_split_conic( BOBUI_FT_Vector*  base )
   {
     TPos  a, b;
 
@@ -925,11 +925,11 @@ QT_FT_END_STMNT
 
 
   static void
-  gray_render_conic( RAS_ARG_ const QT_FT_Vector*  control,
-                              const QT_FT_Vector*  to )
+  gray_render_conic( RAS_ARG_ const BOBUI_FT_Vector*  control,
+                              const BOBUI_FT_Vector*  to )
   {
-    QT_FT_Vector   bez_stack[16 * 2 + 1];  /* enough to accommodate bisections */
-    QT_FT_Vector*  arc = bez_stack;
+    BOBUI_FT_Vector   bez_stack[16 * 2 + 1];  /* enough to accommodate bisections */
+    BOBUI_FT_Vector*  arc = bez_stack;
     TPos        dx, dy;
     int         draw, split;
 
@@ -954,8 +954,8 @@ QT_FT_END_STMNT
       return;
     }
 
-    dx = QT_FT_ABS( arc[2].x + arc[0].x - 2 * arc[1].x );
-    dy = QT_FT_ABS( arc[2].y + arc[0].y - 2 * arc[1].y );
+    dx = BOBUI_FT_ABS( arc[2].x + arc[0].x - 2 * arc[1].x );
+    dy = BOBUI_FT_ABS( arc[2].y + arc[0].y - 2 * arc[1].y );
     if ( dx < dy )
       dx = dy;
 
@@ -990,7 +990,7 @@ QT_FT_END_STMNT
 
 
   static void
-  gray_split_cubic( QT_FT_Vector*  base )
+  gray_split_cubic( BOBUI_FT_Vector*  base )
   {
     TPos  a, b, c, d;
 
@@ -1018,12 +1018,12 @@ QT_FT_END_STMNT
 
 
   static void
-  gray_render_cubic( RAS_ARG_ const QT_FT_Vector*  control1,
-                              const QT_FT_Vector*  control2,
-                              const QT_FT_Vector*  to )
+  gray_render_cubic( RAS_ARG_ const BOBUI_FT_Vector*  control1,
+                              const BOBUI_FT_Vector*  control2,
+                              const BOBUI_FT_Vector*  to )
   {
-    QT_FT_Vector   bez_stack[16 * 3 + 1];  /* enough to accommodate bisections */
-    QT_FT_Vector*  arc = bez_stack;
+    BOBUI_FT_Vector   bez_stack[16 * 3 + 1];  /* enough to accommodate bisections */
+    BOBUI_FT_Vector*  arc = bez_stack;
     TPos        dx, dy, dx_, dy_;
     TPos        dx1, dy1, dx2, dy2;
     TPos        L, s, s_limit;
@@ -1065,7 +1065,7 @@ QT_FT_END_STMNT
       dx = dx_ = arc[3].x - arc[0].x;
       dy = dy_ = arc[3].y - arc[0].y;
 
-      L = QT_FT_HYPOT( dx_, dy_ );
+      L = BOBUI_FT_HYPOT( dx_, dy_ );
 
       /* Avoid possible arithmetic overflow below by splitting. */
       if ( L >= (1 << 23) )
@@ -1077,7 +1077,7 @@ QT_FT_END_STMNT
       /* s is L * the perpendicular distance from P1 to the line P0-P3. */
       dx1 = arc[1].x - arc[0].x;
       dy1 = arc[1].y - arc[0].y;
-      s = QT_FT_ABS( dy * dx1 - dx * dy1 );
+      s = BOBUI_FT_ABS( dy * dx1 - dx * dy1 );
 
       if ( s > s_limit )
         goto Split;
@@ -1085,7 +1085,7 @@ QT_FT_END_STMNT
       /* s is L * the perpendicular distance from P2 to the line P0-P3. */
       dx2 = arc[2].x - arc[0].x;
       dy2 = arc[2].y - arc[0].y;
-      s = QT_FT_ABS( dy * dx2 - dx * dy2 );
+      s = BOBUI_FT_ABS( dy * dx2 - dx * dy2 );
 
       if ( s > s_limit )
         goto Split;
@@ -1114,7 +1114,7 @@ QT_FT_END_STMNT
 
 
   static int
-  gray_move_to( const QT_FT_Vector*  to,
+  gray_move_to( const BOBUI_FT_Vector*  to,
                 PWorker           worker )
   {
     TPos  x, y;
@@ -1137,11 +1137,11 @@ QT_FT_END_STMNT
 
   static void
   gray_render_span( int                count,
-                    const QT_FT_Span*  spans,
+                    const BOBUI_FT_Span*  spans,
                     PWorker            worker )
   {
     unsigned char*  p;
-    QT_FT_Bitmap*      map = &worker->target;
+    BOBUI_FT_Bitmap*      map = &worker->target;
 
     for ( ; count > 0; count--, spans++ )
     {
@@ -1173,7 +1173,7 @@ QT_FT_END_STMNT
         case 1: *q   = coverage; Q_FALLTHROUGH();
         case 0: break;
         default:
-          QT_FT_MEM_SET( q, coverage, spans->len );
+          BOBUI_FT_MEM_SET( q, coverage, spans->len );
         }
       }
     }
@@ -1199,7 +1199,7 @@ QT_FT_END_STMNT
     if ( coverage < 0 )
       coverage = -coverage;
 
-    if ( ras.outline.flags & QT_FT_OUTLINE_EVEN_ODD_FILL )
+    if ( ras.outline.flags & BOBUI_FT_OUTLINE_EVEN_ODD_FILL )
     {
       coverage &= 511;
 
@@ -1218,17 +1218,17 @@ QT_FT_END_STMNT
     y += (TCoord)ras.min_ey;
     x += (TCoord)ras.min_ex;
 
-    /* QT_FT_Span.x is an int, so limit our coordinates appropriately */
+    /* BOBUI_FT_Span.x is an int, so limit our coordinates appropriately */
     if ( x >= (1 << 23) )
       x = (1 << 23) - 1;
 
-    /* QT_FT_Span.y is an int, so limit our coordinates appropriately */
+    /* BOBUI_FT_Span.y is an int, so limit our coordinates appropriately */
     if ( y >= (1 << 23) )
       y = (1 << 23) - 1;
 
     if ( coverage )
     {
-      QT_FT_Span*  span;
+      BOBUI_FT_Span*  span;
       int       count;
       int       skip;
 
@@ -1245,7 +1245,7 @@ QT_FT_END_STMNT
         return;
       }
 
-      if ( count >= QT_FT_MAX_GRAY_SPANS )
+      if ( count >= BOBUI_FT_MAX_GRAY_SPANS )
       {
         if ( ras.render_span && count > ras.skip_spans )
         {
@@ -1319,17 +1319,17 @@ QT_FT_END_STMNT
 
 
   static void
-  gray_sweep( RAS_ARG_ const QT_FT_Bitmap*  target )
+  gray_sweep( RAS_ARG_ const BOBUI_FT_Bitmap*  target )
   {
     int  yindex;
 
-    QT_FT_UNUSED( target );
+    BOBUI_FT_UNUSED( target );
 
 
     if ( ras.num_cells == 0 )
       return;
 
-    QT_FT_TRACE7(( "gray_sweep: start\n" ));
+    BOBUI_FT_TRACE7(( "gray_sweep: start\n" ));
 
     for ( yindex = 0; yindex < ras.ycount; yindex++ )
     {
@@ -1361,7 +1361,7 @@ QT_FT_END_STMNT
                     ras.count_ex - x );
     }
 
-    QT_FT_TRACE7(( "gray_sweep: end\n" ));
+    BOBUI_FT_TRACE7(( "gray_sweep: end\n" ));
   }
 
   /*************************************************************************/
@@ -1374,7 +1374,7 @@ QT_FT_END_STMNT
   /*************************************************************************/
   /*                                                                       */
   /* <Function>                                                            */
-  /*    QT_FT_Outline_Decompose                                               */
+  /*    BOBUI_FT_Outline_Decompose                                               */
   /*                                                                       */
   /* <Description>                                                         */
   /*    Walks over an outline's structure to decompose it into individual  */
@@ -1394,18 +1394,18 @@ QT_FT_END_STMNT
   /*    Error code.  0 means success.                                      */
   /*                                                                       */
   static
-  int  QT_FT_Outline_Decompose( const QT_FT_Outline*        outline,
+  int  BOBUI_FT_Outline_Decompose( const BOBUI_FT_Outline*        outline,
                                 void*                       user )
   {
 #undef SCALED
 #define SCALED( x )  (x)
 
-    QT_FT_Vector   v_last;
-    QT_FT_Vector   v_control;
-    QT_FT_Vector   v_start;
+    BOBUI_FT_Vector   v_last;
+    BOBUI_FT_Vector   v_control;
+    BOBUI_FT_Vector   v_start;
 
-    QT_FT_Vector*  point;
-    QT_FT_Vector*  limit;
+    BOBUI_FT_Vector*  point;
+    BOBUI_FT_Vector*  limit;
     char*       tags;
 
     int   n;         /* index of contour in outline     */
@@ -1440,17 +1440,17 @@ QT_FT_END_STMNT
 
       point = outline->points + first;
       tags  = outline->tags  + first;
-      tag   = QT_FT_CURVE_TAG( tags[0] );
+      tag   = BOBUI_FT_CURVE_TAG( tags[0] );
 
       /* A contour cannot start with a cubic control point! */
-      if ( tag == QT_FT_CURVE_TAG_CUBIC )
+      if ( tag == BOBUI_FT_CURVE_TAG_CUBIC )
         goto Invalid_Outline;
 
       /* check first point to determine origin */
-      if ( tag == QT_FT_CURVE_TAG_CONIC )
+      if ( tag == BOBUI_FT_CURVE_TAG_CONIC )
       {
         /* first point is conic control.  Yes, this happens. */
-        if ( QT_FT_CURVE_TAG( outline->tags[last] ) == QT_FT_CURVE_TAG_ON )
+        if ( BOBUI_FT_CURVE_TAG( outline->tags[last] ) == BOBUI_FT_CURVE_TAG_ON )
         {
           /* start at last point if it is on the curve */
           v_start = v_last;
@@ -1470,7 +1470,7 @@ QT_FT_END_STMNT
         tags--;
       }
 
-      QT_FT_TRACE5(( "  move to (%.2f, %.2f)\n",
+      BOBUI_FT_TRACE5(( "  move to (%.2f, %.2f)\n",
                      v_start.x / 64.0, v_start.y / 64.0 ));
       error = gray_move_to( &v_start, user );
       if ( error )
@@ -1481,24 +1481,24 @@ QT_FT_END_STMNT
         point++;
         tags++;
 
-        tag = QT_FT_CURVE_TAG( tags[0] );
+        tag = BOBUI_FT_CURVE_TAG( tags[0] );
         switch ( tag )
         {
-        case QT_FT_CURVE_TAG_ON:  /* emit a single line_to */
+        case BOBUI_FT_CURVE_TAG_ON:  /* emit a single line_to */
           {
-            QT_FT_Vector  vec;
+            BOBUI_FT_Vector  vec;
 
 
             vec.x = SCALED( point->x );
             vec.y = SCALED( point->y );
 
-            QT_FT_TRACE5(( "  line to (%.2f, %.2f)\n",
+            BOBUI_FT_TRACE5(( "  line to (%.2f, %.2f)\n",
                            vec.x / 64.0, vec.y / 64.0 ));
             gray_render_line(user, UPSCALE(vec.x), UPSCALE(vec.y));
             continue;
           }
 
-        case QT_FT_CURVE_TAG_CONIC:  /* consume conic arcs */
+        case BOBUI_FT_CURVE_TAG_CONIC:  /* consume conic arcs */
           {
             v_control.x = SCALED( point->x );
             v_control.y = SCALED( point->y );
@@ -1506,20 +1506,20 @@ QT_FT_END_STMNT
           Do_Conic:
             if ( point < limit )
             {
-              QT_FT_Vector  vec;
-              QT_FT_Vector  v_middle;
+              BOBUI_FT_Vector  vec;
+              BOBUI_FT_Vector  v_middle;
 
 
               point++;
               tags++;
-              tag = QT_FT_CURVE_TAG( tags[0] );
+              tag = BOBUI_FT_CURVE_TAG( tags[0] );
 
               vec.x = SCALED( point->x );
               vec.y = SCALED( point->y );
 
-              if ( tag == QT_FT_CURVE_TAG_ON )
+              if ( tag == BOBUI_FT_CURVE_TAG_ON )
               {
-                QT_FT_TRACE5(( "  conic to (%.2f, %.2f)"
+                BOBUI_FT_TRACE5(( "  conic to (%.2f, %.2f)"
                                " with control (%.2f, %.2f)\n",
                                vec.x / 64.0, vec.y / 64.0,
                                v_control.x / 64.0, v_control.y / 64.0 ));
@@ -1527,13 +1527,13 @@ QT_FT_END_STMNT
                 continue;
               }
 
-              if ( tag != QT_FT_CURVE_TAG_CONIC )
+              if ( tag != BOBUI_FT_CURVE_TAG_CONIC )
                 goto Invalid_Outline;
 
               v_middle.x = ( v_control.x + vec.x ) / 2;
               v_middle.y = ( v_control.y + vec.y ) / 2;
 
-              QT_FT_TRACE5(( "  conic to (%.2f, %.2f)"
+              BOBUI_FT_TRACE5(( "  conic to (%.2f, %.2f)"
                              " with control (%.2f, %.2f)\n",
                              v_middle.x / 64.0, v_middle.y / 64.0,
                              v_control.x / 64.0, v_control.y / 64.0 ));
@@ -1543,7 +1543,7 @@ QT_FT_END_STMNT
               goto Do_Conic;
             }
 
-            QT_FT_TRACE5(( "  conic to (%.2f, %.2f)"
+            BOBUI_FT_TRACE5(( "  conic to (%.2f, %.2f)"
                            " with control (%.2f, %.2f)\n",
                            v_start.x / 64.0, v_start.y / 64.0,
                            v_control.x / 64.0, v_control.y / 64.0 ));
@@ -1551,13 +1551,13 @@ QT_FT_END_STMNT
             goto Close;
           }
 
-        default:  /* QT_FT_CURVE_TAG_CUBIC */
+        default:  /* BOBUI_FT_CURVE_TAG_CUBIC */
           {
-            QT_FT_Vector  vec1, vec2;
+            BOBUI_FT_Vector  vec1, vec2;
 
 
             if ( point + 1 > limit                             ||
-                 QT_FT_CURVE_TAG( tags[1] ) != QT_FT_CURVE_TAG_CUBIC )
+                 BOBUI_FT_CURVE_TAG( tags[1] ) != BOBUI_FT_CURVE_TAG_CUBIC )
               goto Invalid_Outline;
 
             point += 2;
@@ -1571,13 +1571,13 @@ QT_FT_END_STMNT
 
             if ( point <= limit )
             {
-              QT_FT_Vector  vec;
+              BOBUI_FT_Vector  vec;
 
 
               vec.x = SCALED( point->x );
               vec.y = SCALED( point->y );
 
-              QT_FT_TRACE5(( "  cubic to (%.2f, %.2f)"
+              BOBUI_FT_TRACE5(( "  cubic to (%.2f, %.2f)"
                              " with controls (%.2f, %.2f) and (%.2f, %.2f)\n",
                              vec.x / 64.0, vec.y / 64.0,
                              vec1.x / 64.0, vec1.y / 64.0,
@@ -1586,7 +1586,7 @@ QT_FT_END_STMNT
               continue;
             }
 
-            QT_FT_TRACE5(( "  cubic to (%.2f, %.2f)"
+            BOBUI_FT_TRACE5(( "  cubic to (%.2f, %.2f)"
                            " with controls (%.2f, %.2f) and (%.2f, %.2f)\n",
                            v_start.x / 64.0, v_start.y / 64.0,
                            vec1.x / 64.0, vec1.y / 64.0,
@@ -1598,7 +1598,7 @@ QT_FT_END_STMNT
       }
 
       /* close the contour with a line segment */
-      QT_FT_TRACE5(( "  line to (%.2f, %.2f)\n",
+      BOBUI_FT_TRACE5(( "  line to (%.2f, %.2f)\n",
                      v_start.x / 64.0, v_start.y / 64.0 ));
       gray_render_line(user, UPSCALE(v_start.x), UPSCALE(v_start.y));
 
@@ -1606,11 +1606,11 @@ QT_FT_END_STMNT
       first = last + 1;
     }
 
-    QT_FT_TRACE5(( "FT_Outline_Decompose: Done\n", n ));
+    BOBUI_FT_TRACE5(( "FT_Outline_Decompose: Done\n", n ));
     return 0;
 
   Exit:
-    QT_FT_TRACE5(( "FT_Outline_Decompose: Error %d\n", error ));
+    BOBUI_FT_TRACE5(( "FT_Outline_Decompose: Error %d\n", error ));
     return error;
 
   Invalid_Outline:
@@ -1628,9 +1628,9 @@ QT_FT_END_STMNT
   {
     volatile int  error = 0;
 
-    if ( qt_ft_setjmp( ras.jump_buffer ) == 0 )
+    if ( bobui_ft_setjmp( ras.jump_buffer ) == 0 )
     {
-      error = QT_FT_Outline_Decompose( &ras.outline, &ras );
+      error = BOBUI_FT_Outline_Decompose( &ras.outline, &ras );
       if ( !ras.invalid )
         gray_record_cell( RAS_VAR );
     }
@@ -1650,7 +1650,7 @@ QT_FT_END_STMNT
     TBand* volatile  band;
     int volatile     n, num_bands;
     TPos volatile    min, max, max_y;
-    QT_FT_BBox*      clip;
+    BOBUI_FT_BBox*      clip;
     int              skip;
 
     ras.num_gray_spans = 0;
@@ -1793,11 +1793,11 @@ QT_FT_END_STMNT
 
 
   static int
-  gray_raster_render( QT_FT_Raster                  raster,
-                      const QT_FT_Raster_Params*  params )
+  gray_raster_render( BOBUI_FT_Raster                  raster,
+                      const BOBUI_FT_Raster_Params*  params )
   {
-    const QT_FT_Outline*  outline    = (const QT_FT_Outline*)params->source;
-    const QT_FT_Bitmap*   target_map = params->target;
+    const BOBUI_FT_Outline*  outline    = (const BOBUI_FT_Outline*)params->source;
+    const BOBUI_FT_Bitmap*   target_map = params->target;
     PWorker            worker;
 
 
@@ -1833,7 +1833,7 @@ QT_FT_END_STMNT
     worker = raster->worker;
 
     /* if direct mode is not set, we must have a target bitmap */
-    if ( ( params->flags & QT_FT_RASTER_FLAG_DIRECT ) == 0 )
+    if ( ( params->flags & BOBUI_FT_RASTER_FLAG_DIRECT ) == 0 )
     {
       if ( !target_map )
         return ErrRaster_Invalid_Argument;
@@ -1847,11 +1847,11 @@ QT_FT_END_STMNT
     }
 
     /* this version does not support monochrome rendering */
-    if ( !( params->flags & QT_FT_RASTER_FLAG_AA ) )
+    if ( !( params->flags & BOBUI_FT_RASTER_FLAG_AA ) )
       return ErrRaster_Invalid_Mode;
 
     /* compute clipping box */
-    if ( ( params->flags & QT_FT_RASTER_FLAG_DIRECT ) == 0 )
+    if ( ( params->flags & BOBUI_FT_RASTER_FLAG_DIRECT ) == 0 )
     {
       /* compute clip box from target pixmap */
       ras.clip_box.xMin = 0;
@@ -1859,7 +1859,7 @@ QT_FT_END_STMNT
       ras.clip_box.xMax = target_map->width;
       ras.clip_box.yMax = target_map->rows;
     }
-    else if ( params->flags & QT_FT_RASTER_FLAG_CLIP )
+    else if ( params->flags & BOBUI_FT_RASTER_FLAG_CLIP )
     {
       ras.clip_box = params->clip_box;
     }
@@ -1881,12 +1881,12 @@ QT_FT_END_STMNT
     if ( target_map )
       ras.target = *target_map;
 
-    ras.render_span      = (QT_FT_Raster_Span_Func)gray_render_span;
+    ras.render_span      = (BOBUI_FT_Raster_Span_Func)gray_render_span;
     ras.render_span_data = &ras;
 
-    if ( params->flags & QT_FT_RASTER_FLAG_DIRECT )
+    if ( params->flags & BOBUI_FT_RASTER_FLAG_DIRECT )
     {
-      ras.render_span      = (QT_FT_Raster_Span_Func)params->gray_spans;
+      ras.render_span      = (BOBUI_FT_Raster_Span_Func)params->gray_spans;
       ras.render_span_data = params->user;
     }
 
@@ -1898,28 +1898,28 @@ QT_FT_END_STMNT
   /****                         a static object.                  *****/
 
   static int
-  gray_raster_new( QT_FT_Raster*  araster )
+  gray_raster_new( BOBUI_FT_Raster*  araster )
   {
     *araster = malloc(sizeof(TRaster));
     if (!*araster) {
         *araster = 0;
         return ErrRaster_Memory_Overflow;
     }
-    QT_FT_MEM_ZERO(*araster, sizeof(TRaster));
+    BOBUI_FT_MEM_ZERO(*araster, sizeof(TRaster));
 
     return 0;
   }
 
 
   static void
-  gray_raster_done( QT_FT_Raster  raster )
+  gray_raster_done( BOBUI_FT_Raster  raster )
   {
     free(raster);
   }
 
 
   static void
-  gray_raster_reset( QT_FT_Raster  raster,
+  gray_raster_reset( BOBUI_FT_Raster  raster,
                      char*      pool_base,
                      long       pool_size )
   {
@@ -1959,15 +1959,15 @@ QT_FT_END_STMNT
     }
   }
 
-  const QT_FT_Raster_Funcs  QT_MANGLE_NAMESPACE(qt_ft_grays_raster) =
+  const BOBUI_FT_Raster_Funcs  BOBUI_MANGLE_NAMESPACE(bobui_ft_grays_raster) =
   {
-    QT_FT_GLYPH_FORMAT_OUTLINE,
+    BOBUI_FT_GLYPH_FORMAT_OUTLINE,
 
-    (QT_FT_Raster_New_Func)     gray_raster_new,
-    (QT_FT_Raster_Reset_Func)   gray_raster_reset,
-    (QT_FT_Raster_Set_Mode_Func)0,
-    (QT_FT_Raster_Render_Func)  gray_raster_render,
-    (QT_FT_Raster_Done_Func)    gray_raster_done
+    (BOBUI_FT_Raster_New_Func)     gray_raster_new,
+    (BOBUI_FT_Raster_Reset_Func)   gray_raster_reset,
+    (BOBUI_FT_Raster_Set_Mode_Func)0,
+    (BOBUI_FT_Raster_Render_Func)  gray_raster_render,
+    (BOBUI_FT_Raster_Done_Func)    gray_raster_done
   };
 
 /* END */

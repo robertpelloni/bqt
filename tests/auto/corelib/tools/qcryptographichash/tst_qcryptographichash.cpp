@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 #include <QScopeGuard>
 #include <QCryptographicHash>
-#include <QtCore/QMetaEnum>
+#include <BobUICore/QMetaEnum>
 
 Q_DECLARE_METATYPE(QCryptographicHash::Algorithm)
 
@@ -71,99 +71,99 @@ void tst_QCryptographicHash::repeated_result()
 
 void tst_QCryptographicHash::intermediary_result_data()
 {
-    QTest::addColumn<int>("algo");
-    QTest::addColumn<QByteArray>("first");
-    QTest::addColumn<QByteArray>("second");
-    QTest::addColumn<QByteArray>("hash_first");
-    QTest::addColumn<QByteArray>("hash_firstsecond");
+    BOBUIest::addColumn<int>("algo");
+    BOBUIest::addColumn<QByteArray>("first");
+    BOBUIest::addColumn<QByteArray>("second");
+    BOBUIest::addColumn<QByteArray>("hash_first");
+    BOBUIest::addColumn<QByteArray>("hash_firstsecond");
 
-    QTest::newRow("md4") << int(QCryptographicHash::Md4)
+    BOBUIest::newRow("md4") << int(QCryptographicHash::Md4)
                          << QByteArray("abc") << QByteArray("abc")
                          << QByteArray::fromHex("A448017AAF21D8525FC10AE87AA6729D")
                          << QByteArray::fromHex("03E5E436DAFAF3B9B3589DB83C417C6B");
-    QTest::newRow("md5") << int(QCryptographicHash::Md5)
+    BOBUIest::newRow("md5") << int(QCryptographicHash::Md5)
                          << QByteArray("abc") << QByteArray("abc")
                          << QByteArray::fromHex("900150983CD24FB0D6963F7D28E17F72")
                          << QByteArray::fromHex("440AC85892CA43AD26D44C7AD9D47D3E");
-    QTest::newRow("sha1") << int(QCryptographicHash::Sha1)
+    BOBUIest::newRow("sha1") << int(QCryptographicHash::Sha1)
                           << QByteArray("abc") << QByteArray("abc")
                           << QByteArray::fromHex("A9993E364706816ABA3E25717850C26C9CD0D89D")
                           << QByteArray::fromHex("F8C1D87006FBF7E5CC4B026C3138BC046883DC71");
-    QTest::newRow("sha224") << int(QCryptographicHash::Sha224)
+    BOBUIest::newRow("sha224") << int(QCryptographicHash::Sha224)
                             << QByteArray("abc") << QByteArray("abc")
                             << QByteArray::fromHex("23097D223405D8228642A477BDA255B32AADBCE4BDA0B3F7E36C9DA7")
                             << QByteArray::fromHex("7C9C91FC479626AA1A525301084DEB96716131D146A2DB61B533F4C9");
-    QTest::newRow("sha256") << int(QCryptographicHash::Sha256)
+    BOBUIest::newRow("sha256") << int(QCryptographicHash::Sha256)
                             << QByteArray("abc") << QByteArray("abc")
                             << QByteArray::fromHex("BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD")
                             << QByteArray::fromHex("BBB59DA3AF939F7AF5F360F2CEB80A496E3BAE1CD87DDE426DB0AE40677E1C2C");
-    QTest::newRow("sha384") << int(QCryptographicHash::Sha384)
+    BOBUIest::newRow("sha384") << int(QCryptographicHash::Sha384)
                             << QByteArray("abc") << QByteArray("abc")
                             << QByteArray::fromHex("CB00753F45A35E8BB5A03D699AC65007272C32AB0EDED1631A8B605A43FF5BED8086072BA1E7CC2358BAECA134C825A7")
                             << QByteArray::fromHex("CAF33A735C9535CE7F5D24FB5B3A4834F0E9316664AD15A9E8221679D4A3B4FB7E962404BA0C10C1D43AB49D03A08B8D");
-    QTest::newRow("sha512") << int(QCryptographicHash::Sha512)
+    BOBUIest::newRow("sha512") << int(QCryptographicHash::Sha512)
                             << QByteArray("abc") << QByteArray("abc")
                             << QByteArray::fromHex("DDAF35A193617ABACC417349AE20413112E6FA4E89A97EA20A9EEEE64B55D39A2192992A274FC1A836BA3C23A3FEEBBD454D4423643CE80E2A9AC94FA54CA49F")
                             << QByteArray::fromHex("F3C41E7B63EE869596FC28BAD64120612C520F65928AB4D126C72C6998B551B8FF1CEDDFED4373E6717554DC89D1EEE6F0AB22FD3675E561ABA9AE26A3EEC53B");
 
-    QTest::newRow("sha3_224_empty_abc")
+    BOBUIest::newRow("sha3_224_empty_abc")
             << int(QCryptographicHash::Sha3_224)
             << QByteArray("") << QByteArray("abc")
             << QByteArray::fromHex("6B4E03423667DBB73B6E15454F0EB1ABD4597F9A1B078E3F5B5A6BC7")
             << QByteArray::fromHex("E642824C3F8CF24AD09234EE7D3C766FC9A3A5168D0C94AD73B46FDF");
-    QTest::newRow("sha3_256_empty_abc")
+    BOBUIest::newRow("sha3_256_empty_abc")
             << int(QCryptographicHash::Sha3_256)
             << QByteArray("") << QByteArray("abc")
             << QByteArray::fromHex("A7FFC6F8BF1ED76651C14756A061D662F580FF4DE43B49FA82D80A4B80F8434A")
             << QByteArray::fromHex("3A985DA74FE225B2045C172D6BD390BD855F086E3E9D525B46BFE24511431532");
-    QTest::newRow("sha3_384_empty_abc")
+    BOBUIest::newRow("sha3_384_empty_abc")
             << int(QCryptographicHash::Sha3_384)
             << QByteArray("") << QByteArray("abc")
             << QByteArray::fromHex("0C63A75B845E4F7D01107D852E4C2485C51A50AAAA94FC61995E71BBEE983A2AC3713831264ADB47FB6BD1E058D5F004")
             << QByteArray::fromHex("EC01498288516FC926459F58E2C6AD8DF9B473CB0FC08C2596DA7CF0E49BE4B298D88CEA927AC7F539F1EDF228376D25");
-    QTest::newRow("sha3_512_empty_abc")
+    BOBUIest::newRow("sha3_512_empty_abc")
             << int(QCryptographicHash::Sha3_512)
             << QByteArray("") << QByteArray("abc")
             << QByteArray::fromHex("A69F73CCA23A9AC5C8B567DC185A756E97C982164FE25859E0D1DCC1475C80A615B2123AF1F5F94C11E3E9402C3AC558F500199D95B6D3E301758586281DCD26")
             << QByteArray::fromHex("B751850B1A57168A5693CD924B6B096E08F621827444F70D884F5D0240D2712E10E116E9192AF3C91A7EC57647E3934057340B4CF408D5A56592F8274EEC53F0");
 
-    QTest::newRow("sha3_224_abc_abc")
+    BOBUIest::newRow("sha3_224_abc_abc")
             << int(QCryptographicHash::Sha3_224)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("E642824C3F8CF24AD09234EE7D3C766FC9A3A5168D0C94AD73B46FDF")
             << QByteArray::fromHex("58F426458091E16FBC61DDCB8F2D2A6F30F729CAFA3C289A4EB2BCF8");
-    QTest::newRow("sha3_256_abc_abc")
+    BOBUIest::newRow("sha3_256_abc_abc")
             << int(QCryptographicHash::Sha3_256)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("3A985DA74FE225B2045C172D6BD390BD855F086E3E9D525B46BFE24511431532")
             << QByteArray::fromHex("6C0872716337DE1EE664C1E37F64ADE109448F02681C63A912BC230FDEFC0058");
-    QTest::newRow("sha3_384_abc_abc")
+    BOBUIest::newRow("sha3_384_abc_abc")
             << int(QCryptographicHash::Sha3_384)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("EC01498288516FC926459F58E2C6AD8DF9B473CB0FC08C2596DA7CF0E49BE4B298D88CEA927AC7F539F1EDF228376D25")
             << QByteArray::fromHex("34FA93E11E467D610524EC91CEDC848EE1395BCF8F4F987455478E63DB0BCE47194D33D1251A3CC32BBB18D8726040D0");
-    QTest::newRow("sha3_512_abc_abc")
+    BOBUIest::newRow("sha3_512_abc_abc")
             << int(QCryptographicHash::Sha3_512)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("B751850B1A57168A5693CD924B6B096E08F621827444F70D884F5D0240D2712E10E116E9192AF3C91A7EC57647E3934057340B4CF408D5A56592F8274EEC53F0")
             << QByteArray::fromHex("BB582DA40D15399ACF62AFCBBD6CFC9EE1DD5129B1EF9935DD3B21668F1A73D7841018BE3B13F281C3A8E9DA7EDB60F57B9F9F1C04033DF4CE3654B7B2ADB310");
 
-    QTest::newRow("keccak_224_abc_abc")
+    BOBUIest::newRow("keccak_224_abc_abc")
             << int(QCryptographicHash::Keccak_224)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("c30411768506ebe1c2871b1ee2e87d38df342317300a9b97a95ec6a8")
             << QByteArray::fromHex("048330e7c7c8b4a41ab713b3a6f958d77b8cf3ee969930f1584dd550");
-    QTest::newRow("keccak_256_abc_abc")
+    BOBUIest::newRow("keccak_256_abc_abc")
             << int(QCryptographicHash::Keccak_256)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("4e03657aea45a94fc7d47ba826c8d667c0d1e6e33a64a036ec44f58fa12d6c45")
             << QByteArray::fromHex("9f0adad0a59b05d2e04a1373342b10b9eb16c57c164c8a3bfcbf46dccee39a21");
-    QTest::newRow("keccak_384_abc_abc")
+    BOBUIest::newRow("keccak_384_abc_abc")
             << int(QCryptographicHash::Keccak_384)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("f7df1165f033337be098e7d288ad6a2f74409d7a60b49c36642218de161b1f99f8c681e4afaf31a34db29fb763e3c28e")
             << QByteArray::fromHex("d733b87d392d270889d3da23ae113f349e25574b445f319cde4cd3f877c753e9e3c65980421339b3a131457ff393939f");
-    QTest::newRow("keccak_512_abc_abc")
+    BOBUIest::newRow("keccak_512_abc_abc")
             << int(QCryptographicHash::Keccak_512)
             << QByteArray("abc") << QByteArray("abc")
             << QByteArray::fromHex("18587dc2ea106b9a1563e32b3312421ca164c7f1f07bc922a9c83d77cea3a1e5d0c69910739025372dc14ac9642629379540c17e2a65b19d77aa511a9d00bb96")
@@ -231,12 +231,12 @@ void tst_QCryptographicHash::sha1()
 
 void tst_QCryptographicHash::sha3_data()
 {
-    QTest::addColumn<QCryptographicHash::Algorithm>("algorithm");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QByteArray>("expectedResult");
+    BOBUIest::addColumn<QCryptographicHash::Algorithm>("algorithm");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("expectedResult");
 
 #define ROW(Tag, Algorithm, Input, Result) \
-    QTest::newRow(Tag) << Algorithm << QByteArrayLiteral(Input) << QByteArray::fromHex(Result)
+    BOBUIest::newRow(Tag) << Algorithm << QByteArrayLiteral(Input) << QByteArray::fromHex(Result)
 
     ROW("sha3_224_pangram",
         QCryptographicHash::Sha3_224,
@@ -293,12 +293,12 @@ void tst_QCryptographicHash::sha3()
 
 void tst_QCryptographicHash::keccak_data()
 {
-    QTest::addColumn<QCryptographicHash::Algorithm>("algorithm");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QByteArray>("expectedResult");
+    BOBUIest::addColumn<QCryptographicHash::Algorithm>("algorithm");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("expectedResult");
 
 #define ROW(Tag, Algorithm, Input, Result) \
-    QTest::newRow(Tag) << Algorithm << QByteArrayLiteral(Input) << QByteArray::fromHex(Result)
+    BOBUIest::newRow(Tag) << Algorithm << QByteArrayLiteral(Input) << QByteArray::fromHex(Result)
 
     ROW("keccak_224_pangram",
         QCryptographicHash::Keccak_224,
@@ -355,12 +355,12 @@ void tst_QCryptographicHash::keccak()
 
 void tst_QCryptographicHash::blake2_data()
 {
-    QTest::addColumn<QCryptographicHash::Algorithm>("algorithm");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QByteArray>("expectedResult");
+    BOBUIest::addColumn<QCryptographicHash::Algorithm>("algorithm");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("expectedResult");
 
 #define ROW(Tag, Algorithm, Input, Result) \
-    QTest::newRow(Tag) << Algorithm << QByteArrayLiteral(Input) << QByteArray::fromHex(Result)
+    BOBUIest::newRow(Tag) << Algorithm << QByteArrayLiteral(Input) << QByteArray::fromHex(Result)
 
     // BLAKE2b
     ROW("blake2b_160_pangram",
@@ -458,11 +458,11 @@ void tst_QCryptographicHash::blake2()
 }
 
 void tst_QCryptographicHash::files_data() {
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<QCryptographicHash::Algorithm>("algorithm");
-    QTest::addColumn<QByteArray>("md5sum");
-    QTest::newRow("data1") << QString::fromLatin1("data/2c1517dad3678f03917f15849b052fd5.md5") << QCryptographicHash::Md5 << QByteArray("2c1517dad3678f03917f15849b052fd5");
-    QTest::newRow("data2") << QString::fromLatin1("data/d41d8cd98f00b204e9800998ecf8427e.md5") << QCryptographicHash::Md5 << QByteArray("d41d8cd98f00b204e9800998ecf8427e");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<QCryptographicHash::Algorithm>("algorithm");
+    BOBUIest::addColumn<QByteArray>("md5sum");
+    BOBUIest::newRow("data1") << QString::fromLatin1("data/2c1517dad3678f03917f15849b052fd5.md5") << QCryptographicHash::Md5 << QByteArray("2c1517dad3678f03917f15849b052fd5");
+    BOBUIest::newRow("data2") << QString::fromLatin1("data/d41d8cd98f00b204e9800998ecf8427e.md5") << QCryptographicHash::Md5 << QByteArray("d41d8cd98f00b204e9800998ecf8427e");
 }
 
 
@@ -488,13 +488,13 @@ void tst_QCryptographicHash::files()
 
 void tst_QCryptographicHash::all_methods(bool inclNumAlgos) const
 {
-    QTest::addColumn<QCryptographicHash::Algorithm>("algorithm");
+    BOBUIest::addColumn<QCryptographicHash::Algorithm>("algorithm");
     auto metaEnum = QMetaEnum::fromType<QCryptographicHash::Algorithm>();
     for (int i = 0, value = metaEnum.value(i); value != -1; value = metaEnum.value(++i)) {
         auto algorithm = QCryptographicHash::Algorithm(value);
         if (!inclNumAlgos && algorithm == QCryptographicHash::Algorithm::NumAlgorithms)
             continue;
-        QTest::addRow("%s", metaEnum.key(i)) << algorithm;
+        BOBUIest::addRow("%s", metaEnum.key(i)) << algorithm;
     }
 }
 
@@ -572,5 +572,5 @@ void tst_QCryptographicHash::swap()
     QCOMPARE(hash1.result(), QCryptographicHash::hash("test", QCryptographicHash::Sha256));
 }
 
-QTEST_MAIN(tst_QCryptographicHash)
+BOBUIEST_MAIN(tst_QCryptographicHash)
 #include "tst_qcryptographichash.moc"

@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandwlshellsurface_p.h"
 
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
-#include <QtWaylandClient/private/qwaylandinputdevice_p.h>
-#include <QtWaylandClient/private/qwaylandabstractdecoration_p.h>
-#include <QtWaylandClient/private/qwaylandscreen_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIWaylandClient/private/qwaylandinputdevice_p.h>
+#include <BobUIWaylandClient/private/qwaylandabstractdecoration_p.h>
+#include <BobUIWaylandClient/private/qwaylandscreen_p.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandWlShellSurface::QWaylandWlShellSurface(struct ::wl_shell_surface *shell_surface, QWaylandWindow *window)
     : QWaylandShellSurface(window)
-    , QtWayland::wl_shell_surface(shell_surface)
+    , BobUIWayland::wl_shell_surface(shell_surface)
     , m_window(window)
 {
-    Qt::WindowType type = window->window()->type();
+    BobUI::WindowType type = window->window()->type();
     auto *transientParent = window->transientParent();
-    if (type == Qt::Popup && transientParent && transientParent->wlSurface())
+    if (type == BobUI::Popup && transientParent && transientParent->wlSurface())
         setPopup(transientParent, m_window->display()->lastInputDevice(), m_window->display()->lastInputSerial());
     else if (transientParent && transientParent->wlSurface())
         updateTransientParent(transientParent->window());
@@ -35,7 +35,7 @@ QWaylandWlShellSurface::~QWaylandWlShellSurface()
     wl_shell_surface_destroy(object());
 }
 
-bool QWaylandWlShellSurface::resize(QWaylandInputDevice *inputDevice, Qt::Edges edges)
+bool QWaylandWlShellSurface::resize(QWaylandInputDevice *inputDevice, BobUI::Edges edges)
 {
     enum resize resizeEdges = convertToResizeEdges(edges);
     resize(inputDevice->wl_seat(), inputDevice->serial(), resizeEdges);
@@ -51,18 +51,18 @@ bool QWaylandWlShellSurface::move(QWaylandInputDevice *inputDevice)
 
 void QWaylandWlShellSurface::setTitle(const QString & title)
 {
-    return QtWayland::wl_shell_surface::set_title(title);
+    return BobUIWayland::wl_shell_surface::set_title(title);
 }
 
 void QWaylandWlShellSurface::setAppId(const QString & appId)
 {
-    return QtWayland::wl_shell_surface::set_class(appId);
+    return BobUIWayland::wl_shell_surface::set_class(appId);
 }
 
 void QWaylandWlShellSurface::applyConfigure()
 {
-    if ((m_pending.states & (Qt::WindowMaximized|Qt::WindowFullScreen))
-            && !(m_applied.states & (Qt::WindowMaximized|Qt::WindowFullScreen))) {
+    if ((m_pending.states & (BobUI::WindowMaximized|BobUI::WindowFullScreen))
+            && !(m_applied.states & (BobUI::WindowMaximized|BobUI::WindowFullScreen))) {
         m_normalSize = m_window->windowFrameGeometry().size();
     }
 
@@ -87,30 +87,30 @@ void QWaylandWlShellSurface::applyConfigure()
 
 bool QWaylandWlShellSurface::wantsDecorations() const
 {
-    return !(m_pending.states & Qt::WindowFullScreen);
+    return !(m_pending.states & BobUI::WindowFullScreen);
 }
 
-void QWaylandWlShellSurface::requestWindowStates(Qt::WindowStates states)
+void QWaylandWlShellSurface::requestWindowStates(BobUI::WindowStates states)
 {
     // On wl-shell the client is in charge of states, so diff from the pending state
-    Qt::WindowStates changedStates = m_pending.states ^ states;
-    Qt::WindowStates addedStates = changedStates & states;
+    BobUI::WindowStates changedStates = m_pending.states ^ states;
+    BobUI::WindowStates addedStates = changedStates & states;
 
-    if (addedStates & Qt::WindowMinimized)
+    if (addedStates & BobUI::WindowMinimized)
         qCWarning(lcQpaWayland) << "Minimizing is not supported on wl-shell. Consider using xdg-shell instead.";
 
-    if (addedStates & Qt::WindowMaximized) {
+    if (addedStates & BobUI::WindowMaximized) {
         set_maximized(nullptr);
         m_window->applyConfigureWhenPossible();
     }
 
-    if (addedStates & Qt::WindowFullScreen) {
+    if (addedStates & BobUI::WindowFullScreen) {
         set_fullscreen(WL_SHELL_SURFACE_FULLSCREEN_METHOD_DEFAULT, 0, nullptr);
         m_window->applyConfigureWhenPossible();
     }
 
-    bool isNormal = !(states & Qt::WindowMaximized) && !(states & Qt::WindowFullScreen);
-    if (isNormal && (changedStates & (Qt::WindowMaximized | Qt::WindowFullScreen))) {
+    bool isNormal = !(states & BobUI::WindowMaximized) && !(states & BobUI::WindowFullScreen);
+    if (isNormal && (changedStates & (BobUI::WindowMaximized | BobUI::WindowFullScreen))) {
         setTopLevel(); // set normal window
         // There's usually no configure event after this, so just clear the rest of the pending
         // configure here and queue the applyConfigure call
@@ -119,16 +119,16 @@ void QWaylandWlShellSurface::requestWindowStates(Qt::WindowStates states)
         m_window->applyConfigureWhenPossible();
     }
 
-    m_pending.states = states & ~Qt::WindowMinimized;
+    m_pending.states = states & ~BobUI::WindowMinimized;
 }
 
-enum QWaylandWlShellSurface::resize QWaylandWlShellSurface::convertToResizeEdges(Qt::Edges edges)
+enum QWaylandWlShellSurface::resize QWaylandWlShellSurface::convertToResizeEdges(BobUI::Edges edges)
 {
     return static_cast<enum resize>(
-                ((edges & Qt::TopEdge) ? resize_top : 0)
-                | ((edges & Qt::BottomEdge) ? resize_bottom : 0)
-                | ((edges & Qt::LeftEdge) ? resize_left : 0)
-                | ((edges & Qt::RightEdge) ? resize_right : 0));
+                ((edges & BobUI::TopEdge) ? resize_top : 0)
+                | ((edges & BobUI::BottomEdge) ? resize_bottom : 0)
+                | ((edges & BobUI::LeftEdge) ? resize_left : 0)
+                | ((edges & BobUI::RightEdge) ? resize_right : 0));
 }
 
 void QWaylandWlShellSurface::setTopLevel()
@@ -138,7 +138,7 @@ void QWaylandWlShellSurface::setTopLevel()
 
 static inline bool testShowWithoutActivating(const QWindow *window)
 {
-    // QWidget-attribute Qt::WA_ShowWithoutActivating.
+    // QWidget-attribute BobUI::WA_ShowWithoutActivating.
     const QVariant showWithoutActivating = window->property("_q_showWithoutActivating");
     return showWithoutActivating.isValid() && showWithoutActivating.toBool();
 }
@@ -158,9 +158,9 @@ void QWaylandWlShellSurface::updateTransientParent(QWindow *parent)
     }
 
     uint32_t flags = 0;
-    Qt::WindowFlags wf = m_window->window()->flags();
-    if (wf.testFlag(Qt::ToolTip)
-            || wf.testFlag(Qt::WindowTransparentForInput)
+    BobUI::WindowFlags wf = m_window->window()->flags();
+    if (wf.testFlag(BobUI::ToolTip)
+            || wf.testFlag(BobUI::WindowTransparentForInput)
             || testShowWithoutActivating(m_window->window()))
         flags |= WL_SHELL_SURFACE_TRANSIENT_INACTIVE;
 
@@ -216,6 +216,6 @@ void QWaylandWlShellSurface::shell_surface_popup_done()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandwlshellsurface_p.cpp"

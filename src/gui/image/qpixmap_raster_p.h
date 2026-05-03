@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPIXMAP_RASTER_P_H
 #define QPIXMAP_RASTER_P_H
@@ -8,18 +8,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qpa/qplatformpixmap.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QRasterPlatformPixmap : public QPlatformPixmap
 {
@@ -30,10 +30,10 @@ public:
     QPlatformPixmap *createCompatiblePlatformPixmap() const override;
 
     void resize(int width, int height) override;
-    bool fromData(const uchar *buffer, uint len, const char *format, Qt::ImageConversionFlags flags) override;
-    void fromImage(const QImage &image, Qt::ImageConversionFlags flags) override;
-    void fromImageInPlace(QImage &image, Qt::ImageConversionFlags flags) override;
-    void fromImageReader(QImageReader *imageReader, Qt::ImageConversionFlags flags) override;
+    bool fromData(const uchar *buffer, uint len, const char *format, BobUI::ImageConversionFlags flags) override;
+    void fromImage(const QImage &image, BobUI::ImageConversionFlags flags) override;
+    void fromImageInPlace(QImage &image, BobUI::ImageConversionFlags flags) override;
+    void fromImageReader(QImageReader *imageReader, BobUI::ImageConversionFlags flags) override;
 
     void copy(const QPlatformPixmap *data, const QRect &rect) override;
     bool scroll(int dx, int dy, const QRect &rect) override;
@@ -49,7 +49,7 @@ public:
 
 protected:
     int metric(QPaintDevice::PaintDeviceMetric metric) const override;
-    void createPixmapForImage(QImage sourceImage, Qt::ImageConversionFlags flags);
+    void createPixmapForImage(QImage sourceImage, BobUI::ImageConversionFlags flags);
     void setImage(const QImage &image);
     QImage image;
     static QImage::Format systemNativeFormat();
@@ -61,7 +61,7 @@ private:
     friend class QRasterPaintEngine;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPIXMAP_RASTER_P_H
 

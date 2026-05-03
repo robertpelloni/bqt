@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTENGINE_RASTER_P_H
 #define QPAINTENGINE_RASTER_P_H
@@ -8,28 +8,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "private/qpaintengineex_p.h"
-#include "QtGui/qpainterpath.h"
+#include "BobUIGui/qpainterpath.h"
 #include "private/qdatabuffer_p.h"
 #include "private/qdrawhelper_p.h"
 #include "private/qpaintengine_p.h"
 #include "private/qrasterizer_p.h"
 #include "private/qstroker_p.h"
 #include "private/qpainter_p.h"
-#include "private/qtextureglyphcache_p.h"
+#include "private/bobuiextureglyphcache_p.h"
 #include "private/qoutlinemapper_p.h"
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOutlineMapper;
 class QRasterPaintEnginePrivate;
@@ -122,7 +122,7 @@ public:
     void updateBrush(const QBrush &brush);
     void updatePen(const QPen &pen);
 
-    void updateMatrix(const QTransform &matrix);
+    void updateMatrix(const BOBUIransform &matrix);
 
     virtual void fillPath(const QPainterPath &path, QSpanData *fillData);
     virtual void fillPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
@@ -142,9 +142,9 @@ public:
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
     void drawImage(const QPointF &p, const QImage &img) override;
     void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                   Qt::ImageConversionFlags flags = Qt::AutoColor) override;
+                   BobUI::ImageConversionFlags flags = BobUI::AutoColor) override;
     void drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &sr) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
 
     void drawLines(const QLine *line, int lineCount) override;
     void drawLines(const QLineF *line, int lineCount) override;
@@ -155,9 +155,9 @@ public:
     void stroke(const QVectorPath &path, const QPen &pen) override;
     void fill(const QVectorPath &path, const QBrush &brush) override;
 
-    void clip(const QVectorPath &path, Qt::ClipOperation op) override;
-    void clip(const QRect &rect, Qt::ClipOperation op) override;
-    void clip(const QRegion &region, Qt::ClipOperation op) override;
+    void clip(const QVectorPath &path, BobUI::ClipOperation op) override;
+    void clip(const QRect &rect, BobUI::ClipOperation op) override;
+    void clip(const QRegion &region, BobUI::ClipOperation op) override;
     inline const QClipData *clipData() const;
 
     void drawStaticTextItem(QStaticTextItem *textItem) override;
@@ -185,8 +185,8 @@ public:
 
     QPoint coordinateOffset() const override;
 
-    bool requiresPretransformedGlyphPositions(QFontEngine *fontEngine, const QTransform &m) const override;
-    bool shouldDrawCachedGlyphs(QFontEngine *fontEngine, const QTransform &m) const override;
+    bool requiresPretransformedGlyphPositions(QFontEngine *fontEngine, const BOBUIransform &m) const override;
+    bool shouldDrawCachedGlyphs(QFontEngine *fontEngine, const BOBUIransform &m) const override;
 
 protected:
     QRasterPaintEngine(QRasterPaintEnginePrivate &d, QPaintDevice *);
@@ -199,7 +199,7 @@ private:
     void fillRect(const QRectF &rect, QSpanData *data);
     void drawBitmap(const QPointF &pos, const QImage &image, QSpanData *fill);
 
-    bool setClipRectInDeviceCoords(const QRect &r, Qt::ClipOperation op);
+    bool setClipRectInDeviceCoords(const QRect &r, BobUI::ClipOperation op);
 
     QRect toNormalizedFillRect(const QRectF &rect);
 
@@ -210,7 +210,7 @@ private:
     inline void ensureBrush() { ensureBrush(state()->brush); }
 
     inline void ensurePen(const QPen &pen) {
-        if (!qpen_fast_equals(state()->lastPen, pen) || (pen.style() != Qt::NoPen && state()->strokeFlags))
+        if (!qpen_fast_equals(state()->lastPen, pen) || (pen.style() != BobUI::NoPen && state()->strokeFlags))
             updatePen(pen);
     }
     inline void ensurePen() { ensurePen(state()->pen); }
@@ -237,9 +237,9 @@ public:
 
     void rasterizeLine_dashed(QLineF line, qreal width,
                               int *dashIndex, qreal *dashOffset, bool *inDash);
-    void rasterize(QT_FT_Outline *outline, ProcessSpans callback, QSpanData *spanData, QRasterBuffer *rasterBuffer);
-    void rasterize(QT_FT_Outline *outline, ProcessSpans callback, void *userData, QRasterBuffer *rasterBuffer);
-    void updateMatrixData(QSpanData *spanData, const QBrush &brush, const QTransform &brushMatrix);
+    void rasterize(BOBUI_FT_Outline *outline, ProcessSpans callback, QSpanData *spanData, QRasterBuffer *rasterBuffer);
+    void rasterize(BOBUI_FT_Outline *outline, ProcessSpans callback, void *userData, QRasterBuffer *rasterBuffer);
+    void updateMatrixData(QSpanData *spanData, const QBrush &brush, const BOBUIransform &brushMatrix);
     void updateClipping();
 
     void systemStateChanged() override;
@@ -249,10 +249,10 @@ public:
     void blitImage(const QPointF &pt, const QImage &img,
                    const QRect &clip, const QRect &sr = QRect());
 
-    QTransform brushMatrix() const {
+    BOBUIransform brushMatrix() const {
         Q_Q(const QRasterPaintEngine);
         const QRasterPaintEngineState *s = q->state();
-        QTransform m(s->matrix);
+        BOBUIransform m(s->matrix);
         m.translate(s->brushOrigin.x(), s->brushOrigin.y());
         return m;
     }
@@ -286,7 +286,7 @@ public:
     QStroker basicStroker;
     QScopedPointer<QDashStroker> dashStroker;
 
-    QScopedPointer<QT_FT_Raster> grayRaster;
+    QScopedPointer<BOBUI_FT_Raster> grayRaster;
 
     QDataBuffer<QLineF> cachedLines;
     QSpanData image_filler;
@@ -315,7 +315,7 @@ public:
     int clipSpanHeight;
     struct ClipLine {
         int count;
-        QT_FT_Span *spans;
+        BOBUI_FT_Span *spans;
     } *m_clipLines;
 
     void initialize();
@@ -326,7 +326,7 @@ public:
         return m_clipLines;
     }
 
-    inline QT_FT_Span *spans() {
+    inline BOBUI_FT_Span *spans() {
         if (!m_spans)
             initialize();
         return m_spans;
@@ -334,7 +334,7 @@ public:
 
     int allocated;
     int count;
-    QT_FT_Span *m_spans;
+    BOBUI_FT_Span *m_spans;
     int xmin, xmax, ymin, ymax;
 
     QRect clipRect;
@@ -345,7 +345,7 @@ public:
     uint hasRegionClip : 1;
 
     void appendSpan(int x, int length, int y, int coverage);
-    void appendSpans(const QT_FT_Span *s, int num);
+    void appendSpans(const BOBUI_FT_Span *s, int num);
 
     // ### Should optimize and actually kill the QSpans if the rect is
     // ### a subset of The current region. Thus the "fast" clipspan
@@ -361,7 +361,7 @@ inline void QClipData::appendSpan(int x, int length, int y, int coverage)
 
     if (count == allocated) {
         allocated *= 2;
-        m_spans = static_cast<QT_FT_Span*>(q_check_ptr(realloc(m_spans, allocated * sizeof(QT_FT_Span))));
+        m_spans = static_cast<BOBUI_FT_Span*>(q_check_ptr(realloc(m_spans, allocated * sizeof(BOBUI_FT_Span))));
     }
     m_spans[count].x = x;
     m_spans[count].len = length;
@@ -370,7 +370,7 @@ inline void QClipData::appendSpan(int x, int length, int y, int coverage)
     ++count;
 }
 
-inline void QClipData::appendSpans(const QT_FT_Span *s, int num)
+inline void QClipData::appendSpans(const BOBUI_FT_Span *s, int num)
 {
     Q_ASSERT(m_spans);
 
@@ -378,9 +378,9 @@ inline void QClipData::appendSpans(const QT_FT_Span *s, int num)
         do {
             allocated *= 2;
         } while (count + num > allocated);
-        m_spans = static_cast<QT_FT_Span*>(q_check_ptr(realloc(m_spans, allocated * sizeof(QT_FT_Span))));
+        m_spans = static_cast<BOBUI_FT_Span*>(q_check_ptr(realloc(m_spans, allocated * sizeof(BOBUI_FT_Span))));
     }
-    memcpy(m_spans+count, s, num*sizeof(QT_FT_Span));
+    memcpy(m_spans+count, s, num*sizeof(BOBUI_FT_Span));
     count += num;
 }
 
@@ -445,5 +445,5 @@ inline const QClipData *QRasterPaintEngine::clipData() const {
     return d->baseClip.data();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QPAINTENGINE_RASTER_P_H

@@ -1,10 +1,10 @@
 // Copyright (C) 2023 Ahmad Samir <a.samirh78@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q20CHRONO_H
 #define Q20CHRONO_H
 
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
 #include <chrono>
 
@@ -12,10 +12,10 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -24,7 +24,7 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace q20 {
 namespace chrono {
@@ -58,6 +58,6 @@ using months = std::chrono::duration<IntRep, std::ratio_divide<years::period, st
 } // namespace chrono
 } // namespace q20
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* Q20CHRONO_H */

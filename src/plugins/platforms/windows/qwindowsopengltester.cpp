@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsopengltester.h"
 #include "qwindowscontext.h"
 
-#include <QtCore/qvariant.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qtextstream.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qstandardpaths.h>
-#include <QtCore/qlibraryinfo.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qstandardpaths.h>
+#include <BobUICore/qlibraryinfo.h>
+#include <BobUICore/qhash.h>
 #include <private/qsystemlibrary_p.h>
-#include <QtGui/qtgui-config.h>
+#include <BobUIGui/bobuigui-config.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include <private/qopengl_p.h>
 #endif
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include <d3d9.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const DWORD VENDOR_ID_AMD = 0x1002;
 
@@ -65,7 +65,7 @@ private:
 
 QDirect3D9Handle::QDirect3D9Handle()
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     m_direct3D9 = Direct3DCreate9(D3D_SDK_VERSION);
 #endif
 }
@@ -102,7 +102,7 @@ GpuDescription GpuDescription::detect()
         isAMD = result.vendorId == VENDOR_ID_AMD;
     }
 
-    // Detect QTBUG-50371 (having AMD as the default adapter results in a crash
+    // Detect BOBUIBUG-50371 (having AMD as the default adapter results in a crash
     // when starting apps on a screen connected to the Intel card) by looking
     // for a default AMD adapter and an additional non-AMD one.
     if (isAMD) {
@@ -144,35 +144,35 @@ QList<GpuDescription> GpuDescription::detectAll()
     return result;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const GpuDescription &gd)
 {
     QDebugStateSaver s(d);
     d.nospace();
-    d << Qt::hex << Qt::showbase << "GpuDescription(vendorId=" << gd.vendorId
+    d << BobUI::hex << BobUI::showbase << "GpuDescription(vendorId=" << gd.vendorId
       << ", deviceId=" << gd.deviceId << ", subSysId=" << gd.subSysId
-      << Qt::dec << Qt::noshowbase << ", revision=" << gd.revision
+      << BobUI::dec << BobUI::noshowbase << ", revision=" << gd.revision
       << ", driver: " << gd.driverName
       << ", version=" << gd.driverVersion << ", " << gd.description
       << gd.gpuSuitableScreen << ')';
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 // Return printable string formatted like the output of the dxdiag tool.
 QString GpuDescription::toString() const
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     str <<   "         Card name         : " << description
         << "\n       Driver Name         : " << driverName
         << "\n    Driver Version         : " << driverVersion.toString()
         << "\n         Vendor ID         : 0x" << qSetPadChar(u'0')
-        << Qt::uppercasedigits << Qt::hex << qSetFieldWidth(4) << vendorId
+        << BobUI::uppercasedigits << BobUI::hex << qSetFieldWidth(4) << vendorId
         << "\n         Device ID         : 0x" << qSetFieldWidth(4) << deviceId
         << "\n         SubSys ID         : 0x" << qSetFieldWidth(8) << subSysId
         << "\n       Revision ID         : 0x" << qSetFieldWidth(4) << revision
-        << Qt::dec;
+        << BobUI::dec;
     if (!gpuSuitableScreen.isEmpty())
         str << "\nGL windows forced to screen: " << gpuSuitableScreen;
     return result;
@@ -198,17 +198,17 @@ QVariant GpuDescription::toVariant() const
 
 QWindowsOpenGLTester::Renderer QWindowsOpenGLTester::requestedRenderer()
 {
-    const char openGlVar[] = "QT_OPENGL";
-    if (QCoreApplication::testAttribute(Qt::AA_UseOpenGLES))
-        qWarning("Qt::AA_UseOpenGLES is no longer supported in Qt 6");
-    if (QCoreApplication::testAttribute(Qt::AA_UseDesktopOpenGL))
+    const char openGlVar[] = "BOBUI_OPENGL";
+    if (QCoreApplication::testAttribute(BobUI::AA_UseOpenGLES))
+        qWarning("BobUI::AA_UseOpenGLES is no longer supported in BobUI 6");
+    if (QCoreApplication::testAttribute(BobUI::AA_UseDesktopOpenGL))
         return QWindowsOpenGLTester::DesktopGl;
-    if (QCoreApplication::testAttribute(Qt::AA_UseSoftwareOpenGL))
+    if (QCoreApplication::testAttribute(BobUI::AA_UseSoftwareOpenGL))
         return QWindowsOpenGLTester::SoftwareRasterizer;
     if (qEnvironmentVariableIsSet(openGlVar)) {
         const QByteArray requested = qgetenv(openGlVar);
         if (requested == "angle")
-            qWarning("QT_OPENGL=angle is no longer supported in Qt 6");
+            qWarning("BOBUI_OPENGL=angle is no longer supported in BobUI 6");
         if (requested == "desktop")
             return QWindowsOpenGLTester::DesktopGl;
         if (requested == "software")
@@ -222,10 +222,10 @@ static inline QString resolveBugListFile(const QString &fileName)
 {
     if (QFileInfo(fileName).isAbsolute())
         return fileName;
-    // Try QLibraryInfo::SettingsPath which is typically empty unless specified in qt.conf,
+    // Try QLibraryInfo::SettingsPath which is typically empty unless specified in bobui.conf,
     // then resolve via QStandardPaths::ConfigLocation.
     const QString settingsPath = QLibraryInfo::path(QLibraryInfo::SettingsPath);
-    if (!settingsPath.isEmpty()) { // SettingsPath is empty unless specified in qt.conf.
+    if (!settingsPath.isEmpty()) { // SettingsPath is empty unless specified in bobui.conf.
         const QFileInfo fi(settingsPath + u'/' + fileName);
         if (fi.isFile())
             return fi.absoluteFilePath();
@@ -233,7 +233,7 @@ static inline QString resolveBugListFile(const QString &fileName)
     return QStandardPaths::locate(QStandardPaths::ConfigLocation, fileName);
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 typedef QHash<QOpenGLConfig::Gpu, QWindowsOpenGLTester::Renderers> SupportedRenderersCache;
 Q_GLOBAL_STATIC(SupportedRenderersCache, supportedRenderersCache)
 #endif
@@ -241,7 +241,7 @@ Q_GLOBAL_STATIC(SupportedRenderersCache, supportedRenderersCache)
 QWindowsOpenGLTester::Renderers QWindowsOpenGLTester::detectSupportedRenderers(const GpuDescription &gpu,
                                                                                Renderer requested)
 {
-#if defined(QT_NO_OPENGL)
+#if defined(BOBUI_NO_OPENGL)
     Q_UNUSED(gpu);
     Q_UNUSED(requested);
     return {};
@@ -259,9 +259,9 @@ QWindowsOpenGLTester::Renderers QWindowsOpenGLTester::detectSupportedRenderers(c
         result |= QWindowsOpenGLTester::DesktopGl;
 
     QSet<QString> features; // empty by default -> nothing gets disabled
-    if (!qEnvironmentVariableIsSet("QT_NO_OPENGL_BUGLIST")) {
-        const char bugListFileVar[] = "QT_OPENGL_BUGLIST";
-        QString buglistFileName = QStringLiteral(":/qt-project.org/windows/openglblacklists/default.json");
+    if (!qEnvironmentVariableIsSet("BOBUI_NO_OPENGL_BUGLIST")) {
+        const char bugListFileVar[] = "BOBUI_OPENGL_BUGLIST";
+        QString buglistFileName = QStringLiteral(":/bobui-project.org/windows/openglblacklists/default.json");
         if (qEnvironmentVariableIsSet(bugListFileVar)) {
             const QString fileName = resolveBugListFile(QFile::decodeName(qgetenv(bugListFileVar)));
             if (!fileName.isEmpty())
@@ -271,7 +271,7 @@ QWindowsOpenGLTester::Renderers QWindowsOpenGLTester::detectSupportedRenderers(c
     }
     qCDebug(lcQpaGl) << "GPU features:" << features;
 
-    if (features.contains(QStringLiteral("disable_desktopgl"))) { // Qt-specific
+    if (features.contains(QStringLiteral("disable_desktopgl"))) { // BobUI-specific
         qCDebug(lcQpaGl) << "Disabling Desktop GL: " << gpu;
         result &= ~QWindowsOpenGLTester::DesktopGl;
     }
@@ -285,7 +285,7 @@ QWindowsOpenGLTester::Renderers QWindowsOpenGLTester::detectSupportedRenderers(c
     }
     srCache->insert(qgpu, result);
     return result;
-#endif // !QT_NO_OPENGL
+#endif // !BOBUI_NO_OPENGL
 }
 
 QWindowsOpenGLTester::Renderers QWindowsOpenGLTester::supportedRenderers(Renderer requested)
@@ -298,7 +298,7 @@ QWindowsOpenGLTester::Renderers QWindowsOpenGLTester::supportedRenderers(Rendere
 
 bool QWindowsOpenGLTester::testDesktopGL()
 {
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
     typedef HGLRC (WINAPI *CreateContextType)(HDC);
     typedef BOOL (WINAPI *DeleteContextType)(HGLRC);
     typedef BOOL (WINAPI *MakeCurrentType)(HDC, HGLRC);
@@ -308,7 +308,7 @@ bool QWindowsOpenGLTester::testDesktopGL()
     HWND wnd = nullptr;
     HDC dc = nullptr;
     HGLRC context = nullptr;
-    LPCTSTR className = L"qtopengltest";
+    LPCTSTR className = L"bobuiopengltest";
 
     CreateContextType CreateContext = nullptr;
     DeleteContextType DeleteContext = nullptr;
@@ -351,7 +351,7 @@ bool QWindowsOpenGLTester::testDesktopGL()
         wclass.style = CS_OWNDC;
         if (!RegisterClass(&wclass))
             goto cleanup;
-        wnd = CreateWindow(className, L"qtopenglproxytest", WS_OVERLAPPED,
+        wnd = CreateWindow(className, L"bobuiopenglproxytest", WS_OVERLAPPED,
                            0, 0, 640, 480, nullptr, nullptr, wclass.hInstance, nullptr);
         if (!wnd)
             goto cleanup;
@@ -435,7 +435,7 @@ cleanup:
     return result;
 #else
     return false;
-#endif // !QT_NO_OPENGL
+#endif // !BOBUI_NO_OPENGL
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

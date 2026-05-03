@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSVIEW_H
 #define QGRAPHICSVIEW_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qmetatype.h>
-#include <QtGui/qpainter.h>
-#include <QtWidgets/qscrollarea.h>
-#include <QtWidgets/qgraphicsscene.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIWidgets/qscrollarea.h>
+#include <BobUIWidgets/qgraphicsscene.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsItem;
 class QPainterPath;
@@ -28,7 +28,7 @@ class Q_WIDGETS_EXPORT QGraphicsView : public QAbstractScrollArea
     Q_PROPERTY(QBrush foregroundBrush READ foregroundBrush WRITE setForegroundBrush)
     Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive)
     Q_PROPERTY(QRectF sceneRect READ sceneRect WRITE setSceneRect)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(QPainter::RenderHints renderHints READ renderHints WRITE setRenderHints)
     Q_PROPERTY(DragMode dragMode READ dragMode WRITE setDragMode)
     Q_PROPERTY(CacheMode cacheMode READ cacheMode WRITE setCacheMode)
@@ -37,8 +37,8 @@ class Q_WIDGETS_EXPORT QGraphicsView : public QAbstractScrollArea
     Q_PROPERTY(ViewportAnchor resizeAnchor READ resizeAnchor WRITE setResizeAnchor)
     Q_PROPERTY(ViewportUpdateMode viewportUpdateMode READ viewportUpdateMode
                WRITE setViewportUpdateMode)
-#if QT_CONFIG(rubberband)
-    Q_PROPERTY(Qt::ItemSelectionMode rubberBandSelectionMode READ rubberBandSelectionMode
+#if BOBUI_CONFIG(rubberband)
+    Q_PROPERTY(BobUI::ItemSelectionMode rubberBandSelectionMode READ rubberBandSelectionMode
                WRITE setRubberBandSelectionMode)
 #endif
     Q_PROPERTY(OptimizationFlags optimizationFlags READ optimizationFlags
@@ -93,8 +93,8 @@ public:
     void setRenderHint(QPainter::RenderHint hint, bool enabled = true);
     void setRenderHints(QPainter::RenderHints hints);
 
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment alignment);
+    BobUI::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment alignment);
 
     ViewportAnchor transformationAnchor() const;
     void setTransformationAnchor(ViewportAnchor anchor);
@@ -112,9 +112,9 @@ public:
     DragMode dragMode() const;
     void setDragMode(DragMode mode);
 
-#if QT_CONFIG(rubberband)
-    Qt::ItemSelectionMode rubberBandSelectionMode() const;
-    void setRubberBandSelectionMode(Qt::ItemSelectionMode mode);
+#if BOBUI_CONFIG(rubberband)
+    BobUI::ItemSelectionMode rubberBandSelectionMode() const;
+    void setRubberBandSelectionMode(BobUI::ItemSelectionMode mode);
     QRect rubberBandRect() const;
 #endif
 
@@ -132,10 +132,10 @@ public:
     void setSceneRect(const QRectF &rect);
     inline void setSceneRect(qreal x, qreal y, qreal w, qreal h);
 
-    QTransform transform() const;
-    QTransform viewportTransform() const;
+    BOBUIransform transform() const;
+    BOBUIransform viewportTransform() const;
     bool isTransformed() const;
-    void setTransform(const QTransform &matrix, bool combine = false);
+    void setTransform(const BOBUIransform &matrix, bool combine = false);
     void resetTransform();
     void rotate(qreal angle);
     void scale(qreal sx, qreal sy);
@@ -148,22 +148,22 @@ public:
     void ensureVisible(const QRectF &rect, int xmargin = 50, int ymargin = 50);
     inline void ensureVisible(qreal x, qreal y, qreal w, qreal h, int xmargin = 50, int ymargin = 50);
     void ensureVisible(const QGraphicsItem *item, int xmargin = 50, int ymargin = 50);
-    void fitInView(const QRectF &rect, Qt::AspectRatioMode aspectRadioMode = Qt::IgnoreAspectRatio);
+    void fitInView(const QRectF &rect, BobUI::AspectRatioMode aspectRadioMode = BobUI::IgnoreAspectRatio);
     inline void fitInView(qreal x, qreal y, qreal w, qreal h,
-                          Qt::AspectRatioMode aspectRadioMode = Qt::IgnoreAspectRatio);
+                          BobUI::AspectRatioMode aspectRadioMode = BobUI::IgnoreAspectRatio);
     void fitInView(const QGraphicsItem *item,
-                   Qt::AspectRatioMode aspectRadioMode = Qt::IgnoreAspectRatio);
+                   BobUI::AspectRatioMode aspectRadioMode = BobUI::IgnoreAspectRatio);
 
     void render(QPainter *painter, const QRectF &target = QRectF(), const QRect &source = QRect(),
-                Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+                BobUI::AspectRatioMode aspectRatioMode = BobUI::KeepAspectRatio);
 
     QList<QGraphicsItem *> items() const;
     QList<QGraphicsItem *> items(const QPoint &pos) const;
     inline QList<QGraphicsItem *> items(int x, int y) const;
-    QList<QGraphicsItem *> items(const QRect &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
-    inline QList<QGraphicsItem *> items(int x, int y, int w, int h, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
-    QList<QGraphicsItem *> items(const QPolygon &polygon, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
-    QList<QGraphicsItem *> items(const QPainterPath &path, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
+    QList<QGraphicsItem *> items(const QRect &rect, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
+    inline QList<QGraphicsItem *> items(int x, int y, int w, int h, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
+    QList<QGraphicsItem *> items(const QPolygon &polygon, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
+    QList<QGraphicsItem *> items(const QPainterPath &path, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
     QGraphicsItem *itemAt(const QPoint &pos) const;
     inline QGraphicsItem *itemAt(int x, int y) const;
 
@@ -180,7 +180,7 @@ public:
     inline QPoint mapFromScene(qreal x, qreal y) const;
     inline QPolygon mapFromScene(qreal x, qreal y, qreal w, qreal h) const;
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override;
 
     QBrush backgroundBrush() const;
     void setBackgroundBrush(const QBrush &brush);
@@ -193,7 +193,7 @@ public Q_SLOTS:
     void invalidateScene(const QRectF &rect = QRectF(), QGraphicsScene::SceneLayers layers = QGraphicsScene::AllLayers);
     void updateSceneRect(const QRectF &rect);
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 Q_SIGNALS:
     void rubberBandChanged(QRect viewportRect, QPointF fromScenePoint, QPointF toScenePoint);
 #endif
@@ -206,10 +206,10 @@ protected:
     bool event(QEvent *event) override;
     bool viewportEvent(QEvent *event) override;
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event) override;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
@@ -224,7 +224,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void paintEvent(QPaintEvent *event) override;
@@ -242,7 +242,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QGraphicsView)
     Q_DISABLE_COPY(QGraphicsView)
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     Q_PRIVATE_SLOT(d_func(), void _q_setViewportCursor(const QCursor &))
     Q_PRIVATE_SLOT(d_func(), void _q_unsetViewportCursor())
 #endif
@@ -261,11 +261,11 @@ inline void QGraphicsView::centerOn(qreal ax, qreal ay)
 { centerOn(QPointF(ax, ay)); }
 inline void QGraphicsView::ensureVisible(qreal ax, qreal ay, qreal aw, qreal ah, int xmargin, int ymargin)
 { ensureVisible(QRectF(ax, ay, aw, ah), xmargin, ymargin); }
-inline void QGraphicsView::fitInView(qreal ax, qreal ay, qreal w, qreal h, Qt::AspectRatioMode mode)
+inline void QGraphicsView::fitInView(qreal ax, qreal ay, qreal w, qreal h, BobUI::AspectRatioMode mode)
 { fitInView(QRectF(ax, ay, w, h), mode); }
 inline QList<QGraphicsItem *> QGraphicsView::items(int ax, int ay) const
 { return items(QPoint(ax, ay)); }
-inline QList<QGraphicsItem *> QGraphicsView::items(int ax, int ay, int w, int h, Qt::ItemSelectionMode mode) const
+inline QList<QGraphicsItem *> QGraphicsView::items(int ax, int ay, int w, int h, BobUI::ItemSelectionMode mode) const
 { return items(QRect(ax, ay, w, h), mode); }
 inline QGraphicsItem *QGraphicsView::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
@@ -278,6 +278,6 @@ inline QPoint QGraphicsView::mapFromScene(qreal ax, qreal ay) const
 inline QPolygon QGraphicsView::mapFromScene(qreal ax, qreal ay, qreal w, qreal h) const
 { return mapFromScene(QRectF(ax, ay, w, h)); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRAPHICSVIEW_H

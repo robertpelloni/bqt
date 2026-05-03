@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QWINDOWSYSTEMINTERFACE_H
 #define QWINDOWSYSTEMINTERFACE_H
 
@@ -9,27 +9,27 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QTime>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/QEvent>
-#include <QtCore/QAbstractEventDispatcher>
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
-#include <QtCore/QMutex>
-#include <QtGui/QTouchEvent>
-#include <QtCore/QEventLoop>
-#include <QtGui/QVector2D>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/BOBUIime>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/QEvent>
+#include <BobUICore/QAbstractEventDispatcher>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
+#include <BobUICore/QMutex>
+#include <BobUIGui/BOBUIouchEvent>
+#include <BobUICore/QEventLoop>
+#include <BobUIGui/QVector2D>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 class QPointingDevice;
-class QPlatformDragQtResponse;
-class QPlatformDropQtResponse;
+class QPlatformDragBobUIResponse;
+class QPlatformDropBobUIResponse;
 
 
 class Q_GUI_EXPORT QWindowSystemInterface
@@ -41,69 +41,69 @@ public:
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleMouseEvent(QWindow *window, const QPointF &local, const QPointF &global,
-                                 Qt::MouseButtons state, Qt::MouseButton button, QEvent::Type type,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                 BobUI::MouseButtons state, BobUI::MouseButton button, QEvent::Type type,
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleMouseEvent(QWindow *window,  const QPointingDevice *device,
                                  const QPointF &local, const QPointF &global,
-                                 Qt::MouseButtons state, Qt::MouseButton button, QEvent::Type type,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                 BobUI::MouseButtons state, BobUI::MouseButton button, QEvent::Type type,
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleMouseEvent(QWindow *window, ulong timestamp, const QPointF &local,
-                                 const QPointF &global, Qt::MouseButtons state,
-                                 Qt::MouseButton button, QEvent::Type type,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                 const QPointF &global, BobUI::MouseButtons state,
+                                 BobUI::MouseButton button, QEvent::Type type,
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleMouseEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,
-                                 const QPointF &local, const QPointF &global, Qt::MouseButtons state,
-                                 Qt::MouseButton button, QEvent::Type type,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                 const QPointF &local, const QPointF &global, BobUI::MouseButtons state,
+                                 BobUI::MouseButton button, QEvent::Type type,
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
 
-    static bool handleShortcutEvent(QWindow *window, ulong timestamp, int k, Qt::KeyboardModifiers mods, quint32 nativeScanCode,
+    static bool handleShortcutEvent(QWindow *window, ulong timestamp, int k, BobUI::KeyboardModifiers mods, quint32 nativeScanCode,
                                       quint32 nativeVirtualKey, quint32 nativeModifiers, const QString & text = QString(), bool autorep = false, ushort count = 1);
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static bool handleKeyEvent(QWindow *window, QEvent::Type t, int k, Qt::KeyboardModifiers mods, const QString & text = QString(), bool autorep = false, ushort count = 1);
+    static bool handleKeyEvent(QWindow *window, QEvent::Type t, int k, BobUI::KeyboardModifiers mods, const QString & text = QString(), bool autorep = false, ushort count = 1);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static bool handleKeyEvent(QWindow *window, ulong timestamp, QEvent::Type t, int k, Qt::KeyboardModifiers mods, const QString & text = QString(), bool autorep = false, ushort count = 1);
+    static bool handleKeyEvent(QWindow *window, ulong timestamp, QEvent::Type t, int k, BobUI::KeyboardModifiers mods, const QString & text = QString(), bool autorep = false, ushort count = 1);
 
-    static bool handleExtendedKeyEvent(QWindow *window, QEvent::Type type, int key, Qt::KeyboardModifiers modifiers,
+    static bool handleExtendedKeyEvent(QWindow *window, QEvent::Type type, int key, BobUI::KeyboardModifiers modifiers,
                                        quint32 nativeScanCode, quint32 nativeVirtualKey,
                                        quint32 nativeModifiers,
                                        const QString& text = QString(), bool autorep = false,
                                        ushort count = 1);
-    static bool handleExtendedKeyEvent(QWindow *window, ulong timestamp, QEvent::Type type, int key, Qt::KeyboardModifiers modifiers,
+    static bool handleExtendedKeyEvent(QWindow *window, ulong timestamp, QEvent::Type type, int key, BobUI::KeyboardModifiers modifiers,
                                        quint32 nativeScanCode, quint32 nativeVirtualKey,
                                        quint32 nativeModifiers,
                                        const QString& text = QString(), bool autorep = false,
                                        ushort count = 1);
     static bool handleExtendedKeyEvent(QWindow *window, ulong timestamp, const QInputDevice *device,
-                                       QEvent::Type type, int key, Qt::KeyboardModifiers modifiers,
+                                       QEvent::Type type, int key, BobUI::KeyboardModifiers modifiers,
                                        quint32 nativeScanCode, quint32 nativeVirtualKey,
                                        quint32 nativeModifiers,
                                        const QString& text = QString(), bool autorep = false,
                                        ushort count = 1);
     static bool handleWheelEvent(QWindow *window, const QPointF &local, const QPointF &global,
                                  QPoint pixelDelta, QPoint angleDelta,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::ScrollPhase phase = Qt::NoScrollPhase,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::ScrollPhase phase = BobUI::NoScrollPhase,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized);
     static bool handleWheelEvent(QWindow *window, ulong timestamp, const QPointF &local, const QPointF &global,
                                  QPoint pixelDelta, QPoint angleDelta,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::ScrollPhase phase = Qt::NoScrollPhase,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized,
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::ScrollPhase phase = BobUI::NoScrollPhase,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized,
                                  bool inverted = false);
     static bool handleWheelEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,
                                  const QPointF &local, const QPointF &global,
                                  QPoint pixelDelta, QPoint angleDelta,
-                                 Qt::KeyboardModifiers mods = Qt::NoModifier,
-                                 Qt::ScrollPhase phase = Qt::NoScrollPhase,
-                                 Qt::MouseEventSource source = Qt::MouseEventNotSynthesized,
+                                 BobUI::KeyboardModifiers mods = BobUI::NoModifier,
+                                 BobUI::ScrollPhase phase = BobUI::NoScrollPhase,
+                                 BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized,
                                  bool inverted = false);
 
     // A very-temporary QPA touchpoint which gets converted to a QEventPoint as early as possible
@@ -118,7 +118,7 @@ public:
                                 // width is the horizontal diameter, height is the vertical diameter
         qreal pressure;         // 0 to 1
         qreal rotation;         // rotation applied to the elliptical contact patch
-                                // 0 means pointing straight up; 0 if unknown (like QTabletEvent::rotation)
+                                // 0 means pointing straight up; 0 if unknown (like BOBUIabletEvent::rotation)
         QEventPoint::State state; // Pressed|Updated|Stationary|Released
         QVector2D velocity;     // in screen coordinate system, pixels / seconds
         QList<QPointF> rawPositions; // in screen coordinates
@@ -128,14 +128,14 @@ public:
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleTouchEvent(QWindow *window, const QPointingDevice *device,
-                                 const QList<struct TouchPoint> &points, Qt::KeyboardModifiers mods = Qt::NoModifier);
+                                 const QList<struct TouchPoint> &points, BobUI::KeyboardModifiers mods = BobUI::NoModifier);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleTouchEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,
-                                 const QList<struct TouchPoint> &points, Qt::KeyboardModifiers mods = Qt::NoModifier);
+                                 const QList<struct TouchPoint> &points, BobUI::KeyboardModifiers mods = BobUI::NoModifier);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static bool handleTouchCancelEvent(QWindow *window, const QPointingDevice *device, Qt::KeyboardModifiers mods = Qt::NoModifier);
+    static bool handleTouchCancelEvent(QWindow *window, const QPointingDevice *device, BobUI::KeyboardModifiers mods = BobUI::NoModifier);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static bool handleTouchCancelEvent(QWindow *window, ulong timestamp, const QPointingDevice *device, Qt::KeyboardModifiers mods = Qt::NoModifier);
+    static bool handleTouchCancelEvent(QWindow *window, ulong timestamp, const QPointingDevice *device, BobUI::KeyboardModifiers mods = BobUI::NoModifier);
 
     // rect is relative to parent
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
@@ -158,10 +158,10 @@ public:
     static void handleEnterLeaveEvent(QWindow *enter, QWindow *leave, const QPointF &local = QPointF(), const QPointF& global = QPointF());
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static void handleFocusWindowChanged(QWindow *window, Qt::FocusReason r = Qt::OtherFocusReason);
+    static void handleFocusWindowChanged(QWindow *window, BobUI::FocusReason r = BobUI::OtherFocusReason);
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static void handleWindowStateChanged(QWindow *window, Qt::WindowStates newState, int oldState = -1);
+    static void handleWindowStateChanged(QWindow *window, BobUI::WindowStates newState, int oldState = -1);
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static void handleWindowScreenChanged(QWindow *window, QScreen *newScreen);
 
@@ -172,19 +172,19 @@ public:
     static void handleSafeAreaMarginsChanged(QWindow *window);
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
-    static void handleApplicationStateChanged(Qt::ApplicationState newState, bool forcePropagate = false);
+    static void handleApplicationStateChanged(BobUI::ApplicationState newState, bool forcePropagate = false);
 
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleApplicationTermination();
 
-#if QT_CONFIG(draganddrop)
-    static QPlatformDragQtResponse handleDrag(QWindow *window, const QMimeData *dropData,
-                                              const QPoint &p, Qt::DropActions supportedActions,
-                                              Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-    static QPlatformDropQtResponse handleDrop(QWindow *window, const QMimeData *dropData,
-                                              const QPoint &p, Qt::DropActions supportedActions,
-                                              Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-#endif // QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
+    static QPlatformDragBobUIResponse handleDrag(QWindow *window, const QMimeData *dropData,
+                                              const QPoint &p, BobUI::DropActions supportedActions,
+                                              BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers);
+    static QPlatformDropBobUIResponse handleDrop(QWindow *window, const QMimeData *dropData,
+                                              const QPoint &p, BobUI::DropActions supportedActions,
+                                              BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers);
+#endif // BOBUI_CONFIG(draganddrop)
 
     static bool handleNativeEvent(QWindow *window, const QByteArray &eventType, void *message, qintptr *result);
 
@@ -193,7 +193,7 @@ public:
     static void handleScreenRemoved(QPlatformScreen *screen);
     static void handlePrimaryScreenChanged(QPlatformScreen *newPrimary);
 
-    static void handleScreenOrientationChange(QScreen *screen, Qt::ScreenOrientation newOrientation);
+    static void handleScreenOrientationChange(QScreen *screen, BobUI::ScreenOrientation newOrientation);
     static void handleScreenGeometryChange(QScreen *screen, const QRect &newGeometry, const QRect &newAvailableGeometry);
     static void handleScreenLogicalDotsPerInchChange(QScreen *screen, qreal newDpiX, qreal newDpiY);
     static void handleScreenRefreshRateChange(QScreen *screen, qreal newRefreshRate);
@@ -206,60 +206,60 @@ public:
 
     static bool handleTabletEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,
                                   const QPointF &local, const QPointF &global,
-                                  Qt::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
-                                  qreal tangentialPressure, qreal rotation, int z, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                  BobUI::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
+                                  qreal tangentialPressure, qreal rotation, int z, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     static bool handleTabletEvent(QWindow *window, const QPointingDevice *device,
                                   const QPointF &local, const QPointF &global,
-                                  Qt::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
-                                  qreal tangentialPressure, qreal rotation, int z, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                  BobUI::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
+                                  qreal tangentialPressure, qreal rotation, int z, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     static bool handleTabletEvent(QWindow *window, ulong timestamp, const QPointF &local, const QPointF &global,
-                                  int device, int pointerType, Qt::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
+                                  int device, int pointerType, BobUI::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
                                   qreal tangentialPressure, qreal rotation, int z, qint64 uid,
-                                  Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                  BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     static bool handleTabletEvent(QWindow *window, const QPointF &local, const QPointF &global,
-                                  int device, int pointerType, Qt::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
+                                  int device, int pointerType, BobUI::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
                                   qreal tangentialPressure, qreal rotation, int z, qint64 uid,
-                                  Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                  BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     static bool handleTabletEnterLeaveProximityEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,
                                                      bool inProximity, const QPointF &local = QPointF(), const QPointF &global = QPointF(),
-                                                     Qt::MouseButtons buttons = {}, qreal xTilt = 0, qreal yTilt = 0,
+                                                     BobUI::MouseButtons buttons = {}, qreal xTilt = 0, qreal yTilt = 0,
                                                      qreal tangentialPressure = 0, qreal rotation = 0, int z = 0,
-                                                     Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                                     BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     static bool handleTabletEnterLeaveProximityEvent(QWindow *window, const QPointingDevice *device,
                                                      bool inProximity, const QPointF &local = QPointF(), const QPointF &global = QPointF(),
-                                                     Qt::MouseButtons buttons = {}, qreal xTilt = 0 , qreal yTilt = 0,
+                                                     BobUI::MouseButtons buttons = {}, qreal xTilt = 0 , qreal yTilt = 0,
                                                      qreal tangentialPressure = 0, qreal rotation = 0, int z = 0,
-                                                     Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                                     BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
 
-    // The following 4 functions are deprecated (QTBUG-114560)
+    // The following 4 functions are deprecated (BOBUIBUG-114560)
     static bool handleTabletEnterProximityEvent(ulong timestamp, int deviceType, int pointerType, qint64 uid);
     static void handleTabletEnterProximityEvent(int deviceType, int pointerType, qint64 uid);
     static bool handleTabletLeaveProximityEvent(ulong timestamp, int deviceType, int pointerType, qint64 uid);
     static void handleTabletLeaveProximityEvent(int deviceType, int pointerType, qint64 uid);
 
-#ifndef QT_NO_GESTURES
-    static bool handleGestureEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,  Qt::NativeGestureType type,
+#ifndef BOBUI_NO_GESTURES
+    static bool handleGestureEvent(QWindow *window, ulong timestamp, const QPointingDevice *device,  BobUI::NativeGestureType type,
                                    const QPointF &local, const QPointF &global, int fingerCount = 0);
-    static bool handleGestureEventWithRealValue(QWindow *window, ulong timestamp, const QPointingDevice *device, Qt::NativeGestureType type,
+    static bool handleGestureEventWithRealValue(QWindow *window, ulong timestamp, const QPointingDevice *device, BobUI::NativeGestureType type,
                                                 qreal value, const QPointF &local, const QPointF &global, int fingerCount = 2);
-    static bool handleGestureEventWithValueAndDelta(QWindow *window, ulong timestamp, const QPointingDevice *device, Qt::NativeGestureType type, qreal value,
+    static bool handleGestureEventWithValueAndDelta(QWindow *window, ulong timestamp, const QPointingDevice *device, BobUI::NativeGestureType type, qreal value,
                                                     const QPointF &delta, const QPointF &local, const QPointF &global, int fingerCount = 2);
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
     static void handlePlatformPanelEvent(QWindow *window);
 
-#ifndef QT_NO_CONTEXTMENU
-#if QT_GUI_REMOVED_SINCE(6, 8)
+#ifndef BOBUI_NO_CONTEXTMENU
+#if BOBUI_GUI_REMOVED_SINCE(6, 8)
     static void handleContextMenuEvent(QWindow *window, bool mouseTriggered,
                                        const QPoint &pos, const QPoint &globalPos,
-                                       Qt::KeyboardModifiers modifiers);
+                                       BobUI::KeyboardModifiers modifiers);
 #endif
     template<typename Delivery = QWindowSystemInterface::DefaultDelivery>
     static bool handleContextMenuEvent(QWindow *window, bool mouseTriggered,
                                        const QPoint &pos, const QPoint &globalPos,
-                                       Qt::KeyboardModifiers modifiers);
+                                       BobUI::KeyboardModifiers modifiers);
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     static void handleEnterWhatsThisEvent();
 #endif
 
@@ -272,10 +272,10 @@ public:
     static bool nonUserInputEventsQueued();
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QWindowSystemInterface::TouchPoint &p);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSYSTEMINTERFACE_H

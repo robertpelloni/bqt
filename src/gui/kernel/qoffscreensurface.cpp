@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoffscreensurface.h"
 
@@ -12,13 +12,13 @@
 
 #include <private/qwindow_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QOffscreenSurface
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.1
     \brief The QOffscreenSurface class represents an offscreen surface in the underlying platform.
 
@@ -121,13 +121,13 @@ void QOffscreenSurface::create()
         d->platformOffscreenSurface = QGuiApplicationPrivate::platformIntegration()->createPlatformOffscreenSurface(this);
         // No platform offscreen surface, fallback to an invisible window
         if (!d->platformOffscreenSurface) {
-            if (!QThread::isMainThread())
+            if (!BOBUIhread::isMainThread())
                 qWarning("Attempting to create QWindow-based QOffscreenSurface outside the gui thread. Expect failures.");
             d->offscreenWindow = new QWindow(d->screen);
             // Make the window frameless to prevent Windows from enlarging it, should it
             // violate the minimum title bar width on the platform.
             d->offscreenWindow->setFlags(d->offscreenWindow->flags()
-                                         | Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+                                         | BobUI::CustomizeWindowHint | BobUI::FramelessWindowHint);
             d->offscreenWindow->setObjectName("QOffscreenSurface"_L1);
             // Remove this window from the global list since we do not want it to be destroyed when closing the app.
             // The QOffscreenSurface has to be usable even after exiting the event loop.
@@ -135,7 +135,7 @@ void QOffscreenSurface::create()
             d->offscreenWindow->setSurfaceType(QWindow::OpenGLSurface);
             d->offscreenWindow->setFormat(d->requestedFormat);
             // Prevent QPlatformWindow::initialGeometry() and platforms from setting a default geometry.
-            qt_window_private(d->offscreenWindow)->setAutomaticPositionAndResizeEnabled(false);
+            bobui_window_private(d->offscreenWindow)->setAutomaticPositionAndResizeEnabled(false);
             d->offscreenWindow->setGeometry(0, 0, d->size.width(), d->size.height());
             d->offscreenWindow->create();
         }
@@ -345,12 +345,12 @@ void *QOffscreenSurface::resolveInterface(const char *name, int revision) const
     Q_UNUSED(d);
 
 #if defined(Q_OS_ANDROID)
-    QT_NATIVE_INTERFACE_RETURN_IF(QAndroidOffscreenSurface, d->platformOffscreenSurface);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QAndroidOffscreenSurface, d->platformOffscreenSurface);
 #endif
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qoffscreensurface.cpp"

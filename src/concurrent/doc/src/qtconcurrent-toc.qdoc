@@ -2,18 +2,18 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \page qtconcurrent-toc.html
-    \title Qt Concurrent module topics
+    \page bobuiconcurrent-toc.html
+    \title BobUI Concurrent module topics
 
     The following list has links to all the individual topics (HTML files)
-    in the Qt Concurrent module.
+    in the BobUI Concurrent module.
 
     \list
     \li \l {Concurrent Map and Map-Reduce}
     \li \l {Concurrent Filter and Filter-Reduce}
     \li \l {Concurrent Run}
     \li \l {Concurrent Task}
-    \li \l {Changes to Qt Concurrent}{Upgrading from Qt 5}
+    \li \l {Changes to BobUI Concurrent}{Upgrading from Qt 5}
     \endlist
 
 */

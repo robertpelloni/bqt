@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QIMAGE_P_H
 #define QIMAGE_P_H
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qcolorspace.h>
-#include <QtGui/qimage.h>
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qcolorspace.h>
+#include <BobUIGui/qimage.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/bobuitypetraits.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcImageIo)
 
@@ -70,7 +70,7 @@ struct Q_GUI_EXPORT QImageData {        // internal image data
 
     // Convert the image in-place, minimizing memory reallocation
     // Return false if the conversion cannot be done in-place.
-    bool convertInPlace(QImage::Format newFormat, Qt::ImageConversionFlags);
+    bool convertInPlace(QImage::Format newFormat, BobUI::ImageConversionFlags);
 
     QMap<QString, QString> text;
 
@@ -117,30 +117,30 @@ QImageData::calculateImageParameters(qsizetype width, qsizetype height, qsizetyp
     return { bytes_per_line, total_size };
 }
 
-typedef void (*Image_Converter)(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
-typedef bool (*InPlace_Image_Converter)(QImageData *data, Qt::ImageConversionFlags);
+typedef void (*Image_Converter)(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
+typedef bool (*InPlace_Image_Converter)(QImageData *data, BobUI::ImageConversionFlags);
 
 extern Image_Converter qimage_converter_map[QImage::NImageFormats][QImage::NImageFormats];
 extern InPlace_Image_Converter qimage_inplace_converter_map[QImage::NImageFormats][QImage::NImageFormats];
 
-void convert_generic(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
-void convert_generic_over_rgb64(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
-bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, Qt::ImageConversionFlags);
-bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_format, Qt::ImageConversionFlags);
-#if QT_CONFIG(raster_fp)
-void convert_generic_over_rgba32f(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags);
-bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_format, Qt::ImageConversionFlags);
+void convert_generic(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
+void convert_generic_over_rgb64(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
+bool convert_generic_inplace(QImageData *data, QImage::Format dst_format, BobUI::ImageConversionFlags);
+bool convert_generic_inplace_over_rgb64(QImageData *data, QImage::Format dst_format, BobUI::ImageConversionFlags);
+#if BOBUI_CONFIG(raster_fp)
+void convert_generic_over_rgba32f(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags);
+bool convert_generic_inplace_over_rgba32f(QImageData *data, QImage::Format dst_format, BobUI::ImageConversionFlags);
 #endif
 
-void dither_to_Mono(QImageData *dst, const QImageData *src, Qt::ImageConversionFlags flags, bool fromalpha);
+void dither_to_Mono(QImageData *dst, const QImageData *src, BobUI::ImageConversionFlags flags, bool fromalpha);
 
-const uchar *qt_get_bitflip_array();
+const uchar *bobui_get_bitflip_array();
 Q_GUI_EXPORT void qGamma_correct_back_to_linear_cs(QImage *image);
 
-#if defined(_M_ARM) && defined(_MSC_VER) // QTBUG-42038
+#if defined(_M_ARM) && defined(_MSC_VER) // BOBUIBUG-42038
 #pragma optimize("", off)
 #endif
-inline int qt_depthForFormat(QImage::Format format)
+inline int bobui_depthForFormat(QImage::Format format)
 {
     int depth = 0;
     switch(format) {
@@ -207,7 +207,7 @@ inline int qt_depthForFormat(QImage::Format format)
 #pragma optimize("", on)
 #endif
 
-inline QImage::Format qt_opaqueVersion(QImage::Format format)
+inline QImage::Format bobui_opaqueVersion(QImage::Format format)
 {
     switch (format) {
     case QImage::Format_ARGB8565_Premultiplied:
@@ -265,7 +265,7 @@ inline QImage::Format qt_opaqueVersion(QImage::Format format)
     return QImage::Format_RGB32;
 }
 
-inline QImage::Format qt_alphaVersion(QImage::Format format)
+inline QImage::Format bobui_alphaVersion(QImage::Format format)
 {
     switch (format) {
     case QImage::Format_RGB32:
@@ -324,7 +324,7 @@ inline QImage::Format qt_alphaVersion(QImage::Format format)
 }
 
 // Returns an opaque version that is compatible with format
-inline QImage::Format qt_maybeDataCompatibleOpaqueVersion(QImage::Format format)
+inline QImage::Format bobui_maybeDataCompatibleOpaqueVersion(QImage::Format format)
 {
     switch (format) {
     case QImage::Format_ARGB6666_Premultiplied:
@@ -380,21 +380,21 @@ inline QImage::Format qt_maybeDataCompatibleOpaqueVersion(QImage::Format format)
     return format; // No compatible opaque versions
 }
 
-constexpr QImage::Format qt_toUnpremultipliedFormat(QImage::Format format)
+constexpr QImage::Format bobui_toUnpremultipliedFormat(QImage::Format format)
 {
     // Assumes input is already a premultiplied format with an unpremultiplied counterpart
     // This abuses the fact unpremultiplied formats are always before their premultiplied counterparts.
     return static_cast<QImage::Format>(qToUnderlying(format) - 1);
 }
 
-constexpr QImage::Format qt_toPremultipliedFormat(QImage::Format format)
+constexpr QImage::Format bobui_toPremultipliedFormat(QImage::Format format)
 {
     // Assumes input is already an unpremultiplied format
     // This abuses the fact unpremultiplied formats are always before their premultiplied counterparts.
     return static_cast<QImage::Format>(qToUnderlying(format) + 1);
 }
 
-inline bool qt_highColorPrecision(QImage::Format format, bool opaque = false)
+inline bool bobui_highColorPrecision(QImage::Format format, bool opaque = false)
 {
     // Formats with higher color precision than ARGB32_Premultiplied.
     switch (format) {
@@ -422,7 +422,7 @@ inline bool qt_highColorPrecision(QImage::Format format, bool opaque = false)
     return false;
 }
 
-inline bool qt_fpColorPrecision(QImage::Format format)
+inline bool bobui_fpColorPrecision(QImage::Format format)
 {
     switch (format) {
     case QImage::Format_RGBX16FPx4:
@@ -438,7 +438,7 @@ inline bool qt_fpColorPrecision(QImage::Format format)
     return false;
 }
 
-inline QColorSpace::ColorModel qt_csColorData(QPixelFormat::ColorModel format)
+inline QColorSpace::ColorModel bobui_csColorData(QPixelFormat::ColorModel format)
 {
     switch (format) {
     case QPixelFormat::ColorModel::RGB:
@@ -457,9 +457,9 @@ inline QColorSpace::ColorModel qt_csColorData(QPixelFormat::ColorModel format)
     return QColorSpace::ColorModel::Undefined;
 }
 
-inline bool qt_compatibleColorModelBase(QPixelFormat::ColorModel data, QColorSpace::ColorModel cs)
+inline bool bobui_compatibleColorModelBase(QPixelFormat::ColorModel data, QColorSpace::ColorModel cs)
 {
-    QColorSpace::ColorModel dataCs = qt_csColorData(data);
+    QColorSpace::ColorModel dataCs = bobui_csColorData(data);
 
     if (data == QPixelFormat::ColorModel::Alpha)
         return true; // Alpha data has no colors and can be handled by any color space
@@ -470,9 +470,9 @@ inline bool qt_compatibleColorModelBase(QPixelFormat::ColorModel data, QColorSpa
     return (dataCs == cs); // Matching color models
 }
 
-inline bool qt_compatibleColorModelSource(QPixelFormat::ColorModel data, QColorSpace::ColorModel cs)
+inline bool bobui_compatibleColorModelSource(QPixelFormat::ColorModel data, QColorSpace::ColorModel cs)
 {
-    if (qt_compatibleColorModelBase(data, cs))
+    if (bobui_compatibleColorModelBase(data, cs))
         return true;
 
     if (data == QPixelFormat::ColorModel::Grayscale && cs == QColorSpace::ColorModel::Rgb)
@@ -481,9 +481,9 @@ inline bool qt_compatibleColorModelSource(QPixelFormat::ColorModel data, QColorS
     return false;
 }
 
-inline bool qt_compatibleColorModelTarget(QPixelFormat::ColorModel data, QColorSpace::ColorModel cs, QColorSpace::TransformModel tm)
+inline bool bobui_compatibleColorModelTarget(QPixelFormat::ColorModel data, QColorSpace::ColorModel cs, QColorSpace::TransformModel tm)
 {
-    if (qt_compatibleColorModelBase(data, cs))
+    if (bobui_compatibleColorModelBase(data, cs))
         return true;
 
     if (data == QPixelFormat::ColorModel::Grayscale && tm == QColorSpace::TransformModel::ThreeComponentMatrix)
@@ -492,7 +492,7 @@ inline bool qt_compatibleColorModelTarget(QPixelFormat::ColorModel data, QColorS
     return false;
 }
 
-inline QImage::Format qt_maybeDataCompatibleAlphaVersion(QImage::Format format)
+inline QImage::Format bobui_maybeDataCompatibleAlphaVersion(QImage::Format format)
 {
     switch (format) {
     case QImage::Format_RGB32:
@@ -548,29 +548,29 @@ inline QImage::Format qt_maybeDataCompatibleAlphaVersion(QImage::Format format)
     return format; // No data-compatible alpha version
 }
 
-inline QImage::Format qt_opaqueVersionForPainting(QImage::Format format)
+inline QImage::Format bobui_opaqueVersionForPainting(QImage::Format format)
 {
-    QImage::Format toFormat = qt_opaqueVersion(format);
+    QImage::Format toFormat = bobui_opaqueVersion(format);
     // If we are switching depth anyway upgrade to RGB32
-    if (qt_depthForFormat(format) != qt_depthForFormat(toFormat) && qt_depthForFormat(toFormat) <= 32)
+    if (bobui_depthForFormat(format) != bobui_depthForFormat(toFormat) && bobui_depthForFormat(toFormat) <= 32)
         toFormat = QImage::Format_RGB32;
     return toFormat;
 }
 
-inline QImage::Format qt_alphaVersionForPainting(QImage::Format format)
+inline QImage::Format bobui_alphaVersionForPainting(QImage::Format format)
 {
-    QImage::Format toFormat = qt_alphaVersion(format);
-#if defined(__ARM_NEON__) || defined(__SSE2__) || defined(QT_COMPILER_SUPPORT_LSX)
+    QImage::Format toFormat = bobui_alphaVersion(format);
+#if defined(__ARM_NEON__) || defined(__SSE2__) || defined(BOBUI_COMPILER_SUPPORT_LSX)
     // If we are switching depth anyway and we have optimized ARGB32PM routines, upgrade to that.
-    if (qt_depthForFormat(format) != qt_depthForFormat(toFormat) && qt_depthForFormat(toFormat) <= 32)
+    if (bobui_depthForFormat(format) != bobui_depthForFormat(toFormat) && bobui_depthForFormat(toFormat) <= 32)
         toFormat = QImage::Format_ARGB32_Premultiplied;
 #endif
     return toFormat;
 }
 
-Q_GUI_EXPORT QMap<QString, QString> qt_getImageText(const QImage &image, const QString &description);
-Q_GUI_EXPORT QMap<QString, QString> qt_getImageTextFromDescription(const QString &description);
+Q_GUI_EXPORT QMap<QString, QString> bobui_getImageText(const QImage &image, const QString &description);
+Q_GUI_EXPORT QMap<QString, QString> bobui_getImageTextFromDescription(const QString &description);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIMAGE_P_H

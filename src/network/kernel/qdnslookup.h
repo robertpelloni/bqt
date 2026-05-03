@@ -1,20 +1,20 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDNSLOOKUP_H
 #define QDNSLOOKUP_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qproperty.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qproperty.h>
 
-QT_REQUIRE_CONFIG(dnslookup);
+BOBUI_REQUIRE_CONFIG(dnslookup);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHostAddress;
 class QDnsLookupPrivate;
@@ -26,7 +26,7 @@ class QDnsTextRecordPrivate;
 class QDnsTlsAssociationRecordPrivate;
 class QSslConfiguration;
 
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QDnsTlsAssociationRecordPrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QDnsTlsAssociationRecordPrivate)
 
 class Q_NETWORK_EXPORT QDnsDomainNameRecord
 {
@@ -193,7 +193,7 @@ public:
     Q_NETWORK_EXPORT QDnsTlsAssociationRecord();
     Q_NETWORK_EXPORT QDnsTlsAssociationRecord(const QDnsTlsAssociationRecord &other);
     QDnsTlsAssociationRecord(QDnsTlsAssociationRecord &&other) noexcept = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QDnsTlsAssociationRecord)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QDnsTlsAssociationRecord)
     Q_NETWORK_EXPORT QDnsTlsAssociationRecord &operator=(const QDnsTlsAssociationRecord &other);
     Q_NETWORK_EXPORT ~QDnsTlsAssociationRecord();
 
@@ -296,7 +296,7 @@ public:
     void setNameserverProtocol(Protocol protocol);
     QBindable<Protocol> bindableNameserverProtocol();
     void setNameserver(Protocol protocol, const QHostAddress &nameserver, quint16 port = 0);
-    QT_NETWORK_INLINE_SINCE(6, 8)
+    BOBUI_NETWORK_INLINE_SINCE(6, 8)
     void setNameserver(const QHostAddress &nameserver, quint16 port);
 
     QList<QDnsDomainNameRecord> canonicalNameRecords() const;
@@ -308,7 +308,7 @@ public:
     QList<QDnsTextRecord> textRecords() const;
     QList<QDnsTlsAssociationRecord> tlsAssociationRecords() const;
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     void setSslConfiguration(const QSslConfiguration &sslConfiguration);
     QSslConfiguration sslConfiguration() const;
 #endif
@@ -332,13 +332,13 @@ private:
     Q_DECLARE_PRIVATE(QDnsLookup)
 };
 
-#if QT_NETWORK_INLINE_IMPL_SINCE(6, 8)
+#if BOBUI_NETWORK_INLINE_IMPL_SINCE(6, 8)
 void QDnsLookup::setNameserver(const QHostAddress &nameserver, quint16 port)
 {
     setNameserver(Standard, nameserver, port);
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDNSLOOKUP_H

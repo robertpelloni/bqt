@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef HTTPWINDOW_H
 #define HTTPWINDOW_H
@@ -10,7 +10,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QFile;
 class QLabel;
 class QLineEdit;
@@ -19,11 +19,11 @@ class QSslError;
 class QAuthenticator;
 class QNetworkReply;
 class QCheckBox;
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
 class QNetworkProxy;
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class ProgressDialog : public QProgressDialog {
     Q_OBJECT
@@ -52,10 +52,10 @@ private slots:
     void httpReadyRead();
     void enableDownloadButton();
     void slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     void sslErrors(const QList<QSslError> &errors);
 #endif
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     void slotProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 #endif
 

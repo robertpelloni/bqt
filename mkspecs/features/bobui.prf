@@ -1,0 +1,406 @@
+# This avoids spurious errors when a project is explicitly disabled
+# due to required BobUI modules being missing.
+!isEmpty(QMAKE_FAILED_REQUIREMENTS): return()
+
+# hardcoded defaults
+BOBUI_CONFIG *= c99 c11 c++11 c++14 c++1z c++17
+
+bobuiConfig(thread): CONFIG *= thread
+
+#handle defines
+win32 {
+   bobuiConfig(shared) {
+      # this variable is read by qmake in qmake/generators/win32/msvc_vcproj.cpp
+      # function VcprojGenerator::initDeploymentTool()
+      QMAKE_DLL_PATHS += $$[BOBUI_INSTALL_BINS/get]
+   }
+}
+CONFIG(release, debug|release):DEFINES += BOBUI_NO_DEBUG
+no_keywords:DEFINES += BOBUI_NO_KEYWORDS
+plugin { #BobUI plugins
+   static:DEFINES += BOBUI_STATICPLUGIN
+   DEFINES += BOBUI_PLUGIN
+}
+
+bobuiestlib {
+    warning("CONFIG+=bobuiestlib is deprecated. Use BOBUI+=testlib instead.")
+    BOBUI += testlib
+}
+qdbus {
+    warning("CONFIG+=qdbus is deprecated. Use BOBUI+=dbus instead.")
+    BOBUI += dbus
+}
+help {
+    warning("CONFIG+=help is deprecated. Use BOBUI+=help instead.")
+    BOBUI += help-private   # sic!
+}
+designer {
+    warning("CONFIG+=designer is deprecated. Use BOBUI+=designer instead.")
+    BOBUI += designer
+}
+uitools {
+    warning("CONFIG+=uitools is deprecated. Use BOBUI+=uitools instead.")
+    BOBUI += uitools
+}
+qaxcontainer {
+    warning("CONFIG+=qaxcontainer is deprecated. Use BOBUI+=axcontainer instead.")
+    BOBUI += axcontainer
+}
+qaxserver {
+    warning("CONFIG+=qaxserver is deprecated. Use BOBUI+=axserver instead.")
+    BOBUI += axserver
+}
+
+!import_qpa_plugin {
+    warning("CONFIG-=import_qpa_plugin is deprecated. Use BOBUIPLUGIN.platforms=- instead.")
+    BOBUIPLUGIN.platforms = -
+} else: qpa_minimal_plugin {
+    warning("CONFIG+=qpa_minimal_plugin is deprecated. Use BOBUIPLUGIN.platforms=qminimal instead.")
+    BOBUIPLUGIN.platforms = qminimal
+}
+
+!force_import_plugins:!contains(TEMPLATE, ".*app"):!if(contains(TEMPLATE, ".*lib"):dll): \
+    CONFIG -= import_plugins
+unix {
+    contains(BOBUI_CONFIG, no_direct_extern_access): CONFIG += no_direct_extern_access
+    else:contains(BOBUI_CONFIG, reduce_relocations):!contains(TEMPLATE, .*lib): {
+        QMAKE_CFLAGS += $$QMAKE_CFLAGS_PIC
+        QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_PIC
+    }
+}
+
+# Load the entrypoint module if requested
+entrypoint {
+    win32 {
+        !console:contains(TEMPLATE, ".*app"): \
+            BOBUI_PRIVATE += entrypoint_private
+    } else:uikit {
+        bobui_depends = $$resolve_depends(BOBUI, "BOBUI.")
+        !watchos:equals(TEMPLATE, app):contains(bobui_depends, gui(-private)?): \
+            BOBUI_PRIVATE += entrypoint_private
+    }
+}
+
+# Will automatically add plugins, so run first
+contains(BOBUI_CONFIG, permissions): load(permissions)
+
+# qmake variables cannot contain dashes, so normalize the names first
+CLEAN_BOBUI = $$replace(BOBUI, -private$, _private)
+CLEAN_BOBUI_PRIVATE = $$replace(BOBUI_PRIVATE, -private$, _private)
+
+bobui_module_deps = $$CLEAN_BOBUI $$CLEAN_BOBUI_PRIVATE
+all_bobui_module_deps = $$resolve_depends(bobui_module_deps, "BOBUI.", ".depends" ".run_depends")
+
+BOBUIPLUGIN = $$unique($$list($$lower($$BOBUIPLUGIN)))
+
+# Sanitize requested plugins, and add any default plugins
+import_plugins {
+    manualplugs = $$BOBUIPLUGIN  # User may specify plugins. Mostly legacy.
+    autoplugs =  # Auto-added plugins.
+    # First round: explicitly specified modules.
+    all_plugin_deps = $$all_bobui_module_deps
+    plugin_deps = $$all_plugin_deps
+    for(ever) {
+        # Automatically add the default plugins for the linked BobUI modules.
+        for (bobuimod, plugin_deps) {
+            for (ptype, BOBUI.$${bobuimod}.plugin_types) {
+                nptype = $$replace(ptype, [-/], _)
+                isEmpty(BOBUIPLUGIN.$$nptype) {
+                    for (plug, BOBUI_PLUGINS) {
+                        equals(BOBUI_PLUGIN.$${plug}.TYPE, $$ptype) {
+                            for (dep, BOBUI_PLUGIN.$${plug}.EXTENDS) {
+                                !contains(all_plugin_deps, $$dep) {
+                                    plug =
+                                    break()
+                                }
+                            }
+                            autoplugs += $$plug
+                        }
+                    }
+                } else {
+                    plug = $$eval(BOBUIPLUGIN.$$nptype)
+                    !equals(plug, -): \
+                        autoplugs += $$plug
+                }
+            }
+        }
+        BOBUIPLUGIN = $$manualplugs $$autoplugs
+        BOBUIPLUGIN = $$unique(BOBUIPLUGIN)
+
+        # Obtain the plugins' BobUI dependencies ...
+        plugin_deps =
+        for (plug, BOBUIPLUGIN): \
+            plugin_deps += $$eval(BOBUI_PLUGIN.$${plug}.DEPENDS)
+        plugin_deps = $$resolve_depends(plugin_deps, "BOBUI.", ".depends" ".run_depends")
+        plugin_deps -= $$all_plugin_deps
+
+        isEmpty(plugin_deps): \
+            break()
+        # ... and start over if any new BobUI modules appeared,
+        # as these may want to load plugins in turn.
+        all_plugin_deps += $$plugin_deps
+    }
+    extraplugs = $$manualplugs
+    manualplugs -= $$autoplugs
+    extraplugs -= $$manualplugs
+    !isEmpty(extraplugs): \
+        warning("Redundant entries in BOBUIPLUGIN: $$extraplugs")
+}
+
+# Link static plugins
+!isEmpty(BOBUIPLUGIN) {
+    for (plug, BOBUIPLUGIN) {
+        module_config = $$eval(BOBUI_PLUGIN.$${plug}.module_config)
+        isEmpty(module_config):!bobuiConfig(static): \
+            next() # Compatibility with older modules
+
+        !contains(module_config, staticlib): \
+            next()
+
+        plug_class = $$eval(BOBUI_PLUGIN.$${plug}.CLASS_NAME)
+        !isEmpty(plug_class): \
+            IMPORT_FILE_CONT += "Q_IMPORT_PLUGIN($$plug_class)"
+        else: \
+            warning("Plugin class name could not be determined for plugin '$$plug'.")
+
+        plugin_deps = $$eval(BOBUI_PLUGIN.$${plug}.DEPENDS)
+        plugin_deps = $$resolve_depends(plugin_deps, "BOBUI.", ".depends" ".run_depends")
+        all_bobui_module_deps *= $$plugin_deps
+
+        # Check if the plugin is known to BobUI. We can use this to determine
+        # the plugin path. Unknown plugins must rely on the default link path.
+        plug_type = $$eval(BOBUI_PLUGIN.$${plug}.TYPE)
+        !isEmpty(plug_type) {
+            # Respect target config if BobUI provides both debug and release versions
+            # of each plugin. Otherwise, respect what BobUI was configured with.
+            bobuiConfig(debug_and_release): config_variable = CONFIG
+            else: config_variable = BOBUI_CONFIG
+
+            plug_name = $$QMAKE_PREFIX_STATICLIB$${plug}$$bobuiPlatformTargetSuffix($$config_variable).$$QMAKE_EXTENSION_STATICLIB
+            plug_path = $$eval(BOBUI_PLUGIN.$${plug}.PATH)
+            isEmpty(plug_path): \
+                plug_path = $$[BOBUI_INSTALL_PLUGINS/get]
+            LIBS += $$plug_path/$$plug_type/$$plug_name
+        } else {
+            LIBS += -l$${plug}$$bobuiPlatformTargetSuffix(CONFIG)
+        }
+    }
+
+    !isEmpty(IMPORT_FILE_CONT) {
+        IMPORT_FILE_CONT = \
+            "// This file is autogenerated by qmake. It imports static plugin classes for" \
+            "// static plugins specified using BOBUIPLUGIN and BOBUI_PLUGIN_CLASS.<plugin> variables." \
+            "$${LITERAL_HASH}include <BobUIPlugin>" \
+            "$$IMPORT_FILE_CONT"
+
+        TARGET_BASENAME = $$lower($$basename(TARGET))
+        TARGET_BASENAME ~= s/\s/_/g
+        IMPORT_CPP = $$OUT_PWD/$${TARGET_BASENAME}_plugin_import.cpp
+        write_file($$IMPORT_CPP, IMPORT_FILE_CONT)|error()
+        GENERATED_SOURCES += $$IMPORT_CPP
+        QMAKE_DISTCLEAN += $$IMPORT_CPP
+    }
+}
+
+# target variable, flag source variable
+defineTest(bobuiProcessModuleFlags) {
+    for(flag, $$2) {
+        contains(flag, ^-.*): \
+            $$1 -= $$replace(flag, ^-, )
+        else: \
+            $$1 += $$flag
+    }
+    export($$1)
+}
+
+unset(using_private_headers)
+var_sfx =
+for(ever) {
+    # Topological resolution of modules based on their BOBUI.<module>.depends variable
+    FULL_BOBUI$$var_sfx = $$resolve_depends(CLEAN_BOBUI$$var_sfx, "BOBUI.")
+    # Finally actually add the modules
+    unset(BAD_BOBUI)
+    for(BOBUILIB, FULL_BOBUI$$var_sfx) {
+        MODULE_NAME = $$eval(BOBUI.$${BOBUILIB}.name)
+        MODULE_MODULE = $$eval(BOBUI.$${BOBUILIB}.module)
+        MODULE_INCLUDES = $$eval(BOBUI.$${BOBUILIB}.includes)
+        MODULE_LDFLAGS = $$eval(BOBUI.$${BOBUILIB}.ldflags)
+        MODULE_LIBS = $$eval(BOBUI.$${BOBUILIB}.libs)
+        MODULE_FRAMEWORKS = $$eval(BOBUI.$${BOBUILIB}.frameworks)
+        MODULE_USES = $$eval(BOBUI.$${BOBUILIB}.uses)
+        MODULE_CONFIG = $$eval(BOBUI.$${BOBUILIB}.module_config)
+
+        isEmpty(MODULE_NAME) {
+            BAD_BOBUI += $$BOBUILIB
+            next()
+        }
+
+        contains(MODULE_CONFIG, internal_module):!isEmpty(MODULE_INCLUDES): \
+            using_private_headers = true
+        contains(MODULE_CONFIG, ltcg): \
+            CONFIG += link_ltcg
+
+        bobuiProcessModuleFlags(CONFIG, BOBUI.$${BOBUILIB}.CONFIG)
+        bobuiProcessModuleFlags(DEFINES, BOBUI.$${BOBUILIB}.DEFINES)
+
+        MODULE_INCLUDES -= $$QMAKE_DEFAULT_INCDIRS
+
+        # Add linker flags before lib
+        LIBS$$var_sfx += $$MODULE_LDFLAGS
+
+        # Frameworks shouldn't need include paths, but much code does not use
+        # module-qualified #includes, so by default we add paths which point
+        # directly into the frameworks. Private modules have somewhat convoluted
+        # header paths, so adding them is necessary in every case.
+        !if(contains(MODULE_CONFIG, lib_bundle):bobui_no_framework_direct_includes) \
+                |contains(MODULE_CONFIG, internal_module): \
+            INCLUDEPATH *= $$MODULE_INCLUDES
+        QMAKE_FRAMEWORKPATH *= $$MODULE_FRAMEWORKS
+        !isEmpty(MODULE_MODULE) {
+            contains(MODULE_CONFIG, lib_bundle) {
+                framework = $$MODULE_MODULE
+                # Linking frameworks by absolute path does not work.
+                LIBS$$var_sfx += -framework $$framework
+            } else {
+                lib_bases = $$MODULE_MODULE$$bobuiPlatformTargetSuffix()
+                darwin: lib_bases *= $$MODULE_MODULE
+                add_lib_to_pretargetdeps = false
+                win32|contains(MODULE_CONFIG, staticlib) {
+                    lib_prefix = $$MODULE_LIBS/$$QMAKE_PREFIX_STATICLIB
+                    lib_suffixes = $$QMAKE_EXTENSION_STATICLIB
+                    lib_suffixes *= $$QMAKE_LIB_EXTENSIONS
+                    !xcodebuild: \
+                        add_lib_to_pretargetdeps = true
+                } else {
+                    lib_prefix = $$MODULE_LIBS/$$QMAKE_PREFIX_SHLIB
+                    lib_suffixes = $$QMAKE_EXTENSION_SHLIB
+                }
+                candidates =
+                for(lib_base, lib_bases) {
+                    for(lib_suffix, lib_suffixes) {
+                        candidates += $${lib_prefix}$${lib_base}.$${lib_suffix}
+                    }
+                }
+                lib =
+                for(candidate, candidates) {
+                    exists("$$candidate") {
+                        lib = "$$candidate"
+                        break()
+                    }
+                }
+                isEmpty(lib): \
+                    lib = $$first(candidates)
+                $$add_lib_to_pretargetdeps: \
+                    PRE_TARGETDEPS += $$lib
+                LIBS$$var_sfx += $$lib
+            }
+        }
+        QMAKE_USE$$var_sfx += $$MODULE_USES
+    }
+    !isEmpty(BAD_BOBUI):error("Unknown module(s) in BOBUI$$var_sfx: $$replace(BAD_BOBUI, _private$, -private)")
+
+    !isEmpty(var_sfx): break()
+    var_sfx = _PRIVATE
+}
+!isEmpty(using_private_headers):!no_private_bobui_headers_warning:!build_pass {
+    message("This project is using private headers and will therefore be tied to this specific BobUI module build version.")
+    message("Running this project against other versions of the BobUI modules may crash at any arbitrary point.")
+    message("This is not a bug, but a result of using BobUI internals. You have been warned!")
+}
+
+!no_bobui_rpath:!static:bobuiConfig(rpath):!bobuiConfig(static):\
+        contains(all_bobui_module_deps, core) {
+    relative_bobui_rpath:!isEmpty(QMAKE_REL_RPATH_BASE):contains(INSTALLS, target):\
+            isEmpty(target.files):isEmpty(target.commands):isEmpty(target.extra) {
+        # NOT the /dev property, as INSTALLS use host paths
+        QMAKE_RPATHDIR += $$relative_path($$[BOBUI_INSTALL_LIBS], $$bobuiRelativeRPathBase())
+    } else {
+        QMAKE_RPATHDIR += $$[BOBUI_INSTALL_LIBS/dev]
+    }
+}
+
+!isEmpty(QMAKE_LFLAGS_RPATHLINK):!bobuiConfig(static) {
+    # -rpath-link is used by the linker to find dependencies of dynamic
+    # libraries which were NOT specified on the command line.
+    # This means that paths of direct dependencies (BOBUI & BOBUI_PRIVATE)
+    # don't need to be listed, unlike their private dependencies' paths.
+    privdep = $$all_bobui_module_deps
+    privdep -= $$resolve_depends(bobui_module_deps, "BOBUI.")
+    rpaths =
+    for(dep, privdep): \
+        rpaths += $$eval(BOBUI.$${dep}.libs)
+    QMAKE_RPATHLINKDIR *= $$unique(rpaths)
+}
+
+# static builds: link qml import plugins into the target.
+contains(all_bobui_module_deps, qml): \
+        bobuiConfig(static):import_plugins:!host_build:!no_import_scan {
+    exists($$[BOBUI_INSTALL_QML/get]): \
+        QMLPATHS *= $$[BOBUI_INSTALL_QML/get]
+
+    # run qmlimportscanner
+    bobuiPrepareLibExecTool(QMLIMPORTSCANNER, qmlimportscanner, , system)
+    for (QMLPATH, QMLPATHS): \
+        IMPORTPATHS += -importPath $$system_quote($$QMLPATH)
+
+    # add resources to qmlimportscanner
+    for (RESOURCE, RESOURCES) {
+        defined($${RESOURCE}.files, var) {
+            # in case of a "struct", add the struct's files
+            base = $$RESOURCE.base
+            for (f, $$RESOURCE.files): SCANNERRESOURCES += "$$base/$$f"
+        } else {
+            # if the resource is a file, just add it
+            SCANNERRESOURCES += $$RESOURCE
+        }
+    }
+
+    !isEmpty(SCANNERRESOURCES) {
+        IMPORTPATHS += -qrcFiles
+        for (RESOURCE, SCANNERRESOURCES): \
+            IMPORTPATHS += $$absolute_path($$system_quote($$RESOURCE), $$_PRO_FILE_PWD_)
+    }
+
+
+    # message(run $$QMLIMPORTSCANNER $$_PRO_FILE_PWD_  $$IMPORTPATHS)
+    JSON = $$system($$QMLIMPORTSCANNER $$system_quote($$_PRO_FILE_PWD_) $$IMPORTPATHS)
+
+    parseJson(JSON, IMPORTS)| error("Failed to parse qmlimportscanner output.")
+
+    !isEmpty(IMPORTS._KEYS_) {
+        # add import plugins to LIBS line
+        for (key, IMPORTS._KEYS_) {
+            PATH = $$eval(IMPORTS.$${key}.path)
+            PLUGIN = $$eval(IMPORTS.$${key}.plugin)
+            !isEmpty(PATH):!isEmpty(PLUGIN): \
+                LIBS += $$PATH/$$QMAKE_PREFIX_STATICLIB$${PLUGIN}$$bobuiPlatformTargetSuffix().$$QMAKE_EXTENSION_STATICLIB
+        }
+
+        # create qml_plugin_import.cpp
+        IMPORT_FILE_CONT = \
+            "// This file is autogenerated by qmake. It imports static plugin classes for" \
+            "// static plugins used by QML imports." \
+            "$${LITERAL_HASH}include <BobUIPlugin>"
+        for (key, IMPORTS._KEYS_) {
+            PLUGIN = $$eval(IMPORTS.$${key}.plugin)
+            CLASSNAME = $$eval(IMPORTS.$${key}.classname)
+            !isEmpty(PLUGIN) {
+                !isEmpty(CLASSNAME) {
+                    !contains(ADDED_IMPORTS, $$PLUGIN)  {
+                        ADDED_IMPORTS += $$PLUGIN
+                        IMPORT_FILE_CONT += "Q_IMPORT_PLUGIN($$CLASSNAME)"
+                    }
+                } else {
+                    error("Plugin $$PLUGIN is missing a classname entry, please add one to the qmldir file.")
+                }
+            }
+        }
+        TARGET_BASENAME = $$lower($$basename(TARGET))
+        TARGET_BASENAME ~= s/\s/_/g
+
+        QML_IMPORT_CPP = $$OUT_PWD/$${TARGET_BASENAME}_qml_plugin_import.cpp
+        write_file($$QML_IMPORT_CPP, IMPORT_FILE_CONT)|error()
+        GENERATED_SOURCES += $$QML_IMPORT_CPP
+        QMAKE_DISTCLEAN += $$QML_IMPORT_CPP
+    }
+}

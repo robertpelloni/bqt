@@ -1,10 +1,10 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qmake LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
@@ -13,7 +13,7 @@ file(GLOB_RECURSE test_data_glob
     testdata/*)
 list(APPEND test_data ${test_data_glob})
 
-qt_internal_add_test(tst_qmake
+bobui_internal_add_test(tst_qmake
     SOURCES
         testcompiler.cpp testcompiler.h
         tst_qmake.cpp
@@ -21,20 +21,20 @@ qt_internal_add_test(tst_qmake
 )
 
 set(dependencies
-    Qt::moc
-    Qt::qmake
+    BobUI::moc
+    BobUI::qmake
 )
-if(TARGET Qt::Gui)
-    list(APPEND dependencies Qt::Gui)
+if(TARGET BobUI::Gui)
+    list(APPEND dependencies BobUI::Gui)
 endif()
-if(TARGET Qt::Widgets)
-    list(APPEND dependencies Qt::Widgets)
+if(TARGET BobUI::Widgets)
+    list(APPEND dependencies BobUI::Widgets)
 endif()
-if(TARGET Qt::rcc)
-    list(APPEND dependencies Qt::rcc)
+if(TARGET BobUI::rcc)
+    list(APPEND dependencies BobUI::rcc)
 endif()
-if(TARGET Qt::uic)
-    list(APPEND dependencies Qt::uic)
+if(TARGET BobUI::uic)
+    list(APPEND dependencies BobUI::uic)
 endif()
 # Add dependencies that are implicitly used inside the test
 add_dependencies(tst_qmake ${dependencies})

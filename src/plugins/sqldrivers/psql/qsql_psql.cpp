@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_psql_p.h"
 
@@ -20,9 +20,9 @@
 #include <quuid.h>
 #include <qlocale.h>
 #include <qvarlengtharray.h>
-#include <QtSql/private/qsqlresult_p.h>
-#include <QtSql/private/qsqldriver_p.h>
-#include <QtCore/private/qlocale_tools_p.h>
+#include <BobUISql/private/qsqlresult_p.h>
+#include <BobUISql/private/qsqldriver_p.h>
+#include <BobUICore/private/qlocale_tools_p.h>
 
 #include <queue>
 
@@ -42,10 +42,10 @@
 #define QABSTIMEOID 702
 #define QRELTIMEOID 703
 #define QDATEOID 1082
-#define QTIMEOID 1083
-#define QTIMETZOID 1266
-#define QTIMESTAMPOID 1114
-#define QTIMESTAMPTZOID 1184
+#define BOBUIIMEOID 1083
+#define BOBUIIMETZOID 1266
+#define BOBUIIMESTAMPOID 1114
+#define BOBUIIMESTAMPTZOID 1184
 #define QOIDOID 2278
 #define QBYTEAOID 17
 #define QREGPROCOID 24
@@ -69,11 +69,11 @@ Q_DECLARE_METATYPE(PGconn*)
 Q_DECLARE_OPAQUE_POINTER(PGresult*)
 Q_DECLARE_METATYPE(PGresult*)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcPsql, "qt.sql.postgresql")
+Q_STATIC_LOGGING_CATEGORY(lcPsql, "bobui.sql.postgresql")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 inline void qPQfreemem(void *buffer)
 {
@@ -252,7 +252,7 @@ void QPSQLDriverPrivate::checkPendingNotifications() const
     Q_Q(const QPSQLDriver);
     if (seid.size() && !pendingNotifyCheck) {
         pendingNotifyCheck = true;
-        QMetaObject::invokeMethod(const_cast<QPSQLDriver*>(q), &QPSQLDriver::_q_handleNotification, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(const_cast<QPSQLDriver*>(q), &QPSQLDriver::_q_handleNotification, BobUI::QueuedConnection);
     }
 }
 
@@ -365,12 +365,12 @@ static QMetaType qDecodePSQLType(int t)
     case QDATEOID:
         type = QMetaType::QDate;
         break;
-    case QTIMEOID:
-    case QTIMETZOID:
-        type = QMetaType::QTime;
+    case BOBUIIMEOID:
+    case BOBUIIMETZOID:
+        type = QMetaType::BOBUIime;
         break;
-    case QTIMESTAMPOID:
-    case QTIMESTAMPTZOID:
+    case BOBUIIMESTAMPOID:
+    case BOBUIIMESTAMPTZOID:
         type = QMetaType::QDateTime;
         break;
     case QBYTEAOID:
@@ -656,22 +656,22 @@ QVariant QPSQLResult::data(int i)
         }
         return dbl;
     }
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     case QMetaType::QDate:
-        return QVariant(QDate::fromString(QString::fromLatin1(val), Qt::ISODate));
-    case QMetaType::QTime:
-        return QVariant(QTime::fromString(QString::fromLatin1(val), Qt::ISODate));
+        return QVariant(QDate::fromString(QString::fromLatin1(val), BobUI::ISODate));
+    case QMetaType::BOBUIime:
+        return QVariant(BOBUIime::fromString(QString::fromLatin1(val), BobUI::ISODate));
     case QMetaType::QDateTime: {
         const QLatin1StringView tzString(val);
         const auto timeString(tzString.sliced(11));
         if (timeString.contains(u'-') || timeString.contains(u'+') || timeString.endsWith(u'Z'))
-            return QDateTime::fromString(tzString, Qt::ISODate);
+            return QDateTime::fromString(tzString, BobUI::ISODate);
         const auto utc = tzString.toString() + u'Z';
-        return QVariant(QDateTime::fromString(utc, Qt::ISODate));
+        return QVariant(QDateTime::fromString(utc, BobUI::ISODate));
     }
 #else
     case QMetaType::QDate:
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
     case QMetaType::QDateTime:
         return QVariant(QString::fromLatin1(val));
 #endif
@@ -790,8 +790,8 @@ QSqlRecord QPSQLResult::record() const
         int precision = PQfmod(d->result, i);
 
         switch (ptype) {
-        case QTIMESTAMPOID:
-        case QTIMESTAMPTZOID:
+        case BOBUIIMESTAMPOID:
+        case BOBUIIMESTAMPTZOID:
             precision = 3;
             break;
 
@@ -1211,7 +1211,7 @@ bool QPSQLDriver::open(const QString &db,
     // add any connect options - the server will handle error detection
     if (!connOpts.isEmpty()) {
         QString opt = connOpts;
-        opt.replace(';'_L1, ' '_L1, Qt::CaseInsensitive);
+        opt.replace(';'_L1, ' '_L1, BobUI::CaseInsensitive);
         connectString.append(u' ').append(opt);
     }
 
@@ -1500,16 +1500,16 @@ QString QPSQLDriver::formatValue(const QSqlField &field, bool trimStrings) const
                 // the datetime needs to be in UTC format
                 // Anyway the DB stores it that way for timestamptz
                 // for timestamp (without tz), we store as UTC too and the server will ignore the tz info
-                r = autoQuoteResult<forPreparedStatement>(dt.toUTC().toString(Qt::ISODateWithMs));
+                r = autoQuoteResult<forPreparedStatement>(dt.toUTC().toString(BobUI::ISODateWithMs));
             } else {
                 r = nullStr();
             }
             break;
         }
-        case QMetaType::QTime: {
+        case QMetaType::BOBUIime: {
             const auto t = field.value().toTime();
             if (t.isValid())
-                r = autoQuoteResult<forPreparedStatement>(t.toString(Qt::ISODateWithMs));
+                r = autoQuoteResult<forPreparedStatement>(t.toString(BobUI::ISODateWithMs));
             else
                 r = nullStr();
             break;
@@ -1692,6 +1692,6 @@ void QPSQLDriver::_q_handleNotification()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_psql_p.cpp"

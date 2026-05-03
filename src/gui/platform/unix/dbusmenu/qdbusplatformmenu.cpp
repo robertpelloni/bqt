@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusplatformmenu_p.h"
 
@@ -8,9 +8,9 @@
 #include <QDebug>
 #include <QWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcMenu, "qt.qpa.menu")
+Q_LOGGING_CATEGORY(qLcMenu, "bobui.qpa.menu")
 
 static int nextDBusID = 1;
 QHash<int, QDBusPlatformMenuItem *> menuItemsByID;
@@ -95,7 +95,7 @@ void QDBusPlatformMenuItem::setHasExclusiveGroup(bool hasExclusiveGroup)
     m_hasExclusiveGroup = hasExclusiveGroup;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 void QDBusPlatformMenuItem::setShortcut(const QKeySequence &shortcut)
 {
     m_shortcut = shortcut;
@@ -180,11 +180,11 @@ void QDBusPlatformMenu::syncSubMenu(const QDBusPlatformMenu *menu)
     // The adaptor is only connected to the propertiesUpdated signal of the top-level
     // menu, so the submenus should transfer their signals to their parents.
     connect(menu, &QDBusPlatformMenu::propertiesUpdated,
-            this, &QDBusPlatformMenu::propertiesUpdated, Qt::UniqueConnection);
+            this, &QDBusPlatformMenu::propertiesUpdated, BobUI::UniqueConnection);
     connect(menu, &QDBusPlatformMenu::updated,
-            this, &QDBusPlatformMenu::updated, Qt::UniqueConnection);
+            this, &QDBusPlatformMenu::updated, BobUI::UniqueConnection);
     connect(menu, &QDBusPlatformMenu::popupRequested,
-            this, &QDBusPlatformMenu::popupRequested, Qt::UniqueConnection);
+            this, &QDBusPlatformMenu::popupRequested, BobUI::UniqueConnection);
 }
 
 void QDBusPlatformMenu::syncMenuItem(QPlatformMenuItem *menuItem)
@@ -271,6 +271,6 @@ QPlatformMenu *QDBusPlatformMenu::createSubMenu() const
     return new QDBusPlatformMenu;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusplatformmenu_p.cpp"

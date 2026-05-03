@@ -1,9 +1,9 @@
-Qt 4.3.4 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.3.0 through Qt 4.3.3.
+BobUI 4.3.4 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.3.0 through BobUI 4.3.3.
 
-The Qt version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
-4.0.x series. Applications compiled for Qt 4.0, 4.1 or 4.2 will continue to
-run with Qt 4.3.
+The BobUI version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
+4.0.x series. Applications compiled for BobUI 4.0, 4.1 or 4.2 will continue to
+run with BobUI 4.3.
 
 ****************************************************************************
 *                           General                                        *
@@ -15,12 +15,12 @@ General Improvements
 - Legal
 
     * This version adds the GNU General Public License (GPL) version 3
-      to all Qt Open Source editions. The GPL Exception version 1.1
+      to all BobUI Open Source editions. The GPL Exception version 1.1
       applies to both versions of the GPL license.
 
 Build System
 ------------
-    * Ensure that Qt plugin paths are only added once to the LIBS variable.
+    * Ensure that BobUI plugin paths are only added once to the LIBS variable.
     * MinGW: Ensure that PRE_TARGETDEPS and POST_TARGETDEPS are properly
       escaped in dependency lists, so they match the rules in the Makefiles.
 
@@ -35,8 +35,8 @@ General Improvements
 --------------------
 
 - QApplication
-    * [193842] Fixed a bug where a statically built Qt would still try
-      to load Qt plugins (such as style, imageformat, and sqldriver
+    * [193842] Fixed a bug where a statically built BobUI would still try
+      to load BobUI plugins (such as style, imageformat, and sqldriver
       plugins) which causes the application to crash.
 
 - QCoreApplication
@@ -57,9 +57,9 @@ General Improvements
     * [191705] Fixed crash on remote disconnect
     * [190133] Fixed security bug in QSslSocket's certificate verification
 
-- QTreeWidget
-    * [191300] Adding QTreeWidgetItems into a sorted QTreeWidget can be slow.
-    * [155700] Fixed potential assert when deleting QTreeWidgetItems with
+- BOBUIreeWidget
+    * [191300] Adding BOBUIreeWidgetItems into a sorted BOBUIreeWidget can be slow.
+    * [155700] Fixed potential assert when deleting BOBUIreeWidgetItems with
       sorting enabled.
 
 - QDirModel
@@ -97,14 +97,14 @@ Windows
 
 Mac OS X
 --------
-* [188837] Fixed a bug that would make Qt applications not quit when someone logs out of Leopard
+* [188837] Fixed a bug that would make BobUI applications not quit when someone logs out of Leopard
 * [192030] Prevent a crash when dragging over a widget that has a focus frame
-* [291319] Send the kEventQtRequestWindowChange event when moving QGLWidgets.
+* [291319] Send the kEventBobUIRequestWindowChange event when moving QGLWidgets.
 * Fix binary compatibility issue in the OpenGL module that could cause problems when using
-   Qt binaries compiled on Tiger for development on Leopard. The Mac binary package now supports 
+   BobUI binaries compiled on Tiger for development on Leopard. The Mac binary package now supports 
    development on Leopard.
 
-Qtopia Core
+BobUIopia Core
 -----------
 * [189195] Fix crash when using fonts containing embedded bitmaps with
   zero width and non-zero height.

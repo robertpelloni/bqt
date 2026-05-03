@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QString>
 #include <QDBusConnection>
@@ -37,7 +37,7 @@ QString MyObject::methodWithDelayedReply()
     conn = connection();
     msg = message();
     setDelayedReply(true);
-    QMetaObject::invokeMethod(this, &MyObject::process, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &MyObject::process, BobUI::QueuedConnection);
     return QString();
 }
 //! [0]

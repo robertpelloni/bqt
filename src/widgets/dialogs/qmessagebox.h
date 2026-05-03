@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMESSAGEBOX_H
 #define QMESSAGEBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qdialog.h>
-#include <QtWidgets/qdialogbuttonbox.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qdialog.h>
+#include <BobUIWidgets/qdialogbuttonbox.h>
 
-QT_REQUIRE_CONFIG(messagebox);
+BOBUI_REQUIRE_CONFIG(messagebox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAnyStringView;
 class QLabel;
@@ -25,13 +25,13 @@ class Q_WIDGETS_EXPORT QMessageBox : public QDialog
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(Icon icon READ icon WRITE setIcon)
     Q_PROPERTY(QPixmap iconPixmap READ iconPixmap WRITE setIconPixmap)
-    Q_PROPERTY(Qt::TextFormat textFormat READ textFormat WRITE setTextFormat)
+    Q_PROPERTY(BobUI::TextFormat textFormat READ textFormat WRITE setTextFormat)
     Q_PROPERTY(StandardButtons standardButtons READ standardButtons WRITE setStandardButtons)
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     Q_PROPERTY(QString detailedText READ detailedText WRITE setDetailedText)
 #endif
     Q_PROPERTY(QString informativeText READ informativeText WRITE setInformativeText)
-    Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags
+    Q_PROPERTY(BobUI::TextInteractionFlags textInteractionFlags READ textInteractionFlags
                WRITE setTextInteractionFlags)
     Q_PROPERTY(Options options READ options WRITE setOptions)
 public:
@@ -103,7 +103,7 @@ public:
     };
     Q_ENUM(StandardButton)
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     typedef StandardButton Button;
 #endif
     Q_DECLARE_FLAGS(Options, Option)
@@ -114,7 +114,7 @@ public:
     explicit QMessageBox(QWidget *parent = nullptr);
     QMessageBox(Icon icon, const QString &title, const QString &text,
                 StandardButtons buttons = NoButton, QWidget *parent = nullptr,
-                Qt::WindowFlags flags = Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+                BobUI::WindowFlags flags = BobUI::Dialog | BobUI::MSWindowsFixedSizeDialogHint);
     ~QMessageBox();
 
     void addButton(QAbstractButton *button, ButtonRole role);
@@ -152,11 +152,11 @@ public:
     QPixmap iconPixmap() const;
     void setIconPixmap(const QPixmap &pixmap);
 
-    Qt::TextFormat textFormat() const;
-    void setTextFormat(Qt::TextFormat format);
+    BobUI::TextFormat textFormat() const;
+    void setTextFormat(BobUI::TextFormat format);
 
-    void setTextInteractionFlags(Qt::TextInteractionFlags flags);
-    Qt::TextInteractionFlags textInteractionFlags() const;
+    void setTextInteractionFlags(BobUI::TextInteractionFlags flags);
+    BobUI::TextInteractionFlags textInteractionFlags() const;
 
     void setCheckBox(QCheckBox *cb);
     QCheckBox* checkBox() const;
@@ -169,7 +169,7 @@ public:
     static StandardButton information(QWidget *parent, const QString &title,
          const QString &text, StandardButtons buttons = Ok,
          StandardButton defaultButton = NoButton);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) // needed as long as we have int overloads
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) // needed as long as we have int overloads
     inline static StandardButton information(QWidget *parent, const QString &title,
                                   const QString& text,
                                   StandardButton button0, StandardButton button1 = NoButton)
@@ -179,7 +179,7 @@ public:
     static StandardButton question(QWidget *parent, const QString &title,
          const QString &text, StandardButtons buttons = StandardButtons(Yes | No),
          StandardButton defaultButton = NoButton);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     inline static int question(QWidget *parent, const QString &title,
                                const QString& text,
                                StandardButton button0, StandardButton button1)
@@ -189,7 +189,7 @@ public:
     static StandardButton warning(QWidget *parent, const QString &title,
          const QString &text, StandardButtons buttons = Ok,
          StandardButton defaultButton = NoButton);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     inline static int warning(QWidget *parent, const QString &title,
                               const QString& text,
                               StandardButton button0, StandardButton button1)
@@ -199,7 +199,7 @@ public:
     static StandardButton critical(QWidget *parent, const QString &title,
          const QString &text, StandardButtons buttons = Ok,
          StandardButton defaultButton = NoButton);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     inline static int critical(QWidget *parent, const QString &title,
                                const QString& text,
                                StandardButton button0, StandardButton button1)
@@ -207,21 +207,21 @@ public:
 #endif
 
     static void about(QWidget *parent, const QString &title, const QString &text);
-    static void aboutQt(QWidget *parent, const QString &title = QString());
+    static void aboutBobUI(QWidget *parent, const QString &title = QString());
 
-#if QT_DEPRECATED_SINCE(6,2)
+#if BOBUI_DEPRECATED_SINCE(6,2)
     // the following functions are obsolete:
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     QMessageBox(const QString &title, const QString &text, Icon icon,
                   int button0, int button1, int button2,
                   QWidget *parent = nullptr,
-                  Qt::WindowFlags f = Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+                  BobUI::WindowFlags f = BobUI::Dialog | BobUI::MSWindowsFixedSizeDialogHint);
 
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int information(QWidget *parent, const QString &title,
                            const QString& text,
                            int button0, int button1 = 0, int button2 = 0);
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int information(QWidget *parent, const QString &title,
                            const QString& text,
                            const QString& button0Text,
@@ -230,11 +230,11 @@ public:
                            int defaultButtonNumber = 0,
                            int escapeButtonNumber = -1);
 
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int question(QWidget *parent, const QString &title,
                         const QString& text,
                         int button0, int button1 = 0, int button2 = 0);
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int question(QWidget *parent, const QString &title,
                         const QString& text,
                         const QString& button0Text,
@@ -243,11 +243,11 @@ public:
                         int defaultButtonNumber = 0,
                         int escapeButtonNumber = -1);
 
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int warning(QWidget *parent, const QString &title,
                        const QString& text,
                        int button0, int button1, int button2 = 0);
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int warning(QWidget *parent, const QString &title,
                        const QString& text,
                        const QString& button0Text,
@@ -256,11 +256,11 @@ public:
                        int defaultButtonNumber = 0,
                        int escapeButtonNumber = -1);
 
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int critical(QWidget *parent, const QString &title,
                         const QString& text,
                         int button0, int button1, int button2 = 0);
-    QT_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use the overload taking StandardButtons instead.")
     static int critical(QWidget *parent, const QString &title,
                         const QString& text,
                         const QString& button0Text,
@@ -269,25 +269,25 @@ public:
                         int defaultButtonNumber = 0,
                         int escapeButtonNumber = -1);
 
-    QT_DEPRECATED_VERSION_X_6_2("Use button() and QPushButton::text() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use button() and QPushButton::text() instead.")
     QString buttonText(int button) const;
-    QT_DEPRECATED_VERSION_X_6_2("Use addButton() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use addButton() instead.")
     void setButtonText(int button, const QString &text);
 #endif
 
     QString informativeText() const;
     void setInformativeText(const QString &text);
 
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     QString detailedText() const;
     void setDetailedText(const QString &text);
 #endif
 
     void setWindowTitle(const QString &title);
-    void setWindowModality(Qt::WindowModality windowModality);
+    void setWindowModality(BobUI::WindowModality windowModality);
 
-#if QT_DEPRECATED_SINCE(6,2)
-    QT_DEPRECATED_VERSION_X_6_2("Use QStyle::standardIcon() instead.")
+#if BOBUI_DEPRECATED_SINCE(6,2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use QStyle::standardIcon() instead.")
     static QPixmap standardIcon(Icon icon);
 #endif
 
@@ -316,8 +316,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QMessageBox::StandardButtons)
 
 Q_WIDGETS_EXPORT void qRequireVersion(int argc, char *argv[], QAnyStringView req);
 
-#define QT_REQUIRE_VERSION(argc, argv, str) qRequireVersion(argc, argv, str);
+#define BOBUI_REQUIRE_VERSION(argc, argv, str) qRequireVersion(argc, argv, str);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMESSAGEBOX_H

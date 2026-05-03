@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qabstractnativeeventfilter.h"
 #include "qabstracteventdispatcher.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAbstractNativeEventFilter
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.0
 
     \brief The QAbstractNativeEventFilter class provides an interface for receiving native
@@ -85,4 +85,4 @@ QAbstractNativeEventFilter::~QAbstractNativeEventFilter()
     \snippet code/src_corelib_kernel_qabstractnativeeventfilter.pro 0
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

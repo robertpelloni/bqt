@@ -1,9 +1,9 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mylib/mylib.h"
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
 class test_plugin_deployment : public QObject
 {
@@ -21,6 +21,6 @@ void test_plugin_deployment::loadsTheRightPlugins()
     }
 }
 
-QTEST_MAIN(test_plugin_deployment)
+BOBUIEST_MAIN(test_plugin_deployment)
 
 #include "main.moc"

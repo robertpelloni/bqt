@@ -1,8 +1,8 @@
 // Copyright (C) 2018 Intel Corporation.
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qplatformdefs.h"
 #include "qfilesystemengine_p.h"
@@ -10,15 +10,15 @@
 #include "qstorageinfo.h"
 #include "qurl.h"
 
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtCore/private/qfiledevice_p.h>
-#include <QtCore/private/qfunctions_p.h>
-#include <QtCore/qvarlengtharray.h>
-#ifndef QT_BOOTSTRAPPED
-# include <QtCore/qstandardpaths.h>
-# include <QtCore/private/qtemporaryfile_p.h>
-#endif // QT_BOOTSTRAPPED
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUICore/private/qfiledevice_p.h>
+#include <BobUICore/private/qfunctions_p.h>
+#include <BobUICore/qvarlengtharray.h>
+#ifndef BOBUI_BOOTSTRAPPED
+# include <BobUICore/qstandardpaths.h>
+# include <BobUICore/private/bobuiemporaryfile_p.h>
+#endif // BOBUI_BOOTSTRAPPED
 
 #include <grp.h>
 #include <pwd.h>
@@ -43,7 +43,7 @@
 #endif
 
 #if defined(Q_OS_DARWIN)
-# include <QtCore/private/qcore_mac_p.h>
+# include <BobUICore/private/qcore_mac_p.h>
 # include <CoreFoundation/CFBundle.h>
 # include <UniformTypeIdentifiers/UTType.h>
 # include <UniformTypeIdentifiers/UTCoreTypes.h>
@@ -55,7 +55,7 @@
 #include <CoreServices/CoreServices.h>
 #endif
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
 #include <MobileCoreServices/MobileCoreServices.h>
 #endif
 
@@ -88,9 +88,9 @@
 struct statx { mode_t stx_mode; };      // dummy
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QByteArray &removeTrailingSlashes(QByteArray &path)
 {
@@ -199,19 +199,19 @@ qint64 time_t_toMsecs(time_t t)
 }
 
 // fallback set
-[[maybe_unused]] qint64 atime(const QT_STATBUF &statBuffer, ulong)
+[[maybe_unused]] qint64 atime(const BOBUI_STATBUF &statBuffer, ulong)
 {
     return time_t_toMsecs(statBuffer.st_atime);
 }
-[[maybe_unused]] qint64 birthtime(const QT_STATBUF &, ulong)
+[[maybe_unused]] qint64 birthtime(const BOBUI_STATBUF &, ulong)
 {
     return Q_INT64_C(0);
 }
-[[maybe_unused]] qint64 ctime(const QT_STATBUF &statBuffer, ulong)
+[[maybe_unused]] qint64 ctime(const BOBUI_STATBUF &statBuffer, ulong)
 {
     return time_t_toMsecs(statBuffer.st_ctime);
 }
-[[maybe_unused]] qint64 mtime(const QT_STATBUF &statBuffer, ulong)
+[[maybe_unused]] qint64 mtime(const BOBUI_STATBUF &statBuffer, ulong)
 {
     return time_t_toMsecs(statBuffer.st_mtime);
 }
@@ -295,7 +295,7 @@ mtime(const T &statBuffer, int)
 } // namespace GetFileTimes
 } // unnamed namespace
 
-// converts QT_STATBUF::st_mode to QFSMD
+// converts BOBUI_STATBUF::st_mode to QFSMD
 // the \a attributes parameter is OS-specific
 static QFileSystemMetaData::MetaDataFlags
 flagsFromStMode(mode_t mode, [[maybe_unused]] quint64 attributes)
@@ -353,26 +353,26 @@ flagsFromStMode(mode_t mode, [[maybe_unused]] quint64 attributes)
 }
 
 #ifdef STATX_BASIC_STATS
-static int qt_real_statx(int fd, const char *pathname, int flags, struct statx *statxBuffer)
+static int bobui_real_statx(int fd, const char *pathname, int flags, struct statx *statxBuffer)
 {
     unsigned mask = STATX_BASIC_STATS | STATX_BTIME;
     int ret = statx(fd, pathname, flags | AT_NO_AUTOMOUNT, mask, statxBuffer);
     return ret == -1 ? -errno : 0;
 }
 
-static int qt_statx(const char *pathname, struct statx *statxBuffer)
+static int bobui_statx(const char *pathname, struct statx *statxBuffer)
 {
-    return qt_real_statx(AT_FDCWD, pathname, 0, statxBuffer);
+    return bobui_real_statx(AT_FDCWD, pathname, 0, statxBuffer);
 }
 
-static int qt_lstatx(const char *pathname, struct statx *statxBuffer)
+static int bobui_lstatx(const char *pathname, struct statx *statxBuffer)
 {
-    return qt_real_statx(AT_FDCWD, pathname, AT_SYMLINK_NOFOLLOW, statxBuffer);
+    return bobui_real_statx(AT_FDCWD, pathname, AT_SYMLINK_NOFOLLOW, statxBuffer);
 }
 
-static int qt_fstatx(int fd, struct statx *statxBuffer)
+static int bobui_fstatx(int fd, struct statx *statxBuffer)
 {
-    return qt_real_statx(fd, "", AT_EMPTY_PATH, statxBuffer);
+    return bobui_real_statx(fd, "", AT_EMPTY_PATH, statxBuffer);
 }
 
 inline void QFileSystemMetaData::fillFromStatxBuf(const struct statx &statxBuffer)
@@ -399,13 +399,13 @@ inline void QFileSystemMetaData::fillFromStatxBuf(const struct statx &statxBuffe
     groupId_ = statxBuffer.stx_gid;
 }
 #else
-static int qt_statx(const char *, struct statx *)
+static int bobui_statx(const char *, struct statx *)
 { return -ENOSYS; }
 
-static int qt_lstatx(const char *, struct statx *)
+static int bobui_lstatx(const char *, struct statx *)
 { return -ENOSYS; }
 
-static int qt_fstatx(int, struct statx *)
+static int bobui_fstatx(int, struct statx *)
 { return -ENOSYS; }
 
 inline void QFileSystemMetaData::fillFromStatxBuf(const struct statx &)
@@ -436,7 +436,7 @@ bool QFileSystemEngine::fillMetaData(int fd, QFileSystemMetaData &data)
         // see Linux-compat implementation in
         // http://fxr.watson.org/fxr/source/compat/linux/linux_ioctl.c?v=FREEBSD-13-STABLE#L282
         // S_IFCHR is correct: FreeBSD doesn't have block devices any more
-        if (QT_OFF_T sz; (st_mode & S_IFMT) == S_IFCHR && ioctl(fd, DIOCGMEDIASIZE, &sz) == 0)
+        if (BOBUI_OFF_T sz; (st_mode & S_IFMT) == S_IFCHR && ioctl(fd, DIOCGMEDIASIZE, &sz) == 0)
             data.size_ = sz;        // returns byte count
 #else
         Q_UNUSED(st_mode);
@@ -447,7 +447,7 @@ bool QFileSystemEngine::fillMetaData(int fd, QFileSystemMetaData &data)
 
     struct statx statxBuffer;
 
-    int ret = qt_fstatx(fd, &statxBuffer);
+    int ret = bobui_fstatx(fd, &statxBuffer);
     if (ret != -ENOSYS) {
         if (ret == 0) {
             data.fillFromStatxBuf(statxBuffer);
@@ -457,9 +457,9 @@ bool QFileSystemEngine::fillMetaData(int fd, QFileSystemMetaData &data)
         return false;
     }
 
-    QT_STATBUF statBuffer;
+    BOBUI_STATBUF statBuffer;
 
-    if (QT_FSTAT(fd, &statBuffer) == 0) {
+    if (BOBUI_FSTAT(fd, &statBuffer) == 0) {
         data.fillFromStatBuf(statBuffer);
         getSizeForBlockDev(statBuffer.st_mode);
         return true;
@@ -487,7 +487,7 @@ static void fillStat64fromStat32(struct stat64 *statBuf64, const struct stat &st
 }
 #endif
 
-void QFileSystemMetaData::fillFromStatBuf(const QT_STATBUF &statBuffer)
+void QFileSystemMetaData::fillFromStatBuf(const BOBUI_STATBUF &statBuffer)
 {
     quint64 attributes = 0;
 #if defined(UF_SETTABLE)        // BSDs (incl. Darwin)
@@ -515,7 +515,7 @@ void QFileSystemMetaData::fillFromStatBuf(const QT_STATBUF &statBuffer)
     groupId_ = statBuffer.st_gid;
 }
 
-void QFileSystemMetaData::fillFromDirEnt(const QT_DIRENT &entry)
+void QFileSystemMetaData::fillFromDirEnt(const BOBUI_DIRENT &entry)
 {
 #if defined(_DEXTRA_FIRST)
     knownFlagsMask = {};
@@ -542,7 +542,7 @@ void QFileSystemMetaData::fillFromDirEnt(const QT_DIRENT &entry)
             if (S_ISLNK(extra_stat->d_stat.st_mode) && extra->d_type == _DTYPE_LSTAT)
                 continue;
 
-#if defined(QT_USE_XOPEN_LFS_EXTENSIONS) && defined(QT_LARGEFILE_SUPPORT)
+#if defined(BOBUI_USE_XOPEN_LFS_EXTENSIONS) && defined(BOBUI_LARGEFILE_SUPPORT)
             // Even with large file support, d_stat is always of type struct stat, not struct stat64,
             // so it needs to be converted
             struct stat64 statBuf;
@@ -638,7 +638,7 @@ QFileSystemEntry QFileSystemEngine::getLinkTarget(const QFileSystemEntry &link, 
 {
     Q_CHECK_FILE_NAME(link, link);
 
-    QByteArray s = qt_readlink(link.nativeFilePath().constData());
+    QByteArray s = bobui_readlink(link.nativeFilePath().constData());
     if (s.size() > 0) {
         QString ret;
         if (!data.hasFlags(QFileSystemMetaData::DirectoryType))
@@ -697,7 +697,7 @@ QFileSystemEntry QFileSystemEngine::getRawLinkPath(const QFileSystemEntry &link,
                                                    QFileSystemMetaData &data)
 {
     Q_UNUSED(data)
-    const QByteArray path = qt_readlink(link.nativeFilePath().constData());
+    const QByteArray path = bobui_readlink(link.nativeFilePath().constData());
     const QString ret = QFile::decodeName(path);
     return QFileSystemEntry(ret);
 }
@@ -782,8 +782,8 @@ QByteArray QFileSystemEngine::id(const QFileSystemEntry &entry)
 {
     Q_CHECK_FILE_NAME(entry, QByteArray());
 
-    QT_STATBUF statResult;
-    if (QT_STAT(entry.nativeFilePath().constData(), &statResult)) {
+    BOBUI_STATBUF statResult;
+    if (BOBUI_STAT(entry.nativeFilePath().constData(), &statResult)) {
         if (errno != ENOENT)
             qErrnoWarning("stat() failed for '%s'", entry.nativeFilePath().constData());
         return QByteArray();
@@ -797,8 +797,8 @@ QByteArray QFileSystemEngine::id(const QFileSystemEntry &entry)
 //static
 QByteArray QFileSystemEngine::id(int fd)
 {
-    QT_STATBUF statResult;
-    if (QT_FSTAT(fd, &statResult)) {
+    BOBUI_STATBUF statResult;
+    if (BOBUI_FSTAT(fd, &statResult)) {
         qErrnoWarning("fstat() failed for fd %d", fd);
         return QByteArray();
     }
@@ -811,7 +811,7 @@ QByteArray QFileSystemEngine::id(int fd)
 //static
 QString QFileSystemEngine::resolveUserName(uint userId)
 {
-#if QT_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD)
+#if BOBUI_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD)
     long size_max = sysconf(_SC_GETPW_R_SIZE_MAX);
     if (size_max == -1)
         size_max = 1024;
@@ -820,7 +820,7 @@ QString QFileSystemEngine::resolveUserName(uint userId)
 
 #if !defined(Q_OS_INTEGRITY) && !defined(Q_OS_WASM)
     struct passwd *pw = nullptr;
-#if QT_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD) && !defined(Q_OS_VXWORKS)
+#if BOBUI_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD) && !defined(Q_OS_VXWORKS)
     struct passwd entry;
     getpwuid_r(userId, &entry, buf.data(), buf.size(), &pw);
 #else
@@ -837,7 +837,7 @@ QString QFileSystemEngine::resolveUserName(uint userId)
 //static
 QString QFileSystemEngine::resolveGroupName(uint groupId)
 {
-#if QT_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD)
+#if BOBUI_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD)
     long size_max = sysconf(_SC_GETPW_R_SIZE_MAX);
     if (size_max == -1)
         size_max = 1024;
@@ -846,7 +846,7 @@ QString QFileSystemEngine::resolveGroupName(uint groupId)
 
 #if !defined(Q_OS_INTEGRITY) && !defined(Q_OS_WASM)
     struct group *gr = nullptr;
-#if QT_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD) && !defined(Q_OS_VXWORKS) && (!defined(Q_OS_ANDROID) || defined(Q_OS_ANDROID) && (__ANDROID_API__ >= 24))
+#if BOBUI_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD) && !defined(Q_OS_VXWORKS) && (!defined(Q_OS_ANDROID) || defined(Q_OS_ANDROID) && (__ANDROID_API__ >= 24))
     size_max = sysconf(_SC_GETGR_R_SIZE_MAX);
     if (size_max == -1)
         size_max = 1024;
@@ -945,16 +945,16 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
     //    as well conclude it doesn't exist; EFAULT can't happen and EOVERFLOW
     //    shouldn't happen because we build in _LARGEFILE64.
     union {
-        QT_STATBUF statBuffer;
+        BOBUI_STATBUF statBuffer;
         struct statx statxBuffer;
     };
     int statResult = -1;
     if (needLstat) {
         mode_t mode = 0;
-        statResult = qt_lstatx(nativeFilePath, &statxBuffer);
+        statResult = bobui_lstatx(nativeFilePath, &statxBuffer);
         if (statResult == -ENOSYS) {
             // use lstat(2)
-            statResult = QT_LSTAT(nativeFilePath, &statBuffer);
+            statResult = BOBUI_LSTAT(nativeFilePath, &statBuffer);
             if (statResult == 0)
                 mode = statBuffer.st_mode;
         } else if (statResult == 0) {
@@ -996,10 +996,10 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
     if (statResult == -1 && (what & QFileSystemMetaData::PosixStatFlags)) {
         if (entryErrno == 0) {
             data.entryFlags &= ~QFileSystemMetaData::PosixStatFlags;
-            statResult = qt_statx(nativeFilePath, &statxBuffer);
+            statResult = bobui_statx(nativeFilePath, &statxBuffer);
             if (statResult == -ENOSYS) {
                 // use stat(2)
-                statResult = QT_STAT(nativeFilePath, &statBuffer);
+                statResult = BOBUI_STAT(nativeFilePath, &statBuffer);
                 if (statResult == 0)
                     data.fillFromStatBuf(statBuffer);
             } else if (statResult == 0) {
@@ -1043,11 +1043,11 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
                 return true;
             }
         }
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
         else {
               //on VxWorks hostfs, used for debugging, failes on statfs and falsely reports
               //WasDeleted
-              statResult = QT_STAT(nativeFilePath, &statBuffer);
+              statResult = BOBUI_STAT(nativeFilePath, &statBuffer);
               if (statResult == 0) {
                   data.entryFlags |= QFileSystemMetaData::UserReadPermission |
                                      QFileSystemMetaData::ExistsAttribute;
@@ -1061,7 +1061,7 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
         auto checkAccess = [&](QFileSystemMetaData::MetaDataFlag flag, int mode) {
             if (entryErrno != 0 || (what & flag) == 0)
                 return;
-            if (QT_ACCESS(nativeFilePath, mode) == 0) {
+            if (BOBUI_ACCESS(nativeFilePath, mode) == 0) {
                 // access ok (and file exists)
                 data.entryFlags |= flag | QFileSystemMetaData::ExistsAttribute;
             } else if (errno != EACCES && errno != EROFS) {
@@ -1074,7 +1074,7 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
 
         // if we still haven't found out if the file exists, try F_OK
         if (entryErrno == 0 && (data.entryFlags & QFileSystemMetaData::ExistsAttribute) == 0) {
-            if (QT_ACCESS(nativeFilePath, F_OK) == -1)
+            if (BOBUI_ACCESS(nativeFilePath, F_OK) == -1)
                 entryErrno = errno;
             else
                 data.entryFlags |= QFileSystemMetaData::ExistsAttribute;
@@ -1143,7 +1143,7 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
 // static
 auto QFileSystemEngine::cloneFile(int srcfd, int dstfd, const QFileSystemMetaData &knownData) -> TriStateResult
 {
-    QT_STATBUF statBuffer;
+    BOBUI_STATBUF statBuffer;
     if (knownData.hasFlags(QFileSystemMetaData::PosixStatFlags) &&
             knownData.isFile()) {
         statBuffer.st_mode = S_IFREG;
@@ -1151,7 +1151,7 @@ auto QFileSystemEngine::cloneFile(int srcfd, int dstfd, const QFileSystemMetaDat
                knownData.isDirectory()) {
         errno = EISDIR;
         return TriStateResult::Failed;   // fcopyfile(3) returns success on directories
-    } else if (QT_FSTAT(srcfd, &statBuffer) == -1) {
+    } else if (BOBUI_FSTAT(srcfd, &statBuffer) == -1) {
         // errno was set
         return TriStateResult::Failed;
     } else if (!S_ISREG((statBuffer.st_mode))) {
@@ -1160,8 +1160,8 @@ auto QFileSystemEngine::cloneFile(int srcfd, int dstfd, const QFileSystemMetaDat
     }
 
     [[maybe_unused]] auto destinationIsEmpty = [dstfd]() {
-        QT_STATBUF statBuffer;
-        return QT_FSTAT(dstfd, &statBuffer) == 0 && statBuffer.st_size == 0;
+        BOBUI_STATBUF statBuffer;
+        return BOBUI_FSTAT(dstfd, &statBuffer) == 0 && statBuffer.st_size == 0;
     };
     Q_ASSERT(destinationIsEmpty());
 
@@ -1181,11 +1181,11 @@ auto QFileSystemEngine::cloneFile(int srcfd, int dstfd, const QFileSystemMetaDat
     return TriStateResult::Failed;
 #endif
 
-#if QT_CONFIG(copy_file_range)
+#if BOBUI_CONFIG(copy_file_range)
     // Second, try copy_file_range. Tested on Linux & FreeBSD: FreeBSD can copy
     // across mountpoints, Linux currently (6.12) can only if the source and
     // destination mountpoints are the same filesystem type.
-    QT_OFF_T srcoffset = 0;
+    BOBUI_OFF_T srcoffset = 0;
     ssize_t copied;
     do {
         copied = ::copy_file_range(srcfd, &srcoffset, dstfd, nullptr, SSIZE_MAX, 0);
@@ -1254,20 +1254,20 @@ static QSystemError createDirectoryWithParents(const QByteArray &path, mode_t mo
 #endif
 
     auto tryMkDir = [&path, mode]() -> QSystemError {
-        if (QT_MKDIR(path, mode) == 0) {
+        if (BOBUI_MKDIR(path, mode) == 0) {
 #ifdef Q_OS_VXWORKS
             forceRequestedPermissionsOnVxWorks(path, mode);
 #endif
             return {};
         }
-        // On macOS with APFS mkdir sets errno to EISDIR, QTBUG-97110
+        // On macOS with APFS mkdir sets errno to EISDIR, BOBUIBUG-97110
         if (errno == EISDIR)
             return {};
         if (errno == EEXIST || errno == EROFS) {
             // ::mkdir() can fail if the dir already exists (it may have been
             // created by another thread or another process)
-            QT_STATBUF st;
-            if (QT_STAT(path.constData(), &st) != 0)
+            BOBUI_STATBUF st;
+            if (BOBUI_STAT(path.constData(), &st) != 0)
                 return QSystemError::stdError(errno);
             const bool isDir = (st.st_mode & S_IFMT) == S_IFDIR;
             return isDir ? QSystemError{} : QSystemError::stdError(EEXIST);
@@ -1305,7 +1305,7 @@ bool QFileSystemEngine::mkpath(const QFileSystemEntry &entry,
     QByteArray path = entry.nativeFilePath();
     Q_CHECK_FILE_NAME(path, false);
 
-    mode_t mode = permissions ? QtPrivate::toMode_t(*permissions) : 0777;
+    mode_t mode = permissions ? BobUIPrivate::toMode_t(*permissions) : 0777;
     return createDirectoryWithParents(removeTrailingSlashes(path), mode).ok();
 }
 
@@ -1315,8 +1315,8 @@ bool QFileSystemEngine::mkdir(const QFileSystemEntry &entry,
     QByteArray path = entry.nativeFilePath();
     Q_CHECK_FILE_NAME(path, false);
 
-    mode_t mode = permissions ? QtPrivate::toMode_t(*permissions) : 0777;
-    auto result = QT_MKDIR(removeTrailingSlashes(path), mode) == 0;
+    mode_t mode = permissions ? BobUIPrivate::toMode_t(*permissions) : 0777;
+    auto result = BOBUI_MKDIR(removeTrailingSlashes(path), mode) == 0;
 #if defined(Q_OS_VXWORKS)
     if (result)
         forceRequestedPermissionsOnVxWorks(path, mode);
@@ -1363,7 +1363,7 @@ bool QFileSystemEngine::createLink(const QFileSystemEntry &source, const QFileSy
     return false;
 }
 
-#if defined(QT_BOOTSTRAPPED) || !defined(AT_FDCWD) || defined(Q_OS_ANDROID) || !QT_CONFIG(datestring) || defined(Q_OS_VXWORKS)
+#if defined(BOBUI_BOOTSTRAPPED) || !defined(AT_FDCWD) || defined(Q_OS_ANDROID) || !BOBUI_CONFIG(datestring) || defined(Q_OS_VXWORKS)
 // bootstrapped tools don't need this, and we don't want QStorageInfo
 //static
 bool QFileSystemEngine::supportsMoveFileToTrash()
@@ -1421,7 +1421,7 @@ struct FreeDesktopTrashOperation
             Q_ASSERT(!infoFilePath.isEmpty());
             Q_ASSERT(!trashPath.isEmpty());
 
-            QT_CLOSE(infoFileFd);
+            BOBUI_CLOSE(infoFileFd);
             unlinkat(infoDirFd, infoFilePath, 0);
             infoFileFd = -1;
         }
@@ -1430,9 +1430,9 @@ struct FreeDesktopTrashOperation
             unlinkat(filesDirFd, tempTrashFileName, 0);
         }
         if (filesDirFd >= 0)
-            QT_CLOSE(filesDirFd);
+            BOBUI_CLOSE(filesDirFd);
         if (infoDirFd >= 0)
-            QT_CLOSE(infoDirFd);
+            BOBUI_CLOSE(infoDirFd);
         filesDirFd = infoDirFd = -1;
         errno = savedErrno;
     }
@@ -1440,7 +1440,7 @@ struct FreeDesktopTrashOperation
     bool tryCreateInfoFile(const QString &filePath, QSystemError &error)
     {
         QByteArray p = QFile::encodeName(filePath) + ".trashinfo";
-        infoFileFd = qt_safe_openat(infoDirFd, p, QT_OPEN_RDWR | QT_OPEN_CREAT | QT_OPEN_EXCL, 0666);
+        infoFileFd = bobui_safe_openat(infoDirFd, p, BOBUI_OPEN_RDWR | BOBUI_OPEN_CREAT | BOBUI_OPEN_EXCL, 0666);
         if (infoFileFd < 0) {
             error = QSystemError(errno, QSystemError::StandardLibraryError);
             return false;
@@ -1451,7 +1451,7 @@ struct FreeDesktopTrashOperation
 
     void commit()
     {
-        QT_CLOSE(infoFileFd);
+        BOBUI_CLOSE(infoFileFd);
         infoFileFd = -1;
         tempTrashFileName = {};
     }
@@ -1459,8 +1459,8 @@ struct FreeDesktopTrashOperation
     // opens a directory and returns the file descriptor
     static int openDirFd(int dfd, const char *path, int mode)
     {
-        mode |= QT_OPEN_RDONLY | O_DIRECTORY;
-        return qt_safe_openat(dfd, path, mode);
+        mode |= BOBUI_OPEN_RDONLY | O_DIRECTORY;
+        return bobui_safe_openat(dfd, path, mode);
     }
 
     // opens an XDG Trash directory that is a subdirectory of dfd, creating if necessary
@@ -1493,7 +1493,7 @@ struct FreeDesktopTrashOperation
             return QSystemError::stdError(errno);
 
         // check if it is ours (even if we've just mkdirat'ed it)
-        if (QT_STATBUF st; QT_FSTAT(trashfd, &st) < 0)
+        if (BOBUI_STATBUF st; BOBUI_FSTAT(trashfd, &st) < 0)
             return QSystemError::stdError(errno);
         else if (st.st_uid != getuid())
             return QSystemError::stdError(errno);
@@ -1501,7 +1501,7 @@ struct FreeDesktopTrashOperation
         filesDirFd = openOrCreateDir(trashfd, "files");
         if (filesDirFd >= 0) {
             // try to link our file-to-be-trashed here
-            QTemporaryFileName tfn("XXXXXX"_L1);
+            BOBUIemporaryFileName tfn("XXXXXX"_L1);
             for (int i = 0; i < 16; ++i) {
                 QByteArray attempt = tfn.generateNext();
                 if (linkat(AT_FDCWD, source.nativeFilePath(), filesDirFd, attempt, 0) == 0) {
@@ -1526,11 +1526,11 @@ struct FreeDesktopTrashOperation
         if (infoDirFd < 0) {
             int saved_errno = errno;
             close();
-            QT_CLOSE(trashfd);
+            BOBUI_CLOSE(trashfd);
             return QSystemError::stdError(saved_errno);
         }
 
-        QT_CLOSE(trashfd);
+        BOBUI_CLOSE(trashfd);
         return {};
     }
 
@@ -1555,18 +1555,18 @@ struct FreeDesktopTrashOperation
 
         // we MUST check that the sticky bit is set, and that it is not a symlink
         int genericTrashFd = openDirFd(AT_FDCWD, dotTrashDir.nativeFilePath(), O_NOFOLLOW);
-        QT_STATBUF st = {};
+        BOBUI_STATBUF st = {};
         if (genericTrashFd < 0 && errno != ENOENT && errno != EACCES) {
             // O_DIRECTORY + O_NOFOLLOW produces ENOTDIR on Linux
-            if (QT_LSTAT(dotTrashDir.nativeFilePath(), &st) == 0 && S_ISLNK(st.st_mode)) {
+            if (BOBUI_LSTAT(dotTrashDir.nativeFilePath(), &st) == 0 && S_ISLNK(st.st_mode)) {
                 // we SHOULD report the failed check to the administrator
                 qCritical("Warning: '%s' is a symlink to '%s'",
                           dotTrashDir.nativeFilePath().constData(),
-                          qt_readlink(dotTrashDir.nativeFilePath()).constData());
+                          bobui_readlink(dotTrashDir.nativeFilePath()).constData());
                 error = QSystemError(ELOOP, QSystemError::StandardLibraryError);
             }
         } else if (genericTrashFd >= 0) {
-            QT_FSTAT(genericTrashFd, &st);
+            BOBUI_FSTAT(genericTrashFd, &st);
             if ((st.st_mode & S_ISVTX) == 0) {
                 // we SHOULD report the failed check to the administrator
                 qCritical("Warning: '%s' doesn't have sticky bit set!",
@@ -1587,7 +1587,7 @@ struct FreeDesktopTrashOperation
                     trashPath = dotTrashDir.filePath() + u'/' + userID;
                 }
             }
-            QT_CLOSE(genericTrashFd);
+            BOBUI_CLOSE(genericTrashFd);
         }
 
         /*
@@ -1680,7 +1680,7 @@ bool QFileSystemEngine::moveFileToTrash(const QFileSystemEntry &source,
         // we'll use a counter, starting with the file's inode number to avoid
         // collisions
         qulonglong counter;
-        if (QT_STATBUF st; Q_LIKELY(QT_STAT(source.nativeFilePath(), &st) == 0)) {
+        if (BOBUI_STATBUF st; Q_LIKELY(BOBUI_STAT(source.nativeFilePath(), &st) == 0)) {
             counter = st.st_ino;
         } else {
             error = QSystemError(errno, QSystemError::StandardLibraryError);
@@ -1701,9 +1701,9 @@ bool QFileSystemEngine::moveFileToTrash(const QFileSystemEntry &source,
     QByteArray info =
             "[Trash Info]\n"
             "Path=" + QUrl::toPercentEncoding(source.filePath().mid(op.volumePrefixLength), "/") + "\n"
-            "DeletionDate=" + QDateTime::currentDateTime().toString(Qt::ISODate).toUtf8()
+            "DeletionDate=" + QDateTime::currentDateTime().toString(BobUI::ISODate).toUtf8()
             + "\n";
-    if (QT_WRITE(op.infoFileFd, info.data(), info.size()) < 0) {
+    if (BOBUI_WRITE(op.infoFileFd, info.data(), info.size()) < 0) {
         error = QSystemError(errno, QSystemError::StandardLibraryError);
         return false;
     }
@@ -1738,7 +1738,7 @@ bool QFileSystemEngine::moveFileToTrash(const QFileSystemEntry &source,
     newLocation = QFileSystemEntry(op.trashPath + "/files/"_L1 + uniqueTrashedName);
     return true;
 }
-#endif // !Q_OS_DARWIN && (!QT_BOOTSTRAPPED && AT_FDCWD && !Q_OS_ANDROID && QT_CONFIG(datestring))
+#endif // !Q_OS_DARWIN && (!BOBUI_BOOTSTRAPPED && AT_FDCWD && !Q_OS_ANDROID && BOBUI_CONFIG(datestring))
 
 //static
 bool QFileSystemEngine::copyFile(const QFileSystemEntry &source, const QFileSystemEntry &target, QSystemError &error)
@@ -1758,7 +1758,7 @@ bool QFileSystemEngine::renameFile(const QFileSystemEntry &source, const QFileSy
     Q_CHECK_FILE_NAME(srcPath, false);
     Q_CHECK_FILE_NAME(tgtPath, false);
 
-#if defined(RENAME_NOREPLACE) && QT_CONFIG(renameat2)
+#if defined(RENAME_NOREPLACE) && BOBUI_CONFIG(renameat2)
     if (renameat2(AT_FDCWD, srcPath, AT_FDCWD, tgtPath, RENAME_NOREPLACE) == 0)
         return true;
 
@@ -1850,7 +1850,7 @@ bool QFileSystemEngine::setPermissions(const QFileSystemEntry &entry,
 {
     Q_CHECK_FILE_NAME(entry, false);
 
-    mode_t mode = QtPrivate::toMode_t(permissions);
+    mode_t mode = BobUIPrivate::toMode_t(permissions);
     bool success = ::chmod(entry.nativeFilePath().constData(), mode) == 0;
     if (!success)
         error = QSystemError(errno, QSystemError::StandardLibraryError);
@@ -1860,7 +1860,7 @@ bool QFileSystemEngine::setPermissions(const QFileSystemEntry &entry,
 //static
 bool QFileSystemEngine::setPermissions(int fd, QFile::Permissions permissions, QSystemError &error)
 {
-    mode_t mode = QtPrivate::toMode_t(permissions);
+    mode_t mode = BobUIPrivate::toMode_t(permissions);
     bool success = ::fchmod(fd, mode) == 0;
     if (!success)
         error = QSystemError(errno, QSystemError::StandardLibraryError);
@@ -1876,7 +1876,7 @@ bool QFileSystemEngine::setFileTime(int fd, const QDateTime &newDate, QFile::Fil
         return false;
     }
 
-#if QT_CONFIG(futimens)
+#if BOBUI_CONFIG(futimens)
     // UTIME_OMIT: leave file timestamp unchanged
     struct timespec ts[2] = {{0, UTIME_OMIT}, {0, UTIME_OMIT}};
 
@@ -1925,11 +1925,11 @@ static constexpr QLatin1StringView nativeTempPath() noexcept
 
 QString QFileSystemEngine::tempPath()
 {
-#ifdef QT_UNIX_TEMP_PATH_OVERRIDE
-    return QT_UNIX_TEMP_PATH_OVERRIDE ""_L1;
+#ifdef BOBUI_UNIX_TEMP_PATH_OVERRIDE
+    return BOBUI_UNIX_TEMP_PATH_OVERRIDE ""_L1;
 #else
     QString temp = qEnvironmentVariable("TMPDIR");
-#  if defined(Q_OS_DARWIN) && !defined(QT_BOOTSTRAPPED)
+#  if defined(Q_OS_DARWIN) && !defined(BOBUI_BOOTSTRAPPED)
     if (NSString *nsPath; temp.isEmpty() && (nsPath = NSTemporaryDirectory()))
         temp = QString::fromCFString((CFStringRef)nsPath);
 #  endif
@@ -1948,7 +1948,7 @@ QString QFileSystemEngine::tempPath()
 bool QFileSystemEngine::setCurrentPath(const QFileSystemEntry &path)
 {
     int r;
-    r = QT_CHDIR(path.nativeFilePath().constData());
+    r = BOBUI_CHDIR(path.nativeFilePath().constData());
     return r >= 0;
 }
 
@@ -1973,7 +1973,7 @@ QFileSystemEntry QFileSystemEngine::currentPath()
 #endif
         result = QFileSystemEntry(QByteArray(currentName), QFileSystemEntry::FromNativePath());
     }
-# if defined(QT_DEBUG)
+# if defined(BOBUI_DEBUG)
     if (result.isEmpty())
         qWarning("QFileSystemEngine::currentPath: getcwd() failed");
 # endif
@@ -1990,9 +1990,9 @@ bool QFileSystemEngine::isCaseSensitive(const QFileSystemEntry &entry, QFileSyst
 #else
     Q_UNUSED(entry);
     Q_UNUSED(metaData);
-    // FIXME: This may not be accurate for all file systems (QTBUG-28246)
+    // FIXME: This may not be accurate for all file systems (BOBUIBUG-28246)
     return true;
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

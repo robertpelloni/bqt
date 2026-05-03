@@ -1,21 +1,21 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETASEQUENCE_H
 #define QMETASEQUENCE_H
 
 #if 0
-#pragma qt_class(QMetaSequence)
+#pragma bobui_class(QMetaSequence)
 #endif
 
-#include <QtCore/qiterable.h>
-#include <QtCore/qiterable_impl.h>
-#include <QtCore/qmetacontainer.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qiterable.h>
+#include <BobUICore/qiterable_impl.h>
+#include <BobUICore/qmetacontainer.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtMetaContainerPrivate {
+namespace BobUIMetaContainerPrivate {
 
 class SequentialIterator : public QIterator<QMetaSequence>
 {
@@ -50,30 +50,30 @@ public:
     value_type operator[](qsizetype n) const;
 };
 
-} // namespace QtMetaContainerPrivate
+} // namespace BobUIMetaContainerPrivate
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template<typename Indirect>
 QVariant sequentialIteratorToVariant(const Indirect &referred)
 {
     const auto metaSequence = referred.metaContainer();
-    return QtIterablePrivate::retrieveElement(metaSequence.valueMetaType(), [&](void *dataPtr) {
+    return BobUIIterablePrivate::retrieveElement(metaSequence.valueMetaType(), [&](void *dataPtr) {
         metaSequence.valueAtConstIterator(referred.constIterator(), dataPtr);
     });
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<>
-inline QVariant::Reference<QtMetaContainerPrivate::SequentialIterator>::operator QVariant() const
+inline QVariant::Reference<BobUIMetaContainerPrivate::SequentialIterator>::operator QVariant() const
 {
-    return QtPrivate::sequentialIteratorToVariant(m_referred);
+    return BobUIPrivate::sequentialIteratorToVariant(m_referred);
 }
 
 template<>
-inline QVariant::Reference<QtMetaContainerPrivate::SequentialIterator> &
-QVariant::Reference<QtMetaContainerPrivate::SequentialIterator>::operator=(const QVariant &value)
+inline QVariant::Reference<BobUIMetaContainerPrivate::SequentialIterator> &
+QVariant::Reference<BobUIMetaContainerPrivate::SequentialIterator>::operator=(const QVariant &value)
 {
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     m_referred.metaContainer().setValueAtIterator(
             m_referred.mutableIterator(),
             coercer.coerce(value, m_referred.metaContainer().valueMetaType()));
@@ -81,12 +81,12 @@ QVariant::Reference<QtMetaContainerPrivate::SequentialIterator>::operator=(const
 }
 
 template<>
-inline QVariant::ConstReference<QtMetaContainerPrivate::SequentialConstIterator>::operator QVariant() const
+inline QVariant::ConstReference<BobUIMetaContainerPrivate::SequentialConstIterator>::operator QVariant() const
 {
-    return QtPrivate::sequentialIteratorToVariant(m_referred);
+    return BobUIPrivate::sequentialIteratorToVariant(m_referred);
 }
 
-namespace QtMetaContainerPrivate {
+namespace BobUIMetaContainerPrivate {
 inline SequentialConstIterator::value_type SequentialConstIterator::operator*() const
 {
     return reference(*this);
@@ -100,26 +100,26 @@ inline SequentialConstIterator::value_type SequentialConstIterator::operator[](q
 class Sequence : public QIterable<QMetaSequence>
 {
 public:
-    using Iterator = QTaggedIterator<SequentialIterator, void>;
+    using Iterator = BOBUIaggedIterator<SequentialIterator, void>;
     using RandomAccessIterator
-            = QTaggedIterator<SequentialIterator, std::random_access_iterator_tag>;
+            = BOBUIaggedIterator<SequentialIterator, std::random_access_iterator_tag>;
     using BidirectionalIterator
-            = QTaggedIterator<SequentialIterator, std::bidirectional_iterator_tag>;
+            = BOBUIaggedIterator<SequentialIterator, std::bidirectional_iterator_tag>;
     using ForwardIterator
-            = QTaggedIterator<SequentialIterator, std::forward_iterator_tag>;
+            = BOBUIaggedIterator<SequentialIterator, std::forward_iterator_tag>;
     using InputIterator
-            = QTaggedIterator<SequentialIterator, std::input_iterator_tag>;
+            = BOBUIaggedIterator<SequentialIterator, std::input_iterator_tag>;
 
     using ConstIterator
-            = QTaggedIterator<SequentialConstIterator, void>;
+            = BOBUIaggedIterator<SequentialConstIterator, void>;
     using RandomAccessConstIterator
-            = QTaggedIterator<SequentialConstIterator, std::random_access_iterator_tag>;
+            = BOBUIaggedIterator<SequentialConstIterator, std::random_access_iterator_tag>;
     using BidirectionalConstIterator
-            = QTaggedIterator<SequentialConstIterator, std::bidirectional_iterator_tag>;
+            = BOBUIaggedIterator<SequentialConstIterator, std::bidirectional_iterator_tag>;
     using ForwardConstIterator
-            = QTaggedIterator<SequentialConstIterator, std::forward_iterator_tag>;
+            = BOBUIaggedIterator<SequentialConstIterator, std::forward_iterator_tag>;
     using InputConstIterator
-            = QTaggedIterator<SequentialConstIterator, std::input_iterator_tag>;
+            = BOBUIaggedIterator<SequentialConstIterator, std::input_iterator_tag>;
 
     using iterator = Iterator;
     using const_iterator = ConstIterator;
@@ -178,16 +178,16 @@ public:
     QVariant at(qsizetype idx) const
     {
         const QMetaSequence meta = metaContainer();
-        return QtIterablePrivate::retrieveElement(meta.valueMetaType(), [&](void *dataPtr) {
+        return BobUIIterablePrivate::retrieveElement(meta.valueMetaType(), [&](void *dataPtr) {
             if (meta.canGetValueAtIndex()) {
                 meta.valueAtIndex(constIterable(), idx, dataPtr);
                 return;
             }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
             // We shouldn't second-guess the underlying container.
-            QtPrivate::warnSynthesizedIterableAccess(
-                    QtPrivate::SynthesizedAccessFunction::SequenceAt);
+            BobUIPrivate::warnSynthesizedIterableAccess(
+                    BobUIPrivate::SynthesizedAccessFunction::SequenceAt);
             void *it = meta.constBegin(m_iterable.constPointer());
             meta.advanceConstIterator(it, idx);
             meta.valueAtConstIterator(it, dataPtr);
@@ -199,21 +199,21 @@ public:
     void setAt(qsizetype idx, const QVariant &value)
     {
         const QMetaSequence meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer coercer;
+        BobUIPrivate::QVariantTypeCoercer coercer;
         meta.setValueAtIndex(mutableIterable(), idx, coercer.coerce(value, meta.valueMetaType()));
     }
 
     void append(const QVariant &value)
     {
         const QMetaSequence meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer coercer;
+        BobUIPrivate::QVariantTypeCoercer coercer;
         meta.addValueAtEnd(mutableIterable(), coercer.coerce(value, meta.valueMetaType()));
     }
 
     void prepend(const QVariant &value)
     {
         const QMetaSequence meta = metaContainer();
-        QtPrivate::QVariantTypeCoercer coercer;
+        BobUIPrivate::QVariantTypeCoercer coercer;
         meta.addValueAtBegin(mutableIterable(), coercer.coerce(value, meta.valueMetaType()));
     }
 
@@ -227,12 +227,12 @@ public:
         metaContainer().removeValueAtBegin(mutableIterable());
     }
 
-#if QT_DEPRECATED_SINCE(6, 11)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
 
     enum
-    QT_DEPRECATED_VERSION_X_6_11("Use append(), prepend(), removeLast(), or removeFirst() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_11("Use append(), prepend(), removeLast(), or removeFirst() instead.")
     Position: quint8
     {
         Unspecified, AtBegin, AtEnd
@@ -250,11 +250,11 @@ public:
     void set(qsizetype idx, const QVariant &value)
             Q_DECL_EQ_DELETE_X("Use setAt() instead.");
 
-    QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 11)
+    BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 11)
 };
-} // namespace QtMetaContainerPrivate
+} // namespace BobUIMetaContainerPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMETASEQUENCE_H

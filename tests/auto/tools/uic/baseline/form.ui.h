@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'form.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef FORM_H
 #define FORM_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTimeEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIimeEdit>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "worldtimeclock.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_WorldTimeForm
 {
@@ -31,7 +31,7 @@ public:
     QSpacerItem *spacerItem;
     QHBoxLayout *hboxLayout1;
     QLabel *label;
-    QTimeEdit *timeEdit;
+    BOBUIimeEdit *timeEdit;
     QHBoxLayout *hboxLayout2;
     QLabel *label_2;
     QSpinBox *spinBox;
@@ -76,7 +76,7 @@ public:
 
         hboxLayout1->addWidget(label);
 
-        timeEdit = new QTimeEdit(WorldTimeForm);
+        timeEdit = new BOBUIimeEdit(WorldTimeForm);
         timeEdit->setObjectName("timeEdit");
         timeEdit->setReadOnly(true);
 
@@ -116,7 +116,7 @@ public:
 
         retranslateUi(WorldTimeForm);
         QObject::connect(spinBox, SIGNAL(valueChanged(int)), worldTimeClock, SLOT(setTimeZone(int)));
-        QObject::connect(worldTimeClock, SIGNAL(updated(QTime)), timeEdit, SLOT(setTime(QTime)));
+        QObject::connect(worldTimeClock, SIGNAL(updated(BOBUIime)), timeEdit, SLOT(setTime(BOBUIime)));
 
         QMetaObject::connectSlotsByName(WorldTimeForm);
     } // setupUi
@@ -134,6 +134,6 @@ namespace Ui {
     class WorldTimeForm: public Ui_WorldTimeForm {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // FORM_H

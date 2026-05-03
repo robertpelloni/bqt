@@ -1,5 +1,5 @@
 From 5676e5f83597dc1fb32b551c863633eff102e879 Mon Sep 17 00:00:00 2001
-From: Marc Mutz <marc.mutz@qt.io>
+From: Marc Mutz <marc.mutz@bobui.io>
 Date: Thu, 27 Nov 2025 07:51:19 +0100
 Subject: [PATCH] Namespace TL_ macros with Q23_
 
@@ -34,8 +34,8 @@ index 24ea5be1e5e..54bcae51102 100644
 +#define Q23_TL_EXPECTED_VERSION_MINOR 1
 +#define Q23_TL_EXPECTED_VERSION_PATCH 0
  
- #include <QtCore/private/qglobal_p.h>
- #include <QtCore/qassert.h>
+ #include <BobUICore/private/qglobal_p.h>
+ #include <BobUICore/qassert.h>
 @@ -44,45 +44,45 @@
  #include <type_traits>
  #include <utility>
@@ -48,9 +48,9 @@ index 24ea5be1e5e..54bcae51102 100644
 +#define Q23_TL_EXPECTED_EXCEPTIONS_ENABLED
  #endif
  
--#if defined(TL_EXPECTED_EXCEPTIONS_ENABLED) && defined(QT_NO_EXCEPTIONS)
+-#if defined(TL_EXPECTED_EXCEPTIONS_ENABLED) && defined(BOBUI_NO_EXCEPTIONS)
 -#  undef TL_EXPECTED_EXCEPTIONS_ENABLED
-+#if defined(Q23_TL_EXPECTED_EXCEPTIONS_ENABLED) && defined(QT_NO_EXCEPTIONS)
++#if defined(Q23_TL_EXPECTED_EXCEPTIONS_ENABLED) && defined(BOBUI_NO_EXCEPTIONS)
 +#  undef Q23_TL_EXPECTED_EXCEPTIONS_ENABLED
  #endif
  
@@ -122,11 +122,11 @@ index 24ea5be1e5e..54bcae51102 100644
 -#define TL_GCC_LESS_8_TRIVIALLY_COPY_CONSTRUCTIBLE_MUTEX
 +#ifndef Q23_TL_GCC_LESS_8_TRIVIALLY_COPY_CONSTRUCTIBLE_MUTEX
 +#define Q23_TL_GCC_LESS_8_TRIVIALLY_COPY_CONSTRUCTIBLE_MUTEX
- QT_BEGIN_NAMESPACE
+ BOBUI_BEGIN_NAMESPACE
  namespace q23 {
  namespace detail {
 @@ -121,50 +121,50 @@ struct is_trivially_copy_constructible<std::vector<T, A>> : std::false_type {};
- QT_END_NAMESPACE
+ BOBUI_END_NAMESPACE
  #endif
  
 -#define TL_EXPECTED_IS_TRIVIALLY_COPY_CONSTRUCTIBLE(T)                         \
@@ -184,7 +184,7 @@ index 24ea5be1e5e..54bcae51102 100644
 +#define Q23_TL_EXPECTED_11_CONSTEXPR constexpr
  #endif
  
- QT_BEGIN_NAMESPACE
+ BOBUI_BEGIN_NAMESPACE
  namespace q23 {
  template <class T, class E> class expected;
  

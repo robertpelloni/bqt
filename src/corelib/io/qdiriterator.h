@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIRITERATOR_H
 #define QDIRITERATOR_H
 
-#include <QtCore/qdir.h>
+#include <BobUICore/qdir.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirIteratorPrivate;
 class Q_CORE_EXPORT QDirIterator
@@ -53,6 +53,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDirIterator::IteratorFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

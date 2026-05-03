@@ -1,12 +1,12 @@
 // Copyright (C) 2022 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "viewport.h"
 
 namespace MockCompositor {
 
 Viewporter::Viewporter(CoreCompositor *compositor, int version)
-    : QtWaylandServer::wp_viewporter(compositor->m_display, version)
+    : BobUIWaylandServer::wp_viewporter(compositor->m_display, version)
 {
 }
 
@@ -16,12 +16,12 @@ void Viewporter::wp_viewporter_get_viewport(Resource *resource, uint32_t id, wl_
     auto *viewport = new Viewport(s, resource->client(), id, resource->version());
     connect(viewport, &QObject::destroyed, this, [this, viewport]() {
         m_viewports.removeOne(viewport);
-    }, Qt::DirectConnection);
+    }, BobUI::DirectConnection);
     m_viewports << viewport;
 }
 
 Viewport::Viewport(Surface *surface, wl_client *client, int id, int version)
-    : QtWaylandServer::wp_viewport(client, id, version)
+    : BobUIWaylandServer::wp_viewport(client, id, version)
     , m_surface(surface)
 {
 }

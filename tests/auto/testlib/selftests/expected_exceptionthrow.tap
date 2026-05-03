@@ -4,8 +4,8 @@ ok 1 - initTestCase()
 not ok 2 - throwException()
   ---
   # Caught unhandled exception
-  at: tst_Exception::throwException() (qtbase/src/testlib/qtestcase.cpp:0)
-  file: qtbase/src/testlib/qtestcase.cpp
+  at: tst_Exception::throwException() (bobuibase/src/testlib/bobuiestcase.cpp:0)
+  file: bobuibase/src/testlib/bobuiestcase.cpp
   line: 0
   ...
 1..2

@@ -1,6 +1,6 @@
 Usage:  configure [options] [-- cmake-options]
 
-This is a convenience script for configuring Qt with CMake.
+This is a convenience script for configuring BobUI with CMake.
 Options after the double dash are directly passed to CMake.
 You can pass CMake variables as configure arguments:
     configure VAR=value
@@ -9,9 +9,9 @@ which is equivalent to
 
 Top-level installation directories:
   -prefix <dir> ...... The deployment directory, as seen on the target device.
-                       [/usr/local/Qt-$QT_VERSION; qtbase build directory if
+                       [/usr/local/BobUI-$BOBUI_VERSION; bobuibase build directory if
                        -developer-build]
-  -no-prefix ......... The deployment directory is set to the qtbase build
+  -no-prefix ......... The deployment directory is set to the bobuibase build
                        directory. Can be used instead of -developer-build
                        to not have to install, as well as avoid
                        -developer-build's default of -warnings-are-errors.
@@ -34,7 +34,7 @@ except -sysconfdir should be located under -prefix:
   -datadir <dir> ........ Arch-independent data [PREFIX]
   -docdir <dir> ......... Documentation [DATADIR/doc]
   -translationdir <dir> . Translations [DATADIR/translations]
-  -sysconfdir <dir> ..... Settings used by Qt programs [PREFIX/etc/xdg]
+  -sysconfdir <dir> ..... Settings used by BobUI programs [PREFIX/etc/xdg]
   -examplesdir <dir> .... Examples [PREFIX/examples]
   -testsdir <dir> ....... Tests [PREFIX/tests]
   -hostdatadir <dir> .... Data used by qmake [PREFIX]
@@ -71,13 +71,13 @@ Build options:
                          into an IDE. [no; yes if -developer-build]
   -dry-run ............. Only print the CMake command but don't execute it.
   -no-guess-compiler ... Do not guess the compiler from the target mkspec.
-  -release ............. Build Qt with optimizations and without debug
+  -release ............. Build BobUI with optimizations and without debug
                          symbols [yes]
                          Note that -developer-build implies -debug unless
                          -release is also explicitly specified
-  -debug ............... Build Qt without optimizations and with debug symbols
+  -debug ............... Build BobUI without optimizations and with debug symbols
                          [no]
-  -debug-and-release ... Build two versions of Qt in one build tree [no]
+  -debug-and-release ... Build two versions of BobUI in one build tree [no]
   -optimize-debug ...... Enable debug-friendly optimizations in debug builds
                          [auto] (Not supported with MSVC or Clang toolchains)
   -optimize-size ....... Optimize release builds for size instead of speed [no]
@@ -89,13 +89,13 @@ Build options:
                          and enable linker garbage collection of unused
                          sections. [auto for static builds, otherwise no]
   -force-asserts ....... Enable Q_ASSERT even in release builds [no]
-  -developer-build ..... Compile and link Qt for developing Qt itself
+  -developer-build ..... Compile and link BobUI for developing BobUI itself
                          (exports for auto-tests, extra checks, implies
                          -no-prefix, etc.) [no]
 
-  -shared .............. Build shared Qt libraries [yes] (no for UIKit)
-  -static .............. Build static Qt libraries [no] (yes for UIKit)
-  -framework ........... Build Qt framework bundles [yes] (Apple only)
+  -shared .............. Build shared BobUI libraries [yes] (no for UIKit)
+  -static .............. Build static BobUI libraries [no] (yes for UIKit)
+  -framework ........... Build BobUI framework bundles [yes] (Apple only)
 
   -platform <target> ... Select mkspec for the qmake companion files
   -device <name> ....... Select devices/mkspec for the qmake companion files
@@ -119,10 +119,10 @@ Build options:
                          verification are not found [no]
 
 
-  -qt-host-path <path> . Specify path to a Qt host build for cross-compiling.
-  -qtnamespace <name> .. Wrap all Qt library code in 'namespace <name> {...}'.
-  -qtinlinenamespace ... Make -qtnamespace an inline namespace
-  -qtlibinfix <infix> .. Rename all libQt6*.so to libQt6*<infix>.so.
+  -bobui-host-path <path> . Specify path to a BobUI host build for cross-compiling.
+  -bobuinamespace <name> .. Wrap all BobUI library code in 'namespace <name> {...}'.
+  -bobuiinlinenamespace ... Make -bobuinamespace an inline namespace
+  -bobuilibinfix <infix> .. Rename all libBobUI6*.so to libBobUI6*<infix>.so.
 
   -coverage <tool> ..... Instrument with the code coverage tool.
   -gcov ................ Instrument with the GCov code coverage tool [no]
@@ -143,9 +143,9 @@ Build options:
   -qreal <type> ........ typedef qreal to the specified type. [double]
                          Note: this affects binary compatibility.
 
-  -R <string> .......... Add an explicit runtime library path to the Qt
+  -R <string> .......... Add an explicit runtime library path to the BobUI
                          libraries. Supports paths relative to LIBDIR.
-  -rpath ............... Link Qt libraries and executables using the library
+  -rpath ............... Link BobUI libraries and executables using the library
                          install path as a runtime library path. Similar to
                          -R LIBDIR. On Apple platforms, disabling this implies
                          using absolute install names (based in LIBDIR) for
@@ -181,11 +181,11 @@ Build options:
   -warnings-are-errors . Treat warnings as errors [no; yes if -developer-build]
 
   -disable-deprecated-up-to <version>
-                         Set the QT_DISABLE_DEPRECATED_UP_TO value to <version>.
-                         QT_DISABLE_DEPRECATED_UP_TO is used to remove
+                         Set the BOBUI_DISABLE_DEPRECATED_UP_TO value to <version>.
+                         BOBUI_DISABLE_DEPRECATED_UP_TO is used to remove
                          deprecated methods from both API and ABI.
                          <version> is a hex value, for example 0x060500 can be
-                         used to remove all code deprecated in Qt 6.5.0 or
+                         used to remove all code deprecated in BobUI 6.5.0 or
                          earlier releases.
                          By default <version> is set to 0x040000 and 0x050000 on
                          Windows, and non-Windows respectively.
@@ -204,7 +204,7 @@ Build environment:
   -L <string> .......... Pass additional library path
   -F <string> .......... Pass additional framework path (Apple only)
 
-  -sdk <sdk> ........... Build Qt using Apple provided SDK <sdk>. The argument
+  -sdk <sdk> ........... Build BobUI using Apple provided SDK <sdk>. The argument
                          should be one of the available SDKs as listed by
                          'xcodebuild -showsdks'.
 
@@ -224,18 +224,18 @@ Component selection:
   -submodules <repo>[,<repo>] ... Build the listed repositories and those they
                          depend on rather than all checked-out repositories.
                          The list should be separated with commas, e.g.
-                         -submodules qtsvg,qtnetworkauth
+                         -submodules bobuisvg,bobuinetworkauth
                          [default is to build all checked out repositories]
   -skip <repo>[,<repo>]  Exclude one or more entire repositories from the
                          build. The list should be separated with commas.
-                         e.g. -skip qtimageformats,qtsvg
+                         e.g. -skip bobuiimageformats,bobuisvg
   -skip-tests <repo>[,<repo>] ... Skip building tests for one or more
                          repositories. The list should be separated with commas.
-                         e.g. -skip-tests qtimageformats,qtsvg
+                         e.g. -skip-tests bobuiimageformats,bobuisvg
   -skip-examples <repo>[,<repo>] ... Skip building examples for one or more
                          repositories. The list should be separated with commas.
-                         e.g. -skip-examples qtimageformats,qtsvg
-  -init-submodules ..... When configure is called from the qt git super module,
+                         e.g. -skip-examples bobuiimageformats,bobuisvg
+  -init-submodules ..... When configure is called from the bobui git super module,
                          it will automatically clone and initialize the
                          repositories specified by the -submodules option. When
                          no -submodules are specified, and no existing
@@ -251,19 +251,19 @@ Component selection:
                          doc-snippets)
                          [default: tests and doc-snippets if -developer-build]
   -nomake <part> ....... Exclude <part> from the list of parts to be built.
-  -install-examples-sources Installs examples source code into the Qt prefix
+  -install-examples-sources Installs examples source code into the BobUI prefix
                          Only possible when -make examples is also passed
                          [no]
-  -gui ................. Build the Qt GUI module and dependencies [yes]
-  -widgets ............. Build the Qt Widgets module and dependencies [yes]
-  -no-dbus ............. Do not build the Qt D-Bus module
+  -gui ................. Build the BobUI GUI module and dependencies [yes]
+  -widgets ............. Build the BobUI Widgets module and dependencies [yes]
+  -no-dbus ............. Do not build the BobUI D-Bus module
                          [default on Android and Windows]
-  -dbus-linked ......... Build Qt D-Bus and link to libdbus-1 [auto]
-  -dbus-runtime ........ Build Qt D-Bus and dynamically load libdbus-1 [no]
+  -dbus-linked ......... Build BobUI D-Bus and link to libdbus-1 [auto]
+  -dbus-runtime ........ Build BobUI D-Bus and dynamically load libdbus-1 [no]
   -accessibility ....... Enable accessibility support [yes]
                          Note: Disabling accessibility is not recommended.
 
-Qt comes with bundled copies of some 3rd party libraries. These are used
+BobUI comes with bundled copies of some 3rd party libraries. These are used
 by default if auto-detection of the respective system library fails.
 
   -force-bundled-libs .. Only use bundled 3rd party libraries [no]
@@ -271,14 +271,14 @@ by default if auto-detection of the respective system library fails.
 
 Core options:
 
-  -doubleconversion .... Select used double conversion library [system/qt/no]
+  -doubleconversion .... Select used double conversion library [system/bobui/no]
                          No implies use of sscanf_l and snprintf_l (imprecise).
   -glib ................ Enable Glib support [no; auto on Unix]
   -inotify ............. Enable inotify support
   -icu ................. Enable ICU support [auto]
   -jemalloc ............ Enable jemalloc support and cooperation [no]
-  -pcre ................ Select used libpcre2 [system/qt]
-  -zlib ................ Select used zlib [system/qt]
+  -pcre ................ Select used libpcre2 [system/bobui]
+  -zlib ................ Select used zlib [system/bobui]
 
   Logging backends:
     -journald .......... Enable journald support [no] (Unix only)
@@ -305,8 +305,8 @@ Gui, printing, widget options:
 
   -emojisegmenter ...... Enable complex emoji sequences [yes]
   -fontconfig .......... Enable Fontconfig support [auto] (Unix only)
-  -freetype ............ Select used FreeType [system/qt/no]
-  -harfbuzz ............ Select used HarfBuzz-NG [system/qt/no]
+  -freetype ............ Select used FreeType [system/bobui/no]
+  -harfbuzz ............ Select used HarfBuzz-NG [system/bobui/no]
                          (Not auto-detected on Apple and Windows)
 
   -gtk ................. Enable GTK platform theme support [auto]
@@ -345,12 +345,12 @@ Gui, printing, widget options:
   Image formats:
     -gif ............... Enable reading support for GIF [auto]
     -ico ............... Enable support for ICO [yes]
-    -libpng ............ Select used libpng [system/qt/no]
-    -libjpeg ........... Select used libjpeg [system/qt/no]
+    -libpng ............ Select used libpng [system/bobui/no]
+    -libjpeg ........... Select used libjpeg [system/bobui/no]
 
 Database options:
 
   -sql-<driver> ........ Enable SQL <driver> plugin. Supported drivers:
                          db2 ibase mysql oci odbc psql sqlite mimer
                          [all auto]
-  -sqlite .............. Select used sqlite [system/qt]
+  -sqlite .............. Select used sqlite [system/bobui]

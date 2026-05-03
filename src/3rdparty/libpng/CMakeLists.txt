@@ -1,10 +1,10 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 #####################################################################
 ## BundledLibpng Generic Library:
 #####################################################################
 
-qt_internal_add_3rdparty_library(BundledLibpng
+bobui_internal_add_3rdparty_library(BundledLibpng
     QMAKE_LIB_NAME libpng
     STATIC
     SKIP_AUTOMOC
@@ -34,27 +34,27 @@ qt_internal_add_3rdparty_library(BundledLibpng
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
-qt_internal_add_3rdparty_header_module(PngPrivate
+bobui_internal_add_3rdparty_header_module(PngPrivate
     EXTERNAL_HEADERS
         png.h
         pngconf.h
         pnglibconf.h
 )
 
-qt_disable_warnings(BundledLibpng)
-qt_set_symbol_visibility_hidden(BundledLibpng)
+bobui_disable_warnings(BundledLibpng)
+bobui_set_symbol_visibility_hidden(BundledLibpng)
 
-qt_internal_extend_target(BundledLibpng CONDITION QT_FEATURE_system_zlib
+bobui_internal_extend_target(BundledLibpng CONDITION BOBUI_FEATURE_system_zlib
     LIBRARIES
         WrapZLIB::WrapZLIB
 )
 
-qt_internal_extend_target(BundledLibpng CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(BundledLibpng CONDITION NOT BOBUI_FEATURE_system_zlib
     INCLUDE_DIRECTORIES
         ../zlib/src
 )
 
-qt_internal_extend_target(BundledLibpng CONDITION NOT QT_FEATURE_system_zlib
+bobui_internal_extend_target(BundledLibpng CONDITION NOT BOBUI_FEATURE_system_zlib
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )

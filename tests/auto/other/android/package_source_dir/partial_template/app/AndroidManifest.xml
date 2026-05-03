@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.qtproject.example.tst_package_source_dir_partial_template"
+    package="org.bobuiproject.example.tst_package_source_dir_partial_template"
     android:installLocation="auto"
     android:versionCode="1"
     android:versionName="1.0">
@@ -12,14 +12,14 @@
         android:normalScreens="true"
         android:smallScreens="true" />
     <application
-        android:name="org.qtproject.qt.android.bindings.QtApplication"
+        android:name="org.bobuiproject.bobui.android.bindings.BobUIApplication"
         android:hardwareAccelerated="true"
         android:label="${appName}"
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:fullBackupOnly="false">
         <activity
-            android:name="org.qtproject.qt.android.bindings.QtActivity"
+            android:name="org.bobuiproject.bobui.android.bindings.BobUIActivity"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
@@ -40,12 +40,12 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.qtprovider"
+            android:authorities="${applicationId}.bobuiprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/qtprovider_paths"/>
+                android:resource="@xml/bobuiprovider_paths"/>
         </provider>
     </application>
 </manifest>

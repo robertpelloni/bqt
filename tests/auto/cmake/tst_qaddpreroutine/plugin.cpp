@@ -1,11 +1,11 @@
 // Copyright (C) 2021 zccrs <zccrs@live.com>, JiDe Zhang <zhangjide@uniontech.com>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qpa/qplatformthemeplugin.h>
 #include <qpa/qplatformtheme.h>
 #include <QCoreApplication>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // The "test_function_call_count" property will be used in the "tst_qaddpreroutine.cpp".
 // This plugin is part of the test case. It is used to call qAddPreRoutine through
@@ -35,11 +35,11 @@ QPlatformTheme *ThemePlugin::create(const QString &key, const QStringList &param
     Q_UNUSED(params);
 
     // Used to verify whether this plugin was successfully loaded.
-    qputenv("QTBUG_90341_ThemePlugin", "1");
+    qputenv("BOBUIBUG_90341_ThemePlugin", "1");
 
     return new QPlatformTheme();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "plugin.moc"

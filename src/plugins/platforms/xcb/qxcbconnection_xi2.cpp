@@ -1,34 +1,34 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbconnection.h"
 #include "qxcbkeyboard.h"
 #include "qxcbscrollingdevice_p.h"
 #include "qxcbscreen.h"
 #include "qxcbwindow.h"
-#include "QtCore/qmetaobject.h"
-#include "QtCore/qmath.h"
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qpointingdevice_p.h>
+#include "BobUICore/qmetaobject.h"
+#include "BobUICore/qmath.h"
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
 #include <qpa/qwindowsysteminterface_p.h>
 #include <QDebug>
 
 #include <xcb/xinput.h>
 
-#if QT_CONFIG(gestures)
-#define QT_XCB_HAS_TOUCHPAD_GESTURES (XCB_INPUT_MINOR_VERSION >= 4)
+#if BOBUI_CONFIG(gestures)
+#define BOBUI_XCB_HAS_TOUCHPAD_GESTURES (XCB_INPUT_MINOR_VERSION >= 4)
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-using qt_xcb_input_device_event_t = xcb_input_button_press_event_t;
-#if QT_XCB_HAS_TOUCHPAD_GESTURES
-using qt_xcb_input_pinch_event_t = xcb_input_gesture_pinch_begin_event_t;
-using qt_xcb_input_swipe_event_t = xcb_input_gesture_swipe_begin_event_t;
+using bobui_xcb_input_device_event_t = xcb_input_button_press_event_t;
+#if BOBUI_XCB_HAS_TOUCHPAD_GESTURES
+using bobui_xcb_input_pinch_event_t = xcb_input_gesture_pinch_begin_event_t;
+using bobui_xcb_input_swipe_event_t = xcb_input_gesture_swipe_begin_event_t;
 #endif
 
-struct qt_xcb_input_event_mask_t {
+struct bobui_xcb_input_event_mask_t {
     xcb_input_event_mask_t header;
     alignas(4) uint8_t     mask[8] = {}; // up to 2 units of 4 bytes
 };
@@ -43,7 +43,7 @@ void QXcbConnection::xi2SelectStateEvents()
 {
     // These state events do not depend on a specific X window, but are global
     // for the X client's (application's) state.
-    qt_xcb_input_event_mask_t xiEventMask;
+    bobui_xcb_input_event_mask_t xiEventMask;
     xiEventMask.header.deviceid = XCB_INPUT_DEVICE_ALL;
     xiEventMask.header.mask_len = 1;
     setXcbMask(xiEventMask.mask, XCB_INPUT_HIERARCHY);
@@ -57,7 +57,7 @@ void QXcbConnection::xi2SelectDeviceEvents(xcb_window_t window)
     if (window == rootWindow())
         return;
 
-    qt_xcb_input_event_mask_t mask;
+    bobui_xcb_input_event_mask_t mask;
 
     setXcbMask(mask.mask, XCB_INPUT_BUTTON_PRESS);
     setXcbMask(mask.mask, XCB_INPUT_BUTTON_RELEASE);
@@ -71,7 +71,7 @@ void QXcbConnection::xi2SelectDeviceEvents(xcb_window_t window)
         setXcbMask(mask.mask, XCB_INPUT_TOUCH_UPDATE);
         setXcbMask(mask.mask, XCB_INPUT_TOUCH_END);
     }
-#if QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#if BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
     if (isAtLeastXI24()) {
         setXcbMask(mask.mask, XCB_INPUT_GESTURE_PINCH_BEGIN);
         setXcbMask(mask.mask, XCB_INPUT_GESTURE_PINCH_UPDATE);
@@ -80,7 +80,7 @@ void QXcbConnection::xi2SelectDeviceEvents(xcb_window_t window)
         setXcbMask(mask.mask, XCB_INPUT_GESTURE_SWIPE_UPDATE);
         setXcbMask(mask.mask, XCB_INPUT_GESTURE_SWIPE_END);
     }
-#endif // QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#endif // BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
 
     mask.header.deviceid = XCB_INPUT_DEVICE_ALL;
     mask.header.mask_len = 2;
@@ -100,7 +100,7 @@ static inline qreal fixed3232ToReal(xcb_input_fp3232_t val)
     return qreal(val.integral) + qreal(val.frac) / (1ULL << 32);
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 /*!
     \internal
     Find the existing QPointingDevice instance representing a particular tablet or stylus;
@@ -212,14 +212,14 @@ static const QPointingDevice *tabletToolInstance(QPointingDevice *master, const 
 }
 
 static const char *toolName(QInputDevice::DeviceType tool) {
-    static const QMetaObject *metaObject = qt_getEnumMetaObject(tool);
-    static const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(qt_getEnumName(tool)));
+    static const QMetaObject *metaObject = bobui_getEnumMetaObject(tool);
+    static const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(bobui_getEnumName(tool)));
     return me.valueToKey(int(tool));
 }
 
 static const char *pointerTypeName(QPointingDevice::PointerType ptype) {
-    static const QMetaObject *metaObject = qt_getEnumMetaObject(ptype);
-    static const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(qt_getEnumName(ptype)));
+    static const QMetaObject *metaObject = bobui_getEnumMetaObject(ptype);
+    static const QMetaEnum me = metaObject->enumerator(metaObject->indexOfEnumerator(bobui_getEnumName(ptype)));
     return me.valueToKey(int(ptype));
 }
 #endif
@@ -228,7 +228,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
 {
     auto *deviceInfo = reinterpret_cast<xcb_input_xi_device_info_t *>(info);
     if (removeExisting) {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
         for (int i = 0; i < m_tabletData.size(); ++i) {
             if (m_tabletData.at(i).deviceId == deviceInfo->deviceid) {
                 m_tabletData.remove(i);
@@ -244,7 +244,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
     const QString name = QString::fromUtf8(nameRaw);
     m_xiSlavePointerIds.append(deviceInfo->deviceid);
     qCDebug(lcQpaInputDevices) << "input device " << name << "ID" << deviceInfo->deviceid;
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     TabletData tabletData;
 #endif
     QXcbScrollingDevicePrivate *scrollingDeviceP = nullptr;
@@ -265,7 +265,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
             auto *vci = reinterpret_cast<xcb_input_valuator_class_t *>(classinfo);
             const int valuatorAtom = qatom(vci->label);
             qCDebug(lcQpaInputDevices) << "   has valuator" << atomName(vci->label) << "recognized?" << (valuatorAtom < QXcbAtom::NAtoms);
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
             if (valuatorAtom < QXcbAtom::NAtoms) {
                 TabletData::ValuatorClassInfo info;
                 info.minVal = fixed3232ToReal(vci->min);
@@ -273,7 +273,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
                 info.number = vci->number;
                 tabletData.valuatorInfo[valuatorAtom] = info;
             }
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
             if (valuatorAtom == QXcbAtom::AtomRelHorizScroll || valuatorAtom == QXcbAtom::AtomRelHorizWheel)
                 scrollingDevice()->lastScrollPosition.setX(fixed3232ToReal(vci->value));
             else if (valuatorAtom == QXcbAtom::AtomRelVertScroll || valuatorAtom == QXcbAtom::AtomRelVertWheel)
@@ -284,12 +284,12 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
             auto *sci = reinterpret_cast<xcb_input_scroll_class_t *>(classinfo);
             if (sci->scroll_type == XCB_INPUT_SCROLL_TYPE_VERTICAL) {
                 auto dev = scrollingDevice();
-                dev->orientations.setFlag(Qt::Vertical);
+                dev->orientations.setFlag(BobUI::Vertical);
                 dev->verticalIndex = sci->number;
                 dev->verticalIncrement = fixed3232ToReal(sci->increment);
             } else if (sci->scroll_type == XCB_INPUT_SCROLL_TYPE_HORIZONTAL) {
                 auto dev = scrollingDevice();
-                dev->orientations.setFlag(Qt::Horizontal);
+                dev->orientations.setFlag(BobUI::Horizontal);
                 dev->horizontalIndex = sci->number;
                 dev->horizontalIncrement = fixed3232ToReal(sci->increment);
             }
@@ -306,13 +306,13 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
                 // button 4 and the wrong one on button 5. So we just check that they are not labelled with unrelated buttons.
                 if ((!label4 || qatom(label4) == QXcbAtom::AtomButtonWheelUp || qatom(label4) == QXcbAtom::AtomButtonWheelDown) &&
                     (!label5 || qatom(label5) == QXcbAtom::AtomButtonWheelUp || qatom(label5) == QXcbAtom::AtomButtonWheelDown))
-                    scrollingDevice()->legacyOrientations |= Qt::Vertical;
+                    scrollingDevice()->legacyOrientations |= BobUI::Vertical;
             }
             if (bci->num_buttons >= 7) {
                 xcb_atom_t label6 = labels[5];
                 xcb_atom_t label7 = labels[6];
                 if ((!label6 || qatom(label6) == QXcbAtom::AtomButtonHorizWheelLeft) && (!label7 || qatom(label7) == QXcbAtom::AtomButtonHorizWheelRight))
-                    scrollingDevice()->legacyOrientations |= Qt::Horizontal;
+                    scrollingDevice()->legacyOrientations |= BobUI::Horizontal;
             }
             buttonCount = bci->num_buttons;
             qCDebug(lcQpaInputDevices, "   has %d buttons", bci->num_buttons);
@@ -322,9 +322,9 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
             qCDebug(lcQpaInputDevices) << "   it's a keyboard";
             break;
         case XCB_INPUT_DEVICE_CLASS_TYPE_TOUCH:
-#if QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#if BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
         case XCB_INPUT_DEVICE_CLASS_TYPE_GESTURE:
-#endif // QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#endif // BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
             // will be handled in populateTouchDevices()
             break;
         default:
@@ -333,7 +333,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
         }
     }
     bool isTablet = false;
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     // If we have found the valuators which we expect a tablet to have, it might be a tablet.
     if (tabletData.valuatorInfo.contains(QXcbAtom::AtomAbsX) &&
             tabletData.valuatorInfo.contains(QXcbAtom::AtomAbsY) &&
@@ -399,7 +399,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
                 tabletData.pointerType, capsOverride);
         Q_ASSERT(dev);
     }
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
 
     if (scrollingDeviceP) {
         // Only use legacy wheel button events when we don't have real scroll valuators.
@@ -410,14 +410,14 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
     if (!isTablet) {
         TouchDeviceData *dev = populateTouchDevices(deviceInfo, scrollingDeviceP, &used);
         if (dev && lcQpaInputDevices().isDebugEnabled()) {
-            if (dev->qtTouchDevice->type() == QInputDevice::DeviceType::TouchScreen)
+            if (dev->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchScreen)
                 qCDebug(lcQpaInputDevices, "   it's a touchscreen with type %d capabilities 0x%X max touch points %d",
-                        int(dev->qtTouchDevice->type()), qint32(dev->qtTouchDevice->capabilities()),
-                        dev->qtTouchDevice->maximumPoints());
-            else if (dev->qtTouchDevice->type() == QInputDevice::DeviceType::TouchPad)
+                        int(dev->bobuiTouchDevice->type()), qint32(dev->bobuiTouchDevice->capabilities()),
+                        dev->bobuiTouchDevice->maximumPoints());
+            else if (dev->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchPad)
                 qCDebug(lcQpaInputDevices, "   it's a touchpad with type %d capabilities 0x%X max touch points %d size %f x %f",
-                        int(dev->qtTouchDevice->type()), qint32(dev->qtTouchDevice->capabilities()),
-                        dev->qtTouchDevice->maximumPoints(),
+                        int(dev->bobuiTouchDevice->type()), qint32(dev->bobuiTouchDevice->capabilities()),
+                        dev->bobuiTouchDevice->maximumPoints(),
                         dev->size.width(), dev->size.height());
         }
     }
@@ -450,7 +450,7 @@ void QXcbConnection::xi2SetupSlavePointerDevice(void *info, bool removeExisting,
     Find all X11 input devices at startup, or react to a device hierarchy event,
     and create/delete the corresponding QInputDevice instances as necessary.
     Afterwards, we expect QInputDevice::devices() to contain only the
-    Qt-relevant devices that \c {xinput list} reports. The parent of each master
+    BobUI-relevant devices that \c {xinput list} reports. The parent of each master
     device is this QXcbConnection object; the parent of each slave is its master.
 */
 void QXcbConnection::xi2SetupDevices()
@@ -583,7 +583,7 @@ QXcbConnection::TouchDeviceData *QXcbConnection::populateTouchDevices(void *info
             }
             break;
         }
-#if QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#if BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
         case XCB_INPUT_DEVICE_CLASS_TYPE_GESTURE: {
             // Note that gesture devices can only be touchpads (i.e. dependent devices in XInput
             // naming convention). According to XI 2.4, the same device can't have touch and
@@ -594,7 +594,7 @@ QXcbConnection::TouchDeviceData *QXcbConnection::populateTouchDevices(void *info
             type = QInputDevice::DeviceType::TouchPad;
             break;
         }
-#endif // QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#endif // BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
         case XCB_INPUT_DEVICE_CLASS_TYPE_VALUATOR: {
             auto *vci = reinterpret_cast<xcb_input_valuator_class_t *>(classinfo);
             const QXcbAtom::Atom valuatorAtom = qatom(vci->label);
@@ -658,19 +658,19 @@ QXcbConnection::TouchDeviceData *QXcbConnection::populateTouchDevices(void *info
             scrollingDeviceP->maximumTouchPoints = maxTouchPoints;
             scrollingDeviceP->buttonCount = 3;
             scrollingDeviceP->seatName = master->seatName();
-            dev.qtTouchDevice = new QXcbScrollingDevice(*scrollingDeviceP, master);
+            dev.bobuiTouchDevice = new QXcbScrollingDevice(*scrollingDeviceP, master);
             if (Q_UNLIKELY(!caps.testFlag(QInputDevice::Capability::Scroll)))
-                qCDebug(lcQpaInputDevices) << "unexpectedly missing RelVert/HorizWheel atoms for touchpad with scroll capability" << dev.qtTouchDevice;
+                qCDebug(lcQpaInputDevices) << "unexpectedly missing RelVert/HorizWheel atoms for touchpad with scroll capability" << dev.bobuiTouchDevice;
             *used = true;
         } else {
-            dev.qtTouchDevice = new QPointingDevice(QString::fromUtf8(xcb_input_xi_device_info_name(deviceInfo),
+            dev.bobuiTouchDevice = new QPointingDevice(QString::fromUtf8(xcb_input_xi_device_info_name(deviceInfo),
                                                                       xcb_input_xi_device_info_name_length(deviceInfo)),
                                                     deviceInfo->deviceid,
                                                     type, QPointingDevice::PointerType::Finger, caps, maxTouchPoints, 0,
                                                     master->seatName(), QPointingDeviceUniqueId(), master);
         }
         if (caps != 0)
-            QWindowSystemInterface::registerInputDevice(dev.qtTouchDevice);
+            QWindowSystemInterface::registerInputDevice(dev.bobuiTouchDevice);
         m_touchDevices[deviceInfo->deviceid] = dev;
         isTouchDevice = true;
     }
@@ -685,7 +685,7 @@ static inline qreal fixed1616ToReal(xcb_input_fp1616_t val)
 
 void QXcbConnection::xi2HandleEvent(xcb_ge_event_t *event)
 {
-    auto *xiEvent = reinterpret_cast<qt_xcb_input_device_event_t *>(event);
+    auto *xiEvent = reinterpret_cast<bobui_xcb_input_device_event_t *>(event);
     setTime(xiEvent->time);
     if (m_xiSlavePointerIds.contains(xiEvent->deviceid) && xiEvent->event_type != XCB_INPUT_PROPERTY) {
         if (!m_duringSystemMoveResize)
@@ -704,7 +704,7 @@ void QXcbConnection::xi2HandleEvent(xcb_ge_event_t *event)
         }
     }
     int sourceDeviceId = xiEvent->deviceid; // may be the master id
-    qt_xcb_input_device_event_t *xiDeviceEvent = nullptr;
+    bobui_xcb_input_device_event_t *xiDeviceEvent = nullptr;
     xcb_input_enter_event_t *xiEnterEvent = nullptr;
     QXcbWindowEventListener *eventListener = nullptr;
 
@@ -721,7 +721,7 @@ void QXcbConnection::xi2HandleEvent(xcb_ge_event_t *event)
         sourceDeviceId = xiDeviceEvent->sourceid; // use the actual device id instead of the master
         break;
     }
-#if QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#if BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
     case XCB_INPUT_GESTURE_PINCH_BEGIN:
     case XCB_INPUT_GESTURE_PINCH_UPDATE:
     case XCB_INPUT_GESTURE_PINCH_END:
@@ -732,7 +732,7 @@ void QXcbConnection::xi2HandleEvent(xcb_ge_event_t *event)
     case XCB_INPUT_GESTURE_SWIPE_END:
         xi2HandleGestureSwipeEvent(event);
         return;
-#endif // QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#endif // BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
     case XCB_INPUT_ENTER:
     case XCB_INPUT_LEAVE: {
         xiEnterEvent = reinterpret_cast<xcb_input_enter_event_t *>(event);
@@ -755,14 +755,14 @@ void QXcbConnection::xi2HandleEvent(xcb_ge_event_t *event)
             return;
     }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     if (!xiEnterEvent) {
         // TODO we need the UID here; tabletDataForDevice doesn't have enough to go on (?)
         QXcbConnection::TabletData *tablet = tabletDataForDevice(sourceDeviceId);
         if (tablet && xi2HandleTabletEvent(event, tablet))
             return;
     }
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
 
     if (auto device = QPointingDevicePrivate::pointingDeviceById(sourceDeviceId))
         xi2HandleScrollEvent(event, device);
@@ -807,7 +807,7 @@ void QXcbConnection::xi2HandleEvent(xcb_ge_event_t *event)
 bool QXcbConnection::isTouchScreen(int id)
 {
     auto device = touchDeviceForId(id);
-    return device && device->qtTouchDevice->type() == QInputDevice::DeviceType::TouchScreen;
+    return device && device->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchScreen;
 }
 
 void QXcbConnection::xi2ProcessTouch(void *xiDevEvent, QXcbWindow *platformWindow)
@@ -928,7 +928,7 @@ void QXcbConnection::xi2ProcessTouch(void *xiDevEvent, QXcbWindow *platformWindo
         }
         break;
     case XCB_INPUT_TOUCH_UPDATE:
-        if (dev->qtTouchDevice->type() == QInputDevice::DeviceType::TouchPad && dev->pointPressedPosition.value(touchPoint.id) == QPointF(x, y)) {
+        if (dev->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchPad && dev->pointPressedPosition.value(touchPoint.id) == QPointF(x, y)) {
             qreal dx = (nx - dev->firstPressedNormalPosition.x()) *
                 dev->size.width() * screen->geometry().width() / screen->physicalSize().width();
             qreal dy = (ny - dev->firstPressedNormalPosition.y()) *
@@ -938,11 +938,11 @@ void QXcbConnection::xi2ProcessTouch(void *xiDevEvent, QXcbWindow *platformWindo
             touchPoint.state = QEventPoint::State::Updated;
         } else if (touchPoint.area.center() != QPoint(x, y)) {
             touchPoint.state = QEventPoint::State::Updated;
-            if (dev->qtTouchDevice->type() == QInputDevice::DeviceType::TouchPad)
+            if (dev->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchPad)
                 dev->pointPressedPosition[touchPoint.id] = QPointF(x, y);
         }
 
-        if (dev->qtTouchDevice->type() == QInputDevice::DeviceType::TouchScreen &&
+        if (dev->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchScreen &&
             xiDeviceEvent->event == m_startSystemMoveResizeInfo.window &&
             xiDeviceEvent->sourceid == m_startSystemMoveResizeInfo.deviceid &&
             xiDeviceEvent->detail == m_startSystemMoveResizeInfo.pointid) {
@@ -958,7 +958,7 @@ void QXcbConnection::xi2ProcessTouch(void *xiDevEvent, QXcbWindow *platformWindo
         break;
     case XCB_INPUT_TOUCH_END:
         touchPoint.state = QEventPoint::State::Released;
-        if (dev->qtTouchDevice->type() == QInputDevice::DeviceType::TouchPad && dev->pointPressedPosition.value(touchPoint.id) == QPointF(x, y)) {
+        if (dev->bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchPad && dev->pointPressedPosition.value(touchPoint.id) == QPointF(x, y)) {
             qreal dx = (nx - dev->firstPressedNormalPosition.x()) *
                 dev->size.width() * screen->geometry().width() / screen->physicalSize().width();
             qreal dy = (ny - dev->firstPressedNormalPosition.y()) *
@@ -974,13 +974,13 @@ void QXcbConnection::xi2ProcessTouch(void *xiDevEvent, QXcbWindow *platformWindo
     if (Q_UNLIKELY(lcQpaXInputEvents().isDebugEnabled()))
         qCDebug(lcQpaXInputEvents) << "   touchpoint "  << touchPoint.id << " state " << touchPoint.state << " pos norm " << touchPoint.normalPosition <<
             " area " << touchPoint.area << " pressure " << touchPoint.pressure;
-    Qt::KeyboardModifiers modifiers = keyboard()->translateModifiers(xiDeviceEvent->mods.effective);
-    QWindowSystemInterface::handleTouchEvent(platformWindow->window(), xiDeviceEvent->time, dev->qtTouchDevice, dev->touchPoints.values(), modifiers);
+    BobUI::KeyboardModifiers modifiers = keyboard()->translateModifiers(xiDeviceEvent->mods.effective);
+    QWindowSystemInterface::handleTouchEvent(platformWindow->window(), xiDeviceEvent->time, dev->bobuiTouchDevice, dev->touchPoints.values(), modifiers);
     if (touchPoint.state == QEventPoint::State::Released)
         // If a touchpoint was released, we can forget it, because the ID won't be reused.
         dev->touchPoints.remove(touchPoint.id);
     else
-        // Make sure that we don't send TouchPointPressed/Moved in more than one QTouchEvent
+        // Make sure that we don't send TouchPointPressed/Moved in more than one BOBUIouchEvent
         // with this touch point if the next XI2 event is about a different touch point.
         touchPoint.state = QEventPoint::State::Stationary;
 }
@@ -990,7 +990,7 @@ bool QXcbConnection::startSystemMoveResizeForTouch(xcb_window_t window, int edge
     QHash<int, TouchDeviceData>::const_iterator devIt = m_touchDevices.constBegin();
     for (; devIt != m_touchDevices.constEnd(); ++devIt) {
         TouchDeviceData deviceData = devIt.value();
-        if (deviceData.qtTouchDevice->type() == QInputDevice::DeviceType::TouchScreen) {
+        if (deviceData.bobuiTouchDevice->type() == QInputDevice::DeviceType::TouchScreen) {
             auto pointIt = deviceData.touchPoints.constBegin();
             for (; pointIt != deviceData.touchPoints.constEnd(); ++pointIt) {
                 QEventPoint::State state = pointIt.value().state;
@@ -1059,7 +1059,7 @@ bool QXcbConnection::xi2SetMouseGrabEnabled(xcb_window_t w, bool grab)
             setXcbMask(mask, XCB_INPUT_TOUCH_UPDATE);
             setXcbMask(mask, XCB_INPUT_TOUCH_END);
         }
-#if QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#if BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
         if (isAtLeastXI24()) {
             setXcbMask(mask, XCB_INPUT_GESTURE_PINCH_BEGIN);
             setXcbMask(mask, XCB_INPUT_GESTURE_PINCH_UPDATE);
@@ -1068,7 +1068,7 @@ bool QXcbConnection::xi2SetMouseGrabEnabled(xcb_window_t w, bool grab)
             setXcbMask(mask, XCB_INPUT_GESTURE_SWIPE_UPDATE);
             setXcbMask(mask, XCB_INPUT_GESTURE_SWIPE_END);
         }
-#endif // QT_CONFIG(gestures) && QT_XCB_HAS_TOUCHPAD_GESTURES
+#endif // BOBUI_CONFIG(gestures) && BOBUI_XCB_HAS_TOUCHPAD_GESTURES
 
         for (int id : std::as_const(m_xiMasterPointerIds)) {
             xcb_generic_error_t *error = nullptr;
@@ -1123,10 +1123,10 @@ void QXcbConnection::xi2HandleHierarchyEvent(void *event)
         xi2SetupDevices();
 }
 
-#if QT_XCB_HAS_TOUCHPAD_GESTURES
+#if BOBUI_XCB_HAS_TOUCHPAD_GESTURES
 void QXcbConnection::xi2HandleGesturePinchEvent(void *event)
 {
-    auto *xiEvent = reinterpret_cast<qt_xcb_input_pinch_event_t *>(event);
+    auto *xiEvent = reinterpret_cast<bobui_xcb_input_pinch_event_t *>(event);
 
     if (Q_UNLIKELY(lcQpaXInputEvents().isDebugEnabled())) {
         qCDebug(lcQpaXInputEvents, "XI2 gesture event type %d seq %d fingers %d pos %6.1f, "
@@ -1158,8 +1158,8 @@ void QXcbConnection::xi2HandleGesturePinchEvent(void *event)
         }
         m_lastPinchScale = 1.0;
         QWindowSystemInterface::handleGestureEvent(platformWindow->window(), xiEvent->time,
-                                                   dev->qtTouchDevice,
-                                                   Qt::BeginNativeGesture,
+                                                   dev->bobuiTouchDevice,
+                                                   BobUI::BeginNativeGesture,
                                                    platformWindow->lastPointerPosition(),
                                                    platformWindow->lastPointerGlobalPosition(),
                                                    fingerCount);
@@ -1176,16 +1176,16 @@ void QXcbConnection::xi2HandleGesturePinchEvent(void *event)
 
         if (!delta.isNull()) {
             QWindowSystemInterface::handleGestureEventWithValueAndDelta(
-                        platformWindow->window(), xiEvent->time, dev->qtTouchDevice,
-                        Qt::PanNativeGesture, 0, delta,
+                        platformWindow->window(), xiEvent->time, dev->bobuiTouchDevice,
+                        BobUI::PanNativeGesture, 0, delta,
                         platformWindow->lastPointerPosition(),
                         platformWindow->lastPointerGlobalPosition(),
                         fingerCount);
         }
         if (rotationDelta != 0) {
             QWindowSystemInterface::handleGestureEventWithRealValue(
-                        platformWindow->window(), xiEvent->time, dev->qtTouchDevice,
-                        Qt::RotateNativeGesture,
+                        platformWindow->window(), xiEvent->time, dev->bobuiTouchDevice,
+                        BobUI::RotateNativeGesture,
                         rotationDelta,
                         platformWindow->lastPointerPosition(),
                         platformWindow->lastPointerGlobalPosition(),
@@ -1193,8 +1193,8 @@ void QXcbConnection::xi2HandleGesturePinchEvent(void *event)
         }
         if (scaleDelta != 0) {
             QWindowSystemInterface::handleGestureEventWithRealValue(
-                        platformWindow->window(), xiEvent->time, dev->qtTouchDevice,
-                        Qt::ZoomNativeGesture,
+                        platformWindow->window(), xiEvent->time, dev->bobuiTouchDevice,
+                        BobUI::ZoomNativeGesture,
                         scaleDelta,
                         platformWindow->lastPointerPosition(),
                         platformWindow->lastPointerGlobalPosition(),
@@ -1204,8 +1204,8 @@ void QXcbConnection::xi2HandleGesturePinchEvent(void *event)
     }
     case XCB_INPUT_GESTURE_PINCH_END:
         QWindowSystemInterface::handleGestureEvent(platformWindow->window(), xiEvent->time,
-                                                   dev->qtTouchDevice,
-                                                   Qt::EndNativeGesture,
+                                                   dev->bobuiTouchDevice,
+                                                   BobUI::EndNativeGesture,
                                                    platformWindow->lastPointerPosition(),
                                                    platformWindow->lastPointerGlobalPosition(),
                                                    fingerCount);
@@ -1215,7 +1215,7 @@ void QXcbConnection::xi2HandleGesturePinchEvent(void *event)
 
 void QXcbConnection::xi2HandleGestureSwipeEvent(void *event)
 {
-    auto *xiEvent = reinterpret_cast<qt_xcb_input_swipe_event_t *>(event);
+    auto *xiEvent = reinterpret_cast<bobui_xcb_input_swipe_event_t *>(event);
 
     if (Q_UNLIKELY(lcQpaXInputEvents().isDebugEnabled())) {
         qCDebug(lcQpaXInputEvents, "XI2 gesture event type %d seq %d detail %d pos %6.1f, %6.1f root pos %6.1f, %6.1f on window %x",
@@ -1244,8 +1244,8 @@ void QXcbConnection::xi2HandleGestureSwipeEvent(void *event)
                                       XCB_INPUT_EVENT_MODE_ASYNC_DEVICE, 0, xiEvent->event);
         }
         QWindowSystemInterface::handleGestureEvent(platformWindow->window(), xiEvent->time,
-                                                   dev->qtTouchDevice,
-                                                   Qt::BeginNativeGesture,
+                                                   dev->bobuiTouchDevice,
+                                                   BobUI::BeginNativeGesture,
                                                    platformWindow->lastPointerPosition(),
                                                    platformWindow->lastPointerGlobalPosition(),
                                                    fingerCount);
@@ -1256,8 +1256,8 @@ void QXcbConnection::xi2HandleGestureSwipeEvent(void *event)
 
         if (xiEvent->delta_x != 0 || xiEvent->delta_y != 0) {
             QWindowSystemInterface::handleGestureEventWithValueAndDelta(
-                        platformWindow->window(), xiEvent->time, dev->qtTouchDevice,
-                        Qt::PanNativeGesture, 0, delta,
+                        platformWindow->window(), xiEvent->time, dev->bobuiTouchDevice,
+                        BobUI::PanNativeGesture, 0, delta,
                         platformWindow->lastPointerPosition(),
                         platformWindow->lastPointerGlobalPosition(),
                         fingerCount);
@@ -1266,8 +1266,8 @@ void QXcbConnection::xi2HandleGestureSwipeEvent(void *event)
     }
     case XCB_INPUT_GESTURE_SWIPE_END:
         QWindowSystemInterface::handleGestureEvent(platformWindow->window(), xiEvent->time,
-                                                   dev->qtTouchDevice,
-                                                   Qt::EndNativeGesture,
+                                                   dev->bobuiTouchDevice,
+                                                   BobUI::EndNativeGesture,
                                                    platformWindow->lastPointerPosition(),
                                                    platformWindow->lastPointerGlobalPosition(),
                                                    fingerCount);
@@ -1275,7 +1275,7 @@ void QXcbConnection::xi2HandleGestureSwipeEvent(void *event)
     }
 }
 
-#else // QT_XCB_HAS_TOUCHPAD_GESTURES
+#else // BOBUI_XCB_HAS_TOUCHPAD_GESTURES
 void QXcbConnection::xi2HandleGesturePinchEvent(void*) {}
 void QXcbConnection::xi2HandleGestureSwipeEvent(void*) {}
 #endif
@@ -1361,7 +1361,7 @@ QXcbScrollingDevice *QXcbConnection::scrollingDeviceForId(int id)
 
 void QXcbConnection::xi2HandleScrollEvent(void *event, const QPointingDevice *dev)
 {
-    auto *xiDeviceEvent = reinterpret_cast<qt_xcb_input_device_event_t *>(event);
+    auto *xiDeviceEvent = reinterpret_cast<bobui_xcb_input_device_event_t *>(event);
 
     const QXcbScrollingDevice *scrollDev = qobject_cast<const QXcbScrollingDevice *>(dev);
     if (!scrollDev || !scrollDev->capabilities().testFlag(QInputDevice::Capability::Scroll))
@@ -1373,7 +1373,7 @@ void QXcbConnection::xi2HandleScrollEvent(void *event, const QPointingDevice *de
             QPoint rawDelta;
             QPoint angleDelta;
             double value;
-            if (scrollingDevice->orientations & Qt::Vertical) {
+            if (scrollingDevice->orientations & BobUI::Vertical) {
                 if (xi2GetValuatorValueIfSet(xiDeviceEvent, scrollingDevice->verticalIndex, &value)) {
                     double delta = scrollingDevice->lastScrollPosition.y() - value;
                     scrollingDevice->lastScrollPosition.setY(value);
@@ -1387,7 +1387,7 @@ void QXcbConnection::xi2HandleScrollEvent(void *event, const QPointingDevice *de
                         rawDelta.setY(-delta);
                 }
             }
-            if (scrollingDevice->orientations & Qt::Horizontal) {
+            if (scrollingDevice->orientations & BobUI::Horizontal) {
                 if (xi2GetValuatorValueIfSet(xiDeviceEvent, scrollingDevice->horizontalIndex, &value)) {
                     double delta = scrollingDevice->lastScrollPosition.x() - value;
                     scrollingDevice->lastScrollPosition.setX(value);
@@ -1402,8 +1402,8 @@ void QXcbConnection::xi2HandleScrollEvent(void *event, const QPointingDevice *de
             if (!angleDelta.isNull()) {
                 QPoint local(fixed1616ToReal(xiDeviceEvent->event_x), fixed1616ToReal(xiDeviceEvent->event_y));
                 QPoint global(fixed1616ToReal(xiDeviceEvent->root_x), fixed1616ToReal(xiDeviceEvent->root_y));
-                Qt::KeyboardModifiers modifiers = keyboard()->translateModifiers(xiDeviceEvent->mods.effective);
-                if (modifiers & Qt::AltModifier) {
+                BobUI::KeyboardModifiers modifiers = keyboard()->translateModifiers(xiDeviceEvent->mods.effective);
+                if (modifiers & BobUI::AltModifier) {
                     angleDelta = angleDelta.transposed();
                     rawDelta = rawDelta.transposed();
                 }
@@ -1416,13 +1416,13 @@ void QXcbConnection::xi2HandleScrollEvent(void *event, const QPointingDevice *de
     } else if (xiDeviceEvent->event_type == XCB_INPUT_BUTTON_RELEASE && scrollingDevice->legacyOrientations) {
         if (QXcbWindow *platformWindow = platformWindowFromId(xiDeviceEvent->event)) {
             QPoint angleDelta;
-            if (scrollingDevice->legacyOrientations & Qt::Vertical) {
+            if (scrollingDevice->legacyOrientations & BobUI::Vertical) {
                 if (xiDeviceEvent->detail == 4)
                     angleDelta.setY(120);
                 else if (xiDeviceEvent->detail == 5)
                     angleDelta.setY(-120);
             }
-            if (scrollingDevice->legacyOrientations & Qt::Horizontal) {
+            if (scrollingDevice->legacyOrientations & BobUI::Horizontal) {
                 if (xiDeviceEvent->detail == 6)
                     angleDelta.setX(120);
                 else if (xiDeviceEvent->detail == 7)
@@ -1431,8 +1431,8 @@ void QXcbConnection::xi2HandleScrollEvent(void *event, const QPointingDevice *de
             if (!angleDelta.isNull()) {
                 QPoint local(fixed1616ToReal(xiDeviceEvent->event_x), fixed1616ToReal(xiDeviceEvent->event_y));
                 QPoint global(fixed1616ToReal(xiDeviceEvent->root_x), fixed1616ToReal(xiDeviceEvent->root_y));
-                Qt::KeyboardModifiers modifiers = keyboard()->translateModifiers(xiDeviceEvent->mods.effective);
-                if (modifiers & Qt::AltModifier)
+                BobUI::KeyboardModifiers modifiers = keyboard()->translateModifiers(xiDeviceEvent->mods.effective);
+                if (modifiers & BobUI::AltModifier)
                     angleDelta = angleDelta.transposed();
                 qCDebug(lcQpaXInputEvents) << "scroll wheel (button" << xiDeviceEvent->detail << ") @ window pos" << local << "delta angle" << angleDelta;
                 QWindowSystemInterface::handleWheelEvent(platformWindow->window(), xiDeviceEvent->time, dev,
@@ -1463,7 +1463,7 @@ static int xi2ValuatorOffset(const unsigned char *maskPtr, int maskLen, int numb
 
 bool QXcbConnection::xi2GetValuatorValueIfSet(const void *event, int valuatorNum, double *value)
 {
-    auto *xideviceevent = static_cast<const qt_xcb_input_device_event_t *>(event);
+    auto *xideviceevent = static_cast<const bobui_xcb_input_device_event_t *>(event);
     auto *buttonsMaskAddr = reinterpret_cast<const unsigned char *>(&xideviceevent[1]);
     auto *valuatorsMaskAddr = buttonsMaskAddr + xideviceevent->buttons_len * 4;
     auto *valuatorsValuesAddr = reinterpret_cast<const xcb_input_fp3232_t *>(valuatorsMaskAddr + xideviceevent->valuators_len * 4);
@@ -1477,35 +1477,35 @@ bool QXcbConnection::xi2GetValuatorValueIfSet(const void *event, int valuatorNum
     return true;
 }
 
-Qt::MouseButton QXcbConnection::xiToQtMouseButton(uint32_t b)
+BobUI::MouseButton QXcbConnection::xiToBobUIMouseButton(uint32_t b)
 {
     switch (b) {
-    case 1: return Qt::LeftButton;
-    case 2: return Qt::MiddleButton;
-    case 3: return Qt::RightButton;
+    case 1: return BobUI::LeftButton;
+    case 2: return BobUI::MiddleButton;
+    case 3: return BobUI::RightButton;
     // 4-7 are for scrolling
     default: break;
     }
-    if (b >= 8 && b <= Qt::MaxMouseButton)
-        return static_cast<Qt::MouseButton>(Qt::BackButton << (b - 8));
-    return Qt::NoButton;
+    if (b >= 8 && b <= BobUI::MaxMouseButton)
+        return static_cast<BobUI::MouseButton>(BobUI::BackButton << (b - 8));
+    return BobUI::NoButton;
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 bool QXcbConnection::xi2HandleTabletEvent(const void *event, TabletData *tabletData)
 {
     bool handled = true;
-    const auto *xiDeviceEvent = reinterpret_cast<const qt_xcb_input_device_event_t *>(event);
+    const auto *xiDeviceEvent = reinterpret_cast<const bobui_xcb_input_device_event_t *>(event);
 
     switch (xiDeviceEvent->event_type) {
     case XCB_INPUT_BUTTON_PRESS: {
-        Qt::MouseButton b = xiToQtMouseButton(xiDeviceEvent->detail);
+        BobUI::MouseButton b = xiToBobUIMouseButton(xiDeviceEvent->detail);
         tabletData->buttons |= b;
         xi2ReportTabletEvent(event, tabletData);
         break;
     }
     case XCB_INPUT_BUTTON_RELEASE: {
-        Qt::MouseButton b = xiToQtMouseButton(xiDeviceEvent->detail);
+        BobUI::MouseButton b = xiToBobUIMouseButton(xiDeviceEvent->detail);
         tabletData->buttons ^= b;
         xi2ReportTabletEvent(event, tabletData);
         break;
@@ -1539,7 +1539,7 @@ bool QXcbConnection::xi2HandleTabletEvent(const void *event, TabletData *tabletD
                         if (!tool && ptr[_WACSER_TOOL_SERIAL])
                             tool = ptr[_WACSER_TOOL_SERIAL];
 
-                        QWindow *win = nullptr; // TODO QTBUG-111400 get the position somehow, then the window
+                        QWindow *win = nullptr; // TODO BOBUIBUG-111400 get the position somehow, then the window
                         // The property change event informs us which tool is in proximity or which one left proximity.
                         if (tool) {
                             const QPointingDevice *dev = tabletToolInstance(nullptr, tabletData->name,
@@ -1590,17 +1590,17 @@ inline qreal scaleOneValuator(qreal normValue, qreal screenMin, qreal screenSize
 // TODO QPointingDevice not TabletData
 void QXcbConnection::xi2ReportTabletEvent(const void *event, TabletData *tabletData)
 {
-    auto *ev = reinterpret_cast<const qt_xcb_input_device_event_t *>(event);
+    auto *ev = reinterpret_cast<const bobui_xcb_input_device_event_t *>(event);
     QXcbWindow *xcbWindow = platformWindowFromId(ev->event);
     if (!xcbWindow)
         return;
     QWindow *window = xcbWindow->window();
-    const Qt::KeyboardModifiers modifiers = keyboard()->translateModifiers(ev->mods.effective);
+    const BobUI::KeyboardModifiers modifiers = keyboard()->translateModifiers(ev->mods.effective);
     QPointF local(fixed1616ToReal(ev->event_x), fixed1616ToReal(ev->event_y));
     QPointF global(fixed1616ToReal(ev->root_x), fixed1616ToReal(ev->root_y));
     double pressure = 0, rotation = 0, tangentialPressure = 0;
     qreal xTilt = 0, yTilt = 0;
-    static const bool useValuators = !qEnvironmentVariableIsSet("QT_XCB_TABLET_LEGACY_COORDINATES");
+    static const bool useValuators = !qEnvironmentVariableIsSet("BOBUI_XCB_TABLET_LEGACY_COORDINATES");
     const QPointingDevice *dev = QPointingDevicePrivate::tabletDevice(QInputDevice::DeviceType(tabletData->tool),
                                                                       QPointingDevice::PointerType(tabletData->pointerType),
                                                                       QPointingDeviceUniqueId::fromNumericId(tabletData->serialId));
@@ -1686,4 +1686,4 @@ QXcbConnection::TabletData *QXcbConnection::tabletDataForDevice(int id)
     return nullptr;
 }
 
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)

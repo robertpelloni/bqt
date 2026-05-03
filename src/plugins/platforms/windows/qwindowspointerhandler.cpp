@@ -1,10 +1,10 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
 #include "qwindowspointerhandler.h"
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 #  include "qwindowstabletsupport.h"
 #endif
 #include "qwindowskeymapper.h"
@@ -13,27 +13,27 @@
 #include "qwindowsintegration.h"
 #include "qwindowsscreen.h"
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qqueue.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qqueue.h>
 
 #include <algorithm>
 
 #include <windowsx.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
-    QT_PT_POINTER  = 1,
-    QT_PT_TOUCH    = 2,
-    QT_PT_PEN      = 3,
-    QT_PT_MOUSE    = 4,
-    QT_PT_TOUCHPAD = 5, // MinGW is missing PT_TOUCHPAD
+    BOBUI_PT_POINTER  = 1,
+    BOBUI_PT_TOUCH    = 2,
+    BOBUI_PT_PEN      = 3,
+    BOBUI_PT_MOUSE    = 4,
+    BOBUI_PT_TOUCHPAD = 5, // MinGW is missing PT_TOUCHPAD
 };
 
 qint64 QWindowsPointerHandler::m_nextInputDeviceId = 1;
@@ -50,32 +50,32 @@ QWindowsPointerHandler::~QWindowsPointerHandler()
 {
 }
 
-bool QWindowsPointerHandler::translatePointerEvent(QWindow *window, HWND hwnd, QtWindows::WindowsEventType et, MSG msg, LRESULT *result)
+bool QWindowsPointerHandler::translatePointerEvent(QWindow *window, HWND hwnd, BobUIWindows::WindowsEventType et, MSG msg, LRESULT *result)
 {
     *result = 0;
     const quint32 pointerId = GET_POINTERID_WPARAM(msg.wParam);
 
     if (!GetPointerType(pointerId, &m_pointerType)) {
-        qWarning() << "GetPointerType() failed:" << qt_error_string();
+        qWarning() << "GetPointerType() failed:" << bobui_error_string();
         return false;
     }
 
     switch (m_pointerType) {
-    case QT_PT_POINTER:
-    case QT_PT_MOUSE:
-    case QT_PT_TOUCHPAD: {
+    case BOBUI_PT_POINTER:
+    case BOBUI_PT_MOUSE:
+    case BOBUI_PT_TOUCHPAD: {
         // Let Mouse/TouchPad be handled using legacy messages.
         return false;
     }
-    case QT_PT_TOUCH: {
+    case BOBUI_PT_TOUCH: {
         quint32 pointerCount = 0;
         if (!GetPointerFrameTouchInfo(pointerId, &pointerCount, nullptr)) {
-            qWarning() << "GetPointerFrameTouchInfo() failed:" << qt_error_string();
+            qWarning() << "GetPointerFrameTouchInfo() failed:" << bobui_error_string();
             return false;
         }
         QVarLengthArray<POINTER_TOUCH_INFO, 10> touchInfo(pointerCount);
         if (!GetPointerFrameTouchInfo(pointerId, &pointerCount, touchInfo.data())) {
-            qWarning() << "GetPointerFrameTouchInfo() failed:" << qt_error_string();
+            qWarning() << "GetPointerFrameTouchInfo() failed:" << bobui_error_string();
             return false;
         }
 
@@ -85,13 +85,13 @@ bool QWindowsPointerHandler::translatePointerEvent(QWindow *window, HWND hwnd, Q
         // The history count is the same for all the touchpoints in touchInfo
         quint32 historyCount = touchInfo[0].pointerInfo.historyCount;
         // dispatch any skipped frames if event compression is disabled by the app
-        if (historyCount > 1 && !QCoreApplication::testAttribute(Qt::AA_CompressHighFrequencyEvents)) {
+        if (historyCount > 1 && !QCoreApplication::testAttribute(BobUI::AA_CompressHighFrequencyEvents)) {
             touchInfo.resize(pointerCount * historyCount);
             if (!GetPointerFrameTouchInfoHistory(pointerId,
                                                  &historyCount,
                                                  &pointerCount,
                                                  touchInfo.data())) {
-                qWarning() << "GetPointerFrameTouchInfoHistory() failed:" << qt_error_string();
+                qWarning() << "GetPointerFrameTouchInfoHistory() failed:" << bobui_error_string();
                 return false;
             }
 
@@ -106,22 +106,22 @@ bool QWindowsPointerHandler::translatePointerEvent(QWindow *window, HWND hwnd, Q
 
         return translateTouchEvent(window, hwnd, et, msg, touchInfo.data(), pointerCount);
     }
-    case QT_PT_PEN: {
+    case BOBUI_PT_PEN: {
         POINTER_PEN_INFO penInfo;
         if (!GetPointerPenInfo(pointerId, &penInfo)) {
-            qWarning() << "GetPointerPenInfo() failed:" << qt_error_string();
+            qWarning() << "GetPointerPenInfo() failed:" << bobui_error_string();
             return false;
         }
 
         quint32 historyCount = penInfo.pointerInfo.historyCount;
         // dispatch any skipped frames if generic or tablet event compression is disabled by the app
         if (historyCount > 1
-            && (!QCoreApplication::testAttribute(Qt::AA_CompressHighFrequencyEvents)
-                || !QCoreApplication::testAttribute(Qt::AA_CompressTabletEvents))) {
+            && (!QCoreApplication::testAttribute(BobUI::AA_CompressHighFrequencyEvents)
+                || !QCoreApplication::testAttribute(BobUI::AA_CompressTabletEvents))) {
             QVarLengthArray<POINTER_PEN_INFO, 10> penInfoHistory(historyCount);
 
             if (!GetPointerPenInfoHistory(pointerId, &historyCount, penInfoHistory.data())) {
-                qWarning() << "GetPointerPenInfoHistory() failed:" << qt_error_string();
+                qWarning() << "GetPointerPenInfoHistory() failed:" << bobui_error_string();
                 return false;
             }
 
@@ -142,38 +142,38 @@ bool QWindowsPointerHandler::translatePointerEvent(QWindow *window, HWND hwnd, Q
 namespace {
 struct MouseEvent {
     QEvent::Type type;
-    Qt::MouseButton button;
+    BobUI::MouseButton button;
 };
 } // namespace
 
-static inline Qt::MouseButton extraButton(WPARAM wParam) // for WM_XBUTTON...
+static inline BobUI::MouseButton extraButton(WPARAM wParam) // for WM_XBUTTON...
 {
-    return GET_XBUTTON_WPARAM(wParam) == XBUTTON1 ? Qt::BackButton : Qt::ForwardButton;
+    return GET_XBUTTON_WPARAM(wParam) == XBUTTON1 ? BobUI::BackButton : BobUI::ForwardButton;
 }
 
 static inline MouseEvent eventFromMsg(const MSG &msg)
 {
     switch (msg.message) {
     case WM_MOUSEMOVE:
-        return {QEvent::MouseMove, Qt::NoButton};
+        return {QEvent::MouseMove, BobUI::NoButton};
     case WM_LBUTTONDOWN:
-        return {QEvent::MouseButtonPress, Qt::LeftButton};
+        return {QEvent::MouseButtonPress, BobUI::LeftButton};
     case WM_LBUTTONUP:
-        return {QEvent::MouseButtonRelease, Qt::LeftButton};
-    case WM_LBUTTONDBLCLK: // Qt QPA does not handle double clicks, send as press
-        return {QEvent::MouseButtonPress, Qt::LeftButton};
+        return {QEvent::MouseButtonRelease, BobUI::LeftButton};
+    case WM_LBUTTONDBLCLK: // BobUI QPA does not handle double clicks, send as press
+        return {QEvent::MouseButtonPress, BobUI::LeftButton};
     case WM_MBUTTONDOWN:
-        return {QEvent::MouseButtonPress, Qt::MiddleButton};
+        return {QEvent::MouseButtonPress, BobUI::MiddleButton};
     case WM_MBUTTONUP:
-        return {QEvent::MouseButtonRelease, Qt::MiddleButton};
+        return {QEvent::MouseButtonRelease, BobUI::MiddleButton};
     case WM_MBUTTONDBLCLK:
-        return {QEvent::MouseButtonPress, Qt::MiddleButton};
+        return {QEvent::MouseButtonPress, BobUI::MiddleButton};
     case WM_RBUTTONDOWN:
-        return {QEvent::MouseButtonPress, Qt::RightButton};
+        return {QEvent::MouseButtonPress, BobUI::RightButton};
     case WM_RBUTTONUP:
-        return {QEvent::MouseButtonRelease, Qt::RightButton};
+        return {QEvent::MouseButtonRelease, BobUI::RightButton};
     case WM_RBUTTONDBLCLK:
-        return {QEvent::MouseButtonPress, Qt::RightButton};
+        return {QEvent::MouseButtonPress, BobUI::RightButton};
     case WM_XBUTTONDOWN:
         return {QEvent::MouseButtonPress, extraButton(msg.wParam)};
     case WM_XBUTTONUP:
@@ -181,61 +181,61 @@ static inline MouseEvent eventFromMsg(const MSG &msg)
     case WM_XBUTTONDBLCLK:
         return {QEvent::MouseButtonPress, extraButton(msg.wParam)};
     case WM_NCMOUSEMOVE:
-        return {QEvent::NonClientAreaMouseMove, Qt::NoButton};
+        return {QEvent::NonClientAreaMouseMove, BobUI::NoButton};
     case WM_NCLBUTTONDOWN:
-        return {QEvent::NonClientAreaMouseButtonPress, Qt::LeftButton};
+        return {QEvent::NonClientAreaMouseButtonPress, BobUI::LeftButton};
     case WM_NCLBUTTONUP:
-        return {QEvent::NonClientAreaMouseButtonRelease, Qt::LeftButton};
+        return {QEvent::NonClientAreaMouseButtonRelease, BobUI::LeftButton};
     case WM_NCLBUTTONDBLCLK:
-        return {QEvent::NonClientAreaMouseButtonPress, Qt::LeftButton};
+        return {QEvent::NonClientAreaMouseButtonPress, BobUI::LeftButton};
     case WM_NCMBUTTONDOWN:
-        return {QEvent::NonClientAreaMouseButtonPress, Qt::MiddleButton};
+        return {QEvent::NonClientAreaMouseButtonPress, BobUI::MiddleButton};
     case WM_NCMBUTTONUP:
-        return {QEvent::NonClientAreaMouseButtonRelease, Qt::MiddleButton};
+        return {QEvent::NonClientAreaMouseButtonRelease, BobUI::MiddleButton};
     case WM_NCMBUTTONDBLCLK:
-        return {QEvent::NonClientAreaMouseButtonPress, Qt::MiddleButton};
+        return {QEvent::NonClientAreaMouseButtonPress, BobUI::MiddleButton};
     case WM_NCRBUTTONDOWN:
-        return {QEvent::NonClientAreaMouseButtonPress, Qt::RightButton};
+        return {QEvent::NonClientAreaMouseButtonPress, BobUI::RightButton};
     case WM_NCRBUTTONUP:
-        return {QEvent::NonClientAreaMouseButtonRelease, Qt::RightButton};
+        return {QEvent::NonClientAreaMouseButtonRelease, BobUI::RightButton};
     case WM_NCRBUTTONDBLCLK:
-        return {QEvent::NonClientAreaMouseButtonPress, Qt::RightButton};
+        return {QEvent::NonClientAreaMouseButtonPress, BobUI::RightButton};
     default: // WM_MOUSELEAVE
         break;
     }
-    return {QEvent::None, Qt::NoButton};
+    return {QEvent::None, BobUI::NoButton};
 }
 
-static Qt::MouseButtons mouseButtonsFromKeyState(WPARAM keyState)
+static BobUI::MouseButtons mouseButtonsFromKeyState(WPARAM keyState)
 {
-    Qt::MouseButtons result = Qt::NoButton;
+    BobUI::MouseButtons result = BobUI::NoButton;
     if (keyState & MK_LBUTTON)
-        result |= Qt::LeftButton;
+        result |= BobUI::LeftButton;
     if (keyState & MK_RBUTTON)
-        result |= Qt::RightButton;
+        result |= BobUI::RightButton;
     if (keyState & MK_MBUTTON)
-        result |= Qt::MiddleButton;
+        result |= BobUI::MiddleButton;
     if (keyState & MK_XBUTTON1)
-        result |= Qt::XButton1;
+        result |= BobUI::XButton1;
     if (keyState & MK_XBUTTON2)
-        result |= Qt::XButton2;
+        result |= BobUI::XButton2;
     return result;
 }
 
-Qt::MouseButtons QWindowsPointerHandler::queryMouseButtons()
+BobUI::MouseButtons QWindowsPointerHandler::queryMouseButtons()
 {
-    Qt::MouseButtons result = Qt::NoButton;
+    BobUI::MouseButtons result = BobUI::NoButton;
     const bool mouseSwapped = GetSystemMetrics(SM_SWAPBUTTON);
     if (GetAsyncKeyState(VK_LBUTTON) < 0)
-        result |= mouseSwapped ? Qt::RightButton: Qt::LeftButton;
+        result |= mouseSwapped ? BobUI::RightButton: BobUI::LeftButton;
     if (GetAsyncKeyState(VK_RBUTTON) < 0)
-        result |= mouseSwapped ? Qt::LeftButton : Qt::RightButton;
+        result |= mouseSwapped ? BobUI::LeftButton : BobUI::RightButton;
     if (GetAsyncKeyState(VK_MBUTTON) < 0)
-        result |= Qt::MiddleButton;
+        result |= BobUI::MiddleButton;
     if (GetAsyncKeyState(VK_XBUTTON1) < 0)
-        result |= Qt::XButton1;
+        result |= BobUI::XButton1;
     if (GetAsyncKeyState(VK_XBUTTON2) < 0)
-        result |= Qt::XButton2;
+        result |= BobUI::XButton2;
     return result;
 }
 
@@ -246,13 +246,13 @@ static QWindow *getWindowUnderPointer(QWindow *window, QPoint globalPos)
     QWindow *currentWindowUnderPointer = platformWindow->hasMouseCapture() ?
                 QWindowsScreen::windowAt(globalPos, CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT) : window;
 
-    while (currentWindowUnderPointer && currentWindowUnderPointer->flags() & Qt::WindowTransparentForInput)
+    while (currentWindowUnderPointer && currentWindowUnderPointer->flags() & BobUI::WindowTransparentForInput)
         currentWindowUnderPointer = currentWindowUnderPointer->parent();
 
-    // QTBUG-44332: When Qt is running at low integrity level and
-    // a Qt Window is parented on a Window of a higher integrity process
-    // using QWindow::fromWinId() (for example, Qt running in a browser plugin)
-    // ChildWindowFromPointEx() may not find the Qt window (failing with ERROR_ACCESS_DENIED)
+    // BOBUIBUG-44332: When BobUI is running at low integrity level and
+    // a BobUI Window is parented on a Window of a higher integrity process
+    // using QWindow::fromWinId() (for example, BobUI running in a browser plugin)
+    // ChildWindowFromPointEx() may not find the BobUI window (failing with ERROR_ACCESS_DENIED)
     if (!currentWindowUnderPointer) {
         const QRect clientRect(QPoint(0, 0), window->size());
         if (clientRect.contains(globalPos))
@@ -303,8 +303,8 @@ QWindowsPointerHandler::QPointingDevicePtr QWindowsPointerHandler::createTouchDe
      }
 
      const int flags = digitizers & ~NID_READY;
-     qCDebug(lcQpaEvents) << "Digitizers:" << Qt::hex << Qt::showbase << flags
-         << "Ready:" << (digitizers & NID_READY) << Qt::dec << Qt::noshowbase
+     qCDebug(lcQpaEvents) << "Digitizers:" << BobUI::hex << BobUI::showbase << flags
+         << "Ready:" << (digitizers & NID_READY) << BobUI::dec << BobUI::noshowbase
          << "Tablet PC:" << tabletPc << "Max touch points:" << maxTouchPoints << "Capabilities:" << capabilities;
 
      const int buttonCount = type == QInputDevice::DeviceType::TouchScreen ? 1 : 3;
@@ -320,18 +320,18 @@ QWindowsPointerHandler::QPointingDevicePtr QWindowsPointerHandler::createTouchDe
 void QWindowsPointerHandler::clearEvents()
 {
     m_lastEventType = QEvent::None;
-    m_lastEventButton = Qt::NoButton;
+    m_lastEventButton = BobUI::NoButton;
 }
 
 void QWindowsPointerHandler::handleCaptureRelease(QWindow *window,
                                                   QWindow *currentWindowUnderPointer,
                                                   HWND hwnd,
                                                   QEvent::Type eventType,
-                                                  Qt::MouseButtons mouseButtons)
+                                                  BobUI::MouseButtons mouseButtons)
 {
     auto *platformWindow = static_cast<QWindowsWindow *>(window->handle());
 
-    // Qt expects the platform plugin to capture the mouse on any button press until release.
+    // BobUI expects the platform plugin to capture the mouse on any button press until release.
     if (!platformWindow->hasMouseCapture() && eventType == QEvent::MouseButtonPress) {
 
         platformWindow->setMouseGrabEnabled(true);
@@ -421,14 +421,14 @@ void QWindowsPointerHandler::handleEnterLeave(QWindow *window,
 }
 
 bool QWindowsPointerHandler::translateTouchEvent(QWindow *window, HWND hwnd,
-                                                 QtWindows::WindowsEventType et,
+                                                 BobUIWindows::WindowsEventType et,
                                                  MSG msg, PVOID vTouchInfo, quint32 count)
 {
     Q_UNUSED(hwnd);
 
     auto *touchInfo = static_cast<POINTER_TOUCH_INFO *>(vTouchInfo);
 
-    if (et & QtWindows::NonClientEventFlag)
+    if (et & BobUIWindows::NonClientEventFlag)
         return false; // Let DefWindowProc() handle Non Client messages.
 
     if (count < 1)
@@ -449,7 +449,7 @@ bool QWindowsPointerHandler::translateTouchEvent(QWindow *window, HWND hwnd,
             if (id != -1)
                 m_lastTouchPoints.remove(id);
         }
-        // Send LeaveEvent to reset hover when the last finger leaves the touch screen (QTBUG-62912)
+        // Send LeaveEvent to reset hover when the last finger leaves the touch screen (BOBUIBUG-62912)
         QWindowSystemInterface::handleEnterLeaveEvent(nullptr, window);
     }
 
@@ -468,20 +468,20 @@ bool QWindowsPointerHandler::translateTouchEvent(QWindow *window, HWND hwnd,
     QList<QWindowSystemInterface::TouchPoint> touchPoints;
 
     if (QWindowsContext::verbose > 1)
-        qCDebug(lcQpaEvents).noquote().nospace() << Qt::showbase
+        qCDebug(lcQpaEvents).noquote().nospace() << BobUI::showbase
                 << __FUNCTION__
-                << " message=" << Qt::hex << msg.message
-                << " count=" << Qt::dec << count;
+                << " message=" << BobUI::hex << msg.message
+                << " count=" << BobUI::dec << count;
 
     QEventPoint::States allStates;
     QSet<int> inputIds;
 
     for (quint32 i = 0; i < count; ++i) {
         if (QWindowsContext::verbose > 1)
-            qCDebug(lcQpaEvents).noquote().nospace() << Qt::showbase
+            qCDebug(lcQpaEvents).noquote().nospace() << BobUI::showbase
                     << "    TouchPoint id=" << touchInfo[i].pointerInfo.pointerId
                     << " frame=" << touchInfo[i].pointerInfo.frameId
-                    << " flags=" << Qt::hex << touchInfo[i].pointerInfo.pointerFlags;
+                    << " flags=" << BobUI::hex << touchInfo[i].pointerInfo.pointerFlags;
 
         QWindowSystemInterface::TouchPoint touchPoint;
         const quint32 pointerId = touchInfo[i].pointerInfo.pointerId;
@@ -553,7 +553,7 @@ bool QWindowsPointerHandler::translateTouchEvent(QWindow *window, HWND hwnd,
     return false; // Allow mouse messages to be generated.
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 QWindowsPointerHandler::QPointingDevicePtr QWindowsPointerHandler::findTabletDevice(QPointingDevice::PointerType pointerType) const
 {
     for (const auto &d : m_tabletDevices) {
@@ -564,11 +564,11 @@ QWindowsPointerHandler::QPointingDevicePtr QWindowsPointerHandler::findTabletDev
 }
 #endif
 
-bool QWindowsPointerHandler::translatePenEvent(QWindow *window, HWND hwnd, QtWindows::WindowsEventType et,
+bool QWindowsPointerHandler::translatePenEvent(QWindow *window, HWND hwnd, BobUIWindows::WindowsEventType et,
                                                MSG msg, PVOID vPenInfo)
 {
-#if QT_CONFIG(tabletevent)
-    if (et & QtWindows::NonClientEventFlag)
+#if BOBUI_CONFIG(tabletevent)
+    if (et & BobUIWindows::NonClientEventFlag)
         return false; // Let DefWindowProc() handle Non Client messages.
 
     auto *penInfo = static_cast<POINTER_PEN_INFO *>(vPenInfo);
@@ -596,27 +596,27 @@ bool QWindowsPointerHandler::translatePenEvent(QWindow *window, HWND hwnd, QtWin
     const int z = 0;
 
     if (QWindowsContext::verbose > 1)
-        qCDebug(lcQpaEvents).noquote().nospace() << Qt::showbase
+        qCDebug(lcQpaEvents).noquote().nospace() << BobUI::showbase
             << __FUNCTION__ << " systemId=" << systemId
             << " globalPos=" << globalPos << " localPos=" << localPos << " hiResGlobalPos=" << hiResGlobalPos
-            << " message=" << Qt::hex << msg.message
-            << " flags=" << Qt::hex << penInfo->pointerInfo.pointerFlags;
+            << " message=" << BobUI::hex << msg.message
+            << " flags=" << BobUI::hex << penInfo->pointerInfo.pointerFlags;
 
     QPointingDevice::PointerType type;
     // Since it may be the middle button, so if the checks fail then it should
     // be set to Middle if it was used.
-    Qt::MouseButtons mouseButtons = queryMouseButtons();
+    BobUI::MouseButtons mouseButtons = queryMouseButtons();
 
     const bool pointerInContact = IS_POINTER_INCONTACT_WPARAM(msg.wParam);
     if (pointerInContact)
-        mouseButtons = Qt::LeftButton;
+        mouseButtons = BobUI::LeftButton;
 
     if (penInfo->penFlags & (PEN_FLAG_ERASER | PEN_FLAG_INVERTED)) {
         type = QPointingDevice::PointerType::Eraser;
     } else {
         type = QPointingDevice::PointerType::Pen;
         if (pointerInContact && penInfo->penFlags & PEN_FLAG_BARREL)
-            mouseButtons = Qt::RightButton; // Either left or right, not both
+            mouseButtons = BobUI::RightButton; // Either left or right, not both
     }
 
     auto device = findTabletDevice(type);
@@ -683,7 +683,7 @@ bool QWindowsPointerHandler::translatePenEvent(QWindow *window, HWND hwnd, QtWin
             }
         }
         const auto *keyMapper = QWindowsContext::instance()->keyMapper();
-        const Qt::KeyboardModifiers keyModifiers = keyMapper->queryKeyboardModifiers();
+        const BobUI::KeyboardModifiers keyModifiers = keyMapper->queryKeyboardModifiers();
 
         QWindowSystemInterface::handleTabletEvent(target, msg.time, device.data(),
                                                   localPos, hiResGlobalPos, mouseButtons,
@@ -717,7 +717,7 @@ bool QWindowsPointerHandler::translateMouseWheelEvent(QWindow *window,
                                                       QWindow *currentWindowUnderPointer,
                                                       MSG msg,
                                                       QPoint globalPos,
-                                                      Qt::KeyboardModifiers keyModifiers)
+                                                      BobUI::KeyboardModifiers keyModifiers)
 {
     QWindow *receiver = currentWindowUnderPointer;
     if (!isValidWheelReceiver(receiver))
@@ -727,11 +727,11 @@ bool QWindowsPointerHandler::translateMouseWheelEvent(QWindow *window,
 
     int delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
 
-    // Qt horizontal wheel rotation orientation is opposite to the one in WM_MOUSEHWHEEL
+    // BobUI horizontal wheel rotation orientation is opposite to the one in WM_MOUSEHWHEEL
     if (msg.message == WM_MOUSEHWHEEL)
         delta = -delta;
 
-    const QPoint angleDelta = (msg.message == WM_MOUSEHWHEEL || (keyModifiers & Qt::AltModifier)) ?
+    const QPoint angleDelta = (msg.message == WM_MOUSEHWHEEL || (keyModifiers & BobUI::AltModifier)) ?
                 QPoint(delta, 0) : QPoint(0, delta);
 
     QPoint localPos = QWindowsGeometryHint::mapFromGlobal(receiver, globalPos);
@@ -743,7 +743,7 @@ bool QWindowsPointerHandler::translateMouseWheelEvent(QWindow *window,
 // Process legacy mouse messages here.
 bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
                                                  HWND hwnd,
-                                                 QtWindows::WindowsEventType et,
+                                                 BobUIWindows::WindowsEventType et,
                                                  MSG msg,
                                                  LRESULT *result)
 {
@@ -753,7 +753,7 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
     QPoint globalPos;
     QPoint eventPos(GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam));
 
-    if ((et == QtWindows::MouseWheelEvent) || (et & QtWindows::NonClientEventFlag)) {
+    if ((et == BobUIWindows::MouseWheelEvent) || (et & BobUIWindows::NonClientEventFlag)) {
         globalPos = eventPos;
         localPos = QWindowsGeometryHint::mapFromGlobal(hwnd, eventPos);
     } else {
@@ -773,10 +773,10 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
     }
 
     const auto *keyMapper = QWindowsContext::instance()->keyMapper();
-    const Qt::KeyboardModifiers keyModifiers = keyMapper->queryKeyboardModifiers();
+    const BobUI::KeyboardModifiers keyModifiers = keyMapper->queryKeyboardModifiers();
     QWindow *currentWindowUnderPointer = getWindowUnderPointer(window, globalPos);
 
-    if (et == QtWindows::MouseWheelEvent)
+    if (et == BobUIWindows::MouseWheelEvent)
         return translateMouseWheelEvent(window, currentWindowUnderPointer, msg, globalPos, keyModifiers);
 
     // Windows sends a mouse move with no buttons pressed to signal "Enter"
@@ -791,7 +791,7 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
         lastMouseMovePos = globalPos;
     }
 
-    Qt::MouseEventSource source = Qt::MouseEventNotSynthesized;
+    BobUI::MouseEventSource source = BobUI::MouseEventNotSynthesized;
     const QPointingDevice *device = primaryMouse();
 
     // Following the logic of the old mouse handler, only events synthesized
@@ -800,15 +800,15 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
     // so we use the pointer type of the last pointer message.
     if (isMouseEventSynthesizedFromPenOrTouch()) {
         switch (m_pointerType) {
-        case QT_PT_TOUCH:
+        case BOBUI_PT_TOUCH:
             if (QWindowsIntegration::instance()->options() & QWindowsIntegration::DontPassOsMouseEventsSynthesizedFromTouch)
                 return false;
-            source = Qt::MouseEventSynthesizedBySystem;
+            source = BobUI::MouseEventSynthesizedBySystem;
             if (!m_touchDevice.isNull())
                 device = m_touchDevice.data();
             break;
-        case QT_PT_PEN:
-#if QT_CONFIG(tabletevent)
+        case BOBUI_PT_PEN:
+#if BOBUI_CONFIG(tabletevent)
             qCDebug(lcQpaTablet) << "ignoring synth-mouse event for tablet event from" << device;
             return false;
 #endif
@@ -817,7 +817,7 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
     }
 
     const MouseEvent mouseEvent = eventFromMsg(msg);
-    Qt::MouseButtons mouseButtons;
+    BobUI::MouseButtons mouseButtons;
 
     if (mouseEvent.type >= QEvent::NonClientAreaMouseMove && mouseEvent.type <= QEvent::NonClientAreaMouseButtonDblClick)
         mouseButtons = queryMouseButtons();
@@ -827,7 +827,7 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
     // When the left/right mouse buttons are pressed over the window title bar
     // WM_NCLBUTTONDOWN/WM_NCRBUTTONDOWN messages are received. But no UP
     // messages are received on release, only WM_NCMOUSEMOVE/WM_MOUSEMOVE.
-    // We detect it and generate the missing release events here. (QTBUG-75678)
+    // We detect it and generate the missing release events here. (BOBUIBUG-75678)
     // The last event vars are cleared on QWindowsContext::handleExitSizeMove()
     // to avoid generating duplicated release events.
     if (m_lastEventType == QEvent::NonClientAreaMouseButtonPress
@@ -866,10 +866,10 @@ bool QWindowsPointerHandler::translateMouseEvent(QWindow *window,
                                                  mouseEvent.button, mouseEvent.type, keyModifiers, source);
     }
 
-    // QTBUG-48117, force synchronous handling for the extra buttons so that WM_APPCOMMAND
+    // BOBUIBUG-48117, force synchronous handling for the extra buttons so that WM_APPCOMMAND
     // is sent for unhandled WM_XBUTTONDOWN.
     return (msg.message != WM_XBUTTONUP && msg.message != WM_XBUTTONDOWN && msg.message != WM_XBUTTONDBLCLK)
         || QWindowSystemInterface::flushWindowSystemEvents();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

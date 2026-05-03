@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "bitstreams_p.h"
 #include "hpack_p.h"
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qdebug.h>
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace HPack
 {
@@ -558,8 +558,8 @@ std::optional<QUrl> makePromiseKeyUrl(const HttpHeader &requestHeader)
     }
 
     const QByteArrayView method = pseudoHeaders[Method].value();
-    if (method.compare("get", Qt::CaseInsensitive) != 0 &&
-        method.compare("head", Qt::CaseInsensitive) != 0) {
+    if (method.compare("get", BobUI::CaseInsensitive) != 0 &&
+        method.compare("head", BobUI::CaseInsensitive) != 0) {
         return {};
     }
 
@@ -575,4 +575,4 @@ std::optional<QUrl> makePromiseKeyUrl(const HttpHeader &requestHeader)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

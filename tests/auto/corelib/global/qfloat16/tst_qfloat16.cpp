@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QFloat16>
 #include <QMetaType>
-#include <QTextStream>
-#include <QtCompilerDetection>
+#include <BOBUIextStream>
+#include <BobUICompilerDetection>
 
 #include <private/qcomparisontesthelper_p.h>
 
@@ -14,7 +14,7 @@
 
 //#define DO_FULL_TEST
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static_assert(sizeof(float) == sizeof(quint32), "Float not 32-bit");
 
@@ -64,29 +64,29 @@ private slots:
 
 void tst_qfloat16::compareCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, float>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, double>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, long double>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, float>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, double>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, long double>();
 #if QFLOAT16_IS_NATIVE
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, qfloat16::NativeType>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, qfloat16::NativeType>();
 #endif
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, int>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint8>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint8>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint16>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint16>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, char16_t>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, long>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, unsigned long>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, wchar_t>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint32>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint32>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint64>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint64>();
-#ifdef QT_SUPPORTS_INT128
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint128>();
-    QTestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint128>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, int>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint8>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint8>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint16>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint16>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, char16_t>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, long>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, unsigned long>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, wchar_t>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint32>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint32>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint64>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint64>();
+#ifdef BOBUI_SUPPORTS_INT128
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, qint128>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<qfloat16, quint128>();
 #endif
 }
 
@@ -117,7 +117,7 @@ void tst_qfloat16::relationalOperatorsAreConstexpr()
     CHECK_CONSTEXPR(unsigned long);
     CHECK_CONSTEXPR(qint64);
     CHECK_CONSTEXPR(quint64);
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     CHECK_CONSTEXPR(qint128);
     CHECK_CONSTEXPR(quint128);
 #endif
@@ -131,11 +131,11 @@ void tst_qfloat16::relationalOperatorsAreConstexpr()
 
 void tst_qfloat16::ordering_data()
 {
-    QTest::addColumn<float>("left");
-    QTest::addColumn<float>("right");
+    BOBUIest::addColumn<float>("left");
+    BOBUIest::addColumn<float>("right");
 
     auto row = [](float left, float right) {
-        QTest::addRow("%f_vs_%f", left, right) << left << right;
+        BOBUIest::addRow("%f_vs_%f", left, right) << left << right;
     };
 
     row(0.0f, 0.0f);
@@ -167,9 +167,9 @@ void tst_qfloat16::ordering_data()
 
     // testing with values outside qfloat16 range
     row(0.0f, 13e5f);
-    // generateRow(inf, 13e5f); // fails qfloat16 vs qfloat16 and qfloat16 vs int (QTBUG-118193)
+    // generateRow(inf, 13e5f); // fails qfloat16 vs qfloat16 and qfloat16 vs int (BOBUIBUG-118193)
     row(0.0f, -13e5f);
-    // generateRow(-inf, -13e5f); // fails qfloat16 vs qfloat16 and qfloat16 vs int (QTBUG-118193)
+    // generateRow(-inf, -13e5f); // fails qfloat16 vs qfloat16 and qfloat16 vs int (BOBUIBUG-118193)
 }
 
 void tst_qfloat16::ordering()
@@ -177,15 +177,15 @@ void tst_qfloat16::ordering()
     QFETCH(float, left);
     QFETCH(float, right);
 
-    const auto expectedOrder = Qt::compareThreeWay(left, right);
+    const auto expectedOrder = BobUI::compareThreeWay(left, right);
     const auto lhs = qfloat16(left);
 
 #define POSTCHECK(msg) \
-    if (QTest::currentTestFailed()) { qDebug(msg); return; }
+    if (BOBUIest::currentTestFailed()) { qDebug(msg); return; }
 
 #define CHECK_FP(RHS) \
     do { \
-        QTestPrivate::testAllComparisonOperators(lhs, static_cast<RHS>(right), expectedOrder); \
+        BOBUIestPrivate::testAllComparisonOperators(lhs, static_cast<RHS>(right), expectedOrder); \
         POSTCHECK("qfloat16 vs " #RHS " comparison failed") \
     } while (false) \
     /* END */
@@ -193,7 +193,7 @@ void tst_qfloat16::ordering()
     CHECK_FP(qfloat16);
     CHECK_FP(float);
     CHECK_FP(double);
-    // Qt built for VxWorks x86_64 and arm64 fails to link due to undefined reference to
+    // BobUI built for VxWorks x86_64 and arm64 fails to link due to undefined reference to
     // __extendhfxf2 when below check is enabled.
     // This has been acknowledged by WindRiver as a bug
     // and is being tracked in ticket 00154117
@@ -212,8 +212,8 @@ void tst_qfloat16::ordering()
         if (auto min = std::numeric_limits<RHS>::min(); min != 0 && right < double(min))
             return;
         rhs = RHS(right);
-        const auto expectedRes = Qt::compareThreeWay(left, rhs);
-        QTestPrivate::testAllComparisonOperators(lhs, rhs, expectedRes);
+        const auto expectedRes = BobUI::compareThreeWay(left, rhs);
+        BOBUIestPrivate::testAllComparisonOperators(lhs, rhs, expectedRes);
     };
 #define CHECK_INT(RHS) \
     do { \
@@ -229,7 +229,7 @@ void tst_qfloat16::ordering()
         CHECK_INT(qint16);
         CHECK_INT(qint32);
         CHECK_INT(qint64);
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
         CHECK_INT(qint128);
 #endif
         if (right >= 0) {
@@ -239,7 +239,7 @@ void tst_qfloat16::ordering()
             CHECK_INT(quint16);
             CHECK_INT(quint32);
             CHECK_INT(quint64);
-    #ifdef QT_SUPPORTS_INT128
+    #ifdef BOBUI_SUPPORTS_INT128
             CHECK_INT(quint128);
     #endif
         }
@@ -251,24 +251,24 @@ void tst_qfloat16::ordering()
 
 void tst_qfloat16::fuzzyCompare_data()
 {
-    QTest::addColumn<qfloat16>("val1");
-    QTest::addColumn<qfloat16>("val2");
-    QTest::addColumn<bool>("fuzEqual");
-    QTest::addColumn<bool>("isEqual");
+    BOBUIest::addColumn<qfloat16>("val1");
+    BOBUIest::addColumn<qfloat16>("val2");
+    BOBUIest::addColumn<bool>("fuzEqual");
+    BOBUIest::addColumn<bool>("isEqual");
 
-    QTest::newRow("zero")  << qfloat16(0.0f)   << qfloat16(0.0f)   << true << true;
-    QTest::newRow("ten")   << qfloat16(1e1f)   << qfloat16(1e1f)   << true << true;
-    QTest::newRow("large") << qfloat16(1e4f)   << qfloat16(1e4f)   << true << true;
-    QTest::newRow("small") << qfloat16(1e-5f)  << qfloat16(1e-5f)  << true << true;
-    QTest::newRow("eps")   << qfloat16(10.01f) << qfloat16(10.02f) << true << false;
-    QTest::newRow("eps2")  << qfloat16(1024.f) << qfloat16(1033.f) << true << false;
+    BOBUIest::newRow("zero")  << qfloat16(0.0f)   << qfloat16(0.0f)   << true << true;
+    BOBUIest::newRow("ten")   << qfloat16(1e1f)   << qfloat16(1e1f)   << true << true;
+    BOBUIest::newRow("large") << qfloat16(1e4f)   << qfloat16(1e4f)   << true << true;
+    BOBUIest::newRow("small") << qfloat16(1e-5f)  << qfloat16(1e-5f)  << true << true;
+    BOBUIest::newRow("eps")   << qfloat16(10.01f) << qfloat16(10.02f) << true << false;
+    BOBUIest::newRow("eps2")  << qfloat16(1024.f) << qfloat16(1033.f) << true << false;
 
-    QTest::newRow("mis1") << qfloat16(0.0f)   << qfloat16(1.0f)   << false << false;
-    QTest::newRow("mis2") << qfloat16(0.0f)   << qfloat16(1e7f)   << false << false;
-    QTest::newRow("mis3") << qfloat16(0.0f)   << qfloat16(1e-4f)  << false << false;
-    QTest::newRow("mis4") << qfloat16(1e8f)   << qfloat16(1e-8f)  << false << false;
-    QTest::newRow("mis5") << qfloat16(1e-4f)  << qfloat16(1e-5)   << false << false;
-    QTest::newRow("mis6") << qfloat16(1024.f) << qfloat16(1034.f) << false << false;
+    BOBUIest::newRow("mis1") << qfloat16(0.0f)   << qfloat16(1.0f)   << false << false;
+    BOBUIest::newRow("mis2") << qfloat16(0.0f)   << qfloat16(1e7f)   << false << false;
+    BOBUIest::newRow("mis3") << qfloat16(0.0f)   << qfloat16(1e-4f)  << false << false;
+    BOBUIest::newRow("mis4") << qfloat16(1e8f)   << qfloat16(1e-8f)  << false << false;
+    BOBUIest::newRow("mis5") << qfloat16(1e-4f)  << qfloat16(1e-5)   << false << false;
+    BOBUIest::newRow("mis6") << qfloat16(1024.f) << qfloat16(1034.f) << false << false;
 }
 
 void tst_qfloat16::fuzzyCompare()
@@ -296,20 +296,20 @@ void tst_qfloat16::fuzzyCompare()
 
 void tst_qfloat16::fuzzyIsNull_data()
 {
-    QTest::addColumn<qfloat16>("value");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<qfloat16>("value");
+    BOBUIest::addColumn<bool>("isNull");
     using Bounds = std::numeric_limits<qfloat16>;
     const qfloat16 one(1), huge(1000), tiny(0.00976f);
 
-    QTest::newRow("zero") << qfloat16(0.0f) << true;
-    QTest::newRow("min") << Bounds::min() << true;
-    QTest::newRow("denorm_min") << Bounds::denorm_min() << true;
-    QTest::newRow("tiny") << tiny << true;
+    BOBUIest::newRow("zero") << qfloat16(0.0f) << true;
+    BOBUIest::newRow("min") << Bounds::min() << true;
+    BOBUIest::newRow("denorm_min") << Bounds::denorm_min() << true;
+    BOBUIest::newRow("tiny") << tiny << true;
 
-    QTest::newRow("deci") << qfloat16(.1) << false;
-    QTest::newRow("one") << one << false;
-    QTest::newRow("ten") << qfloat16(10) << false;
-    QTest::newRow("huge") << huge << false;
+    BOBUIest::newRow("deci") << qfloat16(.1) << false;
+    BOBUIest::newRow("one") << one << false;
+    BOBUIest::newRow("ten") << qfloat16(10) << false;
+    BOBUIest::newRow("huge") << huge << false;
 }
 
 void tst_qfloat16::fuzzyIsNull()
@@ -323,25 +323,25 @@ void tst_qfloat16::fuzzyIsNull()
 
 void tst_qfloat16::ltgt_data()
 {
-    QTest::addColumn<float>("val1");
-    QTest::addColumn<float>("val2");
+    BOBUIest::addColumn<float>("val1");
+    BOBUIest::addColumn<float>("val2");
 
-    QTest::newRow("zero")  << 0.0f << 0.0f;
-    QTest::newRow("-zero") << -0.0f << 0.0f;
-    QTest::newRow("ten")   << 10.0f << 10.0f;
-    QTest::newRow("large") << 100000.0f << 100000.0f;
-    QTest::newRow("small") << 0.0000001f << 0.0000001f;
-    QTest::newRow("eps")   << 10.000000000000001f << 10.00000000000002f;
-    QTest::newRow("eps2")  << 10.000000000000001f << 10.000000000000009f;
+    BOBUIest::newRow("zero")  << 0.0f << 0.0f;
+    BOBUIest::newRow("-zero") << -0.0f << 0.0f;
+    BOBUIest::newRow("ten")   << 10.0f << 10.0f;
+    BOBUIest::newRow("large") << 100000.0f << 100000.0f;
+    BOBUIest::newRow("small") << 0.0000001f << 0.0000001f;
+    BOBUIest::newRow("eps")   << 10.000000000000001f << 10.00000000000002f;
+    BOBUIest::newRow("eps2")  << 10.000000000000001f << 10.000000000000009f;
 
-    QTest::newRow("mis1") << 0.0f << 1.0f;
-    QTest::newRow("mis2") << 0.0f << 10000000.0f;
-    QTest::newRow("mis3") << 0.0f << 0.0001f;
-    QTest::newRow("mis4") << 100000000.0f << 0.000000001f;
-    QTest::newRow("mis5") << 0.0001f << 0.00001f;
+    BOBUIest::newRow("mis1") << 0.0f << 1.0f;
+    BOBUIest::newRow("mis2") << 0.0f << 10000000.0f;
+    BOBUIest::newRow("mis3") << 0.0f << 0.0001f;
+    BOBUIest::newRow("mis4") << 100000000.0f << 0.000000001f;
+    BOBUIest::newRow("mis5") << 0.0001f << 0.00001f;
 
-    QTest::newRow("45,23") << 45.f << 23.f;
-    QTest::newRow("1000,76") << 1000.f << 76.f;
+    BOBUIest::newRow("45,23") << 45.f << 23.f;
+    BOBUIest::newRow("1000,76") << 1000.f << 76.f;
 }
 
 void tst_qfloat16::ltgt()
@@ -434,18 +434,18 @@ void tst_qfloat16::infinity()
 
 void tst_qfloat16::float_cast_data()
 {
-    QTest::addColumn<float>("val");
+    BOBUIest::addColumn<float>("val");
 
-    QTest::newRow("zero")  << 0.f;
-    QTest::newRow("one")   << 1e0f;
-    QTest::newRow("ten")   << 1e1f;
-    QTest::newRow("hund")  << 1e2f;
-    QTest::newRow("thou")  << 1e3f;
-    QTest::newRow("tthou") << 1e4f;
-    //QTest::newRow("hthou") << 1e5f;
-    //QTest::newRow("mil")   << 1e6f;
-    //QTest::newRow("tmil")  << 1e7f;
-    //QTest::newRow("hmil")  << 1e8f;
+    BOBUIest::newRow("zero")  << 0.f;
+    BOBUIest::newRow("one")   << 1e0f;
+    BOBUIest::newRow("ten")   << 1e1f;
+    BOBUIest::newRow("hund")  << 1e2f;
+    BOBUIest::newRow("thou")  << 1e3f;
+    BOBUIest::newRow("tthou") << 1e4f;
+    //BOBUIest::newRow("hthou") << 1e5f;
+    //BOBUIest::newRow("mil")   << 1e6f;
+    //BOBUIest::newRow("tmil")  << 1e7f;
+    //BOBUIest::newRow("hmil")  << 1e8f;
 }
 
 void tst_qfloat16::float_cast()
@@ -512,12 +512,12 @@ void tst_qfloat16::promotionTests()
 
 void tst_qfloat16::arithOps_data()
 {
-    QTest::addColumn<float>("val1");
-    QTest::addColumn<float>("val2");
+    BOBUIest::addColumn<float>("val1");
+    BOBUIest::addColumn<float>("val2");
 
-    QTest::newRow("zero")  << 0.0f << 2.0f;
-    QTest::newRow("one")   << 1.0f << 4.0f;
-    QTest::newRow("ten")   << 10.0f << 20.0f;
+    BOBUIest::newRow("zero")  << 0.0f << 2.0f;
+    BOBUIest::newRow("one")   << 1.0f << 4.0f;
+    BOBUIest::newRow("ten")   << 10.0f << 20.0f;
 }
 
 void tst_qfloat16::arithOps()
@@ -560,9 +560,9 @@ void tst_qfloat16::arithOps()
 #if defined DO_FULL_TEST
 void tst_qfloat16::floatToFloat16Full_data()
 {
-    QTest::addColumn<quint32>("group");
+    BOBUIest::addColumn<quint32>("group");
     for (quint32 j = 0x00; j < 0x100; ++j)
-        QTest::addRow("%02x", j) << j;
+        BOBUIest::addRow("%02x", j) << j;
 
 }
 
@@ -671,21 +671,21 @@ static qfloat16 powf16(qfloat16 base, int raise)
 void tst_qfloat16::finite_data()
 {
     using Bounds = std::numeric_limits<qfloat16>;
-    QTest::addColumn<qfloat16>("value");
-    QTest::addColumn<int>("mode");
+    BOBUIest::addColumn<qfloat16>("value");
+    BOBUIest::addColumn<int>("mode");
 
-    QTest::newRow("zero") << qfloat16(0) << FP_ZERO;
-    QTest::newRow("-zero") << -qfloat16(0) << FP_ZERO;
-    QTest::newRow("one") << qfloat16(1) << FP_NORMAL;
-    QTest::newRow("-one") << qfloat16(-1) << FP_NORMAL;
-    QTest::newRow("ten") << qfloat16(10) << FP_NORMAL;
-    QTest::newRow("-ten") << qfloat16(-10) << FP_NORMAL;
-    QTest::newRow("max") << Bounds::max() << FP_NORMAL;
-    QTest::newRow("lowest") << Bounds::lowest() << FP_NORMAL;
-    QTest::newRow("min") << Bounds::min() << FP_NORMAL;
-    QTest::newRow("-min") << -Bounds::min() << FP_NORMAL;
-    QTest::newRow("denorm_min") << Bounds::denorm_min() << FP_SUBNORMAL;
-    QTest::newRow("-denorm_min") << -Bounds::denorm_min() << FP_SUBNORMAL;
+    BOBUIest::newRow("zero") << qfloat16(0) << FP_ZERO;
+    BOBUIest::newRow("-zero") << -qfloat16(0) << FP_ZERO;
+    BOBUIest::newRow("one") << qfloat16(1) << FP_NORMAL;
+    BOBUIest::newRow("-one") << qfloat16(-1) << FP_NORMAL;
+    BOBUIest::newRow("ten") << qfloat16(10) << FP_NORMAL;
+    BOBUIest::newRow("-ten") << qfloat16(-10) << FP_NORMAL;
+    BOBUIest::newRow("max") << Bounds::max() << FP_NORMAL;
+    BOBUIest::newRow("lowest") << Bounds::lowest() << FP_NORMAL;
+    BOBUIest::newRow("min") << Bounds::min() << FP_NORMAL;
+    BOBUIest::newRow("-min") << -Bounds::min() << FP_NORMAL;
+    BOBUIest::newRow("denorm_min") << Bounds::denorm_min() << FP_SUBNORMAL;
+    BOBUIest::newRow("-denorm_min") << -Bounds::denorm_min() << FP_SUBNORMAL;
 }
 
 void tst_qfloat16::finite()
@@ -726,7 +726,7 @@ void tst_qfloat16::properties()
 #if !defined(Q_CC_GHS)
     QVERIFY(Bounds::is_iec559);
 #endif //Q_CC_GHS
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     // Technically, presence of NaN and infinities are implied from the above check, but that checkings GHS compiler complies.
     QVERIFY(Bounds::has_infinity && Bounds::has_quiet_NaN && Bounds::has_signaling_NaN);
 #endif
@@ -735,18 +735,18 @@ void tst_qfloat16::properties()
     QVERIFY(!Bounds::traps);
     QVERIFY(Bounds::has_infinity);
     QVERIFY(Bounds::has_quiet_NaN);
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     QVERIFY(Bounds::has_signaling_NaN);
 #endif
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED // has_denorm is deprecated in C++23
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED // has_denorm is deprecated in C++23
 #if !defined(Q_CC_GHS)
     QCOMPARE(Bounds::has_denorm, std::denorm_present);
 #else
     // For GHS compiler the "denorm_indeterminite" is the expected return value.
     QCOMPARE(Bounds::has_denorm, std::denorm_indeterminate);
 #endif // Q_CC_GHS
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 
     QCOMPARE(Bounds::round_style, std::round_to_nearest);
     QCOMPARE(Bounds::radix, 2);
@@ -880,17 +880,17 @@ void tst_qfloat16::textStream()
 {
     QString buffer;
     {
-        QTextStream ts(&buffer);
-        ts << qfloat16(0) << Qt::endl << qfloat16(1.5);
-        QCOMPARE(ts.status(), QTextStream::Ok);
+        BOBUIextStream ts(&buffer);
+        ts << qfloat16(0) << BobUI::endl << qfloat16(1.5);
+        QCOMPARE(ts.status(), BOBUIextStream::Ok);
     }
     QCOMPARE(buffer, "0\n1.5");
 
     {
-        QTextStream ts(&buffer);
+        BOBUIextStream ts(&buffer);
         qfloat16 zero = qfloat16(-2.5), threehalves = 1234;
         ts >> zero >> threehalves;
-        QCOMPARE(ts.status(), QTextStream::Ok);
+        QCOMPARE(ts.status(), BOBUIextStream::Ok);
         QCOMPARE(zero, qfloat16(0));
         QCOMPARE(threehalves, 1.5);
     }
@@ -898,7 +898,7 @@ void tst_qfloat16::textStream()
 
 void tst_qfloat16::formatCompileTime()
 {
-#ifdef QT_SUPPORTS_STD_FORMAT
+#ifdef BOBUI_SUPPORTS_STD_FORMAT
     // Starting from __cpp_lib_format == 202106L,
     // std::format requires the format string to be evaluated at compile-time,
     // so check it here.
@@ -927,21 +927,21 @@ void tst_qfloat16::formatCompileTime()
     std::format_to(std::back_inserter(wbuffer), loc, L"{:*< 10.7LE}", val);
 #else
     QSKIP("This test requires std::format support!");
-#endif // QT_SUPPORTS_STD_FORMAT
+#endif // BOBUI_SUPPORTS_STD_FORMAT
 }
 
 void tst_qfloat16::format_data()
 {
-#ifdef QT_SUPPORTS_STD_FORMAT
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<qfloat16>("value");
-    QTest::addColumn<std::locale>("locale");
-    QTest::addColumn<QString>("expectedString");
+#ifdef BOBUI_SUPPORTS_STD_FORMAT
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<qfloat16>("value");
+    BOBUIest::addColumn<std::locale>("locale");
+    BOBUIest::addColumn<QString>("expectedString");
 
     auto row = [](const QString &format, qfloat16 val, const QString &expected,
                   const std::locale &loc = std::locale::classic())
     {
-        QTest::addRow("%s:%s", loc.name().c_str(), qPrintable(format))
+        BOBUIest::addRow("%s:%s", loc.name().c_str(), qPrintable(format))
                 << format << val << loc << expected;
     };
 
@@ -968,12 +968,12 @@ void tst_qfloat16::format_data()
     }
 #else
     QSKIP("This test requires std::format support!");
-#endif // QT_SUPPORTS_STD_FORMAT
+#endif // BOBUI_SUPPORTS_STD_FORMAT
 }
 
 void tst_qfloat16::format()
 {
-#ifdef QT_SUPPORTS_STD_FORMAT
+#ifdef BOBUI_SUPPORTS_STD_FORMAT
     QFETCH(const QString, format);
     QFETCH(const qfloat16, value);
     QFETCH(const std::locale, locale);
@@ -1000,12 +1000,12 @@ void tst_qfloat16::format()
     }
 #else
     QSKIP("This test requires std::format support!");
-#endif // QT_SUPPORTS_STD_FORMAT
+#endif // BOBUI_SUPPORTS_STD_FORMAT
 }
 
 void tst_qfloat16::formatMultiArg()
 {
-#ifdef QT_SUPPORTS_STD_FORMAT
+#ifdef BOBUI_SUPPORTS_STD_FORMAT
     const qfloat16 v1{-0.1234f};
     const qfloat16 v2{5.67f};
 
@@ -1025,8 +1025,8 @@ void tst_qfloat16::formatMultiArg()
     }
 #else
     QSKIP("This test requires std::format support!");
-#endif // QT_SUPPORTS_STD_FORMAT
+#endif // BOBUI_SUPPORTS_STD_FORMAT
 }
 
-QTEST_APPLESS_MAIN(tst_qfloat16)
+BOBUIEST_APPLESS_MAIN(tst_qfloat16)
 #include "tst_qfloat16.moc"

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "interactivewidget.h"
 #include "widgets.h"
 #include "paintcommands.h"
 
-#include <QtCore>
-#include <QtWidgets>
-#include <QtPrintSupport>
+#include <BobUICore>
+#include <BobUIWidgets>
+#include <BobUIPrintSupport>
 #include <qimage.h>
 #include <QPicture>
 
@@ -16,16 +16,16 @@
 #include "customdevice.h"
 #endif
 
-#ifndef QT_NO_OPENGL
-#include <QtOpenGL/QOpenGLFramebufferObjectFormat>
-#include <QtOpenGL/QOpenGLPaintDevice>
-#include <QtOpenGLWidgets/QOpenGLWidget>
+#ifndef BOBUI_NO_OPENGL
+#include <BobUIOpenGL/QOpenGLFramebufferObjectFormat>
+#include <BobUIOpenGL/QOpenGLPaintDevice>
+#include <BobUIOpenGLWidgets/QOpenGLWidget>
 #endif
 
 // #define DO_QWS_DEBUGGING
 
 #ifdef DO_QWS_DEBUGGING
-extern bool qt_show_painter_debug_output = false;
+extern bool bobui_show_painter_debug_output = false;
 #endif
 
 //#define CONSOLE_APPLICATION
@@ -64,9 +64,9 @@ static void printHelp()
            "    -imageformat    Set the format of the image when painting to an image\n"
            "    -imagemono      Paints the files to a monochrome image\n"
            "    -imagewidget    same as image, but with interacion...\n"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
            "    -opengl         Paints the files to a QOpenGLWidget on screen\n"
-           "    -glbuffer       Paints the files to a QOpenGLFrameBufferObject (Qt5 style) \n"
+           "    -glbuffer       Paints the files to a QOpenGLFrameBufferObject (BobUI5 style) \n"
            "    -coreglbuffer   Paints the files to a Core Profile context QOpenGLFrameBufferObject\n"
 #endif
 #ifdef USE_CUSTOM_DEVICE
@@ -173,7 +173,7 @@ static QLabel* createLabel()
 {
     QLabel *label = new QLabel;
     QPalette palette = label->palette();
-    palette.setBrush(QPalette::Window, QBrush(Qt::white));
+    palette.setBrush(QPalette::Window, QBrush(BobUI::white));
     label->setPalette(palette);
     return label;
 }
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 #endif
 #ifdef DO_QWS_DEBUGGING
-    qt_show_painter_debug_output = false;
+    bobui_show_painter_debug_output = false;
 #endif
 
     DeviceType type = WidgetType;
@@ -209,7 +209,7 @@ int main(int argc, char **argv)
     qreal scalefactor = 1.0;
     bool verboseMode = false;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QSurfaceFormat f = QSurfaceFormat::defaultFormat();
     f.setSamples(1);
     f.setStencilBufferSize(8);
@@ -254,7 +254,7 @@ int main(int argc, char **argv)
                 type = ImageMonoType;
             else if (option == "imagewidget")
                 type = ImageWidgetType;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
             else if (option == "opengl")
                 type = OpenGLType;
             else if (option == "glbuffer")
@@ -338,9 +338,9 @@ int main(int argc, char **argv)
             QFile file(fileName);
             QFileInfo fileinfo(file);
             if (file.open(QIODevice::ReadOnly)) {
-                QTextStream textFile(&file);
+                BOBUIextStream textFile(&file);
                 QString script = textFile.readAll();
-                content = script.split("\n", Qt::SkipEmptyParts);
+                content = script.split("\n", BobUI::SkipEmptyParts);
             } else {
                 printf("failed to read file: '%s'\n", qPrintable(fileinfo.absoluteFilePath()));
                 continue;
@@ -388,7 +388,7 @@ int main(int argc, char **argv)
                 break;
 
             }
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
             case OpenGLBufferType:
             {
                 QWindow win;
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
             case OpenGLType:
             case OpenGLBufferType:
             {
-                printf("OpenGL type not supported in this Qt build\n");
+                printf("OpenGL type not supported in this BobUI build\n");
                 break;
             }
 #endif
@@ -483,7 +483,7 @@ int main(int argc, char **argv)
             {
                 QPixmap pixmap(scaledWidth, scaledHeight);
                 pixmap.setDevicePixelRatio(scalefactor);
-                pixmap.fill(Qt::white);
+                pixmap.fill(BobUI::white);
                 QPainter pt(&pixmap);
                 pcmd.setPainter(&pt);
                 pcmd.setFilePath(fileinfo.absolutePath());
@@ -563,7 +563,7 @@ int main(int argc, char **argv)
 
             case PrinterType:
             {
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
                 PaintCommands pcmd(QStringList(), 800, 800, imageFormat);
                 pcmd.setVerboseMode(verboseMode);
                 pcmd.setType(type);
@@ -597,7 +597,7 @@ int main(int argc, char **argv)
             case PsType:
             case PdfType:
             {
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
                 PaintCommands pcmd(QStringList(), 800, 800, QImage::Format_ARGB32_Premultiplied);
                 pcmd.setVerboseMode(verboseMode);
                 pcmd.setType(type);
@@ -623,14 +623,14 @@ int main(int argc, char **argv)
             case GrabType:
             {
                 QImage image(width, height, QImage::Format_ARGB32_Premultiplied);
-                image.fill(QColor(Qt::white).rgb());
+                image.fill(QColor(BobUI::white).rgb());
                 QPainter pt(&image);
                 pcmd.setPainter(&pt);
                 pcmd.setFilePath(fileinfo.absolutePath());
                 pcmd.runCommands();
                 pt.end();
                 QImage image1(width, height, QImage::Format_RGB32);
-                image1.fill(QColor(Qt::white).rgb());
+                image1.fill(QColor(BobUI::white).rgb());
                 QPainter pt1(&image1);
                 pt1.drawImage(QPointF(0, 0), image);
                 pt1.end();

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data
 
 #include "qnetworkproxy.h"
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
 #include <qmutex.h>
 #include <qstringlist.h>
@@ -16,13 +16,13 @@
 #include <qhash.h>
 
 #include <string.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <lmcons.h>
 #include <winhttp.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static bool currentProcessIsService()
 {
@@ -106,7 +106,7 @@ static bool isBypassed(const QString &host, const QStringList &bypassList)
             return true;        // excluded
         } else {
             // do wildcard matching
-            auto rx = QRegularExpression::fromWildcard(entry, Qt::CaseInsensitive);
+            auto rx = QRegularExpression::fromWildcard(entry, BobUI::CaseInsensitive);
             if (rx.match(host).hasMatch())
                 return true;
         }
@@ -425,7 +425,7 @@ void QWindowsSystemProxy::init()
     hHttpSession = NULL;
     if (ieProxyConfig.fAutoDetect || !autoConfigUrl.isEmpty()) {
         // open the handle and obtain the options
-        hHttpSession = WinHttpOpen(L"Qt System Proxy access/1.0",
+        hHttpSession = WinHttpOpen(L"BobUI System Proxy access/1.0",
                                    WINHTTP_ACCESS_TYPE_NO_PROXY,
                                    WINHTTP_NO_PROXY_NAME,
                                    WINHTTP_NO_PROXY_BYPASS,
@@ -562,6 +562,6 @@ QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkPro
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsGridLayout
@@ -9,7 +9,7 @@
     \since 4.4
 
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The most common way to use QGraphicsGridLayout is to construct an object
     on the heap, passing a parent widget to the constructor, then add widgets
@@ -56,11 +56,11 @@
 #include "qgraphicsgridlayoutengine_p.h"
 #include "qgraphicslayoutstyleinfo_p.h"
 #include "qscopedpointer.h"
-#ifdef QT_DEBUG
-# include <QtCore/qdebug.h>
+#ifdef BOBUI_DEBUG
+# include <BobUICore/qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsGridLayoutPrivate : public QGraphicsLayoutPrivate
 {
@@ -117,7 +117,7 @@ QGraphicsGridLayout::~QGraphicsGridLayout()
     \a rowSpan and \a columnSpan and an optional \a alignment.
 */
 void QGraphicsGridLayout::addItem(QGraphicsLayoutItem *item, int row, int column,
-                                  int rowSpan, int columnSpan, Qt::Alignment alignment)
+                                  int rowSpan, int columnSpan, BobUI::Alignment alignment)
 {
     Q_D(QGraphicsGridLayout);
     if (row < 0 || column < 0) {
@@ -147,7 +147,7 @@ void QGraphicsGridLayout::addItem(QGraphicsLayoutItem *item, int row, int column
 }
 
 /*!
-    \fn QGraphicsGridLayout::addItem(QGraphicsLayoutItem *item, int row, int column, Qt::Alignment alignment)
+    \fn QGraphicsGridLayout::addItem(QGraphicsLayoutItem *item, int row, int column, BobUI::Alignment alignment)
 
     Adds \a item to the grid on \a row and \a column. You can specify
     an optional \a alignment for \a item.
@@ -159,7 +159,7 @@ void QGraphicsGridLayout::addItem(QGraphicsLayoutItem *item, int row, int column
 void QGraphicsGridLayout::setHorizontalSpacing(qreal spacing)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setSpacing(spacing, Qt::Horizontal);
+    d->engine.setSpacing(spacing, BobUI::Horizontal);
     invalidate();
 }
 
@@ -169,7 +169,7 @@ void QGraphicsGridLayout::setHorizontalSpacing(qreal spacing)
 qreal QGraphicsGridLayout::horizontalSpacing() const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.spacing(Qt::Horizontal, d->styleInfo());
+    return d->engine.spacing(BobUI::Horizontal, d->styleInfo());
 }
 
 /*!
@@ -178,7 +178,7 @@ qreal QGraphicsGridLayout::horizontalSpacing() const
 void QGraphicsGridLayout::setVerticalSpacing(qreal spacing)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setSpacing(spacing, Qt::Vertical);
+    d->engine.setSpacing(spacing, BobUI::Vertical);
     invalidate();
 }
 
@@ -188,7 +188,7 @@ void QGraphicsGridLayout::setVerticalSpacing(qreal spacing)
 qreal QGraphicsGridLayout::verticalSpacing() const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.spacing(Qt::Vertical, d->styleInfo());
+    return d->engine.spacing(BobUI::Vertical, d->styleInfo());
 }
 
 /*!
@@ -200,7 +200,7 @@ qreal QGraphicsGridLayout::verticalSpacing() const
 void QGraphicsGridLayout::setSpacing(qreal spacing)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setSpacing(spacing, Qt::Horizontal | Qt::Vertical);
+    d->engine.setSpacing(spacing, BobUI::Horizontal | BobUI::Vertical);
     invalidate();
 }
 
@@ -210,7 +210,7 @@ void QGraphicsGridLayout::setSpacing(qreal spacing)
 void QGraphicsGridLayout::setRowSpacing(int row, qreal spacing)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSpacing(row, spacing, Qt::Vertical);
+    d->engine.setRowSpacing(row, spacing, BobUI::Vertical);
     invalidate();
 }
 
@@ -220,7 +220,7 @@ void QGraphicsGridLayout::setRowSpacing(int row, qreal spacing)
 qreal QGraphicsGridLayout::rowSpacing(int row) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSpacing(row, Qt::Vertical);
+    return d->engine.rowSpacing(row, BobUI::Vertical);
 }
 
 /*!
@@ -229,7 +229,7 @@ qreal QGraphicsGridLayout::rowSpacing(int row) const
 void QGraphicsGridLayout::setColumnSpacing(int column, qreal spacing)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSpacing(column, spacing, Qt::Horizontal);
+    d->engine.setRowSpacing(column, spacing, BobUI::Horizontal);
     invalidate();
 }
 
@@ -239,7 +239,7 @@ void QGraphicsGridLayout::setColumnSpacing(int column, qreal spacing)
 qreal QGraphicsGridLayout::columnSpacing(int column) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSpacing(column, Qt::Horizontal);
+    return d->engine.rowSpacing(column, BobUI::Horizontal);
 }
 
 /*!
@@ -248,7 +248,7 @@ qreal QGraphicsGridLayout::columnSpacing(int column) const
 void QGraphicsGridLayout::setRowStretchFactor(int row, int stretch)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowStretchFactor(row, stretch, Qt::Vertical);
+    d->engine.setRowStretchFactor(row, stretch, BobUI::Vertical);
     invalidate();
 }
 
@@ -258,7 +258,7 @@ void QGraphicsGridLayout::setRowStretchFactor(int row, int stretch)
 int QGraphicsGridLayout::rowStretchFactor(int row) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowStretchFactor(row, Qt::Vertical);
+    return d->engine.rowStretchFactor(row, BobUI::Vertical);
 }
 
 /*!
@@ -267,7 +267,7 @@ int QGraphicsGridLayout::rowStretchFactor(int row) const
 void QGraphicsGridLayout::setColumnStretchFactor(int column, int stretch)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowStretchFactor(column, stretch, Qt::Horizontal);
+    d->engine.setRowStretchFactor(column, stretch, BobUI::Horizontal);
     invalidate();
 }
 
@@ -277,7 +277,7 @@ void QGraphicsGridLayout::setColumnStretchFactor(int column, int stretch)
 int QGraphicsGridLayout::columnStretchFactor(int column) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowStretchFactor(column, Qt::Horizontal);
+    return d->engine.rowStretchFactor(column, BobUI::Horizontal);
 }
 
 /*!
@@ -286,7 +286,7 @@ int QGraphicsGridLayout::columnStretchFactor(int column) const
 void QGraphicsGridLayout::setRowMinimumHeight(int row, qreal height)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::MinimumSize, row, height, Qt::Vertical);
+    d->engine.setRowSizeHint(BobUI::MinimumSize, row, height, BobUI::Vertical);
     invalidate();
 }
 
@@ -296,7 +296,7 @@ void QGraphicsGridLayout::setRowMinimumHeight(int row, qreal height)
 qreal QGraphicsGridLayout::rowMinimumHeight(int row) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSizeHint(Qt::MinimumSize, row, Qt::Vertical);
+    return d->engine.rowSizeHint(BobUI::MinimumSize, row, BobUI::Vertical);
 }
 
 /*!
@@ -305,7 +305,7 @@ qreal QGraphicsGridLayout::rowMinimumHeight(int row) const
 void QGraphicsGridLayout::setRowPreferredHeight(int row, qreal height)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::PreferredSize, row, height, Qt::Vertical);
+    d->engine.setRowSizeHint(BobUI::PreferredSize, row, height, BobUI::Vertical);
     invalidate();
 }
 
@@ -315,7 +315,7 @@ void QGraphicsGridLayout::setRowPreferredHeight(int row, qreal height)
 qreal QGraphicsGridLayout::rowPreferredHeight(int row) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSizeHint(Qt::PreferredSize, row, Qt::Vertical);
+    return d->engine.rowSizeHint(BobUI::PreferredSize, row, BobUI::Vertical);
 }
 
 /*!
@@ -324,7 +324,7 @@ qreal QGraphicsGridLayout::rowPreferredHeight(int row) const
 void QGraphicsGridLayout::setRowMaximumHeight(int row, qreal height)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::MaximumSize, row, height, Qt::Vertical);
+    d->engine.setRowSizeHint(BobUI::MaximumSize, row, height, BobUI::Vertical);
     invalidate();
 }
 
@@ -334,7 +334,7 @@ void QGraphicsGridLayout::setRowMaximumHeight(int row, qreal height)
 qreal QGraphicsGridLayout::rowMaximumHeight(int row) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSizeHint(Qt::MaximumSize, row, Qt::Vertical);
+    return d->engine.rowSizeHint(BobUI::MaximumSize, row, BobUI::Vertical);
 }
 
 /*!
@@ -343,8 +343,8 @@ qreal QGraphicsGridLayout::rowMaximumHeight(int row) const
 void QGraphicsGridLayout::setRowFixedHeight(int row, qreal height)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::MinimumSize, row, height, Qt::Vertical);
-    d->engine.setRowSizeHint(Qt::MaximumSize, row, height, Qt::Vertical);
+    d->engine.setRowSizeHint(BobUI::MinimumSize, row, height, BobUI::Vertical);
+    d->engine.setRowSizeHint(BobUI::MaximumSize, row, height, BobUI::Vertical);
     invalidate();
 }
 
@@ -354,7 +354,7 @@ void QGraphicsGridLayout::setRowFixedHeight(int row, qreal height)
 void QGraphicsGridLayout::setColumnMinimumWidth(int column, qreal width)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::MinimumSize, column, width, Qt::Horizontal);
+    d->engine.setRowSizeHint(BobUI::MinimumSize, column, width, BobUI::Horizontal);
     invalidate();
 }
 
@@ -364,7 +364,7 @@ void QGraphicsGridLayout::setColumnMinimumWidth(int column, qreal width)
 qreal QGraphicsGridLayout::columnMinimumWidth(int column) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSizeHint(Qt::MinimumSize, column, Qt::Horizontal);
+    return d->engine.rowSizeHint(BobUI::MinimumSize, column, BobUI::Horizontal);
 }
 
 /*!
@@ -373,7 +373,7 @@ qreal QGraphicsGridLayout::columnMinimumWidth(int column) const
 void QGraphicsGridLayout::setColumnPreferredWidth(int column, qreal width)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::PreferredSize, column, width, Qt::Horizontal);
+    d->engine.setRowSizeHint(BobUI::PreferredSize, column, width, BobUI::Horizontal);
     invalidate();
 }
 
@@ -383,7 +383,7 @@ void QGraphicsGridLayout::setColumnPreferredWidth(int column, qreal width)
 qreal QGraphicsGridLayout::columnPreferredWidth(int column) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSizeHint(Qt::PreferredSize, column, Qt::Horizontal);
+    return d->engine.rowSizeHint(BobUI::PreferredSize, column, BobUI::Horizontal);
 }
 
 /*!
@@ -392,7 +392,7 @@ qreal QGraphicsGridLayout::columnPreferredWidth(int column) const
 void QGraphicsGridLayout::setColumnMaximumWidth(int column, qreal width)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::MaximumSize, column, width, Qt::Horizontal);
+    d->engine.setRowSizeHint(BobUI::MaximumSize, column, width, BobUI::Horizontal);
     invalidate();
 }
 
@@ -402,7 +402,7 @@ void QGraphicsGridLayout::setColumnMaximumWidth(int column, qreal width)
 qreal QGraphicsGridLayout::columnMaximumWidth(int column) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowSizeHint(Qt::MaximumSize, column, Qt::Horizontal);
+    return d->engine.rowSizeHint(BobUI::MaximumSize, column, BobUI::Horizontal);
 }
 
 /*!
@@ -411,53 +411,53 @@ qreal QGraphicsGridLayout::columnMaximumWidth(int column) const
 void QGraphicsGridLayout::setColumnFixedWidth(int column, qreal width)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowSizeHint(Qt::MinimumSize, column, width, Qt::Horizontal);
-    d->engine.setRowSizeHint(Qt::MaximumSize, column, width, Qt::Horizontal);
+    d->engine.setRowSizeHint(BobUI::MinimumSize, column, width, BobUI::Horizontal);
+    d->engine.setRowSizeHint(BobUI::MaximumSize, column, width, BobUI::Horizontal);
     invalidate();
 }
 
 /*!
     Sets the alignment of \a row to \a alignment.
 */
-void QGraphicsGridLayout::setRowAlignment(int row, Qt::Alignment alignment)
+void QGraphicsGridLayout::setRowAlignment(int row, BobUI::Alignment alignment)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowAlignment(row, alignment, Qt::Vertical);
+    d->engine.setRowAlignment(row, alignment, BobUI::Vertical);
     invalidate();
 }
 
 /*!
     Returns the alignment of \a row.
 */
-Qt::Alignment QGraphicsGridLayout::rowAlignment(int row) const
+BobUI::Alignment QGraphicsGridLayout::rowAlignment(int row) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowAlignment(row, Qt::Vertical);
+    return d->engine.rowAlignment(row, BobUI::Vertical);
 }
 
 /*!
     Sets the alignment for \a column to \a alignment.
 */
-void QGraphicsGridLayout::setColumnAlignment(int column, Qt::Alignment alignment)
+void QGraphicsGridLayout::setColumnAlignment(int column, BobUI::Alignment alignment)
 {
     Q_D(QGraphicsGridLayout);
-    d->engine.setRowAlignment(column, alignment, Qt::Horizontal);
+    d->engine.setRowAlignment(column, alignment, BobUI::Horizontal);
     invalidate();
 }
 
 /*!
     Returns the alignment for \a column.
 */
-Qt::Alignment QGraphicsGridLayout::columnAlignment(int column) const
+BobUI::Alignment QGraphicsGridLayout::columnAlignment(int column) const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.rowAlignment(column, Qt::Horizontal);
+    return d->engine.rowAlignment(column, BobUI::Horizontal);
 }
 
 /*!
     Sets the alignment for \a item to \a alignment.
 */
-void QGraphicsGridLayout::setAlignment(QGraphicsLayoutItem *item, Qt::Alignment alignment)
+void QGraphicsGridLayout::setAlignment(QGraphicsLayoutItem *item, BobUI::Alignment alignment)
 {
     Q_D(QGraphicsGridLayout);
     d->engine.setAlignment(item, alignment);
@@ -467,7 +467,7 @@ void QGraphicsGridLayout::setAlignment(QGraphicsLayoutItem *item, Qt::Alignment 
 /*!
     Returns the alignment for \a item.
 */
-Qt::Alignment QGraphicsGridLayout::alignment(QGraphicsLayoutItem *item) const
+BobUI::Alignment QGraphicsGridLayout::alignment(QGraphicsLayoutItem *item) const
 {
     Q_D(const QGraphicsGridLayout);
     return d->engine.alignment(item);
@@ -481,7 +481,7 @@ Qt::Alignment QGraphicsGridLayout::alignment(QGraphicsLayoutItem *item) const
 int QGraphicsGridLayout::rowCount() const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.effectiveLastRow(Qt::Vertical) + 1;
+    return d->engine.effectiveLastRow(BobUI::Vertical) + 1;
 }
 
 /*!
@@ -492,7 +492,7 @@ int QGraphicsGridLayout::rowCount() const
 int QGraphicsGridLayout::columnCount() const
 {
     Q_D(const QGraphicsGridLayout);
-    return d->engine.effectiveLastRow(Qt::Horizontal) + 1;
+    return d->engine.effectiveLastRow(BobUI::Horizontal) + 1;
 }
 
 /*!
@@ -555,7 +555,7 @@ void QGraphicsGridLayout::removeAt(int index)
         d->engine.removeItem(gridItem);
 
         // recalculate rowInfo.count if we remove an item that is on the right/bottommost row
-        for (const Qt::Orientation orient : {Qt::Horizontal, Qt::Vertical}) {
+        for (const BobUI::Orientation orient : {BobUI::Horizontal, BobUI::Vertical}) {
             const int oldCount = d->engine.rowCount(orient);
             if (gridItem->lastRow(orient) == oldCount - 1) {
                 const int newCount = d->engine.effectiveLastRow(orient) + 1;
@@ -595,7 +595,7 @@ void QGraphicsGridLayout::invalidate()
 #ifdef QGRIDLAYOUTENGINE_DEBUG
 void QGraphicsGridLayoutPrivate::dump(int indent) const
 {
-    if (qt_graphicsLayoutDebug()) {
+    if (bobui_graphicsLayoutDebug()) {
         engine.dump(indent + 1);
     }
 }
@@ -611,14 +611,14 @@ void QGraphicsGridLayout::setGeometry(const QRectF &rect)
     QRectF effectiveRect = geometry();
     qreal left, top, right, bottom;
     getContentsMargins(&left, &top, &right, &bottom);
-    Qt::LayoutDirection visualDir = d->visualDirection();
+    BobUI::LayoutDirection visualDir = d->visualDirection();
     d->engine.setVisualDirection(visualDir);
-    if (visualDir == Qt::RightToLeft)
+    if (visualDir == BobUI::RightToLeft)
         qSwap(left, right);
     effectiveRect.adjust(+left, +top, -right, -bottom);
     d->engine.setGeometries(effectiveRect, d->styleInfo());
 #ifdef QGRIDLAYOUTENGINE_DEBUG
-    if (qt_graphicsLayoutDebug()) {
+    if (bobui_graphicsLayoutDebug()) {
         static int counter = 0;
         qDebug("==== BEGIN DUMP OF QGraphicsGridLayout (%d)====", counter++);
         d->dump(1);
@@ -630,7 +630,7 @@ void QGraphicsGridLayout::setGeometry(const QRectF &rect)
 /*!
     \reimp
 */
-QSizeF QGraphicsGridLayout::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF QGraphicsGridLayout::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_D(const QGraphicsGridLayout);
     qreal left, top, right, bottom;
@@ -656,4 +656,4 @@ QSizePolicy::ControlTypes QGraphicsGridLayout::controlTypes(LayoutSide side) con
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

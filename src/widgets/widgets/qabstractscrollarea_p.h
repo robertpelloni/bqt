@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSCROLLAREA_P_H
 #define QABSTRACTSCROLLAREA_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qframe_p.h"
 #include "qabstractscrollarea.h"
-#include <QtGui/private/qgridlayoutengine_p.h>
+#include <BobUIGui/private/qgridlayoutengine_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 
 class QScrollBar;
 class QAbstractScrollAreaScrollBarContainer;
@@ -36,11 +36,11 @@ public:
     QAbstractScrollAreaPrivate();
     ~QAbstractScrollAreaPrivate();
 
-    void replaceScrollBar(QScrollBar *scrollBar, Qt::Orientation orientation);
+    void replaceScrollBar(QScrollBar *scrollBar, BobUI::Orientation orientation);
 
     QHVContainer<QAbstractScrollAreaScrollBarContainer *> scrollBarContainers;
     QScrollBar *hbar, *vbar;
-    Qt::ScrollBarPolicy vbarpolicy, hbarpolicy;
+    BobUI::ScrollBarPolicy vbarpolicy, hbarpolicy;
 
     bool shownOnce;
     bool inResize;
@@ -59,7 +59,7 @@ public:
     void init();
     void layoutChildren();
     void layoutChildren_helper(bool *needHorizontalScrollbar, bool *needVerticalScrollbar);
-    virtual void scrollBarPolicyChanged(Qt::Orientation, Qt::ScrollBarPolicy) {}
+    virtual void scrollBarPolicyChanged(BobUI::Orientation, BobUI::ScrollBarPolicy) {}
     virtual bool canStartScrollingAt( const QPoint &startPos ) const;
 
     void flashScrollBars();
@@ -83,7 +83,7 @@ class QAbstractScrollAreaFilter : public QObject
     Q_OBJECT
 public:
     QAbstractScrollAreaFilter(QAbstractScrollAreaPrivate *p) : d(p)
-    { setObjectName(QLatin1StringView("qt_abstractscrollarea_filter")); }
+    { setObjectName(QLatin1StringView("bobui_abstractscrollarea_filter")); }
     bool eventFilter(QObject *o, QEvent *e) override
     { return (o == d->viewport ? d->viewportEvent(e) : false); }
 private:
@@ -96,7 +96,7 @@ class QAbstractScrollAreaScrollBarContainer : public QWidget
 public:
     enum LogicalPosition { LogicalLeft = 1, LogicalRight = 2 };
 
-    QAbstractScrollAreaScrollBarContainer(Qt::Orientation orientation, QWidget *parent);
+    QAbstractScrollAreaScrollBarContainer(BobUI::Orientation orientation, QWidget *parent);
     void addWidget(QWidget *widget, LogicalPosition position);
     QWidgetList widgets(LogicalPosition position);
     void removeWidget(QWidget *widget);
@@ -106,11 +106,11 @@ public:
 private:
     int scrollBarLayoutIndex() const;
 
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
 };
 
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSCROLLAREA_P_H

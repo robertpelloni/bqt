@@ -1,4 +1,4 @@
-qtPrepareLibExecTool(MOC_COLLECT_JSON, moc)
+bobuiPrepareLibExecTool(MOC_COLLECT_JSON, moc)
 
 QMAKE_MOC_OPTIONS += --output-json
 
@@ -46,10 +46,10 @@ moc_collect_json.name = Collect moc JSON output into central file
 
 install_metatypes {
     do_install_metatypes.CONFIG += no_check_exist
-    do_install_metatypes.path = $$[QT_INSTALL_ARCHDATA]/metatypes
+    do_install_metatypes.path = $$[BOBUI_INSTALL_ARCHDATA]/metatypes
     do_install_metatypes.files = $$OUT_PWD/$$MOC_COLLECT_JSON_OUTPUT
     prefix_build {
-        load(qt_build_paths)
+        load(bobui_build_paths)
         !isEmpty(MODULE_BASE_OUTDIR) {
             metatypes_to_builddir.files = $$do_install_metatypes.files
             metatypes_to_builddir.path = $$MODULE_BASE_OUTDIR/lib/metatypes

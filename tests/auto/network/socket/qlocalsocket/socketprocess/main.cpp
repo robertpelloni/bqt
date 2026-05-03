@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <qcoreapplication.h>
@@ -7,7 +7,7 @@
 #include <qeventloop.h>
 #include <qlocalsocket.h>
 #include <qlocalserver.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 
 const QString serverName = QStringLiteral("qlocalsocket_autotest");
 const QByteArray testData("test");
@@ -66,7 +66,7 @@ bool runClient()
             }
             printf("client: server not found. Trying again...\n");
             QEventLoop eventLoop;
-            QTimer::singleShot(500, &eventLoop, SLOT(quit()));
+            BOBUIimer::singleShot(500, &eventLoop, SLOT(quit()));
             eventLoop.exec();
             continue;
         }

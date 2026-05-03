@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETAOBJECT_H
 #define QMETAOBJECT_H
 
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QUntypedBindable;
 
@@ -38,8 +38,8 @@ public:
     Access access() const;
     enum MethodType {
         Method = QMETHOD_CODE,
-        Signal QT7_ONLY(= QSIGNAL_CODE),
-        Slot QT7_ONLY(= QSLOT_CODE),
+        Signal BOBUI7_ONLY(= QSIGNAL_CODE),
+        Slot BOBUI7_ONLY(= QSLOT_CODE),
         Constructor = 3,    // no Q*_CODE
     };
     MethodType methodType() const;
@@ -52,9 +52,9 @@ public:
 
     inline const QMetaObject *enclosingMetaObject() const { return mobj; }
 
-#if QT_VERSION <= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION <= BOBUI_VERSION_CHECK(7, 0, 0)
     bool invoke(QObject *object,
-                Qt::ConnectionType connectionType,
+                BobUI::ConnectionType connectionType,
                 QGenericReturnArgument returnValue,
                 QGenericArgument val0 = QGenericArgument(nullptr),
                 QGenericArgument val1 = QGenericArgument(),
@@ -79,11 +79,11 @@ public:
                        QGenericArgument val8 = QGenericArgument(),
                        QGenericArgument val9 = QGenericArgument()) const
     {
-        return invoke(object, Qt::AutoConnection, returnValue,
+        return invoke(object, BobUI::AutoConnection, returnValue,
                       val0, val1, val2, val3, val4, val5, val6, val7, val8, val9);
     }
     inline bool invoke(QObject *object,
-                       Qt::ConnectionType connectionType,
+                       BobUI::ConnectionType connectionType,
                        QGenericArgument val0,
                        QGenericArgument val1 = QGenericArgument(),
                        QGenericArgument val2 = QGenericArgument(),
@@ -110,7 +110,7 @@ public:
                        QGenericArgument val8 = QGenericArgument(),
                        QGenericArgument val9 = QGenericArgument()) const
     {
-        return invoke(object, Qt::AutoConnection, QGenericReturnArgument(),
+        return invoke(object, BobUI::AutoConnection, QGenericReturnArgument(),
                       val0, val1, val2, val3, val4, val5, val6, val7, val8, val9);
     }
     bool invokeOnGadget(void *gadget,
@@ -146,12 +146,12 @@ public:
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invoke(QObject *obj, Qt::ConnectionType c, QTemplatedMetaMethodReturnArgument<ReturnArg> r,
+    invoke(QObject *obj, BobUI::ConnectionType c, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> r,
            Args &&... arguments) const
     {
-        auto h = QtPrivate::invokeMethodHelper(r, std::forward<Args>(arguments)...);
+        auto h = BobUIPrivate::invokeMethodHelper(r, std::forward<Args>(arguments)...);
         return invokeImpl(*this, obj, c, h.parameterCount(), h.parameters.data(),
                           h.typeNames.data(), h.metaTypes.data());
     }
@@ -160,45 +160,45 @@ public:
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invoke(QObject *obj, Qt::ConnectionType c, Args &&... arguments) const
+    invoke(QObject *obj, BobUI::ConnectionType c, Args &&... arguments) const
     {
-        return invoke(obj, c, QTemplatedMetaMethodReturnArgument<void>{}, std::forward<Args>(arguments)...);
+        return invoke(obj, c, BOBUIemplatedMetaMethodReturnArgument<void>{}, std::forward<Args>(arguments)...);
     }
 
     template <typename ReturnArg, typename... Args>
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invoke(QObject *obj, QTemplatedMetaMethodReturnArgument<ReturnArg> r, Args &&... arguments) const
+    invoke(QObject *obj, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> r, Args &&... arguments) const
     {
-        return invoke(obj, Qt::AutoConnection, r, std::forward<Args>(arguments)...);
+        return invoke(obj, BobUI::AutoConnection, r, std::forward<Args>(arguments)...);
     }
 
     template <typename... Args>
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
     invoke(QObject *obj, Args &&... arguments) const
     {
-        return invoke(obj, Qt::AutoConnection, std::forward<Args>(arguments)...);
+        return invoke(obj, BobUI::AutoConnection, std::forward<Args>(arguments)...);
     }
 
     template <typename ReturnArg, typename... Args>
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invokeOnGadget(void *gadget, QTemplatedMetaMethodReturnArgument<ReturnArg> r, Args &&... arguments) const
+    invokeOnGadget(void *gadget, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> r, Args &&... arguments) const
     {
-        auto h = QtPrivate::invokeMethodHelper(r, std::forward<Args>(arguments)...);
-        return invokeImpl(*this, gadget, Qt::ConnectionType(-1), h.parameterCount(),
+        auto h = BobUIPrivate::invokeMethodHelper(r, std::forward<Args>(arguments)...);
+        return invokeImpl(*this, gadget, BobUI::ConnectionType(-1), h.parameterCount(),
                           h.parameters.data(), h.typeNames.data(), h.metaTypes.data());
     }
 
@@ -206,11 +206,11 @@ public:
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
     invokeOnGadget(void *gadget, Args &&... arguments) const
     {
-        return invokeOnGadget(gadget, QTemplatedMetaMethodReturnArgument<void>{}, std::forward<Args>(arguments)...);
+        return invokeOnGadget(gadget, BOBUIemplatedMetaMethodReturnArgument<void>{}, std::forward<Args>(arguments)...);
     }
 
     inline bool isValid() const { return mobj != nullptr; }
@@ -218,17 +218,17 @@ public:
     template <typename PointerToMemberFunction>
     static inline QMetaMethod fromSignal(PointerToMemberFunction signal)
     {
-        typedef QtPrivate::FunctionPointer<PointerToMemberFunction> SignalType;
-        static_assert(QtPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
+        typedef BobUIPrivate::FunctionPointer<PointerToMemberFunction> SignalType;
+        static_assert(BobUIPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
                       "No Q_OBJECT in the class with the signal");
         return fromSignalImpl(&SignalType::Object::staticMetaObject,
                               reinterpret_cast<void **>(&signal));
     }
 
 private:
-    static bool invokeImpl(QMetaMethod self, void *target, Qt::ConnectionType, qsizetype paramCount,
+    static bool invokeImpl(QMetaMethod self, void *target, BobUI::ConnectionType, qsizetype paramCount,
                            const void *const *parameters, const char *const *typeNames,
-                           const QtPrivate::QMetaTypeInterface *const *metaTypes);
+                           const BobUIPrivate::QMetaTypeInterface *const *metaTypes);
     static QMetaMethod fromSignalImpl(const QMetaObject *, void **);
     static QMetaMethod fromRelativeMethodIndex(const QMetaObject *mobj, int index);
     static QMetaMethod fromRelativeConstructorIndex(const QMetaObject *mobj, int index);
@@ -290,7 +290,7 @@ public:
     int keysToValue(const char *keys, bool *ok = nullptr) const;
     std::optional<quint64> keyToValue64(const char *key) const;
     std::optional<quint64> keysToValue64(const char *keys) const;
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
     const char *valueToKey(int value) const;
     QByteArray valueToKeys(int value) const;
 #endif
@@ -304,11 +304,11 @@ public:
     template<typename T>
     static QMetaEnum fromType()
     {
-        static_assert(QtPrivate::IsQEnumHelper<T>::Value,
+        static_assert(BobUIPrivate::IsQEnumHelper<T>::Value,
                       "QMetaEnum::fromType only works with enums declared as "
                       "Q_ENUM, Q_ENUM_NS, Q_FLAG or Q_FLAG_NS");
-        const QMetaObject *metaObject = qt_getEnumMetaObject(T());
-        const char *name = qt_getEnumName(T());
+        const QMetaObject *metaObject = bobui_getEnumMetaObject(T());
+        const char *name = bobui_getEnumName(T());
         return metaObject->enumerator(metaObject->indexOfEnumerator(name));
     }
 
@@ -342,13 +342,13 @@ public:
 
     const char *name() const;
     const char *typeName() const;
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
-    QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
+    BOBUI_DEPRECATED_VERSION_6_0
     QVariant::Type type() const
     { int t = userType(); return t >= QMetaType::User ? QVariant::UserType : QVariant::Type(t); }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
     int userType() const { return typeId(); }
     int typeId() const { return metaType().id(); }
@@ -398,8 +398,8 @@ public:
     inline const QMetaObject *enclosingMetaObject() const { return mobj; }
 
 private:
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("obsolete, simply returns typeId()")
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("obsolete, simply returns typeId()")
     int registerPropertyType() const;
 #endif
 
@@ -451,6 +451,6 @@ private:
 };
 Q_DECLARE_TYPEINFO(QMetaClassInfo, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMETAOBJECT_H

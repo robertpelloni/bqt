@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qexception.h"
-#include "QtCore/qshareddata.h"
+#include "BobUICore/qshareddata.h"
 
-#if !defined(QT_NO_EXCEPTIONS) || defined(Q_QDOC)
+#if !defined(BOBUI_NO_EXCEPTIONS) || defined(Q_QDOC)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QException
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QException class provides a base class for exceptions that can be transferred across threads.
     \since 5.0
 
-    Qt Concurrent supports throwing and catching exceptions across thread
+    BobUI Concurrent supports throwing and catching exceptions across thread
     boundaries, provided that the exception inherits from QException
     and implements two helper functions:
 
@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
     \snippet code/src_corelib_thread_qexception.cpp 1
 
     If you throw an exception that is not a subclass of QException,
-    the \l{Qt Concurrent} functions will throw a QUnhandledException
+    the \l{BobUI Concurrent} functions will throw a QUnhandledException
     in the receiver thread.
 
     When using QFuture, transferred exceptions will be thrown when calling the following functions:
@@ -55,14 +55,14 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QUnhandledException
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QUnhandledException class represents an unhandled exception in a
-    Qt Concurrent worker thread.
+    BobUI Concurrent worker thread.
     \since 5.0
 
     If a worker thread throws an exception that is not a subclass of QException,
-    the \l{Qt Concurrent} functions will throw a QUnhandledException on the receiver
+    the \l{BobUI Concurrent} functions will throw a QUnhandledException on the receiver
     thread side. The information about the actual exception that has been thrown
     will be saved in the QUnhandledException class and can be obtained using the
     exception() method. For example, you can process the exception held by
@@ -208,7 +208,7 @@ QUnhandledException *QUnhandledException::clone() const
 
 #if !defined(Q_QDOC)
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 void ExceptionStore::setException(const QException &e)
 {
@@ -248,10 +248,10 @@ void ExceptionStore::rethrowException() const
     std::rethrow_exception(exceptionHolder);
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 #endif //Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS

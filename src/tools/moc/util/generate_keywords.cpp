@@ -1,5 +1,5 @@
-// Copyright (C) 2016 TheQt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 TheBobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 #include <stdio.h>
 #include <string.h>
 #include <qbytearray.h>
@@ -195,7 +195,7 @@ static const Keyword keywords[] = {
     { "Q_GADGET", "Q_GADGET_TOKEN" },
     { "Q_GADGET_EXPORT", "Q_GADGET_EXPORT_TOKEN" },
     { "Q_PROPERTY", "Q_PROPERTY_TOKEN" },
-    { "QT_ANONYMOUS_PROPERTY", "QT_ANONYMOUS_PROPERTY_TOKEN" },
+    { "BOBUI_ANONYMOUS_PROPERTY", "BOBUI_ANONYMOUS_PROPERTY_TOKEN" },
     { "Q_PLUGIN_METADATA", "Q_PLUGIN_METADATA_TOKEN" },
     { "Q_ENUMS", "Q_ENUMS_TOKEN" },
     { "Q_ENUM", "Q_ENUM_TOKEN" },
@@ -215,13 +215,13 @@ static const Keyword keywords[] = {
     { "Q_SIGNALS", "Q_SIGNALS_TOKEN" },
     { "Q_SLOTS", "Q_SLOTS_TOKEN" },
     { "Q_PRIVATE_SLOT", "Q_PRIVATE_SLOT_TOKEN" },
-    { "QT_MOC_COMPAT", "Q_MOC_COMPAT_TOKEN" },
+    { "BOBUI_MOC_COMPAT", "Q_MOC_COMPAT_TOKEN" },
     { "Q_INVOKABLE", "Q_INVOKABLE_TOKEN" },
     { "Q_SIGNAL", "Q_SIGNAL_TOKEN" },
     { "Q_SLOT", "Q_SLOT_TOKEN" },
     { "Q_SCRIPTABLE", "Q_SCRIPTABLE_TOKEN" },
     { "Q_PRIVATE_PROPERTY", "Q_PRIVATE_PROPERTY_TOKEN" },
-    { "QT_ANONYMOUS_PRIVATE_PROPERTY", "QT_ANONYMOUS_PRIVATE_PROPERTY_TOKEN" },
+    { "BOBUI_ANONYMOUS_PRIVATE_PROPERTY", "BOBUI_ANONYMOUS_PRIVATE_PROPERTY_TOKEN" },
     { "Q_REVISION", "Q_REVISION_TOKEN" },
     { "Q_MOC_INCLUDE", "Q_MOC_INCLUDE_TOKEN" },
     { "\n", "NEWLINE" },

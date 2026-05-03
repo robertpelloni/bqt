@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfileinfogatherer_p.h"
 #include <qcoreapplication.h>
@@ -16,18 +16,18 @@
 #  include "qplatformdefs.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 Q_CONSTINIT static QBasicAtomicInt fetchedRoot = Q_BASIC_ATOMIC_INITIALIZER(false);
-Q_AUTOTEST_EXPORT void qt_test_resetFetchedRoot()
+Q_AUTOTEST_EXPORT void bobui_test_resetFetchedRoot()
 {
     fetchedRoot.storeRelaxed(false);
 }
 
-Q_AUTOTEST_EXPORT bool qt_test_isFetchedRoot()
+Q_AUTOTEST_EXPORT bool bobui_test_isFetchedRoot()
 {
     return fetchedRoot.loadRelaxed();
 }
@@ -47,7 +47,7 @@ static QString translateDriveName(const QFileInfo &drive)
 
 /*!
     \class QFileInfoGatherer
-    \inmodule QtGui
+    \inmodule BobUIGui
     \internal
 */
 
@@ -55,7 +55,7 @@ static QString translateDriveName(const QFileInfo &drive)
     Creates thread
 */
 QFileInfoGatherer::QFileInfoGatherer(QObject *parent)
-    : QThread(parent)
+    : BOBUIhread(parent)
     , m_iconProvider(&defaultProvider)
 {
     start(LowPriority);
@@ -87,12 +87,12 @@ bool QFileInfoGatherer::event(QEvent *event)
             if (QCoreApplication::closingDown())
                 terminate();
             else
-                connect(this, &QThread::finished, this, [this]{ delete this; });
+                connect(this, &BOBUIhread::finished, this, [this]{ delete this; });
             return true;
         }
     }
 
-    return QThread::event(event);
+    return BOBUIhread::event(event);
 }
 
 void QFileInfoGatherer::requestAbort()
@@ -160,15 +160,15 @@ void QFileInfoGatherer::fetchExtendedInformation(const QString &path, const QStr
             break;
     }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     this->path.push(path);
     this->files.push(files);
     condition.wakeAll();
-#else // !QT_CONFIG(thread)
+#else // !BOBUI_CONFIG(thread)
     getFileInfos(path, files);
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     if (files.isEmpty()
         && !path.isEmpty()
         && !path.startsWith("//"_L1) /*don't watch UNC path*/) {
@@ -192,7 +192,7 @@ void QFileInfoGatherer::updateFile(const QString &filePath)
 
 QStringList QFileInfoGatherer::watchedFiles() const
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     if (m_watcher)
         return m_watcher->files();
 #endif
@@ -201,7 +201,7 @@ QStringList QFileInfoGatherer::watchedFiles() const
 
 QStringList QFileInfoGatherer::watchedDirectories() const
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     if (m_watcher)
         return m_watcher->directories();
 #endif
@@ -210,7 +210,7 @@ QStringList QFileInfoGatherer::watchedDirectories() const
 
 void QFileInfoGatherer::createWatcher()
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     m_watcher = new QFileSystemWatcher(this);
     connect(m_watcher, &QFileSystemWatcher::directoryChanged, this, &QFileInfoGatherer::list);
     connect(m_watcher, &QFileSystemWatcher::fileChanged, this, &QFileInfoGatherer::updateFile);
@@ -228,7 +228,7 @@ void QFileInfoGatherer::createWatcher()
 
 void QFileInfoGatherer::watchPaths(const QStringList &paths)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     if (m_watching) {
         if (m_watcher == nullptr)
             createWatcher();
@@ -241,7 +241,7 @@ void QFileInfoGatherer::watchPaths(const QStringList &paths)
 
 void QFileInfoGatherer::unwatchPaths(const QStringList &paths)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     if (m_watcher && !paths.isEmpty())
         m_watcher->removePaths(paths);
 #else
@@ -252,7 +252,7 @@ void QFileInfoGatherer::unwatchPaths(const QStringList &paths)
 bool QFileInfoGatherer::isWatching() const
 {
     bool result = false;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QMutexLocker locker(&mutex);
     result = m_watching;
 #endif
@@ -270,7 +270,7 @@ bool QFileInfoGatherer::isWatching() const
 */
 void QFileInfoGatherer::setWatching(bool v)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QMutexLocker locker(&mutex);
     if (v != m_watching) {
         m_watching = v;
@@ -289,7 +289,7 @@ void QFileInfoGatherer::setWatching(bool v)
 */
 void QFileInfoGatherer::clear()
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QMutexLocker locker(&mutex);
     unwatchPaths(watchedFiles());
     unwatchPaths(watchedDirectories());
@@ -303,7 +303,7 @@ void QFileInfoGatherer::clear()
 */
 void QFileInfoGatherer::removePath(const QString &path)
 {
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QMutexLocker locker(&mutex);
     unwatchPaths(QStringList(path));
 #else
@@ -358,9 +358,9 @@ QExtendedInformation QFileInfoGatherer::getInfo(const QFileInfo &fileInfo) const
     } else {
         info.displayType = QAbstractFileIconProviderPrivate::getFileType(fileInfo);
     }
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     // ### Not ready to listen all modifications by default
-    static const bool watchFiles = qEnvironmentVariableIsSet("QT_FILESYSTEMMODEL_WATCH_FILES");
+    static const bool watchFiles = qEnvironmentVariableIsSet("BOBUI_FILESYSTEMMODEL_WATCH_FILES");
     if (watchFiles) {
         if (!fileInfo.exists() && !fileInfo.isSymLink()) {
             const_cast<QFileInfoGatherer *>(this)->
@@ -394,7 +394,7 @@ void QFileInfoGatherer::getFileInfos(const QString &path, const QStringList &fil
 {
     // List drives
     if (path.isEmpty()) {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         fetchedRoot.storeRelaxed(true);
 #endif
         QList<std::pair<QString, QFileInfo>> updatedFiles;
@@ -469,6 +469,6 @@ void QFileInfoGatherer::fetch(const QFileInfo &fileInfo, QElapsedTimer &base, bo
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfileinfogatherer_p.cpp"

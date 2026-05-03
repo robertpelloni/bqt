@@ -1,7 +1,7 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMPRINTDEVICE_H
 #define QPLATFORMPRINTDEVICE_H
@@ -10,28 +10,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 #include <private/qprint_p.h>
 #include <private/qprintdevice_p.h>
 
-#include <QtCore/qlist.h>
-#include <QtCore/qvariant.h>
-#if QT_CONFIG(mimetype)
-#include <QtCore/qmimetype.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qvariant.h>
+#if BOBUI_CONFIG(mimetype)
+#include <BobUICore/qmimetype.h>
 #endif
-#include <QtGui/qpagelayout.h>
+#include <BobUIGui/qpagelayout.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 class Q_PRINTSUPPORT_EXPORT QPlatformPrintDevice
 {
@@ -92,7 +92,7 @@ public:
     virtual bool setProperty(QPrintDevice::PrintDevicePropertyKey key, const QVariant &value);
     virtual bool isFeatureAvailable(QPrintDevice::PrintDevicePropertyKey key, const QVariant &params) const;
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     virtual QList<QMimeType> supportedMimeTypes() const;
 #endif
 
@@ -106,7 +106,7 @@ protected:
     virtual void loadOutputBins() const;
     virtual void loadDuplexModes() const;
     virtual void loadColorModes() const;
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     virtual void loadMimeTypes() const;
 #endif
 
@@ -145,14 +145,14 @@ protected:
     mutable bool m_haveColorModes;
     mutable QList<QPrint::ColorMode> m_colorModes;
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     mutable bool m_haveMimeTypes;
     mutable QList<QMimeType> m_mimeTypes;
 #endif
 };
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMPRINTDEVICE_H

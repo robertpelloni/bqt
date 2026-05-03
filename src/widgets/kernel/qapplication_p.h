@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QAPPLICATION_P_H
 #define QAPPLICATION_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp, qcolor_x11.cpp, qfiledialog.cpp
 // and many other.  This header file may change from version to version
 // without notice, or even be removed.
@@ -17,29 +17,29 @@
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qapplication.h"
-#include "QtGui/qevent.h"
-#include "QtGui/qfont.h"
-#include "QtGui/qcursor.h"
-#include "QtGui/qregion.h"
-#include "QtGui/qwindow.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qapplication.h"
+#include "BobUIGui/qevent.h"
+#include "BobUIGui/qfont.h"
+#include "BobUIGui/qcursor.h"
+#include "BobUIGui/qregion.h"
+#include "BobUIGui/qwindow.h"
 #include "qwidget.h"
 #include <qpa/qplatformnativeinterface.h>
-#include "QtCore/qmutex.h"
-#include "QtCore/qtranslator.h"
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qpointer.h"
+#include "BobUICore/qmutex.h"
+#include "BobUICore/bobuiranslator.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qhash.h"
+#include "BobUICore/qpointer.h"
 #include "private/qcoreapplication_p.h"
-#include "QtCore/qpoint.h"
-#include <QTime>
+#include "BobUICore/qpoint.h"
+#include <BOBUIime>
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qwindowsysteminterface_p.h>
 #include <qpa/qplatformintegration.h>
 #include "private/qguiapplication_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QClipboard;
 class QGraphicsScene;
@@ -47,17 +47,17 @@ class QObject;
 class QWidget;
 class QSocketNotifier;
 class QPointingDevice;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 class QGestureManager;
 #endif
 
-extern Q_GUI_EXPORT bool qt_is_tty_app;
-#ifndef QT_NO_CLIPBOARD
-extern QClipboard *qt_clipboard;
+extern Q_GUI_EXPORT bool bobui_is_tty_app;
+#ifndef BOBUI_NO_CLIPBOARD
+extern QClipboard *bobui_clipboard;
 #endif
 
 typedef QHash<QByteArray, QFont> FontHash;
-Q_WIDGETS_EXPORT FontHash *qt_app_fonts_hash();
+Q_WIDGETS_EXPORT FontHash *bobui_app_fonts_hash();
 
 class Q_WIDGETS_EXPORT QApplicationPrivate : public QGuiApplicationPrivate
 {
@@ -78,25 +78,25 @@ public:
     void notifyWindowIconChanged() override;
     bool compressEvent(QEvent *event, QObject *receiver, QPostEventList *postedEvents) final;
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QActionPrivate *createActionPrivate() const override;
 #endif
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QShortcutPrivate *createShortcutPrivate() const override;
 #endif
 
     //modality
-    Qt::WindowModality defaultModality() const override;
+    BobUI::WindowModality defaultModality() const override;
     bool windowNeverBlocked(QWindow *window) const override;
     static bool isBlockedByModal(QWidget *widget);
     static bool modalState();
     static bool tryModalHelper(QWidget *widget, QWidget **rettop = nullptr);
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     static bool keypadNavigationEnabled()
     {
-        return navigationMode == Qt::NavigationModeKeypadTabOrder ||
-                navigationMode == Qt::NavigationModeKeypadDirectional;
+        return navigationMode == BobUI::NavigationModeKeypadTabOrder ||
+                navigationMode == BobUI::NavigationModeKeypadDirectional;
     }
 #endif
 
@@ -113,11 +113,11 @@ public:
     void openPopup(QWidget *popup);
     static bool replayMousePress;
 
-    static void setFocusWidget(QWidget *focus, Qt::FocusReason reason);
+    static void setFocusWidget(QWidget *focus, BobUI::FocusReason reason);
     static QWidget *focusNextPrevChild_helper(QWidget *toplevel, bool next,
                                               bool *wrappingOccurred = nullptr);
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     // Maintain a list of all scenes to ensure font and palette propagation to
     // all scenes.
     QList<QGraphicsScene *> scene_list;
@@ -137,9 +137,9 @@ protected:
     QPalette basePalette() const override;
     void handlePaletteChanged(const char *className = nullptr) override;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void notifyDragStarted(const QDrag *) override;
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 public:
     static QFont *sys_font;
@@ -147,7 +147,7 @@ public:
     static QWidget *main_widget;
     static QWidget *focus_widget;
     static QWidget *hidden_focus_widget;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     static QPointer<QWidget> wheel_widget;
 #endif
 
@@ -163,17 +163,17 @@ public:
 
     static QApplicationPrivate *instance() { return self; }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     static QWidget *oldEditFocus;
-    static Qt::NavigationMode navigationMode;
+    static BobUI::NavigationMode navigationMode;
 #endif
 
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
     static QString styleSheet;
 #endif
     static QPointer<QWidget> leaveAfterRelease;
     static QWidget *pickMouseReceiver(QWidget *candidate, const QPointF &windowPos, QPointF *pos,
-                                      QEvent::Type type, Qt::MouseButtons buttons,
+                                      QEvent::Type type, BobUI::MouseButtons buttons,
                                       QWidget *buttonDown, QWidget *alienWidget);
     static bool sendMouseEvent(QWidget *receiver, QMouseEvent *event, QWidget *alienWidget,
                                QWidget *native, QWidget **buttonDown, QPointer<QWidget> &lastMouseReceiver,
@@ -200,12 +200,12 @@ public:
     }
 #endif
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     QGestureManager *gestureManager;
     QWidget *gestureWidget;
 #endif
 
-    static bool updateTouchPointsForWidget(QWidget *widget, QTouchEvent *touchEvent);
+    static bool updateTouchPointsForWidget(QWidget *widget, BOBUIouchEvent *touchEvent);
     void initializeMultitouch();
     void initializeMultitouch_sys();
     void cleanupMultitouch();
@@ -214,9 +214,9 @@ public:
     void appendTouchPoint(const QEventPoint &touchPoint);
     void removeTouchPoint(int touchPointId);
     enum ImplicitTouchGrabMode { GrabAcceptedPoints, GrabAllPoints };
-    void activateImplicitTouchGrab(QWidget *widget, QTouchEvent *touchBeginEvent,
+    void activateImplicitTouchGrab(QWidget *widget, BOBUIouchEvent *touchBeginEvent,
                                    ImplicitTouchGrabMode grabMode = GrabAcceptedPoints);
-    static bool translateRawTouchEvent(QWidget *widget, const QTouchEvent *touchEvent);
+    static bool translateRawTouchEvent(QWidget *widget, const BOBUIouchEvent *touchEvent);
     static void translateTouchCancel(const QPointingDevice *device, ulong timestamp);
 
     QPixmap applyQIconStyleHelper(QIcon::Mode mode, const QPixmap& base) const override;
@@ -226,15 +226,15 @@ private:
     static bool tryCloseAllWidgetWindows(QWindowList *processedWindows);
 
     static void giveFocusAccordingToFocusPolicy(QWidget *w, QEvent *event, QPoint localPos);
-    static bool shouldSetFocus(QWidget *w, Qt::FocusPolicy policy);
+    static bool shouldSetFocus(QWidget *w, BobUI::FocusPolicy policy);
 
     static QWidget *active_window;
 
     static bool isAlien(QWidget *);
 };
 
-extern void qt_qpa_set_cursor(QWidget * w, bool force);
+extern void bobui_qpa_set_cursor(QWidget * w, bool force);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QAPPLICATION_P_H

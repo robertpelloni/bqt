@@ -1,0 +1,85 @@
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/config/exampleurl-bobuibase.qdocconf)
+
+project                 = BobUICore
+description             = BobUI Core Reference Documentation
+version                 = $BOBUI_VERSION
+
+moduleheader            = BobUICoreDoc
+includepaths           += ./include
+
+examplesinstallpath     = corelib
+
+# Path to the root of bobuibase (for automatic linking to source code)
+url.sources.rootdir     = ../../..
+
+qhp.projects            = BobUICore
+
+qhp.BobUICore.file                = bobuicore.qhp
+qhp.BobUICore.namespace           = org.bobui-project.bobuicore.$BOBUI_VERSION_TAG
+qhp.BobUICore.virtualFolder       = bobuicore
+qhp.BobUICore.indexTitle          = BobUI Core
+qhp.BobUICore.indexRoot           =
+
+qhp.BobUICore.subprojects = manual examples classes
+qhp.BobUICore.subprojects.manual.title = BobUI Core
+qhp.BobUICore.subprojects.manual.indexTitle = BobUI Core module topics
+qhp.BobUICore.subprojects.manual.type = manual
+
+qhp.BobUICore.subprojects.classes.title = C++ Classes
+qhp.BobUICore.subprojects.classes.indexTitle = BobUI Core C++ Classes
+qhp.BobUICore.subprojects.classes.selectors = class fake:headerfile
+qhp.BobUICore.subprojects.classes.sortPages = true
+
+qhp.BobUICore.subprojects.examples.title = Examples
+qhp.BobUICore.subprojects.examples.indexTitle = BobUI Core Examples
+qhp.BobUICore.subprojects.examples.selectors = example
+qhp.BobUICore.subprojects.examples.sortPages = true
+
+tagfile                 = ../../../doc/bobuicore/bobuicore.tags
+
+# Make BobUICore depend on all doc modules; this ensures complete inheritance
+# information for classes
+depends                 = *
+
+headerdirs  += ..
+
+sourcedirs  += .. \
+                ../../tools/androiddeploybobui \
+                ../../tools/androidtestrunner \
+                ../../android/templates \
+                src/includes
+
+exampledirs += \
+               ../ \
+               snippets \
+               ../../../examples/corelib \
+               ../../../examples/network/dnslookup \
+               ../../../examples/widgets/tools \
+               ../../../tests/auto/corelib/thread/qpromise \
+               ../../tools/androiddeploybobui
+
+imagedirs   += images
+
+excludedirs += snippets
+
+excludefiles += ../../../examples/widgets/tools/customcompleter/doc/src/customcompleter.qdoc
+
+defines += BOBUI_BUILD_CORE_LIB
+
+# Included in bobuitestlib.qdocconf instead
+excludefiles += ../kernel/bobuiestsupport_core.cpp
+
+navigation.landingpage = "BobUI Core"
+navigation.cppclassespage = "BobUI Core C++ Classes"
+# Auto-generate navigation linking based on "BobUI Core module topics":
+navigation.toctitles = "BobUI Core module topics"
+navigation.toctitles.inclusive = false
+
+# Highlighted examples in Data Processing & IO category
+manifestmeta.highlighted.names = \
+    "BobUICore/Mandelbrot" \
+    "BobUICore/Serialization Converter" \
+    "BobUICore/QXmlStream Bookmarks Example"
+
+warninglimit = 0

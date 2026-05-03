@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_RUN_H
-#define QTCONCURRENT_RUN_H
+#ifndef BOBUICONCURRENT_RUN_H
+#define BOBUICONCURRENT_RUN_H
 
 #if 0
-#pragma qt_class(QtConcurrentRun)
+#pragma qt_class(BobUIConcurrentRun)
 #endif
 
 #include <QtConcurrent/qtconcurrentcompilertest.h>
@@ -16,13 +16,13 @@
 #include <QtConcurrent/qtconcurrentrunbase.h>
 #include <QtConcurrent/qtconcurrentstoredfunctioncall.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_QDOC
 
 typedef int Function;
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
     template <typename T>
     QFuture<T> run(Function function, ...);
@@ -30,17 +30,17 @@ namespace QtConcurrent {
     template <typename T>
     QFuture<T> run(QThreadPool *pool, Function function, ...);
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 #else
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
-#define QTCONCURRENT_RUN_NODISCARD \
+#define BOBUICONCURRENT_RUN_NODISCARD \
     Q_NODISCARD_X("Use QThreadPool::start(Callable&&) if you don't need the returned QFuture")
 
 template <class Function, class ...Args>
-QTCONCURRENT_RUN_NODISCARD
+BOBUICONCURRENT_RUN_NODISCARD
 auto run(QThreadPool *pool, Function &&f, Args &&...args)
 {
     DecayedTuple<Function, Args...> tuple { std::forward<Function>(f),
@@ -50,7 +50,7 @@ auto run(QThreadPool *pool, Function &&f, Args &&...args)
 }
 
 template <class Function, class ...Args>
-QTCONCURRENT_RUN_NODISCARD
+BOBUICONCURRENT_RUN_NODISCARD
 auto run(QThreadPool *pool, std::reference_wrapper<const Function> &&functionWrapper,
          Args &&...args)
 {
@@ -59,7 +59,7 @@ auto run(QThreadPool *pool, std::reference_wrapper<const Function> &&functionWra
 }
 
 template <class Function, class ...Args>
-QTCONCURRENT_RUN_NODISCARD
+BOBUICONCURRENT_RUN_NODISCARD
 auto run(Function &&f, Args &&...args)
 {
     return run(QThreadPool::globalInstance(), std::forward<Function>(f),
@@ -68,7 +68,7 @@ auto run(Function &&f, Args &&...args)
 
 // overload with a Promise Type hint, takes thread pool
 template <class PromiseType, class Function, class ...Args>
-QTCONCURRENT_RUN_NODISCARD
+BOBUICONCURRENT_RUN_NODISCARD
 auto run(QThreadPool *pool, Function &&f, Args &&...args)
 {
     return (new StoredFunctionCallWithPromise<Function, PromiseType, Args...>(
@@ -77,20 +77,20 @@ auto run(QThreadPool *pool, Function &&f, Args &&...args)
 
 // overload with a Promise Type hint, uses global thread pool
 template <class PromiseType, class Function, class ...Args>
-QTCONCURRENT_RUN_NODISCARD
+BOBUICONCURRENT_RUN_NODISCARD
 auto run(Function &&f, Args &&...args)
 {
     return run<PromiseType>(QThreadPool::globalInstance(), std::forward<Function>(f),
                             std::forward<Args>(args)...);
 }
 
-#undef QTCONCURRENT_RUN_NODISCARD
+#undef BOBUICONCURRENT_RUN_NODISCARD
 
-} //namespace QtConcurrent
+} //namespace BobUIConcurrent
 
 #endif // Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QMainWindow>
 #include <QApplication>
@@ -39,25 +39,25 @@ public:
                         { ui->m_stackWidget->setCurrentWidget(page); });
         }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         const struct {
             QAction *action;
-            Qt::NavigationMode mode;
+            BobUI::NavigationMode mode;
         } modeMappings[] = {
-            {ui->m_actionModeNone,                  Qt::NavigationModeNone},
-            {ui->m_actionModeKeypadTabOrder,        Qt::NavigationModeKeypadTabOrder},
-            {ui->m_actionModeKeypadDirectional,     Qt::NavigationModeKeypadDirectional},
-            {ui->m_actionModeCursorAuto,            Qt::NavigationModeCursorAuto},
-            {ui->m_actionModeCursorForceVisible,    Qt::NavigationModeCursorForceVisible}
+            {ui->m_actionModeNone,                  BobUI::NavigationModeNone},
+            {ui->m_actionModeKeypadTabOrder,        BobUI::NavigationModeKeypadTabOrder},
+            {ui->m_actionModeKeypadDirectional,     BobUI::NavigationModeKeypadDirectional},
+            {ui->m_actionModeCursorAuto,            BobUI::NavigationModeCursorAuto},
+            {ui->m_actionModeCursorForceVisible,    BobUI::NavigationModeCursorForceVisible}
         };
         for (auto modeMapping : modeMappings) {
             const auto mode = modeMapping.mode;
             connect(modeMapping.action, &QAction::triggered, this,
                     [this, mode]() { setNavigationMode(mode); });
         }
-#else // QT_KEYPAD_NAVIGATION
+#else // BOBUI_KEYPAD_NAVIGATION
         ui->m_menuNavigation_mode->deleteLater();
-#endif // QT_KEYPAD_NAVIGATION
+#endif // BOBUI_KEYPAD_NAVIGATION
 
         const struct {
             QPushButton *button;
@@ -69,7 +69,7 @@ public:
             {ui->m_buttonGetColor,              DialogGetColor},
             {ui->m_buttonGetFont,               DialogGetFont},
             {ui->m_buttonQuestion,              DialogQuestion},
-            {ui->m_buttonAboutQt,               DialogAboutQt},
+            {ui->m_buttonAboutBobUI,               DialogAboutBobUI},
             {ui->m_buttonGetItem,               DialogGetItem}
         };
         for (auto openDialogMapping : openDialogMappings) {
@@ -85,12 +85,12 @@ public:
     }
 
 protected slots:
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     void setNavigationMode(int mode)
     {
-        QApplication::setNavigationMode(Qt::NavigationMode(mode));
+        QApplication::setNavigationMode(BobUI::NavigationMode(mode));
     }
-#endif // QT_KEYPAD_NAVIGATION
+#endif // BOBUI_KEYPAD_NAVIGATION
 
     void openDialog(int dialog)
     {
@@ -105,7 +105,7 @@ protected slots:
                 QFileDialog::getExistingDirectory(this, QLatin1String("getExistingDirectory"));
                 break;
             case DialogGetColor:
-                QColorDialog::getColor(QColor(Qt::green), this, QLatin1String("getColor"));
+                QColorDialog::getColor(QColor(BobUI::green), this, QLatin1String("getColor"));
                 break;
             case DialogGetFont:
                 QFontDialog::getFont(0, this);
@@ -113,8 +113,8 @@ protected slots:
             case DialogQuestion:
                 QMessageBox::question(this, QLatin1String("question"), QLatin1String("\xbfHola, que tal?"));
                 break;
-            case DialogAboutQt:
-                QMessageBox::aboutQt(this);
+            case DialogAboutBobUI:
+                QMessageBox::aboutBobUI(this);
                 break;
             case DialogGetItem:
                 QInputDialog::getItem(this, QLatin1String("getItem"), QLatin1String("Choose a color"), QColor::colorNames());
@@ -132,7 +132,7 @@ private:
         DialogGetColor,
         DialogGetFont,
         DialogQuestion,
-        DialogAboutQt,
+        DialogAboutBobUI,
         DialogGetItem
     };
 

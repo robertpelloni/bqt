@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 //#define QPROCESS_DEBUG
 
@@ -20,11 +20,11 @@
 #include <paths.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QProcessEnvironment
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QProcessEnvironment class holds the environment variables that
     can be passed to a program.
@@ -380,7 +380,7 @@ void QProcessEnvironment::insert(const QProcessEnvironment &e)
     d->insert(*e.d);
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 
 void QProcessPrivate::Channel::clear()
 {
@@ -406,7 +406,7 @@ void QProcessPrivate::Channel::clear()
 
 /*!
     \class QProcess
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QProcess class is used to start external programs and
     to communicate with them.
@@ -440,7 +440,7 @@ void QProcessPrivate::Channel::clear()
 
     QProcess allows you to treat a process as a sequential I/O
     device. You can write to and read from the process just as you
-    would access a network connection using QTcpSocket. You can then
+    would access a network connection using BOBUIcpSocket. You can then
     write to the process's standard input by calling write(), and
     read the standard output by calling read(), readLine(), and
     getChar(). Because it inherits QIODevice, QProcess can also be
@@ -594,7 +594,7 @@ void QProcessPrivate::Channel::clear()
 
     The positioning and the screen Z-order of windows belonging to
     GUI applications started with QProcess are controlled by
-    the underlying windowing system. For Qt 5 applications, the
+    the underlying windowing system. For BobUI 5 applications, the
     positioning can be specified using the \c{-qwindowgeometry}
     command line option; X11 applications generally accept a
     \c{-geometry} command line option.
@@ -621,12 +621,12 @@ void QProcessPrivate::Channel::clear()
     calls QApplication::exec()) may cause your user interface to
     freeze.
 
-    The following example runs \c gzip to compress the string "Qt
+    The following example runs \c gzip to compress the string "BobUI
     rocks!", without an event loop:
 
     \snippet process/process.cpp 0
 
-    \sa QBuffer, QFile, QTcpSocket
+    \sa QBuffer, QFile, BOBUIcpSocket
 */
 
 /*!
@@ -676,10 +676,10 @@ void QProcessPrivate::Channel::clear()
     as filters, where the standard output is redirected to another
     process or a file, while standard error is printed to the console
     for diagnostic purposes.
-    (This value was introduced in Qt 5.2.)
+    (This value was introduced in BobUI 5.2.)
 
     \value ForwardedOutputChannel Complementary to ForwardedErrorChannel.
-    (This value was introduced in Qt 5.2.)
+    (This value was introduced in BobUI 5.2.)
 
     \note Windows intentionally suppresses output from GUI-only
     applications to inherited consoles.
@@ -802,7 +802,7 @@ void QProcessPrivate::Channel::clear()
 
 /*!
     \class QProcess::CreateProcessArguments
-    \inmodule QtCore
+    \inmodule BobUICore
     \note This struct is only available on the Windows platform.
 
     This struct is a representation of all parameters of the Windows API
@@ -814,7 +814,7 @@ void QProcessPrivate::Channel::clear()
 
 /*!
     \class QProcess::UnixProcessParameters
-    \inmodule QtCore
+    \inmodule BobUICore
     \note This struct is only available on Unix platforms
     \since 6.6
 
@@ -1703,7 +1703,7 @@ std::function<void(void)> QProcess::childProcessModifier() const
     \note In multithreaded applications, this function must be careful not to
     call any functions that may lock mutexes that may have been in use in
     other threads (in general, using only functions defined by POSIX as
-    "async-signal-safe" is advised). Most of the Qt API is unsafe inside this
+    "async-signal-safe" is advised). Most of the BobUI API is unsafe inside this
     callback, including qDebug(), and may lead to deadlocks.
 
     \note If the UnixProcessParameters::UseVFork flag is set via
@@ -2116,7 +2116,7 @@ void QProcess::setProcessState(ProcessState state)
     emit stateChanged(state, QPrivateSignal());
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7,0,0)
 /*!
     \internal
 */
@@ -2429,7 +2429,7 @@ void QProcessPrivate::start(QIODevice::OpenMode mode)
     errorString.clear();
     startProcess();
 }
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
 /*!
     \since 5.15
@@ -2480,7 +2480,7 @@ QStringList QProcess::splitCommand(QStringView command)
     return args;
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 /*!
     \since 5.0
 
@@ -2732,10 +2732,10 @@ QString QProcess::nullDevice()
 #endif
 }
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include "moc_qprocess.cpp"
 #endif

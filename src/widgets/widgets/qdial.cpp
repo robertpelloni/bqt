@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdial.h"
 
@@ -17,12 +17,12 @@
 #include <qslider.h>
 #include <private/qabstractslider_p.h>
 #include <private/qmath_p.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include <qmath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDialPrivate : public QAbstractSliderPrivate
 {
@@ -51,7 +51,7 @@ void QDialPrivate::init()
 {
     Q_Q(QDial);
     showNotches = false;
-    q->setFocusPolicy(Qt::WheelFocus);
+    q->setFocusPolicy(BobUI::WheelFocus);
 }
 
 int QDialPrivate::bound(int val) const
@@ -142,7 +142,7 @@ int QDialPrivate::valueFromPoint(const QPoint &p) const
     \brief The QDial class provides a rounded range control (like a speedometer or potentiometer).
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-dial.png {Round dial with notches}
 
@@ -241,7 +241,7 @@ void QDial::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QDial);
     if (d->maximum == d->minimum ||
-        (e->button() != Qt::LeftButton)  ||
+        (e->button() != BobUI::LeftButton)  ||
         (e->buttons() ^ e->button())) {
         e->ignore();
         return;
@@ -264,7 +264,7 @@ void QDial::mouseReleaseEvent(QMouseEvent * e)
 {
     Q_D(QDial);
     if (e->buttons() & (~e->button()) ||
-       (e->button() != Qt::LeftButton)) {
+       (e->button() != BobUI::LeftButton)) {
         e->ignore();
         return;
     }
@@ -281,7 +281,7 @@ void QDial::mouseReleaseEvent(QMouseEvent * e)
 void QDial::mouseMoveEvent(QMouseEvent * e)
 {
     Q_D(QDial);
-    if (!(e->buttons() & Qt::LeftButton)) {
+    if (!(e->buttons() & BobUI::LeftButton)) {
         e->ignore();
         return;
     }
@@ -436,6 +436,6 @@ bool QDial::event(QEvent *e)
     return QAbstractSlider::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdial.cpp"

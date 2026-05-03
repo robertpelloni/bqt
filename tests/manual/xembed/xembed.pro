@@ -1,11 +1,11 @@
 TEMPLATE=subdirs
-QT_FOR_CONFIG += network-private gui-private
+BOBUI_FOR_CONFIG += network-private gui-private
 
 TEMPLATE = subdirs
-QT_FOR_CONFIG += widgets-private
+BOBUI_FOR_CONFIG += widgets-private
 
 SUBDIRS = \
-qt-client-raster \
-qt-client-widget
+bobui-client-raster \
+bobui-client-widget
 
-qtHaveModule(widgets):qtConfig(gtk3): SUBDIRS += gtk-container
+bobuiHaveModule(widgets):bobuiConfig(gtk3): SUBDIRS += gtk-container

@@ -58,7 +58,7 @@ Tear-off the menu and move around across screens. The torn-off menu should adapt
          <bool>false</bool>
         </property>
         <property name="alignment">
-         <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         <set>BobUI::AlignHCenter|BobUI::AlignTop</set>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

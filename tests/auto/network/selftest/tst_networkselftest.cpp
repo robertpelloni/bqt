@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "../../network-settings.h"
 
@@ -16,19 +16,19 @@ private slots:
 
 void tst_NetworkSelftest::testServerIsAvailableInCI()
 {
-    if (!qEnvironmentVariable("QTEST_ENVIRONMENT").split(' ').contains("ci"))
+    if (!qEnvironmentVariable("BOBUIEST_ENVIRONMENT").split(' ').contains("ci"))
         QSKIP("Not running in the CI");
 
-    if (qEnvironmentVariable("QT_QPA_PLATFORM").contains("offscreen")
+    if (qEnvironmentVariable("BOBUI_QPA_PLATFORM").contains("offscreen")
           && !qEnvironmentVariableIsEmpty("QEMU_LD_PREFIX"))
-        QSKIP("Not support yet for B2Qt");
+        QSKIP("Not support yet for B2BobUI");
 
-#if !defined(QT_TEST_SERVER)
-    QVERIFY2(QtNetworkSettings::verifyTestNetworkSettings(),
+#if !defined(BOBUI_TEST_SERVER)
+    QVERIFY2(BobUINetworkSettings::verifyTestNetworkSettings(),
         "Test server must be available when running in the CI");
 #endif
 }
 
-QTEST_MAIN(tst_NetworkSelftest)
+BOBUIEST_MAIN(tst_NetworkSelftest)
 
 #include "tst_networkselftest.moc"

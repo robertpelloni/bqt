@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QDebug>
 #include <QIODevice>
 #include <QFile>
 #include <QString>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 class tst_QIODevice : public QObject
 {
@@ -24,13 +24,13 @@ private:
 
 void tst_QIODevice::read_data()
 {
-    QTest::addColumn<qint64>("size");
-    QTest::newRow("10k")      << qint64(10 * 1024);
-    QTest::newRow("100k")     << qint64(100 * 1024);
-    QTest::newRow("1000k")    << qint64(1000 * 1024);
-    QTest::newRow("10000k")   << qint64(10000 * 1024);
-    QTest::newRow("100000k")  << qint64(100000 * 1024);
-    QTest::newRow("1000000k") << qint64(1000000 * 1024);
+    BOBUIest::addColumn<qint64>("size");
+    BOBUIest::newRow("10k")      << qint64(10 * 1024);
+    BOBUIest::newRow("100k")     << qint64(100 * 1024);
+    BOBUIest::newRow("1000k")    << qint64(1000 * 1024);
+    BOBUIest::newRow("10000k")   << qint64(10000 * 1024);
+    BOBUIest::newRow("100000k")  << qint64(100000 * 1024);
+    BOBUIest::newRow("1000000k") << qint64(1000000 * 1024);
 }
 
 void tst_QIODevice::read_old()
@@ -80,7 +80,7 @@ void tst_QIODevice::peekAndRead()
         QFile file(name);
         Q_UNUSED(file.open(QIODevice::ReadOnly));
 
-        QByteArray ba(size / 1024, Qt::Uninitialized);
+        QByteArray ba(size / 1024, BobUI::Uninitialized);
         while (!file.atEnd()) {
             file.peek(ba.data(), ba.size());
             file.read(ba.data(), ba.size());
@@ -93,6 +93,6 @@ void tst_QIODevice::peekAndRead()
     }
 }
 
-QTEST_MAIN(tst_QIODevice)
+BOBUIEST_MAIN(tst_QIODevice)
 
 #include "tst_bench_qiodevice.moc"

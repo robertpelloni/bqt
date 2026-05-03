@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -18,23 +18,23 @@
 #include <qwindow.h>
 #include <qpixmap.h>
 #include <qpa/qplatformwindow.h>
-#include <QtGui/qsurfaceformat.h>
-#ifndef QT_NO_OPENGL
+#include <BobUIGui/qsurfaceformat.h>
+#ifndef BOBUI_NO_OPENGL
 #include <qpa/qplatformopenglcontext.h>
-#include <QtGui/qopenglcontext.h>
+#include <BobUIGui/qopenglcontext.h>
 #include "qcocoaglcontext.h"
 #endif
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qdebug.h>
 
-#include <QtGui/private/qmacmimeregistry_p.h>
-#include <QtGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qmacmimeregistry_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include <MoltenVK/mvk_vulkan.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaNativeInterface::QCocoaNativeInterface()
 {
@@ -49,7 +49,7 @@ void *QCocoaNativeInterface::nativeResourceForWindow(const QByteArray &resourceS
         return static_cast<QCocoaWindow *>(window->handle())->m_view;
     } else if (resourceString == "nswindow") {
         return static_cast<QCocoaWindow *>(window->handle())->nativeWindow();
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     } else if (resourceString == "vkSurface") {
         if (QVulkanInstance *instance = window->vulkanInstance())
             return static_cast<QCocoaVulkanInstance *>(instance->handle())->surface(window);
@@ -131,4 +131,4 @@ bool QCocoaNativeInterface::testContentBorderPosition(QWindow *window, int posit
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

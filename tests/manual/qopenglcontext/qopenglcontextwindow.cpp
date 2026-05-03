@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qopenglcontextwindow.h"
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOffscreenSurface>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QMatrix4x4>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QOffscreenSurface>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QMatrix4x4>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QtEglSupport/private/qeglconvenience_p.h>
+#include <BobUIEglSupport/private/qeglconvenience_p.h>
 
 QOpenGLContextWindow::QOpenGLContextWindow()
     : m_blitter(0)
@@ -19,7 +19,7 @@ QOpenGLContextWindow::QOpenGLContextWindow()
     m_context->setFormat(requestedFormat());
     m_context->create();
 
-    m_image = QImage(QStringLiteral("qticon64.png")).convertToFormat(QImage::Format_RGBA8888);
+    m_image = QImage(QStringLiteral("bobuiicon64.png")).convertToFormat(QImage::Format_RGBA8888);
     Q_ASSERT(!m_image.isNull());
 
     create(); // to make sure format() returns something real

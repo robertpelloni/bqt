@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef IMAGEVIEWER_H
 #define IMAGEVIEWER_H
 
 #include <QMainWindow>
 #include <QImage>
-#if defined(QT_PRINTSUPPORT_LIB)
-#  include <QtPrintSupport/qtprintsupportglobal.h>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#  include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#  if QT_CONFIG(printer)
+#  if BOBUI_CONFIG(printer)
 #    include <QPrinter>
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QLabel;
 class QMenu;
 class QScrollArea;
 class QScrollBar;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class ImageViewer : public QMainWindow
@@ -57,7 +57,7 @@ private:
     QScrollArea *scrollArea;
     double scaleFactor = 1;
 
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printer)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printer)
     QPrinter printer;
 #endif
 

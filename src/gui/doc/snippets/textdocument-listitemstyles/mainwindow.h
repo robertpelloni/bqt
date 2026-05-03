@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WINDOW_H
 #define WINDOW_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextDocument;
-class QTextEdit;
+class BOBUIextDocument;
+class BOBUIextEdit;
 
 class MainWindow : public QMainWindow
 {
@@ -23,10 +23,10 @@ public slots:
 
 private:
     QString currentFile;
-    QTextEdit *editor = nullptr;
-    QTextDocument *document = nullptr;
+    BOBUIextEdit *editor = nullptr;
+    BOBUIextDocument *document = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

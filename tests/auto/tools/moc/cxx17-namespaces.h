@@ -1,9 +1,9 @@
 // Copyright (C) 2011 Olivier Goffart.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CXX17_NAMESPACES_H
 #define CXX17_NAMESPACES_H
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
 #if defined(__cpp_nested_namespace_definitions) || defined(Q_MOC_RUN)
 namespace CXX17Namespace::A::B {

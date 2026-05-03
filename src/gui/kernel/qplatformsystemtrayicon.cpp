@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Christoph Schleifenbaum <christoph.schleifenbaum@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformsystemtrayicon.h"
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/qpa/qplatformtheme.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformSystemTrayIcon
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief The QPlatformSystemTrayIcon class abstracts the system tray icon and interaction.
 
     \internal
@@ -143,8 +143,8 @@ QPlatformMenu *QPlatformSystemTrayIcon::createMenu() const
     return QGuiApplicationPrivate::platformTheme()->createPlatformMenu();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformsystemtrayicon.cpp"
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON

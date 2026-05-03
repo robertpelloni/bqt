@@ -1,28 +1,28 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvncintegration.h"
 #include "qvncscreen.h"
 #include "qvnc_p.h"
 
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
-#include <QtGui/private/qdesktopunixservices_p.h>
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qdesktopunixservices_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 
-#include <QtFbSupport/private/qfbbackingstore_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbbackingstore_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <private/qinputdevicemanager_p_p.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/QRegularExpression>
+#include <BobUICore/QRegularExpression>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QVncIntegration::QVncIntegration(const QStringList &paramList)
     : m_fontDb(new QGenericUnixFontDatabase)
@@ -115,4 +115,4 @@ QPlatformNativeInterface *QVncIntegration::nativeInterface() const
     return m_nativeInterface.data();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

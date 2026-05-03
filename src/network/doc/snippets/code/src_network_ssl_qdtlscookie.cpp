@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
 class DtlsServer : public QObject
@@ -26,7 +26,7 @@ bool DtlsServer::listen(const QHostAddress &serverAddress, quint16 serverPort)
 
 void DtlsServer::readyRead()
 {
-    QByteArray dgram(serverSocket.pendingDatagramSize(), Qt::Uninitialized);
+    QByteArray dgram(serverSocket.pendingDatagramSize(), BobUI::Uninitialized);
     QHostAddress address;
     quint16 port = {};
     serverSocket.readDatagram(dgram.data(), dgram.size(), &address, &port);

@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDATETIMEEDIT_P_H
 #define QDATETIMEEDIT_P_H
@@ -9,35 +9,35 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qcalendar.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qtimezone.h>
-#include "QtWidgets/qcalendarwidget.h"
-#include "QtWidgets/qspinbox.h"
-#include "QtWidgets/qtoolbutton.h"
-#include "QtWidgets/qmenu.h"
-#include "QtWidgets/qdatetimeedit.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qcalendar.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/bobuiimezone.h>
+#include "BobUIWidgets/qcalendarwidget.h"
+#include "BobUIWidgets/qspinbox.h"
+#include "BobUIWidgets/bobuioolbutton.h"
+#include "BobUIWidgets/qmenu.h"
+#include "BobUIWidgets/qdatetimeedit.h"
 #include "private/qabstractspinbox_p.h"
 #include "private/qdatetimeparser_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCalendarPopup;
 class Q_AUTOTEST_EXPORT QDateTimeEditPrivate : public QAbstractSpinBoxPrivate, public QDateTimeParser
 {
     Q_DECLARE_PUBLIC(QDateTimeEdit)
 public:
-    QDateTimeEditPrivate(const QTimeZone &zone = QTimeZone::LocalTime);
+    QDateTimeEditPrivate(const BOBUIimeZone &zone = BOBUIimeZone::LocalTime);
 
     void init(const QVariant &var);
     void readLocaleSettings();
@@ -61,8 +61,8 @@ public:
 
     // Override QDateTimeParser:
     QString displayText() const override { return edit->text(); }
-    QDateTime getMinimum(const QTimeZone &zone) const override;
-    QDateTime getMaximum(const QTimeZone &zone) const override;
+    QDateTime getMinimum(const BOBUIimeZone &zone) const override;
+    QDateTime getMaximum(const BOBUIimeZone &zone) const override;
     QLocale locale() const override { return q_func()->locale(); }
     int cursorPosition() const override { return edit ? edit->cursorPosition() : -1; }
 
@@ -79,7 +79,7 @@ public:
     QDateTime convertTimeZone(const QDateTime &datetime);
     void updateTimeZone();
     QString valueToText(const QVariant &var) const { return textFromValue(var); }
-    QDateTime dateTimeValue(QDate date, QTime time) const;
+    QDateTime dateTimeValue(QDate date, BOBUIime time) const;
 
     void _q_resetButton();
     void updateArrow(QStyle::StateFlag state);
@@ -103,11 +103,11 @@ public:
     QStyle::StateFlag arrowState = QStyle::State_None;
     QCalendarPopup *monthCalendar = nullptr;
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     bool focusOnButton = false;
 #endif
 
-    QTimeZone timeZone;
+    BOBUIimeZone timeZone;
 };
 
 
@@ -120,7 +120,7 @@ public:
     QDate selectedDate() { return verifyCalendarInstance()->selectedDate(); }
     void setDate(QDate date);
     void setDateRange(QDate min, QDate max);
-    void setFirstDayOfWeek(Qt::DayOfWeek dow) { verifyCalendarInstance()->setFirstDayOfWeek(dow); }
+    void setFirstDayOfWeek(BobUI::DayOfWeek dow) { verifyCalendarInstance()->setFirstDayOfWeek(dow); }
     QCalendarWidget *calendarWidget() const { return const_cast<QCalendarPopup*>(this)->verifyCalendarInstance(); }
     void setCalendarWidget(QCalendarWidget *cw);
 Q_SIGNALS:
@@ -148,6 +148,6 @@ private:
     QCalendar calendarSystem;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATETIMEEDIT_P_H

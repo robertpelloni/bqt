@@ -1,5 +1,5 @@
 ********* Start testing of tst_FailFetchType *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_FailFetchType::initTestCase()
 QFATAL : tst_FailFetchType::fetch(bool) Requested type 'QString' does not match available type 'bool'.
 FAIL!  : tst_FailFetchType::fetch(bool) Received a fatal error.

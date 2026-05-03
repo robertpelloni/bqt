@@ -1,18 +1,18 @@
 // Copyright (C) 2015 Konstantin Ritt <ritt.ks@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsharedmemory.h"
 #include "qsharedmemory_p.h"
-#include "qtipccommon_p.h"
+#include "bobuiipccommon_p.h"
 #include <qfile.h>
 
 #include <errno.h>
 
-#if QT_CONFIG(sharedmemory)
-#if QT_CONFIG(posix_shm)
+#if BOBUI_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(posix_shm)
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -25,10 +25,10 @@
 #  define O_CLOEXEC 0
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtIpcCommon;
+using namespace BobUI::StringLiterals;
+using namespace BobUIIpcCommon;
 
 bool QSharedMemoryPosix::runtimeSupportCheck()
 {
@@ -54,7 +54,7 @@ bool QSharedMemoryPosix::handle(QSharedMemoryPrivate *self)
 bool QSharedMemoryPosix::cleanHandle(QSharedMemoryPrivate *)
 {
     if (hand != -1)
-        qt_safe_close(hand);
+        bobui_safe_close(hand);
     hand = -1;
 
     return true;
@@ -68,7 +68,7 @@ bool QSharedMemoryPosix::create(QSharedMemoryPrivate *self, qsizetype size)
     const QByteArray shmName = QFile::encodeName(self->nativeKey.nativeKey());
 
     int fd;
-    QT_EINTR_LOOP(fd, ::shm_open(shmName.constData(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, 0600));
+    BOBUI_EINTR_LOOP(fd, ::shm_open(shmName.constData(), O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC, 0600));
     if (fd == -1) {
         const int errorNumber = errno;
         const auto function = "QSharedMemory::attach (shm_open)"_L1;
@@ -85,14 +85,14 @@ bool QSharedMemoryPosix::create(QSharedMemoryPrivate *self, qsizetype size)
 
     // the size may only be set once
     int ret;
-    QT_EINTR_LOOP(ret, QT_FTRUNCATE(fd, size));
+    BOBUI_EINTR_LOOP(ret, BOBUI_FTRUNCATE(fd, size));
     if (ret == -1) {
         self->setUnixErrorString("QSharedMemory::create (ftruncate)"_L1);
-        qt_safe_close(fd);
+        bobui_safe_close(fd);
         return false;
     }
 
-    qt_safe_close(fd);
+    bobui_safe_close(fd);
 
     return true;
 }
@@ -104,7 +104,7 @@ bool QSharedMemoryPosix::attach(QSharedMemoryPrivate *self, QSharedMemory::Acces
     const int oflag = (mode == QSharedMemory::ReadOnly ? O_RDONLY : O_RDWR);
     const mode_t omode = (mode == QSharedMemory::ReadOnly ? 0400 : 0600);
 
-    QT_EINTR_LOOP(hand, ::shm_open(shmName.constData(), oflag | O_CLOEXEC, omode));
+    BOBUI_EINTR_LOOP(hand, ::shm_open(shmName.constData(), oflag | O_CLOEXEC, omode));
     if (hand == -1) {
         const int errorNumber = errno;
         const auto function = "QSharedMemory::attach (shm_open)"_L1;
@@ -121,8 +121,8 @@ bool QSharedMemoryPosix::attach(QSharedMemoryPrivate *self, QSharedMemory::Acces
     }
 
     // grab the size
-    QT_STATBUF st;
-    if (QT_FSTAT(hand, &st) == -1) {
+    BOBUI_STATBUF st;
+    if (BOBUI_FSTAT(hand, &st) == -1) {
         self->setUnixErrorString("QSharedMemory::attach (fstat)"_L1);
         cleanHandle(self);
         return false;
@@ -131,7 +131,7 @@ bool QSharedMemoryPosix::attach(QSharedMemoryPrivate *self, QSharedMemory::Acces
 
     // grab the memory
     const int mprot = (mode == QSharedMemory::ReadOnly ? PROT_READ : PROT_READ | PROT_WRITE);
-    self->memory = QT_MMAP(0, size_t(self->size), mprot, MAP_SHARED, hand, 0);
+    self->memory = BOBUI_MMAP(0, size_t(self->size), mprot, MAP_SHARED, hand, 0);
     if (self->memory == MAP_FAILED || !self->memory) {
         self->setUnixErrorString("QSharedMemory::attach (mmap)"_L1);
         cleanHandle(self);
@@ -168,8 +168,8 @@ bool QSharedMemoryPosix::detach(QSharedMemoryPrivate *self)
 
     // get the number of current attachments
     int shm_nattch = 0;
-    QT_STATBUF st;
-    if (QT_FSTAT(hand, &st) == 0) {
+    BOBUI_STATBUF st;
+    if (BOBUI_FSTAT(hand, &st) == 0) {
         // subtract 2 from linkcount: one for our own open and one for the dir entry
         shm_nattch = st.st_nlink - 2;
     }
@@ -191,7 +191,7 @@ bool QSharedMemoryPosix::detach(QSharedMemoryPrivate *self)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(posix_shm)
-#endif // QT_CONFIG(sharedmemory)
+#endif // BOBUI_CONFIG(posix_shm)
+#endif // BOBUI_CONFIG(sharedmemory)

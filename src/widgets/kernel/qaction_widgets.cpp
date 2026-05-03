@@ -1,31 +1,31 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qaction.h"
 
 #include <private/qapplication_p.h>
 #include <private/qwidget_p.h>
 #include "qaction_widgets_p.h"
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <private/qmenu_p.h>
 #endif
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include "qgraphicswidget.h"
 #endif
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QActionPrivate *QApplicationPrivate::createActionPrivate() const
 {
-    return new QtWidgetsActionPrivate;
+    return new BobUIWidgetsActionPrivate;
 }
 
-QtWidgetsActionPrivate::~QtWidgetsActionPrivate() = default;
+BobUIWidgetsActionPrivate::~BobUIWidgetsActionPrivate() = default;
 
 // we can't do this in the destructor, as it would only be called by ~QObject
-void QtWidgetsActionPrivate::destroy()
+void BobUIWidgetsActionPrivate::destroy()
 {
     Q_Q(QAction);
     const auto objects = associatedObjects;
@@ -34,27 +34,27 @@ void QtWidgetsActionPrivate::destroy()
         QObject *object = *it;
         if (QWidget *widget = qobject_cast<QWidget*>(object))
             widget->removeAction(q);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         else if (QGraphicsWidget *graphicsWidget = qobject_cast<QGraphicsWidget*>(object))
             graphicsWidget->removeAction(q);
 #endif
     }
 }
 
-#if QT_CONFIG(shortcut)
-QShortcutMap::ContextMatcher QtWidgetsActionPrivate::contextMatcher() const
+#if BOBUI_CONFIG(shortcut)
+QShortcutMap::ContextMatcher BobUIWidgetsActionPrivate::contextMatcher() const
 {
     return qWidgetShortcutContextMatcher;
 }
 #endif
 
-#if QT_CONFIG(menu)
-QObject *QtWidgetsActionPrivate::menu() const
+#if BOBUI_CONFIG(menu)
+QObject *BobUIWidgetsActionPrivate::menu() const
 {
     return m_menu;
 }
 
-void QtWidgetsActionPrivate::setMenu(QObject *menu)
+void BobUIWidgetsActionPrivate::setMenu(QObject *menu)
 {
     Q_Q(QAction);
     QMenu *theMenu = qobject_cast<QMenu*>(menu);
@@ -67,6 +67,6 @@ void QtWidgetsActionPrivate::setMenu(QObject *menu)
         m_menu->d_func()->setOverrideMenuAction(q);
     sendDataChanged();
 }
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

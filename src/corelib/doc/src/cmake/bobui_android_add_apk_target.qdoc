@@ -1,0 +1,55 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-android-add-apk-target.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_android_add_apk_target
+\keyword bobui6_android_add_apk_target
+
+\summary {Defines a build target that runs androiddeploybobui to produce an APK.}
+
+\include cmake-find-package-core.qdocinc
+
+\cmakecommandsince 6.0
+\warning This command is deprecated since BobUI 6.5. Use \l bobui_add_executable instead.
+\cmakecommandandroidonly
+
+\section1 Synopsis
+
+\badcode
+bobui_android_add_apk_target(target)
+\endcode
+
+\versionlessCMakeCommandsNote bobui6_android_add_apk_target()
+
+\section1 Description
+
+The \c{<target>_make_apk} and \c{<target>_make_aab} custom targets created by
+this command take an Android deployment settings file and generate APK and
+AAB respectively by running \c{androiddeploybobui}.
+The location of the settings file is taken from the \c{target}'s
+\c{BOBUI_ANDROID_DEPLOYMENT_SETTINGS_FILE} property. This file is typically created by
+\l{bobui6_android_generate_deployment_settings}{bobui_android_generate_deployment_settings()}.
+The respective Android package will be generated in an \c{android-build}
+subdirectory below the CMake build directory of the \c{target}.
+
+The \c{<target>_make_apk} and \c{<target>_make_aab} targets will be
+automatically added as dependencies of the \c{apk} and \c{aab} build targets
+respectively, which will be created automatically. Creating of the \c{apk} and
+\c{aab} targets can be disabled by setting the \c{BOBUI_NO_GLOBAL_APK_TARGET} and
+\c{BOBUI_NO_GLOBAL_AAB_TARGET} variables to \c{TRUE}.
+
+\sa {bobui6_android_generate_deployment_settings}{bobui_android_generate_deployment_settings()},
+    {bobui6_finalize_target}{bobui_finalize_target()},
+    {bobui6_finalize_project}{bobui_finalize_project()}
+
+\section1 Example
+
+\snippet cmake-macros/examples.cmake bobui_android_deploy_basic
+
+The above commands define the \c{myapp_make_apk}, \c{myapp_make_aab}, \c{apk},
+and \c{aab} build targets which can be used to generate just the
+\c{myapp} packages or all APKs and AABs in the project respectively.
+*/

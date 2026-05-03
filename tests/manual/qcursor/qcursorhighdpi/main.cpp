@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QAction>
 #include <QApplication>
@@ -9,7 +9,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QSharedPointer>
-#include <QToolBar>
+#include <BOBUIoolBar>
 
 #include <QBitmap>
 #include <QCursor>
@@ -20,7 +20,7 @@
 #include <QDebug>
 #include <QMimeData>
 #include <QStringList>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 #include <QScreen>
 #include <QWindow>
@@ -28,7 +28,7 @@
 #include <qpa/qplatformwindow.h>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
 #include <algorithm>
@@ -38,12 +38,12 @@
 // It creates one widget per screen with a grid of standard cursors,
 // pixmap / bitmap cursors and pixmap / bitmap cursors with device pixel ratio 2.
 // On the left, there is a ruler with 10 DIP marks.
-// The code is meant to compile with Qt 4 also.
+// The code is meant to compile with BobUI 4 also.
 
 static QString screenInfo(const QWidget *w)
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     QScreen *screen = nullptr;
     if (const QWindow *window = w->windowHandle())
         screen = window->screen();
@@ -78,19 +78,19 @@ static QPixmap paintPixmap(int size, QColor c)
 
 static QCursor pixmapCursor(int size)
 {
-    QCursor result(paintPixmap(size, Qt::red), size / 2, size / 2);
+    QCursor result(paintPixmap(size, BobUI::red), size / 2, size / 2);
     return result;
 }
 
 static QPair<QBitmap, QBitmap> paintBitmaps(int size)
 {
     QBitmap bitmap(size, size);
-    bitmap.fill(Qt::color1);
+    bitmap.fill(BobUI::color1);
     QBitmap mask(size, size);
-    mask.fill(Qt::color1);
+    mask.fill(BobUI::color1);
     {
         QPainter mp(&mask);
-        mp.fillRect(QRect(0, 0, size / 2, size / 2), Qt::color0);
+        mp.fillRect(QRect(0, 0, size / 2, size / 2), BobUI::color0);
     }
     return QPair<QBitmap, QBitmap>(bitmap, mask);
 }
@@ -103,7 +103,7 @@ static QCursor bitmapCursor(int size)
 
 static QCursor pixmapCursorDevicePixelRatio(int size, int dpr)
 {
-    QPixmap pixmap = paintPixmap(dpr * size, Qt::yellow);
+    QPixmap pixmap = paintPixmap(dpr * size, BobUI::yellow);
     pixmap.setDevicePixelRatio(dpr);
     return QCursor(pixmap, size / 2, size / 2);
 }
@@ -138,11 +138,11 @@ void DraggableLabel::mousePressEvent(QMouseEvent *)
     mimeData->setImageData(QVariant::fromValue(m_pixmap));
     QDrag *drag = new QDrag(this);
     QPixmap pixmap = m_pixmap;
-    if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
+    if (QApplication::keyboardModifiers() & BobUI::ShiftModifier) {
         QBitmap mask(pixmap.width(), pixmap.height());
         mask.clear();
         QPainter painter(&mask);
-        painter.setBrush(Qt::color1);
+        painter.setBrush(BobUI::color1);
         const int hx = pixmap.width() / 2;
         const int hy = pixmap.width() / 2;
         painter.drawEllipse(QPoint(hx, hy), hx, hy);
@@ -154,7 +154,7 @@ void DraggableLabel::mousePressEvent(QMouseEvent *)
     sizeP /= int(m_pixmap.devicePixelRatio());
     drag->setHotSpot(sizeP / 2);
     qDebug() << "Dragging:" << m_pixmap;
-    drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+    drag->exec(BobUI::CopyAction | BobUI::MoveAction, BobUI::CopyAction);
 }
 
 // Vertical ruler widget with 10 px marks
@@ -178,7 +178,7 @@ void VerticalRuler::paintEvent(QPaintEvent *)
     const QPoint sizeP(sizeS.width(), sizeS.height());
     const QPoint center = sizeP / 2;
     QPainter painter(this);
-    painter.fillRect(QRect(QPoint(0, 0), sizeS), Qt::white);
+    painter.fillRect(QRect(QPoint(0, 0), sizeS), BobUI::white);
     painter.drawLine(center.x(), 0, center.x(), sizeP.y());
     for (int y = 0; y < sizeP.y(); y += 10)
         painter.drawLine(center.x() - 5, y, center.x() + 5, y);
@@ -236,15 +236,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     QString title = "Cursors ";
     title += '(' + QGuiApplication::platformName() + ") ";
-    title += QT_VERSION_STR;
+    title += BOBUI_VERSION_STR;
     setWindowTitle(title);
 
     QMenu *fileMenu = menuBar()->addMenu("File");
     QAction *quitAction = fileMenu->addAction("Quit");
-    quitAction->setShortcut(Qt::CTRL | Qt::Key_Q);
+    quitAction->setShortcut(BobUI::CTRL | BobUI::Key_Q);
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-    QToolBar *fileToolBar = addToolBar("File");
+    BOBUIoolBar *fileToolBar = addToolBar("File");
     fileToolBar->addAction(quitAction);
 
     QWidget *cw = new QWidget;
@@ -258,8 +258,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     int row = 0;
     int col = 0;
-    for (int i = 0; i < Qt::BitmapCursor; ++i)
-        addToGrid(createCursorLabel(QCursor(static_cast<Qt::CursorShape>(i))), gridLayout, columnCount, row, col);
+    for (int i = 0; i < BobUI::BitmapCursor; ++i)
+        addToGrid(createCursorLabel(QCursor(static_cast<BobUI::CursorShape>(i))), gridLayout, columnCount, row, col);
 
     addToGrid(createCursorLabel(QCursor(pixmapCursor(size)),
                                 QLatin1String("Plain PX ") + QString::number(size)),

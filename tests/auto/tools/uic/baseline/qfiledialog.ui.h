@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'qfiledialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,26 +16,26 @@
 #ifndef QFILEDIALOG_H
 #define QFILEDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSplitter>
+#include <BobUIWidgets/QStackedWidget>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "qfiledialog_p.h"
 #include "qsidebar_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_QFileDialog
 {
@@ -44,12 +44,12 @@ public:
     QLabel *lookInLabel;
     QHBoxLayout *hboxLayout;
     QFileDialogComboBox *lookInCombo;
-    QToolButton *backButton;
-    QToolButton *forwardButton;
-    QToolButton *toParentButton;
-    QToolButton *newFolderButton;
-    QToolButton *listModeButton;
-    QToolButton *detailModeButton;
+    BOBUIoolButton *backButton;
+    BOBUIoolButton *forwardButton;
+    BOBUIoolButton *toParentButton;
+    BOBUIoolButton *newFolderButton;
+    BOBUIoolButton *listModeButton;
+    BOBUIoolButton *detailModeButton;
     QSplitter *splitter;
     QSidebar *sidebar;
     QFrame *frame;
@@ -93,32 +93,32 @@ public:
 
         hboxLayout->addWidget(lookInCombo);
 
-        backButton = new QToolButton(QFileDialog);
+        backButton = new BOBUIoolButton(QFileDialog);
         backButton->setObjectName("backButton");
 
         hboxLayout->addWidget(backButton);
 
-        forwardButton = new QToolButton(QFileDialog);
+        forwardButton = new BOBUIoolButton(QFileDialog);
         forwardButton->setObjectName("forwardButton");
 
         hboxLayout->addWidget(forwardButton);
 
-        toParentButton = new QToolButton(QFileDialog);
+        toParentButton = new BOBUIoolButton(QFileDialog);
         toParentButton->setObjectName("toParentButton");
 
         hboxLayout->addWidget(toParentButton);
 
-        newFolderButton = new QToolButton(QFileDialog);
+        newFolderButton = new BOBUIoolButton(QFileDialog);
         newFolderButton->setObjectName("newFolderButton");
 
         hboxLayout->addWidget(newFolderButton);
 
-        listModeButton = new QToolButton(QFileDialog);
+        listModeButton = new BOBUIoolButton(QFileDialog);
         listModeButton->setObjectName("listModeButton");
 
         hboxLayout->addWidget(listModeButton);
 
-        detailModeButton = new QToolButton(QFileDialog);
+        detailModeButton = new BOBUIoolButton(QFileDialog);
         detailModeButton->setObjectName("detailModeButton");
 
         hboxLayout->addWidget(detailModeButton);
@@ -133,7 +133,7 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(splitter->sizePolicy().hasHeightForWidth());
         splitter->setSizePolicy(sizePolicy1);
-        splitter->setOrientation(Qt::Orientation::Horizontal);
+        splitter->setOrientation(BobUI::Orientation::Horizontal);
         sidebar = new QSidebar(splitter);
         sidebar->setObjectName("sidebar");
         splitter->addWidget(sidebar);
@@ -201,7 +201,7 @@ public:
 
         buttonBox = new QDialogButtonBox(QFileDialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Vertical);
+        buttonBox->setOrientation(BobUI::Orientation::Vertical);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         gridLayout->addWidget(buttonBox, 2, 2, 2, 1);
@@ -250,24 +250,24 @@ public:
     void retranslateUi(QDialog *QFileDialog)
     {
         lookInLabel->setText(QCoreApplication::translate("QFileDialog", "Look in:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         backButton->setToolTip(QCoreApplication::translate("QFileDialog", "Back", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         forwardButton->setToolTip(QCoreApplication::translate("QFileDialog", "Forward", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         toParentButton->setToolTip(QCoreApplication::translate("QFileDialog", "Parent Directory", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         newFolderButton->setToolTip(QCoreApplication::translate("QFileDialog", "Create New Folder", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         listModeButton->setToolTip(QCoreApplication::translate("QFileDialog", "List View", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         detailModeButton->setToolTip(QCoreApplication::translate("QFileDialog", "Detail View", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         fileTypeLabel->setText(QCoreApplication::translate("QFileDialog", "Files of type:", nullptr));
         (void)QFileDialog;
     } // retranslateUi
@@ -278,6 +278,6 @@ namespace Ui {
     class QFileDialog: public Ui_QFileDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILEDIALOG_H

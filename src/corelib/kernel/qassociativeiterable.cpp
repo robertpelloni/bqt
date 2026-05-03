@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qassociativeiterable.h>
-#include <QtCore/qiterable_impl.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qassociativeiterable.h>
+#include <BobUICore/qiterable_impl.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_DEPRECATED_SINCE(6, 15)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 /*!
     \class QAssociativeIterator
@@ -21,7 +21,7 @@ QT_WARNING_DISABLE_DEPRECATED
 */
 QVariant QAssociativeIterator::key() const
 {
-    return QtIterablePrivate::retrieveElement(
+    return BobUIIterablePrivate::retrieveElement(
                 metaContainer().keyMetaType(), [this](void *dataPtr) {
         metaContainer().keyAtIterator(constIterator(), dataPtr);
     });
@@ -67,7 +67,7 @@ QVariantPointer<QAssociativeIterator> QAssociativeIterator::operator->() const
 */
 QVariant QAssociativeConstIterator::key() const
 {
-    return QtIterablePrivate::retrieveElement(
+    return BobUIIterablePrivate::retrieveElement(
                 metaContainer().keyMetaType(), [this](void *dataPtr) {
         metaContainer().keyAtConstIterator(constIterator(), dataPtr);
     });
@@ -79,7 +79,7 @@ QVariant QAssociativeConstIterator::key() const
 */
 QVariant QAssociativeConstIterator::value() const
 {
-    return QtIterablePrivate::retrieveElement(
+    return BobUIIterablePrivate::retrieveElement(
                 metaContainer().mappedMetaType(), [this](void *dataPtr) {
         metaContainer().mappedAtConstIterator(constIterator(), dataPtr);
     });
@@ -109,7 +109,7 @@ QVariantConstPointer QAssociativeConstIterator::operator->() const
     \class QAssociativeIterable
     \deprecated [6.15] Use QMetaAssociation::Iterable instead.
     \since 5.2
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAssociativeIterable class is an iterable interface for an associative container in a QVariant.
 
     This class allows several methods of accessing the elements of an associative container held within
@@ -169,7 +169,7 @@ QVariantConstPointer QAssociativeConstIterator::operator->() const
 QAssociativeIterable::const_iterator QAssociativeIterable::find(const QVariant &key) const
 {
     const QMetaAssociation meta = metaContainer();
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     if (const void *keyData = coercer.convert(key, meta.keyMetaType())) {
         return const_iterator(QConstIterator(this, meta.createConstIteratorAtKey(
                                                  constIterable(), keyData)));
@@ -185,7 +185,7 @@ QAssociativeIterable::const_iterator QAssociativeIterable::find(const QVariant &
 QAssociativeIterable::iterator QAssociativeIterable::mutableFind(const QVariant &key)
 {
     const QMetaAssociation meta = metaContainer();
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     if (const void *keyData = coercer.convert(key, meta.keyMetaType()))
         return iterator(QIterator(this, meta.createIteratorAtKey(mutableIterable(), keyData)));
     return mutableEnd();
@@ -198,7 +198,7 @@ QAssociativeIterable::iterator QAssociativeIterable::mutableFind(const QVariant 
  */
 bool QAssociativeIterable::containsKey(const QVariant &key)
 {
-    QtPrivate::QVariantTypeCoercer keyCoercer;
+    BobUIPrivate::QVariantTypeCoercer keyCoercer;
     QMetaAssociation meta = metaContainer();
     if (const void *keyData = keyCoercer.convert(key, meta.keyMetaType()))
         return meta.containsKey(constIterable(), keyData);
@@ -214,7 +214,7 @@ bool QAssociativeIterable::containsKey(const QVariant &key)
 void QAssociativeIterable::insertKey(const QVariant &key)
 {
     QMetaAssociation meta = metaContainer();
-    QtPrivate::QVariantTypeCoercer keyCoercer;
+    BobUIPrivate::QVariantTypeCoercer keyCoercer;
     meta.insertKey(mutableIterable(), keyCoercer.coerce(key, meta.keyMetaType()));
 }
 
@@ -226,7 +226,7 @@ void QAssociativeIterable::insertKey(const QVariant &key)
 void QAssociativeIterable::removeKey(const QVariant &key)
 {
     QMetaAssociation meta = metaContainer();
-    QtPrivate::QVariantTypeCoercer keyCoercer;
+    BobUIPrivate::QVariantTypeCoercer keyCoercer;
     meta.removeKey(mutableIterable(), keyCoercer.coerce(key, meta.keyMetaType()));
 }
 
@@ -242,7 +242,7 @@ QVariant QAssociativeIterable::value(const QVariant &key) const
     const QMetaAssociation meta = metaContainer();
     const QMetaType mappedMetaType = meta.mappedMetaType();
 
-    QtPrivate::QVariantTypeCoercer coercer;
+    BobUIPrivate::QVariantTypeCoercer coercer;
     const void *keyData = coercer.coerce(key, meta.keyMetaType());
 
     if (mappedMetaType == QMetaType::fromType<QVariant>()) {
@@ -264,8 +264,8 @@ QVariant QAssociativeIterable::value(const QVariant &key) const
  */
 void QAssociativeIterable::setValue(const QVariant &key, const QVariant &mapped)
 {
-    QtPrivate::QVariantTypeCoercer keyCoercer;
-    QtPrivate::QVariantTypeCoercer mappedCoercer;
+    BobUIPrivate::QVariantTypeCoercer keyCoercer;
+    BobUIPrivate::QVariantTypeCoercer mappedCoercer;
     QMetaAssociation meta = metaContainer();
     meta.setMappedAtKey(mutableIterable(), keyCoercer.coerce(key, meta.keyMetaType()),
                         mappedCoercer.coerce(mapped, meta.mappedMetaType()));
@@ -274,7 +274,7 @@ void QAssociativeIterable::setValue(const QVariant &key, const QVariant &mapped)
 /*!
     \typealias QAssociativeIterable::const_iterator
     \deprecated [6.15] Use QMetaAssociation::Iterable::ConstIterator instead.
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAssociativeIterable::const_iterator allows iteration over a container in a QVariant.
 
     A QAssociativeIterable::const_iterator can only be created by a QAssociativeIterable instance,
@@ -287,7 +287,7 @@ void QAssociativeIterable::setValue(const QVariant &key, const QVariant &mapped)
     \typealias QAssociativeIterable::iterator
     \since 6.0
     \deprecated [6.15] Use QMetaAssociation::Iterable::Iterator instead.
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAssociativeIterable::iterator allows iteration over a container in a QVariant.
 
     A QAssociativeIterable::iterator can only be created by a QAssociativeIterable instance,
@@ -296,7 +296,7 @@ void QAssociativeIterable::setValue(const QVariant &key, const QVariant &mapped)
     \sa QAssociativeIterable
 */
 
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 15)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 15)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

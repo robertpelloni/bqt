@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2024 Jie Liu <liujie01@kylinos.cn>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDDISPLAY_H
 #define QWAYLANDDISPLAY_H
@@ -9,37 +9,37 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/QList>
-#include <QtCore/QObject>
-#include <QtCore/QPointer>
-#include <QtCore/QRect>
-#include <QtCore/QMutex>
-#include <QtCore/QReadWriteLock>
+#include <BobUICore/QList>
+#include <BobUICore/QObject>
+#include <BobUICore/QPointer>
+#include <BobUICore/QRect>
+#include <BobUICore/QMutex>
+#include <BobUICore/QReadWriteLock>
 
-#include <QtCore/QWaitCondition>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QWaitCondition>
+#include <BobUICore/QLoggingCategory>
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
-#include <QtWaylandClient/private/qwaylandshm_p.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/qwaylandshm_p.h>
 
 #include <qpa/qplatforminputcontextfactory_p.h>
 
-#if QT_CONFIG(xkbcommon)
-#include <QtGui/private/qxkbcommon_p.h>
+#if BOBUI_CONFIG(xkbcommon)
+#include <BobUIGui/private/qxkbcommon_p.h>
 #endif
 
 struct wl_cursor_image;
 struct wp_viewport;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define WAYLAND_IM_KEY "wayland"
 
@@ -48,11 +48,11 @@ class QSocketNotifier;
 class QPlatformScreen;
 class QPlatformPlaceholderScreen;
 
-namespace QtWayland {
+namespace BobUIWayland {
     class zwp_text_input_manager_v1;
     class zwp_text_input_manager_v2;
     class zwp_text_input_manager_v3;
-    class qt_text_input_method_manager_v1;
+    class bobui_text_input_method_manager_v1;
     class wp_cursor_shape_manager_v1;
     class wp_fractional_scale_manager_v1;
     class wp_viewporter;
@@ -62,9 +62,9 @@ namespace QtWayland {
     class wp_pointer_warp_v1;
 }
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcQpaWayland, Q_WAYLANDCLIENT_EXPORT);
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcQpaWayland, Q_WAYLANDCLIENT_EXPORT);
 
 class QWaylandAppMenuManager;
 class QWaylandInputDevice;
@@ -74,13 +74,13 @@ class QWaylandXdgOutputManagerV1;
 class QWaylandClientBufferIntegration;
 class QWaylandWindowManagerIntegration;
 class QWaylandDataDeviceManager;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 class QWaylandDataControlManagerV1;
 #endif
-#if QT_CONFIG(wayland_client_primary_selection)
+#if BOBUI_CONFIG(wayland_client_primary_selection)
 class QWaylandPrimarySelectionDeviceManagerV1;
 #endif
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 class QWaylandTabletManagerV2;
 #endif
 class QWaylandPointerGestures;
@@ -101,7 +101,7 @@ typedef void (*RegistryListener)(void *data,
                                  const QString &interface,
                                  uint32_t version);
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandDisplay : public QObject, public QtWayland::wl_registry {
+class Q_WAYLANDCLIENT_EXPORT QWaylandDisplay : public QObject, public BobUIWayland::wl_registry {
     Q_OBJECT
 
 public:
@@ -110,7 +110,7 @@ public:
 
     bool initialize();
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     struct xkb_context *xkbContext() const { return mXkbContext.get(); }
 #endif
 
@@ -130,7 +130,7 @@ public:
     QWaylandClientBufferIntegration *clientBufferIntegration() const;
     QWaylandWindowManagerIntegration *windowManagerIntegration() const;
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     QWaylandCursor *waylandCursor();
     QWaylandCursorTheme *loadCursorTheme(const QString &name, int pixelSize);
 #endif
@@ -140,7 +140,7 @@ public:
     }
     struct ::wl_registry *wl_registry() { return object(); }
 
-    QtWayland::wl_compositor *compositor()
+    BobUIWayland::wl_compositor *compositor()
     {
         return mGlobals.compositor.get();
     }
@@ -148,25 +148,25 @@ public:
     QList<QWaylandInputDevice *> inputDevices() const { return mInputDevices; }
     QWaylandInputDevice *defaultInputDevice() const;
     QWaylandInputDevice *currentInputDevice() const { return defaultInputDevice(); }
-#if QT_CONFIG(wayland_datadevice)
+#if BOBUI_CONFIG(wayland_datadevice)
     QWaylandDataDeviceManager *dndSelectionHandler() const
     {
         return mGlobals.dndSelectionHandler.get();
     }
 #endif
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QWaylandDataControlManagerV1 *dataControlManager() const
     {
         return mGlobals.dataControlManager.get();
     }
 #endif
-#if QT_CONFIG(wayland_client_primary_selection)
+#if BOBUI_CONFIG(wayland_client_primary_selection)
     QWaylandPrimarySelectionDeviceManagerV1 *primarySelectionManager() const
     {
         return mGlobals.primarySelectionManager.get();
     }
 #endif
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QWaylandTabletManagerV2 *tabletManager() const
     {
         return mGlobals.tabletManager.get();
@@ -176,19 +176,19 @@ public:
     {
         return mGlobals.pointerGestures.get();
     }
-    QtWayland::qt_text_input_method_manager_v1 *textInputMethodManager() const
+    BobUIWayland::bobui_text_input_method_manager_v1 *textInputMethodManager() const
     {
         return mGlobals.textInputMethodManager.get();
     }
-    QtWayland::zwp_text_input_manager_v1 *textInputManagerv1() const
+    BobUIWayland::zwp_text_input_manager_v1 *textInputManagerv1() const
     {
         return mGlobals.textInputManagerv1.get();
     }
-    QtWayland::zwp_text_input_manager_v2 *textInputManagerv2() const
+    BobUIWayland::zwp_text_input_manager_v2 *textInputManagerv2() const
     {
         return mGlobals.textInputManagerv2.get();
     }
-    QtWayland::zwp_text_input_manager_v3 *textInputManagerv3() const
+    BobUIWayland::zwp_text_input_manager_v3 *textInputManagerv3() const
     {
         return mGlobals.textInputManagerv3.get();
     }
@@ -200,27 +200,27 @@ public:
     {
         return mGlobals.xdgOutputManager.get();
     }
-    QtWayland::wp_fractional_scale_manager_v1 *fractionalScaleManager() const
+    BobUIWayland::wp_fractional_scale_manager_v1 *fractionalScaleManager() const
     {
         return mGlobals.fractionalScaleManager.get();
     }
-    QtWayland::wp_viewporter *viewporter() const
+    BobUIWayland::wp_viewporter *viewporter() const
     {
         return mGlobals.viewporter.get();
     }
-    QtWayland::wp_cursor_shape_manager_v1 *cursorShapeManager() const
+    BobUIWayland::wp_cursor_shape_manager_v1 *cursorShapeManager() const
     {
         return mGlobals.cursorShapeManager.get();
     }
-    QtWayland::xdg_toplevel_drag_manager_v1 *xdgToplevelDragManager() const
+    BobUIWayland::xdg_toplevel_drag_manager_v1 *xdgToplevelDragManager() const
     {
         return mGlobals.xdgToplevelDragManager.get();
     }
-    QtWayland::xx_session_manager_v1 *xxSessionManager() const
+    BobUIWayland::xx_session_manager_v1 *xxSessionManager() const
     {
         return mGlobals.xxSessionManager.get();
     }
-    QtWayland::xdg_system_bell_v1 *systemBell() const
+    BobUIWayland::xdg_system_bell_v1 *systemBell() const
     {
         return mGlobals.systemBell.get();
     }
@@ -232,7 +232,7 @@ public:
     {
         return mGlobals.colorManager.get();
     }
-    QtWayland::wp_pointer_warp_v1 *pointerWarp() const
+    BobUIWayland::wp_pointer_warp_v1 *pointerWarp() const
     {
         return mGlobals.pointerWarp.get();
     }
@@ -319,7 +319,7 @@ private:
     QList<QWaylandInputDevice *> mInputDevices;
     QList<Listener> mRegistryListeners;
     QWaylandIntegration *mWaylandIntegration = nullptr;
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     struct WaylandCursorTheme {
         QString name;
         int pixelSize;
@@ -341,38 +341,38 @@ private:
 
     struct GlobalHolder
     {
-        std::unique_ptr<QtWayland::wl_compositor> compositor;
+        std::unique_ptr<BobUIWayland::wl_compositor> compositor;
         std::unique_ptr<QWaylandShm> shm;
-#if QT_CONFIG(wayland_datadevice)
+#if BOBUI_CONFIG(wayland_datadevice)
         std::unique_ptr<QWaylandDataDeviceManager> dndSelectionHandler;
 #endif
-        std::unique_ptr<QtWayland::wl_subcompositor> subCompositor;
-#if QT_CONFIG(tabletevent)
+        std::unique_ptr<BobUIWayland::wl_subcompositor> subCompositor;
+#if BOBUI_CONFIG(tabletevent)
         std::unique_ptr<QWaylandTabletManagerV2> tabletManager;
 #endif
         std::unique_ptr<QWaylandPointerGestures> pointerGestures;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
         std::unique_ptr<QWaylandDataControlManagerV1> dataControlManager;
 #endif
-#if QT_CONFIG(wayland_client_primary_selection)
+#if BOBUI_CONFIG(wayland_client_primary_selection)
         std::unique_ptr<QWaylandPrimarySelectionDeviceManagerV1> primarySelectionManager;
 #endif
-        std::unique_ptr<QtWayland::qt_text_input_method_manager_v1> textInputMethodManager;
-        std::unique_ptr<QtWayland::zwp_text_input_manager_v1> textInputManagerv1;
-        std::unique_ptr<QtWayland::zwp_text_input_manager_v2> textInputManagerv2;
-        std::unique_ptr<QtWayland::zwp_text_input_manager_v3> textInputManagerv3;
+        std::unique_ptr<BobUIWayland::bobui_text_input_method_manager_v1> textInputMethodManager;
+        std::unique_ptr<BobUIWayland::zwp_text_input_manager_v1> textInputManagerv1;
+        std::unique_ptr<BobUIWayland::zwp_text_input_manager_v2> textInputManagerv2;
+        std::unique_ptr<BobUIWayland::zwp_text_input_manager_v3> textInputManagerv3;
         std::unique_ptr<QWaylandHardwareIntegration> hardwareIntegration;
         std::unique_ptr<QWaylandXdgOutputManagerV1> xdgOutputManager;
-        std::unique_ptr<QtWayland::wp_viewporter> viewporter;
-        std::unique_ptr<QtWayland::wp_fractional_scale_manager_v1> fractionalScaleManager;
-        std::unique_ptr<QtWayland::wp_cursor_shape_manager_v1> cursorShapeManager;
-        std::unique_ptr<QtWayland::xx_session_manager_v1> xxSessionManager;
-        std::unique_ptr<QtWayland::xdg_system_bell_v1> systemBell;
-        std::unique_ptr<QtWayland::xdg_toplevel_drag_manager_v1> xdgToplevelDragManager;
+        std::unique_ptr<BobUIWayland::wp_viewporter> viewporter;
+        std::unique_ptr<BobUIWayland::wp_fractional_scale_manager_v1> fractionalScaleManager;
+        std::unique_ptr<BobUIWayland::wp_cursor_shape_manager_v1> cursorShapeManager;
+        std::unique_ptr<BobUIWayland::xx_session_manager_v1> xxSessionManager;
+        std::unique_ptr<BobUIWayland::xdg_system_bell_v1> systemBell;
+        std::unique_ptr<BobUIWayland::xdg_toplevel_drag_manager_v1> xdgToplevelDragManager;
         std::unique_ptr<QWaylandWindowManagerIntegration> windowManagerIntegration;
         std::unique_ptr<QWaylandAppMenuManager> appMenuManager;
         std::unique_ptr<ColorManager> colorManager;
-        std::unique_ptr<QtWayland::wp_pointer_warp_v1> pointerWarp;
+        std::unique_ptr<BobUIWayland::wp_pointer_warp_v1> pointerWarp;
     } mGlobals;
 
     int mFd = -1;
@@ -398,7 +398,7 @@ private:
     void registry_global(uint32_t id, const QString &interface, uint32_t version) override;
     void registry_global_remove(uint32_t id) override;
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     QXkbCommon::ScopedXKBContext mXkbContext;
 #endif
 
@@ -407,6 +407,6 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDDISPLAY_H

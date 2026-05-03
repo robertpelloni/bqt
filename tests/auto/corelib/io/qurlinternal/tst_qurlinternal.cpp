@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QUrl>
-#include <QTest>
+#include <BobUICore/QUrl>
+#include <BOBUIest>
 
 #include "private/qurl_p.h"
 
@@ -16,7 +16,7 @@
 #define STRINGPREP_BIDI_BOTH_L_AND_RAL 4
 #define STRINGPREP_BIDI_LEADTRAIL_NOT_RAL 5
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 struct char16array {
     char16array() {}
@@ -39,7 +39,7 @@ class tst_QUrlInternal : public QObject
 
 private Q_SLOTS:
     // IDNA internals
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void idna_testsuite_data();
     void idna_testsuite();
 #endif
@@ -63,47 +63,47 @@ private Q_SLOTS:
 };
 #include "tst_qurlinternal.moc"
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QUrlInternal::idna_testsuite_data()
 {
-    QTest::addColumn<int>("numchars");
-    QTest::addColumn<char16array>("unicode");
-    QTest::addColumn<QByteArray>("punycode");
-    QTest::addColumn<int>("allowunassigned");
-    QTest::addColumn<int>("usestd3asciirules");
-    QTest::addColumn<int>("toasciirc");
-    QTest::addColumn<int>("tounicoderc");
+    BOBUIest::addColumn<int>("numchars");
+    BOBUIest::addColumn<char16array>("unicode");
+    BOBUIest::addColumn<QByteArray>("punycode");
+    BOBUIest::addColumn<int>("allowunassigned");
+    BOBUIest::addColumn<int>("usestd3asciirules");
+    BOBUIest::addColumn<int>("toasciirc");
+    BOBUIest::addColumn<int>("tounicoderc");
 
     char16_t d1[] = { 0x0644, 0x064A, 0x0647, 0x0645, 0x0627, 0x0628, 0x062A, 0x0643,
                       0x0644, 0x0645, 0x0648, 0x0634, 0x0639, 0x0631, 0x0628, 0x064A,
                       0x061F };
-    QTest::newRow("Arabic (Egyptian)") << 17 << char16array(d1)
+    BOBUIest::newRow("Arabic (Egyptian)") << 17 << char16array(d1)
                                     << QByteArray(IDNA_ACE_PREFIX "egbpdaj6bu4bxfgehfvwxn")
                                     << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d2[] = { 0x4ED6, 0x4EEC, 0x4E3A, 0x4EC0, 0x4E48, 0x4E0D, 0x8BF4, 0x4E2D,
                       0x6587 };
-    QTest::newRow("Chinese (simplified)") << 9 << char16array(d2)
+    BOBUIest::newRow("Chinese (simplified)") << 9 << char16array(d2)
                                        << QByteArray(IDNA_ACE_PREFIX "ihqwcrb4cv8a8dqg056pqjye")
                                        << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d3[] = { 0x4ED6, 0x5011, 0x7232, 0x4EC0, 0x9EBD, 0x4E0D, 0x8AAA, 0x4E2D,
                       0x6587 };
-    QTest::newRow("Chinese (traditional)") << 9 << char16array(d3)
+    BOBUIest::newRow("Chinese (traditional)") << 9 << char16array(d3)
                                         << QByteArray(IDNA_ACE_PREFIX "ihqwctvzc91f659drss3x8bo0yb")
                                         << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d4[] = { 0x0050, 0x0072, 0x006F, 0x010D, 0x0070, 0x0072, 0x006F, 0x0073,
                       0x0074, 0x011B, 0x006E, 0x0065, 0x006D, 0x006C, 0x0075, 0x0076,
                       0x00ED, 0x010D, 0x0065, 0x0073, 0x006B, 0x0079 };
-    QTest::newRow("Czech") << 22 << char16array(d4)
+    BOBUIest::newRow("Czech") << 22 << char16array(d4)
                         << QByteArray(IDNA_ACE_PREFIX "Proprostnemluvesky-uyb24dma41a")
                         << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d5[] = { 0x05DC, 0x05DE, 0x05D4, 0x05D4, 0x05DD, 0x05E4, 0x05E9, 0x05D5,
                       0x05D8, 0x05DC, 0x05D0, 0x05DE, 0x05D3, 0x05D1, 0x05E8, 0x05D9,
                       0x05DD, 0x05E2, 0x05D1, 0x05E8, 0x05D9, 0x05EA };
-    QTest::newRow("Hebrew") << 22 << char16array(d5)
+    BOBUIest::newRow("Hebrew") << 22 << char16array(d5)
                          << QByteArray(IDNA_ACE_PREFIX "4dbcagdahymbxekheh6e0a7fei0b")
                          << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
@@ -111,14 +111,14 @@ void tst_QUrlInternal::idna_testsuite_data()
                       0x094D, 0x0926, 0x0940, 0x0915, 0x094D, 0x092F, 0x094B, 0x0902,
                       0x0928, 0x0939, 0x0940, 0x0902, 0x092C, 0x094B, 0x0932, 0x0938,
                       0x0915, 0x0924, 0x0947, 0x0939, 0x0948, 0x0902 };
-    QTest::newRow("Hindi (Devanagari)") << 30 << char16array(d6)
+    BOBUIest::newRow("Hindi (Devanagari)") << 30 << char16array(d6)
                                      << QByteArray(IDNA_ACE_PREFIX "i1baa7eci9glrd9b2ae1bj0hfcgg6iyaf8o0a1dig0cd")
                                      << 0 << 0 << IDNA_SUCCESS;
 
     char16_t d7[] = { 0x306A, 0x305C, 0x307F, 0x3093, 0x306A, 0x65E5, 0x672C, 0x8A9E,
                       0x3092, 0x8A71, 0x3057, 0x3066, 0x304F, 0x308C, 0x306A, 0x3044,
                       0x306E, 0x304B };
-    QTest::newRow("Japanese (kanji and hiragana)") << 18 << char16array(d7)
+    BOBUIest::newRow("Japanese (kanji and hiragana)") << 18 << char16array(d7)
                                                 << QByteArray(IDNA_ACE_PREFIX "n8jok5ay5dzabd5bym9f0cm5685rrjetr6pdxa")
                                                 << 0 << 0 << IDNA_SUCCESS;
 
@@ -126,7 +126,7 @@ void tst_QUrlInternal::idna_testsuite_data()
                       0x043E, 0x043D, 0x0438, 0x043D, 0x0435, 0x0433, 0x043E, 0x0432,
                       0x043E, 0x0440, 0x044F, 0x0442, 0x043F, 0x043E, 0x0440, 0x0443,
                       0x0441, 0x0441, 0x043A, 0x0438 };
-    QTest::newRow("Russian (Cyrillic)") << 28 << char16array(d8)
+    BOBUIest::newRow("Russian (Cyrillic)") << 28 << char16array(d8)
                                      << QByteArray(IDNA_ACE_PREFIX "b1abfaaepdrnnbgefbadotcwatmq2g4l")
                                      << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
@@ -135,7 +135,7 @@ void tst_QUrlInternal::idna_testsuite_data()
                       0x006D, 0x0070, 0x006C, 0x0065, 0x006D, 0x0065, 0x006E, 0x0074,
                       0x0065, 0x0068, 0x0061, 0x0062, 0x006C, 0x0061, 0x0072, 0x0065,
                       0x006E, 0x0045, 0x0073, 0x0070, 0x0061, 0x00F1, 0x006F, 0x006C };
-    QTest::newRow("Spanish") << 40 << char16array(d9)
+    BOBUIest::newRow("Spanish") << 40 << char16array(d9)
                           << QByteArray(IDNA_ACE_PREFIX "PorqunopuedensimplementehablarenEspaol-fmd56a")
                           << 0 << 0 << IDNA_SUCCESS;
 
@@ -143,12 +143,12 @@ void tst_QUrlInternal::idna_testsuite_data()
                        0x006B, 0x0068, 0x00F4, 0x006E, 0x0067, 0x0074, 0x0068, 0x1EC3,
                        0x0063, 0x0068, 0x1EC9, 0x006E, 0x00F3, 0x0069, 0x0074, 0x0069,
                        0x1EBF, 0x006E, 0x0067, 0x0056, 0x0069, 0x1EC7, 0x0074 };
-    QTest::newRow("Vietnamese") << 31 << char16array(d10)
+    BOBUIest::newRow("Vietnamese") << 31 << char16array(d10)
                              << QByteArray(IDNA_ACE_PREFIX "TisaohkhngthchnitingVit-kjcr8268qyxafd2f1b9g")
                              << 0 << 0 << IDNA_SUCCESS;
 
     char16_t d11[] = { 0x0033, 0x5E74, 0x0042, 0x7D44, 0x91D1, 0x516B, 0x5148, 0x751F };
-    QTest::newRow("Japanese") << 8 << char16array(d11)
+    BOBUIest::newRow("Japanese") << 8 << char16array(d11)
                            << QByteArray(IDNA_ACE_PREFIX "3B-ww4c5e180e575a65lsy2b")
                            << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
@@ -156,7 +156,7 @@ void tst_QUrlInternal::idna_testsuite_data()
     char16_t d12[] = { 0x5B89, 0x5BA4, 0x5948, 0x7F8E, 0x6075, 0x002D, 0x0077, 0x0069,
                        0x0074, 0x0068, 0x002D, 0x0053, 0x0055, 0x0050, 0x0045, 0x0052,
                        0x002D, 0x004D, 0x004F, 0x004E, 0x004B, 0x0045, 0x0059, 0x0053 };
-    QTest::newRow("Japanese2") << 24 << char16array(d12)
+    BOBUIest::newRow("Japanese2") << 24 << char16array(d12)
                             << QByteArray(IDNA_ACE_PREFIX "-with-SUPER-MONKEYS-pc58ag80a8qai00g7n9n")
                             << 0 << 0 << IDNA_SUCCESS;
 
@@ -164,39 +164,39 @@ void tst_QUrlInternal::idna_testsuite_data()
                        0x006F, 0x0074, 0x0068, 0x0065, 0x0072, 0x002D, 0x0057, 0x0061,
                        0x0079, 0x002D, 0x305D, 0x308C, 0x305E, 0x308C, 0x306E, 0x5834,
                        0x6240 };
-    QTest::newRow("Japanese3") << 25 << char16array(d13)
+    BOBUIest::newRow("Japanese3") << 25 << char16array(d13)
                             << QByteArray(IDNA_ACE_PREFIX "Hello-Another-Way--fc4qua05auwb3674vfr0b")
                             << 0 << 0 << IDNA_SUCCESS;
 
     char16_t d14[] = { 0x3072, 0x3068, 0x3064, 0x5C4B, 0x6839, 0x306E, 0x4E0B, 0x0032 };
-    QTest::newRow("Japanese4") << 8 << char16array(d14)
+    BOBUIest::newRow("Japanese4") << 8 << char16array(d14)
                             << QByteArray(IDNA_ACE_PREFIX "2-u9tlzr9756bt3uc0v")
                             << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d15[] = { 0x004D, 0x0061, 0x006A, 0x0069, 0x3067, 0x004B, 0x006F, 0x0069,
                        0x3059, 0x308B, 0x0035, 0x79D2, 0x524D };
-    QTest::newRow("Japanese5") << 13 << char16array(d15)
+    BOBUIest::newRow("Japanese5") << 13 << char16array(d15)
                             << QByteArray(IDNA_ACE_PREFIX "MajiKoi5-783gue6qz075azm5e")
                             << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d16[] = { 0x30D1, 0x30D5, 0x30A3, 0x30FC, 0x0064, 0x0065, 0x30EB, 0x30F3, 0x30D0 };
-    QTest::newRow("Japanese6") << 9 << char16array(d16)
+    BOBUIest::newRow("Japanese6") << 9 << char16array(d16)
                             << QByteArray(IDNA_ACE_PREFIX "de-jg4avhby1noc0d")
                             << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d17[] = { 0x305D, 0x306E, 0x30B9, 0x30D4, 0x30FC, 0x30C9, 0x3067 };
-    QTest::newRow("Japanese7") << 7 << char16array(d17)
+    BOBUIest::newRow("Japanese7") << 7 << char16array(d17)
                             << QByteArray(IDNA_ACE_PREFIX "d9juau41awczczp")
                             << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d18[] = { 0x03b5, 0x03bb, 0x03bb, 0x03b7, 0x03bd, 0x03b9, 0x03ba, 0x03ac };
-    QTest::newRow("Greek") << 8 << char16array(d18)
+    BOBUIest::newRow("Greek") << 8 << char16array(d18)
                         << QByteArray(IDNA_ACE_PREFIX "hxargifdar")
                         << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d19[] = { 0x0062, 0x006f, 0x006e, 0x0121, 0x0075, 0x0073, 0x0061, 0x0127,
                        0x0127, 0x0061 };
-    QTest::newRow("Maltese (Malti)") << 10 << char16array(d19)
+    BOBUIest::newRow("Maltese (Malti)") << 10 << char16array(d19)
                                   << QByteArray(IDNA_ACE_PREFIX "bonusaa-5bb1da")
                                   << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
@@ -204,16 +204,16 @@ void tst_QUrlInternal::idna_testsuite_data()
                       0x043e, 0x043d, 0x0438, 0x043d, 0x0435, 0x0433, 0x043e, 0x0432,
                       0x043e, 0x0440, 0x044f, 0x0442, 0x043f, 0x043e, 0x0440, 0x0443,
                       0x0441, 0x0441, 0x043a, 0x0438 };
-    QTest::newRow("Russian (Cyrillic)") << 28 << char16array(d20)
+    BOBUIest::newRow("Russian (Cyrillic)") << 28 << char16array(d20)
                                      << QByteArray(IDNA_ACE_PREFIX "b1abfaaepdrnnbgefbadotcwatmq2g4l")
                                      << 0 << 0 << IDNA_SUCCESS << IDNA_SUCCESS;
 
     char16_t d21[] = { 0xd800, 0xdef7 };
-    QTest::newRow("U+102F7") << 2 << char16array(d21) << QByteArray(IDNA_ACE_PREFIX "r97c");
+    BOBUIest::newRow("U+102F7") << 2 << char16array(d21) << QByteArray(IDNA_ACE_PREFIX "r97c");
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QUrlInternal::idna_testsuite()
 {
     QFETCH(int, numchars);
@@ -221,101 +221,101 @@ void tst_QUrlInternal::idna_testsuite()
     QFETCH(QByteArray, punycode);
 
     QString result;
-    qt_punycodeEncoder(QStringView{unicode.points, numchars}, &result);
+    bobui_punycodeEncoder(QStringView{unicode.points, numchars}, &result);
     QCOMPARE(result.toLatin1(), punycode);
-    QCOMPARE(qt_punycodeDecoder(result), QString::fromUtf16(unicode.points, numchars));
+    QCOMPARE(bobui_punycodeDecoder(result), QString::fromUtf16(unicode.points, numchars));
 }
 #endif
 
 void tst_QUrlInternal::ace_testsuite_data()
 {
-    QTest::addColumn<QString>("in");
-    QTest::addColumn<QString>("toace");
-    QTest::addColumn<QString>("fromace");
-    QTest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QString>("in");
+    BOBUIest::addColumn<QString>("toace");
+    BOBUIest::addColumn<QString>("fromace");
+    BOBUIest::addColumn<QString>("unicode");
 
-    QTest::newRow("ascii-lower") << "fluke" << "fluke" << "fluke" << "fluke";
-    QTest::newRow("ascii-mixed") << "FLuke" << "fluke" << "fluke" << "fluke";
-    QTest::newRow("ascii-upper") << "FLUKE" << "fluke" << "fluke" << "fluke";
+    BOBUIest::newRow("ascii-lower") << "fluke" << "fluke" << "fluke" << "fluke";
+    BOBUIest::newRow("ascii-mixed") << "FLuke" << "fluke" << "fluke" << "fluke";
+    BOBUIest::newRow("ascii-upper") << "FLUKE" << "fluke" << "fluke" << "fluke";
 
     // U+FB01 LATIN SMALL LIGATURE FI
-    QTest::newRow("asciifolded") << u"\uFB01le"_s << "file" << "." << "file";
-    QTest::newRow("asciifolded-dotcom") << u"\uFB01le.example.com"_s << "file.example.com" << "." << "file.example.com";
-    QTest::newRow("greek-mu") << QString::fromLatin1("\265V")
+    BOBUIest::newRow("asciifolded") << u"\uFB01le"_s << "file" << "." << "file";
+    BOBUIest::newRow("asciifolded-dotcom") << u"\uFB01le.example.com"_s << "file.example.com" << "." << "file.example.com";
+    BOBUIest::newRow("greek-mu") << QString::fromLatin1("\265V")
                               <<"xn--v-lmb"
                               << "."
                               << QString::fromUtf8("\316\274v");
 
-    QTest::newRow("non-ascii-lower") << QString::fromLatin1("alqualond\353")
+    BOBUIest::newRow("non-ascii-lower") << QString::fromLatin1("alqualond\353")
                                      << "xn--alqualond-34a"
                                      << "."
                                      << QString::fromLatin1("alqualond\353");
-    QTest::newRow("non-ascii-mixed") << QString::fromLatin1("Alqualond\353")
+    BOBUIest::newRow("non-ascii-mixed") << QString::fromLatin1("Alqualond\353")
                                      << "xn--alqualond-34a"
                                      << "."
                                      << QString::fromLatin1("alqualond\353");
-    QTest::newRow("non-ascii-upper") << QString::fromLatin1("ALQUALOND\313")
+    BOBUIest::newRow("non-ascii-upper") << QString::fromLatin1("ALQUALOND\313")
                                      << "xn--alqualond-34a"
                                      << "."
                                      << QString::fromLatin1("alqualond\353");
 
-    QTest::newRow("idn-lower") << "xn--alqualond-34a" << "xn--alqualond-34a"
+    BOBUIest::newRow("idn-lower") << "xn--alqualond-34a" << "xn--alqualond-34a"
                                << QString::fromLatin1("alqualond\353")
                                << QString::fromLatin1("alqualond\353");
-    QTest::newRow("idn-mixed") << "Xn--alqualond-34a" << "xn--alqualond-34a"
+    BOBUIest::newRow("idn-mixed") << "Xn--alqualond-34a" << "xn--alqualond-34a"
                                << QString::fromLatin1("alqualond\353")
                                << QString::fromLatin1("alqualond\353");
-    QTest::newRow("idn-mixed2") << "XN--alqualond-34a" << "xn--alqualond-34a"
+    BOBUIest::newRow("idn-mixed2") << "XN--alqualond-34a" << "xn--alqualond-34a"
                                 << QString::fromLatin1("alqualond\353")
                                 << QString::fromLatin1("alqualond\353");
-    QTest::newRow("idn-mixed3") << "xn--ALQUALOND-34a" << "xn--alqualond-34a"
+    BOBUIest::newRow("idn-mixed3") << "xn--ALQUALOND-34a" << "xn--alqualond-34a"
                                 << QString::fromLatin1("alqualond\353")
                                 << QString::fromLatin1("alqualond\353");
-    QTest::newRow("idn-mixed4") << "xn--alqualond-34A" << "xn--alqualond-34a"
+    BOBUIest::newRow("idn-mixed4") << "xn--alqualond-34A" << "xn--alqualond-34a"
                                 << QString::fromLatin1("alqualond\353")
                                 << QString::fromLatin1("alqualond\353");
-    QTest::newRow("idn-upper") << "XN--ALQUALOND-34A" << "xn--alqualond-34a"
+    BOBUIest::newRow("idn-upper") << "XN--ALQUALOND-34A" << "xn--alqualond-34a"
                                << QString::fromLatin1("alqualond\353")
                                << QString::fromLatin1("alqualond\353");
 
-    QTest::newRow("separator-3002") << QString::fromUtf8("example\343\200\202com")
+    BOBUIest::newRow("separator-3002") << QString::fromUtf8("example\343\200\202com")
                                     << "example.com" << "." << "example.com";
 
     QString egyptianIDN =
         QString::fromUtf8("\331\210\330\262\330\247\330\261\330\251\055\330\247\331\204\330"
                           "\243\330\252\330\265\330\247\331\204\330\247\330\252.\331\205"
                           "\330\265\330\261");
-    QTest::newRow("egyptian-tld-ace")
+    BOBUIest::newRow("egyptian-tld-ace")
         << "xn----rmckbbajlc6dj7bxne2c.xn--wgbh1c"
         << "xn----rmckbbajlc6dj7bxne2c.xn--wgbh1c"
         << "."
         << egyptianIDN;
-    QTest::newRow("egyptian-tld-unicode")
+    BOBUIest::newRow("egyptian-tld-unicode")
         << egyptianIDN
         << "xn----rmckbbajlc6dj7bxne2c.xn--wgbh1c"
         << "."
         << egyptianIDN;
-    QTest::newRow("egyptian-tld-mix1")
+    BOBUIest::newRow("egyptian-tld-mix1")
         << QString::fromUtf8("\331\210\330\262\330\247\330\261\330\251\055\330\247\331\204\330"
                              "\243\330\252\330\265\330\247\331\204\330\247\330\252.xn--wgbh1c")
         << "xn----rmckbbajlc6dj7bxne2c.xn--wgbh1c"
         << "."
         << egyptianIDN;
-    QTest::newRow("egyptian-tld-mix2")
+    BOBUIest::newRow("egyptian-tld-mix2")
         << QString::fromUtf8("xn----rmckbbajlc6dj7bxne2c.\331\205\330\265\330\261")
         << "xn----rmckbbajlc6dj7bxne2c.xn--wgbh1c"
         << "."
         << egyptianIDN;
 
     QString russianIDN = QString::fromUtf8("\321\217\320\275\320\264\320\265\320\272\321\201.\321\200\321\204");
-    QTest::newRow("russian-tld-ace")
+    BOBUIest::newRow("russian-tld-ace")
         << "xn--d1acpjx3f.xn--p1ai"
         << "xn--d1acpjx3f.xn--p1ai"
         << "."
         << russianIDN;
 
     QString taiwaneseIDN = QString::fromUtf8("\345\217\260\345\214\227\346\214\211\346\221\251.\345\217\260\347\201\243");
-    QTest::newRow("taiwanese-tld-ace")
+    BOBUIest::newRow("taiwanese-tld-ace")
         << "xn--djrptm67aikb.xn--kpry57d"
         << "xn--djrptm67aikb.xn--kpry57d"
         << "."
@@ -323,7 +323,7 @@ void tst_QUrlInternal::ace_testsuite_data()
 
     // violations / invalids
     auto badRow = [](const char *name, const char *text) {
-        QTest::newRow(name) << text << text << text << text;
+        BOBUIest::newRow(name) << text << text << text << text;
     };
 
     badRow("invalid-punycode", "xn--z");
@@ -344,9 +344,9 @@ void tst_QUrlInternal::ace_testsuite_data()
     // but is should have nameprepped to NFKC U+03BC GREEK SMALL LETTER MU
     badRow("invalid-nameprep-nonnfkc", "xn--sba");
 
-    // Decodes to "a" in some versions, see QTBUG-95689
+    // Decodes to "a" in some versions, see BOBUIBUG-95689
     badRow("punycode-overflow-1", "xn--5p32g");
-    // Decodes to the same string as "xn--097c" in some versions, see QTBUG-95689
+    // Decodes to the same string as "xn--097c" in some versions, see BOBUIBUG-95689
     badRow("punycode-overflow-2", "xn--400595c");
 
     // Encodes 2**32, decodes to empty string in some versions
@@ -394,31 +394,31 @@ void tst_QUrlInternal::ace_testsuite()
 
 void tst_QUrlInternal::std3violations_data()
 {
-    QTest::addColumn<QString>("source");
-    QTest::addColumn<bool>("validUrl");
+    BOBUIest::addColumn<QString>("source");
+    BOBUIest::addColumn<bool>("validUrl");
 
-    QTest::newRow("too-long") << "this-domain-is-far-too-long-for-its-own-good-and-should-have-been-limited-to-63-chars" << false;
-    QTest::newRow("dash-begin") << "-x-foo" << false;
-    QTest::newRow("dash-end") << "x-foo-" << false;
-    QTest::newRow("dash-begin-end") << "-foo-" << false;
+    BOBUIest::newRow("too-long") << "this-domain-is-far-too-long-for-its-own-good-and-should-have-been-limited-to-63-chars" << false;
+    BOBUIest::newRow("dash-begin") << "-x-foo" << false;
+    BOBUIest::newRow("dash-end") << "x-foo-" << false;
+    BOBUIest::newRow("dash-begin-end") << "-foo-" << false;
 
-    QTest::newRow("control") << "\033foo" << false;
-    QTest::newRow("bang") << "foo!" << false;
-    QTest::newRow("plus") << "foo+bar" << false;
-    QTest::newRow("slash") << "foo/bar" << true;
-    QTest::newRow("colon") << "foo:80" << true;
-    QTest::newRow("question") << "foo?bar" << true;
-    QTest::newRow("at") << "foo@bar" << true;
-    QTest::newRow("backslash") << "foo\\bar" << false;
+    BOBUIest::newRow("control") << "\033foo" << false;
+    BOBUIest::newRow("bang") << "foo!" << false;
+    BOBUIest::newRow("plus") << "foo+bar" << false;
+    BOBUIest::newRow("slash") << "foo/bar" << true;
+    BOBUIest::newRow("colon") << "foo:80" << true;
+    BOBUIest::newRow("question") << "foo?bar" << true;
+    BOBUIest::newRow("at") << "foo@bar" << true;
+    BOBUIest::newRow("backslash") << "foo\\bar" << false;
 
     // these characters are transformed by NFKC to non-LDH characters
-    QTest::newRow("dot-like") << QString::fromUtf8("foo\342\200\244bar") << false;  // U+2024 ONE DOT LEADER
-    QTest::newRow("slash-like") << QString::fromUtf8("foo\357\274\217bar") << false;    // U+FF0F FULLWIDTH SOLIDUS
+    BOBUIest::newRow("dot-like") << QString::fromUtf8("foo\342\200\244bar") << false;  // U+2024 ONE DOT LEADER
+    BOBUIest::newRow("slash-like") << QString::fromUtf8("foo\357\274\217bar") << false;    // U+FF0F FULLWIDTH SOLIDUS
 
     // The following should be invalid but isn't
     // the DIVISON SLASH doesn't case-fold to a slash
     // is this a problem with RFC 3490?
-    //QTest::newRow("slash-like2") << QString::fromUtf8("foo\342\210\225bar") << false; // U+2215 DIVISION SLASH
+    //BOBUIest::newRow("slash-like2") << QString::fromUtf8("foo\342\210\225bar") << false; // U+2215 DIVISION SLASH
 }
 
 void tst_QUrlInternal::std3violations()
@@ -439,11 +439,11 @@ void tst_QUrlInternal::std3violations()
 
 void tst_QUrlInternal::std3deviations_data()
 {
-    QTest::addColumn<QString>("source");
+    BOBUIest::addColumn<QString>("source");
 
-    QTest::newRow("ending-dot") << "example.com.";
-    QTest::newRow("ending-dot3002") << QString("example.com") + QChar(0x3002);
-    QTest::newRow("underline") << "foo_bar";  //QTBUG-7434
+    BOBUIest::newRow("ending-dot") << "example.com.";
+    BOBUIest::newRow("ending-dot3002") << QString("example.com") + QChar(0x3002);
+    BOBUIest::newRow("underline") << "foo_bar";  //BOBUIBUG-7434
 }
 
 void tst_QUrlInternal::std3deviations()
@@ -458,47 +458,47 @@ void tst_QUrlInternal::std3deviations()
 
 void tst_QUrlInternal::correctEncodedMistakes_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("empty") << "" << "";
+    BOBUIest::newRow("empty") << "" << "";
 
     // these contain one invalid percent
-    QTest::newRow("%") << QString("%") << QString("%25");
-    QTest::newRow("3%") << QString("3%") << QString("3%25");
-    QTest::newRow("13%") << QString("13%") << QString("13%25");
-    QTest::newRow("13%!") << QString("13%!") << QString("13%25!");
-    QTest::newRow("13%!!") << QString("13%!!") << QString("13%25!!");
-    QTest::newRow("13%a") << QString("13%a") << QString("13%25a");
-    QTest::newRow("13%az") << QString("13%az") << QString("13%25az");
+    BOBUIest::newRow("%") << QString("%") << QString("%25");
+    BOBUIest::newRow("3%") << QString("3%") << QString("3%25");
+    BOBUIest::newRow("13%") << QString("13%") << QString("13%25");
+    BOBUIest::newRow("13%!") << QString("13%!") << QString("13%25!");
+    BOBUIest::newRow("13%!!") << QString("13%!!") << QString("13%25!!");
+    BOBUIest::newRow("13%a") << QString("13%a") << QString("13%25a");
+    BOBUIest::newRow("13%az") << QString("13%az") << QString("13%25az");
 
     // two invalid percents
-    QTest::newRow("13%%") << "13%%" << "13%25%25";
-    QTest::newRow("13%a%a") << "13%a%a" << "13%25a%25a";
-    QTest::newRow("13%az%az") << "13%az%az" << "13%25az%25az";
+    BOBUIest::newRow("13%%") << "13%%" << "13%25%25";
+    BOBUIest::newRow("13%a%a") << "13%a%a" << "13%25a%25a";
+    BOBUIest::newRow("13%az%az") << "13%az%az" << "13%25az%25az";
 
     // these are correct (idempotent)
-    QTest::newRow("13%25") << QString("13%25")  << QString("13%25");
-    QTest::newRow("13%25%25") << QString("13%25%25")  << QString("13%25%25");
+    BOBUIest::newRow("13%25") << QString("13%25")  << QString("13%25");
+    BOBUIest::newRow("13%25%25") << QString("13%25%25")  << QString("13%25%25");
 
     // these contain one invalid and one valid
     // the code assumes they are all invalid
-    QTest::newRow("13%13..%") << "13%13..%" << "13%2513..%25";
-    QTest::newRow("13%..%13") << "13%..%13" << "13%25..%2513";
+    BOBUIest::newRow("13%13..%") << "13%13..%" << "13%2513..%25";
+    BOBUIest::newRow("13%..%13") << "13%..%13" << "13%25..%2513";
 
     // three percents, one invalid
-    QTest::newRow("%01%02%3") << "%01%02%3" << "%2501%2502%253";
+    BOBUIest::newRow("%01%02%3") << "%01%02%3" << "%2501%2502%253";
 
     // now mix bad percents with Unicode decoding
-    QTest::newRow("%C2%") << "%C2%" << "%25C2%25";
-    QTest::newRow("%C2%A") << "%C2%A" << "%25C2%25A";
-    QTest::newRow("%C2%Az") << "%C2%Az" << "%25C2%25Az";
-    QTest::newRow("%E2%A0%") << "%E2%A0%" << "%25E2%25A0%25";
-    QTest::newRow("%E2%A0%A") << "%E2%A0%A" << "%25E2%25A0%25A";
-    QTest::newRow("%E2%A0%Az") << "%E2%A0%Az" << "%25E2%25A0%25Az";
-    QTest::newRow("%F2%A0%A0%") << "%F2%A0%A0%" << "%25F2%25A0%25A0%25";
-    QTest::newRow("%F2%A0%A0%A") << "%F2%A0%A0%A" << "%25F2%25A0%25A0%25A";
-    QTest::newRow("%F2%A0%A0%Az") << "%F2%A0%A0%Az" << "%25F2%25A0%25A0%25Az";
+    BOBUIest::newRow("%C2%") << "%C2%" << "%25C2%25";
+    BOBUIest::newRow("%C2%A") << "%C2%A" << "%25C2%25A";
+    BOBUIest::newRow("%C2%Az") << "%C2%Az" << "%25C2%25Az";
+    BOBUIest::newRow("%E2%A0%") << "%E2%A0%" << "%25E2%25A0%25";
+    BOBUIest::newRow("%E2%A0%A") << "%E2%A0%A" << "%25E2%25A0%25A";
+    BOBUIest::newRow("%E2%A0%Az") << "%E2%A0%Az" << "%25E2%25A0%25Az";
+    BOBUIest::newRow("%F2%A0%A0%") << "%F2%A0%A0%" << "%25F2%25A0%25A0%25";
+    BOBUIest::newRow("%F2%A0%A0%A") << "%F2%A0%A0%A" << "%25F2%25A0%25A0%25A";
+    BOBUIest::newRow("%F2%A0%A0%Az") << "%F2%A0%A0%Az" << "%25F2%25A0%25A0%25Az";
 }
 
 void tst_QUrlInternal::correctEncodedMistakes()
@@ -507,10 +507,10 @@ void tst_QUrlInternal::correctEncodedMistakes()
     QFETCH(QString, expected);
 
     // prepend some data to be sure that it remains there
-    QString dataTag = QTest::currentDataTag();
+    QString dataTag = BOBUIest::currentDataTag();
     QString output = dataTag;
 
-    if (!qt_urlRecode(output, input, { }))
+    if (!bobui_urlRecode(output, input, { }))
         output += input;
     QCOMPARE(output, dataTag + expected);
 
@@ -518,7 +518,7 @@ void tst_QUrlInternal::correctEncodedMistakes()
     output = dataTag;
     QString expected2 = QUrl::fromPercentEncoding(expected.toLatin1());
 
-    if (!qt_urlRecode(output, input, QUrl::FullyDecoded))
+    if (!bobui_urlRecode(output, input, QUrl::FullyDecoded))
         output += input;
     QCOMPARE(output, dataTag + expected2);
 }
@@ -530,16 +530,16 @@ static void addUtf8Data(const char *name, const char *data)
 
     // this data contains invaild UTF-8 sequences, so FullyDecoded doesn't work (by design)
     // use PrettyDecoded instead
-    QTest::newRow(QByteArray("decode-") + name) << encoded << QUrl::ComponentFormattingOptions(QUrl::PrettyDecoded) << decoded;
-    QTest::newRow(QByteArray("encode-") + name) << decoded << QUrl::ComponentFormattingOptions(QUrl::FullyEncoded) << encoded;
+    BOBUIest::newRow(QByteArray("decode-") + name) << encoded << QUrl::ComponentFormattingOptions(QUrl::PrettyDecoded) << decoded;
+    BOBUIest::newRow(QByteArray("encode-") + name) << decoded << QUrl::ComponentFormattingOptions(QUrl::FullyEncoded) << encoded;
 }
 
 void tst_QUrlInternal::encodingRecode_data()
 {
     typedef QUrl::ComponentFormattingOptions F;
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<F>("encodingMode");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<F>("encodingMode");
+    BOBUIest::addColumn<QString>("expected");
 
     // -- idempotent tests --
     static int modes[] = { QUrl::PrettyDecoded,
@@ -571,33 +571,33 @@ void tst_QUrlInternal::encodingRecode_data()
         QByteArray code = QByteArray::number(modes[i], 16);
         F mode = QUrl::ComponentFormattingOption(modes[i]);
 
-        QTest::newRow("null-0x" + code) << QString() << mode << QString();
-        QTest::newRow("empty-0x" + code) << "" << mode << "";
+        BOBUIest::newRow("null-0x" + code) << QString() << mode << QString();
+        BOBUIest::newRow("empty-0x" + code) << "" << mode << "";
 
         //    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
         // Unreserved characters are never encoded
-        QTest::newRow("alpha-0x" + code) << "abcABCZZzz" << mode << "abcABCZZzz";
-        QTest::newRow("digits-0x" + code) << "01234567890" << mode << "01234567890";
-        QTest::newRow("otherunreserved-0x" + code) << "-._~" << mode << "-._~";
+        BOBUIest::newRow("alpha-0x" + code) << "abcABCZZzz" << mode << "abcABCZZzz";
+        BOBUIest::newRow("digits-0x" + code) << "01234567890" << mode << "01234567890";
+        BOBUIest::newRow("otherunreserved-0x" + code) << "-._~" << mode << "-._~";
 
         // Control characters are always encoded
         // Use uppercase because the output is also uppercased
-        QTest::newRow("control-nul-0x" + code) << "%00" << mode << "%00";
-        QTest::newRow("control-0x" + code) << "%0D%0A%1F%1A%7F" << mode << "%0D%0A%1F%1A%7F";
+        BOBUIest::newRow("control-nul-0x" + code) << "%00" << mode << "%00";
+        BOBUIest::newRow("control-0x" + code) << "%0D%0A%1F%1A%7F" << mode << "%0D%0A%1F%1A%7F";
 
         // The percent is always encoded
-        QTest::newRow("percent-0x" + code) << "25%2525" << mode << "25%2525";
+        BOBUIest::newRow("percent-0x" + code) << "25%2525" << mode << "25%2525";
 
         // mixed control and unreserved
-        QTest::newRow("control-unreserved-0x" + code) << "Foo%00Bar%0D%0Abksp%7F" << mode << "Foo%00Bar%0D%0Abksp%7F";
+        BOBUIest::newRow("control-unreserved-0x" + code) << "Foo%00Bar%0D%0Abksp%7F" << mode << "Foo%00Bar%0D%0Abksp%7F";
     }
 
     // however, control characters and the percent *are* decoded in FullyDecoded mode
     // this is the only exception
-    QTest::newRow("control-nul-fullydecoded") << "%00" << F(QUrl::FullyDecoded) << QStringLiteral("\0");
-    QTest::newRow("control-fullydecoded") << "%0D%0A%1F%1A%7F" << F(QUrl::FullyDecoded) << "\r\n\x1f\x1a\x7f";
-    QTest::newRow("percent-fullydecoded") << "25%2525" << F(QUrl::FullyDecoded) << "25%25";
-    QTest::newRow("control-unreserved-fullydecoded") << "Foo%00Bar%0D%0Abksp%7F" << F(QUrl::FullyDecoded)
+    BOBUIest::newRow("control-nul-fullydecoded") << "%00" << F(QUrl::FullyDecoded) << QStringLiteral("\0");
+    BOBUIest::newRow("control-fullydecoded") << "%0D%0A%1F%1A%7F" << F(QUrl::FullyDecoded) << "\r\n\x1f\x1a\x7f";
+    BOBUIest::newRow("percent-fullydecoded") << "25%2525" << F(QUrl::FullyDecoded) << "25%25";
+    BOBUIest::newRow("control-unreserved-fullydecoded") << "Foo%00Bar%0D%0Abksp%7F" << F(QUrl::FullyDecoded)
                                                      << QStringLiteral("Foo\0Bar\r\nbksp\x7F");
 
     //    gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
@@ -609,26 +609,26 @@ void tst_QUrlInternal::encodingRecode_data()
         QByteArray code = QByteArray::number(*c, 16);
         QString encoded = QString("abc%") + code.toUpper() + "def" ;
         QString decoded = QString("abc") + *c + "def" ;
-        QTest::newRow("delimiter-encoded-" + code) << encoded << F(QUrl::FullyEncoded) << encoded;
-        QTest::newRow("delimiter-decoded-" + code) << decoded << F(QUrl::FullyEncoded) << decoded;
+        BOBUIest::newRow("delimiter-encoded-" + code) << encoded << F(QUrl::FullyEncoded) << encoded;
+        BOBUIest::newRow("delimiter-decoded-" + code) << decoded << F(QUrl::FullyEncoded) << decoded;
     }
 
     // encode control characters
-    QTest::newRow("encode-control") << "\1abc\2\033esc" << F(QUrl::PrettyDecoded) << "%01abc%02%1Besc";
-    QTest::newRow("encode-nul") << QString::fromLatin1("abc\0def", 7) << F(QUrl::PrettyDecoded) << "abc%00def";
+    BOBUIest::newRow("encode-control") << "\1abc\2\033esc" << F(QUrl::PrettyDecoded) << "%01abc%02%1Besc";
+    BOBUIest::newRow("encode-nul") << QString::fromLatin1("abc\0def", 7) << F(QUrl::PrettyDecoded) << "abc%00def";
 
     // space
-    QTest::newRow("space-leave-decoded") << "Hello World " << F(QUrl::PrettyDecoded) << "Hello World ";
-    QTest::newRow("space-leave-encoded") << "Hello%20World%20" << F(QUrl::FullyEncoded) << "Hello%20World%20";
-    QTest::newRow("space-encode") << "Hello World " << F(QUrl::FullyEncoded) << "Hello%20World%20";
-    QTest::newRow("space-decode") << "Hello%20World%20" << F(QUrl::PrettyDecoded) << "Hello World ";
+    BOBUIest::newRow("space-leave-decoded") << "Hello World " << F(QUrl::PrettyDecoded) << "Hello World ";
+    BOBUIest::newRow("space-leave-encoded") << "Hello%20World%20" << F(QUrl::FullyEncoded) << "Hello%20World%20";
+    BOBUIest::newRow("space-encode") << "Hello World " << F(QUrl::FullyEncoded) << "Hello%20World%20";
+    BOBUIest::newRow("space-decode") << "Hello%20World%20" << F(QUrl::PrettyDecoded) << "Hello World ";
 
     // decode unreserved
-    QTest::newRow("unreserved-decode") << "%66%6f%6f%42a%72" << F(QUrl::FullyEncoded) << "fooBar";
+    BOBUIest::newRow("unreserved-decode") << "%66%6f%6f%42a%72" << F(QUrl::FullyEncoded) << "fooBar";
 
     // mix encoding with decoding
-    QTest::newRow("encode-control-decode-space") << "\1\2%200" << F(QUrl::PrettyDecoded) << "%01%02 0";
-    QTest::newRow("decode-space-encode-control") << "%20\1\2" << F(QUrl::PrettyDecoded) << " %01%02";
+    BOBUIest::newRow("encode-control-decode-space") << "\1\2%200" << F(QUrl::PrettyDecoded) << "%01%02 0";
+    BOBUIest::newRow("decode-space-encode-control") << "%20\1\2" << F(QUrl::PrettyDecoded) << " %01%02";
 
     // decode and encode valid UTF-8 data
     // invalid is tested in encodingRecodeInvalidUtf8
@@ -646,30 +646,30 @@ void tst_QUrlInternal::encodingRecode_data()
     addUtf8Data("utf8-string-2", "\xDF\xBF\xE0\xA0\x80""A");
     addUtf8Data("utf8-string-3", "\xE0\xA0\x80\xDF\xBF...");
 
-    QTest::newRow("encode-unicode-noncharacter") << QString(QChar(0xffff)) << F(QUrl::FullyEncoded) << "%EF%BF%BF";
-    QTest::newRow("decode-unicode-noncharacter") << QString(QChar(0xffff)) << F(QUrl::PrettyDecoded) << QString::fromUtf8("\xEF\xBF\xBF");
+    BOBUIest::newRow("encode-unicode-noncharacter") << QString(QChar(0xffff)) << F(QUrl::FullyEncoded) << "%EF%BF%BF";
+    BOBUIest::newRow("decode-unicode-noncharacter") << QString(QChar(0xffff)) << F(QUrl::PrettyDecoded) << QString::fromUtf8("\xEF\xBF\xBF");
 
     // special cases: stuff we can encode, but not decode
-    QTest::newRow("unicode-lo-surrogate") << QString(QChar(0xD800)) << F(QUrl::FullyEncoded) << "%ED%A0%80";
-    QTest::newRow("unicode-hi-surrogate") << QString(QChar(0xDC00)) << F(QUrl::FullyEncoded) << "%ED%B0%80";
+    BOBUIest::newRow("unicode-lo-surrogate") << QString(QChar(0xD800)) << F(QUrl::FullyEncoded) << "%ED%A0%80";
+    BOBUIest::newRow("unicode-hi-surrogate") << QString(QChar(0xDC00)) << F(QUrl::FullyEncoded) << "%ED%B0%80";
 
     // a couple of Unicode strings with leading spaces
-    QTest::newRow("space-unicode") << QString::fromUtf8(" \xc2\xa0") << F(QUrl::FullyEncoded) << "%20%C2%A0";
-    QTest::newRow("space-space-unicode") << QString::fromUtf8("  \xc2\xa0") << F(QUrl::FullyEncoded) << "%20%20%C2%A0";
-    QTest::newRow("space-space-space-unicode") << QString::fromUtf8("   \xc2\xa0") << F(QUrl::FullyEncoded) << "%20%20%20%C2%A0";
+    BOBUIest::newRow("space-unicode") << QString::fromUtf8(" \xc2\xa0") << F(QUrl::FullyEncoded) << "%20%C2%A0";
+    BOBUIest::newRow("space-space-unicode") << QString::fromUtf8("  \xc2\xa0") << F(QUrl::FullyEncoded) << "%20%20%C2%A0";
+    BOBUIest::newRow("space-space-space-unicode") << QString::fromUtf8("   \xc2\xa0") << F(QUrl::FullyEncoded) << "%20%20%20%C2%A0";
 
     // hex case testing
-    QTest::newRow("FF") << "%FF" << F(QUrl::FullyEncoded) << "%FF";
-    QTest::newRow("Ff") << "%Ff" << F(QUrl::FullyEncoded) << "%FF";
-    QTest::newRow("fF") << "%fF" << F(QUrl::FullyEncoded) << "%FF";
-    QTest::newRow("ff") << "%ff" << F(QUrl::FullyEncoded) << "%FF";
+    BOBUIest::newRow("FF") << "%FF" << F(QUrl::FullyEncoded) << "%FF";
+    BOBUIest::newRow("Ff") << "%Ff" << F(QUrl::FullyEncoded) << "%FF";
+    BOBUIest::newRow("fF") << "%fF" << F(QUrl::FullyEncoded) << "%FF";
+    BOBUIest::newRow("ff") << "%ff" << F(QUrl::FullyEncoded) << "%FF";
 
     // decode UTF-8 mixed with non-UTF-8 and unreserved
-    QTest::newRow("utf8-mix-1") << "%80%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("%80\xC2\x80");
-    QTest::newRow("utf8-mix-2") << "%C2%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("%C2\xC2\x80");
-    QTest::newRow("utf8-mix-3") << "%E0%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("%E0\xC2\x80");
-    QTest::newRow("utf8-mix-3") << "A%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("A\xC2\x80");
-    QTest::newRow("utf8-mix-3") << "%C2%80A" << F(QUrl::PrettyDecoded) << QString::fromUtf8("\xC2\x80""A");
+    BOBUIest::newRow("utf8-mix-1") << "%80%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("%80\xC2\x80");
+    BOBUIest::newRow("utf8-mix-2") << "%C2%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("%C2\xC2\x80");
+    BOBUIest::newRow("utf8-mix-3") << "%E0%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("%E0\xC2\x80");
+    BOBUIest::newRow("utf8-mix-3") << "A%C2%80" << F(QUrl::PrettyDecoded) << QString::fromUtf8("A\xC2\x80");
+    BOBUIest::newRow("utf8-mix-3") << "%C2%80A" << F(QUrl::PrettyDecoded) << QString::fromUtf8("\xC2\x80""A");
 }
 
 void tst_QUrlInternal::encodingRecode()
@@ -679,27 +679,27 @@ void tst_QUrlInternal::encodingRecode()
     QFETCH(QUrl::ComponentFormattingOptions, encodingMode);
 
     // prepend some data to be sure that it remains there
-    QString output = QTest::currentDataTag();
+    QString output = BOBUIest::currentDataTag();
     expected.prepend(output);
 
-    if (!qt_urlRecode(output, input, encodingMode))
+    if (!bobui_urlRecode(output, input, encodingMode))
         output += input;
     QCOMPARE(output, expected);
 }
 
 void tst_QUrlInternal::encodingRecodeInvalidUtf8_data()
 {
-    QTest::addColumn<QByteArray>("utf8");
-    QTest::addColumn<QString>("utf16");
+    BOBUIest::addColumn<QByteArray>("utf8");
+    BOBUIest::addColumn<QString>("utf16");
 
     extern void loadInvalidUtf8Rows();
     extern void loadNonCharactersRows();
     loadInvalidUtf8Rows();
     loadNonCharactersRows();
 
-    QTest::newRow("utf8-mix-4") << QByteArray("\xE0.A2\x80");
-    QTest::newRow("utf8-mix-5") << QByteArray("\xE0\xA2.80");
-    QTest::newRow("utf8-mix-6") << QByteArray("\xE0\xA2\x33");
+    BOBUIest::newRow("utf8-mix-4") << QByteArray("\xE0.A2\x80");
+    BOBUIest::newRow("utf8-mix-5") << QByteArray("\xE0\xA2.80");
+    BOBUIest::newRow("utf8-mix-6") << QByteArray("\xE0\xA2\x33");
 }
 
 void tst_QUrlInternal::encodingRecodeInvalidUtf8()
@@ -708,23 +708,23 @@ void tst_QUrlInternal::encodingRecodeInvalidUtf8()
     QString input = utf8.toPercentEncoding();
 
     // prepend some data to be sure that it remains there
-    QString output = QTest::currentDataTag();
+    QString output = BOBUIest::currentDataTag();
 
-    if (!qt_urlRecode(output, input, QUrl::PrettyDecoded))
+    if (!bobui_urlRecode(output, input, QUrl::PrettyDecoded))
         output += input;
-    QCOMPARE(output, QTest::currentDataTag() + input);
+    QCOMPARE(output, BOBUIest::currentDataTag() + input);
 
     // this is just control
-    output = QTest::currentDataTag();
-    if (!qt_urlRecode(output, input, QUrl::FullyEncoded))
+    output = BOBUIest::currentDataTag();
+    if (!bobui_urlRecode(output, input, QUrl::FullyEncoded))
         output += input;
-    QCOMPARE(output, QTest::currentDataTag() + input);
+    QCOMPARE(output, BOBUIest::currentDataTag() + input);
 
     // verify for security reasons that all bad UTF-8 data got replaced by QChar::ReplacementCharacter
-    output = QTest::currentDataTag();
-    if (!qt_urlRecode(output, input, QUrl::FullyEncoded))
+    output = BOBUIest::currentDataTag();
+    if (!bobui_urlRecode(output, input, QUrl::FullyEncoded))
         output += input;
-    for (int i = int(strlen(QTest::currentDataTag())); i < output.size(); ++i) {
+    for (int i = int(strlen(BOBUIest::currentDataTag())); i < output.size(); ++i) {
         QVERIFY2(output.at(i).unicode() < 0x80 || output.at(i) == QChar::ReplacementCharacter,
                  qPrintable(QString("Character at i == %1 was U+%2").arg(i)
                             .arg(ushort{output.at(i).unicode()}, 4, 16, u'0')));
@@ -733,58 +733,58 @@ void tst_QUrlInternal::encodingRecodeInvalidUtf8()
 
 void tst_QUrlInternal::tldRestrictions_data()
 {
-    QTest::addColumn<QString>("tld");
-    QTest::addColumn<bool>("encode");
+    BOBUIest::addColumn<QString>("tld");
+    BOBUIest::addColumn<bool>("encode");
 
     // current whitelist
-    QTest::newRow("ac")  << QString("ac")  << true;
-    QTest::newRow("ar")  << QString("ar")  << true;
-    QTest::newRow("asia")  << QString("asia")  << true;
-    QTest::newRow("at") << QString("at") << true;
-    QTest::newRow("biz")  << QString("biz")  << true;
-    QTest::newRow("br") << QString("br") << true;
-    QTest::newRow("cat")  << QString("cat")  << true;
-    QTest::newRow("ch")  << QString("ch")  << true;
-    QTest::newRow("cl")  << QString("cl")  << true;
-    QTest::newRow("cn") << QString("cn") << true;
-    QTest::newRow("com")  << QString("com")  << true;
-    QTest::newRow("de")  << QString("de")  << true;
-    QTest::newRow("dk") << QString("dk") << true;
-    QTest::newRow("es")  << QString("es")  << true;
-    QTest::newRow("fi") << QString("fi") << true;
-    QTest::newRow("gr")  << QString("gr")  << true;
-    QTest::newRow("hu") << QString("hu") << true;
-    QTest::newRow("il")  << QString("il")  << true;
-    QTest::newRow("info")  << QString("info")  << true;
-    QTest::newRow("io") << QString("io") << true;
-    QTest::newRow("is")  << QString("is")  << true;
-    QTest::newRow("ir")  << QString("ir")  << true;
-    QTest::newRow("jp") << QString("jp") << true;
-    QTest::newRow("kr") << QString("kr") << true;
-    QTest::newRow("li")  << QString("li")  << true;
-    QTest::newRow("lt") << QString("lt") << true;
-    QTest::newRow("lu")  << QString("lu")  << true;
-    QTest::newRow("lv")  << QString("lv")  << true;
-    QTest::newRow("museum") << QString("museum") << true;
-    QTest::newRow("name")  << QString("name")  << true;
-    QTest::newRow("net")  << QString("name")  << true;
-    QTest::newRow("no") << QString("no") << true;
-    QTest::newRow("nu")  << QString("nu")  << true;
-    QTest::newRow("nz")  << QString("nz")  << true;
-    QTest::newRow("org")  << QString("org")  << true;
-    QTest::newRow("pl")  << QString("pl")  << true;
-    QTest::newRow("pr")  << QString("pr")  << true;
-    QTest::newRow("se")  << QString("se")  << true;
-    QTest::newRow("sh") << QString("sh") << true;
-    QTest::newRow("tel")  << QString("tel")  << true;
-    QTest::newRow("th")  << QString("th")  << true;
-    QTest::newRow("tm")  << QString("tm")  << true;
-    QTest::newRow("tw") << QString("tw") << true;
-    QTest::newRow("ua")  << QString("ua")  << true;
-    QTest::newRow("vn") << QString("vn") << true;
+    BOBUIest::newRow("ac")  << QString("ac")  << true;
+    BOBUIest::newRow("ar")  << QString("ar")  << true;
+    BOBUIest::newRow("asia")  << QString("asia")  << true;
+    BOBUIest::newRow("at") << QString("at") << true;
+    BOBUIest::newRow("biz")  << QString("biz")  << true;
+    BOBUIest::newRow("br") << QString("br") << true;
+    BOBUIest::newRow("cat")  << QString("cat")  << true;
+    BOBUIest::newRow("ch")  << QString("ch")  << true;
+    BOBUIest::newRow("cl")  << QString("cl")  << true;
+    BOBUIest::newRow("cn") << QString("cn") << true;
+    BOBUIest::newRow("com")  << QString("com")  << true;
+    BOBUIest::newRow("de")  << QString("de")  << true;
+    BOBUIest::newRow("dk") << QString("dk") << true;
+    BOBUIest::newRow("es")  << QString("es")  << true;
+    BOBUIest::newRow("fi") << QString("fi") << true;
+    BOBUIest::newRow("gr")  << QString("gr")  << true;
+    BOBUIest::newRow("hu") << QString("hu") << true;
+    BOBUIest::newRow("il")  << QString("il")  << true;
+    BOBUIest::newRow("info")  << QString("info")  << true;
+    BOBUIest::newRow("io") << QString("io") << true;
+    BOBUIest::newRow("is")  << QString("is")  << true;
+    BOBUIest::newRow("ir")  << QString("ir")  << true;
+    BOBUIest::newRow("jp") << QString("jp") << true;
+    BOBUIest::newRow("kr") << QString("kr") << true;
+    BOBUIest::newRow("li")  << QString("li")  << true;
+    BOBUIest::newRow("lt") << QString("lt") << true;
+    BOBUIest::newRow("lu")  << QString("lu")  << true;
+    BOBUIest::newRow("lv")  << QString("lv")  << true;
+    BOBUIest::newRow("museum") << QString("museum") << true;
+    BOBUIest::newRow("name")  << QString("name")  << true;
+    BOBUIest::newRow("net")  << QString("name")  << true;
+    BOBUIest::newRow("no") << QString("no") << true;
+    BOBUIest::newRow("nu")  << QString("nu")  << true;
+    BOBUIest::newRow("nz")  << QString("nz")  << true;
+    BOBUIest::newRow("org")  << QString("org")  << true;
+    BOBUIest::newRow("pl")  << QString("pl")  << true;
+    BOBUIest::newRow("pr")  << QString("pr")  << true;
+    BOBUIest::newRow("se")  << QString("se")  << true;
+    BOBUIest::newRow("sh") << QString("sh") << true;
+    BOBUIest::newRow("tel")  << QString("tel")  << true;
+    BOBUIest::newRow("th")  << QString("th")  << true;
+    BOBUIest::newRow("tm")  << QString("tm")  << true;
+    BOBUIest::newRow("tw") << QString("tw") << true;
+    BOBUIest::newRow("ua")  << QString("ua")  << true;
+    BOBUIest::newRow("vn") << QString("vn") << true;
 
     // known blacklists:
-    QTest::newRow("foo") << QString("foo") << false;
+    BOBUIest::newRow("foo") << QString("foo") << false;
 }
 
 void tst_QUrlInternal::tldRestrictions()
@@ -795,25 +795,25 @@ void tst_QUrlInternal::tldRestrictions()
     QByteArray ascii = "www.xn--brd-1na." + tld.toLatin1();
     QString unicode = QLatin1String("www.br\370d.") + tld;
     QString encoded = QUrl::fromAce(ascii);
-    QTEST(!encoded.contains(".xn--"), "encode");
-    QTEST(encoded == unicode, "encode");
+    BOBUIEST(!encoded.contains(".xn--"), "encode");
+    BOBUIEST(encoded == unicode, "encode");
 
     QUrl url = QUrl::fromEncoded("http://www.xn--brd-1na." + tld.toLatin1());
-    QTEST(!url.host().contains(".xn--"), "encode");
-    QTEST(url.host() == unicode, "encode");
+    BOBUIEST(!url.host().contains(".xn--"), "encode");
+    BOBUIEST(url.host() == unicode, "encode");
 
     url.setUrl(QLatin1String("http://www.xn--brd-1na.") + tld);
-    QTEST(!url.host().contains(".xn--"), "encode");
-    QTEST(url.host() == unicode, "encode");
+    BOBUIEST(!url.host().contains(".xn--"), "encode");
+    BOBUIEST(url.host() == unicode, "encode");
 
     url.setUrl(QLatin1String("http://www.br\370d.") + tld);
-    QTEST(!url.host().contains(".xn--"), "encode");
-    QTEST(url.host() == unicode, "encode");
+    BOBUIEST(!url.host().contains(".xn--"), "encode");
+    BOBUIEST(url.host() == unicode, "encode");
 
     url = QUrl::fromEncoded("http://www.br%C3%B8d." + tld.toLatin1());
-    QTEST(!url.host().contains(".xn--"), "encode");
-    QTEST(url.host() == unicode, "encode");
+    BOBUIEST(!url.host().contains(".xn--"), "encode");
+    BOBUIEST(url.host() == unicode, "encode");
 }
 
 
-QTEST_APPLESS_MAIN(tst_QUrlInternal)
+BOBUIEST_APPLESS_MAIN(tst_QUrlInternal)

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcursor.h"
 
@@ -15,7 +15,7 @@
 #include <private/qguiapplication_p.h>
 #include <private/qhighdpiscaling_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QCursor
@@ -23,7 +23,7 @@ QT_BEGIN_NAMESPACE
     \brief The QCursor class provides a mouse cursor with an arbitrary
     shape.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup appearance
     \ingroup shared
 
@@ -32,7 +32,7 @@ QT_BEGIN_NAMESPACE
     associated with particular widgets and to get and set the position
     of the mouse cursor.
 
-    Qt has a number of standard cursor shapes, but you can also make
+    BobUI has a number of standard cursor shapes, but you can also make
     custom cursor shapes based on a QBitmap, a mask and a hotspot.
 
     To associate a cursor with a widget, use QWidget::setCursor(). To
@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 
     To set a cursor shape use QCursor::setShape() or use the QCursor
     constructor which takes the shape as argument, or you can use one
-    of the predefined cursors defined in the \l Qt::CursorShape enum.
+    of the predefined cursors defined in the \l BobUI::CursorShape enum.
 
     If you want to create a cursor with your own bitmap, either use
     the QCursor constructor which takes a bitmap and a mask or the
@@ -58,60 +58,60 @@ QT_BEGIN_NAMESPACE
 
     \section1 A Note for X11 Users
 
-    On X11, Qt supports the \l{Xcursor}{Xcursor}
+    On X11, BobUI supports the \l{Xcursor}{Xcursor}
     library, which allows for full color icon themes. The table below
-    shows the cursor name used for each Qt::CursorShape value. If a
+    shows the cursor name used for each BobUI::CursorShape value. If a
     cursor cannot be found using the name shown below, a standard X11
     cursor will be used instead. Note: X11 does not provide
-    appropriate cursors for all possible Qt::CursorShape values. It
+    appropriate cursors for all possible BobUI::CursorShape values. It
     is possible that some cursors will be taken from the Xcursor
     theme, while others will use an internal bitmap cursor.
 
     \table
-    \header \li Shape \li Qt::CursorShape Value \li Cursor Name
-            \li Shape \li Qt::CursorShape Value \li Cursor Name
+    \header \li Shape \li BobUI::CursorShape Value \li Cursor Name
+            \li Shape \li BobUI::CursorShape Value \li Cursor Name
     \row \li \inlineimage cursor-arrow.png
-         \li Qt::ArrowCursor   \li \c left_ptr
+         \li BobUI::ArrowCursor   \li \c left_ptr
          \li \inlineimage      cursor-sizev.png
-         \li Qt::SizeVerCursor \li \c size_ver
+         \li BobUI::SizeVerCursor \li \c size_ver
     \row \li \inlineimage      cursor-uparrow.png
-         \li Qt::UpArrowCursor \li \c up_arrow
+         \li BobUI::UpArrowCursor \li \c up_arrow
          \li \inlineimage      cursor-sizeh.png
-         \li Qt::SizeHorCursor \li \c size_hor
+         \li BobUI::SizeHorCursor \li \c size_hor
     \row \li \inlineimage      cursor-cross.png
-         \li Qt::CrossCursor   \li \c cross
+         \li BobUI::CrossCursor   \li \c cross
          \li \inlineimage      cursor-sizeb.png
-         \li Qt::SizeBDiagCursor \li \c size_bdiag
+         \li BobUI::SizeBDiagCursor \li \c size_bdiag
     \row \li \inlineimage      cursor-ibeam.png
-         \li Qt::IBeamCursor   \li \c ibeam
+         \li BobUI::IBeamCursor   \li \c ibeam
          \li \inlineimage      cursor-sizef.png
-         \li Qt::SizeFDiagCursor \li \c size_fdiag
+         \li BobUI::SizeFDiagCursor \li \c size_fdiag
     \row \li \inlineimage      cursor-wait.png
-         \li Qt::WaitCursor    \li \c wait
+         \li BobUI::WaitCursor    \li \c wait
          \li \inlineimage      cursor-sizeall.png
-         \li Qt::SizeAllCursor \li \c size_all
+         \li BobUI::SizeAllCursor \li \c size_all
     \row \li \inlineimage      cursor-busy.png
-         \li Qt::BusyCursor    \li \c left_ptr_watch
+         \li BobUI::BusyCursor    \li \c left_ptr_watch
          \li \inlineimage      cursor-vsplit.png
-         \li Qt::SplitVCursor  \li \c split_v
+         \li BobUI::SplitVCursor  \li \c split_v
     \row \li \inlineimage      cursor-forbidden.png
-         \li Qt::ForbiddenCursor \li \c forbidden
+         \li BobUI::ForbiddenCursor \li \c forbidden
          \li \inlineimage      cursor-hsplit.png
-         \li Qt::SplitHCursor  \li \c split_h
+         \li BobUI::SplitHCursor  \li \c split_h
     \row \li \inlineimage      cursor-hand.png
-         \li Qt::PointingHandCursor \li \c pointing_hand
+         \li BobUI::PointingHandCursor \li \c pointing_hand
          \li \inlineimage      cursor-openhand.png
-         \li Qt::OpenHandCursor  \li \c openhand
+         \li BobUI::OpenHandCursor  \li \c openhand
     \row \li \inlineimage      cursor-whatsthis.png
-         \li Qt::WhatsThisCursor \li \c whats_this
+         \li BobUI::WhatsThisCursor \li \c whats_this
          \li \inlineimage      cursor-closedhand.png
-         \li Qt::ClosedHandCursor \li \c closedhand
+         \li BobUI::ClosedHandCursor \li \c closedhand
     \row \li
-         \li Qt::DragMoveCursor      \li \c dnd-move or \c move
+         \li BobUI::DragMoveCursor      \li \c dnd-move or \c move
          \li
-         \li Qt::DragCopyCursor      \li \c dnd-copy or \c copy
+         \li BobUI::DragCopyCursor      \li \c dnd-copy or \c copy
     \row \li
-         \li Qt::DragLinkCursor      \li \c dnd-link or \c link
+         \li BobUI::DragLinkCursor      \li \c dnd-link or \c link
     \endtable
 
     \sa QWidget
@@ -241,7 +241,7 @@ void QCursor::setPos(int x, int y)
     QCursor::setPos(QGuiApplication::primaryScreen(), x, y);
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 
 /*!
     \fn void QCursor::setPos (const QPoint &p)
@@ -265,7 +265,7 @@ void QCursor::setPos(int x, int y)
   QCursor stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 
 /*!
@@ -274,13 +274,13 @@ void QCursor::setPos(int x, int y)
 
     Writes the \a cursor to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QCursor &c)
 {
     s << (qint16)c.shape();                        // write shape id to stream
-    if (c.shape() == Qt::BitmapCursor) {                // bitmap cursor
+    if (c.shape() == BobUI::BitmapCursor) {                // bitmap cursor
         bool isPixmap = false;
         if (s.version() >= 7) {
             isPixmap = !c.pixmap().isNull();
@@ -301,14 +301,14 @@ QDataStream &operator<<(QDataStream &s, const QCursor &c)
 
     Reads the \a cursor from the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QCursor &c)
 {
     qint16 shape;
     s >> shape;                                        // read shape id from stream
-    if (shape == Qt::BitmapCursor) {                // read bitmap cursor
+    if (shape == BobUI::BitmapCursor) {                // read bitmap cursor
         bool isPixmap = false;
         if (s.version() >= 7)
             s >> isPixmap;
@@ -324,11 +324,11 @@ QDataStream &operator>>(QDataStream &s, QCursor &c)
             c = QCursor(bm, bmm, hot.x(), hot.y());
         }
     } else {
-        c.setShape((Qt::CursorShape)shape);                // create cursor with shape
+        c.setShape((BobUI::CursorShape)shape);                // create cursor with shape
     }
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
 /*!
@@ -352,20 +352,20 @@ QDataStream &operator>>(QDataStream &s, QCursor &c)
 QCursor::QCursor(const QPixmap &pixmap, int hotX, int hotY)
     : d(nullptr)
 {
-    QImage img = pixmap.toImage().convertToFormat(QImage::Format_Indexed8, Qt::ThresholdDither|Qt::AvoidDither);
-    QBitmap bm = QBitmap::fromImage(img, Qt::ThresholdDither|Qt::AvoidDither);
+    QImage img = pixmap.toImage().convertToFormat(QImage::Format_Indexed8, BobUI::ThresholdDither|BobUI::AvoidDither);
+    QBitmap bm = QBitmap::fromImage(img, BobUI::ThresholdDither|BobUI::AvoidDither);
     QBitmap bmm = pixmap.mask();
     if (!bmm.isNull()) {
         QBitmap nullBm;
         bm.setMask(nullBm);
     }
     else if (!pixmap.mask().isNull()) {
-        QImage mimg = pixmap.mask().toImage().convertToFormat(QImage::Format_Indexed8, Qt::ThresholdDither|Qt::AvoidDither);
-        bmm = QBitmap::fromImage(mimg, Qt::ThresholdDither|Qt::AvoidDither);
+        QImage mimg = pixmap.mask().toImage().convertToFormat(QImage::Format_Indexed8, BobUI::ThresholdDither|BobUI::AvoidDither);
+        bmm = QBitmap::fromImage(mimg, BobUI::ThresholdDither|BobUI::AvoidDither);
     }
     else {
         bmm = QBitmap(bm.size());
-        bmm.fill(Qt::color1);
+        bmm.fill(BobUI::color1);
     }
 
     d = QCursorData::setBitmap(bm, bmm, hotX, hotY, pixmap.devicePixelRatio());
@@ -394,7 +394,7 @@ QCursor::QCursor(const QPixmap &pixmap, int hotX, int hotY)
     results on all other platforms.
     \endlist
 
-    Use the global Qt color Qt::color0 to draw 0-pixels and Qt::color1 to
+    Use the global BobUI color BobUI::color0 to draw 0-pixels and BobUI::color1 to
     draw 1-pixels in the bitmaps.
 
     Valid cursor sizes depend on the display hardware (or the
@@ -423,7 +423,7 @@ QCursor::QCursor()
         }
         QCursorData::initialize();
     }
-    QCursorData *c = qt_cursorTable[0];
+    QCursorData *c = bobui_cursorTable[0];
     c->ref.ref();
     d = c;
 }
@@ -431,11 +431,11 @@ QCursor::QCursor()
 /*!
     Constructs a cursor with the specified \a shape.
 
-    See \l Qt::CursorShape for a list of shapes.
+    See \l BobUI::CursorShape for a list of shapes.
 
     \sa setShape()
 */
-QCursor::QCursor(Qt::CursorShape shape)
+QCursor::QCursor(BobUI::CursorShape shape)
     : d(nullptr)
 {
     QCursorData::initialize();
@@ -448,7 +448,7 @@ QCursor::QCursor(Qt::CursorShape shape)
 
     Equality operator. Returns \c true if \a lhs and \a rhs
     have the same \l{QCursor::}{shape()} and, in the case of
-    \l{Qt::BitmapCursor}{bitmap cursors}, the same \l{QCursor::}{hotSpot()}
+    \l{BobUI::BitmapCursor}{bitmap cursors}, the same \l{QCursor::}{hotSpot()}
     and either the same \l{QCursor::}{pixmap()} or the same
     \l{QCursor::}{bitmap()} and \l{QCursor::}{mask()}.
 
@@ -465,7 +465,7 @@ bool operator==(const QCursor &lhs, const QCursor &rhs) noexcept
 
     // Check pixmaps or bitmaps cache keys. Notice that having BitmapCursor
     // shape implies either non-null pixmap or non-null bitmap and mask
-    if (lhs.shape() == Qt::BitmapCursor && rhs.shape() == Qt::BitmapCursor
+    if (lhs.shape() == BobUI::BitmapCursor && rhs.shape() == BobUI::BitmapCursor
             && lhs.hotSpot() == rhs.hotSpot()) {
         if (!lhs.d->pixmap.isNull())
             return lhs.d->pixmap.cacheKey() == rhs.d->pixmap.cacheKey();
@@ -494,7 +494,7 @@ bool operator==(const QCursor &lhs, const QCursor &rhs) noexcept
 
     \sa setShape()
 */
-Qt::CursorShape QCursor::shape() const
+BobUI::CursorShape QCursor::shape() const
 {
     QCursorData::initialize();
     return d->cshape;
@@ -503,16 +503,16 @@ Qt::CursorShape QCursor::shape() const
 /*!
     Sets the cursor to the shape identified by \a shape.
 
-    See \l Qt::CursorShape for the list of cursor shapes.
+    See \l BobUI::CursorShape for the list of cursor shapes.
 
     \sa shape()
 */
-void QCursor::setShape(Qt::CursorShape shape)
+void QCursor::setShape(BobUI::CursorShape shape)
 {
     QCursorData::initialize();
-    QCursorData *c = uint(shape) <= Qt::LastCursor ? qt_cursorTable[shape] : nullptr;
+    QCursorData *c = uint(shape) <= BobUI::LastCursor ? bobui_cursorTable[shape] : nullptr;
     if (!c)
-        c = qt_cursorTable[0];
+        c = bobui_cursorTable[0];
     c->ref.ref();
     if (!d) {
         d = c;
@@ -524,14 +524,14 @@ void QCursor::setShape(Qt::CursorShape shape)
 }
 
 /*!
-    \fn QBitmap QCursor::bitmap(Qt::ReturnByValueConstant) const
+    \fn QBitmap QCursor::bitmap(BobUI::ReturnByValueConstant) const
     \since 5.15
     \deprecated Use the overload without argument instead.
 
     Returns the cursor bitmap, or a null bitmap if it is one of the
     standard cursors.
 
-    Previously, Qt provided a version of \c bitmap() which returned the bitmap
+    Previously, BobUI provided a version of \c bitmap() which returned the bitmap
     by-pointer. That version is now removed. To maintain compatibility
     with old code, this function was provided to differentiate between the by-pointer
     function and the by-value function.
@@ -550,14 +550,14 @@ QBitmap QCursor::bitmap() const
 }
 
 /*!
-    \fn QBitmap QCursor::mask(Qt::ReturnByValueConstant) const
+    \fn QBitmap QCursor::mask(BobUI::ReturnByValueConstant) const
     \since 5.15
     \deprecated Use the overload without argument instead.
 
     Returns the cursor bitmap mask, or a null bitmap if it is one of the
     standard cursors.
 
-    Previously, Qt provided a version of \c mask() which returned the bitmap
+    Previously, BobUI provided a version of \c mask() which returned the bitmap
     by-pointer. That version is now removed. To maintain compatibility
     with old code, this function was provided to differentiate between the by-pointer
     function and the by-value function.
@@ -643,11 +643,11 @@ QCursor::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QCursor &c)
 {
     QDebugStateSaver saver(dbg);
-    dbg.nospace() << "QCursor(Qt::CursorShape(" << c.shape() << "))";
+    dbg.nospace() << "QCursor(BobUI::CursorShape(" << c.shape() << "))";
     return dbg;
 }
 #endif
@@ -656,10 +656,10 @@ QDebug operator<<(QDebug dbg, const QCursor &c)
   Internal QCursorData class
  *****************************************************************************/
 
-QCursorData *qt_cursorTable[Qt::LastCursor + 1];
+QCursorData *bobui_cursorTable[BobUI::LastCursor + 1];
 bool QCursorData::initialized = false;
 
-QCursorData::QCursorData(Qt::CursorShape s)
+QCursorData::QCursorData(BobUI::CursorShape s)
     : ref(1), cshape(s), bm(nullptr), bmm(nullptr), hx(0), hy(0)
 {
 }
@@ -676,11 +676,11 @@ void QCursorData::cleanup()
     if (!QCursorData::initialized)
         return;
 
-    for (int shape = 0; shape <= Qt::LastCursor; ++shape) {
+    for (int shape = 0; shape <= BobUI::LastCursor; ++shape) {
         // In case someone has a static QCursor defined with this shape
-        if (!qt_cursorTable[shape]->ref.deref())
-            delete qt_cursorTable[shape];
-        qt_cursorTable[shape] = nullptr;
+        if (!bobui_cursorTable[shape]->ref.deref())
+            delete bobui_cursorTable[shape];
+        bobui_cursorTable[shape] = nullptr;
     }
     QCursorData::initialized = false;
 }
@@ -690,8 +690,8 @@ void QCursorData::initialize()
 {
     if (QCursorData::initialized)
         return;
-    for (int shape = 0; shape <= Qt::LastCursor; ++shape)
-        qt_cursorTable[shape] = new QCursorData((Qt::CursorShape)shape);
+    for (int shape = 0; shape <= BobUI::LastCursor; ++shape)
+        bobui_cursorTable[shape] = new QCursorData((BobUI::CursorShape)shape);
     QCursorData::initialized = true;
 }
 
@@ -700,14 +700,14 @@ QCursorData *QCursorData::setBitmap(const QBitmap &bitmap, const QBitmap &mask, 
     QCursorData::initialize();
     if (bitmap.depth() != 1 || mask.depth() != 1 || bitmap.size() != mask.size()) {
         qWarning("QCursor: Cannot create bitmap cursor; invalid bitmap(s)");
-        QCursorData *c = qt_cursorTable[0];
+        QCursorData *c = bobui_cursorTable[0];
         c->ref.ref();
         return c;
     }
     QCursorData *d = new QCursorData;
     d->bm  = new QBitmap(bitmap);
     d->bmm = new QBitmap(mask);
-    d->cshape = Qt::BitmapCursor;
+    d->cshape = BobUI::BitmapCursor;
     d->hx = hotX >= 0 ? hotX : bitmap.width() / 2 / devicePixelRatio;
     d->hy = hotY >= 0 ? hotY : bitmap.height() / 2 / devicePixelRatio;
 
@@ -718,6 +718,6 @@ void QCursorData::update()
 {
 }
 
-QT_END_NAMESPACE
-#endif // QT_NO_CURSOR
+BOBUI_END_NAMESPACE
+#endif // BOBUI_NO_CURSOR
 

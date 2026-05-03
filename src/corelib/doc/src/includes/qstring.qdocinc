@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 // \1 is either "search" or "comparison"
 //! [search-comparison-case-sensitivity]
-If \a cs is Qt::CaseSensitive (the default), the \1 is case-sensitive;
+If \a cs is BobUI::CaseSensitive (the default), the \1 is case-sensitive;
 otherwise the \1 is case-insensitive.
 //! [search-comparison-case-sensitivity]
 

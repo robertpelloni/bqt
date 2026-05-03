@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../shared/examplefw.h"
 
@@ -50,7 +50,7 @@ void Window::customInit()
 
     // compute pass
 
-    const QImage image = QImage(QLatin1String(":/qt256.png")).convertToFormat(QImage::Format_RGBA8888);
+    const QImage image = QImage(QLatin1String(":/bobui256.png")).convertToFormat(QImage::Format_RGBA8888);
     d.imageSize = image.size();
     d.texIn = m_r->newTexture(QRhiTexture::RGBA8, d.imageSize, 1, QRhiTexture::UsedWithLoadStore);
     d.texIn->create();

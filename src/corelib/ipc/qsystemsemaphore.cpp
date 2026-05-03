@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsystemsemaphore.h"
 #include "qsystemsemaphore_p.h"
 
-#if QT_CONFIG(systemsemaphore)
-#include <QtCore/q20memory.h>
+#if BOBUI_CONFIG(systemsemaphore)
+#include <BobUICore/q20memory.h>
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtIpcCommon;
-using namespace Qt::StringLiterals;
+using namespace BobUIIpcCommon;
+using namespace BobUI::StringLiterals;
 
 inline void QSystemSemaphorePrivate::constructBackend()
 {
@@ -26,7 +26,7 @@ inline void QSystemSemaphorePrivate::destructBackend()
 
 /*!
   \class QSystemSemaphore
-  \inmodule QtCore
+  \inmodule BobUICore
   \since 4.4
 
   \brief The QSystemSemaphore class provides a general counting system semaphore.
@@ -35,7 +35,7 @@ inline void QSystemSemaphorePrivate::destructBackend()
   semaphore is used to protect a certain number of identical resources.
 
   Like its lighter counterpart, a QSystemSemaphore can be
-  accessed from multiple \l {QThread} {threads}. Unlike QSemaphore, a
+  accessed from multiple \l {BOBUIhread} {threads}. Unlike QSemaphore, a
   QSystemSemaphore can also be accessed from multiple \l {QProcess}
   {processes}. This means QSystemSemaphore is a much heavier class, so
   if your application doesn't need to access your semaphores across
@@ -62,7 +62,7 @@ inline void QSystemSemaphorePrivate::destructBackend()
   \snippet code/src_corelib_kernel_qsystemsemaphore.cpp 0
 
   For details on the key types, platform-specific limitations, and
-  interoperability with older or non-Qt applications, see the \l{Native IPC
+  interoperability with older or non-BobUI applications, see the \l{Native IPC
   Keys} documentation. That includes important information for sandboxed
   applications on Apple platforms, including all apps obtained via the Apple
   App Store.
@@ -207,7 +207,7 @@ void QSystemSemaphore::setNativeKey(const QNativeIpcKey &key, int initialValue, 
   name by which the semaphore can be accessed from other processes.
 
   You can use the native key to access system semaphores that have not been
-  created by Qt, or to grant access to non-Qt applications. See \l{Native IPC
+  created by BobUI, or to grant access to non-BobUI applications. See \l{Native IPC
   Keys} for more information.
 
   \sa setNativeKey()
@@ -368,7 +368,7 @@ void QSystemSemaphorePrivate::setUnixErrorString(QLatin1StringView function)
         break;
     default:
         errorString = QSystemSemaphore::tr("%1: unknown error: %2")
-                .arg(function, qt_error_string(errno));
+                .arg(function, bobui_error_string(errno));
         error = QSystemSemaphore::UnknownError;
 #if defined QSYSTEMSEMAPHORE_DEBUG
         qDebug() << errorString << "key" << key << "errno" << errno << EINVAL;
@@ -389,16 +389,16 @@ bool QSystemSemaphore::isKeyTypeSupported(QNativeIpcKey::Type type)
 
 QNativeIpcKey QSystemSemaphore::platformSafeKey(const QString &key, QNativeIpcKey::Type type)
 {
-    return QtIpcCommon::platformSafeKey(key, IpcType::SystemSemaphore, type);
+    return BobUIIpcCommon::platformSafeKey(key, IpcType::SystemSemaphore, type);
 }
 
 QNativeIpcKey QSystemSemaphore::legacyNativeKey(const QString &key, QNativeIpcKey::Type type)
 {
-    return QtIpcCommon::legacyPlatformSafeKey(key, IpcType::SystemSemaphore, type);
+    return BobUIIpcCommon::legacyPlatformSafeKey(key, IpcType::SystemSemaphore, type);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsystemsemaphore.cpp"
 
-#endif // QT_CONFIG(systemsemaphore)
+#endif // BOBUI_CONFIG(systemsemaphore)

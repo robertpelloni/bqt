@@ -1,36 +1,36 @@
 # Add RunCMake tests using `add_RunCMake_test()`
 
-qt_internal_add_RunCMake_test(QtFlagHandlingHelpers)
+bobui_internal_add_RunCMake_test(BobUIFlagHandlingHelpers)
 
-qt_internal_add_RunCMake_test(find_package)
+bobui_internal_add_RunCMake_test(find_package)
 
 set(extra_run_cmake_args "")
-if(TARGET Qt::Gui)
+if(TARGET BobUI::Gui)
     list(APPEND extra_run_cmake_args "-DHAS_GUI=TRUE")
 endif()
-if(TARGET Qt::DBus)
+if(TARGET BobUI::DBus)
     list(APPEND extra_run_cmake_args "-DHAS_DBUS=TRUE")
 endif()
-if(TARGET Qt::Widgets)
+if(TARGET BobUI::Widgets)
     list(APPEND extra_run_cmake_args "-DHAS_WIDGETS=TRUE")
 endif()
-if(TARGET Qt::OpenGL)
+if(TARGET BobUI::OpenGL)
     list(APPEND extra_run_cmake_args "-DHAS_OPENGL=TRUE")
 endif()
-qt_internal_add_RunCMake_test(Qt6DirConfiguration ${extra_run_cmake_args})
+bobui_internal_add_RunCMake_test(BobUI6DirConfiguration ${extra_run_cmake_args})
 
-if(APPLE AND TARGET Qt::Gui)
-    qt_internal_add_RunCMake_test(AppleFrameworkDeduplication)
+if(APPLE AND TARGET BobUI::Gui)
+    bobui_internal_add_RunCMake_test(AppleFrameworkDeduplication)
 endif()
 
-if(TARGET Qt6::Platform)
-    get_target_property(sbom_spdx_id Qt6::Platform _qt_sbom_spdx_id)
-    # If the id is present and non-empty, that means we built Qt with sbom support.
+if(TARGET BobUI6::Platform)
+    get_target_property(sbom_spdx_id BobUI6::Platform _bobui_sbom_spdx_id)
+    # If the id is present and non-empty, that means we built BobUI with sbom support.
     if(sbom_spdx_id)
-        qt_internal_add_RunCMake_test(Sbom ${extra_run_cmake_args})
+        bobui_internal_add_RunCMake_test(Sbom ${extra_run_cmake_args})
     endif()
 endif()
 
-list(APPEND extra_run_cmake_args "-DQT_WILL_INSTALL=${QT_WILL_INSTALL}")
-list(APPEND extra_run_cmake_args "-DQT_REPO_MODULE_VERSION=${QT_REPO_MODULE_VERSION}")
-qt_internal_add_RunCMake_test(StandaloneToolsPackage ${extra_run_cmake_args})
+list(APPEND extra_run_cmake_args "-DBOBUI_WILL_INSTALL=${BOBUI_WILL_INSTALL}")
+list(APPEND extra_run_cmake_args "-DBOBUI_REPO_MODULE_VERSION=${BOBUI_REPO_MODULE_VERSION}")
+bobui_internal_add_RunCMake_test(StandaloneToolsPackage ${extra_run_cmake_args})

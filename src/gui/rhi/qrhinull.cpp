@@ -1,15 +1,15 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhinull_p.h"
 #include <qmath.h>
 #include <QPainter>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QRhiNullInitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Null backend specific initialization parameters.
@@ -32,7 +32,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiNullNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Empty.
@@ -720,7 +720,7 @@ bool QNullTexture::create()
             for (int level = 0; level < mipLevelCount; ++level) {
                 image[layer][level] = QImage(rhiD->q->sizeForMipLevel(level, size),
                                              QImage::Format_RGBA8888_Premultiplied);
-                image[layer][level].fill(Qt::yellow);
+                image[layer][level].fill(BobUI::yellow);
             }
         }
     }
@@ -1072,4 +1072,4 @@ bool QNullSwapChain::createOrResize()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

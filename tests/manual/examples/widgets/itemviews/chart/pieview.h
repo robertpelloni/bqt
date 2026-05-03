@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PIEVIEW_H
 #define PIEVIEW_H
@@ -27,7 +27,7 @@ protected slots:
 protected:
     bool edit(const QModelIndex &index, EditTrigger trigger, QEvent *event) override;
     QModelIndex moveCursor(QAbstractItemView::CursorAction cursorAction,
-                           Qt::KeyboardModifiers modifiers) override;
+                           BobUI::KeyboardModifiers modifiers) override;
 
     int horizontalOffset() const override;
     int verticalOffset() const override;

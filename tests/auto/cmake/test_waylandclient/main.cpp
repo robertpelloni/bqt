@@ -3,5 +3,5 @@
 int main()
 {
     // use symbol
-    QtWaylandClient::QWaylandCursor cursor(nullptr);
+    BobUIWaylandClient::QWaylandCursor cursor(nullptr);
 }

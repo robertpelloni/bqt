@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qglobal.h"
 
@@ -11,28 +11,28 @@
 #include "qgraphicsscene.h"
 #include "qgraphicssceneevent.h"
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 #include <private/qaction_p.h>
 #endif
 #include <private/qapplication_p.h>
 #include <private/qgraphicsscene_p.h>
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 #include <private/qshortcutmap_p.h>
 #endif
-#include <QtCore/qmutex.h>
-#include <QtCore/QScopeGuard>
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qgraphicsproxywidget.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qpainterpath.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/QScopeGuard>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#include <BobUIWidgets/qgraphicsproxywidget.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/qpainterpath.h>
+#include <BobUIWidgets/qstyleoption.h>
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QGraphicsWidget
@@ -40,7 +40,7 @@ using namespace Qt::StringLiterals;
     items in a QGraphicsScene.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsWidget is an extended base item that provides extra functionality
     over QGraphicsItem. It is similar to QWidget in many ways:
@@ -90,13 +90,13 @@ using namespace Qt::StringLiterals;
                 \li Full modality support.
     \endtable
 
-    QGraphicsWidget supports a subset of Qt's widget attributes,
-    (Qt::WidgetAttribute), as shown in the table below. Any attributes not
+    QGraphicsWidget supports a subset of BobUI's widget attributes,
+    (BobUI::WidgetAttribute), as shown in the table below. Any attributes not
     listed in this table are unsupported, or otherwise unused.
 
     \table
     \header \li Widget Attribute                         \li Usage
-    \row    \li Qt::WA_SetLayoutDirection
+    \row    \li BobUI::WA_SetLayoutDirection
                     \li Set by setLayoutDirection(), cleared by
                         unsetLayoutDirection(). You can test this attribute to
                         check if the widget has been explicitly assigned a
@@ -104,22 +104,22 @@ using namespace Qt::StringLiterals;
                         {layoutDirection}. If the attribute is not set, the
                         \l{QGraphicsWidget::layoutDirection()}
                         {layoutDirection()} is inherited.
-    \row    \li Qt::WA_RightToLeft
+    \row    \li BobUI::WA_RightToLeft
                     \li Toggled by setLayoutDirection(). Inherited from the
                         parent/scene. If set, the widget's layout will order
                         horizontally arranged widgets from right to left.
-    \row    \li Qt::WA_SetStyle
+    \row    \li BobUI::WA_SetStyle
                     \li Set and cleared by setStyle(). If this attribute is
                         set, the widget has been explicitly assigned a style.
                         If it is unset, the widget will use the scene's or the
                         application's style.
-    \row    \li Qt::WA_Resized
+    \row    \li BobUI::WA_Resized
                     \li Set by setGeometry() and resize().
-    \row    \li Qt::WA_SetPalette
+    \row    \li BobUI::WA_SetPalette
                     \li Set by setPalette().
-    \row    \li Qt::WA_SetFont
+    \row    \li BobUI::WA_SetFont
                     \li Set by setFont().
-    \row    \li Qt::WA_WindowPropagation
+    \row    \li BobUI::WA_WindowPropagation
                     \li Enables propagation to window widgets.
     \endtable
 
@@ -140,7 +140,7 @@ using namespace Qt::StringLiterals;
     specifies the widget's window flags (e.g., whether the widget should be a
     window, a tool, a popup, etc).
 */
-QGraphicsWidget::QGraphicsWidget(QGraphicsItem *parent, Qt::WindowFlags wFlags)
+QGraphicsWidget::QGraphicsWidget(QGraphicsItem *parent, BobUI::WindowFlags wFlags)
     : QGraphicsObject(*new QGraphicsWidgetPrivate, nullptr), QGraphicsLayoutItem(nullptr, false)
 {
     Q_D(QGraphicsWidget);
@@ -152,7 +152,7 @@ QGraphicsWidget::QGraphicsWidget(QGraphicsItem *parent, Qt::WindowFlags wFlags)
 
     Constructs a new QGraphicsWidget, using \a dd as parent.
 */
-QGraphicsWidget::QGraphicsWidget(QGraphicsWidgetPrivate &dd, QGraphicsItem *parent, Qt::WindowFlags wFlags)
+QGraphicsWidget::QGraphicsWidget(QGraphicsWidgetPrivate &dd, QGraphicsItem *parent, BobUI::WindowFlags wFlags)
     : QGraphicsObject(dd, nullptr), QGraphicsLayoutItem(nullptr, false)
 {
     Q_D(QGraphicsWidget);
@@ -198,7 +198,7 @@ Q_GLOBAL_STATIC(QGraphicsWidgetStyles, widgetStyles)
 QGraphicsWidget::~QGraphicsWidget()
 {
     Q_D(QGraphicsWidget);
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     // Remove all actions from this widget
     for (auto action : std::as_const(d->actions)) {
         QActionPrivate *apriv = action->d_func();
@@ -337,10 +337,10 @@ void QGraphicsWidget::setGeometry(const QRectF &rect)
     QRectF newGeom;
     QPointF oldPos = d->geom.topLeft();
     if (!wd->inSetPos) {
-        setAttribute(Qt::WA_Resized);
+        setAttribute(BobUI::WA_Resized);
         newGeom = rect;
-        newGeom.setSize(rect.size().expandedTo(effectiveSizeHint(Qt::MinimumSize))
-                                   .boundedTo(effectiveSizeHint(Qt::MaximumSize)));
+        newGeom.setSize(rect.size().expandedTo(effectiveSizeHint(BobUI::MinimumSize))
+                                   .boundedTo(effectiveSizeHint(BobUI::MaximumSize)));
 
         if (newGeom == d->geom)
             return;
@@ -572,8 +572,8 @@ void QGraphicsWidget::getWindowFrameMargins(qreal *left, qreal *top, qreal *righ
 void QGraphicsWidget::unsetWindowFrameMargins()
 {
     Q_D(QGraphicsWidget);
-    if ((d->windowFlags & Qt::Window) && (d->windowFlags & Qt::WindowType_Mask) != Qt::Popup &&
-         (d->windowFlags & Qt::WindowType_Mask) != Qt::ToolTip && !(d->windowFlags & Qt::FramelessWindowHint)) {
+    if ((d->windowFlags & BobUI::Window) && (d->windowFlags & BobUI::WindowType_Mask) != BobUI::Popup &&
+         (d->windowFlags & BobUI::WindowType_Mask) != BobUI::ToolTip && !(d->windowFlags & BobUI::FramelessWindowHint)) {
         QStyleOptionTitleBar bar;
         d->initStyleOptionTitleBar(&bar);
         QStyle *style = this->style();
@@ -666,7 +666,7 @@ void QGraphicsWidget::initStyleOption(QStyleOption *option) const
         option->state |= QStyle::State_Enabled;
     if (hasFocus())
         option->state |= QStyle::State_HasFocus;
-    // if (window->testAttribute(Qt::WA_KeyboardFocusChange)) // ### Window
+    // if (window->testAttribute(BobUI::WA_KeyboardFocusChange)) // ### Window
     //     option->state |= QStyle::State_KeyboardFocusChange;
     if (isUnderMouse())
         option->state |= QStyle::State_MouseOver;
@@ -678,7 +678,7 @@ void QGraphicsWidget::initStyleOption(QStyleOption *option) const
         option->state |= QStyle::State_Window;
     /*
       ###
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (widget->hasEditFocus())
         state |= QStyle::State_HasEditFocus;
 #endif
@@ -700,7 +700,7 @@ void QGraphicsWidget::initStyleOption(QStyleOption *option) const
 /*!
     \reimp
 */
-QSizeF QGraphicsWidget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF QGraphicsWidget::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_D(const QGraphicsWidget);
     QSizeF sh;
@@ -714,13 +714,13 @@ QSizeF QGraphicsWidget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) c
         sh += marginSize;
     } else {
         switch (which) {
-            case Qt::MinimumSize:
+            case BobUI::MinimumSize:
                 sh = QSizeF(0, 0);
                 break;
-            case Qt::PreferredSize:
+            case BobUI::PreferredSize:
                 sh = QSizeF(50, 50);    //rather arbitrary
                 break;
-            case Qt::MaximumSize:
+            case BobUI::MaximumSize:
                 sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
                 break;
             default:
@@ -820,11 +820,11 @@ void QGraphicsWidget::setLayout(QGraphicsLayout *l)
     This function is called implicitly when the item is shown for the first
     time.
 
-    \sa effectiveSizeHint(), Qt::MinimumSize
+    \sa effectiveSizeHint(), BobUI::MinimumSize
 */
 void QGraphicsWidget::adjustSize()
 {
-    QSizeF sz = effectiveSizeHint(Qt::PreferredSize);
+    QSizeF sz = effectiveSizeHint(BobUI::PreferredSize);
     // What if sz is not valid?!
     if (sz.isValid())
         resize(sz);
@@ -835,15 +835,15 @@ void QGraphicsWidget::adjustSize()
     \brief the layout direction for this widget.
 
     This property modifies this widget's and all of its descendants'
-    Qt::WA_RightToLeft attribute. It also sets this widget's
-    Qt::WA_SetLayoutDirection attribute.
+    BobUI::WA_RightToLeft attribute. It also sets this widget's
+    BobUI::WA_SetLayoutDirection attribute.
 
     The widget's layout direction determines the order in which the layout
     manager horizontally arranges subwidgets of this widget. The default
     value depends on the language and locale of the application, and is
     typically in the same direction as words are read and written. With
-    Qt::LeftToRight, the layout starts placing subwidgets from the left
-    side of this widget towards the right. Qt::RightToLeft does the opposite -
+    BobUI::LeftToRight, the layout starts placing subwidgets from the left
+    side of this widget towards the right. BobUI::RightToLeft does the opposite -
     the layout will place widgets starting from the right edge moving towards
     the left.
 
@@ -856,20 +856,20 @@ void QGraphicsWidget::adjustSize()
 
     \sa QWidget::layoutDirection, QApplication::layoutDirection
 */
-Qt::LayoutDirection QGraphicsWidget::layoutDirection() const
+BobUI::LayoutDirection QGraphicsWidget::layoutDirection() const
 {
-    return testAttribute(Qt::WA_RightToLeft) ? Qt::RightToLeft : Qt::LeftToRight;
+    return testAttribute(BobUI::WA_RightToLeft) ? BobUI::RightToLeft : BobUI::LeftToRight;
 }
-void QGraphicsWidget::setLayoutDirection(Qt::LayoutDirection direction)
+void QGraphicsWidget::setLayoutDirection(BobUI::LayoutDirection direction)
 {
     Q_D(QGraphicsWidget);
-    setAttribute(Qt::WA_SetLayoutDirection, true);
+    setAttribute(BobUI::WA_SetLayoutDirection, true);
     d->setLayoutDirection_helper(direction);
 }
 void QGraphicsWidget::unsetLayoutDirection()
 {
     Q_D(QGraphicsWidget);
-    setAttribute(Qt::WA_SetLayoutDirection, false);
+    setAttribute(BobUI::WA_SetLayoutDirection, false);
     d->resolveLayoutDirection();
 }
 
@@ -897,14 +897,14 @@ QStyle *QGraphicsWidget::style() const
     QGraphicsScene::style() (if this has been set). Otherwise the widget will
     use QApplication::style().
 
-    This function sets the Qt::WA_SetStyle attribute if \a style is not \nullptr;
+    This function sets the BobUI::WA_SetStyle attribute if \a style is not \nullptr;
     otherwise it clears the attribute.
 
     \sa style()
 */
 void QGraphicsWidget::setStyle(QStyle *style)
 {
-    setAttribute(Qt::WA_SetStyle, style != nullptr);
+    setAttribute(BobUI::WA_SetStyle, style != nullptr);
     widgetStyles()->setStyleForWidget(this, style);
 
     // Deliver StyleChange to the widget itself (doesn't propagate).
@@ -944,7 +944,7 @@ QFont QGraphicsWidget::font() const
 void QGraphicsWidget::setFont(const QFont &font)
 {
     Q_D(QGraphicsWidget);
-    setAttribute(Qt::WA_SetFont, font.resolveMask() != 0);
+    setAttribute(BobUI::WA_SetFont, font.resolveMask() != 0);
 
     QFont naturalFont = d->naturalWidgetFont();
     QFont resolvedFont = font.resolve(naturalFont);
@@ -984,7 +984,7 @@ QPalette QGraphicsWidget::palette() const
 void QGraphicsWidget::setPalette(const QPalette &palette)
 {
     Q_D(QGraphicsWidget);
-    setAttribute(Qt::WA_SetPalette, palette.resolveMask() != 0);
+    setAttribute(BobUI::WA_SetPalette, palette.resolveMask() != 0);
 
     QPalette naturalPalette = d->naturalWidgetPalette();
     QPalette resolvedPalette = palette.resolve(naturalPalette);
@@ -996,7 +996,7 @@ void QGraphicsWidget::setPalette(const QPalette &palette)
     \brief whether the widget background is filled automatically
     \since 4.7
 
-    If enabled, this property will cause Qt to fill the background of the
+    If enabled, this property will cause BobUI to fill the background of the
     widget before invoking the paint() method. The color used is defined by the
     QPalette::Window color role from the widget's \l{QPalette}{palette}.
 
@@ -1005,7 +1005,7 @@ void QGraphicsWidget::setPalette(const QPalette &palette)
 
     By default, this property is \c false.
 
-    \sa Qt::WA_OpaquePaintEvent, Qt::WA_NoSystemBackground,
+    \sa BobUI::WA_OpaquePaintEvent, BobUI::WA_NoSystemBackground,
 */
 bool QGraphicsWidget::autoFillBackground() const
 {
@@ -1057,9 +1057,9 @@ void QGraphicsWidget::updateGeometry()
                 QCoreApplication::postEvent(static_cast<QGraphicsWidget *>(this), new QEvent(QEvent::LayoutRequest));
         }
         if (!QGraphicsLayout::instantInvalidatePropagation()) {
-            bool wasResized = testAttribute(Qt::WA_Resized);
+            bool wasResized = testAttribute(BobUI::WA_Resized);
             resize(size()); // this will restrict the size
-            setAttribute(Qt::WA_Resized, wasResized);
+            setAttribute(BobUI::WA_Resized, wasResized);
         }
     }
 }
@@ -1099,10 +1099,10 @@ QVariant QGraphicsWidget::itemChange(GraphicsItemChange change, const QVariant &
             // Send Show event before the item has been shown.
             QShowEvent event;
             QCoreApplication::sendEvent(this, &event);
-            bool resized = testAttribute(Qt::WA_Resized);
+            bool resized = testAttribute(BobUI::WA_Resized);
             if (!resized) {
                 adjustSize();
-                setAttribute(Qt::WA_Resized, false);
+                setAttribute(BobUI::WA_Resized, false);
             }
         }
 
@@ -1220,7 +1220,7 @@ bool QGraphicsWidget::windowFrameEvent(QEvent *event)
         break;
     case QEvent::GraphicsSceneMouseMove:
         d->ensureWindowData();
-        if (d->windowData->grabbedSection != Qt::NoSection) {
+        if (d->windowData->grabbedSection != BobUI::NoSection) {
             d->windowFrameMouseMoveEvent(static_cast<QGraphicsSceneMouseEvent *>(event));
             event->accept();
         }
@@ -1244,7 +1244,7 @@ bool QGraphicsWidget::windowFrameEvent(QEvent *event)
     \since 4.4
 
     Returns the window frame section at position \a pos, or
-    Qt::NoSection if there is no window frame section at this
+    BobUI::NoSection if there is no window frame section at this
     position.
 
     This function is used in QGraphicsWidget's base implementation for window
@@ -1253,18 +1253,18 @@ bool QGraphicsWidget::windowFrameEvent(QEvent *event)
     You can reimplement this function if you want to customize how a window
     can be interactively moved or resized.  For instance, if you only want to
     allow a window to be resized by the bottom right corner, you can
-    reimplement this function to return Qt::NoSection for all sections except
-    Qt::BottomRightSection.
+    reimplement this function to return BobUI::NoSection for all sections except
+    BobUI::BottomRightSection.
 
     \sa windowFrameEvent(), paintWindowFrame(), windowFrameGeometry()
 */
-Qt::WindowFrameSection QGraphicsWidget::windowFrameSectionAt(const QPointF &pos) const
+BobUI::WindowFrameSection QGraphicsWidget::windowFrameSectionAt(const QPointF &pos) const
 {
     Q_D(const QGraphicsWidget);
 
     const QRectF r = windowFrameRect();
     if (!r.contains(pos))
-        return Qt::NoSection;
+        return BobUI::NoSection;
 
     const qreal left = r.left();
     const qreal top = r.top();
@@ -1278,34 +1278,34 @@ Qt::WindowFrameSection QGraphicsWidget::windowFrameSectionAt(const QPointF &pos)
     const qreal windowFrameWidth = d->windowFrameMargins
         ? d->windowFrameMargins->left() : 0;
 
-    Qt::WindowFrameSection s = Qt::NoSection;
+    BobUI::WindowFrameSection s = BobUI::NoSection;
     if (x <= left + cornerMargin) {
         if (y <= top + windowFrameWidth || (x <= left + windowFrameWidth && y <= top + cornerMargin)) {
-            s = Qt::TopLeftSection;
+            s = BobUI::TopLeftSection;
         } else if (y >= bottom - windowFrameWidth || (x <= left + windowFrameWidth && y >= bottom - cornerMargin)) {
-            s = Qt::BottomLeftSection;
+            s = BobUI::BottomLeftSection;
         } else if (x <= left + windowFrameWidth) {
-            s = Qt::LeftSection;
+            s = BobUI::LeftSection;
         }
     } else if (x >= right - cornerMargin) {
         if (y <= top + windowFrameWidth || (x >= right - windowFrameWidth && y <= top + cornerMargin)) {
-            s = Qt::TopRightSection;
+            s = BobUI::TopRightSection;
         } else if (y >= bottom - windowFrameWidth || (x >= right - windowFrameWidth && y >= bottom - cornerMargin)) {
-            s = Qt::BottomRightSection;
+            s = BobUI::BottomRightSection;
         } else if (x >= right - windowFrameWidth) {
-            s = Qt::RightSection;
+            s = BobUI::RightSection;
         }
     } else if (y <= top + windowFrameWidth) {
-        s = Qt::TopSection;
+        s = BobUI::TopSection;
     } else if (y >= bottom - windowFrameWidth) {
-        s = Qt::BottomSection;
+        s = BobUI::BottomSection;
     }
-    if (s == Qt::NoSection) {
+    if (s == BobUI::NoSection) {
         QRectF r1 = r;
         r1.setHeight(d->windowFrameMargins
                      ? d->windowFrameMargins->top() : 0);
         if (r1.contains(pos))
-            s = Qt::TitleBarArea;
+            s = BobUI::TitleBarArea;
     }
     return s;
 }
@@ -1418,7 +1418,7 @@ bool QGraphicsWidget::event(QEvent *event)
     case QEvent::GraphicsSceneMouseRelease:
     case QEvent::GraphicsSceneMouseDoubleClick:
         d->ensureWindowData();
-        if (d->hasDecoration() && d->windowData->grabbedSection != Qt::NoSection)
+        if (d->hasDecoration() && d->windowData->grabbedSection != BobUI::NoSection)
             return windowFrameEvent(event);
         break;
     case QEvent::GraphicsSceneHoverEnter:
@@ -1492,7 +1492,7 @@ void QGraphicsWidget::closeEvent(QCloseEvent *event)
 void QGraphicsWidget::focusInEvent(QFocusEvent *event)
 {
     Q_UNUSED(event);
-    if (focusPolicy() != Qt::NoFocus)
+    if (focusPolicy() != BobUI::NoFocus)
         update();
 }
 
@@ -1527,7 +1527,7 @@ bool QGraphicsWidget::focusNextPrevChild(bool next)
     if (d->scene->focusNextPrevChild(next))
         return true;
     if (isWindow()) {
-        setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
+        setFocus(next ? BobUI::TabFocusReason : BobUI::BacktabFocusReason);
         if (hasFocus())
             return true;
     }
@@ -1540,7 +1540,7 @@ bool QGraphicsWidget::focusNextPrevChild(bool next)
 void QGraphicsWidget::focusOutEvent(QFocusEvent *event)
 {
     Q_UNUSED(event);
-    if (focusPolicy() != Qt::NoFocus)
+    if (focusPolicy() != BobUI::NoFocus)
         update();
 }
 
@@ -1699,48 +1699,48 @@ void QGraphicsWidget::ungrabKeyboardEvent(QEvent *event)
 
     \sa windowFlags(), isWindow(), isPanel()
 */
-Qt::WindowType QGraphicsWidget::windowType() const
+BobUI::WindowType QGraphicsWidget::windowType() const
 {
-    return Qt::WindowType(int(windowFlags()) & Qt::WindowType_Mask);
+    return BobUI::WindowType(int(windowFlags()) & BobUI::WindowType_Mask);
 }
 
 /*!
     \property QGraphicsWidget::windowFlags
     \brief the widget's window flags
 
-    Window flags are a combination of a window type (e.g., Qt::Dialog) and
+    Window flags are a combination of a window type (e.g., BobUI::Dialog) and
     several flags giving hints on the behavior of the window. The behavior
     is platform-dependent.
 
     By default, this property contains no window flags.
 
-    Windows are panels. If you set the Qt::Window flag, the ItemIsPanel flag
-    will be set automatically. If you clear the Qt::Window flag, the
+    Windows are panels. If you set the BobUI::Window flag, the ItemIsPanel flag
+    will be set automatically. If you clear the BobUI::Window flag, the
     ItemIsPanel flag is also cleared. Note that the ItemIsPanel flag can be
-    set independently of Qt::Window.
+    set independently of BobUI::Window.
 
     \sa isWindow(), isPanel()
 */
-Qt::WindowFlags QGraphicsWidget::windowFlags() const
+BobUI::WindowFlags QGraphicsWidget::windowFlags() const
 {
     Q_D(const QGraphicsWidget);
     return d->windowFlags;
 }
-void QGraphicsWidget::setWindowFlags(Qt::WindowFlags wFlags)
+void QGraphicsWidget::setWindowFlags(BobUI::WindowFlags wFlags)
 {
     Q_D(QGraphicsWidget);
     if (d->windowFlags == wFlags)
         return;
-    bool wasPopup = (d->windowFlags & Qt::WindowType_Mask) == Qt::Popup;
+    bool wasPopup = (d->windowFlags & BobUI::WindowType_Mask) == BobUI::Popup;
 
     d->adjustWindowFlags(&wFlags);
     d->windowFlags = wFlags;
     if (!d->setWindowFrameMargins)
         unsetWindowFrameMargins();
 
-    setFlag(ItemIsPanel, d->windowFlags & Qt::Window);
+    setFlag(ItemIsPanel, d->windowFlags & BobUI::Window);
 
-    bool isPopup = (d->windowFlags & Qt::WindowType_Mask) == Qt::Popup;
+    bool isPopup = (d->windowFlags & BobUI::WindowType_Mask) == BobUI::Popup;
     if (d->scene && isVisible() && wasPopup != isPopup) {
         // Popup state changed; update implicit mouse grab.
         if (!isPopup)
@@ -1795,36 +1795,36 @@ QString QGraphicsWidget::windowTitle() const
     \property QGraphicsWidget::focusPolicy
     \brief the way the widget accepts keyboard focus
 
-    The focus policy is Qt::TabFocus if the widget accepts keyboard focus by
-    tabbing, Qt::ClickFocus if the widget accepts focus by clicking,
-    Qt::StrongFocus if it accepts both, and Qt::NoFocus (the default) if it
+    The focus policy is BobUI::TabFocus if the widget accepts keyboard focus by
+    tabbing, BobUI::ClickFocus if the widget accepts focus by clicking,
+    BobUI::StrongFocus if it accepts both, and BobUI::NoFocus (the default) if it
     does not accept focus at all.
 
     You must enable keyboard focus for a widget if it processes keyboard
     events. This is normally done from the widget's constructor. For instance,
-    the QLineEdit constructor calls setFocusPolicy(Qt::StrongFocus).
+    the QLineEdit constructor calls setFocusPolicy(BobUI::StrongFocus).
 
-    If you enable a focus policy (i.e., not Qt::NoFocus), QGraphicsWidget will
-    automatically enable the ItemIsFocusable flag.  Setting Qt::NoFocus on a
+    If you enable a focus policy (i.e., not BobUI::NoFocus), QGraphicsWidget will
+    automatically enable the ItemIsFocusable flag.  Setting BobUI::NoFocus on a
     widget will clear the ItemIsFocusable flag. If the widget currently has
     keyboard focus, the widget will automatically lose focus.
 
     \sa focusInEvent(), focusOutEvent(), keyPressEvent(), keyReleaseEvent(), enabled
 */
-Qt::FocusPolicy QGraphicsWidget::focusPolicy() const
+BobUI::FocusPolicy QGraphicsWidget::focusPolicy() const
 {
     Q_D(const QGraphicsWidget);
     return d->focusPolicy;
 }
-void QGraphicsWidget::setFocusPolicy(Qt::FocusPolicy policy)
+void QGraphicsWidget::setFocusPolicy(BobUI::FocusPolicy policy)
 {
     Q_D(QGraphicsWidget);
     if (d->focusPolicy == policy)
         return;
     d->focusPolicy = policy;
-    if (hasFocus() && policy == Qt::NoFocus)
+    if (hasFocus() && policy == BobUI::NoFocus)
         clearFocus();
-    setFlag(ItemIsFocusable, policy != Qt::NoFocus);
+    setFlag(ItemIsFocusable, policy != BobUI::NoFocus);
 }
 
 /*!
@@ -1842,17 +1842,17 @@ QGraphicsWidget *QGraphicsWidget::focusWidget() const
     return nullptr;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 /*!
     \since 4.5
 
-    Adds a shortcut to Qt's shortcut system that watches for the given key \a
+    Adds a shortcut to BobUI's shortcut system that watches for the given key \a
     sequence in the given \a context. If the \a context is
-    Qt::ApplicationShortcut, the shortcut applies to the application as a
-    whole. Otherwise, it is either local to this widget, Qt::WidgetShortcut,
-    or to the window itself, Qt::WindowShortcut. For widgets that are not part
+    BobUI::ApplicationShortcut, the shortcut applies to the application as a
+    whole. Otherwise, it is either local to this widget, BobUI::WidgetShortcut,
+    or to the window itself, BobUI::WindowShortcut. For widgets that are not part
     of a window (i.e., top-level widgets and their children),
-    Qt::WindowShortcut shortcuts apply to the scene.
+    BobUI::WindowShortcut shortcuts apply to the scene.
 
     If the same key \a sequence has been grabbed by several widgets,
     when the key \a sequence occurs a QEvent::Shortcut event is sent
@@ -1870,25 +1870,25 @@ QGraphicsWidget *QGraphicsWidget::focusWidget() const
 
     \sa releaseShortcut(), setShortcutEnabled(), QWidget::grabShortcut()
 */
-int QGraphicsWidget::grabShortcut(const QKeySequence &sequence, Qt::ShortcutContext context)
+int QGraphicsWidget::grabShortcut(const QKeySequence &sequence, BobUI::ShortcutContext context)
 {
     Q_ASSERT(qApp);
     if (sequence.isEmpty())
         return 0;
-    // ### setAttribute(Qt::WA_GrabbedShortcut);
+    // ### setAttribute(BobUI::WA_GrabbedShortcut);
     return QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, sequence, context, qWidgetShortcutContextMatcher);
 }
 
 /*!
     \since 4.5
 
-    Removes the shortcut with the given \a id from Qt's shortcut
+    Removes the shortcut with the given \a id from BobUI's shortcut
     system. The widget will no longer receive QEvent::Shortcut events
     for the shortcut's key sequence (unless it has other shortcuts
     with the same key sequence).
 
     \warning You should not normally need to use this function since
-    Qt's shortcut system removes shortcuts automatically when their
+    BobUI's shortcut system removes shortcuts automatically when their
     parent widget is destroyed. It is best to use QAction or
     QShortcut to handle shortcuts, since they are easier to use than
     this low-level function. Note also that this is an expensive
@@ -1910,7 +1910,7 @@ void QGraphicsWidget::releaseShortcut(int id)
     enabled; otherwise the shortcut is disabled.
 
     \warning You should not normally need to use this function since
-    Qt's shortcut system enables/disables shortcuts automatically as
+    BobUI's shortcut system enables/disables shortcuts automatically as
     widgets become hidden/visible and gain or lose focus. It is best
     to use QAction or QShortcut to handle shortcuts, since they are
     easier to use than this low-level function.
@@ -1940,7 +1940,7 @@ void QGraphicsWidget::setShortcutAutoRepeat(int id, bool enabled)
 }
 #endif
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 /*!
     \since 4.5
 
@@ -2157,12 +2157,12 @@ void QGraphicsWidget::setTabOrder(QGraphicsWidget *first, QGraphicsWidget *secon
 
     \sa testAttribute(), QWidget::setAttribute()
 */
-void QGraphicsWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
+void QGraphicsWidget::setAttribute(BobUI::WidgetAttribute attribute, bool on)
 {
     Q_D(QGraphicsWidget);
     // ### most flags require some immediate action
     // ### we might want to qWarn use of unsupported attributes
-    // ### we might want to not use Qt::WidgetAttribute, but roll our own instead
+    // ### we might want to not use BobUI::WidgetAttribute, but roll our own instead
     d->setAttribute(attribute, on);
 }
 
@@ -2172,7 +2172,7 @@ void QGraphicsWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
 
     \sa setAttribute()
 */
-bool QGraphicsWidget::testAttribute(Qt::WidgetAttribute attribute) const
+bool QGraphicsWidget::testAttribute(BobUI::WidgetAttribute attribute) const
 {
     Q_D(const QGraphicsWidget);
     return d->testAttribute(attribute);
@@ -2218,8 +2218,8 @@ void QGraphicsWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 void QGraphicsWidget::paintWindowFrame(QPainter *painter, const QStyleOptionGraphicsItem *option,
                                        QWidget *widget)
 {
-    const bool fillBackground = !testAttribute(Qt::WA_OpaquePaintEvent)
-                                && !testAttribute(Qt::WA_NoSystemBackground);
+    const bool fillBackground = !testAttribute(BobUI::WA_OpaquePaintEvent)
+                                && !testAttribute(BobUI::WA_NoSystemBackground);
     QGraphicsProxyWidget *proxy = qobject_cast<QGraphicsProxyWidget *>(this);
     const bool embeddedWidgetFillsOwnBackground = proxy && proxy->widget();
 
@@ -2260,7 +2260,7 @@ void QGraphicsWidget::paintWindowFrame(QPainter *painter, const QStyleOptionGrap
     int frameWidth = style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth, &bar, widget);
     if (setMask) {
         painter->save();
-        painter->setClipRegion(mask.region, Qt::IntersectClip);
+        painter->setClipRegion(mask.region, BobUI::IntersectClip);
     }
     if (fillBackground) {
         if (embeddedWidgetFillsOwnBackground) {
@@ -2293,7 +2293,7 @@ void QGraphicsWidget::paintWindowFrame(QPainter *painter, const QStyleOptionGrap
     frameOptions.QStyleOption::operator=(*option);
     initStyleOption(&frameOptions);
     if (!hasBorder)
-        painter->setClipRect(windowFrameRect.adjusted(0, +height, 0, 0), Qt::IntersectClip);
+        painter->setClipRect(windowFrameRect.adjusted(0, +height, 0, 0), BobUI::IntersectClip);
     frameOptions.state.setFlag(QStyle::State_HasFocus, hasFocus());
     bool isActive = isActiveWindow();
     frameOptions.state.setFlag(QStyle::State_Active, isActive);
@@ -2336,7 +2336,7 @@ QPainterPath QGraphicsWidget::shape() const
     not accept the event. If the event was ignored, nothing happens. If the
     event was accepted, it will hide() the widget.
 
-    If the widget has the Qt::WA_DeleteOnClose attribute set it will be
+    If the widget has the BobUI::WA_DeleteOnClose attribute set it will be
     deleted.
 */
 bool QGraphicsWidget::close()
@@ -2350,7 +2350,7 @@ bool QGraphicsWidget::close()
     if (isVisible()) {
         hide();
     }
-    if (testAttribute(Qt::WA_DeleteOnClose)) {
+    if (testAttribute(BobUI::WA_DeleteOnClose)) {
         deleteLater();
     }
     return true;
@@ -2379,6 +2379,6 @@ void QGraphicsWidget::dumpFocusChain()
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicswidget.cpp"

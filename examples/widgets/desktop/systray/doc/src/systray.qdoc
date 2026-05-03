@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example desktop/systray
@@ -132,7 +132,7 @@
     QMessageBox provides a modal dialog with a short message, an icon,
     and buttons laid out depending on the current style. It supports
     four severity levels: "Question", "Information", "Warning" and
-    "Critical". The easiest way to pop up a message box in Qt is to
+    "Critical". The easiest way to pop up a message box in BobUI is to
     call one of the associated static functions, e.g.,
     QMessageBox::information().
 

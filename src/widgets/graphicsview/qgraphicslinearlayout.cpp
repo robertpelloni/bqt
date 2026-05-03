@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsLinearLayout
@@ -8,11 +8,11 @@
     layout for managing widgets in Graphics View.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    The default orientation for a linear layout is Qt::Horizontal. You can
+    The default orientation for a linear layout is BobUI::Horizontal. You can
     choose a vertical orientation either by calling setOrientation(), or by
-    passing Qt::Vertical to QGraphicsLinearLayout's constructor.
+    passing BobUI::Vertical to QGraphicsLinearLayout's constructor.
 
     The most common way to use QGraphicsLinearLayout is to construct an object
     on the heap, passing a parent widget to the constructor, then add widgets
@@ -90,16 +90,16 @@
 #include "qgraphicsgridlayoutengine_p.h"
 #include "qgraphicslayoutstyleinfo_p.h"
 #include "qscopedpointer.h"
-#ifdef QT_DEBUG
-#include <QtCore/qdebug.h>
+#ifdef BOBUI_DEBUG
+#include <BobUICore/qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsLinearLayoutPrivate : public QGraphicsLayoutPrivate
 {
 public:
-    QGraphicsLinearLayoutPrivate(Qt::Orientation orientation)
+    QGraphicsLinearLayoutPrivate(BobUI::Orientation orientation)
         : orientation(orientation)
     { }
 
@@ -109,7 +109,7 @@ public:
     int gridRow(int index) const;
     int gridColumn(int index) const;
 
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     mutable QScopedPointer<QGraphicsLayoutStyleInfo> m_styleInfo;
     QGraphicsGridLayoutEngine engine;
 };
@@ -130,14 +130,14 @@ void QGraphicsLinearLayoutPrivate::fixIndex(int *index) const
 
 int QGraphicsLinearLayoutPrivate::gridRow(int index) const
 {
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         return 0;
     return int(qMin(uint(index), uint(engine.rowCount())));
 }
 
 int QGraphicsLinearLayoutPrivate::gridColumn(int index) const
 {
-    if (orientation == Qt::Vertical)
+    if (orientation == BobUI::Vertical)
         return 0;
     return int(qMin(uint(index), uint(engine.columnCount())));
 }
@@ -154,17 +154,17 @@ QGraphicsLayoutStyleInfo *QGraphicsLinearLayoutPrivate::styleInfo() const
     \a orientation for the layout, either horizontal or vertical, and
     \a parent is passed to QGraphicsLayout's constructor.
 */
-QGraphicsLinearLayout::QGraphicsLinearLayout(Qt::Orientation orientation, QGraphicsLayoutItem *parent)
+QGraphicsLinearLayout::QGraphicsLinearLayout(BobUI::Orientation orientation, QGraphicsLayoutItem *parent)
     : QGraphicsLayout(*new QGraphicsLinearLayoutPrivate(orientation), parent)
 {
 }
 
 /*!
-    Constructs a QGraphicsLinearLayout instance using Qt::Horizontal
+    Constructs a QGraphicsLinearLayout instance using BobUI::Horizontal
     orientation. \a parent is passed to QGraphicsLayout's constructor.
 */
 QGraphicsLinearLayout::QGraphicsLinearLayout(QGraphicsLayoutItem *parent)
-    : QGraphicsLayout(*new QGraphicsLinearLayoutPrivate(Qt::Horizontal), parent)
+    : QGraphicsLayout(*new QGraphicsLinearLayoutPrivate(BobUI::Horizontal), parent)
 {
 }
 
@@ -193,7 +193,7 @@ QGraphicsLinearLayout::~QGraphicsLinearLayout()
 
   \sa orientation()
 */
-void QGraphicsLinearLayout::setOrientation(Qt::Orientation orientation)
+void QGraphicsLinearLayout::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QGraphicsLinearLayout);
     if (orientation != d->orientation) {
@@ -207,7 +207,7 @@ void QGraphicsLinearLayout::setOrientation(Qt::Orientation orientation)
   Returns the layout orientation.
   \sa setOrientation()
  */
-Qt::Orientation QGraphicsLinearLayout::orientation() const
+BobUI::Orientation QGraphicsLinearLayout::orientation() const
 {
     Q_D(const QGraphicsLinearLayout);
     return d->orientation;
@@ -322,7 +322,7 @@ void QGraphicsLinearLayout::setSpacing(qreal spacing)
         qWarning("QGraphicsLinearLayout::setSpacing: invalid spacing %g", spacing);
         return;
     }
-    d->engine.setSpacing(spacing, Qt::Horizontal | Qt::Vertical);
+    d->engine.setSpacing(spacing, BobUI::Horizontal | BobUI::Vertical);
     invalidate();
 }
 
@@ -402,7 +402,7 @@ int QGraphicsLinearLayout::stretchFactor(QGraphicsLayoutItem *item) const
 
     \sa alignment(), invalidate()
 */
-void QGraphicsLinearLayout::setAlignment(QGraphicsLayoutItem *item, Qt::Alignment alignment)
+void QGraphicsLinearLayout::setAlignment(QGraphicsLayoutItem *item, BobUI::Alignment alignment)
 {
     Q_D(QGraphicsLinearLayout);
     if (this->alignment(item) == alignment)
@@ -413,7 +413,7 @@ void QGraphicsLinearLayout::setAlignment(QGraphicsLayoutItem *item, Qt::Alignmen
 
 /*!
     Returns the alignment for \a item. The default alignment is
-    Qt::AlignTop | Qt::AlignLeft.
+    BobUI::AlignTop | BobUI::AlignLeft.
 
     The alignment decides how the item is positioned within its assigned space
     in the case where there's more space available in the layout than the
@@ -421,7 +421,7 @@ void QGraphicsLinearLayout::setAlignment(QGraphicsLayoutItem *item, Qt::Alignmen
 
     \sa setAlignment()
 */
-Qt::Alignment QGraphicsLinearLayout::alignment(QGraphicsLayoutItem *item) const
+BobUI::Alignment QGraphicsLinearLayout::alignment(QGraphicsLayoutItem *item) const
 {
     Q_D(const QGraphicsLinearLayout);
     return d->engine.alignment(item);
@@ -470,13 +470,13 @@ void QGraphicsLinearLayout::setGeometry(const QRectF &rect)
     QRectF effectiveRect = geometry();
     qreal left, top, right, bottom;
     getContentsMargins(&left, &top, &right, &bottom);
-    Qt::LayoutDirection visualDir = d->visualDirection();
+    BobUI::LayoutDirection visualDir = d->visualDirection();
     d->engine.setVisualDirection(visualDir);
-    if (visualDir == Qt::RightToLeft)
+    if (visualDir == BobUI::RightToLeft)
         qSwap(left, right);
     effectiveRect.adjust(+left, +top, -right, -bottom);
 #ifdef QGRIDLAYOUTENGINE_DEBUG
-    if (qt_graphicsLayoutDebug()) {
+    if (bobui_graphicsLayoutDebug()) {
         static int counter = 0;
         qDebug() << counter++ << "QGraphicsLinearLayout::setGeometry - " << rect;
         dump(1);
@@ -484,7 +484,7 @@ void QGraphicsLinearLayout::setGeometry(const QRectF &rect)
 #endif
     d->engine.setGeometries(effectiveRect, d->styleInfo());
 #ifdef QGRIDLAYOUTENGINE_DEBUG
-    if (qt_graphicsLayoutDebug()) {
+    if (bobui_graphicsLayoutDebug()) {
         qDebug("post dump");
         dump(1);
     }
@@ -494,7 +494,7 @@ void QGraphicsLinearLayout::setGeometry(const QRectF &rect)
 /*!
     \reimp
 */
-QSizeF QGraphicsLinearLayout::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF QGraphicsLinearLayout::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_D(const QGraphicsLinearLayout);
     qreal left, top, right, bottom;
@@ -521,10 +521,10 @@ void QGraphicsLinearLayout::invalidate()
 void QGraphicsLinearLayout::dump(int indent) const
 {
 #ifdef QGRIDLAYOUTENGINE_DEBUG
-    if (qt_graphicsLayoutDebug()) {
+    if (bobui_graphicsLayoutDebug()) {
         Q_D(const QGraphicsLinearLayout);
         qDebug("%*s%s layout", indent, "",
-               d->orientation == Qt::Horizontal ? "Horizontal" : "Vertical");
+               d->orientation == BobUI::Horizontal ? "Horizontal" : "Vertical");
         d->engine.dump(indent + 1);
     }
 #else
@@ -532,4 +532,4 @@ void QGraphicsLinearLayout::dump(int indent) const
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

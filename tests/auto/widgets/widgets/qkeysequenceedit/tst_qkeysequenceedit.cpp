@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QKeySequenceEdit>
 #include <QLineEdit>
 #include <QString>
 
-Q_DECLARE_METATYPE(Qt::Key)
-Q_DECLARE_METATYPE(Qt::KeyboardModifiers)
+Q_DECLARE_METATYPE(BobUI::Key)
+Q_DECLARE_METATYPE(BobUI::KeyboardModifiers)
 
 class tst_QKeySequenceEdit : public QObject
 {
@@ -42,14 +42,14 @@ void tst_QKeySequenceEdit::testSetters()
 
 void tst_QKeySequenceEdit::testKeys_data()
 {
-    QTest::addColumn<Qt::Key>("key");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<QKeySequence>("keySequence");
+    BOBUIest::addColumn<BobUI::Key>("key");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<QKeySequence>("keySequence");
 
-    QTest::newRow("1") << Qt::Key_N << Qt::KeyboardModifiers(Qt::ControlModifier) << QKeySequence("Ctrl+N");
-    QTest::newRow("2") << Qt::Key_N << Qt::KeyboardModifiers(Qt::AltModifier) << QKeySequence("Alt+N");
-    QTest::newRow("3") << Qt::Key_N << Qt::KeyboardModifiers(Qt::ShiftModifier) << QKeySequence("Shift+N");
-    QTest::newRow("4") << Qt::Key_N << Qt::KeyboardModifiers(Qt::ControlModifier  | Qt::ShiftModifier) << QKeySequence("Ctrl+Shift+N");
+    BOBUIest::newRow("1") << BobUI::Key_N << BobUI::KeyboardModifiers(BobUI::ControlModifier) << QKeySequence("Ctrl+N");
+    BOBUIest::newRow("2") << BobUI::Key_N << BobUI::KeyboardModifiers(BobUI::AltModifier) << QKeySequence("Alt+N");
+    BOBUIest::newRow("3") << BobUI::Key_N << BobUI::KeyboardModifiers(BobUI::ShiftModifier) << QKeySequence("Shift+N");
+    BOBUIest::newRow("4") << BobUI::Key_N << BobUI::KeyboardModifiers(BobUI::ControlModifier  | BobUI::ShiftModifier) << QKeySequence("Ctrl+Shift+N");
 }
 
 void tst_QKeySequenceEdit::testMaximumSequenceLength()
@@ -69,7 +69,7 @@ void tst_QKeySequenceEdit::testMaximumSequenceLength()
     //
     // WHEN: setting the key sequence on the edit
     //
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QKeySequenceEdit: setting a key sequence of length 2 when "
                          "maximumSequenceLength is 1, truncating.");
     edit.setKeySequence(multi);
@@ -90,18 +90,18 @@ void tst_QKeySequenceEdit::testMaximumSequenceLength()
 
 void tst_QKeySequenceEdit::testKeys()
 {
-    QFETCH(Qt::Key, key);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::Key, key);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(QKeySequence, keySequence);
     QKeySequenceEdit edit;
 
     QSignalSpy spy(&edit, SIGNAL(editingFinished()));
-    QTest::keyPress(&edit, key, modifiers);
-    QTest::keyRelease(&edit, key, modifiers);
+    BOBUIest::keyPress(&edit, key, modifiers);
+    BOBUIest::keyRelease(&edit, key, modifiers);
 
     QCOMPARE(spy.size(), 0);
     QCOMPARE(edit.keySequence(), keySequence);
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
 }
 
 void tst_QKeySequenceEdit::testLineEditContents()
@@ -127,21 +127,21 @@ void tst_QKeySequenceEdit::testLineEditContents()
 
 void tst_QKeySequenceEdit::testFinishingKeyCombinations_data()
 {
-    QTest::addColumn<Qt::Key>("key");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<QKeySequence>("keySequence");
+    BOBUIest::addColumn<BobUI::Key>("key");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<QKeySequence>("keySequence");
 
-    QTest::newRow("1") << Qt::Key_Backtab << Qt::KeyboardModifiers(Qt::NoModifier) << QKeySequence("Backtab");
-    QTest::newRow("2") << Qt::Key_Tab << Qt::KeyboardModifiers(Qt::NoModifier) << QKeySequence("Tab");
-    QTest::newRow("3") << Qt::Key_Return << Qt::KeyboardModifiers(Qt::NoModifier) << QKeySequence("Return");
-    QTest::newRow("4") << Qt::Key_Enter << Qt::KeyboardModifiers(Qt::NoModifier) << QKeySequence("Enter");
-    QTest::newRow("5") << Qt::Key_Enter << Qt::KeyboardModifiers(Qt::ShiftModifier) << QKeySequence("Shift+Enter");
+    BOBUIest::newRow("1") << BobUI::Key_Backtab << BobUI::KeyboardModifiers(BobUI::NoModifier) << QKeySequence("Backtab");
+    BOBUIest::newRow("2") << BobUI::Key_Tab << BobUI::KeyboardModifiers(BobUI::NoModifier) << QKeySequence("Tab");
+    BOBUIest::newRow("3") << BobUI::Key_Return << BobUI::KeyboardModifiers(BobUI::NoModifier) << QKeySequence("Return");
+    BOBUIest::newRow("4") << BobUI::Key_Enter << BobUI::KeyboardModifiers(BobUI::NoModifier) << QKeySequence("Enter");
+    BOBUIest::newRow("5") << BobUI::Key_Enter << BobUI::KeyboardModifiers(BobUI::ShiftModifier) << QKeySequence("Shift+Enter");
 }
 
 void tst_QKeySequenceEdit::testFinishingKeyCombinations()
 {
-    QFETCH(Qt::Key, key);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::Key, key);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(QKeySequence, keySequence);
     QKeySequenceEdit edit;
 
@@ -149,19 +149,19 @@ void tst_QKeySequenceEdit::testFinishingKeyCombinations()
     QCOMPARE(spy.size(), 0);
 
     edit.setFinishingKeyCombinations({QKeyCombination(modifiers, key)});
-    QTest::keyPress(&edit, key, modifiers);
-    QTest::keyRelease(&edit, key, modifiers);
+    BOBUIest::keyPress(&edit, key, modifiers);
+    BOBUIest::keyRelease(&edit, key, modifiers);
 
     QCOMPARE(edit.keySequence(), QKeySequence());
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
 
     edit.setFinishingKeyCombinations({});
-    QTest::keyPress(&edit, key, modifiers);
-    QTest::keyRelease(&edit, key, modifiers);
+    BOBUIest::keyPress(&edit, key, modifiers);
+    BOBUIest::keyRelease(&edit, key, modifiers);
 
     QCOMPARE(edit.keySequence(), keySequence);
-    QTRY_COMPARE(spy.size(), 2);
+    BOBUIRY_COMPARE(spy.size(), 2);
 }
 
-QTEST_MAIN(tst_QKeySequenceEdit)
+BOBUIEST_MAIN(tst_QKeySequenceEdit)
 #include "tst_qkeysequenceedit.moc"

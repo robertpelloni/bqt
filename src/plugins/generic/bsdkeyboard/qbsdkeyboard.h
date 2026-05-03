@@ -1,5 +1,5 @@
 // Copyright (C) 2015-2016 Oleksandr Tymoshenko <gonzo@bluezbox.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBSDKEYBOARD_H
 #define QBSDKEYBOARD_H
@@ -8,7 +8,7 @@
 #include <QDataStream>
 #include <QList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSocketNotifier;
 
@@ -24,7 +24,7 @@ namespace QBsdKeyboardMap {
     struct Mapping {
         quint16 keycode;
         quint16 unicode;
-        quint32 qtcode;
+        quint32 bobuicode;
         quint8 modifiers;
         quint8 flags;
         quint16 special;
@@ -53,7 +53,7 @@ namespace QBsdKeyboardMap {
 
 inline QDataStream &operator>>(QDataStream &ds, QBsdKeyboardMap::Mapping &m)
 {
-    return ds >> m.keycode >> m.unicode >> m.qtcode >> m.modifiers >> m.flags >> m.special;
+    return ds >> m.keycode >> m.unicode >> m.bobuicode >> m.modifiers >> m.flags >> m.special;
 }
 
 class QBsdKeyboardHandler : public QObject
@@ -64,25 +64,25 @@ public:
     QBsdKeyboardHandler(const QString &key, const QString &specification);
     ~QBsdKeyboardHandler() override;
 
-    static Qt::KeyboardModifiers toQtModifiers(quint8 mod)
+    static BobUI::KeyboardModifiers toBobUIModifiers(quint8 mod)
     {
-        Qt::KeyboardModifiers qtmod = Qt::NoModifier;
+        BobUI::KeyboardModifiers bobuimod = BobUI::NoModifier;
 
         if (mod & (QBsdKeyboardMap::ModShift | QBsdKeyboardMap::ModShiftL | QBsdKeyboardMap::ModShiftR))
-            qtmod |= Qt::ShiftModifier;
+            bobuimod |= BobUI::ShiftModifier;
         if (mod & (QBsdKeyboardMap::ModControl | QBsdKeyboardMap::ModCtrlL | QBsdKeyboardMap::ModCtrlR))
-            qtmod |= Qt::ControlModifier;
+            bobuimod |= BobUI::ControlModifier;
         if (mod & QBsdKeyboardMap::ModAlt)
-            qtmod |= Qt::AltModifier;
+            bobuimod |= BobUI::AltModifier;
 
-        return qtmod;
+        return bobuimod;
     }
 
 protected:
     void switchLed(int led, bool state);
     void processKeycode(quint16 keycode, bool pressed, bool autorepeat);
-    void processKeyEvent(int nativecode, int unicode, int qtcode,
-                         Qt::KeyboardModifiers modifiers, bool isPress, bool autoRepeat);
+    void processKeyEvent(int nativecode, int unicode, int bobuicode,
+                         BobUI::KeyboardModifiers modifiers, bool isPress, bool autoRepeat);
     void revertTTYSettings();
     void resetKeymap();
     void readKeyboardData();
@@ -104,6 +104,6 @@ private:
     QList<QBsdKeyboardMap::Mapping> m_keymap;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBSDKEYBOARD_H

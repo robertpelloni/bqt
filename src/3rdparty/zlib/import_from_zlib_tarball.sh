@@ -1,13 +1,13 @@
 #! /bin/sh
 
 # Copyright (C) 2017 André Klitzing
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #
 # This is a small script to copy the required files from a zlib tarball
 # into 3rdparty/zlib/
 
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 zlib_tarball_dir/ \$QTDIR/src/3rdparty/zlib/"
+    echo "Usage: $0 zlib_tarball_dir/ \$BOBUIDIR/src/3rdparty/zlib/"
     exit 1
 fi
 
@@ -79,15 +79,15 @@ done
 
 cat << EOF
 
-Please do not forget to patch qtpatches.diff
+Please do not forget to patch bobuipatches.diff
 The usual routine after this script is:
   1. Create commit to clean staging
-  2. Apply qtpatches.diff with:
-       patch -p1 < qtpatches.diff
+  2. Apply bobuipatches.diff with:
+       patch -p1 < bobuipatches.diff
   3. Update the version in: ChangeLog and src/zlib.h
-  4. Validate all changes and create new qtpatches.diff with:
-       git diff --relative > qtpatches.diff
+  4. Validate all changes and create new bobuipatches.diff with:
+       git diff --relative > bobuipatches.diff
   5. Add changed files and amend the commit with these files.
 
-If you want to revert the diff use: patch -p1 -Ri qtpatches.diff
+If you want to revert the diff use: patch -p1 -Ri bobuipatches.diff
 EOF

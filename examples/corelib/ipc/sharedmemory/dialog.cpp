@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "dialog.h"
 
@@ -7,7 +7,7 @@
 #include <QFileDialog>
 #include <QNativeIpcKey>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
   \class Dialog
@@ -15,7 +15,7 @@ using namespace Qt::StringLiterals;
   \brief This class is a simple example of how to use QSharedMemory.
 
   It is a simple dialog that presents a few buttons. To compile the
-  example, run make in qt/examples/ipc. Then run the executable twice
+  example, run make in bobui/examples/ipc. Then run the executable twice
   to create two processes running the dialog. In one of the processes,
   press the button to load an image into a shared memory segment, and
   then select an image file to load. Once the first process has loaded

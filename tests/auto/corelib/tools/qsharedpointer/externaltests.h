@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#ifndef QTEST_EXTERNAL_TESTS_H
-#define QTEST_EXTERNAL_TESTS_H
+#ifndef BOBUIEST_EXTERNAL_TESTS_H
+#define BOBUIEST_EXTERNAL_TESTS_H
 
 #include <QList>
 #include <QByteArray>
 #include <QStringList>
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
     class QExternalTestPrivate;
     class QExternalTest
     {
@@ -26,23 +26,23 @@ namespace QTest {
             RunStage
         };
 
-        enum QtModule {
-            QtCore      = 0x0001,
-            QtGui       = 0x0002,
-            QtNetwork   = 0x0004,
-            QtXml       = 0x0008,
-            QtXmlPatterns=0x0010,
-            QtOpenGL    = 0x0020,
-            QtSql       = 0x0040,
-            QtSvg       = 0x0080,
-            QtScript    = 0x0100,
-            QtTest      = 0x0200,
-            QtDBus      = 0x0400,
-            QtWebKit    = 0x0800,
-            QtWidgets   = 0x1000,
+        enum BobUIModule {
+            BobUICore      = 0x0001,
+            BobUIGui       = 0x0002,
+            BobUINetwork   = 0x0004,
+            BobUIXml       = 0x0008,
+            BobUIXmlPatterns=0x0010,
+            BobUIOpenGL    = 0x0020,
+            BobUISql       = 0x0040,
+            BobUISvg       = 0x0080,
+            BobUIScript    = 0x0100,
+            BobUITest      = 0x0200,
+            BobUIDBus      = 0x0400,
+            BobUIWebKit    = 0x0800,
+            BobUIWidgets   = 0x1000,
             Phonon      = 0x2000 // odd man out
         };
-        Q_DECLARE_FLAGS(QtModules, QtModule)
+        Q_DECLARE_FLAGS(BobUIModules, BobUIModule)
 
         enum ApplicationType {
             AutoApplication,
@@ -55,8 +55,8 @@ namespace QTest {
         QList<QByteArray> qmakeSettings() const;
         void setQmakeSettings(const QList<QByteArray> &settings);
 
-        QtModules qtModules() const;
-        void setQtModules(QtModules modules);
+        BobUIModules bobuiModules() const;
+        void setBobUIModules(BobUIModules modules);
 
         ApplicationType applicationType() const;
         void setApplicationType(ApplicationType type);
@@ -87,8 +87,8 @@ namespace QTest {
         QExternalTestPrivate * const d;
     };
 
-    Q_DECLARE_OPERATORS_FOR_FLAGS(QExternalTest::QtModules)
+    Q_DECLARE_OPERATORS_FOR_FLAGS(QExternalTest::BobUIModules)
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,26 +1,26 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qrestreply.h"
 #include "qrestreply_p.h"
 
-#include <QtNetwork/private/qnetworkreply_p.h>
-#include <QtNetwork/private/qrestaccessmanager_p.h>
-#include <QtNetwork/private/qtcontenttypeparser_p.h>
+#include <BobUINetwork/private/qnetworkreply_p.h>
+#include <BobUINetwork/private/qrestaccessmanager_p.h>
+#include <BobUINetwork/private/bobuicontenttypeparser_p.h>
 
-#include <QtCore/qbytearrayview.h>
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qlatin1stringmatcher.h>
-#include <QtCore/qlatin1stringview.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qstringconverter.h>
+#include <BobUICore/qbytearrayview.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qlatin1stringmatcher.h>
+#include <BobUICore/qlatin1stringview.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qstringconverter.h>
 
-#include <QtCore/qxpfunctional.h>
+#include <BobUICore/qxpfunctional.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QRestReply
@@ -29,7 +29,7 @@ using namespace Qt::StringLiterals;
 
     \reentrant
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QRestReply wraps a QNetworkReply and provides convenience methods for data
     and status handling. The methods provide convenience for typical RESTful
@@ -288,7 +288,7 @@ QRestReplyPrivate::QRestReplyPrivate()
 QRestReplyPrivate::~QRestReplyPrivate()
     = default;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static QLatin1StringView operationName(QNetworkAccessManager::Operation operation)
 {
     switch (operation) {
@@ -339,7 +339,7 @@ QDebug operator<<(QDebug debug, const QRestReply &reply)
           << ")";
     return debug;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 QByteArray QRestReplyPrivate::contentCharset(const QNetworkReply* reply)
 {
@@ -355,11 +355,11 @@ QByteArray QRestReplyPrivate::contentCharset(const QNetworkReply* reply)
     const QByteArray contentTypeValue =
             reply->headers().value(QHttpHeaders::WellKnownHeader::ContentType).toByteArray();
 
-    const auto r = QtContentTypeParser::parse_content_type(contentTypeValue);
+    const auto r = BobUIContentTypeParser::parse_content_type(contentTypeValue);
     if (r && !r.charset.empty())
         return QByteArrayView(r.charset).toByteArray();
     else
         return "UTF-8"_ba; // Default to the most commonly used UTF-8.
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

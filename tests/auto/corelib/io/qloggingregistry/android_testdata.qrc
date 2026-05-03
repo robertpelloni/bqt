@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>qtlogging.ini</file>
+        <file>bobuilogging.ini</file>
     </qresource>
 </RCC>

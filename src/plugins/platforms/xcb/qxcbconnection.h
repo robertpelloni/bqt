@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
 #include <xcb/xcb.h>
 #include <xcb/randr.h>
 
-#include <QtCore/QTimer>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUICore/BOBUIimer>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qxcbexport.h"
 #include <QHash>
 #include <QList>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/private/qglobal_p.h>
 
 #include "qxcbeventqueue.h"
 #include "qxcbconnection_basic.h"
 
-#if QT_CONFIG(tabletevent)
-#include <QTabletEvent>
+#if BOBUI_CONFIG(tabletevent)
+#include <BOBUIabletEvent>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaXInput)
 Q_DECLARE_LOGGING_CATEGORY(lcQpaXInputEvents)
@@ -69,7 +69,7 @@ public:
     virtual void handleFocusInEvent(const xcb_focus_in_event_t *) {}
     virtual void handleFocusOutEvent(const xcb_focus_out_event_t *) {}
     virtual void handlePropertyNotifyEvent(const xcb_property_notify_event_t *) {}
-    virtual void handleXIMouseEvent(xcb_ge_event_t *, Qt::MouseEventSource = Qt::MouseEventNotSynthesized) {}
+    virtual void handleXIMouseEvent(xcb_ge_event_t *, BobUI::MouseEventSource = BobUI::MouseEventNotSynthesized) {}
     virtual void handleXIEnterLeave(xcb_ge_event_t *) {}
     virtual QXcbWindow *toWindow() { return nullptr; }
 };
@@ -120,10 +120,10 @@ public:
 
     QXcbKeyboard *keyboard() const { return m_keyboard; }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QXcbClipboard *clipboard() const { return m_clipboard; }
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QXcbDrag *drag() const { return m_drag; }
 #endif
 
@@ -155,12 +155,12 @@ public:
 
     xcb_timestamp_t getTimestamp();
     xcb_window_t selectionOwner(xcb_atom_t atom) const;
-    xcb_window_t qtSelectionOwner();
+    xcb_window_t bobuiSelectionOwner();
 
-    void setButtonState(Qt::MouseButton button, bool down);
-    Qt::MouseButtons buttonState() const { return m_buttonState; }
-    Qt::MouseButton button() const { return m_button; }
-    Qt::MouseButton translateMouseButton(xcb_button_t s);
+    void setButtonState(BobUI::MouseButton button, bool down);
+    BobUI::MouseButtons buttonState() const { return m_buttonState; }
+    BobUI::MouseButton button() const { return m_button; }
+    BobUI::MouseButton translateMouseButton(xcb_button_t s);
 
     QXcbWindow *focusWindow() const { return m_focusWindow; }
     void setFocusWindow(QWindow *);
@@ -181,7 +181,7 @@ public:
 
     QXcbSystemTrayTracker *systemTrayTracker() const;
 
-    Qt::MouseButtons queryMouseButtons() const;
+    BobUI::MouseButtons queryMouseButtons() const;
 
     bool isUserInputEvent(xcb_generic_event_t *event) const;
 
@@ -189,7 +189,7 @@ public:
     void xi2SelectDeviceEvents(xcb_window_t window);
     bool xi2SetMouseGrabEnabled(xcb_window_t w, bool grab);
 
-    Qt::MouseButton xiToQtMouseButton(uint32_t b);
+    BobUI::MouseButton xiToBobUIMouseButton(uint32_t b);
     void xi2UpdateScrollingDevices();
     bool isTouchScreen(int id);
 
@@ -205,7 +205,7 @@ public:
     void flush() { xcb_flush(xcb_connection()); }
     void processXcbEvents(QEventLoop::ProcessEventsFlags flags);
 
-    QTimer &focusInTimer() { return m_focusInTimer; }
+    BOBUIimer &focusInTimer() { return m_focusInTimer; }
 
 protected:
     bool event(QEvent *e) override;
@@ -238,7 +238,7 @@ private:
     void xi2SetupDevices();
     // TODO get rid of this: store minimal necessary info in a subclass of QPointingDevicePrivate
     struct TouchDeviceData {
-        QPointingDevice *qtTouchDevice = nullptr;
+        QPointingDevice *bobuiTouchDevice = nullptr;
         QHash<int, QWindowSystemInterface::TouchPoint> touchPoints;
         QHash<int, QPointF> pointPressedPosition; // in screen coordinates where each point was pressed
         struct ValuatorClassInfo {
@@ -263,14 +263,14 @@ private:
     void xi2HandleHierarchyEvent(void *event);
     void xi2HandleDeviceChangedEvent(void *event);
     void xi2ProcessTouch(void *xiDevEvent, QXcbWindow *platformWindow);
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     // TODO get rid of this: store minimal necessary info in a subclass of QXcbScrollingDevice (some tablets can scroll)
     struct TabletData {
         int deviceId = 0;
         QString name;
         QPointingDevice::PointerType pointerType = QPointingDevice::PointerType::Unknown;
         QInputDevice::DeviceType tool = QInputDevice::DeviceType::Stylus;
-        Qt::MouseButtons buttons;
+        BobUI::MouseButtons buttons;
         qint64 serialId = 0;
         bool inProximity = false;
         struct ValuatorClassInfo {
@@ -281,13 +281,13 @@ private:
         };
         QHash<int, ValuatorClassInfo> valuatorInfo;
     };
-    friend class QTypeInfo<TabletData>;
-    friend class QTypeInfo<TabletData::ValuatorClassInfo>;
+    friend class BOBUIypeInfo<TabletData>;
+    friend class BOBUIypeInfo<TabletData::ValuatorClassInfo>;
     bool xi2HandleTabletEvent(const void *event, TabletData *tabletData);
     void xi2ReportTabletEvent(const void *event, TabletData *tabletData);
     QList<TabletData> m_tabletData;
     TabletData *tabletDataForDevice(int id);
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
     void xi2HandleScrollEvent(void *event, const QPointingDevice *scrollingDevice);
     void xi2UpdateScrollingDevice(QInputDevice *scrollingDevice);
     QXcbScrollingDevice *scrollingDeviceForId(int id);
@@ -314,10 +314,10 @@ private:
     xcb_timestamp_t m_netWmUserTime = XCB_CURRENT_TIME;
 
     QXcbKeyboard *m_keyboard = nullptr;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QXcbClipboard *m_clipboard = nullptr;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QXcbDrag *m_drag = nullptr;
 #endif
     QScopedPointer<QXcbWMSupport> m_wmSupport;
@@ -327,14 +327,14 @@ private:
 
     WindowMapper m_mapper;
 
-    Qt::MouseButtons m_buttonState;
-    Qt::MouseButton m_button = Qt::NoButton;
+    BobUI::MouseButtons m_buttonState;
+    BobUI::MouseButton m_button = BobUI::NoButton;
 
     QXcbWindow *m_focusWindow = nullptr;
     QXcbWindow *m_mouseGrabber = nullptr;
     QXcbWindow *m_mousePressWindow = nullptr;
 
-#if QT_CONFIG(gestures)
+#if BOBUI_CONFIG(gestures)
     qreal m_lastPinchScale = 0;
 #endif
 
@@ -347,14 +347,14 @@ private:
     QList<int> m_xiMasterPointerIds;
     QList<int> m_xiSlavePointerIds;
 
-    xcb_window_t m_qtSelectionOwner = 0;
+    xcb_window_t m_bobuiSelectionOwner = 0;
 
     friend class QXcbEventQueue;
 
-    QTimer m_focusInTimer;
+    BOBUIimer m_focusInTimer;
 
 };
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 Q_DECLARE_TYPEINFO(QXcbConnection::TabletData::ValuatorClassInfo, Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(QXcbConnection::TabletData, Q_RELOCATABLE_TYPE);
 #endif
@@ -375,4 +375,4 @@ private:
 template <typename T>
 struct alignas(32) q_padded_xcb_event : T { };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

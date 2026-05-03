@@ -18,7 +18,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabs">
+    <widget class="BOBUIabWidget" name="tabs">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -38,7 +38,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QTreeView" name="treeView">
+        <widget class="BOBUIreeView" name="treeView">
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdockwidget.h"
 
 #include <qaction.h>
 #include <qapplication.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include <qaccessible.h>
 #endif
 #include <qdrawutil.h>
@@ -17,7 +17,7 @@
 #include <qscreen.h>
 #include <qmainwindow.h>
 #include <qstylepainter.h>
-#include <qtoolbutton.h>
+#include <bobuioolbutton.h>
 #include <qdebug.h>
 
 #include <private/qwidgetresizehandler_p.h>
@@ -27,14 +27,14 @@
 #include "qdockwidget_p.h"
 #include "qmainwindowlayout_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-extern QString qt_setWindowTitle_helperHelper(const QString&, const QWidget*); // qwidget.cpp
+extern QString bobui_setWindowTitle_helperHelper(const QString&, const QWidget*); // qwidget.cpp
 
 // qmainwindow.cpp
-extern QMainWindowLayout *qt_mainwindow_layout(const QMainWindow *window);
+extern QMainWindowLayout *bobui_mainwindow_layout(const QMainWindow *window);
 
 static const QMainWindow *mainwindow_from_dock(const QDockWidget *dock)
 {
@@ -45,10 +45,10 @@ static const QMainWindow *mainwindow_from_dock(const QDockWidget *dock)
     return nullptr;
 }
 
-static inline QMainWindowLayout *qt_mainwindow_layout_from_dock(const QDockWidget *dock)
+static inline QMainWindowLayout *bobui_mainwindow_layout_from_dock(const QDockWidget *dock)
 {
     auto mainWindow = mainwindow_from_dock(dock);
-    return mainWindow ? qt_mainwindow_layout(mainWindow) : nullptr;
+    return mainWindow ? bobui_mainwindow_layout(mainWindow) : nullptr;
 }
 
 static inline bool hasFeature(const QDockWidgetPrivate *priv, QDockWidget::DockWidgetFeature feature)
@@ -115,7 +115,7 @@ private:
 QDockWidgetTitleButton::QDockWidgetTitleButton(QDockWidget *dockWidget)
     : QAbstractButton(dockWidget)
 {
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
 }
 
 bool QDockWidgetTitleButton::event(QEvent *event)
@@ -191,7 +191,7 @@ void QDockWidgetTitleButton::paintEvent(QPaintEvent *)
     opt.subControls = { };
     opt.activeSubControls = { };
     opt.features = QStyleOptionToolButton::None;
-    opt.arrowType = Qt::NoArrow;
+    opt.arrowType = BobUI::NoArrow;
     opt.iconSize = dockButtonIconSize();
     p.drawComplexControl(QStyle::CC_ToolButton, opt);
 }
@@ -212,12 +212,12 @@ QDockWidgetLayout::~QDockWidgetLayout()
 
 /*! \internal
     Returns true if the dock widget managed by this layout should have a native
-    window decoration or if Qt needs to draw it.
+    window decoration or if BobUI needs to draw it.
  */
 bool QDockWidgetLayout::nativeWindowDeco() const
 {
     bool floating = parentWidget()->isWindow();
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (auto groupWindow =
             qobject_cast<const QDockWidgetGroupWindow *>(parentWidget()->parentWidget()))
         floating = floating || groupWindow->tabLayoutInfo();
@@ -234,16 +234,16 @@ bool QDockWidgetLayout::wmSupportsNativeWindowDeco()
 #if defined(Q_OS_ANDROID)
     return false;
 #else
-    static const bool xcb = !QGuiApplication::platformName().compare("xcb"_L1, Qt::CaseInsensitive);
+    static const bool xcb = !QGuiApplication::platformName().compare("xcb"_L1, BobUI::CaseInsensitive);
     static const bool wayland =
-            QGuiApplication::platformName().startsWith("wayland"_L1, Qt::CaseInsensitive);
+            QGuiApplication::platformName().startsWith("wayland"_L1, BobUI::CaseInsensitive);
     return !(xcb || wayland);
 #endif
 }
 
 /*! \internal
    Returns true if the dock widget managed by this layout should have a native
-   window decoration or if Qt needs to draw it. The \a floating parameter
+   window decoration or if BobUI needs to draw it. The \a floating parameter
    overrides the floating current state of the dock widget.
  */
 bool QDockWidgetLayout::nativeWindowDeco(bool floating) const
@@ -351,14 +351,14 @@ QSize QDockWidgetLayout::sizeFromContent(const QSize &content, bool floating) co
         explicitMax = w->d_func()->extra->explicitMaxSize;
     }
 
-    if (!(explicitMin & Qt::Horizontal) || min.width() == 0)
+    if (!(explicitMin & BobUI::Horizontal) || min.width() == 0)
         min.setWidth(-1);
-    if (!(explicitMin & Qt::Vertical) || min.height() == 0)
+    if (!(explicitMin & BobUI::Vertical) || min.height() == 0)
         min.setHeight(-1);
 
-    if (!(explicitMax & Qt::Horizontal))
+    if (!(explicitMax & BobUI::Horizontal))
         max.setWidth(QWIDGETSIZE_MAX);
-    if (!(explicitMax & Qt::Vertical))
+    if (!(explicitMax & BobUI::Vertical))
         max.setHeight(QWIDGETSIZE_MAX);
 
     return result.boundedTo(max).expandedTo(min);
@@ -610,23 +610,23 @@ void QDockWidgetPrivate::init()
     layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     QAbstractButton *button = new QDockWidgetTitleButton(q);
-    button->setObjectName("qt_dockwidget_floatbutton"_L1);
+    button->setObjectName("bobui_dockwidget_floatbutton"_L1);
     QObjectPrivate::connect(button, &QAbstractButton::clicked,
                             this, &QDockWidgetPrivate::toggleTopLevel);
     layout->setWidgetForRole(QDockWidgetLayout::FloatButton, button);
 
     button = new QDockWidgetTitleButton(q);
-    button->setObjectName("qt_dockwidget_closebutton"_L1);
+    button->setObjectName("bobui_dockwidget_closebutton"_L1);
     QObject::connect(button, &QAbstractButton::clicked, q, &QDockWidget::close);
     layout->setWidgetForRole(QDockWidgetLayout::CloseButton, button);
 
     font = QApplication::font("QDockWidgetTitle");
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     toggleViewAction = new QAction(q);
     toggleViewAction->setCheckable(true);
     toggleViewAction->setMenuRole(QAction::NoRole);
-    fixedWindowTitle = qt_setWindowTitle_helperHelper(q->windowTitle(), q);
+    fixedWindowTitle = bobui_setWindowTitle_helperHelper(q->windowTitle(), q);
     toggleViewAction->setText(fixedWindowTitle);
     QObjectPrivate::connect(toggleViewAction, &QAction::triggered,
                             this, &QDockWidgetPrivate::toggleView);
@@ -694,7 +694,7 @@ void QDockWidgetPrivate::updateButtons()
         = qobject_cast<QAbstractButton*>(dwLayout->widgetForRole(QDockWidgetLayout::FloatButton));
     button->setIcon(q->style()->standardIcon(QStyle::SP_TitleBarNormalButton, &opt, q));
     button->setVisible(canFloat && !hideButtons);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     //: Accessible name for button undocking a dock widget (floating state)
     button->setAccessibleName(QDockWidget::tr("Float"));
     button->setAccessibleDescription(QDockWidget::tr("Undocks and re-attaches the dock widget"));
@@ -703,7 +703,7 @@ void QDockWidgetPrivate::updateButtons()
         = qobject_cast <QAbstractButton*>(dwLayout->widgetForRole(QDockWidgetLayout::CloseButton));
     button->setIcon(q->style()->standardIcon(QStyle::SP_TitleBarCloseButton, &opt, q));
     button->setVisible(canClose && !hideButtons);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     //: Accessible name for button closing a dock widget
     button->setAccessibleName(QDockWidget::tr("Close"));
     button->setAccessibleDescription(QDockWidget::tr("Closes the dock widget"));
@@ -731,7 +731,7 @@ void QDockWidgetPrivate::initDrag(const QPoint &pos, bool nca)
     if (state != nullptr)
         return;
 
-    QMainWindowLayout *layout = qt_mainwindow_layout_from_dock(q);
+    QMainWindowLayout *layout = bobui_mainwindow_layout_from_dock(q);
     Q_ASSERT(layout != nullptr);
     if (layout->pluggingWidget != nullptr) // the main window is animating a docking operation
         return;
@@ -760,10 +760,10 @@ void QDockWidgetPrivate::startDrag(DragScope scope)
     if (state == nullptr || state->dragging)
         return;
 
-    QMainWindowLayout *layout = qt_mainwindow_layout_from_dock(q);
+    QMainWindowLayout *layout = bobui_mainwindow_layout_from_dock(q);
     Q_ASSERT(layout != nullptr);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     bool wasFloating = q->isFloating();
 #endif
 
@@ -786,11 +786,11 @@ void QDockWidgetPrivate::startDrag(DragScope scope)
 
     state->dragging = true;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     if (QMainWindowLayout::needsPlatformDrag()) {
-        Qt::DropAction result =
+        BobUI::DropAction result =
                 layout->performPlatformWidgetDrag(state->widgetItem, state->pressPos);
-        if (result == Qt::IgnoreAction && !wasFloating) {
+        if (result == BobUI::IgnoreAction && !wasFloating) {
             layout->revert(state->widgetItem);
             delete state;
             state = nullptr;
@@ -816,7 +816,7 @@ void QDockWidgetPrivate::endDrag(EndDragMode mode)
     if (state->dragging) {
         const QMainWindow *mainWindow = mainwindow_from_dock(q);
         Q_ASSERT(mainWindow != nullptr);
-        QMainWindowLayout *mwLayout = qt_mainwindow_layout(mainWindow);
+        QMainWindowLayout *mwLayout = bobui_mainwindow_layout(mainWindow);
 
         // if mainWindow is being deleted in an ongoing drag, make it a no-op instead of crashing
         if (!mwLayout)
@@ -833,8 +833,8 @@ void QDockWidgetPrivate::endDrag(EndDragMode mode)
                 QDockWidgetLayout *dwLayout = qobject_cast<QDockWidgetLayout*>(layout);
                 if (!dwLayout->nativeWindowDeco()) {
                     // get rid of the X11BypassWindowManager window flag and activate the resizer
-                    Qt::WindowFlags flags = q->windowFlags();
-                    flags &= ~Qt::X11BypassWindowManagerHint;
+                    BobUI::WindowFlags flags = q->windowFlags();
+                    flags &= ~BobUI::X11BypassWindowManagerHint;
                     q->setWindowFlags(flags);
                     setResizerActive(q->isFloating());
                     q->show();
@@ -843,10 +843,10 @@ void QDockWidgetPrivate::endDrag(EndDragMode mode)
                 }
                 if (q->isFloating()) { // Might not be floating when dragging a QDockWidgetGroupWindow
                     undockedGeometry = q->geometry();
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
                     // is the widget located within the mainwindow?
-                    const Qt::DockWidgetArea area = mainWindow->dockWidgetArea(q);
-                    if (area != Qt::NoDockWidgetArea) {
+                    const BobUI::DockWidgetArea area = mainWindow->dockWidgetArea(q);
+                    if (area != BobUI::NoDockWidgetArea) {
                         tabPosition = mwLayout->tabPosition(area);
                     } else if (auto dwgw = qobject_cast<QDockWidgetGroupWindow *>(q->parent())) {
                         // DockWidget wasn't found in one of the docks within mainwindow
@@ -872,16 +872,16 @@ void QDockWidgetPrivate::endDrag(EndDragMode mode)
     state = nullptr;
 }
 
-Qt::DockWidgetArea QDockWidgetPrivate::toDockWidgetArea(QInternal::DockPosition pos)
+BobUI::DockWidgetArea QDockWidgetPrivate::toDockWidgetArea(QInternal::DockPosition pos)
 {
     switch (pos) {
-    case QInternal::LeftDock:   return Qt::LeftDockWidgetArea;
-    case QInternal::RightDock:  return Qt::RightDockWidgetArea;
-    case QInternal::TopDock:    return Qt::TopDockWidgetArea;
-    case QInternal::BottomDock: return Qt::BottomDockWidgetArea;
+    case QInternal::LeftDock:   return BobUI::LeftDockWidgetArea;
+    case QInternal::RightDock:  return BobUI::RightDockWidgetArea;
+    case QInternal::TopDock:    return BobUI::TopDockWidgetArea;
+    case QInternal::BottomDock: return BobUI::BottomDockWidgetArea;
     default: break;
     }
-    return Qt::NoDockWidgetArea;
+    return BobUI::NoDockWidgetArea;
 }
 
 void QDockWidgetPrivate::setResizerActive(bool active)
@@ -901,7 +901,7 @@ bool QDockWidgetPrivate::isAnimating() const
 {
     Q_Q(const QDockWidget);
 
-    QMainWindowLayout *mainWinLayout = qt_mainwindow_layout_from_dock(q);
+    QMainWindowLayout *mainWinLayout = bobui_mainwindow_layout_from_dock(q);
     if (mainWinLayout == nullptr)
         return false;
 
@@ -910,7 +910,7 @@ bool QDockWidgetPrivate::isAnimating() const
 
 bool QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
 {
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
     Q_Q(QDockWidget);
 
     QDockWidgetLayout *dwLayout
@@ -921,7 +921,7 @@ bool QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
 
         QDockWidgetGroupWindow *floatingTab = qobject_cast<QDockWidgetGroupWindow*>(parent);
 
-        if (event->button() != Qt::LeftButton ||
+        if (event->button() != BobUI::LeftButton ||
             !titleArea.contains(event->position().toPoint()) ||
             // check if the tool window is movable... do nothing if it
             // is not (but allow moving if the window is floating)
@@ -934,13 +934,13 @@ bool QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
         initDrag(event->position().toPoint(), false);
 
         if (state)
-            state->ctrlDrag = (hasFeature(this, QDockWidget::DockWidgetFloatable) && event->modifiers() & Qt::ControlModifier) ||
+            state->ctrlDrag = (hasFeature(this, QDockWidget::DockWidgetFloatable) && event->modifiers() & BobUI::ControlModifier) ||
                               (!hasFeature(this, QDockWidget::DockWidgetMovable) && q->isFloating());
 
         return true;
     }
 
-#endif // QT_CONFIG(mainwindow)
+#endif // BOBUI_CONFIG(mainwindow)
     return false;
 }
 
@@ -951,7 +951,7 @@ bool QDockWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *event)
     if (!dwLayout->nativeWindowDeco()) {
         QRect titleArea = dwLayout->titleArea();
 
-        if (event->button() == Qt::LeftButton && titleArea.contains(event->position().toPoint()) &&
+        if (event->button() == BobUI::LeftButton && titleArea.contains(event->position().toPoint()) &&
             hasFeature(this, QDockWidget::DockWidgetFloatable)) {
             toggleTopLevel();
             return true;
@@ -964,7 +964,7 @@ bool QDockWidgetPrivate::isTabbed() const
 {
     Q_Q(const QDockWidget);
     QDockWidget *that = const_cast<QDockWidget *>(q);
-    auto *mwLayout = qt_mainwindow_layout_from_dock(that);
+    auto *mwLayout = bobui_mainwindow_layout_from_dock(that);
     Q_ASSERT(mwLayout);
     return mwLayout->isDockWidgetTabbed(q);
 }
@@ -972,7 +972,7 @@ bool QDockWidgetPrivate::isTabbed() const
 bool QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)
 {
     bool ret = false;
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
     Q_Q(QDockWidget);
 
     if (!state)
@@ -980,7 +980,7 @@ bool QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)
 
     QDockWidgetLayout *dwlayout
         = qobject_cast<QDockWidgetLayout *>(layout);
-    QMainWindowLayout *mwlayout = qt_mainwindow_layout_from_dock(q);
+    QMainWindowLayout *mwlayout = bobui_mainwindow_layout_from_dock(q);
     if (!dwlayout->nativeWindowDeco()) {
         if (!state->dragging
             && mwlayout->pluggingWidget == nullptr
@@ -1057,26 +1057,26 @@ bool QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)
         ret = true;
     }
 
-#endif // QT_CONFIG(mainwindow)
+#endif // BOBUI_CONFIG(mainwindow)
     return ret;
 }
 
 bool QDockWidgetPrivate::mouseReleaseEvent(QMouseEvent *event)
 {
-#if QT_CONFIG(mainwindow)
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(mainwindow)
+#if BOBUI_CONFIG(draganddrop)
     // if we are peforming a platform drag ignore the release here and end the drag when the actual
     // drag ends.
     if (QMainWindowLayout::needsPlatformDrag())
         return false;
 #endif
 
-    if (event->button() == Qt::LeftButton && state && !state->nca) {
+    if (event->button() == BobUI::LeftButton && state && !state->nca) {
         endDrag(EndDragMode::LocationChange);
         return true; //filter out the event
     }
 
-#endif // QT_CONFIG(mainwindow)
+#endif // BOBUI_CONFIG(mainwindow)
     return false;
 }
 
@@ -1109,7 +1109,7 @@ void QDockWidgetPrivate::nonClientAreaMouseEvent(QMouseEvent *event)
             initDrag(event->position().toPoint(), true);
             if (state == nullptr)
                 break;
-            state->ctrlDrag = (event->modifiers() & Qt::ControlModifier) ||
+            state->ctrlDrag = (event->modifiers() & BobUI::ControlModifier) ||
                               (!hasFeature(this, QDockWidget::DockWidgetMovable) && q->isFloating());
             startDrag(DragScope::Group);
             break;
@@ -1161,7 +1161,7 @@ void QDockWidgetPrivate::moveEvent(QMoveEvent *event)
     if (state->ctrlDrag)
         return;
 
-    QMainWindowLayout *layout = qt_mainwindow_layout_from_dock(q);
+    QMainWindowLayout *layout = bobui_mainwindow_layout_from_dock(q);
     Q_ASSERT(layout != nullptr);
 
     QPoint globalMousePos = event->pos() + state->pressPos;
@@ -1191,38 +1191,38 @@ void QDockWidgetPrivate::setWindowState(WindowStates states, const QRect &rect)
     bool unplug = states.testFlag(WindowState::Unplug);
 
     if (!floating && parent) {
-        QMainWindowLayout *mwlayout = qt_mainwindow_layout_from_dock(q);
-        if (mwlayout && mwlayout->dockWidgetArea(q) == Qt::NoDockWidgetArea
+        QMainWindowLayout *mwlayout = bobui_mainwindow_layout_from_dock(q);
+        if (mwlayout && mwlayout->dockWidgetArea(q) == BobUI::NoDockWidgetArea
                 && !qobject_cast<QDockWidgetGroupWindow *>(parent))
             return; // this dockwidget can't be redocked
     }
 
     const bool wasFloating = q->isFloating();
-    if (wasFloating) // Prevent repetitive unplugging from nested invocations (QTBUG-42818)
+    if (wasFloating) // Prevent repetitive unplugging from nested invocations (BOBUIBUG-42818)
         unplug = false;
     const bool hidden = q->isHidden();
 
     if (q->isVisible())
         q->hide();
 
-    Qt::WindowFlags flags = floating ? Qt::Tool : Qt::Widget;
+    BobUI::WindowFlags flags = floating ? BobUI::Tool : BobUI::Widget;
 
     QDockWidgetLayout *dwLayout = qobject_cast<QDockWidgetLayout*>(layout);
     const bool nativeDeco = dwLayout->nativeWindowDeco(floating);
 
     if (nativeDeco) {
-        flags |= Qt::CustomizeWindowHint | Qt::WindowTitleHint;
+        flags |= BobUI::CustomizeWindowHint | BobUI::WindowTitleHint;
         if (hasFeature(this, QDockWidget::DockWidgetClosable))
-            flags |= Qt::WindowCloseButtonHint;
+            flags |= BobUI::WindowCloseButtonHint;
     } else {
-        flags |= Qt::FramelessWindowHint;
+        flags |= BobUI::FramelessWindowHint;
     }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     // If we are performing a platform drag the flag is not needed and we want to avoid recreating
     // the platform window when it would be removed later
     if (unplug && !QMainWindowLayout::needsPlatformDrag())
-        flags |= Qt::X11BypassWindowManagerHint;
+        flags |= BobUI::X11BypassWindowManagerHint;
 #endif
 
     q->setWindowFlags(flags);
@@ -1238,7 +1238,7 @@ void QDockWidgetPrivate::setWindowState(WindowStates states, const QRect &rect)
 
     if (floating != wasFloating) {
         emit q->topLevelChanged(floating);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (QAccessible::isActive()) {
             // Accessible role depends on whether QDockWidget is a top level or not,
             // see QAccessibleDockWidget::role
@@ -1248,11 +1248,11 @@ void QDockWidgetPrivate::setWindowState(WindowStates states, const QRect &rect)
 #endif
 
         if (!floating && parent) {
-            QMainWindowLayout *mwlayout = qt_mainwindow_layout_from_dock(q);
+            QMainWindowLayout *mwlayout = bobui_mainwindow_layout_from_dock(q);
             if (mwlayout)
                 emit q->dockLocationChanged(mwlayout->dockWidgetArea(q));
         } else {
-            emit q->dockLocationChanged(Qt::NoDockWidgetArea);
+            emit q->dockLocationChanged(BobUI::NoDockWidgetArea);
         }
     }
 
@@ -1267,7 +1267,7 @@ void QDockWidgetPrivate::setWindowState(WindowStates states, const QRect &rect)
     desktop.
 
     \ingroup mainwindow-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QDockWidget provides the concept of dock widgets, also know as
     tool palettes or utility windows.  Dock windows are secondary
@@ -1344,7 +1344,7 @@ void QDockWidgetPrivate::setWindowState(WindowStates states, const QRect &rect)
     flags. The dock widget will be placed in the left dock widget
     area.
 */
-QDockWidget::QDockWidget(QWidget *parent, Qt::WindowFlags flags)
+QDockWidget::QDockWidget(QWidget *parent, BobUI::WindowFlags flags)
     : QWidget(*new QDockWidgetPrivate, parent, flags)
 {
     Q_D(QDockWidget);
@@ -1362,7 +1362,7 @@ QDockWidget::QDockWidget(QWidget *parent, Qt::WindowFlags flags)
 
     \sa setWindowTitle()
 */
-QDockWidget::QDockWidget(const QString &title, QWidget *parent, Qt::WindowFlags flags)
+QDockWidget::QDockWidget(const QString &title, QWidget *parent, BobUI::WindowFlags flags)
     : QDockWidget(parent, flags)
 {
     setWindowTitle(title);
@@ -1515,7 +1515,7 @@ void QDockWidgetPrivate::setFloating(bool floating)
     if (floating && r.isNull()) {
         if (q->x() < 0 || q->y() < 0) //may happen if we have been hidden
             q->move(QPoint());
-        q->setAttribute(Qt::WA_Moved, false); //we want it at the default position
+        q->setAttribute(BobUI::WA_Moved, false); //we want it at the default position
     }
 
     switch (updateRule) {
@@ -1534,29 +1534,29 @@ void QDockWidgetPrivate::setFloating(bool floating)
     \property QDockWidget::allowedAreas
     \brief areas where the dock widget may be placed
 
-    The default is Qt::AllDockWidgetAreas.
+    The default is BobUI::AllDockWidgetAreas.
 
-    \sa Qt::DockWidgetArea
+    \sa BobUI::DockWidgetArea
 */
 
-void QDockWidget::setAllowedAreas(Qt::DockWidgetAreas areas)
+void QDockWidget::setAllowedAreas(BobUI::DockWidgetAreas areas)
 {
     Q_D(QDockWidget);
-    areas &= Qt::DockWidgetArea_Mask;
+    areas &= BobUI::DockWidgetArea_Mask;
     if (areas == d->allowedAreas)
         return;
     d->allowedAreas = areas;
     emit allowedAreasChanged(d->allowedAreas);
 }
 
-Qt::DockWidgetAreas QDockWidget::allowedAreas() const
+BobUI::DockWidgetAreas QDockWidget::allowedAreas() const
 {
     Q_D(const QDockWidget);
     return d->allowedAreas;
 }
 
 /*!
-    \fn bool QDockWidget::isAreaAllowed(Qt::DockWidgetArea area) const
+    \fn bool QDockWidget::isAreaAllowed(BobUI::DockWidgetArea area) const
 
     Returns \c true if this dock widget can be placed in the given \a area;
     otherwise returns \c false.
@@ -1578,18 +1578,18 @@ void QDockWidget::changeEvent(QEvent *event)
         Q_FALLTHROUGH();
     case QEvent::ModifiedChange:
         update(layout->titleArea());
-#ifndef QT_NO_ACTION
-        d->fixedWindowTitle = qt_setWindowTitle_helperHelper(windowTitle(), this);
+#ifndef BOBUI_NO_ACTION
+        d->fixedWindowTitle = bobui_setWindowTitle_helperHelper(windowTitle(), this);
         d->toggleViewAction->setText(d->fixedWindowTitle);
 #endif
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         {
-            if (QMainWindowLayout *winLayout = qt_mainwindow_layout_from_dock(this)) {
+            if (QMainWindowLayout *winLayout = bobui_mainwindow_layout_from_dock(this)) {
                 if (QDockAreaLayoutInfo *info = winLayout->layoutState.dockAreaLayout.info(this))
                     info->updateTabBar();
             }
         }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
         break;
     default:
         break;
@@ -1652,10 +1652,10 @@ bool QDockWidget::event(QEvent *event)
     Q_D(QDockWidget);
 
     QMainWindow *win = qobject_cast<QMainWindow*>(parentWidget());
-    QMainWindowLayout *layout = qt_mainwindow_layout_from_dock(this);
+    QMainWindowLayout *layout = bobui_mainwindow_layout_from_dock(this);
 
     switch (event->type()) {
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     case QEvent::Hide:
         if (layout != nullptr)
             layout->keepSize(this);
@@ -1687,7 +1687,7 @@ bool QDockWidget::event(QEvent *event)
             const QObjectList &siblings = win->children();
             onTop = siblings.size() > 0 && siblings.last() == (QObject*)this;
         }
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (!isFloating() && layout != nullptr && onTop)
             layout->raise(this);
 #endif
@@ -1748,7 +1748,7 @@ bool QDockWidget::event(QEvent *event)
     return QWidget::event(event);
 }
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 /*!
   Returns a checkable action that can be added to menus and toolbars so that
   the user can show or close this dock widget.
@@ -1768,7 +1768,7 @@ QAction * QDockWidget::toggleViewAction() const
     Q_D(const QDockWidget);
     return d->toggleViewAction;
 }
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
 /*!
     \fn void QDockWidget::featuresChanged(QDockWidget::DockWidgetFeatures features)
@@ -1788,7 +1788,7 @@ QAction * QDockWidget::toggleViewAction() const
 */
 
 /*!
-    \fn void QDockWidget::allowedAreasChanged(Qt::DockWidgetAreas allowedAreas)
+    \fn void QDockWidget::allowedAreasChanged(BobUI::DockWidgetAreas allowedAreas)
 
     This signal is emitted when the \l allowedAreas property changes. The
     \a allowedAreas parameter gives the new value of the property.
@@ -1809,7 +1809,7 @@ QAction * QDockWidget::toggleViewAction() const
 */
 
 /*!
-    \fn void QDockWidget::dockLocationChanged(Qt::DockWidgetArea area)
+    \fn void QDockWidget::dockLocationChanged(BobUI::DockWidgetArea area)
     \since 4.3
 
     This signal is emitted when the dock widget is moved to another
@@ -1881,13 +1881,13 @@ void QDockWidget::setTitleBarWidget(QWidget *widget)
     will move to \a area. If floating or part of floating tabs, the next call
     of setFloating(false) will dock it at \a area.
 
-    \note setDockLocation(Qt::NoDockLocation) is equivalent to setFloating(true).
+    \note setDockLocation(BobUI::NoDockLocation) is equivalent to setFloating(true).
 
     \sa dockLocation(), dockLocationChanged()
  */
-void QDockWidget::setDockLocation(Qt::DockWidgetArea area)
+void QDockWidget::setDockLocation(BobUI::DockWidgetArea area)
 {
-    if (area == Qt::NoDockWidgetArea && !isFloating()) {
+    if (area == BobUI::NoDockWidgetArea && !isFloating()) {
         setFloating(true);
         return;
     }
@@ -1901,21 +1901,21 @@ void QDockWidget::setDockLocation(Qt::DockWidgetArea area)
     \property QDockWidget::dockLocation
     \since 6.9
 
-    \brief the current dock location, or Qt::NoDockLocation if this dock widget
+    \brief the current dock location, or BobUI::NoDockLocation if this dock widget
     is floating or has no mainwindow parent.
  */
-Qt::DockWidgetArea QDockWidget::dockLocation() const
+BobUI::DockWidgetArea QDockWidget::dockLocation() const
 {
     // QDockWidgetPrivate::setWindowState() emits NoDockWidgetArea if
     // the dock widget becomes floating.
     // QMainWindowLayout::dockWidgetArea() always returns the area where
     // the dock widget's item_list is kept.
     if (isFloating())
-        return Qt::NoDockWidgetArea;
+        return BobUI::NoDockWidgetArea;
 
     auto *mainWindow = mainwindow_from_dock(this);
     Q_ASSERT(mainWindow);
-    // FIXME in Qt 7: Make dockWidgetArea take a const QDockWidget* argument
+    // FIXME in BobUI 7: Make dockWidgetArea take a const QDockWidget* argument
     return mainWindow->dockWidgetArea(const_cast<QDockWidget *>(this));
 }
 
@@ -1934,7 +1934,7 @@ QWidget *QDockWidget::titleBarWidget() const
     return layout->widgetForRole(QDockWidgetLayout::TitleBar);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QDockWidget *dockWidget)
 {
     QDebugStateSaver saver(dbg);
@@ -1952,9 +1952,9 @@ QDebug operator<<(QDebug dbg, const QDockWidget *dockWidget)
     dbg << ";))";
     return dbg;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qdockwidget.moc"
 #include "moc_qdockwidget.cpp"

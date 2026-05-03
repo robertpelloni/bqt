@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*! \class QFuture
-    \inmodule QtCore
+    \inmodule BobUICore
     \threadsafe
     \brief The QFuture class represents the result of an asynchronous computation.
     \since 4.4
@@ -92,8 +92,8 @@
     suspend or resume the computation, use the setSuspended() function or one of
     the suspend(), resume(), or toggleSuspended() convenience functions. Be aware
     that not all running asynchronous computations can be canceled or suspended.
-    For example, the future returned by QtConcurrent::run() cannot be canceled;
-    but the future returned by QtConcurrent::mappedReduced() can.
+    For example, the future returned by BobUIConcurrent::run() cannot be canceled;
+    but the future returned by BobUIConcurrent::mappedReduced() can.
 
     Progress information is provided by the progressValue(),
     progressMinimum(), progressMaximum(), and progressText() functions. The
@@ -111,32 +111,32 @@
 
     To interact with running tasks using signals and slots, use QFutureWatcher.
 
-    You can also use QtFuture::connect() to connect signals to a QFuture object
+    You can also use BobUIFuture::connect() to connect signals to a QFuture object
     which will be resolved when a signal is emitted. This allows working with
     signals like with QFuture objects. For example, if you combine it with then(),
     you can attach multiple continuations to a signal, which are invoked in the
     same thread or a new thread.
 
-    The QtFuture::whenAll() and QtFuture::whenAny() functions can be used to
+    The BobUIFuture::whenAll() and BobUIFuture::whenAny() functions can be used to
     combine several futures and track when the last or first of them completes.
 
     A ready QFuture object with a value or a QFuture object holding exception can
-    be created using convenience functions QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeReadyRangeFuture(), and
-    QtFuture::makeExceptionalFuture().
+    be created using convenience functions BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeReadyRangeFuture(), and
+    BobUIFuture::makeExceptionalFuture().
 
-    \note Some APIs (see \l {QFuture::then()} or various QtConcurrent method
+    \note Some APIs (see \l {QFuture::then()} or various BobUIConcurrent method
     overloads) allow scheduling the computation to a specific thread pool.
     However, QFuture implements a work-stealing algorithm to prevent deadlocks
     and optimize thread usage. As a result, computations can be executed
     directly in the thread which requests the QFuture's result.
 
     \note To start a computation and store results in a QFuture, use QPromise or
-    one of the APIs in the \l {Qt Concurrent} framework.
+    one of the APIs in the \l {BobUI Concurrent} framework.
 
-    \sa QPromise, QtFuture::connect(), QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeReadyRangeFuture(),
-    QtFuture::makeExceptionalFuture(), QFutureWatcher, {Qt Concurrent}
+    \sa QPromise, BobUIFuture::connect(), BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeReadyRangeFuture(),
+    BobUIFuture::makeExceptionalFuture(), QFutureWatcher, {BobUI Concurrent}
 */
 
 /*! \fn template <typename T> QFuture<T>::QFuture()
@@ -181,8 +181,8 @@
     progress and result ready signals on a canceled future.
 
     Be aware that not all running asynchronous computations can be canceled.
-    For example, the future returned by QtConcurrent::run() cannot be canceled;
-    but the future returned by QtConcurrent::mappedReduced() can.
+    For example, the future returned by BobUIConcurrent::run() cannot be canceled;
+    but the future returned by BobUIConcurrent::mappedReduced() can.
 
     \sa cancelChain()
 */
@@ -235,7 +235,7 @@
     \sa cancel()
 */
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*! \fn template <typename T> void QFuture<T>::setPaused(bool paused)
 
     \deprecated [6.0] Use setSuspended() instead.
@@ -251,8 +251,8 @@
     If the computation was not previously paused, this function does nothing.
 
     Be aware that not all computations can be paused. For example, the future
-    returned by QtConcurrent::run() cannot be paused; but the future returned
-    by QtConcurrent::mappedReduced() can.
+    returned by BobUIConcurrent::run() cannot be paused; but the future returned
+    by BobUIConcurrent::mappedReduced() can.
 
     \sa suspend(), resume(), toggleSuspended()
 */
@@ -292,7 +292,7 @@
 
     \sa setSuspended(), suspend(), resume()
 */
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*! \fn template <typename T> void QFuture<T>::setSuspended(bool suspend)
 
@@ -309,8 +309,8 @@
     If the computation was not previously suspended, this function does nothing.
 
     Be aware that not all computations can be suspended. For example, the
-    QFuture returned by QtConcurrent::run() cannot be suspended; but the QFuture
-    returned by QtConcurrent::mappedReduced() can.
+    QFuture returned by BobUIConcurrent::run() cannot be suspended; but the QFuture
+    returned by BobUIConcurrent::mappedReduced() can.
 
     \sa suspend(), resume(), toggleSuspended()
 */
@@ -433,7 +433,7 @@
     computations), i.e. until isFinished() returns \c true.
 */
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> T QFuture<T>::result() const
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> T QFuture<T>::result() const
 
     Returns the first result in the future. If the result is not immediately
     available, this function will block and wait for the result to become
@@ -451,7 +451,7 @@
     \sa resultAt(), results(), takeResult()
 */
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> T QFuture<T>::resultAt(int index) const
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> T QFuture<T>::resultAt(int index) const
 
     Returns the result at \a index in the future. If the result is not
     immediately available, this function will block and wait for the result to
@@ -462,7 +462,7 @@
     \sa result(), results(), takeResult(), resultCount()
 */
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> bool QFuture<T>::isResultReadyAt(int index) const
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> bool QFuture<T>::isResultReadyAt(int index) const
 
     Returns \c true if the result at \a index is immediately available; otherwise
     returns \c false.
@@ -472,7 +472,7 @@
     \sa resultAt(), resultCount(), takeResult()
 */
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> QList<T> QFuture<T>::results() const
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> QList<T> QFuture<T>::results() const
 
     Returns all results from the future. If the results are not immediately available,
     this function will block and wait for them to become available. Note that
@@ -487,7 +487,7 @@
 */
 
 #if 0
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> std::vector<T> QFuture<T>::takeResults()
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> std::vector<T> QFuture<T>::takeResults()
 
     If isValid() returns \c false, calling this function leads to undefined behavior.
     takeResults() takes all results from the QFuture object and invalidates it
@@ -506,7 +506,7 @@
 */
 #endif
 
-/*! \fn template <typename T> template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>> std::vector<T> QFuture<T>::takeResult()
+/*! \fn template <typename T> template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>> std::vector<T> QFuture<T>::takeResult()
 
     \since 6.0
 
@@ -548,7 +548,7 @@
         isResultReadyAt()
 */
 
-/*! \fn template<typename T> template<class U = T, typename = QtPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::begin() const
+/*! \fn template<typename T> template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::begin() const
 
     Returns a const \l{STL-style iterators}{STL-style iterator} pointing to the first result in the
     future.
@@ -556,7 +556,7 @@
     \sa constBegin(), end()
 */
 
-/*! \fn template<typename T> template<class U = T, typename = QtPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::end() const
+/*! \fn template<typename T> template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::end() const
 
     Returns a const \l{STL-style iterators}{STL-style iterator} pointing to the imaginary result
     after the last result in the future.
@@ -564,7 +564,7 @@
     \sa begin(), constEnd()
 */
 
-/*! \fn template<typename T> template<class U = T, typename = QtPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::constBegin() const
+/*! \fn template<typename T> template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::constBegin() const
 
     Returns a const \l{STL-style iterators}{STL-style iterator} pointing to the first result in the
     future.
@@ -572,7 +572,7 @@
     \sa begin(), constEnd()
 */
 
-/*! \fn template<typename T> template<class U = T, typename = QtPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::constEnd() const
+/*! \fn template<typename T> template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>> QFuture<T>::const_iterator QFuture<T>::constEnd() const
 
     Returns a const \l{STL-style iterators}{STL-style iterator} pointing to the imaginary result
     after the last result in the future.
@@ -583,7 +583,7 @@
 /*! \class QFuture::const_iterator
     \reentrant
     \since 4.4
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QFuture::const_iterator class provides an STL-style const
     iterator for QFuture.
@@ -750,14 +750,14 @@
 
 /*! \typedef QFuture::ConstIterator
 
-    Qt-style synonym for QFuture::const_iterator.
+    BobUI-style synonym for QFuture::const_iterator.
 */
 
 /*!
     \class QFutureIterator
     \reentrant
     \since 4.4
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QFutureIterator class provides a Java-style const iterator for
     QFuture.
@@ -924,16 +924,16 @@
 */
 
 /*!
-    \namespace QtFuture
+    \namespace BobUIFuture
     \inheaderfile QFuture
 
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Contains miscellaneous identifiers used by the QFuture class.
 */
 
 
 /*!
-  \enum QtFuture::Launch
+  \enum BobUIFuture::Launch
 
   \since 6.0
 
@@ -946,53 +946,53 @@
                         executes \c then().
 
   \value Async          The continuation will be launched in a separate thread taken from
-                        the global QThreadPool.
+                        the global BOBUIhreadPool.
 
   \value Inherit        The continuation will inherit the launch policy or thread pool of
                         the future to which it is attached.
 
   \c Sync is used as a default launch policy.
 
-  \sa QFuture::then(), QThreadPool::globalInstance()
+  \sa QFuture::then(), BOBUIhreadPool::globalInstance()
 
 */
 
 /*!
-    \class QtFuture::WhenAnyResult
-    \inmodule QtCore
+    \class BobUIFuture::WhenAnyResult
+    \inmodule BobUICore
     \ingroup thread
-    \brief QtFuture::WhenAnyResult is used to represent the result of QtFuture::whenAny().
+    \brief BobUIFuture::WhenAnyResult is used to represent the result of BobUIFuture::whenAny().
     \since 6.3
 
     WhenAnyResult\<T\> is a template struct where \a T specifies the result
     type of the futures.
 
-    The \c {QtFuture::WhenAnyResult<T>} struct is used for packaging the copy and
+    The \c {BobUIFuture::WhenAnyResult<T>} struct is used for packaging the copy and
     the index of the first completed \c QFuture<T> in the sequence of futures
-    packaging type \c T that are passed to QtFuture::whenAny().
+    packaging type \c T that are passed to BobUIFuture::whenAny().
 
-    \sa QFuture, QtFuture::whenAny()
+    \sa QFuture, BobUIFuture::whenAny()
 */
 
 /*!
-    \variable QtFuture::WhenAnyResult::index
+    \variable BobUIFuture::WhenAnyResult::index
 
     The field contains the index of the first completed QFuture in the sequence
     of futures passed to whenAny(). It has type \c qsizetype.
 
-    \sa QtFuture::whenAny()
+    \sa BobUIFuture::whenAny()
 */
 
 /*!
-    \variable QtFuture::WhenAnyResult::future
+    \variable BobUIFuture::WhenAnyResult::future
 
     The field contains the copy of the first completed QFuture that packages type
     \c T, where \c T is the type packaged by the futures passed to whenAny().
 
-    \sa QtFuture::whenAny()
+    \sa BobUIFuture::whenAny()
 */
 
-/*! \fn template<class Sender, class Signal, typename = QtPrivate::EnableIfInvocable<Sender, Signal>> static QFuture<ArgsType<Signal>> QtFuture::connect(Sender *sender, Signal signal)
+/*! \fn template<class Sender, class Signal, typename = BobUIPrivate::EnableIfInvocable<Sender, Signal>> static QFuture<ArgsType<Signal>> BobUIFuture::connect(Sender *sender, Signal signal)
 
     Creates and returns a QFuture which will become available when the \a sender emits
     the \a signal. If the \a signal takes no arguments, a QFuture<void> is returned. If
@@ -1014,11 +1014,11 @@
     \snippet code/src_corelib_thread_qfuture.cpp 12
 
     You can also start the continuation in a new thread or a custom thread pool
-    using QtFuture::Launch policies. For example:
+    using BobUIFuture::Launch policies. For example:
 
     \snippet code/src_corelib_thread_qfuture.cpp 13
 
-    Throwing an exception from a slot invoked by Qt's signal-slot connection
+    Throwing an exception from a slot invoked by BobUI's signal-slot connection
     is considered to be an undefined behavior, if it is not handled within the
     slot. But with QFuture::connect(), you can throw and handle exceptions from
     the continuations:
@@ -1031,7 +1031,7 @@
     \sa QFuture, QFuture::then()
 */
 
-/*! \fn template<typename T, typename = QtPrivate::EnableForNonVoid<T>> static QFuture<std::decay_t<T>> QtFuture::makeReadyFuture(T &&value)
+/*! \fn template<typename T, typename = BobUIPrivate::EnableForNonVoid<T>> static QFuture<std::decay_t<T>> BobUIFuture::makeReadyFuture(T &&value)
 
     \since 6.1
     \overload
@@ -1041,21 +1041,21 @@
     The returned QFuture has a type of std::decay_t<T>, where T is not void.
 
     \code
-    auto f = QtFuture::makeReadyFuture(std::make_unique<int>(42));
+    auto f = BobUIFuture::makeReadyFuture(std::make_unique<int>(42));
     ...
     const int result = *f.takeResult(); // result == 42
     \endcode
 
     The method should be avoided because
-    it has an inconsistent set of overloads. From Qt 6.10 onwards, using it
+    it has an inconsistent set of overloads. From BobUI 6.10 onwards, using it
     in code will result in compiler warnings.
 
-    \sa QFuture, QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeReadyRangeFuture(),
-    QtFuture::makeExceptionalFuture()
+    \sa QFuture, BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeReadyRangeFuture(),
+    BobUIFuture::makeExceptionalFuture()
 */
 
-/*! \fn QFuture<void> QtFuture::makeReadyFuture()
+/*! \fn QFuture<void> BobUIFuture::makeReadyFuture()
 
     \since 6.1
     \overload
@@ -1066,7 +1066,7 @@
     The returned QFuture will always be in the finished state.
 
     \code
-    auto f = QtFuture::makeReadyFuture();
+    auto f = BobUIFuture::makeReadyFuture();
     ...
     const bool started = f.isStarted(); // started == true
     const bool running = f.isRunning(); // running == false
@@ -1074,16 +1074,16 @@
     \endcode
 
     The method should be avoided because
-    it has an inconsistent set of overloads. From Qt 6.10 onwards, using it
+    it has an inconsistent set of overloads. From BobUI 6.10 onwards, using it
     in code will result in compiler warnings.
 
     \sa QFuture, QFuture::isStarted(), QFuture::isRunning(),
-    QFuture::isFinished(), QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeReadyRangeFuture(),
-    QtFuture::makeExceptionalFuture()
+    QFuture::isFinished(), BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeReadyRangeFuture(),
+    BobUIFuture::makeExceptionalFuture()
 */
 
-/*! \fn template<typename T> static QFuture<T> QtFuture::makeReadyFuture(const QList<T> &values)
+/*! \fn template<typename T> static QFuture<T> BobUIFuture::makeReadyFuture(const QList<T> &values)
 
     \since 6.1
     \overload
@@ -1093,22 +1093,22 @@
 
     \code
     const QList<int> values { 1, 2, 3 };
-    auto f = QtFuture::makeReadyFuture(values);
+    auto f = BobUIFuture::makeReadyFuture(values);
     ...
     const int count = f.resultCount(); // count == 3
     const auto results = f.results(); // results == { 1, 2, 3 }
     \endcode
 
     The method should be avoided because
-    it has an inconsistent set of overloads. From Qt 6.10 onwards, using it
+    it has an inconsistent set of overloads. From BobUI 6.10 onwards, using it
     in code will result in compiler warnings.
 
-    \sa QFuture, QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeReadyRangeFuture(),
-    QtFuture::makeExceptionalFuture()
+    \sa QFuture, BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeReadyRangeFuture(),
+    BobUIFuture::makeExceptionalFuture()
 */
 
-/*! \fn template<typename T> static QFuture<std::decay_t<T>> QtFuture::makeReadyValueFuture(T &&value)
+/*! \fn template<typename T> static QFuture<std::decay_t<T>> BobUIFuture::makeReadyValueFuture(T &&value)
 
     \since 6.6
 
@@ -1118,11 +1118,11 @@
 
     \snippet code/src_corelib_thread_qfuture.cpp 35
 
-    \sa QFuture, QtFuture::makeReadyRangeFuture(),
-    QtFuture::makeReadyVoidFuture(), QtFuture::makeExceptionalFuture()
+    \sa QFuture, BobUIFuture::makeReadyRangeFuture(),
+    BobUIFuture::makeReadyVoidFuture(), BobUIFuture::makeExceptionalFuture()
 */
 
-/*! \fn QFuture<void> QtFuture::makeReadyVoidFuture()
+/*! \fn QFuture<void> BobUIFuture::makeReadyVoidFuture()
 
     \since 6.6
 
@@ -1133,11 +1133,11 @@
     \snippet code/src_corelib_thread_qfuture.cpp 36
 
     \sa QFuture, QFuture::isStarted(), QFuture::isRunning(),
-    QFuture::isFinished(), QtFuture::makeReadyValueFuture(),
-    QtFuture::makeReadyRangeFuture(), QtFuture::makeExceptionalFuture()
+    QFuture::isFinished(), BobUIFuture::makeReadyValueFuture(),
+    BobUIFuture::makeReadyRangeFuture(), BobUIFuture::makeExceptionalFuture()
 */
 
-/*! \fn template<typename T> static QFuture<T> QtFuture::makeExceptionalFuture(const QException &exception)
+/*! \fn template<typename T> static QFuture<T> BobUIFuture::makeExceptionalFuture(const QException &exception)
 
     \since 6.1
 
@@ -1145,7 +1145,7 @@
 
     \code
     QException e;
-    auto f = QtFuture::makeExceptionalFuture<int>(e);
+    auto f = BobUIFuture::makeExceptionalFuture<int>(e);
     ...
     try {
         f.result(); // throws QException
@@ -1154,11 +1154,11 @@
     }
     \endcode
 
-    \sa QFuture, QException, QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture()
+    \sa QFuture, QException, BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture()
 */
 
-/*! \fn template<typename T> static QFuture<T> QtFuture::makeExceptionalFuture(std::exception_ptr exception)
+/*! \fn template<typename T> static QFuture<T> BobUIFuture::makeExceptionalFuture(std::exception_ptr exception)
 
     \since 6.1
     \overload
@@ -1171,7 +1171,7 @@
     };
     ...
     auto exception = std::make_exception_ptr(TestException());
-    auto f = QtFuture::makeExceptionalFuture<int>(exception);
+    auto f = BobUIFuture::makeExceptionalFuture<int>(exception);
     ...
     try {
         f.result(); // throws TestException
@@ -1180,11 +1180,11 @@
     }
     \endcode
 
-    \sa QFuture, QException, QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture()
+    \sa QFuture, QException, BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture()
 */
 
-/*! \fn template<typename Container, QtFuture::if_container_with_input_iterators<Container>> static QFuture<QtFuture::ContainedType<Container>> QtFuture::makeReadyRangeFuture(Container &&container)
+/*! \fn template<typename Container, BobUIFuture::if_container_with_input_iterators<Container>> static QFuture<BobUIFuture::ContainedType<Container>> BobUIFuture::makeReadyRangeFuture(Container &&container)
 
     \since 6.6
     \overload
@@ -1199,11 +1199,11 @@
 
     \constraints the \c Container has input iterators.
 
-    \sa QFuture, QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeExceptionalFuture()
+    \sa QFuture, BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeExceptionalFuture()
 */
 
-/*! \fn template<typename ValueType> static QFuture<ValueType> QtFuture::makeReadyRangeFuture(std::initializer_list<ValueType> values)
+/*! \fn template<typename ValueType> static QFuture<ValueType> BobUIFuture::makeReadyRangeFuture(std::initializer_list<ValueType> values)
 
     \since 6.6
     \overload
@@ -1215,8 +1215,8 @@
     \dots
     \snippet code/src_corelib_thread_qfuture.cpp 34
 
-    \sa QFuture, QtFuture::makeReadyVoidFuture(),
-    QtFuture::makeReadyValueFuture(), QtFuture::makeExceptionalFuture()
+    \sa QFuture, BobUIFuture::makeReadyVoidFuture(),
+    BobUIFuture::makeReadyValueFuture(), BobUIFuture::makeExceptionalFuture()
 */
 
 /*! \fn template<class T> template<class Function> QFuture<typename QFuture<T>::ResultType<Function>> QFuture<T>::then(Function &&function)
@@ -1225,7 +1225,7 @@
     \overload
 
     Attaches a continuation to this future, allowing to chain multiple asynchronous
-    computations if desired, using the \l {QtFuture::Launch}{Sync} policy.
+    computations if desired, using the \l {BobUIFuture::Launch}{Sync} policy.
     \a function is a callable that takes an argument of the type packaged by this
     future if this has a result (is not a QFuture<void>). Otherwise it takes no
     arguments. This method returns a new QFuture that packages a value of the type
@@ -1276,7 +1276,7 @@
     \sa onFailed(), onCanceled()
 */
 
-/*! \fn template<class T> template<class Function> QFuture<typename QFuture<T>::ResultType<Function>> QFuture<T>::then(QtFuture::Launch policy, Function &&function)
+/*! \fn template<class T> template<class Function> QFuture<typename QFuture<T>::ResultType<Function>> QFuture<T>::then(BobUIFuture::Launch policy, Function &&function)
 
     \since 6.0
     \overload
@@ -1296,7 +1296,7 @@
 
     \code
     QFuture<int> future = ...;
-    future.then(QtFuture::Launch::Async, [](int res){ ... }).then([](int res2){ ... });
+    future.then(BobUIFuture::Launch::Async, [](int res){ ... }).then([](int res2){ ... });
     \endcode
 
     In the following example both continuations will be invoked in new threads using the
@@ -1304,8 +1304,8 @@
 
     \code
     QFuture<int> future = ...;
-    future.then(QtFuture::Launch::Async, [](int res){ ... })
-          .then(QtFuture::Launch::Inherit, [](int res2){ ... });
+    future.then(BobUIFuture::Launch::Async, [](int res){ ... })
+          .then(BobUIFuture::Launch::Inherit, [](int res2){ ... });
     \endcode
 
     See the documentation of the other overload for more details about \a function.
@@ -1313,7 +1313,7 @@
     \sa onFailed(), onCanceled()
 */
 
-/*! \fn template<class T> template<class Function> QFuture<typename QFuture<T>::ResultType<Function>> QFuture<T>::then(QThreadPool *pool, Function &&function)
+/*! \fn template<class T> template<class Function> QFuture<typename QFuture<T>::ResultType<Function>> QFuture<T>::then(BOBUIhreadPool *pool, Function &&function)
 
     \since 6.0
     \overload
@@ -1338,7 +1338,7 @@
 
     \snippet code/src_corelib_thread_qfuture.cpp 17
 
-    The continuation attached into QtConcurrent::run updates the UI elements and cannot
+    The continuation attached into BobUIConcurrent::run updates the UI elements and cannot
     be invoked from a non-gui thread. So \c this is provided as a context to \c .then(),
     to make sure that it will be invoked in the main thread.
 
@@ -1376,7 +1376,7 @@
     \sa onFailed(), onCanceled()
 */
 
-/*! \fn template<class T> template<class Function, typename = std::enable_if_t<!QtPrivate::ArgResolver<Function>::HasExtraArgs>> QFuture<T> QFuture<T>::onFailed(Function &&handler)
+/*! \fn template<class T> template<class Function, typename = std::enable_if_t<!BobUIPrivate::ArgResolver<Function>::HasExtraArgs>> QFuture<T> QFuture<T>::onFailed(Function &&handler)
 
     \since 6.0
 
@@ -1419,7 +1419,7 @@
     \sa then(), onCanceled()
 */
 
-/*! \fn template<class T> template<class Function, typename = std::enable_if_t<!QtPrivate::ArgResolver<Function>::HasExtraArgs>> QFuture<T> QFuture<T>::onFailed(QObject *context, Function &&handler)
+/*! \fn template<class T> template<class Function, typename = std::enable_if_t<!BobUIPrivate::ArgResolver<Function>::HasExtraArgs>> QFuture<T> QFuture<T>::onFailed(QObject *context, Function &&handler)
 
     \since 6.1
     \overload
@@ -1432,7 +1432,7 @@
 
     \snippet code/src_corelib_thread_qfuture.cpp 19
 
-    The failure handler attached into QtConcurrent::run updates the UI elements and cannot
+    The failure handler attached into BobUIConcurrent::run updates the UI elements and cannot
     be invoked from a non-gui thread. So \c this is provided as a context to \c .onFailed(),
     to make sure that it will be invoked in the main thread.
 
@@ -1531,12 +1531,12 @@
     This is especially useful when chaining multiple computations, and one of
     them returns a \c QFuture as its result type. For example, let's say we
     want to download multiple images from an URL, scale the images, and reduce
-    them to a single image using QtConcurrent::mappedReduced(). We could write
+    them to a single image using BobUIConcurrent::mappedReduced(). We could write
     something like:
 
     \snippet code/src_corelib_thread_qfuture.cpp 29
 
-    Here \c QtConcurrent::mappedReduced() returns a \c QFuture<QImage>, so
+    Here \c BobUIConcurrent::mappedReduced() returns a \c QFuture<QImage>, so
     \c .then(processImages) returns a \c QFuture<QFuture<QImage>>. Since
     \c show() takes a \c QImage as argument, the result of \c .then(processImages)
     can't be passed to it directly. We need to call \c .unwrap(), that will
@@ -1548,7 +1548,7 @@
     \snippet code/src_corelib_thread_qfuture.cpp 30
 */
 
-/*! \fn template<typename OutputSequence, typename InputIt> QFuture<OutputSequence> QtFuture::whenAll(InputIt first, InputIt last)
+/*! \fn template<typename OutputSequence, typename InputIt> QFuture<OutputSequence> BobUIFuture::whenAll(InputIt first, InputIt last)
 
     \since 6.3
 
@@ -1586,7 +1586,7 @@
 //! [whenAll-note]
 */
 
-/*! \fn template<typename OutputSequence, typename... Futures> QFuture<OutputSequence> QtFuture::whenAll(Futures &&... futures)
+/*! \fn template<typename OutputSequence, typename... Futures> QFuture<OutputSequence> BobUIFuture::whenAll(Futures &&... futures)
 
     \since 6.3
 
@@ -1610,17 +1610,17 @@
     \include qfuture.qdoc whenAll-note
 */
 
-/*! \fn template<typename T, typename InputIt> QFuture<QtFuture::WhenAnyResult<T>> QtFuture::whenAny(InputIt first, InputIt last)
+/*! \fn template<typename T, typename InputIt> QFuture<BobUIFuture::WhenAnyResult<T>> BobUIFuture::whenAny(InputIt first, InputIt last)
 
     \since 6.3
 
     Returns a new QFuture that succeeds when any of the futures from \a first to
     \a last completes. \a first and \a last are iterators to a sequence of futures
     packaging type \c T. The returned future packages a value of type
-    \c {QtFuture::WhenAnyResult<T>} which in turn packages the index of the
+    \c {BobUIFuture::WhenAnyResult<T>} which in turn packages the index of the
     first completed \c QFuture and the \c QFuture itself. If \a first equals \a last,
     this function returns a ready \c QFuture that has \c -1 for the \c index field in
-    the QtFuture::WhenAnyResult struct and a default-constructed \c QFuture<T> for
+    the BobUIFuture::WhenAnyResult struct and a default-constructed \c QFuture<T> for
     the \c future field. Note that a default-constructed QFuture is a completed
     future in a cancelled state.
 
@@ -1642,10 +1642,10 @@
     thread the continuations are invoked on.
 //! [whenAny-note]
 
-    \sa QtFuture::WhenAnyResult
+    \sa BobUIFuture::WhenAnyResult
 */
 
-/*! \fn template<typename... Futures> QFuture<std::variant<std::decay_t<Futures>...>> QtFuture::whenAny(Futures &&... futures)
+/*! \fn template<typename... Futures> QFuture<std::variant<std::decay_t<Futures>...>> BobUIFuture::whenAny(Futures &&... futures)
 
     \since 6.3
 

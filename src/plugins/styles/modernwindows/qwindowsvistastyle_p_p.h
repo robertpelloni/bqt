@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWINDOWSVISTASTYLE_P_P_H
 #define QWINDOWSVISTASTYLE_P_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp and qfiledialog.cpp.  This header
 // file may change from version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qwindowsvistastyle_p.h"
 #include "qwindowsthemedata_p.h"
 #include <private/qfonticonengine_p.h>
@@ -26,64 +26,64 @@
 #include <qapplication.h>
 #include <qpixmapcache.h>
 #include <qstyleoption.h>
-#include <QtWidgets/private/qwindowsstyle_p_p.h>
-#include <QtCore/private/qflatmap_p.h>
+#include <BobUIWidgets/private/qwindowsstyle_p_p.h>
+#include <BobUICore/private/qflatmap_p.h>
 
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
 #include <qpushbutton.h>
 #endif
 #include <qradiobutton.h>
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include <qlineedit.h>
 #endif
 #include <qgroupbox.h>
-#if QT_CONFIG(toolbutton)
-#include <qtoolbutton.h>
+#if BOBUI_CONFIG(toolbutton)
+#include <bobuioolbutton.h>
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 #include <qspinbox.h>
 #endif
-#if QT_CONFIG(toolbar)
-#include <qtoolbar.h>
+#if BOBUI_CONFIG(toolbar)
+#include <bobuioolbar.h>
 #endif
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
 #include <qcombobox.h>
 #endif
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 #include <qscrollbar.h>
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
 #include <qprogressbar.h>
 #endif
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 #include <qdockwidget.h>
 #endif
-#if QT_CONFIG(listview)
+#if BOBUI_CONFIG(listview)
 #include <qlistview.h>
 #endif
-#if QT_CONFIG(treeview)
-#include <qtreeview.h>
+#if BOBUI_CONFIG(treeview)
+#include <bobuireeview.h>
 #endif
-#include <qtextedit.h>
+#include <bobuiextedit.h>
 #include <qmessagebox.h>
-#if QT_CONFIG(dialogbuttonbox)
+#if BOBUI_CONFIG(dialogbuttonbox)
 #include <qdialogbuttonbox.h>
 #endif
-#if QT_CONFIG(inputdialog)
+#if BOBUI_CONFIG(inputdialog)
 #include <qinputdialog.h>
 #endif
-#if QT_CONFIG(tableview)
-#include <qtableview.h>
+#if BOBUI_CONFIG(tableview)
+#include <bobuiableview.h>
 #endif
 #include <qdatetime.h>
-#if QT_CONFIG(commandlinkbutton)
+#if BOBUI_CONFIG(commandlinkbutton)
 #include <qcommandlinkbutton.h>
 #endif
 #include <qlabel.h>
 #include <qheaderview.h>
 #include <uxtheme.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsVistaStylePrivate : public QWindowsStylePrivate
 {
@@ -153,7 +153,7 @@ public:
     QRgb sliderTickColor = 0;
     bool hasInitColors = false;
 
-    QTime animationTime() const;
+    BOBUIime animationTime() const;
     bool transitionsEnabled() const;
 
 protected:
@@ -200,6 +200,6 @@ protected:
     double m_scale = 0.7;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSVISTASTYLE_P_P_H

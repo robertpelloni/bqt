@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QSurfaceFormat>
@@ -9,9 +9,9 @@ int main( int argc, char ** argv )
 {
     QApplication a( argc, argv );
 
-    QCoreApplication::setApplicationName("Qt QOpenGLWidget Stereoscopic Rendering Example");
-    QCoreApplication::setOrganizationName("QtProject");
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationName("BobUI QOpenGLWidget Stereoscopic Rendering Example");
+    QCoreApplication::setOrganizationName("BobUIProject");
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
 
     //! [1]
     QSurfaceFormat format;

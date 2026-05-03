@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/private/qdecompresshelper_p.h>
+#include <BobUINetwork/private/qdecompresshelper_p.h>
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 class tst_QDecompressHelper : public QObject
 {
@@ -15,25 +15,25 @@ private slots:
 
 void tst_QDecompressHelper::decompress_data()
 {
-    QTest::addColumn<QByteArray>("encoding");
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("encoding");
+    BOBUIest::addColumn<QString>("fileName");
 
-    QString srcDir = QStringLiteral(QT_STRINGIFY(SRC_DIR));
+    QString srcDir = QStringLiteral(BOBUI_STRINGIFY(SRC_DIR));
     srcDir = QDir::fromNativeSeparators(srcDir);
     if (!srcDir.endsWith("/"))
         srcDir += "/";
 
     bool dataAdded = false;
-#ifndef QT_NO_COMPRESS
-    QTest::addRow("gzip") << QByteArray("gzip") << srcDir + QString("50mb.txt.gz");
+#ifndef BOBUI_NO_COMPRESS
+    BOBUIest::addRow("gzip") << QByteArray("gzip") << srcDir + QString("50mb.txt.gz");
     dataAdded = true;
 #endif
-#if QT_CONFIG(brotli)
-    QTest::addRow("brotli") << QByteArray("br") << srcDir + QString("50mb.txt.br");
+#if BOBUI_CONFIG(brotli)
+    BOBUIest::addRow("brotli") << QByteArray("br") << srcDir + QString("50mb.txt.br");
     dataAdded = true;
 #endif
-#if QT_CONFIG(zstd)
-    QTest::addRow("zstandard") << QByteArray("zstd") << srcDir + QString("50mb.txt.zst");
+#if BOBUI_CONFIG(zstd)
+    BOBUIest::addRow("zstandard") << QByteArray("zstd") << srcDir + QString("50mb.txt.zst");
     dataAdded = true;
 #endif
     if (!dataAdded)
@@ -57,7 +57,7 @@ void tst_QDecompressHelper::decompress()
         helper.feed(file.readAll());
 
         qsizetype bytes = 0;
-        QByteArray out(64 * 1024, Qt::Uninitialized);
+        QByteArray out(64 * 1024, BobUI::Uninitialized);
         while (helper.hasData()) {
             qsizetype bytesRead = helper.read(out.data(), out.size());
             bytes += bytesRead;
@@ -67,6 +67,6 @@ void tst_QDecompressHelper::decompress()
     }
 }
 
-QTEST_MAIN(tst_QDecompressHelper)
+BOBUIEST_MAIN(tst_QDecompressHelper)
 
 #include "main.moc"

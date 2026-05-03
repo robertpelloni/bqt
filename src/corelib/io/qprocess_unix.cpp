@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
 // Copyright (C) 2021 Alex Trotsenko.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 //#define QPROCESS_DEBUG
 #include "qdebug.h"
@@ -20,14 +20,14 @@
 #endif
 
 #include <private/qcoreapplication_p.h>
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <qlist.h>
 #include <qmutex.h>
 #include <qsocketnotifier.h>
-#include <qthread.h>
+#include <bobuihread.h>
 
 #ifdef Q_OS_QNX
 #  include <sys/neutrino.h>
@@ -45,7 +45,7 @@
 #  include <paths.h>
 #endif
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <forkfd.h>
 #endif
 
@@ -64,9 +64,9 @@ __attribute__((weak))
 #endif
 extern char **environ;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if !defined(Q_OS_DARWIN)
 
@@ -89,9 +89,9 @@ QProcessEnvironment QProcessEnvironment::systemEnvironment()
 
 #endif // !defined(Q_OS_DARWIN)
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 
-namespace QtVforkSafe {
+namespace BobUIVforkSafe {
 // Certain libc functions we need to call in the child process scenario aren't
 // safe under vfork() because they do more than just place the system call to
 // the kernel and set errno on return. For those, we'll create a function
@@ -100,7 +100,7 @@ namespace QtVforkSafe {
 // while for all other OSes, it'll be
 //  using ::foobar;
 // allowing the code for the child side of the vfork to simply use
-//  QtVforkSafe::foobar(args);
+//  BobUIVforkSafe::foobar(args);
 //
 // Currently known issues are:
 //
@@ -114,7 +114,7 @@ namespace QtVforkSafe {
 #if defined(__MUSL__)
 #  define LIBC_PREFIX   __libc_
 #elif defined(Q_OS_FREEBSD)
-// will cause QtCore to link to ELF version "FBSDprivate_1.0"
+// will cause BobUICore to link to ELF version "FBSDprivate_1.0"
 #  define LIBC_PREFIX   _
 #endif
 
@@ -135,7 +135,7 @@ DECLARE_FUNCTIONS(sigaction)
 #undef LIBC_PREFIX
 #undef DECLARE_FUNCTIONS
 
-// similar to qt_ignore_sigpipe() in qcore_unix_p.h, but vfork-safe
+// similar to bobui_ignore_sigpipe() in qcore_unix_p.h, but vfork-safe
 static void change_sigpipe(decltype(SIG_DFL) new_handler)
 {
     struct sigaction sa;
@@ -143,7 +143,7 @@ static void change_sigpipe(decltype(SIG_DFL) new_handler)
     sa.sa_handler = new_handler;
     sigaction(SIGPIPE, &sa, nullptr);
 }
-} // namespace QtVforkSafe
+} // namespace BobUIVforkSafe
 
 static int opendirfd(QByteArray encodedName)
 {
@@ -152,7 +152,7 @@ static int opendirfd(QByteArray encodedName)
     // with fchdir().
     if (encodedName != "/" && !encodedName.endsWith("/."))
         encodedName += "/.";
-    return qt_safe_open(encodedName, QT_OPEN_RDONLY | O_DIRECTORY | O_PATH);
+    return bobui_safe_open(encodedName, BOBUI_OPEN_RDONLY | O_DIRECTORY | O_PATH);
 }
 
 namespace {
@@ -161,13 +161,13 @@ struct AutoPipe
     int pipe[2] = { -1, -1 };
     AutoPipe(int flags = 0)
     {
-        qt_safe_pipe(pipe, flags);
+        bobui_safe_pipe(pipe, flags);
     }
     ~AutoPipe()
     {
         for (int fd : pipe) {
             if (fd >= 0)
-                qt_safe_close(fd);
+                bobui_safe_close(fd);
         }
     }
 
@@ -192,7 +192,7 @@ static constexpr int FakeErrnoForThrow = std::numeric_limits<int>::max();
 
 static QString errorMessageForSyscall(QUtf8StringView fnName, int errnoCode = -1)
 {
-    QString msg = qt_error_string(errnoCode);
+    QString msg = bobui_error_string(errnoCode);
     return QProcess::tr("Child process set up failed: %1: %2").arg(fnName, std::move(msg));
 }
 
@@ -212,7 +212,7 @@ static QString startFailureErrorMessage(ChildError &err, [[maybe_unused]] ssize_
                 .arg(complement);
     if (err.code < 0)
         return QProcess::tr("Child process modifier reported error: %1: %2")
-                .arg(complement, qt_error_string(-err.code));
+                .arg(complement, bobui_error_string(-err.code));
     return errorMessageForSyscall(complement, err.code);
 }
 
@@ -234,7 +234,7 @@ struct QProcessPoller
 QProcessPoller::QProcessPoller(const QProcessPrivate &proc)
 {
     for (int i = 0; i < n_pfds; i++)
-        pfds[i] = qt_make_pollfd(-1, POLLIN);
+        pfds[i] = bobui_make_pollfd(-1, POLLIN);
 
     stdoutPipe().fd = proc.stdoutChannel.pipe[0];
     stderrPipe().fd = proc.stderrChannel.pipe[0];
@@ -249,7 +249,7 @@ QProcessPoller::QProcessPoller(const QProcessPrivate &proc)
 
 int QProcessPoller::poll(const QDeadlineTimer &deadline)
 {
-    return qt_safe_poll(pfds, n_pfds, deadline);
+    return bobui_safe_poll(pfds, n_pfds, deadline);
 }
 
 struct QChildProcess
@@ -350,7 +350,7 @@ struct QChildProcess
     {
         pid_t pid;
         if (isUsingVfork) {
-            QT_IGNORE_DEPRECATIONS(pid = vfork();)
+            BOBUI_IGNORE_DEPRECATIONS(pid = vfork();)
         } else {
             pid = fork();
         }
@@ -456,18 +456,18 @@ void QChildProcess::CharPointerList::updatePointers(qsizetype count)
 }
 } // anonymous namespace
 
-static bool qt_pollfd_check(const pollfd &pfd, short revents)
+static bool bobui_pollfd_check(const pollfd &pfd, short revents)
 {
     return pfd.fd >= 0 && (pfd.revents & (revents | POLLHUP | POLLERR | POLLNVAL)) != 0;
 }
 
-static int qt_create_pipe(int *pipe)
+static int bobui_create_pipe(int *pipe)
 {
     if (pipe[0] != -1)
-        qt_safe_close(pipe[0]);
+        bobui_safe_close(pipe[0]);
     if (pipe[1] != -1)
-        qt_safe_close(pipe[1]);
-    int pipe_ret = qt_safe_pipe(pipe);
+        bobui_safe_close(pipe[1]);
+    int pipe_ret = bobui_safe_pipe(pipe);
     if (pipe_ret != 0) {
         QScopedValueRollback rollback(errno);
         qErrnoWarning("QProcess: Cannot create pipe");
@@ -478,11 +478,11 @@ static int qt_create_pipe(int *pipe)
 void QProcessPrivate::destroyPipe(int *pipe)
 {
     if (pipe[1] != -1) {
-        qt_safe_close(pipe[1]);
+        bobui_safe_close(pipe[1]);
         pipe[1] = -1;
     }
     if (pipe[0] != -1) {
-        qt_safe_close(pipe[0]);
+        bobui_safe_close(pipe[0]);
         pipe[0] = -1;
     }
 }
@@ -505,7 +505,7 @@ void QProcessPrivate::cleanup()
     destroyPipe(childStartedPipe);
     pid = 0;
     if (forkfd != -1) {
-        qt_safe_close(forkfd);
+        bobui_safe_close(forkfd);
         forkfd = -1;
     }
 }
@@ -519,7 +519,7 @@ bool QProcessPrivate::openChannel(Channel &channel)
 
     if (channel.type == Channel::Normal) {
         // we're piping this channel to our own process
-        if (qt_create_pipe(channel.pipe) != 0) {
+        if (bobui_create_pipe(channel.pipe) != 0) {
             setErrorAndEmit(QProcess::FailedToStart, errorMessageForSyscall("pipe"));
             return false;
         }
@@ -549,7 +549,7 @@ bool QProcessPrivate::openChannel(Channel &channel)
         if (&channel == &stdinChannel) {
             // try to open in read-only mode
             channel.pipe[1] = -1;
-            if ( (channel.pipe[0] = qt_safe_open(fname, O_RDONLY)) != -1)
+            if ( (channel.pipe[0] = bobui_safe_open(fname, O_RDONLY)) != -1)
                 return true;    // success
             setErrorAndEmit(QProcess::FailedToStart,
                             QProcess::tr("Could not open input redirection for reading"));
@@ -561,7 +561,7 @@ bool QProcessPrivate::openChannel(Channel &channel)
                 mode |= O_TRUNC;
 
             channel.pipe[0] = -1;
-            if ( (channel.pipe[1] = qt_safe_open(fname, mode, 0666)) != -1)
+            if ( (channel.pipe[1] = bobui_safe_open(fname, mode, 0666)) != -1)
                 return true; // success
 
             setErrorAndEmit(QProcess::FailedToStart,
@@ -598,7 +598,7 @@ bool QProcessPrivate::openChannel(Channel &channel)
             Q_ASSERT(sink->pipe[0] == INVALID_Q_PIPE && sink->pipe[1] == INVALID_Q_PIPE);
 
             Q_PIPE pipe[2] = { -1, -1 };
-            if (qt_create_pipe(pipe) != 0) {
+            if (bobui_create_pipe(pipe) != 0) {
                 setErrorAndEmit(QProcess::FailedToStart, errorMessageForSyscall("pipe"));
                 return false;
             }
@@ -614,17 +614,17 @@ void QProcessPrivate::commitChannels() const
 {
     // copy the stdin socket if asked to (without closing on exec)
     if (stdinChannel.pipe[0] != INVALID_Q_PIPE)
-        qt_safe_dup2(stdinChannel.pipe[0], STDIN_FILENO, 0);
+        bobui_safe_dup2(stdinChannel.pipe[0], STDIN_FILENO, 0);
 
     // copy the stdout and stderr if asked to
     if (stdoutChannel.pipe[1] != INVALID_Q_PIPE)
-        qt_safe_dup2(stdoutChannel.pipe[1], STDOUT_FILENO, 0);
+        bobui_safe_dup2(stdoutChannel.pipe[1], STDOUT_FILENO, 0);
     if (stderrChannel.pipe[1] != INVALID_Q_PIPE) {
-        qt_safe_dup2(stderrChannel.pipe[1], STDERR_FILENO, 0);
+        bobui_safe_dup2(stderrChannel.pipe[1], STDERR_FILENO, 0);
     } else {
         // merge stdout and stderr if asked to
         if (processChannelMode == QProcess::MergedChannels)
-            qt_safe_dup2(STDOUT_FILENO, STDERR_FILENO, 0);
+            bobui_safe_dup2(STDOUT_FILENO, STDERR_FILENO, 0);
     }
 }
 
@@ -641,7 +641,7 @@ inline QString QChildProcess::resolveExecutable(const QString &program)
             // CFBundle is not reentrant, since CFBundleCreate might return a reference
             // to a cached bundle object. Protect the bundle calls with a mutex lock.
             Q_CONSTINIT static QBasicMutex cfbundleMutex;
-            const auto locker = qt_scoped_lock(cfbundleMutex);
+            const auto locker = bobui_scoped_lock(cfbundleMutex);
             QCFType<CFBundleRef> bundle = CFBundleCreate(0, url);
             // 'executableURL' can be either relative or absolute ...
             QCFType<CFURLRef> executableURL = CFBundleCopyExecutableURL(bundle);
@@ -678,10 +678,10 @@ inline bool globalUsingVfork() noexcept
     // Ditto, apparently
     return false;
 #endif
-#if defined(Q_OS_LINUX) && !QT_CONFIG(forkfd_pidfd)
+#if defined(Q_OS_LINUX) && !BOBUI_CONFIG(forkfd_pidfd)
     // some broken environments are known to have problems with the new Linux
     // API, so we have a way for users to opt-out during configure time (see
-    // QTBUG-86285)
+    // BOBUIBUG-86285)
     return false;
 #endif
 #if defined(Q_OS_DARWIN)
@@ -690,13 +690,13 @@ inline bool globalUsingVfork() noexcept
     return false;
 #endif
 #if defined(Q_OS_CYGWIN)
-    // Fails to link Qt6Core, so we avoid that..
+    // Fails to link BobUI6Core, so we avoid that..
     return false;
 #endif
 
     // Dynamically detect whether libasan or libtsan are loaded into the
     // process' memory. We need this because the user's code may be compiled
-    // with ASan or TSan, but not Qt.
+    // with ASan or TSan, but not BobUI.
     return __interceptor_vfork == nullptr;
 }
 
@@ -714,7 +714,7 @@ inline bool QChildProcess::usingVfork() const noexcept
     return flags.testFlag(QProcess::UnixProcessFlag::UseVFork);
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 Q_AUTOTEST_EXPORT bool _qprocessUsingVfork() noexcept
 {
     return globalUsingVfork();
@@ -737,7 +737,7 @@ void QProcessPrivate::startProcess()
         cleanup();
         return;
     }
-    if (qt_create_pipe(childStartedPipe) != 0) {
+    if (bobui_create_pipe(childStartedPipe) != 0) {
         setErrorAndEmit(QProcess::FailedToStart, errorMessageForSyscall("pipe"));
         cleanup();
         return;
@@ -768,11 +768,11 @@ void QProcessPrivate::startProcess()
         // Cleanup, report error and return
         childProcess.cleanup();
 #if defined (QPROCESS_DEBUG)
-        qDebug("fork failed: %ls", qUtf16Printable(qt_error_string(lastForkErrno)));
+        qDebug("fork failed: %ls", qUtf16Printable(bobui_error_string(lastForkErrno)));
 #endif
         q->setProcessState(QProcess::NotRunning);
         setErrorAndEmit(QProcess::FailedToStart,
-                        QProcess::tr("Resource error (fork failure): %1").arg(qt_error_string(lastForkErrno)));
+                        QProcess::tr("Resource error (fork failure): %1").arg(bobui_error_string(lastForkErrno)));
         cleanup();
         return;
     }
@@ -781,11 +781,11 @@ void QProcessPrivate::startProcess()
 
     // parent
     // close the ends we don't use and make all pipes non-blocking
-    qt_safe_close(childStartedPipe[1]);
+    bobui_safe_close(childStartedPipe[1]);
     childStartedPipe[1] = -1;
 
     if (stdinChannel.pipe[0] != -1) {
-        qt_safe_close(stdinChannel.pipe[0]);
+        bobui_safe_close(stdinChannel.pipe[0]);
         stdinChannel.pipe[0] = -1;
     }
 
@@ -793,7 +793,7 @@ void QProcessPrivate::startProcess()
         ::fcntl(stdinChannel.pipe[1], F_SETFL, ::fcntl(stdinChannel.pipe[1], F_GETFL) | O_NONBLOCK);
 
     if (stdoutChannel.pipe[1] != -1) {
-        qt_safe_close(stdoutChannel.pipe[1]);
+        bobui_safe_close(stdoutChannel.pipe[1]);
         stdoutChannel.pipe[1] = -1;
     }
 
@@ -801,7 +801,7 @@ void QProcessPrivate::startProcess()
         ::fcntl(stdoutChannel.pipe[0], F_SETFL, ::fcntl(stdoutChannel.pipe[0], F_GETFL) | O_NONBLOCK);
 
     if (stderrChannel.pipe[1] != -1) {
-        qt_safe_close(stderrChannel.pipe[1]);
+        bobui_safe_close(stderrChannel.pipe[1]);
         stderrChannel.pipe[1] = -1;
     }
     if (stderrChannel.pipe[0] != -1)
@@ -814,7 +814,7 @@ failChildProcess(const QProcessPrivate *d, const char *description, int code) no
     ChildError error = {};
     error.code = code;
     qstrncpy(error.function, description, sizeof(error.function));
-    qt_safe_write(d->childStartedPipe[1], &error, sizeof(error));
+    bobui_safe_write(d->childStartedPipe[1], &error, sizeof(error));
     _exit(-1);
 }
 
@@ -831,13 +831,13 @@ static const char *applyProcessParameters(const QProcess::UnixProcessParameters 
     // We don't expect signal() to fail, so we ignore its return value
     bool ignore_sigpipe = params.flags.testFlag(QProcess::UnixProcessFlag::IgnoreSigPipe);
     if (ignore_sigpipe)
-        QtVforkSafe::change_sigpipe(SIG_IGN);
+        BobUIVforkSafe::change_sigpipe(SIG_IGN);
     if (params.flags.testFlag(QProcess::UnixProcessFlag::ResetSignalHandlers)) {
         struct sigaction sa = {};
         sa.sa_handler = SIG_DFL;
         for (int sig = 1; sig < NSIG; ++sig) {
             if (!ignore_sigpipe || sig != SIGPIPE)
-                QtVforkSafe::sigaction(sig, &sa, nullptr);
+                BobUIVforkSafe::sigaction(sig, &sa, nullptr);
         }
 
         // and unmask all signals
@@ -921,12 +921,12 @@ static const char *applyProcessParameters(const QProcess::UnixProcessParameters 
 // the noexcept here adds an extra layer of protection
 static void callChildProcessModifier(const QProcessPrivate *d) noexcept
 {
-    QT_TRY {
+    BOBUI_TRY {
         if (d->unixExtras->childProcessModifier)
             d->unixExtras->childProcessModifier();
-    } QT_CATCH (std::exception &e) {
+    } BOBUI_CATCH (std::exception &e) {
         failChildProcess(d, e.what(), FakeErrnoForThrow);
-    } QT_CATCH (...) {
+    } BOBUI_CATCH (...) {
         failChildProcess(d, "throw", FakeErrnoForThrow);
     }
 }
@@ -942,7 +942,7 @@ void QChildProcess::startProcess() const noexcept
     d->commitChannels();
 
     // make sure this fd is closed if execv() succeeds
-    qt_safe_close(d->childStartedPipe[0]);
+    bobui_safe_close(d->childStartedPipe[0]);
 
     // enter the working directory
     if (workingDirectory >= 0 && fchdir(workingDirectory) == -1)
@@ -966,7 +966,7 @@ void QChildProcess::startProcess() const noexcept
     }
     if (!sigpipeHandled) {
         // reset the signal that we ignored
-        QtVforkSafe::change_sigpipe(SIG_DFL);       // reset the signal that we ignored
+        BobUIVforkSafe::change_sigpipe(SIG_DFL);       // reset the signal that we ignored
     }
     if (!sigmaskHandled) {
         // restore the signal mask from the parent, if applyProcessParameters()
@@ -976,9 +976,9 @@ void QChildProcess::startProcess() const noexcept
 
     // execute the process
     if (!envp.pointers)
-        qt_safe_execv(argv[0], argv);
+        bobui_safe_execv(argv[0], argv);
     else
-        qt_safe_execve(argv[0], argv, envp);
+        bobui_safe_execve(argv[0], argv, envp);
     failChildProcess(d, "execve", errno);
 }
 
@@ -987,13 +987,13 @@ bool QProcessPrivate::processStarted(QString *errorMessage)
     Q_Q(QProcess);
 
     ChildError buf;
-    ssize_t ret = qt_safe_read(childStartedPipe[0], &buf, sizeof(buf));
+    ssize_t ret = bobui_safe_read(childStartedPipe[0], &buf, sizeof(buf));
 
     if (stateNotifier) {
         stateNotifier->setEnabled(false);
         stateNotifier->disconnect(q);
     }
-    qt_safe_close(childStartedPipe[0]);
+    bobui_safe_close(childStartedPipe[0]);
     childStartedPipe[0] = -1;
 
 #if defined (QPROCESS_DEBUG)
@@ -1038,12 +1038,12 @@ qint64 QProcessPrivate::bytesAvailableInChannel(const Channel *channel) const
 qint64 QProcessPrivate::readFromChannel(const Channel *channel, char *data, qint64 maxlen)
 {
     Q_ASSERT(channel->pipe[0] != INVALID_Q_PIPE);
-    qint64 bytesRead = qt_safe_read(channel->pipe[0], data, maxlen);
+    qint64 bytesRead = bobui_safe_read(channel->pipe[0], data, maxlen);
 #if defined QPROCESS_DEBUG
     int save_errno = errno;
     qDebug("QProcessPrivate::readFromChannel(%d, %p \"%s\", %lld) == %lld",
            int(channel - &stdinChannel),
-           data, QtDebugUtils::toPrintable(data, bytesRead, 16).constData(), maxlen, bytesRead);
+           data, BobUIDebugUtils::toPrintable(data, bytesRead, 16).constData(), maxlen, bytesRead);
     errno = save_errno;
 #endif
     if (bytesRead == -1 && errno == EWOULDBLOCK)
@@ -1060,7 +1060,7 @@ qint64 QProcess::writeData(const char *data, qint64 len)
     if (d->stdinChannel.closed) {
 #if defined QPROCESS_DEBUG
         qDebug("QProcess::writeData(%p \"%s\", %lld) == 0 (write channel closing)",
-               data, QtDebugUtils::toPrintable(data, len, 16).constData(), len);
+               data, BobUIDebugUtils::toPrintable(data, len, 16).constData(), len);
 #endif
         return 0;
     }
@@ -1071,7 +1071,7 @@ qint64 QProcess::writeData(const char *data, qint64 len)
 
 #if defined QPROCESS_DEBUG
     qDebug("QProcess::writeData(%p \"%s\", %lld) == %lld (written to buffer)",
-           data, QtDebugUtils::toPrintable(data, len, 16).constData(), len, len);
+           data, BobUIDebugUtils::toPrintable(data, len, 16).constData(), len, len);
 #endif
     return len;
 }
@@ -1102,12 +1102,12 @@ bool QProcessPrivate::writeToStdin()
     const char *data = writeBuffer.readPointer();
     const qint64 bytesToWrite = writeBuffer.nextDataBlockSize();
 
-    qint64 written = qt_safe_write_nosignal(stdinChannel.pipe[1], data, bytesToWrite);
+    qint64 written = bobui_safe_write_nosignal(stdinChannel.pipe[1], data, bytesToWrite);
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::writeToStdin(), write(%p \"%s\", %lld) == %lld", data,
-           QtDebugUtils::toPrintable(data, bytesToWrite, 16).constData(), bytesToWrite, written);
+           BobUIDebugUtils::toPrintable(data, bytesToWrite, 16).constData(), bytesToWrite, written);
     if (written == -1)
-        qDebug("QProcessPrivate::writeToStdin(), failed to write (%ls)", qUtf16Printable(qt_error_string(errno)));
+        qDebug("QProcessPrivate::writeToStdin(), failed to write (%ls)", qUtf16Printable(bobui_error_string(errno)));
 #endif
     if (written == -1) {
         // If the O_NONBLOCK flag is set and If some data can be written without blocking
@@ -1155,9 +1155,9 @@ bool QProcessPrivate::waitForStarted(const QDeadlineTimer &deadline)
            msecs, childStartedPipe[0]);
 #endif
 
-    pollfd pfd = qt_make_pollfd(childStartedPipe[0], POLLIN);
+    pollfd pfd = bobui_make_pollfd(childStartedPipe[0], POLLIN);
 
-    if (qt_safe_poll(&pfd, 1, deadline) == 0) {
+    if (bobui_safe_poll(&pfd, 1, deadline) == 0) {
         setError(QProcess::Timedout);
 #if defined (QPROCESS_DEBUG)
         qDebug("QProcessPrivate::waitForStarted(%lld) == false (timed out)", msecs);
@@ -1194,15 +1194,15 @@ bool QProcessPrivate::waitForReadyRead(const QDeadlineTimer &deadline)
         // This calls QProcessPrivate::tryReadFromChannel(), which returns true
         // if we emitted readyRead() signal on the current read channel.
         bool readyReadEmitted = false;
-        if (qt_pollfd_check(poller.stdoutPipe(), POLLIN) && _q_canReadStandardOutput())
+        if (bobui_pollfd_check(poller.stdoutPipe(), POLLIN) && _q_canReadStandardOutput())
             readyReadEmitted = true;
-        if (qt_pollfd_check(poller.stderrPipe(), POLLIN) && _q_canReadStandardError())
+        if (bobui_pollfd_check(poller.stderrPipe(), POLLIN) && _q_canReadStandardError())
             readyReadEmitted = true;
 
         if (readyReadEmitted)
             return true;
 
-        if (qt_pollfd_check(poller.stdinPipe(), POLLOUT))
+        if (bobui_pollfd_check(poller.stdinPipe(), POLLOUT))
             _q_canWrite();
 
         // Signals triggered by I/O may have stopped this process:
@@ -1211,7 +1211,7 @@ bool QProcessPrivate::waitForReadyRead(const QDeadlineTimer &deadline)
 
         // We do this after checking the pipes, so we cannot reach it as long
         // as there is any data left to be read from an already dead process.
-        if (qt_pollfd_check(poller.forkfd(), POLLIN)) {
+        if (bobui_pollfd_check(poller.forkfd(), POLLIN)) {
             processFinished();
             return false;
         }
@@ -1239,20 +1239,20 @@ bool QProcessPrivate::waitForBytesWritten(const QDeadlineTimer &deadline)
             return false;
         }
 
-        if (qt_pollfd_check(poller.stdinPipe(), POLLOUT))
+        if (bobui_pollfd_check(poller.stdinPipe(), POLLOUT))
             return _q_canWrite();
 
-        if (qt_pollfd_check(poller.stdoutPipe(), POLLIN))
+        if (bobui_pollfd_check(poller.stdoutPipe(), POLLIN))
             _q_canReadStandardOutput();
 
-        if (qt_pollfd_check(poller.stderrPipe(), POLLIN))
+        if (bobui_pollfd_check(poller.stderrPipe(), POLLIN))
             _q_canReadStandardError();
 
         // Signals triggered by I/O may have stopped this process:
         if (processState == QProcess::NotRunning)
             return false;
 
-        if (qt_pollfd_check(poller.forkfd(), POLLIN)) {
+        if (bobui_pollfd_check(poller.forkfd(), POLLIN)) {
             processFinished();
             return false;
         }
@@ -1280,20 +1280,20 @@ bool QProcessPrivate::waitForFinished(const QDeadlineTimer &deadline)
             return false;
         }
 
-        if (qt_pollfd_check(poller.stdinPipe(), POLLOUT))
+        if (bobui_pollfd_check(poller.stdinPipe(), POLLOUT))
             _q_canWrite();
 
-        if (qt_pollfd_check(poller.stdoutPipe(), POLLIN))
+        if (bobui_pollfd_check(poller.stdoutPipe(), POLLIN))
             _q_canReadStandardOutput();
 
-        if (qt_pollfd_check(poller.stderrPipe(), POLLIN))
+        if (bobui_pollfd_check(poller.stderrPipe(), POLLIN))
             _q_canReadStandardError();
 
         // Signals triggered by I/O may have stopped this process:
         if (processState == QProcess::NotRunning)
             return true;
 
-        if (qt_pollfd_check(poller.forkfd(), POLLIN)) {
+        if (bobui_pollfd_check(poller.forkfd(), POLLIN)) {
             processFinished();
             return true;
         }
@@ -1307,9 +1307,9 @@ void QProcessPrivate::waitForDeadChild()
 
     // read the process information from our fd
     forkfd_info info = {}; // Silence -Wmaybe-uninitialized; Thiago says forkfd_wait cannot fail here
-                           // (QTBUG-119081)
+                           // (BOBUIBUG-119081)
     int ret;
-    QT_EINTR_LOOP(ret, forkfd_wait(forkfd, &info, nullptr));
+    BOBUI_EINTR_LOOP(ret, forkfd_wait(forkfd, &info, nullptr));
 
     exitCode = info.status;
     exitStatus = info.code == CLD_EXITED ? QProcess::NormalExit : QProcess::CrashExit;
@@ -1317,7 +1317,7 @@ void QProcessPrivate::waitForDeadChild()
     delete stateNotifier;
     stateNotifier = nullptr;
 
-    QT_EINTR_LOOP(ret, forkfd_close(forkfd));
+    BOBUI_EINTR_LOOP(ret, forkfd_close(forkfd));
     forkfd = -1; // Child is dead, don't try to kill it anymore
 
 #if defined QPROCESS_DEBUG
@@ -1351,15 +1351,15 @@ bool QProcessPrivate::startDetached(qint64 *pid)
     pid_t childPid = childProcess.doFork([&] {
         ::setsid();
 
-        qt_safe_close(startedPipe[0]);
-        qt_safe_close(pidPipe[0]);
+        bobui_safe_close(startedPipe[0]);
+        bobui_safe_close(pidPipe[0]);
 
         pid_t doubleForkPid;
         if (childProcess.startChild(&doubleForkPid) == -1)
             failChildProcess(this, "fork", errno);
 
         // success
-        qt_safe_write(pidPipe[1], &doubleForkPid, sizeof(pid_t));
+        bobui_safe_write(pidPipe[1], &doubleForkPid, sizeof(pid_t));
         return 0;
     });
     childStartedPipe[1] = -1;
@@ -1374,8 +1374,8 @@ bool QProcessPrivate::startDetached(qint64 *pid)
     }
 
     // close the writing ends of the pipes so we can properly get EOFs
-    qt_safe_close(pidPipe[1]);
-    qt_safe_close(startedPipe[1]);
+    bobui_safe_close(pidPipe[1]);
+    bobui_safe_close(startedPipe[1]);
     pidPipe[1] = startedPipe[1] = -1;
 
     // This read() will block until we're cleared to proceed. If it returns 0
@@ -1384,16 +1384,16 @@ bool QProcessPrivate::startDetached(qint64 *pid)
     // result, it means one of the two children wrote an error result. Negative
     // values should not happen.
     ChildError childStatus;
-    ssize_t startResult = qt_safe_read(startedPipe[0], &childStatus, sizeof(childStatus));
+    ssize_t startResult = bobui_safe_read(startedPipe[0], &childStatus, sizeof(childStatus));
 
     // reap the intermediate child
     int result;
-    qt_safe_waitpid(childPid, &result, 0);
+    bobui_safe_waitpid(childPid, &result, 0);
 
     bool success = (startResult == 0);  // nothing written -> no error
     if (success && pid) {
         pid_t actualPid;
-        if (qt_safe_read(pidPipe[0], &actualPid, sizeof(pid_t)) != sizeof(pid_t))
+        if (bobui_safe_read(pidPipe[0], &actualPid, sizeof(pid_t)) != sizeof(pid_t))
             actualPid = 0;              // this shouldn't happen!
         *pid = actualPid;
     } else if (!success) {
@@ -1406,6 +1406,6 @@ bool QProcessPrivate::startDetached(qint64 *pid)
     return success;
 }
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

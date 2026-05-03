@@ -1,21 +1,21 @@
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-// Testing qtmochelpers.h is probably pointless... if there's a problem with it
+// Testing bobuimochelpers.h is probably pointless... if there's a problem with it
 // then you most likely can't compile this test in the first place.
-#include <QtCore/qtmochelpers.h>
-#include "qtmocconstants.h"
+#include <BobUICore/bobuimochelpers.h>
+#include "bobuimocconstants.h"
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qobject.h>
+#include <BobUICore/qobject.h>
 
 #include <initializer_list>
 #include <q20algorithm.h>
 
-QT_BEGIN_NAMESPACE
-namespace QtMocHelpers {
-} QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+namespace BobUIMocHelpers {
+} BOBUI_END_NAMESPACE
 
 class tst_MocHelpers : public QObject
 {
@@ -41,7 +41,7 @@ private slots:
 };
 
 template <int Count, size_t StringSize>
-void verifyStringData(const QtMocHelpers::StringData<Count, StringSize> &data,
+void verifyStringData(const BobUIMocHelpers::StringData<Count, StringSize> &data,
                       std::initializer_list<const char *> strings)
 {
     QCOMPARE(std::size(strings), size_t(Count) / 2);
@@ -59,9 +59,9 @@ void verifyStringData(const QtMocHelpers::StringData<Count, StringSize> &data,
 void tst_MocHelpers::stringData()
 {
 #define CHECK(...)  \
-    verifyStringData(QtMocHelpers::stringData(__VA_ARGS__), { __VA_ARGS__ })
+    verifyStringData(BobUIMocHelpers::stringData(__VA_ARGS__), { __VA_ARGS__ })
 
-    QTest::setThrowOnFail(true);
+    BOBUIest::setThrowOnFail(true);
     CHECK("Hello");
     CHECK("Hello", "World");
     CHECK("Hello", "", "World");
@@ -71,13 +71,13 @@ void tst_MocHelpers::stringData()
 void tst_MocHelpers::classinfoData()
 {
     {
-        auto result = QtMocHelpers::ClassInfos({{1, 2}});
+        auto result = BobUIMocHelpers::ClassInfos({{1, 2}});
         QCOMPARE(result.headerSize(), 2U);
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 2U);
     }
     {
-        auto result = QtMocHelpers::ClassInfos({{1, 2}, {3, 4}});
+        auto result = BobUIMocHelpers::ClassInfos({{1, 2}, {3, 4}});
         QCOMPARE(result.headerSize(), 4U);
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 2U);
@@ -86,7 +86,7 @@ void tst_MocHelpers::classinfoData()
     }
 }
 
-constexpr QtMocHelpers::StringRefStorage dummyStringData {"tst_QtMocHelpers"};
+constexpr BobUIMocHelpers::StringRefStorage dummyStringData {"tst_BobUIMocHelpers"};
 
 template <size_t N> static void checkClassInfos(const uint (&data)[N])
 {
@@ -102,16 +102,16 @@ template <size_t N> static void checkClassInfos(const uint (&data)[N])
 
 void tst_MocHelpers::classinfoDataGroup()
 {
-    constexpr auto data = QtMocHelpers::metaObjectData<void, void>(0, dummyStringData,
-            QtMocHelpers::UintData{}, QtMocHelpers::UintData{},
-            QtMocHelpers::UintData{}, -1, QtMocHelpers::UintData{},
-            QtMocHelpers::ClassInfos({{1, 2}, {3, 4}}));
+    constexpr auto data = BobUIMocHelpers::metaObjectData<void, void>(0, dummyStringData,
+            BobUIMocHelpers::UintData{}, BobUIMocHelpers::UintData{},
+            BobUIMocHelpers::UintData{}, -1, BobUIMocHelpers::UintData{},
+            BobUIMocHelpers::ClassInfos({{1, 2}, {3, 4}}));
     checkClassInfos(data.staticData.data);
 }
 
 template <typename MetaTypeHolder> constexpr auto getMetaTypes(MetaTypeHolder)
 {
-    QtMocHelpers::MetaObjectContents<1, 1, 1, MetaTypeHolder::count()> r = {};
+    BobUIMocHelpers::MetaObjectContents<1, 1, 1, MetaTypeHolder::count()> r = {};
     uint metatypeoffset = 0;
     MetaTypeHolder::template copyTo<void>(r, metatypeoffset);
 
@@ -124,7 +124,7 @@ template <typename MetaTypeHolder> constexpr auto getMetaTypes(MetaTypeHolder)
 
 template <typename E, int N> void enumUintData_check(const E (&values)[N])
 {
-    using namespace QtMocHelpers;
+    using namespace BobUIMocHelpers;
 
     // make an array of dummy offsets
     typename EnumData<E>::EnumEntry namesAndOffsets[N];
@@ -151,10 +151,10 @@ enum class E2 { V0 = INT_MAX, V1 = INT_MIN };
 enum class E3 : qint64 { V = 0x1111'2222'3333'4444, V2 = -V };
 void tst_MocHelpers::enumUintData()
 {
-    using namespace QtMocHelpers;
-    using namespace QtMocConstants;
+    using namespace BobUIMocHelpers;
+    using namespace BobUIMocConstants;
     {
-        auto result = QtMocHelpers::EnumData<E1>(1, 1, EnumFlags{});
+        auto result = BobUIMocHelpers::EnumData<E1>(1, 1, EnumFlags{});
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 1U);
         QCOMPARE(result.header[2], EnumFlags{});
@@ -162,7 +162,7 @@ void tst_MocHelpers::enumUintData()
         QCOMPARE(result.payloadSize(), 0U);
     }
     {
-        auto result = QtMocHelpers::EnumData<QFlags<E1>>(1, 2, EnumIsFlag);
+        auto result = BobUIMocHelpers::EnumData<QFlags<E1>>(1, 2, EnumIsFlag);
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 2U);
         QCOMPARE(result.header[2], EnumIsFlag);
@@ -170,7 +170,7 @@ void tst_MocHelpers::enumUintData()
         QCOMPARE(result.payloadSize(), 0U);
     }
     {
-        auto result = QtMocHelpers::EnumData<E1>(1, 1, EnumFlags{}).add({ { 1, E1::AnEnumValue } });
+        auto result = BobUIMocHelpers::EnumData<E1>(1, 1, EnumFlags{}).add({ { 1, E1::AnEnumValue } });
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 1U);
         QCOMPARE(result.header[2], EnumFlags{});
@@ -179,7 +179,7 @@ void tst_MocHelpers::enumUintData()
         QCOMPARE(result.payload[1], uint(E1::AnEnumValue));
     }
     {
-        auto result = QtMocHelpers::EnumData<QFlags<E1>>(1, 2, EnumFlags{}).add({ { 1, E1::AnEnumValue } });
+        auto result = BobUIMocHelpers::EnumData<QFlags<E1>>(1, 2, EnumFlags{}).add({ { 1, E1::AnEnumValue } });
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 2U);
         QCOMPARE(result.header[2], uint(EnumIsFlag));
@@ -188,7 +188,7 @@ void tst_MocHelpers::enumUintData()
         QCOMPARE(result.payload[1], uint(E1::AnEnumValue));
     }
     {
-        constexpr auto result = QtMocHelpers::EnumData<E3>(1, 1, EnumIsScoped)
+        constexpr auto result = BobUIMocHelpers::EnumData<E3>(1, 1, EnumIsScoped)
                 .add({ { 2, E3::V }, {3, E3::V2 }, });
         QCOMPARE(result.header[0], 1U);
         QCOMPARE(result.header[1], 1U);
@@ -202,7 +202,7 @@ void tst_MocHelpers::enumUintData()
         QCOMPARE(result.payload[5], uint(quint64(E3::V2) >> 32));
     }
 
-    QTest::setThrowOnFail(true);
+    BOBUIest::setThrowOnFail(true);
     {
         enum E { E0, E1 = -1, E2 = 123, E3 = INT_MIN };
         enumUintData_check({E0, E1, E2, E3});
@@ -230,9 +230,9 @@ template <typename Data> void testUintData(const Data &data)
 }
 
 static void
-checkEnums(const uint *data, const QtPrivate::QMetaTypeInterface *const *metaTypes)
+checkEnums(const uint *data, const BobUIPrivate::QMetaTypeInterface *const *metaTypes)
 {
-    using namespace QtMocConstants;
+    using namespace BobUIMocConstants;
     QCOMPARE(data[8], 4U);
     QCOMPARE_NE(data[9], 0U);
 
@@ -292,26 +292,26 @@ checkEnums(const uint *data, const QtPrivate::QMetaTypeInterface *const *metaTyp
 
 void tst_MocHelpers::enumUintGroup()
 {
-    using namespace QtMocConstants;
-    QTest::setThrowOnFail(true);
-    constexpr QtMocHelpers::UintData enums = {
-        QtMocHelpers::EnumData<E1>(1, 1, 0x00).add({ { 3, E1::AnEnumValue } }),
-        QtMocHelpers::EnumData<E3>(4, 5, EnumIsFlag | EnumIsScoped)
+    using namespace BobUIMocConstants;
+    BOBUIest::setThrowOnFail(true);
+    constexpr BobUIMocHelpers::UintData enums = {
+        BobUIMocHelpers::EnumData<E1>(1, 1, 0x00).add({ { 3, E1::AnEnumValue } }),
+        BobUIMocHelpers::EnumData<E3>(4, 5, EnumIsFlag | EnumIsScoped)
             .add({ { 6, E3::V }, { 8, E3::V2 }, }),
-        QtMocHelpers::EnumData<E2>(7, 6, EnumIsFlag | EnumIsScoped)
+        BobUIMocHelpers::EnumData<E2>(7, 6, EnumIsFlag | EnumIsScoped)
             .add({ { 7, E2::V0 }, { 10, E2::V1 }, }),
-        QtMocHelpers::EnumData<QFlags<E1>>(11, 1, EnumIsFlag).add({ { 3, E1::AnEnumValue } }),
+        BobUIMocHelpers::EnumData<QFlags<E1>>(11, 1, EnumIsFlag).add({ { 3, E1::AnEnumValue } }),
     };
     testUintData(enums);
 
-    constexpr auto data = QtMocHelpers::metaObjectData<void, void>(0, dummyStringData,
-            QtMocHelpers::UintData{}, QtMocHelpers::UintData{}, enums);
+    constexpr auto data = BobUIMocHelpers::metaObjectData<void, void>(0, dummyStringData,
+            BobUIMocHelpers::UintData{}, BobUIMocHelpers::UintData{}, enums);
     checkEnums(data.staticData.data, data.relocatingData.metaTypes);
 }
 
 void tst_MocHelpers::propertyUintData()
 {
-    using namespace QtMocHelpers;
+    using namespace BobUIMocHelpers;
     {
         auto result = PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101);
         QCOMPARE(result.payloadSize(), 0U);
@@ -336,7 +336,7 @@ void tst_MocHelpers::propertyUintData()
 }
 
 static void
-checkProperties(const uint *data, const QtPrivate::QMetaTypeInterface *const *metaTypes)
+checkProperties(const uint *data, const BobUIPrivate::QMetaTypeInterface *const *metaTypes)
 {
     QCOMPARE(data[6], 3U);
     QCOMPARE_NE(data[7], 0U);
@@ -367,23 +367,23 @@ checkProperties(const uint *data, const QtPrivate::QMetaTypeInterface *const *me
 
 void tst_MocHelpers::propertyUintGroup()
 {
-    QTest::setThrowOnFail(true);
-    constexpr QtMocHelpers::UintData properties = {
-        QtMocHelpers::PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101),
-        QtMocHelpers::PropertyData<QString>(4, 0x80000000 | 5, 0x03),
-        QtMocHelpers::PropertyData<tst_MocHelpers *>(6, 0x80000000 | 7, 0x03)
+    BOBUIest::setThrowOnFail(true);
+    constexpr BobUIMocHelpers::UintData properties = {
+        BobUIMocHelpers::PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101),
+        BobUIMocHelpers::PropertyData<QString>(4, 0x80000000 | 5, 0x03),
+        BobUIMocHelpers::PropertyData<tst_MocHelpers *>(6, 0x80000000 | 7, 0x03)
     };
     testUintData(properties);
 
-    constexpr auto data = QtMocHelpers::metaObjectData<void, void>(0, dummyStringData,
-            QtMocHelpers::UintData{}, properties, QtMocHelpers::UintData{});
+    constexpr auto data = BobUIMocHelpers::metaObjectData<void, void>(0, dummyStringData,
+            BobUIMocHelpers::UintData{}, properties, BobUIMocHelpers::UintData{});
     checkProperties(data.staticData.data, data.relocatingData.metaTypes);
 }
 
 void tst_MocHelpers::methodUintData()
 {
-    using namespace QtMocHelpers;
-    using namespace QtMocConstants;
+    using namespace BobUIMocHelpers;
+    using namespace BobUIMocConstants;
     {
         auto result = SignalData<void()>(1, 2, AccessPublic, QMetaType::Void, {});
         QCOMPARE(result.header[0], 1U);
@@ -435,9 +435,9 @@ void tst_MocHelpers::methodUintData()
 }
 
 static void
-checkMethods(const uint *data, const QtPrivate::QMetaTypeInterface *const *metaTypes)
+checkMethods(const uint *data, const BobUIPrivate::QMetaTypeInterface *const *metaTypes)
 {
-    using namespace QtMocConstants;
+    using namespace BobUIMocConstants;
     QCOMPARE(data[4], 3U);
     QCOMPARE_NE(data[5], 0U);
 
@@ -492,33 +492,33 @@ checkMethods(const uint *data, const QtPrivate::QMetaTypeInterface *const *metaT
 
 void tst_MocHelpers::methodUintGroup()
 {
-    QTest::setThrowOnFail(true);
+    BOBUIest::setThrowOnFail(true);
     using Dummy = QString;
-    constexpr QtMocHelpers::UintData methods = {
-        QtMocHelpers::RevisionedSignalData<void()>(1, 2, QtMocConstants::AccessPublic, 0x509,
+    constexpr BobUIMocHelpers::UintData methods = {
+        BobUIMocHelpers::RevisionedSignalData<void()>(1, 2, BobUIMocConstants::AccessPublic, 0x509,
             QMetaType::Void, {{ }}
         ),
-        QtMocHelpers::SignalData<void (E1, Dummy)>(3, 2, QtMocConstants::AccessPublic,
+        BobUIMocHelpers::SignalData<void (E1, Dummy)>(3, 2, BobUIMocConstants::AccessPublic,
             QMetaType::Void, {{ { 0x80000000 | 4, 6 }, { 0x80000000 | 5, 7 }} }
         ),
-        QtMocHelpers::SlotData<bool (QString &) const>(8, 2, QtMocConstants::AccessPublic,
+        BobUIMocHelpers::SlotData<bool (QString &) const>(8, 2, BobUIMocConstants::AccessPublic,
             QMetaType::Bool, {{ { 0x80000000 | 10,  11 } }}
         )
     };
     testUintData(methods);
 
     constexpr auto data =
-            QtMocHelpers::metaObjectData<tst_MocHelpers, tst_MocHelpers>(0, dummyStringData,
-                    methods, QtMocHelpers::UintData{}, QtMocHelpers::UintData{});
+            BobUIMocHelpers::metaObjectData<tst_MocHelpers, tst_MocHelpers>(0, dummyStringData,
+                    methods, BobUIMocHelpers::UintData{}, BobUIMocHelpers::UintData{});
     checkMethods(data.staticData.data, data.relocatingData.metaTypes);
 }
 
 void tst_MocHelpers::constructorUintData()
 {
-    using namespace QtMocHelpers;
-    using namespace QtMocConstants;
+    using namespace BobUIMocHelpers;
+    using namespace BobUIMocConstants;
     {
-        auto result = ConstructorData<QtMocHelpers::NoType()>(2, AccessPublic, {});
+        auto result = ConstructorData<BobUIMocHelpers::NoType()>(2, AccessPublic, {});
         QCOMPARE(result.header[0], 0U);
         QCOMPARE(result.header[1], 0U);
         QCOMPARE(result.header[3], 2U);
@@ -529,7 +529,7 @@ void tst_MocHelpers::constructorUintData()
         QCOMPARE(result.metaTypes().count(), 0);
     }
     {
-        auto result = ConstructorData<QtMocHelpers::NoType(QObject *)>(1, AccessPublic,
+        auto result = ConstructorData<BobUIMocHelpers::NoType(QObject *)>(1, AccessPublic,
                                                                        {{ { QMetaType::QObjectStar, 2 } }});
         QCOMPARE(result.header[0], 0U);
         QCOMPARE(result.header[1], 1U);
@@ -547,9 +547,9 @@ void tst_MocHelpers::constructorUintData()
 }
 
 static void
-checkConstructors(const uint *data, const QtPrivate::QMetaTypeInterface *const *metaTypes)
+checkConstructors(const uint *data, const BobUIPrivate::QMetaTypeInterface *const *metaTypes)
 {
-    using namespace QtMocConstants;
+    using namespace BobUIMocConstants;
     QCOMPARE(data[10], 3U);
     QCOMPARE_NE(data[11], 0U);
 
@@ -595,24 +595,24 @@ checkConstructors(const uint *data, const QtPrivate::QMetaTypeInterface *const *
 
 void tst_MocHelpers::constructorUintGroup()
 {
-    using QtMocHelpers::NoType;
-    QTest::setThrowOnFail(true);
-    constexpr QtMocHelpers::UintData constructors = {
-        QtMocHelpers::ConstructorData<NoType(QObject *)>(1, QtMocConstants::AccessPublic,
+    using BobUIMocHelpers::NoType;
+    BOBUIest::setThrowOnFail(true);
+    constexpr BobUIMocHelpers::UintData constructors = {
+        BobUIMocHelpers::ConstructorData<NoType(QObject *)>(1, BobUIMocConstants::AccessPublic,
             {{ { QMetaType::QObjectStar, 2 } }}
         ),
-        QtMocHelpers::ConstructorData<NoType()>(1, QtMocConstants::AccessPublic | QtMocConstants::MethodCloned,
+        BobUIMocHelpers::ConstructorData<NoType()>(1, BobUIMocConstants::AccessPublic | BobUIMocConstants::MethodCloned,
             {{ }}
         ),
-        QtMocHelpers::ConstructorData<NoType(const QString &)>(1, QtMocConstants::AccessPublic,
+        BobUIMocHelpers::ConstructorData<NoType(const QString &)>(1, BobUIMocConstants::AccessPublic,
             {{ { QMetaType::QString,  3 }, }}
         )
     };
     testUintData(constructors);
 
-    constexpr auto data = QtMocHelpers::metaObjectData<void, void>(0, dummyStringData,
-            QtMocHelpers::UintData{}, QtMocHelpers::UintData{},
-            QtMocHelpers::UintData{}, -1, constructors);
+    constexpr auto data = BobUIMocHelpers::metaObjectData<void, void>(0, dummyStringData,
+            BobUIMocHelpers::UintData{}, BobUIMocHelpers::UintData{},
+            BobUIMocHelpers::UintData{}, -1, constructors);
     checkConstructors(data.staticData.data, data.relocatingData.metaTypes);
 }
 
@@ -620,7 +620,7 @@ struct Gadget {};
 
 template <size_t N> static void checkUintArrayGeneric(const uint (&data)[N], uint flags = 0)
 {
-    using namespace QtMocConstants;
+    using namespace BobUIMocConstants;
     QCOMPARE(data[0], uint(OutputRevision));
     QCOMPARE(data[1], 0U);
     QCOMPARE(data[12], flags);
@@ -636,12 +636,12 @@ template <size_t N> static void checkUintArrayGeneric(const uint (&data)[N], uin
 
 void tst_MocHelpers::emptyUintArray()
 {
-    using namespace QtMocConstants;
-    constexpr auto mo = QtMocHelpers::metaObjectData<Gadget, void>(MetaObjectFlag{}, dummyStringData,
-            QtMocHelpers::UintData{}, QtMocHelpers::UintData{}, QtMocHelpers::UintData{});
-    QTest::setThrowOnFail(true);
+    using namespace BobUIMocConstants;
+    constexpr auto mo = BobUIMocHelpers::metaObjectData<Gadget, void>(MetaObjectFlag{}, dummyStringData,
+            BobUIMocHelpers::UintData{}, BobUIMocHelpers::UintData{}, BobUIMocHelpers::UintData{});
+    BOBUIest::setThrowOnFail(true);
     checkUintArrayGeneric(mo.staticData.data, MetaObjectFlag{});
-    QTest::setThrowOnFail(false);
+    BOBUIest::setThrowOnFail(false);
 
     const uint *data = mo.staticData.data;
     auto &metaTypes = mo.relocatingData.metaTypes;
@@ -661,32 +661,32 @@ void tst_MocHelpers::emptyUintArray()
 
 void tst_MocHelpers::uintArrayNoMethods()
 {
-    using namespace QtMocConstants;
-    constexpr auto mo = QtMocHelpers::metaObjectData<Gadget, Gadget>(PropertyAccessInStaticMetaCall,
+    using namespace BobUIMocConstants;
+    constexpr auto mo = BobUIMocHelpers::metaObjectData<Gadget, Gadget>(PropertyAccessInStaticMetaCall,
             dummyStringData,
-            QtMocHelpers::UintData{},
-            QtMocHelpers::UintData{
-                QtMocHelpers::PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101),
-                QtMocHelpers::PropertyData<QString>(4, 0x80000000 | 5, 0x03),
-                QtMocHelpers::PropertyData<tst_MocHelpers *>(6, 0x80000000 | 7, 0x03)
-            }, QtMocHelpers::UintData{
-                QtMocHelpers::EnumData<E1>(1, 1, 0x00).add({ { 3, E1::AnEnumValue } }),
-                QtMocHelpers::EnumData<E3>(4, 5, EnumIsFlag | EnumIsScoped)
+            BobUIMocHelpers::UintData{},
+            BobUIMocHelpers::UintData{
+                BobUIMocHelpers::PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101),
+                BobUIMocHelpers::PropertyData<QString>(4, 0x80000000 | 5, 0x03),
+                BobUIMocHelpers::PropertyData<tst_MocHelpers *>(6, 0x80000000 | 7, 0x03)
+            }, BobUIMocHelpers::UintData{
+                BobUIMocHelpers::EnumData<E1>(1, 1, 0x00).add({ { 3, E1::AnEnumValue } }),
+                BobUIMocHelpers::EnumData<E3>(4, 5, EnumIsFlag | EnumIsScoped)
                     .add({ { 6, E3::V }, { 8, E3::V2 }, }),
-                QtMocHelpers::EnumData<E2>(7, 6, EnumIsFlag | EnumIsScoped)
+                BobUIMocHelpers::EnumData<E2>(7, 6, EnumIsFlag | EnumIsScoped)
                     .add({ { 7, E2::V0 }, { 10, E2::V1 }, }),
-                QtMocHelpers::EnumData<QFlags<E1>>(11, 1, EnumIsFlag).add({ { 3, E1::AnEnumValue } }),
-            }, -1, QtMocHelpers::UintData{}, QtMocHelpers::ClassInfos({{1, 2}, {3, 4}}));
+                BobUIMocHelpers::EnumData<QFlags<E1>>(11, 1, EnumIsFlag).add({ { 3, E1::AnEnumValue } }),
+            }, -1, BobUIMocHelpers::UintData{}, BobUIMocHelpers::ClassInfos({{1, 2}, {3, 4}}));
 
     auto &data = mo.staticData.data;
     auto &metaTypes = mo.relocatingData.metaTypes;
 
-    QTest::setThrowOnFail(true);
+    BOBUIest::setThrowOnFail(true);
     checkUintArrayGeneric(data, PropertyAccessInStaticMetaCall);
     checkClassInfos(data);
     checkProperties(data, metaTypes);
     checkEnums(data, metaTypes);
-    QTest::setThrowOnFail(false);
+    BOBUIest::setThrowOnFail(false);
     QCOMPARE(data[4], 0U);      // methods
     QCOMPARE(data[10], 0U);     // constructors
     QCOMPARE(data[13], 0U);     // signals
@@ -697,50 +697,50 @@ void tst_MocHelpers::uintArrayNoMethods()
 void tst_MocHelpers::uintArray()
 {
     using Dummy = QString;
-    using QtMocHelpers::NoType;
-    using namespace QtMocConstants;
-    constexpr auto mo = QtMocHelpers::metaObjectData<tst_MocHelpers, tst_MocHelpers>(PropertyAccessInStaticMetaCall,
+    using BobUIMocHelpers::NoType;
+    using namespace BobUIMocConstants;
+    constexpr auto mo = BobUIMocHelpers::metaObjectData<tst_MocHelpers, tst_MocHelpers>(PropertyAccessInStaticMetaCall,
             dummyStringData,
-            QtMocHelpers::UintData{
-                QtMocHelpers::RevisionedSignalData<void()>(1, 2, QtMocConstants::AccessPublic, 0x509,
+            BobUIMocHelpers::UintData{
+                BobUIMocHelpers::RevisionedSignalData<void()>(1, 2, BobUIMocConstants::AccessPublic, 0x509,
                     QMetaType::Void, {{ }}
                 ),
-                QtMocHelpers::SignalData<void (E1, Dummy)>(3, 2, QtMocConstants::AccessPublic,
+                BobUIMocHelpers::SignalData<void (E1, Dummy)>(3, 2, BobUIMocConstants::AccessPublic,
                     QMetaType::Void, {{ { 0x80000000 | 4, 6 }, { 0x80000000 | 5, 7 }} }
                 ),
-                QtMocHelpers::SlotData<bool (QString &) const>(8, 2, QtMocConstants::AccessPublic,
+                BobUIMocHelpers::SlotData<bool (QString &) const>(8, 2, BobUIMocConstants::AccessPublic,
                     QMetaType::Bool, {{ { 0x80000000 | 10,  11 } }}
                 )
             },
-            QtMocHelpers::UintData{
-                QtMocHelpers::PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101),
-                QtMocHelpers::PropertyData<QString>(4, 0x80000000 | 5, 0x03),
-                QtMocHelpers::PropertyData<tst_MocHelpers *>(6, 0x80000000 | 7, 0x03)
-            }, QtMocHelpers::UintData{
-                QtMocHelpers::EnumData<E1>(1, 1, 0x00).add({ { 3, E1::AnEnumValue } }),
-                QtMocHelpers::EnumData<E3>(4, 5, EnumIsFlag | EnumIsScoped)
+            BobUIMocHelpers::UintData{
+                BobUIMocHelpers::PropertyData<int>(3, QMetaType::Int, 0x3, 13, 0x101),
+                BobUIMocHelpers::PropertyData<QString>(4, 0x80000000 | 5, 0x03),
+                BobUIMocHelpers::PropertyData<tst_MocHelpers *>(6, 0x80000000 | 7, 0x03)
+            }, BobUIMocHelpers::UintData{
+                BobUIMocHelpers::EnumData<E1>(1, 1, 0x00).add({ { 3, E1::AnEnumValue } }),
+                BobUIMocHelpers::EnumData<E3>(4, 5, EnumIsFlag | EnumIsScoped)
                     .add({ { 6, E3::V }, { 8, E3::V2 }, }),
-                QtMocHelpers::EnumData<E2>(7, 6, EnumIsFlag | EnumIsScoped)
+                BobUIMocHelpers::EnumData<E2>(7, 6, EnumIsFlag | EnumIsScoped)
                     .add({ { 7, E2::V0 }, { 10, E2::V1 }, }),
-                QtMocHelpers::EnumData<QFlags<E1>>(11, 1, EnumIsFlag).add({ { 3, E1::AnEnumValue } }),
+                BobUIMocHelpers::EnumData<QFlags<E1>>(11, 1, EnumIsFlag).add({ { 3, E1::AnEnumValue } }),
             },
             -1,
-            QtMocHelpers::UintData{
-                QtMocHelpers::ConstructorData<NoType(QObject *)>(1, QtMocConstants::AccessPublic,
+            BobUIMocHelpers::UintData{
+                BobUIMocHelpers::ConstructorData<NoType(QObject *)>(1, BobUIMocConstants::AccessPublic,
                     {{ { QMetaType::QObjectStar, 2 } }}
                 ),
-                QtMocHelpers::ConstructorData<NoType()>(1, QtMocConstants::AccessPublic | QtMocConstants::MethodCloned,
+                BobUIMocHelpers::ConstructorData<NoType()>(1, BobUIMocConstants::AccessPublic | BobUIMocConstants::MethodCloned,
                     {{ }}
                 ),
-                QtMocHelpers::ConstructorData<NoType(const QString &)>(1, QtMocConstants::AccessPublic,
+                BobUIMocHelpers::ConstructorData<NoType(const QString &)>(1, BobUIMocConstants::AccessPublic,
                     {{ { QMetaType::QString,  3 }, }}
                 )
-            }, QtMocHelpers::ClassInfos({{1, 2}, {3, 4}}));
+            }, BobUIMocHelpers::ClassInfos({{1, 2}, {3, 4}}));
 
     auto &data = mo.staticData.data;
     auto &metaTypes = mo.relocatingData.metaTypes;
 
-    QTest::setThrowOnFail(true);
+    BOBUIest::setThrowOnFail(true);
     checkUintArrayGeneric(data, PropertyAccessInStaticMetaCall);
     checkClassInfos(data);
     checkProperties(data, metaTypes);
@@ -751,5 +751,5 @@ void tst_MocHelpers::uintArray()
     QCOMPARE(self, QMetaType::fromType<tst_MocHelpers>());
 }
 
-QTEST_MAIN(tst_MocHelpers)
+BOBUIEST_MAIN(tst_MocHelpers)
 #include "tst_mochelpers.moc"

@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS     = mainwindow.h \
               pieview.h
@@ -10,5 +10,5 @@ SOURCES     = main.cpp \
 unix:!mac:!vxworks:!integrity:!haiku:LIBS += -lm
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/chart
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/chart
 INSTALLS += target

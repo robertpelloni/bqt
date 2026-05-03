@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -11,14 +11,14 @@
 #include <xcb/xkb.h>
 #undef explicit
 
-#include <QtGui/private/qxkbcommon_p.h>
+#include <BobUIGui/private/qxkbcommon_p.h>
 #include <xkbcommon/xkbcommon-x11.h>
 
 #include <qpa/qplatformkeymapper.h>
 
 #include <QEvent>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbKeyboard : public QXcbObject, public QPlatformKeyMapper
 {
@@ -33,12 +33,12 @@ public:
     void handleKeyPressEvent(const xcb_key_press_event_t *event);
     void handleKeyReleaseEvent(const xcb_key_release_event_t *event);
 
-    Qt::KeyboardModifiers translateModifiers(int s) const;
+    BobUI::KeyboardModifiers translateModifiers(int s) const;
     void updateKeymap(xcb_mapping_notify_event_t *event);
     void updateKeymap();
 
     QList<QKeyCombination> possibleKeyCombinations(const QKeyEvent *event) const override;
-    Qt::KeyboardModifiers queryKeyboardModifiers() const override;
+    BobUI::KeyboardModifiers queryKeyboardModifiers() const override;
 
     void updateXKBMods();
     xkb_mod_mask_t xkbModMask(quint16 state);
@@ -104,4 +104,4 @@ private:
     bool m_hyperAsMeta = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

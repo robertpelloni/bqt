@@ -1,12 +1,12 @@
-// Copyright (C) 2025 Qt Group
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 BobUI Group
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qwasmlocalfileengine_p.h"
-#include <QtCore/QDebug>
-#include <QtCore/QUrl>
+#include <BobUICore/QDebug>
+#include <BobUICore/QUrl>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Custom URL scheme for files handled by this file engine. A complete file URL can
 // look like
@@ -419,4 +419,4 @@ bool QWasmFileEngine::supportsExtension(Extension extension) const
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,28 +1,28 @@
 // Copyright (C) 2013 David Faure <faure+bluesystems@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlockfile.h"
 #include "qlockfile_p.h"
 
-#include <QtCore/qthread.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdeadlinetimer.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qfileinfo.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdeadlinetimer.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qfileinfo.h>
 
 #include <qplatformdefs.h>
 
 #ifdef Q_OS_WIN
 #include <io.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString machineName()
 {
@@ -36,7 +36,7 @@ static QString machineName()
 
 /*!
     \class QLockFile
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup io
     \brief The QLockFile class provides locking between processes using a file.
     \since 5.1
@@ -286,7 +286,7 @@ bool QLockFile::tryLock(std::chrono::milliseconds timeout)
             return false;
         case LockFailedError:
             if (!d->isLocked && d->isApparentlyStale()) {
-                if (Q_UNLIKELY(QFileInfo(d->fileName).lastModified(QTimeZone::UTC) > QDateTime::currentDateTimeUtc()))
+                if (Q_UNLIKELY(QFileInfo(d->fileName).lastModified(BOBUIimeZone::UTC) > QDateTime::currentDateTimeUtc()))
                     qInfo("QLockFile: Lock file '%ls' has a modification time in the future", qUtf16Printable(d->fileName));
                 // Stale lock from another thread/process
                 // Ensure two processes don't remove it at the same time
@@ -306,7 +306,7 @@ bool QLockFile::tryLock(std::chrono::milliseconds timeout)
         if (sleepTime > remainingTime)
             sleepTime = remainingTime;
 
-        QThread::sleep(sleepTime);
+        BOBUIhread::sleep(sleepTime);
         if (sleepTime < 5s)
             sleepTime *= 2;
     }
@@ -394,7 +394,7 @@ bool QLockFilePrivate::getLockInfo_helper(const QString &fileName, LockFileInfo 
         return false;
     QFile reader;
     if (!reader.open(fd, QFile::ReadOnly | QFile::Text, QFile::AutoCloseHandle)) {
-        QT_CLOSE(fd);
+        BOBUI_CLOSE(fd);
         return false;
     }
 
@@ -407,7 +407,7 @@ bool QLockFilePrivate::getLockInfo_helper(const QString &fileName, LockFileInfo 
     QByteArray hostNameLine = reader.readLine();
     hostNameLine.chop(1);
 
-    // prior to Qt 5.10, only the lines above were recorded
+    // prior to BobUI 5.10, only the lines above were recorded
     QByteArray hostId = reader.readLine();
     hostId.chop(1);
     QByteArray bootId = reader.readLine();
@@ -445,7 +445,7 @@ bool QLockFilePrivate::isApparentlyStale() const
         }
     }
 
-    const QDateTime lastMod = QFileInfo(fileName).lastModified(QTimeZone::UTC);
+    const QDateTime lastMod = QFileInfo(fileName).lastModified(BOBUIimeZone::UTC);
     using namespace std::chrono;
     const milliseconds age{lastMod.msecsTo(QDateTime::currentDateTimeUtc())};
     return staleLockTime > 0ms && abs(age) > staleLockTime;
@@ -488,4 +488,4 @@ QLockFile::LockError QLockFile::error() const
     return d->lockError;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsintegration_p.h"
 #include "qlinuxmediadevice.h"
 #include <qeglfskmshelpers_p.h>
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QSize>
-#include <QtCore/QRect>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QSize>
+#include <BobUICore/QRect>
 
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -18,7 +18,7 @@ extern "C" {
 #include <mediactl/v4l2subdev.h>
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
 
@@ -609,4 +609,4 @@ bool QLinuxMediaDevice::streamOff(int subDeviceFd, v4l2_buf_type bufferType)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

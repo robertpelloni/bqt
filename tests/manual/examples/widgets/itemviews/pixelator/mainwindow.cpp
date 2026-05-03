@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "imagemodel.h"
 #include "pixeldelegate.h"
 
-#include <QtWidgets>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#include <BobUIWidgets>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
@@ -24,7 +24,7 @@ MainWindow::MainWindow()
     QWidget *centralWidget = new QWidget;
 
 //! [1]
-    view = new QTableView;
+    view = new BOBUIableView;
     view->setShowGrid(false);
     view->horizontalHeader()->hide();
     view->verticalHeader()->hide();
@@ -120,7 +120,7 @@ void MainWindow::openImage(const QString &fileName)
 
 void MainWindow::printImage()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     if (model->rowCount(QModelIndex())*model->columnCount(QModelIndex()) > 90000) {
         QMessageBox::StandardButton answer;
         answer = QMessageBox::question(this, tr("Large Image Size"),
@@ -163,7 +163,7 @@ void MainWindow::printImage()
     QModelIndex parent = QModelIndex();
 
     QProgressDialog progress(tr("Printing..."), tr("Cancel"), 0, rows, this);
-    progress.setWindowModality(Qt::ApplicationModal);
+    progress.setWindowModality(BobUI::ApplicationModal);
     float y = ItemSize / 2;
 
     for (int row = 0; row < rows; ++row) {
@@ -193,7 +193,7 @@ void MainWindow::printImage()
     }
 #else
     QMessageBox::information(this, tr("Printing canceled"),
-        tr("Printing is not supported on this Qt build"), QMessageBox::Cancel);
+        tr("Printing is not supported on this BobUI build"), QMessageBox::Cancel);
 #endif
 }
 

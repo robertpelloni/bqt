@@ -1,18 +1,18 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSUIATEXTPROVIDER_H
 #define QWINDOWSUIATEXTPROVIDER_H
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include "qwindowsuiabaseprovider.h"
 #include "qwindowsuiatextrangeprovider.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <>
 struct QComObjectTraits<ITextProvider2>
@@ -23,7 +23,7 @@ struct QComObjectTraits<ITextProvider2>
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 // Implements the Text control pattern provider. Used for text controls.
 class QWindowsUiaTextProvider : public QWindowsUiaBaseProvider, public QComObject<ITextProvider2>
@@ -46,8 +46,8 @@ public:
     HRESULT STDMETHODCALLTYPE GetCaretRange(BOOL *isActive, ITextRangeProvider **pRetVal) override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif // QWINDOWSUIATEXTPROVIDER_H

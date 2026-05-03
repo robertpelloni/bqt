@@ -1,29 +1,29 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#ifndef QTCORE_QMINIMALFLATSET_P_H
-#define QTCORE_QMINIMALFLATSET_P_H
+#ifndef BOBUICORE_QMINIMALFLATSET_P_H
+#define BOBUICORE_QMINIMALFLATSET_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qfunctionaltools_impl.h> // CompactStorage
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qfunctionaltools_impl.h> // CompactStorage
+#include <BobUICore/private/qglobal_p.h>
 
 //#define QMINIMAL_FLAT_SET_DEBUG
 #ifdef QMINIMAL_FLAT_SET_DEBUG
-# include <QtCore/qscopeguard.h>
-# include <QtCore/qdebug.h>
+# include <BobUICore/qscopeguard.h>
+# include <BobUICore/qdebug.h>
 # define QMINIMAL_FLAT_SET_PRINT_AT_END \
     const auto sg = qScopeGuard([&] { qDebug() << this << *this; });
 #else
@@ -33,7 +33,7 @@
 #include <algorithm> // for std::lower_bound
 #include <functional> // for std::less, std::ref
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     This is a minimal version of a QFlatSet, the std::set version of QFlatMap.
@@ -46,10 +46,10 @@ QT_BEGIN_NAMESPACE
 */
 
 template <typename T, typename Container = QList<T>, typename Compare = std::less<T>>
-class QMinimalFlatSet : QtPrivate::CompactStorage<Compare>
+class QMinimalFlatSet : BobUIPrivate::CompactStorage<Compare>
 {
     Container c;
-    using CompareStorage = QtPrivate::CompactStorage<Compare>;
+    using CompareStorage = BobUIPrivate::CompactStorage<Compare>;
 public:
     QMinimalFlatSet() = default;
     explicit QMinimalFlatSet(const Compare &cmp) : CompareStorage{cmp} {}
@@ -152,6 +152,6 @@ private:
 template <typename T, qsizetype N = QVarLengthArrayDefaultPrealloc>
 using QMinimalVarLengthFlatSet = QMinimalFlatSet<T, QVarLengthArray<T, N>>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QTCORE_QMINIMALFLATSET_P_H
+#endif // BOBUICORE_QMINIMALFLATSET_P_H

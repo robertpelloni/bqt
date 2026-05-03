@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtGui/QPainterPath>
-#include <QtWidgets/qgraphicsscene.h>
+#include <BOBUIest>
+#include <BobUIGui/QPainterPath>
+#include <BobUIWidgets/qgraphicsscene.h>
 #include <private/qgraphicsscenebsptreeindex_p.h>
 #include <private/qgraphicssceneindex_p.h>
 #include <private/qgraphicsscenelinearindex_p.h>
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QGraphicsSceneIndex : public QObject
 {
@@ -41,10 +41,10 @@ void tst_QGraphicsSceneIndex::initTestCase()
 
 void tst_QGraphicsSceneIndex::common_data()
 {
-    QTest::addColumn<QString>("indexMethod");
+    BOBUIest::addColumn<QString>("indexMethod");
 
-    QTest::newRow("BSP") << QString("bsp");
-    QTest::newRow("Linear") << QString("linear");
+    BOBUIest::newRow("BSP") << QString("bsp");
+    BOBUIest::newRow("Linear") << QString("linear");
 }
 
 QGraphicsSceneIndex *tst_QGraphicsSceneIndex::createIndex(const QString &indexMethod)
@@ -98,7 +98,7 @@ void tst_QGraphicsSceneIndex::overlappedItems()
 
     for (int i = 0; i < 10; ++i)
         for (int j = 0; j < 10; ++j)
-            scene.addRect(i*50, j*50, 200, 200)->setPen(QPen(Qt::black, 0));
+            scene.addRect(i*50, j*50, 200, 200)->setPen(QPen(BobUI::black, 0));
 
     QCOMPARE(scene.items(QPointF(5, 5)).size(), 1);
     QCOMPARE(scene.items(QPointF(55, 55)).size(), 4);
@@ -169,7 +169,7 @@ void tst_QGraphicsSceneIndex::items()
     QCOMPARE(scene.items().size(), 2);
 
     // Move from unindexed items into bsp tree.
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(scene.items().size(), 2);
 
     // Add untransformable item.
@@ -179,13 +179,13 @@ void tst_QGraphicsSceneIndex::items()
     QCOMPARE(scene.items().size(), 3);
 
     // Move from unindexed items into untransformable items.
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(scene.items().size(), 3);
 
     // Move from untransformable items into unindexed items.
     item3->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     QCOMPARE(scene.items().size(), 3);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(scene.items().size(), 3);
 
     // Make all items untransformable.
@@ -195,7 +195,7 @@ void tst_QGraphicsSceneIndex::items()
     QCOMPARE(scene.items().size(), 3);
 
     // Move from unindexed items into untransformable items.
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(scene.items().size(), 3);
 }
 
@@ -211,40 +211,40 @@ private:
     QPainterPath mShape;
 };
 
-Q_DECLARE_METATYPE(Qt::ItemSelectionMode)
+Q_DECLARE_METATYPE(BobUI::ItemSelectionMode)
 Q_DECLARE_METATYPE(QPainterPath)
 
 void tst_QGraphicsSceneIndex::boundingRectPointIntersection_data()
 {
-    QTest::addColumn<QPainterPath>("itemShape");
-    QTest::addColumn<Qt::ItemSelectionMode>("mode");
+    BOBUIest::addColumn<QPainterPath>("itemShape");
+    BOBUIest::addColumn<BobUI::ItemSelectionMode>("mode");
 
-    QTest::newRow("zero shape - intersects rect") << QPainterPath() << Qt::IntersectsItemBoundingRect;
-    QTest::newRow("zero shape - contains rect") << QPainterPath() << Qt::ContainsItemBoundingRect;
+    BOBUIest::newRow("zero shape - intersects rect") << QPainterPath() << BobUI::IntersectsItemBoundingRect;
+    BOBUIest::newRow("zero shape - contains rect") << QPainterPath() << BobUI::ContainsItemBoundingRect;
 
     QPainterPath triangle;
     triangle.moveTo(50, 0);
     triangle.lineTo(0, 50);
     triangle.lineTo(100, 50);
     triangle.lineTo(50, 0);
-    QTest::newRow("triangle shape - intersects rect") << triangle << Qt::IntersectsItemBoundingRect;
-    QTest::newRow("triangle shape - contains rect") << triangle << Qt::ContainsItemBoundingRect;
+    BOBUIest::newRow("triangle shape - intersects rect") << triangle << BobUI::IntersectsItemBoundingRect;
+    BOBUIest::newRow("triangle shape - contains rect") << triangle << BobUI::ContainsItemBoundingRect;
 
     QPainterPath rect;
     rect.addRect(QRectF(0, 0, 100, 100));
-    QTest::newRow("rectangle shape - intersects rect") << rect << Qt::IntersectsItemBoundingRect;
-    QTest::newRow("rectangle shape - contains rect") << rect << Qt::ContainsItemBoundingRect;
+    BOBUIest::newRow("rectangle shape - intersects rect") << rect << BobUI::IntersectsItemBoundingRect;
+    BOBUIest::newRow("rectangle shape - contains rect") << rect << BobUI::ContainsItemBoundingRect;
 }
 
 void tst_QGraphicsSceneIndex::boundingRectPointIntersection()
 {
     QFETCH(QPainterPath, itemShape);
-    QFETCH(Qt::ItemSelectionMode, mode);
+    QFETCH(BobUI::ItemSelectionMode, mode);
 
     QGraphicsScene scene;
     CustomShapeItem *item = new CustomShapeItem(itemShape);
     scene.addItem(item);
-    QList<QGraphicsItem*> items = scene.items(QPointF(0, 0), mode, Qt::AscendingOrder);
+    QList<QGraphicsItem*> items = scene.items(QPointF(0, 0), mode, BobUI::AscendingOrder);
     QVERIFY(!items.isEmpty());
     QCOMPARE(items.first(), item);
 }
@@ -271,19 +271,19 @@ void tst_QGraphicsSceneIndex::removeItems()
      QGraphicsScene scene;
 
     RectWidget *parent = new RectWidget;
-    parent->brush = QBrush(QColor(Qt::magenta));
+    parent->brush = QBrush(QColor(BobUI::magenta));
     parent->setGeometry(250, 250, 400, 400);
 
     RectWidget *widget = new RectWidget(parent);
-    widget->brush = QBrush(QColor(Qt::blue));
+    widget->brush = QBrush(QColor(BobUI::blue));
     widget->setGeometry(10, 10, 200, 200);
 
     RectWidget *widgetChild1 = new RectWidget(widget);
-    widgetChild1->brush = QBrush(QColor(Qt::green));
+    widgetChild1->brush = QBrush(QColor(BobUI::green));
     widgetChild1->setGeometry(20, 20, 100, 100);
 
     RectWidget *widgetChild2 = new RectWidget(widgetChild1);
-    widgetChild2->brush = QBrush(QColor(Qt::yellow));
+    widgetChild2->brush = QBrush(QColor(BobUI::yellow));
     widgetChild2->setGeometry(25, 25, 50, 50);
 
     scene.addItem(parent);
@@ -291,7 +291,7 @@ void tst_QGraphicsSceneIndex::removeItems()
     QGraphicsView view(&scene);
     view.resize(600, 600);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     scene.removeItem(widgetChild1);
 
@@ -322,7 +322,7 @@ void tst_QGraphicsSceneIndex::clear()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     scene.clear();
 
     // Make sure the index is re-generated after QGraphicsScene::clear();
@@ -330,8 +330,8 @@ void tst_QGraphicsSceneIndex::clear()
     MyItem *item = new MyItem;
     scene.addItem(item);
     qApp->processEvents();
-    QTRY_VERIFY(item->numPaints > 0);
+    BOBUIRY_VERIFY(item->numPaints > 0);
 }
 
-QTEST_MAIN(tst_QGraphicsSceneIndex)
+BOBUIEST_MAIN(tst_QGraphicsSceneIndex)
 #include "tst_qgraphicssceneindex.moc"

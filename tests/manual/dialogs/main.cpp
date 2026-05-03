@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "filedialogpanel.h"
 #include "colordialogpanel.h"
@@ -13,7 +13,7 @@
 #include <QMainWindow>
 #include <QApplication>
 #include <QMenuBar>
-#include <QTabWidget>
+#include <BOBUIabWidget>
 #include <QFormLayout>
 #include <QMenu>
 #include <QAction>
@@ -22,7 +22,7 @@
 static bool optNoPrinter = false;
 
 // Test for dialogs, allowing to play with all dialog options for implementing native dialogs.
-// Compiles with Qt 4.8 and Qt 5.
+// Compiles with BobUI 4.8 and BobUI 5.
 
 class AboutDialog : public QDialog
 {
@@ -32,7 +32,7 @@ public:
 
 AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~BobUI::WindowContextHelpButtonHint);
     QFormLayout *mainLayout = new QFormLayout(this);
     mainLayout->addRow(new QLabel(QLibraryInfo::build()));
     mainLayout->addRow("Style:", new QLabel(qApp->style()->objectName()));
@@ -40,7 +40,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
     const QString resolution = QString::number(logicalDpiX()) + QLatin1Char(',')
                                + QString::number(logicalDpiY()) + QLatin1String("dpi");
     mainLayout->addRow("Resolution:", new QLabel(resolution));
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, BobUI::Horizontal);
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     mainLayout->addRow(buttonBox);
 }
@@ -56,7 +56,7 @@ public slots:
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    setWindowTitle(tr("Dialogs Qt %1").arg(QLatin1String(QT_VERSION_STR)));
+    setWindowTitle(tr("Dialogs BobUI %1").arg(QLatin1String(BOBUI_VERSION_STR)));
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     QAction *quitAction = fileMenu->addAction(tr("Quit"));
     quitAction->setShortcut(QKeySequence(QKeySequence::Quit));
@@ -72,14 +72,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     action->setShortcut(QKeySequence(QKeySequence::SelectAll));
     QMenu *aboutMenu = menuBar()->addMenu(tr("&About"));
     QAction *aboutAction = aboutMenu->addAction(tr("About..."), this, SLOT(aboutDialog()));
-    aboutAction->setShortcut(Qt::Key_F1);
-    QTabWidget *tabWidget = new QTabWidget;
+    aboutAction->setShortcut(BobUI::Key_F1);
+    BOBUIabWidget *tabWidget = new BOBUIabWidget;
     tabWidget->addTab(new FileDialogPanel, tr("QFileDialog"));
     tabWidget->addTab(new ColorDialogPanel, tr("QColorDialog"));
     tabWidget->addTab(new FontDialogPanel, tr("QFontDialog"));
     tabWidget->addTab(new WizardPanel, tr("QWizard"));
     tabWidget->addTab(new MessageBoxPanel, tr("QMessageBox"));
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
     if (!optNoPrinter)
         tabWidget->addTab(new PrintDialogPanel, tr("QPrintDialog"));
 #endif
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     for (int a = 1; a < argc; ++a) {
         if (!qstrcmp(argv[a], "-n")) {
             qDebug("AA_DontUseNativeDialogs");
-            QCoreApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
+            QCoreApplication::setAttribute(BobUI::AA_DontUseNativeDialogs);
         } else if (!qstrcmp(argv[a], "-p")) {
             optNoPrinter = true; // Avoid startup slowdown by printer code
         }

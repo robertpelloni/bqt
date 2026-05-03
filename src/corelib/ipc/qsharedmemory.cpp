@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsharedmemory.h"
 #include "qsharedmemory_p.h"
 
-#include "qtipccommon_p.h"
+#include "bobuiipccommon_p.h"
 #include "qsystemsemaphore.h"
 
 #include <q20memory.h>
 #include <qdebug.h>
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 #include <errno.h>
 
@@ -23,12 +23,12 @@
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 
-using namespace QtIpcCommon;
-using namespace Qt::StringLiterals;
+using namespace BobUIIpcCommon;
+using namespace BobUI::StringLiterals;
 
 QSharedMemoryPrivate::~QSharedMemoryPrivate()
 {
@@ -46,7 +46,7 @@ inline void QSharedMemoryPrivate::destructBackend()
     visit([](auto p) { std::destroy_at(p); });
 }
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
 inline QNativeIpcKey QSharedMemoryPrivate::semaphoreNativeKey() const
 {
     if (isIpcSupported(IpcType::SharedMemory, QNativeIpcKey::Type::Windows)
@@ -67,7 +67,7 @@ inline QNativeIpcKey QSharedMemoryPrivate::semaphoreNativeKey() const
 
 /*!
   \class QSharedMemory
-  \inmodule QtCore
+  \inmodule BobUICore
   \since 4.4
 
   \brief The QSharedMemory class provides access to a shared memory segment.
@@ -92,7 +92,7 @@ inline QNativeIpcKey QSharedMemoryPrivate::semaphoreNativeKey() const
   segment, and no references to the segment remain.
 
   For details on the key types, platform-specific limitations, and
-  interoperability with older or non-Qt applications, see the \l{Native IPC
+  interoperability with older or non-BobUI applications, see the \l{Native IPC
   Keys} documentation. That includes important information for sandboxed
   applications on Apple platforms, including all apps obtained via the Apple
   App Store.
@@ -190,7 +190,7 @@ void QSharedMemory::setKey(const QString &key)
   \fn void QSharedMemory::setNativeKey(const QString &key, QNativeIpcKey::Type type)
 
   Sets the native, platform specific, \a key for this shared memory object of
-  type \a type (the type parameter has been available since Qt 6.6). If \a key
+  type \a type (the type parameter has been available since BobUI 6.6). If \a key
   is the same as the current native key, the function returns without doing
   anything. Otherwise, if the shared memory object is attached to an underlying
   shared memory segment, it will \l {detach()} {detach} from it before setting
@@ -254,7 +254,7 @@ bool QSharedMemoryPrivate::initKey(SemaphoreAccessMode mode)
 {
     if (!cleanHandle())
         return false;
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     const QString legacyKey = QNativeIpcKeyPrivate::legacyKey(nativeKey);
     const QNativeIpcKey semKey = legacyKey.isEmpty()
             ? semaphoreNativeKey()
@@ -298,7 +298,7 @@ bool QSharedMemoryPrivate::initKey(SemaphoreAccessMode mode)
 /*!
   Returns the legacy key assigned with setKey() to this shared memory, or a null key
   if no key has been assigned, or if the segment is using a nativeKey(). The
-  key is the identifier used by Qt applications to identify the shared memory
+  key is the identifier used by BobUI applications to identify the shared memory
   segment.
 
   You can find the native, platform specific, key used by the operating system
@@ -320,7 +320,7 @@ QString QSharedMemory::key() const
   shared memory segment.
 
   You can use the native key to access shared memory segments that have not
-  been created by Qt, or to grant shared memory access to non-Qt applications.
+  been created by BobUI, or to grant shared memory access to non-BobUI applications.
   See \l{Native IPC Keys} for more information.
 
   \sa setNativeKey(), nativeIpcKey()
@@ -339,7 +339,7 @@ QString QSharedMemory::nativeKey() const
   the shared memory segment.
 
   You can use the native key to access shared memory segments that have not
-  been created by Qt, or to grant shared memory access to non-Qt applications.
+  been created by BobUI, or to grant shared memory access to non-BobUI applications.
   See \l{Native IPC Keys} for more information.
 
   \sa nativeKey(), setNativeKey()
@@ -365,7 +365,7 @@ bool QSharedMemory::create(qsizetype size, AccessMode mode)
     Q_D(QSharedMemory);
     QLatin1StringView function = "QSharedMemory::create"_L1;
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     if (!d->initKey(QSystemSemaphore::Create))
         return false;
     QSharedMemoryLocker lock(this);
@@ -434,7 +434,7 @@ bool QSharedMemory::attach(AccessMode mode)
 
     if (isAttached() || !d->initKey({}))
         return false;
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     QSharedMemoryLocker lock(this);
     if (!d->nativeKey.isEmpty() && !d->tryLocker(&lock, "QSharedMemory::attach"_L1))
         return false;
@@ -474,7 +474,7 @@ bool QSharedMemory::detach()
     if (!isAttached())
         return false;
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     QSharedMemoryLocker lock(this);
     if (!d->nativeKey.isEmpty() && !d->tryLocker(&lock, "QSharedMemory::detach"_L1))
         return false;
@@ -528,7 +528,7 @@ const void *QSharedMemory::data() const
     return d->memory;
 }
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
 /*!
   This is a semaphore that locks the shared memory segment for access
   by this process and returns \c true. If another process has locked the
@@ -578,7 +578,7 @@ bool QSharedMemory::unlock()
     d->error = QSharedMemory::LockError;
     return false;
 }
-#endif // QT_CONFIG(systemsemaphore)
+#endif // BOBUI_CONFIG(systemsemaphore)
 
 /*!
   \enum QSharedMemory::SharedMemoryError
@@ -659,7 +659,7 @@ void QSharedMemoryPrivate::setUnixErrorString(QLatin1StringView function)
         break;
     default:
         errorString = QSharedMemory::tr("%1: unknown error: %2")
-                .arg(function, qt_error_string(errno));
+                .arg(function, bobui_error_string(errno));
         error = QSharedMemory::UnknownError;
 #if defined QSHAREDMEMORY_DEBUG
         qDebug() << errorString << "key" << key << "errno" << errno << EINVAL;
@@ -680,16 +680,16 @@ bool QSharedMemory::isKeyTypeSupported(QNativeIpcKey::Type type)
 
 QNativeIpcKey QSharedMemory::platformSafeKey(const QString &key, QNativeIpcKey::Type type)
 {
-    return QtIpcCommon::platformSafeKey(key, IpcType::SharedMemory, type);
+    return BobUIIpcCommon::platformSafeKey(key, IpcType::SharedMemory, type);
 }
 
 QNativeIpcKey QSharedMemory::legacyNativeKey(const QString &key, QNativeIpcKey::Type type)
 {
-    return QtIpcCommon::legacyPlatformSafeKey(key, IpcType::SharedMemory, type);
+    return BobUIIpcCommon::legacyPlatformSafeKey(key, IpcType::SharedMemory, type);
 }
 
-#endif // QT_CONFIG(sharedmemory)
+#endif // BOBUI_CONFIG(sharedmemory)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsharedmemory.cpp"

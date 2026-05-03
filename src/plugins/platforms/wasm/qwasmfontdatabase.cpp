@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmfontdatabase.h"
 #include "qwasmintegration.h"
 
-#include <QtCore/qfile.h>
-#include <QtCore/private/qstdweb_p.h>
-#include <QtCore/private/qeventdispatcher_wasm_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/private/qstdweb_p.h>
+#include <BobUICore/private/qeventdispatcher_wasm_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <emscripten.h>
 #include <emscripten/val.h>
@@ -16,10 +16,10 @@
 #include <map>
 #include <array>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace emscripten;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 
 namespace {
@@ -128,10 +128,10 @@ void readFont(FontData font, std::function<void(const QByteArray &)> callback)
 }
 
 emscripten::val getLocalFontsConfigProperty(const char *name) {
-    emscripten::val qt = val::module_property("qt");
-    if (qt.isUndefined())
+    emscripten::val bobui = val::module_property("bobui");
+    if (bobui.isUndefined())
         return emscripten::val();
-    emscripten::val localFonts = qt["localFonts"];
+    emscripten::val localFonts = bobui["localFonts"];
     if (localFonts.isUndefined())
         return emscripten::val();
     return localFonts[name];
@@ -350,7 +350,7 @@ namespace {
     bool g_fontStartupTaskCompleted = false;
 }
 
-// Registers font loading as a startup task, which makes Qt delay
+// Registers font loading as a startup task, which makes BobUI delay
 // sending onLoaded event until font loading has completed.
 void QWasmFontDatabase::beginFontDatabaseStartupTask()
 {
@@ -401,4 +401,4 @@ void QWasmFontDatabase::endAllFontFileLoading()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

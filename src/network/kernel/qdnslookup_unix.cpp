@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdnslookup_p.h"
 
@@ -10,9 +10,9 @@
 #include <qurl.h>
 #include <qvarlengtharray.h>
 #include <private/qnativesocketengine_p.h>      // for setSockAddr
-#include <private/qtnetwork-config_p.h>
+#include <private/bobuinetwork-config_p.h>
 
-QT_REQUIRE_CONFIG(libresolv);
+BOBUI_REQUIRE_CONFIG(libresolv);
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -30,9 +30,9 @@ QT_REQUIRE_CONFIG(libresolv);
 #  define T_OPT     ns_t_opt
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using ReplyBuffer = QDnsLookupRunnable::ReplyBuffer;
 
 // https://www.rfc-editor.org/rfc/rfc6891
@@ -62,7 +62,7 @@ struct QDnsCachedName
 Q_DECLARE_TYPEINFO(QDnsCachedName, Q_RELOCATABLE_TYPE);
 using Cache = QList<QDnsCachedName>;    // QHash or QMap are overkill
 
-#if QT_CONFIG(res_setservers)
+#if BOBUI_CONFIG(res_setservers)
 // https://www.ibm.com/docs/en/i/7.3?topic=ssw_ibm_i_73/apis/ressetservers.html
 // https://docs.oracle.com/cd/E86824_01/html/E54774/res-setservers-3resolv.html
 static bool applyNameServer(res_state state, const QHostAddress &nameserver, quint16 port)
@@ -127,7 +127,7 @@ static bool applyNameServer(res_state state, const QHostAddress &nameserver, qui
     setSockaddr(&state->nsaddr_list[0], nameserver, port);
     return true;
 }
-#endif // !QT_CONFIG(res_setservers)
+#endif // !BOBUI_CONFIG(res_setservers)
 
 static int
 prepareQueryBuffer(res_state state, QueryBuffer &buffer, const char *label, ns_rcode type)
@@ -176,7 +176,7 @@ static int sendStandardDns(QDnsLookupReply *reply, res_state state, QSpan<unsign
 
         // libresolv uses ETIMEDOUT for resolver errors ("no answer")
         if (errno == ECONNREFUSED)
-            reply->setError(QDnsLookup::ServerRefusedError, qt_error_string());
+            reply->setError(QDnsLookup::ServerRefusedError, bobui_error_string());
         else if (errno != ETIMEDOUT)
             reply->makeResolverSystemError();   // some other error
 
@@ -446,4 +446,4 @@ void QDnsLookupRunnable::query(QDnsLookupReply *reply)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

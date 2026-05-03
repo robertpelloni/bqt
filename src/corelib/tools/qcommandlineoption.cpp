@@ -1,14 +1,14 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2013 Laszlo Papp <lpapp@kde.org>
 // Copyright (C) 2013 David Faure <faure@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcommandlineoption.h"
 
 #include "qset.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCommandLineOptionPrivate : public QSharedData
 {
@@ -45,7 +45,7 @@ public:
     \since 5.2
     \class QCommandLineOption
     \brief The QCommandLineOption class defines a possible command-line option.
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup shared
     \ingroup tools
 
@@ -116,7 +116,7 @@ QCommandLineOption::QCommandLineOption(const QStringList &names)
     In addition, the \a valueName needs to be set if the option expects a value.
     The default value for the option is set to \a defaultValue.
 
-    In Qt versions before 5.4, this constructor was \c explicit. In Qt 5.4
+    In BobUI versions before 5.4, this constructor was \c explicit. In BobUI 5.4
     and later, it no longer is and can be used for uniform initialization:
 
     \snippet code/src_corelib_tools_qcommandlineoption.cpp cxx11-init
@@ -151,7 +151,7 @@ QCommandLineOption::QCommandLineOption(const QString &name, const QString &descr
     In addition, the \a valueName needs to be set if the option expects a value.
     The default value for the option is set to \a defaultValue.
 
-    In Qt versions before 5.4, this constructor was \c explicit. In Qt 5.4
+    In BobUI versions before 5.4, this constructor was \c explicit. In BobUI 5.4
     and later, it no longer is and can be used for uniform initialization:
 
     \snippet code/src_corelib_tools_qcommandlineoption.cpp cxx11-init-list
@@ -395,4 +395,4 @@ void QCommandLineOption::setFlags(Flags flags)
     \sa QCommandLineOption::setFlags(), QCommandLineOption::flags()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2014 Ivan Komissarov <ABBAPOH@gmail.com>
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstorageinfo_p.h"
 
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qtextstream.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/bobuiextstream.h>
 
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtCore/private/qlocale_tools_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUICore/private/qlocale_tools_p.h>
 
 #include <errno.h>
 #include <sys/stat.h>
@@ -38,11 +38,11 @@
 
 #if defined(Q_OS_BSD4)
 #  if defined(Q_OS_NETBSD)
-#    define QT_STATFSBUF struct statvfs
-#    define QT_STATFS    ::statvfs
+#    define BOBUI_STATFSBUF struct statvfs
+#    define BOBUI_STATFS    ::statvfs
 #  else
-#    define QT_STATFSBUF struct statfs
-#    define QT_STATFS    ::statfs
+#    define BOBUI_STATFSBUF struct statfs
+#    define BOBUI_STATFS    ::statfs
 #  endif
 
 #  if !defined(ST_RDONLY)
@@ -52,16 +52,16 @@
 #    define _STATFS_F_FLAGS 1
 #  endif
 #elif defined(Q_OS_HAIKU) || defined(Q_OS_CYGWIN)
-#  define QT_STATFSBUF struct statvfs
-#  define QT_STATFS    ::statvfs
+#  define BOBUI_STATFSBUF struct statvfs
+#  define BOBUI_STATFS    ::statvfs
 #else
-#  if defined(QT_LARGEFILE_SUPPORT)
-#    define QT_STATFSBUF struct statvfs64
-#    define QT_STATFS    ::statvfs64
+#  if defined(BOBUI_LARGEFILE_SUPPORT)
+#    define BOBUI_STATFSBUF struct statvfs64
+#    define BOBUI_STATFS    ::statvfs64
 #  else
-#    define QT_STATFSBUF struct statvfs
-#    define QT_STATFS    ::statvfs
-#  endif // QT_LARGEFILE_SUPPORT
+#    define BOBUI_STATFSBUF struct statvfs
+#    define BOBUI_STATFS    ::statvfs
+#  endif // BOBUI_LARGEFILE_SUPPORT
 #endif // Q_OS_BSD4
 
 #if __has_include(<paths.h>)
@@ -71,9 +71,9 @@
 #  define _PATH_MOUNTED     "/etc/mnttab"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QStorageIterator
 {
@@ -90,7 +90,7 @@ public:
     inline QByteArray subvolume() const;
 private:
 #if defined(Q_OS_BSD4)
-    QT_STATFSBUF *stat_buf;
+    BOBUI_STATFSBUF *stat_buf;
     int entryCount;
     int currentIndex;
 #elif defined(Q_OS_SOLARIS)
@@ -163,7 +163,7 @@ inline QByteArray QStorageIterator::subvolume() const
 
 inline QStorageIterator::QStorageIterator()
 {
-    const int fd = qt_safe_open(_PATH_MOUNTED, O_RDONLY);
+    const int fd = bobui_safe_open(_PATH_MOUNTED, O_RDONLY);
     fp = ::fdopen(fd, "r");
 }
 
@@ -402,9 +402,9 @@ void QStorageInfoPrivate::doStat()
 
 void QStorageInfoPrivate::retrieveVolumeInfo()
 {
-    QT_STATFSBUF statfs_buf;
+    BOBUI_STATFSBUF statfs_buf;
     int result;
-    QT_EINTR_LOOP(result, QT_STATFS(QFile::encodeName(rootPath).constData(), &statfs_buf));
+    BOBUI_EINTR_LOOP(result, BOBUI_STATFS(QFile::encodeName(rootPath).constData(), &statfs_buf));
     valid = ready = (result == 0);
     if (valid) {
 #if defined(Q_OS_INTEGRITY) || (defined(Q_OS_BSD4) && !defined(Q_OS_NETBSD)) || defined(Q_OS_RTEMS)
@@ -483,4 +483,4 @@ QList<QStorageInfo> QStorageInfoPrivate::mountedVolumes()
     return volumes;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

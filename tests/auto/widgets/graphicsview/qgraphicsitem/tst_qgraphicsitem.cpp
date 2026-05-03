@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
 #include <private/qgraphicsitem_p.h>
 #include <private/qgraphicsview_p.h>
@@ -30,17 +30,17 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QGraphicsLinearLayout>
-#include <QTransform>
+#include <BOBUIransform>
 #include <QSharedPointer>
 #include <float.h>
 #include <QStyleHints>
 #include <QPainterPath>
 #include <QSignalSpy>
-#include <QTimer>
+#include <BOBUIimer>
 
-#include <QtGui/private/qeventpoint_p.h>
+#include <BobUIGui/private/qeventpoint_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 using AbstractGraphicsShapeItemPtr = QSharedPointer<QAbstractGraphicsShapeItem>;
 using GraphicsItems = QList<QGraphicsItem *>;
@@ -50,10 +50,10 @@ Q_DECLARE_METATYPE(AbstractGraphicsShapeItemPtr)
 Q_DECLARE_METATYPE(QGraphicsItem::GraphicsItemFlags)
 Q_DECLARE_METATYPE(QPainterPath)
 Q_DECLARE_METATYPE(QSizeF)
-Q_DECLARE_METATYPE(QTransform)
+Q_DECLARE_METATYPE(BOBUIransform)
 
 #if defined(Q_OS_WIN)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #define Q_CHECK_PAINTEVENTS \
     if (::SwitchDesktop(::GetThreadDesktop(::GetCurrentThreadId())) == 0) \
         QSKIP("The Graphics View doesn't get the paint events");
@@ -66,12 +66,12 @@ Q_DECLARE_METATYPE(QTransform)
 // So check that the expected region is contained inside the actual
 #define COMPARE_REGIONS(ACTUAL, EXPECTED) QVERIFY((EXPECTED).subtracted(ACTUAL).isEmpty())
 #else
-#define COMPARE_REGIONS QTRY_COMPARE
+#define COMPARE_REGIONS BOBUIRY_COMPARE
 #endif
 
-static QGraphicsRectItem staticItem; //QTBUG-7629, we should not crash at exit.
+static QGraphicsRectItem staticItem; //BOBUIBUG-7629, we should not crash at exit.
 
-static void sendMousePress(QGraphicsScene *scene, const QPointF &point, Qt::MouseButton button = Qt::LeftButton)
+static void sendMousePress(QGraphicsScene *scene, const QPointF &point, BobUI::MouseButton button = BobUI::LeftButton)
 {
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
     event.setScenePos(point);
@@ -81,7 +81,7 @@ static void sendMousePress(QGraphicsScene *scene, const QPointF &point, Qt::Mous
 }
 
 static void sendMouseMove(QGraphicsScene *scene, const QPointF &point,
-                          Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons /* buttons */ = {})
+                          BobUI::MouseButton button = BobUI::NoButton, BobUI::MouseButtons /* buttons */ = {})
 {
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
     event.setScenePos(point);
@@ -90,7 +90,7 @@ static void sendMouseMove(QGraphicsScene *scene, const QPointF &point,
     QCoreApplication::sendEvent(scene, &event);
 }
 
-static void sendMouseRelease(QGraphicsScene *scene, const QPointF &point, Qt::MouseButton button = Qt::LeftButton)
+static void sendMouseRelease(QGraphicsScene *scene, const QPointF &point, BobUI::MouseButton button = BobUI::LeftButton)
 {
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
     event.setScenePos(point);
@@ -98,25 +98,25 @@ static void sendMouseRelease(QGraphicsScene *scene, const QPointF &point, Qt::Mo
     QCoreApplication::sendEvent(scene, &event);
 }
 
-static void sendMouseClick(QGraphicsScene *scene, const QPointF &point, Qt::MouseButton button = Qt::LeftButton)
+static void sendMouseClick(QGraphicsScene *scene, const QPointF &point, BobUI::MouseButton button = BobUI::LeftButton)
 {
     sendMousePress(scene, point, button);
     sendMouseRelease(scene, point, button);
 }
 
-static void sendKeyPress(QGraphicsScene *scene, Qt::Key key)
+static void sendKeyPress(QGraphicsScene *scene, BobUI::Key key)
 {
-    QKeyEvent keyEvent(QEvent::KeyPress, key, Qt::NoModifier);
+    QKeyEvent keyEvent(QEvent::KeyPress, key, BobUI::NoModifier);
     QCoreApplication::sendEvent(scene, &keyEvent);
 }
 
-static void sendKeyRelease(QGraphicsScene *scene, Qt::Key key)
+static void sendKeyRelease(QGraphicsScene *scene, BobUI::Key key)
 {
-    QKeyEvent keyEvent(QEvent::KeyRelease, key, Qt::NoModifier);
+    QKeyEvent keyEvent(QEvent::KeyRelease, key, BobUI::NoModifier);
     QCoreApplication::sendEvent(scene, &keyEvent);
 }
 
-static void sendKeyClick(QGraphicsScene *scene, Qt::Key key)
+static void sendKeyClick(QGraphicsScene *scene, BobUI::Key key)
 {
     sendKeyPress(scene, key);
     sendKeyRelease(scene, key);
@@ -341,7 +341,7 @@ private slots:
     void filtersChildEvents();
     void filtersChildEvents2();
     void ensureVisible();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void cursor();
 #endif
     //void textControlGetterSetter();
@@ -366,9 +366,9 @@ private slots:
     void itemContainsChildrenInShape2();
     void ancestorFlags();
     void untransformable();
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEventPropagation();
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     void itemIsMovable();
     void boundingRegion_data();
     void boundingRegion();
@@ -429,7 +429,7 @@ private slots:
     void modality_keyEvents();
     void itemIsInFront();
     void scenePosChange();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void textItem_shortcuts();
 #endif
     void scroll();
@@ -451,25 +451,25 @@ private slots:
     void task240400_clickOnTextItem();
     void task243707_addChildBeforeParent();
     void task197802_childrenVisibility();
-    void QTBUG_4233_updateCachedWithSceneRect();
-    void QTBUG_5418_textItemSetDefaultColor();
-    void QTBUG_6738_missingUpdateWithSetParent();
-    void QTBUG_7714_fullUpdateDiscardingOpacityUpdate2();
-    void QT_2653_fullUpdateDiscardingOpacityUpdate();
-    void QT_2649_focusScope();
+    void BOBUIBUG_4233_updateCachedWithSceneRect();
+    void BOBUIBUG_5418_textItemSetDefaultColor();
+    void BOBUIBUG_6738_missingUpdateWithSetParent();
+    void BOBUIBUG_7714_fullUpdateDiscardingOpacityUpdate2();
+    void BOBUI_2653_fullUpdateDiscardingOpacityUpdate();
+    void BOBUI_2649_focusScope();
     void sortItemsWhileAdding();
     void doNotMarkFullUpdateIfNotInScene();
     void itemDiesDuringDraggingOperation();
-    void QTBUG_12112_focusItem();
-    void QTBUG_13473_sceneposchange();
-    void QTBUG_16374_crashInDestructor();
-    void QTBUG_20699_focusScopeCrash();
-    void QTBUG_30990_rightClickSelection();
-    void QTBUG_21618_untransformable_sceneTransform();
+    void BOBUIBUG_12112_focusItem();
+    void BOBUIBUG_13473_sceneposchange();
+    void BOBUIBUG_16374_crashInDestructor();
+    void BOBUIBUG_20699_focusScopeCrash();
+    void BOBUIBUG_30990_rightClickSelection();
+    void BOBUIBUG_21618_untransformable_sceneTransform();
 
 private:
     GraphicsItems paintedItems;
-    std::unique_ptr<QPointingDevice> m_touchDevice{QTest::createTouchDevice()};
+    std::unique_ptr<QPointingDevice> m_touchDevice{BOBUIest::createTouchDevice()};
 };
 
 void tst_QGraphicsItem::cleanup()
@@ -481,7 +481,7 @@ template <class I>
 static inline I *createBlackShapeItem()
 {
     auto result = new I;
-    result->setPen(QPen(Qt::black, 0));
+    result->setPen(QPen(BobUI::black, 0));
     return result;
 }
 
@@ -550,15 +550,15 @@ void tst_QGraphicsItem::construction()
         QVERIFY(item->isVisible());
         QVERIFY(item->isEnabled());
         QVERIFY(!item->isSelected());
-        QCOMPARE(item->acceptedMouseButtons(), Qt::MouseButtons(0x1f));
+        QCOMPARE(item->acceptedMouseButtons(), BobUI::MouseButtons(0x1f));
         if (item->type() == QGraphicsTextItem::Type)
             QVERIFY(item->acceptHoverEvents());
         else
             QVERIFY(!item->acceptHoverEvents());
         QVERIFY(!item->hasFocus());
         QCOMPARE(item->pos(), QPointF());
-        QCOMPARE(item->transform(), QTransform());
-        QCOMPARE(item->sceneTransform(), QTransform());
+        QCOMPARE(item->transform(), BOBUIransform());
+        QCOMPARE(item->sceneTransform(), BOBUIransform());
         QCOMPARE(item->zValue(), qreal(0));
         QCOMPARE(item->sceneBoundingRect(), QRectF());
         QCOMPARE(item->shape(), QPainterPath());
@@ -580,7 +580,7 @@ public:
         : QGraphicsRectItem(0, 0, parent ? 200 : 100, parent ? 200 : 100,
                             parent)
     {
-        setPen(QPen(Qt::black, 0));
+        setPen(QPen(BobUI::black, 0));
     }
 
     QRectF boundingRect() const override
@@ -918,15 +918,15 @@ void tst_QGraphicsItem::flags()
         item->setFlag(QGraphicsItem::ItemIsMovable, false);
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(QPointF(0, 0));
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
         QCOMPARE(scene.mouseGrabberItem(), nullptr); // mouse grabber is reset
 
         QGraphicsSceneMouseEvent event2(QEvent::GraphicsSceneMouseMove);
         event2.setScenePos(QPointF(10, 10));
-        event2.setButton(Qt::LeftButton);
-        event2.setButtons(Qt::LeftButton);
+        event2.setButton(BobUI::LeftButton);
+        event2.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event2);
         QCOMPARE(item->pos(), QPointF());
 
@@ -939,14 +939,14 @@ void tst_QGraphicsItem::flags()
         item->setFlag(QGraphicsItem::ItemIsMovable, true);
         QGraphicsSceneMouseEvent event4(QEvent::GraphicsSceneMousePress);
         event4.setScenePos(QPointF(0, 0));
-        event4.setButton(Qt::LeftButton);
-        event4.setButtons(Qt::LeftButton);
+        event4.setButton(BobUI::LeftButton);
+        event4.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event4);
         QCOMPARE(scene.mouseGrabberItem(), item);
         QGraphicsSceneMouseEvent event5(QEvent::GraphicsSceneMouseMove);
         event5.setScenePos(QPointF(10, 10));
-        event5.setButton(Qt::LeftButton);
-        event5.setButtons(Qt::LeftButton);
+        event5.setButton(BobUI::LeftButton);
+        event5.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event5);
         QCOMPARE(item->pos(), QPointF(10, 10));
     }
@@ -982,37 +982,37 @@ void tst_QGraphicsItem::inputMethodHints()
     ImhTester *item = new ImhTester;
     item->setFlag(QGraphicsItem::ItemAcceptsInputMethod, true);
     item->setFlag(QGraphicsItem::ItemIsFocusable, true);
-    QCOMPARE(item->inputMethodHints(), Qt::ImhNone);
+    QCOMPARE(item->inputMethodHints(), BobUI::ImhNone);
     ImhTester *item2 = new ImhTester;
     item2->setFlag(QGraphicsItem::ItemAcceptsInputMethod, true);
     item2->setFlag(QGraphicsItem::ItemIsFocusable, true);
-    Qt::InputMethodHints imHints = item2->inputMethodHints();
-    imHints |= Qt::ImhHiddenText;
+    BobUI::InputMethodHints imHints = item2->inputMethodHints();
+    imHints |= BobUI::ImhHiddenText;
     item2->setInputMethodHints(imHints);
     QGraphicsScene scene;
     scene.addItem(item);
     scene.addItem(item2);
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     item->setFocus();
-    QTRY_VERIFY(item->hasFocus());
+    BOBUIRY_VERIFY(item->hasFocus());
     QCOMPARE(view.inputMethodHints(), item->inputMethodHints());
     item2->setFocus();
-    QTRY_VERIFY(item2->hasFocus());
+    BOBUIRY_VERIFY(item2->hasFocus());
     QCOMPARE(view.inputMethodHints(), item2->inputMethodHints());
     item->setFlag(QGraphicsItem::ItemAcceptsInputMethod, false);
     item->setFocus();
-    QTRY_VERIFY(item->hasFocus());
+    BOBUIRY_VERIFY(item->hasFocus());
     //Focus has changed but the new item doesn't accept input method, no hints.
     QCOMPARE(view.inputMethodHints(), 0);
     item2->setFocus();
-    QTRY_VERIFY(item2->hasFocus());
+    BOBUIRY_VERIFY(item2->hasFocus());
     QCOMPARE(view.inputMethodHints(), item2->inputMethodHints());
     imHints = item2->inputMethodHints();
-    imHints |= (Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText);
+    imHints |= (BobUI::ImhNoAutoUppercase | BobUI::ImhNoPredictiveText);
     item2->setInputMethodHints(imHints);
     QCOMPARE(view.inputMethodHints(), item2->inputMethodHints());
     QGraphicsProxyWidget *widget = new QGraphicsProxyWidget;
@@ -1020,7 +1020,7 @@ void tst_QGraphicsItem::inputMethodHints()
     edit->setEchoMode(QLineEdit::Password);
     scene.addItem(widget);
     widget->setFocus();
-    QTRY_VERIFY(widget->hasFocus());
+    BOBUIRY_VERIFY(widget->hasFocus());
     //No widget on the proxy, so no hints
     QCOMPARE(view.inputMethodHints(), 0);
     widget->setWidget(edit);
@@ -1033,11 +1033,11 @@ void tst_QGraphicsItem::toolTip()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
 
-    QString toolTip = "Qt rocks!";
+    QString toolTip = "BobUI rocks!";
 
     QGraphicsRectItem *item = new QGraphicsRectItem(QRectF(0, 0, 100, 100));
-    item->setPen(QPen(Qt::red, 1));
-    item->setBrush(QBrush(Qt::blue));
+    item->setPen(QPen(BobUI::red, 1));
+    item->setBrush(QBrush(BobUI::blue));
     QVERIFY(item->toolTip().isEmpty());
     item->setToolTip(toolTip);
     QCOMPARE(item->toolTip(), toolTip);
@@ -1046,16 +1046,16 @@ void tst_QGraphicsItem::toolTip()
     scene.addItem(item);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.setFixedSize(200, 200);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     {
         QHelpEvent helpEvent(QEvent::ToolTip, view.viewport()->rect().topLeft(),
                              view.viewport()->mapToGlobal(view.viewport()->rect().topLeft()));
         QCoreApplication::sendEvent(view.viewport(), &helpEvent);
-        QTest::qWait(250);
+        BOBUIest::qWait(250);
 
         bool foundView = false;
         bool foundTipLabel = false;
@@ -1063,7 +1063,7 @@ void tst_QGraphicsItem::toolTip()
         for (auto widget : topLevels) {
             if (widget == &view)
                 foundView = true;
-            if (widget->inherits("QTipLabel"))
+            if (widget->inherits("BOBUIipLabel"))
                 foundTipLabel = true;
         }
         QVERIFY(foundView);
@@ -1074,7 +1074,7 @@ void tst_QGraphicsItem::toolTip()
         QHelpEvent helpEvent(QEvent::ToolTip, view.viewport()->rect().center(),
                              view.viewport()->mapToGlobal(view.viewport()->rect().center()));
         QCoreApplication::sendEvent(view.viewport(), &helpEvent);
-        QTest::qWait(250);
+        BOBUIest::qWait(250);
 
         bool foundView = false;
         bool foundTipLabel = false;
@@ -1082,7 +1082,7 @@ void tst_QGraphicsItem::toolTip()
         for (auto widget : topLevels) {
             if (widget == &view)
                 foundView = true;
-            if (widget->inherits("QTipLabel"))
+            if (widget->inherits("BOBUIipLabel"))
                 foundTipLabel = true;
         }
         QVERIFY(foundView);
@@ -1093,7 +1093,7 @@ void tst_QGraphicsItem::toolTip()
         QHelpEvent helpEvent(QEvent::ToolTip, view.viewport()->rect().topLeft(),
                              view.viewport()->mapToGlobal(view.viewport()->rect().topLeft()));
         QCoreApplication::sendEvent(view.viewport(), &helpEvent);
-        QTest::qWait(1000);
+        BOBUIest::qWait(1000);
 
         bool foundView = false;
         bool foundTipLabel = false;
@@ -1101,7 +1101,7 @@ void tst_QGraphicsItem::toolTip()
         for (auto widget : topLevels) {
             if (widget == &view)
                 foundView = true;
-            if (widget->inherits("QTipLabel") && widget->isVisible())
+            if (widget->inherits("BOBUIipLabel") && widget->isVisible())
                 foundTipLabel = true;
         }
         QVERIFY(foundView);
@@ -1132,7 +1132,7 @@ void tst_QGraphicsItem::visible()
     QCOMPARE(scene.items(QPointF(0, 0)).value(0, nullptr), item);
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-    event.setButton(Qt::LeftButton);
+    event.setButton(BobUI::LeftButton);
     event.setScenePos(QPointF(0, 0));
     QCoreApplication::sendEvent(&scene, &event);
     QCOMPARE(scene.mouseGrabberItem(), item);
@@ -1390,7 +1390,7 @@ void tst_QGraphicsItem::enabled()
     QVERIFY(!item->hasFocus());
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-    event.setButton(Qt::LeftButton);
+    event.setButton(BobUI::LeftButton);
     event.setScenePos(QPointF(0, 0));
     QCoreApplication::sendEvent(&scene, &event);
     QCOMPARE(scene.mouseGrabberItem(), nullptr);
@@ -1512,7 +1512,7 @@ void tst_QGraphicsItem::explicitlyEnabled()
 class SelectChangeItem : public QGraphicsRectItem
 {
 public:
-    SelectChangeItem() : QGraphicsRectItem(-50, -50, 100, 100) { setBrush(Qt::blue); }
+    SelectChangeItem() : QGraphicsRectItem(-50, -50, 100, 100) { setBrush(BobUI::blue); }
     QList<bool> values;
 
 protected:
@@ -1573,11 +1573,11 @@ void tst_QGraphicsItem::selected()
 
     // Interactive selection
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.setFixedSize(250, 250);
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCoreApplication::processEvents();
     QCoreApplication::processEvents();
 
@@ -1587,14 +1587,14 @@ void tst_QGraphicsItem::selected()
     QVERIFY(!item->isSelected());
 
     // Click inside and check that it's selected
-    QTest::mouseMove(view.viewport());
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item->scenePos()));
+    BOBUIest::mouseMove(view.viewport());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item->scenePos()));
     QCOMPARE(item->values.size(), 11);
     QCOMPARE(item->values.constLast(), true);
     QVERIFY(item->isSelected());
 
     // Click outside and check that it's not selected
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item->scenePos() + QPointF(item->boundingRect().width(), item->boundingRect().height())));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item->scenePos() + QPointF(item->boundingRect().width(), item->boundingRect().height())));
     QCOMPARE(item->values.size(), 12);
     QCOMPARE(item->values.constLast(), false);
     QVERIFY(!item->isSelected());
@@ -1605,13 +1605,13 @@ void tst_QGraphicsItem::selected()
     scene.addItem(item2);
 
     // Click inside and check that it's selected
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item->scenePos()));
     QCOMPARE(item->values.size(), 13);
     QCOMPARE(item->values.constLast(), true);
     QVERIFY(item->isSelected());
 
     // Click inside item2 and check that it's selected, and item is not
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item2->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item2->scenePos()));
     QCOMPARE(item->values.size(), 14);
     QCOMPARE(item->values.constLast(), false);
     QVERIFY(!item->isSelected());
@@ -1636,15 +1636,15 @@ void tst_QGraphicsItem::selected2()
     {
         QGraphicsSceneMouseEvent mousePress(QEvent::GraphicsSceneMousePress);
         mousePress.setScenePos(QPointF(50, 50));
-        mousePress.setButton(Qt::LeftButton);
+        mousePress.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &mousePress);
         QVERIFY(mousePress.isAccepted());
     }
     {
         QGraphicsSceneMouseEvent mouseMove(QEvent::GraphicsSceneMouseMove);
         mouseMove.setScenePos(QPointF(60, 60));
-        mouseMove.setButton(Qt::LeftButton);
-        mouseMove.setButtons(Qt::LeftButton);
+        mouseMove.setButton(BobUI::LeftButton);
+        mouseMove.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &mouseMove);
         QVERIFY(mouseMove.isAccepted());
     }
@@ -1704,21 +1704,21 @@ void tst_QGraphicsItem::selected_textItem()
     text->setFlag(QGraphicsItem::ItemIsSelectable);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_VERIFY(!text->isSelected());
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {},
+    BOBUIRY_VERIFY(!text->isSelected());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {},
                       view.mapFromScene(text->mapToScene(0, 0)));
-    QTRY_VERIFY(text->isSelected());
+    BOBUIRY_VERIFY(text->isSelected());
 
     text->setSelected(false);
-    text->setTextInteractionFlags(Qt::TextEditorInteraction);
+    text->setTextInteractionFlags(BobUI::TextEditorInteraction);
 
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {},
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {},
                       view.mapFromScene(text->mapToScene(0, 0)));
-    QTRY_VERIFY(text->isSelected());
+    BOBUIRY_VERIFY(text->isSelected());
 }
 
 void tst_QGraphicsItem::selected_multi()
@@ -1738,107 +1738,107 @@ void tst_QGraphicsItem::selected_multi()
 
     // Create and show a view
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
     view.fitInView(scene.sceneRect());
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Click on item2
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item2->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item2->scenePos()));
     QVERIFY(item2->isSelected());
     QVERIFY(!item1->isSelected());
 
     // Ctrl-click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(item2->isSelected());
     QVERIFY(item1->isSelected());
 
     // Ctrl-click on item1 again
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(item2->isSelected());
     QVERIFY(!item1->isSelected());
 
     // Ctrl-click on item2
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item2->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item2->scenePos()));
     QVERIFY(!item2->isSelected());
     QVERIFY(!item1->isSelected());
 
     // Click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Click on scene
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(0, 0));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(0, 0));
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Ctrl-click on scene
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(0, 0));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(0, 0));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Click on scene
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(0, 0));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(0, 0));
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Press on item2
-    QTest::mousePress(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item2->scenePos()));
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item2->scenePos()));
     QVERIFY(!item1->isSelected());
     QVERIFY(item2->isSelected());
 
     // Release on item2
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item2->scenePos()));
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item2->scenePos()));
     QVERIFY(!item1->isSelected());
     QVERIFY(item2->isSelected());
 
     // Click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Ctrl-click on item1
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     // Ctrl-press on item1
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     {
         // Ctrl-move on item1
         const QPoint item1Point = view.mapFromScene(item1->scenePos()) + QPoint(1, 0);
-        QMouseEvent event(QEvent::MouseMove, item1Point, view.viewport()->mapToGlobal(item1Point), Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier);
+        QMouseEvent event(QEvent::MouseMove, item1Point, view.viewport()->mapToGlobal(item1Point), BobUI::LeftButton, BobUI::LeftButton, BobUI::ControlModifier);
         QCoreApplication::sendEvent(view.viewport(), &event);
         QVERIFY(!item1->isSelected());
         QVERIFY(!item2->isSelected());
     }
 
     // Release on item1
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 
@@ -1846,21 +1846,21 @@ void tst_QGraphicsItem::selected_multi()
     item1->setSelected(false);
 
     // Ctrl-press on item1
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 
     {
         // Ctrl-move on item1
         const QPoint item1Point = view.mapFromScene(item1->scenePos()) + QPoint(1, 0);
-        QMouseEvent event(QEvent::MouseMove, item1Point, view.viewport()->mapToGlobal(item1Point), Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier);
+        QMouseEvent event(QEvent::MouseMove, item1Point, view.viewport()->mapToGlobal(item1Point), BobUI::LeftButton, BobUI::LeftButton, BobUI::ControlModifier);
         QCoreApplication::sendEvent(view.viewport(), &event);
         QVERIFY(item1->isSelected());
         QVERIFY(!item2->isSelected());
     }
 
     // Release on item1
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::ControlModifier, view.mapFromScene(item1->scenePos()));
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, view.mapFromScene(item1->scenePos()));
     QVERIFY(item1->isSelected());
     QVERIFY(!item2->isSelected());
 }
@@ -1875,11 +1875,11 @@ void tst_QGraphicsItem::acceptedMouseButtons()
     item1->setFlag(QGraphicsItem::ItemIsMovable);
     item2->setFlag(QGraphicsItem::ItemIsMovable);
 
-    QCOMPARE(item1->acceptedMouseButtons(), Qt::MouseButtons(0x1f));
-    QCOMPARE(item2->acceptedMouseButtons(), Qt::MouseButtons(0x1f));
+    QCOMPARE(item1->acceptedMouseButtons(), BobUI::MouseButtons(0x1f));
+    QCOMPARE(item2->acceptedMouseButtons(), BobUI::MouseButtons(0x1f));
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-    event.setButton(Qt::LeftButton);
+    event.setButton(BobUI::LeftButton);
     event.setScenePos(QPointF(0, 0));
     QCoreApplication::sendEvent(&scene, &event);
     QCOMPARE(scene.mouseGrabberItem(), item2);
@@ -2134,40 +2134,40 @@ void tst_QGraphicsItem::scenePos()
 void tst_QGraphicsItem::matrix()
 {
     QGraphicsLineItem line;
-    QCOMPARE(line.transform(), QTransform());
-    line.setTransform(QTransform().rotate(90));
-    QCOMPARE(line.transform(), QTransform().rotate(90));
-    line.setTransform(QTransform().rotate(90));
-    QCOMPARE(line.transform(), QTransform().rotate(90));
-    line.setTransform(QTransform().rotate(90), true);
-    QCOMPARE(line.transform(), QTransform().rotate(180));
-    line.setTransform(QTransform().rotate(-90), true);
-    QCOMPARE(line.transform(), QTransform().rotate(90));
+    QCOMPARE(line.transform(), BOBUIransform());
+    line.setTransform(BOBUIransform().rotate(90));
+    QCOMPARE(line.transform(), BOBUIransform().rotate(90));
+    line.setTransform(BOBUIransform().rotate(90));
+    QCOMPARE(line.transform(), BOBUIransform().rotate(90));
+    line.setTransform(BOBUIransform().rotate(90), true);
+    QCOMPARE(line.transform(), BOBUIransform().rotate(180));
+    line.setTransform(BOBUIransform().rotate(-90), true);
+    QCOMPARE(line.transform(), BOBUIransform().rotate(90));
     line.resetTransform();
-    QCOMPARE(line.transform(), QTransform());
+    QCOMPARE(line.transform(), BOBUIransform());
 
-    line.setTransform(QTransform().rotate(90), true);
-    QCOMPARE(line.transform(), QTransform().rotate(90));
-    line.setTransform(QTransform().rotate(90), true);
-    QCOMPARE(line.transform(), QTransform().rotate(90).rotate(90));
-    line.resetTransform();
-
-    line.setTransform(QTransform::fromScale(2, 4), true);
-    QCOMPARE(line.transform(), QTransform::fromScale(2, 4));
-    line.setTransform(QTransform::fromScale(2, 4), true);
-    QCOMPARE(line.transform(), QTransform::fromScale(2, 4).scale(2, 4));
+    line.setTransform(BOBUIransform().rotate(90), true);
+    QCOMPARE(line.transform(), BOBUIransform().rotate(90));
+    line.setTransform(BOBUIransform().rotate(90), true);
+    QCOMPARE(line.transform(), BOBUIransform().rotate(90).rotate(90));
     line.resetTransform();
 
-    line.setTransform(QTransform().shear(2, 4), true);
-    QCOMPARE(line.transform(), QTransform().shear(2, 4));
-    line.setTransform(QTransform().shear(2, 4), true);
-    QCOMPARE(line.transform(), QTransform().shear(2, 4).shear(2, 4));
+    line.setTransform(BOBUIransform::fromScale(2, 4), true);
+    QCOMPARE(line.transform(), BOBUIransform::fromScale(2, 4));
+    line.setTransform(BOBUIransform::fromScale(2, 4), true);
+    QCOMPARE(line.transform(), BOBUIransform::fromScale(2, 4).scale(2, 4));
     line.resetTransform();
 
-    line.setTransform(QTransform::fromTranslate(10, 10), true);
-    QCOMPARE(line.transform(), QTransform::fromTranslate(10, 10));
-    line.setTransform(QTransform::fromTranslate(10, 10), true);
-    QCOMPARE(line.transform(), QTransform::fromTranslate(10, 10).translate(10, 10));
+    line.setTransform(BOBUIransform().shear(2, 4), true);
+    QCOMPARE(line.transform(), BOBUIransform().shear(2, 4));
+    line.setTransform(BOBUIransform().shear(2, 4), true);
+    QCOMPARE(line.transform(), BOBUIransform().shear(2, 4).shear(2, 4));
+    line.resetTransform();
+
+    line.setTransform(BOBUIransform::fromTranslate(10, 10), true);
+    QCOMPARE(line.transform(), BOBUIransform::fromTranslate(10, 10));
+    line.setTransform(BOBUIransform::fromTranslate(10, 10), true);
+    QCOMPARE(line.transform(), BOBUIransform::fromTranslate(10, 10).translate(10, 10));
     line.resetTransform();
 }
 
@@ -2176,20 +2176,20 @@ void tst_QGraphicsItem::sceneTransform()
     QGraphicsLineItem *parent = new QGraphicsLineItem;
     QGraphicsLineItem *child = new QGraphicsLineItem(QLineF(), parent);
 
-    QCOMPARE(parent->sceneTransform(), QTransform());
-    QCOMPARE(child->sceneTransform(), QTransform());
+    QCOMPARE(parent->sceneTransform(), BOBUIransform());
+    QCOMPARE(child->sceneTransform(), BOBUIransform());
 
-    parent->setTransform(QTransform::fromTranslate(10, 10), true);
-    QCOMPARE(parent->sceneTransform(), QTransform().translate(10, 10));
-    QCOMPARE(child->sceneTransform(), QTransform().translate(10, 10));
+    parent->setTransform(BOBUIransform::fromTranslate(10, 10), true);
+    QCOMPARE(parent->sceneTransform(), BOBUIransform().translate(10, 10));
+    QCOMPARE(child->sceneTransform(), BOBUIransform().translate(10, 10));
 
-    child->setTransform(QTransform::fromTranslate(10, 10), true);
-    QCOMPARE(parent->sceneTransform(), QTransform().translate(10, 10));
-    QCOMPARE(child->sceneTransform(), QTransform().translate(20, 20));
+    child->setTransform(BOBUIransform::fromTranslate(10, 10), true);
+    QCOMPARE(parent->sceneTransform(), BOBUIransform().translate(10, 10));
+    QCOMPARE(child->sceneTransform(), BOBUIransform().translate(20, 20));
 
-    parent->setTransform(QTransform().rotate(90), true);
-    QCOMPARE(parent->sceneTransform(), QTransform().translate(10, 10).rotate(90));
-    QCOMPARE(child->sceneTransform(), QTransform().translate(10, 10).rotate(90).translate(10, 10));
+    parent->setTransform(BOBUIransform().rotate(90), true);
+    QCOMPARE(parent->sceneTransform(), BOBUIransform().translate(10, 10).rotate(90));
+    QCOMPARE(child->sceneTransform(), BOBUIransform().translate(10, 10).rotate(90).translate(10, 10));
 
     delete child;
     delete parent;
@@ -2201,14 +2201,14 @@ void tst_QGraphicsItem::setTransform()
     QSignalSpy spy(&scene, &QGraphicsScene::changed);
     QRectF unrotatedRect(-12, -34, 56, 78);
     QGraphicsRectItem item(unrotatedRect, nullptr);
-    item.setPen(QPen(Qt::black, 0));
+    item.setPen(QPen(BobUI::black, 0));
     scene.addItem(&item);
     scene.update(scene.sceneRect());
     QCoreApplication::processEvents();
 
     QCOMPARE(spy.size(), 1);
 
-    item.setTransform(QTransform().rotate(qreal(12.34)));
+    item.setTransform(BOBUIransform().rotate(qreal(12.34)));
     QRectF rotatedRect = scene.sceneRect();
     QVERIFY(unrotatedRect != rotatedRect);
     scene.update(scene.sceneRect());
@@ -2216,7 +2216,7 @@ void tst_QGraphicsItem::setTransform()
 
     QCOMPARE(spy.size(), 2);
 
-    item.setTransform(QTransform());
+    item.setTransform(BOBUIransform());
 
     scene.update(scene.sceneRect());
     QCoreApplication::processEvents();
@@ -2241,7 +2241,7 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
     {
         _paintedItems << this;
-        painter->fillRect(boundingRect(), Qt::red);
+        painter->fillRect(boundingRect(), BobUI::red);
     }
 };
 
@@ -2265,13 +2265,13 @@ void tst_QGraphicsItem::zValue()
     item3->setZValue(0);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QApplication::processEvents();
 
-    QTRY_VERIFY(!_paintedItems.isEmpty());
+    BOBUIRY_VERIFY(!_paintedItems.isEmpty());
     QVERIFY((_paintedItems.size() % 4) == 0);
     for (int i = 0; i < 3; ++i)
         QVERIFY(_paintedItems.at(i)->zValue() < _paintedItems.at(i + 1)->zValue());
@@ -2280,7 +2280,7 @@ void tst_QGraphicsItem::zValue()
 void tst_QGraphicsItem::shape()
 {
     QGraphicsLineItem line(QLineF(-10, -10, 20, 20));
-    line.setPen(QPen(Qt::black, 0));
+    line.setPen(QPen(BobUI::black, 0));
 
     // We unfortunately need this hack as QPainterPathStroker will set a width of 1.0
     // if we pass a value of 0.0 to QPainterPathStroker::setWidth()
@@ -2297,7 +2297,7 @@ void tst_QGraphicsItem::shape()
 
     QPen linePen;
     linePen.setWidthF(5.0);
-    linePen.setCapStyle(Qt::RoundCap);
+    linePen.setCapStyle(BobUI::RoundCap);
     line.setPen(linePen);
 
     ps.setCapStyle(line.pen().capStyle());
@@ -2306,14 +2306,14 @@ void tst_QGraphicsItem::shape()
     p.addPath(path);
     QCOMPARE(line.shape(), p);
 
-    linePen.setCapStyle(Qt::FlatCap);
+    linePen.setCapStyle(BobUI::FlatCap);
     line.setPen(linePen);
     ps.setCapStyle(line.pen().capStyle());
     p = ps.createStroke(path);
     p.addPath(path);
     QCOMPARE(line.shape(), p);
 
-    linePen.setCapStyle(Qt::SquareCap);
+    linePen.setCapStyle(BobUI::SquareCap);
     line.setPen(linePen);
     ps.setCapStyle(line.pen().capStyle());
     p = ps.createStroke(path);
@@ -2321,7 +2321,7 @@ void tst_QGraphicsItem::shape()
     QCOMPARE(line.shape(), p);
 
     QGraphicsRectItem rect(QRectF(-10, -10, 20, 20));
-    rect.setPen(QPen(Qt::black, 0));
+    rect.setPen(QPen(BobUI::black, 0));
     QPainterPathStroker ps1;
     ps1.setWidth(penWidthZero);
     path = QPainterPath();
@@ -2331,7 +2331,7 @@ void tst_QGraphicsItem::shape()
     QCOMPARE(rect.shape(), p);
 
     QGraphicsEllipseItem ellipse(QRectF(-10, -10, 20, 20));
-    ellipse.setPen(QPen(Qt::black, 0));
+    ellipse.setPen(QPen(BobUI::black, 0));
     QPainterPathStroker ps2;
     ps2.setWidth(ellipse.pen().widthF() <= 0.0 ? penWidthZero : ellipse.pen().widthF());
     path = QPainterPath();
@@ -2345,7 +2345,7 @@ void tst_QGraphicsItem::shape()
     p = ps3.createStroke(path);
     p.addPath(path);
     QGraphicsPathItem pathItem(path);
-    pathItem.setPen(QPen(Qt::black, 0));
+    pathItem.setPen(QPen(BobUI::black, 0));
     QCOMPARE(pathItem.shape(), p);
 
     QRegion region(QRect(0, 0, 300, 200));
@@ -2355,7 +2355,7 @@ void tst_QGraphicsItem::shape()
     image.fill(0);
     QPainter painter(&image);
     painter.setClipRegion(region);
-    painter.fillRect(0, 0, 300, 200, Qt::green);
+    painter.fillRect(0, 0, 300, 200, BobUI::green);
     painter.end();
     QPixmap pixmap = QPixmap::fromImage(image);
 
@@ -2368,14 +2368,14 @@ void tst_QGraphicsItem::shape()
         bitmap.clear();
         QPainter painter(&bitmap);
         painter.setClipRegion(region);
-        painter.fillRect(0, 0, 300, 200, Qt::color1);
+        painter.fillRect(0, 0, 300, 200, BobUI::color1);
         painter.end();
 
         QBitmap bitmap2(300, 200);
         bitmap2.clear();
         painter.begin(&bitmap2);
         painter.setClipPath(pixmapItem.shape());
-        painter.fillRect(0, 0, 300, 200, Qt::color1);
+        painter.fillRect(0, 0, 300, 200, BobUI::color1);
         painter.end();
 
         QCOMPARE(bitmap.toImage(), bitmap2.toImage());
@@ -2384,7 +2384,7 @@ void tst_QGraphicsItem::shape()
     QPolygonF poly;
     poly << QPointF(0, 0) << QPointF(10, 0) << QPointF(0, 10);
     QGraphicsPolygonItem polygon(poly);
-    polygon.setPen(QPen(Qt::black, 0));
+    polygon.setPen(QPen(BobUI::black, 0));
     path = QPainterPath();
     path.addPolygon(poly);
 
@@ -2506,26 +2506,26 @@ void tst_QGraphicsItem::collidesWith_item()
 
 void tst_QGraphicsItem::collidesWith_path_data()
 {
-    QTest::addColumn<QPointF>("pos");
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QPainterPath>("shape");
-    QTest::addColumn<bool>("rectCollides");
-    QTest::addColumn<bool>("ellipseCollides");
+    BOBUIest::addColumn<QPointF>("pos");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QPainterPath>("shape");
+    BOBUIest::addColumn<bool>("rectCollides");
+    BOBUIest::addColumn<bool>("ellipseCollides");
 
-    QTest::newRow("nothing") << QPointF(0, 0) << QTransform() << QPainterPath() << false << false;
+    BOBUIest::newRow("nothing") << QPointF(0, 0) << BOBUIransform() << QPainterPath() << false << false;
 
     QPainterPath rect;
     rect.addRect(0, 0, 20, 20);
 
-    QTest::newRow("rect1") << QPointF(0, 0) << QTransform() << rect << true << true;
-    QTest::newRow("rect2") << QPointF(0, 0) << QTransform::fromTranslate(21, 21) << rect << false << false;
-    QTest::newRow("rect3") << QPointF(21, 21) << QTransform() << rect << false << false;
+    BOBUIest::newRow("rect1") << QPointF(0, 0) << BOBUIransform() << rect << true << true;
+    BOBUIest::newRow("rect2") << QPointF(0, 0) << BOBUIransform::fromTranslate(21, 21) << rect << false << false;
+    BOBUIest::newRow("rect3") << QPointF(21, 21) << BOBUIransform() << rect << false << false;
 }
 
 void tst_QGraphicsItem::collidesWith_path()
 {
     QFETCH(QPointF, pos);
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QPainterPath, shape);
     QFETCH(bool, rectCollides);
     QFETCH(bool, ellipseCollides);
@@ -2621,7 +2621,7 @@ void tst_QGraphicsItem::isObscuredBy()
     MyItem myitem1, myitem2;
 
     myitem1.setRect(QRectF(50, 50, 40, 200));
-    myitem1.setTransform(QTransform().rotate(67), true);
+    myitem1.setTransform(BOBUIransform().rotate(67), true);
 
     myitem2.setRect(QRectF(25, 25, 20, 20));
     myitem2.setZValue(-1.0);
@@ -2642,10 +2642,10 @@ void tst_QGraphicsItem::isObscuredBy()
     QGraphicsRectItem rect1, rect2;
 
     rect1.setRect(QRectF(-40, -40, 50, 50));
-    rect1.setBrush(QBrush(Qt::red));
+    rect1.setBrush(QBrush(BobUI::red));
     rect2.setRect(QRectF(-30, -20, 20, 20));
     rect2.setZValue(-1.0);
-    rect2.setBrush(QBrush(Qt::blue));
+    rect2.setBrush(QBrush(BobUI::blue));
 
     QVERIFY(rect2.isObscuredBy(&rect1));
     QVERIFY(!rect1.isObscuredBy(&rect2));
@@ -2757,7 +2757,7 @@ void tst_QGraphicsItem::mapFromToParent()
     item4->setPos(10, 10);
 
     for (int i = 0; i < 4; ++i) {
-        QTransform transform;
+        BOBUIransform transform;
         transform.rotate(i * 90);
         transform.translate(i * 100, -i * 100);
         transform.scale(2, 4);
@@ -2835,7 +2835,7 @@ void tst_QGraphicsItem::mapFromToScene()
     QCOMPARE(item4->mapFromScene(410, 400), QPointF(10, 0));
 
     // Rotate item1 90 degrees clockwise
-    QTransform transform; transform.rotate(90);
+    BOBUIransform transform; transform.rotate(90);
     item1->setTransform(transform);
     QCOMPARE(item1->pos(), item1->mapToParent(0, 0));
     QCOMPARE(item2->pos(), item2->mapToParent(0, 0));
@@ -2890,7 +2890,7 @@ void tst_QGraphicsItem::mapFromToScene()
     QCOMPARE(item4->mapFromScene(-210, 0), QPointF(10, 0));
 
     // Translate item3 50 points, then rotate 90 degrees counterclockwise
-    QTransform transform2;
+    BOBUIransform transform2;
     transform2.translate(50, 0);
     transform2.rotate(-90);
     item3->setTransform(transform2);
@@ -2943,7 +2943,7 @@ void tst_QGraphicsItem::mapFromToItem()
     QCOMPARE(item3->mapFromItem(item2, 0, 0), QPointF(0, -200));
     QCOMPARE(item4->mapFromItem(item3, 0, 0), QPointF(200, 0));
 
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(100, 100);
     item1->setTransform(transform);
 
@@ -2996,44 +2996,44 @@ void tst_QGraphicsItem::mapFromToItem()
 
 void tst_QGraphicsItem::mapRectFromToParent_data()
 {
-    QTest::addColumn<bool>("parent");
-    QTest::addColumn<QPointF>("parentPos");
-    QTest::addColumn<QTransform>("parentTransform");
-    QTest::addColumn<QPointF>("pos");
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QRectF>("inputRect");
-    QTest::addColumn<QRectF>("outputRect");
+    BOBUIest::addColumn<bool>("parent");
+    BOBUIest::addColumn<QPointF>("parentPos");
+    BOBUIest::addColumn<BOBUIransform>("parentTransform");
+    BOBUIest::addColumn<QPointF>("pos");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QRectF>("inputRect");
+    BOBUIest::addColumn<QRectF>("outputRect");
 
-    QTest::newRow("nil") << false << QPointF() << QTransform() << QPointF() << QTransform() << QRectF() << QRectF();
-    QTest::newRow("simple") << false << QPointF() << QTransform() << QPointF() << QTransform()
+    BOBUIest::newRow("nil") << false << QPointF() << BOBUIransform() << QPointF() << BOBUIransform() << QRectF() << QRectF();
+    BOBUIest::newRow("simple") << false << QPointF() << BOBUIransform() << QPointF() << BOBUIransform()
                             << QRectF(0, 0, 10, 10) << QRectF(0, 0, 10, 10);
-    QTest::newRow("simple w/parent") << true
-                                     << QPointF() << QTransform()
-                                     << QPointF() << QTransform()
+    BOBUIest::newRow("simple w/parent") << true
+                                     << QPointF() << BOBUIransform()
+                                     << QPointF() << BOBUIransform()
                                      << QRectF(0, 0, 10, 10) << QRectF(0, 0, 10, 10);
-    QTest::newRow("simple w/parent parentPos") << true
-                                               << QPointF(50, 50) << QTransform()
-                                               << QPointF() << QTransform()
+    BOBUIest::newRow("simple w/parent parentPos") << true
+                                               << QPointF(50, 50) << BOBUIransform()
+                                               << QPointF() << BOBUIransform()
                                                << QRectF(0, 0, 10, 10) << QRectF(0, 0, 10, 10);
-    QTest::newRow("simple w/parent parentPos parentRotation") << true
-                                                              << QPointF(50, 50) << QTransform().rotate(45)
-                                                              << QPointF() << QTransform()
+    BOBUIest::newRow("simple w/parent parentPos parentRotation") << true
+                                                              << QPointF(50, 50) << BOBUIransform().rotate(45)
+                                                              << QPointF() << BOBUIransform()
                                                               << QRectF(0, 0, 10, 10) << QRectF(0, 0, 10, 10);
-    QTest::newRow("pos w/parent") << true
-                                  << QPointF() << QTransform()
-                                  << QPointF(50, 50) << QTransform()
+    BOBUIest::newRow("pos w/parent") << true
+                                  << QPointF() << BOBUIransform()
+                                  << QPointF(50, 50) << BOBUIransform()
                                   << QRectF(0, 0, 10, 10) << QRectF(50, 50, 10, 10);
-    QTest::newRow("rotation w/parent") << true
-                                       << QPointF() << QTransform()
-                                       << QPointF() << QTransform().rotate(90)
+    BOBUIest::newRow("rotation w/parent") << true
+                                       << QPointF() << BOBUIransform()
+                                       << QPointF() << BOBUIransform().rotate(90)
                                        << QRectF(0, 0, 10, 10) << QRectF(-10, 0, 10, 10);
-    QTest::newRow("pos rotation w/parent") << true
-                                           << QPointF() << QTransform()
-                                           << QPointF(50, 50) << QTransform().rotate(90)
+    BOBUIest::newRow("pos rotation w/parent") << true
+                                           << QPointF() << BOBUIransform()
+                                           << QPointF(50, 50) << BOBUIransform().rotate(90)
                                            << QRectF(0, 0, 10, 10) << QRectF(40, 50, 10, 10);
-    QTest::newRow("pos rotation w/parent parentPos parentRotation") << true
-                                                                    << QPointF(-170, -190) << QTransform().rotate(90)
-                                                                    << QPointF(50, 50) << QTransform().rotate(90)
+    BOBUIest::newRow("pos rotation w/parent parentPos parentRotation") << true
+                                                                    << QPointF(-170, -190) << BOBUIransform().rotate(90)
+                                                                    << QPointF(50, 50) << BOBUIransform().rotate(90)
                                                                     << QRectF(0, 0, 10, 10) << QRectF(40, 50, 10, 10);
 }
 
@@ -3041,9 +3041,9 @@ void tst_QGraphicsItem::mapRectFromToParent()
 {
     QFETCH(bool, parent);
     QFETCH(QPointF, parentPos);
-    QFETCH(QTransform, parentTransform);
+    QFETCH(BOBUIransform, parentTransform);
     QFETCH(QPointF, pos);
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QRectF, inputRect);
     QFETCH(QRectF, outputRect);
 
@@ -3276,18 +3276,18 @@ void tst_QGraphicsItem::hoverEventsGenerateRepaints()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     EventTester *tester = new EventTester;
     scene.addItem(tester);
     tester->setAcceptHoverEvents(true);
 
-    QTRY_COMPARE(tester->repaints, 1);
+    BOBUIRY_COMPARE(tester->repaints, 1);
 
     // Send a hover enter event
     QGraphicsSceneHoverEvent hoverEnterEvent(QEvent::GraphicsSceneHoverEnter);
@@ -3334,8 +3334,8 @@ void tst_QGraphicsItem::hoverEventsGenerateRepaints()
 
 void tst_QGraphicsItem::boundingRects_data()
 {
-    QTest::addColumn<AbstractGraphicsShapeItemPtr>("item");
-    QTest::addColumn<QRectF>("boundingRect");
+    BOBUIest::addColumn<AbstractGraphicsShapeItemPtr>("item");
+    BOBUIest::addColumn<QRectF>("boundingRect");
 
     QRectF rect(0, 0, 100, 100);
     QPainterPath path;
@@ -3343,10 +3343,10 @@ void tst_QGraphicsItem::boundingRects_data()
 
     QRectF adjustedRect(-0.5, -0.5, 101, 101);
 
-    QTest::newRow("path") << AbstractGraphicsShapeItemPtr(new QGraphicsPathItem(path)) << adjustedRect;
-    QTest::newRow("rect") << AbstractGraphicsShapeItemPtr(new QGraphicsRectItem(rect)) << adjustedRect;
-    QTest::newRow("ellipse") << AbstractGraphicsShapeItemPtr(new QGraphicsEllipseItem(rect)) << adjustedRect;
-    QTest::newRow("polygon") << AbstractGraphicsShapeItemPtr(new QGraphicsPolygonItem(rect)) << adjustedRect;
+    BOBUIest::newRow("path") << AbstractGraphicsShapeItemPtr(new QGraphicsPathItem(path)) << adjustedRect;
+    BOBUIest::newRow("rect") << AbstractGraphicsShapeItemPtr(new QGraphicsRectItem(rect)) << adjustedRect;
+    BOBUIest::newRow("ellipse") << AbstractGraphicsShapeItemPtr(new QGraphicsEllipseItem(rect)) << adjustedRect;
+    BOBUIest::newRow("polygon") << AbstractGraphicsShapeItemPtr(new QGraphicsPolygonItem(rect)) << adjustedRect;
 }
 
 void tst_QGraphicsItem::boundingRects()
@@ -3354,7 +3354,7 @@ void tst_QGraphicsItem::boundingRects()
     QFETCH(AbstractGraphicsShapeItemPtr, item);
     QFETCH(QRectF, boundingRect);
 
-    item->setPen(QPen(Qt::black, 1));
+    item->setPen(QPen(BobUI::black, 1));
     QCOMPARE(item->boundingRect(), boundingRect);
 }
 
@@ -3364,20 +3364,20 @@ void tst_QGraphicsItem::boundingRects2()
     QCOMPARE(pixmap.boundingRect(), QRectF(0, 0, 100, 100));
 
     QGraphicsLineItem line(0, 0, 100, 0);
-    line.setPen(QPen(Qt::black, 1));
+    line.setPen(QPen(BobUI::black, 1));
     QCOMPARE(line.boundingRect(), QRectF(-0.5, -0.5, 101, 1));
 }
 
 void tst_QGraphicsItem::sceneBoundingRect()
 {
     QGraphicsScene scene;
-    QGraphicsRectItem *item = scene.addRect(QRectF(0, 0, 100, 100), QPen(Qt::black, 0));
+    QGraphicsRectItem *item = scene.addRect(QRectF(0, 0, 100, 100), QPen(BobUI::black, 0));
     item->setPos(100, 100);
 
     QCOMPARE(item->boundingRect(), QRectF(0, 0, 100, 100));
     QCOMPARE(item->sceneBoundingRect(), QRectF(100, 100, 100, 100));
 
-    item->setTransform(QTransform().rotate(90), true);
+    item->setTransform(BOBUIransform().rotate(90), true);
 
     QCOMPARE(item->boundingRect(), QRectF(0, 0, 100, 100));
     QCOMPARE(item->sceneBoundingRect(), QRectF(0, 100, 100, 100));
@@ -3386,8 +3386,8 @@ void tst_QGraphicsItem::sceneBoundingRect()
 void tst_QGraphicsItem::childrenBoundingRect()
 {
     QGraphicsScene scene;
-    QGraphicsRectItem *parent = scene.addRect(QRectF(0, 0, 100, 100), QPen(Qt::black, 0));
-    QGraphicsRectItem *child = scene.addRect(QRectF(0, 0, 100, 100), QPen(Qt::black, 0));
+    QGraphicsRectItem *parent = scene.addRect(QRectF(0, 0, 100, 100), QPen(BobUI::black, 0));
+    QGraphicsRectItem *child = scene.addRect(QRectF(0, 0, 100, 100), QPen(BobUI::black, 0));
     child->setParentItem(parent);
     parent->setPos(100, 100);
     child->setPos(100, 100);
@@ -3397,25 +3397,25 @@ void tst_QGraphicsItem::childrenBoundingRect()
     QCOMPARE(child->childrenBoundingRect(), QRectF());
     QCOMPARE(parent->childrenBoundingRect(), QRectF(100, 100, 100, 100));
 
-    QGraphicsRectItem *child2 = scene.addRect(QRectF(0, 0, 100, 100), QPen(Qt::black, 0));
+    QGraphicsRectItem *child2 = scene.addRect(QRectF(0, 0, 100, 100), QPen(BobUI::black, 0));
     child2->setParentItem(parent);
     child2->setPos(-100, -100);
     QCOMPARE(parent->childrenBoundingRect(), QRectF(-100, -100, 300, 300));
 
-    QGraphicsRectItem *childChild = scene.addRect(QRectF(0, 0, 100, 100), QPen(Qt::black, 0));
+    QGraphicsRectItem *childChild = scene.addRect(QRectF(0, 0, 100, 100), QPen(BobUI::black, 0));
     childChild->setParentItem(child);
     childChild->setPos(500, 500);
-    child->setTransform(QTransform().rotate(90), true);
+    child->setTransform(BOBUIransform().rotate(90), true);
 
-    scene.addPolygon(parent->mapToScene(parent->boundingRect() | parent->childrenBoundingRect()))->setPen(QPen(Qt::red));
+    scene.addPolygon(parent->mapToScene(parent->boundingRect() | parent->childrenBoundingRect()))->setPen(QPen(BobUI::red));
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_COMPARE(parent->childrenBoundingRect(), QRectF(-500, -100, 600, 800));
+    BOBUIRY_COMPARE(parent->childrenBoundingRect(), QRectF(-500, -100, 600, 800));
 }
 
 void tst_QGraphicsItem::childrenBoundingRectTransformed()
@@ -3432,19 +3432,19 @@ void tst_QGraphicsItem::childrenBoundingRectTransformed()
     rect4->setParentItem(rect3);
     rect5->setParentItem(rect4);
 
-    rect->setPen(QPen(Qt::black, 0));
-    rect2->setPen(QPen(Qt::black, 0));
-    rect3->setPen(QPen(Qt::black, 0));
-    rect4->setPen(QPen(Qt::black, 0));
-    rect5->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
+    rect2->setPen(QPen(BobUI::black, 0));
+    rect3->setPen(QPen(BobUI::black, 0));
+    rect4->setPen(QPen(BobUI::black, 0));
+    rect5->setPen(QPen(BobUI::black, 0));
 
-    rect2->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect2->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect2->setPos(25, 25);
-    rect3->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect3->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect3->setPos(25, 25);
-    rect4->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect4->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect4->setPos(25, 25);
-    rect5->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect5->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect5->setPos(25, 25);
 
     QRectF subTreeRect = rect->childrenBoundingRect();
@@ -3453,11 +3453,11 @@ void tst_QGraphicsItem::childrenBoundingRectTransformed()
     QCOMPARE(subTreeRect.width(), qreal(351.7766952966369));
     QCOMPARE(subTreeRect.height(), qreal(251.7766952966369));
 
-    rect->setTransform(QTransform().rotate(45), true);
-    rect2->setTransform(QTransform().rotate(-45), true);
-    rect3->setTransform(QTransform().rotate(45), true);
-    rect4->setTransform(QTransform().rotate(-45), true);
-    rect5->setTransform(QTransform().rotate(45), true);
+    rect->setTransform(BOBUIransform().rotate(45), true);
+    rect2->setTransform(BOBUIransform().rotate(-45), true);
+    rect3->setTransform(BOBUIransform().rotate(45), true);
+    rect4->setTransform(BOBUIransform().rotate(-45), true);
+    rect5->setTransform(BOBUIransform().rotate(45), true);
 
     subTreeRect = rect->childrenBoundingRect();
     QCOMPARE(rect->childrenBoundingRect(), QRectF(-100, 75, 275, 250));
@@ -3470,9 +3470,9 @@ void tst_QGraphicsItem::childrenBoundingRect2()
     QGraphicsLineItem l2(100, 0, 100, 100, &box);
     QGraphicsLineItem l3(0, 0, 0, 100, &box);
     // Make sure lines (zero with/height) are included in the childrenBoundingRect.
-    l1.setPen(QPen(Qt::black, 0));
-    l2.setPen(QPen(Qt::black, 0));
-    l3.setPen(QPen(Qt::black, 0));
+    l1.setPen(QPen(BobUI::black, 0));
+    l2.setPen(QPen(BobUI::black, 0));
+    l3.setPen(QPen(BobUI::black, 0));
     QCOMPARE(box.childrenBoundingRect(), QRectF(0, 0, 100, 100));
 }
 
@@ -3490,19 +3490,19 @@ void tst_QGraphicsItem::childrenBoundingRect3()
     rect4->setParentItem(rect3);
     rect5->setParentItem(rect4);
 
-    rect->setPen(QPen(Qt::black, 0));
-    rect2->setPen(QPen(Qt::black, 0));
-    rect3->setPen(QPen(Qt::black, 0));
-    rect4->setPen(QPen(Qt::black, 0));
-    rect5->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
+    rect2->setPen(QPen(BobUI::black, 0));
+    rect3->setPen(QPen(BobUI::black, 0));
+    rect4->setPen(QPen(BobUI::black, 0));
+    rect5->setPen(QPen(BobUI::black, 0));
 
-    rect2->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect2->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect2->setPos(25, 25);
-    rect3->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect3->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect3->setPos(25, 25);
-    rect4->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect4->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect4->setPos(25, 25);
-    rect5->setTransform(QTransform().translate(50, 50).rotate(45));
+    rect5->setTransform(BOBUIransform().translate(50, 50).rotate(45));
     rect5->setPos(25, 25);
 
     // Try to mess up the cached bounding rect.
@@ -3526,10 +3526,10 @@ void tst_QGraphicsItem::childrenBoundingRect4()
     rect3->setParentItem(rect);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Try to mess up the cached bounding rect.
     rect->childrenBoundingRect();
@@ -3550,14 +3550,14 @@ void tst_QGraphicsItem::childrenBoundingRect5()
     QGraphicsRectItem *child = scene.addRect(QRectF(0, 0, 100, 100));
     child->setParentItem(parent);
 
-    parent->setPen(QPen(Qt::black, 0));
-    child->setPen(QPen(Qt::black, 0));
+    parent->setPen(QPen(BobUI::black, 0));
+    child->setPen(QPen(BobUI::black, 0));
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Try to mess up the cached bounding rect.
     QRectF expectedChildrenBoundingRect = parent->boundingRect();
@@ -3577,11 +3577,11 @@ void tst_QGraphicsItem::childrenBoundingRect5()
 void tst_QGraphicsItem::group()
 {
     QGraphicsScene scene;
-    QGraphicsRectItem *parent = scene.addRect(QRectF(0, 0, 50, 50), QPen(Qt::black, 0), QBrush(Qt::green));
-    QGraphicsRectItem *child = scene.addRect(QRectF(0, 0, 50, 50), QPen(Qt::black, 0), QBrush(Qt::blue));
-    QGraphicsRectItem *parent2 = scene.addRect(QRectF(0, 0, 50, 50), QPen(Qt::black, 0), QBrush(Qt::red));
+    QGraphicsRectItem *parent = scene.addRect(QRectF(0, 0, 50, 50), QPen(BobUI::black, 0), QBrush(BobUI::green));
+    QGraphicsRectItem *child = scene.addRect(QRectF(0, 0, 50, 50), QPen(BobUI::black, 0), QBrush(BobUI::blue));
+    QGraphicsRectItem *parent2 = scene.addRect(QRectF(0, 0, 50, 50), QPen(BobUI::black, 0), QBrush(BobUI::red));
     parent2->setPos(-50, 50);
-    child->setTransform(QTransform().rotate(45), true);
+    child->setTransform(BOBUIransform().rotate(45), true);
     child->setParentItem(parent);
     parent->setPos(25, 25);
     child->setPos(25, 25);
@@ -3591,9 +3591,9 @@ void tst_QGraphicsItem::group()
     QCOMPARE(child->group(), nullptr);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QGraphicsItemGroup *group = new QGraphicsItemGroup;
     group->setSelected(true);
@@ -3623,13 +3623,13 @@ void tst_QGraphicsItem::group()
     GraphicsItems newItems;
     newItems.reserve(100);
     for (int i = 0; i < 100; ++i) {
-        QGraphicsItem *item = scene.addRect(QRectF(-25, -25, 50, 50), QPen(Qt::black, 0),
+        QGraphicsItem *item = scene.addRect(QRectF(-25, -25, 50, 50), QPen(BobUI::black, 0),
                                             QBrush(QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
                                                           QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255))));
         newItems << item;
         item->setPos(-1000 + QRandomGenerator::global()->bounded(2000),
                      -1000 + QRandomGenerator::global()->bounded(2000));
-        item->setTransform(QTransform().rotate(QRandomGenerator::global()->bounded(90)), true);
+        item->setTransform(BOBUIransform().rotate(QRandomGenerator::global()->bounded(90)), true);
     }
 
     view.fitInView(scene.itemsBoundingRect());
@@ -3665,16 +3665,16 @@ void tst_QGraphicsItem::setGroup2()
     QGraphicsItemGroup group;
     scene.addItem(&group);
 
-    QGraphicsRectItem *rect = scene.addRect(50,50,50,50,Qt::NoPen,Qt::black);
+    QGraphicsRectItem *rect = scene.addRect(50,50,50,50,BobUI::NoPen,BobUI::black);
     rect->setTransformOriginPoint(50,50);
     rect->setRotation(45);
     rect->setScale(1.5);
-    rect->setTransform(QTransform::fromTranslate(20,20), true);
-    group.setTransform(QTransform::fromTranslate(-30, -40), true);
+    rect->setTransform(BOBUIransform::fromTranslate(20,20), true);
+    group.setTransform(BOBUIransform::fromTranslate(-30, -40), true);
     group.setRotation(180);
     group.setScale(0.5);
 
-    QTransform oldSceneTransform = rect->sceneTransform();
+    BOBUIransform oldSceneTransform = rect->sceneTransform();
     rect->setGroup(&group);
     QCOMPARE(rect->sceneTransform(), oldSceneTransform);
 
@@ -3723,7 +3723,7 @@ void tst_QGraphicsItem::warpChildrenIntoGroup()
     QGraphicsScene scene;
     QGraphicsRectItem *parentRectItem = scene.addRect(QRectF(0, 0, 100, 100));
     QGraphicsRectItem *childRectItem = scene.addRect(QRectF(0, 0, 100, 100));
-    parentRectItem->setTransform(QTransform().rotate(90), true);
+    parentRectItem->setTransform(BOBUIransform().rotate(90), true);
     childRectItem->setPos(-50, -25);
     childRectItem->setParentItem(parentRectItem);
 
@@ -3732,7 +3732,7 @@ void tst_QGraphicsItem::warpChildrenIntoGroup()
 
     QGraphicsRectItem *parentOfGroup = scene.addRect(QRectF(0, 0, 100, 100));
     parentOfGroup->setPos(-200, -200);
-    parentOfGroup->setTransform(QTransform::fromScale(2, 2), true);
+    parentOfGroup->setTransform(BOBUIransform::fromScale(2, 2), true);
 
     QGraphicsItemGroup *group = new QGraphicsItemGroup;
     group->setPos(50, 50);
@@ -3757,7 +3757,7 @@ void tst_QGraphicsItem::removeFromGroup()
     rect2->setSelected(true);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
 
     QCoreApplication::processEvents(); // index items
@@ -3805,11 +3805,11 @@ void tst_QGraphicsItem::handlesChildEvents()
     ChildEventTester *gray = new ChildEventTester(QRectF(0, 0, 25, 25));
     ChildEventTester *yellow = new ChildEventTester(QRectF(0, 0, 50, 50));
 
-    blue->setBrush(QBrush(Qt::blue));
-    red->setBrush(QBrush(Qt::red));
-    yellow->setBrush(QBrush(Qt::yellow));
-    green->setBrush(QBrush(Qt::green));
-    gray->setBrush(QBrush(Qt::gray));
+    blue->setBrush(QBrush(BobUI::blue));
+    red->setBrush(QBrush(BobUI::red));
+    yellow->setBrush(QBrush(BobUI::yellow));
+    green->setBrush(QBrush(BobUI::green));
+    gray->setBrush(QBrush(BobUI::gray));
     red->setPos(50, 0);
     yellow->setPos(50, 50);
     green->setPos(25, 0);
@@ -3823,9 +3823,9 @@ void tst_QGraphicsItem::handlesChildEvents()
     scene.addItem(blue);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Pull out the items, closest item first
     QList<QGraphicsItem *> items = scene.items(scene.itemsBoundingRect());
@@ -3841,10 +3841,10 @@ void tst_QGraphicsItem::handlesChildEvents()
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
     QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
 
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(blue->mapToScene(5, 5));
     pressEvent.setScreenPos(view.mapFromScene(pressEvent.scenePos()));
-    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setButton(BobUI::LeftButton);
     releaseEvent.setScenePos(blue->mapToScene(5, 5));
     releaseEvent.setScreenPos(view.mapFromScene(pressEvent.scenePos()));
     QCoreApplication::sendEvent(&scene, &pressEvent);
@@ -3947,16 +3947,16 @@ void tst_QGraphicsItem::handlesChildEvents2()
     scene.addItem(root);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
 
     QMouseEvent event(QEvent::MouseButtonPress, view.mapFromScene(5, 5),
-                      view.viewport()->mapToGlobal(view.mapFromScene(5, 5)), Qt::LeftButton, {}, {});
+                      view.viewport()->mapToGlobal(view.mapFromScene(5, 5)), BobUI::LeftButton, {}, {});
     QCoreApplication::sendEvent(view.viewport(), &event);
 
-    QTRY_COMPARE(root->counter, 1);
+    BOBUIRY_COMPARE(root->counter, 1);
 }
 
 void tst_QGraphicsItem::handlesChildEvents3()
@@ -4037,24 +4037,24 @@ void tst_QGraphicsItem::filtersChildEvents()
     scene.addItem(root);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
     QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
 
     // send event to child
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(QPointF(25, 25));//child->mapToScene(5, 5));
     pressEvent.setScreenPos(view.mapFromScene(pressEvent.scenePos()));
-    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setButton(BobUI::LeftButton);
     releaseEvent.setScenePos(QPointF(25, 25));//child->mapToScene(5, 5));
     releaseEvent.setScreenPos(view.mapFromScene(pressEvent.scenePos()));
     QCoreApplication::sendEvent(&scene, &pressEvent);
     QCoreApplication::sendEvent(&scene, &releaseEvent);
 
-    QTRY_COMPARE(child->counter, 1);  // mouse release is not filtered
+    BOBUIRY_COMPARE(child->counter, 1);  // mouse release is not filtered
     QCOMPARE(filter->counter, 1); // mouse press is filtered
     QCOMPARE(root->counter, 0);
 
@@ -4107,17 +4107,17 @@ void tst_QGraphicsItem::filtersChildEvents2()
     scene.addItem(root);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
 
     QMouseEvent event(QEvent::MouseButtonPress, view.mapFromScene(5, 5),
-                      view.viewport()->mapToGlobal(view.mapFromScene(5, 5)), Qt::LeftButton, {}, {});
+                      view.viewport()->mapToGlobal(view.mapFromScene(5, 5)), BobUI::LeftButton, {}, {});
     QCoreApplication::sendEvent(view.viewport(), &event);
 
-    QTRY_COMPARE(root->counter, 1);
+    BOBUIRY_COMPARE(root->counter, 1);
     QCOMPARE(child->counter, 0);
     QCOMPARE(child2->counter, 0);
     QCOMPARE(child3->counter, 0);
@@ -4143,7 +4143,7 @@ public:
         for (int x = -100; x < 100; x += 25) {
             const QString prefix = QString::number(x) + QLatin1Char('x');
             for (int y = -100; y < 100; y += 25)
-                painter->drawText(QRectF(x, y, 25, 25), Qt::AlignCenter, prefix + QString::number(y));
+                painter->drawText(QRectF(x, y, 25, 25), BobUI::AlignCenter, prefix + QString::number(y));
         }
     }
 };
@@ -4156,10 +4156,10 @@ void tst_QGraphicsItem::ensureVisible()
     scene.addItem(item);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.setFixedSize(300, 300);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     for (int i = 0; i < 25; ++i) {
         view.scale(qreal(1.06), qreal(1.06));
@@ -4200,17 +4200,17 @@ void tst_QGraphicsItem::ensureVisible()
     }
 
     item->ensureVisible(100, 100, 25, 25);
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QGraphicsItem::cursor()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
     view.showFullScreen();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    const Qt::CursorShape viewportShape = view.viewport()->cursor().shape();
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    const BobUI::CursorShape viewportShape = view.viewport()->cursor().shape();
 
     QGraphicsRectItem *item1 = scene.addRect(QRectF(-100, 0, 50, 50));
     QGraphicsRectItem *item2 = scene.addRect(QRectF(50, 0, 50, 50));
@@ -4218,8 +4218,8 @@ void tst_QGraphicsItem::cursor()
     QVERIFY(!item1->hasCursor());
     QVERIFY(!item2->hasCursor());
 
-    item1->setCursor(Qt::IBeamCursor);
-    item2->setCursor(Qt::PointingHandCursor);
+    item1->setCursor(BobUI::IBeamCursor);
+    item2->setCursor(BobUI::PointingHandCursor);
 
     QVERIFY(item1->hasCursor());
     QVERIFY(item2->hasCursor());
@@ -4236,36 +4236,36 @@ void tst_QGraphicsItem::cursor()
     QVERIFY(!item1->hasCursor());
     QVERIFY(!item2->hasCursor());
 
-    item1->setCursor(Qt::IBeamCursor);
-    item2->setCursor(Qt::PointingHandCursor);
+    item1->setCursor(BobUI::IBeamCursor);
+    item2->setCursor(BobUI::PointingHandCursor);
 
     QPoint viewCenter = view.rect().center();
     QPoint item1Center = view.mapFromScene(item1->sceneBoundingRect().center());
     QPoint item2Center = view.mapFromScene(item2->sceneBoundingRect().center());
 
     {
-        QMouseEvent event(QEvent::MouseMove, viewCenter, view.viewport()->mapToGlobal(viewCenter), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, viewCenter, view.viewport()->mapToGlobal(viewCenter), BobUI::NoButton, {}, {});
         QCoreApplication::sendEvent(view.viewport(), &event);
     }
 
     QCOMPARE(view.viewport()->cursor().shape(), viewportShape);
 
     {
-        QMouseEvent event(QEvent::MouseMove, item1Center, view.viewport()->mapToGlobal(item1Center), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, item1Center, view.viewport()->mapToGlobal(item1Center), BobUI::NoButton, {}, {});
         QCoreApplication::sendEvent(view.viewport(), &event);
     }
 
     QCOMPARE(view.viewport()->cursor().shape(), item1->cursor().shape());
 
     {
-        QMouseEvent event(QEvent::MouseMove, item2Center, view.viewport()->mapToGlobal(item2Center), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, item2Center, view.viewport()->mapToGlobal(item2Center), BobUI::NoButton, {}, {});
         QCoreApplication::sendEvent(view.viewport(), &event);
     }
 
     QCOMPARE(view.viewport()->cursor().shape(), item2->cursor().shape());
 
     {
-        QMouseEvent event(QEvent::MouseMove, viewCenter, view.viewport()->mapToGlobal(viewCenter), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, viewCenter, view.viewport()->mapToGlobal(viewCenter), BobUI::NoButton, {}, {});
         QCoreApplication::sendEvent(view.viewport(), &event);
     }
 
@@ -4273,7 +4273,7 @@ void tst_QGraphicsItem::cursor()
 
     item1->setEnabled(false);
     {
-        QMouseEvent event(QEvent::MouseMove, item1Center, view.viewport()->mapToGlobal(item1Center), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, item1Center, view.viewport()->mapToGlobal(item1Center), BobUI::NoButton, {}, {});
         QCoreApplication::sendEvent(view.viewport(), &event);
     }
 
@@ -4332,8 +4332,8 @@ void tst_QGraphicsItem::defaultItemTest_QGraphicsLineItem()
     QCOMPARE(item.pen(), QPen());
     QCOMPARE(item.shape(), QPainterPath());
 
-    item.setPen(QPen(Qt::black, 1));
-    QCOMPARE(item.pen(), QPen(Qt::black, 1));
+    item.setPen(QPen(BobUI::black, 1));
+    QCOMPARE(item.pen(), QPen(BobUI::black, 1));
     item.setLine(QLineF(0, 0, 10, 0));
     QCOMPARE(item.line(), QLineF(0, 0, 10, 0));
     QCOMPARE(item.boundingRect(), QRectF(-0.5, -0.5, 11, 1));
@@ -4362,17 +4362,17 @@ void tst_QGraphicsItem::defaultItemTest_QGraphicsPixmapItem()
     QGraphicsPixmapItem item;
     QVERIFY(item.pixmap().isNull());
     QCOMPARE(item.offset(), QPointF());
-    QCOMPARE(item.transformationMode(), Qt::FastTransformation);
+    QCOMPARE(item.transformationMode(), BobUI::FastTransformation);
 
     QPixmap pixmap(300, 200);
-    pixmap.fill(Qt::red);
+    pixmap.fill(BobUI::red);
     item.setPixmap(pixmap);
     QCOMPARE(item.pixmap(), pixmap);
 
-    item.setTransformationMode(Qt::FastTransformation);
-    QCOMPARE(item.transformationMode(), Qt::FastTransformation);
-    item.setTransformationMode(Qt::SmoothTransformation);
-    QCOMPARE(item.transformationMode(), Qt::SmoothTransformation);
+    item.setTransformationMode(BobUI::FastTransformation);
+    QCOMPARE(item.transformationMode(), BobUI::FastTransformation);
+    item.setTransformationMode(BobUI::SmoothTransformation);
+    QCOMPARE(item.transformationMode(), BobUI::SmoothTransformation);
 
     item.setOffset(-15, -15);
     QCOMPARE(item.offset(), QPointF(-15, -15));
@@ -4390,7 +4390,7 @@ void tst_QGraphicsItem::defaultItemTest_QGraphicsTextItem()
     QCOMPARE(text->defaultTextColor(), QPalette().color(QPalette::Text));
     QVERIFY(text->document() != nullptr);
     QCOMPARE(text->font(), QApplication::font());
-    QCOMPARE(text->textInteractionFlags(), Qt::TextInteractionFlags(Qt::NoTextInteraction));
+    QCOMPARE(text->textInteractionFlags(), BobUI::TextInteractionFlags(BobUI::NoTextInteraction));
     QCOMPARE(text->textWidth(), -1.0);
     QCOMPARE(text->toPlainText(), QString(""));
 
@@ -4402,29 +4402,29 @@ void tst_QGraphicsItem::defaultItemTest_QGraphicsTextItem()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(QPointF(1, 1));
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
         QGraphicsSceneMouseEvent event2(QEvent::GraphicsSceneMouseMove);
         event2.setScenePos(QPointF(11, 11));
-        event2.setButton(Qt::LeftButton);
-        event2.setButtons(Qt::LeftButton);
+        event2.setButton(BobUI::LeftButton);
+        event2.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event2);
     }
 
     QCOMPARE(text->pos(), QPointF(10, 10));
 
-    text->setTextInteractionFlags(Qt::NoTextInteraction);
+    text->setTextInteractionFlags(BobUI::NoTextInteraction);
     QVERIFY(!(text->flags() & QGraphicsItem::ItemAcceptsInputMethod));
-    text->setTextInteractionFlags(Qt::TextEditorInteraction);
-    QCOMPARE(text->textInteractionFlags(), Qt::TextInteractionFlags(Qt::TextEditorInteraction));
+    text->setTextInteractionFlags(BobUI::TextEditorInteraction);
+    QCOMPARE(text->textInteractionFlags(), BobUI::TextInteractionFlags(BobUI::TextEditorInteraction));
     QVERIFY(text->flags() & QGraphicsItem::ItemAcceptsInputMethod);
 
     {
         QGraphicsSceneMouseEvent event2(QEvent::GraphicsSceneMouseMove);
         event2.setScenePos(QPointF(21, 21));
-        event2.setButton(Qt::LeftButton);
-        event2.setButtons(Qt::LeftButton);
+        event2.setButton(BobUI::LeftButton);
+        event2.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event2);
     }
 
@@ -4434,7 +4434,7 @@ void tst_QGraphicsItem::defaultItemTest_QGraphicsTextItem()
 void tst_QGraphicsItem::defaultItemTest_QGraphicsEllipseItem()
 {
     QGraphicsEllipseItem item;
-    item.setPen(QPen(Qt::black, 0));
+    item.setPen(QPen(BobUI::black, 0));
     QVERIFY(item.rect().isNull());
     QVERIFY(item.boundingRect().isNull());
     QVERIFY(item.shape().isEmpty());
@@ -4453,7 +4453,7 @@ void tst_QGraphicsItem::defaultItemTest_QGraphicsEllipseItem()
     QCOMPARE(float(item.boundingRect().width()), 50.0f);
     QCOMPARE(float(item.boundingRect().height()), 50.0f);
 
-    item.setPen(QPen(Qt::black, 1));
+    item.setPen(QPen(BobUI::black, 1));
     QCOMPARE(item.boundingRect(), QRectF(49.5, -0.5, 51, 51));
 
     item.setSpanAngle(180 * 16);
@@ -4543,7 +4543,7 @@ protected:
         case QGraphicsItem::ItemSceneHasChanged:
             break;
         case QGraphicsItem::ItemCursorChange:
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             oldValues << cursor();
 #endif
             break;
@@ -4617,21 +4617,21 @@ void tst_QGraphicsItem::itemChange()
     }
     {
         // ItemTransformChange / ItemTransformHasChanged
-        tester.itemChangeReturnValue.setValue(QTransform().rotate(90));
-        tester.setTransform(QTransform::fromTranslate(50, 0), true);
+        tester.itemChangeReturnValue.setValue(BOBUIransform().rotate(90));
+        tester.setTransform(BOBUIransform::fromTranslate(50, 0), true);
         ++changeCount; // notification sent too
         ++changeCount;
         QCOMPARE(tester.changes.size(), changeCount);
         QCOMPARE(tester.changes.at(tester.changes.size() - 2), QGraphicsItem::ItemTransformChange);
         QCOMPARE(tester.changes.at(tester.changes.size() - 1), QGraphicsItem::ItemTransformHasChanged);
-        QCOMPARE(qvariant_cast<QTransform>(tester.values.at(tester.values.size() - 2)),
-                 QTransform().translate(50, 0));
-        QCOMPARE(qvariant_cast<QTransform>(tester.values.at(tester.values.size() - 1)),
-                 QTransform().rotate(90));
+        QCOMPARE(qvariant_cast<BOBUIransform>(tester.values.at(tester.values.size() - 2)),
+                 BOBUIransform().translate(50, 0));
+        QCOMPARE(qvariant_cast<BOBUIransform>(tester.values.at(tester.values.size() - 1)),
+                 BOBUIransform().rotate(90));
         QVariant variant;
-        variant.setValue(QTransform());
+        variant.setValue(BOBUIransform());
         QCOMPARE(tester.oldValues.constLast(), variant);
-        QCOMPARE(tester.transform(), QTransform().rotate(90));
+        QCOMPARE(tester.transform(), BOBUIransform().rotate(90));
     }
     {
         // ItemPositionChange / ItemPositionHasChanged
@@ -4975,10 +4975,10 @@ void tst_QGraphicsItem::sceneEventFilter()
     QGraphicsScene scene;
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QGraphicsTextItem *text1 = scene.addText(QLatin1String("Text1"));
     QGraphicsTextItem *text2 = scene.addText(QLatin1String("Text2"));
@@ -4990,10 +4990,10 @@ void tst_QGraphicsItem::sceneEventFilter()
     EventFilterTesterItem *tester = new EventFilterTesterItem;
     scene.addItem(tester);
 
-    QTRY_VERIFY(!text1->hasFocus());
+    BOBUIRY_VERIFY(!text1->hasFocus());
     text1->installSceneEventFilter(tester);
     text1->setFocus();
-    QTRY_VERIFY(text1->hasFocus());
+    BOBUIRY_VERIFY(text1->hasFocus());
 
     QCOMPARE(tester->filteredEvents.size(), 1);
     QCOMPARE(tester->filteredEvents.at(0), QEvent::FocusIn);
@@ -5041,13 +5041,13 @@ void tst_QGraphicsItem::sceneEventFilter()
     QGraphicsTextItem *ti3 = anotherScene.addText("This is a test #3");
     gv.setScene(&anotherScene);
     gv.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&gv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&gv));
     ti->installSceneEventFilter(ti2);
     ti3->installSceneEventFilter(ti);
     delete ti2;
     //we souldn't crash
-    QTest::mouseMove(gv.viewport(), gv.mapFromScene(ti->scenePos()));
-    QTest::qWait(30);
+    BOBUIest::mouseMove(gv.viewport(), gv.mapFromScene(ti->scenePos()));
+    BOBUIest::qWait(30);
     delete ti;
 }
 
@@ -5096,9 +5096,9 @@ void tst_QGraphicsItem::paint()
     scene.addItem(&paintTester);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
 #ifdef Q_OS_WIN32
     //we try to switch the desktop: if it fails, we skip the test
@@ -5107,15 +5107,15 @@ void tst_QGraphicsItem::paint()
     }
 #endif
 
-    QTRY_COMPARE(paintTester.widget, view.viewport());
+    BOBUIRY_COMPARE(paintTester.widget, view.viewport());
 
     view.hide();
 
     QGraphicsScene scene2;
     QGraphicsView view2(&scene2);
-    view2.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view2.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view2));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view2));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     PaintTester tester2;
@@ -5123,23 +5123,23 @@ void tst_QGraphicsItem::paint()
 
     //First show at least one paint
     QCOMPARE(tester2.painted, 0);
-    QTRY_VERIFY(tester2.painted > 0);
+    BOBUIRY_VERIFY(tester2.painted > 0);
     int painted = tester2.painted;
 
     //nominal case, update call paint
     tester2.update();
-    QTRY_COMPARE(tester2.painted, painted + 1);
+    BOBUIRY_COMPARE(tester2.painted, painted + 1);
     painted = tester2.painted;
 
     //we remove the item from the scene, number of updates is still the same
     tester2.update();
     scene2.removeItem(&tester2);
-    QTRY_COMPARE(tester2.painted, painted);
+    BOBUIRY_COMPARE(tester2.painted, painted);
 
     //We re-add the item, the number of paint should increase
     scene2.addItem(&tester2);
     tester2.update();
-    QTRY_COMPARE(tester2.painted, painted + 1);
+    BOBUIRY_COMPARE(tester2.painted, painted + 1);
 }
 
 class HarakiriItem : public QGraphicsRectItem
@@ -5179,7 +5179,7 @@ public:
     }
 
 protected:
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *) override
     {
         if (harakiri == 3) {
@@ -5187,7 +5187,7 @@ protected:
             delete this;
         }
     }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override
     {
@@ -5259,7 +5259,7 @@ protected:
         QGraphicsRectItem::inputMethodEvent(event);
     }
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery query) const override
+    QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override
     {
         // ??
         return QGraphicsRectItem::inputMethodQuery(query);
@@ -5358,7 +5358,7 @@ void tst_QGraphicsItem::deleteItemInEventHandlers()
         item->installSceneEventFilter(item); // <- ehey!
 
         QGraphicsView view(&scene);
-        view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+        view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
         view.show();
 
         QCoreApplication::processEvents();
@@ -5367,24 +5367,24 @@ void tst_QGraphicsItem::deleteItemInEventHandlers()
         if (!HarakiriItem::dead)
             scene.advance();
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
         if (!HarakiriItem::dead) {
             auto viewPos = view.mapFromScene(item->scenePos());
             QContextMenuEvent event(QContextMenuEvent::Other, viewPos,
                                     view.mapToGlobal(viewPos));
             QCoreApplication::sendEvent(view.viewport(), &event);
         }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
         if (!HarakiriItem::dead)
-            QTest::mouseMove(view.viewport(), view.mapFromScene(item->scenePos()));
+            BOBUIest::mouseMove(view.viewport(), view.mapFromScene(item->scenePos()));
         if (!HarakiriItem::dead)
-            QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item->scenePos()));
+            BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item->scenePos()));
         if (!HarakiriItem::dead)
-            QTest::mouseDClick(view.viewport(), Qt::LeftButton, {}, view.mapFromScene(item->scenePos()));
+            BOBUIest::mouseDClick(view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(item->scenePos()));
         if (!HarakiriItem::dead)
-            QTest::mouseClick(view.viewport(), Qt::RightButton, {}, view.mapFromScene(item->scenePos()));
+            BOBUIest::mouseClick(view.viewport(), BobUI::RightButton, {}, view.mapFromScene(item->scenePos()));
         if (!HarakiriItem::dead)
-            QTest::mouseMove(view.viewport(), view.mapFromScene(item->scenePos() + QPointF(20, -20)));
+            BOBUIest::mouseMove(view.viewport(), view.mapFromScene(item->scenePos() + QPointF(20, -20)));
         if (!HarakiriItem::dead)
             item->setFocus();
         if (!HarakiriItem::dead)
@@ -5392,13 +5392,13 @@ void tst_QGraphicsItem::deleteItemInEventHandlers()
         if (!HarakiriItem::dead)
             item->setFocus();
         if (!HarakiriItem::dead)
-            QTest::keyPress(view.viewport(), Qt::Key_A);
+            BOBUIest::keyPress(view.viewport(), BobUI::Key_A);
         if (!HarakiriItem::dead)
-            QTest::keyRelease(view.viewport(), Qt::Key_A);
+            BOBUIest::keyRelease(view.viewport(), BobUI::Key_A);
         if (!HarakiriItem::dead)
-            QTest::keyPress(view.viewport(), Qt::Key_A);
+            BOBUIest::keyPress(view.viewport(), BobUI::Key_A);
         if (!HarakiriItem::dead)
-            QTest::keyRelease(view.viewport(), Qt::Key_A);
+            BOBUIest::keyRelease(view.viewport(), BobUI::Key_A);
     }
 }
 
@@ -5412,8 +5412,8 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
     {
-        painter->fillRect(-50, -50, 200, 200, Qt::red);
-        painter->fillRect(0, 0, 100, 100, Qt::blue);
+        painter->fillRect(-50, -50, 200, 200, BobUI::red);
+        painter->fillRect(0, 0, 100, 100, BobUI::blue);
     }
 };
 
@@ -5440,35 +5440,35 @@ void tst_QGraphicsItem::itemClipsToShape()
     QCOMPARE(image.pixel(100, 45), QRgb(0));
     QCOMPARE(image.pixel(155, 100), QRgb(0));
     QCOMPARE(image.pixel(45, 155), QRgb(0));
-    QCOMPARE(image.pixel(55, 100), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(100, 55), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(145, 100), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(55, 145), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(245, 100), QColor(Qt::red).rgba());
-    QCOMPARE(image.pixel(300, 45), QColor(Qt::red).rgba());
-    QCOMPARE(image.pixel(355, 100), QColor(Qt::red).rgba());
-    QCOMPARE(image.pixel(245, 155), QColor(Qt::red).rgba());
-    QCOMPARE(image.pixel(255, 100), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(300, 55), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(345, 100), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(255, 145), QColor(Qt::blue).rgba());
+    QCOMPARE(image.pixel(55, 100), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(100, 55), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(145, 100), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(55, 145), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(245, 100), QColor(BobUI::red).rgba());
+    QCOMPARE(image.pixel(300, 45), QColor(BobUI::red).rgba());
+    QCOMPARE(image.pixel(355, 100), QColor(BobUI::red).rgba());
+    QCOMPARE(image.pixel(245, 155), QColor(BobUI::red).rgba());
+    QCOMPARE(image.pixel(255, 100), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(300, 55), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(345, 100), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(255, 145), QColor(BobUI::blue).rgba());
 }
 
 void tst_QGraphicsItem::itemClipsChildrenToShape()
 {
     QGraphicsScene scene;
-    QGraphicsItem *rect = scene.addRect(0, 0, 50, 50, QPen(Qt::NoPen), QBrush(Qt::yellow));
+    QGraphicsItem *rect = scene.addRect(0, 0, 50, 50, QPen(BobUI::NoPen), QBrush(BobUI::yellow));
 
-    QGraphicsItem *ellipse = scene.addEllipse(0, 0, 100, 100, QPen(Qt::NoPen), QBrush(Qt::green));
+    QGraphicsItem *ellipse = scene.addEllipse(0, 0, 100, 100, QPen(BobUI::NoPen), QBrush(BobUI::green));
     ellipse->setParentItem(rect);
 
-    QGraphicsItem *clippedEllipse = scene.addEllipse(0, 0, 50, 50, QPen(Qt::NoPen), QBrush(Qt::blue));
+    QGraphicsItem *clippedEllipse = scene.addEllipse(0, 0, 50, 50, QPen(BobUI::NoPen), QBrush(BobUI::blue));
     clippedEllipse->setParentItem(ellipse);
 
-    QGraphicsItem *clippedEllipse2 = scene.addEllipse(0, 0, 25, 25, QPen(Qt::NoPen), QBrush(Qt::red));
+    QGraphicsItem *clippedEllipse2 = scene.addEllipse(0, 0, 25, 25, QPen(BobUI::NoPen), QBrush(BobUI::red));
     clippedEllipse2->setParentItem(clippedEllipse);
 
-    QGraphicsItem *clippedEllipse3 = scene.addEllipse(50, 50, 25, 25, QPen(Qt::NoPen), QBrush(Qt::red));
+    QGraphicsItem *clippedEllipse3 = scene.addEllipse(50, 50, 25, 25, QPen(BobUI::NoPen), QBrush(BobUI::red));
     clippedEllipse3->setParentItem(clippedEllipse);
 
     QVERIFY(!(ellipse->flags() & QGraphicsItem::ItemClipsChildrenToShape));
@@ -5499,9 +5499,9 @@ void tst_QGraphicsItem::itemClipsChildrenToShape2()
     child1->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
     child2->setParentItem(child1);
 
-    parent->setBrush(Qt::blue);
-    child1->setBrush(Qt::green);
-    child2->setBrush(Qt::red);
+    parent->setBrush(BobUI::blue);
+    child1->setBrush(BobUI::green);
+    child2->setBrush(BobUI::red);
 
     QGraphicsScene scene;
     scene.addItem(parent);
@@ -5597,10 +5597,10 @@ void tst_QGraphicsItem::itemClipsChildrenToShape4()
     scene.addEllipse( 100, 100, 100, 50 );   // <-- this is important to trigger the right codepath*
     //now the label is shown
     outerWidget->setFlag(QGraphicsItem::ItemClipsChildrenToShape, false );
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QTRY_COMPARE(QApplication::activeWindow(), &view);
-    QTRY_COMPARE(innerWidget->painted, true);
+    BOBUIRY_COMPARE(QApplication::activeWindow(), &view);
+    BOBUIRY_COMPARE(innerWidget->painted, true);
 }
 
 //#define DEBUG_ITEM_CLIPS_CHILDREN_TO_SHAPE_5
@@ -5633,7 +5633,7 @@ void tst_QGraphicsItem::itemClipsChildrenToShape5()
     };
 
     ParentItem *parent = new ParentItem(0, 0, 300, 300);
-    parent->setBrush(Qt::blue);
+    parent->setBrush(BobUI::blue);
     parent->setOpacity(0.5);
 
     const QRegion parentRegion(0, 0, 300, 300);
@@ -5642,39 +5642,39 @@ void tst_QGraphicsItem::itemClipsChildrenToShape5()
     QRegion grandChildRegion;
 
     QGraphicsRectItem *topLeftChild = new QGraphicsRectItem(0, 0, 100, 100);
-    topLeftChild->setBrush(Qt::red);
+    topLeftChild->setBrush(BobUI::red);
     topLeftChild->setParentItem(parent);
     childRegion += QRect(0, 0, 100, 100);
 
     QGraphicsRectItem *topRightChild = new QGraphicsRectItem(0, 0, 100, 100);
-    topRightChild->setBrush(Qt::red);
+    topRightChild->setBrush(BobUI::red);
     topRightChild->setParentItem(parent);
     topRightChild->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
     topRightChild->setPos(200, 0);
     childRegion += QRect(200, 0, 100, 100);
 
     QGraphicsRectItem *topRightGrandChild = new QGraphicsRectItem(0, 0, 100, 100);
-    topRightGrandChild->setBrush(Qt::green);
+    topRightGrandChild->setBrush(BobUI::green);
     topRightGrandChild->setParentItem(topRightChild);
     topRightGrandChild->setPos(-40, 40);
     grandChildRegion += QRect(200 - 40, 0 + 40, 100, 100) & QRect(200, 0, 100, 100);
 
     QGraphicsRectItem *bottomLeftChild = new QGraphicsRectItem(0, 0, 100, 100);
-    bottomLeftChild->setBrush(Qt::red);
+    bottomLeftChild->setBrush(BobUI::red);
     bottomLeftChild->setParentItem(parent);
     bottomLeftChild->setFlag(QGraphicsItem::ItemClipsToShape);
     bottomLeftChild->setPos(0, 200);
     childRegion += QRect(0, 200, 100, 100);
 
     QGraphicsRectItem *bottomLeftGrandChild = new QGraphicsRectItem(0, 0, 160, 160);
-    bottomLeftGrandChild->setBrush(Qt::green);
+    bottomLeftGrandChild->setBrush(BobUI::green);
     bottomLeftGrandChild->setParentItem(bottomLeftChild);
     bottomLeftGrandChild->setFlag(QGraphicsItem::ItemClipsToShape);
     bottomLeftGrandChild->setPos(0, -60);
     grandChildRegion += QRect(0, 200 - 60, 160, 160);
 
     QGraphicsRectItem *bottomRightChild = new QGraphicsRectItem(0, 0, 100, 100);
-    bottomRightChild->setBrush(Qt::red);
+    bottomRightChild->setBrush(BobUI::red);
     bottomRightChild->setParentItem(parent);
     bottomRightChild->setPos(200, 200);
     childRegion += QRect(200, 200, 100, 100);
@@ -5793,7 +5793,7 @@ void tst_QGraphicsItem::itemClipsTextChildToShape()
     // Construct a scene with a rect that clips its children, with one text
     // child that has text that exceeds the size of the rect.
     QGraphicsScene scene;
-    QGraphicsItem *rect = scene.addRect(0, 0, 50, 50, QPen(Qt::black), Qt::black);
+    QGraphicsItem *rect = scene.addRect(0, 0, 50, 50, QPen(BobUI::black), BobUI::black);
     rect->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
     QGraphicsTextItem *text = new QGraphicsTextItem("This is a long sentence that's wider than 50 pixels.");
     text->setParentItem(rect);
@@ -5808,7 +5808,7 @@ void tst_QGraphicsItem::itemClipsTextChildToShape()
     // Erase the area immediately underneath the rect.
     painter.setCompositionMode(QPainter::CompositionMode_Source);
     painter.fillRect(rect->sceneBoundingRect().translated(-sr.topLeft()).adjusted(-0.5, -0.5, 0.5, 0.5),
-                     Qt::transparent);
+                     BobUI::transparent);
     painter.end();
 
     // Check that you get a truly transparent image back (i.e., the text was
@@ -5912,15 +5912,15 @@ void tst_QGraphicsItem::itemContainsChildrenInShape2()
     //in terms of optimizations but does not enforce the clip.
     //This test makes sure there is no clip.
     QGraphicsScene scene;
-    QGraphicsItem *rect = scene.addRect(0, 0, 50, 50, QPen(Qt::NoPen), QBrush(Qt::yellow));
+    QGraphicsItem *rect = scene.addRect(0, 0, 50, 50, QPen(BobUI::NoPen), QBrush(BobUI::yellow));
 
-    QGraphicsItem *ellipse = scene.addEllipse(0, 0, 100, 100, QPen(Qt::NoPen), QBrush(Qt::green));
+    QGraphicsItem *ellipse = scene.addEllipse(0, 0, 100, 100, QPen(BobUI::NoPen), QBrush(BobUI::green));
     ellipse->setParentItem(rect);
 
-    QGraphicsItem *clippedEllipse = scene.addEllipse(0, 0, 50, 50, QPen(Qt::NoPen), QBrush(Qt::blue));
+    QGraphicsItem *clippedEllipse = scene.addEllipse(0, 0, 50, 50, QPen(BobUI::NoPen), QBrush(BobUI::blue));
     clippedEllipse->setParentItem(ellipse);
 
-    QGraphicsItem *clippedEllipse2 = scene.addEllipse(0, 0, 25, 25, QPen(Qt::NoPen), QBrush(Qt::red));
+    QGraphicsItem *clippedEllipse2 = scene.addEllipse(0, 0, 25, 25, QPen(BobUI::NoPen), QBrush(BobUI::red));
     clippedEllipse2->setParentItem(clippedEllipse);
 
     QVERIFY(!(ellipse->flags() & QGraphicsItem::ItemClipsChildrenToShape));
@@ -5936,10 +5936,10 @@ void tst_QGraphicsItem::itemContainsChildrenInShape2()
     scene.render(&painter);
     painter.end();
 
-    QCOMPARE(image.pixel(2, 2), QColor(Qt::yellow).rgba());
-    QCOMPARE(image.pixel(12, 12), QColor(Qt::red).rgba());
-    QCOMPARE(image.pixel(2, 25), QColor(Qt::blue).rgba());
-    QCOMPARE(image.pixel(2, 50), QColor(Qt::green).rgba());
+    QCOMPARE(image.pixel(2, 2), QColor(BobUI::yellow).rgba());
+    QCOMPARE(image.pixel(12, 12), QColor(BobUI::red).rgba());
+    QCOMPARE(image.pixel(2, 25), QColor(BobUI::blue).rgba());
+    QCOMPARE(image.pixel(2, 50), QColor(BobUI::green).rgba());
 }
 
 void tst_QGraphicsItem::ancestorFlags()
@@ -6205,26 +6205,26 @@ void tst_QGraphicsItem::untransformable()
     auto item1 = new QGraphicsEllipseItem(QRectF(-50, -50, 100, 100));
     item1->setZValue(1);
     item1->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-    item1->setTransform(QTransform().rotate(45), true);
-    item1->setBrush(Qt::red);
+    item1->setTransform(BOBUIransform().rotate(45), true);
+    item1->setBrush(BobUI::red);
 
     auto item2 = new QGraphicsEllipseItem(QRectF(-50, -50, 100, 100));
     item2->setParentItem(item1);
-    item2->setTransform(QTransform().rotate(45), true);
+    item2->setTransform(BOBUIransform().rotate(45), true);
     item2->setPos(100, 0);
-    item2->setBrush(Qt::green);
+    item2->setBrush(BobUI::green);
 
     auto item3 = new QGraphicsEllipseItem(QRectF(-50, -50, 100, 100));
     item3->setParentItem(item2);
     item3->setPos(100, 0);
-    item3->setBrush(Qt::blue);
+    item3->setBrush(BobUI::blue);
 
     QGraphicsScene scene(-500, -500, 1000, 1000);
     scene.addItem(item1);
 
     QWidget topLevel;
     QGraphicsView view(&scene,&topLevel);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.resize(300, 300);
     topLevel.show();
     view.scale(8, 8);
@@ -6233,10 +6233,10 @@ void tst_QGraphicsItem::untransformable()
 // Painting with the DiagCrossPattern is really slow on Mac
 // when zoomed out. (The test times out). Task to fix is 155567.
 #if !defined(Q_OS_MAC) || 1
-    view.setBackgroundBrush(QBrush(Qt::black, Qt::DiagCrossPattern));
+    view.setBackgroundBrush(QBrush(BobUI::black, BobUI::DiagCrossPattern));
 #endif
 
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     for (int i = 0; i < 10; ++i) {
         QPoint center = view.viewport()->rect().center();
@@ -6265,7 +6265,7 @@ void tst_QGraphicsItem::untransformable()
     }
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 class ContextMenuItem : public QGraphicsRectItem
 {
 public:
@@ -6296,11 +6296,11 @@ void tst_QGraphicsItem::contextMenuEventPropagation()
     QGraphicsScene scene;
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
-    view.setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
+    view.setAlignment(BobUI::AlignLeft | BobUI::AlignTop);
     view.show();
     view.resize(200, 200);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QContextMenuEvent event(QContextMenuEvent::Mouse, QPoint(10, 10),
                             view.viewport()->mapToGlobal(QPoint(10, 10)));
@@ -6329,7 +6329,7 @@ void tst_QGraphicsItem::contextMenuEventPropagation()
     QCOMPARE(bottomItem->gotEvent, false);
     QCOMPARE(topItem->eventWasAccepted, true);
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 void tst_QGraphicsItem::itemIsMovable()
 {
@@ -6341,34 +6341,34 @@ void tst_QGraphicsItem::itemIsMovable()
 
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     QCOMPARE(rect->pos(), QPointF(0, 0));
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
-        event.setButtons(Qt::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         event.setScenePos(QPointF(10, 10));
         QCoreApplication::sendEvent(&scene, &event);
     }
     QCOMPARE(rect->pos(), QPointF(10, 10));
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
-        event.setButtons(Qt::RightButton);
+        event.setButtons(BobUI::RightButton);
         event.setScenePos(QPointF(20, 20));
         QCoreApplication::sendEvent(&scene, &event);
     }
     QCOMPARE(rect->pos(), QPointF(10, 10));
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
-        event.setButtons(Qt::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         event.setScenePos(QPointF(30, 30));
         QCoreApplication::sendEvent(&scene, &event);
     }
@@ -6381,7 +6381,7 @@ class ItemAddScene : public QGraphicsScene
 public:
     ItemAddScene()
     {
-        QTimer::singleShot(500, this, &ItemAddScene::newTextItem);
+        BOBUIimer::singleShot(500, this, &ItemAddScene::newTextItem);
     }
 
 public slots:
@@ -6400,19 +6400,19 @@ void tst_QGraphicsItem::task141694_textItemEnsureVisible()
     scene.setSceneRect(-1000, -1000, 2000, 2000);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.setFixedSize(200, 200);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     view.ensureVisible(-1000, -1000, 5, 5);
     int hscroll = view.horizontalScrollBar()->value();
     int vscroll = view.verticalScrollBar()->value();
 
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
 
     // This should not cause the view to scroll
-    QTRY_COMPARE(view.horizontalScrollBar()->value(), hscroll);
+    BOBUIRY_COMPARE(view.horizontalScrollBar()->value(), hscroll);
     QCOMPARE(view.verticalScrollBar()->value(), vscroll);
 }
 
@@ -6420,7 +6420,7 @@ void tst_QGraphicsItem::task128696_textItemEnsureMovable()
 {
     QGraphicsTextItem *item = new QGraphicsTextItem;
     item->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-    item->setTextInteractionFlags(Qt::TextEditorInteraction);
+    item->setTextInteractionFlags(BobUI::TextEditorInteraction);
     item->setPlainText("abc de\nf ghi\n   j k l");
 
     QGraphicsScene scene;
@@ -6428,21 +6428,21 @@ void tst_QGraphicsItem::task128696_textItemEnsureMovable()
     scene.addItem(item);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.setFixedSize(200, 200);
     view.show();
 
     QGraphicsSceneMouseEvent event1(QEvent::GraphicsSceneMousePress);
     event1.setScenePos(QPointF(0, 0));
-    event1.setButton(Qt::LeftButton);
-    event1.setButtons(Qt::LeftButton);
+    event1.setButton(BobUI::LeftButton);
+    event1.setButtons(BobUI::LeftButton);
     QCoreApplication::sendEvent(&scene, &event1);
     QCOMPARE(scene.mouseGrabberItem(), item);
 
     QGraphicsSceneMouseEvent event2(QEvent::GraphicsSceneMouseMove);
     event2.setScenePos(QPointF(10, 10));
-    event2.setButton(Qt::LeftButton);
-    event2.setButtons(Qt::LeftButton);
+    event2.setButton(BobUI::LeftButton);
+    event2.setButtons(BobUI::LeftButton);
     QCoreApplication::sendEvent(&scene, &event2);
     QCOMPARE(item->pos(), QPointF(10, 10));
 }
@@ -6454,44 +6454,44 @@ void tst_QGraphicsItem::task177918_lineItemUndetected()
     QCOMPARE(line->boundingRect(), QRectF(10, 10, 0, 0));
 
     const QRectF rect(9, 9, 2, 2);
-    QVERIFY(!scene.items(rect, Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(!scene.items(rect, Qt::ContainsItemShape).isEmpty());
-    QVERIFY(!scene.items(rect, Qt::IntersectsItemBoundingRect).isEmpty());
-    QVERIFY(!scene.items(rect, Qt::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(!scene.items(rect, BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(!scene.items(rect, BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(!scene.items(rect, BobUI::IntersectsItemBoundingRect).isEmpty());
+    QVERIFY(!scene.items(rect, BobUI::ContainsItemBoundingRect).isEmpty());
 }
 
 void tst_QGraphicsItem::task240400_clickOnTextItem_data()
 {
     using Flags = QGraphicsItem::GraphicsItemFlags;
-    QTest::addColumn<Flags>("flags");
-    QTest::addColumn<Qt::TextInteractionFlags>("textFlags");
-    QTest::newRow("editor, noflags")
+    BOBUIest::addColumn<Flags>("flags");
+    BOBUIest::addColumn<BobUI::TextInteractionFlags>("textFlags");
+    BOBUIest::newRow("editor, noflags")
         << Flags{}
-        << Qt::TextInteractionFlags(Qt::TextEditorInteraction);
-    QTest::newRow("editor, movable")
+        << BobUI::TextInteractionFlags(BobUI::TextEditorInteraction);
+    BOBUIest::newRow("editor, movable")
         << Flags(QGraphicsItem::ItemIsMovable)
-        << Qt::TextInteractionFlags(Qt::TextEditorInteraction);
-    QTest::newRow("editor, selectable")
+        << BobUI::TextInteractionFlags(BobUI::TextEditorInteraction);
+    BOBUIest::newRow("editor, selectable")
         << Flags(QGraphicsItem::ItemIsSelectable)
-        << Qt::TextInteractionFlags(Qt::TextEditorInteraction);
-    QTest::newRow("editor, movable | selectable")
+        << BobUI::TextInteractionFlags(BobUI::TextEditorInteraction);
+    BOBUIest::newRow("editor, movable | selectable")
         << Flags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable)
-        << Qt::TextInteractionFlags(Qt::TextEditorInteraction);
-    QTest::newRow("noninteractive, noflags")
-        << Flags{} << Qt::TextInteractionFlags(Qt::NoTextInteraction);
-    QTest::newRow("noninteractive, movable")
-        << Flags(QGraphicsItem::ItemIsMovable) << Qt::TextInteractionFlags(Qt::NoTextInteraction);
-    QTest::newRow("noninteractive, selectable")
-        << Flags(QGraphicsItem::ItemIsSelectable) << Qt::TextInteractionFlags(Qt::NoTextInteraction);
-    QTest::newRow("noninteractive, movable | selectable")
+        << BobUI::TextInteractionFlags(BobUI::TextEditorInteraction);
+    BOBUIest::newRow("noninteractive, noflags")
+        << Flags{} << BobUI::TextInteractionFlags(BobUI::NoTextInteraction);
+    BOBUIest::newRow("noninteractive, movable")
+        << Flags(QGraphicsItem::ItemIsMovable) << BobUI::TextInteractionFlags(BobUI::NoTextInteraction);
+    BOBUIest::newRow("noninteractive, selectable")
+        << Flags(QGraphicsItem::ItemIsSelectable) << BobUI::TextInteractionFlags(BobUI::NoTextInteraction);
+    BOBUIest::newRow("noninteractive, movable | selectable")
         << Flags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable)
-        << Qt::TextInteractionFlags(Qt::NoTextInteraction);
+        << BobUI::TextInteractionFlags(BobUI::NoTextInteraction);
 }
 
 void tst_QGraphicsItem::task240400_clickOnTextItem()
 {
     QFETCH(QGraphicsItem::GraphicsItemFlags, flags);
-    QFETCH(Qt::TextInteractionFlags, textFlags);
+    QFETCH(BobUI::TextInteractionFlags, textFlags);
 
     QGraphicsScene scene;
     QEvent activate(QEvent::WindowActivate);
@@ -6512,8 +6512,8 @@ void tst_QGraphicsItem::task240400_clickOnTextItem()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(item->sceneBoundingRect().topLeft() + QPointF(0.1, 0.1));
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     if (flags || textFlags)
@@ -6523,7 +6523,7 @@ void tst_QGraphicsItem::task240400_clickOnTextItem()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.setScenePos(item->sceneBoundingRect().topLeft() + QPointF(0.1, 0.1));
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setButtons({});
         QCoreApplication::sendEvent(&scene, &event);
     }
@@ -6539,8 +6539,8 @@ void tst_QGraphicsItem::task240400_clickOnTextItem()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(item->sceneBoundingRect().center());
-        event.setButton(Qt::LeftButton);
-        event.setButtons(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
+        event.setButtons(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     if (flags || textFlags)
@@ -6550,7 +6550,7 @@ void tst_QGraphicsItem::task240400_clickOnTextItem()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.setScenePos(item->sceneBoundingRect().center());
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         event.setButtons({});
         QCoreApplication::sendEvent(&scene, &event);
     }
@@ -6563,7 +6563,7 @@ void tst_QGraphicsItem::task240400_clickOnTextItem()
     QVERIFY(selectable ? item->isSelected() : !item->isSelected());
 
     //
-    if (textFlags.testFlag(Qt::TextEditorInteraction))
+    if (textFlags.testFlag(BobUI::TextEditorInteraction))
         QVERIFY(item->textCursor().columnNumber() > column);
     else
         QCOMPARE(item->textCursor().columnNumber(), 0);
@@ -6587,17 +6587,17 @@ void tst_QGraphicsItem::ensureUpdateOnTextItem()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
     TextItem *text1 = new TextItem(QLatin1String("123"));
     scene.addItem(text1);
-    QTRY_COMPARE(text1->updates,1);
+    BOBUIRY_COMPARE(text1->updates,1);
 
     //same bouding rect but we have to update
     text1->setText(QLatin1String("321"));
-    QTRY_COMPARE(text1->updates,2);
+    BOBUIRY_COMPARE(text1->updates,2);
 }
 
 void tst_QGraphicsItem::task243707_addChildBeforeParent()
@@ -6652,24 +6652,24 @@ void tst_QGraphicsItem::task197802_childrenVisibility()
 
 void tst_QGraphicsItem::boundingRegion_data()
 {
-    QTest::addColumn<QLineF>("line");
-    QTest::addColumn<qreal>("granularity");
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QRegion>("expectedRegion");
+    BOBUIest::addColumn<QLineF>("line");
+    BOBUIest::addColumn<qreal>("granularity");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QRegion>("expectedRegion");
 
-    QTest::newRow("(0, 0, 10, 10) | 0.0 | identity | {(0, 0, 10, 10)}") << QLineF(0, 0, 10, 10) << qreal(0.0) << QTransform()
+    BOBUIest::newRow("(0, 0, 10, 10) | 0.0 | identity | {(0, 0, 10, 10)}") << QLineF(0, 0, 10, 10) << qreal(0.0) << BOBUIransform()
                                                                         << QRegion(QRect(0, 0, 10, 10));
-    QTest::newRow("(0, 0, 10, 0) | 0.0 | identity | {(0, 0, 10, 10)}") << QLineF(0, 0, 10, 0) << qreal(0.0) << QTransform()
+    BOBUIest::newRow("(0, 0, 10, 0) | 0.0 | identity | {(0, 0, 10, 10)}") << QLineF(0, 0, 10, 0) << qreal(0.0) << BOBUIransform()
                                                                        << QRegion(QRect(0, 0, 10, 1));
-    QTest::newRow("(0, 0, 10, 0) | 0.5 | identity | {(0, 0, 10, 1)}") << QLineF(0, 0, 10, 0) << qreal(0.5) << QTransform()
+    BOBUIest::newRow("(0, 0, 10, 0) | 0.5 | identity | {(0, 0, 10, 1)}") << QLineF(0, 0, 10, 0) << qreal(0.5) << BOBUIransform()
                                                                       << QRegion(QRect(0, 0, 10, 1));
-    QTest::newRow("(0, 0, 10, 0) | 1.0 | identity | {(0, 0, 10, 1)}") << QLineF(0, 0, 10, 0) << qreal(1.0) << QTransform()
+    BOBUIest::newRow("(0, 0, 10, 0) | 1.0 | identity | {(0, 0, 10, 1)}") << QLineF(0, 0, 10, 0) << qreal(1.0) << BOBUIransform()
                                                                       << QRegion(QRect(0, 0, 10, 1));
-    QTest::newRow("(0, 0, 0, 10) | 0.0 | identity | {(0, 0, 10, 10)}") << QLineF(0, 0, 0, 10) << qreal(0.0) << QTransform()
+    BOBUIest::newRow("(0, 0, 0, 10) | 0.0 | identity | {(0, 0, 10, 10)}") << QLineF(0, 0, 0, 10) << qreal(0.0) << BOBUIransform()
                                                                        << QRegion(QRect(0, 0, 1, 10));
-    QTest::newRow("(0, 0, 0, 10) | 0.5 | identity | {(0, 0, 1, 10)}") << QLineF(0, 0, 0, 10) << qreal(0.5) << QTransform()
+    BOBUIest::newRow("(0, 0, 0, 10) | 0.5 | identity | {(0, 0, 1, 10)}") << QLineF(0, 0, 0, 10) << qreal(0.5) << BOBUIransform()
                                                                       << QRegion(QRect(0, 0, 1, 10));
-    QTest::newRow("(0, 0, 0, 10) | 1.0 | identity | {(0, 0, 1, 10)}") << QLineF(0, 0, 0, 10) << qreal(1.0) << QTransform()
+    BOBUIest::newRow("(0, 0, 0, 10) | 1.0 | identity | {(0, 0, 1, 10)}") << QLineF(0, 0, 0, 10) << qreal(1.0) << BOBUIransform()
                                                                       << QRegion(QRect(0, 0, 1, 10));
 }
 
@@ -6677,11 +6677,11 @@ void tst_QGraphicsItem::boundingRegion()
 {
     QFETCH(QLineF, line);
     QFETCH(qreal, granularity);
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QRegion, expectedRegion);
 
     QGraphicsLineItem item(line);
-    item.setPen(QPen(Qt::black, 0));
+    item.setPen(QPen(BobUI::black, 0));
     QCOMPARE(item.boundingRegionGranularity(), qreal(0.0));
     item.setBoundingRegionGranularity(granularity);
     QCOMPARE(item.boundingRegionGranularity(), granularity);
@@ -6695,8 +6695,8 @@ void tst_QGraphicsItem::itemTransform_parentChild()
     QGraphicsItem *child = scene.addRect(0, 0, 100, 100);
     child->setParentItem(parent);
     child->setPos(10, 10);
-    child->setTransform(QTransform::fromScale(2, 2), true);
-    child->setTransform(QTransform().rotate(90), true);
+    child->setTransform(BOBUIransform::fromScale(2, 2), true);
+    child->setTransform(BOBUIransform().rotate(90), true);
 
     QCOMPARE(child->itemTransform(parent).map(QPointF(10, 10)), QPointF(-10, 30));
     QCOMPARE(parent->itemTransform(child).map(QPointF(-10, 30)), QPointF(10, 10));
@@ -6708,19 +6708,19 @@ void tst_QGraphicsItem::itemTransform_siblings()
     QGraphicsItem *parent = scene.addRect(0, 0, 100, 100);
     QGraphicsItem *brother = scene.addRect(0, 0, 100, 100);
     QGraphicsItem *sister = scene.addRect(0, 0, 100, 100);
-    parent->setTransform(QTransform::fromScale(10, 5), true);
-    parent->setTransform(QTransform().rotate(-180), true);
-    parent->setTransform(QTransform().shear(2, 3), true);
+    parent->setTransform(BOBUIransform::fromScale(10, 5), true);
+    parent->setTransform(BOBUIransform().rotate(-180), true);
+    parent->setTransform(BOBUIransform().shear(2, 3), true);
 
     brother->setParentItem(parent);
     sister->setParentItem(parent);
 
     brother->setPos(10, 10);
-    brother->setTransform(QTransform::fromScale(2, 2), true);
-    brother->setTransform(QTransform().rotate(90), true);
+    brother->setTransform(BOBUIransform::fromScale(2, 2), true);
+    brother->setTransform(BOBUIransform().rotate(90), true);
     sister->setPos(10, 10);
-    sister->setTransform(QTransform::fromScale(2, 2), true);
-    sister->setTransform(QTransform().rotate(90), true);
+    sister->setTransform(BOBUIransform::fromScale(2, 2), true);
+    sister->setTransform(BOBUIransform().rotate(90), true);
 
     QCOMPARE(brother->itemTransform(sister).map(QPointF(10, 10)), QPointF(10, 10));
     QCOMPARE(sister->itemTransform(brother).map(QPointF(10, 10)), QPointF(10, 10));
@@ -6732,11 +6732,11 @@ void tst_QGraphicsItem::itemTransform_unrelated()
     QGraphicsItem *stranger1 = scene.addRect(0, 0, 100, 100);
     QGraphicsItem *stranger2 = scene.addRect(0, 0, 100, 100);
     stranger1->setPos(10, 10);
-    stranger1->setTransform(QTransform::fromScale(2, 2), true);
-    stranger1->setTransform(QTransform().rotate(90), true);
+    stranger1->setTransform(BOBUIransform::fromScale(2, 2), true);
+    stranger1->setTransform(BOBUIransform().rotate(90), true);
     stranger2->setPos(10, 10);
-    stranger2->setTransform(QTransform::fromScale(2, 2), true);
-    stranger2->setTransform(QTransform().rotate(90), true);
+    stranger2->setTransform(BOBUIransform::fromScale(2, 2), true);
+    stranger2->setTransform(BOBUIransform().rotate(90), true);
 
     QCOMPARE(stranger1->itemTransform(stranger2).map(QPointF(10, 10)), QPointF(10, 10));
     QCOMPARE(stranger2->itemTransform(stranger1).map(QPointF(10, 10)), QPointF(10, 10));
@@ -6744,68 +6744,68 @@ void tst_QGraphicsItem::itemTransform_unrelated()
 
 void tst_QGraphicsItem::opacity_data()
 {
-    QTest::addColumn<qreal>("p_opacity");
-    QTest::addColumn<int>("p_opacityFlags");
-    QTest::addColumn<qreal>("c1_opacity");
-    QTest::addColumn<int>("c1_opacityFlags");
-    QTest::addColumn<qreal>("c2_opacity");
-    QTest::addColumn<int>("c2_opacityFlags");
-    QTest::addColumn<qreal>("p_effectiveOpacity");
-    QTest::addColumn<qreal>("c1_effectiveOpacity");
-    QTest::addColumn<qreal>("c2_effectiveOpacity");
-    QTest::addColumn<qreal>("c3_effectiveOpacity");
+    BOBUIest::addColumn<qreal>("p_opacity");
+    BOBUIest::addColumn<int>("p_opacityFlags");
+    BOBUIest::addColumn<qreal>("c1_opacity");
+    BOBUIest::addColumn<int>("c1_opacityFlags");
+    BOBUIest::addColumn<qreal>("c2_opacity");
+    BOBUIest::addColumn<int>("c2_opacityFlags");
+    BOBUIest::addColumn<qreal>("p_effectiveOpacity");
+    BOBUIest::addColumn<qreal>("c1_effectiveOpacity");
+    BOBUIest::addColumn<qreal>("c2_effectiveOpacity");
+    BOBUIest::addColumn<qreal>("c3_effectiveOpacity");
 
     // Modify the opacity and see how it propagates
-    QTest::newRow("A: 1.0 0 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 << qreal(1.0) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("A: 1.0 0 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 << qreal(1.0) << 0 << qreal(1.0) << 0
                                                         << qreal(1.0) << qreal(1.0) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("B: 0.5 0 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 << qreal(1.0) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("B: 0.5 0 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 << qreal(1.0) << 0 << qreal(1.0) << 0
                                                         << qreal(0.5) << qreal(0.5) << qreal(0.5) << qreal(0.5);
-    QTest::newRow("C: 0.5 0 0.1 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 << qreal(0.1) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("C: 0.5 0 0.1 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 << qreal(0.1) << 0 << qreal(1.0) << 0
                                                         << qreal(0.5) << qreal(0.05) << qreal(0.05) << qreal(0.05);
-    QTest::newRow("D: 0.0 0 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.0) << 0 << qreal(1.0) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("D: 0.0 0 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.0) << 0 << qreal(1.0) << 0 << qreal(1.0) << 0
                                                         << qreal(0.0) << qreal(0.0) << qreal(0.0) << qreal(0.0);
 
     // Parent doesn't propagate to children - now modify the opacity and see how it propagates
     int flags = QGraphicsItem::ItemDoesntPropagateOpacityToChildren;
-    QTest::newRow("E: 1.0 2 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << flags << qreal(1.0) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("E: 1.0 2 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << flags << qreal(1.0) << 0 << qreal(1.0) << 0
                                                         << qreal(1.0) << qreal(1.0) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("F: 0.5 2 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << flags << qreal(1.0) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("F: 0.5 2 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << flags << qreal(1.0) << 0 << qreal(1.0) << 0
                                                         << qreal(0.5) << qreal(1.0) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("G: 0.5 2 0.1 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << flags << qreal(0.1) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("G: 0.5 2 0.1 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << flags << qreal(0.1) << 0 << qreal(1.0) << 0
                                                         << qreal(0.5) << qreal(0.1) << qreal(0.1) << qreal(0.1);
-    QTest::newRow("H: 0.0 2 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.0) << flags << qreal(1.0) << 0 << qreal(1.0) << 0
+    BOBUIest::newRow("H: 0.0 2 1.0 0 1.0 1.0 1.0 1.0 1.0") << qreal(0.0) << flags << qreal(1.0) << 0 << qreal(1.0) << 0
                                                         << qreal(0.0) << qreal(1.0) << qreal(1.0) << qreal(1.0);
 
     // Child ignores parent - now modify the opacity and see how it propagates
     flags = QGraphicsItem::ItemIgnoresParentOpacity;
-    QTest::newRow("I: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 << qreal(1.0) << flags << qreal(1.0) << 0
+    BOBUIest::newRow("I: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 << qreal(1.0) << flags << qreal(1.0) << 0
                                                         << qreal(1.0) << qreal(1.0) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("J: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 << qreal(0.5) << flags << qreal(0.5) << 0
+    BOBUIest::newRow("J: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 << qreal(0.5) << flags << qreal(0.5) << 0
                                                         << qreal(0.5) << qreal(0.5) << qreal(0.25) << qreal(0.25);
-    QTest::newRow("K: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.2) << 0 << qreal(0.2) << flags << qreal(0.2) << 0
+    BOBUIest::newRow("K: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.2) << 0 << qreal(0.2) << flags << qreal(0.2) << 0
                                                         << qreal(0.2) << qreal(0.2) << qreal(0.04) << qreal(0.04);
-    QTest::newRow("L: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.0) << 0 << qreal(0.0) << flags << qreal(0.0) << 0
+    BOBUIest::newRow("L: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.0) << 0 << qreal(0.0) << flags << qreal(0.0) << 0
                                                         << qreal(0.0) << qreal(0.0) << qreal(0.0) << qreal(0.0);
 
     // Child ignores parent and doesn't propagate - now modify the opacity and see how it propagates
     flags = QGraphicsItem::ItemIgnoresParentOpacity | QGraphicsItem::ItemDoesntPropagateOpacityToChildren;
-    QTest::newRow("M: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 // p
+    BOBUIest::newRow("M: 1.0 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 // p
                                                         << qreal(1.0) << flags // c1 (no prop)
                                                         << qreal(1.0) << 0 // c2
                                                         << qreal(1.0) << qreal(1.0) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("M: 0.5 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 // p
+    BOBUIest::newRow("M: 0.5 0 1.0 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 // p
                                                         << qreal(1.0) << flags // c1 (no prop)
                                                         << qreal(1.0) << 0 // c2
                                                         << qreal(0.5) << qreal(1.0) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("M: 0.5 0 0.5 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 // p
+    BOBUIest::newRow("M: 0.5 0 0.5 1 1.0 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 // p
                                                         << qreal(0.5) << flags // c1 (no prop)
                                                         << qreal(1.0) << 0 // c2
                                                         << qreal(0.5) << qreal(0.5) << qreal(1.0) << qreal(1.0);
-    QTest::newRow("M: 0.5 0 0.5 1 0.5 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 // p
+    BOBUIest::newRow("M: 0.5 0 0.5 1 0.5 1.0 1.0 1.0 1.0") << qreal(0.5) << 0 // p
                                                         << qreal(0.5) << flags // c1 (no prop)
                                                         << qreal(0.5) << 0 // c2
                                                         << qreal(0.5) << qreal(0.5) << qreal(0.5) << qreal(0.5);
-    QTest::newRow("M: 1.0 0 0.5 1 0.5 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 // p
+    BOBUIest::newRow("M: 1.0 0 0.5 1 0.5 1.0 1.0 1.0 1.0") << qreal(1.0) << 0 // p
                                                         << qreal(0.5) << flags // c1 (no prop)
                                                         << qreal(0.5) << 0 // c2
                                                         << qreal(1.0) << qreal(0.5) << qreal(0.5) << qreal(0.5);
@@ -6861,13 +6861,13 @@ void tst_QGraphicsItem::opacity2()
     scene.addItem(parent);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
-    QTRY_VERIFY(view.repaints >= 1);
+    BOBUIRY_VERIFY(view.repaints >= 1);
 
 #define RESET_REPAINT_COUNTERS \
     parent->repaints = 0; \
@@ -6878,7 +6878,7 @@ void tst_QGraphicsItem::opacity2()
     RESET_REPAINT_COUNTERS
 
     child->setOpacity(0.0);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     QCOMPARE(parent->repaints, 1);
     QCOMPARE(child->repaints, 0);
     QCOMPARE(grandChild->repaints, 0);
@@ -6886,7 +6886,7 @@ void tst_QGraphicsItem::opacity2()
     RESET_REPAINT_COUNTERS
 
     child->setOpacity(1.0);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     QCOMPARE(parent->repaints, 1);
     QCOMPARE(child->repaints, 1);
     QCOMPARE(grandChild->repaints, 1);
@@ -6894,7 +6894,7 @@ void tst_QGraphicsItem::opacity2()
     RESET_REPAINT_COUNTERS
 
     parent->setOpacity(0.0);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     QCOMPARE(parent->repaints, 0);
     QCOMPARE(child->repaints, 0);
     QCOMPARE(grandChild->repaints, 0);
@@ -6902,7 +6902,7 @@ void tst_QGraphicsItem::opacity2()
     RESET_REPAINT_COUNTERS
 
     parent->setOpacity(1.0);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     QCOMPARE(parent->repaints, 1);
     QCOMPARE(child->repaints, 1);
     QCOMPARE(grandChild->repaints, 1);
@@ -6911,7 +6911,7 @@ void tst_QGraphicsItem::opacity2()
     RESET_REPAINT_COUNTERS
 
     child->setOpacity(0.0);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     QCOMPARE(parent->repaints, 1);
     QCOMPARE(child->repaints, 0);
     QCOMPARE(grandChild->repaints, 1);
@@ -6919,7 +6919,7 @@ void tst_QGraphicsItem::opacity2()
     RESET_REPAINT_COUNTERS
 
     child->setOpacity(0.0); // Already 0.0; no change.
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     QCOMPARE(view.repaints, 0);
     QCOMPARE(parent->repaints, 0);
     QCOMPARE(child->repaints, 0);
@@ -6937,20 +6937,20 @@ void tst_QGraphicsItem::opacityZeroUpdates()
     scene.addItem(parent);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
     QCoreApplication::processEvents(); // Process all queued paint events
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
 
     view.reset();
     parent->setOpacity(0.0);
 
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
 
     // transforming items bounding rect to view coordinates
     const QRect childDeviceBoundingRect = child->deviceTransform(view.viewportTransform())
@@ -7016,21 +7016,21 @@ void tst_QGraphicsItem::itemStacksBehindParent()
     scene.addItem(parent2);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(!paintedItems.isEmpty());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(!paintedItems.isEmpty());
     paintedItems.clear();
     view.viewport()->update();
     QApplication::processEvents();
     QRectF rect(0, 0, 100, 100);
     const GraphicsItemsList expected1{grandChild111, child11, grandChild121, child12, parent1,
                                       grandChild211, child21, grandChild221, child22, parent2};
-    QTRY_COMPARE(scene.items(rect), expected1);
+    BOBUIRY_COMPARE(scene.items(rect), expected1);
 
     const GraphicsItems expected2{parent2, child22, grandChild221, child21, grandChild211,
                                   parent1, child12, grandChild121, child11, grandChild111};
-    QTRY_COMPARE(paintedItems, expected2);
+    BOBUIRY_COMPARE(paintedItems, expected2);
 
     child11->setFlag(QGraphicsItem::ItemStacksBehindParent);
     scene.update();
@@ -7039,10 +7039,10 @@ void tst_QGraphicsItem::itemStacksBehindParent()
     const GraphicsItemsList expected3{grandChild121, child12, parent1, grandChild111, child11,
                                       grandChild211, child21, grandChild221, child22, parent2};
 
-    QTRY_COMPARE(scene.items(rect), expected3);
+    BOBUIRY_COMPARE(scene.items(rect), expected3);
     const GraphicsItems expected4{parent2, child22, grandChild221, child21, grandChild211, child11, grandChild111,
                                   parent1, child12, grandChild121};
-    QTRY_COMPARE(paintedItems, expected4);
+    BOBUIRY_COMPARE(paintedItems, expected4);
 
     child12->setFlag(QGraphicsItem::ItemStacksBehindParent);
     paintedItems.clear();
@@ -7050,11 +7050,11 @@ void tst_QGraphicsItem::itemStacksBehindParent()
 
     const GraphicsItemsList expected5{parent1, grandChild111, child11, grandChild121, child12,
                                       grandChild211, child21, grandChild221, child22, parent2};
-    QTRY_COMPARE(scene.items(rect), expected5);
+    BOBUIRY_COMPARE(scene.items(rect), expected5);
 
     const GraphicsItems expected6{parent2, child22, grandChild221, child21, grandChild211,
                                   child12, grandChild121, child11, grandChild111, parent1};
-    QTRY_COMPARE(paintedItems, expected6);
+    BOBUIRY_COMPARE(paintedItems, expected6);
 }
 
 class ClippingAndTransformsScene : public QGraphicsScene
@@ -7105,12 +7105,12 @@ void tst_QGraphicsItem::nestedClipping()
 
     QGraphicsView view(&scene);
     view.setOptimizationFlag(QGraphicsView::IndirectPainting);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     GraphicsItems expected{root, l1, l2, l3};
-    QTRY_COMPARE(scene.drawnItems, expected);
+    BOBUIRY_COMPARE(scene.drawnItems, expected);
 
     QImage image(200, 200, QImage::Format_ARGB32_Premultiplied);
     image.fill(0);
@@ -7140,11 +7140,11 @@ public:
     TransformDebugItem()
         : QGraphicsRectItem(QRectF(-10, -10, 20, 20))
     {
-        setPen(QPen(Qt::black, 0));
+        setPen(QPen(BobUI::black, 0));
         setBrush(QColor(QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256)));
     }
 
-    QTransform x;
+    BOBUIransform x;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override
@@ -7192,14 +7192,14 @@ void tst_QGraphicsItem::nestedClippingTransforms()
     scene.render(&p);
     p.end();
 
-    QCOMPARE(rootClipper->x, QTransform(1, 0, 0, 0, 1, 0, 10, 10, 1));
-    QCOMPARE(child->x, QTransform(1, 0, 0, 0, 1, 0, 12, 12, 1));
-    QCOMPARE(grandChildClipper->x, QTransform(1, 0, 0, 0, 1, 0, 16, 16, 1));
-    QCOMPARE(greatGrandChild->x, QTransform(1, 0, 0, 0, 1, 0, 18, 18, 1));
-    QCOMPARE(grandChildClipper2->x, QTransform(1, 0, 0, 0, 1, 0, 20, 20, 1));
-    QCOMPARE(greatGrandChild2->x, QTransform(1, 0, 0, 0, 1, 0, 22, 22, 1));
-    QCOMPARE(grandChildClipper3->x, QTransform(1, 0, 0, 0, 1, 0, 24, 24, 1));
-    QCOMPARE(greatGrandChild3->x, QTransform(1, 0, 0, 0, 1, 0, 26, 26, 1));
+    QCOMPARE(rootClipper->x, BOBUIransform(1, 0, 0, 0, 1, 0, 10, 10, 1));
+    QCOMPARE(child->x, BOBUIransform(1, 0, 0, 0, 1, 0, 12, 12, 1));
+    QCOMPARE(grandChildClipper->x, BOBUIransform(1, 0, 0, 0, 1, 0, 16, 16, 1));
+    QCOMPARE(greatGrandChild->x, BOBUIransform(1, 0, 0, 0, 1, 0, 18, 18, 1));
+    QCOMPARE(grandChildClipper2->x, BOBUIransform(1, 0, 0, 0, 1, 0, 20, 20, 1));
+    QCOMPARE(greatGrandChild2->x, BOBUIransform(1, 0, 0, 0, 1, 0, 22, 22, 1));
+    QCOMPARE(grandChildClipper3->x, BOBUIransform(1, 0, 0, 0, 1, 0, 24, 24, 1));
+    QCOMPARE(greatGrandChild3->x, BOBUIransform(1, 0, 0, 0, 1, 0, 26, 26, 1));
 }
 
 void tst_QGraphicsItem::sceneTransformCache()
@@ -7209,18 +7209,18 @@ void tst_QGraphicsItem::sceneTransformCache()
     QGraphicsScene scene;
 
     const QScopedPointer<QGraphicsRectItem> rect(scene.addRect(0, 0, 100, 100));
-    rect->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
     QGraphicsRectItem *rect2 = scene.addRect(0, 0, 100, 100);
-    rect2->setPen(QPen(Qt::black, 0));
+    rect2->setPen(QPen(BobUI::black, 0));
     rect2->setParentItem(rect.data());
-    rect2->setTransform(QTransform().rotate(90), true);
-    rect->setTransform(QTransform::fromTranslate(0, 50), true);
+    rect2->setTransform(BOBUIransform().rotate(90), true);
+    rect->setTransform(BOBUIransform::fromTranslate(0, 50), true);
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    rect->setTransform(QTransform::fromTranslate(0, 100), true);
-    QTransform x;
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    rect->setTransform(BOBUIransform::fromTranslate(0, 100), true);
+    BOBUIransform x;
     x.translate(0, 150);
     x.rotate(90);
     QCOMPARE(rect2->sceneTransform(), x);
@@ -7236,11 +7236,11 @@ void tst_QGraphicsItem::sceneTransformCache()
     QGraphicsRectItem *rect3 = scene.addRect(0, 0, 100, 100);
     QGraphicsRectItem *rect4 = scene.addRect(0, 0, 100, 100);
     rect3->setPos(QPointF(10,10));
-    rect3->setPen(QPen(Qt::black, 0));
+    rect3->setPen(QPen(BobUI::black, 0));
 
     rect4->setParentItem(rect3);
     rect4->setPos(QPointF(10,10));
-    rect4->setPen(QPen(Qt::black, 0));
+    rect4->setPen(QPen(BobUI::black, 0));
 
     QCOMPARE(rect4->mapToScene(rect4->boundingRect().topLeft()), QPointF(20,20));
 
@@ -7251,11 +7251,11 @@ void tst_QGraphicsItem::sceneTransformCache()
     QGraphicsRectItem *rect5 = scene.addRect(0, 0, 100, 100);
     QGraphicsRectItem *rect6 = scene.addRect(0, 0, 100, 100);
     rect5->setPos(QPointF(20,20));
-    rect5->setPen(QPen(Qt::black, 0));
+    rect5->setPen(QPen(BobUI::black, 0));
 
     rect6->setParentItem(rect5);
     rect6->setPos(QPointF(10,10));
-    rect6->setPen(QPen(Qt::black, 0));
+    rect6->setPen(QPen(BobUI::black, 0));
     //test if rect6 transform is ok
     QCOMPARE(rect6->mapToScene(rect6->boundingRect().topLeft()), QPointF(30,30));
 
@@ -7268,9 +7268,9 @@ void tst_QGraphicsItem::sceneTransformCache()
 
 void tst_QGraphicsItem::tabChangesFocus_data()
 {
-    QTest::addColumn<bool>("tabChangesFocus");
-    QTest::newRow("tab changes focus") << true;
-    QTest::newRow("tab doesn't change focus") << false;
+    BOBUIest::addColumn<bool>("tabChangesFocus");
+    BOBUIest::newRow("tab changes focus") << true;
+    BOBUIest::newRow("tab doesn't change focus") << false;
 }
 
 void tst_QGraphicsItem::tabChangesFocus()
@@ -7283,7 +7283,7 @@ void tst_QGraphicsItem::tabChangesFocus()
     QGraphicsScene scene;
     QGraphicsTextItem *item = scene.addText("Hello");
     item->setTabChangesFocus(tabChangesFocus);
-    item->setTextInteractionFlags(Qt::TextEditorInteraction);
+    item->setTextInteractionFlags(BobUI::TextEditorInteraction);
     item->setFocus();
 
     QDial *dial1 = new QDial;
@@ -7296,47 +7296,47 @@ void tst_QGraphicsItem::tabChangesFocus()
     layout->addWidget(dial2);
 
     QWidget widget;
-    widget.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    widget.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     widget.setLayout(layout);
     widget.show();
     view->window()->activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
-    QTRY_VERIFY(scene.isActive());
+    BOBUIRY_VERIFY(scene.isActive());
 
     dial1->setFocus();
-    QTRY_VERIFY(dial1->hasFocus());
+    BOBUIRY_VERIFY(dial1->hasFocus());
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
-    QTRY_VERIFY(view->hasFocus());
-    QTRY_VERIFY(item->hasFocus());
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
+    BOBUIRY_VERIFY(view->hasFocus());
+    BOBUIRY_VERIFY(item->hasFocus());
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
 
     if (tabChangesFocus) {
-        QTRY_VERIFY(!view->hasFocus());
-        QTRY_VERIFY(!item->hasFocus());
-        QTRY_VERIFY(dial2->hasFocus());
+        BOBUIRY_VERIFY(!view->hasFocus());
+        BOBUIRY_VERIFY(!item->hasFocus());
+        BOBUIRY_VERIFY(dial2->hasFocus());
     } else {
-        QTRY_VERIFY(view->hasFocus());
-        QTRY_VERIFY(item->hasFocus());
+        BOBUIRY_VERIFY(view->hasFocus());
+        BOBUIRY_VERIFY(item->hasFocus());
         QCOMPARE(item->toPlainText(), QString("\tHello"));
     }
 }
 
 void tst_QGraphicsItem::cacheMode()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QGraphicsScene scene(0, 0, 100, 100);
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.resize(150, 150);
     view.show();
     view.window()->activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     EventTester *tester = new EventTester;
@@ -7350,20 +7350,20 @@ void tst_QGraphicsItem::cacheMode()
 
     for (int i = 0; i < 2; ++i) {
         // No visual change.
-        QTRY_COMPARE(tester->repaints, 1);
+        BOBUIRY_COMPARE(tester->repaints, 1);
         QCOMPARE(testerChild->repaints, 1);
         QCOMPARE(testerChild2->repaints, 1);
         tester->setCacheMode(QGraphicsItem::NoCache);
         testerChild->setCacheMode(QGraphicsItem::NoCache);
         testerChild2->setCacheMode(QGraphicsItem::NoCache);
-        QTest::qWait(25);
-        QTRY_COMPARE(tester->repaints, 1);
+        BOBUIest::qWait(25);
+        BOBUIRY_COMPARE(tester->repaints, 1);
         QCOMPARE(testerChild->repaints, 1);
         QCOMPARE(testerChild2->repaints, 1);
         tester->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         testerChild->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         testerChild2->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        QTest::qWait(25);
+        BOBUIest::qWait(25);
     }
 
     // The first move causes a repaint as the item is painted into its pixmap.
@@ -7371,7 +7371,7 @@ void tst_QGraphicsItem::cacheMode()
     tester->setPos(10, 10);
     testerChild->setPos(10, 10);
     testerChild2->setPos(10, 10);
-    QTRY_COMPARE(tester->repaints, 2);
+    BOBUIRY_COMPARE(tester->repaints, 2);
     QCOMPARE(testerChild->repaints, 2);
     QCOMPARE(testerChild2->repaints, 2);
 
@@ -7379,21 +7379,21 @@ void tst_QGraphicsItem::cacheMode()
     tester->setPos(20, 20);
     testerChild->setPos(20, 20);
     testerChild2->setPos(20, 20);
-    QTest::qWait(250);
+    BOBUIest::qWait(250);
     QCOMPARE(tester->repaints, 2);
     QCOMPARE(testerChild->repaints, 2);
     QCOMPARE(testerChild2->repaints, 2);
 
     // Translating does not result in a repaint.
-    tester->setTransform(QTransform::fromTranslate(10, 10), true);
-    QTest::qWait(25);
+    tester->setTransform(BOBUIransform::fromTranslate(10, 10), true);
+    BOBUIest::qWait(25);
     QCOMPARE(tester->repaints, 2);
     QCOMPARE(testerChild->repaints, 2);
     QCOMPARE(testerChild2->repaints, 2);
 
     // Rotating results in a repaint.
-    tester->setTransform(QTransform().rotate(45), true);
-    QTRY_COMPARE(tester->repaints, 3);
+    tester->setTransform(BOBUIransform().rotate(45), true);
+    BOBUIRY_COMPARE(tester->repaints, 3);
     QCOMPARE(testerChild->repaints, 3);
     QCOMPARE(testerChild2->repaints, 2);
 
@@ -7401,15 +7401,15 @@ void tst_QGraphicsItem::cacheMode()
     tester->setCacheMode(QGraphicsItem::ItemCoordinateCache); // autosize
     testerChild->setCacheMode(QGraphicsItem::ItemCoordinateCache); // autosize
     testerChild2->setCacheMode(QGraphicsItem::ItemCoordinateCache); // autosize
-    QTRY_COMPARE(tester->repaints, 4);
+    BOBUIRY_COMPARE(tester->repaints, 4);
     QCOMPARE(testerChild->repaints, 4);
     QCOMPARE(testerChild2->repaints, 3);
 
     // Rotating items with ItemCoordinateCache doesn't cause a repaint.
-    tester->setTransform(QTransform().rotate(22), true);
-    testerChild->setTransform(QTransform().rotate(22), true);
-    testerChild2->setTransform(QTransform().rotate(22), true);
-    QTest::qWait(25);
+    tester->setTransform(BOBUIransform().rotate(22), true);
+    testerChild->setTransform(BOBUIransform().rotate(22), true);
+    testerChild2->setTransform(BOBUIransform().rotate(22), true);
+    BOBUIest::qWait(25);
     QCOMPARE(tester->repaints, 4);
     QCOMPARE(testerChild->repaints, 4);
     QCOMPARE(testerChild2->repaints, 3);
@@ -7419,13 +7419,13 @@ void tst_QGraphicsItem::cacheMode()
 
     // Explicit update causes a repaint.
     tester->update(0, 0, 5, 5);
-    QTRY_COMPARE(tester->repaints, 5);
+    BOBUIRY_COMPARE(tester->repaints, 5);
     QCOMPARE(testerChild->repaints, 4);
     QCOMPARE(testerChild2->repaints, 3);
 
     // Updating outside the item's bounds does not cause a repaint.
     tester->update(10, 10, 5, 5);
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
     QCOMPARE(tester->repaints, 5);
     QCOMPARE(testerChild->repaints, 4);
     QCOMPARE(testerChild2->repaints, 3);
@@ -7433,7 +7433,7 @@ void tst_QGraphicsItem::cacheMode()
     // Resizing an item should cause a repaint of that item. (because of
     // autosize).
     tester->setGeometry(QRectF(-15, -15, 30, 30));
-    QTRY_COMPARE(tester->repaints, 6);
+    BOBUIRY_COMPARE(tester->repaints, 6);
     QCOMPARE(testerChild->repaints, 4);
     QCOMPARE(testerChild2->repaints, 3);
 
@@ -7441,19 +7441,19 @@ void tst_QGraphicsItem::cacheMode()
     tester->setCacheMode(QGraphicsItem::ItemCoordinateCache, QSize(30, 30));
     testerChild->setCacheMode(QGraphicsItem::ItemCoordinateCache, QSize(30, 30));
     testerChild2->setCacheMode(QGraphicsItem::ItemCoordinateCache, QSize(30, 30));
-    QTRY_COMPARE(tester->repaints, 7);
+    BOBUIRY_COMPARE(tester->repaints, 7);
     QCOMPARE(testerChild->repaints, 5);
     QCOMPARE(testerChild2->repaints, 4);
 
     // Resizing the item should cause a repaint.
     testerChild->setGeometry(QRectF(-15, -15, 30, 30));
-    QTRY_COMPARE(testerChild->repaints, 6);
+    BOBUIRY_COMPARE(testerChild->repaints, 6);
     QCOMPARE(tester->repaints, 7);
     QCOMPARE(testerChild2->repaints, 4);
 
     // Scaling the view does not cause a repaint.
     view.scale(0.7, 0.7);
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
     QCOMPARE(tester->repaints, 7);
     QCOMPARE(testerChild->repaints, 6);
     QCOMPARE(testerChild2->repaints, 4);
@@ -7462,118 +7462,118 @@ void tst_QGraphicsItem::cacheMode()
     tester->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     testerChild->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     testerChild2->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    QTRY_COMPARE(tester->repaints, 8);
+    BOBUIRY_COMPARE(tester->repaints, 8);
     QCOMPARE(testerChild->repaints, 7);
     QCOMPARE(testerChild2->repaints, 5);
 
     // Scaling the view back should cause repaints for two of the items.
-    view.setTransform(QTransform());
-    QTRY_COMPARE(tester->repaints, 9);
+    view.setTransform(BOBUIransform());
+    BOBUIRY_COMPARE(tester->repaints, 9);
     QCOMPARE(testerChild->repaints, 8);
     QCOMPARE(testerChild2->repaints, 5);
 
     // Rotating the base item (perspective) should repaint two items.
-    tester->setTransform(QTransform().rotate(10, Qt::XAxis));
-    QTRY_COMPARE(tester->repaints, 10);
+    tester->setTransform(BOBUIransform().rotate(10, BobUI::XAxis));
+    BOBUIRY_COMPARE(tester->repaints, 10);
     QCOMPARE(testerChild->repaints, 9);
     QCOMPARE(testerChild2->repaints, 5);
 
     // Moving the middle item should cause a repaint even if it's a move,
     // because the parent is rotated with a perspective.
     testerChild->setPos(1, 1);
-    QTRY_COMPARE(tester->repaints, 11);
-    QTRY_COMPARE(testerChild->repaints, 10);
+    BOBUIRY_COMPARE(tester->repaints, 11);
+    BOBUIRY_COMPARE(testerChild->repaints, 10);
     QCOMPARE(testerChild2->repaints, 5);
     tester->resetTransform();
 
     // Make a huge item
     tester->setGeometry(QRectF(-4000, -4000, 8000, 8000));
-    QTRY_COMPARE(tester->repaints, 12);
-    QTRY_COMPARE(testerChild->repaints, 11);
+    BOBUIRY_COMPARE(tester->repaints, 12);
+    BOBUIRY_COMPARE(testerChild->repaints, 11);
     QCOMPARE(testerChild2->repaints, 5);
 
     // Move the large item - will cause a repaint as the
     // cache is clipped.
     tester->setPos(5, 0);
-    QTRY_COMPARE(tester->repaints, 13);
-    QTRY_COMPARE(testerChild->repaints, 11);
+    BOBUIRY_COMPARE(tester->repaints, 13);
+    BOBUIRY_COMPARE(testerChild->repaints, 11);
     QCOMPARE(testerChild2->repaints, 5);
 
     // Hiding and showing should invalidate the cache
     tester->hide();
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
     tester->show();
-    QTRY_COMPARE(tester->repaints, 14);
-    QTRY_COMPARE(testerChild->repaints, 12);
-    QTRY_COMPARE(testerChild2->repaints, 6);
+    BOBUIRY_COMPARE(tester->repaints, 14);
+    BOBUIRY_COMPARE(testerChild->repaints, 12);
+    BOBUIRY_COMPARE(testerChild2->repaints, 6);
 }
 
 void tst_QGraphicsItem::cacheMode2()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QGraphicsScene scene(0, 0, 100, 100);
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.resize(150, 150);
     view.show();
     view.window()->activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     EventTester *tester = new EventTester;
     scene.addItem(tester);
-    QTRY_COMPARE(tester->repaints, 1);
+    BOBUIRY_COMPARE(tester->repaints, 1);
 
     // Switching from NoCache to NoCache (no repaint)
     tester->setCacheMode(QGraphicsItem::NoCache);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(tester->repaints, 1);
 
     // Switching from NoCache to DeviceCoordinateCache (no repaint)
     tester->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(tester->repaints, 1);
 
     // Switching from DeviceCoordinateCache to DeviceCoordinateCache (no repaint)
     tester->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(tester->repaints, 1);
 
     // Switching from DeviceCoordinateCache to NoCache (no repaint)
     tester->setCacheMode(QGraphicsItem::NoCache);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(tester->repaints, 1);
 
     // Switching from NoCache to ItemCoordinateCache (repaint)
     tester->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    QTRY_COMPARE(tester->repaints, 2);
+    BOBUIRY_COMPARE(tester->repaints, 2);
 
     // Switching from ItemCoordinateCache to ItemCoordinateCache (no repaint)
     tester->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(tester->repaints, 2);
 
     // Switching from ItemCoordinateCache to ItemCoordinateCache with different size (repaint)
     tester->setCacheMode(QGraphicsItem::ItemCoordinateCache, QSize(100, 100));
-    QTRY_COMPARE(tester->repaints, 3);
+    BOBUIRY_COMPARE(tester->repaints, 3);
 
     // Switching from ItemCoordinateCache to NoCache (repaint)
     tester->setCacheMode(QGraphicsItem::NoCache);
-    QTRY_COMPARE(tester->repaints, 4);
+    BOBUIRY_COMPARE(tester->repaints, 4);
 
     // Switching from DeviceCoordinateCache to ItemCoordinateCache (repaint)
     tester->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QCOMPARE(tester->repaints, 4);
     tester->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    QTRY_COMPARE(tester->repaints, 5);
+    BOBUIRY_COMPARE(tester->repaints, 5);
 
     // Switching from ItemCoordinateCache to DeviceCoordinateCache (repaint)
     tester->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    QTRY_COMPARE(tester->repaints, 6);
+    BOBUIRY_COMPARE(tester->repaints, 6);
 }
 
 void tst_QGraphicsItem::updateCachedItemAfterMove()
@@ -7587,32 +7587,32 @@ void tst_QGraphicsItem::updateCachedItemAfterMove()
     QGraphicsScene scene;
     scene.addItem(tester);
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_VERIFY(tester->repaints > 0);
+    BOBUIRY_VERIFY(tester->repaints > 0);
     tester->repaints = 0;
 
     // Move the item, should not cause repaints
     tester->setPos(10, 0);
-    QTest::qWait(12);
+    BOBUIest::qWait(12);
     QCOMPARE(tester->repaints, 0);
 
     // Move then update, should cause one repaint
     tester->setPos(20, 0);
     tester->update();
-    QTRY_COMPARE(tester->repaints, 1);
+    BOBUIRY_COMPARE(tester->repaints, 1);
 
     // Hiding the item doesn't cause a repaint
     tester->hide();
-    QTest::qWait(12);
+    BOBUIest::qWait(12);
     QCOMPARE(tester->repaints, 1);
 
     // Moving a hidden item doesn't cause a repaint
     tester->setPos(30, 0);
     tester->update();
-    QTest::qWait(12);
+    BOBUIest::qWait(12);
     QCOMPARE(tester->repaints, 1);
 }
 
@@ -7630,7 +7630,7 @@ public:
         QGraphicsRectItem::paint(painter, option, widget);
         const QString text = QString::number(p.x()) + QLatin1Char('x') + QString::number(p.y())
             + QLatin1Char('\n') + QString::number(sp.x()) + QLatin1Char('x') + QString::number(sp.y());
-        painter->drawText(boundingRect(), Qt::AlignCenter, text);
+        painter->drawText(boundingRect(), BobUI::AlignCenter, text);
     }
 
 protected:
@@ -7647,44 +7647,44 @@ private:
 
 void tst_QGraphicsItem::deviceTransform_data()
 {
-    QTest::addColumn<bool>("untransformable1");
-    QTest::addColumn<bool>("untransformable2");
-    QTest::addColumn<bool>("untransformable3");
-    QTest::addColumn<qreal>("rotation1");
-    QTest::addColumn<qreal>("rotation2");
-    QTest::addColumn<qreal>("rotation3");
-    QTest::addColumn<QTransform>("deviceX");
-    QTest::addColumn<QPointF>("mapResult1");
-    QTest::addColumn<QPointF>("mapResult2");
-    QTest::addColumn<QPointF>("mapResult3");
+    BOBUIest::addColumn<bool>("untransformable1");
+    BOBUIest::addColumn<bool>("untransformable2");
+    BOBUIest::addColumn<bool>("untransformable3");
+    BOBUIest::addColumn<qreal>("rotation1");
+    BOBUIest::addColumn<qreal>("rotation2");
+    BOBUIest::addColumn<qreal>("rotation3");
+    BOBUIest::addColumn<BOBUIransform>("deviceX");
+    BOBUIest::addColumn<QPointF>("mapResult1");
+    BOBUIest::addColumn<QPointF>("mapResult2");
+    BOBUIest::addColumn<QPointF>("mapResult3");
 
-    QTest::newRow("nil") << false << false << false
+    BOBUIest::newRow("nil") << false << false << false
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform()
+                         << BOBUIransform()
                          << QPointF(150, 150) << QPointF(250, 250) << QPointF(350, 350);
-    QTest::newRow("deviceX rot 90") << false << false << false
+    BOBUIest::newRow("deviceX rot 90") << false << false << false
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform().rotate(90)
+                         << BOBUIransform().rotate(90)
                          << QPointF(-150, 150) << QPointF(-250, 250) << QPointF(-350, 350);
-    QTest::newRow("deviceX rot 90 100") << true << false << false
+    BOBUIest::newRow("deviceX rot 90 100") << true << false << false
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform().rotate(90)
+                         << BOBUIransform().rotate(90)
                          << QPointF(-50, 150) << QPointF(50, 250) << QPointF(150, 350);
-    QTest::newRow("deviceX rot 90 010") << false << true << false
+    BOBUIest::newRow("deviceX rot 90 010") << false << true << false
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform().rotate(90)
+                         << BOBUIransform().rotate(90)
                          << QPointF(-150, 150) << QPointF(-150, 250) << QPointF(-50, 350);
-    QTest::newRow("deviceX rot 90 001") << false << false << true
+    BOBUIest::newRow("deviceX rot 90 001") << false << false << true
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform().rotate(90)
+                         << BOBUIransform().rotate(90)
                          << QPointF(-150, 150) << QPointF(-250, 250) << QPointF(-250, 350);
-    QTest::newRow("deviceX rot 90 111") << true << true << true
+    BOBUIest::newRow("deviceX rot 90 111") << true << true << true
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform().rotate(90)
+                         << BOBUIransform().rotate(90)
                          << QPointF(-50, 150) << QPointF(50, 250) << QPointF(150, 350);
-    QTest::newRow("deviceX rot 90 101") << true << false << true
+    BOBUIest::newRow("deviceX rot 90 101") << true << false << true
                          << qreal(0.0) << qreal(0.0) << qreal(0.0)
-                         << QTransform().rotate(90)
+                         << BOBUIransform().rotate(90)
                          << QPointF(-50, 150) << QPointF(50, 250) << QPointF(150, 350);
 }
 
@@ -7696,7 +7696,7 @@ void tst_QGraphicsItem::deviceTransform()
     QFETCH(qreal, rotation1);
     QFETCH(qreal, rotation2);
     QFETCH(qreal, rotation3);
-    QFETCH(QTransform, deviceX);
+    QFETCH(BOBUIransform, deviceX);
     QFETCH(QPointF, mapResult1);
     QFETCH(QPointF, mapResult2);
     QFETCH(QPointF, mapResult3);
@@ -7710,15 +7710,15 @@ void tst_QGraphicsItem::deviceTransform()
     rect1->setPos(100, 100);
     rect2->setPos(100, 100);
     rect3->setPos(100, 100);
-    rect1->setTransform(QTransform().rotate(rotation1), true);
-    rect2->setTransform(QTransform().rotate(rotation2), true);
-    rect3->setTransform(QTransform().rotate(rotation3), true);
+    rect1->setTransform(BOBUIransform().rotate(rotation1), true);
+    rect2->setTransform(BOBUIransform().rotate(rotation2), true);
+    rect3->setTransform(BOBUIransform().rotate(rotation3), true);
     rect1->setFlag(QGraphicsItem::ItemIgnoresTransformations, untransformable1);
     rect2->setFlag(QGraphicsItem::ItemIgnoresTransformations, untransformable2);
     rect3->setFlag(QGraphicsItem::ItemIgnoresTransformations, untransformable3);
-    rect1->setBrush(Qt::red);
-    rect2->setBrush(Qt::green);
-    rect3->setBrush(Qt::blue);
+    rect1->setBrush(BobUI::red);
+    rect2->setBrush(BobUI::green);
+    rect3->setBrush(BobUI::blue);
     scene.addItem(rect1);
 
     QCOMPARE(rect1->deviceTransform(deviceX).map(QPointF(50, 50)), mapResult1);
@@ -7731,34 +7731,34 @@ void tst_QGraphicsItem::update()
     QGraphicsScene scene;
     scene.setSceneRect(-100, -100, 200, 200);
     QWidget topLevel;
-    topLevel.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    topLevel.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     MyGraphicsView view(&scene,&topLevel);
 
     topLevel.resize(300, 300);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     EventTester *item = new EventTester;
     scene.addItem(item);
-    QTRY_VERIFY(item->repaints > 0); // Wait for painting
+    BOBUIRY_VERIFY(item->repaints > 0); // Wait for painting
     item->repaints = 0;
 
     item->update(); // Item marked as dirty
     scene.update(); // Entire scene marked as dirty
-    QTRY_COMPARE(item->repaints, 1);
+    BOBUIRY_COMPARE(item->repaints, 1);
 
     // Make sure the dirty state from the previous update is reset so that
     // the item don't think it is already dirty and discards this update.
     item->update();
-    QTRY_COMPARE(item->repaints, 2);
+    BOBUIRY_COMPARE(item->repaints, 2);
 
     // Make sure a partial update doesn't cause a full update to be discarded.
     view.reset();
     item->repaints = 0;
     item->update(QRectF(0, 0, 5, 5));
     item->update();
-    QTRY_COMPARE(item->repaints, 1);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(item->repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     QRect itemDeviceBoundingRect = item->deviceTransform(view.viewportTransform())
                                                          .mapRect(item->boundingRect()).toAlignedRect();
     QRegion expectedRegion = itemDeviceBoundingRect.adjusted(-2, -2, 2, 2);
@@ -7816,15 +7816,15 @@ void tst_QGraphicsItem::update()
     // The entire item's bounding rect (adjusted for antialiasing) should have been painted.
     QCOMPARE(view.paintedRegion, expectedRegion);
 
-    QGraphicsViewPrivate *viewPrivate = static_cast<QGraphicsViewPrivate *>(qt_widget_private(&view));
+    QGraphicsViewPrivate *viewPrivate = static_cast<QGraphicsViewPrivate *>(bobui_widget_private(&view));
     item->setPos(originalPos + QPoint(50, 50));
     viewPrivate->updateAll();
     QVERIFY(viewPrivate->fullUpdatePending);
-    QTRY_VERIFY(view.repaints > 1 && item->repaints > 1);
+    BOBUIRY_VERIFY(view.repaints > 1 && item->repaints > 1);
     item->repaints = 0;
     view.reset();
     item->setPos(originalPos);
-    QTRY_COMPARE(item->repaints, 1);
+    BOBUIRY_COMPARE(item->repaints, 1);
     QCOMPARE(view.repaints, 1);
     COMPARE_REGIONS(view.paintedRegion, expectedRegion + expectedRegion.translated(50, 50));
 
@@ -7840,14 +7840,14 @@ void tst_QGraphicsItem::update()
     expectedRegion = itemDeviceBoundingRect.adjusted(-2, -2, 2, 2);
     view.reset();
     item->repaints = 0;
-    parent->setTransform(QTransform::fromTranslate(-400, 0), true);
+    parent->setTransform(BOBUIransform::fromTranslate(-400, 0), true);
     QCoreApplication::processEvents();
     QCOMPARE(item->repaints, 0);
     QCOMPARE(view.repaints, 1);
     QCOMPARE(view.paintedRegion, expectedRegion);
     view.reset();
     item->repaints = 0;
-    parent->setTransform(QTransform::fromTranslate(400, 0), true);
+    parent->setTransform(BOBUIransform::fromTranslate(400, 0), true);
     QCoreApplication::processEvents();
     QCOMPARE(item->repaints, 1);
     QCOMPARE(view.repaints, 1);
@@ -7857,22 +7857,22 @@ void tst_QGraphicsItem::update()
 
 void tst_QGraphicsItem::setTransformProperties_data()
 {
-    QTest::addColumn<QPointF>("origin");
-    QTest::addColumn<qreal>("rotation");
-    QTest::addColumn<qreal>("scale");
+    BOBUIest::addColumn<QPointF>("origin");
+    BOBUIest::addColumn<qreal>("rotation");
+    BOBUIest::addColumn<qreal>("scale");
 
-    QTest::newRow("nothing") << QPointF() << qreal(0.0) << qreal(1.0);
+    BOBUIest::newRow("nothing") << QPointF() << qreal(0.0) << qreal(1.0);
 
-    QTest::newRow("rotation") << QPointF() << qreal(42.2) << qreal(1.0);
+    BOBUIest::newRow("rotation") << QPointF() << qreal(42.2) << qreal(1.0);
 
-    QTest::newRow("rotation dicentred") << QPointF(qreal(22.3), qreal(-56.2))
+    BOBUIest::newRow("rotation dicentred") << QPointF(qreal(22.3), qreal(-56.2))
                                 << qreal(-2578.2)
                                 << qreal(1.0);
 
-    QTest::newRow("Scale")    << QPointF() << qreal(0.0)
+    BOBUIest::newRow("Scale")    << QPointF() << qreal(0.0)
                                           << qreal(6);
 
-    QTest::newRow("Everything dicentred")  << QPointF(qreal(22.3), qreal(-56.2)) << qreal(-175) << qreal(196);
+    BOBUIest::newRow("Everything dicentred")  << QPointF(qreal(22.3), qreal(-56.2)) << qreal(-175) << qreal(196);
 }
 
 /**
@@ -7886,9 +7886,9 @@ void tst_QGraphicsItem::setTransformProperties()
     QFETCH(qreal,rotation);
     QFETCH(qreal,scale);
 
-    QTransform result;
+    BOBUIransform result;
     result.translate(origin.x(), origin.y());
-    result.rotate(rotation, Qt::ZAxis);
+    result.rotate(rotation, BobUI::ZAxis);
     result.scale(scale, scale);
     result.translate(-origin.x(), -origin.y());
 
@@ -7904,13 +7904,13 @@ void tst_QGraphicsItem::setTransformProperties()
     QCOMPARE(item->scale(), scale);
     QCOMPARE(item->transformOriginPoint(), origin);
 
-    QCOMPARE(QTransform(), item->transform());
+    QCOMPARE(BOBUIransform(), item->transform());
     QCOMPARE(result, item->sceneTransform());
 
     //-----------------------------------------------------------------
     //Change the rotation Z
     item->setRotation(45);
-    QTransform result2;
+    BOBUIransform result2;
     result2.translate(origin.x(), origin.y());
     result2.rotate(45);
     result2.scale(scale, scale);
@@ -7920,7 +7920,7 @@ void tst_QGraphicsItem::setTransformProperties()
     QCOMPARE(item->scale(), scale);
     QCOMPARE(item->transformOriginPoint(), origin);
 
-    QCOMPARE(QTransform(), item->transform());
+    QCOMPARE(BOBUIransform(), item->transform());
     QCOMPARE(result2, item->sceneTransform());
 
     //-----------------------------------------------------------------
@@ -7933,14 +7933,14 @@ void tst_QGraphicsItem::setTransformProperties()
     QCOMPARE(item->transformOriginPoint(), origin);
     QCOMPARE(result, item->transform());
 
-    QTransform result3(result);
+    BOBUIransform result3(result);
 
     result3.translate(origin.x(), origin.y());
     result3.rotate(45);
     result3.scale(scale, scale);
     result3.translate(-origin.x(), -origin.y());
 
-    result3 *= QTransform::fromTranslate(100, -150.5); //the pos;
+    result3 *= BOBUIransform::fromTranslate(100, -150.5); //the pos;
 
     QCOMPARE(result3, item->sceneTransform());
 
@@ -7962,8 +7962,8 @@ void tst_QGraphicsItem::setTransformProperties()
 
         QCOMPARE_TRANSFORM(item1->sceneTransform(), item2->sceneTransform());
 
-        QCOMPARE_TRANSFORM(item1->itemTransform(item2), QTransform());
-        QCOMPARE_TRANSFORM(item2->itemTransform(item1), QTransform());
+        QCOMPARE_TRANSFORM(item1->itemTransform(item2), BOBUIransform());
+        QCOMPARE_TRANSFORM(item2->itemTransform(item1), BOBUIransform());
     }
 }
 
@@ -8004,28 +8004,28 @@ void tst_QGraphicsItem::itemUsesExtendedStyleOption()
     scene.addItem(rect);
     rect->setPos(200, 200);
     QWidget topLevel;
-    topLevel.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    topLevel.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     topLevel.resize(200, 200);
     QGraphicsView view(&scene, &topLevel);
-    topLevel.setWindowFlags(Qt::X11BypassWindowManagerHint);
+    topLevel.setWindowFlags(BobUI::X11BypassWindowManagerHint);
     rect->startTrack = false;
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     QCoreApplication::processEvents(); // Process all queued paint events
-    QTRY_VERIFY(rect->repaints > 0);
+    BOBUIRY_VERIFY(rect->repaints > 0);
     rect->repaints = 0;
     rect->startTrack = true;
     rect->update(10, 10, 10, 10);
-    QTRY_COMPARE(rect->repaints, 1);
+    BOBUIRY_COMPARE(rect->repaints, 1);
     rect->repaints = 0;
     rect->startTrack = false;
     rect->setFlag(QGraphicsItem::ItemUsesExtendedStyleOption, true);
     QVERIFY((rect->flags() & QGraphicsItem::ItemUsesExtendedStyleOption));
-    QTRY_COMPARE(rect->repaints, 1);
+    BOBUIRY_COMPARE(rect->repaints, 1);
     rect->repaints = 0;
     rect->startTrack = true;
     rect->update(10, 10, 10, 10);
-    QTest::qWait(60);
+    BOBUIest::qWait(60);
     // MyStyleOptionTester does not receive a paint event. Why not?
 }
 
@@ -8035,7 +8035,7 @@ void tst_QGraphicsItem::itemSendsGeometryChanges()
     item.setFlags({ });
     item.clear();
 
-    QTransform x = QTransform().rotate(45);
+    BOBUIransform x = BOBUIransform().rotate(45);
     QPointF pos(10, 10);
     qreal o(0.5);
     qreal r(10.0);
@@ -8058,10 +8058,10 @@ void tst_QGraphicsItem::itemSendsGeometryChanges()
 
     item.setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     QCOMPARE(item.changes.size(), 4); // flags
-    item.setTransform(QTransform());
+    item.setTransform(BOBUIransform());
     item.setPos(QPointF());
     QCOMPARE(item.changes.size(), 8); // transform + pos
-    QCOMPARE(item.transform(), QTransform());
+    QCOMPARE(item.transform(), BOBUIransform());
     QCOMPARE(item.pos(), QPointF());
     QCOMPARE(item.opacity(), o);
     item.setRotation(0.0);
@@ -8098,9 +8098,9 @@ void tst_QGraphicsItem::moveItem()
     scene.setSceneRect(-50, -50, 200, 200);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     EventTester *parent = new EventTester;
@@ -8115,7 +8115,7 @@ void tst_QGraphicsItem::moveItem()
 
     RESET_COUNTERS
     scene.addItem(parent);
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
 
     RESET_COUNTERS
 
@@ -8156,7 +8156,7 @@ void tst_QGraphicsItem::moveItem()
 
     RESET_COUNTERS
 
-    parent->setTransform(QTransform::fromTranslate(20, 20), true);
+    parent->setTransform(BOBUIransform::fromTranslate(20, 20), true);
     QCoreApplication::processEvents();
     QCOMPARE(parent->repaints, 1);
     QCOMPARE(child->repaints, 1);
@@ -8177,13 +8177,13 @@ void tst_QGraphicsItem::moveLineItem()
     scene.addItem(item);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
     view.reset();
 
@@ -8199,21 +8199,21 @@ void tst_QGraphicsItem::moveLineItem()
 
     // Make sure the calculated region is correct.
     item->update();
-    QTRY_COMPARE(view.paintedRegion, expectedRegion);
+    BOBUIRY_COMPARE(view.paintedRegion, expectedRegion);
     view.reset();
 
     // Old position: (50, 50)
     item->setPos(50, 100);
     expectedRegion += expectedRegion.translated(0, 50);
-    QTRY_COMPARE(view.paintedRegion, expectedRegion);
+    BOBUIRY_COMPARE(view.paintedRegion, expectedRegion);
 }
 
 void tst_QGraphicsItem::sorting_data()
 {
-    QTest::addColumn<int>("index");
+    BOBUIest::addColumn<int>("index");
 
-    QTest::newRow("NoIndex") << int(QGraphicsScene::NoIndex);
-    QTest::newRow("BspTreeIndex") << int(QGraphicsScene::BspTreeIndex);
+    BOBUIest::newRow("NoIndex") << int(QGraphicsScene::NoIndex);
+    BOBUIest::newRow("BspTreeIndex") << int(QGraphicsScene::BspTreeIndex);
 }
 
 void tst_QGraphicsItem::sorting()
@@ -8244,9 +8244,9 @@ void tst_QGraphicsItem::sorting()
     scene.addItem(item2);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
-    // Use Qt::Tool as fully decorated windows have a minimum width of 160 on Windows.
-    view.setWindowFlags(view.windowFlags() | Qt::Tool);
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
+    // Use BobUI::Tool as fully decorated windows have a minimum width of 160 on Windows.
+    view.setWindowFlags(view.windowFlags() | BobUI::Tool);
     view.setResizeAnchor(QGraphicsView::NoAnchor);
     view.setTransformationAnchor(QGraphicsView::NoAnchor);
     view.resize(120, 100);
@@ -8254,10 +8254,10 @@ void tst_QGraphicsItem::sorting()
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(_paintedItems.size() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(_paintedItems.size() > 0);
 
     _paintedItems.clear();
 
@@ -8268,7 +8268,7 @@ void tst_QGraphicsItem::sorting()
                                  grid[3][0], grid[3][1], grid[3][2], grid[3][3],
                                  grid[4][0], grid[4][1], grid[4][2], grid[4][3],
                                  item1, item2};
-    QTRY_COMPARE(_paintedItems, expected);
+    BOBUIRY_COMPARE(_paintedItems, expected);
 }
 
 void tst_QGraphicsItem::itemHasNoContents()
@@ -8284,19 +8284,19 @@ void tst_QGraphicsItem::itemHasNoContents()
     scene.addItem(item1);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(!_paintedItems.isEmpty());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(!_paintedItems.isEmpty());
 
     _paintedItems.clear();
 
     view.viewport()->update();
-    QTRY_COMPARE(_paintedItems, GraphicsItems{item2});
+    BOBUIRY_COMPARE(_paintedItems, GraphicsItems{item2});
 }
 
 void tst_QGraphicsItem::hitTestUntransformableItem()
@@ -8305,9 +8305,9 @@ void tst_QGraphicsItem::hitTestUntransformableItem()
     scene.setSceneRect(-100, -100, 200, 200);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Confuse the BSP with dummy items.
     QGraphicsRectItem *dummy = new QGraphicsRectItem(0, 0, 20, 20);
@@ -8339,7 +8339,7 @@ void tst_QGraphicsItem::hitTestUntransformableItem()
     QCOMPARE(items.at(0), item3);
 
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     items = scene.items(QPointF(80, 80));
     QCOMPARE(items.size(), 1);
@@ -8352,12 +8352,12 @@ void tst_QGraphicsItem::hitTestGraphicsEffectItem()
     scene.setSceneRect(-100, -100, 200, 200);
 
     QWidget toplevel;
-    toplevel.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    toplevel.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
 
     QGraphicsView view(&scene, &toplevel);
     toplevel.resize(300, 300);
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     // Confuse the BSP with dummy items.
@@ -8375,23 +8375,23 @@ void tst_QGraphicsItem::hitTestGraphicsEffectItem()
     EventTester *item1 = new EventTester;
     item1->br = itemBoundingRect;
     item1->setPos(-200, -200);
-    item1->brush = Qt::red;
+    item1->brush = BobUI::red;
 
     EventTester *item2 = new EventTester;
     item2->br = itemBoundingRect;
     item2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     item2->setParentItem(item1);
     item2->setPos(200, 200);
-    item2->brush = Qt::green;
+    item2->brush = BobUI::green;
 
     EventTester *item3 = new EventTester;
     item3->br = itemBoundingRect;
     item3->setParentItem(item2);
     item3->setPos(80, 80);
-    item3->brush = Qt::blue;
+    item3->brush = BobUI::blue;
 
     scene.addItem(item1);
-    QTRY_COMPARE(item2->repaints, 1);
+    BOBUIRY_COMPARE(item2->repaints, 1);
     QCOMPARE(item3->repaints, 1);
 
     item1->repaints = 0;
@@ -8404,7 +8404,7 @@ void tst_QGraphicsItem::hitTestGraphicsEffectItem()
     item1->setGraphicsEffect(shadow);
 
     // Make sure all visible items are repainted.
-    QTRY_COMPARE(item1->repaints, 1);
+    BOBUIRY_COMPARE(item1->repaints, 1);
     QCOMPARE(item2->repaints, 1);
     QCOMPARE(item3->repaints, 1);
 
@@ -8416,7 +8416,7 @@ void tst_QGraphicsItem::hitTestGraphicsEffectItem()
     QCOMPARE(items.at(0), item3);
 
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     items = scene.items(QPointF(75, 75));
     QVERIFY(items.isEmpty());
@@ -8446,16 +8446,16 @@ void tst_QGraphicsItem::focusProxy()
 
     // Try to make a focus chain loop
     QString err;
-    QTextStream stream(&err);
+    BOBUIextStream stream(&err);
     stream << "QGraphicsItem::setFocusProxy: "
-           << static_cast<const void*>(item) << " is already in the focus proxy chain" << Qt::flush;
-    QTest::ignoreMessage(QtWarningMsg, err.toLatin1().constData());
+           << static_cast<const void*>(item) << " is already in the focus proxy chain" << BobUI::flush;
+    BOBUIest::ignoreMessage(BobUIWarningMsg, err.toLatin1().constData());
     item2->setFocusProxy(item); // fails
     QCOMPARE(item->focusProxy(), item2);
     QCOMPARE(item2->focusProxy(), nullptr);
 
     // Try to assign self as focus proxy
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsItem::setFocusProxy: cannot assign self as focus proxy");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsItem::setFocusProxy: cannot assign self as focus proxy");
     item->setFocusProxy(item); // fails
     QCOMPARE(item->focusProxy(), item2);
     QCOMPARE(item2->focusProxy(), nullptr);
@@ -8515,7 +8515,7 @@ void tst_QGraphicsItem::subFocus()
     // it does set subfocus, indicating that the item wishes
     // to gain focus later.
     QGraphicsTextItem *text = new QGraphicsTextItem("Hello");
-    text->setTextInteractionFlags(Qt::TextEditorInteraction);
+    text->setTextInteractionFlags(BobUI::TextEditorInteraction);
     QVERIFY(!text->hasFocus());
     text->setFocus();
     QVERIFY(!text->hasFocus());
@@ -8523,7 +8523,7 @@ void tst_QGraphicsItem::subFocus()
 
     // Add a sibling.
     QGraphicsTextItem *text2 = new QGraphicsTextItem("Hi");
-    text2->setTextInteractionFlags(Qt::TextEditorInteraction);
+    text2->setTextInteractionFlags(BobUI::TextEditorInteraction);
     text2->setPos(30, 30);
 
     // Add both items to a scene and check that it's text that
@@ -8624,7 +8624,7 @@ void tst_QGraphicsItem::focusProxyDeletion()
     QCOMPARE(rect->focusProxy(), nullptr);
 
     rect2 = new QGraphicsRectItem;
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsItem::setFocusProxy: focus proxy must be in same scene");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsItem::setFocusProxy: focus proxy must be in same scene");
     rect->setFocusProxy(rect2);
     QCOMPARE(rect->focusProxy(), nullptr);
     scene->addItem(rect2);
@@ -8871,8 +8871,8 @@ void tst_QGraphicsItem::panelWithFocusItems()
         parentPanelFocusItem->setFlag(QGraphicsItem::ItemIsFocusable);
         parentPanelFocusItemSibling->setFlag(QGraphicsItem::ItemIsFocusable);
         if (widget) {
-            static_cast<QGraphicsWidget *>(parentPanelFocusItem)->setFocusPolicy(Qt::StrongFocus);
-            static_cast<QGraphicsWidget *>(parentPanelFocusItemSibling)->setFocusPolicy(Qt::StrongFocus);
+            static_cast<QGraphicsWidget *>(parentPanelFocusItem)->setFocusPolicy(BobUI::StrongFocus);
+            static_cast<QGraphicsWidget *>(parentPanelFocusItemSibling)->setFocusPolicy(BobUI::StrongFocus);
         }
         parentPanelFocusItem->setParentItem(parentPanel);
         parentPanelFocusItemSibling->setParentItem(parentPanel);
@@ -8903,9 +8903,9 @@ void tst_QGraphicsItem::panelWithFocusItems()
         grandChildPanelFocusItem2->setFlag(QGraphicsItem::ItemIsFocusable);
 
         if (widget) {
-            static_cast<QGraphicsWidget *>(childPanelFocusItem)->setFocusPolicy(Qt::StrongFocus);
-            static_cast<QGraphicsWidget *>(grandChildPanelFocusItem)->setFocusPolicy(Qt::StrongFocus);
-            static_cast<QGraphicsWidget *>(grandChildPanelFocusItem2)->setFocusPolicy(Qt::StrongFocus);
+            static_cast<QGraphicsWidget *>(childPanelFocusItem)->setFocusPolicy(BobUI::StrongFocus);
+            static_cast<QGraphicsWidget *>(grandChildPanelFocusItem)->setFocusPolicy(BobUI::StrongFocus);
+            static_cast<QGraphicsWidget *>(grandChildPanelFocusItem2)->setFocusPolicy(BobUI::StrongFocus);
         }
         grandChildPanelFocusItem->setParentItem(childPanelFocusItem);
         grandChildPanelFocusItem2->setParentItem(childPanelFocusItem);
@@ -9220,9 +9220,9 @@ void tst_QGraphicsItem::moveWhileDeleting()
     child = new QGraphicsRectItem(silly);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     delete rect;
 
@@ -9231,7 +9231,7 @@ void tst_QGraphicsItem::moveWhileDeleting()
     silly = new MoveWhileDying(rect);
     child = new QGraphicsRectItem(silly);
 
-    QTest::qWait(125);
+    BOBUIest::qWait(125);
 
     delete rect;
 
@@ -9240,7 +9240,7 @@ void tst_QGraphicsItem::moveWhileDeleting()
     child = new QGraphicsRectItem(rect);
     silly = new MoveWhileDying(child);
 
-    QTest::qWait(125);
+    BOBUIest::qWait(125);
 
     delete rect;
 }
@@ -9259,7 +9259,7 @@ public:
     void move()
     {
         setPos(-100,-100);
-        topLevel->collidingItems(Qt::IntersectsItemBoundingRect);
+        topLevel->collidingItems(BobUI::IntersectsItemBoundingRect);
     }
 public:
     QGraphicsItem *topLevel = nullptr;
@@ -9274,14 +9274,14 @@ void tst_QGraphicsItem::ensureDirtySceneTransform()
     MyRectItem *topLevel = new MyRectItem;
     topLevel->setGeometry(0, 0, 100, 100);
     topLevel->setPos(-50, -50);
-    topLevel->brush = QBrush(QColor(Qt::black));
+    topLevel->brush = QBrush(QColor(BobUI::black));
     scene.addItem(topLevel);
 
     MyRectItem *parent = new MyRectItem;
     parent->topLevel = topLevel;
     parent->setGeometry(0, 0, 100, 100);
     parent->setPos(0, 0);
-    parent->brush = QBrush(QColor(Qt::magenta));
+    parent->brush = QBrush(QColor(BobUI::magenta));
     parent->setObjectName("parent");
     scene.addItem(parent);
 
@@ -9289,29 +9289,29 @@ void tst_QGraphicsItem::ensureDirtySceneTransform()
     child->setGeometry(0, 0, 80, 80);
     child->setPos(10, 10);
     child->setObjectName("child");
-    child->brush = QBrush(QColor(Qt::blue));
+    child->brush = QBrush(QColor(BobUI::blue));
 
     MyRectItem *child2 = new MyRectItem(parent);
     child2->setGeometry(0, 0, 80, 80);
     child2->setPos(15, 15);
     child2->setObjectName("child2");
-    child2->brush = QBrush(QColor(Qt::green));
+    child2->brush = QBrush(QColor(BobUI::green));
 
     MyRectItem *child3 = new MyRectItem(parent);
     child3->setGeometry(0, 0, 80, 80);
     child3->setPos(20, 20);
     child3->setObjectName("child3");
-    child3->brush = QBrush(QColor(Qt::gray));
+    child3->brush = QBrush(QColor(BobUI::gray));
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
         QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     //We move the parent
     parent->move();
@@ -9326,9 +9326,9 @@ void tst_QGraphicsItem::ensureDirtySceneTransform()
     QCOMPARE(child2->sceneBoundingRect(), QRectF(-85, -85, 80, 80));
     QCOMPARE(child3->sceneBoundingRect(), QRectF(-80, -80, 80, 80));
 
-    QCOMPARE(child->sceneTransform(), QTransform::fromTranslate(-90, -90));
-    QCOMPARE(child2->sceneTransform(), QTransform::fromTranslate(-85, -85));
-    QCOMPARE(child3->sceneTransform(), QTransform::fromTranslate(-80, -80));
+    QCOMPARE(child->sceneTransform(), BOBUIransform::fromTranslate(-90, -90));
+    QCOMPARE(child2->sceneTransform(), BOBUIransform::fromTranslate(-85, -85));
+    QCOMPARE(child3->sceneTransform(), BOBUIransform::fromTranslate(-80, -80));
 }
 
 void tst_QGraphicsItem::focusScope()
@@ -9662,35 +9662,35 @@ void tst_QGraphicsItem::stackBefore()
     scene.addItem(child2);
     scene.addItem(child3);
     scene.addItem(child4);
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected1234);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected1234);
 
     // Remove and append
     scene.removeItem(child2);
     scene.addItem(child2);
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected1342);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected1342);
 
     // Move child2 before child1
     child2->stackBefore(child1); // 2134
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected2134);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected2134);
     child2->stackBefore(child2); // 2134
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected2134);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected2134);
     child1->setZValue(1); // 2341
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected2341);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected2341);
     child1->stackBefore(child2); // 2341
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected2341);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected2341);
     child1->setZValue(0); // 1234
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected1234);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected1234);
     child4->stackBefore(child1); // 4123
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected4123);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected4123);
     child4->setZValue(1); // 1234 (4123)
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected1234);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected1234);
     child3->stackBefore(child1); // 3124 (4312)
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected3124);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected3124);
     child4->setZValue(0); // 4312
-    QCOMPARE(scene.items(QPointF(2, 2), Qt::IntersectsItemBoundingRect, Qt::AscendingOrder), expected4312);
+    QCOMPARE(scene.items(QPointF(2, 2), BobUI::IntersectsItemBoundingRect, BobUI::AscendingOrder), expected4312);
 }
 
-void tst_QGraphicsItem::QTBUG_4233_updateCachedWithSceneRect()
+void tst_QGraphicsItem::BOBUIBUG_4233_updateCachedWithSceneRect()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
@@ -9703,14 +9703,14 @@ void tst_QGraphicsItem::QTBUG_4233_updateCachedWithSceneRect()
     scene.setSceneRect(-100, -100, 200, 200); // contains the tester item
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
     view.window()->activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(QApplication::activeWindow(), &view);
 
-    QTRY_COMPARE(tester->repaints, 1);
+    BOBUIRY_COMPARE(tester->repaints, 1);
 
     scene.update(); // triggers "updateAll" optimization
     QCoreApplication::processEvents();
@@ -9738,23 +9738,23 @@ void tst_QGraphicsItem::sceneModality()
 
     QGraphicsRectItem *bottomItem = scene.addRect(-150, -100, 300, 200);
     bottomItem->setFlag(QGraphicsItem::ItemIsFocusable);
-    bottomItem->setBrush(Qt::yellow);
+    bottomItem->setBrush(BobUI::yellow);
 
     QGraphicsRectItem *leftParent = scene.addRect(-50, -50, 100, 100);
     leftParent->setFlag(QGraphicsItem::ItemIsPanel);
-    leftParent->setBrush(Qt::blue);
+    leftParent->setBrush(BobUI::blue);
 
     QGraphicsRectItem *leftChild = scene.addRect(-25, -25, 50, 50);
     leftChild->setFlag(QGraphicsItem::ItemIsPanel);
-    leftChild->setBrush(Qt::green);
+    leftChild->setBrush(BobUI::green);
     leftChild->setParentItem(leftParent);
 
     QGraphicsRectItem *rightParent = scene.addRect(-50, -50, 100, 100);
     rightParent->setFlag(QGraphicsItem::ItemIsPanel);
-    rightParent->setBrush(Qt::red);
+    rightParent->setBrush(BobUI::red);
     QGraphicsRectItem *rightChild = scene.addRect(-25, -25, 50, 50);
     rightChild->setFlag(QGraphicsItem::ItemIsPanel);
-    rightChild->setBrush(Qt::gray);
+    rightChild->setBrush(BobUI::gray);
     rightChild->setParentItem(rightParent);
 
     leftParent->setPos(-75, 0);
@@ -9783,7 +9783,7 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::WindowBlocked], 0); // not a panel
 
     // Click inside left child
-    sendMouseClick(&scene, leftChild->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, leftChild->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 1);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0); // no grab
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
@@ -9792,7 +9792,7 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
 
     // Click on left parent, event goes to modal child
-    sendMouseClick(&scene, leftParent->sceneBoundingRect().topLeft() + QPointF(5, 5), Qt::LeftButton);
+    sendMouseClick(&scene, leftParent->sceneBoundingRect().topLeft() + QPointF(5, 5), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 2);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0); // no grab
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
@@ -9801,13 +9801,13 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
 
     // Click on all other items and outside the items
-    sendMouseClick(&scene, rightParent->sceneBoundingRect().topLeft() + QPointF(5, 5), Qt::LeftButton);
+    sendMouseClick(&scene, rightParent->sceneBoundingRect().topLeft() + QPointF(5, 5), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 3);
-    sendMouseClick(&scene, rightChild->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, rightChild->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 4);
-    sendMouseClick(&scene, bottomItem->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, bottomItem->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 5);
-    sendMouseClick(&scene, QPointF(10000, 10000), Qt::LeftButton);
+    sendMouseClick(&scene, QPointF(10000, 10000), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 6);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0); // no grab
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
@@ -9837,7 +9837,7 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::WindowBlocked], 0);
 
     // Click inside left child.
-    sendMouseClick(&scene, leftChild->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, leftChild->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 1);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // panel stops propagation
@@ -9846,7 +9846,7 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
 
    // Click on left parent.
-    sendMouseClick(&scene, leftParent->sceneBoundingRect().topLeft() + QPointF(5, 5), Qt::LeftButton);
+    sendMouseClick(&scene, leftParent->sceneBoundingRect().topLeft() + QPointF(5, 5), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 1);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 1);
@@ -9855,13 +9855,13 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::GraphicsSceneMousePress], 0);
 
     // Click on all other items and outside the items
-    sendMouseClick(&scene, rightParent->sceneBoundingRect().topLeft() + QPointF(5, 5), Qt::LeftButton);
+    sendMouseClick(&scene, rightParent->sceneBoundingRect().topLeft() + QPointF(5, 5), BobUI::LeftButton);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 2);
-    sendMouseClick(&scene, rightChild->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, rightChild->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 3);
-    sendMouseClick(&scene, bottomItem->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, bottomItem->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 4);
-    sendMouseClick(&scene, QPointF(10000, 10000), Qt::LeftButton);
+    sendMouseClick(&scene, QPointF(10000, 10000), BobUI::LeftButton);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 5);
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMouseRelease], 0);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 1);
@@ -9884,7 +9884,7 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::WindowBlocked], 0);
 
     // Click inside left child
-    sendMouseClick(&scene, leftChild->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, leftChild->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 1);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0); // no grab
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
@@ -9893,7 +9893,7 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
 
     // Click on left parent, event goes to modal child
-    sendMouseClick(&scene, leftParent->sceneBoundingRect().topLeft() + QPointF(5, 5), Qt::LeftButton);
+    sendMouseClick(&scene, leftParent->sceneBoundingRect().topLeft() + QPointF(5, 5), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 2);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0); // no grab
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
@@ -9902,13 +9902,13 @@ void tst_QGraphicsItem::sceneModality()
     QCOMPARE(bottomItemSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
 
     // Click on all other items and outside the items
-    sendMouseClick(&scene, rightParent->sceneBoundingRect().topLeft() + QPointF(5, 5), Qt::LeftButton);
+    sendMouseClick(&scene, rightParent->sceneBoundingRect().topLeft() + QPointF(5, 5), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 3);
-    sendMouseClick(&scene, rightChild->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, rightChild->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 4);
-    sendMouseClick(&scene, bottomItem->scenePos(), Qt::LeftButton);
+    sendMouseClick(&scene, bottomItem->scenePos(), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 5);
-    sendMouseClick(&scene, QPointF(10000, 10000), Qt::LeftButton);
+    sendMouseClick(&scene, QPointF(10000, 10000), BobUI::LeftButton);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMousePress], 6);
     QCOMPARE(leftChildSpy.counts[QEvent::GraphicsSceneMouseRelease], 0); // no grab
     QCOMPARE(leftParentSpy.counts[QEvent::GraphicsSceneMousePress], 0); // blocked
@@ -9943,23 +9943,23 @@ void tst_QGraphicsItem::panelModality()
 
     QGraphicsRectItem *bottomItem = scene.addRect(-150, -100, 300, 200);
     bottomItem->setFlag(QGraphicsItem::ItemIsFocusable);
-    bottomItem->setBrush(Qt::yellow);
+    bottomItem->setBrush(BobUI::yellow);
 
     QGraphicsRectItem *leftParent = scene.addRect(-50, -50, 100, 100);
     leftParent->setFlag(QGraphicsItem::ItemIsPanel);
-    leftParent->setBrush(Qt::blue);
+    leftParent->setBrush(BobUI::blue);
 
     QGraphicsRectItem *leftChild = scene.addRect(-25, -25, 50, 50);
     leftChild->setFlag(QGraphicsItem::ItemIsPanel);
-    leftChild->setBrush(Qt::green);
+    leftChild->setBrush(BobUI::green);
     leftChild->setParentItem(leftParent);
 
     QGraphicsRectItem *rightParent = scene.addRect(-50, -50, 100, 100);
     rightParent->setFlag(QGraphicsItem::ItemIsPanel);
-    rightParent->setBrush(Qt::red);
+    rightParent->setBrush(BobUI::red);
     QGraphicsRectItem *rightChild = scene.addRect(-25, -25, 50, 50);
     rightChild->setFlag(QGraphicsItem::ItemIsPanel);
-    rightChild->setBrush(Qt::gray);
+    rightChild->setBrush(BobUI::gray);
     rightChild->setParentItem(rightParent);
 
     leftParent->setPos(-75, 0);
@@ -10052,23 +10052,23 @@ void tst_QGraphicsItem::mixedModality()
 
     QGraphicsRectItem *bottomItem = scene.addRect(-150, -100, 300, 200);
     bottomItem->setFlag(QGraphicsItem::ItemIsFocusable);
-    bottomItem->setBrush(Qt::yellow);
+    bottomItem->setBrush(BobUI::yellow);
 
     QGraphicsRectItem *leftParent = scene.addRect(-50, -50, 100, 100);
     leftParent->setFlag(QGraphicsItem::ItemIsPanel);
-    leftParent->setBrush(Qt::blue);
+    leftParent->setBrush(BobUI::blue);
 
     QGraphicsRectItem *leftChild = scene.addRect(-25, -25, 50, 50);
     leftChild->setFlag(QGraphicsItem::ItemIsPanel);
-    leftChild->setBrush(Qt::green);
+    leftChild->setBrush(BobUI::green);
     leftChild->setParentItem(leftParent);
 
     QGraphicsRectItem *rightParent = scene.addRect(-50, -50, 100, 100);
     rightParent->setFlag(QGraphicsItem::ItemIsPanel);
-    rightParent->setBrush(Qt::red);
+    rightParent->setBrush(BobUI::red);
     QGraphicsRectItem *rightChild = scene.addRect(-25, -25, 50, 50);
     rightChild->setFlag(QGraphicsItem::ItemIsPanel);
-    rightChild->setBrush(Qt::gray);
+    rightChild->setBrush(BobUI::gray);
     rightChild->setParentItem(rightParent);
 
     leftParent->setPos(-75, 0);
@@ -10622,10 +10622,10 @@ void tst_QGraphicsItem::modality_keyEvents()
     QCOMPARE(scene.focusItem(), rect1child);
 
     // but key events to rect1child should be neither delivered nor propagated
-    sendKeyClick(&scene, Qt::Key_A);
-    sendKeyClick(&scene, Qt::Key_S);
-    sendKeyClick(&scene, Qt::Key_D);
-    sendKeyClick(&scene, Qt::Key_F);
+    sendKeyClick(&scene, BobUI::Key_A);
+    sendKeyClick(&scene, BobUI::Key_S);
+    sendKeyClick(&scene, BobUI::Key_D);
+    sendKeyClick(&scene, BobUI::Key_F);
     QCOMPARE(rect1childSpy.counts[QEvent::KeyPress], 0);
     QCOMPARE(rect1childSpy.counts[QEvent::KeyRelease], 0);
     QCOMPARE(rect1Spy.counts[QEvent::KeyPress], 0);
@@ -10636,10 +10636,10 @@ void tst_QGraphicsItem::modality_keyEvents()
     QCOMPARE(scene.focusItem(), rect1child);
 
     // still no key events
-    sendKeyClick(&scene, Qt::Key_J);
-    sendKeyClick(&scene, Qt::Key_K);
-    sendKeyClick(&scene, Qt::Key_L);
-    sendKeyClick(&scene, Qt::Key_Semicolon);
+    sendKeyClick(&scene, BobUI::Key_J);
+    sendKeyClick(&scene, BobUI::Key_K);
+    sendKeyClick(&scene, BobUI::Key_L);
+    sendKeyClick(&scene, BobUI::Key_Semicolon);
     QCOMPARE(rect1childSpy.counts[QEvent::KeyPress], 0);
     QCOMPARE(rect1childSpy.counts[QEvent::KeyRelease], 0);
     QCOMPARE(rect1Spy.counts[QEvent::KeyPress], 0);
@@ -10675,17 +10675,17 @@ void tst_QGraphicsItem::itemIsInFront()
     QGraphicsRectItem *rect2child1 = new QGraphicsRectItem(rect2);
     rect2child1->setData(0, "rect2child1");
 
-    QCOMPARE(qt_closestItemFirst(rect1, rect1), false);
-    QCOMPARE(qt_closestItemFirst(rect1, rect2), false);
-    QCOMPARE(qt_closestItemFirst(rect1child1, rect2child1), false);
-    QCOMPARE(qt_closestItemFirst(rect1child1, rect1child2), true);
-    QCOMPARE(qt_closestItemFirst(rect1child1_1, rect1child2), true);
-    QCOMPARE(qt_closestItemFirst(rect1child1_1, rect1child1), true);
-    QCOMPARE(qt_closestItemFirst(rect1child1_2, rect1child2), true);
-    QCOMPARE(qt_closestItemFirst(rect1child1_2, rect1child1), false);
-    QCOMPARE(qt_closestItemFirst(rect1child1_2, rect1), true);
-    QCOMPARE(qt_closestItemFirst(rect1child1_2, rect2), false);
-    QCOMPARE(qt_closestItemFirst(rect1child1_2, rect2child1), false);
+    QCOMPARE(bobui_closestItemFirst(rect1, rect1), false);
+    QCOMPARE(bobui_closestItemFirst(rect1, rect2), false);
+    QCOMPARE(bobui_closestItemFirst(rect1child1, rect2child1), false);
+    QCOMPARE(bobui_closestItemFirst(rect1child1, rect1child2), true);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_1, rect1child2), true);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_1, rect1child1), true);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_2, rect1child2), true);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_2, rect1child1), false);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_2, rect1), true);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_2, rect2), false);
+    QCOMPARE(bobui_closestItemFirst(rect1child1_2, rect2child1), false);
 }
 
 using ScenePosChangeTester = ItemChangeTester;
@@ -10765,7 +10765,7 @@ void tst_QGraphicsItem::scenePosChange()
     QCOMPARE(child2->changes.count(QGraphicsItem::ItemScenePositionHasChanged), 0);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QGraphicsItem::textItem_shortcuts()
 {
@@ -10773,7 +10773,7 @@ void tst_QGraphicsItem::textItem_shortcuts()
         QSKIP("Window activation is not supported");
 
     QWidget w;
-    w.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    w.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     auto l = new QVBoxLayout(&w);
     QGraphicsScene scene;
     QGraphicsView view(&scene);
@@ -10783,22 +10783,22 @@ void tst_QGraphicsItem::textItem_shortcuts()
 
     QGraphicsTextItem *item = scene.addText("Troll Text");
     item->setFlag(QGraphicsItem::ItemIsFocusable);
-    item->setTextInteractionFlags(Qt::TextEditorInteraction);
+    item->setTextInteractionFlags(BobUI::TextEditorInteraction);
     w.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     item->setFocus();
-    QTRY_VERIFY(item->hasFocus());
+    BOBUIRY_VERIFY(item->hasFocus());
     QVERIFY(item->textCursor().selectedText().isEmpty());
 
     // Shortcut should work (select all)
-    QTest::keyClick(&view, Qt::Key_A, Qt::ControlModifier);
-    QTRY_COMPARE(item->textCursor().selectedText(), item->toPlainText());
-    QTextCursor tc = item->textCursor();
+    BOBUIest::keyClick(&view, BobUI::Key_A, BobUI::ControlModifier);
+    BOBUIRY_COMPARE(item->textCursor().selectedText(), item->toPlainText());
+    BOBUIextCursor tc = item->textCursor();
     tc.clearSelection();
     item->setTextCursor(tc);
     QVERIFY(item->textCursor().selectedText().isEmpty());
@@ -10806,11 +10806,11 @@ void tst_QGraphicsItem::textItem_shortcuts()
     // Shortcut should also work if the text item has the focus and another widget
     // has the same shortcut.
     b.setShortcut(QKeySequence("CTRL+A"));
-    QTest::keyClick(&view, Qt::Key_A, Qt::ControlModifier);
-    QTRY_COMPARE(item->textCursor().selectedText(), item->toPlainText());
+    BOBUIest::keyClick(&view, BobUI::Key_A, BobUI::ControlModifier);
+    BOBUIRY_COMPARE(item->textCursor().selectedText(), item->toPlainText());
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QGraphicsItem::scroll()
 {
@@ -10825,12 +10825,12 @@ void tst_QGraphicsItem::scroll()
 
     EventTester *item1 = new EventTester;
     item1->br = QRectF(0, 0, 200, 200);
-    item1->brush = Qt::red;
+    item1->brush = BobUI::red;
     item1->setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
     EventTester *item2 = new EventTester;
     item2->br = QRectF(0, 0, 200, 200);
-    item2->brush = Qt::blue;
+    item2->brush = BobUI::blue;
     item2->setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
     item2->setPos(100, 100);
 
@@ -10839,15 +10839,15 @@ void tst_QGraphicsItem::scroll()
     scene.addItem(item2);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.setFrameStyle(0);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
 
     view.reset();
     item1->reset();
@@ -10860,7 +10860,7 @@ void tst_QGraphicsItem::scroll()
     // Item1 should get full exposure
     // Item2 should get exposure for the part that overlaps item1.
     item1->scroll(0, -10);
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
     QCOMPARE(item1->lastExposedRect, item1BoundingRect);
 
     QRectF expectedItem2Expose = item2BoundingRect;
@@ -10871,7 +10871,7 @@ void tst_QGraphicsItem::scroll()
     // Enable ItemCoordinateCache on item1.
     view.reset();
     item1->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
     view.reset();
     item1->reset();
     item2->reset();
@@ -10880,7 +10880,7 @@ void tst_QGraphicsItem::scroll()
     // Item1 should only get expose for the newly exposed area (accelerated scroll).
     // Item2 should get exposure for the part that overlaps item1.
     item1->scroll(0, -10, QRectF(50, 50, 100, 100));
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
     QCOMPARE(item1->lastExposedRect, QRectF(50, 140, 100, 10));
 
     expectedItem2Expose = item2BoundingRect;
@@ -10893,26 +10893,26 @@ Q_DECLARE_METATYPE(QGraphicsItem::GraphicsItemFlag);
 
 void tst_QGraphicsItem::focusHandling_data()
 {
-    QTest::addColumn<QGraphicsItem::GraphicsItemFlag>("focusFlag");
-    QTest::addColumn<bool>("useStickyFocus");
-    QTest::addColumn<int>("expectedFocusItem"); // 0: none, 1: focusableUnder, 2: itemWithFocus
+    BOBUIest::addColumn<QGraphicsItem::GraphicsItemFlag>("focusFlag");
+    BOBUIest::addColumn<bool>("useStickyFocus");
+    BOBUIest::addColumn<int>("expectedFocusItem"); // 0: none, 1: focusableUnder, 2: itemWithFocus
 
-    QTest::newRow("Focus goes through.")
+    BOBUIest::newRow("Focus goes through.")
         << static_cast<QGraphicsItem::GraphicsItemFlag>(0x0) << false << 1;
 
-    QTest::newRow("Focus goes through, even with sticky scene.")
+    BOBUIest::newRow("Focus goes through, even with sticky scene.")
         << static_cast<QGraphicsItem::GraphicsItemFlag>(0x0) << true  << 1;
 
-    QTest::newRow("With ItemStopsClickFocusPropagation, we cannot focus the item beneath the flagged one (but can still focus-out).")
+    BOBUIest::newRow("With ItemStopsClickFocusPropagation, we cannot focus the item beneath the flagged one (but can still focus-out).")
         << QGraphicsItem::ItemStopsClickFocusPropagation << false << 0;
 
-    QTest::newRow("With ItemStopsClickFocusPropagation, we cannot focus the item beneath the flagged one (and cannot focus-out if scene is sticky).")
+    BOBUIest::newRow("With ItemStopsClickFocusPropagation, we cannot focus the item beneath the flagged one (and cannot focus-out if scene is sticky).")
         << QGraphicsItem::ItemStopsClickFocusPropagation << true << 2;
 
-    QTest::newRow("With ItemStopsFocusHandling, focus cannot be changed by presses.")
+    BOBUIest::newRow("With ItemStopsFocusHandling, focus cannot be changed by presses.")
         << QGraphicsItem::ItemStopsFocusHandling << false << 2;
 
-    QTest::newRow("With ItemStopsFocusHandling, focus cannot be changed by presses (even if scene is sticky).")
+    BOBUIest::newRow("With ItemStopsFocusHandling, focus cannot be changed by presses (even if scene is sticky).")
         << QGraphicsItem::ItemStopsFocusHandling << true << 2;
 }
 
@@ -10928,21 +10928,21 @@ void tst_QGraphicsItem::focusHandling()
         MyItem() : QGraphicsRectItem(0, 0, 100, 100) {}
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
         {
-            painter->fillRect(boundingRect(), hasFocus() ? QBrush(Qt::red) : brush());
+            painter->fillRect(boundingRect(), hasFocus() ? QBrush(BobUI::red) : brush());
         }
     };
 
     QGraphicsRectItem *noFocusOnTop = new MyItem;
     noFocusOnTop->setFlag(QGraphicsItem::ItemIsFocusable, false);
-    noFocusOnTop->setBrush(Qt::yellow);
+    noFocusOnTop->setBrush(BobUI::yellow);
 
     QGraphicsRectItem *focusableUnder = new MyItem;
-    focusableUnder->setBrush(Qt::blue);
+    focusableUnder->setBrush(BobUI::blue);
     focusableUnder->setFlag(QGraphicsItem::ItemIsFocusable);
     focusableUnder->setPos(50, 50);
 
     QGraphicsRectItem *itemWithFocus = new MyItem;
-    itemWithFocus->setBrush(Qt::black);
+    itemWithFocus->setBrush(BobUI::black);
     itemWithFocus->setFlag(QGraphicsItem::ItemIsFocusable);
     itemWithFocus->setPos(250, 10);
 
@@ -10958,9 +10958,9 @@ void tst_QGraphicsItem::focusHandling()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_COMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
+    BOBUIRY_COMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
     QVERIFY(itemWithFocus->hasFocus());
 
     const QPointF mousePressPoint = noFocusOnTop->mapToScene(noFocusOnTop->boundingRect().center());
@@ -11010,11 +11010,11 @@ protected:
     {
         switch (ev->type()) {
         case QEvent::TouchBegin:
-            m_touchBeginPoints.append(static_cast<const QTouchEvent *>(ev)->points().constFirst());
+            m_touchBeginPoints.append(static_cast<const BOBUIouchEvent *>(ev)->points().constFirst());
             ev->accept();
             return true;
         case QEvent::TouchUpdate:
-            m_touchUpdatePoints.append(static_cast<const QTouchEvent *>(ev)->points().constFirst());
+            m_touchUpdatePoints.append(static_cast<const BOBUIouchEvent *>(ev)->points().constFirst());
             ev->accept();
             return true;
         default:
@@ -11076,14 +11076,14 @@ static QByteArray msgSizeFComparisonFailed(const QSizeF &s1, const QSizeF &s2)
 
 void tst_QGraphicsItem::touchEventPropagation_data()
 {
-    QTest::addColumn<QGraphicsItem::GraphicsItemFlag>("flag");
-    QTest::addColumn<int>("expectedCount");
+    BOBUIest::addColumn<QGraphicsItem::GraphicsItemFlag>("flag");
+    BOBUIest::addColumn<int>("expectedCount");
 
-    QTest::newRow("ItemIsPanel")
+    BOBUIest::newRow("ItemIsPanel")
         << QGraphicsItem::ItemIsPanel << 0;
-    QTest::newRow("ItemStopsClickFocusPropagation")
+    BOBUIest::newRow("ItemStopsClickFocusPropagation")
         << QGraphicsItem::ItemStopsClickFocusPropagation << 1;
-    QTest::newRow("ItemStopsFocusHandling")
+    BOBUIest::newRow("ItemStopsFocusHandling")
         << QGraphicsItem::ItemStopsFocusHandling << 1;
 }
 
@@ -11105,11 +11105,11 @@ void tst_QGraphicsItem::touchEventPropagation()
     topMost->setFlag(flag, true);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("::")
-                        + QLatin1String(QTest::currentDataTag()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("::")
+                        + QLatin1String(BOBUIest::currentDataTag()));
     view.setSceneRect(touchEventReceiver->boundingRect());
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QInputDevicePrivate::get(m_touchDevice.get())
             ->setAvailableVirtualGeometry(view.screen()->geometry());
 
@@ -11117,7 +11117,7 @@ void tst_QGraphicsItem::touchEventPropagation()
 
     const QPointF scenePos = view.sceneRect().center();
     sendMousePress(&scene, scenePos);
-    QMutableTouchEvent touchBegin(QEvent::TouchBegin, m_touchDevice.get(), Qt::NoModifier,
+    QMutableTouchEvent touchBegin(QEvent::TouchBegin, m_touchDevice.get(), BobUI::NoModifier,
                                   createTouchPoints(view, scenePos, QSizeF(10, 10)));
     touchBegin.setTarget(view.viewport());
 
@@ -11127,29 +11127,29 @@ void tst_QGraphicsItem::touchEventPropagation()
 
 void tst_QGraphicsItem::touchEventTransformation_data()
 {
-    QTest::addColumn<QGraphicsItem::GraphicsItemFlag>("flag");
-    QTest::addColumn<QTransform>("viewTransform");
-    QTest::addColumn<QPointF>("touchScenePos");
-    QTest::addColumn<QSizeF>("ellipseDiameters");
-    QTest::addColumn<QPointF>("expectedItemPos");
+    BOBUIest::addColumn<QGraphicsItem::GraphicsItemFlag>("flag");
+    BOBUIest::addColumn<BOBUIransform>("viewTransform");
+    BOBUIest::addColumn<QPointF>("touchScenePos");
+    BOBUIest::addColumn<QSizeF>("ellipseDiameters");
+    BOBUIest::addColumn<QPointF>("expectedItemPos");
 
-    QTest::newRow("notransform")
-        << QGraphicsItem::ItemIsSelectable << QTransform()
+    BOBUIest::newRow("notransform")
+        << QGraphicsItem::ItemIsSelectable << BOBUIransform()
         << QPointF(150, 150) << QSizeF(7, 8) << QPointF(50, 50);
-    QTest::newRow("scaled")
-        << QGraphicsItem::ItemIsSelectable << QTransform::fromScale(0.5, 0.5)
+    BOBUIest::newRow("scaled")
+        << QGraphicsItem::ItemIsSelectable << BOBUIransform::fromScale(0.5, 0.5)
         << QPointF(150, 150) << QSizeF(7, 8) << QPointF(50, 50);
-    // QTBUG-66192: When the item ignores the downscaling transformation,
+    // BOBUIBUG-66192: When the item ignores the downscaling transformation,
     // it will receive the touch point at 25,25 instead of 50,50.
-    QTest::newRow("scaled/ItemIgnoresTransformations")
-        << QGraphicsItem::ItemIgnoresTransformations << QTransform::fromScale(0.5, 0.5)
+    BOBUIest::newRow("scaled/ItemIgnoresTransformations")
+        << QGraphicsItem::ItemIgnoresTransformations << BOBUIransform::fromScale(0.5, 0.5)
         << QPointF(150, 150) << QSizeF(7, 8) << QPointF(25, 25);
 }
 
 void tst_QGraphicsItem::touchEventTransformation()
 {
     QFETCH(QGraphicsItem::GraphicsItemFlag, flag);
-    QFETCH(QTransform, viewTransform);
+    QFETCH(BOBUIransform, viewTransform);
     QFETCH(QPointF, touchScenePos);
     QFETCH(QSizeF, ellipseDiameters);
     QFETCH(QPointF, expectedItemPos);
@@ -11165,18 +11165,18 @@ void tst_QGraphicsItem::touchEventTransformation()
     touchEventReceiver->setFlag(flag, true);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("::")
-                        + QLatin1String(QTest::currentDataTag()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("::")
+                        + QLatin1String(BOBUIest::currentDataTag()));
     view.setSceneRect(QRectF(QPointF(0, 0), QSizeF(300, 300)));
     view.setTransform(viewTransform);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QInputDevicePrivate::get(m_touchDevice.get())
             ->setAvailableVirtualGeometry(view.screen()->geometry());
 
     QCOMPARE(touchEventReceiver->touchBeginEventCount(), 0);
 
-    QMutableTouchEvent touchBegin(QEvent::TouchBegin, m_touchDevice.get(), Qt::NoModifier,
+    QMutableTouchEvent touchBegin(QEvent::TouchBegin, m_touchDevice.get(), BobUI::NoModifier,
                                   createTouchPoints(view, touchScenePos, ellipseDiameters));
     touchBegin.setTarget(view.viewport());
     QCoreApplication::sendEvent(&scene, &touchBegin);
@@ -11190,7 +11190,7 @@ void tst_QGraphicsItem::touchEventTransformation()
     COMPARE_POINTF(touchBeginPoint.position(), expectedItemPos);
     COMPARE_SIZEF(touchBeginPoint.ellipseDiameters(), ellipseDiameters); // Must remain untransformed
 
-    QMutableTouchEvent touchUpdate(QEvent::TouchUpdate, m_touchDevice.get(), Qt::NoModifier,
+    QMutableTouchEvent touchUpdate(QEvent::TouchUpdate, m_touchDevice.get(), BobUI::NoModifier,
                                    createTouchPoints(view, touchScenePos, ellipseDiameters, QEventPoint::State::Updated));
     touchUpdate.setTarget(view.viewport());
 
@@ -11211,7 +11211,7 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
     // Make sure we don't invalidate the cache when applying simple
     // (90, 180, 270, 360) rotation transforms to the item.
     QGraphicsRectItem *item = new QGraphicsRectItem(0, 0, 300, 200);
-    item->setBrush(Qt::red);
+    item->setBrush(BobUI::red);
     item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     QGraphicsScene scene;
@@ -11219,10 +11219,10 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
     scene.addItem(item);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(view.repaints > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(view.repaints > 0);
 
     QGraphicsItemCache *itemCache = QGraphicsItemPrivate::get(item)->extraItemCache();
     QVERIFY(itemCache);
@@ -11232,7 +11232,7 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
     QPixmapCache::Key oldKey = currentKey;
     view.reset();
     view.viewport()->update();
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
     currentKey = itemCache->deviceData.value(view.viewport()).key;
     QCOMPARE(currentKey, oldKey);
 
@@ -11241,12 +11241,12 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
         // Rotate item and verify that the cache was invalidated.
         oldKey = currentKey;
         view.reset();
-        QTransform transform;
+        BOBUIransform transform;
         transform.translate(150, 100);
         transform.rotate(angle);
         transform.translate(-150, -100);
         item->setTransform(transform);
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
         currentKey = itemCache->deviceData.value(view.viewport()).key;
         QVERIFY(currentKey != oldKey);
 
@@ -11255,7 +11255,7 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
         oldKey = currentKey;
         view.reset();
         view.viewport()->update();
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
         currentKey = itemCache->deviceData.value(view.viewport()).key;
         QCOMPARE(currentKey, oldKey);
     }
@@ -11263,12 +11263,12 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
     // 45 degree rotation.
     oldKey = currentKey;
     view.reset();
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(150, 100);
     transform.rotate(45);
     transform.translate(-150, -100);
     item->setTransform(transform);
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
     currentKey = itemCache->deviceData.value(view.viewport()).key;
     QVERIFY(currentKey != oldKey);
 
@@ -11277,12 +11277,12 @@ void tst_QGraphicsItem::deviceCoordinateCache_simpleRotations()
     oldKey = currentKey;
     view.reset();
     view.viewport()->update();
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
     currentKey = itemCache->deviceData.value(view.viewport()).key;
     QVERIFY(currentKey != oldKey);
 }
 
-void tst_QGraphicsItem::QTBUG_5418_textItemSetDefaultColor()
+void tst_QGraphicsItem::BOBUIBUG_5418_textItemSetDefaultColor()
 {
     struct Item : public QGraphicsTextItem
     {
@@ -11300,19 +11300,19 @@ void tst_QGraphicsItem::QTBUG_5418_textItemSetDefaultColor()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     scene.addItem(i);
     QApplication::processEvents();
-    QTRY_VERIFY(i->painted);
+    BOBUIRY_VERIFY(i->painted);
     QApplication::processEvents();
 
     i->painted = 0;
-    QColor col(Qt::red);
+    QColor col(BobUI::red);
     i->setDefaultTextColor(col);
     QApplication::processEvents();
-    QTRY_COMPARE(i->painted, 1); //check that changing the color force an update
+    BOBUIRY_COMPARE(i->painted, 1); //check that changing the color force an update
 
     i->painted = false;
     QImage image(400, 200, QImage::Format_RGB32);
@@ -11342,10 +11342,10 @@ void tst_QGraphicsItem::QTBUG_5418_textItemSetDefaultColor()
     i->painted = 0;
     i->setDefaultTextColor(col);
     QApplication::processEvents();
-    QCOMPARE(i->painted, 0); //same color as before should not trigger an update (QTBUG-6242)
+    QCOMPARE(i->painted, 0); //same color as before should not trigger an update (BOBUIBUG-6242)
 }
 
-void tst_QGraphicsItem::QTBUG_6738_missingUpdateWithSetParent()
+void tst_QGraphicsItem::BOBUIBUG_6738_missingUpdateWithSetParent()
 {
     // In all 3 test cases below the reparented item should disappear
     EventTester *parent = new EventTester;
@@ -11363,51 +11363,51 @@ void tst_QGraphicsItem::QTBUG_6738_missingUpdateWithSetParent()
     scene.addItem(parent);
 
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
 
     // test case #1
     view.reset();
     child2->setVisible(false);
     child2->setParentItem(child);
 
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
 
     // test case #2
     view.reset();
     child3->setOpacity(0.0);
     child3->setParentItem(child);
 
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
 
     // test case #3
     view.reset();
     child4->setParentItem(child);
     child4->setVisible(false);
 
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
 }
 
-void tst_QGraphicsItem::QT_2653_fullUpdateDiscardingOpacityUpdate()
+void tst_QGraphicsItem::BOBUI_2653_fullUpdateDiscardingOpacityUpdate()
 {
     QGraphicsScene scene(0, 0, 200, 200);
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
 
     EventTester *parentGreen = new EventTester();
     parentGreen->setGeometry(QRectF(20, 20, 100, 100));
-    parentGreen->brush = Qt::green;
+    parentGreen->brush = BobUI::green;
 
     EventTester *childYellow = new EventTester(parentGreen);
     childYellow->setGeometry(QRectF(10, 10, 50, 50));
-    childYellow->brush = Qt::yellow;
+    childYellow->brush = BobUI::yellow;
 
     scene.addItem(parentGreen);
 
@@ -11419,50 +11419,50 @@ void tst_QGraphicsItem::QT_2653_fullUpdateDiscardingOpacityUpdate()
     parentGreen->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
     QCoreApplication::processEvents(); // Process all queued paint events
     view.reset();
 
     parentGreen->setOpacity(1.0);
 
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
 
     view.reset();
     childYellow->repaints = 0;
 
     childYellow->setOpacity(1.0);
 
-    QTRY_COMPARE(view.repaints, 1);
-    QTRY_COMPARE(childYellow->repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(childYellow->repaints, 1);
 }
 
-void tst_QGraphicsItem::QTBUG_7714_fullUpdateDiscardingOpacityUpdate2()
+void tst_QGraphicsItem::BOBUIBUG_7714_fullUpdateDiscardingOpacityUpdate2()
 {
     QGraphicsScene scene(0, 0, 200, 200);
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     MyGraphicsView origView(&scene);
 
     EventTester *parentGreen = new EventTester();
     parentGreen->setGeometry(QRectF(20, 20, 100, 100));
-    parentGreen->brush = Qt::green;
+    parentGreen->brush = BobUI::green;
 
     EventTester *childYellow = new EventTester(parentGreen);
     childYellow->setGeometry(QRectF(10, 10, 50, 50));
-    childYellow->brush = Qt::yellow;
+    childYellow->brush = BobUI::yellow;
 
     scene.addItem(parentGreen);
 
     origView.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&origView));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&origView));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&origView));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&origView));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     origView.setGeometry(origView.x() + origView.width() + 20, origView.y() + 20,
@@ -11473,24 +11473,24 @@ void tst_QGraphicsItem::QTBUG_7714_fullUpdateDiscardingOpacityUpdate2()
     origView.reset();
     childYellow->setOpacity(0.0);
 
-    QTRY_VERIFY(origView.repaints > 0);
+    BOBUIRY_VERIFY(origView.repaints > 0);
 
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         QApplicationPrivate::setActiveWindow(&view);
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     view.reset();
     origView.reset();
 
     childYellow->setOpacity(1.0);
 
-    QTRY_VERIFY(origView.repaints > 0);
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(origView.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
 }
 
-void tst_QGraphicsItem::QT_2649_focusScope()
+void tst_QGraphicsItem::BOBUI_2649_focusScope()
 {
     QGraphicsScene *scene = new QGraphicsScene;
 
@@ -11604,7 +11604,7 @@ void tst_QGraphicsItem::doNotMarkFullUpdateIfNotInScene()
     };
     QGraphicsScene scene;
     MyGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     Item *item = new Item;
     item->setPlainText("Grandparent");
     Item *item2 = new Item;
@@ -11619,34 +11619,34 @@ void tst_QGraphicsItem::doNotMarkFullUpdateIfNotInScene()
     scene.addItem(item);
     view.show();
     view.window()->activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(view.windowHandle()));
-    QVERIFY(QTest::qWaitForWindowActive(view.windowHandle()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.windowHandle()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(view.windowHandle()));
     QCoreApplication::processEvents(); // Process all queued paint events
     view.activateWindow();
-    QTRY_VERIFY(view.isActiveWindow());
-    QTRY_VERIFY(view.repaints >= 1);
+    BOBUIRY_VERIFY(view.isActiveWindow());
+    BOBUIRY_VERIFY(view.repaints >= 1);
     int count = view.repaints;
-    QTRY_COMPARE(item->painted, count);
+    BOBUIRY_COMPARE(item->painted, count);
     // cached as graphics effects, not painted multiple times
-    QTRY_COMPARE(item2->painted, 1);
-    QTRY_COMPARE(item3->painted, 1);
+    BOBUIRY_COMPARE(item2->painted, 1);
+    BOBUIRY_COMPARE(item3->painted, 1);
     item2->update();
     QApplication::processEvents();
-    QTRY_COMPARE(item->painted, count + 1);
-    QTRY_COMPARE(item2->painted, 2);
-    QTRY_COMPARE(item3->painted, 2);
+    BOBUIRY_COMPARE(item->painted, count + 1);
+    BOBUIRY_COMPARE(item2->painted, 2);
+    BOBUIRY_COMPARE(item3->painted, 2);
     item2->update();
     QApplication::processEvents();
-    QTRY_COMPARE(item->painted, count + 2);
-    QTRY_COMPARE(item2->painted, 3);
-    QTRY_COMPARE(item3->painted, 3);
+    BOBUIRY_COMPARE(item->painted, count + 2);
+    BOBUIRY_COMPARE(item2->painted, 3);
+    BOBUIRY_COMPARE(item3->painted, 3);
 }
 
 void tst_QGraphicsItem::itemDiesDuringDraggingOperation()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     QGraphicsRectItem *item = new QGraphicsRectItem(QRectF(0, 0, 100, 100));
     item->setFlag(QGraphicsItem::ItemIsMovable);
     item->setAcceptDrops(true);
@@ -11654,28 +11654,28 @@ void tst_QGraphicsItem::itemDiesDuringDraggingOperation()
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
         QCOMPARE(QApplication::activeWindow(), &view);
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QGraphicsSceneDragDropEvent dragEnter(QEvent::GraphicsSceneDragEnter);
     dragEnter.setScenePos(item->boundingRect().center());
     QCoreApplication::sendEvent(&scene, &dragEnter);
     QGraphicsSceneDragDropEvent event(QEvent::GraphicsSceneDragMove);
     event.setScenePos(item->boundingRect().center());
-    event.setProposedAction(Qt::DropAction::CopyAction); // prevent uninit'ed copy in...
-    event.setDropAction(Qt::DropAction::CopyAction);     // ...QGraphicsScenePrivate::cloneDragDropEvent()
+    event.setProposedAction(BobUI::DropAction::CopyAction); // prevent uninit'ed copy in...
+    event.setDropAction(BobUI::DropAction::CopyAction);     // ...QGraphicsScenePrivate::cloneDragDropEvent()
     QCoreApplication::sendEvent(&scene, &event);
     QCOMPARE(QGraphicsScenePrivate::get(&scene)->dragDropItem, item);
     delete item;
     QVERIFY(!QGraphicsScenePrivate::get(&scene)->dragDropItem);
 }
 
-void tst_QGraphicsItem::QTBUG_12112_focusItem()
+void tst_QGraphicsItem::BOBUIBUG_12112_focusItem()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     QGraphicsRectItem *item1 = new QGraphicsRectItem(0, 0, 20, 20);
     item1->setFlag(QGraphicsItem::ItemIsFocusable);
     QGraphicsRectItem *item2 = new QGraphicsRectItem(20, 20, 20, 20);
@@ -11687,10 +11687,10 @@ void tst_QGraphicsItem::QTBUG_12112_focusItem()
     view.show();
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation)) {
         view.window()->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&view));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&view));
         QCOMPARE(QApplication::activeWindow(), &view);
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QVERIFY(item1->focusItem());
     QVERIFY(!item2->focusItem());
@@ -11700,7 +11700,7 @@ void tst_QGraphicsItem::QTBUG_12112_focusItem()
     QVERIFY(item2->focusItem());
 }
 
-void tst_QGraphicsItem::QTBUG_13473_sceneposchange()
+void tst_QGraphicsItem::BOBUIBUG_13473_sceneposchange()
 {
     ScenePosChangeTester* parent = new ScenePosChangeTester;
     ScenePosChangeTester* child = new ScenePosChangeTester(parent);
@@ -11722,7 +11722,7 @@ void tst_QGraphicsItem::QTBUG_13473_sceneposchange()
     QCOMPARE(child->changes.count(QGraphicsItem::ItemScenePositionHasChanged), 1);
 
     // transform
-    parent->setTransform(QTransform::fromScale(0.5, 0.5));
+    parent->setTransform(BOBUIransform::fromScale(0.5, 0.5));
     QCOMPARE(child->changes.count(QGraphicsItem::ItemScenePositionHasChanged), 2);
 }
 
@@ -11732,15 +11732,15 @@ class MyGraphicsWidget : public QGraphicsWidget
 public:
     MyGraphicsWidget() : QGraphicsWidget(nullptr)
     {
-        QGraphicsLinearLayout *lay = new QGraphicsLinearLayout(Qt::Vertical);
+        QGraphicsLinearLayout *lay = new QGraphicsLinearLayout(BobUI::Vertical);
         QLatin1String wiseWords("AZ BUKI VEDI");
         QString sentence(wiseWords);
-        QStringList words = sentence.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+        QStringList words = sentence.split(QLatin1Char(' '), BobUI::SkipEmptyParts);
         for (int i = 0; i < words.size(); ++i) {
             QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
             QLabel *label = new QLabel(words.at(i));
             proxy->setWidget(label);
-            proxy->setFocusPolicy(Qt::StrongFocus);
+            proxy->setFocusPolicy(BobUI::StrongFocus);
             proxy->setFlag(QGraphicsItem::ItemAcceptsInputMethod, true);
             if (i % 2 == 0)
                 proxy->setVisible(false);
@@ -11754,33 +11754,33 @@ public:
 class MyWidgetWindow : public QGraphicsWidget
 {
 public:
-    MyWidgetWindow() : QGraphicsWidget(nullptr, Qt::Window)
+    MyWidgetWindow() : QGraphicsWidget(nullptr, BobUI::Window)
     {
-        QGraphicsLinearLayout *lay = new QGraphicsLinearLayout(Qt::Vertical);
+        QGraphicsLinearLayout *lay = new QGraphicsLinearLayout(BobUI::Vertical);
         MyGraphicsWidget *widget = new MyGraphicsWidget();
         lay->addItem(widget);
         setLayout(lay);
     }
 };
 
-void tst_QGraphicsItem::QTBUG_16374_crashInDestructor()
+void tst_QGraphicsItem::BOBUIBUG_16374_crashInDestructor()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
 
     MyWidgetWindow win;
     scene.addItem(&win);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
-void tst_QGraphicsItem::QTBUG_20699_focusScopeCrash()
+void tst_QGraphicsItem::BOBUIBUG_20699_focusScopeCrash()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QLatin1String(QTest::currentTestFunction()));
+    view.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()));
     QGraphicsPixmapItem fs;
     fs.setFlags(QGraphicsItem::ItemIsFocusScope | QGraphicsItem::ItemIsFocusable);
     scene.addItem(&fs);
@@ -11794,7 +11794,7 @@ void tst_QGraphicsItem::QTBUG_20699_focusScopeCrash()
     fi->setFocus();
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     fi->setParentItem(fi2);
     fi->setFocus();
@@ -11808,7 +11808,7 @@ void tst_QGraphicsItem::QTBUG_20699_focusScopeCrash()
     fs.setFocus();
 }
 
-void tst_QGraphicsItem::QTBUG_30990_rightClickSelection()
+void tst_QGraphicsItem::BOBUIBUG_30990_rightClickSelection()
 {
     QGraphicsScene scene;
     QGraphicsItem *item1 = scene.addRect(10, 10, 10, 10);
@@ -11817,76 +11817,76 @@ void tst_QGraphicsItem::QTBUG_30990_rightClickSelection()
     item2->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable);
 
     // right mouse press & release over an item should not make it selected
-    sendMousePress(&scene, item1->boundingRect().center(), Qt::RightButton);
+    sendMousePress(&scene, item1->boundingRect().center(), BobUI::RightButton);
     QVERIFY(!item1->isSelected());
-    sendMouseRelease(&scene, item1->boundingRect().center(), Qt::RightButton);
+    sendMouseRelease(&scene, item1->boundingRect().center(), BobUI::RightButton);
     QVERIFY(!item1->isSelected());
 
     // right mouse press over one item, moving over another item,
     // and then releasing should make neither of the items selected
-    sendMousePress(&scene, item1->boundingRect().center(), Qt::RightButton);
+    sendMousePress(&scene, item1->boundingRect().center(), BobUI::RightButton);
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
-    sendMouseMove(&scene, item2->boundingRect().center(), Qt::RightButton);
+    sendMouseMove(&scene, item2->boundingRect().center(), BobUI::RightButton);
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
-    sendMouseRelease(&scene, item2->boundingRect().center(), Qt::RightButton);
+    sendMouseRelease(&scene, item2->boundingRect().center(), BobUI::RightButton);
     QVERIFY(!item1->isSelected());
     QVERIFY(!item2->isSelected());
 }
 
-void tst_QGraphicsItem::QTBUG_21618_untransformable_sceneTransform()
+void tst_QGraphicsItem::BOBUIBUG_21618_untransformable_sceneTransform()
 {
     QGraphicsScene scene(0, 0, 150, 150);
     scene.addRect(-2, -2, 4, 4);
 
-    QGraphicsItem *item1 = scene.addRect(0, 0, 100, 100, QPen(), Qt::red);
+    QGraphicsItem *item1 = scene.addRect(0, 0, 100, 100, QPen(), BobUI::red);
     item1->setPos(50, 50);
-    item1->setTransform(QTransform::fromTranslate(50, 50), true);
-    item1->setTransform(QTransform().rotate(90), true);
-    QGraphicsItem *item2 = scene.addRect(0, 0, 100, 100, QPen(), Qt::green);
+    item1->setTransform(BOBUIransform::fromTranslate(50, 50), true);
+    item1->setTransform(BOBUIransform().rotate(90), true);
+    QGraphicsItem *item2 = scene.addRect(0, 0, 100, 100, QPen(), BobUI::green);
     item2->setPos(50, 50);
-    item2->setTransform(QTransform::fromTranslate(50, 50), true);
-    item2->setTransform(QTransform().rotate(90), true);
+    item2->setTransform(BOBUIransform::fromTranslate(50, 50), true);
+    item2->setTransform(BOBUIransform().rotate(90), true);
     item2->setFlags(QGraphicsItem::ItemIgnoresTransformations);
 
     QGraphicsRectItem *item1_topleft = new QGraphicsRectItem(QRectF(-2, -2, 4, 4));
     item1_topleft->setParentItem(item1);
-    item1_topleft->setBrush(Qt::black);
+    item1_topleft->setBrush(BobUI::black);
     QGraphicsRectItem *item1_bottomright = new QGraphicsRectItem(QRectF(-2, -2, 4, 4));
     item1_bottomright->setParentItem(item1);
     item1_bottomright->setPos(100, 100);
-    item1_bottomright->setBrush(Qt::yellow);
+    item1_bottomright->setBrush(BobUI::yellow);
 
     QGraphicsRectItem *item2_topleft = new QGraphicsRectItem(QRectF(-2, -2, 4, 4));
     item2_topleft->setParentItem(item2);
-    item2_topleft->setBrush(Qt::black);
+    item2_topleft->setBrush(BobUI::black);
     QGraphicsRectItem *item2_bottomright = new QGraphicsRectItem(QRectF(-2, -2, 4, 4));
     item2_bottomright->setParentItem(item2);
     item2_bottomright->setPos(100, 100);
-    item2_bottomright->setBrush(Qt::yellow);
+    item2_bottomright->setBrush(BobUI::yellow);
 
     QCOMPARE(item1->sceneTransform(), item2->sceneTransform());
     QCOMPARE(item1_topleft->sceneTransform(), item2_topleft->sceneTransform());
     QCOMPARE(item1_bottomright->sceneTransform(), item2_bottomright->sceneTransform());
-    QCOMPARE(item1->deviceTransform(QTransform()), item2->deviceTransform(QTransform()));
-    QCOMPARE(item1->deviceTransform(QTransform()).map(QPointF()), QPointF(100, 100));
-    QCOMPARE(item2->deviceTransform(QTransform()).map(QPointF()), QPointF(100, 100));
-    QCOMPARE(item1->deviceTransform(QTransform()).map(QPointF(100, 100)), QPointF(0, 200));
-    QCOMPARE(item2->deviceTransform(QTransform()).map(QPointF(100, 100)), QPointF(0, 200));
-    QCOMPARE(item1_topleft->deviceTransform(QTransform()).map(QPointF()), QPointF(100, 100));
-    QCOMPARE(item2_topleft->deviceTransform(QTransform()).map(QPointF()), QPointF(100, 100));
-    QCOMPARE(item1_bottomright->deviceTransform(QTransform()).map(QPointF()), QPointF(0, 200));
-    QCOMPARE(item2_bottomright->deviceTransform(QTransform()).map(QPointF()), QPointF(0, 200));
+    QCOMPARE(item1->deviceTransform(BOBUIransform()), item2->deviceTransform(BOBUIransform()));
+    QCOMPARE(item1->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(100, 100));
+    QCOMPARE(item2->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(100, 100));
+    QCOMPARE(item1->deviceTransform(BOBUIransform()).map(QPointF(100, 100)), QPointF(0, 200));
+    QCOMPARE(item2->deviceTransform(BOBUIransform()).map(QPointF(100, 100)), QPointF(0, 200));
+    QCOMPARE(item1_topleft->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(100, 100));
+    QCOMPARE(item2_topleft->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(100, 100));
+    QCOMPARE(item1_bottomright->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(0, 200));
+    QCOMPARE(item2_bottomright->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(0, 200));
 
     item2->setParentItem(item1);
 
-    QCOMPARE(item2->deviceTransform(QTransform()).map(QPointF()), QPointF(100, 200));
-    QCOMPARE(item2->deviceTransform(QTransform()).map(QPointF(100, 100)), QPointF(0, 300));
-    QCOMPARE(item2_topleft->deviceTransform(QTransform()).map(QPointF()), QPointF(100, 200));
-    QCOMPARE(item2_bottomright->deviceTransform(QTransform()).map(QPointF()), QPointF(0, 300));
+    QCOMPARE(item2->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(100, 200));
+    QCOMPARE(item2->deviceTransform(BOBUIransform()).map(QPointF(100, 100)), QPointF(0, 300));
+    QCOMPARE(item2_topleft->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(100, 200));
+    QCOMPARE(item2_bottomright->deviceTransform(BOBUIransform()).map(QPointF()), QPointF(0, 300));
 
-    QTransform tx = QTransform::fromTranslate(100, 0);
+    BOBUIransform tx = BOBUIransform::fromTranslate(100, 0);
     QCOMPARE(item1->deviceTransform(tx).map(QPointF()), QPointF(200, 100));
     QCOMPARE(item1->deviceTransform(tx).map(QPointF(100, 100)), QPointF(100, 200));
     QCOMPARE(item2->deviceTransform(tx).map(QPointF()), QPointF(200, 200));
@@ -11903,7 +11903,7 @@ void tst_QGraphicsItem::resolvePaletteForItemChildren()
     QGraphicsWidget widget;
     widget.setParentItem(&item);
 
-    QColor green(Qt::green);
+    QColor green(BobUI::green);
     QPalette paletteForScene = scene.palette();
     paletteForScene.setColor(QPalette::Active, QPalette::Window, green);
     scene.setPalette(paletteForScene);
@@ -11911,5 +11911,5 @@ void tst_QGraphicsItem::resolvePaletteForItemChildren()
     QCOMPARE(widget.palette().color(QPalette::Active, QPalette::Window), green);
 }
 
-QTEST_MAIN(tst_QGraphicsItem)
+BOBUIEST_MAIN(tst_QGraphicsItem)
 #include "tst_qgraphicsitem.moc"

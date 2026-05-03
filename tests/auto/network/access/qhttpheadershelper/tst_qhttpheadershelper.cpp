@@ -1,12 +1,12 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qhttpheaders.h>
-#include <QtNetwork/private/qhttpheadershelper_p.h>
+#include <BobUINetwork/qhttpheaders.h>
+#include <BobUINetwork/private/qhttpheadershelper_p.h>
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QHttpHeadersHelper : public QObject
 {
@@ -72,5 +72,5 @@ void tst_QHttpHeadersHelper::testCompareStrict()
     QVERIFY(compareStrict(h1, h2));
 }
 
-QTEST_MAIN(tst_QHttpHeadersHelper)
+BOBUIEST_MAIN(tst_QHttpHeadersHelper)
 #include "tst_qhttpheadershelper.moc"

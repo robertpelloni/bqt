@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
 #include <QFile>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 # include <QProcess>
 #endif
 #include <QSharedMemory>
-#include <QTest>
-#include <QThread>
+#include <BOBUIest>
+#include <BOBUIhread>
 #include <QElapsedTimer>
 
 #include <errno.h>
@@ -18,7 +18,7 @@
 #  include <unistd.h>
 #endif
 
-#include "private/qtcore-config_p.h"
+#include "private/bobuicore-config_p.h"
 #include "../ipctestcommon.h"
 
 #define EXISTING_SIZE 1024
@@ -26,7 +26,7 @@
 Q_DECLARE_METATYPE(QSharedMemory::SharedMemoryError)
 Q_DECLARE_METATYPE(QSharedMemory::AccessMode)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QSharedMemory : public QObject
 {
@@ -153,11 +153,11 @@ void tst_QSharedMemory::cleanup()
     ++seq;
 }
 
-#if QT_CONFIG(posix_shm)
+#if BOBUI_CONFIG(posix_shm)
 #include <sys/types.h>
 #include <sys/mman.h>
 #endif
-#if QT_CONFIG(sysv_shm)
+#if BOBUI_CONFIG(sysv_shm)
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -175,7 +175,7 @@ void tst_QSharedMemory::remove(const QNativeIpcKey &key)
         return;
 
     case QNativeIpcKey::Type::PosixRealtime:
-#if QT_CONFIG(posix_shm)
+#if BOBUI_CONFIG(posix_shm)
         if (shm_unlink(QFile::encodeName(key.nativeKey()).constData()) == -1) {
             if (errno != ENOENT) {
                 perror("shm_unlink");
@@ -189,7 +189,7 @@ void tst_QSharedMemory::remove(const QNativeIpcKey &key)
         break;
     }
 
-#if QT_CONFIG(sysv_shm)
+#if BOBUI_CONFIG(sysv_shm)
     // ftok requires that an actual file exists somewhere
     QString fileName = key.nativeKey();
     if (!QFile::exists(fileName)) {
@@ -234,27 +234,27 @@ void tst_QSharedMemory::constructor()
     QCOMPARE(sm.error(), QSharedMemory::NoError);
     QCOMPARE(sm.errorString(), QString());
 
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     QCOMPARE(sm.key(), QString());
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 }
 
 void tst_QSharedMemory::nativeKey_data()
 {
-    QTest::addColumn<QString>("constructorKey");
-    QTest::addColumn<QString>("setKey");
-    QTest::addColumn<QString>("setNativeKey");   // only used in the legacyKey test
+    BOBUIest::addColumn<QString>("constructorKey");
+    BOBUIest::addColumn<QString>("setKey");
+    BOBUIest::addColumn<QString>("setNativeKey");   // only used in the legacyKey test
 
-    QTest::newRow("null, null, null") << QString() << QString() << QString();
-    QTest::newRow("one, null, null") << QString("one") << QString() << QString();
-    QTest::newRow("null, one, null") << QString() << QString("one") << QString();
-    QTest::newRow("null, null, one") << QString() << QString() << QString("one");
-    QTest::newRow("one, two, null") << QString("one") << QString("two") << QString();
-    QTest::newRow("one, null, two") << QString("one") << QString() << QString("two");
-    QTest::newRow("null, one, two") << QString() << QString("one") << QString("two");
-    QTest::newRow("one, two, three") << QString("one") << QString("two") << QString("three");
-    QTest::newRow("invalid") << QString("o/e") << QString("t/o") << QString("|x");
+    BOBUIest::newRow("null, null, null") << QString() << QString() << QString();
+    BOBUIest::newRow("one, null, null") << QString("one") << QString() << QString();
+    BOBUIest::newRow("null, one, null") << QString() << QString("one") << QString();
+    BOBUIest::newRow("null, null, one") << QString() << QString() << QString("one");
+    BOBUIest::newRow("one, two, null") << QString("one") << QString("two") << QString();
+    BOBUIest::newRow("one, null, two") << QString("one") << QString() << QString("two");
+    BOBUIest::newRow("null, one, two") << QString() << QString("one") << QString("two");
+    BOBUIest::newRow("one, two, three") << QString("one") << QString("two") << QString("three");
+    BOBUIest::newRow("invalid") << QString("o/e") << QString("t/o") << QString("|x");
 }
 
 /*!
@@ -305,8 +305,8 @@ void tst_QSharedMemory::nativeKey()
     }
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QSharedMemory::legacyKey()
 {
     QFETCH(QString, constructorKey);
@@ -334,22 +334,22 @@ void tst_QSharedMemory::legacyKey()
 
     QCOMPARE(sm.detach(), false);
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 void tst_QSharedMemory::create_data()
 {
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<int>("size");
-    QTest::addColumn<bool>("canCreate");
-    QTest::addColumn<QSharedMemory::SharedMemoryError>("error");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("canCreate");
+    BOBUIest::addColumn<QSharedMemory::SharedMemoryError>("error");
 
-    QTest::newRow("null key") << QString() << 1024
+    BOBUIest::newRow("null key") << QString() << 1024
         << false << QSharedMemory::KeyError;
-    QTest::newRow("-1 size") << QString("negsize") << -1
+    BOBUIest::newRow("-1 size") << QString("negsize") << -1
         << false << QSharedMemory::InvalidSize;
-    QTest::newRow("nor size") << QString("norsize") << 1024
+    BOBUIest::newRow("nor size") << QString("norsize") << 1024
         << true << QSharedMemory::NoError;
-    QTest::newRow("existing") << QString("existing") << EXISTING_SIZE
+    BOBUIest::newRow("existing") << QString("existing") << EXISTING_SIZE
         << false << QSharedMemory::AlreadyExists;
 }
 
@@ -381,14 +381,14 @@ void tst_QSharedMemory::create()
 
 void tst_QSharedMemory::attach_data()
 {
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<bool>("exists");
-    QTest::addColumn<QSharedMemory::SharedMemoryError>("error");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<bool>("exists");
+    BOBUIest::addColumn<QSharedMemory::SharedMemoryError>("error");
 
-    QTest::newRow("null") << QString() << false << QSharedMemory::KeyError;
-    QTest::newRow("doesntexists") << QString("doesntexist") << false << QSharedMemory::NotFound;
+    BOBUIest::newRow("null") << QString() << false << QSharedMemory::KeyError;
+    BOBUIest::newRow("doesntexists") << QString("doesntexist") << false << QSharedMemory::NotFound;
 
-    QTest::newRow("existing") << QString("existing") << true << QSharedMemory::NoError;
+    BOBUIest::newRow("existing") << QString("existing") << true << QSharedMemory::NoError;
 }
 
 /*!
@@ -467,10 +467,10 @@ void tst_QSharedMemory::lock()
 
     QVERIFY(shm.create(100));
     QVERIFY(shm.lock());
-    QTest::ignoreMessage(QtWarningMsg, "QSharedMemory::lock: already locked");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSharedMemory::lock: already locked");
     QVERIFY(shm.lock());
     // we didn't unlock(), so ignore the warning from auto-detach in destructor
-    QTest::ignoreMessage(QtWarningMsg, "QSharedMemory::lock: already locked");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSharedMemory::lock: already locked");
 }
 
 /*!
@@ -528,10 +528,10 @@ void tst_QSharedMemory::emptyMemory()
 */
 void tst_QSharedMemory::readOnly()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #elif defined(Q_OS_MACOS)
-    QSKIP("QTBUG-59936: Times out on macOS");
+    QSKIP("BOBUIBUG-59936: Times out on macOS");
 #elif defined(Q_OS_WIN)
     QSKIP("This test opens a crash dialog on Windows.");
 #elif defined(__SANITIZE_ADDRESS__) || __has_feature(address_sanitizer)
@@ -550,10 +550,10 @@ void tst_QSharedMemory::readOnly()
 
 void tst_QSharedMemory::attachBeforeCreate_data()
 {
-    QTest::addColumn<bool>("legacy");
+    BOBUIest::addColumn<bool>("legacy");
 
-    QTest::addRow("legacy") << true;
-    QTest::addRow("non-legacy") << false;
+    BOBUIest::addRow("legacy") << true;
+    BOBUIest::addRow("non-legacy") << false;
 }
 
 void tst_QSharedMemory::attachBeforeCreate()
@@ -585,7 +585,7 @@ void tst_QSharedMemory::useTooMuchMemory()
 {
     if (QSysInfo::kernelType() == QLatin1String("linux")
         && QSysInfo::currentCpuArchitecture() == QLatin1String("arm64"))
-        QSKIP("This test is unstable: QTBUG-119321");
+        QSKIP("This test is unstable: BOBUIBUG-119321");
 
 #ifdef Q_OS_LINUX
     bool success = true;
@@ -656,10 +656,10 @@ void tst_QSharedMemory::attachTooMuch()
 
 void tst_QSharedMemory::simpleProducerConsumer_data()
 {
-    QTest::addColumn<QSharedMemory::AccessMode>("mode");
+    BOBUIest::addColumn<QSharedMemory::AccessMode>("mode");
 
-    QTest::newRow("readonly") << QSharedMemory::ReadOnly;
-    QTest::newRow("readwrite") << QSharedMemory::ReadWrite;
+    BOBUIest::newRow("readonly") << QSharedMemory::ReadOnly;
+    BOBUIest::newRow("readwrite") << QSharedMemory::ReadWrite;
 }
 
 /*!
@@ -713,7 +713,7 @@ void tst_QSharedMemory::simpleDoubleProducerConsumer()
     }
 }
 
-class Consumer : public QThread
+class Consumer : public BOBUIhread
 {
 public:
     QNativeIpcKey nativeKey;
@@ -726,7 +726,7 @@ public:
             if (consumer.error() != QSharedMemory::NotFound)
                 qDebug() << "consumer: failed to connect" << consumer.error() << consumer.errorString();
             QVERIFY(consumer.error() == QSharedMemory::NotFound || consumer.error() == QSharedMemory::KeyError);
-            QTest::qWait(1);
+            BOBUIest::qWait(1);
         }
 
         char *memory = (char*)consumer.data();
@@ -743,14 +743,14 @@ public:
                 break;
             }
             QVERIFY(consumer.unlock());
-            QTest::qWait(1);
+            BOBUIest::qWait(1);
         }
 
         QVERIFY(consumer.detach());
     }
 };
 
-class Producer : public QThread
+class Producer : public BOBUIhread
 {
 public:
     Producer(const QNativeIpcKey &nativeKey) : producer(nativeKey)
@@ -778,13 +778,13 @@ public:
             QVERIFY(producer.lock());
             if (memory[0] == 'Q') {
                 QVERIFY(producer.unlock());
-                QTest::qWait(1);
+                BOBUIest::qWait(1);
                 continue;
             }
             ++i;
             memory[0] = 'Q';
             QVERIFY(producer.unlock());
-            QTest::qWait(1);
+            BOBUIest::qWait(1);
         }
 
         // tell everyone to quit
@@ -801,13 +801,13 @@ private:
 
 void tst_QSharedMemory::simpleThreadedProducerConsumer_data()
 {
-    QTest::addColumn<bool>("producerIsThread");
-    QTest::addColumn<int>("threads");
+    BOBUIest::addColumn<bool>("producerIsThread");
+    BOBUIest::addColumn<int>("threads");
     for (int i = 0; i < 5; ++i) {
-        QTest::newRow("1 consumer, producer is thread") << true << 1;
-        QTest::newRow("1 consumer, producer is this") << false << 1;
-        QTest::newRow("5 consumers, producer is thread") << true << 5;
-        QTest::newRow("5 consumers, producer is this") << false << 5;
+        BOBUIest::newRow("1 consumer, producer is thread") << true << 1;
+        BOBUIest::newRow("1 consumer, producer is this") << false << 1;
+        BOBUIest::newRow("5 consumers, producer is thread") << true << 5;
+        BOBUIest::newRow("5 consumers, producer is this") << false << 5;
     }
 }
 
@@ -844,12 +844,12 @@ void tst_QSharedMemory::simpleThreadedProducerConsumer()
 
 void tst_QSharedMemory::simpleProcessProducerConsumer_data()
 {
-#if QT_CONFIG(process)
-    QTest::addColumn<int>("processes");
+#if BOBUI_CONFIG(process)
+    BOBUIest::addColumn<int>("processes");
     int tries = 5;
     for (int i = 0; i < tries; ++i) {
-        QTest::newRow("1 process") << 1;
-        QTest::newRow("5 processes") << 5;
+        BOBUIest::newRow("1 process") << 1;
+        BOBUIest::newRow("5 processes") << 5;
     }
 #endif
 }
@@ -859,12 +859,12 @@ void tst_QSharedMemory::simpleProcessProducerConsumer_data()
  */
 void tst_QSharedMemory::simpleProcessProducerConsumer()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
     QFETCH(int, processes);
 
-    QSKIP("This test is unstable: QTBUG-25655");
+    QSKIP("This test is unstable: BOBUIBUG-25655");
 
     QNativeIpcKey nativeKey = rememberKey("market");
 
@@ -910,16 +910,16 @@ void tst_QSharedMemory::simpleProcessProducerConsumer()
 
 void tst_QSharedMemory::uniqueKey_data()
 {
-    QTest::addColumn<QString>("key1");
-    QTest::addColumn<QString>("key2");
+    BOBUIest::addColumn<QString>("key1");
+    BOBUIest::addColumn<QString>("key2");
 
-    QTest::newRow("null == null") << QString() << QString();
-    QTest::newRow("key == key") << QString("key") << QString("key");
-    QTest::newRow("key1 == key1") << QString("key1") << QString("key1");
-    QTest::newRow("key != key1") << QString("key") << QString("key1");
-    QTest::newRow("ke1y != key1") << QString("ke1y") << QString("key1");
-    QTest::newRow("key1 != key2") << QString("key1") << QString("key2");
-    QTest::newRow("Noël -> Nol") << QString::fromUtf8("N\xc3\xabl") << QString("Nol");
+    BOBUIest::newRow("null == null") << QString() << QString();
+    BOBUIest::newRow("key == key") << QString("key") << QString("key");
+    BOBUIest::newRow("key1 == key1") << QString("key1") << QString("key1");
+    BOBUIest::newRow("key != key1") << QString("key") << QString("key1");
+    BOBUIest::newRow("ke1y != key1") << QString("ke1y") << QString("key1");
+    BOBUIest::newRow("key1 != key2") << QString("key1") << QString("key2");
+    BOBUIest::newRow("Noël -> Nol") << QString::fromUtf8("N\xc3\xabl") << QString("Nol");
 }
 
 void tst_QSharedMemory::uniqueKey()
@@ -938,8 +938,8 @@ void tst_QSharedMemory::uniqueKey()
     QCOMPARE(nativeEqual, setEqual);
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QSharedMemory::createWithSameKey()
 {
     const QString key = u"legacy_key"_s;
@@ -952,15 +952,15 @@ void tst_QSharedMemory::createWithSameKey()
         QVERIFY(!mem2.create(sz));
         QVERIFY(mem2.attach());
     }
-    // and the second create() should fail as well, QTBUG-111855
+    // and the second create() should fail as well, BOBUIBUG-111855
     {
         QSharedMemory mem2(key);
         QVERIFY(!mem2.create(sz));
         QVERIFY(mem2.attach());
     }
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-QTEST_MAIN(tst_QSharedMemory)
+BOBUIEST_MAIN(tst_QSharedMemory)
 #include "tst_qsharedmemory.moc"
 

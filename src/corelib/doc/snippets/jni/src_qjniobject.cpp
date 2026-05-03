@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-#include <QtCore/qglobal.h>
-#include <QtCore/qdebug.h>
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qdebug.h>
 
 #if defined(Q_QDOC) || defined(Q_OS_ANDROID)
 
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnitypes.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnitypes.h>
 
 //! [QJniObject scope]
 void functionScope()
@@ -19,7 +19,7 @@ void functionScope()
     }
 
     // Ops! myJString is no longer valid.
-    QString myQtString = QJniObject(myJString).toString();
+    QString myBobUIString = QJniObject(myJString).toString();
 }
 //! [QJniObject scope]
 

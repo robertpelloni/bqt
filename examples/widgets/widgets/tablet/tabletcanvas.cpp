@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "tabletcanvas.h"
 
 #include <QCoreApplication>
 #include <QPainter>
-#include <QtMath>
+#include <BobUIMath>
 #include <cstdlib>
 
 //! [0]
 TabletCanvas::TabletCanvas()
     : QWidget(nullptr), m_brush(m_color)
-    , m_pen(m_brush, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin)
+    , m_pen(m_brush, 1.0, BobUI::SolidLine, BobUI::RoundCap, BobUI::RoundJoin)
 {
     resize(500, 500);
     setAutoFillBackground(true);
-    setAttribute(Qt::WA_TabletTracking);
+    setAttribute(BobUI::WA_TabletTracking);
 }
 //! [0]
 
@@ -41,12 +41,12 @@ bool TabletCanvas::loadImage(const QString &file)
 
 void TabletCanvas::clear()
 {
-    m_pixmap.fill(Qt::white);
+    m_pixmap.fill(BobUI::white);
     update();
 }
 
 //! [3]
-void TabletCanvas::tabletEvent(QTabletEvent *event)
+void TabletCanvas::tabletEvent(BOBUIabletEvent *event)
 {
     switch (event->type()) {
         case QEvent::TabletPress:
@@ -72,7 +72,7 @@ void TabletCanvas::tabletEvent(QTabletEvent *event)
             }
             break;
         case QEvent::TabletRelease:
-            if (m_deviceDown && event->buttons() == Qt::NoButton)
+            if (m_deviceDown && event->buttons() == BobUI::NoButton)
                 m_deviceDown = false;
             update();
             break;
@@ -89,7 +89,7 @@ void TabletCanvas::initPixmap()
     qreal dpr = devicePixelRatio();
     QPixmap newPixmap = QPixmap(qRound(width() * dpr), qRound(height() * dpr));
     newPixmap.setDevicePixelRatio(dpr);
-    newPixmap.fill(Qt::white);
+    newPixmap.fill(BobUI::white);
     QPainter painter(&newPixmap);
     if (!m_pixmap.isNull())
         painter.drawPixmap(0, 0, m_pixmap);
@@ -109,7 +109,7 @@ void TabletCanvas::paintEvent(QPaintEvent *event)
 //! [4]
 
 //! [5]
-void TabletCanvas::paintPixmap(QPainter &painter, QTabletEvent *event)
+void TabletCanvas::paintPixmap(QPainter &painter, BOBUIabletEvent *event)
 {
     static qreal maxPenRadius = pressureToWidth(1.0);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -118,12 +118,12 @@ void TabletCanvas::paintPixmap(QPainter &painter, QTabletEvent *event)
 //! [6]
         case QInputDevice::DeviceType::Airbrush:
             {
-                painter.setPen(Qt::NoPen);
+                painter.setPen(BobUI::NoPen);
                 QRadialGradient grad(lastPoint.pos, m_pen.widthF() * 10.0);
                 QColor color = m_brush.color();
                 color.setAlphaF(color.alphaF() * 0.25);
                 grad.setColorAt(0, m_brush.color());
-                grad.setColorAt(0.5, Qt::transparent);
+                grad.setColorAt(0.5, BobUI::transparent);
                 painter.setBrush(grad);
                 qreal radius = grad.radius();
                 painter.drawEllipse(event->position(), radius, radius);
@@ -135,7 +135,7 @@ void TabletCanvas::paintPixmap(QPainter &painter, QTabletEvent *event)
         case QInputDevice::DeviceType::Mouse:
             {
                 const QString error(tr("This input device is not supported by the example."));
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
                 QStatusTipEvent status(error);
                 QCoreApplication::sendEvent(this, &status);
 #else
@@ -146,7 +146,7 @@ void TabletCanvas::paintPixmap(QPainter &painter, QTabletEvent *event)
         default:
             {
                 const QString error(tr("Unknown tablet device - treating as stylus"));
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
                 QStatusTipEvent status(error);
                 QCoreApplication::sendEvent(this, &status);
 #else
@@ -156,8 +156,8 @@ void TabletCanvas::paintPixmap(QPainter &painter, QTabletEvent *event)
             Q_FALLTHROUGH();
         case QInputDevice::DeviceType::Stylus:
             if (event->pointingDevice()->capabilities().testFlag(QPointingDevice::Capability::Rotation)) {
-                m_brush.setStyle(Qt::SolidPattern);
-                painter.setPen(Qt::NoPen);
+                m_brush.setStyle(BobUI::SolidPattern);
+                painter.setPen(BobUI::NoPen);
                 painter.setBrush(m_brush);
                 QPolygonF poly;
                 qreal halfWidth = pressureToWidth(lastPoint.pressure);
@@ -189,7 +189,7 @@ qreal TabletCanvas::pressureToWidth(qreal pressure)
 }
 
 //! [7]
-void TabletCanvas::updateBrush(const QTabletEvent *event)
+void TabletCanvas::updateBrush(const BOBUIabletEvent *event)
 {
     int hue, saturation, value, alpha;
     m_color.getHsv(&hue, &saturation, &value, &alpha);
@@ -246,8 +246,8 @@ void TabletCanvas::updateBrush(const QTabletEvent *event)
 
 //! [10] //! [11]
     if (event->pointerType() == QPointingDevice::PointerType::Eraser) {
-        m_brush.setColor(Qt::white);
-        m_pen.setColor(Qt::white);
+        m_brush.setColor(BobUI::white);
+        m_pen.setColor(BobUI::white);
         m_pen.setWidthF(event->pressure() * 10 + 1);
     } else {
         m_brush.setColor(m_color);
@@ -257,7 +257,7 @@ void TabletCanvas::updateBrush(const QTabletEvent *event)
 //! [11]
 
 //! [12]
-void TabletCanvas::updateCursor(const QTabletEvent *event)
+void TabletCanvas::updateCursor(const BOBUIabletEvent *event)
 {
     QCursor cursor;
     if (event->type() != QEvent::TabletLeaveProximity) {
@@ -273,7 +273,7 @@ void TabletCanvas::updateCursor(const QTabletEvent *event)
                     solid.setAlpha(255);
                     img.fill(solid);
                     QPainter painter(&img);
-                    QTransform transform = painter.transform();
+                    BOBUIransform transform = painter.transform();
                     transform.translate(16, 16);
                     transform.rotate(event->rotation());
                     painter.setTransform(transform);

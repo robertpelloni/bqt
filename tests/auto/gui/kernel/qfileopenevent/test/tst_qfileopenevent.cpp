@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QTemporaryDir>
-#include <QTest>
-#include <QtGui/qevent.h>
+#include <BobUICore/BOBUIemporaryDir>
+#include <BOBUIest>
+#include <BobUIGui/qevent.h>
 
 class tst_qfileopenevent : public QObject
 {
@@ -32,7 +32,7 @@ private:
 
     bool event(QEvent *) override;
 
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
     QString m_originalCurrent;
 };
 
@@ -186,7 +186,7 @@ void tst_qfileopenevent::sendAndReceive()
     QCoreApplication::instance()->postEvent(this, event.release());
     QCoreApplication::instance()->processEvents();
 
-    // QTBUG-17468: On Mac, processEvents doesn't always process posted events
+    // BOBUIBUG-17468: On Mac, processEvents doesn't always process posted events
     QCoreApplication::instance()->sendPostedEvents();
 
     // check the content
@@ -199,5 +199,5 @@ void tst_qfileopenevent::sendAndReceive()
     QFile::remove(QLatin1String("testSendAndReceive"));
 }
 
-QTEST_MAIN(tst_qfileopenevent)
+BOBUIEST_MAIN(tst_qfileopenevent)
 #include "tst_qfileopenevent.moc"

@@ -1513,8 +1513,8 @@ inline void QOpenGLExtension_QCOM_tiled_rendering::glEndTilingQCOM(GLbitfield pr
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif

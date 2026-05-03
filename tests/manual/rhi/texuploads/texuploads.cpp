@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../shared/examplefw.h"
 #include "../shared/cube.h"
@@ -35,7 +35,7 @@ void Window::customInit()
     d.releasePool << d.ubuf;
     d.ubuf->create();
 
-    QImage baseImage(QLatin1String(":/qt256.png"));
+    QImage baseImage(QLatin1String(":/bobui256.png"));
     d.tex = m_r->newTexture(QRhiTexture::RGBA8, baseImage.size(), 1, QRhiTexture::UsedAsTransferSource);
     d.releasePool << d.tex;
     d.tex->create();
@@ -100,7 +100,7 @@ void Window::customInit()
     d.ps->create();
 
     d.customImage = QImage(128, 64, QImage::Format_RGBA8888);
-    d.customImage.fill(Qt::red);
+    d.customImage.fill(BobUI::red);
     QPainter painter(&d.customImage);
     // the text may look different on different platforms, so no guarantee the
     // output on the screen will be identical everywhere
@@ -153,7 +153,7 @@ void Window::customRender()
             d.newTex->create();
 
             QImage empty(sz.width(), sz.height(), QImage::Format_RGBA8888);
-            empty.fill(Qt::blue);
+            empty.fill(BobUI::blue);
             u->uploadTexture(d.newTex, empty);
 
             // Copy the left-half of tex to the right-half of newTex, while
@@ -192,7 +192,7 @@ void Window::customRender()
         if (d.testStage == 6) {
             const QRhiTexture::NativeTexture nativeTexture = d.tex->nativeTexture();
             if (nativeTexture.object) {
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
                 if (graphicsApi == Metal) {
                     qDebug() << "Metal texture: " << nativeTexture.object;
                     // Now could cast to id<MTLTexture> and do something with

@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@deltech.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlistview.h"
 
 #include <qabstractitemdelegate.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include <qaccessible.h>
 #endif
 #include <qapplication.h>
 #include <qstylepainter.h>
 #include <qbitmap.h>
 #include <qdebug.h>
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qdrag.h>
 #endif
 #include <qevent.h>
 #include <qlist.h>
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 #include <qrubberband.h>
 #endif
 #include <qscrollbar.h>
@@ -29,9 +29,9 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
+extern bool bobui_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 
 /*!
     \class QListView
@@ -40,7 +40,7 @@ extern bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
 
     \ingroup model-view
     \ingroup advanced
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-listview.png {List of weather icons}
 
@@ -48,13 +48,13 @@ extern bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
     non-hierarchical list, or as a collection of icons. This class is used
     to provide lists and icon views that were previously provided by the
     \c QListBox and \c QIconView classes, but using the more flexible
-    approach provided by Qt's model/view architecture.
+    approach provided by BobUI's model/view architecture.
 
     The QListView class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     This view does not display horizontal or vertical headers; to display
-    a list of items with a horizontal header, use QTreeView instead.
+    a list of items with a horizontal header, use BOBUIreeView instead.
 
     QListView implements the interfaces defined by the
     QAbstractItemView class to allow it to display data provided by
@@ -89,7 +89,7 @@ extern bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event);
     that can be taken for views that are intended to display items with equal sizes
     is to set the \l uniformItemSizes property to true.
 
-    \sa {View Classes}, QTreeView, QTableView, QListWidget
+    \sa {View Classes}, BOBUIreeView, BOBUIableView, QListWidget
 */
 
 /*!
@@ -147,7 +147,7 @@ QListView::QListView(QWidget *parent)
 {
     setViewMode(ListMode);
     setSelectionMode(SingleSelection);
-    setAttribute(Qt::WA_MacShowFocusRect);
+    setAttribute(BobUI::WA_MacShowFocusRect);
     Q_D(QListView);               // We rely on a qobject_cast for PM_DefaultFrameWidth to change
     d->updateStyledFrameWidths(); // hence we have to force an update now that the object has been constructed
 }
@@ -160,7 +160,7 @@ QListView::QListView(QListViewPrivate &dd, QWidget *parent)
 {
     setViewMode(ListMode);
     setSelectionMode(SingleSelection);
-    setAttribute(Qt::WA_MacShowFocusRect);
+    setAttribute(BobUI::WA_MacShowFocusRect);
     Q_D(QListView);               // We rely on a qobject_cast for PM_DefaultFrameWidth to change
     d->updateStyledFrameWidths(); // hence we have to force an update now that the object has been constructed
 }
@@ -197,7 +197,7 @@ void QListView::setMovement(Movement movement)
     d->modeProperties |= uint(QListViewPrivate::Movement);
     d->movement = movement;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     bool movable = (movement != Static);
     setDragEnabled(movable);
     d->viewport->setAcceptDrops(movable);
@@ -459,7 +459,7 @@ void QListView::setViewMode(ViewMode mode)
             d->showElasticBand = true;
     }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     bool movable = (d->movement != Static);
     setDragEnabled(movable);
     setAcceptDrops(movable);
@@ -609,7 +609,7 @@ void QListViewPrivate::selectAll(QItemSelectionModel::SelectionFlags command)
 
 /*!
     \class QListViewPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -784,7 +784,7 @@ void QListView::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 /*!
   \reimp
 */
@@ -800,7 +800,7 @@ void QListView::wheelEvent(QWheelEvent *e)
             QWheelEvent hwe(e->position(), e->globalPosition(), pixelDelta, angleDelta,
                             e->buttons(), e->modifiers(), e->phase(), e->inverted(), e->source());
             if (e->spontaneous())
-                qt_sendSpontaneousEvent(d->hbar, &hwe);
+                bobui_sendSpontaneousEvent(d->hbar, &hwe);
             else
                 QCoreApplication::sendEvent(d->hbar, &hwe);
             e->setAccepted(hwe.isAccepted());
@@ -811,12 +811,12 @@ void QListView::wheelEvent(QWheelEvent *e)
         QCoreApplication::sendEvent(d->hbar, e);
     }
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 /*!
   \reimp
 */
-void QListView::timerEvent(QTimerEvent *e)
+void QListView::timerEvent(BOBUIimerEvent *e)
 {
     Q_D(QListView);
     if (e->timerId() == d->batchLayoutTimer.timerId()) {
@@ -858,7 +858,7 @@ void QListView::resizeEvent(QResizeEvent *e)
     }
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*!
   \reimp
@@ -891,7 +891,7 @@ void QListView::dropEvent(QDropEvent *event)
 {
     Q_D(QListView);
 
-    const bool moveAction = event->dropAction() == Qt::MoveAction
+    const bool moveAction = event->dropAction() == BobUI::MoveAction
                          || dragDropMode() == QAbstractItemView::InternalMove;
     if (event->source() == this && moveAction) {
         QModelIndex topIndex;
@@ -955,13 +955,13 @@ void QListView::dropEvent(QDropEvent *event)
 /*!
   \reimp
 */
-void QListView::startDrag(Qt::DropActions supportedActions)
+void QListView::startDrag(BobUI::DropActions supportedActions)
 {
     if (!d_func()->commonListView->filterStartDrag(supportedActions))
         QAbstractItemView::startDrag(supportedActions);
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
   \reimp
@@ -979,7 +979,7 @@ void QListView::initViewItemOption(QStyleOptionViewItem *option) const
     if (d->viewMode == QListView::IconMode) {
         option->showDecorationSelected = false;
         option->decorationPosition = QStyleOptionViewItem::Top;
-        option->displayAlignment = Qt::AlignCenter;
+        option->displayAlignment = BobUI::AlignCenter;
     } else {
         option->decorationPosition = QStyleOptionViewItem::Left;
     }
@@ -1030,7 +1030,7 @@ void QListView::paintEvent(QPaintEvent *e)
         else
             option.rect.setHeight(qMin(maxSize, option.rect.height()));
 
-        const bool itemIsEnabled = enabled && index.flags().testFlag(Qt::ItemIsEnabled);
+        const bool itemIsEnabled = enabled && index.flags().testFlag(BobUI::ItemIsEnabled);
         option.state = state;
         option.state.setFlag(QStyle::State_Selected, selections && selections->isSelected(index));
         option.state.setFlag(QStyle::State_Enabled, itemIsEnabled);
@@ -1067,11 +1067,11 @@ void QListView::paintEvent(QPaintEvent *e)
         itemDelegateForIndex(index)->paint(&painter, option, index);
     }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     d->commonListView->paintDragDrop(&painter);
 #endif
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     // #### move this implementation into a dynamic class
     if (d->showElasticBand && d->elasticBand.isValid()) {
         QStyleOptionRubberBand opt;
@@ -1121,7 +1121,7 @@ int QListView::verticalOffset() const
 /*!
   \reimp
 */
-QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+QModelIndex QListView::moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers)
 {
     Q_D(QListView);
     Q_UNUSED(modifiers);
@@ -1225,7 +1225,7 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
         while (intersectVector.isEmpty()) {
             rect.translate(0, -rect.height());
             if (rect.bottom() <= 0) {
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
                 if (QApplicationPrivate::keypadNavigationEnabled()) {
                     int row = d->batchStartRow() - 1;
                     while (row >= 0 && d->isHiddenOrDisabled(row))
@@ -1270,7 +1270,7 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
         while (intersectVector.isEmpty()) {
             rect.translate(0, rect.height());
             if (rect.top() >= contents.height()) {
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
                 if (QApplicationPrivate::keypadNavigationEnabled()) {
                     int rowCount = d->model->rowCount(d->root);
                     int row = 0;
@@ -1578,12 +1578,12 @@ void QListView::updateGeometries()
     if (d->movement == Static && !d->isWrapping()) {
         d->layoutChildren(); // we need the viewport size to be updated
         if (d->flow == TopToBottom) {
-            if (horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
+            if (horizontalScrollBarPolicy() == BobUI::ScrollBarAlwaysOff) {
                 d->setContentsSize(viewport()->width(), contentsSize().height());
                 horizontalScrollBar()->setRange(0, 0); // we see all the contents anyway
             }
         } else { // LeftToRight
-            if (verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
+            if (verticalScrollBarPolicy() == BobUI::ScrollBarAlwaysOff) {
                 d->setContentsSize(contentsSize().width(), viewport()->height());
                 verticalScrollBar()->setRange(0, 0); // we see all the contents anyway
             }
@@ -1617,7 +1617,7 @@ void QListView::setModelColumn(int column)
         return;
     d->column = column;
     d->doDelayedItemsLayout();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent event(this, QAccessibleTableModelChangeEvent::ModelReset);
         QAccessible::updateAccessibility(&event);
@@ -1718,7 +1718,7 @@ bool QListView::isSelectionRectVisible() const
     The default alignment is 0, which means that an item fills
     its cell entirely.
 */
-void QListView::setItemAlignment(Qt::Alignment alignment)
+void QListView::setItemAlignment(BobUI::Alignment alignment)
 {
     Q_D(QListView);
     if (d->itemAlignment == alignment)
@@ -1728,7 +1728,7 @@ void QListView::setItemAlignment(Qt::Alignment alignment)
         d->doDelayedItemsLayout();
 }
 
-Qt::Alignment QListView::itemAlignment() const
+BobUI::Alignment QListView::itemAlignment() const
 {
     Q_D(const QListView);
     return d->itemAlignment;
@@ -1761,7 +1761,7 @@ QListViewPrivate::QListViewPrivate()
       uniformItemSizes(false),
       batchSize(100),
       showElasticBand(false),
-      itemAlignment(Qt::Alignment())
+      itemAlignment(BobUI::Alignment())
 {
 }
 
@@ -1793,13 +1793,13 @@ void QListViewPrivate::prepareItemsLayout()
     }
 
     // maximumViewportSize() already takes scrollbar into account if policy is
-    // Qt::ScrollBarAlwaysOn but scrollbar extent must be deduced if policy
-    // is Qt::ScrollBarAsNeeded
-    int verticalMargin = (vbarpolicy == Qt::ScrollBarAsNeeded) && (flow == QListView::LeftToRight || vbar->isVisible())
+    // BobUI::ScrollBarAlwaysOn but scrollbar extent must be deduced if policy
+    // is BobUI::ScrollBarAsNeeded
+    int verticalMargin = (vbarpolicy == BobUI::ScrollBarAsNeeded) && (flow == QListView::LeftToRight || vbar->isVisible())
                         && !q->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap, nullptr, vbar)
         ? q->style()->pixelMetric(QStyle::PM_ScrollBarExtent, nullptr, vbar) + frameAroundContents
         : 0;
-    int horizontalMargin =  hbarpolicy==Qt::ScrollBarAsNeeded
+    int horizontalMargin =  hbarpolicy==BobUI::ScrollBarAsNeeded
         ? q->style()->pixelMetric(QStyle::PM_ScrollBarExtent, nullptr, hbar) + frameAroundContents
         : 0;
 
@@ -1941,7 +1941,7 @@ QItemSelection QListViewPrivate::selection(const QRect &rect) const
     return selection;
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QAbstractItemView::DropIndicatorPosition QListViewPrivate::position(const QPoint &pos, const QRect &rect, const QModelIndex &idx) const
 {
     if (viewMode == QListView::ListMode && flow == QListView::LeftToRight)
@@ -1959,7 +1959,7 @@ bool QListViewPrivate::dropOn(QDropEvent *event, int *dropRow, int *dropCol, QMo
 }
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 int QListViewPrivate::accessibleChildIndex(const QModelIndex &index) const
 {
     Q_Q(const QListView);
@@ -1990,7 +1990,7 @@ void QCommonListViewBase::removeHiddenRow(int row)
     dd->hiddenRows.remove(dd->model->index(row, 0, qq->rootIndex()));
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QCommonListViewBase::paintDragDrop(QPainter *painter)
 {
     // FIXME: Until the we can provide a proper drop indicator
@@ -2012,9 +2012,9 @@ void QCommonListViewBase::updateHorizontalScrollBar(const QSize &step)
     // If both scroll bars are set to auto, we might end up in a situation with enough space
     // for the actual content. But still one of the scroll bars will become enabled due to
     // the other one using the space. The other one will become invisible in the same cycle.
-    // -> Infinite loop, QTBUG-39902
-    const bool bothScrollBarsAuto = qq->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded &&
-                                    qq->horizontalScrollBarPolicy() == Qt::ScrollBarAsNeeded;
+    // -> Infinite loop, BOBUIBUG-39902
+    const bool bothScrollBarsAuto = qq->verticalScrollBarPolicy() == BobUI::ScrollBarAsNeeded &&
+                                    qq->horizontalScrollBarPolicy() == BobUI::ScrollBarAsNeeded;
 
     const QSize viewportSize = QListModeViewBase::viewportSize(qq);
 
@@ -2042,9 +2042,9 @@ void QCommonListViewBase::updateVerticalScrollBar(const QSize &step)
     // If both scroll bars are set to auto, we might end up in a situation with enough space
     // for the actual content. But still one of the scroll bars will become enabled due to
     // the other one using the space. The other one will become invisible in the same cycle.
-    // -> Infinite loop, QTBUG-39902
-    const bool bothScrollBarsAuto = qq->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded &&
-                                    qq->horizontalScrollBarPolicy() == Qt::ScrollBarAsNeeded;
+    // -> Infinite loop, BOBUIBUG-39902
+    const bool bothScrollBarsAuto = qq->verticalScrollBarPolicy() == BobUI::ScrollBarAsNeeded &&
+                                    qq->horizontalScrollBarPolicy() == BobUI::ScrollBarAsNeeded;
 
     const QSize viewportSize = QListModeViewBase::viewportSize(qq);
 
@@ -2120,12 +2120,12 @@ int QCommonListViewBase::horizontalScrollToValue(const int /*index*/, QListView:
 QListModeViewBase::QListModeViewBase(QListView *q, QListViewPrivate *d)
     : QCommonListViewBase(q, d)
 {
-#if QT_CONFIG(draganddrop)
-    dd->defaultDropAction = Qt::CopyAction;
+#if BOBUI_CONFIG(draganddrop)
+    dd->defaultDropAction = BobUI::CopyAction;
 #endif
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QAbstractItemView::DropIndicatorPosition QListModeViewBase::position(const QPoint &pos, const QRect &rect, const QModelIndex &index) const
 {
     QAbstractItemView::DropIndicatorPosition r = QAbstractItemView::OnViewport;
@@ -2146,7 +2146,7 @@ QAbstractItemView::DropIndicatorPosition QListModeViewBase::position(const QPoin
         }
     }
 
-    if (r == QAbstractItemView::OnItem && (!(dd->model->flags(index) & Qt::ItemIsDropEnabled)))
+    if (r == QAbstractItemView::OnItem && (!(dd->model->flags(index) & BobUI::ItemIsDropEnabled)))
         r = pos.x() < rect.center().x() ? QAbstractItemView::AboveItem : QAbstractItemView::BelowItem;
 
     return r;
@@ -2155,7 +2155,7 @@ QAbstractItemView::DropIndicatorPosition QListModeViewBase::position(const QPoin
 void QListModeViewBase::dragMoveEvent(QDragMoveEvent *event)
 {
     if (qq->dragDropMode() == QAbstractItemView::InternalMove
-        && (event->source() != qq || !(event->possibleActions() & Qt::MoveAction)))
+        && (event->source() != qq || !(event->possibleActions() & BobUI::MoveAction)))
         return;
 
     // ignore by default
@@ -2284,7 +2284,7 @@ bool QListModeViewBase::dropOn(QDropEvent *event, int *dropRow, int *dropCol, QM
     return false;
 }
 
-#endif //QT_CONFIG(draganddrop)
+#endif //BOBUI_CONFIG(draganddrop)
 
 void QListModeViewBase::updateVerticalScrollBar(const QSize &step)
 {
@@ -2348,7 +2348,7 @@ int QListModeViewBase::verticalScrollToValue(int index, QListView::ScrollHint hi
         if (hint == QListView::EnsureVisible)
             return value;
 
-        return perItemScrollToValue(index, value, area.height(), hint, Qt::Vertical, isWrapping(), rect.height());
+        return perItemScrollToValue(index, value, area.height(), hint, BobUI::Vertical, isWrapping(), rect.height());
     }
 
     return QCommonListViewBase::verticalScrollToValue(index, hint, above, below, area, rect);
@@ -2413,7 +2413,7 @@ int QListModeViewBase::horizontalScrollToValue(int index, QListView::ScrollHint 
     if (hint == QListView::EnsureVisible)
         return value;
 
-    return perItemScrollToValue(index, value, area.width(), hint, Qt::Horizontal, isWrapping(), rect.width());
+    return perItemScrollToValue(index, value, area.width(), hint, BobUI::Horizontal, isWrapping(), rect.width());
 }
 
 void QListModeViewBase::scrollContentsBy(int dx, int dy, bool scrollElasticBand)
@@ -2503,11 +2503,11 @@ QListViewItem QListModeViewBase::indexToListViewItem(const QModelIndex &index) c
         }
     }
 
-    if (dd->itemAlignment & Qt::AlignHorizontal_Mask) {
+    if (dd->itemAlignment & BobUI::AlignHorizontal_Mask) {
         size.setWidth(qMin(size.width(), cellSize.width()));
-        if (dd->itemAlignment & Qt::AlignRight)
+        if (dd->itemAlignment & BobUI::AlignRight)
             pos.setX(pos.x() + cellSize.width() - size.width());
-        if (dd->itemAlignment & Qt::AlignHCenter)
+        if (dd->itemAlignment & BobUI::AlignHCenter)
             pos.setX(pos.x() + (cellSize.width() - size.width()) / 2);
     } else {
         size.setWidth(cellSize.width());
@@ -2693,7 +2693,7 @@ QList<QModelIndex> QListModeViewBase::intersectingSet(const QRect &area) const
                 continue;
             QModelIndex index = modelIndex(row);
             if (index.isValid()) {
-                if (flow() == QListView::LeftToRight || dd->itemAlignment == Qt::Alignment()) {
+                if (flow() == QListView::LeftToRight || dd->itemAlignment == BobUI::Alignment()) {
                     ret += index;
                 } else {
                     const auto viewItem = indexToListViewItem(index);
@@ -2773,7 +2773,7 @@ int QListModeViewBase::perItemScrollingPageSteps(int length, int bounds, bool wr
 
 int QListModeViewBase::perItemScrollToValue(int index, int scrollValue, int viewportSize,
                                                  QAbstractItemView::ScrollHint hint,
-                                                 Qt::Orientation orientation, bool wrap, int itemExtent) const
+                                                 BobUI::Orientation orientation, bool wrap, int itemExtent) const
 {
     if (index < 0)
         return scrollValue;
@@ -2811,8 +2811,8 @@ int QListModeViewBase::perItemScrollToValue(int index, int scrollValue, int view
             break;
         }
     } else { // wrapping
-        Qt::Orientation flowOrientation = (flow() == QListView::LeftToRight
-                                           ? Qt::Horizontal : Qt::Vertical);
+        BobUI::Orientation flowOrientation = (flow() == QListView::LeftToRight
+                                           ? BobUI::Horizontal : BobUI::Vertical);
         if (flowOrientation == orientation) { // scrolling in the "flow" direction
             // ### wrapped scrolling in the flow direction
             return flowPositions.at(index + hiddenRowsBefore); // ### always pixel based for now
@@ -2885,8 +2885,8 @@ void QIconModeViewBase::removeHiddenRow(int row)
         tree.insertLeaf(items.at(row).rect(), row);
 }
 
-#if QT_CONFIG(draganddrop)
-bool QIconModeViewBase::filterStartDrag(Qt::DropActions supportedActions)
+#if BOBUI_CONFIG(draganddrop)
+bool QIconModeViewBase::filterStartDrag(BobUI::DropActions supportedActions)
 {
     // This function does the same thing as in QAbstractItemView::startDrag(),
     // plus adding viewitems to the draggedItems list.
@@ -2896,7 +2896,7 @@ bool QIconModeViewBase::filterStartDrag(Qt::DropActions supportedActions)
         if (viewport()->acceptDrops()) {
             QModelIndexList::ConstIterator it = indexes.constBegin();
             for (; it != indexes.constEnd(); ++it)
-                if (dd->model->flags(*it) & Qt::ItemIsDragEnabled
+                if (dd->model->flags(*it) & BobUI::ItemIsDragEnabled
                     && (*it).column() == dd->column)
                     draggedItems.push_back(*it);
         }
@@ -2909,10 +2909,10 @@ bool QIconModeViewBase::filterStartDrag(Qt::DropActions supportedActions)
         drag->setPixmap(pixmap);
         drag->setHotSpot(dd->pressedPosition - rect.topLeft());
         dd->dropEventMoved = false;
-        Qt::DropAction action = drag->exec(supportedActions, dd->defaultDropAction);
+        BobUI::DropAction action = drag->exec(supportedActions, dd->defaultDropAction);
         draggedItems.clear();
         // delete item, unless it has already been moved internally (see filterDropEvent)
-        if (action == Qt::MoveAction && !dd->dropEventMoved) {
+        if (action == BobUI::MoveAction && !dd->dropEventMoved) {
             if (dd->dragDropMode != QAbstractItemView::InternalMove || drag->target() == qq->viewport())
                 dd->clearOrRemove();
         }
@@ -2930,7 +2930,7 @@ bool QIconModeViewBase::filterDropEvent(QDropEvent *e)
     QPoint offset(horizontalOffset(), verticalOffset());
     QPoint end = e->position().toPoint() + offset;
     if (qq->acceptDrops()) {
-        const Qt::ItemFlags dropableFlags = Qt::ItemIsDropEnabled|Qt::ItemIsEnabled;
+        const BobUI::ItemFlags dropableFlags = BobUI::ItemIsDropEnabled|BobUI::ItemIsEnabled;
         const QList<QModelIndex> &dropIndices = intersectingSet(QRect(end, QSize(1, 1)));
         for (const QModelIndex &index : dropIndices)
             if ((index.flags() & dropableFlags) == dropableFlags)
@@ -3004,7 +3004,7 @@ bool QIconModeViewBase::filterDragMoveEvent(QDragMoveEvent *e)
     // check if we allow drops here
     if (draggedItems.contains(index))
         e->accept(); // allow changing item position
-    else if (dd->model->flags(index) & Qt::ItemIsDropEnabled)
+    else if (dd->model->flags(index) & BobUI::ItemIsDropEnabled)
         e->accept(); // allow dropping on dropenabled items
     else if (!index.isValid())
         e->accept(); // allow dropping in empty areas
@@ -3014,7 +3014,7 @@ bool QIconModeViewBase::filterDragMoveEvent(QDragMoveEvent *e)
         dd->startAutoScroll();
     return true;
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 void QIconModeViewBase::setRowCount(int rowCount)
 {
@@ -3407,7 +3407,7 @@ void QListView::currentChanged(const QModelIndex &current, const QModelIndex &pr
 {
     Q_D(const QListView);
     QAbstractItemView::currentChanged(current, previous);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         if (current.isValid() && hasFocus()) {
             int entry = d->accessibleChildIndex(current);
@@ -3425,7 +3425,7 @@ void QListView::currentChanged(const QModelIndex &current, const QModelIndex &pr
 void QListView::selectionChanged(const QItemSelection &selected,
                                  const QItemSelection &deselected)
 {
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     Q_D(const QListView);
     if (QAccessible::isActive()) {
         // ### does not work properly for selection ranges.
@@ -3511,6 +3511,6 @@ QSize QListView::viewportSizeHint() const
     return QSize(w, h);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlistview.cpp"

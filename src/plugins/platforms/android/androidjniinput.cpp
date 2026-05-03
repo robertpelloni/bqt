@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
 #include "androidjniinput.h"
 #include "androidjnimain.h"
@@ -11,24 +11,24 @@
 
 #include <qpa/qplatformwindow.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QTouchEvent>
+#include <BOBUIouchEvent>
 #include <QPointer>
 
 #include <QGuiApplication>
-#include <QtMath>
+#include <BobUIMath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaInputMethods, "qt.qpa.input.methods");
+Q_LOGGING_CATEGORY(lcQpaInputMethods, "bobui.qpa.input.methods");
 
-using namespace QtAndroid;
+using namespace BobUIAndroid;
 
-Q_DECLARE_JNI_CLASS(QtInputInterface, "org/qtproject/qt/android/QtInputInterface")
+Q_DECLARE_JNI_CLASS(BobUIInputInterface, "org/bobuiproject/bobui/android/BobUIInputInterface")
 
-namespace QtAndroidInput
+namespace BobUIAndroidInput
 {
     static bool m_ignoreMouseEvents = false;
-    static Qt::MouseButtons m_lastSeenButtons = Qt::NoButton;
+    static BobUI::MouseButtons m_lastSeenButtons = BobUI::NoButton;
 
     static QRect m_softwareKeyboardRect;
 
@@ -40,16 +40,16 @@ namespace QtAndroidInput
     void updateSelection(int selStart, int selEnd, int candidatesStart, int candidatesEnd)
     {
         qCDebug(lcQpaInputMethods) << ">>> UPDATESELECTION" << selStart << selEnd << candidatesStart << candidatesEnd;
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtInputInterface, void>("updateSelection", selStart, selEnd,
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIInputInterface, void>("updateSelection", selStart, selEnd,
                                                                candidatesStart, candidatesEnd);
     }
 
     void showSoftwareKeyboard(int left, int top, int width, int height, int inputHints, int enterKeyType)
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtInputInterface, void>(
-                "showSoftwareKeyboard", QtAndroidPrivate::activity(),
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIInputInterface, void>(
+                "showSoftwareKeyboard", BobUIAndroidPrivate::activity(),
                 left, top, width, height, inputHints,
                 enterKeyType);
         qCDebug(lcQpaInputMethods) << "@@@ SHOWSOFTWAREKEYBOARD" << left << top << width << height << inputHints << enterKeyType;
@@ -57,22 +57,22 @@ namespace QtAndroidInput
 
     void resetSoftwareKeyboard()
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtInputInterface>("resetSoftwareKeyboard");
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIInputInterface>("resetSoftwareKeyboard");
         qCDebug(lcQpaInputMethods) << "@@@ RESETSOFTWAREKEYBOARD";
     }
 
     void hideSoftwareKeyboard()
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtInputInterface>("hideSoftwareKeyboard");
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIInputInterface>("hideSoftwareKeyboard");
         qCDebug(lcQpaInputMethods) << "@@@ HIDESOFTWAREKEYBOARD";
     }
 
     bool isSoftwareKeyboardVisible()
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        return reg->callInterface<QtJniTypes::QtInputInterface, jboolean>(
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        return reg->callInterface<BobUIJniTypes::BobUIInputInterface, jboolean>(
                 "isSoftwareKeyboardVisible");
     }
 
@@ -83,14 +83,14 @@ namespace QtAndroidInput
 
     int getSelectHandleWidth()
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        return reg->callInterface<QtJniTypes::QtInputInterface, jint>("getSelectionHandleWidth");
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        return reg->callInterface<BobUIJniTypes::BobUIInputInterface, jint>("getSelectionHandleWidth");
     }
 
     void updateHandles(int mode, QPoint editMenuPos, uint32_t editButtons, QPoint cursor, QPoint anchor, bool rtl)
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtInputInterface, void>(
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIInputInterface, void>(
                 "updateHandles", mode, editMenuPos.x(), editMenuPos.y(),
                 editButtons, cursor.x(), cursor.y(), anchor.x(), anchor.y(), rtl);
     }
@@ -107,35 +107,35 @@ namespace QtAndroidInput
     };
     Q_DECLARE_FLAGS(AndroidMouseButtons, AndroidMouseButton)
 
-    static Qt::MouseButtons toMouseButtons(jint j_buttons)
+    static BobUI::MouseButtons toMouseButtons(jint j_buttons)
     {
         const auto buttons = static_cast<AndroidMouseButtons>(j_buttons);
-        Qt::MouseButtons mouseButtons;
+        BobUI::MouseButtons mouseButtons;
         if (buttons.testFlag(BUTTON_PRIMARY))
-            mouseButtons.setFlag(Qt::LeftButton);
+            mouseButtons.setFlag(BobUI::LeftButton);
 
         if (buttons.testFlag(BUTTON_SECONDARY))
-            mouseButtons.setFlag(Qt::RightButton);
+            mouseButtons.setFlag(BobUI::RightButton);
 
         if (buttons.testFlag(BUTTON_TERTIARY))
-            mouseButtons.setFlag(Qt::MiddleButton);
+            mouseButtons.setFlag(BobUI::MiddleButton);
 
         if (buttons.testFlag(BUTTON_BACK))
-            mouseButtons.setFlag(Qt::BackButton);
+            mouseButtons.setFlag(BobUI::BackButton);
 
         if (buttons.testFlag(BUTTON_FORWARD))
-            mouseButtons.setFlag(Qt::ForwardButton);
+            mouseButtons.setFlag(BobUI::ForwardButton);
 
         if (buttons.testFlag(BUTTON_STYLUS_PRIMARY))
-            mouseButtons.setFlag(Qt::LeftButton);
+            mouseButtons.setFlag(BobUI::LeftButton);
 
         if (buttons.testFlag(BUTTON_STYLUS_SECONDARY))
-            mouseButtons.setFlag(Qt::RightButton);
+            mouseButtons.setFlag(BobUI::RightButton);
 
         // Fall back to left button
-        if (Q_UNLIKELY(buttons != 0 && mouseButtons == Qt::NoButton)) {
-            qWarning() << "Unhandled button value:" << buttons << "Falling back to Qt::LeftButton";
-            mouseButtons = Qt::LeftButton;
+        if (Q_UNLIKELY(buttons != 0 && mouseButtons == BobUI::NoButton)) {
+            qWarning() << "Unhandled button value:" << buttons << "Falling back to BobUI::LeftButton";
+            mouseButtons = BobUI::LeftButton;
         }
         return mouseButtons;
     }
@@ -143,22 +143,22 @@ namespace QtAndroidInput
     static void sendMouseButtonEvents(QWindow *topLevel, QPoint localPos, QPoint globalPos,
                                       jint mouseButtonState, QEvent::Type type)
     {
-        const Qt::MouseButtons qtButtons = toMouseButtons(mouseButtonState);
-        const bool mouseReleased = type == QEvent::MouseButtonRelease && qtButtons == Qt::NoButton;
-        const Qt::MouseButtons eventButtons = mouseReleased ? m_lastSeenButtons : qtButtons;
-        m_lastSeenButtons = qtButtons;
+        const BobUI::MouseButtons bobuiButtons = toMouseButtons(mouseButtonState);
+        const bool mouseReleased = type == QEvent::MouseButtonRelease && bobuiButtons == BobUI::NoButton;
+        const BobUI::MouseButtons eventButtons = mouseReleased ? m_lastSeenButtons : bobuiButtons;
+        m_lastSeenButtons = bobuiButtons;
 
-        static_assert (sizeof(eventButtons) <= sizeof(uint), "Qt::MouseButtons size changed. Adapt code.");
+        static_assert (sizeof(eventButtons) <= sizeof(uint), "BobUI::MouseButtons size changed. Adapt code.");
 
-        if (eventButtons == Qt::NoButton) {
-            QWindowSystemInterface::handleMouseEvent(topLevel, localPos, globalPos, qtButtons, Qt::NoButton, type);
+        if (eventButtons == BobUI::NoButton) {
+            QWindowSystemInterface::handleMouseEvent(topLevel, localPos, globalPos, bobuiButtons, BobUI::NoButton, type);
             return;
         }
         for (uint buttonInt = 0x1; static_cast<uint>(eventButtons) >= buttonInt; buttonInt <<= 1) {
-            const auto button = static_cast<Qt::MouseButton>(buttonInt);
+            const auto button = static_cast<BobUI::MouseButton>(buttonInt);
             if (eventButtons.testFlag(button)) {
                 QWindowSystemInterface::handleMouseEvent(topLevel, localPos, globalPos,
-                                                         qtButtons, button, type);
+                                                         bobuiButtons, button, type);
             }
         }
     }
@@ -237,8 +237,8 @@ namespace QtAndroidInput
         if (inputContext && qGuiApp)
             QMetaObject::invokeMethod(inputContext, "longPress", Q_ARG(int, globalPos.x()), Q_ARG(int, globalPos.y()));
 
-        //### TODO: add proper API for Qt 5.2
-        static bool rightMouseFromLongPress = qEnvironmentVariableIntValue("QT_ANDROID_ENABLE_RIGHT_MOUSE_FROM_LONG_PRESS");
+        //### TODO: add proper API for BobUI 5.2
+        static bool rightMouseFromLongPress = qEnvironmentVariableIntValue("BOBUI_ANDROID_ENABLE_RIGHT_MOUSE_FROM_LONG_PRESS");
         if (!rightMouseFromLongPress)
             return;
         m_ignoreMouseEvents = true;
@@ -247,10 +247,10 @@ namespace QtAndroidInput
         // Click right button if no other button is already pressed.
         if (!m_mouseGrabber) {
             QWindowSystemInterface::handleMouseEvent(window, localPos, globalPos,
-                                                     Qt::MouseButtons(Qt::RightButton), Qt::RightButton,
+                                                     BobUI::MouseButtons(BobUI::RightButton), BobUI::RightButton,
                                                      QEvent::MouseButtonPress);
             QWindowSystemInterface::handleMouseEvent(window, localPos, globalPos,
-                                                     Qt::MouseButtons(Qt::NoButton), Qt::RightButton,
+                                                     BobUI::MouseButtons(BobUI::NoButton), BobUI::RightButton,
                                                      QEvent::MouseButtonRelease);
         }
     }
@@ -281,12 +281,12 @@ namespace QtAndroidInput
 
 
         QSize availableSize;
-        if (auto *platformIntegration = QtAndroid::androidPlatformIntegration())
+        if (auto *platformIntegration = BobUIAndroid::androidPlatformIntegration())
             availableSize = platformIntegration->screen()->availableGeometry().size();
         else
             availableSize = QAndroidPlatformScreen::defaultAvailableGeometry().size();
 
-        QWindow *window = QtAndroid::windowFromId(winId);
+        QWindow *window = BobUIAndroid::windowFromId(winId);
         if (!window) {
             qCWarning(lcQpaInputMethods, "Touch event received for non-existing window %d", winId);
             return;
@@ -321,7 +321,7 @@ namespace QtAndroidInput
 
     static QPointingDevice *getTouchDevice()
     {
-        QAndroidPlatformIntegration *platformIntegration = QtAndroid::androidPlatformIntegration();
+        QAndroidPlatformIntegration *platformIntegration = BobUIAndroid::androidPlatformIntegration();
         if (!platformIntegration)
             return nullptr;
 
@@ -347,12 +347,12 @@ namespace QtAndroidInput
         if (m_touchPoints.isEmpty())
             return;
 
-        QMutexLocker lock(QtAndroid::platformInterfaceMutex());
+        QMutexLocker lock(BobUIAndroid::platformInterfaceMutex());
         const QPointingDevice *touchDevice = getTouchDevice();
         if (!touchDevice)
             return;
 
-        QWindow *window = QtAndroid::windowFromId(winId);
+        QWindow *window = BobUIAndroid::windowFromId(winId);
         if (!window)
             return;
         QWindowSystemInterface::handleTouchEvent(window, touchDevice, m_touchPoints);
@@ -363,12 +363,12 @@ namespace QtAndroidInput
         if (m_touchPoints.isEmpty())
             return;
 
-        QMutexLocker lock(QtAndroid::platformInterfaceMutex());
+        QMutexLocker lock(BobUIAndroid::platformInterfaceMutex());
         const QPointingDevice *touchDevice = getTouchDevice();
         if (!touchDevice)
             return;
 
-        QWindow *window = QtAndroid::windowFromId(winId);
+        QWindow *window = BobUIAndroid::windowFromId(winId);
         if (!window)
             return;
         QWindowSystemInterface::handleTouchCancelEvent(window, touchDevice);
@@ -376,17 +376,17 @@ namespace QtAndroidInput
 
     static bool isTabletEventSupported(JNIEnv */*env*/, jobject /*thiz*/)
     {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
         return true;
 #else
         return false;
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
     }
 
     static void tabletEvent(JNIEnv */*env*/, jobject /*thiz*/, jint winId, jint deviceId, jlong time, jint action,
         jint pointerType, jint buttonState, jfloat x, jfloat y, jfloat pressure)
     {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
         const QPointF localPos(x, y);
         QWindow *window = windowFromId(winId);
         const QPointF globalPosF = window && window->handle() ?
@@ -407,18 +407,18 @@ namespace QtAndroidInput
         // 213 1 2  stylus drag with side-button held
         // 212 1 2  stylus release with side-button held
         // when action == ACTION_UP (1) it's a release; otherwise we say which button is pressed
-        Qt::MouseButtons buttons = Qt::NoButton;
+        BobUI::MouseButtons buttons = BobUI::NoButton;
         switch (action) {
         case 1:     // ACTION_UP
         case 6:     // ACTION_POINTER_UP, happens if stylus is not the primary pointer
         case 212:   // stylus release while side-button held on Galaxy Note 4
-            buttons = Qt::NoButton;
+            buttons = BobUI::NoButton;
             break;
         default:    // action is press or drag
             if (buttonState == 0)
-                buttons = Qt::LeftButton;
+                buttons = BobUI::LeftButton;
             else // 2 means RightButton
-                buttons = Qt::MouseButtons(buttonState);
+                buttons = BobUI::MouseButtons(buttonState);
             break;
         }
 
@@ -426,203 +426,203 @@ namespace QtAndroidInput
 
         QWindowSystemInterface::handleTabletEvent(window, ulong(time),
             localPos, globalPosF, int(QInputDevice::DeviceType::Stylus), pointerType,
-            buttons, pressure, 0, 0, 0., 0., 0, deviceId, Qt::NoModifier);
-#endif // QT_CONFIG(tabletevent)
+            buttons, pressure, 0, 0, 0., 0., 0, deviceId, BobUI::NoModifier);
+#endif // BOBUI_CONFIG(tabletevent)
     }
 
     static QKeyCombination mapAndroidKey(int key)
     {
         // 0--9        0x00000007 -- 0x00000010
         if (key >= 0x00000007 && key <= 0x00000010)
-            return QKeyCombination::fromCombined(Qt::Key_0 + key - 0x00000007);
+            return QKeyCombination::fromCombined(BobUI::Key_0 + key - 0x00000007);
 
         // A--Z        0x0000001d -- 0x00000036
         if (key >= 0x0000001d && key <= 0x00000036)
-            return QKeyCombination::fromCombined(Qt::Key_A + key - 0x0000001d);
+            return QKeyCombination::fromCombined(BobUI::Key_A + key - 0x0000001d);
 
         // F1--F12     0x00000083 -- 0x0000008e
         if (key >= 0x00000083 && key <= 0x0000008e)
-            return QKeyCombination::fromCombined(Qt::Key_F1 + key - 0x00000083);
+            return QKeyCombination::fromCombined(BobUI::Key_F1 + key - 0x00000083);
 
         // NUMPAD_0--NUMPAD_9     0x00000090 -- 0x00000099
         if (key >= 0x00000090 && key <= 0x00000099)
-            return QKeyCombination::fromCombined(Qt::KeypadModifier | Qt::Key_0 + key - 0x00000090);
+            return QKeyCombination::fromCombined(BobUI::KeypadModifier | BobUI::Key_0 + key - 0x00000090);
 
         // BUTTON_1--KEYCODE_BUTTON_16 0x000000bc -- 0x000000cb
 
         switch (key) {
         case 0x00000000: // KEYCODE_UNKNOWN
-            return Qt::Key_unknown;
+            return BobUI::Key_unknown;
 
         case 0x00000001: // KEYCODE_SOFT_LEFT
-            return Qt::Key_Left;
+            return BobUI::Key_Left;
 
         case 0x00000002: // KEYCODE_SOFT_RIGHT
-            return Qt::Key_Right;
+            return BobUI::Key_Right;
 
         // 0x00000003: // KEYCODE_HOME is never delivered to applications.
 
         case 0x00000004: // KEYCODE_BACK
-            return Qt::Key_Back;
+            return BobUI::Key_Back;
 
         case 0x00000005: // KEYCODE_CALL
-            return Qt::Key_Call;
+            return BobUI::Key_Call;
 
         case 0x00000006: // KEYCODE_ENDCALL
-            return Qt::Key_Hangup;
+            return BobUI::Key_Hangup;
 
        // 0--9        0x00000007 -- 0x00000010
 
         case 0x00000011: // KEYCODE_STAR
-            return Qt::Key_Asterisk;
+            return BobUI::Key_Asterisk;
 
         case 0x00000012: // KEYCODE_POUND
-            return Qt::Key_NumberSign;
+            return BobUI::Key_NumberSign;
 
         case 0x00000013: //KEYCODE_DPAD_UP
-            return Qt::Key_Up;
+            return BobUI::Key_Up;
 
         case 0x00000014: // KEYCODE_DPAD_DOWN
-            return Qt::Key_Down;
+            return BobUI::Key_Down;
 
         case 0x00000015: //KEYCODE_DPAD_LEFT
-            return Qt::Key_Left;
+            return BobUI::Key_Left;
 
         case 0x00000016: //KEYCODE_DPAD_RIGHT
-            return Qt::Key_Right;
+            return BobUI::Key_Right;
 
         case 0x00000017: // KEYCODE_DPAD_CENTER
-            return Qt::Key_Enter;
+            return BobUI::Key_Enter;
 
         case 0x00000018: // KEYCODE_VOLUME_UP
-            return Qt::Key_VolumeUp;
+            return BobUI::Key_VolumeUp;
 
         case 0x00000019: // KEYCODE_VOLUME_DOWN
-            return Qt::Key_VolumeDown;
+            return BobUI::Key_VolumeDown;
 
         case 0x0000001a:
-            return Qt::Key_PowerOff;
+            return BobUI::Key_PowerOff;
 
         case 0x0000001b: // KEYCODE_CAMERA
-            return Qt::Key_Camera;
+            return BobUI::Key_Camera;
 
         case 0x0000001c: // KEYCODE_CLEAR
-            return Qt::Key_Clear;
+            return BobUI::Key_Clear;
 
         // A--Z        0x0000001d -- 0x00000036
 
         case 0x00000037: // KEYCODE_COMMA
-            return Qt::Key_Comma;
+            return BobUI::Key_Comma;
 
         case 0x00000038: // KEYCODE_PERIOD
-            return Qt::Key_Period;
+            return BobUI::Key_Period;
 
         case 0x00000039: // KEYCODE_ALT_LEFT
         case 0x0000003a: // KEYCODE_ALT_RIGHT
-            return Qt::Key_Alt;
+            return BobUI::Key_Alt;
 
         case 0x0000003b: // KEYCODE_SHIFT_LEFT
         case 0x0000003c: // KEYCODE_SHIFT_RIGHT
-            return Qt::Key_Shift;
+            return BobUI::Key_Shift;
 
         case 0x0000003d: // KEYCODE_TAB
-            return Qt::Key_Tab;
+            return BobUI::Key_Tab;
 
         case 0x0000003e: // KEYCODE_SPACE
-            return Qt::Key_Space;
+            return BobUI::Key_Space;
 
         case 0x0000003f: // KEYCODE_SYM
-            return Qt::Key_Meta;
+            return BobUI::Key_Meta;
 
         case 0x00000040: // KEYCODE_EXPLORER
-            return Qt::Key_Explorer;
+            return BobUI::Key_Explorer;
 
         case 0x00000041: //KEYCODE_ENVELOPE
-            return Qt::Key_LaunchMail;
+            return BobUI::Key_LaunchMail;
 
         case 0x00000042: // KEYCODE_ENTER
-            return Qt::Key_Return;
+            return BobUI::Key_Return;
 
         case 0x00000043: // KEYCODE_DEL
-            return Qt::Key_Backspace;
+            return BobUI::Key_Backspace;
 
         case 0x00000044: // KEYCODE_GRAVE
-            return Qt::Key_QuoteLeft;
+            return BobUI::Key_QuoteLeft;
 
         case 0x00000045: // KEYCODE_MINUS
-            return Qt::Key_Minus;
+            return BobUI::Key_Minus;
 
         case 0x00000046: // KEYCODE_EQUALS
-            return Qt::Key_Equal;
+            return BobUI::Key_Equal;
 
         case 0x00000047: // KEYCODE_LEFT_BRACKET
-            return Qt::Key_BracketLeft;
+            return BobUI::Key_BracketLeft;
 
         case 0x00000048: // KEYCODE_RIGHT_BRACKET
-            return Qt::Key_BracketRight;
+            return BobUI::Key_BracketRight;
 
         case 0x00000049: // KEYCODE_BACKSLASH
-            return Qt::Key_Backslash;
+            return BobUI::Key_Backslash;
 
         case 0x0000004a: // KEYCODE_SEMICOLON
-            return Qt::Key_Semicolon;
+            return BobUI::Key_Semicolon;
 
         case 0x0000004b: // KEYCODE_APOSTROPHE
-            return Qt::Key_Apostrophe;
+            return BobUI::Key_Apostrophe;
 
         case 0x0000004c: // KEYCODE_SLASH
-            return Qt::Key_Slash;
+            return BobUI::Key_Slash;
 
         case 0x0000004d: // KEYCODE_AT
-            return Qt::Key_At;
+            return BobUI::Key_At;
 
         case 0x0000004e: // KEYCODE_NUM
-            return Qt::Key_Alt;
+            return BobUI::Key_Alt;
 
         case 0x0000004f: // KEYCODE_HEADSETHOOK
             return QKeyCombination::fromCombined(0);
 
         case 0x00000050: // KEYCODE_FOCUS
-            return Qt::Key_CameraFocus;
+            return BobUI::Key_CameraFocus;
 
         case 0x00000051: // KEYCODE_PLUS
-            return Qt::Key_Plus;
+            return BobUI::Key_Plus;
 
         case 0x00000052: // KEYCODE_MENU
-            return Qt::Key_Menu;
+            return BobUI::Key_Menu;
 
         case 0x00000053: // KEYCODE_NOTIFICATION
             return QKeyCombination::fromCombined(0);
 
         case 0x00000054: // KEYCODE_SEARCH
-            return Qt::Key_Search;
+            return BobUI::Key_Search;
 
         case 0x00000055: // KEYCODE_MEDIA_PLAY_PAUSE
-            return Qt::Key_MediaTogglePlayPause;
+            return BobUI::Key_MediaTogglePlayPause;
 
         case 0x00000056: // KEYCODE_MEDIA_STOP
-            return Qt::Key_MediaStop;
+            return BobUI::Key_MediaStop;
 
         case 0x00000057: // KEYCODE_MEDIA_NEXT
-            return Qt::Key_MediaNext;
+            return BobUI::Key_MediaNext;
 
         case 0x00000058: // KEYCODE_MEDIA_PREVIOUS
-            return Qt::Key_MediaPrevious;
+            return BobUI::Key_MediaPrevious;
 
         case 0x00000059: // KEYCODE_MEDIA_REWIND
-            return Qt::Key_AudioRewind;
+            return BobUI::Key_AudioRewind;
 
         case 0x0000005a: // KEYCODE_MEDIA_FAST_FORWARD
-            return Qt::Key_AudioForward;
+            return BobUI::Key_AudioForward;
 
         case 0x0000005b: // KEYCODE_MUTE
-            return Qt::Key_MicMute;
+            return BobUI::Key_MicMute;
 
         case 0x0000005c: // KEYCODE_PAGE_UP
-            return Qt::Key_PageUp;
+            return BobUI::Key_PageUp;
 
         case 0x0000005d: // KEYCODE_PAGE_DOWN
-            return Qt::Key_PageDown;
+            return BobUI::Key_PageDown;
 
         case 0x0000005e: // KEYCODE_PICTSYMBOLS
             return QKeyCombination::fromCombined(0);
@@ -645,132 +645,132 @@ namespace QtAndroidInput
             return QKeyCombination::fromCombined(0);
 
         case 0x0000006f: // KEYCODE_ESCAPE
-            return Qt::Key_Escape;
+            return BobUI::Key_Escape;
 
         case 0x00000070: // KEYCODE_FORWARD_DEL
-            return Qt::Key_Delete;
+            return BobUI::Key_Delete;
 
         case 0x00000071: // KEYCODE_CTRL_LEFT
         case 0x00000072: // KEYCODE_CTRL_RIGHT
-            return Qt::Key_Control;
+            return BobUI::Key_Control;
 
         case 0x00000073: // KEYCODE_CAPS_LOCK
-            return Qt::Key_CapsLock;
+            return BobUI::Key_CapsLock;
 
         case 0x00000074: // KEYCODE_SCROLL_LOCK
-            return Qt::Key_ScrollLock;
+            return BobUI::Key_ScrollLock;
 
         case 0x00000075: // KEYCODE_META_LEFT
         case 0x00000076: // KEYCODE_META_RIGHT
-            return Qt::Key_Meta;
+            return BobUI::Key_Meta;
 
         case 0x00000077: // KEYCODE_FUNCTION
             return QKeyCombination::fromCombined(0);
 
         case 0x00000078: // KEYCODE_SYSRQ
-            return Qt::Key_Print;
+            return BobUI::Key_Print;
 
         case 0x00000079: // KEYCODE_BREAK
-            return Qt::Key_Pause;
+            return BobUI::Key_Pause;
 
         case 0x0000007a: // KEYCODE_MOVE_HOME
-            return Qt::Key_Home;
+            return BobUI::Key_Home;
 
         case 0x0000007b: // KEYCODE_MOVE_END
-            return Qt::Key_End;
+            return BobUI::Key_End;
 
         case 0x0000007c: // KEYCODE_MOVE_INSERT
-            return Qt::Key_Insert;
+            return BobUI::Key_Insert;
 
         case 0x0000007d: // KEYCODE_FORWARD
-            return Qt::Key_Forward;
+            return BobUI::Key_Forward;
 
         case 0x0000007e: // KEYCODE_MEDIA_PLAY
-            return Qt::Key_MediaPlay;
+            return BobUI::Key_MediaPlay;
 
         case 0x0000007f: // KEYCODE_MEDIA_PAUSE
-            return Qt::Key_MediaPause;
+            return BobUI::Key_MediaPause;
 
         case 0x00000080: // KEYCODE_MEDIA_CLOSE
         case 0x00000081: // KEYCODE_MEDIA_EJECT
-            return Qt::Key_Eject;
+            return BobUI::Key_Eject;
 
         case 0x00000082: // KEYCODE_MEDIA_RECORD
-            return Qt::Key_MediaRecord;
+            return BobUI::Key_MediaRecord;
 
         // F1--F12     0x00000083 -- 0x0000008e
 
         case 0x0000008f: // KEYCODE_NUM_LOCK
-            return Qt::Key_NumLock;
+            return BobUI::Key_NumLock;
 
         // NUMPAD_0--NUMPAD_9     0x00000090 -- 0x00000099
 
         case 0x0000009a: // KEYCODE_NUMPAD_DIVIDE
-            return Qt::KeypadModifier | Qt::Key_Slash;
+            return BobUI::KeypadModifier | BobUI::Key_Slash;
 
         case 0x0000009b: // KEYCODE_NUMPAD_MULTIPLY
-            return Qt::KeypadModifier | Qt::Key_Asterisk;
+            return BobUI::KeypadModifier | BobUI::Key_Asterisk;
 
         case 0x0000009c: // KEYCODE_NUMPAD_SUBTRACT
-            return Qt::KeypadModifier | Qt::Key_Minus;
+            return BobUI::KeypadModifier | BobUI::Key_Minus;
 
         case 0x0000009d: // KEYCODE_NUMPAD_ADD
-            return Qt::KeypadModifier | Qt::Key_Plus;
+            return BobUI::KeypadModifier | BobUI::Key_Plus;
 
         case 0x0000009e: // KEYCODE_NUMPAD_DOT
-            return Qt::KeypadModifier | Qt::Key_Period;
+            return BobUI::KeypadModifier | BobUI::Key_Period;
 
         case 0x0000009f: // KEYCODE_NUMPAD_COMMA
-            return Qt::KeypadModifier | Qt::Key_Comma;
+            return BobUI::KeypadModifier | BobUI::Key_Comma;
 
         case 0x000000a0: // KEYCODE_NUMPAD_ENTER
-            return Qt::Key_Enter;
+            return BobUI::Key_Enter;
 
         case 0x000000a1: // KEYCODE_NUMPAD_EQUALS
-            return Qt::KeypadModifier | Qt::Key_Equal;
+            return BobUI::KeypadModifier | BobUI::Key_Equal;
 
         case 0x000000a2: // KEYCODE_NUMPAD_LEFT_PAREN
-            return Qt::Key_ParenLeft;
+            return BobUI::Key_ParenLeft;
 
         case 0x000000a3: // KEYCODE_NUMPAD_RIGHT_PAREN
-            return Qt::Key_ParenRight;
+            return BobUI::Key_ParenRight;
 
         case 0x000000a4: // KEYCODE_VOLUME_MUTE
-            return Qt::Key_VolumeMute;
+            return BobUI::Key_VolumeMute;
 
         case 0x000000a5: // KEYCODE_INFO
-            return Qt::Key_Info;
+            return BobUI::Key_Info;
 
         case 0x000000a6: // KEYCODE_CHANNEL_UP
-            return Qt::Key_ChannelUp;
+            return BobUI::Key_ChannelUp;
 
         case 0x000000a7: // KEYCODE_CHANNEL_DOWN
-            return Qt::Key_ChannelDown;
+            return BobUI::Key_ChannelDown;
 
         case 0x000000a8: // KEYCODE_ZOOM_IN
-            return Qt::Key_ZoomIn;
+            return BobUI::Key_ZoomIn;
 
         case 0x000000a9: // KEYCODE_ZOOM_OUT
-            return Qt::Key_ZoomOut;
+            return BobUI::Key_ZoomOut;
 
         case 0x000000aa: // KEYCODE_TV
         case 0x000000ab: // KEYCODE_WINDOW
             return QKeyCombination::fromCombined(0);
 
         case 0x000000ac: // KEYCODE_GUIDE
-            return Qt::Key_Guide;
+            return BobUI::Key_Guide;
 
         case 0x000000ad: // KEYCODE_DVR
             return QKeyCombination::fromCombined(0);
 
         case 0x000000ae: // KEYCODE_BOOKMARK
-            return Qt::Key_AddFavorite;
+            return BobUI::Key_AddFavorite;
 
         case 0x000000af: // KEYCODE_CAPTIONS
-            return Qt::Key_Subtitle;
+            return BobUI::Key_Subtitle;
 
         case 0x000000b0: // KEYCODE_SETTINGS
-            return Qt::Key_Settings;
+            return BobUI::Key_Settings;
 
         case 0x000000b1: // KEYCODE_TV_POWER
         case 0x000000b2: // KEYCODE_TV_INPUT
@@ -781,16 +781,16 @@ namespace QtAndroidInput
             return QKeyCombination::fromCombined(0);
 
         case 0x000000b7: // KEYCODE_PROG_RED
-            return Qt::Key_Red;
+            return BobUI::Key_Red;
 
         case 0x000000b8: // KEYCODE_PROG_GREEN
-            return Qt::Key_Green;
+            return BobUI::Key_Green;
 
         case 0x000000b9: // KEYCODE_PROG_YELLOW
-            return Qt::Key_Yellow;
+            return BobUI::Key_Yellow;
 
         case 0x000000ba: // KEYCODE_PROG_BLUE
-            return Qt::Key_Blue;
+            return BobUI::Key_Blue;
 
         // 0x000000bb: // KEYCODE_APP_SWITCH is not sent by the Android O.S.
 
@@ -803,26 +803,26 @@ namespace QtAndroidInput
             return QKeyCombination::fromCombined(0);
 
         case 0x000000d0: // KEYCODE_CALENDAR
-            return Qt::Key_Calendar;
+            return BobUI::Key_Calendar;
 
         case 0x000000d1: // KEYCODE_MUSIC
-            return Qt::Key_Music;
+            return BobUI::Key_Music;
 
         case 0x000000d2: // KEYCODE_CALCULATOR
-            return Qt::Key_Calculator;
+            return BobUI::Key_Calculator;
 
         // 0x000000d3 -- 0x000000da some japanese specific keys, someone who understand what is about should check !
 
         // 0x000000db: // KEYCODE_ASSIST  not delivered to applications.
 
         case 0x000000dc: // KEYCODE_BRIGHTNESS_DOWN
-            return Qt::Key_KeyboardBrightnessDown;
+            return BobUI::Key_KeyboardBrightnessDown;
 
         case 0x000000dd: // KEYCODE_BRIGHTNESS_UP
-            return Qt::Key_KeyboardBrightnessUp;
+            return BobUI::Key_KeyboardBrightnessUp;
 
         case 0x000000de: // KEYCODE_MEDIA_AUDIO_TRACK
-            return Qt::Key_AudioCycleTrack;
+            return BobUI::Key_AudioCycleTrack;
 
         default:
             qWarning() << "Unhandled key code " << key << '!';
@@ -830,21 +830,21 @@ namespace QtAndroidInput
         }
     }
 
-    static Qt::KeyboardModifiers mapAndroidModifiers(jint modifiers)
+    static BobUI::KeyboardModifiers mapAndroidModifiers(jint modifiers)
     {
-        Qt::KeyboardModifiers qmodifiers;
+        BobUI::KeyboardModifiers qmodifiers;
 
         if (modifiers & 0x00000001) // META_SHIFT_ON
-            qmodifiers |= Qt::ShiftModifier;
+            qmodifiers |= BobUI::ShiftModifier;
 
         if (modifiers & 0x00000002) // META_ALT_ON
-            qmodifiers |= Qt::AltModifier;
+            qmodifiers |= BobUI::AltModifier;
 
         if (modifiers & 0x00000004) // META_SYM_ON
-            qmodifiers |= Qt::MetaModifier;
+            qmodifiers |= BobUI::MetaModifier;
 
         if (modifiers & 0x00001000) // META_CTRL_ON
-            qmodifiers |= Qt::ControlModifier;
+            qmodifiers |= BobUI::ControlModifier;
 
         return qmodifiers;
     }
@@ -885,7 +885,7 @@ namespace QtAndroidInput
             inputContext->emitInputPanelVisibleChanged();
             if (!visibility) {
                 inputContext->emitKeyboardRectChanged();
-                QMetaObject::invokeMethod(inputContext, "hideSelectionHandles", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(inputContext, "hideSelectionHandles", BobUI::QueuedConnection);
             }
         }
         qCDebug(lcQpaInputMethods) << "@@@ KEYBOARDVISIBILITYCHANGED" << inputContext;
@@ -909,7 +909,7 @@ namespace QtAndroidInput
         qCDebug(lcQpaInputMethods) << "@@@ handleLocationChanged" << id << x << y;
         QAndroidInputContext *inputContext = QAndroidInputContext::androidInputContext();
         if (inputContext && qGuiApp)
-            QMetaObject::invokeMethod(inputContext, "handleLocationChanged", Qt::BlockingQueuedConnection,
+            QMetaObject::invokeMethod(inputContext, "handleLocationChanged", BobUI::BlockingQueuedConnection,
                                       Q_ARG(int, id), Q_ARG(int, x), Q_ARG(int, y));
 
     }
@@ -936,9 +936,9 @@ namespace QtAndroidInput
 
     bool registerNatives(QJniEnvironment &env)
     {
-        if (!env.registerNativeMethods(QtJniTypes::Traits<QtJniTypes::QtInputDelegate>::className(),
+        if (!env.registerNativeMethods(BobUIJniTypes::Traits<BobUIJniTypes::BobUIInputDelegate>::className(),
                                  methods, sizeof(methods) / sizeof(methods[0]))) {
-            __android_log_print(ANDROID_LOG_FATAL,"Qt", "RegisterNatives failed");
+            __android_log_print(ANDROID_LOG_FATAL,"BobUI", "RegisterNatives failed");
             return false;
         }
 
@@ -946,4 +946,4 @@ namespace QtAndroidInput
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

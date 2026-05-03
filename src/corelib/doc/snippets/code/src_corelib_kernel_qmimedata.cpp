@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include <QMimeData>
 #include <QDragEnterEvent>
@@ -73,13 +73,13 @@ namespace OtherNamespace
 
 #if PRO_FILE
 //! [3]
-application/x-qt-windows-mime;value="<custom type>"
+application/x-bobui-windows-mime;value="<custom type>"
 //! [3]
 
 
 //! [4]
-application/x-qt-windows-mime;value="FileGroupDescriptor"
-application/x-qt-windows-mime;value="FileContents"
+application/x-bobui-windows-mime;value="FileGroupDescriptor"
+application/x-bobui-windows-mime;value="FileContents"
 //! [4]
 #endif
 
@@ -112,7 +112,7 @@ void examples(QDropEvent *event, QMimeData *mimeData)
 
 #if PRO_FILE
 //! [8]
-application/x-qt-windows-mime;value="FileContents";index=0
-application/x-qt-windows-mime;value="FileContents";index=1
+application/x-bobui-windows-mime;value="FileContents";index=0
+application/x-bobui-windows-mime;value="FileContents";index=1
 //! [8]
 #endif

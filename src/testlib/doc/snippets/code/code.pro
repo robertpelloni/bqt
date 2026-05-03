@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += testlib
+BOBUI += testlib
 #! [qmake_use]

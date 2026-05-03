@@ -5,6 +5,7 @@
 int main(int argc, char *argv[])
 {
     OmniApplication app(argc, argv);
+
     app.initializeJuce();
 
     // In QML mode, we don't need to manually create QWidgets here.

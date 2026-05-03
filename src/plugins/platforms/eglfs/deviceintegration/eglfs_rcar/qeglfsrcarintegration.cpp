@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <QDebug>
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 #include <EGL/egl.h>
 #include "INTEGRITY.h"
 #include "qeglfsrcarintegration.h"
@@ -12,7 +12,7 @@
 
 extern "C" unsigned long PVRGrfxServerInit(void);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QEglFSRcarIntegration::platformInit()
 {
@@ -25,7 +25,7 @@ void QEglFSRcarIntegration::platformInit()
     mScreenSize = q_screenSizeFromFb(0);
     mNativeDisplay = (NativeDisplayType)EGL_DEFAULT_DISPLAY;
 
-    mNativeDisplayID = qEnvironmentVariableIntValue("QT_QPA_WM_DISP_ID", &ok);
+    mNativeDisplayID = qEnvironmentVariableIntValue("BOBUI_QPA_WM_DISP_ID", &ok);
     if (!ok)
         mNativeDisplayID = RCAR_DEFAULT_DISPLAY;
 
@@ -90,7 +90,7 @@ EGLNativeWindowType QEglFSRcarIntegration::createNativeWindow(QPlatformWindow *w
     mNativeWindow->ColorFmt = getWMColorFormat(format);
     mNativeWindow->PosX = 0;
     mNativeWindow->PosY = 0;
-    mNativeWindow->PosZ = qEnvironmentVariableIntValue("QT_QPA_WM_LAYER", &ok);
+    mNativeWindow->PosZ = qEnvironmentVariableIntValue("BOBUI_QPA_WM_LAYER", &ok);
     if (!ok)
         mNativeWindow->PosZ = RCAR_DEFAULT_WM_LAYER;
     mNativeWindow->Pitch = size.width();
@@ -128,4 +128,4 @@ void QEglFSRcarIntegration::destroyNativeWindow(EGLNativeWindowType window)
     free(mNativeWindow);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include <qbuffer.h>
 #include <qbytearray.h>
@@ -17,7 +17,7 @@
 #include <private/qdbusconnection_p.h>    // for the qDBusCheckAsyncTag
 #include <private/qdbusmetatype_p.h> // for QDBusMetaTypeId::init()
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // copied from dbus-protocol.h:
 static const char docTypeHeader[] =
@@ -38,7 +38,7 @@ static const char docTypeHeader[] =
 
 #define PROGRAMNAME     "qdbuscpp2xml"
 #define PROGRAMVERSION  "0.2"
-#define PROGRAMCOPYRIGHT QT_COPYRIGHT
+#define PROGRAMCOPYRIGHT BOBUI_COPYRIGHT
 
 static QString outputFile;
 static int flags;
@@ -93,7 +93,7 @@ static QString addFunction(const FunctionDef &mm, bool isSignal = false) {
 
                     // do we need to describe this argument?
                     if (!QDBusMetaType::signatureToMetaType(typeName).isValid())
-                        xml += QString::fromLatin1("      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"%1\"/>\n")
+                        xml += QString::fromLatin1("      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"%1\"/>\n")
                             .arg(typeNameToXml(mm.normalizedType.constData()));
             } else {
                 return QString();
@@ -139,7 +139,7 @@ static QString addFunction(const FunctionDef &mm, bool isSignal = false) {
         // do we need to describe this argument?
         if (!QDBusMetaType::signatureToMetaType(signature).isValid()) {
             const char *typeName = QMetaType(types.at(j)).name();
-            xml += QString::fromLatin1("      <annotation name=\"org.qtproject.QtDBus.QtTypeName.%1%2\" value=\"%3\"/>\n")
+            xml += QString::fromLatin1("      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.%1%2\" value=\"%3\"/>\n")
                     .arg(isOutput ? "Out"_L1 : "In"_L1)
                     .arg(isOutput && !isSignal ? j - inputCount : j - 1)
                     .arg(typeNameToXml(typeName));
@@ -204,7 +204,7 @@ static QString generateInterfaceXml(const ClassDef *mo)
                            QLatin1StringView(accessvalues[access]));
 
             if (!QDBusMetaType::signatureToMetaType(signature).isValid()) {
-                retval += QString::fromLatin1(">\n      <annotation name=\"org.qtproject.QtDBus.QtTypeName\" value=\"%3\"/>\n    </property>\n")
+                retval += QString::fromLatin1(">\n      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName\" value=\"%3\"/>\n    </property>\n")
                           .arg(typeNameToXml(mp.type.constData()));
             } else {
                 retval += "/>\n"_L1;
@@ -254,11 +254,11 @@ QString qDBusInterfaceFromClassDef(const ClassDef *mo)
     interface.replace("::"_L1, "."_L1);
 
     if (interface.startsWith("QDBus"_L1)) {
-        interface.prepend("org.qtproject.QtDBus."_L1);
+        interface.prepend("org.bobuiproject.BobUIDBus."_L1);
     } else if (interface.startsWith(u'Q') &&
                 interface.size() >= 2 && interface.at(1).isUpper()) {
-        // assume it's Qt
-        interface.prepend("local.org.qtproject.Qt."_L1);
+        // assume it's BobUI
+        interface.prepend("local.org.bobuiproject.BobUI."_L1);
     } else {
         interface.prepend("local."_L1);
     }
@@ -309,7 +309,7 @@ public:
 
 private:
     // not copiable and not movable because of QBasicAtomicInt
-    QtPrivate::QMetaTypeInterface metaTypeImpl =
+    BobUIPrivate::QMetaTypeInterface metaTypeImpl =
     {  /*.revision=*/ 0,
        /*.alignment=*/ 0,
        /*.size=*/ 0,

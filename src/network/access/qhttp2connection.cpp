@@ -1,32 +1,32 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "qhttp2connection_p.h"
 
 #include <private/bitstreams_p.h>
 
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/private/qiodevice_p.h>
-#include <QtCore/private/qnoncontiguousbytedevice_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/QRandomGenerator>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/private/qiodevice_p.h>
+#include <BobUICore/private/qnoncontiguousbytedevice_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/QRandomGenerator>
+#include <BobUICore/qloggingcategory.h>
 
 #include <algorithm>
 #include <memory>
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(qHttp2ConnectionLog, "qt.network.http2.connection", QtCriticalMsg)
+Q_STATIC_LOGGING_CATEGORY(qHttp2ConnectionLog, "bobui.network.http2.connection", BobUICriticalMsg)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace Http2;
 
 /*!
     \class QHttp2Stream
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \internal
 
     The QHttp2Stream class represents a single HTTP/2 stream.
@@ -37,7 +37,7 @@ using namespace Http2;
 
 /*!
     \struct QHttp2Stream::Configuration
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \internal
 
     \brief Configuration options for a QHttp2Stream.
@@ -262,7 +262,7 @@ void QHttp2Stream::finishWithError(Http2::Http2Error errorCode)
 {
     QNetworkReply::NetworkError ignored = QNetworkReply::NoError;
     QString message;
-    qt_error(errorCode, ignored, message);
+    bobui_error(errorCode, ignored, message);
     finishWithError(errorCode, message);
 }
 
@@ -584,7 +584,7 @@ bool QHttp2Stream::sendHEADERS(const HPack::HttpHeader &headers, bool endStream,
     if (endStream)
         frameWriter.addFlag(FrameFlag::END_STREAM);
 
-    frameWriter.append(quint32()); // No stream dependency in Qt.
+    frameWriter.append(quint32()); // No stream dependency in BobUI.
     frameWriter.append(priority);
 
     // Compress in-place:
@@ -801,7 +801,7 @@ void QHttp2Stream::handleWINDOW_UPDATE(const Frame &inboundFrame)
 
 /*!
     \class QHttp2Connection
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \internal
 
     The QHttp2Connection class represents a HTTP/2 connection.
@@ -1396,7 +1396,7 @@ bool QHttp2Connection::sendClientPreface()
     }
     m_prefaceSent = true;
     if (socket->bytesAvailable()) // We ignore incoming data until preface is sent, so handle it now
-        QMetaObject::invokeMethod(this, &QHttp2Connection::handleReadyRead, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &QHttp2Connection::handleReadyRead, BobUI::QueuedConnection);
     return true;
 }
 
@@ -1601,7 +1601,7 @@ void QHttp2Connection::handleDATA()
 
     if (sessionReceiveWindowSize < maxSessionReceiveWindowSize / 2) {
         // @future[consider]: emit signal instead
-        QMetaObject::invokeMethod(this, &QHttp2Connection::sendWINDOW_UPDATE, Qt::QueuedConnection,
+        QMetaObject::invokeMethod(this, &QHttp2Connection::sendWINDOW_UPDATE, BobUI::QueuedConnection,
                                   quint32(connectionStreamID),
                                   quint32(maxSessionReceiveWindowSize - sessionReceiveWindowSize));
         sessionReceiveWindowSize = maxSessionReceiveWindowSize;
@@ -2059,7 +2059,7 @@ void QHttp2Connection::handleWINDOW_UPDATE()
                 continue;
             if (stream->isUploadingDATA() && !stream->isUploadBlocked())
                 QMetaObject::invokeMethod(stream, &QHttp2Stream::maybeResumeUpload,
-                                          Qt::QueuedConnection);
+                                          BobUI::QueuedConnection);
         }
     } else {
         QHttp2Stream *stream = m_streams.value(streamID);
@@ -2255,7 +2255,7 @@ bool QHttp2Connection::acceptSetting(Http2::Settings identifier, quint32 newValu
             stream->m_sendWindow = sum;
             if (delta > 0 && stream->isUploadingDATA() && !stream->isUploadBlocked()) {
                 QMetaObject::invokeMethod(stream, &QHttp2Stream::maybeResumeUpload,
-                                          Qt::QueuedConnection);
+                                          BobUI::QueuedConnection);
             }
         }
         break;
@@ -2304,6 +2304,6 @@ bool QHttp2Connection::acceptSetting(Http2::Settings identifier, quint32 newValu
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttp2connection_p.cpp"

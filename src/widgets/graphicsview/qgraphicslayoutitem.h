@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGRAPHICSLAYOUTITEM_H
 #define QGRAPHICSLAYOUTITEM_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtWidgets/qsizepolicy.h>
-#include <QtGui/qevent.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIWidgets/qsizepolicy.h>
+#include <BobUIGui/qevent.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsLayoutItemPrivate;
 class QGraphicsItem;
@@ -54,7 +54,7 @@ public:
     virtual void getContentsMargins(qreal *left, qreal *top, qreal *right, qreal *bottom) const;
     QRectF contentsRect() const;
 
-    QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
+    QSizeF effectiveSizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const;
 
     virtual void updateGeometry();
 
@@ -71,7 +71,7 @@ protected:
     void setOwnedByLayout(bool ownedByLayout);
     QGraphicsLayoutItem(QGraphicsLayoutItemPrivate &dd);
 
-    virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const = 0;
+    virtual QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const = 0;
     QScopedPointer<QGraphicsLayoutItemPrivate> d_ptr;
 
 private:
@@ -82,7 +82,7 @@ private:
 };
 
 #ifndef Q_QDOC
-Q_DECLARE_INTERFACE(QGraphicsLayoutItem, "org.qt-project.Qt.QGraphicsLayoutItem")
+Q_DECLARE_INTERFACE(QGraphicsLayoutItem, "org.bobui-project.BobUI.QGraphicsLayoutItem")
 #endif
 
 inline void QGraphicsLayoutItem::setMinimumSize(qreal aw, qreal ah)
@@ -93,20 +93,20 @@ inline void QGraphicsLayoutItem::setMaximumSize(qreal aw, qreal ah)
 { setMaximumSize(QSizeF(aw, ah)); }
 
 inline qreal QGraphicsLayoutItem::minimumWidth() const
-{ return effectiveSizeHint(Qt::MinimumSize).width(); }
+{ return effectiveSizeHint(BobUI::MinimumSize).width(); }
 inline qreal QGraphicsLayoutItem::minimumHeight() const
-{ return effectiveSizeHint(Qt::MinimumSize).height(); }
+{ return effectiveSizeHint(BobUI::MinimumSize).height(); }
 
 inline qreal QGraphicsLayoutItem::preferredWidth() const
-{ return effectiveSizeHint(Qt::PreferredSize).width(); }
+{ return effectiveSizeHint(BobUI::PreferredSize).width(); }
 inline qreal QGraphicsLayoutItem::preferredHeight() const
-{ return effectiveSizeHint(Qt::PreferredSize).height(); }
+{ return effectiveSizeHint(BobUI::PreferredSize).height(); }
 
 inline qreal QGraphicsLayoutItem::maximumWidth() const
-{ return effectiveSizeHint(Qt::MaximumSize).width(); }
+{ return effectiveSizeHint(BobUI::MaximumSize).width(); }
 inline qreal QGraphicsLayoutItem::maximumHeight() const
-{ return effectiveSizeHint(Qt::MaximumSize).height(); }
+{ return effectiveSizeHint(BobUI::MaximumSize).height(); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

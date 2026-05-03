@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef IOPROCESSOR_P_H
 #define IOPROCESSOR_P_H
@@ -9,35 +9,35 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qtcoreglobal_p.h>
+#include <BobUICore/private/bobuicoreglobal_p.h>
 
-#include <QtCore/qstring.h>
-#include <QtCore/qspan.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qfiledevice.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qdeadlinetimer.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qspan.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qfiledevice.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qdeadlinetimer.h>
 
 #ifdef Q_OS_LINUX
-#  include <QtCore/qsocketnotifier.h>
+#  include <BobUICore/qsocketnotifier.h>
 struct io_uring_sqe;
 struct io_uring_cqe;
 #elif defined(Q_OS_WIN)
-#  include <QtCore/qwineventnotifier.h>
-#  include <qt_windows.h>
+#  include <BobUICore/qwineventnotifier.h>
+#  include <bobui_windows.h>
 #  include <ioringapi.h>
 #endif
 
 #include <algorithm>
 #include <filesystem>
-#include <QtCore/qxpfunctional.h>
+#include <BobUICore/qxpfunctional.h>
 #include <variant>
 #include <optional>
 #include <type_traits>
@@ -62,11 +62,11 @@ struct io_uring_cqe;
     interface.
 */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQIORing);
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 Q_NAMESPACE
 
 #define FOREACH_IO_OPERATION(OP) \
@@ -99,9 +99,9 @@ struct IORingApiTable;
 #ifdef Q_OS_LINUX
 extern Q_CORE_EXPORT std::atomic<qsizetype> testMaxReadWriteLen;
 #endif
-}; // namespace QtPrivate
+}; // namespace BobUIPrivate
 
-template <QtPrivate::Operation Op>
+template <BobUIPrivate::Operation Op>
 struct QIORingRequest;
 
 class QIORing final
@@ -111,7 +111,7 @@ class QIORing final
 public:
     static constexpr quint32 DefaultSubmissionQueueSize = 128;
     static constexpr quint32 DefaultCompletionQueueSize = DefaultSubmissionQueueSize * 2;
-    using Operation = QtPrivate::Operation;
+    using Operation = BobUIPrivate::Operation;
     using RequestHandle = RequestHandleTag *;
 
     Q_CORE_EXPORT
@@ -238,7 +238,7 @@ private:
     std::optional<QWinEventNotifier> notifier;
     HIORING ioRingHandle = nullptr;
     HANDLE eventHandle = INVALID_HANDLE_VALUE;
-    const QtPrivate::IORingApiTable *apiTable;
+    const BobUIPrivate::IORingApiTable *apiTable;
 
     bool initialized = false;
     bool queueWasFull = false;
@@ -267,13 +267,13 @@ struct QIORingRequestEmptyBase
 {
 };
 
-template <QtPrivate::Operation Op>
+template <BobUIPrivate::Operation Op>
 struct QIORingResult;
-template <QtPrivate::Operation Op>
+template <BobUIPrivate::Operation Op>
 struct QIORingRequest;
 
 // @todo: q23::expected once emplace() returns a reference
-template <QtPrivate::Operation Op>
+template <BobUIPrivate::Operation Op>
 using ExpectedResultType = std::variant<std::monostate, QIORingResult<Op>, QFileDevice::FileError>;
 
 struct QIORingRequestOffsetFdBase : QIORingRequestEmptyBase
@@ -282,111 +282,111 @@ struct QIORingRequestOffsetFdBase : QIORingRequestEmptyBase
     quint64 offset;
 };
 
-template <QtPrivate::Operation Op, typename Base = QIORingRequestOffsetFdBase>
+template <BobUIPrivate::Operation Op, typename Base = QIORingRequestOffsetFdBase>
 struct QIORingRequestBase : Base
 {
     ExpectedResultType<Op> result; // To be filled in by the backend
-    QtPrivate::SlotObjUniquePtr callback;
+    BobUIPrivate::SlotObjUniquePtr callback;
     template <typename Func>
     Q_ALWAYS_INLINE void setCallback(Func &&func)
     {
         using Prototype = void (*)(const QIORingRequest<Op> &);
-        callback.reset(QtPrivate::makeCallableObject<Prototype>(std::forward<Func>(func)));
+        callback.reset(BobUIPrivate::makeCallableObject<Prototype>(std::forward<Func>(func)));
     }
 };
 
 template <>
-struct QIORingResult<QtPrivate::Operation::Open>
+struct QIORingResult<BobUIPrivate::Operation::Open>
 {
     // On Windows this is a HANDLE
     qintptr fd;
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::Open> final
-    : QIORingRequestBase<QtPrivate::Operation::Open, QIORingRequestEmptyBase>
+struct QIORingRequest<BobUIPrivate::Operation::Open> final
+    : QIORingRequestBase<BobUIPrivate::Operation::Open, QIORingRequestEmptyBase>
 {
     std::filesystem::path path;
     QFileDevice::OpenMode flags;
 };
 template <>
-struct QIORingResult<QtPrivate::Operation::Close>
+struct QIORingResult<BobUIPrivate::Operation::Close>
 {
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::Close> final
-    : QIORingRequestBase<QtPrivate::Operation::Close, QIORingRequestEmptyBase>
+struct QIORingRequest<BobUIPrivate::Operation::Close> final
+    : QIORingRequestBase<BobUIPrivate::Operation::Close, QIORingRequestEmptyBase>
 {
     // On Windows this is a HANDLE
     qintptr fd;
 };
 
 template <>
-struct QIORingResult<QtPrivate::Operation::Write>
+struct QIORingResult<BobUIPrivate::Operation::Write>
 {
     qint64 bytesWritten;
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::Write> final
-    : QIORingRequestBase<QtPrivate::Operation::Write>
+struct QIORingRequest<BobUIPrivate::Operation::Write> final
+    : QIORingRequestBase<BobUIPrivate::Operation::Write>
 {
     QSpan<const std::byte> source;
 };
 template <>
-struct QIORingResult<QtPrivate::Operation::VectoredWrite> final
-    : QIORingResult<QtPrivate::Operation::Write>
+struct QIORingResult<BobUIPrivate::Operation::VectoredWrite> final
+    : QIORingResult<BobUIPrivate::Operation::Write>
 {
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::VectoredWrite> final
-    : QIORingRequestBase<QtPrivate::Operation::VectoredWrite>
+struct QIORingRequest<BobUIPrivate::Operation::VectoredWrite> final
+    : QIORingRequestBase<BobUIPrivate::Operation::VectoredWrite>
 {
     QSpan<const QSpan<const std::byte>> sources;
 };
 
 template <>
-struct QIORingResult<QtPrivate::Operation::Read>
+struct QIORingResult<BobUIPrivate::Operation::Read>
 {
     qint64 bytesRead;
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::Read> final
-    : QIORingRequestBase<QtPrivate::Operation::Read>
+struct QIORingRequest<BobUIPrivate::Operation::Read> final
+    : QIORingRequestBase<BobUIPrivate::Operation::Read>
 {
     QSpan<std::byte> destination;
 };
 
 template <>
-struct QIORingResult<QtPrivate::Operation::VectoredRead> final
-    : QIORingResult<QtPrivate::Operation::Read>
+struct QIORingResult<BobUIPrivate::Operation::VectoredRead> final
+    : QIORingResult<BobUIPrivate::Operation::Read>
 {
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::VectoredRead> final
-    : QIORingRequestBase<QtPrivate::Operation::VectoredRead>
+struct QIORingRequest<BobUIPrivate::Operation::VectoredRead> final
+    : QIORingRequestBase<BobUIPrivate::Operation::VectoredRead>
 {
     QSpan<QSpan<std::byte>> destinations;
 };
 
 template <>
-struct QIORingResult<QtPrivate::Operation::Flush> final
+struct QIORingResult<BobUIPrivate::Operation::Flush> final
 {
     // No value in the result, just a success or failure
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::Flush> final : QIORingRequestBase<QtPrivate::Operation::Flush, QIORingRequestEmptyBase>
+struct QIORingRequest<BobUIPrivate::Operation::Flush> final : QIORingRequestBase<BobUIPrivate::Operation::Flush, QIORingRequestEmptyBase>
 {
     // On Windows this is a HANDLE
     qintptr fd;
 };
 
 template <>
-struct QIORingResult<QtPrivate::Operation::Stat> final
+struct QIORingResult<BobUIPrivate::Operation::Stat> final
 {
     quint64 size;
 };
 template <>
-struct QIORingRequest<QtPrivate::Operation::Stat> final
-    : QIORingRequestBase<QtPrivate::Operation::Stat, QIORingRequestEmptyBase>
+struct QIORingRequest<BobUIPrivate::Operation::Stat> final
+    : QIORingRequestBase<BobUIPrivate::Operation::Stat, QIORingRequestEmptyBase>
 {
     // On Windows this is a HANDLE
     qintptr fd;
@@ -396,16 +396,16 @@ struct QIORingRequest<QtPrivate::Operation::Stat> final
 // whether it was successful or not is indicated by whether the operation
 // it was cancelling was successful or not.
 template <>
-struct QIORingRequest<QtPrivate::Operation::Cancel> final : QIORingRequestEmptyBase
+struct QIORingRequest<BobUIPrivate::Operation::Cancel> final : QIORingRequestEmptyBase
 {
     QIORing::RequestHandle handle;
-    QtPrivate::SlotObjUniquePtr callback;
+    BobUIPrivate::SlotObjUniquePtr callback;
     template <typename Func>
     Q_ALWAYS_INLINE void setCallback(Func &&func)
     {
-        using Op = QtPrivate::Operation;
+        using Op = BobUIPrivate::Operation;
         using Prototype = void (*)(const QIORingRequest<Op::Cancel> &);
-        callback.reset(QtPrivate::makeCallableObject<Prototype>(std::forward<Func>(func)));
+        callback.reset(BobUIPrivate::makeCallableObject<Prototype>(std::forward<Func>(func)));
     }
 };
 
@@ -600,7 +600,7 @@ QIORing::ReadWriteStatus QIORing::handleWriteCompletion(NativeResultType result,
     return rwstatus;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // The 'extra' struct for Read/Write operations that must be split up
 struct ReadWriteExtra
 {
@@ -609,8 +609,8 @@ struct ReadWriteExtra
     qsizetype spanOffset = 0;
     qsizetype numSpans = 1;
 };
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // IOPROCESSOR_P_H

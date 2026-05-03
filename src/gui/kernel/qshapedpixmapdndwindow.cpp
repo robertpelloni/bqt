@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qshapedpixmapdndwindow_p.h"
 
 #include "qplatformwindow.h"
 
-#include <QtGui/QPainter>
-#include <QtGui/QCursor>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QPalette>
-#include <QtGui/QBitmap>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QCursor>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QPalette>
+#include <BobUIGui/QBitmap>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QShapedPixmapWindow::QShapedPixmapWindow(QScreen *screen)
     : m_useCompositing(true)
@@ -20,8 +20,8 @@ QShapedPixmapWindow::QShapedPixmapWindow(QScreen *screen)
     QSurfaceFormat format;
     format.setAlphaBufferSize(8);
     setFormat(format);
-    setFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint
-             | Qt::WindowTransparentForInput | Qt::WindowDoesNotAcceptFocus);
+    setFlags(BobUI::FramelessWindowHint | BobUI::BypassWindowManagerHint
+             | BobUI::WindowTransparentForInput | BobUI::WindowDoesNotAcceptFocus);
 }
 
 QShapedPixmapWindow::~QShapedPixmapWindow()
@@ -73,6 +73,6 @@ void QShapedPixmapWindow::updateGeometry(const QPoint &pos)
     setGeometry(QRect(pos - m_hotSpot, size));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qshapedpixmapdndwindow_p.cpp"

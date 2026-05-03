@@ -1,20 +1,20 @@
 [positioning]
 macos ci
 [modalWithChildWindow]
-# QTBUG-69160
+# BOBUIBUG-69160
 android
-[modalWindowEnterEventOnHide_QTBUG35109]
+[modalWindowEnterEventOnHide_BOBUIBUG35109]
 osx
 android
 windows
 [spuriousMouseMove]
-# QTBUG-69162
+# BOBUIBUG-69162
 windows-10
 android
 [modalWindowPosition]
-# QTBUG-69161
+# BOBUIBUG-69161
 android
-# QTBUG-87392
+# BOBUIBUG-87392
 [paintEvent]
 android
 [isActive]
@@ -25,6 +25,6 @@ android
 windows-10
 windows-11
 android
-macos-26 # QTBUG-142157
+macos-26 # BOBUIBUG-142157
 [stateChangeSignal]
-macos # QTBUG-140388
+macos # BOBUIBUG-140388

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "imageviewer.h"
 
@@ -21,10 +21,10 @@
 #include <QStandardPaths>
 #include <QStatusBar>
 
-#if defined(QT_PRINTSUPPORT_LIB)
-#  include <QtPrintSupport/qtprintsupportglobal.h>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#  include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#  if QT_CONFIG(printdialog)
+#  if BOBUI_CONFIG(printdialog)
 #    include <QPrintDialog>
 #  endif
 #endif
@@ -83,7 +83,7 @@ void ImageViewer::setImage(const QImage &newImage)
         image = newImage.convertedToColorSpace(QColorSpace::SRgb);
     else
         image = newImage;
-    imageLabel->setPixmap(QPixmap::fromImage(image, Qt::NoFormatConversion));
+    imageLabel->setPixmap(QPixmap::fromImage(image, BobUI::NoFormatConversion));
 //! [4]
     scaleFactor = 1.0;
 
@@ -160,7 +160,7 @@ void ImageViewer::print()
 //! [5] //! [6]
 {
     Q_ASSERT(!imageLabel->pixmap().isNull());
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
 //! [6] //! [7]
     QPrintDialog dialog(&printer, this);
 //! [7] //! [8]
@@ -169,7 +169,7 @@ void ImageViewer::print()
         QPixmap pixmap = imageLabel->pixmap();
         QRect rect = painter.viewport();
         QSize size = pixmap.size();
-        size.scale(rect.size(), Qt::KeepAspectRatio);
+        size.scale(rect.size(), BobUI::KeepAspectRatio);
         painter.setViewport(rect.x(), rect.y(), size.width(), size.height());
         painter.setWindow(pixmap.rect());
         painter.drawPixmap(0, 0, pixmap);
@@ -180,12 +180,12 @@ void ImageViewer::print()
 
 void ImageViewer::copy()
 {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QGuiApplication::clipboard()->setImage(image);
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 static QImage clipboardImage()
 {
     if (const QMimeData *mimeData = QGuiApplication::clipboard()->mimeData()) {
@@ -197,11 +197,11 @@ static QImage clipboardImage()
     }
     return QImage();
 }
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 
 void ImageViewer::paste()
 {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     const QImage newImage = clipboardImage();
     if (newImage.isNull()) {
         statusBar()->showMessage(tr("No image in clipboard"));
@@ -212,7 +212,7 @@ void ImageViewer::paste()
             .arg(newImage.width()).arg(newImage.height()).arg(newImage.depth());
         statusBar()->showMessage(message);
     }
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 }
 
 //! [9]
@@ -323,7 +323,7 @@ void ImageViewer::createActions()
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 
     helpMenu->addAction(tr("&About"), this, &ImageViewer::about);
-    helpMenu->addAction(tr("About &Qt"), this, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), this, &QApplication::aboutBobUI);
 }
 //! [18]
 

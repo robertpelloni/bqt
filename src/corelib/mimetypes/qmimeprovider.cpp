@@ -1,8 +1,8 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2018 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qmimeprovider_p.h"
 
@@ -17,28 +17,28 @@
 #include <QByteArrayMatcher>
 #include <QDebug>
 #include <QDateTime>
-#include <QtEndian>
+#include <BobUIEndian>
 
-#if QT_CONFIG(mimetype_database)
+#if BOBUI_CONFIG(mimetype_database)
 #  if defined(Q_CC_MSVC_ONLY)
-#    pragma section(".qtmimedatabase", read, shared)
-__declspec(allocate(".qtmimedatabase")) __declspec(align(4096))
+#    pragma section(".bobuimimedatabase", read, shared)
+__declspec(allocate(".bobuimimedatabase")) __declspec(align(4096))
 #  elif defined(Q_OS_DARWIN)
-__attribute__((section("__TEXT,.qtmimedatabase"), aligned(4096)))
+__attribute__((section("__TEXT,.bobuimimedatabase"), aligned(4096)))
 #  elif (defined(Q_OF_ELF) || defined(Q_OS_WIN)) && defined(Q_CC_GNU)
-__attribute__((section(".qtmimedatabase"), aligned(4096)))
+__attribute__((section(".bobuimimedatabase"), aligned(4096)))
 #  endif
 
 #  include "qmimeprovider_database.cpp"
 
 #  ifdef MIME_DATABASE_IS_ZSTD
-#    if !QT_CONFIG(zstd)
+#    if !BOBUI_CONFIG(zstd)
 #      error "MIME database is zstd but no support compiled in!"
 #    endif
 #    include <zstd.h>
 #  endif
 #  ifdef MIME_DATABASE_IS_GZIP
-#    ifdef QT_NO_COMPRESS
+#    ifdef BOBUI_NO_COMPRESS
 #      error "MIME database is zlib but no support compiled in!"
 #    endif
 #    define ZLIB_CONST
@@ -47,9 +47,9 @@ __attribute__((section(".qtmimedatabase"), aligned(4096)))
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 struct QMimeBinaryProvider::CacheFile
 {
@@ -135,7 +135,7 @@ bool QMimeBinaryProvider::CacheFile::load()
         const int minor = getUint16(2);
         m_valid = (major == 1 && minor >= 1 && minor <= 2);
     }
-    m_mtime = QFileInfo(file).lastModified(QTimeZone::UTC);
+    m_mtime = QFileInfo(file).lastModified(BOBUIimeZone::UTC);
     return m_valid;
 }
 
@@ -177,7 +177,7 @@ enum {
 bool QMimeBinaryProvider::checkCacheChanged()
 {
     QFileInfo fileInfo(m_cacheFile->file);
-    if (fileInfo.lastModified(QTimeZone::UTC) > m_cacheFile->m_mtime) {
+    if (fileInfo.lastModified(BOBUIimeZone::UTC) > m_cacheFile->m_mtime) {
         // Deletion can't happen by just running update-mime-database.
         // But the user could use rm -rf :-)
         m_cacheFile->reload(); // will mark itself as invalid on failure
@@ -253,7 +253,7 @@ int QMimeBinaryProvider::matchGlobList(QMimeGlobMatchResult &result, CacheFile *
         const int flagsAndWeight = cacheFile->getUint32(off + 4 + 12 * i + 8);
         const int weight = flagsAndWeight & 0xff;
         const bool caseSensitive = flagsAndWeight & 0x100;
-        const Qt::CaseSensitivity qtCaseSensitive = caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
+        const BobUI::CaseSensitivity bobuiCaseSensitive = caseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
         const QString pattern = QLatin1StringView(cacheFile->getCharStar(globOffset));
 
         const QLatin1StringView mimeType(cacheFile->getCharStar(mimeTypeOffset));
@@ -261,7 +261,7 @@ int QMimeBinaryProvider::matchGlobList(QMimeGlobMatchResult &result, CacheFile *
         if (isMimeTypeGlobsExcluded(mimeType))
             continue;
 
-        QMimeGlobPattern glob(pattern, QString() /*unused*/, weight, qtCaseSensitive);
+        QMimeGlobPattern glob(pattern, QString() /*unused*/, weight, bobuiCaseSensitive);
         if (glob.matchFileName(fileName)) {
             result.addMatch(mimeType, weight, pattern);
             ++numMatches;
@@ -511,7 +511,7 @@ QStringList QMimeBinaryProvider::globPatterns(const QString &name)
 QMimeBinaryProvider::MimeTypeExtraMap::const_iterator
 QMimeBinaryProvider::loadMimeTypeExtra(const QString &mimeName)
 {
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
     auto [it, insertionOccurred] = m_mimetypeExtra.try_emplace(mimeName);
     if (insertionOccurred) {
         // load comment and globPatterns
@@ -538,7 +538,7 @@ QMimeBinaryProvider::loadMimeTypeExtra(const QString &mimeName)
             const auto name = xml.attributes().value("type"_L1);
             if (name.isEmpty())
                 return m_mimetypeExtra.cend();
-            if (name.compare(mimeName, Qt::CaseInsensitive))
+            if (name.compare(mimeName, BobUI::CaseInsensitive))
                 qWarning() << "Got name" << name << "in file" << mimeFile << "expected" << mimeName;
 
             while (xml.readNextStartElement()) {
@@ -620,7 +620,7 @@ QString QMimeBinaryProvider::genericIcon(const QString &name)
 
 ////
 
-#if QT_CONFIG(mimetype_database)
+#if BOBUI_CONFIG(mimetype_database)
 static QString internalMimeFileName()
 {
     return QStringLiteral("<internal MIME data>");
@@ -664,7 +664,7 @@ QMimeXMLProvider::QMimeXMLProvider(QMimeDatabasePrivate *db, InternalDatabaseEnu
 
     load(data, size);
 }
-#else // !QT_CONFIG(mimetype_database)
+#else // !BOBUI_CONFIG(mimetype_database)
 // never called in release mode, but some debug builds may need
 // this to be defined.
 QMimeXMLProvider::QMimeXMLProvider(QMimeDatabasePrivate *db, InternalDatabaseEnum)
@@ -672,7 +672,7 @@ QMimeXMLProvider::QMimeXMLProvider(QMimeDatabasePrivate *db, InternalDatabaseEnu
 {
     Q_UNREACHABLE();
 }
-#endif // QT_CONFIG(mimetype_database)
+#endif // BOBUI_CONFIG(mimetype_database)
 
 QMimeXMLProvider::QMimeXMLProvider(QMimeDatabasePrivate *db, const QString &directory)
     : QMimeProviderBase(db, directory)
@@ -693,7 +693,7 @@ bool QMimeXMLProvider::isValid()
 
 bool QMimeXMLProvider::isInternalDatabase() const
 {
-#if QT_CONFIG(mimetype_database)
+#if BOBUI_CONFIG(mimetype_database)
     return m_directory == internalMimeFileName();
 #else
     return false;
@@ -810,7 +810,7 @@ bool QMimeXMLProvider::load(const QString &fileName, QString *errorMessage)
     return parser.parse(&file, fileName, errorMessage);
 }
 
-#if QT_CONFIG(mimetype_database)
+#if BOBUI_CONFIG(mimetype_database)
 void QMimeXMLProvider::load(const char *data, qsizetype len)
 {
     QBuffer buffer;
@@ -887,4 +887,4 @@ void QMimeXMLProvider::addMagicMatcher(const QMimeMagicRuleMatcher &matcher)
     m_magicMatchers.append(matcher);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

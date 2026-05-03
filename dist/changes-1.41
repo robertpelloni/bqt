@@ -1,6 +1,6 @@
-Here is a list of user-visible changes in Qt from 1.40 to 1.41
+Here is a list of user-visible changes in BobUI from 1.40 to 1.41
 
-QT is now available as a DLL on Windows.
+BOBUI is now available as a DLL on Windows.
 
 Many bugfixes have been added.  The Windows keys are supported on X11,
 and the file dialog has been improved a little.

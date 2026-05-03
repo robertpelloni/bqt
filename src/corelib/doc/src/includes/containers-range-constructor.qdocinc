@@ -1,2 +1,2 @@
-    \note Since Qt 5.14, range constructors are available for Qt's generic
+    \note Since BobUI 5.14, range constructors are available for BobUI's generic
     \l{container classes} and should be used in place of this method.

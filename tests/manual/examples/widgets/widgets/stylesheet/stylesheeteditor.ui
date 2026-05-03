@@ -22,7 +22,7 @@
    <item row="0" column="6" >
     <spacer>
      <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+      <enum>BobUI::Horizontal</enum>
      </property>
      <property name="sizeType" >
       <enum>QSizePolicy::MinimumExpanding</enum>
@@ -38,7 +38,7 @@
    <item row="0" column="0" >
     <spacer>
      <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+      <enum>BobUI::Horizontal</enum>
      </property>
      <property name="sizeType" >
       <enum>QSizePolicy::MinimumExpanding</enum>
@@ -73,7 +73,7 @@
    <item row="0" column="3" >
     <spacer>
      <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+      <enum>BobUI::Horizontal</enum>
      </property>
      <property name="sizeType" >
       <enum>QSizePolicy::Fixed</enum>
@@ -124,7 +124,7 @@
      <item>
       <spacer>
        <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+        <enum>BobUI::Horizontal</enum>
        </property>
        <property name="sizeHint" >
         <size>
@@ -147,7 +147,7 @@
     </layout>
    </item>
    <item row="1" column="0" colspan="7" >
-    <widget class="QTextEdit" name="styleTextEdit" />
+    <widget class="BOBUIextEdit" name="styleTextEdit" />
    </item>
    <item row="0" column="4" >
     <widget class="QLabel" name="label_8" >

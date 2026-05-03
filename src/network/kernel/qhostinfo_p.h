@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHOSTINFO_P_H
 #define QHOSTINFO_P_H
@@ -9,42 +9,42 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QHostInfo class.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include "QtCore/qcoreapplication.h"
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include "BobUICore/qcoreapplication.h"
 #include "private/qcoreapplication_p.h"
 #include "private/qmetaobject_p.h"
-#include "QtNetwork/qhostinfo.h"
-#include "QtCore/qmutex.h"
-#include "QtCore/qwaitcondition.h"
-#include "QtCore/qobject.h"
-#include "QtCore/qpointer.h"
-#include "QtCore/qthread.h"
-#if QT_CONFIG(thread)
-#include "QtCore/qthreadpool.h"
+#include "BobUINetwork/qhostinfo.h"
+#include "BobUICore/qmutex.h"
+#include "BobUICore/qwaitcondition.h"
+#include "BobUICore/qobject.h"
+#include "BobUICore/qpointer.h"
+#include "BobUICore/bobuihread.h"
+#if BOBUI_CONFIG(thread)
+#include "BobUICore/bobuihreadpool.h"
 #endif
-#include "QtCore/qrunnable.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qqueue.h"
+#include "BobUICore/qrunnable.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qqueue.h"
 #include <QElapsedTimer>
 #include <QCache>
 
 #include <atomic>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QHostInfoResult : public QObject
 {
     Q_OBJECT
 public:
-    explicit QHostInfoResult(const QObject *receiver, QtPrivate::SlotObjUniquePtr slot);
+    explicit QHostInfoResult(const QObject *receiver, BobUIPrivate::SlotObjUniquePtr slot);
     ~QHostInfoResult() override;
 
     void postResultsReady(const QHostInfo &info);
@@ -70,7 +70,7 @@ private:
     // receiver is either a QObject provided by the user,
     // or it's set to `this` (to emulate the behavior of the contextless connect())
     QPointer<const QObject> receiver = nullptr;
-    QtPrivate::SlotObjUniquePtr slotObj;
+    BobUIPrivate::SlotObjUniquePtr slotObj;
 };
 
 class QHostInfoAgent
@@ -86,13 +86,13 @@ class QHostInfoPrivate
 public:
     inline QHostInfoPrivate()
         : err(QHostInfo::NoError),
-          errorStr(QLatin1StringView(QT_TRANSLATE_NOOP("QHostInfo", "Unknown error"))),
+          errorStr(QLatin1StringView(BOBUI_TRANSLATE_NOOP("QHostInfo", "Unknown error"))),
           lookupId(0)
     {
     }
     static int lookupHostImpl(const QString &name,
                               const QObject *receiver,
-                              QtPrivate::QSlotObjectBase *slotObj,
+                              BobUIPrivate::QSlotObjectBase *slotObj,
                               const char *member);
 
     QHostInfo::HostInfoError err;
@@ -104,10 +104,10 @@ public:
 
 // These functions are outside of the QHostInfo class and strictly internal.
 // Do NOT use them outside of QAbstractSocket.
-QHostInfo Q_NETWORK_EXPORT qt_qhostinfo_lookup(const QString &name, QObject *receiver, const char *member, bool *valid, int *id);
-void Q_AUTOTEST_EXPORT qt_qhostinfo_clear_cache();
-void Q_AUTOTEST_EXPORT qt_qhostinfo_enable_cache(bool e);
-void Q_AUTOTEST_EXPORT qt_qhostinfo_cache_inject(const QString &hostname, const QHostInfo &resolution);
+QHostInfo Q_NETWORK_EXPORT bobui_qhostinfo_lookup(const QString &name, QObject *receiver, const char *member, bool *valid, int *id);
+void Q_AUTOTEST_EXPORT bobui_qhostinfo_clear_cache();
+void Q_AUTOTEST_EXPORT bobui_qhostinfo_enable_cache(bool e);
+void Q_AUTOTEST_EXPORT bobui_qhostinfo_cache_inject(const QString &hostname, const QHostInfo &resolution);
 
 class QHostInfoCache
 {
@@ -139,7 +139,7 @@ class QHostInfoRunnable : public QRunnable
 {
 public:
     explicit QHostInfoRunnable(const QString &hn, int i, const QObject *receiver,
-                               QtPrivate::SlotObjUniquePtr slotObj);
+                               BobUIPrivate::SlotObjUniquePtr slotObj);
     ~QHostInfoRunnable() override;
 
     void run() override;
@@ -170,7 +170,7 @@ public:
 
     friend class QHostInfoRunnable;
 protected:
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     QList<QHostInfoRunnable*> currentLookups; // in progress
     QList<QHostInfoRunnable*> postponedLookups; // postponed because in progress for same host
 #endif
@@ -178,8 +178,8 @@ protected:
     QList<QHostInfoRunnable*> finishedLookups; // recently finished
     QList<int> abortedLookups; // ids of aborted lookups
 
-#if QT_CONFIG(thread)
-    QThreadPool threadPool;
+#if BOBUI_CONFIG(thread)
+    BOBUIhreadPool threadPool;
 #endif
     QMutex mutex;
 
@@ -189,6 +189,6 @@ private:
     void rescheduleWithMutexHeld();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHOSTINFO_P_H

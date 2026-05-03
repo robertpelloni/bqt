@@ -25,7 +25,7 @@
  * Author: Bill Hollings <bill.hollings@brenwill.com>
  */
 
-// Normals added by Qt.
+// Normals added by BobUI.
 
 #ifndef CUBE_H
 #define CUBE_H

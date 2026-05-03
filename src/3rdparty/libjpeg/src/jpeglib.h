@@ -123,7 +123,7 @@ typedef JCOEF *JCOEFPTR;        /* useful in a couple of places */
 
 typedef struct {
   /* This array gives the coefficient quantizers in natural array order
-   * (not the zigzag order in which they are stored in a JPEG DQT marker).
+   * (not the zigzag order in which they are stored in a JPEG DBOBUI marker).
    * CAUTION: IJG versions prior to v6a kept this array in zigzag order.
    */
   UINT16 quantval[DCTSIZE2];    /* quantization step for each coefficient */
@@ -1001,7 +1001,7 @@ EXTERN(void) jpeg_set_quality(j_compress_ptr cinfo, int quality,
 EXTERN(void) jpeg_set_linear_quality(j_compress_ptr cinfo, int scale_factor,
                                      boolean force_baseline);
 #if JPEG_LIB_VERSION >= 70
-EXTERN(void) jpeg_default_qtables(j_compress_ptr cinfo,
+EXTERN(void) jpeg_default_bobuiables(j_compress_ptr cinfo,
                                   boolean force_baseline);
 #endif
 EXTERN(void) jpeg_add_quant_table(j_compress_ptr cinfo, int which_tbl,

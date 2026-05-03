@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick SerialPort Bluetooth)
 
 include_directories(../../core/include)
 # We point to the local deps folder for the mock JUCE headers
@@ -19,7 +20,8 @@ add_executable(HelloOmni
 )
 
 target_link_libraries(HelloOmni PRIVATE
-    Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick
+    BobUI6::Core BobUI6::Gui BobUI6::Widgets BobUI6::Qml BobUI6::Quick
+    BobUI6::SerialPort BobUI6::Bluetooth
 )
 
 if(EMSCRIPTEN)

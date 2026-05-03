@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSKEYMAPPER_H
 #define QWINDOWSKEYMAPPER_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qlocale.h>
+#include <BobUICore/qlocale.h>
 
 #include <qpa/qplatformkeymapper.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QKeyEvent;
 class QWindow;
@@ -31,8 +31,8 @@ struct KeyboardLayoutItem {
     uint dirty : 1;
     uint exists : 1; // whether this item has been initialized (by updatePossibleKeyCodes)
     quint8 deadkeys;
-    static const size_t NumQtKeys = 9;
-    quint32 qtKey[NumQtKeys]; // Can by any Qt::Key_<foo>, or unicode character
+    static const size_t NumBobUIKeys = 9;
+    quint32 bobuiKey[NumBobUIKeys]; // Can by any BobUI::Key_<foo>, or unicode character
 };
 
 class QWindowsKeyMapper : public QPlatformKeyMapper
@@ -55,7 +55,7 @@ public:
     QWindow *keyGrabber() const      { return m_keyGrabber; }
     void setKeyGrabber(QWindow *w)   { m_keyGrabber = w; }
 
-    Qt::KeyboardModifiers queryKeyboardModifiers() const override;
+    BobUI::KeyboardModifiers queryKeyboardModifiers() const override;
     QList<QKeyCombination> possibleKeyCombinations(const QKeyEvent *e) const override;
 
 private:
@@ -66,7 +66,7 @@ private:
     bool m_useRTLExtensions;
 
     QLocale keyboardInputLocale;
-    Qt::LayoutDirection keyboardInputDirection;
+    BobUI::LayoutDirection keyboardInputDirection;
 
     void updatePossibleKeyCodes(unsigned char *kbdBuffer, quint32 scancode, quint32 vk_key);
     void deleteLayouts();
@@ -102,6 +102,6 @@ enum WindowsNativeModifiers {
     LockAny              = 0x00000700
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSKEYMAPPER_H

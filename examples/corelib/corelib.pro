@@ -9,4 +9,4 @@ SUBDIRS = \
     platform \
     time
 
-qtConfig(thread): SUBDIRS += threads
+bobuiConfig(thread): SUBDIRS += threads

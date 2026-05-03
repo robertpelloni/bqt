@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTENGINE_MAC_P_H
 #define QPRINTENGINE_MAC_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-#include <QtPrintSupport/qprinter.h>
-#include <QtPrintSupport/qprintengine.h>
-#include <QtGui/private/qpainter_p.h>
-#include <QtGui/qpagelayout.h>
+#include <BobUIPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/qprintengine.h>
+#include <BobUIGui/private/qpainter_p.h>
+#include <BobUIGui/qpagelayout.h>
 
 #include "qcocoaprintdevice_p.h"
 
@@ -31,7 +31,7 @@
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSPrintInfo);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPrinterPrivate;
 class QMacPrintEnginePrivate;
@@ -41,7 +41,7 @@ class QMacPrintEngine : public QPaintEngine, public QPrintEngine
 public:
     QMacPrintEngine(QPrinter::PrinterMode mode, const QString &deviceId);
 
-    Qt::HANDLE handle() const;
+    BobUI::HANDLE handle() const;
 
     bool begin(QPaintDevice *dev);
     bool end();
@@ -70,8 +70,8 @@ public:
     virtual void drawEllipse(const QRectF &r);
     virtual void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
     virtual void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
-    virtual void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, Qt::ImageConversionFlags flags);
-    virtual void drawTextItem(const QPointF &p, const QTextItem &ti);
+    virtual void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, BobUI::ImageConversionFlags flags);
+    virtual void drawTextItem(const QPointF &p, const BOBUIextItem &ti);
     virtual void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
     virtual void drawPath(const QPainterPath &);
 
@@ -114,11 +114,11 @@ public:
     PMPrintSettings settings() const { return static_cast<PMPrintSettings>([printInfo PMPrintSettings]); }
 
     QPaintEngine *aggregateEngine() override { return paintEngine; }
-    Qt::HANDLE nativeHandle() override { return q_func()->handle(); }
+    BobUI::HANDLE nativeHandle() override { return q_func()->handle(); }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
 #endif // QPRINTENGINE_WIN_P_H

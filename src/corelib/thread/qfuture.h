@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFUTURE_H
 #define QFUTURE_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#include <QtCore/qfutureinterface.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qfutureinterface.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qstring.h>
 
-#include <QtCore/qfuture_impl.h>
+#include <BobUICore/qfuture_impl.h>
 
 #include <type_traits>
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T>
 class QFutureWatcher;
@@ -33,23 +33,23 @@ public:
         : d(QFutureInterface<T>::canceledResult())
     { }
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     explicit QFuture(QFutureInterface<T> *p) // internal
         : d(*p)
     { }
 
-    template<typename U = T, typename = QtPrivate::EnableForVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForVoid<U>>
     explicit QFuture(QFutureInterfaceBase *p) // internal
         : d(*p)
     {
     }
 
-    template<typename U, typename V = T, typename = QtPrivate::EnableForVoid<V>>
+    template<typename U, typename V = T, typename = BobUIPrivate::EnableForVoid<V>>
     QFuture(const QFuture<U> &other) : d(other.d)
     {
     }
 
-    template<typename U, typename V = T, typename = QtPrivate::EnableForVoid<V>>
+    template<typename U, typename V = T, typename = BobUIPrivate::EnableForVoid<V>>
     QFuture<void> &operator=(const QFuture<U> &other)
     {
         d = other.d;
@@ -66,23 +66,23 @@ public:
     bool isCanceled() const { return d.isCanceled(); }
     void cancelChain() { d.cancelChain(); }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use setSuspended() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use setSuspended() instead.")
     void setPaused(bool paused) { d.setSuspended(paused); }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use isSuspending() or isSuspended() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use isSuspending() or isSuspended() instead.")
     bool isPaused() const
     {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
         return d.isPaused();
-QT_WARNING_POP
+BOBUI_WARNING_POP
     }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use toggleSuspended() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use toggleSuspended() instead.")
     void togglePaused() { d.toggleSuspended(); }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use suspend() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use suspend() instead.")
     void pause() { suspend(); }
 #endif
     bool isSuspending() const { return d.isSuspending(); }
@@ -103,51 +103,51 @@ QT_WARNING_POP
     QString progressText() const { return d.progressText(); }
     void waitForFinished() { d.waitForFinished(); }
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     inline T result() const;
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     inline T resultAt(int index) const;
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     bool isResultReadyAt(int resultIndex) const { return d.isResultReadyAt(resultIndex); }
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     QList<T> results() const { return d.results(); }
 
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     T takeResult() { return d.takeResult(); }
 
 #if 0
     // TODO: Enable and make it return a QList, when QList is fixed to support move-only types
-    template<typename U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<typename U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     std::vector<T> takeResults() { return d.takeResults(); }
 #endif
 
     bool isValid() const { return d.isValid(); }
 
     template<class Function>
-    using ResultType = typename QtPrivate::ResultTypeHelper<Function, T>::ResultType;
+    using ResultType = typename BobUIPrivate::ResultTypeHelper<Function, T>::ResultType;
 
     template<class Function>
     QFuture<ResultType<Function>> then(Function &&function);
 
     template<class Function>
-    QFuture<ResultType<Function>> then(QtFuture::Launch policy, Function &&function);
+    QFuture<ResultType<Function>> then(BobUIFuture::Launch policy, Function &&function);
 
     template<class Function>
-    QFuture<ResultType<Function>> then(QThreadPool *pool, Function &&function);
+    QFuture<ResultType<Function>> then(BOBUIhreadPool *pool, Function &&function);
 
     template<class Function>
     QFuture<ResultType<Function>> then(QObject *context, Function &&function);
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     template<class Function,
-             typename = std::enable_if_t<!QtPrivate::ArgResolver<Function>::HasExtraArgs>>
+             typename = std::enable_if_t<!BobUIPrivate::ArgResolver<Function>::HasExtraArgs>>
     QFuture<T> onFailed(Function &&handler);
 
     template<class Function,
-             typename = std::enable_if_t<!QtPrivate::ArgResolver<Function>::HasExtraArgs>>
+             typename = std::enable_if_t<!BobUIPrivate::ArgResolver<Function>::HasExtraArgs>>
     QFuture<T> onFailed(QObject *context, Function &&handler);
 #endif
 
@@ -158,7 +158,7 @@ QT_WARNING_POP
     QFuture<T> onCanceled(QObject *context, Function &&handler);
 
 #if !defined(Q_QDOC)
-    template<class U = T, typename = std::enable_if_t<QtPrivate::isQFutureV<U>>>
+    template<class U = T, typename = std::enable_if_t<BobUIPrivate::isQFutureV<U>>>
     auto unwrap();
 #else
     template<class U>
@@ -261,16 +261,16 @@ QT_WARNING_POP
     friend class const_iterator;
     typedef const_iterator ConstIterator;
 
-    template<class U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     const_iterator begin() const { return  const_iterator(this, 0); }
 
-    template<class U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     const_iterator constBegin() const { return  const_iterator(this, 0); }
 
-    template<class U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     const_iterator end() const { return const_iterator(this, -1); }
 
-    template<class U = T, typename = QtPrivate::EnableForNonVoid<U>>
+    template<class U = T, typename = BobUIPrivate::EnableForNonVoid<U>>
     const_iterator constEnd() const { return const_iterator(this, -1); }
 
 private:
@@ -282,20 +282,20 @@ private:
     friend class QFutureInterfaceBase;
 
     template<class Function, class ResultType, class ParentResultType>
-    friend class QtPrivate::CompactContinuation;
+    friend class BobUIPrivate::CompactContinuation;
 
     template<class Function, class ResultType>
-    friend class QtPrivate::CanceledHandler;
+    friend class BobUIPrivate::CanceledHandler;
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     template<class Function, class ResultType>
-    friend class QtPrivate::FailureHandler;
+    friend class BobUIPrivate::FailureHandler;
 #endif
 
     template<typename ResultType>
-    friend struct QtPrivate::WhenAnyContext;
+    friend struct BobUIPrivate::WhenAnyContext;
 
-    friend struct QtPrivate::UnwrapHandler;
+    friend struct BobUIPrivate::UnwrapHandler;
 
     using QFuturePrivate =
             std::conditional_t<std::is_void_v<T>, QFutureInterfaceBase, QFutureInterface<T>>;
@@ -332,27 +332,27 @@ template<class T>
 template<class Function>
 QFuture<typename QFuture<T>::template ResultType<Function>> QFuture<T>::then(Function &&function)
 {
-    return then(QtFuture::Launch::Sync, std::forward<Function>(function));
+    return then(BobUIFuture::Launch::Sync, std::forward<Function>(function));
 }
 
 template<class T>
 template<class Function>
 QFuture<typename QFuture<T>::template ResultType<Function>>
-QFuture<T>::then(QtFuture::Launch policy, Function &&function)
+QFuture<T>::then(BobUIFuture::Launch policy, Function &&function)
 {
     QFutureInterface<ResultType<Function>> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::CompactContinuation<std::decay_t<Function>, ResultType<Function>, T>::create(
+    BobUIPrivate::CompactContinuation<std::decay_t<Function>, ResultType<Function>, T>::create(
             std::forward<Function>(function), this, promise, policy);
     return promise.future();
 }
 
 template<class T>
 template<class Function>
-QFuture<typename QFuture<T>::template ResultType<Function>> QFuture<T>::then(QThreadPool *pool,
+QFuture<typename QFuture<T>::template ResultType<Function>> QFuture<T>::then(BOBUIhreadPool *pool,
                                                                              Function &&function)
 {
     QFutureInterface<ResultType<Function>> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::CompactContinuation<std::decay_t<Function>, ResultType<Function>, T>::create(
+    BobUIPrivate::CompactContinuation<std::decay_t<Function>, ResultType<Function>, T>::create(
             std::forward<Function>(function), this, promise, pool);
     return promise.future();
 }
@@ -363,18 +363,18 @@ QFuture<typename QFuture<T>::template ResultType<Function>> QFuture<T>::then(QOb
                                                                              Function &&function)
 {
     QFutureInterface<ResultType<Function>> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::CompactContinuation<std::decay_t<Function>, ResultType<Function>, T>::create(
+    BobUIPrivate::CompactContinuation<std::decay_t<Function>, ResultType<Function>, T>::create(
             std::forward<Function>(function), this, promise, context);
     return promise.future();
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 template<class T>
 template<class Function, typename>
 QFuture<T> QFuture<T>::onFailed(Function &&handler)
 {
     QFutureInterface<T> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::FailureHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
+    BobUIPrivate::FailureHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
                                                                  this, promise);
     return promise.future();
 }
@@ -384,7 +384,7 @@ template<class Function, typename>
 QFuture<T> QFuture<T>::onFailed(QObject *context, Function &&handler)
 {
     QFutureInterface<T> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::FailureHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
+    BobUIPrivate::FailureHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
                                                                  this, promise, context);
     return promise.future();
 }
@@ -396,7 +396,7 @@ template<class Function, typename>
 QFuture<T> QFuture<T>::onCanceled(Function &&handler)
 {
     QFutureInterface<T> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::CanceledHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
+    BobUIPrivate::CanceledHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
                                                                   this, promise);
     return promise.future();
 }
@@ -406,7 +406,7 @@ template<class Function, typename>
 QFuture<T> QFuture<T>::onCanceled(QObject *context, Function &&handler)
 {
     QFutureInterface<T> promise(QFutureInterfaceBase::State::Pending);
-    QtPrivate::CanceledHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
+    BobUIPrivate::CanceledHandler<std::decay_t<Function>, T>::create(std::forward<Function>(handler),
                                                                   this, promise, context);
     return promise.future();
 }
@@ -415,10 +415,10 @@ template<class T>
 template<class U, typename>
 auto QFuture<T>::unwrap()
 {
-    if constexpr (QtPrivate::isQFutureV<typename QtPrivate::Future<T>::type>)
-        return QtPrivate::UnwrapHandler::unwrapImpl(this).unwrap();
+    if constexpr (BobUIPrivate::isQFutureV<typename BobUIPrivate::Future<T>::type>)
+        return BobUIPrivate::UnwrapHandler::unwrapImpl(this).unwrap();
     else
-        return QtPrivate::UnwrapHandler::unwrapImpl(this);
+        return BobUIPrivate::UnwrapHandler::unwrapImpl(this);
 }
 
 inline QFuture<void> QFutureInterface<void>::future()
@@ -432,7 +432,7 @@ QFutureInterfaceBase QFutureInterfaceBase::get(const QFuture<T> &future)
     return future.d;
 }
 
-namespace QtPrivate
+namespace BobUIPrivate
 {
 
 template<typename T>
@@ -448,69 +448,69 @@ struct MetaTypeQFutureHelper<QFuture<T>>
     }
 };
 
-}  // namespace QtPrivate
+}  // namespace BobUIPrivate
 
-namespace QtFuture {
+namespace BobUIFuture {
 
 #ifndef Q_QDOC
 
 template<typename OutputSequence, typename InputIt,
          typename ValueType = typename std::iterator_traits<InputIt>::value_type,
-         std::enable_if_t<std::conjunction_v<QtPrivate::IsForwardIterable<InputIt>,
-                                             QtPrivate::IsRandomAccessible<OutputSequence>,
-                                             QtPrivate::isQFuture<ValueType>>,
+         std::enable_if_t<std::conjunction_v<BobUIPrivate::IsForwardIterable<InputIt>,
+                                             BobUIPrivate::IsRandomAccessible<OutputSequence>,
+                                             BobUIPrivate::isQFuture<ValueType>>,
                           int> = 0>
 QFuture<OutputSequence> whenAll(InputIt first, InputIt last)
 {
-    return QtPrivate::whenAllImpl<OutputSequence, InputIt, ValueType>(first, last);
+    return BobUIPrivate::whenAllImpl<OutputSequence, InputIt, ValueType>(first, last);
 }
 
 template<typename InputIt, typename ValueType = typename std::iterator_traits<InputIt>::value_type,
-         std::enable_if_t<std::conjunction_v<QtPrivate::IsForwardIterable<InputIt>,
-                                             QtPrivate::isQFuture<ValueType>>,
+         std::enable_if_t<std::conjunction_v<BobUIPrivate::IsForwardIterable<InputIt>,
+                                             BobUIPrivate::isQFuture<ValueType>>,
                           int> = 0>
 QFuture<QList<ValueType>> whenAll(InputIt first, InputIt last)
 {
-    return QtPrivate::whenAllImpl<QList<ValueType>, InputIt, ValueType>(first, last);
+    return BobUIPrivate::whenAllImpl<QList<ValueType>, InputIt, ValueType>(first, last);
 }
 
 template<typename OutputSequence, typename... Futures,
-         std::enable_if_t<std::conjunction_v<QtPrivate::IsRandomAccessible<OutputSequence>,
-                                             QtPrivate::NotEmpty<Futures...>,
-                                             QtPrivate::isQFuture<std::decay_t<Futures>>...>,
+         std::enable_if_t<std::conjunction_v<BobUIPrivate::IsRandomAccessible<OutputSequence>,
+                                             BobUIPrivate::NotEmpty<Futures...>,
+                                             BobUIPrivate::isQFuture<std::decay_t<Futures>>...>,
                           int> = 0>
 QFuture<OutputSequence> whenAll(Futures &&... futures)
 {
-    return QtPrivate::whenAllImpl<OutputSequence, Futures...>(std::forward<Futures>(futures)...);
+    return BobUIPrivate::whenAllImpl<OutputSequence, Futures...>(std::forward<Futures>(futures)...);
 }
 
 template<typename... Futures,
-         std::enable_if_t<std::conjunction_v<QtPrivate::NotEmpty<Futures...>,
-                                             QtPrivate::isQFuture<std::decay_t<Futures>>...>,
+         std::enable_if_t<std::conjunction_v<BobUIPrivate::NotEmpty<Futures...>,
+                                             BobUIPrivate::isQFuture<std::decay_t<Futures>>...>,
                           int> = 0>
 QFuture<QList<std::variant<std::decay_t<Futures>...>>> whenAll(Futures &&... futures)
 {
-    return QtPrivate::whenAllImpl<QList<std::variant<std::decay_t<Futures>...>>, Futures...>(
+    return BobUIPrivate::whenAllImpl<QList<std::variant<std::decay_t<Futures>...>>, Futures...>(
             std::forward<Futures>(futures)...);
 }
 
 template<typename InputIt, typename ValueType = typename std::iterator_traits<InputIt>::value_type,
-         std::enable_if_t<std::conjunction_v<QtPrivate::IsForwardIterable<InputIt>,
-                                             QtPrivate::isQFuture<ValueType>>,
+         std::enable_if_t<std::conjunction_v<BobUIPrivate::IsForwardIterable<InputIt>,
+                                             BobUIPrivate::isQFuture<ValueType>>,
                           int> = 0>
-QFuture<WhenAnyResult<typename QtPrivate::Future<ValueType>::type>> whenAny(InputIt first,
+QFuture<WhenAnyResult<typename BobUIPrivate::Future<ValueType>::type>> whenAny(InputIt first,
                                                                             InputIt last)
 {
-    return QtPrivate::whenAnyImpl<InputIt, ValueType>(first, last);
+    return BobUIPrivate::whenAnyImpl<InputIt, ValueType>(first, last);
 }
 
 template<typename... Futures,
-         std::enable_if_t<std::conjunction_v<QtPrivate::NotEmpty<Futures...>,
-                                             QtPrivate::isQFuture<std::decay_t<Futures>>...>,
+         std::enable_if_t<std::conjunction_v<BobUIPrivate::NotEmpty<Futures...>,
+                                             BobUIPrivate::isQFuture<std::decay_t<Futures>>...>,
                           int> = 0>
 QFuture<std::variant<std::decay_t<Futures>...>> whenAny(Futures &&... futures)
 {
-    return QtPrivate::whenAnyImpl(std::forward<Futures>(futures)...);
+    return BobUIPrivate::whenAnyImpl(std::forward<Futures>(futures)...);
 }
 
 #else
@@ -522,31 +522,31 @@ template<typename OutputSequence, typename... Futures>
 QFuture<OutputSequence> whenAll(Futures &&... futures);
 
 template<typename T, typename InputIt>
-QFuture<QtFuture::WhenAnyResult<T>> whenAny(InputIt first, InputIt last);
+QFuture<BobUIFuture::WhenAnyResult<T>> whenAny(InputIt first, InputIt last);
 
 template<typename... Futures>
 QFuture<std::variant<std::decay_t<Futures>...>> whenAny(Futures &&... futures);
 
 #endif // Q_QDOC
 
-#if QT_DEPRECATED_SINCE(6, 10)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
 #if defined(Q_QDOC)
 static QFuture<void> makeReadyFuture()
 #else
 template<typename T = void>
-QT_DEPRECATED_VERSION_X(6, 10, "Use makeReadyVoidFuture() instead.")
+BOBUI_DEPRECATED_VERSION_X(6, 10, "Use makeReadyVoidFuture() instead.")
 static QFuture<T> makeReadyFuture()
 #endif
 {
     return makeReadyVoidFuture();
 }
-#endif // QT_DEPRECATED_SINCE(6, 10)
+#endif // BOBUI_DEPRECATED_SINCE(6, 10)
 
-} // namespace QtFuture
+} // namespace BobUIFuture
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(Future)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE_TEMPLATE_1ARG(QFuture)
 

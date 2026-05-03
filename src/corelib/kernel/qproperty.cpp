@@ -1,31 +1,31 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qproperty.h"
 #include "qproperty_p.h"
 
 #include <qscopedvaluerollback.h>
 #include <QScopeGuard>
-#include <QtCore/qalloc.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/private/qthread_p.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qmutex.h>
+#include <BobUICore/qalloc.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/private/bobuihread_p.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qmutex.h>
 
 #include "qobject_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcQPropertyBinding, "qt.qproperty.binding");
+Q_STATIC_LOGGING_CATEGORY(lcQPropertyBinding, "bobui.qproperty.binding");
 
-using namespace QtPrivate;
+using namespace BobUIPrivate;
 
 void QPropertyBindingPrivatePtr::destroyAndFreeMemory()
 {
     QPropertyBindingPrivate::destroyAndFreeMemory(static_cast<QPropertyBindingPrivate *>(d));
 }
 
-void QPropertyBindingPrivatePtr::reset(QtPrivate::RefCounted *ptr) noexcept
+void QPropertyBindingPrivatePtr::reset(BobUIPrivate::RefCounted *ptr) noexcept
 {
     if (ptr != d) {
         if (ptr)
@@ -113,7 +113,7 @@ struct QPropertyDelayedNotifications
 
     /*!
         \internal
-        Called in Qt::endPropertyUpdateGroup. For the QPropertyProxyBindingData at position
+        Called in BobUI::endPropertyUpdateGroup. For the QPropertyProxyBindingData at position
         \a index, it
         \list
             \li restores the original binding data that was modified in addProperty and
@@ -144,7 +144,7 @@ struct QPropertyDelayedNotifications
 
     /*!
         \internal
-        Called in Qt::endPropertyUpdateGroup. For the QPropertyProxyBindingData at position
+        Called in BobUI::endPropertyUpdateGroup. For the QPropertyProxyBindingData at position
         \a i, it
         \list
             \li resets the proxy binding data and
@@ -170,23 +170,23 @@ struct QPropertyDelayedNotifications
 /*
     The binding status needs some care: Conceptually, it is a thread-local. However, we cache it
     in QObjects via their QBindingStorage. Those QObjects might outlive the thread in which the
-    binding status was initially created  (e.g. when their QThread is stopped).
-    If they are not migrated to another (running) QThread, they would have a stale pointer if
+    binding status was initially created  (e.g. when their BOBUIhread is stopped).
+    If they are not migrated to another (running) BOBUIhread, they would have a stale pointer if
     a plain thread local were used for the QBindingStatus.
 
     So instead of a normal thread_local, we use the following scheme:
-    - On first access, the QBindingStatus gets allocated on the heap, and stored in QThreadData
+    - On first access, the QBindingStatus gets allocated on the heap, and stored in BOBUIhreadData
     - It also gets cached in in a thread_local variable for faster access
-    - The QThreadData takes care of deleting the QBindingStatus in its destructor
-    - Moreover, if a QThread is restarted, the native thread's thread local gets initialized with
-      the QBindingStatus of the QThreadData. Otherwise, we'd somehow need to update all objects
+    - The BOBUIhreadData takes care of deleting the QBindingStatus in its destructor
+    - Moreover, if a BOBUIhread is restarted, the native thread's thread local gets initialized with
+      the QBindingStatus of the BOBUIhreadData. Otherwise, we'd somehow need to update all objects
       whose affinity is pointing to that thread, which we can't easily do. Moreover, this avoids
       freeing and reallocating a QBindingStatus instance.
 
-    Note that the lifetime is coupled to the QThreadData, which is kept alive by QObjects, even if
-    the corresponding QThread is gone.
+    Note that the lifetime is coupled to the BOBUIhreadData, which is kept alive by QObjects, even if
+    the corresponding BOBUIhread is gone.
 
-    The draw-back here is that even plain QProperty will cause the creation of QThreadData if used
+    The draw-back here is that even plain QProperty will cause the creation of BOBUIhreadData if used
     in a thread which doesn't already have it; however that should be rare in practice.
  */
 
@@ -201,15 +201,15 @@ Q_NEVER_INLINE static void initBindingStatus()
        end up calling into bindingStatus again
     */
     tl_status = status;
-    QThreadData *threadData = QThreadData::current();
-    QThread *currentThread = threadData->thread;
+    BOBUIhreadData *threadData = BOBUIhreadData::current();
+    BOBUIhread *currentThread = threadData->thread;
     if (currentThread) {
-        QThreadPrivate *threadPriv = static_cast<QThreadPrivate *>(QObjectPrivate::get(currentThread));
+        BOBUIhreadPrivate *threadPriv = static_cast<BOBUIhreadPrivate *>(QObjectPrivate::get(currentThread));
         QMutexLocker lock(&threadPriv->mutex);
         threadData->m_statusOrPendingObjects.setStatusAndClearList(status);
     } else {
-        // if QThreadData is in the process of being created, we don't need to synchronize, as there's
-        // no QThread to which another thread could move objects to
+        // if BOBUIhreadData is in the process of being created, we don't need to synchronize, as there's
+        // no BOBUIhread to which another thread could move objects to
         threadData->m_statusOrPendingObjects.setStatusAndClearList(status);
     }
 }
@@ -239,9 +239,9 @@ static QBindingStatus &bindingStatus()
     properties need to be updated, preventing any external observer from noticing an inconsistent
     state.
 
-    \sa Qt::endPropertyUpdateGroup, QScopedPropertyUpdateGroup
+    \sa BobUI::endPropertyUpdateGroup, QScopedPropertyUpdateGroup
 */
-void Qt::beginPropertyUpdateGroup()
+void BobUI::beginPropertyUpdateGroup()
 {
     QPropertyDelayedNotifications *& groupUpdateData = bindingStatus().groupUpdateData;
     if (!groupUpdateData)
@@ -259,9 +259,9 @@ void Qt::beginPropertyUpdateGroup()
     \warning Calling endPropertyUpdateGroup without a preceding call to beginPropertyUpdateGroup
     results in undefined behavior.
 
-    \sa Qt::beginPropertyUpdateGroup, QScopedPropertyUpdateGroup
+    \sa BobUI::beginPropertyUpdateGroup, QScopedPropertyUpdateGroup
 */
-void Qt::endPropertyUpdateGroup()
+void BobUI::endPropertyUpdateGroup()
 {
     auto status = &bindingStatus();
     QPropertyDelayedNotifications *& groupUpdateData = status->groupUpdateData;
@@ -296,21 +296,21 @@ void Qt::endPropertyUpdateGroup()
 /*!
     \since 6.6
     \class QScopedPropertyUpdateGroup
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup tools
-    \brief RAII class around Qt::beginPropertyUpdateGroup()/Qt::endPropertyUpdateGroup().
+    \brief RAII class around BobUI::beginPropertyUpdateGroup()/BobUI::endPropertyUpdateGroup().
 
-    This class calls Qt::beginPropertyUpdateGroup() in its constructor and
-    Qt::endPropertyUpdateGroup() in its destructor, making sure the latter
+    This class calls BobUI::beginPropertyUpdateGroup() in its constructor and
+    BobUI::endPropertyUpdateGroup() in its destructor, making sure the latter
     function is reliably called even in the presence of early returns or thrown
     exceptions.
 
-    \note Qt::endPropertyUpdateGroup() may re-throw exceptions thrown by
+    \note BobUI::endPropertyUpdateGroup() may re-throw exceptions thrown by
     binding evaluations. This means your application may crash
     (\c{std::terminate()} called) if another exception is causing
     QScopedPropertyUpdateGroup's destructor to be called during stack
     unwinding. If you expect exceptions from binding evaluations, use manual
-    Qt::endPropertyUpdateGroup() calls and \c{try}/\c{catch} blocks.
+    BobUI::endPropertyUpdateGroup() calls and \c{try}/\c{catch} blocks.
 
     \sa QProperty
 */
@@ -318,13 +318,13 @@ void Qt::endPropertyUpdateGroup()
 /*!
     \fn QScopedPropertyUpdateGroup::QScopedPropertyUpdateGroup()
 
-    Calls Qt::beginPropertyUpdateGroup().
+    Calls BobUI::beginPropertyUpdateGroup().
 */
 
 /*!
     \fn QScopedPropertyUpdateGroup::~QScopedPropertyUpdateGroup()
 
-    Calls Qt::endPropertyUpdateGroup().
+    Calls BobUI::endPropertyUpdateGroup().
 */
 
 
@@ -403,7 +403,7 @@ QPropertyBindingPrivate::NotificationState QPropertyBindingPrivate::notifyNonRec
 
 /*!
     \class QUntypedPropertyBinding
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \ingroup tools
     \brief Represents a type-erased property binding.
@@ -545,7 +545,7 @@ QPropertyBindingData::~QPropertyBindingData()
 QUntypedPropertyBinding QPropertyBindingData::setBinding(const QUntypedPropertyBinding &binding,
                                                   QUntypedPropertyData *propertyDataPtr,
                                                   QPropertyObserverCallback staticObserverCallback,
-                                                  QtPrivate::QPropertyBindingWrapper guardCallback)
+                                                  BobUIPrivate::QPropertyBindingWrapper guardCallback)
 {
     QPropertyBindingPrivatePtr oldBinding;
     QPropertyBindingPrivatePtr newBinding = binding.d;
@@ -717,9 +717,9 @@ QPropertyBindingData::NotificationResult QPropertyBindingData::notifyObserver_he
             QPropertyObserverPointer observer,
             PendingBindingObserverList &bindingObservers) const
 {
-#ifdef QT_HAS_FAST_CURRENT_THREAD_ID
+#ifdef BOBUI_HAS_FAST_CURRENT_THREAD_ID
     QBindingStatus *status = storage ? storage->bindingStatus : nullptr;
-    if (!status || status->threadId != QThread::currentThreadId())
+    if (!status || status->threadId != BOBUIhread::currentThreadId())
         status = &bindingStatus();
 #else
     Q_UNUSED(storage);
@@ -741,13 +741,13 @@ QPropertyObserver::QPropertyObserver(ChangeHandler changeHandler)
     d.setChangeHandler(changeHandler);
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 QPropertyObserver::QPropertyObserver(QUntypedPropertyData *data)
 {
-    QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     aliasData = data;
     next.setTag(ObserverIsAlias);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 }
 #endif
 
@@ -842,7 +842,7 @@ void QPropertyObserverPointer::setBindingToNotify_unsafe(QPropertyBindingPrivate
   \a propertyDataPtr is a pointer to the observed property's property data
 */
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
 void QPropertyObserverPointer::noSelfDependencies(QPropertyBindingPrivate *binding)
 {
     auto observer = const_cast<QPropertyObserver*>(ptr);
@@ -892,7 +892,7 @@ void QPropertyObserverPointer::observeProperty(QPropertyBindingDataPointer prope
 
 /*!
     \class QPropertyBindingError
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup tools
     \since 6.0
 
@@ -1022,7 +1022,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QPropertyData
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QPropertyData class is a helper class for properties with automatic property bindings.
   \since 6.0
 
@@ -1068,7 +1068,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QUntypedBindable
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief QUntypedBindable is a uniform interface over bindable properties like \c QProperty\<T\>
          and \c QObjectBindableProperty of any type \c T.
   \since 6.0
@@ -1216,7 +1216,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QBindable
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief QBindable is a wrapper class around binding-enabled properties. It allows type-safe
          operations while abstracting the differences between the various property classes away.
   \inherits QUntypedBindable
@@ -1226,8 +1226,8 @@ QString QPropertyBindingError::description() const
    QBindable is a template class where the template parameter \a T specifies
    the type of the property value.
 
-   QBindable\<T\> helps to integrate Qt's traditional Q_PROPERTY with
-   \l {Qt Bindable Properties}{binding-enabled} properties.
+   QBindable\<T\> helps to integrate BobUI's traditional Q_PROPERTY with
+   \l {BobUI Bindable Properties}{binding-enabled} properties.
    If a property is backed by a QProperty, QObjectBindableProperty or QObjectComputedProperty,
    you can add \c BINDABLE bindablePropertyName to the Q_PROPERTY
    declaration, where bindablePropertyName is a function returning an instance of QBindable
@@ -1239,7 +1239,7 @@ QString QPropertyBindingError::description() const
    \snippet code/src_corelib_kernel_qproperty.cpp 3
 
    \sa QMetaProperty::isBindable, QProperty, QObjectBindableProperty,
-       QObjectComputedProperty, {Qt Bindable Properties}
+       QObjectComputedProperty, {BobUI Bindable Properties}
 */
 
 /*!
@@ -1266,7 +1266,7 @@ QString QPropertyBindingError::description() const
    displayText.setBinding([dateTimeBindable](){ return dateTimeBindable.value().toString(); });
    \endcode
 
-   \sa QProperty, QObjectBindableProperty, {Qt Bindable Properties}
+   \sa QProperty, QObjectBindableProperty, {BobUI Bindable Properties}
 */
 
 /*!
@@ -1341,7 +1341,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QProperty
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QProperty class is a template class that enables automatic property bindings.
   \since 6.0
   \compares equality
@@ -1353,7 +1353,7 @@ QString QPropertyBindingError::description() const
   QProperty is a template class where the template parameter \a T specifies
   the type of the property value.
 
-  QProperty\<T\> is one of the classes implementing \l {Qt Bindable Properties}.
+  QProperty\<T\> is one of the classes implementing \l {BobUI Bindable Properties}.
   It is a container that holds an instance of T. You can assign
   a value to it and you can read it via the value() function or the T conversion
   operator. You can also tie the property to an expression that computes the value
@@ -1551,13 +1551,13 @@ QString QPropertyBindingError::description() const
 */
 
 /*!
-  \fn template <typename T> QtPrivate::QPropertyBindingData &QProperty<T>::bindingData() const
+  \fn template <typename T> BobUIPrivate::QPropertyBindingData &QProperty<T>::bindingData() const
   \internal
 */
 
 /*!
   \class QObjectBindableProperty
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QObjectBindableProperty class is a template class that enables
          automatic property bindings for property data stored in QObject derived
          classes.
@@ -1576,7 +1576,7 @@ QString QPropertyBindingError::description() const
 
   QObjectBindableProperty is a generic container that holds an
   instance of T and behaves mostly like \l QProperty.
-  It is one of the classes implementing \l {Qt Bindable Properties}.
+  It is one of the classes implementing \l {BobUI Bindable Properties}.
   Unlike QProperty, it stores its management data structure in
   the surrounding QObject.
   The extra template parameters are used to identify the surrounding
@@ -1626,7 +1626,7 @@ QString QPropertyBindingError::description() const
   macros.
 
   \sa Q_OBJECT_BINDABLE_PROPERTY, Q_OBJECT_BINDABLE_PROPERTY_WITH_ARGS,
-  QProperty, QObjectComputedProperty, {Qt's Property System}, {Qt Bindable
+  QProperty, QObjectComputedProperty, {BobUI's Property System}, {BobUI Bindable
   Properties}
 */
 
@@ -1638,7 +1638,7 @@ QString QPropertyBindingError::description() const
   \a type with name \a name. If the optional argument \a signal is given, this
   signal will be emitted when the property is marked dirty.
 
-  \sa {Qt's Property System}, {Qt Bindable Properties}
+  \sa {BobUI's Property System}, {BobUI Bindable Properties}
 */
 
 /*!
@@ -1650,12 +1650,12 @@ QString QPropertyBindingError::description() const
   If the optional argument \a signal is given, this signal will be emitted when
   the property is marked dirty.
 
-  \sa {Qt's Property System}, {Qt Bindable Properties}
+  \sa {BobUI's Property System}, {BobUI Bindable Properties}
 */
 
 /*!
   \class QObjectCompatProperty
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QObjectCompatProperty class is a template class to help port old
          properties to the bindable property system.
   \since 6.0
@@ -1664,14 +1664,14 @@ QString QPropertyBindingError::description() const
 
   QObjectCompatProperty is a generic container that holds an
   instance of \c T and behaves mostly like QProperty, just like
-  QObjectBindableProperty. It's one of the Qt internal classes implementing
-  \l {Qt Bindable Properties}. Like QObjectBindableProperty,
+  QObjectBindableProperty. It's one of the BobUI internal classes implementing
+  \l {BobUI Bindable Properties}. Like QObjectBindableProperty,
   QObjectCompatProperty stores its management data structure in the surrounding
   QObject. The last template parameter specifies a method (of the owning
   class) to be called when the property is changed through the binding.
   This is usually a setter.
 
-  As explained in \l {Qt Bindable Properties}, getters and setters for bindable
+  As explained in \l {BobUI Bindable Properties}, getters and setters for bindable
   properties have to be almost trivial to be correct. However, in legacy code,
   there is often complex logic in the setter. QObjectCompatProperty is a helper
   to port these properties to the bindable property system.
@@ -1689,7 +1689,7 @@ QString QPropertyBindingError::description() const
 
   \section2 Properties with Virtual Setters
 
-  Some of the pre-existing Qt classes (for example, \l QAbstractProxyModel)
+  Some of the pre-existing BobUI classes (for example, \l QAbstractProxyModel)
   have properties with virtual setters. Special care must be taken when
   making such properties bindable.
 
@@ -1712,7 +1712,7 @@ QString QPropertyBindingError::description() const
   Properties for which these conditions cannot be met should not be made
   bindable.
 
-  \sa Q_OBJECT_COMPAT_PROPERTY, QObjectBindableProperty, {Qt's Property System}, {Qt Bindable
+  \sa Q_OBJECT_COMPAT_PROPERTY, QObjectBindableProperty, {BobUI's Property System}, {BobUI Bindable
   Properties}
 */
 
@@ -1725,7 +1725,7 @@ QString QPropertyBindingError::description() const
   of type \a type with name \a name. The argument \a callback specifies
   a setter function to be called when the property is changed through the binding.
 
-  \sa QObjectBindableProperty, {Qt's Property System}, {Qt Bindable Properties}
+  \sa QObjectBindableProperty, {BobUI's Property System}, {BobUI Bindable Properties}
 */
 
 /*!
@@ -1741,7 +1741,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QObjectComputedProperty
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QObjectComputedProperty class is a template class to help port old
          properties to the bindable property system.
   \since 6.0
@@ -1755,7 +1755,7 @@ QString QPropertyBindingError::description() const
 
   QObjectComputedProperty is a read-only property which is recomputed on each read.
   It does not store the computed value.
-  It is one of the Qt internal classes implementing \l {Qt Bindable Properties}.
+  It is one of the BobUI internal classes implementing \l {BobUI Bindable Properties}.
   QObjectComputedProperty is usually not used directly, instead an instance of it is created by
   using the Q_OBJECT_COMPUTED_PROPERTY macro.
 
@@ -1789,7 +1789,7 @@ QString QPropertyBindingError::description() const
   on any input that might change without notice, such as the contents of a file.
 
   \sa Q_OBJECT_COMPUTED_PROPERTY, QProperty, QObjectBindableProperty,
-      {Qt's Property System}, {Qt Bindable Properties}
+      {BobUI's Property System}, {BobUI Bindable Properties}
 */
 
 /*!
@@ -1800,7 +1800,7 @@ QString QPropertyBindingError::description() const
   of type \a type with name \a name. The argument \a callback specifies
   a GETTER function to be called when the property is evaluated.
 
-  \sa QObjectBindableProperty, {Qt's Property System}, {Qt Bindable Properties}
+  \sa QObjectBindableProperty, {BobUI's Property System}, {BobUI Bindable Properties}
 */
 
 /*!
@@ -1890,7 +1890,7 @@ QString QPropertyBindingError::description() const
   binding is not reevaluated when notify() is called. Any binding depending on
   this property is still reevaluated as usual.
 
-  \sa Qt::beginPropertyUpdateGroup(), setValueBypassingBindings()
+  \sa BobUI::beginPropertyUpdateGroup(), setValueBypassingBindings()
 */
 
 /*!
@@ -2010,13 +2010,13 @@ QString QPropertyBindingError::description() const
 */
 
 /*!
-  \fn template <typename T> QtPrivate::QPropertyBase &QObjectBindableProperty<Class, T, offset, Callback>::propertyBase() const
+  \fn template <typename T> BobUIPrivate::QPropertyBase &QObjectBindableProperty<Class, T, offset, Callback>::propertyBase() const
   \internal
 */
 
 /*!
   \class QPropertyChangeHandler
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QPropertyChangeHandler class controls the lifecycle of change
   callback installed on a QProperty.
 
@@ -2036,7 +2036,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QPropertyNotifier
-  \inmodule QtCore
+  \inmodule BobUICore
   \brief The QPropertyNotifier class controls the lifecycle of change callback installed on a QProperty.
 
   \ingroup tools
@@ -2051,7 +2051,7 @@ QString QPropertyBindingError::description() const
 
 /*!
   \class QPropertyAlias
-  \inmodule QtCore
+  \inmodule BobUICore
   \internal
 
   \brief The QPropertyAlias class is a safe alias for a QProperty with same
@@ -2313,7 +2313,7 @@ struct QBindingStoragePrivate
         }
         // data has been moved, no need to call destructors on old Pairs
         const size_t oldAllocSize = sizeof(QBindingStorageData) + d->size*sizeof(Pair);
-        QtPrivate::sizedFree(d, oldAllocSize);
+        BobUIPrivate::sizedFree(d, oldAllocSize);
         d = newData;
     }
 
@@ -2371,7 +2371,7 @@ struct QBindingStoragePrivate
             ++p;
         }
         const size_t allocSize = sizeof(QBindingStorageData) + d->size*sizeof(Pair);
-        QtPrivate::sizedFree(d, allocSize);
+        BobUIPrivate::sizedFree(d, allocSize);
     }
 };
 
@@ -2389,7 +2389,7 @@ struct QBindingStoragePrivate
 
 QBindingStorage::QBindingStorage()
 {
-    bindingStatus = &QT_PREPEND_NAMESPACE(bindingStatus)();
+    bindingStatus = &BOBUI_PREPEND_NAMESPACE(bindingStatus)();
     Q_ASSERT(bindingStatus);
 }
 
@@ -2400,7 +2400,7 @@ QBindingStorage::~QBindingStorage()
 
 void QBindingStorage::reinitAfterThreadMove()
 {
-    bindingStatus = &QT_PREPEND_NAMESPACE(bindingStatus)();
+    bindingStatus = &BOBUI_PREPEND_NAMESPACE(bindingStatus)();
     Q_ASSERT(bindingStatus);
 }
 
@@ -2416,15 +2416,15 @@ void QBindingStorage::registerDependency_helper(const QUntypedPropertyData *data
     Q_ASSERT(bindingStatus);
     // Use ::bindingStatus to get the binding from TLS. This is required, so that reads from
     // another thread do not register as dependencies
-    QtPrivate::BindingEvaluationState *currentBinding;
-#ifdef QT_HAS_FAST_CURRENT_THREAD_ID
-    const bool threadMatches = (QThread::currentThreadId() == bindingStatus->threadId);
+    BobUIPrivate::BindingEvaluationState *currentBinding;
+#ifdef BOBUI_HAS_FAST_CURRENT_THREAD_ID
+    const bool threadMatches = (BOBUIhread::currentThreadId() == bindingStatus->threadId);
     if (Q_LIKELY(threadMatches))
         currentBinding = bindingStatus->currentlyEvaluatingBinding;
     else
-        currentBinding = QT_PREPEND_NAMESPACE(bindingStatus)().currentlyEvaluatingBinding;
+        currentBinding = BOBUI_PREPEND_NAMESPACE(bindingStatus)().currentlyEvaluatingBinding;
 #else
-    currentBinding = QT_PREPEND_NAMESPACE(bindingStatus)().currentlyEvaluatingBinding;
+    currentBinding = BOBUI_PREPEND_NAMESPACE(bindingStatus)().currentlyEvaluatingBinding;
 #endif
     QUntypedPropertyData *dd = const_cast<QUntypedPropertyData *>(data);
     if (!currentBinding)
@@ -2441,7 +2441,7 @@ QPropertyBindingData *QBindingStorage::bindingData_helper(const QUntypedProperty
     return QBindingStoragePrivate(d).get(data);
 }
 
-const QBindingStatus *QBindingStorage::status(QtPrivate::QBindingStatusAccessToken) const
+const QBindingStatus *QBindingStorage::status(BobUIPrivate::QBindingStatusAccessToken) const
 {
     return bindingStatus;
 }
@@ -2452,12 +2452,12 @@ QPropertyBindingData *QBindingStorage::bindingData_helper(QUntypedPropertyData *
 }
 
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 
 void initBindingStatusThreadId()
 {
-    bindingStatus().threadId = QThread::currentThreadId();
+    bindingStatus().threadId = BOBUIhread::currentThreadId();
 }
 
 BindingEvaluationState *suspendCurrentBindingStatus()
@@ -2498,16 +2498,16 @@ namespace BindableWarnings {
 void printUnsuitableBindableWarning(QAnyStringView prefix, BindableWarnings::Reason reason)
 {
     switch (reason) {
-    case QtPrivate::BindableWarnings::NonBindableInterface:
+    case BobUIPrivate::BindableWarnings::NonBindableInterface:
         qCWarning(lcQPropertyBinding).noquote() << prefix.toString()
                                                 << "The QBindable does not allow interaction with the binding.";
         break;
-    case QtPrivate::BindableWarnings::ReadOnlyInterface:
+    case BobUIPrivate::BindableWarnings::ReadOnlyInterface:
         qCWarning(lcQPropertyBinding).noquote() << prefix.toString()
                                                 << "The QBindable is read-only.";
         break;
     default:
-    case QtPrivate::BindableWarnings::InvalidInterface:
+    case BobUIPrivate::BindableWarnings::InvalidInterface:
         qCWarning(lcQPropertyBinding).noquote() << prefix.toString()
                                                 << "The QBindable is invalid.";
         break;
@@ -2527,9 +2527,9 @@ void printMetaTypeMismatch(QMetaType actual, QMetaType expected)
     \internal
     Returns the binding statusof the current thread.
  */
-QBindingStatus* getBindingStatus(QtPrivate::QBindingStatusAccessToken)
+QBindingStatus* getBindingStatus(BobUIPrivate::QBindingStatusAccessToken)
 {
-    return &QT_PREPEND_NAMESPACE(bindingStatus)();
+    return &BOBUI_PREPEND_NAMESPACE(bindingStatus)();
 }
 void setBindingStatus(QBindingStatus *status, QBindingStatusAccessToken)
 {
@@ -2541,7 +2541,7 @@ void setBindingStatus(QBindingStatus *status, QBindingStatusAccessToken)
 namespace PropertyAdaptorSlotObjectHelpers {
 void getter(const QUntypedPropertyData *d, void *value)
 {
-    auto adaptor = static_cast<const QtPrivate::QPropertyAdaptorSlotObject *>(d);
+    auto adaptor = static_cast<const BobUIPrivate::QPropertyAdaptorSlotObject *>(d);
     adaptor->bindingData().registerWithCurrentlyEvaluatingBinding();
     auto mt = adaptor->metaProperty().metaType();
     mt.destruct(value);
@@ -2550,7 +2550,7 @@ void getter(const QUntypedPropertyData *d, void *value)
 
 void setter(QUntypedPropertyData *d, const void *value)
 {
-    auto adaptor = static_cast<QtPrivate::QPropertyAdaptorSlotObject *>(d);
+    auto adaptor = static_cast<BobUIPrivate::QPropertyAdaptorSlotObject *>(d);
     adaptor->bindingData().removeBinding();
     adaptor->metaProperty().write(adaptor->object(),
                                   QVariant(adaptor->metaProperty().metaType(), value));
@@ -2558,15 +2558,15 @@ void setter(QUntypedPropertyData *d, const void *value)
 
 QUntypedPropertyBinding getBinding(const QUntypedPropertyData *d)
 {
-    auto adaptor = static_cast<const QtPrivate::QPropertyAdaptorSlotObject *>(d);
+    auto adaptor = static_cast<const BobUIPrivate::QPropertyAdaptorSlotObject *>(d);
     return QUntypedPropertyBinding(adaptor->bindingData().binding());
 }
 
 bool bindingWrapper(QMetaType type, QUntypedPropertyData *d,
-                    QtPrivate::QPropertyBindingFunction binding, QUntypedPropertyData *temp,
+                    BobUIPrivate::QPropertyBindingFunction binding, QUntypedPropertyData *temp,
                     void *value)
 {
-    auto adaptor = static_cast<const QtPrivate::QPropertyAdaptorSlotObject *>(d);
+    auto adaptor = static_cast<const BobUIPrivate::QPropertyAdaptorSlotObject *>(d);
     type.destruct(value);
     type.construct(value, adaptor->metaProperty().read(adaptor->object()).data());
     if (binding.vtable->call(type, temp, binding.functor)) {
@@ -2594,7 +2594,7 @@ QPropertyAdaptorSlotObject::QPropertyAdaptorSlotObject(QObject *o, const QMetaPr
 {
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 void QPropertyAdaptorSlotObject::impl(int which, QSlotObjectBase *this_, QObject *r, void **a,
                                       bool *ret)
 #else
@@ -2620,10 +2620,10 @@ void QPropertyAdaptorSlotObject::impl(QSlotObjectBase *this_, QObject *r, void *
     }
 }
 
-} // namespace QtPrivate end
+} // namespace BobUIPrivate end
 
 QUntypedBindable::QUntypedBindable(QObject *obj, const QMetaProperty &metaProperty,
-                                   const QtPrivate::QBindableInterface *i)
+                                   const BobUIPrivate::QBindableInterface *i)
     : iface(i)
 {
     if (!obj)
@@ -2667,7 +2667,7 @@ QUntypedBindable::QUntypedBindable(QObject *obj, const QMetaProperty &metaProper
         adaptor = new QPropertyAdaptorSlotObject(obj, metaProperty);
 
         auto c = QObjectPrivate::connect(obj, metaProperty.notifySignalIndex(), obj, adaptor,
-                                         Qt::DirectConnection);
+                                         BobUI::DirectConnection);
         Q_ASSERT(c);
     }
 
@@ -2675,7 +2675,7 @@ QUntypedBindable::QUntypedBindable(QObject *obj, const QMetaProperty &metaProper
 }
 
 QUntypedBindable::QUntypedBindable(QObject *obj, const char *property,
-                                   const QtPrivate::QBindableInterface *i)
+                                   const BobUIPrivate::QBindableInterface *i)
     : QUntypedBindable(
             obj,
             [=]() -> QMetaProperty {
@@ -2693,4 +2693,4 @@ QUntypedBindable::QUntypedBindable(QObject *obj, const char *property,
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

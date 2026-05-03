@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qiosintegration.h"
 #include "qioseventdispatcher.h"
@@ -10,7 +10,7 @@
 #include "qioswindow.h"
 #include "qiosscreen.h"
 #include "qiosplatformaccessibility.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qiosclipboard.h"
 #endif
 #include "qiosinputcontext.h"
@@ -22,30 +22,30 @@
 #include "qiosswiftintegration.h"
 #endif
 
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qrhibackingstore_p.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qrhibackingstore_p.h>
 
 #include <qoffscreensurface.h>
 #include <qpa/qplatformoffscreensurface.h>
 
-#include <QtGui/private/qcoretextfontdatabase_p.h>
-#include <QtGui/private/qmacmimeregistry_p.h>
-#include <QtGui/qutimimeconverter.h>
+#include <BobUIGui/private/qcoretextfontdatabase_p.h>
+#include <BobUIGui/private/qmacmimeregistry_p.h>
+#include <BobUIGui/qutimimeconverter.h>
 #include <QDir>
 #include <QOperatingSystemVersion>
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #include "qioscontext.h"
 #endif
 
 #import <AudioToolbox/AudioServices.h>
 
-#include <QtDebug>
+#include <BobUIDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QCoreTextFontEngine;
 
@@ -56,16 +56,16 @@ QIOSIntegration *QIOSIntegration::instance()
 
 QIOSIntegration::QIOSIntegration()
     : m_fontDatabase(new QCoreTextFontDatabaseEngineFactory<QCoreTextFontEngine>)
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     , m_clipboard(new QIOSClipboard)
 #endif
     , m_inputContext(0)
     , m_accessibility(0)
     , m_optionalPlugins(new QFactoryLoader(QIosOptionalPluginInterface_iid, "/platforms/darwin"_L1))
 {
-    if (Q_UNLIKELY(!qt_apple_isApplicationExtension() && !qt_apple_sharedApplication())) {
+    if (Q_UNLIKELY(!bobui_apple_isApplicationExtension() && !bobui_apple_sharedApplication())) {
         qFatal("Error: You are creating QApplication before calling UIApplicationMain.\n" \
-               "If you are writing a native iOS application, and only want to use Qt for\n" \
+               "If you are writing a native iOS application, and only want to use BobUI for\n" \
                "parts of the application, a good place to create QApplication is from within\n" \
                "'applicationDidFinishLaunching' inside your UIApplication delegate.\n");
     }
@@ -89,7 +89,7 @@ void QIOSIntegration::initialize()
     m_touchDevice = new QPointingDevice("touchscreen", 0, QInputDevice::DeviceType::TouchScreen,
                                 QPointingDevice::PointerType::Finger, touchCapabilities, 10, 0);
     QWindowSystemInterface::registerInputDevice(m_touchDevice);
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QWindowSystemInterfacePrivate::TabletEvent::setPlatformSynthesizesMouse(false);
     m_pencilDevice = new QPointingDevice(
             "Apple Pencil", 0, QInputDevice::DeviceType::Stylus, QPointingDevice::PointerType::Pen,
@@ -110,7 +110,7 @@ QIOSIntegration::~QIOSIntegration()
     delete m_fontDatabase;
     m_fontDatabase = 0;
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     delete m_clipboard;
     m_clipboard = 0;
 #endif
@@ -136,7 +136,7 @@ QIOSIntegration::~QIOSIntegration()
 bool QIOSIntegration::hasCapability(Capability cap) const
 {
     switch (cap) {
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     case BufferQueueingOpenGL:
         return true;
     case OpenGL:
@@ -173,7 +173,7 @@ QPlatformBackingStore *QIOSIntegration::createPlatformBackingStore(QWindow *wind
     return new QRhiBackingStore(window);
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 // Used when the QWindow's surface type is set by the client to QSurface::OpenGLSurface
 QPlatformOpenGLContext *QIOSIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
@@ -209,7 +209,7 @@ QPlatformFontDatabase * QIOSIntegration::fontDatabase() const
     return m_fontDatabase;
 }
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 QPlatformClipboard *QIOSIntegration::clipboard() const
 {
     return m_clipboard;
@@ -265,14 +265,14 @@ QPointingDevice *QIOSIntegration::touchDevice()
     return m_touchDevice;
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 QPointingDevice *QIOSIntegration::pencilDevice()
 {
     return m_pencilDevice;
 }
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 QPlatformAccessibility *QIOSIntegration::accessibility() const
 {
     if (!m_accessibility)
@@ -363,6 +363,6 @@ void *QIOSIntegration::nativeResourceForWindow(const QByteArray &resource, QWind
 
 // ---------------------------------------------------------
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qiosintegration.cpp"

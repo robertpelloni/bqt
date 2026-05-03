@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qdir.h>
 #include <qlibrary.h>
-#include <QtCore/QRegularExpression>
-#include <QtCore/private/qlibrary_p.h>
+#include <BobUICore/QRegularExpression>
+#include <BobUICore/private/qlibrary_p.h>
 
 
 // Helper macros to let us know if some suffixes and prefixes are valid
@@ -64,9 +64,9 @@
 # define PREFIX         "lib"
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_FORWARD_DECLARE_CLASS(QLibrary)
+BOBUI_FORWARD_DECLARE_CLASS(QLibrary)
 class tst_QLibrary : public QObject
 {
     Q_OBJECT
@@ -154,11 +154,11 @@ void tst_QLibrary::cleanup()
         { directory + "/" PREFIX "mylib" SUFFIX },
 #if defined(Q_OS_WIN32)
         { directory + "/mylib.dl2" },
-        { directory + "/system.qt.test.mylib.dll" },
+        { directory + "/system.bobui.test.mylib.dll" },
 #elif !defined(Q_OS_ANDROID)
         // .so even on macOS
         { directory + "/libmylib.so2" },
-        { directory + "/system.qt.test.mylib.so" },
+        { directory + "/system.bobui.test.mylib.so" },
 #endif
 
     };
@@ -177,13 +177,13 @@ void tst_QLibrary::version_data()
 #ifdef Q_OS_ANDROID
     QSKIP("Versioned .so files are not generated for Android, so this test is not applicable.");
 #endif
-    QTest::addColumn<QString>("lib");
-    QTest::addColumn<int>("loadversion");
-    QTest::addColumn<int>("resultversion");
+    BOBUIest::addColumn<QString>("lib");
+    BOBUIest::addColumn<int>("loadversion");
+    BOBUIest::addColumn<int>("resultversion");
 
-    QTest::newRow( "ok00, version 1" ) << "mylib" << 1 << 1;
-    QTest::newRow( "ok00, version 2" ) << "mylib" << 2 << 2;
-    QTest::newRow( "ok00, load without version" ) << "mylib" << -1 << 2;
+    BOBUIest::newRow( "ok00, version 1" ) << "mylib" << 1 << 1;
+    BOBUIest::newRow( "ok00, version 2" ) << "mylib" << 2 << 2;
+    BOBUIest::newRow( "ok00, load without version" ) << "mylib" << -1 << 2;
 }
 
 void tst_QLibrary::version()
@@ -245,13 +245,13 @@ void tst_QLibrary::archSpecificVersion_data()
     QSKIP("Test not applicable on this platform");
 #endif
 
-    QTest::addColumn<QString>("lib");
-    QTest::addColumn<int>("version");
+    BOBUIest::addColumn<QString>("lib");
+    BOBUIest::addColumn<int>("version");
 
     for (const char *prefix : { "", PREFIX }) {
         QString libname = prefix + u"myarchlib"_s;
-        QTest::addRow("%s v1", qPrintable(libname)) << libname << 1;
-        QTest::addRow("%s.so.1", qPrintable(libname)) << (libname + SUFFIX + ".1") << -1;
+        BOBUIest::addRow("%s v1", qPrintable(libname)) << libname << 1;
+        BOBUIest::addRow("%s.so.1", qPrintable(libname)) << (libname + SUFFIX + ".1") << -1;
     }
 }
 
@@ -310,30 +310,30 @@ void tst_QLibrary::setFileNameAndVersionTwice()
 
 void tst_QLibrary::load_data()
 {
-    QTest::addColumn<QString>("lib");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("lib");
+    BOBUIest::addColumn<bool>("result");
 
     QString appDir = directory;
 
-    QTest::newRow( "ok00" ) << appDir + "/mylib" << true;
-    QTest::newRow( "notexist" ) << appDir + "/nolib" << false;
-    QTest::newRow( "badlibrary" ) << appDir + "/qlibrary.pro" << false;
+    BOBUIest::newRow( "ok00" ) << appDir + "/mylib" << true;
+    BOBUIest::newRow( "notexist" ) << appDir + "/nolib" << false;
+    BOBUIest::newRow( "badlibrary" ) << appDir + "/qlibrary.pro" << false;
 
 #ifdef Q_OS_DARWIN
-    QTest::newRow("ok (libmylib ver. 1)") << appDir + "/libmylib" <<true;
+    BOBUIest::newRow("ok (libmylib ver. 1)") << appDir + "/libmylib" <<true;
 #endif
 
 # if defined(Q_OS_WIN32)
-    QTest::newRow( "ok01 (with suffix)" ) << appDir + "/mylib.dll" << true;
-    QTest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/mylib.dl2" << true;
-    QTest::newRow( "ok03 (with many dots)" ) << appDir + "/system.qt.test.mylib.dll" << true;
+    BOBUIest::newRow( "ok01 (with suffix)" ) << appDir + "/mylib.dll" << true;
+    BOBUIest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/mylib.dl2" << true;
+    BOBUIest::newRow( "ok03 (with many dots)" ) << appDir + "/system.bobui.test.mylib.dll" << true;
 # elif defined Q_OS_UNIX
-    QTest::newRow( "ok01 (with suffix)" ) << appDir + "/libmylib" SUFFIX << true;
+    BOBUIest::newRow( "ok01 (with suffix)" ) << appDir + "/libmylib" SUFFIX << true;
 #ifndef Q_OS_ANDROID
     // We do not support non-standard suffixes on Android
-    QTest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/libmylib.so2" << true;
+    BOBUIest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/libmylib.so2" << true;
 #endif
-    QTest::newRow( "ok03 (with many dots)" ) << appDir + "/system.qt.test.mylib.so" << true;
+    BOBUIest::newRow( "ok03 (with many dots)" ) << appDir + "/system.bobui.test.mylib.so" << true;
 # endif  // Q_OS_UNIX
 }
 
@@ -354,13 +354,13 @@ void tst_QLibrary::load()
 
 void tst_QLibrary::unload_data()
 {
-    QTest::addColumn<QString>("lib");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("lib");
+    BOBUIest::addColumn<bool>("result");
 
     QString appDir = directory;
 
-    QTest::newRow( "mylib" ) << appDir + "/mylib" << true;
-    QTest::newRow( "ok01" ) << appDir + "/nolib" << false;
+    BOBUIest::newRow( "mylib" ) << appDir + "/mylib" << true;
+    BOBUIest::newRow( "ok01" ) << appDir + "/nolib" << false;
 }
 
 void tst_QLibrary::unload()
@@ -438,7 +438,7 @@ void tst_QLibrary::loadAfterFailedLoad()
     QSKIP("### FIXME: The helper libraries are currently messed up in the CMakeLists.txt");
 #endif
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QLibrary library(dir.path() + "/mylib");
     QVERIFY(!library.load());
     QVERIFY(!library.isLoaded());
@@ -460,15 +460,15 @@ void tst_QLibrary::loadAfterFailedLoad()
 
 void tst_QLibrary::resolve_data()
 {
-    QTest::addColumn<QString>("lib");
-    QTest::addColumn<QString>("symbol");
-    QTest::addColumn<bool>("goodPointer");
+    BOBUIest::addColumn<QString>("lib");
+    BOBUIest::addColumn<QString>("symbol");
+    BOBUIest::addColumn<bool>("goodPointer");
 
     QString appDir = directory;
 
-    QTest::newRow( "ok00" ) << appDir + "/mylib" << QString("mylibversion") << true;
-    QTest::newRow( "bad00" ) << appDir + "/mylib" << QString("nosym") << false;
-    QTest::newRow( "bad01" ) << appDir + "/nolib" << QString("nosym") << false;
+    BOBUIest::newRow( "ok00" ) << appDir + "/mylib" << QString("mylibversion") << true;
+    BOBUIest::newRow( "bad00" ) << appDir + "/mylib" << QString("nosym") << false;
+    BOBUIest::newRow( "bad01" ) << appDir + "/nolib" << QString("nosym") << false;
 }
 
 void tst_QLibrary::resolve()
@@ -501,33 +501,33 @@ void tst_QLibrary::resolve()
 
 void tst_QLibrary::isLibrary_data()
 {
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<bool>("valid");
 
     // use the macros #defined at the top of the file
-    QTest::newRow("bad") << QString("mylib.bad") << false;
-    QTest::newRow(".a") << QString("mylib.a") << a_VALID;
-    QTest::newRow(".bundle") << QString("mylib.bundle") << bundle_VALID;
-    QTest::newRow(".dll") << QString("mylib.dll") << dll_VALID;
-    QTest::newRow(".DLL") << QString("MYLIB.DLL") << DLL_VALID;
-    QTest::newRow(".dl2" ) << QString("mylib.dl2") << false;
-    QTest::newRow(".dylib") << QString("mylib.dylib") << dylib_VALID;
-    QTest::newRow(".sl") << QString("mylib.sl") << sl_VALID;
-    QTest::newRow(".so") << QString("mylib.so") << so_VALID;
-    QTest::newRow(".so+version") << QString("mylib.so.0") << so_VALID;
-    QTest::newRow("version+.so") << QString("libc-2.7.so") << so_VALID;
-    QTest::newRow("version+.so+version") << QString("liboil-0.3.so.0.1.0") << so_VALID;
+    BOBUIest::newRow("bad") << QString("mylib.bad") << false;
+    BOBUIest::newRow(".a") << QString("mylib.a") << a_VALID;
+    BOBUIest::newRow(".bundle") << QString("mylib.bundle") << bundle_VALID;
+    BOBUIest::newRow(".dll") << QString("mylib.dll") << dll_VALID;
+    BOBUIest::newRow(".DLL") << QString("MYLIB.DLL") << DLL_VALID;
+    BOBUIest::newRow(".dl2" ) << QString("mylib.dl2") << false;
+    BOBUIest::newRow(".dylib") << QString("mylib.dylib") << dylib_VALID;
+    BOBUIest::newRow(".sl") << QString("mylib.sl") << sl_VALID;
+    BOBUIest::newRow(".so") << QString("mylib.so") << so_VALID;
+    BOBUIest::newRow(".so+version") << QString("mylib.so.0") << so_VALID;
+    BOBUIest::newRow("version+.so") << QString("libc-2.7.so") << so_VALID;
+    BOBUIest::newRow("version+.so+version") << QString("liboil-0.3.so.0.1.0") << so_VALID;
 
     // special tests:
 #ifdef Q_OS_DARWIN
-    QTest::newRow("good (libmylib.1.0.0.dylib)") << QString("libmylib.1.0.0.dylib") << true;
-    QTest::newRow("good (libmylib.dylib)") << QString("libmylib.dylib") << true;
-    QTest::newRow("good (libmylib.so)") << QString("libmylib.so") << true;
-    QTest::newRow("good (libmylib.so.1.0.0)") << QString("libmylib.so.1.0.0") << true;
+    BOBUIest::newRow("good (libmylib.1.0.0.dylib)") << QString("libmylib.1.0.0.dylib") << true;
+    BOBUIest::newRow("good (libmylib.dylib)") << QString("libmylib.dylib") << true;
+    BOBUIest::newRow("good (libmylib.so)") << QString("libmylib.so") << true;
+    BOBUIest::newRow("good (libmylib.so.1.0.0)") << QString("libmylib.so.1.0.0") << true;
 
-    QTest::newRow("bad (libmylib.1.0.0.foo)") << QString("libmylib.1.0.0.foo") << false;
+    BOBUIest::newRow("bad (libmylib.1.0.0.foo)") << QString("libmylib.1.0.0.foo") << false;
 #elif defined(Q_OS_WIN)
-    QTest::newRow("good (with many dots)" ) << "/system.qt.test.mylib.dll" << true;
+    BOBUIest::newRow("good (with many dots)" ) << "/system.bobui.test.mylib.dll" << true;
 #endif
 }
 
@@ -541,24 +541,24 @@ void tst_QLibrary::isLibrary()
 
 void tst_QLibrary::errorString_data()
 {
-    QTest::addColumn<int>("operation");
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("success");
-    QTest::addColumn<QString>("errorString");
+    BOBUIest::addColumn<int>("operation");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<bool>("success");
+    BOBUIest::addColumn<QString>("errorString");
 
     QString appDir = directory;
 
-    QTest::newRow("bad load()") << (int)Load << QString("nosuchlib") << false << QString("Cannot load library nosuchlib: .*");
-    QTest::newRow("call errorString() on QLibrary with no d-pointer (crashtest)") << (int)(Load | DontSetFileName) << QString() << false << QString("Unknown error");
-    QTest::newRow("bad resolve") << (int)Resolve << appDir + "/mylib" << false << QString("Unknown error");
-    QTest::newRow("good resolve") << (int)Resolve << appDir + "/mylib" << true << QString("Unknown error");
+    BOBUIest::newRow("bad load()") << (int)Load << QString("nosuchlib") << false << QString("Cannot load library nosuchlib: .*");
+    BOBUIest::newRow("call errorString() on QLibrary with no d-pointer (crashtest)") << (int)(Load | DontSetFileName) << QString() << false << QString("Unknown error");
+    BOBUIest::newRow("bad resolve") << (int)Resolve << appDir + "/mylib" << false << QString("Unknown error");
+    BOBUIest::newRow("good resolve") << (int)Resolve << appDir + "/mylib" << true << QString("Unknown error");
 
 #ifdef Q_OS_WIN
-    QTest::newRow("bad load() with .dll suffix") << (int)Load << QString("nosuchlib.dll") << false << QString("Cannot load library nosuchlib.dll: The specified module could not be found.");
-//    QTest::newRow("bad unload") << (int)Unload << QString("nosuchlib.dll") << false << QString("QLibrary::unload_sys: Cannot unload nosuchlib.dll (The specified module could not be found.)");
+    BOBUIest::newRow("bad load() with .dll suffix") << (int)Load << QString("nosuchlib.dll") << false << QString("Cannot load library nosuchlib.dll: The specified module could not be found.");
+//    BOBUIest::newRow("bad unload") << (int)Unload << QString("nosuchlib.dll") << false << QString("QLibrary::unload_sys: Cannot unload nosuchlib.dll (The specified module could not be found.)");
 #elif defined Q_OS_DARWIN
 #else
-    QTest::newRow("load invalid file") << (int)Load << QFINDTESTDATA("library_path/invalid.so") << false << QString("Cannot load library.*");
+    BOBUIest::newRow("load invalid file") << (int)Load << QFINDTESTDATA("library_path/invalid.so") << false << QString("Cannot load library.*");
 #endif
 }
 
@@ -596,7 +596,7 @@ void tst_QLibrary::errorString()
             QFAIL(qPrintable(QString("Unknown operation: %1").arg(operation)));
             break;
     }
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression re(QRegularExpression::anchoredPattern(errorString));
     QString libErrorString = lib.errorString();
     QVERIFY2(re.match(libErrorString).hasMatch(), qPrintable(libErrorString));
@@ -607,9 +607,9 @@ void tst_QLibrary::errorString()
 
 void tst_QLibrary::loadHints_data()
 {
-    QTest::addColumn<QString>("lib");
-    QTest::addColumn<int>("loadHints");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("lib");
+    BOBUIest::addColumn<int>("loadHints");
+    BOBUIest::addColumn<bool>("result");
 
     QLibrary::LoadHints lh;
 
@@ -617,16 +617,16 @@ void tst_QLibrary::loadHints_data()
 
     lh |= QLibrary::ResolveAllSymbolsHint;
 # if defined(Q_OS_WIN32)
-    QTest::newRow( "ok01 (with suffix)" ) << appDir + "/mylib.dll" << int(lh) << true;
-    QTest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/mylib.dl2" << int(lh) << true;
-    QTest::newRow( "ok03 (with many dots)" ) << appDir + "/system.qt.test.mylib.dll" << int(lh) << true;
+    BOBUIest::newRow( "ok01 (with suffix)" ) << appDir + "/mylib.dll" << int(lh) << true;
+    BOBUIest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/mylib.dl2" << int(lh) << true;
+    BOBUIest::newRow( "ok03 (with many dots)" ) << appDir + "/system.bobui.test.mylib.dll" << int(lh) << true;
 # elif defined Q_OS_UNIX
-    QTest::newRow( "ok01 (with suffix)" ) << appDir + "/libmylib" SUFFIX << int(lh) << true;
+    BOBUIest::newRow( "ok01 (with suffix)" ) << appDir + "/libmylib" SUFFIX << int(lh) << true;
 #ifndef Q_OS_ANDROID
     // We do not support non-standard suffixes on Android
-    QTest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/libmylib.so2" << int(lh) << true;
+    BOBUIest::newRow( "ok02 (with non-standard suffix)" ) << appDir + "/libmylib.so2" << int(lh) << true;
 #endif
-    QTest::newRow( "ok03 (with many dots)" ) << appDir + "/system.qt.test.mylib.so" << int(lh) << true;
+    BOBUIest::newRow( "ok03 (with many dots)" ) << appDir + "/system.bobui.test.mylib.so" << int(lh) << true;
 # endif  // Q_OS_UNIX
 }
 
@@ -642,7 +642,7 @@ void tst_QLibrary::loadHints()
         lh |= library.loadHints();
         library.setLoadHints(lh);
 
-        // confirm that another QLibrary doesn't get affected - QTBUG-39642
+        // confirm that another QLibrary doesn't get affected - BOBUIBUG-39642
         QCOMPARE(QLibrary().loadHints(), QLibrary::LoadHints());
     }
     library.setFileName(lib);
@@ -666,13 +666,13 @@ void tst_QLibrary::loadHints()
 
 void tst_QLibrary::fileName_data()
 {
-    QTest::addColumn<QString>("libName");
-    QTest::addColumn<QString>("expectedFilename");
+    BOBUIest::addColumn<QString>("libName");
+    BOBUIest::addColumn<QString>("expectedFilename");
 
-    QTest::newRow( "ok02" ) << sys_qualifiedLibraryName(QLatin1String("mylib"))
+    BOBUIest::newRow( "ok02" ) << sys_qualifiedLibraryName(QLatin1String("mylib"))
                             << sys_qualifiedLibraryName(QLatin1String("mylib"));
 #if defined(Q_OS_WIN)
-    QTest::newRow( "ok03" ) << "user32"
+    BOBUIest::newRow( "ok03" ) << "user32"
                             << "USER32.dll";
 #endif
 }
@@ -724,5 +724,5 @@ void tst_QLibrary::multipleInstancesForOneLibrary()
     }
 }
 
-QTEST_MAIN(tst_QLibrary)
+BOBUIEST_MAIN(tst_QLibrary)
 #include "tst_qlibrary.moc"

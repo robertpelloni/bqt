@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example rhiwindow
@@ -11,10 +11,10 @@
 
     \image rhiwindow_example.jpg {Screenshot of example}
 
-    Qt 6.6 starts offering its accelerated 3D API and shader abstraction layer
+    BobUI 6.6 starts offering its accelerated 3D API and shader abstraction layer
     for application use as well. Applications can now use the same 3D graphics
-    classes Qt itself uses to implement the Qt Quick scenegraph or the Qt Quick
-    3D engine. In earlier Qt versions QRhi and the related classes were all
+    classes BobUI itself uses to implement the BobUI Quick scenegraph or the BobUI Quick
+    3D engine. In earlier BobUI versions QRhi and the related classes were all
     private APIs. From 6.6 on these classes are in a similar category as QPA
     family of classes: neither fully public nor private, but something
     in-between, with a more limited compatibility promise compared to public
@@ -22,18 +22,18 @@
     documentation similarly to public APIs.
 
     There are multiple ways to use QRhi, the example here shows the most
-    low-level approach: targeting a QWindow, while not using Qt Quick, Qt Quick
+    low-level approach: targeting a QWindow, while not using BobUI Quick, BobUI Quick
     3D, or Widgets in any form, and setting up all the rendering and windowing
     infrastructure in the application.
 
-    In contrast, when writing a QML application with Qt Quick or Qt Quick 3D,
+    In contrast, when writing a QML application with BobUI Quick or BobUI Quick 3D,
     and wanting to add QRhi-based rendering to it, such an application is going
-    to rely on the window and rendering infrastructure Qt Quick has already
+    to rely on the window and rendering infrastructure BobUI Quick has already
     initialized, and it is likely going to query an existing QRhi instance from
     the QQuickWindow. There dealing with QRhi::create(), platform/API specifics
     such as \l{QVulkanInstance}{Vulkan instances}, or correctly handling
     \l{QExposeEvent}{expose} and resize events for the window are all managed
-    by Qt Quick. Whereas in this example, all that is managed and taken care
+    by BobUI Quick. Whereas in this example, all that is managed and taken care
     of by the application itself.
 
     \note For QWidget-based applications in particular, it should be noted that
@@ -63,12 +63,12 @@
 
     \section1 Build System Notes
 
-    This application relies solely on the Qt GUI module. It does not use Qt
-    Widgets or Qt Quick.
+    This application relies solely on the BobUI GUI module. It does not use BobUI
+    Widgets or BobUI Quick.
 
-    In order to access the RHI APIs, which are available to all Qt applications
+    In order to access the RHI APIs, which are available to all BobUI applications
     but come with a limited compatibility promise, the \c target_link_libraries
-    CMake command lists \c{Qt6::GuiPrivate}. This is what enables the
+    CMake command lists \c{BobUI6::GuiPrivate}. This is what enables the
     \c{#include <rhi/qrhi.h>} include statement to compile successfully.
 
     \section1 Features
@@ -116,17 +116,17 @@
 
     The shaders are written as Vulkan-compatible GLSL source code.
 
-    Due to being a Qt GUI module example, this example cannot have a dependency
-    on the \l{Qt Shader Tools} module. This means that CMake helper functions
-    such as \c{qt_add_shaders} are not available for use. Therefore, the
+    Due to being a BobUI GUI module example, this example cannot have a dependency
+    on the \l{BobUI Shader Tools} module. This means that CMake helper functions
+    such as \c{bobui_add_shaders} are not available for use. Therefore, the
     example has the pre-processed \c{.qsb} files included in the
     \c{shaders/prebuilt} folder, and they are simply included within the
-    executable via \c{qt_add_resources}. This approach is not generally
-    recommended for applications, consider rather using \l{Qt Shader Tools
-    Build System Integration}{qt_add_shaders}, which avoids the need to
+    executable via \c{bobui_add_resources}. This approach is not generally
+    recommended for applications, consider rather using \l{BobUI Shader Tools
+    Build System Integration}{bobui_add_shaders}, which avoids the need to
     manually generate and manage the \c{.qsb} files.
 
-    To generate the \c{.qsb} files for this example, the command \c{qsb --qt6
+    To generate the \c{.qsb} files for this example, the command \c{qsb --bobui6
     color.vert -o prebuilt/color.vert.qsb} etc. was used. This leads to
     compiling to \l{https://www.khronos.org/spir/}{SPIR-V} and than transpiling
     into GLSL (\c{100 es} and \c 120), HLSL (5.0), and MSL (1.2). All the
@@ -139,7 +139,7 @@
     API-specific initialiation, e.g. to create a QVulkanInstance when using
     Vulkan. For OpenGL we have to ensure a depth buffer is available, this is
     done via QSurfaceFormat. These steps are not in the scope of QRhi since
-    QRhi backends for OpenGL or Vulkan build on the existing Qt facilities such
+    QRhi backends for OpenGL or Vulkan build on the existing BobUI facilities such
     as QOpenGLContext or QVulkanInstance.
 
     \snippet rhiwindow/main.cpp api-setup
@@ -181,7 +181,7 @@
     What \c renderable exactly means is platform-specific. For example, on
     macOS a window that is fully obscured (fully behind some other window) is
     not renderable, whereas on Windows obscuring has no significance.
-    Fortunately, the application needs no special knowledge about this: Qt's
+    Fortunately, the application needs no special knowledge about this: BobUI's
     platform plugins abstract the differences behind the expose event. However,
     the \l{QWindow::exposeEvent()}{exposeEvent()} reimplementation also needs
     to be aware that an empty output size (e.g. width and height of 0) is also
@@ -190,7 +190,7 @@
     Hence the check based on QRhiSwapChain::surfacePixelSize().
 
     This implementation of expose event handling attempts to be robust, safe,
-    and portable. Qt Quick itself also implements a very similar logic in its
+    and portable. BobUI Quick itself also implements a very similar logic in its
     render loops.
 
     \snippet rhiwindow/rhiwindow.cpp expose

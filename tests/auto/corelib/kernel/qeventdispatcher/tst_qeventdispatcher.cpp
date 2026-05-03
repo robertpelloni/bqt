@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#ifdef QT_GUI_LIB
-#  include <QtGui/QGuiApplication>
+#ifdef BOBUI_GUI_LIB
+#  include <BobUIGui/QGuiApplication>
 #else
-#  include <QtCore/QCoreApplication>
+#  include <BobUICore/QCoreApplication>
 #endif
-#include <QTest>
+#include <BOBUIest>
 #include <QAbstractEventDispatcher>
 #include <QElapsedTimer>
-#include <QTimer>
-#include <QThreadPool>
+#include <BOBUIimer>
+#include <BOBUIhreadPool>
 
 #ifdef DISABLE_GLIB
 static bool glibDisabled = []() {
-    qputenv("QT_NO_GLIB", "1");
+    qputenv("BOBUI_NO_GLIB", "1");
     return true;
 }();
 #endif
 
 #include <chrono>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 using namespace std::chrono_literals;
@@ -32,18 +32,18 @@ static constexpr auto CoarseTimerInterval = 200ms;
 static constexpr auto VeryCoarseTimerInterval = 1s;
 
 static constexpr
-std::chrono::nanoseconds fudgeInterval(std::chrono::nanoseconds interval, Qt::TimerType timerType)
+std::chrono::nanoseconds fudgeInterval(std::chrono::nanoseconds interval, BobUI::TimerType timerType)
 {
     // Make the intervals have have fractions of milliseconds so we can check
     // that they have been rounded & stored properly (where applicable).
     switch (timerType) {
-    case Qt::VeryCoarseTimer:
+    case BobUI::VeryCoarseTimer:
         // rounds down (floor) to seconds
         return interval + 1010us;
-    case Qt::CoarseTimer:
+    case BobUI::CoarseTimer:
         // rounds up (ceil) to milliseconds
         return interval - 10us;
-    case Qt::PreciseTimer:
+    case BobUI::PreciseTimer:
         // not rounded using QAbstractEventDispatcherV2; rounded up (ceil) on V1
         return interval - 10us;
     }
@@ -98,10 +98,10 @@ bool tst_QEventDispatcher::event(QEvent *e)
     switch (receivedEventType = e->type()) {
     case QEvent::Timer:
     {
-        // sometimes, two timers fire during a single QTRY_xxx wait loop
+        // sometimes, two timers fire during a single BOBUIRY_xxx wait loop
         if (timerIdFromEvent != -1)
             doubleTimer = true;
-        timerIdFromEvent = static_cast<QTimerEvent *>(e)->timerId();
+        timerIdFromEvent = static_cast<BOBUIimerEvent *>(e)->timerId();
         return true;
     }
     default:
@@ -158,20 +158,20 @@ public:
     void registerAll()
     {
         // start 3 timers, each with the different timer types and different intervals
-        auto registerTimer = [&](std::chrono::milliseconds interval, Qt::TimerType timerType) {
+        auto registerTimer = [&](std::chrono::milliseconds interval, BobUI::TimerType timerType) {
             return m_eventDispatcher->registerTimer(fudgeInterval(interval, timerType), timerType,
                                                     m_parent);
         };
-        m_preciseTimerId = registerTimer(PreciseTimerInterval, Qt::PreciseTimer);
-        m_coarseTimerId = registerTimer(CoarseTimerInterval, Qt::CoarseTimer);
-        m_veryCoarseTimerId = registerTimer(VeryCoarseTimerInterval, Qt::VeryCoarseTimer);
+        m_preciseTimerId = registerTimer(PreciseTimerInterval, BobUI::PreciseTimer);
+        m_coarseTimerId = registerTimer(CoarseTimerInterval, BobUI::CoarseTimer);
+        m_veryCoarseTimerId = registerTimer(VeryCoarseTimerInterval, BobUI::VeryCoarseTimer);
         QVERIFY(foundPrecise());
         QVERIFY(foundCoarse());
         QVERIFY(foundVeryCoarse());
         findTimers();
     }
 
-    void unregister(Qt::TimerId timerId)
+    void unregister(BobUI::TimerId timerId)
     {
         m_eventDispatcher->unregisterTimer(timerId);
         findTimers();
@@ -194,38 +194,38 @@ private:
             if (timerInfo.timerId == m_preciseTimerId) {
                 // For precise timers, we expect the fudge factor to be present
                 QAbstractEventDispatcher::Duration interval =
-                        fudgeInterval(PreciseTimerInterval, Qt::PreciseTimer);
+                        fudgeInterval(PreciseTimerInterval, BobUI::PreciseTimer);
 #ifdef Q_OS_WIN
                 // Windows does not have a nanosecond-resolution timer
                 interval = PreciseTimerInterval;
 #endif
                 QCOMPARE(timerInfo.interval, interval);
-                QCOMPARE(timerInfo.timerType, Qt::PreciseTimer);
+                QCOMPARE(timerInfo.timerType, BobUI::PreciseTimer);
                 foundPrecise = true;
             } else if (timerInfo.timerId == m_coarseTimerId) {
                 // For other timers, the fudge factors ought to have been rounded away
                 QCOMPARE(timerInfo.interval, CoarseTimerInterval);
-                QCOMPARE(timerInfo.timerType, Qt::CoarseTimer);
+                QCOMPARE(timerInfo.timerType, BobUI::CoarseTimer);
                 foundCoarse = true;
             } else if (timerInfo.timerId == m_veryCoarseTimerId) {
                 QCOMPARE(timerInfo.interval, VeryCoarseTimerInterval);
-                QCOMPARE(timerInfo.timerType, Qt::VeryCoarseTimer);
+                QCOMPARE(timerInfo.timerType, BobUI::VeryCoarseTimer);
                 foundVeryCoarse = true;
             }
         }
         if (!foundPrecise)
-            m_preciseTimerId = Qt::TimerId::Invalid;
+            m_preciseTimerId = BobUI::TimerId::Invalid;
         if (!foundCoarse)
-            m_coarseTimerId = Qt::TimerId::Invalid;
+            m_coarseTimerId = BobUI::TimerId::Invalid;
         if (!foundVeryCoarse)
-            m_veryCoarseTimerId = Qt::TimerId::Invalid;
+            m_veryCoarseTimerId = BobUI::TimerId::Invalid;
     }
 
     QAbstractEventDispatcher *m_eventDispatcher = nullptr;
 
-    Qt::TimerId m_preciseTimerId = Qt::TimerId::Invalid;
-    Qt::TimerId m_coarseTimerId = Qt::TimerId::Invalid;
-    Qt::TimerId m_veryCoarseTimerId = Qt::TimerId::Invalid;
+    BobUI::TimerId m_preciseTimerId = BobUI::TimerId::Invalid;
+    BobUI::TimerId m_coarseTimerId = BobUI::TimerId::Invalid;
+    BobUI::TimerId m_veryCoarseTimerId = BobUI::TimerId::Invalid;
 
     QObject *m_parent = nullptr;
 };
@@ -257,7 +257,7 @@ void tst_QEventDispatcher::registerTimer()
     receivedEventType = -1;
     timerIdFromEvent = -1;
     doubleTimer = false;
-    QTRY_COMPARE_WITH_TIMEOUT(receivedEventType, int(QEvent::Timer), PreciseTimerInterval * 2);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(receivedEventType, int(QEvent::Timer), PreciseTimerInterval * 2);
 
 #ifdef Q_OS_DARWIN
     if (doubleTimer)
@@ -269,7 +269,7 @@ void tst_QEventDispatcher::registerTimer()
 
     QCOMPARE(timerIdFromEvent, timers.preciseTimerId());
     // now unregister it and make sure it's gone
-    timers.unregister(Qt::TimerId(timers.preciseTimerId()));
+    timers.unregister(BobUI::TimerId(timers.preciseTimerId()));
     QCOMPARE(timers.registeredTimers().size(), 2);
     QVERIFY(!timers.foundPrecise());
     QVERIFY(timers.foundCoarse());
@@ -279,7 +279,7 @@ void tst_QEventDispatcher::registerTimer()
     receivedEventType = -1;
     timerIdFromEvent = -1;
     doubleTimer = false;
-    QTRY_COMPARE_WITH_TIMEOUT(receivedEventType, int(QEvent::Timer), CoarseTimerInterval * 2);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(receivedEventType, int(QEvent::Timer), CoarseTimerInterval * 2);
 
 #ifdef Q_OS_DARWIN
     if (doubleTimer)
@@ -291,7 +291,7 @@ void tst_QEventDispatcher::registerTimer()
 
     QCOMPARE(timerIdFromEvent, timers.coarseTimerId());
     // now unregister it and make sure it's gone
-    timers.unregister(Qt::TimerId(timers.coarseTimerId()));
+    timers.unregister(BobUI::TimerId(timers.coarseTimerId()));
     QCOMPARE(timers.registeredTimers().size(), 1);
     QVERIFY(!timers.foundPrecise());
     QVERIFY(!timers.foundCoarse());
@@ -304,10 +304,10 @@ void tst_QEventDispatcher::registerTimer()
 
 void tst_QEventDispatcher::sendPostedEvents_data()
 {
-    QTest::addColumn<int>("processEventsFlagsInt");
+    BOBUIest::addColumn<int>("processEventsFlagsInt");
 
-    QTest::newRow("WaitForMoreEvents") << int(QEventLoop::WaitForMoreEvents);
-    QTest::newRow("AllEvents") << int(QEventLoop::AllEvents);
+    BOBUIest::newRow("WaitForMoreEvents") << int(QEventLoop::WaitForMoreEvents);
+    BOBUIest::newRow("AllEvents") << int(QEventLoop::AllEvents);
 }
 
 // test that the eventDispatcher sends posted events correctly
@@ -368,7 +368,7 @@ void tst_QEventDispatcher::processEventsOnlySendsQueuedEvents()
     QCOMPARE(object.eventsReceived, 2);
 
     // The same goes for posted events during timer processing
-    QTimer::singleShot(0, &object, SLOT(timerFired()));
+    BOBUIimer::singleShot(0, &object, SLOT(timerFired()));
     QCoreApplication::processEvents();
     QCOMPARE(object.eventsReceived, 3);
     QCoreApplication::processEvents();
@@ -377,13 +377,13 @@ void tst_QEventDispatcher::processEventsOnlySendsQueuedEvents()
 
 void tst_QEventDispatcher::postEventFromThread()
 {
-    QThreadPool *threadPool = QThreadPool::globalInstance();
+    BOBUIhreadPool *threadPool = BOBUIhreadPool::globalInstance();
     QAtomicInt hadToQuit = false;
     QAtomicInt done = false;
 
     int threadCount = 500;
     const int timeout = (1000
-#if defined(QT_GUI_LIB)
+#if defined(BOBUI_GUI_LIB)
         // Aggressively posting events may on some platforms rate limit us to
         // the display's refresh rate, so give us enough time if that happens.
         + ((1000.0 / qGuiApp->primaryScreen()->refreshRate()) * threadCount)
@@ -393,7 +393,7 @@ void tst_QEventDispatcher::postEventFromThread()
     threadPool->start([&]{
         int loop = timeout / 10;
         while (!done && --loop)
-            QThread::sleep(std::chrono::milliseconds{10});
+            BOBUIhread::sleep(std::chrono::milliseconds{10});
         if (done)
             return;
         hadToQuit = true;
@@ -423,14 +423,14 @@ void tst_QEventDispatcher::postEventFromThread()
 
 void tst_QEventDispatcher::postEventFromEventHandler()
 {
-    QThreadPool *threadPool = QThreadPool::globalInstance();
+    BOBUIhreadPool *threadPool = BOBUIhreadPool::globalInstance();
     QAtomicInt hadToQuit = false;
     QAtomicInt done = false;
 
     threadPool->start([&]{
         int loop = 250 / 10; // give it 250ms
         while (!done && --loop)
-            QThread::sleep(std::chrono::milliseconds{10});
+            BOBUIhread::sleep(std::chrono::milliseconds{10});
         if (done)
             return;
         hadToQuit = true;
@@ -478,20 +478,20 @@ void tst_QEventDispatcher::postedEventsPingPong()
     QEventLoop mainLoop;
 
     // We need to have at least two levels of nested loops
-    // for the posted event to get stuck (QTBUG-85981).
+    // for the posted event to get stuck (BOBUIBUG-85981).
     QMetaObject::invokeMethod(this, [this, &mainLoop]() {
         QMetaObject::invokeMethod(this, [&mainLoop]() {
             // QEventLoop::quit() should be invoked on the next
             // iteration of mainLoop.exec().
             QMetaObject::invokeMethod(&mainLoop, &QEventLoop::quit,
-                                      Qt::QueuedConnection);
-        }, Qt::QueuedConnection);
+                                      BobUI::QueuedConnection);
+        }, BobUI::QueuedConnection);
         mainLoop.processEvents();
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 
-    // We should use Qt::CoarseTimer on Windows, to prevent event
+    // We should use BobUI::CoarseTimer on Windows, to prevent event
     // dispatcher from sending a posted event.
-    QTimer::singleShot(500, Qt::CoarseTimer, &mainLoop, [&mainLoop]() {
+    BOBUIimer::singleShot(500, BobUI::CoarseTimer, &mainLoop, [&mainLoop]() {
         mainLoop.exit(1);
     });
 
@@ -500,7 +500,7 @@ void tst_QEventDispatcher::postedEventsPingPong()
 
 void tst_QEventDispatcher::eventLoopExit()
 {
-    // This test was inspired by QTBUG-79477. A particular
+    // This test was inspired by BOBUIBUG-79477. A particular
     // implementation detail in QCocoaEventDispatcher allowed
     // QEventLoop::exit() to fail to really exit the event loop.
     // Thus this test is a part of the dispatcher auto-test.
@@ -508,12 +508,12 @@ void tst_QEventDispatcher::eventLoopExit()
     // Imitates QApplication::exec():
     QEventLoop mainLoop;
     // The test itself is a lambda:
-    QTimer::singleShot(0, &mainLoop, [&mainLoop]() {
+    BOBUIimer::singleShot(0, &mainLoop, [&mainLoop]() {
         // Two more single shots, both will be posted as events
         // (zero timeout) and supposed to be processes by the
         // mainLoop:
 
-        QTimer::singleShot(0, &mainLoop, [&mainLoop]() {
+        BOBUIimer::singleShot(0, &mainLoop, [&mainLoop]() {
             // wakeUp triggers QCocoaEventDispatcher into incrementing
             // its 'serialNumber':
             mainLoop.wakeUp();
@@ -522,7 +522,7 @@ void tst_QEventDispatcher::eventLoopExit()
             QCoreApplication::processEvents();
         });
 
-        QTimer::singleShot(0, &mainLoop, [&mainLoop]() {
+        BOBUIimer::singleShot(0, &mainLoop, [&mainLoop]() {
             // With QCocoaEventDispatcher this is executed while in the
             // processEvents (see above) and would fail to actually
             // interrupt the loop.
@@ -531,7 +531,7 @@ void tst_QEventDispatcher::eventLoopExit()
     });
 
     bool timeoutObserved = false;
-    QTimer::singleShot(500, &mainLoop, [&timeoutObserved, &mainLoop]() {
+    BOBUIimer::singleShot(500, &mainLoop, [&timeoutObserved, &mainLoop]() {
         // In case the QEventLoop::exit above failed, we have to bail out
         // early, not wasting time:
         mainLoop.exit();
@@ -542,19 +542,19 @@ void tst_QEventDispatcher::eventLoopExit()
     QVERIFY(!timeoutObserved);
 }
 
-// Based on QTBUG-91539: In the event dispatcher on Windows we overwrite the
+// Based on BOBUIBUG-91539: In the event dispatcher on Windows we overwrite the
 // interrupt once we start processing events (this pattern is also in the 'unix' dispatcher)
 // which would lead the dispatcher to accidentally ignore certain interrupts and,
 // as in the bug report, would not quit, leaving the thread alive and running.
 void tst_QEventDispatcher::interruptTrampling()
 {
-    class WorkerThread : public QThread
+    class WorkerThread : public BOBUIhread
     {
         void run() override {
             auto dispatcher = eventDispatcher();
             QVERIFY(dispatcher);
             dispatcher->processEvents(QEventLoop::AllEvents);
-            QTimer::singleShot(0, dispatcher, [dispatcher]() {
+            BOBUIimer::singleShot(0, dispatcher, [dispatcher]() {
                 dispatcher->wakeUp();
             });
             dispatcher->processEvents(QEventLoop::WaitForMoreEvents);
@@ -568,5 +568,5 @@ void tst_QEventDispatcher::interruptTrampling()
     QVERIFY(thread.isFinished());
 }
 
-QTEST_MAIN(tst_QEventDispatcher)
+BOBUIEST_MAIN(tst_QEventDispatcher)
 #include "tst_qeventdispatcher.moc"

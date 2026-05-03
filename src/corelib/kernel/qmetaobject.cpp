@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmetaobject.h"
 #include "qmetaobject_p.h"
@@ -10,14 +10,14 @@
 #include "qobject_p.h"
 
 #include <qcoreapplication.h>
-#include <QtCore/qspan.h>
+#include <BobUICore/qspan.h>
 #include <qvariant.h>
 
-// qthread(_p).h uses QT_CONFIG(thread) internally and has a dummy
+// bobuihread(_p).h uses BOBUI_CONFIG(thread) internally and has a dummy
 // interface for the non-thread support case
-#include <qthread.h>
-#include "private/qthread_p.h"
-#if QT_CONFIG(thread)
+#include <bobuihread.h>
+#include "private/bobuihread_p.h"
+#if BOBUI_CONFIG(thread)
 #include "private/qlatch_p.h"
 #endif
 
@@ -29,22 +29,22 @@
 
 #include <cstring>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QMetaObject
-    \inmodule QtCore
+    \inmodule BobUICore
 
-    \brief The QMetaObject class contains meta-information about Qt
+    \brief The QMetaObject class contains meta-information about BobUI
     objects.
 
     \ingroup objectmodel
 
-    The Qt \l{Meta-Object System} in Qt is responsible for the
+    The BobUI \l{Meta-Object System} in BobUI is responsible for the
     signals and slots inter-object communication mechanism, runtime
-    type information, and the Qt property system. A single
+    type information, and the BobUI property system. A single
     QMetaObject instance is created for each QObject subclass that is
     used in an application, and this instance stores all the
     meta-information for the QObject subclass. This object is
@@ -72,7 +72,7 @@ using namespace Qt::StringLiterals;
     The index functions indexOfConstructor(), indexOfMethod(),
     indexOfEnumerator(), and indexOfProperty() map names of constructors,
     member functions, enumerators, or properties to indexes in the
-    meta-object. For example, Qt uses indexOfMethod() internally when you
+    meta-object. For example, BobUI uses indexOfMethod() internally when you
     connect a signal to a slot.
 
     Classes can also have a list of \e{name}--\e{value} pairs of
@@ -204,8 +204,8 @@ public:
     inline uint parameterTypeInfo(int index) const;
     inline int parameterType(int index) const;
     inline void getParameterTypes(int *types) const;
-    inline const QtPrivate::QMetaTypeInterface *returnMetaTypeInterface() const;
-    inline const QtPrivate::QMetaTypeInterface *const *parameterMetaTypeInterfaces() const;
+    inline const BobUIPrivate::QMetaTypeInterface *returnMetaTypeInterface() const;
+    inline const BobUIPrivate::QMetaTypeInterface *const *parameterMetaTypeInterfaces() const;
     inline QByteArrayView parameterTypeName(int index) const noexcept;
     inline QList<QByteArray> parameterTypes() const;
     inline QList<QByteArray> parameterNames() const;
@@ -214,14 +214,14 @@ public:
     inline int ownConstructorMethodIndex() const;
 
 private:
-    void checkMethodMetaTypeConsistency(const QtPrivate::QMetaTypeInterface *iface, int index) const;
+    void checkMethodMetaTypeConsistency(const BobUIPrivate::QMetaTypeInterface *iface, int index) const;
     QMetaMethodPrivate();
 };
 } // unnamed namespace
 
 enum { MaximumParamCount = 11 }; // up to 10 arguments + 1 return value
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 /*!
     \since 4.5
     \obsolete [6.5] Please use the variadic overload of this function
@@ -286,16 +286,16 @@ QObject *QMetaObject::newInstance(QGenericArgument val0,
 
 QObject *QMetaObject::newInstanceImpl(const QMetaObject *mobj, qsizetype paramCount,
                                       const void **parameters, const char **typeNames,
-                                      const QtPrivate::QMetaTypeInterface **metaTypes)
+                                      const BobUIPrivate::QMetaTypeInterface **metaTypes)
 {
     if (!mobj->inherits(&QObject::staticMetaObject)) {
         qWarning("QMetaObject::newInstance: type %s does not inherit QObject", mobj->className());
         return nullptr;
     }
 
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 #if Q_CC_GNU >= 1200
-QT_WARNING_DISABLE_GCC("-Wdangling-pointer")
+BOBUI_WARNING_DISABLE_GCC("-Wdangling-pointer")
 #endif
 
     // set the return type
@@ -306,7 +306,7 @@ QT_WARNING_DISABLE_GCC("-Wdangling-pointer")
     if (metaTypes)
         metaTypes[0] = returnValueMetaType.iface();
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     // find the constructor
     auto priv = QMetaObjectPrivate::get(mobj);
@@ -317,7 +317,7 @@ QT_WARNING_POP
 
         // attempt to call
         QMetaMethodPrivate::InvokeFailReason r =
-                QMetaMethodPrivate::invokeImpl(m, nullptr, Qt::DirectConnection, paramCount,
+                QMetaMethodPrivate::invokeImpl(m, nullptr, BobUI::DirectConnection, paramCount,
                                                parameters, typeNames, metaTypes);
         if (r == QMetaMethodPrivate::InvokeFailReason::None)
             return returnValue;
@@ -348,7 +348,7 @@ int QMetaObject::metacall(QObject *object, Call cl, int idx, void **argv)
     if (object->d_ptr->metaObject)
         return object->d_ptr->metaObject->metaCall(object, cl, idx, argv);
     else
-        return object->qt_metacall(cl, idx, argv);
+        return object->bobui_metacall(cl, idx, argv);
 }
 
 static inline QByteArrayView objectClassName(const QMetaObject *m)
@@ -412,7 +412,7 @@ const QObject *QMetaObject::cast(const QObject *obj) const
     return (obj && obj->metaObject()->inherits(this)) ? obj : nullptr;
 }
 
-#ifndef QT_NO_TRANSLATION
+#ifndef BOBUI_NO_TRANSLATION
 /*!
     \internal
 */
@@ -420,7 +420,7 @@ QString QMetaObject::tr(const char *s, const char *c, int n) const
 {
     return QCoreApplication::translate(className(), s, c, n);
 }
-#endif // QT_NO_TRANSLATION
+#endif // BOBUI_NO_TRANSLATION
 
 /*!
     \since 6.2
@@ -448,7 +448,7 @@ QMetaType QMetaObject::metaType() const
          | propertyCount + enumeratorCount     | QMetaType(class)               |
 
         */
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         // Before revision 12 we only stored metatypes for enums if they showed
         // up as types of properties or method arguments or return values.
         // From revision 12 on, we always store them in a predictable place.
@@ -460,7 +460,7 @@ QMetaType QMetaObject::metaType() const
 #endif
 
         auto iface = this->d.metaTypes[offset];
-        if (iface && QtMetaTypePrivate::isInterfaceFor<void>(iface))
+        if (iface && BobUIMetaTypePrivate::isInterfaceFor<void>(iface))
             return QMetaType(); // return invalid meta-type for namespaces
         if (iface)
             return QMetaType(iface);
@@ -472,7 +472,7 @@ QMetaType QMetaObject::metaType() const
 static inline QByteArrayView objectMetaObjectHash(const QMetaObject *m)
 {
     // metaObjectHash didn't exist before revision 14
-    if (QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && priv(m->d.data)->revision < 14)
+    if (BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && priv(m->d.data)->revision < 14)
         return {};
     const auto index = priv(m->d.data)->metaObjectHashIndex;
     if (index == -1)
@@ -691,7 +691,7 @@ bool QMetaObjectPrivate::methodMatch(const QMetaObject *m, const QMetaMethod &me
     else if (const auto n = qname.chopped(name.size()); !n.isEmpty() && !n.endsWith(':'))
         return false;
 
-    const QtPrivate::QMetaTypeInterface * const *ifaces = priv->parameterMetaTypeInterfaces();
+    const BobUIPrivate::QMetaTypeInterface * const *ifaces = priv->parameterMetaTypeInterfaces();
     int paramsIndex = data.parameters() + 1;
     for (qsizetype i = 0; i < argc; ++i) {
         uint typeInfo = m->d.data[paramsIndex + i];
@@ -766,7 +766,7 @@ inline int QMetaObjectPrivate::indexOfMethodRelative(const QMetaObject **baseObj
         for (; i >= end; --i) {
             auto data = QMetaMethod::fromRelativeMethodIndex(m, i);
             if (methodMatch(m, data, name, types)) {
-                if (QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+                if (BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
                     && what == QMetaMethod::Slot && data.methodType() != QMetaMethod::Slot) {
                     return -1;
                 }
@@ -791,7 +791,7 @@ inline int QMetaObjectPrivate::indexOfMethodRelative(const QMetaObject **baseObj
     \sa constructor(), constructorCount(), normalizedSignature()
 */
 
-#if QT_DEPRECATED_SINCE(6, 10)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
 Q_DECL_COLD_FUNCTION
 static int compat_indexOf(const char *what, const char *sig, const QMetaObject *mo,
                           int (*indexOf)(const QMetaObject *, const char *))
@@ -800,8 +800,8 @@ static int compat_indexOf(const char *what, const char *sig, const QMetaObject *
     const int i = indexOf(mo, normalized.data());
     if (i >= 0) {
         qWarning(R"(QMetaObject::indexOf%s: argument "%s" is not normalized, because it contains "QVector<". )"
-                 R"(Earlier versions of Qt 6 incorrectly normalized QVector< to QList<, silently. )"
-                 R"(This behavior is deprecated as of 6.10, and will be removed in a future version of Qt.)",
+                 R"(Earlier versions of BobUI 6 incorrectly normalized QVector< to QList<, silently. )"
+                 R"(This behavior is deprecated as of 6.10, and will be removed in a future version of BobUI.)",
                  what, sig);
     }
     return i;
@@ -814,7 +814,7 @@ static int compat_indexOf(const char *what, const char *sig, const QMetaObject *
     } while (false)
 #else
 #define INDEXOF_COMPAT(what, arg)
-#endif // QT_DEPRECATED_SINCE(6, 10)
+#endif // BOBUI_DEPRECATED_SINCE(6, 10)
 
 static int indexOfConstructor_helper(const QMetaObject *mo, const char *constructor)
 {
@@ -915,7 +915,7 @@ int QMetaObjectPrivate::indexOfSignalRelative(const QMetaObject **baseObject,
                                               QSpan<const QArgumentType> types)
 {
     int i = indexOfMethodRelative(baseObject, name, types, QMetaMethod::Signal);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     const QMetaObject *m = *baseObject;
     if (i >= 0 && m && m->d.superdata) {
         int conflict = indexOfMethod(m->d.superdata, name, types);
@@ -1440,7 +1440,7 @@ static const char *qNormalizeType(QByteArrayView in, int &templdepth, QByteArray
     Normalizes a \a type.
 
     See QMetaObject::normalizedSignature() for a description on how
-    Qt normalizes.
+    BobUI normalizes.
 
     Example:
 
@@ -1458,7 +1458,7 @@ QByteArray QMetaObject::normalizedType(const char *type)
 
     Normalizes the signature of the given \a method.
 
-    Qt uses normalized signatures to decide whether two given signals
+    BobUI uses normalized signatures to decide whether two given signals
     and slots are compatible. Normalization reduces whitespace to a
     minimum, moves 'const' to the front where appropriate, removes
     'const' from value types and replaces const references with
@@ -1519,7 +1519,7 @@ QByteArray QMetaObject::normalizedSignature(const char *method)
 Q_DECL_COLD_FUNCTION static inline bool
 printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizetype paramCount,
                            const char *const *names,
-                           const QtPrivate::QMetaTypeInterface * const *metaTypes)
+                           const BobUIPrivate::QMetaTypeInterface * const *metaTypes)
 {
     // now find the candidates we couldn't use
     QByteArray candidateMessage;
@@ -1552,9 +1552,9 @@ printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizety
 }
 
 /*!
-    \fn template <typename ReturnArg, typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, Qt::ConnectionType type, QTemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... args)
-    \fn template <typename ReturnArg, typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, QTemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... args)
-    \fn template <typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, Qt::ConnectionType type, Args &&... args)
+    \fn template <typename ReturnArg, typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, BobUI::ConnectionType type, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... args)
+    \fn template <typename ReturnArg, typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... args)
+    \fn template <typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, BobUI::ConnectionType type, Args &&... args)
     \fn template <typename... Args> bool QMetaObject::invokeMethod(QObject *obj, const char *member, Args &&... args)
     \since 6.5
     \threadsafe
@@ -1563,30 +1563,30 @@ printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizety
     obj. Returns \c true if the member could be invoked. Returns \c false
     if there is no such member or the parameters did not match.
 
-    For the overloads with a QTemplatedMetaMethodReturnArgument parameter, the
+    For the overloads with a BOBUIemplatedMetaMethodReturnArgument parameter, the
     return value of the \a member function call is placed in \a ret. For the
     overloads without such a member, the return value of the called function
-    (if any) will be discarded. QTemplatedMetaMethodReturnArgument is an
+    (if any) will be discarded. BOBUIemplatedMetaMethodReturnArgument is an
     internal type you should not use directly. Instead, use the qReturnArg()
     function.
 
-    The overloads with a Qt::ConnectionType \a type parameter allow explicitly
+    The overloads with a BobUI::ConnectionType \a type parameter allow explicitly
     selecting whether the invocation will be synchronous or not:
 
     \list
-    \li If \a type is Qt::DirectConnection, the member will be invoked immediately
+    \li If \a type is BobUI::DirectConnection, the member will be invoked immediately
        in the current thread.
 
-    \li If \a type is Qt::QueuedConnection, a QEvent will be sent and the
+    \li If \a type is BobUI::QueuedConnection, a QEvent will be sent and the
        member is invoked as soon as the application enters the event loop in the
        thread that the \a obj was created in or was moved to.
 
-    \li If \a type is Qt::BlockingQueuedConnection, the method will be invoked in
-       the same way as for Qt::QueuedConnection, except that the current thread
+    \li If \a type is BobUI::BlockingQueuedConnection, the method will be invoked in
+       the same way as for BobUI::QueuedConnection, except that the current thread
        will block until the event is delivered. Using this connection type to
        communicate between objects in the same thread will lead to deadlocks.
 
-    \li If \a type is Qt::AutoConnection, the member is invoked synchronously
+    \li If \a type is BobUI::AutoConnection, the member is invoked synchronously
         if \a obj lives in the same thread as the caller; otherwise it will invoke
         the member asynchronously. This is the behavior of the overloads that do
         not have the \a type parameter.
@@ -1594,14 +1594,14 @@ printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizety
 
     You only need to pass the name of the signal or slot to this function,
     not the entire signature. For example, to asynchronously invoke
-    the \l{QThread::quit()}{quit()} slot on a
-    QThread, use the following code:
+    the \l{BOBUIhread::quit()}{quit()} slot on a
+    BOBUIhread, use the following code:
 
     \snippet code/src_corelib_kernel_qmetaobject.cpp 2
 
     With asynchronous method invocations, the parameters must be copyable
-    types, because Qt needs to copy the arguments to store them in an event
-    behind the scenes. Since Qt 6.5, this function automatically registers the
+    types, because BobUI needs to copy the arguments to store them in an event
+    behind the scenes. Since BobUI 6.5, this function automatically registers the
     types being used; however, as a side-effect, it is not possible to make
     calls using types that are only forward-declared. Additionally, it is not
     possible to make asynchronous calls that use references to
@@ -1626,7 +1626,7 @@ printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizety
 
     \snippet code/src_corelib_kernel_qmetaobject.cpp 4
 
-    The macros are kept for compatibility with Qt 6.4 and earlier versions, and
+    The macros are kept for compatibility with BobUI 6.4 and earlier versions, and
     can be freely mixed with parameters that do not use the macro. They may be
     necessary in rare situations when calling a method that used a typedef to
     forward-declared type as a parameter or the return type.
@@ -1654,7 +1654,7 @@ printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizety
     \endlist
 
     With asynchronous method invocations, the parameters must be of
-    types that are already known to Qt's meta-object system, because Qt needs
+    types that are already known to BobUI's meta-object system, because BobUI needs
     to copy the arguments to store them in an event behind the
     scenes. If you try to use a queued connection and get the error
     message
@@ -1668,7 +1668,7 @@ printMethodNotFoundWarning(const QMetaObject *meta, QByteArrayView name, qsizety
 */
 bool QMetaObject::invokeMethod(QObject *obj,
                                const char *member,
-                               Qt::ConnectionType type,
+                               BobUI::ConnectionType type,
                                QGenericReturnArgument ret,
                                QGenericArgument val0,
                                QGenericArgument val1,
@@ -1698,10 +1698,10 @@ bool QMetaObject::invokeMethod(QObject *obj,
     return invokeMethodImpl(obj, member, type, paramCount, parameters, typeNames, nullptr);
 }
 
-bool QMetaObject::invokeMethodImpl(QObject *obj, const char *member, Qt::ConnectionType type,
+bool QMetaObject::invokeMethodImpl(QObject *obj, const char *member, BobUI::ConnectionType type,
                                    qsizetype paramCount, const void * const *parameters,
                                    const char * const *typeNames,
-                                   const QtPrivate::QMetaTypeInterface * const *metaTypes)
+                                   const BobUIPrivate::QMetaTypeInterface * const *metaTypes)
 {
     if (!obj)
         return false;
@@ -1738,31 +1738,31 @@ bool QMetaObject::invokeMethodImpl(QObject *obj, const char *member, Qt::Connect
     return printMethodNotFoundWarning(obj->metaObject(), name, paramCount, typeNames, metaTypes);
 }
 
-bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *slotObj, Qt::ConnectionType type,
+bool QMetaObject::invokeMethodImpl(QObject *object, BobUIPrivate::QSlotObjectBase *slotObj, BobUI::ConnectionType type,
                                 qsizetype parameterCount, const void *const *params, const char *const *names,
-                                const QtPrivate::QMetaTypeInterface * const *metaTypes)
+                                const BobUIPrivate::QMetaTypeInterface * const *metaTypes)
 {
     // We don't need this now but maybe we want it later, or we may be able to
     // share more code between the two invokeMethodImpl() overloads:
     Q_UNUSED(names);
-    auto slot = QtPrivate::SlotObjUniquePtr(slotObj);
+    auto slot = BobUIPrivate::SlotObjUniquePtr(slotObj);
 
     if (! object) // ### only if the slot requires the object + not queued?
         return false;
 
-    Qt::HANDLE currentThreadId = QThread::currentThreadId();
-    QThread *objectThread = object->thread();
+    BobUI::HANDLE currentThreadId = BOBUIhread::currentThreadId();
+    BOBUIhread *objectThread = object->thread();
     bool receiverInSameThread = false;
     if (objectThread)
-        receiverInSameThread = currentThreadId == QThreadData::get2(objectThread)->threadId.loadRelaxed();
+        receiverInSameThread = currentThreadId == BOBUIhreadData::get2(objectThread)->threadId.loadRelaxed();
 
-    if (type == Qt::AutoConnection)
-        type = receiverInSameThread ? Qt::DirectConnection : Qt::QueuedConnection;
+    if (type == BobUI::AutoConnection)
+        type = receiverInSameThread ? BobUI::DirectConnection : BobUI::QueuedConnection;
 
     void **argv = const_cast<void **>(params);
-    if (type == Qt::DirectConnection) {
+    if (type == BobUI::DirectConnection) {
         slot->call(object, argv);
-    } else if (type == Qt::QueuedConnection) {
+    } else if (type == BobUI::QueuedConnection) {
         if (argv[0]) {
             qWarning("QMetaObject::invokeMethod: Unable to invoke methods with return values in "
                      "queued connections");
@@ -1770,15 +1770,15 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
         }
         QCoreApplication::postEvent(object, new QQueuedMetaCallEvent(std::move(slot), nullptr, -1,
                                                                      parameterCount, metaTypes, params));
-    } else if (type == Qt::BlockingQueuedConnection) {
-#if QT_CONFIG(thread)
+    } else if (type == BobUI::BlockingQueuedConnection) {
+#if BOBUI_CONFIG(thread)
         if (receiverInSameThread)
             qWarning("QMetaObject::invokeMethod: Dead lock detected");
 
         QLatch latch(1);
         QCoreApplication::postEvent(object, new QMetaCallEvent(std::move(slot), nullptr, -1, argv, &latch));
         latch.wait();
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
     } else {
         qWarning("QMetaObject::invokeMethod: Unknown connection type");
         return false;
@@ -1802,11 +1802,11 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
     \obsolete [6.5] Please use the variadic overload of this function.
     \overload invokeMethod()
 
-    This overload always invokes the member using the connection type Qt::AutoConnection.
+    This overload always invokes the member using the connection type BobUI::AutoConnection.
 */
 
 /*! \fn bool QMetaObject::invokeMethod(QObject *obj, const char *member,
-                                       Qt::ConnectionType type,
+                                       BobUI::ConnectionType type,
                                        QGenericArgument val0 = QGenericArgument(0),
                                        QGenericArgument val1 = QGenericArgument(),
                                        QGenericArgument val2 = QGenericArgument(),
@@ -1842,12 +1842,12 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
     \obsolete [6.5] Please use the variadic overload of this function.
     \overload invokeMethod()
 
-    This overload invokes the member using the connection type Qt::AutoConnection and
+    This overload invokes the member using the connection type BobUI::AutoConnection and
     ignores return values.
 */
 
 /*!
-    \fn  template<typename Functor, typename FunctorReturnType> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, Qt::ConnectionType type, FunctorReturnType *ret)
+    \fn  template<typename Functor, typename FunctorReturnType> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, BobUI::ConnectionType type, FunctorReturnType *ret)
     \fn  template<typename Functor, typename FunctorReturnType> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, FunctorReturnType *ret)
 
     \since 5.10
@@ -1859,13 +1859,13 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
     The return value of the function call is placed in \a ret.
 
     If \a type is set, then the function is invoked using that connection type. Otherwise,
-    Qt::AutoConnection will be used.
+    BobUI::AutoConnection will be used.
 */
 
 /*!
-    \fn  template<typename Functor, typename FunctorReturnType, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, Qt::ConnectionType type, QTemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments)
-    \fn  template<typename Functor, typename FunctorReturnType, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, QTemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments)
-    \fn  template<typename Functor, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, Qt::ConnectionType type, Args &&...arguments)
+    \fn  template<typename Functor, typename FunctorReturnType, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, BobUI::ConnectionType type, BOBUIemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments)
+    \fn  template<typename Functor, typename FunctorReturnType, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, BOBUIemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments)
+    \fn  template<typename Functor, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, BobUI::ConnectionType type, Args &&...arguments)
     \fn  template<typename Functor, typename... Args> bool QMetaObject::invokeMethod(QObject *context, Functor &&function, Args &&...arguments)
 
     \since 6.7
@@ -1884,7 +1884,7 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
     \endcode
 
     If \a type is set, then the function is invoked using that connection type.
-    Otherwise, Qt::AutoConnection will be used.
+    Otherwise, BobUI::AutoConnection will be used.
 */
 
 /*!
@@ -1907,7 +1907,7 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
 
 /*!
     \class QMetaMethod
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMetaMethod class provides meta-data about a member
     function.
@@ -1920,7 +1920,7 @@ bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *
     tag(), and an access() specifier. You can use invoke() to invoke
     the method on an arbitrary QObject.
 
-    \sa QMetaObject, QMetaEnum, QMetaProperty, {Qt's Property System}
+    \sa QMetaObject, QMetaEnum, QMetaProperty, {BobUI's Property System}
 */
 
 /*!
@@ -2064,7 +2064,7 @@ int QMetaMethodPrivate::parameterCount() const
 }
 
 inline void
-QMetaMethodPrivate::checkMethodMetaTypeConsistency(const QtPrivate::QMetaTypeInterface *iface,
+QMetaMethodPrivate::checkMethodMetaTypeConsistency(const BobUIPrivate::QMetaTypeInterface *iface,
                                                    int index) const
 {
     uint typeInfo = parameterTypeInfo(index);
@@ -2080,11 +2080,11 @@ QMetaMethodPrivate::checkMethodMetaTypeConsistency(const QtPrivate::QMetaTypeInt
 
 #define ASSERT_NOT_PRIMITIVE_TYPE(TYPE, METATYPEID, NAME)           \
         Q_ASSERT(typeInfo != QMetaType::TYPE);
-        QT_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(ASSERT_NOT_PRIMITIVE_TYPE)
+        BOBUI_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(ASSERT_NOT_PRIMITIVE_TYPE)
 #undef ASSERT_NOT_PRIMITIVE_TYPE
         Q_ASSERT(typeInfo != QMetaType::QObjectStar);
 
-        // Prior to Qt 6.4 we failed to record void and void*
+        // Prior to BobUI 6.4 we failed to record void and void*
         if (priv(mobj->d.data)->revision >= 11) {
             Q_ASSERT(typeInfo != QMetaType::Void);
             Q_ASSERT(typeInfo != QMetaType::VoidStar);
@@ -2104,18 +2104,18 @@ uint QMetaMethodPrivate::parameterTypeInfo(int index) const
     return mobj->d.data[parametersDataIndex() + index];
 }
 
-const QtPrivate::QMetaTypeInterface *QMetaMethodPrivate::returnMetaTypeInterface() const
+const BobUIPrivate::QMetaTypeInterface *QMetaMethodPrivate::returnMetaTypeInterface() const
 {
     Q_ASSERT(priv(mobj->d.data)->revision >= 7);
     if (methodType() == QMetaMethod::Constructor)
         return nullptr;         // constructors don't have return types
 
-    const QtPrivate::QMetaTypeInterface *iface =  mobj->d.metaTypes[data.metaTypeOffset()];
+    const BobUIPrivate::QMetaTypeInterface *iface =  mobj->d.metaTypes[data.metaTypeOffset()];
     checkMethodMetaTypeConsistency(iface, -1);
     return iface;
 }
 
-const QtPrivate::QMetaTypeInterface * const *QMetaMethodPrivate::parameterMetaTypeInterfaces() const
+const BobUIPrivate::QMetaTypeInterface * const *QMetaMethodPrivate::parameterMetaTypeInterfaces() const
 {
     Q_ASSERT(priv(mobj->d.data)->revision >= 7);
     int offset = (methodType() == QMetaMethod::Constructor ? 0 : 1);
@@ -2221,7 +2221,7 @@ QByteArray QMetaMethod::name() const
 {
     if (!mobj)
         return QByteArray();
-    // ### Qt 7: change the return type and make noexcept
+    // ### BobUI 7: change the return type and make noexcept
     return stringData(mobj, QMetaMethodPrivate::get(this)->name());
 }
 
@@ -2365,7 +2365,7 @@ QByteArray QMetaMethod::parameterTypeName(int index) const
 {
     if (!mobj || index < 0 || index >= parameterCount())
         return {};
-    // ### Qt 7: change the return type and make noexcept
+    // ### BobUI 7: change the return type and make noexcept
     return stringData(mobj, QMetaMethodPrivate::get(this)->parameterTypeName(index));
 }
 
@@ -2387,7 +2387,7 @@ QList<QByteArray> QMetaMethod::parameterNames() const
     constructor, this function returns an empty string (constructors have no
     return types).
 
-    \note In Qt 7, this function will return a null pointer for constructors.
+    \note In BobUI 7, this function will return a null pointer for constructors.
 
     \sa returnType(), QMetaType::name()
 */
@@ -2395,7 +2395,7 @@ const char *QMetaMethod::typeName() const
 {
     if (!mobj)
         return nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     if (methodType() == QMetaMethod::Constructor)
         return "";
 #endif
@@ -2472,8 +2472,8 @@ int QMetaMethod::relativeMethodIndex() const
 /*!
     \since 5.1
     Returns the method revision if one was specified by Q_REVISION, otherwise
-    returns 0. Since Qt 6.0, non-zero values are encoded and can be decoded
-    using QTypeRevision::fromEncodedVersion().
+    returns 0. Since BobUI 6.0, non-zero values are encoded and can be decoded
+    using BOBUIypeRevision::fromEncodedVersion().
  */
 int QMetaMethod::revision() const
 {
@@ -2481,7 +2481,7 @@ int QMetaMethod::revision() const
         return 0;
     if ((data.flags() & MethodRevisioned) == 0)
         return 0;
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     if (priv(mobj->d.data)->revision < 13) {
         // revision number located elsewhere
         int offset = priv(mobj->d.data)->methodData
@@ -2500,7 +2500,7 @@ int QMetaMethod::revision() const
     Returns whether the method is const qualified.
 
     \note This method might erroneously return \c false for a const method
-    if it belongs to a library compiled against an older version of Qt.
+    if it belongs to a library compiled against an older version of BobUI.
  */
 bool QMetaMethod::isConst() const
 {
@@ -2582,39 +2582,39 @@ QMetaMethod QMetaMethod::fromSignalImpl(const QMetaObject *metaObject, void **si
 }
 
 /*!
-    \fn template <typename ReturnArg, typename... Args> bool QMetaMethod::invoke(QObject *obj, Qt::ConnectionType type, QTemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... arguments) const
-    \fn template <typename... Args> bool QMetaMethod::invoke(QObject *obj, Qt::ConnectionType type, Args &&... arguments) const
-    \fn template <typename ReturnArg, typename... Args> bool QMetaMethod::invoke(QObject *obj, QTemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... arguments) const
+    \fn template <typename ReturnArg, typename... Args> bool QMetaMethod::invoke(QObject *obj, BobUI::ConnectionType type, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... arguments) const
+    \fn template <typename... Args> bool QMetaMethod::invoke(QObject *obj, BobUI::ConnectionType type, Args &&... arguments) const
+    \fn template <typename ReturnArg, typename... Args> bool QMetaMethod::invoke(QObject *obj, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... arguments) const
     \fn template <typename... Args> bool QMetaMethod::invoke(QObject *obj, Args &&... arguments) const
     \since 6.5
 
     Invokes this method on the object \a object. Returns \c true if the member could be invoked.
     Returns \c false if there is no such member or the parameters did not match.
 
-    For the overloads with a QTemplatedMetaMethodReturnArgument parameter, the
+    For the overloads with a BOBUIemplatedMetaMethodReturnArgument parameter, the
     return value of the \a member function call is placed in \a ret. For the
     overloads without such a member, the return value of the called function
-    (if any) will be discarded. QTemplatedMetaMethodReturnArgument is an
+    (if any) will be discarded. BOBUIemplatedMetaMethodReturnArgument is an
     internal type you should not use directly. Instead, use the qReturnArg()
     function.
 
-    The overloads with a Qt::ConnectionType \a type parameter allow explicitly
+    The overloads with a BobUI::ConnectionType \a type parameter allow explicitly
     selecting whether the invocation will be synchronous or not:
 
     \list
-    \li If \a type is Qt::DirectConnection, the member will be invoked immediately
+    \li If \a type is BobUI::DirectConnection, the member will be invoked immediately
        in the current thread.
 
-    \li If \a type is Qt::QueuedConnection, a QEvent will be sent and the
+    \li If \a type is BobUI::QueuedConnection, a QEvent will be sent and the
        member is invoked as soon as the application enters the event loop in the
        thread the \a obj was created in or was moved to.
 
-    \li If \a type is Qt::BlockingQueuedConnection, the method will be invoked in
-       the same way as for Qt::QueuedConnection, except that the current thread
+    \li If \a type is BobUI::BlockingQueuedConnection, the method will be invoked in
+       the same way as for BobUI::QueuedConnection, except that the current thread
        will block until the event is delivered. Using this connection type to
        communicate between objects in the same thread will lead to deadlocks.
 
-    \li If \a type is Qt::AutoConnection, the member is invoked synchronously
+    \li If \a type is BobUI::AutoConnection, the member is invoked synchronously
         if \a obj lives in the same thread as the caller; otherwise it will invoke
         the member asynchronously. This is the behavior of the overloads that do
         not have the \a type parameter.
@@ -2627,8 +2627,8 @@ QMetaMethod QMetaMethod::fromSignalImpl(const QMetaObject *metaObject, void **si
     \snippet code/src_corelib_kernel_qmetaobject.cpp 6
 
     With asynchronous method invocations, the parameters must be copyable
-    types, because Qt needs to copy the arguments to store them in an event
-    behind the scenes. Since Qt 6.5, this function automatically registers the
+    types, because BobUI needs to copy the arguments to store them in an event
+    behind the scenes. Since BobUI 6.5, this function automatically registers the
     types being used; however, as a side-effect, it is not possible to make
     calls using types that are only forward-declared. Additionally, it is not
     possible to make asynchronous calls that use references to
@@ -2677,7 +2677,7 @@ QMetaMethod QMetaMethod::fromSignalImpl(const QMetaObject *metaObject, void **si
     \endlist
 
     With asynchronous method invocations, the parameters must be of
-    types that are known to Qt's meta-object system, because Qt needs
+    types that are known to BobUI's meta-object system, because BobUI needs
     to copy the arguments to store them in an event behind the
     scenes. If you try to use a queued connection and get the error
     message
@@ -2694,7 +2694,7 @@ QMetaMethod QMetaMethod::fromSignalImpl(const QMetaObject *metaObject, void **si
     \sa Q_ARG(), Q_RETURN_ARG(), qRegisterMetaType(), QMetaObject::invokeMethod()
 */
 bool QMetaMethod::invoke(QObject *object,
-                         Qt::ConnectionType connectionType,
+                         BobUI::ConnectionType connectionType,
                          QGenericReturnArgument returnValue,
                          QGenericArgument val0,
                          QGenericArgument val1,
@@ -2746,10 +2746,10 @@ bool QMetaMethod::invoke(QObject *object,
     return invokeImpl(*this, object, connectionType, paramCount, param, typeNames, nullptr);
 }
 
-bool QMetaMethod::invokeImpl(QMetaMethod self, void *target, Qt::ConnectionType connectionType,
+bool QMetaMethod::invokeImpl(QMetaMethod self, void *target, BobUI::ConnectionType connectionType,
                              qsizetype paramCount, const void *const *parameters,
                              const char *const *typeNames,
-                             const QtPrivate::QMetaTypeInterface *const *metaTypes)
+                             const BobUIPrivate::QMetaTypeInterface *const *metaTypes)
 {
     if (!target || !self.mobj)
         return false;
@@ -2773,20 +2773,20 @@ bool QMetaMethod::invokeImpl(QMetaMethod self, void *target, Qt::ConnectionType 
 }
 
 auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
-                                    Qt::ConnectionType connectionType,
+                                    BobUI::ConnectionType connectionType,
                                     qsizetype paramCount, const void *const *parameters,
                                     const char *const *typeNames,
-                                    const QtPrivate::QMetaTypeInterface *const *metaTypes) -> InvokeFailReason
+                                    const BobUIPrivate::QMetaTypeInterface *const *metaTypes) -> InvokeFailReason
 {
     auto object = static_cast<QObject *>(target);
     auto priv = QMetaMethodPrivate::get(&self);
-    constexpr bool MetaTypesAreOptional = QT_VERSION < QT_VERSION_CHECK(7, 0, 0);
+    constexpr bool MetaTypesAreOptional = BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0);
     auto methodMetaTypes = priv->parameterMetaTypeInterfaces();
     auto param = const_cast<void **>(parameters);
 
     Q_ASSERT(priv->mobj);
     Q_ASSERT(self.methodType() == Constructor || object);
-    Q_ASSERT(self.methodType() == Constructor || connectionType == Qt::ConnectionType(-1) ||
+    Q_ASSERT(self.methodType() == Constructor || connectionType == BobUI::ConnectionType(-1) ||
              priv->mobj->cast(object));
     Q_ASSERT(paramCount >= 1);  // includes the return type
     Q_ASSERT(parameters);
@@ -2884,27 +2884,27 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
         }
     }
 
-    Qt::HANDLE currentThreadId = nullptr;
-    QThread *objectThread = nullptr;
+    BobUI::HANDLE currentThreadId = nullptr;
+    BOBUIhread *objectThread = nullptr;
     auto receiverInSameThread = [&]() {
         if (!currentThreadId) {
-            currentThreadId = QThread::currentThreadId();
+            currentThreadId = BOBUIhread::currentThreadId();
             objectThread = object->thread();
         }
         if (objectThread)
-            return currentThreadId == QThreadData::get2(objectThread)->threadId.loadRelaxed();
+            return currentThreadId == BOBUIhreadData::get2(objectThread)->threadId.loadRelaxed();
         return false;
     };
 
     // check connection type
-    if (connectionType == Qt::AutoConnection)
-        connectionType = receiverInSameThread() ? Qt::DirectConnection : Qt::QueuedConnection;
-    else if (connectionType == Qt::ConnectionType(-1))
-        connectionType = Qt::DirectConnection;
+    if (connectionType == BobUI::AutoConnection)
+        connectionType = receiverInSameThread() ? BobUI::DirectConnection : BobUI::QueuedConnection;
+    else if (connectionType == BobUI::ConnectionType(-1))
+        connectionType = BobUI::DirectConnection;
 
-#if !QT_CONFIG(thread)
-    if (connectionType == Qt::BlockingQueuedConnection) {
-        connectionType = Qt::DirectConnection;
+#if !BOBUI_CONFIG(thread)
+    if (connectionType == BobUI::BlockingQueuedConnection) {
+        connectionType = BobUI::DirectConnection;
     }
 #endif
 
@@ -2913,19 +2913,19 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
     int idx_offset = priv->mobj->methodOffset();
     QObjectPrivate::StaticMetaCallFunction callFunction = priv->mobj->d.static_metacall;
 
-    if (connectionType == Qt::DirectConnection) {
+    if (connectionType == BobUI::DirectConnection) {
         if (callFunction)
             callFunction(object, QMetaObject::InvokeMetaMethod, idx_relative, param);
         else if (QMetaObject::metacall(object, QMetaObject::InvokeMetaMethod, idx_relative + idx_offset, param) >= 0)
             return InvokeFailReason::CallViaVirtualFailed;
-    } else if (connectionType == Qt::QueuedConnection) {
+    } else if (connectionType == BobUI::QueuedConnection) {
         if (parameters[0]) {
             qWarning("QMetaMethod::invoke: Unable to invoke methods with return values in "
                      "queued connections");
             return InvokeFailReason::CouldNotQueueParameter;
         }
 
-        QVarLengthArray<const QtPrivate::QMetaTypeInterface *, 16> argTypes;
+        QVarLengthArray<const BobUIPrivate::QMetaTypeInterface *, 16> argTypes;
         argTypes.reserve(paramCount);
         argTypes.emplace_back(nullptr); // return type
         // fill in the meta types first
@@ -2948,7 +2948,7 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
         QCoreApplication::postEvent(object, new QQueuedMetaCallEvent(idx_offset, idx_relative, callFunction, nullptr,
                                                                      -1, paramCount, argTypes.data(), parameters));
     } else { // blocking queued connection
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
         if (receiverInSameThread()) {
             qWarning("QMetaMethod::invoke: Dead lock detected in BlockingQueuedConnection: "
                      "Receiver is %s(%p)", priv->mobj->className(), object);
@@ -2959,7 +2959,7 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
         QCoreApplication::postEvent(object, new QMetaCallEvent(idx_offset, idx_relative, callFunction,
                                                                nullptr, -1, param, &latch));
         latch.wait();
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
     }
     return {};
 }
@@ -2979,11 +2979,11 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
     \obsolete [6.5] Please use the variadic overload of this function
     \overload invoke()
 
-    This overload always invokes this method using the connection type Qt::AutoConnection.
+    This overload always invokes this method using the connection type BobUI::AutoConnection.
 */
 
 /*! \fn bool QMetaMethod::invoke(QObject *object,
-                                 Qt::ConnectionType connectionType,
+                                 BobUI::ConnectionType connectionType,
                                  QGenericArgument val0 = QGenericArgument(0),
                                  QGenericArgument val1 = QGenericArgument(),
                                  QGenericArgument val2 = QGenericArgument(),
@@ -3016,11 +3016,11 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
     \overload invoke()
 
     This overload invokes this method using the
-    connection type Qt::AutoConnection and ignores return values.
+    connection type BobUI::AutoConnection and ignores return values.
 */
 
 /*!
-    \fn template <typename ReturnArg, typename... Args> bool QMetaMethod::invokeOnGadget(void *gadget, QTemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... arguments) const
+    \fn template <typename ReturnArg, typename... Args> bool QMetaMethod::invokeOnGadget(void *gadget, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> ret, Args &&... arguments) const
     \fn template <typename... Args> bool QMetaMethod::invokeOnGadget(void *gadget, Args &&... arguments) const
     \since 6.5
 
@@ -3031,10 +3031,10 @@ auto QMetaMethodInvoker::invokeImpl(QMetaMethod self, void *target,
 
     The invocation is always synchronous.
 
-    For the overload with a QTemplatedMetaMethodReturnArgument parameter, the
+    For the overload with a BOBUIemplatedMetaMethodReturnArgument parameter, the
     return value of the \a member function call is placed in \a ret. For the
     overload without it, the return value of the called function (if any) will
-    be discarded. QTemplatedMetaMethodReturnArgument is an internal type you
+    be discarded. BOBUIemplatedMetaMethodReturnArgument is an internal type you
     should not use directly. Instead, use the qReturnArg() function.
 
     \warning this method will not test the validity of the arguments: \a gadget
@@ -3165,7 +3165,7 @@ bool QMetaMethod::invokeOnGadget(void *gadget,
 
 /*!
     \class QMetaEnum
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMetaEnum class provides meta-data about an enumerator.
 
     \ingroup objectmodel
@@ -3222,8 +3222,8 @@ bool QMetaMethod::invokeOnGadget(void *gadget,
 /*!
     Returns the name of the type (without the scope).
 
-    For example, the Qt::Key enumeration has \c
-    Key as the type name and \l Qt as the scope.
+    For example, the BobUI::Key enumeration has \c
+    Key as the type name and \l BobUI as the scope.
 
     For flags this returns the name of the flag type, not the
     name of the enum type.
@@ -3240,7 +3240,7 @@ const char *QMetaEnum::name() const
 /*!
     Returns the enum name of the flag (without the scope).
 
-    For example, the Qt::AlignmentFlag flag has \c
+    For example, the BobUI::AlignmentFlag flag has \c
     AlignmentFlag as the enum name, but \c Alignment as the type name.
     Non flag enums has the same type and enum names.
 
@@ -3259,7 +3259,7 @@ const char *QMetaEnum::enumName() const
 /*!
     Returns the meta type of the enum.
 
-    If the QMetaObject that this enum is part of was generated with Qt 6.5 or
+    If the QMetaObject that this enum is part of was generated with BobUI 6.5 or
     earlier, this will be an invalid meta type.
 
     \note This is the meta type of the enum itself, not of its underlying
@@ -3274,7 +3274,7 @@ QMetaType QMetaEnum::metaType() const
         return {};
 
     const QMetaObjectPrivate *p = priv(mobj->d.data);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     if (p->revision < 12)
         QMetaType();
 #endif
@@ -3383,7 +3383,7 @@ quint64 QMetaEnum::value_helper(uint index, Mode... modes) const noexcept
     not automatically switch to an unsigned underlying type. To avoid this
     problem, explicitly specify the underlying type in the \c enum declaration.
 
-    \note For QMetaObjects compiled prior to Qt 6.6, this function always
+    \note For QMetaObjects compiled prior to BobUI 6.6, this function always
     sign-extends.
 //! [qmetaenum-32bit-signextend-64bit]
 
@@ -3445,7 +3445,7 @@ bool QMetaEnum::is64Bit() const
 /*!
     Returns the scope this enumerator was declared in.
 
-    For example, the Qt::AlignmentFlag enumeration has \c Qt as
+    For example, the BobUI::AlignmentFlag enumeration has \c BobUI as
     the scope and \c AlignmentFlag as the name.
 
     \sa name()
@@ -3707,7 +3707,7 @@ QByteArray QMetaEnum::valueToKeys(quint64 value) const
     QVarLengthArray<QByteArrayView, sizeof(int) * CHAR_BIT> parts;
     quint64 v = value;
 
-    // reverse iterate to ensure values like Qt::Dialog=0x2|Qt::Window are processed first.
+    // reverse iterate to ensure values like BobUI::Dialog=0x2|BobUI::Window are processed first.
     for (int i = data.keyCount() - 1; i >= 0; --i) {
         quint64 k = value_helper(i, mode);
         if ((k != 0 && (v & k) == k) || (k == value)) {
@@ -3730,7 +3730,7 @@ QMetaEnum::QMetaEnum(const QMetaObject *mobj, int index)
 
 int QMetaEnum::Data::index(const QMetaObject *mobj) const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
 #  warning "Consider changing Size to a power of 2"
 #endif
     return (unsigned(d - mobj->d.data) - priv(mobj->d.data)->enumeratorData) / Size;
@@ -3746,7 +3746,7 @@ int QMetaEnum::Data::index(const QMetaObject *mobj) const
 
 /*!
     \class QMetaProperty
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMetaProperty class provides meta-data about a property.
 
     \ingroup objectmodel
@@ -3777,7 +3777,7 @@ int QMetaEnum::Data::index(const QMetaObject *mobj) const
     QMetaProperty objects can be copied by value. However, each copy will
     refer to the same underlying property meta-data.
 
-    \sa QMetaObject, QMetaEnum, QMetaMethod, {Qt's Property System}
+    \sa QMetaObject, QMetaEnum, QMetaMethod, {BobUI's Property System}
 */
 
 /*!
@@ -3871,7 +3871,7 @@ QMetaType QMetaProperty::metaType() const
 
 int QMetaProperty::Data::index(const QMetaObject *mobj) const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
 #  warning "Consider changing Size to a power of 2"
 #endif
     return (unsigned(d - mobj->d.data) - priv(mobj->d.data)->propertyData) / Size;
@@ -3933,9 +3933,9 @@ bool QMetaProperty::isEnumType() const
     \internal
 
     Returns \c true if the property has a C++ setter function that
-    follows Qt's standard "name" / "setName" pattern. Designer and uic
+    follows BobUI's standard "name" / "setName" pattern. Designer and uic
     query hasStdCppSet() in order to avoid expensive
-    QObject::setProperty() calls. All properties in Qt [should] follow
+    QObject::setProperty() calls. All properties in BobUI [should] follow
     this pattern.
 */
 bool QMetaProperty::hasStdCppSet() const
@@ -3959,14 +3959,14 @@ bool QMetaProperty::isAlias() const
     return (data.flags() & Alias);
 }
 
-#if QT_DEPRECATED_SINCE(6, 4)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
 /*!
     \internal
     Historically:
     Executes metacall with QMetaObject::RegisterPropertyMetaType flag.
     Returns id of registered type or QMetaType::UnknownType if a type
     could not be registered for any reason.
-    Obsolete since Qt 6
+    Obsolete since BobUI 6
 */
 int QMetaProperty::registerPropertyType() const
 {
@@ -3997,8 +3997,8 @@ QMetaProperty::QMetaProperty(const QMetaObject *mobj, int index)
     }
 
     const QMetaObject *scope = nullptr;
-    if (scope_name == "Qt")
-        scope = &Qt::staticMetaObject;
+    if (scope_name == "BobUI")
+        scope = &BobUI::staticMetaObject;
     else
         scope = QMetaObject_findMetaObject(mobj, QByteArrayView(scope_name));
 
@@ -4037,10 +4037,10 @@ QVariant QMetaProperty::read(const QObject *object) const
     if (!object || !mobj)
         return QVariant();
 
-    // the status variable is changed by qt_metacall to indicate what it did
-    // this feature is currently only used by Qt D-Bus and should not be depended
+    // the status variable is changed by bobui_metacall to indicate what it did
+    // this feature is currently only used by BobUI D-Bus and should not be depended
     // upon. Don't change it without looking into QDBusAbstractInterface first
-    // -1 (unchanged): normal qt_metacall, result stored in argv[0]
+    // -1 (unchanged): normal bobui_metacall, result stored in argv[0]
     // changed: result stored directly in value
     int status = -1;
     QVariant value;
@@ -4118,10 +4118,10 @@ bool QMetaProperty::write(QObject *object, QVariant &&v) const
             return false;
         }
     }
-    // the status variable is changed by qt_metacall to indicate what it did
-    // this feature is currently only used by Qt D-Bus and should not be depended
+    // the status variable is changed by bobui_metacall to indicate what it did
+    // this feature is currently only used by BobUI D-Bus and should not be depended
     // upon. Don't change it without looking into QDBusAbstractInterface first
-    // -1 (unchanged): normal qt_metacall, result stored in argv[0]
+    // -1 (unchanged): normal bobui_metacall, result stored in argv[0]
     // changed: result stored directly in value, return the value of status
     int status = -1;
     // the flags variable is used by the declarative module to implement
@@ -4322,8 +4322,8 @@ int QMetaProperty::notifySignalIndex() const
     \since 5.1
 
     Returns the property revision if one was specified by Q_REVISION, otherwise
-    returns 0. Since Qt 6.0, non-zero values are encoded and can be decoded
-    using QTypeRevision::fromEncodedVersion().
+    returns 0. Since BobUI 6.0, non-zero values are encoded and can be decoded
+    using BOBUIypeRevision::fromEncodedVersion().
  */
 int QMetaProperty::revision() const
 {
@@ -4491,7 +4491,7 @@ bool QMetaProperty::isBindable() const
 
 /*!
     \class QMetaClassInfo
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMetaClassInfo class provides additional information
     about a class.
@@ -4504,10 +4504,10 @@ bool QMetaProperty::isBindable() const
 
     \snippet code/src_corelib_kernel_qmetaobject.cpp 0
 
-    This mechanism is free for you to use in your Qt applications.
+    This mechanism is free for you to use in your BobUI applications.
 
-    \note It's also used by the \l[ActiveQt]{Active Qt},
-    \l[QtDBus]{Qt D-Bus}, \l[QtQml]{Qt Qml}, and \l{Qt Remote Objects}
+    \note It's also used by the \l[ActiveBobUI]{Active BobUI},
+    \l[BobUIDBus]{BobUI D-Bus}, \l[BobUIQml]{BobUI Qml}, and \l{BobUI Remote Objects}
     modules. Some keys might be set when using these modules.
 
     \sa QMetaObject
@@ -4586,7 +4586,7 @@ const char *QMetaClassInfo::value() const
 
 /*!
     \class QGenericArgument
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QGenericArgument class is an internal helper class for
     marshalling arguments.
@@ -4617,7 +4617,7 @@ const char *QMetaClassInfo::value() const
 
 /*!
     \class QGenericReturnArgument
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QGenericReturnArgument class is an internal helper class for
     marshalling arguments.
@@ -4695,4 +4695,4 @@ QMetaObjectPrivate::parameterTypeNamesFromSignature(QByteArrayView sig,
     return name;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

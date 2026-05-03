@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qcupsjobwidget_p.h"
@@ -9,16 +9,16 @@
 #include <QFontDatabase>
 #include <QLabel>
 #include <QLayout>
-#include <QTime>
-#include <QTableWidget>
-#include <QTableWidgetItem>
+#include <BOBUIime>
+#include <BOBUIableWidget>
+#include <BOBUIableWidgetItem>
 #include <QHeaderView>
 #include <QPrinter>
 #include <QPrintEngine>
 
 #include <kernel/qprintdevice_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \internal
@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
     A widget to add to QPrintDialog to enable extra CUPS options
     such as Job Scheduling, Job Priority or Job Billing
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
  */
 
 QCupsJobWidget::QCupsJobWidget(QPrinter *printer, QPrintDevice *printDevice, QWidget *parent)
@@ -102,7 +102,7 @@ void QCupsJobWidget::initJobHold()
     toggleJobHoldTime();
 }
 
-void QCupsJobWidget::setJobHold(QCUPSSupport::JobHoldUntil jobHold, QTime holdUntilTime)
+void QCupsJobWidget::setJobHold(QCUPSSupport::JobHoldUntil jobHold, BOBUIime holdUntilTime)
 {
     if (jobHold == QCUPSSupport::SpecificTime && holdUntilTime.isNull()) {
         jobHold = QCUPSSupport::NoHold;
@@ -125,7 +125,7 @@ void QCupsJobWidget::toggleJobHoldTime()
         m_ui.jobHoldTimeEdit->setEnabled(false);
 }
 
-QTime QCupsJobWidget::jobHoldTime() const
+BOBUIime QCupsJobWidget::jobHoldTime() const
 {
     return m_ui.jobHoldTimeEdit->time();
 }
@@ -224,6 +224,6 @@ QCUPSSupport::BannerPage QCupsJobWidget::endBannerPage() const
     return qvariant_cast<QCUPSSupport::BannerPage>(m_ui.endBannerPageCombo->itemData(m_ui.endBannerPageCombo->currentIndex()));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcupsjobwidget_p.cpp"

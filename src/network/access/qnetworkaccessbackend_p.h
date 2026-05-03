@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKACCESSBACKEND_P_H
 #define QNETWORKACCESSBACKEND_P_H
@@ -9,27 +9,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience
+// This file is not part of the BobUI API. It exists for the convenience
 // of the Network Access API. This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/qnetworkreply.h>
 
-#include <QtCore/qobject.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qbytearrayview.h>
-#if QT_CONFIG(ssl)
-#include <QtNetwork/qsslconfiguration.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qbytearrayview.h>
+#if BOBUI_CONFIG(ssl)
+#include <BobUINetwork/qsslconfiguration.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkReplyImplPrivate;
 class QNetworkAccessManagerPrivate;
@@ -82,7 +82,7 @@ public:
     virtual bool start();
     virtual void open() = 0;
     virtual void close() = 0;
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     virtual void setSslConfiguration(const QSslConfiguration &configuration);
     virtual QSslConfiguration sslConfiguration() const;
 #endif
@@ -94,7 +94,7 @@ public:
     virtual qint64 read(char *data, qint64 maxlen);
     virtual bool wantToRead();
 
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     QList<QNetworkProxy> proxyList() const;
 #endif
     QUrl url() const;
@@ -123,7 +123,7 @@ public slots:
 protected slots:
     void finished();
     void error(QNetworkReply::NetworkError code, const QString &errorString);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);
 #endif
     void authenticationRequired(QAuthenticator *auth);
@@ -152,8 +152,8 @@ public:
                                           const QNetworkRequest &request) const = 0;
 };
 
-#define QNetworkAccessBackendFactory_iid "org.qt-project.Qt.NetworkAccessBackendFactory"
+#define QNetworkAccessBackendFactory_iid "org.bobui-project.BobUI.NetworkAccessBackendFactory"
 Q_DECLARE_INTERFACE(QNetworkAccessBackendFactory, QNetworkAccessBackendFactory_iid);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif

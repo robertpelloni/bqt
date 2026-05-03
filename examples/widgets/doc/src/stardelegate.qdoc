@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example itemviews/stardelegate
@@ -11,21 +11,21 @@
 
     \image stardelegate.png The Star Delegate Example
 
-    When displaying data in a QListView, QTableView, or QTreeView,
+    When displaying data in a QListView, BOBUIableView, or BOBUIreeView,
     the individual items are drawn by a
     \l{Delegate Classes}{delegate}. Also, when the user starts
     editing an item (for example, by double-clicking the item), the delegate
     provides an editor widget that is placed on top of the item while
     editing takes place.
 
-    Delegates are subclasses of QAbstractItemDelegate. Qt provides
+    Delegates are subclasses of QAbstractItemDelegate. BobUI provides
     QStyledItemDelegate, which inherits QAbstractItemDelegate and handles
     the most common data types (notably \c int and QString). If we
     need to support custom data types, or want to customize the
     rendering or the editing for existing data types, we can subclass
     QAbstractItemDelegate or QStyledItemDelegate. See \l{Delegate Classes}
     for more information about delegates, and \l{Model/View
-    Programming} if you need a high-level introduction to Qt's
+    Programming} if you need a high-level introduction to BobUI's
     model/view architecture (including delegates).
 
     In this example, we will see how to implement a custom delegate
@@ -48,7 +48,7 @@
     \endlist
 
     To show the \c StarDelegate in action, we will fill a
-    QTableWidget with some data and install the delegate on it.
+    BOBUIableWidget with some data and install the delegate on it.
 
     \section1 StarDelegate Class Definition
 
@@ -228,14 +228,14 @@
 
     \snippet itemviews/stardelegate/main.cpp 5
 
-    The \c main() function creates a QTableWidget and sets a \c
+    The \c main() function creates a BOBUIableWidget and sets a \c
     StarDelegate on it. \l{QAbstractItemView::}{DoubleClicked} and
     \l{QAbstractItemView::}{SelectedClicked} are set as
     \l{QAbstractItemView::editTriggers()}{edit triggers}, so that the
     editor is opened with a single click when the star rating item is
     selected.
 
-    The \c populateTableWidget() function fills the QTableWidget with
+    The \c populateTableWidget() function fills the BOBUIableWidget with
     data:
 
     \snippet itemviews/stardelegate/main.cpp 0
@@ -251,7 +251,7 @@
 
     \section1 Possible Extensions and Suggestions
 
-    There are many ways to customize Qt's \l{Model/View
+    There are many ways to customize BobUI's \l{Model/View
     Programming}{model/view framework}. The approach used in this
     example is appropriate for most custom delegates and editors.
     Examples of possibilities not used by the star delegate and star

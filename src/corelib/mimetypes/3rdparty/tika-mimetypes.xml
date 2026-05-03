@@ -38,7 +38,7 @@
 -->
 <mime-info xmlns:tika="https://tika.apache.org/">
 
-  <!-- Qt additions START -->
+  <!-- BobUI additions START -->
 
   <mime-type type="application/x-zerosize">
     <comment>Empty document</comment>
@@ -50,11 +50,11 @@
   </mime-type>
 
   <mime-type type="text/x-qml">
-    <comment>Qt Markup Language file</comment>
+    <comment>BobUI Markup Language file</comment>
     <sub-class-of type="text/plain"/>
     <magic>
       <match type="string" value="/bin/env qml" offset="2:16"/>
-      <match type="string" value="import Qt" offset="0:3000">
+      <match type="string" value="import BobUI" offset="0:3000">
         <match type="string" value="{" offset="9:3009"/>
       </match>
       <match type="string" value="import Qml" offset="0:3000">
@@ -86,7 +86,7 @@
     <generic-icon name="folder"/>
   </mime-type>
 
-  <!-- Qt additions END -->
+  <!-- BobUI additions END -->
 
   <mime-type type="application/activemessage"/>
   <mime-type type="application/andrew-inset">
@@ -209,7 +209,7 @@
   <mime-type type="application/x-dbf">
     <!-- this looks unique/precise. It isn't. False positives are common. Keep priority low. -->
     <magic priority="40">
-<!-- DISABLED FOR QT:       <match value="(?s)^[\\x02\\x03\\x30\\x31\\x32\\x43\\x63\\x83\\x8B\\xCB\\xF5\\xE5\\xFB].[\\x01-\\x0C][\\x01-\\x1F].{4}(?:.[^\\x00]|[\\x41-\\xFF].)(?:[^\\x00\\x01].|.[^\\x00]).{31}(?&lt;=[\\x00][^\\x00]{0,10})[A-Z@+]" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^[\\x02\\x03\\x30\\x31\\x32\\x43\\x63\\x83\\x8B\\xCB\\xF5\\xE5\\xFB].[\\x01-\\x0C][\\x01-\\x1F].{4}(?:.[^\\x00]|[\\x41-\\xFF].)(?:[^\\x00\\x01].|.[^\\x00]).{31}(?&lt;=[\\x00][^\\x00]{0,10})[A-Z@+]" type="regex" offset="0"/>-->
     </magic>
     <glob pattern="*.dbf"/>
     <glob pattern="*.dbase"/>
@@ -252,7 +252,7 @@
         <match value=".01" type="string" offset="8" />
       </match>
     </magic>
-    <glob pattern="*.stl"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.stl"/> <!-- Re-enabled by BobUI -->
   </mime-type>
 
   <mime-type type="application/ecmascript">
@@ -324,7 +324,7 @@
     <!-- we can do more specific versions by focusing on the integer in the regex below -->
     <tika:link>http://justsolve.archiveteam.org/wiki/Adobe_Illustrator_Artwork</tika:link>
     <magic priority="60">
-<!-- DISABLED FOR QT:       <match value="[\r\n]%AI5_FileFormat [1-4][\r\n]" type="regex" offset="0:8192"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="[\r\n]%AI5_FileFormat [1-4][\r\n]" type="regex" offset="0:8192"/>-->
     </magic>
     <sub-class-of type="application/postscript"/>
   </mime-type>
@@ -399,7 +399,7 @@
       <match value="/* jQuery " type="string" offset="0"/>
       <match value="/*! jQuery " type="string" offset="0"/>
       <match value="/*!" type="string" offset="0">
-         <match type="string" value="* jQuery " offset="4:8"/> <!-- type added by Qt -->
+         <match type="string" value="* jQuery " offset="4:8"/> <!-- type added by BobUI -->
       </match>
       <match value="(function(e,undefined){" type="string" offset="0"/>
       <match value="!function(window,undefined){" type="string" offset="0"/>
@@ -410,7 +410,7 @@
       <!-- React -->
       <match value="/** @license React" type="string" offset="0"/>
       <match value="/**" type="string" offset="0">
-         <match type="string" value="* React " offset="4:8"/> <!-- type added by Qt -->
+         <match type="string" value="* React " offset="4:8"/> <!-- type added by BobUI -->
       </match>
     </magic>
   </mime-type>
@@ -535,14 +535,14 @@
   <mime-type type="application/vnd.java.hprof ">
     <comment>Java hprof text file</comment>
     <magic priority="50">
-<!-- DISABLED FOR QT:       <match value="JAVA PROFILE \\d\\.\\d\\.\\d\\u0000" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="JAVA PROFILE \\d\\.\\d\\.\\d\\u0000" type="regex" offset="0"/>-->
     </magic>
     <glob pattern="*.hprof"/>
   </mime-type>
   <mime-type type="application/vnd.java.hprof.text">
     <comment>Java hprof text file</comment>
     <magic priority="50">
-<!-- DISABLED FOR QT:       <match value="JAVA PROFILE \\d\\.\\d\\.\\d," type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="JAVA PROFILE \\d\\.\\d\\.\\d," type="regex" offset="0"/>-->
     </magic>
     <glob pattern="*.hprof.txt"/>
     <sub-class-of type="text/plain"/>
@@ -652,7 +652,7 @@
   <mime-type type="application/quicktime">
     <!-- The is the base QuickTime container -->
     <!-- QuickTime video, and all MP4 formats, are based on it -->
-    <acronym>QTFF</acronym>
+    <acronym>BOBUIFF</acronym>
     <comment>QuickTime container format</comment>
   </mime-type>
   <mime-type type="application/mp4">
@@ -695,15 +695,15 @@
     <!-- Pre-OLE2, not a subtype of application/x-tika-msoffice -->
     <comment>Microsoft Word 2 Document</comment>
     <magic priority="50">
-      <match offset="0" value="\x9b\xa5" type="string" /> <!-- offset added by Qt -->
-      <match offset="0" value="\xdb\xa5" type="string" /> <!-- offset added by Qt -->
+      <match offset="0" value="\x9b\xa5" type="string" /> <!-- offset added by BobUI -->
+      <match offset="0" value="\xdb\xa5" type="string" /> <!-- offset added by BobUI -->
     </magic>
   </mime-type>
   <mime-type type="application/msword5">
     <!-- Pre-OLE2, not a subtype of application/x-tika-msoffice -->
     <comment>Microsoft Word 5 Document</comment>
     <magic priority="50">
-      <match offset="0" value="\xfe\x37" type="string" /> <!-- offset added by Qt -->
+      <match offset="0" value="\xfe\x37" type="string" /> <!-- offset added by BobUI -->
     </magic>
   </mime-type>
 
@@ -846,23 +846,23 @@
       <!-- PEM encoded -->
       <match value="-----BEGIN PKCS7" type="string" offset="0"/>
       <!-- DER encoded, sequence+length, object=pkcs7-signedData -->
-      <match type="string" value="\x30\x80" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\x30\x80" offset="0"> <!-- type added by BobUI -->
          <match value="\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\xFF\xa0" type="string"
                  mask="0xFFFFFFFFFFFFFFFFFFFF00FF" offset="2"/>
       </match>
-      <match type="string" value="\x30\x81" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\x30\x81" offset="0"> <!-- type added by BobUI -->
          <match value="\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\xFF\xa0" type="string"
                  mask="0xFFFFFFFFFFFFFFFFFFFF00FF" offset="3"/>
       </match>
-      <match type="string" value="\x30\x82" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\x30\x82" offset="0"> <!-- type added by BobUI -->
          <match value="\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\xFF\xa0" type="string"
                  mask="0xFFFFFFFFFFFFFFFFFFFF00FF" offset="4"/>
       </match>
-      <match type="string" value="\x30\x83" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\x30\x83" offset="0"> <!-- type added by BobUI -->
          <match value="\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\xFF\xa0" type="string"
                  mask="0xFFFFFFFFFFFFFFFFFFFF00FF" offset="5"/>
       </match>
-      <match type="string" value="\x30\x84" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\x30\x84" offset="0"> <!-- type added by BobUI -->
          <match value="\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\xFF\xa0" type="string"
                  mask="0xFFFFFFFFFFFFFFFFFFFF00FF" offset="6"/>
       </match>
@@ -1782,7 +1782,7 @@
   <mime-type type="application/vnd.lotus-1-2-3">
     <alias type="application/x-123"/>
     <comment>Lotus 1-2-3</comment>
-    <glob pattern="*.wks"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.wks"/> <!-- Re-enabled by BobUI -->
     <glob pattern="*.wk1"/>
     <glob pattern="*.wk2"/>
     <glob pattern="*.wk3"/>
@@ -1795,7 +1795,7 @@
     <comment>Lotus 1-2-3, version 1</comment>
     <magic priority="50">
       <match value="\x00\x00\x02\x00\x04\x04" type="string" offset="0">
-      <glob pattern="*.wks"/> <!-- Re-enabled by Qt -->
+      <glob pattern="*.wks"/> <!-- Re-enabled by BobUI -->
       </match>
     </magic>
   </mime-type>
@@ -1855,7 +1855,7 @@
   </mime-type>
 
   <mime-type type="application/vnd.lotus-screencam">
-    <glob pattern="*.scm"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.scm"/> <!-- Re-enabled by BobUI -->
   </mime-type>
 
   <mime-type type="application/vnd.lotus-wordpro">
@@ -2192,16 +2192,16 @@
     <!-- should have a higher priority than rfc822 - TIKA-3489 -->
     <!-- and a lower priority than pcap - TIKA-4174 -->
     <magic priority="55">
-<!-- DISABLED FOR QT:       <match minShouldMatch="2">-->
-<!-- DISABLED FOR QT:         <match value="user-agent:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:         <match value="allow:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:         <match value="disallow:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:         <match value="sitemap:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:         <match value="\nuser-agent:" type="stringignorecase" offset="0:1000"/>-->
-<!-- DISABLED FOR QT:         <match value="\nallow:" type="stringignorecase" offset="0:1000"/>-->
-<!-- DISABLED FOR QT:         <match value="\ndisallow:" type="stringignorecase" offset="0:1000"/>-->
-<!-- DISABLED FOR QT:         <match value="\nsitemap:" type="stringignorecase" offset="0:1000"/>-->
-<!-- DISABLED FOR QT:       </match>-->
+<!-- DISABLED FOR BOBUI:       <match minShouldMatch="2">-->
+<!-- DISABLED FOR BOBUI:         <match value="user-agent:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="allow:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="disallow:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="sitemap:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="\nuser-agent:" type="stringignorecase" offset="0:1000"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="\nallow:" type="stringignorecase" offset="0:1000"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="\ndisallow:" type="stringignorecase" offset="0:1000"/>-->
+<!-- DISABLED FOR BOBUI:         <match value="\nsitemap:" type="stringignorecase" offset="0:1000"/>-->
+<!-- DISABLED FOR BOBUI:       </match>-->
     </magic>
     <sub-class-of type="text/plain"/>
   </mime-type>
@@ -2683,7 +2683,7 @@
   <mime-type type="application/vnd.otps.ct-kip+xml"/>
 
   <mime-type type="application/vnd.palm">
-    <glob pattern="*.pdb"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.pdb"/> <!-- Re-enabled by BobUI -->
     <glob pattern="*.pqa"/>
     <glob pattern="*.oprc"/>
   </mime-type>
@@ -3312,13 +3312,13 @@
      <comment>Targa image data</comment>
      <magic priority="90">
         <match value="0x01010000" type="big32" offset="1" >
-<!-- DISABLED FOR QT:            <match value=".*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]" type="regex" offset="8" />-->
+<!-- DISABLED FOR BOBUI:            <match value=".*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]" type="regex" offset="8" />-->
         </match>
         <match value="0x00020000" type="big32" offset="1" >
-<!-- DISABLED FOR QT:            <match value=".*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]" type="regex" offset="8" />-->
+<!-- DISABLED FOR BOBUI:            <match value=".*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]" type="regex" offset="8" />-->
         </match>
         <match value="0x00030000" type="big32" offset="1" >
-<!-- DISABLED FOR QT:            <match value=".*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]" type="regex" offset="8" />-->
+<!-- DISABLED FOR BOBUI:            <match value=".*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]" type="regex" offset="8" />-->
         </match>
      </magic>
      <glob pattern="*.tga"/>
@@ -3349,12 +3349,12 @@
   <mime-type type="application/x-atari-floppy-disk-image">
     <tika:link>http://fileformats.archiveteam.org/wiki/ATR</tika:link>
     <magic priority="50">
-      <match type="string" value="\x96\x02" offset="0"> <!-- type added by Qt -->
-        <match type="string" value="\x80\x00" offset="4"> <!-- type added by Qt -->
-          <match type="string" value="\x00\x00\x00\x00" offset="11"/> <!-- type added by Qt -->
+      <match type="string" value="\x96\x02" offset="0"> <!-- type added by BobUI -->
+        <match type="string" value="\x80\x00" offset="4"> <!-- type added by BobUI -->
+          <match type="string" value="\x00\x00\x00\x00" offset="11"/> <!-- type added by BobUI -->
         </match>
-        <match type="string" value="\x00\x01" offset="4"> <!-- type added by Qt -->
-          <match type="string" value="\x00\x00\x00\x00" offset="11"/> <!-- type added by Qt -->
+        <match type="string" value="\x00\x01" offset="4"> <!-- type added by BobUI -->
+          <match type="string" value="\x00\x00\x00\x00" offset="11"/> <!-- type added by BobUI -->
         </match>
       </match>
     </magic>
@@ -3381,7 +3381,7 @@
   <mime-type type="application/vnd.isac.fcs">
     <comment>Flow Cytometry Standard File</comment>
     <magic priority="50">
-<!-- DISABLED FOR QT:       <match value="FCS[1-3]\\.[0-9]    " type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="FCS[1-3]\\.[0-9]    " type="regex" offset="0"/>-->
     </magic>
     <glob pattern="*.fcs"/>
   </mime-type>
@@ -3404,7 +3404,7 @@
   <mime-type type="application/x-apple-diskimage">
     <glob pattern="*.dmg"/>
     <!-- <glob pattern="*.img"/> too generic -->
-    <glob pattern="*.smi"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.smi"/> <!-- Re-enabled by BobUI -->
   </mime-type>
 
   <mime-type type="application/x-appleworks">
@@ -3597,7 +3597,7 @@
     <sub-class-of type="application/x-bzip"/>
     <comment>Bzip 2 UNIX Compressed File</comment>
     <magic priority="40">
-<!-- DISABLED FOR QT:       <match value="BZh[1-9]" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="BZh[1-9]" type="regex" offset="0"/>-->
     </magic>
     <glob pattern="*.bz2"/>
     <glob pattern="*.tbz2"/>
@@ -3777,9 +3777,9 @@
     <comment>fat disk image; extensions: ima, img, dsk</comment>
     <tika:link>https://www.nationalarchives.gov.uk/PRONOM/fmt/1087</tika:link>
     <magic priority="50">
-      <match type="string" value="\xEB" offset="0"> <!-- type added by Qt -->
-        <match type="string" value="\x90" offset="2"> <!-- type added by Qt -->
-<!-- DISABLED FOR QT:           <match value="(\x01|\x02|\x04|\x08|\x10|\x20\x40|x80)" type="regex" offset="14"/>-->
+      <match type="string" value="\xEB" offset="0"> <!-- type added by BobUI -->
+        <match type="string" value="\x90" offset="2"> <!-- type added by BobUI -->
+<!-- DISABLED FOR BOBUI:           <match value="(\x01|\x02|\x04|\x08|\x10|\x20\x40|x80)" type="regex" offset="14"/>-->
         </match>
       </match>
     </magic>
@@ -4136,7 +4136,7 @@
     <comment>Jigsaw Download</comment>
     <tika:link>http://justsolve.archiveteam.org/wiki/Jigdo</tika:link>
     <magic priority="50">
-      <match type="string" value="JigsawDownload template" offset="0"/> <!-- type added by Qt -->
+      <match type="string" value="JigsawDownload template" offset="0"/> <!-- type added by BobUI -->
     </magic>
   </mime-type>
   <mime-type type="application/x-kdelnk">
@@ -4223,7 +4223,7 @@
       <match value="\xFE\xED\xFA\xCF" type="string" offset="0">
         <match value="0x00000001" type="big32" offset="12"/>
       </match>
-      <match type="string" value="\xCF\xFA\xED\xFE" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\xCF\xFA\xED\xFE" offset="0"> <!-- type added by BobUI -->
         <match value="0x00000001" type="little32" offset="12"/>
       </match>
     </magic>
@@ -4421,7 +4421,7 @@
     <tika:link>https://www.nationalarchives.gov.uk/PRONOM/fmt/462</tika:link>
     <magic priority="50">
       <!-- SZDD... -->
-      <match type="string" value="\x53\x5A\x44\x44\x88\xF0\x27\x33\x41" offset="0"/> <!-- type added by Qt -->
+      <match type="string" value="\x53\x5A\x44\x44\x88\xF0\x27\x33\x41" offset="0"/> <!-- type added by BobUI -->
     </magic>
   </mime-type>
   <mime-type type="application/x-ms-owner">
@@ -4431,15 +4431,15 @@
     <comment>Based on TIKA-2469, we've added a heuristic/wild guess that the first 10 chars</comment>
     <comment>after the length byte should be \x00 or a non-control character.</comment>
     <magic priority="80">
-<!-- DISABLED FOR QT:       <match value="(?s)^([\\x05-\\x0F])[\\x00\\x20-\\x7E]{10}.{43}\\1\x00" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^([\\x05-\\x0F])[\\x00\\x20-\\x7E]{10}.{43}\\1\x00" type="regex" offset="0"/>-->
     </magic>
   </mime-type>
   <mime-type type="application/x-ms-nls">
     <comment>Microsoft National Language Support</comment>
     <comment>Should take precedence over x-ms-owner</comment>
     <magic priority="70">
-<!-- DISABLED FOR QT:       <match value="(?s)^\\x0D.{51}\\x0C\\x00\\x0D\\x00\\x0E" type="regex" offset="0"/>-->
-<!-- DISABLED FOR QT:       <match value="(?s)^\\x44\\x43.\\x01" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^\\x0D.{51}\\x0C\\x00\\x0D\\x00\\x0E" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^\\x44\\x43.\\x01" type="regex" offset="0"/>-->
     </magic>
   </mime-type>
   <mime-type type="application/x-ms-wmd">
@@ -4808,14 +4808,14 @@
     <glob pattern="*.xpt"/>
     <glob pattern="*.xport"/>
     <magic priority="40">
-      <match type="string" value="HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!" offset="0" /> <!-- type added by Qt -->
+      <match type="string" value="HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!" offset="0" /> <!-- type added by BobUI -->
     </magic>
   </mime-type>
   <mime-type type="application/x-spss-sav">
     <comment>SPSS Data File</comment>
     <glob pattern="*.sav"/>
     <magic priority="50">
-      <match type="string" value="$FL2@(#)" offset="0" /> <!-- type added by Qt -->
+      <match type="string" value="$FL2@(#)" offset="0" /> <!-- type added by BobUI -->
     </magic>
   </mime-type>
   <mime-type type="application/x-sc">
@@ -4825,8 +4825,8 @@
   </mime-type>
 
   <mime-type type="application/x-sh">
-    <alias type="application/x-shellscript"/> <!-- added by Qt -->
-    <sub-class-of type="application/x-executable"/> <!-- added by Qt -->
+    <alias type="application/x-shellscript"/> <!-- added by BobUI -->
+    <sub-class-of type="application/x-executable"/> <!-- added by BobUI -->
     <comment>UNIX/LINUX Shell Script</comment>
     <magic priority="50">
       <match value="#!/" type="string" offset="0"/>
@@ -5267,7 +5267,7 @@
     <comment>Zeno IMproved (ZIM)</comment>
     <tika:link>https://en.wikipedia.org/wiki/ZIM_(file_format)</tika:link>
     <magic priority="50">
-      <match type="string" value="\x5A\x49\x4D\x04" offset="0"/> <!-- type added by Qt -->
+      <match type="string" value="\x5A\x49\x4D\x04" offset="0"/> <!-- type added by BobUI -->
     </magic>
   </mime-type>
   <mime-type type="application/x-zoo">
@@ -5587,7 +5587,7 @@
   <mime-type type="audio/mpa-robust"/>
 
   <mime-type type="audio/mpeg">
-    <alias type="audio/mp3"/> <!-- added by Qt -->
+    <alias type="audio/mp3"/> <!-- added by BobUI -->
     <alias type="audio/x-mpeg"/>
     <acronym>MP3</acronym>
     <comment>MPEG-1 Audio Layer 3</comment>
@@ -5613,11 +5613,11 @@
       <match value="0xffff" type="string" offset="0"/> <!-- V1, L1      -->
       <!-- TIKA-4582: Require MP3 frame sync after ID3 tag to avoid false positives with other ID3-tagged formats -->
       <match value="ID3" type="string" offset="0">
-<!-- DISABLED FOR QT:          <match type="regex" value="\\xFF[\\xE3\\xF2-\\xF7\\xFA-\\xFD\\xFF]" offset="512:8192" />-->
+<!-- DISABLED FOR BOBUI:          <match type="regex" value="\\xFF[\\xE3\\xF2-\\xF7\\xFA-\\xFD\\xFF]" offset="512:8192" />-->
       </match>
       <!-- in the wild, 0D0A or quite a few \x00 may precede the magic -->
-<!-- DISABLED FOR QT:       <match value="(?:\\x0D\\x0A|\\x00{1,1024})(?:\\xff[\\xe3\\xf2\\xf3\\xf4\\xf5\\xf6\\xf7\\xf8\\xf9\\xfa\\xfb\\xfc\\xfd\\xfe\\xff]|ID3)"-->
-<!-- DISABLED FOR QT:              type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?:\\x0D\\x0A|\\x00{1,1024})(?:\\xff[\\xe3\\xf2\\xf3\\xf4\\xf5\\xf6\\xf7\\xf8\\xf9\\xfa\\xfb\\xfc\\xfd\\xfe\\xff]|ID3)"-->
+<!-- DISABLED FOR BOBUI:              type="regex" offset="0"/>-->
     </magic>
     <!-- TIKA-4582: Low-priority fallback for ID3-only files (truncated or very large ID3 tags) -->
     <magic priority="10">
@@ -5644,9 +5644,9 @@
     <alias type="application/x-ogg"/>
     <magic priority="60">
       <!-- For a single stream file -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................\001vorbis" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................\001vorbis" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <glob pattern="*.ogg"/>
     <sub-class-of type="audio/ogg"/>
@@ -5700,9 +5700,9 @@
     <alias type="audio/x-ogg-flac"/>
     <magic priority="60">
       <!-- For a single stream file -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................FLAC" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................FLAC" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="audio/ogg"/>
   </mime-type>
@@ -5712,9 +5712,9 @@
     <alias type="audio/x-ogg-pcm"/>
     <magic priority="60">
       <!-- For a single stream file -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................PCM     " type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................PCM     " type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="audio/ogg"/>
   </mime-type>
@@ -5723,9 +5723,9 @@
     <comment>Ogg Opus Codec Compressed WAV File</comment>
     <magic priority="60">
       <!-- For a single stream file -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................OpusHead" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................OpusHead" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <glob pattern="*.opus"/>
     <sub-class-of type="audio/ogg"/>
@@ -5736,9 +5736,9 @@
     <alias type="application/x-speex"/>
     <magic priority="60">
       <!-- For a single stream file -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................Speex   " type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................Speex   " type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <glob pattern="*.spx"/>
     <sub-class-of type="audio/ogg"/>
@@ -5831,12 +5831,12 @@
     <magic priority="30">
       <!-- Without ID3 tags - require two consecutive ADTS frame syncs -->
       <!-- ADTS frames are typically 100-2000 bytes, so look for second sync at that distance -->
-<!-- DISABLED FOR QT:       <match type="regex" value="(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]" offset="0" />-->
+<!-- DISABLED FOR BOBUI:       <match type="regex" value="(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]" offset="0" />-->
     </magic>
     <magic priority="40">
       <!-- With ID3 tags at the start - require two consecutive ADTS frame syncs -->
       <match value="ID3" type="string" offset="0">
-<!-- DISABLED FOR QT:          <match type="regex" value="(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]" offset="512:8192" />-->
+<!-- DISABLED FOR BOBUI:          <match type="regex" value="(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]" offset="512:8192" />-->
       </match>
     </magic>
   </mime-type>
@@ -5949,7 +5949,7 @@
     <sub-class-of type="video/x-ms-asf" />
     <glob pattern="*.wma"/>
     <magic priority="50">
-<!-- DISABLED FOR QT:        <match value="Windows Media Audio" type="unicodeLE" offset="0:8192" />-->
+<!-- DISABLED FOR BOBUI:        <match value="Windows Media Audio" type="unicodeLE" offset="0:8192" />-->
     </magic>
   </mime-type>
 
@@ -5966,7 +5966,7 @@
   <mime-type type="audio/x-pn-realaudio-plugin">
     <comment>RealMedia Player Plug-in</comment>
     <glob pattern="*.rmp"/>
-    <glob pattern="*.rpm"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.rpm"/> <!-- Re-enabled by BobUI -->
   </mime-type>
 
   <mime-type type="audio/vnd.wave">
@@ -6051,18 +6051,18 @@
     <magic priority="50">
       <match value="BM" type="string" offset="0">
         <match value="\x01\x00" type="string" offset="26">
-<!-- DISABLED FOR QT:           <match minShouldMatch="2">-->
-<!-- DISABLED FOR QT:             <match minShouldMatch="1">-->
-<!-- DISABLED FOR QT:               <match value="0x0000" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:               <match value="0x0100" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:               <match value="0x0400" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:               <match value="0x0800" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:               <match value="0x1000" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:               <match value="0x1800" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:               <match value="0x2000" type="string" offset="28"/>-->
-<!-- DISABLED FOR QT:             </match>-->
-<!-- DISABLED FOR QT:             <match value="0x00000000" type="string" offset="30"/>-->
-<!-- DISABLED FOR QT:           </match>-->
+<!-- DISABLED FOR BOBUI:           <match minShouldMatch="2">-->
+<!-- DISABLED FOR BOBUI:             <match minShouldMatch="1">-->
+<!-- DISABLED FOR BOBUI:               <match value="0x0000" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:               <match value="0x0100" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:               <match value="0x0400" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:               <match value="0x0800" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:               <match value="0x1000" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:               <match value="0x1800" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:               <match value="0x2000" type="string" offset="28"/>-->
+<!-- DISABLED FOR BOBUI:             </match>-->
+<!-- DISABLED FOR BOBUI:             <match value="0x00000000" type="string" offset="30"/>-->
+<!-- DISABLED FOR BOBUI:           </match>-->
         </match>
       </match>
     </magic>
@@ -6978,73 +6978,73 @@
     </magic>
     <magic priority="45">
       <!-- be a bit more flexible, but require one from each of these -->
-<!-- DISABLED FOR QT:       <match minShouldMatch="2">-->
-<!-- DISABLED FOR QT: -->
-<!-- DISABLED FOR QT:         <match minShouldMatch="1">-->
-<!-- DISABLED FOR QT:           <match value="Content-ID:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Content-Location:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Content-Transfer-Encoding:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Content-Type:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Date:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Delivered-To:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="From:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Message-ID:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="MIME-Version:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Received:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Relay-Version:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Return-Path:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Sent:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Status:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="Subject:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="To:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="User-Agent:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="X-Mailer:" type="string" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="X-Originating-IP:" type="stringignorecase" offset="0"/>-->
-<!-- DISABLED FOR QT:           <match value="0xefbbbf" type="string" offset="0">-->
-<!-- DISABLED FOR QT:             <match value="Content-ID:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Content-Location:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Content-Transfer-Encoding:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Content-Type:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Date:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Delivered-To:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="From:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Message-ID:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="MIME-Version:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Received:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Relay-Version:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Return-Path:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Sent:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Status:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="Subject:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="To:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="User-Agent:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="X-Mailer:" type="string" offset="3"/>-->
-<!-- DISABLED FOR QT:             <match value="X-Originating-IP:" type="stringignorecase" offset="3"/>-->
-<!-- DISABLED FOR QT:           </match>-->
-<!-- DISABLED FOR QT:         </match>-->
-<!-- DISABLED FOR QT:         <match minShouldMatch="1">-->
-<!-- DISABLED FOR QT:           <match value="\nContent-ID:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nContent-Location:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nContent-Transfer-Encoding:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nContent-Type:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nDate:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nDelivered-To:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nFrom:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nMIME-Version:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nReceived:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nRelay-Version:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nReturn-Path:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nSent:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nStatus:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nSubject:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nTo:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nUser-Agent:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nX-Mailer:" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nX-Originating-IP:" type="stringignorecase" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nDKIM-" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:           <match value="\nARC-" type="string" offset="0:1024"/>-->
-<!-- DISABLED FOR QT:         </match>-->
-<!-- DISABLED FOR QT:       </match>-->
+<!-- DISABLED FOR BOBUI:       <match minShouldMatch="2">-->
+<!-- DISABLED FOR BOBUI: -->
+<!-- DISABLED FOR BOBUI:         <match minShouldMatch="1">-->
+<!-- DISABLED FOR BOBUI:           <match value="Content-ID:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Content-Location:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Content-Transfer-Encoding:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Content-Type:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Date:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Delivered-To:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="From:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Message-ID:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="MIME-Version:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Received:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Relay-Version:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Return-Path:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Sent:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Status:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="Subject:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="To:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="User-Agent:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="X-Mailer:" type="string" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="X-Originating-IP:" type="stringignorecase" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="0xefbbbf" type="string" offset="0">-->
+<!-- DISABLED FOR BOBUI:             <match value="Content-ID:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Content-Location:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Content-Transfer-Encoding:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Content-Type:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Date:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Delivered-To:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="From:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Message-ID:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="MIME-Version:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Received:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Relay-Version:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Return-Path:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Sent:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Status:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="Subject:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="To:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="User-Agent:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="X-Mailer:" type="string" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:             <match value="X-Originating-IP:" type="stringignorecase" offset="3"/>-->
+<!-- DISABLED FOR BOBUI:           </match>-->
+<!-- DISABLED FOR BOBUI:         </match>-->
+<!-- DISABLED FOR BOBUI:         <match minShouldMatch="1">-->
+<!-- DISABLED FOR BOBUI:           <match value="\nContent-ID:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nContent-Location:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nContent-Transfer-Encoding:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nContent-Type:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nDate:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nDelivered-To:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nFrom:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nMIME-Version:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nReceived:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nRelay-Version:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nReturn-Path:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nSent:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nStatus:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nSubject:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nTo:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nUser-Agent:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nX-Mailer:" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nX-Originating-IP:" type="stringignorecase" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nDKIM-" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:           <match value="\nARC-" type="string" offset="0:1024"/>-->
+<!-- DISABLED FOR BOBUI:         </match>-->
+<!-- DISABLED FOR BOBUI:       </match>-->
     </magic>
     <magic priority="40">
       <!-- lower priority than message/news -->
@@ -7341,8 +7341,8 @@
     <root-XML localName="iframe"/>
     <root-XML localName="IFRAME"/>
     <magic priority="60">
-<!-- DISABLED FOR QT:       <match value="(?i)&lt;(html|head|body|title|div)[ >]" type="regex" offset="0"/>-->
-<!-- DISABLED FOR QT:       <match value="(?i)&lt;h[123][ >]" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?i)&lt;(html|head|body|title|div)[ >]" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?i)&lt;h[123][ >]" type="regex" offset="0"/>-->
     </magic>
     <!-- The magic priority needs to be lower than that of -->
     <!--  files which contain HTML within them, eg mime emails -->
@@ -7555,9 +7555,9 @@
     <glob pattern="*.gv"/>
     <!-- glob pattern="*.dot" - conflicts with application/msword -->
     <magic priority="50">
-<!-- DISABLED FOR QT:       <match value="(?s)^\\s*(?:strict\\s+)?(?:di)?graph\\b" type="regex" offset="0"/>-->
-<!-- DISABLED FOR QT:       <match value="(?s)^(?:\\s*//[^\\n]*\n){1,10}\\s*(?:strict\\s+)?(?:di)?graph\\b" type="regex" offset="0"/>-->
-<!-- DISABLED FOR QT:       <match value="(?s)^\\s*/\\*.{0,1024}?\\*/\\s*(?:strict\\s+)?(?:di)?graph\\b" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^\\s*(?:strict\\s+)?(?:di)?graph\\b" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^(?:\\s*//[^\\n]*\n){1,10}\\s*(?:strict\\s+)?(?:di)?graph\\b" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="(?s)^\\s*/\\*.{0,1024}?\\*/\\s*(?:strict\\s+)?(?:di)?graph\\b" type="regex" offset="0"/>-->
     </magic>
     <sub-class-of type="text/plain"/>
   </mime-type>
@@ -7605,15 +7605,15 @@
       <match value="WEBVTT\r" type="string" offset="0"/>
       <match value="WEBVTT\n" type="string" offset="0"/>
       <!-- With Byte Order Mark -->
-      <match type="string" value="\xfe\xff" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\xfe\xff" offset="0"> <!-- type added by BobUI -->
          <match value="WEBVTT\r" type="string" offset="2"/>
          <match value="WEBVTT\n" type="string" offset="2"/>
       </match>
-      <match type="string" value="\xfe\xff" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\xfe\xff" offset="0"> <!-- type added by BobUI -->
          <match value="WEBVTT\r" type="string" offset="2"/>
          <match value="WEBVTT\n" type="string" offset="2"/>
       </match>
-      <match type="string" value="\xef\xbb\xbf" offset="0"> <!-- type added by Qt -->
+      <match type="string" value="\xef\xbb\xbf" offset="0"> <!-- type added by BobUI -->
          <match value="WEBVTT\r" type="string" offset="3"/>
          <match value="WEBVTT\n" type="string" offset="3"/>
       </match>
@@ -7680,7 +7680,7 @@
     <glob pattern="*.cpp"/>
     <glob pattern="*.cxx"/>
     <glob pattern="*.cc"/>
-    <glob pattern="*.C" case-sensitive="true"/> <!-- case-sensitive added by Qt -->
+    <glob pattern="*.C" case-sensitive="true"/> <!-- case-sensitive added by BobUI -->
     <glob pattern="*.c++"/>
     <glob pattern="*.CPP"/>
     <sub-class-of type="text/plain"/>
@@ -7719,7 +7719,7 @@
     <magic priority="30">
       <match value="#include " type="string" offset="0"/>
     </magic>
-    <glob pattern="*.c" case-sensitive="true"/> <!-- case-sensitive added by Qt -->
+    <glob pattern="*.c" case-sensitive="true"/> <!-- case-sensitive added by BobUI -->
     <sub-class-of type="text/plain"/>
   </mime-type>
 
@@ -7758,7 +7758,7 @@
   </mime-type>
 
   <mime-type type="text/x-diff">
-    <alias type="text/x-patch"/> <!-- added by Qt -->
+    <alias type="text/x-patch"/> <!-- added by BobUI -->
     <magic priority="50">
       <match value="diff\ " type="string" offset="0"/>
       <match value="***\ " type="string" offset="0"/>
@@ -7906,12 +7906,12 @@
     </magic>
     <!-- Single-output or no output function definition -->
     <magic priority="40">
-<!-- DISABLED FOR QT:       <match value="function [a-zA-Z][A-Za-z0-9_]{0,62}\\s*=" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="function [a-zA-Z][A-Za-z0-9_]{0,62}\\s*=" type="regex" offset="0"/>-->
     </magic>
     <!-- No-output function definition in short form -->
     <!-- Be careful to avoid a false-match on JS functions! -->
     <magic priority="40">
-<!-- DISABLED FOR QT:       <match value="function [a-zA-Z][A-Za-z0-9_]{0,62}[\\r\\n]" type="regex" offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="function [a-zA-Z][A-Za-z0-9_]{0,62}[\\r\\n]" type="regex" offset="0"/>-->
     </magic>
     <!-- Two matlab-style comments fairly early in the file -->
     <magic priority="25">
@@ -7924,7 +7924,7 @@
       <match value="%%" type="string" offset="0">
       </match>
     </magic>
-    <glob pattern="*.m"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.m"/> <!-- Re-enabled by BobUI -->
     <sub-class-of type="text/plain"/>
   </mime-type>
 
@@ -7999,7 +7999,7 @@
   <mime-type type="text/x-prolog">
     <comment>Prolog source code</comment>
     <glob pattern="*.pro"/>
-    <glob pattern="*.pl"/> <!-- Re-enabled by Qt -->
+    <glob pattern="*.pl"/> <!-- Re-enabled by BobUI -->
     <sub-class-of type="text/plain"/>
   </mime-type>
 
@@ -8281,9 +8281,9 @@
     <alias type="video/x-daala"/>
     <magic priority="60">
       <!-- Assumes Video stream comes before Audio, may not always -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................\x80daala" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................\x80daala" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="video/ogg"/>
   </mime-type>
@@ -8293,9 +8293,9 @@
     <alias type="video/x-theora"/>
     <magic priority="60">
       <!-- Assumes Video stream comes before Audio, may not always -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................\x80theora" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................\x80theora" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="video/ogg"/>
   </mime-type>
@@ -8303,9 +8303,9 @@
   <mime-type type="video/x-dirac">
     <comment>Ogg Packaged Dirac Video</comment>
     <magic priority="60">
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................BBCD" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................BBCD" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <glob pattern="*.drc"/>
     <sub-class-of type="video/ogg"/>
@@ -8315,9 +8315,9 @@
     <comment>Ogg Packaged OGM Video</comment>
     <magic priority="60">
       <!-- Assumes Video stream comes before Audio, may not always -->
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................video" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................video" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <glob pattern="*.ogm"/>
     <sub-class-of type="video/ogg"/>
@@ -8327,9 +8327,9 @@
     <comment>Ogg Packaged Raw UVS Video</comment>
     <alias type="video/x-ogg-uvs"/>
     <magic priority="60">
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................UVS " type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................UVS " type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="video/ogg"/>
   </mime-type>
@@ -8338,9 +8338,9 @@
     <comment>Ogg Packaged Raw YUV Video</comment>
     <alias type="video/x-ogg-yuv"/>
     <magic priority="60">
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................\001YUV" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................\001YUV" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="video/ogg"/>
   </mime-type>
@@ -8349,9 +8349,9 @@
     <comment>Ogg Packaged Raw RGB Video</comment>
     <alias type="video/x-ogg-rgb"/>
     <magic priority="60">
-<!-- DISABLED FOR QT:       <match value="OggS\000.......................\001RGB" type="string"-->
-<!-- DISABLED FOR QT:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
-<!-- DISABLED FOR QT:              offset="0"/>-->
+<!-- DISABLED FOR BOBUI:       <match value="OggS\000.......................\001RGB" type="string"-->
+<!-- DISABLED FOR BOBUI:              mask="0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF"-->
+<!-- DISABLED FOR BOBUI:              offset="0"/>-->
     </magic>
     <sub-class-of type="video/ogg"/>
   </mime-type>
@@ -8375,7 +8375,7 @@
       <!-- Common starting Atoms of fixed size -->
       <match value="\x00\x00\x00\x08wide" type="string" offset="0"/>
     </magic>
-    <glob pattern="*.qt"/>
+    <glob pattern="*.bobui"/>
     <glob pattern="*.mov"/>
     <sub-class-of type="application/quicktime" />
   </mime-type>
@@ -8480,9 +8480,9 @@
     <sub-class-of type="video/x-ms-asf" />
     <glob pattern="*.wmv"/>
     <magic priority="60">
-<!-- DISABLED FOR QT:        <match value="Windows Media Video" type="unicodeLE" offset="0:8192" />-->
-<!-- DISABLED FOR QT:        <match value="VC-1 Advanced Profile" type="unicodeLE" offset="0:8192" />-->
-<!-- DISABLED FOR QT:        <match value="wmv2" type="unicodeLE" offset="0:8192" />-->
+<!-- DISABLED FOR BOBUI:        <match value="Windows Media Video" type="unicodeLE" offset="0:8192" />-->
+<!-- DISABLED FOR BOBUI:        <match value="VC-1 Advanced Profile" type="unicodeLE" offset="0:8192" />-->
+<!-- DISABLED FOR BOBUI:        <match value="wmv2" type="unicodeLE" offset="0:8192" />-->
     </magic>
   </mime-type>
   <mime-type type="video/x-ms-wmx">

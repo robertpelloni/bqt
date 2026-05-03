@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "rsslisting.h"
 
-#include <QtCore>
-#include <QtWidgets>
-#include <QtNetwork>
+#include <BobUICore>
+#include <BobUIWidgets>
+#include <BobUINetwork>
 
 //! [setup]
 RSSListing::RSSListing(const QString &url, QWidget *parent)
@@ -20,10 +20,10 @@ RSSListing::RSSListing(const QString &url, QWidget *parent)
     fetchButton = new QPushButton(tr("Fetch"), this);
     connect(fetchButton, &QPushButton::clicked, this, &RSSListing::fetch);
 
-    treeWidget = new QTreeWidget(this);
-    connect(treeWidget, &QTreeWidget::itemActivated,
+    treeWidget = new BOBUIreeWidget(this);
+    connect(treeWidget, &BOBUIreeWidget::itemActivated,
             // Open the link in the browser:
-            this, [](QTreeWidgetItem *item) { QDesktopServices::openUrl(QUrl(item->text(1))); });
+            this, [](BOBUIreeWidgetItem *item) { QDesktopServices::openUrl(QUrl(item->text(1))); });
     treeWidget->setHeaderLabels(QStringList { tr("Title"), tr("Link") });
     treeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -108,7 +108,7 @@ void RSSListing::parseXml()
         } else if (xml.isEndElement()) {
             if (xml.name() == u"item") {
 
-                QTreeWidgetItem *item = new QTreeWidgetItem;
+                BOBUIreeWidgetItem *item = new BOBUIreeWidgetItem;
                 item->setText(0, titleString);
                 item->setText(1, linkString);
                 treeWidget->addTopLevelItem(item);

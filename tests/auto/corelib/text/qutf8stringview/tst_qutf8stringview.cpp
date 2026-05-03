@@ -1,9 +1,9 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
-#include <QtCore/QString>
+#include <BobUITest/BOBUIest>
+#include <BobUICore/QString>
 
 #include <private/qcomparisontesthelper_p.h>
 
@@ -14,7 +14,7 @@
     QSKIP("This test requires C++20 char8_t support enabled in the compiler.")
 #endif
 
-// QTBUG-112746
+// BOBUIBUG-112746
 namespace {
 extern const char string_array[];
 static void from_array_of_unknown_size()
@@ -145,7 +145,7 @@ void tst_QUtf8StringView::basics()
     QVERIFY(sv1.isEmpty());
 
     QUtf8StringView sv2;
-    QT_TEST_ALL_COMPARISON_OPS(sv2, sv1, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(sv2, sv1, BobUI::strong_ordering::equal);
 }
 
 template <typename Char, size_t HSize, size_t LHSize, size_t WNSize>
@@ -398,12 +398,12 @@ void tst_QUtf8StringView::comparison()
     QVERIFY(aa < bb);
     QVERIFY(bb > aa);
 
-    QT_TEST_ALL_COMPARISON_OPS(aa, aa, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(aa, bb, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(aa, aa, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(aa, bb, BobUI::strong_ordering::less);
 
     QCOMPARE(aa.compare(aa), 0);
     QVERIFY(aa.compare(upperAa) != 0);
-    QCOMPARE(aa.compare(upperAa, Qt::CaseInsensitive), 0);
+    QCOMPARE(aa.compare(upperAa, BobUI::CaseInsensitive), 0);
     QVERIFY(aa.compare(bb) < 0);
     QVERIFY(bb.compare(aa) > 0);
 }
@@ -608,20 +608,20 @@ void tst_QUtf8StringView::iterators()
     QVERIFY(std::equal(hello.begin(), hello.end(),
                        olleh.rbegin()));
     QVERIFY(std::equal(hello.rbegin(), hello.rend(),
-                       QT_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
+                       BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
 
     QVERIFY(std::equal(hello.cbegin(), hello.cend(),
                        olleh.rbegin()));
     QVERIFY(std::equal(hello.crbegin(), hello.crend(),
-                       QT_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
+                       BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(olleh.begin(), olleh.size())));
 }
 
 void tst_QUtf8StringView::relationalOperators_data()
 {
-    QTest::addColumn<QUtf8StringView>("lhs");
-    QTest::addColumn<int>("lhsOrderNumber");
-    QTest::addColumn<QUtf8StringView>("rhs");
-    QTest::addColumn<int>("rhsOrderNumber");
+    BOBUIest::addColumn<QUtf8StringView>("lhs");
+    BOBUIest::addColumn<int>("lhsOrderNumber");
+    BOBUIest::addColumn<QUtf8StringView>("rhs");
+    BOBUIest::addColumn<int>("rhsOrderNumber");
 
     struct Data {
         QUtf8StringView l1;
@@ -637,7 +637,7 @@ void tst_QUtf8StringView::relationalOperators_data()
     for (Data *lhs = data; lhs != data + sizeof data / sizeof *data; ++lhs) {
         for (Data *rhs = data; rhs != data + sizeof data / sizeof *data; ++rhs) {
             QUtf8StringView l = { lhs->l1 }, r = { rhs->l1 };
-            QTest::addRow("\"%s\" <> \"%s\"",
+            BOBUIest::addRow("\"%s\" <> \"%s\"",
                           lhs->l1.data() ? lhs->l1.data() : "nullptr",
                           rhs->l1.data() ? rhs->l1.data() : "nullptr")
                 << l << lhs->order << r << rhs->order;
@@ -664,6 +664,6 @@ void tst_QUtf8StringView::relationalOperators()
 #undef CHECK
 }
 
-QTEST_APPLESS_MAIN(tst_QUtf8StringView)
+BOBUIEST_APPLESS_MAIN(tst_QUtf8StringView)
 
 #include "tst_qutf8stringview.moc"

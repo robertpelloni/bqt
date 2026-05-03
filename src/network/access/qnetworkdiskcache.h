@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKDISKCACHE_H
 #define QNETWORKDISKCACHE_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtNetwork/qabstractnetworkcache.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUINetwork/qabstractnetworkcache.h>
 
-QT_REQUIRE_CONFIG(networkdiskcache);
+BOBUI_REQUIRE_CONFIG(networkdiskcache);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkDiskCachePrivate;
 class Q_NETWORK_EXPORT QNetworkDiskCache : public QAbstractNetworkCache
@@ -48,6 +48,6 @@ private:
     Q_DISABLE_COPY(QNetworkDiskCache)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNETWORKDISKCACHE_H

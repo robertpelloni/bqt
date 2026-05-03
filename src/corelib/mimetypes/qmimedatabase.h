@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMIMEDATABASE_H
 #define QMIMEDATABASE_H
 
-#include <QtCore/qmimetype.h>
+#include <BobUICore/qmimetype.h>
 
-QT_REQUIRE_CONFIG(mimetype);
+BOBUI_REQUIRE_CONFIG(mimetype);
 
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArray;
 class QFileInfo;
@@ -55,6 +55,6 @@ private:
     QMimeDatabasePrivate *d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMIMEDATABASE_H

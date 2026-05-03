@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformfontdatabase.h"
-#include <QtGui/private/qfontengine_p.h>
-#include <QtGui/private/qfontdatabase_p.h>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
+#include <BobUIGui/private/qfontengine_p.h>
+#include <BobUIGui/private/qfontdatabase_p.h>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QScreen>
 #include <qpa/qplatformscreen.h>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QDir>
-#include <QtCore/QMetaEnum>
-#include <QtCore/qendian.h>
+#include <BobUICore/QLibraryInfo>
+#include <BobUICore/QDir>
+#include <BobUICore/QMetaEnum>
+#include <BobUICore/qendian.h>
 
 #include <algorithm>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcQpaFonts, "qt.qpa.fonts")
+Q_LOGGING_CATEGORY(lcQpaFonts, "bobui.qpa.fonts")
 
-void qt_registerFont(const QString &familyname, const QString &stylename,
+void bobui_registerFont(const QString &familyname, const QString &stylename,
                      const QString &foundryname, int weight,
                      QFont::Style style, int stretch, bool antialiased,
                      bool scalable, int pixelSize, bool fixedPitch, bool colorFont,
                      const QSupportedWritingSystems &writingSystems, void *hanlde);
 
-void qt_registerFontFamily(const QString &familyName);
-void qt_registerAliasToFontFamily(const QString &familyName, const QString &alias);
-bool qt_isFontFamilyPopulated(const QString &familyName);
+void bobui_registerFontFamily(const QString &familyName);
+void bobui_registerAliasToFontFamily(const QString &familyName, const QString &alias);
+bool bobui_isFontFamilyPopulated(const QString &familyName);
 
 /*!
     Registers a font with the given set of attributes describing the font's
@@ -61,7 +61,7 @@ void QPlatformFontDatabase::registerFont(const QString &familyname, const QStrin
     if (scalable)
         pixelSize = 0;
 
-    qt_registerFont(familyname, stylename, foundryname, weight, style,
+    bobui_registerFont(familyname, stylename, foundryname, weight, style,
                     stretch, antialiased, scalable, pixelSize,
                     fixedPitch, colorFont, writingSystems, usrPtr);
 }
@@ -75,7 +75,7 @@ void QPlatformFontDatabase::registerFont(const QString &familyname, const QStrin
 */
 void QPlatformFontDatabase::registerFontFamily(const QString &familyName)
 {
-    qt_registerFontFamily(familyName);
+    bobui_registerFontFamily(familyName);
 }
 
 class QWritingSystemsPrivate
@@ -148,7 +148,7 @@ bool operator!=(const QSupportedWritingSystems &lhs, const QSupportedWritingSyst
     return false;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QSupportedWritingSystems &sws)
 {
     const QMetaObject *mo = &QFontDatabase::staticMetaObject;
@@ -211,10 +211,10 @@ bool QSupportedWritingSystems::supported(QFontDatabase::WritingSystem writingSys
 
 /*!
     \class QSupportedWritingSystems
-    \brief The QSupportedWritingSystems class is used when registering fonts with the internal Qt
+    \brief The QSupportedWritingSystems class is used when registering fonts with the internal BobUI
     fontdatabase.
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Its to provide an easy to use interface for indicating what writing systems a specific font
     supports.
@@ -229,7 +229,7 @@ QPlatformFontDatabase::~QPlatformFontDatabase()
 }
 
 /*!
-  This function is called once at startup by Qt's internal font database.
+  This function is called once at startup by BobUI's internal font database.
   Reimplement this function in a subclass for a convenient place to initialize
   the internal font database.
 
@@ -324,7 +324,7 @@ QFontEngine *QPlatformFontDatabase::fontEngine(const QByteArray &fontData, qreal
 
     If \a applicationFont is non-null, its \c properties list should be filled
     with information from the loaded fonts. This is exposed through FontLoader in
-    Qt Quick where it is needed for disambiguating fonts in the same family. When
+    BobUI Quick where it is needed for disambiguating fonts in the same family. When
     the function exits, the \a applicationFont should contain an entry of properties
     per font in the file, or it should be empty if no font was loaded.
 
@@ -360,7 +360,7 @@ void QPlatformFontDatabase::releaseHandle(void *handle)
 */
 QString QPlatformFontDatabase::fontDir() const
 {
-    QString fontpath = qEnvironmentVariable("QT_QPA_FONTDIR");
+    QString fontpath = qEnvironmentVariable("BOBUI_QPA_FONTDIR");
     if (fontpath.isEmpty())
         fontpath = QLibraryInfo::path(QLibraryInfo::LibrariesPath) + "/fonts"_L1;
 
@@ -390,7 +390,7 @@ QFont QPlatformFontDatabase::defaultFont() const
 }
 
 
-QString qt_resolveFontFamilyAlias(const QString &alias);
+QString bobui_resolveFontFamilyAlias(const QString &alias);
 
 /*!
     Resolve alias to actual font family names.
@@ -399,7 +399,7 @@ QString qt_resolveFontFamilyAlias(const QString &alias);
  */
 QString QPlatformFontDatabase::resolveFontFamilyAlias(const QString &family) const
 {
-    return qt_resolveFontFamilyAlias(family);
+    return bobui_resolveFontFamilyAlias(family);
 }
 
 /*!
@@ -615,7 +615,7 @@ QSupportedWritingSystems QPlatformFontDatabase::writingSystemsFromTrueTypeBits(q
 
 void QPlatformFontDatabase::registerAliasToFontFamily(const QString &familyName, const QString &alias)
 {
-    qt_registerAliasToFontFamily(familyName, alias);
+    bobui_registerAliasToFontFamily(familyName, alias);
 }
 
 /*!
@@ -643,7 +643,7 @@ void QPlatformFontDatabase::repopulateFontDatabase()
 */
 bool QPlatformFontDatabase::isFamilyPopulated(const QString &familyName)
 {
-    return qt_isFontFamilyPopulated(familyName);
+    return bobui_isFontFamilyPopulated(familyName);
 }
 
 /*!
@@ -681,7 +681,7 @@ bool QPlatformFontDatabase::supportsColrv0Fonts() const
     QPlatformFontDatabase is the superclass which is intended to let platform implementations use
     native font handling.
 
-    Qt has its internal font database which it uses to discover available fonts on the
+    BobUI has its internal font database which it uses to discover available fonts on the
     user's system. To be able to populate this database subclass this class, and
     reimplement populateFontDatabase().
 
@@ -693,4 +693,4 @@ bool QPlatformFontDatabase::supportsColrv0Fonts() const
 
     \sa QSupportedWritingSystems
 */
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
 /****************************************************************************
 ** Resource object code
 **
-** Created by: The Resource Compiler for Qt version 6.0.0
+** Created by: The Resource Compiler for BobUI version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-static const unsigned char qt_resource_data[] = {
-  // D:/projects/qt/dev/src/qtbase/tests/auto/network/access/qdecompresshelper/5GiB.txt.inflate
+static const unsigned char bobui_resource_data[] = {
+  // D:/projects/bobui/dev/src/bobuibase/tests/auto/network/access/qdecompresshelper/5GiB.txt.inflate
   0x0,0x0,0x20,0xca,
   0x0,
   0x4f,0x9f,0x57,0x78,0xda,0xec,0xdc,0x3d,0x2e,0x44,0x1,0x18,0x86,0xd1,0x3b,0x31,
@@ -538,7 +538,7 @@ static const unsigned char qt_resource_data[] = {
   
 };
 
-static const unsigned char qt_resource_name[] = {
+static const unsigned char bobui_resource_name[] = {
   // 5GiB.txt.inflate
   0x0,0x10,
   0x6,0xf4,0xb1,0x65,
@@ -547,7 +547,7 @@ static const unsigned char qt_resource_name[] = {
   
 };
 
-static const unsigned char qt_resource_struct[] = {
+static const unsigned char bobui_resource_struct[] = {
   // :
   0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x1,
 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
@@ -557,20 +557,20 @@ static const unsigned char qt_resource_struct[] = {
 
 };
 
-#ifdef QT_NAMESPACE
-#  define QT_RCC_PREPEND_NAMESPACE(name) ::QT_NAMESPACE::name
-#  define QT_RCC_MANGLE_NAMESPACE0(x) x
-#  define QT_RCC_MANGLE_NAMESPACE1(a, b) a##_##b
-#  define QT_RCC_MANGLE_NAMESPACE2(a, b) QT_RCC_MANGLE_NAMESPACE1(a,b)
-#  define QT_RCC_MANGLE_NAMESPACE(name) QT_RCC_MANGLE_NAMESPACE2( \
-        QT_RCC_MANGLE_NAMESPACE0(name), QT_RCC_MANGLE_NAMESPACE0(QT_NAMESPACE))
+#ifdef BOBUI_NAMESPACE
+#  define BOBUI_RCC_PREPEND_NAMESPACE(name) ::BOBUI_NAMESPACE::name
+#  define BOBUI_RCC_MANGLE_NAMESPACE0(x) x
+#  define BOBUI_RCC_MANGLE_NAMESPACE1(a, b) a##_##b
+#  define BOBUI_RCC_MANGLE_NAMESPACE2(a, b) BOBUI_RCC_MANGLE_NAMESPACE1(a,b)
+#  define BOBUI_RCC_MANGLE_NAMESPACE(name) BOBUI_RCC_MANGLE_NAMESPACE2( \
+        BOBUI_RCC_MANGLE_NAMESPACE0(name), BOBUI_RCC_MANGLE_NAMESPACE0(BOBUI_NAMESPACE))
 #else
-#   define QT_RCC_PREPEND_NAMESPACE(name) name
-#   define QT_RCC_MANGLE_NAMESPACE(name) name
+#   define BOBUI_RCC_PREPEND_NAMESPACE(name) name
+#   define BOBUI_RCC_MANGLE_NAMESPACE(name) name
 #endif
 
-#ifdef QT_NAMESPACE
-namespace QT_NAMESPACE {
+#ifdef BOBUI_NAMESPACE
+namespace BOBUI_NAMESPACE {
 #endif
 
 bool qRegisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
@@ -579,39 +579,39 @@ bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, 
 #if defined(__ELF__) || defined(__APPLE__)
 static inline unsigned char qResourceFeatureZlib()
 {
-    extern const unsigned char qt_resourceFeatureZlib;
-    return qt_resourceFeatureZlib;
+    extern const unsigned char bobui_resourceFeatureZlib;
+    return bobui_resourceFeatureZlib;
 }
 #else
 unsigned char qResourceFeatureZlib();
 #endif
 
-#ifdef QT_NAMESPACE
+#ifdef BOBUI_NAMESPACE
 }
 #endif
 
-int QT_RCC_MANGLE_NAMESPACE(qInitResources_inflate)();
-int QT_RCC_MANGLE_NAMESPACE(qInitResources_inflate)()
+int BOBUI_RCC_MANGLE_NAMESPACE(qInitResources_inflate)();
+int BOBUI_RCC_MANGLE_NAMESPACE(qInitResources_inflate)()
 {
     int version = 3;
-    QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)
-        (version, qt_resource_struct, qt_resource_name, qt_resource_data);
+    BOBUI_RCC_PREPEND_NAMESPACE(qRegisterResourceData)
+        (version, bobui_resource_struct, bobui_resource_name, bobui_resource_data);
     return 1;
 }
 
-int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_inflate)();
-int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_inflate)()
+int BOBUI_RCC_MANGLE_NAMESPACE(qCleanupResources_inflate)();
+int BOBUI_RCC_MANGLE_NAMESPACE(qCleanupResources_inflate)()
 {
     int version = 3;
-    version += QT_RCC_PREPEND_NAMESPACE(qResourceFeatureZlib());
-    QT_RCC_PREPEND_NAMESPACE(qUnregisterResourceData)
-       (version, qt_resource_struct, qt_resource_name, qt_resource_data);
+    version += BOBUI_RCC_PREPEND_NAMESPACE(qResourceFeatureZlib());
+    BOBUI_RCC_PREPEND_NAMESPACE(qUnregisterResourceData)
+       (version, bobui_resource_struct, bobui_resource_name, bobui_resource_data);
     return 1;
 }
 
 namespace {
    struct initializer {
-       initializer() { QT_RCC_MANGLE_NAMESPACE(qInitResources_inflate)(); }
-       ~initializer() { QT_RCC_MANGLE_NAMESPACE(qCleanupResources_inflate)(); }
+       initializer() { BOBUI_RCC_MANGLE_NAMESPACE(qInitResources_inflate)(); }
+       ~initializer() { BOBUI_RCC_MANGLE_NAMESPACE(qCleanupResources_inflate)(); }
    } dummy;
 }

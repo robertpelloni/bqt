@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qcolordialog)
@@ -10,10 +10,10 @@ add_subdirectory(qinputdialog)
 add_subdirectory(qprogressdialog)
 add_subdirectory(qwizard)
 add_subdirectory(qfiledialog)
-# QTBUG-101217, qmessagebox hangs on Android
+# BOBUIBUG-101217, qmessagebox hangs on Android
 if(NOT ANDROID)
     add_subdirectory(qmessagebox)
 endif()
-if(QT_FEATURE_private_tests)
+if(BOBUI_FEATURE_private_tests)
     add_subdirectory(qsidebar)
 endif()

@@ -1,8 +1,8 @@
-LANCELOT_DIR = $$[QT_HOST_PREFIX]/tests/baseline/shared
+LANCELOT_DIR = $$[BOBUI_HOST_PREFIX]/tests/baseline/shared
 CONFIG += cmdline moc
 TEMPLATE = app
 INCLUDEPATH += . $$LANCELOT_DIR
-QT += core-private gui-private widgets printsupport openglwidgets
+BOBUI += core-private gui-private widgets printsupport openglwidgets
 
 HEADERS += widgets.h \
            interactivewidget.h \
@@ -13,5 +13,5 @@ SOURCES += interactivewidget.cpp \
 RESOURCES += icons.qrc \
            $$LANCELOT_DIR/../painting/images.qrc
 
-qtHaveModule(opengl): QT += opengl
+bobuiHaveModule(opengl): BOBUI += opengl
 

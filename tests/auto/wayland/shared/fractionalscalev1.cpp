@@ -1,12 +1,12 @@
 // Copyright (C) 2022 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "fractionalscalev1.h"
 
 namespace MockCompositor {
 
 FractionalScaleManager::FractionalScaleManager(CoreCompositor *compositor, int version)
-    : QtWaylandServer::wp_fractional_scale_manager_v1(compositor->m_display, version)
+    : BobUIWaylandServer::wp_fractional_scale_manager_v1(compositor->m_display, version)
 {
 }
 
@@ -16,12 +16,12 @@ void FractionalScaleManager::wp_fractional_scale_manager_v1_get_fractional_scale
     auto *scaler = new FractionalScale(s, resource->client(), id, resource->version());
     connect(scaler, &QObject::destroyed, this, [this, scaler]() {
         m_fractionalScales.removeOne(scaler);
-    }, Qt::DirectConnection);
+    }, BobUI::DirectConnection);
     m_fractionalScales << scaler;
 }
 
 FractionalScale::FractionalScale(Surface *surface, wl_client *client, int id, int version)
-    : QtWaylandServer::wp_fractional_scale_v1(client, id, version)
+    : BobUIWaylandServer::wp_fractional_scale_v1(client, id, version)
     , m_surface(surface)
 {
 }

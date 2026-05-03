@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qwidgetlinecontrol_p.h"
 
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include "qabstractitemview.h"
 #endif
 #include "qclipboard.h"
 #include <private/qguiapplication_p.h>
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 #include <private/qcompleter_p.h>
 #endif
 #include <qpa/qplatformtheme.h>
 #include <qstylehints.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
 #include "qapplication.h"
 #include "private/qapplication_p.h"
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include "qgraphicssceneevent.h"
 #endif
 
@@ -28,21 +28,21 @@
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 /*!
    \internal
 
    Updates the internal text layout. Returns the ascent of the
-   created QTextLine.
+   created BOBUIextLine.
 */
 int QWidgetLineControl::redoTextLayout() const
 {
     m_textLayout.clearLayout();
 
     m_textLayout.beginLayout();
-    QTextLine l = m_textLayout.createLine();
+    BOBUIextLine l = m_textLayout.createLine();
     m_textLayout.endLayout();
 
     return qRound(l.ascent());
@@ -94,9 +94,9 @@ void QWidgetLineControl::updateDisplayText(bool forceUpdate)
 
     m_textLayout.setText(str);
 
-    QTextOption option = m_textLayout.textOption();
+    BOBUIextOption option = m_textLayout.textOption();
     option.setTextDirection(m_layoutDirection);
-    option.setFlags(QTextOption::IncludeTrailingSpaces);
+    option.setFlags(BOBUIextOption::IncludeTrailingSpaces);
     m_textLayout.setTextOption(option);
 
     m_ascent = redoTextLayout();
@@ -105,7 +105,7 @@ void QWidgetLineControl::updateDisplayText(bool forceUpdate)
         emit displayTextChanged(str);
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 /*!
     \internal
 
@@ -142,14 +142,14 @@ void QWidgetLineControl::paste(QClipboard::Mode clipboardMode)
     }
 }
 
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
 
 /*!
     \internal
 */
 void QWidgetLineControl::commitPreedit()
 {
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
     if (!composeMode())
         return;
 
@@ -366,7 +366,7 @@ void QWidgetLineControl::updatePasswordEchoEditing(bool editing)
     to the displayed text.  The given \a betweenOrOn specified what kind
     of cursor position is requested.
 */
-int QWidgetLineControl::xToPos(int x, QTextLine::CursorPosition betweenOrOn) const
+int QWidgetLineControl::xToPos(int x, BOBUIextLine::CursorPosition betweenOrOn) const
 {
     return textLayout()->lineAt(0).xToCursor(x, betweenOrOn);
 }
@@ -378,7 +378,7 @@ int QWidgetLineControl::xToPos(int x, QTextLine::CursorPosition betweenOrOn) con
 */
 QRect QWidgetLineControl::rectForPos(int pos) const
 {
-    QTextLine l = textLayout()->lineAt(0);
+    BOBUIextLine l = textLayout()->lineAt(0);
     if (m_preeditCursor != -1)
         pos += m_preeditCursor;
     int cix = qRound(l.cursorToX(pos));
@@ -420,7 +420,7 @@ QRect QWidgetLineControl::anchorRect() const
 */
 bool QWidgetLineControl::fixup() // this function assumes that validate currently returns != Acceptable
 {
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
     if (m_validator) {
         QString textCopy = m_text;
         int cursorCopy = m_cursor;
@@ -538,7 +538,7 @@ void QWidgetLineControl::processInputMethodEvent(QInputMethodEvent *event)
             cursorPositionChanged = true;
         }
     }
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
     // in NoEcho mode, the cursor is always at the beginning of the lineedit
     switch (m_echoMode) {
     case QLineEdit::NoEcho:
@@ -554,11 +554,11 @@ void QWidgetLineControl::processInputMethodEvent(QInputMethodEvent *event)
         setPreeditArea(m_cursor, event->preeditString());
         break;
     }
-#endif //QT_NO_IM
+#endif //BOBUI_NO_IM
     const int oldPreeditCursor = m_preeditCursor;
     m_preeditCursor = event->preeditString().size();
     m_hideCursor = false;
-    QList<QTextLayout::FormatRange> formats;
+    QList<BOBUIextLayout::FormatRange> formats;
     formats.reserve(event->attributes().size());
     for (int i = 0; i < event->attributes().size(); ++i) {
         const QInputMethodEvent::Attribute &a = event->attributes().at(i);
@@ -566,9 +566,9 @@ void QWidgetLineControl::processInputMethodEvent(QInputMethodEvent *event)
             m_preeditCursor = a.start;
             m_hideCursor = !a.length;
         } else if (a.type == QInputMethodEvent::TextFormat) {
-            QTextCharFormat f = qvariant_cast<QTextFormat>(a.value).toCharFormat();
+            BOBUIextCharFormat f = qvariant_cast<BOBUIextFormat>(a.value).toCharFormat();
             if (f.isValid()) {
-                QTextLayout::FormatRange o;
+                BOBUIextLayout::FormatRange o;
                 o.start = a.start + m_cursor;
                 o.length = a.length;
                 o.format = f;
@@ -607,9 +607,9 @@ void QWidgetLineControl::processInputMethodEvent(QInputMethodEvent *event)
 */
 void QWidgetLineControl::draw(QPainter *painter, const QPoint &offset, const QRect &clip, int flags)
 {
-    QList<QTextLayout::FormatRange> selections;
+    QList<BOBUIextLayout::FormatRange> selections;
     if (flags & DrawSelections) {
-        QTextLayout::FormatRange o;
+        BOBUIextLayout::FormatRange o;
         if (m_selstart < m_selend) {
             o.start = m_selstart;
             o.length = m_selend - m_selstart;
@@ -643,7 +643,7 @@ void QWidgetLineControl::draw(QPainter *painter, const QPoint &offset, const QRe
     \internal
 
     Sets the selection to cover the word at the given cursor position.
-    The word boundaries are defined by the behavior of QTextLayout::SkipWords
+    The word boundaries are defined by the behavior of BOBUIextLayout::SkipWords
     cursor mode.
 */
 void QWidgetLineControl::selectWordAtPos(int cursor)
@@ -651,10 +651,10 @@ void QWidgetLineControl::selectWordAtPos(int cursor)
     int next = cursor + 1;
     if (next > end())
         --next;
-    int c = textLayout()->previousCursorPosition(next, QTextLayout::SkipWords);
+    int c = textLayout()->previousCursorPosition(next, BOBUIextLayout::SkipWords);
     moveCursor(c, false);
     // ## text layout should support end of words.
-    int end = textLayout()->nextCursorPosition(c, QTextLayout::SkipWords);
+    int end = textLayout()->nextCursorPosition(c, BOBUIextLayout::SkipWords);
     while (end > cursor && m_text[end-1].isSpace())
         --end;
     moveCursor(end, true);
@@ -680,7 +680,7 @@ bool QWidgetLineControl::finishChange(int validateFromState, bool update, bool e
         // do validation
         bool wasValidInput = m_validInput;
         m_validInput = true;
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
         if (m_validator) {
             QString textCopy = m_text;
             int cursorCopy = m_cursor;
@@ -751,7 +751,7 @@ void QWidgetLineControl::internalSetText(const QString &txt, int pos, bool edite
     m_textDirty = (oldText != m_text);
     const bool changed = finishChange(-1, true, edited);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (changed) {
         if (oldText.isEmpty()) {
             QAccessibleTextInsertEvent event(accessibleObject(), 0, txt);
@@ -807,7 +807,7 @@ void QWidgetLineControl::internalInsert(const QString &s)
         if (m_passwordEchoTimer.isActive())
             m_passwordEchoTimer.stop();
         int delay = m_passwordMaskDelay;
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         if (m_passwordMaskDelayOverride >= 0)
             delay = m_passwordMaskDelayOverride;
 #endif
@@ -821,7 +821,7 @@ void QWidgetLineControl::internalInsert(const QString &s)
         QString ms = maskString(m_cursor, s);
         if (ms.isEmpty() && !s.isEmpty())
             emit inputRejected();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleTextInsertEvent insertEvent(accessibleObject(), m_cursor, ms);
         QAccessible::updateAccessibility(&insertEvent);
 #endif
@@ -833,14 +833,14 @@ void QWidgetLineControl::internalInsert(const QString &s)
         m_cursor += ms.size();
         m_cursor = nextMaskBlank(m_cursor);
         m_textDirty = true;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleTextCursorEvent event(accessibleObject(), m_cursor);
         QAccessible::updateAccessibility(&event);
 #endif
     } else {
         int remaining = m_maxLength - m_text.size();
         if (remaining != 0) {
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
             QAccessibleTextInsertEvent insertEvent(accessibleObject(), m_cursor, s);
             QAccessible::updateAccessibility(&insertEvent);
 #endif
@@ -873,7 +873,7 @@ void QWidgetLineControl::internalDelete(bool wasBackspace)
             addCommand(Command(SetSelection, m_cursor, u'\0', m_selstart, m_selend));
         addCommand(Command((CommandType)((m_maskData ? 2 : 0) + (wasBackspace ? Remove : Delete)),
                    m_cursor, m_text.at(m_cursor), -1, -1));
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleTextRemoveEvent event(accessibleObject(), m_cursor, m_text.at(m_cursor));
         QAccessible::updateAccessibility(&event);
 #endif
@@ -914,7 +914,7 @@ void QWidgetLineControl::removeSelectedText()
             for (i = m_selend-1; i >= m_selstart; --i)
                 addCommand (Command(RemoveSelection, i, m_text.at(i), -1, -1));
         }
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleTextRemoveEvent event(accessibleObject(), m_selstart, m_text.mid(m_selstart, m_selend - m_selstart));
         QAccessible::updateAccessibility(&event);
 #endif
@@ -1123,7 +1123,7 @@ bool QWidgetLineControl::isValidInput(QChar key, QChar mask) const
 */
 bool QWidgetLineControl::hasAcceptableInput(const QString &str) const
 {
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
     QString textCopy = str;
     int cursorCopy = m_cursor;
     if (m_validator && m_validator->validate(textCopy, cursorCopy)
@@ -1399,7 +1399,7 @@ void QWidgetLineControl::emitCursorPositionChanged()
         const int oldLast = m_lastCursorPos;
         m_lastCursorPos = m_cursor;
         emit cursorPositionChanged(oldLast, m_cursor);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         // otherwise we send a selection update which includes the cursor
         if (!hasSelectedText()) {
             QAccessibleTextCursorEvent event(accessibleObject(), m_cursor);
@@ -1409,7 +1409,7 @@ void QWidgetLineControl::emitCursorPositionChanged()
     }
 }
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 // iterating forward(dir=1)/backward(dir=-1) from the
 // current row based. dir=0 indicates a new completion prefix was set.
 bool QWidgetLineControl::advanceToEnabledItem(int dir)
@@ -1426,7 +1426,7 @@ bool QWidgetLineControl::advanceToEnabledItem(int dir)
             i = i > 0 ? 0 : m_completer->completionCount() - 1;
         } else {
             QModelIndex currentIndex = m_completer->currentIndex();
-            if (m_completer->completionModel()->flags(currentIndex) & Qt::ItemIsEnabled)
+            if (m_completer->completionModel()->flags(currentIndex) & BobUI::ItemIsEnabled)
                 return true;
             i += dir;
         }
@@ -1443,10 +1443,10 @@ void QWidgetLineControl::complete(int key)
 
     QString text = this->text();
     if (m_completer->completionMode() == QCompleter::InlineCompletion) {
-        if (key == Qt::Key_Backspace)
+        if (key == BobUI::Key_Backspace)
             return;
         int n = 0;
-        if (key == Qt::Key_Up || key == Qt::Key_Down) {
+        if (key == BobUI::Key_Up || key == BobUI::Key_Down) {
             if (textAfterSelection().size())
                 return;
             QString prefix = hasSelectedText() ? textBeforeSelection()
@@ -1455,7 +1455,7 @@ void QWidgetLineControl::complete(int key)
                 || prefix.compare(m_completer->completionPrefix(), m_completer->caseSensitivity()) != 0) {
                 m_completer->setCompletionPrefix(prefix);
             } else {
-                n = (key == Qt::Key_Up) ? -1 : +1;
+                n = (key == BobUI::Key_Up) ? -1 : +1;
             }
         } else {
             m_completer->setCompletionPrefix(text);
@@ -1463,7 +1463,7 @@ void QWidgetLineControl::complete(int key)
         if (!advanceToEnabledItem(n))
             return;
     } else {
-#ifndef QT_KEYPAD_NAVIGATION
+#ifndef BOBUI_KEYPAD_NAVIGATION
         if (text.isEmpty()) {
             if (auto *popup = QCompleterPrivate::get(m_completer)->popup)
                 popup->hide();
@@ -1515,7 +1515,7 @@ void QWidgetLineControl::updateCursorBlinking()
     emit updateNeeded(inputMask().isEmpty() ? cursorRect() : QRect());
 }
 
-// This is still used by QDeclarativeTextInput in the qtquick1 repo
+// This is still used by QDeclarativeTextInput in the bobuiquick1 repo
 void QWidgetLineControl::resetCursorBlinkTimer()
 {
     if (!m_blinkEnabled || !m_blinkTimer.isActive())
@@ -1527,7 +1527,7 @@ void QWidgetLineControl::resetCursorBlinkTimer()
     m_blinkStatus = 1;
 }
 
-void QWidgetLineControl::timerEvent(QTimerEvent *event)
+void QWidgetLineControl::timerEvent(BOBUIimerEvent *event)
 {
     const auto eventId = event->id();
     if (eventId == m_blinkTimer.id()) {
@@ -1544,7 +1544,7 @@ void QWidgetLineControl::timerEvent(QTimerEvent *event)
     }
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 void QWidgetLineControl::processShortcutOverrideEvent(QKeyEvent *ke)
 {
     if (ke == QKeySequence::Copy
@@ -1571,23 +1571,23 @@ void QWidgetLineControl::processShortcutOverrideEvent(QKeyEvent *ke)
                || ke == QKeySequence::DeleteCompleteLine) {
         if (!isReadOnly())
             ke->accept();
-    } else if (ke->modifiers() == Qt::NoModifier || ke->modifiers() == Qt::ShiftModifier
-               || ke->modifiers() == Qt::KeypadModifier) {
-        if (ke->key() < Qt::Key_Escape) {
+    } else if (ke->modifiers() == BobUI::NoModifier || ke->modifiers() == BobUI::ShiftModifier
+               || ke->modifiers() == BobUI::KeypadModifier) {
+        if (ke->key() < BobUI::Key_Escape) {
             if (!isReadOnly())
                 ke->accept();
         } else {
             switch (ke->key()) {
-            case Qt::Key_Delete:
-            case Qt::Key_Backspace:
+            case BobUI::Key_Delete:
+            case BobUI::Key_Backspace:
                 if (!isReadOnly())
                     ke->accept();
                 break;
 
-            case Qt::Key_Home:
-            case Qt::Key_End:
-            case Qt::Key_Left:
-            case Qt::Key_Right:
+            case BobUI::Key_Home:
+            case BobUI::Key_End:
+            case BobUI::Key_Left:
+            case BobUI::Key_Right:
                 ke->accept();
                 break;
 
@@ -1603,7 +1603,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
 {
     bool inlineCompletionAccepted = false;
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     if (m_completer) {
         QCompleter::CompletionMode completionMode = m_completer->completionMode();
         auto *popup = QCompleterPrivate::get(m_completer)->popup;
@@ -1613,7 +1613,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
             // The following keys are forwarded by the completer to the widget
             // Ignoring the events lets the completer provide suitable default behavior
             switch (event->key()) {
-            case Qt::Key_Escape:
+            case BobUI::Key_Escape:
                 event->ignore();
                 return;
             default:
@@ -1621,11 +1621,11 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
             }
         } else if (completionMode == QCompleter::InlineCompletion) {
             switch (event->key()) {
-            case Qt::Key_Enter:
-            case Qt::Key_Return:
-            case Qt::Key_F4:
-#ifdef QT_KEYPAD_NAVIGATION
-            case Qt::Key_Select:
+            case BobUI::Key_Enter:
+            case BobUI::Key_Return:
+            case BobUI::Key_F4:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+            case BobUI::Key_Select:
                 if (!QApplicationPrivate::keypadNavigationEnabled())
                     break;
 #endif
@@ -1641,15 +1641,15 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
             }
         }
     }
-#endif // QT_CONFIG(completer)
+#endif // BOBUI_CONFIG(completer)
 
-    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+    if (event->key() == BobUI::Key_Enter || event->key() == BobUI::Key_Return) {
         if (hasAcceptableInput() || fixup()) {
 
             QInputMethod *inputMethod = QGuiApplication::inputMethod();
             inputMethod->commit();
             QWidget *lineEdit = qobject_cast<QWidget *>(parent());
-            if (!(lineEdit && lineEdit->inputMethodHints() & Qt::ImhMultiLine))
+            if (!(lineEdit && lineEdit->inputMethodHints() & BobUI::ImhMultiLine))
                 inputMethod->hide();
 
             emit accepted();
@@ -1666,13 +1666,13 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
         && !passwordEchoEditing()
         && !isReadOnly()
         && !event->text().isEmpty()
-#ifdef QT_KEYPAD_NAVIGATION
-        && event->key() != Qt::Key_Select
-        && event->key() != Qt::Key_Up
-        && event->key() != Qt::Key_Down
-        && event->key() != Qt::Key_Back
+#ifdef BOBUI_KEYPAD_NAVIGATION
+        && event->key() != BobUI::Key_Select
+        && event->key() != BobUI::Key_Up
+        && event->key() != BobUI::Key_Down
+        && event->key() != BobUI::Key_Back
 #endif
-        && !(event->modifiers() & Qt::ControlModifier)) {
+        && !(event->modifiers() & BobUI::ControlModifier)) {
         // Clear the edit and reset to normal echo mode while editing; the
         // echo mode switches back when the edit loses focus
         // ### resets current content.  dubious code; you can
@@ -1683,13 +1683,13 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
     }
 
     bool unknown = false;
-#if QT_CONFIG(shortcut)
-    bool visual = cursorMoveStyle() == Qt::VisualMoveStyle;
+#if BOBUI_CONFIG(shortcut)
+    bool visual = cursorMoveStyle() == BobUI::VisualMoveStyle;
 #endif
 
     if (false) {
     }
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     else if (event == QKeySequence::Undo) {
         if (!isReadOnly())
             undo();
@@ -1701,7 +1701,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
     else if (event == QKeySequence::SelectAll) {
         selectAll();
     }
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     else if (event == QKeySequence::Copy) {
         copy();
     }
@@ -1709,8 +1709,8 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
         if (!isReadOnly()) {
             QClipboard::Mode mode = QClipboard::Clipboard;
             if (m_keyboardScheme == QPlatformTheme::X11KeyboardScheme
-                && event->modifiers() == (Qt::CTRL | Qt::SHIFT)
-                && event->key() == Qt::Key_Insert) {
+                && event->modifiers() == (BobUI::CTRL | BobUI::SHIFT)
+                && event->key() == BobUI::Key_Insert) {
                 mode = QClipboard::Selection;
             }
             paste(mode);
@@ -1729,7 +1729,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
             del();
         }
     }
-#endif //QT_NO_CLIPBOARD
+#endif //BOBUI_NO_CLIPBOARD
     else if (event == QKeySequence::MoveToStartOfLine || event == QKeySequence::MoveToStartOfBlock) {
         home(0);
     }
@@ -1743,7 +1743,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
         end(1);
     }
     else if (event == QKeySequence::MoveToNextChar) {
-#if !QT_CONFIG(completer)
+#if !BOBUI_CONFIG(completer)
         const bool inlineCompletion = false;
 #else
         const bool inlineCompletion = m_completer && m_completer->completionMode() == QCompleter::InlineCompletion;
@@ -1753,14 +1753,14 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
                || inlineCompletion)) {
             moveCursor(selectionEnd(), false);
         } else {
-            cursorForward(0, visual ? 1 : (layoutDirection() == Qt::LeftToRight ? 1 : -1));
+            cursorForward(0, visual ? 1 : (layoutDirection() == BobUI::LeftToRight ? 1 : -1));
         }
     }
     else if (event == QKeySequence::SelectNextChar) {
-        cursorForward(1, visual ? 1 : (layoutDirection() == Qt::LeftToRight ? 1 : -1));
+        cursorForward(1, visual ? 1 : (layoutDirection() == BobUI::LeftToRight ? 1 : -1));
     }
     else if (event == QKeySequence::MoveToPreviousChar) {
-#if !QT_CONFIG(completer)
+#if !BOBUI_CONFIG(completer)
         const bool inlineCompletion = false;
 #else
         const bool inlineCompletion = m_completer && m_completer->completionMode() == QCompleter::InlineCompletion;
@@ -1770,36 +1770,36 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
                 || inlineCompletion)) {
             moveCursor(selectionStart(), false);
         } else {
-            cursorForward(0, visual ? -1 : (layoutDirection() == Qt::LeftToRight ? -1 : 1));
+            cursorForward(0, visual ? -1 : (layoutDirection() == BobUI::LeftToRight ? -1 : 1));
         }
     }
     else if (event == QKeySequence::SelectPreviousChar) {
-        cursorForward(1, visual ? -1 : (layoutDirection() == Qt::LeftToRight ? -1 : 1));
+        cursorForward(1, visual ? -1 : (layoutDirection() == BobUI::LeftToRight ? -1 : 1));
     }
     else if (event == QKeySequence::MoveToNextWord) {
         if (echoMode() == QLineEdit::Normal)
-            layoutDirection() == Qt::LeftToRight ? cursorWordForward(0) : cursorWordBackward(0);
+            layoutDirection() == BobUI::LeftToRight ? cursorWordForward(0) : cursorWordBackward(0);
         else
-            layoutDirection() == Qt::LeftToRight ? end(0) : home(0);
+            layoutDirection() == BobUI::LeftToRight ? end(0) : home(0);
     }
     else if (event == QKeySequence::MoveToPreviousWord) {
         if (echoMode() == QLineEdit::Normal)
-            layoutDirection() == Qt::LeftToRight ? cursorWordBackward(0) : cursorWordForward(0);
+            layoutDirection() == BobUI::LeftToRight ? cursorWordBackward(0) : cursorWordForward(0);
         else if (!isReadOnly()) {
-            layoutDirection() == Qt::LeftToRight ? home(0) : end(0);
+            layoutDirection() == BobUI::LeftToRight ? home(0) : end(0);
         }
     }
     else if (event == QKeySequence::SelectNextWord) {
         if (echoMode() == QLineEdit::Normal)
-            layoutDirection() == Qt::LeftToRight ? cursorWordForward(1) : cursorWordBackward(1);
+            layoutDirection() == BobUI::LeftToRight ? cursorWordForward(1) : cursorWordBackward(1);
         else
-            layoutDirection() == Qt::LeftToRight ? end(1) : home(1);
+            layoutDirection() == BobUI::LeftToRight ? end(1) : home(1);
     }
     else if (event == QKeySequence::SelectPreviousWord) {
         if (echoMode() == QLineEdit::Normal)
-            layoutDirection() == Qt::LeftToRight ? cursorWordBackward(1) : cursorWordForward(1);
+            layoutDirection() == BobUI::LeftToRight ? cursorWordBackward(1) : cursorWordForward(1);
         else
-            layoutDirection() == Qt::LeftToRight ? home(1) : end(1);
+            layoutDirection() == BobUI::LeftToRight ? home(1) : end(1);
     }
     else if (event == QKeySequence::Delete) {
         if (!isReadOnly())
@@ -1825,45 +1825,45 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
     } else if (event == QKeySequence::DeleteCompleteLine) {
         if (!isReadOnly()) {
             setSelection(0, text().size());
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
             copy();
 #endif
             del();
         }
     }
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
     else {
         bool handled = false;
         if (m_keyboardScheme == QPlatformTheme::MacKeyboardScheme
-            && (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down)) {
-            Qt::KeyboardModifiers myModifiers = (event->modifiers() & ~Qt::KeypadModifier);
-            if (myModifiers & Qt::ShiftModifier) {
-                if (myModifiers == (Qt::ControlModifier|Qt::ShiftModifier)
-                        || myModifiers == (Qt::AltModifier|Qt::ShiftModifier)
-                        || myModifiers == Qt::ShiftModifier) {
+            && (event->key() == BobUI::Key_Up || event->key() == BobUI::Key_Down)) {
+            BobUI::KeyboardModifiers myModifiers = (event->modifiers() & ~BobUI::KeypadModifier);
+            if (myModifiers & BobUI::ShiftModifier) {
+                if (myModifiers == (BobUI::ControlModifier|BobUI::ShiftModifier)
+                        || myModifiers == (BobUI::AltModifier|BobUI::ShiftModifier)
+                        || myModifiers == BobUI::ShiftModifier) {
 
-                    event->key() == Qt::Key_Up ? home(1) : end(1);
+                    event->key() == BobUI::Key_Up ? home(1) : end(1);
                 }
             } else {
-                if ((myModifiers == Qt::ControlModifier
-                     || myModifiers == Qt::AltModifier
-                     || myModifiers == Qt::NoModifier)) {
-                    event->key() == Qt::Key_Up ? home(0) : end(0);
+                if ((myModifiers == BobUI::ControlModifier
+                     || myModifiers == BobUI::AltModifier
+                     || myModifiers == BobUI::NoModifier)) {
+                    event->key() == BobUI::Key_Up ? home(0) : end(0);
                 }
             }
             handled = true;
         }
-        if (event->modifiers() & Qt::ControlModifier) {
+        if (event->modifiers() & BobUI::ControlModifier) {
             switch (event->key()) {
-            case Qt::Key_Backspace:
+            case BobUI::Key_Backspace:
                 if (!isReadOnly()) {
                     cursorWordBackward(true);
                     del();
                 }
                 break;
-#if QT_CONFIG(completer)
-            case Qt::Key_Up:
-            case Qt::Key_Down:
+#if BOBUI_CONFIG(completer)
+            case BobUI::Key_Up:
+            case BobUI::Key_Down:
                 complete(event->key());
                 break;
 #endif
@@ -1873,16 +1873,16 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
             }
         } else { // ### check for *no* modifier
             switch (event->key()) {
-            case Qt::Key_Backspace:
+            case BobUI::Key_Backspace:
                 if (!isReadOnly()) {
                     backspace();
-#if QT_CONFIG(completer)
-                    complete(Qt::Key_Backspace);
+#if BOBUI_CONFIG(completer)
+                    complete(BobUI::Key_Backspace);
 #endif
                 }
                 break;
-#ifdef QT_KEYPAD_NAVIGATION
-            case Qt::Key_Back:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+            case BobUI::Key_Back:
                 if (QApplicationPrivate::keypadNavigationEnabled() && !event->isAutoRepeat()
                     && !isReadOnly()) {
                     if (text().length() == 0) {
@@ -1907,8 +1907,8 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
         }
     }
 
-    if (event->key() == Qt::Key_Direction_L || event->key() == Qt::Key_Direction_R) {
-        setLayoutDirection((event->key() == Qt::Key_Direction_L) ? Qt::LeftToRight : Qt::RightToLeft);
+    if (event->key() == BobUI::Key_Direction_L || event->key() == BobUI::Key_Direction_R) {
+        setLayoutDirection((event->key() == BobUI::Key_Direction_L) ? BobUI::LeftToRight : BobUI::RightToLeft);
         unknown = false;
     }
 
@@ -1916,7 +1916,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
         && !isReadOnly()
         && isAcceptableInput(event)) {
         insert(event->text());
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
         complete(event->key());
 #endif
         event->accept();
@@ -1926,7 +1926,7 @@ void QWidgetLineControl::processKeyEvent(QKeyEvent* event)
     if (unknown) {
         event->ignore();
     } else {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         if (QApplication::clipboard()->supportsSelection())
             copy(QClipboard::Selection);
 #endif
@@ -1950,6 +1950,6 @@ bool QWidgetLineControl::isRedoAvailable() const
             && m_undoState < int(m_history.size());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwidgetlinecontrol_p.cpp"

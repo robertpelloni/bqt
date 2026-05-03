@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qabstractfileiconengine_p.h"
 
 #include <qpixmapcache.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QAbstractFileIconEngine
@@ -80,7 +80,7 @@ QSize QAbstractFileIconEngine::actualSize(const QSize &size, QIcon::Mode mode,
     }
 
     if (!actualSize.isNull() && (actualSize.width() > size.width() || actualSize.height() > size.height()))
-        actualSize.scale(size, Qt::KeepAspectRatio);
+        actualSize.scale(size, BobUI::KeepAspectRatio);
 
     return actualSize;
 }
@@ -93,8 +93,8 @@ QString QAbstractFileIconEngine::cacheKey() const
         return QString();
 
     const QString &suffix = m_fileInfo.suffix();
-    return "qt_."_L1
+    return "bobui_."_L1
         + (suffix.isEmpty() ? m_fileInfo.fileName() : suffix); // handle "Makefile"                                    ;)
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

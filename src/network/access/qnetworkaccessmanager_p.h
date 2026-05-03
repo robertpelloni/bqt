@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKACCESSMANAGER_P_H
 #define QNETWORKACCESSMANAGER_P_H
@@ -9,32 +9,32 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 #include "qnetworkaccessmanager.h"
 #include "qnetworkaccesscache_p.h"
 #include "qnetworkaccessbackend_p.h"
 #include "qnetworkrequest.h"
 #include "qhsts_p.h"
 #include "private/qobject_p.h"
-#include "QtNetwork/qnetworkproxy.h"
+#include "BobUINetwork/qnetworkproxy.h"
 #include "qnetworkaccessauthenticationmanager_p.h"
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include "qhstsstore_p.h"
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include <memory>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAuthenticator;
 class QAbstractNetworkCache;
@@ -48,7 +48,7 @@ public:
         : networkCache(nullptr),
           cookieJar(nullptr),
           thread(nullptr),
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
           proxyFactory(nullptr),
 #endif
           cookieJarCreated(false),
@@ -59,7 +59,7 @@ public:
     }
     ~QNetworkAccessManagerPrivate();
 
-    QThread * createThread();
+    BOBUIhread * createThread();
     void destroyThread();
 
     void _q_replyFinished(QNetworkReply *reply);
@@ -79,7 +79,7 @@ public:
     QNetworkAuthenticationCredential *fetchCachedCredentials(const QUrl &url,
                                                              const QAuthenticator *auth = nullptr);
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QUrl &url,
                                 const QNetworkProxy &proxy,
                                 bool synchronous,
@@ -94,7 +94,7 @@ public:
     QNetworkAccessBackend *findBackend(QNetworkAccessManager::Operation op, const QNetworkRequest &request);
     QStringList backendSupportedSchemes() const;
 
-#if QT_CONFIG(http) || defined(Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined(Q_OS_WASM)
     QNetworkRequest prepareMultipart(const QNetworkRequest &request, QHttpMultiPart *multiPart);
 #endif
 
@@ -105,10 +105,10 @@ public:
 
     QNetworkCookieJar *cookieJar;
 
-    QThread *thread;
+    BOBUIhread *thread;
 
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy proxy;
     QNetworkProxyFactory *proxyFactory;
 #endif
@@ -124,9 +124,9 @@ public:
     Q_AUTOTEST_EXPORT static void clearConnectionCache(QNetworkAccessManager *manager);
 
     QHstsCache stsCache;
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     std::unique_ptr<QHstsStore> stsStore;
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
     bool stsEnabled = false;
 
     bool autoDeleteReplies = false;
@@ -136,6 +136,6 @@ public:
     Q_DECLARE_PUBLIC(QNetworkAccessManager)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

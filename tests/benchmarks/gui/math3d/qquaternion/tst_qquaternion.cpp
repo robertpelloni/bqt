@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QQuaternion>
 
 class tst_QQuaternion : public QObject
@@ -39,24 +39,24 @@ void tst_QQuaternion::cleanup()
 
 void tst_QQuaternion::multiply_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("unitvec")
+    BOBUIest::newRow("unitvec")
         << 1.0f << 0.0f << 0.0f << 1.0f
         << 0.0f << 1.0f << 0.0f << 1.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << 3.0f << 7.0f
         << 4.0f << 5.0f << 6.0f << 8.0f;
 }
@@ -81,5 +81,5 @@ void tst_QQuaternion::multiply()
     }
 }
 
-QTEST_MAIN(tst_QQuaternion)
+BOBUIEST_MAIN(tst_QQuaternion)
 #include "tst_qquaternion.moc"

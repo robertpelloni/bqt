@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSHAREDPOINTER_H
 #define QSHAREDPOINTER_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qshareddata.h>
 
 #ifndef Q_QDOC
-# include <QtCore/qsharedpointer_impl.h>
+# include <BobUICore/qsharedpointer_impl.h>
 #else
 
 #include <memory> // for std::shared_ptr
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 // These classes are here to fool qdoc into generating a better documentation
@@ -183,7 +183,7 @@ template <typename X, class T> std::shared_ptr<X> qSharedPointerObjectCast(std::
 
 template <class X, class T> QWeakPointer<X> qWeakPointerCast(const QWeakPointer<T> &src);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_QDOC
 

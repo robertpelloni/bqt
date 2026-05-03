@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDateTime>
 
@@ -69,10 +69,10 @@ extern "C" int LLVMFuzzerTestOneInput(const char *Data, size_t Size)
 {
     const QString userString = QString::fromUtf8(Data, Size);
 
-    QDateTime::fromString(userString, Qt::TextDate);
-    QDateTime::fromString(userString, Qt::ISODate);
-    QDateTime::fromString(userString, Qt::RFC2822Date);
-    QDateTime::fromString(userString, Qt::ISODateWithMs);
+    QDateTime::fromString(userString, BobUI::TextDate);
+    QDateTime::fromString(userString, BobUI::ISODate);
+    QDateTime::fromString(userString, BobUI::RFC2822Date);
+    QDateTime::fromString(userString, BobUI::ISODateWithMs);
 
     QDateTime::fromString(userString, formats[0], QCalendar(QCalendar::System::Gregorian));
     for (int sys = int(QCalendar::System::Julian); sys <= int(QCalendar::System::Last); ++sys)

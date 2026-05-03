@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwidgetresizehandler_p.h"
 
@@ -8,16 +8,16 @@
 #include "qapplication.h"
 #include "private/qwidget_p.h"
 #include "qcursor.h"
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 #include "qsizegrip.h"
 #endif
 #include "qevent.h"
 #include "qdebug.h"
 #include "private/qlayoutengine_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define RANGE 4
 
@@ -80,7 +80,7 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
         const QPoint cursorPoint = widget->mapFromGlobal(e->globalPosition().toPoint());
         if (!widgetRect.contains(cursorPoint))
             return false;
-        if (e->button() == Qt::LeftButton) {
+        if (e->button() == BobUI::LeftButton) {
             buttonDown = false;
             emit activate();
             mouseMoveEvent(e);
@@ -94,7 +94,7 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
     case QEvent::MouseButtonRelease:
         if (w->isMaximized())
             break;
-        if (static_cast<QMouseEvent *>(ee)->button() == Qt::LeftButton) {
+        if (static_cast<QMouseEvent *>(ee)->button() == BobUI::LeftButton) {
             active = false;
             buttonDown = false;
             widget->releaseMouse();
@@ -107,7 +107,7 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
         if (w->isMaximized())
             break;
         QMouseEvent *e = static_cast<QMouseEvent *>(ee);
-        buttonDown = buttonDown && (e->buttons() & Qt::LeftButton); // safety, state machine broken!
+        buttonDown = buttonDown && (e->buttons() & BobUI::LeftButton); // safety, state machine broken!
         mouseMoveEvent(e);
         if (mode != Center)
             return true;
@@ -116,7 +116,7 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
         keyPressEvent(static_cast<QKeyEvent *>(ee));
         break;
     case QEvent::ShortcutOverride:
-        buttonDown &= ((QGuiApplication::mouseButtons() & Qt::LeftButton) != Qt::NoButton);
+        buttonDown &= ((QGuiApplication::mouseButtons() & BobUI::LeftButton) != BobUI::NoButton);
         if (buttonDown) {
             ee->accept();
             return true;
@@ -156,7 +156,7 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
 
         if (widget->isMinimized() || !isEnabled())
             mode = Center;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         setMouseCursor(mode);
 #endif
         return;
@@ -165,7 +165,7 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
     if (mode == Center)
         return;
 
-    if (widget->testAttribute(Qt::WA_WState_ConfigPending))
+    if (widget->testAttribute(BobUI::WA_WState_ConfigPending))
         return;
 
 
@@ -256,14 +256,14 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
 
 void QWidgetResizeHandler::setMouseCursor(MousePosition m)
 {
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
     Q_UNUSED(m);
 #else
     QObjectList children = widget->children();
     for (int i = 0; i < children.size(); ++i) {
         if (QWidget *w = qobject_cast<QWidget*>(children.at(i))) {
-            if (!w->testAttribute(Qt::WA_SetCursor)) {
-                w->setCursor(Qt::ArrowCursor);
+            if (!w->testAttribute(BobUI::WA_SetCursor)) {
+                w->setCursor(BobUI::ArrowCursor);
             }
         }
     }
@@ -271,36 +271,36 @@ void QWidgetResizeHandler::setMouseCursor(MousePosition m)
     switch (m) {
     case TopLeft:
     case BottomRight:
-        widget->setCursor(Qt::SizeFDiagCursor);
+        widget->setCursor(BobUI::SizeFDiagCursor);
         break;
     case BottomLeft:
     case TopRight:
-        widget->setCursor(Qt::SizeBDiagCursor);
+        widget->setCursor(BobUI::SizeBDiagCursor);
         break;
     case Top:
     case Bottom:
-        widget->setCursor(Qt::SizeVerCursor);
+        widget->setCursor(BobUI::SizeVerCursor);
         break;
     case Left:
     case Right:
-        widget->setCursor(Qt::SizeHorCursor);
+        widget->setCursor(BobUI::SizeHorCursor);
         break;
     default:
-        widget->setCursor(Qt::ArrowCursor);
+        widget->setCursor(BobUI::ArrowCursor);
         break;
     }
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
 }
 
 void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
 {
     if (!isResizing())
         return;
-    bool is_control = e->modifiers() & Qt::ControlModifier;
+    bool is_control = e->modifiers() & BobUI::ControlModifier;
     int delta = is_control?1:8;
     QPoint pos = QCursor::pos();
     switch (e->key()) {
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         pos.rx() -= delta;
         if (pos.x() <= QGuiApplication::primaryScreen()->virtualGeometry().left()) {
             if (mode == TopLeft || mode == BottomLeft) {
@@ -317,7 +317,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
                 mode = BottomLeft;
             else if (mode == TopRight)
                 mode = TopLeft;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             setMouseCursor(mode);
             widget->grabMouse(widget->cursor());
 #else
@@ -325,7 +325,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
 #endif
         }
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         pos.rx() += delta;
         if (pos.x() >= QGuiApplication::primaryScreen()->virtualGeometry().right()) {
             if (mode == TopRight || mode == BottomRight) {
@@ -342,7 +342,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
                 mode = BottomRight;
             else if (mode == TopLeft)
                 mode = TopRight;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             setMouseCursor(mode);
             widget->grabMouse(widget->cursor());
 #else
@@ -350,7 +350,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
 #endif
         }
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         pos.ry() -= delta;
         if (pos.y() <= QGuiApplication::primaryScreen()->virtualGeometry().top()) {
             if (mode == TopLeft || mode == TopRight) {
@@ -367,7 +367,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
                 mode = TopLeft;
             else if (mode == BottomRight)
                 mode = TopRight;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             setMouseCursor(mode);
             widget->grabMouse(widget->cursor());
 #else
@@ -375,7 +375,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
 #endif
         }
         break;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         pos.ry() += delta;
         if (pos.y() >= QGuiApplication::primaryScreen()->virtualGeometry().bottom()) {
             if (mode == BottomLeft || mode == BottomRight) {
@@ -392,7 +392,7 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
                 mode = BottomLeft;
             else if (mode == TopRight)
                 mode = BottomRight;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             setMouseCursor(mode);
             widget->grabMouse(widget->cursor());
 #else
@@ -400,10 +400,10 @@ void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)
 #endif
         }
         break;
-    case Qt::Key_Space:
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-    case Qt::Key_Escape:
+    case BobUI::Key_Space:
+    case BobUI::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Escape:
         active = false;
         widget->releaseMouse();
         widget->releaseKeyboard();
@@ -435,7 +435,7 @@ void QWidgetResizeHandler::doResize()
             mode = BottomRight;
     }
     invertedMoveOffset = widget->rect().bottomRight() - moveOffset;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     setMouseCursor(mode);
     widget->grabMouse(widget->cursor() );
 #else
@@ -446,6 +446,6 @@ void QWidgetResizeHandler::doResize()
     resizeVerticalDirectionFixed = false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwidgetresizehandler_p.cpp"

@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusconnectionmanager_p.h"
 
 #include <qcoreapplication.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qstringlist.h>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/private/qlocking_p.h>
 
 #include "qdbuserror.h"
 #include "qdbuspendingcall_p.h"
 #include "qdbusmetatype_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN
 static void preventDllUnload();
@@ -34,15 +34,15 @@ QDBusConnectionPrivate *QDBusConnectionManager::busConnection(QDBusConnection::B
 
     // we'll start in suspended delivery mode if we're in the main thread
     // (the event loop will resume delivery) and QCoreApplication already exists
-    bool suspendedDelivery = QThread::isMainThread() && qApp;
+    bool suspendedDelivery = BOBUIhread::isMainThread() && qApp;
 
-    const auto locker = qt_scoped_lock(defaultBusMutex);
+    const auto locker = bobui_scoped_lock(defaultBusMutex);
     if (defaultBuses[type])
         return defaultBuses[type];
 
-    QString name = QStringLiteral("qt_default_session_bus");
+    QString name = QStringLiteral("bobui_default_session_bus");
     if (type == QDBusConnection::SystemBus)
-        name = QStringLiteral("qt_default_system_bus");
+        name = QStringLiteral("bobui_default_system_bus");
     return defaultBuses[type] = connectToBus(type, name, suspendedDelivery);
 }
 
@@ -53,7 +53,7 @@ QDBusConnectionPrivate *QDBusConnectionManager::connection(const QString &name) 
 
 QDBusConnectionPrivate *QDBusConnectionManager::existingConnection(const QString &name) const
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
     auto *conn = connection(name);
     if (conn)
         conn->ref.ref();
@@ -76,7 +76,7 @@ void QDBusConnectionManager::removeConnection(const QString &name)
 
 void QDBusConnectionManager::removeConnections(const QStringList &names)
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     for (const auto &name : names)
         removeConnection(name);
@@ -85,7 +85,7 @@ void QDBusConnectionManager::removeConnections(const QStringList &names)
 void QDBusConnectionManager::disconnectFrom(const QString &name,
                                             QDBusConnectionPrivate::ConnectionMode mode)
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     QDBusConnectionPrivate *d = connection(name);
     if (d && d->mode != mode)
@@ -97,7 +97,7 @@ QDBusConnectionManager::QDBusConnectionManager()
 {
     // Ensure that the custom metatype registry is created before the instance
     // of this class. This will ensure that the registry is not destroyed before
-    // the connection manager at application exit (see also QTBUG-58732). This
+    // the connection manager at application exit (see also BOBUIBUG-58732). This
     // works with compilers that use mechanism similar to atexit() to call
     // destructurs for global statics.
     QDBusMetaTypeId::init();
@@ -136,7 +136,7 @@ void QDBusConnectionManager::setConnection(const QString &name, QDBusConnectionP
 
 void QDBusConnectionManager::addConnection(const QString &name, QDBusConnectionPrivate *c)
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
     setConnection(name, c);
 }
 
@@ -145,7 +145,7 @@ void QDBusConnectionManager::run()
     exec();
 
     // cleanup:
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
     for (QDBusConnectionPrivate *d : std::as_const(connectionHash)) {
         if (!d->ref.deref()) {
             delete d;
@@ -166,7 +166,7 @@ QDBusConnectionPrivate *QDBusConnectionManager::connectToBus(QDBusConnection::Bu
     QDBusConnectionPrivate *result = nullptr;
 
     QMetaObject::invokeMethod(this, &QDBusConnectionManager::doConnectToStandardBus,
-                              Qt::BlockingQueuedConnection, qReturnArg(result), type, name,
+                              BobUI::BlockingQueuedConnection, qReturnArg(result), type, name,
                               suspendedDelivery);
 
     if (suspendedDelivery && result && result->connection)
@@ -180,7 +180,7 @@ QDBusConnectionPrivate *QDBusConnectionManager::connectToBus(const QString &addr
     QDBusConnectionPrivate *result = nullptr;
 
     QMetaObject::invokeMethod(this, &QDBusConnectionManager::doConnectToBus,
-                              Qt::BlockingQueuedConnection, qReturnArg(result), address, name);
+                              BobUI::BlockingQueuedConnection, qReturnArg(result), address, name);
 
     return result;
 }
@@ -190,7 +190,7 @@ QDBusConnectionPrivate *QDBusConnectionManager::connectToPeer(const QString &add
     QDBusConnectionPrivate *result = nullptr;
 
     QMetaObject::invokeMethod(this, &QDBusConnectionManager::doConnectToPeer,
-                              Qt::BlockingQueuedConnection, qReturnArg(result), address, name);
+                              BobUI::BlockingQueuedConnection, qReturnArg(result), address, name);
 
     return result;
 }
@@ -199,7 +199,7 @@ QDBusConnectionPrivate *
 QDBusConnectionManager::doConnectToStandardBus(QDBusConnection::BusType type, const QString &name,
                                                bool suspendedDelivery)
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     // check if the connection exists by name
     QDBusConnectionPrivate *d = connection(name);
@@ -237,7 +237,7 @@ QDBusConnectionManager::doConnectToStandardBus(QDBusConnection::BusType type, co
 QDBusConnectionPrivate *QDBusConnectionManager::doConnectToBus(const QString &address,
                                                                const QString &name)
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     // check if the connection exists by name
     QDBusConnectionPrivate *d = connection(name);
@@ -270,7 +270,7 @@ QDBusConnectionPrivate *QDBusConnectionManager::doConnectToBus(const QString &ad
 QDBusConnectionPrivate *QDBusConnectionManager::doConnectToPeer(const QString &address,
                                                                 const QString &name)
 {
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     // check if the connection exists by name
     QDBusConnectionPrivate *d = connection(name);
@@ -298,17 +298,17 @@ void QDBusConnectionManager::createServer(const QString &address, QDBusServer *s
                 d->setServer(server, q_dbus_server_listen(address.toUtf8().constData(), error),
                              error);
             },
-            Qt::BlockingQueuedConnection);
+            BobUI::BlockingQueuedConnection);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusconnectionmanager_p.cpp"
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 static void preventDllUnload()
 {
     // Thread termination is really wacky on Windows. For some reason we don't
@@ -329,7 +329,7 @@ static void preventDllUnload()
                       reinterpret_cast<const wchar_t *>(&self), // any address in this DLL
                       &self);
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

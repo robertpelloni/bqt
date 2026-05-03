@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPOINTER_H
 #define QPOINTER_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qtypeinfo.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/bobuiypeinfo.h>
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVariant;
 
@@ -96,7 +96,7 @@ private:
     template <typename X>
     friend bool comparesEqual(const QPointer &lhs, const QPointer<X> &rhs) noexcept
     { return lhs.data() == rhs.data(); }
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QPointer, QPointer<X>, /* non-constexpr */,
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QPointer, QPointer<X>, /* non-constexpr */,
                                          noexcept(true), template <typename X>)
 
     template <typename X>
@@ -114,12 +114,12 @@ template<typename T>
 QPointer<T>
 qPointerFromVariant(const QVariant &variant)
 {
-    const auto wp = QtSharedPointer::weakPointerFromVariant_internal(variant);
-    return QPointer<T>{qobject_cast<T*>(QtPrivate::EnableInternalData::internalData(wp))};
+    const auto wp = BobUISharedPointer::weakPointerFromVariant_internal(variant);
+    return QPointer<T>{qobject_cast<T*>(BobUIPrivate::EnableInternalData::internalData(wp))};
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 #endif // QPOINTER_H

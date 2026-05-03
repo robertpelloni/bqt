@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:load-external-library-via-qlibrary
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:load-external-library-via-qlibrary
 
 #include "qdbus_symbols_p.h"
-#include <QtCore/qlatin1stringview.h>
-#if QT_CONFIG(library)
-#include <QtCore/qlibrary.h>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/qlatin1stringview.h>
+#if BOBUI_CONFIG(library)
+#include <BobUICore/qlibrary.h>
+#include <BobUICore/private/qlocking_p.h>
 #endif
-#include <QtCore/qmutex.h>
+#include <BobUICore/qmutex.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if !defined QT_LINKED_LIBDBUS
+#if !defined BOBUI_LINKED_LIBDBUS
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 Q_CONSTINIT static QLibrary *qdbus_libdbus = nullptr;
 
 void qdbus_unloadLibDBus()
@@ -36,16 +36,16 @@ void qdbus_unloadLibDBus()
 
 bool qdbus_loadLibDBus()
 {
-#if QT_CONFIG(library)
-#ifdef QT_BUILD_INTERNAL
+#if BOBUI_CONFIG(library)
+#ifdef BOBUI_BUILD_INTERNAL
     // this is to simulate a library load failure for our autotest suite.
-    if (!qEnvironmentVariableIsEmpty("QT_SIMULATE_DBUS_LIBFAIL"))
+    if (!qEnvironmentVariableIsEmpty("BOBUI_SIMULATE_DBUS_LIBFAIL"))
         return false;
 #endif
 
     Q_CONSTINIT static bool triedToLoadLibrary = false;
     Q_CONSTINIT static QBasicMutex mutex;
-    const auto locker = qt_scoped_lock(mutex);
+    const auto locker = bobui_scoped_lock(mutex);
 
     QLibrary *&lib = qdbus_libdbus;
     if (triedToLoadLibrary)
@@ -91,7 +91,7 @@ bool qdbus_loadLibDBus()
 
 QFunctionPointer qdbus_resolve_conditionally(const char *name)
 {
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     if (qdbus_loadLibDBus())
         return qdbus_libdbus->resolve(name);
 #else
@@ -102,7 +102,7 @@ QFunctionPointer qdbus_resolve_conditionally(const char *name)
 
 QFunctionPointer qdbus_resolve_me(const char *name)
 {
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     if (Q_UNLIKELY(!qdbus_loadLibDBus()))
         qFatal("Cannot find libdbus-1 in your system to resolve symbol '%s'.", name);
 
@@ -124,12 +124,12 @@ static void qdbus_unloadLibDBus()
         dbus_shutdown();
 }
 
-#endif // !QT_LINKED_LIBDBUS
+#endif // !BOBUI_LINKED_LIBDBUS
 
-#if defined(QT_LINKED_LIBDBUS) || QT_CONFIG(library)
+#if defined(BOBUI_LINKED_LIBDBUS) || BOBUI_CONFIG(library)
 Q_DESTRUCTOR_FUNCTION(qdbus_unloadLibDBus)
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

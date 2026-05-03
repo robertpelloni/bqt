@@ -1,10 +1,10 @@
 // Copyright (C) 2025 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtCore/qcheckedint_impl.h>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BOBUIest>
+#include <BobUICore/qcheckedint_impl.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
 #include <climits>
 #include <type_traits>
@@ -43,9 +43,9 @@ void tst_QCheckedInt::init()
 }
 
 using CheckedInt =
-    QtPrivate::QCheckedIntegers::QCheckedInt<
+    BobUIPrivate::QCheckedIntegers::QCheckedInt<
         int,
-        QtPrivate::QCheckedIntegers::SafeCheckImpl<int>,
+        BobUIPrivate::QCheckedIntegers::SafeCheckImpl<int>,
         TestPolicy>;
 
 void tst_QCheckedInt::unary()
@@ -352,7 +352,7 @@ void tst_QCheckedInt::division()
 template <typename T>
 constexpr bool checkedIntTypeProperties()
 {
-    using Int = QtPrivate::QCheckedIntegers::QCheckedInt<T>;
+    using Int = BobUIPrivate::QCheckedIntegers::QCheckedInt<T>;
     static_assert(sizeof(Int) == sizeof(T));
     static_assert(alignof(Int) == alignof(T));
     static_assert(std::is_trivially_constructible_v<Int>);
@@ -378,5 +378,5 @@ static_assert(checkedIntTypeProperties<long long>());
 
 #endif // MSVC / GHS
 
-QTEST_APPLESS_MAIN(tst_QCheckedInt)
+BOBUIEST_APPLESS_MAIN(tst_QCheckedInt)
 #include "tst_qcheckedint.moc"

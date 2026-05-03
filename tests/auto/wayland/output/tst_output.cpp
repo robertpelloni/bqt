@@ -1,9 +1,9 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QScreen>
-#include <QtGui/QRasterWindow>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QRasterWindow>
 
 using namespace MockCompositor;
 
@@ -19,8 +19,8 @@ private slots:
     void cleanup()
     {
         QCOMPOSITOR_COMPARE(getAll<Output>().size(), 1); // Only the default output should be left
-        QTRY_COMPARE(QGuiApplication::screens().size(), 1);
-        QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+        BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
+        BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
     }
     void primaryScreen();
     void secondaryHiDpiScreen();
@@ -35,7 +35,7 @@ void tst_output::primaryScreen()
 {
     // Verify that the client has bound to the output global
     QCOMPOSITOR_TRY_COMPARE(output()->resourceMap().size(), 1);
-    QTRY_VERIFY(QGuiApplication::primaryScreen());
+    BOBUIRY_VERIFY(QGuiApplication::primaryScreen());
     QScreen *screen = QGuiApplication::primaryScreen();
     QCOMPARE(screen->manufacturer(), "Make");
     QCOMPARE(screen->model(), "Model");
@@ -60,13 +60,13 @@ void tst_output::secondaryHiDpiScreen()
     // Verify that the client has bound to the output global
     QCOMPOSITOR_TRY_VERIFY(output(1) && output(1)->resourceMap().size() == 1);
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
     QScreen *screen = QGuiApplication::screens()[1];
     QCOMPARE(screen->refreshRate(), 60);
     QCOMPARE(screen->devicePixelRatio(), 2);
     QCOMPARE(screen->logicalDotsPerInch(), 96);
 
-    // Dots currently means device pixels, not actual pixels (see QTBUG-62649)
+    // Dots currently means device pixels, not actual pixels (see BOBUIBUG-62649)
     QCOMPARE(qRound(screen->physicalDotsPerInch() * screen->devicePixelRatio()), 200);
 
     // Size is in logical pixel coordinates
@@ -77,7 +77,7 @@ void tst_output::secondaryHiDpiScreen()
     exec([&] { remove(output(1)); });
 }
 
-// QTBUG-62044
+// BOBUIBUG-62044
 void tst_output::addScreenWithGeometryChange()
 {
     const QPoint initialPosition = exec([&] { return output(0)->m_data.position; });
@@ -94,8 +94,8 @@ void tst_output::addScreenWithGeometryChange()
         oldOutput->sendDone();
     });
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
-    QTRY_COMPARE(QGuiApplication::primaryScreen()->geometry(), QRect(QPoint(1280, 0), QSize(1920, 1080)));
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::primaryScreen()->geometry(), QRect(QPoint(1280, 0), QSize(1920, 1080)));
 
     // Remove the extra output and move the old one back
     exec([&] {
@@ -104,8 +104,8 @@ void tst_output::addScreenWithGeometryChange()
         output()->sendGeometry();
         output()->sendDone();
     });
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
-    QTRY_COMPARE(QGuiApplication::primaryScreen()->geometry(), QRect(QPoint(0, 0), QSize(1920, 1080)));
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::primaryScreen()->geometry(), QRect(QPoint(0, 0), QSize(1920, 1080)));
 }
 
 void tst_output::windowScreens()
@@ -115,13 +115,13 @@ void tst_output::windowScreens()
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgSurface() && xdgSurface()->m_committedConfigureSerial);
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
     QScreen *primaryScreen = QGuiApplication::screens().first();
     QCOMPARE(window.screen(), primaryScreen);
 
     exec([&] { add<Output>(); });
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
     QScreen *secondaryScreen = QGuiApplication::screens().at(1);
     QVERIFY(secondaryScreen);
 
@@ -133,17 +133,17 @@ void tst_output::windowScreens()
         xdgToplevel()->surface()->sendEnter(output(1));
     });
 
-    QTRY_COMPARE(window.screen(), primaryScreen);
+    BOBUIRY_COMPARE(window.screen(), primaryScreen);
 
     exec([&] {
         xdgToplevel()->surface()->sendLeave(output(0));
     });
-    QTRY_COMPARE(window.screen(), secondaryScreen);
+    BOBUIRY_COMPARE(window.screen(), secondaryScreen);
 
     exec([&] {
         remove(output(1));
     });
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
     QCOMPARE(window.screen(), primaryScreen);
 }
 
@@ -154,20 +154,20 @@ void tst_output::removePrimaryScreen()
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgSurface() && xdgSurface()->m_committedConfigureSerial);
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
     QScreen *primaryScreen = QGuiApplication::screens().first();
     QCOMPARE(window.screen(), primaryScreen);
 
     // Add a clone of the primary output
     exec([&] { add<Output>(output()->m_data); });
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 2);
-    QTRY_COMPARE(QGuiApplication::primaryScreen()->virtualSiblings().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 2);
+    BOBUIRY_COMPARE(QGuiApplication::primaryScreen()->virtualSiblings().size(), 2);
     QScreen *secondaryScreen = QGuiApplication::screens().at(1);
     QVERIFY(secondaryScreen);
 
     exec([&] { remove(output()); });
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
 
     exec([&] {
         auto *surface = xdgToplevel()->surface();
@@ -183,7 +183,7 @@ void tst_output::removePrimaryScreen()
     xdgPingAndWaitForPong();
 }
 
-// QTBUG-72828
+// BOBUIBUG-72828
 void tst_output::screenOrder()
 {
     exec([&] {
@@ -191,7 +191,7 @@ void tst_output::screenOrder()
         add<Output>()->m_data.model = "Screen 2";
     });
 
-    QTRY_COMPARE(QGuiApplication::screens().size(), 3);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 3);
     const auto screens = QGuiApplication::screens();
 
     QCOMPARE(screens[1]->model(), "Screen 1");
@@ -219,7 +219,7 @@ void tst_output::removeAllScreens()
     exec([&] { remove(output()); });
 
     // Make sure the wl_output is actually removed before we continue
-    QTRY_VERIFY(!QGuiApplication::primaryScreen() || QGuiApplication::primaryScreen()->model() != wlOutputPrimaryScreenModel);
+    BOBUIRY_VERIFY(!QGuiApplication::primaryScreen() || QGuiApplication::primaryScreen()->model() != wlOutputPrimaryScreenModel);
 
     // Adding a window while there are no screens should also work
     QRasterWindow window2;
@@ -229,13 +229,13 @@ void tst_output::removeAllScreens()
     exec([&] { add<Output>(screenInfo); });
 
     // Things should be back to normal
-    QTRY_VERIFY(QGuiApplication::primaryScreen());
-    QTRY_COMPARE(QGuiApplication::primaryScreen()->model(), wlOutputPrimaryScreenModel);
+    BOBUIRY_VERIFY(QGuiApplication::primaryScreen());
+    BOBUIRY_COMPARE(QGuiApplication::primaryScreen()->model(), wlOutputPrimaryScreenModel);
 
     // Test that we don't leave any fake screens around after we get a wl_output back.
-    QTRY_COMPARE(QGuiApplication::screens().size(), 1);
+    BOBUIRY_COMPARE(QGuiApplication::screens().size(), 1);
 
-    // Qt may choose to recreate/hide windows in response to changing screens, so give the client
+    // BobUI may choose to recreate/hide windows in response to changing screens, so give the client
     // some time to potentially mess up before we verify that the windows are visible.
     xdgPingAndWaitForPong();
 

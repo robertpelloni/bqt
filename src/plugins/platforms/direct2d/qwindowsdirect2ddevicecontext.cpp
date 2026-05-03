@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dcontext.h"
 #include "qwindowsdirect2dhelpers.h"
 #include "qwindowsdirect2ddevicecontext.h"
 
-#include <QtCore/private/qcomptr_p.h>
+#include <BobUICore/private/qcomptr_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DDeviceContextPrivate {
 public:
@@ -127,4 +127,4 @@ void QWindowsDirect2DDeviceContextSuspender::resume()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

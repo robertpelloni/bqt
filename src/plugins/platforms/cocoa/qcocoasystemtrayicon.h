@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Christoph Schleifenbaum <christoph.schleifenbaum@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOASYSTEMTRAYICON_P_H
 #define QCOCOASYSTEMTRAYICON_P_H
 
-#include <QtCore/qglobal.h>
-#include <QtGui/qtguiglobal.h>
+#include <BobUICore/qglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(systemtrayicon)
 
-#include <QtCore/qstring.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#include <QtGui/qpa/qplatformsystemtrayicon.h>
+#include <BobUIGui/qpa/qplatformsystemtrayicon.h>
 
 #include "qcocoamenu.h"
 
-QT_FORWARD_DECLARE_CLASS(QCocoaSystemTrayIcon);
+BOBUI_FORWARD_DECLARE_CLASS(QCocoaSystemTrayIcon);
 
-QT_DECLARE_NAMESPACED_OBJC_INTERFACE(QStatusItemDelegate, NSObject <NSUserNotificationCenterDelegate>
+BOBUI_DECLARE_NAMESPACED_OBJC_INTERFACE(QStatusItemDelegate, NSObject <NSUserNotificationCenterDelegate>
 - (instancetype)initWithSysTray:(QCocoaSystemTrayIcon *)platformSystemTray;
 @property (nonatomic, assign) QCocoaSystemTrayIcon *platformSystemTray;
 )
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSStatusItem);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaSystemTrayIcon : public QPlatformSystemTrayIcon
 {
@@ -53,8 +53,8 @@ private:
     QStatusItemDelegate *m_delegate = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON
 
 #endif // QCOCOASYSTEMTRAYICON_P_H

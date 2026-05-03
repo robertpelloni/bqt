@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
@@ -106,17 +106,17 @@ void Window::createDateTimeEdits()
     QDateEdit *dateEdit = new QDateEdit(QDate::currentDate());
     dateEdit->setDateRange(QDate(2005, 1, 1), QDate(2010, 12, 31));
     dateLabel->setText(tr("Appointment date (between %0 and %1):")
-                       .arg(dateEdit->minimumDate().toString(Qt::ISODate))
-                       .arg(dateEdit->maximumDate().toString(Qt::ISODate)));
+                       .arg(dateEdit->minimumDate().toString(BobUI::ISODate))
+                       .arg(dateEdit->maximumDate().toString(BobUI::ISODate)));
 //! [6]
 
 //! [7]
     QLabel *timeLabel = new QLabel;
-    QTimeEdit *timeEdit = new QTimeEdit(QTime::currentTime());
-    timeEdit->setTimeRange(QTime(9, 0, 0, 0), QTime(16, 30, 0, 0));
+    BOBUIimeEdit *timeEdit = new BOBUIimeEdit(BOBUIime::currentTime());
+    timeEdit->setTimeRange(BOBUIime(9, 0, 0, 0), BOBUIime(16, 30, 0, 0));
     timeLabel->setText(tr("Appointment time (between %0 and %1):")
-                       .arg(timeEdit->minimumTime().toString(Qt::ISODate))
-                       .arg(timeEdit->maximumTime().toString(Qt::ISODate)));
+                       .arg(timeEdit->minimumTime().toString(BobUI::ISODate))
+                       .arg(timeEdit->maximumTime().toString(BobUI::ISODate)));
 //! [7]
 
 //! [8]
@@ -163,13 +163,13 @@ void Window::setFormatString(const QString &formatString)
     if (meetingEdit->displayedSections() & QDateTimeEdit::DateSections_Mask) {
         meetingEdit->setDateRange(QDate(2004, 11, 1), QDate(2005, 11, 30));
         meetingLabel->setText(tr("Meeting date (between %0 and %1):")
-            .arg(meetingEdit->minimumDate().toString(Qt::ISODate))
-            .arg(meetingEdit->maximumDate().toString(Qt::ISODate)));
+            .arg(meetingEdit->minimumDate().toString(BobUI::ISODate))
+            .arg(meetingEdit->maximumDate().toString(BobUI::ISODate)));
     } else {
-        meetingEdit->setTimeRange(QTime(0, 7, 20, 0), QTime(21, 0, 0, 0));
+        meetingEdit->setTimeRange(BOBUIime(0, 7, 20, 0), BOBUIime(21, 0, 0, 0));
         meetingLabel->setText(tr("Meeting time (between %0 and %1):")
-            .arg(meetingEdit->minimumTime().toString(Qt::ISODate))
-            .arg(meetingEdit->maximumTime().toString(Qt::ISODate)));
+            .arg(meetingEdit->minimumTime().toString(BobUI::ISODate))
+            .arg(meetingEdit->maximumTime().toString(BobUI::ISODate)));
     }
 }
 //! [13]

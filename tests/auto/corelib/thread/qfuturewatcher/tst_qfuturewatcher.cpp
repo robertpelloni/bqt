@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtTest/qsignalspy.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/qsignalspy.h>
 
-#include <QtConcurrent/qtconcurrentfilter.h>
-#include <QtConcurrent/qtconcurrentmap.h>
-#include <QtConcurrent/qtconcurrentrun.h>
+#include <BobUIConcurrent/bobuiconcurrentfilter.h>
+#include <BobUIConcurrent/bobuiconcurrentmap.h>
+#include <BobUIConcurrent/bobuiconcurrentrun.h>
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qfuturesynchronizer.h>
-#include <QtCore/qfuturewatcher.h>
-#include <QtCore/qset.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qfuturesynchronizer.h>
+#include <BobUICore/qfuturewatcher.h>
+#include <BobUICore/qset.h>
 
 #include <private/qfutureinterface_p.h>
 
-using namespace QtConcurrent;
+using namespace BobUIConcurrent;
 using namespace std::chrono_literals;
 
-#include <QTest>
+#include <BOBUIest>
 
 //#define PRINT
 
@@ -45,7 +45,7 @@ private slots:
     void sharedFutureInterface();
     void changeFuture();
     void cancelEvents();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void pauseEvents();
     void pausedSuspendedOrder();
 #endif
@@ -63,7 +63,7 @@ private slots:
 
 void sleeper()
 {
-    QTest::qSleep(100);
+    BOBUIest::qSleep(100);
 }
 
 void tst_QFutureWatcher::startFinish()
@@ -85,7 +85,7 @@ void tst_QFutureWatcher::startFinish()
         QCOMPARE(finishedCount, 1);
     });
 
-    futureWatcher.setFuture(QtConcurrent::run(sleeper));
+    futureWatcher.setFuture(BobUIConcurrent::run(sleeper));
     futureWatcher.future().waitForFinished();
 
     // waitForFinished() may unblock before asynchronous
@@ -99,7 +99,7 @@ void tst_QFutureWatcher::startFinish()
 
 void mapSleeper(int &)
 {
-    QTest::qSleep(100);
+    BOBUIest::qSleep(100);
 }
 
 static QSet<int> progressValues;
@@ -117,23 +117,23 @@ public slots:
 
 void ProgressObject::printProgress(int progress)
 {
-    qDebug() << "thread" << QThread::currentThread() << "reports progress" << progress;
+    qDebug() << "thread" << BOBUIhread::currentThread() << "reports progress" << progress;
 }
 
 void ProgressObject::printText(const QString &text)
 {
-    qDebug() << "thread" << QThread::currentThread() << "reports progress text" << text;
+    qDebug() << "thread" << BOBUIhread::currentThread() << "reports progress text" << text;
 }
 
 void ProgressObject::registerProgress(int progress)
 {
-    QTest::qSleep(1);
+    BOBUIest::qSleep(1);
     progressValues.insert(progress);
 }
 
 void ProgressObject::registerText(const QString &text)
 {
-    QTest::qSleep(1);
+    BOBUIest::qSleep(1);
     progressTexts.insert(text);
 }
 
@@ -150,7 +150,7 @@ QList<int> createList(int listSize)
 void tst_QFutureWatcher::progressValueChanged()
 {
 #ifdef PRINT
-    qDebug() << "main thread" << QThread::currentThread();
+    qDebug() << "main thread" << BOBUIhread::currentThread();
 #endif
 
     progressValues.clear();
@@ -159,16 +159,16 @@ void tst_QFutureWatcher::progressValueChanged()
 
     QFutureWatcher<void> futureWatcher;
     ProgressObject progressObject;
-    QObject::connect(&futureWatcher, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(&futureWatcher, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 #ifdef PRINT
-    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &progressObject, SLOT(printProgress(int)), Qt::DirectConnection );
+    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &progressObject, SLOT(printProgress(int)), BobUI::DirectConnection );
 #endif
     QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &progressObject, SLOT(registerProgress(int)));
 
-    futureWatcher.setFuture(QtConcurrent::map(list, mapSleeper));
+    futureWatcher.setFuture(BobUIConcurrent::map(list, mapSleeper));
 
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     futureWatcher.disconnect();
     QVERIFY(progressValues.contains(0));
     QVERIFY(progressValues.contains(listSize));
@@ -187,7 +187,7 @@ public slots:
 void CancelObject::cancel()
 {
 #ifdef PRINT
-    qDebug() << "thread" << QThread::currentThread() << "reports canceled";
+    qDebug() << "thread" << BOBUIhread::currentThread() << "reports canceled";
 #endif
     wasCanceled = true;
 }
@@ -203,13 +203,13 @@ void tst_QFutureWatcher::canceled()
 
     QObject::connect(&futureWatcher, SIGNAL(canceled()), &cancelObject, SLOT(cancel()));
     QObject::connect(&futureWatcher, SIGNAL(canceled()),
-        &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
+        &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
 
-    future = QtConcurrent::map(list, mapSleeper);
+    future = BobUIConcurrent::map(list, mapSleeper);
     futureWatcher.setFuture(future);
     futureWatcher.cancel();
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QVERIFY(future.isCanceled());
     QVERIFY(cancelObject.wasCanceled);
@@ -219,13 +219,13 @@ void tst_QFutureWatcher::canceled()
 
 void tst_QFutureWatcher::cancelAndFinish_data()
 {
-    QTest::addColumn<bool>("isCanceled");
-    QTest::addColumn<bool>("isFinished");
+    BOBUIest::addColumn<bool>("isCanceled");
+    BOBUIest::addColumn<bool>("isFinished");
 
-    QTest::addRow("running") << false << false;
-    QTest::addRow("canceled") << true << false;
-    QTest::addRow("finished") << false << true;
-    QTest::addRow("canceledAndFinished") << true << true;
+    BOBUIest::addRow("running") << false << false;
+    BOBUIest::addRow("canceled") << true << false;
+    BOBUIest::addRow("finished") << false << true;
+    BOBUIest::addRow("canceledAndFinished") << true << true;
 }
 
 void tst_QFutureWatcher::cancelAndFinish()
@@ -249,8 +249,8 @@ void tst_QFutureWatcher::cancelAndFinish()
     fi.cancelAndFinish();
 
     // The signals should be emitted only once
-    QTRY_COMPARE(canceledSpy.size(), 1);
-    QTRY_COMPARE(finishedSpy.size(), 1);
+    BOBUIRY_COMPARE(canceledSpy.size(), 1);
+    BOBUIRY_COMPARE(finishedSpy.size(), 1);
 }
 
 class IntTask : public RunFunctionTaskBase<int>
@@ -382,7 +382,7 @@ void tst_QFutureWatcher::futureSignals()
 
         const int progress = 1;
         a.setProgressValue(progress);
-        QTRY_COMPARE(progressSpy.size(), 2);
+        BOBUIRY_COMPARE(progressSpy.size(), 2);
         QCOMPARE(progressSpy.takeFirst().at(0).toInt(), 0);
         QCOMPARE(progressSpy.takeFirst().at(0).toInt(), 1);
 
@@ -392,7 +392,7 @@ void tst_QFutureWatcher::futureSignals()
         QCOMPARE(resultReadySpy.size(), 1);
         a.reportFinished(&result);
 
-        QTRY_COMPARE(resultReadySpy.size(), 2);
+        BOBUIRY_COMPARE(resultReadySpy.size(), 2);
         QCOMPARE(resultReadySpy.takeFirst().at(0).toInt(), 0); // check the index
         QCOMPARE(resultReadySpy.takeFirst().at(0).toInt(), 1);
 
@@ -500,11 +500,11 @@ void tst_QFutureWatcher::disconnectRunningFuture()
     delete watcher;
 
     a.reportResult(&result);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     QCOMPARE(resultReadySpy.size(), 1);
 
     a.reportFinished(&result);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     QCOMPARE(finishedSpy.size(), 0);
 }
 
@@ -526,7 +526,7 @@ void tst_QFutureWatcher::tooMuchProgress()
     ProgressObject o;
 
     QFutureWatcher<void> f;
-    QObject::connect(&f, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(&f, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 #ifdef PRINT
     QObject::connect(&f, SIGNAL(progressValueChanged(int)), &o, SLOT(printProgress(int)));
 #endif
@@ -534,8 +534,8 @@ void tst_QFutureWatcher::tooMuchProgress()
     f.setFuture((new ProgressEmitterTask())->start());
 
     // Android reports ca. 10k progressValueChanged per second
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(progressValues.contains(maxProgress));
 }
 
@@ -548,15 +548,15 @@ public:
         this->promise.setProgressValueAndText(1, QLatin1String("Foo 1"));
 
         while (this->promise.isProgressUpdateNeeded() == false)
-            QTest::qSleep(1);
+            BOBUIest::qSleep(1);
         this->promise.setProgressValueAndText(2, QLatin1String("Foo 2"));
 
         while (this->promise.isProgressUpdateNeeded() == false)
-            QTest::qSleep(1);
+            BOBUIest::qSleep(1);
         this->promise.setProgressValueAndText(3, QLatin1String("Foo 3"));
 
         while (this->promise.isProgressUpdateNeeded() == false)
-            QTest::qSleep(1);
+            BOBUIest::qSleep(1);
         this->promise.setProgressValueAndText(4, QLatin1String("Foo 4"));
     }
 };
@@ -573,7 +573,7 @@ void tst_QFutureWatcher::progressText()
         QFuture<int> f = ((new ProgressTextTask<int>())->start());
         QFutureWatcher<int> watcher;
         ProgressObject o;
-        QObject::connect(&watcher, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+        QObject::connect(&watcher, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 #ifdef PRINT
         QObject::connect(&watcher, SIGNAL(progressValueChanged(int)), &o, SLOT(printProgress(int)));
         QObject::connect(&watcher, SIGNAL(progressTextChanged(QString)), &o, SLOT(printText(QString)));
@@ -582,8 +582,8 @@ void tst_QFutureWatcher::progressText()
         QObject::connect(&watcher, SIGNAL(progressTextChanged(QString)), &o, SLOT(registerText(QString)));
 
         watcher.setFuture(f);
-        QTestEventLoop::instance().enterLoop(5);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        BOBUIestEventLoop::instance().enterLoop(5);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
         QCOMPARE(f.progressText(), QLatin1String("Foo 4"));
         QCOMPARE(f.progressValue(), 4);
@@ -617,13 +617,13 @@ void callInterface(T &obj)
     obj.suspend();
     obj.resume();
     obj.toggleSuspended();
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     obj.isPaused();
     obj.pause();
     obj.togglePaused();
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
     obj.waitForFinished();
 
@@ -639,11 +639,11 @@ QT_WARNING_POP
     objConst.isCanceled();
     objConst.isSuspending();
     objConst.isSuspended();
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     objConst.isPaused();
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
 }
 
@@ -703,7 +703,7 @@ void tst_QFutureWatcher::changeFuture()
 
     watcher.setFuture(a); // Watch 'a' which will generate a resultReady event.
     watcher.setFuture(b); // But oh no! we're switching to another future
-    QTest::qWait(10);     // before the event gets delivered.
+    BOBUIest::qWait(10);     // before the event gets delivered.
 
     QCOMPARE(resultReadySpy.size(), 0);
 
@@ -743,9 +743,9 @@ void tst_QFutureWatcher::cancelEvents()
     QCOMPARE(resultReadySpy.size(), 0);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 // Tests that events from paused futures are saved and
 // delivered on resume.
 void tst_QFutureWatcher::pauseEvents()
@@ -767,14 +767,14 @@ void tst_QFutureWatcher::pauseEvents()
         watcher.setFuture(iface.future());
         watcher.pause();
 
-        QTRY_COMPARE(pauseSpy.size(), 1);
+        BOBUIRY_COMPARE(pauseSpy.size(), 1);
 
         int value = 0;
         iface.reportFinished(&value);
 
         // A result is reported, although the watcher is paused.
         // The corresponding event should be also reported.
-        QTRY_COMPARE(resultReadySpy.size(), 1);
+        BOBUIRY_COMPARE(resultReadySpy.size(), 1);
 
         watcher.resume();
     }
@@ -801,7 +801,7 @@ void tst_QFutureWatcher::pauseEvents()
         watcher.setFuture(b); // If we watch b instead, resuming a
         a.resume();           // should give us no results.
 
-        QTest::qWait(10);
+        BOBUIest::qWait(10);
         QCOMPARE(resultReadySpy.size(), 0);
     }
 }
@@ -837,15 +837,15 @@ void tst_QFutureWatcher::pausedSuspendedOrder()
     iface.setPaused(true);
     iface.reportSuspended();
 
-    QTRY_COMPARE(suspendedSpy.size(), 1);
+    BOBUIRY_COMPARE(suspendedSpy.size(), 1);
     QCOMPARE(pausedSpy.size(), 1);
     QVERIFY(notSuspendedBeforePaused);
     QVERIFY(pausedBeforeSuspended);
 
     iface.reportFinished();
 }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 // Tests that events from suspended futures are saved and
 // delivered on resume.
@@ -869,14 +869,14 @@ void tst_QFutureWatcher::suspendEvents()
         watcher.setFuture(iface.future());
         watcher.suspend();
 
-        QTRY_COMPARE(suspendingSpy.size(), 1);
+        BOBUIRY_COMPARE(suspendingSpy.size(), 1);
 
         int value = 0;
         iface.reportFinished(&value);
 
         // A result is reported, although the watcher is paused.
         // The corresponding event should be also reported.
-        QTRY_COMPARE(resultReadySpy.size(), 1);
+        BOBUIRY_COMPARE(resultReadySpy.size(), 1);
 
         watcher.resume();
     }
@@ -904,7 +904,7 @@ void tst_QFutureWatcher::suspendEvents()
         watcher.setFuture(b); // If we watch b instead, resuming a
         a.resume();           // should give us no results.
 
-        QTest::qWait(10);
+        BOBUIest::qWait(10);
         QCOMPARE(resultReadySpy.size(), 0);
     }
 }
@@ -913,11 +913,11 @@ void tst_QFutureWatcher::suspended()
 {
     QFutureWatcher<int> watcher;
     QSignalSpy resultReadySpy(&watcher, &QFutureWatcher<int>::resultReadyAt);
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     QSignalSpy pausedSpy(&watcher, &QFutureWatcher<int>::paused);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
     QSignalSpy suspendingSpy(&watcher, &QFutureWatcher<int>::suspending);
     QSignalSpy suspendedSpy(&watcher, &QFutureWatcher<int>::suspended);
@@ -927,25 +927,25 @@ QT_WARNING_POP
     std::vector<int> values(numValues, 0);
     std::atomic_int count = 0;
 
-    QThreadPool pool;
+    BOBUIhreadPool pool;
     pool.setMaxThreadCount(3);
 
-    QFuture<int> future = QtConcurrent::mapped(&pool, values, [&](int value) {
+    QFuture<int> future = BobUIConcurrent::mapped(&pool, values, [&](int value) {
         ++count;
         // Sleep, to make sure not all threads will start at once.
-        QThread::sleep(50ms);
+        BOBUIhread::sleep(50ms);
         return value;
     });
     watcher.setFuture(future);
 
     // Allow some threads to start before suspending.
-    QThread::sleep(200ms);
+    BOBUIhread::sleep(200ms);
 
     watcher.suspend();
     watcher.suspend();
-    QTRY_COMPARE(suspendedSpy.size(), 1); // suspended() should be emitted only once
+    BOBUIRY_COMPARE(suspendedSpy.size(), 1); // suspended() should be emitted only once
     QCOMPARE(suspendingSpy.size(), 2); // suspending() is emitted as many times as requested
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(pausedSpy.size(), 2); // paused() is emitted as many times as requested
 #endif
 
@@ -954,12 +954,12 @@ QT_WARNING_POP
     QCOMPARE(resultReadyAfterPaused, count);
 
     // Make sure no more results are reported before resuming.
-    QThread::sleep(200ms);
+    BOBUIhread::sleep(200ms);
     QCOMPARE(resultReadyAfterPaused, resultReadySpy.size());
     resultReadySpy.clear();
 
     watcher.resume();
-    QTRY_COMPARE(finishedSpy.size(), 1);
+    BOBUIRY_COMPARE(finishedSpy.size(), 1);
 
     // Make sure that no more suspended() signals have been emitted.
     QCOMPARE(suspendedSpy.size(), 1);
@@ -999,7 +999,7 @@ void tst_QFutureWatcher::suspendedEventsOrder()
     iface.setSuspended(true);
     iface.reportSuspended();
 
-    QTRY_COMPARE(suspendedSpy.size(), 1);
+    BOBUIRY_COMPARE(suspendedSpy.size(), 1);
     QCOMPARE(suspendingSpy.size(), 1);
     QVERIFY(notSuspendedBeforeSuspending);
     QVERIFY(suspendingBeforeSuspended);
@@ -1030,7 +1030,7 @@ void tst_QFutureWatcher::throttling()
 
     QVERIFY(iface.isThrottled());
 
-    QTRY_COMPARE(resultSpy.size(), resultCount); // Process the results
+    BOBUIRY_COMPARE(resultSpy.size(), resultCount); // Process the results
 
     QVERIFY(!iface.isThrottled());
 
@@ -1080,7 +1080,7 @@ void tst_QFutureWatcher::incrementalMapResults()
     connect(&watcher, SIGNAL(resultReadyAt(int)), &object, SLOT(resultReadyAt(int)));
 #endif
 
-    QObject::connect(&watcher, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(&watcher, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
     ResultReadyTester resultReadyTester(&watcher);
     connect(&watcher, SIGNAL(resultReadyAt(int)), &resultReadyTester, SLOT(resultReadyAt(int)));
@@ -1090,11 +1090,11 @@ void tst_QFutureWatcher::incrementalMapResults()
     for (int i = 0; i < count; ++i)
         ints << i;
 
-    QFuture<int> future = QtConcurrent::mapped(ints, mapper);
+    QFuture<int> future = BobUIConcurrent::mapped(ints, mapper);
     watcher.setFuture(future);
 
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(resultReadyTester.count, count);
     QVERIFY(resultReadyTester.ok);
     QVERIFY(watcher.isFinished());
@@ -1117,7 +1117,7 @@ void tst_QFutureWatcher::incrementalFilterResults()
     connect(&watcher, SIGNAL(resultReadyAt(int)), &object, SLOT(resultReadyAt(int)));
 #endif
 
-    QObject::connect(&watcher, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(&watcher, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
 
     ResultReadyTester resultReadyTester(&watcher);
@@ -1129,11 +1129,11 @@ void tst_QFutureWatcher::incrementalFilterResults()
     for (int i = 0; i < count; ++i)
         ints << i;
 
-    QFuture<int> future = QtConcurrent::filtered(ints, filterer);
+    QFuture<int> future = BobUIConcurrent::filtered(ints, filterer);
     watcher.setFuture(future);
 
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(resultReadyTester.count, count / 2);
     QVERIFY(resultReadyTester.ok);
     QVERIFY(watcher.isFinished());
@@ -1173,8 +1173,8 @@ public:
 void tst_QFutureWatcher::warnRace()
 {
 #ifndef Q_OS_DARWIN // I don't know why it is not working on mac
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtWarningMsg, "QFutureWatcher::connect: connecting after calling setFuture() is likely to produce race");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFutureWatcher::connect: connecting after calling setFuture() is likely to produce race");
 #endif
 #endif
     QFutureWatcher<void> watcher;
@@ -1182,9 +1182,9 @@ void tst_QFutureWatcher::warnRace()
     QMutex mutex;
     mutex.lock();
 
-    QFuture<void> future = QtConcurrent::run(DummyObject::function, &mutex);
+    QFuture<void> future = BobUIConcurrent::run(DummyObject::function, &mutex);
     watcher.setFuture(future);
-    QTRY_VERIFY(future.isStarted());
+    BOBUIRY_VERIFY(future.isStarted());
     connect(&watcher, SIGNAL(finished()), &object, SLOT(dummySlot()));
     mutex.unlock();
     future.waitForFinished();
@@ -1205,7 +1205,7 @@ void tst_QFutureWatcher::checkStateConsistency()
 {
 #define CHECK_FAIL(state)                                                                          \
     do {                                                                                           \
-        if (QTest::currentTestFailed())                                                            \
+        if (BOBUIest::currentTestFailed())                                                            \
             QFAIL("checkState() failed, QFutureWatcher has inconistent state after " state "!");   \
     } while (false)
 
@@ -1251,5 +1251,5 @@ void tst_QFutureWatcher::checkStateConsistency()
 #undef CHECK_FAIL
 }
 
-QTEST_MAIN(tst_QFutureWatcher)
+BOBUIEST_MAIN(tst_QFutureWatcher)
 #include "tst_qfuturewatcher.moc"

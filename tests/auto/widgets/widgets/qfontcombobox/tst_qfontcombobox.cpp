@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QFontDatabase>
 
@@ -41,7 +41,7 @@ public:
 
 void tst_QFontComboBox::initTestCase()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This freezes. Figure out why.");
 }
 
@@ -66,21 +66,21 @@ void tst_QFontComboBox::qfontcombobox()
 
 void tst_QFontComboBox::currentFont_data()
 {
-    QTest::addColumn<QFont>("currentFont");
+    BOBUIest::addColumn<QFont>("currentFont");
     // Normalize the names
     QFont defaultFont;
     QFontInfo fi(defaultFont);
     defaultFont = QFont(QStringList{fi.family()}); // make sure we have a real font name and not something like 'Sans Serif'.
     if (!QFontDatabase::isPrivateFamily(defaultFont.family()))
-        QTest::newRow("default") << defaultFont;
+        BOBUIest::newRow("default") << defaultFont;
     defaultFont.setPointSize(defaultFont.pointSize() + 10);
     if (!QFontDatabase::isPrivateFamily(defaultFont.family()))
-        QTest::newRow("default2") << defaultFont;
+        BOBUIest::newRow("default2") << defaultFont;
     QStringList list = QFontDatabase::families();
     for (int i = 0; i < list.size(); ++i) {
         QFont f = QFont(QStringList{QFontInfo(QFont(list.at(i))).family()});
         if (!QFontDatabase::isPrivateFamily(f.families().first()))
-            QTest::newRow(qPrintable(list.at(i))) << f;
+            BOBUIest::newRow(qPrintable(list.at(i))) << f;
     }
 }
 
@@ -112,24 +112,24 @@ void tst_QFontComboBox::currentFont()
 Q_DECLARE_METATYPE(QFontComboBox::FontFilters)
 void tst_QFontComboBox::fontFilters_data()
 {
-    QTest::addColumn<QFontComboBox::FontFilters>("fontFilters");
-    QTest::newRow("AllFonts")
+    BOBUIest::addColumn<QFontComboBox::FontFilters>("fontFilters");
+    BOBUIest::newRow("AllFonts")
         << QFontComboBox::FontFilters(QFontComboBox::AllFonts);
-    QTest::newRow("ScalableFonts")
+    BOBUIest::newRow("ScalableFonts")
         << QFontComboBox::FontFilters(QFontComboBox::ScalableFonts);
-    QTest::newRow("NonScalableFonts")
+    BOBUIest::newRow("NonScalableFonts")
         << QFontComboBox::FontFilters(QFontComboBox::NonScalableFonts);
-    QTest::newRow("MonospacedFonts")
+    BOBUIest::newRow("MonospacedFonts")
         << QFontComboBox::FontFilters(QFontComboBox::MonospacedFonts);
-    QTest::newRow("ProportionalFonts")
+    BOBUIest::newRow("ProportionalFonts")
         << QFontComboBox::FontFilters(QFontComboBox::ProportionalFonts);
 
     // combine two
-    QTest::newRow("ProportionalFonts | NonScalableFonts")
+    BOBUIest::newRow("ProportionalFonts | NonScalableFonts")
         << QFontComboBox::FontFilters(QFontComboBox::ProportionalFonts | QFontComboBox::NonScalableFonts);
 
     // i.e. all
-    QTest::newRow("ScalableFonts | NonScalableFonts")
+    BOBUIest::newRow("ScalableFonts | NonScalableFonts")
         << QFontComboBox::FontFilters(QFontComboBox::ScalableFonts | QFontComboBox::NonScalableFonts);
 
 }
@@ -196,16 +196,16 @@ void tst_QFontComboBox::sizeHint()
 Q_DECLARE_METATYPE(QFontDatabase::WritingSystem)
 void tst_QFontComboBox::writingSystem_data()
 {
-    QTest::addColumn<QFontDatabase::WritingSystem>("writingSystem");
-    QTest::newRow("Any") << QFontDatabase::Any;
-    QTest::newRow("Latin") << QFontDatabase::Latin;
-    QTest::newRow("Lao") << QFontDatabase::Lao;
-    QTest::newRow("TraditionalChinese") << QFontDatabase::TraditionalChinese;
-    QTest::newRow("Ogham") << QFontDatabase::Ogham;
-    QTest::newRow("Runic") << QFontDatabase::Runic;
+    BOBUIest::addColumn<QFontDatabase::WritingSystem>("writingSystem");
+    BOBUIest::newRow("Any") << QFontDatabase::Any;
+    BOBUIest::newRow("Latin") << QFontDatabase::Latin;
+    BOBUIest::newRow("Lao") << QFontDatabase::Lao;
+    BOBUIest::newRow("TraditionalChinese") << QFontDatabase::TraditionalChinese;
+    BOBUIest::newRow("Ogham") << QFontDatabase::Ogham;
+    BOBUIest::newRow("Runic") << QFontDatabase::Runic;
 
     for (int i = 0; i < 31; ++i)
-        QTest::newRow(("enum " + QByteArray::number(i)).constData()) << (QFontDatabase::WritingSystem)i;
+        BOBUIest::newRow(("enum " + QByteArray::number(i)).constData()) << (QFontDatabase::WritingSystem)i;
 }
 
 // public QFontDatabase::WritingSystem writingSystem() const
@@ -244,7 +244,7 @@ void tst_QFontComboBox::currentFontChanged()
     QSignalSpy spy0(box, SIGNAL(currentFontChanged(QFont)));
 
     if (box->model()->rowCount() > 2) {
-        QTest::keyPress(box, Qt::Key_Down);
+        BOBUIest::keyPress(box, BobUI::Key_Down);
         QCOMPARE(spy0.size(), 1);
 
         QFont f( "Sans Serif" );
@@ -263,7 +263,7 @@ void tst_QFontComboBox::emptyFont()
     QFont font;
     font.setFamilies(QStringList());
 
-    // Due to QTBUG-98341, we need to find an index in the family list
+    // Due to BOBUIBUG-98341, we need to find an index in the family list
     // which does not match the default index for the empty font, otherwise
     // the font selection will not be properly updated.
     {
@@ -284,6 +284,6 @@ void tst_QFontComboBox::emptyFont()
     QVERIFY(!fontCB.currentFont().families().isEmpty());
 }
 
-QTEST_MAIN(tst_QFontComboBox)
+BOBUIEST_MAIN(tst_QFontComboBox)
 #include "tst_qfontcombobox.moc"
 

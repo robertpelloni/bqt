@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTDBUSGLOBAL_P_H
-#define QTDBUSGLOBAL_P_H
+#ifndef BOBUIDBUSGLOBAL_P_H
+#define BOBUIDBUSGLOBAL_P_H
 
 //
 //  W A R N I N G
@@ -19,4 +19,4 @@
 #include <QtDBus/qtdbusglobal.h>
 #include <QtCore/private/qglobal_p.h>
 
-#endif // QTDBUSGLOBAL_P_H
+#endif // BOBUIDBUSGLOBAL_P_H

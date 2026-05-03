@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
-// To find the IP address of qt-project.org
-QHostInfo::lookupHost("qt-project.org", this, &MyWidget::printResults);
+// To find the IP address of bobui-project.org
+QHostInfo::lookupHost("bobui-project.org", this, &MyWidget::printResults);
 
 // To find the host name for 4.2.2.1
 QHostInfo::lookupHost("4.2.2.1", this, &MyWidget::printResults);
@@ -11,7 +11,7 @@ QHostInfo::lookupHost("4.2.2.1", this, &MyWidget::printResults);
 
 
 //! [1]
-QHostInfo info = QHostInfo::fromName("qt-project.org");
+QHostInfo info = QHostInfo::fromName("bobui-project.org");
 //! [1]
 
 

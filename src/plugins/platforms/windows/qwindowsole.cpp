@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsole.h"
 #include "qwindowsmimeregistry.h"
 #include "qwindowscontext.h"
 \
-#include <QtGui/qevent.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qcursor.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qcursor.h>
+#include <BobUIGui/qguiapplication.h>
 
-#include <QtCore/qmimedata.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUICore/qdebug.h>
 
 #include <shlobj.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsOleDataObject
@@ -45,7 +45,7 @@ QWindowsOleDataObject::QWindowsOleDataObject(QMimeData *mimeData) :
 
 QWindowsOleDataObject::~QWindowsOleDataObject() = default;
 
-void QWindowsOleDataObject::releaseQt()
+void QWindowsOleDataObject::releaseBobUI()
 {
     data = nullptr;
 }
@@ -73,7 +73,7 @@ QWindowsOleDataObject::GetData(LPFORMATETC pformatetc, LPSTGMEDIUM pmedium) noex
     }
 
     if (QWindowsContext::verbose > 1 && lcQpaMime().isDebugEnabled())
-        qCDebug(lcQpaMime) <<__FUNCTION__ << *pformatetc << "returns" << Qt::hex << Qt::showbase << quint64(hr);
+        qCDebug(lcQpaMime) <<__FUNCTION__ << *pformatetc << "returns" << BobUI::hex << BobUI::showbase << quint64(hr);
 
     return hr;
 }
@@ -98,7 +98,7 @@ QWindowsOleDataObject::QueryGetData(LPFORMATETC pformatetc) noexcept
              ResultFromScode(S_OK) : ResultFromScode(S_FALSE);
     }
     if (QWindowsContext::verbose > 1)
-        qCDebug(lcQpaMime) <<  __FUNCTION__ << " returns 0x" << Qt::hex << int(hr);
+        qCDebug(lcQpaMime) <<  __FUNCTION__ << " returns 0x" << BobUI::hex << int(hr);
     return hr;
 }
 
@@ -126,7 +126,7 @@ QWindowsOleDataObject::SetData(LPFORMATETC pFormatetc, STGMEDIUM *pMedium, BOOL 
         hr = ResultFromScode(S_OK);
     }
     if (QWindowsContext::verbose > 1)
-        qCDebug(lcQpaMime) <<  __FUNCTION__ << " returns 0x" << Qt::hex << int(hr);
+        qCDebug(lcQpaMime) <<  __FUNCTION__ << " returns 0x" << BobUI::hex << int(hr);
     return hr;
 }
 
@@ -353,4 +353,4 @@ bool QWindowsOleEnumFmtEtc::copyFormatEtc(LPFORMATETC dest, const FORMATETC *src
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

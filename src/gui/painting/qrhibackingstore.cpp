@@ -1,11 +1,11 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhibackingstore_p.h"
 #include "qpa/qplatformwindow.h"
 #include <private/qimage_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QRhiBackingStore::QRhiBackingStore(QWindow *window)
     : QRasterBackingStore(window)
@@ -51,7 +51,7 @@ void QRhiBackingStore::flush(QWindow *flushedWindow, const QRegion &region, cons
     // QBackingStore::flush will convert the region and offset from device independent
     // pixels to native pixels before calling QPlatformBackingStore::flush, which means
     // we can't pass on the window's DPR as the sourceTransformFactor, as that will include
-    // the Qt scale factor, which has already been applied. Instead we ask the platform
+    // the BobUI scale factor, which has already been applied. Instead we ask the platform
     // window, which only reflect the remaining scale factor from the OS.
     const qreal sourceTransformFactor = flushedWindow->handle()->devicePixelRatio();
 
@@ -70,9 +70,9 @@ QImage::Format QRhiBackingStore::format() const
     // image must have an alpha channel. Hence upgrading the format. Matches
     // what other platforms (Windows, xcb) do.
     if (QImage::toPixelFormat(fmt).alphaUsage() != QPixelFormat::UsesAlpha)
-        fmt = qt_maybeDataCompatibleAlphaVersion(fmt);
+        fmt = bobui_maybeDataCompatibleAlphaVersion(fmt);
 
     return fmt;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

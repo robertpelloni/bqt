@@ -1,13 +1,13 @@
 // Copyright (C) 2024 David Redondo <kde@david-redondo.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandappmenu_p.h"
 
 #include "qwaylandwindow_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandAppMenu::QWaylandAppMenu() : org_kde_kwin_appmenu() { }
 
@@ -27,6 +27,6 @@ QWaylandAppMenuManager::~QWaylandAppMenuManager()
     org_kde_kwin_appmenu_manager_destroy(object());
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

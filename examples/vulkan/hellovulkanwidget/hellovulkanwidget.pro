@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS += \
     hellovulkanwidget.h \
@@ -12,5 +12,5 @@ SOURCES += \
 RESOURCES += hellovulkanwidget.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/vulkan/hellovulkanwidget
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/vulkan/hellovulkanwidget
 INSTALLS += target

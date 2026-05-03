@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QStringList>
 #include <QDebug>
@@ -12,7 +12,7 @@ static void usage(const char *appname)
     printf(" GraphicsViewBenchmark related options:\n");
     printf(" -h,-help,--help: This help\n");
     printf(" -resolution    : UI resolution in format WxH where width and height are positive values\n");
-    printf(" -opengl        : Enables OpenGL usage. Building PRECONDITIONS: QT_NO_OPENGL is off.\n");
+    printf(" -opengl        : Enables OpenGL usage. Building PRECONDITIONS: BOBUI_NO_OPENGL is off.\n");
     printf(" -manual        : Run test manually \n");
     printf("\n The following options are available in manual mode:\n");
     printf(" -rotation      : UI rotation in degrees\n");
@@ -36,7 +36,7 @@ bool readSettingsFromCommandLine(int argc, char *argv[],
     bool builtWithOpenGL = false;
     Settings::Options options;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     builtWithOpenGL = true;
 #endif
     for (int i = 1; i < argc; ++i) {
@@ -59,7 +59,7 @@ bool readSettingsFromCommandLine(int argc, char *argv[],
                 options |= Settings::UseOpenGL;
                 argv[i] = 0;
             } else {
-                printf("-opengl parameter can be used only with building PRECONDITIONS: QT_NO_OPENGL is off.\n");
+                printf("-opengl parameter can be used only with building PRECONDITIONS: BOBUI_NO_OPENGL is off.\n");
                 usage(argv[0]);
                 return false;
             }

@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QKEYSEQUENCE_H
 #define QKEYSEQUENCE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qobjectdefs.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qobjectdefs.h>
 
-QT_REQUIRE_CONFIG(shortcut);
+BOBUI_REQUIRE_CONFIG(shortcut);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QKeySequence;
 
 /*****************************************************************************
   QKeySequence stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM) || defined(Q_QDOC)
+#if !defined(BOBUI_NO_DATASTREAM) || defined(Q_QDOC)
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &in, const QKeySequence &ks);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &out, QKeySequence &ks);
 #endif
 
 #if defined(Q_QDOC)
-void qt_set_sequence_auto_mnemonic(bool b);
+void bobui_set_sequence_auto_mnemonic(bool b);
 #endif
 
 class QVariant;
@@ -151,8 +151,8 @@ public:
     operator QVariant() const;
     QKeyCombination operator[](uint i) const;
     QKeySequence &operator=(const QKeySequence &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QKeySequence)
-    void swap(QKeySequence &other) noexcept { qt_ptr_swap(d, other.d); }
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QKeySequence)
+    void swap(QKeySequence &other) noexcept { bobui_ptr_swap(d, other.d); }
 
     bool operator==(const QKeySequence &other) const;
     inline bool operator!= (const QKeySequence &other) const
@@ -186,10 +186,10 @@ public:
 
 Q_DECLARE_SHARED(QKeySequence)
 
-#if !defined(QT_NO_DEBUG_STREAM) || defined(Q_QDOC)
+#if !defined(BOBUI_NO_DEBUG_STREAM) || defined(Q_QDOC)
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QKeySequence &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QKEYSEQUENCE_H

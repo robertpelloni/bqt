@@ -3,7 +3,7 @@
 # Submodule documentation projects can increase this base limit to
 # account for known warnings, for example:
 #
-# qtcore.qdocconf:
+# bobuicore.qdocconf:
 #     warninglimit += 1
 
 warninglimit = 10

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGui>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QPushButton>
+#include <BOBUIest>
+#include <BobUIGui>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QPushButton>
 
 #include <QDBusArgument>
 #include <QDBusConnection>
@@ -37,7 +37,7 @@ public:
     {
         layout()->addWidget(widget);
         widget->show();
-        QVERIFY(QTest::qWaitForWindowExposed(widget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(widget));
     }
 
     void clearChildren()
@@ -55,7 +55,7 @@ class tst_QAccessibilityLinux : public QObject
 public:
     tst_QAccessibilityLinux() : m_window(0), root(0), rootApplication(0), mainWindow(0)
     {
-        qputenv("QT_LINUX_ACCESSIBILITY_ALWAYS_ON", "1");
+        qputenv("BOBUI_LINUX_ACCESSIBILITY_ALWAYS_ON", "1");
         dbus = new DBusConnection();
     }
     ~tst_QAccessibilityLinux()
@@ -143,13 +143,13 @@ void tst_QAccessibilityLinux::initTestCase()
     a11yStatus->isEnabled();
     for (int i = 0; i < 5; ++i) {
         if (!dbus->isEnabled())
-            QTest::qWait(100);
+            BOBUIest::qWait(100);
     }
 
     if (!dbus->isEnabled())
         QSKIP("Could not connect to AT-SPI, make sure lib atspi2 is installed.");
-    QTRY_VERIFY(dbus->isEnabled());
-    QTRY_VERIFY(dbus->connection().isConnected());
+    BOBUIRY_VERIFY(dbus->isEnabled());
+    BOBUIRY_VERIFY(dbus->connection().isConnected());
     address = dbus->connection().baseService().toLatin1().data();
     QVERIFY(!address.isEmpty());
 
@@ -157,7 +157,7 @@ void tst_QAccessibilityLinux::initTestCase()
     m_window->setObjectName("mainWindow"_L1);
     m_window->show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(m_window));
     registerDbus();
 }
 
@@ -335,17 +335,17 @@ void tst_QAccessibilityLinux::testListWidget()
 
 void tst_QAccessibilityLinux::testTreeWidget()
 {
-    QTreeWidget *tree = new QTreeWidget;
+    BOBUIreeWidget *tree = new BOBUIreeWidget;
     tree->setColumnCount(2);
     tree->setHeaderLabels(QStringList() << "Header 1" << "Header 2");
 
-    QTreeWidgetItem *top1 = new QTreeWidgetItem(QStringList() << "0.0" << "0.1");
+    BOBUIreeWidgetItem *top1 = new BOBUIreeWidgetItem(QStringList() << "0.0" << "0.1");
     tree->addTopLevelItem(top1);
 
-    QTreeWidgetItem *top2 = new QTreeWidgetItem(QStringList() << "1.0" << "1.1");
+    BOBUIreeWidgetItem *top2 = new BOBUIreeWidgetItem(QStringList() << "1.0" << "1.1");
     tree->addTopLevelItem(top2);
 
-    QTreeWidgetItem *child1 = new QTreeWidgetItem(QStringList() << "1.0 0.0" << "1.0 0.1");
+    BOBUIreeWidgetItem *child1 = new BOBUIreeWidgetItem(QStringList() << "1.0 0.0" << "1.0 0.1");
     top2->addChild(child1);
 
     m_window->addWidget(tree);
@@ -418,7 +418,7 @@ void tst_QAccessibilityLinux::testTreeWidget()
 
 void tst_QAccessibilityLinux::testTextEdit()
 {
-    QTextEdit *textEdit = new QTextEdit(m_window);
+    BOBUIextEdit *textEdit = new BOBUIextEdit(m_window);
     textEdit->setText("<html><head></head><body>This is a <b>sample</b> text.<br />"
                       "How are you today</body></html>");
     textEdit->show();
@@ -496,7 +496,7 @@ void tst_QAccessibilityLinux::testSlider()
 void tst_QAccessibilityLinux::testFocus()
 {
     m_window->activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(m_window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(m_window));
     QLineEdit *lineEdit1 = new QLineEdit(m_window);
     lineEdit1->setText("lineEdit 1");
     QLineEdit *lineEdit2 = new QLineEdit(m_window);
@@ -532,6 +532,6 @@ void tst_QAccessibilityLinux::testFocus()
     delete componentInterfaceLineEdit2;
 }
 
-QTEST_MAIN(tst_QAccessibilityLinux)
+BOBUIEST_MAIN(tst_QAccessibilityLinux)
 #include "tst_qaccessibilitylinux.moc"
 

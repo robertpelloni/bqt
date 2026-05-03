@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QComboBox>
 #include <QDataWidgetMapper>
@@ -7,11 +7,11 @@
 #include <QMetaType>
 #include <QStandardItemModel>
 #include <QSignalSpy>
-#include <QTest>
-#include <QTextEdit>
+#include <BOBUIest>
+#include <BOBUIextEdit>
 #include <QVBoxLayout>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QDataWidgetMapper: public QObject
 {
@@ -29,7 +29,7 @@ private slots:
 
     void comboBox();
 
-    void textEditDoesntChangeFocusOnTab_qtbug3305();
+    void textEditDoesntChangeFocusOnTab_bobuibug3305();
 };
 
 Q_DECLARE_METATYPE(QAbstractItemDelegate::EndEditHint)
@@ -155,7 +155,7 @@ void tst_QDataWidgetMapper::navigate()
 
     /* now try vertical navigation */
 
-    mapper.setOrientation(Qt::Vertical);
+    mapper.setOrientation(BobUI::Vertical);
 
     mapper.addMapping(&edit1, 0);
     mapper.addMapping(&edit2, 1);
@@ -362,8 +362,8 @@ void tst_QDataWidgetMapper::comboBox()
     QCOMPARE(model->data(model->index(0, 1)).toString(), QString("read write item y"));
 
     // now test updating of the widgets
-    model->setData(model->index(0, 0), 2, Qt::EditRole);
-    model->setData(model->index(0, 1), QString("read write item z"), Qt::EditRole);
+    model->setData(model->index(0, 0), 2, BobUI::EditRole);
+    model->setData(model->index(0, 1), QString("read write item z"), BobUI::EditRole);
 
     QCOMPARE(readOnlyBox.currentIndex(), 2);
     QCOMPARE(readWriteBox.currentText(), QString("read write item z"));
@@ -392,9 +392,9 @@ void tst_QDataWidgetMapper::mappedWidgetAt()
     QCOMPARE(mapper.mappedWidgetAt(4242), &lineEdit2);
 }
 
-void tst_QDataWidgetMapper::textEditDoesntChangeFocusOnTab_qtbug3305()
+void tst_QDataWidgetMapper::textEditDoesntChangeFocusOnTab_bobuibug3305()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QDataWidgetMapper mapper;
@@ -412,7 +412,7 @@ void tst_QDataWidgetMapper::textEditDoesntChangeFocusOnTab_qtbug3305()
     mapper.addMapping(lineEdit, 0);
     container.layout()->addWidget(lineEdit);
 
-    QTextEdit *textEdit = new QTextEdit;
+    BOBUIextEdit *textEdit = new BOBUIextEdit;
     mapper.addMapping(textEdit, 1);
     container.layout()->addWidget(textEdit);
 
@@ -420,7 +420,7 @@ void tst_QDataWidgetMapper::textEditDoesntChangeFocusOnTab_qtbug3305()
 
     container.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&container));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&container));
 
     int closeEditorSpyCount = 0;
     const QString textEditContents = textEdit->toPlainText();
@@ -430,16 +430,16 @@ void tst_QDataWidgetMapper::textEditDoesntChangeFocusOnTab_qtbug3305()
     QVERIFY(!textEdit->hasFocus());
 
     // this will generate a closeEditor for the tab key, and another for the focus out
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Tab);
     closeEditorSpyCount += 2;
-    QTRY_COMPARE(closeEditorSpy.size(), closeEditorSpyCount);
+    BOBUIRY_COMPARE(closeEditorSpy.size(), closeEditorSpyCount);
 
-    QTRY_VERIFY(textEdit->hasFocus());
+    BOBUIRY_VERIFY(textEdit->hasFocus());
     QVERIFY(!lineEdit->hasFocus());
 
     // now that the text edit is focused, a tab keypress will insert a tab, not change focus
-    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Tab);
-    QTRY_COMPARE(closeEditorSpy.size(), closeEditorSpyCount);
+    BOBUIest::keyClick(QApplication::focusWidget(), BobUI::Key_Tab);
+    BOBUIRY_COMPARE(closeEditorSpy.size(), closeEditorSpyCount);
 
     QVERIFY(!lineEdit->hasFocus());
     QVERIFY(textEdit->hasFocus());
@@ -447,11 +447,11 @@ void tst_QDataWidgetMapper::textEditDoesntChangeFocusOnTab_qtbug3305()
 
     // now give focus back to the line edit and check closeEditor gets emitted
     lineEdit->setFocus();
-    QTRY_VERIFY(lineEdit->hasFocus());
+    BOBUIRY_VERIFY(lineEdit->hasFocus());
     QVERIFY(!textEdit->hasFocus());
     ++closeEditorSpyCount;
     QCOMPARE(closeEditorSpy.size(), closeEditorSpyCount);
 }
 
-QTEST_MAIN(tst_QDataWidgetMapper)
+BOBUIEST_MAIN(tst_QDataWidgetMapper)
 #include "tst_qdatawidgetmapper.moc"

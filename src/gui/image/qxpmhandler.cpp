@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "private/qxpmhandler_p.h"
 
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
 
 #include <qbytearraymatcher.h>
 #include <qdebug.h>
 #include <qimage.h>
 #include <qloggingcategory.h>
 #include <qmap.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qvariant.h>
 
 #include <private/qcolor_p.h>
 #include <private/qduplicatetracker_p.h> // for easier std::pmr detection
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 #include <private/qimage_p.h>
 
 #include <algorithm>
 #include <array>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 static quint64 xpmHash(const QString &str)
 {
@@ -721,7 +721,7 @@ inline bool operator<(const char *name, const XPMRGBData &data)
 inline bool operator<(const XPMRGBData &data, const char *name)
 { return qstrcmp(data.name, name) < 0; }
 
-static inline std::optional<QRgb> qt_get_named_xpm_rgb(const char *name_no_space)
+static inline std::optional<QRgb> bobui_get_named_xpm_rgb(const char *name_no_space)
 {
     const XPMRGBData *r = std::lower_bound(xpmRgbTbl, xpmRgbTbl + xpmRgbTblSize, name_no_space);
     if ((r != xpmRgbTbl + xpmRgbTblSize) && !(name_no_space < *r))
@@ -903,9 +903,9 @@ static bool read_xpm_body(
                 buf.truncate(((buf.size()-1) / 4 * 3) + 1); // remove alpha channel left by imagemagick
             }
             if (buf[0] == '#') {
-                c_rgb = qt_get_hex_rgb(buf).value_or(0);
+                c_rgb = bobui_get_hex_rgb(buf).value_or(0);
             } else {
-                c_rgb = qt_get_named_xpm_rgb(buf).value_or(0);
+                c_rgb = bobui_get_named_xpm_rgb(buf).value_or(0);
             }
             if (ncols <= 256) {
                 image.setColor(currentColor, 0xff000000 | c_rgb);
@@ -994,7 +994,7 @@ static bool read_xpm_body(
 // One of the two HAS to be 0, the other one is used.
 //
 
-bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, QImage &image)
+bool bobui_read_xpm_image_or_array(QIODevice *device, const char * const * source, QImage &image)
 {
     if (!source)
         return true;
@@ -1108,16 +1108,16 @@ static bool write_xpm_image(const QImage &sourceImage, QIODevice *device, const 
         // limit to 4 characters per pixel
         // 64^4 colors is enough for a 4096x4096 image
          if (cpp > 4) {
-             qCWarning(lcImageIo, "Qt does not support writing XPM images with more than "
+             qCWarning(lcImageIo, "BobUI does not support writing XPM images with more than "
                        "64^4 colors (requested: %d colors).", ncolors);
              return false;
          }
     }
 
     // write header
-    QTextStream s(device);
-    s << "/* XPM */" << Qt::endl
-      << "static char *" << fbname(fileName) << "[]={" << Qt::endl
+    BOBUIextStream s(device);
+    s << "/* XPM */" << BobUI::endl
+      << "static char *" << fbname(fileName) << "[]={" << BobUI::endl
       << '\"' << w << ' ' << h << ' ' << ncolors << ' ' << cpp << '\"';
 
     // write palette
@@ -1126,18 +1126,18 @@ static bool write_xpm_image(const QImage &sourceImage, QIODevice *device, const 
             ? QString::asprintf("\"%s c None\"", xpm_color_name(cpp, index))
             : QString::asprintf("\"%s c #%02x%02x%02x\"", xpm_color_name(cpp, index),
                                 qRed(color), qGreen(color), qBlue(color));
-        s << ',' << Qt::endl << line;
+        s << ',' << BobUI::endl << line;
     }
 
     // write pixels, limit to 4 characters per pixel
     for (int y = 0; y < h; ++y) {
-        s << ',' << Qt::endl << '\"';
+        s << ',' << BobUI::endl << '\"';
         const QRgb *yp = reinterpret_cast<const QRgb *>(image.constScanLine(y));
         for (int x = 0; x < w; ++x)
             s << xpm_color_name(cpp, colorMap[yp[x]]);
         s << '\"';
     }
-    s << "};" << Qt::endl;
+    s << "};" << BobUI::endl;
     return static_cast<bool>(s);
 }
 
@@ -1254,6 +1254,6 @@ void QXpmHandler::setOption(ImageOption option, const QVariant &value)
         fileName = value.toString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_IMAGEFORMAT_XPM
+#endif // BOBUI_NO_IMAGEFORMAT_XPM

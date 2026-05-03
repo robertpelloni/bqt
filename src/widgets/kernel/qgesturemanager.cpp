@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "private/qgesturemanager_p.h"
 #include "private/qstandardgestures_p.h"
 #include "private/qwidget_p.h"
 #include "private/qgesture_p.h"
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include "private/qgraphicsitem_p.h"
 #include "qgraphicsitem.h"
 #endif
@@ -21,20 +21,20 @@
 #endif
 
 #include "qdebug.h"
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QVarLengthArray>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QVarLengthArray>
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcGestureManager, "qt.widgets.gestures")
+Q_STATIC_LOGGING_CATEGORY(lcGestureManager, "bobui.widgets.gestures")
 
 #if !defined(Q_OS_MACOS)
 static inline int panTouchPoints()
 {
     // Override by environment variable for testing.
-    static const char panTouchPointVariable[] = "QT_PAN_TOUCHPOINTS";
+    static const char panTouchPointVariable[] = "BOBUI_PAN_TOUCHPOINTS";
     if (qEnvironmentVariableIsSet(panTouchPointVariable)) {
         bool ok;
         const int result = qEnvironmentVariableIntValue(panTouchPointVariable, &ok);
@@ -51,9 +51,9 @@ static inline int panTouchPoints()
 #endif
 
 QGestureManager::QGestureManager(QObject *parent)
-    : QObject(parent), m_lastCustomGestureId(Qt::CustomGesture)
+    : QObject(parent), m_lastCustomGestureId(BobUI::CustomGesture)
 {
-    qRegisterMetaType<Qt::GestureState>();
+    qRegisterMetaType<BobUI::GestureState>();
 
 #if defined(Q_OS_MACOS)
     registerGestureRecognizer(new QMacSwipeGestureRecognizer);
@@ -63,9 +63,9 @@ QGestureManager::QGestureManager(QObject *parent)
     registerGestureRecognizer(new QPanGestureRecognizer(panTouchPoints()));
     registerGestureRecognizer(new QPinchGestureRecognizer);
     registerGestureRecognizer(new QSwipeGestureRecognizer);
-    registerGestureRecognizer(new QTapGestureRecognizer);
+    registerGestureRecognizer(new BOBUIapGestureRecognizer);
 #endif
-    registerGestureRecognizer(new QTapAndHoldGestureRecognizer);
+    registerGestureRecognizer(new BOBUIapAndHoldGestureRecognizer);
 }
 
 QGestureManager::~QGestureManager()
@@ -77,25 +77,25 @@ QGestureManager::~QGestureManager()
     }
 }
 
-Qt::GestureType QGestureManager::registerGestureRecognizer(QGestureRecognizer *recognizer)
+BobUI::GestureType QGestureManager::registerGestureRecognizer(QGestureRecognizer *recognizer)
 {
     const QScopedPointer<QGesture> dummy(recognizer->create(nullptr));
     if (Q_UNLIKELY(!dummy)) {
         qWarning("QGestureManager::registerGestureRecognizer: "
                  "the recognizer fails to create a gesture object, skipping registration.");
-        return Qt::GestureType(0);
+        return BobUI::GestureType(0);
     }
-    Qt::GestureType type = dummy->gestureType();
-    if (type == Qt::CustomGesture) {
+    BobUI::GestureType type = dummy->gestureType();
+    if (type == BobUI::CustomGesture) {
         // generate a new custom gesture id
         ++m_lastCustomGestureId;
-        type = Qt::GestureType(m_lastCustomGestureId);
+        type = BobUI::GestureType(m_lastCustomGestureId);
     }
     m_recognizers.insert(type, recognizer);
     return type;
 }
 
-void QGestureManager::unregisterGestureRecognizer(Qt::GestureType type)
+void QGestureManager::unregisterGestureRecognizer(BobUI::GestureType type)
 {
     QList<QGestureRecognizer *> list = m_recognizers.values(type);
     m_recognizers.remove(type);
@@ -127,7 +127,7 @@ void QGestureManager::unregisterGestureRecognizer(Qt::GestureType type)
     }
 }
 
-void QGestureManager::cleanupCachedGestures(QObject *target, Qt::GestureType type)
+void QGestureManager::cleanupCachedGestures(QObject *target, BobUI::GestureType type)
 {
     const auto iter = m_objectGestures.find({target, type});
     if (iter == m_objectGestures.end())
@@ -152,7 +152,7 @@ void QGestureManager::cleanupCachedGestures(QObject *target, Qt::GestureType typ
 }
 
 // get or create a QGesture object that will represent the state for a given object, used by the recognizer
-QGesture *QGestureManager::getState(QObject *object, QGestureRecognizer *recognizer, Qt::GestureType type)
+QGesture *QGestureManager::getState(QObject *object, QGestureRecognizer *recognizer, BobUI::GestureType type)
 {
     // if the widget is being deleted we should be careful not to
     // create a new state, as it will create QWeakPointer which doesn't work
@@ -162,7 +162,7 @@ QGesture *QGestureManager::getState(QObject *object, QGestureRecognizer *recogni
             return nullptr;
     } else if (QGesture *g = qobject_cast<QGesture *>(object)) {
         return g;
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     } else {
         Q_ASSERT(qobject_cast<QGraphicsObject *>(object));
         QGraphicsObject *graphicsObject = static_cast<QGraphicsObject *>(object);
@@ -183,7 +183,7 @@ QGesture *QGestureManager::getState(QObject *object, QGestureRecognizer *recogni
     if (!state)
         return nullptr;
     state->setParent(this);
-    if (state->gestureType() == Qt::CustomGesture) {
+    if (state->gestureType() == BobUI::CustomGesture) {
         // if the recognizer didn't fill in the gesture type, then this
         // is a custom gesture with autogenerated id and we fill it.
         state->d_func()->gestureType = type;
@@ -228,7 +228,7 @@ static bool logIgnoredEvent(QEvent::Type t)
 }
 
 bool QGestureManager::filterEventThroughContexts(const QMultiMap<QObject *,
-                                                 Qt::GestureType> &contexts,
+                                                 BobUI::GestureType> &contexts,
                                                  QEvent *event)
 {
     QSet<QGesture *> triggeredGestures;
@@ -242,12 +242,12 @@ bool QGestureManager::filterEventThroughContexts(const QMultiMap<QObject *,
     bool consumeEventHint = false;
 
     // filter the event through recognizers
-    typedef QMultiMap<QObject *, Qt::GestureType>::const_iterator ContextIterator;
+    typedef QMultiMap<QObject *, BobUI::GestureType>::const_iterator ContextIterator;
     ContextIterator contextEnd = contexts.end();
     for (ContextIterator context = contexts.begin(); context != contextEnd; ++context) {
-        Qt::GestureType gestureType = context.value();
-        const QMultiMap<Qt::GestureType, QGestureRecognizer *> &const_recognizers = m_recognizers;
-        QMultiMap<Qt::GestureType, QGestureRecognizer *>::const_iterator
+        BobUI::GestureType gestureType = context.value();
+        const QMultiMap<BobUI::GestureType, QGestureRecognizer *> &const_recognizers = m_recognizers;
+        QMultiMap<BobUI::GestureType, QGestureRecognizer *>::const_iterator
                 typeToRecognizerIterator = const_recognizers.lowerBound(gestureType),
                 typeToRecognizerEnd = const_recognizers.upperBound(gestureType);
         for (; typeToRecognizerIterator != typeToRecognizerEnd; ++typeToRecognizerIterator) {
@@ -323,7 +323,7 @@ bool QGestureManager::filterEventThroughContexts(const QMultiMap<QObject *,
             // there are some gestures that claim to be finished, but never started.
             // probably those are "singleshot" gestures so we'll fake the started state.
             for (QGesture *gesture : notStarted)
-                gesture->d_func()->state = Qt::GestureStarted;
+                gesture->d_func()->state = BobUI::GestureStarted;
             QSet<QGesture *> undeliveredGestures;
             deliverEvents(notStarted, &undeliveredGestures);
             finishedGestures -= undeliveredGestures;
@@ -338,15 +338,15 @@ bool QGestureManager::filterEventThroughContexts(const QMultiMap<QObject *,
 
         // set the proper gesture state on each gesture
         for (QGesture *gesture : startedGestures)
-            gesture->d_func()->state = Qt::GestureStarted;
+            gesture->d_func()->state = BobUI::GestureStarted;
         for (QGesture *gesture : std::as_const(triggeredGestures))
-            gesture->d_func()->state = Qt::GestureUpdated;
+            gesture->d_func()->state = BobUI::GestureUpdated;
         for (QGesture *gesture : std::as_const(finishedGestures))
-            gesture->d_func()->state = Qt::GestureFinished;
+            gesture->d_func()->state = BobUI::GestureFinished;
         for (QGesture *gesture : canceledGestures)
-            gesture->d_func()->state = Qt::GestureCanceled;
+            gesture->d_func()->state = BobUI::GestureCanceled;
         for (QGesture *gesture : activeToMaybeGestures)
-            gesture->d_func()->state = Qt::GestureFinished;
+            gesture->d_func()->state = BobUI::GestureFinished;
 
         if (!m_activeGestures.isEmpty() || !m_maybeGestures.isEmpty() ||
             !startedGestures.isEmpty() || !triggeredGestures.isEmpty() ||
@@ -370,7 +370,7 @@ bool QGestureManager::filterEventThroughContexts(const QMultiMap<QObject *,
                 continue;
             if (g->gestureCancelPolicy() == QGesture::CancelAllInContext) {
                 qCDebug(lcGestureManager) << "lets try to cancel some";
-                // find gestures in context in Qt::GestureStarted or Qt::GestureUpdated state and cancel them
+                // find gestures in context in BobUI::GestureStarted or BobUI::GestureUpdated state and cancel them
                 cancelGesturesForChildren(g);
             }
         }
@@ -412,7 +412,7 @@ void QGestureManager::cancelGesturesForChildren(QGesture *original)
         // note that we don't touch the gestures for our originatingWidget
         if (widget != originatingWidget && originatingWidget->isAncestorOf(widget)) {
             qCDebug(lcGestureManager) << "  found a gesture to cancel" << (*iter);
-            (*iter)->d_func()->state = Qt::GestureCanceled;
+            (*iter)->d_func()->state = BobUI::GestureCanceled;
             cancelledGestures << *iter;
             iter = m_activeGestures.erase(iter);
         } else {
@@ -467,10 +467,10 @@ void QGestureManager::cleanupGesturesForRemovedRecognizer(QGesture *gesture)
 // return true if accepted (consumed)
 bool QGestureManager::filterEvent(QWidget *receiver, QEvent *event)
 {
-    QVarLengthArray<Qt::GestureType, 16> types;
-    QMultiMap<QObject *, Qt::GestureType> contexts;
+    QVarLengthArray<BobUI::GestureType, 16> types;
+    QMultiMap<QObject *, BobUI::GestureType> contexts;
     QWidget *w = receiver;
-    typedef QMap<Qt::GestureType, Qt::GestureFlags>::const_iterator ContextIterator;
+    typedef QMap<BobUI::GestureType, BobUI::GestureFlags>::const_iterator ContextIterator;
     if (!w->d_func()->gestureContext.isEmpty()) {
         for(ContextIterator it = w->d_func()->gestureContext.constBegin(),
             e = w->d_func()->gestureContext.constEnd(); it != e; ++it) {
@@ -484,7 +484,7 @@ bool QGestureManager::filterEvent(QWidget *receiver, QEvent *event)
     {
         for (ContextIterator it = w->d_func()->gestureContext.constBegin(),
              e = w->d_func()->gestureContext.constEnd(); it != e; ++it) {
-            if (!(it.value() & Qt::DontStartGestureOnChildren)) {
+            if (!(it.value() & BobUI::DontStartGestureOnChildren)) {
                 if (!types.contains(it.key())) {
                     types.push_back(it.key());
                     contexts.insert(w, it.key());
@@ -498,14 +498,14 @@ bool QGestureManager::filterEvent(QWidget *receiver, QEvent *event)
     return contexts.isEmpty() ? false : filterEventThroughContexts(contexts, event);
 }
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 bool QGestureManager::filterEvent(QGraphicsObject *receiver, QEvent *event)
 {
-    QVarLengthArray<Qt::GestureType, 16> types;
-    QMultiMap<QObject *, Qt::GestureType> contexts;
+    QVarLengthArray<BobUI::GestureType, 16> types;
+    QMultiMap<QObject *, BobUI::GestureType> contexts;
     QGraphicsObject *item = receiver;
     if (!item->QGraphicsItem::d_func()->gestureContext.isEmpty()) {
-        typedef QMap<Qt::GestureType, Qt::GestureFlags>::const_iterator ContextIterator;
+        typedef QMap<BobUI::GestureType, BobUI::GestureFlags>::const_iterator ContextIterator;
         for(ContextIterator it = item->QGraphicsItem::d_func()->gestureContext.constBegin(),
             e = item->QGraphicsItem::d_func()->gestureContext.constEnd(); it != e; ++it) {
             types.push_back(it.key());
@@ -516,10 +516,10 @@ bool QGestureManager::filterEvent(QGraphicsObject *receiver, QEvent *event)
     item = item->parentObject();
     while (item)
     {
-        typedef QMap<Qt::GestureType, Qt::GestureFlags>::const_iterator ContextIterator;
+        typedef QMap<BobUI::GestureType, BobUI::GestureFlags>::const_iterator ContextIterator;
         for (ContextIterator it = item->QGraphicsItem::d_func()->gestureContext.constBegin(),
              e = item->QGraphicsItem::d_func()->gestureContext.constEnd(); it != e; ++it) {
-            if (!(it.value() & Qt::DontStartGestureOnChildren)) {
+            if (!(it.value() & BobUI::DontStartGestureOnChildren)) {
                 if (!types.contains(it.key())) {
                     types.push_back(it.key());
                     contexts.insert(item, it.key());
@@ -544,7 +544,7 @@ bool QGestureManager::filterEvent(QObject *receiver, QEvent *event)
     QGesture *state = qobject_cast<QGesture *>(receiver);
     if (!state || !m_gestureToRecognizer.contains(state))
         return false;
-    QMultiMap<QObject *, Qt::GestureType> contexts;
+    QMultiMap<QObject *, BobUI::GestureType> contexts;
     contexts.insert(state, state->gestureType());
     return filterEventThroughContexts(contexts, event);
 }
@@ -553,7 +553,7 @@ void QGestureManager::getGestureTargets(const QSet<QGesture*> &gestures,
     QHash<QWidget *, QList<QGesture *> > *conflicts,
     QHash<QWidget *, QList<QGesture *> > *normal)
 {
-    typedef QHash<Qt::GestureType, QHash<QWidget *, QGesture *> > GestureByTypes;
+    typedef QHash<BobUI::GestureType, QHash<QWidget *, QGesture *> > GestureByTypes;
     GestureByTypes gestureByTypes;
 
     // sort gestures by types
@@ -571,11 +571,11 @@ void QGestureManager::getGestureTargets(const QSet<QGesture*> &gestures,
             QWidget *widget = wit.key();
             QWidget *w = widget->parentWidget();
             while (w) {
-                QMap<Qt::GestureType, Qt::GestureFlags>::const_iterator it
+                QMap<BobUI::GestureType, BobUI::GestureFlags>::const_iterator it
                         = w->d_func()->gestureContext.constFind(git.key());
                 if (it != w->d_func()->gestureContext.constEnd()) {
                     // i.e. 'w' listens to gesture 'type'
-                    if (!(it.value() & Qt::DontStartGestureOnChildren) && w != widget) {
+                    if (!(it.value() & BobUI::DontStartGestureOnChildren) && w != widget) {
                         // conflicting gesture!
                         (*conflicts)[widget].append(wit.value());
                         break;
@@ -611,7 +611,7 @@ void QGestureManager::deliverEvents(const QSet<QGesture *> &gestures,
         QWidget *target = m_gestureTargets.value(gesture, nullptr);
         if (!target) {
             // the gesture has just started and doesn't have a target yet.
-            Q_ASSERT(gesture->state() == Qt::GestureStarted);
+            Q_ASSERT(gesture->state() == BobUI::GestureStarted);
             if (gesture->hasHotSpot()) {
                 // guess the target widget using the hotspot of the gesture
                 QPoint pt = gesture->hotSpot().toPoint();
@@ -635,8 +635,8 @@ void QGestureManager::deliverEvents(const QSet<QGesture *> &gestures,
                 m_gestureTargets.insert(gesture, target);
         }
 
-        Qt::GestureType gestureType = gesture->gestureType();
-        Q_ASSERT(gestureType != Qt::CustomGesture);
+        BobUI::GestureType gestureType = gesture->gestureType();
+        Q_ASSERT(gestureType != BobUI::CustomGesture);
         Q_UNUSED(gestureType);
 
         if (Q_UNLIKELY(!target)) {
@@ -645,7 +645,7 @@ void QGestureManager::deliverEvents(const QSet<QGesture *> &gestures,
             qWarning("QGestureManager::deliverEvents: could not find the target for gesture");
             undeliveredGestures->insert(gesture);
         } else {
-            if (gesture->state() == Qt::GestureStarted) {
+            if (gesture->state() == BobUI::GestureStarted) {
                 startedGestures.insert(gesture);
             } else {
                 normalStartedGestures[target].append(gesture);
@@ -706,7 +706,7 @@ void QGestureManager::deliverEvents(const QSet<QGesture *> &gestures,
             bool eventAccepted = event.isAccepted();
             const auto eventGestures = event.gestures();
             for (QGesture *gesture : eventGestures) {
-                if (gesture->state() == Qt::GestureStarted &&
+                if (gesture->state() == BobUI::GestureStarted &&
                     (eventAccepted || event.isAccepted(gesture))) {
                     QWidget *w = event.m_targetWidgets.value(gesture->gestureType(), 0);
                     Q_ASSERT(w);
@@ -736,8 +736,8 @@ bool QGestureManager::gesturePending(QObject *o)
     return gm && gm->m_gestureOwners.key(o);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 #include "moc_qgesturemanager_p.cpp"

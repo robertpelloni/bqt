@@ -9,8 +9,8 @@ not ok 2 - xfailAndContinue() # TODO This should xfail
       message: begin
     - severity: xfail
       message: This should xfail
-      at: tst_ExpectFail::xfailAndContinue() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailAndContinue() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
     - severity: debug
       message: after
@@ -23,21 +23,21 @@ not ok 3 - xfailAndAbort() # TODO This should xfail
       message: begin
     - severity: xfail
       message: This should xfail
-      at: tst_ExpectFail::xfailAndAbort() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailAndAbort() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 4 - xfailContinueSkip() # SKIP This skip should be reported and counted
   ---
-  at: tst_ExpectFail::xfailContinueSkip() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailContinueSkip() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   extensions:
     messages:
     - severity: xfail
       message: This should xfail then skip
-      at: tst_ExpectFail::xfailContinueSkip() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailContinueSkip() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 5 - xfailAbortSkip() # TODO This should xfail
@@ -46,43 +46,43 @@ not ok 5 - xfailAbortSkip() # TODO This should xfail
     messages:
     - severity: xfail
       message: This should xfail
-      at: tst_ExpectFail::xfailAbortSkip() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailAbortSkip() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 6 - xfailTwice()
   ---
   # Already expecting a fail
-  at: tst_ExpectFail::xfailTwice() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailTwice() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   ...
 not ok 7 - xfailDataDrivenTwice(Pass Abort)
   ---
   # Already expecting a fail
-  at: tst_ExpectFail::xfailDataDrivenTwice() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailDataDrivenTwice() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   ...
 not ok 8 - xfailDataDrivenTwice(Pass Continue)
   ---
   # Already expecting a fail
-  at: tst_ExpectFail::xfailDataDrivenTwice() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailDataDrivenTwice() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   ...
 not ok 9 - xfailDataDrivenTwice(Fail Abort)
   ---
   # Already expecting a fail
-  at: tst_ExpectFail::xfailDataDrivenTwice() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailDataDrivenTwice() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   ...
 not ok 10 - xfailDataDrivenTwice(Fail Continue)
   ---
   # Already expecting a fail
-  at: tst_ExpectFail::xfailDataDrivenTwice() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailDataDrivenTwice() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   ...
 not ok 11 - xfailWithQString() # TODO A string
@@ -91,13 +91,13 @@ not ok 11 - xfailWithQString() # TODO A string
     messages:
     - severity: xfail
       message: A string
-      at: tst_ExpectFail::xfailWithQString() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailWithQString() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
     - severity: xfail
       message: Bug 5 (The message)
-      at: tst_ExpectFail::xfailWithQString() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailWithQString() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 ok 12 - xfailDataDrivenWithQString(Pass Abort) # SKIP Each Continue or Pass reports this and increments skip-count
@@ -108,26 +108,26 @@ not ok 14 - xfailDataDrivenWithQString(Fail Abort) # TODO A string
     messages:
     - severity: xfail
       message: A string
-      at: tst_ExpectFail::xfailDataDrivenWithQString() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQString() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 15 - xfailDataDrivenWithQString(Fail Continue) # SKIP Each Continue or Pass reports this and increments skip-count
   ---
-  at: tst_ExpectFail::xfailDataDrivenWithQString() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+  at: tst_ExpectFail::xfailDataDrivenWithQString() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
   line: 0
   extensions:
     messages:
     - severity: xfail
       message: A string
-      at: tst_ExpectFail::xfailDataDrivenWithQString() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQString() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
     - severity: xfail
       message: Bug 5 (The message)
-      at: tst_ExpectFail::xfailDataDrivenWithQString() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQString() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 ok 16 - xfailDataDrivenWithQVerify(Pass Abort)
@@ -138,8 +138,8 @@ not ok 18 - xfailDataDrivenWithQVerify(Fail Abort) # TODO This test should xfail
     messages:
     - severity: xfail
       message: This test should xfail
-      at: tst_ExpectFail::xfailDataDrivenWithQVerify() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQVerify() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 19 - xfailDataDrivenWithQVerify(Fail Continue) # TODO This test should xfail
@@ -148,8 +148,8 @@ not ok 19 - xfailDataDrivenWithQVerify(Fail Continue) # TODO This test should xf
     messages:
     - severity: xfail
       message: This test should xfail
-      at: tst_ExpectFail::xfailDataDrivenWithQVerify() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQVerify() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 ok 20 - xfailDataDrivenWithQCompare(Pass Abort)
@@ -160,8 +160,8 @@ not ok 22 - xfailDataDrivenWithQCompare(Fail Abort) # TODO This test should xfai
     messages:
     - severity: xfail
       message: This test should xfail
-      at: tst_ExpectFail::xfailDataDrivenWithQCompare() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQCompare() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 23 - xfailDataDrivenWithQCompare(Fail Continue) # TODO This test should xfail
@@ -170,8 +170,8 @@ not ok 23 - xfailDataDrivenWithQCompare(Fail Continue) # TODO This test should x
     messages:
     - severity: xfail
       message: This test should xfail
-      at: tst_ExpectFail::xfailDataDrivenWithQCompare() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailDataDrivenWithQCompare() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 ok 24 - xfailOnWrongRow(Fail Abort)
@@ -194,8 +194,8 @@ not ok 26 - xfailOnAnyRow(Fail Abort) # TODO This test should xfail
     messages:
     - severity: xfail
       message: This test should xfail
-      at: tst_ExpectFail::xfailOnAnyRow() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailOnAnyRow() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 27 - xfailOnAnyRow(Fail Continue) # TODO This test should xfail
@@ -204,8 +204,8 @@ not ok 27 - xfailOnAnyRow(Fail Continue) # TODO This test should xfail
     messages:
     - severity: xfail
       message: This test should xfail
-      at: tst_ExpectFail::xfailOnAnyRow() (qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
+      at: tst_ExpectFail::xfailOnAnyRow() (bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/expectfail/tst_expectfail.cpp
       line: 0
   ...
 not ok 28 - xfailWithoutCheck(Fail Abort)

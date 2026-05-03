@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidjnimain.h"
 #include "qandroidsystemlocale.h"
@@ -7,10 +7,10 @@
 #include "qstringlist.h"
 #include "qvariant.h"
 
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/QJniObject>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/QJniObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_JNI_CLASS(Locale, "java/util/Locale")
 Q_DECLARE_JNI_CLASS(Resources, "android/content/res/Resources")
@@ -18,7 +18,7 @@ Q_DECLARE_JNI_CLASS(Configuration, "android/content/res/Configuration")
 Q_DECLARE_JNI_CLASS(LocaleList, "android/os/LocaleList")
 Q_DECLARE_JNI_CLASS(DateFormat, "android/text/format/DateFormat")
 
-using namespace QtJniTypes;
+using namespace BobUIJniTypes;
 
 QAndroidSystemLocale::QAndroidSystemLocale() : m_locale(QLocale::C)
 {
@@ -27,7 +27,7 @@ QAndroidSystemLocale::QAndroidSystemLocale() : m_locale(QLocale::C)
 void QAndroidSystemLocale::getLocaleFromJava() const
 {
     const Locale javaLocaleObject = []{
-        const QJniObject javaContext = QtAndroidPrivate::context();
+        const QJniObject javaContext = BobUIAndroidPrivate::context();
         if (javaContext.isValid()) {
             const QJniObject resources = javaContext.callMethod<Resources>("getResources");
             const QJniObject configuration = resources.callMethod<Configuration>("getConfiguration");
@@ -84,7 +84,7 @@ QString QAndroidSystemLocale::convertTo24hFormat(const QString &format) const
     return format24.trimmed();
 }
 
-QString QAndroidSystemLocale::timeToString(const QTime &time, QLocale::FormatType type) const
+QString QAndroidSystemLocale::timeToString(const BOBUIime &time, QLocale::FormatType type) const
 {
     if (m_24hFormat)
         return m_locale.toString(time, convertTo24hFormat(m_locale.timeFormat(type)));
@@ -202,7 +202,7 @@ QVariant QAndroidSystemLocale::query(QueryType type, QVariant &&in) const
     case LocaleChanged:
         Q_ASSERT_X(false, Q_FUNC_INFO, "This can't happen.");
     case UILanguages: {
-        if (QtAndroidPrivate::androidSdkVersion() >= 24) {
+        if (BobUIAndroidPrivate::androidSdkVersion() >= 24) {
             LocaleList localeListObject = LocaleList::callStaticMethod<LocaleList>("getDefault");
             if (localeListObject.isValid()) {
                 QString lang = localeListObject.callMethod<QString>("toLanguageTags");
@@ -227,4 +227,4 @@ QLocale QAndroidSystemLocale::fallbackLocale() const
     return m_locale;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

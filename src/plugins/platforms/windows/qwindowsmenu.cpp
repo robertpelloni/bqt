@@ -1,20 +1,20 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsmenu.h"
 #include "qwindowscontext.h"
 #include "qwindowswindow.h"
 
-#include <QtGui/qwindow.h>
-#include <QtGui/private/qpixmap_win_p.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qpointer.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/private/qpixmap_win_p.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qpointer.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsMenuBar
@@ -26,8 +26,8 @@ QT_BEGIN_NAMESPACE
     \endlist
 
     \note The destruction order of the QWindowsMenu/Item/Bar instances is
-    arbitrary depending on whether the application is Qt Quick or
-    Qt Widgets, either the containers or the items might be deleted first.
+    arbitrary depending on whether the application is BobUI Quick or
+    BobUI Widgets, either the containers or the items might be deleted first.
 
     \internal
 */
@@ -237,7 +237,7 @@ void QWindowsMenuItem::updateBitmap()
         const int size = m_iconSize ? m_iconSize : GetSystemMetrics(SM_CYMENUCHECK);
         // native Win32 menus don't support high-DPI versions of icons, so always
         // use the pixmap for a 1.0 scale factor.
-        m_hbitmap = qt_pixmapToWinHBITMAP(m_icon.pixmap(QSize(size, size), 1.0), 1);
+        m_hbitmap = bobui_pixmapToWinHBITMAP(m_icon.pixmap(QSize(size, size), 1.0), 1);
     }
     MENUITEMINFO itemInfo;
     menuItemInfoInit(itemInfo);
@@ -354,7 +354,7 @@ void QWindowsMenuItem::setChecked(bool isChecked)
     menuItemSetChangeState(parentMenuHandle(), m_id, FALSE, m_checked, MF_CHECKED, MF_UNCHECKED);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 void QWindowsMenuItem::setShortcut(const QKeySequence &shortcut)
 {
     qCDebug(lcQpaMenus) << __FUNCTION__ << '(' << shortcut << ')' << this;
@@ -399,7 +399,7 @@ UINT QWindowsMenuItem::state() const
         result |= MF_POPUP;
     if (m_checkable)
         result |= m_checked ? MF_CHECKED : MF_UNCHECKED;
-    if (QGuiApplication::layoutDirection() == Qt::RightToLeft)
+    if (QGuiApplication::layoutDirection() == BobUI::RightToLeft)
         result |= MFT_RIGHTORDER;
     return result;
 }
@@ -407,7 +407,7 @@ UINT QWindowsMenuItem::state() const
 QString QWindowsMenuItem::nativeText() const
 {
     QString result = m_text;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     if (!m_shortcut.isEmpty()) {
         result += u'\t';
         result += m_shortcut.toString(QKeySequence::NativeText);
@@ -667,7 +667,7 @@ bool QWindowsPopupMenu::trackPopupMenu(HWND windowHandle, int x, int y)
     emit aboutToShow();
     const bool result =
         TrackPopupMenu(menuHandle(),
-                          QGuiApplication::layoutDirection() == Qt::RightToLeft ? UINT(TPM_RIGHTALIGN) : UINT(0),
+                          QGuiApplication::layoutDirection() == BobUI::RightToLeft ? UINT(TPM_RIGHTALIGN) : UINT(0),
                           x, y, 0, windowHandle, nullptr) == TRUE;
     emit aboutToHide();
     return result;
@@ -824,7 +824,7 @@ void QWindowsMenuBar::redraw() const
         DrawMenuBar(window->handle());
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 template <class M>  /* Menu[Item] */
 static void formatTextSequence(QDebug &d, const QList<M *> &v)
@@ -853,9 +853,9 @@ void QWindowsMenuItem::formatDebug(QDebug &d) const
         d << ", parentMenu=" << static_cast<const void *>(m_parentMenu);
     if (m_subMenu)
         d << ", subMenu=" << static_cast<const void *>(m_subMenu);
-    d << ", tag=" << Qt::showbase << Qt::hex
-      << tag() << Qt::noshowbase << Qt::dec << ", id=" << m_id;
-#if QT_CONFIG(shortcut)
+    d << ", tag=" << BobUI::showbase << BobUI::hex
+      << tag() << BobUI::noshowbase << BobUI::dec << ", id=" << m_id;
+#if BOBUI_CONFIG(shortcut)
     if (!m_shortcut.isEmpty())
         d << ", shortcut=" << m_shortcut;
 #endif
@@ -890,7 +890,7 @@ void QWindowsMenu::formatDebug(QDebug &d) const
     if (m_parentMenu != nullptr)
         d << " [on menu]";
     if (tag())
-        d << ", tag=" << Qt::showbase << Qt::hex << tag() << Qt::noshowbase << Qt::dec;
+        d << ", tag=" << BobUI::showbase << BobUI::hex << tag() << BobUI::noshowbase << BobUI::dec;
     if (m_visible)
         d << " [visible]";
     if (m_enabled)
@@ -934,6 +934,6 @@ QDebug operator<<(QDebug d, const QPlatformMenuBar *mb)
     return d;
 }
 
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

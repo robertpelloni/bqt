@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include "QtWidgets/qapplication.h"
-#include "QtWidgets/qwidget.h"
-#if QT_CONFIG(tabbar)
-#include "QtWidgets/qtabbar.h"
+#include "BobUIWidgets/qapplication.h"
+#include "BobUIWidgets/qwidget.h"
+#if BOBUI_CONFIG(tabbar)
+#include "BobUIWidgets/bobuiabbar.h"
 #endif
-#include "QtWidgets/qstyle.h"
-#include "QtWidgets/qapplication.h"
-#include "QtCore/qvariant.h"
+#include "BobUIWidgets/qstyle.h"
+#include "BobUIWidgets/qapplication.h"
+#include "BobUICore/qvariant.h"
 #include "qdockarealayout_p.h"
 #include "qdockwidget.h"
 #include "qmainwindow.h"
@@ -20,20 +20,20 @@
 #include "qdockwidget_p.h"
 #include <private/qlayoutengine_p.h>
 
-#if QT_CONFIG(toolbar)
-#include "qtoolbar.h"
-#include "qtoolbarlayout_p.h"
+#if BOBUI_CONFIG(toolbar)
+#include "bobuioolbar.h"
+#include "bobuioolbarlayout_p.h"
 #endif
 
 #include <qpainter.h>
 #include <qstyleoption.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaDockWidgets, "qt.widgets.dockwidgets");
+Q_LOGGING_CATEGORY(lcQpaDockWidgets, "bobui.widgets.dockwidgets");
 
 // qmainwindow.cpp
-extern QMainWindowLayout *qt_mainwindow_layout(const QMainWindow *window);
+extern QMainWindowLayout *bobui_mainwindow_layout(const QMainWindow *window);
 
 enum { StateFlagVisible = 1, StateFlagFloating = 2 };
 
@@ -124,12 +124,12 @@ QSize QDockAreaLayoutItem::maximumSize() const
     return QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 }
 
-bool QDockAreaLayoutItem::hasFixedSize(Qt::Orientation o) const
+bool QDockAreaLayoutItem::hasFixedSize(BobUI::Orientation o) const
 {
     return perp(o, minimumSize()) == perp(o, maximumSize());
 }
 
-bool QDockAreaLayoutItem::expansive(Qt::Orientation o) const
+bool QDockAreaLayoutItem::expansive(BobUI::Orientation o) const
 {
     if ((flags & GapItem) || placeHolderItem != nullptr)
         return false;
@@ -177,7 +177,7 @@ QDockAreaLayoutItem
     return *this;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QDockAreaLayoutItem *item)
 {
     QDebugStateSaver saver(dbg);
@@ -207,13 +207,13 @@ QDebug operator<<(QDebug dbg, const QDockAreaLayoutItem &item)
     dbg << ")";
     return dbg;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 /******************************************************************************
 ** QDockAreaLayoutInfo
 */
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 static quintptr tabId(const QDockAreaLayoutItem &item)
 {
     if (item.widgetItem == nullptr)
@@ -225,22 +225,22 @@ static quintptr tabId(const QDockAreaLayoutItem &item)
 static const int zero = 0;
 
 QDockAreaLayoutInfo::QDockAreaLayoutInfo()
-    : sep(&zero), dockPos(QInternal::LeftDock), o(Qt::Horizontal), mainWindow(nullptr)
-#if QT_CONFIG(tabbar)
-    , tabbed(false), tabBar(nullptr), tabBarShape(QTabBar::RoundedSouth)
+    : sep(&zero), dockPos(QInternal::LeftDock), o(BobUI::Horizontal), mainWindow(nullptr)
+#if BOBUI_CONFIG(tabbar)
+    , tabbed(false), tabBar(nullptr), tabBarShape(BOBUIabBar::RoundedSouth)
 #endif
 {
 }
 
 QDockAreaLayoutInfo::QDockAreaLayoutInfo(const int *_sep, QInternal::DockPosition _dockPos,
-                                            Qt::Orientation _o, int tbshape,
+                                            BobUI::Orientation _o, int tbshape,
                                             QMainWindow *window)
     : sep(_sep), dockPos(_dockPos), o(_o), mainWindow(window)
-#if QT_CONFIG(tabbar)
-    , tabbed(false), tabBar(nullptr), tabBarShape(static_cast<QTabBar::Shape>(tbshape))
+#if BOBUI_CONFIG(tabbar)
+    , tabbed(false), tabBar(nullptr), tabBarShape(static_cast<BOBUIabBar::Shape>(tbshape))
 #endif
 {
-#if !QT_CONFIG(tabbar)
+#if !BOBUI_CONFIG(tabbar)
     Q_UNUSED(tbshape);
 #endif
 }
@@ -254,7 +254,7 @@ void QDockAreaLayoutInfo::clear()
 {
     item_list.clear();
     rect = QRect();
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     tabbed = false;
     tabBar = nullptr;
 #endif
@@ -288,7 +288,7 @@ QSize QDockAreaLayoutInfo::minimumSize() const
             continue;
 
         QSize min_size = item.minimumSize();
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (tabbed) {
             a = qMax(a, pick(o, min_size));
         } else
@@ -307,21 +307,21 @@ QSize QDockAreaLayoutInfo::minimumSize() const
     rpick(o, result) = a;
     rperp(o, result) = b;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     QSize tbm = tabBarMinimumSize();
     if (!tbm.isNull()) {
         switch (tabBarShape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularNorth:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::RoundedNorth:
+            case BOBUIabBar::RoundedSouth:
+            case BOBUIabBar::TriangularNorth:
+            case BOBUIabBar::TriangularSouth:
                 result.rheight() += tbm.height();
                 result.rwidth() = qMax(tbm.width(), result.width());
                 break;
-            case QTabBar::RoundedEast:
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularEast:
-            case QTabBar::TriangularWest:
+            case BOBUIabBar::RoundedEast:
+            case BOBUIabBar::RoundedWest:
+            case BOBUIabBar::TriangularEast:
+            case BOBUIabBar::TriangularWest:
                 result.rheight() = qMax(tbm.height(), result.height());
                 result.rwidth() += tbm.width();
                 break;
@@ -329,7 +329,7 @@ QSize QDockAreaLayoutInfo::minimumSize() const
                 break;
         }
     }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
     return result;
 }
@@ -340,7 +340,7 @@ QSize QDockAreaLayoutInfo::maximumSize() const
         return QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
     int a = 0, b = QWIDGETSIZE_MAX;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed)
         a = QWIDGETSIZE_MAX;
 #endif
@@ -356,7 +356,7 @@ QSize QDockAreaLayoutInfo::maximumSize() const
         QSize max_size = item.maximumSize();
         min_perp = qMax(min_perp, perp(o, item.minimumSize()));
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (tabbed) {
             a = qMin(a, pick(o, max_size));
         } else
@@ -380,23 +380,23 @@ QSize QDockAreaLayoutInfo::maximumSize() const
     rpick(o, result) = a;
     rperp(o, result) = b;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     QSize tbh = tabBarSizeHint();
     if (!tbh.isNull()) {
         switch (tabBarShape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::RoundedSouth:
+            case BOBUIabBar::RoundedNorth:
+            case BOBUIabBar::RoundedSouth:
                 result.rheight() += tbh.height();
                 break;
-            case QTabBar::RoundedEast:
-            case QTabBar::RoundedWest:
+            case BOBUIabBar::RoundedEast:
+            case BOBUIabBar::RoundedWest:
                 result.rwidth() += tbh.width();
                 break;
             default:
                 break;
         }
     }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
     return result;
 }
@@ -421,7 +421,7 @@ QSize QDockAreaLayoutInfo::sizeHint() const
         min_perp = qMax(min_perp, perp(o, item.minimumSize()));
         max_perp = qMin(max_perp, perp(o, item.maximumSize()));
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (tabbed) {
             a = qMax(a, gap ? item.size : pick(o, size_hint));
         } else
@@ -446,21 +446,21 @@ QSize QDockAreaLayoutInfo::sizeHint() const
     rpick(o, result) = a;
     rperp(o, result) = b;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
         QSize tbh = tabBarSizeHint();
         switch (tabBarShape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularNorth:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::RoundedNorth:
+            case BOBUIabBar::RoundedSouth:
+            case BOBUIabBar::TriangularNorth:
+            case BOBUIabBar::TriangularSouth:
                 result.rheight() += tbh.height();
                 result.rwidth() = qMax(tbh.width(), result.width());
                 break;
-            case QTabBar::RoundedEast:
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularEast:
-            case QTabBar::TriangularWest:
+            case BOBUIabBar::RoundedEast:
+            case BOBUIabBar::RoundedWest:
+            case BOBUIabBar::TriangularEast:
+            case BOBUIabBar::TriangularWest:
                 result.rheight() = qMax(tbh.height(), result.height());
                 result.rwidth() += tbh.width();
                 break;
@@ -468,12 +468,12 @@ QSize QDockAreaLayoutInfo::sizeHint() const
                 break;
         }
     }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
     return result;
 }
 
-bool QDockAreaLayoutInfo::expansive(Qt::Orientation o) const
+bool QDockAreaLayoutInfo::expansive(BobUI::Orientation o) const
 {
     for (int i = 0; i < item_list.size(); ++i) {
         if (item_list.at(i).expansive(o))
@@ -544,7 +544,7 @@ static int realMaxSize(const QDockAreaLayoutInfo &info)
 
 void QDockAreaLayoutInfo::fitItems()
 {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
         return;
     }
@@ -650,7 +650,7 @@ void QDockAreaLayoutInfo::fitItems()
 }
 
 static QInternal::DockPosition dockPosHelper(const QRect &rect, const QPoint &_pos,
-                                        Qt::Orientation o,
+                                        BobUI::Orientation o,
                                         bool nestingEnabled,
                                         QDockAreaLayoutInfo::TabMode tabMode)
 {
@@ -679,7 +679,7 @@ static QInternal::DockPosition dockPosHelper(const QRect &rect, const QPoint &_p
             QRect center(w/6, h/6, 2*w/3, 2*h/3);
             if (center.contains(pos))
                 return QInternal::DockCount;
-        } else if (o == Qt::Horizontal) {
+        } else if (o == BobUI::Horizontal) {
         /*             2/3
                 +--------------+
                 |   CCCCCCCC   |
@@ -706,7 +706,7 @@ static QInternal::DockPosition dockPosHelper(const QRect &rect, const QPoint &_p
 
     // not in the center. which edge?
     if (nestingEnabled) {
-        if (o == Qt::Horizontal) {
+        if (o == BobUI::Horizontal) {
     /*       1/3  1/3 1/3
             +------------+     (we've already ruled out the center)
             |LLLLTTTTRRRR|
@@ -739,7 +739,7 @@ static QInternal::DockPosition dockPosHelper(const QRect &rect, const QPoint &_p
             return QInternal::RightDock;
         }
     } else {
-        if (o == Qt::Horizontal) {
+        if (o == BobUI::Horizontal) {
             return x < w/2
                     ? QInternal::LeftDock
                     : QInternal::RightDock;
@@ -758,7 +758,7 @@ QList<int> QDockAreaLayoutInfo::gapIndex(const QPoint& _pos,
     QRect item_rect;
     int item_index = 0;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
         item_rect = tabContentRect();
     } else
@@ -778,7 +778,7 @@ QList<int> QDockAreaLayoutInfo::gapIndex(const QPoint& _pos,
                 continue;
 
             if (item.subinfo != nullptr
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
                 && !item.subinfo->tabbed
 #endif
                 ) {
@@ -806,26 +806,26 @@ QList<int> QDockAreaLayoutInfo::gapIndex(const QPoint& _pos,
 
     switch (dock_pos) {
         case QInternal::LeftDock:
-            if (o == Qt::Horizontal)
+            if (o == BobUI::Horizontal)
                 result << item_index;
             else
                 result << item_index << 0; // this subinfo doesn't exist yet, but insertGap()
                                            // handles this by inserting it
             break;
         case QInternal::RightDock:
-            if (o == Qt::Horizontal)
+            if (o == BobUI::Horizontal)
                 result << item_index + 1;
             else
                 result << item_index << 1;
             break;
         case QInternal::TopDock:
-            if (o == Qt::Horizontal)
+            if (o == BobUI::Horizontal)
                 result << item_index << 0;
             else
                 result << item_index;
             break;
         case QInternal::BottomDock:
-            if (o == Qt::Horizontal)
+            if (o == BobUI::Horizontal)
                 result << item_index << 1;
             else
                 result << item_index + 1;
@@ -940,7 +940,7 @@ static int separatorMoveHelper(QList<QLayoutStruct> &list, int index, int delta,
 
 int QDockAreaLayoutInfo::separatorMove(int index, int delta)
 {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     Q_ASSERT(!tabbed);
 #endif
 
@@ -1072,7 +1072,7 @@ QLayoutItem *QDockAreaLayoutInfo::unplug(const QList<int> &path)
     Q_ASSERT(!(item.flags & QDockAreaLayoutItem::GapItem));
     item.flags |= QDockAreaLayoutItem::GapItem;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
     } else
 #endif
@@ -1088,7 +1088,7 @@ QLayoutItem *QDockAreaLayoutInfo::unplug(const QList<int> &path)
     return item.widgetItem;
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 
 quintptr QDockAreaLayoutInfo::currentTabId() const
 {
@@ -1120,7 +1120,7 @@ void QDockAreaLayoutInfo::setCurrentTabId(quintptr id)
     }
 }
 
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 static QRect dockedGeometry(QWidget *widget)
 {
@@ -1166,7 +1166,7 @@ bool QDockAreaLayoutInfo::insertGap(const QList<int> &path, QLayoutItem *dockWid
         QDockAreaLayoutItem &item = item_list[index];
 
         if (item.subinfo == nullptr
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
             || (item.subinfo->tabbed && !insert_tabbed)
 #endif
             ) {
@@ -1178,8 +1178,8 @@ bool QDockAreaLayoutInfo::insertGap(const QList<int> &path, QLayoutItem *dockWid
             QPlaceHolderItem *placeHolderItem = item.placeHolderItem;
             QRect r = subinfo == nullptr ? widgetItem ? dockedGeometry(widgetItem->widget()) : placeHolderItem->topLevelRect : subinfo->rect;
 
-            Qt::Orientation opposite = o == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal;
-#if !QT_CONFIG(tabbar)
+            BobUI::Orientation opposite = o == BobUI::Horizontal ? BobUI::Vertical : BobUI::Horizontal;
+#if !BOBUI_CONFIG(tabbar)
             const int tabBarShape = 0;
 #endif
             QDockAreaLayoutInfo *new_info
@@ -1197,7 +1197,7 @@ bool QDockAreaLayoutInfo::insertGap(const QList<int> &path, QLayoutItem *dockWid
             new_item.size = pick(opposite, r.size());
             new_item.pos = pick(opposite, r.topLeft());
             new_info->item_list.append(new_item);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
             if (insert_tabbed) {
                 new_info->tabbed = true;
             }
@@ -1212,7 +1212,7 @@ bool QDockAreaLayoutInfo::insertGap(const QList<int> &path, QLayoutItem *dockWid
     gap_item.flags |= QDockAreaLayoutItem::GapItem;
     gap_item.widgetItem = dockWidgetItem;   // so minimumSize(), maximumSize() and
                                             // sizeHint() will work
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (!tabbed)
 #endif
     {
@@ -1225,21 +1225,21 @@ bool QDockAreaLayoutInfo::insertGap(const QList<int> &path, QLayoutItem *dockWid
             switch (dockPos) {
                 case QInternal::LeftDock:
                 case QInternal::RightDock:
-                    if (o == Qt::Vertical) {
+                    if (o == BobUI::Vertical) {
                         // the "size" is the height of the dock area (remember we are empty)
-                        space = pick(Qt::Vertical, rect.size());
+                        space = pick(BobUI::Vertical, rect.size());
                     } else {
-                        space = pick(Qt::Horizontal, dockWidgetItem->widget()->size());
+                        space = pick(BobUI::Horizontal, dockWidgetItem->widget()->size());
                     }
                     break;
                 case QInternal::TopDock:
                 case QInternal::BottomDock:
                 default:
-                    if (o == Qt::Horizontal) {
+                    if (o == BobUI::Horizontal) {
                         // the "size" is width of the dock area
-                        space = pick(Qt::Horizontal, rect.size());
+                        space = pick(BobUI::Horizontal, rect.size());
                     } else {
-                        space = pick(Qt::Vertical, dockWidgetItem->widget()->size());
+                        space = pick(BobUI::Vertical, dockWidgetItem->widget()->size());
                     }
                     break;
             }
@@ -1288,7 +1288,7 @@ QDockAreaLayoutInfo *QDockAreaLayoutInfo::info(QWidget *widget)
         if (item.skip())
             continue;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (tabbed && widget == tabBar)
             return this;
 #endif
@@ -1329,7 +1329,7 @@ QRect QDockAreaLayoutInfo::itemRect(int index, bool isGap) const
 
     QRect result;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
         if (isGap || tabId(item) == currentTabId())
             result = tabContentRect();
@@ -1378,7 +1378,7 @@ QRect QDockAreaLayoutInfo::itemRect(const QList<int> &path) const
 
 QRect QDockAreaLayoutInfo::separatorRect(int index) const
 {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed)
         return QRect();
 #endif
@@ -1410,7 +1410,7 @@ QRect QDockAreaLayoutInfo::separatorRect(const QList<int> &path) const
 
 QList<int> QDockAreaLayoutInfo::findSeparator(const QPoint &_pos) const
 {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed)
         return QList<int>();
 #endif
@@ -1512,7 +1512,7 @@ std::unique_ptr<QLayoutItem> QDockAreaLayoutInfo::takeWidgetItem(QWidget *widget
 
 QMainWindowLayout *QDockAreaLayoutInfo::mainWindowLayout() const
 {
-    QMainWindowLayout *result = qt_mainwindow_layout(mainWindow);
+    QMainWindowLayout *result = bobui_mainwindow_layout(mainWindow);
     Q_ASSERT(result != nullptr);
     return result;
 }
@@ -1529,29 +1529,29 @@ QDockWidget *QDockAreaLayoutInfo::apply(bool animate)
 {
     QWidgetAnimator &widgetAnimator = mainWindowLayout()->widgetAnimator;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
         QRect tab_rect;
         QSize tbh = tabBarSizeHint();
 
         if (!tbh.isNull()) {
             switch (tabBarShape) {
-                case QTabBar::RoundedNorth:
-                case QTabBar::TriangularNorth:
+                case BOBUIabBar::RoundedNorth:
+                case BOBUIabBar::TriangularNorth:
                     tab_rect = QRect(rect.left(), rect.top(), rect.width(), tbh.height());
                     break;
-                case QTabBar::RoundedSouth:
-                case QTabBar::TriangularSouth:
+                case BOBUIabBar::RoundedSouth:
+                case BOBUIabBar::TriangularSouth:
                     tab_rect = QRect(rect.left(), rect.bottom() - tbh.height() + 1,
                                         rect.width(), tbh.height());
                     break;
-                case QTabBar::RoundedEast:
-                case QTabBar::TriangularEast:
+                case BOBUIabBar::RoundedEast:
+                case BOBUIabBar::TriangularEast:
                     tab_rect = QRect(rect.right() - tbh.width() + 1, rect.top(),
                                         tbh.width(), rect.height());
                     break;
-                case QTabBar::RoundedWest:
-                case QTabBar::TriangularWest:
+                case BOBUIabBar::RoundedWest:
+                case BOBUIabBar::TriangularWest:
                     tab_rect = QRect(rect.left(), rect.top(),
                                         tbh.width(), rect.height());
                     break;
@@ -1562,7 +1562,7 @@ QDockWidget *QDockAreaLayoutInfo::apply(bool animate)
 
         widgetAnimator.animate(tabBar, tab_rect, animate);
     }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
     QDockWidget *activated = nullptr;
 
@@ -1598,21 +1598,21 @@ QDockWidget *QDockAreaLayoutInfo::apply(bool animate)
             }
         }
     }
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (*sep == 1)
         updateSeparatorWidgets();
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
     return activated;
 }
 
-static void paintSep(QPainter *p, QWidget *w, const QRect &r, Qt::Orientation o, bool mouse_over)
+static void paintSep(QPainter *p, QWidget *w, const QRect &r, BobUI::Orientation o, bool mouse_over)
 {
     QStyleOption opt(0);
     opt.state = QStyle::State_None;
     if (w->isEnabled())
         opt.state |= QStyle::State_Enabled;
-    if (o != Qt::Horizontal)
+    if (o != BobUI::Horizontal)
         opt.state |= QStyle::State_Horizontal;
     if (mouse_over)
         opt.state |= QStyle::State_MouseOver;
@@ -1628,7 +1628,7 @@ QRegion QDockAreaLayoutInfo::separatorRegion() const
 
     if (isEmpty())
         return result;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed)
         return result;
 #endif
@@ -1658,7 +1658,7 @@ void QDockAreaLayoutInfo::paintSeparators(QPainter *p, QWidget *widget,
 {
     if (isEmpty())
         return;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed)
         return;
 #endif
@@ -1705,7 +1705,7 @@ int QDockAreaLayoutInfo::prev(int index) const
     return -1;
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 void QDockAreaLayoutInfo::tab(int index, QLayoutItem *dockWidgetItem)
 {
     if (tabbed) {
@@ -1724,15 +1724,15 @@ void QDockAreaLayoutInfo::tab(int index, QLayoutItem *dockWidgetItem)
         new_info->setCurrentTab(dockWidgetItem->widget());
     }
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
-void QDockAreaLayoutInfo::split(int index, Qt::Orientation orientation,
+void QDockAreaLayoutInfo::split(int index, BobUI::Orientation orientation,
                                        QLayoutItem *dockWidgetItem)
 {
     if (orientation == o) {
         item_list.insert(index + 1, QDockAreaLayoutItem(dockWidgetItem));
     } else {
-#if !QT_CONFIG(tabbar)
+#if !BOBUI_CONFIG(tabbar)
         const int tabBarShape = 0;
 #endif
         QDockAreaLayoutInfo *new_info
@@ -1837,7 +1837,7 @@ void QDockAreaLayoutInfo::deleteAllLayoutItems()
 
 void QDockAreaLayoutInfo::saveState(QDataStream &stream) const
 {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (tabbed) {
         stream << (uchar) TabMarker;
 
@@ -1852,7 +1852,7 @@ void QDockAreaLayoutInfo::saveState(QDataStream &stream) const
         }
         stream << index;
     } else
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
     {
         stream << (uchar) SequenceMarker;
     }
@@ -1907,16 +1907,16 @@ void QDockAreaLayoutInfo::saveState(QDataStream &stream) const
     }
 }
 
-static Qt::DockWidgetArea toDockWidgetArea(QInternal::DockPosition pos)
+static BobUI::DockWidgetArea toDockWidgetArea(QInternal::DockPosition pos)
 {
     switch (pos) {
-        case QInternal::LeftDock:   return Qt::LeftDockWidgetArea;
-        case QInternal::RightDock:  return Qt::RightDockWidgetArea;
-        case QInternal::TopDock:    return Qt::TopDockWidgetArea;
-        case QInternal::BottomDock: return Qt::BottomDockWidgetArea;
+        case QInternal::LeftDock:   return BobUI::LeftDockWidgetArea;
+        case QInternal::RightDock:  return BobUI::RightDockWidgetArea;
+        case QInternal::TopDock:    return BobUI::TopDockWidgetArea;
+        case QInternal::BottomDock: return BobUI::BottomDockWidgetArea;
         default: break;
     }
-    return Qt::NoDockWidgetArea;
+    return BobUI::NoDockWidgetArea;
 }
 
 bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> &widgets, bool testing)
@@ -1926,7 +1926,7 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
     if (marker != TabMarker && marker != SequenceMarker)
         return false;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     tabbed = marker == TabMarker;
 
     int index = -1;
@@ -1936,7 +1936,7 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
 
     uchar orientation;
     stream >> orientation;
-    o = static_cast<Qt::Orientation>(orientation);
+    o = static_cast<BobUI::Orientation>(orientation);
 
     int cnt;
     stream >> cnt;
@@ -2020,7 +2020,7 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
             }
         } else if (nextMarker == SequenceMarker) {
             int dummy;
-#if !QT_CONFIG(tabbar)
+#if !BOBUI_CONFIG(tabbar)
             const int tabBarShape = 0;
 #endif
             QDockAreaLayoutItem item(new QDockAreaLayoutInfo(sep, dockPos, o,
@@ -2041,7 +2041,7 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
         }
     }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (!testing && tabbed && index >= 0 && index < item_list.size()) {
         updateTabBar();
         setCurrentTabId(tabId(item_list.at(index)));
@@ -2053,19 +2053,19 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
     return true;
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 
 static void raiseSeparatorWidget(QWidget *separatorWidget)
 {
     Q_ASSERT(separatorWidget);
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
     // Raise the separator widget, but make sure it doesn't go above
     // an expanded toolbar, as that would break mouse event hit testing.
     Q_ASSERT(separatorWidget->parent());
-    const auto toolBars = separatorWidget->parent()->findChildren<QToolBar*>(Qt::FindDirectChildrenOnly);
+    const auto toolBars = separatorWidget->parent()->findChildren<BOBUIoolBar*>(BobUI::FindDirectChildrenOnly);
     for (auto *toolBar : toolBars) {
-        if (auto *toolBarLayout = qobject_cast<QToolBarLayout*>(toolBar->layout())) {
+        if (auto *toolBarLayout = qobject_cast<BOBUIoolBarLayout*>(toolBar->layout())) {
             if (toolBarLayout->expanded) {
                 separatorWidget->stackUnder(toolBar);
                 return;
@@ -2173,7 +2173,7 @@ bool QDockAreaLayoutInfo::updateTabBar() const
 
     if (that->tabBar == nullptr) {
         that->tabBar = mainWindowLayout()->getTabBar();
-        that->tabBar->setShape(static_cast<QTabBar::Shape>(tabBarShape));
+        that->tabBar->setShape(static_cast<BOBUIabBar::Shape>(tabBarShape));
         that->tabBar->setDrawBase(true);
     }
 
@@ -2197,11 +2197,11 @@ bool QDockAreaLayoutInfo::updateTabBar() const
         QDockWidget *dw = qobject_cast<QDockWidget*>(item.widgetItem->widget());
         QString title = dw->d_func()->fixedWindowTitle;
         quintptr id = tabId(item);
-        const QIcon windowIcon = dw->testAttribute(Qt::WA_SetWindowIcon) ? dw->windowIcon()
+        const QIcon windowIcon = dw->testAttribute(BobUI::WA_SetWindowIcon) ? dw->windowIcon()
                                                                          : QIcon();
         if (tab_idx == tabBar->count()) {
             tabBar->insertTab(tab_idx, windowIcon, title);
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
             tabBar->setTabToolTip(tab_idx, title);
 #endif
             tabBar->setTabData(tab_idx, id);
@@ -2211,7 +2211,7 @@ bool QDockAreaLayoutInfo::updateTabBar() const
                 tabBar->removeTab(tab_idx);
             else {
                 tabBar->insertTab(tab_idx, windowIcon, title);
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
                 tabBar->setTabToolTip(tab_idx, title);
 #endif
                 tabBar->setTabData(tab_idx, id);
@@ -2220,7 +2220,7 @@ bool QDockAreaLayoutInfo::updateTabBar() const
 
         if (title != tabBar->tabText(tab_idx)) {
             tabBar->setTabText(tab_idx, title);
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
             tabBar->setTabToolTip(tab_idx, title);
 #endif
         }
@@ -2248,7 +2248,7 @@ void QDockAreaLayoutInfo::setTabBarShape(int shape)
         return;
     tabBarShape = shape;
     if (tabBar != nullptr)
-        tabBar->setShape(static_cast<QTabBar::Shape>(shape));
+        tabBar->setShape(static_cast<BOBUIabBar::Shape>(shape));
 
     for (int i = 0; i < item_list.size(); ++i) {
         QDockAreaLayoutItem &item = item_list[i];
@@ -2273,9 +2273,9 @@ QSize QDockAreaLayoutInfo::tabBarSizeHint() const
     return tabBar->sizeHint();
 }
 
-QSet<QTabBar*> QDockAreaLayoutInfo::usedTabBars() const
+QSet<BOBUIabBar*> QDockAreaLayoutInfo::usedTabBars() const
 {
-    QSet<QTabBar*> result;
+    QSet<BOBUIabBar*> result;
 
     if (tabbed) {
         updateTabBar();
@@ -2321,20 +2321,20 @@ QRect QDockAreaLayoutInfo::tabContentRect() const
 
     if (!tbh.isNull()) {
         switch (tabBarShape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
+            case BOBUIabBar::RoundedNorth:
+            case BOBUIabBar::TriangularNorth:
                 result.adjust(0, tbh.height(), 0, 0);
                 break;
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::RoundedSouth:
+            case BOBUIabBar::TriangularSouth:
                 result.adjust(0, 0, 0, -tbh.height());
                 break;
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
+            case BOBUIabBar::RoundedEast:
+            case BOBUIabBar::TriangularEast:
                 result.adjust(0, 0, -tbh.width(), 0);
                 break;
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
+            case BOBUIabBar::RoundedWest:
+            case BOBUIabBar::TriangularWest:
                 result.adjust(tbh.width(), 0, 0, 0);
                 break;
             default:
@@ -2360,7 +2360,7 @@ void QDockAreaLayoutInfo::moveTab(int from, int to)
 {
     item_list.move(tabIndexToListIndex(from), tabIndexToListIndex(to));
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 /******************************************************************************
 ** QDockAreaLayout
@@ -2370,26 +2370,26 @@ QDockAreaLayout::QDockAreaLayout(QMainWindow *win) : fallbackToSizeHints(true)
 {
     mainWindow = win;
     sep = win->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent, nullptr, win);
-#if QT_CONFIG(tabbar)
-    const int tabShape = QTabBar::RoundedSouth;
+#if BOBUI_CONFIG(tabbar)
+    const int tabShape = BOBUIabBar::RoundedSouth;
 #else
     const int tabShape = 0;
 #endif
     docks[QInternal::LeftDock]
-        = QDockAreaLayoutInfo(&sep, QInternal::LeftDock, Qt::Vertical, tabShape, win);
+        = QDockAreaLayoutInfo(&sep, QInternal::LeftDock, BobUI::Vertical, tabShape, win);
     docks[QInternal::RightDock]
-        = QDockAreaLayoutInfo(&sep, QInternal::RightDock, Qt::Vertical, tabShape, win);
+        = QDockAreaLayoutInfo(&sep, QInternal::RightDock, BobUI::Vertical, tabShape, win);
     docks[QInternal::TopDock]
-        = QDockAreaLayoutInfo(&sep, QInternal::TopDock, Qt::Horizontal, tabShape, win);
+        = QDockAreaLayoutInfo(&sep, QInternal::TopDock, BobUI::Horizontal, tabShape, win);
     docks[QInternal::BottomDock]
-        = QDockAreaLayoutInfo(&sep, QInternal::BottomDock, Qt::Horizontal, tabShape, win);
+        = QDockAreaLayoutInfo(&sep, QInternal::BottomDock, BobUI::Horizontal, tabShape, win);
     centralWidgetItem = nullptr;
 
 
-    corners[Qt::TopLeftCorner] = Qt::TopDockWidgetArea;
-    corners[Qt::TopRightCorner] = Qt::TopDockWidgetArea;
-    corners[Qt::BottomLeftCorner] = Qt::BottomDockWidgetArea;
-    corners[Qt::BottomRightCorner] = Qt::BottomDockWidgetArea;
+    corners[BobUI::TopLeftCorner] = BobUI::TopDockWidgetArea;
+    corners[BobUI::TopRightCorner] = BobUI::TopDockWidgetArea;
+    corners[BobUI::BottomLeftCorner] = BobUI::BottomDockWidgetArea;
+    corners[BobUI::BottomRightCorner] = BobUI::BottomDockWidgetArea;
 }
 
 bool QDockAreaLayout::isValid() const
@@ -2451,7 +2451,7 @@ bool QDockAreaLayout::restoreState(QDataStream &stream, const QList<QDockWidget*
             stream >> cornerData[i];
         if (stream.status() == QDataStream::Ok) {
             for (int i = 0; i < 4; ++i)
-                corners[i] = static_cast<Qt::DockWidgetArea>(cornerData[i]);
+                corners[i] = static_cast<BobUI::DockWidgetArea>(cornerData[i]);
         }
 
         if (!testing)
@@ -2490,7 +2490,7 @@ QList<int> QDockAreaLayout::gapIndex(const QPoint &pos, bool disallowTabs) const
     QMainWindow::DockOptions opts = mainWindow->dockOptions();
     bool nestingEnabled = opts & QMainWindow::AllowNestedDocks;
     QDockAreaLayoutInfo::TabMode tabMode = QDockAreaLayoutInfo::NoTabs;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (!disallowTabs) {
         if (opts & QMainWindow::AllowTabbedDocks || opts & QMainWindow::VerticalTabs)
             tabMode = QDockAreaLayoutInfo::AllowTabs;
@@ -2539,7 +2539,7 @@ QRect QDockAreaLayout::gapRect(QInternal::DockPosition dockPos) const
 {
     Q_ASSERT_X(mainWindow, "QDockAreaLayout::gapRect", "Called without valid mainWindow pointer.");
 
-    // Determine gap size depending on MainWindow size (QTBUG-101657)
+    // Determine gap size depending on MainWindow size (BOBUIBUG-101657)
     const QSize gapSize = (mainWindow->size()/2).boundedTo(QSize(EmptyDropAreaSize, EmptyDropAreaSize));
 
     // Warn if main window is too small to create proper docks.
@@ -2684,7 +2684,7 @@ bool QDockAreaLayout::insertGap(const QList<int> &path, QLayoutItem *dockWidgetI
 
 QLayoutItem *QDockAreaLayout::plug(const QList<int> &path)
 {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     Q_ASSERT(!path.isEmpty());
     const int index = path.first();
     Q_ASSERT(index >= 0 && index < QInternal::DockCount);
@@ -2718,7 +2718,7 @@ void QDockAreaLayout::removePlaceHolder(const QString &name)
     if (!index.isEmpty())
         remove(index);
     const auto groups =
-            mainWindow->findChildren<QDockWidgetGroupWindow *>(Qt::FindDirectChildrenOnly);
+            mainWindow->findChildren<QDockWidgetGroupWindow *>(BobUI::FindDirectChildrenOnly);
     for (QDockWidgetGroupWindow *dwgw : groups) {
         index = dwgw->layoutInfo()->indexOfPlaceHolder(name);
         if (!index.isEmpty()) {
@@ -2802,13 +2802,13 @@ void QDockAreaLayout::getGrid(QList<QLayoutStruct> *_ver_struct_list,
         ver_struct_list[1].init();
         ver_struct_list[1].stretch = center_hint.height();
 
-        bool tl_significant = corners[Qt::TopLeftCorner] == Qt::TopDockWidgetArea
+        bool tl_significant = corners[BobUI::TopLeftCorner] == BobUI::TopDockWidgetArea
                                     || docks[QInternal::TopDock].isEmpty();
-        bool bl_significant = corners[Qt::BottomLeftCorner] == Qt::BottomDockWidgetArea
+        bool bl_significant = corners[BobUI::BottomLeftCorner] == BobUI::BottomDockWidgetArea
                                     || docks[QInternal::BottomDock].isEmpty();
-        bool tr_significant = corners[Qt::TopRightCorner] == Qt::TopDockWidgetArea
+        bool tr_significant = corners[BobUI::TopRightCorner] == BobUI::TopDockWidgetArea
                                     || docks[QInternal::TopDock].isEmpty();
-        bool br_significant = corners[Qt::BottomRightCorner] == Qt::BottomDockWidgetArea
+        bool br_significant = corners[BobUI::BottomRightCorner] == BobUI::BottomDockWidgetArea
                                     || docks[QInternal::BottomDock].isEmpty();
 
         int left = (tl_significant && bl_significant) ? left_hint.height() : 0;
@@ -2864,13 +2864,13 @@ void QDockAreaLayout::getGrid(QList<QLayoutStruct> *_ver_struct_list,
         hor_struct_list[1].init();
         hor_struct_list[1].stretch = center_hint.width();
 
-        bool tl_significant = corners[Qt::TopLeftCorner] == Qt::LeftDockWidgetArea
+        bool tl_significant = corners[BobUI::TopLeftCorner] == BobUI::LeftDockWidgetArea
                                     || docks[QInternal::LeftDock].isEmpty();
-        bool tr_significant = corners[Qt::TopRightCorner] == Qt::RightDockWidgetArea
+        bool tr_significant = corners[BobUI::TopRightCorner] == BobUI::RightDockWidgetArea
                                     || docks[QInternal::RightDock].isEmpty();
-        bool bl_significant = corners[Qt::BottomLeftCorner] == Qt::LeftDockWidgetArea
+        bool bl_significant = corners[BobUI::BottomLeftCorner] == BobUI::LeftDockWidgetArea
                                     || docks[QInternal::LeftDock].isEmpty();
-        bool br_significant = corners[Qt::BottomRightCorner] == Qt::RightDockWidgetArea
+        bool br_significant = corners[BobUI::BottomRightCorner] == BobUI::RightDockWidgetArea
                                     || docks[QInternal::RightDock].isEmpty();
 
         int top = (tl_significant && tr_significant) ? top_hint.width() : 0;
@@ -2917,10 +2917,10 @@ void QDockAreaLayout::setGrid(QList<QLayoutStruct> *ver_struct_list,
     if (!docks[QInternal::TopDock].isEmpty()) {
         QRect r = docks[QInternal::TopDock].rect;
         if (hor_struct_list != nullptr) {
-            r.setLeft(corners[Qt::TopLeftCorner] == Qt::TopDockWidgetArea
+            r.setLeft(corners[BobUI::TopLeftCorner] == BobUI::TopDockWidgetArea
                 || docks[QInternal::LeftDock].isEmpty()
                 ? rect.left() : hor_struct_list->at(1).pos);
-            r.setRight(corners[Qt::TopRightCorner] == Qt::TopDockWidgetArea
+            r.setRight(corners[BobUI::TopRightCorner] == BobUI::TopDockWidgetArea
                 || docks[QInternal::RightDock].isEmpty()
                 ? rect.right() : hor_struct_list->at(2).pos - sep - 1);
         }
@@ -2937,10 +2937,10 @@ void QDockAreaLayout::setGrid(QList<QLayoutStruct> *ver_struct_list,
     if (!docks[QInternal::BottomDock].isEmpty()) {
         QRect r = docks[QInternal::BottomDock].rect;
         if (hor_struct_list != nullptr) {
-            r.setLeft(corners[Qt::BottomLeftCorner] == Qt::BottomDockWidgetArea
+            r.setLeft(corners[BobUI::BottomLeftCorner] == BobUI::BottomDockWidgetArea
                         || docks[QInternal::LeftDock].isEmpty()
                             ? rect.left() : hor_struct_list->at(1).pos);
-            r.setRight(corners[Qt::BottomRightCorner] == Qt::BottomDockWidgetArea
+            r.setRight(corners[BobUI::BottomRightCorner] == BobUI::BottomDockWidgetArea
                         || docks[QInternal::RightDock].isEmpty()
                             ? rect.right() : hor_struct_list->at(2).pos - sep - 1);
         }
@@ -2961,10 +2961,10 @@ void QDockAreaLayout::setGrid(QList<QLayoutStruct> *ver_struct_list,
             r.setRight(hor_struct_list->at(1).pos - sep - 1);
         }
         if (ver_struct_list != nullptr) {
-            r.setTop(corners[Qt::TopLeftCorner] == Qt::LeftDockWidgetArea
+            r.setTop(corners[BobUI::TopLeftCorner] == BobUI::LeftDockWidgetArea
                 || docks[QInternal::TopDock].isEmpty()
                 ? rect.top() : ver_struct_list->at(1).pos);
-            r.setBottom(corners[Qt::BottomLeftCorner] == Qt::LeftDockWidgetArea
+            r.setBottom(corners[BobUI::BottomLeftCorner] == BobUI::LeftDockWidgetArea
                 || docks[QInternal::BottomDock].isEmpty()
                 ? rect.bottom() : ver_struct_list->at(2).pos - sep - 1);
         }
@@ -2981,10 +2981,10 @@ void QDockAreaLayout::setGrid(QList<QLayoutStruct> *ver_struct_list,
             r.setRight(rect.right());
         }
         if (ver_struct_list != nullptr) {
-            r.setTop(corners[Qt::TopRightCorner] == Qt::RightDockWidgetArea
+            r.setTop(corners[BobUI::TopRightCorner] == BobUI::RightDockWidgetArea
                         || docks[QInternal::TopDock].isEmpty()
                             ? rect.top() : ver_struct_list->at(1).pos);
-            r.setBottom(corners[Qt::BottomRightCorner] == Qt::RightDockWidgetArea
+            r.setBottom(corners[BobUI::BottomRightCorner] == BobUI::RightDockWidgetArea
                         || docks[QInternal::BottomDock].isEmpty()
                             ? rect.bottom() : ver_struct_list->at(2).pos - sep - 1);
         }
@@ -3054,22 +3054,22 @@ QSize QDockAreaLayout::size_helper(SizePMF sizeFn, CenterPMF centerFn) const
     int col2 = top.height() + center.height() + bottom.height();
     int col3 = right.height();
 
-    if (corners[Qt::TopLeftCorner] == Qt::LeftDockWidgetArea)
+    if (corners[BobUI::TopLeftCorner] == BobUI::LeftDockWidgetArea)
         row1 += left.width();
     else
         col1 += top.height();
 
-    if (corners[Qt::TopRightCorner] == Qt::RightDockWidgetArea)
+    if (corners[BobUI::TopRightCorner] == BobUI::RightDockWidgetArea)
         row1 += right.width();
     else
         col3 += top.height();
 
-    if (corners[Qt::BottomLeftCorner] == Qt::LeftDockWidgetArea)
+    if (corners[BobUI::BottomLeftCorner] == BobUI::LeftDockWidgetArea)
         row3 += left.width();
     else
         col1 += bottom.height();
 
-    if (corners[Qt::BottomRightCorner] == Qt::RightDockWidgetArea)
+    if (corners[BobUI::BottomRightCorner] == BobUI::RightDockWidgetArea)
         row3 += right.width();
     else
         col3 += bottom.height();
@@ -3128,7 +3128,7 @@ bool QDockAreaLayout::restoreDockWidget(QDockWidget *dockWidget)
 {
     QDockAreaLayoutItem *item = nullptr;
     const auto groups =
-            mainWindow->findChildren<QDockWidgetGroupWindow *>(Qt::FindDirectChildrenOnly);
+            mainWindow->findChildren<QDockWidgetGroupWindow *>(BobUI::FindDirectChildrenOnly);
     for (QDockWidgetGroupWindow *dwgw : groups) {
         QList<int> index = dwgw->layoutInfo()->indexOfPlaceHolder(dockWidget->objectName());
         if (!index.isEmpty()) {
@@ -3164,7 +3164,7 @@ bool QDockAreaLayout::restoreDockWidget(QDockWidget *dockWidget)
 }
 
 void QDockAreaLayout::addDockWidget(QInternal::DockPosition pos, QDockWidget *dockWidget,
-                                             Qt::Orientation orientation)
+                                             BobUI::Orientation orientation)
 {
     QLayoutItem *dockWidgetItem = new QDockWidgetItem(dockWidget);
     QDockAreaLayoutInfo &info = docks[pos];
@@ -3175,14 +3175,14 @@ void QDockAreaLayout::addDockWidget(QInternal::DockPosition pos, QDockWidget *do
 
         QDockAreaLayoutItem new_item(dockWidgetItem);
         info.item_list.append(new_item);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (info.tabbed && !new_item.skip()) {
             info.updateTabBar();
             info.setCurrentTabId(tabId(new_item));
         }
 #endif
     } else {
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         int tbshape = info.tabBarShape;
 #else
         int tbshape = 0;
@@ -3196,7 +3196,7 @@ void QDockAreaLayout::addDockWidget(QInternal::DockPosition pos, QDockWidget *do
     removePlaceHolder(dockWidget->objectName());
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 void QDockAreaLayout::tabifyDockWidget(QDockWidget *first, QDockWidget *second)
 {
     const QList<int> path = indexOf(first);
@@ -3209,10 +3209,10 @@ void QDockAreaLayout::tabifyDockWidget(QDockWidget *first, QDockWidget *second)
 
     removePlaceHolder(second->objectName());
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 void QDockAreaLayout::resizeDocks(const QList<QDockWidget *> &docks,
-                                  const QList<int> &sizes, Qt::Orientation o)
+                                  const QList<int> &sizes, BobUI::Orientation o)
 {
     if (Q_UNLIKELY(docks.size() != sizes.size())) {
         qWarning("QMainWidget::resizeDocks: size of the lists are not the same");
@@ -3234,7 +3234,7 @@ void QDockAreaLayout::resizeDocks(const QList<QDockWidget *> &docks,
 
         while (path.size() > 1) {
             QDockAreaLayoutInfo *info = this->info(path);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
             if (!info->tabbed && info->o == o) {
                 info->item_list[path.constLast()].size = size;
                 int totalSize = 0;
@@ -3247,7 +3247,7 @@ void QDockAreaLayout::resizeDocks(const QList<QDockWidget *> &docks,
                 }
                 size = totalSize;
             }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
             path.removeLast();
         }
 
@@ -3262,7 +3262,7 @@ void QDockAreaLayout::resizeDocks(const QList<QDockWidget *> &docks,
 
 void QDockAreaLayout::splitDockWidget(QDockWidget *after,
                                                QDockWidget *dockWidget,
-                                               Qt::Orientation orientation)
+                                               BobUI::Orientation orientation)
 {
     const QList<int> path = indexOf(after);
     if (path.isEmpty())
@@ -3277,7 +3277,7 @@ void QDockAreaLayout::splitDockWidget(QDockWidget *after,
 
 void QDockAreaLayout::apply(bool animate)
 {
-    QWidgetAnimator &widgetAnimator = qt_mainwindow_layout(mainWindow)->widgetAnimator;
+    QWidgetAnimator &widgetAnimator = bobui_mainwindow_layout(mainWindow)->widgetAnimator;
 
     for (int i = 0; i < QInternal::DockCount; ++i)
         docks[i].apply(animate);
@@ -3285,10 +3285,10 @@ void QDockAreaLayout::apply(bool animate)
         widgetAnimator.animate(centralWidgetItem->widget(), centralWidgetRect,
                                 animate);
     }
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     if (sep == 1)
         updateSeparatorWidgets();
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 }
 
 void QDockAreaLayout::paintSeparators(QPainter *p, QWidget *widget,
@@ -3301,8 +3301,8 @@ void QDockAreaLayout::paintSeparators(QPainter *p, QWidget *widget,
             continue;
         QRect r = separatorRect(i);
         if (clip.contains(r) && !dock.hasFixedSize()) {
-            Qt::Orientation opposite = dock.o == Qt::Horizontal
-                                        ? Qt::Vertical : Qt::Horizontal;
+            BobUI::Orientation opposite = dock.o == BobUI::Horizontal
+                                        ? BobUI::Vertical : BobUI::Horizontal;
             paintSep(p, widget, r, opposite, r.contains(mouse));
         }
         if (clip.contains(dock.rect))
@@ -3361,7 +3361,7 @@ int QDockAreaLayout::separatorMove(const QList<int> &separator, const QPoint &or
         getGrid(&list, nullptr);
 
     const int sep_index = isLeftOrTop ? 0 : 1;
-    const Qt::Orientation o = isHorizontal ? Qt::Horizontal : Qt::Vertical;
+    const BobUI::Orientation o = isHorizontal ? BobUI::Horizontal : BobUI::Vertical;
 
     delta = pick(o, dest - origin);
     delta = separatorMoveHelper(list, sep_index, delta, sep);
@@ -3391,7 +3391,7 @@ int QDockAreaLayoutInfo::separatorMove(const QList<int> &separator, const QPoint
     return delta;
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 // Sets the correct positions for the separator widgets
 // Allocates new separator widgets with getSeparatorWidget
 void QDockAreaLayout::updateSeparatorWidgets() const
@@ -3408,11 +3408,11 @@ void QDockAreaLayout::updateSeparatorWidgets() const
             sepWidget = separatorWidgets.at(j);
             if (!sepWidget) {
                 qWarning("QDockAreaLayout::updateSeparatorWidgets: null separator widget");
-                sepWidget = qt_mainwindow_layout(mainWindow)->getSeparatorWidget();
+                sepWidget = bobui_mainwindow_layout(mainWindow)->getSeparatorWidget();
                 separatorWidgets[j] = sepWidget;
             }
         } else {
-            sepWidget = qt_mainwindow_layout(mainWindow)->getSeparatorWidget();
+            sepWidget = bobui_mainwindow_layout(mainWindow)->getSeparatorWidget();
             separatorWidgets.append(sepWidget);
         }
         j++;
@@ -3430,7 +3430,7 @@ void QDockAreaLayout::updateSeparatorWidgets() const
 
     separatorWidgets.resize(j);
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 QLayoutItem *QDockAreaLayout::itemAt(int *x, int index) const
 {
@@ -3473,10 +3473,10 @@ void QDockAreaLayout::deleteAllLayoutItems()
         docks[i].deleteAllLayoutItems();
 }
 
-#if QT_CONFIG(tabbar)
-QSet<QTabBar*> QDockAreaLayout::usedTabBars() const
+#if BOBUI_CONFIG(tabbar)
+QSet<BOBUIabBar*> QDockAreaLayout::usedTabBars() const
 {
-    QSet<QTabBar*> result;
+    QSet<BOBUIabBar*> result;
     for (int i = 0; i < QInternal::DockCount; ++i) {
         const QDockAreaLayoutInfo &dock = docks[i];
         result += dock.usedTabBars();
@@ -3528,4 +3528,4 @@ void QDockAreaLayout::styleChangedEvent()
         fitLayout();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define FOR_ALL_TOKENS(F) \
     F(NOTOKEN) \
@@ -135,7 +135,7 @@ QT_BEGIN_NAMESPACE
     F(Q_NAMESPACE_TOKEN) \
     F(Q_NAMESPACE_EXPORT_TOKEN) \
     F(Q_PROPERTY_TOKEN) \
-    F(QT_ANONYMOUS_PROPERTY_TOKEN) \
+    F(BOBUI_ANONYMOUS_PROPERTY_TOKEN) \
     F(Q_PLUGIN_METADATA_TOKEN) \
     F(Q_ENUMS_TOKEN) \
     F(Q_ENUM_TOKEN) \
@@ -156,7 +156,7 @@ QT_BEGIN_NAMESPACE
     F(Q_INVOKABLE_TOKEN) \
     F(Q_SCRIPTABLE_TOKEN) \
     F(Q_PRIVATE_PROPERTY_TOKEN) \
-    F(QT_ANONYMOUS_PRIVATE_PROPERTY_TOKEN) \
+    F(BOBUI_ANONYMOUS_PRIVATE_PROPERTY_TOKEN) \
     F(Q_REVISION_TOKEN) \
     F(Q_MOC_INCLUDE_TOKEN) \
     F(Q_META_TOKEN_END) \
@@ -251,6 +251,6 @@ const char *tokenTypeName(Token t);
 
 typedef Token PP_Token;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TOKEN_H

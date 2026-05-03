@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QRhiWidget>
-#include <QtGui/QPainter>
-#include <QTest>
+#include <BobUIWidgets/QRhiWidget>
+#include <BobUIGui/QPainter>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
@@ -14,7 +14,7 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include <private/qvulkandefaultinstance_p.h>
 #endif
 
@@ -53,46 +53,46 @@ void tst_QRhiWidget::initTestCase()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::RhiBasedRendering))
         QSKIP("RhiBasedRendering capability is reported as unsupported on this platform.");
 
-    qputenv("QT_RHI_LEAK_CHECK", "1");
+    qputenv("BOBUI_RHI_LEAK_CHECK", "1");
 }
 
 void tst_QRhiWidget::testData()
 {
-    QTest::addColumn<QRhiWidget::Api>("api");
+    BOBUIest::addColumn<QRhiWidget::Api>("api");
 
 #ifndef Q_OS_WEBOS
-    QTest::newRow("Null") << QRhiWidget::Api::Null;
+    BOBUIest::newRow("Null") << QRhiWidget::Api::Null;
 #endif
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
-        QTest::newRow("OpenGL") << QRhiWidget::Api::OpenGL;
+        BOBUIest::newRow("OpenGL") << QRhiWidget::Api::OpenGL;
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     // Have to probe to be sure Vulkan is actually working (the test cases
     // themselves will assume QRhi init succeeds).
     if (QVulkanDefaultInstance::instance()) {
         QRhiVulkanInitParams vulkanInitParams;
         vulkanInitParams.inst = QVulkanDefaultInstance::instance();
         if (QRhi::probe(QRhi::Vulkan, &vulkanInitParams))
-            QTest::newRow("Vulkan") << QRhiWidget::Api::Vulkan;
+            BOBUIest::newRow("Vulkan") << QRhiWidget::Api::Vulkan;
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     QRhiMetalInitParams metalInitParams;
     if (QRhi::probe(QRhi::Metal, &metalInitParams))
-        QTest::newRow("Metal") << QRhiWidget::Api::Metal;
+        BOBUIest::newRow("Metal") << QRhiWidget::Api::Metal;
 #endif
 
 #ifdef Q_OS_WIN
-    QTest::newRow("D3D11") << QRhiWidget::Api::Direct3D11;
+    BOBUIest::newRow("D3D11") << QRhiWidget::Api::Direct3D11;
     // D3D12 needs to be probed too due to being disabled if the SDK headers
     // are too old (clang, mingw).
     QRhiD3D12InitParams d3d12InitParams;
     if (QRhi::probe(QRhi::D3D12, &d3d12InitParams))
-        QTest::newRow("D3D12") << QRhiWidget::Api::Direct3D12;
+        BOBUIest::newRow("D3D12") << QRhiWidget::Api::Direct3D12;
 #endif
 }
 
@@ -110,7 +110,7 @@ void tst_QRhiWidget::create()
         w.setApi(api);
         w.resize(320, 240);
         w.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&w));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     }
 
     {
@@ -120,7 +120,7 @@ void tst_QRhiWidget::create()
         w->setApi(api);
         w->resize(100, 100);
         topLevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     }
 }
 
@@ -137,8 +137,8 @@ void tst_QRhiWidget::noCreate()
     QSignalSpy errorSpy(&rhiWidget, &QRhiWidget::renderFailed);
     rhiWidget.resize(320, 240);
     rhiWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&rhiWidget));
-    QTRY_VERIFY(errorSpy.count() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&rhiWidget));
+    BOBUIRY_VERIFY(errorSpy.count() > 0);
     QCOMPARE(frameSpy.count(), 0);
 #endif
 }
@@ -330,7 +330,7 @@ void tst_QRhiWidget::simple()
 #ifdef Q_OS_ANDROID
     if ((QNativeInterface::QAndroidApplication::sdkVersion() == 36)
         && (QRhiWidget::Api::OpenGL==api)) {
-        QSKIP("Fails and crashes on Android 16 (QTBUG-140627)");
+        QSKIP("Fails and crashes on Android 16 (BOBUIBUG-140627)");
     }
 #endif
 
@@ -346,9 +346,9 @@ void tst_QRhiWidget::simple()
     w.setLayout(layout);
     w.resize(1280, 720);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     QCOMPARE(rhiWidget->sampleCount(), 1);
@@ -461,9 +461,9 @@ void tst_QRhiWidget::msaa()
     w.setLayout(layout);
     w.resize(1280, 720);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     QCOMPARE(rhiWidget->sampleCount(), 4);
@@ -505,7 +505,7 @@ void tst_QRhiWidget::msaa()
     rhiWidget->m_pipeline.reset();
     rhiWidget->m_sampleCount = 1;
     rhiWidget->setSampleCount(1);
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
     QVERIFY(rhiWidget->colorTexture());
     QVERIFY(!rhiWidget->msaaColorBuffer());
@@ -514,7 +514,7 @@ void tst_QRhiWidget::msaa()
     rhiWidget->m_pipeline.reset();
     rhiWidget->m_sampleCount = SAMPLE_COUNT;
     rhiWidget->setSampleCount(SAMPLE_COUNT);
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
     QVERIFY(!rhiWidget->colorTexture());
     QVERIFY(rhiWidget->msaaColorBuffer());
@@ -543,9 +543,9 @@ void tst_QRhiWidget::fixedSize()
     w.setLayout(layout);
     w.resize(1280, 720);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     QVERIFY(rhiWidget->rhi());
@@ -558,7 +558,7 @@ void tst_QRhiWidget::fixedSize()
 
     frameSpy.clear();
     rhiWidget->setFixedColorBufferSize(640, 480); // should also trigger update()
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
 
     QVERIFY(rhiWidget->colorTexture());
     QCOMPARE(rhiWidget->colorTexture()->pixelSize(), QSize(640, 480));
@@ -567,7 +567,7 @@ void tst_QRhiWidget::fixedSize()
 
     frameSpy.clear();
     rhiWidget->setFixedColorBufferSize(QSize());
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
 
     QVERIFY(rhiWidget->colorTexture());
     QVERIFY(rhiWidget->colorTexture()->pixelSize() != QSize(640, 480));
@@ -599,9 +599,9 @@ void tst_QRhiWidget::autoRt()
     w.setLayout(layout);
     w.resize(1280, 720);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     QVERIFY(rhiWidget->rhi());
@@ -617,7 +617,7 @@ void tst_QRhiWidget::autoRt()
     frameSpy.clear();
     // do something that triggers creating a new backing texture
     rhiWidget->setFixedColorBufferSize(QSize(320, 200));
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
 
     QVERIFY(rhiWidget->colorTexture());
     QCOMPARE(rhiWidget->m_rt->description().cbeginColorAttachments()->texture(), rhiWidget->colorTexture());
@@ -645,15 +645,15 @@ void tst_QRhiWidget::reparent()
     QSignalSpy errorSpy(rhiWidget, &QRhiWidget::renderFailed);
 
     rhiWidget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(rhiWidget));
-    QTRY_VERIFY(frameSpy.count() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(rhiWidget));
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     frameSpy.clear();
     rhiWidget->setParent(windowOne);
     windowOne->show();
-    QVERIFY(QTest::qWaitForWindowExposed(windowOne));
-    QTRY_VERIFY(frameSpy.count() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(windowOne));
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     frameSpy.clear();
@@ -668,8 +668,8 @@ void tst_QRhiWidget::reparent()
     delete windowOne;
 
     windowTwo.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&windowTwo));
-    QTRY_VERIFY(frameSpy.count() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&windowTwo));
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     // now reparent after show() has already been called
@@ -677,13 +677,13 @@ void tst_QRhiWidget::reparent()
     QWidget windowThree;
     windowThree.resize(1280, 720);
     windowThree.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&windowThree));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&windowThree));
 
     rhiWidget->setParent(&windowThree);
     // this case needs a show() on rhiWidget
     rhiWidget->show();
 
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 }
 
@@ -719,8 +719,8 @@ void tst_QRhiWidget::grabFramebufferWhileStillInvisible()
     // own QRhi and attaches to the backingstore's.
     QSignalSpy frameSpy(&w, &QRhiWidget::frameSubmitted);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
-    QTRY_VERIFY(frameSpy.count() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
 
     QCOMPARE(errorSpy.count(), 0);
 
@@ -757,8 +757,8 @@ void tst_QRhiWidget::grabViaQWidgetGrab()
     w.resize(1280, 720);
     QSignalSpy frameSpy(&w, &QRhiWidget::frameSubmitted);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
-    QTRY_VERIFY(frameSpy.count() > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
 
     QImage image = w.grab().toImage();
 
@@ -795,15 +795,15 @@ void tst_QRhiWidget::mirror()
     w.setLayout(layout);
     w.resize(1280, 720);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     frameSpy.clear();
     rhiWidget->setMirrorVertically(true);
     QVERIFY(rhiWidget->isMirrorVerticallyEnabled());
-    QTRY_VERIFY(frameSpy.count() > 0);
+    BOBUIRY_VERIFY(frameSpy.count() > 0);
     QCOMPARE(errorSpy.count(), 0);
 
     if (api != QRhiWidget::Api::Null) {
@@ -836,6 +836,6 @@ void tst_QRhiWidget::mirror()
     }
 }
 
-QTEST_MAIN(tst_QRhiWidget)
+BOBUIEST_MAIN(tst_QRhiWidget)
 
 #include "tst_qrhiwidget.moc"

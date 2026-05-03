@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfbcursor_p.h"
 #include "qfbscreen_p.h"
-#include <QtGui/QPainter>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 bool QFbCursorDeviceListener::hasMouse() const
 {
@@ -27,14 +27,14 @@ QFbCursor::QFbCursor(QFbScreen *screen)
       mCursorImage(nullptr),
       mDeviceListener(nullptr)
 {
-    const char *envVar = "QT_QPA_FB_HIDECURSOR";
+    const char *envVar = "BOBUI_QPA_FB_HIDECURSOR";
     if (qEnvironmentVariableIsSet(envVar))
         mVisible = qEnvironmentVariableIntValue(envVar) == 0;
     if (!mVisible)
         return;
 
     mCursorImage.reset(new QPlatformCursorImage(0, 0, 0, 0, 0, 0));
-    setCursor(Qt::ArrowCursor);
+    setCursor(BobUI::ArrowCursor);
 
     mDeviceListener = new QFbCursorDeviceListener(this);
     connect(QGuiApplicationPrivate::inputDeviceManager(), &QInputDeviceManager::deviceListChanged,
@@ -115,7 +115,7 @@ QRect QFbCursor::dirtyRect()
     return QRect();
 }
 
-void QFbCursor::setCursor(Qt::CursorShape shape)
+void QFbCursor::setCursor(BobUI::CursorShape shape)
 {
     if (mCursorImage)
         mCursorImage->set(shape);
@@ -133,15 +133,15 @@ void QFbCursor::setCursor(const uchar *data, const uchar *mask, int width, int h
         mCursorImage->set(data, mask, width, height, hotX, hotY);
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QFbCursor::changeCursor(QCursor * widgetCursor, QWindow *window)
 {
     Q_UNUSED(window);
     if (!mVisible)
         return;
-    const Qt::CursorShape shape = widgetCursor ? widgetCursor->shape() : Qt::ArrowCursor;
+    const BobUI::CursorShape shape = widgetCursor ? widgetCursor->shape() : BobUI::ArrowCursor;
 
-    if (shape == Qt::BitmapCursor) {
+    if (shape == BobUI::BitmapCursor) {
         // application supplied cursor
         QPoint spot = widgetCursor->hotSpot();
         setCursor(widgetCursor->pixmap().toImage(), spot.x(), spot.y());
@@ -173,6 +173,6 @@ void QFbCursor::updateMouseStatus()
     mScreen->setDirty(mVisible ? getCurrentRect() : lastPainted());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfbcursor_p.cpp"

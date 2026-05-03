@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstandarditemmodel.h"
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qbitarray.h>
-#include <QtCore/qmimedata.h>
-#include <QtCore/qiodevice.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qbitarray.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUICore/qiodevice.h>
 #include <private/qduplicatetracker_p.h>
 #include <private/qstandarditemmodel_p.h>
 #include <qdebug.h>
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline QString qStandardItemModelDataListMimeType()
 {
@@ -135,10 +135,10 @@ void QStandardItemPrivate::setChild(int row, int column, QStandardItem *item,
 /*!
   \internal
 */
-void QStandardItemPrivate::changeFlags(bool enable, Qt::ItemFlags f)
+void QStandardItemPrivate::changeFlags(bool enable, BobUI::ItemFlags f)
 {
     Q_Q(QStandardItem);
-    Qt::ItemFlags flags = q->flags();
+    BobUI::ItemFlags flags = q->flags();
     if (enable)
         flags |= f;
     else
@@ -164,7 +164,7 @@ namespace {
     {
         static int normalizedRole(int role)
         {
-            return role == Qt::EditRole ? Qt::DisplayRole : role;
+            return role == BobUI::EditRole ? BobUI::DisplayRole : role;
         }
 
        bool operator()(const QStandardItemData& standardItemData, const std::pair<const int &, const QVariant&>& roleMapIt) const
@@ -258,15 +258,15 @@ void QStandardItemPrivate::setItemData(const QMap<int, QVariant> &roles)
             bool hasDisplayRole = false;
             for (auto it = roles.keyBegin(); it != roles.keyEnd(); ++it) {
                 roleKeys.push_back(*it);
-                if (*it == Qt::EditRole)
+                if (*it == BobUI::EditRole)
                     hasEditRole = true;
-                else if (*it == Qt::DisplayRole)
+                else if (*it == BobUI::DisplayRole)
                     hasDisplayRole = true;
             }
             if (hasEditRole && !hasDisplayRole)
-                roleKeys.push_back(Qt::DisplayRole);
+                roleKeys.push_back(BobUI::DisplayRole);
             else if (!hasEditRole && hasDisplayRole)
-                roleKeys.push_back(Qt::EditRole);
+                roleKeys.push_back(BobUI::EditRole);
             model->d_func()->itemChanged(q, roleKeys);
         }
     }
@@ -279,7 +279,7 @@ QMap<int, QVariant> QStandardItemPrivate::itemData() const
 {
     QMap<int, QVariant> result;
     for (const auto &data : values) {
-        if (data.role != Qt::StandardItemFlagsRole)
+        if (data.role != BobUI::StandardItemFlagsRole)
             result.insert(data.role, data.value);
     }
     return result;
@@ -288,7 +288,7 @@ QMap<int, QVariant> QStandardItemPrivate::itemData() const
 /*!
   \internal
 */
-void QStandardItemPrivate::sortChildren(int column, Qt::SortOrder order)
+void QStandardItemPrivate::sortChildren(int column, BobUI::SortOrder order)
 {
     Q_Q(QStandardItem);
     if (column >= columnCount())
@@ -308,7 +308,7 @@ void QStandardItemPrivate::sortChildren(int column, Qt::SortOrder order)
             unsortable.append(row);
     }
 
-    if (order == Qt::AscendingOrder) {
+    if (order == BobUI::AscendingOrder) {
         QStandardItemModelLessThan lt;
         std::stable_sort(sortable.begin(), sortable.end(), lt);
     } else {
@@ -384,7 +384,7 @@ void QStandardItemPrivate::setModel(QStandardItemModel *mod)
 QStandardItemModelPrivate::QStandardItemModelPrivate()
     : root(new QStandardItem), itemPrototype(nullptr)
 {
-    root->setFlags(Qt::ItemIsDropEnabled);
+    root->setFlags(BobUI::ItemIsDropEnabled);
 }
 
 /*!
@@ -556,11 +556,11 @@ void QStandardItemModelPrivate::itemChanged(QStandardItem *item, const QList<int
         // Header item
         int idx = columnHeaderItems.indexOf(item);
         if (idx != -1) {
-            emit q->headerDataChanged(Qt::Horizontal, idx, idx);
+            emit q->headerDataChanged(BobUI::Horizontal, idx, idx);
         } else {
             idx = rowHeaderItems.indexOf(item);
             if (idx != -1)
-                emit q->headerDataChanged(Qt::Vertical, idx, idx);
+                emit q->headerDataChanged(BobUI::Vertical, idx, idx);
         }
     } else {
         // Normal item
@@ -681,7 +681,7 @@ void QStandardItemModelPrivate::columnsRemoved(QStandardItem *parent,
     QStandardItemModel class.
     \since 4.2
     \ingroup model-view
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Items usually contain text, icons, or checkboxes.
 
@@ -749,7 +749,7 @@ void QStandardItemModelPrivate::columnsRemoved(QStandardItem *parent,
 
     \value Type     The default type for standard items.
     \value UserType The minimum value for custom types. Values below UserType are
-                    reserved by Qt.
+                    reserved by BobUI.
 
     You can define new user types in QStandardItem subclasses to ensure that
     custom items are treated specially; for example, when items are sorted.
@@ -876,17 +876,17 @@ QStandardItem *QStandardItem::parent() const
         etc., will not work.
     \endlist
 
-    \note The default implementation treats Qt::EditRole and Qt::DisplayRole
+    \note The default implementation treats BobUI::EditRole and BobUI::DisplayRole
     as referring to the same data.
 
-    \sa Qt::ItemDataRole, data(), setFlags()
+    \sa BobUI::ItemDataRole, data(), setFlags()
 */
 void QStandardItem::setData(const QVariant &value, int role)
 {
     Q_D(QStandardItem);
-    role = (role == Qt::EditRole) ? Qt::DisplayRole : role;
-    const QList<int> roles((role == Qt::DisplayRole) ?
-                                QList<int>({Qt::DisplayRole, Qt::EditRole}) :
+    role = (role == BobUI::EditRole) ? BobUI::DisplayRole : role;
+    const QList<int> roles((role == BobUI::DisplayRole) ?
+                                QList<int>({BobUI::DisplayRole, BobUI::EditRole}) :
                                 QList<int>({role}));
     for (auto it = d->values.begin(); it != d->values.end(); ++it) {
         if ((*it).role == role) {
@@ -933,13 +933,13 @@ void QStandardItem::clearData()
     flags, e.g. by calling flags(), isCheckable(), isEditable() etc.,
     will not work.
 
-    \note The default implementation treats Qt::EditRole and Qt::DisplayRole
+    \note The default implementation treats BobUI::EditRole and BobUI::DisplayRole
     as referring to the same data.
 */
 QVariant QStandardItem::data(int role) const
 {
     Q_D(const QStandardItem);
-    const int r = (role == Qt::EditRole) ? Qt::DisplayRole : role;
+    const int r = (role == BobUI::EditRole) ? BobUI::DisplayRole : role;
     for (const auto &value : d->values) {
         if (value.role == r)
             return value.value;
@@ -990,9 +990,9 @@ void QStandardItem::emitDataChanged()
 
   \sa flags(), setData()
 */
-void QStandardItem::setFlags(Qt::ItemFlags flags)
+void QStandardItem::setFlags(BobUI::ItemFlags flags)
 {
-    setData((int)flags, Qt::StandardItemFlagsRole);
+    setData((int)flags, BobUI::StandardItemFlagsRole);
 }
 
 /*!
@@ -1005,13 +1005,13 @@ void QStandardItem::setFlags(Qt::ItemFlags flags)
 
   \sa setFlags()
 */
-Qt::ItemFlags QStandardItem::flags() const
+BobUI::ItemFlags QStandardItem::flags() const
 {
-    QVariant v = data(Qt::StandardItemFlagsRole);
+    QVariant v = data(BobUI::StandardItemFlagsRole);
     if (!v.isValid())
-        return (Qt::ItemIsSelectable|Qt::ItemIsEnabled|Qt::ItemIsEditable
-                |Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
-    return Qt::ItemFlags(v.toInt());
+        return (BobUI::ItemIsSelectable|BobUI::ItemIsEnabled|BobUI::ItemIsEditable
+                |BobUI::ItemIsDragEnabled|BobUI::ItemIsDropEnabled);
+    return BobUI::ItemFlags(v.toInt());
 }
 
 /*!
@@ -1149,7 +1149,7 @@ Qt::ItemFlags QStandardItem::flags() const
 */
 
 /*!
-    \fn void QStandardItem::setTextAlignment(Qt::Alignment alignment)
+    \fn void QStandardItem::setTextAlignment(BobUI::Alignment alignment)
 
     Sets the text alignment for the item's text to the \a alignment
     specified.
@@ -1180,7 +1180,7 @@ Qt::ItemFlags QStandardItem::flags() const
 */
 
 /*!
-    \fn Qt::CheckState QStandardItem::checkState() const
+    \fn BobUI::CheckState QStandardItem::checkState() const
 
     Returns the checked state of the item.
 
@@ -1188,7 +1188,7 @@ Qt::ItemFlags QStandardItem::flags() const
 */
 
 /*!
-    \fn void QStandardItem::setCheckState(Qt::CheckState state)
+    \fn void QStandardItem::setCheckState(BobUI::CheckState state)
 
     Sets the check state of the item to be \a state.
 
@@ -1246,15 +1246,15 @@ Qt::ItemFlags QStandardItem::flags() const
   user cannot interact with the item.
 
   This flag takes precedence over the other item flags; e.g. if an item is not
-  enabled, it cannot be selected by the user, even if the Qt::ItemIsSelectable
+  enabled, it cannot be selected by the user, even if the BobUI::ItemIsSelectable
   flag has been set.
 
-  \sa isEnabled(), Qt::ItemIsEnabled, setFlags()
+  \sa isEnabled(), BobUI::ItemIsEnabled, setFlags()
 */
 void QStandardItem::setEnabled(bool enabled)
 {
     Q_D(QStandardItem);
-    d->changeFlags(enabled, Qt::ItemIsEnabled);
+    d->changeFlags(enabled, BobUI::ItemIsEnabled);
 }
 
 /*!
@@ -1283,7 +1283,7 @@ void QStandardItem::setEnabled(bool enabled)
 void QStandardItem::setEditable(bool editable)
 {
     Q_D(QStandardItem);
-    d->changeFlags(editable, Qt::ItemIsEditable);
+    d->changeFlags(editable, BobUI::ItemIsEditable);
 }
 
 /*!
@@ -1313,7 +1313,7 @@ void QStandardItem::setEditable(bool editable)
 void QStandardItem::setSelectable(bool selectable)
 {
     Q_D(QStandardItem);
-    d->changeFlags(selectable, Qt::ItemIsSelectable);
+    d->changeFlags(selectable, BobUI::ItemIsSelectable);
 }
 
 /*!
@@ -1341,10 +1341,10 @@ void QStandardItem::setCheckable(bool checkable)
     Q_D(QStandardItem);
     if (checkable && !isCheckable()) {
         // make sure there's data for the checkstate role
-        if (!data(Qt::CheckStateRole).isValid())
-            setData(Qt::Unchecked, Qt::CheckStateRole);
+        if (!data(BobUI::CheckStateRole).isValid())
+            setData(BobUI::Unchecked, BobUI::CheckStateRole);
     }
-    d->changeFlags(checkable, Qt::ItemIsUserCheckable);
+    d->changeFlags(checkable, BobUI::ItemIsUserCheckable);
 }
 
 /*!
@@ -1358,9 +1358,9 @@ void QStandardItem::setCheckable(bool checkable)
 */
 
 /*!
-  Determines that the item is tristate and controlled by QTreeWidget if \a tristate
+  Determines that the item is tristate and controlled by BOBUIreeWidget if \a tristate
   is \c true.
-  This enables automatic management of the state of parent items in QTreeWidget
+  This enables automatic management of the state of parent items in BOBUIreeWidget
   (checked if all children are checked, unchecked if all children are unchecked,
   or partially checked if only some children are checked).
 
@@ -1370,13 +1370,13 @@ void QStandardItem::setCheckable(bool checkable)
 void QStandardItem::setAutoTristate(bool tristate)
 {
     Q_D(QStandardItem);
-    d->changeFlags(tristate, Qt::ItemIsAutoTristate);
+    d->changeFlags(tristate, BobUI::ItemIsAutoTristate);
 }
 
 /*!
   \fn bool QStandardItem::isAutoTristate() const
 
-  Returns whether the item is tristate and is controlled by QTreeWidget.
+  Returns whether the item is tristate and is controlled by BOBUIreeWidget.
 
   The default value is false.
 
@@ -1396,7 +1396,7 @@ void QStandardItem::setAutoTristate(bool tristate)
 void QStandardItem::setUserTristate(bool tristate)
 {
     Q_D(QStandardItem);
-    d->changeFlags(tristate, Qt::ItemIsUserTristate);
+    d->changeFlags(tristate, BobUI::ItemIsUserTristate);
 }
 
 /*!
@@ -1411,7 +1411,7 @@ void QStandardItem::setUserTristate(bool tristate)
   \sa setUserTristate(), isCheckable(), checkState()
 */
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*!
   Sets whether the item is drag enabled. If \a dragEnabled is true, the item
@@ -1425,7 +1425,7 @@ void QStandardItem::setUserTristate(bool tristate)
 void QStandardItem::setDragEnabled(bool dragEnabled)
 {
     Q_D(QStandardItem);
-    d->changeFlags(dragEnabled, Qt::ItemIsDragEnabled);
+    d->changeFlags(dragEnabled, BobUI::ItemIsDragEnabled);
 }
 
 /*!
@@ -1455,7 +1455,7 @@ void QStandardItem::setDragEnabled(bool dragEnabled)
 void QStandardItem::setDropEnabled(bool dropEnabled)
 {
     Q_D(QStandardItem);
-    d->changeFlags(dropEnabled, Qt::ItemIsDropEnabled);
+    d->changeFlags(dropEnabled, BobUI::ItemIsDropEnabled);
 }
 
 /*!
@@ -1469,7 +1469,7 @@ void QStandardItem::setDropEnabled(bool dropEnabled)
   \sa setDropEnabled(), isDragEnabled(), flags()
 */
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
   Returns the row where the item is located in its parent's child table, or
@@ -1971,7 +1971,7 @@ QList<QStandardItem*> QStandardItem::takeColumn(int column)
 
     The default implementation uses the data for the item's sort role (see
     QStandardItemModel::sortRole) to perform the comparison if the item
-    belongs to a model; otherwise, the data for the item's Qt::DisplayRole
+    belongs to a model; otherwise, the data for the item's BobUI::DisplayRole
     (text()) is used to perform the comparison.
 
     sortChildren() and QStandardItemModel::sort() use this function when
@@ -1980,7 +1980,7 @@ QList<QStandardItem*> QStandardItem::takeColumn(int column)
 */
 bool QStandardItem::operator<(const QStandardItem &other) const
 {
-    const int role = model() ? model()->sortRole() : Qt::DisplayRole;
+    const int role = model() ? model()->sortRole() : BobUI::DisplayRole;
     const QVariant l = data(role), r = other.data(role);
     return QAbstractItemModelPrivate::isVariantLessThan(l, r);
 }
@@ -1994,7 +1994,7 @@ bool QStandardItem::operator<(const QStandardItem &other) const
 
     \sa {operator<()}
 */
-void QStandardItem::sortChildren(int column, Qt::SortOrder order)
+void QStandardItem::sortChildren(int column, BobUI::SortOrder order)
 {
     Q_D(QStandardItem);
     if ((column < 0) || (rowCount() == 0))
@@ -2037,7 +2037,7 @@ int QStandardItem::type() const
     return Type;
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     Reads the item from stream \a in. Only the data and flags of the item are
@@ -2051,7 +2051,7 @@ void QStandardItem::read(QDataStream &in)
     in >> d->values;
     qint32 flags;
     in >> flags;
-    setFlags(Qt::ItemFlags(flags));
+    setFlags(BobUI::ItemFlags(flags));
 }
 
 /*!
@@ -2075,7 +2075,7 @@ void QStandardItem::write(QDataStream &out) const
 
     This operator uses QStandardItem::read().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &in, QStandardItem &item)
 {
@@ -2091,7 +2091,7 @@ QDataStream &operator>>(QDataStream &in, QStandardItem &item)
 
     This operator uses QStandardItem::write().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, const QStandardItem &item)
 {
@@ -2099,17 +2099,17 @@ QDataStream &operator<<(QDataStream &out, const QStandardItem &item)
     return out;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
     \class QStandardItemModel
     \brief The QStandardItemModel class provides a generic model for storing custom data.
     \ingroup model-view
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    QStandardItemModel can be used as a repository for standard Qt
+    QStandardItemModel can be used as a repository for standard BobUI
     data types. It is one of the \l {Model/View Classes} and is part
-    of Qt's \l {Model/View Programming}{model/view} framework.
+    of BobUI's \l {Model/View Programming}{model/view} framework.
 
     QStandardItemModel provides a classic item-based approach to working with
     the model.  The items in a QStandardItemModel are provided by
@@ -2117,7 +2117,7 @@ QDataStream &operator<<(QDataStream &out, const QStandardItem &item)
 
     QStandardItemModel implements the QAbstractItemModel interface, which
     means that the model can be used to provide data in any view that supports
-    that interface (such as QListView, QTableView and QTreeView, and your own
+    that interface (such as QListView, BOBUIableView and BOBUIreeView, and your own
     custom views). For performance and flexibility, you may want to subclass
     QAbstractItemModel to provide support for different kinds of data
     repositories. For example, the QFileSystemModel provides a model interface
@@ -2266,7 +2266,7 @@ void QStandardItemModel::clear()
     Q_D(QStandardItemModel);
     beginResetModel();
     d->root.reset(new QStandardItem);
-    d->root->setFlags(Qt::ItemIsDropEnabled);
+    d->root->setFlags(BobUI::ItemIsDropEnabled);
     d->root->d_func()->setModel(this);
     qDeleteAll(d->columnHeaderItems);
     d->columnHeaderItems.clear();
@@ -2453,7 +2453,7 @@ void QStandardItemModel::setHorizontalHeaderItem(int column, QStandardItem *item
     delete oldItem;
 
     d->columnHeaderItems.replace(column, item);
-    emit headerDataChanged(Qt::Horizontal, column, column);
+    emit headerDataChanged(BobUI::Horizontal, column, column);
 }
 
 /*!
@@ -2509,7 +2509,7 @@ void QStandardItemModel::setVerticalHeaderItem(int row, QStandardItem *item)
     delete oldItem;
 
     d->rowHeaderItems.replace(row, item);
-    emit headerDataChanged(Qt::Vertical, row, row);
+    emit headerDataChanged(BobUI::Vertical, row, row);
 }
 
 /*!
@@ -2620,10 +2620,10 @@ const QStandardItem *QStandardItemModel::itemPrototype() const
     flags, in the given \a column.
 */
 QList<QStandardItem*> QStandardItemModel::findItems(const QString &text,
-                                                    Qt::MatchFlags flags, int column) const
+                                                    BobUI::MatchFlags flags, int column) const
 {
     QModelIndexList indexes = match(index(0, column, QModelIndex()),
-                                    Qt::DisplayRole, text, -1, flags);
+                                    BobUI::DisplayRole, text, -1, flags);
     QList<QStandardItem*> items;
     const int numIndexes = indexes.size();
     items.reserve(numIndexes);
@@ -2800,7 +2800,7 @@ QStandardItem *QStandardItemModel::takeVerticalHeaderItem(int row)
     \property QStandardItemModel::sortRole
     \brief the item role that is used to query the model's data when sorting items
 
-    The default value is Qt::DisplayRole.
+    The default value is BobUI::DisplayRole.
 
     \sa sort(), QStandardItem::sortChildren()
 */
@@ -2857,7 +2857,7 @@ void QStandardItemModel::multiData(const QModelIndex &index, QModelRoleDataSpan 
 /*!
   \reimp
 */
-Qt::ItemFlags QStandardItemModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QStandardItemModel::flags(const QModelIndex &index) const
 {
     Q_D(const QStandardItemModel);
     if (!d->indexValid(index))
@@ -2865,11 +2865,11 @@ Qt::ItemFlags QStandardItemModel::flags(const QModelIndex &index) const
     QStandardItem *item = d->itemFromIndex(index);
     if (item)
         return item->flags();
-    return Qt::ItemIsSelectable
-        |Qt::ItemIsEnabled
-        |Qt::ItemIsEditable
-        |Qt::ItemIsDragEnabled
-        |Qt::ItemIsDropEnabled;
+    return BobUI::ItemIsSelectable
+        |BobUI::ItemIsEnabled
+        |BobUI::ItemIsEditable
+        |BobUI::ItemIsDragEnabled
+        |BobUI::ItemIsDropEnabled;
 }
 
 /*!
@@ -2885,18 +2885,18 @@ bool QStandardItemModel::hasChildren(const QModelIndex &parent) const
 /*!
   \reimp
 */
-QVariant QStandardItemModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QStandardItemModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QStandardItemModel);
     if ((section < 0)
-        || ((orientation == Qt::Horizontal) && (section >= columnCount()))
-        || ((orientation == Qt::Vertical) && (section >= rowCount()))) {
+        || ((orientation == BobUI::Horizontal) && (section >= columnCount()))
+        || ((orientation == BobUI::Vertical) && (section >= rowCount()))) {
         return QVariant();
     }
     QStandardItem *headerItem = nullptr;
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         headerItem = d->columnHeaderItems.at(section);
-    else if (orientation == Qt::Vertical)
+    else if (orientation == BobUI::Vertical)
         headerItem = d->rowHeaderItems.at(section);
     return headerItem ? headerItem->data(role)
         : QAbstractItemModel::headerData(section, orientation, role);
@@ -2907,9 +2907,9 @@ QVariant QStandardItemModel::headerData(int section, Qt::Orientation orientation
 
     QStandardItemModel supports both copy and move.
 */
-Qt::DropActions QStandardItemModel::supportedDropActions () const
+BobUI::DropActions QStandardItemModel::supportedDropActions () const
 {
-    return Qt::CopyAction | Qt::MoveAction;
+    return BobUI::CopyAction | BobUI::MoveAction;
 }
 
 /*!
@@ -3045,23 +3045,23 @@ bool QStandardItemModel::clearItemData(const QModelIndex &index)
 /*!
   \reimp
 */
-bool QStandardItemModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+bool QStandardItemModel::setHeaderData(int section, BobUI::Orientation orientation, const QVariant &value, int role)
 {
     Q_D(QStandardItemModel);
     if ((section < 0)
-        || ((orientation == Qt::Horizontal) && (section >= columnCount()))
-        || ((orientation == Qt::Vertical) && (section >= rowCount()))) {
+        || ((orientation == BobUI::Horizontal) && (section >= columnCount()))
+        || ((orientation == BobUI::Vertical) && (section >= rowCount()))) {
         return false;
     }
     QStandardItem *headerItem = nullptr;
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         headerItem = d->columnHeaderItems.at(section);
         if (headerItem == nullptr) {
             headerItem = d->createItem();
             headerItem->d_func()->setModel(this);
             d->columnHeaderItems.replace(section, headerItem);
         }
-    } else if (orientation == Qt::Vertical) {
+    } else if (orientation == BobUI::Vertical) {
         headerItem = d->rowHeaderItems.at(section);
         if (headerItem == nullptr) {
             headerItem = d->createItem();
@@ -3091,7 +3091,7 @@ bool QStandardItemModel::setItemData(const QModelIndex &index, const QMap<int, Q
 /*!
   \reimp
 */
-void QStandardItemModel::sort(int column, Qt::SortOrder order)
+void QStandardItemModel::sort(int column, BobUI::SortOrder order)
 {
     Q_D(QStandardItemModel);
     d->root->sortChildren(column, order);
@@ -3197,12 +3197,12 @@ void QStandardItemModelPrivate::decodeDataRecursive(QDataStream &stream, QStanda
 /*!
   \reimp
 */
-bool QStandardItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QStandardItemModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                       int row, int column, const QModelIndex &parent)
 {
     Q_D(QStandardItemModel);
     // check if the action is supported
-    if (!data || !(action == Qt::CopyAction || action == Qt::MoveAction))
+    if (!data || !(action == BobUI::CopyAction || action == BobUI::MoveAction))
         return false;
     // check if the format is supported
     const QString format = qStandardItemModelDataListMimeType();
@@ -3313,6 +3313,6 @@ bool QStandardItemModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstandarditemmodel.cpp"

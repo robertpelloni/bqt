@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpainterpath.h"
 #include "qpainterpath_p.h"
@@ -10,7 +10,7 @@
 #include <qlist.h>
 #include <qpen.h>
 #include <qpolygon.h>
-#include <qtextlayout.h>
+#include <bobuiextlayout.h>
 #include <qvarlengtharray.h>
 #include <qmath.h>
 
@@ -20,7 +20,7 @@
 #include <private/qobject_p.h>
 #include <private/qpathclipper_p.h>
 #include <private/qstroker_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 
 #include <cmath>
 
@@ -34,7 +34,7 @@
 #define PM_DISPLAY
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline bool isValidCoord(qreal c)
 {
@@ -62,9 +62,9 @@ static bool hasValidCoords(QRectF r)
 // #define QPP_STROKE_DEBUG
 //#define QPP_FILLPOLYGONS_DEBUG
 
-QPainterPath qt_stroke_dash(const QPainterPath &path, qreal *dashes, int dashCount);
+QPainterPath bobui_stroke_dash(const QPainterPath &path, qreal *dashes, int dashCount);
 
-void qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
+void bobui_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
                             QPointF* startPoint, QPointF *endPoint)
 {
     if (r.isNull()) {
@@ -91,7 +91,7 @@ void qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
         int quadrant = int(t);
         t -= quadrant;
 
-        t = qt_t_for_arc_angle(90 * t);
+        t = bobui_t_for_arc_angle(90 * t);
 
         // swap x and y?
         if (quadrant & 1)
@@ -99,7 +99,7 @@ void qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
 
         qreal a, b, c, d;
         QBezier::coefficients(t, a, b, c, d);
-        QPointF p(a + b + c*QT_PATH_KAPPA, d + c + b*QT_PATH_KAPPA);
+        QPointF p(a + b + c*BOBUI_PATH_KAPPA, d + c + b*BOBUI_PATH_KAPPA);
 
         // left quadrants
         if (quadrant == 1 || quadrant == 2)
@@ -114,7 +114,7 @@ void qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
 }
 
 #ifdef QPP_DEBUG
-static void qt_debug_path(const QPainterPath &path)
+static void bobui_debug_path(const QPainterPath &path)
 {
     const char *names[] = {
         "MoveTo     ",
@@ -135,7 +135,7 @@ static void qt_debug_path(const QPainterPath &path)
 /*!
     \class QPainterPath
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \reentrant
 
@@ -206,19 +206,19 @@ static void qt_debug_path(const QPainterPath &path)
     a rectangle, which is a closed subpath. Then we add two bezier
     curves which together form a closed subpath even though they are
     not closed individually. Finally we draw the entire path. The path
-    is filled using the default fill rule, Qt::OddEvenFill. Qt
+    is filled using the default fill rule, BobUI::OddEvenFill. BobUI
     provides two methods for filling paths:
 
     \table
     \header
-    \li Qt::OddEvenFill
-    \li Qt::WindingFill
+    \li BobUI::OddEvenFill
+    \li BobUI::WindingFill
     \row
-    \li \inlineimage qt-fillrule-oddeven.png
-    \li \inlineimage qt-fillrule-winding.png
+    \li \inlineimage bobui-fillrule-oddeven.png
+    \li \inlineimage bobui-fillrule-winding.png
     \endtable
 
-    See the Qt::FillRule documentation for the definition of the
+    See the BobUI::FillRule documentation for the definition of the
     rules. A painter path's currently set fill rule can be retrieved
     using the fillRule() function, and altered using the setFillRule()
     function.
@@ -274,9 +274,9 @@ static void qt_debug_path(const QPainterPath &path)
 
     \section1 Examples
 
-    Qt provides the \l {painting/painterpaths}{Painter Paths Example}
+    BobUI provides the \l {painting/painterpaths}{Painter Paths Example}
     and the \l {painting/deform}{Vector Deformation example} which are
-    located in Qt's example directory.
+    located in BobUI's example directory.
 
     The \l {painting/painterpaths}{Painter Paths Example} shows how
     painter paths can be used to build complex shapes for rendering
@@ -319,7 +319,7 @@ static void qt_debug_path(const QPainterPath &path)
 
 /*!
     \class QPainterPath::Element
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPainterPath::Element class specifies the position and
     type of a subpath.
@@ -683,7 +683,7 @@ void QPainterPath::moveTo(const QPointF &p)
 #endif
 
     if (!hasValidCoords(p)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::moveTo: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -733,7 +733,7 @@ void QPainterPath::lineTo(const QPointF &p)
 #endif
 
     if (!hasValidCoords(p)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::lineTo: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -792,7 +792,7 @@ void QPainterPath::cubicTo(const QPointF &c1, const QPointF &c2, const QPointF &
 #endif
 
     if (!hasValidCoords(c1) || !hasValidCoords(c2) || !hasValidCoords(e)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::cubicTo: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -848,7 +848,7 @@ void QPainterPath::quadTo(const QPointF &c, const QPointF &e)
 #endif
 
     if (!hasValidCoords(c) || !hasValidCoords(e)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::quadTo: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -919,7 +919,7 @@ void QPainterPath::arcTo(const QRectF &rect, qreal startAngle, qreal sweepLength
 #endif
 
     if (!hasValidCoords(rect) || !isValidCoord(startAngle) || !isValidCoord(sweepLength)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::arcTo: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -933,7 +933,7 @@ void QPainterPath::arcTo(const QRectF &rect, qreal startAngle, qreal sweepLength
 
     int point_count;
     QPointF pts[15];
-    QPointF curve_start = qt_curves_for_arc(rect, startAngle, sweepLength, pts, &point_count);
+    QPointF curve_start = bobui_curves_for_arc(rect, startAngle, sweepLength, pts, &point_count);
 
     lineTo(curve_start);
     for (int i=0; i<point_count; i+=3) {
@@ -974,7 +974,7 @@ void QPainterPath::arcMoveTo(const QRectF &rect, qreal angle)
         return;
 
     QPointF pt;
-    qt_find_ellipse_coords(rect, angle, 0, &pt, nullptr);
+    bobui_find_ellipse_coords(rect, angle, 0, &pt, nullptr);
     moveTo(pt);
 }
 
@@ -1024,7 +1024,7 @@ QPointF QPainterPath::currentPosition() const
 void QPainterPath::addRect(const QRectF &r)
 {
     if (!hasValidCoords(r)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::addRect: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -1104,7 +1104,7 @@ void QPainterPath::addPolygon(const QPolygonF &polygon)
 void QPainterPath::addEllipse(const QRectF &boundingRect)
 {
     if (!hasValidCoords(boundingRect)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QPainterPath::addEllipse: Adding point with invalid coordinates, ignoring call");
 #endif
         return;
@@ -1120,7 +1120,7 @@ void QPainterPath::addEllipse(const QRectF &boundingRect)
 
     QPointF pts[12];
     int point_count;
-    QPointF start = qt_curves_for_arc(boundingRect, 0, -360, pts, &point_count);
+    QPointF start = bobui_curves_for_arc(boundingRect, 0, -360, pts, &point_count);
 
     moveTo(start);
     cubicTo(pts[0], pts[1], pts[2]);           // 0 -> 270
@@ -1141,7 +1141,7 @@ void QPainterPath::addEllipse(const QRectF &boundingRect)
     point.
 
     Some fonts may yield overlapping subpaths and will require the
-    \c Qt::WindingFill fill rule for correct rendering.
+    \c BobUI::WindingFill fill rule for correct rendering.
 
     \table 100%
     \row
@@ -1161,16 +1161,16 @@ void QPainterPath::addText(const QPointF &point, const QFont &f, const QString &
     ensureData();
     setDirty(true);
 
-    QTextLayout layout(text, f);
+    BOBUIextLayout layout(text, f);
     layout.setCacheEnabled(true);
 
-    QTextOption opt = layout.textOption();
+    BOBUIextOption opt = layout.textOption();
     opt.setUseDesignMetrics(true);
     layout.setTextOption(opt);
 
-    QTextEngine *eng = layout.engine();
+    BOBUIextEngine *eng = layout.engine();
     layout.beginLayout();
-    QTextLine line = layout.createLine();
+    BOBUIextLine line = layout.createLine();
     Q_UNUSED(line);
     layout.endLayout();
     const QScriptLine &sl = eng->lines[0];
@@ -1186,7 +1186,7 @@ void QPainterPath::addText(const QPointF &point, const QFont &f, const QString &
     QVarLengthArray<uchar> levels(nItems);
     for (int i = 0; i < nItems; ++i)
         levels[i] = eng->layoutData->items.at(i).analysis.bidiLevel;
-    QTextEngine::bidiReorder(nItems, levels.data(), visualOrder.data());
+    BOBUIextEngine::bidiReorder(nItems, levels.data(), visualOrder.data());
 
     for (int i = 0; i < nItems; ++i) {
         int item = visualOrder[i];
@@ -1198,8 +1198,8 @@ void QPainterPath::addText(const QPointF &point, const QFont &f, const QString &
             Q_ASSERT(fe);
             fe->addOutlineToPath(x, y, glyphs, this,
                                  si.analysis.bidiLevel % 2
-                                 ? QTextItem::RenderFlags(QTextItem::RightToLeft)
-                                 : QTextItem::RenderFlags{});
+                                 ? BOBUIextItem::RenderFlags(BOBUIextItem::RightToLeft)
+                                 : BOBUIextItem::RenderFlags{});
 
             const qreal lw = fe->lineThickness().toReal();
             if (f.d->underline) {
@@ -1311,32 +1311,32 @@ void QPainterPath::addRegion(const QRegion &region)
 
     \sa setFillRule()
 */
-Qt::FillRule QPainterPath::fillRule() const
+BobUI::FillRule QPainterPath::fillRule() const
 {
-    return d_func() && d_func()->hasWindingFill ? Qt::WindingFill : Qt::OddEvenFill;
+    return d_func() && d_func()->hasWindingFill ? BobUI::WindingFill : BobUI::OddEvenFill;
 }
 
 /*!
-    \fn void QPainterPath::setFillRule(Qt::FillRule fillRule)
+    \fn void QPainterPath::setFillRule(BobUI::FillRule fillRule)
 
     Sets the fill rule of the painter path to the given \a
-    fillRule. Qt provides two methods for filling paths:
+    fillRule. BobUI provides two methods for filling paths:
 
     \table
     \header
-    \li Qt::OddEvenFill (default)
-    \li Qt::WindingFill
+    \li BobUI::OddEvenFill (default)
+    \li BobUI::WindingFill
     \row
-    \li \inlineimage qt-fillrule-oddeven.png
-    \li \inlineimage qt-fillrule-winding.png
+    \li \inlineimage bobui-fillrule-oddeven.png
+    \li \inlineimage bobui-fillrule-winding.png
     \endtable
 
     \sa fillRule()
 */
-void QPainterPath::setFillRule(Qt::FillRule fillRule)
+void QPainterPath::setFillRule(BobUI::FillRule fillRule)
 {
     ensureData();
-    const bool isWindingRequested = (fillRule == Qt::WindingFill);
+    const bool isWindingRequested = (fillRule == BobUI::WindingFill);
     if (d_func()->hasWindingFill == isWindingRequested)
         return;
     setDirty(true);
@@ -1344,19 +1344,19 @@ void QPainterPath::setFillRule(Qt::FillRule fillRule)
     d_func()->hasWindingFill = isWindingRequested;
 }
 
-#define QT_BEZIER_A(bezier, coord) 3 * (-bezier.coord##1 \
+#define BOBUI_BEZIER_A(bezier, coord) 3 * (-bezier.coord##1 \
                                         + 3*bezier.coord##2 \
                                         - 3*bezier.coord##3 \
                                         +bezier.coord##4)
 
-#define QT_BEZIER_B(bezier, coord) 6 * (bezier.coord##1 \
+#define BOBUI_BEZIER_B(bezier, coord) 6 * (bezier.coord##1 \
                                         - 2*bezier.coord##2 \
                                         + bezier.coord##3)
 
-#define QT_BEZIER_C(bezier, coord) 3 * (- bezier.coord##1 \
+#define BOBUI_BEZIER_C(bezier, coord) 3 * (- bezier.coord##1 \
                                         + bezier.coord##2)
 
-#define QT_BEZIER_CHECK_T(bezier, t) \
+#define BOBUI_BEZIER_CHECK_T(bezier, t) \
     if (t >= 0 && t <= 1) { \
         QPointF p(b.pointAt(t)); \
         if (p.x() < minx) minx = p.x(); \
@@ -1366,7 +1366,7 @@ void QPainterPath::setFillRule(Qt::FillRule fillRule)
     }
 
 
-static QRectF qt_painterpath_bezier_extrema(const QBezier &b)
+static QRectF bobui_painterpath_bezier_extrema(const QBezier &b)
 {
     qreal minx, miny, maxx, maxy;
 
@@ -1388,16 +1388,16 @@ static QRectF qt_painterpath_bezier_extrema(const QBezier &b)
 
     // Update for the X extrema
     {
-        qreal ax = QT_BEZIER_A(b, x);
-        qreal bx = QT_BEZIER_B(b, x);
-        qreal cx = QT_BEZIER_C(b, x);
+        qreal ax = BOBUI_BEZIER_A(b, x);
+        qreal bx = BOBUI_BEZIER_B(b, x);
+        qreal cx = BOBUI_BEZIER_C(b, x);
         // specialcase quadratic curves to avoid div by zero
         if (qFuzzyIsNull(ax)) {
 
             // linear curves are covered by initialization.
             if (!qFuzzyIsNull(bx)) {
                 qreal t = -cx / bx;
-                QT_BEZIER_CHECK_T(b, t);
+                BOBUI_BEZIER_CHECK_T(b, t);
             }
 
         } else {
@@ -1407,19 +1407,19 @@ static QRectF qt_painterpath_bezier_extrema(const QBezier &b)
                 qreal temp = qSqrt(tx);
                 qreal rcp = 1 / (2 * ax);
                 qreal t1 = (-bx + temp) * rcp;
-                QT_BEZIER_CHECK_T(b, t1);
+                BOBUI_BEZIER_CHECK_T(b, t1);
 
                 qreal t2 = (-bx - temp) * rcp;
-                QT_BEZIER_CHECK_T(b, t2);
+                BOBUI_BEZIER_CHECK_T(b, t2);
             }
         }
     }
 
     // Update for the Y extrema
     {
-        qreal ay = QT_BEZIER_A(b, y);
-        qreal by = QT_BEZIER_B(b, y);
-        qreal cy = QT_BEZIER_C(b, y);
+        qreal ay = BOBUI_BEZIER_A(b, y);
+        qreal by = BOBUI_BEZIER_B(b, y);
+        qreal cy = BOBUI_BEZIER_C(b, y);
 
         // specialcase quadratic curves to avoid div by zero
         if (qFuzzyIsNull(ay)) {
@@ -1427,7 +1427,7 @@ static QRectF qt_painterpath_bezier_extrema(const QBezier &b)
             // linear curves are covered by initialization.
             if (!qFuzzyIsNull(by)) {
                 qreal t = -cy / by;
-                QT_BEZIER_CHECK_T(b, t);
+                BOBUI_BEZIER_CHECK_T(b, t);
             }
 
         } else {
@@ -1437,10 +1437,10 @@ static QRectF qt_painterpath_bezier_extrema(const QBezier &b)
                 qreal temp = qSqrt(ty);
                 qreal rcp = 1 / (2 * ay);
                 qreal t1 = (-by + temp) * rcp;
-                QT_BEZIER_CHECK_T(b, t1);
+                BOBUI_BEZIER_CHECK_T(b, t1);
 
                 qreal t2 = (-by - temp) * rcp;
-                QT_BEZIER_CHECK_T(b, t2);
+                BOBUI_BEZIER_CHECK_T(b, t2);
             }
         }
     }
@@ -1542,16 +1542,16 @@ QPainterPath QPainterPath::toReversed() const
                 break;
             }
         default:
-            Q_ASSERT(!"qt_reversed_path");
+            Q_ASSERT(!"bobui_reversed_path");
             break;
         }
     }
-    //qt_debug_path(rev);
+    //bobui_debug_path(rev);
     return rev;
 }
 
 /*!
-    Converts the path into a list of polygons using the QTransform
+    Converts the path into a list of polygons using the BOBUIransform
     \a matrix, and returns the list.
 
     This function creates one polygon for each subpath regardless of
@@ -1562,7 +1562,7 @@ QPainterPath QPainterPath::toReversed() const
     \sa toFillPolygons(), toFillPolygon(), {QPainterPath#QPainterPath
     Conversion}{QPainterPath Conversion}
 */
-QList<QPolygonF> QPainterPath::toSubpathPolygons(const QTransform &matrix) const
+QList<QPolygonF> QPainterPath::toSubpathPolygons(const BOBUIransform &matrix) const
 {
 
     Q_D(const QPainterPath);
@@ -1609,7 +1609,7 @@ QList<QPolygonF> QPainterPath::toSubpathPolygons(const QTransform &matrix) const
 
 /*!
     Converts the path into a list of polygons using the
-    QTransform \a matrix, and returns the list.
+    BOBUIransform \a matrix, and returns the list.
 
     The function differs from the toFillPolygon() function in that it
     creates several polygons. It is provided because it is usually
@@ -1629,7 +1629,7 @@ QList<QPolygonF> QPainterPath::toSubpathPolygons(const QTransform &matrix) const
     \sa toSubpathPolygons(), toFillPolygon(),
     {QPainterPath#QPainterPath Conversion}{QPainterPath Conversion}
 */
-QList<QPolygonF> QPainterPath::toFillPolygons(const QTransform &matrix) const
+QList<QPolygonF> QPainterPath::toFillPolygons(const BOBUIransform &matrix) const
 {
 
     QList<QPolygonF> polys;
@@ -1726,8 +1726,8 @@ QList<QPolygonF> QPainterPath::toFillPolygons(const QTransform &matrix) const
     return polys;
 }
 
-//same as qt_polygon_isect_line in qpolygon.cpp
-static void qt_painterpath_isect_line(const QPointF &p1,
+//same as bobui_polygon_isect_line in qpolygon.cpp
+static void bobui_painterpath_isect_line(const QPointF &p1,
                                       const QPointF &p2,
                                       const QPointF &pos,
                                       int *winding)
@@ -1740,7 +1740,7 @@ static void qt_painterpath_isect_line(const QPointF &p1,
 
     int dir = 1;
 
-    if (QtPrivate::fuzzyCompare(y1, y2)) {
+    if (BobUIPrivate::fuzzyCompare(y1, y2)) {
         // ignore horizontal lines according to scan conversion rule
         return;
     } else if (y2 < y1) {
@@ -1759,7 +1759,7 @@ static void qt_painterpath_isect_line(const QPointF &p1,
     }
 }
 
-static void qt_painterpath_isect_curve(const QBezier &bezier, const QPointF &pt,
+static void bobui_painterpath_isect_curve(const QBezier &bezier, const QPointF &pt,
                                        int *winding, int depth = 0)
 {
     qreal y = pt.y();
@@ -1787,8 +1787,8 @@ static void qt_painterpath_isect_curve(const QBezier &bezier, const QPointF &pt,
 
         // split curve and try again...
         const auto halves = bezier.split();
-        qt_painterpath_isect_curve(halves.first,  pt, winding, depth + 1);
-        qt_painterpath_isect_curve(halves.second, pt, winding, depth + 1);
+        bobui_painterpath_isect_curve(halves.first,  pt, winding, depth + 1);
+        bobui_painterpath_isect_curve(halves.second, pt, winding, depth + 1);
     }
 }
 
@@ -1818,12 +1818,12 @@ bool QPainterPath::contains(const QPointF &pt) const
 
         case MoveToElement:
             if (i > 0) // implicitly close all paths.
-                qt_painterpath_isect_line(last_pt, last_start, pt, &winding_number);
+                bobui_painterpath_isect_line(last_pt, last_start, pt, &winding_number);
             last_start = last_pt = e;
             break;
 
         case LineToElement:
-            qt_painterpath_isect_line(last_pt, e, pt, &winding_number);
+            bobui_painterpath_isect_line(last_pt, e, pt, &winding_number);
             last_pt = e;
             break;
 
@@ -1831,7 +1831,7 @@ bool QPainterPath::contains(const QPointF &pt) const
             {
                 const QPainterPath::Element &cp2 = d->elements.at(++i);
                 const QPainterPath::Element &ep = d->elements.at(++i);
-                qt_painterpath_isect_curve(QBezier::fromPoints(last_pt, e, cp2, ep),
+                bobui_painterpath_isect_curve(QBezier::fromPoints(last_pt, e, cp2, ep),
                                            pt, &winding_number);
                 last_pt = ep;
 
@@ -1845,7 +1845,7 @@ bool QPainterPath::contains(const QPointF &pt) const
 
     // implicitly close last subpath
     if (last_pt != last_start)
-        qt_painterpath_isect_line(last_pt, last_start, pt, &winding_number);
+        bobui_painterpath_isect_line(last_pt, last_start, pt, &winding_number);
 
     return (d->hasWindingFill
             ? (winding_number != 0)
@@ -1854,7 +1854,7 @@ bool QPainterPath::contains(const QPointF &pt) const
 
 enum PainterDirections { Left, Right, Top, Bottom };
 
-static bool qt_painterpath_isect_line_rect(qreal x1, qreal y1, qreal x2, qreal y2,
+static bool bobui_painterpath_isect_line_rect(qreal x1, qreal y1, qreal x2, qreal y2,
                                            const QRectF &rect)
 {
     qreal left = rect.left();
@@ -1933,7 +1933,7 @@ static bool qt_painterpath_isect_line_rect(qreal x1, qreal y1, qreal x2, qreal y
     return false;
 }
 
-static bool qt_isect_curve_horizontal(const QBezier &bezier, qreal y, qreal x1, qreal x2, int depth = 0)
+static bool bobui_isect_curve_horizontal(const QBezier &bezier, qreal y, qreal x1, qreal x2, int depth = 0)
 {
     QRectF bounds = bezier.bounds();
 
@@ -1944,14 +1944,14 @@ static bool qt_isect_curve_horizontal(const QBezier &bezier, qreal y, qreal x1, 
             return true;
 
         const auto halves = bezier.split();
-        if (qt_isect_curve_horizontal(halves.first, y, x1, x2, depth + 1)
-            || qt_isect_curve_horizontal(halves.second, y, x1, x2, depth + 1))
+        if (bobui_isect_curve_horizontal(halves.first, y, x1, x2, depth + 1)
+            || bobui_isect_curve_horizontal(halves.second, y, x1, x2, depth + 1))
             return true;
     }
     return false;
 }
 
-static bool qt_isect_curve_vertical(const QBezier &bezier, qreal x, qreal y1, qreal y2, int depth = 0)
+static bool bobui_isect_curve_vertical(const QBezier &bezier, qreal x, qreal y1, qreal y2, int depth = 0)
 {
     QRectF bounds = bezier.bounds();
 
@@ -1962,8 +1962,8 @@ static bool qt_isect_curve_vertical(const QBezier &bezier, qreal x, qreal y1, qr
             return true;
 
         const auto halves = bezier.split();
-        if (qt_isect_curve_vertical(halves.first, x, y1, y2, depth + 1)
-            || qt_isect_curve_vertical(halves.second, x, y1, y2, depth + 1))
+        if (bobui_isect_curve_vertical(halves.first, x, y1, y2, depth + 1)
+            || bobui_isect_curve_vertical(halves.second, x, y1, y2, depth + 1))
             return true;
     }
      return false;
@@ -1983,7 +1983,7 @@ static bool pointOnEdge(const QRectF &rect, const QPointF &point)
 /*
     Returns \c true if any lines or curves cross the four edges in of rect
 */
-static bool qt_painterpath_check_crossing(const QPainterPath *path, const QRectF &rect)
+static bool bobui_painterpath_check_crossing(const QPainterPath *path, const QRectF &rect)
 {
     QPointF last_pt;
     QPointF last_start;
@@ -1996,14 +1996,14 @@ static bool qt_painterpath_check_crossing(const QPainterPath *path, const QRectF
         case QPainterPath::MoveToElement:
             if (i > 0
                 && qFuzzyCompare(last_pt, last_start)
-                && qt_painterpath_isect_line_rect(last_pt.x(), last_pt.y(),
+                && bobui_painterpath_isect_line_rect(last_pt.x(), last_pt.y(),
                                                   last_start.x(), last_start.y(), rect))
                 return true;
             last_start = last_pt = e;
             break;
 
         case QPainterPath::LineToElement:
-            if (qt_painterpath_isect_line_rect(last_pt.x(), last_pt.y(), e.x, e.y, rect))
+            if (bobui_painterpath_isect_line_rect(last_pt.x(), last_pt.y(), e.x, e.y, rect))
                 return true;
             last_pt = e;
             break;
@@ -2013,10 +2013,10 @@ static bool qt_painterpath_check_crossing(const QPainterPath *path, const QRectF
                 QPointF cp2 = path->elementAt(++i);
                 QPointF ep = path->elementAt(++i);
                 QBezier bezier = QBezier::fromPoints(last_pt, e, cp2, ep);
-                if (qt_isect_curve_horizontal(bezier, rect.top(), rect.left(), rect.right())
-                    || qt_isect_curve_horizontal(bezier, rect.bottom(), rect.left(), rect.right())
-                    || qt_isect_curve_vertical(bezier, rect.left(), rect.top(), rect.bottom())
-                    || qt_isect_curve_vertical(bezier, rect.right(), rect.top(), rect.bottom()))
+                if (bobui_isect_curve_horizontal(bezier, rect.top(), rect.left(), rect.right())
+                    || bobui_isect_curve_horizontal(bezier, rect.bottom(), rect.left(), rect.right())
+                    || bobui_isect_curve_vertical(bezier, rect.left(), rect.top(), rect.bottom())
+                    || bobui_isect_curve_vertical(bezier, rect.right(), rect.top(), rect.bottom()))
                     return true;
                 last_pt = ep;
             }
@@ -2050,7 +2050,7 @@ static bool qt_painterpath_check_crossing(const QPainterPath *path, const QRectF
 
     // implicitly close last subpath
     if (last_pt != last_start
-        && qt_painterpath_isect_line_rect(last_pt.x(), last_pt.y(),
+        && bobui_painterpath_isect_line_rect(last_pt.x(), last_pt.y(),
                                           last_start.x(), last_start.y(), rect))
         return true;
 
@@ -2090,7 +2090,7 @@ bool QPainterPath::intersects(const QRectF &rect) const
         return false;
 
     // If any path element cross the rect its bound to be an intersection
-    if (qt_painterpath_check_crossing(this, rect))
+    if (bobui_painterpath_check_crossing(this, rect))
         return true;
 
     if (contains(rect.center()))
@@ -2184,8 +2184,8 @@ bool QPainterPath::contains(const QRectF &rect) const
     // if there are intersections, chances are that the rect is not
     // contained, except if we have winding rule, in which case it
     // still might.
-    if (qt_painterpath_check_crossing(this, rect)) {
-        if (fillRule() == Qt::OddEvenFill) {
+    if (bobui_painterpath_check_crossing(this, rect)) {
+        if (fillRule() == BobUI::OddEvenFill) {
             return false;
         } else {
             // Do some wague sampling in the winding case. This is not
@@ -2214,7 +2214,7 @@ bool QPainterPath::contains(const QRectF &rect) const
     for (int i=0; i<d->elements.size(); ++i) {
         const Element &e = d->elements.at(i);
         if (e.type == QPainterPath::MoveToElement && rect.contains(e)) {
-            if (fillRule() == Qt::OddEvenFill)
+            if (fillRule() == BobUI::OddEvenFill)
                 return false;
 
             bool stop = false;
@@ -2279,11 +2279,11 @@ bool QPainterPath::operator==(const QPainterPath &path) const
     else if (d->elements.size() != other_d->elements.size())
         return false;
 
-    const qreal qt_epsilon = sizeof(qreal) == sizeof(double) ? 1e-12 : qreal(1e-5);
+    const qreal bobui_epsilon = sizeof(qreal) == sizeof(double) ? 1e-12 : qreal(1e-5);
 
     QSizeF epsilon = boundingRect().size();
-    epsilon.rwidth() *= qt_epsilon;
-    epsilon.rheight() *= qt_epsilon;
+    epsilon.rwidth() *= bobui_epsilon;
+    epsilon.rheight() *= bobui_epsilon;
 
     for (int i = 0; i < d->elements.size(); ++i)
         if (d->elements.at(i).type != other_d->elements.at(i).type
@@ -2406,7 +2406,7 @@ QPainterPath &QPainterPath::operator-=(const QPainterPath &other)
     return *this = (*this - other);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPainterPath &path)
     \relates QPainterPath
@@ -2414,7 +2414,7 @@ QPainterPath &QPainterPath::operator-=(const QPainterPath &other)
     Writes the given painter \a path to the given \a stream, and
     returns a reference to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &s, const QPainterPath &p)
 {
@@ -2441,7 +2441,7 @@ QDataStream &operator<<(QDataStream &s, const QPainterPath &p)
     Reads a painter path from the given \a stream into the specified \a path,
     and returns a reference to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &s, QPainterPath &p)
 {
@@ -2465,7 +2465,7 @@ QDataStream &operator>>(QDataStream &s, QPainterPath &p)
         s >> y;
         Q_ASSERT(type >= 0 && type <= 3);
         if (!isValidCoord(qreal(x)) || !isValidCoord(qreal(y))) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             qWarning("QDataStream::operator>>: Invalid QPainterPath coordinates read, skipping it");
 #endif
             errorDetected = true;
@@ -2477,44 +2477,44 @@ QDataStream &operator>>(QDataStream &s, QPainterPath &p)
     s >> p.d_func()->cStart;
     int fillRule;
     s >> fillRule;
-    Q_ASSERT(fillRule == Qt::OddEvenFill || fillRule == Qt::WindingFill);
-    p.d_func()->hasWindingFill = (Qt::FillRule(fillRule) == Qt::WindingFill);
+    Q_ASSERT(fillRule == BobUI::OddEvenFill || fillRule == BobUI::WindingFill);
+    p.d_func()->hasWindingFill = (BobUI::FillRule(fillRule) == BobUI::WindingFill);
     if (errorDetected || p.d_func()->elements.isEmpty())
         p = QPainterPath();  // Better than to return path with possibly corrupt datastructure, which would likely cause crash
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
 /*******************************************************************************
  * class QPainterPathStroker
  */
 
-void qt_path_stroke_move_to(qfixed x, qfixed y, void *data)
+void bobui_path_stroke_move_to(qfixed x, qfixed y, void *data)
 {
-    ((QPainterPath *) data)->moveTo(qt_fixed_to_real(x), qt_fixed_to_real(y));
+    ((QPainterPath *) data)->moveTo(bobui_fixed_to_real(x), bobui_fixed_to_real(y));
 }
 
-void qt_path_stroke_line_to(qfixed x, qfixed y, void *data)
+void bobui_path_stroke_line_to(qfixed x, qfixed y, void *data)
 {
-    ((QPainterPath *) data)->lineTo(qt_fixed_to_real(x), qt_fixed_to_real(y));
+    ((QPainterPath *) data)->lineTo(bobui_fixed_to_real(x), bobui_fixed_to_real(y));
 }
 
-void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
+void bobui_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
                              qfixed c2x, qfixed c2y,
                              qfixed ex, qfixed ey,
                              void *data)
 {
-    ((QPainterPath *) data)->cubicTo(qt_fixed_to_real(c1x), qt_fixed_to_real(c1y),
-                                     qt_fixed_to_real(c2x), qt_fixed_to_real(c2y),
-                                     qt_fixed_to_real(ex), qt_fixed_to_real(ey));
+    ((QPainterPath *) data)->cubicTo(bobui_fixed_to_real(c1x), bobui_fixed_to_real(c1y),
+                                     bobui_fixed_to_real(c2x), bobui_fixed_to_real(c2y),
+                                     bobui_fixed_to_real(ex), bobui_fixed_to_real(ey));
 }
 
 /*!
     \since 4.1
     \class QPainterPathStroker
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPainterPathStroker class is used to generate fillable
     outlines for a given painter path.
@@ -2536,7 +2536,7 @@ void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
     \li setDashPattern()
     \endlist
 
-    The setDashPattern() function accepts both a Qt::PenStyle object
+    The setDashPattern() function accepts both a BobUI::PenStyle object
     and a list representation of the pattern as argument.
 
     In addition you can specify a curve's threshold, controlling the
@@ -2551,12 +2551,12 @@ void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
     far from each join the miter join can extend. The limit is
     specified in the units of width so the pixelwise miter limit will
     be \c {miterlimit * width}. This value is only used if the join
-    style is Qt::MiterJoin.
+    style is BobUI::MiterJoin.
 
     The painter path generated by the createStroke() function should
     only be used for outlining the given painter path. Otherwise it
     may cause unexpected behavior. Generated outlines also require the
-    Qt::WindingFill rule which is set by default.
+    BobUI::WindingFill rule which is set by default.
 
     \sa QPen, QBrush
 */
@@ -2564,9 +2564,9 @@ void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
 QPainterPathStrokerPrivate::QPainterPathStrokerPrivate()
     : dashOffset(0)
 {
-    stroker.setMoveToHook(qt_path_stroke_move_to);
-    stroker.setLineToHook(qt_path_stroke_line_to);
-    stroker.setCubicToHook(qt_path_stroke_cubic_to);
+    stroker.setMoveToHook(bobui_path_stroke_move_to);
+    stroker.setLineToHook(bobui_path_stroke_line_to);
+    stroker.setCubicToHook(bobui_path_stroke_cubic_to);
 }
 
 /*!
@@ -2591,7 +2591,7 @@ QPainterPathStroker::QPainterPathStroker(const QPen &pen)
     setMiterLimit(pen.miterLimit());
     setDashOffset(pen.dashOffset());
 
-    if (pen.style() == Qt::CustomDashLine)
+    if (pen.style() == BobUI::CustomDashLine)
         setDashPattern(pen.dashPattern());
     else
         setDashPattern(pen.style());
@@ -2615,7 +2615,7 @@ QPainterPathStroker::~QPainterPathStroker()
 
     The generated path should only be used for outlining the given
     painter path. Otherwise it may cause unexpected
-    behavior. Generated outlines also require the Qt::WindingFill rule
+    behavior. Generated outlines also require the BobUI::WindingFill rule
     which is set by default.
 */
 QPainterPath QPainterPathStroker::createStroke(const QPainterPath &path) const
@@ -2625,15 +2625,15 @@ QPainterPath QPainterPathStroker::createStroke(const QPainterPath &path) const
     if (path.isEmpty())
         return path;
     if (d->dashPattern.isEmpty()) {
-        d->stroker.strokePath(path, &stroke, QTransform());
+        d->stroker.strokePath(path, &stroke, BOBUIransform());
     } else {
         QDashStroker dashStroker(&d->stroker);
         dashStroker.setDashPattern(d->dashPattern);
         dashStroker.setDashOffset(d->dashOffset);
         dashStroker.setClipRect(d->stroker.clipRect());
-        dashStroker.strokePath(path, &stroke, QTransform());
+        dashStroker.strokePath(path, &stroke, BOBUIransform());
     }
-    stroke.setFillRule(Qt::WindingFill);
+    stroke.setFillRule(BobUI::WindingFill);
     return stroke;
 }
 
@@ -2648,7 +2648,7 @@ void QPainterPathStroker::setWidth(qreal width)
     Q_D(QPainterPathStroker);
     if (width <= 0)
         width = 1;
-    d->stroker.setStrokeWidth(qt_real_to_fixed(width));
+    d->stroker.setStrokeWidth(bobui_real_to_fixed(width));
 }
 
 /*!
@@ -2656,7 +2656,7 @@ void QPainterPathStroker::setWidth(qreal width)
 */
 qreal QPainterPathStroker::width() const
 {
-    return qt_fixed_to_real(d_func()->stroker.strokeWidth());
+    return bobui_fixed_to_real(d_func()->stroker.strokeWidth());
 }
 
 
@@ -2665,7 +2665,7 @@ qreal QPainterPathStroker::width() const
     dash pattern is set, each segment of the pattern is subject to the
     cap \a style.
 */
-void QPainterPathStroker::setCapStyle(Qt::PenCapStyle style)
+void QPainterPathStroker::setCapStyle(BobUI::PenCapStyle style)
 {
     d_func()->stroker.setCapStyle(style);
 }
@@ -2674,7 +2674,7 @@ void QPainterPathStroker::setCapStyle(Qt::PenCapStyle style)
 /*!
     Returns the cap style of the generated outlines.
 */
-Qt::PenCapStyle QPainterPathStroker::capStyle() const
+BobUI::PenCapStyle QPainterPathStroker::capStyle() const
 {
     return d_func()->stroker.capStyle();
 }
@@ -2682,7 +2682,7 @@ Qt::PenCapStyle QPainterPathStroker::capStyle() const
 /*!
     Sets the join style of the generated outlines to \a style.
 */
-void QPainterPathStroker::setJoinStyle(Qt::PenJoinStyle style)
+void QPainterPathStroker::setJoinStyle(BobUI::PenJoinStyle style)
 {
     d_func()->stroker.setJoinStyle(style);
 }
@@ -2690,7 +2690,7 @@ void QPainterPathStroker::setJoinStyle(Qt::PenJoinStyle style)
 /*!
     Returns the join style of the generated outlines.
 */
-Qt::PenJoinStyle QPainterPathStroker::joinStyle() const
+BobUI::PenJoinStyle QPainterPathStroker::joinStyle() const
 {
     return d_func()->stroker.joinStyle();
 }
@@ -2703,11 +2703,11 @@ Qt::PenJoinStyle QPainterPathStroker::joinStyle() const
     width. So the pixelwise miter limit will be \c { miterlimit *
     width}.
 
-    This value is only used if the join style is Qt::MiterJoin.
+    This value is only used if the join style is BobUI::MiterJoin.
 */
 void QPainterPathStroker::setMiterLimit(qreal limit)
 {
-    d_func()->stroker.setMiterLimit(qt_real_to_fixed(limit));
+    d_func()->stroker.setMiterLimit(bobui_real_to_fixed(limit));
 }
 
 /*!
@@ -2715,7 +2715,7 @@ void QPainterPathStroker::setMiterLimit(qreal limit)
 */
 qreal QPainterPathStroker::miterLimit() const
 {
-    return qt_fixed_to_real(d_func()->stroker.miterLimit());
+    return bobui_fixed_to_real(d_func()->stroker.miterLimit());
 }
 
 
@@ -2729,7 +2729,7 @@ qreal QPainterPathStroker::miterLimit() const
 */
 void QPainterPathStroker::setCurveThreshold(qreal threshold)
 {
-    d_func()->stroker.setCurveThreshold(qt_real_to_fixed(threshold));
+    d_func()->stroker.setCurveThreshold(bobui_real_to_fixed(threshold));
 }
 
 /*!
@@ -2738,13 +2738,13 @@ void QPainterPathStroker::setCurveThreshold(qreal threshold)
 */
 qreal QPainterPathStroker::curveThreshold() const
 {
-    return qt_fixed_to_real(d_func()->stroker.curveThreshold());
+    return bobui_fixed_to_real(d_func()->stroker.curveThreshold());
 }
 
 /*!
     Sets the dash pattern for the generated outlines to \a style.
 */
-void QPainterPathStroker::setDashPattern(Qt::PenStyle style)
+void QPainterPathStroker::setDashPattern(BobUI::PenStyle style)
 {
     d_func()->dashPattern = QDashStroker::patternForStyle(style);
 }
@@ -2769,7 +2769,7 @@ void QPainterPathStroker::setDashPattern(const QList<qreal> &dashPattern)
 {
     d_func()->dashPattern.clear();
     for (int i=0; i<dashPattern.size(); ++i)
-        d_func()->dashPattern << qt_real_to_fixed(dashPattern.at(i));
+        d_func()->dashPattern << bobui_real_to_fixed(dashPattern.at(i));
 }
 
 /*!
@@ -2800,7 +2800,7 @@ void QPainterPathStroker::setDashOffset(qreal offset)
 }
 
 /*!
-  Converts the path into a polygon using the QTransform
+  Converts the path into a polygon using the BOBUIransform
   \a matrix, and returns the polygon.
 
   The polygon is created by first converting all subpaths to
@@ -2814,7 +2814,7 @@ void QPainterPathStroker::setDashOffset(qreal offset)
   \sa toSubpathPolygons(), toFillPolygons(),
   {QPainterPath#QPainterPath Conversion}{QPainterPath Conversion}
 */
-QPolygonF QPainterPath::toFillPolygon(const QTransform &matrix) const
+QPolygonF QPainterPath::toFillPolygon(const BOBUIransform &matrix) const
 {
     const QList<QPolygonF> flats = toSubpathPolygons(matrix);
     QPolygonF polygon;
@@ -3277,9 +3277,9 @@ QPainterPath QPainterPath::trimmed(qreal fromFraction, qreal toFraction, qreal o
     const qreal l1 = f1 * totalLength;
     const qreal l2 = f2 * totalLength;
     const int e1 = d->elementAtLength(l1);
-    const bool mustTrimE1 = !QtPrivate::fuzzyCompare(d->m_runLengths.at(e1), l1);
+    const bool mustTrimE1 = !BobUIPrivate::fuzzyCompare(d->m_runLengths.at(e1), l1);
     const int e2 = d->elementAtLength(l2);
-    const bool mustTrimE2 = !QtPrivate::fuzzyCompare(d->m_runLengths.at(e2), l2);
+    const bool mustTrimE2 = !BobUIPrivate::fuzzyCompare(d->m_runLengths.at(e2), l2);
 
     //qDebug() << "Trim [" << f1 << f2 << "] e1:" << e1 << mustTrimE1 << "e2:" << e2 << mustTrimE2 << "wrapping:" << wrapping;
     if (e1 == e2 && !wrapping && mustTrimE1 && mustTrimE2) {
@@ -3387,21 +3387,21 @@ void QPainterPathPrivate::appendElementRange(QPainterPath *to, int first, int la
 
   The \a xRadius and \a yRadius arguments specify the radii of
   the ellipses defining the corners of the rounded rectangle.
-  When \a mode is Qt::RelativeSize, \a xRadius and
+  When \a mode is BobUI::RelativeSize, \a xRadius and
   \a yRadius are specified in percentage of half the rectangle's
   width and height respectively, and should be in the range 0.0 to 100.0.
 
   \sa addRect()
 */
 void QPainterPath::addRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
-                                  Qt::SizeMode mode)
+                                  BobUI::SizeMode mode)
 {
     QRectF r = rect.normalized();
 
     if (r.isNull())
         return;
 
-    if (mode == Qt::AbsoluteSize) {
+    if (mode == BobUI::AbsoluteSize) {
         qreal w = r.width() / 2;
         qreal h = r.height() / 2;
 
@@ -3452,7 +3452,7 @@ void QPainterPath::addRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadi
 }
 
 /*!
-  \fn void QPainterPath::addRoundedRect(qreal x, qreal y, qreal w, qreal h, qreal xRadius, qreal yRadius, Qt::SizeMode mode = Qt::AbsoluteSize);
+  \fn void QPainterPath::addRoundedRect(qreal x, qreal y, qreal w, qreal h, qreal xRadius, qreal yRadius, BobUI::SizeMode mode = BobUI::AbsoluteSize);
   \since 4.4
   \overload
 
@@ -3517,7 +3517,7 @@ QPainterPath QPainterPath::subtracted(const QPainterPath &p) const
 
     Returns a simplified version of this path. This implies merging all subpaths that intersect,
     and returning a path containing no intersecting edges. Consecutive parallel lines will also
-    be merged. The simplified path will always use the default fill rule, Qt::OddEvenFill.
+    be merged. The simplified path will always use the default fill rule, BobUI::OddEvenFill.
     Bezier curves may be flattened to line segments due to numerical instability of
     doing bezier curve intersections.
 */
@@ -3610,7 +3610,7 @@ void QPainterPath::computeBoundingRect() const
                                                 e,
                                                 d->elements.at(i+1),
                                                 d->elements.at(i+2));
-                QRectF r = qt_painterpath_bezier_extrema(b);
+                QRectF r = bobui_painterpath_bezier_extrema(b);
                 qreal right = r.right();
                 qreal bottom = r.bottom();
                 if (r.x() < minx) minx = r.x();
@@ -3687,17 +3687,17 @@ void QPainterPathPrivate::computeRunLengths()
     dirtyRunLengths = false;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug s, const QPainterPath &p)
 {
     QDebugStateSaver saver(s);
-    s.nospace() << "QPainterPath: Element count=" << p.elementCount() << Qt::endl;
+    s.nospace() << "QPainterPath: Element count=" << p.elementCount() << BobUI::endl;
     const char *types[] = {"MoveTo", "LineTo", "CurveTo", "CurveToData"};
     for (int i=0; i<p.elementCount(); ++i) {
-        s.nospace() << " -> " << types[p.elementAt(i).type] << "(x=" << p.elementAt(i).x << ", y=" << p.elementAt(i).y << ')' << Qt::endl;
+        s.nospace() << " -> " << types[p.elementAt(i).type] << "(x=" << p.elementAt(i).x << ", y=" << p.elementAt(i).y << ')' << BobUI::endl;
     }
     return s;
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

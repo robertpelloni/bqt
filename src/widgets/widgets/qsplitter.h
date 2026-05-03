@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSPLITTER_H
 #define QSPLITTER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qframe.h>
-#include <QtWidgets/qsizepolicy.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qframe.h>
+#include <BobUIWidgets/qsizepolicy.h>
 
-QT_REQUIRE_CONFIG(splitter);
+BOBUI_REQUIRE_CONFIG(splitter);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSplitterPrivate;
-class QTextStream;
+class BOBUIextStream;
 
 class QSplitterHandle;
 
@@ -22,22 +22,22 @@ class Q_WIDGETS_EXPORT QSplitter : public QFrame
 {
     Q_OBJECT
 
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(BobUI::Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(bool opaqueResize READ opaqueResize WRITE setOpaqueResize)
     Q_PROPERTY(int handleWidth READ handleWidth WRITE setHandleWidth)
     Q_PROPERTY(bool childrenCollapsible READ childrenCollapsible WRITE setChildrenCollapsible)
 
 public:
     explicit QSplitter(QWidget* parent = nullptr);
-    explicit QSplitter(Qt::Orientation, QWidget* parent = nullptr);
+    explicit QSplitter(BobUI::Orientation, QWidget* parent = nullptr);
     ~QSplitter();
 
     void addWidget(QWidget *widget);
     void insertWidget(int index, QWidget *widget);
     QWidget *replaceWidget(int index, QWidget *widget);
 
-    void setOrientation(Qt::Orientation);
-    Qt::Orientation orientation() const;
+    void setOrientation(BobUI::Orientation);
+    BobUI::Orientation orientation() const;
 
     void setChildrenCollapsible(bool);
     bool childrenCollapsible() const;
@@ -99,11 +99,11 @@ class Q_WIDGETS_EXPORT QSplitterHandle : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QSplitterHandle(Qt::Orientation o, QSplitter *parent);
+    explicit QSplitterHandle(BobUI::Orientation o, QSplitter *parent);
     ~QSplitterHandle();
 
-    void setOrientation(Qt::Orientation o);
-    Qt::Orientation orientation() const;
+    void setOrientation(BobUI::Orientation o);
+    BobUI::Orientation orientation() const;
     bool opaqueResize() const;
     QSplitter *splitter() const;
 
@@ -125,6 +125,6 @@ private:
     Q_DECLARE_PRIVATE(QSplitterHandle)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSPLITTER_H

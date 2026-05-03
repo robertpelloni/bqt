@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVULKANINSTANCE_H
 #define QVULKANINSTANCE_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
 #if 0
-#pragma qt_no_master_include
-#pragma qt_sync_skip_header_check
+#pragma bobui_no_master_include
+#pragma bobui_sync_skip_header_check
 #endif
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
 #ifndef VK_NO_PROTOTYPES
 #define VK_NO_PROTOTYPES
@@ -19,11 +19,11 @@
 #if !defined(Q_QDOC) && __has_include(<vulkan/vulkan.h>)
 #include <vulkan/vulkan.h>
 #else
-// QT_CONFIG(vulkan) implies vulkan.h being available at Qt build time, but it
+// BOBUI_CONFIG(vulkan) implies vulkan.h being available at BobUI build time, but it
 // does not guarantee vulkan.h is available at *application* build time. Both
 // for qdoc and for apps built on systems without Vulkan SDK we provide a set
 // of typedefs to keep things compiling since this header may be included from
-// Qt Quick and elsewhere just to get types like VkImage and friends defined.
+// BobUI Quick and elsewhere just to get types like VkImage and friends defined.
 
 typedef void* PFN_vkVoidFunction;
 // non-dispatchable handles (64-bit regardless of arch)
@@ -44,16 +44,16 @@ typedef int VkDebugReportObjectTypeEXT;
 
 // QVulkanInstance itself is only applicable if vulkan.h is available, or if
 // it's qdoc. An application that is built on a vulkan.h-less system against a
-// Vulkan-enabled Qt gets the dummy typedefs but not QVulkan*.
+// Vulkan-enabled BobUI gets the dummy typedefs but not QVulkan*.
 #if __has_include(<vulkan/vulkan.h>) || defined(Q_QDOC)
 
-#include <QtCore/qbytearraylist.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qversionnumber.h>
+#include <BobUICore/qbytearraylist.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qversionnumber.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
@@ -81,7 +81,7 @@ inline bool operator!=(const QVulkanLayer &lhs, const QVulkanLayer &rhs) noexcep
 
 inline size_t qHash(const QVulkanLayer &key, size_t seed = 0) noexcept
 {
-    QtPrivate::QHashCombine hash(seed);
+    BobUIPrivate::QHashCombine hash(seed);
     seed = hash(seed, key.name);
     seed = hash(seed, key.version);
     seed = hash(seed, key.specVersion);
@@ -104,13 +104,13 @@ inline bool operator!=(const QVulkanExtension &lhs, const QVulkanExtension &rhs)
 
 inline size_t qHash(const QVulkanExtension &key, size_t seed = 0) noexcept
 {
-    QtPrivate::QHashCombine hash(seed);
+    BobUIPrivate::QHashCombine hash(seed);
     seed = hash(seed, key.name);
     seed = hash(seed, key.version);
     return seed;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QVulkanLayer &);
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QVulkanExtension &);
 #endif
@@ -141,7 +141,7 @@ public:
     };
     Q_DECLARE_FLAGS(Flags, Flag)
 
-    // ### Qt 7: remove non-const overloads
+    // ### BobUI 7: remove non-const overloads
     QVulkanInfoVector<QVulkanLayer> supportedLayers();
     inline QVulkanInfoVector<QVulkanLayer> supportedLayers() const
     { return const_cast<QVulkanInstance*>(this)->supportedLayers(); }
@@ -218,10 +218,10 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QVulkanInstance::Flags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QVulkanInstance::DebugMessageTypeFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QVulkanInstance::DebugMessageSeverityFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // __has_include(<vulkan/vulkan.h>) || defined(Q_QDOC)
 
-#endif // QT_CONFIG(vulkan) || defined(Q_QDOC)
+#endif // BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
 #endif // QVULKANINSTANCE_H

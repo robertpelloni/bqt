@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTENGINE_H
 #define QPAINTENGINE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/qpainter.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/qpainter.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QFontEngine;
@@ -22,10 +22,10 @@ class QPointF;
 class QPolygonF;
 class QRectF;
 struct QGlyphLayout;
-class QTextItemInt;
+class BOBUIextItemInt;
 class QPaintEngineState;
 
-class Q_GUI_EXPORT QTextItem {
+class Q_GUI_EXPORT BOBUIextItem {
 public:
     enum RenderFlag {
         RightToLeft = 0x1,
@@ -44,7 +44,7 @@ public:
     QString text() const;
     QFont font() const;
 };
-Q_DECLARE_TYPEINFO(QTextItem, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUIextItem, Q_PRIMITIVE_TYPE);
 
 
 class Q_GUI_EXPORT QPaintEngine
@@ -137,10 +137,10 @@ public:
     virtual void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode);
 
     virtual void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) = 0;
-    virtual void drawTextItem(const QPointF &p, const QTextItem &textItem);
+    virtual void drawTextItem(const QPointF &p, const BOBUIextItem &textItem);
     virtual void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
     virtual void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                           Qt::ImageConversionFlags flags = Qt::AutoColor);
+                           BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
     void setPaintDevice(QPaintDevice *device);
     QPaintDevice *paintDevice() const;
@@ -190,7 +190,7 @@ public:
     inline bool isExtended() const { return extended; }
 
     virtual QPixmap createPixmap(QSize size);
-    virtual QPixmap createPixmapFromImage(QImage image, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    virtual QPixmap createPixmapFromImage(QImage image, BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
 protected:
     QPaintEngine(QPaintEnginePrivate &data, PaintEngineFeatures devcaps=PaintEngineFeatures());
@@ -237,11 +237,11 @@ public:
     QBrush brush() const;
     QPointF brushOrigin() const;
     QBrush backgroundBrush() const;
-    Qt::BGMode backgroundMode() const;
+    BobUI::BGMode backgroundMode() const;
     QFont font() const;
-    QTransform transform() const;
+    BOBUIransform transform() const;
 
-    Qt::ClipOperation clipOperation() const;
+    BobUI::ClipOperation clipOperation() const;
     QRegion clipRegion() const;
     QPainterPath clipPath() const;
     bool isClipEnabled() const;
@@ -298,10 +298,10 @@ inline void QPaintEngine::clearDirty(DirtyFlags df)
     state->dirtyFlags &= ~df;
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QTextItem::RenderFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(BOBUIextItem::RenderFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPaintEngine::PaintEngineFeatures)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPaintEngine::DirtyFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTENGINE_H

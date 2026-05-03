@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PAINTEDWINDOW_H
 #define PAINTEDWINDOW_H
 
 #include <QWindow>
 
-#include <QtGui/qopengl.h>
-#include <QtOpenGL/qopenglshaderprogram.h>
-#include <QtOpenGL/qopenglframebufferobject.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIOpenGL/qopenglshaderprogram.h>
+#include <BobUIOpenGL/qopenglframebufferobject.h>
 
 #include <QPropertyAnimation>
 
 #include <QColor>
 #include <QImage>
-#include <QTime>
+#include <BOBUIime>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QOpenGLContext;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class PaintedWindow : public QWindow
 {
@@ -36,7 +36,7 @@ signals:
 private slots:
     void paint();
     void setRotation(qreal r);
-    void orientationChanged(Qt::ScreenOrientation newOrientation);
+    void orientationChanged(BobUI::ScreenOrientation newOrientation);
     void rotationDone();
 
 private:
@@ -52,11 +52,11 @@ private:
     QImage m_nextImage;
     qreal m_deltaRotation;
 
-    Qt::ScreenOrientation m_targetOrientation;
-    Qt::ScreenOrientation m_nextTargetOrientation;
+    BobUI::ScreenOrientation m_targetOrientation;
+    BobUI::ScreenOrientation m_nextTargetOrientation;
 
     QPropertyAnimation *m_animation;
-    QTimer *m_paintTimer;
+    BOBUIimer *m_paintTimer;
 };
 
 #endif // PAINTEDWINDOW_H

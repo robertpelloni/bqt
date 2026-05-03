@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
-#include <QtGui/QScreen>
-#include <QtGui/QCursor>
-#include <QtGui/QFont>
-#include <QtGui/QPalette>
-#include <QtGui/QStyleHints>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QCursor>
+#include <BobUIGui/QFont>
+#include <BobUIGui/QPalette>
+#include <BobUIGui/QStyleHints>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qgenericplugin.h>
@@ -21,7 +21,7 @@
 #include <QOpenGLContext>
 #endif
 
-#include <QtGui/private/qopenglcontext_p.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
 
 #include <QDebug>
 
@@ -69,15 +69,15 @@ private slots:
 
 void tst_QGuiApplication::initTestCase()
 {
-#ifdef QT_QPA_DEFAULT_PLATFORM_NAME
-    if ((QString::compare(QStringLiteral(QT_QPA_DEFAULT_PLATFORM_NAME),
-         QStringLiteral("eglfs"), Qt::CaseInsensitive) == 0) ||
-        (QString::compare(QString::fromLatin1(qgetenv("QT_QPA_PLATFORM")),
-         QStringLiteral("eglfs"), Qt::CaseInsensitive) == 0)) {
+#ifdef BOBUI_QPA_DEFAULT_PLATFORM_NAME
+    if ((QString::compare(QStringLiteral(BOBUI_QPA_DEFAULT_PLATFORM_NAME),
+         QStringLiteral("eglfs"), BobUI::CaseInsensitive) == 0) ||
+        (QString::compare(QString::fromLatin1(qgetenv("BOBUI_QPA_PLATFORM")),
+         QStringLiteral("eglfs"), BobUI::CaseInsensitive) == 0)) {
         // Set env variables to disable input and cursor because eglfs is single fullscreen window
         // and trying to initialize input and cursor will crash test.
-        qputenv("QT_QPA_EGLFS_DISABLE_INPUT", "1");
-        qputenv("QT_QPA_EGLFS_HIDECURSOR", "1");
+        qputenv("BOBUI_QPA_EGLFS_DISABLE_INPUT", "1");
+        qputenv("BOBUI_QPA_EGLFS_HIDECURSOR", "1");
     }
 #endif
 }
@@ -125,8 +125,8 @@ void tst_QGuiApplication::desktopFileName()
 
     QCOMPARE(QGuiApplication::desktopFileName(), QString());
 
-    QGuiApplication::setDesktopFileName("io.qt.QGuiApplication");
-    QCOMPARE(QGuiApplication::desktopFileName(), QString::fromLatin1("io.qt.QGuiApplication"));
+    QGuiApplication::setDesktopFileName("io.bobui.QGuiApplication");
+    QCOMPARE(QGuiApplication::desktopFileName(), QString::fromLatin1("io.bobui.QGuiApplication"));
 
     QGuiApplication::setDesktopFileName(QString());
     QCOMPARE(QGuiApplication::desktopFileName(), QString());
@@ -211,7 +211,7 @@ void tst_QGuiApplication::focusObject()
     QOpenGLContext context;
     context.create();
     context.makeCurrent(&window1);
-    QVERIFY(QTest::qWaitForWindowExposed(&window1)); // Buffer swap only succeeds with exposed window
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window1)); // Buffer swap only succeeds with exposed window
     context.swapBuffers(&window1);
 #endif
 
@@ -220,7 +220,7 @@ void tst_QGuiApplication::focusObject()
 
     // verify active window focus propagates to qguiapplication
     window1.requestActivate();
-    QVERIFY(QTest::qWaitForWindowActive(&window1));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window1));
     QCOMPARE(app.focusWindow(), &window1);
 
     window1.setFocusObject(&obj1);
@@ -236,8 +236,8 @@ void tst_QGuiApplication::focusObject()
     window2.setFocusObject(&obj3);
     QCOMPARE(app.focusObject(), &obj2); // not yet changed
     window2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window2));
-    QTRY_COMPARE(app.focusWindow(), &window2);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window2));
+    BOBUIRY_COMPARE(app.focusWindow(), &window2);
     QCOMPARE(app.focusObject(), &obj3);
     QCOMPARE(spy.size(), 1);
 
@@ -289,8 +289,8 @@ public:
     ShowCloseShowWindow(bool showAgain, QWindow *parent = nullptr)
       : QWindow(parent), showAgain(showAgain)
     {
-        QTimer::singleShot(0, this, SLOT(doClose()));
-        QTimer::singleShot(500, this, SLOT(exitApp()));
+        BOBUIimer::singleShot(0, this, SLOT(doClose()));
+        BOBUIimer::singleShot(500, this, SLOT(exitApp()));
     }
 
 private slots:
@@ -376,7 +376,7 @@ void tst_QGuiApplication::changeFocusWindow()
     QOpenGLContext context;
     context.create();
     context.makeCurrent(&window1);
-    QVERIFY(QTest::qWaitForWindowExposed(&window1)); // Buffer swap only succeeds with exposed window
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window1)); // Buffer swap only succeeds with exposed window
     context.swapBuffers(&window1);
 #endif
     FocusChangeWindow window2;
@@ -390,16 +390,16 @@ void tst_QGuiApplication::changeFocusWindow()
 #if defined(Q_OS_QNX) // We either need to create a eglSurface or a create a backing store
                       // and then post the window in order for screen to show the window
     context.makeCurrent(&window2);
-    QVERIFY(QTest::qWaitForWindowExposed(&window2)); // Buffer swap only succeeds with exposed window
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window2)); // Buffer swap only succeeds with exposed window
     context.swapBuffers(&window2);
 #endif
-    QVERIFY(QTest::qWaitForWindowExposed(&window1));
-    QVERIFY(QTest::qWaitForWindowExposed(&window2));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window1));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window2));
     window1.requestActivate();
-    QTRY_COMPARE(app.focusWindow(), &window1);
+    BOBUIRY_COMPARE(app.focusWindow(), &window1);
 
     window2.requestActivate();
-    QTRY_COMPARE(app.focusWindow(), &window2);
+    BOBUIRY_COMPARE(app.focusWindow(), &window2);
     QCOMPARE(window1.windowDuringFocusAboutToChange, &window1);
     QCOMPARE(window1.windowDuringFocusOut, &window2);
 }
@@ -416,65 +416,65 @@ void tst_QGuiApplication::keyboardModifiers()
     window->setTitle(QStringLiteral("keyboardModifiers"));
 
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window.data()));
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window.data()));
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
 
     // mouse events
     QPoint center = window->geometry().center();
-    QTest::mouseEvent(QTest::MousePress, window.data(), Qt::LeftButton, Qt::NoModifier, center);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
-    QTest::mouseEvent(QTest::MouseRelease, window.data(), Qt::LeftButton, Qt::NoModifier, center);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
-    QTest::mouseEvent(QTest::MousePress, window.data(), Qt::RightButton, Qt::ControlModifier, center);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
-    QTest::mouseEvent(QTest::MouseRelease, window.data(), Qt::RightButton, Qt::ControlModifier, center);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
+    BOBUIest::mouseEvent(BOBUIest::MousePress, window.data(), BobUI::LeftButton, BobUI::NoModifier, center);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
+    BOBUIest::mouseEvent(BOBUIest::MouseRelease, window.data(), BobUI::LeftButton, BobUI::NoModifier, center);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
+    BOBUIest::mouseEvent(BOBUIest::MousePress, window.data(), BobUI::RightButton, BobUI::ControlModifier, center);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
+    BOBUIest::mouseEvent(BOBUIest::MouseRelease, window.data(), BobUI::RightButton, BobUI::ControlModifier, center);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
 
     // shortcut events
-    QTest::keyEvent(QTest::Shortcut, window.data(), Qt::Key_5, Qt::MetaModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::MetaModifier);
-    QTest::keyEvent(QTest::Shortcut, window.data(), Qt::Key_Period, Qt::NoModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
-    QTest::keyEvent(QTest::Shortcut, window.data(), Qt::Key_0, Qt::ControlModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
+    BOBUIest::keyEvent(BOBUIest::Shortcut, window.data(), BobUI::Key_5, BobUI::MetaModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::MetaModifier);
+    BOBUIest::keyEvent(BOBUIest::Shortcut, window.data(), BobUI::Key_Period, BobUI::NoModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
+    BOBUIest::keyEvent(BOBUIest::Shortcut, window.data(), BobUI::Key_0, BobUI::ControlModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
 
     // key events
-    QTest::keyEvent(QTest::Press, window.data(), Qt::Key_C);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
-    QTest::keyEvent(QTest::Release, window.data(), Qt::Key_C);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
+    BOBUIest::keyEvent(BOBUIest::Press, window.data(), BobUI::Key_C);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
+    BOBUIest::keyEvent(BOBUIest::Release, window.data(), BobUI::Key_C);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
 
-    QTest::keyEvent(QTest::Press, window.data(), Qt::Key_U, Qt::ControlModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
-    QTest::keyEvent(QTest::Release, window.data(), Qt::Key_U, Qt::ControlModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
+    BOBUIest::keyEvent(BOBUIest::Press, window.data(), BobUI::Key_U, BobUI::ControlModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
+    BOBUIest::keyEvent(BOBUIest::Release, window.data(), BobUI::Key_U, BobUI::ControlModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
 
-    QTest::keyEvent(QTest::Press, window.data(), Qt::Key_T);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
-    QTest::keyEvent(QTest::Release, window.data(), Qt::Key_T);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
+    BOBUIest::keyEvent(BOBUIest::Press, window.data(), BobUI::Key_T);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
+    BOBUIest::keyEvent(BOBUIest::Release, window.data(), BobUI::Key_T);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
 
-    QTest::keyEvent(QTest::Press, window.data(), Qt::Key_E, Qt::ControlModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
-    QTest::keyEvent(QTest::Release, window.data(), Qt::Key_E, Qt::ControlModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
+    BOBUIest::keyEvent(BOBUIest::Press, window.data(), BobUI::Key_E, BobUI::ControlModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
+    BOBUIest::keyEvent(BOBUIest::Release, window.data(), BobUI::Key_E, BobUI::ControlModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
 
     // wheel events
     QPoint delta(0, 1);
-    QTest::wheelEvent(window.data(), center, delta, delta, Qt::NoModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
-    QTest::wheelEvent(window.data(), center, delta, delta, Qt::AltModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::AltModifier);
-    QTest::wheelEvent(window.data(), center, delta, delta, Qt::ControlModifier);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::ControlModifier);
+    BOBUIest::wheelEvent(window.data(), center, delta, delta, BobUI::NoModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
+    BOBUIest::wheelEvent(window.data(), center, delta, delta, BobUI::AltModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::AltModifier);
+    BOBUIest::wheelEvent(window.data(), center, delta, delta, BobUI::ControlModifier);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::ControlModifier);
 
     // touch events
     QPointingDevice touchDevice(QLatin1String("test touchscreen"), 0,
                                 QInputDevice::DeviceType::TouchScreen, QPointingDevice::PointerType::Finger,
                                 QPointingDevice::Capability::Position, 10, 0);
     QWindowSystemInterface::registerInputDevice(&touchDevice);
-    QTest::touchEvent(window.data(), &touchDevice).press(1, center).release(1, center);
-    QCOMPARE(QGuiApplication::keyboardModifiers(), Qt::NoModifier);
+    BOBUIest::touchEvent(window.data(), &touchDevice).press(1, center).release(1, center);
+    QCOMPARE(QGuiApplication::keyboardModifiers(), BobUI::NoModifier);
 
     window->close();
 }
@@ -520,16 +520,16 @@ void tst_QGuiApplication::palette()
     QVERIFY(!QGuiApplication::palette().resolveMask());
 
     // TODO: add event processing instead of the signal
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QSignalSpy signalSpy(&app, SIGNAL(paletteChanged(QPalette)));
 #endif
 
     QPalette oldPalette = QGuiApplication::palette();
-    QPalette newPalette = QPalette(Qt::red);
+    QPalette newPalette = QPalette(BobUI::red);
 
     QGuiApplication::setPalette(newPalette);
     QVERIFY(palettesMatch(QGuiApplication::palette(), newPalette));
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(signalSpy.size(), 1);
     QVERIFY(palettesMatch(signalSpy.at(0).at(0).value<QPalette>(), newPalette));
 #endif
@@ -537,7 +537,7 @@ void tst_QGuiApplication::palette()
 
     QGuiApplication::setPalette(oldPalette);
     QVERIFY(palettesMatch(QGuiApplication::palette(), oldPalette));
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(signalSpy.size(), 2);
     QVERIFY(palettesMatch(signalSpy.at(1).at(0).value<QPalette>(), oldPalette));
 #endif
@@ -545,7 +545,7 @@ void tst_QGuiApplication::palette()
 
     QGuiApplication::setPalette(oldPalette);
     QVERIFY(palettesMatch(QGuiApplication::palette(), oldPalette));
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(signalSpy.size(), 2);
 #endif
     QCOMPARE(QGuiApplication::palette(), QPalette());
@@ -556,7 +556,7 @@ void tst_QGuiApplication::paletteNoCrash()
     QGuiApplication::setDesktopSettingsAware(false);
     int argc = 1;
     char *argv[] = { const_cast<char*>("tst_qguiapplication") };
-    // this would crash on windows (QTBUG-111527)
+    // this would crash on windows (BOBUIBUG-111527)
     QGuiApplication a(argc, argv);
 }
 
@@ -565,7 +565,7 @@ void tst_QGuiApplication::font()
     int argc = 1;
     char *argv[] = { const_cast<char*>("tst_qguiapplication") };
     QGuiApplication app(argc, argv);
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QSignalSpy signalSpy(&app, SIGNAL(fontChanged(QFont)));
 #endif
 
@@ -574,21 +574,21 @@ void tst_QGuiApplication::font()
 
     QGuiApplication::setFont(newFont);
     QCOMPARE(QGuiApplication::font(), newFont);
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(signalSpy.size(), 1);
     QCOMPARE(signalSpy.at(0).at(0), QVariant(newFont));
 #endif
 
     QGuiApplication::setFont(oldFont);
     QCOMPARE(QGuiApplication::font(), oldFont);
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(signalSpy.size(), 2);
     QCOMPARE(signalSpy.at(1).at(0), QVariant(oldFont));
 #endif
 
     QGuiApplication::setFont(oldFont);
     QCOMPARE(QGuiApplication::font(), oldFont);
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     QCOMPARE(signalSpy.size(), 2);
 #endif
 }
@@ -651,7 +651,7 @@ void tst_QGuiApplication::modalWindow()
 
     QScopedPointer<BlockableWindow> window2(new BlockableWindow);
     window2->setTitle(QStringLiteral("window2"));
-    window2->setFlags(window2->flags() & Qt::Tool); // QTBUG-32433, don't be fooled by unusual window flags.
+    window2->setFlags(window2->flags() & BobUI::Tool); // BOBUIBUG-32433, don't be fooled by unusual window flags.
     window2->resize(windowSize, windowSize);
     window2->setFramePosition(QPoint(x, y));
     x += spacing + windowSize;
@@ -659,7 +659,7 @@ void tst_QGuiApplication::modalWindow()
     QScopedPointer<BlockableWindow> windowModalWindow1(new BlockableWindow);
     windowModalWindow1->setTitle(QStringLiteral("windowModalWindow1"));
     windowModalWindow1->setTransientParent(window1.data());
-    windowModalWindow1->setModality(Qt::WindowModal);
+    windowModalWindow1->setModality(BobUI::WindowModal);
     windowModalWindow1->resize(windowSize, windowSize);
     windowModalWindow1->setFramePosition(QPoint(x, y));
     x += spacing + windowSize;
@@ -667,7 +667,7 @@ void tst_QGuiApplication::modalWindow()
     QScopedPointer<BlockableWindow> windowModalWindow2(new BlockableWindow);
     windowModalWindow2->setTitle(QStringLiteral("windowModalWindow2"));
     windowModalWindow2->setTransientParent(windowModalWindow1.data());
-    windowModalWindow2->setModality(Qt::WindowModal);
+    windowModalWindow2->setModality(BobUI::WindowModal);
     windowModalWindow2->resize(windowSize, windowSize);
     windowModalWindow2->setFramePosition(QPoint(x, y));
     x = screenGeometry.left() + spacing;
@@ -675,19 +675,19 @@ void tst_QGuiApplication::modalWindow()
 
     QScopedPointer<BlockableWindow> applicationModalWindow1(new BlockableWindow);
     applicationModalWindow1->setTitle(QStringLiteral("applicationModalWindow1"));
-    applicationModalWindow1->setModality(Qt::ApplicationModal);
+    applicationModalWindow1->setModality(BobUI::ApplicationModal);
     applicationModalWindow1->resize(windowSize, windowSize);
     applicationModalWindow1->setFramePosition(QPoint(x, y));
 
-#ifndef QT_NO_CURSOR // Get the mouse cursor out of the way since we are manually sending enter/leave.
+#ifndef BOBUI_NO_CURSOR // Get the mouse cursor out of the way since we are manually sending enter/leave.
     QCursor::setPos(QPoint(x + 2 * spacing + windowSize, y));
 #endif
 
     // show the 2 windows, nothing is blocked
     window1->show();
     window2->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window1.data()));
-    QVERIFY(QTest::qWaitForWindowExposed(window2.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window1.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window2.data()));
     QCOMPARE(app.modalWindow(), static_cast<QWindow *>(nullptr));
     QCOMPARE(window1->blocked, 0);
     QCOMPARE(childWindow1->blocked, 0);
@@ -706,7 +706,7 @@ void tst_QGuiApplication::modalWindow()
     applicationModalWindow1->show();
     QCOMPARE(app.modalWindow(), applicationModalWindow1.data());
     QCOMPARE(window1->blocked, 1);
-    QCOMPARE(childWindow1->blocked, 1); // QTBUG-32242, blocked status needs to be set on children as well.
+    QCOMPARE(childWindow1->blocked, 1); // BOBUIBUG-32242, blocked status needs to be set on children as well.
     QCOMPARE(window2->blocked, 1);
     QCOMPARE(windowModalWindow1->blocked, 1);
     QCOMPARE(windowModalWindow2->blocked, 1);
@@ -734,7 +734,7 @@ void tst_QGuiApplication::modalWindow()
     applicationModalWindow1->hide();
     QCOMPARE(app.modalWindow(), static_cast<QWindow *>(nullptr));
     QCOMPARE(window1->blocked, 0);
-    QCOMPARE(childWindow1->blocked, 0); // QTBUG-32242, blocked status needs to be set on children as well.
+    QCOMPARE(childWindow1->blocked, 0); // BOBUIBUG-32242, blocked status needs to be set on children as well.
     QCOMPARE(window2->blocked, 0);
     QCOMPARE(windowModalWindow1->blocked, 0);
     QCOMPARE(windowModalWindow2->blocked, 0);
@@ -866,11 +866,11 @@ void tst_QGuiApplication::quitOnLastWindowClosed()
     QGuiApplication app(argc, nullptr);
     const QRect screenGeometry = QGuiApplication::primaryScreen()->availableVirtualGeometry();
 
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(100);
 
     QSignalSpy spyAboutToQuit(&app, &QCoreApplication::aboutToQuit);
-    QSignalSpy spyTimeout(&timer, &QTimer::timeout);
+    QSignalSpy spyTimeout(&timer, &BOBUIimer::timeout);
 
     QWindow mainWindow;
     mainWindow.setTitle(QStringLiteral("quitOnLastWindowClosedMainWindow"));
@@ -887,11 +887,11 @@ void tst_QGuiApplication::quitOnLastWindowClosed()
 
     mainWindow.show();
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
 
     timer.start();
-    QTimer::singleShot(1000, &mainWindow, &QWindow::close); // This should quit the application
-    QTimer::singleShot(2000, &app, QCoreApplication::quit);  // This makes sure we quit even if it didn't
+    BOBUIimer::singleShot(1000, &mainWindow, &QWindow::close); // This should quit the application
+    BOBUIimer::singleShot(2000, &app, QCoreApplication::quit);  // This makes sure we quit even if it didn't
 
     app.exec();
 
@@ -923,14 +923,14 @@ void tst_QGuiApplication::quitOnLastWindowClosedMulti()
 
     mainWindow.show();
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
 
     bool prematureQuit = true;
-    QTimer::singleShot(100, &mainWindow, [&]{
+    BOBUIimer::singleShot(100, &mainWindow, [&]{
         prematureQuit = true; // this should be reset by the other timer
         mainWindow.close();
     });
-    QTimer::singleShot(500, &mainWindow, [&]{
+    BOBUIimer::singleShot(500, &mainWindow, [&]{
         prematureQuit = false; // if we don't get here, then the app quit prematurely
         dialog.close();
     });
@@ -947,19 +947,19 @@ void tst_QGuiApplication::dontQuitOnLastWindowClosed()
     QGuiApplication app(argc, nullptr);
     app.setQuitOnLastWindowClosed(false);
 
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(2000);
     timer.setSingleShot(true);
-    QObject::connect(&timer, &QTimer::timeout, &app, &QCoreApplication::quit);
+    QObject::connect(&timer, &BOBUIimer::timeout, &app, &QCoreApplication::quit);
 
     QSignalSpy spyLastWindowClosed(&app, &QGuiApplication::lastWindowClosed);
-    QSignalSpy spyTimeout(&timer, &QTimer::timeout);
+    QSignalSpy spyTimeout(&timer, &BOBUIimer::timeout);
 
     QScopedPointer<QWindow> mainWindow(new QWindow);
 
     mainWindow->show();
 
-    QTimer::singleShot(1000, mainWindow.data(), &QWindow::close); // This should not quit the application
+    BOBUIimer::singleShot(1000, mainWindow.data(), &QWindow::close); // This should not quit the application
     timer.start();
 
     app.exec();
@@ -1011,9 +1011,9 @@ void tst_QGuiApplication::quitOnLastWindowClosedWithEventLoopLocker()
         QuitSpy quitSpy;
         QWindow window;
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, &window, &QWindow::close);
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, &window, &QWindow::close);
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 1);
     }
@@ -1028,9 +1028,9 @@ void tst_QGuiApplication::quitOnLastWindowClosedWithEventLoopLocker()
         QuitSpy quitSpy;
         QWindow window;
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, &window, &QWindow::close);
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, &window, &QWindow::close);
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 0);
     }
@@ -1044,8 +1044,8 @@ void tst_QGuiApplication::quitOnLastWindowClosedWithEventLoopLocker()
 
         QuitSpy quitSpy;
         QScopedPointer<QEventLoopLocker> locker(new QEventLoopLocker);
-        QTimer::singleShot(0, [&]{ locker.reset(nullptr); });
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        BOBUIimer::singleShot(0, [&]{ locker.reset(nullptr); });
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 1);
     }
@@ -1060,9 +1060,9 @@ void tst_QGuiApplication::quitOnLastWindowClosedWithEventLoopLocker()
         QScopedPointer<QEventLoopLocker> locker(new QEventLoopLocker);
         QWindow window;
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, [&]{ locker.reset(nullptr); });
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, [&]{ locker.reset(nullptr); });
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 0);
     }
@@ -1077,24 +1077,24 @@ void tst_QGuiApplication::quitOnLastWindowClosedWithEventLoopLocker()
         QScopedPointer<QEventLoopLocker> locker(new QEventLoopLocker);
         QWindow window;
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, &window, &QWindow::close);
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, &window, &QWindow::close);
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 0);
 
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, [&]{ locker.reset(nullptr); });
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, [&]{ locker.reset(nullptr); });
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 0);
 
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, [&]{ locker.reset(nullptr); });
-        QTimer::singleShot(0, &window, &QWindow::close);
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, [&]{ locker.reset(nullptr); });
+        BOBUIimer::singleShot(0, &window, &QWindow::close);
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 1);
     }
@@ -1108,16 +1108,16 @@ void tst_QGuiApplication::quitOnLastWindowClosedWithEventLoopLocker()
         QScopedPointer<QEventLoopLocker> locker(new QEventLoopLocker);
         QWindow window;
         window.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&window));
-        QTimer::singleShot(0, [&]{ locker.reset(nullptr); });
-        QTimer::singleShot(0, &window, &QWindow::close);
-        QTimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
+        BOBUIimer::singleShot(0, [&]{ locker.reset(nullptr); });
+        BOBUIimer::singleShot(0, &window, &QWindow::close);
+        BOBUIimer::singleShot(200, &app, []{ QCoreApplication::exit(0); });
         app.exec();
         QCOMPARE(quitSpy.quits, 0);
     }
 }
 
-static Qt::ScreenOrientation testOrientationToSend = Qt::PrimaryOrientation;
+static BobUI::ScreenOrientation testOrientationToSend = BobUI::PrimaryOrientation;
 
 class TestPlugin : public QObject
 {
@@ -1133,7 +1133,7 @@ public:
 class TestPluginFactory : public QGenericPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QGenericPluginFactoryInterface" FILE "testplugin.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QGenericPluginFactoryInterface" FILE "testplugin.json")
 public:
     QObject* create(const QString &key, const QString &) override
     {
@@ -1163,16 +1163,16 @@ public:
 
 void tst_QGuiApplication::genericPluginsAndWindowSystemEvents()
 {
-    testOrientationToSend = Qt::InvertedLandscapeOrientation;
+    testOrientationToSend = BobUI::InvertedLandscapeOrientation;
 
     TestEventReceiver testReceiver;
     QCoreApplication::postEvent(&testReceiver, new QEvent(QEvent::User));
     QCOMPARE(testReceiver.customEvents, 0);
 
-    QStaticPlugin testPluginInfo(qt_plugin_instance, qt_plugin_query_metadata_v2);
+    QStaticPlugin testPluginInfo(bobui_plugin_instance, bobui_plugin_query_metadata_v2);
     qRegisterStaticPluginFunction(testPluginInfo);
     int argc = 3;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()), const_cast<char*>("-plugin"), const_cast<char*>("testplugin") };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()), const_cast<char*>("-plugin"), const_cast<char*>("testplugin") };
     QGuiApplication app(argc, argv);
 
     QVERIFY(QGuiApplication::primaryScreen());
@@ -1183,13 +1183,13 @@ void tst_QGuiApplication::genericPluginsAndWindowSystemEvents()
     QCOMPARE(testReceiver.customEvents, 1);
 }
 
-Q_DECLARE_METATYPE(Qt::LayoutDirection)
+Q_DECLARE_METATYPE(BobUI::LayoutDirection)
 void tst_QGuiApplication::layoutDirection()
 {
-    qRegisterMetaType<Qt::LayoutDirection>();
+    qRegisterMetaType<BobUI::LayoutDirection>();
 
-    const Qt::LayoutDirection oldDirection = QGuiApplication::layoutDirection();
-    const Qt::LayoutDirection newDirection = oldDirection == Qt::LeftToRight ? Qt::RightToLeft : Qt::LeftToRight;
+    const BobUI::LayoutDirection oldDirection = QGuiApplication::layoutDirection();
+    const BobUI::LayoutDirection newDirection = oldDirection == BobUI::LeftToRight ? BobUI::RightToLeft : BobUI::LeftToRight;
 
     QGuiApplication::setLayoutDirection(newDirection);
     QCOMPARE(QGuiApplication::layoutDirection(), newDirection);
@@ -1197,7 +1197,7 @@ void tst_QGuiApplication::layoutDirection()
     int argc = 1;
     char *argv[] = { const_cast<char*>("tst_qguiapplication") };
     QGuiApplication app(argc, argv);
-    QSignalSpy signalSpy(&app, SIGNAL(layoutDirectionChanged(Qt::LayoutDirection)));
+    QSignalSpy signalSpy(&app, SIGNAL(layoutDirectionChanged(BobUI::LayoutDirection)));
 
     QGuiApplication::setLayoutDirection(oldDirection);
     QCOMPARE(QGuiApplication::layoutDirection(), oldDirection);
@@ -1209,27 +1209,27 @@ void tst_QGuiApplication::layoutDirection()
     QCOMPARE(signalSpy.size(), 1);
 
     // with QGuiApplication instantiated, install a translator that gives us control
-    class LayoutDirectionTranslator : public QTranslator
+    class LayoutDirectionTranslator : public BOBUIranslator
     {
     public:
-        LayoutDirectionTranslator(Qt::LayoutDirection direction)
+        LayoutDirectionTranslator(BobUI::LayoutDirection direction)
         : direction(direction)
         {}
 
         bool isEmpty() const override { return false; }
         QString translate(const char *context, const char *sourceText, const char *disambiguation, int n) const override
         {
-            if (QByteArrayView(sourceText) == "QT_LAYOUT_DIRECTION")
-                return direction == Qt::LeftToRight ? QLatin1String("LTR") : QLatin1String("RTL");
-            return QTranslator::translate(context, sourceText, disambiguation, n);
+            if (QByteArrayView(sourceText) == "BOBUI_LAYOUT_DIRECTION")
+                return direction == BobUI::LeftToRight ? QLatin1String("LTR") : QLatin1String("RTL");
+            return BOBUIranslator::translate(context, sourceText, disambiguation, n);
         }
 
-        const Qt::LayoutDirection direction;
+        const BobUI::LayoutDirection direction;
     };
 
     int layoutDirectionChangedCount = 0;
     // reset to auto-detection, should be back to oldDirection now
-    QGuiApplication::setLayoutDirection(Qt::LayoutDirectionAuto);
+    QGuiApplication::setLayoutDirection(BobUI::LayoutDirectionAuto);
     QCOMPARE(QGuiApplication::layoutDirection(), oldDirection);
     signalSpy.clear();
     {
@@ -1267,20 +1267,20 @@ void tst_QGuiApplication::layoutDirection()
 
 void tst_QGuiApplication::globalShareContext()
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     // Test that there is a global share context when requested.
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    QCoreApplication::setAttribute(BobUI::AA_ShareOpenGLContexts);
     int argc = 1;
     char *argv[] = { const_cast<char*>("tst_qguiapplication") };
     QScopedPointer<QGuiApplication> app(new QGuiApplication(argc, argv));
     QOpenGLContext *ctx = QOpenGLContext::globalShareContext();
     QVERIFY(ctx);
     app.reset();
-    ctx = qt_gl_global_share_context();
+    ctx = bobui_gl_global_share_context();
     QVERIFY(!ctx);
 
     // Test that there is no global share context by default.
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts, false);
+    QCoreApplication::setAttribute(BobUI::AA_ShareOpenGLContexts, false);
     app.reset(new QGuiApplication(argc, argv));
     ctx = QOpenGLContext::globalShareContext();
     QVERIFY(!ctx);
@@ -1289,7 +1289,7 @@ void tst_QGuiApplication::globalShareContext()
     // QGuiApplication.
     app.reset();
     app.reset(new QGuiApplication(argc, argv));
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts, true);
+    QCoreApplication::setAttribute(BobUI::AA_ShareOpenGLContexts, true);
     ctx = QOpenGLContext::globalShareContext();
     QVERIFY(ctx);
 
@@ -1297,8 +1297,8 @@ void tst_QGuiApplication::globalShareContext()
     // even from secondary threads.
     app.reset();
     app.reset(new QGuiApplication(argc, argv));
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts, true);
-    class Thread : public QThread
+    QCoreApplication::setAttribute(BobUI::AA_ShareOpenGLContexts, true);
+    class Thread : public BOBUIhread
     {
         void run() override
         {
@@ -1317,21 +1317,21 @@ void tst_QGuiApplication::globalShareContext()
 
 void tst_QGuiApplication::testSetPaletteAttribute()
 {
-    QCoreApplication::setAttribute(Qt::AA_SetPalette, false);
+    QCoreApplication::setAttribute(BobUI::AA_SetPalette, false);
     int argc = 1;
     char *argv[] = { const_cast<char*>("tst_qguiapplication") };
 
     QGuiApplication app(argc, argv);
 
-    QVERIFY(!QCoreApplication::testAttribute(Qt::AA_SetPalette));
+    QVERIFY(!QCoreApplication::testAttribute(BobUI::AA_SetPalette));
     QPalette palette;
-    palette.setColor(QPalette::WindowText, Qt::red);
+    palette.setColor(QPalette::WindowText, BobUI::red);
     QGuiApplication::setPalette(palette);
 
-    QVERIFY(QCoreApplication::testAttribute(Qt::AA_SetPalette));
+    QVERIFY(QCoreApplication::testAttribute(BobUI::AA_SetPalette));
 
     QGuiApplication::setPalette(QPalette());
-    QVERIFY(!QCoreApplication::testAttribute(Qt::AA_SetPalette));
+    QVERIFY(!QCoreApplication::testAttribute(BobUI::AA_SetPalette));
 }
 
 // Test that static functions do not crash if there is no application instance.
@@ -1345,39 +1345,39 @@ void tst_QGuiApplication::staticFunctions()
     QGuiApplication::setWindowIcon(QIcon());
     QGuiApplication::windowIcon();
     QGuiApplication::platformName();
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::modalWindow();
     QGuiApplication::focusWindow();
     QGuiApplication::focusObject();
     QGuiApplication::primaryScreen();
     QGuiApplication::screens();
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::overrideCursor();
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::setOverrideCursor(QCursor());
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::changeOverrideCursor(QCursor());
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::restoreOverrideCursor();
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::keyboardModifiers();
-    QTest::ignoreMessage(QtWarningMsg, "Must construct a QGuiApplication first.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Must construct a QGuiApplication first.");
     QGuiApplication::queryKeyboardModifiers();
     QGuiApplication::mouseButtons();
-    QGuiApplication::setLayoutDirection(Qt::LeftToRight);
+    QGuiApplication::setLayoutDirection(BobUI::LeftToRight);
     QGuiApplication::layoutDirection();
     QGuiApplication::styleHints();
     QGuiApplication::setDesktopSettingsAware(true);
     QGuiApplication::desktopSettingsAware();
     QGuiApplication::inputMethod();
     QGuiApplication::platformNativeInterface();
-    QTest::ignoreMessage(QtWarningMsg, "QGuiApplication::platformFunction(): Must construct a QGuiApplication before accessing a platform function");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGuiApplication::platformFunction(): Must construct a QGuiApplication before accessing a platform function");
     QGuiApplication::platformFunction(QByteArrayLiteral("bla"));
     QGuiApplication::setQuitOnLastWindowClosed(true);
     QGuiApplication::quitOnLastWindowClosed();
     QGuiApplication::applicationState();
 
-    QTest::ignoreMessage(QtWarningMsg, "QPixmap: QGuiApplication must be created before calling defaultDepth().");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QPixmap: QGuiApplication must be created before calling defaultDepth().");
     QPixmap::defaultDepth();
 }
 
@@ -1387,39 +1387,39 @@ void tst_QGuiApplication::topLevelAt()
     char *argv[] = { const_cast<char*>("tst_qguiapplication") };
     QGuiApplication app(argc, argv);
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
-        QSKIP("QGuiApplication::topLevelAt() is not Wayland compliant, see also QTBUG-121015");
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
+        QSKIP("QGuiApplication::topLevelAt() is not Wayland compliant, see also BOBUIBUG-121015");
 
     QWindow bottom;
     bottom.setObjectName("Bottom");
-    bottom.setFlag(Qt::FramelessWindowHint);
+    bottom.setFlag(BobUI::FramelessWindowHint);
     bottom.setGeometry(200, 200, 200, 200);
     bottom.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&bottom));
-    QTRY_COMPARE(app.topLevelAt(QPoint(300, 300)), &bottom);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&bottom));
+    BOBUIRY_COMPARE(app.topLevelAt(QPoint(300, 300)), &bottom);
 
     QWindow top;
     top.setObjectName("Top");
-    top.setFlag(Qt::FramelessWindowHint);
+    top.setFlag(BobUI::FramelessWindowHint);
     top.setGeometry(200, 200, 200, 200);
     top.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&top));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&top));
     top.raise();
-    QTRY_COMPARE(app.topLevelAt(QPoint(300, 300)), &top);
+    BOBUIRY_COMPARE(app.topLevelAt(QPoint(300, 300)), &top);
 
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowMasks))
         QSKIP("QWindow::setMask() is not supported.");
 
     top.setMask(QRect(0, 0, 50, 50));
-    QTRY_COMPARE(app.topLevelAt(QPoint(300, 300)), &bottom);
-    QTRY_COMPARE(app.topLevelAt(QPoint(225, 225)), &top);
+    BOBUIRY_COMPARE(app.topLevelAt(QPoint(300, 300)), &bottom);
+    BOBUIRY_COMPARE(app.topLevelAt(QPoint(225, 225)), &top);
 }
 
 void tst_QGuiApplication::settableStyleHints_data()
 {
-    QTest::addColumn<bool>("appInstance");
-    QTest::newRow("app") << true;
-    QTest::newRow("no-app") << false;
+    BOBUIest::addColumn<bool>("appInstance");
+    BOBUIest::newRow("app") << true;
+    BOBUIest::newRow("no-app") << false;
 }
 
 void tst_QGuiApplication::settableStyleHints()
@@ -1435,4 +1435,4 @@ void tst_QGuiApplication::settableStyleHints()
     QCOMPARE(QGuiApplication::styleHints()->keyboardInputInterval(), keyboardInputInterval);
 }
 
-QTEST_APPLESS_MAIN(tst_QGuiApplication)
+BOBUIEST_APPLESS_MAIN(tst_QGuiApplication)

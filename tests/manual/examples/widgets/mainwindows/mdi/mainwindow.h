@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -7,13 +7,13 @@
 #include <QMainWindow>
 
 class MdiChild;
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QMdiArea;
 class QMdiSubWindow;
-class QTextDocument;
-QT_END_NAMESPACE
+class BOBUIextDocument;
+BOBUI_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -34,7 +34,7 @@ private slots:
     void saveAs();
     void updateRecentFileActions();
     void openRecentFile();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void cut();
     void copy();
     void paste();
@@ -69,7 +69,7 @@ private:
     QAction *recentFileActs[MaxRecentFiles];
     QAction *recentFileSeparator;
     QAction *recentFileSubMenuAct;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QAction *cutAct;
     QAction *copyAct;
     QAction *pasteAct;

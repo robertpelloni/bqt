@@ -1,9 +1,9 @@
 // Copyright (C) 2023 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_qxp_is_virtual_base_of : public QObject
 {
@@ -49,9 +49,9 @@ static_assert(!qxp::is_virtual_base_of_v<VirtualDerived1, VirtualDerived3>);
 static_assert(qxp::is_virtual_base_of_v<Base, VirtualDerived4>);
 static_assert(qxp::is_virtual_base_of_v<Base, VirtualPrivateDerived>);
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Winaccessible-base")
-QT_WARNING_DISABLE_CLANG("-Winaccessible-base")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Winaccessible-base")
+BOBUI_WARNING_DISABLE_CLANG("-Winaccessible-base")
 // Ambiguous non-virtual base
 class IntermediateDerived : public Base {};
 class AmbiguousBase1 : public IntermediateDerived, public Base {};
@@ -67,7 +67,7 @@ static_assert(qxp::is_virtual_base_of_v<Base, AmbiguousBase2>);
 static_assert(!qxp::is_virtual_base_of_v<Base, AmbiguousBase2>);
 #endif
 #endif
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 // Const
 static_assert(!qxp::is_virtual_base_of_v<      Base, const NonVirtualDerived>);
@@ -103,6 +103,6 @@ static_assert(qxp::is_virtual_base_of_v<const Base,       VirtualPrivateDerived>
 static_assert(qxp::is_virtual_base_of_v<const Base, const VirtualPrivateDerived>);
 
 
-QTEST_APPLESS_MAIN(tst_qxp_is_virtual_base_of);
+BOBUIEST_APPLESS_MAIN(tst_qxp_is_virtual_base_of);
 
 #include "tst_is_virtual_base_of.moc"

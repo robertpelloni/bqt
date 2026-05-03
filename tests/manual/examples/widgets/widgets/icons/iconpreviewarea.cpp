@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "iconpreviewarea.h"
 
@@ -83,7 +83,7 @@ void IconPreviewArea::setSize(const QSize &size)
 QLabel *IconPreviewArea::createHeaderLabel(const QString &text)
 {
     QLabel *label = new QLabel(tr("<b>%1</b>").arg(text));
-    label->setAlignment(Qt::AlignCenter);
+    label->setAlignment(BobUI::AlignCenter);
     return label;
 }
 //! [3]
@@ -93,7 +93,7 @@ QLabel *IconPreviewArea::createPixmapLabel()
 {
     QLabel *label = new QLabel;
     label->setEnabled(false);
-    label->setAlignment(Qt::AlignCenter);
+    label->setAlignment(BobUI::AlignCenter);
     label->setFrameShape(QFrame::Box);
     label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     label->setBackgroundRole(QPalette::Base);

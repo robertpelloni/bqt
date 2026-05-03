@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qset.h>
 #include <qdebug.h>
 
@@ -69,8 +69,8 @@ inline bool operator==(IdentityTracker lhs, IdentityTracker rhs) { return lhs.va
 
 void tst_QSet::comparisonCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QSet<int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QSet<QString>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QSet<int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QSet<QString>>();
 }
 
 void tst_QSet::operator_eq()
@@ -79,54 +79,54 @@ void tst_QSet::operator_eq()
         QSet<int> set1, set2;
         QVERIFY(set1 == set2);
         QVERIFY(!(set1 != set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, true);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, true);
 
         set1.insert(1);
         QVERIFY(set1 != set2);
         QVERIFY(!(set1 == set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, false);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, false);
 
         set2.insert(1);
         QVERIFY(set1 == set2);
         QVERIFY(!(set1 != set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, true);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, true);
 
         set2.insert(1);
         QVERIFY(set1 == set2);
         QVERIFY(!(set1 != set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, true);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, true);
 
         set1.insert(2);
         QVERIFY(set1 != set2);
         QVERIFY(!(set1 == set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, false);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, false);
     }
 
     {
         QSet<QString> set1, set2;
         QVERIFY(set1 == set2);
         QVERIFY(!(set1 != set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, true);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, true);
 
         set1.insert("one");
         QVERIFY(set1 != set2);
         QVERIFY(!(set1 == set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, false);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, false);
 
         set2.insert("one");
         QVERIFY(set1 == set2);
         QVERIFY(!(set1 != set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, true);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, true);
 
         set2.insert("one");
         QVERIFY(set1 == set2);
         QVERIFY(!(set1 != set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, true);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, true);
 
         set1.insert("two");
         QVERIFY(set1 != set2);
         QVERIFY(!(set1 == set2));
-        QT_TEST_EQUALITY_OPS(set1, set2, false);
+        BOBUI_TEST_EQUALITY_OPS(set1, set2, false);
     }
 
     {
@@ -138,7 +138,7 @@ void tst_QSet::operator_eq()
 
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
 
     {
@@ -146,11 +146,11 @@ void tst_QSet::operator_eq()
         s1.reserve(100);
         s2.reserve(4);
         QVERIFY(s1 == s2);
-        QT_TEST_EQUALITY_OPS(s1, s2, true);
+        BOBUI_TEST_EQUALITY_OPS(s1, s2, true);
         s1 << 100 << 200 << 300 << 400;
         s2 << 400 << 300 << 200 << 100;
         QVERIFY(s1 == s2);
-        QT_TEST_EQUALITY_OPS(s1, s2, true);
+        BOBUI_TEST_EQUALITY_OPS(s1, s2, true);
     }
 }
 
@@ -1225,14 +1225,14 @@ void tst_QSet::values()
 
 void tst_QSet::setOperationsPickEquivalentElementsFromLHSContainer_data()
 {
-    QTest::addColumn<bool>("lhsShared");
-    QTest::addColumn<bool>("rhsShared");
-    QTest::addColumn<bool>("rhsRValue");
+    BOBUIest::addColumn<bool>("lhsShared");
+    BOBUIest::addColumn<bool>("rhsShared");
+    BOBUIest::addColumn<bool>("rhsRValue");
 
     for (bool lhs : {true, false}) {
         for (bool rhs : {true, false}) {
             for (bool rv : {true, false}) {
-                QTest::addRow("lhs %sshared, rhs %sshared %cvalue",
+                BOBUIest::addRow("lhs %sshared, rhs %sshared %cvalue",
                               lhs ? "" : "not ", rhs ? "" : "not ", rv ? 'r' : 'l')
                     << lhs << rhs << rv;
             }
@@ -1292,7 +1292,7 @@ void tst_QSet::setOperationsPickEquivalentElementsFromLHSContainer_impl()
 
         //
         // THEN: equivalent elements are picked from the LHS container:
-        //       (unlike other Qt containers, QSet's insertion behavior is STL-compliant):
+        //       (unlike other BobUI containers, QSet's insertion behavior is STL-compliant):
         //
         QVERIFY(lhsCopy.contains(OneL));
         QCOMPARE(lhsCopy.find(OneL)->id, OneL.id);
@@ -1329,7 +1329,7 @@ void tst_QSet::setOperationsPickEquivalentElementsFromLHSContainer_impl()
 
         //
         // THEN: equivalent elements are picked from the LHS container:
-        //       (unlike other Qt containers, QSet's insertion behavior is STL-compliant):
+        //       (unlike other BobUI containers, QSet's insertion behavior is STL-compliant):
         //
         QVERIFY(lhsCopy.contains(OneL));
         QCOMPARE(lhsCopy.find(OneL)->id, OneL.id);
@@ -1352,6 +1352,6 @@ void tst_QSet::setOperationsPickEquivalentElementsFromLHSContainer_impl()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QSet)
+BOBUIEST_APPLESS_MAIN(tst_QSet)
 
 #include "tst_qset.moc"

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 /*!
  \internal
@@ -55,14 +55,14 @@ void tst_DataTable::fiveTableFailures() const
 
 void tst_DataTable::fiveTableFailures_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
     /* Unconditionally fail. */
-    QTest::newRow("fiveTableFailures_data 1") << false;
-    QTest::newRow("fiveTableFailures_data 2") << false;
-    QTest::newRow("fiveTableFailures_data 3") << false;
-    QTest::newRow("fiveTableFailures_data 4") << false;
-    QTest::newRow("fiveTableFailures_data 5") << false;
+    BOBUIest::newRow("fiveTableFailures_data 1") << false;
+    BOBUIest::newRow("fiveTableFailures_data 2") << false;
+    BOBUIest::newRow("fiveTableFailures_data 3") << false;
+    BOBUIest::newRow("fiveTableFailures_data 4") << false;
+    BOBUIest::newRow("fiveTableFailures_data 5") << false;
 }
 
 void tst_DataTable::startsWithFailure() const
@@ -77,24 +77,24 @@ void tst_DataTable::fiveTablePasses() const
 
 void tst_DataTable::fiveTablePasses_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
-    QTest::newRow("fiveTablePasses_data 1") << true;
-    QTest::newRow("fiveTablePasses_data 2") << true;
-    QTest::newRow("fiveTablePasses_data 3") << true;
-    QTest::newRow("fiveTablePasses_data 4") << true;
-    QTest::newRow("fiveTablePasses_data 5") << true;
+    BOBUIest::newRow("fiveTablePasses_data 1") << true;
+    BOBUIest::newRow("fiveTablePasses_data 2") << true;
+    BOBUIest::newRow("fiveTablePasses_data 3") << true;
+    BOBUIest::newRow("fiveTablePasses_data 4") << true;
+    BOBUIest::newRow("fiveTablePasses_data 5") << true;
 }
 
 void tst_DataTable::startsWithFailure_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
-    QTest::newRow("startsWithFailure_data 1") << false;
-    QTest::newRow("startsWithFailure_data 2") << true;
-    QTest::newRow("startsWithFailure_data 3") << true;
-    QTest::newRow("startsWithFailure_data 4") << true;
-    QTest::newRow("startsWithFailure_data 5") << true;
+    BOBUIest::newRow("startsWithFailure_data 1") << false;
+    BOBUIest::newRow("startsWithFailure_data 2") << true;
+    BOBUIest::newRow("startsWithFailure_data 3") << true;
+    BOBUIest::newRow("startsWithFailure_data 4") << true;
+    BOBUIest::newRow("startsWithFailure_data 5") << true;
 }
 
 void tst_DataTable::endsWithFailure() const
@@ -104,13 +104,13 @@ void tst_DataTable::endsWithFailure() const
 
 void tst_DataTable::endsWithFailure_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
-    QTest::newRow("endsWithFailure 1") << true;
-    QTest::newRow("endsWithFailure 2") << true;
-    QTest::newRow("endsWithFailure 3") << true;
-    QTest::newRow("endsWithFailure 4") << true;
-    QTest::newRow("endsWithFailure 5") << false;
+    BOBUIest::newRow("endsWithFailure 1") << true;
+    BOBUIest::newRow("endsWithFailure 2") << true;
+    BOBUIest::newRow("endsWithFailure 3") << true;
+    BOBUIest::newRow("endsWithFailure 4") << true;
+    BOBUIest::newRow("endsWithFailure 5") << false;
 }
 
 void tst_DataTable::failureInMiddle() const
@@ -120,13 +120,13 @@ void tst_DataTable::failureInMiddle() const
 
 void tst_DataTable::failureInMiddle_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
-    QTest::newRow("failureInMiddle_data 1") << true;
-    QTest::newRow("failureInMiddle_data 2") << true;
-    QTest::newRow("failureInMiddle_data 3") << false;
-    QTest::newRow("failureInMiddle_data 4") << true;
-    QTest::newRow("failureInMiddle_data 5") << true;
+    BOBUIest::newRow("failureInMiddle_data 1") << true;
+    BOBUIest::newRow("failureInMiddle_data 2") << true;
+    BOBUIest::newRow("failureInMiddle_data 3") << false;
+    BOBUIest::newRow("failureInMiddle_data 4") << true;
+    BOBUIest::newRow("failureInMiddle_data 5") << true;
 }
 
 void tst_DataTable::fiveIsolatedFailures() const
@@ -137,15 +137,15 @@ void tst_DataTable::fiveIsolatedFailures() const
 
 void tst_DataTable::fiveIsolatedFailures_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
-    QTest::newRow("fiveIsolatedFailures_data 1") << true;
-    QTest::newRow("fiveIsolatedFailures_data 2") << true;
-    QTest::newRow("fiveIsolatedFailures_data 3") << true;
-    QTest::newRow("fiveIsolatedFailures_data 4") << true;
-    QTest::newRow("fiveIsolatedFailures_data 5") << true;
+    BOBUIest::newRow("fiveIsolatedFailures_data 1") << true;
+    BOBUIest::newRow("fiveIsolatedFailures_data 2") << true;
+    BOBUIest::newRow("fiveIsolatedFailures_data 3") << true;
+    BOBUIest::newRow("fiveIsolatedFailures_data 4") << true;
+    BOBUIest::newRow("fiveIsolatedFailures_data 5") << true;
 }
 
-QTEST_MAIN(tst_DataTable)
+BOBUIEST_MAIN(tst_DataTable)
 
 #include "tst_datatable.moc"

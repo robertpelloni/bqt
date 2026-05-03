@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example richtext/syntaxhighlighter
@@ -43,15 +43,15 @@
 
     We have chosen to store our highlighting rules using a private
     struct: A rule consists of a QRegularExpression pattern and a
-    QTextCharFormat instance. The various rules are then stored using a
+    BOBUIextCharFormat instance. The various rules are then stored using a
     QList.
 
-    The QTextCharFormat class provides formatting information for
-    characters in a QTextDocument specifying the visual properties of
+    The BOBUIextCharFormat class provides formatting information for
+    characters in a BOBUIextDocument specifying the visual properties of
     the text, as well as information about its role in a hypertext
     document. In this example, we will only define the font weight and
-    color using the QTextCharFormat::setFontWeight() and
-    QTextCharFormat::setForeground() functions.
+    color using the BOBUIextCharFormat::setFontWeight() and
+    BOBUIextCharFormat::setForeground() functions.
 
     \section1 Highlighter Class Implementation
 
@@ -76,10 +76,10 @@
     \codeline
     \snippet richtext/syntaxhighlighter/highlighter.cpp 5
 
-    Then we create a format that we will apply to Qt class names. The
+    Then we create a format that we will apply to BobUI class names. The
     class names will be rendered with a dark magenta color and a bold
     style. We specify a string pattern that is actually a regular
-    expression capturing all Qt class names. Then we assign the
+    expression capturing all BobUI class names. Then we assign the
     regular expression and the specified format to a HighlightingRule
     object and append the object to our list of rules.
 
@@ -153,7 +153,7 @@
     value is -1. You can designate any other value to identify any
     given state using the \l
     {QSyntaxHighlighter::setCurrentBlockState()}{setCurrentBlockState()}
-    function. Once the state is set, the QTextBlock keeps that value
+    function. Once the state is set, the BOBUIextBlock keeps that value
     until it is set again or until the corresponding paragraph of text
     is deleted.
 
@@ -209,7 +209,7 @@
     \snippet richtext/syntaxhighlighter/mainwindow.cpp 1
 
     First we create the font we want to use in the editor, then we
-    create the editor itself which is an instance of the QTextEdit
+    create the editor itself which is an instance of the BOBUIextEdit
     class. Before we initialize the editor with the \c MainWindow
     class definition file, we create a \c Highlighter instance passing
     the editor's document as argument. This is the document that the

@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/qinputdevice.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qinputdevice_p.h>
+#include <BobUIGui/qinputdevice.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qinputdevice_p.h>
 
 class tst_QInputDevice : public QObject
 {
@@ -99,5 +99,5 @@ void tst_QInputDevice::multiSeatDevices()
     QCOMPARE(QPointingDevice::primaryPointingDevice("seat 2")->systemId(), 2010);
 }
 
-QTEST_MAIN(tst_QInputDevice)
+BOBUIEST_MAIN(tst_QInputDevice)
 #include "tst_qinputdevice.moc"

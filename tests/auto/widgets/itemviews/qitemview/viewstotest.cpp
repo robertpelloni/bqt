@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QHeaderView>
 #include <QListView>
-#include <QTableView>
-#include <QTreeView>
+#include <BOBUIableView>
+#include <BOBUIreeView>
 
 /*
     To add a view to be tested add the header file to the includes
     and impliment what is needed in the functions below.
 
-    You can add more then one view, several Qt views are included as examples.
+    You can add more then one view, several BobUI views are included as examples.
 
     In tst_qitemview.cpp a new ViewsToTest object is created for each test.
 
@@ -42,15 +42,15 @@ public:
  */
 ViewsToTest::ViewsToTest()
 {
-    tests.append(test("QTreeView_ScrollPerItem", DisplayRoot));
-    tests.append(test("QTreeView_ScrollPerPixel", DisplayRoot));
+    tests.append(test("BOBUIreeView_ScrollPerItem", DisplayRoot));
+    tests.append(test("BOBUIreeView_ScrollPerPixel", DisplayRoot));
     tests.append(test("QListView_ScrollPerItem", DisplayRoot));
     tests.append(test("QListView_ScrollPerPixel", DisplayRoot));
     tests.append(test("QHeaderViewHorizontal", DisplayNone));
     tests.append(test("QHeaderViewVertical", DisplayNone));
-    tests.append(test("QTableView_ScrollPerItem", DisplayRoot));
-    tests.append(test("QTableView_ScrollPerPixel", DisplayRoot));
-    tests.append(test("QTableViewNoGrid", DisplayRoot));
+    tests.append(test("BOBUIableView_ScrollPerItem", DisplayRoot));
+    tests.append(test("BOBUIableView_ScrollPerPixel", DisplayRoot));
+    tests.append(test("BOBUIableViewNoGrid", DisplayRoot));
 }
 
 /*!
@@ -70,35 +70,35 @@ QAbstractItemView *ViewsToTest::createView(const QString &viewType)
         view->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
         view->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     } else if (viewType == "QHeaderViewHorizontal") {
-        view = new QHeaderView(Qt::Horizontal);
+        view = new QHeaderView(BobUI::Horizontal);
         view->setObjectName("QHeaderView");
     } else if (viewType == "QHeaderViewVertical") {
-        view = new QHeaderView(Qt::Vertical);
+        view = new QHeaderView(BobUI::Vertical);
         view->setObjectName("QHeaderView");
-    } else if (viewType == "QTableView_ScrollPerItem") {
-        view = new QTableView();
-        view->setObjectName("QTableView");
+    } else if (viewType == "BOBUIableView_ScrollPerItem") {
+        view = new BOBUIableView();
+        view->setObjectName("BOBUIableView");
         view->setHorizontalScrollMode(QAbstractItemView::ScrollPerItem);
         view->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
-    } else if (viewType == "QTableView_ScrollPerPixel") {
-        view = new QTableView();
-        view->setObjectName("QTableView");
+    } else if (viewType == "BOBUIableView_ScrollPerPixel") {
+        view = new BOBUIableView();
+        view->setObjectName("BOBUIableView");
         view->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
         view->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    } else if (viewType == "QTableViewNoGrid") {
-        QTableView *table = new QTableView();
-        table->setObjectName("QTableView");
+    } else if (viewType == "BOBUIableViewNoGrid") {
+        BOBUIableView *table = new BOBUIableView();
+        table->setObjectName("BOBUIableView");
         table->setShowGrid(false);
         view = table;
-    } else if (viewType == "QTreeView_ScrollPerItem") {
-        view = new QTreeView();
-        view->setObjectName("QTreeView");
+    } else if (viewType == "BOBUIreeView_ScrollPerItem") {
+        view = new BOBUIreeView();
+        view->setObjectName("BOBUIreeView");
         view->setHorizontalScrollMode(QAbstractItemView::ScrollPerItem);
         view->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
         view->setSelectionBehavior(QAbstractItemView::SelectItems);
-    } else if (viewType == "QTreeView_ScrollPerPixel") {
-        view = new QTreeView();
-        view->setObjectName("QTreeView");
+    } else if (viewType == "BOBUIreeView_ScrollPerPixel") {
+        view = new BOBUIreeView();
+        view->setObjectName("BOBUIreeView");
         view->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
         view->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
         view->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -108,12 +108,12 @@ QAbstractItemView *ViewsToTest::createView(const QString &viewType)
 
 void ViewsToTest::hideIndexes(QAbstractItemView *view)
 {
-    if (QTableView *tableView = qobject_cast<QTableView *>(view)) {
+    if (BOBUIableView *tableView = qobject_cast<BOBUIableView *>(view)) {
         tableView->setColumnHidden(1, true);
         tableView->setRowHidden(1, true);
         tableView->setRowHidden(tableView->model()->rowCount() - 2, true);
     }
-    if (QTreeView *treeView = qobject_cast<QTreeView *>(view)) {
+    if (BOBUIreeView *treeView = qobject_cast<BOBUIreeView *>(view)) {
         treeView->setColumnHidden(1, true);
         treeView->setRowHidden(1, QModelIndex(), true);
         treeView->setRowHidden(treeView->model()->rowCount() - 2, QModelIndex(), true);

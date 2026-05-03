@@ -1,5 +1,5 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxnavigatorpps.h"
 
@@ -8,7 +8,7 @@
 #include <QByteArray>
 #include <private/qcore_unix_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 const char *QQnxNavigatorPps::navigatorControlPath = "/pps/services/navigator/control";
 const size_t QQnxNavigatorPps::ppsBufferSize = 4096;
@@ -23,7 +23,7 @@ QQnxNavigatorPps::~QQnxNavigatorPps()
 {
     // close connection to navigator
     if (m_fd != -1)
-        qt_safe_close(m_fd);
+        bobui_safe_close(m_fd);
 }
 
 bool QQnxNavigatorPps::openPpsConnection()
@@ -33,7 +33,7 @@ bool QQnxNavigatorPps::openPpsConnection()
 
     // open connection to navigator
     errno = 0;
-    m_fd = qt_safe_open(navigatorControlPath, O_RDWR);
+    m_fd = bobui_safe_open(navigatorControlPath, O_RDWR);
     if (m_fd == -1) {
         qWarning("QQNX: failed to open navigator pps, errno=%d", errno);
         return false;
@@ -65,7 +65,7 @@ bool QQnxNavigatorPps::sendPpsMessage(const QByteArray &message, const QByteArra
 
     // send pps message to navigator
     errno = 0;
-    int bytes = qt_safe_write(m_fd, ppsMessage.constData(), ppsMessage.size());
+    int bytes = bobui_safe_write(m_fd, ppsMessage.constData(), ppsMessage.size());
     if (Q_UNLIKELY(bytes == -1))
         qFatal("QQNX: failed to write navigator pps, errno=%d", errno);
 
@@ -75,7 +75,7 @@ bool QQnxNavigatorPps::sendPpsMessage(const QByteArray &message, const QByteArra
     // attempt to read pps data
     do {
         errno = 0;
-        bytes = qt_safe_read(m_fd, buffer, ppsBufferSize - 1);
+        bytes = bobui_safe_read(m_fd, buffer, ppsBufferSize - 1);
         if (Q_UNLIKELY(bytes == -1))
             qFatal("QQNX: failed to read navigator pps, errno=%d", errno);
     } while (bytes == 0);
@@ -139,4 +139,4 @@ void QQnxNavigatorPps::parsePPS(const QByteArray &ppsData, QHash<QByteArray, QBy
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

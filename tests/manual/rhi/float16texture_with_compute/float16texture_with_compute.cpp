@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // An advanced version of floattexture. Instead of RGBA32F, we use RGBA16F, and
 // also generate the floating point data from rgba with compute. Then there's a
-// compute pass using the BSDF prefiltering taken from Qt Quick 3D, which
+// compute pass using the BSDF prefiltering taken from BobUI Quick 3D, which
 // generates all the mip levels.
 
 // Why do we animate the scale of the quad rendered to the window? To have
@@ -94,7 +94,7 @@ void Window::customInit()
     // load rgba8 image data
 
     QImage image;
-    image.load(QLatin1String(":/qt256.png"));
+    image.load(QLatin1String(":/bobui256.png"));
     image = image.convertToFormat(QImage::Format_RGBA8888);
     Q_ASSERT(!image.isNull());
     d.texRgba = m_r->newTexture(QRhiTexture::RGBA8, image.size(), 1, QRhiTexture::UsedWithLoadStore);

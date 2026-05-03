@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qglobal.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qnumeric.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qnumeric.h>
 #include "qgraphicswidget_p.h"
 #include "qgraphicslayoutitem_p.h"
 #include "qgraphicslayout.h"
 #include "qgraphicsscene_p.h"
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qgraphicsscene.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtWidgets/QStyleOptionTitleBar>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qgraphicsscene.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIWidgets/QStyleOptionTitleBar>
+#include <BobUIWidgets/QGraphicsSceneMouseEvent>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void QGraphicsWidgetPrivate::init(QGraphicsItem *parentItem, Qt::WindowFlags wFlags)
+void QGraphicsWidgetPrivate::init(QGraphicsItem *parentItem, BobUI::WindowFlags wFlags)
 {
     Q_Q(QGraphicsWidget);
 
     attributes = 0;
     isWidget = 1; // QGraphicsItem::isWidget() returns true.
     focusNext = focusPrev = q;
-    focusPolicy = Qt::NoFocus;
+    focusPolicy = BobUI::NoFocus;
 
     adjustWindowFlags(&wFlags);
     windowFlags = wFlags;
@@ -38,7 +38,7 @@ void QGraphicsWidgetPrivate::init(QGraphicsItem *parentItem, Qt::WindowFlags wFl
     q->unsetWindowFrameMargins();
     flags |= QGraphicsItem::ItemUsesExtendedStyleOption;
     flags |= QGraphicsItem::ItemSendsGeometryChanges;
-    if (windowFlags & Qt::Window)
+    if (windowFlags & BobUI::Window)
         flags |= QGraphicsItem::ItemIsPanel;
 }
 
@@ -61,7 +61,7 @@ QGraphicsWidgetPrivate::QGraphicsWidgetPrivate()
       polished(false),
       inSetPos(false),
       autoFillBackground(false),
-      focusPolicy(Qt::NoFocus),
+      focusPolicy(BobUI::NoFocus),
       focusNext(nullptr),
       focusPrev(nullptr),
       windowFlags(),
@@ -133,7 +133,7 @@ void QGraphicsWidgetPrivate::updatePalette(const QPalette &palette)
     this->palette = palette;
 
     // Calculate new mask.
-    if (q->isWindow() && !q->testAttribute(Qt::WA_WindowPropagation))
+    if (q->isWindow() && !q->testAttribute(BobUI::WA_WindowPropagation))
         inheritedPaletteResolveMask = 0;
     int mask = palette.resolveMask() | inheritedPaletteResolveMask;
 
@@ -142,7 +142,7 @@ void QGraphicsWidgetPrivate::updatePalette(const QPalette &palette)
         QGraphicsItem *item = children.at(i);
         if (item->isWidget()) {
             QGraphicsWidget *w = static_cast<QGraphicsWidget *>(item);
-            if (!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation))
+            if (!w->isWindow() || w->testAttribute(BobUI::WA_WindowPropagation))
                 w->d_func()->resolvePalette(mask);
         } else {
             item->d_ptr->resolvePalette(mask);
@@ -154,19 +154,19 @@ void QGraphicsWidgetPrivate::updatePalette(const QPalette &palette)
     QCoreApplication::sendEvent(q, &event);
 }
 
-void QGraphicsWidgetPrivate::setLayoutDirection_helper(Qt::LayoutDirection direction)
+void QGraphicsWidgetPrivate::setLayoutDirection_helper(BobUI::LayoutDirection direction)
 {
     Q_Q(QGraphicsWidget);
-    if ((direction == Qt::RightToLeft) == (testAttribute(Qt::WA_RightToLeft)))
+    if ((direction == BobUI::RightToLeft) == (testAttribute(BobUI::WA_RightToLeft)))
         return;
-    q->setAttribute(Qt::WA_RightToLeft, (direction == Qt::RightToLeft));
+    q->setAttribute(BobUI::WA_RightToLeft, (direction == BobUI::RightToLeft));
 
     // Propagate this change to all children.
     for (int i = 0; i < children.size(); ++i) {
         QGraphicsItem *item = children.at(i);
         if (item->isWidget()) {
             QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(item);
-            if (widget->parentWidget() && !widget->testAttribute(Qt::WA_SetLayoutDirection))
+            if (widget->parentWidget() && !widget->testAttribute(BobUI::WA_SetLayoutDirection))
                 widget->d_func()->setLayoutDirection_helper(direction);
         }
     }
@@ -179,7 +179,7 @@ void QGraphicsWidgetPrivate::setLayoutDirection_helper(Qt::LayoutDirection direc
 void QGraphicsWidgetPrivate::resolveLayoutDirection()
 {
     Q_Q(QGraphicsWidget);
-    if (q->testAttribute(Qt::WA_SetLayoutDirection)) {
+    if (q->testAttribute(BobUI::WA_SetLayoutDirection)) {
         return;
     }
     if (QGraphicsWidget *parentWidget = q->parentWidget()) {
@@ -231,7 +231,7 @@ void QGraphicsWidgetPrivate::updateFont(const QFont &font)
     this->font = font;
 
     // Calculate new mask.
-    if (q->isWindow() && !q->testAttribute(Qt::WA_WindowPropagation))
+    if (q->isWindow() && !q->testAttribute(BobUI::WA_WindowPropagation))
         inheritedFontResolveMask = 0;
     int mask = font.resolveMask() | inheritedFontResolveMask;
 
@@ -240,7 +240,7 @@ void QGraphicsWidgetPrivate::updateFont(const QFont &font)
         QGraphicsItem *item = children.at(i);
         if (item->isWidget()) {
             QGraphicsWidget *w = static_cast<QGraphicsWidget *>(item);
-            if (!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation))
+            if (!w->isWindow() || w->testAttribute(BobUI::WA_WindowPropagation))
                 w->d_func()->resolveFont(mask);
         } else {
             item->d_ptr->resolveFont(mask);
@@ -279,45 +279,45 @@ void QGraphicsWidgetPrivate::initStyleOptionTitleBar(QStyleOptionTitleBar *optio
     bool isActive = q->isActiveWindow();
     option->state.setFlag(QStyle::State_Active, isActive);
     if (isActive) {
-        option->titleBarState = Qt::WindowActive;
+        option->titleBarState = BobUI::WindowActive;
         option->titleBarState |= QStyle::State_Active;
     } else {
-        option->titleBarState = Qt::WindowNoState;
+        option->titleBarState = BobUI::WindowNoState;
     }
     QFont windowTitleFont = QApplication::font("QMdiSubWindowTitleBar");
     QRect textRect = q->style()->subControlRect(QStyle::CC_TitleBar, option, QStyle::SC_TitleBarLabel, nullptr);
     option->text = QFontMetrics(windowTitleFont).elidedText(
-        windowData->windowTitle, Qt::ElideRight, textRect.width());
+        windowData->windowTitle, BobUI::ElideRight, textRect.width());
 }
 
-void QGraphicsWidgetPrivate::adjustWindowFlags(Qt::WindowFlags *flags)
+void QGraphicsWidgetPrivate::adjustWindowFlags(BobUI::WindowFlags *flags)
 {
-    bool customize =  (*flags & (Qt::CustomizeWindowHint
-            | Qt::FramelessWindowHint
-            | Qt::WindowTitleHint
-            | Qt::WindowSystemMenuHint
-            | Qt::WindowMinimizeButtonHint
-            | Qt::WindowMaximizeButtonHint
-            | Qt::WindowContextHelpButtonHint));
+    bool customize =  (*flags & (BobUI::CustomizeWindowHint
+            | BobUI::FramelessWindowHint
+            | BobUI::WindowTitleHint
+            | BobUI::WindowSystemMenuHint
+            | BobUI::WindowMinimizeButtonHint
+            | BobUI::WindowMaximizeButtonHint
+            | BobUI::WindowContextHelpButtonHint));
 
-    uint type = (*flags & Qt::WindowType_Mask);
+    uint type = (*flags & BobUI::WindowType_Mask);
     if (customize)
         ;
-    else if (type == Qt::Dialog || type == Qt::Sheet)
-        *flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowContextHelpButtonHint;
-    else if (type == Qt::Tool)
-        *flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint;
-    else if (type == Qt::Window || type == Qt::SubWindow)
-        *flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                  | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint;
+    else if (type == BobUI::Dialog || type == BobUI::Sheet)
+        *flags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowContextHelpButtonHint;
+    else if (type == BobUI::Tool)
+        *flags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint;
+    else if (type == BobUI::Window || type == BobUI::SubWindow)
+        *flags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                  | BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint;
 }
 
 void QGraphicsWidgetPrivate::windowFrameMouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_Q(QGraphicsWidget);
     ensureWindowData();
-    if (windowData->grabbedSection != Qt::NoSection) {
-        if (windowData->grabbedSection == Qt::TitleBarArea) {
+    if (windowData->grabbedSection != BobUI::NoSection) {
+        if (windowData->grabbedSection == BobUI::TitleBarArea) {
             windowData->buttonSunken = false;
             QStyleOptionTitleBar bar;
             initStyleOptionTitleBar(&bar);
@@ -338,7 +338,7 @@ void QGraphicsWidgetPrivate::windowFrameMouseReleaseEvent(QGraphicsSceneMouseEve
             }
         }
         if (!(static_cast<QGraphicsSceneMouseEvent *>(event)->buttons()))
-            windowData->grabbedSection = Qt::NoSection;
+            windowData->grabbedSection = BobUI::NoSection;
         event->accept();
     }
 }
@@ -346,19 +346,19 @@ void QGraphicsWidgetPrivate::windowFrameMouseReleaseEvent(QGraphicsSceneMouseEve
 void QGraphicsWidgetPrivate::windowFrameMousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_Q(QGraphicsWidget);
-    if (event->button() != Qt::LeftButton)
+    if (event->button() != BobUI::LeftButton)
         return;
 
     ensureWindowData();
     windowData->startGeometry = q->geometry();
     windowData->grabbedSection = q->windowFrameSectionAt(event->pos());
     ensureWindowData();
-    if (windowData->grabbedSection == Qt::TitleBarArea
+    if (windowData->grabbedSection == BobUI::TitleBarArea
         && windowData->hoveredSubControl == QStyle::SC_TitleBarCloseButton) {
         windowData->buttonSunken = true;
         q->update();
     }
-    event->setAccepted(windowData->grabbedSection != Qt::NoSection);
+    event->setAccepted(windowData->grabbedSection != BobUI::NoSection);
 }
 
 /*
@@ -378,19 +378,19 @@ static qreal minimumHeightForWidth(qreal width, qreal minh, qreal maxh,
     const bool hasHFW = QGraphicsLayoutItemPrivate::get(widget)->hasHeightForWidth();
     if (hasHFW == heightForWidth) {
         minimumHeightForWidth = hasHFW
-                                ? widget->effectiveSizeHint(Qt::MinimumSize, QSizeF(width, -1)).height()
-                                : widget->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, width)).width();    //"width" is here height!
+                                ? widget->effectiveSizeHint(BobUI::MinimumSize, QSizeF(width, -1)).height()
+                                : widget->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, width)).width();    //"width" is here height!
     } else {
         // widthForHeight
         const qreal constraint = width;
         while (maxh - minh > 0.1) {
             qreal middle = minh + (maxh - minh)/2;
             // ### really bad, if we are a widget with a layout it will call
-            // layout->effectiveSizeHint(Qt::MiniumumSize), which again will call
+            // layout->effectiveSizeHint(BobUI::MiniumumSize), which again will call
             // sizeHint three times because of how the cache works
             qreal hfw = hasHFW
-                        ? widget->effectiveSizeHint(Qt::MinimumSize, QSizeF(middle, -1)).height()
-                        : widget->effectiveSizeHint(Qt::MinimumSize, QSizeF(-1, middle)).width();
+                        ? widget->effectiveSizeHint(BobUI::MinimumSize, QSizeF(middle, -1)).height()
+                        : widget->effectiveSizeHint(BobUI::MinimumSize, QSizeF(-1, middle)).width();
             if (hfw > constraint) {
                 minh = middle;
             } else if (hfw <= constraint) {
@@ -456,7 +456,7 @@ static QSizeF closestAcceptableSize(const QSizeF &proposed,
 }
 
 static void _q_boundGeometryToSizeConstraints(const QRectF &startGeometry,
-                                              QRectF *rect, Qt::WindowFrameSection section,
+                                              QRectF *rect, BobUI::WindowFrameSection section,
                                               const QSizeF &min, const QSizeF &max,
                                               const QGraphicsWidget *widget)
 {
@@ -497,33 +497,33 @@ static void _q_boundGeometryToSizeConstraints(const QRectF &startGeometry,
     }
 
     switch (section) {
-    case Qt::LeftSection:
+    case BobUI::LeftSection:
         rect->setRect(startGeometry.right() - qRound(width), startGeometry.top(),
                       qRound(width), startGeometry.height());
         break;
-    case Qt::TopLeftSection:
+    case BobUI::TopLeftSection:
         rect->setRect(startGeometry.right() - qRound(width), startGeometry.bottom() - qRound(height),
                       qRound(width), qRound(height));
         break;
-    case Qt::TopSection:
+    case BobUI::TopSection:
         rect->setRect(startGeometry.left(), startGeometry.bottom() - qRound(height),
                       startGeometry.width(), qRound(height));
         break;
-    case Qt::TopRightSection:
+    case BobUI::TopRightSection:
         rect->setTop(rect->bottom() - qRound(height));
         rect->setWidth(qRound(width));
         break;
-    case Qt::RightSection:
+    case BobUI::RightSection:
         rect->setWidth(qRound(width));
         break;
-    case Qt::BottomRightSection:
+    case BobUI::BottomRightSection:
         rect->setWidth(qRound(width));
         rect->setHeight(qRound(height));
         break;
-    case Qt::BottomSection:
+    case BobUI::BottomSection:
         rect->setHeight(qRound(height));
         break;
-    case Qt::BottomLeftSection:
+    case BobUI::BottomLeftSection:
         rect->setRect(startGeometry.right() - qRound(width), startGeometry.top(),
                       qRound(width), qRound(height));
         break;
@@ -536,67 +536,67 @@ void QGraphicsWidgetPrivate::windowFrameMouseMoveEvent(QGraphicsSceneMouseEvent 
 {
     Q_Q(QGraphicsWidget);
     ensureWindowData();
-    if (!(event->buttons() & Qt::LeftButton) || windowData->hoveredSubControl != QStyle::SC_TitleBarLabel)
+    if (!(event->buttons() & BobUI::LeftButton) || windowData->hoveredSubControl != QStyle::SC_TitleBarLabel)
         return;
 
-    QLineF delta(q->mapFromScene(event->buttonDownScenePos(Qt::LeftButton)), event->pos());
+    QLineF delta(q->mapFromScene(event->buttonDownScenePos(BobUI::LeftButton)), event->pos());
     QLineF parentDelta(q->mapToParent(delta.p1()), q->mapToParent(delta.p2()));
     QLineF parentXDelta(q->mapToParent(QPointF(delta.p1().x(), 0)), q->mapToParent(QPointF(delta.p2().x(), 0)));
     QLineF parentYDelta(q->mapToParent(QPointF(0, delta.p1().y())), q->mapToParent(QPointF(0, delta.p2().y())));
 
     QRectF newGeometry;
     switch (windowData->grabbedSection) {
-    case Qt::LeftSection:
+    case BobUI::LeftSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft()
                              + QPointF(parentXDelta.dx(), parentXDelta.dy()),
                              windowData->startGeometry.size() - QSizeF(delta.dx(), delta.dy()));
         break;
-    case Qt::TopLeftSection:
+    case BobUI::TopLeftSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft()
                              + QPointF(parentDelta.dx(), parentDelta.dy()),
                              windowData->startGeometry.size() - QSizeF(delta.dx(), delta.dy()));
         break;
-    case Qt::TopSection:
+    case BobUI::TopSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft()
                              + QPointF(parentYDelta.dx(), parentYDelta.dy()),
                              windowData->startGeometry.size() - QSizeF(0, delta.dy()));
         break;
-    case Qt::TopRightSection:
+    case BobUI::TopRightSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft()
                              + QPointF(parentYDelta.dx(), parentYDelta.dy()),
                              windowData->startGeometry.size() - QSizeF(-delta.dx(), delta.dy()));
         break;
-    case Qt::RightSection:
+    case BobUI::RightSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft(),
                              windowData->startGeometry.size() + QSizeF(delta.dx(), 0));
         break;
-    case Qt::BottomRightSection:
+    case BobUI::BottomRightSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft(),
                              windowData->startGeometry.size() + QSizeF(delta.dx(), delta.dy()));
         break;
-    case Qt::BottomSection:
+    case BobUI::BottomSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft(),
                              windowData->startGeometry.size() + QSizeF(0, delta.dy()));
         break;
-    case Qt::BottomLeftSection:
+    case BobUI::BottomLeftSection:
         newGeometry = QRectF(windowData->startGeometry.topLeft()
                              + QPointF(parentXDelta.dx(), parentXDelta.dy()),
                              windowData->startGeometry.size() - QSizeF(delta.dx(), -delta.dy()));
         break;
-    case Qt::TitleBarArea:
+    case BobUI::TitleBarArea:
         newGeometry = QRectF(windowData->startGeometry.topLeft()
                              + QPointF(parentDelta.dx(), parentDelta.dy()),
                              windowData->startGeometry.size());
         break;
-    case Qt::NoSection:
+    case BobUI::NoSection:
         break;
     }
 
-    if (windowData->grabbedSection != Qt::NoSection) {
+    if (windowData->grabbedSection != BobUI::NoSection) {
         _q_boundGeometryToSizeConstraints(windowData->startGeometry, &newGeometry,
                                           windowData->grabbedSection,
-                                          q->effectiveSizeHint(Qt::MinimumSize),
-                                          q->effectiveSizeHint(Qt::MaximumSize),
+                                          q->effectiveSizeHint(BobUI::MinimumSize),
+                                          q->effectiveSizeHint(BobUI::MaximumSize),
                                           q);
         q->setGeometry(newGeometry);
     }
@@ -632,26 +632,26 @@ void QGraphicsWidgetPrivate::windowFrameHoverMoveEvent(QGraphicsSceneHoverEvent 
     bar.rect.moveTo(0,0);
     bar.rect.setHeight(int(titleBarHeight(bar)));
 
-    Qt::CursorShape cursorShape = Qt::ArrowCursor;
+    BobUI::CursorShape cursorShape = BobUI::ArrowCursor;
     bool needsSetCursorCall = true;
     switch (q->windowFrameSectionAt(event->pos())) {
-        case Qt::TopLeftSection:
-        case Qt::BottomRightSection:
-            cursorShape = Qt::SizeFDiagCursor;
+        case BobUI::TopLeftSection:
+        case BobUI::BottomRightSection:
+            cursorShape = BobUI::SizeFDiagCursor;
             break;
-        case Qt::TopRightSection:
-        case Qt::BottomLeftSection:
-            cursorShape = Qt::SizeBDiagCursor;
+        case BobUI::TopRightSection:
+        case BobUI::BottomLeftSection:
+            cursorShape = BobUI::SizeBDiagCursor;
             break;
-        case Qt::LeftSection:
-        case Qt::RightSection:
-            cursorShape = Qt::SizeHorCursor;
+        case BobUI::LeftSection:
+        case BobUI::RightSection:
+            cursorShape = BobUI::SizeHorCursor;
             break;
-        case Qt::TopSection:
-        case Qt::BottomSection:
-            cursorShape = Qt::SizeVerCursor;
+        case BobUI::TopSection:
+        case BobUI::BottomSection:
+            cursorShape = BobUI::SizeVerCursor;
             break;
-        case Qt::TitleBarArea:
+        case BobUI::TitleBarArea:
             windowData->buttonRect = q->style()->subControlRect(
                 QStyle::CC_TitleBar, &bar, QStyle::SC_TitleBarCloseButton, nullptr);
             if (windowData->buttonRect.contains(pos.toPoint()))
@@ -662,7 +662,7 @@ void QGraphicsWidgetPrivate::windowFrameHoverMoveEvent(QGraphicsSceneHoverEvent 
             needsSetCursorCall = false;
             event->ignore();
         }
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (needsSetCursorCall)
         q->setCursor(cursorShape);
 #else
@@ -688,7 +688,7 @@ void QGraphicsWidgetPrivate::windowFrameHoverLeaveEvent(QGraphicsSceneHoverEvent
     Q_Q(QGraphicsWidget);
     if (hasDecoration()) {
         // ### restore the cursor, don't override it
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         q->unsetCursor();
 #endif
 
@@ -710,7 +710,7 @@ void QGraphicsWidgetPrivate::windowFrameHoverLeaveEvent(QGraphicsSceneHoverEvent
 
 bool QGraphicsWidgetPrivate::hasDecoration() const
 {
-    return (windowFlags & Qt::Window) && (windowFlags & Qt::WindowTitleHint);
+    return (windowFlags & BobUI::Window) && (windowFlags & BobUI::WindowTitleHint);
 }
 
 /**
@@ -844,4 +844,4 @@ void QGraphicsWidgetPrivate::setGeometryFromSetPos()
     inSetPos = 0 ;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

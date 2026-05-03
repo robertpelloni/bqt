@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
@@ -11,13 +11,13 @@
 #include <QPixmap>
 #include <QDrag>
 #include <QWindow>
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #include <QOpenGLWindow>
 #endif
 
-#include <QtTest/QtTest>
-#include <QtWaylandClient/private/qwaylandintegration_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUITest/BobUITest>
+#include <BobUIWaylandClient/private/qwaylandintegration_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 using namespace MockCompositor;
 
@@ -78,7 +78,7 @@ public:
         ++mouseReleaseEventCount;
     }
 
-    void touchEvent(QTouchEvent *event) override
+    void touchEvent(BOBUIouchEvent *event) override
     {
         Q_UNUSED(event);
         ++touchEventCount;
@@ -93,7 +93,7 @@ public:
         backingStore->resize(rect.size());
         backingStore->beginPaint(rect);
 
-        const QColor color = Qt::magenta;
+        const QColor color = BobUI::magenta;
         QPainter p(backingStore->paintDevice());
         p.fillRect(rect, color);
         p.end();
@@ -117,7 +117,7 @@ public:
     QScopedPointer<QBackingStore> backingStore;
 };
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 class TestGlWindow : public QOpenGLWindow
 {
     Q_OBJECT
@@ -147,7 +147,7 @@ void TestGlWindow::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
     ++paintGLCalled;
 }
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
 
 class tst_WaylandClient : public QObject, private TestCompositor
 {
@@ -155,7 +155,7 @@ class tst_WaylandClient : public QObject, private TestCompositor
 
 private slots:
     void cleanup() {
-        QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+        BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
     }
     void createDestroyWindow();
     void activeWindowFollowsKeyboardFocus();
@@ -166,9 +166,9 @@ private slots:
     void dontCrashOnMultipleCommits();
     void hiddenTransientParent();
     void hiddenPopupParent();
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     void glWindow();
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
     void longWindowTitle();
     void longWindowTitleWithUtf16Characters();
 };
@@ -201,14 +201,14 @@ void tst_WaylandClient::activeWindowFollowsKeyboardFocus()
     exec([&] {
         keyboard()->sendEnter(s);
     });
-    QTRY_COMPARE(window.focusInEventCount, 1);
+    BOBUIRY_COMPARE(window.focusInEventCount, 1);
     QCOMPARE(QGuiApplication::focusWindow(), &window);
 
     QCOMPARE(window.focusOutEventCount, 0);
     exec([&] {
         keyboard()->sendLeave(s); // or implement setFocus in Keyboard
     });
-    QTRY_COMPARE(window.focusOutEventCount, 1);
+    BOBUIRY_COMPARE(window.focusOutEventCount, 1);
     QCOMPARE(QGuiApplication::focusWindow(), static_cast<QWindow *>(nullptr));
 }
 
@@ -230,7 +230,7 @@ void tst_WaylandClient::events()
     exec([&] {
         keyboard()->sendEnter(s);
     });
-    QTRY_COMPARE(window.focusInEventCount, 1);
+    BOBUIRY_COMPARE(window.focusInEventCount, 1);
     QCOMPARE(QGuiApplication::focusWindow(), &window);
 
     // See also https://wayland.app/protocols/wayland#wl_keyboard:enum:keymap_format
@@ -244,32 +244,32 @@ void tst_WaylandClient::events()
     exec([&] {
         keyboard()->sendKey(client(), keyCode - 8, Keyboard::key_state_pressed); // related with native scan code
     });
-    QTRY_COMPARE(window.keyPressEventCount, 1);
+    BOBUIRY_COMPARE(window.keyPressEventCount, 1);
     QCOMPARE(window.keyCode, keyCode);
 
     QCOMPARE(window.keyReleaseEventCount, 0);
     exec([&] {
         keyboard()->sendKey(client(), keyCode - 8, Keyboard::key_state_released); // related with native scan code
     });
-    QTRY_COMPARE(window.keyReleaseEventCount, 1);
+    BOBUIRY_COMPARE(window.keyReleaseEventCount, 1);
     QCOMPARE(window.keyCode, keyCode);
 
     const int touchId = 0;
     exec([&] {
         touch()->sendDown(s, window.frameOffset() + QPoint(10, 10), touchId);
     });
-    // Note: wl_touch.frame should not be the last event in a test until QTBUG-66563 is fixed.
-    // See also: QTBUG-66537
+    // Note: wl_touch.frame should not be the last event in a test until BOBUIBUG-66563 is fixed.
+    // See also: BOBUIBUG-66537
     exec([&] {
         touch()->sendFrame(client());
     });
-    QTRY_COMPARE(window.touchEventCount, 1);
+    BOBUIRY_COMPARE(window.touchEventCount, 1);
 
     exec([&] {
         touch()->sendUp(client(), touchId);
         touch()->sendFrame(client());
     });
-    QTRY_COMPARE(window.touchEventCount, 2);
+    BOBUIRY_COMPARE(window.touchEventCount, 2);
 
     QPoint mousePressPos(16, 16);
     QCOMPARE(window.mousePressEventCount, 0);
@@ -283,15 +283,15 @@ void tst_WaylandClient::events()
         pointer()->sendButton(client(), BTN_LEFT, Pointer::button_state_pressed);
         pointer()->sendFrame(client());
     });
-    QTRY_COMPARE(window.mousePressEventCount, 1);
-    QTRY_COMPARE(window.mousePressPos, mousePressPos);
+    BOBUIRY_COMPARE(window.mousePressEventCount, 1);
+    BOBUIRY_COMPARE(window.mousePressPos, mousePressPos);
 
     QCOMPARE(window.mouseReleaseEventCount, 0);
     exec([&] {
         pointer()->sendButton(client(), BTN_LEFT, Pointer::button_state_released);
         pointer()->sendFrame(client());
     });
-    QTRY_COMPARE(window.mouseReleaseEventCount, 1);
+    BOBUIRY_COMPARE(window.mouseReleaseEventCount, 1);
 }
 
 void tst_WaylandClient::backingStore()
@@ -305,10 +305,10 @@ void tst_WaylandClient::backingStore()
         sendShellSurfaceConfigure(s);
     });
 
-    const QColor color = Qt::magenta; // see expose event in TestWindow
+    const QColor color = BobUI::magenta; // see expose event in TestWindow
 
-    QTRY_COMPARE(s->m_image.size(), window.frameGeometry().size());
-    QTRY_COMPARE(s->m_image.pixel(window.frameMargins().left(), window.frameMargins().top()), color.rgba());
+    BOBUIRY_COMPARE(s->m_image.size(), window.frameGeometry().size());
+    BOBUIRY_COMPARE(s->m_image.pixel(window.frameMargins().left(), window.frameMargins().top()), color.rgba());
 
     window.hide();
 
@@ -325,7 +325,7 @@ public:
         : QWindow(parent)
     {
         QImage cursorImage(64,64,QImage::Format_ARGB32);
-        cursorImage.fill(Qt::blue);
+        cursorImage.fill(BobUI::blue);
         m_dragIcon = QPixmap::fromImage(cursorImage);
     }
     ~DndWindow() override{}
@@ -346,7 +346,7 @@ protected:
         QDrag *drag = new QDrag(this);
         drag->setMimeData(mimeData);
         drag->setPixmap(m_dragIcon);
-        drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+        drag->exec(BobUI::CopyAction | BobUI::MoveAction, BobUI::CopyAction);
     }
 private:
     QPixmap m_dragIcon;
@@ -412,7 +412,7 @@ void tst_WaylandClient::touchDrag()
     exec([&] {
         keyboard()->sendEnter(s);
     });
-    QTRY_COMPARE(QGuiApplication::focusWindow(), &window);
+    BOBUIRY_COMPARE(QGuiApplication::focusWindow(), &window);
 
     const int touchId = 0;
     exec([&] {
@@ -422,7 +422,7 @@ void tst_WaylandClient::touchDrag()
         touch()->sendFrame(client());
     });
 
-    QTRY_VERIFY(window.dragStarted);
+    BOBUIRY_VERIFY(window.dragStarted);
 }
 
 void tst_WaylandClient::mouseDrag()
@@ -448,7 +448,7 @@ void tst_WaylandClient::mouseDrag()
     exec([&] {
         keyboard()->sendEnter(s);
     });
-    QTRY_COMPARE(QGuiApplication::focusWindow(), &window);
+    BOBUIRY_COMPARE(QGuiApplication::focusWindow(), &window);
 
     QPoint mousePressPos(16, 16);
     exec([&] {
@@ -464,7 +464,7 @@ void tst_WaylandClient::mouseDrag()
         dataDevice()->sendMotion(s, window.frameOffset() + QPoint(21, 21));
     });
 
-    QTRY_VERIFY(window.dragStarted);
+    BOBUIRY_VERIFY(window.dragStarted);
 }
 
 void tst_WaylandClient::dontCrashOnMultipleCommits()
@@ -530,11 +530,11 @@ void tst_WaylandClient::hiddenPopupParent()
         pointer()->sendButton(client(), BTN_LEFT, Pointer::button_state_pressed);
         pointer()->sendFrame(client());
     });
-    QTRY_COMPARE(toplevel.mousePressEventCount, 1);
+    BOBUIRY_COMPARE(toplevel.mousePressEventCount, 1);
 
     QWindow popup;
     popup.setTransientParent(&toplevel);
-    popup.setFlag(Qt::Popup, true);
+    popup.setFlag(BobUI::Popup, true);
 
     toplevel.hide();
     QCOMPOSITOR_TRY_VERIFY(!surface());
@@ -543,10 +543,10 @@ void tst_WaylandClient::hiddenPopupParent()
     QCOMPOSITOR_TRY_VERIFY(surface());
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 void tst_WaylandClient::glWindow()
 {
-    QSKIP("Skipping GL tests, as not supported by all CI systems: See https://bugreports.qt.io/browse/QTBUG-65802");
+    QSKIP("Skipping GL tests, as not supported by all CI systems: See https://bugreports.bobui.io/browse/BOBUIBUG-65802");
 
     QScopedPointer<TestGlWindow> testWindow(new TestGlWindow);
     testWindow->show();
@@ -556,26 +556,26 @@ void tst_WaylandClient::glWindow()
         sendShellSurfaceConfigure(s);
     });
 
-    QTRY_COMPARE(testWindow->paintGLCalled, 1);
+    BOBUIRY_COMPARE(testWindow->paintGLCalled, 1);
 
-    //QTBUG-63411
-    QMetaObject::invokeMethod(testWindow.data(), "hideShow", Qt::QueuedConnection);
+    //BOBUIBUG-63411
+    QMetaObject::invokeMethod(testWindow.data(), "hideShow", BobUI::QueuedConnection);
     testWindow->requestUpdate();
-    QTRY_COMPARE(testWindow->paintGLCalled, 2);
+    BOBUIRY_COMPARE(testWindow->paintGLCalled, 2);
 
     testWindow->requestUpdate();
-    QTRY_COMPARE(testWindow->paintGLCalled, 3);
+    BOBUIRY_COMPARE(testWindow->paintGLCalled, 3);
 
     //confirm we don't crash when we delete an already hidden GL window
-    //QTBUG-65553
+    //BOBUIBUG-65553
     testWindow->setVisible(false);
     QCOMPOSITOR_TRY_VERIFY(!surface());
 }
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
 
 void tst_WaylandClient::longWindowTitle()
 {
-    // See QTBUG-68715
+    // See BOBUIBUG-68715
     QWindow window;
     QString absurdlyLongTitle(10000, QLatin1Char('z'));
     window.setTitle(absurdlyLongTitle);
@@ -595,17 +595,17 @@ void tst_WaylandClient::longWindowTitleWithUtf16Characters()
 
 int main(int argc, char **argv)
 {
-    QTemporaryDir tmpRuntimeDir;
+    BOBUIemporaryDir tmpRuntimeDir;
     qputenv("XDG_RUNTIME_DIR", tmpRuntimeDir.path().toLocal8Bit());
-    qputenv("QT_QPA_PLATFORM", "wayland"); // force QGuiApplication to use wayland plugin
-    QString shell = QString::fromLocal8Bit(qgetenv("QT_WAYLAND_SHELL_INTEGRATION"));
+    qputenv("BOBUI_QPA_PLATFORM", "wayland"); // force QGuiApplication to use wayland plugin
+    QString shell = QString::fromLocal8Bit(qgetenv("BOBUI_WAYLAND_SHELL_INTEGRATION"));
     if (shell.isEmpty())
-        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "wl-shell");
+        qputenv("BOBUI_WAYLAND_SHELL_INTEGRATION", "wl-shell");
 
     tst_WaylandClient tc;
     QGuiApplication app(argc, argv);
-    QTEST_SET_MAIN_SOURCE_PATH
-    return QTest::qExec(&tc, argc, argv);
+    BOBUIEST_SET_MAIN_SOURCE_PATH
+    return BOBUIest::qExec(&tc, argc, argv);
 }
 
 #include <tst_client.moc>

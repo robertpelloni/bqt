@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
-#include <QtTest/QTestEventLoop>
+#include <BobUITest/BOBUIest>
+#include <BobUITest/BOBUIestEventLoop>
 
 #include <qcoreapplication.h>
 #include <qelapsedtimer.h>
@@ -15,9 +15,9 @@
 #include <QNetworkRequest>
 #include <QList>
 #include <QSysInfo>
-#include <QThread>
+#include <BOBUIhread>
 
-#include <private/qtnetworkglobal_p.h>
+#include <private/bobuinetworkglobal_p.h>
 
 class tst_QNetworkProxyFactory : public QObject {
     Q_OBJECT
@@ -61,53 +61,53 @@ tst_QNetworkProxyFactory::tst_QNetworkProxyFactory()
 
 void tst_QNetworkProxyFactory::systemProxyForQuery_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::addColumn<QUrl>("url");
-    QTest::addColumn<QString>("tag");
-    QTest::addColumn<QString>("hostName");
-    QTest::addColumn<int>("port");
-    QTest::addColumn<int>("requiredCapabilities");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<QUrl>("url");
+    BOBUIest::addColumn<QString>("tag");
+    BOBUIest::addColumn<QString>("hostName");
+    BOBUIest::addColumn<int>("port");
+    BOBUIest::addColumn<int>("requiredCapabilities");
 
     //URLs
-    QTest::newRow("http") << (int)QNetworkProxyQuery::UrlRequest << QUrl("http://qt-project.org") << QString() << QString() << 0 << 0;
+    BOBUIest::newRow("http") << (int)QNetworkProxyQuery::UrlRequest << QUrl("http://bobui-project.org") << QString() << QString() << 0 << 0;
     //windows: "intranet" should be bypassed if "bypass proxy server for local addresses" is ticked
-    QTest::newRow("intranet") << (int)QNetworkProxyQuery::UrlRequest << QUrl("http://qt-test-server") << QString() << QString() << 0 << 0;
+    BOBUIest::newRow("intranet") << (int)QNetworkProxyQuery::UrlRequest << QUrl("http://bobui-test-server") << QString() << QString() << 0 << 0;
     //windows: "intranet2" should be bypassed if "*.local" is in the exceptions list (advanced settings)
-    QTest::newRow("intranet2") << (int)QNetworkProxyQuery::UrlRequest << QUrl("http://qt-test-server.local") << QString() << QString() << 0 << 0;
-    QTest::newRow("https") << (int)QNetworkProxyQuery::UrlRequest << QUrl("https://qt-project.org") << QString() << QString() << 0 << (int)QNetworkProxy::TunnelingCapability;
-    QTest::newRow("ftp") << (int)QNetworkProxyQuery::UrlRequest << QUrl("ftp://qt-project.org") << QString() << QString() << 0 << 0;
+    BOBUIest::newRow("intranet2") << (int)QNetworkProxyQuery::UrlRequest << QUrl("http://bobui-test-server.local") << QString() << QString() << 0 << 0;
+    BOBUIest::newRow("https") << (int)QNetworkProxyQuery::UrlRequest << QUrl("https://bobui-project.org") << QString() << QString() << 0 << (int)QNetworkProxy::TunnelingCapability;
+    BOBUIest::newRow("ftp") << (int)QNetworkProxyQuery::UrlRequest << QUrl("ftp://bobui-project.org") << QString() << QString() << 0 << 0;
 
     //TCP
-    QTest::newRow("imap") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString() << QString("qt-project.org") << 0 << (int)QNetworkProxy::TunnelingCapability;
-    QTest::newRow("autobind-server") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString() << QString() << 0 << (int)QNetworkProxy::ListeningCapability;
-    QTest::newRow("web-server") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString() << QString() << 80 << (int)QNetworkProxy::ListeningCapability;
+    BOBUIest::newRow("imap") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString() << QString("bobui-project.org") << 0 << (int)QNetworkProxy::TunnelingCapability;
+    BOBUIest::newRow("autobind-server") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString() << QString() << 0 << (int)QNetworkProxy::ListeningCapability;
+    BOBUIest::newRow("web-server") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString() << QString() << 80 << (int)QNetworkProxy::ListeningCapability;
     //windows: these should be bypassed  if "bypass proxy server for local addresses" is ticked
     const auto addresses = QNetworkInterface::allAddresses();
     for (const QHostAddress &address : addresses) {
-        QTest::newRow(qPrintable(address.toString())) << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString() << address.toString() << 0 << 0;
+        BOBUIest::newRow(qPrintable(address.toString())) << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString() << address.toString() << 0 << 0;
     }
 
     //UDP
-    QTest::newRow("udp") << (int)QNetworkProxyQuery::UdpSocket << QUrl() << QString() << QString() << 0 << (int)QNetworkProxy::UdpTunnelingCapability;
+    BOBUIest::newRow("udp") << (int)QNetworkProxyQuery::UdpSocket << QUrl() << QString() << QString() << 0 << (int)QNetworkProxy::UdpTunnelingCapability;
 
     //Protocol tags
-    QTest::newRow("http-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("http") << QString("qt-project.org") << 80 << (int)QNetworkProxy::TunnelingCapability;
-    QTest::newRow("ftp-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("ftp") << QString("qt-project.org") << 21 << (int)QNetworkProxy::TunnelingCapability;
-    QTest::newRow("https-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("https") << QString("qt-project.org") << 443 << (int)QNetworkProxy::TunnelingCapability;
+    BOBUIest::newRow("http-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("http") << QString("bobui-project.org") << 80 << (int)QNetworkProxy::TunnelingCapability;
+    BOBUIest::newRow("ftp-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("ftp") << QString("bobui-project.org") << 21 << (int)QNetworkProxy::TunnelingCapability;
+    BOBUIest::newRow("https-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("https") << QString("bobui-project.org") << 443 << (int)QNetworkProxy::TunnelingCapability;
 #ifdef Q_OS_WIN
-    //in Qt 4.8, "socks" would get the socks proxy, but we don't want to enforce that for all platforms
-    QTest::newRow("socks-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("socks") << QString("qt-project.org") << 21 <<  (int)(QNetworkProxy::TunnelingCapability | QNetworkProxy::ListeningCapability);
+    //in BobUI 4.8, "socks" would get the socks proxy, but we don't want to enforce that for all platforms
+    BOBUIest::newRow("socks-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("socks") << QString("bobui-project.org") << 21 <<  (int)(QNetworkProxy::TunnelingCapability | QNetworkProxy::ListeningCapability);
 #endif
     //windows: ssh is not a tag provided by the os, but any tunneling proxy is acceptable
-    QTest::newRow("ssh-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("ssh") << QString("qt-project.org") << 22 << (int)QNetworkProxy::TunnelingCapability;
+    BOBUIest::newRow("ssh-tag") << (int)QNetworkProxyQuery::TcpSocket << QUrl() << QString("ssh") << QString("bobui-project.org") << 22 << (int)QNetworkProxy::TunnelingCapability;
 
     //Server protocol tags (ftp/http proxies are no good, we need socks or nothing)
-    QTest::newRow("http-server-tag") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString("http") << QString() << 80 << (int)QNetworkProxy::ListeningCapability;
-    QTest::newRow("ftp-server-tag") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString("ftp") << QString() << 21 << (int)QNetworkProxy::ListeningCapability;
-    QTest::newRow("imap-server-tag") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString("imap") << QString() << 143 << (int)QNetworkProxy::ListeningCapability;
+    BOBUIest::newRow("http-server-tag") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString("http") << QString() << 80 << (int)QNetworkProxy::ListeningCapability;
+    BOBUIest::newRow("ftp-server-tag") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString("ftp") << QString() << 21 << (int)QNetworkProxy::ListeningCapability;
+    BOBUIest::newRow("imap-server-tag") << (int)QNetworkProxyQuery::TcpServer << QUrl() << QString("imap") << QString() << 143 << (int)QNetworkProxy::ListeningCapability;
 
     //UDP protocol tag
-    QTest::newRow("sip-udp-tag") << (int)QNetworkProxyQuery::UdpSocket << QUrl() << QString("sip") << QString("qt-project.org") << 5061 << (int)QNetworkProxy::UdpTunnelingCapability;
+    BOBUIest::newRow("sip-udp-tag") << (int)QNetworkProxyQuery::UdpSocket << QUrl() << QString("sip") << QString("bobui-project.org") << 5061 << (int)QNetworkProxy::UdpTunnelingCapability;
 }
 
 void tst_QNetworkProxyFactory::systemProxyForQuery() const
@@ -231,25 +231,25 @@ void tst_QNetworkProxyFactory::genericSystemProxy()
 void tst_QNetworkProxyFactory::genericSystemProxy_data()
 {
     // We can only use the generic system proxy where available:
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID) || QT_CONFIG(libproxy)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) || defined(Q_OS_ANDROID) || BOBUI_CONFIG(libproxy)
     QSKIP("Generic system proxy not available on this platform.");
 #else
-    QTest::addColumn<QByteArray>("envVar");
-    QTest::addColumn<QByteArray>("url");
-    QTest::addColumn<QNetworkProxy::ProxyType>("proxyType");
-    QTest::addColumn<QString>("hostName");
-    QTest::addColumn<int>("port");
+    BOBUIest::addColumn<QByteArray>("envVar");
+    BOBUIest::addColumn<QByteArray>("url");
+    BOBUIest::addColumn<QNetworkProxy::ProxyType>("proxyType");
+    BOBUIest::addColumn<QString>("hostName");
+    BOBUIest::addColumn<int>("port");
 
-    QTest::newRow("no proxy") << QByteArray("http_proxy") << QByteArray() << QNetworkProxy::NoProxy
+    BOBUIest::newRow("no proxy") << QByteArray("http_proxy") << QByteArray() << QNetworkProxy::NoProxy
                               << QString() << 0;
-    QTest::newRow("socks5") << QByteArray("http_proxy") << QByteArray("socks5://127.0.0.1:4242")
+    BOBUIest::newRow("socks5") << QByteArray("http_proxy") << QByteArray("socks5://127.0.0.1:4242")
                             << QNetworkProxy::Socks5Proxy << QString("127.0.0.1") << 4242;
-    QTest::newRow("http") << QByteArray("http_proxy") << QByteArray("http://example.com:666")
+    BOBUIest::newRow("http") << QByteArray("http_proxy") << QByteArray("http://example.com:666")
                           << QNetworkProxy::HttpProxy << QString("example.com") << 666;
 #endif
 }
 
-class QSPFQThread : public QThread
+class QSPFBOBUIhread : public BOBUIhread
 {
 protected:
     void run() override
@@ -261,22 +261,22 @@ public:
     QList<QNetworkProxy> proxies;
 };
 
-//regression test for QTBUG-18799
+//regression test for BOBUIBUG-18799
 void tst_QNetworkProxyFactory::systemProxyForQueryCalledFromThread()
 {
     if (QSysInfo::productType() == QLatin1String("windows") && QSysInfo::productVersion() == QLatin1String("7sp1")) {
-        QSKIP("This test fails by the systemProxyForQuery() call hanging - QTQAINFRA-1200");
+        QSKIP("This test fails by the systemProxyForQuery() call hanging - BOBUIQAINFRA-1200");
     }
-    QUrl url(QLatin1String("http://qt-project.org"));
+    QUrl url(QLatin1String("http://bobui-project.org"));
     QNetworkProxyQuery query(url);
-    QSPFQThread thread;
+    QSPFBOBUIhread thread;
     thread.query = query;
-    connect(&thread, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(&thread, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
     thread.start();
-    QTestEventLoop::instance().enterLoop(5);
+    BOBUIestEventLoop::instance().enterLoop(5);
     QVERIFY(thread.isFinished());
     QCOMPARE(thread.proxies, QNetworkProxyFactory::systemProxyForQuery(query));
 }
 
-QTEST_MAIN(tst_QNetworkProxyFactory)
+BOBUIEST_MAIN(tst_QNetworkProxyFactory)
 #include "tst_qnetworkproxyfactory.moc"

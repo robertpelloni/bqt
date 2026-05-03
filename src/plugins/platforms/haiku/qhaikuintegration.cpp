@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qhaikuintegration.h"
 
@@ -14,13 +14,13 @@
 #include <QFileInfo>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 
 #include <Application.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static long int startApplicationThread(void *data)
 {
@@ -34,7 +34,7 @@ QHaikuIntegration::QHaikuIntegration(const QStringList &parameters)
 {
     Q_UNUSED(parameters);
 
-    const QString signature = "application/x-vnd.Qt.%1"_L1.arg(QFileInfo(QCoreApplication::applicationFilePath()).fileName());
+    const QString signature = "application/x-vnd.BobUI.%1"_L1.arg(QFileInfo(QCoreApplication::applicationFilePath()).fileName());
 
     QHaikuApplication *app = new QHaikuApplication(signature.toLocal8Bit());
     be_app = app;
@@ -104,4 +104,4 @@ QAbstractEventDispatcher *QHaikuIntegration::createEventDispatcher() const
     return createUnixEventDispatcher();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

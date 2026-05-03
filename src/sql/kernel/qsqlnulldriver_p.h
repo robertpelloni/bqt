@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLNULLDRIVER_P_H
 #define QSQLNULLDRIVER_P_H
@@ -9,20 +9,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  This header file may
+// This file is not part of the BobUI API.  This header file may
 // change from version to version without notice, or even be
 // removed.
 //
 // We mean it.
 //
 
-#include <QtSql/private/qtsqlglobal_p.h>
-#include "QtCore/qvariant.h"
-#include "QtSql/qsqldriver.h"
-#include "QtSql/qsqlerror.h"
-#include "QtSql/qsqlresult.h"
+#include <BobUISql/private/bobuisqlglobal_p.h>
+#include "BobUICore/qvariant.h"
+#include "BobUISql/qsqldriver.h"
+#include "BobUISql/qsqlerror.h"
+#include "BobUISql/qsqlresult.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSqlNullResult : public QSqlResult
 {
@@ -72,6 +72,6 @@ protected:
     inline void setLastError(const QSqlError&) override {}
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLNULLDRIVER_P_H

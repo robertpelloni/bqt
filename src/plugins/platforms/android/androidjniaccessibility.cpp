@@ -1,32 +1,32 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidjniaccessibility.h"
 #include "androidjnimain.h"
 #include "qandroidplatformintegration.h"
 #include "qandroidplatformwindow.h"
 #include "qpa/qplatformaccessibility.h"
-#include <QtGui/private/qaccessiblebridgeutils_p.h>
+#include <BobUIGui/private/qaccessiblebridgeutils_p.h>
 #include "qguiapplication.h"
 #include "qwindow.h"
 #include "qrect.h"
-#include "QtGui/qaccessible.h"
-#include <QtCore/qmath.h>
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/QJniObject>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include "BobUIGui/qaccessible.h"
+#include <BobUICore/qmath.h>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/QJniObject>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
-#include <QtCore/QObject>
-#include <QtCore/qpointer.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/QObject>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qvarlengtharray.h>
 
-static const char m_qtTag[] = "Qt A11Y";
+static const char m_bobuiTag[] = "BobUI A11Y";
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtAndroidAccessibility
+namespace BobUIAndroidAccessibility
 {
     static jmethodID m_setClassNameMethodID = 0;
     static jmethodID m_addActionMethodID = 0;
@@ -52,13 +52,13 @@ namespace QtAndroidAccessibility
     static bool m_accessibilityActivated = false;
 
     // This object is needed to schedule the execution of the code that
-    // deals with accessibility instances to the Qt main thread.
+    // deals with accessibility instances to the BobUI main thread.
     // Because of that almost every method here is split into two parts.
     // The _helper part is executed in the context of m_accessibilityContext
     // on the main thread. The other part is executed in Java thread.
     Q_CONSTINIT static QPointer<QObject> m_accessibilityContext = {};
 
-    // This method is called from the Qt main thread, and normally a
+    // This method is called from the BobUI main thread, and normally a
     // QGuiApplication instance will be used as a parent.
     void createAccessibilityContextObject(QObject *parent)
     {
@@ -71,25 +71,25 @@ namespace QtAndroidAccessibility
     void runInObjectContext(QObject *context, Func &&func, Ret *retVal)
     {
         if (QAndroidPlatformWindow::surfacesCount() == 0) {
-            __android_log_print(ANDROID_LOG_WARN, m_qtTag,
+            __android_log_print(ANDROID_LOG_WARN, m_bobuiTag,
                 "Could not run accessibility call in object context, no valid surface.");
             return;
         }
 
-        QtAndroidPrivate::AndroidDeadlockProtector protector(
-            u"QtAndroidAccessibility::runInObjectContext()"_s);
+        BobUIAndroidPrivate::AndroidDeadlockProtector protector(
+            u"BobUIAndroidAccessibility::runInObjectContext()"_s);
         if (!protector.acquire()) {
-            __android_log_print(ANDROID_LOG_WARN, m_qtTag,
+            __android_log_print(ANDROID_LOG_WARN, m_bobuiTag,
                                 "Could not run accessibility call in object context, accessing "
                                 "main thread could lead to deadlock");
             return;
         }
 
-        if (!QtAndroid::blockEventLoopsWhenSuspended()
-            || QGuiApplication::applicationState() != Qt::ApplicationSuspended) {
-            QMetaObject::invokeMethod(context, func, Qt::BlockingQueuedConnection, retVal);
+        if (!BobUIAndroid::blockEventLoopsWhenSuspended()
+            || QGuiApplication::applicationState() != BobUI::ApplicationSuspended) {
+            QMetaObject::invokeMethod(context, func, BobUI::BlockingQueuedConnection, retVal);
         } else {
-            __android_log_print(ANDROID_LOG_WARN, m_qtTag,
+            __android_log_print(ANDROID_LOG_WARN, m_bobuiTag,
                                 "Could not run accessibility call in object context, event loop suspended.");
         }
     }
@@ -101,13 +101,13 @@ namespace QtAndroidAccessibility
 
     static void setActive(JNIEnv */*env*/, jobject /*thiz*/, jboolean active)
     {
-        QMutexLocker lock(QtAndroid::platformInterfaceMutex());
-        QAndroidPlatformIntegration *platformIntegration = QtAndroid::androidPlatformIntegration();
+        QMutexLocker lock(BobUIAndroid::platformInterfaceMutex());
+        QAndroidPlatformIntegration *platformIntegration = BobUIAndroid::androidPlatformIntegration();
         m_accessibilityActivated = active;
         if (platformIntegration) {
             platformIntegration->accessibility()->setActive(active);
         } else {
-            __android_log_print(ANDROID_LOG_DEBUG, m_qtTag,
+            __android_log_print(ANDROID_LOG_DEBUG, m_bobuiTag,
                 "Android platform integration is not ready, accessibility activation deferred.");
         }
     }
@@ -127,7 +127,7 @@ namespace QtAndroidAccessibility
 
     void notifyLocationChange(uint accessibilityObjectId)
     {
-        QtAndroid::notifyAccessibilityLocationChange(accessibilityObjectId);
+        BobUIAndroid::notifyAccessibilityLocationChange(accessibilityObjectId);
     }
 
     static int parentId_helper(int objectId); // forward declaration
@@ -135,18 +135,18 @@ namespace QtAndroidAccessibility
     void notifyObjectHide(uint accessibilityObjectId)
     {
         const auto parentObjectId = parentId_helper(accessibilityObjectId);
-        QtAndroid::notifyObjectHide(accessibilityObjectId, parentObjectId);
+        BobUIAndroid::notifyObjectHide(accessibilityObjectId, parentObjectId);
     }
 
     void notifyObjectShow(uint accessibilityObjectId)
     {
         const auto parentObjectId = parentId_helper(accessibilityObjectId);
-        QtAndroid::notifyObjectShow(parentObjectId);
+        BobUIAndroid::notifyObjectShow(parentObjectId);
     }
 
     void notifyObjectFocus(uint accessibilityObjectId)
     {
-        QtAndroid::notifyObjectFocus(accessibilityObjectId);
+        BobUIAndroid::notifyObjectFocus(accessibilityObjectId);
     }
 
     static jstring jvalueForAccessibleObject(int objectId); // forward declaration
@@ -154,7 +154,7 @@ namespace QtAndroidAccessibility
     void notifyValueChanged(uint accessibilityObjectId)
     {
         jstring value = jvalueForAccessibleObject(accessibilityObjectId);
-        QtAndroid::notifyValueChanged(accessibilityObjectId, value);
+        BobUIAndroid::notifyValueChanged(accessibilityObjectId, value);
     }
 
     // Forward declaration
@@ -165,18 +165,18 @@ namespace QtAndroidAccessibility
         QAccessibleInterface *iface = interfaceFromId(accessibilityObjectId);
         if (iface && iface->isValid()) {
             const QString value = descriptionForInterface(iface);
-            QtAndroid::notifyDescriptionOrNameChanged(accessibilityObjectId, value);
+            BobUIAndroid::notifyDescriptionOrNameChanged(accessibilityObjectId, value);
         }
     }
 
     void notifyScrolledEvent(uint accessiblityObjectId)
     {
-        QtAndroid::notifyScrolledEvent(accessiblityObjectId);
+        BobUIAndroid::notifyScrolledEvent(accessiblityObjectId);
     }
 
     void notifyAnnouncementEvent(uint accessibilityObjectId, const QString &message)
     {
-        QtAndroid::notifyAnnouncementEvent(accessibilityObjectId, message);
+        BobUIAndroid::notifyAnnouncementEvent(accessibilityObjectId, message);
     }
 
     static QVarLengthArray<int, 8> childIdListForAccessibleObject_helper(int objectId)
@@ -301,7 +301,7 @@ namespace QtAndroidAccessibility
         // block it for too long
         QMetaObject::invokeMethod(qApp, [actionInterface, action]() {
             actionInterface->doAction(action);
-        }, Qt::QueuedConnection);
+        }, BobUI::QueuedConnection);
     }
 
     static bool clickAction_helper(int objectId)
@@ -472,7 +472,7 @@ namespace QtAndroidAccessibility
         QJniEnvironment env;
         jstring jstr = env->NewString((jchar*)value.constData(), (jsize)value.size());
         if (env.checkAndClearExceptions())
-            __android_log_print(ANDROID_LOG_WARN, m_qtTag, "Failed to create jstring");
+            __android_log_print(ANDROID_LOG_WARN, m_bobuiTag, "Failed to create jstring");
         return jstr;
     }
 
@@ -541,7 +541,7 @@ namespace QtAndroidAccessibility
             // infos about colums, rows und items.
             return QStringLiteral("android.widget.GridView");
         case QAccessible::Role::Pane:
-            // #TODO QQuickScrollView, QQuickListView (see QTBUG-137806)
+            // #TODO QQuickScrollView, QQuickListView (see BOBUIBUG-137806)
             return QStringLiteral("android.view.ViewGroup");
         case QAccessible::Role::AlertMessage:
         case QAccessible::Role::Animation:
@@ -702,7 +702,7 @@ namespace QtAndroidAccessibility
             }, &info);
         }
         if (!info.valid) {
-            __android_log_print(ANDROID_LOG_WARN, m_qtTag, "Accessibility: populateNode for Invalid ID");
+            __android_log_print(ANDROID_LOG_WARN, m_bobuiTag, "Accessibility: populateNode for Invalid ID");
             return false;
         }
 
@@ -807,23 +807,23 @@ namespace QtAndroidAccessibility
 #define GET_AND_CHECK_STATIC_METHOD(VAR, CLASS, METHOD_NAME, METHOD_SIGNATURE) \
     VAR = env->GetMethodID(CLASS, METHOD_NAME, METHOD_SIGNATURE); \
     if (!VAR) { \
-        __android_log_print(ANDROID_LOG_FATAL, QtAndroid::qtTagText(), QtAndroid::methodErrorMsgFmt(), METHOD_NAME, METHOD_SIGNATURE); \
+        __android_log_print(ANDROID_LOG_FATAL, BobUIAndroid::bobuiTagText(), BobUIAndroid::methodErrorMsgFmt(), METHOD_NAME, METHOD_SIGNATURE); \
         return false; \
     }
 
 #define CHECK_AND_INIT_STATIC_FIELD(TYPE, VAR, CLASS, FIELD_NAME)             \
     if (env.findStaticField<TYPE>(CLASS, FIELD_NAME) == nullptr) {            \
-        __android_log_print(ANDROID_LOG_FATAL, QtAndroid::qtTagText(),        \
-                            QtAndroid::staticFieldErrorMsgFmt(), FIELD_NAME); \
+        __android_log_print(ANDROID_LOG_FATAL, BobUIAndroid::bobuiTagText(),        \
+                            BobUIAndroid::staticFieldErrorMsgFmt(), FIELD_NAME); \
         return false;                                                         \
     }                                                                         \
     VAR = QJniObject::getStaticField<TYPE>(CLASS, FIELD_NAME);
 
     bool registerNatives(QJniEnvironment &env)
     {
-        if (!env.registerNativeMethods("org/qtproject/qt/android/QtNativeAccessibility",
+        if (!env.registerNativeMethods("org/bobuiproject/bobui/android/BobUINativeAccessibility",
                                       methods, sizeof(methods) / sizeof(methods[0]))) {
-            __android_log_print(ANDROID_LOG_FATAL,"Qt A11y", "RegisterNatives failed");
+            __android_log_print(ANDROID_LOG_FATAL,"BobUI A11y", "RegisterNatives failed");
             return false;
         }
 
@@ -838,7 +838,7 @@ namespace QtAndroidAccessibility
         GET_AND_CHECK_STATIC_METHOD(m_setEnabledMethodID, nodeInfoClass, "setEnabled", "(Z)V");
         GET_AND_CHECK_STATIC_METHOD(m_setFocusableMethodID, nodeInfoClass, "setFocusable", "(Z)V");
         GET_AND_CHECK_STATIC_METHOD(m_setFocusedMethodID, nodeInfoClass, "setFocused", "(Z)V");
-        if (QtAndroidPrivate::androidSdkVersion() >= 28) {
+        if (BobUIAndroidPrivate::androidSdkVersion() >= 28) {
             GET_AND_CHECK_STATIC_METHOD(m_setHeadingMethodID, nodeInfoClass, "setHeading", "(Z)V");
         }
         GET_AND_CHECK_STATIC_METHOD(m_setScrollableMethodID, nodeInfoClass, "setScrollable", "(Z)V");
@@ -853,7 +853,7 @@ namespace QtAndroidAccessibility
         CHECK_AND_INIT_STATIC_FIELD(int, RANGE_TYPE_INT, rangeInfoClass, "RANGE_TYPE_INT");
         CHECK_AND_INIT_STATIC_FIELD(int, RANGE_TYPE_FLOAT, rangeInfoClass, "RANGE_TYPE_FLOAT");
         CHECK_AND_INIT_STATIC_FIELD(int, RANGE_TYPE_PERCENT, rangeInfoClass, "RANGE_TYPE_PERCENT");
-        if (QtAndroidPrivate::androidSdkVersion() >= 36) {
+        if (BobUIAndroidPrivate::androidSdkVersion() >= 36) {
             CHECK_AND_INIT_STATIC_FIELD(int, RANGE_TYPE_INDETERMINATE, rangeInfoClass,
                                         "RANGE_TYPE_INDETERMINATE");
         } else {
@@ -864,4 +864,4 @@ namespace QtAndroidAccessibility
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

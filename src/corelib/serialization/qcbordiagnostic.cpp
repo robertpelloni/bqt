@@ -1,6 +1,6 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcborvalue.h"
 #include "qcborvalue_p.h"
@@ -10,11 +10,11 @@
 
 #include <private/qnumeric_p.h>
 #include <qstack.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace  {
 class DiagnosticNotation
@@ -69,9 +69,9 @@ static QString makeFpString(double d)
 {
     QString s;
     quint64 v;
-    if (qt_is_inf(d)) {
+    if (bobui_is_inf(d)) {
         s = (d < 0) ? QStringLiteral("-inf") : QStringLiteral("inf");
-    } else if (qt_is_nan(d)) {
+    } else if (bobui_is_nan(d)) {
         s = QStringLiteral("nan");
     } else if (convertDoubleTo(d, &v)) {
         s = QString::fromLatin1("%1.0").arg(v);
@@ -139,8 +139,8 @@ void DiagnosticNotation::appendString(const QString &s)
 
         if (buf[1] == QChar::Null) {
             const auto toHexUpper = [](char32_t value) -> QChar {
-                // QtMiscUtils::toHexUpper() returns char, we need QChar, so wrap
-                return char16_t(QtMiscUtils::toHexUpper(value));
+                // BobUIMiscUtils::toHexUpper() returns char, we need QChar, so wrap
+                return char16_t(BobUIMiscUtils::toHexUpper(value));
             };
             if (ptr->isHighSurrogate() && (ptr + 1) != end && ptr[1].isLowSurrogate()) {
                 // properly-paired surrogates
@@ -288,7 +288,7 @@ void DiagnosticNotation::appendValue(const QCborValue &v)
     it. The \a opts parameter controls the dialect of the notation. Diagnostic
     notation is useful in debugging, to aid the developer in understanding what
     value is stored in the QCborValue or in a CBOR stream. For that reason, the
-    Qt API provides no support for parsing the diagnostic back into the
+    BobUI API provides no support for parsing the diagnostic back into the
     in-memory format or CBOR stream, though the representation is unique and it
     would be possible.
 
@@ -314,4 +314,4 @@ QString QCborValue::toDiagnosticNotation(DiagnosticNotationOptions opts) const
     return DiagnosticNotation::create(*this, opts);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

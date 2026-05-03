@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTPTHREADDELEGATE_H
 #define QHTTPTHREADDELEGATE_H
@@ -10,16 +10,16 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 #include <QObject>
-#include <QThreadStorage>
+#include <BOBUIhreadStorage>
 #include <QNetworkProxy>
 #include <QSslConfiguration>
 #include <QSslError>
@@ -32,17 +32,17 @@
 #include <QSharedPointer>
 #include "private/qnoncontiguousbytedevice_p.h"
 #include "qnetworkaccessauthenticationmanager_p.h"
-#include <QtNetwork/private/http2protocol_p.h>
-#include <QtNetwork/qhttpheaders.h>
-#include "qtcpkeepaliveconfiguration_p.h"
+#include <BobUINetwork/private/http2protocol_p.h>
+#include <BobUINetwork/qhttpheaders.h>
+#include "bobuicpkeepaliveconfiguration_p.h"
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 #include <memory>
 #endif
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAuthenticator;
 class QHttpNetworkReply;
@@ -60,7 +60,7 @@ public:
 
     // incoming
     bool ssl;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     std::unique_ptr<QSslConfiguration> incomingSslConfiguration;
 #endif
     QHttpNetworkRequest httpRequest;
@@ -70,7 +70,7 @@ public:
     // From backend, modified by us for signal compression
     std::shared_ptr<QAtomicInt> pendingDownloadData;
     std::shared_ptr<QAtomicInt> pendingDownloadProgress;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy cacheProxy;
     QNetworkProxy transparentProxy;
 #endif
@@ -92,7 +92,7 @@ public:
     QString incomingErrorDetail;
     QHttp1Configuration http1Parameters;
     QHttp2Configuration http2Parameters;
-    QTcpKeepAliveConfiguration tcpKeepAliveParameters = {};
+    BOBUIcpKeepAliveConfiguration tcpKeepAliveParameters = {};
 
 protected:
     // The zerocopy download buffer, if used:
@@ -107,10 +107,10 @@ protected:
 
 signals:
     void authenticationRequired(const QHttpNetworkRequest &request, QAuthenticator *);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &, QAuthenticator *);
 #endif
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void encrypted();
     void sslErrors(const QList<QSslError> &, bool *, QList<QSslError> *);
     void sslConfigurationChanged(const QSslConfiguration &);
@@ -146,21 +146,21 @@ protected slots:
     void synchronousHeaderChangedSlot();
     void dataReadProgressSlot(qint64 done, qint64 total);
     void cacheCredentialsSlot(const QHttpNetworkRequest &request, QAuthenticator *authenticator);
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void encryptedSlot();
     void sslErrorsSlot(const QList<QSslError> &errors);
     void preSharedKeyAuthenticationRequiredSlot(QSslPreSharedKeyAuthenticator *authenticator);
 #endif
 
     void synchronousAuthenticationRequiredSlot(const QHttpNetworkRequest &request, QAuthenticator *);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void synchronousProxyAuthenticationRequiredSlot(const QNetworkProxy &, QAuthenticator *);
 #endif
 
 protected:
     // Cache for all the QHttpNetworkConnection objects.
     // This is per thread.
-    static QThreadStorage<QNetworkAccessCache *> connections;
+    static BOBUIhreadStorage<QNetworkAccessCache *> connections;
 
 };
 
@@ -297,6 +297,6 @@ signals:
     void resetData(bool *b);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHTTPTHREADDELEGATE_H

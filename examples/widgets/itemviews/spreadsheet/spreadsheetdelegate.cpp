@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "spreadsheetdelegate.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 SpreadSheetDelegate::SpreadSheetDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
@@ -26,7 +26,7 @@ QWidget *SpreadSheetDelegate::createEditor(QWidget *parent,
     QStringList allStrings;
     for (int i = 1; i<index.model()->rowCount(); i++) {
         QString strItem(index.model()->data(index.sibling(i, index.column()),
-            Qt::EditRole).toString());
+            BobUI::EditRole).toString());
 
         if (!allStrings.contains(strItem))
             allStrings.append(strItem);
@@ -50,14 +50,14 @@ void SpreadSheetDelegate::setEditorData(QWidget *editor,
 {
     QLineEdit *edit = qobject_cast<QLineEdit*>(editor);
     if (edit) {
-        edit->setText(index.model()->data(index, Qt::EditRole).toString());
+        edit->setText(index.model()->data(index, BobUI::EditRole).toString());
         return;
     }
 
     QDateTimeEdit *dateEditor = qobject_cast<QDateTimeEdit *>(editor);
     if (dateEditor) {
         dateEditor->setDate(QDate::fromString(
-                                index.model()->data(index, Qt::EditRole).toString(),
+                                index.model()->data(index, BobUI::EditRole).toString(),
                                 "d/M/yyyy"));
     }
 }

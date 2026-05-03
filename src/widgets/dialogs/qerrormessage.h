@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QERRORMESSAGE_H
 #define QERRORMESSAGE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
 
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(errormessage);
+BOBUI_REQUIRE_CONFIG(errormessage);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QErrorMessagePrivate;
 
@@ -23,7 +23,7 @@ public:
     explicit QErrorMessage(QWidget* parent = nullptr);
     ~QErrorMessage();
 
-    static QErrorMessage * qtHandler();
+    static QErrorMessage * bobuiHandler();
 
 public Q_SLOTS:
     void showMessage(const QString &message);
@@ -37,6 +37,6 @@ private:
     Q_DISABLE_COPY(QErrorMessage)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QERRORMESSAGE_H

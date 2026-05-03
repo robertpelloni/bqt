@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfilesystemwatcher.h"
 #include "qfilesystemwatcher_p.h"
@@ -11,7 +11,7 @@
 #include <qloggingcategory.h>
 #include <qset.h>
 
-#if (defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD)) && QT_CONFIG(inotify)
+#if (defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD)) && BOBUI_CONFIG(inotify)
 #  define USE_INOTIFY
 #endif
 
@@ -20,7 +20,7 @@
 #  include "qfilesystemwatcher_win_p.h"
 #elif defined(USE_INOTIFY)
 #  include "qfilesystemwatcher_inotify_p.h"
-#elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD) || defined(Q_OS_OPENBSD) || defined(QT_PLATFORM_UIKIT)
+#elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD) || defined(Q_OS_OPENBSD) || defined(BOBUI_PLATFORM_UIKIT)
 #  include "qfilesystemwatcher_kqueue_p.h"
 #elif defined(Q_OS_MACOS)
 #  include "qfilesystemwatcher_fsevents_p.h"
@@ -29,11 +29,11 @@
 #include <algorithm>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcWatcher, "qt.core.filesystemwatcher")
+Q_STATIC_LOGGING_CATEGORY(lcWatcher, "bobui.core.filesystemwatcher")
 
 QFileSystemWatcherEngine *QFileSystemWatcherPrivate::createNativeEngine(QObject *parent)
 {
@@ -43,7 +43,7 @@ QFileSystemWatcherEngine *QFileSystemWatcherPrivate::createNativeEngine(QObject 
     // there is a chance that inotify may fail on Linux pre-2.6.13 (August
     // 2005), so we can't just new inotify directly.
     return QInotifyFileSystemWatcherEngine::create(parent);
-#elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD) || defined(Q_OS_OPENBSD) || defined(QT_PLATFORM_UIKIT)
+#elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD) || defined(Q_OS_OPENBSD) || defined(BOBUI_PLATFORM_UIKIT)
     return QKqueueFileSystemWatcherEngine::create(parent);
 #elif defined(Q_OS_MACOS)
     return QFseventsFileSystemWatcherEngine::create(parent);
@@ -129,7 +129,7 @@ void QFileSystemWatcherPrivate::winDriveLockForRemoval(const QString &path)
     // its paths under watch, temporarily storing them should the lock fail.
     Q_Q(QFileSystemWatcher);
     QStringList pathsToBeRemoved;
-    auto pred = [&path] (const QString &f) { return !f.startsWith(path, Qt::CaseInsensitive); };
+    auto pred = [&path] (const QString &f) { return !f.startsWith(path, BobUI::CaseInsensitive); };
     std::remove_copy_if(files.cbegin(), files.cend(),
                         std::back_inserter(pathsToBeRemoved), pred);
     std::remove_copy_if(directories.cbegin(), directories.cend(),
@@ -164,7 +164,7 @@ void  QFileSystemWatcherPrivate::winDriveRemoved(const QString &path)
 
 /*!
     \class QFileSystemWatcher
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QFileSystemWatcher class provides an interface for monitoring files and directories for modifications.
     \ingroup io
     \since 4.2
@@ -320,10 +320,10 @@ QStringList QFileSystemWatcher::addPaths(const QStringList &paths)
     }
     qCDebug(lcWatcher) << "adding" << paths;
     const auto selectEngine = [this, d]() -> QFileSystemWatcherEngine* {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         const QString on = objectName();
 
-        if (Q_UNLIKELY(on.startsWith("_qt_autotest_force_engine_"_L1))) {
+        if (Q_UNLIKELY(on.startsWith("_bobui_autotest_force_engine_"_L1))) {
             // Autotest override case - use the explicitly selected engine only
             const auto forceName = QStringView{on}.mid(26);
             if (forceName == "poller"_L1) {
@@ -460,7 +460,7 @@ QStringList QFileSystemWatcher::files() const
     return d->files;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfilesystemwatcher.cpp"
 #include "moc_qfilesystemwatcher_p.cpp"

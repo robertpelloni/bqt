@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 /*!
@@ -12,7 +12,7 @@
     \ingroup network
     \ingroup ssl
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QSslKey provides a simple API for managing keys.
 
@@ -24,16 +24,16 @@
 #include "qsslkey_p.h"
 #include "qsslsocket.h"
 #include "qsslsocket_p.h"
-#include "qtlsbackend_p.h"
+#include "bobuilsbackend_p.h"
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qiodevice.h>
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qiodevice.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \fn void QSslKeyPrivate::decodePem(const QByteArray &pem, const QByteArray &passPhrase,
@@ -78,7 +78,7 @@ QSslKeyPrivate::~QSslKeyPrivate()
 QByteArray QSslKeyPrivate::decrypt(Cipher cipher, const QByteArray &data, const QByteArray &key, const QByteArray &iv)
 {
     if (const auto *tlsBackend = QSslSocketPrivate::tlsBackendInUse()) {
-        const std::unique_ptr<QTlsPrivate::TlsKey> cryptor(tlsBackend->createKey());
+        const std::unique_ptr<BOBUIlsPrivate::TlsKey> cryptor(tlsBackend->createKey());
         return cryptor->decrypt(cipher, data, key, iv);
     }
 
@@ -88,7 +88,7 @@ QByteArray QSslKeyPrivate::decrypt(Cipher cipher, const QByteArray &data, const 
 QByteArray QSslKeyPrivate::encrypt(Cipher cipher, const QByteArray &data, const QByteArray &key, const QByteArray &iv)
 {
     if (const auto *tlsBackend = QSslSocketPrivate::tlsBackendInUse()) {
-        const std::unique_ptr<QTlsPrivate::TlsKey> cryptor(tlsBackend->createKey());
+        const std::unique_ptr<BOBUIlsPrivate::TlsKey> cryptor(tlsBackend->createKey());
         return cryptor->encrypt(cipher, data, key, iv);
     }
 
@@ -161,7 +161,7 @@ QSslKey::QSslKey(QIODevice *device, QSsl::KeyAlgorithm algorithm, QSsl::Encoding
     QSslKey will take ownership for this key and you must not
     free the key using the native library.
 */
-QSslKey::QSslKey(Qt::HANDLE handle, QSsl::KeyType type)
+QSslKey::QSslKey(BobUI::HANDLE handle, QSsl::KeyType type)
     : d(new QSslKeyPrivate)
 {
     if (auto *tlsKey = d->backend.get())
@@ -278,14 +278,14 @@ QSsl::KeyAlgorithm QSslKey::algorithm() const
   Returns the key in DER encoding.
 
   The \a passPhrase argument should be omitted as DER cannot be
-  encrypted. It will be removed in a future version of Qt.
+  encrypted. It will be removed in a future version of BobUI.
 */
 QByteArray QSslKey::toDer(const QByteArray &passPhrase) const
 {
     if (isNull() || algorithm() == QSsl::Opaque)
         return {};
 
-    // Encrypted DER is nonsense, see QTBUG-41038.
+    // Encrypted DER is nonsense, see BOBUIBUG-41038.
     if (type() == QSsl::PrivateKey && !passPhrase.isEmpty())
         return {};
 
@@ -318,9 +318,9 @@ QByteArray QSslKey::toPem(const QByteArray &passPhrase) const
 
     \warning Use of this function has a high probability of being
     non-portable, and its return value may vary across platforms, and
-    between minor Qt releases.
+    between minor BobUI releases.
 */
-Qt::HANDLE QSslKey::handle() const
+BobUI::HANDLE QSslKey::handle() const
 {
     if (d->backend.get())
         return d->backend->handle();
@@ -354,7 +354,7 @@ bool QSslKey::operator==(const QSslKey &other) const
   returns \c false.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QSslKey &key)
 {
     QDebugStateSaver saver(debug);
@@ -372,4 +372,4 @@ QDebug operator<<(QDebug debug, const QSslKey &key)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

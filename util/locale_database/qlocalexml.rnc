@@ -1,5 +1,5 @@
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 # This is RelaxNG compact schema for qLocaleXML interemediate locale data
 # representation format produced and consumed by the qlocalexml module.
 #
@@ -12,7 +12,7 @@
 
 start = element localeDatabase {
   attribute versionCldr { text },
-  attribute versionQt { text },
+  attribute versionBobUI { text },
   element languageList { Naming+ },
   element scriptList { Naming+ },
   element territoryList { Naming+ },

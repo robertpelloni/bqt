@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "dateformats.h"
 
@@ -57,7 +57,7 @@ DateFormatsWidget::DateFormatsWidget()
     layout->addWidget(standaloneDayNamesLong, row, 2);
 }
 
-QString toString(Qt::DayOfWeek dow)
+QString toString(BobUI::DayOfWeek dow)
 {
     static const char *names[] = {
         "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"

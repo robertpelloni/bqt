@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 
@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     QFrame *centralFrame = new QFrame(this);
 
     QLabel *nameLabel = new QLabel(tr("Comment:"), centralFrame);
-    commentEdit = new QTextEdit(centralFrame);
+    commentEdit = new BOBUIextEdit(centralFrame);
     QLabel *dragLabel = new QLabel(tr("<p>Drag the icon to a filer "
                                       "window or the desktop background:</p>"),
                                       centralFrame);
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 //! [0]
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton
+    if (event->button() == BobUI::LeftButton
         && iconLabel->geometry().contains(event->pos())) {
 
 //! [1]
@@ -46,21 +46,21 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 //! [1]
         drag->setPixmap(iconPixmap);
 
-        Qt::DropAction dropAction = drag->exec();
+        BobUI::DropAction dropAction = drag->exec();
 //! [0]
 
         QString actionText;
         switch (dropAction) {
-            case Qt::CopyAction:
+            case BobUI::CopyAction:
                 actionText = tr("The text was copied.");
                 break;
-            case Qt::MoveAction:
+            case BobUI::MoveAction:
                 actionText = tr("The text was moved.");
                 break;
-            case Qt::LinkAction:
+            case BobUI::LinkAction:
                 actionText = tr("The text was linked.");
                 break;
-            case Qt::IgnoreAction:
+            case BobUI::IgnoreAction:
                 actionText = tr("The drag was ignored.");
                 break;
             default:

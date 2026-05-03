@@ -1,26 +1,26 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfonticonengine_p.h"
 
-#ifndef QT_NO_ICON
+#ifndef BOBUI_NO_ICON
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qset.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qset.h>
 
-#include <QtGui/qfontdatabase.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpainterpath.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qtextlayout.h>
+#include <BobUIGui/qfontdatabase.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpainterpath.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/bobuiextlayout.h>
 
-#include <QtGui/private/qfont_p.h>
-#include <QtGui/private/qfontengine_p.h>
+#include <BobUIGui/private/qfont_p.h>
+#include <BobUIGui/private/qfontengine_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QFontIconEngine::QFontIconEngine(const QString &iconName, const QFont &font)
     : m_iconName(iconName)
@@ -92,7 +92,7 @@ QSize QFontIconEngine::actualSize(const QSize &size, QIcon::Mode mode, QIcon::St
     if (!result.isValid())
         return QIconEngine::actualSize(size, mode, state);
 
-    return result.scaled(size, Qt::KeepAspectRatio).toSize();
+    return result.scaled(size, BobUI::KeepAspectRatio).toSize();
 }
 
 QPixmap QFontIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
@@ -107,7 +107,7 @@ QPixmap QFontIconEngine::scaledPixmap(const QSize &size, QIcon::Mode mode, QIcon
     if (cacheKey != m_pixmapCacheKey || m_pixmap.deviceIndependentSize() != fittingSize
      || m_pixmap.devicePixelRatio() != scale) {
         m_pixmap = QPixmap(fittingSize * scale);
-        m_pixmap.fill(Qt::transparent);
+        m_pixmap.fill(BobUI::transparent);
         m_pixmap.setDevicePixelRatio(scale);
 
         if (!m_pixmap.isNull()) {
@@ -129,7 +129,7 @@ void QFontIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mo
     QFont renderFont(m_iconFont);
     renderFont.setPixelSize(rect.height());
 
-    QColor color = Qt::black;
+    QColor color = BobUI::black;
     QPalette palette;
     switch (mode) {
     case QIcon::Active:
@@ -158,7 +158,7 @@ void QFontIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mo
         if (glyph_width > 0 && glyph_height > 0) {
             QFixedPoint pt(QFixed(-glyph_x), QFixed(-glyph_y));
             QPainterPath path;
-            path.setFillRule(Qt::WindingFill);
+            path.setFillRule(BobUI::WindingFill);
             engine->addGlyphsToPath(&glyphIndex, &pt, 1, &path, {});
             // make the glyph fit tightly into rect
             const QRectF pathBoundingRect = path.boundingRect();
@@ -169,14 +169,14 @@ void QFontIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mo
             painter->translate(topLeft);
 
             painter->setRenderHint(QPainter::Antialiasing);
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->setBrush(color);
             painter->drawPath(path);
         }
     } else if (const QString text = string(); !text.isEmpty()) {
         painter->setFont(renderFont);
         painter->setPen(color);
-        painter->drawText(rect, Qt::AlignCenter, text);
+        painter->drawText(rect, BobUI::AlignCenter, text);
     }
     painter->restore();
 }
@@ -195,7 +195,7 @@ glyph_t QFontIconEngine::glyph() const
         if (!m_glyph) {
             // May not be a named glyph, but there might be a ligature for the
             // icon name.
-            QTextLayout layout(m_iconName, m_iconFont);
+            BOBUIextLayout layout(m_iconName, m_iconFont);
             layout.beginLayout();
             layout.createLine();
             layout.endLayout();
@@ -210,6 +210,6 @@ glyph_t QFontIconEngine::glyph() const
     return m_glyph;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_ICON
+#endif // BOBUI_NO_ICON

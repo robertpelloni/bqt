@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-\page qt-wrap-ui.html
-\ingroup cmake-macros-qtwidgets
+\page bobui-wrap-ui.html
+\ingroup cmake-macros-bobuiwidgets
 
-\title qt_wrap_ui
-\keyword qt6_wrap_ui
+\title bobui_wrap_ui
+\keyword bobui6_wrap_ui
 
 \summary {Creates sources for .ui files.}
 
@@ -15,11 +15,11 @@
 \section1 Synopsis
 
 \badcode
-qt_wrap_ui(<VAR> ui_file1 [ui_file2 ...]
+bobui_wrap_ui(<VAR> ui_file1 [ui_file2 ...]
            [OPTIONS ...])
 \endcode
 
-\versionlessCMakeCommandsNote qt6_wrap_ui()
+\versionlessCMakeCommandsNote bobui6_wrap_ui()
 
 \section1 Description
 
@@ -31,7 +31,7 @@ directory. The paths of the generated header files are added to \c{<VAR>}.
 more convenient way to process \c{.ui} files with \c{uic}.
 
 Since 6.8:
-\note \l{qt6_add_ui}{qt_add_ui} is the recommended way to process \c{.ui}
+\note \l{bobui6_add_ui}{bobui_add_ui} is the recommended way to process \c{.ui}
 files.
 
 \section1 Options
@@ -41,15 +41,15 @@ You can find possible options in the \l{uic}{uic documentation}.
 
 \section1 Examples
 
-\snippet cmake-macros/examples.cmake qt_wrap_ui
+\snippet cmake-macros/examples.cmake bobui_wrap_ui
 */
 
 /*!
-\page qt-add-ui.html
-\ingroup cmake-macros-qtwidgets
+\page bobui-add-ui.html
+\ingroup cmake-macros-bobuiwidgets
 
-\title qt_add_ui
-\keyword qt6_add_ui
+\title bobui_add_ui
+\keyword bobui6_add_ui
 
 \summary {Adds .ui files to a target.}
 
@@ -58,13 +58,13 @@ You can find possible options in the \l{uic}{uic documentation}.
 \section1 Synopsis
 
 \badcode
-qt_add_ui(<TARGET>
+bobui_add_ui(<TARGET>
           SOURCES file1.ui [file2.ui ...]
           [INCLUDE_PREFIX <PREFIX>]
           [OPTIONS ...])
 \endcode
 
-\versionlessCMakeCommandsNote qt6_add_ui()
+\versionlessCMakeCommandsNote bobui6_add_ui()
 
 \cmakecommandsince 6.8
 
@@ -104,24 +104,24 @@ You can find possible options in the \l{uic}{uic documentation}.
 In the following snippet, the \c{mainwindow.cpp} file includes
 \c{ui_mainwindow.h} and \c{mainwindow.h}.
 
-\snippet cmake-macros/examples.cpp qt_add_ui_1
+\snippet cmake-macros/examples.cpp bobui_add_ui_1
 
 \c{CMakeLists.txt} is implemented as follows and it calls
-\c{qt_add_ui} to add \c{ui_mainwindow.h} to the \c{myapp} target.
+\c{bobui_add_ui} to add \c{ui_mainwindow.h} to the \c{myapp} target.
 
-\snippet cmake-macros/examples.cmake qt_add_ui_1
+\snippet cmake-macros/examples.cmake bobui_add_ui_1
 
 In the above example, \c{ui_mainwindow.h} is included without a prefix. So the
 \c{INCLUDE_PREFIX} argument is not specified.
 
 \section2 With INCLUDE_PREFIX
 
-\snippet cmake-macros/examples.cpp qt_add_ui_2
+\snippet cmake-macros/examples.cpp bobui_add_ui_2
 
 In the above snippet, \c{mainwindow.cpp} includes \c{ui_mainwindow.h} with a
 prefix.
 
-\snippet cmake-macros/examples.cmake qt_add_ui_2
+\snippet cmake-macros/examples.cmake bobui_add_ui_2
 
 Since \c{ui_mainwindow.h} is included with a prefix, the \c{INCLUDE_PREFIX}
 argument is specified as \c{src/files} in the above example.
@@ -133,43 +133,43 @@ In the following snippets, both \c{widget1.cpp} and \c{widget2.cpp} include
 
 \c{widget1.cpp}:
 
-\snippet cmake-macros/examples.cpp qt_add_ui_3_1
+\snippet cmake-macros/examples.cpp bobui_add_ui_3_1
 
 \c{widget2.cpp}:
 
-\snippet cmake-macros/examples.cpp qt_add_ui_3_2
+\snippet cmake-macros/examples.cpp bobui_add_ui_3_2
 
 Both \c{ui_widget1.h} and \c{ui_widget2.h} are included with the same prefix
 
-\snippet cmake-macros/examples.cmake qt_add_ui_3
+\snippet cmake-macros/examples.cmake bobui_add_ui_3
 
 In this case, the \c{INCLUDE_PREFIX} argument can be specified as \c{src/files}
 for both files in the above snippet.
 
-\section1 When to prefer \c{qt_add_ui} over \c{AUTOUIC}?
+\section1 When to prefer \c{bobui_add_ui} over \c{AUTOUIC}?
 
-\c{qt_add_ui} has some advantages over \l{CMake AUTOUIC Documentation}{AUTOUIC}:
+\c{bobui_add_ui} has some advantages over \l{CMake AUTOUIC Documentation}{AUTOUIC}:
 
 \list
-\li \c{qt_add_ui} ensures that the \c{.ui} files are generated
+\li \c{bobui_add_ui} ensures that the \c{.ui} files are generated
 correctly during the first build, for the \c{Ninja} and \c{Ninja Multi-Config}
 generators.
 
-\li \c{qt_add_ui} guarantees that the generated \c{.h} files are
+\li \c{bobui_add_ui} guarantees that the generated \c{.h} files are
 not leaked outside the build directory.
 
-\li Since \c{qt_add_ui} does not scan source files, it provides a faster build
+\li Since \c{bobui_add_ui} does not scan source files, it provides a faster build
 than \c{AUTOUIC}.
 
 \endlist
 
-\section1 When to prefer \c{qt_add_ui} over \c{qt_wrap_ui}?
+\section1 When to prefer \c{bobui_add_ui} over \c{bobui_wrap_ui}?
 
-\c{qt_add_ui} has the \c{INCLUDE_PREFIX} argument, which can be used to
+\c{bobui_add_ui} has the \c{INCLUDE_PREFIX} argument, which can be used to
 specify the include prefix for the generated header files.
 
-\note It is not recommended to use both \c{qt_add_ui} and
+\note It is not recommended to use both \c{bobui_add_ui} and
 \l{CMake AUTOUIC Documentation}{AUTOUIC} for the same target.
 
-\sa {qt_wrap_ui}
+\sa {bobui_wrap_ui}
 */

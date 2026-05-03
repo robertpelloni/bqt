@@ -1,27 +1,27 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLUGIN_H
 #define QPLUGIN_H
 
 #if 0
-#pragma qt_class(QtPlugin)
+#pragma bobui_class(BobUIPlugin)
 #endif
 
-#include <QtCore/qobject.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qjsonobject.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qjsonobject.h>
 
-#include <QtCore/q20algorithm.h>
+#include <BobUICore/q20algorithm.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-// Used up to Qt 6.2
+// Used up to BobUI 6.2
 inline constexpr unsigned char qPluginArchRequirements()
 {
     return 0
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             | 1
 #endif
 #ifdef __AVX2__
@@ -33,7 +33,7 @@ inline constexpr unsigned char qPluginArchRequirements()
     ;
 }
 
-typedef QObject *(*QtPluginInstanceFunction)();
+typedef QObject *(*BobUIPluginInstanceFunction)();
 struct QPluginMetaData
 {
     static constexpr quint8 CurrentMetaDataVersion = 1;
@@ -60,7 +60,7 @@ struct QPluginMetaData
 #elif defined(__SSE__) || defined(__MMX___)
         v = 1;      // x86-64 baseline: SSE and SSE2
 #endif
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         v |= 0x80;
 #endif
         return v;
@@ -68,8 +68,8 @@ struct QPluginMetaData
 
     struct Header {
         quint8 version = CurrentMetaDataVersion;
-        quint8 qt_major_version = QT_VERSION_MAJOR;
-        quint8 qt_minor_version = QT_VERSION_MINOR;
+        quint8 bobui_major_version = BOBUI_VERSION_MAJOR;
+        quint8 bobui_minor_version = BOBUI_VERSION_MINOR;
         quint8 plugin_arch_requirements = archRequirements();
     };
     static_assert(alignof(Header) == 1, "Alignment of header incorrect with this compiler");
@@ -83,7 +83,7 @@ struct QPluginMetaData
 
     struct ElfNoteHeader {
         static constexpr quint32 NoteType = 0x74510001;
-        static constexpr char NoteName[] = "qt-project!";
+        static constexpr char NoteName[] = "bobui-project!";
 
         // ELF note header
         quint32 n_namesz = sizeof(name);
@@ -103,16 +103,16 @@ struct QPluginMetaData
     const void *data;
     size_t size;
 };
-typedef QPluginMetaData (*QtPluginMetaDataFunction)();
+typedef QPluginMetaData (*BobUIPluginMetaDataFunction)();
 
 
 struct Q_CORE_EXPORT QStaticPlugin
 {
 public:
-    constexpr QStaticPlugin(QtPluginInstanceFunction i, QtPluginMetaDataFunction m)
+    constexpr QStaticPlugin(BobUIPluginInstanceFunction i, BobUIPluginMetaDataFunction m)
         : instance(i), rawMetaDataSize(m().size), rawMetaData(m().data)
     {}
-    QtPluginInstanceFunction instance;
+    BobUIPluginInstanceFunction instance;
     QJsonObject metaData() const;
 
 private:
@@ -125,21 +125,21 @@ Q_DECLARE_TYPEINFO(QStaticPlugin, Q_PRIMITIVE_TYPE);
 void Q_CORE_EXPORT qRegisterStaticPluginFunction(QStaticPlugin staticPlugin);
 
 #if defined(Q_OF_ELF) || (defined(Q_OS_WIN) && (defined (Q_CC_GNU) || defined(Q_CC_CLANG)))
-#  define QT_PLUGIN_METADATA_SECTION \
-    __attribute__ ((section (".qtmetadata"))) __attribute__((used))
+#  define BOBUI_PLUGIN_METADATA_SECTION \
+    __attribute__ ((section (".bobuimetadata"))) __attribute__((used))
 #elif defined(Q_OS_DARWIN)
-#  define QT_PLUGIN_METADATA_SECTION \
-    __attribute__ ((section ("__TEXT,qtmetadata"))) __attribute__((used))
+#  define BOBUI_PLUGIN_METADATA_SECTION \
+    __attribute__ ((section ("__TEXT,bobuimetadata"))) __attribute__((used))
 #elif defined(Q_CC_MSVC)
 // TODO: Implement section parsing for MSVC
-#pragma section(".qtmetadata",read,shared)
-#  define QT_PLUGIN_METADATA_SECTION \
-    __declspec(allocate(".qtmetadata"))
+#pragma section(".bobuimetadata",read,shared)
+#  define BOBUI_PLUGIN_METADATA_SECTION \
+    __declspec(allocate(".bobuimetadata"))
 #else
-#  define QT_PLUGIN_METADATA_SECTION
+#  define BOBUI_PLUGIN_METADATA_SECTION
 #endif
 
-// Since Qt 6.3
+// Since BobUI 6.3
 template <auto (&PluginMetaData)> class QPluginMetaDataV2
 {
     struct ElfNotePayload : QPluginMetaData::ElfNoteHeader {
@@ -162,21 +162,21 @@ template <auto (&PluginMetaData)> class QPluginMetaDataV2
         constexpr StaticPayload() { QPluginMetaData::copy(payload, PluginMetaData); }
     };
 
-#if defined(QT_STATICPLUGIN)
-#  define QT_PLUGIN_METADATAV2_SECTION
+#if defined(BOBUI_STATICPLUGIN)
+#  define BOBUI_PLUGIN_METADATAV2_SECTION
     using Payload = StaticPayload;
 #elif defined(Q_OF_ELF)
 #  ifdef Q_CC_CLANG
-#    define QT_PLUGIN_METADATAV2_SECTION                                                            \
-            __attribute__((section(".note.qt.metadata"), used, aligned(alignof(void *)),            \
+#    define BOBUI_PLUGIN_METADATAV2_SECTION                                                            \
+            __attribute__((section(".note.bobui.metadata"), used, aligned(alignof(void *)),            \
                            no_sanitize("address")))
 #  else
-#    define QT_PLUGIN_METADATAV2_SECTION                                                            \
-            __attribute__((section(".note.qt.metadata"), used, aligned(alignof(void *))))
+#    define BOBUI_PLUGIN_METADATAV2_SECTION                                                            \
+            __attribute__((section(".note.bobui.metadata"), used, aligned(alignof(void *))))
 #  endif
     using Payload = ElfNotePayload;
 #else
-#  define QT_PLUGIN_METADATAV2_SECTION      QT_PLUGIN_METADATA_SECTION
+#  define BOBUI_PLUGIN_METADATAV2_SECTION      BOBUI_PLUGIN_METADATA_SECTION
     using Payload = RegularPayload;
 #endif
 
@@ -192,68 +192,68 @@ public:
 };
 
 #define Q_IMPORT_PLUGIN(PLUGIN)                                                                            \
-        extern const QT_PREPEND_NAMESPACE(QStaticPlugin) QT_MANGLE_NAMESPACE(qt_static_plugin_##PLUGIN)(); \
+        extern const BOBUI_PREPEND_NAMESPACE(QStaticPlugin) BOBUI_MANGLE_NAMESPACE(bobui_static_plugin_##PLUGIN)(); \
         namespace {                                                                                        \
             struct Static##PLUGIN##PluginInstance {                                                        \
                 Static##PLUGIN##PluginInstance() {                                                         \
-                    qRegisterStaticPluginFunction(QT_MANGLE_NAMESPACE(qt_static_plugin_##PLUGIN)());       \
+                    qRegisterStaticPluginFunction(BOBUI_MANGLE_NAMESPACE(bobui_static_plugin_##PLUGIN)());       \
                 }                                                                                          \
             };                                                                                             \
         } /* namespace */                                                                                  \
-        /* QTBUG-139615: static, to work around bug in clazy-non-pod-global-static */                      \
+        /* BOBUIBUG-139615: static, to work around bug in clazy-non-pod-global-static */                      \
         static Static##PLUGIN##PluginInstance static##PLUGIN##Instance;                                    \
 
-#if defined(QT_PLUGIN_RESOURCE_INIT_FUNCTION)
-#  define QT_PLUGIN_RESOURCE_INIT \
-          extern void QT_PLUGIN_RESOURCE_INIT_FUNCTION(); \
-          QT_PLUGIN_RESOURCE_INIT_FUNCTION();
+#if defined(BOBUI_PLUGIN_RESOURCE_INIT_FUNCTION)
+#  define BOBUI_PLUGIN_RESOURCE_INIT \
+          extern void BOBUI_PLUGIN_RESOURCE_INIT_FUNCTION(); \
+          BOBUI_PLUGIN_RESOURCE_INIT_FUNCTION();
 #else
-#  define QT_PLUGIN_RESOURCE_INIT
+#  define BOBUI_PLUGIN_RESOURCE_INIT
 #endif
 
 #define Q_PLUGIN_INSTANCE(IMPLEMENTATION) \
         { \
-            static QT_PREPEND_NAMESPACE(QPointer)<QT_PREPEND_NAMESPACE(QObject)> _instance; \
+            static BOBUI_PREPEND_NAMESPACE(QPointer)<BOBUI_PREPEND_NAMESPACE(QObject)> _instance; \
             if (!_instance) {    \
-                QT_PLUGIN_RESOURCE_INIT \
+                BOBUI_PLUGIN_RESOURCE_INIT \
                 _instance = new IMPLEMENTATION; \
             } \
             return _instance; \
         }
 
-#if defined(QT_STATICPLUGIN)
-#  define QT_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)                                     \
-    static QT_PREPEND_NAMESPACE(QObject) *qt_plugin_instance_##MANGLEDNAME()                        \
+#if defined(BOBUI_STATICPLUGIN)
+#  define BOBUI_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)                                     \
+    static BOBUI_PREPEND_NAMESPACE(QObject) *bobui_plugin_instance_##MANGLEDNAME()                        \
     Q_PLUGIN_INSTANCE(PLUGINCLASS)                                                                  \
-    const QT_PREPEND_NAMESPACE(QStaticPlugin) QT_MANGLE_NAMESPACE(qt_static_plugin_##MANGLEDNAME)() \
-    { return { qt_plugin_instance_##MANGLEDNAME, qt_plugin_query_metadata_##MANGLEDNAME}; }         \
+    const BOBUI_PREPEND_NAMESPACE(QStaticPlugin) BOBUI_MANGLE_NAMESPACE(bobui_static_plugin_##MANGLEDNAME)() \
+    { return { bobui_plugin_instance_##MANGLEDNAME, bobui_plugin_query_metadata_##MANGLEDNAME}; }         \
     /**/
 
-#  define QT_MOC_EXPORT_PLUGIN(PLUGINCLASS, PLUGINCLASSNAME) \
-    static QPluginMetaData qt_plugin_query_metadata_##PLUGINCLASSNAME() \
-        { return { qt_pluginMetaData_##PLUGINCLASSNAME, sizeof qt_pluginMetaData_##PLUGINCLASSNAME }; } \
-    QT_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, PLUGINCLASSNAME)
+#  define BOBUI_MOC_EXPORT_PLUGIN(PLUGINCLASS, PLUGINCLASSNAME) \
+    static QPluginMetaData bobui_plugin_query_metadata_##PLUGINCLASSNAME() \
+        { return { bobui_pluginMetaData_##PLUGINCLASSNAME, sizeof bobui_pluginMetaData_##PLUGINCLASSNAME }; } \
+    BOBUI_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, PLUGINCLASSNAME)
 
-#  define QT_MOC_EXPORT_PLUGIN_V2(PLUGINCLASS, MANGLEDNAME, MD)                                 \
-    static QT_PREPEND_NAMESPACE(QPluginMetaData) qt_plugin_query_metadata_##MANGLEDNAME()       \
+#  define BOBUI_MOC_EXPORT_PLUGIN_V2(PLUGINCLASS, MANGLEDNAME, MD)                                 \
+    static BOBUI_PREPEND_NAMESPACE(QPluginMetaData) bobui_plugin_query_metadata_##MANGLEDNAME()       \
     { static constexpr QPluginMetaDataV2<MD> md{}; return md; }                                 \
-    QT_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)
+    BOBUI_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)
 #else
-#  define QT_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)                                 \
-    extern "C" Q_DECL_EXPORT QT_PREPEND_NAMESPACE(QObject) *qt_plugin_instance()                \
+#  define BOBUI_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)                                 \
+    extern "C" Q_DECL_EXPORT BOBUI_PREPEND_NAMESPACE(QObject) *bobui_plugin_instance()                \
     Q_PLUGIN_INSTANCE(PLUGINCLASS)                                                              \
     /**/
 
-#  define QT_MOC_EXPORT_PLUGIN(PLUGINCLASS, PLUGINCLASSNAME)      \
+#  define BOBUI_MOC_EXPORT_PLUGIN(PLUGINCLASS, PLUGINCLASSNAME)      \
             extern "C" Q_DECL_EXPORT \
-            QPluginMetaData qt_plugin_query_metadata() \
-            { return { qt_pluginMetaData_##PLUGINCLASSNAME, sizeof qt_pluginMetaData_##PLUGINCLASSNAME }; } \
-            QT_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, PLUGINCLASSNAME)
+            QPluginMetaData bobui_plugin_query_metadata() \
+            { return { bobui_pluginMetaData_##PLUGINCLASSNAME, sizeof bobui_pluginMetaData_##PLUGINCLASSNAME }; } \
+            BOBUI_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, PLUGINCLASSNAME)
 
-#  define QT_MOC_EXPORT_PLUGIN_V2(PLUGINCLASS, MANGLEDNAME, MD)                                 \
-    extern "C" Q_DECL_EXPORT QT_PREPEND_NAMESPACE(QPluginMetaData) qt_plugin_query_metadata_v2()\
-    { static constexpr QT_PLUGIN_METADATAV2_SECTION QPluginMetaDataV2<MD> md{}; return md; }    \
-    QT_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)
+#  define BOBUI_MOC_EXPORT_PLUGIN_V2(PLUGINCLASS, MANGLEDNAME, MD)                                 \
+    extern "C" Q_DECL_EXPORT BOBUI_PREPEND_NAMESPACE(QPluginMetaData) bobui_plugin_query_metadata_v2()\
+    { static constexpr BOBUI_PLUGIN_METADATAV2_SECTION QPluginMetaDataV2<MD> md{}; return md; }    \
+    BOBUI_MOC_EXPORT_PLUGIN_COMMON(PLUGINCLASS, MANGLEDNAME)
 #endif
 
 #define Q_EXPORT_PLUGIN(PLUGIN) \
@@ -265,6 +265,6 @@ public:
     static_assert(false, "Old plugin system used")
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_PLUGIN_H

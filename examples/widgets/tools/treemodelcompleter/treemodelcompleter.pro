@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(completer))
+BOBUI += widgets
+requires(bobuiConfig(completer))
 
 HEADERS   = treemodelcompleter.h \
             mainwindow.h
@@ -9,5 +9,5 @@ SOURCES   = treemodelcompleter.cpp \
 RESOURCES = treemodelcompleter.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/treemodelcompleter
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/treemodelcompleter
 INSTALLS += target

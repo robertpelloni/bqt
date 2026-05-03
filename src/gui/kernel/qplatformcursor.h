@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QPLATFORMCURSOR_H
 #define QPLATFORMCURSOR_H
 
@@ -9,18 +9,18 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QList>
-#include <QtGui/QImage>
-#include <QtGui/QMouseEvent>
-#include <QtCore/QObject>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/QList>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QMouseEvent>
+#include <BobUICore/QObject>
 #include <qpa/qplatformscreen.h>
-#include <QtGui/QCursor>
+#include <BobUIGui/QCursor>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 // Cursor graphics management
@@ -32,7 +32,7 @@ public:
     QPoint hotspot() const { return hot; }
     void set(const uchar *data, const uchar *mask, int width, int height, int hotX, int hotY);
     void set(const QImage &image, int hx, int hy);
-    void set(Qt::CursorShape);
+    void set(BobUI::CursorShape);
 private:
     static void createSystemCursor(int id);
     QImage cursorImage;
@@ -52,11 +52,11 @@ public:
 
     // input methods
     virtual void pointerEvent(const QMouseEvent & event) { Q_UNUSED(event); }
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     virtual void changeCursor(QCursor * windowCursor, QWindow * window) = 0;
     virtual void setOverrideCursor(const QCursor &);
     virtual void clearOverrideCursor();
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
     virtual QPoint pos() const;
     virtual void setPos(const QPoint &pos);
     virtual QSize size() const;
@@ -66,7 +66,7 @@ public:
     static void setCapability(Capability c) { m_capabilities.setFlag(c); }
 
 private:
-    friend void qt_qpa_set_cursor(QWidget * w, bool force);
+    friend void bobui_qpa_set_cursor(QWidget * w, bool force);
     friend class QApplicationPrivate;
 
     static Capabilities m_capabilities;
@@ -74,6 +74,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPlatformCursor::Capabilities)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMCURSOR_H

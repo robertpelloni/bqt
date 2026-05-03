@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2012 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "global/qglobal.h"
 #include "qplatformdefs.h"
@@ -10,16 +10,16 @@
 #include <qdebug.h>
 #include "qatomic.h"
 #include "qfutex_p.h"
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qmutex_p.h"
 
-#ifndef QT_ALWAYS_USE_FUTEX
+#ifndef BOBUI_ALWAYS_USE_FUTEX
 #include "private/qfreelist_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtFutex;
+using namespace BobUIFutex;
 static inline QMutexPrivate *dummyFutexValue()
 {
     return reinterpret_cast<QMutexPrivate *>(quintptr(3));
@@ -27,7 +27,7 @@ static inline QMutexPrivate *dummyFutexValue()
 
 /*
     \class QBasicMutex
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QMutex POD
     \internal
 
@@ -40,7 +40,7 @@ static inline QMutexPrivate *dummyFutexValue()
 
 /*!
     \class QMutex
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMutex class provides access serialization between threads.
 
     \threadsafe
@@ -225,7 +225,7 @@ void QBasicMutex::destroyInternal(void *ptr)
 
 /*!
     \class QRecursiveMutex
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.14
     \brief The QRecursiveMutex class provides access serialization between threads.
 
@@ -320,14 +320,14 @@ QRecursiveMutex::~QRecursiveMutex()
 */
 bool QRecursiveMutex::tryLock(QDeadlineTimer timeout) noexcept(LockIsNoexcept)
 {
-    unsigned tsanFlags = QtTsan::MutexWriteReentrant | QtTsan::TryLock;
-    QtTsan::mutexPreLock(this, tsanFlags);
+    unsigned tsanFlags = BobUITsan::MutexWriteReentrant | BobUITsan::TryLock;
+    BobUITsan::mutexPreLock(this, tsanFlags);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    BobUI::HANDLE self = BOBUIhread::currentThreadId();
     if (owner.loadRelaxed() == self) {
         ++count;
         Q_ASSERT_X(count != 0, "QMutex::lock", "Overflow in recursion counter");
-        QtTsan::mutexPostLock(this, tsanFlags, 0);
+        BobUITsan::mutexPostLock(this, tsanFlags, 0);
         return true;
     }
     bool success = true;
@@ -340,9 +340,9 @@ bool QRecursiveMutex::tryLock(QDeadlineTimer timeout) noexcept(LockIsNoexcept)
     if (success)
         owner.storeRelaxed(self);
     else
-        tsanFlags |= QtTsan::TryLockFailed;
+        tsanFlags |= BobUITsan::TryLockFailed;
 
-    QtTsan::mutexPostLock(this, tsanFlags, 0);
+    BobUITsan::mutexPostLock(this, tsanFlags, 0);
 
     return success;
 }
@@ -406,8 +406,8 @@ bool QRecursiveMutex::tryLock(QDeadlineTimer timeout) noexcept(LockIsNoexcept)
 */
 void QRecursiveMutex::unlock() noexcept
 {
-    Q_ASSERT(owner.loadRelaxed() == QThread::currentThreadId());
-    QtTsan::mutexPreUnlock(this, 0u);
+    Q_ASSERT(owner.loadRelaxed() == BOBUIhread::currentThreadId());
+    BobUITsan::mutexPreUnlock(this, 0u);
 
     if (count > 0) {
         count--;
@@ -416,13 +416,13 @@ void QRecursiveMutex::unlock() noexcept
         mutex.unlock();
     }
 
-    QtTsan::mutexPostUnlock(this, 0u);
+    BobUITsan::mutexPostUnlock(this, 0u);
 }
 
 
 /*!
     \class QMutexLocker
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMutexLocker class is a convenience class that simplifies
     locking and unlocking mutexes.
 
@@ -564,7 +564,7 @@ void QRecursiveMutex::unlock() noexcept
 
 /*
   For a rough introduction on how this works, refer to
-  http://woboq.com/blog/internals-of-qmutex-in-qt5.html
+  http://woboq.com/blog/internals-of-qmutex-in-bobui5.html
   which explains a slightly simplified version of it.
   The differences are that here we try to work with timeout (requires the
   possiblyUnlocked flag) and that we only wake one thread when unlocking
@@ -651,7 +651,7 @@ void QBasicMutex::lockInternal() noexcept(FutexAlwaysAvailable)
 /*!
     \internal helper for lock(int)
  */
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 bool QBasicMutex::lockInternal(int timeout) noexcept(FutexAlwaysAvailable)
 {
     if (timeout == 0)
@@ -697,7 +697,7 @@ bool QBasicMutex::lockInternal(QDeadlineTimer deadlineTimer) noexcept(FutexAlway
         }
     }
 
-#if !defined(QT_ALWAYS_USE_FUTEX)
+#if !defined(BOBUI_ALWAYS_USE_FUTEX)
     while (!fastTryLock()) {
         QMutexPrivate *copy = d_ptr.loadAcquire();
         if (!copy) // if d is 0, the mutex is unlocked
@@ -801,7 +801,7 @@ bool QBasicMutex::lockInternal(QDeadlineTimer deadlineTimer) noexcept(FutexAlway
 #endif
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 // not in removed_api.cpp because we need futexAvailable()
 /*!
     \internal
@@ -858,8 +858,8 @@ void QBasicMutex::unlockInternal(void *copy) noexcept
         return unlockInternalFutex(copy);
     }
 
-#if !defined(QT_ALWAYS_USE_FUTEX)
-    static_assert(!FutexAlwaysAvailable, "mismatch with QT_ALWAYS_USE_FUTEX");
+#if !defined(BOBUI_ALWAYS_USE_FUTEX)
+    static_assert(!FutexAlwaysAvailable, "mismatch with BOBUI_ALWAYS_USE_FUTEX");
     QMutexPrivate *d = reinterpret_cast<QMutexPrivate *>(copy);
 
     // If no one is waiting for the lock anymore, we should reset d to 0x0.
@@ -882,12 +882,12 @@ void QBasicMutex::unlockInternal(void *copy) noexcept
     }
     d->deref();
 #else
-    static_assert(FutexAlwaysAvailable, "mismatch with QT_ALWAYS_USE_FUTEX");
+    static_assert(FutexAlwaysAvailable, "mismatch with BOBUI_ALWAYS_USE_FUTEX");
     Q_UNUSED(copy);
 #endif
 }
 
-#if !defined(QT_ALWAYS_USE_FUTEX)
+#if !defined(BOBUI_ALWAYS_USE_FUTEX)
 //The freelist management
 namespace {
 struct FreeListConstants : QFreeListDefaultConstants {
@@ -946,9 +946,9 @@ void QMutexPrivate::derefWaiters(int value) noexcept
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#if defined(QT_ALWAYS_USE_FUTEX)
+#if defined(BOBUI_ALWAYS_USE_FUTEX)
 // nothing
 #elif defined(Q_OS_DARWIN)
 #  include "qmutex_mac.cpp"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/qguiapplication_p.h>
 
@@ -23,42 +23,42 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QStyledItemDelegate>
-#include <QTableWidget>
-#include <QTimer>
-#include <QTreeWidget>
-#include <QTest>
+#include <BOBUIableWidget>
+#include <BOBUIimer>
+#include <BOBUIreeWidget>
+#include <BOBUIest>
 #include <QVBoxLayout>
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 #include <private/qabstractitemview_p.h>
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 #include <vector>
 #include <memory>
 
-Q_DECLARE_METATYPE(Qt::ItemFlags);
+Q_DECLARE_METATYPE(BobUI::ItemFlags);
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 using IntList = QList<int>;
 
 // Move cursor out of widget area to avoid undesired interaction on Mac.
 static inline void moveCursorAway(const QWidget *topLevel)
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursor::setPos(topLevel->geometry().topRight() + QPoint(100, 0));
 #else
     Q_UNUSED(topLevel);
 #endif
 }
 
-class GeometriesTestView : public QTableView
+class GeometriesTestView : public BOBUIableView
 {
     Q_OBJECT
 public:
-    using QTableView::QTableView;
-    using QTableView::selectedIndexes;
+    using BOBUIableView::BOBUIableView;
+    using BOBUIableView::selectedIndexes;
     bool updateGeometriesCalled = false;
 protected slots:
-    void updateGeometries() override { updateGeometriesCalled = true; QTableView::updateGeometries(); }
+    void updateGeometries() override { updateGeometriesCalled = true; BOBUIableView::updateGeometries(); }
 };
 
 class tst_QAbstractItemView : public QObject
@@ -109,8 +109,8 @@ private slots:
     void shiftArrowSelectionAfterScrolling();
     void shiftSelectionAfterRubberbandSelection();
     void ctrlRubberbandSelection();
-    void QTBUG6407_extendedSelection();
-    void QTBUG6753_selectOnSelection();
+    void BOBUIBUG6407_extendedSelection();
+    void BOBUIBUG6753_selectOnSelection();
     void testDelegateDestroyEditor();
     void testDelegateDestroyEditorChild();
     void testClickedSignal();
@@ -119,17 +119,17 @@ private slots:
     void testNoActivateOnDisabledItem();
     void testFocusPolicy_data();
     void testFocusPolicy();
-    void QTBUG31411_noSelection();
-    void QTBUG39324_settingSameInstanceOfIndexWidget();
+    void BOBUIBUG31411_noSelection();
+    void BOBUIBUG39324_settingSameInstanceOfIndexWidget();
     void sizeHintChangeTriggersLayout();
     void shiftSelectionAfterChangingModelContents();
-    void QTBUG48968_reentrant_updateEditorGeometries();
-    void QTBUG50102_SH_ItemView_ScrollMode();
-    void QTBUG50535_update_on_new_selection_model();
+    void BOBUIBUG48968_reentrant_updateEditorGeometries();
+    void BOBUIBUG50102_SH_ItemView_ScrollMode();
+    void BOBUIBUG50535_update_on_new_selection_model();
     void testSelectionModelInSyncWithView();
     void testClickToSelect();
     void testDialogAsEditor();
-    void QTBUG46785_mouseout_hover_state();
+    void BOBUIBUG46785_mouseout_hover_state();
     void testClearModelInClickedSignal();
     void inputMethodEnabled_data();
     void inputMethodEnabled();
@@ -156,19 +156,19 @@ private slots:
     void removeIndexWhileEditing();
     void focusNextOnHide();
     void shiftSelectionAfterModelSetCurrentIndex();
-    void QTBUG72333_isPersistentEditorOpen();
+    void BOBUIBUG72333_isPersistentEditorOpen();
 
 private:
     static QAbstractItemView *viewFromString(const QByteArray &viewType, QWidget *parent = nullptr)
     {
       if (viewType == "QListView")
           return new QListView(parent);
-      if (viewType == "QTableView")
-          return new QTableView(parent);
-      if (viewType == "QTreeView")
-          return new QTreeView(parent);
+      if (viewType == "BOBUIableView")
+          return new BOBUIableView(parent);
+      if (viewType == "BOBUIreeView")
+          return new BOBUIreeView(parent);
       if (viewType == "QHeaderView")
-          return new QHeaderView(Qt::Vertical, parent);
+          return new QHeaderView(BobUI::Vertical, parent);
       Q_ASSERT(false);
       return nullptr;
     }
@@ -261,7 +261,7 @@ void tst_QAbstractItemView::getSetCheck()
 
     // bool QAbstractItemView::dragEnabled()
     // void QAbstractItemView::setDragEnabled(bool)
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     obj1->setDragEnabled(false);
     QCOMPARE(false, obj1->dragEnabled());
     obj1->setDragEnabled(true);
@@ -313,11 +313,11 @@ void tst_QAbstractItemView::cleanup()
 
 void tst_QAbstractItemView::emptyModels_data()
 {
-    QTest::addColumn<QByteArray>("viewType");
+    BOBUIest::addColumn<QByteArray>("viewType");
 
-    const QList<QByteArray> widgets { "QListView", "QTreeView", "QTableView", "QHeaderView" };
+    const QList<QByteArray> widgets { "QListView", "BOBUIreeView", "BOBUIableView", "QHeaderView" };
     for (const QByteArray &widget : widgets)
-        QTest::newRow(widget) << widget;
+        BOBUIest::newRow(widget) << widget;
 }
 
 void tst_QAbstractItemView::emptyModels()
@@ -328,7 +328,7 @@ void tst_QAbstractItemView::emptyModels()
     centerOnScreen(view.data());
     moveCursorAway(view.data());
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.data()));
 
     QVERIFY(!view->model());
     QVERIFY(!view->selectionModel());
@@ -350,7 +350,7 @@ void tst_QAbstractItemView::setModel()
     centerOnScreen(view.data());
     moveCursorAway(view.data());
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.data()));
 
     QStandardItemModel model(20,20);
     view->setModel(nullptr);
@@ -415,7 +415,7 @@ void tst_QAbstractItemView::basic_tests(QAbstractItemView *view)
     view->setTabKeyNavigation(true);
     QCOMPARE(view->tabKeyNavigation(), true);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     // setDropIndicatorShown
     view->setDropIndicatorShown(false);
     QCOMPARE(view->showDropIndicator(), false);
@@ -506,7 +506,7 @@ void tst_QAbstractItemView::basic_tests(QAbstractItemView *view)
     // Will assert as it should
     // view->setIndexWidget(QModelIndex(), 0);
 
-    view->moveCursor(QAbstractItemView::MoveUp, Qt::NoModifier);
+    view->moveCursor(QAbstractItemView::MoveUp, BobUI::NoModifier);
     view->horizontalOffset();
     view->verticalOffset();
 
@@ -523,9 +523,9 @@ void tst_QAbstractItemView::basic_tests(QAbstractItemView *view)
 
     view->selectionCommand(QModelIndex(), nullptr);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     if (!view->model())
-        view->startDrag(Qt::CopyAction);
+        view->startDrag(BobUI::CopyAction);
     QStyleOptionViewItem option;
     view->initViewItemOption(&option);
 
@@ -548,12 +548,12 @@ void tst_QAbstractItemView::basic_tests(QAbstractItemView *view)
     view->doAutoScroll();
 
     // testing mouseFoo and key functions
-//     QTest::mousePress(view, Qt::LeftButton, Qt::NoModifier, QPoint(0,0));
-//     mouseMove(view, Qt::LeftButton, Qt::NoModifier, QPoint(10,10));
-//     QTest::mouseRelease(view, Qt::LeftButton, Qt::NoModifier, QPoint(10,10));
-//     QTest::mouseClick(view, Qt::LeftButton, Qt::NoModifier, QPoint(10,10));
-//     mouseDClick(view, Qt::LeftButton, Qt::NoModifier, QPoint(10,10));
-//     QTest::keyClick(view, Qt::Key_A);
+//     BOBUIest::mousePress(view, BobUI::LeftButton, BobUI::NoModifier, QPoint(0,0));
+//     mouseMove(view, BobUI::LeftButton, BobUI::NoModifier, QPoint(10,10));
+//     BOBUIest::mouseRelease(view, BobUI::LeftButton, BobUI::NoModifier, QPoint(10,10));
+//     BOBUIest::mouseClick(view, BobUI::LeftButton, BobUI::NoModifier, QPoint(10,10));
+//     mouseDClick(view, BobUI::LeftButton, BobUI::NoModifier, QPoint(10,10));
+//     BOBUIest::keyClick(view, BobUI::Key_A);
 }
 
 void tst_QAbstractItemView::noModel()
@@ -561,7 +561,7 @@ void tst_QAbstractItemView::noModel()
     // From task #85415
 
     QStandardItemModel model(20,20);
-    QTreeView view;
+    BOBUIreeView view;
     setFrameless(&view);
 
     view.setModel(&model);
@@ -570,7 +570,7 @@ void tst_QAbstractItemView::noModel()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // make sure that the scrollbars are not at value 0
     view.scrollTo(view.model()->index(10,10));
@@ -588,20 +588,20 @@ void tst_QAbstractItemView::dragSelect()
 
     QStandardItemModel model(64, 64);
 
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.setVisible(true);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     const int delay = 2;
     for (int i = 0; i < 2; ++i) {
         bool tracking = (i == 1);
         view.setMouseTracking(false);
-        QTest::mouseMove(&view, QPoint(0, 0), delay);
+        BOBUIest::mouseMove(&view, QPoint(0, 0), delay);
         view.setMouseTracking(tracking);
-        QTest::mouseMove(&view, QPoint(50, 50), delay);
+        BOBUIest::mouseMove(&view, QPoint(50, 50), delay);
         QVERIFY(view.selectionModel()->selectedIndexes().isEmpty());
     }
 }
@@ -611,13 +611,13 @@ void tst_QAbstractItemView::rowDelegate()
     QStandardItemModel model(4, 4);
     MyAbstractItemDelegate delegate;
 
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
     view.setItemDelegateForRow(3, &delegate);
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index = model.index(3, 0);
     QVERIFY(!view.isPersistentEditorOpen(index));
@@ -633,13 +633,13 @@ void tst_QAbstractItemView::columnDelegate()
     QStandardItemModel model(4, 4);
     MyAbstractItemDelegate delegate;
 
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
     view.setItemDelegateForColumn(3, &delegate);
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index = model.index(0, 3);
     QVERIFY(!view.isPersistentEditorOpen(index));
@@ -663,16 +663,16 @@ void tst_QAbstractItemView::sizeHintChangeTriggersLayout()
     view.setItemDelegateForRow(1, &rowDelegate);
     view.setItemDelegateForColumn(2, &columnDelegate);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     view.updateGeometriesCalled = false;
     delegate.changeSize();
-    QTRY_VERIFY(view.updateGeometriesCalled);
+    BOBUIRY_VERIFY(view.updateGeometriesCalled);
     view.updateGeometriesCalled = false;
     rowDelegate.changeSize();
-    QTRY_VERIFY(view.updateGeometriesCalled);
+    BOBUIRY_VERIFY(view.updateGeometriesCalled);
     view.updateGeometriesCalled = false;
     columnDelegate.changeSize();
-    QTRY_VERIFY(view.updateGeometriesCalled);
+    BOBUIRY_VERIFY(view.updateGeometriesCalled);
 }
 
 void tst_QAbstractItemView::selectAll()
@@ -693,7 +693,7 @@ void tst_QAbstractItemView::ctrlA()
     view.setModel(&model);
 
     QCOMPARE(view.selectedIndexes().size(), 0);
-    QTest::keyClick(&view, Qt::Key_A, Qt::ControlModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_A, BobUI::ControlModifier);
     QCOMPARE(view.selectedIndexes().size(), 4 * 4);
 }
 
@@ -703,7 +703,7 @@ void tst_QAbstractItemView::persistentEditorFocus()
     QStandardItemModel model(1, 3);
     for(int i = 0; i < model.columnCount(); ++i)
         model.setData(model.index(0, i), i);
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
 
     view.openPersistentEditor(model.index(0, 1));
@@ -718,17 +718,17 @@ void tst_QAbstractItemView::persistentEditorFocus()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     const QPoint p(5, 5);
     for (QSpinBox *sb : list) {
-        QTRY_VERIFY(sb->isVisible());
+        BOBUIRY_VERIFY(sb->isVisible());
         QMouseEvent mouseEvent(QEvent::MouseButtonPress, p, sb->mapToGlobal(p),
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                               BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier);
         QCoreApplication::sendEvent(sb, &mouseEvent);
         if (!QApplication::focusWidget())
             QSKIP("Some window managers don't handle focus that well");
-        QTRY_COMPARE(QApplication::focusWidget(), sb);
+        BOBUIRY_COMPARE(QApplication::focusWidget(), sb);
     }
 }
 
@@ -737,7 +737,7 @@ void tst_QAbstractItemView::persistentEditorFocus()
     closes the editor by transferring focus to the view. The corresponding release
     should then not re-open the editor.
 
-    QTBUG-20456.
+    BOBUIBUG-20456.
 */
 void tst_QAbstractItemView::pressClosesReleaseDoesntOpenEditor()
 {
@@ -745,31 +745,31 @@ void tst_QAbstractItemView::pressClosesReleaseDoesntOpenEditor()
     auto *parent = new QStandardItem("parent");
     for (const auto &childText : {"child1", "child2"}) {
         auto *child = new QStandardItem(childText);
-        child->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsEditable | Qt::ItemIsSelectable);
+        child->setFlags(BobUI::ItemFlag::ItemIsEnabled | BobUI::ItemFlag::ItemIsEditable | BobUI::ItemIsSelectable);
         parent->appendRow(child);
     }
     model.appendRow(parent);
 
-    QTreeView view;
+    BOBUIreeView view;
     view.setModel(&model);
     view.setExpanded(model.indexFromItem(parent), true);
     view.setSelectionMode(QAbstractItemView::SingleSelection);
     view.setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::DoubleClicked);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     const QRect childRect = view.visualRect(model.indexFromItem(parent->child(0)));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, childRect.center()); // select
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, childRect.center()); // select
     QVERIFY(view.selectionModel()->selectedIndexes().contains(model.indexFromItem(parent->child(0))));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, childRect.center()); // edit
-    QTRY_COMPARE(view.state(), QAbstractItemView::EditingState);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, childRect.center()); // edit
+    BOBUIRY_COMPARE(view.state(), QAbstractItemView::EditingState);
     QPoint inChildOutsideEditor = QPoint(view.indentation() / 2, childRect.center().y());
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::NoModifier, inChildOutsideEditor); // focus itemview, editor closes
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, inChildOutsideEditor); // focus itemview, editor closes
     QCOMPARE(view.state(), QAbstractItemView::NoState);
-    QTest::qWait(10); // process some events, let the internal timer time out
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::NoModifier, inChildOutsideEditor); // should not reopen editor
-    QTest::qWait(QApplication::doubleClickInterval() * 2);
+    BOBUIest::qWait(10); // process some events, let the internal timer time out
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, inChildOutsideEditor); // should not reopen editor
+    BOBUIest::qWait(QApplication::doubleClickInterval() * 2);
     QCOMPARE(view.state(), QAbstractItemView::NoState);
 }
 
@@ -782,15 +782,15 @@ static void sendMouseMove(QWidget *widget, QPoint pos = QPoint())
 {
     if (pos.isNull())
         pos = widget->rect().center();
-    QMouseEvent event(QEvent::MouseMove, pos, widget->mapToGlobal(pos), Qt::NoButton, 0, 0);
+    QMouseEvent event(QEvent::MouseMove, pos, widget->mapToGlobal(pos), BobUI::NoButton, 0, 0);
     QCursor::setPos(widget->mapToGlobal(pos));
     qApp->processEvents();
-    QVERIFY(QTest::qWaitForWindowExposed(widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(widget));
     QApplication::sendEvent(widget, &event);
 }
 
 static void sendMousePress(
-    QWidget *widget, QPoint pos = QPoint(), Qt::MouseButton button = Qt::LeftButton)
+    QWidget *widget, QPoint pos = QPoint(), BobUI::MouseButton button = BobUI::LeftButton)
 {
     if (pos.isNull())
          pos = widget->rect().center();
@@ -799,7 +799,7 @@ static void sendMousePress(
 }
 
 static void sendMouseRelease(
-    QWidget *widget, QPoint pos = QPoint(), Qt::MouseButton button = Qt::LeftButton)
+    QWidget *widget, QPoint pos = QPoint(), BobUI::MouseButton button = BobUI::LeftButton)
 {
     if (pos.isNull())
          pos = widget->rect().center();
@@ -810,29 +810,29 @@ static void sendMouseRelease(
 class DnDTestModel : public QStandardItemModel
 {
     Q_OBJECT
-    bool dropMimeData(const QMimeData *md, Qt::DropAction action, int r, int c, const QModelIndex &p)
+    bool dropMimeData(const QMimeData *md, BobUI::DropAction action, int r, int c, const QModelIndex &p)
     {
         dropAction_result = action;
         QStandardItemModel::dropMimeData(md, action, r, c, p);
         return true;
     }
-    Qt::DropActions supportedDropActions() const { return Qt::CopyAction | Qt::MoveAction; }
+    BobUI::DropActions supportedDropActions() const { return BobUI::CopyAction | BobUI::MoveAction; }
 
-    Qt::DropAction dropAction_result;
+    BobUI::DropAction dropAction_result;
 public:
-    DnDTestModel() : QStandardItemModel(20, 20), dropAction_result(Qt::IgnoreAction) {
+    DnDTestModel() : QStandardItemModel(20, 20), dropAction_result(BobUI::IgnoreAction) {
         for (int i = 0; i < rowCount(); ++i)
             setData(index(i, 0), QString::number(i));
     }
-    Qt::DropAction dropAction() const { return dropAction_result; }
+    BobUI::DropAction dropAction() const { return dropAction_result; }
 };
 
-class DnDTestView : public QTreeView
+class DnDTestView : public BOBUIreeView
 {
     Q_OBJECT
 
     QPoint dropPoint;
-    Qt::DropAction dropAction;
+    BobUI::DropAction dropAction;
 
     void dragEnterEvent(QDragEnterEvent *event)
     {
@@ -842,10 +842,10 @@ class DnDTestView : public QTreeView
     void dropEvent(QDropEvent *event)
     {
         event->setDropAction(dropAction);
-        QTreeView::dropEvent(event);
+        BOBUIreeView::dropEvent(event);
     }
 
-    void timerEvent(QTimerEvent *event)
+    void timerEvent(BOBUIimerEvent *event)
     {
         killTimer(event->timerId());
         sendMouseMove(this, dropPoint);
@@ -854,7 +854,7 @@ class DnDTestView : public QTreeView
 
     void mousePressEvent(QMouseEvent *e)
     {
-        QTreeView::mousePressEvent(e);
+        BOBUIreeView::mousePressEvent(e);
 
         startTimer(0);
         setState(DraggingState);
@@ -862,7 +862,7 @@ class DnDTestView : public QTreeView
     }
 
 public:
-    DnDTestView(Qt::DropAction dropAction, QAbstractItemModel *model)
+    DnDTestView(BobUI::DropAction dropAction, QAbstractItemModel *model)
         : dropAction(dropAction)
     {
         header()->hide();
@@ -884,11 +884,11 @@ class DnDTestWidget : public QWidget
 {
     Q_OBJECT
 
-    Qt::DropAction dropAction_request;
-    Qt::DropAction dropAction_result;
+    BobUI::DropAction dropAction_request;
+    BobUI::DropAction dropAction_result;
     QWidget *dropTarget;
 
-    void timerEvent(QTimerEvent *event)
+    void timerEvent(BOBUIimerEvent *event)
     {
         killTimer(event->timerId());
         sendMouseMove(dropTarget);
@@ -906,9 +906,9 @@ class DnDTestWidget : public QWidget
     }
 
 public:
-    Qt::DropAction dropAction() const { return dropAction_result; }
+    BobUI::DropAction dropAction() const { return dropAction_result; }
 
-    void dragAndDrop(QWidget *dropTarget, Qt::DropAction dropAction)
+    void dragAndDrop(QWidget *dropTarget, BobUI::DropAction dropAction)
     {
         this->dropTarget = dropTarget;
         dropAction_request = dropAction;
@@ -924,7 +924,7 @@ void tst_QAbstractItemView::dragAndDrop()
     const int attempts = 10;
     int successes = 0;
     for (int i = 0; i < attempts; ++i) {
-        Qt::DropAction dropAction = Qt::MoveAction;
+        BobUI::DropAction dropAction = BobUI::MoveAction;
 
         DnDTestModel model;
         DnDTestView view(dropAction, &model);
@@ -939,8 +939,8 @@ void tst_QAbstractItemView::dragAndDrop()
 
         widget.show();
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&widget));
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
         widget.dragAndDrop(&view, dropAction);
         if (model.dropAction() == dropAction
@@ -962,7 +962,7 @@ void tst_QAbstractItemView::dragAndDropOnChild()
     const int attempts = 10;
     int successes = 0;
     for (int i = 0; i < attempts; ++i) {
-        Qt::DropAction dropAction = Qt::MoveAction;
+        BobUI::DropAction dropAction = BobUI::MoveAction;
 
         DnDTestModel model;
         QModelIndex parent = model.index(0, 0);
@@ -979,7 +979,7 @@ void tst_QAbstractItemView::dragAndDropOnChild()
         view.setFixedSize(size, size);
         view.move(int(size * 1.5), int(size * 1.5));
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
         view.dragAndDrop(view.visualRect(parent).center(),
                          view.visualRect(child).center());
@@ -1014,21 +1014,21 @@ public:
 void tst_QAbstractItemView::setItemDelegate_data()
 {
     // default is rows, a -1 will switch to columns
-    QTest::addColumn<IntList>("rowsOrColumnsWithDelegate");
-    QTest::addColumn<QPoint>("cellToEdit");
-    QTest::newRow("4 columndelegates")
+    BOBUIest::addColumn<IntList>("rowsOrColumnsWithDelegate");
+    BOBUIest::addColumn<QPoint>("cellToEdit");
+    BOBUIest::newRow("4 columndelegates")
                 << (IntList{ -1, 0, 1, 2, 3 })
                 << QPoint(0, 0);
-    QTest::newRow("2 identical rowdelegates on the same row")
+    BOBUIest::newRow("2 identical rowdelegates on the same row")
                 << (IntList{ 0, 0 })
                 << QPoint(0, 0);
-    QTest::newRow("2 identical columndelegates on the same column")
+    BOBUIest::newRow("2 identical columndelegates on the same column")
                 << (IntList{ -1, 2, 2 })
                 << QPoint(2, 0);
-    QTest::newRow("2 duplicate delegates, 1 row and 1 column")
+    BOBUIest::newRow("2 duplicate delegates, 1 row and 1 column")
                 << (IntList{ 0, -1, 2 })
                 << QPoint(2, 0);
-    QTest::newRow("4 duplicate delegates, 2 row and 2 column")
+    BOBUIest::newRow("4 duplicate delegates, 2 row and 2 column")
                 << (IntList{ 0, 0, -1, 2, 2 })
                 << QPoint(2, 0);
 
@@ -1041,7 +1041,7 @@ void tst_QAbstractItemView::setItemDelegate()
 
     QFETCH(const IntList, rowsOrColumnsWithDelegate);
     QFETCH(QPoint, cellToEdit);
-    QTableView v;
+    BOBUIableView v;
     QStyledItemDelegate *delegate = new QStyledItemDelegate(&v);
     TestModel model(5, 5);
     v.setModel(&model);
@@ -1060,13 +1060,13 @@ void tst_QAbstractItemView::setItemDelegate()
     centerOnScreen(&v);
     moveCursorAway(&v);
     v.show();
-    QVERIFY(QTest::qWaitForWindowActive(&v));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&v));
 
     QModelIndex index = model.index(cellToEdit.y(), cellToEdit.x());
     v.edit(index);
 
     // This will close the editor
-    QTRY_VERIFY(QApplication::focusWidget());
+    BOBUIRY_VERIFY(QApplication::focusWidget());
     QWidget *editor = QApplication::focusWidget();
     QVERIFY(editor);
     editor->hide();
@@ -1092,7 +1092,7 @@ void tst_QAbstractItemView::noFallbackToRoot()
     QModelIndex parent2 = model.indexFromItem(par2);
     QModelIndex item1 = model.indexFromItem(it1);
 
-    QTreeView v;
+    BOBUIreeView v;
     v.setModel(&model);
     v.setRootIndex(parent1);
     v.setCurrentIndex(item1);
@@ -1105,29 +1105,29 @@ void tst_QAbstractItemView::noFallbackToRoot()
 
 void tst_QAbstractItemView::setCurrentIndex_data()
 {
-    QTest::addColumn<QByteArray>("viewType");
-    QTest::addColumn<Qt::ItemFlags>("itemFlags");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QByteArray>("viewType");
+    BOBUIest::addColumn<BobUI::ItemFlags>("itemFlags");
+    BOBUIest::addColumn<bool>("result");
 
-    const QList<QByteArray> widgets { "QListView", "QTreeView", "QTableView", "QHeaderView" };
+    const QList<QByteArray> widgets { "QListView", "BOBUIreeView", "BOBUIableView", "QHeaderView" };
     for (const QByteArray &widget : widgets) {
-        QTest::newRow(widget + ": no flags")
-            << widget << Qt::ItemFlags(Qt::NoItemFlags) << false;
-        QTest::newRow(widget + ": checkable")
-            << widget << Qt::ItemFlags(Qt::ItemIsUserCheckable) << false;
-        QTest::newRow(widget + ": selectable")
-            << widget << Qt::ItemFlags(Qt::ItemIsSelectable) << false;
-        QTest::newRow(widget + ": enabled")
-            << widget << Qt::ItemFlags(Qt::ItemIsEnabled) << true;
-        QTest::newRow(widget + ": enabled|selectable")
-            << widget << (Qt::ItemIsSelectable|Qt::ItemIsEnabled) << true;
+        BOBUIest::newRow(widget + ": no flags")
+            << widget << BobUI::ItemFlags(BobUI::NoItemFlags) << false;
+        BOBUIest::newRow(widget + ": checkable")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsUserCheckable) << false;
+        BOBUIest::newRow(widget + ": selectable")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsSelectable) << false;
+        BOBUIest::newRow(widget + ": enabled")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsEnabled) << true;
+        BOBUIest::newRow(widget + ": enabled|selectable")
+            << widget << (BobUI::ItemIsSelectable|BobUI::ItemIsEnabled) << true;
     }
 }
 
 void tst_QAbstractItemView::setCurrentIndex()
 {
     QFETCH(QByteArray, viewType);
-    QFETCH(Qt::ItemFlags, itemFlags);
+    QFETCH(BobUI::ItemFlags, itemFlags);
     QFETCH(bool, result);
 
     QScopedPointer<QAbstractItemView> view(viewFromString(viewType));
@@ -1135,11 +1135,11 @@ void tst_QAbstractItemView::setCurrentIndex()
     centerOnScreen(view.data());
     moveCursorAway(view.data());
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.data()));
 
     QStandardItemModel *model = new QStandardItemModel(view.data());
     QStandardItem *item = new QStandardItem("first item");
-    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    item->setFlags(BobUI::ItemIsSelectable | BobUI::ItemIsEnabled);
     model->appendRow(item);
 
     item = new QStandardItem("test item");
@@ -1166,17 +1166,17 @@ void tst_QAbstractItemView::checkIntersectedRect_data()
         }
         return model;
     };
-    QTest::addColumn<QStandardItemModel *>("model");
-    QTest::addColumn<QList<QModelIndex>>("changedIndexes");
-    QTest::addColumn<bool>("isEmpty");
+    BOBUIest::addColumn<QStandardItemModel *>("model");
+    BOBUIest::addColumn<QList<QModelIndex>>("changedIndexes");
+    BOBUIest::addColumn<bool>("isEmpty");
     {
         auto model = createModel(5);
-        QTest::newRow("multiple columns")
+        BOBUIest::newRow("multiple columns")
                 << model << QList<QModelIndex>({ model->index(0, 0), model->index(0, 1) }) << false;
     }
     {
         auto model = createModel(5);
-        QTest::newRow("multiple rows")
+        BOBUIest::newRow("multiple rows")
                 << model
                 << QList<QModelIndex>(
                            { model->index(0, 0), model->index(1, 0), model->index(2, 0) })
@@ -1184,12 +1184,12 @@ void tst_QAbstractItemView::checkIntersectedRect_data()
     }
     {
         auto model = createModel(5);
-        QTest::newRow("hidden rows")
+        BOBUIest::newRow("hidden rows")
                 << model << QList<QModelIndex>({ model->index(3, 0), model->index(4, 0) }) << true;
     }
     {
         auto model = createModel(500);
-        QTest::newRow("rows outside viewport")
+        BOBUIest::newRow("rows outside viewport")
                 << model << QList<QModelIndex>({ model->index(498, 0), model->index(499, 0) })
                 << true;
     }
@@ -1201,15 +1201,15 @@ void tst_QAbstractItemView::checkIntersectedRect()
     QFETCH(const QList<QModelIndex>, changedIndexes);
     QFETCH(bool, isEmpty);
 
-    class TableView : public QTableView
+    class TableView : public BOBUIableView
     {
     public:
         void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
                          const QList<int> &roles = QList<int>()) override
         {
-            QTableView::dataChanged(topLeft, bottomRight, roles);
+            BOBUIableView::dataChanged(topLeft, bottomRight, roles);
             // we want to check the base class implementation here!
-            QAbstractItemViewPrivate *av = static_cast<QAbstractItemViewPrivate*>(qt_widget_private(this));
+            QAbstractItemViewPrivate *av = static_cast<QAbstractItemViewPrivate*>(bobui_widget_private(this));
             m_intersectecRect = av->intersectedRect(av->viewport->rect(), topLeft, bottomRight);
         }
         mutable QRect m_intersectecRect;
@@ -1222,7 +1222,7 @@ void tst_QAbstractItemView::checkIntersectedRect()
     view.show();
     view.setRowHidden(3, true);
     view.setRowHidden(4, true);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     view.m_intersectecRect = QRect();
     emit view.model()->dataChanged(changedIndexes.first(), changedIndexes.last());
@@ -1250,14 +1250,14 @@ void tst_QAbstractItemView::task221955_selectedEditor()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
 
-    QTreeWidget tree;
+    BOBUIreeWidget tree;
     tree.setColumnCount(2);
 
-    tree.addTopLevelItem(new QTreeWidgetItem({"Foo", "1"}));
-    tree.addTopLevelItem(new QTreeWidgetItem({"Bar", "2"}));
-    tree.addTopLevelItem(new QTreeWidgetItem({"Baz", "3"}));
+    tree.addTopLevelItem(new BOBUIreeWidgetItem({"Foo", "1"}));
+    tree.addTopLevelItem(new BOBUIreeWidgetItem({"Bar", "2"}));
+    tree.addTopLevelItem(new BOBUIreeWidgetItem({"Baz", "3"}));
 
-    QTreeWidgetItem *dummy = new QTreeWidgetItem();
+    BOBUIreeWidgetItem *dummy = new BOBUIreeWidgetItem();
     tree.addTopLevelItem(dummy);
     QPushButton *button = new QPushButton("More...");
     tree.setItemWidget(dummy, 0, button);
@@ -1268,13 +1268,13 @@ void tst_QAbstractItemView::task221955_selectedEditor()
     tree.show();
     tree.setFocus();
     tree.setCurrentIndex(tree.model()->index(1,0));
-    QVERIFY(QTest::qWaitForWindowActive(&tree));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tree));
 
     QVERIFY(! tree.selectionModel()->selectedIndexes().contains(tree.model()->index(3,0)));
 
     //We set the focus to the button, the index need to be selected
     button->setFocus();
-    QTRY_VERIFY(tree.selectionModel()->selectedIndexes().contains(tree.model()->index(3,0)));
+    BOBUIRY_VERIFY(tree.selectionModel()->selectedIndexes().contains(tree.model()->index(3,0)));
 
     tree.setCurrentIndex(tree.model()->index(1,0));
     QVERIFY(! tree.selectionModel()->selectedIndexes().contains(tree.model()->index(3,0)));
@@ -1285,7 +1285,7 @@ void tst_QAbstractItemView::task221955_selectedEditor()
     tree.clearSelection();
     QVERIFY(tree.selectionModel()->selectedIndexes().isEmpty());
     button->setFocus();
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     QVERIFY(tree.selectionModel()->selectedIndexes().isEmpty());
 }
 
@@ -1295,7 +1295,7 @@ void tst_QAbstractItemView::task250754_fontChange()
     qApp->setStyleSheet("/*  */");
 
     QWidget w;
-    QTreeView tree(&w);
+    BOBUIreeView tree(&w);
     QVBoxLayout *vLayout = new QVBoxLayout(&w);
     vLayout->addWidget(&tree);
 
@@ -1315,29 +1315,29 @@ void tst_QAbstractItemView::task250754_fontChange()
     centerOnScreen(&w);
     moveCursorAway(&w);
     w.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QFont font = tree.font();
     font.setPixelSize(10);
     tree.setFont(font);
-    QTRY_VERIFY(!tree.verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!tree.verticalScrollBar()->isVisible());
 
     font.setPixelSize(60);
     tree.setFont(font);
     //now with the huge items, the scrollbar must be visible
-    QTRY_VERIFY(tree.verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(tree.verticalScrollBar()->isVisible());
 
     qApp->setStyleSheet(app_css);
 }
 
 void tst_QAbstractItemView::task200665_itemEntered()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
     {
         // skip if we can't move mouse
         const QPoint cursorPos = QCursor::pos() + QPoint(10, 10);
         QCursor::setPos(cursorPos);
-        if (!QTest::qWaitFor([cursorPos] { return QCursor::pos() == cursorPos; }, 500))
+        if (!BOBUIest::qWaitFor([cursorPos] { return QCursor::pos() == cursorPos; }, 500))
             QSKIP("Can't move mouse");
     }
     //we test that view will emit entered
@@ -1348,13 +1348,13 @@ void tst_QAbstractItemView::task200665_itemEntered()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCursor::setPos(view.geometry().center());
-    QTRY_COMPARE(QCursor::pos(), view.geometry().center());
+    BOBUIRY_COMPARE(QCursor::pos(), view.geometry().center());
     QSignalSpy spy(&view, &QAbstractItemView::entered);
     view.verticalScrollBar()->setValue(view.verticalScrollBar()->maximum());
 
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
 }
 
 void tst_QAbstractItemView::task257481_emptyEditor()
@@ -1367,13 +1367,13 @@ void tst_QAbstractItemView::task257481_emptyEditor()
     model.appendRow(new QStandardItem(icon, "Editor works"));
     model.appendRow(new QStandardItem(QString()));
 
-    QTreeView treeView;
+    BOBUIreeView treeView;
     treeView.setRootIsDecorated(false);
     treeView.setModel(&model);
     centerOnScreen(&treeView);
     moveCursorAway(&treeView);
     treeView.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&treeView));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&treeView));
 
     treeView.edit(model.index(0, 0));
     QList<QLineEdit *> lineEditors = treeView.viewport()->findChildren<QLineEdit *>();
@@ -1407,7 +1407,7 @@ void tst_QAbstractItemView::shiftArrowSelectionAfterScrolling()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index0 = model.index(0, 0);
     QModelIndex index1 = model.index(1, 0);
@@ -1417,7 +1417,7 @@ void tst_QAbstractItemView::shiftArrowSelectionAfterScrolling()
     QCOMPARE(view.currentIndex(), index0);
 
     view.scrollTo(index9);
-    QTest::keyClick(&view, Qt::Key_Down, Qt::ShiftModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Down, BobUI::ShiftModifier);
 
     QCOMPARE(view.currentIndex(), index1);
     QModelIndexList selected = view.selectionModel()->selectedIndexes();
@@ -1442,7 +1442,7 @@ void tst_QAbstractItemView::shiftSelectionAfterRubberbandSelection()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index0 = model.index(0, 0);
     QModelIndex index1 = model.index(1, 0);
@@ -1458,19 +1458,19 @@ void tst_QAbstractItemView::shiftSelectionAfterRubberbandSelection()
     QCOMPARE(view.indexAt(releasePos), index1);
 
     // Select item 1 using a rubberband selection
-    // The mouse move event has to be created manually because the QTest framework does not
+    // The mouse move event has to be created manually because the BOBUIest framework does not
     // contain a function for mouse moves with buttons pressed
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::NoModifier, pressPos);
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, pressPos);
     QMouseEvent moveEvent(QEvent::MouseMove, releasePos, view.viewport()->mapToGlobal(releasePos),
-                          Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
+                          BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier);
     bool moveEventReceived = qApp->notify(view.viewport(), &moveEvent);
     QVERIFY(moveEventReceived);
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::NoModifier, releasePos);
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, releasePos);
     QCOMPARE(view.currentIndex(), index1);
 
     // Shift-click item 2
     QPoint item2Pos = view.visualRect(index2).center();
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, item2Pos);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, item2Pos);
     QCOMPARE(view.currentIndex(), index2);
 
     // Verify that the selection worked OK
@@ -1484,16 +1484,16 @@ void tst_QAbstractItemView::shiftSelectionAfterRubberbandSelection()
     QCOMPARE(view.currentIndex(), index0);
 
     // Repeat the same steps as above, but with a Shift-Arrow selection
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::NoModifier, pressPos);
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, pressPos);
     QMouseEvent moveEvent2(QEvent::MouseMove, releasePos, view.viewport()->mapToGlobal(releasePos),
-                           Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
+                           BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier);
     moveEventReceived = qApp->notify(view.viewport(), &moveEvent2);
     QVERIFY(moveEventReceived);
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::NoModifier, releasePos);
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, releasePos);
     QCOMPARE(view.currentIndex(), index1);
 
     // Press Shift-Down
-    QTest::keyClick(&view, Qt::Key_Down, Qt::ShiftModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Down, BobUI::ShiftModifier);
     QCOMPARE(view.currentIndex(), index2);
 
     // Verify that the selection worked OK
@@ -1519,7 +1519,7 @@ void tst_QAbstractItemView::ctrlRubberbandSelection()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index1 = model.index(1, 0);
     QModelIndex index2 = model.index(2, 0);
@@ -1531,16 +1531,16 @@ void tst_QAbstractItemView::ctrlRubberbandSelection()
     QVERIFY(selected.contains(index1));
 
     // Now press control and draw a rubberband around items 1 and 2.
-    // The mouse move event has to be created manually because the QTest framework does not
+    // The mouse move event has to be created manually because the BOBUIest framework does not
     // contain a function for mouse moves with buttons pressed.
     QPoint pressPos = view.visualRect(index1).topLeft() - QPoint(1, 1);
     QPoint releasePos = view.visualRect(index2).bottomRight() + QPoint(1, 1);
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::ControlModifier, pressPos);
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, pressPos);
     QMouseEvent moveEvent(QEvent::MouseMove, releasePos, view.viewport()->mapToGlobal(releasePos),
-                          Qt::NoButton, Qt::LeftButton, Qt::ControlModifier);
+                          BobUI::NoButton, BobUI::LeftButton, BobUI::ControlModifier);
     bool moveEventReceived = qApp->notify(view.viewport(), &moveEvent);
     QVERIFY(moveEventReceived);
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::ControlModifier, releasePos);
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, releasePos);
 
     // Verify that item 2 is selected now
     selected = view.selectionModel()->selectedIndexes();
@@ -1548,7 +1548,7 @@ void tst_QAbstractItemView::ctrlRubberbandSelection()
     QVERIFY(selected.contains(index2));
 }
 
-void tst_QAbstractItemView::QTBUG6407_extendedSelection()
+void tst_QAbstractItemView::BOBUIBUG6407_extendedSelection()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
@@ -1566,7 +1566,7 @@ void tst_QAbstractItemView::QTBUG6407_extendedSelection()
     moveCursorAway(&view);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(&view, QApplication::activeWindow());
 
     view.verticalScrollBar()->setValue(view.verticalScrollBar()->maximum());
@@ -1574,46 +1574,46 @@ void tst_QAbstractItemView::QTBUG6407_extendedSelection()
     QModelIndex index49 = view.model()->index(49,0);
     QPoint p = view.visualRect(index49).center();
     QVERIFY(view.viewport()->rect().contains(p));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, p);
     QCOMPARE(view.currentIndex(), index49);
     QCOMPARE(view.selectedItems().size(), 1);
 
     QModelIndex index47 = view.model()->index(47,0);
     p = view.visualRect(index47).center();
     QVERIFY(view.viewport()->rect().contains(p));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, p);
     QCOMPARE(view.currentIndex(), index47);
     QCOMPARE(view.selectedItems().size(), 3); //49, 48, 47;
 
     QModelIndex index44 = view.model()->index(44,0);
     p = view.visualRect(index44).center();
     QVERIFY(view.viewport()->rect().contains(p));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, p);
     QCOMPARE(view.currentIndex(), index44);
     QCOMPARE(view.selectedItems().size(), 6); //49 .. 44;
 
 }
 
-void tst_QAbstractItemView::QTBUG6753_selectOnSelection()
+void tst_QAbstractItemView::BOBUIBUG6753_selectOnSelection()
 {
-    QTableWidget table(5, 5);
+    BOBUIableWidget table(5, 5);
     for (int i = 0; i < table.rowCount(); ++i) {
         for (int j = 0; j < table.columnCount(); ++j)
-            table.setItem(i, j, new QTableWidgetItem("choo-be-doo-wah"));
+            table.setItem(i, j, new BOBUIableWidgetItem("choo-be-doo-wah"));
     }
 
     centerOnScreen(&table);
     moveCursorAway(&table);
     table.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&table));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&table));
 
     table.setSelectionMode(QAbstractItemView::ExtendedSelection);
     table.selectAll();
-    QVERIFY(QTest::qWaitForWindowExposed(&table));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&table));
     QModelIndex item = table.model()->index(1,1);
     QRect itemRect = table.visualRect(item);
-    QTest::mouseMove(table.viewport(), itemRect.center());
-    QTest::mouseClick(table.viewport(), Qt::LeftButton, Qt::NoModifier, itemRect.center());
+    BOBUIest::mouseMove(table.viewport(), itemRect.center());
+    BOBUIest::mouseClick(table.viewport(), BobUI::LeftButton, BobUI::NoModifier, itemRect.center());
 
     QCOMPARE(table.selectedItems().size(), 1);
     QCOMPARE(table.selectedItems().first(), table.item(item.row(), item.column()));
@@ -1621,7 +1621,7 @@ void tst_QAbstractItemView::QTBUG6753_selectOnSelection()
 
 void tst_QAbstractItemView::testDelegateDestroyEditor()
 {
-    QTableWidget table(5, 5);
+    BOBUIableWidget table(5, 5);
     MyAbstractItemDelegate delegate;
     table.setItemDelegate(&delegate);
     table.edit(table.model()->index(1, 1));
@@ -1633,15 +1633,15 @@ void tst_QAbstractItemView::testDelegateDestroyEditor()
 
 void tst_QAbstractItemView::testDelegateDestroyEditorChild()
 {
-    std::vector<std::unique_ptr<QTreeWidgetItem>> reaper;
-    QTreeWidget tree;
+    std::vector<std::unique_ptr<BOBUIreeWidgetItem>> reaper;
+    BOBUIreeWidget tree;
     MyAbstractItemDelegate delegate;
     tree.setItemDelegate(&delegate);
-    QTreeWidgetItem *topLevel = new QTreeWidgetItem;
-    QTreeWidgetItem *levelOne1 = new QTreeWidgetItem(topLevel);
-    QTreeWidgetItem *levelTwo1 = new QTreeWidgetItem(levelOne1);
-    QTreeWidgetItem *levelOne2 = new QTreeWidgetItem(topLevel);
-    QTreeWidgetItem *levelTwo2 = new QTreeWidgetItem(levelOne2);
+    BOBUIreeWidgetItem *topLevel = new BOBUIreeWidgetItem;
+    BOBUIreeWidgetItem *levelOne1 = new BOBUIreeWidgetItem(topLevel);
+    BOBUIreeWidgetItem *levelTwo1 = new BOBUIreeWidgetItem(levelOne1);
+    BOBUIreeWidgetItem *levelOne2 = new BOBUIreeWidgetItem(topLevel);
+    BOBUIreeWidgetItem *levelTwo2 = new BOBUIreeWidgetItem(levelOne2);
     tree.insertTopLevelItem(0, topLevel);
     tree.openPersistentEditor(levelOne1);
     tree.openPersistentEditor(levelTwo1);
@@ -1661,24 +1661,24 @@ void tst_QAbstractItemView::testClickedSignal()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
 
-    QTableWidget view(5, 5);
+    BOBUIableWidget view(5, 5);
 
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(&view, QApplication::activeWindow());
 
     QModelIndex index49 = view.model()->index(49,0);
     QPoint p = view.visualRect(index49).center();
     QVERIFY(view.viewport()->rect().contains(p));
 
-    QSignalSpy clickedSpy(&view, &QTableWidget::clicked);
+    QSignalSpy clickedSpy(&view, &BOBUIableWidget::clicked);
 
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, p);
     QCOMPARE(clickedSpy.size(), 1);
 
-    QTest::mouseClick(view.viewport(), Qt::RightButton, {}, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::RightButton, {}, p);
     // We expect that right-clicks do not cause the clicked() signal to
     // be emitted.
     QCOMPARE(clickedSpy.size(), 1);
@@ -1704,19 +1704,19 @@ void tst_QAbstractItemView::testChangeEditorState()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
 
-    // Test for QTBUG-25370
+    // Test for BOBUIBUG-25370
     TestModel model;
     model.setItem(0, 0, new QStandardItem("a"));
     model.setItem(0, 1, new QStandardItem("b"));
 
-    QTableView view;
+    BOBUIableView view;
     view.setEditTriggers(QAbstractItemView::CurrentChanged);
     view.setItemDelegate(new StateChangeDelegate(&view));
     view.setModel(&model);
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(&view, QApplication::activeWindow());
 
     model.emitDataChanged();
@@ -1725,7 +1725,7 @@ void tst_QAbstractItemView::testChangeEditorState()
 
 void tst_QAbstractItemView::deselectInSingleSelection()
 {
-    QTableView view;
+    BOBUIableView view;
     QStandardItemModel s;
     s.setRowCount(10);
     s.setColumnCount(10);
@@ -1733,36 +1733,36 @@ void tst_QAbstractItemView::deselectInSingleSelection()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     view.setSelectionMode(QAbstractItemView::SingleSelection);
     view.setEditTriggers(QAbstractItemView::NoEditTriggers);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     // mouse
     QModelIndex index22 = s.index(2, 2);
     QRect rect22 = view.visualRect(index22);
     QPoint clickpos = rect22.center();
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, clickpos);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, clickpos);
     QCOMPARE(view.currentIndex(), index22);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 1);
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, clickpos);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, clickpos);
     QCOMPARE(view.currentIndex(), index22);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 0);
 
     // second click with modifier however does select
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ControlModifier, clickpos);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ControlModifier, clickpos);
     QCOMPARE(view.currentIndex(), index22);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 1);
 
     // keyboard
-    QTest::keyClick(&view, Qt::Key_Space, Qt::NoModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Space, BobUI::NoModifier);
     QCOMPARE(view.currentIndex(), index22);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 1);
-    QTest::keyClick(&view, Qt::Key_Space, Qt::ControlModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Space, BobUI::ControlModifier);
     QCOMPARE(view.currentIndex(), index22);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 0);
 
     // second keypress with modifier however does select
-    QTest::keyClick(&view, Qt::Key_Space, Qt::ControlModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Space, BobUI::ControlModifier);
     QCOMPARE(view.currentIndex(), index22);
     QCOMPARE(view.selectionModel()->selectedIndexes().size(), 1);
 }
@@ -1772,37 +1772,37 @@ void tst_QAbstractItemView::testNoActivateOnDisabledItem()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
 
-    QTreeView treeView;
+    BOBUIreeView treeView;
     QStandardItemModel model(1, 1);
     QStandardItem *item = new QStandardItem("item");
     model.setItem(0, 0, item);
-    item->setFlags(Qt::NoItemFlags);
+    item->setFlags(BobUI::NoItemFlags);
     treeView.setModel(&model);
     centerOnScreen(&treeView);
     moveCursorAway(&treeView);
     treeView.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&treeView));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&treeView));
 
     QSignalSpy activatedSpy(&treeView, &QAbstractItemView::activated);
 
     // Ensure clicking on a disabled item doesn't emit itemActivated.
     QModelIndex itemIndex = treeView.model()->index(0, 0);
     QPoint clickPos = treeView.visualRect(itemIndex).center();
-    QTest::mouseClick(treeView.viewport(), Qt::LeftButton, {}, clickPos);
+    BOBUIest::mouseClick(treeView.viewport(), BobUI::LeftButton, {}, clickPos);
 
     QCOMPARE(activatedSpy.size(), 0);
 }
 
 void tst_QAbstractItemView::testFocusPolicy_data()
 {
-    QTest::addColumn<QAbstractItemDelegate*>("delegate");
+    BOBUIest::addColumn<QAbstractItemDelegate*>("delegate");
 
     QAbstractItemDelegate *styledItemDelegate = new QStyledItemDelegate(this);
     QAbstractItemDelegate *itemDelegate = new QItemDelegate(this);
 
-    QTest::newRow("QStyledItemDelegate") << styledItemDelegate;
-    QTest::newRow("QItemDelegate") << itemDelegate;
+    BOBUIest::newRow("QStyledItemDelegate") << styledItemDelegate;
+    BOBUIest::newRow("QItemDelegate") << itemDelegate;
 }
 
 void tst_QAbstractItemView::testFocusPolicy()
@@ -1813,7 +1813,7 @@ void tst_QAbstractItemView::testFocusPolicy()
     QFETCH(QAbstractItemDelegate*, delegate);
 
     QWidget window;
-    QTableView *table = new QTableView(&window);
+    BOBUIableView *table = new BOBUIableView(&window);
     table->setItemDelegate(delegate);
     QVBoxLayout *layout = new QVBoxLayout(&window);
     layout->addWidget(table);
@@ -1828,29 +1828,29 @@ void tst_QAbstractItemView::testFocusPolicy()
     moveCursorAway(&window);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
 
     // itemview accepts focus => editor is closed => return focus to the itemview
     QPoint clickpos = table->visualRect(model.index(1, 1)).center();
-    QTest::mouseDClick(table->viewport(), Qt::LeftButton, Qt::NoModifier, clickpos);
+    BOBUIest::mouseDClick(table->viewport(), BobUI::LeftButton, BobUI::NoModifier, clickpos);
     QWidget *editor = QApplication::focusWidget();
     QVERIFY(editor);
-    QTest::keyClick(editor, Qt::Key_Escape, Qt::NoModifier);
+    BOBUIest::keyClick(editor, BobUI::Key_Escape, BobUI::NoModifier);
     QCOMPARE(QApplication::focusWidget(), table);
 
     // itemview doesn't accept focus => editor is closed => clear the focus
-    table->setFocusPolicy(Qt::NoFocus);
-    QTest::mouseDClick(table->viewport(), Qt::LeftButton, Qt::NoModifier, clickpos);
+    table->setFocusPolicy(BobUI::NoFocus);
+    BOBUIest::mouseDClick(table->viewport(), BobUI::LeftButton, BobUI::NoModifier, clickpos);
     editor = QApplication::focusWidget();
     QVERIFY(editor);
-    QTest::keyClick(editor, Qt::Key_Escape, Qt::NoModifier);
+    BOBUIest::keyClick(editor, BobUI::Key_Escape, BobUI::NoModifier);
     QVERIFY(!QApplication::focusWidget());
 }
 
-void tst_QAbstractItemView::QTBUG31411_noSelection()
+void tst_QAbstractItemView::BOBUIBUG31411_noSelection()
 {
     QWidget window;
-    QTableView *table = new QTableView(&window);
+    BOBUIableView *table = new BOBUIableView(&window);
     table->setSelectionMode(QAbstractItemView::NoSelection);
     QVBoxLayout *layout = new QVBoxLayout(&window);
     layout->addWidget(table);
@@ -1865,32 +1865,32 @@ void tst_QAbstractItemView::QTBUG31411_noSelection()
     moveCursorAway(&window);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&window));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&window));
 
     qRegisterMetaType<QItemSelection>();
     QSignalSpy selectionChangeSpy(table->selectionModel(), &QItemSelectionModel::selectionChanged);
     QVERIFY(selectionChangeSpy.isValid());
 
     QPoint clickpos = table->visualRect(model.index(1, 1)).center();
-    QTest::mouseClick(table->viewport(), Qt::LeftButton, Qt::NoModifier, clickpos);
-    QTest::mouseDClick(table->viewport(), Qt::LeftButton, Qt::NoModifier, clickpos);
+    BOBUIest::mouseClick(table->viewport(), BobUI::LeftButton, BobUI::NoModifier, clickpos);
+    BOBUIest::mouseDClick(table->viewport(), BobUI::LeftButton, BobUI::NoModifier, clickpos);
 
     QPointer<QWidget> editor1 = QApplication::focusWidget();
     QVERIFY(editor1);
-    QTest::keyClick(editor1, Qt::Key_Tab, Qt::NoModifier);
+    BOBUIest::keyClick(editor1, BobUI::Key_Tab, BobUI::NoModifier);
 
     QPointer<QWidget> editor2 = QApplication::focusWidget();
     QVERIFY(editor2);
-    QTest::keyClick(editor2, Qt::Key_Escape, Qt::NoModifier);
+    BOBUIest::keyClick(editor2, BobUI::Key_Escape, BobUI::NoModifier);
 
     QCOMPARE(selectionChangeSpy.size(), 0);
 }
 
-void tst_QAbstractItemView::QTBUG39324_settingSameInstanceOfIndexWidget()
+void tst_QAbstractItemView::BOBUIBUG39324_settingSameInstanceOfIndexWidget()
 {
     QStringListModel model({ "FOO", "bar" });
 
-    QScopedPointer<QTableView> table(new QTableView());
+    QScopedPointer<BOBUIableView> table(new BOBUIableView());
     table->setModel(&model);
 
     QModelIndex index = model.index(0,0);
@@ -1906,7 +1906,7 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
     QStringListModel model({ "A", "B", "C", "D", "E", "F" });
     QSortFilterProxyModel proxyModel;
     proxyModel.setSourceModel(&model);
-    proxyModel.sort(0, Qt::AscendingOrder);
+    proxyModel.sort(0, BobUI::AscendingOrder);
     proxyModel.setDynamicSortFilter(true);
 
     QPersistentModelIndex indexA(proxyModel.index(0, 0));
@@ -1920,10 +1920,10 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
     view.setModel(&proxyModel);
     view.setSelectionMode(QAbstractItemView::ExtendedSelection);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Click "C"
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, view.visualRect(indexC).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, view.visualRect(indexC).center());
     QModelIndexList selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 1);
     QVERIFY(selected.contains(indexC));
@@ -1933,14 +1933,14 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
     model.setData(model.index(0, 0), "B1");
 
     // Shift-click "D" -> we expect that "C" and "D" are selected
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, view.visualRect(indexD).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, view.visualRect(indexD).center());
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 2);
     QVERIFY(selected.contains(indexC));
     QVERIFY(selected.contains(indexD));
 
     // Click "D"
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, view.visualRect(indexD).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, view.visualRect(indexD).center());
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 1);
     QVERIFY(selected.contains(indexD));
@@ -1952,7 +1952,7 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
     QVERIFY(!indexC.isValid());
 
     // Shift-click "F" -> we expect that "D", "E", and "F" are selected
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, view.visualRect(indexF).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, view.visualRect(indexF).center());
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 3);
     QVERIFY(selected.contains(indexD));
@@ -1961,24 +1961,24 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
 
     // Move to "A" by pressing "Up" repeatedly
     while (view.currentIndex() != indexA)
-        QTest::keyClick(&view, Qt::Key_Up);
+        BOBUIest::keyClick(&view, BobUI::Key_Up);
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 1);
     QVERIFY(selected.contains(indexA));
 
     // Change the sort order
-    proxyModel.sort(0, Qt::DescendingOrder);
+    proxyModel.sort(0, BobUI::DescendingOrder);
 
     // Shift-click "F" -> All items should be selected
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, view.visualRect(indexF).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, view.visualRect(indexF).center());
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), model.rowCount());
 
     // Restore the old sort order
-    proxyModel.sort(0, Qt::AscendingOrder);
+    proxyModel.sort(0, BobUI::AscendingOrder);
 
     // Click "D"
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, view.visualRect(indexD).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, view.visualRect(indexD).center());
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 1);
     QVERIFY(selected.contains(indexD));
@@ -1988,7 +1988,7 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
     model.setData(model.index(0, 0), "B2");
 
     // Press Shift+Down -> "D" and "E" should be selected.
-    QTest::keyClick(&view, Qt::Key_Down, Qt::ShiftModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Down, BobUI::ShiftModifier);
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 2);
     QVERIFY(selected.contains(indexD));
@@ -1996,7 +1996,7 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
 
     // Click "A" to reset the current selection starting point;
     //then select "D" via QAbstractItemView::setCurrentIndex(const QModelIndex&).
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, view.visualRect(indexA).center());
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, view.visualRect(indexA).center());
     view.setCurrentIndex(indexD);
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 1);
@@ -2007,19 +2007,19 @@ void tst_QAbstractItemView::shiftSelectionAfterChangingModelContents()
     model.setData(model.index(0, 0), "B3");
 
     // Press Shift+Down -> "D" and "E" should be selected.
-    QTest::keyClick(&view, Qt::Key_Down, Qt::ShiftModifier);
+    BOBUIest::keyClick(&view, BobUI::Key_Down, BobUI::ShiftModifier);
     selected = view.selectionModel()->selectedIndexes();
     QCOMPARE(selected.size(), 2);
     QVERIFY(selected.contains(indexD));
     QVERIFY(selected.contains(indexE));
 }
 
-void tst_QAbstractItemView::QTBUG48968_reentrant_updateEditorGeometries()
+void tst_QAbstractItemView::BOBUIBUG48968_reentrant_updateEditorGeometries()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    QTreeView tree;
+    BOBUIreeView tree;
     QStandardItemModel *m = new QStandardItemModel(&tree);
     for (int i = 0; i < 10; ++i) {
         QStandardItem *item = new QStandardItem(QString("Item number %1").arg(i));
@@ -2033,16 +2033,16 @@ void tst_QAbstractItemView::QTBUG48968_reentrant_updateEditorGeometries()
 
     tree.setModel(m);
     tree.setRootIsDecorated(false);
-    connect(&tree, &QTreeView::doubleClicked,
-            &tree, &QTreeView::setRootIndex);
+    connect(&tree, &BOBUIreeView::doubleClicked,
+            &tree, &BOBUIreeView::setRootIndex);
     tree.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tree));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tree));
 
     // Trigger editing idx
     QModelIndex idx = m->index(1, 0);
     const QPoint pos = tree.visualRect(idx).center();
-    QTest::mouseClick(tree.viewport(), Qt::LeftButton, Qt::NoModifier, pos);
-    QTest::mouseDClick(tree.viewport(), Qt::LeftButton, Qt::NoModifier, pos);
+    BOBUIest::mouseClick(tree.viewport(), BobUI::LeftButton, BobUI::NoModifier, pos);
+    BOBUIest::mouseDClick(tree.viewport(), BobUI::LeftButton, BobUI::NoModifier, pos);
 
     // Add more children to idx
     QStandardItem *item = m->itemFromIndex(idx);
@@ -2076,7 +2076,7 @@ public:
     QAbstractItemView::ScrollMode scrollMode;
 };
 
-void tst_QAbstractItemView::QTBUG50102_SH_ItemView_ScrollMode()
+void tst_QAbstractItemView::BOBUIBUG50102_SH_ItemView_ScrollMode()
 {
     QListView view;
 
@@ -2107,7 +2107,7 @@ void tst_QAbstractItemView::QTBUG50102_SH_ItemView_ScrollMode()
     QCOMPARE(view.horizontalScrollMode(), styleScrollMode);
 }
 
-void tst_QAbstractItemView::QTBUG50535_update_on_new_selection_model()
+void tst_QAbstractItemView::BOBUIBUG50535_update_on_new_selection_model()
 {
     QStandardItemModel model;
     for (int i = 0; i < 10; ++i)
@@ -2162,7 +2162,7 @@ void tst_QAbstractItemView::QTBUG50535_update_on_new_selection_model()
     view.setModel(&model);
     view.selectionModel()->setCurrentIndex(model.index(1, 0), QItemSelectionModel::SelectCurrent);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QVERIFY(view.selectionChangedOk());
 
     QItemSelectionModel selectionModel(&model);
@@ -2170,7 +2170,7 @@ void tst_QAbstractItemView::QTBUG50535_update_on_new_selection_model()
 
     int oldPaintEventsCount = view.m_paintEventsCount;
     view.setSelectionModel(&selectionModel);
-    QTRY_VERIFY(view.m_paintEventsCount > oldPaintEventsCount);
+    BOBUIRY_VERIFY(view.m_paintEventsCount > oldPaintEventsCount);
     QVERIFY(view.selectionChangedOk());
 
 
@@ -2180,7 +2180,7 @@ void tst_QAbstractItemView::QTBUG50535_update_on_new_selection_model()
 
     oldPaintEventsCount = view.m_paintEventsCount;
     view.setSelectionModel(&selectionModel2);
-    QTRY_VERIFY(view.m_paintEventsCount > oldPaintEventsCount);
+    BOBUIRY_VERIFY(view.m_paintEventsCount > oldPaintEventsCount);
     QVERIFY(view.selectionChangedOk());
 
     // Tests QAbstractItemView::selectionChanged
@@ -2227,7 +2227,7 @@ void tst_QAbstractItemView::testSelectionModelInSyncWithView()
     QCOMPARE(view.selectionModel()->selection().indexes(), QModelIndexList() << model.index(1, 0));
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QItemSelectionModel selectionModel(&model);
     selectionModel.setCurrentIndex(model.index(2, 0), QItemSelectionModel::Current);
@@ -2277,7 +2277,7 @@ void tst_QAbstractItemView::testClickToSelect()
     SetSelectionTestView view;
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QSignalSpy spy(&view, &SetSelectionTestView::setSelectionCalled);
 
@@ -2286,14 +2286,14 @@ void tst_QAbstractItemView::testClickToSelect()
     const QPoint centerA = visualRectA.center();
 
     // Click the center of the visualRect of item "A"
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, centerA);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, centerA);
     QCOMPARE(spy.size(), 1);
     QCOMPARE(spy.back().front().value<QRect>(), QRect(centerA, QSize(1, 1)));
 
     // Click a point slightly away from the center
     const QPoint nearCenterA = centerA + QPoint(1, 1);
     QVERIFY(visualRectA.contains(nearCenterA));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, nearCenterA);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, nearCenterA);
     QCOMPARE(spy.size(), 2);
     QCOMPARE(spy.back().front().value<QRect>(), QRect(nearCenterA, QSize(1, 1)));
 }
@@ -2309,11 +2309,11 @@ void tst_QAbstractItemView::testDialogAsEditor()
     view.setItemDelegate(&delegate);
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     view.edit(model.index(0,0));
 
-    QVERIFY(QTest::qWaitForWindowExposed(delegate.openedEditor));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(delegate.openedEditor));
 
     delegate.openedEditor->reject();
     QApplication::processEvents();
@@ -2322,7 +2322,7 @@ void tst_QAbstractItemView::testDialogAsEditor()
 
     view.edit(model.index(0,0));
 
-    QVERIFY(QTest::qWaitForWindowExposed(delegate.openedEditor));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(delegate.openedEditor));
 
     delegate.openedEditor->accept();
     QApplication::processEvents();
@@ -2350,34 +2350,34 @@ public:
     mutable bool m_paintedWithoutHover = false;
 };
 
-void tst_QAbstractItemView::QTBUG46785_mouseout_hover_state()
+void tst_QAbstractItemView::BOBUIBUG46785_mouseout_hover_state()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     HoverItemDelegate delegate;
 
-    QTableWidget table(5, 5);
+    BOBUIableWidget table(5, 5);
     table.verticalHeader()->hide();
     table.horizontalHeader()->hide();
     table.setMouseTracking(true);
     table.setItemDelegate(&delegate);
     centerOnScreen(&table);
     table.show();
-    QVERIFY(QTest::qWaitForWindowActive(&table));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&table));
 
     QModelIndex item = table.model()->index(0, 0);
     QRect itemRect = table.visualRect(item);
 
     // Move the mouse into the center of the item at 0,0 to cause a paint event to occur
-    QTest::mouseMove(table.viewport(), itemRect.center());
-    QTest::mouseClick(table.viewport(), Qt::LeftButton, {}, itemRect.center());
+    BOBUIest::mouseMove(table.viewport(), itemRect.center());
+    BOBUIest::mouseClick(table.viewport(), BobUI::LeftButton, {}, itemRect.center());
 
     delegate.m_paintedWithoutHover = false;
 
-    QTest::mouseMove(table.viewport(), QPoint(-50, 0));
+    BOBUIest::mouseMove(table.viewport(), QPoint(-50, 0));
 
-    QTRY_VERIFY(delegate.m_paintedWithoutHover);
+    BOBUIRY_VERIFY(delegate.m_paintedWithoutHover);
 }
 
 void tst_QAbstractItemView::testClearModelInClickedSignal()
@@ -2398,33 +2398,33 @@ void tst_QAbstractItemView::testClearModelInClickedSignal()
     QVERIFY(index.isValid());
     QPoint p = view.visualRect(index).center();
 
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, p);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
 
     QCOMPARE(view.model(), nullptr);
 }
 
 void tst_QAbstractItemView::inputMethodEnabled_data()
 {
-    QTest::addColumn<QByteArray>("viewType");
-    QTest::addColumn<Qt::ItemFlags>("itemFlags");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QByteArray>("viewType");
+    BOBUIest::addColumn<BobUI::ItemFlags>("itemFlags");
+    BOBUIest::addColumn<bool>("result");
 
-    const QList<QByteArray> widgets { "QListView", "QTreeView", "QTableView" };
+    const QList<QByteArray> widgets { "QListView", "BOBUIreeView", "BOBUIableView" };
     for (const QByteArray &widget : widgets) {
-        QTest::newRow(widget + ": no flags")
-            << widget << Qt::ItemFlags(Qt::NoItemFlags) << false;
-        QTest::newRow(widget + ": checkable")
-            << widget << Qt::ItemFlags(Qt::ItemIsUserCheckable) << false;
-        QTest::newRow(widget + ": selectable")
-            << widget << Qt::ItemFlags(Qt::ItemIsSelectable) << false;
-        QTest::newRow(widget + ": enabled")
-            << widget << Qt::ItemFlags(Qt::ItemIsEnabled) << false;
-        QTest::newRow(widget + ": selectable|enabled")
-            << widget << Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled) << false;
-        QTest::newRow(widget + ": editable|enabled")
-            << widget << Qt::ItemFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled) << true;
-        QTest::newRow(widget + ": editable|enabled|selectable")
-            << widget << Qt::ItemFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable) << true;
+        BOBUIest::newRow(widget + ": no flags")
+            << widget << BobUI::ItemFlags(BobUI::NoItemFlags) << false;
+        BOBUIest::newRow(widget + ": checkable")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsUserCheckable) << false;
+        BOBUIest::newRow(widget + ": selectable")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsSelectable) << false;
+        BOBUIest::newRow(widget + ": enabled")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsEnabled) << false;
+        BOBUIest::newRow(widget + ": selectable|enabled")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsSelectable | BobUI::ItemIsEnabled) << false;
+        BOBUIest::newRow(widget + ": editable|enabled")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsEditable | BobUI::ItemIsEnabled) << true;
+        BOBUIest::newRow(widget + ": editable|enabled|selectable")
+            << widget << BobUI::ItemFlags(BobUI::ItemIsEditable | BobUI::ItemIsEnabled | BobUI::ItemIsSelectable) << true;
     }
 }
 
@@ -2434,55 +2434,55 @@ void tst_QAbstractItemView::inputMethodEnabled()
         QSKIP("Window activation is not supported");
 
     QFETCH(QByteArray, viewType);
-    QFETCH(Qt::ItemFlags, itemFlags);
+    QFETCH(BobUI::ItemFlags, itemFlags);
     QFETCH(bool, result);
 
     QScopedPointer<QAbstractItemView> view(viewFromString(viewType));
 
     centerOnScreen(view.data());
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.data()));
 
     QStandardItemModel *model = new QStandardItemModel(view.data());
     QStandardItem *item = new QStandardItem("first item");
-    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    item->setFlags(BobUI::ItemIsSelectable | BobUI::ItemIsEnabled);
     model->appendRow(item);
 
     QStandardItem *secondItem = new QStandardItem("test item");
-    secondItem->setFlags(Qt::ItemFlags(itemFlags));
+    secondItem->setFlags(BobUI::ItemFlags(itemFlags));
     model->appendRow(secondItem);
 
     view->setModel(model);
 
     // Check current changed
     view->setCurrentIndex(model->index(0, 0));
-    QVERIFY(!view->testAttribute(Qt::WA_InputMethodEnabled));
+    QVERIFY(!view->testAttribute(BobUI::WA_InputMethodEnabled));
     view->setCurrentIndex(model->index(1, 0));
-    QCOMPARE(view->testAttribute(Qt::WA_InputMethodEnabled), result);
+    QCOMPARE(view->testAttribute(BobUI::WA_InputMethodEnabled), result);
     view->setCurrentIndex(model->index(0, 0));
-    QVERIFY(!view->testAttribute(Qt::WA_InputMethodEnabled));
+    QVERIFY(!view->testAttribute(BobUI::WA_InputMethodEnabled));
 
     // Check focus by switching the activation of the window to force a focus in
     view->setCurrentIndex(model->index(1, 0));
-    QVERIFY(QTest::qWaitForWindowActive(view.data()));
-    QCOMPARE(view->testAttribute(Qt::WA_InputMethodEnabled), result);
+    QVERIFY(BOBUIest::qWaitForWindowActive(view.data()));
+    QCOMPARE(view->testAttribute(BobUI::WA_InputMethodEnabled), result);
 
     view->setCurrentIndex(QModelIndex());
-    QVERIFY(!view->testAttribute(Qt::WA_InputMethodEnabled));
-    QVERIFY(QTest::qWaitForWindowActive(view.data()));
+    QVERIFY(!view->testAttribute(BobUI::WA_InputMethodEnabled));
+    QVERIFY(BOBUIest::qWaitForWindowActive(view.data()));
     QModelIndex index = model->index(1, 0);
     QPoint p = view->visualRect(index).center();
-    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, p);
-    if (itemFlags & Qt::ItemIsEnabled)
+    BOBUIest::mouseClick(view->viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
+    if (itemFlags & BobUI::ItemIsEnabled)
         QCOMPARE(view->currentIndex(), index);
-    QCOMPARE(view->testAttribute(Qt::WA_InputMethodEnabled), result);
+    QCOMPARE(view->testAttribute(BobUI::WA_InputMethodEnabled), result);
 
     index = model->index(0, 0);
-    QVERIFY(QTest::qWaitForWindowActive(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(view.data()));
     p = view->visualRect(index).center();
-    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, p);
+    BOBUIest::mouseClick(view->viewport(), BobUI::LeftButton, BobUI::NoModifier, p);
     QCOMPARE(view->currentIndex(), index);
-    QVERIFY(!view->testAttribute(Qt::WA_InputMethodEnabled));
+    QVERIFY(!view->testAttribute(BobUI::WA_InputMethodEnabled));
 
     // There is a case when it goes to the first visible item so we
     // make the flags of the first item match the ones we are testing
@@ -2490,19 +2490,19 @@ void tst_QAbstractItemView::inputMethodEnabled()
     QApplicationPrivate::setActiveWindow(nullptr);
     view->setCurrentIndex(QModelIndex());
     view->reset();
-    item->setFlags(Qt::ItemFlags(itemFlags));
+    item->setFlags(BobUI::ItemFlags(itemFlags));
     QApplicationPrivate::setActiveWindow(view.data());
-    QVERIFY(QTest::qWaitForWindowActive(view.data()));
-    QCOMPARE(view->testAttribute(Qt::WA_InputMethodEnabled), result);
+    QVERIFY(BOBUIest::qWaitForWindowActive(view.data()));
+    QCOMPARE(view->testAttribute(BobUI::WA_InputMethodEnabled), result);
 }
 
 void tst_QAbstractItemView::currentFollowsIndexWidget_data()
 {
-    QTest::addColumn<QByteArray>("viewType");
+    BOBUIest::addColumn<QByteArray>("viewType");
 
-    const QList<QByteArray> widgets { "QListView", "QTreeView", "QTableView" };
+    const QList<QByteArray> widgets { "QListView", "BOBUIreeView", "BOBUIableView" };
     for (const QByteArray &widget : widgets)
-        QTest::newRow(widget) << widget;
+        BOBUIest::newRow(widget) << widget;
 }
 
 void tst_QAbstractItemView::currentFollowsIndexWidget()
@@ -2516,15 +2516,15 @@ void tst_QAbstractItemView::currentFollowsIndexWidget()
 
     centerOnScreen(view.data());
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view.data()));
 
     QStandardItemModel *model = new QStandardItemModel(view.data());
     QStandardItem *item1 = new QStandardItem("first item");
-    item1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    item1->setFlags(BobUI::ItemIsSelectable | BobUI::ItemIsEnabled);
     model->appendRow(item1);
 
     QStandardItem *item2 = new QStandardItem("test item");
-    item2->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    item2->setFlags(BobUI::ItemIsSelectable | BobUI::ItemIsEnabled);
     model->appendRow(item2);
 
     view->setModel(model);
@@ -2534,10 +2534,10 @@ void tst_QAbstractItemView::currentFollowsIndexWidget()
     view->setIndexWidget(item2->index(), lineEdit2);
 
     lineEdit2->setFocus();
-    QTRY_VERIFY(lineEdit2->hasFocus());
+    BOBUIRY_VERIFY(lineEdit2->hasFocus());
     QCOMPARE(view->currentIndex(), item2->index());
     lineEdit1->setFocus();
-    QTRY_VERIFY(lineEdit1->hasFocus());
+    BOBUIRY_VERIFY(lineEdit1->hasFocus());
     QCOMPARE(view->currentIndex(), item1->index());
 }
 
@@ -2555,7 +2555,7 @@ public:
     mutable QPointer<QWidget> openedEditor = nullptr;
 };
 
-// Testing the case reported in QTBUG-62253.
+// Testing the case reported in BOBUIBUG-62253.
 // When an itemview with an editor that has focus loses focus
 // due to a change in the active window then we need to check
 // that the itemview gets focus once the activation is back
@@ -2592,22 +2592,22 @@ void tst_QAbstractItemView::checkFocusAfterActivationChanges()
     view->setItemDelegate(&delegate);
     w.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
     QVERIFY(le->hasFocus());
 
     view->setFocus();
     QVERIFY(view->hasFocus());
 
     view->edit(model.index(0,0));
-    QVERIFY(QTest::qWaitForWindowExposed(delegate.openedEditor));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(delegate.openedEditor));
     QVERIFY(delegate.openedEditor->hasFocus());
 
     QApplicationPrivate::setActiveWindow(&otherTopLevel);
     otherTopLevel.setFocus();
-    QTRY_VERIFY(!delegate.openedEditor);
+    BOBUIRY_VERIFY(!delegate.openedEditor);
 
     QApplicationPrivate::setActiveWindow(&w);
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
     QVERIFY(view->hasFocus());
 }
 
@@ -2626,7 +2626,7 @@ void tst_QAbstractItemView::dragSelectAfterNewPress()
     centerOnScreen(&view);
     moveCursorAway(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index0 = model.index(0, 0);
     QModelIndex index2 = model.index(2, 0);
@@ -2635,12 +2635,12 @@ void tst_QAbstractItemView::dragSelectAfterNewPress()
     QCOMPARE(view.currentIndex(), index0);
 
     // Select item 0 using a single click
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier,
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier,
                       view.visualRect(index0).center());
     QCOMPARE(view.currentIndex(), index0);
 
     // Press to select item 2
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::ShiftModifier,
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier,
                       view.visualRect(index2).center());
     QCOMPARE(view.currentIndex(), index2);
 
@@ -2652,13 +2652,13 @@ void tst_QAbstractItemView::dragSelectAfterNewPress()
 
     QModelIndex index5 = model.index(5, 0);
     const QPoint releasePos = view.visualRect(index5).center();
-    // The mouse move event has to be created manually because the QTest framework does not
+    // The mouse move event has to be created manually because the BOBUIest framework does not
     // contain a function for mouse moves with buttons pressed
     QMouseEvent moveEvent2(QEvent::MouseMove, releasePos, view.viewport()->mapToGlobal(releasePos),
-                           Qt::NoButton, Qt::LeftButton, Qt::ShiftModifier);
+                           BobUI::NoButton, BobUI::LeftButton, BobUI::ShiftModifier);
     const bool moveEventReceived = qApp->notify(view.viewport(), &moveEvent2);
     QVERIFY(moveEventReceived);
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::ShiftModifier, releasePos);
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::ShiftModifier, releasePos);
     QCOMPARE(view.currentIndex(), index5);
 
     // Verify that the selection worked OK
@@ -2670,12 +2670,12 @@ void tst_QAbstractItemView::dragSelectAfterNewPress()
 
 void tst_QAbstractItemView::dragWithSecondClick_data()
 {
-    QTest::addColumn<QByteArray>("viewClass");
-    QTest::addColumn<bool>("doubleClick");
-    const QList<QByteArray> widgets { "QListView", "QTreeView" };
+    BOBUIest::addColumn<QByteArray>("viewClass");
+    BOBUIest::addColumn<bool>("doubleClick");
+    const QList<QByteArray> widgets { "QListView", "BOBUIreeView" };
     for (const QByteArray &widget : widgets) {
-        QTest::newRow(widget + ": DoubleClick") << widget << true;
-        QTest::newRow(widget + ": Two Single Clicks") << widget << false;
+        BOBUIest::newRow(widget + ": DoubleClick") << widget << true;
+        BOBUIest::newRow(widget + ": Two Single Clicks") << widget << false;
     }
 }
 
@@ -2695,7 +2695,7 @@ public:
     DragRecorderView()
     { view = this; }
 protected:
-    void startDrag(Qt::DropActions) override
+    void startDrag(BobUI::DropActions) override
     {
         draggedIndexes = ViewClass::selectedIndexes();
         dragStarted = true;
@@ -2717,8 +2717,8 @@ void tst_QAbstractItemView::dragWithSecondClick()
     }
 
     std::unique_ptr<DragRecorder> dragRecorder;
-    if (viewClass == "QTreeView")
-        dragRecorder.reset(new DragRecorderView<QTreeView>);
+    if (viewClass == "BOBUIreeView")
+        dragRecorder.reset(new DragRecorderView<BOBUIreeView>);
     else if (viewClass == "QListView")
         dragRecorder.reset(new DragRecorderView<QListView>);
 
@@ -2730,22 +2730,22 @@ void tst_QAbstractItemView::dragWithSecondClick()
     centerOnScreen(view);
     moveCursorAway(view);
     view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(view));
 
     QModelIndex index0 = model.index(0, 0);
     QModelIndex index1 = model.index(1, 0);
     // Select item 0 using a single click
-    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier,
+    BOBUIest::mouseClick(view->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                       view->visualRect(index0).center());
     QCOMPARE(view->currentIndex(), index0);
 
     if (doubleClick) {
         // press on same item within the double click interval
-        QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::NoModifier,
+        BOBUIest::mouseDClick(view->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                            view->visualRect(index0).center());
     } else {
         // or on different item with a slow second press
-        QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier,
+        BOBUIest::mousePress(view->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                           view->visualRect(index1).center());
     }
     // then drag far enough with left button held
@@ -2753,23 +2753,23 @@ void tst_QAbstractItemView::dragWithSecondClick()
                         + QPoint(2 * QApplication::startDragDistance(),
                                  2 * QApplication::startDragDistance());
     QMouseEvent mouseMoveEvent(QEvent::MouseMove, dragTo, view->viewport()->mapToGlobal(dragTo),
-                            Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
+                            BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier);
     QVERIFY(QApplication::sendEvent(view->viewport(), &mouseMoveEvent));
     // twice since the view will first enter dragging state, then start the drag
     // (not necessary to actually move the mouse)
     QVERIFY(QApplication::sendEvent(view->viewport(), &mouseMoveEvent));
     QVERIFY(dragRecorder->dragStarted);
-    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, dragTo);
+    BOBUIest::mouseRelease(view->viewport(), BobUI::LeftButton, BobUI::NoModifier, dragTo);
 }
 
 void tst_QAbstractItemView::clickAfterDoubleClick()
 {
-    QTableWidget view(5, 5);
+    BOBUIableWidget view(5, 5);
     view.horizontalHeader()->hide();
     view.verticalHeader()->hide();
     view.setEditTriggers(QAbstractItemView::NoEditTriggers);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     const QModelIndex index = view.model()->index(1, 1);
     QVERIFY(index.isValid());
     const QPoint clickPoint = view.visualRect(index).center();
@@ -2781,64 +2781,64 @@ void tst_QAbstractItemView::clickAfterDoubleClick()
     connect(&view, &QAbstractItemView::doubleClicked, [&]{
         QDialog dialog(&view);
         dialog.setModal(true);
-        QTimer::singleShot(0, [&]{ dialog.close(); });
+        BOBUIimer::singleShot(0, [&]{ dialog.close(); });
         dialog.exec();
     });
     connect(&view, &QAbstractItemView::clicked, [&]{
         ++clickCount;
     });
 
-    QTest::mouseClick(window, Qt::LeftButton, {}, clickPoint);
+    BOBUIest::mouseClick(window, BobUI::LeftButton, {}, clickPoint);
     QCOMPARE(clickCount, 1);
     // generates a click followed by a double click; double click opens
     // dialog that eats second release
-    QTest::mouseDClick(window, Qt::LeftButton, {}, clickPoint);
+    BOBUIest::mouseDClick(window, BobUI::LeftButton, {}, clickPoint);
     QCOMPARE(clickCount, 2);
-    QTest::mouseClick(window, Qt::LeftButton, {}, clickPoint);
+    BOBUIest::mouseClick(window, BobUI::LeftButton, {}, clickPoint);
     QCOMPARE(clickCount, 3);
 }
 
 void tst_QAbstractItemView::selectionCommand_data()
 {
-    QTest::addColumn<QAbstractItemView::SelectionMode>("selectionMode");
-    QTest::addColumn<Qt::KeyboardModifier>("keyboardModifier");
-    QTest::addColumn<QItemSelectionModel::SelectionFlag>("selectionFlag");
+    BOBUIest::addColumn<QAbstractItemView::SelectionMode>("selectionMode");
+    BOBUIest::addColumn<BobUI::KeyboardModifier>("keyboardModifier");
+    BOBUIest::addColumn<QItemSelectionModel::SelectionFlag>("selectionFlag");
 
-    QTest::newRow("NoSelection - NoModifier") << QAbstractItemView::NoSelection << Qt::NoModifier << QItemSelectionModel::NoUpdate;
-    QTest::newRow("NoSelection - ShiftModifier") << QAbstractItemView::NoSelection << Qt::ShiftModifier << QItemSelectionModel::NoUpdate;
-    QTest::newRow("NoSelection - ControlModifier") << QAbstractItemView::NoSelection << Qt::ControlModifier << QItemSelectionModel::NoUpdate;
-    QTest::newRow("NoSelection - AltModifier") << QAbstractItemView::NoSelection << Qt::AltModifier << QItemSelectionModel::NoUpdate;
+    BOBUIest::newRow("NoSelection - NoModifier") << QAbstractItemView::NoSelection << BobUI::NoModifier << QItemSelectionModel::NoUpdate;
+    BOBUIest::newRow("NoSelection - ShiftModifier") << QAbstractItemView::NoSelection << BobUI::ShiftModifier << QItemSelectionModel::NoUpdate;
+    BOBUIest::newRow("NoSelection - ControlModifier") << QAbstractItemView::NoSelection << BobUI::ControlModifier << QItemSelectionModel::NoUpdate;
+    BOBUIest::newRow("NoSelection - AltModifier") << QAbstractItemView::NoSelection << BobUI::AltModifier << QItemSelectionModel::NoUpdate;
 
-    QTest::newRow("SingleSelection - NoModifier") << QAbstractItemView::SingleSelection << Qt::NoModifier << QItemSelectionModel::ClearAndSelect;
-    QTest::newRow("SingleSelection - ShiftModifier") << QAbstractItemView::SingleSelection << Qt::ShiftModifier << QItemSelectionModel::ClearAndSelect;
-    QTest::newRow("SingleSelection - ControlModifier") << QAbstractItemView::SingleSelection << Qt::ControlModifier << QItemSelectionModel::ClearAndSelect;
-    QTest::newRow("SingleSelection - AltModifier") << QAbstractItemView::SingleSelection << Qt::AltModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("SingleSelection - NoModifier") << QAbstractItemView::SingleSelection << BobUI::NoModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("SingleSelection - ShiftModifier") << QAbstractItemView::SingleSelection << BobUI::ShiftModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("SingleSelection - ControlModifier") << QAbstractItemView::SingleSelection << BobUI::ControlModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("SingleSelection - AltModifier") << QAbstractItemView::SingleSelection << BobUI::AltModifier << QItemSelectionModel::ClearAndSelect;
 
-    QTest::newRow("MultiSelection - NoModifier") << QAbstractItemView::MultiSelection << Qt::NoModifier << QItemSelectionModel::Toggle;
-    QTest::newRow("MultiSelection - ShiftModifier") << QAbstractItemView::MultiSelection << Qt::ShiftModifier << QItemSelectionModel::Toggle;
-    QTest::newRow("MultiSelection - ControlModifier") << QAbstractItemView::MultiSelection << Qt::ControlModifier << QItemSelectionModel::Toggle;
-    QTest::newRow("MultiSelection - AltModifier") << QAbstractItemView::MultiSelection << Qt::AltModifier << QItemSelectionModel::Toggle;
+    BOBUIest::newRow("MultiSelection - NoModifier") << QAbstractItemView::MultiSelection << BobUI::NoModifier << QItemSelectionModel::Toggle;
+    BOBUIest::newRow("MultiSelection - ShiftModifier") << QAbstractItemView::MultiSelection << BobUI::ShiftModifier << QItemSelectionModel::Toggle;
+    BOBUIest::newRow("MultiSelection - ControlModifier") << QAbstractItemView::MultiSelection << BobUI::ControlModifier << QItemSelectionModel::Toggle;
+    BOBUIest::newRow("MultiSelection - AltModifier") << QAbstractItemView::MultiSelection << BobUI::AltModifier << QItemSelectionModel::Toggle;
 
-    QTest::newRow("ExtendedSelection - NoModifier") << QAbstractItemView::ExtendedSelection << Qt::NoModifier << QItemSelectionModel::ClearAndSelect;
-    QTest::newRow("ExtendedSelection - ShiftModifier") << QAbstractItemView::ExtendedSelection << Qt::ShiftModifier << QItemSelectionModel::SelectCurrent;
-    QTest::newRow("ExtendedSelection - ControlModifier") << QAbstractItemView::ExtendedSelection << Qt::ControlModifier << QItemSelectionModel::Toggle;
-    QTest::newRow("ExtendedSelection - AltModifier") << QAbstractItemView::ExtendedSelection << Qt::AltModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("ExtendedSelection - NoModifier") << QAbstractItemView::ExtendedSelection << BobUI::NoModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("ExtendedSelection - ShiftModifier") << QAbstractItemView::ExtendedSelection << BobUI::ShiftModifier << QItemSelectionModel::SelectCurrent;
+    BOBUIest::newRow("ExtendedSelection - ControlModifier") << QAbstractItemView::ExtendedSelection << BobUI::ControlModifier << QItemSelectionModel::Toggle;
+    BOBUIest::newRow("ExtendedSelection - AltModifier") << QAbstractItemView::ExtendedSelection << BobUI::AltModifier << QItemSelectionModel::ClearAndSelect;
 
-    QTest::newRow("ContiguousSelection - NoModifier") << QAbstractItemView::ContiguousSelection << Qt::NoModifier << QItemSelectionModel::ClearAndSelect;
-    QTest::newRow("ContiguousSelection - ShiftModifier") << QAbstractItemView::ContiguousSelection << Qt::ShiftModifier << QItemSelectionModel::SelectCurrent;
-    QTest::newRow("ContiguousSelection - ControlModifier") << QAbstractItemView::ContiguousSelection << Qt::ControlModifier << QItemSelectionModel::SelectCurrent;
-    QTest::newRow("ContiguousSelection - AltModifier") << QAbstractItemView::ContiguousSelection << Qt::AltModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("ContiguousSelection - NoModifier") << QAbstractItemView::ContiguousSelection << BobUI::NoModifier << QItemSelectionModel::ClearAndSelect;
+    BOBUIest::newRow("ContiguousSelection - ShiftModifier") << QAbstractItemView::ContiguousSelection << BobUI::ShiftModifier << QItemSelectionModel::SelectCurrent;
+    BOBUIest::newRow("ContiguousSelection - ControlModifier") << QAbstractItemView::ContiguousSelection << BobUI::ControlModifier << QItemSelectionModel::SelectCurrent;
+    BOBUIest::newRow("ContiguousSelection - AltModifier") << QAbstractItemView::ContiguousSelection << BobUI::AltModifier << QItemSelectionModel::ClearAndSelect;
 }
 
 void tst_QAbstractItemView::selectionCommand()
 {
     QFETCH(QAbstractItemView::SelectionMode, selectionMode);
-    QFETCH(Qt::KeyboardModifier, keyboardModifier);
+    QFETCH(BobUI::KeyboardModifier, keyboardModifier);
     QFETCH(QItemSelectionModel::SelectionFlag, selectionFlag);
 
-    QTableView view;
+    BOBUIableView view;
     view.setSelectionMode(selectionMode);
-    QTest::keyPress(&view, Qt::Key_A, keyboardModifier);
+    BOBUIest::keyPress(&view, BobUI::Key_A, keyboardModifier);
     QCOMPARE(selectionFlag, view.selectionCommand(QModelIndex(), nullptr));
 }
 
@@ -2848,88 +2848,88 @@ struct SelectionEvent
     { Press, Release, Click, Move };
     constexpr SelectionEvent(MouseEvent type, int r = -1) noexcept
         : eventType(type), row(r) {}
-    constexpr SelectionEvent(MouseEvent type, Qt::KeyboardModifiers mod, int r = -1) noexcept
+    constexpr SelectionEvent(MouseEvent type, BobUI::KeyboardModifiers mod, int r = -1) noexcept
         : eventType(type), keyboardModifiers(mod), row(r) {}
     MouseEvent eventType = Press;
-    Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;
+    BobUI::KeyboardModifiers keyboardModifiers = BobUI::NoModifier;
     int row = -1;
 };
 
 void tst_QAbstractItemView::mouseSelection_data()
 {
-    QTest::addColumn<QAbstractItemView::SelectionMode>("selectionMode");
-    QTest::addColumn<bool>("dragEnabled");
-    QTest::addColumn<QAbstractItemView::EditTrigger>("editTrigger");
-    QTest::addColumn<QList<SelectionEvent>>("selectionEvents");
-    QTest::addColumn<QList<int>>("selectedRows");
+    BOBUIest::addColumn<QAbstractItemView::SelectionMode>("selectionMode");
+    BOBUIest::addColumn<bool>("dragEnabled");
+    BOBUIest::addColumn<QAbstractItemView::EditTrigger>("editTrigger");
+    BOBUIest::addColumn<QList<SelectionEvent>>("selectionEvents");
+    BOBUIest::addColumn<QList<int>>("selectedRows");
 
     // single selection mode - always one row selected, modifiers ignored
-    QTest::addRow("Single:Press") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Press") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1)}
         << QList{1};
-    QTest::addRow("Single:Click") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Click") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent{SelectionEvent::Click, 1}}
         << QList{1};
-    QTest::addRow("Single:Press+Drag") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Press+Drag") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
                  SelectionEvent{SelectionEvent::Move, 2},
                  SelectionEvent{SelectionEvent::Release}}
         << QList{2};
-    QTest::addRow("Single:Shift+Click") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Shift+Click") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
-        << QList{SelectionEvent{SelectionEvent::Click, Qt::ShiftModifier, 2}}
+        << QList{SelectionEvent{SelectionEvent::Click, BobUI::ShiftModifier, 2}}
         << QList{2};
-    QTest::addRow("Single:Press;Ctrl+Press") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Press;Ctrl+Press") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent{SelectionEvent::Press, 3},
-                 SelectionEvent{SelectionEvent::Press, Qt::ControlModifier, 3}}
+                 SelectionEvent{SelectionEvent::Press, BobUI::ControlModifier, 3}}
         << QList{3};
-    QTest::addRow("Single:Ctrl+Click") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Ctrl+Click") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
-        << QList{SelectionEvent{SelectionEvent::Click, Qt::ControlModifier, 3}}
+        << QList{SelectionEvent{SelectionEvent::Click, BobUI::ControlModifier, 3}}
         << QList{3};
-    QTest::addRow("Single:Click;Ctrl+Click") << QAbstractItemView::SingleSelection << false
+    BOBUIest::addRow("Single:Click;Ctrl+Click") << QAbstractItemView::SingleSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent{SelectionEvent::Click, 3},
-                 SelectionEvent{SelectionEvent::Click, Qt::ControlModifier, 3}}
+                 SelectionEvent{SelectionEvent::Click, BobUI::ControlModifier, 3}}
         << QList<int>{};
 
     // multi selection mode - selection toggles on press, selection can be drag-extended
     // modifiers ignored
-    QTest::addRow("Multi:Press") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1)}
         << QList{1};
-    QTest::addRow("Multi:Press twice") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press twice") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
                  SelectionEvent(SelectionEvent::Press, 1)}
         << QList<int>{};
-    QTest::addRow("Multi:Press twice with drag enabled") << QAbstractItemView::MultiSelection << true
+    BOBUIest::addRow("Multi:Press twice with drag enabled") << QAbstractItemView::MultiSelection << true
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Click, 1),
                  SelectionEvent(SelectionEvent::Press, 1)}
         << QList{1};
-    QTest::addRow("Multi:Press and click with drag enabled") << QAbstractItemView::MultiSelection << true
+    BOBUIest::addRow("Multi:Press and click with drag enabled") << QAbstractItemView::MultiSelection << true
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
                  SelectionEvent(SelectionEvent::Click, 1)}
         << QList<int>{};
-    QTest::addRow("Multi:Press,Press") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press,Press") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 2),
                  SelectionEvent(SelectionEvent::Press, 3)}
         << QList{2, 3};
-    QTest::addRow("Multi:Press,Drag") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press,Drag") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
                  SelectionEvent(SelectionEvent::Move, 5),
                  SelectionEvent(SelectionEvent::Release)}
         << QList{1, 2, 3, 4, 5};
-    QTest::addRow("Multi:Press,Drag,Deselect") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press,Drag,Deselect") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
                  SelectionEvent(SelectionEvent::Move, 5),
@@ -2937,7 +2937,7 @@ void tst_QAbstractItemView::mouseSelection_data()
                  SelectionEvent(SelectionEvent::Press, 3)}
         << QList{1, 2, 4, 5};
     // drag-select a few indices; then drag-select a larger area that includes the first
-    QTest::addRow("Multi:Press,Drag;Surround") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press,Drag;Surround") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 3),
                  SelectionEvent(SelectionEvent::Move, 5),
@@ -2947,7 +2947,7 @@ void tst_QAbstractItemView::mouseSelection_data()
                  SelectionEvent(SelectionEvent::Release)}
         << QList{1, 2, 3, 4, 5, 6, 7, 8};
     // drag-select a few indices; then try to select more starting with the last -> not working
-    QTest::addRow("Multi:Press,Drag;Expand") << QAbstractItemView::MultiSelection << false
+    BOBUIest::addRow("Multi:Press,Drag;Expand") << QAbstractItemView::MultiSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 3),
                  SelectionEvent(SelectionEvent::Move, 5),
@@ -2956,8 +2956,8 @@ void tst_QAbstractItemView::mouseSelection_data()
                  SelectionEvent(SelectionEvent::Move, 8),
                  SelectionEvent(SelectionEvent::Release)}
         << QList{3, 4};
-    // Multi: Press-dragging a selection should not deselect #QTBUG-59888
-    QTest::addRow("Multi:Press-Drag selection") << QAbstractItemView::MultiSelection << true
+    // Multi: Press-dragging a selection should not deselect #BOBUIBUG-59888
+    BOBUIest::addRow("Multi:Press-Drag selection") << QAbstractItemView::MultiSelection << true
         // with drag'n'drop enabled, we cannot drag a selection
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Click, 2),
@@ -2971,101 +2971,101 @@ void tst_QAbstractItemView::mouseSelection_data()
         << QList{2, 3, 4, 5};
 
     // Extended selection: Press selects a single item
-    QTest::addRow("Extended:Press") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 3)}
         << QList{3};
-    QTest::addRow("Extended:Press twice") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press twice") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 3),
                  SelectionEvent(SelectionEvent::Press, 3)}
         << QList{3};
-    QTest::addRow("Extended:Press,Press") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Press") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 2),
                  SelectionEvent(SelectionEvent::Press, 3)}
         << QList{3};
     // Extended selection: press with Ctrl toggles item
-    QTest::addRow("Extended:Press,Toggle") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Toggle") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 3),
-                 SelectionEvent(SelectionEvent::Click, Qt::ControlModifier, 3)}
+                 SelectionEvent(SelectionEvent::Click, BobUI::ControlModifier, 3)}
         << QList<int>{};
-    QTest::addRow("Extended:Press,Add") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Add") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
-                 SelectionEvent(SelectionEvent::Click, Qt::ControlModifier, 3)}
+                 SelectionEvent(SelectionEvent::Click, BobUI::ControlModifier, 3)}
         << QList{1, 3};
     // Extended selection: Shift creates a range between first and last pressed
-    QTest::addRow("Extended:Press,Range") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Range") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
-                 SelectionEvent(SelectionEvent::Press, Qt::ShiftModifier, 5)}
+                 SelectionEvent(SelectionEvent::Press, BobUI::ShiftModifier, 5)}
         << QList{1, 2, 3, 4, 5};
-    QTest::addRow("Extended:Press,Range,Fix Range") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Range,Fix Range") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 1),
-                 SelectionEvent(SelectionEvent::Press, Qt::ShiftModifier, 5),
-                 SelectionEvent(SelectionEvent::Press, Qt::ShiftModifier, 3)}
+                 SelectionEvent(SelectionEvent::Press, BobUI::ShiftModifier, 5),
+                 SelectionEvent(SelectionEvent::Press, BobUI::ShiftModifier, 3)}
         << QList{1, 2, 3};
     // Extended: dragging extends the selection
-    QTest::addRow("Extended:Press,Drag") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Drag") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 2),
                  SelectionEvent(SelectionEvent::Move, 5)}
         << QList{2, 3, 4, 5};
     // Extended: Ctrl+Press-dragging extends the selection
-    QTest::addRow("Extended:Press,Drag;Ctrl-Press,Drag") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Press,Drag;Ctrl-Press,Drag") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Press, 2),
                  SelectionEvent(SelectionEvent::Move, 5),
                  SelectionEvent(SelectionEvent::Release),
-                 SelectionEvent(SelectionEvent::Press, Qt::ControlModifier, 6),
-                 SelectionEvent(SelectionEvent::Move, Qt::ControlModifier, 8),
-                 SelectionEvent(SelectionEvent::Release, Qt::ControlModifier, 8)}
+                 SelectionEvent(SelectionEvent::Press, BobUI::ControlModifier, 6),
+                 SelectionEvent(SelectionEvent::Move, BobUI::ControlModifier, 8),
+                 SelectionEvent(SelectionEvent::Release, BobUI::ControlModifier, 8)}
         << QList{2, 3, 4, 5, 6, 7, 8};
-    // Extended: Ctrl+Press-dragging in a selection should not deselect #QTBUG-59888
-    QTest::addRow("Extended:Ctrl-Drag selection,no deselect") << QAbstractItemView::ExtendedSelection << true
+    // Extended: Ctrl+Press-dragging in a selection should not deselect #BOBUIBUG-59888
+    BOBUIest::addRow("Extended:Ctrl-Drag selection,no deselect") << QAbstractItemView::ExtendedSelection << true
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Click, 2),
-                 SelectionEvent(SelectionEvent::Click, Qt::ShiftModifier, 5),
-                 SelectionEvent(SelectionEvent::Press, Qt::ControlModifier, 3),
-                 SelectionEvent(SelectionEvent::Move, Qt::ControlModifier, 5),
+                 SelectionEvent(SelectionEvent::Click, BobUI::ShiftModifier, 5),
+                 SelectionEvent(SelectionEvent::Press, BobUI::ControlModifier, 3),
+                 SelectionEvent(SelectionEvent::Move, BobUI::ControlModifier, 5),
                  // two moves needed because of distance and state logic in QAbstractItemView
-                 SelectionEvent(SelectionEvent::Move, Qt::ControlModifier, 6)}
+                 SelectionEvent(SelectionEvent::Move, BobUI::ControlModifier, 6)}
         << QList{2, 3, 4, 5};
-    // Extended: Ctrl+Press-dragging with a selection extends, then drags #QTBUG-59888
-    QTest::addRow("Extended:Ctrl-Drag selection") << QAbstractItemView::ExtendedSelection << true
+    // Extended: Ctrl+Press-dragging with a selection extends, then drags #BOBUIBUG-59888
+    BOBUIest::addRow("Extended:Ctrl-Drag selection") << QAbstractItemView::ExtendedSelection << true
         << QAbstractItemView::NoEditTriggers
         << QList{SelectionEvent(SelectionEvent::Click, 2),
-                 SelectionEvent(SelectionEvent::Click, Qt::ShiftModifier, 5),
-                 SelectionEvent(SelectionEvent::Press, Qt::ControlModifier, 6),
-                 SelectionEvent(SelectionEvent::Move, Qt::ControlModifier, 7),
+                 SelectionEvent(SelectionEvent::Click, BobUI::ShiftModifier, 5),
+                 SelectionEvent(SelectionEvent::Press, BobUI::ControlModifier, 6),
+                 SelectionEvent(SelectionEvent::Move, BobUI::ControlModifier, 7),
                  // two moves needed because of distance and state logic in 7QAbstractItemView
-                 SelectionEvent(SelectionEvent::Move, Qt::ControlModifier, 8)}
+                 SelectionEvent(SelectionEvent::Move, BobUI::ControlModifier, 8)}
         << QList{2, 3, 4, 5, 6};
-    // Extended: when drag is enabled, click with Ctrl toggles item instead of editing # QTBUG-111131
-    QTest::addRow("Extended:Click,Toggle,editable") << QAbstractItemView::ExtendedSelection << false
+    // Extended: when drag is enabled, click with Ctrl toggles item instead of editing # BOBUIBUG-111131
+    BOBUIest::addRow("Extended:Click,Toggle,editable") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::SelectedClicked
         << QList{SelectionEvent(SelectionEvent::Click, 3),
-                 SelectionEvent(SelectionEvent::Click, Qt::ControlModifier, 3)}
+                 SelectionEvent(SelectionEvent::Click, BobUI::ControlModifier, 3)}
         << QList<int>{};
-    QTest::addRow("Extended:Click,Toggle,dragable,editable") << QAbstractItemView::ExtendedSelection << true
+    BOBUIest::addRow("Extended:Click,Toggle,dragable,editable") << QAbstractItemView::ExtendedSelection << true
         << QAbstractItemView::SelectedClicked
         << QList{SelectionEvent(SelectionEvent::Click, 3),
-                 SelectionEvent(SelectionEvent::Click, Qt::ControlModifier, 3)}
+                 SelectionEvent(SelectionEvent::Click, BobUI::ControlModifier, 3)}
         << QList<int>{};
     // Extended: when drag is enabled, click on selected without Ctrl clears before editing
-    QTest::addRow("Extended:Range,Click,editable") << QAbstractItemView::ExtendedSelection << false
+    BOBUIest::addRow("Extended:Range,Click,editable") << QAbstractItemView::ExtendedSelection << false
         << QAbstractItemView::SelectedClicked
         << QList{SelectionEvent(SelectionEvent::Click, 1),
-                 SelectionEvent(SelectionEvent::Click, Qt::ShiftModifier, 3),
+                 SelectionEvent(SelectionEvent::Click, BobUI::ShiftModifier, 3),
                  SelectionEvent(SelectionEvent::Click, 2)}
         << QList<int>{2};
-    QTest::addRow("Extended:Range,Click,dragable,editable") << QAbstractItemView::ExtendedSelection << true
+    BOBUIest::addRow("Extended:Range,Click,dragable,editable") << QAbstractItemView::ExtendedSelection << true
         << QAbstractItemView::SelectedClicked
         << QList{SelectionEvent(SelectionEvent::Click, 1),
-                 SelectionEvent(SelectionEvent::Click, Qt::ShiftModifier, 3),
+                 SelectionEvent(SelectionEvent::Click, BobUI::ShiftModifier, 3),
                  SelectionEvent(SelectionEvent::Click, 2)}
         << QList<int>{2};
 }
@@ -3087,7 +3087,7 @@ void tst_QAbstractItemView::mouseSelection()
         parentItem->appendRow(item);
     }
 
-    std::unique_ptr<DragRecorder> dragRecorder(new DragRecorderView<QTreeView>);
+    std::unique_ptr<DragRecorder> dragRecorder(new DragRecorderView<BOBUIreeView>);
     QAbstractItemView *view = dragRecorder->view;
     QVERIFY(view);
     view->setModel(&model);
@@ -3095,9 +3095,9 @@ void tst_QAbstractItemView::mouseSelection()
     view->setSelectionMode(selectionMode);
     view->setEditTriggers(editTrigger);
     view->show();
-    QVERIFY(QTest::qWaitForWindowActive(view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(view));
 
-    Qt::MouseButton buttonDown = Qt::NoButton;
+    BobUI::MouseButton buttonDown = BobUI::NoButton;
     int targetRow = -1;
     QModelIndex pressedIndex;
     for (const auto &event : std::as_const(selectionEvents)) {
@@ -3107,27 +3107,27 @@ void tst_QAbstractItemView::mouseSelection()
         const QPoint targetPoint = view->visualRect(targetIndex).center();
         switch (event.eventType) {
         case SelectionEvent::Press:
-            if (buttonDown != Qt::NoButton) {
-                QTest::mouseRelease(view->viewport(), buttonDown, event.keyboardModifiers,
+            if (buttonDown != BobUI::NoButton) {
+                BOBUIest::mouseRelease(view->viewport(), buttonDown, event.keyboardModifiers,
                                     view->visualRect(pressedIndex).center());
             }
-            buttonDown = Qt::LeftButton;
+            buttonDown = BobUI::LeftButton;
             pressedIndex = model.index(targetRow, 0);
-            QTest::mousePress(view->viewport(), buttonDown, event.keyboardModifiers, targetPoint);
+            BOBUIest::mousePress(view->viewport(), buttonDown, event.keyboardModifiers, targetPoint);
             break;
         case SelectionEvent::Release:
-            QTest::mouseRelease(view->viewport(), buttonDown, event.keyboardModifiers, targetPoint);
-            buttonDown = Qt::NoButton;
+            BOBUIest::mouseRelease(view->viewport(), buttonDown, event.keyboardModifiers, targetPoint);
+            buttonDown = BobUI::NoButton;
             pressedIndex = QModelIndex();
             break;
         case SelectionEvent::Click:
-            QTest::mouseClick(view->viewport(), Qt::LeftButton, event.keyboardModifiers, targetPoint);
-            buttonDown = Qt::NoButton;
+            BOBUIest::mouseClick(view->viewport(), BobUI::LeftButton, event.keyboardModifiers, targetPoint);
+            buttonDown = BobUI::NoButton;
             break;
         case SelectionEvent::Move: {
                 QMouseEvent mouseMoveEvent(QEvent::MouseMove, targetPoint,
                                            view->viewport()->mapToGlobal(targetPoint),
-                                           Qt::NoButton, buttonDown, event.keyboardModifiers);
+                                           BobUI::NoButton, buttonDown, event.keyboardModifiers);
                 QApplication::sendEvent(view->viewport(), &mouseMoveEvent);
             }
             break;
@@ -3147,7 +3147,7 @@ void tst_QAbstractItemView::mouseSelection()
 /*!
     Make sure that when clicking on empty space in the view, we don't
     unselect the current row.
-    QTBUG-105870
+    BOBUIBUG-105870
 */
 void tst_QAbstractItemView::keepSingleSelectionOnEmptyAreaClick()
 {
@@ -3160,7 +3160,7 @@ void tst_QAbstractItemView::keepSingleSelectionOnEmptyAreaClick()
     // Make widget large enough so that there is empty area below the last item
     view.setFixedSize(300, 500);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     // Select third row
     view.setCurrentRow(2);
@@ -3169,7 +3169,7 @@ void tst_QAbstractItemView::keepSingleSelectionOnEmptyAreaClick()
     QPoint targetPoint = view.visualItemRect(lastItem).bottomLeft();
     targetPoint += QPoint(10, 10);
 
-    QTest::mouseClick(view.viewport(), Qt::MouseButton::LeftButton, Qt::NoModifier, targetPoint);
+    BOBUIest::mouseClick(view.viewport(), BobUI::MouseButton::LeftButton, BobUI::NoModifier, targetPoint);
 
     QCOMPARE(view.currentRow(), 2);
     QVERIFY(view.currentItem()->isSelected());
@@ -3179,7 +3179,7 @@ void tst_QAbstractItemView::keepSingleSelectionOnEmptyAreaClick()
     Verify that scrolling an autoScroll enabled itemview with a QScroller
     produces a continuous, smooth scroll without any jumping around due to
     the currentItem negotiation between QAbstractItemView and QScroller.
-    QTBUG-64543.
+    BOBUIBUG-64543.
 */
 void tst_QAbstractItemView::scrollerSmoothScroll()
 {
@@ -3202,7 +3202,7 @@ void tst_QAbstractItemView::scrollerSmoothScroll()
     // make sure we have space for only a few items
     view.setFixedSize(120, 200);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     // we flick up, so we should never scroll back
     int lastScrollPosition = 0;
@@ -3220,37 +3220,37 @@ void tst_QAbstractItemView::scrollerSmoothScroll()
     // the mouse press changes the current item temporarily, but the press is delayed
     // by the gesture machinery. this is not what we are testing here, so skip the test
     // if this fails within a reasonable amount of time.
-    QTest::mousePress(view.viewport(), Qt::LeftButton, Qt::NoModifier, dragPosition);
-    if (!(QTest::qWaitFor([&]{ return view.currentItem() == pressItem; })))
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, dragPosition);
+    if (!(BOBUIest::qWaitFor([&]{ return view.currentItem() == pressItem; })))
         QSKIP("Current item didn't change on press, skipping test");
 
     // QAIV will reset the current item when the scroller changes state to Dragging
     for (int y = 0; y < QApplication::startDragDistance() * 2; ++y) {
         // gesture recognizer needs some throttling
-        QTest::qWait(10);
+        BOBUIest::qWait(10);
         dragPosition -= QPoint(0, 10);
         const QPoint globalPos = view.viewport()->mapToGlobal(dragPosition);
         QMouseEvent mouseMoveEvent(QEvent::MouseMove, dragPosition, dragPosition, globalPos,
-                                    Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
+                                    BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier);
         QApplication::sendEvent(view.viewport(), &mouseMoveEvent);
         QVERIFY(!scrollBack);
     }
 
-    QTest::mouseRelease(view.viewport(), Qt::LeftButton, Qt::NoModifier, dragPosition);
+    BOBUIest::mouseRelease(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, dragPosition);
 }
 
 /*!
     Verify that starting the editing of an item with a key press while a composing
-    input method is active doesn't break the input method. See QTBUG-54848.
+    input method is active doesn't break the input method. See BOBUIBUG-54848.
 */
 void tst_QAbstractItemView::inputMethodOpensEditor_data()
 {
-    QTest::addColumn<QPoint>("editItem");
-    QTest::addColumn<QString>("preedit");
-    QTest::addColumn<QString>("commit");
+    BOBUIest::addColumn<QPoint>("editItem");
+    BOBUIest::addColumn<QString>("preedit");
+    BOBUIest::addColumn<QString>("commit");
 
-    QTest::addRow("IM accepted") << QPoint(1, 1) << "chang" << QString("长");
-    QTest::addRow("IM cancelled") << QPoint(25, 25) << "chang" << QString();
+    BOBUIest::addRow("IM accepted") << QPoint(1, 1) << "chang" << QString("长");
+    BOBUIest::addRow("IM cancelled") << QPoint(25, 25) << "chang" << QString();
 }
 
 void tst_QAbstractItemView::inputMethodOpensEditor()
@@ -3258,15 +3258,15 @@ void tst_QAbstractItemView::inputMethodOpensEditor()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("QWindow::requestActivate() is not supported.");
 
-    QTableWidget tableWidget(50, 50);
+    BOBUIableWidget tableWidget(50, 50);
     tableWidget.setEditTriggers(QAbstractItemView::AnyKeyPressed);
     for (int r = 0; r < 50; ++r) {
         for (int c = 0; c < 50; ++c )
-            tableWidget.setItem(r, c, new QTableWidgetItem(QString("Item %1:%2").arg(r).arg(c)));
+            tableWidget.setItem(r, c, new BOBUIableWidgetItem(QString("Item %1:%2").arg(r).arg(c)));
     }
 
     tableWidget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tableWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tableWidget));
 
     const auto sendInputMethodEvent = [](const QString &preeditText, const QString &commitString = {}){
         QInputMethodEvent imEvent(preeditText, {});
@@ -3283,7 +3283,7 @@ void tst_QAbstractItemView::inputMethodOpensEditor()
     tableWidget.setCurrentCell(editItem.y(), editItem.x());
     const QString orgText = tableWidget.currentItem()->text();
     const QModelIndex currentIndex = tableWidget.currentIndex();
-    QCOMPARE(tableWidget.inputMethodQuery(Qt::ImCursorRectangle), tableWidget.visualRect(currentIndex));
+    QCOMPARE(tableWidget.inputMethodQuery(BobUI::ImCursorRectangle), tableWidget.visualRect(currentIndex));
 
     // simulate the start of input via a composing input method
     sendInputMethodEvent(preedit.left(1));
@@ -3294,7 +3294,7 @@ void tst_QAbstractItemView::inputMethodOpensEditor()
     // the focus must remain with the tableWidget, as otherwise the compositing is interrupted
     QCOMPARE(QApplication::focusWidget(), &tableWidget);
     // the item view delegates input method queries to the editor
-    const QRect cursorRect = tableWidget.inputMethodQuery(Qt::ImCursorRectangle).toRect();
+    const QRect cursorRect = tableWidget.inputMethodQuery(BobUI::ImCursorRectangle).toRect();
     QVERIFY(cursorRect.isValid());
     QVERIFY(tableWidget.visualRect(currentIndex).intersects(cursorRect));
 
@@ -3305,38 +3305,38 @@ void tst_QAbstractItemView::inputMethodOpensEditor()
     QCOMPARE(tableWidget.state(), QAbstractItemView::EditingState);
     QVERIFY(editor->hasFocus());
     // finish editing
-    QTest::keyClick(editor, Qt::Key_Return);
+    BOBUIest::keyClick(editor, BobUI::Key_Return);
     if (commit.isEmpty()) {
         // if composition was cancelled, then the item's value is unchanged
         QCOMPARE(tableWidget.currentItem()->text(), orgText);
     } else {
         // otherwise, the item's value is now the commit string
-        QTRY_COMPARE(tableWidget.currentItem()->text(), commit);
+        BOBUIRY_COMPARE(tableWidget.currentItem()->text(), commit);
     }
 }
 
 void tst_QAbstractItemView::selectionAutoScrolling_data()
 {
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<int>("direction"); // negative or positive
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<int>("direction"); // negative or positive
 
-    QTest::addRow("scroll up") << Qt::Vertical << -1;
-    QTest::addRow("scroll left") << Qt::Horizontal << -1;
-    QTest::addRow("scroll down") << Qt::Vertical << +1;
-    QTest::addRow("scroll right") << Qt::Horizontal << +1;
+    BOBUIest::addRow("scroll up") << BobUI::Vertical << -1;
+    BOBUIest::addRow("scroll left") << BobUI::Horizontal << -1;
+    BOBUIest::addRow("scroll down") << BobUI::Vertical << +1;
+    BOBUIest::addRow("scroll right") << BobUI::Horizontal << +1;
 }
 
 void tst_QAbstractItemView::selectionAutoScrolling()
 {
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     QFETCH(int, direction);
 
     QListView listview;
     listview.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     listview.setResizeMode(QListView::Fixed);
     listview.setAutoScroll(true);
-    listview.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    listview.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    listview.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    listview.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     listview.setSpacing(10);
     listview.setGeometry(0, 0, 500, 500);
     listview.setFrameShape(QFrame::Shape::NoFrame);
@@ -3348,14 +3348,14 @@ void tst_QAbstractItemView::selectionAutoScrolling()
     listview.setSelectionMode(QListView::ExtendedSelection);
 
     QPixmap pm(50, 50);
-    pm.fill(Qt::red);
+    pm.fill(BobUI::red);
     for (int i = 0; i < 80; i++) {
         QStandardItem *item = new QStandardItem(pm, QString::number(i));
         listModel->appendRow(item);
     }
 
     listview.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&listview));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&listview));
 
     listview.resize(200, 200);
     // scroll to the middle
@@ -3404,7 +3404,7 @@ void tst_QAbstractItemView::selectionAutoScrolling()
     // Simulate multiple select behavior; start in the middle, drag to the edge
     const QPoint pressPoint(listview.viewport()->width() / 2, listview.viewport()->height() / 2);
     QPoint dragPoint = pressPoint;
-    if (orientation == Qt::Vertical) {
+    if (orientation == BobUI::Vertical) {
         dragPoint.rx() += 50;
         dragPoint.ry() = direction > 0 ? listview.viewport()->height() : 0;
     } else {
@@ -3412,23 +3412,23 @@ void tst_QAbstractItemView::selectionAutoScrolling()
         dragPoint.ry() += 50;
     }
 
-    QTest::mousePress(listview.viewport(), Qt::LeftButton, Qt::NoModifier, pressPoint);
+    BOBUIest::mousePress(listview.viewport(), BobUI::LeftButton, BobUI::NoModifier, pressPoint);
     QMouseEvent mmEvent(QEvent::MouseMove, dragPoint, listview.viewport()->mapToGlobal(dragPoint),
-                        Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
-    QApplication::sendEvent(listview.viewport(), &mmEvent); // QTest::mouseMove is useless
+                        BobUI::NoButton, BobUI::LeftButton, BobUI::NoModifier);
+    QApplication::sendEvent(listview.viewport(), &mmEvent); // BOBUIest::mouseMove is useless
 
     // check that we scrolled to the end
-    QScrollBar *scrollBar = orientation == Qt::Vertical
+    QScrollBar *scrollBar = orientation == BobUI::Vertical
                           ? listview.verticalScrollBar()
                           : listview.horizontalScrollBar();
 
     if (direction < 0)
-        QTRY_COMPARE(scrollBar->value(), 0);
+        BOBUIRY_COMPARE(scrollBar->value(), 0);
     else
-        QTRY_COMPARE(scrollBar->value(), scrollBar->maximum());
+        BOBUIRY_COMPARE(scrollBar->value(), scrollBar->maximum());
     QVERIFY(listview.selectionModel()->selectedIndexes().size() > 0);
 
-    QTest::mouseRelease(listview.viewport(), Qt::LeftButton, Qt::NoModifier, dragPoint);
+    BOBUIest::mouseRelease(listview.viewport(), BobUI::LeftButton, BobUI::NoModifier, dragPoint);
 }
 class SpinBoxDelegate : public QStyledItemDelegate
 {
@@ -3450,9 +3450,9 @@ public:
 
 void tst_QAbstractItemView::testSpinBoxAsEditor_data()
 {
-    QTest::addColumn<bool>("keyboardTracking");
-    QTest::newRow("true") << true;
-    QTest::newRow("false")<< false;
+    BOBUIest::addColumn<bool>("keyboardTracking");
+    BOBUIest::newRow("true") << true;
+    BOBUIest::newRow("false")<< false;
 }
 
 void tst_QAbstractItemView::testSpinBoxAsEditor()
@@ -3462,7 +3462,7 @@ void tst_QAbstractItemView::testSpinBoxAsEditor()
     QStandardItemModel model(2, 2);
     SpinBoxDelegate delegate;
 
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
     view.setItemDelegate(&delegate);
 
@@ -3477,19 +3477,19 @@ void tst_QAbstractItemView::testSpinBoxAsEditor()
 
     centerOnScreen(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_COMPARE(QApplication::focusWidget(), sb);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_COMPARE(QApplication::focusWidget(), sb);
 
-    QTest::keyClick(sb, Qt::Key_1, Qt::NoModifier);
+    BOBUIest::keyClick(sb, BobUI::Key_1, BobUI::NoModifier);
     QPoint clickpos = view.visualRect(model.index(0, 0)).center();
-    QTest::mouseDClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, clickpos);
+    BOBUIest::mouseDClick(view.viewport(), BobUI::LeftButton, BobUI::NoModifier, clickpos);
 
     QCOMPARE(model.data(model.index(0, 1)).toInt(), 1);
 }
 
 void tst_QAbstractItemView::removeIndexWhileEditing()
 {
-    QTreeView view;
+    BOBUIreeView view;
     QStandardItemModel treeModel;
     auto editableItem1 = new QStandardItem("aa");
     auto editableItem2 = new QStandardItem("ab");
@@ -3504,13 +3504,13 @@ void tst_QAbstractItemView::removeIndexWhileEditing()
     view.setModel(&filterModel);
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     view.setExpanded(item->index(), true);
 
     filterModel.setFilterRegularExpression("a.*");
 
-    QTest::failOnWarning(QRegularExpression("QAbstractItemView::closeEditor called with an editor "
+    BOBUIest::failOnWarning(QRegularExpression("QAbstractItemView::closeEditor called with an editor "
                                             "that does not belong to this view"));
 
     // Verify that we shut editing down cleanly if the index we are editing is
@@ -3520,13 +3520,13 @@ void tst_QAbstractItemView::removeIndexWhileEditing()
         QVERIFY(filteredIndex.isValid());
         view.edit(filteredIndex);
         QCOMPARE(view.state(), QAbstractItemView::EditingState);
-        QTRY_VERIFY(QApplication::focusWidget());
+        BOBUIRY_VERIFY(QApplication::focusWidget());
         QPointer<QLineEdit> lineEdit = qobject_cast<QLineEdit *>(QApplication::focusWidget());
         QVERIFY(lineEdit);
         lineEdit->setText("c");
-        QTest::keyClick(lineEdit, Qt::Key_Enter);
-        QTRY_VERIFY(!lineEdit);
-        QCOMPARE(editableItem1->data(Qt::DisplayRole), "c");
+        BOBUIest::keyClick(lineEdit, BobUI::Key_Enter);
+        BOBUIRY_VERIFY(!lineEdit);
+        QCOMPARE(editableItem1->data(BobUI::DisplayRole), "c");
         QCOMPARE(view.state(), QAbstractItemView::NoState);
     }
 
@@ -3536,12 +3536,12 @@ void tst_QAbstractItemView::removeIndexWhileEditing()
         QVERIFY(filteredIndex.isValid());
         view.edit(filteredIndex);
         QCOMPARE(view.state(), QAbstractItemView::EditingState);
-        QTRY_VERIFY(QApplication::focusWidget());
+        BOBUIRY_VERIFY(QApplication::focusWidget());
         QPointer<QLineEdit> lineEdit = qobject_cast<QLineEdit *>(QApplication::focusWidget());
         QVERIFY(lineEdit);
         filterModel.setFilterFixedString("c");
         QVERIFY(!filterModel.mapFromSource(editableItem2->index()).isValid());
-        QTRY_VERIFY(!lineEdit);
+        BOBUIRY_VERIFY(!lineEdit);
         QCOMPARE(view.state(), QAbstractItemView::NoState);
     }
 }
@@ -3549,7 +3549,7 @@ void tst_QAbstractItemView::removeIndexWhileEditing()
 void tst_QAbstractItemView::focusNextOnHide()
 {
     QWidget widget;
-    QTableWidget table(10, 10);
+    BOBUIableWidget table(10, 10);
     table.setTabKeyNavigation(true);
     QLineEdit lineEdit;
 
@@ -3561,11 +3561,11 @@ void tst_QAbstractItemView::focusNextOnHide()
     widget.setTabOrder({&table, &lineEdit});
 
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
-    QTRY_VERIFY(table.hasFocus());
+    BOBUIRY_VERIFY(table.hasFocus());
     QCOMPARE(table.currentIndex(), table.model()->index(0, 0));
-    QTest::keyPress(&table, Qt::Key_Tab);
+    BOBUIest::keyPress(&table, BobUI::Key_Tab);
     QCOMPARE(table.currentIndex(), table.model()->index(0, 1));
 
     table.hide();
@@ -3573,44 +3573,44 @@ void tst_QAbstractItemView::focusNextOnHide()
     QVERIFY(lineEdit.hasFocus());
 }
 
-// Tests for QTBUG-127381, where shift-selecting after calling
+// Tests for BOBUIBUG-127381, where shift-selecting after calling
 // QItemSelectionModel::setCurrentIndex() would produce unexpected results.
 void tst_QAbstractItemView::shiftSelectionAfterModelSetCurrentIndex()
 {
     QStandardItemModel model(5, 1);
-    QTreeView view;
+    BOBUIreeView view;
     view.setSelectionBehavior(QAbstractItemView::SelectRows);
     view.setSelectionMode(QAbstractItemView::ExtendedSelection);
     view.setModel(&model);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QModelIndex index = model.index(0, 0);
     view.setCurrentIndex(index);
     index = model.index(2, 0);
     view.selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 
-    QTest::keyPress(&view, Qt::Key_Down, Qt::ShiftModifier);
+    BOBUIest::keyPress(&view, BobUI::Key_Down, BobUI::ShiftModifier);
 
     QItemSelection selection = view.selectionModel()->selection();
     QCOMPARE(selection.size(), 1);
     QCOMPARE(selection.first().top(), 2);
     QCOMPARE(selection.first().bottom(), 3);
 
-    QTest::keyPress(&view, Qt::Key_Up, Qt::ShiftModifier);
+    BOBUIest::keyPress(&view, BobUI::Key_Up, BobUI::ShiftModifier);
 
     selection = view.selectionModel()->selection();
     QCOMPARE(selection.first().top(), 2);
     QCOMPARE(selection.first().bottom(), 2);
 }
 
-void tst_QAbstractItemView::QTBUG72333_isPersistentEditorOpen()
+void tst_QAbstractItemView::BOBUIBUG72333_isPersistentEditorOpen()
 {
     QStandardItemModel model(1, 1);
     model.setData(model.index(0, 0), QStringLiteral("Test"));
 
-    QTableView view;
+    BOBUIableView view;
     view.setModel(&model);
     view.show();
 
@@ -3629,5 +3629,5 @@ void tst_QAbstractItemView::QTBUG72333_isPersistentEditorOpen()
     QVERIFY(!view.isPersistentEditorOpen(index));
 }
 
-QTEST_MAIN(tst_QAbstractItemView)
+BOBUIEST_MAIN(tst_QAbstractItemView)
 #include "tst_qabstractitemview.moc"

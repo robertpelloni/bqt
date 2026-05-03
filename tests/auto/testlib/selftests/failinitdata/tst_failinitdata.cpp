@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_FailInitData: public QObject
 {
@@ -34,6 +34,6 @@ void tst_FailInitData::aTestFunction() const
     qDebug() << "This function is NOT supposed to be called.";
 }
 
-QTEST_APPLESS_MAIN(tst_FailInitData)
+BOBUIEST_APPLESS_MAIN(tst_FailInitData)
 
 #include "tst_failinitdata.moc"

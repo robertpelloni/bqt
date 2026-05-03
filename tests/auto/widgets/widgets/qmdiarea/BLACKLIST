@@ -5,7 +5,7 @@ macos
 [resizeTimer]
 macos
 
-# QTBUG-87420
+# BOBUIBUG-87420
 [subWindowActivated]
 android
 [subWindowActivated2]

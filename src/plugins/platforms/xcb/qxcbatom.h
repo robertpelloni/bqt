@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -41,22 +41,22 @@ public:
         AtomTIMESTAMP,
         AtomSAVE_TARGETS,
         AtomCLIP_TEMPORARY,
-        Atom_QT_SELECTION,
-        Atom_QT_CLIPBOARD_SENTINEL,
-        Atom_QT_SELECTION_SENTINEL,
+        Atom_BOBUI_SELECTION,
+        Atom_BOBUI_CLIPBOARD_SENTINEL,
+        Atom_BOBUI_SELECTION_SENTINEL,
         AtomCLIPBOARD_MANAGER,
 
         AtomRESOURCE_MANAGER,
 
         Atom_XSETROOT_ID,
 
-        Atom_QT_SCROLL_DONE,
-        Atom_QT_INPUT_ENCODING,
+        Atom_BOBUI_SCROLL_DONE,
+        Atom_BOBUI_INPUT_ENCODING,
 
-        // Qt/XCB specific
-        Atom_QT_CLOSE_CONNECTION,
+        // BobUI/XCB specific
+        Atom_BOBUI_CLOSE_CONNECTION,
 
-        Atom_QT_GET_TIMESTAMP,
+        Atom_BOBUI_GET_TIMESTAMP,
 
         Atom_MOTIF_WM_HINTS,
 

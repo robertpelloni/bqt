@@ -3,6 +3,6 @@ TEMPLATE = app
 TARGET = qconcatenatetablesproxymodel
 INCLUDEPATH += .
 
-QT += widgets
+BOBUI += widgets
 
 SOURCES += main.cpp

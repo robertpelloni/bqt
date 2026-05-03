@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #ifndef QIODEVICE_P_H
 #define QIODEVICE_P_H
@@ -9,35 +9,35 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of QIODevice. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/qbytearray.h"
-#include "QtCore/qiodevice.h"
-#include "QtCore/qobjectdefs.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qvarlengtharray.h"
+#include "BobUICore/qbytearray.h"
+#include "BobUICore/qiodevice.h"
+#include "BobUICore/qobjectdefs.h"
+#include "BobUICore/qstring.h"
+#include "BobUICore/qvarlengtharray.h"
 #include "private/qringbuffer_p.h"
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "private/qobject_p.h"
 #else
-static constexpr int QObjectPrivateVersion = QT_VERSION;
+static constexpr int QObjectPrivateVersion = BOBUI_VERSION;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef QIODEVICE_BUFFERSIZE
 #define QIODEVICE_BUFFERSIZE 16384
 #endif
 
-Q_CORE_EXPORT int qt_subtract_from_timeout(int timeout, int elapsed);
+Q_CORE_EXPORT int bobui_subtract_from_timeout(int timeout, int elapsed);
 
 class Q_CORE_EXPORT QIODevicePrivate
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     : public QObjectPrivate
 #endif
 {
@@ -177,13 +177,13 @@ public:
                && currentWriteChunk->size() == size;
     }
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     QIODevice *q_ptr = nullptr;
 #endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QIODevicePrivate::ReadLineOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIODEVICE_P_H

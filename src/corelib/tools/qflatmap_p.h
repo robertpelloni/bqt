@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFLATMAP_P_H
 #define QFLATMAP_P_H
@@ -9,16 +9,16 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of a number of Qt sources files.  This header file may change from
+// This file is not part of the BobUI API.  It exists for the convenience
+// of a number of BobUI sources files.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qcontainertools_impl.h>
+#include <BobUICore/qcontainertools_impl.h>
 #include "qlist.h"
-#include <QtCore/qtclasshelpermacros.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
 #include "private/qglobal_p.h"
 
 #include <algorithm>
@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
   QFlatMap provides an associative container backed by sorted sequential
@@ -45,11 +45,11 @@ QT_BEGIN_NAMESPACE
       QFlatMap<float, int, std::less<float>, std::vector<float>, std::vector<int>>
 */
 
-namespace Qt {
+namespace BobUI {
 
-QT_DEFINE_TAG(OrderedUniqueRange);
+BOBUI_DEFINE_TAG(OrderedUniqueRange);
 
-} // namespace Qt
+} // namespace BobUI
 
 template <class Key, class T, class Compare>
 class QFlatMapValueCompare : protected Compare
@@ -76,7 +76,7 @@ template<class Key, class T, class Compare = std::less<Key>, class KeyContainer 
          class MappedContainer = QList<T>>
 class QFlatMap : private QFlatMapValueCompare<Key, T, Compare>
 {
-    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 public:
     using key_type = Key;
     using mapped_type = T;
@@ -99,7 +99,7 @@ public:
         using difference_type = ptrdiff_t;
         using value_type = std::pair<const Key, T>;
         using reference = std::pair<const Key &, T &>;
-        using pointer = QtPrivate::ArrowProxy<reference>;
+        using pointer = BobUIPrivate::ArrowProxy<reference>;
         using iterator_category = std::random_access_iterator_tag;
 
         iterator() = default;
@@ -231,7 +231,7 @@ public:
         using difference_type = ptrdiff_t;
         using value_type = std::pair<const Key, const T>;
         using reference = std::pair<const Key &, const T &>;
-        using pointer = QtPrivate::ArrowProxy<reference>;
+        using pointer = BobUIPrivate::ArrowProxy<reference>;
         using iterator_category = std::random_access_iterator_tag;
 
         const_iterator() = default;
@@ -416,37 +416,37 @@ public:
         ensureOrderedUnique();
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, const key_container_type &keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, const key_container_type &keys,
                       const mapped_container_type &values)
         : c{keys, values}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, key_container_type &&keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, key_container_type &&keys,
                       const mapped_container_type &values)
         : c{std::move(keys), values}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, const key_container_type &keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, const key_container_type &keys,
                       mapped_container_type &&values)
         : c{keys, std::move(values)}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, key_container_type &&keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, key_container_type &&keys,
                       mapped_container_type &&values)
         : c{std::move(keys), std::move(values)}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, std::initializer_list<value_type> lst)
-        : QFlatMap(Qt::OrderedUniqueRange, lst.begin(), lst.end())
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, std::initializer_list<value_type> lst)
+        : QFlatMap(BobUI::OrderedUniqueRange, lst.begin(), lst.end())
     {
     }
 
     template <class InputIt, is_compatible_iterator<InputIt> = nullptr>
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, InputIt first, InputIt last)
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, InputIt first, InputIt last)
     {
         initWithRange(first, last);
     }
@@ -497,38 +497,38 @@ public:
         ensureOrderedUnique();
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, const key_container_type &keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, const key_container_type &keys,
                       const mapped_container_type &values, const Compare &compare)
         : value_compare(compare), c{keys, values}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, key_container_type &&keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, key_container_type &&keys,
                       const mapped_container_type &values, const Compare &compare)
         : value_compare(compare), c{std::move(keys), values}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, const key_container_type &keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, const key_container_type &keys,
                       mapped_container_type &&values, const Compare &compare)
         : value_compare(compare), c{keys, std::move(values)}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, key_container_type &&keys,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, key_container_type &&keys,
                       mapped_container_type &&values, const Compare &compare)
         : value_compare(compare), c{std::move(keys), std::move(values)}
     {
     }
 
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, std::initializer_list<value_type> lst,
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, std::initializer_list<value_type> lst,
                       const Compare &compare)
-        : QFlatMap(Qt::OrderedUniqueRange, lst.begin(), lst.end(), compare)
+        : QFlatMap(BobUI::OrderedUniqueRange, lst.begin(), lst.end(), compare)
     {
     }
 
     template <class InputIt, is_compatible_iterator<InputIt> = nullptr>
-    explicit QFlatMap(Qt::OrderedUniqueRange_t, InputIt first, InputIt last, const Compare &compare)
+    explicit QFlatMap(BobUI::OrderedUniqueRange_t, InputIt first, InputIt last, const Compare &compare)
         : value_compare(compare)
     {
         initWithRange(first, last);
@@ -715,14 +715,14 @@ public:
     }
 
     template <class InputIt, is_compatible_iterator<InputIt> = nullptr>
-    void insert(Qt::OrderedUniqueRange_t, InputIt first, InputIt last)
+    void insert(BobUI::OrderedUniqueRange_t, InputIt first, InputIt last)
     {
         insertOrderedUniqueRange(first, last);
     }
 
     // ### Merge with the templated version above
     //     once we can use std::disjunction in is_compatible_iterator.
-    void insert(Qt::OrderedUniqueRange_t, const value_type *first, const value_type *last)
+    void insert(BobUI::OrderedUniqueRange_t, const value_type *first, const value_type *last)
     {
         insertOrderedUniqueRange(first, last);
     }
@@ -823,7 +823,7 @@ public:
             } else if constexpr (std::is_invocable_v<P, K> && !std::is_invocable_v<P, Pair>) {
                 return pred(it.key());
             } else {
-                static_assert(QtPrivate::type_dependent_false<Predicate>(),
+                static_assert(BobUIPrivate::type_dependent_false<Predicate>(),
                     "Don't know how to call the predicate.\n"
                     "Options:\n"
                     "- pred(*it)\n"
@@ -916,7 +916,7 @@ private:
     template <class InputIt, is_compatible_iterator<InputIt> = nullptr>
     void initWithRange(InputIt first, InputIt last)
     {
-        QtPrivate::reserveIfForwardIterator(this, first, last);
+        BobUIPrivate::reserveIfForwardIterator(this, first, last);
         while (first != last) {
             c.keys.push_back(first->first);
             c.values.push_back(first->second);
@@ -1066,6 +1066,6 @@ template <class Key, class T,
           class Compare = std::less<Key>>
 using QVarLengthFlatMap = QFlatMap<Key, T, Compare, QVarLengthArray<Key, N>, QVarLengthArray<T, N>>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFLATMAP_P_H

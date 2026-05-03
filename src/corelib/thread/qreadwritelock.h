@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QREADWRITELOCK_H
 #define QREADWRITELOCK_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qdeadlinetimer.h>
-#include <QtCore/qtsan_impl.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qdeadlinetimer.h>
+#include <BobUICore/bobuisan_impl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
 class QReadWriteLockPrivate;
 
@@ -26,11 +26,11 @@ public:
     }
     bool tryLockForRead()
     {
-        return tryLockForReadInternal(QDeadlineTimer(), QtTsan::TryLock);
+        return tryLockForReadInternal(QDeadlineTimer(), BobUITsan::TryLock);
     }
     bool tryLockForRead(QDeadlineTimer timeout)
     {
-        return tryLockForReadInternal(timeout, QtTsan::TryLock);
+        return tryLockForReadInternal(timeout, BobUITsan::TryLock);
     }
 
     void lockForWrite()
@@ -39,11 +39,11 @@ public:
     }
     bool tryLockForWrite()
     {
-        return tryLockForWriteInternal(QDeadlineTimer(), QtTsan::TryLock);
+        return tryLockForWriteInternal(QDeadlineTimer(), BobUITsan::TryLock);
     }
     bool tryLockForWrite(QDeadlineTimer timeout)
     {
-        return tryLockForWriteInternal(timeout, QtTsan::TryLock);
+        return tryLockForWriteInternal(timeout, BobUITsan::TryLock);
     }
 
     void unlock()
@@ -53,12 +53,12 @@ public:
         quintptr u = quintptr(d);
         Q_ASSERT_X(u, "QReadWriteLock::unlock()", "Cannot unlock an unlocked lock");
         if (u & StateLockedForRead)
-            flags |= QtTsan::ReadLock;  // ### will be wrong for past-contention read locks
+            flags |= BobUITsan::ReadLock;  // ### will be wrong for past-contention read locks
 
-        QtTsan::mutexPreUnlock(this, flags);
+        BobUITsan::mutexPreUnlock(this, flags);
         if (u > StateMask || !d_ptr.testAndSetRelease(d, nullptr, d))
             contendedUnlock(d);
-        QtTsan::mutexPostUnlock(this, flags);
+        BobUITsan::mutexPostUnlock(this, flags);
     }
 
     // std::shared_mutex API:
@@ -87,8 +87,8 @@ protected:
 
     Q_ALWAYS_INLINE bool tryLockForReadInternal(QDeadlineTimer timeout, unsigned tsanFlags)
     {
-        tsanFlags |= QtTsan::ReadLock;
-        QtTsan::mutexPreLock(this, tsanFlags);
+        tsanFlags |= BobUITsan::ReadLock;
+        BobUITsan::mutexPreLock(this, tsanFlags);
 
         QReadWriteLockPrivate *d = d_ptr.loadRelaxed();
         bool locked = fastTryLockForRead(d);
@@ -96,8 +96,8 @@ protected:
             locked = contendedTryLockForRead(timeout, d);
 
         if (!locked)
-            tsanFlags |= QtTsan::TryLockFailed;
-        QtTsan::mutexPostLock(this, tsanFlags, 0);
+            tsanFlags |= BobUITsan::TryLockFailed;
+        BobUITsan::mutexPostLock(this, tsanFlags, 0);
         return locked;
     }
 
@@ -111,7 +111,7 @@ protected:
 
     Q_ALWAYS_INLINE bool tryLockForWriteInternal(QDeadlineTimer timeout, unsigned tsanFlags)
     {
-        QtTsan::mutexPreLock(this, tsanFlags);
+        BobUITsan::mutexPreLock(this, tsanFlags);
 
         QReadWriteLockPrivate *d = d_ptr.loadRelaxed();
         bool locked = fastTryLockForWrite(d);
@@ -119,8 +119,8 @@ protected:
             locked = contendedTryLockForWrite(timeout, d);
 
         if (!locked)
-            tsanFlags |= QtTsan::TryLockFailed;
-        QtTsan::mutexPostLock(this, tsanFlags, 0);
+            tsanFlags |= BobUITsan::TryLockFailed;
+        BobUITsan::mutexPostLock(this, tsanFlags, 0);
         return locked;
     }
 
@@ -140,36 +140,36 @@ class Q_CORE_EXPORT QReadWriteLock : public QBasicReadWriteLock
 public:
     enum RecursionMode { NonRecursive, Recursive };
 
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     explicit QReadWriteLock(RecursionMode recursionMode = NonRecursive);
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     ~QReadWriteLock();
 
-#if QT_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
-    // was: QT_CORE_INLINE_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
+    // was: BOBUI_CORE_INLINE_SINCE(6, 6)
     void lockForRead();
     bool tryLockForRead();
 #endif
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     bool tryLockForRead(int timeout);
-#if QT_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
     bool tryLockForRead(QDeadlineTimer timeout = {});
 #endif
     using QBasicReadWriteLock::tryLockForRead;
 
-#if QT_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
-    // was: QT_CORE_INLINE_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
+    // was: BOBUI_CORE_INLINE_SINCE(6, 6)
     void lockForWrite();
     bool tryLockForWrite();
 #endif
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     bool tryLockForWrite(int timeout);
-#if QT_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
     bool tryLockForWrite(QDeadlineTimer timeout = {});
 #endif
     using QBasicReadWriteLock::tryLockForWrite;
 
-#if QT_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11) || defined(Q_QDOC)
     void unlock();
 #endif
 
@@ -178,7 +178,7 @@ private:
     static void destroyRecursive(QReadWriteLockPrivate *);
 };
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 6)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 6)
 QReadWriteLock::QReadWriteLock(RecursionMode recursionMode)
     : QBasicReadWriteLock(recursionMode == Recursive ? initRecursive() : nullptr)
 {
@@ -206,7 +206,7 @@ bool QReadWriteLock::tryLockForWrite(int timeout)
 #pragma warning( disable : 4312 ) // ignoring the warning from /Wp64
 #endif
 
-class QT6_ONLY(Q_CORE_EXPORT) QReadLocker
+class BOBUI6_ONLY(Q_CORE_EXPORT) QReadLocker
 {
 public:
     Q_NODISCARD_CTOR
@@ -251,7 +251,7 @@ inline QReadLocker::QReadLocker(QReadWriteLock *areadWriteLock)
     relock();
 }
 
-class QT6_ONLY(Q_CORE_EXPORT) QWriteLocker
+class BOBUI6_ONLY(Q_CORE_EXPORT) QWriteLocker
 {
 public:
     Q_NODISCARD_CTOR
@@ -301,9 +301,9 @@ inline QWriteLocker::QWriteLocker(QReadWriteLock *areadWriteLock)
 #pragma warning( pop )
 #endif
 
-#else // QT_CONFIG(thread)
+#else // BOBUI_CONFIG(thread)
 
-class QT6_ONLY(Q_CORE_EXPORT) QReadWriteLock
+class BOBUI6_ONLY(Q_CORE_EXPORT) QReadWriteLock
 {
 public:
     enum RecursionMode { NonRecursive, Recursive };
@@ -326,7 +326,7 @@ private:
     Q_DISABLE_COPY(QReadWriteLock)
 };
 
-class QT6_ONLY(Q_CORE_EXPORT) QReadLocker
+class BOBUI6_ONLY(Q_CORE_EXPORT) QReadLocker
 {
 public:
     Q_NODISCARD_CTOR
@@ -341,7 +341,7 @@ private:
     Q_DISABLE_COPY(QReadLocker)
 };
 
-class QT6_ONLY(Q_CORE_EXPORT) QWriteLocker
+class BOBUI6_ONLY(Q_CORE_EXPORT) QWriteLocker
 {
 public:
     Q_NODISCARD_CTOR
@@ -356,8 +356,8 @@ private:
     Q_DISABLE_COPY(QWriteLocker)
 };
 
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QREADWRITELOCK_H

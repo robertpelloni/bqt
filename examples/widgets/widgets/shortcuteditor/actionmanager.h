@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef ACTIONMANAGER_H
 #define ACTIONMANAGER_H
@@ -7,9 +7,9 @@
 #include <QList>
 #include <QString>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class ActionManager
 {

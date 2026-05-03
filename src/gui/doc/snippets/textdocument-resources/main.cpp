@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -11,21 +11,21 @@ QString tr(const char *text)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QTextEdit *editor = new QTextEdit;
+    BOBUIextEdit *editor = new BOBUIextEdit;
 
-    QTextDocument *document = new QTextDocument(editor);
-    QTextCursor cursor(document);
+    BOBUIextDocument *document = new BOBUIextDocument(editor);
+    BOBUIextCursor cursor(document);
 
     QImage image(64, 64, QImage::Format_RGB32);
     image.fill(qRgb(255, 160, 128));
 
 //! [Adding a resource]
-    document->addResource(QTextDocument::ImageResource,
+    document->addResource(BOBUIextDocument::ImageResource,
         QUrl("mydata://image.png"), QVariant(image));
 //! [Adding a resource]
 
 //! [Inserting an image with a cursor]
-    QTextImageFormat imageFormat;
+    BOBUIextImageFormat imageFormat;
     imageFormat.setName("mydata://image.png");
     cursor.insertImage(imageFormat);
 //! [Inserting an image with a cursor]

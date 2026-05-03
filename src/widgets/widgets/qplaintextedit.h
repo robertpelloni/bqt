@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLAINTEXTEDIT_H
 #define QPLAINTEXTEDIT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qtextedit.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/bobuiextedit.h>
 
-#include <QtWidgets/qabstractscrollarea.h>
-#include <QtGui/qtextdocument.h>
-#include <QtGui/qtextoption.h>
-#include <QtGui/qtextcursor.h>
-#include <QtGui/qtextformat.h>
-#include <QtGui/qabstracttextdocumentlayout.h>
+#include <BobUIWidgets/qabstractscrollarea.h>
+#include <BobUIGui/bobuiextdocument.h>
+#include <BobUIGui/bobuiextoption.h>
+#include <BobUIGui/bobuiextcursor.h>
+#include <BobUIGui/bobuiextformat.h>
+#include <BobUIGui/qabstracttextdocumentlayout.h>
 
-QT_REQUIRE_CONFIG(textedit);
+BOBUI_REQUIRE_CONFIG(textedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStyleSheet;
-class QTextDocument;
+class BOBUIextDocument;
 class QMenu;
 class QPlainTextEditPrivate;
 class QMimeData;
@@ -35,13 +35,13 @@ class Q_WIDGETS_EXPORT QPlainTextEdit : public QAbstractScrollArea
     Q_PROPERTY(QString documentTitle READ documentTitle WRITE setDocumentTitle)
     Q_PROPERTY(bool undoRedoEnabled READ isUndoRedoEnabled WRITE setUndoRedoEnabled)
     Q_PROPERTY(LineWrapMode lineWrapMode READ lineWrapMode WRITE setLineWrapMode)
-    QDOC_PROPERTY(QTextOption::WrapMode wordWrapMode READ wordWrapMode WRITE setWordWrapMode)
+    QDOC_PROPERTY(BOBUIextOption::WrapMode wordWrapMode READ wordWrapMode WRITE setWordWrapMode)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
     Q_PROPERTY(QString plainText READ toPlainText WRITE setPlainText NOTIFY textChanged USER true)
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
     Q_PROPERTY(qreal tabStopDistance READ tabStopDistance WRITE setTabStopDistance)
     Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
-    Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags
+    Q_PROPERTY(BobUI::TextInteractionFlags textInteractionFlags READ textInteractionFlags
                WRITE setTextInteractionFlags)
     Q_PROPERTY(int blockCount READ blockCount)
     Q_PROPERTY(int maximumBlockCount READ maximumBlockCount WRITE setMaximumBlockCount)
@@ -59,32 +59,32 @@ public:
     explicit QPlainTextEdit(const QString &text, QWidget *parent = nullptr);
     virtual ~QPlainTextEdit();
 
-    void setDocument(QTextDocument *document);
-    QTextDocument *document() const;
+    void setDocument(BOBUIextDocument *document);
+    BOBUIextDocument *document() const;
 
     void setPlaceholderText(const QString &placeholderText);
     QString placeholderText() const;
 
-    void setTextCursor(const QTextCursor &cursor);
-    QTextCursor textCursor() const;
+    void setTextCursor(const BOBUIextCursor &cursor);
+    BOBUIextCursor textCursor() const;
 
     bool isReadOnly() const;
     void setReadOnly(bool ro);
 
-    void setTextInteractionFlags(Qt::TextInteractionFlags flags);
-    Qt::TextInteractionFlags textInteractionFlags() const;
+    void setTextInteractionFlags(BobUI::TextInteractionFlags flags);
+    BobUI::TextInteractionFlags textInteractionFlags() const;
 
-    void mergeCurrentCharFormat(const QTextCharFormat &modifier);
-    void setCurrentCharFormat(const QTextCharFormat &format);
-    QTextCharFormat currentCharFormat() const;
+    void mergeCurrentCharFormat(const BOBUIextCharFormat &modifier);
+    void setCurrentCharFormat(const BOBUIextCharFormat &format);
+    BOBUIextCharFormat currentCharFormat() const;
 
     bool tabChangesFocus() const;
     void setTabChangesFocus(bool b);
 
     inline void setDocumentTitle(const QString &title)
-    { document()->setMetaInformation(QTextDocument::DocumentTitle, title); }
+    { document()->setMetaInformation(BOBUIextDocument::DocumentTitle, title); }
     inline QString documentTitle() const
-    { return document()->metaInformation(QTextDocument::DocumentTitle); }
+    { return document()->metaInformation(BOBUIextDocument::DocumentTitle); }
 
     inline bool isUndoRedoEnabled() const
     { return document()->isUndoRedoEnabled(); }
@@ -100,8 +100,8 @@ public:
     LineWrapMode lineWrapMode() const;
     void setLineWrapMode(LineWrapMode mode);
 
-    QTextOption::WrapMode wordWrapMode() const;
-    void setWordWrapMode(QTextOption::WrapMode policy);
+    BOBUIextOption::WrapMode wordWrapMode() const;
+    void setWordWrapMode(BOBUIextOption::WrapMode policy);
 
     void setBackgroundVisible(bool visible);
     bool backgroundVisible() const;
@@ -109,9 +109,9 @@ public:
     void setCenterOnScroll(bool enabled);
     bool centerOnScroll() const;
 
-    bool find(const QString &exp, QTextDocument::FindFlags options = QTextDocument::FindFlags());
-#if QT_CONFIG(regularexpression)
-    bool find(const QRegularExpression &exp, QTextDocument::FindFlags options = QTextDocument::FindFlags());
+    bool find(const QString &exp, BOBUIextDocument::FindFlags options = BOBUIextDocument::FindFlags());
+#if BOBUI_CONFIG(regularexpression)
+    bool find(const QRegularExpression &exp, BOBUIextDocument::FindFlags options = BOBUIextDocument::FindFlags());
 #endif
 
     inline QString toPlainText() const
@@ -120,13 +120,13 @@ public:
     void ensureCursorVisible();
 
     virtual QVariant loadResource(int type, const QUrl &name);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     QMenu *createStandardContextMenu();
     QMenu *createStandardContextMenu(const QPoint &position);
 #endif
 
-    QTextCursor cursorForPosition(const QPoint &pos) const;
-    QRect cursorRect(const QTextCursor &cursor) const;
+    BOBUIextCursor cursorForPosition(const QPoint &pos) const;
+    QRect cursorRect(const BOBUIextCursor &cursor) const;
     QRect cursorRect() const;
 
     QString anchorAt(const QPoint &pos) const;
@@ -140,24 +140,24 @@ public:
     int cursorWidth() const;
     void setCursorWidth(int width);
 
-    void setExtraSelections(const QList<QTextEdit::ExtraSelection> &selections);
-    QList<QTextEdit::ExtraSelection> extraSelections() const;
+    void setExtraSelections(const QList<BOBUIextEdit::ExtraSelection> &selections);
+    QList<BOBUIextEdit::ExtraSelection> extraSelections() const;
 
-    void moveCursor(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
+    void moveCursor(BOBUIextCursor::MoveOperation operation, BOBUIextCursor::MoveMode mode = BOBUIextCursor::MoveAnchor);
 
     bool canPaste() const;
 
     void print(QPagedPaintDevice *printer) const;
 
     int blockCount() const;
-    QVariant inputMethodQuery(Qt::InputMethodQuery property) const override;
-    Q_INVOKABLE QVariant inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery property) const override;
+    Q_INVOKABLE QVariant inputMethodQuery(BobUI::InputMethodQuery query, QVariant argument) const;
 
 public Q_SLOTS:
 
     void setPlainText(const QString &text);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void cut();
     void copy();
     void paste();
@@ -193,7 +193,7 @@ Q_SIGNALS:
 
 protected:
     virtual bool event(QEvent *e) override;
-    virtual void timerEvent(QTimerEvent *e) override;
+    virtual void timerEvent(BOBUIimerEvent *e) override;
     virtual void keyPressEvent(QKeyEvent *e) override;
     virtual void keyReleaseEvent(QKeyEvent *e) override;
     virtual void resizeEvent(QResizeEvent *e) override;
@@ -203,10 +203,10 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *e) override;
     virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
     virtual bool focusNextPrevChild(bool next) override;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     virtual void contextMenuEvent(QContextMenuEvent *e) override;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual void dragEnterEvent(QDragEnterEvent *e) override;
     virtual void dragLeaveEvent(QDragLeaveEvent *e) override;
     virtual void dragMoveEvent(QDragMoveEvent *e) override;
@@ -216,7 +216,7 @@ protected:
     virtual void focusOutEvent(QFocusEvent *e) override;
     virtual void showEvent(QShowEvent *) override;
     virtual void changeEvent(QEvent *e) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     virtual void wheelEvent(QWheelEvent *e) override;
 #endif
 
@@ -229,12 +229,12 @@ protected:
     QPlainTextEdit(QPlainTextEditPrivate &dd, QWidget *parent);
 
     virtual void scrollContentsBy(int dx, int dy) override;
-    virtual void doSetTextCursor(const QTextCursor &cursor);
+    virtual void doSetTextCursor(const BOBUIextCursor &cursor);
 
-    QTextBlock firstVisibleBlock() const;
+    BOBUIextBlock firstVisibleBlock() const;
     QPointF contentOffset() const;
-    QRectF blockBoundingRect(const QTextBlock &block) const;
-    QRectF blockBoundingGeometry(const QTextBlock &block) const;
+    QRectF blockBoundingRect(const BOBUIextBlock &block) const;
+    QRectF blockBoundingGeometry(const BOBUIextBlock &block) const;
     QAbstractTextDocumentLayout::PaintContext getPaintContext() const;
 
     void zoomInF(float range);
@@ -254,19 +254,19 @@ class Q_WIDGETS_EXPORT QPlainTextDocumentLayout : public QAbstractTextDocumentLa
     Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
 
 public:
-    QPlainTextDocumentLayout(QTextDocument *document);
+    QPlainTextDocumentLayout(BOBUIextDocument *document);
     ~QPlainTextDocumentLayout();
 
     void draw(QPainter *, const PaintContext &) override;
-    int hitTest(const QPointF &, Qt::HitTestAccuracy ) const override;
+    int hitTest(const QPointF &, BobUI::HitTestAccuracy ) const override;
 
     int pageCount() const override;
     QSizeF documentSize() const override;
 
-    QRectF frameBoundingRect(QTextFrame *) const override;
-    QRectF blockBoundingRect(const QTextBlock &block) const override;
+    QRectF frameBoundingRect(BOBUIextFrame *) const override;
+    QRectF blockBoundingRect(const BOBUIextBlock &block) const override;
 
-    void ensureBlockLayout(const QTextBlock &block) const;
+    void ensureBlockLayout(const BOBUIextBlock &block) const;
 
     void setCursorWidth(int width);
     int cursorWidth() const;
@@ -280,8 +280,8 @@ protected:
 private:
     void setTextWidth(qreal newWidth);
     qreal textWidth() const;
-    void layoutBlock(const QTextBlock &block);
-    qreal blockWidth(const QTextBlock &block);
+    void layoutBlock(const BOBUIextBlock &block);
+    qreal blockWidth(const BOBUIextBlock &block);
 
     QPlainTextDocumentLayoutPrivate *priv() const;
 
@@ -289,6 +289,6 @@ private:
     friend class QPlainTextEditPrivate;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLAINTEXTEDIT_H

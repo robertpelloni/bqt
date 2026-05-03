@@ -1,24 +1,24 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QURL_H
 #define QURL_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qglobal.h>
 
 #if defined(Q_OS_DARWIN) || defined(Q_QDOC)
 Q_FORWARD_DECLARE_CF_TYPE(CFURL);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSURL);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QUrlQuery;
@@ -85,7 +85,7 @@ public:
 };
 
 template<typename E1, typename E2>
-class QTypeInfo<QUrlTwoFlags<E1, E2> > : public QTypeInfoMerger<QUrlTwoFlags<E1, E2>, E1, E2> {};
+class BOBUIypeInfo<QUrlTwoFlags<E1, E2> > : public BOBUIypeInfoMerger<QUrlTwoFlags<E1, E2>, E1, E2> {};
 
 class QUrl;
 // qHash is a friend, but we can't use default arguments for friends (§8.3.6.4)
@@ -111,7 +111,7 @@ public:
         RemovePath = 0x20,
         RemoveQuery = 0x40,
         RemoveFragment = 0x80,
-        // 0x100 was a private code in Qt 4, keep unused for a while
+        // 0x100 was a private code in BobUI 4, keep unused for a while
         PreferLocalFile = 0x200,
         StripTrailingSlash = 0x400,
         RemoveFilename = 0x800,
@@ -146,7 +146,7 @@ public:
     QUrl();
     QUrl(const QUrl &copy) noexcept;
     QUrl &operator =(const QUrl &copy) noexcept;
-#ifdef QT_NO_URL_CAST_FROM_STRING
+#ifdef BOBUI_NO_URL_CAST_FROM_STRING
     explicit QUrl(const QString &url, ParsingMode mode = TolerantMode);
 #else
     QUrl(const QString &url, ParsingMode mode = TolerantMode);
@@ -154,10 +154,10 @@ public:
 #endif
     QUrl(QUrl &&other) noexcept : d(other.d)
     { other.d = nullptr; }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QUrl)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QUrl)
     ~QUrl();
 
-    void swap(QUrl &other) noexcept { qt_ptr_swap(d, other.d); }
+    void swap(QUrl &other) noexcept { bobui_ptr_swap(d, other.d); }
 
     void setUrl(const QString &url, ParsingMode mode = TolerantMode);
     QString url(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
@@ -166,7 +166,7 @@ public:
     [[nodiscard]] QUrl adjusted(FormattingOptions options) const;
 
     QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     static QUrl fromEncoded(const QByteArray &url, ParsingMode mode = TolerantMode);
 #endif
     static QUrl fromEncoded(QByteArrayView input, ParsingMode mode = TolerantMode);
@@ -232,7 +232,7 @@ public:
     void detach();
     bool isDetached() const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator <(const QUrl &url) const;
     bool operator ==(const QUrl &url) const;
     bool operator !=(const QUrl &url) const;
@@ -257,7 +257,7 @@ public:
     };
     Q_DECLARE_FLAGS(AceProcessingOptions, AceProcessingOption)
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     static QString fromAce(const QByteArray &);
     static QByteArray toAce(const QString &);
 #endif
@@ -273,7 +273,7 @@ public:
 
 private:
     friend Q_CORE_EXPORT bool comparesEqual(const QUrl &lhs, const QUrl &rhs);
-    friend Q_CORE_EXPORT Qt::weak_ordering
+    friend Q_CORE_EXPORT BobUI::weak_ordering
     compareThreeWay(const QUrl &lhs, const QUrl &rhs);
     Q_DECLARE_WEAKLY_ORDERED_NON_NOEXCEPT(QUrl)
 
@@ -322,15 +322,15 @@ constexpr inline QUrl::FormattingOptions operator|(QUrl::ComponentFormattingOpti
 //{ i = int(f); f; }
 #endif // Q_QDOC
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QUrl &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QUrl &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QUrl &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QURL_H

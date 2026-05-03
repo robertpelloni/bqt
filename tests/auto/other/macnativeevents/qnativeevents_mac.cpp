@@ -1,39 +1,39 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qnativeevents.h"
 #include <CoreGraphics/CoreGraphics.h>
-#include <QtCore>
+#include <BobUICore>
 
 //  ************************************************************
 //  Quartz
 //  ************************************************************
 
-static Qt::KeyboardModifiers getModifiersFromQuartzEvent(CGEventRef inEvent)
+static BobUI::KeyboardModifiers getModifiersFromQuartzEvent(CGEventRef inEvent)
 {
-    Qt::KeyboardModifiers m;
+    BobUI::KeyboardModifiers m;
     CGEventFlags flags = CGEventGetFlags(inEvent);
     if (flags & kCGEventFlagMaskShift || flags & kCGEventFlagMaskAlphaShift)
-        m |= Qt::ShiftModifier;
+        m |= BobUI::ShiftModifier;
     if (flags & kCGEventFlagMaskControl)
-        m |= Qt::ControlModifier;
+        m |= BobUI::ControlModifier;
     if (flags & kCGEventFlagMaskAlternate)
-        m |= Qt::AltModifier;
+        m |= BobUI::AltModifier;
     if (flags & kCGEventFlagMaskCommand)
-        m |= Qt::MetaModifier;
+        m |= BobUI::MetaModifier;
     return m;
 }
 
 static void setModifiersFromQNativeEvent(CGEventRef inEvent, const QNativeEvent &event)
 {
     CGEventFlags flags = CGEventFlags(0);
-    if (event.modifiers.testFlag(Qt::ShiftModifier))
+    if (event.modifiers.testFlag(BobUI::ShiftModifier))
         flags = CGEventFlags(flags | kCGEventFlagMaskShift);
-    if (event.modifiers.testFlag(Qt::ControlModifier))
+    if (event.modifiers.testFlag(BobUI::ControlModifier))
         flags = CGEventFlags(flags | kCGEventFlagMaskControl);
-    if (event.modifiers.testFlag(Qt::AltModifier))
+    if (event.modifiers.testFlag(BobUI::AltModifier))
         flags = CGEventFlags(flags | kCGEventFlagMaskAlternate);
-    if (event.modifiers.testFlag(Qt::MetaModifier))
+    if (event.modifiers.testFlag(BobUI::MetaModifier))
         flags = CGEventFlags(flags | kCGEventFlagMaskCommand);
     CGEventSetFlags(inEvent, flags);
 }
@@ -83,7 +83,7 @@ static CGEventRef EventHandler_Quartz(CGEventTapProxy proxy, CGEventType type, C
             e.modifiers = getModifiersFromQuartzEvent(inEvent);
             e.globalPos = getMouseLocationFromQuartzEvent(inEvent);
             e.clickCount = CGEventGetIntegerValueField(inEvent, kCGMouseEventClickState);
-            e.button = Qt::LeftButton;
+            e.button = BobUI::LeftButton;
             nativeInput->notify(&e);
             break;
         }
@@ -92,7 +92,7 @@ static CGEventRef EventHandler_Quartz(CGEventTapProxy proxy, CGEventType type, C
             e.modifiers = getModifiersFromQuartzEvent(inEvent);
             e.globalPos = getMouseLocationFromQuartzEvent(inEvent);
             e.clickCount = 0;
-            e.button = Qt::LeftButton;
+            e.button = BobUI::LeftButton;
             nativeInput->notify(&e);
             break;
         }
@@ -101,7 +101,7 @@ static CGEventRef EventHandler_Quartz(CGEventTapProxy proxy, CGEventType type, C
             e.modifiers = getModifiersFromQuartzEvent(inEvent);
             e.globalPos = getMouseLocationFromQuartzEvent(inEvent);
             e.clickCount = CGEventGetIntegerValueField(inEvent, kCGMouseEventClickState);
-            e.button = Qt::RightButton;
+            e.button = BobUI::RightButton;
             nativeInput->notify(&e);
             break;
         }
@@ -110,7 +110,7 @@ static CGEventRef EventHandler_Quartz(CGEventTapProxy proxy, CGEventType type, C
             e.modifiers = getModifiersFromQuartzEvent(inEvent);
             e.globalPos = getMouseLocationFromQuartzEvent(inEvent);
             e.clickCount = 0;
-            e.button = Qt::RightButton;
+            e.button = BobUI::RightButton;
             nativeInput->notify(&e);
             break;
         }
@@ -126,7 +126,7 @@ static CGEventRef EventHandler_Quartz(CGEventTapProxy proxy, CGEventType type, C
             e.modifiers = getModifiersFromQuartzEvent(inEvent);
             e.globalPos = getMouseLocationFromQuartzEvent(inEvent);
             e.clickCount = CGEventGetIntegerValueField(inEvent, kCGMouseEventClickState);
-            e.button = Qt::LeftButton;
+            e.button = BobUI::LeftButton;
             nativeInput->notify(&e);
             break;
         }
@@ -151,7 +151,7 @@ static CGEventRef EventHandler_Quartz(CGEventTapProxy proxy, CGEventType type, C
     return inEvent;
 }
 
-Qt::Native::Status insertEventHandler_Quartz(QNativeInput *nativeInput)
+BobUI::Native::Status insertEventHandler_Quartz(QNativeInput *nativeInput)
 {
     uid_t uid = geteuid();
     if (uid != 0)
@@ -164,24 +164,24 @@ Qt::Native::Status insertEventHandler_Quartz(QNativeInput *nativeInput)
     CFRunLoopSourceRef eventSrc = CFMachPortCreateRunLoopSource(NULL, port, 0);
     CFRunLoopAddSource(CFRunLoopGetMain(), eventSrc, kCFRunLoopCommonModes);
 
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
-Qt::Native::Status removeEventHandler_Quartz()
+BobUI::Native::Status removeEventHandler_Quartz()
 {
-    return Qt::Native::Success; // ToDo:
+    return BobUI::Native::Success; // ToDo:
 }
 
-Qt::Native::Status sendNativeKeyEvent_Quartz(const QNativeKeyEvent &event)
+BobUI::Native::Status sendNativeKeyEvent_Quartz(const QNativeKeyEvent &event)
 {
     CGEventRef e = CGEventCreateKeyboardEvent(0, (uint)event.nativeKeyCode, event.press);
     setModifiersFromQNativeEvent(e, event);
     CGEventPost(kCGHIDEventTap, e);
     CFRelease(e);
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
-Qt::Native::Status sendNativeMouseMoveEvent_Quartz(const QNativeMouseMoveEvent &event)
+BobUI::Native::Status sendNativeMouseMoveEvent_Quartz(const QNativeMouseMoveEvent &event)
 {
     CGPoint pos;
     pos.x = event.globalPos.x();
@@ -191,19 +191,19 @@ Qt::Native::Status sendNativeMouseMoveEvent_Quartz(const QNativeMouseMoveEvent &
     setModifiersFromQNativeEvent(e, event);
     CGEventPost(kCGHIDEventTap, e);
     CFRelease(e);
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
-Qt::Native::Status sendNativeMouseButtonEvent_Quartz(const QNativeMouseButtonEvent &event)
+BobUI::Native::Status sendNativeMouseButtonEvent_Quartz(const QNativeMouseButtonEvent &event)
 {
     CGPoint pos;
     pos.x = event.globalPos.x();
     pos.y = event.globalPos.y();
 
     CGEventType type = kCGEventNull;
-    if (event.button == Qt::LeftButton)
+    if (event.button == BobUI::LeftButton)
         type = (event.clickCount > 0) ? kCGEventLeftMouseDown : kCGEventLeftMouseUp;
-    else if (event.button == Qt::RightButton)
+    else if (event.button == BobUI::RightButton)
         type = (event.clickCount > 0) ? kCGEventRightMouseDown : kCGEventRightMouseUp;
     else
         type = (event.clickCount > 0) ? kCGEventOtherMouseDown : kCGEventOtherMouseUp;
@@ -218,19 +218,19 @@ Qt::Native::Status sendNativeMouseButtonEvent_Quartz(const QNativeMouseButtonEve
     CGEventSetIntegerValueField(e, kCGMouseEventClickState, event.clickCount);
     CGEventPost(kCGHIDEventTap, e);
     CFRelease(e);
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
-Qt::Native::Status sendNativeMouseDragEvent_Quartz(const QNativeMouseDragEvent &event)
+BobUI::Native::Status sendNativeMouseDragEvent_Quartz(const QNativeMouseDragEvent &event)
 {
     CGPoint pos;
     pos.x = event.globalPos.x();
     pos.y = event.globalPos.y();
 
     CGEventType type = kCGEventNull;
-    if (event.button == Qt::LeftButton)
+    if (event.button == BobUI::LeftButton)
         type = kCGEventLeftMouseDragged;
-    else if (event.button == Qt::RightButton)
+    else if (event.button == BobUI::RightButton)
         type = kCGEventRightMouseDragged;
     else
         type = kCGEventOtherMouseDragged;
@@ -243,10 +243,10 @@ Qt::Native::Status sendNativeMouseDragEvent_Quartz(const QNativeMouseDragEvent &
     setModifiersFromQNativeEvent(e, event);
     CGEventPost(kCGHIDEventTap, e);
     CFRelease(e);
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
-Qt::Native::Status sendNativeMouseWheelEvent_Quartz(const QNativeMouseWheelEvent &event)
+BobUI::Native::Status sendNativeMouseWheelEvent_Quartz(const QNativeMouseWheelEvent &event)
 {
     CGPoint pos;
     pos.x = event.globalPos.x();
@@ -259,64 +259,64 @@ Qt::Native::Status sendNativeMouseWheelEvent_Quartz(const QNativeMouseWheelEvent
     CGEventPost(kCGHIDEventTap, e);
     CFRelease(e);
 
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
-Qt::Native::Status sendNativeModifierEvent_Quartz(const QNativeModifierEvent &event)
+BobUI::Native::Status sendNativeModifierEvent_Quartz(const QNativeModifierEvent &event)
 {
     CGEventRef e = CGEventCreateKeyboardEvent(0, (uint)event.nativeKeyCode, 0);
     CGEventSetType(e, kCGEventFlagsChanged);
     setModifiersFromQNativeEvent(e, event);
     CGEventPost(kCGHIDEventTap, e);
     CFRelease(e);
-    return Qt::Native::Success;
+    return BobUI::Native::Success;
 }
 
 //  ************************************************************
 //  QNativeInput methods:
 //  ************************************************************
 
-Qt::Native::Status QNativeInput::sendNativeMouseButtonEvent(const QNativeMouseButtonEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeMouseButtonEvent(const QNativeMouseButtonEvent &event)
 {
     return sendNativeMouseButtonEvent_Quartz(event);
 }
 
-Qt::Native::Status QNativeInput::sendNativeMouseMoveEvent(const QNativeMouseMoveEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeMouseMoveEvent(const QNativeMouseMoveEvent &event)
 {
     return sendNativeMouseMoveEvent_Quartz(event);
 }
 
-Qt::Native::Status QNativeInput::sendNativeMouseDragEvent(const QNativeMouseDragEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeMouseDragEvent(const QNativeMouseDragEvent &event)
 {
     return sendNativeMouseDragEvent_Quartz(event);
 }
 
-Qt::Native::Status QNativeInput::sendNativeMouseWheelEvent(const QNativeMouseWheelEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeMouseWheelEvent(const QNativeMouseWheelEvent &event)
 {
     return sendNativeMouseWheelEvent_Quartz(event);
 }
 
-Qt::Native::Status QNativeInput::sendNativeKeyEvent(const QNativeKeyEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeKeyEvent(const QNativeKeyEvent &event)
 {
     return sendNativeKeyEvent_Quartz(event);
 }
 
-Qt::Native::Status QNativeInput::sendNativeModifierEvent(const QNativeModifierEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeModifierEvent(const QNativeModifierEvent &event)
 {
     return sendNativeModifierEvent_Quartz(event);
 }
 
-Qt::Native::Status QNativeInput::subscribeForNativeEvents()
+BobUI::Native::Status QNativeInput::subscribeForNativeEvents()
 {
     return insertEventHandler_Quartz(this);
 }
 
-Qt::Native::Status QNativeInput::unsubscribeForNativeEvents()
+BobUI::Native::Status QNativeInput::unsubscribeForNativeEvents()
 {
     return removeEventHandler_Quartz();
 }
 
-// Some Qt to Mac mappings:
+// Some BobUI to Mac mappings:
 int QNativeKeyEvent::Key_A = 0;
 int QNativeKeyEvent::Key_B = 11;
 int QNativeKeyEvent::Key_C = 8;

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef QMAKELIBRARYINFO_H
 #define QMAKELIBRARYINFO_H
@@ -8,7 +8,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSettings;
 
@@ -41,6 +41,6 @@ struct QMakeLibraryInfo
     static void sysrootify(QString &path);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAKELIBRARYINFO_H

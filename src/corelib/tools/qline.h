@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLINE_H
 #define QLINE_H
 
-#include <QtCore/qpoint.h>
+#include <BobUICore/qpoint.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDataStream;
 class QLineF;
@@ -50,7 +50,7 @@ public:
     inline void setPoints(const QPoint &p1, const QPoint &p2);
     inline void setLine(int x1, int y1, int x2, int y2);
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     constexpr inline bool operator==(const QLine &d) const noexcept;
     constexpr inline bool operator!=(const QLine &d) const noexcept { return !operator==(d); }
 #endif
@@ -60,7 +60,7 @@ public:
 private:
     friend constexpr bool comparesEqual(const QLine &lhs, const QLine &rhs) noexcept
     { return lhs.pt1 == rhs.pt1 && lhs.pt2 == rhs.pt2; }
-#if !QT_CORE_REMOVED_SINCE(6, 8)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_DECLARE_EQUALITY_COMPARABLE_LITERAL_TYPE(QLine)
 #endif
 
@@ -171,18 +171,18 @@ inline void QLine::setLine(int aX1, int aY1, int aX2, int aY2)
     pt2 = QPoint(aX2, aY2);
 }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
 constexpr inline bool QLine::operator==(const QLine &d) const noexcept
 {
     return comparesEqual(*this, d);
 }
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug d, const QLine &p);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QLine &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QLine &);
 #endif
@@ -245,7 +245,7 @@ public:
     inline void setPoints(const QPointF &p1, const QPointF &p2);
     inline void setLine(qreal x1, qreal y1, qreal x2, qreal y2);
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     constexpr inline bool operator==(const QLineF &d) const;
     constexpr inline bool operator!=(const QLineF &d) const { return !operator==(d); }
 #endif
@@ -255,7 +255,7 @@ public:
 private:
     friend constexpr bool comparesEqual(const QLineF &lhs, const QLineF &rhs) noexcept
     { return lhs.pt1 == rhs.pt1 && lhs.pt2 == rhs.pt2; }
-#if !QT_CORE_REMOVED_SINCE(6, 8)
+#if !BOBUI_CORE_REMOVED_SINCE(6, 8)
     Q_DECLARE_EQUALITY_COMPARABLE_LITERAL_TYPE(QLineF)
 #endif
 
@@ -413,7 +413,7 @@ inline void QLineF::setLine(qreal aX1, qreal aY1, qreal aX2, qreal aY2)
     pt2 = QPointF(aX2, aY2);
 }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
 constexpr inline bool QLineF::operator==(const QLineF &d) const
 {
     return comparesEqual(*this, d);
@@ -421,15 +421,15 @@ constexpr inline bool QLineF::operator==(const QLineF &d) const
 #endif
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug d, const QLineF &p);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QLineF &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QLineF &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLINE_H

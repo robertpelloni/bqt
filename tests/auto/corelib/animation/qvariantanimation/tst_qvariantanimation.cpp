@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/qvariantanimation.h>
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BobUICore/qvariantanimation.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 
 class tst_QVariantAnimation : public QObject
 {
@@ -103,7 +103,7 @@ void tst_QVariantAnimation::duration()
     QCOMPARE(anim.duration(), 250);
     anim.setDuration(500);
     QCOMPARE(anim.duration(), 500);
-    QTest::ignoreMessage(QtWarningMsg, "QVariantAnimation::setDuration: cannot set a negative duration");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QVariantAnimation::setDuration: cannot set a negative duration");
     anim.setDuration(-1);
     QCOMPARE(anim.duration(), 500);
 }
@@ -138,26 +138,26 @@ void tst_QVariantAnimation::durationBindings()
 
     // duration property
     QProperty<int> duration;
-    animation.bindableDuration().setBinding(Qt::makePropertyBinding(duration));
+    animation.bindableDuration().setBinding(BobUI::makePropertyBinding(duration));
 
     // negative values must be ignored
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QVariantAnimation::setDuration: cannot set a negative duration");
     duration = -1;
     QVERIFY(animation.duration() != duration);
 
-    QTestPrivate::testReadWritePropertyBasics(animation, 42, 43, "duration");
+    BOBUIestPrivate::testReadWritePropertyBasics(animation, 42, 43, "duration");
 }
 
 void tst_QVariantAnimation::easingCurveBindings()
 {
     QVariantAnimation animation;
 
-    QTestPrivate::testReadWritePropertyBasics(animation, QEasingCurve(QEasingCurve::InQuad),
+    BOBUIestPrivate::testReadWritePropertyBasics(animation, QEasingCurve(QEasingCurve::InQuad),
                                               QEasingCurve(QEasingCurve::BezierSpline),
                                               "easingCurve");
 }
 
-QTEST_MAIN(tst_QVariantAnimation)
+BOBUIEST_MAIN(tst_QVariantAnimation)
 
 #include "tst_qvariantanimation.moc"

@@ -1,5 +1,5 @@
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 """Digesting the CLDR's data.
 
 Provides two classes:
@@ -427,7 +427,7 @@ class CldrAccess (object):
         are unknown plus suitable names for any that could sensibly be
         added to enumdata.py to make them known.
 
-        Until we implement variant support (QTBUG-81051), the fourth
+        Until we implement variant support (BOBUIBUG-81051), the fourth
         member of the returned tuple is always 0 paired with a string
         that should not be used."""
         enum: Callable[[str], dict[str, tuple[int, str]]] = self.__enumMap

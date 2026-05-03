@@ -1,9 +1,9 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qbytedatabuffer)
 add_subdirectory(qhttpheaders)
-if(QT_FEATURE_networkdiskcache)
+if(BOBUI_FEATURE_networkdiskcache)
     add_subdirectory(qnetworkdiskcache)
 endif()
 add_subdirectory(qnetworkcookiejar)
@@ -13,13 +13,13 @@ add_subdirectory(qnetworkrequest)
 add_subdirectory(qnetworkreply)
 add_subdirectory(qnetworkcachemetadata)
 add_subdirectory(qabstractnetworkcache)
-if(QT_FEATURE_http)
+if(BOBUI_FEATURE_http)
     add_subdirectory(qnetworkreply_local)
     add_subdirectory(qformdatabuilder)
     add_subdirectory(qnetworkrequestfactory)
     add_subdirectory(qrestaccessmanager)
 endif()
-if(QT_FEATURE_private_tests)
+if(BOBUI_FEATURE_private_tests)
     add_subdirectory(qhttp2connection)
     add_subdirectory(qhttpheaderparser)
     add_subdirectory(qhttpheadershelper)

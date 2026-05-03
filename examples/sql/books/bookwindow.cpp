@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "bookwindow.h"
 #include "bookdelegate.h"
@@ -19,7 +19,7 @@
 #include <QScrollBar>
 #include <QSpinBox>
 #include <QSqlDatabase>
-#include <QTableView>
+#include <BOBUIableView>
 
 BookWindow::BookWindow()
 {
@@ -67,7 +67,7 @@ void BookWindow::showError(const QSqlError &err)
 
 void BookWindow::createLayout()
 {
-    tableView = new QTableView(window);
+    tableView = new BOBUIableView(window);
 
     gridLayout = new QGridLayout(window);
 
@@ -82,23 +82,23 @@ void BookWindow::createLayout()
     ratingLabel = new QLabel(tr("Rating:"), window);
     ratingComboBox = new QComboBox(window);
 
-    gridLayout->addWidget(titleLabel, 0, 0, Qt::AlignRight);
+    gridLayout->addWidget(titleLabel, 0, 0, BobUI::AlignRight);
     gridLayout->addWidget(titleLineEdit, 0, 1, 1, 3);
-    gridLayout->addWidget(authorLabel, 1, 0, Qt::AlignRight);
+    gridLayout->addWidget(authorLabel, 1, 0, BobUI::AlignRight);
     gridLayout->addWidget(authorComboBox, 1, 1);
-    gridLayout->addWidget(yearLabel, 1, 2, Qt::AlignRight);
+    gridLayout->addWidget(yearLabel, 1, 2, BobUI::AlignRight);
     gridLayout->addWidget(yearSpinBox, 1, 3);
-    gridLayout->addWidget(genreLabel, 2, 0, Qt::AlignRight);
+    gridLayout->addWidget(genreLabel, 2, 0, BobUI::AlignRight);
     gridLayout->addWidget(genreComboBox, 2, 1);
-    gridLayout->addWidget(ratingLabel, 2, 2, Qt::AlignRight);
+    gridLayout->addWidget(ratingLabel, 2, 2, BobUI::AlignRight);
     gridLayout->addWidget(ratingComboBox, 2, 3);
-    gridLayout->addWidget(tableView, 3, 0, 1, 4, Qt::AlignCenter);
+    gridLayout->addWidget(tableView, 3, 0, 1, 4, BobUI::AlignCenter);
     gridLayout->setColumnStretch(1, 1000);
     gridLayout->setColumnStretch(3, 1000);
 
     gridLayout->setContentsMargins(18, 18, 18, 18);
     gridLayout->setSpacing(18);
-    gridLayout->setAlignment(Qt::AlignHCenter);
+    gridLayout->setAlignment(BobUI::AlignHCenter);
 }
 
 void BookWindow::createModel()
@@ -115,13 +115,13 @@ void BookWindow::createModel()
     model->setRelation(genreIdx, QSqlRelation("genres", "id", "name"));
 
     // Set the localised header captions
-    model->setHeaderData(authorIdx, Qt::Horizontal, tr("Author Name"));
-    model->setHeaderData(genreIdx, Qt::Horizontal, tr("Genre"));
+    model->setHeaderData(authorIdx, BobUI::Horizontal, tr("Author Name"));
+    model->setHeaderData(genreIdx, BobUI::Horizontal, tr("Genre"));
     model->setHeaderData(model->fieldIndex("title"),
-                         Qt::Horizontal, tr("Title"));
-    model->setHeaderData(model->fieldIndex("year"), Qt::Horizontal, tr("Year"));
+                         BobUI::Horizontal, tr("Title"));
+    model->setHeaderData(model->fieldIndex("year"), BobUI::Horizontal, tr("Year"));
     model->setHeaderData(model->fieldIndex("rating"),
-                         Qt::Horizontal, tr("Rating"));
+                         BobUI::Horizontal, tr("Rating"));
 }
 
 void BookWindow::configureWidgets()
@@ -180,23 +180,23 @@ void BookWindow::createMenuBar()
 {
     QAction *quitAction = new QAction(tr("&Quit"), this);
     QAction *aboutAction = new QAction(tr("&About"), this);
-    QAction *aboutQtAction = new QAction(tr("&About Qt"), this);
+    QAction *aboutBobUIAction = new QAction(tr("&About BobUI"), this);
 
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(quitAction);
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAction);
-    helpMenu->addAction(aboutQtAction);
+    helpMenu->addAction(aboutBobUIAction);
 
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     connect(aboutAction, &QAction::triggered, this, &BookWindow::about);
-    connect(aboutQtAction, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(aboutBobUIAction, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 }
 
 void BookWindow::about()
 {
     QMessageBox::about(this, tr("About Books"),
-            tr("<p>The <b>Books</b> example shows how to use Qt SQL classes "
+            tr("<p>The <b>Books</b> example shows how to use BobUI SQL classes "
                "with a model/view framework."));
 }

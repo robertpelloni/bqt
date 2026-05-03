@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsglcontext.h"
 #include "qwindowscontext.h"
 #include "qwindowswindow.h"
 #include "qwindowsintegration.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qsysinfo.h>
-#include <QtGui/qcolorspace.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qsysinfo.h>
+#include <BobUIGui/qcolorspace.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <private/qsystemlibrary_p.h>
 #include <algorithm>
@@ -113,7 +113,7 @@
 #define WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT 0x20A9
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWindowsOpengl32DLL QOpenGLStaticContext::opengl32;
 
@@ -130,7 +130,7 @@ bool QWindowsOpengl32DLL::init(bool softwareRendering)
     const QByteArray swopengl = QByteArrayLiteral("opengl32sw");
     bool useSystemLib = false;
 
-    QByteArray openglDll = qgetenv("QT_OPENGL_DLL");
+    QByteArray openglDll = qgetenv("BOBUI_OPENGL_DLL");
     if (openglDll.isEmpty()) {
         openglDll = softwareRendering ? swopengl : opengl32;
         useSystemLib = !softwareRendering;
@@ -139,7 +139,7 @@ bool QWindowsOpengl32DLL::init(bool softwareRendering)
     openglDll = openglDll.toLower();
     m_nonOpengl32 = openglDll != opengl32;
 
-    qCDebug(lcQpaGl) << "Qt: Using WGL and OpenGL from" << openglDll;
+    qCDebug(lcQpaGl) << "BobUI: Using WGL and OpenGL from" << openglDll;
 
     if (useSystemLib)
         m_lib = QSystemLibrary::load((wchar_t*)(QString::fromLatin1(openglDll).utf16()));
@@ -218,13 +218,13 @@ static inline void initPixelFormatDescriptor(PIXELFORMATDESCRIPTOR *d)
     d->nVersion = 1;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const PIXELFORMATDESCRIPTOR &pd)
 {
     QDebugStateSaver saver(d);
     d.nospace();
     d << "PIXELFORMATDESCRIPTOR "
-        << "dwFlags=" << Qt::hex << Qt::showbase << pd.dwFlags << Qt::dec << Qt::noshowbase;
+        << "dwFlags=" << BobUI::hex << BobUI::showbase << pd.dwFlags << BobUI::dec << BobUI::noshowbase;
     if (pd.dwFlags & PFD_DRAW_TO_WINDOW) d << " PFD_DRAW_TO_WINDOW";
     if (pd.dwFlags & PFD_DRAW_TO_BITMAP) d << " PFD_DRAW_TO_BITMAP";
     if (pd.dwFlags & PFD_SUPPORT_GDI) d << " PFD_SUPPORT_GDI";
@@ -285,7 +285,7 @@ QDebug operator<<(QDebug d, const QWindowsOpenGLContextFormat &f)
         << " profile: " << f.profile << " options: " << f.options;
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 // Check whether an obtained PIXELFORMATDESCRIPTOR matches the request.
 static inline bool
@@ -606,17 +606,17 @@ static int choosePixelFormat(HDC hdc,
         pixelFormat = 0;
     }
 
-#ifndef QT_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG_OUTPUT
     if (lcQpaGl().isDebugEnabled()) {
         QString message;
         QDebug nsp(&message);
         nsp << __FUNCTION__;
         if (sampleBuffersRequested)
             nsp << " samples=" << iAttributes[samplesValuePosition];
-        nsp << " Attributes: " << Qt::hex << Qt::showbase;
+        nsp << " Attributes: " << BobUI::hex << BobUI::showbase;
         for (int ii = 0; ii < i; ++ii)
             nsp << iAttributes[ii] << ',';
-        nsp << Qt::noshowbase << Qt::dec << "\n    obtained px #" << pixelFormat
+        nsp << BobUI::noshowbase << BobUI::dec << "\n    obtained px #" << pixelFormat
             << " of " << numFormats << "\n    " << *obtainedPfd;
         qCDebug(lcQpaGl) << message;
     } // Debug
@@ -766,7 +766,7 @@ static HGLRC createContext(const QOpenGLStaticContext &staticContext,
     if (!result) {
         QString message;
         QDebug(&message).nospace() << __FUNCTION__ << ": wglCreateContextAttribsARB() failed (GL error code: 0x"
-            << Qt::hex << staticContext.opengl32.glGetError() << Qt::dec << ") for format: " << format << ", shared context: " << shared;
+            << BobUI::hex << staticContext.opengl32.glGetError() << BobUI::dec << ") for format: " << format << ", shared context: " << shared;
         qErrnoWarning("%s", qPrintable(message));
     }
     return result;
@@ -930,7 +930,7 @@ QOpenGLTemporaryContext::~QOpenGLTemporaryContext()
 
     No WGL or OpenGL functions are called directly from the windows plugin. Instead, the
     static context loads opengl32.dll and resolves the necessary functions. This allows
-    building the plugin without linking to opengl32 and enables QT_OPENGL_DYNAMIC builds
+    building the plugin without linking to opengl32 and enables BOBUI_OPENGL_DYNAMIC builds
     where both the EGL and WGL (this) based implementation of the context are built.
 
     \note Initialization requires an active context (see create()).
@@ -1339,7 +1339,7 @@ QFunctionPointer QWindowsGLContext::getProcAddress(const char *procName)
     // We support AllGLFunctionsQueryable, which means this function must be able to
     // return a function pointer even for functions that are in GL.h and exported
     // normally from opengl32.dll. wglGetProcAddress() is not guaranteed to work for such
-    // functions, however in QT_OPENGL_DYNAMIC builds QOpenGLFunctions will just blindly
+    // functions, however in BOBUI_OPENGL_DYNAMIC builds QOpenGLFunctions will just blindly
     // call into here for _any_ OpenGL function.
     if (procAddress == nullptr || reinterpret_cast<quintptr>(procAddress) < 4u
         || procAddress == reinterpret_cast<QFunctionPointer>(-1)) {
@@ -1352,4 +1352,4 @@ QFunctionPointer QWindowsGLContext::getProcAddress(const char *procName)
     return reinterpret_cast<QFunctionPointer>(procAddress);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

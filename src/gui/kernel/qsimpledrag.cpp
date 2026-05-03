@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsimpledrag_p.h"
 
@@ -18,9 +18,9 @@
 #include "qplatformscreen.h"
 #include "qplatformwindow.h"
 
-#include <QtCore/QEventLoop>
-#include <QtCore/QDebug>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QEventLoop>
+#include <BobUICore/QDebug>
+#include <BobUICore/QLoggingCategory>
 
 #include <private/qguiapplication_p.h>
 #include <private/qdnd_p.h>
@@ -28,9 +28,9 @@
 #include <private/qshapedpixmapdndwindow_p.h>
 #include <private/qhighdpiscaling_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcDnd, "qt.gui.dnd")
+Q_STATIC_LOGGING_CATEGORY(lcDnd, "bobui.gui.dnd")
 
 static QWindow* topLevelAt(const QPoint &pos)
 {
@@ -54,7 +54,7 @@ static QWindow* topLevelAt(const QPoint &pos)
     QBasicDrag implements QPlatformDrag::drag() by running a local event loop in which
     it tracks mouse movements and moves the drag icon (QShapedPixmapWindow) accordingly.
     It provides new virtuals allowing for querying whether the receiving window
-    (within the Qt application or outside) accepts the drag and sets the state accordingly.
+    (within the BobUI application or outside) accepts the drag and sets the state accordingly.
 */
 
 QBasicDrag::QBasicDrag()
@@ -87,7 +87,7 @@ bool QBasicDrag::eventFilter(QObject *o, QEvent *e)
     Q_UNUSED(o);
 
     if (!m_drag) {
-        if (e->type() == QEvent::KeyRelease && static_cast<QKeyEvent*>(e)->key() == Qt::Key_Escape) {
+        if (e->type() == QEvent::KeyRelease && static_cast<QKeyEvent*>(e)->key() == BobUI::Key_Escape) {
             disableEventFilter();
             exitDndEventLoop();
             return true; // block the key release
@@ -105,7 +105,7 @@ bool QBasicDrag::eventFilter(QObject *o, QEvent *e)
         case QEvent::KeyRelease:
         {
             QKeyEvent *ke = static_cast<QKeyEvent *>(e);
-            if (ke->key() == Qt::Key_Escape && e->type() == QEvent::KeyPress) {
+            if (ke->key() == BobUI::Key_Escape && e->type() == QEvent::KeyPress) {
                 cancel();
                 disableEventFilter();
                 exitDndEventLoop();
@@ -141,8 +141,8 @@ bool QBasicDrag::eventFilter(QObject *o, QEvent *e)
             // If a QShapedPixmapWindow (drag feedback) is being dragged along, the
             // mouse event's localPos() will be relative to that, which is useless.
             // We want a position relative to the window where the drag ends, if possible (?).
-            // If there is no such window (belonging to this Qt application),
-            // make the event relative to the window where the drag started. (QTBUG-66103)
+            // If there is no such window (belonging to this BobUI application),
+            // make the event relative to the window where the drag started. (BOBUIBUG-66103)
             const QMouseEvent *release = static_cast<QMouseEvent *>(e);
             const QWindow *releaseWindow = topLevelAt(release->globalPosition().toPoint());
             qCDebug(lcDnd) << "mouse released over" << releaseWindow << "after drag from" << m_sourceWindow << "globalPos" << release->globalPosition().toPoint();
@@ -165,10 +165,10 @@ bool QBasicDrag::eventFilter(QObject *o, QEvent *e)
     return false;
 }
 
-Qt::DropAction QBasicDrag::drag(QDrag *o)
+BobUI::DropAction QBasicDrag::drag(QDrag *o)
 {
     m_drag = o;
-    m_executed_drop_action = Qt::IgnoreAction;
+    m_executed_drop_action = BobUI::IgnoreAction;
     m_can_drop = false;
 
     startDrag();
@@ -193,7 +193,7 @@ void QBasicDrag::cancelDrag()
 void QBasicDrag::startDrag()
 {
     QPoint pos;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     pos = QCursor::pos();
     static constexpr QGuiApplicationPrivate::QLastCursorPosition uninitializedCursorPosition;
     if (pos == uninitializedCursorPosition) {
@@ -242,7 +242,7 @@ void QBasicDrag::moveShapedPixmapWindow(const QPoint &globalPos)
         m_drag_icon_window->updateGeometry(globalPos);
 }
 
-void QBasicDrag::drop(const QPoint &, Qt::MouseButtons, Qt::KeyboardModifiers)
+void QBasicDrag::drop(const QPoint &, BobUI::MouseButtons, BobUI::KeyboardModifiers)
 {
     disableEventFilter();
     restoreCursor();
@@ -255,20 +255,20 @@ void  QBasicDrag::exitDndEventLoop()
         m_eventLoop->exit();
 }
 
-void QBasicDrag::updateCursor(Qt::DropAction action)
+void QBasicDrag::updateCursor(BobUI::DropAction action)
 {
-#ifndef QT_NO_CURSOR
-    Qt::CursorShape cursorShape = Qt::ForbiddenCursor;
+#ifndef BOBUI_NO_CURSOR
+    BobUI::CursorShape cursorShape = BobUI::ForbiddenCursor;
     if (canDrop()) {
         switch (action) {
-        case Qt::CopyAction:
-            cursorShape = Qt::DragCopyCursor;
+        case BobUI::CopyAction:
+            cursorShape = BobUI::DragCopyCursor;
             break;
-        case Qt::LinkAction:
-            cursorShape = Qt::DragLinkCursor;
+        case BobUI::LinkAction:
+            cursorShape = BobUI::DragLinkCursor;
             break;
         default:
-            cursorShape = Qt::DragMoveCursor;
+            cursorShape = BobUI::DragMoveCursor;
             break;
         }
     }
@@ -298,7 +298,7 @@ void QBasicDrag::updateCursor(Qt::DropAction action)
 
 void QBasicDrag::restoreCursor()
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (m_dndHasSetOverrideCursor) {
         QGuiApplication::restoreOverrideCursor();
         m_dndHasSetOverrideCursor = false;
@@ -308,7 +308,7 @@ void QBasicDrag::restoreCursor()
 
 static inline QPoint fromNativeGlobalPixels(const QPoint &point)
 {
-#ifndef QT_NO_HIGHDPISCALING
+#ifndef BOBUI_NO_HIGHDPISCALING
     QPoint res = point;
     if (QHighDpiScaling::isActive()) {
         for (const QScreen *s : std::as_const(QGuiApplicationPrivate::screen_list)) {
@@ -326,12 +326,12 @@ static inline QPoint fromNativeGlobalPixels(const QPoint &point)
 
 /*!
     \class QSimpleDrag
-    \brief QSimpleDrag implements QBasicDrag for Drag and Drop operations within the Qt Application itself.
+    \brief QSimpleDrag implements QBasicDrag for Drag and Drop operations within the BobUI Application itself.
     \since 5.0
     \internal
     \ingroup qpa
 
-    The class checks whether the receiving window is a window of the Qt application
+    The class checks whether the receiving window is a window of the BobUI application
     and sets the state accordingly. It does not take windows of other applications
     into account.
 */
@@ -342,14 +342,14 @@ QSimpleDrag::QSimpleDrag()
 
 void QSimpleDrag::startDrag()
 {
-    setExecutedDropAction(Qt::IgnoreAction);
+    setExecutedDropAction(BobUI::IgnoreAction);
 
     QBasicDrag::startDrag();
     // Here we can be fairly sure that QGuiApplication::mouseButtons/keyboardModifiers() will
     // contain sensible values as startDrag() normally is called from mouse event handlers
     // by QDrag::exec(). A better API would be if we could pass something like "input device
     // pointer" to QDrag::exec(). My guess is that something like that might be required for
-    // QTBUG-52430.
+    // BOBUIBUG-52430.
     m_sourceWindow = topLevelAt(QCursor::pos());
     m_windowUnderCursor = m_sourceWindow;
     if (m_sourceWindow) {
@@ -357,7 +357,7 @@ void QSimpleDrag::startDrag()
         move(nativePixelPos, QGuiApplication::mouseButtons(), QGuiApplication::keyboardModifiers());
     } else {
         setCanDrop(false);
-        updateCursor(Qt::IgnoreAction);
+        updateCursor(BobUI::IgnoreAction);
     }
 
     qCDebug(lcDnd) << "drag began from" << m_sourceWindow << "cursor pos" << QCursor::pos() << "can drop?" << canDrop();
@@ -365,7 +365,7 @@ void QSimpleDrag::startDrag()
 
 static void sendDragLeave(QWindow *window)
 {
-    QWindowSystemInterface::handleDrag(window, nullptr, QPoint(), Qt::IgnoreAction, { }, { });
+    QWindowSystemInterface::handleDrag(window, nullptr, QPoint(), BobUI::IgnoreAction, { }, { });
 }
 
 void QSimpleDrag::cancel()
@@ -377,8 +377,8 @@ void QSimpleDrag::cancel()
     }
 }
 
-void QSimpleDrag::move(const QPoint &nativeGlobalPos, Qt::MouseButtons buttons,
-                       Qt::KeyboardModifiers modifiers)
+void QSimpleDrag::move(const QPoint &nativeGlobalPos, BobUI::MouseButtons buttons,
+                       BobUI::KeyboardModifiers modifiers)
 {
     QPoint globalPos = fromNativeGlobalPixels(nativeGlobalPos);
     moveShapedPixmapWindow(globalPos);
@@ -391,22 +391,22 @@ void QSimpleDrag::move(const QPoint &nativeGlobalPos, Qt::MouseButtons buttons,
         if (!window) {
             // QSimpleDrag supports only in-process dnd, we can't drop anywhere else.
             setCanDrop(false);
-            updateCursor(Qt::IgnoreAction);
+            updateCursor(BobUI::IgnoreAction);
             return;
         }
     }
 
     const QPoint pos = nativeGlobalPos - window->handle()->geometry().topLeft();
-    const QPlatformDragQtResponse qt_response = QWindowSystemInterface::handleDrag(
+    const QPlatformDragBobUIResponse bobui_response = QWindowSystemInterface::handleDrag(
                 window, drag()->mimeData(), pos, drag()->supportedActions(),
                 buttons, modifiers);
 
-    setCanDrop(qt_response.isAccepted());
-    updateCursor(qt_response.acceptedAction());
+    setCanDrop(bobui_response.isAccepted());
+    updateCursor(bobui_response.acceptedAction());
 }
 
-void QSimpleDrag::drop(const QPoint &nativeGlobalPos, Qt::MouseButtons buttons,
-                       Qt::KeyboardModifiers modifiers)
+void QSimpleDrag::drop(const QPoint &nativeGlobalPos, BobUI::MouseButtons buttons,
+                       BobUI::KeyboardModifiers modifiers)
 {
     QPoint globalPos = fromNativeGlobalPixels(nativeGlobalPos);
 
@@ -416,14 +416,14 @@ void QSimpleDrag::drop(const QPoint &nativeGlobalPos, Qt::MouseButtons buttons,
         return;
 
     const QPoint pos = nativeGlobalPos - window->handle()->geometry().topLeft();
-    const QPlatformDropQtResponse response = QWindowSystemInterface::handleDrop(
+    const QPlatformDropBobUIResponse response = QWindowSystemInterface::handleDrop(
                 window, drag()->mimeData(), pos, drag()->supportedActions(),
                 buttons, modifiers);
     if (response.isAccepted()) {
         setExecutedDropAction(response.acceptedAction());
     } else {
-        setExecutedDropAction(Qt::IgnoreAction);
+        setExecutedDropAction(BobUI::IgnoreAction);
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

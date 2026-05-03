@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example desktop/screenshot
@@ -11,7 +11,7 @@
 
     \brief The Screenshot example shows how to take a screenshot of the
     desktop using QScreen. It also shows how
-    to use QTimer to provide a single-shot timer, and how to
+    to use BOBUIimer to provide a single-shot timer, and how to
     reimplement the QWidget::resizeEvent() event handler to make sure
     that an application resizes smoothly and without data loss.
 
@@ -96,7 +96,7 @@
     and also make sure that the application can be resized smoothly.
 
     To achieve the first goal, we scale the screenshot pixmap using
-    Qt::KeepAspectRatio. We scale the pixmap to a rectangle as large
+    BobUI::KeepAspectRatio. We scale the pixmap to a rectangle as large
     as possible inside the current size of the screenshot preview
     label, preserving the aspect ratio. This means that if the user
     resizes the application window in only one direction, the preview
@@ -117,9 +117,9 @@
     {New Screenshot} button, to make sure the user only can request
     one screenshot at a time.
 
-    We create a timer using the QTimer class which provides repetitive
+    We create a timer using the BOBUIimer class which provides repetitive
     and single-shot timers. We set the timer to time out only once,
-    using the static QTimer::singleShot() function. This function
+    using the static BOBUIimer::singleShot() function. This function
     calls the private \c shootScreen() slot after the time interval
     specified by the \uicontrol {Screenshot Delay} option. It is \c
     shootScreen() that actually performs the screenshot.
@@ -195,7 +195,7 @@
 
     QPixmap::scaled() returns a copy of the given pixmap scaled to a
     rectangle of the given size according to the given
-    Qt::AspectRatioMode and Qt::TransformationMode.
+    BobUI::AspectRatioMode and BobUI::TransformationMode.
 
     We scale the original pixmap to fit the current screenshot label's
     size, preserving the aspect ratio and giving the resulting pixmap

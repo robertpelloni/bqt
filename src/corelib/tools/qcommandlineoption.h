@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2013 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCOMMANDLINEOPTION_H
 #define QCOMMANDLINEOPTION_H
 
-#include <QtCore/qstringlist.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qshareddata.h>
 
-QT_REQUIRE_CONFIG(commandlineparser);
+BOBUI_REQUIRE_CONFIG(commandlineparser);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCommandLineOptionPrivate;
 
@@ -38,7 +38,7 @@ public:
     ~QCommandLineOption();
 
     QCommandLineOption &operator=(const QCommandLineOption &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCommandLineOption)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCommandLineOption)
 
     void swap(QCommandLineOption &other) noexcept
     { d.swap(other.d); }
@@ -66,6 +66,6 @@ Q_DECLARE_SHARED(QCommandLineOption)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QCommandLineOption::Flags)
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMMANDLINEOPTION_H

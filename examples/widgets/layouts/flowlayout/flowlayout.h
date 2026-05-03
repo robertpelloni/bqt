@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef FLOWLAYOUT_H
 #define FLOWLAYOUT_H
@@ -18,7 +18,7 @@ public:
     void addItem(QLayoutItem *item) override;
     int horizontalSpacing() const;
     int verticalSpacing() const;
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     bool hasHeightForWidth() const override;
     int heightForWidth(int) const override;
     int count() const override;

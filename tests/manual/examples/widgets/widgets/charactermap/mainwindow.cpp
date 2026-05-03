@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "characterwidget.h"
@@ -19,7 +19,7 @@
 #include <QScreen>
 #include <QScrollArea>
 #include <QStatusBar>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 //! [0]
 Q_DECLARE_METATYPE(QFontComboBox::FontFilter)
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     fileMenu->addAction(tr("Quit"), this, &QWidget::close);
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(tr("Show Font Info"), this, &MainWindow::showInfo);
-    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
 
     QWidget *centralWidget = new QWidget;
 
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
 //! [2]
     lineEdit = new QLineEdit;
     lineEdit->setClearButtonEnabled(true);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QPushButton *clipboardButton = new QPushButton(tr("&To clipboard"));
 //! [2]
 
@@ -89,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(characterWidget, &CharacterWidget::characterSelected,
             this, &MainWindow::insertCharacter);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     connect(clipboardButton, &QAbstractButton::clicked, this, &MainWindow::updateClipboard);
 #endif
 //! [5]
@@ -112,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *lineLayout = new QHBoxLayout;
     lineLayout->addWidget(lineEdit, 1);
     lineLayout->addSpacing(12);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     lineLayout->addWidget(clipboardButton);
 #endif
 
@@ -198,7 +198,7 @@ void MainWindow::insertCharacter(const QString &character)
 //! [9]
 
 //! [10]
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void MainWindow::updateClipboard()
 {
 //! [11]
@@ -219,7 +219,7 @@ private:
 
 FontInfoDialog::FontInfoDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~BobUI::WindowContextHelpButtonHint);
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QPlainTextEdit *textEdit = new QPlainTextEdit(text(), this);
     textEdit->setReadOnly(true);
@@ -233,13 +233,13 @@ FontInfoDialog::FontInfoDialog(QWidget *parent) : QDialog(parent)
 QString FontInfoDialog::text() const
 {
     QString text;
-    QTextStream str(&text);
+    BOBUIextStream str(&text);
     const QFont defaultFont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     const QFont titleFont = QFontDatabase::systemFont(QFontDatabase::TitleFont);
     const QFont smallestReadableFont = QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont);
 
-    str << "Qt " << QT_VERSION_STR << " on " << QGuiApplication::platformName()
+    str << "BobUI " << BOBUI_VERSION_STR << " on " << QGuiApplication::platformName()
         << ", " << logicalDpiX() << "DPI";
     if (!qFuzzyCompare(devicePixelRatio(), qreal(1)))
         str  << ", device pixel ratio: " << devicePixelRatio();
@@ -256,7 +256,7 @@ void MainWindow::showInfo()
     const QRect screenGeometry = screen()->geometry();
     FontInfoDialog *dialog = new FontInfoDialog(this);
     dialog->setWindowTitle(tr("Fonts"));
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setAttribute(BobUI::WA_DeleteOnClose);
     dialog->resize(screenGeometry.width() / 4, screenGeometry.height() / 4);
     dialog->show();
 }

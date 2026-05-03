@@ -1,4 +1,4 @@
-QT_FOR_CONFIG += widgets
+BOBUI_FOR_CONFIG += widgets
 
 TEMPLATE      = subdirs
 SUBDIRS       = licensewizard \
@@ -6,7 +6,7 @@ SUBDIRS       = licensewizard \
                 tabdialog \
                 trivialwizard
 
-!qtHaveModule(printsupport): SUBDIRS -= licensewizard
-!qtConfig(wizard) {
+!bobuiHaveModule(printsupport): SUBDIRS -= licensewizard
+!bobuiConfig(wizard) {
     SUBDIRS -= trivialwizard licensewizard classwizard
 }

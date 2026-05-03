@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMBOBOX_H
 #define QCOMBOBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qabstractitemdelegate.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qvariant.h>
-#include <QtGui/qvalidator.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIWidgets/qabstractitemdelegate.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIGui/qvalidator.h>
 
-QT_REQUIRE_CONFIG(combobox);
+BOBUI_REQUIRE_CONFIG(combobox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractItemView;
 class QLineEdit;
@@ -61,10 +61,10 @@ public:
     bool hasFrame() const;
 
     inline int findText(const QString &text,
-                        Qt::MatchFlags flags = static_cast<Qt::MatchFlags>(Qt::MatchExactly|Qt::MatchCaseSensitive)) const
-        { return findData(text, Qt::DisplayRole, flags); }
-    int findData(const QVariant &data, int role = Qt::UserRole,
-                 Qt::MatchFlags flags = static_cast<Qt::MatchFlags>(Qt::MatchExactly|Qt::MatchCaseSensitive)) const;
+                        BobUI::MatchFlags flags = static_cast<BobUI::MatchFlags>(BobUI::MatchExactly|BobUI::MatchCaseSensitive)) const
+        { return findData(text, BobUI::DisplayRole, flags); }
+    int findData(const QVariant &data, int role = BobUI::UserRole,
+                 BobUI::MatchFlags flags = static_cast<BobUI::MatchFlags>(BobUI::MatchExactly|BobUI::MatchCaseSensitive)) const;
 
     enum InsertPolicy {
         NoInsert,
@@ -107,12 +107,12 @@ public:
     void setEditable(bool editable);
     void setLineEdit(QLineEdit *edit);
     QLineEdit *lineEdit() const;
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
     void setValidator(const QValidator *v);
     const QValidator *validator() const;
 #endif
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     void setCompleter(QCompleter *c);
     QCompleter *completer() const;
 #endif
@@ -134,11 +134,11 @@ public:
 
     int currentIndex() const;
     QString currentText() const;
-    QVariant currentData(int role = Qt::UserRole) const;
+    QVariant currentData(int role = BobUI::UserRole) const;
 
     QString itemText(int index) const;
     QIcon itemIcon(int index) const;
-    QVariant itemData(int index, int role = Qt::UserRole) const;
+    QVariant itemData(int index, int role = BobUI::UserRole) const;
 
     inline void addItem(const QString &text, const QVariant &userData = QVariant());
     inline void addItem(const QIcon &icon, const QString &text,
@@ -156,7 +156,7 @@ public:
 
     void setItemText(int index, const QString &text);
     void setItemIcon(int index, const QIcon &icon);
-    void setItemData(int index, const QVariant &value, int role = Qt::UserRole);
+    void setItemData(int index, const QVariant &value, int role = BobUI::UserRole);
 
     QAbstractItemView *view() const;
     void setView(QAbstractItemView *itemView);
@@ -168,8 +168,8 @@ public:
     virtual void hidePopup();
 
     bool event(QEvent *event) override;
-    QVariant inputMethodQuery(Qt::InputMethodQuery) const override;
-    Q_INVOKABLE QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery) const override;
+    Q_INVOKABLE QVariant inputMethodQuery(BobUI::InputMethodQuery query, const QVariant &argument) const;
 
 public Q_SLOTS:
     void clear();
@@ -199,12 +199,12 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
     void keyReleaseEvent(QKeyEvent *e) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *e) override;
 #endif
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *e) override;
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     void inputMethodEvent(QInputMethodEvent *) override;
     virtual void initStyleOption(QStyleOptionComboBox *option) const;
 
@@ -227,6 +227,6 @@ inline void QComboBox::insertItem(int aindex, const QString &atext,
                                   const QVariant &auserData)
 { insertItem(aindex, QIcon(), atext, auserData); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMBOBOX_H

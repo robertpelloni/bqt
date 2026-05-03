@@ -1,22 +1,22 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qwasmwindow_harness LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qwasmwindow_harness
+bobui_internal_add_test(tst_qwasmwindow_harness
     MANUAL
     NO_BATCH
     NO_WASM_DEFAULT_FILES
     SOURCES
         tst_qwasmwindow_harness.cpp
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::OpenGL
-        Qt::Widgets
+        BobUI::Core
+        BobUI::Gui
+        BobUI::OpenGL
+        BobUI::Widgets
 )
 
 # Resources:
@@ -25,7 +25,7 @@ set(shaders_resource_files
     "vshader.glsl"
 )
 
-qt6_add_resources(tst_qwasmwindow_harness "shaders"
+bobui6_add_resources(tst_qwasmwindow_harness "shaders"
     PREFIX
         "/"
     FILES
@@ -41,7 +41,7 @@ else()
 endif()
 
 set_target_properties(tst_qwasmwindow_harness PROPERTIES CROSSCOMPILING_EMULATOR "") # disabling emrun
-qt_internal_create_test_script(NAME tst_qwasmwindow_harness
+bobui_internal_create_test_script(NAME tst_qwasmwindow_harness
     COMMAND ${RUNSHCMD}
     ARGS    ${RUNSHARG}
     WORKING_DIRECTORY "${test_working_dir}"
@@ -58,8 +58,8 @@ add_custom_command(
 add_custom_command(
     TARGET tst_qwasmwindow_harness POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-            ${CMAKE_CURRENT_SOURCE_DIR}/../../../../util/wasm/qtwasmserver/qtwasmserver.py
-            ${CMAKE_CURRENT_BINARY_DIR}/qtwasmserver.py
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../../../util/wasm/bobuiwasmserver/bobuiwasmserver.py
+            ${CMAKE_CURRENT_BINARY_DIR}/bobuiwasmserver.py
 )
 
 add_custom_command(

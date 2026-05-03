@@ -1,0 +1,23 @@
+#include <BobUIGui/BobUIGui>
+
+// vulkan
+#include <BobUIGui/QVulkanDeviceFunctions>
+#include <BobUIGui/QVulkanExtension>
+#include <BobUIGui/QVulkanFunctions>
+#include <BobUIGui/QVulkanInfoVector>
+#include <BobUIGui/QVulkanInstance>
+#include <BobUIGui/QVulkanLayer>
+#include <BobUIGui/QVulkanWindow>
+#include <BobUIGui/QVulkanWindowRenderer>
+
+// native platform interfaces
+#include <BobUIGui/qpa/qplatformmenu_p.h>
+#include <BobUIGui/qpa/qplatformwindow_p.h>
+#include <BobUIGui/qpa/qplatformscreen_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qkeymapper_p.h>
+
+// rhi
+#include <BobUIGui/rhi/qrhi.h>
+#include <BobUIGui/rhi/qshader.h>
+#include <BobUIGui/rhi/qshaderdescription.h>

@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsscreen_p.h"
 #include "qeglfskmsdevice_p.h"
@@ -9,13 +9,13 @@
 #include <private/qeglfsintegration_p.h>
 #include <private/qeglfskmsintegration_p.h>
 
-#include <QtCore/QMutex>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QMutex>
+#include <BobUICore/QLoggingCategory>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtFbSupport/private/qfbvthandler_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIFbSupport/private/qfbvthandler_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QMutex s_screensMutex;
 static QSet<QEglFSKmsScreen *> s_screens;
@@ -146,19 +146,19 @@ QDpi QEglFSKmsScreen::logicalBaseDpi() const
     return QDpi(100, 100);
 }
 
-Qt::ScreenOrientation QEglFSKmsScreen::nativeOrientation() const
+BobUI::ScreenOrientation QEglFSKmsScreen::nativeOrientation() const
 {
-    return Qt::PrimaryOrientation;
+    return BobUI::PrimaryOrientation;
 }
 
-Qt::ScreenOrientation QEglFSKmsScreen::orientation() const
+BobUI::ScreenOrientation QEglFSKmsScreen::orientation() const
 {
-    return Qt::PrimaryOrientation;
+    return BobUI::PrimaryOrientation;
 }
 
 QString QEglFSKmsScreen::name() const
 {
-    return !m_headless ? m_output.name : QStringLiteral("qt_Headless");
+    return !m_headless ? m_output.name : QStringLiteral("bobui_Headless");
 }
 
 QString QEglFSKmsScreen::manufacturer() const
@@ -257,4 +257,4 @@ bool QEglFSKmsScreen::isScreenKnown(QEglFSKmsScreen *s)
     return s_screens.contains(s);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

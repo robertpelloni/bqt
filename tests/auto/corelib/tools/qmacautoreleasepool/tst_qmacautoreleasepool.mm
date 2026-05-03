@@ -1,9 +1,9 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <Foundation/Foundation.h>
 
@@ -41,7 +41,7 @@ void tst_QMacAutoreleasePool::rootLevelPool()
 
     NSObject *allocedObject = nil;
     {
-        QMacAutoReleasePool qtPool;
+        QMacAutoReleasePool bobuiPool;
         allocedObject = [[[DeallocTracker alloc] init] autorelease];
     }
     QCOMPARE(lastDeallocedObject, allocedObject);
@@ -55,13 +55,13 @@ void tst_QMacAutoreleasePool::stackAllocatedPool()
     NSObject *allocedObject = nil;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     {
-        QMacAutoReleasePool qtPool;
+        QMacAutoReleasePool bobuiPool;
         allocedObject = [[[DeallocTracker alloc] init] autorelease];
     }
     QCOMPARE(lastDeallocedObject, allocedObject);
     [pool drain];
 }
 
-QTEST_APPLESS_MAIN(tst_QMacAutoreleasePool)
+BOBUIEST_APPLESS_MAIN(tst_QMacAutoreleasePool)
 
 #include "tst_qmacautoreleasepool.moc"

@@ -1,5 +1,5 @@
 // Copyright (C) 2025 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QGLOBAL_EXPANSION_TO_DEFINED_CHECK_H
 #define TST_QGLOBAL_EXPANSION_TO_DEFINED_CHECK_H

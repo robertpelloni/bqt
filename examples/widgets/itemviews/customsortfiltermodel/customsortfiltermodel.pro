@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(treeview))
+BOBUI += widgets
+requires(bobuiConfig(treeview))
 
 HEADERS     = mysortfilterproxymodel.h \
               window.h \
@@ -12,5 +12,5 @@ SOURCES     = main.cpp \
 RESOURCES +=  customsortfiltermodel.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/customsortfiltermodel
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/customsortfiltermodel
 INSTALLS += target

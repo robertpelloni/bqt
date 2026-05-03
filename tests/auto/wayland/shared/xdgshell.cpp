@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "xdgshell.h"
 
 namespace MockCompositor {
 
 XdgWmBase::XdgWmBase(CoreCompositor *compositor, int version)
-    : QtWaylandServer::xdg_wm_base(compositor->m_display, version)
+    : BobUIWaylandServer::xdg_wm_base(compositor->m_display, version)
     , m_compositor(compositor)
 {
 }
@@ -52,13 +52,13 @@ void XdgWmBase::xdg_wm_base_pong(Resource *resource, uint32_t serial)
 }
 
 XdgSurface::XdgSurface(XdgWmBase *xdgWmBase, Surface *surface, wl_client *client, int id, int version)
-    : QtWaylandServer::xdg_surface(client, id, version)
+    : BobUIWaylandServer::xdg_surface(client, id, version)
     , m_xdgWmBase(xdgWmBase)
     , m_surface(surface)
 {
     QVERIFY(!surface->m_pending.buffer);
     QVERIFY(!surface->m_committed.buffer);
-    connect(this, &XdgSurface::toplevelCreated, xdgWmBase, &XdgWmBase::toplevelCreated, Qt::DirectConnection);
+    connect(this, &XdgSurface::toplevelCreated, xdgWmBase, &XdgWmBase::toplevelCreated, BobUI::DirectConnection);
     connect(surface, &Surface::attach, this, [this]  (void *buffer) {
         if (buffer)
             verifyConfigured();
@@ -132,7 +132,7 @@ void XdgSurface::xdg_surface_destroy_resource(Resource *resource)
     delete this;
 }
 
-void XdgSurface::xdg_surface_destroy(QtWaylandServer::xdg_surface::Resource *resource)
+void XdgSurface::xdg_surface_destroy(BobUIWaylandServer::xdg_surface::Resource *resource)
 {
     QVERIFY(m_popups.empty());
     wl_resource_destroy(resource->handle);
@@ -159,7 +159,7 @@ void XdgSurface::xdg_surface_ack_configure(Resource *resource, uint32_t serial)
 }
 
 XdgToplevel::XdgToplevel(XdgSurface *xdgSurface, int id, int version)
-    : QtWaylandServer::xdg_toplevel(xdgSurface->resource()->client(), id, version)
+    : BobUIWaylandServer::xdg_toplevel(xdgSurface->resource()->client(), id, version)
     , m_xdgSurface(xdgSurface)
 {
     connect(surface(), &Surface::commit, this, [this] { m_committed = m_pending; });
@@ -198,7 +198,7 @@ void XdgToplevel::xdg_toplevel_set_min_size(Resource *resource, int32_t width, i
 }
 
 XdgPopup::XdgPopup(XdgSurface *xdgSurface, XdgSurface *parent, int id, int version)
-    : QtWaylandServer::xdg_popup(xdgSurface->resource()->client(), id, version)
+    : BobUIWaylandServer::xdg_popup(xdgSurface->resource()->client(), id, version)
     , m_xdgSurface(xdgSurface)
     , m_parentXdgSurface(parent)
 {
@@ -218,7 +218,7 @@ uint XdgPopup::sendCompleteConfigure(const QRect &geometry)
     return m_xdgSurface->sendConfigure();
 }
 
-void XdgPopup::xdg_popup_grab(QtWaylandServer::xdg_popup::Resource *resource, wl_resource *seat, uint32_t serial)
+void XdgPopup::xdg_popup_grab(BobUIWaylandServer::xdg_popup::Resource *resource, wl_resource *seat, uint32_t serial)
 {
     Q_UNUSED(resource);
     Q_UNUSED(seat); // TODO: verify correct seat as well

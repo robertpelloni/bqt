@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'controller.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,14 +9,14 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Controller
 {
@@ -43,7 +43,7 @@ public:
         gridLayout->setObjectName("gridLayout");
         label = new QLabel(Controller);
         label->setObjectName("label");
-        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        label->setAlignment(BobUI::AlignmentFlag::AlignCenter);
 
         gridLayout->addWidget(label, 1, 1, 1, 1);
 
@@ -89,6 +89,6 @@ namespace Ui {
     class Controller: public Ui_Controller {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CONTROLLER_H

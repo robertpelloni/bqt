@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkcookiejar.h"
 #include "qnetworkcookiejar_p.h"
 
-#include "QtNetwork/qnetworkcookie.h"
-#include "QtCore/qurl.h"
-#include "QtCore/qdatetime.h"
-#if QT_CONFIG(topleveldomain)
-#include "private/qtldurl_p.h"
+#include "BobUINetwork/qnetworkcookie.h"
+#include "BobUICore/qurl.h"
+#include "BobUICore/qdatetime.h"
+#if BOBUI_CONFIG(topleveldomain)
+#include "private/bobuildurl_p.h"
 #else
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 static bool qIsEffectiveTLD(QStringView domain)
 {
     // provide minimal checking by not accepting cookies on real TLDs
     return !domain.contains(u'.');
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QNetworkCookieJar
     \since 4.4
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QNetworkCookieJar class implements a simple jar of QNetworkCookie objects.
 
@@ -217,9 +217,9 @@ QList<QNetworkCookie> QNetworkCookieJar::cookiesForUrl(const QUrl &url) const
             continue;
 
         QStringView domain = cookieDomain;
-        if (domain.startsWith(u'.')) /// Qt6?: remove when compliant with RFC6265
+        if (domain.startsWith(u'.')) /// BobUI6?: remove when compliant with RFC6265
             domain = domain.sliced(1);
-#if QT_CONFIG(topleveldomain)
+#if BOBUI_CONFIG(topleveldomain)
         if (urlHost != domain && qIsEffectiveTLD(domain))
             continue;
 #else
@@ -323,11 +323,11 @@ bool QNetworkCookieJar::validateCookie(const QNetworkCookie &cookie, const QUrl 
     // the check for effective TLDs makes the "embedded dot" rule from RFC 2109 section 4.3.2
     // redundant; the "leading dot" rule has been relaxed anyway, see QNetworkCookie::normalize()
     // we remove the leading dot for this check if it's present
-    // Normally defined in qtldurl_p.h, but uses fall-back in this file when topleveldomain isn't
+    // Normally defined in bobuildurl_p.h, but uses fall-back in this file when topleveldomain isn't
     // configured:
     return !qIsEffectiveTLD(domain);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkcookiejar.cpp"

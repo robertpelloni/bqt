@@ -1,21 +1,21 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qdatawidgetmapper Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qdatawidgetmapper LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qdatawidgetmapper
+bobui_internal_add_test(tst_qdatawidgetmapper
     SOURCES
         tst_qdatawidgetmapper.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::Gui
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )

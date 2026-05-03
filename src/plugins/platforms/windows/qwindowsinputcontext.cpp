@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsinputcontext.h"
 #include "qwindowscontext.h"
 #include "qwindowswindow.h"
 #include "qwindowsintegration.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qtextboundaryfinder.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/bobuiextboundaryfinder.h>
 
-#include <QtGui/qevent.h>
-#include <QtGui/qtextformat.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/bobuiextformat.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/qguiapplication.h>
 
 #include <private/qhighdpiscaling_p.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline QByteArray debugComposition(int lParam)
 {
@@ -64,7 +64,7 @@ static inline LCID currentInputLanguageId()
     return languageIdFromLocaleId(reinterpret_cast<quintptr>(GetKeyboardLayout(0)));
 }
 
-Q_CORE_EXPORT QLocale qt_localeFromLCID(LCID id); // from qlocale_win.cpp
+Q_CORE_EXPORT QLocale bobui_localeFromLCID(LCID id); // from qlocale_win.cpp
 
 /*!
     \class QWindowsInputContext
@@ -117,8 +117,8 @@ Q_CORE_EXPORT QLocale qt_localeFromLCID(LCID id); // from qlocale_win.cpp
     invoked.
 
     \note Mouse interaction of popups with
-    QtWindows::InputMethodOpenCandidateWindowEvent and
-    QtWindows::InputMethodCloseCandidateWindowEvent
+    BobUIWindows::InputMethodOpenCandidateWindowEvent and
+    BobUIWindows::InputMethodCloseCandidateWindowEvent
     needs to be checked (mouse grab might interfere with candidate window).
 
     \internal
@@ -128,7 +128,7 @@ Q_CORE_EXPORT QLocale qt_localeFromLCID(LCID id); // from qlocale_win.cpp
 QWindowsInputContext::QWindowsInputContext() :
     m_WM_MSIME_MOUSE(RegisterWindowMessage(L"MSIMEMouseOperation")),
     m_languageId(currentInputLanguageId()),
-    m_locale(qt_localeFromLCID(m_languageId))
+    m_locale(bobui_localeFromLCID(m_languageId))
 {
     const quint32 bmpData = 0;
     m_transparentBitmap = CreateBitmap(2, 2, 1, 1, &bmpData);
@@ -147,7 +147,7 @@ bool QWindowsInputContext::hasCapability(Capability capability) const
 {
     switch (capability) {
     case QPlatformInputContext::HiddenTextCapability:
-        return false; // QTBUG-40691, do not show IME on desktop for password entry fields.
+        return false; // BOBUIBUG-40691, do not show IME on desktop for password entry fields.
     default:
         break;
     }
@@ -279,9 +279,9 @@ void QWindowsInputContext::setWindowsImeEnabled(QWindowsWindow *platformWindow, 
     \brief Moves the candidate window along with microfocus of the focus object.
 */
 
-void QWindowsInputContext::update(Qt::InputMethodQueries queries)
+void QWindowsInputContext::update(BobUI::InputMethodQueries queries)
 {
-    if (queries & Qt::ImEnabled)
+    if (queries & BobUI::ImEnabled)
         updateEnabled();
 }
 
@@ -389,12 +389,12 @@ enum StandardFormat {
     SelectionFormat
 };
 
-static inline QTextFormat standardFormat(StandardFormat format)
+static inline BOBUIextFormat standardFormat(StandardFormat format)
 {
-    QTextCharFormat result;
+    BOBUIextCharFormat result;
     switch (format) {
     case PreeditFormat:
-        result.setUnderlineStyle(QTextCharFormat::DashUnderline);
+        result.setUnderlineStyle(BOBUIextCharFormat::DashUnderline);
         break;
     case SelectionFormat: {
         // TODO: Should be that of the widget?
@@ -435,7 +435,7 @@ void QWindowsInputContext::startContextComposition()
     m_compositionContext.composition.clear();
     m_compositionContext.position = 0;
     cursorRectChanged(); // position cursor initially.
-    update(Qt::ImQueryAll);
+    update(BobUI::ImQueryAll);
 }
 
 void QWindowsInputContext::endContextComposition()
@@ -523,7 +523,7 @@ bool QWindowsInputContext::composition(HWND hwnd, LPARAM lParamIn)
     qCDebug(lcQpaInputMethods) << '<' << __FUNCTION__ << "sending markup="
         << event->attributes().size() << " commit=" << event->commitString()
         << " to " << m_compositionContext.focusObject << " returns " << result;
-    update(Qt::ImQueryAll);
+    update(BobUI::ImQueryAll);
     ImmReleaseContext(m_compositionContext.hwnd, himc);
     return result;
 }
@@ -539,10 +539,10 @@ bool QWindowsInputContext::endComposition(HWND hwnd)
     if (m_compositionContext.focusObject.isNull())
         return false;
 
-    // QTBUG-58300: Ignore WM_IME_ENDCOMPOSITION when CTRL is pressed to prevent
+    // BOBUIBUG-58300: Ignore WM_IME_ENDCOMPOSITION when CTRL is pressed to prevent
     // for example the text being cleared when pressing CTRL+A
     if (m_locale.language() == QLocale::Korean
-        && QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier)) {
+        && QGuiApplication::queryKeyboardModifiers().testFlag(BobUI::ControlModifier)) {
         reset();
         return true;
     }
@@ -567,7 +567,7 @@ void QWindowsInputContext::initContext(HWND hwnd, QObject *focusObject)
     m_compositionContext.hwnd = hwnd;
     m_compositionContext.focusObject = focusObject;
 
-    update(Qt::ImQueryAll);
+    update(BobUI::ImQueryAll);
     m_compositionContext.isComposing = false;
     m_compositionContext.position = 0;
 }
@@ -610,12 +610,12 @@ void QWindowsInputContext::handleInputLanguageChanged(WPARAM wparam, LPARAM lpar
         return;
     const LCID oldLanguageId = m_languageId;
     m_languageId = newLanguageId;
-    m_locale = qt_localeFromLCID(m_languageId);
+    m_locale = bobui_localeFromLCID(m_languageId);
     emitLocaleChanged();
 
-    qCDebug(lcQpaInputMethods) << __FUNCTION__ << Qt::hex << Qt::showbase
+    qCDebug(lcQpaInputMethods) << __FUNCTION__ << BobUI::hex << BobUI::showbase
         << oldLanguageId  << "->" << newLanguageId << "Character set:"
-        << DWORD(wparam) << Qt::dec << Qt::noshowbase << m_locale;
+        << DWORD(wparam) << BobUI::dec << BobUI::noshowbase << m_locale;
 }
 
 /*!
@@ -635,7 +635,7 @@ int QWindowsInputContext::reconvertString(RECONVERTSTRING *reconv)
     if (!fo)
         return false;
 
-    const QVariant surroundingTextV = QInputMethod::queryFocusObject(Qt::ImSurroundingText, QVariant());
+    const QVariant surroundingTextV = QInputMethod::queryFocusObject(BobUI::ImSurroundingText, QVariant());
     if (!surroundingTextV.isValid())
         return -1;
     const QString surroundingText = surroundingTextV.toString();
@@ -647,12 +647,12 @@ int QWindowsInputContext::reconvertString(RECONVERTSTRING *reconv)
     if (!reconv)
         return surroundingText.isEmpty() ? -1 : memSize;
 
-    const QVariant posV = QInputMethod::queryFocusObject(Qt::ImCursorPosition, QVariant());
+    const QVariant posV = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, QVariant());
     const int pos = posV.isValid() ? posV.toInt() : 0;
     // Find the word in the surrounding text.
-    QTextBoundaryFinder bounds(QTextBoundaryFinder::Word, surroundingText);
+    BOBUIextBoundaryFinder bounds(BOBUIextBoundaryFinder::Word, surroundingText);
     bounds.setPosition(pos);
-    if (bounds.position() > 0 && !(bounds.boundaryReasons() & QTextBoundaryFinder::StartOfItem))
+    if (bounds.position() > 0 && !(bounds.boundaryReasons() & BOBUIextBoundaryFinder::StartOfItem))
         bounds.toPreviousBoundary();
     const int startPos = bounds.position();
     bounds.toNextBoundary();
@@ -679,4 +679,4 @@ int QWindowsInputContext::reconvertString(RECONVERTSTRING *reconv)
     return memSize;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

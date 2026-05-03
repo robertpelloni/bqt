@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <jni.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QGuiApplication>
-#include <QtCore/qnativeinterface.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qdiriterator.h>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qdiriterator.h>
 #include <QScreen>
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformnativeinterface.h>
-#include <QtCore/qdiriterator.h>
+#include <BobUICore/qdiriterator.h>
 #include <private/qglobal_p.h>  // for widgets feature test
-#if QT_CONFIG(widgets)
+#if BOBUI_CONFIG(widgets)
 #include <QWidget>
 #endif
 #include <QSignalSpy>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_JNI_CLASS(Display, "android/view/Display")
 Q_DECLARE_JNI_CLASS(Point, "android/graphics/Point")
@@ -44,7 +44,7 @@ private slots:
     void testAndroidSdkVersion();
     void testAndroidActivity();
     void testRunOnAndroidMainThread();
-#if QT_CONFIG(widgets)
+#if BOBUI_CONFIG(widgets)
     void safeAreaWithWindowFlagsAndStates_data();
     void safeAreaWithWindowFlagsAndStates();
     void testFullScreenDimensions();
@@ -118,7 +118,7 @@ void tst_Android::testRunOnAndroidMainThread()
     {
         int res = 0;
         QNativeInterface::QAndroidApplication::runOnAndroidMainThread([&res]{ res = 1; });
-        QTRY_COMPARE(res, 1);
+        BOBUIRY_COMPARE(res, 1);
     }
 
     // sync void
@@ -150,7 +150,7 @@ void tst_Android::testRunOnAndroidMainThread()
                 res = 3;
             });
         });
-        QTRY_COMPARE(res, 3);
+        BOBUIRY_COMPARE(res, 3);
 
         // nested async/sync
         QNativeInterface::QAndroidApplication::runOnAndroidMainThread([&res]{
@@ -158,7 +158,7 @@ void tst_Android::testRunOnAndroidMainThread()
                 res = 5;
             }).waitForFinished();
         });
-        QTRY_COMPARE(res, 5);
+        BOBUIRY_COMPARE(res, 5);
 
         // nested sync/sync
         QNativeInterface::QAndroidApplication::runOnAndroidMainThread([&res]{
@@ -181,7 +181,7 @@ void tst_Android::testRunOnAndroidMainThread()
     // timeouts
     {
         auto task = QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]{
-            QThread::msleep(500);
+            BOBUIhread::msleep(500);
             return 1;
         }, QDeadlineTimer(100));
         task.waitForFinished();
@@ -212,7 +212,7 @@ void tst_Android::testRunOnAndroidMainThread()
     // cancelled future
     {
         auto task = QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]{
-            QThread::msleep(2000);
+            BOBUIhread::msleep(2000);
             return 1;
         });
         task.cancel();
@@ -223,56 +223,56 @@ void tst_Android::testRunOnAndroidMainThread()
     }
 }
 
-#if QT_CONFIG(widgets)
+#if BOBUI_CONFIG(widgets)
 void tst_Android::safeAreaWithWindowFlagsAndStates_data()
 {
-    QTest::addColumn<Qt::WindowStates>("windowStates");
-    QTest::addColumn<Qt::WindowFlags>("windowFlags");
+    BOBUIest::addColumn<BobUI::WindowStates>("windowStates");
+    BOBUIest::addColumn<BobUI::WindowFlags>("windowFlags");
 
-    QTest::newRow("Normal")
-        << Qt::WindowStates(Qt::WindowNoState)
-        << Qt::WindowFlags();
+    BOBUIest::newRow("Normal")
+        << BobUI::WindowStates(BobUI::WindowNoState)
+        << BobUI::WindowFlags();
 
-    QTest::newRow("Expanded Client Area")
-        << Qt::WindowStates(Qt::WindowNoState)
-        << Qt::WindowFlags(Qt::ExpandedClientAreaHint);
+    BOBUIest::newRow("Expanded Client Area")
+        << BobUI::WindowStates(BobUI::WindowNoState)
+        << BobUI::WindowFlags(BobUI::ExpandedClientAreaHint);
 
-    QTest::newRow("Fullscreen")
-        << Qt::WindowStates(Qt::WindowFullScreen)
-        << Qt::WindowFlags();
+    BOBUIest::newRow("Fullscreen")
+        << BobUI::WindowStates(BobUI::WindowFullScreen)
+        << BobUI::WindowFlags();
 
-    QTest::newRow("Fullscreen and Expanded Client Area")
-        << Qt::WindowStates(Qt::WindowFullScreen)
-        << Qt::WindowFlags(Qt::ExpandedClientAreaHint);
+    BOBUIest::newRow("Fullscreen and Expanded Client Area")
+        << BobUI::WindowStates(BobUI::WindowFullScreen)
+        << BobUI::WindowFlags(BobUI::ExpandedClientAreaHint);
 }
 
 void tst_Android::safeAreaWithWindowFlagsAndStates()
 {
-    QFETCH(Qt::WindowStates, windowStates);
-    QFETCH(Qt::WindowFlags, windowFlags);
+    QFETCH(BobUI::WindowStates, windowStates);
+    QFETCH(BobUI::WindowFlags, windowFlags);
 
     if ((QNativeInterface::QAndroidApplication::sdkVersion() > __ANDROID_API_V__) &&
-             qgetenv("QTEST_ENVIRONMENT").split(' ').contains("ci") &
-                (!(windowFlags & Qt::ExpandedClientAreaHint) &&
-                     !(windowStates & Qt::WindowFullScreen)))
-        QSKIP("Normal fails on Android 16 (QTBUG-140846).");
+             qgetenv("BOBUIEST_ENVIRONMENT").split(' ').contains("ci") &
+                (!(windowFlags & BobUI::ExpandedClientAreaHint) &&
+                     !(windowStates & BobUI::WindowFullScreen)))
+        QSKIP("Normal fails on Android 16 (BOBUIBUG-140846).");
 
     QWidget widget;
     QPalette palette = widget.palette();
-    palette.setColor(QPalette::Window, Qt::red);
+    palette.setColor(QPalette::Window, BobUI::red);
     widget.setAutoFillBackground(true);
     widget.setPalette(palette);
     widget.setWindowFlags(windowFlags);
 
-    const bool fullscreen = windowStates & Qt::WindowFullScreen;
+    const bool fullscreen = windowStates & BobUI::WindowFullScreen;
     if (fullscreen)
         widget.showFullScreen();
     else
         widget.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
     const int sdkVersion = QNativeInterface::QAndroidApplication::sdkVersion();
     auto activity = QNativeInterface::QAndroidApplication::context();
 
@@ -300,18 +300,18 @@ void tst_Android::safeAreaWithWindowFlagsAndStates()
         cameraCutout = true;
     }
 
-    const bool runsOnCI = qgetenv("QTEST_ENVIRONMENT").split(' ').contains("ci");
+    const bool runsOnCI = qgetenv("BOBUIEST_ENVIRONMENT").split(' ').contains("ci");
     if (sdkVersion >= __ANDROID_API_V__ && runsOnCI) {
         // However on CI, Android 15 and later doesn't enable edge-to-edge.
         edgeToEdge = false;
     }
 
-    const bool expandedClientArea = windowFlags & Qt::ExpandedClientAreaHint;
+    const bool expandedClientArea = windowFlags & BobUI::ExpandedClientAreaHint;
     const bool normalMode = !expandedClientArea && !fullscreen;
     if ((normalMode && !edgeToEdge) || (fullscreen && !cameraCutout)) {
-        QTRY_COMPARE(widget.windowHandle()->safeAreaMargins(), QMargins());
+        BOBUIRY_COMPARE(widget.windowHandle()->safeAreaMargins(), QMargins());
     } else {
-        QTRY_COMPARE_NE(widget.windowHandle()->safeAreaMargins(), QMargins());
+        BOBUIRY_COMPARE_NE(widget.windowHandle()->safeAreaMargins(), QMargins());
 
         // Make sure the margins we get are the same as the system bars sizes,
         // that way we make sure we don't end up with margins bigger than expected.
@@ -341,44 +341,44 @@ void tst_Android::safeAreaWithWindowFlagsAndStates()
     }
 }
 
-// QTBUG-107604
+// BOBUIBUG-107604
 void tst_Android::testFullScreenDimensions()
 {
     if ((QNativeInterface::QAndroidApplication::sdkVersion() > __ANDROID_API_V__) &&
-            qgetenv("QTEST_ENVIRONMENT").split(' ').contains("ci") )
-        QSKIP("Keep on failing on Android 16 (QTBUG-141712).");
+            qgetenv("BOBUIEST_ENVIRONMENT").split(' ').contains("ci") )
+        QSKIP("Keep on failing on Android 16 (BOBUIBUG-141712).");
 
     QJniObject activity = QNativeInterface::QAndroidApplication::context();
     QVERIFY(activity.isValid());
 
-    QJniObject windowManager = activity.callMethod<QtJniTypes::WindowManager>("getWindowManager");
+    QJniObject windowManager = activity.callMethod<BobUIJniTypes::WindowManager>("getWindowManager");
     QVERIFY(windowManager.isValid());
 
-    QJniObject display = windowManager.callMethod<QtJniTypes::Display>("getDefaultDisplay");
+    QJniObject display = windowManager.callMethod<BobUIJniTypes::Display>("getDefaultDisplay");
     QVERIFY(display.isValid());
 
     QSize appSize;
     const int sdkVersion = QNativeInterface::QAndroidApplication::sdkVersion();
     if (sdkVersion >= __ANDROID_API_R__) {
-        using namespace QtJniTypes;
+        using namespace BobUIJniTypes;
         auto windowMetrics = windowManager.callMethod<WindowMetrics>("getCurrentWindowMetrics");
         auto bounds = windowMetrics.callMethod<Rect>("getBounds");
         appSize.setWidth(bounds.callMethod<int>("width"));
         appSize.setHeight(bounds.callMethod<int>("height"));
     } else {
-        QtJniTypes::Point jappSize{};
+        BobUIJniTypes::Point jappSize{};
         display.callMethod<void>("getSize", jappSize);
         appSize.setWidth(jappSize.getField<jint>("x"));
         appSize.setHeight(jappSize.getField<jint>("y"));
     }
 
-    QtJniTypes::Point realSize{};
+    BobUIJniTypes::Point realSize{};
     QVERIFY(realSize.isValid());
     display.callMethod<void>("getRealSize", realSize);
 
     QWidget widget;
     QPalette palette = widget.palette();
-    palette.setColor(QPalette::Window, Qt::red);
+    palette.setColor(QPalette::Window, BobUI::red);
     widget.setAutoFillBackground(true);
     widget.setPalette(palette);
     QPlatformScreen *screen = QGuiApplication::primaryScreen()->handle();
@@ -391,21 +391,21 @@ void tst_Android::testFullScreenDimensions()
         int expectedWidth;
         int expectedHeight;
 
-        const auto appContext = activity.callMethod<QtJniTypes::Context>("getApplicationContext");
-        const auto appInfo = appContext.callMethod<QtJniTypes::ApplicationInfo>("getApplicationInfo");
+        const auto appContext = activity.callMethod<BobUIJniTypes::Context>("getApplicationContext");
+        const auto appInfo = appContext.callMethod<BobUIJniTypes::ApplicationInfo>("getApplicationInfo");
         const int targetSdkVersion = appInfo.getField<jint>("targetSdkVersion");
 
         if (sdkVersion >= __ANDROID_API_V__  && targetSdkVersion >= __ANDROID_API_V__) {
             expectedWidth = appSize.width();
             expectedHeight = appSize.height();
         } else {
-            QJniObject window = activity.callMethod<QtJniTypes::Window>("getWindow");
+            QJniObject window = activity.callMethod<BobUIJniTypes::Window>("getWindow");
             QVERIFY(window.isValid());
 
-            QJniObject decorView = window.callMethod<QtJniTypes::View>("getDecorView");
+            QJniObject decorView = window.callMethod<BobUIJniTypes::View>("getDecorView");
             QVERIFY(decorView.isValid());
 
-            auto insets = decorView.callMethod<QtJniTypes::WindowInsets>("getRootWindowInsets");
+            auto insets = decorView.callMethod<BobUIJniTypes::WindowInsets>("getRootWindowInsets");
             QVERIFY(insets.isValid());
 
             int insetRight = insets.callMethod<jint>("getSystemWindowInsetRight");
@@ -420,11 +420,11 @@ void tst_Android::testFullScreenDimensions()
             expectedHeight = appSize.height() - insetsHeight;
         }
 
-        QTRY_COMPARE(screen->availableGeometry().width(), expectedWidth);
-        QTRY_COMPARE(screen->availableGeometry().height(), expectedHeight);
+        BOBUIRY_COMPARE(screen->availableGeometry().width(), expectedWidth);
+        BOBUIRY_COMPARE(screen->availableGeometry().height(), expectedHeight);
 
-        QTRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
-        QTRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
+        BOBUIRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
     }
 
     {
@@ -432,29 +432,29 @@ void tst_Android::testFullScreenDimensions()
         // available geometry == full display size (system bars hidden)
         widget.showFullScreen();
         QCoreApplication::processEvents();
-        QTRY_COMPARE(screen->availableGeometry().width(), realSize.getField<jint>("x"));
-        QTRY_COMPARE(screen->availableGeometry().height(), realSize.getField<jint>("y"));
+        BOBUIRY_COMPARE(screen->availableGeometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->availableGeometry().height(), realSize.getField<jint>("y"));
 
-        QTRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
-        QTRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
+        BOBUIRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
         widget.showNormal();
     }
 
     // TODO needs fix to work in local and CI on same fashion
-    const bool runsOnCI = qgetenv("QTEST_ENVIRONMENT").split(' ').contains("ci");
+    const bool runsOnCI = qgetenv("BOBUIEST_ENVIRONMENT").split(' ').contains("ci");
     {
         // Translucent
         // available geometry == full display size (system bars visible but drawable under)
-        widget.setWindowFlags(widget.windowFlags() | Qt::ExpandedClientAreaHint);
+        widget.setWindowFlags(widget.windowFlags() | BobUI::ExpandedClientAreaHint);
         widget.show();
         QCoreApplication::processEvents();
-        QTRY_COMPARE(screen->availableGeometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->availableGeometry().width(), realSize.getField<jint>("x"));
         if ((sdkVersion > __ANDROID_API_V__) && runsOnCI)
-            QEXPECT_FAIL("", "Fails on Android 16 (QTBUG-141712).", Continue);
-        QTRY_COMPARE(screen->availableGeometry().height(), realSize.getField<jint>("y"));
+            QEXPECT_FAIL("", "Fails on Android 16 (BOBUIBUG-141712).", Continue);
+        BOBUIRY_COMPARE(screen->availableGeometry().height(), realSize.getField<jint>("y"));
 
-        QTRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
-        QTRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
+        BOBUIRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
         widget.showNormal();
     }
 
@@ -463,24 +463,24 @@ void tst_Android::testFullScreenDimensions()
         // available geometry == full display size (system bars visible but drawable under)
         widget.showMaximized();
         QCoreApplication::processEvents();
-        QTRY_COMPARE(screen->availableGeometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->availableGeometry().width(), realSize.getField<jint>("x"));
         if ((sdkVersion > __ANDROID_API_V__) && runsOnCI)
-            QEXPECT_FAIL("", "Fails on Android 16 (QTBUG-141712).", Continue);
-        QTRY_COMPARE(screen->availableGeometry().height(), realSize.getField<jint>("y"));
+            QEXPECT_FAIL("", "Fails on Android 16 (BOBUIBUG-141712).", Continue);
+        BOBUIRY_COMPARE(screen->availableGeometry().height(), realSize.getField<jint>("y"));
 
-        QTRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
-        QTRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
+        BOBUIRY_COMPARE(screen->geometry().width(), realSize.getField<jint>("x"));
+        BOBUIRY_COMPARE(screen->geometry().height(), realSize.getField<jint>("y"));
     }
 }
 
 void tst_Android::orientationChange()
 {
     if (QNativeInterface::QAndroidApplication::sdkVersion() == __ANDROID_API_P__)
-        QSKIP("Android 9 orientation changes callbacks are buggy (QTBUG-124890).");
+        QSKIP("Android 9 orientation changes callbacks are buggy (BOBUIBUG-124890).");
 
     QWidget widget;
     QPalette palette = widget.palette();
-    palette.setColor(QPalette::Window, Qt::red);
+    palette.setColor(QPalette::Window, BobUI::red);
     widget.setAutoFillBackground(true);
     widget.setPalette(palette);
     widget.show();
@@ -497,41 +497,41 @@ void tst_Android::orientationChange()
         InvertedPortrait = 9
     };
 
-    auto nativeOrientation = [](Qt::ScreenOrientation orientation) {
+    auto nativeOrientation = [](BobUI::ScreenOrientation orientation) {
         switch (orientation) {
-        case(Qt::LandscapeOrientation):
+        case(BobUI::LandscapeOrientation):
             return Landscape;
-        case(Qt::PortraitOrientation):
+        case(BobUI::PortraitOrientation):
             return Portrait;
-        case(Qt::InvertedLandscapeOrientation):
+        case(BobUI::InvertedLandscapeOrientation):
             return InvertedLandscape;
-        case(Qt::InvertedPortraitOrientation):
+        case(BobUI::InvertedPortraitOrientation):
             return InvertedPortrait;
         default:
             return Portrait;
         }
     };
 
-    auto requestOrientation = [nativeOrientation, context](Qt::ScreenOrientation expected) {
+    auto requestOrientation = [nativeOrientation, context](BobUI::ScreenOrientation expected) {
         context.callMethod("setRequestedOrientation", nativeOrientation(expected));
     };
 
     auto restoreOrientation = qScopeGuard([&] {
-        requestOrientation(Qt::PortraitOrientation);
+        requestOrientation(BobUI::PortraitOrientation);
         orientationSpy.wait();
-        QTRY_COMPARE(screen->orientation(), Qt::PortraitOrientation);
+        BOBUIRY_COMPARE(screen->orientation(), BobUI::PortraitOrientation);
     });
 
-    auto testOrientation = [&](Qt::ScreenOrientation expected, const QSize &screenSize) {
+    auto testOrientation = [&](BobUI::ScreenOrientation expected, const QSize &screenSize) {
         requestOrientation(expected);
         orientationSpy.wait();
-        QTRY_COMPARE(screen->orientation(), expected);
+        BOBUIRY_COMPARE(screen->orientation(), expected);
         QCOMPARE(orientationSpy.size(), 1);
-        // For QTBUG-94459 to verify widget size consistency after orientation changes.
+        // For BOBUIBUG-94459 to verify widget size consistency after orientation changes.
         // In general we can't guarantee the order though, since Android might send the
-        // orientation and size change at any order, so we need to use QTRY_COMPARE().
-        QTRY_COMPARE(screen->size(), screenSize);
-        QTRY_COMPARE(widget.size(), screen->availableSize());
+        // orientation and size change at any order, so we need to use BOBUIRY_COMPARE().
+        BOBUIRY_COMPARE(screen->size(), screenSize);
+        BOBUIRY_COMPARE(widget.size(), screen->availableSize());
         orientationSpy.clear();
     };
 
@@ -539,23 +539,23 @@ void tst_Android::orientationChange()
     const QSize landscapeSize = QSize(portraitSize.height(), portraitSize.width());
 
     // Sequential 90 degrees clock-wise rotations
-    testOrientation(Qt::InvertedLandscapeOrientation, landscapeSize);
-    testOrientation(Qt::InvertedPortraitOrientation, portraitSize);
-    testOrientation(Qt::LandscapeOrientation, landscapeSize);
-    testOrientation(Qt::PortraitOrientation, portraitSize);
+    testOrientation(BobUI::InvertedLandscapeOrientation, landscapeSize);
+    testOrientation(BobUI::InvertedPortraitOrientation, portraitSize);
+    testOrientation(BobUI::LandscapeOrientation, landscapeSize);
+    testOrientation(BobUI::PortraitOrientation, portraitSize);
 
     // Sequential 90 degrees counter-clockwise rotations
-    testOrientation(Qt::LandscapeOrientation, landscapeSize);
-    testOrientation(Qt::InvertedPortraitOrientation, portraitSize);
-    testOrientation(Qt::InvertedLandscapeOrientation, landscapeSize);
+    testOrientation(BobUI::LandscapeOrientation, landscapeSize);
+    testOrientation(BobUI::InvertedPortraitOrientation, portraitSize);
+    testOrientation(BobUI::InvertedLandscapeOrientation, landscapeSize);
 
     // 180 degree rotations
-    testOrientation(Qt::InvertedPortraitOrientation, portraitSize);
-    testOrientation(Qt::PortraitOrientation, portraitSize);
-    testOrientation(Qt::InvertedLandscapeOrientation, landscapeSize);
-    testOrientation(Qt::LandscapeOrientation, landscapeSize);
+    testOrientation(BobUI::InvertedPortraitOrientation, portraitSize);
+    testOrientation(BobUI::PortraitOrientation, portraitSize);
+    testOrientation(BobUI::InvertedLandscapeOrientation, landscapeSize);
+    testOrientation(BobUI::LandscapeOrientation, landscapeSize);
 }
-#endif // QT_CONFIG(widgets)
+#endif // BOBUI_CONFIG(widgets)
 
-QTEST_MAIN(tst_Android)
+BOBUIEST_MAIN(tst_Android)
 #include "tst_android.moc"

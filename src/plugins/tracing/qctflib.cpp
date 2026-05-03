@@ -1,8 +1,8 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #define BUILD_LIBRARY
 #include <qstring.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <stdio.h>
 #include <qjsondocument.h>
 #include <qjsonarray.h>
@@ -15,15 +15,15 @@
 #include <qplatformdefs.h>
 #include "qctflib_p.h"
 
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
 #include <filesystem>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcDebugTrace, "qt.core.ctf", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcDebugTrace, "bobui.core.ctf", BobUIWarningMsg)
 
 static const size_t packetHeaderSize = 24 + 6 * 8 + 4;
 static const size_t packetSize = 4096;
@@ -92,7 +92,7 @@ void QCtfLibImpl::buildMetadata()
     metadata.replace(QStringLiteral("$TRACE_UUID"), s_TraceUuid.toString(QUuid::WithoutBraces));
     metadata.replace(QStringLiteral("$ARC_BIT_WIDTH"), QString::number(Q_PROCESSOR_WORDSIZE * 8));
     metadata.replace(QStringLiteral("$SESSION_NAME"), m_session.name);
-    metadata.replace(QStringLiteral("$CREATION_TIME"), m_datetime.toString(Qt::ISODate));
+    metadata.replace(QStringLiteral("$CREATION_TIME"), m_datetime.toString(BobUI::ISODate));
     metadata.replace(QStringLiteral("$HOST_NAME"), mhn);
     metadata.replace(QStringLiteral("$CLOCK_FREQUENCY"), QStringLiteral("1000000000"));
     metadata.replace(QStringLiteral("$CLOCK_NAME"), QStringLiteral("monotonic"));
@@ -104,9 +104,9 @@ void QCtfLibImpl::buildMetadata()
 
 QCtfLibImpl::QCtfLibImpl()
 {
-    QString location = qEnvironmentVariable("QTRACE_LOCATION");
+    QString location = qEnvironmentVariable("BOBUIRACE_LOCATION");
     if (location.isEmpty()) {
-        qCInfo(lcDebugTrace) << "QTRACE_LOCATION not set";
+        qCInfo(lcDebugTrace) << "BOBUIRACE_LOCATION not set";
         return;
     }
 
@@ -121,12 +121,12 @@ QCtfLibImpl::QCtfLibImpl()
         m_session.tracepoints.append(allLiteral());
         m_session.name = defaultLiteral();
     } else {
-#if !QT_CONFIG(cxx17_filesystem)
+#if !BOBUI_CONFIG(cxx17_filesystem)
         qCWarning(lcDebugTrace) << "Unable to use filesystem";
         return;
 #endif
         // Check if the location is writable
-        if (QT_ACCESS(qPrintable(location), W_OK) != 0) {
+        if (BOBUI_ACCESS(qPrintable(location), W_OK) != 0) {
             qCWarning(lcDebugTrace) << "Unable to write to location";
             return;
         }
@@ -134,18 +134,18 @@ QCtfLibImpl::QCtfLibImpl()
         FILE *file = openFile(qPrintable(filename), "rb"_L1);
         if (!file) {
             qCWarning(lcDebugTrace) << "unable to open session file: "
-                                    << filename << ", " << qt_error_string();
+                                    << filename << ", " << bobui_error_string();
             m_location = location;
             m_session.tracepoints.append(allLiteral());
             m_session.name = defaultLiteral();
         } else {
-            QT_STATBUF stat;
-            if (QT_FSTAT(QT_FILENO(file), &stat) != 0) {
-                qCWarning(lcDebugTrace) << "Unable to stat session file, " << qt_error_string();
+            BOBUI_STATBUF stat;
+            if (BOBUI_FSTAT(BOBUI_FILENO(file), &stat) != 0) {
+                qCWarning(lcDebugTrace) << "Unable to stat session file, " << bobui_error_string();
                 return;
             }
             qsizetype filesize = qMin(stat.st_size, std::numeric_limits<qsizetype>::max());
-            QByteArray data(filesize, Qt::Uninitialized);
+            QByteArray data(filesize, BobUI::Uninitialized);
             qsizetype size = static_cast<qsizetype>(fread(data.data(), 1, filesize, file));
             fclose(file);
             if (size != filesize)
@@ -168,7 +168,7 @@ QCtfLibImpl::QCtfLibImpl()
                 m_session.name = defaultLiteral();
             }
             m_location = location + u"/ust";
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
             std::filesystem::create_directory(qPrintable(m_location), qPrintable(location));
 #endif
         }
@@ -185,7 +185,7 @@ QCtfLibImpl::QCtfLibImpl()
 
 void QCtfLibImpl::clearLocation()
 {
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
     const std::filesystem::path location{m_location.toStdU16String()};
     for (auto const& dirEntry : std::filesystem::directory_iterator{location})
     {
@@ -354,7 +354,7 @@ void QCtfLibImpl::doTracepoint(const QCtfTracePointEvent &point, const QByteArra
 {
     QCtfTracePointPrivate *priv = point.d;
     quint64 timestamp = 0;
-    QThread *thread = nullptr;
+    BOBUIhread *thread = nullptr;
     if (m_streaming && m_serverClosed)
         return;
     {
@@ -382,7 +382,7 @@ void QCtfLibImpl::doTracepoint(const QCtfTracePointEvent &point, const QByteArra
             return;
     }
 
-    thread = QThread::currentThread();
+    thread = BOBUIhread::currentThread();
     if (thread == nullptr)
         return;
 
@@ -444,4 +444,4 @@ void QCtfLibImpl::registerMetadata(const QCtfTraceMetadata &metadata)
     m_newAdditionalMetadata.insert(metadata.name);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

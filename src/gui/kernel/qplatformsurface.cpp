@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformsurface.h"
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
-#include <QtGui/qwindow.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
+#include <BobUIGui/qwindow.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformSurface
@@ -32,7 +32,7 @@ QPlatformSurface::QPlatformSurface(QSurface *surface) : m_surface(surface)
 {
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QPlatformSurface *surface)
 {
     QDebugStateSaver saver(debug);
@@ -51,7 +51,7 @@ Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QPlatformSurface *surface)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

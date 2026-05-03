@@ -1,24 +1,24 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QBYTEARRAYALGORITHMS_H
 #define QBYTEARRAYALGORITHMS_H
 
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qnamespace.h>
 
 #include <string.h>
 #include <stdarg.h>
 
 #if 0
-#pragma qt_class(QByteArrayAlgorithms)
+#pragma bobui_class(QByteArrayAlgorithms)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArrayView;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION
 bool startsWith(QByteArrayView haystack, QByteArrayView needle) noexcept;
@@ -94,7 +94,7 @@ static inline T toIntegral(ByteArrayView data, bool *ok, int base)
     return T(*val);
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 /*****************************************************************************
   Safe and portable C string functions; extensions to standard string.h
@@ -106,14 +106,14 @@ Q_CORE_EXPORT char *qstrdup(const char *);
 
 inline size_t qstrlen(const char *str)
 {
-    QT_WARNING_PUSH
+    BOBUI_WARNING_PUSH
 #if defined(Q_CC_GNU_ONLY) && Q_CC_GNU >= 900 && Q_CC_GNU < 1000
     // spurious compiler warning (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91490#c6)
     // when Q_DECLARE_METATYPE_TEMPLATE_1ARG is used
-    QT_WARNING_DISABLE_GCC("-Wstringop-overflow")
+    BOBUI_WARNING_DISABLE_GCC("-Wstringop-overflow")
 #endif
     return str ? strlen(str) : 0;
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 }
 
 inline size_t qstrnlen(const char *str, size_t maxlen)
@@ -139,10 +139,10 @@ Q_CORE_EXPORT int qstricmp(const char *, const char *);
 Q_CORE_EXPORT int qstrnicmp(const char *, const char *, size_t len);
 Q_CORE_EXPORT int qstrnicmp(const char *, qsizetype, const char *, qsizetype = -1);
 
-#ifndef QT_NO_QSNPRINTF // use std::(v)snprintf() from <cstdio> instead
-#if QT_DEPRECATED_SINCE(6, 9)
+#ifndef BOBUI_NO_QSNPRINTF // use std::(v)snprintf() from <cstdio> instead
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 #define QSNPF_DEPR(vsn) \
-    QT_DEPRECATED_VERSION_X_6_9("Use C++11 std::" #vsn "printf() instead, taking care to " \
+    BOBUI_DEPRECATED_VERSION_X_6_9("Use C++11 std::" #vsn "printf() instead, taking care to " \
                                 "ensure that you didn't rely on QString::asprintf() " \
                                 "idiosyncrasies that q" #vsn "printf might, but " \
                                 "std::" #vsn "printf() does not, support.")
@@ -154,12 +154,12 @@ QSNPF_DEPR(sn)
 Q_CORE_EXPORT int qsnprintf(char *str, size_t n, const char *fmt, ...)
     Q_ATTRIBUTE_FORMAT_PRINTF(3, 4);
 #undef QSNPF_DEPR
-#endif // QT_DEPRECATED_SINCE(6, 9)
-#endif // QT_NO_QSNPRINTF
+#endif // BOBUI_DEPRECATED_SINCE(6, 9)
+#endif // BOBUI_NO_QSNPRINTF
 
 // qChecksum: Internet checksum
-Q_CORE_EXPORT quint16 qChecksum(QByteArrayView data, Qt::ChecksumType standard = Qt::ChecksumIso3309);
+Q_CORE_EXPORT quint16 qChecksum(QByteArrayView data, BobUI::ChecksumType standard = BobUI::ChecksumIso3309);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBYTEARRAYALGORITHMS_H

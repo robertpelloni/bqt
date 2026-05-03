@@ -1,0 +1,19 @@
+# Extra target for running windeploybobui
+bobuiPrepareTool(QMAKE_WINDEPLOYBOBUI, windeploybobui)
+build_pass {
+    load(resolve_target)
+
+    isEmpty(WINDEPLOYBOBUI_OPTIONS): WINDEPLOYBOBUI_OPTIONS = -qmldir $$shell_quote($$system_path($$_PRO_FILE_PWD_))
+    WINDEPLOYBOBUI_TARGET = $$shell_quote($$system_path($$QMAKE_RESOLVED_TARGET))
+    WINDEPLOYBOBUI_OUTPUT = $$shell_quote($$system_path($$dirname(QMAKE_RESOLVED_TARGET)/$$basename(TARGET).windeploybobui))
+    windeploybobui.target = windeploybobui
+    windeploybobui.commands = $$QMAKE_WINDEPLOYBOBUI $$WINDEPLOYBOBUI_OPTIONS -list target $$WINDEPLOYBOBUI_TARGET > $$WINDEPLOYBOBUI_OUTPUT
+
+    windeploybobui_clean.commands = if exist $$WINDEPLOYBOBUI_OUTPUT for /f %i in ($$WINDEPLOYBOBUI_OUTPUT) do $$QMAKE_DEL_FILE %~fi && $$QMAKE_DEL_DIR %~pi
+    DISTCLEAN_DEPS += windeploybobui_clean
+    QMAKE_DISTCLEAN += $$WINDEPLOYBOBUI_OUTPUT
+} else {
+    windeploybobui.CONFIG += recursive
+    windeploybobui_clean.CONFIG += recursive
+}
+QMAKE_EXTRA_TARGETS += windeploybobui windeploybobui_clean

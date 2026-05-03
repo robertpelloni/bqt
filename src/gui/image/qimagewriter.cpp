@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 /*!
     \class QImageWriter
     \brief The QImageWriter class provides a format independent interface
     for writing images to files or other devices.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \reentrant
     \ingroup painting
 
@@ -56,7 +56,7 @@
     writing the image data. Consult your device for more details on
     what went wrong.
 
-    \value UnsupportedFormatError Qt does not support the requested
+    \value UnsupportedFormatError BobUI does not support the requested
     image format.
 
     \value InvalidImageError An attempt was made to write an invalid QImage. An
@@ -87,7 +87,7 @@
 #include <private/qppmhandler_p.h>
 #include <private/qxbmhandler_p.h>
 #include <private/qxpmhandler_p.h>
-#ifndef QT_NO_IMAGEFORMAT_PNG
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
 #include <private/qpnghandler_p.h>
 #endif
 
@@ -95,11 +95,11 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcImageWriter, "qt.gui.imageio.writer")
+Q_STATIC_LOGGING_CATEGORY(lcImageWriter, "bobui.gui.imageio.writer")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
     const QByteArray &format)
@@ -110,7 +110,7 @@ static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
 
     qCDebug(lcImageWriter) << "Finding write handler for" << device << "and format" << format;
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
     typedef QMultiMap<int, QString> PluginKeyMap;
 
     // check if any plugins can write the image
@@ -128,7 +128,7 @@ static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
         if (QFileDevice *file = qobject_cast<QFileDevice *>(device)) {
             if (!(suffix = QFileInfo(file->fileName()).suffix().toLower().toLatin1()).isEmpty()) {
                 qCDebug(lcImageWriter) << "Resolved format" << suffix << "from file name suffix";
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
                 const int index = keyMap.key(QString::fromLatin1(suffix), -1);
                 if (index != -1)
                     suffixPluginIndex = index;
@@ -139,7 +139,7 @@ static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
 
     QByteArray testFormat = !form.isEmpty() ? form : suffix;
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
     if (suffixPluginIndex != -1) {
         // when format is missing, check if we can find a plugin for the
         // suffix.
@@ -154,33 +154,33 @@ static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
             }
         }
     }
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
     // check if any built-in handlers can write the image
     if (!handler && !testFormat.isEmpty()) {
         qCDebug(lcImageWriter) << "Checking if any built in handlers recognize the format"
                                << testFormat;
         if (false) {
-#ifndef QT_NO_IMAGEFORMAT_PNG
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
         } else if (testFormat == "png") {
             handler = new QPngHandler;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
         } else if (testFormat == "bmp") {
             handler = new QBmpHandler;
         } else if (testFormat == "dib") {
             handler = new QBmpHandler(QBmpHandler::DibFormat);
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
         } else if (testFormat == "xpm") {
             handler = new QXpmHandler;
 #endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
+#ifndef BOBUI_NO_IMAGEFORMAT_XBM
         } else if (testFormat == "xbm") {
             handler = new QXbmHandler;
             handler->setOption(QImageIOHandler::SubType, testFormat);
 #endif
-#ifndef QT_NO_IMAGEFORMAT_PPM
+#ifndef BOBUI_NO_IMAGEFORMAT_PPM
         } else if (testFormat == "pbm" || testFormat == "pbmraw" || testFormat == "pgm"
                  || testFormat == "pgmraw" || testFormat == "ppm" || testFormat == "ppmraw") {
             handler = new QPpmHandler;
@@ -192,7 +192,7 @@ static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
             qCDebug(lcImageWriter) << "Using the built-in handler for format" << testFormat;
     }
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#ifndef BOBUI_NO_IMAGEFORMATPLUGIN
     if (!handler && !testFormat.isEmpty()) {
         qCDebug(lcImageWriter) << "Checking if any plugins recognize the format" << testFormat;
         const int keyCount = keyMap.size();
@@ -205,7 +205,7 @@ static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
             }
         }
     }
-#endif // QT_NO_IMAGEFORMATPLUGIN
+#endif // BOBUI_NO_IMAGEFORMATPLUGIN
 
     if (!handler) {
         qCDebug(lcImageWriter, "No handlers found. Giving up.");
@@ -374,7 +374,7 @@ QByteArray QImageWriter::format() const
     If the device is not already open, QImageWriter will attempt to
     open the device in \l QIODeviceBase::WriteOnly mode by calling
     open(). Note that this does not work for certain devices, such as
-    QProcess, QTcpSocket and QUdpSocket, where more logic is required
+    QProcess, BOBUIcpSocket and QUdpSocket, where more logic is required
     to open the device.
 
     \sa device(), setFileName()
@@ -657,7 +657,7 @@ bool QImageWriter::canWrite() const
     return d->canWriteHelper();
 }
 
-extern void qt_imageTransform(QImage &src, QImageIOHandler::Transformations orient);
+extern void bobui_imageTransform(QImage &src, QImageIOHandler::Transformations orient);
 
 /*!
     Writes the image \a image to the assigned device or file
@@ -698,7 +698,7 @@ bool QImageWriter::write(const QImage &image)
     if (d->handler->supportsOption(QImageIOHandler::ImageTransformation))
         d->handler->setOption(QImageIOHandler::ImageTransformation, int(d->transformation));
     else
-        qt_imageTransform(img, d->transformation);
+        bobui_imageTransform(img, d->transformation);
 
     if (!d->handler->write(img))
         return false;
@@ -756,7 +756,7 @@ bool QImageWriter::supportsOption(QImageIOHandler::ImageOption option) const
 /*!
     Returns the list of image formats supported by QImageWriter.
 
-    By default, Qt can write the following formats:
+    By default, BobUI can write the following formats:
 
     \table
     \header \li Format \li MIME type                    \li Description
@@ -770,8 +770,8 @@ bool QImageWriter::supportsOption(QImageIOHandler::ImageOption option) const
     \row    \li XPM    \li image/x-xpixmap              \li X11 Pixmap
     \endtable
 
-    Reading and writing SVG files is supported through the \l{Qt SVG} module.
-    The \l{Qt Image Formats} module provides support for additional image formats.
+    Reading and writing SVG files is supported through the \l{BobUI SVG} module.
+    The \l{BobUI Image Formats} module provides support for additional image formats.
 
     Note that the QApplication instance must be created before this function is
     called.
@@ -813,4 +813,4 @@ QList<QByteArray> QImageWriter::imageFormatsForMimeType(const QByteArray &mimeTy
                                                               QImageReaderWriterHelpers::CanWrite);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

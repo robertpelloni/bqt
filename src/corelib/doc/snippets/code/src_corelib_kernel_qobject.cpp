@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QTimer>
+#include <BobUIWidgets>
+#include <BOBUIimer>
 #include <QKeyEvent>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QVBoxLayout>
 
 QString objectName() { return ""; }
@@ -31,9 +31,9 @@ void examples(int newPrecision)
 
     {
         //! [3]
-        QObject *obj = new QTimer;          // QTimer inherits QObject
+        QObject *obj = new BOBUIimer;          // BOBUIimer inherits QObject
 
-        QTimer *timer = qobject_cast<QTimer *>(obj);
+        BOBUIimer *timer = qobject_cast<BOBUIimer *>(obj);
         // timer == (QObject *)obj
 
         QAbstractButton *button = qobject_cast<QAbstractButton *>(obj);
@@ -43,8 +43,8 @@ void examples(int newPrecision)
 
     {
         //! [4]
-        QTimer *timer = new QTimer;         // QTimer inherits QObject
-        timer->inherits("QTimer");          // returns true
+        BOBUIimer *timer = new BOBUIimer;         // BOBUIimer inherits QObject
+        timer->inherits("BOBUIimer");          // returns true
         timer->inherits("QObject");         // returns true
         timer->inherits("QAbstractButton"); // returns false
 
@@ -73,12 +73,12 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev) override;
 
 private:
-    QTextEdit *textEdit;
+    BOBUIextEdit *textEdit;
 };
 
 MainWindow::MainWindow()
 {
-    textEdit = new QTextEdit;
+    textEdit = new BOBUIextEdit;
     setCentralWidget(textEdit);
 
     textEdit->installEventFilter(this);
@@ -120,7 +120,7 @@ Q_SIGNALS:
     void valueChanged();
 
 protected:
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 };
 
 MyObject::MyObject(QObject *parent)
@@ -134,7 +134,7 @@ MyObject::MyObject(QObject *parent)
     startTimer(1h);
 }
 
-void MyObject::timerEvent(QTimerEvent *event)
+void MyObject::timerEvent(BOBUIimerEvent *event)
 {
     qDebug() << "Timer ID:" << event->id();
 }
@@ -381,18 +381,18 @@ namespace MyClassExample2
 void snippets_41_44(QWidget *parentWidget)
 {
     //! [41]
-    QPushButton *button = parentWidget->findChild<QPushButton *>("button1", Qt::FindDirectChildrenOnly);
+    QPushButton *button = parentWidget->findChild<QPushButton *>("button1", BobUI::FindDirectChildrenOnly);
     //! [41]
 
 
     //! [42]
-    QListWidget *list = parentWidget->findChild<QListWidget *>(Qt::FindDirectChildrenOnly);
+    QListWidget *list = parentWidget->findChild<QListWidget *>(BobUI::FindDirectChildrenOnly);
     //! [42]
 
     {
         QWidget parentWidget;
         //! [43]
-        QList<QPushButton *> childButtons = parentWidget.findChildren<QPushButton *>(Qt::FindDirectChildrenOnly);
+        QList<QPushButton *> childButtons = parentWidget.findChildren<QPushButton *>(BobUI::FindDirectChildrenOnly);
         //! [43]
     }
     //! [44]
@@ -414,8 +414,8 @@ void someOtherFunction()
 //! [45]
 
 
-#if __has_include(<QTcpSocket>)
-#include <QTcpSocket>
+#if __has_include(<BOBUIcpSocket>)
+#include <BOBUIcpSocket>
 
 namespace TcpSocketExample
 {
@@ -430,9 +430,9 @@ namespace TcpSocketExample
         {
             //! [46]
                 QByteArray page = "...";
-                QTcpSocket *socket = new QTcpSocket;
-                socket->connectToHost("qt-project.org", 80);
-                QObject::connect(socket, &QTcpSocket::connected, [=] () {
+                BOBUIcpSocket *socket = new BOBUIcpSocket;
+                socket->connectToHost("bobui-project.org", 80);
+                QObject::connect(socket, &BOBUIcpSocket::connected, [=] () {
                         socket->write("GET " + page + "\r\n");
                     });
             //! [46]
@@ -458,11 +458,11 @@ namespace TcpSocketExample
             {
                 //! [51]
                 QByteArray page = "...";
-                QTcpSocket *socket = new QTcpSocket;
-                socket->connectToHost("qt-project.org", 80);
-                QObject::connect(socket, &QTcpSocket::connected, this, [=] () {
+                BOBUIcpSocket *socket = new BOBUIcpSocket;
+                socket->connectToHost("bobui-project.org", 80);
+                QObject::connect(socket, &BOBUIcpSocket::connected, this, [=] () {
                         socket->write("GET " + page + "\r\n");
-                    }, Qt::AutoConnection);
+                    }, BobUI::AutoConnection);
                 //! [51]
             }
         }
@@ -474,7 +474,7 @@ namespace TcpSocketExample
         void someOtherFunction()
         {
             QPushButton *button = new QPushButton;
-            QObject::connect(button, &QPushButton::clicked, this, someFunction, Qt::QueuedConnection);
+            QObject::connect(button, &QPushButton::clicked, this, someFunction, BobUI::QueuedConnection);
         }
         //! [50]
 
@@ -483,13 +483,13 @@ namespace TcpSocketExample
         void mySignal();
 
     protected:
-        void timerEvent(QTimerEvent *event) override;
+        void timerEvent(BOBUIimerEvent *event) override;
     };
     //! [50_someFunction]
     void someFunction();
     //! [50_someFunction]
 }
-#endif // __has_include(<QTcpSocket>)
+#endif // __has_include(<BOBUIcpSocket>)
 
 void doThings() {}
 void doThings2() {}
@@ -543,8 +543,8 @@ void blocker_and_invalid_timer_id_examples(QObject *someQObject)
     //! [invalid-timer-id]
         QObject *obj;
         //...
-        const auto id = Qt::TimerId {obj->startTimer(100ms)};
-        if (id != Qt::TimerId::Invalid)
+        const auto id = BobUI::TimerId {obj->startTimer(100ms)};
+        if (id != BobUI::TimerId::Invalid)
         {
             // The timer has been started successfully
         }

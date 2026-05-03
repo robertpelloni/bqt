@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_bench_qstring Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_qstring
+bobui_internal_add_benchmark(tst_bench_qstring
     SOURCES
         tst_bench_qstring.cpp
     LIBRARIES
-        Qt::Test
+        BobUI::Test
 )

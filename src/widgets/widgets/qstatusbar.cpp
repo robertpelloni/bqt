@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstatusbar.h"
 
@@ -9,24 +9,24 @@
 #include "qevent.h"
 #include "qlayout.h"
 #include "qpainter.h"
-#include "qtimer.h"
+#include "bobuiimer.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 #include "qsizegrip.h"
 #endif
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 #include "qmainwindow.h"
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
 #include <private/qlayoutengine_p.h>
 #include <private/qwidget_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStatusBarPrivate : public QWidgetPrivate
 {
@@ -51,9 +51,9 @@ public:
     QString tempItem;
 
     QBoxLayout *box;
-    QTimer *timer;
+    BOBUIimer *timer;
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QSizeGrip *resizer;
     bool showSizeGrip;
 #endif
@@ -71,7 +71,7 @@ public:
         return i;
     }
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     void tryToShowSizeGrip()
     {
         if (!showSizeGrip)
@@ -79,9 +79,9 @@ public:
         showSizeGrip = false;
         if (!resizer || resizer->isVisible())
             return;
-        resizer->setAttribute(Qt::WA_WState_ExplicitShowHide, false);
-        QMetaObject::invokeMethod(resizer, "_q_showIfNotHidden", Qt::DirectConnection);
-        resizer->setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+        resizer->setAttribute(BobUI::WA_WState_ExplicitShowHide, false);
+        QMetaObject::invokeMethod(resizer, "_q_showIfNotHidden", BobUI::DirectConnection);
+        resizer->setAttribute(BobUI::WA_WState_ExplicitShowHide, false);
     }
 #endif
 
@@ -92,12 +92,12 @@ public:
 QRect QStatusBarPrivate::messageRect() const
 {
     Q_Q(const QStatusBar);
-    const bool rtl = q->layoutDirection() == Qt::RightToLeft;
+    const bool rtl = q->layoutDirection() == BobUI::RightToLeft;
 
     int left = 6;
     int right = q->width() - 12;
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (resizer && resizer->isVisible()) {
         if (rtl)
             left = resizer->x() + resizer->width();
@@ -126,7 +126,7 @@ QRect QStatusBarPrivate::messageRect() const
 
     \ingroup mainwindow-classes
     \ingroup helpsystem
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Each status indicator falls into one of three categories:
 
@@ -166,7 +166,7 @@ QRect QStatusBarPrivate::messageRect() const
 
     \target permanent message
     \e Normal and \e Permanent messages are displayed by creating a
-    small widget (QLabel, QProgressBar or even QToolButton) and then
+    small widget (QLabel, QProgressBar or even BOBUIoolButton) and then
     adding it to the status bar using the addWidget() or the
     addPermanentWidget() function. Use the removeWidget() function to
     remove such messages from the status bar.
@@ -196,7 +196,7 @@ QStatusBar::QStatusBar(QWidget * parent)
     d->box = nullptr;
     d->timer = nullptr;
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     d->resizer = nullptr;
     setSizeGripEnabled(true); // causes reformat()
 #else
@@ -359,7 +359,7 @@ void QStatusBar::removeWidget(QWidget *widget)
         widget->hide();
         reformat();
     }
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
     else
         qDebug("QStatusBar::removeWidget(): Widget not found.");
 #endif
@@ -376,7 +376,7 @@ void QStatusBar::removeWidget(QWidget *widget)
 
 bool QStatusBar::isSizeGripEnabled() const
 {
-#if !QT_CONFIG(sizegrip)
+#if !BOBUI_CONFIG(sizegrip)
     return false;
 #else
     Q_D(const QStatusBar);
@@ -386,7 +386,7 @@ bool QStatusBar::isSizeGripEnabled() const
 
 void QStatusBar::setSizeGripEnabled(bool enabled)
 {
-#if !QT_CONFIG(sizegrip)
+#if !BOBUI_CONFIG(sizegrip)
     Q_UNUSED(enabled);
 #else
     Q_D(QStatusBar);
@@ -422,7 +422,7 @@ void QStatusBar::reformat()
         delete d->box;
 
     QBoxLayout *vbox;
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (d->resizer) {
         d->box = new QHBoxLayout(this);
         d->box->setContentsMargins(QMargins());
@@ -460,11 +460,11 @@ void QStatusBar::reformat()
         int itemH = qMin(qSmartMinSize(item.widget).height(), item.widget->maximumHeight());
         maxH = qMax(maxH, itemH);
     }
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     if (d->resizer) {
         maxH = qMax(maxH, d->resizer->sizeHint().height());
         d->box->addSpacing(1);
-        d->box->addWidget(d->resizer, 0, Qt::AlignBottom);
+        d->box->addWidget(d->resizer, 0, BobUI::AlignBottom);
     }
 #endif
     l->addStrut(maxH);
@@ -494,8 +494,8 @@ void QStatusBar::showMessage(const QString &message, int timeout)
 
     if (timeout > 0) {
         if (!d->timer) {
-            d->timer = new QTimer(this);
-            connect(d->timer, &QTimer::timeout, this, &QStatusBar::clearMessage);
+            d->timer = new BOBUIimer(this);
+            connect(d->timer, &BOBUIimer::timeout, this, &QStatusBar::clearMessage);
         }
         d->timer->start(timeout);
     } else if (d->timer) {
@@ -566,15 +566,15 @@ void QStatusBar::hideOrShow()
             break;
         if (haveMessage && item.widget->isVisible()) {
             item.widget->hide();
-            item.widget->setAttribute(Qt::WA_WState_ExplicitShowHide, false);
-        } else if (!haveMessage && !item.widget->testAttribute(Qt::WA_WState_ExplicitShowHide)) {
+            item.widget->setAttribute(BobUI::WA_WState_ExplicitShowHide, false);
+        } else if (!haveMessage && !item.widget->testAttribute(BobUI::WA_WState_ExplicitShowHide)) {
             item.widget->show();
         }
     }
 
     emit messageChanged(d->tempItem);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleEvent event(this, QAccessible::NameChanged);
         QAccessible::updateAccessibility(&event);
@@ -589,7 +589,7 @@ void QStatusBar::hideOrShow()
  */
 void QStatusBar::showEvent(QShowEvent *)
 {
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     Q_D(QStatusBar);
     if (d->resizer && d->showSizeGrip)
         d->tryToShowSizeGrip();
@@ -627,7 +627,7 @@ void QStatusBar::paintEvent(QPaintEvent *event)
     }
     if (haveMessage) {
         p.setPen(palette().windowText().color());
-        p.drawText(d->messageRect(), Qt::AlignLeading | Qt::AlignVCenter | Qt::TextSingleLine, d->tempItem);
+        p.drawText(d->messageRect(), BobUI::AlignLeading | BobUI::AlignVCenter | BobUI::TextSingleLine, d->tempItem);
     }
 }
 
@@ -657,7 +657,7 @@ bool QStatusBar::event(QEvent *e)
             maxH = qMax(maxH, itemH);
         }
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
         if (d->resizer)
             maxH = qMax(maxH, d->resizer->sizeHint().height());
 #endif
@@ -682,6 +682,6 @@ bool QStatusBar::event(QEvent *e)
     return QWidget::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstatusbar.cpp"

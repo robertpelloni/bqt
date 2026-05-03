@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example widgets/sliders
@@ -7,9 +7,9 @@
     \examplecategory {User Interface Components}
     \ingroup examples-widgets
     \brief The Sliders example shows how to use the different types of sliders
-    available in Qt: QSlider, QScrollBar and QDial.
+    available in BobUI: QSlider, QScrollBar and QDial.
 
-    Qt provides three types of slider-like widgets: QSlider,
+    BobUI provides three types of slider-like widgets: QSlider,
     QScrollBar and QDial. They all inherit most of their
     functionality from QAbstractSlider, and can in theory replace
     each other in an application since the differences only concern
@@ -90,8 +90,8 @@
     \table
     \header \li                \li{2,1} QSlider                   \li{2,1} QScrollBar                \li{2,1} QDial
     \header \li                \li Normal        \li Inverted      \li Normal        \li Inverted      \li Normal         \li Inverted
-    \row    \li Qt::Horizontal \li Left to right \li Right to left \li Left to right \li Right to left \li Clockwise \li Counterclockwise
-    \row    \li Qt::Vertical   \li Bottom to top \li Top to bottom \li Top to bottom \li Bottom to top \li Clockwise \li Counterclockwise
+    \row    \li BobUI::Horizontal \li Left to right \li Right to left \li Left to right \li Right to left \li Clockwise \li Counterclockwise
+    \row    \li BobUI::Vertical   \li Bottom to top \li Top to bottom \li Top to bottom \li Bottom to top \li Clockwise \li Counterclockwise
     \endtable
 
     It is common to invert the appearance of a vertical QSlider. A
@@ -176,9 +176,9 @@
 
     First we create the slider-like widgets with the appropriate
     properties. In particular we set the focus policy for each
-    widget. Qt::FocusPolicy is an enum type that defines the various
+    widget. BobUI::FocusPolicy is an enum type that defines the various
     policies a widget can have with respect to acquiring keyboard
-    focus. The Qt::StrongFocus policy means that the widget accepts
+    focus. The BobUI::StrongFocus policy means that the widget accepts
     focus by both tabbing and clicking.
 
     \snippet widgets/sliders/slidersgroup.cpp 1

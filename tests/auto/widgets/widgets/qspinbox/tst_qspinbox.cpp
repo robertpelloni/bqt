@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qdebug.h>
 #include <qapplication.h>
@@ -9,7 +9,7 @@
 #include <qlineedit.h>
 #include <qlayout.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSpinBox>
 #include <QWidget>
 #include <QString>
@@ -29,9 +29,9 @@
 #include <QProxyStyle>
 #include <QScreen>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <QKeySequence>
 #endif
 
@@ -53,7 +53,7 @@ public:
     {
         return QSpinBox::valueFromText(text);
     }
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override
     {
         QSpinBox::wheelEvent(event);
@@ -104,7 +104,7 @@ public:
         }
     }
 
-    Qt::KeyboardModifier stepModifier = Qt::ControlModifier;
+    BobUI::KeyboardModifier stepModifier = BobUI::ControlModifier;
 };
 
 class SelectAllOnStepStyle : public QProxyStyle
@@ -177,7 +177,7 @@ private slots:
     void removeAll();
     void startWithDash();
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void undoRedo();
 #endif
 
@@ -188,7 +188,7 @@ private slots:
 
     void integerOverflow();
 
-    void taskQTBUG_5008_textFromValueAndValidate();
+    void taskBOBUIBUG_5008_textFromValueAndValidate();
     void lineEditReturnPressed();
 
     void positiveSign();
@@ -228,22 +228,22 @@ typedef QList<int> IntList;
 Q_DECLARE_METATYPE(QLocale::Language)
 Q_DECLARE_METATYPE(QLocale::Country)
 
-static QLatin1String modifierToName(Qt::KeyboardModifier modifier)
+static QLatin1String modifierToName(BobUI::KeyboardModifier modifier)
 {
     switch (modifier) {
-    case Qt::NoModifier:
+    case BobUI::NoModifier:
         return QLatin1String("No");
         break;
-    case Qt::ControlModifier:
+    case BobUI::ControlModifier:
         return QLatin1String("Ctrl");
         break;
-    case Qt::ShiftModifier:
+    case BobUI::ShiftModifier:
         return QLatin1String("Shift");
         break;
-    case Qt::AltModifier:
+    case BobUI::AltModifier:
         return QLatin1String("Alt");
         break;
-    case Qt::MetaModifier:
+    case BobUI::MetaModifier:
         return QLatin1String("Meta");
         break;
     default:
@@ -256,7 +256,7 @@ static QLatin1String modifierToName(Qt::KeyboardModifier modifier)
 void tst_QSpinBox::getSetCheck()
 {
     QSpinBox obj1;
-    QCOMPARE(obj1.inputMethodQuery(Qt::ImHints), QVariant(int(Qt::ImhDigitsOnly)));
+    QCOMPARE(obj1.inputMethodQuery(BobUI::ImHints), QVariant(int(BobUI::ImhDigitsOnly)));
     // int QSpinBox::singleStep()
     // void QSpinBox::setSingleStep(int)
     obj1.setSingleStep(0);
@@ -294,7 +294,7 @@ void tst_QSpinBox::getSetCheck()
     QCOMPARE(INT_MAX, obj1.value());
 
     QDoubleSpinBox obj2;
-    QCOMPARE(obj2.inputMethodQuery(Qt::ImHints), QVariant(int(Qt::ImhFormattedNumbersOnly)));
+    QCOMPARE(obj2.inputMethodQuery(BobUI::ImHints), QVariant(int(BobUI::ImhFormattedNumbersOnly)));
     // double QDoubleSpinBox::singleStep()
     // void QDoubleSpinBox::setSingleStep(double)
     obj2.setSingleStep(0.0);
@@ -355,7 +355,7 @@ tst_QSpinBox::tst_QSpinBox()
 
 void tst_QSpinBox::init()
 {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     // Ensure mouse cursor was not left by previous tests where widgets
     // will appear, as it could cause events and interfere with the tests.
     const QScreen *screen = QGuiApplication::primaryScreen();
@@ -366,14 +366,14 @@ void tst_QSpinBox::init()
 
 void tst_QSpinBox::setValue_data()
 {
-    QTest::addColumn<int>("set");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<int>("set");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("data0") << 0 << 0;
-    QTest::newRow("data1") << 100 << 100;
-    QTest::newRow("data2") << -100 << -100;
-    QTest::newRow("data3") << INT_MIN << INT_MIN;
-    QTest::newRow("data4") << INT_MAX << INT_MAX;
+    BOBUIest::newRow("data0") << 0 << 0;
+    BOBUIest::newRow("data1") << 100 << 100;
+    BOBUIest::newRow("data2") << -100 << -100;
+    BOBUIest::newRow("data3") << INT_MIN << INT_MIN;
+    BOBUIest::newRow("data4") << INT_MAX << INT_MAX;
 }
 
 void tst_QSpinBox::setValue()
@@ -388,33 +388,33 @@ void tst_QSpinBox::setValue()
 
 void tst_QSpinBox::setDisplayIntegerBase_data()
 {
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<QString>("string");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<QString>("string");
 
-    QTest::newRow("base 10") << 42 << 10 << "42";
-    QTest::newRow("base 2") << 42 << 2 << "101010";
-    QTest::newRow("base 8") << 42 << 8 << "52";
-    QTest::newRow("base 16") << 42 << 16 << "2a";
-    QTest::newRow("base 0") << 42 << 0 << "42";
-    QTest::newRow("base -4") << 42 << -4 << "42";
-    QTest::newRow("base 40") << 42 << 40 << "42";
+    BOBUIest::newRow("base 10") << 42 << 10 << "42";
+    BOBUIest::newRow("base 2") << 42 << 2 << "101010";
+    BOBUIest::newRow("base 8") << 42 << 8 << "52";
+    BOBUIest::newRow("base 16") << 42 << 16 << "2a";
+    BOBUIest::newRow("base 0") << 42 << 0 << "42";
+    BOBUIest::newRow("base -4") << 42 << -4 << "42";
+    BOBUIest::newRow("base 40") << 42 << 40 << "42";
 
-    QTest::newRow("negative base 10") << -42 << 10 << "-42";
-    QTest::newRow("negative base 2") << -42 << 2 << "-101010";
-    QTest::newRow("negative base 8") << -42 << 8 << "-52";
-    QTest::newRow("negative base 16") << -42 << 16 << "-2a";
-    QTest::newRow("negative base 0") << -42 << 0 << "-42";
-    QTest::newRow("negative base -4") << -42 << -4 << "-42";
-    QTest::newRow("negative base 40") << -42 << 40 << "-42";
+    BOBUIest::newRow("negative base 10") << -42 << 10 << "-42";
+    BOBUIest::newRow("negative base 2") << -42 << 2 << "-101010";
+    BOBUIest::newRow("negative base 8") << -42 << 8 << "-52";
+    BOBUIest::newRow("negative base 16") << -42 << 16 << "-2a";
+    BOBUIest::newRow("negative base 0") << -42 << 0 << "-42";
+    BOBUIest::newRow("negative base -4") << -42 << -4 << "-42";
+    BOBUIest::newRow("negative base 40") << -42 << 40 << "-42";
 
-    QTest::newRow("0 base 10") << 0 << 10 << "0";
-    QTest::newRow("0 base 2") << 0 << 2 << "0";
-    QTest::newRow("0 base 8") << 0 << 8 << "0";
-    QTest::newRow("0 base 16") << 0 << 16 << "0";
-    QTest::newRow("0 base 0") << 0 << 0 << "0";
-    QTest::newRow("0 base -4") << 0 << -4 << "0";
-    QTest::newRow("0 base 40") << 0 << 40 << "0";
+    BOBUIest::newRow("0 base 10") << 0 << 10 << "0";
+    BOBUIest::newRow("0 base 2") << 0 << 2 << "0";
+    BOBUIest::newRow("0 base 8") << 0 << 8 << "0";
+    BOBUIest::newRow("0 base 16") << 0 << 16 << "0";
+    BOBUIest::newRow("0 base 0") << 0 << 0 << "0";
+    BOBUIest::newRow("0 base -4") << 0 << -4 << "0";
+    BOBUIest::newRow("0 base 40") << 0 << 40 << "0";
 }
 
 void tst_QSpinBox::setDisplayIntegerBase()
@@ -437,28 +437,28 @@ void tst_QSpinBox::setDisplayIntegerBase()
     QCOMPARE(spin.lineEdit()->text(), QString::number(0, base));
 
     spin.lineEdit()->clear();
-    QTest::keyClicks(spin.lineEdit(), string);
+    BOBUIest::keyClicks(spin.lineEdit(), string);
     QCOMPARE(spin.value(), value);
 }
 
 void tst_QSpinBox::setPrefixSuffix_data()
 {
-    QTest::addColumn<QString>("prefix");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<int>("value");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<QString>("expectedCleanText");
-    QTest::addColumn<bool>("show");
+    BOBUIest::addColumn<QString>("prefix");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<QString>("expectedCleanText");
+    BOBUIest::addColumn<bool>("show");
 
-    QTest::newRow("data0") << QString() << QString() << 10 << "10" << "10" << false;
-    QTest::newRow("data1") << QString() << "cm" << 10 << "10cm" << "10" << false;
-    QTest::newRow("data2") << "cm: " << QString() << 10 << "cm: 10" << "10" << false;
-    QTest::newRow("data3") << "length: " << "cm" << 10 << "length: 10cm" << "10" << false;
+    BOBUIest::newRow("data0") << QString() << QString() << 10 << "10" << "10" << false;
+    BOBUIest::newRow("data1") << QString() << "cm" << 10 << "10cm" << "10" << false;
+    BOBUIest::newRow("data2") << "cm: " << QString() << 10 << "cm: 10" << "10" << false;
+    BOBUIest::newRow("data3") << "length: " << "cm" << 10 << "length: 10cm" << "10" << false;
 
-    QTest::newRow("data4") << QString() << QString() << 10 << "10" << "10" << true;
-    QTest::newRow("data5") << QString() << "cm" << 10 << "10cm" << "10" << true;
-    QTest::newRow("data6") << "cm: " << QString() << 10 << "cm: 10" << "10" << true;
-    QTest::newRow("data7") << "length: " << "cm" << 10 << "length: 10cm" << "10" << true;
+    BOBUIest::newRow("data4") << QString() << QString() << 10 << "10" << "10" << true;
+    BOBUIest::newRow("data5") << QString() << "cm" << 10 << "10cm" << "10" << true;
+    BOBUIest::newRow("data6") << "cm: " << QString() << 10 << "cm: 10" << "10" << true;
+    BOBUIest::newRow("data7") << "length: " << "cm" << 10 << "length: 10cm" << "10" << true;
 }
 
 void tst_QSpinBox::setPrefixSuffix()
@@ -526,49 +526,49 @@ void tst_QSpinBox::setReadOnly()
 {
     ReadOnlyChangeTracker spin(0);
     spin.show();
-    QTest::keyClick(&spin, Qt::Key_Up);
+    BOBUIest::keyClick(&spin, BobUI::Key_Up);
     QCOMPARE(spin.value(), 1);
     spin.setReadOnly(true);
     QCOMPARE(spin.readOnlyChangeEventCount, 1);
-    QTest::keyClick(&spin, Qt::Key_Up);
+    BOBUIest::keyClick(&spin, BobUI::Key_Up);
     QCOMPARE(spin.value(), 1);
     spin.stepBy(1);
     QCOMPARE(spin.value(), 2);
     spin.setReadOnly(false);
     QCOMPARE(spin.readOnlyChangeEventCount, 2);
-    QTest::keyClick(&spin, Qt::Key_Up);
+    BOBUIest::keyClick(&spin, BobUI::Key_Up);
     QCOMPARE(spin.value(), 3);
 }
 void tst_QSpinBox::setTracking_data()
 {
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<QStringList>("texts");
-    QTest::addColumn<bool>("tracking");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<QStringList>("texts");
+    BOBUIest::addColumn<bool>("tracking");
 
-    QTestEventList keys;
+    BOBUIestEventList keys;
     QStringList texts1;
     QStringList texts2;
 
 #ifdef Q_OS_MAC
-    keys.addKeyClick(Qt::Key_Right, Qt::ControlModifier);
+    keys.addKeyClick(BobUI::Key_Right, BobUI::ControlModifier);
 #else
-    keys.addKeyClick(Qt::Key_End);
+    keys.addKeyClick(BobUI::Key_End);
 #endif
     keys.addKeyClick('7');
     keys.addKeyClick('9');
-    keys.addKeyClick(Qt::Key_Enter);
-    keys.addKeyClick(Qt::Key_Enter);
-    keys.addKeyClick(Qt::Key_Enter);
+    keys.addKeyClick(BobUI::Key_Enter);
+    keys.addKeyClick(BobUI::Key_Enter);
+    keys.addKeyClick(BobUI::Key_Enter);
     texts1 << "07" << "079" << "79" << "79" << "79";
     texts2 << "79";
-    QTest::newRow("data1") << keys << texts1 << true;
-    QTest::newRow("data2") << keys << texts2 << false;
+    BOBUIest::newRow("data1") << keys << texts1 << true;
+    BOBUIest::newRow("data2") << keys << texts2 << false;
 }
 
 void tst_QSpinBox::setTracking()
 {
     actualTexts.clear();
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(QStringList, texts);
     QFETCH(bool, tracking);
 
@@ -583,70 +583,70 @@ void tst_QSpinBox::setTracking()
 
 void tst_QSpinBox::setWrapping_data()
 {
-    QTest::addColumn<bool>("wrapping");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("startValue");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<IntList>("expected");
+    BOBUIest::addColumn<bool>("wrapping");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("startValue");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<IntList>("expected");
 
-    QTestEventList keys;
+    BOBUIestEventList keys;
     IntList values;
-    keys.addKeyClick(Qt::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
     values << 10;
-    keys.addKeyClick(Qt::Key_Up);
-    QTest::newRow("data0") << false << 0 << 10 << 9 << keys << values;
+    keys.addKeyClick(BobUI::Key_Up);
+    BOBUIest::newRow("data0") << false << 0 << 10 << 9 << keys << values;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
     values << 10;
-    keys.addKeyClick(Qt::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
     values << 0;
-    QTest::newRow("data1") << true << 0 << 10 << 9 << keys << values;
+    BOBUIest::newRow("data1") << true << 0 << 10 << 9 << keys << values;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_Delete); // doesn't emit because lineedit is empty so intermediate
+    keys.addKeyClick(BobUI::Key_Delete); // doesn't emit because lineedit is empty so intermediate
     keys.addKeyClick('1');
-    keys.addKeyClick(Qt::Key_Down);
-    keys.addKeyClick(Qt::Key_Down);
+    keys.addKeyClick(BobUI::Key_Down);
+    keys.addKeyClick(BobUI::Key_Down);
     values << 1 << 0;
-    QTest::newRow("data2") << false << 0 << 10 << 9 << keys << values;
+    BOBUIest::newRow("data2") << false << 0 << 10 << 9 << keys << values;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_Delete);
+    keys.addKeyClick(BobUI::Key_Delete);
     keys.addKeyClick('1');
-    keys.addKeyClick(Qt::Key_Down);
-    keys.addKeyClick(Qt::Key_Down);
+    keys.addKeyClick(BobUI::Key_Down);
+    keys.addKeyClick(BobUI::Key_Down);
     values << 1 << 0 << 10;
-    QTest::newRow("data3") << true << 0 << 10 << 9 << keys << values;
+    BOBUIest::newRow("data3") << true << 0 << 10 << 9 << keys << values;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_PageDown);
-    keys.addKeyClick(Qt::Key_Down);
+    keys.addKeyClick(BobUI::Key_PageDown);
+    keys.addKeyClick(BobUI::Key_Down);
     values << 0;
-    QTest::newRow("data4") << false << 0 << 10 << 6 << keys << values;
+    BOBUIest::newRow("data4") << false << 0 << 10 << 6 << keys << values;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_PageDown);
-    keys.addKeyClick(Qt::Key_Down);
+    keys.addKeyClick(BobUI::Key_PageDown);
+    keys.addKeyClick(BobUI::Key_Down);
     values << 0 << 10;
-    QTest::newRow("data5") << true << 0 << 10 << 6 << keys << values;
+    BOBUIest::newRow("data5") << true << 0 << 10 << 6 << keys << values;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_PageUp);
-    keys.addKeyClick(Qt::Key_PageDown);
-    keys.addKeyClick(Qt::Key_Down);
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_PageDown);
-    keys.addKeyClick(Qt::Key_PageDown);
+    keys.addKeyClick(BobUI::Key_PageUp);
+    keys.addKeyClick(BobUI::Key_PageDown);
+    keys.addKeyClick(BobUI::Key_Down);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_PageDown);
+    keys.addKeyClick(BobUI::Key_PageDown);
     values << 10 << 0 << 10 << 0 << 10 << 0;
-    QTest::newRow("data6") << true << 0 << 10 << 6 << keys << values;
+    BOBUIest::newRow("data6") << true << 0 << 10 << 6 << keys << values;
 
 }
 
@@ -657,7 +657,7 @@ void tst_QSpinBox::setWrapping()
     QFETCH(int, minimum);
     QFETCH(int, maximum);
     QFETCH(int, startValue);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(IntList, expected);
 
     QSpinBox spin(0);
@@ -680,17 +680,17 @@ void tst_QSpinBox::setWrapping()
 
 void tst_QSpinBox::setSpecialValueText_data()
 {
-    QTest::addColumn<QString>("specialValueText");
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("value");
-    QTest::addColumn<QString>("expected");
-    QTest::addColumn<bool>("show");
+    BOBUIest::addColumn<QString>("specialValueText");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<QString>("expected");
+    BOBUIest::addColumn<bool>("show");
 
-    QTest::newRow("data0") << QString() << 0 << 10 << 1 << "1" << false;
-    QTest::newRow("data1") << QString() << 0 << 10 << 1 << "1" << true;
-    QTest::newRow("data2") << "foo" << 0 << 10 << 0 << "foo" << false;
-    QTest::newRow("data3") << "foo" << 0 << 10 << 0 << "foo" << true;
+    BOBUIest::newRow("data0") << QString() << 0 << 10 << 1 << "1" << false;
+    BOBUIest::newRow("data1") << QString() << 0 << 10 << 1 << "1" << true;
+    BOBUIest::newRow("data2") << "foo" << 0 << 10 << 0 << "foo" << false;
+    BOBUIest::newRow("data3") << "foo" << 0 << 10 << 0 << "foo" << true;
 }
 
 void tst_QSpinBox::setSpecialValueText()
@@ -716,36 +716,36 @@ void tst_QSpinBox::setSpecialValueText()
 
 void tst_QSpinBox::setSingleStep_data()
 {
-    QTest::addColumn<int>("singleStep");
-    QTest::addColumn<int>("startValue");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<IntList>("expected");
-    QTest::addColumn<bool>("show");
+    BOBUIest::addColumn<int>("singleStep");
+    BOBUIest::addColumn<int>("startValue");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<IntList>("expected");
+    BOBUIest::addColumn<bool>("show");
 
-    QTestEventList keys;
+    BOBUIestEventList keys;
     IntList values;
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Down);
-    keys.addKeyClick(Qt::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Down);
+    keys.addKeyClick(BobUI::Key_Up);
     values << 11 << 10 << 11;
-    QTest::newRow("data0") << 1 << 10 << keys << values << false;
-    QTest::newRow("data1") << 1 << 10 << keys << values << true;
+    BOBUIest::newRow("data0") << 1 << 10 << keys << values << false;
+    BOBUIest::newRow("data1") << 1 << 10 << keys << values << true;
 
     keys.clear();
     values.clear();
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Down);
-    keys.addKeyClick(Qt::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Down);
+    keys.addKeyClick(BobUI::Key_Up);
     values << 12 << 10 << 12;
-    QTest::newRow("data2") << 2 << 10 << keys << values << false;
-    QTest::newRow("data3") << 2 << 10 << keys << values << true;
+    BOBUIest::newRow("data2") << 2 << 10 << keys << values << false;
+    BOBUIest::newRow("data3") << 2 << 10 << keys << values << true;
 }
 
 void tst_QSpinBox::setSingleStep()
 {
     QFETCH(int, singleStep);
     QFETCH(int, startValue);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(IntList, expected);
     QFETCH(bool, show);
 
@@ -768,25 +768,25 @@ void tst_QSpinBox::setSingleStep()
 
 void tst_QSpinBox::setMinMax_data()
 {
-    QTest::addColumn<int>("startValue");
-    QTest::addColumn<int>("mini");
-    QTest::addColumn<int>("maxi");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<int>("expected");
-    QTest::addColumn<bool>("show");
+    BOBUIest::addColumn<int>("startValue");
+    BOBUIest::addColumn<int>("mini");
+    BOBUIest::addColumn<int>("maxi");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<int>("expected");
+    BOBUIest::addColumn<bool>("show");
 
-    QTestEventList keys;
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Up);
-    QTest::newRow("data0") << 1 << INT_MIN << 2 << keys << 2 << false;
-    QTest::newRow("data1") << 1 << INT_MIN << 2 << keys << 2 << true;
+    BOBUIestEventList keys;
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Up);
+    BOBUIest::newRow("data0") << 1 << INT_MIN << 2 << keys << 2 << false;
+    BOBUIest::newRow("data1") << 1 << INT_MIN << 2 << keys << 2 << true;
 
     keys.clear();
-    QTest::newRow("data2") << 2 << INT_MAX - 2 << INT_MAX << keys << INT_MAX - 2 << false;
-    QTest::newRow("data3") << 2 << INT_MAX - 2 << INT_MAX << keys << INT_MAX - 2 << true;
+    BOBUIest::newRow("data2") << 2 << INT_MAX - 2 << INT_MAX << keys << INT_MAX - 2 << false;
+    BOBUIest::newRow("data3") << 2 << INT_MAX - 2 << INT_MAX << keys << INT_MAX - 2 << true;
 }
 
 void tst_QSpinBox::setMinMax()
@@ -794,7 +794,7 @@ void tst_QSpinBox::setMinMax()
     QFETCH(int, startValue);
     QFETCH(int, mini);
     QFETCH(int, maxi);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(int, expected);
     QFETCH(bool, show);
 
@@ -816,34 +816,34 @@ void tst_QSpinBox::valueFromTextAndValidate_data()
     const int Invalid = QValidator::Invalid;
     const int Acceptable = QValidator::Acceptable;
 
-    QTest::addColumn<QString>("txt");
-    QTest::addColumn<int>("state");
-    QTest::addColumn<int>("mini");
-    QTest::addColumn<int>("maxi");
-    QTest::addColumn<QString>("expectedText"); // if empty we don't check
+    BOBUIest::addColumn<QString>("txt");
+    BOBUIest::addColumn<int>("state");
+    BOBUIest::addColumn<int>("mini");
+    BOBUIest::addColumn<int>("maxi");
+    BOBUIest::addColumn<QString>("expectedText"); // if empty we don't check
 
-    QTest::newRow("data0") << QString("2") << Intermediate << 3 << 5 << QString();
-    QTest::newRow("data1") << QString() << Intermediate << 0 << 100 << QString();
-    QTest::newRow("data2") << QString("asd") << Invalid << 0 << 100 << QString();
-    QTest::newRow("data3") << QString("2") << Acceptable << 0 << 100 << QString();
-    QTest::newRow("data4") << QString() << Intermediate << 0 << 1 << QString();
-    QTest::newRow("data5") << QString() << Invalid << 0 << 0 << QString();
-    QTest::newRow("data6") << QString("5") << Intermediate << 2004 << 2005 << QString();
-    QTest::newRow("data7") << QString("50") << Intermediate << 2004 << 2005 << QString();
-    QTest::newRow("data8") << QString("205") << Intermediate << 2004 << 2005 << QString();
-    QTest::newRow("data9") << QString("2005") << Acceptable << 2004 << 2005 << QString();
-    QTest::newRow("data10") << QString("3") << Intermediate << 2004 << 2005 << QString();
-    QTest::newRow("data11") << QString("-") << Intermediate << -20 << -10 << QString();
-    QTest::newRow("data12") << QString("-1") << Intermediate << -20 << -10 << QString();
-    QTest::newRow("data13") << QString("-5") << Intermediate << -20 << -10 << QString();
-    QTest::newRow("data14") << QString("-5") << Intermediate << -20 << -16 << QString();
-    QTest::newRow("data15") << QString("-2") << Intermediate << -20 << -16 << QString();
-    QTest::newRow("data16") << QString("2") << Invalid << -20 << -16 << QString();
-    QTest::newRow("data17") << QString() << Intermediate << -20 << -16 << QString();
-    QTest::newRow("data18") << QString("  22") << Acceptable << 0 << 1000 << QString("22");
-    QTest::newRow("data19") << QString("22  ") << Acceptable << 0 << 1000 << QString("22");
-    QTest::newRow("data20") << QString("  22  ") << Acceptable << 0 << 1000 << QString("22");
-    QTest::newRow("data21") << QString("2 2") << Invalid << 0 << 1000 << QString();
+    BOBUIest::newRow("data0") << QString("2") << Intermediate << 3 << 5 << QString();
+    BOBUIest::newRow("data1") << QString() << Intermediate << 0 << 100 << QString();
+    BOBUIest::newRow("data2") << QString("asd") << Invalid << 0 << 100 << QString();
+    BOBUIest::newRow("data3") << QString("2") << Acceptable << 0 << 100 << QString();
+    BOBUIest::newRow("data4") << QString() << Intermediate << 0 << 1 << QString();
+    BOBUIest::newRow("data5") << QString() << Invalid << 0 << 0 << QString();
+    BOBUIest::newRow("data6") << QString("5") << Intermediate << 2004 << 2005 << QString();
+    BOBUIest::newRow("data7") << QString("50") << Intermediate << 2004 << 2005 << QString();
+    BOBUIest::newRow("data8") << QString("205") << Intermediate << 2004 << 2005 << QString();
+    BOBUIest::newRow("data9") << QString("2005") << Acceptable << 2004 << 2005 << QString();
+    BOBUIest::newRow("data10") << QString("3") << Intermediate << 2004 << 2005 << QString();
+    BOBUIest::newRow("data11") << QString("-") << Intermediate << -20 << -10 << QString();
+    BOBUIest::newRow("data12") << QString("-1") << Intermediate << -20 << -10 << QString();
+    BOBUIest::newRow("data13") << QString("-5") << Intermediate << -20 << -10 << QString();
+    BOBUIest::newRow("data14") << QString("-5") << Intermediate << -20 << -16 << QString();
+    BOBUIest::newRow("data15") << QString("-2") << Intermediate << -20 << -16 << QString();
+    BOBUIest::newRow("data16") << QString("2") << Invalid << -20 << -16 << QString();
+    BOBUIest::newRow("data17") << QString() << Intermediate << -20 << -16 << QString();
+    BOBUIest::newRow("data18") << QString("  22") << Acceptable << 0 << 1000 << QString("22");
+    BOBUIest::newRow("data19") << QString("22  ") << Acceptable << 0 << 1000 << QString("22");
+    BOBUIest::newRow("data20") << QString("  22  ") << Acceptable << 0 << 1000 << QString("22");
+    BOBUIest::newRow("data21") << QString("2 2") << Invalid << 0 << 1000 << QString();
 }
 
 static QString stateName(int state)
@@ -877,14 +877,14 @@ void tst_QSpinBox::valueFromTextAndValidate()
 
 void tst_QSpinBox::locale_data()
 {
-    QTest::addColumn<QLocale>("loc");
-    QTest::addColumn<int>("value");
-    QTest::addColumn<QString>("textFromVal");
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<int>("valFromText");
+    BOBUIest::addColumn<QLocale>("loc");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<QString>("textFromVal");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<int>("valFromText");
 
-    QTest::newRow("data0") << QLocale(QLocale::NorwegianBokmal, QLocale::Norway) << 1234 << QString("1234") << QString("2345") << 2345;
-    QTest::newRow("data1") << QLocale(QLocale::German, QLocale::Germany) << 1234 << QString("1234") << QString("2345") << 2345;
+    BOBUIest::newRow("data0") << QLocale(QLocale::NorwegianBokmal, QLocale::Norway) << 1234 << QString("1234") << QString("2345") << 2345;
+    BOBUIest::newRow("data1") << QLocale(QLocale::German, QLocale::Germany) << 1234 << QString("1234") << QString("2345") << 2345;
 }
 
 void tst_QSpinBox::locale()
@@ -914,7 +914,7 @@ void tst_QSpinBox::locale()
 
 void tst_QSpinBox::editingFinished()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget testFocusWidget;
@@ -929,45 +929,45 @@ void tst_QSpinBox::editingFinished()
     layout->addWidget(box2);
 
     testFocusWidget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&testFocusWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&testFocusWidget));
     box->activateWindow();
     box->setFocus();
 
-    QTRY_COMPARE(qApp->focusWidget(), (QWidget *)box);
+    BOBUIRY_COMPARE(qApp->focusWidget(), (QWidget *)box);
 
     QSignalSpy editingFinishedSpy1(box, SIGNAL(editingFinished()));
     QSignalSpy editingFinishedSpy2(box2, SIGNAL(editingFinished()));
 
     box->setFocus();
-    QTest::keyClick(box, Qt::Key_Up);
-    QTest::keyClick(box, Qt::Key_Up);
+    BOBUIest::keyClick(box, BobUI::Key_Up);
+    BOBUIest::keyClick(box, BobUI::Key_Up);
 
     QCOMPARE(editingFinishedSpy1.size(), 0);
     QCOMPARE(editingFinishedSpy2.size(), 0);
 
-    QTest::keyClick(box2, Qt::Key_Up);
-    QTest::keyClick(box2, Qt::Key_Up);
+    BOBUIest::keyClick(box2, BobUI::Key_Up);
+    BOBUIest::keyClick(box2, BobUI::Key_Up);
     box2->setFocus();
     QCOMPARE(editingFinishedSpy1.size(), 1);
     box->setFocus();
     QCOMPARE(editingFinishedSpy1.size(), 1);
     QCOMPARE(editingFinishedSpy2.size(), 1);
-    QTest::keyClick(box, Qt::Key_Up);
+    BOBUIest::keyClick(box, BobUI::Key_Up);
     QCOMPARE(editingFinishedSpy1.size(), 1);
     QCOMPARE(editingFinishedSpy2.size(), 1);
-    QTest::keyClick(box, Qt::Key_Enter);
+    BOBUIest::keyClick(box, BobUI::Key_Enter);
     QCOMPARE(editingFinishedSpy1.size(), 2);
     QCOMPARE(editingFinishedSpy2.size(), 1);
-    QTest::keyClick(box, Qt::Key_Return);
+    BOBUIest::keyClick(box, BobUI::Key_Return);
     QCOMPARE(editingFinishedSpy1.size(), 3);
     QCOMPARE(editingFinishedSpy2.size(), 1);
     box2->setFocus();
     QCOMPARE(editingFinishedSpy1.size(), 4);
     QCOMPARE(editingFinishedSpy2.size(), 1);
-    QTest::keyClick(box2, Qt::Key_Enter);
+    BOBUIest::keyClick(box2, BobUI::Key_Enter);
     QCOMPARE(editingFinishedSpy1.size(), 4);
     QCOMPARE(editingFinishedSpy2.size(), 2);
-    QTest::keyClick(box2, Qt::Key_Return);
+    BOBUIest::keyClick(box2, BobUI::Key_Return);
     QCOMPARE(editingFinishedSpy1.size(), 4);
     QCOMPARE(editingFinishedSpy2.size(), 3);
 
@@ -978,17 +978,17 @@ void tst_QSpinBox::editingFinished()
     //task203285
     editingFinishedSpy1.clear();
     testFocusWidget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&testFocusWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&testFocusWidget));
     box->setKeyboardTracking(false);
     QApplicationPrivate::setActiveWindow(&testFocusWidget);
     testFocusWidget.activateWindow();
     box->setFocus();
-    QTRY_VERIFY(box->hasFocus());
+    BOBUIRY_VERIFY(box->hasFocus());
     box->setValue(0);
-    QTest::keyClick(box, '2');
+    BOBUIest::keyClick(box, '2');
     QCOMPARE(box->text(), QLatin1String("20"));
     box2->setFocus();
-    QTRY_VERIFY(qApp->focusWidget() != box);
+    BOBUIRY_VERIFY(qApp->focusWidget() != box);
     QCOMPARE(box->text(), QLatin1String("20"));
     QCOMPARE(editingFinishedSpy1.size(), 1);
 }
@@ -998,7 +998,7 @@ void tst_QSpinBox::returnPressed()
     QSpinBox spinBox;
     QSignalSpy spyCurrentChanged(&spinBox, &QSpinBox::returnPressed);
     spinBox.show();
-    QTest::keyClick(&spinBox, Qt::Key_Return);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_Return);
     QCOMPARE(spyCurrentChanged.size(), 1);
 }
 
@@ -1010,19 +1010,19 @@ void tst_QSpinBox::removeAll()
     spin.setValue(2);
     spin.show();
 #ifdef Q_OS_MAC
-    QTest::keyClick(&spin, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(&spin, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(&spin, Qt::Key_Home);
+    BOBUIest::keyClick(&spin, BobUI::Key_Home);
 #endif
 
 #ifdef Q_OS_MAC
-    QTest::keyClick(&spin, Qt::Key_Right, Qt::ControlModifier|Qt::ShiftModifier);
+    BOBUIest::keyClick(&spin, BobUI::Key_Right, BobUI::ControlModifier|BobUI::ShiftModifier);
 #else
-    QTest::keyClick(&spin, Qt::Key_End, Qt::ShiftModifier);
+    BOBUIest::keyClick(&spin, BobUI::Key_End, BobUI::ShiftModifier);
 #endif
 
     QCOMPARE(spin.lineEdit()->selectedText(), QString("foo2bar"));
-    QTest::keyClick(&spin, Qt::Key_1);
+    BOBUIest::keyClick(&spin, BobUI::Key_1);
     QCOMPARE(spin.text(), QString("foo1bar"));
 }
 
@@ -1031,16 +1031,16 @@ void tst_QSpinBox::startWithDash()
     SpinBox spin(0);
     spin.show();
 #ifdef Q_OS_MAC
-    QTest::keyClick(&spin, Qt::Key_Left, Qt::ControlModifier);
+    BOBUIest::keyClick(&spin, BobUI::Key_Left, BobUI::ControlModifier);
 #else
-    QTest::keyClick(&spin, Qt::Key_Home);
+    BOBUIest::keyClick(&spin, BobUI::Key_Home);
 #endif
     QCOMPARE(spin.text(), QString("0"));
-    QTest::keyClick(&spin, Qt::Key_Minus);
+    BOBUIest::keyClick(&spin, BobUI::Key_Minus);
     QCOMPARE(spin.text(), QString("0"));
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QSpinBox::undoRedo()
 {
@@ -1055,14 +1055,14 @@ void tst_QSpinBox::undoRedo()
     QVERIFY(!spin.lineEdit()->isRedoAvailable());
 
     spin.lineEdit()->selectAll(); //ensures everything is selected and will be cleared by typing a key
-    QTest::keyClick(&spin, Qt::Key_1); //we put 1 into the spinbox
+    BOBUIest::keyClick(&spin, BobUI::Key_1); //we put 1 into the spinbox
     QCOMPARE(spin.value(), 1);
     QVERIFY(spin.lineEdit()->isUndoAvailable());
 
     //testing CTRL+Z (undo)
     int val = QKeySequence(QKeySequence::Undo)[0].toCombined();
-    Qt::KeyboardModifiers mods = (Qt::KeyboardModifiers)(val & Qt::KeyboardModifierMask);
-    QTest::keyClick(&spin, val & ~mods, mods);
+    BobUI::KeyboardModifiers mods = (BobUI::KeyboardModifiers)(val & BobUI::KeyboardModifierMask);
+    BOBUIest::keyClick(&spin, val & ~mods, mods);
 
     QCOMPARE(spin.value(), 0);
     QVERIFY(!spin.lineEdit()->isUndoAvailable());
@@ -1070,8 +1070,8 @@ void tst_QSpinBox::undoRedo()
 
     //testing CTRL+Y (redo)
     val = QKeySequence(QKeySequence::Redo)[0].toCombined();
-    mods = (Qt::KeyboardModifiers)(val & Qt::KeyboardModifierMask);
-    QTest::keyClick(&spin, val & ~mods, mods);
+    mods = (BobUI::KeyboardModifiers)(val & BobUI::KeyboardModifierMask);
+    BOBUIest::keyClick(&spin, val & ~mods, mods);
     QCOMPARE(spin.value(), 1);
     QVERIFY(!spin.lineEdit()->isRedoAvailable());
     QVERIFY(spin.lineEdit()->isUndoAvailable());
@@ -1080,8 +1080,8 @@ void tst_QSpinBox::undoRedo()
     QVERIFY(!spin.lineEdit()->isUndoAvailable());
     QVERIFY(!spin.lineEdit()->isRedoAvailable());
 
-    QTest::keyClick(&spin, Qt::Key_Return);
-    QTest::keyClick(&spin, '1');
+    BOBUIest::keyClick(&spin, BobUI::Key_Return);
+    BOBUIest::keyClick(&spin, '1');
     QVERIFY(spin.lineEdit()->isUndoAvailable());
     QVERIFY(!spin.lineEdit()->isRedoAvailable());
     spin.lineEdit()->undo();
@@ -1094,11 +1094,11 @@ void tst_QSpinBox::undoRedo()
     QVERIFY(!spin.lineEdit()->isRedoAvailable());
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QSpinBox::specialValue()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QString specialText="foo";
@@ -1117,26 +1117,26 @@ void tst_QSpinBox::specialValue()
     topWidget.show();
     //make sure we have the focus (even if editingFinished fails)
     topWidget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&topWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topWidget));
     spin.setFocus();
 
-    QTest::keyClick(&spin, Qt::Key_Return);
-    QTest::keyClick(&spin, '0');
+    BOBUIest::keyClick(&spin, BobUI::Key_Return);
+    BOBUIest::keyClick(&spin, '0');
     QCOMPARE(spin.text(), QString("0"));
-    QTest::keyClick(&spin, Qt::Key_Return);
+    BOBUIest::keyClick(&spin, BobUI::Key_Return);
     QCOMPARE(spin.text(), specialText);
 
     spin.setValue(50);
-    QTest::keyClick(&spin, Qt::Key_Return);
-    QTest::keyClick(&spin, '0');
+    BOBUIest::keyClick(&spin, BobUI::Key_Return);
+    BOBUIest::keyClick(&spin, '0');
     QCOMPARE(spin.text(), QString("0"));
-    QTest::keyClick(spin.lineEdit(), Qt::Key_Tab);
+    BOBUIest::keyClick(spin.lineEdit(), BobUI::Key_Tab);
     QCOMPARE(spin.text(), specialText);
 
     spin.setValue(50);
     spin.setFocus();
-    QTest::keyClick(&spin, Qt::Key_Return);
-    QTest::keyClick(&spin, '0');
+    BOBUIest::keyClick(&spin, BobUI::Key_Return);
+    BOBUIest::keyClick(&spin, '0');
     QCOMPARE(spin.text(), QString("0"));
     box2.setFocus();
     QCOMPARE(spin.text(), specialText);
@@ -1170,28 +1170,28 @@ void tst_QSpinBox::sizeHint()
     // are processed before the widget is shown
     QCoreApplication::sendPostedEvents(&widget, QEvent::LayoutRequest);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     // Prefix
     spinBox->sizeHintRequests = 0;
     spinBox->setPrefix(QLatin1String("abcdefghij"));
-    QTRY_VERIFY(spinBox->sizeHintRequests > 0);
+    BOBUIRY_VERIFY(spinBox->sizeHintRequests > 0);
 
     // Suffix
     spinBox->sizeHintRequests = 0;
     spinBox->setSuffix(QLatin1String("abcdefghij"));
-    QTRY_VERIFY(spinBox->sizeHintRequests > 0);
+    BOBUIRY_VERIFY(spinBox->sizeHintRequests > 0);
 
     // Range
     spinBox->sizeHintRequests = 0;
     spinBox->setRange(0, 1234567890);
     spinBox->setValue(spinBox->maximum());
-    QTRY_VERIFY(spinBox->sizeHintRequests > 0);
+    BOBUIRY_VERIFY(spinBox->sizeHintRequests > 0);
 }
 
-void tst_QSpinBox::taskQTBUG_5008_textFromValueAndValidate()
+void tst_QSpinBox::taskBOBUIBUG_5008_textFromValueAndValidate()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     class DecoratedSpinBox : public QSpinBox
@@ -1219,12 +1219,12 @@ void tst_QSpinBox::taskQTBUG_5008_textFromValueAndValidate()
     spinbox.show();
     spinbox.activateWindow();
     spinbox.setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&spinbox));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&spinbox));
     QVERIFY(spinbox.hasFocus());
-    QTRY_COMPARE(static_cast<QWidget *>(&spinbox), QApplication::activeWindow());
+    BOBUIRY_COMPARE(static_cast<QWidget *>(&spinbox), QApplication::activeWindow());
     QCOMPARE(spinbox.text(), spinbox.locale().toString(spinbox.value()));
     spinbox.lineEdit()->setCursorPosition(2); //just after the first thousand separator
-    QTest::keyClick(static_cast<QWidget *>(0), Qt::Key_0); // let's insert a 0
+    BOBUIest::keyClick(static_cast<QWidget *>(0), BobUI::Key_0); // let's insert a 0
     QCOMPARE(spinbox.value(), 10000000); //it's been multiplied by 10
     spinbox.clearFocus(); //make sure the value is correctly formatted
     QCOMPARE(spinbox.text(), spinbox.locale().toString(spinbox.value()));
@@ -1265,41 +1265,41 @@ void tst_QSpinBox::lineEditReturnPressed()
     SpinBox spinBox;
     QSignalSpy spyCurrentChanged(spinBox.lineEdit(), SIGNAL(returnPressed()));
     spinBox.show();
-    QTest::keyClick(&spinBox, Qt::Key_Return);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_Return);
     QCOMPARE(spyCurrentChanged.size(), 1);
 }
 
 void tst_QSpinBox::positiveSign()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QSpinBox spinBox;
     spinBox.setRange(-20, 20);
     spinBox.setValue(-20);
     spinBox.show();
-    QVERIFY(QTest::qWaitForWindowActive(&spinBox));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&spinBox));
 
-    QTest::keyClick(&spinBox, Qt::Key_End, Qt::ShiftModifier);
-    QTest::keyClick(&spinBox, Qt::Key_Plus, Qt::ShiftModifier);
-    QTest::keyClick(&spinBox, Qt::Key_2);
-    QTest::keyClick(&spinBox, Qt::Key_0);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_End, BobUI::ShiftModifier);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_Plus, BobUI::ShiftModifier);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_2);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_0);
     QCOMPARE(spinBox.text(), QLatin1String("+20"));
 }
 
 void tst_QSpinBox::interpretOnLosingFocus()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    // QTBUG-55249: When typing an invalid value after QSpinBox::clear(),
+    // BOBUIBUG-55249: When typing an invalid value after QSpinBox::clear(),
     // it should be fixed up on losing focus.
 
     static const int minimumValue = 10;
     static const int maximumValue = 20;
 
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     QVBoxLayout *layout = new QVBoxLayout(&widget);
     QLineEdit *focusDummy = new QLineEdit("focusDummy", &widget);
     layout->addWidget(focusDummy);
@@ -1310,8 +1310,8 @@ void tst_QSpinBox::interpretOnLosingFocus()
     spinBox->clear();
     spinBox->setFocus();
     widget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
-    QTest::keyClick(spinBox, Qt::Key_1); // Too small
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
+    BOBUIest::keyClick(spinBox, BobUI::Key_1); // Too small
     focusDummy->setFocus();
     QCOMPARE(spinBox->value(), minimumValue);
     QCOMPARE(spinBox->lineEdit()->text().toInt(), minimumValue);
@@ -1319,14 +1319,14 @@ void tst_QSpinBox::interpretOnLosingFocus()
 
 void tst_QSpinBox::setGroupSeparatorShown_data()
 {
-    QTest::addColumn<QLocale::Language>("lang");
-    QTest::addColumn<QLocale::Territory>("country");
+    BOBUIest::addColumn<QLocale::Language>("lang");
+    BOBUIest::addColumn<QLocale::Territory>("country");
 
-    QTest::newRow("data0") << QLocale::English << QLocale::UnitedStates;
-    QTest::newRow("data1") << QLocale::Swedish << QLocale::Sweden;
-    QTest::newRow("data2") << QLocale::German << QLocale::Germany;
-    QTest::newRow("data3") << QLocale::Georgian << QLocale::Georgia;
-    QTest::newRow("data3") << QLocale::Macedonian << QLocale::Macedonia;
+    BOBUIest::newRow("data0") << QLocale::English << QLocale::UnitedStates;
+    BOBUIest::newRow("data1") << QLocale::Swedish << QLocale::Sweden;
+    BOBUIest::newRow("data2") << QLocale::German << QLocale::Germany;
+    BOBUIest::newRow("data3") << QLocale::Georgian << QLocale::Georgia;
+    BOBUIest::newRow("data3") << QLocale::Macedonian << QLocale::Macedonia;
 }
 
 void tst_QSpinBox::setGroupSeparatorShown()
@@ -1364,32 +1364,32 @@ void tst_QSpinBox::setGroupSeparatorShown()
 
 void tst_QSpinBox::wheelEvents_data()
 {
-#if QT_CONFIG(wheelevent)
-    QTest::addColumn<QPoint>("angleDelta");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifier");
-    QTest::addColumn<Qt::MouseEventSource>("source");
-    QTest::addColumn<int>("start");
-    QTest::addColumn<IntList>("expectedValues");
+#if BOBUI_CONFIG(wheelevent)
+    BOBUIest::addColumn<QPoint>("angleDelta");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifier");
+    BOBUIest::addColumn<BobUI::MouseEventSource>("source");
+    BOBUIest::addColumn<int>("start");
+    BOBUIest::addColumn<IntList>("expectedValues");
 
     const auto fractions = {false, true};
 
     const auto directions = {true, false};
 
-    const auto modifierList = {Qt::NoModifier,
-                               Qt::ShiftModifier,
-                               Qt::ControlModifier,
-                               Qt::AltModifier,
-                               Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                               BobUI::ShiftModifier,
+                               BobUI::ControlModifier,
+                               BobUI::AltModifier,
+                               BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
-    const auto sources = {Qt::MouseEventNotSynthesized,
-                          Qt::MouseEventSynthesizedBySystem,
-                          Qt::MouseEventSynthesizedByQt,
-                          Qt::MouseEventSynthesizedByApplication};
+    const auto sources = {BobUI::MouseEventNotSynthesized,
+                          BobUI::MouseEventSynthesizedBySystem,
+                          BobUI::MouseEventSynthesizedByBobUI,
+                          BobUI::MouseEventSynthesizedByApplication};
 
     const int startValue = 0;
 
@@ -1400,7 +1400,7 @@ void tst_QSpinBox::wheelEvents_data()
 
             for (auto modifier : modifierList) {
 
-                const Qt::KeyboardModifiers modifiers(modifier);
+                const BobUI::KeyboardModifiers modifiers(modifier);
 
                 const auto modifierName = modifierToName(modifier);
                 if (modifierName.isEmpty())
@@ -1419,8 +1419,8 @@ void tst_QSpinBox::wheelEvents_data()
 
 #ifdef Q_OS_MACOS
                         QPoint angleDelta;
-                        if ((modifier & Qt::ShiftModifier) &&
-                                source == Qt::MouseEventNotSynthesized) {
+                        if ((modifier & BobUI::ShiftModifier) &&
+                                source == BobUI::MouseEventNotSynthesized) {
                             // On macOS the Shift modifier converts vertical
                             // mouse wheel events to horizontal.
                             angleDelta = { units, 0 };
@@ -1435,16 +1435,16 @@ void tst_QSpinBox::wheelEvents_data()
 
                         QLatin1String sourceName;
                         switch (source) {
-                        case Qt::MouseEventNotSynthesized:
+                        case BobUI::MouseEventNotSynthesized:
                             sourceName = QLatin1String("NotSynthesized");
                             break;
-                        case Qt::MouseEventSynthesizedBySystem:
+                        case BobUI::MouseEventSynthesizedBySystem:
                             sourceName = QLatin1String("SynthesizedBySystem");
                             break;
-                        case Qt::MouseEventSynthesizedByQt:
-                            sourceName = QLatin1String("SynthesizedByQt");
+                        case BobUI::MouseEventSynthesizedByBobUI:
+                            sourceName = QLatin1String("SynthesizedByBobUI");
                             break;
-                        case Qt::MouseEventSynthesizedByApplication:
+                        case BobUI::MouseEventSynthesizedByApplication:
                             sourceName = QLatin1String("SynthesizedByApplication");
                             break;
                         default:
@@ -1457,7 +1457,7 @@ void tst_QSpinBox::wheelEvents_data()
                             expectedValues << startValue;
                         expectedValues << startValue + steps;
 
-                        QTest::addRow("%s%s%sWith%sKeyboardModifier%s",
+                        BOBUIest::addRow("%s%s%sWith%sKeyboardModifier%s",
                                       fraction ? "half" : "full",
                                       up ? "Up" : "Down",
                                       stepModifierName.latin1(),
@@ -1481,11 +1481,11 @@ void tst_QSpinBox::wheelEvents_data()
 
 void tst_QSpinBox::wheelEvents()
 {
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     QFETCH(QPoint, angleDelta);
     QFETCH(int, stepModifier);
-    QFETCH(Qt::KeyboardModifiers, modifier);
-    QFETCH(Qt::MouseEventSource, source);
+    QFETCH(BobUI::KeyboardModifiers, modifier);
+    QFETCH(BobUI::MouseEventSource, source);
     QFETCH(int, start);
     QFETCH(IntList, expectedValues);
 
@@ -1495,11 +1495,11 @@ void tst_QSpinBox::wheelEvents()
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> style(
                 new StepModifierStyle);
-    style->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    style->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     spinBox.setStyle(style.data());
 
     QWheelEvent event(QPointF(), QPointF(), QPoint(), angleDelta,
-                      Qt::NoButton, modifier, Qt::NoScrollPhase, false, source);
+                      BobUI::NoButton, modifier, BobUI::NoScrollPhase, false, source);
     for (int expected : expectedValues) {
         qApp->sendEvent(&spinBox, &event);
         QCOMPARE(spinBox.value(), expected);
@@ -1590,33 +1590,33 @@ void tst_QSpinBox::adaptiveDecimalStep()
 
 void tst_QSpinBox::stepModifierKeys_data()
 {
-    QTest::addColumn<int>("startValue");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<int>("expectedValue");
+    BOBUIest::addColumn<int>("startValue");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<int>("expectedValue");
 
-    const auto keyList = {Qt::Key_Up, Qt::Key_Down};
+    const auto keyList = {BobUI::Key_Up, BobUI::Key_Down};
 
-    const auto modifierList = {Qt::NoModifier,
-                               Qt::ShiftModifier,
-                               Qt::ControlModifier,
-                               Qt::AltModifier,
-                               Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                               BobUI::ShiftModifier,
+                               BobUI::ControlModifier,
+                               BobUI::AltModifier,
+                               BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
     for (auto key : keyList) {
 
-        const bool up = key == Qt::Key_Up;
-        Q_ASSERT(up || key == Qt::Key_Down);
+        const bool up = key == BobUI::Key_Up;
+        Q_ASSERT(up || key == BobUI::Key_Down);
 
         const int startValue = up ? 0.0 : 10.0;
 
         for (auto modifier : modifierList) {
 
-            QTestEventList keys;
+            BOBUIestEventList keys;
             keys.addKeyClick(key, modifier);
 
             const auto modifierName = modifierToName(modifier);
@@ -1634,7 +1634,7 @@ void tst_QSpinBox::stepModifierKeys_data()
 
                 const int expectedValue = startValue + steps;
 
-                QTest::addRow("%s%sWith%sKeyboardModifier",
+                BOBUIest::addRow("%s%sWith%sKeyboardModifier",
                               up ? "up" : "down",
                               stepModifierName.latin1(),
                               modifierName.latin1())
@@ -1649,12 +1649,12 @@ void tst_QSpinBox::stepModifierKeys_data()
 
 void tst_QSpinBox::stepModifierKeys()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(int, startValue);
     QFETCH(int, stepModifier);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(int, expectedValue);
 
     QSpinBox spin(0);
@@ -1662,11 +1662,11 @@ void tst_QSpinBox::stepModifierKeys()
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> style(
                 new StepModifierStyle);
-    style->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    style->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     spin.setStyle(style.data());
 
     spin.show();
-    QVERIFY(QTest::qWaitForWindowActive(&spin));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&spin));
 
     QCOMPARE(spin.value(), startValue);
     keys.simulate(&spin);
@@ -1675,23 +1675,23 @@ void tst_QSpinBox::stepModifierKeys()
 
 void tst_QSpinBox::stepModifierButtons_data()
 {
-    QTest::addColumn<QStyle::SubControl>("subControl");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<int>("startValue");
-    QTest::addColumn<int>("expectedValue");
+    BOBUIest::addColumn<QStyle::SubControl>("subControl");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<int>("startValue");
+    BOBUIest::addColumn<int>("expectedValue");
 
     const auto subControls = {QStyle::SC_SpinBoxUp, QStyle::SC_SpinBoxDown};
 
-    const auto modifierList = {Qt::NoModifier,
-                               Qt::ShiftModifier,
-                               Qt::ControlModifier,
-                               Qt::AltModifier,
-                               Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                               BobUI::ShiftModifier,
+                               BobUI::ControlModifier,
+                               BobUI::AltModifier,
+                               BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
     for (auto subControl : subControls) {
 
@@ -1702,7 +1702,7 @@ void tst_QSpinBox::stepModifierButtons_data()
 
         for (auto modifier : modifierList) {
 
-            const Qt::KeyboardModifiers modifiers(modifier);
+            const BobUI::KeyboardModifiers modifiers(modifier);
 
             const auto modifierName = modifierToName(modifier);
             if (modifierName.isEmpty())
@@ -1719,7 +1719,7 @@ void tst_QSpinBox::stepModifierButtons_data()
 
                 const int expectedValue = startValue + steps;
 
-                QTest::addRow("%s%sWith%sKeyboardModifier",
+                BOBUIest::addRow("%s%sWith%sKeyboardModifier",
                               up ? "up" : "down",
                               stepModifierName.latin1(),
                               modifierName.latin1())
@@ -1735,12 +1735,12 @@ void tst_QSpinBox::stepModifierButtons_data()
 
 void tst_QSpinBox::stepModifierButtons()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QStyle::SubControl, subControl);
     QFETCH(int, stepModifier);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(int, startValue);
     QFETCH(int, expectedValue);
 
@@ -1750,11 +1750,11 @@ void tst_QSpinBox::stepModifierButtons()
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> style(
                 new StepModifierStyle);
-    style->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    style->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     spin.setStyle(style.data());
 
     spin.show();
-    QVERIFY(QTest::qWaitForWindowActive(&spin));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&spin));
 
     QStyleOptionSpinBox spinBoxStyleOption;
     spin.initStyleOption(&spinBoxStyleOption);
@@ -1763,28 +1763,28 @@ void tst_QSpinBox::stepModifierButtons()
                 QStyle::CC_SpinBox, &spinBoxStyleOption, subControl, &spin);
 
     QCOMPARE(spin.value(), startValue);
-    QTest::mouseClick(&spin, Qt::LeftButton, modifiers, buttonRect.center());
+    BOBUIest::mouseClick(&spin, BobUI::LeftButton, modifiers, buttonRect.center());
     QCOMPARE(spin.value(), expectedValue);
 }
 
 void tst_QSpinBox::stepModifierPressAndHold_data()
 {
-    QTest::addColumn<QStyle::SubControl>("subControl");
-    QTest::addColumn<int>("stepModifier");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<int>("expectedStepModifier");
+    BOBUIest::addColumn<QStyle::SubControl>("subControl");
+    BOBUIest::addColumn<int>("stepModifier");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<int>("expectedStepModifier");
 
     const auto subControls = {QStyle::SC_SpinBoxUp, QStyle::SC_SpinBoxDown};
 
-    const auto modifierList = {Qt::NoModifier,
-                               Qt::ShiftModifier,
-                               Qt::ControlModifier,
-                               Qt::AltModifier,
-                               Qt::MetaModifier};
+    const auto modifierList = {BobUI::NoModifier,
+                               BobUI::ShiftModifier,
+                               BobUI::ControlModifier,
+                               BobUI::AltModifier,
+                               BobUI::MetaModifier};
 
-    const auto validStepModifierList = {Qt::NoModifier,
-                                        Qt::ControlModifier,
-                                        Qt::ShiftModifier};
+    const auto validStepModifierList = {BobUI::NoModifier,
+                                        BobUI::ControlModifier,
+                                        BobUI::ShiftModifier};
 
     for (auto subControl : subControls) {
 
@@ -1793,7 +1793,7 @@ void tst_QSpinBox::stepModifierPressAndHold_data()
 
         for (auto modifier : modifierList) {
 
-            const Qt::KeyboardModifiers modifiers(modifier);
+            const BobUI::KeyboardModifiers modifiers(modifier);
 
             const auto modifierName = modifierToName(modifier);
             if (modifierName.isEmpty())
@@ -1808,7 +1808,7 @@ void tst_QSpinBox::stepModifierPressAndHold_data()
                 const int steps = (modifier & stepModifier ? 10 : 1)
                         * (up ? 1 : -1);
 
-                QTest::addRow("%s%sWith%sKeyboardModifier",
+                BOBUIest::addRow("%s%sWith%sKeyboardModifier",
                               up ? "up" : "down",
                               stepModifierName.latin1(),
                               modifierName.latin1())
@@ -1823,12 +1823,12 @@ void tst_QSpinBox::stepModifierPressAndHold_data()
 
 void tst_QSpinBox::stepModifierPressAndHold()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QStyle::SubControl, subControl);
     QFETCH(int, stepModifier);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(int, expectedStepModifier);
 
     SpinBox spin(0);
@@ -1837,13 +1837,13 @@ void tst_QSpinBox::stepModifierPressAndHold()
 
     QScopedPointer<StepModifierStyle, QScopedPointerDeleteLater> stepModifierStyle(
                 new StepModifierStyle(new PressAndHoldStyle));
-    stepModifierStyle->stepModifier = static_cast<Qt::KeyboardModifier>(stepModifier);
+    stepModifierStyle->stepModifier = static_cast<BobUI::KeyboardModifier>(stepModifier);
     spin.setStyle(stepModifierStyle.data());
 
     QSignalSpy spy(&spin, &SpinBox::valueChanged);
 
     spin.show();
-    QVERIFY(QTest::qWaitForWindowActive(&spin));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&spin));
 
     QStyleOptionSpinBox spinBoxStyleOption;
     spin.initStyleOption(&spinBoxStyleOption);
@@ -1851,13 +1851,13 @@ void tst_QSpinBox::stepModifierPressAndHold()
     const QRect buttonRect = spin.style()->subControlRect(
                 QStyle::CC_SpinBox, &spinBoxStyleOption, subControl, &spin);
 
-    // TODO: remove debug output when QTBUG-69492 is fixed
+    // TODO: remove debug output when BOBUIBUG-69492 is fixed
     qDebug() << "QGuiApplication::focusWindow():" << QGuiApplication::focusWindow();
     qDebug() << "QGuiApplication::topLevelWindows():" << QGuiApplication::topLevelWindows();
-    QTest::mousePress(&spin, Qt::LeftButton, modifiers, buttonRect.center());
-    QTRY_VERIFY2(spy.size() >= 3, qPrintable(QString::fromLatin1(
+    BOBUIest::mousePress(&spin, BobUI::LeftButton, modifiers, buttonRect.center());
+    BOBUIRY_VERIFY2(spy.size() >= 3, qPrintable(QString::fromLatin1(
         "Expected valueChanged() to be emitted 3 or more times, but it was only emitted %1 times").arg(spy.size())));
-    QTest::mouseRelease(&spin, Qt::LeftButton, modifiers, buttonRect.center());
+    BOBUIest::mouseRelease(&spin, BobUI::LeftButton, modifiers, buttonRect.center());
 
     const auto value = spy.last().at(0);
     QVERIFY(value.metaType().id() == QMetaType::Int);
@@ -1866,11 +1866,11 @@ void tst_QSpinBox::stepModifierPressAndHold()
 
 void tst_QSpinBox::stepSelectAll_data()
 {
-    QTest::addColumn<bool>("stepShouldSelectAll");
-    QTest::addColumn<QStringList>("selectedText");
+    BOBUIest::addColumn<bool>("stepShouldSelectAll");
+    BOBUIest::addColumn<QStringList>("selectedText");
 
-    QTest::addRow("select all") << true << QStringList{"1", "0", "5", "4", "9"};
-    QTest::addRow("don't select all") << false << QStringList{{}, {}, {}, {}, "94"};
+    BOBUIest::addRow("select all") << true << QStringList{"1", "0", "5", "4", "9"};
+    BOBUIest::addRow("don't select all") << false << QStringList{{}, {}, {}, {}, "94"};
 }
 
 void tst_QSpinBox::stepSelectAll()
@@ -1894,12 +1894,12 @@ void tst_QSpinBox::stepSelectAll()
     spinBox.stepBy(5);
     QCOMPARE(spinBox.lineEdit()->selectedText(), *(it++));
     spinBox.lineEdit()->deselect();
-    QTest::keyClick(&spinBox, Qt::Key_Down);
+    BOBUIest::keyClick(&spinBox, BobUI::Key_Down);
     QCOMPARE(spinBox.lineEdit()->selectedText(), *(it++));
-    QTest::keyClicks(&spinBox, "9");
+    BOBUIest::keyClicks(&spinBox, "9");
     QCOMPARE(spinBox.lineEdit()->selectedText(), QString());
     QCOMPARE(spinBox.lineEdit()->text(), *(it++));
 }
 
-QTEST_MAIN(tst_QSpinBox)
+BOBUIEST_MAIN(tst_QSpinBox)
 #include "tst_qspinbox.moc"

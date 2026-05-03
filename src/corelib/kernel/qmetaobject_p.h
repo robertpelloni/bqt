@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2014 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETAOBJECT_P_H
 #define QMETAOBJECT_P_H
@@ -9,29 +9,29 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of moc.  This header file may change from version to version without notice,
 // or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qmetaobject.h>
-#ifndef QT_NO_QOBJECT
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qmetaobject.h>
+#ifndef BOBUI_NO_QOBJECT
 #include <private/qobject_p.h> // For QObjectPrivate::Connection
 #endif
-#include <QtCore/qtmocconstants.h>
-#include <private/qtools_p.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/bobuimocconstants.h>
+#include <private/bobuiools_p.h>
+#include <BobUICore/qvarlengtharray.h>
 
-QT_BEGIN_NAMESPACE
-// ### TODO - QTBUG-87869: wrap in a proper Q_NAMESPACE and use scoped enums, to avoid name clashes
+BOBUI_BEGIN_NAMESPACE
+// ### TODO - BOBUIBUG-87869: wrap in a proper Q_NAMESPACE and use scoped enums, to avoid name clashes
 
-using namespace QtMiscUtils;
-using namespace QtMocConstants;
+using namespace BobUIMiscUtils;
+using namespace BobUIMocConstants;
 
 Q_DECLARE_FLAGS(MetaObjectFlags, MetaObjectFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(MetaObjectFlags)
@@ -103,14 +103,14 @@ public:
 
     // shadows the public function
     static InvokeFailReason Q_CORE_EXPORT
-    invokeImpl(QMetaMethod self, void *target, Qt::ConnectionType, qsizetype paramCount,
+    invokeImpl(QMetaMethod self, void *target, BobUI::ConnectionType, qsizetype paramCount,
                const void *const *parameters, const char *const *typeNames,
-               const QtPrivate::QMetaTypeInterface *const *metaTypes);
+               const BobUIPrivate::QMetaTypeInterface *const *metaTypes);
 };
 
 struct QMetaObjectPrivate
 {
-    enum { OutputRevision = QtMocConstants::OutputRevision }; // Used by moc, qmetaobjectbuilder and qdbus
+    enum { OutputRevision = BobUIMocConstants::OutputRevision }; // Used by moc, qmetaobjectbuilder and qdbus
     enum { IntsPerMethod = QMetaMethod::Data::Size };
     enum { IntsPerEnum = QMetaEnum::Data::Size };
     enum { IntsPerProperty = QMetaProperty::Data::Size };
@@ -173,7 +173,7 @@ struct QMetaObjectPrivate
     parameterTypeNamesFromSignature(QByteArrayView signature,
                                     QVarLengthArray<QByteArrayView, 10> &typeNames);
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     // defined in qobject.cpp
     enum DisconnectType { DisconnectAll, DisconnectOne };
     static void memberIndexes(const QObject *obj, const QMetaMethod &member,
@@ -221,7 +221,7 @@ static inline bool is_space(char s)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdirectfbbackingstore.h"
 #include "qdirectfbintegration.h"
@@ -9,9 +9,9 @@
 #include "qdirectfbwindow.h"
 #include <private/qpixmap_blitter_p.h>
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QDirectFbBackingStore::QDirectFbBackingStore(QWindow *window)
     : QPlatformBackingStore(window), m_pixmap(0), m_pmdata(0)
@@ -82,4 +82,4 @@ QImage QDirectFbBackingStore::toImage() const
     return m_pixmap.data()->toImage();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

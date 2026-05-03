@@ -1,32 +1,32 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qimagescale_p.h"
 #include "qimage.h"
 #include <private/qdrawhelper_x86_p.h>
 #include <private/qsimd_p.h>
 
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
 #include <private/qlatch_p.h>
-#include <qthreadpool.h>
+#include <bobuihreadpool.h>
 #include <private/qguiapplication_p.h>
-#include <private/qthreadpool_p.h>
+#include <private/bobuihreadpool_p.h>
 #endif
 
-#if defined(QT_COMPILER_SUPPORTS_SSE4_1)
+#if defined(BOBUI_COMPILER_SUPPORTS_SSE4_1)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QImageScale;
 
 template<typename T>
 static inline void multithread_pixels_function(QImageScaleInfo *isi, int dh, const T &scaleSection)
 {
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     int segments = (qsizetype(isi->sh) * isi->sw) / (1<<16);
     segments = std::min(segments, dh);
-    QThreadPool *threadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    if (segments > 1 && threadPool && !threadPool->contains(QThread::currentThread())) {
+    BOBUIhreadPool *threadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    if (segments > 1 && threadPool && !threadPool->contains(BOBUIhread::currentThread())) {
         QLatch latch(segments);
         int y = 0;
         for (int i = 0; i < segments; ++i) {
@@ -45,7 +45,7 @@ static inline void multithread_pixels_function(QImageScaleInfo *isi, int dh, con
 }
 
 inline static __m128i Q_DECL_VECTORCALL
-qt_qimageScaleAARGBA_helper(const unsigned int *pix, int xyap, int Cxy, int step, const __m128i vxyap, const __m128i vCxy)
+bobui_qimageScaleAARGBA_helper(const unsigned int *pix, int xyap, int Cxy, int step, const __m128i vxyap, const __m128i vCxy)
 {
     __m128i vpix = _mm_cvtepu8_epi32(_mm_cvtsi32_si128(*pix));
     __m128i vx = _mm_mullo_epi32(vpix, vxyap);
@@ -62,7 +62,7 @@ qt_qimageScaleAARGBA_helper(const unsigned int *pix, int xyap, int Cxy, int step
 }
 
 template<bool RGB>
-void qt_qimageScaleAARGBA_up_x_down_y_sse4(QImageScaleInfo *isi, unsigned int *dest,
+void bobui_qimageScaleAARGBA_up_x_down_y_sse4(QImageScaleInfo *isi, unsigned int *dest,
                                            int dw, int dh, int dow, int sow)
 {
     const unsigned int **ypoints = isi->ypoints;
@@ -83,13 +83,13 @@ void qt_qimageScaleAARGBA_up_x_down_y_sse4(QImageScaleInfo *isi, unsigned int *d
             unsigned int *dptr = dest + (y * dow);
             for (int x = 0; x < dw; x++) {
                 const unsigned int *sptr = ypoints[y] + xpoints[x];
-                __m128i vx = qt_qimageScaleAARGBA_helper(sptr, yap, Cy, sow, vyap, vCy);
+                __m128i vx = bobui_qimageScaleAARGBA_helper(sptr, yap, Cy, sow, vyap, vCy);
 
                 const int xap = xapoints[x];
                 if (xap > 0) {
                     const __m128i vxap = _mm_set1_epi32(xap);
                     const __m128i vinvxap = _mm_sub_epi32(v256, vxap);
-                    __m128i vr = qt_qimageScaleAARGBA_helper(sptr + 1, yap, Cy, sow, vyap, vCy);
+                    __m128i vr = bobui_qimageScaleAARGBA_helper(sptr + 1, yap, Cy, sow, vyap, vCy);
 
                     vx = _mm_mullo_epi32(vx, vinvxap);
                     vr = _mm_mullo_epi32(vr, vxap);
@@ -110,7 +110,7 @@ void qt_qimageScaleAARGBA_up_x_down_y_sse4(QImageScaleInfo *isi, unsigned int *d
 }
 
 template<bool RGB>
-void qt_qimageScaleAARGBA_down_x_up_y_sse4(QImageScaleInfo *isi, unsigned int *dest,
+void bobui_qimageScaleAARGBA_down_x_up_y_sse4(QImageScaleInfo *isi, unsigned int *dest,
                                            int dw, int dh, int dow, int sow)
 {
     const unsigned int **ypoints = isi->ypoints;
@@ -131,13 +131,13 @@ void qt_qimageScaleAARGBA_down_x_up_y_sse4(QImageScaleInfo *isi, unsigned int *d
                 const __m128i vxap = _mm_set1_epi32(xap);
 
                 const unsigned int *sptr = ypoints[y] + xpoints[x];
-                __m128i vx = qt_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
+                __m128i vx = bobui_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
 
                 int yap = yapoints[y];
                 if (yap > 0) {
                     const __m128i vyap = _mm_set1_epi32(yap);
                     const __m128i vinvyap = _mm_sub_epi32(v256, vyap);
-                    __m128i vr = qt_qimageScaleAARGBA_helper(sptr + sow, xap, Cx, 1, vxap, vCx);
+                    __m128i vr = bobui_qimageScaleAARGBA_helper(sptr + sow, xap, Cx, 1, vxap, vCx);
 
                     vx = _mm_mullo_epi32(vx, vinvyap);
                     vr = _mm_mullo_epi32(vr, vyap);
@@ -158,7 +158,7 @@ void qt_qimageScaleAARGBA_down_x_up_y_sse4(QImageScaleInfo *isi, unsigned int *d
 }
 
 template<bool RGB>
-void qt_qimageScaleAARGBA_down_xy_sse4(QImageScaleInfo *isi, unsigned int *dest,
+void bobui_qimageScaleAARGBA_down_xy_sse4(QImageScaleInfo *isi, unsigned int *dest,
                                        int dw, int dh, int dow, int sow)
 {
     const unsigned int **ypoints = isi->ypoints;
@@ -181,17 +181,17 @@ void qt_qimageScaleAARGBA_down_xy_sse4(QImageScaleInfo *isi, unsigned int *dest,
                 const __m128i vxap = _mm_set1_epi32(xap);
 
                 const unsigned int *sptr = ypoints[y] + xpoints[x];
-                __m128i vx = qt_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
+                __m128i vx = bobui_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
                 __m128i vr = _mm_mullo_epi32(_mm_srli_epi32(vx, 4), vyap);
 
                 int j;
                 for (j = (1 << 14) - yap; j > Cy; j -= Cy) {
                     sptr += sow;
-                    vx = qt_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
+                    vx = bobui_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
                     vr = _mm_add_epi32(vr, _mm_mullo_epi32(_mm_srli_epi32(vx, 4), vCy));
                 }
                 sptr += sow;
-                vx = qt_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
+                vx = bobui_qimageScaleAARGBA_helper(sptr, xap, Cx, 1, vxap, vCx);
                 vr = _mm_add_epi32(vr, _mm_mullo_epi32(_mm_srli_epi32(vx, 4), _mm_set1_epi32(j)));
 
                 vr = _mm_srli_epi32(vr, 24);
@@ -207,24 +207,24 @@ void qt_qimageScaleAARGBA_down_xy_sse4(QImageScaleInfo *isi, unsigned int *dest,
     multithread_pixels_function(isi, dh, scaleSection);
 }
 
-template void qt_qimageScaleAARGBA_up_x_down_y_sse4<false>(QImageScaleInfo *isi, unsigned int *dest,
+template void bobui_qimageScaleAARGBA_up_x_down_y_sse4<false>(QImageScaleInfo *isi, unsigned int *dest,
                                                            int dw, int dh, int dow, int sow);
 
-template void qt_qimageScaleAARGBA_up_x_down_y_sse4<true>(QImageScaleInfo *isi, unsigned int *dest,
+template void bobui_qimageScaleAARGBA_up_x_down_y_sse4<true>(QImageScaleInfo *isi, unsigned int *dest,
                                                           int dw, int dh, int dow, int sow);
 
-template void qt_qimageScaleAARGBA_down_x_up_y_sse4<false>(QImageScaleInfo *isi, unsigned int *dest,
+template void bobui_qimageScaleAARGBA_down_x_up_y_sse4<false>(QImageScaleInfo *isi, unsigned int *dest,
                                                            int dw, int dh, int dow, int sow);
 
-template void qt_qimageScaleAARGBA_down_x_up_y_sse4<true>(QImageScaleInfo *isi, unsigned int *dest,
+template void bobui_qimageScaleAARGBA_down_x_up_y_sse4<true>(QImageScaleInfo *isi, unsigned int *dest,
                                                           int dw, int dh, int dow, int sow);
 
-template void qt_qimageScaleAARGBA_down_xy_sse4<false>(QImageScaleInfo *isi, unsigned int *dest,
+template void bobui_qimageScaleAARGBA_down_xy_sse4<false>(QImageScaleInfo *isi, unsigned int *dest,
                                                        int dw, int dh, int dow, int sow);
 
-template void qt_qimageScaleAARGBA_down_xy_sse4<true>(QImageScaleInfo *isi, unsigned int *dest,
+template void bobui_qimageScaleAARGBA_down_xy_sse4<true>(QImageScaleInfo *isi, unsigned int *dest,
                                                       int dw, int dh, int dow, int sow);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

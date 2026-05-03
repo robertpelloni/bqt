@@ -1,50 +1,50 @@
-Qt 5.14.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.14.0 through 5.14.1.
+BobUI 5.14.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.14.0 through 5.14.1.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-https://doc.qt.io/qt-5/index.html
+https://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.14 series is binary compatible with the 5.13.x series.
+The BobUI version 5.14 series is binary compatible with the 5.13.x series.
 Applications compiled for 5.13 will continue to run with 5.14.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
 
 ****************************************************************************
-*                                  QtCore                                  *
+*                                  BobUICore                                  *
 ****************************************************************************
 
  - QCollator:
-   * QTBUG-81673: Fixed a regression introduced in 5.14.0 that caused
+   * BOBUIBUG-81673: Fixed a regression introduced in 5.14.0 that caused
      QCollator not to operate with default-constructed QStrings and print a
      warning on Windows.
 
  - QString, codecs:
-   * QTBUG-62011: ZWNBS is no longer discarded (mistaken for a BOM despite
+   * BOBUIBUG-62011: ZWNBS is no longer discarded (mistaken for a BOM despite
      not being at the start) when converting UCS4 to QString's UCS2.
 
  - QLocale:
-   * QTBUG-80459: Skip digit-grouping if the system locale is configured to
+   * BOBUIBUG-80459: Skip digit-grouping if the system locale is configured to
      use an empty group separator.
-   * QTBUG-81530: Use "+" if MS reports empty for the system locale's plus
+   * BOBUIBUG-81530: Use "+" if MS reports empty for the system locale's plus
      sign, as documented in MS's API for the relevant query.
 
  - QLockFile:
    * Suppressed the warning on QNX that said 'setNativeLocks failed:
-     "Function not implemented"'. There is no difference in behavior: Qt
+     "Function not implemented"'. There is no difference in behavior: BobUI
      will continue not to be able to apply an OS- level file lock, which
      means the lock could be accidentally stolen by buggy software. Correct
      software using QLockFile should not be affected.
 
  - QObject:
-   * For the purposes of QT_NO_NARROWING_CONVERSIONS_IN_CONNECT, pointer
+   * For the purposes of BOBUI_NO_NARROWING_CONVERSIONS_IN_CONNECT, pointer
      (incl. pointer-to-member) to bool conversions are now considered
      narrowing. This matches the resolution of a defect report in C++
      itself.
@@ -54,10 +54,10 @@ information about a particular change.
      renamed after the filesystem was mounted and udev is in use.
 
 ****************************************************************************
-*                                  QtGui                                   *
+*                                  BobUIGui                                   *
 ****************************************************************************
 
- - QTextMarkdownImporter:
+ - BOBUIextMarkdownImporter:
    * Text in Markdown format is assumed to be UTF-8.
    * The "title" in a Markdown hyperlink is now used as the tooltip,
      not the anchor name.
@@ -65,7 +65,7 @@ information about a particular change.
      attempt to insert items into a list that no longer exists).
 
 ****************************************************************************
-*                                QtWidgets                                 *
+*                                BobUIWidgets                                 *
 ****************************************************************************
 
  - QLineEdit:
@@ -88,23 +88,23 @@ information about a particular change.
 
  - md4c was updated to 0.4.3. This fixes vulnerability oss-fuzz-20580.
 
- - QtSQL, sqlite:
+ - BobUISQL, sqlite:
    * Updated to v3.31.1
-   * [QTBUG-82533] Fixed CVE-2020-9327
+   * [BOBUIBUG-82533] Fixed CVE-2020-9327
 
 ****************************************************************************
 *                                  CMake                                   *
 ****************************************************************************
 
  - Windows:
-   * Fixed linking with Qt static build
+   * Fixed linking with BobUI static build
 
 ****************************************************************************
 *                                   MSVC                                   *
 ****************************************************************************
 
  - Fixed a compatibility issue found when linking code compiled with
-   version 16.6 to a Qt compiled with 16.5.
+   version 16.6 to a BobUI compiled with 16.5.
 
 ****************************************************************************
 *                                   MinGW                                  *
@@ -112,6 +112,6 @@ information about a particular change.
 
  - Fixed build regressions.
  - The -debug-and-release configuration has been fixed. In this
-   configuration, Qt libraries again have a 'd' suffix.
+   configuration, BobUI libraries again have a 'd' suffix.
  - In the -debug configuration, libraries do not have a 'd' suffix, similar
    to Unix platforms.

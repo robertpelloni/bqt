@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qglobal.h>
 
@@ -20,7 +20,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPixmapFilterPrivate : public QObjectPrivate
 {
@@ -392,9 +392,9 @@ void QPixmapConvolutionFilter::draw(QPainter *painter, const QPointF &p, const Q
     if (painter->paintEngine()->paintDevice()->devType() == QInternal::Image) {
         target = static_cast<QImage *>(painter->paintEngine()->paintDevice());
 
-        QTransform mat = painter->combinedTransform();
+        BOBUIransform mat = painter->combinedTransform();
 
-        if (mat.type() > QTransform::TxTranslate) {
+        if (mat.type() > BOBUIransform::TxTranslate) {
             // Disabled because of transformation...
             target = nullptr;
         } else {
@@ -405,7 +405,7 @@ void QPixmapConvolutionFilter::draw(QPainter *painter, const QPointF &p, const Q
             else {
                 QRectF clip = pe->clipBoundingRect();
                 QRectF rect = boundingRectFor(srcRect.isEmpty() ? src.rect() : srcRect);
-                QTransform x = painter->deviceTransform();
+                BOBUIransform x = painter->deviceTransform();
                 if (!clip.contains(rect.translated(x.dx() + p.x(), x.dy() + p.y()))) {
                     target = nullptr;
                 }
@@ -415,7 +415,7 @@ void QPixmapConvolutionFilter::draw(QPainter *painter, const QPointF &p, const Q
     }
 
     if (target) {
-        QTransform x = painter->deviceTransform();
+        BOBUIransform x = painter->deviceTransform();
         QPointF offset(x.dx(), x.dy());
 
         convolute(target, p+offset, src.toImage(), srcRect, QPainter::CompositionMode_SourceOver, d->convolutionKernel, d->kernelWidth, d->kernelHeight);
@@ -555,9 +555,9 @@ QRectF QPixmapBlurFilter::boundingRectFor(const QRectF &rect) const
     return rect.adjusted(-delta, -delta, delta, delta);
 }
 
-Q_GUI_EXPORT extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale);
+Q_GUI_EXPORT extern bool bobui_scaleForTransform(const BOBUIransform &transform, qreal *scale);
 
-Q_GUI_EXPORT extern void qt_blurImage(QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0);
+Q_GUI_EXPORT extern void bobui_blurImage(QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0);
 
 /*!
     \internal
@@ -582,7 +582,7 @@ void QPixmapBlurFilter::draw(QPainter *painter, const QPointF &p, const QPixmap 
 
     qreal scaledRadius = radiusScale * d->radius;
     qreal scale;
-    if (qt_scaleForTransform(painter->transform(), &scale))
+    if (bobui_scaleForTransform(painter->transform(), &scale))
         scaledRadius /= scale;
 
     QImage srcImage;
@@ -594,9 +594,9 @@ void QPixmapBlurFilter::draw(QPainter *painter, const QPointF &p, const QPixmap 
         srcImage = src.copy(rect).toImage();
     }
 
-    QTransform transform = painter->worldTransform();
+    BOBUIransform transform = painter->worldTransform();
     painter->translate(p);
-    qt_blurImage(painter, srcImage, scaledRadius, (d->hints & QGraphicsBlurEffect::QualityHint), false);
+    bobui_blurImage(painter, srcImage, scaledRadius, (d->hints & QGraphicsBlurEffect::QualityHint), false);
     painter->setWorldTransform(transform);
 }
 
@@ -995,7 +995,7 @@ void QPixmapDropShadowFilter::draw(QPainter *p,
     blurred.setDevicePixelRatio(px.devicePixelRatio());
     blurred.fill(0);
     QPainter blurPainter(&blurred);
-    qt_blurImage(&blurPainter, tmp, d->radius, false, true);
+    bobui_blurImage(&blurPainter, tmp, d->radius, false, true);
     blurPainter.end();
 
     tmp = std::move(blurred);
@@ -1013,6 +1013,6 @@ void QPixmapDropShadowFilter::draw(QPainter *p,
     p->drawPixmap(pos, px, src);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpixmapfilter_p.cpp"

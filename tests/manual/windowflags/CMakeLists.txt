@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_manual_windowflags Binary:
 #####################################################################
 
-qt_internal_add_manual_test(tst_manual_windowflags
+bobui_internal_add_manual_test(tst_manual_windowflags
     GUI
     SOURCES
         controllerwindow.cpp controllerwindow.h
@@ -13,9 +13,9 @@ qt_internal_add_manual_test(tst_manual_windowflags
         main.cpp
         previewwindow.cpp previewwindow.h
     NO_PCH_SOURCES
-        controls.cpp # undef QT_NO_FOREACH
+        controls.cpp # undef BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Widgets
 )

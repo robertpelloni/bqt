@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "glwidget.h"
 #include <QPainter>
@@ -79,12 +79,12 @@ void GLWidget::setScaling(int scale)
 
 void GLWidget::setLogo()
 {
-    m_qtLogo = true;
+    m_bobuiLogo = true;
 }
 
 void GLWidget::setTexture()
 {
-    m_qtLogo = false;
+    m_bobuiLogo = false;
 }
 
 void GLWidget::setShowBubbles(bool bubbles)
@@ -92,7 +92,7 @@ void GLWidget::setShowBubbles(bool bubbles)
     m_showBubbles = bubbles;
 }
 
-void GLWidget::paintQtLogo()
+void GLWidget::paintBobUILogo()
 {
     m_program1->enableAttributeArray(m_vertexAttr1);
     m_program1->enableAttributeArray(m_normalAttr1);
@@ -201,7 +201,7 @@ void GLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    m_texture = new QOpenGLTexture(QImage(":/qt.png"));
+    m_texture = new QOpenGLTexture(QImage(":/bobui.png"));
 
     m_vshader1 = new QOpenGLShader(QOpenGLShader::Vertex);
     const char *vsrc1 =
@@ -288,7 +288,7 @@ void GLWidget::initializeGL()
     m_vbo1.create();
     m_vbo1.bind();
     // For the cube all the data belonging to the texture coordinates and
-    // normals is placed separately, after the vertices. Here, for the Qt logo,
+    // normals is placed separately, after the vertices. Here, for the BobUI logo,
     // let's do something different and potentially more efficient: create a
     // properly interleaved data set.
     const int vertexCount = m_vertices.count();
@@ -340,10 +340,10 @@ void GLWidget::paintGL()
     modelview.scale(m_fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
-    if (m_qtLogo) {
+    if (m_bobuiLogo) {
         m_program1->bind();
         m_program1->setUniformValue(m_matrixUniform1, modelview);
-        paintQtLogo();
+        paintBobUILogo();
         m_program1->release();
     } else {
         m_program2->bind();
@@ -365,7 +365,7 @@ void GLWidget::paintGL()
     if (const int elapsed = m_time.elapsed()) {
         QString framesPerSecond;
         framesPerSecond.setNum(m_frames /(elapsed / 1000.0), 'f', 2);
-        painter.setPen(m_transparent ? Qt::black : Qt::white);
+        painter.setPen(m_transparent ? BobUI::black : BobUI::white);
         painter.drawText(20, 40, framesPerSecond + " paintGL calls / s");
     }
 
@@ -516,7 +516,7 @@ void GLWidget::extrude(qreal x1, qreal y1, qreal x2, qreal y2)
 
 void GLWidget::setTransparent(bool transparent)
 {
-    setAttribute(Qt::WA_AlwaysStackOnTop, transparent);
+    setAttribute(BobUI::WA_AlwaysStackOnTop, transparent);
     m_transparent = transparent;
     // Call update() on the top-level window after toggling AlwayStackOnTop to make sure
     // the entire backingstore is updated accordingly.

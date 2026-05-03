@@ -1,50 +1,50 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxglobal.h"
 #include "qqnxcursor.h"
 #include <errno.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 #include <QWindow>
 #include <QCursor>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaQnx, "qt.qpa.qnx");
+Q_LOGGING_CATEGORY(lcQpaQnx, "bobui.qpa.qnx");
 
 QQnxCursor::QQnxCursor(screen_context_t context) : m_screenContext(context)
 {
 }
 
-#if !defined(QT_NO_CURSOR)
-static int mapQtCursorToScreenCursor(int cshape)
+#if !defined(BOBUI_NO_CURSOR)
+static int mapBobUICursorToScreenCursor(int cshape)
 {
     int cursor_shape;
 
     switch (cshape) {
-    case Qt::ArrowCursor:
+    case BobUI::ArrowCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_ARROW;
         break;
-    case Qt::CrossCursor:
+    case BobUI::CrossCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_CROSS;
         break;
-    case Qt::WaitCursor:
+    case BobUI::WaitCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_WAIT;
         break;
-    case Qt::IBeamCursor:
+    case BobUI::IBeamCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_IBEAM;
         break;
-    case Qt::PointingHandCursor:
+    case BobUI::PointingHandCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_HAND;
         break;
-    case Qt::OpenHandCursor:
+    case BobUI::OpenHandCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_GRAB;
         break;
-    case Qt::ClosedHandCursor:
+    case BobUI::ClosedHandCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_GRABBING;
         break;
-    case Qt::DragMoveCursor:
+    case BobUI::DragMoveCursor:
         cursor_shape = SCREEN_CURSOR_SHAPE_MOVE;
         break;
     default:
@@ -63,7 +63,7 @@ void QQnxCursor::changeCursor(QCursor *windowCursor, QWindow *window)
     if (windowCursor && windowCursor->shape() != m_currentCShape) {
         m_currentCShape = windowCursor->shape();
         errno = 0;
-        int cursorShape = mapQtCursorToScreenCursor(windowCursor->shape());
+        int cursorShape = mapBobUICursorToScreenCursor(windowCursor->shape());
         screen_window_t screenWindow = reinterpret_cast<screen_window_t>(window->winId());
 
         if (!m_session) {
@@ -94,4 +94,4 @@ QPoint QQnxCursor::pos() const
     return m_pos;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "gradients.h"
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     const QList<QWidget *> widgets = gradientWidget.findChildren<QWidget *>();
     for (QWidget *w : widgets) {
         w->setStyle(arthurStyle);
-        w->setAttribute(Qt::WA_AcceptTouchEvents);
+        w->setAttribute(BobUI::WA_AcceptTouchEvents);
     }
     gradientWidget.show();
 

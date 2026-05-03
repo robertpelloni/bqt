@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = triangulator
 
-QT += gui-private widgets
+BOBUI += gui-private widgets
 
 SOURCES += main.cpp \
            triviswidget.cpp

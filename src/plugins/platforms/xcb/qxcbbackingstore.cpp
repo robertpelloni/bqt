@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbbackingstore.h"
 
@@ -24,7 +24,7 @@
 #include <qdebug.h>
 #include <qpainter.h>
 #include <qscreen.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 #include <qpa/qplatformgraphicsbuffer.h>
 #include <private/qimage_p.h>
 #include <qendian.h>
@@ -35,7 +35,7 @@
 #define XCB_USE_SHM_FD
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbBackingStore;
 
@@ -174,7 +174,7 @@ void QXcbBackingStoreImage::init(const QSize &size, uint depth, QImage::Format f
     m_qimage_format = format;
     m_hasAlpha = QImage::toPixelFormat(m_qimage_format).alphaUsage() == QPixelFormat::UsesAlpha;
     if (!m_hasAlpha)
-        m_qimage_format = qt_maybeDataCompatibleAlphaVersion(m_qimage_format);
+        m_qimage_format = bobui_maybeDataCompatibleAlphaVersion(m_qimage_format);
 
     memset(&m_shm_info, 0, sizeof m_shm_info);
 
@@ -437,7 +437,7 @@ void QXcbBackingStoreImage::destroyShmSegment()
     m_segmentSize = 0;
 }
 
-extern void qt_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset);
+extern void bobui_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset);
 
 bool QXcbBackingStoreImage::scroll(const QRegion &area, int dx, int dy)
 {
@@ -454,7 +454,7 @@ bool QXcbBackingStoreImage::scroll(const QRegion &area, int dx, int dy)
             preparePaint(destinationRegion);
 
         const QRect rect = scrollArea.boundingRect();
-        qt_scrollRectInImage(m_qimage, rect, delta);
+        bobui_scrollRectInImage(m_qimage, rect, delta);
     } else {
         ensureGC(m_xcb_pixmap);
 
@@ -772,7 +772,7 @@ void QXcbBackingStore::beginPaint(const QRegion &region)
     if (m_image->hasAlpha()) {
         QPainter p(paintDevice());
         p.setCompositionMode(QPainter::CompositionMode_Source);
-        const QColor blank = Qt::transparent;
+        const QColor blank = BobUI::transparent;
         for (const QRect &rect : region)
             p.fillRect(rect, blank);
     }
@@ -849,7 +849,7 @@ void QXcbBackingStore::flush(QWindow *window, const QRegion &region, const QPoin
 
     QXcbWindow *platformWindow = static_cast<QXcbWindow *>(window->handle());
     if (!platformWindow) {
-        qCWarning(lcQpaXcb, "%s QWindow has no platform window, see QTBUG-32681", Q_FUNC_INFO);
+        qCWarning(lcQpaXcb, "%s QWindow has no platform window, see BOBUIBUG-32681", Q_FUNC_INFO);
         return;
     }
 
@@ -1083,4 +1083,4 @@ void QXcbSystemTrayBackingStore::initXRenderMode()
     m_usingXRenderMode = true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

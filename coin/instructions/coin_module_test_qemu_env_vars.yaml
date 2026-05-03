@@ -4,9 +4,9 @@ instructions:
     instructions:
       - type: EnvironmentVariable
         variableName: QEMU_LD_PREFIX
-        variableValue: "{{.Env.QT_SYSROOT_FOR_RUNNING_TESTS}}"
+        variableValue: "{{.Env.BOBUI_SYSROOT_FOR_RUNNING_TESTS}}"
       - type: EnvironmentVariable
-        variableName: QT_QPA_PLATFORM
+        variableName: BOBUI_QPA_PLATFORM
         variableValue: "offscreen"
     enable_if:
       condition: property

@@ -7,7 +7,7 @@
 # Otherwise, the .qm files are available in the build directory in LRELEASE_DIR.
 # They can also be automatically installed by setting QM_FILES_INSTALL_PATH.
 
-qtPrepareTool(QMAKE_LRELEASE, lrelease)
+bobuiPrepareTool(QMAKE_LRELEASE, lrelease)
 
 isEmpty(LRELEASE_DIR): LRELEASE_DIR = .qm
 isEmpty(QM_FILES_RESOURCE_PREFIX): QM_FILES_RESOURCE_PREFIX = i18n

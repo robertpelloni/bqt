@@ -1,22 +1,22 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglplatformcontext_p.h"
 #include "qeglconvenience_p.h"
 #include "qeglpbuffer_p.h"
 #include <qpa/qplatformwindow.h>
-#include <QtGui/qopengl.h>
-#include <QtGui/qopenglcontext.h>
-#include <QtCore/qdebug.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUICore/qdebug.h>
 
 #ifdef Q_OS_ANDROID
-#include <QtCore/private/qjnihelpers_p.h>
+#include <BobUICore/private/qjnihelpers_p.h>
 #endif
 #ifndef Q_OS_WIN
 #include <dlfcn.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QEGLPlatformContext
@@ -167,12 +167,12 @@ QEGLPlatformContext::QEGLPlatformContext(const QSurfaceFormat &format, QPlatform
 
     m_getGraphicsResetStatus = reinterpret_cast<GLenum (QOPENGLF_APIENTRYP)()>(getProcAddress("glGetGraphicsResetStatusARB"));
 
-    static const bool printConfig = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DEBUG");
+    static const bool printConfig = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_DEBUG");
     if (printConfig) {
         qDebug() << "Created context for format" << format << "with config:";
         q_printEglConfig(m_eglDisplay, m_eglConfig);
 
-        static const bool printAllConfigs = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DEBUG") > 1;
+        static const bool printAllConfigs = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_DEBUG") > 1;
         if (printAllConfigs) {
             EGLint numConfigs = 0;
             eglGetConfigs(m_eglDisplay, nullptr, 0, &numConfigs);
@@ -350,14 +350,14 @@ void QEGLPlatformContext::runGLChecks()
     // queries needing a context.
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 bool QEGLPlatformContext::hasExtension(const char *name)
 {
     // glGetString(GL_EXTENSIONS) is deprecated in OpenGL 3.
     if (m_format.renderableType() == QSurfaceFormat::OpenGL && m_format.majorVersion() >= 3) {
-#ifdef QT_OPENGL_3
-        typedef const GLubyte *(QOPENGLF_APIENTRYP qt_glGetStringi)(GLenum, GLuint);
-        const auto glGetStringi = reinterpret_cast<qt_glGetStringi>(getProcAddress("glGetStringi"));
+#ifdef BOBUI_OPENGL_3
+        typedef const GLubyte *(QOPENGLF_APIENTRYP bobui_glGetStringi)(GLenum, GLuint);
+        const auto glGetStringi = reinterpret_cast<bobui_glGetStringi>(getProcAddress("glGetStringi"));
         if (!glGetStringi) {
             return false;
         }
@@ -402,7 +402,7 @@ bool QEGLPlatformContext::hasExtension(const char *name)
 
 void QEGLPlatformContext::updateFormatFromGL()
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     // Have to save & restore to prevent QOpenGLContext::currentContext() from becoming
     // inconsistent after QOpenGLContext::create().
     EGLDisplay prevDisplay = eglGetCurrentDisplay();
@@ -483,7 +483,7 @@ void QEGLPlatformContext::updateFormatFromGL()
         destroyTemporaryOffscreenSurface(tempSurface);
     if (tempContext != EGL_NO_CONTEXT)
         eglDestroyContext(m_eglDisplay, tempContext);
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 }
 
 bool QEGLPlatformContext::makeCurrent(QPlatformSurface *surface)
@@ -509,8 +509,8 @@ bool QEGLPlatformContext::makeCurrent(QPlatformSurface *surface)
     if (ok) {
         if (!m_swapIntervalEnvChecked) {
             m_swapIntervalEnvChecked = true;
-            if (qEnvironmentVariableIsSet("QT_QPA_EGLFS_SWAPINTERVAL")) {
-                QByteArray swapIntervalString = qgetenv("QT_QPA_EGLFS_SWAPINTERVAL");
+            if (qEnvironmentVariableIsSet("BOBUI_QPA_EGLFS_SWAPINTERVAL")) {
+                QByteArray swapIntervalString = qgetenv("BOBUI_QPA_EGLFS_SWAPINTERVAL");
                 bool intervalOk;
                 const int swapInterval = swapIntervalString.toInt(&intervalOk);
                 if (intervalOk)
@@ -578,21 +578,21 @@ QFunctionPointer QEGLPlatformContext::getProcAddress(const char *procName)
 {
     eglBindAPI(m_api);
     QFunctionPointer proc = (QFunctionPointer) eglGetProcAddress(procName);
-#if QT_CONFIG(dlopen)
+#if BOBUI_CONFIG(dlopen)
     if (!proc)
         proc = (QFunctionPointer) dlsym(RTLD_DEFAULT, procName);
-#elif !defined(QT_OPENGL_DYNAMIC)
+#elif !defined(BOBUI_OPENGL_DYNAMIC)
     // On systems without KHR_get_all_proc_addresses and without
     // dynamic linking there still has to be a way to access the
     // standard GLES functions. QOpenGL(Extra)Functions never makes
-    // direct GL API calls since Qt 5.7, so all such workarounds are
+    // direct GL API calls since BobUI 5.7, so all such workarounds are
     // expected to be handled in the platform plugin.
     if (!proc) {
         static struct StdFunc {
             const char *name;
             QFunctionPointer func;
         } standardFuncs[] = {
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
             { "glBindTexture", (QFunctionPointer) ::glBindTexture },
             { "glBlendFunc", (QFunctionPointer) ::glBlendFunc },
             { "glClear", (QFunctionPointer) ::glClear },
@@ -737,9 +737,9 @@ QFunctionPointer QEGLPlatformContext::getProcAddress(const char *procName)
 
             { "glClearDepthf", (QFunctionPointer) ::glClearDepthf },
             { "glDepthRangef", (QFunctionPointer) ::glDepthRangef },
-#endif // QT_CONFIG(opengles2)
+#endif // BOBUI_CONFIG(opengles2)
 
-#if QT_CONFIG(opengles3)
+#if BOBUI_CONFIG(opengles3)
             { "glBeginQuery", (QFunctionPointer) ::glBeginQuery },
             { "glBeginTransformFeedback", (QFunctionPointer) ::glBeginTransformFeedback },
             { "glBindBufferBase", (QFunctionPointer) ::glBindBufferBase },
@@ -844,9 +844,9 @@ QFunctionPointer QEGLPlatformContext::getProcAddress(const char *procName)
             { "glVertexAttribI4uiv", (QFunctionPointer) ::glVertexAttribI4uiv },
             { "glVertexAttribIPointer", (QFunctionPointer) ::glVertexAttribIPointer },
             { "glWaitSync", (QFunctionPointer) ::glWaitSync },
-#endif // QT_CONFIG(opengles3)
+#endif // BOBUI_CONFIG(opengles3)
 
-#if QT_CONFIG(opengles31)
+#if BOBUI_CONFIG(opengles31)
             { "glActiveShaderProgram", (QFunctionPointer) ::glActiveShaderProgram },
             { "glBindImageTexture", (QFunctionPointer) ::glBindImageTexture },
             { "glBindProgramPipeline", (QFunctionPointer) ::glBindProgramPipeline },
@@ -915,9 +915,9 @@ QFunctionPointer QEGLPlatformContext::getProcAddress(const char *procName)
             { "glVertexAttribFormat", (QFunctionPointer) ::glVertexAttribFormat },
             { "glVertexAttribIFormat", (QFunctionPointer) ::glVertexAttribIFormat },
             { "glVertexBindingDivisor", (QFunctionPointer) ::glVertexBindingDivisor },
-#endif // QT_CONFIG(opengles31)
+#endif // BOBUI_CONFIG(opengles31)
 
-#if QT_CONFIG(opengles32)
+#if BOBUI_CONFIG(opengles32)
             { "glBlendBarrier", (QFunctionPointer) ::glBlendBarrier },
             { "glCopyImageSubData", (QFunctionPointer) ::glCopyImageSubData },
             { "glDebugMessageControl", (QFunctionPointer) ::glDebugMessageControl },
@@ -962,7 +962,7 @@ QFunctionPointer QEGLPlatformContext::getProcAddress(const char *procName)
             { "glTexBuffer", (QFunctionPointer) ::glTexBuffer },
             { "glTexBufferRange", (QFunctionPointer) ::glTexBufferRange },
             { "glTexStorage3DMultisample", (QFunctionPointer) ::glTexStorage3DMultisample },
-#endif // QT_CONFIG(opengles32)
+#endif // BOBUI_CONFIG(opengles32)
         };
 
         for (size_t i = 0; i < sizeof(standardFuncs) / sizeof(StdFunc); ++i) {
@@ -1007,4 +1007,4 @@ bool QEGLPlatformContext::checkGraphicsReset()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

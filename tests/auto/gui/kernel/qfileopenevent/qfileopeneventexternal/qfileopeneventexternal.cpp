@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qevent.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
 
-#include <QtCore/qfile.h>
+#include <BobUICore/qfile.h>
 
 struct MyApplication : public QGuiApplication
 {

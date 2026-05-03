@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="tst_Counting" timestamp="@TEST_START_TIME@" hostname="@HOSTNAME@" tests="32" failures="8" errors="0" skipped="8" time="@TEST_DURATION@">
   <properties>
-    <property name="QTestVersion" value="@INSERT_QT_VERSION_HERE@"/>
-    <property name="QtVersion" value="@INSERT_QT_VERSION_HERE@"/>
-    <property name="QtBuild" value=""/>
+    <property name="BOBUIestVersion" value="@INSERT_BOBUI_VERSION_HERE@"/>
+    <property name="BobUIVersion" value="@INSERT_BOBUI_VERSION_HERE@"/>
+    <property name="BobUIBuild" value=""/>
   </properties>
   <testcase name="initTestCase" classname="tst_Counting" time="@TEST_DURATION@"/>
   <testcase name="testPassPass(row 1)" classname="tst_Counting" time="@TEST_DURATION@">

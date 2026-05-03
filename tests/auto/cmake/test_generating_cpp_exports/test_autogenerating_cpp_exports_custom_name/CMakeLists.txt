@@ -1,7 +1,7 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_module(TestAutogeneratingCppExportsCustomName
+bobui_internal_add_module(TestAutogeneratingCppExportsCustomName
     NO_UNITY_BUILD
     CPP_EXPORT_HEADER_BASE_NAME
         "customname_exports"
@@ -9,10 +9,10 @@ qt_internal_add_module(TestAutogeneratingCppExportsCustomName
         module_api.h
         module_api.cpp
     PUBLIC_LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
 
-qt_internal_extend_target(TestAutogeneratingCppExportsCustomName
+bobui_internal_extend_target(TestAutogeneratingCppExportsCustomName
     CONDITION GCC OR MINGW
     COMPILE_OPTIONS
         -fvisibility=hidden

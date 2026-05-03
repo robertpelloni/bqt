@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QTest>
+#include <BobUIWidgets/QWidget>
+#include <BobUIWidgets/QPushButton>
+#include <BOBUIest>
 
-QT_BEGIN_NAMESPACE
-namespace QtSharedPointer {
+BOBUI_BEGIN_NAMESPACE
+namespace BobUISharedPointer {
     Q_CORE_EXPORT void internalSafetyCheckCleanCheck();
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class tst_QSharedPointer_and_QWidget: public QObject
 {
@@ -29,8 +29,8 @@ public slots:
 public:
     inline void safetyCheck()
     {
-#ifdef QT_BUILD_INTERNAL
-        QtSharedPointer::internalSafetyCheckCleanCheck();
+#ifdef BOBUI_BUILD_INTERNAL
+        BobUISharedPointer::internalSafetyCheckCleanCheck();
 #endif
     }
 };
@@ -109,6 +109,6 @@ void tst_QSharedPointer_and_QWidget::strong_sharedptrDelete()
     delete parent; // mustn't crash
 }
 
-QTEST_MAIN(tst_QSharedPointer_and_QWidget)
+BOBUIEST_MAIN(tst_QSharedPointer_and_QWidget)
 
 #include "tst_qsharedpointer_and_qwidget.moc"

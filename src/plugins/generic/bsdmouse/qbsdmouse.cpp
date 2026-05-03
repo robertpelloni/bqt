@@ -1,5 +1,5 @@
 // Copyright (C) 2015-2016 Oleksandr Tymoshenko <gonzo@bluezbox.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbsdmouse.h"
 
@@ -20,7 +20,7 @@
 #include <sys/mouse.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     PsmLevelBasic = 0,
@@ -41,7 +41,7 @@ QBsdMouseHandler::QBsdMouseHandler(const QString &key, const QString &specificat
     if (device.isEmpty())
         device = QByteArrayLiteral("/dev/sysmouse");
 
-    m_devFd = QT_OPEN(device.constData(), O_RDONLY);
+    m_devFd = BOBUI_OPEN(device.constData(), O_RDONLY);
     if (m_devFd < 0) {
         qErrnoWarning(errno, "open(%s) failed", device.constData());
         return;
@@ -122,15 +122,15 @@ void QBsdMouseHandler::readMouseData()
         m_y = g.bottom() - m_yOffset;
 
     const QPoint pos(m_x + m_xOffset, m_y + m_yOffset);
-    m_buttons = Qt::NoButton;
+    m_buttons = BobUI::NoButton;
     if (!(status & MOUSE_SYS_BUTTON1UP))
-        m_buttons |= Qt::LeftButton;
+        m_buttons |= BobUI::LeftButton;
     if (!(status & MOUSE_SYS_BUTTON2UP))
-        m_buttons |= Qt::MiddleButton;
+        m_buttons |= BobUI::MiddleButton;
     if (!(status & MOUSE_SYS_BUTTON3UP))
-        m_buttons |= Qt::RightButton;
+        m_buttons |= BobUI::RightButton;
 
     QWindowSystemInterface::handleMouseEvent(0, pos, pos, m_buttons);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

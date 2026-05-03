@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRGBAFLOAT_H
 #define QRGBAFLOAT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qfloat16.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qfloat16.h>
 
 #include <algorithm>
 #include <cmath>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template<typename F>
 class alignas(sizeof(F) * 4) QRgbaFloat
@@ -121,6 +121,6 @@ private:
 typedef QRgbaFloat<qfloat16> QRgbaFloat16;
 typedef QRgbaFloat<float> QRgbaFloat32;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRGBAFLOAT_H

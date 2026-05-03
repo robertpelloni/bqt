@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <QtGui/QVector3D>
+#include <BobUIGui/QVector3D>
 
 class OpenGLWidgetPrivate;
 class OpenGLWidget : public QOpenGLWidget

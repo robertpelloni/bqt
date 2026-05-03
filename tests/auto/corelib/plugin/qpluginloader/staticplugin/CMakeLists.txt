@@ -1,16 +1,16 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## staticplugin Generic Library:
 #####################################################################
 
-qt_internal_add_cmake_library(staticplugin
+bobui_internal_add_cmake_library(staticplugin
     STATIC
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Core
+        BobUI::Core
     MOC_OPTIONS
         "-M"
         "ExtraMetaData=StaticPlugin"
@@ -20,6 +20,6 @@ qt_internal_add_cmake_library(staticplugin
 
 # TEMPLATE = "lib"
 
-qt_autogen_tools_initial_setup(staticplugin)
+bobui_autogen_tools_initial_setup(staticplugin)
 
-target_compile_definitions(staticplugin PRIVATE QT_STATICPLUGIN)
+target_compile_definitions(staticplugin PRIVATE BOBUI_STATICPLUGIN)

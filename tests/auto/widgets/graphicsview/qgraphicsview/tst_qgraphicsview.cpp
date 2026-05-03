@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QTimer>
+#include <BOBUIimer>
 
 #include <qgraphicsitem.h>
 #include <qgraphicsscene.h>
@@ -15,20 +15,20 @@
 
 #include <math.h>
 
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QCommonStyle>
-#include <QtGui/QPainterPath>
-#include <QtWidgets/QRubberBand>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QStyleOption>
-#include <QtWidgets/QBoxLayout>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QScroller>
-#include <QtWidgets/QStackedWidget>
-#if QT_CONFIG(opengl)
-#include <QtOpenGLWidgets/QOpenGLWidget>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QStyleFactory>
+#include <BobUIWidgets/QCommonStyle>
+#include <BobUIGui/QPainterPath>
+#include <BobUIWidgets/QRubberBand>
+#include <BobUIWidgets/QScrollBar>
+#include <BobUIWidgets/QStyleOption>
+#include <BobUIWidgets/QBoxLayout>
+#include <BobUIWidgets/QStyle>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QScroller>
+#include <BobUIWidgets/QStackedWidget>
+#if BOBUI_CONFIG(opengl)
+#include <BobUIOpenGLWidgets/QOpenGLWidget>
 #endif
 #include <private/qgraphicsscene_p.h>
 #include <private/qgraphicsview_p.h>
@@ -39,18 +39,18 @@
 
 #include "tst_qgraphicsview.h"
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 Q_DECLARE_METATYPE(ExpectedValueDescription)
 Q_DECLARE_METATYPE(QList<int>)
 Q_DECLARE_METATYPE(QList<QRectF>)
-Q_DECLARE_METATYPE(QTransform)
+Q_DECLARE_METATYPE(BOBUIransform)
 Q_DECLARE_METATYPE(QPainterPath)
-Q_DECLARE_METATYPE(Qt::ScrollBarPolicy)
+Q_DECLARE_METATYPE(BobUI::ScrollBarPolicy)
 Q_DECLARE_METATYPE(ScrollBarCount)
 
 #ifdef Q_OS_MAC
@@ -60,21 +60,21 @@ Q_DECLARE_METATYPE(ScrollBarCount)
 #define COMPARE_REGIONS QCOMPARE
 #endif
 
-static void sendMousePress(QWidget *widget, const QPoint &point, Qt::MouseButton button = Qt::LeftButton)
+static void sendMousePress(QWidget *widget, const QPoint &point, BobUI::MouseButton button = BobUI::LeftButton)
 {
     QMouseEvent event(QEvent::MouseButtonPress, point, widget->mapToGlobal(point), button, {}, {});
     QApplication::sendEvent(widget, &event);
 }
 
-static void sendMouseMove(QWidget *widget, const QPoint &point, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = {})
+static void sendMouseMove(QWidget *widget, const QPoint &point, BobUI::MouseButton button = BobUI::NoButton, BobUI::MouseButtons buttons = {})
 {
-    QTest::mouseMove(widget, point);
+    BOBUIest::mouseMove(widget, point);
     QMouseEvent event(QEvent::MouseMove, point, widget->mapToGlobal(point), button, buttons, {});
     QApplication::sendEvent(widget, &event);
     QApplication::processEvents();
 }
 
-static void sendMouseRelease(QWidget *widget, const QPoint &point, Qt::MouseButton button = Qt::LeftButton)
+static void sendMouseRelease(QWidget *widget, const QPoint &point, BobUI::MouseButton button = BobUI::LeftButton)
 {
     QMouseEvent event(QEvent::MouseButtonRelease, point, widget->mapToGlobal(point), button, {}, {});
     QApplication::sendEvent(widget, &event);
@@ -82,7 +82,7 @@ static void sendMouseRelease(QWidget *widget, const QPoint &point, Qt::MouseButt
 
 static bool isPlatformEGLFS()
 {
-    static const bool isEGLFS = !QGuiApplication::platformName().compare(QLatin1String("eglfs"), Qt::CaseInsensitive);
+    static const bool isEGLFS = !QGuiApplication::platformName().compare(QLatin1String("eglfs"), BobUI::CaseInsensitive);
     return isEGLFS;
 }
 
@@ -112,7 +112,7 @@ protected:
     QEvent::Type spied;
 };
 
-#if defined QT_BUILD_INTERNAL
+#if defined BOBUI_BUILD_INTERNAL
 class FriendlyGraphicsScene : public QGraphicsScene
 {
     using QGraphicsScene::QGraphicsScene;
@@ -142,7 +142,7 @@ private slots:
     void sceneRect_growing();
     void setSceneRect();
     void viewport();
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     void openGLViewport();
 #endif
     void dragMode_scrollHand();
@@ -160,7 +160,7 @@ private slots:
     void ensureVisibleRect();
     void fitInView();
     void itemsAtPoint();
-#if defined QT_BUILD_INTERNAL
+#if defined BOBUI_BUILD_INTERNAL
     void itemsAtPosition_data();
     void itemsAtPosition();
 #endif
@@ -182,10 +182,10 @@ private slots:
     void mapFromScenePoly();
     void mapFromScenePath();
     void sendEvent();
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent();
 #endif
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void cursor();
     void cursor2();
 #endif
@@ -193,7 +193,7 @@ private slots:
     void resizeAnchor();
     void viewportUpdateMode();
     void viewportUpdateMode2();
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void acceptDrops();
 #endif
     void optimizationFlags();
@@ -247,17 +247,17 @@ private slots:
     void task253415_reconnectUpdateSceneOnSceneChanged();
     void task255529_transformationAnchorMouseAndViewportMargins();
     void task259503_scrollingArtifacts();
-    void QTBUG_4151_clipAndIgnore_data();
-    void QTBUG_4151_clipAndIgnore();
-    void QTBUG_5859_exposedRect();
+    void BOBUIBUG_4151_clipAndIgnore_data();
+    void BOBUIBUG_4151_clipAndIgnore();
+    void BOBUIBUG_5859_exposedRect();
     void hoverLeave();
-    void QTBUG_16063_microFocusRect();
-    void QTBUG_70255_scrollTo();
-#ifndef QT_NO_CURSOR
-    void QTBUG_7438_cursor();
+    void BOBUIBUG_16063_microFocusRect();
+    void BOBUIBUG_70255_scrollTo();
+#ifndef BOBUI_NO_CURSOR
+    void BOBUIBUG_7438_cursor();
 #endif
-#ifdef QT_BUILD_INTERNAL
-    void QTBUG_53974_mismatched_hide_show_events();
+#ifdef BOBUI_BUILD_INTERNAL
+    void BOBUIBUG_53974_mismatched_hide_show_events();
 #endif
     void resizeContentsOnItemDrag_data();
     void resizeContentsOnItemDrag();
@@ -286,7 +286,7 @@ void tst_QGraphicsView::construction()
     QCOMPARE(view.sceneRect(), QRectF());
     QVERIFY(view.viewport());
     QCOMPARE(view.viewport()->metaObject()->className(), "QWidget");
-    QCOMPARE(view.transform(), QTransform());
+    QCOMPARE(view.transform(), BOBUIransform());
     QVERIFY(view.items().isEmpty());
     QVERIFY(view.items(QPoint()).isEmpty());
     QVERIFY(view.items(QRect()).isEmpty());
@@ -304,7 +304,7 @@ void tst_QGraphicsView::construction()
     QCOMPARE(view.transformationAnchor(), QGraphicsView::AnchorViewCenter);
     QCOMPARE(view.resizeAnchor(), QGraphicsView::NoAnchor);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
 class TestItem : public QGraphicsItem
@@ -352,15 +352,15 @@ void tst_QGraphicsView::renderHints()
 
     QCOMPARE(item->hints, 0);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     view.update();
-    QTRY_COMPARE(item->hints, view.renderHints());
+    BOBUIRY_COMPARE(item->hints, view.renderHints());
 
     view.setRenderHints(QPainter::Antialiasing);
     QCOMPARE(view.renderHints(), QPainter::Antialiasing);
 
     view.update();
-    QTRY_COMPARE(item->hints, view.renderHints());
+    BOBUIRY_COMPARE(item->hints, view.renderHints());
 }
 
 void tst_QGraphicsView::alignment()
@@ -371,33 +371,33 @@ void tst_QGraphicsView::alignment()
     QGraphicsView view(&scene);
     setFrameless(&view);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
-            Qt::Alignment alignment;
+            BobUI::Alignment alignment;
             switch (i) {
             case 0:
-                alignment |= Qt::AlignLeft;
+                alignment |= BobUI::AlignLeft;
                 break;
             case 1:
-                alignment |= Qt::AlignHCenter;
+                alignment |= BobUI::AlignHCenter;
                 break;
             case 2:
             default:
-                alignment |= Qt::AlignRight;
+                alignment |= BobUI::AlignRight;
                 break;
             }
             switch (j) {
             case 0:
-                alignment |= Qt::AlignTop;
+                alignment |= BobUI::AlignTop;
                 break;
             case 1:
-                alignment |= Qt::AlignVCenter;
+                alignment |= BobUI::AlignVCenter;
                 break;
             case 2:
             default:
-                alignment |= Qt::AlignBottom;
+                alignment |= BobUI::AlignBottom;
                 break;
             }
             view.setAlignment(alignment);
@@ -428,10 +428,10 @@ void tst_QGraphicsView::interactive()
     QCOMPARE(item->events.size(), 0);
     view.show();
     view.activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
-    QTRY_COMPARE(item->events.size(), 1); // activate
+    BOBUIRY_COMPARE(item->events.size(), 1); // activate
 
     QPoint itemPoint = view.mapFromScene(item->scenePos());
 
@@ -446,12 +446,12 @@ void tst_QGraphicsView::interactive()
         QCOMPARE(item->events.size(), i * 5 + 5);
         QCOMPARE(item->events.at(item->events.size() - 2), QEvent::GraphicsSceneMouseRelease);
         QCOMPARE(item->events.at(item->events.size() - 1), QEvent::UngrabMouse);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
         QContextMenuEvent contextEvent(QContextMenuEvent::Mouse, itemPoint, view.mapToGlobal(itemPoint));
         QApplication::sendEvent(view.viewport(), &contextEvent);
         QCOMPARE(item->events.size(), i * 5 + 6);
         QCOMPARE(item->events.last(), QEvent::GraphicsSceneContextMenu);
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     }
 
     view.setInteractive(false);
@@ -463,12 +463,12 @@ void tst_QGraphicsView::interactive()
         sendMouseRelease(view.viewport(), itemPoint);
         QCOMPARE(item->events.size(), 501);
         QCOMPARE(item->events.last(), QEvent::GraphicsSceneContextMenu);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
         QContextMenuEvent contextEvent(QContextMenuEvent::Mouse, itemPoint, view.mapToGlobal(itemPoint));
         QApplication::sendEvent(view.viewport(), &contextEvent);
         QCOMPARE(item->events.size(), 501);
         QCOMPARE(item->events.last(), QEvent::GraphicsSceneContextMenu);
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     }
 }
 
@@ -494,7 +494,7 @@ void tst_QGraphicsView::setScene()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(view.sceneRect(), scene.sceneRect());
 
@@ -505,8 +505,8 @@ void tst_QGraphicsView::setScene()
 
     view.setScene(0);
 
-    QTRY_VERIFY(!view.horizontalScrollBar()->isVisible());
-    QTRY_VERIFY(!view.verticalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view.horizontalScrollBar()->isVisible());
+    BOBUIRY_VERIFY(!view.verticalScrollBar()->isVisible());
     QVERIFY(!view.horizontalScrollBar()->isHidden());
     QVERIFY(!view.verticalScrollBar()->isHidden());
 
@@ -542,7 +542,7 @@ void tst_QGraphicsView::sceneRect()
     QCOMPARE(view.sceneRect(), QRectF());
     QGraphicsScene scene;
     QGraphicsRectItem *item = scene.addRect(QRectF(-100, -100, 100, 100));
-    item->setPen(QPen(Qt::black, 0));
+    item->setPen(QPen(BobUI::black, 0));
 
     view.setScene(&scene);
 
@@ -568,7 +568,7 @@ void tst_QGraphicsView::sceneRect_growing()
     QGraphicsView view(&scene, &toplevel);
     view.setFixedSize(200, 200);
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowActive(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel));
 
     int size = 200;
     scene.setSceneRect(-size, -size, size * 2, size * 2);
@@ -636,14 +636,14 @@ void tst_QGraphicsView::viewport()
     QVERIFY(view.viewport() != 0);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QPointer<QWidget> widget = new QWidget;
     view.setViewport(widget);
     QCOMPARE(view.viewport(), (QWidget *)widget);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     view.setViewport(0);
     QVERIFY(widget.isNull());
@@ -651,10 +651,10 @@ void tst_QGraphicsView::viewport()
     QVERIFY(view.viewport() != widget);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 void tst_QGraphicsView::openGLViewport()
 {
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
@@ -663,7 +663,7 @@ void tst_QGraphicsView::openGLViewport()
         QSKIP("", "Resizing does not work on EGLFS on top level window", Continue);
 
     QGraphicsScene scene;
-    scene.setBackgroundBrush(Qt::white);
+    scene.setBackgroundBrush(BobUI::white);
     scene.addText("GraphicsView");
     scene.addEllipse(QRectF(400, 50, 50, 50));
     scene.addEllipse(QRectF(-100, -400, 50, 50));
@@ -681,17 +681,17 @@ void tst_QGraphicsView::openGLViewport()
     view.setViewport(glw);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(spy1.size() > 0);
-    QTRY_VERIFY(spy2.size() >= spy1.size());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(spy1.size() > 0);
+    BOBUIRY_VERIFY(spy2.size() >= spy1.size());
     spy1.clear();
     spy2.clear();
 
-    // Now test for resize (QTBUG-52419). This is special when the viewport is
+    // Now test for resize (BOBUIBUG-52419). This is special when the viewport is
     // a QOpenGLWidget since the underlying FBO must also be maintained.
     view.resize(300, 300);
-    QTRY_VERIFY(spy1.size() > 0);
-    QTRY_VERIFY(spy2.size() >= spy1.size());
+    BOBUIRY_VERIFY(spy1.size() > 0);
+    BOBUIRY_VERIFY(spy2.size() >= spy1.size());
     // There is no sane way to check if the framebuffer contents got updated
     // (grabFramebuffer is no good for the viewport case as that does not go
     // through paintGL). So skip the actual verification.
@@ -709,7 +709,7 @@ void tst_QGraphicsView::dragMode_scrollHand()
         view.setFixedSize(100, 100);
         view.show();
 
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
         QApplication::processEvents();
 
         view.setInteractive(j ? false : true);
@@ -728,8 +728,8 @@ void tst_QGraphicsView::dragMode_scrollHand()
 
         for (int i = 0; i < 2; ++i) {
             // ScrollHandDrag
-#ifndef QT_NO_CURSOR
-            Qt::CursorShape cursorShape = view.viewport()->cursor().shape();
+#ifndef BOBUI_NO_CURSOR
+            BobUI::CursorShape cursorShape = view.viewport()->cursor().shape();
 #endif
             int horizontalScrollBarValue = view.horizontalScrollBar()->value();
             int verticalScrollBarValue = view.verticalScrollBar()->value();
@@ -738,25 +738,25 @@ void tst_QGraphicsView::dragMode_scrollHand()
                 auto pos = view.viewport()->rect().center();
                 QMouseEvent event(QEvent::MouseButtonPress, pos,
                                   view.viewport()->mapToGlobal(pos),
-                                  Qt::LeftButton, Qt::LeftButton, {});
+                                  BobUI::LeftButton, BobUI::LeftButton, {});
                 event.setAccepted(true);
                 QApplication::sendEvent(view.viewport(), &event);
                 QVERIFY(event.isAccepted());
             }
             QApplication::processEvents();
 
-            QTRY_VERIFY(item->isSelected());
+            BOBUIRY_VERIFY(item->isSelected());
 
             for (int k = 0; k < 4; ++k) {
-#ifndef QT_NO_CURSOR
-                QCOMPARE(view.viewport()->cursor().shape(), Qt::ClosedHandCursor);
+#ifndef BOBUI_NO_CURSOR
+                QCOMPARE(view.viewport()->cursor().shape(), BobUI::ClosedHandCursor);
 #endif
                 {
                     // Move
                     auto pos = view.viewport()->rect().center() + QPoint(10, 0);
                     QMouseEvent event(QEvent::MouseMove, pos,
                                       view.viewport()->mapToGlobal(pos),
-                                      Qt::LeftButton, Qt::LeftButton, {});
+                                      BobUI::LeftButton, BobUI::LeftButton, {});
                     event.setAccepted(true);
                     QApplication::sendEvent(view.viewport(), &event);
                     QVERIFY(event.isAccepted());
@@ -769,7 +769,7 @@ void tst_QGraphicsView::dragMode_scrollHand()
                     auto pos = view.viewport()->rect().center() + QPoint(10, 10);
                     QMouseEvent event(QEvent::MouseMove, pos,
                                       view.viewport()->mapToGlobal(pos),
-                                      Qt::LeftButton, Qt::LeftButton, {});
+                                      BobUI::LeftButton, BobUI::LeftButton, {});
                     event.setAccepted(true);
                     QApplication::sendEvent(view.viewport(), &event);
                     QVERIFY(event.isAccepted());
@@ -784,17 +784,17 @@ void tst_QGraphicsView::dragMode_scrollHand()
                 auto pos = view.viewport()->rect().center() + QPoint(10, 10);
                 QMouseEvent event(QEvent::MouseButtonRelease, pos,
                                   view.viewport()->mapToGlobal(pos),
-                                  Qt::LeftButton, Qt::LeftButton, {});
+                                  BobUI::LeftButton, BobUI::LeftButton, {});
                 event.setAccepted(true);
                 QApplication::sendEvent(view.viewport(), &event);
                 QVERIFY(event.isAccepted());
             }
             QApplication::processEvents();
 
-            QTRY_VERIFY(item->isSelected());
+            BOBUIRY_VERIFY(item->isSelected());
             QCOMPARE(view.horizontalScrollBar()->value(), horizontalScrollBarValue - 10);
             QCOMPARE(view.verticalScrollBar()->value(), verticalScrollBarValue - 10);
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             QCOMPARE(view.viewport()->cursor().shape(), cursorShape);
 #endif
 
@@ -807,7 +807,7 @@ void tst_QGraphicsView::dragMode_scrollHand()
                 auto pos = view.viewport()->rect().center() + QPoint(10, 10);
                 QMouseEvent event(QEvent::MouseButtonPress, pos,
                                   view.viewport()->mapToGlobal(pos),
-                                  Qt::LeftButton, Qt::LeftButton, {});
+                                  BobUI::LeftButton, BobUI::LeftButton, {});
                 QApplication::sendEvent(view.viewport(), &event);
             }
             {
@@ -815,7 +815,7 @@ void tst_QGraphicsView::dragMode_scrollHand()
                 auto pos = view.viewport()->rect().center() + QPoint(10, 10);
                 QMouseEvent event(QEvent::MouseButtonRelease, pos,
                                   view.viewport()->mapToGlobal(pos),
-                                  Qt::LeftButton, Qt::LeftButton, {});
+                                  BobUI::LeftButton, BobUI::LeftButton, {});
                 QApplication::sendEvent(view.viewport(), &event);
             }
 
@@ -851,13 +851,13 @@ void tst_QGraphicsView::dragMode_rubberBand()
 
     view.setDragMode(QGraphicsView::RubberBandDrag);
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
 
     for (int i = 0; i < 2; ++i) {
         // RubberBandDrag
-#ifndef QT_NO_CURSOR
-        Qt::CursorShape cursorShape = view.viewport()->cursor().shape();
+#ifndef BOBUI_NO_CURSOR
+        BobUI::CursorShape cursorShape = view.viewport()->cursor().shape();
 #endif
         int horizontalScrollBarValue = view.horizontalScrollBar()->value();
         int verticalScrollBarValue = view.verticalScrollBar()->value();
@@ -866,12 +866,12 @@ void tst_QGraphicsView::dragMode_rubberBand()
             auto pos = view.viewport()->rect().center();
             QMouseEvent event(QEvent::MouseButtonPress, pos,
                               view.viewport()->mapToGlobal(pos),
-                              Qt::LeftButton, Qt::LeftButton, {});
+                              BobUI::LeftButton, BobUI::LeftButton, {});
             event.setAccepted(true);
             QApplication::sendEvent(view.viewport(), &event);
             QVERIFY(event.isAccepted());
         }
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         QCOMPARE(view.viewport()->cursor().shape(), cursorShape);
 #endif
 
@@ -882,7 +882,7 @@ void tst_QGraphicsView::dragMode_rubberBand()
             auto pos = view.viewport()->rect().center() + QPoint(100, 0);
             QMouseEvent event(QEvent::MouseMove, pos,
                               view.viewport()->mapToGlobal(pos),
-                              Qt::LeftButton, Qt::LeftButton, {});
+                              BobUI::LeftButton, BobUI::LeftButton, {});
             event.setAccepted(true);
             QApplication::sendEvent(view.viewport(), &event);
             QVERIFY(event.isAccepted());
@@ -898,7 +898,7 @@ void tst_QGraphicsView::dragMode_rubberBand()
             auto pos = view.viewport()->rect().center() + QPoint(100, 100);
             QMouseEvent event(QEvent::MouseMove, pos,
                               view.viewport()->mapToGlobal(pos),
-                              Qt::LeftButton, Qt::LeftButton, {});
+                              BobUI::LeftButton, BobUI::LeftButton, {});
             event.setAccepted(true);
             QApplication::sendEvent(view.viewport(), &event);
             QVERIFY(event.isAccepted());
@@ -911,14 +911,14 @@ void tst_QGraphicsView::dragMode_rubberBand()
             auto pos = view.viewport()->rect().center() + QPoint(100, 100);
             QMouseEvent event(QEvent::MouseButtonRelease, pos,
                               view.viewport()->mapToGlobal(pos),
-                              Qt::LeftButton, Qt::LeftButton, {});
+                              BobUI::LeftButton, BobUI::LeftButton, {});
             event.setAccepted(true);
             QApplication::sendEvent(view.viewport(), &event);
             QVERIFY(event.isAccepted());
         }
         QCOMPARE(view.horizontalScrollBar()->value(), horizontalScrollBarValue);
         QCOMPARE(view.verticalScrollBar()->value(), verticalScrollBarValue);
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         QCOMPARE(view.viewport()->cursor().shape(), cursorShape);
 #endif
 
@@ -940,7 +940,7 @@ void tst_QGraphicsView::rubberBandSelectionMode()
     rect->setFlag(QGraphicsItem::ItemIsSelectable);
 
     QGraphicsView view(&scene, &toplevel);
-    QCOMPARE(view.rubberBandSelectionMode(), Qt::IntersectsItemShape);
+    QCOMPARE(view.rubberBandSelectionMode(), BobUI::IntersectsItemShape);
     view.setDragMode(QGraphicsView::RubberBandDrag);
     view.resize(120, 120);
     toplevel.show();
@@ -952,21 +952,21 @@ void tst_QGraphicsView::rubberBandSelectionMode()
     view.viewport()->setMouseTracking(false);
 
     QVERIFY(scene.selectedItems().isEmpty());
-    sendMousePress(view.viewport(), QPoint(), Qt::LeftButton);
+    sendMousePress(view.viewport(), QPoint(), BobUI::LeftButton);
     sendMouseMove(view.viewport(), view.viewport()->rect().center(),
-                  Qt::LeftButton, Qt::LeftButton);
+                  BobUI::LeftButton, BobUI::LeftButton);
     QCOMPARE(scene.selectedItems(), {rect});
-    sendMouseRelease(view.viewport(), QPoint(), Qt::LeftButton);
+    sendMouseRelease(view.viewport(), QPoint(), BobUI::LeftButton);
 
-    view.setRubberBandSelectionMode(Qt::ContainsItemShape);
-    QCOMPARE(view.rubberBandSelectionMode(), Qt::ContainsItemShape);
-    sendMousePress(view.viewport(), QPoint(), Qt::LeftButton);
+    view.setRubberBandSelectionMode(BobUI::ContainsItemShape);
+    QCOMPARE(view.rubberBandSelectionMode(), BobUI::ContainsItemShape);
+    sendMousePress(view.viewport(), QPoint(), BobUI::LeftButton);
     QVERIFY(scene.selectedItems().isEmpty());
     sendMouseMove(view.viewport(), view.viewport()->rect().center(),
-                  Qt::LeftButton, Qt::LeftButton);
+                  BobUI::LeftButton, BobUI::LeftButton);
     QVERIFY(scene.selectedItems().isEmpty());
     sendMouseMove(view.viewport(), view.viewport()->rect().bottomRight(),
-                  Qt::LeftButton, Qt::LeftButton);
+                  BobUI::LeftButton, BobUI::LeftButton);
     QCOMPARE(scene.selectedItems(), {rect});
 }
 
@@ -1000,12 +1000,12 @@ void tst_QGraphicsView::rubberBandExtendSelection()
    QCOMPARE(scene.selectedItems(), {item1});
 
    // first rubberband without modifier key
-   sendMousePress(view.viewport(), view.mapFromScene(20, 115), Qt::LeftButton);
-   sendMouseMove(view.viewport(), view.mapFromScene(20, 300), Qt::LeftButton, Qt::LeftButton);
+   sendMousePress(view.viewport(), view.mapFromScene(20, 115), BobUI::LeftButton);
+   sendMouseMove(view.viewport(), view.mapFromScene(20, 300), BobUI::LeftButton, BobUI::LeftButton);
    QVERIFY(!item1->isSelected());
    QVERIFY(item2->isSelected());
    QVERIFY(item3->isSelected());
-   sendMouseRelease(view.viewport(), QPoint(), Qt::LeftButton);
+   sendMouseRelease(view.viewport(), QPoint(), BobUI::LeftButton);
 
    scene.clearSelection();
 
@@ -1017,10 +1017,10 @@ void tst_QGraphicsView::rubberBandExtendSelection()
    {
       QPoint clickPoint = view.mapFromScene(20, 115);
       QMouseEvent event(QEvent::MouseButtonPress, clickPoint, view.viewport()->mapToGlobal(clickPoint),
-                        Qt::LeftButton, {}, Qt::ControlModifier);
+                        BobUI::LeftButton, {}, BobUI::ControlModifier);
       QApplication::sendEvent(view.viewport(), &event);
    }
-   sendMouseMove(view.viewport(), view.mapFromScene(20, 300), Qt::LeftButton, Qt::LeftButton);
+   sendMouseMove(view.viewport(), view.mapFromScene(20, 300), BobUI::LeftButton, BobUI::LeftButton);
    QVERIFY(item1->isSelected());
    QVERIFY(item2->isSelected());
    QVERIFY(item3->isSelected());
@@ -1043,12 +1043,12 @@ void tst_QGraphicsView::rotated_rubberBand()
     }
 
     QGraphicsView view(&scene, &toplevel);
-    QCOMPARE(view.rubberBandSelectionMode(), Qt::IntersectsItemShape);
+    QCOMPARE(view.rubberBandSelectionMode(), BobUI::IntersectsItemShape);
     view.setDragMode(QGraphicsView::RubberBandDrag);
     view.resize(120, 120);
     view.rotate(45);
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
     // Disable mouse tracking to prevent the window system from sending mouse
     // move events to the viewport while we are synthesizing events. If
@@ -1058,78 +1058,78 @@ void tst_QGraphicsView::rotated_rubberBand()
 
     QVERIFY(scene.selectedItems().isEmpty());
     int midWidth = view.viewport()->width() / 2;
-    sendMousePress(view.viewport(), QPoint(midWidth - 2, 0), Qt::LeftButton);
+    sendMousePress(view.viewport(), QPoint(midWidth - 2, 0), BobUI::LeftButton);
     sendMouseMove(view.viewport(), QPoint(midWidth + 2, view.viewport()->height()),
-                  Qt::LeftButton, Qt::LeftButton);
+                  BobUI::LeftButton, BobUI::LeftButton);
     QCOMPARE(scene.selectedItems().size(), dim);
     const auto items = scene.items();
     for (const QGraphicsItem *item : items)
         QCOMPARE(item->isSelected(), item->data(0).toBool());
-    sendMouseRelease(view.viewport(), QPoint(), Qt::LeftButton);
+    sendMouseRelease(view.viewport(), QPoint(), BobUI::LeftButton);
 }
 
 void tst_QGraphicsView::backgroundBrush()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    scene.setBackgroundBrush(Qt::blue);
-    QCOMPARE(scene.backgroundBrush(), QBrush(Qt::blue));
+    scene.setBackgroundBrush(BobUI::blue);
+    QCOMPARE(scene.backgroundBrush(), QBrush(BobUI::blue));
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     scene.setBackgroundBrush(QBrush());
     QCOMPARE(scene.backgroundBrush(), QBrush());
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
 
     QRadialGradient gradient(0, 0, 10);
     gradient.setSpread(QGradient::RepeatSpread);
     scene.setBackgroundBrush(gradient);
 
     QCOMPARE(scene.backgroundBrush(), QBrush(gradient));
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
 }
 
 void tst_QGraphicsView::foregroundBrush()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    scene.setForegroundBrush(Qt::blue);
-    QCOMPARE(scene.foregroundBrush(), QBrush(Qt::blue));
+    scene.setForegroundBrush(BobUI::blue);
+    QCOMPARE(scene.foregroundBrush(), QBrush(BobUI::blue));
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     scene.setForegroundBrush(QBrush());
     QCOMPARE(scene.foregroundBrush(), QBrush());
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
 
     QRadialGradient gradient(0, 0, 10);
     gradient.setSpread(QGradient::RepeatSpread);
     scene.setForegroundBrush(gradient);
 
     QCOMPARE(scene.foregroundBrush(), QBrush(gradient));
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
 
     for (int i = 0; i < 50; ++i) {
         QRadialGradient gradient(view.rect().center() + QPoint(int(sin(i / 2.0) * 10), int(cos(i / 2.0) * 10)), 10);
-        gradient.setColorAt(0, Qt::transparent);
-        gradient.setColorAt(0.5, Qt::black);
-        gradient.setColorAt(1, Qt::transparent);
+        gradient.setColorAt(0, BobUI::transparent);
+        gradient.setColorAt(0.5, BobUI::black);
+        gradient.setColorAt(1, BobUI::transparent);
         gradient.setSpread(QGradient::RepeatSpread);
         scene.setForegroundBrush(gradient);
 
         QRadialGradient gradient2(view.rect().center() + QPoint(int(sin(i / 1.7) * 10), int(cos(i / 1.7) * 10)), 10);
-        gradient2.setColorAt(0, Qt::transparent);
-        gradient2.setColorAt(0.5, Qt::black);
-        gradient2.setColorAt(1, Qt::transparent);
+        gradient2.setColorAt(0, BobUI::transparent);
+        gradient2.setColorAt(0.5, BobUI::black);
+        gradient2.setColorAt(1, BobUI::transparent);
         gradient2.setSpread(QGradient::RepeatSpread);
         scene.setBackgroundBrush(gradient2);
 
         QRadialGradient gradient3(view.rect().center() + QPoint(int(sin(i / 1.85) * 10), int(cos(i / 1.85) * 10)), 10);
-        gradient3.setColorAt(0, Qt::transparent);
-        gradient3.setColorAt(0.5, Qt::black);
-        gradient3.setColorAt(1, Qt::transparent);
+        gradient3.setColorAt(0, BobUI::transparent);
+        gradient3.setColorAt(0.5, BobUI::black);
+        gradient3.setColorAt(1, BobUI::transparent);
         gradient3.setSpread(QGradient::RepeatSpread);
         scene.setBackgroundBrush(gradient3);
 
@@ -1160,15 +1160,15 @@ void tst_QGraphicsView::matrix()
         for (int i = 0; i < 50; ++i) {
             view.rotate(5);
             QRadialGradient gradient(view.rect().center() + QPoint(int(sin(i / 2.0) * 10), int(cos(i / 2.0) * 10)), 10);
-            gradient.setColorAt(0, Qt::transparent);
-            gradient.setColorAt(0.5, Qt::black);
-            gradient.setColorAt(1, Qt::transparent);
+            gradient.setColorAt(0, BobUI::transparent);
+            gradient.setColorAt(0.5, BobUI::black);
+            gradient.setColorAt(1, BobUI::transparent);
             gradient.setSpread(QGradient::RepeatSpread);
             scene.setForegroundBrush(gradient);
             QRadialGradient gradient2(view.rect().center() + QPoint(int(sin(i / 1.7) * 10), int(cos(i / 1.7) * 10)), 10);
-            gradient2.setColorAt(0, Qt::transparent);
-            gradient2.setColorAt(0.5, Qt::black);
-            gradient2.setColorAt(1, Qt::transparent);
+            gradient2.setColorAt(0, BobUI::transparent);
+            gradient2.setColorAt(0.5, BobUI::black);
+            gradient2.setColorAt(1, BobUI::transparent);
             gradient2.setSpread(QGradient::RepeatSpread);
             scene.setBackgroundBrush(gradient2);
             QApplication::processEvents();
@@ -1192,11 +1192,11 @@ void tst_QGraphicsView::matrix()
           // These cause a crash
         for (int i = 0; i < 40; ++i) {
             view.shear(1.2, 1.2);
-            QTest::qWait(20);
+            BOBUIest::qWait(20);
         }
         for (int i = 0; i < 40; ++i) {
             view.shear(-1.2, -1.2);
-            QTest::qWait(20);
+            BOBUIest::qWait(20);
         }
         */
         for (int i = 0; i < 20; ++i) {
@@ -1215,37 +1215,37 @@ void tst_QGraphicsView::matrix()
 void tst_QGraphicsView::matrix_convenience()
 {
     QGraphicsView view;
-    QCOMPARE(view.transform(), QTransform());
+    QCOMPARE(view.transform(), BOBUIransform());
 
     // Check the convenience functions
     view.rotate(90);
-    QCOMPARE(view.transform(), QTransform().rotate(90));
+    QCOMPARE(view.transform(), BOBUIransform().rotate(90));
     view.scale(2, 2);
-    QCOMPARE(view.transform(), QTransform().scale(2, 2) * QTransform().rotate(90));
+    QCOMPARE(view.transform(), BOBUIransform().scale(2, 2) * BOBUIransform().rotate(90));
     view.shear(1.2, 1.2);
-    QCOMPARE(view.transform(), QTransform().shear(1.2, 1.2) * QTransform().scale(2, 2) * QTransform().rotate(90));
+    QCOMPARE(view.transform(), BOBUIransform().shear(1.2, 1.2) * BOBUIransform().scale(2, 2) * BOBUIransform().rotate(90));
     view.translate(1, 1);
-    QCOMPARE(view.transform(), QTransform().translate(1, 1) * QTransform().shear(1.2, 1.2) * QTransform().scale(2, 2) * QTransform().rotate(90));
+    QCOMPARE(view.transform(), BOBUIransform().translate(1, 1) * BOBUIransform().shear(1.2, 1.2) * BOBUIransform().scale(2, 2) * BOBUIransform().rotate(90));
 }
 
 void tst_QGraphicsView::matrix_combine()
 {
     // Check matrix combining
     QGraphicsView view;
-    QCOMPARE(view.transform(), QTransform());
-    view.setTransform(QTransform().rotate(90), true);
-    view.setTransform(QTransform().rotate(90), true);
-    view.setTransform(QTransform().rotate(90), true);
-    view.setTransform(QTransform().rotate(90), true);
-    QCOMPARE(view.transform(), QTransform());
+    QCOMPARE(view.transform(), BOBUIransform());
+    view.setTransform(BOBUIransform().rotate(90), true);
+    view.setTransform(BOBUIransform().rotate(90), true);
+    view.setTransform(BOBUIransform().rotate(90), true);
+    view.setTransform(BOBUIransform().rotate(90), true);
+    QCOMPARE(view.transform(), BOBUIransform());
 
     view.resetTransform();
-    QCOMPARE(view.transform(), QTransform());
-    view.setTransform(QTransform().rotate(90), false);
-    view.setTransform(QTransform().rotate(90), false);
-    view.setTransform(QTransform().rotate(90), false);
-    view.setTransform(QTransform().rotate(90), false);
-    QCOMPARE(view.transform(), QTransform().rotate(90));
+    QCOMPARE(view.transform(), BOBUIransform());
+    view.setTransform(BOBUIransform().rotate(90), false);
+    view.setTransform(BOBUIransform().rotate(90), false);
+    view.setTransform(BOBUIransform().rotate(90), false);
+    view.setTransform(BOBUIransform().rotate(90), false);
+    QCOMPARE(view.transform(), BOBUIransform().rotate(90));
 }
 
 void tst_QGraphicsView::centerOnPoint()
@@ -1306,7 +1306,7 @@ void tst_QGraphicsView::centerOnItem()
     QGraphicsView view(&scene);
     view.setSceneRect(-1000, -1000, 2000, 2000);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     int tolerance = 7;
 
     for (int x = 0; x < 3; ++x) {
@@ -1341,24 +1341,24 @@ void tst_QGraphicsView::ensureVisibleRect()
 
     QGraphicsScene scene;
     QGraphicsItem *items[4];
-    items[0] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(Qt::black), QBrush(Qt::green));
-    items[1] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(Qt::black), QBrush(Qt::red));
-    items[2] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(Qt::black), QBrush(Qt::blue));
-    items[3] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(Qt::black), QBrush(Qt::yellow));
-    scene.addLine(QLineF(0, -100, 0, 100), QPen(Qt::blue, 2));
-    scene.addLine(QLineF(-100, 0, 100, 0), QPen(Qt::blue, 2));
+    items[0] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(BobUI::black), QBrush(BobUI::green));
+    items[1] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(BobUI::black), QBrush(BobUI::red));
+    items[2] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(BobUI::black), QBrush(BobUI::blue));
+    items[3] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(BobUI::black), QBrush(BobUI::yellow));
+    scene.addLine(QLineF(0, -100, 0, 100), QPen(BobUI::blue, 2));
+    scene.addLine(QLineF(-100, 0, 100, 0), QPen(BobUI::blue, 2));
     items[0]->setPos(-100, -100);
     items[1]->setPos(100, -100);
     items[2]->setPos(-100, 100);
     items[3]->setPos(100, 100);
 
-    QGraphicsItem *icon = scene.addEllipse(QRectF(-10, -10, 20, 20), QPen(Qt::black), QBrush(Qt::gray));
+    QGraphicsItem *icon = scene.addEllipse(QRectF(-10, -10, 20, 20), QPen(BobUI::black), QBrush(BobUI::gray));
 
     QGraphicsView view(&scene, &toplevel);
     view.setSceneRect(-500, -500, 1000, 1000);
     view.setFixedSize(250, 250);
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
     for (int y = -100; y < 100; y += 25) {
         for (int x = -100; x < 100; x += 13) {
@@ -1408,26 +1408,26 @@ void tst_QGraphicsView::fitInView()
 {
     QGraphicsScene scene;
     QGraphicsItem *items[4];
-    items[0] = scene.addEllipse(QRectF(-25, -25, 100, 20), QPen(Qt::black), QBrush(Qt::green));
-    items[1] = scene.addEllipse(QRectF(-25, -25, 20, 100), QPen(Qt::black), QBrush(Qt::red));
-    items[2] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(Qt::black), QBrush(Qt::blue));
-    items[3] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(Qt::black), QBrush(Qt::yellow));
-    scene.addLine(QLineF(0, -100, 0, 100), QPen(Qt::blue, 2));
-    scene.addLine(QLineF(-100, 0, 100, 0), QPen(Qt::blue, 2));
+    items[0] = scene.addEllipse(QRectF(-25, -25, 100, 20), QPen(BobUI::black), QBrush(BobUI::green));
+    items[1] = scene.addEllipse(QRectF(-25, -25, 20, 100), QPen(BobUI::black), QBrush(BobUI::red));
+    items[2] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(BobUI::black), QBrush(BobUI::blue));
+    items[3] = scene.addEllipse(QRectF(-25, -25, 50, 50), QPen(BobUI::black), QBrush(BobUI::yellow));
+    scene.addLine(QLineF(0, -100, 0, 100), QPen(BobUI::blue, 2));
+    scene.addLine(QLineF(-100, 0, 100, 0), QPen(BobUI::blue, 2));
     items[0]->setPos(-100, -100);
     items[1]->setPos(100, -100);
     items[2]->setPos(-100, 100);
     items[3]->setPos(100, 100);
 
-    items[0]->setTransform(QTransform().rotate(30), true);
-    items[1]->setTransform(QTransform().rotate(-30), true);
+    items[0]->setTransform(BOBUIransform().rotate(30), true);
+    items[1]->setTransform(BOBUIransform().rotate(-30), true);
 
     QGraphicsView view(&scene);
     view.setSceneRect(-400, -400, 800, 800);
     view.setFixedSize(400, 200);
 
     view.showNormal();
-    view.fitInView(scene.itemsBoundingRect(), Qt::IgnoreAspectRatio);
+    view.fitInView(scene.itemsBoundingRect(), BobUI::IgnoreAspectRatio);
     qApp->processEvents();
 
     // Sampled coordinates.
@@ -1439,7 +1439,7 @@ void tst_QGraphicsView::fitInView()
     QCOMPARE(view.itemAt(38, 158), items[2]);
     QCOMPARE(view.itemAt(332, 160), items[3]);
 
-    view.fitInView(items[0], Qt::IgnoreAspectRatio);
+    view.fitInView(items[0], BobUI::IgnoreAspectRatio);
     qApp->processEvents();
 
     QCOMPARE(view.itemAt(19, 13), items[0]);
@@ -1451,7 +1451,7 @@ void tst_QGraphicsView::fitInView()
     QVERIFY(!view.itemAt(29, 69));
     QVERIFY(!view.itemAt(251, 167));
 
-    view.fitInView(items[0], Qt::KeepAspectRatio);
+    view.fitInView(items[0], BobUI::KeepAspectRatio);
     qApp->processEvents();
 
     QCOMPARE(view.itemAt(325, 170), items[0]);
@@ -1463,7 +1463,7 @@ void tst_QGraphicsView::fitInView()
     QVERIFY(!view.itemAt(310, 125));
     QVERIFY(!view.itemAt(261, 168));
 
-    view.fitInView(items[0], Qt::KeepAspectRatioByExpanding);
+    view.fitInView(items[0], BobUI::KeepAspectRatioByExpanding);
     qApp->processEvents();
 
     QCOMPARE(view.itemAt(18, 10), items[0]);
@@ -1501,18 +1501,18 @@ void tst_QGraphicsView::itemsAtPoint()
     QCOMPARE(items.takeFirst()->zValue(), qreal(-1));
 }
 
-#if defined QT_BUILD_INTERNAL
+#if defined BOBUI_BUILD_INTERNAL
 void tst_QGraphicsView::itemsAtPosition_data()
 {
-    QTest::addColumn<float>("rotation");
-    QTest::addColumn<float>("scale");
-    QTest::addColumn<QPoint>("viewPos");
-    QTest::addColumn<bool>("ignoreTransform");
-    QTest::addColumn<bool>("hit");
-    QTest::newRow("scaled + ignore transform, no hit") << 0.0f << 1000.0f << QPoint(0, 0) << true << false;
-    QTest::newRow("scaled + ignore transform, hit") << 0.0f << 1000.0f << QPoint(100, 100) << true << true;
-    QTest::newRow("rotated + scaled, no hit") << 45.0f << 2.0f << QPoint(90, 90) << false << false;
-    QTest::newRow("rotated + scaled, hit") << 45.0f << 2.0f << QPoint(100, 100) << false << true;
+    BOBUIest::addColumn<float>("rotation");
+    BOBUIest::addColumn<float>("scale");
+    BOBUIest::addColumn<QPoint>("viewPos");
+    BOBUIest::addColumn<bool>("ignoreTransform");
+    BOBUIest::addColumn<bool>("hit");
+    BOBUIest::newRow("scaled + ignore transform, no hit") << 0.0f << 1000.0f << QPoint(0, 0) << true << false;
+    BOBUIest::newRow("scaled + ignore transform, hit") << 0.0f << 1000.0f << QPoint(100, 100) << true << true;
+    BOBUIest::newRow("rotated + scaled, no hit") << 45.0f << 2.0f << QPoint(90, 90) << false << false;
+    BOBUIest::newRow("rotated + scaled, hit") << 45.0f << 2.0f << QPoint(100, 100) << false << true;
 }
 
 void tst_QGraphicsView::itemsAtPosition()
@@ -1535,11 +1535,11 @@ void tst_QGraphicsView::itemsAtPosition()
     view.resize(200, 200);
     view.scale(scale, scale);
     view.rotate(rotation);
-    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    view.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     view.setScene(&scene);
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QPoint screenPos = view.viewport()->mapToGlobal(viewPos);
     QPointF scenePos = view.mapToScene(viewPos);
@@ -1609,35 +1609,35 @@ public:
 
 void tst_QGraphicsView::itemsInRect_cosmeticAdjust_data()
 {
-    QTest::addColumn<QRect>("updateRect");
-    QTest::addColumn<int>("numPaints");
-    QTest::addColumn<bool>("adjustForAntialiasing");
+    BOBUIest::addColumn<QRect>("updateRect");
+    BOBUIest::addColumn<int>("numPaints");
+    BOBUIest::addColumn<bool>("adjustForAntialiasing");
 
     // Aliased.
-    QTest::newRow("nil") << QRect() << 1 << false;
-    QTest::newRow("0, 0, 300, 100") << QRect(0, 0, 300, 100) << 1 << false;
-    QTest::newRow("0, 0, 100, 300") << QRect(0, 0, 100, 300) << 1 << false;
-    QTest::newRow("200, 0, 100, 300") << QRect(200, 0, 100, 300) << 1 << false;
-    QTest::newRow("0, 200, 300, 100") << QRect(0, 200, 300, 100) << 1 << false;
-    QTest::newRow("0, 0, 300, 99") << QRect(0, 0, 300, 99) << 0 << false;
-    QTest::newRow("0, 0, 99, 300") << QRect(0, 0, 99, 300) << 0 << false;
-    QTest::newRow("201, 0, 99, 300") << QRect(201, 0, 99, 300) << 0 << false;
-    QTest::newRow("0, 201, 300, 99") << QRect(0, 201, 300, 99) << 0 << false;
+    BOBUIest::newRow("nil") << QRect() << 1 << false;
+    BOBUIest::newRow("0, 0, 300, 100") << QRect(0, 0, 300, 100) << 1 << false;
+    BOBUIest::newRow("0, 0, 100, 300") << QRect(0, 0, 100, 300) << 1 << false;
+    BOBUIest::newRow("200, 0, 100, 300") << QRect(200, 0, 100, 300) << 1 << false;
+    BOBUIest::newRow("0, 200, 300, 100") << QRect(0, 200, 300, 100) << 1 << false;
+    BOBUIest::newRow("0, 0, 300, 99") << QRect(0, 0, 300, 99) << 0 << false;
+    BOBUIest::newRow("0, 0, 99, 300") << QRect(0, 0, 99, 300) << 0 << false;
+    BOBUIest::newRow("201, 0, 99, 300") << QRect(201, 0, 99, 300) << 0 << false;
+    BOBUIest::newRow("0, 201, 300, 99") << QRect(0, 201, 300, 99) << 0 << false;
 
     // Anti-aliased.
-    QTest::newRow("nil, antiAliased") << QRect() << 1 << true;
-    QTest::newRow("0, 0, 300, 100, antiAliased") << QRect(0, 0, 300, 100) << 1 << true;
-    QTest::newRow("0, 0, 100, 300, antiAliased") << QRect(0, 0, 100, 300) << 1 << true;
-    QTest::newRow("200, 0, 100, 300, antiAliased") << QRect(200, 0, 100, 300) << 1 << true;
-    QTest::newRow("0, 200, 300, 100, antiAliased") << QRect(0, 200, 300, 100) << 1 << true;
-    QTest::newRow("0, 0, 300, 99, antiAliased") << QRect(0, 0, 300, 99) << 1 << true;
-    QTest::newRow("0, 0, 99, 300, antiAliased") << QRect(0, 0, 99, 300) << 1 << true;
-    QTest::newRow("201, 0, 99, 300, antiAliased") << QRect(201, 0, 99, 300) << 1 << true;
-    QTest::newRow("0, 201, 300, 99, antiAliased") << QRect(0, 201, 300, 99) << 1 << true;
-    QTest::newRow("0, 0, 300, 98, antiAliased") << QRect(0, 0, 300, 98) << 0 << false;
-    QTest::newRow("0, 0, 98, 300, antiAliased") << QRect(0, 0, 98, 300) << 0 << false;
-    QTest::newRow("202, 0, 98, 300, antiAliased") << QRect(202, 0, 98, 300) << 0 << false;
-    QTest::newRow("0, 202, 300, 98, antiAliased") << QRect(0, 202, 300, 98) << 0 << false;
+    BOBUIest::newRow("nil, antiAliased") << QRect() << 1 << true;
+    BOBUIest::newRow("0, 0, 300, 100, antiAliased") << QRect(0, 0, 300, 100) << 1 << true;
+    BOBUIest::newRow("0, 0, 100, 300, antiAliased") << QRect(0, 0, 100, 300) << 1 << true;
+    BOBUIest::newRow("200, 0, 100, 300, antiAliased") << QRect(200, 0, 100, 300) << 1 << true;
+    BOBUIest::newRow("0, 200, 300, 100, antiAliased") << QRect(0, 200, 300, 100) << 1 << true;
+    BOBUIest::newRow("0, 0, 300, 99, antiAliased") << QRect(0, 0, 300, 99) << 1 << true;
+    BOBUIest::newRow("0, 0, 99, 300, antiAliased") << QRect(0, 0, 99, 300) << 1 << true;
+    BOBUIest::newRow("201, 0, 99, 300, antiAliased") << QRect(201, 0, 99, 300) << 1 << true;
+    BOBUIest::newRow("0, 201, 300, 99, antiAliased") << QRect(0, 201, 300, 99) << 1 << true;
+    BOBUIest::newRow("0, 0, 300, 98, antiAliased") << QRect(0, 0, 300, 98) << 0 << false;
+    BOBUIest::newRow("0, 0, 98, 300, antiAliased") << QRect(0, 0, 98, 300) << 0 << false;
+    BOBUIest::newRow("202, 0, 98, 300, antiAliased") << QRect(202, 0, 98, 300) << 0 << false;
+    BOBUIest::newRow("0, 202, 300, 98, antiAliased") << QRect(0, 202, 300, 98) << 0 << false;
 }
 
 void tst_QGraphicsView::itemsInRect_cosmeticAdjust()
@@ -1651,7 +1651,7 @@ void tst_QGraphicsView::itemsInRect_cosmeticAdjust()
 
     QGraphicsScene scene(-100, -100, 200, 200);
     CountPaintItem *rect = new CountPaintItem(QRectF(-50, -50, 100, 100));
-    rect->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
     scene.addItem(rect);
 
     QGraphicsView view(&scene);
@@ -1660,9 +1660,9 @@ void tst_QGraphicsView::itemsInRect_cosmeticAdjust()
     view.setFrameStyle(0);
     view.resize(300, 300);
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_VERIFY(rect->numPaints > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_VERIFY(rect->numPaints > 0);
 
     QCoreApplication::processEvents(); // Process all queued paint events
     rect->numPaints = 0;
@@ -1671,7 +1671,7 @@ void tst_QGraphicsView::itemsInRect_cosmeticAdjust()
     else
         view.viewport()->update(updateRect);
     qApp->processEvents();
-    QTRY_COMPARE(rect->numPaints, numPaints);
+    BOBUIRY_COMPARE(rect->numPaints, numPaints);
 }
 
 void tst_QGraphicsView::itemsInPoly()
@@ -1791,14 +1791,14 @@ void tst_QGraphicsView::itemAt2()
     QGraphicsScene scene(0, 0, 100, 100);
 
     // Add a 0.5x0.5 item at position 0 on the scene, top-left corner at -0.25, -0.25.
-    QGraphicsItem *item = scene.addRect(QRectF(-0.25, -0.25, 0.5, 0.5), QPen(Qt::black, 0.1));
+    QGraphicsItem *item = scene.addRect(QRectF(-0.25, -0.25, 0.5, 0.5), QPen(BobUI::black, 0.1));
 
     QGraphicsView view(&scene);
     view.setFixedSize(200, 200);
     view.setTransformationAnchor(QGraphicsView::NoAnchor);
     view.setRenderHint(QPainter::Antialiasing);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
 
     QPoint itemViewPoint = view.mapFromScene(item->scenePos());
@@ -1843,7 +1843,7 @@ void tst_QGraphicsView::mapToScene()
 
     view.setFixedSize(viewSize);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCOMPARE(view.size(), viewSize);
 
     // First once without setting the scene rect
@@ -1907,12 +1907,12 @@ void tst_QGraphicsView::mapToScenePoint()
 
 void tst_QGraphicsView::mapToSceneRect_data()
 {
-    QTest::addColumn<QRect>("viewRect");
-    QTest::addColumn<QPolygonF>("scenePoly");
-    QTest::addColumn<qreal>("rotation");
+    BOBUIest::addColumn<QRect>("viewRect");
+    BOBUIest::addColumn<QPolygonF>("scenePoly");
+    BOBUIest::addColumn<qreal>("rotation");
 
     const auto translate90 = [&](const QPolygonF &poly) -> QPolygonF {
-        const QTransform mat = QTransform().rotate(-90); // the view is rotated
+        const BOBUIransform mat = BOBUIransform().rotate(-90); // the view is rotated
         return mat.map(QPolygonF(poly));
     };
 
@@ -1920,12 +1920,12 @@ void tst_QGraphicsView::mapToSceneRect_data()
     constexpr QRect r2(0, 0, 10, 10);
     const QPolygonF p1 = QPolygonF(QRectF(r1));
     const QPolygonF p2 = QPolygonF(QRectF(r2));
-    QTest::newRow("nil, no rotation") << QRect() << QPolygonF() << qreal(0);
-    QTest::newRow("0, 0, 1, 1, no rotation") << r1 << p1 << qreal(0);
-    QTest::newRow("0, 0, 10, 10, no rotation") << r2 << p2 << qreal(0);
-    QTest::newRow("nil, 90 degree") << QRect() << QPolygonF() << qreal(90);
-    QTest::newRow("0, 0, 1, 1, 90 degree") << r1 << translate90(p1) << qreal(90);
-    QTest::newRow("0, 0, 10, 10, 90 degree") << r2 << translate90(p2) << qreal(90);
+    BOBUIest::newRow("nil, no rotation") << QRect() << QPolygonF() << qreal(0);
+    BOBUIest::newRow("0, 0, 1, 1, no rotation") << r1 << p1 << qreal(0);
+    BOBUIest::newRow("0, 0, 10, 10, no rotation") << r2 << p2 << qreal(0);
+    BOBUIest::newRow("nil, 90 degree") << QRect() << QPolygonF() << qreal(90);
+    BOBUIest::newRow("0, 0, 1, 1, 90 degree") << r1 << translate90(p1) << qreal(90);
+    BOBUIest::newRow("0, 0, 10, 10, 90 degree") << r2 << translate90(p2) << qreal(90);
 }
 
 void tst_QGraphicsView::mapToSceneRect()
@@ -1941,12 +1941,12 @@ void tst_QGraphicsView::mapToSceneRect()
     scene.addRect(25, -25, 50, 50);
     QGraphicsView view(&scene);
     view.setFrameStyle(0);
-    view.setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    view.setAlignment(BobUI::AlignTop | BobUI::AlignLeft);
     view.setFixedSize(200, 200);
     view.setTransformationAnchor(QGraphicsView::NoAnchor);
     view.setResizeAnchor(QGraphicsView::NoAnchor);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     view.rotate(rotation);
 
@@ -1965,7 +1965,7 @@ void tst_QGraphicsView::mapToScenePoly()
     view.translate(100, 100);
     view.setFixedSize(117, 117);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QPoint center = view.viewport()->rect().center();
     QRect rect(center + QPoint(10, 0), QSize(10, 10));
 
@@ -1987,7 +1987,7 @@ void tst_QGraphicsView::mapToScenePath()
     view.translate(10, 10);
     view.setFixedSize(300, 300);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QRect rect(QPoint(10, 0), QSize(10, 10));
 
     QPainterPath path;
@@ -2006,10 +2006,10 @@ void tst_QGraphicsView::mapFromScenePoint()
         QGraphicsView view(&scene);
         view.rotate(90);
         view.scale(10, 10);
-        view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        view.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+        view.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
         QPoint mapped = view.mapFromScene(0, 0);
         QPoint center = view.viewport()->rect().center();
@@ -2024,12 +2024,12 @@ void tst_QGraphicsView::mapFromScenePoint()
         QWidget toplevel;
 
         QGraphicsScene scene(0, 0, 200, 200);
-        scene.addRect(QRectF(0, 0, 200, 200), QPen(Qt::black, 1));
+        scene.addRect(QRectF(0, 0, 200, 200), QPen(BobUI::black, 1));
         QGraphicsView view(&scene, &toplevel);
         view.ensurePolished();
         view.resize(view.sizeHint());
         toplevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
         QCOMPARE(view.mapFromScene(0, 0), QPoint(0, 0));
         QCOMPARE(view.mapFromScene(0.4, 0.4), QPoint(0, 0));
@@ -2053,7 +2053,7 @@ void tst_QGraphicsView::mapFromSceneRect()
     const auto fw = view.frameWidth() * 2;
     view.setFixedSize(200 + fw, 200 + fw);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
     QVERIFY(!view.horizontalScrollBar()->isVisible());
     QVERIFY(!view.verticalScrollBar()->isVisible());
 
@@ -2076,7 +2076,7 @@ void tst_QGraphicsView::mapFromScenePoly()
     const auto fw = view.frameWidth() * 2;
     view.setFixedSize(200 + fw, 200 + fw);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QVERIFY(!view.horizontalScrollBar()->isVisible());
     QVERIFY(!view.verticalScrollBar()->isVisible());
 
@@ -2095,7 +2095,7 @@ void tst_QGraphicsView::mapFromScenePath()
     const auto fw = view.frameWidth() * 2;
     view.setFixedSize(200 + fw, 200 + fw);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QVERIFY(!view.horizontalScrollBar()->isVisible());
     QVERIFY(!view.verticalScrollBar()->isVisible());
 
@@ -2121,8 +2121,8 @@ void tst_QGraphicsView::sendEvent()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
     QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
 
     item->setFocus();
@@ -2138,30 +2138,30 @@ void tst_QGraphicsView::sendEvent()
     QCOMPARE(item->events.at(item->events.size() - 1), QEvent::GraphicsSceneMousePress);
 
     QMouseEvent mouseMoveEvent(QEvent::MouseMove, itemPoint, view.viewport()->mapToGlobal(itemPoint),
-                               Qt::LeftButton, Qt::LeftButton, {});
+                               BobUI::LeftButton, BobUI::LeftButton, {});
     QApplication::sendEvent(view.viewport(), &mouseMoveEvent);
     QCOMPARE(item->events.size(), 5);
     QCOMPARE(item->events.last(), QEvent::GraphicsSceneMouseMove);
 
     QMouseEvent mouseReleaseEvent(QEvent::MouseButtonRelease, itemPoint,
                                   view.viewport()->mapToGlobal(itemPoint),
-                                  Qt::LeftButton, {}, {});
+                                  BobUI::LeftButton, {}, {});
     QApplication::sendEvent(view.viewport(), &mouseReleaseEvent);
     QCOMPARE(item->events.size(), 7);
     QCOMPARE(item->events.at(item->events.size() - 2), QEvent::GraphicsSceneMouseRelease);
     QCOMPARE(item->events.at(item->events.size() - 1), QEvent::UngrabMouse);
 
-    QTest::keyPress(view.viewport(), Qt::Key_Space);
+    BOBUIest::keyPress(view.viewport(), BobUI::Key_Space);
     QCOMPARE(item->events.size(), 9);
     QCOMPARE(item->events.at(item->events.size() - 2), QEvent::ShortcutOverride);
     QCOMPARE(item->events.last(), QEvent::KeyPress);
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 class MouseWheelScene : public QGraphicsScene
 {
 public:
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
 
     void wheelEvent(QGraphicsSceneWheelEvent *event) override
     {
@@ -2174,11 +2174,11 @@ void tst_QGraphicsView::wheelEvent()
 {
     // Create a scene with an invalid orientation.
     MouseWheelScene scene;
-    scene.orientation = Qt::Orientation(-1);
+    scene.orientation = BobUI::Orientation(-1);
 
     QGraphicsWidget *widget = new QGraphicsWidget;
     widget->setGeometry(0, 0, 400, 400);
-    widget->setFocusPolicy(Qt::WheelFocus);
+    widget->setFocusPolicy(BobUI::WheelFocus);
 
     EventSpy spy(widget, QEvent::GraphicsSceneWheel);
     QCOMPARE(spy.count(), 0);
@@ -2188,8 +2188,8 @@ void tst_QGraphicsView::wheelEvent()
     // Assign a view.
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
     QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
 
 
@@ -2197,121 +2197,121 @@ void tst_QGraphicsView::wheelEvent()
     {
         QWheelEvent event(view.mapFromScene(widget->boundingRect().center()),
                           view.mapToGlobal(view.mapFromScene(widget->boundingRect().center())),
-                          QPoint(), QPoint(120, 0), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+                          QPoint(), QPoint(120, 0), BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
         QApplication::sendEvent(view.viewport(), &event);
-        QCOMPARE(scene.orientation, Qt::Horizontal);
+        QCOMPARE(scene.orientation, BobUI::Horizontal);
     }
 
     // Send a wheel event with vertical orientation.
     {
         QWheelEvent event(view.mapFromScene(widget->boundingRect().center()),
                           view.mapToGlobal(view.mapFromScene(widget->boundingRect().center())),
-                          QPoint(), QPoint(0, 120), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+                          QPoint(), QPoint(0, 120), BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
         QApplication::sendEvent(view.viewport(), &event);
-        QCOMPARE(scene.orientation, Qt::Vertical);
+        QCOMPARE(scene.orientation, BobUI::Vertical);
     }
 
     QCOMPARE(spy.count(), 2);
     QVERIFY(widget->hasFocus());
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QGraphicsView::cursor()
 {
     QGraphicsScene scene;
     QGraphicsItem *item = scene.addRect(QRectF(-10, -10, 20, 20));
-    item->setCursor(Qt::IBeamCursor);
+    item->setCursor(BobUI::IBeamCursor);
 
     QGraphicsView view(&scene);
     view.setFixedSize(400, 400);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(view.viewport()->cursor().shape(), QCursor().shape());
-    view.viewport()->setCursor(Qt::PointingHandCursor);
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    view.viewport()->setCursor(BobUI::PointingHandCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
 
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
 
     sendMouseMove(view.viewport(), QPoint(5, 5));
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
 }
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QGraphicsView::cursor2()
 {
     QGraphicsScene scene;
     QGraphicsItem *item = scene.addRect(QRectF(-10, -10, 20, 20));
-    item->setCursor(Qt::IBeamCursor);
+    item->setCursor(BobUI::IBeamCursor);
     item->setZValue(1);
 
     QGraphicsItem *item2 = scene.addRect(QRectF(-20, -20, 40, 40));
     item2->setZValue(0);
 
     QGraphicsView view(&scene);
-    view.viewport()->setCursor(Qt::PointingHandCursor);
+    view.viewport()->setCursor(BobUI::PointingHandCursor);
     view.setFixedSize(400, 400);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     sendMouseMove(view.viewport(), view.mapFromScene(-30, -30));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-30, -30));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-15, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
 
     view.setDragMode(QGraphicsView::ScrollHandDrag);
 
     sendMouseMove(view.viewport(), view.mapFromScene(-30, -30));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::OpenHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::OpenHandCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-15, -15));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::OpenHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::OpenHandCursor);
 
     view.setDragMode(QGraphicsView::NoDrag);
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::ArrowCursor);
-    view.viewport()->setCursor(Qt::PointingHandCursor);
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::ArrowCursor);
+    view.viewport()->setCursor(BobUI::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
 
-    item2->setCursor(Qt::SizeAllCursor);
+    item2->setCursor(BobUI::SizeAllCursor);
 
     sendMouseMove(view.viewport(), view.mapFromScene(-30, -30));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-15, -15));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::SizeAllCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::SizeAllCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-15, -15));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::SizeAllCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::SizeAllCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-30, -30));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
 
     view.setDragMode(QGraphicsView::ScrollHandDrag);
 
     sendMouseMove(view.viewport(), view.mapFromScene(-30, -30));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::OpenHandCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::OpenHandCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::IBeamCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::IBeamCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(-15, -15));
-    QTRY_COMPARE(view.viewport()->cursor().shape(), Qt::SizeAllCursor);
+    BOBUIRY_COMPARE(view.viewport()->cursor().shape(), BobUI::SizeAllCursor);
 }
 #endif
 
 void tst_QGraphicsView::transformationAnchor()
 {
     QGraphicsScene scene(-1000, -1000, 2000, 2000);
-    scene.addRect(QRectF(-50, -50, 100, 100), QPen(Qt::black), QBrush(Qt::blue));
+    scene.addRect(QRectF(-50, -50, 100, 100), QPen(BobUI::black), QBrush(BobUI::blue));
 
     QGraphicsView view(&scene);
     setFrameless(&view);
@@ -2350,7 +2350,7 @@ void tst_QGraphicsView::transformationAnchor()
 void tst_QGraphicsView::resizeAnchor()
 {
     QGraphicsScene scene(-1000, -1000, 2000, 2000);
-    scene.addRect(QRectF(-50, -50, 100, 100), QPen(Qt::black), QBrush(Qt::blue));
+    scene.addRect(QRectF(-50, -50, 100, 100), QPen(BobUI::black), QBrush(BobUI::blue));
 
     QGraphicsView view(&scene);
     setFrameless(&view);
@@ -2358,7 +2358,7 @@ void tst_QGraphicsView::resizeAnchor()
     for (int i = 0; i < 2; ++i) {
         view.resize(100, 100);
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
         QApplication::processEvents();
 
         if (i == 0) {
@@ -2367,7 +2367,7 @@ void tst_QGraphicsView::resizeAnchor()
             view.setResizeAnchor(QGraphicsView::AnchorViewCenter);
         }
         view.centerOn(0, 0);
-        QTest::qWait(25);
+        BOBUIest::qWait(25);
 
         QPointF f = view.mapToScene(50, 50);
         QPointF center = view.mapToScene(view.viewport()->rect().center());
@@ -2377,10 +2377,10 @@ void tst_QGraphicsView::resizeAnchor()
         for (int size = 200; size <= 400; size += 25) {
             view.resize(size, size);
             if (i == 0) {
-                QTRY_COMPARE(view.mapToScene(50, 50), f);
-                QTRY_VERIFY(view.mapToScene(view.viewport()->rect().center()) != center);
+                BOBUIRY_COMPARE(view.mapToScene(50, 50), f);
+                BOBUIRY_VERIFY(view.mapToScene(view.viewport()->rect().center()) != center);
             } else {
-                QTRY_VERIFY(view.mapToScene(50, 50) != f);
+                BOBUIRY_VERIFY(view.mapToScene(50, 50) != f);
 
                 QPointF newCenter = view.mapToScene(view.viewport()->rect().center());
                 int slack = 3;
@@ -2414,7 +2414,7 @@ protected:
 void tst_QGraphicsView::viewportUpdateMode()
 {
     QGraphicsScene scene(0, 0, 100, 100);
-    scene.setBackgroundBrush(Qt::red);
+    scene.setBackgroundBrush(BobUI::red);
 
     CustomView view;
     QScreen *screen = QGuiApplication::primaryScreen();
@@ -2424,9 +2424,9 @@ void tst_QGraphicsView::viewportUpdateMode()
 
     // Show the view, and initialize our test.
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_VERIFY(!view.lastUpdateRegions.isEmpty());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_VERIFY(!view.lastUpdateRegions.isEmpty());
     view.lastUpdateRegions.clear();
 
     // Issue two scene updates.
@@ -2434,7 +2434,7 @@ void tst_QGraphicsView::viewportUpdateMode()
     scene.update(QRectF(20, 0, 10, 10));
 
     // The view gets two updates for the update scene updates.
-    QTRY_VERIFY(!view.lastUpdateRegions.isEmpty());
+    BOBUIRY_VERIFY(!view.lastUpdateRegions.isEmpty());
 #ifndef Q_OS_MAC //cocoa doesn't support drawing regions
     QCOMPARE(view.lastUpdateRegions.last().rectCount(), 2);
     QCOMPARE(view.lastUpdateRegions.last().begin()[0].size(), QSize(14, 14));
@@ -2506,14 +2506,14 @@ void tst_QGraphicsView::viewportUpdateMode2()
     const QMargins margins = view.contentsMargins();
     view.resize(200 + margins.left() + margins.right(), 200 + margins.top() + margins.bottom());
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
-    QVERIFY(QTest::qWaitForWindowActive(&toplevel));
-    QTRY_VERIFY(view.painted);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel));
+    BOBUIRY_VERIFY(view.painted);
     const QRect viewportRect = view.viewport()->rect();
     QCOMPARE(viewportRect, QRect(0, 0, 200, 200));
 
-#if defined QT_BUILD_INTERNAL
-    QGraphicsViewPrivate *viewPrivate = static_cast<QGraphicsViewPrivate *>(qt_widget_private(&view));
+#if defined BOBUI_BUILD_INTERNAL
+    QGraphicsViewPrivate *viewPrivate = static_cast<QGraphicsViewPrivate *>(bobui_widget_private(&view));
 
     QRect boundingRect;
     const QRect rect1(0, 0, 10, 10);
@@ -2536,13 +2536,13 @@ void tst_QGraphicsView::viewportUpdateMode2()
 
     view.lastUpdateRegions.clear();
     viewPrivate->processPendingUpdates();
-    QTRY_COMPARE(view.lastUpdateRegions.size(), 1);
+    BOBUIRY_COMPARE(view.lastUpdateRegions.size(), 1);
     // Note that we adjust by 2 for antialiasing.
     QCOMPARE(view.lastUpdateRegions.at(0), QRegion(boundingRect.adjusted(-2, -2, 2, 2) & viewportRect));
 #endif
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void tst_QGraphicsView::acceptDrops()
 {
     QGraphicsView view;
@@ -2610,7 +2610,7 @@ public:
     {
         receivedPaintEvent = true;
         dirtyPainter = (painter->pen().color() != w->palette().color(w->foregroundRole()));
-        painter->setPen(Qt::red);
+        painter->setPen(BobUI::red);
     }
 };
 
@@ -2647,13 +2647,13 @@ void tst_QGraphicsView::optimizationFlags_dontSavePainterState()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     parent->receivedPaintEvent = false;
     child->receivedPaintEvent = false;
     view.viewport()->update();
 
-    QTRY_VERIFY(parent->receivedPaintEvent);
-    QTRY_VERIFY(child->receivedPaintEvent);
+    BOBUIRY_VERIFY(parent->receivedPaintEvent);
+    BOBUIRY_VERIFY(child->receivedPaintEvent);
     QVERIFY(!parent->dirtyPainter);
     QVERIFY(!child->dirtyPainter);
 
@@ -2662,29 +2662,29 @@ void tst_QGraphicsView::optimizationFlags_dontSavePainterState()
     child->receivedPaintEvent = false;
     view.viewport()->update();
 
-    QTRY_VERIFY(parent->receivedPaintEvent);
-    QTRY_VERIFY(child->receivedPaintEvent);
+    BOBUIRY_VERIFY(parent->receivedPaintEvent);
+    BOBUIRY_VERIFY(child->receivedPaintEvent);
     QVERIFY(!parent->dirtyPainter);
     QVERIFY(child->dirtyPainter);
 
     MyGraphicsView painter(&scene);
     painter.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&painter));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&painter));
 
     MyGraphicsView painter2(&scene);
     painter2.setOptimizationFlag(QGraphicsView::DontSavePainterState,true);
     painter2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&painter2));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&painter2));
 }
 
 void tst_QGraphicsView::optimizationFlags_dontSavePainterState2_data()
 {
-    QTest::addColumn<bool>("savePainter");
-    QTest::addColumn<bool>("indirectPainting");
-    QTest::newRow("With painter state protection, without indirect painting") << true << false;
-    QTest::newRow("Without painter state protection, without indirect painting") << false << false;
-    QTest::newRow("With painter state protectionm, with indirect painting") << true << true;
-    QTest::newRow("Without painter state protection, with indirect painting") << false << true;
+    BOBUIest::addColumn<bool>("savePainter");
+    BOBUIest::addColumn<bool>("indirectPainting");
+    BOBUIest::newRow("With painter state protection, without indirect painting") << true << false;
+    BOBUIest::newRow("Without painter state protection, without indirect painting") << false << false;
+    BOBUIest::newRow("With painter state protectionm, with indirect painting") << true << true;
+    BOBUIest::newRow("Without painter state protection, with indirect painting") << false << true;
 }
 
 void tst_QGraphicsView::optimizationFlags_dontSavePainterState2()
@@ -2701,8 +2701,8 @@ void tst_QGraphicsView::optimizationFlags_dontSavePainterState2()
         void drawForeground(QPainter *p, const QRectF &) override
         { transformInDrawForeground = p->worldTransform(); opacityInDrawForeground = p->opacity(); }
 
-        QTransform transformInDrawBackground;
-        QTransform transformInDrawForeground;
+        BOBUIransform transformInDrawBackground;
+        BOBUIransform transformInDrawForeground;
         qreal opacityInDrawBackground;
         qreal opacityInDrawForeground;
     };
@@ -2712,10 +2712,10 @@ void tst_QGraphicsView::optimizationFlags_dontSavePainterState2()
     QGraphicsRectItem *rectA = scene.addRect(0, 0, 20, 20);
     QGraphicsRectItem *rectB = scene.addRect(50, 50, 20, 20);
 
-    rectA->setTransform(QTransform::fromScale(2, 2));
-    rectA->setPen(QPen(Qt::black, 0));
-    rectB->setTransform(QTransform::fromTranslate(200, 200));
-    rectB->setPen(QPen(Qt::black, 0));
+    rectA->setTransform(BOBUIransform::fromScale(2, 2));
+    rectA->setPen(QPen(BobUI::black, 0));
+    rectB->setTransform(BOBUIransform::fromTranslate(200, 200));
+    rectB->setPen(QPen(BobUI::black, 0));
 
     const auto items = scene.items();
     for (QGraphicsItem *item : items)
@@ -2728,14 +2728,14 @@ void tst_QGraphicsView::optimizationFlags_dontSavePainterState2()
     view.rotate(45);
     view.scale(1.5, 1.5);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Make sure the view is repainted; otherwise the tests below will fail.
     view.viewport()->update();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
 
     // Make sure the painter's world transform is preserved after drawItems.
-    QTransform expectedTransform = view.viewportTransform();
+    BOBUIransform expectedTransform = view.viewportTransform();
     QVERIFY(!expectedTransform.isIdentity());
     QCOMPARE(scene.transformInDrawForeground, expectedTransform);
     QCOMPARE(scene.transformInDrawBackground, expectedTransform);
@@ -2750,7 +2750,7 @@ void tst_QGraphicsView::optimizationFlags_dontSavePainterState2()
     scene.render(&painter);
     painter.end();
 
-    expectedTransform = QTransform();
+    expectedTransform = BOBUIransform();
     QCOMPARE(scene.transformInDrawForeground, expectedTransform);
     QCOMPARE(scene.transformInDrawBackground, expectedTransform);
     QCOMPARE(scene.opacityInDrawBackground, expectedOpacity);
@@ -2786,29 +2786,29 @@ public:
 
 void tst_QGraphicsView::levelOfDetail_data()
 {
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<qreal>("lod");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<qreal>("lod");
 
-    QTest::newRow("1:4, 1:4") << QTransform().scale(0.25, 0.25) << qreal(0.25);
-    QTest::newRow("1:2, 1:4") << QTransform().scale(0.5, 0.25) << qreal(::sqrt(0.125));
-    QTest::newRow("1:4, 1:2") << QTransform().scale(0.25, 0.5) << qreal(::sqrt(0.125));
+    BOBUIest::newRow("1:4, 1:4") << BOBUIransform().scale(0.25, 0.25) << qreal(0.25);
+    BOBUIest::newRow("1:2, 1:4") << BOBUIransform().scale(0.5, 0.25) << qreal(::sqrt(0.125));
+    BOBUIest::newRow("1:4, 1:2") << BOBUIransform().scale(0.25, 0.5) << qreal(::sqrt(0.125));
 
-    QTest::newRow("1:2, 1:2") << QTransform().scale(0.5, 0.5) << qreal(0.5);
-    QTest::newRow("1:1, 1:2") << QTransform().scale(1, 0.5) << qreal(::sqrt(0.5));
-    QTest::newRow("1:2, 1:1") << QTransform().scale(0.5, 1) << qreal(::sqrt(0.5));
+    BOBUIest::newRow("1:2, 1:2") << BOBUIransform().scale(0.5, 0.5) << qreal(0.5);
+    BOBUIest::newRow("1:1, 1:2") << BOBUIransform().scale(1, 0.5) << qreal(::sqrt(0.5));
+    BOBUIest::newRow("1:2, 1:1") << BOBUIransform().scale(0.5, 1) << qreal(::sqrt(0.5));
 
-    QTest::newRow("1:1, 1:1") << QTransform().scale(1, 1) << qreal(1.0);
-    QTest::newRow("2:1, 1:1") << QTransform().scale(2, 1) << qreal(::sqrt(2.0));
-    QTest::newRow("1:1, 2:1") << QTransform().scale(1, 2) << qreal(::sqrt(2.0));
-    QTest::newRow("2:1, 2:1") << QTransform().scale(2, 2) << qreal(2.0);
-    QTest::newRow("2:1, 4:1") << QTransform().scale(2, 4) << qreal(::sqrt(8.0));
-    QTest::newRow("4:1, 2:1") << QTransform().scale(4, 2) << qreal(::sqrt(8.0));
-    QTest::newRow("4:1, 4:1") << QTransform().scale(4, 4) << qreal(4.0);
+    BOBUIest::newRow("1:1, 1:1") << BOBUIransform().scale(1, 1) << qreal(1.0);
+    BOBUIest::newRow("2:1, 1:1") << BOBUIransform().scale(2, 1) << qreal(::sqrt(2.0));
+    BOBUIest::newRow("1:1, 2:1") << BOBUIransform().scale(1, 2) << qreal(::sqrt(2.0));
+    BOBUIest::newRow("2:1, 2:1") << BOBUIransform().scale(2, 2) << qreal(2.0);
+    BOBUIest::newRow("2:1, 4:1") << BOBUIransform().scale(2, 4) << qreal(::sqrt(8.0));
+    BOBUIest::newRow("4:1, 2:1") << BOBUIransform().scale(4, 2) << qreal(::sqrt(8.0));
+    BOBUIest::newRow("4:1, 4:1") << BOBUIransform().scale(4, 4) << qreal(4.0);
 }
 
 void tst_QGraphicsView::levelOfDetail()
 {
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(qreal, lod);
 
     LodItem *item = new LodItem(QRectF(0, 0, 100, 100));
@@ -2818,13 +2818,13 @@ void tst_QGraphicsView::levelOfDetail()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTRY_COMPARE(item->lastLod, qreal(1));
+    BOBUIRY_COMPARE(item->lastLod, qreal(1));
 
     view.setTransform(transform);
 
-    QTRY_COMPARE(item->lastLod, lod);
+    BOBUIRY_COMPARE(item->lastLod, lod);
 }
 
 static void scrollBarRanges_addTestData(const QString &style, bool styled)
@@ -2837,7 +2837,7 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
         QRectF sceneRect;
         ScrollBarCount sceneRectOffsetFactors;
         int scale;
-        Qt::ScrollBarPolicy hbarpolicy, vbarpolicy;
+        BobUI::ScrollBarPolicy hbarpolicy, vbarpolicy;
         ExpectedValueDescription hmin, hmax, vmin, vmax;
     } data [] = {
         {
@@ -2845,8 +2845,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(),
             ExpectedValueDescription(),
@@ -2857,8 +2857,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1, 1),
             ExpectedValueDescription(),
@@ -2869,8 +2869,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1, 1),
             ExpectedValueDescription(0, 0),
@@ -2881,8 +2881,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(),
             ExpectedValueDescription(),
@@ -2893,8 +2893,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100),
@@ -2905,8 +2905,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100),
@@ -2917,8 +2917,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(1, 1, 1),
             ExpectedValueDescription(),
@@ -2929,8 +2929,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(51, 1, 1),
             ExpectedValueDescription(),
@@ -2941,8 +2941,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(51, 1, 1),
             ExpectedValueDescription(),
@@ -2953,8 +2953,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-101),
@@ -2965,8 +2965,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-101),
@@ -2977,8 +2977,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-101),
@@ -2989,8 +2989,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(0, 2, 1),
             ExpectedValueDescription(),
@@ -3001,8 +3001,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 2, 1),
             ExpectedValueDescription(),
@@ -3013,8 +3013,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 2, 1),
             ExpectedValueDescription(),
@@ -3025,8 +3025,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3037,8 +3037,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3049,8 +3049,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3061,8 +3061,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth, 1, 1),
             ExpectedValueDescription(),
@@ -3073,8 +3073,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100, 1, 1),
             ExpectedValueDescription(),
@@ -3085,8 +3085,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100, 1, 1),
             ExpectedValueDescription(),
@@ -3097,8 +3097,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 200, 1, 1),
             ExpectedValueDescription(-200),
@@ -3109,8 +3109,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100, 1, 1),
             ExpectedValueDescription(-200),
@@ -3121,8 +3121,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAsNeeded,
-            Qt::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
+            BobUI::ScrollBarAsNeeded,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100, 1, 1),
             ExpectedValueDescription(-200),
@@ -3133,8 +3133,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(),
             ExpectedValueDescription(),
@@ -3145,8 +3145,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(50),
             ExpectedValueDescription(),
@@ -3157,8 +3157,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(50),
             ExpectedValueDescription(),
@@ -3169,8 +3169,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(),
             ExpectedValueDescription(),
@@ -3181,8 +3181,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50),
             ExpectedValueDescription(),
@@ -3193,8 +3193,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50),
             ExpectedValueDescription(-100),
@@ -3205,8 +3205,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(1),
             ExpectedValueDescription(),
@@ -3217,8 +3217,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(51),
             ExpectedValueDescription(),
@@ -3229,8 +3229,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(51),
             ExpectedValueDescription(),
@@ -3241,8 +3241,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-101),
@@ -3253,8 +3253,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50),
             ExpectedValueDescription(-101),
@@ -3265,8 +3265,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50),
             ExpectedValueDescription(-101),
@@ -3277,8 +3277,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(0, 1),
             ExpectedValueDescription(),
@@ -3289,8 +3289,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1),
             ExpectedValueDescription(),
@@ -3301,8 +3301,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1),
             ExpectedValueDescription(),
@@ -3313,8 +3313,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-100, -1),
@@ -3325,8 +3325,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50),
             ExpectedValueDescription(-100, -1),
@@ -3337,8 +3337,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50),
             ExpectedValueDescription(-100, -1),
@@ -3349,8 +3349,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth),
             ExpectedValueDescription(),
@@ -3361,8 +3361,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100),
             ExpectedValueDescription(),
@@ -3373,8 +3373,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100),
             ExpectedValueDescription(),
@@ -3385,8 +3385,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 200),
             ExpectedValueDescription(-200),
@@ -3397,8 +3397,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100),
             ExpectedValueDescription(-200),
@@ -3409,8 +3409,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOff,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100),
             ExpectedValueDescription(-200),
@@ -3421,8 +3421,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(0, 1, 1),
             ExpectedValueDescription(),
@@ -3433,8 +3433,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1, 1),
             ExpectedValueDescription(),
@@ -3445,8 +3445,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1, 1),
             ExpectedValueDescription(),
@@ -3457,8 +3457,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-100),
@@ -3469,8 +3469,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100),
@@ -3481,8 +3481,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100),
@@ -3493,8 +3493,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(1, 1, 1),
             ExpectedValueDescription(),
@@ -3505,8 +3505,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(51, 1, 1),
             ExpectedValueDescription(),
@@ -3517,8 +3517,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(51, 1, 1),
             ExpectedValueDescription(),
@@ -3529,8 +3529,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-101),
@@ -3541,8 +3541,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-101),
@@ -3553,8 +3553,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-101),
@@ -3565,8 +3565,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(0, 2, 1),
             ExpectedValueDescription(),
@@ -3577,8 +3577,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 2, 1),
             ExpectedValueDescription(),
@@ -3589,8 +3589,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 2, 1),
             ExpectedValueDescription(),
@@ -3601,8 +3601,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3613,8 +3613,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3625,8 +3625,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3637,8 +3637,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth, 1, 1),
             ExpectedValueDescription(),
@@ -3649,8 +3649,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100, 1, 1),
             ExpectedValueDescription(),
@@ -3661,8 +3661,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100, 1, 1),
             ExpectedValueDescription(),
@@ -3673,8 +3673,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 200, 1, 1),
             ExpectedValueDescription(-200),
@@ -3685,8 +3685,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100, 1, 1),
             ExpectedValueDescription(-200),
@@ -3697,8 +3697,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOn,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100, 1, 1),
             ExpectedValueDescription(-200),
@@ -3709,8 +3709,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(0, 1, 1),
             ExpectedValueDescription(),
@@ -3721,8 +3721,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1, 1),
             ExpectedValueDescription(),
@@ -3733,8 +3733,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 1, 1),
             ExpectedValueDescription(),
@@ -3745,8 +3745,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(),
@@ -3757,8 +3757,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(),
@@ -3769,8 +3769,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100),
@@ -3781,8 +3781,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 1, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(1, 1, 1),
             ExpectedValueDescription(),
@@ -3793,8 +3793,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(51, 1, 1),
             ExpectedValueDescription(),
@@ -3805,8 +3805,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(51, 1, 1),
             ExpectedValueDescription(),
@@ -3817,8 +3817,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 1, viewHeight +1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-101),
@@ -3829,8 +3829,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 1),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-101),
@@ -3841,8 +3841,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-101, -101, viewWidth + 51, viewHeight + 101),
             ScrollBarCount(0, 0, 0, 0),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-101),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-101),
@@ -3853,8 +3853,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(0, 2, 1),
             ExpectedValueDescription(),
@@ -3865,8 +3865,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 2, 1),
             ExpectedValueDescription(),
@@ -3877,8 +3877,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(50, 2, 1),
             ExpectedValueDescription(),
@@ -3889,8 +3889,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-100, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3901,8 +3901,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3913,8 +3913,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(-1, -1, 1, 1),
             1,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-100, -1),
             ExpectedValueDescription(-50, 1, 1),
             ExpectedValueDescription(-100, -1),
@@ -3925,8 +3925,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth, 1, 1),
             ExpectedValueDescription(),
@@ -3937,8 +3937,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100, 1, 1),
             ExpectedValueDescription(),
@@ -3949,8 +3949,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(0, 0, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(),
             ExpectedValueDescription(viewWidth + 100, 1, 1),
             ExpectedValueDescription(),
@@ -3961,8 +3961,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 200, 1, 1),
             ExpectedValueDescription(-200),
@@ -3973,8 +3973,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100, 1, 1),
             ExpectedValueDescription(-200),
@@ -3985,8 +3985,8 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
             QRectF(-100, -100, viewWidth + 50, viewHeight + 100),
             ScrollBarCount(0, 0, 0, 0),
             2,
-            Qt::ScrollBarAlwaysOff,
-            Qt::ScrollBarAlwaysOn,
+            BobUI::ScrollBarAlwaysOff,
+            BobUI::ScrollBarAlwaysOn,
             ExpectedValueDescription(-200),
             ExpectedValueDescription(viewWidth - 100, 1, 1),
             ExpectedValueDescription(-200),
@@ -3997,11 +3997,11 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
     const QSize viewSize(viewWidth, viewHeight);
 
     for (const Data &e : data) {
-        QTest::addRow("%s%s, %s", style.toLatin1().data(), styled ? ", Styled" : "", e.name)
+        BOBUIest::addRow("%s%s, %s", style.toLatin1().data(), styled ? ", Styled" : "", e.name)
             << style << viewSize
             << e.sceneRect
             << e.sceneRectOffsetFactors
-            << QTransform().scale(e.scale, e.scale)
+            << BOBUIransform().scale(e.scale, e.scale)
             << e.hbarpolicy
             << e.vbarpolicy
             << e.hmin << e.hmax << e.vmin << e.vmax
@@ -4011,18 +4011,18 @@ static void scrollBarRanges_addTestData(const QString &style, bool styled)
 
 void tst_QGraphicsView::scrollBarRanges_data()
 {
-    QTest::addColumn<QString>("style");
-    QTest::addColumn<QSize>("viewportSize");
-    QTest::addColumn<QRectF>("sceneRect");
-    QTest::addColumn<ScrollBarCount>("sceneRectOffsetFactors");
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<Qt::ScrollBarPolicy>("hbarpolicy");
-    QTest::addColumn<Qt::ScrollBarPolicy>("vbarpolicy");
-    QTest::addColumn<ExpectedValueDescription>("hmin");
-    QTest::addColumn<ExpectedValueDescription>("hmax");
-    QTest::addColumn<ExpectedValueDescription>("vmin");
-    QTest::addColumn<ExpectedValueDescription>("vmax");
-    QTest::addColumn<bool>("useStyledPanel");
+    BOBUIest::addColumn<QString>("style");
+    BOBUIest::addColumn<QSize>("viewportSize");
+    BOBUIest::addColumn<QRectF>("sceneRect");
+    BOBUIest::addColumn<ScrollBarCount>("sceneRectOffsetFactors");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<BobUI::ScrollBarPolicy>("hbarpolicy");
+    BOBUIest::addColumn<BobUI::ScrollBarPolicy>("vbarpolicy");
+    BOBUIest::addColumn<ExpectedValueDescription>("hmin");
+    BOBUIest::addColumn<ExpectedValueDescription>("hmax");
+    BOBUIest::addColumn<ExpectedValueDescription>("vmin");
+    BOBUIest::addColumn<ExpectedValueDescription>("vmax");
+    BOBUIest::addColumn<bool>("useStyledPanel");
 
     const auto styles = QStyleFactory::keys();
     for (const QString &style : styles) {
@@ -4040,9 +4040,9 @@ void tst_QGraphicsView::scrollBarRanges()
     QFETCH(QSize, viewportSize);
     QFETCH(QRectF, sceneRect);
     QFETCH(ScrollBarCount, sceneRectOffsetFactors);
-    QFETCH(QTransform, transform);
-    QFETCH(Qt::ScrollBarPolicy, hbarpolicy);
-    QFETCH(Qt::ScrollBarPolicy, vbarpolicy);
+    QFETCH(BOBUIransform, transform);
+    QFETCH(BobUI::ScrollBarPolicy, hbarpolicy);
+    QFETCH(BobUI::ScrollBarPolicy, vbarpolicy);
     QFETCH(ExpectedValueDescription, hmin);
     QFETCH(ExpectedValueDescription, hmax);
     QFETCH(ExpectedValueDescription, vmin);
@@ -4073,7 +4073,7 @@ void tst_QGraphicsView::scrollBarRanges()
     view.setVerticalScrollBarPolicy(vbarpolicy);
 
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     const int offset = view.style()->pixelMetric(QStyle::PM_ScrollBarExtent, 0, 0);
 
@@ -4083,7 +4083,7 @@ void tst_QGraphicsView::scrollBarRanges()
     actualSceneRect.setTop(sceneRect.top() + sceneRectOffsetFactors.top * offset);
     actualSceneRect.setHeight(sceneRect.height() + sceneRectOffsetFactors.bottom * offset);
     scene.setSceneRect(actualSceneRect);
-    scene.addRect(actualSceneRect, QPen(Qt::blue), QBrush(QColor(Qt::green)));
+    scene.addRect(actualSceneRect, QPen(BobUI::blue), QBrush(QColor(BobUI::green)));
 
     int expectedHmin = hmin.value + hmin.scrollBarExtentsToAdd * offset;
     int expectedVmin = vmin.value + vmin.scrollBarExtentsToAdd * offset;
@@ -4131,16 +4131,16 @@ void tst_QGraphicsView::acceptMousePressEvent()
 
     TestView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTest::mouseClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(!view.pressAccepted);
 
     QSignalSpy spy(&scene, &QGraphicsScene::changed);
     scene.addRect(0, 0, 2000, 2000)->setFlag(QGraphicsItem::ItemIsMovable);
     QVERIFY(spy.wait());
 
-    QTest::mouseClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(view.pressAccepted);
 }
 
@@ -4150,16 +4150,16 @@ void tst_QGraphicsView::acceptMouseDoubleClickEvent()
 
     TestView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    QTest::mouseDClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseDClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(!view.doubleClickAccepted);
 
     QSignalSpy spy(&scene, &QGraphicsScene::changed);
     scene.addRect(0, 0, 2000, 2000)->setFlag(QGraphicsItem::ItemIsMovable);
     QVERIFY(spy.wait());
 
-    QTest::mouseDClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseDClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(view.doubleClickAccepted);
 }
 
@@ -4195,10 +4195,10 @@ void tst_QGraphicsView::forwardMousePress()
     widget.setLayout(&layout);
     layout.addWidget(&view);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     widget.pressForwarded = false;
-    QTest::mouseClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(widget.pressForwarded);
 
     scene.addRect(0, 0, 2000, 2000);
@@ -4206,7 +4206,7 @@ void tst_QGraphicsView::forwardMousePress()
     qApp->processEvents(); // ensure scene rect is updated
 
     widget.pressForwarded = false;
-    QTest::mouseClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(widget.pressForwarded);
 }
 
@@ -4219,10 +4219,10 @@ void tst_QGraphicsView::forwardMouseDoubleClick()
     widget.setLayout(&layout);
     layout.addWidget(&view);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     widget.doubleClickForwarded = false;
-    QTest::mouseDClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseDClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(widget.doubleClickForwarded);
 
     scene.addRect(0, 0, 2000, 2000);
@@ -4230,7 +4230,7 @@ void tst_QGraphicsView::forwardMouseDoubleClick()
     qApp->processEvents(); // ensure scene rect is updated
 
     widget.doubleClickForwarded = false;
-    QTest::mouseDClick(view.viewport(), Qt::LeftButton);
+    BOBUIest::mouseDClick(view.viewport(), BobUI::LeftButton);
     QVERIFY(widget.doubleClickForwarded);
 }
 
@@ -4250,7 +4250,7 @@ void tst_QGraphicsView::replayMouseMove()
     // One mouse event should be translated into one scene event.
     for (int i = 0; i < 3; ++i) {
         sendMouseMove(view.viewport(), view.viewport()->rect().center(),
-                      Qt::LeftButton, Qt::MouseButtons(Qt::LeftButton));
+                      BobUI::LeftButton, BobUI::MouseButtons(BobUI::LeftButton));
         QCOMPARE(viewSpy.count(), i + 1);
         QCOMPARE(sceneSpy.count(), i + 1);
     }
@@ -4291,7 +4291,7 @@ void tst_QGraphicsView::itemsUnderMouse()
 
    QGraphicsView view(&scene);
    view.show();
-   QVERIFY(QTest::qWaitForWindowExposed(&view));
+   QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
    QCOMPARE(view.items(view.mapFromScene(w3.boundingRect().center())).first(),
             static_cast<QGraphicsItem *>(&w3));
@@ -4328,8 +4328,8 @@ void tst_QGraphicsView::task172231_untransformableItems()
 
     view.scale(2, 1);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
     QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
 
     QRectF origExposedRect = text->exposedRect;
@@ -4389,17 +4389,17 @@ void tst_QGraphicsView::task187791_setSceneCausesUpdate()
     QGraphicsScene scene(0, 0, 200, 200);
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     EventSpy updateSpy(view.viewport(), QEvent::Paint);
     QCOMPARE(updateSpy.count(), 0);
 
     view.setScene(0);
     QApplication::processEvents();
-    QTRY_COMPARE(updateSpy.count(), 1);
+    BOBUIRY_COMPARE(updateSpy.count(), 1);
     view.setScene(&scene);
     QApplication::processEvents();
-    QTRY_COMPARE(updateSpy.count(), 2);
+    BOBUIRY_COMPARE(updateSpy.count(), 2);
 }
 
 class MouseMoveCounter : public QGraphicsView
@@ -4435,26 +4435,26 @@ void tst_QGraphicsView::task186827_deleteReplayedItem()
     MouseMoveCounter view;
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     view.viewport()->setMouseTracking(true);
 
     QCOMPARE(view.mouseMoves, 0);
     {
         auto pos = view.mapFromScene(25, 25);
-        QMouseEvent event(QEvent::MouseMove, pos, view.viewport()->mapToGlobal(pos), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, pos, view.viewport()->mapToGlobal(pos), BobUI::NoButton, {}, {});
         QApplication::sendEvent(view.viewport(), &event);
     }
     QCOMPARE(view.mouseMoves, 1);
-    QTest::qWait(25);
-    QTRY_COMPARE(view.mouseMoves, 1);
-    QTest::qWait(25);
+    BOBUIest::qWait(25);
+    BOBUIRY_COMPARE(view.mouseMoves, 1);
+    BOBUIest::qWait(25);
     {
         auto pos = view.mapFromScene(25, 25);
-        QMouseEvent event(QEvent::MouseMove, pos, view.viewport()->mapToGlobal(pos), Qt::NoButton, {}, {});
+        QMouseEvent event(QEvent::MouseMove, pos, view.viewport()->mapToGlobal(pos), BobUI::NoButton, {}, {});
         QApplication::sendEvent(view.viewport(), &event);
     }
     QCOMPARE(view.mouseMoves, 2);
-    QTest::qWait(15);
+    BOBUIest::qWait(15);
 }
 
 void tst_QGraphicsView::task207546_focusCrash()
@@ -4475,7 +4475,7 @@ void tst_QGraphicsView::task207546_focusCrash()
     widget.layout()->addWidget(gr2);
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&widget));
     widget.focusNextPrevChild(true);
     QCOMPARE(static_cast<QWidget *>(gr2), widget.focusWidget());
@@ -4496,9 +4496,9 @@ void tst_QGraphicsView::task210599_unsetDragWhileDragging()
     {
         view.setDragMode(QGraphicsView::ScrollHandDrag);
         QMouseEvent press(QEvent::MouseButtonPress, origPos,
-                          view.viewport()->mapToGlobal(origPos), Qt::LeftButton, {}, {});
+                          view.viewport()->mapToGlobal(origPos), BobUI::LeftButton, {}, {});
         QMouseEvent move(QEvent::MouseMove, step1Pos,
-                         view.viewport()->mapToGlobal(step1Pos), Qt::LeftButton, {}, {});
+                         view.viewport()->mapToGlobal(step1Pos), BobUI::LeftButton, {}, {});
         QApplication::sendEvent(view.viewport(), &press);
         QApplication::sendEvent(view.viewport(), &move);
     }
@@ -4507,7 +4507,7 @@ void tst_QGraphicsView::task210599_unsetDragWhileDragging()
     {
         view.setDragMode(QGraphicsView::NoDrag);
         QMouseEvent release(QEvent::MouseButtonRelease, step1Pos,
-                            view.viewport()->mapToGlobal(step1Pos), Qt::LeftButton, {}, {});
+                            view.viewport()->mapToGlobal(step1Pos), BobUI::LeftButton, {}, {});
         QApplication::sendEvent(view.viewport(), &release);
     }
 
@@ -4517,7 +4517,7 @@ void tst_QGraphicsView::task210599_unsetDragWhileDragging()
     {
         view.setDragMode(QGraphicsView::ScrollHandDrag);
         QMouseEvent move(QEvent::MouseMove, step2Pos,
-                         view.viewport()->mapToGlobal(step2Pos), Qt::LeftButton, {}, {});
+                         view.viewport()->mapToGlobal(step2Pos), BobUI::LeftButton, {}, {});
         QApplication::sendEvent(view.viewport(), &move);
     }
 
@@ -4540,10 +4540,10 @@ public slots:
 
 void tst_QGraphicsView::task239729_noViewUpdate_data()
 {
-    QTest::addColumn<bool>("a");
+    BOBUIest::addColumn<bool>("a");
 
-    QTest::newRow("a") << false;
-    QTest::newRow("b") << true;
+    BOBUIest::newRow("a") << false;
+    BOBUIest::newRow("b") << true;
 }
 
 void tst_QGraphicsView::task239729_noViewUpdate()
@@ -4566,13 +4566,13 @@ void tst_QGraphicsView::task239729_noViewUpdate()
     QCOMPARE(spy.count(), 0);
 
     view->show();
-    QVERIFY(QTest::qWaitForWindowActive(view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(view));
 
-    QTRY_VERIFY(spy.count() >= 1);
+    BOBUIRY_VERIFY(spy.count() >= 1);
     spy.reset();
     scene.update();
     QApplication::processEvents();
-    QTRY_COMPARE(spy.count(), 1);
+    BOBUIRY_COMPARE(spy.count(), 1);
 
     delete view;
 }
@@ -4612,7 +4612,7 @@ void tst_QGraphicsView::task245469_itemsAtPointWithClip()
     view.resize(150,150);
     view.rotate(90);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QList<QGraphicsItem *> itemsAtCenter = view.items(view.viewport()->rect().center());
     QCOMPARE(itemsAtCenter, (QList<QGraphicsItem *>() << child << parent));
@@ -4628,11 +4628,11 @@ static QGraphicsView *createSimpleViewAndScene()
     QGraphicsScene *scene = new QGraphicsScene(view);
     view->setScene(scene);
 
-    view->setBackgroundBrush(Qt::blue);
+    view->setBackgroundBrush(BobUI::blue);
 
     QGraphicsRectItem *rect = scene->addRect(0, 0, 10, 10);
-    rect->setBrush(Qt::red);
-    rect->setPen(Qt::NoPen);
+    rect->setBrush(BobUI::red);
+    rect->setPen(BobUI::NoPen);
     return view;
 }
 
@@ -4649,7 +4649,7 @@ public:
         transform = painter->transform();
     }
 
-    QTransform transform;
+    BOBUIransform transform;
 };
 
 void tst_QGraphicsView::embeddedViews()
@@ -4662,15 +4662,15 @@ void tst_QGraphicsView::embeddedViews()
     SpyItem *item = new SpyItem;
     v2->scene()->addItem(item);
 
-    proxy->setTransform(QTransform::fromTranslate(5, 5), true);
+    proxy->setTransform(BOBUIransform::fromTranslate(5, 5), true);
 
     QImage actual(64, 64, QImage::Format_ARGB32_Premultiplied);
     actual.fill(0);
     v1->QWidget::render(&actual);
-    QTransform a = item->transform;
+    BOBUIransform a = item->transform;
 
     v2->QWidget::render(&actual);
-    QTransform b = item->transform;
+    BOBUIransform b = item->transform;
 
     QCOMPARE(a, b);
     delete v1;
@@ -4680,14 +4680,14 @@ void tst_QGraphicsView::embeddedViews()
     Verify that a nested graphics view and embedded widgets receive window
     activation and focus correctly.
 
-    See QTBUG-94091.
+    See BOBUIBUG-94091.
 */
 void tst_QGraphicsView::embeddedViewsWithFocus()
 {
     class FocusWidget : public QWidget
     {
     public:
-        FocusWidget() { setFocusPolicy(Qt::StrongFocus); }
+        FocusWidget() { setFocusPolicy(BobUI::StrongFocus); }
         QSize sizeHint() const override { return QSize(100, 100); }
 
         int focusCount = 0;
@@ -4714,7 +4714,7 @@ void tst_QGraphicsView::embeddedViewsWithFocus()
     QGraphicsView outerView(&outerScene);
     outerView.show();
     outerView.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&outerView));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&outerView));
     const QPoint outerCenter(QPoint(innerWidget->sizeHint().width() / 2,
                                     innerWidget->sizeHint().height() / 2));
     const QPoint innerCenter(outerCenter + QPoint(0, innerWidget->sizeHint().height()));
@@ -4725,20 +4725,20 @@ void tst_QGraphicsView::embeddedViewsWithFocus()
 
     QCOMPARE(outerWidget->focusCount, 0);
     QCOMPARE(innerWidget->focusCount, 0);
-    QTest::mouseClick(outerView.viewport(), Qt::LeftButton, {}, outerCenter);
+    BOBUIest::mouseClick(outerView.viewport(), BobUI::LeftButton, {}, outerCenter);
     QCOMPARE(outerWidget->focusCount, 1);
     QCOMPARE(innerWidget->focusCount, 0);
-    QTest::mouseClick(outerView.viewport(), Qt::LeftButton, {}, innerCenter);
+    BOBUIest::mouseClick(outerView.viewport(), BobUI::LeftButton, {}, innerCenter);
     QCOMPARE(outerWidget->focusCount, 0);
     QCOMPARE(innerWidget->focusCount, 1);
 }
 
 void tst_QGraphicsView::scrollAfterResize_data()
 {
-    QTest::addColumn<bool>("reverse");
-    QTest::addColumn<QTransform>("x1");
-    QTest::addColumn<QTransform>("x2");
-    QTest::addColumn<QTransform>("x3");
+    BOBUIest::addColumn<bool>("reverse");
+    BOBUIest::addColumn<BOBUIransform>("x1");
+    BOBUIest::addColumn<BOBUIransform>("x2");
+    BOBUIest::addColumn<BOBUIransform>("x3");
 
     QStyle *style = QStyleFactory::create("windows");
 
@@ -4748,23 +4748,23 @@ void tst_QGraphicsView::scrollAfterResize_data()
     int viewportWidth = 300;
     int scrollBarIndent = viewportWidth - extent - (inside ? 4 : 2)*frameWidth;
 
-    QTest::newRow("normal") << false
-                            << QTransform()
-                            << QTransform()
-                            << QTransform().translate(-10, 0);
-    QTest::newRow("reverse") << true
-                             << QTransform().translate(scrollBarIndent, 0)
-                             << QTransform().translate(scrollBarIndent + 100, 0)
-                             << QTransform().translate(scrollBarIndent + 110, 0);
+    BOBUIest::newRow("normal") << false
+                            << BOBUIransform()
+                            << BOBUIransform()
+                            << BOBUIransform().translate(-10, 0);
+    BOBUIest::newRow("reverse") << true
+                             << BOBUIransform().translate(scrollBarIndent, 0)
+                             << BOBUIransform().translate(scrollBarIndent + 100, 0)
+                             << BOBUIransform().translate(scrollBarIndent + 110, 0);
     delete style;
 }
 
 void tst_QGraphicsView::scrollAfterResize()
 {
     QFETCH(bool, reverse);
-    QFETCH(QTransform, x1);
-    QFETCH(QTransform, x2);
-    QFETCH(QTransform, x3);
+    QFETCH(BOBUIransform, x1);
+    QFETCH(BOBUIransform, x2);
+    QFETCH(BOBUIransform, x3);
 
     QStyle *style = QStyleFactory::create("windows");
     QWidget toplevel;
@@ -4772,12 +4772,12 @@ void tst_QGraphicsView::scrollAfterResize()
     QGraphicsView view(&toplevel);
     view.setStyle(style);
     if (reverse)
-        view.setLayoutDirection(Qt::RightToLeft);
+        view.setLayoutDirection(BobUI::RightToLeft);
 
     view.setSceneRect(-1000, -1000, 2000, 2000);
     view.resize(300, 300);
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
     view.horizontalScrollBar()->setValue(0);
     view.verticalScrollBar()->setValue(0);
     QCOMPARE(view.viewportTransform(), x1);
@@ -4790,13 +4790,13 @@ void tst_QGraphicsView::scrollAfterResize()
 
 void tst_QGraphicsView::moveItemWhileScrolling_data()
 {
-    QTest::addColumn<bool>("adjustForAntialiasing");
-    QTest::addColumn<bool>("changedConnected");
+    BOBUIest::addColumn<bool>("adjustForAntialiasing");
+    BOBUIest::addColumn<bool>("changedConnected");
 
-    QTest::newRow("no adjust") << false << false;
-    QTest::newRow("adjust") << true << false;
-    QTest::newRow("no adjust changedConnected") << false << true;
-    QTest::newRow("adjust changedConnected") << true << true;
+    BOBUIest::newRow("no adjust") << false << false;
+    BOBUIest::newRow("adjust") << true << false;
+    BOBUIest::newRow("no adjust changedConnected") << false << true;
+    BOBUIest::newRow("adjust changedConnected") << true << true;
 }
 
 void tst_QGraphicsView::moveItemWhileScrolling()
@@ -4812,11 +4812,11 @@ void tst_QGraphicsView::moveItemWhileScrolling()
     public:
         MoveItemScrollView()
         {
-            setWindowFlags(Qt::X11BypassWindowManagerHint);
+            setWindowFlags(BobUI::X11BypassWindowManagerHint);
             setScene(new QGraphicsScene(0, 0, 1000, 1000, this));
             rect = scene()->addRect(0, 0, 10, 10);
             rect->setPos(50, 50);
-            rect->setPen(QPen(Qt::black, 0));
+            rect->setPen(QPen(BobUI::black, 0));
             painted = false;
         }
         QRegion lastPaintedRegion;
@@ -4824,7 +4824,7 @@ void tst_QGraphicsView::moveItemWhileScrolling()
         bool painted;
         void waitForPaintEvent()
         {
-            QTimer::singleShot(2000, &eventLoop, SLOT(quit()));
+            BOBUIimer::singleShot(2000, &eventLoop, SLOT(quit()));
             eventLoop.exec();
         }
     protected:
@@ -4841,8 +4841,8 @@ void tst_QGraphicsView::moveItemWhileScrolling()
 
     MoveItemScrollView view;
     view.setFrameStyle(0);
-    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    view.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     view.setResizeAnchor(QGraphicsView::NoAnchor);
     view.setTransformationAnchor(QGraphicsView::NoAnchor);
     if (!adjustForAntialiasing)
@@ -4852,15 +4852,15 @@ void tst_QGraphicsView::moveItemWhileScrolling()
     view.showNormal();
     if (changedConnected)
         QObject::connect(view.scene(), SIGNAL(changed(QList<QRectF>)), this, SLOT(dummySlot()));
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     view.painted = false;
     view.lastPaintedRegion = QRegion();
     view.horizontalScrollBar()->setValue(view.horizontalScrollBar()->value() + 10);
     view.rect->moveBy(0, 10);
     view.waitForPaintEvent();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
 
     QRegion expectedRegion;
     expectedRegion += QRect(0, 0, 200, 200);
@@ -4868,7 +4868,7 @@ void tst_QGraphicsView::moveItemWhileScrolling()
     int a = adjustForAntialiasing ? 2 : 1;
     expectedRegion += QRect(40, 50, 10, 10).adjusted(-a, -a, a, a);
     expectedRegion += QRect(40, 60, 10, 10).adjusted(-a, -a, a, a);
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
     COMPARE_REGIONS(view.lastPaintedRegion, expectedRegion);
 }
@@ -4878,7 +4878,7 @@ void tst_QGraphicsView::centerOnDirtyItem()
     QWidget toplevel;
 
     QGraphicsView view(&toplevel);
-    toplevel.setWindowFlags(view.windowFlags() | Qt::WindowStaysOnTopHint);
+    toplevel.setWindowFlags(view.windowFlags() | BobUI::WindowStaysOnTopHint);
     view.resize(200, 200);
 
     QGraphicsScene *scene = new QGraphicsScene(&view);
@@ -4886,12 +4886,12 @@ void tst_QGraphicsView::centerOnDirtyItem()
     view.setSceneRect(-1000, -1000, 2000, 2000);
 
     QGraphicsRectItem *item = new QGraphicsRectItem(0, 0, 10, 10);
-    item->setBrush(Qt::red);
+    item->setBrush(BobUI::red);
     scene->addItem(item);
     view.centerOn(item);
 
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
     QImage before(view.viewport()->size(), QImage::Format_ARGB32);
     view.viewport()->render(&before);
@@ -4958,7 +4958,7 @@ void tst_QGraphicsView::mouseTracking()
         scene.addItem(widget);
         QVERIFY(!view.viewport()->hasMouseTracking());
         // Enable window decoraton.
-        widget->setWindowFlags(Qt::Window | Qt::WindowTitleHint);
+        widget->setWindowFlags(BobUI::Window | BobUI::WindowTitleHint);
         QVERIFY(view.viewport()->hasMouseTracking());
     }
 
@@ -4969,8 +4969,8 @@ void tst_QGraphicsView::mouseTracking()
         QGraphicsView view(&scene);
 
         QGraphicsRectItem *item = new QGraphicsRectItem(10, 10, 10, 10);
-#ifndef QT_NO_CURSOR
-        item->setCursor(Qt::CrossCursor);
+#ifndef BOBUI_NO_CURSOR
+        item->setCursor(BobUI::CrossCursor);
 #endif
         scene.addItem(item);
         QVERIFY(view.viewport()->hasMouseTracking());
@@ -4979,8 +4979,8 @@ void tst_QGraphicsView::mouseTracking()
         // Adding an item to the scene before the scene is set on the view.
         QGraphicsScene scene(-10000, -10000, 20000, 20000);
         QGraphicsRectItem *item = new QGraphicsRectItem(10, 10, 10, 10);
-#ifndef QT_NO_CURSOR
-        item->setCursor(Qt::CrossCursor);
+#ifndef BOBUI_NO_CURSOR
+        item->setCursor(BobUI::CrossCursor);
 #endif
         scene.addItem(item);
 
@@ -4996,8 +4996,8 @@ void tst_QGraphicsView::mouseTracking()
         QGraphicsView view3(&scene);
 
         QGraphicsRectItem *item = new QGraphicsRectItem(10, 10, 10, 10);
-#ifndef QT_NO_CURSOR
-        item->setCursor(Qt::CrossCursor);
+#ifndef BOBUI_NO_CURSOR
+        item->setCursor(BobUI::CrossCursor);
 #endif
         scene.addItem(item);
 
@@ -5018,7 +5018,7 @@ void tst_QGraphicsView::mouseTracking2()
 
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QVERIFY(!view.viewport()->hasMouseTracking());
     view.viewport()->setMouseTracking(true); // Explicitly enable mouse tracking.
@@ -5028,7 +5028,7 @@ void tst_QGraphicsView::mouseTracking2()
     QCOMPARE(spy.count(), 0);
     auto pos = view.viewport()->rect().center();
     QMouseEvent event(QEvent::MouseMove, pos, view.viewport()->mapToGlobal(pos),
-                      Qt::NoButton, Qt::MouseButtons(Qt::NoButton), {});
+                      BobUI::NoButton, BobUI::MouseButtons(BobUI::NoButton), {});
     QApplication::sendEvent(view.viewport(), &event);
     QCOMPARE(spy.count(), 1);
 }
@@ -5154,9 +5154,9 @@ void tst_QGraphicsView::render()
     view.resize(200, 200);
     view.painted = false;
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QApplication::processEvents();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
 
     RenderTester *r1 = new RenderTester(QRectF(0, 0, 50, 50));
     RenderTester *r2 = new RenderTester(QRectF(50, 50, 50, 50));
@@ -5169,13 +5169,13 @@ void tst_QGraphicsView::render()
 
     qApp->processEvents();
 
-    QTRY_COMPARE(r1->paints, 1);
+    BOBUIRY_COMPARE(r1->paints, 1);
     QCOMPARE(r2->paints, 1);
     QCOMPARE(r3->paints, 1);
     QCOMPARE(r4->paints, 1);
 
     QPixmap pix(200, 200);
-    pix.fill(Qt::transparent);
+    pix.fill(BobUI::transparent);
     QPainter painter(&pix);
     view.render(&painter);
     painter.end();
@@ -5197,10 +5197,10 @@ void tst_QGraphicsView::exposeRegion()
     view.setScene(&scene);
     view.show();
     QApplicationPrivate::setActiveWindow(&view);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
-    QTRY_VERIFY(item->paints > 0);
+    BOBUIRY_VERIFY(item->paints > 0);
 
     item->paints = 0;
     view.lastUpdateRegions.clear();
@@ -5214,7 +5214,7 @@ void tst_QGraphicsView::exposeRegion()
     QApplication::processEvents();
 
     // Make sure it triggers correct repaint on the view.
-    QTRY_COMPARE(view.lastUpdateRegions.size(), 1);
+    BOBUIRY_COMPARE(view.lastUpdateRegions.size(), 1);
     COMPARE_REGIONS(view.lastUpdateRegions.at(0), expectedExposeRegion);
 
     // Make sure the item didn't get any repaints.
@@ -5226,28 +5226,28 @@ void tst_QGraphicsView::exposeRegion()
 void tst_QGraphicsView::update_data()
 {
     // In view.viewport() coordinates. (viewport rect: QRect(0, 0, 200, 200))
-    QTest::addColumn<QRect>("updateRect");
-    QTest::newRow("empty") << QRect();
-    QTest::newRow("outside left") << QRect(-200, 0, 100, 100);
-    QTest::newRow("outside right") << QRect(400, 0 ,100, 100);
-    QTest::newRow("outside top") << QRect(0, -200, 100, 100);
-    QTest::newRow("outside bottom") << QRect(0, 400, 100, 100);
-    QTest::newRow("partially inside left") << QRect(-50, 0, 100, 100);
-    QTest::newRow("partially inside right") << QRect(-150, 0, 100, 100);
-    QTest::newRow("partially inside top") << QRect(0, -150, 100, 100);
-    QTest::newRow("partially inside bottom") << QRect(0, 150, 100, 100);
-    QTest::newRow("on topLeft edge") << QRect(-100, -100, 100, 100);
-    QTest::newRow("on topRight edge") << QRect(200, -100, 100, 100);
-    QTest::newRow("on bottomRight edge") << QRect(200, 200, 100, 100);
-    QTest::newRow("on bottomLeft edge") << QRect(-200, 200, 100, 100);
-    QTest::newRow("inside topLeft") << QRect(-99, -99, 100, 100);
-    QTest::newRow("inside topRight") << QRect(199, -99, 100, 100);
-    QTest::newRow("inside bottomRight") << QRect(199, 199, 100, 100);
-    QTest::newRow("inside bottomLeft") << QRect(-199, 199, 100, 100);
-    QTest::newRow("large1") << QRect(50, -100, 100, 400);
-    QTest::newRow("large2") << QRect(-100, 50, 400, 100);
-    QTest::newRow("large3") << QRect(-100, -100, 400, 400);
-    QTest::newRow("viewport rect") << QRect(0, 0, 200, 200);
+    BOBUIest::addColumn<QRect>("updateRect");
+    BOBUIest::newRow("empty") << QRect();
+    BOBUIest::newRow("outside left") << QRect(-200, 0, 100, 100);
+    BOBUIest::newRow("outside right") << QRect(400, 0 ,100, 100);
+    BOBUIest::newRow("outside top") << QRect(0, -200, 100, 100);
+    BOBUIest::newRow("outside bottom") << QRect(0, 400, 100, 100);
+    BOBUIest::newRow("partially inside left") << QRect(-50, 0, 100, 100);
+    BOBUIest::newRow("partially inside right") << QRect(-150, 0, 100, 100);
+    BOBUIest::newRow("partially inside top") << QRect(0, -150, 100, 100);
+    BOBUIest::newRow("partially inside bottom") << QRect(0, 150, 100, 100);
+    BOBUIest::newRow("on topLeft edge") << QRect(-100, -100, 100, 100);
+    BOBUIest::newRow("on topRight edge") << QRect(200, -100, 100, 100);
+    BOBUIest::newRow("on bottomRight edge") << QRect(200, 200, 100, 100);
+    BOBUIest::newRow("on bottomLeft edge") << QRect(-200, 200, 100, 100);
+    BOBUIest::newRow("inside topLeft") << QRect(-99, -99, 100, 100);
+    BOBUIest::newRow("inside topRight") << QRect(199, -99, 100, 100);
+    BOBUIest::newRow("inside bottomRight") << QRect(199, 199, 100, 100);
+    BOBUIest::newRow("inside bottomLeft") << QRect(-199, 199, 100, 100);
+    BOBUIest::newRow("large1") << QRect(50, -100, 100, 400);
+    BOBUIest::newRow("large2") << QRect(-100, 50, 400, 100);
+    BOBUIest::newRow("large3") << QRect(-100, -100, 400, 400);
+    BOBUIest::newRow("viewport rect") << QRect(0, 0, 200, 200);
 }
 
 void tst_QGraphicsView::update()
@@ -5267,19 +5267,19 @@ void tst_QGraphicsView::update()
     const QMargins margins = view.contentsMargins();
     view.resize(200 + margins.left() + margins.right(), 200 + margins.top() + margins.bottom());
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
 
     QApplication::processEvents();
-    QTRY_COMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&toplevel));
+    BOBUIRY_COMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&toplevel));
 
     const QRect viewportRect = view.viewport()->rect();
     QCOMPARE(viewportRect, QRect(0, 0, 200, 200));
 
-#if defined QT_BUILD_INTERNAL
+#if defined BOBUI_BUILD_INTERNAL
     const bool intersects = updateRect.intersects(viewportRect);
-    QGraphicsViewPrivate *viewPrivate = static_cast<QGraphicsViewPrivate *>(qt_widget_private(&view));
-    QTRY_COMPARE(viewPrivate->updateRect(updateRect), intersects);
+    QGraphicsViewPrivate *viewPrivate = static_cast<QGraphicsViewPrivate *>(bobui_widget_private(&view));
+    BOBUIRY_COMPARE(viewPrivate->updateRect(updateRect), intersects);
     QApplication::processEvents();
 
     view.lastUpdateRegions.clear();
@@ -5288,12 +5288,12 @@ void tst_QGraphicsView::update()
     QVERIFY(viewPrivate->dirtyBoundingRect.isEmpty());
     QApplication::processEvents();
     if (!intersects) {
-        QTRY_VERIFY(view.lastUpdateRegions.isEmpty());
+        BOBUIRY_VERIFY(view.lastUpdateRegions.isEmpty());
     } else {
-        QTRY_COMPARE(view.lastUpdateRegions.size(), 1);
-        QTRY_COMPARE(view.lastUpdateRegions.at(0), QRegion(updateRect) & viewportRect);
+        BOBUIRY_COMPARE(view.lastUpdateRegions.size(), 1);
+        BOBUIRY_COMPARE(view.lastUpdateRegions.at(0), QRegion(updateRect) & viewportRect);
     }
-    QTRY_VERIFY(!viewPrivate->fullUpdatePending);
+    BOBUIRY_VERIFY(!viewPrivate->fullUpdatePending);
 #else
     Q_UNUSED(updateRect);
 #endif
@@ -5301,27 +5301,27 @@ void tst_QGraphicsView::update()
 
 void tst_QGraphicsView::update2_data()
 {
-    QTest::addColumn<qreal>("penWidth");
-    QTest::addColumn<bool>("antialiasing");
-    QTest::addColumn<bool>("changedConnected");
+    BOBUIest::addColumn<qreal>("penWidth");
+    BOBUIest::addColumn<bool>("antialiasing");
+    BOBUIest::addColumn<bool>("changedConnected");
 
     // Anti-aliased.
-    QTest::newRow("pen width: 0.0, antialiasing: true") << qreal(0.0) << true << false;
-    QTest::newRow("pen width: 1.5, antialiasing: true") << qreal(1.5) << true << false;
-    QTest::newRow("pen width: 2.0, antialiasing: true") << qreal(2.0) << true << false;
-    QTest::newRow("pen width: 3.0, antialiasing: true") << qreal(3.0) << true << false;
+    BOBUIest::newRow("pen width: 0.0, antialiasing: true") << qreal(0.0) << true << false;
+    BOBUIest::newRow("pen width: 1.5, antialiasing: true") << qreal(1.5) << true << false;
+    BOBUIest::newRow("pen width: 2.0, antialiasing: true") << qreal(2.0) << true << false;
+    BOBUIest::newRow("pen width: 3.0, antialiasing: true") << qreal(3.0) << true << false;
 
     // Aliased.
-    QTest::newRow("pen width: 0.0, antialiasing: false") << qreal(0.0) << false << false;
-    QTest::newRow("pen width: 1.5, antialiasing: false") << qreal(1.5) << false << false;
-    QTest::newRow("pen width: 2.0, antialiasing: false") << qreal(2.0) << false << false;
-    QTest::newRow("pen width: 3.0, antialiasing: false") << qreal(3.0) << false << false;
+    BOBUIest::newRow("pen width: 0.0, antialiasing: false") << qreal(0.0) << false << false;
+    BOBUIest::newRow("pen width: 1.5, antialiasing: false") << qreal(1.5) << false << false;
+    BOBUIest::newRow("pen width: 2.0, antialiasing: false") << qreal(2.0) << false << false;
+    BOBUIest::newRow("pen width: 3.0, antialiasing: false") << qreal(3.0) << false << false;
 
     // changed() connected
-    QTest::newRow("pen width: 0.0, antialiasing: false, changed") << qreal(0.0) << false << true;
-    QTest::newRow("pen width: 1.5, antialiasing: true, changed") << qreal(1.5) << true << true;
-    QTest::newRow("pen width: 2.0, antialiasing: false, changed") << qreal(2.0) << false << true;
-    QTest::newRow("pen width: 3.0, antialiasing: true, changed") << qreal(3.0) << true << true;
+    BOBUIest::newRow("pen width: 0.0, antialiasing: false, changed") << qreal(0.0) << false << true;
+    BOBUIest::newRow("pen width: 1.5, antialiasing: true, changed") << qreal(1.5) << true << true;
+    BOBUIest::newRow("pen width: 2.0, antialiasing: false, changed") << qreal(2.0) << false << true;
+    BOBUIest::newRow("pen width: 3.0, antialiasing: true, changed") << qreal(3.0) << true << true;
 }
 
 void tst_QGraphicsView::update2()
@@ -5355,9 +5355,9 @@ void tst_QGraphicsView::update2()
     view.resize(200, 200);
     view.show();
     QApplicationPrivate::setActiveWindow(&view);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_VERIFY(rect->numPaints > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_VERIFY(rect->numPaints > 0);
 
     // Calculate expected update region for the rect.
     QRectF expectedItemBoundingRect = rawItemRect;
@@ -5379,10 +5379,10 @@ void tst_QGraphicsView::update2()
     view.painted = false;
 
     rect->update();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
 
 #ifndef Q_OS_MAC //cocoa doesn't support drawing regions
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     QCOMPARE(view.lastUpdateRegions.size(), 1);
     QCOMPARE(view.lastUpdateRegions.at(0), expectedUpdateRegion);
 #endif
@@ -5410,7 +5410,7 @@ void tst_QGraphicsView::update_ancestorClipsChildrenToShape()
     QApplication::processEvents(); // Get rid of pending update.
 
     QGraphicsRectItem *grandParent = static_cast<QGraphicsRectItem *>(scene.addRect(0, 0, 50, 50));
-    grandParent->setBrush(Qt::black);
+    grandParent->setBrush(BobUI::black);
     grandParent->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 
     QGraphicsRectItem *parent = static_cast<QGraphicsRectItem *>(scene.addRect(-50, -50, 100, 100));
@@ -5425,9 +5425,9 @@ void tst_QGraphicsView::update_ancestorClipsChildrenToShape()
     CustomView view(&scene);
     view.show();
     QApplicationPrivate::setActiveWindow(&view);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_VERIFY(view.painted);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_VERIFY(view.painted);
 
     view.lastUpdateRegions.clear();
     view.painted = false;
@@ -5437,10 +5437,10 @@ void tst_QGraphicsView::update_ancestorClipsChildrenToShape()
     expected &= grandParent->deviceTransform(view.viewportTransform()).mapRect(grandParent->boundingRect());
 
     child->update();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
 
 #ifndef Q_OS_MAC //cocoa doesn't support drawing regions
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     QCOMPARE(view.lastUpdateRegions.size(), 1);
     QCOMPARE(view.lastUpdateRegions.at(0), QRegion(expected.toAlignedRect()));
 #endif
@@ -5479,9 +5479,9 @@ void tst_QGraphicsView::update_ancestorClipsChildrenToShape2()
     CustomView view(&scene);
     view.show();
     QApplicationPrivate::setActiveWindow(&view);
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_VERIFY(view.painted);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_VERIFY(view.painted);
 
     view.lastUpdateRegions.clear();
     view.painted = false;
@@ -5491,10 +5491,10 @@ void tst_QGraphicsView::update_ancestorClipsChildrenToShape2()
     expected &= parent->deviceTransform(view.viewportTransform()).mapRect(parent->boundingRect());
 
     child->update();
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
 
 #ifndef Q_OS_MAC //cocoa doesn't support drawing regions
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     QCOMPARE(view.lastUpdateRegions.size(), 1);
     QCOMPARE(view.lastUpdateRegions.at(0), QRegion(expected.toAlignedRect()));
 #endif
@@ -5512,7 +5512,7 @@ void tst_QGraphicsView::update_ancestorClipsChildrenToShape2()
     expected.adjust(-2, -2, 2, 2); // Antialiasing
 
 #ifndef Q_OS_MAC //cocoa doesn't support drawing regions
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     QCOMPARE(view.lastUpdateRegions.size(), 1);
     QCOMPARE(view.lastUpdateRegions.at(0), QRegion(expected.toAlignedRect()));
 #endif
@@ -5528,7 +5528,7 @@ public:
     void focusInEvent(QFocusEvent * /* event */) override
     {
         QGraphicsView *view = scene()->views().first();
-        m_viewHasIMEnabledInFocusInEvent = view->testAttribute(Qt::WA_InputMethodEnabled);
+        m_viewHasIMEnabledInFocusInEvent = view->testAttribute(BobUI::WA_InputMethodEnabled);
     }
 
     bool m_viewHasIMEnabledInFocusInEvent;
@@ -5539,85 +5539,85 @@ void tst_QGraphicsView::inputMethodSensitivity()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
     QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
 
     FocusItem *item = new FocusItem;
 
-    view.setAttribute(Qt::WA_InputMethodEnabled, true);
+    view.setAttribute(BobUI::WA_InputMethodEnabled, true);
 
     scene.addItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     scene.removeItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     item->setFlag(QGraphicsItem::ItemAcceptsInputMethod);
     scene.addItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     scene.removeItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     scene.addItem(item);
     scene.setFocusItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     scene.removeItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     item->setFlag(QGraphicsItem::ItemIsFocusable);
     scene.addItem(item);
     scene.setFocusItem(item);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item));
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), true);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), true);
     QCOMPARE(item->m_viewHasIMEnabledInFocusInEvent, true);
 
     item->setFlag(QGraphicsItem::ItemAcceptsInputMethod, false);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
 
     item->setFlag(QGraphicsItem::ItemAcceptsInputMethod, true);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), true);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), true);
 
     // introduce another item that is focusable but does not accept input methods
     FocusItem *item2 = new FocusItem;
     item2->setFlag(QGraphicsItem::ItemIsFocusable);
     scene.addItem(item2);
     scene.setFocusItem(item2);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
     QCOMPARE(item2->m_viewHasIMEnabledInFocusInEvent, false);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item2));
 
     scene.setFocusItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), true);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), true);
     QCOMPARE(item->m_viewHasIMEnabledInFocusInEvent, true);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item));
 
     view.setScene(0);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item));
 
     view.setScene(&scene);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), true);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), true);
     QCOMPARE(item->m_viewHasIMEnabledInFocusInEvent, true);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item));
 
     scene.setFocusItem(item2);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
     QCOMPARE(item2->m_viewHasIMEnabledInFocusInEvent, false);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item2));
 
     view.setScene(0);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item2));
 
     scene.setFocusItem(item);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), false);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), false);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item));
 
     view.setScene(&scene);
-    QCOMPARE(view.testAttribute(Qt::WA_InputMethodEnabled), true);
+    QCOMPARE(view.testAttribute(BobUI::WA_InputMethodEnabled), true);
     QCOMPARE(item->m_viewHasIMEnabledInFocusInEvent, true);
     QCOMPARE(scene.focusItem(), static_cast<QGraphicsItem *>(item));
 }
@@ -5633,11 +5633,11 @@ void tst_QGraphicsView::inputContextReset()
 
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    QVERIFY(view.testAttribute(Qt::WA_InputMethodEnabled));
+    QVERIFY(view.testAttribute(BobUI::WA_InputMethodEnabled));
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(QApplication::activeWindow(), static_cast<QWidget *>(&view));
 
     QGraphicsItem *item1 = new QGraphicsRectItem;
@@ -5651,14 +5651,14 @@ void tst_QGraphicsView::inputContextReset()
 
     scene.setFocusItem(item1);
     QCOMPARE(scene.focusItem(), (QGraphicsItem *)item1);
-    QVERIFY(view.testAttribute(Qt::WA_InputMethodEnabled));
+    QVERIFY(view.testAttribute(BobUI::WA_InputMethodEnabled));
     QCOMPARE(inputContext.m_resetCallCount, 0);
     QCOMPARE(inputContext.m_commitCallCount, 0);
 
     scene.setFocusItem(0);
     // the input context is reset twice, once because an item has lost focus and again because
-    // the Qt::WA_InputMethodEnabled flag is cleared because no item has focus.
-    //    QEXPECT_FAIL("", "QTBUG-22454", Abort);
+    // the BobUI::WA_InputMethodEnabled flag is cleared because no item has focus.
+    //    QEXPECT_FAIL("", "BOBUIBUG-22454", Abort);
     QCOMPARE(inputContext.m_resetCallCount + inputContext.m_commitCallCount, 2);
 
     // introduce another item that is focusable but does not accept input methods
@@ -5698,13 +5698,13 @@ void tst_QGraphicsView::indirectPainting()
     QGraphicsView view(&scene);
     view.setOptimizationFlag(QGraphicsView::IndirectPainting);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QTRY_VERIFY(scene.drawCount > 0);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    BOBUIRY_VERIFY(scene.drawCount > 0);
 
     scene.drawCount = 0;
     item->setPos(20, 20);
     QApplication::processEvents();
-    QTRY_VERIFY(scene.drawCount > 0);
+    BOBUIRY_VERIFY(scene.drawCount > 0);
 }
 
 void tst_QGraphicsView::compositionModeInDrawBackground()
@@ -5725,10 +5725,10 @@ void tst_QGraphicsView::compositionModeInDrawBackground()
     QGraphicsScene dummy;
     MyView view(&dummy);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Make sure the painter's composition mode is SourceOver in drawBackground.
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     QCOMPARE(view.compositionMode, QPainter::CompositionMode_SourceOver);
 
     view.painted = false;
@@ -5737,27 +5737,27 @@ void tst_QGraphicsView::compositionModeInDrawBackground()
 
     // Make sure the painter's composition mode is SourceOver in drawBackground
     // with background cache enabled.
-    QTRY_VERIFY(view.painted);
+    BOBUIRY_VERIFY(view.painted);
     QCOMPARE(view.compositionMode, QPainter::CompositionMode_SourceOver);
 }
 void tst_QGraphicsView::task253415_reconnectUpdateSceneOnSceneChanged()
 {
     QGraphicsView view;
     QGraphicsView dummyView;
-    view.setWindowFlags(view.windowFlags() | Qt::WindowStaysOnTopHint);
+    view.setWindowFlags(view.windowFlags() | BobUI::WindowStaysOnTopHint);
     view.resize(200, 200);
 
     QGraphicsScene scene1;
     QObject::connect(&scene1, SIGNAL(changed(QList<QRectF>)), &dummyView, SLOT(updateScene(QList<QRectF>)));
     view.setScene(&scene1);
 
-    QTest::qWait(12);
+    BOBUIest::qWait(12);
 
     QGraphicsScene scene2;
     QObject::connect(&scene2, SIGNAL(changed(QList<QRectF>)), &dummyView, SLOT(updateScene(QList<QRectF>)));
     view.setScene(&scene2);
 
-    QTest::qWait(12);
+    BOBUIest::qWait(12);
 
     bool wasConnected2 = QObject::disconnect(&scene2, SIGNAL(changed(QList<QRectF>)), &view, 0);
     QVERIFY(wasConnected2);
@@ -5766,7 +5766,7 @@ void tst_QGraphicsView::task253415_reconnectUpdateSceneOnSceneChanged()
 void tst_QGraphicsView::task255529_transformationAnchorMouseAndViewportMargins()
 {
     QGraphicsScene scene(-100, -100, 200, 200);
-    scene.addRect(QRectF(-50, -50, 100, 100), QPen(Qt::black), QBrush(Qt::blue));
+    scene.addRect(QRectF(-50, -50, 100, 100), QPen(BobUI::black), QBrush(BobUI::blue));
 
     class VpGraphicsView: public QGraphicsView
     {
@@ -5781,10 +5781,10 @@ void tst_QGraphicsView::task255529_transformationAnchorMouseAndViewportMargins()
     };
 
     VpGraphicsView view(&scene);
-    view.setWindowFlags(Qt::X11BypassWindowManagerHint);
+    view.setWindowFlags(BobUI::X11BypassWindowManagerHint);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    const bool isActiveWindow = QTest::qWaitForWindowActive(&view);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    const bool isActiveWindow = BOBUIest::qWaitForWindowActive(&view);
     if (!isActiveWindow)
         QSKIP("Window activation failed, skipping test", Abort);
     // This is highly unstable (observed to pass on Windows and some Linux configurations).
@@ -5794,7 +5794,7 @@ void tst_QGraphicsView::task255529_transformationAnchorMouseAndViewportMargins()
         sendMouseMove(view.viewport(), mouseViewPos);
 
         QPointF mouseScenePos = view.mapToScene(mouseViewPos);
-        view.setTransform(QTransform().scale(5, 5).rotate(5, Qt::ZAxis), true);
+        view.setTransform(BOBUIransform().scale(5, 5).rotate(5, BobUI::ZAxis), true);
 
         qreal slack = 1;
 
@@ -5802,14 +5802,14 @@ void tst_QGraphicsView::task255529_transformationAnchorMouseAndViewportMargins()
 
         const qreal dx = qAbs(newMouseScenePos.x() - mouseScenePos.x());
         const qreal dy = qAbs(newMouseScenePos.y() - mouseScenePos.y());
-        const QByteArray message = QString::fromLatin1("QTBUG-22455, distance: dx=%1, dy=%2 slack=%3 (%4).").
+        const QByteArray message = QString::fromLatin1("BOBUIBUG-22455, distance: dx=%1, dy=%2 slack=%3 (%4).").
                          arg(dx).arg(dy).arg(slack).arg(qApp->style()->metaObject()->className()).toLocal8Bit();
         if (i == 9 || (dx < slack && dy < slack)) {
             QVERIFY2(dx < slack && dy < slack, message.constData());
             break;
         }
 
-        QTest::qWait(100);
+        BOBUIest::qWait(100);
     }
 #endif
 }
@@ -5820,8 +5820,8 @@ void tst_QGraphicsView::task259503_scrollingArtifacts()
 
     QGraphicsRectItem card;
     card.setRect(0, 0, 50, 50);
-    card.setPen(QPen(Qt::darkRed));
-    card.setBrush(QBrush(Qt::cyan));
+    card.setPen(QPen(BobUI::darkRed));
+    card.setBrush(QBrush(BobUI::cyan));
     card.setZValue(2.0);
     card.setPos(300, 300);
     scene.addItem(&card);
@@ -5846,7 +5846,7 @@ void tst_QGraphicsView::task259503_scrollingArtifacts()
 
             if (itSTimeToTest)
             {
-                QEXPECT_FAIL("", "QTBUG-24296", Continue);
+                QEXPECT_FAIL("", "BOBUIBUG-24296", Continue);
                 QCOMPARE(event->region(), updateRegion);
             }
         }
@@ -5854,13 +5854,13 @@ void tst_QGraphicsView::task259503_scrollingArtifacts()
 
     SAGraphicsView view(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     int hsbValue = view.horizontalScrollBar()->value();
     view.horizontalScrollBar()->setValue(hsbValue / 2);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     view.horizontalScrollBar()->setValue(0);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
 
     QRect itemDeviceBoundingRect = card.deviceTransform(view.viewportTransform()).mapRect(card.boundingRect()).toRect();
     itemDeviceBoundingRect.adjust(-2, -2, 2, 2);
@@ -5868,24 +5868,24 @@ void tst_QGraphicsView::task259503_scrollingArtifacts()
     view.updateRegion += itemDeviceBoundingRect.translated(-100, 0);
     view.itSTimeToTest = true;
     card.setPos(200, 300);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
 }
 
-void tst_QGraphicsView::QTBUG_4151_clipAndIgnore_data()
+void tst_QGraphicsView::BOBUIBUG_4151_clipAndIgnore_data()
 {
-    QTest::addColumn<bool>("clip");
-    QTest::addColumn<bool>("ignoreTransformations");
-    QTest::addColumn<int>("numItems");
+    BOBUIest::addColumn<bool>("clip");
+    BOBUIest::addColumn<bool>("ignoreTransformations");
+    BOBUIest::addColumn<int>("numItems");
 
-    QTest::newRow("none") << false << false << 3;
-    QTest::newRow("clip") << true << false << 3;
-    QTest::newRow("ignore") << false << true << 3;
-    QTest::newRow("clip+ignore") << true << true << 3;
+    BOBUIest::newRow("none") << false << false << 3;
+    BOBUIest::newRow("clip") << true << false << 3;
+    BOBUIest::newRow("ignore") << false << true << 3;
+    BOBUIest::newRow("clip+ignore") << true << true << 3;
 }
 
-void tst_QGraphicsView::QTBUG_4151_clipAndIgnore()
+void tst_QGraphicsView::BOBUIBUG_4151_clipAndIgnore()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(bool, clip);
@@ -5903,9 +5903,9 @@ void tst_QGraphicsView::QTBUG_4151_clipAndIgnore()
     if (ignoreTransformations)
         ignore->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
-    parent->setBrush(Qt::red);
+    parent->setBrush(BobUI::red);
     child->setBrush(QColor(0, 0, 255, 128));
-    ignore->setBrush(Qt::green);
+    ignore->setBrush(BobUI::green);
 
     scene.addItem(parent);
     scene.addItem(ignore);
@@ -5916,14 +5916,14 @@ void tst_QGraphicsView::QTBUG_4151_clipAndIgnore()
     view.resize(75, 75);
     view.show();
     view.activateWindow();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(QApplication::activeWindow(), (QWidget *)&view);
 
     QCOMPARE(view.items(view.rect()).size(), numItems);
 }
 
-void tst_QGraphicsView::QTBUG_5859_exposedRect()
+void tst_QGraphicsView::BOBUIBUG_5859_exposedRect()
 {
     if (isPlatformEGLFS())
         QSKIP("", "Resizing does not work on EGLFS on top level window", Continue);
@@ -5956,15 +5956,15 @@ void tst_QGraphicsView::QTBUG_5859_exposedRect()
     QGraphicsView view(&scene);
     view.scale(4.15, 4.15);
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     view.viewport()->update(10,10,20,20);
-    QTRY_COMPARE(item.lastExposedRect, scene.lastBackgroundExposedRect);
+    BOBUIRY_COMPARE(item.lastExposedRect, scene.lastBackgroundExposedRect);
 }
 
-#ifndef QT_NO_CURSOR
-void tst_QGraphicsView::QTBUG_7438_cursor()
+#ifndef BOBUI_NO_CURSOR
+void tst_QGraphicsView::BOBUIBUG_7438_cursor()
 {
     QGraphicsScene scene;
     QGraphicsItem *item = scene.addRect(QRectF(-10, -10, 20, 20));
@@ -5973,17 +5973,17 @@ void tst_QGraphicsView::QTBUG_7438_cursor()
     QGraphicsView view(&scene);
     view.setFixedSize(400, 400);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE(view.viewport()->cursor().shape(), QCursor().shape());
-    view.viewport()->setCursor(Qt::PointingHandCursor);
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    view.viewport()->setCursor(BobUI::PointingHandCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
     sendMouseMove(view.viewport(), view.mapFromScene(0, 0));
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
     sendMousePress(view.viewport(), view.mapFromScene(0, 0));
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
     sendMouseRelease(view.viewport(), view.mapFromScene(0, 0));
-    QCOMPARE(view.viewport()->cursor().shape(), Qt::PointingHandCursor);
+    QCOMPARE(view.viewport()->cursor().shape(), BobUI::PointingHandCursor);
 }
 #endif
 
@@ -6027,23 +6027,23 @@ void tst_QGraphicsView::hoverLeave()
     scene.addItem(item);
 
     view.showNormal();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QWindow *viewWindow = view.window()->windowHandle();
     QPoint posOutsideItem = view.mapFromScene(item->mapToScene(0, 0)) - QPoint(5, 0);
     QPoint posOutsideItemGlobal = view.mapToGlobal(posOutsideItem);
     QPoint posOutsideItemInWindow = viewWindow->mapFromGlobal(posOutsideItemGlobal);
-    QTest::mouseMove(viewWindow, posOutsideItemInWindow);
+    BOBUIest::mouseMove(viewWindow, posOutsideItemInWindow);
 
     item->checkEvents = true;
     QPoint posInItemGlobal = view.mapToGlobal(view.mapFromScene(item->mapToScene(10, 10)));
-    QTest::mouseMove(viewWindow, viewWindow->mapFromGlobal(posInItemGlobal));
-    QTRY_VERIFY(item->receivedEnterEvent);
+    BOBUIest::mouseMove(viewWindow, viewWindow->mapFromGlobal(posInItemGlobal));
+    BOBUIRY_VERIFY(item->receivedEnterEvent);
     QCOMPARE(item->enterWidget, view.viewport());
 
-    QTest::mouseMove(viewWindow, posOutsideItemInWindow);
+    BOBUIest::mouseMove(viewWindow, posOutsideItemInWindow);
 
-    QTRY_VERIFY(item->receivedLeaveEvent);
+    BOBUIRY_VERIFY(item->receivedLeaveEvent);
     QCOMPARE(item->leaveWidget, view.viewport());
 }
 
@@ -6055,10 +6055,10 @@ public:
     {
         setFlag(QGraphicsItem::ItemIsFocusable, true);
         setFlag(QGraphicsItem::ItemAcceptsInputMethod, true);
-        setPen(Qt::NoPen); // Avoid adding a half pixel border to the rect.
+        setPen(BobUI::NoPen); // Avoid adding a half pixel border to the rect.
     }
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery) const override
+    QVariant inputMethodQuery(BobUI::InputMethodQuery) const override
     {
         return mf;
     }
@@ -6068,9 +6068,9 @@ public:
 
 QRectF IMItem::mf(1.5, 1.6, 10, 10);
 
-void tst_QGraphicsView::QTBUG_16063_microFocusRect()
+void tst_QGraphicsView::BOBUIBUG_16063_microFocusRect()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QGraphicsScene scene;
@@ -6082,16 +6082,16 @@ void tst_QGraphicsView::QTBUG_16063_microFocusRect()
 
     view.setFixedSize(40, 40);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     scene.setFocusItem(item);
     view.setFocus();
-    QRectF mfv = view.inputMethodQuery(Qt::ImCursorRectangle).toRectF();
+    QRectF mfv = view.inputMethodQuery(BobUI::ImCursorRectangle).toRectF();
     QCOMPARE(mfv, IMItem::mf.translated(-view.mapToScene(view.sceneRect().toRect()).boundingRect().topLeft()));
 }
 
-void tst_QGraphicsView::QTBUG_70255_scrollTo()
+void tst_QGraphicsView::BOBUIBUG_70255_scrollTo()
 {
     QGraphicsView view;
     QGraphicsScene scene;
@@ -6105,21 +6105,21 @@ void tst_QGraphicsView::QTBUG_70255_scrollTo()
     view.centerOn(0, 0);
 
     view.show();
-    if (!QTest::qWaitForWindowExposed(&view) || !QTest::qWaitForWindowActive(&view))
+    if (!BOBUIest::qWaitForWindowExposed(&view) || !BOBUIest::qWaitForWindowActive(&view))
         QSKIP("Failed to show and activate window");
 
     QPoint point = view.mapFromScene(0, 0);
     QCOMPARE(point, QPoint(0, 0));
 
     QScroller::scroller(&view)->scrollTo(QPointF(0, 500), 100);
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
 
     point = view.mapFromScene(0, 0);
     QCOMPARE(point, QPoint(0, -500));
 }
 
-#ifdef QT_BUILD_INTERNAL
-void tst_QGraphicsView::QTBUG_53974_mismatched_hide_show_events()
+#ifdef BOBUI_BUILD_INTERNAL
+void tst_QGraphicsView::BOBUIBUG_53974_mismatched_hide_show_events()
 {
     QGraphicsView *view = new QGraphicsView;
     FriendlyGraphicsScene *scene = new FriendlyGraphicsScene(view);
@@ -6137,7 +6137,7 @@ void tst_QGraphicsView::QTBUG_53974_mismatched_hide_show_events()
 
     topLevel.show();
     topLevel.activateWindow();
-    QVERIFY(QTest::qWaitForWindowFocused(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&topLevel));
 
     // Starting point
     QCOMPARE_EQ(topLevel.currentIndex(), 0);
@@ -6200,18 +6200,18 @@ void tst_QGraphicsView::QTBUG_53974_mismatched_hide_show_events()
 
 void tst_QGraphicsView::resizeContentsOnItemDrag_data()
 {
-    QTest::addColumn<Qt::Alignment>("alignment");
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addRow("Center right") << Qt::Alignment(Qt::AlignCenter) << Qt::Horizontal;
-    QTest::addRow("Center down") << Qt::Alignment(Qt::AlignCenter) << Qt::Vertical;
-    QTest::addRow("BottomLeft right") << (Qt::AlignBottom | Qt::AlignLeft) << Qt::Horizontal;
-    QTest::addRow("TopRight down") << (Qt::AlignTop | Qt::AlignRight) << Qt::Vertical;
+    BOBUIest::addColumn<BobUI::Alignment>("alignment");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addRow("Center right") << BobUI::Alignment(BobUI::AlignCenter) << BobUI::Horizontal;
+    BOBUIest::addRow("Center down") << BobUI::Alignment(BobUI::AlignCenter) << BobUI::Vertical;
+    BOBUIest::addRow("BottomLeft right") << (BobUI::AlignBottom | BobUI::AlignLeft) << BobUI::Horizontal;
+    BOBUIest::addRow("TopRight down") << (BobUI::AlignTop | BobUI::AlignRight) << BobUI::Vertical;
 }
 
 void tst_QGraphicsView::resizeContentsOnItemDrag()
 {
-    QFETCH(Qt::Alignment, alignment);
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Alignment, alignment);
+    QFETCH(BobUI::Orientation, orientation);
 
     QGraphicsView view;
     QGraphicsScene scene;
@@ -6243,41 +6243,41 @@ void tst_QGraphicsView::resizeContentsOnItemDrag()
     item.setFlags(QGraphicsItem::ItemIsMovable);
     scene.addItem(&item);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     // Position the item near the relevant edge of the view, with a few pixels
     // to go until the scrollbars should be showing.
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         item.setPos(view.width() - item.rect().width() - 5, 0);
     else
         item.setPos(0, view.height() - item.rect().height() - 5);
     QApplication::processEvents(); // queued connection  used to trigger recalculateContentSize
     QPoint mousePos = view.mapFromScene(item.pos());
 
-    QTest::mousePress(view.viewport(), Qt::LeftButton, {}, mousePos);
+    BOBUIest::mousePress(view.viewport(), BobUI::LeftButton, {}, mousePos);
     QCOMPARE(item.scenePositions.count(), 1);
     QCOMPARE(item.scenePositions.takeLast(), view.mapToScene(mousePos));
 
     auto lastItemPos = item.pos();
     auto lastScenePos = view.mapToScene(mousePos);
     int overshoot = 0;
-    const QScrollBar *scrollBar = orientation == Qt::Horizontal
+    const QScrollBar *scrollBar = orientation == BobUI::Horizontal
                                 ? view.horizontalScrollBar()
                                 : view.verticalScrollBar();
     // Drag the item until the scroll bars become visible, and then for a few more pixels.
     // Verify that the item doesn't jump when the scrollbar shows.
     while (overshoot < 10) {
-        if (orientation == Qt::Horizontal)
+        if (orientation == BobUI::Horizontal)
             mousePos.rx() += 1;
         else
             mousePos.ry() += 1;
-        QTest::mouseMove(view.viewport(), mousePos);
+        BOBUIest::mouseMove(view.viewport(), mousePos);
         QApplication::processEvents(); // queued connection used to trigger recalculateContentSize
         const bool scrollbarAvailable = scrollBar->maximum() > scrollBar->minimum();
         bool allowMoreEvents = false;
         if (scrollbarAvailable) {
             if (!overshoot) {
-                QTRY_VERIFY(scrollBar->isVisible());
+                BOBUIRY_VERIFY(scrollBar->isVisible());
                 // scrollbar becoming visible triggers event replay, so we get more than one
                 allowMoreEvents = true;
             }
@@ -6290,8 +6290,8 @@ void tst_QGraphicsView::resizeContentsOnItemDrag()
         const auto scenePos = item.scenePositions.takeLast();
         item.scenePositions.clear();
 
-        const auto same = orientation == Qt::Horizontal ? &QPointF::y : &QPointF::x;
-        const auto moved = orientation == Qt::Horizontal ? &QPointF::x : &QPointF::y;
+        const auto same = orientation == BobUI::Horizontal ? &QPointF::y : &QPointF::x;
+        const auto moved = orientation == BobUI::Horizontal ? &QPointF::x : &QPointF::y;
         QCOMPARE((item.pos().*same)(), (lastItemPos.*same)());
         QCOMPARE_GE((item.pos().*moved)() - (lastItemPos.*moved)(), 1);
         QCOMPARE_LE((item.pos().*moved)() - (lastItemPos.*moved)(), 2);
@@ -6304,5 +6304,5 @@ void tst_QGraphicsView::resizeContentsOnItemDrag()
     }
 }
 
-QTEST_MAIN(tst_QGraphicsView)
+BOBUIEST_MAIN(tst_QGraphicsView)
 #include "tst_qgraphicsview.moc"

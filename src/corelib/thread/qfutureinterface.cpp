@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // qfutureinterface.h included from qfuture.h
 #include "qfuture.h"
 #include "qfutureinterface_p.h"
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qvarlengtharray.h>
-#include <private/qthreadpool_p.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <private/bobuihreadpool_p.h>
 #include <private/qobject_p.h>
 
 #include <climits> // For INT_MAX
@@ -19,11 +19,11 @@
 // GCC 12 gets confused about QFutureInterfaceBase::state, for some non-obvious
 // reason
 //  warning: ‘unsigned int __atomic_or_fetch_4(volatile void*, unsigned int, int)’ writing 4 bytes into a region of size 0 overflows the destination [-Wstringop-overflow=]
-QT_WARNING_DISABLE_GCC("-Wstringop-overflow")
+BOBUI_WARNING_DISABLE_GCC("-Wstringop-overflow")
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcQFutureContinuations, "qt.core.qfuture.continuations")
+Q_STATIC_LOGGING_CATEGORY(lcQFutureContinuations, "bobui.core.qfuture.continuations")
 
 enum {
     MaxProgressEmitsPerSecond = 25
@@ -31,10 +31,10 @@ enum {
 
 namespace {
 class ThreadPoolThreadReleaser {
-    QThreadPool *m_pool;
+    BOBUIhreadPool *m_pool;
 public:
     Q_NODISCARD_CTOR
-    explicit ThreadPoolThreadReleaser(QThreadPool *pool)
+    explicit ThreadPoolThreadReleaser(BOBUIhreadPool *pool)
         : m_pool(pool)
     { if (pool) pool->releaseThread(); }
     ~ThreadPoolThreadReleaser()
@@ -46,7 +46,7 @@ const auto suspendingOrSuspended =
 
 } // unnamed namespace
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 void qfutureWarnIfUnusedResults(qsizetype numResults)
 {
@@ -58,7 +58,7 @@ void qfutureWarnIfUnusedResults(qsizetype numResults)
     }
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class QObjectContinuationWrapper : public QObject
 {
@@ -274,7 +274,7 @@ bool QFutureInterfaceBase::isSuspending() const
     return queryState(Suspending);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 bool QFutureInterfaceBase::isPaused() const
 {
     return queryState(static_cast<State>(suspendingOrSuspended));
@@ -416,7 +416,7 @@ void QFutureInterfaceBase::reportCanceled()
     cancel();
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void QFutureInterfaceBase::reportException(const QException &exception)
 {
     try {
@@ -426,7 +426,7 @@ void QFutureInterfaceBase::reportException(const QException &exception)
     }
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 void QFutureInterfaceBase::reportException(std::exception_ptr exception)
 #else
 void QFutureInterfaceBase::reportException(const std::exception_ptr &exception)
@@ -554,12 +554,12 @@ void QFutureInterfaceBase::setRunnable(QRunnable *runnable)
     d->runnable = runnable;
 }
 
-void QFutureInterfaceBase::setThreadPool(QThreadPool *pool)
+void QFutureInterfaceBase::setThreadPool(BOBUIhreadPool *pool)
 {
     d->m_pool = pool;
 }
 
-QThreadPool *QFutureInterfaceBase::threadPool() const
+BOBUIhreadPool *QFutureInterfaceBase::threadPool() const
 {
     return d->m_pool;
 }
@@ -645,19 +645,19 @@ bool QFutureInterfaceBase::hasException() const
     return d->hasException;
 }
 
-QtPrivate::ExceptionStore &QFutureInterfaceBase::exceptionStore()
+BobUIPrivate::ExceptionStore &QFutureInterfaceBase::exceptionStore()
 {
     Q_ASSERT(d->hasException);
     return d->data.m_exceptionStore;
 }
 
-QtPrivate::ResultStoreBase &QFutureInterfaceBase::resultStoreBase()
+BobUIPrivate::ResultStoreBase &QFutureInterfaceBase::resultStoreBase()
 {
     Q_ASSERT(!d->hasException);
     return d->data.m_results;
 }
 
-const QtPrivate::ResultStoreBase &QFutureInterfaceBase::resultStoreBase() const
+const BobUIPrivate::ResultStoreBase &QFutureInterfaceBase::resultStoreBase() const
 {
     Q_ASSERT(!d->hasException);
     return d->data.m_results;
@@ -670,7 +670,7 @@ QFutureInterfaceBase &QFutureInterfaceBase::operator=(const QFutureInterfaceBase
     return *this;
 }
 
-// ### Qt 7: inline
+// ### BobUI 7: inline
 void QFutureInterfaceBase::swap(QFutureInterfaceBase &other) noexcept
 {
     qSwap(d, other.d);
@@ -843,7 +843,7 @@ void QFutureInterfaceBasePrivate::connectOutputInterface(QFutureCallOutInterface
     }
 
     if (!hasException) {
-        QtPrivate::ResultIteratorBase it = data.m_results.begin();
+        BobUIPrivate::ResultIteratorBase it = data.m_results.begin();
         while (it != data.m_results.end()) {
             const int begin = it.resultIndex();
             const int end = begin + it.batchSize();
@@ -936,10 +936,10 @@ void QFutureInterfaceBase::setContinuation(const QObject *context, std::function
     Q_ASSERT(context);
 
     using FuncType = void();
-    using Prototype = typename QtPrivate::Callable<FuncType>::Function;
-    auto slotObj = QtPrivate::makeCallableObject<Prototype>(std::move(func));
+    using Prototype = typename BobUIPrivate::Callable<FuncType>::Function;
+    auto slotObj = BobUIPrivate::makeCallableObject<Prototype>(std::move(func));
 
-    auto slot = QtPrivate::SlotObjUniquePtr(slotObj);
+    auto slot = BobUIPrivate::SlotObjUniquePtr(slotObj);
 
     auto *watcher = new QObjectContinuationWrapper;
     watcher->moveToThread(context->thread());
@@ -1049,7 +1049,7 @@ bool QFutureInterfaceBase::launchAsync() const
     return d->launchAsync;
 }
 
-namespace QtFuture {
+namespace BobUIFuture {
 
 QFuture<void> makeReadyVoidFuture()
 {
@@ -1060,8 +1060,8 @@ QFuture<void> makeReadyVoidFuture()
     return promise.future();
 }
 
-} // namespace QtFuture
+} // namespace BobUIFuture
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qfutureinterface.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "inputdevicemodel.h"
 
@@ -9,7 +9,7 @@
 #include <QMetaEnum>
 #include <QPointingDevice>
 
-Q_LOGGING_CATEGORY(lcIPDM, "qt.inputdevicemodel")
+Q_LOGGING_CATEGORY(lcIPDM, "bobui.inputdevicemodel")
 
 static QString enumToString(const QObject *obj, const char* enumName, int enumValue)
 {
@@ -99,7 +99,7 @@ static const int masterDeviceIndex(const QInputDevice *device)
 InputDeviceModel::InputDeviceModel(QObject *parent)
     : QAbstractItemModel{parent}
 {
-    connect(this, &InputDeviceModel::deviceAdded, this, &InputDeviceModel::onDeviceAdded, Qt::QueuedConnection);
+    connect(this, &InputDeviceModel::deviceAdded, this, &InputDeviceModel::onDeviceAdded, BobUI::QueuedConnection);
 }
 
 // invariant: always call createIndex(row, column, QInputDevice*) or else nullptr for the last argument
@@ -142,9 +142,9 @@ int InputDeviceModel::columnCount(const QModelIndex &) const
     return NRoles;
 }
 
-QVariant InputDeviceModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant InputDeviceModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+    if (orientation == BobUI::Horizontal && role == BobUI::DisplayRole) {
         switch (section + Name) {
         case Name:
             return tr("Device Name");
@@ -222,14 +222,14 @@ void InputDeviceModel::deviceDestroyed(QObject *o)
 
 QVariant InputDeviceModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         role = index.column() + Role::Name;
     if (role >= NRoles)
         return {};
     const QInputDevice *dev = static_cast<QInputDevice *>(index.internalPointer());
     watchDevice(dev);
     if (role < Name)
-        qCDebug(lcIPDM) << index << Qt::ItemDataRole(role) << dev;
+        qCDebug(lcIPDM) << index << BobUI::ItemDataRole(role) << dev;
     else
         qCDebug(lcIPDM) << index << Role(role) << dev;
     const QPointingDevice *pdev = qobject_cast<const QPointingDevice *>(dev);

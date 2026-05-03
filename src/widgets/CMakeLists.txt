@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## Widgets Module:
 #####################################################################
 
-qt_internal_add_module(Widgets
+bobui_internal_add_module(Widgets
     QMAKE_MODULE_CONFIG uic
     PLUGIN_TYPES styles
     SOURCES
@@ -24,8 +24,8 @@ qt_internal_add_module(Widgets
         kernel/qsizepolicy.cpp kernel/qsizepolicy.h
         kernel/qstackedlayout.cpp kernel/qstackedlayout.h
         kernel/qstandardgestures.cpp kernel/qstandardgestures_p.h
-        kernel/qtestsupport_widgets.cpp kernel/qtestsupport_widgets.h
-        kernel/qtwidgetsglobal.h kernel/qtwidgetsglobal_p.h
+        kernel/bobuiestsupport_widgets.cpp kernel/bobuiestsupport_widgets.h
+        kernel/bobuiwidgetsglobal.h kernel/bobuiwidgetsglobal_p.h
         kernel/qwidget.cpp kernel/qwidget.h kernel/qwidget_p.h
         kernel/qwidgetrepaintmanager.cpp kernel/qwidgetrepaintmanager_p.h
         kernel/qwidgetsvariant.cpp
@@ -50,31 +50,31 @@ qt_internal_add_module(Widgets
         widgets/qframe.cpp widgets/qframe.h widgets/qframe_p.h
         widgets/qwidgetanimator.cpp widgets/qwidgetanimator_p.h
     DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_USING_NAMESPACE
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_USING_NAMESPACE
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_USE_NODISCARD_FILE_OPEN
     INCLUDE_DIRECTORIES
         dialogs
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
     PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
+        BobUI::Core
+        BobUI::Gui
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
     PRECOMPILED_HEADER
-        "kernel/qt_widgets_pch.h"
+        "kernel/bobui_widgets_pch.h"
     NO_PCH_SOURCES
         compat/removed_api.cpp
     ELF_LINKER_DYNAMIC_LIST
-        QtWidgets.dynlist.in
+        BobUIWidgets.dynlist.in
 )
 
-qt_internal_extend_target(Widgets CONDITION APPLE
+bobui_internal_extend_target(Widgets CONDITION APPLE
     NO_UNITY_BUILD_SOURCES
         kernel/qapplication.cpp
 )
@@ -286,9 +286,9 @@ set(qstyle_resource_files
     "styles/images/warning-32.png"
 )
 
-qt_internal_add_resource(Widgets "qstyle"
+bobui_internal_add_resource(Widgets "qstyle"
     PREFIX
-        "/qt-project.org/styles/commonstyle"
+        "/bobui-project.org/styles/commonstyle"
     BASE
         "styles"
     FILES
@@ -323,9 +323,9 @@ set(qstyle1_resource_files
     "styles/images/toolbar-ext-macstyle@2x.png"
 )
 
-qt_internal_add_resource(Widgets "qstyle1"
+bobui_internal_add_resource(Widgets "qstyle1"
     PREFIX
-        "/qt-project.org/styles/macstyle"
+        "/bobui-project.org/styles/macstyle"
     BASE
         "styles"
     FILES
@@ -353,9 +353,9 @@ set(qstyle_resource_fusion_files
     "styles/images/fusion_titlebar-min-64.png"
 )
 
-qt_internal_add_resource(Widgets "qstyle_fusion"
+bobui_internal_add_resource(Widgets "qstyle_fusion"
     PREFIX
-        "/qt-project.org/styles/fusionstyle"
+        "/bobui-project.org/styles/fusionstyle"
     BASE
         "styles"
     FILES
@@ -365,12 +365,12 @@ qt_internal_add_resource(Widgets "qstyle_fusion"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(Widgets CONDITION MSVC AND (TEST_architecture_arch STREQUAL "i386")
+bobui_internal_extend_target(Widgets CONDITION MSVC AND (TEST_architecture_arch STREQUAL "i386")
     LINK_OPTIONS
         "/BASE:0x65000000"
 )
 
-qt_internal_extend_target(Widgets CONDITION MACOS
+bobui_internal_extend_target(Widgets CONDITION MACOS
     SOURCES
         kernel/qmacgesturerecognizer.cpp kernel/qmacgesturerecognizer_p.h
     LIBRARIES
@@ -378,20 +378,20 @@ qt_internal_extend_target(Widgets CONDITION MACOS
         z
 )
 
-qt_internal_extend_target(Widgets CONDITION WIN32
+bobui_internal_extend_target(Widgets CONDITION WIN32
     LIBRARIES
         dwmapi
         shell32
         uxtheme
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_graphicseffect
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_graphicseffect
     SOURCES
         effects/qgraphicseffect.cpp effects/qgraphicseffect.h effects/qgraphicseffect_p.h
         effects/qpixmapfilter.cpp effects/qpixmapfilter_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_action
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_action
     SOURCES
         kernel/qaction.h
         kernel/qaction_widgets.cpp kernel/qaction_widgets_p.h
@@ -399,303 +399,303 @@ qt_internal_extend_target(Widgets CONDITION QT_FEATURE_action
         kernel/qwidgetaction.cpp kernel/qwidgetaction.h kernel/qwidgetaction_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_formlayout
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_formlayout
     SOURCES
         kernel/qformlayout.cpp kernel/qformlayout.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_shortcut
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_shortcut
     SOURCES
         kernel/qshortcut.h
         kernel/qshortcut_widgets.cpp
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_tooltip
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_tooltip
     SOURCES
-        kernel/qtooltip.cpp kernel/qtooltip.h kernel/qtooltip_p.h
+        kernel/bobuiooltip.cpp kernel/bobuiooltip.h kernel/bobuiooltip_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_whatsthis
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_whatsthis
     SOURCES
         kernel/qwhatsthis.cpp kernel/qwhatsthis.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_animation
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_animation
     SOURCES
         styles/qstyleanimation.cpp styles/qstyleanimation_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_style_stylesheet
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_style_stylesheet
     SOURCES
         styles/qstylesheetstyle.cpp styles/qstylesheetstyle_p.h
         styles/qstylesheetstyle_default.cpp
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_style_windows
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_style_windows
     SOURCES
         styles/qwindowsstyle.cpp styles/qwindowsstyle_p.h
         styles/qwindowsstyle_p_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_style_fusion
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_style_fusion
     SOURCES
         styles/qfusionstyle.cpp styles/qfusionstyle_p.h
         styles/qfusionstyle_p_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_abstractbutton
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_abstractbutton
     SOURCES
         widgets/qabstractbutton.cpp widgets/qabstractbutton.h widgets/qabstractbutton_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_abstractslider
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_abstractslider
     SOURCES
         widgets/qabstractslider.cpp widgets/qabstractslider.h widgets/qabstractslider_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_buttongroup
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_buttongroup
     SOURCES
         widgets/qbuttongroup.cpp widgets/qbuttongroup.h widgets/qbuttongroup_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_calendarwidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_calendarwidget
     SOURCES
         widgets/qcalendarwidget.cpp widgets/qcalendarwidget.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_checkbox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_checkbox
     SOURCES
         widgets/qcheckbox.cpp widgets/qcheckbox.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_combobox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_combobox
     SOURCES
         widgets/qcombobox.cpp widgets/qcombobox.h widgets/qcombobox_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_commandlinkbutton
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_commandlinkbutton
     SOURCES
         widgets/qcommandlinkbutton.cpp widgets/qcommandlinkbutton.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_datetimeedit
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_datetimeedit
     SOURCES
         widgets/qdatetimeedit.cpp widgets/qdatetimeedit.h widgets/qdatetimeedit_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_dial
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_dial
     SOURCES
         widgets/qdial.cpp widgets/qdial.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_dockwidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_dockwidget
     SOURCES
         widgets/qdockarealayout.cpp widgets/qdockarealayout_p.h
         widgets/qdockwidget.cpp widgets/qdockwidget.h widgets/qdockwidget_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_effects
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_effects
     SOURCES
         widgets/qeffects.cpp widgets/qeffects_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_fontcombobox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_fontcombobox
     SOURCES
         widgets/qfontcombobox.cpp widgets/qfontcombobox.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_groupbox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_groupbox
     SOURCES
         widgets/qgroupbox.cpp widgets/qgroupbox.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_keysequenceedit
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_keysequenceedit
     SOURCES
         widgets/qkeysequenceedit.cpp widgets/qkeysequenceedit.h widgets/qkeysequenceedit_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_label
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_label
     SOURCES
         widgets/qlabel.cpp widgets/qlabel.h widgets/qlabel_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_lcdnumber
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_lcdnumber
     SOURCES
         widgets/qlcdnumber.cpp widgets/qlcdnumber.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_lineedit
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_lineedit
     SOURCES
         widgets/qlineedit.cpp widgets/qlineedit.h widgets/qlineedit_p.cpp widgets/qlineedit_p.h
         widgets/qwidgetlinecontrol.cpp widgets/qwidgetlinecontrol_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_mainwindow
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_mainwindow
     SOURCES
         widgets/qmainwindow.cpp widgets/qmainwindow.h
         widgets/qmainwindowlayout.cpp widgets/qmainwindowlayout_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_mdiarea
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_mdiarea
     SOURCES
         widgets/qmdiarea.cpp widgets/qmdiarea.h widgets/qmdiarea_p.h
         widgets/qmdisubwindow.cpp widgets/qmdisubwindow.h widgets/qmdisubwindow_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_menu
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_menu
     SOURCES
         widgets/qmenu.cpp widgets/qmenu.h widgets/qmenu_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_menubar
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_menubar
     SOURCES
         widgets/qmenubar.cpp widgets/qmenubar.h widgets/qmenubar_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_progressbar
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_progressbar
     SOURCES
         widgets/qprogressbar.cpp widgets/qprogressbar.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_pushbutton
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_pushbutton
     SOURCES
         widgets/qpushbutton.cpp widgets/qpushbutton.h widgets/qpushbutton_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_radiobutton
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_radiobutton
     SOURCES
         widgets/qradiobutton.cpp widgets/qradiobutton.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_resizehandler
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_resizehandler
     SOURCES
         widgets/qwidgetresizehandler.cpp widgets/qwidgetresizehandler_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_dialogbuttonbox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_dialogbuttonbox
     SOURCES
         widgets/qdialogbuttonbox.cpp widgets/qdialogbuttonbox.h widgets/qdialogbuttonbox_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_rubberband
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_rubberband
     SOURCES
         widgets/qrubberband.cpp widgets/qrubberband.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_scrollarea
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_scrollarea
     SOURCES
         widgets/qscrollarea.cpp widgets/qscrollarea.h widgets/qscrollarea_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_scrollbar
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_scrollbar
     SOURCES
         widgets/qscrollbar.cpp widgets/qscrollbar.h widgets/qscrollbar_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_sizegrip
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_sizegrip
     SOURCES
         widgets/qsizegrip.cpp widgets/qsizegrip.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_slider
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_slider
     SOURCES
         widgets/qslider.cpp widgets/qslider.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_spinbox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_spinbox
     SOURCES
         widgets/qabstractspinbox.cpp widgets/qabstractspinbox.h widgets/qabstractspinbox_p.h
         widgets/qspinbox.cpp widgets/qspinbox.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_splashscreen
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_splashscreen
     SOURCES
         widgets/qsplashscreen.cpp widgets/qsplashscreen.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_splitter
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_splitter
     SOURCES
         widgets/qsplitter.cpp widgets/qsplitter.h widgets/qsplitter_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_stackedwidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_stackedwidget
     SOURCES
         widgets/qstackedwidget.cpp widgets/qstackedwidget.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_statusbar
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_statusbar
     SOURCES
         widgets/qstatusbar.cpp widgets/qstatusbar.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_tabbar
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_tabbar
     SOURCES
-        widgets/qtabbar.cpp widgets/qtabbar.h widgets/qtabbar_p.h
+        widgets/bobuiabbar.cpp widgets/bobuiabbar.h widgets/bobuiabbar_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_textedit
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_textedit
     SOURCES
         widgets/qplaintextedit.cpp widgets/qplaintextedit.h widgets/qplaintextedit_p.h
-        widgets/qtextedit.cpp widgets/qtextedit.h widgets/qtextedit_p.h
+        widgets/bobuiextedit.cpp widgets/bobuiextedit.h widgets/bobuiextedit_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_textbrowser
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_textbrowser
     SOURCES
-        widgets/qtextbrowser.cpp widgets/qtextbrowser.h
+        widgets/bobuiextbrowser.cpp widgets/bobuiextbrowser.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_tabwidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_tabwidget
     SOURCES
-        widgets/qtabwidget.cpp widgets/qtabwidget.h
+        widgets/bobuiabwidget.cpp widgets/bobuiabwidget.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_toolbar
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_toolbar
     SOURCES
-        widgets/qtoolbar.cpp widgets/qtoolbar.h widgets/qtoolbar_p.h
-        widgets/qtoolbararealayout.cpp widgets/qtoolbararealayout_p.h
-        widgets/qtoolbarlayout.cpp widgets/qtoolbarlayout_p.h
-        widgets/qtoolbarseparator.cpp widgets/qtoolbarseparator_p.h
+        widgets/bobuioolbar.cpp widgets/bobuioolbar.h widgets/bobuioolbar_p.h
+        widgets/bobuioolbararealayout.cpp widgets/bobuioolbararealayout_p.h
+        widgets/bobuioolbarlayout.cpp widgets/bobuioolbarlayout_p.h
+        widgets/bobuioolbarseparator.cpp widgets/bobuioolbarseparator_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_toolbox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_toolbox
     SOURCES
-        widgets/qtoolbox.cpp widgets/qtoolbox.h
+        widgets/bobuioolbox.cpp widgets/bobuioolbox.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_toolbutton
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_toolbutton
     SOURCES
-        widgets/qtoolbarextension.cpp widgets/qtoolbarextension_p.h
-        widgets/qtoolbutton.cpp widgets/qtoolbutton.h
+        widgets/bobuioolbarextension.cpp widgets/bobuioolbarextension_p.h
+        widgets/bobuioolbutton.cpp widgets/bobuioolbutton.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_widgettextcontrol
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_widgettextcontrol
     SOURCES
         widgets/qwidgettextcontrol.cpp widgets/qwidgettextcontrol_p.h
         widgets/qwidgettextcontrol_p_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION MACOS AND (QT_FEATURE_menu OR QT_FEATURE_menubar)
+bobui_internal_extend_target(Widgets CONDITION MACOS AND (BOBUI_FEATURE_menu OR BOBUI_FEATURE_menubar)
     SOURCES
         widgets/qmenu_mac.mm
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_colordialog
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_colordialog
     SOURCES
         dialogs/qcolordialog.cpp dialogs/qcolordialog.h
         dialogs/qcolorwell_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_dialog
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_dialog
     SOURCES
         dialogs/qdialog.cpp dialogs/qdialog.h dialogs/qdialog_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_errormessage
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_errormessage
     SOURCES
         dialogs/qerrormessage.cpp dialogs/qerrormessage.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_filedialog
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_filedialog
     SOURCES
         dialogs/qfiledialog.cpp dialogs/qfiledialog.h dialogs/qfiledialog.ui dialogs/qfiledialog_p.h
         dialogs/qsidebar.cpp dialogs/qsidebar_p.h
@@ -703,42 +703,42 @@ qt_internal_extend_target(Widgets CONDITION QT_FEATURE_filedialog
         uic
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_filesystemmodel
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_filesystemmodel
     SOURCES
         dialogs/qfilesystemmodel.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_fontdialog
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_fontdialog
     SOURCES
         dialogs/qfontdialog.cpp dialogs/qfontdialog.h dialogs/qfontdialog_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_fscompleter
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_fscompleter
     SOURCES
         dialogs/qfscompleter_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_inputdialog
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_inputdialog
     SOURCES
         dialogs/qinputdialog.cpp dialogs/qinputdialog.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_messagebox
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_messagebox
     SOURCES
         dialogs/qmessagebox.cpp dialogs/qmessagebox.h
     NO_UNITY_BUILD_SOURCES
         dialogs/qmessagebox.cpp # error: ‘Old_Ok’ [etc] was not declared in this scope
 )
 
-if(QT_FEATURE_messagebox)
+if(BOBUI_FEATURE_messagebox)
     # Resources:
     set(qmessagebox_resource_files
-        "dialogs/images/qtlogo-64.png"
+        "dialogs/images/bobuilogo-64.png"
     )
 
-    qt_internal_add_resource(Widgets "qmessagebox"
+    bobui_internal_add_resource(Widgets "qmessagebox"
         PREFIX
-            "/qt-project.org/qmessagebox"
+            "/bobui-project.org/qmessagebox"
         BASE
             "dialogs"
         FILES
@@ -746,13 +746,13 @@ if(QT_FEATURE_messagebox)
     )
 endif()
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_progressdialog
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_progressdialog
     SOURCES
         dialogs/qprogressdialog.cpp dialogs/qprogressdialog.h
 )
 
-if(QT_FEATURE_wizard)
-    qt_internal_extend_target(Widgets CONDITION
+if(BOBUI_FEATURE_wizard)
+    bobui_internal_extend_target(Widgets CONDITION
         SOURCES
             dialogs/qwizard.cpp dialogs/qwizard.h
     )
@@ -765,13 +765,13 @@ if(QT_FEATURE_wizard)
         )
     endif()
 
-    qt_internal_extend_target(Widgets CONDITION WIN32
+    bobui_internal_extend_target(Widgets CONDITION WIN32
         SOURCES
             dialogs/qwizard_win.cpp dialogs/qwizard_win_p.h
     )
 endif()
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_accessibility
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_accessibility
     SOURCES
         accessible/complexwidgets.cpp accessible/complexwidgets_p.h
         accessible/qaccessiblecolorwell.cpp accessible/qaccessiblecolorwell_p.h
@@ -783,12 +783,12 @@ qt_internal_extend_target(Widgets CONDITION QT_FEATURE_accessibility
         accessible/simplewidgets.cpp accessible/simplewidgets_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_accessibility AND QT_FEATURE_itemviews
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_accessibility AND BOBUI_FEATURE_itemviews
     SOURCES
         accessible/itemviews.cpp accessible/itemviews_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_itemviews
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_itemviews
     SOURCES
         itemviews/qabstractitemdelegate.cpp itemviews/qabstractitemdelegate.h itemviews/qabstractitemdelegate_p.h
         itemviews/qabstractitemview.cpp itemviews/qabstractitemview.h itemviews/qabstractitemview_p.h
@@ -800,50 +800,50 @@ qt_internal_extend_target(Widgets CONDITION QT_FEATURE_itemviews
         itemviews/qwidgetitemdata_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_columnview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_columnview
     SOURCES
         itemviews/qcolumnview.cpp itemviews/qcolumnview.h itemviews/qcolumnview_p.h
         itemviews/qcolumnviewgrip.cpp itemviews/qcolumnviewgrip_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_datawidgetmapper
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_datawidgetmapper
     SOURCES
         itemviews/qdatawidgetmapper.cpp itemviews/qdatawidgetmapper.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_listview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_listview
     SOURCES
         itemviews/qlistview.cpp itemviews/qlistview.h itemviews/qlistview_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_listwidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_listwidget
     SOURCES
         itemviews/qlistwidget.cpp itemviews/qlistwidget.h itemviews/qlistwidget_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_tableview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_tableview
     SOURCES
-        itemviews/qtableview.cpp itemviews/qtableview.h itemviews/qtableview_p.h
+        itemviews/bobuiableview.cpp itemviews/bobuiableview.h itemviews/bobuiableview_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_tablewidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_tablewidget
     SOURCES
-        itemviews/qtablewidget.cpp itemviews/qtablewidget.h itemviews/qtablewidget_p.h
+        itemviews/bobuiablewidget.cpp itemviews/bobuiablewidget.h itemviews/bobuiablewidget_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_treeview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_treeview
     SOURCES
-        itemviews/qtreeview.cpp itemviews/qtreeview.h itemviews/qtreeview_p.h
+        itemviews/bobuireeview.cpp itemviews/bobuireeview.h itemviews/bobuireeview_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_treewidget
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_treewidget
     SOURCES
-        itemviews/qtreewidget.cpp itemviews/qtreewidget.h itemviews/qtreewidget_p.h
-        itemviews/qtreewidgetitemiterator.cpp itemviews/qtreewidgetitemiterator.h
-        itemviews/qtreewidgetitemiterator_p.h
+        itemviews/bobuireewidget.cpp itemviews/bobuireewidget.h itemviews/bobuireewidget_p.h
+        itemviews/bobuireewidgetitemiterator.cpp itemviews/bobuireewidgetitemiterator.h
+        itemviews/bobuireewidgetitemiterator_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_graphicsview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_graphicsview
     SOURCES
         graphicsview/qgraph_p.h
         graphicsview/qgraphicsanchorlayout.cpp graphicsview/qgraphicsanchorlayout.h graphicsview/qgraphicsanchorlayout_p.cpp graphicsview/qgraphicsanchorlayout_p.h
@@ -867,63 +867,63 @@ qt_internal_extend_target(Widgets CONDITION QT_FEATURE_graphicsview
         graphicsview/qsimplex_p.cpp graphicsview/qsimplex_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_easingcurve AND QT_FEATURE_graphicsview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_easingcurve AND BOBUI_FEATURE_graphicsview
     SOURCES
         graphicsview/qgraphicsitemanimation.cpp graphicsview/qgraphicsitemanimation.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_completer
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_completer
     SOURCES
         util/qcompleter.cpp util/qcompleter.h util/qcompleter_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_scroller
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_scroller
     SOURCES
         util/qflickgesture.cpp util/qflickgesture_p.h
         util/qscroller.cpp util/qscroller.h util/qscroller_p.h
         util/qscrollerproperties.cpp util/qscrollerproperties.h util/qscrollerproperties_p.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_undocommand
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_undocommand
     SOURCES
         util/qundostack.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_undogroup
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_undogroup
     SOURCES
         util/qundogroup.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_undoview
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_undoview
     SOURCES
         util/qundoview.cpp util/qundoview.h
 )
 
-qt_internal_extend_target(Widgets CONDITION QT_FEATURE_xcb
+bobui_internal_extend_target(Widgets CONDITION BOBUI_FEATURE_xcb
     SOURCES
         util/qsystemtrayicon_x11.cpp
 )
 
-qt_internal_extend_target(Widgets CONDITION NOT QT_FEATURE_xcb
+bobui_internal_extend_target(Widgets CONDITION NOT BOBUI_FEATURE_xcb
     SOURCES
         util/qsystemtrayicon_qpa.cpp
 )
 
 
-qt_internal_generate_tracepoints(Widgets widgets
+bobui_internal_generate_tracepoints(Widgets widgets
     SOURCES
         kernel/qapplication.cpp
 )
 
-qt_internal_add_docs(Widgets
-    doc/qtwidgets.qdocconf
+bobui_internal_add_docs(Widgets
+    doc/bobuiwidgets.qdocconf
 )
 
 if(IOS)
-    qt_internal_set_apple_privacy_manifest(Widgets
+    bobui_internal_set_apple_privacy_manifest(Widgets
         "${CMAKE_CURRENT_SOURCE_DIR}/platform/ios/PrivacyInfo.xcprivacy")
 endif()
 
-if(QT_FEATURE_doc_snippets)
+if(BOBUI_FEATURE_doc_snippets)
     add_subdirectory(doc/snippets)
 endif()

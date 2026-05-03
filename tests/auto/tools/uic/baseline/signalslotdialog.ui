@@ -26,7 +26,7 @@
       <item>
        <layout class="QHBoxLayout">
         <item>
-         <widget class="QToolButton" name="addSlotButton">
+         <widget class="BOBUIoolButton" name="addSlotButton">
           <property name="toolTip">
            <string>Add</string>
           </property>
@@ -36,7 +36,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="removeSlotButton">
+         <widget class="BOBUIoolButton" name="removeSlotButton">
           <property name="toolTip">
            <string>Delete</string>
           </property>
@@ -48,7 +48,7 @@
         <item>
          <spacer>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -75,7 +75,7 @@
       <item>
        <layout class="QHBoxLayout">
         <item>
-         <widget class="QToolButton" name="addSignalButton">
+         <widget class="BOBUIoolButton" name="addSignalButton">
           <property name="toolTip">
            <string>Add</string>
           </property>
@@ -85,7 +85,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="removeSignalButton">
+         <widget class="BOBUIoolButton" name="removeSignalButton">
           <property name="toolTip">
            <string>Delete</string>
           </property>
@@ -97,7 +97,7 @@
         <item>
          <spacer>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>

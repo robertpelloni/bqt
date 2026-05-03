@@ -1,16 +1,16 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#include <QtCore/qshareddata_impl.h>
+#include <BobUICore/qshareddata_impl.h>
 
 class tst_QExplicitlySharedDataPointerv2 : public QObject
 {
     Q_OBJECT
 
-    template <typename T> using QESDP_V2 = QtPrivate::QExplicitlySharedDataPointerV2<T>;
+    template <typename T> using QESDP_V2 = BobUIPrivate::QExplicitlySharedDataPointerV2<T>;
 
 private slots:
     void copyConstructor() const;
@@ -69,29 +69,29 @@ void tst_QExplicitlySharedDataPointerv2::moveAssignment() const
 
 void tst_QExplicitlySharedDataPointerv2::compareCompiles() const
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QESDP_V2<MyClass>>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QESDP_V2<MyClass>, std::nullptr_t>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QESDP_V2<MyClass>>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QESDP_V2<MyClass>, std::nullptr_t>();
 }
 
 void tst_QExplicitlySharedDataPointerv2::compare() const
 {
     const QESDP_V2<MyClass> ptr;
     const QESDP_V2<MyClass> ptr2;
-    QT_TEST_ALL_COMPARISON_OPS(ptr, nullptr, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(ptr2, nullptr, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(ptr, ptr2, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr, nullptr, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr2, nullptr, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr, ptr2, BobUI::strong_ordering::equal);
 
     const QESDP_V2<MyClass> copy(ptr);
-    QT_TEST_ALL_COMPARISON_OPS(ptr, copy, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(ptr, copy, BobUI::strong_ordering::equal);
 
     const QESDP_V2<MyClass> new_ptr(new MyClass());
-    QT_TEST_ALL_COMPARISON_OPS(new_ptr, nullptr, Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(new_ptr, ptr, Qt::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(new_ptr, nullptr, BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(new_ptr, ptr, BobUI::strong_ordering::greater);
 
     std::array<MyClass, 3> myArray {MyClass(2), MyClass(1), MyClass(0)};
     const QESDP_V2<const MyClass> val0(&myArray[0]);
     const QESDP_V2<const MyClass> val1(&myArray[1]);
-    QT_TEST_ALL_COMPARISON_OPS(val0, val1, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(val0, val1, BobUI::strong_ordering::less);
 }
 
 void tst_QExplicitlySharedDataPointerv2::mutability() const
@@ -129,14 +129,14 @@ void tst_QExplicitlySharedDataPointerv2::data() const
     {
         QESDP_V2<const MyClass> pointer;
         QCOMPARE_EQ(pointer.data(), static_cast<const MyClass *>(0));
-        QT_TEST_ALL_COMPARISON_OPS(pointer, nullptr, Qt::strong_ordering::equal);
+        BOBUI_TEST_ALL_COMPARISON_OPS(pointer, nullptr, BobUI::strong_ordering::equal);
     }
 
     {
         const QESDP_V2<const MyClass> pointer(new MyClass());
         /* Check that this cast is possible. */
         Q_UNUSED(static_cast<const MyClass *>(pointer.data()));
-        QT_TEST_ALL_COMPARISON_OPS(pointer, nullptr, Qt::strong_ordering::greater);
+        BOBUI_TEST_ALL_COMPARISON_OPS(pointer, nullptr, BobUI::strong_ordering::greater);
     }
 
     {
@@ -219,6 +219,6 @@ void tst_QExplicitlySharedDataPointerv2::take() const
     QCOMPARE_EQ(pointer, nullptr);
 }
 
-QTEST_MAIN(tst_QExplicitlySharedDataPointerv2)
+BOBUIEST_MAIN(tst_QExplicitlySharedDataPointerv2)
 
 #include "tst_qexplicitlyshareddatapointerv2.moc"

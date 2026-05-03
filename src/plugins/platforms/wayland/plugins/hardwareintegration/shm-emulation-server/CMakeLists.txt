@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from shm-emulation-server.pro.
@@ -7,22 +7,22 @@
 ## ShmServerBufferPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(ShmServerBufferPlugin
+bobui_internal_add_plugin(ShmServerBufferPlugin
     OUTPUT_NAME shm-emulation-server
     PLUGIN_TYPE wayland-graphics-integration-client
     SOURCES
         shmserverbufferintegration.cpp shmserverbufferintegration.h
         main.cpp
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::OpenGL
-        Qt::WaylandClientPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::OpenGL
+        BobUI::WaylandClientPrivate
         Wayland::Client
-    QT_LICENSE_ID QT_COMMERCIAL_OR_LGPL3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_LGPL3
 )
 
-qt6_generate_wayland_protocol_client_sources(ShmServerBufferPlugin
+bobui6_generate_wayland_protocol_client_sources(ShmServerBufferPlugin
     PRIVATE_CODE
     FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../3rdparty/wayland/extensions/server-buffer-extension.xml

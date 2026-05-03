@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdarwinpermissionplugin_p_p.h"
 
 #include <AVFoundation/AVFoundation.h>
 
-QT_DEFINE_PERMISSION_STATUS_CONVERTER(AVAuthorizationStatus);
+BOBUI_DEFINE_PERMISSION_STATUS_CONVERTER(AVAuthorizationStatus);
 
 #ifndef BUILDING_PERMISSION_REQUEST
 
 @implementation QDarwinMicrophonePermissionHandler
-- (Qt::PermissionStatus)checkPermission:(QPermission)permission
+- (BobUI::PermissionStatus)checkPermission:(QPermission)permission
 {
     const auto status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    return nativeStatusToQtStatus(status);
+    return nativeStatusToBobUIStatus(status);
 }
 
 - (QStringList)usageDescriptionsFor:(QPermission)permission
@@ -34,7 +34,7 @@ QT_DEFINE_PERMISSION_STATUS_CONVERTER(AVAuthorizationStatus);
     {
         Q_UNUSED(granted); // We use status instead
         const auto status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-        callback(nativeStatusToQtStatus(status));
+        callback(nativeStatusToBobUIStatus(status));
     }];
 }
 @end

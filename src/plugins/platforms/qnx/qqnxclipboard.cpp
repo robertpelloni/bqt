@@ -1,25 +1,25 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
 
 #include "qqnxclipboard.h"
 
-#include <QtGui/QColor>
+#include <BobUIGui/QColor>
 
-#include <QtCore/QDebug>
-#include <QtCore/QMimeData>
-#include <QtCore/QStringList>
-#include <QtCore/QUrl>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMimeData>
+#include <BobUICore/QStringList>
+#include <BobUICore/QUrl>
 
 #include <clipboard/clipboard.h>
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaClipboard, "qt.qpa.clipboard");
+Q_LOGGING_CATEGORY(lcQpaClipboard, "bobui.qpa.clipboard");
 
 // null terminated array
 static const char *typeList[] = {"text/html", "text/plain", "image/png", "image/jpeg", "application/x-color", 0};
@@ -94,7 +94,7 @@ public:
         // simulate an owner change through delayed invocation
         // basically transfer ownership of data to the system clipboard once event processing resumes
         if (m_userMimeData)
-            QMetaObject::invokeMethod(this, "releaseOwnership", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "releaseOwnership", BobUI::QueuedConnection);
     }
 
     QMimeData *userMimeData()
@@ -193,8 +193,8 @@ QMimeData *QQnxClipboard::mimeData(QClipboard::Mode mode)
     return m_mimeData;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qqnxclipboard.moc"
 
-#endif //QT_NO_CLIPBOARD
+#endif //BOBUI_NO_CLIPBOARD

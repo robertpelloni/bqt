@@ -1,7 +1,7 @@
-# QTBUG-87404
+# BOBUIBUG-87404
 [minMaxSize]
 android
-# QTBUG-140038
+# BOBUIBUG-140038
 [spacingsAndMargins]
 android
 [styleDependentSpacingsAndMargins]

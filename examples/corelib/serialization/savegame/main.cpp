@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "game.h"
 
 #include <QCoreApplication>
 #include <QStringList>
 #include <QString>
-#include <QTextStream>
+#include <BOBUIextStream>
 
-using namespace Qt::StringLiterals; // for _L1
+using namespace BobUI::StringLiterals; // for _L1
 
 //! [0]
 int main(int argc, char *argv[])
@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 
     const QStringList args = QCoreApplication::arguments();
     const bool newGame
-            = args.size() <= 1 || QString::compare(args[1], "load"_L1, Qt::CaseInsensitive) != 0;
+            = args.size() <= 1 || QString::compare(args[1], "load"_L1, BobUI::CaseInsensitive) != 0;
     const bool json
-            = args.size() <= 2 || QString::compare(args[2], "binary"_L1, Qt::CaseInsensitive) != 0;
+            = args.size() <= 2 || QString::compare(args[2], "binary"_L1, BobUI::CaseInsensitive) != 0;
 
     Game game;
     if (newGame)
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     // Game is played; changes are made...
 //! [0]
 //! [1]
-    QTextStream s(stdout);
+    BOBUIextStream s(stdout);
     s << "Game ended in the following state:\n";
     game.print(s);
     if (!game.saveGame(json ? Game::Json : Game::Binary))

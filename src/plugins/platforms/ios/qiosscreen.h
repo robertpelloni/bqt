@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSSCREEN_H
 #define QIOSSCREEN_H
@@ -9,11 +9,11 @@
 
 #include <qpa/qplatformscreen.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 @class QIOSOrientationListener;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSScreen : public QObject, public QPlatformScreen
 {
@@ -38,8 +38,8 @@ public:
     qreal devicePixelRatio() const override;
     qreal refreshRate() const override;
 
-    Qt::ScreenOrientation nativeOrientation() const override;
-    Qt::ScreenOrientation orientation() const override;
+    BobUI::ScreenOrientation nativeOrientation() const override;
+    BobUI::ScreenOrientation orientation() const override;
 
     QPixmap grabWindow(WId window, int x, int y, int width, int height) const override;
 
@@ -71,6 +71,6 @@ private:
     friend class QIOSIntegration;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

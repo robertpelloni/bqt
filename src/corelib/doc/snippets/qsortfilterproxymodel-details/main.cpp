@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QApplication>
 #include <QSortFilterProxyModel>
 #include <QWidget>
-#include <QTreeView>
+#include <BOBUIreeView>
 
 class MyItemModel : public QStandardItemModel
 {
@@ -27,7 +27,7 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
 //! [0] //! [1]
-        QTreeView *treeView = new QTreeView;
+        BOBUIreeView *treeView = new BOBUIreeView;
 //! [0]
         MyItemModel *model = new MyItemModel(this);
 
@@ -47,7 +47,7 @@ Widget::Widget(QWidget *parent)
 //! [3]
 
 //! [4]
-        proxyModel->sort(2, Qt::AscendingOrder);
+        proxyModel->sort(2, BobUI::AscendingOrder);
 //! [4] //! [5]
         proxyModel->setFilterRegularExpression(QRegularExpression("\\.png", QRegularExpression::CaseInsensitiveOption));
         proxyModel->setFilterKeyColumn(1);

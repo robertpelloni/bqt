@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef BOOKWINDOW_H
 #define BOOKWINDOW_H
 
 #include <QMainWindow>
 
-QT_FORWARD_DECLARE_CLASS(QComboBox)
-QT_FORWARD_DECLARE_CLASS(QGridLayout)
-QT_FORWARD_DECLARE_CLASS(QLabel)
-QT_FORWARD_DECLARE_CLASS(QLineEdit)
-QT_FORWARD_DECLARE_CLASS(QSpinBox)
-QT_FORWARD_DECLARE_CLASS(QSqlError)
-QT_FORWARD_DECLARE_CLASS(QSqlRelationalTableModel)
-QT_FORWARD_DECLARE_CLASS(QTableView)
+BOBUI_FORWARD_DECLARE_CLASS(QComboBox)
+BOBUI_FORWARD_DECLARE_CLASS(QGridLayout)
+BOBUI_FORWARD_DECLARE_CLASS(QLabel)
+BOBUI_FORWARD_DECLARE_CLASS(QLineEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QSpinBox)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlError)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlRelationalTableModel)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIableView)
 
 class BookWindow: public QMainWindow
 {
@@ -38,7 +38,7 @@ private:
     QWidget *window = nullptr;
 
     QGridLayout *gridLayout = nullptr;
-    QTableView *tableView = nullptr;
+    BOBUIableView *tableView = nullptr;
     QLabel *titleLabel = nullptr;
     QLineEdit *titleLineEdit = nullptr;
     QLabel *authorLabel = nullptr;

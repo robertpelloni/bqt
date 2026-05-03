@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSHAREDMEMORY_H
 #define QSHAREDMEMORY_H
 
-#include <QtCore/qtipccommon.h>
-#ifndef QT_NO_QOBJECT
-# include <QtCore/qobject.h>
+#include <BobUICore/bobuiipccommon.h>
+#ifndef BOBUI_NO_QOBJECT
+# include <BobUICore/qobject.h>
 #else
-# include <QtCore/qobjectdefs.h>
-# include <QtCore/qscopedpointer.h>
-# include <QtCore/qstring.h>
+# include <BobUICore/qobjectdefs.h>
+# include <BobUICore/qscopedpointer.h>
+# include <BobUICore/qstring.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 
 class QSharedMemoryPrivate;
 
@@ -60,7 +60,7 @@ public:
     { setNativeKey({ key, type }); }
     QString nativeKey() const;
     QNativeIpcKey nativeIpcKey() const;
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
     void setNativeKey(const QString &key);
 #endif
 
@@ -75,7 +75,7 @@ public:
     const void* constData() const;
     const void *data() const;
 
-#if QT_CONFIG(systemsemaphore)
+#if BOBUI_CONFIG(systemsemaphore)
     bool lock();
     bool unlock();
 #endif
@@ -93,8 +93,8 @@ private:
     Q_DISABLE_COPY(QSharedMemory)
 };
 
-#endif // QT_CONFIG(sharedmemory)
+#endif // BOBUI_CONFIG(sharedmemory)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSHAREDMEMORY_H

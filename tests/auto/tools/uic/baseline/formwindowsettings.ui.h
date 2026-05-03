@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'formwindowsettings.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,24 +16,24 @@
 #ifndef FORMWINDOWSETTINGS_H
 #define FORMWINDOWSETTINGS_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
 #include <gridpanel_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_FormWindowSettings
 {
@@ -59,7 +59,7 @@ public:
     QLineEdit *authorLineEdit;
     QGroupBox *includeHintsGroupBox;
     QVBoxLayout *vboxLayout1;
-    QTextEdit *includeHintsTextEdit;
+    BOBUIextEdit *includeHintsTextEdit;
     QHBoxLayout *hboxLayout1;
     QGroupBox *pixmapFunctionGroupBox;
     QVBoxLayout *vboxLayout2;
@@ -76,7 +76,7 @@ public:
         gridLayout->setObjectName("gridLayout");
         buttonBox = new QDialogButtonBox(FormWindowSettings);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         gridLayout->addWidget(buttonBox, 6, 0, 1, 2);
@@ -185,7 +185,7 @@ public:
 #endif
         vboxLayout1->setContentsMargins(8, 8, 8, 8);
         vboxLayout1->setObjectName("vboxLayout1");
-        includeHintsTextEdit = new QTextEdit(includeHintsGroupBox);
+        includeHintsTextEdit = new BOBUIextEdit(includeHintsGroupBox);
         includeHintsTextEdit->setObjectName("includeHintsTextEdit");
 
         vboxLayout1->addWidget(includeHintsTextEdit);
@@ -228,12 +228,12 @@ public:
 
         gridLayout->addWidget(gridPanel, 1, 0, 1, 2);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label_2->setBuddy(defaultSpacingSpinBox);
         label->setBuddy(defaultMarginSpinBox);
         label_3->setBuddy(marginFunctionLineEdit);
         label_3_2->setBuddy(spacingFunctionLineEdit);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
         QWidget::setTabOrder(authorLineEdit, defaultMarginSpinBox);
         QWidget::setTabOrder(defaultMarginSpinBox, defaultSpacingSpinBox);
         QWidget::setTabOrder(defaultSpacingSpinBox, marginFunctionLineEdit);
@@ -268,6 +268,6 @@ namespace Ui {
     class FormWindowSettings: public Ui_FormWindowSettings {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // FORMWINDOWSETTINGS_H

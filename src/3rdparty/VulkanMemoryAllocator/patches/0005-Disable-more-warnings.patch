@@ -1,5 +1,5 @@
 From 4a6d29420041e1f0a14450853887226ff838b917 Mon Sep 17 00:00:00 2001
-From: Laszlo Agocs <laszlo.agocs@qt.io>
+From: Laszlo Agocs <laszlo.agocs@bobui.io>
 Date: Mon, 24 Oct 2022 15:11:30 +0200
 Subject: [PATCH] vkmemalloc: Disable more warnings
 

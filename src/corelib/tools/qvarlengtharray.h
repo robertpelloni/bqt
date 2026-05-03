@@ -1,34 +1,34 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QVARLENGTHARRAY_H
 #define QVARLENGTHARRAY_H
 
 #if 0
-#pragma qt_class(QVarLengthArray)
-#pragma qt_sync_stop_processing
+#pragma bobui_class(QVarLengthArray)
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qalloc.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qalgorithms.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qalloc.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qalgorithms.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <algorithm>
 #include <initializer_list>
 #include <iterator>
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20memory.h>
 #include <new>
 
 #include <string.h>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <size_t Size, size_t Align, qsizetype Prealloc>
 class QVLAStorage
@@ -36,23 +36,23 @@ class QVLAStorage
     template <size_t> class print;
 protected:
     QVLAStorage() = default;
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QVLAStorage)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QVLAStorage)
 
     alignas(Align) char array[Prealloc * (Align > Size ? Align : Size)];
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     // ensure we maintain BC: std::aligned_storage_t was only specified by a
     // minimum size, but for BC we need the substitution to be exact in size:
     static_assert(std::is_same_v<print<sizeof(std::aligned_storage_t<Size, Align>[Prealloc])>,
                                  print<sizeof(array)>>);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 };
 
 class QVLABaseBase
 {
 protected:
     QVLABaseBase() = default;
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QVLABaseBase)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QVLABaseBase)
 
     qsizetype a;      // capacity
     qsizetype s;      // size
@@ -85,7 +85,7 @@ class QVLABase : public QVLABaseBase
 {
 protected:
     QVLABase() = default;
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QVLABase)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QVLABase)
 
 public:
     T *data() noexcept { return static_cast<T *>(ptr); }
@@ -145,7 +145,7 @@ public:
     void pop_back()
     {
         verify();
-        if constexpr (QTypeInfo<T>::isComplex)
+        if constexpr (BOBUIypeInfo<T>::isComplex)
             data()[size() - 1].~T();
         --s;
     }
@@ -182,7 +182,7 @@ public:
 
     void clear()
     {
-        if constexpr (QTypeInfo<T>::isComplex)
+        if constexpr (BOBUIypeInfo<T>::isComplex)
             std::destroy_n(data(), size());
         s = 0;
     }
@@ -193,14 +193,14 @@ public:
     static constexpr qsizetype maxSize() noexcept
     {
         // -1 to deal with the pointer one-past-the-end
-        return (QtPrivate::MaxAllocSize / sizeof(T)) - 1;
+        return (BobUIPrivate::MaxAllocSize / sizeof(T)) - 1;
     }
     constexpr qsizetype max_size() const noexcept
     {
         return maxSize();
     }
 
-    size_t hash(size_t seed) const noexcept(QtPrivate::QNothrowHashable_v<T>)
+    size_t hash(size_t seed) const noexcept(BobUIPrivate::QNothrowHashable_v<T>)
     {
         return qHashRange(begin(), end(), seed);
     }
@@ -236,7 +236,7 @@ protected:
     void reallocate_impl(qsizetype prealloc, void *array, qsizetype size, qsizetype alloc);
     void resize_impl(qsizetype prealloc, void *array, qsizetype sz, const T &v)
     {
-        if (QtPrivate::q_points_into_range(&v, begin(), end())) {
+        if (BobUIPrivate::q_points_into_range(&v, begin(), end())) {
             resize_impl(prealloc, array, sz, T(v));
             return;
         }
@@ -249,7 +249,7 @@ protected:
     void resize_impl(qsizetype prealloc, void *array, qsizetype sz)
     {
         reallocate_impl(prealloc, array, sz, qMax(sz, capacity()));
-        if constexpr (QTypeInfo<T>::isComplex) {
+        if constexpr (BOBUIypeInfo<T>::isComplex) {
             // call default constructor for new objects (which can throw)
             while (size() < sz) {
                 q20::construct_at(data() + size());
@@ -280,7 +280,7 @@ protected:
 // Prealloc = 256 by default, specified in qcontainerfwd.h
 template<class T, qsizetype Prealloc>
 class QVarLengthArray
-#if QT_VERSION >= QT_VERSION_CHECK(7,0,0) || defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0) || defined(BOBUI_BOOTSTRAPPED)
     : public QVLAStorage<sizeof(T), alignof(T), Prealloc>,
       public QVLABase<T>
 #else
@@ -293,13 +293,13 @@ class QVarLengthArray
     using Base = QVLABase<T>;
     using Storage = QVLAStorage<sizeof(T), alignof(T), Prealloc>;
     static_assert(Prealloc > 0, "QVarLengthArray Prealloc must be greater than 0.");
-    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
     using Base::verify;
 
     template <typename U>
     using if_copyable = std::enable_if_t<std::is_copy_constructible_v<U>, bool>;
     template <typename InputIterator>
-    using if_input_iterator = QtPrivate::IfIsInputIterator<InputIterator>;
+    using if_input_iterator = BobUIPrivate::IfIsInputIterator<InputIterator>;
 public:
     static constexpr qsizetype PreallocatedSize = Prealloc;
 
@@ -348,7 +348,7 @@ public:
         if (data() == otherInlineStorage) {
             // inline buffer - move into our inline buffer:
             this->ptr = this->array;
-            QtPrivate::q_uninitialized_relocate_n(otherInlineStorage, size(), data());
+            BobUIPrivate::q_uninitialized_relocate_n(otherInlineStorage, size(), data());
         } else {
             // heap buffer - we just stole the memory
         }
@@ -372,10 +372,10 @@ public:
 
     inline ~QVarLengthArray()
     {
-        if constexpr (QTypeInfo<T>::isComplex)
+        if constexpr (BOBUIypeInfo<T>::isComplex)
             std::destroy_n(data(), size());
         if (data() != reinterpret_cast<T *>(this->array))
-            QtPrivate::sizedFree(data(), capacity(), sizeof(T));
+            BobUIPrivate::sizedFree(data(), capacity(), sizeof(T));
     }
     inline QVarLengthArray<T, Prealloc> &operator=(const QVarLengthArray<T, Prealloc> &other)
     {
@@ -401,7 +401,7 @@ public:
             this->ptr = std::exchange(other.ptr, otherInlineStorage);
         } else {
             // inline storage: move into our storage (doesn't matter whether inline or external)
-            QtPrivate::q_uninitialized_relocate_n(other.data(), other.size(), data());
+            BobUIPrivate::q_uninitialized_relocate_n(other.data(), other.size(), data());
         }
         this->s = std::exchange(other.s, 0);
         return *this;
@@ -518,10 +518,10 @@ public:
     inline QVarLengthArray<T, Prealloc> &operator+=(T &&t)
     { append(std::move(t)); return *this; }
 
-#if QT_DEPRECATED_SINCE(6, 3)
-    QT_DEPRECATED_VERSION_X_6_3("This is slow. If you must, use insert(cbegin(), ~~~) instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+    BOBUI_DEPRECATED_VERSION_X_6_3("This is slow. If you must, use insert(cbegin(), ~~~) instead.")
     void prepend(T &&t);
-    QT_DEPRECATED_VERSION_X_6_3("This is slow. If you must, use insert(cbegin(), ~~~) instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_3("This is slow. If you must, use insert(cbegin(), ~~~) instead.")
     void prepend(const T &t);
 #endif
     void insert(qsizetype i, T &&t);
@@ -641,42 +641,42 @@ public:
 #else
 private:
     template <typename U = T, qsizetype Prealloc2 = Prealloc,
-              Qt::if_has_qt_compare_three_way<U, U> = true>
+              BobUI::if_has_bobui_compare_three_way<U, U> = true>
     friend auto
     compareThreeWay(const QVarLengthArray &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
     {
-        return QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+        return BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                                  rhs.begin(), rhs.end());
     }
 
 #if defined(__cpp_lib_three_way_comparison) && defined(__cpp_lib_concepts)
     template <typename U = T, qsizetype Prealloc2 = Prealloc,
-              QtOrderingPrivate::if_has_op_less_or_op_compare_three_way<QVarLengthArray, U> = true>
+              BobUIOrderingPrivate::if_has_op_less_or_op_compare_three_way<QVarLengthArray, U> = true>
     friend auto
     operator<=>(const QVarLengthArray &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
     {
         return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(),
                                                       rhs.begin(), rhs.end(),
-                                                      QtOrderingPrivate::synthThreeWay);
+                                                      BobUIOrderingPrivate::synthThreeWay);
     }
 #endif // __cpp_lib_three_way_comparison && __cpp_lib_concepts
 
 public:
     template <typename U = T, qsizetype Prealloc2 = Prealloc> friend
-    QTypeTraits::compare_eq_result<U> operator==(const QVarLengthArray<T, Prealloc> &l, const QVarLengthArray<T, Prealloc2> &r)
+    BOBUIypeTraits::compare_eq_result<U> operator==(const QVarLengthArray<T, Prealloc> &l, const QVarLengthArray<T, Prealloc2> &r)
     {
         return l.equal(r);
     }
 
     template <typename U = T, qsizetype Prealloc2 = Prealloc> friend
-    QTypeTraits::compare_eq_result<U> operator!=(const QVarLengthArray<T, Prealloc> &l, const QVarLengthArray<T, Prealloc2> &r)
+    BOBUIypeTraits::compare_eq_result<U> operator!=(const QVarLengthArray<T, Prealloc> &l, const QVarLengthArray<T, Prealloc2> &r)
     {
         return !(l == r);
     }
 
 #ifndef __cpp_lib_three_way_comparison
     template <typename U = T, qsizetype Prealloc2 = Prealloc> friend
-    QTypeTraits::compare_lt_result<U> operator<(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
+    BOBUIypeTraits::compare_lt_result<U> operator<(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
         noexcept(noexcept(std::lexicographical_compare(lhs.begin(), lhs.end(),
                                                        rhs.begin(), rhs.end())))
     {
@@ -684,21 +684,21 @@ public:
     }
 
     template <typename U = T, qsizetype Prealloc2 = Prealloc> friend
-    QTypeTraits::compare_lt_result<U> operator>(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
+    BOBUIypeTraits::compare_lt_result<U> operator>(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
         noexcept(noexcept(lhs < rhs))
     {
         return rhs < lhs;
     }
 
     template <typename U = T, qsizetype Prealloc2 = Prealloc> friend
-    QTypeTraits::compare_lt_result<U> operator<=(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
+    BOBUIypeTraits::compare_lt_result<U> operator<=(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
         noexcept(noexcept(lhs < rhs))
     {
         return !(lhs > rhs);
     }
 
     template <typename U = T, qsizetype Prealloc2 = Prealloc> friend
-    QTypeTraits::compare_lt_result<U> operator>=(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
+    BOBUIypeTraits::compare_lt_result<U> operator>=(const QVarLengthArray<T, Prealloc> &lhs, const QVarLengthArray<T, Prealloc2> &rhs)
         noexcept(noexcept(lhs < rhs))
     {
         return !(lhs < rhs);
@@ -722,7 +722,7 @@ private:
 
 template <typename InputIterator,
           typename ValueType = typename std::iterator_traits<InputIterator>::value_type,
-          QtPrivate::IfIsInputIterator<InputIterator> = true>
+          BobUIPrivate::IfIsInputIterator<InputIterator> = true>
 QVarLengthArray(InputIterator, InputIterator) -> QVarLengthArray<ValueType>;
 
 template <class T, qsizetype Prealloc>
@@ -737,10 +737,10 @@ Q_INLINE_TEMPLATE QVarLengthArray<T, Prealloc>::QVarLengthArray(qsizetype asize)
 
     if (asize > Prealloc) {
         this->a = asize;
-        this->ptr = QtPrivate::fittedMalloc(0, &this->a, sizeof(T));
+        this->ptr = BobUIPrivate::fittedMalloc(0, &this->a, sizeof(T));
         Q_CHECK_PTR(this->ptr);
     }
-    if constexpr (QTypeInfo<T>::isComplex)
+    if constexpr (BOBUIypeInfo<T>::isComplex)
         std::uninitialized_default_construct_n(data(), asize);
     this->s = asize;
 }
@@ -805,7 +805,7 @@ Q_OUTOFLINE_TEMPLATE void QVLABase<T>::append_impl(qsizetype prealloc, void *arr
     if (asize >= capacity())
         growBy(prealloc, array, increment);
 
-    if constexpr (QTypeInfo<T>::isComplex)
+    if constexpr (BOBUIypeInfo<T>::isComplex)
         std::uninitialized_copy_n(abuf, increment, end());
     else
         memcpy(static_cast<void *>(end()), static_cast<const void *>(abuf), increment * sizeof(T));
@@ -842,7 +842,7 @@ void QVLABase<T>::assign_impl(qsizetype prealloc, void *array, Iterator first, I
 
     auto dst = begin();
 
-    if constexpr (!QTypeInfo<T>::isComplex) {
+    if constexpr (!BOBUIypeInfo<T>::isComplex) {
         // For non-complex types, we prefer a single std::copy() -> memcpy()
         // call. We can do that because either the default constructor is
         // trivial (so the lifetime has started) or the copy constructor is
@@ -918,16 +918,16 @@ Q_OUTOFLINE_TEMPLATE void QVLABase<T>::reallocate_impl(qsizetype prealloc, void 
         void *newPtr;
         qsizetype newA;
         if (aalloc > prealloc) {
-            newPtr = QtPrivate::fittedMalloc(0, &aalloc, sizeof(T));
+            newPtr = BobUIPrivate::fittedMalloc(0, &aalloc, sizeof(T));
             guard.reset(newPtr);
             Q_CHECK_PTR(newPtr); // could throw
-            // by design: in case of QT_NO_EXCEPTIONS malloc must not fail or it crashes here
+            // by design: in case of BOBUI_NO_EXCEPTIONS malloc must not fail or it crashes here
             newA = aalloc;
         } else {
             newPtr = array;
             newA = prealloc;
         }
-        QtPrivate::q_uninitialized_relocate_n(oldPtr, copySize,
+        BobUIPrivate::q_uninitialized_relocate_n(oldPtr, copySize,
                                               reinterpret_cast<T *>(newPtr));
         // commit:
         ptr = newPtr;
@@ -937,13 +937,13 @@ Q_OUTOFLINE_TEMPLATE void QVLABase<T>::reallocate_impl(qsizetype prealloc, void 
     s = copySize;
 
     // destroy remaining old objects
-    if constexpr (QTypeInfo<T>::isComplex) {
+    if constexpr (BOBUIypeInfo<T>::isComplex) {
         if (osize > asize)
             std::destroy(oldPtr + asize, oldPtr + osize);
     }
 
     if (oldPtr != reinterpret_cast<T *>(array) && oldPtr != data())
-        QtPrivate::sizedFree(oldPtr, oalloc, sizeof(T));
+        BobUIPrivate::sizedFree(oldPtr, oalloc, sizeof(T));
 }
 
 template <class T>
@@ -978,16 +978,16 @@ inline void QVLABase<T>::remove(qsizetype i, qsizetype n)
 template <class T>
 template <typename AT>
 inline qsizetype QVLABase<T>::removeAll(const AT &t)
-{ return QtPrivate::sequential_erase_with_copy(*this, t); }
+{ return BobUIPrivate::sequential_erase_with_copy(*this, t); }
 template <class T>
 template <typename AT>
 inline bool QVLABase<T>::removeOne(const AT &t)
-{ return QtPrivate::sequential_erase_one(*this, t); }
+{ return BobUIPrivate::sequential_erase_one(*this, t); }
 template <class T>
 template <typename Predicate>
 inline qsizetype QVLABase<T>::removeIf(Predicate pred)
-{ return QtPrivate::sequential_erase_if(*this, pred); }
-#if QT_DEPRECATED_SINCE(6, 3)
+{ return BobUIPrivate::sequential_erase_if(*this, pred); }
+#if BOBUI_DEPRECATED_SINCE(6, 3)
 template <class T, qsizetype Prealloc>
 inline void QVarLengthArray<T, Prealloc>::prepend(T &&t)
 { insert(cbegin(), std::move(t)); }
@@ -1015,7 +1015,7 @@ Q_OUTOFLINE_TEMPLATE auto QVLABase<T>::emplace_impl(qsizetype prealloc, void *ar
     emplace_back_impl(prealloc, array, std::forward<Args>(args)...);
     const auto b = begin() + offset;
     const auto e = end();
-    QtPrivate::q_rotate(b, e - 1, e);
+    BobUIPrivate::q_rotate(b, e - 1, e);
     return b;
 }
 
@@ -1028,7 +1028,7 @@ Q_OUTOFLINE_TEMPLATE auto QVLABase<T>::insert_impl(qsizetype prealloc, void *arr
     resize_impl(prealloc, array, size() + n, t);
     const auto b = begin() + offset;
     const auto e = end();
-    QtPrivate::q_rotate(b, e - n, e);
+    BobUIPrivate::q_rotate(b, e - n, e);
     return b;
 }
 
@@ -1047,8 +1047,8 @@ Q_OUTOFLINE_TEMPLATE auto QVLABase<T>::erase(const_iterator abegin, const_iterat
 
     Q_ASSERT(n > 0); // aend must be reachable from abegin
 
-    if constexpr (!QTypeInfo<T>::isRelocatable) {
-        std::move(begin() + l, end(), QT_MAKE_CHECKED_ARRAY_ITERATOR(begin() + f, size() - f));
+    if constexpr (!BOBUIypeInfo<T>::isRelocatable) {
+        std::move(begin() + l, end(), BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(begin() + f, size() - f));
         std::destroy(end() - n, end());
     } else {
         std::destroy(abegin, aend);
@@ -1082,7 +1082,7 @@ bool operator>=(const QVarLengthArray<T, Prealloc1> &l, const QVarLengthArray<T,
 
 template <typename T, qsizetype Prealloc>
 size_t qHash(const QVarLengthArray<T, Prealloc> &key, size_t seed = 0)
-    noexcept(QtPrivate::QNothrowHashable_v<T>)
+    noexcept(BobUIPrivate::QNothrowHashable_v<T>)
 {
     return key.hash(seed);
 }
@@ -1099,6 +1099,6 @@ qsizetype erase_if(QVarLengthArray<T, Prealloc> &array, Predicate pred)
     return array.removeIf(pred);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVARLENGTHARRAY_H

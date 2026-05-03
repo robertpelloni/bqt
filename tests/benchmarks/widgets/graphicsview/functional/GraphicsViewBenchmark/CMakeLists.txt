@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_GraphicsViewBenchmark Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_GraphicsViewBenchmark
+bobui_internal_add_benchmark(tst_GraphicsViewBenchmark
     SOURCES
         main.cpp
         widgets/abstractitemcontainer.cpp widgets/abstractitemcontainer.h
@@ -40,68 +40,68 @@ qt_internal_add_benchmark(tst_GraphicsViewBenchmark
     INCLUDE_DIRECTORIES
         widgets
     LIBRARIES
-        Qt::Gui
-        Qt::Svg
-        Qt::Test
+        BobUI::Gui
+        BobUI::Svg
+        BobUI::Test
 )
 
 # Resources:
 set_source_files_properties("resources/blue_SVG/blue_background_360x640px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "background.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "background.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_background_horisontal_640x360px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "background_horisontal.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "background_horisontal.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_default_icon_52x52px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_default_icon.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_default_icon.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_list_divider_360x76px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_list_divider.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_list_divider.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_list_highlighter_360x76px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_list_highlighter.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_list_highlighter.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_status_idle_33x33px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_status_idle.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_status_idle.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_status_offline_33x33px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_status_offline.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_status_offline.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_status_online_33x33px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_status_online.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_status_online.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_scroll_16x80px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "scroll.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "scroll.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_scrollbar_7x14px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "scrollbar.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "scrollbar.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_status_field_left_14x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "status_field_left.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "status_field_left.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_status_field_middle_14x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "status_field_middle.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "status_field_middle.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_status_field_right_14x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "status_field_right.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "status_field_right.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_topbar_356x96px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "topbar.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "topbar.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_topbar_horisontal_636x96px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "topbar_horisontal.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "topbar_horisontal.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_user_default_icon_68x68px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_default_icon.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_default_icon.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_user_status_idle_38x38px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_status_idle.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_status_idle.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_user_status_offline_38x38px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_status_offline.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_status_offline.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_user_status_online_38x38px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_status_online.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_status_online.svg"
 )
 set(GraphicsViewBenchmark_resource_files
     "resources/blue_SVG/blue_background_360x640px.svg"
@@ -125,71 +125,71 @@ set(GraphicsViewBenchmark_resource_files
     "resources/blue_SVG/blue_user_status_online_38x38px.svg"
 )
 
-qt_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark"
+bobui_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark"
     PREFIX
         "/themes/blue"
     FILES
         ${GraphicsViewBenchmark_resource_files}
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_status_idle_33x33px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_status_idle.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_status_idle.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_status_offline_33x33px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_status_offline.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_status_offline.svg"
 )
 set_source_files_properties("resources/blue_SVG/blue_contact_status_online_33x33px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_status_online.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_status_online.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_background_360x640px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "background.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "background.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_background_horisontal_640x360px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "background_horisontal.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "background_horisontal.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_contact_default_icon_53x53px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_default_icon.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_default_icon.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_contact_default_icon_highlight_53x53px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_default_icon_highlight.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_default_icon_highlight.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_contact_list_divider_360x76px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_list_divider.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_list_divider.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_contact_list_highlighter_357x80px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "contact_list_highlighter.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "contact_list_highlighter.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_scroll_5x80px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "scroll.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "scroll.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_scrollbar_5x14px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "scrollbar.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "scrollbar.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_status_field_left_14x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "status_field_left.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "status_field_left.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_status_field_middle_10x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "status_field_middle.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "status_field_middle.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_status_field_right_14x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "status_field_right.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "status_field_right.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_topbar_356x96px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "topbar.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "topbar.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_topbar_horisontal_636x96px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "topbar_horisontal.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "topbar_horisontal.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_user_default_icon_84x68px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_default_icon.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_default_icon.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_user_status_idle_24x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_status_idle.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_status_idle.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_user_status_offline_24x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_status_offline.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_status_offline.svg"
 )
 set_source_files_properties("resources/lime_SVG/lime_user_status_online_24x24px.svg"
-    PROPERTIES QT_RESOURCE_ALIAS "user_status_online.svg"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "user_status_online.svg"
 )
 set(GraphicsViewBenchmark1_resource_files
     "resources/blue_SVG/blue_contact_status_idle_33x33px.svg"
@@ -214,86 +214,86 @@ set(GraphicsViewBenchmark1_resource_files
     "resources/lime_SVG/lime_user_status_online_24x24px.svg"
 )
 
-qt_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark1"
+bobui_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark1"
     PREFIX
         "/themes/lime"
     FILES
         ${GraphicsViewBenchmark1_resource_files}
 )
 set_source_files_properties("resources/avatars/avatar_man_001_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_001.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_001.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_002_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_002.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_002.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_003_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_003.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_003.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_004_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_004.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_004.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_005_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_005.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_005.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_006_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_006.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_006.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_007_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_007.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_007.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_008_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_008.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_008.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_009_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_009.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_009.png"
 )
 set_source_files_properties("resources/avatars/avatar_man_010_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_010.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_010.png"
 )
 set_source_files_properties("resources/avatars/avatar_picture_001_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_011.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_011.png"
 )
 set_source_files_properties("resources/avatars/avatar_picture_002_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_012.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_012.png"
 )
 set_source_files_properties("resources/avatars/avatar_picture_003_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_013.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_013.png"
 )
 set_source_files_properties("resources/avatars/avatar_picture_004_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_014.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_014.png"
 )
 set_source_files_properties("resources/avatars/avatar_picture_005_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_015.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_015.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_001_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_016.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_016.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_002_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_017.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_017.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_003_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_018.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_018.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_004_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_019.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_019.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_005_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_020.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_020.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_006_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_021.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_021.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_007_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_022.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_022.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_008_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_023.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_023.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_009_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_024.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_024.png"
 )
 set_source_files_properties("resources/avatars/avatar_woman_010_58x58.png"
-    PROPERTIES QT_RESOURCE_ALIAS "avatar_025.png"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "avatar_025.png"
 )
 set(GraphicsViewBenchmark2_resource_files
     "resources/avatars/avatar_man_001_58x58.png"
@@ -323,23 +323,23 @@ set(GraphicsViewBenchmark2_resource_files
     "resources/avatars/avatar_woman_010_58x58.png"
 )
 
-qt_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark2"
+bobui_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark2"
     PREFIX
         "/avatars"
     FILES
         ${GraphicsViewBenchmark2_resource_files}
 )
 set_source_files_properties("resources/contacts/areacodes.txt"
-    PROPERTIES QT_RESOURCE_ALIAS "areacodes.txt"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "areacodes.txt"
 )
 set_source_files_properties("resources/contacts/firstnamesF.txt"
-    PROPERTIES QT_RESOURCE_ALIAS "firstnamesF.txt"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "firstnamesF.txt"
 )
 set_source_files_properties("resources/contacts/firstnamesM.txt"
-    PROPERTIES QT_RESOURCE_ALIAS "firstnamesM.txt"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "firstnamesM.txt"
 )
 set_source_files_properties("resources/contacts/lastnames.txt"
-    PROPERTIES QT_RESOURCE_ALIAS "lastnames.txt"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "lastnames.txt"
 )
 set(GraphicsViewBenchmark3_resource_files
     "resources/contacts/areacodes.txt"
@@ -348,7 +348,7 @@ set(GraphicsViewBenchmark3_resource_files
     "resources/contacts/lastnames.txt"
 )
 
-qt_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark3"
+bobui_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark3"
     PREFIX
         "/contact"
     FILES
@@ -358,8 +358,8 @@ qt_internal_add_resource(tst_GraphicsViewBenchmark "GraphicsViewBenchmark3"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_GraphicsViewBenchmark CONDITION TARGET Qt::OpenGL
+bobui_internal_extend_target(tst_GraphicsViewBenchmark CONDITION TARGET BobUI::OpenGL
     LIBRARIES
-        Qt::OpenGL
-        Qt::OpenGLWidgets
+        BobUI::OpenGL
+        BobUI::OpenGLWidgets
 )

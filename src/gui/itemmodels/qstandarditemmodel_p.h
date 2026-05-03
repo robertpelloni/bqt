@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTANDARDITEMMODEL_P_H
 #define QSTANDARDITEMMODEL_P_H
@@ -9,42 +9,42 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qstandarditemmodel.h>
+#include <BobUIGui/qstandarditemmodel.h>
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "private/qabstractitemmodel_p.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qstack.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qdebug.h>
 
-QT_REQUIRE_CONFIG(standarditemmodel);
+BOBUI_REQUIRE_CONFIG(standarditemmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStandardItemData
 {
 public:
     inline QStandardItemData() : role(-1) {}
     inline QStandardItemData(int r, const QVariant &v) :
-          role(r == Qt::EditRole ? Qt::DisplayRole : r), value(v) {}
+          role(r == BobUI::EditRole ? BobUI::DisplayRole : r), value(v) {}
     inline QStandardItemData(const std::pair<const int&, const QVariant&> &p) :
-          role(p.first == Qt::EditRole ? Qt::DisplayRole : p.first), value(p.second) {}
+          role(p.first == BobUI::EditRole ? BobUI::DisplayRole : p.first), value(p.second) {}
     int role;
     QVariant value;
     inline bool operator==(const QStandardItemData &other) const { return role == other.role && value == other.value; }
 };
 Q_DECLARE_TYPEINFO(QStandardItemData, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 inline QDataStream &operator>>(QDataStream &in, QStandardItemData &data)
 {
@@ -69,7 +69,7 @@ inline QDebug &operator<<(QDebug &debug, const QStandardItemData &data)
     return debug.space();
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 class QStandardItemPrivate
 {
@@ -146,7 +146,7 @@ public:
         parent = par;
     }
 
-    void changeFlags(bool enable, Qt::ItemFlags f);
+    void changeFlags(bool enable, BobUI::ItemFlags f);
     void setItemData(const QMap<int, QVariant> &roles);
     QMap<int, QVariant> itemData() const;
 
@@ -154,7 +154,7 @@ public:
     bool insertRows(int row, const QList<QStandardItem*> &items);
     bool insertColumns(int column, int count, const QList<QStandardItem*> &items);
 
-    void sortChildren(int column, Qt::SortOrder order);
+    void sortChildren(int column, BobUI::SortOrder order);
 
     QStandardItemModel *model;
     QStandardItem *parent;
@@ -194,7 +194,7 @@ public:
         return parent->child(index.row(), index.column());
     }
 
-    void sort(QStandardItem *parent, int column, Qt::SortOrder order);
+    void sort(QStandardItem *parent, int column, BobUI::SortOrder order);
     void itemChanged(QStandardItem *item, const QList<int> &roles = QList<int>());
     void rowsAboutToBeInserted(QStandardItem *parent, int start, int end);
     void columnsAboutToBeInserted(QStandardItem *parent, int start, int end);
@@ -215,9 +215,9 @@ public:
     QHash<int, QByteArray> roleNames;
     QScopedPointer<QStandardItem> root;
     const QStandardItem *itemPrototype;
-    Q_OBJECT_BINDABLE_PROPERTY_WITH_ARGS(QStandardItemModelPrivate, int, sortRole, Qt::DisplayRole)
+    Q_OBJECT_BINDABLE_PROPERTY_WITH_ARGS(QStandardItemModelPrivate, int, sortRole, BobUI::DisplayRole)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTANDARDITEMMODEL_P_H

@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(tex3d
+bobui_internal_add_manual_test(tex3d
     GUI
     SOURCES
         tex3d.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 set(tex3d_resource_files
@@ -15,7 +15,7 @@ set(tex3d_resource_files
     "texture3d.frag.qsb"
 )
 
-qt_internal_add_resource(tex3d "tex3d"
+bobui_internal_add_resource(tex3d "tex3d"
     PREFIX
         "/"
     FILES

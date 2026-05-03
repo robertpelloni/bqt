@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #ifndef ASSOCIATION_H
 #define ASSOCIATION_H
 
-#include <QtNetwork>
-#include <QtCore>
+#include <BobUINetwork>
+#include <BobUICore>
 
 //! [0]
 class DtlsAssociation : public QObject
@@ -36,7 +36,7 @@ private:
     QUdpSocket socket;
     QDtls crypto;
 
-    QTimer pingTimer;
+    BOBUIimer pingTimer;
     unsigned ping = 0;
 
     Q_DISABLE_COPY(DtlsAssociation)

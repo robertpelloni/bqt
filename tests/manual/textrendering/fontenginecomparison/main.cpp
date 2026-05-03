@@ -1,9 +1,9 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
         font.setWeight(QFont::Weight(weight));
         font.setItalic(isItalic);
 
-        QTextLayout layout;
+        BOBUIextLayout layout;
         layout.setFont(font);
         layout.setText(example);
         layout.beginLayout();
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         QRect brect = layout.boundingRect().toAlignedRect();
 
         QImage image(brect.size(), QImage::Format_RGB32);
-        image.fill(Qt::white);
+        image.fill(BobUI::white);
         image.setDevicePixelRatio(1.0);
 
         QPainter p;

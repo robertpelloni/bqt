@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMINPUTCONTEXT_H
 #define QPLATFORMINPUTCONTEXT_H
@@ -10,13 +10,13 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qinputmethod.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qinputmethod.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformInputContextPrivate;
 
@@ -38,7 +38,7 @@ public:
 
     virtual void reset();
     virtual void commit();
-    virtual void update(Qt::InputMethodQueries);
+    virtual void update(BobUI::InputMethodQueries);
     virtual void invokeAction(QInputMethod::Action, int cursorPosition);
     virtual bool filterEvent(const QEvent *event);
     virtual QRectF keyboardRect() const;
@@ -54,14 +54,14 @@ public:
 
     virtual QLocale locale() const;
     void emitLocaleChanged();
-    virtual Qt::LayoutDirection inputDirection() const;
-    void emitInputDirectionChanged(Qt::LayoutDirection newDirection);
+    virtual BobUI::LayoutDirection inputDirection() const;
+    void emitInputDirectionChanged(BobUI::LayoutDirection newDirection);
 
     virtual void setFocusObject(QObject *object);
     bool inputMethodAccepted() const;
 
     static void setSelectionOnFocusObject(const QPointF &anchorPos, const QPointF &cursorPos);
-    static QVariant queryFocusObject(Qt::InputMethodQuery query, QPointF position);
+    static QVariant queryFocusObject(BobUI::InputMethodQuery query, QPointF position);
     static QRectF inputItemRectangle();
     static QRectF inputItemClipRectangle();
     static QRectF cursorRectangle();
@@ -73,9 +73,9 @@ private:
     friend class QGuiApplicationPrivate;
     friend class QInputMethod;
 
-    Qt::LayoutDirection m_inputDirection;
+    BobUI::LayoutDirection m_inputDirection;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMINPUTCONTEXT_H

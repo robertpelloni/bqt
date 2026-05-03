@@ -1,25 +1,25 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbasictimer.h"
 #include "qabstracteventdispatcher.h"
 #include "qabstracteventdispatcher_p.h"
 
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QBasicTimer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QBasicTimer class provides timer events for objects.
 
     \ingroup events
 
-    This is a fast, lightweight, and low-level class used by Qt
-    internally. We recommend using the higher-level QTimer class
+    This is a fast, lightweight, and low-level class used by BobUI
+    internally. We recommend using the higher-level BOBUIimer class
     rather than this class if you want to use timers in your
     applications. Note that this timer is a repeating timer that
     will send subsequent timer events unless the stop() function is called.
@@ -37,7 +37,7 @@ QT_BEGIN_NAMESPACE
     can maintain a list of basic timers by holding them in container
     that supports move-only types, e.g. std::vector.
 
-    \sa QTimer, QChronoTimer, QTimerEvent, QObject::timerEvent(),
+    \sa BOBUIimer, QChronoTimer, BOBUIimerEvent, QObject::timerEvent(),
     Timers, {Affine Transformations}
 */
 
@@ -109,16 +109,16 @@ QT_BEGIN_NAMESPACE
 
     In new code use id() instead.
 
-    \sa QTimerEvent::timerId()
+    \sa BOBUIimerEvent::timerId()
 */
 
 /*!
-    \fn Qt::TimerId QBasicTimer::id() const
+    \fn BobUI::TimerId QBasicTimer::id() const
     \since 6.8
 
     Returns the timer's ID.
 
-    \sa QTimerEvent::id()
+    \sa BOBUIimerEvent::id()
 */
 
 /*!
@@ -142,7 +142,7 @@ QT_BEGIN_NAMESPACE
     \since 6.5
 
     Starts (or restarts) the timer with a \a duration timeout. The
-    timer will be a Qt::CoarseTimer. See Qt::TimerType for information on the
+    timer will be a BobUI::CoarseTimer. See BobUI::TimerType for information on the
     different timer types.
 
     The given \a object will receive timer events.
@@ -150,16 +150,16 @@ QT_BEGIN_NAMESPACE
     \include timers-common.qdocinc negative-intervals-not-allowed
 
 //! [start-nanoseconds-note]
-    \note Starting from Qt 6.9 this method takes std::chrono::nanoseconds,
+    \note Starting from BobUI 6.9 this method takes std::chrono::nanoseconds,
           before that it took std::chrono::milliseconds. This change is
           backwards compatible.
 //! [start-nanoseconds-note]
 
-    \sa stop(), isActive(), QObject::timerEvent(), Qt::CoarseTimer
+    \sa stop(), isActive(), QObject::timerEvent(), BobUI::CoarseTimer
  */
 
 /*!
-    \fn QBasicTimer::start(int msec, Qt::TimerType timerType, QObject *obj)
+    \fn QBasicTimer::start(int msec, BobUI::TimerType timerType, QObject *obj)
     \overload
     \obsolete
 
@@ -171,7 +171,7 @@ QT_BEGIN_NAMESPACE
     \overload
 
     Starts (or restarts) the timer with a \a duration timeout and the
-    given \a timerType. See Qt::TimerType for information on the different
+    given \a timerType. See BobUI::TimerType for information on the different
     timer types.
 
     \include timers-common.qdocinc negative-intervals-not-allowed
@@ -180,9 +180,9 @@ QT_BEGIN_NAMESPACE
 
     \include qbasictimer.cpp start-nanoseconds-note
 
-    \sa stop(), isActive(), QObject::timerEvent(), Qt::TimerType
+    \sa stop(), isActive(), QObject::timerEvent(), BobUI::TimerType
  */
-void QBasicTimer::start(Duration duration, Qt::TimerType timerType, QObject *obj)
+void QBasicTimer::start(Duration duration, BobUI::TimerType timerType, QObject *obj)
 {
     if (duration < 0ns) {
         qWarning("QBasicTimer::start: negative intervals aren't allowed; the "
@@ -190,7 +190,7 @@ void QBasicTimer::start(Duration duration, Qt::TimerType timerType, QObject *obj
         duration = 1ms;
     }
 
-    QThreadData *currentData = QThreadData::current();
+    BOBUIhreadData *currentData = BOBUIhreadData::current();
     if (Q_UNLIKELY(obj && QObjectPrivate::get(obj)->threadData != currentData)) {
         qWarning("QBasicTimer::start: Timers cannot be started from another thread");
         return;
@@ -217,7 +217,7 @@ void QBasicTimer::stop()
         QAbstractEventDispatcher *eventDispatcher = nullptr;
 
         // don't create the current thread data if it's already been destroyed
-        if (QThreadData *data = QThreadData::currentThreadData())
+        if (BOBUIhreadData *data = BOBUIhreadData::currentThreadData())
             eventDispatcher = data->eventDispatcher.loadRelaxed();
 
         if (eventDispatcher && !eventDispatcher->unregisterTimer(m_id)) {
@@ -226,7 +226,7 @@ void QBasicTimer::stop()
         }
         QAbstractEventDispatcherPrivate::releaseTimerId(m_id);
     }
-    m_id = Qt::TimerId::Invalid;
+    m_id = BobUI::TimerId::Invalid;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

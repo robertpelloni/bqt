@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 //! [disconnect-all]
 \note Disconnecting all signal-slot connections will also disconnect the
@@ -19,7 +19,7 @@ it in the call to \l{disconnect(const QMetaObject::Connection &connection)}{disc
 //! [disconnect-mismatch]
 
 //! [disconnect-queued]
-\note If a \l{Qt::QueuedConnection}{queued connection} is disconnected,
+\note If a \l{BobUI::QueuedConnection}{queued connection} is disconnected,
 already scheduled events may still be delivered, causing the receiver to
 be called after the connection is disconnected.
 //! [disconnect-queued]

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -8,9 +8,9 @@
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
-class QTextEdit;
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+class BOBUIextEdit;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class MainWindow : public QMainWindow
@@ -30,7 +30,7 @@ private:
     void setupFileMenu();
     void setupHelpMenu();
 
-    QTextEdit *editor;
+    BOBUIextEdit *editor;
     Highlighter *highlighter;
 };
 //! [0]

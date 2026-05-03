@@ -2,7 +2,7 @@
 ##teamcity[testStarted name='initTestCase()' flowId='tst_SingleSkip']
 ##teamcity[testFinished name='initTestCase()' flowId='tst_SingleSkip']
 ##teamcity[testStarted name='myTest()' flowId='tst_SingleSkip']
-##teamcity[testIgnored name='myTest()' message='skipping test |[Loc: qtbase/tests/auto/testlib/selftests/singleskip/tst_singleskip.cpp(0)|]' flowId='tst_SingleSkip']
+##teamcity[testIgnored name='myTest()' message='skipping test |[Loc: bobuibase/tests/auto/testlib/selftests/singleskip/tst_singleskip.cpp(0)|]' flowId='tst_SingleSkip']
 ##teamcity[testFinished name='myTest()' flowId='tst_SingleSkip']
 ##teamcity[testStarted name='cleanupTestCase()' flowId='tst_SingleSkip']
 ##teamcity[testFinished name='cleanupTestCase()' flowId='tst_SingleSkip']

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusmetaobject_p.h"
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvarlengtharray.h>
 
 #include "qdbusutil_p.h"
 #include "qdbuserror.h"
@@ -20,11 +20,11 @@
 #include <private/qmetaobject_p.h>
 #include <private/qmetaobjectbuilder_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QDBusMetaObjectGenerator
 {
@@ -97,11 +97,11 @@ QDBusMetaObjectGenerator::QDBusMetaObjectGenerator(const QString &interfaceName,
 
 static int registerComplexDBusType(const QByteArray &typeName)
 {
-    struct QDBusRawTypeHandler : QtPrivate::QMetaTypeInterface
+    struct QDBusRawTypeHandler : BobUIPrivate::QMetaTypeInterface
     {
         const QByteArray name;
         QDBusRawTypeHandler(const QByteArray &name)
-            : QtPrivate::QMetaTypeInterface {
+            : BobUIPrivate::QMetaTypeInterface {
                 0, sizeof(void *), sizeof(void *), QMetaType::RelocatableType, 0, nullptr,
                 name.constData(),
                 nullptr, nullptr, nullptr, nullptr,
@@ -128,7 +128,7 @@ static int registerComplexDBusType(const QByteArray &typeName)
     return metatype.id();
 }
 
-Q_DBUS_EXPORT bool qt_dbus_metaobject_skip_annotations = false;
+Q_DBUS_EXPORT bool bobui_dbus_metaobject_skip_annotations = false;
 
 QDBusMetaObjectGenerator::Type
 QDBusMetaObjectGenerator::findType(const QByteArray &signature,
@@ -139,10 +139,10 @@ QDBusMetaObjectGenerator::findType(const QByteArray &signature,
     result.id = QMetaType::UnknownType;
 
     int type = QDBusMetaType::signatureToMetaType(signature).id();
-    if (type == QMetaType::UnknownType && !qt_dbus_metaobject_skip_annotations) {
+    if (type == QMetaType::UnknownType && !bobui_dbus_metaobject_skip_annotations) {
         // it's not a type normally handled by our meta type system
         // it must contain an annotation
-        QString annotationName = QString::fromLatin1("org.qtproject.QtDBus.QtTypeName");
+        QString annotationName = QString::fromLatin1("org.qtproject.BobUIDBus.QtTypeName");
         if (id >= 0)
             annotationName += QString::fromLatin1(".%1%2")
                               .arg(QLatin1StringView(direction))
@@ -155,7 +155,7 @@ QDBusMetaObjectGenerator::findType(const QByteArray &signature,
         // verify that it's a valid one
         if (typeName.isEmpty()) {
             // try the old annotation from Qt 4
-            annotationName = QString::fromLatin1("com.trolltech.QtDBus.QtTypeName");
+            annotationName = QString::fromLatin1("com.trolltech.BobUIDBus.QtTypeName");
             if (id >= 0)
                 annotationName += QString::fromLatin1(".%1%2")
                                   .arg(QLatin1StringView(direction))
@@ -383,7 +383,7 @@ void QDBusMetaObjectGenerator::write(QDBusMetaObject *obj)
             - methods.size(); // ditto
 
     QDBusMetaObjectPrivate *header = reinterpret_cast<QDBusMetaObjectPrivate *>(idata.data());
-    static_assert(QMetaObjectPrivate::OutputRevision == 14, "QtDBus meta-object generator should generate the same version as moc");
+    static_assert(QMetaObjectPrivate::OutputRevision == 14, "BobUIDBus meta-object generator should generate the same version as moc");
     header->revision = QMetaObjectPrivate::OutputRevision;
     header->className = 0;
     header->metaObjectHashIndex = -1; // TODO support hash in dbus metaobject too
@@ -539,7 +539,7 @@ void QDBusMetaObjectGenerator::write(QDBusMetaObject *obj)
     obj->d.extradata = nullptr;
     obj->d.stringdata = reinterpret_cast<const uint *>(string_data);
     obj->d.superdata = &QDBusAbstractInterface::staticMetaObject;
-    obj->d.metaTypes = reinterpret_cast<QtPrivate::QMetaTypeInterface *const *>(metaTypes);
+    obj->d.metaTypes = reinterpret_cast<BobUIPrivate::QMetaTypeInterface *const *>(metaTypes);
 }
 
 #if 0
@@ -683,6 +683,6 @@ int QDBusMetaObject::propertyMetaType(int id) const
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

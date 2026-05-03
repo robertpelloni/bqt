@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "customwidgetsinfo.h"
 #include "driver.h"
@@ -8,9 +8,9 @@
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 CustomWidgetsInfo::CustomWidgetsInfo() = default;
 
@@ -78,7 +78,7 @@ bool CustomWidgetsInfo::isCustomWidgetContainer(const QString &className) const
     return false;
 }
 
-// FIXME in 7.0 - QTBUG-124241
+// FIXME in 7.0 - BOBUIBUG-124241
 // Remove isAmbiguous logic when widget slots have been disambiguated.
 bool CustomWidgetsInfo::isAmbiguous(const QString &className, const QString &signature,
                                     QMetaMethod::MethodType type) const
@@ -100,7 +100,7 @@ bool CustomWidgetsInfo::isAmbiguous(const QString &className, const QString &sig
                           {"clicked"_L1, QMetaMethod::Signal}}},
         {"QRadioButton"_L1, {{"triggered"_L1, QMetaMethod::Signal},
                              {"clicked"_L1, QMetaMethod::Signal}}},
-        {"QToolButton"_L1,  {{"triggered"_L1, QMetaMethod::Signal},
+        {"BOBUIoolButton"_L1,  {{"triggered"_L1, QMetaMethod::Signal},
                             {"clicked"_L1, QMetaMethod::Signal}}},
         {"QLabel"_L1, {{"setNum"_L1, QMetaMethod::Slot}}},
         {"QGraphicsView"_L1, {{"invalidateScene"_L1, QMetaMethod::Slot}}},
@@ -108,20 +108,20 @@ bool CustomWidgetsInfo::isAmbiguous(const QString &className, const QString &sig
         {"QColumnView"_L1, {{"dataChanged"_L1, QMetaMethod::Slot}}},
         {"QListWidget"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
                            {"scrollToItem"_L1, QMetaMethod::Slot}}},
-        {"QTableView"_L1, {{"dataChanged"_L1, QMetaMethod::Slot}}},
-        {"QTableWidget"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
+        {"BOBUIableView"_L1, {{"dataChanged"_L1, QMetaMethod::Slot}}},
+        {"BOBUIableWidget"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
                             {"scrollToItem"_L1, QMetaMethod::Slot}}},
-        {"QTreeView"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
+        {"BOBUIreeView"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
                          {"verticalScrollbarValueChanged"_L1, QMetaMethod::Slot},
                          {"expandRecursively"_L1, QMetaMethod::Slot}}},
-        {"QTreeWidget"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
+        {"BOBUIreeWidget"_L1, {{"dataChanged"_L1, QMetaMethod::Slot},
                            {"verticalScrollbarValueChanged"_L1, QMetaMethod::Slot}
                            ,{"expandRecursively"_L1, QMetaMethod::Slot}
                            ,{"scrollToItem"_L1, QMetaMethod::Slot}}},
         {"QUndoView"_L1, {{"dataChanged"_L1, QMetaMethod::Slot}}},
         {"QLCDNumber"_L1, {{"display"_L1, QMetaMethod::Slot}}},
         {"QMenuBar"_L1, {{"setVisible"_L1, QMetaMethod::Slot}}},
-        {"QTextBrowser"_L1, {{"setSource"_L1, QMetaMethod::Slot}}},
+        {"BOBUIextBrowser"_L1, {{"setSource"_L1, QMetaMethod::Slot}}},
 
         /*
         The following widgets with ambiguities are not used in the widget designer:
@@ -185,7 +185,7 @@ QString CustomWidgetsInfo::simpleContainerAddPageMethod(const QString &name) con
 
     static const AddPageMethod addPageMethods[] = {
         {u"QStackedWidget"_s, u"addWidget"_s},
-        {u"QToolBar"_s, u"addWidget"_s},
+        {u"BOBUIoolBar"_s, u"addWidget"_s},
         {u"QDockWidget"_s, u"setWidget"_s},
         {u"QScrollArea"_s, u"setWidget"_s},
         {u"QSplitter"_s, u"addWidget"_s},
@@ -198,4 +198,4 @@ QString CustomWidgetsInfo::simpleContainerAddPageMethod(const QString &name) con
     return {};
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

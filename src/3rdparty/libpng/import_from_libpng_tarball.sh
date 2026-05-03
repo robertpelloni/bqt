@@ -1,13 +1,13 @@
 #! /bin/sh
 
 # Copyright (C) 2017 André Klitzing
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #
 # This is a small script to copy the required files from a libpng tarball
 # into 3rdparty/libpng/
 
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 libpng_tarball_dir/ \$QTDIR/src/3rdparty/libpng/"
+    echo "Usage: $0 libpng_tarball_dir/ \$BOBUIDIR/src/3rdparty/libpng/"
     exit 1
 fi
 

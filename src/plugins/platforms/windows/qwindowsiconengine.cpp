@@ -1,18 +1,18 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsiconengine.h"
 
-#ifndef QT_NO_ICON
+#ifndef BOBUI_NO_ICON
 
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpalette.h>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpalette.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString getGlyphs(QStringView iconName)
 {
@@ -321,6 +321,6 @@ QString QWindowsIconEngine::string() const
     return m_glyphs;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif //QT_NO_ICON
+#endif //BOBUI_NO_ICON

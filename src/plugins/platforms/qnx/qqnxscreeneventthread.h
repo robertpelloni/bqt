@@ -1,19 +1,19 @@
 // Copyright (C) 2017 QNX Software Systems. All rights reserved.
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXSCREENEVENTTHREAD_H
 #define QQNXSCREENEVENTTHREAD_H
 
-#include <QtCore/QThread>
-#include <QtCore/QMutex>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QMutex>
 
 #include <screen/screen.h>
 #include <sys/siginfo.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QQnxScreenEventThread : public QThread
+class QQnxScreenEventThread : public BOBUIhread
 {
     Q_OBJECT
 
@@ -44,6 +44,6 @@ private:
     int m_screenPulsesSinceLastArmPulse = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXSCREENEVENTTHREAD_H

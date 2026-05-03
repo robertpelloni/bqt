@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QCoreApplication>
+#include <BOBUIest>
+#include <BobUICore/QCoreApplication>
 
-#include <QtDBus/private/qdbusutil_p.h>
-#include <QtDBus/private/qdbus_symbols_p.h>
+#include <BobUIDBus/private/qdbusutil_p.h>
+#include <BobUIDBus/private/qdbus_symbols_p.h>
 
 DEFINEFUNC(dbus_bool_t, dbus_signature_validate, (const char       *signature,
                                                 DBusError        *error),
@@ -41,31 +41,31 @@ enum { Invalid = false, Valid = true };
 static void addColumns()
 {
     // All tests use these two columns only
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<bool>("isValid");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<bool>("isValid");
 }
 
 // ---- type adds ---
 static void addFixedTypes()
 {
-    QTest::newRow("bool") << DBUS_TYPE_BOOLEAN_AS_STRING << true << true;
-    QTest::newRow("byte") << DBUS_TYPE_BYTE_AS_STRING << true << true;
-    QTest::newRow("int16") << DBUS_TYPE_INT16_AS_STRING << true << true;
-    QTest::newRow("uint16") << DBUS_TYPE_UINT16_AS_STRING << true << true;
-    QTest::newRow("int32") << DBUS_TYPE_INT32_AS_STRING << true << true;
-    QTest::newRow("uint32") << DBUS_TYPE_UINT32_AS_STRING << true << true;
-    QTest::newRow("int64") << DBUS_TYPE_INT64_AS_STRING << true << true;
-    QTest::newRow("uint64") << DBUS_TYPE_UINT64_AS_STRING << true << true;
-    QTest::newRow("double") << DBUS_TYPE_DOUBLE_AS_STRING << true << true;
+    BOBUIest::newRow("bool") << DBUS_TYPE_BOOLEAN_AS_STRING << true << true;
+    BOBUIest::newRow("byte") << DBUS_TYPE_BYTE_AS_STRING << true << true;
+    BOBUIest::newRow("int16") << DBUS_TYPE_INT16_AS_STRING << true << true;
+    BOBUIest::newRow("uint16") << DBUS_TYPE_UINT16_AS_STRING << true << true;
+    BOBUIest::newRow("int32") << DBUS_TYPE_INT32_AS_STRING << true << true;
+    BOBUIest::newRow("uint32") << DBUS_TYPE_UINT32_AS_STRING << true << true;
+    BOBUIest::newRow("int64") << DBUS_TYPE_INT64_AS_STRING << true << true;
+    BOBUIest::newRow("uint64") << DBUS_TYPE_UINT64_AS_STRING << true << true;
+    BOBUIest::newRow("double") << DBUS_TYPE_DOUBLE_AS_STRING << true << true;
 
 #ifdef DBUS_TYPE_UNIX_FD_AS_STRING
-#  ifndef QT_LINKED_LIBDBUS
+#  ifndef BOBUI_LINKED_LIBDBUS
     // We have got the macro from dbus_minimal_p.h, so we need to check if
     // the library recognizes this as valid type first.
     // The following function was added for Unix FD support, so if it is
     // present, so is support for Unix FDs.
-#    if QT_CONFIG(library)
+#    if BOBUI_CONFIG(library)
     bool supportsUnixFds = qdbus_resolve_conditionally("dbus_connection_can_send_type");
 #    else
     bool supportsUnixFds = false;
@@ -74,87 +74,87 @@ static void addFixedTypes()
     bool supportsUnixFds = true;
 #  endif
     if (supportsUnixFds)
-        QTest::newRow("unixfd") << DBUS_TYPE_UNIX_FD_AS_STRING << true << true;
+        BOBUIest::newRow("unixfd") << DBUS_TYPE_UNIX_FD_AS_STRING << true << true;
 #endif
 }
 
 static void addInvalidSingleLetterTypes()
 {
     QChar nulString[] = { '\0' };
-    QTest::newRow("nul") << QString(nulString, 1) << false << false;
-    QTest::newRow("tilde") << "~" << false << false;
-    QTest::newRow("struct-begin") << "(" << false << false;
-    QTest::newRow("struct-end") << ")" << false << false;
-    QTest::newRow("dict-entry-begin") << "{" << false << false;
-    QTest::newRow("dict-entry-end") << "}" << false << false;
-    QTest::newRow("array-no-element") << "a" << false << false;
+    BOBUIest::newRow("nul") << QString(nulString, 1) << false << false;
+    BOBUIest::newRow("tilde") << "~" << false << false;
+    BOBUIest::newRow("struct-begin") << "(" << false << false;
+    BOBUIest::newRow("struct-end") << ")" << false << false;
+    BOBUIest::newRow("dict-entry-begin") << "{" << false << false;
+    BOBUIest::newRow("dict-entry-end") << "}" << false << false;
+    BOBUIest::newRow("array-no-element") << "a" << false << false;
 }
 
 static void addBasicTypes(bool basicsAreValid)
 {
     addFixedTypes();
-    QTest::newRow("string") << DBUS_TYPE_STRING_AS_STRING << basicsAreValid << true;
-    QTest::newRow("object-path") << DBUS_TYPE_OBJECT_PATH_AS_STRING << basicsAreValid << true;
-    QTest::newRow("signature") << DBUS_TYPE_SIGNATURE_AS_STRING << basicsAreValid << true;
+    BOBUIest::newRow("string") << DBUS_TYPE_STRING_AS_STRING << basicsAreValid << true;
+    BOBUIest::newRow("object-path") << DBUS_TYPE_OBJECT_PATH_AS_STRING << basicsAreValid << true;
+    BOBUIest::newRow("signature") << DBUS_TYPE_SIGNATURE_AS_STRING << basicsAreValid << true;
 }
 
 static void addVariant(bool variantIsValid)
 {
-    QTest::newRow("variant") << "v" << variantIsValid << true;
+    BOBUIest::newRow("variant") << "v" << variantIsValid << true;
 }
 
 static void addSingleSignatures()
 {
     addBasicTypes(Valid);
     addVariant(Valid);
-    QTest::newRow("struct-1") << "(y)" << true;
-    QTest::newRow("struct-2") << "(yy)" << true;
-    QTest::newRow("struct-3") << "(yyv)" << true;
+    BOBUIest::newRow("struct-1") << "(y)" << true;
+    BOBUIest::newRow("struct-2") << "(yy)" << true;
+    BOBUIest::newRow("struct-3") << "(yyv)" << true;
 
-    QTest::newRow("struct-nested-1") << "((y))" << true;
-    QTest::newRow("struct-nested-2") << "((yy))" << true;
-    QTest::newRow("struct-nested-3") << "(y(y))" << true;
-    QTest::newRow("struct-nested-4") << "((y)y)" << true;
-    QTest::newRow("struct-nested-5") << "(y(y)y)" << true;
-    QTest::newRow("struct-nested-6") << "((y)(y))" << true;
+    BOBUIest::newRow("struct-nested-1") << "((y))" << true;
+    BOBUIest::newRow("struct-nested-2") << "((yy))" << true;
+    BOBUIest::newRow("struct-nested-3") << "(y(y))" << true;
+    BOBUIest::newRow("struct-nested-4") << "((y)y)" << true;
+    BOBUIest::newRow("struct-nested-5") << "(y(y)y)" << true;
+    BOBUIest::newRow("struct-nested-6") << "((y)(y))" << true;
 
-    QTest::newRow("array-1") << "as" << true;
-    QTest::newRow("struct-array-1") << "(as)" << true;
-    QTest::newRow("struct-array-2") << "(yas)" << true;
-    QTest::newRow("struct-array-3") << "(asy)" << true;
-    QTest::newRow("struct-array-4") << "(yasy)" << true;
+    BOBUIest::newRow("array-1") << "as" << true;
+    BOBUIest::newRow("struct-array-1") << "(as)" << true;
+    BOBUIest::newRow("struct-array-2") << "(yas)" << true;
+    BOBUIest::newRow("struct-array-3") << "(asy)" << true;
+    BOBUIest::newRow("struct-array-4") << "(yasy)" << true;
 
-    QTest::newRow("dict-1") << "a{sy}" << true;
-    QTest::newRow("dict-2") << "a{sv}" << true;
-    QTest::newRow("dict-struct-1") << "a{s(y)}" << true;
-    QTest::newRow("dict-struct-2") << "a{s(yyyy)}" << true;
-    QTest::newRow("dict-struct-array") << "a{s(ay)}" << true;
-    QTest::newRow("dict-array") << "a{sas}" << true;
-    QTest::newRow("dict-array-struct") << "a{sa(y)}" << true;
+    BOBUIest::newRow("dict-1") << "a{sy}" << true;
+    BOBUIest::newRow("dict-2") << "a{sv}" << true;
+    BOBUIest::newRow("dict-struct-1") << "a{s(y)}" << true;
+    BOBUIest::newRow("dict-struct-2") << "a{s(yyyy)}" << true;
+    BOBUIest::newRow("dict-struct-array") << "a{s(ay)}" << true;
+    BOBUIest::newRow("dict-array") << "a{sas}" << true;
+    BOBUIest::newRow("dict-array-struct") << "a{sa(y)}" << true;
 
     addInvalidSingleLetterTypes();
-    QTest::newRow("naked-dict-empty") << "{}" << false;
-    QTest::newRow("naked-dict-missing-value") << "{i}" << false;
+    BOBUIest::newRow("naked-dict-empty") << "{}" << false;
+    BOBUIest::newRow("naked-dict-missing-value") << "{i}" << false;
 
-    QTest::newRow("dict-empty") << "a{}" << false;
-    QTest::newRow("dict-missing-value") << "a{i}" << false;
-    QTest::newRow("dict-non-basic-key") << "a{vi}" << false;
-    QTest::newRow("dict-struct-key") << "a{(y)y}" << false;
-    QTest::newRow("dict-missing-close") << "a{sv" << false;
-    QTest::newRow("dict-mismatched-close") << "a{sv)" << false;
-    QTest::newRow("dict-missing-value-close") << "a{s" << false;
+    BOBUIest::newRow("dict-empty") << "a{}" << false;
+    BOBUIest::newRow("dict-missing-value") << "a{i}" << false;
+    BOBUIest::newRow("dict-non-basic-key") << "a{vi}" << false;
+    BOBUIest::newRow("dict-struct-key") << "a{(y)y}" << false;
+    BOBUIest::newRow("dict-missing-close") << "a{sv" << false;
+    BOBUIest::newRow("dict-mismatched-close") << "a{sv)" << false;
+    BOBUIest::newRow("dict-missing-value-close") << "a{s" << false;
 
-    QTest::newRow("empty-struct") << "()" << false;
-    QTest::newRow("struct-missing-close") << "(s" << false;
-    QTest::newRow("struct-nested-missing-close-1") << "((s)" << false;
-    QTest::newRow("struct-nested-missing-close-2") << "((s" << false;
+    BOBUIest::newRow("empty-struct") << "()" << false;
+    BOBUIest::newRow("struct-missing-close") << "(s" << false;
+    BOBUIest::newRow("struct-nested-missing-close-1") << "((s)" << false;
+    BOBUIest::newRow("struct-nested-missing-close-2") << "((s" << false;
 
-    QTest::newRow("struct-ending-array-no-element") << "(a)" << false;
+    BOBUIest::newRow("struct-ending-array-no-element") << "(a)" << false;
 }
 
 static void addNakedDictEntry()
 {
-    QTest::newRow("naked-dict-entry") << "{sv}" << false;
+    BOBUIest::newRow("naked-dict-entry") << "{sv}" << false;
 }
 
 // ---- tests ----
@@ -206,7 +206,7 @@ void tst_QDBusType::isValidBasicType()
 void tst_QDBusType::isValidSingleSignature_data()
 {
     addColumns();
-    QTest::newRow("empty") << "" << false;
+    BOBUIest::newRow("empty") << "" << false;
     addSingleSignatures();
     addNakedDictEntry();
 }
@@ -223,7 +223,7 @@ void tst_QDBusType::isValidSingleSignature()
 void tst_QDBusType::isValidArray_data()
 {
     addColumns();
-    QTest::newRow("empty") << "" << false;
+    BOBUIest::newRow("empty") << "" << false;
     addSingleSignatures();
 }
 
@@ -244,7 +244,7 @@ void tst_QDBusType::isValidArray()
 void tst_QDBusType::isValidSignature_data()
 {
     addColumns();
-    QTest::newRow("empty") << "" << true;
+    BOBUIest::newRow("empty") << "" << true;
     addSingleSignatures();
     addNakedDictEntry();
 }
@@ -262,6 +262,6 @@ void tst_QDBusType::isValidSignature()
     QCOMPARE(QDBusUtil::isValidSignature(data), result);
 }
 
-QTEST_MAIN(tst_QDBusType)
+BOBUIEST_MAIN(tst_QDBusType)
 
 #include "tst_qdbustype.moc"

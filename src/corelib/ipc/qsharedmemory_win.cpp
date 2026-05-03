@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsharedmemory.h"
 #include "qsharedmemory_p.h"
 #include "qsystemsemaphore.h"
 #include <qdebug.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 
 void QSharedMemoryPrivate::setWindowsErrorString(QLatin1StringView function)
 {
@@ -43,7 +43,7 @@ void QSharedMemoryPrivate::setWindowsErrorString(QLatin1StringView function)
         break;
     default:
         errorString = QSharedMemory::tr("%1: unknown error: %2")
-                .arg(function, qt_error_string(windowsError));
+                .arg(function, bobui_error_string(windowsError));
         error = QSharedMemory::UnknownError;
 #if defined QSHAREDMEMORY_DEBUG
         qDebug() << errorString << "key" << key;
@@ -144,6 +144,6 @@ bool QSharedMemoryWin32::detach(QSharedMemoryPrivate *self)
     return cleanHandle(self);
 }
 
-#endif // QT_CONFIG(sharedmemory)
+#endif // BOBUI_CONFIG(sharedmemory)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

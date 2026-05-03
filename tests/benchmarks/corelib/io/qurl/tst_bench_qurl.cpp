@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qurl.h>
-#include <qtest.h>
+#include <bobuiest.h>
 
 class tst_QUrl : public QObject
 {
@@ -51,10 +51,10 @@ void tst_QUrl::absoluteUrl()
 
 void tst_QUrl::generateFirstRunData()
 {
-    QTest::addColumn<bool>("firstRun");
+    BOBUIest::addColumn<bool>("firstRun");
 
-    QTest::newRow("construction + first run") << true;
-    QTest::newRow("subsequent runs") << false;
+    BOBUIest::newRow("construction + first run") << true;
+    BOBUIest::newRow("subsequent runs") << false;
 }
 
 void tst_QUrl::isRelative_data()
@@ -170,7 +170,7 @@ void tst_QUrl::equality()
 
 void tst_QUrl::qmlPropertyWriteUseCase()
 {
-    QUrl base("file:///home/user/qt/examples/declarative/samegame/SamegameCore/");
+    QUrl base("file:///home/user/bobui/examples/declarative/samegame/SamegameCore/");
     QString str("pics/redStar.png");
 
     QBENCHMARK {
@@ -180,6 +180,6 @@ void tst_QUrl::qmlPropertyWriteUseCase()
     }
 }
 
-QTEST_MAIN(tst_QUrl)
+BOBUIEST_MAIN(tst_QUrl)
 
 #include "tst_bench_qurl.moc"

@@ -8,8 +8,8 @@ not ok 1 - initTestCase()
   found: false (false)
   expected: true (false)
   actual: false (false)
-  at: tst_FailInit::initTestCase() (qtbase/tests/auto/testlib/selftests/failinit/tst_failinit.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/failinit/tst_failinit.cpp
+  at: tst_FailInit::initTestCase() (bobuibase/tests/auto/testlib/selftests/failinit/tst_failinit.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/failinit/tst_failinit.cpp
   line: 0
   ...
 ok 2 - cleanupTestCase()

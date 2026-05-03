@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-#include <QtGui/qtguiglobal.h>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+#include <BobUIGui/bobuiguiglobal.h>
 
-#include <QtCore/qvariantanimation.h>
+#include <BobUICore/qvariantanimation.h>
 #include <private/qvariantanimation_p.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qvector2d.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qvector4d.h>
-#include <QtGui/qquaternion.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qvector2d.h>
+#include <BobUIGui/qvector3d.h>
+#include <BobUIGui/qvector4d.h>
+#include <BobUIGui/qquaternion.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template<> Q_INLINE_TEMPLATE QColor _q_interpolate(const QColor &f,const QColor &t, qreal progress)
 {
@@ -51,4 +51,4 @@ static void qUnregisterGuiGetInterpolator()
 }
 Q_DESTRUCTOR_FUNCTION(qUnregisterGuiGetInterpolator)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

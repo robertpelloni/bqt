@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
 #include <qwayland-server-xdg-decoration-unstable-v1.h>
 
-#include <QtGui/QRasterWindow>
-#include <QtGui/QClipboard>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/QClipboard>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #include <fcntl.h>
 
@@ -16,7 +16,7 @@ using namespace MockCompositor;
 constexpr int xdgDecorationVersion = 1; // protocol VERSION, not the name suffix (_v1)
 
 class XdgDecorationManagerV1;
-class XdgToplevelDecorationV1 : public QObject, public QtWaylandServer::zxdg_toplevel_decoration_v1
+class XdgToplevelDecorationV1 : public QObject, public BobUIWaylandServer::zxdg_toplevel_decoration_v1
 {
     Q_OBJECT
 public:
@@ -60,12 +60,12 @@ public:
     bool m_configureSent = false;
 };
 
-class XdgDecorationManagerV1 : public Global, public QtWaylandServer::zxdg_decoration_manager_v1
+class XdgDecorationManagerV1 : public Global, public BobUIWaylandServer::zxdg_decoration_manager_v1
 {
     Q_OBJECT
 public:
     explicit XdgDecorationManagerV1(CoreCompositor *compositor, int version = 1)
-        : QtWaylandServer::zxdg_decoration_manager_v1(compositor->m_display, version)
+        : BobUIWaylandServer::zxdg_decoration_manager_v1(compositor->m_display, version)
         , m_version(version)
     {}
     bool isClean() override { return m_decorations.empty(); }
@@ -98,7 +98,7 @@ protected:
     }
 };
 
-void XdgToplevelDecorationV1::zxdg_toplevel_decoration_v1_destroy_resource(QtWaylandServer::zxdg_toplevel_decoration_v1::Resource *resource)
+void XdgToplevelDecorationV1::zxdg_toplevel_decoration_v1_destroy_resource(BobUIWaylandServer::zxdg_toplevel_decoration_v1::Resource *resource)
 {
     Q_UNUSED(resource);
     int removed = m_manager->m_decorations.remove(m_toplevel);
@@ -125,7 +125,7 @@ class tst_xdgdecorationv1 : public QObject, private XdgDecorationCompositor
     Q_OBJECT
 private slots:
     void initTestCase();
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void clientSidePreferredByCompositor();
     void initialFramelessWindowHint();
     void delayedFramelessWindowHint();
@@ -133,8 +133,8 @@ private slots:
 
 void tst_xdgdecorationv1::initTestCase()
 {
-    if (qEnvironmentVariableIntValue("QT_WAYLAND_DISABLE_WINDOWDECORATION"))
-        QSKIP("This test doesn't make sense when QT_WAYLAND_DISABLE_WINDOWDECORATION is set in the environment");
+    if (qEnvironmentVariableIntValue("BOBUI_WAYLAND_DISABLE_WINDOWDECORATION"))
+        QSKIP("This test doesn't make sense when BOBUI_WAYLAND_DISABLE_WINDOWDECORATION is set in the environment");
 }
 
 void tst_xdgdecorationv1::clientSidePreferredByCompositor()
@@ -155,13 +155,13 @@ void tst_xdgdecorationv1::clientSidePreferredByCompositor()
         toplevelDecoration()->sendConfigure(XdgToplevelDecorationV1::mode_client_side);
         xdgToplevel()->sendCompleteConfigure();
     });
-    QTRY_VERIFY(!window.frameMargins().isNull());
+    BOBUIRY_VERIFY(!window.frameMargins().isNull());
 }
 
 void tst_xdgdecorationv1::initialFramelessWindowHint()
 {
     QRasterWindow window;
-    window.setFlag(Qt::FramelessWindowHint, true);
+    window.setFlag(BobUI::FramelessWindowHint, true);
     window.show();
     QCOMPOSITOR_TRY_COMPARE(get<XdgDecorationManagerV1>()->resourceMap().size(), 1);
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
@@ -187,7 +187,7 @@ void tst_xdgdecorationv1::delayedFramelessWindowHint()
     QCOMPOSITOR_TRY_VERIFY(xdgSurface()->m_committedConfigureSerial);
     QCOMPOSITOR_TRY_VERIFY(toplevelDecoration());
 
-    window.setFlag(Qt::FramelessWindowHint, true);
+    window.setFlag(BobUI::FramelessWindowHint, true);
 
     // The client should now destroy the decoration object, so the compositor is no longer
     // able to force window decorations

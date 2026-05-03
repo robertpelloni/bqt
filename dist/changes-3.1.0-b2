@@ -1,14 +1,14 @@
-Qt 3.1 introduces many significant new features and many improvements
+BobUI 3.1 introduces many significant new features and many improvements
 over the 3.0.x series. For an overview of the main changes between
 3.0.x and 3.1, look at the changes-3.1.0-b1 file. This file describes
-the changes between Qt 3.1 beta1 and Qt 3.1 beta2.
+the changes between BobUI 3.1 beta1 and BobUI 3.1 beta2.
 
 
 ****************************************************************************
 *			    General					   *
 ****************************************************************************
 
-The binary incompatibilities that were introduced in Qt 3.1 beta1
+The binary incompatibilities that were introduced in BobUI 3.1 beta1
 have been fixed.
 
 ****************************************************************************
@@ -52,7 +52,7 @@ have been fixed.
 	the user cancelled an update by clicking in a different field,
 	the current row was needlessly changed.
 
-- QDateTimeEdit/QTimeEdit
+- QDateTimeEdit/BOBUIimeEdit
 	Now supports wraparound for time editing.
 	
 - QDesktopWidget
@@ -154,7 +154,7 @@ have been fixed.
 - QSplitter
 	addWidget() now reparents the widget if necessary.
 
-- QTable
+- BOBUIable
 	Set the table of the item to the table in insertItem(), so
 	takeItem()/insertItem() can be used to move items between
 	tables.
@@ -181,7 +181,7 @@ have been fixed.
 
 
 ****************************************************************************
-*			   Qt Designer					   *
+*			   BobUI Designer					   *
 ****************************************************************************
 
 - Improved the look of the Toolbox
@@ -206,7 +206,7 @@ have been fixed.
   since all buttons support multi-line labels.
 
 ****************************************************************************
-*			   Qt Assistant					   *
+*			   BobUI Assistant					   *
 ****************************************************************************
 
 - Added commandline option -removeContentFile.
@@ -214,7 +214,7 @@ have been fixed.
 - New icon look.
 
 ****************************************************************************
-*			   Qt Linguist					   *
+*			   BobUI Linguist					   *
 ****************************************************************************
 
 - New icon look.

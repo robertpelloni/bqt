@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDSYSTEMLOCALE_H
 #define QANDROIDSYSTEMLOCALE_H
 
 #include "private/qlocale_p.h"
-#include <QtCore/qreadwritelock.h>
+#include <BobUICore/qreadwritelock.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidSystemLocale : public QSystemLocale
 {
@@ -22,7 +22,7 @@ private:
     void getLocaleFromJava() const;
 
     QString convertTo24hFormat(const QString &format) const;
-    QString timeToString(const QTime &time, QLocale::FormatType type) const;
+    QString timeToString(const BOBUIime &time, QLocale::FormatType type) const;
     QString dateTimeToString(const QDateTime &dt, QLocale::FormatType type) const;
 
     mutable QLocale m_locale;
@@ -30,6 +30,6 @@ private:
     mutable bool m_24hFormat = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDSYSTEMLOCALE_H

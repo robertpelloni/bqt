@@ -1,5 +1,5 @@
 From 4ced1426e27320e00b0dd28693df5d95c648d230 Mon Sep 17 00:00:00 2001
-From: Eskil Abrahamsen Blomfeldt <eskil.abrahamsen-blomfeldt@qt.io>
+From: Eskil Abrahamsen Blomfeldt <eskil.abrahamsen-blomfeldt@bobui.io>
 Date: Thu, 14 Nov 2024 09:42:11 +0100
 Subject: [PATCH] Compile with warnings-are-errors
 

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example threads/mandelbrot
     \examplecategory {Data Processing & I/O}
     \title Mandelbrot
-    \ingroup qtconcurrent-mtexamples
+    \ingroup bobuiconcurrent-mtexamples
     \ingroup corelib_examples
 
     \brief The Mandelbrot example demonstrates multi-thread programming
-    using Qt. It shows how to use a worker thread to
+    using BobUI. It shows how to use a worker thread to
     perform heavy computations without blocking the main thread's
     event loop.
 
@@ -65,14 +65,14 @@
     The application consists of two classes:
 
     \list
-    \li \c RenderThread is a QThread subclass that renders
+    \li \c RenderThread is a BOBUIhread subclass that renders
        the Mandelbrot set.
     \li \c MandelbrotWidget is a QWidget subclass that shows the
        Mandelbrot set on screen and lets the user zoom and scroll.
     \endlist
 
-    If you are not already familiar with Qt's thread support, we
-    recommend that you start by reading the \l{Multi-threading in Qt}
+    If you are not already familiar with BobUI's thread support, we
+    recommend that you start by reading the \l{Multi-threading in BobUI}
     overview.
 
     \section1 RenderThread Class Definition
@@ -81,12 +81,12 @@
 
     \snippet threads/mandelbrot/renderthread.h 0
 
-    The class inherits QThread so that it gains the ability to run in
+    The class inherits BOBUIhread so that it gains the ability to run in
     a separate thread. Apart from the constructor and destructor, \c
     render() is the only public function. Whenever the thread is done
     rendering an image, it emits the \c renderedImage() signal.
 
-    The protected \c run() function is reimplemented from QThread. It
+    The protected \c run() function is reimplemented from BOBUIhread. It
     is automatically called when the thread is started.
 
     In the \c private section, we have a QMutex, a QWaitCondition,
@@ -121,7 +121,7 @@
     the \c abort and \c condition variables, which might be accessed
     at any time by \c run().
 
-    At the end of the destructor, we call QThread::wait() to wait
+    At the end of the destructor, we call BOBUIhread::wait() to wait
     until \c run() has exited before the base class destructor is
     invoked.
 
@@ -153,7 +153,7 @@
     it needs to access \c{RenderThread}'s member variables (e.g., in
     \c render()).
 
-    The \c forever keyword is a Qt pseudo-keyword.
+    The \c forever keyword is a BobUI pseudo-keyword.
 
     \snippet threads/mandelbrot/renderthread.cpp 4
     \snippet threads/mandelbrot/renderthread.cpp 5
@@ -225,16 +225,16 @@
     Although it looks like a standard signal-slot connection between
     two \l{QObject}s, because the signal is emitted in a different
     thread than the receiver lives in, the connection is effectively a
-    \l{Qt::QueuedConnection}{queued connection}. These connections are
+    \l{BobUI::QueuedConnection}{queued connection}. These connections are
     asynchronous (i.e., non-blocking), meaning that the slot will be
     called at some point after the \c emit statement. What's more, the
     slot will be invoked in the thread in which the receiver lives.
     Here, the signal is emitted in the worker thread, and the slot is
     executed in the GUI thread when control returns to the event loop.
 
-    With queued connections, Qt must store a copy of the arguments
+    With queued connections, BobUI must store a copy of the arguments
     that were passed to the signal so that it can pass them to the
-    slot later on. Qt knows how to take of copy of many C++ and Qt
+    slot later on. BobUI knows how to take of copy of many C++ and BobUI
     types, so, no further action is needed for QImage.
     If a custom type was used, a call to the template function
     qRegisterMetaType() would be required before the type
@@ -283,7 +283,7 @@
     centerY, and \c curScale parameters but with the new widget size.
 
     Notice that we rely on \c resizeEvent() being automatically
-    called by Qt when the widget is shown the first time to generate
+    called by BobUI when the widget is shown the first time to generate
     the initial image.
 
     \snippet threads/mandelbrot/mandelbrotwidget.cpp 11

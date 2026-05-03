@@ -1,20 +1,20 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMTHEME_H
 #define QANDROIDPLATFORMTHEME_H
 
 #include <qpa/qplatformtheme.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qpalette.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qloggingcategory.h>
 #include <QJsonObject>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaMenus)
 
@@ -39,10 +39,10 @@ public:
     QPlatformMenu *createPlatformMenu() const override;
     QPlatformMenuItem *createPlatformMenuItem() const override;
     void showPlatformMenuBar() override;
-    Qt::ColorScheme colorScheme() const override;
-    Qt::ColorScheme colorSchemeOverride() const { return m_colorSchemeOverride; };
-    void requestColorScheme(Qt::ColorScheme scheme) override;
-    Qt::ContrastPreference contrastPreference() const override;
+    BobUI::ColorScheme colorScheme() const override;
+    BobUI::ColorScheme colorSchemeOverride() const { return m_colorSchemeOverride; };
+    void requestColorScheme(BobUI::ColorScheme scheme) override;
+    BobUI::ContrastPreference contrastPreference() const override;
 
     const QPalette *palette(Palette type = SystemPalette) const override;
     const QFont *font(Font type = SystemFont) const override;
@@ -62,9 +62,9 @@ private:
     std::shared_ptr<AndroidStyle> m_androidStyleData;
     QPalette m_defaultPalette;
     QFont* m_systemFont;
-    Qt::ColorScheme m_colorSchemeOverride = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme m_colorSchemeOverride = BobUI::ColorScheme::Unknown;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDPLATFORMTHEME_H

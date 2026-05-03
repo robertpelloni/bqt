@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qcupsprintersupport_p.h"
 
 #include <qpa/qplatformprintplugin.h>
-#include <QtCore/QStringList>
+#include <BobUICore/QStringList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QCupsPrinterSupportPlugin : public QPlatformPrinterSupportPlugin
 {
@@ -28,11 +28,11 @@ QStringList QCupsPrinterSupportPlugin::keys() const
 
 QPlatformPrinterSupport *QCupsPrinterSupportPlugin::create(const QString &key)
 {
-    if (key.compare(key, "cupsprintersupport"_L1, Qt::CaseInsensitive) == 0)
+    if (key.compare(key, "cupsprintersupport"_L1, BobUI::CaseInsensitive) == 0)
         return new QCupsPrinterSupport;
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

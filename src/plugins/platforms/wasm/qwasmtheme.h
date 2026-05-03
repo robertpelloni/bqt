@@ -1,17 +1,17 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMTHEME_H
 #define QWASMTHEME_H
 
 #include <qpa/qplatformtheme.h>
-#include <QtGui/QFont>
+#include <BobUIGui/QFont>
 
 #include <memory>
 
 #include <private/qstdweb_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWasmEventTranslator;
 class QWasmFontDatabase;
@@ -52,9 +52,9 @@ public:
     ~QWasmTheme();
 
     const QPalette *palette(Palette type = SystemPalette) const override;
-    Qt::ColorScheme colorScheme() const override;
-    void requestColorScheme(Qt::ColorScheme scheme) override;
-    Qt::ContrastPreference contrastPreference() const override;
+    BobUI::ColorScheme colorScheme() const override;
+    void requestColorScheme(BobUI::ColorScheme scheme) override;
+    BobUI::ContrastPreference contrastPreference() const override;
     QVariant themeHint(ThemeHint hint) const override;
     const QFont *font(Font type) const override;
     bool usePlatformNativeDialog(DialogType type) const override;
@@ -66,14 +66,14 @@ public:
     void onContrastPreferenceChange();
 
 private:
-    Qt::ColorScheme m_colorScheme = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme m_colorScheme = BobUI::ColorScheme::Unknown;
     QWasmEventHandler m_colorSchemeChangeCallback;
     std::unique_ptr<QPalette> m_palette;
     mutable bool m_paletteIsDirty = false;
-    Qt::ContrastPreference m_contrastPreference;
+    BobUI::ContrastPreference m_contrastPreference;
     std::vector<QWasmEventHandler> m_contrastPreferenceChangeCallbacks;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWASMTHEME_H

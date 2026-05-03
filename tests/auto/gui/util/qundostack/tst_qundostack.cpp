@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QAction>
 #include <QUndoStack>
 #include <QSignalSpy>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
-#include <QTranslator>
+#include <BOBUIranslator>
 #include <QLibraryInfo>
 
 /******************************************************************************
@@ -3928,7 +3928,7 @@ void tst_QUndoStack::undoLimit()
 
 void tst_QUndoStack::commandTextFormat()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No QProcess available");
 #else
     QString binDir = QLibraryInfo::path(QLibraryInfo::BinariesPath);
@@ -3941,7 +3941,7 @@ void tst_QUndoStack::commandTextFormat()
     QFile::remove("qundostack.qm"); // Avoid confusion by strays.
     QVERIFY(!QProcess::execute(binDir + "/lrelease -silent " + tsFile + " -qm qundostack.qm"));
 
-    QTranslator translator;
+    BOBUIranslator translator;
     QVERIFY(translator.load("qundostack.qm"));
     QFile::remove("qundostack.qm");
     qApp->installTranslator(&translator);
@@ -4000,6 +4000,6 @@ void tst_QUndoStack::separateUndoText()
     QCOMPARE(command1->text(), QString("idle-item"));
 }
 
-QTEST_MAIN(tst_QUndoStack)
+BOBUIEST_MAIN(tst_QUndoStack)
 
 #include "tst_qundostack.moc"

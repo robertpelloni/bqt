@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QTemporaryFile>
-#if QT_CONFIG(process)
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BOBUIemporaryFile>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
@@ -17,7 +17,7 @@
 #include <QDirIterator>
 
 #if defined(Q_OS_WIN)
-#include <QtCore/private/qfsfileengine_p.h>
+#include <BobUICore/private/qfsfileengine_p.h>
 #endif
 
 #if defined(Q_OS_WIN) && !defined(_WIN32_WINNT)
@@ -45,11 +45,11 @@
 #define DRIVE
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 #include "private/qdir_p.h"
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QByteArray msgDoesNotExist(const QString &name)
 {
@@ -122,7 +122,7 @@ private slots:
     void cleanPath_data();
     void cleanPath();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void normalizePathSegments_data();
     void normalizePathSegments();
 #endif
@@ -179,7 +179,7 @@ private slots:
     void isRoot_data();
     void isRoot();
 
-#ifndef QT_NO_REGEXP
+#ifndef BOBUI_NO_REGEXP
     void match_data();
     void match();
 #endif
@@ -207,7 +207,7 @@ private slots:
     void stdfilesystem();
 
 private:
-    QSharedPointer<QTemporaryDir> m_dataDir;
+    QSharedPointer<BOBUIemporaryDir> m_dataDir;
     QString m_dataPath;
     bool uncServerAvailable = false;
 
@@ -269,8 +269,8 @@ void tst_QDir::initTestCase()
 #endif
     QVERIFY2(!m_dataDir.isNull(), qPrintable("Did not find testdata. Is this builtin?"));
     m_dataPath = m_dataDir->path();
-#elif QT_CONFIG(cxx17_filesystem) // This code doesn't work in QNX on the CI
-    m_dataDir.reset(new QTemporaryDir);
+#elif BOBUI_CONFIG(cxx17_filesystem) // This code doesn't work in QNX on the CI
+    m_dataDir.reset(new BOBUIemporaryDir);
     m_dataPath = m_dataDir->path();
 
     QString sourceDir = QFileInfo(QFINDTESTDATA(m_testDirs[0])).absolutePath();
@@ -289,7 +289,7 @@ void tst_QDir::initTestCase()
 
 #ifdef Q_OS_WIN
     // "When used with directories, _access determines only whether the specified directory exists"
-    if (_waccess(qUtf16Printable("//" + QTest::uncServerName() + "/testshare"), 0) == 0)
+    if (_waccess(qUtf16Printable("//" + BOBUIest::uncServerName() + "/testshare"), 0) == 0)
         uncServerAvailable = true;
 #endif
 }
@@ -297,7 +297,7 @@ void tst_QDir::initTestCase()
 void tst_QDir::cleanupTestCase()
 {
 #ifdef BUILTIN_TESTDATA
-    // We need to reset the current directory outside of QTemporaryDir for successful deletion
+    // We need to reset the current directory outside of BOBUIemporaryDir for successful deletion
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 #else
     QDir(QDir::currentPath() + "/tmpdir").removeRecursively();
@@ -336,12 +336,12 @@ void tst_QDir::construction()
 
 void tst_QDir::setPath_data()
 {
-    QTest::addColumn<QString>("dir1");
-    QTest::addColumn<QString>("dir2");
+    BOBUIest::addColumn<QString>("dir1");
+    BOBUIest::addColumn<QString>("dir2");
 
-    QTest::newRow("data0") << QString(".") << QString("..");
+    BOBUIest::newRow("data0") << QString(".") << QString("..");
 #if defined(Q_OS_WIN)
-    QTest::newRow("data1") << QString("c:/") << QDir::currentPath();
+    BOBUIest::newRow("data1") << QString("c:/") << QDir::currentPath();
 #endif
 }
 
@@ -365,8 +365,8 @@ void tst_QDir::setPath()
 
 void tst_QDir::mkdirRmdir_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("recurse");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("recurse");
 
     const struct {
         const char *name; // shall have a prefix added
@@ -381,8 +381,8 @@ void tst_QDir::mkdirRmdir_data()
 
     for (const auto &it : cases) {
         QVERIFY(!QFile::exists(it.path));
-        QTest::addRow("absolute-%s", it.name) << (QDir::currentPath() + "/") + it.path << it.recurse;
-        QTest::addRow("relative-%s", it.name) << QString::fromLatin1(it.path) << it.recurse;
+        BOBUIest::addRow("absolute-%s", it.name) << (QDir::currentPath() + "/") + it.path << it.recurse;
+        BOBUIest::addRow("relative-%s", it.name) << QString::fromLatin1(it.path) << it.recurse;
     }
 }
 
@@ -391,7 +391,7 @@ void tst_QDir::mkdirRmdir()
     QFETCH(QString, path);
     QFETCH(bool, recurse);
 
-    QTest::ThrowOnFailEnabler thrower;
+    BOBUIest::ThrowOnFailEnabler thrower;
 
     QDir dir;
     dir.rmdir(path);
@@ -475,7 +475,7 @@ void tst_QDir::mkdirOnSymlink()
     path = "two/four/five";
     fi.setFile(path);
 #if defined(Q_OS_QNX)
-    QSKIP("Fails on QNX QTBUG-98561");
+    QSKIP("Fails on QNX BOBUIBUG-98561");
 #endif
     QVERIFY2(fi.exists() && fi.isDir(), msgDoesNotExist(path).constData());
 #endif
@@ -483,13 +483,13 @@ void tst_QDir::mkdirOnSymlink()
 
 void tst_QDir::mkdirWithPermissions_data()
 {
-    QTest::addColumn<QFile::Permissions>("permissions");
+    BOBUIest::addColumn<QFile::Permissions>("permissions");
 
     for (int u = 0; u < 8; ++u) {
         for (int g = 0; g < 8; ++g) {
             for (int o = 0; o < 8; ++o) {
                 auto permissions = QFileDevice::Permissions::fromInt((u << 12) | (g << 4) | o);
-                QTest::addRow("%04x", permissions.toInt()) << permissions;
+                BOBUIest::addRow("%04x", permissions.toInt()) << permissions;
             }
         }
     }
@@ -555,7 +555,7 @@ void tst_QDir::makedirReturnCode()
     QVERIFY(!QDir::current().mkdir(dirName)); // calling mkdir on an existing dir will fail.
     QVERIFY(QDir::current().mkpath(dirName)); // calling mkpath on an existing dir will pass
 
-    // the next line specifically targets Windows and macOS (QTBUG-85997, QTBUG-97110)
+    // the next line specifically targets Windows and macOS (BOBUIBUG-85997, BOBUIBUG-97110)
     // calling mkpath on an existing drive name (Windows) or root path (macOS) shall pass
     QVERIFY(QDir().mkpath(QDir::rootPath()));
     QVERIFY(!QDir().mkdir(QDir::rootPath()));
@@ -574,7 +574,7 @@ void tst_QDir::makedirReturnCode()
 
 void tst_QDir::removeRecursively_data()
 {
-    QTest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("path");
 
     // Create dirs and files
     const QString tmpdir = QDir::currentPath() + "/tmpdir/";
@@ -595,11 +595,11 @@ void tst_QDir::removeRecursively_data()
         file.write("Hello");
     }
 
-    QTest::newRow("empty") << tmpdir + "empty";
-    QTest::newRow("one") << tmpdir + "one";
-    QTest::newRow("two") << tmpdir + "two";
-    QTest::newRow("does not exist") << tmpdir + "doesnotexist";
-    QTest::newRow("relative") << "relative";
+    BOBUIest::newRow("empty") << tmpdir + "empty";
+    BOBUIest::newRow("one") << tmpdir + "one";
+    BOBUIest::newRow("two") << tmpdir + "two";
+    BOBUIest::newRow("does not exist") << tmpdir + "doesnotexist";
+    BOBUIest::newRow("relative") << "relative";
 }
 
 void tst_QDir::removeRecursively()
@@ -675,33 +675,33 @@ void tst_QDir::removeRecursivelySymlink()
 
 void tst_QDir::exists_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("data0") << QDir::currentPath() << true;
-    QTest::newRow("data0.1") << QDir::currentPath() + "/" << true;
-    QTest::newRow("data1") << QString("/I/Do_not_expect_this_path_to_exist/") << false;
-    QTest::newRow("resource0") << QString(":/tst_qdir/") << true;
-    QTest::newRow("resource1") << QString(":/I/Do_not_expect_this_resource_to_exist/") << false;
+    BOBUIest::newRow("data0") << QDir::currentPath() << true;
+    BOBUIest::newRow("data0.1") << QDir::currentPath() + "/" << true;
+    BOBUIest::newRow("data1") << QString("/I/Do_not_expect_this_path_to_exist/") << false;
+    BOBUIest::newRow("resource0") << QString(":/tst_qdir/") << true;
+    BOBUIest::newRow("resource1") << QString(":/I/Do_not_expect_this_resource_to_exist/") << false;
 
-    QTest::newRow("simple dir") << (m_dataPath + "/resources") << true;
-    QTest::newRow("simple dir with slash") << (m_dataPath + "/resources/") << true;
+    BOBUIest::newRow("simple dir") << (m_dataPath + "/resources") << true;
+    BOBUIest::newRow("simple dir with slash") << (m_dataPath + "/resources/") << true;
 #if defined(Q_OS_WIN)
-    const QString uncRoot = QStringLiteral("//") + QTest::uncServerName();
-    QTest::newRow("unc 1") << uncRoot << true;
-    QTest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
-    QTest::newRow("unc 3") << uncRoot + "/testshare" << uncServerAvailable;
-    QTest::newRow("unc 4") << uncRoot + "/testshare/" << uncServerAvailable;
-    QTest::newRow("unc 5") << uncRoot + "/testshare/tmp" << uncServerAvailable;
-    QTest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << uncServerAvailable;
-    QTest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << false;
-    QTest::newRow("unc 8") << uncRoot + "/asharethatshouldnotexist" << false;
-    QTest::newRow("unc 9") << "//ahostthatshouldnotexist" << false;
+    const QString uncRoot = QStringLiteral("//") + BOBUIest::uncServerName();
+    BOBUIest::newRow("unc 1") << uncRoot << true;
+    BOBUIest::newRow("unc 2") << uncRoot + QLatin1Char('/') << true;
+    BOBUIest::newRow("unc 3") << uncRoot + "/testshare" << uncServerAvailable;
+    BOBUIest::newRow("unc 4") << uncRoot + "/testshare/" << uncServerAvailable;
+    BOBUIest::newRow("unc 5") << uncRoot + "/testshare/tmp" << uncServerAvailable;
+    BOBUIest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << uncServerAvailable;
+    BOBUIest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << false;
+    BOBUIest::newRow("unc 8") << uncRoot + "/asharethatshouldnotexist" << false;
+    BOBUIest::newRow("unc 9") << "//ahostthatshouldnotexist" << false;
 #endif
 #if defined (Q_OS_WIN)
-    QTest::newRow("This drive should exist") <<  "C:/" << true;
+    BOBUIest::newRow("This drive should exist") <<  "C:/" << true;
     // find a non-existing drive and check if it does not exist
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QFileInfoList drives = QFSFileEngine::drives();
     QStringList driveLetters;
     for (int i = 0; i < drives.count(); ++i) {
@@ -715,7 +715,7 @@ void tst_QDir::exists_data()
         --drive;
     } while (drive >= 'A');
     if (drive >= 'A') {
-        QTest::newRow("This drive should not exist") <<  driv << false;
+        BOBUIest::newRow("This drive should not exist") <<  driv << false;
     }
 #endif
 #endif
@@ -735,18 +735,18 @@ void tst_QDir::exists()
 
 void tst_QDir::isRelativePath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("relative");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("relative");
 
-    QTest::newRow("data0") << "../somedir" << true;
+    BOBUIest::newRow("data0") << "../somedir" << true;
 #if defined(Q_OS_WIN)
-    QTest::newRow("data1") << "C:/sOmedir" << false;
+    BOBUIest::newRow("data1") << "C:/sOmedir" << false;
 #endif
-    QTest::newRow("data2") << "somedir" << true;
-    QTest::newRow("data3") << "/somedir" << false;
+    BOBUIest::newRow("data2") << "somedir" << true;
+    BOBUIest::newRow("data3") << "/somedir" << false;
 
-    QTest::newRow("resource0") << ":/prefix" << false;
-    QTest::newRow("resource1") << ":/prefix/foo.bar" << false;
+    BOBUIest::newRow("resource0") << ":/prefix" << false;
+    BOBUIest::newRow("resource1") << ":/prefix/foo.bar" << false;
 }
 
 void tst_QDir::isRelativePath()
@@ -767,18 +767,18 @@ void tst_QDir::QDir_default()
 
 void tst_QDir::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QDir>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QDir>();
 }
 
 void tst_QDir::compare()
 {
     QDir dir;
     dir.makeAbsolute();
-    QT_TEST_EQUALITY_OPS(dir, QDir::currentPath(), true);
+    BOBUI_TEST_EQUALITY_OPS(dir, QDir::currentPath(), true);
 
     QCOMPARE(QDir(), QDir(QDir::currentPath()));
 
-    QT_TEST_EQUALITY_OPS(QDir("../"), QDir(QDir::currentPath() + "/.."), true);
+    BOBUI_TEST_EQUALITY_OPS(QDir("../"), QDir(QDir::currentPath() + "/.."), true);
 }
 
 static QStringList filterLinks(QStringList &&list)
@@ -792,33 +792,33 @@ static QStringList filterLinks(QStringList &&list)
 
 void tst_QDir::entryList_data()
 {
-    QTest::addColumn<QString>("dirName"); // relative from current path or abs
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<int>("filterspec");
-    QTest::addColumn<int>("sortspec");
-    QTest::addColumn<QStringList>("expected");
-    QTest::newRow("spaces1") << (m_dataPath + "/testdir/spaces") << QStringList("*. bar")
+    BOBUIest::addColumn<QString>("dirName"); // relative from current path or abs
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<int>("filterspec");
+    BOBUIest::addColumn<int>("sortspec");
+    BOBUIest::addColumn<QStringList>("expected");
+    BOBUIest::newRow("spaces1") << (m_dataPath + "/testdir/spaces") << QStringList("*. bar")
               << (int)(QDir::NoFilter) << (int)(QDir::NoSort)
               << QStringList("foo. bar"); // notice how spaces5 works
-    QTest::newRow("spaces2") << (m_dataPath + "/testdir/spaces") << QStringList("*.bar")
+    BOBUIest::newRow("spaces2") << (m_dataPath + "/testdir/spaces") << QStringList("*.bar")
               << (int)(QDir::NoFilter) << (int)(QDir::NoSort)
               << QStringList("foo.bar");
-    QTest::newRow("spaces3") << (m_dataPath + "/testdir/spaces") << QStringList("foo.*")
+    BOBUIest::newRow("spaces3") << (m_dataPath + "/testdir/spaces") << QStringList("foo.*")
               << (int)(QDir::NoFilter) << (int)(QDir::NoSort)
               << QString("foo. bar,foo.bar").split(',');
-    QTest::newRow("files1")  << (m_dataPath + "/testdir/dir") << QString("*r.cpp *.pro").split(" ")
+    BOBUIest::newRow("files1")  << (m_dataPath + "/testdir/dir") << QString("*r.cpp *.pro").split(" ")
               << (int)(QDir::NoFilter) << (int)(QDir::NoSort)
               << QString("qdir.pro,qrc_qdir.cpp,tst_qdir.cpp").split(',');
-    QTest::newRow("testdir1")  << (m_dataPath + "/testdir") << QStringList()
+    BOBUIest::newRow("testdir1")  << (m_dataPath + "/testdir") << QStringList()
               << (int)(QDir::AllDirs) << (int)(QDir::NoSort)
               << QString(".,..,dir,dir.lnk,spaces").split(',');
-    QTest::newRow("resources1") << QString(":/tst_qdir/resources/entryList") << QStringList("*.data")
+    BOBUIest::newRow("resources1") << QString(":/tst_qdir/resources/entryList") << QStringList("*.data")
                              << (int)(QDir::NoFilter) << (int)(QDir::NoSort)
                              << QString("file1.data,file2.data,file3.data").split(',');
-    QTest::newRow("resources2") << QString(":/tst_qdir/resources/entryList") << QStringList("*.data")
+    BOBUIest::newRow("resources2") << QString(":/tst_qdir/resources/entryList") << QStringList("*.data")
                              << (int)(QDir::Files) << (int)(QDir::NoSort)
                              << QString("file1.data,file2.data,file3.data").split(',');
-    QTest::newRow("testdir.lnk") << (m_dataPath + "/testdir/dir.lnk") << QStringList()
+    BOBUIest::newRow("testdir.lnk") << (m_dataPath + "/testdir/dir.lnk") << QStringList()
                              << (int)(QDir::NoFilter) << (int)(QDir::NoSort)
                              << QString(".,..,aaaaa.txt,subdir,subdir.lnk").split(',');
 }
@@ -842,119 +842,119 @@ void tst_QDir::entryList()
 
 void tst_QDir::entryListWithTestFiles_data()
 {
-    QTest::addColumn<QString>("dirName"); // relative from current path or abs
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<int>("filterspec");
-    QTest::addColumn<int>("sortspec");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<QString>("dirName"); // relative from current path or abs
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<int>("filterspec");
+    BOBUIest::addColumn<int>("sortspec");
+    BOBUIest::addColumn<QStringList>("expected");
 
-    QTest::newRow("nofilter") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("nofilter") << (m_dataPath + "/entrylist/") << QStringList("*")
                               << int(QDir::NoFilter) << int(QDir::Name)
                               << filterLinks(QString(".,..,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::AllEntries") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllEntries") << (m_dataPath + "/entrylist/") << QStringList("*")
                               << int(QDir::AllEntries) << int(QDir::Name)
                               << filterLinks(QString(".,..,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
     // Tests an assert in QDirSortItemComparator, when QDir::LocaleAware is set
     // a QCollator is used
-    QTest::newRow("QDir::AllEntries-LocaleAware")
+    BOBUIest::newRow("QDir::AllEntries-LocaleAware")
         << (m_dataPath + "/entrylist/") << QStringList("*")
         << int(QDir::AllEntries) << int(QDir::Name | QDir::LocaleAware)
         << filterLinks(QString(".,..,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::Files") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Files") << (m_dataPath + "/entrylist/") << QStringList("*")
                                  << int(QDir::Files) << int(QDir::Name)
                                  << filterLinks(QString("file,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::Dirs") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Dirs") << (m_dataPath + "/entrylist/") << QStringList("*")
                                 << int(QDir::Dirs) << int(QDir::Name)
                                 << filterLinks(QString(".,..,directory,linktodirectory.lnk").split(','));
-    QTest::newRow("QDir::Dirs | QDir::NoDotAndDotDot") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Dirs | QDir::NoDotAndDotDot") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                        << int(QDir::Dirs | QDir::NoDotAndDotDot) << int(QDir::Name)
                                 << filterLinks(QString("directory,linktodirectory.lnk").split(','));
-    QTest::newRow("QDir::AllDirs") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllDirs") << (m_dataPath + "/entrylist/") << QStringList("*")
                                    << int(QDir::AllDirs) << int(QDir::Name)
                                    << filterLinks(QString(".,..,directory,linktodirectory.lnk").split(','));
-    QTest::newRow("QDir::AllDirs | QDir::Dirs") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllDirs | QDir::Dirs") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                 << int(QDir::AllDirs | QDir::Dirs) << int(QDir::Name)
                                                 << filterLinks(QString(".,..,directory,linktodirectory.lnk").split(','));
-    QTest::newRow("QDir::AllDirs | QDir::Files") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllDirs | QDir::Files") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                  << int(QDir::AllDirs | QDir::Files) << int(QDir::Name)
                                                  << filterLinks(QString(".,..,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::AllEntries | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllEntries | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
                                       << int(QDir::AllEntries | QDir::NoSymLinks) << int(QDir::Name)
                                       << filterLinks(QString(".,..,directory,file,writable").split(','));
-    QTest::newRow("QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot") << (m_dataPath + "/entrylist/") << QStringList("*")
                                       << int(QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot) << int(QDir::Name)
                                       << filterLinks(QString("directory,file,writable").split(','));
-    QTest::newRow("QDir::Files | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Files | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                     << int(QDir::Files | QDir::NoSymLinks) << int(QDir::Name)
                                                     << filterLinks(QString("file,writable").split(','));
-    QTest::newRow("QDir::Dirs | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Dirs | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                    << int(QDir::Dirs | QDir::NoSymLinks) << int(QDir::Name)
                                                    << filterLinks(QString(".,..,directory").split(','));
-    QTest::newRow("QDir::Drives | QDir::Files | QDir::NoDotAndDotDot") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Drives | QDir::Files | QDir::NoDotAndDotDot") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                    << int(QDir::Drives | QDir::Files | QDir::NoDotAndDotDot) << int(QDir::Name)
                                                    << filterLinks(QString("file,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::System") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::System") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::System) << int(QDir::Name)
                                   << filterLinks(QStringList("brokenlink.lnk"));
-    QTest::newRow("QDir::Hidden") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Hidden") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::Hidden) << int(QDir::Name)
                                   << QStringList();
-    QTest::newRow("QDir::System | QDir::Hidden") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::System | QDir::Hidden") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::System | QDir::Hidden) << int(QDir::Name)
                                   << filterLinks(QStringList("brokenlink.lnk"));
-    QTest::newRow("QDir::AllDirs | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllDirs | QDir::NoSymLinks") << (m_dataPath + "/entrylist/") << QStringList("*")
                                                       << int(QDir::AllDirs | QDir::NoSymLinks) << int(QDir::Name)
                                                       << filterLinks(QString(".,..,directory").split(','));
-    QTest::newRow("QDir::AllEntries | QDir::Hidden | QDir::System") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllEntries | QDir::Hidden | QDir::System") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::AllEntries | QDir::Hidden | QDir::System) << int(QDir::Name)
                                   << filterLinks(QString(".,..,brokenlink.lnk,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::AllEntries | QDir::Readable") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllEntries | QDir::Readable") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::AllEntries | QDir::Readable) << int(QDir::Name)
                                                 << filterLinks(QString(".,..,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::AllEntries | QDir::Writable") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::AllEntries | QDir::Writable") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::AllEntries | QDir::Writable) << int(QDir::Name)
                                   << filterLinks(QString(".,..,directory,linktodirectory.lnk,writable").split(','));
-    QTest::newRow("QDir::Files | QDir::Readable") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Files | QDir::Readable") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::Files | QDir::Readable) << int(QDir::Name)
                                   << filterLinks(QString("file,linktofile.lnk,writable").split(','));
-    QTest::newRow("QDir::Dirs | QDir::Readable") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("QDir::Dirs | QDir::Readable") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::Dirs | QDir::Readable) << int(QDir::Name)
                                   << filterLinks(QString(".,..,directory,linktodirectory.lnk").split(','));
-    QTest::newRow("Namefilters b*") << (m_dataPath + "/entrylist/") << QStringList("d*")
+    BOBUIest::newRow("Namefilters b*") << (m_dataPath + "/entrylist/") << QStringList("d*")
                                   << int(QDir::NoFilter) << int(QDir::Name)
                                   << filterLinks(QString("directory").split(','));
-    QTest::newRow("Namefilters f*") << (m_dataPath + "/entrylist/") << QStringList("f*")
+    BOBUIest::newRow("Namefilters f*") << (m_dataPath + "/entrylist/") << QStringList("f*")
                                   << int(QDir::NoFilter) << int(QDir::Name)
                                   << filterLinks(QString("file").split(','));
-    QTest::newRow("Namefilters link*") << (m_dataPath + "/entrylist/") << QStringList("link*")
+    BOBUIest::newRow("Namefilters link*") << (m_dataPath + "/entrylist/") << QStringList("link*")
                                   << int(QDir::NoFilter) << int(QDir::Name)
                                   << filterLinks(QString("linktodirectory.lnk,linktofile.lnk").split(','));
-    QTest::newRow("Namefilters *to*") << (m_dataPath + "/entrylist/") << QStringList("*to*")
+    BOBUIest::newRow("Namefilters *to*") << (m_dataPath + "/entrylist/") << QStringList("*to*")
                                   << int(QDir::NoFilter) << int(QDir::Name)
                                   << filterLinks(QString("directory,linktodirectory.lnk,linktofile.lnk").split(','));
-    QTest::newRow("Sorting QDir::Name") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Name") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::NoFilter) << int(QDir::Name)
                                   << filterLinks(QString(".,..,directory,file,linktodirectory.lnk,linktofile.lnk,writable").split(','));
-    QTest::newRow("Sorting QDir::Name | QDir::Reversed") << (m_dataPath + "/entrylist/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Name | QDir::Reversed") << (m_dataPath + "/entrylist/") << QStringList("*")
                                   << int(QDir::NoFilter) << int(QDir::Name | QDir::Reversed)
                                   << filterLinks(QString("writable,linktofile.lnk,linktodirectory.lnk,file,directory,..,.").split(','));
 
-    QTest::newRow("Sorting QDir::Type") << (m_dataPath + "/types/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Type") << (m_dataPath + "/types/") << QStringList("*")
                                   << int(QDir::NoFilter) << int(QDir::Type)
                                   << QString(".,..,a,b,c,d,e,f,a.a,b.a,c.a,d.a,e.a,f.a,a.b,b.b,c.b,d.b,e.b,f.b,a.c,b.c,c.c,d.c,e.c,f.c").split(',');
-    QTest::newRow("Sorting QDir::Type | QDir::Reversed") << (m_dataPath + "/types/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Type | QDir::Reversed") << (m_dataPath + "/types/") << QStringList("*")
                                   << int(QDir::NoFilter) << int(QDir::Type | QDir::Reversed)
                                   << QString("f.c,e.c,d.c,c.c,b.c,a.c,f.b,e.b,d.b,c.b,b.b,a.b,f.a,e.a,d.a,c.a,b.a,a.a,f,e,d,c,b,a,..,.").split(',');
-    QTest::newRow("Sorting QDir::Type | QDir::DirsLast") << (m_dataPath + "/types/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Type | QDir::DirsLast") << (m_dataPath + "/types/") << QStringList("*")
                                   << int(QDir::NoFilter) << int(QDir::Type | QDir::DirsLast)
                                   << QString("a,b,c,a.a,b.a,c.a,a.b,b.b,c.b,a.c,b.c,c.c,.,..,d,e,f,d.a,e.a,f.a,d.b,e.b,f.b,d.c,e.c,f.c").split(',');
-    QTest::newRow("Sorting QDir::Type | QDir::DirsFirst") << (m_dataPath + "/types/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Type | QDir::DirsFirst") << (m_dataPath + "/types/") << QStringList("*")
                                   << int(QDir::NoFilter) << int(QDir::Type | QDir::DirsFirst)
                                   << QString(".,..,d,e,f,d.a,e.a,f.a,d.b,e.b,f.b,d.c,e.c,f.c,a,b,c,a.a,b.a,c.a,a.b,b.b,c.b,a.c,b.c,c.c").split(',');
-    QTest::newRow("Sorting QDir::Size") << (m_dataPath + "/types/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Size") << (m_dataPath + "/types/") << QStringList("*")
                                   << int(QDir::AllEntries|QDir::NoDotAndDotDot) << int(QDir::Size | QDir::DirsFirst)
                                   << QString("d,d.a,d.b,d.c,e,e.a,e.b,e.c,f,f.a,f.b,f.c,c.a,c.b,c.c,b.a,b.c,b.b,a.c,a.b,a.a,a,b,c").split(',');
-    QTest::newRow("Sorting QDir::Size | QDir::Reversed") << (m_dataPath + "/types/") << QStringList("*")
+    BOBUIest::newRow("Sorting QDir::Size | QDir::Reversed") << (m_dataPath + "/types/") << QStringList("*")
                                   << int(QDir::AllEntries|QDir::NoDotAndDotDot) << int(QDir::Size | QDir::Reversed | QDir::DirsLast)
                                   << QString("c,b,a,a.a,a.b,a.c,b.b,b.c,b.a,c.c,c.b,c.a,f.c,f.b,f.a,f,e.c,e.b,e.a,e,d.c,d.b,d.a,d").split(',');
 }
@@ -1020,7 +1020,7 @@ void tst_QDir::entryListWithTestFiles()
 
     bool doContentCheck = true;
 #if defined(Q_OS_UNIX)
-    if (qstrcmp(QTest::currentDataTag(), "QDir::AllEntries | QDir::Writable") == 0) {
+    if (qstrcmp(BOBUIest::currentDataTag(), "QDir::AllEntries | QDir::Writable") == 0) {
         // for root, everything is writeable
         if (::getuid() == 0)
             doContentCheck = false;
@@ -1036,14 +1036,14 @@ void tst_QDir::entryListWithTestFiles()
 
 void tst_QDir::entryListTimedSort()
 {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     const QString touchBinary = "/bin/touch";
     if (!QFile::exists(touchBinary))
         QSKIP("/bin/touch not found");
 
     const QString entrylistPath = m_dataPath + "/entrylist/";
-    QTemporaryFile aFile(entrylistPath + "A-XXXXXX.qws");
-    QTemporaryFile bFile(entrylistPath + "B-XXXXXX.qws");
+    BOBUIemporaryFile aFile(entrylistPath + "A-XXXXXX.qws");
+    BOBUIemporaryFile bFile(entrylistPath + "B-XXXXXX.qws");
 
     QVERIFY2(aFile.open(), qPrintable(aFile.errorString()));
     QVERIFY2(bFile.open(), qPrintable(bFile.errorString()));
@@ -1063,38 +1063,38 @@ void tst_QDir::entryListTimedSort()
 
     QFileInfo aFileInfo(aFile);
     QFileInfo bFileInfo(bFile);
-    QVERIFY(bFileInfo.lastModified(QTimeZone::UTC).msecsTo(aFileInfo.lastModified(QTimeZone::UTC)) < 0);
+    QVERIFY(bFileInfo.lastModified(BOBUIimeZone::UTC).msecsTo(aFileInfo.lastModified(BOBUIimeZone::UTC)) < 0);
 
     QCOMPARE(actual.size(), 2);
     QCOMPARE(actual.first(), bFileInfo.fileName());
     QCOMPARE(actual.last(), aFileInfo.fileName());
 #else
     QSKIP("This test requires QProcess support.");
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QDir::entryListSimple_data()
 {
-    QTest::addColumn<QString>("dirName");
-    QTest::addColumn<int>("countMin");
+    BOBUIest::addColumn<QString>("dirName");
+    BOBUIest::addColumn<int>("countMin");
 
-    QTest::newRow("data2") << "do_not_expect_this_path_to_exist/" << 0;
-    QTest::newRow("simple dir") << (m_dataPath + "/resources") << 2;
-    QTest::newRow("simple dir with slash") << (m_dataPath + "/resources/") << 2;
+    BOBUIest::newRow("data2") << "do_not_expect_this_path_to_exist/" << 0;
+    BOBUIest::newRow("simple dir") << (m_dataPath + "/resources") << 2;
+    BOBUIest::newRow("simple dir with slash") << (m_dataPath + "/resources/") << 2;
 
 #if defined(Q_OS_WIN)
-    const QString uncRoot = QStringLiteral("//") + QTest::uncServerName();
+    const QString uncRoot = QStringLiteral("//") + BOBUIest::uncServerName();
     if (uncServerAvailable) {
-        QTest::newRow("unc 1") << uncRoot << 2;
-        QTest::newRow("unc 2") << uncRoot + QLatin1Char('/') << 2;
-        QTest::newRow("unc 3") << uncRoot + "/testshare" << 2;
-        QTest::newRow("unc 4") << uncRoot + "/testshare/" << 2;
-        QTest::newRow("unc 5") << uncRoot + "/testshare/tmp" << 2;
-        QTest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << 2;
+        BOBUIest::newRow("unc 1") << uncRoot << 2;
+        BOBUIest::newRow("unc 2") << uncRoot + QLatin1Char('/') << 2;
+        BOBUIest::newRow("unc 3") << uncRoot + "/testshare" << 2;
+        BOBUIest::newRow("unc 4") << uncRoot + "/testshare/" << 2;
+        BOBUIest::newRow("unc 5") << uncRoot + "/testshare/tmp" << 2;
+        BOBUIest::newRow("unc 6") << uncRoot + "/testshare/tmp/" << 2;
     }
-    QTest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << 0;
-    QTest::newRow("unc 8") << uncRoot + "/asharethatshouldnotexist" << 0;
-    QTest::newRow("unc 9") << "//ahostthatshouldnotexist" << 0;
+    BOBUIest::newRow("unc 7") << uncRoot + "/testshare/adirthatshouldnotexist" << 0;
+    BOBUIest::newRow("unc 8") << uncRoot + "/asharethatshouldnotexist" << 0;
+    BOBUIest::newRow("unc 9") << "//ahostthatshouldnotexist" << 0;
 #endif
 }
 
@@ -1154,29 +1154,29 @@ void tst_QDir::entryListWithSymLinks()
 
 void tst_QDir::canonicalPath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("canonicalPath");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("canonicalPath");
 
-    QTest::newRow("relative") << "." << m_dataPath;
-    QTest::newRow("relativeSubDir") << "./testData/../testData" << m_dataPath + "/testData";
+    BOBUIest::newRow("relative") << "." << m_dataPath;
+    BOBUIest::newRow("relativeSubDir") << "./testData/../testData" << m_dataPath + "/testData";
 #ifndef Q_OS_WIN
-    QTest::newRow("absPath") << m_dataPath + "/testData/../testData" << m_dataPath + "/testData";
+    BOBUIest::newRow("absPath") << m_dataPath + "/testData/../testData" << m_dataPath + "/testData";
 #else
-    QTest::newRow("absPath") << m_dataPath + "\\testData\\..\\testData" << m_dataPath + "/testData";
+    BOBUIest::newRow("absPath") << m_dataPath + "\\testData\\..\\testData" << m_dataPath + "/testData";
 #endif
-    QTest::newRow("nonexistant") << "testd" << QString();
+    BOBUIest::newRow("nonexistant") << "testd" << QString();
 
-    QTest::newRow("rootPath") << QDir::rootPath() << QDir::rootPath();
-    QTest::newRow("rootPath + ./") << QDir::rootPath().append("./") << QDir::rootPath();
-    QTest::newRow("rootPath + ../.. ") << QDir::rootPath().append("../..") << QDir::rootPath();
+    BOBUIest::newRow("rootPath") << QDir::rootPath() << QDir::rootPath();
+    BOBUIest::newRow("rootPath + ./") << QDir::rootPath().append("./") << QDir::rootPath();
+    BOBUIest::newRow("rootPath + ../.. ") << QDir::rootPath().append("../..") << QDir::rootPath();
 #if defined(Q_OS_WIN)
-    QTest::newRow("drive:\\") << QDir::toNativeSeparators(QDir::rootPath()) << QDir::rootPath();
-    QTest::newRow("drive:\\.\\") << QDir::toNativeSeparators(QDir::rootPath().append("./")) << QDir::rootPath();
-    QTest::newRow("drive:\\..\\..") << QDir::toNativeSeparators(QDir::rootPath().append("../..")) << QDir::rootPath();
-    QTest::newRow("drive:") << QDir().canonicalPath().left(2) << QDir().canonicalPath();
+    BOBUIest::newRow("drive:\\") << QDir::toNativeSeparators(QDir::rootPath()) << QDir::rootPath();
+    BOBUIest::newRow("drive:\\.\\") << QDir::toNativeSeparators(QDir::rootPath().append("./")) << QDir::rootPath();
+    BOBUIest::newRow("drive:\\..\\..") << QDir::toNativeSeparators(QDir::rootPath().append("../..")) << QDir::rootPath();
+    BOBUIest::newRow("drive:") << QDir().canonicalPath().left(2) << QDir().canonicalPath();
 #endif
 
-    QTest::newRow("resource") << ":/tst_qdir/resources/entryList" << ":/tst_qdir/resources/entryList";
+    BOBUIest::newRow("resource") << ":/tst_qdir/resources/entryList" << ":/tst_qdir/resources/entryList";
 }
 
 void tst_QDir::canonicalPath()
@@ -1203,19 +1203,19 @@ void tst_QDir::canonicalPath()
 
 void tst_QDir::current_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("currentDir");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("currentDir");
 
-    QTest::newRow("startup") << QString() << m_dataPath;
-    QTest::newRow("relPath") << "testData" << m_dataPath + "/testData";
+    BOBUIest::newRow("startup") << QString() << m_dataPath;
+    BOBUIest::newRow("relPath") << "testData" << m_dataPath + "/testData";
 #ifndef Q_OS_WIN
-    QTest::newRow("absPath") << m_dataPath + "/testData" << m_dataPath + "/testData";
+    BOBUIest::newRow("absPath") << m_dataPath + "/testData" << m_dataPath + "/testData";
 #else
-    QTest::newRow("absPath") << m_dataPath + "\\testData" << m_dataPath + "/testData";
+    BOBUIest::newRow("absPath") << m_dataPath + "\\testData" << m_dataPath + "/testData";
 #endif
-    QTest::newRow("nonexistant") << "testd" << QString();
+    BOBUIest::newRow("nonexistant") << "testd" << QString();
 
-    QTest::newRow("parent") << ".." << m_dataPath.left(m_dataPath.lastIndexOf('/'));
+    BOBUIest::newRow("parent") << ".." << m_dataPath.left(m_dataPath.lastIndexOf('/'));
 }
 
 void tst_QDir::current()
@@ -1246,30 +1246,30 @@ void tst_QDir::current()
 
 void tst_QDir::cd_data()
 {
-    QTest::addColumn<QString>("startDir");
-    QTest::addColumn<QString>("cdDir");
-    QTest::addColumn<bool>("successExpected");
-    QTest::addColumn<QString>("newDir");
+    BOBUIest::addColumn<QString>("startDir");
+    BOBUIest::addColumn<QString>("cdDir");
+    BOBUIest::addColumn<bool>("successExpected");
+    BOBUIest::addColumn<QString>("newDir");
 
     // use the canonical path for m_dataPath here, because if TMPDIR points to
     // a symlink like what happens on Apple systems (/tmp -> /private/tmp),
     // then /tmp/.. will not be the same as / (it's /private).
     QString canonicalPath = QDir(m_dataPath).canonicalPath();
     int index = canonicalPath.lastIndexOf(QLatin1Char('/'));
-    QTest::newRow("cdUp") << canonicalPath << ".." << true << canonicalPath.left(index==0?1:index);
-    QTest::newRow("cdUp non existent (relative dir)") << "anonexistingDir" << ".."
+    BOBUIest::newRow("cdUp") << canonicalPath << ".." << true << canonicalPath.left(index==0?1:index);
+    BOBUIest::newRow("cdUp non existent (relative dir)") << "anonexistingDir" << ".."
                                                       << true << canonicalPath;
-    QTest::newRow("cdUp non existent (absolute dir)") << canonicalPath + "/anonexistingDir" << ".."
+    BOBUIest::newRow("cdUp non existent (absolute dir)") << canonicalPath + "/anonexistingDir" << ".."
                                                       << true << canonicalPath;
-    QTest::newRow("noChange") << canonicalPath << "." << true << canonicalPath;
+    BOBUIest::newRow("noChange") << canonicalPath << "." << true << canonicalPath;
 #if defined(Q_OS_WIN)  // on windows QDir::root() is usually c:/ but cd "/" will not force it to be root
-    QTest::newRow("absolute") << canonicalPath << "/" << true << "/";
+    BOBUIest::newRow("absolute") << canonicalPath << "/" << true << "/";
 #else
-    QTest::newRow("absolute") << canonicalPath << "/" << true << QDir::root().absolutePath();
+    BOBUIest::newRow("absolute") << canonicalPath << "/" << true << QDir::root().absolutePath();
 #endif
-    QTest::newRow("non existant") << "." << "../anonexistingdir" << false << canonicalPath;
-    QTest::newRow("self") << "." << (QString("../") + QFileInfo(canonicalPath).fileName()) << true << canonicalPath;
-    QTest::newRow("file") << "." << "qdir.pro" << false << canonicalPath;
+    BOBUIest::newRow("non existant") << "." << "../anonexistingdir" << false << canonicalPath;
+    BOBUIest::newRow("self") << "." << (QString("../") + QFileInfo(canonicalPath).fileName()) << true << canonicalPath;
+    BOBUIest::newRow("file") << "." << "qdir.pro" << false << canonicalPath;
 }
 
 void tst_QDir::cd()
@@ -1290,19 +1290,19 @@ void tst_QDir::setNameFilters_data()
 {
     // Effectively copied from entryList2() test
 
-    QTest::addColumn<QString>("dirName"); // relative from current path or abs
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<QString>("dirName"); // relative from current path or abs
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<QStringList>("expected");
 
-    QTest::newRow("spaces1") << m_dataPath + "/testdir/spaces" << QStringList("*. bar")
+    BOBUIest::newRow("spaces1") << m_dataPath + "/testdir/spaces" << QStringList("*. bar")
                           << QStringList("foo. bar");
-    QTest::newRow("spaces2") << m_dataPath + "/testdir/spaces" << QStringList("*.bar")
+    BOBUIest::newRow("spaces2") << m_dataPath + "/testdir/spaces" << QStringList("*.bar")
                           << QStringList("foo.bar");
-    QTest::newRow("spaces3") << m_dataPath + "/testdir/spaces" << QStringList("foo.*")
+    BOBUIest::newRow("spaces3") << m_dataPath + "/testdir/spaces" << QStringList("foo.*")
                             << QString("foo. bar,foo.bar").split(QLatin1Char(','));
-    QTest::newRow("files1")  << m_dataPath + "/testdir/dir" << QString("*r.cpp *.pro").split(QLatin1Char(' '))
+    BOBUIest::newRow("files1")  << m_dataPath + "/testdir/dir" << QString("*r.cpp *.pro").split(QLatin1Char(' '))
                           << QString("qdir.pro,qrc_qdir.cpp,tst_qdir.cpp").split(QLatin1Char(','));
-    QTest::newRow("resources1") << QString(":/tst_qdir/resources/entryList") << QStringList("*.data")
+    BOBUIest::newRow("resources1") << QString(":/tst_qdir/resources/entryList") << QStringList("*.data")
                              << QString("file1.data,file2.data,file3.data").split(QLatin1Char(','));
 }
 
@@ -1327,76 +1327,76 @@ void tst_QDir::setNameFilters()
 void
 tst_QDir::cleanPath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("data0") << "/Users/sam/troll/qt4.0//.." << "/Users/sam/troll";
-    QTest::newRow("data1") << "/Users/sam////troll/qt4.0//.." << "/Users/sam/troll";
-    QTest::newRow("data2") << "/" << "/";
-    QTest::newRow("data2-up") << "/path/.." << "/";
-    QTest::newRow("data2-above-root") << "/.." << "/..";
-    QTest::newRow("data3") << QDir::cleanPath("../.") << "..";
-    QTest::newRow("data4") << QDir::cleanPath("../..") << "../..";
+    BOBUIest::newRow("data0") << "/Users/sam/troll/bobui4.0//.." << "/Users/sam/troll";
+    BOBUIest::newRow("data1") << "/Users/sam////troll/bobui4.0//.." << "/Users/sam/troll";
+    BOBUIest::newRow("data2") << "/" << "/";
+    BOBUIest::newRow("data2-up") << "/path/.." << "/";
+    BOBUIest::newRow("data2-above-root") << "/.." << "/..";
+    BOBUIest::newRow("data3") << QDir::cleanPath("../.") << "..";
+    BOBUIest::newRow("data4") << QDir::cleanPath("../..") << "../..";
 #if defined(Q_OS_WIN)
-    QTest::newRow("data5") << "d:\\a\\bc\\def\\.." << "d:/a/bc";
-    QTest::newRow("data6") << "d:\\a\\bc\\def\\../../.." << "d:/";
+    BOBUIest::newRow("data5") << "d:\\a\\bc\\def\\.." << "d:/a/bc";
+    BOBUIest::newRow("data6") << "d:\\a\\bc\\def\\../../.." << "d:/";
 #else
-    QTest::newRow("data5") << "d:\\a\\bc\\def\\.." << "d:\\a\\bc\\def\\..";
-    QTest::newRow("data6") << "d:\\a\\bc\\def\\../../.." << "..";
+    BOBUIest::newRow("data5") << "d:\\a\\bc\\def\\.." << "d:\\a\\bc\\def\\..";
+    BOBUIest::newRow("data6") << "d:\\a\\bc\\def\\../../.." << "..";
 #endif
-    QTest::newRow("data7") << ".//file1.txt" << "file1.txt";
-    QTest::newRow("data8") << "/foo/bar/..//file1.txt" << "/foo/file1.txt";
-    QTest::newRow("data9") << "//" << "/";
+    BOBUIest::newRow("data7") << ".//file1.txt" << "file1.txt";
+    BOBUIest::newRow("data8") << "/foo/bar/..//file1.txt" << "/foo/file1.txt";
+    BOBUIest::newRow("data9") << "//" << "/";
 #if defined Q_OS_WIN
-    QTest::newRow("data10") << "c:\\" << "c:/";
+    BOBUIest::newRow("data10") << "c:\\" << "c:/";
 #else
-    QTest::newRow("data10") << "/:/" << "/:";
+    BOBUIest::newRow("data10") << "/:/" << "/:";
 #endif
 #if defined(Q_OS_WIN)
-    QTest::newRow("data11") << "//foo//bar" << "//foo/bar";
+    BOBUIest::newRow("data11") << "//foo//bar" << "//foo/bar";
 #endif
-    QTest::newRow("data12") << "ab/a/" << "ab/a"; // Path item with length of 2
+    BOBUIest::newRow("data12") << "ab/a/" << "ab/a"; // Path item with length of 2
 #ifdef Q_OS_WIN
-    QTest::newRow("data13") << "c://" << "c:/";
+    BOBUIest::newRow("data13") << "c://" << "c:/";
 #else
-    QTest::newRow("data13") << "c://" << "c:";
+    BOBUIest::newRow("data13") << "c://" << "c:";
 #endif
 
-    QTest::newRow("data14") << "c://foo" << "c:/foo";
+    BOBUIest::newRow("data14") << "c://foo" << "c:/foo";
     // Drive letters and unc path in one string
 #if defined(Q_OS_WIN)
-    QTest::newRow("data15") << "//c:/foo" << "//c:/foo";
-    QTest::newRow("drive-up") << "A:/path/.." << "A:/";
-    QTest::newRow("drive-above-root") << "A:/.." << "A:/..";
-    QTest::newRow("unc-server-up") << "//server/path/.." << "//server";
-    QTest::newRow("unc-server-above-root") << "//server/.." << "//server/..";
+    BOBUIest::newRow("data15") << "//c:/foo" << "//c:/foo";
+    BOBUIest::newRow("drive-up") << "A:/path/.." << "A:/";
+    BOBUIest::newRow("drive-above-root") << "A:/.." << "A:/..";
+    BOBUIest::newRow("unc-server-up") << "//server/path/.." << "//server";
+    BOBUIest::newRow("unc-server-above-root") << "//server/.." << "//server/..";
 
-    QTest::newRow("longpath") << uR"(\\?\d:\)"_s << u"d:/"_s;
-    QTest::newRow("longpath-slash") << u"//?/d:/"_s << u"d:/"_s;
-    QTest::newRow("longpath-mixed-slashes") << uR"(//?/d:\)"_s << u"d:/"_s;
-    QTest::newRow("longpath-mixed-slashes-2") << uR"(\\?\d:/)"_s << u"d:/"_s;
+    BOBUIest::newRow("longpath") << uR"(\\?\d:\)"_s << u"d:/"_s;
+    BOBUIest::newRow("longpath-slash") << u"//?/d:/"_s << u"d:/"_s;
+    BOBUIest::newRow("longpath-mixed-slashes") << uR"(//?/d:\)"_s << u"d:/"_s;
+    BOBUIest::newRow("longpath-mixed-slashes-2") << uR"(\\?\d:/)"_s << u"d:/"_s;
 
-    QTest::newRow("unc-network-share") << uR"(\\?\UNC\localhost\c$\tmp.txt)"_s
+    BOBUIest::newRow("unc-network-share") << uR"(\\?\UNC\localhost\c$\tmp.txt)"_s
         << u"//localhost/c$/tmp.txt"_s;
-    QTest::newRow("unc-network-share-slash") << u"//?/UNC/localhost/c$/tmp.txt"_s
+    BOBUIest::newRow("unc-network-share-slash") << u"//?/UNC/localhost/c$/tmp.txt"_s
         << u"//localhost/c$/tmp.txt"_s;
-    QTest::newRow("unc-network-share-mixed-slashes") << uR"(//?/UNC/localhost\c$\tmp.txt)"_s
+    BOBUIest::newRow("unc-network-share-mixed-slashes") << uR"(//?/UNC/localhost\c$\tmp.txt)"_s
         << u"//localhost/c$/tmp.txt"_s;
-    QTest::newRow("unc-network-share-mixed-slashes-2") << uR"(\\?\UNC\localhost/c$/tmp.txt)"_s
+    BOBUIest::newRow("unc-network-share-mixed-slashes-2") << uR"(\\?\UNC\localhost/c$/tmp.txt)"_s
         << u"//localhost/c$/tmp.txt"_s;
 #else
-    QTest::newRow("data15") << "//c:/foo" << "/c:/foo";
+    BOBUIest::newRow("data15") << "//c:/foo" << "/c:/foo";
 #endif // non-windows
 
-    QTest::newRow("QTBUG-23892_0") << "foo/.." << ".";
-    QTest::newRow("QTBUG-23892_1") << "foo/../" << ".";
+    BOBUIest::newRow("BOBUIBUG-23892_0") << "foo/.." << ".";
+    BOBUIest::newRow("BOBUIBUG-23892_1") << "foo/../" << ".";
 
-    QTest::newRow("QTBUG-3472_0") << "/foo/./bar" << "/foo/bar";
-    QTest::newRow("QTBUG-3472_1") << "./foo/.." << ".";
-    QTest::newRow("QTBUG-3472_2") << "./foo/../" << ".";
+    BOBUIest::newRow("BOBUIBUG-3472_0") << "/foo/./bar" << "/foo/bar";
+    BOBUIest::newRow("BOBUIBUG-3472_1") << "./foo/.." << ".";
+    BOBUIest::newRow("BOBUIBUG-3472_2") << "./foo/../" << ".";
 
-    QTest::newRow("resource0") << ":/prefix/foo.bar" << ":/prefix/foo.bar";
-    QTest::newRow("resource1") << "://prefix/..//prefix/foo.bar" << ":/prefix/foo.bar";
+    BOBUIest::newRow("resource0") << ":/prefix/foo.bar" << ":/prefix/foo.bar";
+    BOBUIest::newRow("resource1") << "://prefix/..//prefix/foo.bar" << ":/prefix/foo.bar";
 }
 
 
@@ -1409,93 +1409,93 @@ tst_QDir::cleanPath()
     QCOMPARE(cleaned, expected);
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QDir::normalizePathSegments_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("data0") << u"/Users/sam/troll/qt4.0//.."_s << u"/Users/sam/troll/"_s;
-    QTest::newRow("data1") << u"/Users/sam////troll/qt4.0//.."_s << u"/Users/sam/troll/"_s;
-    QTest::newRow("data53") <<u"/b//."_s << u"/b/"_s;
-    QTest::newRow("data54") <<u"/b//./"_s << u"/b/"_s;
-    QTest::newRow("data55") <<u"/b/."_s << u"/b/"_s;
-    QTest::newRow("data56") <<u"/b/./"_s << u"/b/"_s;
-    QTest::newRow("data57") <<u"/b"_s << u"/b"_s;
+    BOBUIest::newRow("data0") << u"/Users/sam/troll/bobui4.0//.."_s << u"/Users/sam/troll/"_s;
+    BOBUIest::newRow("data1") << u"/Users/sam////troll/bobui4.0//.."_s << u"/Users/sam/troll/"_s;
+    BOBUIest::newRow("data53") <<u"/b//."_s << u"/b/"_s;
+    BOBUIest::newRow("data54") <<u"/b//./"_s << u"/b/"_s;
+    BOBUIest::newRow("data55") <<u"/b/."_s << u"/b/"_s;
+    BOBUIest::newRow("data56") <<u"/b/./"_s << u"/b/"_s;
+    BOBUIest::newRow("data57") <<u"/b"_s << u"/b"_s;
 
-    QTest::newRow("data2") << u"/"_s << u"/"_s;
+    BOBUIest::newRow("data2") << u"/"_s << u"/"_s;
 #if defined(Q_OS_WIN)
-    QTest::newRow("data3") << u"//"_s << u"//"_s;
+    BOBUIest::newRow("data3") << u"//"_s << u"//"_s;
 #else
-    QTest::newRow("data3") << u"//"_s << u"/"_s;
+    BOBUIest::newRow("data3") << u"//"_s << u"/"_s;
 #endif
-    QTest::newRow("data5") << u"/."_s << u"/"_s;
-    QTest::newRow("data6") << u"/./"_s << u"/"_s;
-    QTest::newRow("data7") << u"/.."_s << u"/.."_s;
-    QTest::newRow("data8") << u"/../"_s << u"/../"_s;
-    QTest::newRow("/../.") << u"/../."_s << u"/../"_s;
-    QTest::newRow("/.././") << u"/.././"_s << u"/../"_s;
-    QTest::newRow("/../..") << u"/../.."_s << u"/../.."_s;
-    QTest::newRow("data9") << u"."_s << u"."_s;
-    QTest::newRow("data10") << u"./"_s << u"."_s;
-    QTest::newRow("data11") << u"./."_s << u"."_s;
-    QTest::newRow("data12") << u"././"_s << u"."_s;
-    QTest::newRow("data13") << u".."_s << u".."_s;
-    QTest::newRow("data14") << u"../"_s << u"../"_s;
-    QTest::newRow("data15") << u"../."_s << u"../"_s;
-    QTest::newRow("data16") << u".././"_s << u"../"_s;
-    QTest::newRow("data17") << u"../.."_s << u"../.."_s;
-    QTest::newRow("data18") << u"../../"_s << u"../../"_s;
-    QTest::newRow("./file1.txt") << u"./file1.txt"_s << u"file1.txt"_s;
-    QTest::newRow("data19") << u".//file1.txt"_s << u"file1.txt"_s;
-    QTest::newRow("/foo/bar//file1.txt") << u"/foo/bar//file1.txt"_s << u"/foo/bar/file1.txt"_s;
-    QTest::newRow("data20") << u"/foo/bar/..//file1.txt"_s << u"/foo/file1.txt"_s;
-    QTest::newRow("data21") << u"foo/.."_s << u"."_s;
-    QTest::newRow("data22") << u"./foo/.."_s << u"."_s;
-    QTest::newRow("data23") << u".foo/.."_s << u"."_s;
-    QTest::newRow("data24") << u"foo/bar/../.."_s << u"."_s;
-    QTest::newRow("data25") << u"./foo/bar/../.."_s << u"."_s;
-    QTest::newRow("data26") << u"../foo/bar"_s << u"../foo/bar"_s;
-    QTest::newRow("data27") << u"./../foo/bar"_s << u"../foo/bar"_s;
-    QTest::newRow("data28") << u"../../foo/../bar"_s << u"../../bar"_s;
-    QTest::newRow("data29") << u"./foo/bar/.././.."_s << u"."_s;
-    QTest::newRow("data30") << u"/./foo"_s << u"/foo"_s;
-    QTest::newRow("data31") << u"/../foo/"_s << u"/../foo/"_s;
-    QTest::newRow("data32") << u"c:/"_s << u"c:/"_s;
-    QTest::newRow("data33") << u"c://"_s << u"c:/"_s;
-    QTest::newRow("data34") << u"c://foo"_s << u"c:/foo"_s;
-    QTest::newRow("data35") << u"c:"_s << u"c:"_s;
-    QTest::newRow("data37") << u"c:/."_s << u"c:/"_s;
+    BOBUIest::newRow("data5") << u"/."_s << u"/"_s;
+    BOBUIest::newRow("data6") << u"/./"_s << u"/"_s;
+    BOBUIest::newRow("data7") << u"/.."_s << u"/.."_s;
+    BOBUIest::newRow("data8") << u"/../"_s << u"/../"_s;
+    BOBUIest::newRow("/../.") << u"/../."_s << u"/../"_s;
+    BOBUIest::newRow("/.././") << u"/.././"_s << u"/../"_s;
+    BOBUIest::newRow("/../..") << u"/../.."_s << u"/../.."_s;
+    BOBUIest::newRow("data9") << u"."_s << u"."_s;
+    BOBUIest::newRow("data10") << u"./"_s << u"."_s;
+    BOBUIest::newRow("data11") << u"./."_s << u"."_s;
+    BOBUIest::newRow("data12") << u"././"_s << u"."_s;
+    BOBUIest::newRow("data13") << u".."_s << u".."_s;
+    BOBUIest::newRow("data14") << u"../"_s << u"../"_s;
+    BOBUIest::newRow("data15") << u"../."_s << u"../"_s;
+    BOBUIest::newRow("data16") << u".././"_s << u"../"_s;
+    BOBUIest::newRow("data17") << u"../.."_s << u"../.."_s;
+    BOBUIest::newRow("data18") << u"../../"_s << u"../../"_s;
+    BOBUIest::newRow("./file1.txt") << u"./file1.txt"_s << u"file1.txt"_s;
+    BOBUIest::newRow("data19") << u".//file1.txt"_s << u"file1.txt"_s;
+    BOBUIest::newRow("/foo/bar//file1.txt") << u"/foo/bar//file1.txt"_s << u"/foo/bar/file1.txt"_s;
+    BOBUIest::newRow("data20") << u"/foo/bar/..//file1.txt"_s << u"/foo/file1.txt"_s;
+    BOBUIest::newRow("data21") << u"foo/.."_s << u"."_s;
+    BOBUIest::newRow("data22") << u"./foo/.."_s << u"."_s;
+    BOBUIest::newRow("data23") << u".foo/.."_s << u"."_s;
+    BOBUIest::newRow("data24") << u"foo/bar/../.."_s << u"."_s;
+    BOBUIest::newRow("data25") << u"./foo/bar/../.."_s << u"."_s;
+    BOBUIest::newRow("data26") << u"../foo/bar"_s << u"../foo/bar"_s;
+    BOBUIest::newRow("data27") << u"./../foo/bar"_s << u"../foo/bar"_s;
+    BOBUIest::newRow("data28") << u"../../foo/../bar"_s << u"../../bar"_s;
+    BOBUIest::newRow("data29") << u"./foo/bar/.././.."_s << u"."_s;
+    BOBUIest::newRow("data30") << u"/./foo"_s << u"/foo"_s;
+    BOBUIest::newRow("data31") << u"/../foo/"_s << u"/../foo/"_s;
+    BOBUIest::newRow("data32") << u"c:/"_s << u"c:/"_s;
+    BOBUIest::newRow("data33") << u"c://"_s << u"c:/"_s;
+    BOBUIest::newRow("data34") << u"c://foo"_s << u"c:/foo"_s;
+    BOBUIest::newRow("data35") << u"c:"_s << u"c:"_s;
+    BOBUIest::newRow("data37") << u"c:/."_s << u"c:/"_s;
 #if defined Q_OS_WIN
-    QTest::newRow("data38") << u"c:/.."_s << u"c:/.."_s;
-    QTest::newRow("data39") << u"c:/../"_s << u"c:/../"_s;
+    BOBUIest::newRow("data38") << u"c:/.."_s << u"c:/.."_s;
+    BOBUIest::newRow("data39") << u"c:/../"_s << u"c:/../"_s;
 #else
-    QTest::newRow("data38") << u"c:/.."_s << u"."_s;
-    QTest::newRow("data39") << u"c:/../"_s << u"."_s;
+    BOBUIest::newRow("data38") << u"c:/.."_s << u"."_s;
+    BOBUIest::newRow("data39") << u"c:/../"_s << u"."_s;
 #endif
-    QTest::newRow("data40") << u"c:/./"_s << u"c:/"_s;
-    QTest::newRow("data41") << u"foo/../foo/.."_s << u"."_s;
-    QTest::newRow("data42") << u"foo/../foo/../.."_s << u".."_s;
-    QTest::newRow("data43") << u"..foo.bar/foo"_s << u"..foo.bar/foo"_s;
-    QTest::newRow("data44") << u".foo./bar/.."_s << u".foo./"_s;
-    QTest::newRow("data45") << u"foo/..bar.."_s << u"foo/..bar.."_s;
-    QTest::newRow("data46") << u"foo/.bar./.."_s << u"foo/"_s;
+    BOBUIest::newRow("data40") << u"c:/./"_s << u"c:/"_s;
+    BOBUIest::newRow("data41") << u"foo/../foo/.."_s << u"."_s;
+    BOBUIest::newRow("data42") << u"foo/../foo/../.."_s << u".."_s;
+    BOBUIest::newRow("data43") << u"..foo.bar/foo"_s << u"..foo.bar/foo"_s;
+    BOBUIest::newRow("data44") << u".foo./bar/.."_s << u".foo./"_s;
+    BOBUIest::newRow("data45") << u"foo/..bar.."_s << u"foo/..bar.."_s;
+    BOBUIest::newRow("data46") << u"foo/.bar./.."_s << u"foo/"_s;
 #if defined(Q_OS_WIN)
-    QTest::newRow("data47") << u"//foo//bar"_s << u"//foo/bar"_s;
+    BOBUIest::newRow("data47") << u"//foo//bar"_s << u"//foo/bar"_s;
 #else
-    QTest::newRow("data47") << u"//foo//bar"_s << u"/foo/bar"_s;
+    BOBUIest::newRow("data47") << u"//foo//bar"_s << u"/foo/bar"_s;
 #endif
-    QTest::newRow("data48") << u"..."_s << u"..."_s;
-    QTest::newRow("data49") << u"foo/.../bar"_s << u"foo/.../bar"_s;
-    QTest::newRow("data50") << u"ab/a/"_s << u"ab/a/"_s; // Path item with length of 2
+    BOBUIest::newRow("data48") << u"..."_s << u"..."_s;
+    BOBUIest::newRow("data49") << u"foo/.../bar"_s << u"foo/.../bar"_s;
+    BOBUIest::newRow("data50") << u"ab/a/"_s << u"ab/a/"_s; // Path item with length of 2
 #if defined(Q_OS_WIN)
     // Drive letters and unc path in one string. The drive letter isn't handled as a drive letter
     // but as a host name in this case (even though Windows host names can't contain a ':')
-    QTest::newRow("data51") << u"//c:/foo"_s << u"//c:/foo"_s;
+    BOBUIest::newRow("data51") << u"//c:/foo"_s << u"//c:/foo"_s;
 #endif
 
-    QTest::newRow("resource0") << u":/prefix/foo.bar"_s << u":/prefix/foo.bar"_s;
-    QTest::newRow("resource1") << u"://prefix/..//prefix/foo.bar"_s << u":/prefix/foo.bar"_s;
+    BOBUIest::newRow("resource0") << u":/prefix/foo.bar"_s << u":/prefix/foo.bar"_s;
+    BOBUIest::newRow("resource1") << u"://prefix/..//prefix/foo.bar"_s << u":/prefix/foo.bar"_s;
 }
 
 void tst_QDir::normalizePathSegments()
@@ -1503,36 +1503,36 @@ void tst_QDir::normalizePathSegments()
     QFETCH(QString, path);
     QFETCH(QString, expected);
     // for QDirPrivate::RemotePath, see tst_QUrl::resolving
-    qt_normalizePathSegments(&path, QDirPrivate::DefaultNormalization);
+    bobui_normalizePathSegments(&path, QDirPrivate::DefaultNormalization);
     QCOMPARE(path, expected);
 }
-# endif //QT_BUILD_INTERNAL
+# endif //BOBUI_BUILD_INTERNAL
 
 void tst_QDir::absoluteFilePath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("expectedFilePath");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("expectedFilePath");
 
 #if defined(Q_OS_WIN)
-    QTest::newRow("UNC-rel") << "//machine/share" << "dir" << "//machine/share/dir";
-    QTest::newRow("UNC-abs") << "//machine/share/path/to/blah" << "/dir" << "//machine/share/dir";
-    QTest::newRow("UNC-UNC") << "//machine/share/path/to/blah" << "//host/share/path" << "//host/share/path";
-    QTest::newRow("Drive-UNC") << "c:/side/town" << "//host/share/path" << "//host/share/path";
-    QTest::newRow("Drive-LTUNC") << "c:/side/town" << "\\/leaning\\toothpick/path" << "\\/leaning\\toothpick/path";
-    QTest::newRow("Drive-abs") << "c:/side/town" << "/my/way/home" << "c:/my/way/home";
+    BOBUIest::newRow("UNC-rel") << "//machine/share" << "dir" << "//machine/share/dir";
+    BOBUIest::newRow("UNC-abs") << "//machine/share/path/to/blah" << "/dir" << "//machine/share/dir";
+    BOBUIest::newRow("UNC-UNC") << "//machine/share/path/to/blah" << "//host/share/path" << "//host/share/path";
+    BOBUIest::newRow("Drive-UNC") << "c:/side/town" << "//host/share/path" << "//host/share/path";
+    BOBUIest::newRow("Drive-LTUNC") << "c:/side/town" << "\\/leaning\\toothpick/path" << "\\/leaning\\toothpick/path";
+    BOBUIest::newRow("Drive-abs") << "c:/side/town" << "/my/way/home" << "c:/my/way/home";
 #endif
 
-    QTest::newRow("0") << DRIVE "/etc" << "/passwd" << DRIVE "/passwd";
-    QTest::newRow("1") << DRIVE "/etc" << "passwd" << DRIVE "/etc/passwd";
-    QTest::newRow("2") << DRIVE "/" << "passwd" << DRIVE "/passwd";
-    QTest::newRow("3") << "relative" << "path" << QDir::currentPath() + "/relative/path";
-    QTest::newRow("4") << "" << "" << QDir::currentPath();
+    BOBUIest::newRow("0") << DRIVE "/etc" << "/passwd" << DRIVE "/passwd";
+    BOBUIest::newRow("1") << DRIVE "/etc" << "passwd" << DRIVE "/etc/passwd";
+    BOBUIest::newRow("2") << DRIVE "/" << "passwd" << DRIVE "/passwd";
+    BOBUIest::newRow("3") << "relative" << "path" << QDir::currentPath() + "/relative/path";
+    BOBUIest::newRow("4") << "" << "" << QDir::currentPath();
 
     // Resource paths are absolute:
-    QTest::newRow("resource-rel") << ":/prefix" << "foo.bar" << ":/prefix/foo.bar";
-    QTest::newRow("abs-res-res") << ":/prefix" << ":/abc.txt" << ":/abc.txt";
-    QTest::newRow("abs-res-path") << DRIVE "/etc" << ":/abc.txt" << ":/abc.txt";
+    BOBUIest::newRow("resource-rel") << ":/prefix" << "foo.bar" << ":/prefix/foo.bar";
+    BOBUIest::newRow("abs-res-res") << ":/prefix" << ":/abc.txt" << ":/abc.txt";
+    BOBUIest::newRow("abs-res-path") << DRIVE "/etc" << ":/abc.txt" << ":/abc.txt";
 }
 
 void tst_QDir::absoluteFilePath()
@@ -1548,23 +1548,23 @@ void tst_QDir::absoluteFilePath()
 
 void tst_QDir::absolutePath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("expectedPath");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("expectedPath");
 
-    QTest::newRow("0") << "/machine/share/dir1" << "/machine/share/dir1";
+    BOBUIest::newRow("0") << "/machine/share/dir1" << "/machine/share/dir1";
 #if defined(Q_OS_WIN)
-    QTest::newRow("1") << "\\machine\\share\\dir1" << "/machine/share/dir1";
-    QTest::newRow("2") << "//machine/share/dir1" << "//machine/share/dir1";
-    QTest::newRow("3") << "\\\\machine\\share\\dir1" << "//machine/share/dir1";
-    QTest::newRow("4") << "c:/machine/share/dir1" << "c:/machine/share/dir1";
-    QTest::newRow("5") << "c:\\machine\\share\\dir1" << "c:/machine/share/dir1";
+    BOBUIest::newRow("1") << "\\machine\\share\\dir1" << "/machine/share/dir1";
+    BOBUIest::newRow("2") << "//machine/share/dir1" << "//machine/share/dir1";
+    BOBUIest::newRow("3") << "\\\\machine\\share\\dir1" << "//machine/share/dir1";
+    BOBUIest::newRow("4") << "c:/machine/share/dir1" << "c:/machine/share/dir1";
+    BOBUIest::newRow("5") << "c:\\machine\\share\\dir1" << "c:/machine/share/dir1";
 #endif
-    //test dirty paths are cleaned (QTBUG-19995)
-    QTest::newRow("/home/qt/.") << QDir::rootPath() + "home/qt/." << QDir::rootPath() + "home/qt";
-    QTest::newRow("/system/data/../config") << QDir::rootPath() + "system/data/../config" << QDir::rootPath() + "system/config";
-    QTest::newRow("//home//qt/") << QDir::rootPath() + "/home//qt/" << QDir::rootPath() + "home/qt";
-    QTest::newRow("foo/../bar") << "foo/../bar" << QDir::currentPath() + "/bar";
-    QTest::newRow("resource") << ":/prefix/foo.bar" << ":/prefix/foo.bar";
+    //test dirty paths are cleaned (BOBUIBUG-19995)
+    BOBUIest::newRow("/home/bobui/.") << QDir::rootPath() + "home/bobui/." << QDir::rootPath() + "home/bobui";
+    BOBUIest::newRow("/system/data/../config") << QDir::rootPath() + "system/data/../config" << QDir::rootPath() + "system/config";
+    BOBUIest::newRow("//home//bobui/") << QDir::rootPath() + "/home//bobui/" << QDir::rootPath() + "home/bobui";
+    BOBUIest::newRow("foo/../bar") << "foo/../bar" << QDir::currentPath() + "/bar";
+    BOBUIest::newRow("resource") << ":/prefix/foo.bar" << ":/prefix/foo.bar";
 }
 
 void tst_QDir::absolutePath()
@@ -1578,56 +1578,56 @@ void tst_QDir::absolutePath()
 
 void tst_QDir::relativeFilePath_data()
 {
-    QTest::addColumn<QString>("dir");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("dir");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("0") << "/foo/bar" << "ding.txt" << "ding.txt";
-    QTest::newRow("1") << "/foo/bar" << "ding/dong.txt"    << "ding/dong.txt";
-    QTest::newRow("2") << "/foo/bar" << "../ding/dong.txt" << "../ding/dong.txt";
+    BOBUIest::newRow("0") << "/foo/bar" << "ding.txt" << "ding.txt";
+    BOBUIest::newRow("1") << "/foo/bar" << "ding/dong.txt"    << "ding/dong.txt";
+    BOBUIest::newRow("2") << "/foo/bar" << "../ding/dong.txt" << "../ding/dong.txt";
 
-    QTest::newRow("3") << "/foo/bar" << "/foo/bar/ding.txt" << "ding.txt";
-    QTest::newRow("4") << "/foo/bar/" << "/foo/bar/ding/dong.txt" << "ding/dong.txt";
-    QTest::newRow("5") << "/foo/bar/" << "/ding/dong.txt" << "../../ding/dong.txt";
+    BOBUIest::newRow("3") << "/foo/bar" << "/foo/bar/ding.txt" << "ding.txt";
+    BOBUIest::newRow("4") << "/foo/bar/" << "/foo/bar/ding/dong.txt" << "ding/dong.txt";
+    BOBUIest::newRow("5") << "/foo/bar/" << "/ding/dong.txt" << "../../ding/dong.txt";
 
-    QTest::newRow("6") << "/" << "/ding/dong.txt" << "ding/dong.txt";
-    QTest::newRow("7") << "/" << "/ding/" << "ding";
-    QTest::newRow("8") << "/" << "/ding//" << "ding";
-    QTest::newRow("9") << "/" << "/ding/../dong" << "dong";
-    QTest::newRow("10") << "/" << "/ding/../../../../dong" << "../../../dong";
+    BOBUIest::newRow("6") << "/" << "/ding/dong.txt" << "ding/dong.txt";
+    BOBUIest::newRow("7") << "/" << "/ding/" << "ding";
+    BOBUIest::newRow("8") << "/" << "/ding//" << "ding";
+    BOBUIest::newRow("9") << "/" << "/ding/../dong" << "dong";
+    BOBUIest::newRow("10") << "/" << "/ding/../../../../dong" << "../../../dong";
 
-    QTest::newRow("11") << "" << "" << "";
+    BOBUIest::newRow("11") << "" << "" << "";
 
-    QTest::newRow("same path 1") << "/tmp" << "/tmp" << ".";
-    QTest::newRow("same path 2") << "//tmp" << "/tmp/" << ".";
+    BOBUIest::newRow("same path 1") << "/tmp" << "/tmp" << ".";
+    BOBUIest::newRow("same path 2") << "//tmp" << "/tmp/" << ".";
 
 #if defined(Q_OS_WIN)
-    QTest::newRow("12") << "C:/foo/bar" << "ding" << "ding";
-    QTest::newRow("13") << "C:/foo/bar" << "C:/ding/dong" << "../../ding/dong";
-    QTest::newRow("14") << "C:/foo/bar" << "/ding/dong" << "../../ding/dong";
-    QTest::newRow("15") << "C:/foo/bar" << "D:/ding/dong" << "D:/ding/dong";
-    QTest::newRow("16") << "C:" << "C:/ding/dong" << "ding/dong";
-    QTest::newRow("17") << "C:/" << "C:/ding/dong" << "ding/dong";
-    QTest::newRow("18") << "C:" << "C:" << ".";
-    QTest::newRow("19") << "C:/" << "C:" << ".";
-    QTest::newRow("20") << "C:" << "C:/" << ".";
-    QTest::newRow("21") << "C:/" << "C:/" << ".";
-    QTest::newRow("22") << "C:" << "C:file.txt" << "file.txt";
-    QTest::newRow("23") << "C:/" << "C:file.txt" << "file.txt";
-    QTest::newRow("24") << "C:" << "C:/file.txt" << "file.txt";
-    QTest::newRow("25") << "C:/" << "C:/file.txt" << "file.txt";
-    QTest::newRow("26") << "C:" << "D:" << "D:";
-    QTest::newRow("27") << "C:" << "D:/" << "D:/";
-    QTest::newRow("28") << "C:/" << "D:" << "D:";
-    QTest::newRow("29") << "C:/" << "D:/" << "D:/";
-    QTest::newRow("30") << "C:/foo/bar" << "//anotherHost/foo/bar" << "//anotherHost/foo/bar";
-    QTest::newRow("31") << "//anotherHost/foo" << "//anotherHost/foo/bar" << "bar";
-    QTest::newRow("32") << "//anotherHost/foo" << "bar" << "bar";
-    QTest::newRow("33") << "//anotherHost/foo" << "C:/foo/bar" << "C:/foo/bar";
+    BOBUIest::newRow("12") << "C:/foo/bar" << "ding" << "ding";
+    BOBUIest::newRow("13") << "C:/foo/bar" << "C:/ding/dong" << "../../ding/dong";
+    BOBUIest::newRow("14") << "C:/foo/bar" << "/ding/dong" << "../../ding/dong";
+    BOBUIest::newRow("15") << "C:/foo/bar" << "D:/ding/dong" << "D:/ding/dong";
+    BOBUIest::newRow("16") << "C:" << "C:/ding/dong" << "ding/dong";
+    BOBUIest::newRow("17") << "C:/" << "C:/ding/dong" << "ding/dong";
+    BOBUIest::newRow("18") << "C:" << "C:" << ".";
+    BOBUIest::newRow("19") << "C:/" << "C:" << ".";
+    BOBUIest::newRow("20") << "C:" << "C:/" << ".";
+    BOBUIest::newRow("21") << "C:/" << "C:/" << ".";
+    BOBUIest::newRow("22") << "C:" << "C:file.txt" << "file.txt";
+    BOBUIest::newRow("23") << "C:/" << "C:file.txt" << "file.txt";
+    BOBUIest::newRow("24") << "C:" << "C:/file.txt" << "file.txt";
+    BOBUIest::newRow("25") << "C:/" << "C:/file.txt" << "file.txt";
+    BOBUIest::newRow("26") << "C:" << "D:" << "D:";
+    BOBUIest::newRow("27") << "C:" << "D:/" << "D:/";
+    BOBUIest::newRow("28") << "C:/" << "D:" << "D:";
+    BOBUIest::newRow("29") << "C:/" << "D:/" << "D:/";
+    BOBUIest::newRow("30") << "C:/foo/bar" << "//anotherHost/foo/bar" << "//anotherHost/foo/bar";
+    BOBUIest::newRow("31") << "//anotherHost/foo" << "//anotherHost/foo/bar" << "bar";
+    BOBUIest::newRow("32") << "//anotherHost/foo" << "bar" << "bar";
+    BOBUIest::newRow("33") << "//anotherHost/foo" << "C:/foo/bar" << "C:/foo/bar";
 #endif
 
-    QTest::newRow("resource0") << ":/prefix" << "foo.bar" << "foo.bar";
-    QTest::newRow("resource1") << ":/prefix" << ":/prefix/foo.bar" << "foo.bar";
+    BOBUIest::newRow("resource0") << ":/prefix" << "foo.bar" << "foo.bar";
+    BOBUIest::newRow("resource1") << ":/prefix" << ":/prefix/foo.bar" << "foo.bar";
 }
 
 void tst_QDir::relativeFilePath()
@@ -1641,25 +1641,25 @@ void tst_QDir::relativeFilePath()
 
 void tst_QDir::filePath_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("expectedFilePath");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("expectedFilePath");
 
-    QTest::newRow("abs-abs") << DRIVE "/etc" << DRIVE "/passwd" << DRIVE "/passwd";
-    QTest::newRow("abs-rel") << DRIVE "/etc" << "passwd" << DRIVE "/etc/passwd";
-    QTest::newRow("root-rel") << DRIVE "/" << "passwd" << DRIVE "/passwd";
-    QTest::newRow("rel-rel") << "relative" << "path" << "relative/path";
-    QTest::newRow("empty-empty") << "" << "" << ".";
-    QTest::newRow("resource") << ":/prefix" << "foo.bar" << ":/prefix/foo.bar";
+    BOBUIest::newRow("abs-abs") << DRIVE "/etc" << DRIVE "/passwd" << DRIVE "/passwd";
+    BOBUIest::newRow("abs-rel") << DRIVE "/etc" << "passwd" << DRIVE "/etc/passwd";
+    BOBUIest::newRow("root-rel") << DRIVE "/" << "passwd" << DRIVE "/passwd";
+    BOBUIest::newRow("rel-rel") << "relative" << "path" << "relative/path";
+    BOBUIest::newRow("empty-empty") << "" << "" << ".";
+    BOBUIest::newRow("resource") << ":/prefix" << "foo.bar" << ":/prefix/foo.bar";
 #ifdef Q_OS_IOS
-    QTest::newRow("assets-rel") << "assets-library:/" << "foo/bar.baz" << "assets-library:/foo/bar.baz";
-    QTest::newRow("assets-abs") << "assets-library:/" << "/foo/bar.baz" << "/foo/bar.baz";
-    QTest::newRow("abs-assets") << "/some/path" << "assets-library:/foo/bar.baz" << "assets-library:/foo/bar.baz";
+    BOBUIest::newRow("assets-rel") << "assets-library:/" << "foo/bar.baz" << "assets-library:/foo/bar.baz";
+    BOBUIest::newRow("assets-abs") << "assets-library:/" << "/foo/bar.baz" << "/foo/bar.baz";
+    BOBUIest::newRow("abs-assets") << "/some/path" << "assets-library:/foo/bar.baz" << "assets-library:/foo/bar.baz";
 #endif
 #ifdef Q_OS_WIN
-    QTest::newRow("abs-LTUNC") << "Q:/path" << "\\/leaning\\tooth/pick" << "\\/leaning\\tooth/pick";
-    QTest::newRow("LTUNC-slash") << "\\/leaning\\tooth/pick" << "/path" << "//leaning/tooth/path";
-    QTest::newRow("LTUNC-abs") << "\\/leaning\\tooth/pick" << "Q:/path" << "Q:/path";
+    BOBUIest::newRow("abs-LTUNC") << "Q:/path" << "\\/leaning\\tooth/pick" << "\\/leaning\\tooth/pick";
+    BOBUIest::newRow("LTUNC-slash") << "\\/leaning\\tooth/pick" << "/path" << "//leaning/tooth/path";
+    BOBUIest::newRow("LTUNC-abs") << "\\/leaning\\tooth/pick" << "Q:/path" << "Q:/path";
 #endif
 }
 
@@ -1683,7 +1683,7 @@ void tst_QDir::remove()
     QVERIFY(dir.remove("remove-test"));
     // Test that the file just removed is gone
     QVERIFY(!dir.remove("remove-test"));
-    QTest::ignoreMessage(QtWarningMsg, "QDir::remove: Empty or null file name");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QDir::remove: Empty or null file name");
     QVERIFY(!dir.remove(""));
 }
 
@@ -1707,9 +1707,9 @@ void tst_QDir::rename()
     QVERIFY(!dir.rename("rename-test", "/rename-test-renamed"));
 #endif
 #endif
-    QTest::ignoreMessage(QtWarningMsg, "QDir::rename: Empty or null file name(s)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QDir::rename: Empty or null file name(s)");
     QVERIFY(!dir.rename("rename-test", ""));
-    QTest::ignoreMessage(QtWarningMsg, "QDir::rename: Empty or null file name(s)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QDir::rename: Empty or null file name(s)");
     QVERIFY(!dir.rename("", "rename-test-renamed"));
     QVERIFY(!dir.rename("some-file-that-does-not-exist", "rename-test-renamed"));
 
@@ -1718,21 +1718,21 @@ void tst_QDir::rename()
 
 void tst_QDir::exists2_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("exists");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("exists");
 
-    QTest::newRow("0") << "." << true;
-    QTest::newRow("1") << "/" << true;
-    QTest::newRow("2") << "" << false;
-    QTest::newRow("3") << "testData" << true;
-    QTest::newRow("4") << "/testData" << false;
+    BOBUIest::newRow("0") << "." << true;
+    BOBUIest::newRow("1") << "/" << true;
+    BOBUIest::newRow("2") << "" << false;
+    BOBUIest::newRow("3") << "testData" << true;
+    BOBUIest::newRow("4") << "/testData" << false;
 #ifdef Q_OS_WIN
-    QTest::newRow("abs") << "Q:/testData" << false;
+    BOBUIest::newRow("abs") << "Q:/testData" << false;
 #endif
-    QTest::newRow("5") << "tst_qdir.cpp" << true;
-    QTest::newRow("6") << "/resources.cpp" << false;
-    QTest::newRow("resource0") << ":/prefix/foo.bar" << false;
-    QTest::newRow("resource1") << ":/tst_qdir/resources/entryList/file1.data" << true;
+    BOBUIest::newRow("5") << "tst_qdir.cpp" << true;
+    BOBUIest::newRow("6") << "/resources.cpp" << false;
+    BOBUIest::newRow("resource0") << ":/prefix/foo.bar" << false;
+    BOBUIest::newRow("resource1") << ":/tst_qdir/resources/entryList/file1.data" << true;
 }
 
 void tst_QDir::exists2()
@@ -1744,7 +1744,7 @@ void tst_QDir::exists2()
     QDir::setCurrent((m_dataPath + "/."));
 
     if (path.isEmpty())
-        QTest::ignoreMessage(QtWarningMsg, "QDir::exists: Empty or null file name");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDir::exists: Empty or null file name");
 
     QDir dir;
     if (exists)
@@ -1757,19 +1757,19 @@ void tst_QDir::exists2()
 
 void tst_QDir::dirName_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("dirName");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("dirName");
 
-    QTest::newRow("slash0") << "c:/winnt/system32" << "system32";
-    QTest::newRow("slash1") << "/winnt/system32" << "system32";
-    QTest::newRow("slash2") << "c:/winnt/system32/kernel32.dll" << "kernel32.dll";
+    BOBUIest::newRow("slash0") << "c:/winnt/system32" << "system32";
+    BOBUIest::newRow("slash1") << "/winnt/system32" << "system32";
+    BOBUIest::newRow("slash2") << "c:/winnt/system32/kernel32.dll" << "kernel32.dll";
 #if defined(Q_OS_WIN)
-    QTest::newRow("bslash0") << "c:\\winnt\\system32" << "system32";
-    QTest::newRow("bslash1") << "\\winnt\\system32" << "system32";
-    QTest::newRow("bslash2") << "c:\\winnt\\system32\\kernel32.dll" << "kernel32.dll";
+    BOBUIest::newRow("bslash0") << "c:\\winnt\\system32" << "system32";
+    BOBUIest::newRow("bslash1") << "\\winnt\\system32" << "system32";
+    BOBUIest::newRow("bslash2") << "c:\\winnt\\system32\\kernel32.dll" << "kernel32.dll";
 #endif
 
-    QTest::newRow("resource") << ":/prefix" << "prefix";
+    BOBUIest::newRow("resource") << ":/prefix" << "prefix";
 }
 
 void tst_QDir::dirName()
@@ -1784,10 +1784,10 @@ void tst_QDir::dirName()
 void tst_QDir::operator_eq()
 {
     QDir dir1(".");
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     dir1 = dir1;
-QT_WARNING_POP
+BOBUI_WARNING_POP
     dir1.setPath("..");
 }
 
@@ -1887,27 +1887,27 @@ void tst_QDir::nativeSeparators()
 
 void tst_QDir::searchPaths_data()
 {
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<QString>("searchPathPrefixes");
-    QTest::addColumn<QString>("searchPaths");
-    QTest::addColumn<QString>("expectedAbsolutePath");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<QString>("searchPathPrefixes");
+    BOBUIest::addColumn<QString>("searchPaths");
+    BOBUIest::addColumn<QString>("expectedAbsolutePath");
 
     QString searchDir = (m_dataPath + "/searchdir");
     QString srcdir = QFileInfo(searchDir).absolutePath();
 
     // sanity
-    QTest::newRow("nopath") << "picker.png" << QString() << QString() << QString();
-    QTest::newRow("emptysearchpath") << "subdir1/picker.png" << QString() << QString() << QString();
-    QTest::newRow("searchpathwithoutprefix") << (m_dataPath + "/searchdir/subdir1/picker.png") << QString("searchpath") << QString("searchdir") << (searchDir+"/subdir1/picker.png");
+    BOBUIest::newRow("nopath") << "picker.png" << QString() << QString() << QString();
+    BOBUIest::newRow("emptysearchpath") << "subdir1/picker.png" << QString() << QString() << QString();
+    BOBUIest::newRow("searchpathwithoutprefix") << (m_dataPath + "/searchdir/subdir1/picker.png") << QString("searchpath") << QString("searchdir") << (searchDir+"/subdir1/picker.png");
 
     // new
-    QTest::newRow("novalidsearchpath") << "searchpath:subdir1/picker.png" << QString() << QString() << QString();
-    QTest::newRow("invalidsearchpath") << "searchpath:subdir1/picker.png" << QString("invalid") << QString("invalid") << QString();
-    QTest::newRow("onlyvalidsearchpath") << "searchpath:subdir1/picker.png" << QString("searchpath") << QString((m_dataPath + "/searchdir")) << (searchDir+"/subdir1/picker.png");
-    QTest::newRow("validandinvalidsearchpath") << "searchpath:subdir1/picker.png" << QString("invalid;searchpath") << ("invalid;" + (m_dataPath + "/searchdir")) << (searchDir+"/subdir1/picker.png");
-    QTest::newRow("precedence1") << "searchpath:picker.png" << QString("invalid;searchpath") << ("invalid;" + (m_dataPath + "/searchdir/subdir1") + "," + (m_dataPath + "/searchdir/subdir2")) << (searchDir+"/subdir1/picker.png");
-    QTest::newRow("precedence2") << "searchpath:picker.png" << QString("invalid;searchpath") << ("invalid;" + (m_dataPath + "/searchdir/subdir2") + "," + (m_dataPath + "/searchdir/subdir1")) << (searchDir+"/subdir2/picker.png");
-    QTest::newRow("precedence3") << "searchpath2:picker.png" << QString("searchpath1;searchpath2") << ((m_dataPath + "/searchdir/subdir1") + ";" + (m_dataPath + "/searchdir/subdir2")) << (searchDir+"/subdir2/picker.png");
+    BOBUIest::newRow("novalidsearchpath") << "searchpath:subdir1/picker.png" << QString() << QString() << QString();
+    BOBUIest::newRow("invalidsearchpath") << "searchpath:subdir1/picker.png" << QString("invalid") << QString("invalid") << QString();
+    BOBUIest::newRow("onlyvalidsearchpath") << "searchpath:subdir1/picker.png" << QString("searchpath") << QString((m_dataPath + "/searchdir")) << (searchDir+"/subdir1/picker.png");
+    BOBUIest::newRow("validandinvalidsearchpath") << "searchpath:subdir1/picker.png" << QString("invalid;searchpath") << ("invalid;" + (m_dataPath + "/searchdir")) << (searchDir+"/subdir1/picker.png");
+    BOBUIest::newRow("precedence1") << "searchpath:picker.png" << QString("invalid;searchpath") << ("invalid;" + (m_dataPath + "/searchdir/subdir1") + "," + (m_dataPath + "/searchdir/subdir2")) << (searchDir+"/subdir1/picker.png");
+    BOBUIest::newRow("precedence2") << "searchpath:picker.png" << QString("invalid;searchpath") << ("invalid;" + (m_dataPath + "/searchdir/subdir2") + "," + (m_dataPath + "/searchdir/subdir1")) << (searchDir+"/subdir2/picker.png");
+    BOBUIest::newRow("precedence3") << "searchpath2:picker.png" << QString("searchpath1;searchpath2") << ((m_dataPath + "/searchdir/subdir1") + ";" + (m_dataPath + "/searchdir/subdir2")) << (searchDir+"/subdir2/picker.png");
 
     // re
 }
@@ -1916,9 +1916,9 @@ void tst_QDir::searchPaths()
 {
     QFETCH(QString, filename);
     QFETCH(QString, searchPathPrefixes);
-    QStringList searchPathPrefixList = searchPathPrefixes.split(";", Qt::SkipEmptyParts);
+    QStringList searchPathPrefixList = searchPathPrefixes.split(";", BobUI::SkipEmptyParts);
     QFETCH(QString, searchPaths);
-    QStringList searchPathsList = searchPaths.split(";", Qt::SkipEmptyParts);
+    QStringList searchPathsList = searchPaths.split(";", BobUI::SkipEmptyParts);
     QFETCH(QString, expectedAbsolutePath);
     bool exists = !expectedAbsolutePath.isEmpty();
 
@@ -1984,15 +1984,15 @@ void tst_QDir::entryListWithSearchPaths()
 
 void tst_QDir::longFileName_data()
 {
-    QTest::addColumn<int>("length");
+    BOBUIest::addColumn<int>("length");
 
-    QTest::newRow("128") << 128;
+    BOBUIest::newRow("128") << 128;
 #ifndef Q_OS_WASM
-    QTest::newRow("256") << 256;
-    QTest::newRow("512") << 512;
-    QTest::newRow("1024") << 1024;
-    QTest::newRow("2048") << 2048;
-    QTest::newRow("4096") << 4096;
+    BOBUIest::newRow("256") << 256;
+    BOBUIest::newRow("512") << 512;
+    BOBUIest::newRow("1024") << 1024;
+    BOBUIest::newRow("2048") << 2048;
+    BOBUIest::newRow("4096") << 4096;
 #endif
 }
 
@@ -2218,24 +2218,24 @@ void tst_QDir::testCaching()
 
 void tst_QDir::isRoot_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isRoot");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isRoot");
 
     QString test = QDir::rootPath();
-    QTest::newRow(QString("rootPath " + test).toLatin1()) << test << true;
+    BOBUIest::newRow(QString("rootPath " + test).toLatin1()) << test << true;
     test = QDir::rootPath().append("./");
-    QTest::newRow(QString("./ appended " + test).toLatin1()) << test << false;
+    BOBUIest::newRow(QString("./ appended " + test).toLatin1()) << test << false;
 
     test = QDir(QDir::rootPath().append("./")).canonicalPath();
-    QTest::newRow(QString("canonicalPath " + test).toLatin1()) << test << true;
+    BOBUIest::newRow(QString("canonicalPath " + test).toLatin1()) << test << true;
 
 #if defined(Q_OS_WIN)
     test = QDir::rootPath().left(2);
-    QTest::newRow(QString("drive relative " + test).toLatin1()) << test << false;
+    BOBUIest::newRow(QString("drive relative " + test).toLatin1()) << test << false;
 #endif
 
-    QTest::newRow("resources root") << ":/" << true;
-    QTest::newRow("resources nonroot") << ":/entrylist" << false;
+    BOBUIest::newRow("resources root") << ":/" << true;
+    BOBUIest::newRow("resources nonroot") << ":/entrylist" << false;
 }
 
 void tst_QDir::isRoot()
@@ -2247,18 +2247,18 @@ void tst_QDir::isRoot()
     QCOMPARE(dir.isRoot(),isRoot);
 }
 
-#ifndef QT_NO_REGEXP
+#ifndef BOBUI_NO_REGEXP
 void tst_QDir::match_data()
 {
-    QTest::addColumn<QString>("filter");
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<bool>("match");
+    BOBUIest::addColumn<QString>("filter");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<bool>("match");
 
-    QTest::newRow("single, matching") << "*.cpp" << "tst_qdir.cpp" << true;
-    QTest::newRow("single, not matching") << "*.cpp" << "tst_qdir.h" << false;
-    QTest::newRow("multi, matching") << "*.cpp;*.h" << "tst_qdir.cpp" << true;
-    QTest::newRow("multi, matching2") << "*.cpp;*.h" << "tst_qdir.h" << true;
-    QTest::newRow("multi, not matching") << "*.cpp;*.h" << "readme.txt" << false;
+    BOBUIest::newRow("single, matching") << "*.cpp" << "tst_qdir.cpp" << true;
+    BOBUIest::newRow("single, not matching") << "*.cpp" << "tst_qdir.h" << false;
+    BOBUIest::newRow("multi, matching") << "*.cpp;*.h" << "tst_qdir.cpp" << true;
+    BOBUIest::newRow("multi, matching2") << "*.cpp;*.h" << "tst_qdir.h" << true;
+    BOBUIest::newRow("multi, not matching") << "*.cpp;*.h" << "readme.txt" << false;
 }
 
 void tst_QDir::match()
@@ -2312,25 +2312,25 @@ void tst_QDir::arrayOperator()
 
 void tst_QDir::equalityOperator_data()
 {
-    QTest::addColumn<QString>("leftPath");
-    QTest::addColumn<QString>("leftNameFilters");
-    QTest::addColumn<int>("leftSort");
-    QTest::addColumn<int>("leftFilters");
-    QTest::addColumn<QString>("rightPath");
-    QTest::addColumn<QString>("rightNameFilters");
-    QTest::addColumn<int>("rightSort");
-    QTest::addColumn<int>("rightFilters");
-    QTest::addColumn<bool>("expected");
+    BOBUIest::addColumn<QString>("leftPath");
+    BOBUIest::addColumn<QString>("leftNameFilters");
+    BOBUIest::addColumn<int>("leftSort");
+    BOBUIest::addColumn<int>("leftFilters");
+    BOBUIest::addColumn<QString>("rightPath");
+    BOBUIest::addColumn<QString>("rightNameFilters");
+    BOBUIest::addColumn<int>("rightSort");
+    BOBUIest::addColumn<int>("rightFilters");
+    BOBUIest::addColumn<bool>("expected");
 
-    QTest::newRow("same") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("same") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << true;
 
-    QTest::newRow("relativepaths") << "entrylist/" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("relativepaths") << "entrylist/" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << "./entrylist" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << true;
 
-    QTest::newRow("QTBUG-20495") << QDir::currentPath() + "/entrylist/.." << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("BOBUIBUG-20495") << QDir::currentPath() + "/entrylist/.." << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << "." << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << true;
 
@@ -2348,31 +2348,31 @@ void tst_QDir::equalityOperator_data()
 #else
     QString pathinroot("/usr/..");
 #endif
-    QTest::newRow("QTBUG-20495-root") << pathinroot << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("BOBUIBUG-20495-root") << pathinroot << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << QDir::rootPath() << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << true;
 
-    QTest::newRow("slashdot") << QDir::rootPath() + "." << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("slashdot") << QDir::rootPath() + "." << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << QDir::rootPath() << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << true;
 
-    QTest::newRow("slashdotslash") << QDir::rootPath() + "./" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("slashdotslash") << QDir::rootPath() + "./" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << QDir::rootPath() << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << true;
 
-    QTest::newRow("nonexistantpaths") << "dir-that-dont-exist" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("nonexistantpaths") << "dir-that-dont-exist" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << "another-dir-that-dont-exist" << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << false;
 
-    QTest::newRow("diff-filters") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("diff-filters") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << m_dataPath << "*.cpp" << int(QDir::Name) << int(QDir::Dirs)
         << false;
 
-    QTest::newRow("diff-sort") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("diff-sort") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << m_dataPath << "*.cpp" << int(QDir::Time) << int(QDir::Files)
         << false;
 
-    QTest::newRow("diff-namefilters") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
+    BOBUIest::newRow("diff-namefilters") << (m_dataPath + "/.") << "*.cpp" << int(QDir::Name) << int(QDir::Files)
         << m_dataPath << "*.jpg" << int(QDir::Name) << int(QDir::Files)
         << false;
 }
@@ -2400,21 +2400,21 @@ void tst_QDir::equalityOperator()
 
 void tst_QDir::isRelative_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("relative");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("relative");
 
-    QTest::newRow(".") << "./" << true;
-    QTest::newRow("..") << "../" << true;
-    QTest::newRow("content") << "entrylist/" << true;
-    QTest::newRow("current") << QDir::currentPath() << false;
-    QTest::newRow("homepath") << QDir::homePath() << false;
-    QTest::newRow("temppath") << QDir::tempPath() << false;
-    QTest::newRow("rootpath") << QDir::rootPath() << false;
+    BOBUIest::newRow(".") << "./" << true;
+    BOBUIest::newRow("..") << "../" << true;
+    BOBUIest::newRow("content") << "entrylist/" << true;
+    BOBUIest::newRow("current") << QDir::currentPath() << false;
+    BOBUIest::newRow("homepath") << QDir::homePath() << false;
+    BOBUIest::newRow("temppath") << QDir::tempPath() << false;
+    BOBUIest::newRow("rootpath") << QDir::rootPath() << false;
     const auto drives = QDir::drives();
     for (const QFileInfo &root : drives)
-        QTest::newRow(root.absolutePath().toLocal8Bit()) << root.absolutePath() << false;
+        BOBUIest::newRow(root.absolutePath().toLocal8Bit()) << root.absolutePath() << false;
 
-    QTest::newRow("resource") << ":/prefix" << false;
+    BOBUIest::newRow("resource") << ":/prefix" << false;
 }
 
 void tst_QDir::isRelative()
@@ -2462,23 +2462,23 @@ void tst_QDir::cdNonreadable()
 
 void tst_QDir::cdBelowRoot_data()
 {
-    QTest::addColumn<QString>("rootPath");
-    QTest::addColumn<QString>("cdInto");
-    QTest::addColumn<QString>("targetPath");
+    BOBUIest::addColumn<QString>("rootPath");
+    BOBUIest::addColumn<QString>("cdInto");
+    BOBUIest::addColumn<QString>("targetPath");
 
 #if defined(Q_OS_ANDROID)
-    QTest::newRow("android") << "/" << "system" << "/system";
+    BOBUIest::newRow("android") << "/" << "system" << "/system";
 #elif defined(Q_OS_UNIX)
-    QTest::newRow("unix") << "/" << "tmp" << "/tmp";
+    BOBUIest::newRow("unix") << "/" << "tmp" << "/tmp";
 #else // Windows+CE
     const QString systemDrive = QString::fromLocal8Bit(qgetenv("SystemDrive")) + QLatin1Char('/');
     const QString systemRoot = QString::fromLocal8Bit(qgetenv("SystemRoot"));
-    QTest::newRow("windows-drive")
+    BOBUIest::newRow("windows-drive")
         << systemDrive << systemRoot.mid(3) << QDir::cleanPath(systemRoot);
-    const QString uncRoot = QStringLiteral("//") + QTest::uncServerName();
+    const QString uncRoot = QStringLiteral("//") + BOBUIest::uncServerName();
     const QString testDirectory = QStringLiteral("testshare");
     if (uncServerAvailable)
-        QTest::newRow("windows-share")
+        BOBUIest::newRow("windows-share")
                 << uncRoot << testDirectory << QDir::cleanPath(uncRoot + QLatin1Char('/') + testDirectory);
 #endif // Windows
 }
@@ -2532,7 +2532,7 @@ void tst_QDir::nonEmptyDir()
 
 void tst_QDir::stdfilesystem()
 {
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
     namespace fs = std::filesystem;
     fs::path path(".");
     QDir dir(path);
@@ -2569,6 +2569,6 @@ void tst_QDir::stdfilesystem()
 #endif
 }
 
-QTEST_MAIN(tst_QDir)
+BOBUIEST_MAIN(tst_QDir)
 #include "tst_qdir.moc"
 

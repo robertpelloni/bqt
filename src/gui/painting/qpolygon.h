@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPOLYGON_H
 #define QPOLYGON_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTransform;
+class BOBUIransform;
 class QRect;
 class QVariant;
 
@@ -50,7 +50,7 @@ public:
     Q_GUI_EXPORT void putPoints(int index, int nPoints, int firstx, int firsty, ...);
     Q_GUI_EXPORT void putPoints(int index, int nPoints, const QPolygon & from, int fromIndex=0);
 
-    Q_GUI_EXPORT bool containsPoint(const QPoint &pt, Qt::FillRule fillRule) const;
+    Q_GUI_EXPORT bool containsPoint(const QPoint &pt, BobUI::FillRule fillRule) const;
 
     [[nodiscard]] Q_GUI_EXPORT QPolygon united(const QPolygon &r) const;
     [[nodiscard]] Q_GUI_EXPORT QPolygon intersected(const QPolygon &r) const;
@@ -62,14 +62,14 @@ public:
 };
 Q_DECLARE_SHARED(QPolygon)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPolygon &);
 #endif
 
 /*****************************************************************************
   QPolygon stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &stream, const QPolygon &polygon);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QPolygon &polygon);
 #endif
@@ -117,7 +117,7 @@ public:
 
     QRectF Q_GUI_EXPORT boundingRect() const;
 
-    Q_GUI_EXPORT bool containsPoint(const QPointF &pt, Qt::FillRule fillRule) const;
+    Q_GUI_EXPORT bool containsPoint(const QPointF &pt, BobUI::FillRule fillRule) const;
 
     [[nodiscard]] Q_GUI_EXPORT QPolygonF united(const QPolygonF &r) const;
     [[nodiscard]] Q_GUI_EXPORT QPolygonF intersected(const QPolygonF &r) const;
@@ -129,14 +129,14 @@ Q_DECLARE_SHARED(QPolygonF)
 
 QPolygonF QPolygon::toPolygonF() const { return QPolygonF(*this); }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPolygonF &);
 #endif
 
 /*****************************************************************************
   QPolygonF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &stream, const QPolygonF &array);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QPolygonF &array);
 #endif
@@ -147,6 +147,6 @@ inline void QPolygonF::translate(qreal dx, qreal dy)
 inline QPolygonF QPolygonF::translated(qreal dx, qreal dy) const
 { return translated(QPointF(dx, dy)); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPOLYGON_H

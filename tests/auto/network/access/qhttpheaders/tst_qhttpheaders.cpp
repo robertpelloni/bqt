@@ -1,16 +1,16 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/qhttpheaders.h>
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qdatastream.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qset.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QHttpHeaders : public QObject
 {
@@ -283,7 +283,7 @@ void tst_QHttpHeaders::accessors()
     QCOMPARE(list.last().second, "lastValue");
     // Failed insert
     QRegularExpression re("HTTP header name contained*");
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re);
     QVERIFY(!h1.insert(0, "a€", "b"));
 
     // replace
@@ -307,7 +307,7 @@ void tst_QHttpHeaders::accessors()
     QCOMPARE(list.at(1).first, "accept");
     QCOMPARE(list.at(1).second, "NOTHING");
     // Failed replace
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re);
     QVERIFY(!h1.replace(0, "a€", "b"));
 
 }
@@ -319,7 +319,7 @@ void tst_QHttpHeaders::wellKnownHeader()
 }
 
 #define TEST_ILLEGAL_HEADER_NAME_CHARACTER(NAME)       \
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re); \
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re); \
     QVERIFY(!h1.append(NAME, v1));                     \
     QVERIFY(h1.isEmpty());                             \
 
@@ -349,7 +349,7 @@ void tst_QHttpHeaders::headerNameField()
 
     // Error cases
     // Header name must contain at least 1 character
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "HTTP header name cannot be empty");
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "HTTP header name cannot be empty");
     h1.append("", v1);
     QVERIFY(h1.isEmpty());
     // Disallowed ASCII/extended ASCII characters (not exhaustive list)
@@ -396,7 +396,7 @@ void tst_QHttpHeaders::headerNameField()
 }
 
 #define TEST_ILLEGAL_HEADER_VALUE_CHARACTER(VALUE) \
-QTest::ignoreMessage(QtMsgType::QtWarningMsg, re); \
+BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re); \
     QVERIFY(!h1.append(n1, VALUE));                \
     QVERIFY(h1.isEmpty());                         \
 
@@ -547,9 +547,9 @@ void tst_QHttpHeaders::replaceOrAppend()
     h1.clear();
     h1.append(n1, v1);
     QRegularExpression re("HTTP header*");
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re);
     QVERIFY(!h1.replaceOrAppend("", V1));
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re);
     QVERIFY(!h1.replaceOrAppend(v1, "foo\x08"));
 }
 
@@ -600,42 +600,42 @@ void tst_QHttpHeaders::dateTimeValues()
     std::optional<QDateTime> dateTimeString = h1.dateTimeValue("date");
     QVERIFY(dateTimeString);
     QCOMPARE(dateTimeString->date(), QDate(2025, 2, 25));
-    QCOMPARE(dateTimeString->time(), QTime(10, 10, 10, 0));
+    QCOMPARE(dateTimeString->time(), BOBUIime(10, 10, 10, 0));
     std::optional<QDateTime> dateTimeWKH =
             h1.dateTimeValue(QHttpHeaders::WellKnownHeader::Date);
     QVERIFY(dateTimeWKH);
     QCOMPARE(dateTimeWKH->date(), QDate(2025, 2, 25));
-    QCOMPARE(dateTimeWKH->time(), QTime(10, 10, 10, 0));
+    QCOMPARE(dateTimeWKH->time(), BOBUIime(10, 10, 10, 0));
 
     std::optional<QList<QDateTime>> dateTimeStringValueList = h1.dateTimeValues("date");
     QVERIFY(dateTimeStringValueList);
     QCOMPARE(dateTimeStringValueList->size(), 2);
     QCOMPARE(dateTimeStringValueList->at(0).date(), QDate(2025, 2, 25));
-    QCOMPARE(dateTimeStringValueList->at(0).time(), QTime(10, 10, 10, 0));
+    QCOMPARE(dateTimeStringValueList->at(0).time(), BOBUIime(10, 10, 10, 0));
     QCOMPARE(dateTimeStringValueList->at(1).date(), QDate(2025, 2, 24));
-    QCOMPARE(dateTimeStringValueList->at(1).time(), QTime(11, 11, 11, 0));
+    QCOMPARE(dateTimeStringValueList->at(1).time(), BOBUIime(11, 11, 11, 0));
 
     std::optional<QList<QDateTime>> dateTimeWHKValueList =
             h1.dateTimeValues(QHttpHeaders::WellKnownHeader::Date);
     QVERIFY(dateTimeWHKValueList);
     QCOMPARE(dateTimeWHKValueList->size(), 2);
     QCOMPARE(dateTimeWHKValueList->at(0).date(), QDate(2025, 2, 25));
-    QCOMPARE(dateTimeWHKValueList->at(0).time(), QTime(10, 10, 10, 0));
+    QCOMPARE(dateTimeWHKValueList->at(0).time(), BOBUIime(10, 10, 10, 0));
     QCOMPARE(dateTimeWHKValueList->at(1).date(), QDate(2025, 2, 24));
-    QCOMPARE(dateTimeWHKValueList->at(1).time(), QTime(11, 11, 11, 0));
+    QCOMPARE(dateTimeWHKValueList->at(1).time(), BOBUIime(11, 11, 11, 0));
 
     std::optional<QDateTime> dateTimeValueAtIndex = h1.dateTimeValueAt(1);
     QVERIFY(dateTimeValueAtIndex);
     QCOMPARE(dateTimeValueAtIndex->date(), QDate(2025, 2, 24));
-    QCOMPARE(dateTimeValueAtIndex->time(), QTime(11, 11, 11, 0));
+    QCOMPARE(dateTimeValueAtIndex->time(), BOBUIime(11, 11, 11, 0));
 
-    QDateTime dateTimeValue3{QDate{2049, 4, 3}, QTime{12, 30, 00, 0}};
-    dateTimeValue3.setTimeZone(QTimeZone::UTC);
+    QDateTime dateTimeValue3{QDate{2049, 4, 3}, BOBUIime{12, 30, 00, 0}};
+    dateTimeValue3.setTimeZone(BOBUIimeZone::UTC);
     h1.setDateTimeValue("date", dateTimeValue3);
     std::optional<QDateTime> setDateTimeValue = h1.dateTimeValue("date");
     QVERIFY(setDateTimeValue);
     QCOMPARE(setDateTimeValue->date(), QDate(2049, 4, 3));
-    QCOMPARE(setDateTimeValue->time(), QTime(12, 30, 00, 0));
+    QCOMPARE(setDateTimeValue->time(), BOBUIime(12, 30, 00, 0));
 
     h1.clear();
     h1.append("Date", "InvalidDateFormat");
@@ -659,11 +659,11 @@ void tst_QHttpHeaders::data_stream_data()
 
     QHttpHeaders h3;
 
-    QTest::addColumn<QHttpHeaders>("http_headers");
+    BOBUIest::addColumn<QHttpHeaders>("http_headers");
 
-    QTest::newRow("non-empty") << h1;
-    QTest::newRow("empty") << h2;
-    QTest::newRow("null") << h3;
+    BOBUIest::newRow("non-empty") << h1;
+    BOBUIest::newRow("empty") << h2;
+    BOBUIest::newRow("null") << h3;
 }
 
 void tst_QHttpHeaders::data_stream()
@@ -694,10 +694,10 @@ void tst_QHttpHeaders::data_stream_invalid_data()
     QList<std::pair<QByteArray, QByteArray>> raw;
     raw.append(std::pair<QByteArray, QByteArray>("Invalid:Header", "value"));
 
-    QTest::addColumn<QList<std::pair<QByteArray, QByteArray>>>("raw");
-    QTest::addColumn<QDataStream::Status>("stream_out_status");
+    BOBUIest::addColumn<QList<std::pair<QByteArray, QByteArray>>>("raw");
+    BOBUIest::addColumn<QDataStream::Status>("stream_out_status");
 
-    QTest::newRow("invalid-char-colon") << raw << QDataStream::Status::ReadCorruptData;
+    BOBUIest::newRow("invalid-char-colon") << raw << QDataStream::Status::ReadCorruptData;
 }
 
 void tst_QHttpHeaders::data_stream_invalid()
@@ -730,5 +730,5 @@ void tst_QHttpHeaders::data_stream_invalid()
     }
 }
 
-QTEST_MAIN(tst_QHttpHeaders)
+BOBUIEST_MAIN(tst_QHttpHeaders)
 #include "tst_qhttpheaders.moc"

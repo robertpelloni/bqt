@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QCoreApplication>
+#include <BOBUIest>
+#include <BobUICore/QCoreApplication>
 
-#include <QtDBus/private/qdbusutil_p.h>
-#include <QtDBus/private/qdbus_symbols_p.h>
+#include <BobUIDBus/private/qdbusutil_p.h>
+#include <BobUIDBus/private/qdbus_symbols_p.h>
 
 DEFINEFUNC(dbus_bool_t, dbus_signature_validate, (const char       *signature,
                                                 DBusError        *error),
@@ -22,14 +22,14 @@ private Q_SLOTS:
 static inline void benchmarkAddRow(const char *name, const char *data)
 {
     if (qdbus_loadLibDBus())
-        QTest::newRow(QByteArray(QByteArray("native-") + name)) << data << true;
-    QTest::newRow(name) << data << false;
+        BOBUIest::newRow(QByteArray(QByteArray("native-") + name)) << data << true;
+    BOBUIest::newRow(name) << data << false;
 }
 
 void tst_QDBusType::benchmarkSignature_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<bool>("useNative");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<bool>("useNative");
 
     benchmarkAddRow("single-invalid", "~");
     benchmarkAddRow("single-invalid-array", "a~");
@@ -71,6 +71,6 @@ void tst_QDBusType::benchmarkSignature()
     Q_UNUSED(result);
 }
 
-QTEST_MAIN(tst_QDBusType)
+BOBUIEST_MAIN(tst_QDBusType)
 
 #include "main.moc"

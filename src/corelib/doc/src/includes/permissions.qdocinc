@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 //! [requestPermission-functor]
     When the request is ready, \a functor will be called as
@@ -10,19 +10,19 @@
 //! [requestPermission-postamble]
     If the user explicitly grants the application the requested \a permission,
     or the \a permission is known to not require user authorization on the given
-    platform, the status will be Qt::PermissionStatus::Granted.
+    platform, the status will be BobUI::PermissionStatus::Granted.
 
     If the user explicitly denies the application the requested \a permission,
     or the \a permission is known to not be accessible or applicable to applications
-    on the given platform, the status will be Qt::PermissionStatus::Denied.
+    on the given platform, the status will be BobUI::PermissionStatus::Denied.
 
-    The result of a request will never be Qt::PermissionStatus::Undetermined.
+    The result of a request will never be BobUI::PermissionStatus::Undetermined.
 
     \note Permissions can only be requested from the main thread.
 //! [requestPermission-postamble]
 
 //! [permission-metadata]
-    \inmodule QtCore
+    \inmodule BobUICore
     \inheaderfile QPermissions
     \ingroup permissions
     \since 6.5

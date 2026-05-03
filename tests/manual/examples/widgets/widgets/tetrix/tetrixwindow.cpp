@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "tetrixboard.h"
 #include "tetrixwindow.h"
@@ -17,7 +17,7 @@ TetrixWindow::TetrixWindow(QWidget *parent)
 //! [0]
     nextPieceLabel = new QLabel;
     nextPieceLabel->setFrameStyle(QFrame::Box | QFrame::Raised);
-    nextPieceLabel->setAlignment(Qt::AlignCenter);
+    nextPieceLabel->setAlignment(BobUI::AlignCenter);
     board->setNextPieceLabel(nextPieceLabel);
 //! [1]
     scoreLcd = new QLCDNumber(5);
@@ -30,12 +30,12 @@ TetrixWindow::TetrixWindow(QWidget *parent)
 
 //! [2]
     startButton = new QPushButton(tr("&Start"));
-    startButton->setFocusPolicy(Qt::NoFocus);
+    startButton->setFocusPolicy(BobUI::NoFocus);
     quitButton = new QPushButton(tr("&Quit"));
-    quitButton->setFocusPolicy(Qt::NoFocus);
+    quitButton->setFocusPolicy(BobUI::NoFocus);
     pauseButton = new QPushButton(tr("&Pause"));
 //! [2] //! [3]
-    pauseButton->setFocusPolicy(Qt::NoFocus);
+    pauseButton->setFocusPolicy(BobUI::NoFocus);
 //! [3] //! [4]
 
     connect(startButton, &QPushButton::clicked, board, &TetrixBoard::start);
@@ -75,7 +75,7 @@ TetrixWindow::TetrixWindow(QWidget *parent)
 QLabel *TetrixWindow::createLabel(const QString &text)
 {
     QLabel *label = new QLabel(text);
-    label->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    label->setAlignment(BobUI::AlignHCenter | BobUI::AlignBottom);
     return label;
 }
 //! [7]

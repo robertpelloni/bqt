@@ -1,17 +1,17 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
-#include <QtCore/QCommandLineParser>
+#include <BobUIWidgets>
+#include <BobUICore/QCommandLineParser>
 
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtGui/qpa/qplatformtheme.h>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
 
-#ifdef QT_QUICKWIDGETS_LIB
+#ifdef BOBUI_QUICKWIDGETS_LIB
 #include <QQuickWidget>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class IconModel : public QAbstractItemModel
 {
@@ -340,7 +340,7 @@ public:
     IconModel()
     {
         for (const auto &ext : {u"txt"_s, u"pdf"_s, u"png"_s}) {
-            QTemporaryFile *tempFile = new QTemporaryFile(u"XXXXXX.%1"_s.arg(ext), this);
+            BOBUIemporaryFile *tempFile = new BOBUIemporaryFile(u"XXXXXX.%1"_s.arg(ext), this);
             if (!tempFile->open()) {
                 qWarning() << "Couldn't create temporary file" << ext;
                 fileIconTypes << u"file.%1"_s.arg(ext);
@@ -392,7 +392,7 @@ public:
             return {};
 
         switch (role) {
-        case Qt::DisplayRole:
+        case BobUI::DisplayRole:
             switch (index.column()) {
             case StylePixmap:
             case StyleIcon:
@@ -414,7 +414,7 @@ public:
                 return {};
             }
             break;
-        case Qt::DecorationRole: {
+        case BobUI::DecorationRole: {
             QIcon result = [&]{
                 switch (index.column()) {
                 case Name:
@@ -447,7 +447,7 @@ public:
             }();
             static QIcon missingIcon = []{
                 QImage image(64, 64, QImage::Format_ARGB32_Premultiplied);
-                image.fill(Qt::magenta);
+                image.fill(BobUI::magenta);
                 return QIcon(QPixmap::fromImage(image));
             }();
             return !result.isNull() ? result : missingIcon;
@@ -459,13 +459,13 @@ public:
 
         return {};
     }
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override
+    QVariant headerData(int section, BobUI::Orientation orientation, int role) const override
     {
         switch (orientation) {
-        case Qt::Vertical:
+        case BobUI::Vertical:
             break;
-        case Qt::Horizontal:
-            if (role == Qt::DisplayRole) {
+        case BobUI::Horizontal:
+            if (role == BobUI::DisplayRole) {
                 switch (section) {
                 case Name:
                     return "Name";
@@ -497,7 +497,7 @@ struct ColumnModel : public QSortFilterProxyModel
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
     {
         const QModelIndex sourceIndex = sourceModel()->index(sourceRow, Column, sourceParent);
-        const QString iconName = sourceModel()->data(sourceIndex, Qt::DisplayRole).template value<QString>();
+        const QString iconName = sourceModel()->data(sourceIndex, BobUI::DisplayRole).template value<QString>();
         return !iconName.isNull();
     }
 };
@@ -528,7 +528,7 @@ public:
         connect(lineEdit, &QLineEdit::textChanged,
                 this, &IconInspector::updateIcon);
 
-        button = new QToolButton;
+        button = new BOBUIoolButton;
         button->setCheckable(true);
 
         QVBoxLayout *vbox = new QVBoxLayout;
@@ -567,7 +567,7 @@ protected:
 
             painter.save();
             painter.translate(labelWidth + contentsMargins().left(), labelHeight * 2);
-            const QBrush brush(palette().base().color(), Qt::CrossPattern);
+            const QBrush brush(palette().base().color(), BobUI::CrossPattern);
 
             QPoint point;
             for (const auto &mode : {QIcon::Normal, QIcon::Disabled, QIcon::Active, QIcon::Selected}) {
@@ -581,7 +581,7 @@ protected:
                             continue;
                         const QRect iconRect(point, size);
                         painter.fillRect(iconRect, brush);
-                        icon.paint(&painter, iconRect, Qt::AlignCenter, mode, state);
+                        icon.paint(&painter, iconRect, BobUI::AlignCenter, mode, state);
                         totalWidth += size.width();
                         point.rx() += size.width();
                         height = std::max(height, size.height());
@@ -604,7 +604,7 @@ protected:
         QFrame::paintEvent(event);
     }
 private:
-    QToolButton *button;
+    BOBUIoolButton *button;
     QIcon icon;
     void updateIcon(const QString &iconName)
     {
@@ -623,8 +623,8 @@ public:
         QAction *openThemeAction = fileMenu->addAction("Open theme");
         connect(openThemeAction, &QAction::triggered, this, &Window::selectTheme);
 
-        QTabWidget *widget = new QTabWidget;
-        widget->setTabPosition(QTabWidget::West);
+        BOBUIabWidget *widget = new BOBUIabWidget;
+        widget->setTabPosition(BOBUIabWidget::West);
         widget->addTab(new IconInspector, "Inspect");
         widget->addTab(new IconView<IconModel::Icon>(&model), "QIcon::fromTheme");
         widget->addTab(new IconView<IconModel::StylePixmap>(&model), "QStyle::standardPixmap");
@@ -632,11 +632,11 @@ public:
         widget->addTab(new IconView<IconModel::Theme>(&model), "QPlatformTheme");
         widget->addTab(new IconView<IconModel::File>(&model), "QAbstractFileIconProvider");
 
-    #ifdef QT_QUICKWIDGETS_LIB
+    #ifdef BOBUI_QUICKWIDGETS_LIB
         QQuickWidget *quickBrowser = new QQuickWidget;
         quickBrowser->setSource(QUrl(u"qrc:/Main.qml"_s));
         quickBrowser->setResizeMode(QQuickWidget::SizeRootObjectToView);
-        widget->addTab(quickBrowser, "Qt Quick");
+        widget->addTab(quickBrowser, "BobUI Quick");
         QObject::connect(quickBrowser, &QQuickWidget::statusChanged, quickBrowser,
                         [](QQuickWidget::Status status){
             qDebug() << status;
@@ -657,7 +657,7 @@ private:
         dialog->setFileMode(QFileDialog::ExistingFile);
         dialog->setAcceptMode(QFileDialog::AcceptOpen);
         dialog->setNameFilter(u"Icon theme (*.theme)"_s);
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setAttribute(BobUI::WA_DeleteOnClose);
         dialog->open();
 
         connect(dialog, &QFileDialog::fileSelected, this, &Window::openTheme);
@@ -676,9 +676,9 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
-    QApplication::setApplicationVersion(QT_VERSION_STR);
+    QApplication::setApplicationVersion(BOBUI_VERSION_STR);
     QApplication::setApplicationName(QLatin1String("IconBrowser Manual Test"));
-    QApplication::setOrganizationName(QLatin1String("QtProject"));
+    QApplication::setOrganizationName(QLatin1String("BobUIProject"));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QApplication::applicationName());

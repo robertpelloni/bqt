@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QObject>
 #include <QSignalSpy>
-#include <qtest.h>
+#include <bobuiest.h>
 #include <qproperty.h>
 #include <private/qproperty_p.h>
 #include <private/qobject_p.h>
@@ -11,14 +11,14 @@
 
 #if __has_include(<source_location>) && __cplusplus >= 202002L && !defined(Q_QDOC)
 #include <source_location>
-#define QT_SOURCE_LOCATION_NAMESPACE std
+#define BOBUI_SOURCE_LOCATION_NAMESPACE std
 #elif __has_include(<experimental/source_location>) && !defined(Q_QDOC)
 #include <experimental/source_location>
-#define QT_SOURCE_LOCATION_NAMESPACE std::experimental
+#define BOBUI_SOURCE_LOCATION_NAMESPACE std::experimental
 #endif
 
-using namespace QtPrivate;
-using namespace Qt::StringLiterals;
+using namespace BobUIPrivate;
+using namespace BobUI::StringLiterals;
 
 struct DtorCounter {
     static inline int counter = 0;
@@ -88,10 +88,10 @@ private slots:
     void compareAgainstDifferentType();
 
     void noFakeDependencies();
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     void threadSafety();
     void threadSafety2();
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
     void bindablePropertyWithInitialization();
     void noDoubleNotification();
@@ -185,7 +185,7 @@ void tst_QProperty::basicDependencies()
 {
     QProperty<int> right(100);
 
-    QProperty<int> left(Qt::makePropertyBinding(right));
+    QProperty<int> left(BobUI::makePropertyBinding(right));
 
     QCOMPARE(left.value(), int(100));
 
@@ -297,7 +297,7 @@ void tst_QProperty::dependencyChangeDuringDestruction()
 {
     auto tester = std::make_unique<ChangeDuringDtorTester>();
     QProperty<int> iprop {42};
-    tester->bindableProp().setBinding(Qt::makePropertyBinding(iprop));
+    tester->bindableProp().setBinding(BobUI::makePropertyBinding(iprop));
     QObject::connect(tester.get(), &QObject::destroyed, [&](){
         iprop = 12;
     });
@@ -314,10 +314,10 @@ void tst_QProperty::recursiveDependency()
     QProperty<int> first(1);
 
     QProperty<int> second;
-    second.setBinding(Qt::makePropertyBinding(first));
+    second.setBinding(BobUI::makePropertyBinding(first));
 
     QProperty<int> third;
-    third.setBinding(Qt::makePropertyBinding(second));
+    third.setBinding(BobUI::makePropertyBinding(second));
 
     QCOMPARE(third.value(), int(1));
 
@@ -331,13 +331,13 @@ void tst_QProperty::bindingAfterUse()
     QProperty<int> propWithBindingLater(1);
 
     QProperty<int> propThatUsesFirstProp;
-    propThatUsesFirstProp.setBinding(Qt::makePropertyBinding(propWithBindingLater));
+    propThatUsesFirstProp.setBinding(BobUI::makePropertyBinding(propWithBindingLater));
 
     QCOMPARE(propThatUsesFirstProp.value(), int(1));
     QCOMPARE(QPropertyBindingDataPointer::get(propWithBindingLater).observerCount(), 1);
 
     QProperty<int> injectedValue(42);
-    propWithBindingLater.setBinding(Qt::makePropertyBinding(injectedValue));
+    propWithBindingLater.setBinding(BobUI::makePropertyBinding(injectedValue));
 
     QCOMPARE(propThatUsesFirstProp.value(), int(42));
     QCOMPARE(QPropertyBindingDataPointer::get(propWithBindingLater).observerCount(), 1);
@@ -363,16 +363,16 @@ void tst_QProperty::switchBinding()
     QProperty<int> first(1);
 
     QProperty<int> propWithChangingBinding;
-    propWithChangingBinding.setBinding(Qt::makePropertyBinding(first));
+    propWithChangingBinding.setBinding(BobUI::makePropertyBinding(first));
 
     QCOMPARE(propWithChangingBinding.value(), 1);
 
     QProperty<int> output;
-    output.setBinding(Qt::makePropertyBinding(propWithChangingBinding));
+    output.setBinding(BobUI::makePropertyBinding(propWithChangingBinding));
     QCOMPARE(output.value(), 1);
 
     QProperty<int> second(2);
-    propWithChangingBinding.setBinding(Qt::makePropertyBinding(second));
+    propWithChangingBinding.setBinding(BobUI::makePropertyBinding(second));
     QCOMPARE(output.value(), 2);
 }
 
@@ -412,7 +412,7 @@ void tst_QProperty::takeBinding()
     QVERIFY(existingBinding.isNull());
 
     QProperty<int> first(100);
-    QProperty<int> second(Qt::makePropertyBinding(first));
+    QProperty<int> second(BobUI::makePropertyBinding(first));
 
     QCOMPARE(second.value(), int(100));
 
@@ -457,11 +457,11 @@ void tst_QProperty::stickyBinding()
 void tst_QProperty::replaceBinding()
 {
     QProperty<int> first(100);
-    QProperty<int> second(Qt::makePropertyBinding(first));
+    QProperty<int> second(BobUI::makePropertyBinding(first));
 
     QCOMPARE(second.value(), 100);
 
-    auto constantBinding = Qt::makePropertyBinding([]() { return 42; });
+    auto constantBinding = BobUI::makePropertyBinding([]() { return 42; });
     auto oldBinding = second.setBinding(constantBinding);
     QCOMPARE(second.value(), 42);
 
@@ -585,9 +585,9 @@ void tst_QProperty::dontTriggerDependenciesIfUnchangedValue()
 
 void tst_QProperty::bindingSourceLocation()
 {
-#if defined(QT_PROPERTY_COLLECT_BINDING_LOCATION)
-    auto bindingLine = QT_SOURCE_LOCATION_NAMESPACE::source_location::current().line() + 1;
-    auto binding = Qt::makePropertyBinding([]() { return 42; });
+#if defined(BOBUI_PROPERTY_COLLECT_BINDING_LOCATION)
+    auto bindingLine = BOBUI_SOURCE_LOCATION_NAMESPACE::source_location::current().line() + 1;
+    auto binding = BobUI::makePropertyBinding([]() { return 42; });
     QCOMPARE(QPropertyBindingPrivate::get(binding)->sourceLocation().line, bindingLine);
 #else
     QSKIP("Skipping this in the light of missing binding source location support");
@@ -614,8 +614,8 @@ class BindingLoopTester : public QObject
     Q_PROPERTY(int eagerProp2 READ eagerProp2 WRITE setEagerProp2 BINDABLE bindableEagerProp2)
     public:
     BindingLoopTester(QProperty<int> *i, QObject *parent = nullptr) : QObject(parent) {
-        eagerData.setBinding(Qt::makePropertyBinding([&](){ return eagerData2.value() + i->value(); }  ) );
-        eagerData2.setBinding(Qt::makePropertyBinding([&](){ return eagerData.value() + 1; }  ) );
+        eagerData.setBinding(BobUI::makePropertyBinding([&](){ return eagerData2.value() + i->value(); }  ) );
+        eagerData2.setBinding(BobUI::makePropertyBinding([&](){ return eagerData.value() + 1; }  ) );
         i->setValue(42);
     }
     BindingLoopTester() {}
@@ -756,7 +756,7 @@ void tst_QProperty::changePropertyFromWithinChangeHandler()
 void tst_QProperty::changePropertyFromWithinChangeHandlerThroughDependency()
 {
     QProperty<int> sourceProperty(100);
-    QProperty<int> property(Qt::makePropertyBinding(sourceProperty));
+    QProperty<int> property(BobUI::makePropertyBinding(sourceProperty));
     bool resetPropertyOnChange = false;
     int changeHandlerCallCount = 0;
 
@@ -799,7 +799,7 @@ void tst_QProperty::settingPropertyValueDoesRemoveBinding()
 {
     QProperty<int> source(42);
 
-    QProperty<int> property(Qt::makePropertyBinding(source));
+    QProperty<int> property(BobUI::makePropertyBinding(source));
 
     QCOMPARE(property.value(), 42);
     QVERIFY(!property.binding().isNull());
@@ -916,7 +916,7 @@ void tst_QProperty::arrowAndStarOperator()
         QString *operator->() { return &x; }
         const QString *operator->() const { return &x; }
     };
-    static_assert(QTypeTraits::is_dereferenceable_v<Dereferenceable>);
+    static_assert(BOBUIypeTraits::is_dereferenceable_v<Dereferenceable>);
 
     QProperty<Dereferenceable> prop2(Dereferenceable{str});
     QCOMPARE(prop2->size(), str.size());
@@ -1064,7 +1064,7 @@ void tst_QProperty::typeNoOperatorEqual()
     Uncomparable u2 = { 27 };
 
     QProperty<Uncomparable> p1;
-    QProperty<Uncomparable> p2(Qt::makePropertyBinding(p1));
+    QProperty<Uncomparable> p2(BobUI::makePropertyBinding(p1));
 
     QCOMPARE(p1.value().data, p2.value().data);
     p1.setValue(u1);
@@ -1074,7 +1074,7 @@ void tst_QProperty::typeNoOperatorEqual()
     QCOMPARE(p1.value().data, u1.data);
     QCOMPARE(p2.value().data, u2.data);
 
-    QProperty<Uncomparable> p3(Qt::makePropertyBinding(p1));
+    QProperty<Uncomparable> p3(BobUI::makePropertyBinding(p1));
     p1.setValue(u1);
     QCOMPARE(p1.value().data, p3.value().data);
 
@@ -1122,7 +1122,7 @@ void tst_QProperty::quntypedBindableApi()
     QUntypedBindable bindable(&iprop);
     QVERIFY(!bindable.hasBinding());
     QVERIFY(bindable.binding().isNull());
-    bindable.setBinding(Qt::makePropertyBinding([]() -> int {return 42;}));
+    bindable.setBinding(BobUI::makePropertyBinding([]() -> int {return 42;}));
     QVERIFY(bindable.hasBinding());
     QVERIFY(!bindable.binding().isNull());
     QUntypedPropertyBinding binding = bindable.takeBinding();
@@ -1133,23 +1133,23 @@ void tst_QProperty::quntypedBindableApi()
     QVERIFY(propLess.takeBinding().isNull());
 
     QUntypedBindable invalidBindable;
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "setBinding: Could not set binding via bindable interface. The QBindable is invalid.");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "setBinding: Could not set binding via bindable interface. The QBindable is invalid.");
 #endif
-    invalidBindable.setBinding(Qt::makePropertyBinding(iprop));
+    invalidBindable.setBinding(BobUI::makePropertyBinding(iprop));
 
     QUntypedBindable readOnlyBindable(static_cast<const QProperty<int> *>(&iprop) );
     QVERIFY(readOnlyBindable.isReadOnly());
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "setBinding: Could not set binding via bindable interface. The QBindable is read-only.");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "setBinding: Could not set binding via bindable interface. The QBindable is read-only.");
 #endif
-    readOnlyBindable.setBinding(Qt::makePropertyBinding(iprop));
+    readOnlyBindable.setBinding(BobUI::makePropertyBinding(iprop));
 
     QProperty<float> fprop;
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "setBinding: Could not set binding as the property expects it to be of type int but got float instead.");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "setBinding: Could not set binding as the property expects it to be of type int but got float instead.");
 #endif
-    bindable.setBinding(Qt::makePropertyBinding(fprop));
+    bindable.setBinding(BobUI::makePropertyBinding(fprop));
 }
 
 void tst_QProperty::readonlyConstQBindable()
@@ -1352,7 +1352,7 @@ void tst_QProperty::qobjectBindableSignalTakingNewValue()
 
     // The same holds true when we set a binding
     QProperty<int> i {2};
-    object.bindableFoo().setBinding(Qt::makePropertyBinding(i));
+    object.bindableFoo().setBinding(BobUI::makePropertyBinding(i));
     QCOMPARE(newValue, 2);
     // and when the binding gets reevaluated to a new value
     i = 3;
@@ -1376,25 +1376,25 @@ private:
 
 void tst_QProperty::bindableStateAfterThreadRestart()
 {
-    auto workerThread = new QThread(this);
+    auto workerThread = new BOBUIhread(this);
     auto worker = std::unique_ptr<TestWorker, QScopedPointerDeleteLater>(new TestWorker);
     worker->moveToThread(workerThread);
     workerThread->start();
     int returnValue = -1;
-    QMetaObject::invokeMethod(worker.get(), &TestWorker::work, Qt::BlockingQueuedConnection,
+    QMetaObject::invokeMethod(worker.get(), &TestWorker::work, BobUI::BlockingQueuedConnection,
                               qReturnArg(returnValue));
     QCOMPARE(returnValue, 0);
     workerThread->quit();
     workerThread->wait(); // the native thread is gone now
 
-    // accessing a property should work even if there is no actively running native thread for its QThread
+    // accessing a property should work even if there is no actively running native thread for its BOBUIhread
     returnValue = worker->work();
     QCOMPARE(returnValue, 1);
 
     // it should also work if we restart the thread
     workerThread->start();
     QVERIFY(workerThread->isRunning());
-    QMetaObject::invokeMethod(worker.get(), &TestWorker::work, Qt::BlockingQueuedConnection,
+    QMetaObject::invokeMethod(worker.get(), &TestWorker::work, BobUI::BlockingQueuedConnection,
                               qReturnArg(returnValue));
     QCOMPARE(returnValue, 2);
 
@@ -1412,8 +1412,8 @@ void tst_QProperty::bindableStateAfterThreadRestart()
 void tst_QProperty::testNewStuff()
 {
     MyQObject testReadOnly;
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "setBinding: Could not set binding via bindable interface. The QBindable is read-only.");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "setBinding: Could not set binding via bindable interface. The QBindable is read-only.");
 #endif
     testReadOnly.bindableFoo().setBinding([](){return 42;});
     auto bindable = const_cast<const MyQObject&>(testReadOnly).bindableFoo();
@@ -1450,7 +1450,7 @@ void tst_QProperty::testNewStuff()
             return object.barData / 2;
     };
 
-    object.bindableFoo().setBinding(Qt::makePropertyBinding(f2));
+    object.bindableFoo().setBinding(BobUI::makePropertyBinding(f2));
     QVERIFY(object.bindableFoo().hasBinding());
     QCOMPARE(object.foo(), 333);
     auto oldBinding = object.bindableFoo().setBinding(QPropertyBinding<int>());
@@ -1487,7 +1487,7 @@ void tst_QProperty::testNewStuff()
     QCOMPARE(object.foo(), 24);
 
     auto isCurrentlyEvaluatingBinding = []() {
-        return QtPrivate::isAnyBindingEvaluating();
+        return BobUIPrivate::isAnyBindingEvaluating();
     };
     QVERIFY(!isCurrentlyEvaluatingBinding());
     QProperty<bool> evaluationDetector {false};
@@ -1602,7 +1602,7 @@ void tst_QProperty::metaProperty()
     QVERIFY(fooBindable.isValid());
     QVERIFY(fooBindable.isBindable());
     QVERIFY(!fooBindable.hasBinding());
-    fooBindable.setBinding(Qt::makePropertyBinding(f));
+    fooBindable.setBinding(BobUI::makePropertyBinding(f));
     QVERIFY(fooBindable.hasBinding());
     QCOMPARE(object.fooChangedCount, 2);
     QCOMPARE(object.fooData.value(), 42);
@@ -1846,13 +1846,13 @@ void tst_QProperty::compareAgainstValueType()
 {
     {
         // compile time checks
-        QTestPrivate::testEqualityOperatorsCompile<QProperty<QVariantList>>();
-        QTestPrivate::testEqualityOperatorsCompile<QProperty<QVariantList>, QVariantList>();
+        BOBUIestPrivate::testEqualityOperatorsCompile<QProperty<QVariantList>>();
+        BOBUIestPrivate::testEqualityOperatorsCompile<QProperty<QVariantList>, QVariantList>();
 
         using ObjectBindableProperty = decltype(std::declval<CompareTestObject>().varList);
 
-        QTestPrivate::testEqualityOperatorsCompile<ObjectBindableProperty>();
-        QTestPrivate::testEqualityOperatorsCompile<ObjectBindableProperty, QVariantList>();
+        BOBUIestPrivate::testEqualityOperatorsCompile<ObjectBindableProperty>();
+        BOBUIestPrivate::testEqualityOperatorsCompile<ObjectBindableProperty, QVariantList>();
     }
 
     QVariantList vl {1, QString(), QByteArray {}};
@@ -1869,8 +1869,8 @@ void tst_QProperty::compareAgainstValueType()
 
 void tst_QProperty::compareAgainstDifferentType()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QProperty<qsizetype>, int>();
-    QTestPrivate::testEqualityOperatorsCompile<QProperty<qsizetype>, double>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QProperty<qsizetype>, int>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QProperty<qsizetype>, double>();
 
     QProperty<qsizetype> p1{1};
     QCOMPARE_EQ(p1, 1);
@@ -1983,8 +1983,8 @@ void tst_QProperty::propertyAdaptorBinding()
 
     struct MyBindable : QBindable<int> {
         using QBindable<int>::QBindable;
-        QtPrivate::QPropertyAdaptorSlotObject* data() {
-            return static_cast<QtPrivate::QPropertyAdaptorSlotObject*>(QUntypedBindable::data);
+        BobUIPrivate::QPropertyAdaptorSlotObject* data() {
+            return static_cast<BobUIPrivate::QPropertyAdaptorSlotObject*>(QUntypedBindable::data);
         }
     } dataBinding(&object, "foo");
     QPropertyBindingDataPointer data{&dataBinding.data()->bindingData()};
@@ -2095,20 +2095,20 @@ void tst_QProperty::propertyAdaptorBinding()
     QVERIFY(bindableObject.barData.hasBinding());
 
     // Check bad arguments
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QUntypedBindable: Property is not valid");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QUntypedBindable: Property is not valid");
 #endif
     QVERIFY(!QBindable<int>(&object, QMetaProperty{}).isValid());
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QUntypedBindable: Property foo1 has no notify signal");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QUntypedBindable: Property foo1 has no notify signal");
 #endif
     QVERIFY(!QBindable<int>(&object, "foo1").isValid());
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QUntypedBindable: Property foo of type int does not match requested type bool");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QUntypedBindable: Property foo of type int does not match requested type bool");
 #endif
     QVERIFY(!QBindable<bool>(&object, "foo").isValid());
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg,
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg,
                          "QUntypedBindable: Property foo does not belong to this object");
 #endif
     QObject qobj;
@@ -2116,14 +2116,14 @@ void tst_QProperty::propertyAdaptorBinding()
                      &qobj,
                      object.metaObject()->property(object.metaObject()->indexOfProperty("foo")))
                      .isValid());
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QUntypedBindable: No property named fizz");
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QUntypedBindable: Property is not valid");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QUntypedBindable: No property named fizz");
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QUntypedBindable: Property is not valid");
 #endif
     QVERIFY(!QBindable<int>(&object, "fizz").isValid());
 }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 struct ThreadSafetyTester : public QObject
 {
     Q_OBJECT
@@ -2133,7 +2133,7 @@ public:
 
     Q_INVOKABLE bool hasCorrectStatus() const
     {
-        return qGetBindingStorage(this)->status({}) == QtPrivate::getBindingStatus({});
+        return qGetBindingStorage(this)->status({}) == BobUIPrivate::getBindingStatus({});
     }
 
     Q_INVOKABLE bool bindingTest()
@@ -2150,7 +2150,7 @@ public:
 
 void tst_QProperty::threadSafety()
 {
-    QThread workerThread;
+    BOBUIhread workerThread;
     auto cleanup = qScopeGuard([&](){
         QMetaObject::invokeMethod(&workerThread, "quit");
         workerThread.wait();
@@ -2159,24 +2159,24 @@ void tst_QProperty::threadSafety()
     auto obj1 = scopedObj1.data();
     auto child1 = new ThreadSafetyTester(obj1);
     obj1->moveToThread(&workerThread);
-    const auto mainThreadBindingStatus = QtPrivate::getBindingStatus({});
+    const auto mainThreadBindingStatus = BobUIPrivate::getBindingStatus({});
     QCOMPARE(qGetBindingStorage(child1)->status({}), nullptr);
     workerThread.start();
 
     bool correctStatus = false;
-    bool ok = QMetaObject::invokeMethod(obj1, "hasCorrectStatus", Qt::BlockingQueuedConnection,
+    bool ok = QMetaObject::invokeMethod(obj1, "hasCorrectStatus", BobUI::BlockingQueuedConnection,
             Q_RETURN_ARG(bool, correctStatus));
     QVERIFY(ok);
     QVERIFY(correctStatus);
 
     bool bindingWorks = false;
-    ok = QMetaObject::invokeMethod(obj1, "bindingTest", Qt::BlockingQueuedConnection,
+    ok = QMetaObject::invokeMethod(obj1, "bindingTest", BobUI::BlockingQueuedConnection,
             Q_RETURN_ARG(bool, bindingWorks));
     QVERIFY(ok);
     QVERIFY(bindingWorks);
 
     correctStatus = false;
-    ok = QMetaObject::invokeMethod(child1, "hasCorrectStatus", Qt::BlockingQueuedConnection,
+    ok = QMetaObject::invokeMethod(child1, "hasCorrectStatus", BobUI::BlockingQueuedConnection,
             Q_RETURN_ARG(bool, correctStatus));
     QVERIFY(ok);
     QVERIFY(correctStatus);
@@ -2190,7 +2190,7 @@ void tst_QProperty::threadSafety()
 
     obj2->moveToThread(&workerThread);
     correctStatus = false;
-    ok = QMetaObject::invokeMethod(obj2, "hasCorrectStatus", Qt::BlockingQueuedConnection,
+    ok = QMetaObject::invokeMethod(obj2, "hasCorrectStatus", BobUI::BlockingQueuedConnection,
             Q_RETURN_ARG(bool, correctStatus));
 
     QVERIFY(ok);
@@ -2209,10 +2209,10 @@ void tst_QProperty::threadSafety()
     QCOMPARE(obj3->objectName(), "moved again");
 }
 
-class QPropertyUsingThread : public QThread
+class QPropertyUsingThread : public BOBUIhread
 {
 public:
-    QPropertyUsingThread(QObject **dest, QThread *destThread) : dest(dest), destThread(destThread) {}
+    QPropertyUsingThread(QObject **dest, BOBUIhread *destThread) : dest(dest), destThread(destThread) {}
     void run() override
     {
         scopedObj1.reset(new ThreadSafetyTester());
@@ -2225,7 +2225,7 @@ public:
     }
     std::unique_ptr<ThreadSafetyTester> scopedObj1;
     QObject **dest;
-    QThread *destThread;
+    BOBUIhread *destThread;
 };
 
 void tst_QProperty::threadSafety2()
@@ -2233,7 +2233,7 @@ void tst_QProperty::threadSafety2()
     std::unique_ptr<QObject> movedObj;
     {
         QObject *tmp = nullptr;
-        QPropertyUsingThread workerThread(&tmp, QThread::currentThread());
+        QPropertyUsingThread workerThread(&tmp, BOBUIhread::currentThread());
         workerThread.start();
         workerThread.quit();
         workerThread.wait();
@@ -2243,7 +2243,7 @@ void tst_QProperty::threadSafety2()
     QCOMPARE(movedObj->objectName(), "test");
     QCOMPARE(movedObj->children().first()->objectName(), "child");
 }
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
 struct CustomType
 {
@@ -2418,8 +2418,8 @@ void tst_QProperty::bindingGroupMovingBindingData()
     auto bindingData = testerPriv->bindingStorage.bindingData(&tester->property);
     QVERIFY(bindingData); // we have a notifier, so there should be binding data
 
-    Qt::beginPropertyUpdateGroup();
-    auto cleanup = qScopeGuard([](){ Qt::endPropertyUpdateGroup(); });
+    BobUI::beginPropertyUpdateGroup();
+    auto cleanup = qScopeGuard([](){ BobUI::endPropertyUpdateGroup(); });
     tester->property = 42;
     QCOMPARE(testerPriv->bindingStorage.bindingData(&tester->property), bindingData);
     auto proxyData = QPropertyBindingDataPointer::proxyData(bindingData);
@@ -2455,8 +2455,8 @@ void tst_QProperty::bindingGroupBindingDeleted()
     });
     auto handler = toBeDeleted->property.onValueChanged([&]() { calledHandler = true; } );
     {
-        Qt::beginPropertyUpdateGroup();
-        auto cleanup = qScopeGuard([](){ Qt::endPropertyUpdateGroup(); });
+        BobUI::beginPropertyUpdateGroup();
+        auto cleanup = qScopeGuard([](){ BobUI::endPropertyUpdateGroup(); });
         QVERIFY(toBeDeleted);
         toBeDeleted->property = 42;
         // ASAN should not complain here
@@ -2540,8 +2540,8 @@ void tst_QProperty::selfBindingShouldNotCrash()
 
 void tst_QProperty::qpropertyAlias()
 {
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     std::unique_ptr<QProperty<int>> i {new QProperty<int>};
     QPropertyAlias<int> alias(i.get());
     QVERIFY(alias.isValid());
@@ -2556,7 +2556,7 @@ void tst_QProperty::qpropertyAlias()
     QCOMPARE(alias.value(), 42);
     i.reset();
     QVERIFY(!alias.isValid());
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 }
 
@@ -2742,8 +2742,8 @@ void tst_QProperty::derefFromObserver()
     QCOMPARE(target, 8);
 }
 
-QTEST_MAIN(tst_QProperty);
+BOBUIEST_MAIN(tst_QProperty);
 
-#undef QT_SOURCE_LOCATION_NAMESPACE
+#undef BOBUI_SOURCE_LOCATION_NAMESPACE
 
 #include "tst_qproperty.moc"

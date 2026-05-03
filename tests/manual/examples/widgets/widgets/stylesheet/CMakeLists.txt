@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(stylesheet LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/widgets/stylesheet")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(stylesheet
+bobui_add_executable(stylesheet
     main.cpp
     mainwindow.cpp mainwindow.h mainwindow.ui
     stylesheeteditor.cpp stylesheeteditor.h stylesheeteditor.ui
@@ -26,9 +26,9 @@ set_target_properties(stylesheet PROPERTIES
 )
 
 target_link_libraries(stylesheet PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
 # Resources:
@@ -70,7 +70,7 @@ set(stylesheet_resource_files
     "qss/pagefold.qss"
 )
 
-qt_add_resources(stylesheet "stylesheet"
+bobui_add_resources(stylesheet "stylesheet"
     PREFIX
         "/"
     FILES

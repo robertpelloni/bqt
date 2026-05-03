@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGui/QFontDatabase>
+#include <BOBUIest>
+#include <BobUIGui/QFontDatabase>
 
 #include <qrawfont.h>
 #include <private/qrawfont_p.h>
@@ -10,7 +10,7 @@
 class tst_QRawFont: public QObject
 {
     Q_OBJECT
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 private slots:
     void init();
     void initTestCase();
@@ -68,8 +68,8 @@ private slots:
 
     void fallbackFontsOrder();
 
-    void qtbug65923_partal_clone_data();
-    void qtbug65923_partal_clone();
+    void bobuibug65923_partal_clone_data();
+    void bobuibug65923_partal_clone();
 
     void zeroEmSquare();
 
@@ -78,10 +78,10 @@ private:
     QString testFontBoldItalic;
     QString testFontOs2V1;
     QString testFontNoEmSquare;
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 };
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 Q_DECLARE_METATYPE(QFont::HintingPreference)
 Q_DECLARE_METATYPE(QFont::Style)
 Q_DECLARE_METATYPE(QFont::Weight)
@@ -120,12 +120,12 @@ void tst_QRawFont::invalidRawFont()
 
 void tst_QRawFont::explicitRawFontNotLoadedInDatabase_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::explicitRawFontNotLoadedInDatabase()
@@ -140,12 +140,12 @@ void tst_QRawFont::explicitRawFontNotLoadedInDatabase()
 
 void tst_QRawFont::explicitRawFontNotAvailableInSystem_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::explicitRawFontNotAvailableInSystem()
@@ -164,14 +164,14 @@ void tst_QRawFont::explicitRawFontNotAvailableInSystem()
 
 void tst_QRawFont::correctFontData_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("expectedFamilyName");
-    QTest::addColumn<QFont::Style>("style");
-    QTest::addColumn<QFont::Weight>("weight");
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
-    QTest::addColumn<qreal>("unitsPerEm");
-    QTest::addColumn<qreal>("pixelSize");
-    QTest::addColumn<int>("capHeight");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("expectedFamilyName");
+    BOBUIest::addColumn<QFont::Style>("style");
+    BOBUIest::addColumn<QFont::Weight>("weight");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<qreal>("unitsPerEm");
+    BOBUIest::addColumn<qreal>("pixelSize");
+    BOBUIest::addColumn<int>("capHeight");
 
     int hintingPreferences[] = {
         int(QFont::PreferDefaultHinting),
@@ -188,9 +188,9 @@ void tst_QRawFont::correctFontData_data()
                       + QLatin1String(": hintingPreference=")
                       + QString::number(*hintingPreference);
 
-        QTest::newRow(qPrintable(title))
+        BOBUIest::newRow(qPrintable(title))
                 << fileName
-                << QString::fromLatin1("QtBidiTestFont")
+                << QString::fromLatin1("BobUIBidiTestFont")
                 << QFont::StyleNormal
                 << QFont::Normal
                 << QFont::HintingPreference(*hintingPreference)
@@ -203,9 +203,9 @@ void tst_QRawFont::correctFontData_data()
               + QLatin1String(": hintingPreference=")
               + QString::number(*hintingPreference);
 
-        QTest::newRow(qPrintable(title))
+        BOBUIest::newRow(qPrintable(title))
                 << fileName
-                << QString::fromLatin1("QtBidiTestFont")
+                << QString::fromLatin1("BobUIBidiTestFont")
                 << QFont::StyleItalic
                 << QFont::Bold
                 << QFont::HintingPreference(*hintingPreference)
@@ -218,9 +218,9 @@ void tst_QRawFont::correctFontData_data()
               + QLatin1String(": hintingPreference=")
               + QString::number(*hintingPreference);
 
-        QTest::newRow(qPrintable(title))
+        BOBUIest::newRow(qPrintable(title))
                 << fileName
-                << QString::fromLatin1("QtBidiTestFont")
+                << QString::fromLatin1("BobUIBidiTestFont")
                 << QFont::StyleNormal
                 << QFont::Normal
                 << QFont::HintingPreference(*hintingPreference)
@@ -291,12 +291,12 @@ void tst_QRawFont::glyphIndices()
 
 void tst_QRawFont::advances_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::advances()
@@ -371,12 +371,12 @@ void tst_QRawFont::textLayout()
     int id = QFontDatabase::addApplicationFont(testFont);
     QVERIFY(id >= 0);
 
-    QString familyName = QString::fromLatin1("QtBidiTestFont");
+    QString familyName = QString::fromLatin1("BobUIBidiTestFont");
     QFont font(familyName);
     font.setPixelSize(18.0);
     QCOMPARE(QFontInfo(font).family(), familyName);
 
-    QTextLayout layout(QLatin1String("Foobar"));
+    BOBUIextLayout layout(QLatin1String("Foobar"));
     layout.setFont(font);
     layout.setCacheEnabled(true);
     layout.beginLayout();
@@ -403,12 +403,12 @@ void tst_QRawFont::textLayout()
 
 void tst_QRawFont::fontTable_data()
 {
-    QTest::addColumn<QFont::Tag>("tag");
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
-    QTest::addColumn<int>("offset");
-    QTest::addColumn<quint32>("expectedValue");
+    BOBUIest::addColumn<QFont::Tag>("tag");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::addColumn<quint32>("expectedValue");
 
-    QTest::newRow("Head table, magic number, default hinting")
+    BOBUIest::newRow("Head table, magic number, default hinting")
             << QFont::Tag("head")
             << QFont::PreferDefaultHinting
             << 12
@@ -416,7 +416,7 @@ void tst_QRawFont::fontTable_data()
                 ? 0x5F0F3CF5
                 : 0xF53C0F5F);
 
-    QTest::newRow("Head table, magic number, no hinting")
+    BOBUIest::newRow("Head table, magic number, no hinting")
             << QFont::Tag("head")
             << QFont::PreferNoHinting
             << 12
@@ -424,7 +424,7 @@ void tst_QRawFont::fontTable_data()
                 ? 0x5F0F3CF5
                 : 0xF53C0F5F);
 
-    QTest::newRow("Head table, magic number, vertical hinting")
+    BOBUIest::newRow("Head table, magic number, vertical hinting")
             << QFont::Tag("head")
             << QFont::PreferVerticalHinting
             << 12
@@ -432,7 +432,7 @@ void tst_QRawFont::fontTable_data()
                 ? 0x5F0F3CF5
                 : 0xF53C0F5F);
 
-    QTest::newRow("Head table, magic number, full hinting")
+    BOBUIest::newRow("Head table, magic number, full hinting")
             << QFont::Tag("head")
             << QFont::PreferFullHinting
             << 12
@@ -465,15 +465,15 @@ Q_DECLARE_METATYPE(WritingSystemList)
 
 void tst_QRawFont::supportedWritingSystems_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<WritingSystemList>("writingSystems");
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<WritingSystemList>("writingSystems");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
     for (int hintingPreference=QFont::PreferDefaultHinting;
          hintingPreference<=QFont::PreferFullHinting;
          ++hintingPreference) {
 
-        QTest::newRow(qPrintable(QString::fromLatin1("testfont.ttf, hintingPreference=%1")
+        BOBUIest::newRow(qPrintable(QString::fromLatin1("testfont.ttf, hintingPreference=%1")
                       .arg(hintingPreference)))
             << testFont
             << (QList<QFontDatabase::WritingSystem>()
@@ -482,7 +482,7 @@ void tst_QRawFont::supportedWritingSystems_data()
                   << QFontDatabase::Vietnamese) // Vietnamese uses same unicode bits as Latin
             << QFont::HintingPreference(hintingPreference);
 
-        QTest::newRow(qPrintable(QString::fromLatin1("testfont_bold_italic.ttf, hintingPreference=%1")
+        BOBUIest::newRow(qPrintable(QString::fromLatin1("testfont_bold_italic.ttf, hintingPreference=%1")
                       .arg(hintingPreference)))
             << testFontBoldItalic
             << (QList<QFontDatabase::WritingSystem>()
@@ -512,10 +512,10 @@ void tst_QRawFont::supportedWritingSystems()
 
 void tst_QRawFont::supportsCharacter_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
-    QTest::addColumn<QChar>("character");
-    QTest::addColumn<bool>("shouldBeSupported");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QChar>("character");
+    BOBUIest::addColumn<bool>("shouldBeSupported");
 
     const char *fileNames[2] = {
         "testfont.ttf",
@@ -534,7 +534,7 @@ void tst_QRawFont::supportsCharacter_data()
                     QString title = QString::fromLatin1("%1, character=0x%2, hintingPreference=%3")
                             .arg(fileName).arg(QString::number(ch, 16)).arg(hintingPreference);
 
-                    QTest::newRow(qPrintable(title))
+                    BOBUIest::newRow(qPrintable(title))
                             << fileName
                             << QFont::HintingPreference(hintingPreference)
                             << QChar::fromLatin1(ch)
@@ -546,14 +546,14 @@ void tst_QRawFont::supportsCharacter_data()
                 QString title = QString::fromLatin1("%1, character=0x%2, hintingPreference=%3")
                         .arg(fileName).arg(QString::number(ch, 16)).arg(hintingPreference);
 
-                QTest::newRow(qPrintable(title))
+                BOBUIest::newRow(qPrintable(title))
                         << fileName
                         << QFont::HintingPreference(hintingPreference)
                         << QChar(ch)
                         << true;
             }
 
-            QTest::newRow(qPrintable(QString::fromLatin1("Missing character, %1, hintingPreference=%2")
+            BOBUIest::newRow(qPrintable(QString::fromLatin1("Missing character, %1, hintingPreference=%2")
                           .arg(fileName).arg(hintingPreference)))
                     << fileName
                     << QFont::HintingPreference(hintingPreference)
@@ -578,10 +578,10 @@ void tst_QRawFont::supportsCharacter()
 
 void tst_QRawFont::supportsUcs4Character_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
-    QTest::addColumn<quint32>("ucs4");
-    QTest::addColumn<bool>("shouldBeSupported");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<quint32>("ucs4");
+    BOBUIest::addColumn<bool>("shouldBeSupported");
 
     // Gothic text
     for (int hintingPreference=QFont::PreferDefaultHinting;
@@ -593,7 +593,7 @@ void tst_QRawFont::supportsUcs4Character_data()
                 QString title = QString::fromLatin1("%1, character=0x%2, hintingPreference=%3")
                         .arg(fileName).arg(QString::number(ch, 16)).arg(hintingPreference);
 
-                QTest::newRow(qPrintable(title))
+                BOBUIest::newRow(qPrintable(title))
                         << fileName
                         << QFont::HintingPreference(hintingPreference)
                         << ch
@@ -605,7 +605,7 @@ void tst_QRawFont::supportsUcs4Character_data()
                 QString title = QString::fromLatin1("%1, character=0x%2, hintingPreference=%3")
                         .arg(fileName).arg(QString::number(ch, 16)).arg(hintingPreference);
 
-                QTest::newRow(qPrintable(title))
+                BOBUIest::newRow(qPrintable(title))
                         << fileName
                         << QFont::HintingPreference(hintingPreference)
                         << ch
@@ -630,11 +630,11 @@ void tst_QRawFont::supportsUcs4Character()
 
 void tst_QRawFont::fromFont_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
-    QTest::addColumn<QString>("familyName");
-    QTest::addColumn<QFontDatabase::WritingSystem>("writingSystem");
-    QTest::addColumn<QFont::StyleStrategy>("styleStrategy");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QString>("familyName");
+    BOBUIest::addColumn<QFontDatabase::WritingSystem>("writingSystem");
+    BOBUIest::addColumn<QFont::StyleStrategy>("styleStrategy");
 
     for (int i=QFont::PreferDefaultHinting; i<=QFont::PreferFullHinting; ++i) {
         QString titleBase = QString::fromLatin1("%2, hintingPreference=%1, writingSystem=%3")
@@ -644,10 +644,10 @@ void tst_QRawFont::fromFont_data()
             QFontDatabase::WritingSystem writingSystem = QFontDatabase::Any;
 
             QString title = titleBase.arg(fileName).arg(writingSystem);
-            QTest::newRow(qPrintable(title))
+            BOBUIest::newRow(qPrintable(title))
                     << fileName
                     << QFont::HintingPreference(i)
-                    << "QtBidiTestFont"
+                    << "BobUIBidiTestFont"
                     << writingSystem
                     << QFont::PreferDefault;
         }
@@ -657,10 +657,10 @@ void tst_QRawFont::fromFont_data()
             QFontDatabase::WritingSystem writingSystem = QFontDatabase::Hebrew;
 
             QString title = titleBase.arg(fileName).arg(writingSystem);
-            QTest::newRow(qPrintable(title))
+            BOBUIest::newRow(qPrintable(title))
                     << fileName
                     << QFont::HintingPreference(i)
-                    << "QtBidiTestFont"
+                    << "BobUIBidiTestFont"
                     << writingSystem
                     << QFont::PreferDefault;
         }
@@ -670,10 +670,10 @@ void tst_QRawFont::fromFont_data()
             QFontDatabase::WritingSystem writingSystem = QFontDatabase::Latin;
 
             QString title = titleBase.arg(fileName).arg(writingSystem);
-            QTest::newRow(qPrintable(title))
+            BOBUIest::newRow(qPrintable(title))
                     << fileName
                     << QFont::HintingPreference(i)
-                    << "QtBidiTestFont"
+                    << "BobUIBidiTestFont"
                     << writingSystem
                     << QFont::PreferDefault;
         }
@@ -684,10 +684,10 @@ void tst_QRawFont::fromFont_data()
         QFontDatabase::WritingSystem writingSystem = QFontDatabase::Arabic;
 
         QString title = QStringLiteral("No font merging + unsupported script");
-        QTest::newRow(qPrintable(title))
+        BOBUIest::newRow(qPrintable(title))
                 << fileName
                 << QFont::PreferDefaultHinting
-                << "QtBidiTestFont"
+                << "BobUIBidiTestFont"
                 << writingSystem
                 << QFont::NoFontMerging;
     }
@@ -722,12 +722,12 @@ void tst_QRawFont::fromFont()
 
 void tst_QRawFont::copyConstructor_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting preference") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting preference") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting preference") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting preference") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::copyConstructor()
@@ -790,12 +790,12 @@ void tst_QRawFont::copyConstructor()
 
 void tst_QRawFont::detach_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting preference") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting preference") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting preference") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting preference") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::detach()
@@ -866,12 +866,12 @@ void tst_QRawFont::detach()
 
 void tst_QRawFont::unsupportedWritingSystem_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting preference") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting preference") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting preference") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting preference") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::unsupportedWritingSystem()
@@ -880,21 +880,21 @@ void tst_QRawFont::unsupportedWritingSystem()
 
     int id = QFontDatabase::addApplicationFont(testFont);
 
-    QFont font("QtBidiTestFont");
+    QFont font("BobUIBidiTestFont");
     font.setHintingPreference(hintingPreference);
     font.setPixelSize(12.0);
 
     QRawFont rawFont = QRawFont::fromFont(font, QFontDatabase::Any);
-    QCOMPARE(rawFont.familyName(), QString::fromLatin1("QtBidiTestFont"));
+    QCOMPARE(rawFont.familyName(), QString::fromLatin1("BobUIBidiTestFont"));
     QCOMPARE(rawFont.pixelSize(), 12.0);
 
     rawFont = QRawFont::fromFont(font, QFontDatabase::Hebrew);
-    QCOMPARE(rawFont.familyName(), QString::fromLatin1("QtBidiTestFont"));
+    QCOMPARE(rawFont.familyName(), QString::fromLatin1("BobUIBidiTestFont"));
     QCOMPARE(rawFont.pixelSize(), 12.0);
 
     QString arabicText = QFontDatabase::writingSystemSample(QFontDatabase::Arabic).simplified().remove(QLatin1Char(' '));
 
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setFont(font);
     layout.setText(arabicText);
     layout.setCacheEnabled(true);
@@ -907,7 +907,7 @@ void tst_QRawFont::unsupportedWritingSystem()
 
     QGlyphRun glyphs = glyphRuns.at(0);
     QRawFont layoutFont = glyphs.rawFont();
-    QVERIFY(layoutFont.familyName() != QString::fromLatin1("QtBidiTestFont"));
+    QVERIFY(layoutFont.familyName() != QString::fromLatin1("BobUIBidiTestFont"));
     QCOMPARE(layoutFont.pixelSize(), 12.0);
 
     rawFont = QRawFont::fromFont(font, QFontDatabase::Arabic);
@@ -919,19 +919,19 @@ void tst_QRawFont::unsupportedWritingSystem()
 
 void tst_QRawFont::rawFontSetPixelSize_data()
 {
-    QTest::addColumn<QFont::HintingPreference>("hintingPreference");
+    BOBUIest::addColumn<QFont::HintingPreference>("hintingPreference");
 
-    QTest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
-    QTest::newRow("No hinting preference") << QFont::PreferNoHinting;
-    QTest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
-    QTest::newRow("Full hinting preference") << QFont::PreferFullHinting;
+    BOBUIest::newRow("Default hinting preference") << QFont::PreferDefaultHinting;
+    BOBUIest::newRow("No hinting preference") << QFont::PreferNoHinting;
+    BOBUIest::newRow("Vertical hinting preference") << QFont::PreferVerticalHinting;
+    BOBUIest::newRow("Full hinting preference") << QFont::PreferFullHinting;
 }
 
 void tst_QRawFont::rawFontSetPixelSize()
 {
     QFETCH(QFont::HintingPreference, hintingPreference);
 
-    QTextLayout layout("Foobar");
+    BOBUIextLayout layout("Foobar");
 
     QFont font = layout.font();
     font.setHintingPreference(hintingPreference);
@@ -1018,7 +1018,7 @@ void tst_QRawFont::fallbackFontsOrder()
 {
     int id = QFontDatabase::addApplicationFont(testFont);
 
-    QFont font("QtBidiTestFont");
+    QFont font("BobUIBidiTestFont");
     font.setPixelSize(12.0);
 
     QString arabicText = QFontDatabase::writingSystemSample(QFontDatabase::Arabic);
@@ -1027,7 +1027,7 @@ void tst_QRawFont::fallbackFontsOrder()
     // a new text containing both a space and Arabic characters.
     QVERIFY(arabicText.contains(QLatin1Char(' ')));
 
-    QTextLayout layout;
+    BOBUIextLayout layout;
     layout.setFont(font);
     layout.setText(arabicText);
     layout.setCacheEnabled(true);
@@ -1038,9 +1038,9 @@ void tst_QRawFont::fallbackFontsOrder()
     QList<QGlyphRun> glyphRuns = layout.glyphRuns();
 
 #ifdef Q_OS_ANDROID
-    QEXPECT_FAIL("", "QTBUG-69217", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-69217", Continue);
 #endif
-    // Since QtBidiTestFont does not support Arabic nor the space, both should map to
+    // Since BobUIBidiTestFont does not support Arabic nor the space, both should map to
     // the same font. If this fails, it is an indication that the list of fallbacks fonts
     // is not sorted by writing system support.
     QCOMPARE(glyphRuns.size(), 1);
@@ -1048,15 +1048,15 @@ void tst_QRawFont::fallbackFontsOrder()
     QFontDatabase::removeApplicationFont(id);
 }
 
-void tst_QRawFont::qtbug65923_partal_clone_data()
+void tst_QRawFont::bobuibug65923_partal_clone_data()
 {
-    QTest::addColumn<bool>("shouldClone");
+    BOBUIest::addColumn<bool>("shouldClone");
 
-    QTest::newRow("Without cloning font engine") << false;
-    QTest::newRow("Cloning font engine") << true;
+    BOBUIest::newRow("Without cloning font engine") << false;
+    BOBUIest::newRow("Cloning font engine") << true;
 }
 
-void tst_QRawFont::qtbug65923_partal_clone()
+void tst_QRawFont::bobuibug65923_partal_clone()
 {
     QFile file(testFont);
     QVERIFY(file.open(QIODevice::ReadOnly));
@@ -1077,7 +1077,7 @@ void tst_QRawFont::qtbug65923_partal_clone()
     }
 
     // This will detach if data is shared with the raw font. If the raw font has
-    // a naked reference to the data, without informing Qt of it via the ref count
+    // a naked reference to the data, without informing BobUI of it via the ref count
     // of the byte array, this will result in clearing 'live' data.
     fontData.fill('\0');
 
@@ -1090,8 +1090,8 @@ void tst_QRawFont::zeroEmSquare()
     QVERIFY(!rawFont.isValid() || rawFont.unitsPerEm() > 0);
 }
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
-QTEST_MAIN(tst_QRawFont)
+BOBUIEST_MAIN(tst_QRawFont)
 #include "tst_qrawfont.moc"
 

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRASTERWINDOW_H
 #define QRASTERWINDOW_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/QPaintDeviceWindow>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/QPaintDeviceWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRasterWindowPrivate;
 
@@ -29,6 +29,6 @@ private:
     Q_DISABLE_COPY(QRasterWindow)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

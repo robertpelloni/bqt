@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengltextureuploader_p.h"
 
@@ -80,7 +80,7 @@
 #define GL_SRGB_ALPHA                     0x8C42
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 qsizetype QOpenGLTextureUploader::textureImage(GLenum target, const QImage &image, QOpenGLTextureUploader::BindOptions options, QSize maxSize)
 {
@@ -367,7 +367,7 @@ qsizetype QOpenGLTextureUploader::textureImage(GLenum target, const QImage &imag
     }
 
     if (newSize != tx.size())
-        tx = tx.scaled(newSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        tx = tx.scaled(newSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
 
     // Handle cases where the QImage is actually a sub image of its image data:
     qsizetype naturalBpl = ((qsizetype(tx.width()) * tx.depth() + 31) >> 5) << 2;
@@ -381,4 +381,4 @@ qsizetype QOpenGLTextureUploader::textureImage(GLenum target, const QImage &imag
     return cost;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qsqldatabase.h>
@@ -20,7 +20,7 @@
 
 Q_DECLARE_METATYPE(QSqlDriver::NotificationSource)
 
-QT_FORWARD_DECLARE_CLASS(QSqlDatabase)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlDatabase)
 struct FieldDef;
 
 class tst_QSqlDatabase : public QObject
@@ -221,7 +221,7 @@ struct FieldDef {
 static int createFieldTable(const FieldDef fieldDefs[], const QSqlDatabase &db)
 {
     QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
-    const QString tableName = qTableName("qtestfields", __FILE__, db);
+    const QString tableName = qTableName("bobuiestfields", __FILE__, db);
     tst_Databases::safeDropTables(db, {tableName});
     QSqlQuery q(db);
     // construct a create table statement consisting of all fieldtypes
@@ -257,7 +257,7 @@ void tst_QSqlDatabase::createTestTables(const QSqlDatabase &db)
 {
     if (!db.isValid())
     return;
-    const QString tableName = qTableName("qtest", __FILE__, db);
+    const QString tableName = qTableName("bobuiest", __FILE__, db);
     QSqlQuery q(db);
     QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
     if (dbType == QSqlDriver::MySqlServer) {
@@ -280,7 +280,7 @@ void tst_QSqlDatabase::createTestTables(const QSqlDatabase &db)
                " (id integer not null, t_varchar varchar(40) not null, "
                "t_char char(40), t_numeric numeric(6, 3), primary key (id, t_varchar))"));
     }
-    QString qry = "create table " + qTableName("qtest test", __FILE__, db)
+    QString qry = "create table " + qTableName("bobuiest test", __FILE__, db)
         + '('
         + db.driver()->escapeIdentifier(QLatin1String("test test"), QSqlDriver::FieldName)
         + " int not null primary key)";
@@ -299,19 +299,19 @@ void tst_QSqlDatabase::dropTestTables(const QSqlDatabase &db)
     }
 
     // drop the view first, otherwise we'll get dependency problems
-    tst_Databases::safeDropViews(db, {qTableName("qtest_view", __FILE__, db),
-                                      qTableName("qtest_view2", __FILE__, db)});
-    QStringList tableNames = {qTableName("qtest", __FILE__, db),
-                              qTableName("qtest test", __FILE__, db),
-                              qTableName("qtestfields", __FILE__, db)};
+    tst_Databases::safeDropViews(db, {qTableName("bobuiest_view", __FILE__, db),
+                                      qTableName("bobuiest_view2", __FILE__, db)});
+    QStringList tableNames = {qTableName("bobuiest", __FILE__, db),
+                              qTableName("bobuiest test", __FILE__, db),
+                              qTableName("bobuiestfields", __FILE__, db)};
 
     QSqlQuery q(0, db);
     if (dbType == QSqlDriver::PostgreSQL) {
-        q.exec("drop schema " + qTableName("qtestschema", __FILE__, db) + " cascade");
-        q.exec("drop schema " + qTableName("qtestScHeMa", __FILE__, db) + " cascade");
+        q.exec("drop schema " + qTableName("bobuiestschema", __FILE__, db) + " cascade");
+        q.exec("drop schema " + qTableName("bobuiestScHeMa", __FILE__, db) + " cascade");
     }
 
-    tableNames << db.driver()->escapeIdentifier(qTableName("qtest test", __FILE__, db),
+    tableNames << db.driver()->escapeIdentifier(qTableName("bobuiest test", __FILE__, db),
                                                 QSqlDriver::TableName);
     tst_Databases::safeDropTables(db, tableNames);
 
@@ -328,14 +328,14 @@ void tst_QSqlDatabase::populateTestTables(const QSqlDatabase &db)
     if (!db.isValid())
         return;
     QSqlQuery q(db);
-    const QString qtest(qTableName("qtest", __FILE__, db));
+    const QString bobuiest(qTableName("bobuiest", __FILE__, db));
 
-    q.exec("delete from " + qtest); //non-fatal
-    QVERIFY_SQL(q, exec("insert into " + qtest + " (id, t_varchar, t_char, t_numeric) values (0, 'VarChar0', 'Char0', 1.1)"));
-    QVERIFY_SQL(q, exec("insert into " + qtest + " (id, t_varchar, t_char, t_numeric) values (1, 'VarChar1', 'Char1', 2.2)"));
-    QVERIFY_SQL(q, exec("insert into " + qtest + " (id, t_varchar, t_char, t_numeric) values (2, 'VarChar2', 'Char2', 3.3)"));
-    QVERIFY_SQL(q, exec("insert into " + qtest + " (id, t_varchar, t_char, t_numeric) values (3, 'VarChar3', 'Char3', 4.4)"));
-    QVERIFY_SQL(q, exec("insert into " + qtest + " (id, t_varchar, t_char, t_numeric) values (4, 'VarChar4', NULL, NULL)"));
+    q.exec("delete from " + bobuiest); //non-fatal
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " (id, t_varchar, t_char, t_numeric) values (0, 'VarChar0', 'Char0', 1.1)"));
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " (id, t_varchar, t_char, t_numeric) values (1, 'VarChar1', 'Char1', 2.2)"));
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " (id, t_varchar, t_char, t_numeric) values (2, 'VarChar2', 'Char2', 3.3)"));
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " (id, t_varchar, t_char, t_numeric) values (3, 'VarChar3', 'Char3', 4.4)"));
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " (id, t_varchar, t_char, t_numeric) values (4, 'VarChar4', NULL, NULL)"));
 }
 
 void tst_QSqlDatabase::initTestCase()
@@ -375,15 +375,15 @@ void tst_QSqlDatabase::generic_data(const QString& engine)
 {
     if ( dbs.fillTestTable(engine) == 0 ) {
         if(engine.isEmpty())
-           QSKIP( "No database drivers are available in this Qt configuration");
+           QSKIP( "No database drivers are available in this BobUI configuration");
         else
-           QSKIP( (QString("No database drivers of type %1 are available in this Qt configuration").arg(engine)).toLocal8Bit());
+           QSKIP( (QString("No database drivers of type %1 are available in this BobUI configuration").arg(engine)).toLocal8Bit());
     }
 }
 
 void tst_QSqlDatabase::addDatabase()
 {
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QSqlDatabase: can not load requested driver 'BLAH_FOO_NONEXISTENT_DRIVER', available drivers: "
                          + QSqlDatabase::drivers().join(QLatin1Char(' ')).toLatin1());
     {
@@ -426,16 +426,16 @@ void tst_QSqlDatabase::tables()
     CHECK_DATABASE(db);
     QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
 
-    const auto qtest(qTableName("qtest", __FILE__, db, false)),
-               qtest_view(qTableName("qtest_view", __FILE__, db, false)),
+    const auto bobuiest(qTableName("bobuiest", __FILE__, db, false)),
+               bobuiest_view(qTableName("bobuiest_view", __FILE__, db, false)),
                temp_tab(qTableName("test_tab", __FILE__, db, false)),
-               qtestspace(qTableName("qtest test", __FILE__, db, false));
+               bobuiestspace(qTableName("bobuiest test", __FILE__, db, false));
 
     bool views = true;
     bool tempTables = false;
 
     QSqlQuery q(db);
-    if (!q.exec("CREATE VIEW " + qtest_view + " as select * from " + db.driver()->escapeIdentifier(qtest, QSqlDriver::TableName))) {
+    if (!q.exec("CREATE VIEW " + bobuiest_view + " as select * from " + db.driver()->escapeIdentifier(bobuiest, QSqlDriver::TableName))) {
         qDebug("DBMS '%s' cannot handle VIEWs: %s",
                qPrintable(tst_Databases::dbToString(db)),
                qPrintable(tst_Databases::printError(q.lastError())));
@@ -448,38 +448,38 @@ void tst_QSqlDatabase::tables()
     }
 
     QStringList tables = db.tables(QSql::Tables);
-    QVERIFY(tables.contains(qtest, Qt::CaseInsensitive));
-    QVERIFY(!tables.contains("sql_features", Qt::CaseInsensitive)); //check for postgres 7.4 internal tables
+    QVERIFY(tables.contains(bobuiest, BobUI::CaseInsensitive));
+    QVERIFY(!tables.contains("sql_features", BobUI::CaseInsensitive)); //check for postgres 7.4 internal tables
     if (views) {
-        QVERIFY(!tables.contains(qtest_view, Qt::CaseInsensitive));
+        QVERIFY(!tables.contains(bobuiest_view, BobUI::CaseInsensitive));
     }
     if (tempTables)
-        QVERIFY(tables.contains(temp_tab, Qt::CaseInsensitive));
+        QVERIFY(tables.contains(temp_tab, BobUI::CaseInsensitive));
 
     tables = db.tables(QSql::Views);
     if (views) {
-        if(!tables.contains(qtest_view, Qt::CaseInsensitive))
-            qDebug() << "failed to find" << qtest_view << "in" << tables;
-        QVERIFY(tables.contains(qtest_view, Qt::CaseInsensitive));
+        if(!tables.contains(bobuiest_view, BobUI::CaseInsensitive))
+            qDebug() << "failed to find" << bobuiest_view << "in" << tables;
+        QVERIFY(tables.contains(bobuiest_view, BobUI::CaseInsensitive));
     }
     if (tempTables)
-        QVERIFY(!tables.contains(temp_tab, Qt::CaseInsensitive));
-    QVERIFY(!tables.contains(qtest, Qt::CaseInsensitive));
+        QVERIFY(!tables.contains(temp_tab, BobUI::CaseInsensitive));
+    QVERIFY(!tables.contains(bobuiest, BobUI::CaseInsensitive));
 
     tables = db.tables(QSql::SystemTables);
-    QVERIFY(!tables.contains(qtest, Qt::CaseInsensitive));
-    QVERIFY(!tables.contains(qtest_view, Qt::CaseInsensitive));
-    QVERIFY(!tables.contains(temp_tab, Qt::CaseInsensitive));
+    QVERIFY(!tables.contains(bobuiest, BobUI::CaseInsensitive));
+    QVERIFY(!tables.contains(bobuiest_view, BobUI::CaseInsensitive));
+    QVERIFY(!tables.contains(temp_tab, BobUI::CaseInsensitive));
 
     tables = db.tables(QSql::AllTables);
     if (views)
-        QVERIFY(tables.contains(qtest_view, Qt::CaseInsensitive));
+        QVERIFY(tables.contains(bobuiest_view, BobUI::CaseInsensitive));
     if (tempTables)
-        QVERIFY(tables.contains(temp_tab, Qt::CaseInsensitive));
-    QVERIFY(tables.contains(qtest, Qt::CaseInsensitive));
+        QVERIFY(tables.contains(temp_tab, BobUI::CaseInsensitive));
+    QVERIFY(tables.contains(bobuiest, BobUI::CaseInsensitive));
 
     if (dbType == QSqlDriver::PostgreSQL)
-        QVERIFY(tables.contains(qtestspace));
+        QVERIFY(tables.contains(bobuiestspace));
 }
 
 void tst_QSqlDatabase::whitespaceInIdentifiers()
@@ -491,7 +491,7 @@ void tst_QSqlDatabase::whitespaceInIdentifiers()
     const auto metaTypeToCheck = dbType == QSqlDriver::Oracle
         ? QMetaType(QMetaType::Double) : QMetaType(QMetaType::Int);
 
-    const auto tableName(qTableName("qtest test", __FILE__, db, true));
+    const auto tableName(qTableName("bobuiest test", __FILE__, db, true));
     QVERIFY(db.tables().contains(db.driver()->stripDelimiters(tableName, QSqlDriver::TableName)));
 
     QSqlRecord rec = db.record(tableName);
@@ -510,7 +510,7 @@ void tst_QSqlDatabase::alterTable()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    TableScope ts(db, "qtestalter", __FILE__);
+    TableScope ts(db, "bobuiestalter", __FILE__);
     QSqlQuery q(db);
 
     QVERIFY_SQL(q, exec("create table " + ts.tableName() + " (F1 char(20), F2 char(20), F3 char(20))"));
@@ -584,8 +584,8 @@ void tst_QSqlDatabase::commonFieldTest(const FieldDef fieldDefs[], const QSqlDat
 {
     CHECK_DATABASE(db);
 
-    const QStringList tableNames = { qTableName("qtestfields", __FILE__, db),
-                                     qTableName("qtestfields", __FILE__, db, false) };
+    const QStringList tableNames = { qTableName("bobuiestfields", __FILE__, db),
+                                     qTableName("bobuiestfields", __FILE__, db, false) };
 
     for (const QString &table : tableNames) {
         QSqlRecord rec = db.record(table);
@@ -615,7 +615,7 @@ void tst_QSqlDatabase::recordOCI()
     FieldDef intytm;
     FieldDef intdts;
 
-    static const QDateTime dt(QDate::currentDate(), QTime(1, 2, 3, 0));
+    static const QDateTime dt(QDate::currentDate(), BOBUIime(1, 2, 3, 0));
 
     if (hasTimeStamp) {
         tsdef = FieldDef("timestamp", QMetaType::QDateTime,  dt);
@@ -653,7 +653,7 @@ void tst_QSqlDatabase::recordOCI()
     commonFieldTest(fieldDefs, db, fieldCount);
 
     // some additional tests
-    const QString tableName = qTableName("qtestfields", __FILE__, db);
+    const QString tableName = qTableName("bobuiestfields", __FILE__, db);
     QSqlRecord rec = db.record(tableName);
     QCOMPARE(rec.field("T_NUMBER").length(), 10);
     QCOMPARE(rec.field("T_NUMBER").precision(), 5);
@@ -702,8 +702,8 @@ void tst_QSqlDatabase::recordPSQL()
         FieldDef("smallint", QMetaType::Int,          32767),
         FieldDef("serial", QMetaType::Int,            100, false),
         FieldDef("text", QMetaType::QString,           "blah"),
-        FieldDef("time(6)", QMetaType::QTime,          QTime(1, 2, 3)),
-        FieldDef("timetz", QMetaType::QTime,           QTime(1, 2, 3)),
+        FieldDef("time(6)", QMetaType::BOBUIime,          BOBUIime(1, 2, 3)),
+        FieldDef("timetz", QMetaType::BOBUIime,           BOBUIime(1, 2, 3)),
         FieldDef("timestamp(6)", QMetaType::QDateTime, QDateTime::currentDateTime()),
         FieldDef("timestamptz", QMetaType::QDateTime,  QDateTime::currentDateTime()),
         byteadef,
@@ -716,8 +716,8 @@ void tst_QSqlDatabase::recordPSQL()
     QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
     if (dbType == QSqlDriver::PostgreSQL)
         QVERIFY_SQL( q, exec("set client_min_messages='warning'"));
-    q.exec("drop sequence " + qTableName("qtestfields_t_bigserial_seq", __FILE__, db));
-    q.exec("drop sequence " + qTableName("qtestfields_t_serial_seq", __FILE__, db));
+    q.exec("drop sequence " + qTableName("bobuiestfields_t_bigserial_seq", __FILE__, db));
+    q.exec("drop sequence " + qTableName("bobuiestfields_t_serial_seq", __FILE__, db));
 
     const int fieldCount = createFieldTable(fieldDefs, db);
     QVERIFY(fieldCount > 0);
@@ -743,7 +743,7 @@ void tst_QSqlDatabase::recordMySQL()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
 
-    static QDateTime dt(QDate::currentDate(), QTime(1, 2, 3, 0));
+    static QDateTime dt(QDate::currentDate(), BOBUIime(1, 2, 3, 0));
     static const FieldDef fieldDefs[] = {
         FieldDef("tinyint", QMetaType::Char, 127),
         FieldDef("tinyint unsigned", QMetaType::UChar, 255),
@@ -807,7 +807,7 @@ void tst_QSqlDatabase::recordDB2()
         FieldDef("decimal(10,9)", QMetaType::Double,    1.234567891),
         FieldDef("numeric(10,9)", QMetaType::Double,    1.234567891),
         FieldDef("date", QMetaType::QDate,               QDate::currentDate()),
-        FieldDef("time", QMetaType::QTime,               QTime(1, 2, 3)),
+        FieldDef("time", QMetaType::BOBUIime,               BOBUIime(1, 2, 3)),
         FieldDef("timestamp", QMetaType::QDateTime,      QDateTime::currentDateTime()),
 //         FieldDef("graphic(20)", QMetaType::QString,       QString("Blah4")),
 //         FieldDef("vargraphic(20)", QMetaType::QString,    QString("Blah5")),
@@ -835,7 +835,7 @@ void tst_QSqlDatabase::recordIBase()
         FieldDef("float", QMetaType::Double, 1.2345),
         FieldDef("double precision", QMetaType::Double, 1.2345678),
         FieldDef("timestamp", QMetaType::QDateTime, QDateTime::currentDateTime()),
-        FieldDef("time", QMetaType::QTime, QTime::currentTime()),
+        FieldDef("time", QMetaType::BOBUIime, BOBUIime::currentTime()),
         FieldDef("decimal(18)", QMetaType::LongLong, Q_INT64_C(9223372036854775807)),
         FieldDef("numeric(5,2)", QMetaType::Double, 123.45),
         FieldDef("boolean", QMetaType::Bool, true),
@@ -855,7 +855,7 @@ void tst_QSqlDatabase::recordODBC()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
 
-    static QDateTime dt(QDate::currentDate(), QTime(1, 2, 3, 0));
+    static QDateTime dt(QDate::currentDate(), BOBUIime(1, 2, 3, 0));
     static const FieldDef fieldDefs[] = {
         FieldDef("decimal(10, 9)", QMetaType::Double,     1.123456789),
         FieldDef("numeric(5, 2)", QMetaType::Double,      123.67),
@@ -870,7 +870,7 @@ void tst_QSqlDatabase::recordODBC()
 
         FieldDef("date", QMetaType::QDate,                 QDate::currentDate()),
         FieldDef("timestamp", QMetaType::QDateTime,        dt, false),
-        FieldDef("time", QMetaType::QTime,                 dt.time()),
+        FieldDef("time", QMetaType::BOBUIime,                 dt.time()),
         FieldDef("char(20)", QMetaType::QString,           "Blah"),
         FieldDef("varchar(20)", QMetaType::QString,        "BlahBlah"),
         FieldDef("text", QMetaType::QString,               QString("blah6")),
@@ -976,7 +976,7 @@ void tst_QSqlDatabase::transaction()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
     const QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
-    const QString qtest(qTableName("qtest", __FILE__, db));
+    const QString bobuiest(qTableName("bobuiest", __FILE__, db));
 
     if (!db.driver()->hasFeature(QSqlDriver::Transactions))
         QSKIP("DBMS not transaction capable");
@@ -984,8 +984,8 @@ void tst_QSqlDatabase::transaction()
     QVERIFY(db.transaction());
 
     QSqlQuery q(db);
-    QVERIFY_SQL(q, exec("insert into " + qtest + " values (40, 'VarChar40', 'Char40', 40.40)"));
-    QVERIFY_SQL(q, exec("select * from " + qtest + " where id = 40"));
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " values (40, 'VarChar40', 'Char40', 40.40)"));
+    QVERIFY_SQL(q, exec("select * from " + bobuiest + " where id = 40"));
     QVERIFY(q.next());
     QCOMPARE(q.value(0).toInt(), 40);
     q.clear();
@@ -993,15 +993,15 @@ void tst_QSqlDatabase::transaction()
     QVERIFY(db.commit());
 
     QVERIFY(db.transaction());
-    QVERIFY_SQL(q, exec("select * from " + qtest + " where id = 40"));
+    QVERIFY_SQL(q, exec("select * from " + bobuiest + " where id = 40"));
     QVERIFY(q.next());
     QCOMPARE(q.value(0).toInt(), 40);
     q.clear();
     QVERIFY(db.commit());
 
     QVERIFY(db.transaction());
-    QVERIFY_SQL(q, exec("insert into " + qtest + " values (41, 'VarChar41', 'Char41', 41.41)"));
-    QVERIFY_SQL(q, exec("select * from " + qtest + " where id = 41"));
+    QVERIFY_SQL(q, exec("insert into " + bobuiest + " values (41, 'VarChar41', 'Char41', 41.41)"));
+    QVERIFY_SQL(q, exec("select * from " + bobuiest + " where id = 41"));
     QVERIFY(q.next());
     QCOMPARE(q.value(0).toInt(), 41);
     q.clear(); // for SQLite which does not allow any references on rows that shall be rolled back
@@ -1012,7 +1012,7 @@ void tst_QSqlDatabase::transaction()
             QFAIL("Could not rollback transaction: " + tst_Databases::printError(db.lastError()));
     }
 
-    QVERIFY_SQL(q, exec("select * from " + qtest + " where id = 41"));
+    QVERIFY_SQL(q, exec("select * from " + bobuiest + " where id = 41"));
     QVERIFY(!q.next());
 
     populateTestTables(db);
@@ -1048,7 +1048,7 @@ void tst_QSqlDatabase::bigIntField()
     if (queryString.isEmpty())
         QSKIP("no 64 bit integer support");
 
-    TableScope ts(db, "qtest_bigint", __FILE__);
+    TableScope ts(db, "bobuiest_bigint", __FILE__);
     QSqlQuery q(db);
     q.setForwardOnly(true);
     if (dbType == QSqlDriver::Oracle)
@@ -1107,19 +1107,19 @@ void tst_QSqlDatabase::caseSensivity()
         cs = true;
     }
 
-    QSqlRecord rec = db.record(qTableName("qtest", __FILE__, db));
+    QSqlRecord rec = db.record(qTableName("bobuiest", __FILE__, db));
     QVERIFY(rec.count() > 0);
     if (!cs) {
-        rec = db.record(qTableName("QTEST", __FILE__, db, false).toUpper());
+        rec = db.record(qTableName("BOBUIEST", __FILE__, db, false).toUpper());
         QVERIFY(rec.count() > 0);
         rec = db.record(qTableName("qTesT", __FILE__, db, false));
         QVERIFY(rec.count() > 0);
     }
 
-    rec = db.primaryIndex(qTableName("qtest", __FILE__, db));
+    rec = db.primaryIndex(qTableName("bobuiest", __FILE__, db));
     QVERIFY(rec.count() > 0);
     if (!cs) {
-        rec = db.primaryIndex(qTableName("QTEST", __FILE__, db, false).toUpper());
+        rec = db.primaryIndex(qTableName("BOBUIEST", __FILE__, db, false).toUpper());
         QVERIFY(rec.count() > 0);
         rec = db.primaryIndex(qTableName("qTesT", __FILE__, db, false));
         QVERIFY(rec.count() > 0);
@@ -1160,7 +1160,7 @@ void tst_QSqlDatabase::noEscapedFieldNamesInRecord()
         fieldname = fieldname.toUpper();
 
     QSqlQuery q(db);
-    QString query = "SELECT " + db.driver()->escapeIdentifier(fieldname, QSqlDriver::FieldName) + " FROM " + qTableName("qtest", __FILE__, db);
+    QString query = "SELECT " + db.driver()->escapeIdentifier(fieldname, QSqlDriver::FieldName) + " FROM " + qTableName("bobuiest", __FILE__, db);
     QVERIFY_SQL(q, exec(query));
     QCOMPARE(q.record().fieldName(0), fieldname);
 }
@@ -1177,15 +1177,15 @@ void tst_QSqlDatabase::psql_schemas()
     QSqlQuery q(db);
     QVERIFY_SQL( q, exec("set client_min_messages='warning'"));
 
-    const QString schemaName = qTableName("qtestschema", __FILE__, db);
+    const QString schemaName = qTableName("bobuiestschema", __FILE__, db);
     QVERIFY_SQL(q, exec("CREATE SCHEMA " + schemaName));
 
-    const auto table = schemaName + '.' + qTableName("qtesttable", __FILE__, db);
-    const auto noescapeTable = qTableName("qtestschema", __FILE__, db, false) + '.' +
-                               qTableName("qtesttable", __FILE__, db, false);
+    const auto table = schemaName + '.' + qTableName("bobuiesttable", __FILE__, db);
+    const auto noescapeTable = qTableName("bobuiestschema", __FILE__, db, false) + '.' +
+                               qTableName("bobuiesttable", __FILE__, db, false);
     QVERIFY_SQL(q, exec("CREATE TABLE " + table + " (id int primary key, name varchar(20))"));
 
-    QVERIFY(db.tables().contains(noescapeTable, Qt::CaseInsensitive));
+    QVERIFY(db.tables().contains(noescapeTable, BobUI::CaseInsensitive));
 
     QSqlRecord rec = db.record(noescapeTable);
     QCOMPARE(rec.count(), 2);
@@ -1210,9 +1210,9 @@ void tst_QSqlDatabase::psql_escapedIdentifiers()
     QSqlQuery q(db);
     QVERIFY_SQL( q, exec("set client_min_messages='warning'"));
 
-    const char bumpyCase[] = "qtestScHeMa";
+    const char bumpyCase[] = "bobuiestScHeMa";
     const QString schemaName(qTableName(bumpyCase, __FILE__, db)),
-                  tableName(qTableName("qtest", __FILE__, db)),
+                  tableName(qTableName("bobuiest", __FILE__, db)),
                   field1Name(QLatin1String("fIeLdNaMe")),
                   field2Name(QLatin1String("ZuLu"));
 
@@ -1224,7 +1224,7 @@ void tst_QSqlDatabase::psql_escapedIdentifiers()
     QVERIFY_SQL(q, exec(createTable));
 
     QVERIFY(db.tables().contains(qTableName(bumpyCase, __FILE__, db, false) + '.' +
-                                 qTableName("qtest", __FILE__, db, false), Qt::CaseSensitive));
+                                 qTableName("bobuiest", __FILE__, db, false), BobUI::CaseSensitive));
 
     QSqlField fld1(field1Name, QMetaType(QMetaType::Int));
     QSqlField fld2(field2Name, QMetaType(QMetaType::QString));
@@ -1298,10 +1298,10 @@ void tst_QSqlDatabase::psql_bug249059()
     QVERIFY_SQL(q, exec(QString("SELECT dt, t FROM %1").arg(ts.tableName())));
     QVERIFY_SQL(q, next());
     QDateTime dt1=q.value(0).toDateTime();
-    QTime t1=q.value(1).toTime();
+    BOBUIime t1=q.value(1).toTime();
     QVERIFY_SQL(q, next());
     QDateTime dt2=q.value(0).toDateTime();
-    QTime t2=q.value(1).toTime();
+    BOBUIime t2=q.value(1).toTime();
 
     // These will fail when timezone support is added, when that's the case, set the second record to 14:05:06.789 and it should work correctly
     QCOMPARE(dt1, dt2);
@@ -1313,7 +1313,7 @@ void tst_QSqlDatabase::precisionPolicy()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    TableScope ts(db, "qtest_prec", __FILE__);
+    TableScope ts(db, "bobuiest_prec", __FILE__);
     const auto &tableName = ts.tableName();
 
     QSqlQuery q(db);
@@ -1583,7 +1583,7 @@ void tst_QSqlDatabase::ibase_fetchBlobs()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    TableScope ts(db, "qtest_ibaseblobs", __FILE__);
+    TableScope ts(db, "bobuiest_ibaseblobs", __FILE__);
     const auto &tableName = ts.tableName();
 
     QSqlQuery q(db);
@@ -1616,11 +1616,11 @@ void tst_QSqlDatabase::ibase_procWithoutReturnValues()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    ProcScope ps(db, "qtest_proc1", __FILE__);
+    ProcScope ps(db, "bobuiest_proc1", __FILE__);
 
     QSqlQuery q(db);
     QVERIFY_SQL(q, exec("CREATE PROCEDURE " + ps.name() + " (str VARCHAR(10))\nAS BEGIN\nstr='test';\nEND;"));
-    QVERIFY_SQL(q, exec(QString("execute procedure %1('qtest')").arg(ps.name())));
+    QVERIFY_SQL(q, exec(QString("execute procedure %1('bobuiest')").arg(ps.name())));
 }
 
 void tst_QSqlDatabase::ibase_procWithReturnValues()
@@ -1628,7 +1628,7 @@ void tst_QSqlDatabase::ibase_procWithReturnValues()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    ProcScope ps(db, "qtest_proc2", __FILE__);
+    ProcScope ps(db, "bobuiest_proc2", __FILE__);
 
     QSqlQuery q(db);
     QVERIFY_SQL(q, exec("CREATE PROCEDURE " + ps.name() + " ("
@@ -1666,7 +1666,7 @@ void tst_QSqlDatabase::formatValueTrimStrings()
     CHECK_DATABASE(db);
 
     QSqlQuery q(db);
-    const QString tableName = qTableName("qtest", __FILE__, db);
+    const QString tableName = qTableName("bobuiest", __FILE__, db);
     QVERIFY_SQL(q, exec(QString("INSERT INTO %1 (id, t_varchar, t_char) values (50, 'Trim Test ', 'Trim Test 2   ')").arg(tableName)));
     QVERIFY_SQL(q, exec(QString("INSERT INTO %1 (id, t_varchar, t_char) values (51, 'TrimTest', 'Trim Test 2')").arg(tableName)));
     QVERIFY_SQL(q, exec(QString("INSERT INTO %1 (id, t_varchar, t_char) values (52, ' ', '    ')").arg(tableName)));
@@ -1692,7 +1692,7 @@ void tst_QSqlDatabase::odbc_reopenDatabase()
 {
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
-    const QString tableName = qTableName("qtest", __FILE__, db);
+    const QString tableName = qTableName("bobuiest", __FILE__, db);
     CHECK_DATABASE(db);
 
     QSqlQuery q(db);
@@ -1713,7 +1713,7 @@ void tst_QSqlDatabase::odbc_bindBoolean()
     QSqlDriver::DbmsType dbType = tst_Databases::getDatabaseType(db);
     if (dbType == QSqlDriver::MySqlServer)
         QSKIP("MySql has inconsistent behaviour of bit field type across versions.");
-    TableScope ts(db, "qtestBindBool", __FILE__);
+    TableScope ts(db, "bobuiestBindBool", __FILE__);
 
     QSqlQuery q(db);
     QVERIFY_SQL(q, exec("CREATE TABLE " + ts.tableName() + "(id int, boolvalue bit)"));
@@ -1788,14 +1788,14 @@ void tst_QSqlDatabase::mysql_multiselect()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    const QString qtest(qTableName("qtest", __FILE__, db));
+    const QString bobuiest(qTableName("bobuiest", __FILE__, db));
 
     QSqlQuery q(db);
-    QVERIFY_SQL(q, exec("SELECT * FROM " + qtest + "; SELECT * FROM " + qtest));
+    QVERIFY_SQL(q, exec("SELECT * FROM " + bobuiest + "; SELECT * FROM " + bobuiest));
     QVERIFY_SQL(q, next());
-    QVERIFY_SQL(q, exec("SELECT * FROM " + qtest + "; SELECT * FROM " + qtest));
+    QVERIFY_SQL(q, exec("SELECT * FROM " + bobuiest + "; SELECT * FROM " + bobuiest));
     QVERIFY_SQL(q, next());
-    QVERIFY_SQL(q, exec("SELECT * FROM " + qtest));
+    QVERIFY_SQL(q, exec("SELECT * FROM " + bobuiest));
 }
 
 void tst_QSqlDatabase::oci_serverDetach()
@@ -1823,7 +1823,7 @@ void tst_QSqlDatabase::oci_xmltypeSupport()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
-    TableScope ts(db, "qtest_xmltype", __FILE__);
+    TableScope ts(db, "bobuiest_xmltype", __FILE__);
     const auto &tableName = ts.tableName();
 
     QString xml("<?xml version=\"1.0\"?>\n<TABLE_NAME>MY_TABLE</TABLE_NAME>\n");
@@ -1853,7 +1853,7 @@ void tst_QSqlDatabase::oci_fieldLength()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
 
-    const QString tableName(qTableName("qtest", __FILE__, db));
+    const QString tableName(qTableName("bobuiest", __FILE__, db));
     QSqlQuery q(db);
 
     QVERIFY_SQL(q, exec(QString("SELECT t_varchar, t_char FROM %1").arg(tableName)));
@@ -1888,7 +1888,7 @@ void tst_QSqlDatabase::oci_synonymstest()
     QVERIFY_SQL(db3, open(appuser,appuser));
     QSqlQuery q3(db3);
     QVERIFY_SQL(q3, exec("create synonym " + appuser + '.' + qTableName("synonyms", __FILE__, db) + " for " + creator + '.' + table1));
-    QVERIFY_SQL(db3, tables().filter(qTableName("synonyms", __FILE__, db), Qt::CaseInsensitive).count() >= 1);
+    QVERIFY_SQL(db3, tables().filter(qTableName("synonyms", __FILE__, db), BobUI::CaseInsensitive).count() >= 1);
 }
 
 
@@ -1903,7 +1903,7 @@ void tst_QSqlDatabase::odbc_uniqueidentifier()
     if (dbType != QSqlDriver::MSSqlServer)
         QSKIP("SQL Server (ODBC) specific test");
 
-    TableScope ts(db, "qtest_sqlguid", __FILE__);
+    TableScope ts(db, "bobuiest_sqlguid", __FILE__);
     QString guid = QString("AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE");
     QString invalidGuid = QString("GAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE");
 
@@ -1933,7 +1933,7 @@ void tst_QSqlDatabase::getConnectionName()
     QCOMPARE(db.connectionName(), dbName);
     QSqlDatabase clone = QSqlDatabase::cloneDatabase(db, "clonedDatabase");
     QCOMPARE(clone.connectionName(), QString("clonedDatabase"));
-    QTest::ignoreMessage(QtWarningMsg, "QSqlDatabasePrivate::removeDatabase: "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSqlDatabasePrivate::removeDatabase: "
         "connection 'clonedDatabase' is still in use, all queries will cease to work.");
     QSqlDatabase::removeDatabase("clonedDatabase");
     QCOMPARE(clone.connectionName(), QString());
@@ -2020,7 +2020,7 @@ void tst_QSqlDatabase::eventNotificationIBase()
     ProcScope ps(db, "posteventProc", __FILE__);
     QSqlDriver *driver=db.driver();
     QVERIFY_SQL(*driver, subscribeToNotification(ps.name()));
-    QTest::qWait(300);  // Interbase needs some time to call the driver callback.
+    BOBUIest::qWait(300);  // Interbase needs some time to call the driver callback.
 
     db.transaction();   // InterBase events are posted from within transactions.
     QSqlQuery q(db);
@@ -2031,7 +2031,7 @@ void tst_QSqlDatabase::eventNotificationIBase()
     // Interbase needs some time to post the notification and call the driver callback.
     // This happends from another thread, and we have to process events in order for the
     // event handler in the driver to be executed and emit the notification signal.
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), ps.name());
     QVERIFY_SQL(*driver, unsubscribeFromNotification(ps.name()));
@@ -2050,7 +2050,7 @@ void tst_QSqlDatabase::eventNotificationPSQL()
     QVERIFY_SQL(*driver, subscribeToNotification(procedureName));
     QSignalSpy spy(driver, &QSqlDriver::notification);
     query.exec(QString("NOTIFY \"%1\", '%2'").arg(procedureName).arg(payload));
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), procedureName);
     QCOMPARE(qvariant_cast<QSqlDriver::NotificationSource>(arguments.at(1)), QSqlDriver::SelfSource);
@@ -2073,12 +2073,12 @@ void tst_QSqlDatabase::eventNotificationSQLite()
     QVERIFY_SQL(q, exec("CREATE TABLE " + ts.tableName() + " (id INTEGER, realVal REAL)"));
     driver->subscribeToNotification(tsEscape.tableName());
     QVERIFY_SQL(q, exec("INSERT INTO " + ts.tableName() + " (id, realVal) VALUES (1, 2.3)"));
-    QTRY_COMPARE(spy.size(), 1);
+    BOBUIRY_COMPARE(spy.size(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), tsEscape.tableName());
     driver->unsubscribeFromNotification(tsEscape.tableName());
     QVERIFY_SQL(q, exec("INSERT INTO " + ts.tableName() + " (id, realVal) VALUES (1, 2.3)"));
-    QTRY_COMPARE(spy.size(), 0);
+    BOBUIRY_COMPARE(spy.size(), 0);
 }
 
 void tst_QSqlDatabase::sqlite_bindAndFetchUInt()
@@ -2107,7 +2107,7 @@ void tst_QSqlDatabase::db2_valueCacheUpdate()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
 
-    const QString tableName(qTableName("qtest", __FILE__, db));
+    const QString tableName(qTableName("bobuiest", __FILE__, db));
     QSqlQuery q(db);
     q.exec(QString("SELECT id, t_varchar, t_char, t_numeric FROM %1").arg(tableName));
     q.next();
@@ -2130,17 +2130,17 @@ void tst_QSqlDatabase::sqlStatementUseIsNull_189093()
 
     // select a record with NULL value
     QSqlQuery q(QString(), db);
-    QVERIFY_SQL(q, exec("select * from " + qTableName("qtest", __FILE__, db) + " where id = 4"));
+    QVERIFY_SQL(q, exec("select * from " + qTableName("bobuiest", __FILE__, db) + " where id = 4"));
     QVERIFY_SQL(q, next());
 
     QSqlDriver *driver = db.driver();
     QVERIFY(driver);
 
-    QString preparedStatment = driver->sqlStatement(QSqlDriver::WhereStatement, QString("qtest"), q.record(), true);
-    QCOMPARE(preparedStatment.count("IS NULL", Qt::CaseInsensitive), 2);
+    QString preparedStatment = driver->sqlStatement(QSqlDriver::WhereStatement, QString("bobuiest"), q.record(), true);
+    QCOMPARE(preparedStatment.count("IS NULL", BobUI::CaseInsensitive), 2);
 
-    QString statment = driver->sqlStatement(QSqlDriver::WhereStatement, QString("qtest"), q.record(), false);
-    QCOMPARE(statment.count("IS NULL", Qt::CaseInsensitive), 2);
+    QString statment = driver->sqlStatement(QSqlDriver::WhereStatement, QString("bobuiest"), q.record(), false);
+    QCOMPARE(statment.count("IS NULL", BobUI::CaseInsensitive), 2);
 }
 
 void tst_QSqlDatabase::mysql_savepointtest()
@@ -2150,7 +2150,7 @@ void tst_QSqlDatabase::mysql_savepointtest()
     CHECK_DATABASE(db);
     QSqlQuery q(db);
     QVERIFY_SQL(q, exec("begin"));
-    QVERIFY_SQL(q, exec("insert into " + qTableName("qtest", __FILE__, db) + " VALUES (54, 'foo', 'foo', 54.54)"));
+    QVERIFY_SQL(q, exec("insert into " + qTableName("bobuiest", __FILE__, db) + " VALUES (54, 'foo', 'foo', 54.54)"));
     QVERIFY_SQL(q, exec("savepoint foo"));
 }
 
@@ -2189,8 +2189,8 @@ void tst_QSqlDatabase::sqlite_enable_cache_mode()
     db2.setConnectOptions("QSQLITE_ENABLE_SHARED_CACHE");
     QVERIFY_SQL(db2, open());
     QSqlQuery q(db), q2(db2);
-    QVERIFY_SQL(q, exec("select * from " + qTableName("qtest", __FILE__, db)));
-    QVERIFY_SQL(q2, exec("select * from " + qTableName("qtest", __FILE__, db)));
+    QVERIFY_SQL(q, exec("select * from " + qTableName("bobuiest", __FILE__, db)));
+    QVERIFY_SQL(q2, exec("select * from " + qTableName("bobuiest", __FILE__, db)));
     db2.close();
 }
 
@@ -2221,7 +2221,7 @@ void tst_QSqlDatabase::sqlite_enableRegexp()
 
 void tst_QSqlDatabase::sqlite_openError()
 {
-    // see QTBUG-70506
+    // see BOBUIBUG-70506
     if (!QSqlDatabase::drivers().contains("QSQLITE"))
         QSKIP("Database driver QSQLITE not available");
 
@@ -2300,7 +2300,7 @@ public:
 public slots:
     void ready()
     {
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
             "QSqlDatabasePrivate::database: requested database does not belong to the calling thread.");
         QSqlDatabase db = QSqlDatabase::database(dbName);
         QVERIFY(!db.isValid());
@@ -2318,7 +2318,7 @@ public slots:
             clonedDatabase.close();
         }
 
-        QThread::currentThread()->exit();
+        BOBUIhread::currentThread()->exit();
     }
 private:
     QString dbName;
@@ -2330,12 +2330,12 @@ void tst_QSqlDatabase::multipleThreads()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
     DatabaseThreadObject dto(dbName);
-    QThread t;
+    BOBUIhread t;
     dto.moveToThread(&t);
-    connect(&t, &QThread::started, &dto, &DatabaseThreadObject::ready);
+    connect(&t, &BOBUIhread::started, &dto, &DatabaseThreadObject::ready);
     t.start();
-    QTRY_VERIFY(t.isRunning());
-    QTRY_VERIFY(t.isFinished());
+    BOBUIRY_VERIFY(t.isRunning());
+    BOBUIRY_VERIFY(t.isFinished());
 }
 
 void tst_QSqlDatabase::moveToThread()
@@ -2343,20 +2343,20 @@ void tst_QSqlDatabase::moveToThread()
     QFETCH(QString, dbName);
     QSqlDatabase db = QSqlDatabase::database(dbName);
     auto clonedDb = QSqlDatabase::cloneDatabase(db, "clonedDb");
-    auto mainThread = QThread::currentThread();
+    auto mainThread = BOBUIhread::currentThread();
     CHECK_DATABASE(db);
     QCOMPARE(db.thread(), mainThread);
     QCOMPARE(clonedDb.thread(), mainThread);
-    std::unique_ptr<QThread> t(QThread::create([&] {
+    std::unique_ptr<BOBUIhread> t(BOBUIhread::create([&] {
         db.moveToThread(mainThread);
-        QThread::currentThread()->exit();
+        BOBUIhread::currentThread()->exit();
     }));
     db.moveToThread(t.get());
     QCOMPARE(db.thread(), t.get());
     QCOMPARE(clonedDb.thread(), mainThread);
     t->start();
-    QTRY_VERIFY(t->isRunning());
-    QTRY_VERIFY(t->wait(30000));
+    BOBUIRY_VERIFY(t->isRunning());
+    BOBUIRY_VERIFY(t->wait(30000));
     QCOMPARE(db.thread(), mainThread);
     QCOMPARE(clonedDb.thread(), mainThread);
     db = QSqlDatabase();
@@ -2365,5 +2365,5 @@ void tst_QSqlDatabase::moveToThread()
 }
 
 
-QTEST_MAIN(tst_QSqlDatabase)
+BOBUIEST_MAIN(tst_QSqlDatabase)
 #include "tst_qsqldatabase.moc"

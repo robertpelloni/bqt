@@ -1,18 +1,18 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
 #include "qcocoawindowmanager.h"
 #include "qcocoawindow.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaWindowManager::QCocoaWindowManager()
 {
@@ -75,5 +75,5 @@ void QCocoaWindowManager::modalSessionChanged()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

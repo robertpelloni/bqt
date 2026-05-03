@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/private/qabstractfileengine_p.h>
-#include <QtCore/private/qfsfileengine_p.h>
+#include <BobUICore/private/qabstractfileengine_p.h>
+#include <BobUICore/private/qfsfileengine_p.h>
 
-#include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QScopedPointer>
-#include <QtCore/QHash>
-#include <QtCore/QDir>
-#include <QtCore/QDirIterator>
+#include <BobUICore/QMutex>
+#include <BobUICore/QMutexLocker>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QScopedPointer>
+#include <BobUICore/QHash>
+#include <BobUICore/QDir>
+#include <BobUICore/QDirIterator>
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 #include "../../../../shared/filesystem.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QAbstractFileEngine
     : public QObject
@@ -37,7 +37,7 @@ private slots:
     void mounting();
 private:
     QStringList filesForRemoval;
-    QSharedPointer<QTemporaryDir> m_currentDir;
+    QSharedPointer<BOBUIemporaryDir> m_currentDir;
     QString m_previousCurrent;
 };
 
@@ -516,7 +516,7 @@ public:
 void tst_QAbstractFileEngine::initTestCase()
 {
     m_previousCurrent = QDir::currentPath();
-    m_currentDir = QSharedPointer<QTemporaryDir>::create();
+    m_currentDir = QSharedPointer<BOBUIemporaryDir>::create();
     QVERIFY2(!m_currentDir.isNull(), qPrintable("Could not create current directory."));
     QDir::setCurrent(m_currentDir->path());
 }
@@ -563,23 +563,23 @@ void tst_QAbstractFileEngine::customHandler()
 
 void tst_QAbstractFileEngine::fileIO_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("readContent");
-    QTest::addColumn<QByteArray>("writeContent");
-    QTest::addColumn<bool>("fileExists");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("readContent");
+    BOBUIest::addColumn<QByteArray>("writeContent");
+    BOBUIest::addColumn<bool>("fileExists");
 
     QString resourceTxtFile(":/tst_qabstractfileengine/resources/file.txt");
     QByteArray readContent("This is a simple text file.\n");
     QByteArray writeContent("This contains two lines of text.\n");
 
-    QTest::newRow("resource") << resourceTxtFile << readContent << QByteArray() << true;
-    QTest::newRow("native") << "native-file.txt" << readContent << writeContent << false;
-    QTest::newRow("Forced QFSFileEngine") << "QFSFileEngine:QFSFileEngine-file.txt" << readContent << writeContent << false;
-    QTest::newRow("Custom FE") << "reference-file-engine:file.txt" << readContent << writeContent << false;
+    BOBUIest::newRow("resource") << resourceTxtFile << readContent << QByteArray() << true;
+    BOBUIest::newRow("native") << "native-file.txt" << readContent << writeContent << false;
+    BOBUIest::newRow("Forced QFSFileEngine") << "QFSFileEngine:QFSFileEngine-file.txt" << readContent << writeContent << false;
+    BOBUIest::newRow("Custom FE") << "reference-file-engine:file.txt" << readContent << writeContent << false;
 
-    QTest::newRow("Forced QFSFileEngine (native)") << "QFSFileEngine:native-file.txt" << readContent << writeContent << true;
-    QTest::newRow("native (Forced QFSFileEngine)") << "QFSFileEngine-file.txt" << readContent << writeContent << true;
-    QTest::newRow("Custom FE (2)") << "reference-file-engine:file.txt" << readContent << writeContent << true;
+    BOBUIest::newRow("Forced QFSFileEngine (native)") << "QFSFileEngine:native-file.txt" << readContent << writeContent << true;
+    BOBUIest::newRow("native (Forced QFSFileEngine)") << "QFSFileEngine-file.txt" << readContent << writeContent << true;
+    BOBUIest::newRow("Custom FE (2)") << "reference-file-engine:file.txt" << readContent << writeContent << true;
 }
 
 void tst_QAbstractFileEngine::fileIO()
@@ -819,9 +819,9 @@ void tst_QAbstractFileEngine::fileIO()
 
 void tst_QAbstractFileEngine::mounting_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::newRow("native") << "test.tar";
-    QTest::newRow("Forced QFSFileEngine") << "QFSFileEngine:test.tar";
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::newRow("native") << "test.tar";
+    BOBUIest::newRow("Forced QFSFileEngine") << "QFSFileEngine:test.tar";
 }
 
 void tst_QAbstractFileEngine::mounting()
@@ -849,6 +849,6 @@ void tst_QAbstractFileEngine::mounting()
     QVERIFY(found);
 }
 
-QTEST_APPLESS_MAIN(tst_QAbstractFileEngine)
+BOBUIEST_APPLESS_MAIN(tst_QAbstractFileEngine)
 #include "tst_qabstractfileengine.moc"
 

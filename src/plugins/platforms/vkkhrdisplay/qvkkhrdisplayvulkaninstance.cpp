@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvkkhrdisplayvulkaninstance.h"
 #include <QVarLengthArray>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QVkKhrDisplayVulkanInstance::QVkKhrDisplayVulkanInstance(QVulkanInstance *instance)
     : m_instance(instance)
@@ -49,7 +49,7 @@ void QVkKhrDisplayVulkanInstance::createOrAdoptInstance()
     m_getPhysicalDeviceSurfaceSupportKHR = reinterpret_cast<PFN_vkGetPhysicalDeviceSurfaceSupportKHR>(
         m_vkGetInstanceProcAddr(m_vkInst, "vkGetPhysicalDeviceSurfaceSupportKHR"));
 
-    // Use for first physical device, unless overridden by QT_VK_PHYSICAL_DEVICE_INDEX.
+    // Use for first physical device, unless overridden by BOBUI_VK_PHYSICAL_DEVICE_INDEX.
     // This behavior matches what the Vulkan backend of QRhi would do.
 
     uint32_t physDevCount = 0;
@@ -65,8 +65,8 @@ void QVkKhrDisplayVulkanInstance::createOrAdoptInstance()
         return;
     }
 
-    if (qEnvironmentVariableIsSet("QT_VK_PHYSICAL_DEVICE_INDEX")) {
-        int requestedPhysDevIndex = qEnvironmentVariableIntValue("QT_VK_PHYSICAL_DEVICE_INDEX");
+    if (qEnvironmentVariableIsSet("BOBUI_VK_PHYSICAL_DEVICE_INDEX")) {
+        int requestedPhysDevIndex = qEnvironmentVariableIntValue("BOBUI_VK_PHYSICAL_DEVICE_INDEX");
         if (requestedPhysDevIndex >= 0 && uint32_t(requestedPhysDevIndex) < physDevCount)
             m_physDev = physDevs[requestedPhysDevIndex];
     }
@@ -115,10 +115,10 @@ bool QVkKhrDisplayVulkanInstance::chooseDisplay()
     // Pick the first display and the first mode, unless specified via env.vars.
     uint32_t wantedDisplayIndex = 0;
     uint32_t wantedModeIndex = 0;
-    if (qEnvironmentVariableIsSet("QT_VK_DISPLAY_INDEX"))
-        wantedDisplayIndex = uint32_t(qEnvironmentVariableIntValue("QT_VK_DISPLAY_INDEX"));
-    if (qEnvironmentVariableIsSet("QT_VK_MODE_INDEX"))
-        wantedModeIndex = uint32_t(qEnvironmentVariableIntValue("QT_VK_MODE_INDEX"));
+    if (qEnvironmentVariableIsSet("BOBUI_VK_DISPLAY_INDEX"))
+        wantedDisplayIndex = uint32_t(qEnvironmentVariableIntValue("BOBUI_VK_DISPLAY_INDEX"));
+    if (qEnvironmentVariableIsSet("BOBUI_VK_MODE_INDEX"))
+        wantedModeIndex = uint32_t(qEnvironmentVariableIntValue("BOBUI_VK_MODE_INDEX"));
 
     for (uint32_t i = 0; i < displayCount; ++i) {
         const VkDisplayPropertiesKHR &disp(displayProps[i]);
@@ -268,4 +268,4 @@ void QVkKhrDisplayVulkanInstance::presentAboutToBeQueued(QWindow *window)
     Q_UNUSED(window);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

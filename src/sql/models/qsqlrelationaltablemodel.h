@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLRELATIONALTABLEMODEL_H
 #define QSQLRELATIONALTABLEMODEL_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtSql/qsqltablemodel.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUISql/qsqltablemodel.h>
 
-#include <QtCore/qtypeinfo.h>
+#include <BobUICore/bobuiypeinfo.h>
 
-QT_REQUIRE_CONFIG(sqlmodel);
+BOBUI_REQUIRE_CONFIG(sqlmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class Q_SQL_EXPORT QSqlRelation
@@ -59,8 +59,8 @@ public:
                                       const QSqlDatabase &db = QSqlDatabase());
     virtual ~QSqlRelationalTableModel();
 
-    QVariant data(const QModelIndex &item, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &item, const QVariant &value, int role = Qt::EditRole) override;
+    QVariant data(const QModelIndex &item, int role = BobUI::DisplayRole) const override;
+    bool setData(const QModelIndex &item, const QVariant &value, int role = BobUI::EditRole) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
     void clear() override;
@@ -85,6 +85,6 @@ private:
     Q_DECLARE_PRIVATE(QSqlRelationalTableModel)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLRELATIONALTABLEMODEL_H

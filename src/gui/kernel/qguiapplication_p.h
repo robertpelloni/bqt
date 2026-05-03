@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGUIAPPLICATION_P_H
 #define QGUIAPPLICATION_P_H
@@ -8,37 +8,37 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qicon.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qicon.h>
 
-#include <QtCore/QHash>
-#include <QtCore/QPointF>
-#include <QtCore/private/qcoreapplication_p.h>
+#include <BobUICore/QHash>
+#include <BobUICore/QPointF>
+#include <BobUICore/private/qcoreapplication_p.h>
 
-#include <QtCore/qnativeinterface.h>
-#include <QtCore/private/qnativeinterface_p.h>
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/private/qthread_p.h>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUICore/private/qnativeinterface_p.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/private/bobuihread_p.h>
 
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qwindowsysteminterface_p.h>
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include "private/qshortcutmap_p.h"
 #endif
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcPopup)
 Q_DECLARE_LOGGING_CATEGORY(lcVirtualKeyboard)
@@ -46,18 +46,18 @@ Q_DECLARE_LOGGING_CATEGORY(lcVirtualKeyboard)
 class QColorTrcLut;
 class QPlatformIntegration;
 class QPlatformTheme;
-class QPlatformDragQtResponse;
-#if QT_CONFIG(draganddrop)
+class QPlatformDragBobUIResponse;
+#if BOBUI_CONFIG(draganddrop)
 class QDrag;
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 class QInputDeviceManager;
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 class QActionPrivate;
 #endif
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 class QShortcutPrivate;
 #endif
-class QThreadPool;
+class BOBUIhreadPool;
 
 class Q_GUI_EXPORT QGuiApplicationPrivate : public QCoreApplicationPrivate
 {
@@ -75,8 +75,8 @@ public:
     virtual void notifyLayoutDirectionChange();
     virtual void notifyActiveWindowChange(QWindow *previous);
 
-#if QT_CONFIG(commandlineparser)
-    void addQtOptions(QList<QCommandLineOption> *options) override;
+#if BOBUI_CONFIG(commandlineparser)
+    void addBobUIOptions(QList<QCommandLineOption> *options) override;
 #endif
     bool canQuitAutomatically() override;
     void quit() override;
@@ -86,8 +86,8 @@ public:
     static bool quitOnLastWindowClosed;
 
     static void captureGlobalModifierState(QEvent *e);
-    static Qt::KeyboardModifiers modifier_buttons;
-    static Qt::MouseButtons mouse_buttons;
+    static BobUI::KeyboardModifiers modifier_buttons;
+    static BobUI::MouseButtons mouse_buttons;
 
     static QPlatformIntegration *platform_integration;
 
@@ -99,7 +99,7 @@ public:
     static QPlatformTheme *platformTheme()
     { return platform_theme; }
 
-    static QAbstractEventDispatcher *qt_qpa_core_dispatcher()
+    static QAbstractEventDispatcher *bobui_qpa_core_dispatcher()
     {
         if (QCoreApplication::instance())
             return QCoreApplication::instance()->d_func()->threadData.loadRelaxed()->eventDispatcher.loadRelaxed();
@@ -147,22 +147,22 @@ public:
     static void processTabletEnterProximityEvent(QWindowSystemInterfacePrivate::TabletEnterProximityEvent *e);
     static void processTabletLeaveProximityEvent(QWindowSystemInterfacePrivate::TabletLeaveProximityEvent *e);
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     static void processGestureEvent(QWindowSystemInterfacePrivate::GestureEvent *e);
 #endif
 
     static void processPlatformPanelEvent(QWindowSystemInterfacePrivate::PlatformPanelEvent *e);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     static void processContextMenuEvent(QWindowSystemInterfacePrivate::ContextMenuEvent *e);
 #endif
 
-#if QT_CONFIG(draganddrop)
-    static QPlatformDragQtResponse processDrag(QWindow *w, const QMimeData *dropData,
-                                               const QPoint &p, Qt::DropActions supportedActions,
-                                               Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-    static QPlatformDropQtResponse processDrop(QWindow *w, const QMimeData *dropData,
-                                               const QPoint &p, Qt::DropActions supportedActions,
-                                               Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+#if BOBUI_CONFIG(draganddrop)
+    static QPlatformDragBobUIResponse processDrag(QWindow *w, const QMimeData *dropData,
+                                               const QPoint &p, BobUI::DropActions supportedActions,
+                                               BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers);
+    static QPlatformDropBobUIResponse processDrop(QWindow *w, const QMimeData *dropData,
+                                               const QPoint &p, BobUI::DropActions supportedActions,
+                                               BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers);
 #endif
 
     static bool processNativeEvent(QWindow *window, const QByteArray &eventType, void *message, qintptr *result);
@@ -172,23 +172,23 @@ public:
     static bool maybeForwardEventToVirtualKeyboard(QEvent *e);
     static bool isUsingVirtualKeyboard();
 
-    static inline Qt::Alignment visualAlignment(Qt::LayoutDirection direction, Qt::Alignment alignment)
+    static inline BobUI::Alignment visualAlignment(BobUI::LayoutDirection direction, BobUI::Alignment alignment)
     {
-        if (!(alignment & Qt::AlignHorizontal_Mask))
-            alignment |= Qt::AlignLeft;
-        if (!(alignment & Qt::AlignAbsolute) && (alignment & (Qt::AlignLeft | Qt::AlignRight))) {
-            if (direction == Qt::RightToLeft)
-                alignment ^= (Qt::AlignLeft | Qt::AlignRight);
-            alignment |= Qt::AlignAbsolute;
+        if (!(alignment & BobUI::AlignHorizontal_Mask))
+            alignment |= BobUI::AlignLeft;
+        if (!(alignment & BobUI::AlignAbsolute) && (alignment & (BobUI::AlignLeft | BobUI::AlignRight))) {
+            if (direction == BobUI::RightToLeft)
+                alignment ^= (BobUI::AlignLeft | BobUI::AlignRight);
+            alignment |= BobUI::AlignAbsolute;
         }
         return alignment;
     }
 
-    QPixmap getPixmapCursor(Qt::CursorShape cshape);
+    QPixmap getPixmapCursor(BobUI::CursorShape cshape);
 
     void _q_updateFocusObject(QObject *object);
 
-    static QGuiApplicationPrivate *instance() { QT_IGNORE_DEPRECATIONS(return self;) }
+    static QGuiApplicationPrivate *instance() { BOBUI_IGNORE_DEPRECATIONS(return self;) }
 
     static QIcon *app_icon;
     static QString *platform_name;
@@ -200,7 +200,7 @@ public:
     static void hideModalWindow(QWindow *window);
     static void updateBlockedStatus(QWindow *window);
 
-    virtual Qt::WindowModality defaultModality() const;
+    virtual BobUI::WindowModality defaultModality() const;
     virtual bool windowNeverBlocked(QWindow *window) const;
     bool isWindowBlocked(QWindow *window, QWindow **blockingWindow = nullptr) const;
     static qsizetype popupCount() { return QGuiApplicationPrivate::popup_list.size(); }
@@ -209,7 +209,7 @@ public:
     static bool closePopup(QWindow *popup);
     static bool closeAllPopups();
 
-    static Qt::MouseButton mousePressButton;
+    static BobUI::MouseButton mousePressButton;
     static struct QLastCursorPosition {
         // Initialize to a far-offscreen position.  2^23 is small enough for accurate arithmetic
         // (even manhattanLength()) even when stored in the mantissa of a 32-bit float.
@@ -224,12 +224,12 @@ public:
 
         // QGuiApplicationPrivate::lastCursorPosition is used for mouse-move detection
         // but even QPointF's qFuzzCompare on doubles is too precise, and causes move-noise
-        // e.g. on macOS (see QTBUG-111170). So we specialize the equality operators here
+        // e.g. on macOS (see BOBUIBUG-111170). So we specialize the equality operators here
         // to use single-point precision.
         friend constexpr bool operator==(const QLastCursorPosition &p1, const QPointF &p2) noexcept
         {
-            return QtPrivate::fuzzyCompare(float(p1.x()), float(p2.x()))
-                && QtPrivate::fuzzyCompare(float(p1.y()), float(p2.y()));
+            return BobUIPrivate::fuzzyCompare(float(p1.x()), float(p2.x()))
+                && BobUIPrivate::fuzzyCompare(float(p1.y()), float(p2.y()));
         }
         friend constexpr bool operator!=(const QLastCursorPosition &p1, const QPointF &p2) noexcept
         {
@@ -249,22 +249,22 @@ public:
     } lastCursorPosition;
     static QWindow *currentMouseWindow;
     static QWindow *currentMousePressWindow;
-    static Qt::ApplicationState applicationState;
-    static Qt::HighDpiScaleFactorRoundingPolicy highDpiScaleFactorRoundingPolicy;
+    static BobUI::ApplicationState applicationState;
+    static BobUI::HighDpiScaleFactorRoundingPolicy highDpiScaleFactorRoundingPolicy;
     static QPointer<QWindow> currentDragWindow;
 
     // TODO remove this: QPointingDevice can store what we need directly
     struct TabletPointData {
-        TabletPointData(qint64 devId = 0) : deviceId(devId), state(Qt::NoButton), target(nullptr) {}
+        TabletPointData(qint64 devId = 0) : deviceId(devId), state(BobUI::NoButton), target(nullptr) {}
         qint64 deviceId;
-        Qt::MouseButtons state;
+        BobUI::MouseButtons state;
         QWindow *target;
     };
     static QList<TabletPointData> tabletDevicePoints;
     static TabletPointData &tabletDevicePoint(qint64 deviceId);
 
-#ifndef QT_NO_CLIPBOARD
-    static QClipboard *qt_clipboard;
+#ifndef BOBUI_NO_CLIPBOARD
+    static QClipboard *bobui_clipboard;
 #endif
 
     static QPalette *app_pal;
@@ -274,7 +274,7 @@ public:
     static const QWindow *active_popup_on_press;
     static QWindow *focus_window;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QList<QCursor> cursor_list;
 #endif
     static QList<QScreen *> screen_list;
@@ -291,11 +291,11 @@ public:
     QIcon forcedWindowIcon;
 
     static QList<QObject *> generic_plugin_list;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QShortcutMap shortcutMap;
 #endif
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     QSessionManager *session_manager;
     bool is_session_restored;
     bool is_saving_session;
@@ -325,14 +325,14 @@ public:
 
     static void applyWindowGeometrySpecificationTo(QWindow *window);
 
-    static void setApplicationState(Qt::ApplicationState state, bool forcePropagate = false);
+    static void setApplicationState(BobUI::ApplicationState state, bool forcePropagate = false);
 
     static void resetCachedDevicePixelRatio();
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     virtual QActionPrivate *createActionPrivate() const;
 #endif
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     virtual QShortcutPrivate *createShortcutPrivate() const;
 #endif
 
@@ -340,9 +340,9 @@ public:
 
     static QEvent::Type contextMenuEventType();
 
-    static QThreadPool *qtGuiThreadPool();
+    static BOBUIhreadPool *bobuiGuiThreadPool();
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     bool ownGlobalShareContext = false;
 #endif
 
@@ -353,9 +353,9 @@ protected:
     virtual QPalette basePalette() const;
     virtual void handlePaletteChanged(const char *className = nullptr);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual void notifyDragStarted(const QDrag *);
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 private:
     static void clearPalette();
@@ -388,7 +388,7 @@ namespace QNativeInterface::Private {
 
 struct Q_GUI_EXPORT QWindowsApplication
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWindowsApplication, 1, QGuiApplication)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWindowsApplication, 1, QGuiApplication)
 
     enum WindowActivationBehavior {
         DefaultActivateWindow,
@@ -435,10 +435,10 @@ struct Q_GUI_EXPORT QWindowsApplication
                                      const QString &windowName,
                                      QFunctionPointer eventProc = nullptr) const = 0;
 
-    virtual bool asyncExpose() const = 0; // internal, used by Active Qt
+    virtual bool asyncExpose() const = 0; // internal, used by Active BobUI
     virtual void setAsyncExpose(bool value) = 0;
 
-    virtual QVariant gpu() const = 0; // internal, used by qtdiag
+    virtual QVariant gpu() const = 0; // internal, used by bobuidiag
     virtual QVariant gpuList() const = 0;
 
     virtual void populateLightSystemPalette(QPalette &pal) const = 0;
@@ -452,6 +452,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QNativeInterface::Private::QWindowsApplication::To
 Q_DECLARE_OPERATORS_FOR_FLAGS(QNativeInterface::Private::QWindowsApplication::DarkModeHandling)
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGUIAPPLICATION_P_H

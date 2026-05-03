@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlibinputtouch_p.h"
 #include "qlibinputhandler_p.h"
 #include "qoutputmapping_p.h"
 #include <libinput.h>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QPointingDevice>
-#include <QtGui/QScreen>
-#include <QtGui/QPointingDevice>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/private/qpointingdevice_p.h>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QPointingDevice>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QPointingDevice>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(qLcLibInputEvents, "qt.qpa.input.events")
+Q_STATIC_LOGGING_CATEGORY(qLcLibInputEvents, "bobui.qpa.input.events")
 
 QWindowSystemInterface::TouchPoint *QLibInputTouch::DeviceState::point(int32_t slot)
 {
@@ -64,7 +64,7 @@ QPointF QLibInputTouch::getPos(libinput_event_touch *e)
 static void setMatrix(libinput_device *dev)
 {
     if (libinput_device_config_calibration_has_matrix(dev)) {
-        QByteArray env = qgetenv("QT_QPA_LIBINPUT_TOUCH_MATRIX");
+        QByteArray env = qgetenv("BOBUI_QPA_LIBINPUT_TOUCH_MATRIX");
         env = env.simplified();
         if (env.size()) {
             float matrix[6];
@@ -223,4 +223,4 @@ void QLibInputTouch::processTouchFrame(libinput_event_touch *e)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

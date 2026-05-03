@@ -1,0 +1,16 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUIPrintSupport
+    \title BobUI Print Support C++ Classes
+    \brief The BobUI PrintSupport module provides classes to make printing easier and portable.
+
+    \ingroup modules
+    \bobuicmakepackage PrintSupport
+    \bobuivariable printsupport
+
+    The \l{BobUI Print Support} page contains information about using the module.
+
+    BobUI Print Support is not available on iOS.
+*/

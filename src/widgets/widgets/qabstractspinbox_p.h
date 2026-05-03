@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSPINBOX_P_H
 #define QABSTRACTSPINBOX_P_H
@@ -9,27 +9,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qabstractspinbox.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qabstractspinbox.h"
 
-#include "QtWidgets/qlineedit.h"
-#include "QtWidgets/qstyleoption.h"
-#include "QtGui/qvalidator.h"
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qvariant.h"
+#include "BobUIWidgets/qlineedit.h"
+#include "BobUIWidgets/qstyleoption.h"
+#include "BobUIGui/qvalidator.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qvariant.h"
 #include "private/qwidget_p.h"
 
-QT_REQUIRE_CONFIG(spinbox);
+BOBUI_REQUIRE_CONFIG(spinbox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QVariant operator+(const QVariant &arg1, const QVariant &arg2);
 QVariant operator-(const QVariant &arg1, const QVariant &arg2);
@@ -108,8 +108,8 @@ public:
     int acceleration = 0;
     int wheelDeltaRemainder = 0;
 
-    Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;
-    Qt::KeyboardModifier stepModifier = Qt::ControlModifier;
+    BobUI::KeyboardModifiers keyboardModifiers = BobUI::NoModifier;
+    BobUI::KeyboardModifier stepModifier = BobUI::ControlModifier;
     QAbstractSpinBox::CorrectionMode correctionMode = QAbstractSpinBox::CorrectToPreviousValue;
     QAbstractSpinBox::StepType stepType = QAbstractSpinBox::StepType::DefaultStepType;
     QAbstractSpinBox::ButtonSymbols buttonSymbols = QAbstractSpinBox::UpDownArrows;
@@ -139,6 +139,6 @@ private:
     QAbstractSpinBoxPrivate *dptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSPINBOX_P_H

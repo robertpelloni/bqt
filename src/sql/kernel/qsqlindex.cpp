@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsqlindex.h"
 
 #include "qsqlfield.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QSqlIndex
@@ -16,7 +16,7 @@ using namespace Qt::StringLiterals;
     describe database indexes.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     An \e index refers to a single table or view in a database.
     Information about the fields that comprise the index can be used
@@ -168,6 +168,6 @@ void QSqlIndex::setCursorName(const QString& cursorName)
     cursor = cursorName;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqlindex.cpp"

@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprintpreviewdialog.h"
 #include "qprintpreviewwidget.h"
 #include <private/qprinter_p.h>
 #include "qprintdialog.h"
 
-#include <QtGui/qaction.h>
-#include <QtGui/qactiongroup.h>
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qcombobox.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtPrintSupport/qpagesetupdialog.h>
-#include <QtPrintSupport/qprinter.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qtoolbutton.h>
-#include <QtGui/qvalidator.h>
-#if QT_CONFIG(filedialog)
-#include <QtWidgets/qfiledialog.h>
+#include <BobUIGui/qaction.h>
+#include <BobUIGui/qactiongroup.h>
+#include <BobUIWidgets/qboxlayout.h>
+#include <BobUIWidgets/qcombobox.h>
+#include <BobUIWidgets/qlineedit.h>
+#include <BobUIPrintSupport/qpagesetupdialog.h>
+#include <BobUIPrintSupport/qprinter.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/bobuioolbutton.h>
+#include <BobUIGui/qvalidator.h>
+#if BOBUI_CONFIG(filedialog)
+#include <BobUIWidgets/qfiledialog.h>
 #endif
-#include <QtWidgets/qmainwindow.h>
-#include <QtWidgets/qtoolbar.h>
-#include <QtCore/QCoreApplication>
+#include <BobUIWidgets/qmainwindow.h>
+#include <BobUIWidgets/bobuioolbar.h>
+#include <BobUICore/QCoreApplication>
 
 #include "private/qdialog_p.h"
 
-#include <QtWidgets/qformlayout.h>
-#include <QtWidgets/qlabel.h>
+#include <BobUIWidgets/qformlayout.h>
+#include <BobUIWidgets/qlabel.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 static void _q_ppd_initResources()
 {
@@ -40,9 +40,9 @@ static void _q_ppd_initResources()
     }
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 class QPrintPreviewMainWindow : public QMainWindow
@@ -88,7 +88,7 @@ public:
     LineEdit(QWidget* parent = nullptr)
         : QLineEdit(parent)
     {
-        setContextMenuPolicy(Qt::NoContextMenu);
+        setContextMenuPolicy(BobUI::NoContextMenu);
         connect(this, &LineEdit::returnPressed, this, &LineEdit::handleReturnPressed);
     }
 
@@ -211,7 +211,7 @@ void QPrintPreviewDialogPrivate::init(QPrinter *_printer)
     setupActions();
 
     pageNumEdit = new LineEdit;
-    pageNumEdit->setAlignment(Qt::AlignRight);
+    pageNumEdit->setAlignment(BobUI::AlignRight);
     pageNumEdit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     pageNumLabel = new QLabel;
     QObject::connect(pageNumEdit, SIGNAL(editingFinished()), q, SLOT(_q_pageNumEdited()));
@@ -232,7 +232,7 @@ void QPrintPreviewDialogPrivate::init(QPrinter *_printer)
                      q, SLOT(_q_zoomFactorChanged()));
 
     QPrintPreviewMainWindow *mw = new QPrintPreviewMainWindow(q);
-    QToolBar *toolbar = new QToolBar(mw);
+    BOBUIoolBar *toolbar = new BOBUIoolBar(mw);
     toolbar->addAction(fitWidthAction);
     toolbar->addAction(fitPageAction);
     toolbar->addSeparator();
@@ -269,7 +269,7 @@ void QPrintPreviewDialogPrivate::init(QPrinter *_printer)
     formLayout->setWidget(0, QFormLayout::LabelRole, pageNumEdit);
     formLayout->setWidget(0, QFormLayout::FieldRole, pageNumLabel);
     vboxLayout->addLayout(formLayout);
-    vboxLayout->setAlignment(Qt::AlignVCenter);
+    vboxLayout->setAlignment(BobUI::AlignVCenter);
     pageEdit->setLayout(vboxLayout);
     toolbar->addWidget(pageEdit);
 
@@ -284,8 +284,8 @@ void QPrintPreviewDialogPrivate::init(QPrinter *_printer)
     toolbar->addAction(printAction);
 
     // Cannot use the actions' triggered signal here, since it doesn't autorepeat
-    QToolButton *zoomInButton = static_cast<QToolButton *>(toolbar->widgetForAction(zoomInAction));
-    QToolButton *zoomOutButton = static_cast<QToolButton *>(toolbar->widgetForAction(zoomOutAction));
+    BOBUIoolButton *zoomInButton = static_cast<BOBUIoolButton *>(toolbar->widgetForAction(zoomInAction));
+    BOBUIoolButton *zoomOutButton = static_cast<BOBUIoolButton *>(toolbar->widgetForAction(zoomOutAction));
     zoomInButton->setAutoRepeat(true);
     zoomInButton->setAutoRepeatInterval(200);
     zoomInButton->setAutoRepeatDelay(200);
@@ -299,7 +299,7 @@ void QPrintPreviewDialogPrivate::init(QPrinter *_printer)
     mw->setCentralWidget(preview);
     // QMainWindows are always created as top levels, force it to be a
     // plain widget
-    mw->setParent(q, Qt::Widget);
+    mw->setParent(q, BobUI::Widget);
 
     QVBoxLayout *topLayout = new QVBoxLayout;
     topLayout->addWidget(mw);
@@ -320,9 +320,9 @@ void QPrintPreviewDialogPrivate::init(QPrinter *_printer)
     preview->setFocus();
 }
 
-static inline void qt_setupActionIcon(QAction *action, QLatin1StringView name)
+static inline void bobui_setupActionIcon(QAction *action, QLatin1StringView name)
 {
-    const auto imagePrefix = ":/qt-project.org/dialogs/qprintpreviewdialog/images/"_L1;
+    const auto imagePrefix = ":/bobui-project.org/dialogs/qprintpreviewdialog/images/"_L1;
     QIcon icon = QIcon::fromTheme(name);
     icon.addFile(imagePrefix + name + "-24.png"_L1, QSize(24, 24));
     icon.addFile(imagePrefix + name + "-32.png"_L1, QSize(32, 32));
@@ -340,10 +340,10 @@ void QPrintPreviewDialogPrivate::setupActions()
     prevPageAction = navGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Previous page"));
     firstPageAction = navGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "First page"));
     lastPageAction = navGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Last page"));
-    qt_setupActionIcon(nextPageAction, "go-next"_L1);
-    qt_setupActionIcon(prevPageAction, "go-previous"_L1);
-    qt_setupActionIcon(firstPageAction, "go-first"_L1);
-    qt_setupActionIcon(lastPageAction, "go-last"_L1);
+    bobui_setupActionIcon(nextPageAction, "go-next"_L1);
+    bobui_setupActionIcon(prevPageAction, "go-previous"_L1);
+    bobui_setupActionIcon(firstPageAction, "go-first"_L1);
+    bobui_setupActionIcon(lastPageAction, "go-last"_L1);
     QObject::connect(navGroup, SIGNAL(triggered(QAction*)), q, SLOT(_q_navigate(QAction*)));
 
 
@@ -354,16 +354,16 @@ void QPrintPreviewDialogPrivate::setupActions()
     fitPageAction->setObjectName("fitPageAction"_L1);
     fitWidthAction->setCheckable(true);
     fitPageAction->setCheckable(true);
-    qt_setupActionIcon(fitWidthAction, "zoom-fit-width"_L1);
-    qt_setupActionIcon(fitPageAction, "zoom-fit-page"_L1);
+    bobui_setupActionIcon(fitWidthAction, "zoom-fit-width"_L1);
+    bobui_setupActionIcon(fitPageAction, "zoom-fit-page"_L1);
     QObject::connect(fitGroup, SIGNAL(triggered(QAction*)), q, SLOT(_q_fit(QAction*)));
 
     // Zoom
     zoomGroup = new QActionGroup(q);
     zoomInAction = zoomGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Zoom in"));
     zoomOutAction = zoomGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Zoom out"));
-    qt_setupActionIcon(zoomInAction, "zoom-in"_L1);
-    qt_setupActionIcon(zoomOutAction, "zoom-out"_L1);
+    bobui_setupActionIcon(zoomInAction, "zoom-in"_L1);
+    bobui_setupActionIcon(zoomOutAction, "zoom-out"_L1);
 
     // Portrait/Landscape
     orientationGroup = new QActionGroup(q);
@@ -371,8 +371,8 @@ void QPrintPreviewDialogPrivate::setupActions()
     landscapeAction = orientationGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Landscape"));
     portraitAction->setCheckable(true);
     landscapeAction->setCheckable(true);
-    qt_setupActionIcon(portraitAction, "layout-portrait"_L1);
-    qt_setupActionIcon(landscapeAction, "layout-landscape"_L1);
+    bobui_setupActionIcon(portraitAction, "layout-portrait"_L1);
+    bobui_setupActionIcon(landscapeAction, "layout-landscape"_L1);
     QObject::connect(portraitAction, SIGNAL(triggered(bool)), preview, SLOT(setPortraitOrientation()));
     QObject::connect(landscapeAction, SIGNAL(triggered(bool)), preview, SLOT(setLandscapeOrientation()));
 
@@ -381,9 +381,9 @@ void QPrintPreviewDialogPrivate::setupActions()
     singleModeAction = modeGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Show single page"));
     facingModeAction = modeGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Show facing pages"));
     overviewModeAction = modeGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Show overview of all pages"));
-    qt_setupActionIcon(singleModeAction, "view-pages-single"_L1);
-    qt_setupActionIcon(facingModeAction, "view-pages-facing"_L1);
-    qt_setupActionIcon(overviewModeAction, "view-pages-overview"_L1);
+    bobui_setupActionIcon(singleModeAction, "view-pages-single"_L1);
+    bobui_setupActionIcon(facingModeAction, "view-pages-facing"_L1);
+    bobui_setupActionIcon(overviewModeAction, "view-pages-overview"_L1);
     singleModeAction->setObjectName("singleModeAction"_L1);
     facingModeAction->setObjectName("facingModeAction"_L1);
     overviewModeAction->setObjectName("overviewModeAction"_L1);
@@ -397,8 +397,8 @@ void QPrintPreviewDialogPrivate::setupActions()
     printerGroup = new QActionGroup(q);
     printAction = printerGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Print"));
     pageSetupAction = printerGroup->addAction(QCoreApplication::translate("QPrintPreviewDialog", "Page setup"));
-    qt_setupActionIcon(printAction, "printer"_L1);
-    qt_setupActionIcon(pageSetupAction, "page-setup"_L1);
+    bobui_setupActionIcon(printAction, "printer"_L1);
+    bobui_setupActionIcon(pageSetupAction, "page-setup"_L1);
     QObject::connect(printAction, SIGNAL(triggered(bool)), q, SLOT(_q_print()));
     QObject::connect(pageSetupAction, SIGNAL(triggered(bool)), q, SLOT(_q_pageSetup()));
 
@@ -552,7 +552,7 @@ void QPrintPreviewDialogPrivate::_q_print()
         QString title = QCoreApplication::translate("QPrintPreviewDialog", "Export to PDF");
         QString suffix = ".pdf"_L1;
         QString fileName;
-#if QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(filedialog)
         fileName = QFileDialog::getSaveFileName(q, title, printer->outputFileName(), u'*' + suffix);
 #endif
         if (!fileName.isEmpty()) {
@@ -625,7 +625,7 @@ void QPrintPreviewDialogPrivate::_q_zoomFactorChanged()
 
     \ingroup standard-dialogs
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     Using QPrintPreviewDialog in your existing application is
     straightforward:
@@ -662,7 +662,7 @@ void QPrintPreviewDialogPrivate::_q_zoomFactorChanged()
 
     \sa QWidget::setWindowFlags()
 */
-QPrintPreviewDialog::QPrintPreviewDialog(QPrinter* printer, QWidget *parent, Qt::WindowFlags flags)
+QPrintPreviewDialog::QPrintPreviewDialog(QPrinter* printer, QWidget *parent, BobUI::WindowFlags flags)
     : QDialog(*new QPrintPreviewDialogPrivate, parent, flags)
 {
     Q_D(QPrintPreviewDialog);
@@ -671,12 +671,12 @@ QPrintPreviewDialog::QPrintPreviewDialog(QPrinter* printer, QWidget *parent, Qt:
 
 /*!
     \overload
-    \fn QPrintPreviewDialog::QPrintPreviewDialog(QWidget *parent, Qt::WindowFlags flags)
+    \fn QPrintPreviewDialog::QPrintPreviewDialog(QWidget *parent, BobUI::WindowFlags flags)
 
     This will create an internal QPrinter object, which will use the
     system default printer.
 */
-QPrintPreviewDialog::QPrintPreviewDialog(QWidget *parent, Qt::WindowFlags f)
+QPrintPreviewDialog::QPrintPreviewDialog(QWidget *parent, BobUI::WindowFlags f)
     : QDialog(*new QPrintPreviewDialogPrivate, parent, f)
 {
     Q_D(QPrintPreviewDialog);
@@ -766,7 +766,7 @@ QPrinter *QPrintPreviewDialog::printer()
 */
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprintpreviewdialog.cpp"
 #include "qprintpreviewdialog.moc"

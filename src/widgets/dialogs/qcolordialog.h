@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOLORDIALOG_H
 #define QCOLORDIALOG_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
 
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(colordialog);
+BOBUI_REQUIRE_CONFIG(colordialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QColorDialogPrivate;
 
@@ -53,7 +53,7 @@ public:
 
     void setVisible(bool visible) override;
 
-    static QColor getColor(const QColor &initial = Qt::white,
+    static QColor getColor(const QColor &initial = BobUI::white,
                            QWidget *parent = nullptr,
                            const QString &title = QString(),
                            ColorDialogOptions options = ColorDialogOptions());
@@ -78,6 +78,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QColorDialog::ColorDialogOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLORDIALOG_H

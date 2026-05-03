@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "wigglywidget.h"
 
 #include <QFontMetrics>
 #include <QPainter>
-#include <QTimerEvent>
+#include <BOBUIimerEvent>
 
 //! [0]
 WigglyWidget::WigglyWidget(QWidget *parent)
@@ -52,7 +52,7 @@ void WigglyWidget::paintEvent(QPaintEvent * /* event */)
 //! [4]
 
 //! [5]
-void WigglyWidget::timerEvent(QTimerEvent *event)
+void WigglyWidget::timerEvent(BOBUIimerEvent *event)
 //! [5] //! [6]
 {
     if (event->timerId() == timer.timerId()) {

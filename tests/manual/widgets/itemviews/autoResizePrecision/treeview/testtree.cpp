@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QtWidgets>
+#include <BobUIWidgets/BobUIWidgets>
 
 class TreeDialog : public QDialog
 {
@@ -13,7 +13,7 @@ protected:
     {
         resize(1000, 233);
         gridLayout = new QGridLayout(this);
-        treeWidget = new QTreeWidget(this);
+        treeWidget = new BOBUIreeWidget(this);
 
         gridLayout->addWidget(treeWidget, 0, 0, 2, 1);
         spinPrecision = new QSpinBox(this);
@@ -30,11 +30,11 @@ protected:
 
         QStringList sl1("This is Root Item");
         sl1.append("i");
-        QTreeWidgetItem *rootitem = new QTreeWidgetItem(treeWidget, sl1);
+        BOBUIreeWidgetItem *rootitem = new BOBUIreeWidgetItem(treeWidget, sl1);
 
         QStringList sl2("This is Child1 Item");
         sl2.append("WW");
-        QTreeWidgetItem *child1 = new QTreeWidgetItem(rootitem, sl2);
+        BOBUIreeWidgetItem *child1 = new BOBUIreeWidgetItem(rootitem, sl2);
 
         QString ii = QString::fromLatin1("ii");
         QStringList is;
@@ -59,9 +59,9 @@ protected:
             sl.append(is[rowCount - u - 1]);
 
             if (u > 500)
-                new QTreeWidgetItem(rootitem, sl);
+                new BOBUIreeWidgetItem(rootitem, sl);
             else
-                new QTreeWidgetItem(child1, sl);
+                new BOBUIreeWidgetItem(child1, sl);
         }
         treeWidget->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
         treeWidget->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
@@ -73,7 +73,7 @@ protected slots:
     void slotValueChanged(int newval);
 protected:
     QGridLayout *gridLayout;
-    QTreeWidget *treeWidget;
+    BOBUIreeWidget *treeWidget;
     QSpinBox *spinPrecision;
     QSpacerItem *verticalSpacer;
 };

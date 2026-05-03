@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QString>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 
 struct Node
@@ -17,7 +17,7 @@ void example()
     {
         //! [1]
         // Required for using the '_L1' string literal.
-        using namespace Qt::StringLiterals;
+        using namespace BobUI::StringLiterals;
         // ...
         QString url = "https://www.unicode.org/"_L1;
         //! [1]
@@ -60,7 +60,7 @@ void example()
     {
         //! [5]
         // Required for using the '_L1' string literal.
-        using namespace Qt::StringLiterals;
+        using namespace BobUI::StringLiterals;
         // ...
         if (str == "auto"_L1
                 || str == "extern"_L1
@@ -73,9 +73,9 @@ void example()
 
     {
         //! [7]
-        QString plain = "#include <QtCore>";
+        QString plain = "#include <BobUICore>";
         QString html = plain.toHtmlEscaped();
-        // html == "#include &lt;QtCore&gt;"
+        // html == "#include &lt;BobUICore&gt;"
         //! [7]
     }
 

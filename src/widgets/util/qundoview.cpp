@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qundoview.h"
 
-#if QT_CONFIG(undogroup)
-#include <QtGui/qundogroup.h>
+#if BOBUI_CONFIG(undogroup)
+#include <BobUIGui/qundogroup.h>
 #endif
-#include <QtGui/qundostack.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qpointer.h>
-#include <QtGui/qicon.h>
+#include <BobUIGui/qundostack.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qpointer.h>
+#include <BobUIGui/qicon.h>
 #include <private/qlistview_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QUndoModel : public QAbstractItemModel
 {
@@ -28,7 +28,7 @@ public:
     virtual QModelIndex parent(const QModelIndex &child) const override;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    virtual QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
 
     QModelIndex selectedIndex() const;
     QItemSelectionModel *selectionModel() const;
@@ -178,11 +178,11 @@ QVariant QUndoModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() > m_stack->count())
         return QVariant();
 
-    if (role == Qt::DisplayRole) {
+    if (role == BobUI::DisplayRole) {
         if (index.row() == 0)
             return m_emty_label;
         return m_stack->text(index.row() - 1);
-    } else if (role == Qt::DecorationRole) {
+    } else if (role == BobUI::DecorationRole) {
         if (index.row() == m_stack->cleanIndex() && !m_clean_icon.isNull())
             return m_clean_icon;
         return QVariant();
@@ -219,7 +219,7 @@ QIcon QUndoModel::cleanIcon() const
     \since 4.2
 
     \ingroup advanced
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QUndoView is a QListView which displays the list of commands pushed on an undo stack.
     The most recently executed command is always selected. Selecting a different command
@@ -238,12 +238,12 @@ class QUndoViewPrivate : public QListViewPrivate
     Q_DECLARE_PUBLIC(QUndoView)
 public:
     QUndoViewPrivate() :
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
         group(nullptr),
 #endif
         model(nullptr) {}
 
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     QPointer<QUndoGroup> group;
 #endif
     QUndoModel *model;
@@ -283,7 +283,7 @@ QUndoView::QUndoView(QUndoStack *stack, QWidget *parent)
     setStack(stack);
 }
 
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
 
 /*!
     Constructs a new view with parent \a parent and sets the observed group to \a group.
@@ -299,7 +299,7 @@ QUndoView::QUndoView(QUndoGroup *group, QWidget *parent)
     setGroup(group);
 }
 
-#endif // QT_CONFIG(undogroup)
+#endif // BOBUI_CONFIG(undogroup)
 
 /*!
     Destroys this view.
@@ -334,13 +334,13 @@ QUndoStack *QUndoView::stack() const
 void QUndoView::setStack(QUndoStack *stack)
 {
     Q_D(QUndoView);
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
     setGroup(nullptr);
 #endif
     d->model->setStack(stack);
 }
 
-#if QT_CONFIG(undogroup)
+#if BOBUI_CONFIG(undogroup)
 
 /*!
     Sets the group displayed by this view to \a group. If \a group is \nullptr,
@@ -388,7 +388,7 @@ QUndoGroup *QUndoView::group() const
     return d->group;
 }
 
-#endif // QT_CONFIG(undogroup)
+#endif // BOBUI_CONFIG(undogroup)
 
 /*!
     \property QUndoView::emptyLabel
@@ -434,7 +434,7 @@ QIcon QUndoView::cleanIcon() const
     return d->model->cleanIcon();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qundoview.moc"
 #include "moc_qundoview.cpp"

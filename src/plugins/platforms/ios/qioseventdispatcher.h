@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSEVENTDISPATCHER_H
 #define QIOSEVENTDISPATCHER_H
 
-#include <QtCore/private/qeventdispatcher_cf_p.h>
+#include <BobUICore/private/qeventdispatcher_cf_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSEventDispatcher : public QEventDispatcherCoreFoundation
 {
@@ -17,7 +17,7 @@ public:
     static QIOSEventDispatcher* create();
     bool processPostedEvents() override;
 
-    static bool isQtApplication();
+    static bool isBobUIApplication();
 
 protected:
     explicit QIOSEventDispatcher(QObject *parent = nullptr);
@@ -41,6 +41,6 @@ private:
     RunLoopObserver<QIOSJumpingEventDispatcher> m_runLoopExitObserver;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOSEVENTDISPATCHER_H

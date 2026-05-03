@@ -1,5 +1,5 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sean Harmer <sean.harmer@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLVERTEXARRAYOBJECT_P_H
 #define QOPENGLVERTEXARRAYOBJECT_P_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of the Qt OpenGL classes.  This header file may change from
+// This file is not part of the BobUI API.  It exists for the convenience
+// of the BobUI OpenGL classes.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#include <QtGui/qopengl.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLContext;
 
@@ -69,17 +69,17 @@ public:
     }
 
     // Function signatures are equivalent between desktop core, ARB, APPLE, ES 3 and ES 2 extensions
-    typedef void (QOPENGLF_APIENTRYP qt_GenVertexArrays_t)(GLsizei n, GLuint *arrays);
-    typedef void (QOPENGLF_APIENTRYP qt_DeleteVertexArrays_t)(GLsizei n, const GLuint *arrays);
-    typedef void (QOPENGLF_APIENTRYP qt_BindVertexArray_t)(GLuint array);
-    typedef GLboolean (QOPENGLF_APIENTRYP qt_IsVertexArray_t)(GLuint array);
+    typedef void (QOPENGLF_APIENTRYP bobui_GenVertexArrays_t)(GLsizei n, GLuint *arrays);
+    typedef void (QOPENGLF_APIENTRYP bobui_DeleteVertexArrays_t)(GLsizei n, const GLuint *arrays);
+    typedef void (QOPENGLF_APIENTRYP bobui_BindVertexArray_t)(GLuint array);
+    typedef GLboolean (QOPENGLF_APIENTRYP bobui_IsVertexArray_t)(GLuint array);
 
-    qt_GenVertexArrays_t GenVertexArrays;
-    qt_DeleteVertexArrays_t DeleteVertexArrays;
-    qt_BindVertexArray_t BindVertexArray;
-    qt_IsVertexArray_t IsVertexArray;
+    bobui_GenVertexArrays_t GenVertexArrays;
+    bobui_DeleteVertexArrays_t DeleteVertexArrays;
+    bobui_BindVertexArray_t BindVertexArray;
+    bobui_IsVertexArray_t IsVertexArray;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENGLVERTEXARRAYOBJECT_P_H

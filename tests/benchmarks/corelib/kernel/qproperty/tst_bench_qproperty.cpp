@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QScopedPointer>
 #include <QProperty>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 #include "propertytester.h"
 
@@ -202,6 +202,6 @@ void tst_QProperty::cppNotifyingDirectReadOnce()
     QCOMPARE(tester->yNotified.value(), i);
 }
 
-QTEST_MAIN(tst_QProperty)
+BOBUIEST_MAIN(tst_QProperty)
 
 #include "tst_bench_qproperty.moc"

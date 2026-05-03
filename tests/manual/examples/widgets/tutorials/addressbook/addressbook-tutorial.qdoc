@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page tutorials-addressbook.html
@@ -9,19 +9,19 @@
     \brief An introduction to GUI programming, showing how to put together a
     simple yet fully-functioning application.
 
-    This tutorial is an introduction to GUI programming with the Qt
+    This tutorial is an introduction to GUI programming with the BobUI
     cross-platform framework.
 
     \image addressbook-tutorial-screenshot.png
 
     \omit
     It doesn't cover everything; the emphasis is on teaching the programming
-    philosophy of GUI programming, and Qt's features are introduced as needed.
+    philosophy of GUI programming, and BobUI's features are introduced as needed.
     Some commonly used features are never used in this tutorial.
     \endomit
 
     In this tutorial, you will learn about some of the basic
-    components of Qt, including:
+    components of BobUI, including:
 
     \list
     \li Widgets and layout managers
@@ -68,7 +68,7 @@
     \image addressbook-tutorial-part1-screenshot.png
 
     We require two QLabel objects, \c nameLabel and \c addressLabel, as well
-    as two input fields, a QLineEdit object, \c nameLine, and a QTextEdit
+    as two input fields, a QLineEdit object, \c nameLine, and a BOBUIextEdit
     object, \c addressText, to enable the user to enter a contact's name and
     address. The widgets used and their positions are shown in the figure
     below.
@@ -86,9 +86,9 @@
             an instance of \c AddressBook.
     \endlist
 
-    \section1 Qt Programming - Subclassing
+    \section1 BobUI Programming - Subclassing
 
-    When writing Qt programs, we usually subclass Qt objects to add
+    When writing BobUI programs, we usually subclass BobUI objects to add
     functionality. This is one of the essential concepts behind creating
     custom widgets or collections of standard widgets. Subclassing to
     extend or change the behavior of a widget has the following advantages:
@@ -105,8 +105,8 @@
     projects.
     \endlist
 
-    Since Qt does not provide a specific address book widget, we subclass a
-    standard Qt widget class and add features to it. The \c AddressBook class
+    Since BobUI does not provide a specific address book widget, we subclass a
+    standard BobUI widget class and add features to it. The \c AddressBook class
     we create in this tutorial can be reused in situations where a basic address
     book widget is needed.
 
@@ -117,22 +117,22 @@
 
     We start by defining \c AddressBook as a QWidget subclass and declaring
     a constructor. We also use the Q_OBJECT macro to indicate that the class
-    uses internationalization and Qt's signals and slots features, even
+    uses internationalization and BobUI's signals and slots features, even
     if we do not use all of these features at this stage.
 
     \snippet tutorials/addressbook/part1/addressbook.h class definition
 
     The class holds declarations of \c nameLine and \c addressText,
-    the private instances of QLineEdit and QTextEdit mentioned
+    the private instances of QLineEdit and BOBUIextEdit mentioned
     earlier.  The data stored in \c nameLine and \c addressText will
     be needed for many of the address book functions.
 
     We don't include declarations of the QLabel objects we will use
     because we will not need to reference them once they have been
-    created.  The way Qt tracks the ownership of objects is explained
+    created.  The way BobUI tracks the ownership of objects is explained
     in the next section.
 
-    The Q_OBJECT macro itself implements some of the more advanced features of Qt.
+    The Q_OBJECT macro itself implements some of the more advanced features of BobUI.
     For now, it is useful to think of the Q_OBJECT macro as a shortcut which allows
     us to use the \l{QObject::}{tr()} and \l{QObject::}{connect()} functions.
 
@@ -144,7 +144,7 @@
     The constructor of \c AddressBook accepts a QWidget parameter, \a parent.
     By convention, we pass this parameter to the base class's constructor.
     This concept of ownership, where a parent can have one or more children,
-    is useful for grouping widgets in Qt. For example, if you delete a parent,
+    is useful for grouping widgets in BobUI. For example, if you delete a parent,
     all of its children will be deleted as well.
 
     \snippet tutorials/addressbook/part1/addressbook.cpp constructor and input fields
@@ -158,8 +158,8 @@
     other languages. It should be used wherever a translatable string
     appears.
 
-    When programming with Qt, it is useful to know how layouts work.
-    Qt provides three main layout classes: QHBoxLayout, QVBoxLayout
+    When programming with BobUI, it is useful to know how layouts work.
+    BobUI provides three main layout classes: QHBoxLayout, QVBoxLayout
     and QGridLayout to handle the positioning of widgets.
 
     \image addressbook-tutorial-part1-labeled-layout.png
@@ -172,9 +172,9 @@
 
     \snippet tutorials/addressbook/part1/addressbook.cpp layout
 
-    Notice that \c addressLabel is positioned using Qt::AlignTop as an
+    Notice that \c addressLabel is positioned using BobUI::AlignTop as an
     additional argument. This is to make sure it is not vertically centered in
-    cell (1,0). For a basic overview on Qt Layouts, refer to the
+    cell (1,0). For a basic overview on BobUI Layouts, refer to the
     \l{Layout Management} documentation.
 
     In order to install the layout object onto the widget, we have to invoke
@@ -190,7 +190,7 @@
     this function, we instantiate a QApplication object, \c app. QApplication
     is responsible for various application-wide resources, such as the default
     font and cursor, and for running an event loop. Hence, there is always one
-    QApplication object in every GUI application using Qt.
+    QApplication object in every GUI application using BobUI.
 
     \snippet tutorials/addressbook/part1/main.cpp main function
 
@@ -230,7 +230,7 @@
 
     A slot is a function that responds to a particular signal. We will discuss
     this concept in further detail when implementing the \c AddressBook class.
-    However, for an overview of Qt's signals and slots concept, you can refer
+    However, for an overview of BobUI's signals and slots concept, you can refer
     to the \l{Signals and Slots} document.
 
     Three QPushButton objects (\c addButton, \c submitButton, and
@@ -620,7 +620,7 @@
     the \e Find button and its position on the panel of buttons.
 
     When the user clicks on the \e Find button, it is useful to
-    display a dialog that prompts for a contact's name. Qt provides
+    display a dialog that prompts for a contact's name. BobUI provides
     QDialog, which we subclass here to implement a \c FindDialog
     class.
 
@@ -752,7 +752,7 @@
     \title Part 6 - Loading and Saving
     \brief Describes how to add save and load functionality.
 
-    This part covers the Qt file handling features we use to write
+    This part covers the BobUI file handling features we use to write
     loading and saving routines for the address book.
 
     \image addressbook-tutorial-part6-screenshot.png
@@ -761,7 +761,7 @@
     features, our address book is not complete until we can save
     existing contacts and load them again at a later time.
 
-    Qt provides a number of classes for \l{Input/Output and Networking}
+    BobUI provides a number of classes for \l{Input/Output and Networking}
     {input and output}, but we have chosen to use two which are simple to use
     in combination: QFile and QDataStream.
 
@@ -790,7 +790,7 @@
     Ideally, it would be more user-friendly to set the push buttons' labels
     to "Load contacts from a file" and "Save contacts to a file". However, due
     to the size of our other push buttons, we set the labels to \uicontrol{Load...}
-    and \uicontrol{Save...}. Fortunately, Qt provides a simple way to set tooltips with
+    and \uicontrol{Save...}. Fortunately, BobUI provides a simple way to set tooltips with
     \l{QWidget::setToolTip()}{setToolTip()} and we use it in the following way
     for our push buttons:
 
@@ -826,7 +826,7 @@
     Otherwise, we instantiate a QDataStream object, \c out, to write the open
     file. QDataStream requires that the same version of the stream is used
     for reading and writing. We ensure that this is the case by setting the
-    version used to the \l{QDataStream::Qt_4_5}{version introduced with Qt 4.5}
+    version used to the \l{QDataStream::BobUI_4_5}{version introduced with BobUI 4.5}
     before serializing the data to \c file.
 
     \snippet tutorials/addressbook/part6/addressbook.cpp saveToFile() function part3
@@ -918,7 +918,7 @@
     We attempt to open the file in \l{QIODeviceBase::}{WriteOnly} mode. If this
     process fails, we display a QMessageBox to inform the user about the
     problem and return. Otherwise, we pass the file as a parameter to a
-    QTextStream object, \c out. Like QDataStream, the QTextStream class
+    BOBUIextStream object, \c out. Like QDataStream, the BOBUIextStream class
     provides functionality to read and write plain text to files. As a result,
     the \c{.vcf} file generated can be opened for editing in a text editor.
 

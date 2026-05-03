@@ -1,19 +1,19 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtSql/QtSql>
+#include <BOBUIest>
+#include <BobUISql/BobUISql>
 
-#include <QtCore/QDateTime>
-#include <QtCore/QTimeZone>
+#include <BobUICore/QDateTime>
+#include <BobUICore/BOBUIimeZone>
 
 #include <numeric>
 
 #include "../qsqldatabase/tst_databases.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QString qtest;
+QString bobuiest;
 
 class tst_QSqlIndex : public QObject
 {
@@ -36,17 +36,17 @@ tst_QSqlIndex::tst_QSqlIndex()
 
 void tst_QSqlIndex::construction_data()
 {
-    QTest::addColumn<QSqlIndex>("sqlIndex");
-    QTest::addColumn<QString>("cursorName");
-    QTest::addColumn<QString>("name");
+    BOBUIest::addColumn<QSqlIndex>("sqlIndex");
+    BOBUIest::addColumn<QString>("cursorName");
+    BOBUIest::addColumn<QString>("name");
 
     const QString cursorName("cusorName"_L1);
     const QString name("name"_L1);
     QSqlIndex sqlIndex(cursorName, name);
-    QTest::newRow("ctor1") << QSqlIndex() << QString() << QString();
-    QTest::newRow("ctor2") << sqlIndex << cursorName << name;
-    QTest::newRow("copy ctor") << QSqlIndex(sqlIndex) << cursorName << name;
-    QTest::newRow("move ctor") << QSqlIndex(std::move(sqlIndex)) << cursorName << name;
+    BOBUIest::newRow("ctor1") << QSqlIndex() << QString() << QString();
+    BOBUIest::newRow("ctor2") << sqlIndex << cursorName << name;
+    BOBUIest::newRow("copy ctor") << QSqlIndex(sqlIndex) << cursorName << name;
+    BOBUIest::newRow("move ctor") << QSqlIndex(std::move(sqlIndex)) << cursorName << name;
 }
 
 void tst_QSqlIndex::construction()
@@ -63,9 +63,9 @@ void tst_QSqlIndex::construction()
 
 void tst_QSqlIndex::assignment_data()
 {
-    QTest::addColumn<QSqlIndex>("sqlIndex");
-    QTest::addColumn<QString>("cursorName");
-    QTest::addColumn<QString>("name");
+    BOBUIest::addColumn<QSqlIndex>("sqlIndex");
+    BOBUIest::addColumn<QString>("cursorName");
+    BOBUIest::addColumn<QString>("name");
 
     const QString cursorName("cusorName"_L1);
     const QString name("name"_L1);
@@ -73,8 +73,8 @@ void tst_QSqlIndex::assignment_data()
     QSqlIndex sqlIndex1 = sqlIndex;
     QSqlIndex sqlIndex2 = std::move(sqlIndex);
     sqlIndex = std::move(sqlIndex2);
-    QTest::newRow("copy assignment") << sqlIndex1 << cursorName << name;
-    QTest::newRow("move assignment") << sqlIndex << cursorName << name;
+    BOBUIest::newRow("copy assignment") << sqlIndex1 << cursorName << name;
+    BOBUIest::newRow("move assignment") << sqlIndex << cursorName << name;
 }
 
 void tst_QSqlIndex::assignment()
@@ -122,5 +122,5 @@ void tst_QSqlIndex::basicFunctions()
     QCOMPARE(sqlIndex.field(1), f2);
 }
 
-QTEST_MAIN(tst_QSqlIndex)
+BOBUIEST_MAIN(tst_QSqlIndex)
 #include "tst_qsqlindex.moc"

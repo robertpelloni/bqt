@@ -1,24 +1,24 @@
 // Copyright (C) 2014 Ivan Komissarov <ABBAPOH@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTORAGEINFO_H
 #define QSTORAGEINFO_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
 class QStorageInfoPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QStorageInfoPrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QStorageInfoPrivate)
 class Q_CORE_EXPORT QStorageInfo
 {
 public:
@@ -30,7 +30,7 @@ public:
     ~QStorageInfo();
 
     QStorageInfo &operator=(const QStorageInfo &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QStorageInfo)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QStorageInfo)
 
     inline void swap(QStorageInfo &other) noexcept
     { d.swap(other.d); }
@@ -75,12 +75,12 @@ inline bool QStorageInfo::isRoot() const
 
 Q_DECLARE_SHARED(QStorageInfo)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QStorageInfo &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QStorageInfo, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QStorageInfo, Q_CORE_EXPORT)
 
 #endif // QSTORAGEINFO_H

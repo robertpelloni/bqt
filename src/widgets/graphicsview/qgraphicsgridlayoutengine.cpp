@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgraphicsgridlayoutengine_p.h"
 
@@ -8,7 +8,7 @@
 #include "qgraphicslayout_p.h"
 #include "qgraphicswidget.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
   returns \c true if the size policy returns \c true for either hasHeightForWidth()
@@ -20,12 +20,12 @@ bool QGraphicsGridLayoutEngineItem::hasDynamicConstraint() const
         || QGraphicsLayoutItemPrivate::get(q_layoutItem)->hasWidthForHeight();
 }
 
-Qt::Orientation QGraphicsGridLayoutEngineItem::dynamicConstraintOrientation() const
+BobUI::Orientation QGraphicsGridLayoutEngineItem::dynamicConstraintOrientation() const
 {
     if (QGraphicsLayoutItemPrivate::get(q_layoutItem)->hasHeightForWidth())
-        return Qt::Vertical;
+        return BobUI::Vertical;
     else //if (QGraphicsLayoutItemPrivate::get(q_layoutItem)->hasWidthForHeight())
-        return Qt::Horizontal;
+        return BobUI::Horizontal;
 }
 
 /*!
@@ -39,7 +39,7 @@ bool QGraphicsGridLayoutEngineItem::isEmpty() const
     return q_layoutItem->isEmpty();
 }
 
-void QGraphicsGridLayoutEngine::setAlignment(QGraphicsLayoutItem *graphicsLayoutItem, Qt::Alignment alignment)
+void QGraphicsGridLayoutEngine::setAlignment(QGraphicsLayoutItem *graphicsLayoutItem, BobUI::Alignment alignment)
 {
     if (QGraphicsGridLayoutEngineItem *gridEngineItem = findLayoutItem(graphicsLayoutItem)) {
         gridEngineItem->setAlignment(alignment);
@@ -47,7 +47,7 @@ void QGraphicsGridLayoutEngine::setAlignment(QGraphicsLayoutItem *graphicsLayout
     }
 }
 
-Qt::Alignment QGraphicsGridLayoutEngine::alignment(QGraphicsLayoutItem *graphicsLayoutItem) const
+BobUI::Alignment QGraphicsGridLayoutEngine::alignment(QGraphicsLayoutItem *graphicsLayoutItem) const
 {
     if (QGraphicsGridLayoutEngineItem *gridEngineItem = findLayoutItem(graphicsLayoutItem))
         return gridEngineItem->alignment();
@@ -56,7 +56,7 @@ Qt::Alignment QGraphicsGridLayoutEngine::alignment(QGraphicsLayoutItem *graphics
 
 
 void QGraphicsGridLayoutEngine::setStretchFactor(QGraphicsLayoutItem *layoutItem, int stretch,
-                                         Qt::Orientation orientation)
+                                         BobUI::Orientation orientation)
 {
     Q_ASSERT(stretch >= 0);
 
@@ -64,11 +64,11 @@ void QGraphicsGridLayoutEngine::setStretchFactor(QGraphicsLayoutItem *layoutItem
         item->setStretchFactor(stretch, orientation);
 }
 
-int QGraphicsGridLayoutEngine::stretchFactor(QGraphicsLayoutItem *layoutItem, Qt::Orientation orientation) const
+int QGraphicsGridLayoutEngine::stretchFactor(QGraphicsLayoutItem *layoutItem, BobUI::Orientation orientation) const
 {
     if (QGraphicsGridLayoutEngineItem *item = findLayoutItem(layoutItem))
         return item->stretchFactor(orientation);
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

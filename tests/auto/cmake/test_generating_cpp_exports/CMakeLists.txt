@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
@@ -7,18 +7,18 @@ include(.cmake.conf)
 
 project(TestGeneratingCppExports
         DESCRIPTION "Test of the generating of cpp exports"
-        HOMEPAGE_URL "https://qt.io/"
+        HOMEPAGE_URL "https://bobui.io/"
         LANGUAGES CXX C
-        VERSION "${QT_REPO_MODULE_VERSION}"
+        VERSION "${BOBUI_REPO_MODULE_VERSION}"
 )
 
-find_package(Qt6 COMPONENTS Core BuildInternals Test CONFIG REQUIRED)
-qt_internal_project_setup()
+find_package(BobUI6 COMPONENTS Core BuildInternals Test CONFIG REQUIRED)
+bobui_internal_project_setup()
 
-qt_build_repo_begin()
+bobui_build_repo_begin()
 
 add_subdirectory(test_autogenerating_cpp_exports)
 add_subdirectory(test_autogenerating_cpp_exports_custom_name)
 
-qt_build_repo_post_process()
-qt_build_repo_end()
+bobui_build_repo_post_process()
+bobui_build_repo_end()

@@ -1,7 +1,7 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
   <Message type="qdebug" file="" line="0">
@@ -123,7 +123,7 @@
     <DataTag><![CDATA[data1]]></DataTag>
     <Description><![CDATA[test3 test3 data1]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <DataTag><![CDATA[data1]]></DataTag>
       <Description><![CDATA[Compared values are not the same
    Actual   (str)              : "hello1"
@@ -141,7 +141,7 @@
     <DataTag><![CDATA[data2]]></DataTag>
     <Description><![CDATA[test3 test3 data2]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <DataTag><![CDATA[data2]]></DataTag>
       <Description><![CDATA[Compared values are not the same
    Actual   (str)              : "hello2"
@@ -157,37 +157,37 @@
   <Message type="qdebug" file="" line="0">
     <Description><![CDATA[init multiFail (null)]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This failure message should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[But this test should only contribute one to the failure count]]></Description>
     </Incident>
   <Message type="qdebug" file="" line="0">
@@ -199,37 +199,37 @@
   <Message type="qdebug" file="" line="0">
     <Description><![CDATA[init multiSkip (null)]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[This skip should be repeated ten times]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp" line="0">
       <Description><![CDATA[But this test should only contribute one to the skip count]]></Description>
     </Incident>
   <Message type="qdebug" file="" line="0">

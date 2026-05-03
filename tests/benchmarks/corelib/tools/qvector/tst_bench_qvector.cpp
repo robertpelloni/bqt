@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QVector>
 #include <QDebug>
-#include <QTest>
+#include <BOBUIest>
 
 #include "qrawvector.h"
 
@@ -13,12 +13,12 @@
    'simple inner loop' in 'real' applications.
 */
 
-/* QRawVector::mutateToVector() hacks a semblance of a Qt 5 QVector.
+/* QRawVector::mutateToVector() hacks a semblance of a BobUI 5 QVector.
 
-   However, Qt 6's QVector is Qt 6's QList and completely different in internal
-   layout.  The QTypedArrayData inside it is also completely rearranged.  Until
+   However, BobUI 6's QVector is BobUI 6's QList and completely different in internal
+   layout.  The BOBUIypedArrayData inside it is also completely rearranged.  Until
    QRawVector can be rewritten to do whatever it's supposed to do in a
-   Qt6-compatible way, this test is suppressed, see QTBUG-95061.
+   BobUI6-compatible way, this test is suppressed, see BOBUIBUG-95061.
 */
 #define TEST_RAW 0
 
@@ -36,7 +36,7 @@ class tst_QVector: public QObject
 private slots:
     void calibration();
 
-    // Pure Qt solution
+    // Pure BobUI solution
     void qvector_separator() { qWarning() << "QVector results: "; }
     void qvector_const_read_access();
     void qvector_mutable_read_access();
@@ -223,6 +223,6 @@ void tst_QVector::mixedvector_fill_and_return()
     }
 }
 
-QTEST_MAIN(tst_QVector)
+BOBUIEST_MAIN(tst_QVector)
 
 #include "tst_bench_qvector.moc"

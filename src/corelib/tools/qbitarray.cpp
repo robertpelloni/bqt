@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qbitarray.h"
 #include <qalgorithms.h>
@@ -13,11 +13,11 @@
 
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QBitArray
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QBitArray class provides an array of bits.
 
     \ingroup tools
@@ -80,7 +80,7 @@ QT_BEGIN_NAMESPACE
     \sa QByteArray, QList
 */
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 /*!
     \fn QBitArray::QBitArray(QBitArray &&other)
 
@@ -232,7 +232,7 @@ void QBitArray::resize(qsizetype size)
     Example:
     \snippet code/src_corelib_tools_qbitarray.cpp 5
 
-    Qt makes a distinction between null bit arrays and empty bit
+    BobUI makes a distinction between null bit arrays and empty bit
     arrays for historical reasons. For most applications, what
     matters is whether or not a bit array contains any data,
     and this can be determined using isEmpty().
@@ -468,7 +468,7 @@ quint32 QBitArray::toUInt32(QSysInfo::Endian endianness, bool *ok) const noexcep
     \overload
 */
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 /*! \fn QBitArray::QBitArray(const QBitArray &other) noexcept
 
     Constructs a copy of \a other.
@@ -493,7 +493,7 @@ quint32 QBitArray::toUInt32(QSysInfo::Endian endianness, bool *ok) const noexcep
     Moves \a other to this bit array and returns a reference to
     this bit array.
 */
-#endif // Qt 6
+#endif // BobUI 6
 
 /*! \fn void QBitArray::swap(QBitArray &other)
     \since 4.8
@@ -846,7 +846,7 @@ QBitArray operator^(const QBitArray &a1, const QBitArray &a2)
 
 /*!
     \class QBitRef
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QBitRef class is an internal class, used with QBitArray.
 
@@ -889,19 +889,19 @@ QBitArray operator^(const QBitArray &a1, const QBitArray &a2)
   QBitArray stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \relates QBitArray
 
     Writes bit array \a ba to stream \a out.
 
-    \sa {Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa {Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 QDataStream &operator<<(QDataStream &out, const QBitArray &ba)
 {
     const qsizetype len = ba.size();
-    if (out.version() < QDataStream::Qt_6_0) {
+    if (out.version() < QDataStream::BobUI_6_0) {
         if (Q_UNLIKELY(len > qsizetype{(std::numeric_limits<qint32>::max)()})) {
             out.setStatus(QDataStream::Status::SizeLimitExceeded);
             return out;
@@ -920,14 +920,14 @@ QDataStream &operator<<(QDataStream &out, const QBitArray &ba)
 
     Reads a bit array into \a ba from stream \a in.
 
-    \sa {Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa {Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 QDataStream &operator>>(QDataStream &in, QBitArray &ba)
 {
     ba.clear();
     qsizetype len;
-    if (in.version() < QDataStream::Qt_6_0) {
+    if (in.version() < QDataStream::BobUI_6_0) {
         quint32 tmp;
         in >> tmp;
         if (Q_UNLIKELY(tmp > quint32((std::numeric_limits<qint32>::max)()))) {
@@ -973,9 +973,9 @@ QDataStream &operator>>(QDataStream &in, QBitArray &ba)
     }
     return in;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QBitArray &array)
 {
     QDebugStateSaver saver(dbg);
@@ -1004,4 +1004,4 @@ QDebug operator<<(QDebug dbg, const QBitArray &array)
     \internal
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

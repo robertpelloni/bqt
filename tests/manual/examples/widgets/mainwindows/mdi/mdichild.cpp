@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mdichild.h"
 
 MdiChild::MdiChild(MdiChild *other)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(BobUI::WA_DeleteOnClose);
     if (other) {
         auto *doc = other->document();
         setDocument(doc);
         setWindowModified(other->isWindowModified());
-        connect(doc, &QTextDocument::contentsChanged,
+        connect(doc, &BOBUIextDocument::contentsChanged,
                 this, &MdiChild::documentWasModified);
         curFile = other->curFile;
         setWindowTitle(userFriendlyCurrentFile() + "[*]");
@@ -27,7 +27,7 @@ void MdiChild::newFile()
     curFile = tr("document%1.txt").arg(sequenceNumber++);
     setWindowTitle(curFile + "[*]");
 
-    connect(document(), &QTextDocument::contentsChanged,
+    connect(document(), &BOBUIextDocument::contentsChanged,
             this, &MdiChild::documentWasModified);
 }
 
@@ -42,14 +42,14 @@ bool MdiChild::loadFile(const QString &fileName)
         return false;
     }
 
-    QTextStream in(&file);
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    BOBUIextStream in(&file);
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
     setPlainText(in.readAll());
     QGuiApplication::restoreOverrideCursor();
 
     setCurrentFile(fileName);
 
-    connect(document(), &QTextDocument::contentsChanged,
+    connect(document(), &BOBUIextDocument::contentsChanged,
             this, &MdiChild::documentWasModified);
 
     return true;
@@ -78,10 +78,10 @@ bool MdiChild::saveFile(const QString &fileName)
 {
     QString errorMessage;
 
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
     QSaveFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
-        QTextStream out(&file);
+        BOBUIextStream out(&file);
         out << toPlainText();
         if (!file.commit()) {
             errorMessage = tr("Cannot write file %1:\n%2.")

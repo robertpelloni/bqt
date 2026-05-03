@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QICON_P_H
 #define QICON_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qlist.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qicon.h>
-#include <QtGui/qiconengine.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qlist.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qicon.h>
+#include <BobUIGui/qiconengine.h>
 
-#ifndef QT_NO_ICON
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_ICON
+BOBUI_BEGIN_NAMESPACE
 
 class QIconPrivate
 {
@@ -97,7 +97,7 @@ public:
     static inline QSize adjustSize(const QSize &expectedSize, QSize size)
     {
         if (!size.isNull() && (size.width() > expectedSize.width() || size.height() > expectedSize.height()))
-            size.scale(expectedSize, Qt::KeepAspectRatio);
+            size.scale(expectedSize, BobUI::KeepAspectRatio);
         return size;
     }
 
@@ -119,6 +119,6 @@ private:
     friend class QIconThemeEngine;
 };
 
-QT_END_NAMESPACE
-#endif //QT_NO_ICON
+BOBUI_END_NAMESPACE
+#endif //BOBUI_NO_ICON
 #endif // QICON_P_H

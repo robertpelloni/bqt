@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 /*!
     \class QMovie
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QMovie class is a convenience class for playing movies
     with QImageReader.
@@ -143,7 +143,7 @@
 #include "qpixmap.h"
 #include "qrect.h"
 #include "qelapsedtimer.h"
-#include "qtimer.h"
+#include "bobuiimer.h"
 #include "qlist.h"
 #include "qbuffer.h"
 #include "qdir.h"
@@ -157,7 +157,7 @@
 
 #define QMOVIE_INVALID_DELAY -1
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFrameInfo
 {
@@ -239,7 +239,7 @@ public:
     std::map<int, QFrameInfo> frameMap;
     QString absoluteFilePath;
 
-    QTimer *nextImageTimer = nullptr;
+    BOBUIimer *nextImageTimer = nullptr;
 };
 
 /*! \internal
@@ -252,7 +252,7 @@ void QMoviePrivate::init(QMovie *qq, std::unique_ptr<QImageReader> r)
 {
     q_ptr = qq;
     reader = std::move(r);
-    nextImageTimer = new QTimer(qq);
+    nextImageTimer = new BOBUIimer(qq);
     nextImageTimer->setSingleShot(true);
     QObject::connect(nextImageTimer, SIGNAL(timeout()),
                      qq, SLOT(_q_loadNextFrame()));
@@ -1063,6 +1063,6 @@ QBindable<QMovie::CacheMode> QMovie::bindableCacheMode()
     return &d->cacheMode;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmovie.cpp"

@@ -4,7 +4,7 @@
 # supposed to be influenced by -device-option then.
 host_build: return()
 
-DEVICE_PRI = $$[QT_HOST_DATA/get]/mkspecs/qdevice.pri
+DEVICE_PRI = $$[BOBUI_HOST_DATA/get]/mkspecs/qdevice.pri
 exists($$DEVICE_PRI):include($$DEVICE_PRI)
 unset(DEVICE_PRI)
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILESYSTEMWATCHER_POLLING_P_H
 #define QFILESYSTEMWATCHER_POLLING_P_H
@@ -9,25 +9,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qdirlisting.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qdirlisting.h>
+#include <BobUICore/qhash.h>
 
 #include "qfilesystemwatcher_p.h"
 
-QT_REQUIRE_CONFIG(filesystemwatcher);
-QT_BEGIN_NAMESPACE
+BOBUI_REQUIRE_CONFIG(filesystemwatcher);
+BOBUI_BEGIN_NAMESPACE
 
 class QPollingFileSystemWatcherEngine : public QFileSystemWatcherEngine
 {
@@ -58,7 +58,7 @@ class QPollingFileSystemWatcherEngine : public QFileSystemWatcherEngine
             : ownerId(fileInfo.ownerId()),
               groupId(fileInfo.groupId()),
               permissions(fileInfo.permissions()),
-              lastModified(fileInfo.lastModified(QTimeZone::UTC))
+              lastModified(fileInfo.lastModified(BOBUIimeZone::UTC))
         {
             if (fileInfo.isDir())
                 entries = dirEntryList(fileInfo);
@@ -76,7 +76,7 @@ class QPollingFileSystemWatcherEngine : public QFileSystemWatcherEngine
             return (ownerId != fileInfo.ownerId()
                     || groupId != fileInfo.groupId()
                     || permissions != fileInfo.permissions()
-                    || lastModified != fileInfo.lastModified(QTimeZone::UTC));
+                    || lastModified != fileInfo.lastModified(BOBUIimeZone::UTC));
         }
     };
 
@@ -89,12 +89,12 @@ public:
     QStringList removePaths(const QStringList &paths, QStringList *files, QStringList *directories) override;
 
 private:
-    void timerEvent(QTimerEvent *) final;
+    void timerEvent(BOBUIimerEvent *) final;
 
 private:
     QBasicTimer timer;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QFILESYSTEMWATCHER_POLLING_P_H
 

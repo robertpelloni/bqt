@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef MSBUILD_OBJECTMODEL_H
 #define MSBUILD_OBJECTMODEL_H
@@ -11,7 +11,7 @@
 #include <qstring.h>
 #include <qmap.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Tree & Flat view of files --------------------------------------------------
 class XNode
@@ -136,7 +136,7 @@ public:
     void write(XmlOutput &, const VCResourceCompilerTool &) override;
     void write(XmlOutput &, const VCEventTool &) override;
     void write(XmlOutput &, const VCDeploymentTool &) override;
-    void write(XmlOutput &, const VCWinDeployQtTool &) override;
+    void write(XmlOutput &, const VCWinDeployBobUITool &) override;
     void write(XmlOutput &, const VCConfiguration &) override;
     void write(XmlOutput &, VCFilter &) override;
 
@@ -163,6 +163,6 @@ private:
     friend class XFlatNode;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MSVC_OBJECTMODEL_H

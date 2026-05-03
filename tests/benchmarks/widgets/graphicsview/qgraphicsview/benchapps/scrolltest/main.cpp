@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui>
 
 #include "valgrind/callgrind.h"
 
@@ -15,7 +15,7 @@ public:
     }
 
 protected:
-    void timerEvent(QTimerEvent *event)
+    void timerEvent(BOBUIimerEvent *event)
     {
         _item->moveBy(-1, 0);
     }
@@ -65,27 +65,27 @@ int main(int argc, char *argv[])
     QGraphicsScene scene;
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    ClipItem *clipItem = new ClipItem(0, 0, 100, 100, QPen(), QBrush(Qt::blue));
+    ClipItem *clipItem = new ClipItem(0, 0, 100, 100, QPen(), QBrush(BobUI::blue));
     clipItem->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
     clipItem->setData(0, "clipItem");
     scene.addItem(clipItem);
 
-    QGraphicsRectItem *scrollItem = scene.addRect(0, 0, 10, 10, QPen(Qt::NoPen), QBrush(Qt::NoBrush));
+    QGraphicsRectItem *scrollItem = scene.addRect(0, 0, 10, 10, QPen(BobUI::NoPen), QBrush(BobUI::NoBrush));
     scrollItem->setParentItem(clipItem);
     scrollItem->setFlag(QGraphicsItem::ItemIsMovable);
     scrollItem->setData(0, "scrollItem");
 
     for (int y = 0; y < 25; ++y) {
         for (int x = 0; x < 25; ++x) {
-            ClipItem *rect = new ClipItem(0, 0, 90, 20, QPen(Qt::NoPen), QBrush(Qt::green));
+            ClipItem *rect = new ClipItem(0, 0, 90, 20, QPen(BobUI::NoPen), QBrush(BobUI::green));
             rect->setParentItem(scrollItem);
             rect->setPos(x * 95, y * 25);
             rect->setData(0, qPrintable(QString("rect %1 %2").arg(x).arg(y)));
             rect->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 
             QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(-5, -5, 10, 10);
-            ellipse->setPen(QPen(Qt::NoPen));
-            ellipse->setBrush(QBrush(Qt::yellow));
+            ellipse->setPen(QPen(BobUI::NoPen));
+            ellipse->setBrush(QBrush(BobUI::yellow));
             ellipse->setParentItem(rect);
             ellipse->setData(0, qPrintable(QString("ellipse %1 %2").arg(x).arg(y)));
         }

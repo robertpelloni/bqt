@@ -1,7 +1,7 @@
-The Qt Platform Abstraction - QPA
+The BobUI Platform Abstraction - QPA
 
-QPA is the platform abstraction layer for Qt 5 and replaces QWS and the
-platform ports from Qt 4.
+QPA is the platform abstraction layer for BobUI 5 and replaces QWS and the
+platform ports from BobUI 4.
 
 There is currently little documentation for QPA. The best approach for
 developing a new platform plugin is to look at the other plugins and
@@ -16,7 +16,7 @@ theming and integration. QStyle is not a part of QPA.
 
 There are no source or binary compatibility guarantees for the QPA
 classes, meaning that a platform plugin is only guaranteed to work
-with the Qt version it was developed against. API changes will
+with the BobUI version it was developed against. API changes will
 however only be made in minor releases. (5.1, 5.2, and so on.)
 
 Class Overview:

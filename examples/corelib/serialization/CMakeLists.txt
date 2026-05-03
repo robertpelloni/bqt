@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 if(NOT ANDROID)
-    qt_internal_add_example(cbordump)
-    qt_internal_add_example(convert)
-    qt_internal_add_example(savegame)
+    bobui_internal_add_example(cbordump)
+    bobui_internal_add_example(convert)
+    bobui_internal_add_example(savegame)
 endif()
-if(TARGET Qt6::Widgets)
-    qt_internal_add_example(streambookmarks)
+if(TARGET BobUI6::Widgets)
+    bobui_internal_add_example(streambookmarks)
 endif()

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QMainWindow>
 #include <QMenuBar>
@@ -9,17 +9,17 @@
 #include <QApplication>
 #include <QAction>
 #include <QStyle>
-#include <QToolBar>
+#include <BOBUIoolBar>
 #include <QPushButton>
 #include <QButtonGroup>
 #include <QLineEdit>
 #include <QPlainTextEdit>
-#include <QTabWidget>
+#include <BOBUIabWidget>
 #include <QScrollBar>
 #include <QSlider>
 #include <QSpinBox>
-#include <QTabBar>
-#include <QTextBrowser>
+#include <BOBUIabBar>
+#include <BOBUIextBrowser>
 #include <QIcon>
 #include <QPainter>
 #include <QWindow>
@@ -29,8 +29,8 @@
 #include <QFile>
 #include <QFontMetrics>
 #include <QMouseEvent>
-#include <QTemporaryDir>
-#include <QTimer>
+#include <BOBUIemporaryDir>
+#include <BOBUIimer>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QDebug>
@@ -42,22 +42,22 @@
 
 #include <utility>
 
-static QTextStream &operator<<(QTextStream &str, const QSizeF &s)
+static BOBUIextStream &operator<<(BOBUIextStream &str, const QSizeF &s)
 {
     str << s.width() << 'x' << s.height();
     return str;
 }
 
-static QTextStream &operator<<(QTextStream &str, const QRect &r)
+static BOBUIextStream &operator<<(BOBUIextStream &str, const QRect &r)
 {
-    str << r.width() << 'x' << r.height() << Qt::forcesign << r.x() << r.y() << Qt::noforcesign;
+    str << r.width() << 'x' << r.height() << BobUI::forcesign << r.x() << r.y() << BobUI::noforcesign;
     return str;
 }
 
 static QString formatWindowTitle(const QString &title)
 {
     QString result;
-    QTextStream(&result) << title << ' ' << QT_VERSION_STR << " ("
+    BOBUIextStream(&result) << title << ' ' << BOBUI_VERSION_STR << " ("
         << QGuiApplication::platformName()
         << '/' << QApplication::style()->objectName() << ')';
     return result;
@@ -97,7 +97,7 @@ public:
             m_widget = new T;
             if (m_widget->windowTitle().isEmpty()) {
                 QString title = m_option.description();
-                if (title.startsWith("Test ", Qt::CaseInsensitive))
+                if (title.startsWith("Test ", BobUI::CaseInsensitive))
                     title.remove(0, 5);
                 title[0] = title.at(0).toUpper();
                 m_widget->setWindowTitle(formatWindowTitle(title));
@@ -121,7 +121,7 @@ public:
     {
         QLabel *textLabel = new QLabel(text);
         m_slider = new QSlider();
-        m_slider->setOrientation(Qt::Horizontal);
+        m_slider->setOrientation(BobUI::Horizontal);
         m_slider->setMinimum(1);
         m_slider->setMaximum(40);
         m_slider->setValue(10);
@@ -303,27 +303,27 @@ private:
     QImage image1X;
     QImage image2X;
     QImage imageLarge;
-    QIcon qtIcon;
+    QIcon bobuiIcon;
 };
 
 PixmapPainter::PixmapPainter()
 {
-    pixmap1X = QPixmap(":/qticon32.png");
-    pixmap2X = QPixmap(":/qticon32@2x.png");
-    pixmapLarge = QPixmap(":/qticon64.png");
+    pixmap1X = QPixmap(":/bobuiicon32.png");
+    pixmap2X = QPixmap(":/bobuiicon32@2x.png");
+    pixmapLarge = QPixmap(":/bobuiicon64.png");
 
-    image1X = QImage(":/qticon32.png");
-    image2X = QImage(":/qticon32@2x.png");
-    imageLarge = QImage(":/qticon64.png");
+    image1X = QImage(":/bobuiicon32.png");
+    image2X = QImage(":/bobuiicon32@2x.png");
+    imageLarge = QImage(":/bobuiicon64.png");
 
-    qtIcon.addFile(":/qticon32.png");
-    qtIcon.addFile(":/qticon32@2x.png");
+    bobuiIcon.addFile(":/bobuiicon32.png");
+    bobuiIcon.addFile(":/bobuiicon32@2x.png");
 }
 
 void PixmapPainter::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.fillRect(QRect(QPoint(0, 0), size()), QBrush(Qt::gray));
+    p.fillRect(QRect(QPoint(0, 0), size()), QBrush(BobUI::gray));
 
     int pixmapPointSize = 32;
     int y = 30;
@@ -336,7 +336,7 @@ void PixmapPainter::paintEvent(QPaintEvent *)
           p.drawPixmap(x, y, pixmap1X);
     x+=dx;p.drawPixmap(x, y, pixmap2X);
     x+=dx;p.drawPixmap(x, y, pixmapLarge);
-  x+=dx*2;p.drawPixmap(x, y, qtIcon.pixmap(QSize(pixmapPointSize, pixmapPointSize)));
+  x+=dx*2;p.drawPixmap(x, y, bobuiIcon.pixmap(QSize(pixmapPointSize, pixmapPointSize)));
     x+=dx;p.drawImage(x, y, image1X);
     x+=dx;p.drawImage(x, y, image2X);
     x+=dx;p.drawImage(x, y, imageLarge);
@@ -347,7 +347,7 @@ void PixmapPainter::paintEvent(QPaintEvent *)
           p.drawPixmap(QRect(x, y, pixmapPointSize, pixmapPointSize), pixmap1X);
     x+=dx;p.drawPixmap(QRect(x, y, pixmapPointSize, pixmapPointSize), pixmap2X);
     x+=dx;p.drawPixmap(QRect(x, y, pixmapPointSize, pixmapPointSize), pixmapLarge);
-    x+=dx;p.drawPixmap(QRect(x, y, pixmapPointSize, pixmapPointSize), qtIcon.pixmap(QSize(pixmapPointSize, pixmapPointSize)));
+    x+=dx;p.drawPixmap(QRect(x, y, pixmapPointSize, pixmapPointSize), bobuiIcon.pixmap(QSize(pixmapPointSize, pixmapPointSize)));
     x+=dx;p.drawImage(QRect(x, y, pixmapPointSize, pixmapPointSize), image1X);
     x+=dx;p.drawImage(QRect(x, y, pixmapPointSize, pixmapPointSize), image2X);
     x+=dx;p.drawImage(QRect(x, y, pixmapPointSize, pixmapPointSize), imageLarge);
@@ -359,7 +359,7 @@ void PixmapPainter::paintEvent(QPaintEvent *)
                p.drawPixmap(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), pixmap1X);
     x+=dx * 2; p.drawPixmap(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), pixmap2X);
     x+=dx * 2; p.drawPixmap(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), pixmapLarge);
-    x+=dx * 2; p.drawPixmap(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), qtIcon.pixmap(QSize(pixmapPointSize, pixmapPointSize)));
+    x+=dx * 2; p.drawPixmap(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), bobuiIcon.pixmap(QSize(pixmapPointSize, pixmapPointSize)));
     x+=dx * 2; p.drawImage(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), image1X);
     x+=dx * 2; p.drawImage(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), image2X);
     x+=dx * 2; p.drawImage(QRect(x, y, pixmapPointSize * 2, pixmapPointSize * 2), imageLarge);
@@ -380,9 +380,9 @@ private:
 
 TiledPixmapPainter::TiledPixmapPainter()
 {
-    pixmap1X = QPixmap(":/qticon32.png");
-    pixmap2X = QPixmap(":/qticon32@2x.png");
-    pixmapLarge = QPixmap(":/qticon64.png");
+    pixmap1X = QPixmap(":/bobuiicon32.png");
+    pixmap2X = QPixmap(":/bobuiicon32@2x.png");
+    pixmapLarge = QPixmap(":/bobuiicon64.png");
 }
 
 void TiledPixmapPainter::paintEvent(QPaintEvent *event)
@@ -430,18 +430,18 @@ private:
     QPixmap pixmap1X;
     QPixmap pixmap2X;
     QPixmap pixmapLarge;
-    QIcon qtIcon;
+    QIcon bobuiIcon;
 };
 
 Labels::Labels()
 {
-    pixmap1X = QPixmap(":/qticon32.png");
-    pixmap2X = QPixmap(":/qticon32@2x.png");
-    pixmapLarge = QPixmap(":/qticon64.png");
+    pixmap1X = QPixmap(":/bobuiicon32.png");
+    pixmap2X = QPixmap(":/bobuiicon32@2x.png");
+    pixmapLarge = QPixmap(":/bobuiicon64.png");
 
-    qtIcon.addFile(":/qticon32.png");
-    qtIcon.addFile(":/qticon32@2x.png");
-    setWindowIcon(qtIcon);
+    bobuiIcon.addFile(":/bobuiicon32.png");
+    bobuiIcon.addFile(":/bobuiicon32@2x.png");
+    setWindowIcon(bobuiIcon);
     setWindowTitle(formatWindowTitle("Labels"));
 
     QLabel *label1x = new QLabel();
@@ -449,7 +449,7 @@ Labels::Labels()
     QLabel *label2x = new QLabel();
     label2x->setPixmap(pixmap2X);
     QLabel *labelIcon = new QLabel();
-    labelIcon->setPixmap(qtIcon.pixmap(QSize(32,32)));
+    labelIcon->setPixmap(bobuiIcon.pixmap(QSize(32,32)));
     QLabel *labelLarge = new QLabel();
     labelLarge->setPixmap(pixmapLarge);
 
@@ -472,11 +472,11 @@ private slots:
     void maskActionToggled(bool t);
 
 private:
-    QIcon qtIcon;
-    QIcon qtIcon1x;
-    QIcon qtIcon2x;
+    QIcon bobuiIcon;
+    QIcon bobuiIcon1x;
+    QIcon bobuiIcon2x;
 
-    QToolBar *fileToolBar;
+    BOBUIoolBar *fileToolBar;
     QAction *m_maskAction;
     int menuCount = 0;
 };
@@ -484,15 +484,15 @@ private:
 MainWindow::MainWindow()
 {
     // beware that QIcon auto-loads the @2x versions.
-    qtIcon1x.addFile(":/qticon16.png");
-    qtIcon2x.addFile(":/qticon32.png");
-    setWindowIcon(qtIcon);
+    bobuiIcon1x.addFile(":/bobuiicon16.png");
+    bobuiIcon2x.addFile(":/bobuiicon32.png");
+    setWindowIcon(bobuiIcon);
     setWindowTitle(formatWindowTitle("MainWindow"));
 
     fileToolBar = addToolBar(tr("File"));
-//    fileToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    fileToolBar->addAction(new QAction(qtIcon1x, QString("1x"), this));
-    fileToolBar->addAction(new QAction(qtIcon2x, QString("2x"), this));
+//    fileToolBar->setToolButtonStyle(BobUI::ToolButtonTextUnderIcon);
+    fileToolBar->addAction(new QAction(bobuiIcon1x, QString("1x"), this));
+    fileToolBar->addAction(new QAction(bobuiIcon2x, QString("2x"), this));
     addNewMenu("&Edit");
     addNewMenu("&Build");
     addNewMenu("&Debug", 4);
@@ -564,7 +564,7 @@ public:
         QSize layoutSize(75, 75);
 
         QPainter widgetPainter(this);
-        widgetPainter.fillRect(QRect(QPoint(0, 0), this->size()), Qt::gray);
+        widgetPainter.fillRect(QRect(QPoint(0, 0), this->size()), BobUI::gray);
 
         {
             const qreal devicePixelRatio = this->windowHandle()->devicePixelRatio();
@@ -572,8 +572,8 @@ public:
             cache.setDevicePixelRatio(devicePixelRatio);
 
             QPainter cachedPainter(&cache);
-            cachedPainter.fillRect(QRect(0,0, 75, 75), Qt::blue);
-            cachedPainter.fillRect(QRect(10,10, 55, 55), Qt::red);
+            cachedPainter.fillRect(QRect(0,0, 75, 75), BobUI::blue);
+            cachedPainter.fillRect(QRect(10,10, 55, 55), BobUI::red);
             cachedPainter.drawEllipse(QRect(10,10, 55, 55));
 
             QPainter widgetPainter(this);
@@ -586,8 +586,8 @@ public:
             cache.setDevicePixelRatio(devicePixelRatio);
 
             QPainter cachedPainter(&cache);
-            cachedPainter.fillRect(QRect(0,0, 75, 75), Qt::blue);
-            cachedPainter.fillRect(QRect(10,10, 55, 55), Qt::red);
+            cachedPainter.fillRect(QRect(0,0, 75, 75), BobUI::blue);
+            cachedPainter.fillRect(QRect(10,10, 55, 55), BobUI::red);
             cachedPainter.drawEllipse(QRect(10,10, 55, 55));
 
             QPainter widgetPainter(this);
@@ -618,7 +618,7 @@ public:
         row1->addWidget(new QSpinBox);
         row1->addWidget(new QScrollBar);
 
-        auto tab  = new QTabBar();
+        auto tab  = new BOBUIabBar();
         tab->addTab("Foo");
         tab->addTab("Bar");
         row1->addWidget(tab);
@@ -701,13 +701,13 @@ public:
     IconDrawing()
     {
         const QString tempPath = m_temporaryDir.path();
-        const QString path32 = tempPath + "/qticon32.png";
-        const QString path32_2 = tempPath + "/qticon32-2.png";
-        const QString path32_2x = tempPath + "/qticon32@2x.png";
+        const QString path32 = tempPath + "/bobuiicon32.png";
+        const QString path32_2 = tempPath + "/bobuiicon32-2.png";
+        const QString path32_2x = tempPath + "/bobuiicon32@2x.png";
 
-        QFile::copy(":/qticon32.png", path32_2);
-        QFile::copy(":/qticon32.png", path32);
-        QFile::copy(":/qticon32@2x.png", path32_2x);
+        QFile::copy(":/bobuiicon32.png", path32_2);
+        QFile::copy(":/bobuiicon32.png", path32);
+        QFile::copy(":/bobuiicon32@2x.png", path32_2x);
 
         iconHighDPI.reset(new QIcon(path32)); // will auto-load @2x version.
         iconNormalDpi.reset(new QIcon(path32_2)); // does not have a 2x version.
@@ -746,7 +746,7 @@ public:
     }
 
 private:
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
     QScopedPointer<QIcon> iconHighDPI;
     QScopedPointer<QIcon> iconNormalDpi;
 };
@@ -758,25 +758,25 @@ public:
     Buttons()
     {
         QIcon icon;
-        icon.addFile(":/qticon16@2x.png");
+        icon.addFile(":/bobuiicon16@2x.png");
 
         QPushButton *button =  new QPushButton(this);
         button->setIcon(icon);
         button->setText("16@2x");
 
-        QTabBar *tab = new QTabBar(this);
-        tab->addTab(QIcon(":/qticon16.png"), "16@1x");
-        tab->addTab(QIcon(":/qticon16@2x.png"), "16@2x");
-        tab->addTab(QIcon(":/qticon16.png"), "");
-        tab->addTab(QIcon(":/qticon16@2x.png"), "");
+        BOBUIabBar *tab = new BOBUIabBar(this);
+        tab->addTab(QIcon(":/bobuiicon16.png"), "16@1x");
+        tab->addTab(QIcon(":/bobuiicon16@2x.png"), "16@2x");
+        tab->addTab(QIcon(":/bobuiicon16.png"), "");
+        tab->addTab(QIcon(":/bobuiicon16@2x.png"), "");
         tab->move(10, 100);
         tab->show();
 
-        auto toolBar = new QToolBar(this);
-        toolBar->addAction(QIcon(":/qticon16.png"), "16");
-        toolBar->addAction(QIcon(":/qticon16@2x.png"), "16@2x");
-        toolBar->addAction(QIcon(":/qticon32.png"), "32");
-        toolBar->addAction(QIcon(":/qticon32@2x.png"), "32@2x");
+        auto toolBar = new BOBUIoolBar(this);
+        toolBar->addAction(QIcon(":/bobuiicon16.png"), "16");
+        toolBar->addAction(QIcon(":/bobuiicon16@2x.png"), "16@2x");
+        toolBar->addAction(QIcon(":/bobuiicon32.png"), "32");
+        toolBar->addAction(QIcon(":/bobuiicon32@2x.png"), "32@2x");
 
         toolBar->move(10, 200);
         toolBar->show();
@@ -799,7 +799,7 @@ private:
 void LinePainter::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.fillRect(QRect(QPoint(0, 0), size()), QBrush(Qt::gray));
+    p.fillRect(QRect(QPoint(0, 0), size()), QBrush(BobUI::gray));
 
     // Default antialiased line
     p.setRenderHint(QPainter::Antialiasing);
@@ -865,7 +865,7 @@ public:
         p.drawText(r2, "Drag from here to move a window based on mouse event position");
 
         if (moving) {
-            p.setPen(Qt::darkGray);
+            p.setPen(BobUI::darkGray);
             QFont f = font();
             f.setPointSize(8);
             p.setFont(f);
@@ -901,7 +901,7 @@ public:
         useCursorPos = r1.contains(e->pos());
 
         if (!moveLabel)
-            moveLabel = new QLabel(this,Qt::BypassWindowManagerHint|Qt::FramelessWindowHint|Qt::Window );
+            moveLabel = new QLabel(this,BobUI::BypassWindowManagerHint|BobUI::FramelessWindowHint|BobUI::Window );
 
         if (useCursorPos)
             moveLabel->setText("I'm following QCursor::pos()");
@@ -943,7 +943,7 @@ class ScreenDisplayer : public QWidget
 public:
     ScreenDisplayer() = default;
 
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         update();
     }
@@ -951,8 +951,8 @@ public:
     void mousePressEvent(QMouseEvent *) override
     {
         if (!moveLabel)
-            moveLabel = new QLabel(this,Qt::BypassWindowManagerHint|Qt::FramelessWindowHint|Qt::Window );
-        moveLabel->setText("Hello, Qt this is a label\nwith some text");
+            moveLabel = new QLabel(this,BobUI::BypassWindowManagerHint|BobUI::FramelessWindowHint|BobUI::Window );
+        moveLabel->setText("Hello, BobUI this is a label\nwith some text");
         moveLabel->show();
     }
 
@@ -996,18 +996,18 @@ public:
 
         scaleFactor = qMin(width()/total.width(), height()/total.height());
 
-        p.fillRect(rect(), Qt::black);
+        p.fillRect(rect(), BobUI::black);
         p.scale(scaleFactor, scaleFactor);
         p.translate(-total.topLeft());
-        p.setPen(QPen(Qt::white, 10));
-        p.setBrush(Qt::gray);
+        p.setPen(QPen(BobUI::white, 10));
+        p.setBrush(BobUI::gray);
 
         for (const QScreen *screen : screens) {
             p.drawRect(screen->geometry());
             QFont f = font();
             f.setPixelSize(screen->geometry().height() / 8);
             p.setFont(f);
-            p.drawText(screen->geometry(), Qt::AlignCenter, screen->name());
+            p.drawText(screen->geometry(), BobUI::AlignCenter, screen->name());
         }
         p.setBrush(QColor(200,220,255,127));
 
@@ -1053,7 +1053,7 @@ public:
         if (event->type() == QEvent::ScreenChangeInternal) {
             // we will get resize events when the scale factor changes
             m_ignoreResize = true;
-            QTimer::singleShot(100, this, &PhysicalSizeTest::handleScreenChange);
+            BOBUIimer::singleShot(100, this, &PhysicalSizeTest::handleScreenChange);
         }
         return QWidget::event(event);
     }
@@ -1087,7 +1087,7 @@ void PhysicalSizeTest::paintEvent(QPaintEvent *)
     f.setPixelSize(18);
     p.setFont(f);
 
-    // draw a rectangle in (Qt) pixel coordinates, for comparison
+    // draw a rectangle in (BobUI) pixel coordinates, for comparison
     QRect pixelRect(0, 0, 300, 50);
     pixelRect.moveTopLeft(QPoint(5 * ppmm, rulerRect.bottom() + 5 * ppmm));
     p.fillRect(pixelRect, QColor(199,222,255));
@@ -1097,13 +1097,13 @@ void PhysicalSizeTest::paintEvent(QPaintEvent *)
     p.setFont(f);
 
     QRectF topRect(0, 0, width(), rulerRect.top());
-    p.drawText(topRect, Qt::AlignCenter, "The ruler is drawn in physical units.\nThis window tries to keep its physical size\nwhen moved between screens.");
+    p.drawText(topRect, BobUI::AlignCenter, "The ruler is drawn in physical units.\nThis window tries to keep its physical size\nwhen moved between screens.");
 
     // draw a ruler in real physical coordinates
 
     p.fillRect(rulerRect, QColor(255, 222, 111));
 
-    QPen linePen(Qt::black, 0.3 * ppmm);
+    QPen linePen(BobUI::black, 0.3 * ppmm);
     p.setPen(linePen);
     f.setBold(true);
     p.setFont(f);
@@ -1132,8 +1132,8 @@ void PhysicalSizeTest::paintEvent(QPaintEvent *)
             textR.moveTopLeft(QPointF(x, vCenter));
             int n = i / 10 + 1;
             if (n % 10 == 0)
-                p.setPen(Qt::red);
-            p.drawText(textR, Qt::AlignCenter, QString::number(n));
+                p.setPen(BobUI::red);
+            p.drawText(textR, BobUI::AlignCenter, QString::number(n));
             p.setPen(linePen);
         }
     }
@@ -1163,7 +1163,7 @@ void PhysicalSizeTest::paintEvent(QPaintEvent *)
         if (i % 16 == 12) {
             QRectF textR(0, 0, 0.25 * ppi, h / 2 - 2 * d);
             textR.moveBottomLeft(QPointF(x, vCenter));
-            p.drawText(textR, Qt::AlignCenter, QString::number(1 + i/16));
+            p.drawText(textR, BobUI::AlignCenter, QString::number(1 + i/16));
         }
     }
 
@@ -1192,22 +1192,22 @@ public:
     }
 };
 
-class MetricsTest : public QTabWidget
+class MetricsTest : public BOBUIabWidget
 {
     Q_OBJECT
 public:
     MetricsTest()
     {
-        qDebug().noquote().nospace() << "MetricsTest " << QT_VERSION_STR
+        qDebug().noquote().nospace() << "MetricsTest " << BOBUI_VERSION_STR
             << ' ' << QGuiApplication::platformName() << '\n'
 << R"(Relevant environment variables are:
-QT_FONT_DPI=N
-QT_SCALE_FACTOR=n
-QT_ENABLE_HIGHDPI_SCALING=0|1
-QT_USE_PHYSICAL_DPI=0|1
-QT_SCREEN_SCALE_FACTORS=N;N;N or QT_SCREEN_SCALE_FACTORS=name:N
-QT_SCALE_FACTOR_ROUNDING_POLICY=Round|Ceil|Floor|RoundPreferFloor|PassThrough
-QT_DPI_ADJUSTMENT_POLICY=AdjustDpi|DontAdjustDpi|AdjustUpOnly)";
+BOBUI_FONT_DPI=N
+BOBUI_SCALE_FACTOR=n
+BOBUI_ENABLE_HIGHDPI_SCALING=0|1
+BOBUI_USE_PHYSICAL_DPI=0|1
+BOBUI_SCREEN_SCALE_FACTORS=N;N;N or BOBUI_SCREEN_SCALE_FACTORS=name:N
+BOBUI_SCALE_FACTOR_ROUNDING_POLICY=Round|Ceil|Floor|RoundPreferFloor|PassThrough
+BOBUI_DPI_ADJUSTMENT_POLICY=AdjustDpi|DontAdjustDpi|AdjustUpOnly)";
 
         m_textEdit = addTextPage("Parameters");
         m_logEdit = addTextPage("Screen Change Log");
@@ -1244,7 +1244,7 @@ QT_DPI_ADJUSTMENT_POLICY=AdjustDpi|DontAdjustDpi|AdjustUpOnly)";
     void updateMetrics()
     {
         QString text;
-        QTextStream str(&text);
+        BOBUIextStream str(&text);
 
         auto currentScreen = windowHandle()->screen();
         const auto screens = QGuiApplication::screens();
@@ -1270,13 +1270,13 @@ QT_DPI_ADJUSTMENT_POLICY=AdjustDpi|DontAdjustDpi|AdjustUpOnly)";
 
         str << "widget devicePixelRatio: " << this->devicePixelRatio()
             << "\nwidget logicalDpi: " << this->logicalDpiX()
-            << "\n\nQT_FONT_DPI: " << qgetenv("QT_FONT_DPI")
-            << "\nQT_SCALE_FACTOR: " << qgetenv("QT_SCALE_FACTOR")
-            << "\nQT_ENABLE_HIGHDPI_SCALING: " << qgetenv("QT_ENABLE_HIGHDPI_SCALING")
-            << "\nQT_SCREEN_SCALE_FACTORS: " << qgetenv("QT_SCREEN_SCALE_FACTORS")
-            << "\nQT_USE_PHYSICAL_DPI: " << qgetenv("QT_USE_PHYSICAL_DPI")
-            << "\nQT_SCALE_FACTOR_ROUNDING_POLICY: " << qgetenv("QT_SCALE_FACTOR_ROUNDING_POLICY")
-            << "\nQT_DPI_ADJUSTMENT_POLICY: " << qgetenv("QT_DPI_ADJUSTMENT_POLICY")
+            << "\n\nBOBUI_FONT_DPI: " << qgetenv("BOBUI_FONT_DPI")
+            << "\nBOBUI_SCALE_FACTOR: " << qgetenv("BOBUI_SCALE_FACTOR")
+            << "\nBOBUI_ENABLE_HIGHDPI_SCALING: " << qgetenv("BOBUI_ENABLE_HIGHDPI_SCALING")
+            << "\nBOBUI_SCREEN_SCALE_FACTORS: " << qgetenv("BOBUI_SCREEN_SCALE_FACTORS")
+            << "\nBOBUI_USE_PHYSICAL_DPI: " << qgetenv("BOBUI_USE_PHYSICAL_DPI")
+            << "\nBOBUI_SCALE_FACTOR_ROUNDING_POLICY: " << qgetenv("BOBUI_SCALE_FACTOR_ROUNDING_POLICY")
+            << "\nBOBUI_DPI_ADJUSTMENT_POLICY: " << qgetenv("BOBUI_DPI_ADJUSTMENT_POLICY")
             << '\n';
 
         m_textEdit->setPlainText(text);
@@ -1306,9 +1306,9 @@ private slots:
     { logScreenChangeSignal(sender(), "logicalDotsPerInch", dpi); }
     void slotScreenVirtualGeometryChanged(const QRect &rect)
     { logScreenChangeSignal(sender(), "virtualGeometry", rect); }
-    void slotScreenPrimaryOrientationChanged(Qt::ScreenOrientation orientation)
+    void slotScreenPrimaryOrientationChanged(BobUI::ScreenOrientation orientation)
     { logScreenChangeSignal(sender(), "primaryOrientation", orientation); }
-    void slotScreenOrientationChanged(Qt::ScreenOrientation orientation)
+    void slotScreenOrientationChanged(BobUI::ScreenOrientation orientation)
     { logScreenChangeSignal(sender(), "orientation", orientation); }
     void slotScreenRefreshRateChanged(qreal refreshRate)
     { logScreenChangeSignal(sender(), "refreshRate", refreshRate); }
@@ -1378,7 +1378,7 @@ void MetricsTest::connectScreenChangeSignals(QScreen *s)
 QString MetricsTest::briefFormatScreens()
 {
     QString message;
-    QTextStream str(&message);
+    BOBUIextStream str(&message);
     const auto screens = QGuiApplication::screens();
     for (int i = 0, size = screens.size(); i < size; ++i) {
         str << (i ? ", " : "(");
@@ -1393,16 +1393,16 @@ void MetricsTest::logScreenChangeSignal(const QObject *o, const char *name, cons
 {
     auto screen = qobject_cast<const QScreen *>(o);
     QString message;
-    QTextStream(&message) << (screen ? screen->name() : QString()) << ' ' << name << " changed: " << value;
+    BOBUIextStream(&message) << (screen ? screen->name() : QString()) << ' ' << name << " changed: " << value;
     logMessage(message);
 }
 
 int main(int argc, char **argv)
 {
-    qInfo("High DPI tester %s", QT_VERSION_STR);
+    qInfo("High DPI tester %s", BOBUI_VERSION_STR);
 
     QApplication app(argc, argv);
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
 
     QCommandLineParser parser;
     parser.setApplicationDescription("High DPI tester. Pass one or more of the options to\n"

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QIMAGEREADER_H
 #define QIMAGEREADER_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qimageiohandler.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qimageiohandler.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QColor;
@@ -113,6 +113,6 @@ private:
     QImageReaderPrivate *d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIMAGEREADER_H

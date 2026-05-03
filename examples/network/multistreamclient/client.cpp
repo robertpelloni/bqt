@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtNetwork>
+#include <BobUIWidgets>
+#include <BobUINetwork>
 
 #include "client.h"
 #include "movieconsumer.h"

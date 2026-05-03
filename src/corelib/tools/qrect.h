@@ -1,15 +1,15 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRECT_H
 #define QRECT_H
 
-#include <QtCore/qcheckedint_impl.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qmargins.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qpoint.h>
+#include <BobUICore/qcheckedint_impl.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qmargins.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qpoint.h>
 
 #ifdef topLeft
 #error qrect.h must be included before any header file that defines topLeft
@@ -24,7 +24,7 @@ class val;
 }
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRectF;
 
@@ -134,7 +134,7 @@ public:
     [[nodiscard]] constexpr inline QRectF toRectF() const noexcept;
 
 private:
-    using Representation = QtPrivate::QCheckedIntegers::QCheckedInt<int>;
+    using Representation = BobUIPrivate::QCheckedIntegers::QCheckedInt<int>;
 
     constexpr QRect(Representation aleft,
                     Representation atop,
@@ -155,7 +155,7 @@ Q_DECLARE_TYPEINFO(QRect, Q_RELOCATABLE_TYPE);
 /*****************************************************************************
   QRect stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QRect &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QRect &);
 #endif
@@ -501,7 +501,7 @@ constexpr QRect QRect::span(const QPoint &p1, const QPoint &p2) noexcept
                  QPoint(qMax(p1.x(), p2.x()), qMax(p1.y(), p2.y())));
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QRect &);
 #endif
 
@@ -648,7 +648,7 @@ Q_DECLARE_TYPEINFO(QRectF, Q_RELOCATABLE_TYPE);
 /*****************************************************************************
   QRectF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QRectF &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QRectF &);
 #endif
@@ -681,8 +681,8 @@ constexpr inline QRectF::QRectF(const QRect &r) noexcept
 {
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
 constexpr inline bool QRectF::isNull() const noexcept
 { return w == 0. && h == 0.; }
@@ -690,7 +690,7 @@ constexpr inline bool QRectF::isNull() const noexcept
 constexpr inline bool QRectF::isEmpty() const noexcept
 { return w <= 0. || h <= 0.; }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 constexpr inline bool QRectF::isValid() const noexcept
 { return w > 0. && h > 0.; }
@@ -890,10 +890,10 @@ constexpr inline QRect QRectF::toRect() const noexcept
     // This rounding is designed to minimize the maximum possible difference
     // in topLeft(), bottomRight(), and size() after rounding.
     // All dimensions are at most off by 0.75, and topLeft by at most 0.5.
-    const int nxp = QtPrivate::qSaturateRound(xp);
-    const int nyp = QtPrivate::qSaturateRound(yp);
-    const int nw = QtPrivate::qSaturateRound(w + (xp - nxp) / 2);
-    const int nh = QtPrivate::qSaturateRound(h + (yp - nyp) / 2);
+    const int nxp = BobUIPrivate::qSaturateRound(xp);
+    const int nyp = BobUIPrivate::qSaturateRound(yp);
+    const int nw = BobUIPrivate::qSaturateRound(w + (xp - nxp) / 2);
+    const int nh = BobUIPrivate::qSaturateRound(h + (yp - nyp) / 2);
     return QRect(nxp, nyp, nw, nh);
 }
 
@@ -939,10 +939,10 @@ constexpr inline QRectF &QRectF::operator-=(const QMarginsF &margins) noexcept
     return *this;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QRectF &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRECT_H

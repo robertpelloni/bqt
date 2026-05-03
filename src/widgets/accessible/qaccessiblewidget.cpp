@@ -1,41 +1,41 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessiblewidget.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 #include "qapplication.h"
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
 #include "qgroupbox.h"
 #endif
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
 #include "qlabel.h"
 #endif
-#if QT_CONFIG(tooltip)
-#include "qtooltip.h"
+#if BOBUI_CONFIG(tooltip)
+#include "bobuiooltip.h"
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include "qwhatsthis.h"
 #endif
 #include "qwidget.h"
 #include "qdebug.h"
 #include <qmath.h>
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 #include <QRubberBand>
 #endif
 #include <QFocusFrame>
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <QMenu>
 #endif
-#include <QtGui/private/qaccessiblehelper_p.h>
-#include <QtWidgets/private/qwidget_p.h>
+#include <BobUIGui/private/qaccessiblehelper_p.h>
+#include <BobUIWidgets/private/qwidget_p.h>
 
 #include <qpa/qplatformwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QWidgetList _q_ac_childWidgets(const QWidget *widget);
 
@@ -46,7 +46,7 @@ static QString buddyString(const QWidget *widget)
     QWidget *parent = widget->parentWidget();
     if (!parent)
         return QString();
-#if QT_CONFIG(shortcut) && QT_CONFIG(label)
+#if BOBUI_CONFIG(shortcut) && BOBUI_CONFIG(label)
     for (QObject *o : parent->children()) {
         QLabel *label = qobject_cast<QLabel*>(o);
         if (label && label->buddy() == widget)
@@ -54,7 +54,7 @@ static QString buddyString(const QWidget *widget)
     }
 #endif
 
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
     QGroupBox *groupbox = qobject_cast<QGroupBox*>(parent);
     if (groupbox)
         return groupbox->title();
@@ -63,9 +63,9 @@ static QString buddyString(const QWidget *widget)
     return QString();
 }
 
-QString qt_accHotKey(const QString &text)
+QString bobui_accHotKey(const QString &text)
 {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     return QKeySequence::mnemonic(text).toString(QKeySequence::NativeText);
 #else
     Q_UNUSED(text);
@@ -92,7 +92,7 @@ public:
     \brief The QAccessibleWidget class implements the QAccessibleInterface for QWidgets.
 
     \ingroup accessibility
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This class is part of \l {Accessibility for QWidget Applications}.
 
@@ -224,14 +224,14 @@ QAccessibleWidget::relations(QAccessible::Relation match /*= QAccessible::AllRel
     QList<std::pair<QAccessibleInterface *, QAccessible::Relation>> rels;
     if (match & QAccessible::Label) {
         const QAccessible::Relation rel = QAccessible::Label;
-#if QT_CONFIG(shortcut) && QT_CONFIG(label)
+#if BOBUI_CONFIG(shortcut) && BOBUI_CONFIG(label)
         for (QLabel *label : std::as_const(widget()->d_func()->labels)) {
             Q_ASSERT(label);
             QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(label);
             rels.emplace_back(iface, rel);
         }
 #endif
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
         QGroupBox *groupbox = qobject_cast<QGroupBox *>(widget()->parentWidget());
         if (groupbox && !groupbox->title().isEmpty()) {
             QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(groupbox);
@@ -329,12 +329,12 @@ QString QAccessibleWidget::text(QAccessible::Text t) const
                     str = platformWindow->windowTitle();
             }
         } else {
-            str = qt_accStripAmp(buddyString(widget()));
+            str = bobui_accStripAmp(buddyString(widget()));
         }
         break;
     case QAccessible::Description:
         str = widget()->accessibleDescription();
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         if (str.isEmpty())
             str = widget()->toolTip();
 #endif
@@ -343,12 +343,12 @@ QString QAccessibleWidget::text(QAccessible::Text t) const
         str = widget()->accessibleIdentifier();
         break;
     case QAccessible::Help:
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         str = widget()->whatsThis();
 #endif
         break;
     case QAccessible::Accelerator:
-        str = qt_accHotKey(buddyString(widget()));
+        str = bobui_accHotKey(buddyString(widget()));
         break;
     case QAccessible::Value:
         break;
@@ -363,9 +363,9 @@ QStringList QAccessibleWidget::actionNames() const
 {
     QStringList names;
     if (widget()->isEnabled()) {
-        if (widget()->focusPolicy() != Qt::NoFocus)
+        if (widget()->focusPolicy() != BobUI::NoFocus)
             names << setFocusAction();
-        if (widget()->contextMenuPolicy() == Qt::ActionsContextMenu && widget()->actions().size() > 0)
+        if (widget()->contextMenuPolicy() == BobUI::ActionsContextMenu && widget()->actions().size() > 0)
             names << showMenuAction();
     }
     return names;
@@ -407,16 +407,16 @@ QAccessible::State QAccessibleWidget::state() const
     QAccessible::State state;
 
     QWidget *w = widget();
-    if (w->testAttribute(Qt::WA_WState_Visible) == false)
+    if (w->testAttribute(BobUI::WA_WState_Visible) == false)
         state.invisible = true;
-    if (w->focusPolicy() != Qt::NoFocus)
+    if (w->focusPolicy() != BobUI::NoFocus)
         state.focusable = true;
     if (w->hasFocus())
         state.focused = true;
     if (!w->isEnabled())
         state.disabled = true;
     if (w->isWindow()) {
-        if (w->windowFlags() & Qt::WindowSystemMenuHint)
+        if (w->windowFlags() & BobUI::WindowSystemMenuHint)
             state.movable = true;
         if (w->minimumSize() != w->maximumSize())
             state.sizeable = true;
@@ -457,7 +457,7 @@ QAccessibleWidgetV2::QAccessibleWidgetV2(QWidget *object, QAccessible::Role role
 
 /*!
     \class QAccessibleWidgetV2
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 QAccessibleWidgetV2::QAccessibleWidgetV2(QWidget *object, QAccessible::Role role)
@@ -490,6 +490,6 @@ QVariant QAccessibleWidgetV2::attributeValue(QAccessible::Attribute key) const
     return QVariant();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

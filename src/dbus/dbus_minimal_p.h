@@ -2,7 +2,7 @@
 // Copyright (C) 2002, 2003, 2004, 2005 Red Hat, Inc.
 // Copyright (C) 2016 Intel Corporation.
 // SPDX-License-Identifier: AFL-2.1 OR GPL-2.0-or-later
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 #ifndef DBUS_MINIMAL_P_H
 #define DBUS_MINIMAL_P_H
@@ -11,8 +11,8 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.

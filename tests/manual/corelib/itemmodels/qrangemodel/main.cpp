@@ -1,13 +1,13 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore>
-#include <QtWidgets>
+#include <BobUICore>
+#include <BobUIWidgets>
 
-#if __has_include(<QtQml>)
+#if __has_include(<BobUIQml>)
 #define QUICK_UI
-#include <QtQml/QQmlApplicationEngine>
-#include <QtQml/QQmlContext>
+#include <BobUIQml/QQmlApplicationEngine>
+#include <BobUIQml/QQmlContext>
 #include <QQuickWidget>
 #include <QQuickItem>
 #elif defined(Q_CC_MSVC)
@@ -20,7 +20,7 @@
 #include <ranges>
 #include <vector>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class Gadget
 {
@@ -74,10 +74,10 @@ struct QMetaEnumerator
             return lhs.m_index == rhs.m_index && lhs.m_enum == rhs.m_enum;
         }
 
-        friend constexpr Qt::strong_ordering compareThreeWay(const iterator &lhs,
+        friend constexpr BobUI::strong_ordering compareThreeWay(const iterator &lhs,
                                                              const iterator &rhs) noexcept
         {
-            return Qt::compareThreeWay(lhs.m_index, rhs.m_index);
+            return BobUI::compareThreeWay(lhs.m_index, rhs.m_index);
         }
         Q_DECLARE_STRONGLY_ORDERED(iterator)
 
@@ -197,12 +197,12 @@ class ModelFactory : public QObject
     QList<QString> strings = {u"one"_s, u"two"_s, u"three"_s};
     std::array<int, 1000000> largeArray = {};
     std::array<Object *, 10000> objects = {};
-    std::unique_ptr<QTimer> updater = nullptr;
+    std::unique_ptr<BOBUIimer> updater = nullptr;
 
     void updateAllObjects()
     {
         for (auto *object : objects)
-            object->setDisplay(QTime::currentTime().toString());
+            object->setDisplay(BOBUIime::currentTime().toString());
     }
 
 public slots:
@@ -225,7 +225,7 @@ public slots:
         qDebug() << "Data from adapter" << adapter.data(0);
         qDebug() << "Data from operator[]" << adapter[0];
 
-        QTimer::singleShot(5000, &model, [&adapter]{
+        BOBUIimer::singleShot(5000, &model, [&adapter]{
             adapter[0] = {};
         });
 
@@ -264,7 +264,7 @@ public slots:
 
         qDebug() << "Tuple from operator[]" << adapter[0];
         qDebug() << "Tuple from operator[...]" << adapter[0, 1];
-        QTimer::singleShot(5000, &model, [&adapter]{
+        BOBUIimer::singleShot(5000, &model, [&adapter]{
             adapter[0] = { 0, "null" };
             adapter.insertRow(0, {-1, "negative"});
             adapter[2, 1] = "two";
@@ -286,7 +286,7 @@ public slots:
 
     QRangeModel *makeCustomFromEnum()
     {
-        return new QRangeModel(QMetaEnumerator(Qt::ItemDataRole{}));
+        return new QRangeModel(QMetaEnumerator(BobUI::ItemDataRole{}));
     }
 
     QRangeModel *makeBoundedIota()
@@ -312,10 +312,10 @@ public slots:
     QRangeModel *makeGadgetList()
     {
         QList<Gadget> gadgetList = {
-            {"1/1", Qt::red, "red"},
-            {"1/2", Qt::black, "black"},
-            {"2/1", Qt::blue, "blue"},
-            {"2/2", Qt::green, "green"},
+            {"1/1", BobUI::red, "red"},
+            {"1/2", BobUI::black, "black"},
+            {"2/1", BobUI::blue, "blue"},
+            {"2/2", BobUI::green, "green"},
         };
         return new QRangeModel(gadgetList);
     }
@@ -323,13 +323,13 @@ public slots:
     QRangeModel *makeGadgetTable()
     {
         QList<QList<Gadget>> gadgetTable = {
-            {{"1/1", Qt::red, "red"}, {"1/2", Qt::black, "black"}},
-            {{"2/1", Qt::blue, "blue"}, {"2/2", Qt::green, "green"}},
+            {{"1/1", BobUI::red, "red"}, {"1/2", BobUI::black, "black"}},
+            {{"2/1", BobUI::blue, "blue"}, {"2/2", BobUI::green, "green"}},
         };
         return new QRangeModel(gadgetTable);
     }
 
-    QRangeModel *makeQtMap()
+    QRangeModel *makeBobUIMap()
     {
         return new QRangeModel(QMap<QString, QString>{
             {"one", "eins"},
@@ -362,16 +362,16 @@ public slots:
 
     QRangeModel *makeMultiRoleMap()
     {
-        using ColorEntry = QMap<Qt::ItemDataRole, QVariant>;
+        using ColorEntry = QMap<BobUI::ItemDataRole, QVariant>;
 
         const QStringList colorNames = QColor::colorNames();
         QList<ColorEntry> colors;
         colors.reserve(colorNames.size());
         for (const QString &name : QColor::colorNames()) {
             const QColor color = QColor::fromString(name);
-            colors << ColorEntry{{Qt::DisplayRole, name},
-                                {Qt::DecorationRole, color},
-                                {Qt::ToolTipRole, color.name()}};
+            colors << ColorEntry{{BobUI::DisplayRole, name},
+                                {BobUI::DecorationRole, color},
+                                {BobUI::ToolTipRole, color.name()}};
         }
         return new QRangeModel(colors);
     }
@@ -450,8 +450,8 @@ public slots:
         QRangeModelAdapter adapter(std::move(europe));
         const QList<int> path = {1, 0};
         QRangeModel *model = adapter.model();
-        updater.reset(new QTimer);
-        connect(updater.get(), &QTimer::timeout, model, [adapter] mutable {
+        updater.reset(new BOBUIimer);
+        connect(updater.get(), &BOBUIimer::timeout, model, [adapter] mutable {
             // adapter[0] = tree_row{"Deutschland", "Berlin"};
             for (auto row : adapter) {
                 qDebug() << row[0] << row[1];
@@ -466,8 +466,8 @@ public slots:
     QRangeModel *makeAutoConnectedObjects()
     {
         QRangeModel *model = new QRangeModel(std::ref(objects));
-        updater.reset(new QTimer(model));
-        connect(updater.get(), &QTimer::timeout, this, &ModelFactory::updateAllObjects);
+        updater.reset(new BOBUIimer(model));
+        connect(updater.get(), &BOBUIimer::timeout, this, &ModelFactory::updateAllObjects);
 
         for (int i = 0; i < objects.size(); ++i)
             objects[i] = new Object(i, model);
@@ -479,8 +479,8 @@ public slots:
     QRangeModel *makeAutoConnectedConstObjects()
     {
         QRangeModel *model = new QRangeModel(&std::as_const(objects));
-        updater.reset(new QTimer(model));
-        connect(updater.get(), &QTimer::timeout, this, &ModelFactory::updateAllObjects);
+        updater.reset(new BOBUIimer(model));
+        connect(updater.get(), &BOBUIimer::timeout, this, &ModelFactory::updateAllObjects);
 
         for (int i = 0; i < objects.size(); ++i)
             objects[i] = new Object(i, model);
@@ -514,10 +514,10 @@ struct QMetaMethodEnumerator
             return lhs.m_index == rhs.m_index && lhs.m_metaobject == rhs.m_metaobject;
         }
 
-        friend constexpr Qt::strong_ordering compareThreeWay(const iterator &lhs,
+        friend constexpr BobUI::strong_ordering compareThreeWay(const iterator &lhs,
                                                              const iterator &rhs) noexcept
         {
-            return Qt::compareThreeWay(lhs.m_index, rhs.m_index);
+            return BobUI::compareThreeWay(lhs.m_index, rhs.m_index);
         }
         Q_DECLARE_STRONGLY_ORDERED(iterator)
 
@@ -563,7 +563,7 @@ public:
     {
         QSplitter *splitter = new QSplitter;
 
-        treeview = new QTreeView;
+        treeview = new BOBUIreeView;
         treeview->setUniformRowHeights(true);
         splitter->addWidget(treeview);
 
@@ -582,7 +582,7 @@ public:
         QComboBox *modelPicker = new QComboBox;
         connect(modelPicker, &QComboBox::currentIndexChanged, this, &MainWindow::modelChanged);
 
-        QToolBar *toolBar = addToolBar(tr("Model Operations"));
+        BOBUIoolBar *toolBar = addToolBar(tr("Model Operations"));
         toolBar->addWidget(modelPicker);
 
         toolBar->addSeparator();
@@ -735,7 +735,7 @@ private:
 
     ModelFactory factory;
     QPointer<QRangeModel> model; // might be owned by an adapter
-    QTreeView *treeview;
+    BOBUIreeView *treeview;
 #ifdef QUICK_UI
     QQuickWidget *quickWidget;
 #endif

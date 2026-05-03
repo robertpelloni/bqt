@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "diagramscene.h"
 #include "arrow.h"
 
 #include <QGraphicsSceneMouseEvent>
-#include <QTextCursor>
+#include <BOBUIextCursor>
 
 //! [0]
 DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
@@ -16,9 +16,9 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     myItemType = DiagramItem::Step;
     line = nullptr;
     textItem = nullptr;
-    myItemColor = Qt::white;
-    myTextColor = Qt::black;
-    myLineColor = Qt::black;
+    myItemColor = BobUI::white;
+    myTextColor = BobUI::black;
+    myLineColor = BobUI::black;
 }
 //! [0]
 
@@ -83,7 +83,7 @@ void DiagramScene::setItemType(DiagramItem::DiagramType type)
 //! [5]
 void DiagramScene::editorLostFocus(DiagramTextItem *item)
 {
-    QTextCursor cursor = item->textCursor();
+    BOBUIextCursor cursor = item->textCursor();
     cursor.clearSelection();
     item->setTextCursor(cursor);
 
@@ -97,7 +97,7 @@ void DiagramScene::editorLostFocus(DiagramTextItem *item)
 //! [6]
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (mouseEvent->button() != Qt::LeftButton)
+    if (mouseEvent->button() != BobUI::LeftButton)
         return;
 
     DiagramItem *item;
@@ -120,7 +120,7 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         case InsertText:
             textItem = new DiagramTextItem();
             textItem->setFont(myFont);
-            textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
+            textItem->setTextInteractionFlags(BobUI::TextEditorInteraction);
             textItem->setZValue(1000.0);
             connect(textItem, &DiagramTextItem::lostFocus,
                     this, &DiagramScene::editorLostFocus);

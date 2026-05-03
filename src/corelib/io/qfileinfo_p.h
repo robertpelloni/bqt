@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILEINFO_P_H
 #define QFILEINFO_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -22,13 +22,13 @@
 #include "qshareddata.h"
 #include "qfilesystemengine_p.h"
 
-#include <QtCore/private/qabstractfileengine_p.h>
-#include <QtCore/private/qfilesystementry_p.h>
-#include <QtCore/private/qfilesystemmetadata_p.h>
+#include <BobUICore/private/qabstractfileengine_p.h>
+#include <BobUICore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileInfoPrivate : public QSharedData
 {
@@ -60,7 +60,7 @@ public:
         metaData(copy.metaData),
         fileEngine(QFileSystemEngine::createLegacyEngine(fileEntry, metaData)),
         cachedFlags(0),
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
         isDefaultConstructed(false),
 #else
         isDefaultConstructed(!fileEngine),
@@ -71,7 +71,7 @@ public:
         : fileEntry(file),
         fileEngine(QFileSystemEngine::createLegacyEngine(fileEntry, metaData)),
         cachedFlags(0),
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
         isDefaultConstructed(file.isEmpty()),
 #else
         isDefaultConstructed(!fileEngine),
@@ -100,7 +100,7 @@ public:
         metaData(data),
         fileEngine{std::move(engine)},
         cachedFlags(0),
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
         isDefaultConstructed(false),
 #else
         isDefaultConstructed(!fileEngine),
@@ -171,6 +171,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILEINFO_P_H

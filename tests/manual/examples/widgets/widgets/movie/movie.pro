@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS     = movieplayer.h
 SOURCES     = main.cpp \
@@ -8,5 +8,5 @@ SOURCES     = main.cpp \
 EXAMPLE_FILES = animation.gif
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/movie
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/movie
 INSTALLS += target

@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbuslistener_p.h"
 #include "qdbussettings_p.h"
@@ -13,9 +13,9 @@
 #include <qjsondocument.h>
 #include <qjsonobject.h>
 
-QT_BEGIN_NAMESPACE
-using namespace Qt::StringLiterals;
-Q_STATIC_LOGGING_CATEGORY(lcQpaThemeDBus, "qt.qpa.theme.dbus")
+BOBUI_BEGIN_NAMESPACE
+using namespace BobUI::StringLiterals;
+Q_STATIC_LOGGING_CATEGORY(lcQpaThemeDBus, "bobui.qpa.theme.dbus")
 
 /*!
     \internal
@@ -144,7 +144,7 @@ void QDBusListener::loadJson(const QString &fileName)
     else
         qCWarning(lcQpaThemeDBus) << "No data imported from" << fileName << "falling back to default.";
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     const int count = m_signalMap.count();
     if (count == 0)
         return;
@@ -193,7 +193,7 @@ void QDBusListener::saveJson(const QString &fileName) const
 void QDBusListener::populateSignalMap()
 {
     m_signalMap.clear();
-    const QString &loadJsonFile = qEnvironmentVariable("QT_QPA_DBUS_SIGNALS");
+    const QString &loadJsonFile = qEnvironmentVariable("BOBUI_QPA_DBUS_SIGNALS");
     if (!loadJsonFile.isEmpty())
         loadJson(loadJsonFile);
     if (!m_signalMap.isEmpty())
@@ -219,7 +219,7 @@ void QDBusListener::populateSignalMap()
     m_signalMap.insert(DBusKey(GnomeSettings::AllyNamespace, GnomeSettings::ContrastKey),
                        ChangeSignal(Provider::Gnome, Setting::Contrast));
 
-    const QString &saveJsonFile = qEnvironmentVariable("QT_QPA_DBUS_SIGNALS_SAVE");
+    const QString &saveJsonFile = qEnvironmentVariable("BOBUI_QPA_DBUS_SIGNALS_SAVE");
     if (!saveJsonFile.isEmpty())
         saveJson(saveJsonFile);
 }
@@ -251,7 +251,7 @@ void QDBusListener::onSettingChanged(const QString &location, const QString &key
         break;
     case Setting::Contrast:
         using namespace QDBusSettings;
-        // To unify the value, it's necessary to convert the DBus value to Qt::ContrastPreference.
+        // To unify the value, it's necessary to convert the DBus value to BobUI::ContrastPreference.
         // Then the users of the value don't need to parse the raw value.
         if (key == XdgSettings::ContrastKey)
             settingValue.setValue(XdgSettings::convertContrastPreference(settingValue));
@@ -266,4 +266,4 @@ void QDBusListener::onSettingChanged(const QString &location, const QString &key
 
     emit settingChanged(sig.value().provider, setting, settingValue);
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

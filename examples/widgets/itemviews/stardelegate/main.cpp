@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
-#include <QTableWidget>
+#include <BOBUIableWidget>
 
 #include "stardelegate.h"
 #include "stareditor.h"
 #include "starrating.h"
 
 //! [0]
-void populateTableWidget(QTableWidget *tableWidget)
+void populateTableWidget(BOBUIableWidget *tableWidget)
 {
     static constexpr struct {
         const char *title;
@@ -30,10 +30,10 @@ void populateTableWidget(QTableWidget *tableWidget)
 //! [3] //! [4]
 
     for (int row = 0; staticData[row].title != nullptr; ++row) {
-        QTableWidgetItem *item0 = new QTableWidgetItem(staticData[row].title);
-        QTableWidgetItem *item1 = new QTableWidgetItem(staticData[row].genre);
-        QTableWidgetItem *item2 = new QTableWidgetItem(staticData[row].artist);
-        QTableWidgetItem *item3 = new QTableWidgetItem;
+        BOBUIableWidgetItem *item0 = new BOBUIableWidgetItem(staticData[row].title);
+        BOBUIableWidgetItem *item1 = new BOBUIableWidgetItem(staticData[row].genre);
+        BOBUIableWidgetItem *item2 = new BOBUIableWidgetItem(staticData[row].artist);
+        BOBUIableWidgetItem *item3 = new BOBUIableWidgetItem;
         item3->setData(0,
                        QVariant::fromValue(StarRating(staticData[row].rating)));
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QTableWidget tableWidget(4, 4);
+    BOBUIableWidget tableWidget(4, 4);
     tableWidget.setItemDelegate(new StarDelegate);
     tableWidget.setEditTriggers(QAbstractItemView::DoubleClicked
                                 | QAbstractItemView::SelectedClicked);

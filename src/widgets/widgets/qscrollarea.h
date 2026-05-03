@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCROLLAREA_H
 #define QSCROLLAREA_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractscrollarea.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractscrollarea.h>
 
-QT_REQUIRE_CONFIG(scrollarea);
+BOBUI_REQUIRE_CONFIG(scrollarea);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QScrollAreaPrivate;
 
@@ -18,7 +18,7 @@ class Q_WIDGETS_EXPORT QScrollArea : public QAbstractScrollArea
 {
     Q_OBJECT
     Q_PROPERTY(bool widgetResizable READ widgetResizable WRITE setWidgetResizable)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
 
 public:
     explicit QScrollArea(QWidget *parent = nullptr);
@@ -35,8 +35,8 @@ public:
 
     bool focusNextPrevChild(bool next) override;
 
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment);
+    BobUI::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment);
 
     void ensureVisible(int x, int y, int xmargin = 50, int ymargin = 50);
     void ensureWidgetVisible(QWidget *childWidget, int xmargin = 50, int ymargin = 50);
@@ -55,6 +55,6 @@ private:
     Q_DISABLE_COPY(QScrollArea)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCROLLAREA_H

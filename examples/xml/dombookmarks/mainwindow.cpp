@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "xbeltree.h"
@@ -13,7 +13,7 @@
 #include <QAction>
 #include <QScreen>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
 MainWindow::MainWindow()
@@ -84,7 +84,7 @@ void MainWindow::about()
 {
    QMessageBox::about(this, tr("About DOM Bookmarks"),
                       tr("The <b>DOM Bookmarks</b> example demonstrates how to "
-                         "use Qt's DOM classes to read and write XML "
+                         "use BobUI's DOM classes to read and write XML "
                          "documents."));
 }
 //! [3]
@@ -106,6 +106,6 @@ void MainWindow::createMenus()
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(tr("&About"), this, &MainWindow::about);
-    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
 }
 //! [4]

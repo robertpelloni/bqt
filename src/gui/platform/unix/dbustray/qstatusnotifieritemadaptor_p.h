@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
     This file was originally created by qdbusxml2cpp version 0.8
@@ -20,23 +20,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <private/qtguiglobal_p.h>
+#include <private/bobuiguiglobal_p.h>
 
-QT_REQUIRE_CONFIG(systemtrayicon);
+BOBUI_REQUIRE_CONFIG(systemtrayicon);
 
 #include <QObject>
 #include <QDBusAbstractAdaptor>
 
 #include <private/qdbustraytypes_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QDBusTrayIcon;
 
 /*
@@ -60,19 +60,19 @@ class QStatusNotifierItemAdaptor: public QDBusAbstractAdaptor
 "    <property access=\"read\" type=\"b\" name=\"ItemIsMenu\"/>\n"
 "    <property access=\"read\" type=\"s\" name=\"IconName\"/>\n"
 "    <property access=\"read\" type=\"a(iiay)\" name=\"IconPixmap\">\n"
-"      <annotation value=\"QXdgDBusImageVector\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+"      <annotation value=\"QXdgDBusImageVector\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
 "    </property>\n"
 "    <property access=\"read\" type=\"s\" name=\"OverlayIconName\"/>\n"
 "    <property access=\"read\" type=\"a(iiay)\" name=\"OverlayIconPixmap\">\n"
-"      <annotation value=\"QXdgDBusImageVector\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+"      <annotation value=\"QXdgDBusImageVector\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
 "    </property>\n"
 "    <property access=\"read\" type=\"s\" name=\"AttentionIconName\"/>\n"
 "    <property access=\"read\" type=\"a(iiay)\" name=\"AttentionIconPixmap\">\n"
-"      <annotation value=\"QXdgDBusImageVector\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+"      <annotation value=\"QXdgDBusImageVector\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
 "    </property>\n"
 "    <property access=\"read\" type=\"s\" name=\"AttentionMovieName\"/>\n"
 "    <property access=\"read\" type=\"(sa(iiay)ss)\" name=\"ToolTip\">\n"
-"      <annotation value=\"QXdgDBusToolTipStruct\" name=\"org.qtproject.QtDBus.QtTypeName\"/>\n"
+"      <annotation value=\"QXdgDBusToolTipStruct\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName\"/>\n"
 "    </property>\n"
 "    <method name=\"ProvideXdgActivationToken\">\n"
 "        <arg name=\"token\" type=\"s\" direction=\"in\"/>\n"
@@ -170,6 +170,6 @@ private:
     QDBusTrayIcon *m_trayIcon;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTATUSNOTIFIERITEMADAPTER_P_H

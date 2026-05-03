@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <private/qapplication_p.h>
 #include <private/qdatetimeedit_p.h>
@@ -29,9 +29,9 @@
 #  define QDTEDEBUGN if (false) qDebug
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // --- QDateTimeEdit ---
 
@@ -40,7 +40,7 @@ using namespace Qt::StringLiterals;
   \brief The QDateTimeEdit class provides a widget for editing dates and times.
 
   \ingroup basicwidgets
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   \image fusion-datetimeedit.png {Widget for editing time and date}
 
@@ -86,7 +86,7 @@ using namespace Qt::StringLiterals;
   leaves the text field after edits have modified the content. This allows the
   user to edit via an invalid date-time to reach a valid one.
 
-  \sa QDateEdit, QTimeEdit, QDate, QTime
+  \sa QDateEdit, BOBUIimeEdit, QDate, BOBUIime
 */
 
 /*!
@@ -115,7 +115,7 @@ using namespace Qt::StringLiterals;
 */
 
 /*!
-  \fn void QDateTimeEdit::timeChanged(QTime time)
+  \fn void QDateTimeEdit::timeChanged(BOBUIime time)
 
   This signal is emitted whenever the time is changed. The new time
   is passed in \a time.
@@ -171,13 +171,13 @@ QDateTimeEdit::QDateTimeEdit(QDate date, QWidget *parent)
 }
 
 /*!
-  \fn QDateTimeEdit::QDateTimeEdit(QTime time, QWidget *parent)
+  \fn QDateTimeEdit::QDateTimeEdit(BOBUIime time, QWidget *parent)
 
   Constructs an empty date time editor with a \a parent.
   The value is set to \a time.
 */
 
-QDateTimeEdit::QDateTimeEdit(QTime time, QWidget *parent)
+QDateTimeEdit::QDateTimeEdit(BOBUIime time, QWidget *parent)
     : QAbstractSpinBox(*new QDateTimeEditPrivate, parent)
 {
     Q_D(QDateTimeEdit);
@@ -189,7 +189,7 @@ QDateTimeEdit::QDateTimeEdit(QTime time, QWidget *parent)
 */
 QDateTimeEdit::QDateTimeEdit(const QVariant &var, QMetaType::Type parserType, QWidget *parent)
     : QAbstractSpinBox(*new QDateTimeEditPrivate(parserType == QMetaType::QDateTime
-                                                 ? QTimeZone::LocalTime : QTimeZone::UTC),
+                                                 ? BOBUIimeZone::LocalTime : BOBUIimeZone::UTC),
                        parent)
 {
     Q_D(QDateTimeEdit);
@@ -279,7 +279,7 @@ void QDateTimeEdit::setDate(QDate date)
 
 /*!
   \property QDateTimeEdit::time
-  \brief The QTime that is set in the widget.
+  \brief The BOBUIime that is set in the widget.
 
   By default, this property contains a time of 00:00:00 and 0 milliseconds.
 
@@ -289,13 +289,13 @@ void QDateTimeEdit::setDate(QDate date)
 /*!
     Returns the time of the date time edit.
 */
-QTime QDateTimeEdit::time() const
+BOBUIime QDateTimeEdit::time() const
 {
     Q_D(const QDateTimeEdit);
     return d->value.toTime();
 }
 
-void QDateTimeEdit::setTime(QTime time)
+void QDateTimeEdit::setTime(BOBUIime time)
 {
     Q_D(QDateTimeEdit);
     if (time.isValid()) {
@@ -546,21 +546,21 @@ void QDateTimeEdit::clearMaximumDate()
   valid. Otherwise, changing this property preserves the \l maximumDateTime
   property.
 
-  This property can be set to any valid QTime value. By default, this property
+  This property can be set to any valid BOBUIime value. By default, this property
   contains a time of 00:00:00 and 0 milliseconds. This default can be restored
   with clearMinimumTime().
 
   \sa maximumTime, minimumDate, minimumDateTime, setTimeRange(),
-      QTime::isValid(), {Keyboard Tracking}
+      BOBUIime::isValid(), {Keyboard Tracking}
 */
 
-QTime QDateTimeEdit::minimumTime() const
+BOBUIime QDateTimeEdit::minimumTime() const
 {
     Q_D(const QDateTimeEdit);
     return d->minimum.toTime();
 }
 
-void QDateTimeEdit::setMinimumTime(QTime min)
+void QDateTimeEdit::setMinimumTime(BOBUIime min)
 {
     Q_D(QDateTimeEdit);
     if (min.isValid())
@@ -584,20 +584,20 @@ void QDateTimeEdit::clearMinimumTime()
   valid. Otherwise, changing this property preserves the \l minimumDateTime
   property.
 
-  This property can be set to any valid QTime value. By default, this property
+  This property can be set to any valid BOBUIime value. By default, this property
   contains a time of 23:59:59 and 999 milliseconds. This default can be restored
   with clearMaximumTime().
 
   \sa minimumTime, maximumDate, maximumDateTime, setTimeRange(),
-      QTime::isValid(), {Keyboard Tracking}
+      BOBUIime::isValid(), {Keyboard Tracking}
 */
-QTime QDateTimeEdit::maximumTime() const
+BOBUIime QDateTimeEdit::maximumTime() const
 {
     Q_D(const QDateTimeEdit);
     return d->maximum.toTime();
 }
 
-void QDateTimeEdit::setMaximumTime(QTime max)
+void QDateTimeEdit::setMaximumTime(BOBUIime max)
 {
     Q_D(QDateTimeEdit);
     if (max.isValid())
@@ -671,10 +671,10 @@ void QDateTimeEdit::setDateRange(QDate min, QDate max)
   edit the time to one in the later part of the range if keyboard-tracking is
   disabled.
 
-  \sa minimumTime, maximumTime, setDateTimeRange(), QTime::isValid(), {Keyboard Tracking}
+  \sa minimumTime, maximumTime, setDateTimeRange(), BOBUIime::isValid(), {Keyboard Tracking}
 */
 
-void QDateTimeEdit::setTimeRange(QTime min, QTime max)
+void QDateTimeEdit::setTimeRange(BOBUIime min, BOBUIime max)
 {
     Q_D(QDateTimeEdit);
     if (min.isValid() && max.isValid()) {
@@ -708,7 +708,7 @@ QDateTimeEdit::Sections QDateTimeEdit::displayedSections() const
 QDateTimeEdit::Section QDateTimeEdit::currentSection() const
 {
     Q_D(const QDateTimeEdit);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (QApplicationPrivate::keypadNavigationEnabled() && d->focusOnButton)
         return NoSection;
 #endif
@@ -953,7 +953,7 @@ void QDateTimeEdit::setDisplayFormat(const QString &format)
         const bool dateShown = (d->sections & DateSections_Mask);
         Q_ASSERT(dateShown || timeShown);
         if (timeShown && !dateShown) {
-            QTime time = d->value.toTime();
+            BOBUIime time = d->value.toTime();
             setDateRange(d->value.toDate(), d->value.toDate());
             if (d->minimum.toTime() >= d->maximum.toTime()) {
                 setTimeRange(QDATETIMEEDIT_TIME_MIN, QDATETIMEEDIT_TIME_MAX);
@@ -991,9 +991,9 @@ void QDateTimeEdit::setCalendarPopup(bool enable)
     Q_D(QDateTimeEdit);
     if (enable == d->calendarPopup)
         return;
-    setAttribute(Qt::WA_MacShowFocusRect, !enable);
+    setAttribute(BobUI::WA_MacShowFocusRect, !enable);
     d->calendarPopup = enable;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (!enable)
         d->focusOnButton = false;
 #endif
@@ -1001,34 +1001,34 @@ void QDateTimeEdit::setCalendarPopup(bool enable)
     update();
 }
 
-#if QT_DEPRECATED_SINCE(6, 10)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
 /*!
     \property QDateTimeEdit::timeSpec
     \since 4.4
     \deprecated[6.10] Use QDateTimeEdit::timeZone instead.
     \brief The current timespec used by the date time edit.
 
-    Since Qt 6.7 this is an indirect accessor for the timeZone property.
+    Since BobUI 6.7 this is an indirect accessor for the timeZone property.
 
     \sa QDateTimeEdit::timeZone
 */
 
-Qt::TimeSpec QDateTimeEdit::timeSpec() const
+BobUI::TimeSpec QDateTimeEdit::timeSpec() const
 {
     Q_D(const QDateTimeEdit);
     return d->timeZone.timeSpec();
 }
 
-void QDateTimeEdit::setTimeSpec(Qt::TimeSpec spec)
+void QDateTimeEdit::setTimeSpec(BobUI::TimeSpec spec)
 {
     Q_D(QDateTimeEdit);
     if (spec != d->timeZone.timeSpec()) {
         switch (spec) {
-        case Qt::UTC:
-            setTimeZone(QTimeZone::UTC);
+        case BobUI::UTC:
+            setTimeZone(BOBUIimeZone::UTC);
             break;
-        case Qt::LocalTime:
-            setTimeZone(QTimeZone::LocalTime);
+        case BobUI::LocalTime:
+            setTimeZone(BOBUIimeZone::LocalTime);
             break;
         default:
             qWarning() << "Ignoring attempt to set time-spec" << spec
@@ -1053,13 +1053,13 @@ void QDateTimeEdit::setTimeSpec(Qt::TimeSpec spec)
     \sa QDateTimeEdit::displayFormat
 */
 
-QTimeZone QDateTimeEdit::timeZone() const
+BOBUIimeZone QDateTimeEdit::timeZone() const
 {
     Q_D(const QDateTimeEdit);
     return d->timeZone;
 }
 
-void QDateTimeEdit::setTimeZone(const QTimeZone &zone)
+void QDateTimeEdit::setTimeZone(const BOBUIimeZone &zone)
 {
     Q_D(QDateTimeEdit);
     if (zone != d->timeZone) {
@@ -1162,8 +1162,8 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
     bool inserted = false;
 
     switch (event->key()) {
-#ifdef QT_KEYPAD_NAVIGATION
-    case Qt::Key_NumberSign:    //shortcut to popup calendar
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    case BobUI::Key_NumberSign:    //shortcut to popup calendar
         if (QApplicationPrivate::keypadNavigationEnabled() && d->calendarPopupEnabled()) {
             d->initCalendarPopup();
             d->positionCalendarPopup();
@@ -1171,7 +1171,7 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
             return;
         }
         break;
-    case Qt::Key_Select:
+    case BobUI::Key_Select:
         if (QApplicationPrivate::keypadNavigationEnabled()) {
             if (hasEditFocus()) {
                 if (d->focusOnButton) {
@@ -1194,8 +1194,8 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
         }
         return;
 #endif
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         d->interpret(AlwaysEmit);
         d->setSelected(d->currentSectionIndex, true);
         event->ignore();
@@ -1203,7 +1203,7 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
         emit d->edit->returnPressed();
         return;
     default:
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()
             && !event->text().isEmpty() && event->text().at(0).isLetterOrNumber()) {
             setEditFocus(true);
@@ -1217,34 +1217,34 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
 #endif
         if (!d->isSeparatorKey(event)) {
             inserted = select = !event->text().isEmpty() && event->text().at(0).isPrint()
-                       && !(event->modifiers() & ~(Qt::ShiftModifier|Qt::KeypadModifier));
+                       && !(event->modifiers() & ~(BobUI::ShiftModifier|BobUI::KeypadModifier));
             break;
         }
         Q_FALLTHROUGH();
-    case Qt::Key_Left:
-    case Qt::Key_Right:
-        if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Right) {
+    case BobUI::Key_Left:
+    case BobUI::Key_Right:
+        if (event->key() == BobUI::Key_Left || event->key() == BobUI::Key_Right) {
             if (
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
                 QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()
                 || !QApplicationPrivate::keypadNavigationEnabled() &&
 #endif
-                !(event->modifiers() & Qt::ControlModifier)) {
+                !(event->modifiers() & BobUI::ControlModifier)) {
                 select = false;
                 break;
             }
         }
         Q_FALLTHROUGH();
-    case Qt::Key_Backtab:
-    case Qt::Key_Tab: {
+    case BobUI::Key_Backtab:
+    case BobUI::Key_Tab: {
         event->accept();
         if (d->specialValue()) {
             d->edit->setSelection(d->edit->cursorPosition(), 0);
             return;
         }
-        const bool forward = event->key() != Qt::Key_Left && event->key() != Qt::Key_Backtab
-                             && (event->key() != Qt::Key_Tab || !(event->modifiers() & Qt::ShiftModifier));
-#ifdef QT_KEYPAD_NAVIGATION
+        const bool forward = event->key() != BobUI::Key_Left && event->key() != BobUI::Key_Backtab
+                             && (event->key() != BobUI::Key_Tab || !(event->modifiers() & BobUI::ShiftModifier));
+#ifdef BOBUI_KEYPAD_NAVIGATION
         int newSection = d->nextPrevSection(d->currentSectionIndex, forward);
         if (QApplicationPrivate::keypadNavigationEnabled()) {
             if (d->focusOnButton) {
@@ -1263,7 +1263,7 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
             return;
 #endif
         //key tab and backtab will be managed thrgout QWidget::event
-        if (event->key() != Qt::Key_Backtab && event->key() != Qt::Key_Tab)
+        if (event->key() != BobUI::Key_Backtab && event->key() != BobUI::Key_Tab)
             focusNextPrevChild(forward);
 
         return; }
@@ -1298,7 +1298,7 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
   \reimp
 */
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QDateTimeEdit::wheelEvent(QWheelEvent *event)
 {
     QAbstractSpinBox::wheelEvent(event);
@@ -1337,18 +1337,18 @@ void QDateTimeEdit::focusInEvent(QFocusEvent *event)
     d->hasHadFocus = true;
     bool first = true;
     switch (event->reason()) {
-    case Qt::BacktabFocusReason:
+    case BobUI::BacktabFocusReason:
         first = false;
         break;
-    case Qt::MouseFocusReason:
-    case Qt::PopupFocusReason:
+    case BobUI::MouseFocusReason:
+    case BobUI::PopupFocusReason:
         return;
-    case Qt::ActiveWindowFocusReason:
+    case BobUI::ActiveWindowFocusReason:
         if (oldHasHadFocus)
             return;
         break;
-    case Qt::ShortcutFocusReason:
-    case Qt::TabFocusReason:
+    case BobUI::ShortcutFocusReason:
+    case BobUI::TabFocusReason:
     default:
         break;
     }
@@ -1388,7 +1388,7 @@ bool QDateTimeEdit::focusNextPrevChild(bool next)
 void QDateTimeEdit::stepBy(int steps)
 {
     Q_D(QDateTimeEdit);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     // with keypad navigation and not editFocus, left right change the date/time by a fixed amount.
     if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()) {
         // if date based, shift by day.  else shift by 15min
@@ -1420,13 +1420,13 @@ void QDateTimeEdit::stepBy(int steps)
                     return;
                 }
             }
-            setTime(QTime(minutes/60, minutes%60));
+            setTime(BOBUIime(minutes/60, minutes%60));
         }
         return;
     }
 #endif
     // don't optimize away steps == 0. This is the only way to select
-    // the currentSection in Qt 4.1.x
+    // the currentSection in BobUI 4.1.x
     if (d->specialValue() && displayedSections() != AmPmSection) {
         for (int i=0; i<d->sectionNodes.size(); ++i) {
             if (d->sectionType(i) != QDateTimeParser::AmPmSection) {
@@ -1521,7 +1521,7 @@ QDateTimeEdit::StepEnabled QDateTimeEdit::stepEnabled() const
 
     QAbstractSpinBox::StepEnabled ret = { };
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()) {
         if (d->wrapping)
             return StepEnabled(StepUpEnabled | StepDownEnabled);
@@ -1601,16 +1601,16 @@ void QDateTimeEdit::mousePressEvent(QMouseEvent *event)
 }
 
 /*!
-  \class QTimeEdit
-  \brief The QTimeEdit class provides a widget for editing times based on
+  \class BOBUIimeEdit
+  \brief The BOBUIimeEdit class provides a widget for editing times based on
   the QDateTimeEdit widget.
 
   \ingroup basicwidgets
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   \image fusion-timeedit.png {Editable time}
 
-  Many of the properties and functions provided by QTimeEdit are implemented in
+  Many of the properties and functions provided by BOBUIimeEdit are implemented in
   QDateTimeEdit. These are the relevant properties of this class:
 
   \list
@@ -1631,10 +1631,10 @@ void QDateTimeEdit::mousePressEvent(QMouseEvent *event)
 */
 
 
-QTimeEdit::QTimeEdit(QWidget *parent)
-    : QDateTimeEdit(QDATETIMEEDIT_TIME_MIN, QMetaType::QTime, parent)
+BOBUIimeEdit::BOBUIimeEdit(QWidget *parent)
+    : QDateTimeEdit(QDATETIMEEDIT_TIME_MIN, QMetaType::BOBUIime, parent)
 {
-    connect(this, &QTimeEdit::timeChanged, this, &QTimeEdit::userTimeChanged);
+    connect(this, &BOBUIimeEdit::timeChanged, this, &BOBUIimeEdit::userTimeChanged);
 }
 
 /*!
@@ -1642,27 +1642,27 @@ QTimeEdit::QTimeEdit(QWidget *parent)
   to \a time.
 */
 
-QTimeEdit::QTimeEdit(QTime time, QWidget *parent)
-    : QDateTimeEdit(time.isValid() ? time : QDATETIMEEDIT_TIME_MIN, QMetaType::QTime, parent)
+BOBUIimeEdit::BOBUIimeEdit(BOBUIime time, QWidget *parent)
+    : QDateTimeEdit(time.isValid() ? time : QDATETIMEEDIT_TIME_MIN, QMetaType::BOBUIime, parent)
 {
-    connect(this, &QTimeEdit::timeChanged, this, &QTimeEdit::userTimeChanged);
+    connect(this, &BOBUIimeEdit::timeChanged, this, &BOBUIimeEdit::userTimeChanged);
 }
 
 /*!
   Destructor.
 */
-QTimeEdit::~QTimeEdit()
+BOBUIimeEdit::~BOBUIimeEdit()
 {
 }
 
 /*!
-  \property QTimeEdit::time
+  \property BOBUIimeEdit::time
   \internal
   \sa QDateTimeEdit::time
 */
 
 /*!
-  \fn void QTimeEdit::userTimeChanged(QTime time)
+  \fn void BOBUIimeEdit::userTimeChanged(BOBUIime time)
 
   This signal only exists to fully implement the time Q_PROPERTY on the class.
   Normally timeChanged should be used instead.
@@ -1677,7 +1677,7 @@ QTimeEdit::~QTimeEdit()
   the QDateTimeEdit widget.
 
   \ingroup basicwidgets
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   \image fusion-dateedit.png {Editable date}
 
@@ -1694,7 +1694,7 @@ QTimeEdit::~QTimeEdit()
      to format the date displayed in the widget.
   \endlist
 
-  \sa QTimeEdit, QDateTimeEdit
+  \sa BOBUIimeEdit, QDateTimeEdit
 */
 
 /*!
@@ -1749,7 +1749,7 @@ QDateEdit::~QDateEdit()
 */
 
 
-QDateTimeEditPrivate::QDateTimeEditPrivate(const QTimeZone &zone)
+QDateTimeEditPrivate::QDateTimeEditPrivate(const BOBUIimeZone &zone)
     : QDateTimeParser(QMetaType::QDateTime, QDateTimeParser::DateTimeEdit, QCalendar()),
       timeZone(zone)
 {
@@ -1767,7 +1767,7 @@ QDateTime QDateTimeEditPrivate::convertTimeZone(const QDateTime &datetime)
     return datetime.toTimeZone(timeZone);
 }
 
-QDateTime QDateTimeEditPrivate::dateTimeValue(QDate date, QTime time) const
+QDateTime QDateTimeEditPrivate::dateTimeValue(QDate date, BOBUIime time) const
 {
     return QDateTime(date, time, timeZone);
 }
@@ -1799,7 +1799,7 @@ void QDateTimeEditPrivate::updateEdit()
     edit->setText(newText);
 
     if (!specialValue()
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         && !(QApplicationPrivate::keypadNavigationEnabled() && !edit->hasEditFocus())
 #endif
             ) {
@@ -1818,27 +1818,27 @@ void QDateTimeEditPrivate::updateEdit()
     }
 }
 
-QDateTime QDateTimeEditPrivate::getMinimum(const QTimeZone &zone) const
+QDateTime QDateTimeEditPrivate::getMinimum(const BOBUIimeZone &zone) const
 {
     if (keyboardTracking)
         return minimum.toDateTime().toTimeZone(zone);
 
     // QDTP's min is the local-time start of QDATETIMEEDIT_DATE_MIN, cached
     // (along with its conversion to UTC).
-    if (timeZone.timeSpec() == Qt::LocalTime)
+    if (timeZone.timeSpec() == BobUI::LocalTime)
         return QDateTimeParser::getMinimum(zone);
 
     return QDATETIMEEDIT_DATE_MIN.startOfDay(timeZone).toTimeZone(zone);
 }
 
-QDateTime QDateTimeEditPrivate::getMaximum(const QTimeZone &zone) const
+QDateTime QDateTimeEditPrivate::getMaximum(const BOBUIimeZone &zone) const
 {
     if (keyboardTracking)
         return maximum.toDateTime().toTimeZone(zone);
 
     // QDTP's max is the local-time end of QDATETIMEEDIT_DATE_MAX, cached
     // (along with its conversion to UTC).
-    if (timeZone.timeSpec() == Qt::LocalTime)
+    if (timeZone.timeSpec() == BobUI::LocalTime)
         return QDateTimeParser::getMaximum(zone);
 
     return QDATETIMEEDIT_DATE_MAX.endOfDay(timeZone).toTimeZone(zone);
@@ -1853,7 +1853,7 @@ QDateTime QDateTimeEditPrivate::getMaximum(const QTimeZone &zone) const
 void QDateTimeEditPrivate::setSelected(int sectionIndex, bool forward)
 {
     if (specialValue()
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         || (QApplicationPrivate::keypadNavigationEnabled() && !edit->hasEditFocus())
 #endif
         ) {
@@ -2056,7 +2056,7 @@ QDateTime QDateTimeEditPrivate::validateAndInterpret(QString &input, int &positi
     // Take note of any corrections imposed during parsing:
     input = m_text;
     // TODO: if the format specifies time-zone, update timeZone to match the
-    // parsed text; but we're in const context, so can't - QTBUG-118393.
+    // parsed text; but we're in const context, so can't - BOBUIBUG-118393.
     // Impose this widget's time system:
     tmp.value = tmp.value.toTimeZone(timeZone);
     // ... but that might turn a valid datetime into an invalid one:
@@ -2137,7 +2137,7 @@ QDateTime QDateTimeEditPrivate::stepBy(int sectionIndex, int steps, bool test) c
     if (sn.type & DayOfWeekSectionMask) {
         // Must take locale's first day of week into account when *not*
         // wrapping; min and max don't help us.
-#ifndef QT_ALWAYS_WRAP_WEEKDAY // (documentation, not an actual define)
+#ifndef BOBUI_ALWAYS_WRAP_WEEKDAY // (documentation, not an actual define)
         if (!wrapping) {
             /* It's not clear this is ever really a desirable behavior.
 
@@ -2552,7 +2552,7 @@ void QDateTimeEditPrivate::init(const QVariant &var)
         if (sectionNodes.isEmpty()) // ### safeguard for broken locale
             q->setDisplayFormat("dd/MM/yyyy hh:mm:ss"_L1);
         break;
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         value = dateTimeValue(QDATETIMEEDIT_DATE_INITIAL, var.toTime());
         updateTimeZone();
         q->setDisplayFormat(defaultTimeFormat);
@@ -2563,11 +2563,11 @@ void QDateTimeEditPrivate::init(const QVariant &var)
         Q_ASSERT_X(0, "QDateTimeEditPrivate::init", "Internal error");
         break;
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (QApplicationPrivate::keypadNavigationEnabled())
         q->setCalendarPopup(true);
 #endif
-    q->setInputMethodHints(Qt::ImhPreferNumbers);
+    q->setInputMethodHints(BobUI::ImhPreferNumbers);
     setLayoutItemMargins(QStyle::SE_DateTimeEditLayoutItem);
 }
 
@@ -2661,7 +2661,7 @@ void QDateTimeEditPrivate::initCalendarPopup(QCalendarWidget *cw)
     Q_Q(QDateTimeEdit);
     if (!monthCalendar) {
         monthCalendar = new QCalendarPopup(q, cw, calendar);
-        monthCalendar->setObjectName("qt_datetimedit_calendar"_L1);
+        monthCalendar->setObjectName("bobui_datetimedit_calendar"_L1);
         QObject::connect(monthCalendar, SIGNAL(newDateSelected(QDate)), q, SLOT(setDate(QDate)));
         QObject::connect(monthCalendar, SIGNAL(hidingCalendar(QDate)), q, SLOT(setDate(QDate)));
         QObject::connect(monthCalendar, SIGNAL(activated(QDate)), q, SLOT(setDate(QDate)));
@@ -2676,8 +2676,8 @@ void QDateTimeEditPrivate::initCalendarPopup(QCalendarWidget *cw)
 void QDateTimeEditPrivate::positionCalendarPopup()
 {
     Q_Q(QDateTimeEdit);
-    QPoint pos = (q->layoutDirection() == Qt::RightToLeft) ? q->rect().bottomRight() : q->rect().bottomLeft();
-    QPoint pos2 = (q->layoutDirection() == Qt::RightToLeft) ? q->rect().topRight() : q->rect().topLeft();
+    QPoint pos = (q->layoutDirection() == BobUI::RightToLeft) ? q->rect().bottomRight() : q->rect().bottomLeft();
+    QPoint pos2 = (q->layoutDirection() == BobUI::RightToLeft) ? q->rect().topRight() : q->rect().topLeft();
     pos = q->mapToGlobal(pos);
     pos2 = q->mapToGlobal(pos2);
     QSize size = monthCalendar->sizeHint();
@@ -2686,7 +2686,7 @@ void QDateTimeEditPrivate::positionCalendarPopup()
         screen = QGuiApplication::primaryScreen();
     const QRect screenRect = screen->availableGeometry();
     //handle popup falling "off screen"
-    if (q->layoutDirection() == Qt::RightToLeft) {
+    if (q->layoutDirection() == BobUI::RightToLeft) {
         pos.setX(pos.x()-size.width());
         pos2.setX(pos2.x()-size.width());
         if (pos.x() < screenRect.left())
@@ -2725,9 +2725,9 @@ void QDateTimeEditPrivate::syncCalendarWidget()
 }
 
 QCalendarPopup::QCalendarPopup(QWidget *parent, QCalendarWidget *cw, QCalendar ca)
-    : QWidget(parent, Qt::Popup), calendarSystem(ca)
+    : QWidget(parent, BobUI::Popup), calendarSystem(ca)
 {
-    setAttribute(Qt::WA_WindowPropagation);
+    setAttribute(BobUI::WA_WindowPropagation);
 
     dateChanged = false;
     if (!cw) {
@@ -2743,7 +2743,7 @@ QCalendarWidget *QCalendarPopup::verifyCalendarInstance()
         QCalendarWidget *cw = new QCalendarWidget(this);
         cw->setCalendar(calendarSystem);
         cw->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled())
             cw->setHorizontalHeaderFormat(QCalendarWidget::SingleLetterDayNames);
 #endif
@@ -2798,7 +2798,7 @@ void QCalendarPopup::mousePressEvent(QMouseEvent *event)
                                                             QStyle::SC_ComboBoxArrow, dateTime);
         arrowRect.moveTo(dateTime->mapToGlobal(arrowRect .topLeft()));
         if (arrowRect.contains(event->globalPosition().toPoint()) || rect().contains(event->position().toPoint()))
-            setAttribute(Qt::WA_NoMouseReplay);
+            setAttribute(BobUI::WA_NoMouseReplay);
     }
     QWidget::mousePressEvent(event);
 }
@@ -2810,7 +2810,7 @@ void QCalendarPopup::mouseReleaseEvent(QMouseEvent*)
 
 bool QCalendarPopup::event(QEvent *event)
 {
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->matches(QKeySequence::Cancel))
@@ -2839,6 +2839,6 @@ void QCalendarPopup::hideEvent(QHideEvent *)
         emit hidingCalendar(oldDate);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #include "moc_qdatetimeedit.cpp"
 #include "moc_qdatetimeedit_p.cpp"

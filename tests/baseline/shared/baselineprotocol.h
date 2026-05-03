@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef BASELINEPROTOCOL_H
 #define BASELINEPROTOCOL_H
 
 #include <QDataStream>
-#include <QTcpSocket>
+#include <BOBUIcpSocket>
 #include <QImage>
 #include <QList>
 #include <QMap>
@@ -24,8 +24,8 @@ extern const QString PI_HostName;
 extern const QString PI_HostAddress;
 extern const QString PI_OSName;
 extern const QString PI_OSVersion;
-extern const QString PI_QtVersion;
-extern const QString PI_QtBuildMode;
+extern const QString PI_BobUIVersion;
+extern const QString PI_BobUIBuildMode;
 extern const QString PI_GitCommit;
 extern const QString PI_GitBranch;
 
@@ -148,7 +148,7 @@ private:
     bool receiveBlock(Command *cmd, QByteArray *block);
 
     QString errMsg;
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
 
     friend class BaselineThread;
     friend class BaselineHandler;

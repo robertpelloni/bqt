@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(qopenglwindow LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/opengl/qopenglwindow")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui OpenGL)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui OpenGL)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(qopenglwindow
+bobui_add_executable(qopenglwindow
     background_renderer.cpp background_renderer.h
     main.cpp
 )
@@ -25,9 +25,9 @@ set_target_properties(qopenglwindow PROPERTIES
 )
 
 target_link_libraries(qopenglwindow PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::OpenGL
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::OpenGL
 )
 
 # Resources:
@@ -35,7 +35,7 @@ set(shaders_resource_files
     "background.frag"
 )
 
-qt_add_resources(qopenglwindow "shaders"
+bobui_add_resources(qopenglwindow "shaders"
     PREFIX
         "/"
     FILES

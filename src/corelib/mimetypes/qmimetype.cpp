@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmimetype.h"
 
 #include "qmimetype_p.h"
 #include "qmimedatabase_p.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-#include <QtCore/QLocale>
-#include <QtCore/QHashFunctions>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDebug>
+#include <BobUICore/QLocale>
+#include <BobUICore/QHashFunctions>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QMimeType
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup shared
     \brief The QMimeType class describes types of file or data, represented by a MIME type string.
 
@@ -450,7 +450,7 @@ bool QMimeType::inherits(const QString &mimeTypeName) const
     return QMimeDatabasePrivate::instance()->mimeInherits(d->name, mimeTypeName);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QMimeType &mime)
 {
     QDebugStateSaver saver(debug);
@@ -463,6 +463,6 @@ QDebug operator<<(QDebug debug, const QMimeType &mime)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmimetype.cpp"

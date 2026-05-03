@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef DRAGWIDGET_H
 #define DRAGWIDGET_H
@@ -7,10 +7,10 @@
 #include <QWidget>
 #include <QBasicTimer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class DragWidget : public QWidget
 {
@@ -24,7 +24,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void dragMoveEvent(QDragMoveEvent * event) override;
     void paintEvent(QPaintEvent *) override;
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 

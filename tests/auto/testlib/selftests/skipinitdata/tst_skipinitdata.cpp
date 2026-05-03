@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_SkipInitData: public QObject
 {
@@ -30,6 +30,6 @@ void tst_SkipInitData::aTestFunction() const
     qDebug() << "ERROR: this function is NOT supposed to be run.";
 }
 
-QTEST_APPLESS_MAIN(tst_SkipInitData)
+BOBUIEST_APPLESS_MAIN(tst_SkipInitData)
 
 #include "tst_skipinitdata.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "locationdialog.h"
 #include "mainwindow.h"
@@ -97,7 +97,7 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Settings Editor"),
             tr("The <b>Settings Editor</b> example shows how to access "
-               "application settings using Qt."));
+               "application settings using BobUI."));
 }
 
 void MainWindow::createActions()
@@ -151,7 +151,7 @@ void MainWindow::createActions()
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(tr("&About"), this, &MainWindow::about);
-    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
 }
 
 void MainWindow::setSettingsObject(const SettingsPtr &settings)

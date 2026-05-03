@@ -1,12 +1,12 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "window.h"
 
 #include <QComboBox>
 #include <QLocale>
 #include <QLabel>
-#include <QTabWidget>
+#include <BOBUIabWidget>
 #include <QHBoxLayout>
 #include <QEvent>
 
@@ -31,7 +31,7 @@ Window::Window()
     connect(localeCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(localeChanged(int)));
 
-    tabWidget = new QTabWidget;
+    tabWidget = new BOBUIabWidget;
     info = new InfoWidget;
     connect(this, SIGNAL(localeChanged(QLocale)), info, SLOT(localeChanged(QLocale)));
     calendar = new CalendarWidget;

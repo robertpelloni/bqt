@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "norwegianwoodstyle.h"
 
@@ -29,7 +29,7 @@ QPalette NorwegianWoodStyle::standardPalette() const
 
         QPainter painter;
         painter.begin(&midImage);
-        painter.setPen(Qt::NoPen);
+        painter.setPen(BobUI::NoPen);
         painter.fillRect(midImage.rect(), slightlyOpaqueBlack);
         painter.end();
     //! [0]
@@ -37,9 +37,9 @@ QPalette NorwegianWoodStyle::standardPalette() const
     //! [1]
         QPalette palette(brown);
 
-        palette.setBrush(QPalette::BrightText, Qt::white);
+        palette.setBrush(QPalette::BrightText, BobUI::white);
         palette.setBrush(QPalette::Base, beige);
-        palette.setBrush(QPalette::Highlight, Qt::darkGreen);
+        palette.setBrush(QPalette::Highlight, BobUI::darkGreen);
         setTexture(palette, QPalette::Button, buttonImage);
         setTexture(palette, QPalette::Mid, midImage);
         setTexture(palette, QPalette::Window, backgroundImage);
@@ -67,7 +67,7 @@ void NorwegianWoodStyle::polish(QWidget *widget)
 {
     if (qobject_cast<QPushButton *>(widget)
             || qobject_cast<QComboBox *>(widget))
-        widget->setAttribute(Qt::WA_Hover, true);
+        widget->setAttribute(BobUI::WA_Hover, true);
 }
 //! [4]
 
@@ -77,7 +77,7 @@ void NorwegianWoodStyle::unpolish(QWidget *widget)
 {
     if (qobject_cast<QPushButton *>(widget)
             || qobject_cast<QComboBox *>(widget))
-        widget->setAttribute(Qt::WA_Hover, false);
+        widget->setAttribute(BobUI::WA_Hover, false);
 }
 //! [6]
 
@@ -199,7 +199,7 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
             int x3 = x + width - radius;
             int x4 = x + width;
 
-            if (option->direction == Qt::RightToLeft) {
+            if (option->direction == BobUI::RightToLeft) {
                 qSwap(x1, x4);
                 qSwap(x2, x3);
             }
@@ -212,7 +212,7 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
                     << QPoint(x1, y + height);
 
             painter->setClipPath(roundRect);
-            painter->setClipRegion(topHalf, Qt::IntersectClip);
+            painter->setClipRegion(topHalf, BobUI::IntersectClip);
             painter->setPen(topPen);
             painter->drawPath(roundRect);
 //! [26] //! [32]
@@ -221,7 +221,7 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
             bottomHalf[0] = QPoint(x4, y + height);
 
             painter->setClipPath(roundRect);
-            painter->setClipRegion(bottomHalf, Qt::IntersectClip);
+            painter->setClipRegion(bottomHalf, BobUI::IntersectClip);
             painter->setPen(bottomPen);
             painter->drawPath(roundRect);
 

@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCONTAINERINFO_H
 #define QCONTAINERINFO_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QContainerInfo {
 
@@ -27,8 +27,8 @@ template<typename C>
 using const_iterator = typename C::const_iterator;
 
 // Some versions of Apple clang warn about the constexpr variables below being unused.
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wunused-const-variable")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wunused-const-variable")
 
 template<typename C, typename = void>
 inline constexpr bool has_value_type_v = false;
@@ -220,10 +220,10 @@ inline constexpr bool iterator_dereferences_to_mapped_v = false;
 template<typename C>
 inline constexpr bool iterator_dereferences_to_mapped_v<C, std::void_t<decltype(mapped_type<C>(*C().begin()))>> = true;
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCONTAINERINFO_H

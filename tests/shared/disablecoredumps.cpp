@@ -1,8 +1,8 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-// This file is added to some test helpers that don't link to Qt, so don't
-// use Qt #includes here.
+// This file is added to some test helpers that don't link to BobUI, so don't
+// use BobUI #includes here.
 
 #ifdef _WIN32
 #  include <windows.h>

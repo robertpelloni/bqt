@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qdebug.h"
@@ -12,9 +12,9 @@
 #include "qrect.h"
 #include "qwidget.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // Fixed column matrix, stores items as [i11, i12, i21, i22...],
 // with FORTRAN-style index operator(r, c).
 template <class T, int NumColumns>
@@ -83,7 +83,7 @@ struct QFormLayoutItem
     bool hasHeightForWidth() const { return item->hasHeightForWidth(); }
     int heightForWidth(int width) const { return item->heightForWidth(width); }
     int minimumHeightForWidth(int width) const { return item->minimumHeightForWidth(width); }
-    Qt::Orientations expandingDirections() const { return item->expandingDirections(); }
+    BobUI::Orientations expandingDirections() const { return item->expandingDirections(); }
     QSizePolicy::ControlTypes controlTypes() const { return item->controlTypes(); }
     int vStretch() const { return widget() ? widget()->sizePolicy().verticalStretch() : 0; }
 
@@ -151,7 +151,7 @@ class QFormLayoutPrivate : public QLayoutPrivate
     Q_DECLARE_PUBLIC(QFormLayout)
 
 public:
-    using ItemMatrix = QtPrivate::FixedColumnMatrix<QFormLayoutItem *, 2>;
+    using ItemMatrix = BobUIPrivate::FixedColumnMatrix<QFormLayoutItem *, 2>;
 
     QFormLayoutPrivate();
     ~QFormLayoutPrivate() { }
@@ -187,8 +187,8 @@ public:
     uint sizesDirty : 2; // have we (not) gathered layout item sizes?
     uint expandVertical : 1; // Do we expand vertically?
     uint expandHorizontal : 1; // Do we expand horizonally?
-    Qt::Alignment labelAlignment;
-    Qt::Alignment formAlignment;
+    BobUI::Alignment labelAlignment;
+    BobUI::Alignment formAlignment;
 
     ItemMatrix m_matrix;
     QList<QFormLayoutItem *> m_things;
@@ -227,15 +227,15 @@ QFormLayoutPrivate::QFormLayoutPrivate()
 {
 }
 
-static Qt::Alignment fixedAlignment(Qt::Alignment alignment, Qt::LayoutDirection layoutDirection)
+static BobUI::Alignment fixedAlignment(BobUI::Alignment alignment, BobUI::LayoutDirection layoutDirection)
 {
-    if (layoutDirection == Qt::RightToLeft && alignment & Qt::AlignAbsolute) {
+    if (layoutDirection == BobUI::RightToLeft && alignment & BobUI::AlignAbsolute) {
         // swap left and right, and eliminate absolute flag
-        return Qt::Alignment((alignment & ~(Qt::AlignLeft | Qt::AlignRight | Qt::AlignAbsolute))
-                             | ((alignment & Qt::AlignRight) ? Qt::AlignLeft : 0)
-                             | ((alignment & Qt::AlignLeft) ? Qt::AlignRight : 0));
+        return BobUI::Alignment((alignment & ~(BobUI::AlignLeft | BobUI::AlignRight | BobUI::AlignAbsolute))
+                             | ((alignment & BobUI::AlignRight) ? BobUI::AlignLeft : 0)
+                             | ((alignment & BobUI::AlignLeft) ? BobUI::AlignRight : 0));
     } else {
-        return alignment & ~Qt::AlignAbsolute;
+        return alignment & ~BobUI::AlignAbsolute;
     }
 }
 
@@ -259,7 +259,7 @@ static void updateFormLayoutItem(QFormLayoutItem *item, int userVSpacing,
 
     if (!fullRow && (fieldGrowthPolicy == QFormLayout::FieldsStayAtSizeHint
                      || (fieldGrowthPolicy == QFormLayout::ExpandingFieldsGrow
-                         && !(item->item->expandingDirections() & Qt::Horizontal))))
+                         && !(item->item->expandingDirections() & BobUI::Horizontal))))
         item->maxSize.setWidth(item->sizeHint.width());
 
     item->isHfw = item->item->hasHeightForWidth();
@@ -318,11 +318,11 @@ void QFormLayoutPrivate::updateSizes()
                 updateFormLayoutItem(label, userVSpacing, q->fieldGrowthPolicy(), false);
                 if (label->isHfw)
                     has_hfw = true;
-                Qt::Orientations o = label->expandingDirections();
+                BobUI::Orientations o = label->expandingDirections();
 
-                if (o & Qt::Vertical)
+                if (o & BobUI::Vertical)
                     expandV = true;
-                if (o & Qt::Horizontal)
+                if (o & BobUI::Horizontal)
                     expandH = true;
             }
             if (field) {
@@ -331,11 +331,11 @@ void QFormLayoutPrivate::updateSizes()
                 if (field->isHfw)
                     has_hfw = true;
 
-                Qt::Orientations o = field->expandingDirections();
+                BobUI::Orientations o = field->expandingDirections();
 
-                if (o & Qt::Vertical)
+                if (o & BobUI::Vertical)
                     expandV = true;
-                if (o & Qt::Horizontal)
+                if (o & BobUI::Horizontal)
                     expandH = true;
             }
 
@@ -358,9 +358,9 @@ void QFormLayoutPrivate::updateSizes()
                         QSizePolicy::ControlTypes fldtoptypes =
                             QSizePolicy::ControlTypes(fldtop ? fldtop->controlTypes() : QSizePolicy::DefaultType);
                         if (label && lbltop)
-                            label->vSpace = style->combinedLayoutSpacing(lbltoptypes, lbltypes, Qt::Vertical, nullptr, parent);
+                            label->vSpace = style->combinedLayoutSpacing(lbltoptypes, lbltypes, BobUI::Vertical, nullptr, parent);
                         if (field && fldtop)
-                            field->vSpace = style->combinedLayoutSpacing(fldtoptypes, fldtypes, Qt::Vertical, nullptr, parent);
+                            field->vSpace = style->combinedLayoutSpacing(fldtoptypes, fldtypes, BobUI::Vertical, nullptr, parent);
                     } else {
                         // Side by side..  we have to also consider the spacings to empty cells, which can strangely be more than
                         // non empty cells..
@@ -374,22 +374,22 @@ void QFormLayoutPrivate::updateSizes()
                         // To be compatible to QGridLayout, we have to compare solitary labels & fields with both predecessors
                         if (label && !label->isHidden()) {
                             if (!field) {
-                                int lblspacing = style->combinedLayoutSpacing(lbltoptypes, lbltypes, Qt::Vertical, nullptr, parent);
-                                int fldspacing = style->combinedLayoutSpacing(fldtoptypes, lbltypes, Qt::Vertical, nullptr, parent);
+                                int lblspacing = style->combinedLayoutSpacing(lbltoptypes, lbltypes, BobUI::Vertical, nullptr, parent);
+                                int fldspacing = style->combinedLayoutSpacing(fldtoptypes, lbltypes, BobUI::Vertical, nullptr, parent);
                                 label->vSpace = qMax(lblspacing, fldspacing);
                             } else {
-                                label->vSpace = style->combinedLayoutSpacing(lbltoptypes, lbltypes, Qt::Vertical, nullptr, parent);
+                                label->vSpace = style->combinedLayoutSpacing(lbltoptypes, lbltypes, BobUI::Vertical, nullptr, parent);
                             }
                         }
 
                         if (field && !field->isHidden()) {
                             // check spacing against both the previous label and field
                             if (!label) {
-                                int lblspacing = style->combinedLayoutSpacing(lbltoptypes, fldtypes, Qt::Vertical, nullptr, parent);
-                                int fldspacing = style->combinedLayoutSpacing(fldtoptypes, fldtypes, Qt::Vertical, nullptr, parent);
+                                int lblspacing = style->combinedLayoutSpacing(lbltoptypes, fldtypes, BobUI::Vertical, nullptr, parent);
+                                int fldspacing = style->combinedLayoutSpacing(fldtoptypes, fldtypes, BobUI::Vertical, nullptr, parent);
                                 field->vSpace = qMax(lblspacing, fldspacing);
                             } else {
-                                field->vSpace = style->combinedLayoutSpacing(fldtoptypes, fldtypes, Qt::Vertical, nullptr, parent);
+                                field->vSpace = style->combinedLayoutSpacing(fldtoptypes, fldtypes, BobUI::Vertical, nullptr, parent);
                             }
                         }
                     }
@@ -399,7 +399,7 @@ void QFormLayoutPrivate::updateSizes()
                 // hard-coded the left and right control types so that all the rows have the same
                 // inter-column spacing (otherwise the right column isn't always left aligned)
                 if (userHSpacing < 0 && !wrapAllRows && (label || !field->fullRow) && field)
-                    field->sbsHSpace = style->combinedLayoutSpacing(QSizePolicy::Label, QSizePolicy::LineEdit, Qt::Horizontal, nullptr, parent);
+                    field->sbsHSpace = style->combinedLayoutSpacing(QSizePolicy::Label, QSizePolicy::LineEdit, BobUI::Horizontal, nullptr, parent);
             }
 
             // Now update our min/sizehint widths
@@ -490,7 +490,7 @@ void QFormLayoutPrivate::setupHfwLayoutData()
     // but instead uses heightForWidth for both min and sizeHint.
     // For the common case where minimumHeightForWidth just calls
     // heightForWidth, we do the calculation twice, which can be
-    // very expensive for word wrapped QLabels/QTextEdits, for example.
+    // very expensive for word wrapped QLabels/BOBUIextEdits, for example.
     // So we just use heightForWidth as well.
     int i;
     int rr = m_matrix.rowCount();
@@ -595,13 +595,13 @@ static inline int spacingHelper(QWidget* parent, QStyle *style, int userVSpacing
                     QSizePolicy::ControlTypes(item1 ? item1->controlTypes() : QSizePolicy::DefaultType);
                 int spacing2 = 0;
 
-                spacing = style->combinedLayoutSpacing(itemtypes, prevItem1->controlTypes(), Qt::Vertical, nullptr, parent);
+                spacing = style->combinedLayoutSpacing(itemtypes, prevItem1->controlTypes(), BobUI::Vertical, nullptr, parent);
 
                 // At most of one of item2 and prevItem2 will be nonnull
                 if (item2)
-                    spacing2 = style->combinedLayoutSpacing(item2->controlTypes(), prevItem1->controlTypes(), Qt::Vertical, nullptr, parent);
+                    spacing2 = style->combinedLayoutSpacing(item2->controlTypes(), prevItem1->controlTypes(), BobUI::Vertical, nullptr, parent);
                 else if (prevItem2)
-                    spacing2 = style->combinedLayoutSpacing(itemtypes, prevItem2->controlTypes(), Qt::Vertical, nullptr, parent);
+                    spacing2 = style->combinedLayoutSpacing(itemtypes, prevItem2->controlTypes(), BobUI::Vertical, nullptr, parent);
 
                 spacing = qMax(spacing, spacing2);
             }
@@ -626,7 +626,7 @@ static inline void initLayoutStruct(QLayoutStruct& sl, QFormLayoutItem* item)
     sl.init(item->vStretch(), item->minSize.height());
     sl.sizeHint = item->sizeHint.height();
     sl.maximumSize = item->maxSize.height();
-    sl.expansive = (item->expandingDirections() & Qt::Vertical);
+    sl.expansive = (item->expandingDirections() & BobUI::Vertical);
     sl.empty = false;
 }
 
@@ -762,7 +762,7 @@ void QFormLayoutPrivate::setupVerticalLayoutData(int width)
 
             if (label) {
                 max1 = label->maxSize;
-                if (label->expandingDirections() & Qt::Vertical)
+                if (label->expandingDirections() & BobUI::Vertical)
                     expanding = true;
 
                 label->sideBySide = (field != nullptr);
@@ -772,7 +772,7 @@ void QFormLayoutPrivate::setupVerticalLayoutData(int width)
 
             if (field) {
                 max2 = field->maxSize;
-                if (field->expandingDirections() & Qt::Vertical)
+                if (field->expandingDirections() & BobUI::Vertical)
                     expanding = true;
 
                 field->sideBySide = (label || !field->fullRow);
@@ -806,16 +806,16 @@ void QFormLayoutPrivate::setupVerticalLayoutData(int width)
     }
 
     if (addTopBottomStretch) {
-        Qt::Alignment formAlignment = q->formAlignment();
+        BobUI::Alignment formAlignment = q->formAlignment();
 
-        if (!(formAlignment & Qt::AlignBottom)) {
+        if (!(formAlignment & BobUI::AlignBottom)) {
             // AlignTop (default if unspecified) or AlignVCenter: We add a stretch at the bottom
             vLayouts[vidx].init(1, 0);
             vLayouts[vidx].expansive = true;
             ++vidx;
         }
 
-        if (formAlignment & (Qt::AlignVCenter | Qt::AlignBottom)) {
+        if (formAlignment & (BobUI::AlignVCenter | BobUI::AlignBottom)) {
             // AlignVCenter or AlignBottom: We add a stretch at the top
             vLayouts[0].init(1, 0);
             vLayouts[0].expansive = true;
@@ -1001,7 +1001,7 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
         return nullptr;
     const int storageIndex = storageIndexFromLayoutItem(m_matrix, m_things.value(index));
     if (Q_UNLIKELY(storageIndex == -1)) {
-        // ### Qt6 - fix warning too when this class becomes public
+        // ### BobUI6 - fix warning too when this class becomes public
         qWarning("QFormLayoutPrivate::replaceAt: Invalid index %d", index);
         return nullptr;
     }
@@ -1026,7 +1026,7 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
     \brief The QFormLayout class manages forms of input widgets and their associated labels.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QFormLayout is a convenience layout class that lays out its
     children in a two-column form. The left column consists of labels
@@ -1071,7 +1071,7 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
         \li QCommonStyle derived styles (except QPlastiqueStyle)
         \li QMacStyle
         \li QPlastiqueStyle
-        \li Qt Extended styles
+        \li BobUI Extended styles
     \row
         \li \inlineimage qformlayout-win.png
             {Form layout in traditional desktop style}
@@ -1080,7 +1080,7 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
         \li \inlineimage qformlayout-kde.png
             {Form layout in KDE Plastique style}
         \li \inlineimage qformlayout-qpe.png
-            {Form layout in Qt Extended style}
+            {Form layout in BobUI Extended style}
     \row
         \li Traditional style used for Windows, GNOME, and earlier
            versions of KDE. Labels are left aligned, and expanding
@@ -1095,7 +1095,7 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
            KDE applications. Similar to MacStyle, except that the form
            is left-aligned and all fields grow to fill the available
            space.
-        \li Default style for Qt Extended styles. Labels are right-aligned,
+        \li Default style for BobUI Extended styles. Labels are right-aligned,
            expanding fields grow to fill the available space, and row
            wrapping is enabled for long lines.
     \endtable
@@ -1147,14 +1147,14 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
 
     \value DontWrapRows
            Fields are always laid out next to their label.  This is
-           the default policy for all styles except Qt Extended styles.
+           the default policy for all styles except BobUI Extended styles.
 
     \value WrapLongRows
            Labels are given enough horizontal space to fit the widest label,
            and the rest of the space is given to the fields. If the minimum
            size of a field pair is wider than the available space, the field
            is wrapped to the next line.  This is the default policy for
-           Qt Extended styles.
+           BobUI Extended styles.
 
     \value WrapAllRows
            Fields are always laid out below their label.
@@ -1180,7 +1180,7 @@ QLayoutItem* QFormLayoutPrivate::replaceAt(int index, QLayoutItem *newitem)
     \class QFormLayout::TakeRowResult
 
     \brief Contains the result of a QFormLayout::takeRow() call.
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \since 5.8
     \sa QFormLayout::takeRow()
 */
@@ -1346,7 +1346,7 @@ void QFormLayout::insertRow(int row, const QString &labelText, QWidget *field)
     QLabel *label = nullptr;
     if (!labelText.isEmpty()) {
         label = new QLabel(labelText);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         label->setBuddy(field);
 #endif
     }
@@ -1701,17 +1701,17 @@ QLayoutItem *QFormLayout::takeAt(int index)
 /*!
     \reimp
 */
-Qt::Orientations QFormLayout::expandingDirections() const
+BobUI::Orientations QFormLayout::expandingDirections() const
 {
     Q_D(const QFormLayout);
     QFormLayoutPrivate *e = const_cast<QFormLayoutPrivate *>(d);
     e->updateSizes();
 
-    Qt::Orientations o;
+    BobUI::Orientations o;
     if (e->expandHorizontal)
-        o = Qt::Horizontal;
+        o = BobUI::Horizontal;
     if (e->expandVertical)
-        o |= Qt::Vertical;
+        o |= BobUI::Vertical;
     return o;
 }
 
@@ -1972,7 +1972,7 @@ QWidget *QFormLayout::labelForField(QLayout *field) const
     The default value depends on the widget or application style. For
     QMacStyle, the default is FieldsStayAtSizeHint; for QCommonStyle
     derived styles (like Plastique and Windows), the default
-    is ExpandingFieldsGrow; for Qt Extended styles, the default is
+    is ExpandingFieldsGrow; for BobUI Extended styles, the default is
     AllNonFixedFieldsGrow.
 
     If none of the fields can grow and the form is resized, extra
@@ -2006,7 +2006,7 @@ QFormLayout::FieldGrowthPolicy QFormLayout::fieldGrowthPolicy() const
     \brief the way in which the form's rows wrap
 
     The default value depends on the widget or application style. For
-    Qt Extended styles, the default is WrapLongRows;
+    BobUI Extended styles, the default is WrapLongRows;
     for the other styles, the default is DontWrapRows.
 
     If you want to display each label above its associated field
@@ -2040,13 +2040,13 @@ QFormLayout::RowWrapPolicy QFormLayout::rowWrapPolicy() const
 
     The default value depends on the widget or application style. For
     QCommonStyle derived styles, except for QPlastiqueStyle, the
-    default is Qt::AlignLeft; for the other styles, the default is
-    Qt::AlignRight.
+    default is BobUI::AlignLeft; for the other styles, the default is
+    BobUI::AlignRight.
 
     \sa formAlignment
 */
 
-void QFormLayout::setLabelAlignment(Qt::Alignment alignment)
+void QFormLayout::setLabelAlignment(BobUI::Alignment alignment)
 {
     Q_D(QFormLayout);
     if (d->labelAlignment != alignment) {
@@ -2055,11 +2055,11 @@ void QFormLayout::setLabelAlignment(Qt::Alignment alignment)
     }
 }
 
-Qt::Alignment QFormLayout::labelAlignment() const
+BobUI::Alignment QFormLayout::labelAlignment() const
 {
     Q_D(const QFormLayout);
     if (!d->labelAlignment) {
-        return Qt::Alignment(d->getStyle()->styleHint(QStyle::SH_FormLayoutLabelAlignment));
+        return BobUI::Alignment(d->getStyle()->styleHint(QStyle::SH_FormLayoutLabelAlignment));
     } else {
         return d->labelAlignment;
     }
@@ -2070,13 +2070,13 @@ Qt::Alignment QFormLayout::labelAlignment() const
     \brief the alignment of the form layout's contents within the layout's geometry
 
     The default value depends on the widget or application style. For
-    QMacStyle, the default is Qt::AlignHCenter | Qt::AlignTop; for the
-    other styles, the default is Qt::AlignLeft | Qt::AlignTop.
+    QMacStyle, the default is BobUI::AlignHCenter | BobUI::AlignTop; for the
+    other styles, the default is BobUI::AlignLeft | BobUI::AlignTop.
 
     \sa labelAlignment, rowWrapPolicy
 */
 
-void QFormLayout::setFormAlignment(Qt::Alignment alignment)
+void QFormLayout::setFormAlignment(BobUI::Alignment alignment)
 {
     Q_D(QFormLayout);
     if (d->formAlignment != alignment) {
@@ -2085,11 +2085,11 @@ void QFormLayout::setFormAlignment(Qt::Alignment alignment)
     }
 }
 
-Qt::Alignment QFormLayout::formAlignment() const
+BobUI::Alignment QFormLayout::formAlignment() const
 {
     Q_D(const QFormLayout);
     if (!d->formAlignment) {
-        return Qt::Alignment(d->getStyle()->styleHint(QStyle::SH_FormLayoutFormAlignment));
+        return BobUI::Alignment(d->getStyle()->styleHint(QStyle::SH_FormLayoutFormAlignment));
     } else {
         return d->formAlignment;
     }
@@ -2189,14 +2189,14 @@ void QFormLayoutPrivate::arrangeWidgets(const QList<QLayoutStruct> &layouts, QRe
     int i;
     const int rr = m_matrix.rowCount();
     QWidget *w = q->parentWidget();
-    Qt::LayoutDirection layoutDirection = w ? w->layoutDirection() : QGuiApplication::layoutDirection();
+    BobUI::LayoutDirection layoutDirection = w ? w->layoutDirection() : QGuiApplication::layoutDirection();
 
-    Qt::Alignment formAlignment = fixedAlignment(q->formAlignment(), layoutDirection);
+    BobUI::Alignment formAlignment = fixedAlignment(q->formAlignment(), layoutDirection);
     int leftOffset = 0;
     int delta = rect.width() - formMaxWidth;
-    if (formAlignment & (Qt::AlignHCenter | Qt::AlignRight) && delta > 0) {
+    if (formAlignment & (BobUI::AlignHCenter | BobUI::AlignRight) && delta > 0) {
         leftOffset = delta;
-        if (formAlignment & Qt::AlignHCenter)
+        if (formAlignment & BobUI::AlignHCenter)
             leftOffset >>= 1;
     }
 
@@ -2209,7 +2209,7 @@ void QFormLayoutPrivate::arrangeWidgets(const QList<QLayoutStruct> &layouts, QRe
 
         if (label && label->vLayoutIndex > -1) {
             int height = layouts.at(label->vLayoutIndex).size;
-            if ((label->expandingDirections() & Qt::Vertical) == 0) {
+            if ((label->expandingDirections() & BobUI::Vertical) == 0) {
                 /*
                     If the field on the right-hand side is tall,
                     we want the label to be top-aligned, but not too
@@ -2224,9 +2224,9 @@ void QFormLayoutPrivate::arrangeWidgets(const QList<QLayoutStruct> &layouts, QRe
             QSize sz(qMin(label->layoutWidth, label->sizeHint.width()), height);
             int x = leftOffset + rect.x() + label->layoutPos;
             const auto fAlign = fixedAlignment(q->labelAlignment(), layoutDirection);
-            if (fAlign & Qt::AlignRight)
+            if (fAlign & BobUI::AlignRight)
                 x += label->layoutWidth - sz.width();
-            else if (fAlign & Qt::AlignHCenter)
+            else if (fAlign & BobUI::AlignHCenter)
                 x += label->layoutWidth / 2 - sz.width() / 2;
             QPoint p(x, layouts.at(label->vLayoutIndex).pos);
             // ### expansion & sizepolicy stuff
@@ -2519,6 +2519,6 @@ void QFormLayout::dump() const
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qformlayout.cpp"

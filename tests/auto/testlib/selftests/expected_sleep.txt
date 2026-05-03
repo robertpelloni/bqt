@@ -1,5 +1,5 @@
 ********* Start testing of tst_Sleep *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_Sleep::initTestCase()
 PASS   : tst_Sleep::sleep()
 PASS   : tst_Sleep::wait()

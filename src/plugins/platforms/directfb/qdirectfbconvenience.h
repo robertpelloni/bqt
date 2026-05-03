@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIRECTFBCONVENIENCE_H
 #define QDIRECTFBCONVENIENCE_H
 
-#include <QtGui/qimage.h>
-#include <QtCore/QHash>
-#include <QtCore/QEvent>
-#include <QtGui/QPixmap>
+#include <BobUIGui/qimage.h>
+#include <BobUICore/QHash>
+#include <BobUICore/QEvent>
+#include <BobUIGui/QPixmap>
 
 #include <directfb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirectFbScreen;
 class QPlatformScreen;
 
-class QDirectFbKeyMap: public QHash<DFBInputDeviceKeySymbol, Qt::Key>
+class QDirectFbKeyMap: public QHash<DFBInputDeviceKeySymbol, BobUI::Key>
 {
 public:
     QDirectFbKeyMap();
@@ -37,9 +37,9 @@ public:
 
     static IDirectFBSurface *dfbSurfaceForPlatformPixmap(QPlatformPixmap *);
 
-    static Qt::MouseButton mouseButton(DFBInputDeviceButtonIdentifier identifier);
-    static Qt::MouseButtons mouseButtons(DFBInputDeviceButtonMask mask);
-    static Qt::KeyboardModifiers keyboardModifiers(DFBInputDeviceModifierMask mask);
+    static BobUI::MouseButton mouseButton(DFBInputDeviceButtonIdentifier identifier);
+    static BobUI::MouseButtons mouseButtons(DFBInputDeviceButtonMask mask);
+    static BobUI::KeyboardModifiers keyboardModifiers(DFBInputDeviceModifierMask mask);
     static QEvent::Type eventType(DFBWindowEventType type);
 
     static QDirectFbKeyMap *keyMap();
@@ -83,7 +83,7 @@ IDirectFBDisplayLayer *toDfbLayer(QPlatformScreen *screen);
 #define QDFB_PRETTY \
     (__FILE__ ":" QDFB_TOSTRING(__LINE__))
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 #endif // QDIRECTFBCONVENIENCE_H

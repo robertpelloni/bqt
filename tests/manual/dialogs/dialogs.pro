@@ -1,5 +1,5 @@
-QT += core gui widgets
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += core gui widgets
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 TARGET = dialogs
 TEMPLATE = app
@@ -9,7 +9,7 @@ SOURCES += main.cpp filedialogpanel.cpp colordialogpanel.cpp fontdialogpanel.cpp
 HEADERS += filedialogpanel.h colordialogpanel.h fontdialogpanel.h \
     wizardpanel.h messageboxpanel.h utils.h
 
-!contains(DEFINES, QT_NO_PRINTER) {
+!contains(DEFINES, BOBUI_NO_PRINTER) {
     SOURCES += printdialogpanel.cpp
     HEADERS += printdialogpanel.h
     FORMS += printdialogpanel.ui

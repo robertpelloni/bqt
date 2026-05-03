@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \since 4.3
     \class QDirIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup io
     \brief The QDirIterator class provides an iterator for directory entrylists.
 
@@ -32,11 +32,11 @@
     first advancing the iterator. The fileName() function returns only the
     name of the file, similar to how QDir::entryList() works.
 
-    Unlike Qt's container iterators, QDirIterator is uni-directional (i.e.,
+    Unlike BobUI's container iterators, QDirIterator is uni-directional (i.e.,
     you cannot iterate directories in reverse order) and does not allow random
     access.
 
-    \note This class is deprecated and may be removed in a Qt release. Use
+    \note This class is deprecated and may be removed in a BobUI release. Use
     QDirListing instead, see \l {Porting QDirIterator to QDirListing}.
 
     \sa QDir, QDir::entryList()
@@ -64,27 +64,27 @@
 #include "qdirlisting.h"
 #include "qdirentryinfo_p.h"
 
-#include <QtCore/qset.h>
-#include <QtCore/qstack.h>
-#include <QtCore/qvariant.h>
-#if QT_CONFIG(regularexpression)
-#include <QtCore/qregularexpression.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qvariant.h>
+#if BOBUI_CONFIG(regularexpression)
+#include <BobUICore/qregularexpression.h>
 #endif
 
-#include <QtCore/private/qfilesystemiterator_p.h>
-#include <QtCore/private/qfilesystementry_p.h>
-#include <QtCore/private/qfilesystemmetadata_p.h>
-#include <QtCore/private/qfilesystemengine_p.h>
-#include <QtCore/private/qfileinfo_p.h>
-#include <QtCore/private/qduplicatetracker_p.h>
+#include <BobUICore/private/qfilesystemiterator_p.h>
+#include <BobUICore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
+#include <BobUICore/private/qfilesystemengine_p.h>
+#include <BobUICore/private/qfileinfo_p.h>
+#include <BobUICore/private/qduplicatetracker_p.h>
 
 #include <memory>
 #include <stack>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QDirListing::IteratorFlags toDirListingFlags(QDir::Filters filters,
                                                     QDirIterator::IteratorFlags flags)
@@ -128,7 +128,7 @@ public:
     {
         // Match the behavior of advance() from before porting to QDirListing,
         // that is, even if hasNext() returns false, calling next() returns an
-        // empty string without crashing. QTBUG-130142
+        // empty string without crashing. BOBUIBUG-130142
         if (it == lister.end()) {
             currentFileInfo = {};
             return;
@@ -324,4 +324,4 @@ QString QDirIterator::path() const
     return d->lister.iteratorPath();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

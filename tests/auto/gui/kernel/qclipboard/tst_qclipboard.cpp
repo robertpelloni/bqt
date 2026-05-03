@@ -1,40 +1,40 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QMimeData>
 #include <QSignalSpy>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
-#include <QtCore/QDebug>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QtCore/QVariant>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QClipboard>
-#include <QtGui/QImage>
-#include <QtGui/QPixmap>
-#include <QtGui/QColor>
+#include <BobUICore/QDebug>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QDir>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QClipboard>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QPixmap>
+#include <BobUIGui/QColor>
 #include "../../../shared/platformclipboard.h"
 
 #ifdef Q_OS_WIN
-#  include <QtGui/private/qguiapplication_p.h>
-#  include <QtGui/qwindowsmimeconverter.h>
-#  include <QtGui/qpa/qplatformintegration.h>
-#  include <QtCore/qt_windows.h>
+#  include <BobUIGui/private/qguiapplication_p.h>
+#  include <BobUIGui/qwindowsmimeconverter.h>
+#  include <BobUIGui/qpa/qplatformintegration.h>
+#  include <BobUICore/bobui_windows.h>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QClipboard : public QObject
 {
     Q_OBJECT
 private slots:
     void initTestCase();
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     void init();
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_QNX)
     void copy_exit_paste();
@@ -56,21 +56,21 @@ private slots:
 
 void tst_QClipboard::initTestCase()
 {
-#if !QT_CONFIG(clipboard)
+#if !BOBUI_CONFIG(clipboard)
     QSKIP("This test requires clipboard support");
 #endif
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: Manipulating the clipboard requires real input events. Can't auto test.");
     if (qgetenv("XDG_CURRENT_DESKTOP").toLower().contains("ubuntu:gnome")
         && QSysInfo::productVersion() == "24.04"_L1
         && QSysInfo::prettyProductName() == "Ubuntu 24.04 LTS"_L1)
-        QSKIP("This hangs on Ubuntu 24.04(.0) GNOME/X11, see also QTBUG-129567.");
+        QSKIP("This hangs on Ubuntu 24.04(.0) GNOME/X11, see also BOBUIBUG-129567.");
 }
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 void tst_QClipboard::init()
 {
-#if QT_CONFIG(process) && !defined(Q_OS_ANDROID)
+#if BOBUI_CONFIG(process) && !defined(Q_OS_ANDROID)
     const QString testdataDir = QFileInfo(QFINDTESTDATA("copier")).absolutePath();
     QVERIFY2(QDir::setCurrent(testdataDir), qPrintable("Could not chdir to " + testdataDir));
 #endif
@@ -123,7 +123,7 @@ void tst_QClipboard::modes()
     }
 }
 
-// A predicate to be used with a QSignalSpy / QTRY_VERIFY to ensure all delayed
+// A predicate to be used with a QSignalSpy / BOBUIRY_VERIFY to ensure all delayed
 // notifications are eaten. It waits at least one cycle and returns true when
 // no new signals arrive.
 class EatSignalSpyNotificationsPredicate
@@ -148,7 +148,7 @@ private:
 
 /*
     Test that the appropriate signals are emitted when the clipboard
-    contents is changed by calling the qt functions.
+    contents is changed by calling the bobui functions.
 */
 void tst_QClipboard::testSignals()
 {
@@ -163,10 +163,10 @@ void tst_QClipboard::testSignals()
     QSignalSpy dataChangedSpy(clipboard, SIGNAL(dataChanged()));
     // Clipboard notifications are asynchronous with the new AddClipboardFormatListener
     // in Windows Vista (5.4). Eat away all signals to ensure they don't interfere
-    // with the QTRY_COMPARE below.
+    // with the BOBUIRY_COMPARE below.
     EatSignalSpyNotificationsPredicate noLeftOverDataChanges(dataChangedSpy);
     EatSignalSpyNotificationsPredicate noLeftOverChanges(changedSpy);
-    QTRY_VERIFY(noLeftOverChanges && noLeftOverDataChanges);
+    BOBUIRY_VERIFY(noLeftOverChanges && noLeftOverDataChanges);
 
     QSignalSpy searchChangedSpy(clipboard, SIGNAL(findBufferChanged()));
     QSignalSpy selectionChangedSpy(clipboard, SIGNAL(selectionChanged()));
@@ -175,7 +175,7 @@ void tst_QClipboard::testSignals()
 
     // Test the default mode signal.
     clipboard->setText(text);
-    QTRY_COMPARE(dataChangedSpy.size(), 1);
+    BOBUIRY_COMPARE(dataChangedSpy.size(), 1);
     QCOMPARE(searchChangedSpy.size(), 0);
     QCOMPARE(selectionChangedSpy.size(), 0);
     QCOMPARE(changedSpy.size(), 1);
@@ -215,7 +215,7 @@ void tst_QClipboard::testSignals()
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_QNX)
 static bool runHelper(const QString &program, const QStringList &arguments, QByteArray *errorMessage)
 {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QProcess process;
     process.setProcessChannelMode(QProcess::ForwardedChannels);
     process.start(program, arguments);
@@ -251,19 +251,19 @@ static bool runHelper(const QString &program, const QStringList &arguments, QByt
         return false;
     }
     return true;
-#else // QT_CONFIG(process)
+#else // BOBUI_CONFIG(process)
     Q_UNUSED(program);
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
     return false;
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
-// Test that pasted text remains on the clipboard after a Qt application exits.
+// Test that pasted text remains on the clipboard after a BobUI application exits.
 // This test does not make sense on X11 and embedded, copied data disappears from the clipboard when the application exits
 void tst_QClipboard::copy_exit_paste()
 {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     // ### It's still possible to test copy/paste - just keep the apps running
     if (!PlatformClipboard::isAvailable())
         QSKIP("Native clipboard not working in this setup");
@@ -273,34 +273,34 @@ void tst_QClipboard::copy_exit_paste()
              errorMessage.constData());
 #ifdef Q_OS_MAC
     // The Pasteboard needs a moment to breathe (at least on older Macs).
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif // Q_OS_MAC
     QVERIFY2(runHelper(QStringLiteral("paster/paster"),
                        QStringList() << QStringLiteral("--text") << stringArgument,
                        &errorMessage),
              errorMessage.constData());
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QClipboard::copyImage()
 {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     if (!PlatformClipboard::isAvailable())
         QSKIP("Native clipboard not working in this setup");
     QImage image(100, 100, QImage::Format_ARGB32);
-    image.fill(QColor(Qt::transparent));
-    image.setPixel(QPoint(1, 0), QColor(Qt::blue).rgba());
+    image.fill(QColor(BobUI::transparent));
+    image.setPixel(QPoint(1, 0), QColor(BobUI::blue).rgba());
     QGuiApplication::clipboard()->setImage(image);
 #ifdef Q_OS_MACOS
     // The Pasteboard needs a moment to breathe (at least on older Macs).
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif // Q_OS_MACOS
     // paster will perform hard-coded checks on the copied image.
     QByteArray errorMessage;
     QVERIFY2(runHelper(QStringLiteral("paster/paster"),
                        QStringList(QStringLiteral("--image")), &errorMessage),
              errorMessage.constData());
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 #endif // Q_OS_WIN || Q_OS_MAC || Q_OS_QNX
@@ -339,9 +339,9 @@ void tst_QClipboard::setMimeData()
     QSignalSpy spyData(QGuiApplication::clipboard(), SIGNAL(dataChanged()));
     // Clipboard notifications are asynchronous with the new AddClipboardFormatListener
     // in Windows Vista (5.4). Eat away all signals to ensure they don't interfere
-    // with the QTRY_COMPARE below.
+    // with the BOBUIRY_COMPARE below.
     EatSignalSpyNotificationsPredicate noLeftOverDataChanges(spyData);
-    QTRY_VERIFY(noLeftOverDataChanges);
+    BOBUIRY_VERIFY(noLeftOverDataChanges);
     QSignalSpy spyFindBuffer(QGuiApplication::clipboard(), SIGNAL(findBufferChanged()));
 
     QGuiApplication::clipboard()->clear(QClipboard::Clipboard);
@@ -358,7 +358,7 @@ void tst_QClipboard::setMimeData()
     else
         QCOMPARE(spyFindBuffer.size(), 0);
 
-    QTRY_COMPARE(spyData.size(), 1);
+    BOBUIRY_COMPARE(spyData.size(), 1);
 
     // an other crash test
     data = new QMimeData;
@@ -375,7 +375,7 @@ void tst_QClipboard::setMimeData()
 
     spySelection.clear();
     noLeftOverDataChanges.reset();
-    QTRY_VERIFY(noLeftOverDataChanges);
+    BOBUIRY_VERIFY(noLeftOverDataChanges);
     spyFindBuffer.clear();
 
     QGuiApplication::clipboard()->setMimeData(newData, QClipboard::Clipboard);
@@ -394,7 +394,7 @@ void tst_QClipboard::setMimeData()
     else
         QCOMPARE(spyFindBuffer.size(), 0);
 
-    QTRY_COMPARE(spyData.size(), 1);
+    BOBUIRY_COMPARE(spyData.size(), 1);
 }
 
 void tst_QClipboard::clearBeforeSetText()
@@ -503,11 +503,11 @@ void tst_QClipboard::testWindowsMimeRegisterType()
 
 void tst_QClipboard::testWindowsMime_data()
 {
-    QTest::addColumn<QVariant>("data");
-    QTest::newRow("string") << QVariant(QStringLiteral("bla"));
+    BOBUIest::addColumn<QVariant>("data");
+    BOBUIest::newRow("string") << QVariant(QStringLiteral("bla"));
     QPixmap pm(10, 10);
-    pm.fill(Qt::black);
-    QTest::newRow("pixmap") << QVariant(pm);
+    pm.fill(BobUI::black);
+    BOBUIest::newRow("pixmap") << QVariant(pm);
 }
 
 void tst_QClipboard::testWindowsMime()
@@ -531,15 +531,15 @@ void tst_QClipboard::testWindowsMime()
     default:
         break;
     }
-    QTRY_VERIFY(testMime.formatsForMimeCalled);
+    BOBUIRY_VERIFY(testMime.formatsForMimeCalled);
 
     nativeWindowsApp->unregisterMime(&testMime);
 }
 
 #  endif // Q_OS_WIN
 
-#endif // QT_CONFIG(clipboard)
+#endif // BOBUI_CONFIG(clipboard)
 
-QTEST_MAIN(tst_QClipboard)
+BOBUIEST_MAIN(tst_QClipboard)
 
 #include "tst_qclipboard.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef QMAKEGLOBALS_H
 #define QMAKEGLOBALS_H
@@ -7,13 +7,13 @@
 #include "qmake_global.h"
 #include "proitems.h"
 
-#ifdef QT_BUILD_QMAKE
+#ifdef BOBUI_BUILD_QMAKE
 #  include <property.h>
 #endif
 
 #include <qhash.h>
 #include <qstringlist.h>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 # include <qprocess.h>
 #endif
 #ifdef PROEVALUATOR_THREAD_SAFE
@@ -21,7 +21,7 @@
 # include <qwaitcondition.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMakeEvaluator;
 
@@ -85,7 +85,7 @@ public:
     QString qmake_abslocation;
     QStringList qmake_args, qmake_extra_args;
 
-    QString qtconf;
+    QString bobuiconf;
     QString qmakespec, xqmakespec;
     QString user_template, user_template_prefix;
     QString extra_cmds[4];
@@ -101,7 +101,7 @@ public:
     void setCommandLineArguments(const QString &pwd, const QStringList &args);
     void useEnvironment();
     void setDirectories(const QString &input_dir, const QString &output_dir);
-#ifdef QT_BUILD_QMAKE
+#ifdef BOBUI_BUILD_QMAKE
     void setQMakeProperty(QMakeProperty *prop) { property = prop; }
     void reloadProperties() { property->reload(); }
     ProString propertyValue(const ProKey &name) const { return property->value(name); }
@@ -127,7 +127,7 @@ private:
 
     QString source_root, build_root;
 
-#ifdef QT_BUILD_QMAKE
+#ifdef BOBUI_BUILD_QMAKE
     QMakeProperty *property;
 #else
     QHash<ProKey, ProString> properties;
@@ -141,6 +141,6 @@ private:
     friend class QMakeEvaluator;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAKEGLOBALS_H

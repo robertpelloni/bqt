@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>qdesigner_internal::PaletteEditor</class>
  <widget class="QDialog" name="qdesigner_internal::PaletteEditor">
@@ -55,7 +55,7 @@
        <number>6</number>
       </property>
       <item row="0" column="1">
-       <widget class="QtColorButton" name="buildButton">
+       <widget class="BobUIColorButton" name="buildButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
           <horstretch>0</horstretch>
@@ -68,7 +68,7 @@
        </widget>
       </item>
       <item row="1" column="0" colspan="4">
-       <widget class="QTreeView" name="paletteView">
+       <widget class="BOBUIreeView" name="paletteView">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -162,7 +162,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
@@ -173,9 +173,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qtcolorbutton.h</header>
+   <class>BobUIColorButton</class>
+   <extends>BOBUIoolButton</extends>
+   <header>bobuicolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>qdesigner_internal::PreviewFrame</class>

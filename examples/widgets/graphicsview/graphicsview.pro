@@ -8,4 +8,4 @@ SUBDIRS       = \
               dragdroprobot \
               simpleanchorlayout
 
-contains(DEFINES, QT_NO_CURSOR)|!qtConfig(draganddrop): SUBDIRS -= dragdroprobot
+contains(DEFINES, BOBUI_NO_CURSOR)|!bobuiConfig(draganddrop): SUBDIRS -= dragdroprobot

@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCALENDAR_H
 #define QCALENDAR_H
 
 #include <limits>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qlocale.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringview.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringview.h>
 
 /* Suggested enum names for other calendars known to CLDR (v33.1)
 
@@ -44,7 +44,7 @@
    to do that by contributing data for them to CLDR.
 */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCalendarBackend;
 class QDate;
@@ -72,16 +72,16 @@ public:
     enum class System
     {
         Gregorian, // CLDR: type = "gregory", alias = "gregorian"
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         Julian = 8,
         Milankovic = 9,
 #endif // These are Roman-based, so share Gregorian's CLDR data
 
         // Feature-controlled calendars:
-#if QT_CONFIG(jalalicalendar) // type="persian"
+#if BOBUI_CONFIG(jalalicalendar) // type="persian"
         Jalali = 10,
 #endif
-#if QT_CONFIG(islamiccivilcalendar) // type="islamic-civil", uses data from type="islamic"
+#if BOBUI_CONFIG(islamiccivilcalendar) // type="islamic-civil", uses data from type="islamic"
         IslamicCivil = 11,
         // tabular, civil epoch
         // 30 year cycle, leap on 2, 5, 7, 10, 13, 16, 18, 21, 24, 26 and 29
@@ -110,7 +110,7 @@ public:
 
     explicit QCalendar(); // Gregorian, optimised
     explicit QCalendar(System system);
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
     explicit QCalendar(QLatin1StringView name);
     explicit QCalendar(QStringView name);
 #endif
@@ -160,7 +160,7 @@ public:
 
     // Formatting of date-times:
     QString dateTimeToString(QStringView format, const QDateTime &datetime,
-                             QDate dateOnly, QTime timeOnly,
+                             QDate dateOnly, BOBUIime timeOnly,
                              const QLocale &locale) const;
 
     // What's available ?
@@ -173,6 +173,6 @@ private:
     const QCalendarBackend *d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCALENDAR_H

@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef VIEW_H
 #define VIEW_H
 
 #include <QWidget>
-#include <QTextOption>
+#include <BOBUIextOption>
 
-class QTextLayout;
+class BOBUIextLayout;
 class View : public QWidget
 {
     Q_OBJECT
@@ -17,12 +17,12 @@ public:
 
     void updateLayout(const QString &sourceString,
                       float width,
-                      QTextOption::WrapMode mode,
+                      BOBUIextOption::WrapMode mode,
                       const QFont &font);
 
     QSize sizeHint() const override;
 
-    QTextLayout *layout() const { return m_layout; }
+    BOBUIextLayout *layout() const { return m_layout; }
 
 public slots:
     void setVisualizedBounds(const QRegion &region)
@@ -35,7 +35,7 @@ protected:
     void paintEvent(QPaintEvent *e) override;
 
 private:
-    QTextLayout *m_layout = nullptr;
+    BOBUIextLayout *m_layout = nullptr;
     QRegion m_bounds;
 };
 

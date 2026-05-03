@@ -1,6 +1,6 @@
 // Copyright (C) 2015 Mikkel Krautz <mikkel@krautz.dk>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 /*!
@@ -12,7 +12,7 @@
     \ingroup network
     \ingroup ssl
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QSslDiffieHellmanParameters provides an interface for setting Diffie-Hellman parameters to servers based on QSslSocket.
 
@@ -21,18 +21,18 @@
 
 #include "qssldiffiehellmanparameters.h"
 #include "qssldiffiehellmanparameters_p.h"
-#include "qtlsbackend_p.h"
+#include "bobuilsbackend_p.h"
 #include "qsslsocket.h"
 #include "qsslsocket_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qbytearraymatcher.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qbytearraymatcher.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // The 2048-bit MODP group from RFC 3526
 Q_AUTOTEST_EXPORT extern const char qssl_dhparams_default_base64[] =
@@ -284,7 +284,7 @@ void QSslDiffieHellmanParametersPrivate::initFromPem(const QByteArray &pem)
         error = QSslDiffieHellmanParameters::Error(tlsBackend->dhParametersFromPem(pem, &derData));
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \since 5.8
     \relates QSslDiffieHellmanParameters
@@ -315,4 +315,4 @@ size_t qHash(const QSslDiffieHellmanParameters &dhparam, size_t seed) noexcept
     return qHash(dhparam.d->derData, seed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

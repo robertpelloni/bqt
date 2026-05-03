@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'paletteeditor.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,22 +16,22 @@
 #ifndef PALETTEEDITOR_H
 #define PALETTEEDITOR_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/BOBUIreeView>
+#include <BobUIWidgets/QVBoxLayout>
 #include "previewframe.h"
-#include "qtcolorbutton.h"
+#include "bobuicolorbutton.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -41,8 +41,8 @@ public:
     QVBoxLayout *vboxLayout;
     QGroupBox *advancedBox;
     QGridLayout *gridLayout;
-    QtColorButton *buildButton;
-    QTreeView *paletteView;
+    BobUIColorButton *buildButton;
+    BOBUIreeView *paletteView;
     QRadioButton *detailsRadio;
     QRadioButton *computeRadio;
     QLabel *label;
@@ -84,7 +84,7 @@ public:
         gridLayout->setContentsMargins(9, 9, 9, 9);
 #endif
         gridLayout->setObjectName("gridLayout");
-        buildButton = new QtColorButton(advancedBox);
+        buildButton = new BobUIColorButton(advancedBox);
         buildButton->setObjectName("buildButton");
         QSizePolicy sizePolicy1(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Ignored);
         sizePolicy1.setHorizontalStretch(0);
@@ -94,7 +94,7 @@ public:
 
         gridLayout->addWidget(buildButton, 0, 1, 1, 1);
 
-        paletteView = new QTreeView(advancedBox);
+        paletteView = new BOBUIreeView(advancedBox);
         paletteView->setObjectName("paletteView");
         paletteView->setMinimumSize(QSize(0, 200));
 
@@ -160,7 +160,7 @@ public:
 
         buttonBox = new QDialogButtonBox(qdesigner_internal__PaletteEditor);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         vboxLayout->addWidget(buttonBox);
@@ -197,6 +197,6 @@ namespace Ui {
 } // namespace Ui
 } // namespace qdesigner_internal
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PALETTEEDITOR_H

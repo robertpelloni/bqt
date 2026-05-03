@@ -1,27 +1,27 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include "qwindowsuiaaccessibility.h"
 #include "qwindowsuiautomation.h"
 #include "qwindowsuiamainprovider.h"
 #include "qwindowsuiautils.h"
 
-#include <QtGui/qaccessible.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtCore/qt_windows.h>
+#include <BobUIGui/qaccessible.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUICore/bobui_windows.h>
 #include <qpa/qplatformintegration.h>
 
-#include <QtCore/private/qwinregistry_p.h>
+#include <BobUICore/private/qwinregistry_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QWindowsUiAutomation;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 bool QWindowsUiaAccessibility::m_accessibleActive = false;
 
@@ -162,6 +162,6 @@ void QWindowsUiaAccessibility::notifyAccessibilityUpdate(QAccessibleEvent *event
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

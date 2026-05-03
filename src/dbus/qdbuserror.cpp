@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbuserror.h"
 
@@ -8,17 +8,17 @@
 #include <qvarlengtharray.h>
 #include <private/qoffsetstringarray_p.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "qdbus_symbols_p.h"
 #include "qdbusmessage.h"
 #include "qdbusmessage_p.h"
 #endif
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QDBusError)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusError)
 
 static constexpr const auto errorMessages = qOffsetStringArray(
     "NoError",
@@ -44,15 +44,15 @@ static constexpr const auto errorMessages = qOffsetStringArray(
     "org.freedesktop.DBus.Error.UnknownObject",
     "org.freedesktop.DBus.Error.UnknownProperty",
     "org.freedesktop.DBus.Error.PropertyReadOnly",
-    "org.qtproject.QtDBus.Error.InternalError",
-    "org.qtproject.QtDBus.Error.InvalidService",
-    "org.qtproject.QtDBus.Error.InvalidObjectPath",
-    "org.qtproject.QtDBus.Error.InvalidInterface",
-    "org.qtproject.QtDBus.Error.InvalidMember",
+    "org.qtproject.BobUIDBus.Error.InternalError",
+    "org.qtproject.BobUIDBus.Error.InvalidService",
+    "org.qtproject.BobUIDBus.Error.InvalidObjectPath",
+    "org.qtproject.BobUIDBus.Error.InvalidInterface",
+    "org.qtproject.BobUIDBus.Error.InvalidMember",
     ""
 );
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 static inline QDBusError::ErrorType get(const char *name)
 {
     if (!name || !*name)
@@ -66,7 +66,7 @@ static inline QDBusError::ErrorType get(const char *name)
 
 /*!
     \class QDBusError
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusError class represents an error received from the
@@ -80,7 +80,7 @@ static inline QDBusError::ErrorType get(const char *name)
     C++ and Java exceptions are a valid analogy for D-Bus errors:
     instead of returning normally with a return value, remote
     applications and the bus may decide to throw an error
-    condition. However, the Qt D-Bus implementation does not use the C++
+    condition. However, the BobUI D-Bus implementation does not use the C++
     exception-throwing mechanism, so you will receive QDBusErrors in
     the return reply (see QDBusReply::error()).
 
@@ -166,7 +166,7 @@ QDBusError::QDBusError()
     Q_UNUSED(unused);
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     \internal
     Constructs a QDBusError from a DBusError structure.
@@ -231,7 +231,7 @@ QDBusError &QDBusError::operator=(const QDBusError &other)
     return *this;
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
   \internal
   Assignment operator from a QDBusMessage
@@ -304,7 +304,7 @@ QString QDBusError::errorString(ErrorType error)
     return QLatin1StringView(errorMessages[error]);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QDBusError &msg)
 {
     QDebugStateSaver saver(dbg);
@@ -318,16 +318,16 @@ QDebug operator<<(QDebug dbg, const QDBusError &msg)
     \memberswap{error}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbuserror.cpp"
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 
 /*
 MSVC2015 has the warning C4503 at the end of the file:
-QtPrivate::StaticStringBuilder<QtPrivate::IndexesList<...> - decorated name length exceeded, name was truncated
+BobUIPrivate::StaticStringBuilder<BobUIPrivate::IndexesList<...> - decorated name length exceeded, name was truncated
 It is used by qOffsetStringArray in a constexpr evaluation and this code does not exist in the object file,
 but we still have the warning or even error with -WX flag
 */
-QT_WARNING_DISABLE_MSVC(4503)
+BOBUI_WARNING_DISABLE_MSVC(4503)

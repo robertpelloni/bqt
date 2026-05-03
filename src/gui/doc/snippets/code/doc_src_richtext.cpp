@@ -1,41 +1,41 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-#include <QTextDocument>
-#include <QTextEdit>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
+#include <BOBUIextDocument>
+#include <BOBUIextEdit>
 
 namespace doc_src_richtext {
 
 void wrapper() {
 //! [0]
-QTextDocument *newDocument = new QTextDocument;
+BOBUIextDocument *newDocument = new BOBUIextDocument;
 //! [0]
 
 
 //! [1]
-QTextEdit *editor = new QTextEdit;
-QTextDocument *editorDocument = editor->document();
+BOBUIextEdit *editor = new BOBUIextEdit;
+BOBUIextDocument *editorDocument = editor->document();
 //! [1]
 Q_UNUSED(newDocument);
 Q_UNUSED(editorDocument);
 } // wrapper
 
 void wrapper2() {
-auto parent = new QTextEdit();
+auto parent = new BOBUIextEdit();
 QString aStringContainingHTMLtext;
 //! [2]
-QTextEdit *editor = new QTextEdit(parent);
+BOBUIextEdit *editor = new BOBUIextEdit(parent);
 editor->setHtml(aStringContainingHTMLtext);
 editor->show();
 //! [2]
 
 
 //! [3]
-QTextDocument *document = editor->document();
+BOBUIextDocument *document = editor->document();
 //! [3]
 Q_UNUSED(document);
 
 //! [4]
-QTextCursor cursor = editor->textCursor();
+BOBUIextCursor cursor = editor->textCursor();
 //! [4]
 
 
@@ -44,8 +44,8 @@ editor->setTextCursor(cursor);
 //! [5]
 
 
-QTextEdit textEdit;
-QTextCursor textCursor;
+BOBUIextEdit textEdit;
+BOBUIextCursor textCursor;
 QString paragraphText;
 //! [6]
 textEdit.show();

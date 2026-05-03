@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "treemodel.h"
 
 #include <QApplication>
 #include <QFile>
 #include <QScreen>
-#include <QTreeView>
+#include <BOBUIreeView>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     TreeModel model(QString::fromUtf8(file.readAll()));
     file.close();
 
-    QTreeView view;
+    BOBUIreeView view;
     view.setModel(&model);
     view.setWindowTitle(TreeModel::tr("Simple Tree Model"));
     for (int c = 0; c < model.columnCount(); ++c)

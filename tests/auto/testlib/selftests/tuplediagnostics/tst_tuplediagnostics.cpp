@@ -1,12 +1,12 @@
 // Copyright (C) 2017 Samuel Gaist <samuel.gaist@edeltech.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Make sure we get a real Q_ASSERT even in release builds
-#ifdef QT_NO_DEBUG
-# undef QT_NO_DEBUG
+#ifdef BOBUI_NO_DEBUG
+# undef BOBUI_NO_DEBUG
 #endif
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_TupleDiagnostics: public QObject
 {
@@ -35,6 +35,6 @@ void tst_TupleDiagnostics::testTuple() const
     QCOMPARE(tuple1, tuple2);
 }
 
-QTEST_MAIN(tst_TupleDiagnostics)
+BOBUIEST_MAIN(tst_TupleDiagnostics)
 
 #include "tst_tuplediagnostics.moc"

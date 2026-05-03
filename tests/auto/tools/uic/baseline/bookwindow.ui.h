@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'bookwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,21 +9,21 @@
 #ifndef BOOKWINDOW_H
 #define BOOKWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIableView>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_BookWindow
 {
@@ -32,7 +32,7 @@ public:
     QVBoxLayout *vboxLayout;
     QGroupBox *groupBox;
     QVBoxLayout *vboxLayout1;
-    QTableView *bookTable;
+    BOBUIableView *bookTable;
     QGroupBox *groupBox_2;
     QFormLayout *formLayout;
     QLabel *label_5;
@@ -71,7 +71,7 @@ public:
         vboxLayout1->setContentsMargins(9, 9, 9, 9);
 #endif
         vboxLayout1->setObjectName("vboxLayout1");
-        bookTable = new QTableView(groupBox);
+        bookTable = new BOBUIableView(groupBox);
         bookTable->setObjectName("bookTable");
         bookTable->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 
@@ -174,6 +174,6 @@ namespace Ui {
     class BookWindow: public Ui_BookWindow {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // BOOKWINDOW_H

@@ -1,20 +1,20 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowswindowclassregistry.h"
 
-#include <QtCore/qlibraryinfo.h>
-#include <QtCore/quuid.h>
+#include <BobUICore/qlibraryinfo.h>
+#include <BobUICore/quuid.h>
 
 #include "qwindowscontext.h"
 #include "qwindowswindowclassdescription.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcQpaWindowClass, "qt.qpa.windowclass")
+Q_LOGGING_CATEGORY(lcQpaWindowClass, "bobui.qpa.windowclass")
 
 QWindowsWindowClassRegistry *QWindowsWindowClassRegistry::m_instance = nullptr;
 
@@ -40,14 +40,14 @@ QString QWindowsWindowClassRegistry::classNamePrefix()
 {
     static QString result;
     if (result.isEmpty()) {
-        QTextStream str(&result);
-        str << "Qt" << QT_VERSION_MAJOR << QT_VERSION_MINOR << QT_VERSION_PATCH;
+        BOBUIextStream str(&result);
+        str << "BobUI" << BOBUI_VERSION_MAJOR << BOBUI_VERSION_MINOR << BOBUI_VERSION_PATCH;
         if (QLibraryInfo::isDebugBuild())
             str << 'd';
-#ifdef QT_NAMESPACE
+#ifdef BOBUI_NAMESPACE
 #  define xstr(s) str(s)
 #  define str(s) #s
-        str << xstr(QT_NAMESPACE);
+        str << xstr(BOBUI_NAMESPACE);
 #  undef str
 #  undef xstr
 #endif
@@ -62,12 +62,12 @@ QString QWindowsWindowClassRegistry::registerWindowClass(const QWindowsWindowCla
     if (description.shouldAddPrefix)
         className = classNamePrefix() + className;
 
-    // since multiple Qt versions can be used in one process
+    // since multiple BobUI versions can be used in one process
     // each one has to have window class names with a unique name
     // The first instance gets the unmodified name; if the class
-    // has already been registered by another instance of Qt then
+    // has already been registered by another instance of BobUI then
     // add a UUID. The check needs to be performed for each name
-    // in case new message windows are added (QTBUG-81347).
+    // in case new message windows are added (BOBUIBUG-81347).
     // Note: GetClassInfo() returns != 0 when a class exists.
     if (shouldDecorateWindowClassName(description))
         className += QUuid::createUuid().toString();
@@ -99,7 +99,7 @@ QString QWindowsWindowClassRegistry::registerWindowClass(const QWindowsWindowCla
     ATOM atom = RegisterClassEx(&wc);
     if (!atom)
         qCWarning(lcQpaWindowClass) << "Failed to register window class" << className
-            << "(" << qt_error_string(-1) << ")";
+            << "(" << bobui_error_string(-1) << ")";
 
     m_registeredWindowClassNames.insert(className);
 
@@ -140,9 +140,9 @@ void QWindowsWindowClassRegistry::unregisterWindowClasses()
     for (const QString &name : std::as_const(m_registeredWindowClassNames)) {
         if (!UnregisterClass(reinterpret_cast<LPCWSTR>(name.utf16()), appInstance) && QWindowsContext::verbose)
             qCWarning(lcQpaWindowClass) << "Failed to unregister window class" << name
-                << "(" << qt_error_string(-1) << ")";
+                << "(" << bobui_error_string(-1) << ")";
     }
     m_registeredWindowClassNames.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

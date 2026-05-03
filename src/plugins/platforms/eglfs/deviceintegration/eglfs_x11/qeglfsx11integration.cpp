@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsx11integration.h"
-#include <QThread>
+#include <BOBUIhread>
 
 #include <X11/Xlib.h>
 #include <X11/Xlib-xcb.h>
@@ -11,9 +11,9 @@
    This here is barely an extremely useful tool for developing eglfs itself because
    it allows to do so without any requirements for devices or drivers. */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class EventReader : public QThread
+class EventReader : public BOBUIhread
 {
 public:
     EventReader(QEglFSX11Integration *integration)
@@ -174,12 +174,12 @@ EGLNativeWindowType QEglFSX11Integration::createNativeWindow(QPlatformWindow *pl
 
     xcb_flush(m_connection);
 
-    return qt_egl_cast<EGLNativeWindowType>(m_window);
+    return bobui_egl_cast<EGLNativeWindowType>(m_window);
 }
 
 void QEglFSX11Integration::destroyNativeWindow(EGLNativeWindowType window)
 {
-    xcb_destroy_window(m_connection, qt_egl_cast<xcb_window_t>(window));
+    xcb_destroy_window(m_connection, bobui_egl_cast<xcb_window_t>(window));
 }
 
 bool QEglFSX11Integration::hasCapability(QPlatformIntegration::Capability cap) const
@@ -188,4 +188,4 @@ bool QEglFSX11Integration::hasCapability(QPlatformIntegration::Capability cap) c
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

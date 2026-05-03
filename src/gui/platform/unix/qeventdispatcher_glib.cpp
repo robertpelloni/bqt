@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qeventdispatcher_glib_p.h"
 
@@ -11,7 +11,7 @@
 #include <glib.h>
 #include "private/qguiapplication_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct GUserEventSource
 {
@@ -55,7 +55,7 @@ QPAEventDispatcherGlibPrivate::QPAEventDispatcherGlibPrivate(GMainContext *conte
     Q_Q(QPAEventDispatcherGlib);
 
     GSource *source = g_source_new(&userEventSourceFuncs, sizeof(GUserEventSource));
-    g_source_set_name(source, "[Qt] GUserEventSource");
+    g_source_set_name(source, "[BobUI] GUserEventSource");
     userEventSource = reinterpret_cast<GUserEventSource *>(source);
 
     userEventSource->q = q;
@@ -90,6 +90,6 @@ bool QPAEventDispatcherGlib::processEvents(QEventLoop::ProcessEventsFlags flags)
     return QEventDispatcherGlib::processEvents(m_flags);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventdispatcher_glib_p.cpp"

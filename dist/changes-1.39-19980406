@@ -34,9 +34,9 @@ src/kernel/qrgn_x11.cpp    2.5  hanord  +50 -2
 
 src/widgets/qmainwindow.cpp    2.13  agulbra  +46 -3  (1998/04/02)
 src/widgets/qmainwindow.h    2.9  agulbra  +9 -4
-src/widgets/qtoolbar.cpp    2.15  agulbra  +20 -5
-src/widgets/qtoolbar.h    2.7  agulbra  +5 -2
-src/widgets/qtoolbutton.cpp    2.20  agulbra  +25 -17
+src/widgets/bobuioolbar.cpp    2.15  agulbra  +20 -5
+src/widgets/bobuioolbar.h    2.7  agulbra  +5 -2
+src/widgets/bobuioolbutton.cpp    2.20  agulbra  +25 -17
 
   button pixmap size change support
 
@@ -45,8 +45,8 @@ src/kernel/qiconset.cpp    2.5  agulbra  +18 -4
 src/kernel/qiconset.h    2.3  agulbra  +4 -3
 src/widgets/qpushbt.cpp    2.37  agulbra  +62 -3
 src/widgets/qpushbt.h    2.7  agulbra  +5 -1
-src/widgets/qtoolbutton.cpp    2.19  agulbra  +31 -5
-src/widgets/qtoolbutton.h    2.4  agulbra  +6 -2
+src/widgets/bobuioolbutton.cpp    2.19  agulbra  +31 -5
+src/widgets/bobuioolbutton.h    2.4  agulbra  +6 -2
 
   new functionality, menu buttons
 
@@ -156,9 +156,9 @@ src/widgets/qcombo.cpp    2.81  agulbra  +24 -19
 
 src/widgets/qmainwindow.cpp    2.15  agulbra  +82 -14
 src/widgets/qmainwindow.h    2.11  agulbra  +7 -4
-src/widgets/qtoolbar.cpp    2.16  agulbra  +46 -11
-src/widgets/qtoolbar.h    2.8  agulbra  +8 -2
-src/widgets/qtoolbutton.cpp    2.21  agulbra  +4 -4
+src/widgets/bobuioolbar.cpp    2.16  agulbra  +46 -11
+src/widgets/bobuioolbar.h    2.8  agulbra  +8 -2
+src/widgets/bobuioolbutton.cpp    2.21  agulbra  +4 -4
 
   various improvements in look&feel, stretchable space, stretchable widgets
 
@@ -201,7 +201,7 @@ examples/scrollview/scrollview.cpp    1.8  warwick  +49 -5
   Test new arbitrary-number-of-children code.
 
 
-src/qt.pro    2.20  warwick  +2 -0
+src/bobui.pro    2.20  warwick  +2 -0
 
   fix dependencies
 
@@ -212,7 +212,7 @@ src/widgets/qstatusbar.cpp    2.4  agulbra  +4 -2
 
 
 src/widgets/qmainwindow.cpp    2.16  agulbra  +10 -18
-src/widgets/qtoolbar.cpp    2.17  agulbra  +6 -5
+src/widgets/bobuioolbar.cpp    2.17  agulbra  +6 -5
 
   move motif style away from what the OSF probably would have done,
   closer towards what Netscape and Microsoft has done.
@@ -241,7 +241,7 @@ src/widgets/qscrollview.h    2.17  warwick  +2 -1
 
 
 src/widgets/qscrollview.cpp    2.32  warwick  +2 -2
-src/widgets/qtoolbutton.cpp    2.22  warwick  +12 -2
+src/widgets/bobuioolbutton.cpp    2.22  warwick  +12 -2
 
   Focus indication in toolbutton.
 

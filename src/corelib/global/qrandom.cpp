@@ -1,7 +1,7 @@
 // Copyright (C) 2021 Intel Corporation.
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 // for rand_s
 #define _CRT_RAND_S
@@ -14,22 +14,22 @@
 
 #include <errno.h>
 
-#if QT_CONFIG(getauxval)
+#if BOBUI_CONFIG(getauxval)
 #  include <sys/auxv.h>
 #endif
 
-#if QT_CONFIG(getentropy) && __has_include(<sys/random.h>)
+#if BOBUI_CONFIG(getentropy) && __has_include(<sys/random.h>)
 #  include <sys/random.h>
-#elif !QT_CONFIG(getentropy) && (!defined(Q_OS_BSD4) || defined(__GLIBC__)) && !defined(Q_OS_WIN)
+#elif !BOBUI_CONFIG(getentropy) && (!defined(Q_OS_BSD4) || defined(__GLIBC__)) && !defined(Q_OS_WIN)
 #  include "qdeadlinetimer.h"
 #  include "qhashfunctions.h"
-#endif // !QT_CONFIG(getentropy)
+#endif // !BOBUI_CONFIG(getentropy)
 
 #ifdef Q_OS_UNIX
 #  include <fcntl.h>
 #  include <private/qcore_unix_p.h>
 #else
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 
 // RtlGenRandom is not exported by its name in advapi32.dll, but as SystemFunction036
 // See https://msdn.microsoft.com/en-us/library/windows/desktop/aa387694(v=vs.85).aspx
@@ -47,25 +47,25 @@ DECLSPEC_IMPORT BOOLEAN WINAPI SystemFunction036(PVOID RandomBuffer, ULONG Rando
 #undef Q_ASSERT
 #define Q_ASSERT(cond) assert(cond)
 #define Q_ASSERT_X(cond, x, msg) assert(cond && msg)
-#if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
+#if defined(BOBUI_NO_DEBUG) && !defined(BOBUI_FORCE_ASSERTS)
 #  define NDEBUG    1
 #endif
 #include <assert.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     // may be "overridden" by a member enum
     FillBufferNoexcept = true
 };
 
-#if defined(QT_BUILD_INTERNAL)
-QBasicAtomicInteger<uint> qt_randomdevice_control = Q_BASIC_ATOMIC_INITIALIZER(0U);
+#if defined(BOBUI_BUILD_INTERNAL)
+QBasicAtomicInteger<uint> bobui_randomdevice_control = Q_BASIC_ATOMIC_INITIALIZER(0U);
 #endif
 
 struct QRandomGenerator::SystemGenerator
 {
-#if QT_CONFIG(getentropy)
+#if BOBUI_CONFIG(getentropy)
     static qsizetype fillBuffer(void *buffer, qsizetype count) noexcept
     {
         // getentropy can read at most 256 bytes, so break the reading
@@ -94,9 +94,9 @@ struct QRandomGenerator::SystemGenerator
         if (fd != -1)
             return fd;
 
-        fd = qt_safe_open("/dev/urandom", O_RDONLY);
+        fd = bobui_safe_open("/dev/urandom", O_RDONLY);
         if (fd == -1)
-            fd = qt_safe_open("/dev/random", O_RDONLY | O_NONBLOCK);
+            fd = bobui_safe_open("/dev/random", O_RDONLY | O_NONBLOCK);
         if (fd == -1) {
             // failed on both, set to -2 so we won't try again
             fd = -2;
@@ -108,7 +108,7 @@ struct QRandomGenerator::SystemGenerator
 
         // failed, another thread has opened the file descriptor
         if (fd >= 0)
-            qt_safe_close(fd);
+            bobui_safe_close(fd);
         return opened_fdp1 - 1;
     }
 
@@ -120,7 +120,7 @@ struct QRandomGenerator::SystemGenerator
     {
         int fd = self().fdp1.loadRelaxed() - 1;
         if (fd >= 0)
-            qt_safe_close(fd);
+            bobui_safe_close(fd);
     }
 
     constexpr SystemGenerator() : fdp1 Q_BASIC_ATOMIC_INITIALIZER(0) {}
@@ -131,7 +131,7 @@ struct QRandomGenerator::SystemGenerator
         if (Q_UNLIKELY(fd < 0))
             return 0;
 
-        qint64 n = qt_safe_read(fd, buffer, count);
+        qint64 n = bobui_safe_read(fd, buffer, count);
         return qMax<qsizetype>(n, 0);        // ignore any errors
     }
 
@@ -179,7 +179,7 @@ static void fallback_fill(quint32 *ptr, qsizetype left) noexcept
         return value;
     });
 }
-#elif QT_CONFIG(getentropy)
+#elif BOBUI_CONFIG(getentropy)
 static void fallback_update_seed(unsigned) {}
 static void fallback_fill(quint32 *, qsizetype) noexcept
 {
@@ -198,7 +198,7 @@ Q_CONSTINIT static QBasicAtomicInteger<unsigned> seed = Q_BASIC_ATOMIC_INITIALIZ
 static void fallback_update_seed(unsigned value)
 {
     // Update the seed to be used for the fallback mechanism, if we need to.
-    // We can't use QtPrivate::QHashCombine here because that is not an atomic
+    // We can't use BobUIPrivate::QHashCombine here because that is not an atomic
     // operation. A simple XOR will have to do then.
     seed.fetchAndXorRelaxed(value);
 }
@@ -232,15 +232,15 @@ static void fallback_fill(quint32 *ptr, qsizetype left) noexcept
     *end++ = foldPointer(quintptr(&errno));         // 3: veriable either in libc or thread-specific
     *end++ = foldPointer(quintptr(reinterpret_cast<void*>(strerror)));   // 4: function in libc (and unlikely to be a macro)
 
-#ifndef QT_BOOTSTRAPPED
-    quint64 nsecs = QDeadlineTimer::current(Qt::PreciseTimer).deadline();
+#ifndef BOBUI_BOOTSTRAPPED
+    quint64 nsecs = QDeadlineTimer::current(BobUI::PreciseTimer).deadline();
     *end++ = quint32(nsecs);    // 5
 #endif
 
     if (quint32 v = seed.loadRelaxed())
         *end++ = v; // 6
 
-#if QT_CONFIG(getauxval)
+#if BOBUI_CONFIG(getauxval)
     // works on Linux -- all modern libc have getauxval
 #  ifdef AT_RANDOM
     // ELF's auxv AT_RANDOM has 16 random bytes
@@ -286,14 +286,14 @@ Q_NEVER_INLINE void QRandomGenerator::SystemGenerator::generate(quint32 *begin, 
     quint32 *buffer = begin;
     qsizetype count = end - begin;
 
-    if (Q_UNLIKELY(uint(qt_randomdevice_control.loadAcquire()) & SetRandomData)) {
-        uint value = uint(qt_randomdevice_control.loadAcquire()) & RandomDataMask;
+    if (Q_UNLIKELY(uint(bobui_randomdevice_control.loadAcquire()) & SetRandomData)) {
+        uint value = uint(bobui_randomdevice_control.loadAcquire()) & RandomDataMask;
         std::fill_n(buffer, count, value);
         return;
     }
 
     qsizetype filled = 0;
-    if ((uint(qt_randomdevice_control.loadAcquire()) & SkipSystemRNG) == 0) {
+    if ((uint(bobui_randomdevice_control.loadAcquire()) & SkipSystemRNG) == 0) {
         qsizetype bytesFilled =
                 fillBuffer(buffer + filled, (count - filled) * qsizetype(sizeof(*buffer)));
         filled += bytesFilled / qsizetype(sizeof(*buffer));
@@ -398,7 +398,7 @@ inline QRandomGenerator::SystemGenerator &QRandomGenerator::SystemGenerator::sel
 
 /*!
     \class QRandomGenerator
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \since 5.10
 
@@ -417,7 +417,7 @@ inline QRandomGenerator::SystemGenerator &QRandomGenerator::SystemGenerator::sel
     that is securely seeded with QRandomGenerator::system(), meaning that the
     sequence of numbers it generates cannot be easily predicted. Additionally,
     QRandomGenerator::global() returns a global instance of QRandomGenerator
-    that Qt will ensure to be securely seeded. This object is thread-safe, may
+    that BobUI will ensure to be securely seeded. This object is thread-safe, may
     be shared for most uses, and is always seeded from
     QRandomGenerator::system()
 
@@ -471,7 +471,7 @@ inline QRandomGenerator::SystemGenerator &QRandomGenerator::SystemGenerator::sel
     \section1 System-wide random number generator
 
     QRandomGenerator::system() may be used to access the system-wide random
-    number generator, which is cryptographically-safe on all systems that Qt
+    number generator, which is cryptographically-safe on all systems that BobUI
     runs on. This function will use hardware facilities to generate random
     numbers where available. On such systems, those facilities are true Random
     Number Generators. However, if they are true RNGs, those facilities have
@@ -479,7 +479,7 @@ inline QRandomGenerator::SystemGenerator &QRandomGenerator::SystemGenerator::sel
     entropy pool is exhausted.
 
     If that happens, first the operating system then QRandomGenerator will fall
-    back to Pseudo Random Number Generators of decreasing qualities (Qt's
+    back to Pseudo Random Number Generators of decreasing qualities (BobUI's
     fallback generator being the simplest). Whether those generators are still
     of cryptographic quality is implementation-defined. Therefore,
     QRandomGenerator::system() should not be used for high-frequency random
@@ -1062,7 +1062,7 @@ inline QRandomGenerator::SystemGenerator &QRandomGenerator::SystemGenerator::sel
 
 /*!
     \class QRandomGenerator64
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
 
     \brief The QRandomGenerator64 class allows one to obtain 64-bit random values
@@ -1247,7 +1247,7 @@ quint64 QRandomGenerator::_fillRange(void *buffer, qptrdiff count)
     quint32 *begin = static_cast<quint32 *>(buffer ? buffer : &dummy);
     quint32 *end = begin + count;
 
-    if (type == SystemRNG || Q_UNLIKELY(uint(qt_randomdevice_control.loadAcquire()) & (UseSystemRNG|SetRandomData))) {
+    if (type == SystemRNG || Q_UNLIKELY(uint(bobui_randomdevice_control.loadAcquire()) & (UseSystemRNG|SetRandomData))) {
         SystemGenerator::self().generate(begin, end);
     } else {
         SystemAndGlobalGenerators::PRNGLocker lock(this);
@@ -1283,9 +1283,9 @@ static qsizetype callFillBuffer(FillBufferType f, T *v)
     Note: on some systems, this functionn may rerturn the same value every time
     it is called.
  */
-QRandomGenerator::InitialRandomData qt_initial_random_value() noexcept
+QRandomGenerator::InitialRandomData bobui_initial_random_value() noexcept
 {
-#if QT_CONFIG(getauxval) && defined(AT_RANDOM)
+#if BOBUI_CONFIG(getauxval) && defined(AT_RANDOM)
     auto at_random_ptr = reinterpret_cast<size_t *>(getauxval(AT_RANDOM));
     if (at_random_ptr)
         return qFromUnaligned<QRandomGenerator::InitialRandomData>(at_random_ptr);
@@ -1309,4 +1309,4 @@ QRandomGenerator::InitialRandomData qt_initial_random_value() noexcept
     return v;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

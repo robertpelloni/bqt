@@ -1,6 +1,6 @@
 [wglContextWrap]
 windows
-# QTBUG-87665
+# BOBUIBUG-87665
 [fboMRT]
 android
 [fboMRT_differentFormats]

@@ -1,27 +1,27 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOBJECTDEFS_H
 #define QOBJECTDEFS_H
 
 #if defined(__OBJC__) && !defined(__cplusplus)
-#  warning "File built in Objective-C mode (.m), but using Qt requires Objective-C++ (.mm)"
+#  warning "File built in Objective-C mode (.m), but using BobUI requires Objective-C++ (.mm)"
 #endif
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qobjectdefs_impl.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qtmetamacros.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qobjectdefs_impl.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/bobuimetamacros.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArray;
 struct QArrayData;
 
 class QString;
 
-#ifndef QT_NO_META_MACROS
+#ifndef BOBUI_NO_META_MACROS
 // macro for onaming members
 #ifdef METHOD
 #undef METHOD
@@ -32,36 +32,36 @@ class QString;
 #ifdef SIGNAL
 #undef SIGNAL
 #endif
-#endif // QT_NO_META_MACROS
+#endif // BOBUI_NO_META_MACROS
 
 Q_CORE_EXPORT const char *qFlagLocation(const char *method);
 
-#ifndef QT_NO_META_MACROS
+#ifndef BOBUI_NO_META_MACROS
 # define QMETHOD_CODE  0                        // member type codes
 # define QSLOT_CODE    1
 # define QSIGNAL_CODE  2
-# define QT_PREFIX_CODE(code, a) QT_STRINGIFY(code) #a
-# define QT_STRINGIFY_METHOD(a) QT_PREFIX_CODE(QMETHOD_CODE, a)
-# define QT_STRINGIFY_SLOT(a) QT_PREFIX_CODE(QSLOT_CODE, a)
-# define QT_STRINGIFY_SIGNAL(a) QT_PREFIX_CODE(QSIGNAL_CODE, a)
-# ifndef QT_NO_DEBUG
-#  define QLOCATION "\0" __FILE__ ":" QT_STRINGIFY(__LINE__)
-#  ifndef QT_NO_KEYWORDS
-#   define METHOD(a)   qFlagLocation(QT_STRINGIFY_METHOD(a) QLOCATION)
+# define BOBUI_PREFIX_CODE(code, a) BOBUI_STRINGIFY(code) #a
+# define BOBUI_STRINGIFY_METHOD(a) BOBUI_PREFIX_CODE(QMETHOD_CODE, a)
+# define BOBUI_STRINGIFY_SLOT(a) BOBUI_PREFIX_CODE(QSLOT_CODE, a)
+# define BOBUI_STRINGIFY_SIGNAL(a) BOBUI_PREFIX_CODE(QSIGNAL_CODE, a)
+# ifndef BOBUI_NO_DEBUG
+#  define QLOCATION "\0" __FILE__ ":" BOBUI_STRINGIFY(__LINE__)
+#  ifndef BOBUI_NO_KEYWORDS
+#   define METHOD(a)   qFlagLocation(BOBUI_STRINGIFY_METHOD(a) QLOCATION)
 #  endif
-#  define SLOT(a)     qFlagLocation(QT_STRINGIFY_SLOT(a) QLOCATION)
-#  define SIGNAL(a)   qFlagLocation(QT_STRINGIFY_SIGNAL(a) QLOCATION)
+#  define SLOT(a)     qFlagLocation(BOBUI_STRINGIFY_SLOT(a) QLOCATION)
+#  define SIGNAL(a)   qFlagLocation(BOBUI_STRINGIFY_SIGNAL(a) QLOCATION)
 # else
-#  ifndef QT_NO_KEYWORDS
-#   define METHOD(a)  QT_STRINGIFY_METHOD(a)
+#  ifndef BOBUI_NO_KEYWORDS
+#   define METHOD(a)  BOBUI_STRINGIFY_METHOD(a)
 #  endif
-#  define SLOT(a)     QT_STRINGIFY_SLOT(a)
-#  define SIGNAL(a)   QT_STRINGIFY_SIGNAL(a)
+#  define SLOT(a)     BOBUI_STRINGIFY_SLOT(a)
+#  define SIGNAL(a)   BOBUI_STRINGIFY_SIGNAL(a)
 # endif
-#endif // QT_NO_META_MACROS
+#endif // BOBUI_NO_META_MACROS
 
-#define Q_ARG(Type, data)           QtPrivate::Invoke::argument<Type>(QT_STRINGIFY(Type), data)
-#define Q_RETURN_ARG(Type, data)    QtPrivate::Invoke::returnArgument<Type>(QT_STRINGIFY(Type), data)
+#define Q_ARG(Type, data)           BobUIPrivate::Invoke::argument<Type>(BOBUI_STRINGIFY(Type), data)
+#define Q_RETURN_ARG(Type, data)    BobUIPrivate::Invoke::returnArgument<Type>(BOBUI_STRINGIFY(Type), data)
 
 class QObject;
 class QMetaMethod;
@@ -69,7 +69,7 @@ class QMetaEnum;
 class QMetaProperty;
 class QMetaClassInfo;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QMetaTypeInterface;
 template<typename T> constexpr const QMetaTypeInterface *qMetaTypeInterfaceForType();
 }
@@ -79,7 +79,7 @@ struct QMethodRawArguments
     void **arguments;
 };
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 class Q_CORE_EXPORT QGenericArgument
 {
 public:
@@ -131,27 +131,27 @@ public:
 
 struct QMetaMethodArgument
 {
-    const QtPrivate::QMetaTypeInterface *metaType;
+    const BobUIPrivate::QMetaTypeInterface *metaType;
     const char *name;
     const void *data;
 };
 
 struct QMetaMethodReturnArgument
 {
-    const QtPrivate::QMetaTypeInterface *metaType;
+    const BobUIPrivate::QMetaTypeInterface *metaType;
     const char *name;
     void *data;
 };
 
 template <typename T>
-struct QTemplatedMetaMethodReturnArgument : QMetaMethodReturnArgument
+struct BOBUIemplatedMetaMethodReturnArgument : QMetaMethodReturnArgument
 {
     using Type = T;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 namespace Invoke {
-#if QT_VERSION <= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION <= BOBUI_VERSION_CHECK(7, 0, 0)
 template <typename... Args>
 using AreOldStyleArgs = std::disjunction<std::is_base_of<QGenericArgument, Args>...>;
 
@@ -172,7 +172,7 @@ template <typename T> inline QMetaMethodArgument argument(const char *name, cons
 }
 
 template <typename T>
-inline QTemplatedMetaMethodReturnArgument<T> returnArgument(const char *name, T &t)
+inline BOBUIemplatedMetaMethodReturnArgument<T> returnArgument(const char *name, T &t)
 {
     return { qMetaTypeInterfaceForType<T>(), name, std::addressof(t) };
 }
@@ -204,7 +204,7 @@ inline const char *typenameHelper(const char16_t *) = delete;
 template <typename T> inline const void *dataHelper(const char16_t *) = delete;
 inline const QMetaTypeInterface *metaTypeHelper(const char16_t *) = delete;
 
-} // namespace QtPrivate::Invoke
+} // namespace BobUIPrivate::Invoke
 
 template <typename... Args> inline auto invokeMethodHelper(QMetaMethodReturnArgument r, const Args &... arguments)
 {
@@ -222,12 +222,12 @@ template <typename... Args> inline auto invokeMethodHelper(QMetaMethodReturnArgu
     };
     return R { params, names, types };
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename T> void qReturnArg(const T &&) = delete;
-template <typename T> inline QTemplatedMetaMethodReturnArgument<T> qReturnArg(T &data)
+template <typename T> inline BOBUIemplatedMetaMethodReturnArgument<T> qReturnArg(T &data)
 {
-    return QtPrivate::Invoke::returnArgument(nullptr, data);
+    return BobUIPrivate::Invoke::returnArgument(nullptr, data);
 }
 
 struct Q_CORE_EXPORT QMetaObject
@@ -241,9 +241,9 @@ struct Q_CORE_EXPORT QMetaObject
     { return const_cast<QObject *>(cast(const_cast<const QObject *>(obj))); }
     const QObject *cast(const QObject *obj) const;
 
-#if !defined(QT_NO_TRANSLATION) || defined(Q_QDOC)
+#if !defined(BOBUI_NO_TRANSLATION) || defined(Q_QDOC)
     QString tr(const char *s, const char *c, int n = -1) const;
-#endif // QT_NO_TRANSLATION
+#endif // BOBUI_NO_TRANSLATION
 
     QMetaType metaType() const;
 
@@ -296,15 +296,15 @@ struct Q_CORE_EXPORT QMetaObject
 
 #ifdef Q_QDOC
     template<typename PointerToMemberFunction>
-    static QMetaObject::Connection connect(const QObject *sender, const QMetaMethod &signal, const QObject *receiver, PointerToMemberFunction method, Qt::ConnectionType type = Qt::AutoConnection);
+    static QMetaObject::Connection connect(const QObject *sender, const QMetaMethod &signal, const QObject *receiver, PointerToMemberFunction method, BobUI::ConnectionType type = BobUI::AutoConnection);
     template<typename Functor>
-    static QMetaObject::Connection connect(const QObject *sender, const QMetaMethod &signal, const QObject *context, Functor functor, Qt::ConnectionType type = Qt::AutoConnection);
+    static QMetaObject::Connection connect(const QObject *sender, const QMetaMethod &signal, const QObject *context, Functor functor, BobUI::ConnectionType type = BobUI::AutoConnection);
 #else
     template <typename Func>
     static inline Connection
         connect(const QObject *sender, const QMetaMethod &signal,
-                const typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *context, Func &&slot,
-                Qt::ConnectionType type = Qt::AutoConnection);
+                const typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *context, Func &&slot,
+                BobUI::ConnectionType type = BobUI::AutoConnection);
 #endif // Q_QDOC
 
     // internal index-based signal activation
@@ -321,9 +321,9 @@ struct Q_CORE_EXPORT QMetaObject
         activate(sender, mo, local_signal_index, _a);
     }
 
-#if QT_VERSION <= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION <= BOBUI_VERSION_CHECK(7, 0, 0)
     static bool invokeMethod(QObject *obj, const char *member,
-                             Qt::ConnectionType,
+                             BobUI::ConnectionType,
                              QGenericReturnArgument ret,
                              QGenericArgument val0 = QGenericArgument(nullptr),
                              QGenericArgument val1 = QGenericArgument(),
@@ -349,12 +349,12 @@ struct Q_CORE_EXPORT QMetaObject
                              QGenericArgument val8 = QGenericArgument(),
                              QGenericArgument val9 = QGenericArgument())
     {
-        return invokeMethod(obj, member, Qt::AutoConnection, ret, val0, val1, val2, val3,
+        return invokeMethod(obj, member, BobUI::AutoConnection, ret, val0, val1, val2, val3,
                 val4, val5, val6, val7, val8, val9);
     }
 
     static inline bool invokeMethod(QObject *obj, const char *member,
-                             Qt::ConnectionType type,
+                             BobUI::ConnectionType type,
                              QGenericArgument val0,
                              QGenericArgument val1 = QGenericArgument(),
                              QGenericArgument val2 = QGenericArgument(),
@@ -382,21 +382,21 @@ struct Q_CORE_EXPORT QMetaObject
                              QGenericArgument val8 = QGenericArgument(),
                              QGenericArgument val9 = QGenericArgument())
     {
-        return invokeMethod(obj, member, Qt::AutoConnection, QGenericReturnArgument(), val0,
+        return invokeMethod(obj, member, BobUI::AutoConnection, QGenericReturnArgument(), val0,
                 val1, val2, val3, val4, val5, val6, val7, val8, val9);
     }
-#endif // Qt < 7.0
+#endif // BobUI < 7.0
 
     template <typename ReturnArg, typename... Args> static
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invokeMethod(QObject *obj, const char *member, Qt::ConnectionType c,
-                 QTemplatedMetaMethodReturnArgument<ReturnArg> r, Args &&... arguments)
+    invokeMethod(QObject *obj, const char *member, BobUI::ConnectionType c,
+                 BOBUIemplatedMetaMethodReturnArgument<ReturnArg> r, Args &&... arguments)
     {
-        auto h = QtPrivate::invokeMethodHelper(r, std::forward<Args>(arguments)...);
+        auto h = BobUIPrivate::invokeMethodHelper(r, std::forward<Args>(arguments)...);
         return invokeMethodImpl(obj, member, c, h.parameterCount(), h.parameters.data(),
                                 h.typeNames.data(), h.metaTypes.data());
     }
@@ -405,11 +405,11 @@ struct Q_CORE_EXPORT QMetaObject
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invokeMethod(QObject *obj, const char *member, Qt::ConnectionType c, Args &&... arguments)
+    invokeMethod(QObject *obj, const char *member, BobUI::ConnectionType c, Args &&... arguments)
     {
-        QTemplatedMetaMethodReturnArgument<void> r = {};
+        BOBUIemplatedMetaMethodReturnArgument<void> r = {};
         return invokeMethod(obj, member, c, r, std::forward<Args>(arguments)...);
     }
 
@@ -417,76 +417,76 @@ struct Q_CORE_EXPORT QMetaObject
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
-    invokeMethod(QObject *obj, const char *member, QTemplatedMetaMethodReturnArgument<ReturnArg> r,
+    invokeMethod(QObject *obj, const char *member, BOBUIemplatedMetaMethodReturnArgument<ReturnArg> r,
                  Args &&... arguments)
     {
-        return invokeMethod(obj, member, Qt::AutoConnection, r, std::forward<Args>(arguments)...);
+        return invokeMethod(obj, member, BobUI::AutoConnection, r, std::forward<Args>(arguments)...);
     }
 
     template <typename... Args> static
 #ifdef Q_QDOC
     bool
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<bool, Args...>
 #endif
     invokeMethod(QObject *obj, const char *member, Args &&... arguments)
     {
-        QTemplatedMetaMethodReturnArgument<void> r = {};
-        return invokeMethod(obj, member, Qt::AutoConnection, r, std::forward<Args>(arguments)...);
+        BOBUIemplatedMetaMethodReturnArgument<void> r = {};
+        return invokeMethod(obj, member, BobUI::AutoConnection, r, std::forward<Args>(arguments)...);
     }
 
 #ifdef Q_QDOC
     template<typename Functor, typename FunctorReturnType>
-    static bool invokeMethod(QObject *context, Functor &&function, Qt::ConnectionType type = Qt::AutoConnection, FunctorReturnType *ret = nullptr);
+    static bool invokeMethod(QObject *context, Functor &&function, BobUI::ConnectionType type = BobUI::AutoConnection, FunctorReturnType *ret = nullptr);
     template<typename Functor, typename FunctorReturnType>
     static bool invokeMethod(QObject *context, Functor &&function, FunctorReturnType *ret);
 
     template<typename Functor, typename FunctorReturnType, typename... Args>
-    static bool invokeMethod(QObject *context, Functor &&function, Qt::ConnectionType type, QTemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments);
+    static bool invokeMethod(QObject *context, Functor &&function, BobUI::ConnectionType type, BOBUIemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments);
     template<typename Functor, typename FunctorReturnType, typename... Args>
-    static bool invokeMethod(QObject *context, Functor &&function, QTemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments);
+    static bool invokeMethod(QObject *context, Functor &&function, BOBUIemplatedMetaMethodReturnArgument<FunctorReturnType> ret, Args &&...arguments);
     template<typename Functor, typename... Args>
-    static bool invokeMethod(QObject *context, Functor &&function, Qt::ConnectionType type, Args &&...arguments);
+    static bool invokeMethod(QObject *context, Functor &&function, BobUI::ConnectionType type, Args &&...arguments);
     template<typename Functor, typename... Args>
     static bool invokeMethod(QObject *context, Functor &&function, Args &&...arguments);
 #else
     template <typename Func>
     static std::enable_if_t<!std::disjunction_v<std::is_convertible<Func, const char *>,
-                                                QtPrivate::Invoke::AreOldStyleArgs<Func>>,
+                                                BobUIPrivate::Invoke::AreOldStyleArgs<Func>>,
                             bool>
-    invokeMethod(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
-                 Func &&function, Qt::ConnectionType type,
-                 typename QtPrivate::Callable<Func>::ReturnType *ret)
+    invokeMethod(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+                 Func &&function, BobUI::ConnectionType type,
+                 typename BobUIPrivate::Callable<Func>::ReturnType *ret)
     {
-        using R = typename QtPrivate::Callable<Func>::ReturnType;
-        const auto getReturnArg = [ret]() -> QTemplatedMetaMethodReturnArgument<R> {
+        using R = typename BobUIPrivate::Callable<Func>::ReturnType;
+        const auto getReturnArg = [ret]() -> BOBUIemplatedMetaMethodReturnArgument<R> {
             if constexpr (std::is_void_v<R>)
                 return {};
             else
-                return ret ? qReturnArg(*ret) : QTemplatedMetaMethodReturnArgument<R>{};
+                return ret ? qReturnArg(*ret) : BOBUIemplatedMetaMethodReturnArgument<R>{};
         };
         return invokeMethod(object, std::forward<Func>(function), type, getReturnArg());
     }
     template <typename Func>
     static std::enable_if_t<!std::disjunction_v<std::is_convertible<Func, const char *>,
-                                                QtPrivate::Invoke::AreOldStyleArgs<Func>>,
+                                                BobUIPrivate::Invoke::AreOldStyleArgs<Func>>,
                             bool>
-    invokeMethod(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
-                 Func &&function, typename QtPrivate::Callable<Func>::ReturnType *ret)
+    invokeMethod(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+                 Func &&function, typename BobUIPrivate::Callable<Func>::ReturnType *ret)
     {
-        return invokeMethod(object, std::forward<Func>(function), Qt::AutoConnection, ret);
+        return invokeMethod(object, std::forward<Func>(function), BobUI::AutoConnection, ret);
     }
 
     template <typename Func, typename... Args>
     static std::enable_if_t<!std::disjunction_v<std::is_convertible<Func, const char *>,
-                                                QtPrivate::Invoke::AreOldStyleArgs<Args...>>,
+                                                BobUIPrivate::Invoke::AreOldStyleArgs<Args...>>,
                             bool>
-    invokeMethod(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
-                 Func &&function, Qt::ConnectionType type,
-                 QTemplatedMetaMethodReturnArgument<
-                         typename QtPrivate::Callable<Func, Args...>::ReturnType>
+    invokeMethod(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+                 Func &&function, BobUI::ConnectionType type,
+                 BOBUIemplatedMetaMethodReturnArgument<
+                         typename BobUIPrivate::Callable<Func, Args...>::ReturnType>
                          ret,
                  Args &&...args)
     {
@@ -496,13 +496,13 @@ struct Q_CORE_EXPORT QMetaObject
 
     template <typename Func, typename... Args>
     static std::enable_if_t<!std::disjunction_v<std::is_convertible<Func, const char *>,
-                                                QtPrivate::Invoke::AreOldStyleArgs<Args...>>,
+                                                BobUIPrivate::Invoke::AreOldStyleArgs<Args...>>,
                             bool>
-    invokeMethod(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
-                 Func &&function, Qt::ConnectionType type, Args &&...args)
+    invokeMethod(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+                 Func &&function, BobUI::ConnectionType type, Args &&...args)
     {
-        using R = typename QtPrivate::Callable<Func, Args...>::ReturnType;
-        QTemplatedMetaMethodReturnArgument<R> r{ QtPrivate::qMetaTypeInterfaceForType<R>(), nullptr,
+        using R = typename BobUIPrivate::Callable<Func, Args...>::ReturnType;
+        BOBUIemplatedMetaMethodReturnArgument<R> r{ BobUIPrivate::qMetaTypeInterfaceForType<R>(), nullptr,
                                                  nullptr };
         return invokeMethod(object, std::forward<Func>(function), type, r,
                             std::forward<Args>(args)...);
@@ -510,36 +510,36 @@ struct Q_CORE_EXPORT QMetaObject
 
     template <typename Func, typename... Args>
     static std::enable_if_t<!std::disjunction_v<std::is_convertible<Func, const char *>,
-                                                QtPrivate::Invoke::AreOldStyleArgs<Args...>>,
+                                                BobUIPrivate::Invoke::AreOldStyleArgs<Args...>>,
                             bool>
-    invokeMethod(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+    invokeMethod(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
                  Func &&function,
-                 QTemplatedMetaMethodReturnArgument<
-                         typename QtPrivate::Callable<Func, Args...>::ReturnType>
+                 BOBUIemplatedMetaMethodReturnArgument<
+                         typename BobUIPrivate::Callable<Func, Args...>::ReturnType>
                          ret,
                  Args &&...args)
     {
-        return invokeMethod(object, std::forward<Func>(function), Qt::AutoConnection, ret,
+        return invokeMethod(object, std::forward<Func>(function), BobUI::AutoConnection, ret,
                             std::forward<Args>(args)...);
     }
 
     template <typename Func, typename... Args>
     static std::enable_if_t<!std::disjunction_v<std::is_convertible<Func, const char *>,
-                                                QtPrivate::Invoke::AreOldStyleArgs<Args...>>,
+                                                BobUIPrivate::Invoke::AreOldStyleArgs<Args...>>,
                             bool>
-    invokeMethod(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+    invokeMethod(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
                  Func &&function, Args &&...args)
     {
-        using R = typename QtPrivate::Callable<Func, Args...>::ReturnType;
-        QTemplatedMetaMethodReturnArgument<R> r{ QtPrivate::qMetaTypeInterfaceForType<R>(), nullptr,
+        using R = typename BobUIPrivate::Callable<Func, Args...>::ReturnType;
+        BOBUIemplatedMetaMethodReturnArgument<R> r{ BobUIPrivate::qMetaTypeInterfaceForType<R>(), nullptr,
                                                  nullptr };
-        return invokeMethod(object, std::forward<Func>(function), Qt::AutoConnection, r,
+        return invokeMethod(object, std::forward<Func>(function), BobUI::AutoConnection, r,
                             std::forward<Args>(args)...);
     }
 
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     QObject *newInstance(QGenericArgument val0,
                          QGenericArgument val1 = QGenericArgument(),
                          QGenericArgument val2 = QGenericArgument(),
@@ -556,11 +556,11 @@ struct Q_CORE_EXPORT QMetaObject
 #ifdef Q_QDOC
     QObject *
 #else
-    QtPrivate::Invoke::IfNotOldStyleArgs<QObject *, Args...>
+    BobUIPrivate::Invoke::IfNotOldStyleArgs<QObject *, Args...>
 #endif
     newInstance(Args &&... arguments) const
     {
-        auto h = QtPrivate::invokeMethodHelper(QMetaMethodReturnArgument{}, std::forward<Args>(arguments)...);
+        auto h = BobUIPrivate::invokeMethodHelper(QMetaMethodReturnArgument{}, std::forward<Args>(arguments)...);
         return newInstanceImpl(this, h.parameterCount(), h.parameters.data(),
                                h.typeNames.data(), h.metaTypes.data());
     }
@@ -596,7 +596,7 @@ struct Q_CORE_EXPORT QMetaObject
 
         constexpr const QMetaObject *operator->() const { return operator const QMetaObject *(); }
 
-#ifdef QT_NO_DATA_RELOCATION
+#ifdef BOBUI_NO_DATA_RELOCATION
         Getter indirect = nullptr;
         constexpr SuperData(Getter g) : direct(nullptr), indirect(g) {}
         constexpr operator const QMetaObject *() const
@@ -619,7 +619,7 @@ struct Q_CORE_EXPORT QMetaObject
         typedef void (*StaticMetacallFunction)(QObject *, QMetaObject::Call, int, void **);
         StaticMetacallFunction static_metacall;
         const SuperData *relatedMetaObjects;
-        const QtPrivate::QMetaTypeInterface *const *metaTypes;
+        const BobUIPrivate::QMetaTypeInterface *const *metaTypes;
         void *extradata; //reserved for future use
     } d;
 
@@ -628,47 +628,47 @@ private:
     // functions can call this without any ambiguity
     template <typename Func, typename... Args>
     static bool
-    invokeMethodCallableHelper(typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *object,
-            Func &&function, Qt::ConnectionType type, const QMetaMethodReturnArgument &ret,
+    invokeMethodCallableHelper(typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *object,
+            Func &&function, BobUI::ConnectionType type, const QMetaMethodReturnArgument &ret,
             Args &&...args)
     {
-        using Callable = QtPrivate::Callable<Func, Args...>;
+        using Callable = BobUIPrivate::Callable<Func, Args...>;
         using ExpectedArguments = typename Callable::Arguments;
         static_assert(sizeof...(Args) <= ExpectedArguments::size, "Too many arguments");
-        using ActualArguments = QtPrivate::List<Args...>;
-        static_assert(QtPrivate::CheckCompatibleArguments<ActualArguments,
+        using ActualArguments = BobUIPrivate::List<Args...>;
+        static_assert(BobUIPrivate::CheckCompatibleArguments<ActualArguments,
                               ExpectedArguments>::value,
                 "Incompatible arguments");
 
-        auto h = QtPrivate::invokeMethodHelper(ret, std::forward<Args>(args)...);
+        auto h = BobUIPrivate::invokeMethodHelper(ret, std::forward<Args>(args)...);
 
         // NOLINTBEGIN(clang-analyzer-cplusplus.NewDeleteLeaks)
-        auto callable = new QtPrivate::QCallableObject<std::decay_t<Func>, ActualArguments,
+        auto callable = new BobUIPrivate::QCallableObject<std::decay_t<Func>, ActualArguments,
                 typename Callable::ReturnType>(std::forward<Func>(function));
         return invokeMethodImpl(object, callable, type, h.parameterCount(), h.parameters.data(),
                 h.typeNames.data(), h.metaTypes.data());
         // NOLINTEND(clang-analyzer-cplusplus.NewDeleteLeaks)
     }
 
-    static bool invokeMethodImpl(QObject *object, const char *member, Qt::ConnectionType type,
+    static bool invokeMethodImpl(QObject *object, const char *member, BobUI::ConnectionType type,
                                  qsizetype parameterCount, const void *const *parameters, const char *const *names,
-                                 const QtPrivate::QMetaTypeInterface * const *metaTypes);
-    static bool invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *slotObj,
-                                 Qt::ConnectionType type, qsizetype parameterCount,
+                                 const BobUIPrivate::QMetaTypeInterface * const *metaTypes);
+    static bool invokeMethodImpl(QObject *object, BobUIPrivate::QSlotObjectBase *slotObj,
+                                 BobUI::ConnectionType type, qsizetype parameterCount,
                                  const void *const *params, const char *const *names,
-                                 const QtPrivate::QMetaTypeInterface *const *metaTypes);
-#if QT_CORE_REMOVED_SINCE(6, 7)
-    static bool invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *slot, Qt::ConnectionType type, void *ret);
+                                 const BobUIPrivate::QMetaTypeInterface *const *metaTypes);
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
+    static bool invokeMethodImpl(QObject *object, BobUIPrivate::QSlotObjectBase *slot, BobUI::ConnectionType type, void *ret);
 #endif
     static QObject *newInstanceImpl(const QMetaObject *mobj, qsizetype parameterCount,
                                     const void **parameters, const char **typeNames,
-                                    const QtPrivate::QMetaTypeInterface **metaTypes);
+                                    const BobUIPrivate::QMetaTypeInterface **metaTypes);
 
     static QMetaObject::Connection connectImpl(const QObject *sender, const QMetaMethod& signal,
                                             const QObject *receiver, void **slotPtr,
-                                            QtPrivate::QSlotObjectBase *slot, Qt::ConnectionType type);
+                                            BobUIPrivate::QSlotObjectBase *slot, BobUI::ConnectionType type);
 
-    friend class QTimer;
+    friend class BOBUIimer;
     friend class QChronoTimer;
 };
 
@@ -694,32 +694,32 @@ public:
 #endif
 
     Connection(Connection &&other) noexcept : d_ptr(std::exchange(other.d_ptr, nullptr)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(Connection)
-    void swap(Connection &other) noexcept { qt_ptr_swap(d_ptr, other.d_ptr); }
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(Connection)
+    void swap(Connection &other) noexcept { bobui_ptr_swap(d_ptr, other.d_ptr); }
 };
 
 template <typename Func>
 QMetaObject::Connection
     QMetaObject::connect(const QObject *sender, const QMetaMethod &signal,
-                         const typename QtPrivate::ContextTypeForFunctor<Func>::ContextType *context, Func &&slot,
-                         Qt::ConnectionType type)
+                         const typename BobUIPrivate::ContextTypeForFunctor<Func>::ContextType *context, Func &&slot,
+                         BobUI::ConnectionType type)
 {
     using Slot = std::decay_t<Func>;
-    using FunctionSlotType = QtPrivate::FunctionPointer<Slot>;
+    using FunctionSlotType = BobUIPrivate::FunctionPointer<Slot>;
     void **pSlot = nullptr;
-    QtPrivate::QSlotObjectBase *slotObject;
+    BobUIPrivate::QSlotObjectBase *slotObject;
     if constexpr (FunctionSlotType::ArgumentCount != -1) {
-        slotObject = new QtPrivate::QCallableObject<Slot, typename FunctionSlotType::Arguments, typename FunctionSlotType::ReturnType>(std::forward<Func>(slot));
+        slotObject = new BobUIPrivate::QCallableObject<Slot, typename FunctionSlotType::Arguments, typename FunctionSlotType::ReturnType>(std::forward<Func>(slot));
         if constexpr (FunctionSlotType::IsPointerToMemberFunction) {
             pSlot = const_cast<void **>(reinterpret_cast<void *const *>(&slot));
         } else {
-            Q_ASSERT_X((type & Qt::UniqueConnection) == 0, "",
+            Q_ASSERT_X((type & BobUI::UniqueConnection) == 0, "",
                 "QObject::connect: Unique connection requires the slot to be a pointer to "
                 "a member function of a QObject subclass.");
         }
     } else {
-        using FunctorSlotType = QtPrivate::FunctionPointer<decltype(&Slot::operator())>;
-        slotObject = new QtPrivate::QCallableObject<Slot, typename FunctorSlotType::Arguments, typename FunctorSlotType::ReturnType>(std::forward<Func>(slot));
+        using FunctorSlotType = BobUIPrivate::FunctionPointer<decltype(&Slot::operator())>;
+        slotObject = new BobUIPrivate::QCallableObject<Slot, typename FunctorSlotType::Arguments, typename FunctorSlotType::ReturnType>(std::forward<Func>(slot));
     }
     return QMetaObject::connectImpl(sender, signal, context, pSlot, slotObject, type);
 }
@@ -732,13 +732,13 @@ inline void swap(QMetaObject::Connection &lhs, QMetaObject::Connection &rhs) noe
 inline const QMetaObject *QMetaObject::superClass() const
 { return d.superdata; }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     // Trait that tells if a QObject has a Q_OBJECT macro
     template <typename Object> struct HasQ_OBJECT_Macro {
         template <typename T>
         static char test(int (T::*)(QMetaObject::Call, int, void **));
         static int test(int (Object::*)(QMetaObject::Call, int, void **));
-        enum { Value =  sizeof(test(&Object::qt_metacall)) == sizeof(int) };
+        enum { Value =  sizeof(test(&Object::bobui_metacall)) == sizeof(int) };
     };
 
     template <class TgtType, class SrcType>
@@ -760,6 +760,6 @@ namespace QtPrivate {
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOBJECTDEFS_H

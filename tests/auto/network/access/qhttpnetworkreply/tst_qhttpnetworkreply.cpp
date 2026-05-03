@@ -1,11 +1,11 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtCore/QBuffer>
-#include <QtCore/QByteArray>
-#include <QtCore/QStringBuilder>
+#include <BOBUIest>
+#include <BobUICore/QBuffer>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QStringBuilder>
 
 #include "private/qhttpnetworkconnection_p.h"
 
@@ -25,44 +25,44 @@ private Q_SLOTS:
 
 void tst_QHttpNetworkReply::parseHeader_data()
 {
-    QTest::addColumn<QByteArray>("headers");
-    QTest::addColumn<QStringList>("fields");
-    QTest::addColumn<QStringList>("values");
+    BOBUIest::addColumn<QByteArray>("headers");
+    BOBUIest::addColumn<QStringList>("fields");
+    BOBUIest::addColumn<QStringList>("values");
 
-    QTest::newRow("no-fields") << QByteArray("\r\n") << QStringList() << QStringList();
-    QTest::newRow("empty-field") << QByteArray("Set-Cookie: \r\n")
+    BOBUIest::newRow("no-fields") << QByteArray("\r\n") << QStringList() << QStringList();
+    BOBUIest::newRow("empty-field") << QByteArray("Set-Cookie: \r\n")
                                  << (QStringList() << "Set-Cookie")
                                  << (QStringList() << "");
-    QTest::newRow("single-field") << QByteArray("Content-Type: text/html; charset=utf-8\r\n")
+    BOBUIest::newRow("single-field") << QByteArray("Content-Type: text/html; charset=utf-8\r\n")
                                   << (QStringList() << "Content-Type")
                                   << (QStringList() << "text/html; charset=utf-8");
-    QTest::newRow("single-field-continued") << QByteArray("Content-Type: text/html;\r\n"
+    BOBUIest::newRow("single-field-continued") << QByteArray("Content-Type: text/html;\r\n"
                                                           " charset=utf-8\r\n")
                                             << (QStringList() << "Content-Type")
                                             << (QStringList() << "text/html; charset=utf-8");
-    QTest::newRow("single-field-on-five-lines")
+    BOBUIest::newRow("single-field-on-five-lines")
             << QByteArray("Name:\r\n first\r\n \r\n \r\n last\r\n") << (QStringList() << "Name")
             << (QStringList() << "first last");
 
-    QTest::newRow("multi-field") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("multi-field") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                                "Content-Length: 1024\r\n"
                                                "Content-Encoding: gzip\r\n")
                                  << (QStringList() << "Content-Type" << "Content-Length" << "Content-Encoding")
                                  << (QStringList() << "text/html; charset=utf-8" << "1024" << "gzip");
-    QTest::newRow("multi-field-with-emtpy") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("multi-field-with-emtpy") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                                           "Content-Length: 1024\r\n"
                                                           "Set-Cookie: \r\n"
                                                           "Content-Encoding: gzip\r\n")
                                             << (QStringList() << "Content-Type" << "Content-Length" << "Set-Cookie" << "Content-Encoding")
                                             << (QStringList() << "text/html; charset=utf-8" << "1024" << "" << "gzip");
 
-    QTest::newRow("lws-field") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("lws-field") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                              "Content-Length:\r\n 1024\r\n"
                                              "Content-Encoding: gzip\r\n")
                                << (QStringList() << "Content-Type" << "Content-Length" << "Content-Encoding")
                                << (QStringList() << "text/html; charset=utf-8" << "1024" << "gzip");
 
-    QTest::newRow("duplicated-field") << QByteArray("Vary: Accept-Language\r\n"
+    BOBUIest::newRow("duplicated-field") << QByteArray("Vary: Accept-Language\r\n"
                                                     "Vary: Cookie\r\n"
                                                     "Vary: User-Agent\r\n")
                                       << (QStringList() << "Vary")
@@ -86,49 +86,49 @@ void tst_QHttpNetworkReply::parseHeader()
 
 void tst_QHttpNetworkReply::parseHeaderVerification_data()
 {
-    QTest::addColumn<QByteArray>("headers");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<QByteArray>("headers");
+    BOBUIest::addColumn<bool>("success");
 
-    QTest::newRow("no-header-fields") << QByteArray("\r\n") << true;
-    QTest::newRow("starting-with-space") << QByteArray(" Content-Encoding: gzip\r\n") << false;
-    QTest::newRow("starting-with-tab") << QByteArray("\tContent-Encoding: gzip\r\n") << false;
-    QTest::newRow("only-colon") << QByteArray(":\r\n") << false;
-    QTest::newRow("colon-and-value") << QByteArray(": only-value\r\n") << false;
-    QTest::newRow("name-with-space") << QByteArray("Content Length: 10\r\n") << false;
-    QTest::newRow("missing-colon-1") << QByteArray("Content-Encoding\r\n") << false;
-    QTest::newRow("missing-colon-2")
+    BOBUIest::newRow("no-header-fields") << QByteArray("\r\n") << true;
+    BOBUIest::newRow("starting-with-space") << QByteArray(" Content-Encoding: gzip\r\n") << false;
+    BOBUIest::newRow("starting-with-tab") << QByteArray("\tContent-Encoding: gzip\r\n") << false;
+    BOBUIest::newRow("only-colon") << QByteArray(":\r\n") << false;
+    BOBUIest::newRow("colon-and-value") << QByteArray(": only-value\r\n") << false;
+    BOBUIest::newRow("name-with-space") << QByteArray("Content Length: 10\r\n") << false;
+    BOBUIest::newRow("missing-colon-1") << QByteArray("Content-Encoding\r\n") << false;
+    BOBUIest::newRow("missing-colon-2")
             << QByteArray("Content-Encoding\r\nContent-Length: 10\r\n") << false;
-    QTest::newRow("missing-colon-3")
+    BOBUIest::newRow("missing-colon-3")
             << QByteArray("Content-Encoding: gzip\r\nContent-Length\r\n") << false;
-    QTest::newRow("header-field-too-long")
+    BOBUIest::newRow("header-field-too-long")
             << (QByteArray("Content-Type: ")
                 + QByteArray(HeaderConstants::MAX_HEADER_FIELD_SIZE, 'a') + QByteArray("\r\n"))
             << false;
 
     QByteArray name = "Content-Type: ";
-    QTest::newRow("max-header-field-size")
+    BOBUIest::newRow("max-header-field-size")
             << (name + QByteArray(HeaderConstants::MAX_HEADER_FIELD_SIZE - name.size(), 'a')
                 + QByteArray("\r\n"))
             << true;
 
     QByteArray tooManyHeaders = QByteArray("Content-Type: text/html; charset=utf-8\r\n")
                                         .repeated(HeaderConstants::MAX_HEADER_FIELDS + 1);
-    QTest::newRow("too-many-headers") << tooManyHeaders << false;
+    BOBUIest::newRow("too-many-headers") << tooManyHeaders << false;
 
     QByteArray maxHeaders = QByteArray("Content-Type: text/html; charset=utf-8\r\n")
                                     .repeated(HeaderConstants::MAX_HEADER_FIELDS);
-    QTest::newRow("max-headers") << maxHeaders << true;
+    BOBUIest::newRow("max-headers") << maxHeaders << true;
 
     QByteArray firstValue(HeaderConstants::MAX_HEADER_FIELD_SIZE / 2, 'a');
     constexpr int obsFold = 1;
-    QTest::newRow("max-continuation-size")
+    BOBUIest::newRow("max-continuation-size")
             << (name + firstValue + QByteArray("\r\n ")
                 + QByteArray(HeaderConstants::MAX_HEADER_FIELD_SIZE - name.size()
                                      - firstValue.size() - obsFold,
                              'b')
                 + QByteArray("\r\n"))
             << true;
-    QTest::newRow("too-long-continuation-size")
+    BOBUIest::newRow("too-long-continuation-size")
             << (name + firstValue + QByteArray("\r\n ")
                 + QByteArray(HeaderConstants::MAX_HEADER_FIELD_SIZE - name.size()
                                      - firstValue.size() - obsFold + 1,
@@ -153,10 +153,10 @@ void tst_QHttpNetworkReply::parseHeaderVerification_data()
     longHeader += "\r\n\r\n";
 
     // Test with headers which are just large enough to fit our MAX_TOTAL_HEADER_SIZE limit:
-    QTest::newRow("total-header-close-to-max-size") << longHeader << true;
+    BOBUIest::newRow("total-header-close-to-max-size") << longHeader << true;
     // Now add another character to make the total header size exceed the limit:
     longHeader.insert(HeaderConstants::MAX_TOTAL_HEADER_SIZE - TrailerLength, 'a');
-    QTest::newRow("total-header-too-large") << longHeader << false;
+    BOBUIest::newRow("total-header-too-large") << longHeader << false;
 }
 
 void tst_QHttpNetworkReply::parseHeaderVerification()
@@ -194,25 +194,25 @@ public:
 
 void tst_QHttpNetworkReply::parseEndOfHeader_data()
 {
-    QTest::addColumn<QByteArray>("headers");
-    QTest::addColumn<qint64>("lengths");
+    BOBUIest::addColumn<QByteArray>("headers");
+    BOBUIest::addColumn<qint64>("lengths");
 
-    QTest::newRow("CRLFCRLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("CRLFCRLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                             "Content-Length:\r\n 1024\r\n"
                                             "Content-Encoding: gzip\r\n\r\nHTTPBODY")
                                << qint64(90);
 
-    QTest::newRow("CRLFLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("CRLFLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                           "Content-Length:\r\n 1024\r\n"
                                           "Content-Encoding: gzip\r\n\nHTTPBODY")
                             << qint64(89);
 
-    QTest::newRow("LFCRLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("LFCRLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                           "Content-Length:\r\n 1024\r\n"
                                           "Content-Encoding: gzip\n\r\nHTTPBODY")
                             << qint64(89);
 
-    QTest::newRow("LFLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
+    BOBUIest::newRow("LFLF") << QByteArray("Content-Type: text/html; charset=utf-8\r\n"
                                         "Content-Length:\r\n 1024\r\n"
                                         "Content-Encoding: gzip\n\nHTTPBODY")
                           << qint64(88);
@@ -232,5 +232,5 @@ void tst_QHttpNetworkReply::parseEndOfHeader()
     QCOMPARE(headerBytes, lengths);
 }
 
-QTEST_MAIN(tst_QHttpNetworkReply)
+BOBUIEST_MAIN(tst_QHttpNetworkReply)
 #include "tst_qhttpnetworkreply.moc"

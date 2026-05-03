@@ -1,7 +1,7 @@
 // Copyright (C) 2016 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtMath>
+#include <BobUIMath>
 
 void qmath_examples()
 {

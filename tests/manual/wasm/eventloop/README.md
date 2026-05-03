@@ -1,15 +1,15 @@
-Event loop exec() and main() on Qt for WebAssembly
+Event loop exec() and main() on BobUI for WebAssembly
 ==================================================
 
 These examples demonstrate how QEventLoop::exec() works on
-Qt for WebAssembly, and also shows how to implement main()
+BobUI for WebAssembly, and also shows how to implement main()
 without calling QApplication::exec().
 
 Contents
 ========
 
-    main_exec       Standard Qt main(), where QApplication::exec() does not return
-    main_noexec     Qt main() without QApplication::exec()
+    main_exec       Standard BobUI main(), where QApplication::exec() does not return
+    main_noexec     BobUI main() without QApplication::exec()
     dialog_exec     Shows how QDialog::exec() also does not return
-    thread_exec     Shows how to use QThread::exec()
+    thread_exec     Shows how to use BOBUIhread::exec()
     eventloop_auto  Event loop autotest (manually run)

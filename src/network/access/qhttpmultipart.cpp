@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhttpmultipart.h"
 #include "qhttpmultipart_p.h"
-#include "QtCore/qdatetime.h" // for initializing the random number generator with QTime
-#include <QtCore/qdebug.h>
-#include "QtCore/qmutex.h"
-#include "QtCore/qrandom.h"
+#include "BobUICore/qdatetime.h" // for initializing the random number generator with BOBUIime
+#include <BobUICore/qdebug.h>
+#include "BobUICore/qmutex.h"
+#include "BobUICore/qrandom.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QHttpPart
@@ -19,7 +19,7 @@ QT_BEGIN_NAMESPACE
 
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QHttpPart class holds a body part to be used inside a HTTP
     multipart MIME message (which is represented by the QHttpMultiPart class).
@@ -184,7 +184,7 @@ void QHttpPart::setBodyDevice(QIODevice *device)
     \since 4.8
 
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QHttpMultiPart resembles a MIME multipart message, as described in RFC 2046,
     which is to be sent over HTTP.
@@ -522,7 +522,7 @@ qint64 QHttpMultiPartIODevice::writeData(const char *data, qint64 maxSize)
     return -1;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 /*!
     \fn QDebug QHttpPart::operator<<(QDebug debug, const QHttpPart &part)
@@ -562,9 +562,9 @@ QDebug operator<<(QDebug debug, const QHttpPart &part)
     return debug;
 }
 
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttpmultipart.cpp"

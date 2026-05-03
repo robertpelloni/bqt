@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "treemodelcompleter.h"
@@ -18,7 +18,7 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStringListModel>
-#include <QTreeView>
+#include <BOBUIreeView>
 
 //! [0]
 MainWindow::MainWindow(QWidget *parent)
@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(separatorLineEdit, &QLineEdit::textChanged,
             this, &MainWindow::updateContentsLabel);
 
-    treeView = new QTreeView;
+    treeView = new BOBUIreeView;
     treeView->setModel(completer->model());
     treeView->header()->hide();
     treeView->expandAll();
@@ -113,18 +113,18 @@ void MainWindow::createMenu()
 {
     QAction *exitAction = new QAction(tr("Exit"), this);
     QAction *aboutAct = new QAction(tr("About"), this);
-    QAction *aboutQtAct = new QAction(tr("About Qt"), this);
+    QAction *aboutBobUIAct = new QAction(tr("About BobUI"), this);
 
     connect(exitAction, &QAction::triggered, qApp, &QApplication::quit);
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     fileMenu->addAction(exitAction);
 
     QMenu *helpMenu = menuBar()->addMenu(tr("About"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
 }
 //! [4]
 
@@ -149,8 +149,8 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString &fileName)
     if (!file.open(QFile::ReadOnly))
         return new QStringListModel(completer);
 
-#ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#ifndef BOBUI_NO_CURSOR
+    QGuiApplication::setOverrideCursor(QCursor(BobUI::WaitCursor));
 #endif
 
     QStandardItemModel *model = new QStandardItemModel(completer);
@@ -183,7 +183,7 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString &fileName)
         parents[level + 1] = item;
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
 
@@ -212,7 +212,7 @@ void MainWindow::about()
 //! [7]
 void MainWindow::changeCase(int cs)
 {
-    completer->setCaseSensitivity(cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    completer->setCaseSensitivity(cs ? BobUI::CaseSensitive : BobUI::CaseInsensitive);
 }
 //! [7]
 

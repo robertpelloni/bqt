@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsqlresult.h"
 
@@ -15,9 +15,9 @@
 #include "qdatetime.h"
 #include "private/qsqldriver_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QString QSqlResultPrivate::holderAt(int index) const
 {
@@ -85,7 +85,7 @@ QString QSqlResultPrivate::namedToPositionalBinding(const QString &query)
     // caller to make sure that it is not using named bindings for the wrong
     // parts of the query since Interbase uses them literally
     if (sqldriver->dbmsType() == QSqlDriver::Interbase &&
-        query.trimmed().startsWith("EXECUTE BLOCK"_L1, Qt::CaseInsensitive))
+        query.trimmed().startsWith("EXECUTE BLOCK"_L1, BobUI::CaseInsensitive))
         return query;
 
     const qsizetype n = query.size();
@@ -152,7 +152,7 @@ QString QSqlResultPrivate::namedToPositionalBinding(const QString &query)
     accessing data from specific SQL databases.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     Normally, you would use QSqlQuery instead of QSqlResult, since
     QSqlQuery provides a generic wrapper for database-specific
@@ -610,9 +610,9 @@ bool QSqlResultPrivate::isVariantNull(const QVariant &variant)
         return !static_cast<const QDateTime*>(variant.constData())->isValid();
     case qMetaTypeId<QDate>():
         return static_cast<const QDate*>(variant.constData())->isNull();
-    case qMetaTypeId<QTime>():
-        // As for QDateTime, QTime can be invalid without being null.
-        return !static_cast<const QTime*>(variant.constData())->isValid();
+    case qMetaTypeId<BOBUIime>():
+        // As for QDateTime, BOBUIime can be invalid without being null.
+        return !static_cast<const BOBUIime*>(variant.constData())->isValid();
     case qMetaTypeId<QUuid>():
         return static_cast<const QUuid*>(variant.constData())->isNull();
     default:
@@ -800,7 +800,7 @@ int QSqlResult::boundValueCount() const
 
     \sa boundValueCount()
 */
-QVariantList QSqlResult::boundValues(QT6_IMPL_NEW_OVERLOAD) const
+QVariantList QSqlResult::boundValues(BOBUI6_IMPL_NEW_OVERLOAD) const
 {
     Q_D(const QSqlResult);
     return d->values;
@@ -814,7 +814,7 @@ QVariantList QSqlResult::boundValues(QT6_IMPL_NEW_OVERLOAD) const
 
     \sa boundValueCount()
 */
-QVariantList &QSqlResult::boundValues(QT6_IMPL_NEW_OVERLOAD)
+QVariantList &QSqlResult::boundValues(BOBUI6_IMPL_NEW_OVERLOAD)
 {
     Q_D(QSqlResult);
     return d->values;
@@ -1070,4 +1070,4 @@ QVariant QSqlResult::handle() const
     return QVariant();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

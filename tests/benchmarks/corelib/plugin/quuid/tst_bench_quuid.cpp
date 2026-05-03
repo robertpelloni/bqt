@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QUuid>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QUuid>
+#include <BOBUIest>
 
 class tst_QUuid : public QObject
 {
@@ -167,6 +167,6 @@ void tst_QUuid::operatorMore()
     }
 }
 
-QTEST_MAIN(tst_QUuid)
+BOBUIEST_MAIN(tst_QUuid)
 
 #include "tst_bench_quuid.moc"

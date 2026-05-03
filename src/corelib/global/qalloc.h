@@ -1,5 +1,5 @@
 // Copyright (C) 2025 Aurélien Brooke <aurelien@bahiasoft.fr>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QALLOC_H
 #define QALLOC_H
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qnumeric.h>
-#include <QtCore/qtypeinfo.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/qnumeric.h>
+#include <BobUICore/bobuiypeinfo.h>
 
 #include <cstddef>
 #include <cstdlib>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 /**
  * \internal
@@ -127,8 +127,8 @@ inline void sizedFree(void *ptr, size_t capacity, size_t elementSize) noexcept
     sizedFree(ptr, capacity * elementSize);
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QALLOC_H

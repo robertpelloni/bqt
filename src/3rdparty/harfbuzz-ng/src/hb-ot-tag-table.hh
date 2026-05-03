@@ -776,7 +776,7 @@ static const LangTag ot_languages3[] = {
   {HB_TAG('i','j','s',' '),	HB_TAG('I','J','O',' ')},	/* Southeast Ijo -> Ijo */
   {HB_TAG('i','k','e',' '),	HB_TAG('I','N','U',' ')},	/* Eastern Canadian Inuktitut -> Inuktitut */
   {HB_TAG('i','k','e',' '),	HB_TAG('I','N','U','K')},	/* Eastern Canadian Inuktitut -> Nunavik Inuktitut */
-  {HB_TAG('i','k','t',' '),	HB_TAG('I','N','U',' ')},	/* Inuinnaqtun -> Inuktitut */
+  {HB_TAG('i','k','t',' '),	HB_TAG('I','N','U',' ')},	/* Inuinnabobuiun -> Inuktitut */
 /*{HB_TAG('i','l','o',' '),	HB_TAG('I','L','O',' ')},*/	/* Iloko -> Ilokano */
   {HB_TAG('i','n','g',' '),	HB_TAG('A','T','H',' ')},	/* Degexit'an -> Athapaskan */
   {HB_TAG('i','n','h',' '),	HB_TAG('I','N','G',' ')},	/* Ingush */

@@ -1,0 +1,63 @@
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-cmake-policy-bobuip0002.html
+\ingroup bobui-cmake-policies
+
+\title BOBUIP0002
+\keyword bobui_cmake_policy_bobuip0002
+
+\summary {Target properties that specify Android-specific paths may contain generator expressions.}
+
+This policy was introduced in BobUI 6.6. It changes the processing of target
+properties that specify Android-specific paths:
+\list
+    \li \l BOBUI_QML_IMPORT_PATH
+    \li \l BOBUI_QML_ROOT_PATH
+    \li \l BOBUI_ANDROID_PACKAGE_SOURCE_DIR
+    \li \l BOBUI_ANDROID_EXTRA_PLUGINS
+    \li \l BOBUI_ANDROID_EXTRA_LIBS
+\endlist
+
+The \c OLD behavior of this policy doesn't allow generator expressions in the
+target properties that specify Android-specific paths but implicitly converts
+the specified paths to valid JSON strings.
+
+The \c NEW behavior of this policy allows using generator expressions in the
+target properties that specify Android-specific paths, but they must evaluate to
+valid JSON strings.
+
+The following value of the \l BOBUI_ANDROID_EXTRA_PLUGINS property is converted to
+a valid JSON string if you set the policy to OLD, but leads to an error if the
+policy is set to NEW:
+\badcode
+set_target_properties(
+    BOBUI_ANDROID_EXTRA_PLUGINS "\\path\\to\\MyPlugin.so"
+)
+\endcode
+If the policy is set to NEW for the above example, the resulting JSON string in
+the deployment settings file will contain escaped symbols instead of path
+separators.
+
+Generator expressions are only supported if the policy is set to NEW, so the
+OLD behavior generates a malformed deployment settings file with the following
+code:
+\badcode
+set_target_properties(
+    BOBUI_ANDROID_EXTRA_PLUGINS "$<TARGET_FILE_DIR:MyPlugin>"
+)
+\endcode
+
+This property value works as expected with both OLD and NEW policy values:
+\badcode
+set_target_properties(
+    BOBUI_ANDROID_EXTRA_PLUGINS "/path/to/MyPlugin.so"
+)
+\endcode
+
+\bobuipolicydeprecatedbehavior
+
+\sa bobui_policy, {BobUI CMake policies}
+
+*/

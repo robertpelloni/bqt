@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVNCCLIENT_H
 #define QVNCCLIENT_H
@@ -8,9 +8,9 @@
 
 #include "qvnc_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTcpSocket;
+class BOBUIcpSocket;
 class QVncServer;
 
 class QVncClient : public QObject
@@ -27,9 +27,9 @@ public:
         ClientCutText = 6
     };
 
-    explicit QVncClient(QTcpSocket *clientSocket, QVncServer *server);
+    explicit QVncClient(BOBUIcpSocket *clientSocket, QVncServer *server);
     ~QVncClient();
-    QTcpSocket *clientSocket() const;
+    BOBUIcpSocket *clientSocket() const;
     QVncServer *server() const { return m_server; }
 
     void setDirty(const QRegion &region);
@@ -78,7 +78,7 @@ private:
     bool pixelConversionNeeded() const;
 
     QVncServer *m_server;
-    QTcpSocket *m_clientSocket;
+    BOBUIcpSocket *m_clientSocket;
     QRfbEncoder *m_encoder;
 
     // Client State
@@ -98,7 +98,7 @@ private:
     uint m_supportCursor : 1;
     uint m_supportDesktopSize : 1;
     bool m_wantUpdate;
-    Qt::KeyboardModifiers m_keymod;
+    BobUI::KeyboardModifiers m_keymod;
     bool m_dirtyCursor;
     bool m_updatePending;
 #if Q_BYTE_ORDER == Q_BIG_ENDIAN
@@ -108,6 +108,6 @@ private:
     ProtocolVersion m_protocolVersion;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVNCCLIENT_H

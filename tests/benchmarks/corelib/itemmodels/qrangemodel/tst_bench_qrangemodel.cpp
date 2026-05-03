@@ -1,10 +1,10 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qrangemodel.h>
-#include <QtCore/qstringlistmodel.h>
+#include <BobUICore/qrangemodel.h>
+#include <BobUICore/qstringlistmodel.h>
 
 class Gadget
 {
@@ -54,13 +54,13 @@ struct QRangeModel::ItemAccess<FastGadget>
     {
         QVariant result;
         switch (role) {
-        case Qt::DisplayRole:
+        case BobUI::DisplayRole:
             result = item.display();
             break;
-        case Qt::ToolTipRole:
+        case BobUI::ToolTipRole:
             result = item.toolTip();
             break;
-        case Qt::UserRole:
+        case BobUI::UserRole:
             result = item.user();
             break;
         }
@@ -70,13 +70,13 @@ struct QRangeModel::ItemAccess<FastGadget>
     static bool writeRole(FastGadget &item, const QVariant &value, int role)
     {
         switch (role) {
-        case Qt::DisplayRole:
+        case BobUI::DisplayRole:
             item.setDisplay(value.toString());
             break;
-        case Qt::ToolTipRole:
+        case BobUI::ToolTipRole:
             item.setToolTip(value.toString());
             break;
-        case Qt::UserRole:
+        case BobUI::UserRole:
             item.setUser(value);
             break;
         default:
@@ -116,10 +116,10 @@ tst_bench_QRangeModel::tst_bench_QRangeModel(QObject *parent)
 
 void tst_bench_QRangeModel::stringList_data()
 {
-    QTest::addColumn<Type>("type");
-    QTest::addRow("StringListModel") << StringListModel;
-    QTest::addRow("VectorStrings") << VectorStrings;
-    QTest::addRow("ArrayStrings") << ArrayStrings;
+    BOBUIest::addColumn<Type>("type");
+    BOBUIest::addRow("StringListModel") << StringListModel;
+    BOBUIest::addRow("VectorStrings") << VectorStrings;
+    BOBUIest::addRow("ArrayStrings") << ArrayStrings;
 }
 
 void tst_bench_QRangeModel::stringList()
@@ -155,19 +155,19 @@ void tst_bench_QRangeModel::stringList()
 
 void tst_bench_QRangeModel::gadgetReadAccess_data()
 {
-    QTest::addColumn<std::shared_ptr<QRangeModel>>("model");
+    BOBUIest::addColumn<std::shared_ptr<QRangeModel>>("model");
 
-    QTest::addRow("gadget list") << std::make_shared<QRangeModel>(QList<Gadget> {
+    BOBUIest::addRow("gadget list") << std::make_shared<QRangeModel>(QList<Gadget> {
             {"display", "tooltip"}
     });
 
-    QTest::addRow("gadget table") << std::make_shared<QRangeModel>(QList<QList<Gadget>> {
+    BOBUIest::addRow("gadget table") << std::make_shared<QRangeModel>(QList<QList<Gadget>> {
         {
             {"display", "tooltip"}
         }
     });
 
-    QTest::addRow("fast gadget list") << std::make_shared<QRangeModel>(QList<FastGadget> {
+    BOBUIest::addRow("fast gadget list") << std::make_shared<QRangeModel>(QList<FastGadget> {
             {"display", "tooltip"}
     });
 }
@@ -178,8 +178,8 @@ void tst_bench_QRangeModel::gadgetReadAccess()
 
     const QModelIndex index = model->index(0, 0);
     QBENCHMARK {
-        model->data(index, Qt::DisplayRole);
-        model->data(index, Qt::UserRole);
+        model->data(index, BobUI::DisplayRole);
+        model->data(index, BobUI::UserRole);
     }
 }
 
@@ -191,10 +191,10 @@ void tst_bench_QRangeModel::gadgetWriteAccess()
     const QVariant display = "display";
     const QVariant user = "user";
     QBENCHMARK {
-        QVERIFY(model->setData(index, display, Qt::DisplayRole));
-        QVERIFY(model->setData(index, user, Qt::UserRole));
+        QVERIFY(model->setData(index, display, BobUI::DisplayRole));
+        QVERIFY(model->setData(index, user, BobUI::UserRole));
     }
 }
 
-QTEST_MAIN(tst_bench_QRangeModel)
+BOBUIEST_MAIN(tst_bench_QRangeModel)
 #include "tst_bench_qrangemodel.moc"

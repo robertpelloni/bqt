@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QMIMEDATABASE_H
 #define TST_QMIMEDATABASE_H
 
-#include <QtCore/QObject>
-#include <QtCore/QTemporaryDir>
-#include <QtCore/QStringList>
+#include <BobUICore/QObject>
+#include <BobUICore/BOBUIemporaryDir>
+#include <BobUICore/QStringList>
 
 class tst_QMimeDatabase : public QObject
 {
@@ -76,7 +76,7 @@ private:
     QString m_localMimeDir;
     QStringList m_additionalMimeFileNames;
     QStringList m_additionalMimeFilePaths;
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
     QString m_testSuite;
     bool m_isUsingCacheProvider;
     bool m_hasFreedesktopOrg = false;

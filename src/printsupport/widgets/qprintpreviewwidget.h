@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTPREVIEWWIDGET_H
 #define QPRINTPREVIEWWIDGET_H
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#include <QtWidgets/qwidget.h>
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIPrintSupport/qprinter.h>
 
-QT_REQUIRE_CONFIG(printpreviewwidget);
+BOBUI_REQUIRE_CONFIG(printpreviewwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPrintPreviewWidgetPrivate;
@@ -35,8 +35,8 @@ public:
     };
 
     explicit QPrintPreviewWidget(QPrinter *printer, QWidget *parent = nullptr,
-                                 Qt::WindowFlags flags = Qt::WindowFlags());
-    explicit QPrintPreviewWidget(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+                                 BobUI::WindowFlags flags = BobUI::WindowFlags());
+    explicit QPrintPreviewWidget(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QPrintPreviewWidget();
 
     qreal zoomFactor() const;
@@ -77,6 +77,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateCurrentPage())
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTPREVIEWWIDGET_H

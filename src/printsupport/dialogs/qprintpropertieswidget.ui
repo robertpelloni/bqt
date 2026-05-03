@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabs">
+    <widget class="BOBUIabWidget" name="tabs">
      <property name="currentIndex">
       <number>0</number>
      </property>

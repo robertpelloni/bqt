@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfsfileengine_iterator_p.h"
 #include "qfileinfo_p.h"
 #include "qvariant.h"
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QFSFileEngineIterator::QFSFileEngineIterator(const QString &path, QDir::Filters filters,
                                              const QStringList &filterNames)
@@ -54,6 +54,6 @@ QFileInfo QFSFileEngineIterator::currentFileInfo() const
     return m_fileInfo;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FILESYSTEMITERATOR
+#endif // BOBUI_NO_FILESYSTEMITERATOR

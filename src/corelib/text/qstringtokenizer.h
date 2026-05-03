@@ -1,15 +1,15 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTRINGTOKENIZER_H
 #define QSTRINGTOKENIZER_H
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qcontainerfwd.h>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename, typename> class QStringBuilder;
 
@@ -17,7 +17,7 @@ class QStringTokenizerBaseBase
 {
 protected:
     ~QStringTokenizerBaseBase() = default;
-    constexpr QStringTokenizerBaseBase(Qt::SplitBehavior sb, Qt::CaseSensitivity cs) noexcept
+    constexpr QStringTokenizerBaseBase(BobUI::SplitBehavior sb, BobUI::CaseSensitivity cs) noexcept
         : m_sb{sb}, m_cs{cs} {}
 
     struct tokenizer_state {
@@ -28,8 +28,8 @@ protected:
         { return !operator==(lhs, rhs); }
     };
 
-    Qt::SplitBehavior m_sb;
-    Qt::CaseSensitivity m_cs;
+    BobUI::SplitBehavior m_sb;
+    BobUI::CaseSensitivity m_cs;
 };
 
 template <typename Haystack, typename Needle>
@@ -43,7 +43,7 @@ class QStringTokenizerBase : protected QStringTokenizerBaseBase
     inline next_result next(tokenizer_state state) const noexcept;
     inline next_result toFront() const noexcept { return next({}); }
 public:
-    constexpr explicit QStringTokenizerBase(Haystack haystack, Needle needle, Qt::SplitBehavior sb, Qt::CaseSensitivity cs) noexcept
+    constexpr explicit QStringTokenizerBase(Haystack haystack, Needle needle, BobUI::SplitBehavior sb, BobUI::CaseSensitivity cs) noexcept
         : QStringTokenizerBaseBase{sb, cs}, m_haystack{haystack}, m_needle{needle} {}
 
     class iterator;
@@ -108,11 +108,11 @@ private:
     Needle m_needle;
 };
 
-QT_BEGIN_INCLUDE_NAMESPACE
-#include <QtCore/qstringview.h>
-QT_END_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
+#include <BobUICore/qstringview.h>
+BOBUI_END_INCLUDE_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 namespace Tok {
 
     constexpr qsizetype tokenSize(QChar) noexcept { return 1; }
@@ -228,17 +228,17 @@ namespace Tok {
     template <typename Haystack, typename Needle>
     using TokenizerBase = QStringTokenizerBase<ViewFor<Haystack>, ViewFor<Needle>>;
 } // namespace Tok
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename Haystack, typename Needle>
 class QStringTokenizer
-    : private QtPrivate::Tok::HaystackPinning<Haystack>,
-      private QtPrivate::Tok::NeedlePinning<Needle>,
-      public  QtPrivate::Tok::TokenizerBase<Haystack, Needle>
+    : private BobUIPrivate::Tok::HaystackPinning<Haystack>,
+      private BobUIPrivate::Tok::NeedlePinning<Needle>,
+      public  BobUIPrivate::Tok::TokenizerBase<Haystack, Needle>
 {
-    using HPin = QtPrivate::Tok::HaystackPinning<Haystack>;
-    using NPin = QtPrivate::Tok::NeedlePinning<Needle>;
-    using Base = QtPrivate::Tok::TokenizerBase<Haystack, Needle>;
+    using HPin = BobUIPrivate::Tok::HaystackPinning<Haystack>;
+    using NPin = BobUIPrivate::Tok::NeedlePinning<Needle>;
+    using Base = BobUIPrivate::Tok::TokenizerBase<Haystack, Needle>;
     template <typename Container, typename HPin>
     struct if_haystack_not_pinned_impl : std::enable_if<std::is_empty<HPin>::value, bool> {};
     template <typename Container>
@@ -271,8 +271,8 @@ public:
 #endif
 
     constexpr explicit QStringTokenizer(Haystack haystack, Needle needle,
-                                        Qt::CaseSensitivity cs,
-                                        Qt::SplitBehavior sb = Qt::KeepEmptyParts)
+                                        BobUI::CaseSensitivity cs,
+                                        BobUI::SplitBehavior sb = BobUI::KeepEmptyParts)
             noexcept(std::is_nothrow_copy_constructible<QStringTokenizer>::value)
           // here, we present the haystack to Pinning<>, for optional storing.
           // If it did store, haystack is moved-from and mustn't be touched
@@ -286,8 +286,8 @@ public:
                this->needleView(needle), sb, cs}
     {}
     constexpr explicit QStringTokenizer(Haystack haystack, Needle needle,
-                                        Qt::SplitBehavior sb = Qt::KeepEmptyParts,
-                                        Qt::CaseSensitivity cs = Qt::CaseSensitive)
+                                        BobUI::SplitBehavior sb = BobUI::KeepEmptyParts,
+                                        BobUI::CaseSensitivity cs = BobUI::CaseSensitive)
             noexcept(std::is_nothrow_copy_constructible<QStringTokenizer>::value)
         : HPin{std::forward<Haystack>(haystack)},
           NPin{std::forward<Needle>(needle)},
@@ -317,7 +317,7 @@ public:
 #endif
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 namespace Tok {
 // This meta function just calculated the template arguments for the
 // QStringTokenizer (not -Base), based on the actual arguments passed
@@ -332,8 +332,8 @@ namespace Tok {
 // it.
 #define Q_TOK_RESULT \
     QStringTokenizer< \
-        QtPrivate::Tok::PinFor<Haystack>, \
-        QtPrivate::Tok::PinFor<Needle> \
+        BobUIPrivate::Tok::PinFor<Haystack>, \
+        BobUIPrivate::Tok::PinFor<Needle> \
     > \
     /*end*/
 template <typename Haystack, typename Needle>
@@ -350,16 +350,16 @@ template <typename Haystack, typename Needle>
 QStringTokenizer(Haystack&&, Needle&&)
     -> Q_TOK_RESULT;
 template <typename Haystack, typename Needle>
-QStringTokenizer(Haystack&&, Needle&&, Qt::SplitBehavior)
+QStringTokenizer(Haystack&&, Needle&&, BobUI::SplitBehavior)
     -> Q_TOK_RESULT;
 template <typename Haystack, typename Needle>
-QStringTokenizer(Haystack&&, Needle&&, Qt::SplitBehavior, Qt::CaseSensitivity)
+QStringTokenizer(Haystack&&, Needle&&, BobUI::SplitBehavior, BobUI::CaseSensitivity)
     -> Q_TOK_RESULT;
 template <typename Haystack, typename Needle>
-QStringTokenizer(Haystack&&, Needle&&, Qt::CaseSensitivity)
+QStringTokenizer(Haystack&&, Needle&&, BobUI::CaseSensitivity)
     -> Q_TOK_RESULT;
 template <typename Haystack, typename Needle>
-QStringTokenizer(Haystack&&, Needle&&, Qt::CaseSensitivity, Qt::SplitBehavior)
+QStringTokenizer(Haystack&&, Needle&&, BobUI::CaseSensitivity, BobUI::SplitBehavior)
     -> Q_TOK_RESULT;
 #endif
 
@@ -368,10 +368,10 @@ QStringTokenizer(Haystack&&, Needle&&, Qt::CaseSensitivity, Qt::SplitBehavior)
 template <typename Haystack, typename Needle, typename...Flags>
 [[nodiscard]] constexpr auto
 qTokenize(Haystack &&h, Needle &&n, Flags...flags)
-    noexcept(QtPrivate::Tok::is_nothrow_constructible_from<Haystack, Needle>::value)
-    -> decltype(QtPrivate::Tok::TokenizerResult<Haystack, Needle>{std::forward<Haystack>(h),
+    noexcept(BobUIPrivate::Tok::is_nothrow_constructible_from<Haystack, Needle>::value)
+    -> decltype(BobUIPrivate::Tok::TokenizerResult<Haystack, Needle>{std::forward<Haystack>(h),
                                                                   std::forward<Needle>(n), flags...})
-{ return QtPrivate::Tok::TokenizerResult<Haystack, Needle>{std::forward<Haystack>(h),
+{ return BobUIPrivate::Tok::TokenizerResult<Haystack, Needle>{std::forward<Haystack>(h),
                                                            std::forward<Needle>(n),
                                                            flags...}; }
 
@@ -388,19 +388,19 @@ auto QStringTokenizerBase<Haystack, Needle>::next(tokenizer_state state) const n
         if (state.end >= 0) {
             // token separator found => return intermediate element:
             result = m_haystack.sliced(state.start, state.end - state.start);
-            const auto ns = QtPrivate::Tok::tokenSize(m_needle);
+            const auto ns = BobUIPrivate::Tok::tokenSize(m_needle);
             state.start = state.end + ns;
             state.extra = (ns == 0 ? 1 : 0);
         } else {
             // token separator not found => return final element:
             result = m_haystack.sliced(state.start);
         }
-        if ((m_sb & Qt::SkipEmptyParts) && result.isEmpty())
+        if ((m_sb & BobUI::SkipEmptyParts) && result.isEmpty())
             continue;
         return {result, true, state};
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* QSTRINGTOKENIZER_H */

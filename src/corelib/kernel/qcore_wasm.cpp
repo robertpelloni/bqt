@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qrect.h>
+#include <BobUICore/qrect.h>
 
 #include <emscripten/val.h>
 
@@ -9,7 +9,7 @@
 #error This is a wasm-only file.
 #endif // !defined(Q_OS_WASM)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     Converts the DOMRect (https://www.w3.org/TR/geometry-1/) \a domRect to QRectF. The behavior is
@@ -75,7 +75,7 @@ QString QString::fromEcmaString(emscripten::val jsString)
                Q_FUNC_INFO,
                "The floating-point lengthOfUtf16 cannot precisely represent an integer");
 
-    const QString result(uint64_t(length), Qt::Uninitialized);
+    const QString result(uint64_t(length), BobUI::Uninitialized);
 
     static const emscripten::val stringToUTF16(emscripten::val::module_property("stringToUTF16"));
     stringToUTF16(jsString, emscripten::val(quintptr(result.data())),
@@ -101,4 +101,4 @@ emscripten::val QString::toEcmaString() const
     return UTF16ToString(emscripten::val(quintptr(utf16())));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

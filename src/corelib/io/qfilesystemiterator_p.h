@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILESYSTEMITERATOR_P_H
 #define QFILESYSTEMITERATOR_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 
-#include <QtCore/qdir.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qstringlist.h>
 
-#include <QtCore/private/qfilesystementry_p.h>
-#include <QtCore/private/qfilesystemmetadata_p.h>
+#include <BobUICore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
 
 #if !defined(Q_OS_WIN)
 #include <private/qstringconverter_p.h>
@@ -32,7 +32,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileSystemIterator
 {
@@ -57,12 +57,12 @@ private:
     bool onlyDirs;
 #else
     struct DirStreamCloser {
-        void operator()(QT_DIR *dir) { if (dir) QT_CLOSEDIR(dir); }
+        void operator()(BOBUI_DIR *dir) { if (dir) BOBUI_CLOSEDIR(dir); }
     };
-    using DirPtr = std::unique_ptr<QT_DIR, DirStreamCloser>;
+    using DirPtr = std::unique_ptr<BOBUI_DIR, DirStreamCloser>;
     DirPtr dir;
 
-    QT_DIRENT *dirEntry = nullptr;
+    BOBUI_DIRENT *dirEntry = nullptr;
     int lastError = 0;
     QStringDecoder toUtf16;
 #endif
@@ -70,8 +70,8 @@ private:
     Q_DISABLE_COPY_MOVE(QFileSystemIterator)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FILESYSTEMITERATOR
+#endif // BOBUI_NO_FILESYSTEMITERATOR
 
 #endif // include guard

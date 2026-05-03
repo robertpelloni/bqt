@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS       = iconpreviewarea.h \
                 iconsizespinbox.h \
@@ -16,5 +16,5 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 EXAMPLE_FILES = images/*
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/icons
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/icons
 INSTALLS += target

@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -14,10 +14,10 @@
 //
 
 #include "qgtk3json_p.h"
-#include <QtCore/QFile>
+#include <BobUICore/QFile>
 #include <QMetaEnum>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QLatin1String QGtk3Json::fromPalette(QPlatformTheme::Palette palette)
 {
@@ -54,9 +54,9 @@ QLatin1String QGtk3Json::fromWidgetType(QGtk3Interface::QGtkWidget widgetType)
     return QLatin1String(QMetaEnum::fromType<QGtk3Interface::QGtkWidget>().valueToKey(static_cast<int>(widgetType)));
 }
 
-QLatin1String QGtk3Json::fromColorScheme(Qt::ColorScheme app)
+QLatin1String QGtk3Json::fromColorScheme(BobUI::ColorScheme app)
 {
-    return QLatin1String(QMetaEnum::fromType<Qt::ColorScheme>().valueToKey(static_cast<int>(app)));
+    return QLatin1String(QMetaEnum::fromType<BobUI::ColorScheme>().valueToKey(static_cast<int>(app)));
 }
 
 #define CONVERT(type, key, def)\
@@ -64,9 +64,9 @@ QLatin1String QGtk3Json::fromColorScheme(Qt::ColorScheme app)
     const int intVal = QMetaEnum::fromType<type>().keyToValue(key.toLatin1().constData(), &ok);\
     return ok ? static_cast<type>(intVal) : type::def
 
-Qt::ColorScheme QGtk3Json::toColorScheme(const QString &colorScheme)
+BobUI::ColorScheme QGtk3Json::toColorScheme(const QString &colorScheme)
 {
-    CONVERT(Qt::ColorScheme, colorScheme, Unknown);
+    CONVERT(BobUI::ColorScheme, colorScheme, Unknown);
 }
 
 QPlatformTheme::Palette QGtk3Json::toPalette(const QString &palette)
@@ -333,7 +333,7 @@ bool QGtk3Json::load(QGtk3Storage::PaletteMap &map, const QJsonDocument &doc)
                 GETSTR(brushObject, ceColorGroup);
                 const QPalette::ColorGroup colorGroup = toColorGroup(value);
                 GETSTR(brushObject, ceColorScheme);
-                const Qt::ColorScheme colorScheme = toColorScheme(value);
+                const BobUI::ColorScheme colorScheme = toColorScheme(value);
                 QGtk3Storage::TargetBrush tb(colorGroup, colorRole, colorScheme);
                 QGtk3Storage::Source s;
 
@@ -387,7 +387,7 @@ bool QGtk3Json::load(QGtk3Storage::PaletteMap &map, const QJsonDocument &doc)
                         GETSTR(sourceObject, ceColorRole);
                         const QPalette::ColorRole colorRole = toColorRole(value);
                         GETSTR(sourceObject, ceColorScheme);
-                        const Qt::ColorScheme colorScheme = toColorScheme(value);
+                        const BobUI::ColorScheme colorScheme = toColorScheme(value);
                         GETINT(sourceObject, ceLighter, lighter);
                         GETINT(sourceObject, ceRed, red);
                         GETINT(sourceObject, ceBlue, blue);
@@ -430,5 +430,5 @@ bool QGtk3Json::load(QGtk3Storage::PaletteMap &map, const QJsonDocument &doc)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

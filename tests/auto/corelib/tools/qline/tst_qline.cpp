@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qline.h>
 #include <qmath.h>
 #include <private/qcomparisontesthelper_p.h>
@@ -56,24 +56,24 @@ constexpr static qreal qreal_min = std::numeric_limits<qreal>::min();
 
 void tst_QLine::testComparisonCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QLine>();
-    QTestPrivate::testEqualityOperatorsCompile<QLineF>();
-    QTestPrivate::testEqualityOperatorsCompile<QLineF, QLine>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QLine>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QLineF>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QLineF, QLine>();
 }
 
 void tst_QLine::testComparison_data()
 {
-    QTest::addColumn<double>("xa1");
-    QTest::addColumn<double>("ya1");
-    QTest::addColumn<double>("xa2");
-    QTest::addColumn<double>("ya2");
-    QTest::addColumn<double>("xb1");
-    QTest::addColumn<double>("yb1");
-    QTest::addColumn<double>("xb2");
-    QTest::addColumn<double>("yb2");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<bool>("floatResult");
-    QTest::addColumn<bool>("mixedResult");
+    BOBUIest::addColumn<double>("xa1");
+    BOBUIest::addColumn<double>("ya1");
+    BOBUIest::addColumn<double>("xa2");
+    BOBUIest::addColumn<double>("ya2");
+    BOBUIest::addColumn<double>("xb1");
+    BOBUIest::addColumn<double>("yb1");
+    BOBUIest::addColumn<double>("xb2");
+    BOBUIest::addColumn<double>("yb2");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<bool>("floatResult");
+    BOBUIest::addColumn<bool>("mixedResult");
 
     auto row = [&](double xa1, double ya1, double xa2, double ya2,
                    double xb1, double yb1, double xb2, double yb2,
@@ -83,7 +83,7 @@ void tst_QLine::testComparison_data()
         QDebug dbg(&str);
         dbg.nospace() << "[(" << xa1 << ", " << ya1 << "); (" << xa2 << ", " << ya2 << ")] vs [("
                       << xb1 << ", " << yb1 << "); (" << xb2 << ", " << yb2 << ")]";
-        QTest::addRow("%s", str.toLatin1().constData())
+        BOBUIest::addRow("%s", str.toLatin1().constData())
                 << xa1 << ya1 << xa2 << ya2 << xb1 << yb1 << xb2 << yb2
                 << result << floatResult << mixedResult;
     };
@@ -114,9 +114,9 @@ void tst_QLine::testComparison()
     const QLineF l2f(xb1, yb1, xb2, yb2);
     const QLine l2 = l2f.toLine();
 
-    QT_TEST_EQUALITY_OPS(l1, l2, result);
-    QT_TEST_EQUALITY_OPS(l1f, l2f, floatResult);
-    QT_TEST_EQUALITY_OPS(l1f, l2, mixedResult);
+    BOBUI_TEST_EQUALITY_OPS(l1, l2, result);
+    BOBUI_TEST_EQUALITY_OPS(l1f, l2f, floatResult);
+    BOBUI_TEST_EQUALITY_OPS(l1f, l2, mixedResult);
 }
 
 void tst_QLine::testFuzzyCompare_data()
@@ -144,14 +144,14 @@ void tst_QLine::testFuzzyCompare()
 
 void tst_QLine::testIsNull_data()
 {
-    QTest::addColumn<QLineF>("lineF");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<bool>("floatResult");
+    BOBUIest::addColumn<QLineF>("lineF");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<bool>("floatResult");
 
-    QTest::newRow("non-null") << QLineF(1.0, 1.0, 2.0, 2.0) << false << false;
-    QTest::newRow("null") << QLineF(1.0, 1.0, 1.0, 1.0) << true << true;
-    QTest::newRow("null_int_non-null_float") << QLineF(1.0, 1.0, 1.1, 1.1) << true << false;
-    QTest::newRow("with_qreal_min") << QLineF(-qreal_min, qreal_min, 0.0, 0.0) << true << true;
+    BOBUIest::newRow("non-null") << QLineF(1.0, 1.0, 2.0, 2.0) << false << false;
+    BOBUIest::newRow("null") << QLineF(1.0, 1.0, 1.0, 1.0) << true << true;
+    BOBUIest::newRow("null_int_non-null_float") << QLineF(1.0, 1.0, 1.1, 1.1) << true << false;
+    BOBUIest::newRow("with_qreal_min") << QLineF(-qreal_min, qreal_min, 0.0, 0.0) << true << true;
 }
 
 void tst_QLine::testIsNull()
@@ -219,37 +219,37 @@ void tst_QLine::testSet()
 
 void tst_QLine::testIntersection_data()
 {
-    QTest::addColumn<double>("xa1");
-    QTest::addColumn<double>("ya1");
-    QTest::addColumn<double>("xa2");
-    QTest::addColumn<double>("ya2");
-    QTest::addColumn<double>("xb1");
-    QTest::addColumn<double>("yb1");
-    QTest::addColumn<double>("xb2");
-    QTest::addColumn<double>("yb2");
-    QTest::addColumn<int>("type");
-    QTest::addColumn<double>("ix");
-    QTest::addColumn<double>("iy");
+    BOBUIest::addColumn<double>("xa1");
+    BOBUIest::addColumn<double>("ya1");
+    BOBUIest::addColumn<double>("xa2");
+    BOBUIest::addColumn<double>("ya2");
+    BOBUIest::addColumn<double>("xb1");
+    BOBUIest::addColumn<double>("yb1");
+    BOBUIest::addColumn<double>("xb2");
+    BOBUIest::addColumn<double>("yb2");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<double>("ix");
+    BOBUIest::addColumn<double>("iy");
 
-    QTest::newRow("parallel") << 1.0 << 1.0 << 3.0 << 4.0
+    BOBUIest::newRow("parallel") << 1.0 << 1.0 << 3.0 << 4.0
                            << 5.0 << 6.0 << 7.0 << 9.0
                            << int(QLineF::NoIntersection) << 0.0 << 0.0;
-    QTest::newRow("unbounded") << 1.0 << 1.0 << 5.0 << 5.0
+    BOBUIest::newRow("unbounded") << 1.0 << 1.0 << 5.0 << 5.0
                             << 0.0 << 4.0 << 3.0 << 4.0
                             << int(QLineF::UnboundedIntersection) << 4.0 << 4.0;
-    QTest::newRow("bounded") << 1.0 << 1.0 << 5.0 << 5.0
+    BOBUIest::newRow("bounded") << 1.0 << 1.0 << 5.0 << 5.0
                           << 0.0 << 4.0 << 5.0 << 4.0
                           << int(QLineF::BoundedIntersection) << 4.0 << 4.0;
 
-    QTest::newRow("almost vertical") << 0.0 << 10.0 << 20.0000000000001 << 10.0
+    BOBUIest::newRow("almost vertical") << 0.0 << 10.0 << 20.0000000000001 << 10.0
                                      << 10.0 << 0.0 << 10.0 << 20.0
                                      << int(QLineF::BoundedIntersection) << 10.0 << 10.0;
 
-    QTest::newRow("almost horizontal") << 0.0 << 10.0 << 20.0 << 10.0
+    BOBUIest::newRow("almost horizontal") << 0.0 << 10.0 << 20.0 << 10.0
                                        << 10.0000000000001 << 0.0 << 10.0 << 20.0
                                        << int(QLineF::BoundedIntersection) << 10.0 << 10.0;
 
-    QTest::newRow("long vertical") << 100.1599256468623
+    BOBUIest::newRow("long vertical") << 100.1599256468623
                                    << 100.7861905065196
                                    << 100.1599256468604
                                    << -9999.78619050651
@@ -269,7 +269,7 @@ void tst_QLine::testIntersection_data()
         a = a.translated(1, 1);
         b = b.translated(1, 1);
 
-        QTest::newRow(("rotation-" + QByteArray::number(i)).constData())
+        BOBUIest::newRow(("rotation-" + QByteArray::number(i)).constData())
             << (double)a.x1() << (double)a.y1() << (double)a.x2() << (double)a.y2()
             << (double)b.x1() << (double)b.y1() << (double)b.x2() << (double)b.y2()
             << int(QLineF::BoundedIntersection)
@@ -308,53 +308,53 @@ void tst_QLine::testIntersection()
 
 void tst_QLine::testLength_data()
 {
-    QTest::addColumn<double>("x1");
-    QTest::addColumn<double>("y1");
-    QTest::addColumn<double>("x2");
-    QTest::addColumn<double>("y2");
-    QTest::addColumn<double>("length");
-    QTest::addColumn<double>("lengthToSet");
-    QTest::addColumn<double>("vx");
-    QTest::addColumn<double>("vy");
+    BOBUIest::addColumn<double>("x1");
+    BOBUIest::addColumn<double>("y1");
+    BOBUIest::addColumn<double>("x2");
+    BOBUIest::addColumn<double>("y2");
+    BOBUIest::addColumn<double>("length");
+    BOBUIest::addColumn<double>("lengthToSet");
+    BOBUIest::addColumn<double>("vx");
+    BOBUIest::addColumn<double>("vy");
 
     // Test name: [dx,dy]->|lenToSet| (x1,x2)
     // with the last part omitted if (0,0)
-    QTest::newRow("[1,0]->|2|") << 0.0 << 0.0 << 1.0 << 0.0 << 1.0 << 2.0 << 2.0 << 0.0;
-    QTest::newRow("[0,1]->|2|") << 0.0 << 0.0 << 0.0 << 1.0 << 1.0 << 2.0 << 0.0 << 2.0;
-    QTest::newRow("[-1,0]->|2|") << 0.0 << 0.0 << -1.0 << 0.0 << 1.0 << 2.0 << -2.0 << 0.0;
-    QTest::newRow("[0,-1]->|2|") << 0.0 << 0.0 << 0.0 << -1.0 << 1.0 << 2.0 << 0.0 << -2.0;
-    QTest::newRow("[1,1]->->|1|") << 0.0 << 0.0 << 1.0 << 1.0
+    BOBUIest::newRow("[1,0]->|2|") << 0.0 << 0.0 << 1.0 << 0.0 << 1.0 << 2.0 << 2.0 << 0.0;
+    BOBUIest::newRow("[0,1]->|2|") << 0.0 << 0.0 << 0.0 << 1.0 << 1.0 << 2.0 << 0.0 << 2.0;
+    BOBUIest::newRow("[-1,0]->|2|") << 0.0 << 0.0 << -1.0 << 0.0 << 1.0 << 2.0 << -2.0 << 0.0;
+    BOBUIest::newRow("[0,-1]->|2|") << 0.0 << 0.0 << 0.0 << -1.0 << 1.0 << 2.0 << 0.0 << -2.0;
+    BOBUIest::newRow("[1,1]->->|1|") << 0.0 << 0.0 << 1.0 << 1.0
                              << M_SQRT2 << 1.0 << M_SQRT1_2 << M_SQRT1_2;
-    QTest::newRow("[-1,1]->|1|") << 0.0 << 0.0 << -1.0 << 1.0
+    BOBUIest::newRow("[-1,1]->|1|") << 0.0 << 0.0 << -1.0 << 1.0
                              << M_SQRT2 << 1.0 << -M_SQRT1_2 << M_SQRT1_2;
-    QTest::newRow("[1,-1]->|1|") << 0.0 << 0.0 << 1.0 << -1.0
+    BOBUIest::newRow("[1,-1]->|1|") << 0.0 << 0.0 << 1.0 << -1.0
                              << M_SQRT2 << 1.0 << M_SQRT1_2 << -M_SQRT1_2;
-    QTest::newRow("[-1,-1]->|1|") << 0.0 << 0.0 << -1.0 << -1.0
+    BOBUIest::newRow("[-1,-1]->|1|") << 0.0 << 0.0 << -1.0 << -1.0
                              << M_SQRT2 << 1.0 << -M_SQRT1_2 << -M_SQRT1_2;
-    QTest::newRow("[1,0]->|2| (2,2)") << 2.0 << 2.0 << 3.0 << 2.0 << 1.0 << 2.0 << 2.0 << 0.0;
-    QTest::newRow("[0,1]->|2| (2,2)") << 2.0 << 2.0 << 2.0 << 3.0 << 1.0 << 2.0 << 0.0 << 2.0;
-    QTest::newRow("[-1,0]->|2| (2,2)") << 2.0 << 2.0 << 1.0 << 2.0 << 1.0 << 2.0 << -2.0 << 0.0;
-    QTest::newRow("[0,-1]->|2| (2,2)") << 2.0 << 2.0 << 2.0 << 1.0 << 1.0 << 2.0 << 0.0 << -2.0;
-    QTest::newRow("[1,1]->|1| (2,2)") << 2.0 << 2.0 << 3.0 << 3.0
+    BOBUIest::newRow("[1,0]->|2| (2,2)") << 2.0 << 2.0 << 3.0 << 2.0 << 1.0 << 2.0 << 2.0 << 0.0;
+    BOBUIest::newRow("[0,1]->|2| (2,2)") << 2.0 << 2.0 << 2.0 << 3.0 << 1.0 << 2.0 << 0.0 << 2.0;
+    BOBUIest::newRow("[-1,0]->|2| (2,2)") << 2.0 << 2.0 << 1.0 << 2.0 << 1.0 << 2.0 << -2.0 << 0.0;
+    BOBUIest::newRow("[0,-1]->|2| (2,2)") << 2.0 << 2.0 << 2.0 << 1.0 << 1.0 << 2.0 << 0.0 << -2.0;
+    BOBUIest::newRow("[1,1]->|1| (2,2)") << 2.0 << 2.0 << 3.0 << 3.0
                                    << M_SQRT2 << 1.0 << M_SQRT1_2 << M_SQRT1_2;
-    QTest::newRow("[-1,1]->|1| (2,2)") << 2.0 << 2.0 << 1.0 << 3.0
+    BOBUIest::newRow("[-1,1]->|1| (2,2)") << 2.0 << 2.0 << 1.0 << 3.0
                                     << M_SQRT2 << 1.0 << -M_SQRT1_2 << M_SQRT1_2;
-    QTest::newRow("[1,-1]->|1| (2,2)") << 2.0 << 2.0 << 3.0 << 1.0
+    BOBUIest::newRow("[1,-1]->|1| (2,2)") << 2.0 << 2.0 << 3.0 << 1.0
                                     << M_SQRT2 << 1.0 << M_SQRT1_2 << -M_SQRT1_2;
-    QTest::newRow("[-1,-1]->|1| (2,2)") << 2.0 << 2.0 << 1.0 << 1.0
+    BOBUIest::newRow("[-1,-1]->|1| (2,2)") << 2.0 << 2.0 << 1.0 << 1.0
                                      << M_SQRT2 << 1.0 << -M_SQRT1_2 << -M_SQRT1_2;
     const double small = qSqrt(std::numeric_limits<qreal>::denorm_min()) / 8;
-    QTest::newRow("[small,small]->|2| (-small/2,-small/2)")
+    BOBUIest::newRow("[small,small]->|2| (-small/2,-small/2)")
         << -(small * .5) << -(small * .5) << (small * .5) << (small * .5)
         << (small * M_SQRT2) << (2 * M_SQRT2) << 2.0 << 2.0;
     const double tiny = std::numeric_limits<qreal>::min() / 2;
-    QTest::newRow("[tiny,tiny]->|2| (-tiny/2,-tiny/2)")
+    BOBUIest::newRow("[tiny,tiny]->|2| (-tiny/2,-tiny/2)")
         << -(tiny * .5) << -(tiny * .5) << (tiny * .5) << (tiny * .5)
         << (tiny * M_SQRT2) << (2 * M_SQRT2) << 2.0 << 2.0;
-    QTest::newRow("[1+3e-13,1+4e-13]|1895| (1, 1)")
+    BOBUIest::newRow("[1+3e-13,1+4e-13]|1895| (1, 1)")
         << 1.0 << 1.0 << (1 + 3e-13) << (1 + 4e-13)
         << 5e-13 << 1895.0 << 1137.0 << 1516.0;
-    QTest::newRow("[4e-323,5e-324]|1892|") // Unavoidable underflow: denormals
+    BOBUIest::newRow("[4e-323,5e-324]|1892|") // Unavoidable underflow: denormals
         << 0.0 << 0.0 << 4e-323 << 5e-324
         << 4e-323 << 1892.0 << 4e-323 << 5e-324; // vx, vy values ignored
 }
@@ -375,10 +375,10 @@ void tst_QLine::testLength()
 
     l.setLength(lengthToSet);
 
-    QT_IGNORE_DEPRECATIONS(constexpr bool has_denorm = std::numeric_limits<double>::has_denorm != std::denorm_present;)
+    BOBUI_IGNORE_DEPRECATIONS(constexpr bool has_denorm = std::numeric_limits<double>::has_denorm != std::denorm_present;)
     if constexpr (has_denorm) {
-        if (qstrcmp(QTest::currentDataTag(), "[tiny,tiny]->|2| (-tiny/2,-tiny/2)") == 0
-            || qstrcmp(QTest::currentDataTag(), "[4e-323,5e-324]|1892|") == 0) {
+        if (qstrcmp(BOBUIest::currentDataTag(), "[tiny,tiny]->|2| (-tiny/2,-tiny/2)") == 0
+            || qstrcmp(BOBUIest::currentDataTag(), "[4e-323,5e-324]|1892|") == 0) {
             QSKIP("Skipping 'denorm' as this type lacks denormals on this system");
         }
     }
@@ -408,27 +408,27 @@ void tst_QLine::testCenter()
 
 void tst_QLine::testCenter_data()
 {
-    QTest::addColumn<int>("x1");
-    QTest::addColumn<int>("y1");
-    QTest::addColumn<int>("x2");
-    QTest::addColumn<int>("y2");
-    QTest::addColumn<int>("centerX");
-    QTest::addColumn<int>("centerY");
+    BOBUIest::addColumn<int>("x1");
+    BOBUIest::addColumn<int>("y1");
+    BOBUIest::addColumn<int>("x2");
+    BOBUIest::addColumn<int>("y2");
+    BOBUIest::addColumn<int>("centerX");
+    BOBUIest::addColumn<int>("centerY");
 
-    QTest::newRow("[0, 0]") << 0 << 0 << 0 << 0 << 0 << 0;
-    QTest::newRow("top") << 0 << 0 << 2 << 0 << 1 << 0;
-    QTest::newRow("right") << 0 << 0 << 0 << 2 << 0 << 1;
-    QTest::newRow("bottom") << 0 << 0 << -2 << 0 << -1 << 0;
-    QTest::newRow("left") << 0 << 0 << 0 << -2 << 0 << -1;
+    BOBUIest::newRow("[0, 0]") << 0 << 0 << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("top") << 0 << 0 << 2 << 0 << 1 << 0;
+    BOBUIest::newRow("right") << 0 << 0 << 0 << 2 << 0 << 1;
+    BOBUIest::newRow("bottom") << 0 << 0 << -2 << 0 << -1 << 0;
+    BOBUIest::newRow("left") << 0 << 0 << 0 << -2 << 0 << -1;
 
-    QTest::newRow("precision+") << 0 << 0 << 1 << 1 << 0 << 0;
-    QTest::newRow("precision-") << -1 << -1 << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("precision+") << 0 << 0 << 1 << 1 << 0 << 0;
+    BOBUIest::newRow("precision-") << -1 << -1 << 0 << 0 << 0 << 0;
 
     const int max = std::numeric_limits<int>::max();
     const int min = std::numeric_limits<int>::min();
-    QTest::newRow("max") << max << max << max << max << max << max;
-    QTest::newRow("min") << min << min << min << min << min << min;
-    QTest::newRow("minmax") << min << min << max << max << 0 << 0;
+    BOBUIest::newRow("max") << max << max << max << max << max << max;
+    BOBUIest::newRow("min") << min << min << min << min << min << min;
+    BOBUIest::newRow("minmax") << min << min << max << max << 0 << 0;
 }
 
 void tst_QLine::testCenterF()
@@ -447,37 +447,37 @@ void tst_QLine::testCenterF()
 
 void tst_QLine::testCenterF_data()
 {
-    QTest::addColumn<double>("x1");
-    QTest::addColumn<double>("y1");
-    QTest::addColumn<double>("x2");
-    QTest::addColumn<double>("y2");
-    QTest::addColumn<double>("centerX");
-    QTest::addColumn<double>("centerY");
+    BOBUIest::addColumn<double>("x1");
+    BOBUIest::addColumn<double>("y1");
+    BOBUIest::addColumn<double>("x2");
+    BOBUIest::addColumn<double>("y2");
+    BOBUIest::addColumn<double>("centerX");
+    BOBUIest::addColumn<double>("centerY");
 
-    QTest::newRow("[0, 0]") << 0.0 << 0.0 << 0.0 << 0.0 << 0.0 << 0.0;
-    QTest::newRow("top") << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << 0.0;
-    QTest::newRow("right") << 0.0 << 0.0 << 0.0 << 1.0 << 0.0 << 0.5;
-    QTest::newRow("bottom") << 0.0 << 0.0 << -1.0 << 0.0 << -0.5 << 0.0;
-    QTest::newRow("left") << 0.0 << 0.0 << 0.0 << -1.0 << 0.0 << -0.5;
+    BOBUIest::newRow("[0, 0]") << 0.0 << 0.0 << 0.0 << 0.0 << 0.0 << 0.0;
+    BOBUIest::newRow("top") << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << 0.0;
+    BOBUIest::newRow("right") << 0.0 << 0.0 << 0.0 << 1.0 << 0.0 << 0.5;
+    BOBUIest::newRow("bottom") << 0.0 << 0.0 << -1.0 << 0.0 << -0.5 << 0.0;
+    BOBUIest::newRow("left") << 0.0 << 0.0 << 0.0 << -1.0 << 0.0 << -0.5;
 
     const double max = std::numeric_limits<qreal>::max();
-    QTest::newRow("max") << max << max << max << max << max << max;
+    BOBUIest::newRow("max") << max << max << max << max << max << max;
 }
 
 void tst_QLine::testNormalVector_data()
 {
-    QTest::addColumn<double>("x1");
-    QTest::addColumn<double>("y1");
-    QTest::addColumn<double>("x2");
-    QTest::addColumn<double>("y2");
-    QTest::addColumn<double>("nvx");
-    QTest::addColumn<double>("nvy");
+    BOBUIest::addColumn<double>("x1");
+    BOBUIest::addColumn<double>("y1");
+    BOBUIest::addColumn<double>("x2");
+    BOBUIest::addColumn<double>("y2");
+    BOBUIest::addColumn<double>("nvx");
+    BOBUIest::addColumn<double>("nvy");
 
-    QTest::newRow("[1, 0]") << 0.0 << 0.0 << 1.0 << 0.0 << 0.0 << -1.0;
-    QTest::newRow("[-1, 0]") << 0.0 << 0.0 << -1.0 << 0.0 << 0.0 << 1.0;
-    QTest::newRow("[0, 1]") << 0.0 << 0.0 << 0.0 << 1.0 << 1.0 << 0.0;
-    QTest::newRow("[0, -1]") << 0.0 << 0.0 << 0.0 << -1.0 << -1.0 << 0.0;
-    QTest::newRow("[2, 3]") << 2.0 << 3.0 << 4.0 << 6.0 << 3.0 << -2.0;
+    BOBUIest::newRow("[1, 0]") << 0.0 << 0.0 << 1.0 << 0.0 << 0.0 << -1.0;
+    BOBUIest::newRow("[-1, 0]") << 0.0 << 0.0 << -1.0 << 0.0 << 0.0 << 1.0;
+    BOBUIest::newRow("[0, 1]") << 0.0 << 0.0 << 0.0 << 1.0 << 1.0 << 0.0;
+    BOBUIest::newRow("[0, -1]") << 0.0 << 0.0 << 0.0 << -1.0 << -1.0 << 0.0;
+    BOBUIest::newRow("[2, 3]") << 2.0 << 3.0 << 4.0 << 6.0 << 3.0 << -2.0;
 }
 
 void tst_QLine::testNormalVector()
@@ -501,21 +501,21 @@ void tst_QLine::testNormalVector()
 
 void tst_QLine::testAngle2_data()
 {
-    QTest::addColumn<qreal>("x1");
-    QTest::addColumn<qreal>("y1");
-    QTest::addColumn<qreal>("x2");
-    QTest::addColumn<qreal>("y2");
-    QTest::addColumn<qreal>("angle");
+    BOBUIest::addColumn<qreal>("x1");
+    BOBUIest::addColumn<qreal>("y1");
+    BOBUIest::addColumn<qreal>("x2");
+    BOBUIest::addColumn<qreal>("y2");
+    BOBUIest::addColumn<qreal>("angle");
 
-    QTest::newRow("right") << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(0.0) << qreal(0.0);
-    QTest::newRow("left") << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(0.0) << qreal(180.0);
-    QTest::newRow("up") << qreal(0.0) << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(90.0);
-    QTest::newRow("down") << qreal(0.0) << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(270.0);
+    BOBUIest::newRow("right") << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(0.0) << qreal(0.0);
+    BOBUIest::newRow("left") << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(0.0) << qreal(180.0);
+    BOBUIest::newRow("up") << qreal(0.0) << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(90.0);
+    BOBUIest::newRow("down") << qreal(0.0) << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(270.0);
 
-    QTest::newRow("diag a") << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(-10.0) << qreal(45.0);
-    QTest::newRow("diag b") << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(-10.0) << qreal(135.0);
-    QTest::newRow("diag c") << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(10.0) << qreal(225.0);
-    QTest::newRow("diag d") << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(10.0) << qreal(315.0);
+    BOBUIest::newRow("diag a") << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(-10.0) << qreal(45.0);
+    BOBUIest::newRow("diag b") << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(-10.0) << qreal(135.0);
+    BOBUIest::newRow("diag c") << qreal(0.0) << qreal(0.0) << qreal(-10.0) << qreal(10.0) << qreal(225.0);
+    BOBUIest::newRow("diag d") << qreal(0.0) << qreal(0.0) << qreal(10.0) << qreal(10.0) << qreal(315.0);
 }
 
 void tst_QLine::testAngle2()
@@ -579,29 +579,29 @@ void tst_QLine::testAngleTo()
 
 void tst_QLine::testAngleTo_data()
 {
-    QTest::addColumn<qreal>("xa1");
-    QTest::addColumn<qreal>("ya1");
-    QTest::addColumn<qreal>("xa2");
-    QTest::addColumn<qreal>("ya2");
-    QTest::addColumn<qreal>("xb1");
-    QTest::addColumn<qreal>("yb1");
-    QTest::addColumn<qreal>("xb2");
-    QTest::addColumn<qreal>("yb2");
-    QTest::addColumn<qreal>("angle");
+    BOBUIest::addColumn<qreal>("xa1");
+    BOBUIest::addColumn<qreal>("ya1");
+    BOBUIest::addColumn<qreal>("xa2");
+    BOBUIest::addColumn<qreal>("ya2");
+    BOBUIest::addColumn<qreal>("xb1");
+    BOBUIest::addColumn<qreal>("yb1");
+    BOBUIest::addColumn<qreal>("xb2");
+    BOBUIest::addColumn<qreal>("yb2");
+    BOBUIest::addColumn<qreal>("angle");
 
-    QTest::newRow("parallel") << qreal(1.0) << qreal(1.0) << qreal(3.0) << qreal(4.0)
+    BOBUIest::newRow("parallel") << qreal(1.0) << qreal(1.0) << qreal(3.0) << qreal(4.0)
                            << qreal(5.0) << qreal(6.0) << qreal(7.0) << qreal(9.0)
                            << qreal(0.0);
-    QTest::newRow("[4,4]-[4,0]") << qreal(1.0) << qreal(1.0) << qreal(5.0) << qreal(5.0)
+    BOBUIest::newRow("[4,4]-[4,0]") << qreal(1.0) << qreal(1.0) << qreal(5.0) << qreal(5.0)
                               << qreal(0.0) << qreal(4.0) << qreal(3.0) << qreal(4.0)
                               << qreal(45.0);
-    QTest::newRow("[4,4]-[-4,0]") << qreal(1.0) << qreal(1.0) << qreal(5.0) << qreal(5.0)
+    BOBUIest::newRow("[4,4]-[-4,0]") << qreal(1.0) << qreal(1.0) << qreal(5.0) << qreal(5.0)
                               << qreal(3.0) << qreal(4.0) << qreal(0.0) << qreal(4.0)
                               << qreal(225.0);
 
     for (int i = 0; i < 360; ++i) {
         const QLineF l = QLineF::fromPolar(1, i);
-        QTest::newRow(("angle:" + QByteArray::number(i)).constData())
+        BOBUIest::newRow(("angle:" + QByteArray::number(i)).constData())
             << qreal(0.0) << qreal(0.0) << qreal(1.0) << qreal(0.0)
             << qreal(0.0) << qreal(0.0) << l.p2().x() << l.p2().y()
             << qreal(i);
@@ -610,11 +610,11 @@ void tst_QLine::testAngleTo_data()
 
 void tst_QLine::toLineF_data()
 {
-    QTest::addColumn<QLine>("input");
-    QTest::addColumn<QLineF>("result");
+    BOBUIest::addColumn<QLine>("input");
+    BOBUIest::addColumn<QLineF>("result");
 
     auto row = [](int x1, int y1, int x2, int y2) {
-        QTest::addRow("((%d, %d)->(%d, %d))", x1, y1, x2, y2)
+        BOBUIest::addRow("((%d, %d)->(%d, %d))", x1, y1, x2, y2)
                 << QLine(x1, y1, x2, y2) << QLineF(x1, y1, x2, y2);
     };
     constexpr std::array samples = {-1, 0, 1};
@@ -651,5 +651,5 @@ static_assert(lf.y1() == 8.0);
 static_assert(lf.y2() == 10.0);
 } // namespace ConstexprTests
 
-QTEST_MAIN(tst_QLine)
+BOBUIEST_MAIN(tst_QLine)
 #include "tst_qline.moc"

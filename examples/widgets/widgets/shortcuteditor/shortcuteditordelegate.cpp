@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "shortcuteditordelegate.h"
 
@@ -40,7 +40,7 @@ void ShortcutEditorDelegate::setEditorData(QWidget *editor,
     if (!editor || !index.isValid())
         return;
 
-    QString value = index.model()->data(index, Qt::EditRole).toString();
+    QString value = index.model()->data(index, BobUI::EditRole).toString();
 
     QKeySequenceEdit *keySequenceEdit = static_cast<QKeySequenceEdit *>(editor);
     keySequenceEdit->setKeySequence(value);

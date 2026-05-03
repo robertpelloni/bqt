@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMDISUBWINDOW_P_H
 #define QMDISUBWINDOW_P_H
@@ -9,31 +9,31 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qmdisubwindow.h"
 
 #include <QStyle>
 #include <QStyleOptionTitleBar>
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 #include <QMenuBar>
 #endif
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 #include <QSizeGrip>
 #endif
 #include <QBasicTimer>
 #include <QPointer>
 #include <private/qwidget_p.h>
 
-QT_REQUIRE_CONFIG(mdiarea);
+BOBUI_REQUIRE_CONFIG(mdiarea);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVBoxLayout;
 class QMouseEvent;
@@ -49,7 +49,7 @@ public:
         mdiChild = child;
     }
 
-    void *qt_metacast(const char *classname) override
+    void *bobui_metacast(const char *classname) override
     {
         if (classname && strcmp(classname, "ControlElement") == 0)
             return this;
@@ -65,7 +65,7 @@ public:
     ControlContainer(QMdiSubWindow *mdiChild);
     ~ControlContainer();
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     void showButtonsInMenuBar(QMenuBar *menuBar);
     void removeButtonsFromMenuBar(QMenuBar *menuBar = nullptr);
     QMenuBar *menuBar() const { return m_menuBar; }
@@ -77,7 +77,7 @@ public:
 private:
     QPointer<QWidget> previousLeft;
     QPointer<QWidget> previousRight;
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     QPointer<QMenuBar> m_menuBar;
 #endif
     QPointer<QWidget> m_controllerWidget;
@@ -127,10 +127,10 @@ public:
 
     struct OperationInfo {
         uint changeFlags;
-        Qt::CursorShape cursorShape;
+        BobUI::CursorShape cursorShape;
         QRegion region;
         bool hover;
-        OperationInfo(uint changeFlags, Qt::CursorShape cursorShape, bool hover = true)
+        OperationInfo(uint changeFlags, BobUI::CursorShape cursorShape, bool hover = true)
             : changeFlags(changeFlags),
               cursorShape(cursorShape),
               hover(hover)
@@ -145,10 +145,10 @@ public:
     QPointer<QWidget> baseWidget;
     QPointer<QWidget> restoreFocusWidget;
     QPointer<QMdi::ControlContainer> controlContainer;
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QPointer<QSizeGrip> sizeGrip;
 #endif
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     QRubberBand *rubberBand;
 #endif
     QPoint mousePressPosition;
@@ -159,7 +159,7 @@ public:
     bool resizeEnabled;
     bool moveEnabled;
     bool isInInteractiveMode;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     bool isInRubberBandMode;
 #endif
     bool isShadeMode;
@@ -177,10 +177,10 @@ public:
     Operation currentOperation;
     QStyle::SubControl hoveredSubControl;
     QStyle::SubControl activeSubControl;
-    Qt::FocusReason focusInReason;
+    BobUI::FocusReason focusInReason;
     OperationInfoMap operationMap;
     QPointer<QMenu> systemMenu;
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QPointer<QAction> actions[NumWindowStateActions];
 #endif
     QMdiSubWindow::SubWindowOptions options;
@@ -201,7 +201,7 @@ public:
     void leaveInteractiveMode();
     void removeBaseWidget();
     void initOperationMap();
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void createSystemMenu();
 #endif
     void updateCursor();
@@ -217,17 +217,17 @@ public:
     QRegion getRegion(Operation operation) const;
     Operation getOperation(const QPoint &pos) const;
     QStyleOptionTitleBar titleBarOptions() const;
-    void ensureWindowState(Qt::WindowState state);
+    void ensureWindowState(BobUI::WindowState state);
     int titleBarHeight(const QStyleOptionTitleBar &options) const;
     void sizeParameters(int *margin, int *minWidth) const;
     bool drawTitleBarWhenMaximized() const;
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     QMenuBar *menuBar() const;
     void showButtonsInMenuBar(QMenuBar *menuBar);
     void removeButtonsFromMenuBar();
 #endif
     void updateWindowTitle(bool requestFromChild);
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     void enterRubberBandMode();
     void leaveRubberBandMode();
 #endif
@@ -236,17 +236,17 @@ public:
     void setFocusWidget();
     bool restoreFocus();
     void storeFocusWidget();
-    void setWindowFlags(Qt::WindowFlags windowFlags) override;
+    void setWindowFlags(BobUI::WindowFlags windowFlags) override;
     using QWidgetPrivate::setVisible;
     void setVisible(WindowStateAction, bool visible = true);
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     void setEnabled(WindowStateAction, bool enable = true);
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void addToSystemMenu(WindowStateAction, const QString &text, const char *slot);
 #endif
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
     QSize iconSize() const;
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     void setSizeGrip(QSizeGrip *sizeGrip);
     void setSizeGripVisible(bool visible = true) const;
 #endif
@@ -258,7 +258,7 @@ public:
     inline int titleBarHeight() const
     {
         Q_Q(const QMdiSubWindow);
-        if (!parent || q->windowFlags() & Qt::FramelessWindowHint
+        if (!parent || q->windowFlags() & BobUI::FramelessWindowHint
             || (q->isMaximized() && !drawTitleBarWhenMaximized())) {
             return 0;
         }
@@ -281,7 +281,7 @@ public:
         Q_Q(QMdiSubWindow);
         Q_ASSERT(parent);
         geometry->setSize(geometry->size().expandedTo(internalMinimumSize));
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
         if (isInRubberBandMode)
             rubberBand->setGeometry(*geometry);
         else
@@ -312,6 +312,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMDISUBWINDOW_P_H

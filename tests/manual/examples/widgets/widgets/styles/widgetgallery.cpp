@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "widgetgallery.h"
 #include "norwegianwoodstyle.h"
@@ -20,9 +20,9 @@
 #include <QSpinBox>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QTableWidget>
-#include <QTextEdit>
-#include <QTimer>
+#include <BOBUIableWidget>
+#include <BOBUIextEdit>
+#include <BOBUIimer>
 
 //! [0]
 WidgetGallery::WidgetGallery(QWidget *parent)
@@ -33,7 +33,7 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     QStringList styleNames = QStyleFactory::keys();
     styleNames.append("NorwegianWood");
     for (int i = 1, size = styleNames.size(); i < size; ++i) {
-        if (defaultStyleName.compare(styleNames.at(i), Qt::CaseInsensitive) == 0) {
+        if (defaultStyleName.compare(styleNames.at(i), BobUI::CaseInsensitive) == 0) {
             styleNames.swapItemsAt(0, i);
             break;
         }
@@ -128,7 +128,7 @@ void WidgetGallery::styleChanged()
 {
     auto styleName = QApplication::style()->objectName();
     for (int i = 0; i < styleComboBox->count(); ++i) {
-        if (QString::compare(styleComboBox->itemText(i), styleName, Qt::CaseInsensitive) == 0) {
+        if (QString::compare(styleComboBox->itemText(i), styleName, BobUI::CaseInsensitive) == 0) {
             styleComboBox->setCurrentIndex(i);
             break;
         }
@@ -160,7 +160,7 @@ void WidgetGallery::createTopLeftGroupBox()
 
     checkBox = new QCheckBox(tr("Tri-state check box"));
     checkBox->setTristate(true);
-    checkBox->setCheckState(Qt::PartiallyChecked);
+    checkBox->setCheckState(BobUI::PartiallyChecked);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(radioButton1);
@@ -196,12 +196,12 @@ void WidgetGallery::createTopRightGroupBox()
 
 void WidgetGallery::createBottomLeftTabWidget()
 {
-    bottomLeftTabWidget = new QTabWidget;
+    bottomLeftTabWidget = new BOBUIabWidget;
     bottomLeftTabWidget->setSizePolicy(QSizePolicy::Preferred,
                                        QSizePolicy::Ignored);
 
     QWidget *tab1 = new QWidget;
-    tableWidget = new QTableWidget(10, 10);
+    tableWidget = new BOBUIableWidget(10, 10);
 
     QHBoxLayout *tab1hbox = new QHBoxLayout;
     tab1hbox->setContentsMargins(5,5, 5, 5);
@@ -209,7 +209,7 @@ void WidgetGallery::createBottomLeftTabWidget()
     tab1->setLayout(tab1hbox);
 
     QWidget *tab2 = new QWidget;
-    textEdit = new QTextEdit;
+    textEdit = new BOBUIextEdit;
 
     textEdit->setPlainText(tr("Twinkle, twinkle, little star,\n"
                               "How I wonder what you are.\n"
@@ -242,10 +242,10 @@ void WidgetGallery::createBottomRightGroupBox()
     dateTimeEdit = new QDateTimeEdit(bottomRightGroupBox);
     dateTimeEdit->setDateTime(QDateTime::currentDateTime());
 
-    slider = new QSlider(Qt::Horizontal, bottomRightGroupBox);
+    slider = new QSlider(BobUI::Horizontal, bottomRightGroupBox);
     slider->setValue(40);
 
-    scrollBar = new QScrollBar(Qt::Horizontal, bottomRightGroupBox);
+    scrollBar = new QScrollBar(BobUI::Horizontal, bottomRightGroupBox);
     scrollBar->setValue(60);
 
     dial = new QDial(bottomRightGroupBox);
@@ -270,8 +270,8 @@ void WidgetGallery::createProgressBar()
     progressBar->setRange(0, 10000);
     progressBar->setValue(0);
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &WidgetGallery::advanceProgressBar);
+    BOBUIimer *timer = new BOBUIimer(this);
+    connect(timer, &BOBUIimer::timeout, this, &WidgetGallery::advanceProgressBar);
     timer->start(1000);
 }
 //! [13]

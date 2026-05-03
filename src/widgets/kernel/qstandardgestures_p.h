@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTANDARDGESTURES_P_H
 #define QSTANDARDGESTURES_P_H
@@ -9,20 +9,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qgesturerecognizer.h"
 #include "private/qgesture_p.h"
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPanGestureRecognizer : public QGestureRecognizer
 {
@@ -57,28 +57,28 @@ public:
     void reset(QGesture *state) override;
 };
 
-class QTapGestureRecognizer : public QGestureRecognizer
+class BOBUIapGestureRecognizer : public QGestureRecognizer
 {
 public:
-    QTapGestureRecognizer();
+    BOBUIapGestureRecognizer();
 
     QGesture *create(QObject *target) override;
     QGestureRecognizer::Result recognize(QGesture *state, QObject *watched, QEvent *event) override;
     void reset(QGesture *state) override;
 };
 
-class QTapAndHoldGestureRecognizer : public QGestureRecognizer
+class BOBUIapAndHoldGestureRecognizer : public QGestureRecognizer
 {
 public:
-    QTapAndHoldGestureRecognizer();
+    BOBUIapAndHoldGestureRecognizer();
 
     QGesture *create(QObject *target) override;
     QGestureRecognizer::Result recognize(QGesture *state, QObject *watched, QEvent *event) override;
     void reset(QGesture *state) override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 #endif // QSTANDARDGESTURES_P_H

@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS     = flowlayout.h \
               window.h
@@ -7,5 +7,5 @@ SOURCES     = flowlayout.cpp \
               window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/layouts/flowlayout
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/layouts/flowlayout
 INSTALLS += target

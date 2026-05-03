@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsdirect2dbackingstore.h"
 #include "qwindowsdirect2dplatformpixmap.h"
@@ -12,11 +12,11 @@
 
 #include "qwindowscontext.h"
 
-#include <QtGui/qpainter.h>
-#include <QtGui/qwindow.h>
-#include <QtCore/qdebug.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsDirect2DBackingStore
@@ -54,7 +54,7 @@ void QWindowsDirect2DBackingStore::beginPaint(const QRegion &region)
     bitmap(pixmap)->deviceContext()->begin();
 
     QPainter painter(pixmap);
-    QColor clear(Qt::transparent);
+    QColor clear(BobUI::transparent);
 
     painter.setCompositionMode(QPainter::CompositionMode_Source);
 
@@ -100,4 +100,4 @@ QImage QWindowsDirect2DBackingStore::toImage() const
     return nativeWindow(window())->pixmap()->toImage();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

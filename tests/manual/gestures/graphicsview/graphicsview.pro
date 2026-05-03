@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 TARGET = tst_manual_graphicsview
 

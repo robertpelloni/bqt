@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'previewwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,26 +16,26 @@
 #ifndef PREVIEWWIDGET_H
 #define PREVIEWWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QProgressBar>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QScrollBar>
+#include <BobUIWidgets/QSlider>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -122,13 +122,13 @@ public:
 
         ScrollBar1 = new QScrollBar(qdesigner_internal__PreviewWidget);
         ScrollBar1->setObjectName("ScrollBar1");
-        ScrollBar1->setOrientation(Qt::Orientation::Horizontal);
+        ScrollBar1->setOrientation(BobUI::Orientation::Horizontal);
 
         vboxLayout->addWidget(ScrollBar1);
 
         Slider1 = new QSlider(qdesigner_internal__PreviewWidget);
         Slider1->setObjectName("Slider1");
-        Slider1->setOrientation(Qt::Orientation::Horizontal);
+        Slider1->setOrientation(BobUI::Orientation::Horizontal);
 
         vboxLayout->addWidget(Slider1);
 
@@ -147,7 +147,7 @@ public:
 
         ProgressBar1 = new QProgressBar(qdesigner_internal__PreviewWidget);
         ProgressBar1->setObjectName("ProgressBar1");
-        ProgressBar1->setOrientation(Qt::Orientation::Horizontal);
+        ProgressBar1->setOrientation(BobUI::Orientation::Horizontal);
 
         gridLayout->addWidget(ProgressBar1, 2, 0, 1, 1);
 
@@ -236,6 +236,6 @@ namespace Ui {
 } // namespace Ui
 } // namespace qdesigner_internal
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PREVIEWWIDGET_H

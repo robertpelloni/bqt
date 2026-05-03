@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsettings.h"
 
@@ -9,13 +9,13 @@
 #include "qdir.h"
 #include "qvarlengtharray.h"
 #include "private/qcore_mac_p.h"
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "qcoreapplication.h"
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const CFStringRef hostNames[2] = { kCFPreferencesCurrentHost, kCFPreferencesAnyHost };
 static const int numHostNames = 2;
@@ -28,7 +28,7 @@ static const int numHostNames = 2;
     becomes "4<middot>0.BrowserCommand".
 */
 
-enum RotateShift { Macify = 1, Qtify = 2 };
+enum RotateShift { Macify = 1, BobUIify = 2 };
 
 static QString rotateSlashesDotsAndMiddots(const QString &key, int shift)
 {
@@ -52,9 +52,9 @@ static QCFType<CFStringRef> macKey(const QString &key)
     return rotateSlashesDotsAndMiddots(key, Macify).toCFString();
 }
 
-static QString qtKey(CFStringRef cfkey)
+static QString bobuiKey(CFStringRef cfkey)
 {
-    return rotateSlashesDotsAndMiddots(QString::fromCFString(cfkey), Qtify);
+    return rotateSlashesDotsAndMiddots(QString::fromCFString(cfkey), BobUIify);
 }
 
 static QCFType<CFPropertyListRef> macValue(const QVariant &value);
@@ -116,7 +116,7 @@ static QCFType<CFPropertyListRef> macValue(const QVariant &value)
         {
             QDateTime dateTime = value.toDateTime();
             // CFDate, unlike QDateTime, doesn't store timezone information
-            if (dateTime.timeSpec() == Qt::LocalTime)
+            if (dateTime.timeSpec() == BobUI::LocalTime)
                 result = dateTime.toCFDate();
             else
                 goto string_case;
@@ -157,7 +157,7 @@ static QCFType<CFPropertyListRef> macValue(const QVariant &value)
     return result;
 }
 
-static QVariant qtValue(CFPropertyListRef cfvalue)
+static QVariant bobuiValue(CFPropertyListRef cfvalue)
 {
     if (!cfvalue)
         return QVariant();
@@ -192,7 +192,7 @@ static QVariant qtValue(CFPropertyListRef cfvalue)
         CFIndex size = CFArrayGetCount(cfarray);
         bool metNonString = false;
         for (CFIndex i = 0; i < size; ++i) {
-            QVariant value = qtValue(CFArrayGetValueAtIndex(cfarray, i));
+            QVariant value = bobuiValue(CFArrayGetValueAtIndex(cfarray, i));
             if (value.typeId() != QMetaType::QString)
                 metNonString = true;
             list << value;
@@ -241,10 +241,10 @@ static QVariant qtValue(CFPropertyListRef cfvalue)
                 QVariantList list;
                 list.reserve(arraySize);
                 for (CFIndex j = 0; j < arraySize; ++j)
-                    list.append(qtValue(CFArrayGetValueAtIndex(cfarray, j)));
+                    list.append(bobuiValue(CFArrayGetValueAtIndex(cfarray, j)));
                 map.insert(key, list);
             } else {
-                map.insert(key, qtValue(values[i]));
+                map.insert(key, bobuiValue(values[i]));
             }
         }
         return map;
@@ -343,7 +343,7 @@ QMacSettingsPrivate::QMacSettingsPrivate(QSettings::Scope scope, const QString &
         if (main_bundle != NULL) {
             CFStringRef main_bundle_identifier = CFBundleGetIdentifier(main_bundle);
             if (main_bundle_identifier != NULL) {
-                QString bundle_identifier(qtKey(main_bundle_identifier));
+                QString bundle_identifier(bobuiKey(main_bundle_identifier));
                 // CFBundleGetIdentifier returns identifier separated by slashes rather than periods.
                 QStringList bundle_identifier_components = bundle_identifier.split(u'/');
                 // pre-reverse them so that when they get reversed again below, they are in the com.company.product format.
@@ -429,7 +429,7 @@ std::optional<QVariant> QMacSettingsPrivate::get(const QString &key) const
                     CFPreferencesCopyValue(k, domains[i].applicationOrSuiteId, domains[i].userName,
                                            hostNames[j]);
             if (ret)
-                return qtValue(ret);
+                return bobuiValue(ret);
         }
 
         if (!fallbacks)
@@ -452,7 +452,7 @@ QStringList QMacSettingsPrivate::children(const QString &prefix, ChildSpec spec)
                 CFIndex size = CFArrayGetCount(cfarray);
                 for (CFIndex k = 0; k < size; ++k) {
                     QString currentKey =
-                            qtKey(static_cast<CFStringRef>(CFArrayGetValueAtIndex(cfarray, k)));
+                            bobuiKey(static_cast<CFStringRef>(CFArrayGetValueAtIndex(cfarray, k)));
                     if (currentKey.startsWith(prefix))
                         processChild(QStringView{currentKey}.mid(startPos), spec, result);
                 }
@@ -498,7 +498,7 @@ void QMacSettingsPrivate::flush()
 bool QMacSettingsPrivate::isWritable() const
 {
     QMacSettingsPrivate *that = const_cast<QMacSettingsPrivate *>(this);
-    QString impossibleKey("qt_internal/"_L1);
+    QString impossibleKey("bobui_internal/"_L1);
 
     QSettings::Status oldStatus = that->status;
     that->status = QSettings::NoError;
@@ -529,8 +529,8 @@ QSettingsPrivate *QSettingsPrivate::create(QSettings::Format format,
                                            const QString &organization,
                                            const QString &application)
 {
-#ifndef QT_BOOTSTRAPPED
-    if (organization == "Qt"_L1)
+#ifndef BOBUI_BOOTSTRAPPED
+    if (organization == "BobUI"_L1)
     {
         QString organizationDomain = QCoreApplication::organizationDomain();
         QString applicationName = QCoreApplication::applicationName();
@@ -575,8 +575,8 @@ bool QConfFileSettingsPrivate::readPlistFile(const QByteArray &data, ParsedSetti
     CFDictionaryGetKeysAndValues(cfdict, keys.data(), values.data());
 
     for (int i = 0; i < size; ++i) {
-        QString key = qtKey(static_cast<CFStringRef>(keys[i]));
-        map->insert(QSettingsKey(key, Qt::CaseSensitive), qtValue(values[i]));
+        QString key = bobuiKey(static_cast<CFStringRef>(keys[i]));
+        map->insert(QSettingsKey(key, BobUI::CaseSensitive), bobuiValue(values[i]));
     }
     return true;
 }
@@ -607,4 +607,4 @@ bool QConfFileSettingsPrivate::writePlistFile(QIODevice &file, const ParsedSetti
     return file.write(QByteArray::fromRawCFData(xmlData)) == CFDataGetLength(xmlData);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

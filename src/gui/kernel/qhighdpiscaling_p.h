@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QHIGHDPISCALING_P_H
 #define QHIGHDPISCALING_P_H
@@ -8,25 +8,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmargins.h>
-#include <QtCore/qmath.h>
-#include <QtCore/qrect.h>
-#include <QtGui/qregion.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qvector2d.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmargins.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qregion.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qvector2d.h>
+#include <BobUIGui/qwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcHighDpi);
 
@@ -34,7 +34,7 @@ class QScreen;
 class QPlatformScreen;
 typedef std::pair<qreal, qreal> QDpi;
 
-#ifndef QT_NO_HIGHDPISCALING
+#ifndef BOBUI_NO_HIGHDPISCALING
 class Q_GUI_EXPORT QHighDpiScaling {
     Q_GADGET
 public:
@@ -115,7 +115,7 @@ private:
     static DpiAdjustmentPolicy m_dpiAdjustmentPolicy;
     static QHash<QString, qreal> m_namedScreenScaleFactors;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const ScreenFactor &);
 #endif
 };
@@ -188,7 +188,7 @@ inline QRegion scale(const QRegion &region, qreal scaleFactor, QPoint origin = Q
         return region;
 
     QRegion scaled = region.translated(-origin);
-    scaled = QTransform::fromScale(scaleFactor, scaleFactor).map(scaled);
+    scaled = BOBUIransform::fromScale(scaleFactor, scaleFactor).map(scaled);
     return scaled.translated(origin);
 }
 
@@ -295,7 +295,7 @@ inline QRegion fromNativeLocalRegion(const QRegion &pixelRegion, const QWindow *
     return scale(pixelRegion, qreal(1) / QHighDpiScaling::factor(window));
 }
 
-// When mapping expose events to Qt rects: round top/left towards the origin and
+// When mapping expose events to BobUI rects: round top/left towards the origin and
 // bottom/right away from the origin, making sure that we cover the whole window.
 inline QRegion fromNativeLocalExposedRegion(const QRegion &pixelRegion, const QWindow *window)
 {
@@ -316,7 +316,7 @@ inline QRegion toNativeLocalRegion(const QRegion &pointRegion, const QWindow *wi
 }
 
 } // namespace QHighDpi
-#else // QT_NO_HIGHDPISCALING
+#else // BOBUI_NO_HIGHDPISCALING
 class Q_GUI_EXPORT QHighDpiScaling {
 public:
     static inline void initHighDpiScaling() {}
@@ -384,7 +384,7 @@ namespace QHighDpi {
     template <typename T, typename U> inline
     T fromNativePixels(const T &value, const U*) {return value;}
 }
-#endif // QT_NO_HIGHDPISCALING
-QT_END_NAMESPACE
+#endif // BOBUI_NO_HIGHDPISCALING
+BOBUI_END_NAMESPACE
 
 #endif // QHIGHDPISCALING_P_H

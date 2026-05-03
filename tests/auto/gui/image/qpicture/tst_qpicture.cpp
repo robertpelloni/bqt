@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QBuffer>
 
 #include <qpicture.h>
@@ -14,7 +14,7 @@
 #include <limits.h>
 #include <qfontdatabase.h>
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 
 class tst_QPicture : public QObject
 {
@@ -153,7 +153,7 @@ void tst_QPicture::serialization()
     QDataStream stream;
     const int thisVersion = stream.version();
 
-    for (int version = QDataStream::Qt_1_0; version <= thisVersion; ++version) {
+    for (int version = QDataStream::BobUI_1_0; version <= thisVersion; ++version) {
         const QDataStream::Version versionEnum = static_cast<QDataStream::Version>(version);
 
         {
@@ -170,7 +170,7 @@ void tst_QPicture::serialization()
     }
 
     {
-        // Test features that were added after Qt 4.5, as that was hard-coded as the major
+        // Test features that were added after BobUI 4.5, as that was hard-coded as the major
         // version for a while, which was incorrect. In this case, we'll test font hints.
         QPicture picture;
         QPainter painter;
@@ -201,7 +201,7 @@ static void paintStuff(QPainter *p)
 {
     const QScreen *screen = QGuiApplication::primaryScreen();
     // Calculate factors from the screen resolution against QPicture's 96DPI
-    // (enforced by Qt::AA_Use96Dpi as set by QTEST_MAIN).
+    // (enforced by BobUI::AA_Use96Dpi as set by BOBUIEST_MAIN).
     const qreal xf = qreal(p->device()->logicalDpiX()) / screen->logicalDotsPerInchX();
     const qreal yf = qreal(p->device()->logicalDpiY()) / screen->logicalDotsPerInchY();
     p->drawRect(scaleRect(QRectF(100, 100, 100, 100), xf, yf));
@@ -225,13 +225,13 @@ void tst_QPicture::save_restore()
     p.end();
 
     QPixmap pix1(300, 300);
-    pix1.fill(Qt::white);
+    pix1.fill(BobUI::white);
     p.begin(&pix1);
     p.drawPicture(50, 50, pic);
     p.end();
 
     QPixmap pix2(300, 300);
-    pix2.fill(Qt::white);
+    pix2.fill(BobUI::white);
     p.begin(&pix2);
     p.translate(50, 50);
     paintStuff(&p);
@@ -242,18 +242,18 @@ void tst_QPicture::save_restore()
 
 void tst_QPicture::boundaryValues_data()
 {
-    QTest::addColumn<int>("x");
-    QTest::addColumn<int>("y");
-    QTest::newRow("max x") << INT_MAX << 50;
-    QTest::newRow("max y") << 50 << INT_MAX;
-    QTest::newRow("max x and y") << INT_MAX << INT_MAX;
+    BOBUIest::addColumn<int>("x");
+    BOBUIest::addColumn<int>("y");
+    BOBUIest::newRow("max x") << INT_MAX << 50;
+    BOBUIest::newRow("max y") << 50 << INT_MAX;
+    BOBUIest::newRow("max x and y") << INT_MAX << INT_MAX;
 
-    QTest::newRow("min x") << INT_MIN << 50;
-    QTest::newRow("min y") << 50 << INT_MIN;
-    QTest::newRow("min x and y") << INT_MIN << INT_MIN;
+    BOBUIest::newRow("min x") << INT_MIN << 50;
+    BOBUIest::newRow("min y") << 50 << INT_MIN;
+    BOBUIest::newRow("min x and y") << INT_MIN << INT_MIN;
 
-    QTest::newRow("min x, max y") << INT_MIN << INT_MAX;
-    QTest::newRow("max x, min y") << INT_MAX << INT_MIN;
+    BOBUIest::newRow("min x, max y") << INT_MIN << INT_MAX;
+    BOBUIest::newRow("max x, min y") << INT_MAX << INT_MIN;
 }
 
 void tst_QPicture::boundaryValues()
@@ -294,7 +294,7 @@ void tst_QPicture::textBaseline()
         int expectedY;
         {
             QImage image(500, 500, QImage::Format_ARGB32);
-            image.fill(Qt::transparent);
+            image.fill(BobUI::transparent);
             QPainter painter(&image);
             painter.setFont(font);
             painter.drawText(QPointF(0, 250), str);
@@ -311,7 +311,7 @@ void tst_QPicture::textBaseline()
             }
 
             QImage image(500, 500, QImage::Format_ARGB32);
-            image.fill(Qt::transparent);
+            image.fill(BobUI::transparent);
             {
                 QPainter painter(&image);
                 painter.drawPicture(QPointF(0, 0), picture);
@@ -324,7 +324,7 @@ void tst_QPicture::textBaseline()
     }
 }
 
-QTEST_MAIN(tst_QPicture)
+BOBUIEST_MAIN(tst_QPicture)
 #include "tst_qpicture.moc"
 
-#endif // QT_NO_PICTURE
+#endif // BOBUI_NO_PICTURE

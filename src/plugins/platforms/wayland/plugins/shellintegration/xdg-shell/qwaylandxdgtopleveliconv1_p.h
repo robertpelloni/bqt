@@ -1,6 +1,6 @@
 // Copyright (C) 2024 David Reondo <kde@david-redondo.de>
 // Copyright (C) 2024 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
@@ -9,15 +9,15 @@
 
 #include <QList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIcon;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 
-class QWaylandXdgToplevelIconManagerV1 : public QtWayland::xdg_toplevel_icon_manager_v1
+class QWaylandXdgToplevelIconManagerV1 : public BobUIWayland::xdg_toplevel_icon_manager_v1
 {
 public:
     QWaylandXdgToplevelIconManagerV1(QWaylandDisplay *display, wl_registry *registry, uint32_t id,
@@ -34,6 +34,6 @@ private:
     QWaylandDisplay *mDisplay;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

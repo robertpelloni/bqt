@@ -1,12 +1,12 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SENDER_H
 #define SENDER_H
 
-#include <QtWidgets>
-#include <QtNetwork>
-#include <QtCore>
+#include <BobUIWidgets>
+#include <BobUINetwork>
+#include <BobUICore>
 
 class Sender : public QDialog
 {
@@ -25,7 +25,7 @@ private:
     QPushButton *startButton = nullptr;
     QUdpSocket udpSocket4;
     QUdpSocket udpSocket6;
-    QTimer timer;
+    BOBUIimer timer;
     QHostAddress groupAddress4;
     QHostAddress groupAddress6;
     int messageNo = 1;

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSizeGrip>
 #include <QEvent>
 #include <QLineEdit>
@@ -13,22 +13,22 @@
 #include <QMdiArea>
 #include <QMdiSubWindow>
 
-static inline Qt::Corner sizeGripCorner(QWidget *parent, QSizeGrip *sizeGrip)
+static inline BobUI::Corner sizeGripCorner(QWidget *parent, QSizeGrip *sizeGrip)
 {
     if (!parent || !sizeGrip)
-        return Qt::TopLeftCorner;
+        return BobUI::TopLeftCorner;
 
     const QPoint sizeGripPos = sizeGrip->mapTo(parent, QPoint(0, 0));
     bool isAtBottom = sizeGripPos.y() >= parent->height() / 2;
     bool isAtLeft = sizeGripPos.x() <= parent->width() / 2;
     if (isAtLeft)
-        return isAtBottom ? Qt::BottomLeftCorner : Qt::TopLeftCorner;
+        return isAtBottom ? BobUI::BottomLeftCorner : BobUI::TopLeftCorner;
     else
-        return isAtBottom ? Qt::BottomRightCorner : Qt::TopRightCorner;
+        return isAtBottom ? BobUI::BottomRightCorner : BobUI::TopRightCorner;
 
 }
 
-Q_DECLARE_METATYPE(Qt::WindowType);
+Q_DECLARE_METATYPE(BobUI::WindowType);
 
 class tst_QSizeGrip : public QObject
 {
@@ -53,7 +53,7 @@ public:
     {
         QWidget::changeEvent(event);
         if (isWindow() && event->type() == QEvent::WindowStateChange)
-            QVERIFY(QTest::qWaitForWindowExposed(this));
+            QVERIFY(BOBUIest::qWaitForWindowExposed(this));
     }
 };
 
@@ -64,19 +64,19 @@ void tst_QSizeGrip::cleanup()
 
 void tst_QSizeGrip::hideAndShowOnWindowStateChange_data()
 {
-    QTest::addColumn<Qt::WindowType>("windowType");
-    QTest::newRow("Qt::Window") << Qt::Window;
-    QTest::newRow("Qt::SubWindow") << Qt::SubWindow;
+    BOBUIest::addColumn<BobUI::WindowType>("windowType");
+    BOBUIest::newRow("BobUI::Window") << BobUI::Window;
+    BOBUIest::newRow("BobUI::SubWindow") << BobUI::SubWindow;
 }
 
 void tst_QSizeGrip::hideAndShowOnWindowStateChange()
 {
-    QFETCH(Qt::WindowType, windowType);
+    QFETCH(BobUI::WindowType, windowType);
 
     QScopedPointer<QWidget> parentWidget;
-    if (windowType != Qt::Window)
+    if (windowType != BobUI::Window)
         parentWidget.reset(new QWidget);
-    QScopedPointer<TestWidget> widget(new TestWidget(parentWidget.data(), Qt::WindowFlags(windowType)));
+    QScopedPointer<TestWidget> widget(new TestWidget(parentWidget.data(), BobUI::WindowFlags(windowType)));
     QSizeGrip *sizeGrip = new QSizeGrip(widget.data());
 
     // Normal.
@@ -84,35 +84,35 @@ void tst_QSizeGrip::hideAndShowOnWindowStateChange()
         parentWidget->show();
     else
         widget->show();
-    QTRY_VERIFY(sizeGrip->isVisible());
-    QVERIFY(QTest::qWaitForWindowExposed(widget.data()));
+    BOBUIRY_VERIFY(sizeGrip->isVisible());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(widget.data()));
 
     widget->showFullScreen();
-    QTRY_VERIFY(!sizeGrip->isVisible());
+    BOBUIRY_VERIFY(!sizeGrip->isVisible());
 
     widget->showNormal();
-    QTRY_VERIFY(sizeGrip->isVisible());
+    BOBUIRY_VERIFY(sizeGrip->isVisible());
 
     widget->showMaximized();
 #ifndef Q_OS_MAC
-    QTRY_VERIFY(!sizeGrip->isVisible());
+    BOBUIRY_VERIFY(!sizeGrip->isVisible());
 #else
-    QEXPECT_FAIL("", "QTBUG-23681", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-23681", Abort);
     QVERIFY(sizeGrip->isVisible());
 #endif
 
     widget->showNormal();
-    QTRY_VERIFY(sizeGrip->isVisible());
+    BOBUIRY_VERIFY(sizeGrip->isVisible());
 
     sizeGrip->hide();
-    QTRY_VERIFY(!sizeGrip->isVisible());
+    BOBUIRY_VERIFY(!sizeGrip->isVisible());
 
     widget->showFullScreen();
     widget->showNormal();
-    QTRY_VERIFY(!sizeGrip->isVisible());
+    BOBUIRY_VERIFY(!sizeGrip->isVisible());
     widget->showMaximized();
     widget->showNormal();
-    QTRY_VERIFY(!sizeGrip->isVisible());
+    BOBUIRY_VERIFY(!sizeGrip->isVisible());
 }
 
 void tst_QSizeGrip::orientation()
@@ -123,35 +123,35 @@ void tst_QSizeGrip::orientation()
     QSizeGrip *sizeGrip = new QSizeGrip(&widget);
     sizeGrip->setFixedSize(sizeGrip->sizeHint());
     widget.layout()->addWidget(sizeGrip);
-    widget.layout()->setAlignment(sizeGrip, Qt::AlignBottom | Qt::AlignRight);
+    widget.layout()->setAlignment(sizeGrip, BobUI::AlignBottom | BobUI::AlignRight);
 
     widget.show();
-    QCOMPARE(sizeGripCorner(&widget, sizeGrip), Qt::BottomRightCorner);
+    QCOMPARE(sizeGripCorner(&widget, sizeGrip), BobUI::BottomRightCorner);
 
-    widget.setLayoutDirection(Qt::RightToLeft);
+    widget.setLayoutDirection(BobUI::RightToLeft);
     qApp->processEvents();
-    QCOMPARE(sizeGripCorner(&widget, sizeGrip), Qt::BottomLeftCorner);
-
-    widget.unsetLayoutDirection();
-    qApp->processEvents();
-    QCOMPARE(sizeGripCorner(&widget, sizeGrip), Qt::BottomRightCorner);
-
-    widget.layout()->setAlignment(sizeGrip, Qt::AlignTop | Qt::AlignRight);
-    qApp->processEvents();
-    QCOMPARE(sizeGripCorner(&widget, sizeGrip), Qt::TopRightCorner);
-
-    widget.setLayoutDirection(Qt::RightToLeft);
-    qApp->processEvents();
-    QCOMPARE(sizeGripCorner(&widget, sizeGrip), Qt::TopLeftCorner);
+    QCOMPARE(sizeGripCorner(&widget, sizeGrip), BobUI::BottomLeftCorner);
 
     widget.unsetLayoutDirection();
     qApp->processEvents();
-    QCOMPARE(sizeGripCorner(&widget, sizeGrip), Qt::TopRightCorner);
+    QCOMPARE(sizeGripCorner(&widget, sizeGrip), BobUI::BottomRightCorner);
+
+    widget.layout()->setAlignment(sizeGrip, BobUI::AlignTop | BobUI::AlignRight);
+    qApp->processEvents();
+    QCOMPARE(sizeGripCorner(&widget, sizeGrip), BobUI::TopRightCorner);
+
+    widget.setLayoutDirection(BobUI::RightToLeft);
+    qApp->processEvents();
+    QCOMPARE(sizeGripCorner(&widget, sizeGrip), BobUI::TopLeftCorner);
+
+    widget.unsetLayoutDirection();
+    qApp->processEvents();
+    QCOMPARE(sizeGripCorner(&widget, sizeGrip), BobUI::TopRightCorner);
 }
 
 void tst_QSizeGrip::dontCrashOnTLWChange()
 {
-    // QTBUG-22867
+    // BOBUIBUG-22867
     QMdiArea mdiArea;
     mdiArea.show();
 
@@ -164,10 +164,10 @@ void tst_QSizeGrip::dontCrashOnTLWChange()
 
     // the above setup causes a change of TLW for the size grip,
     // and it must not crash.
-    QVERIFY(QTest::qWaitForWindowExposed(&mdiArea));
-    QVERIFY(QTest::qWaitForWindowExposed(mw.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mdiArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(mw.data()));
 }
 
-QTEST_MAIN(tst_QSizeGrip)
+BOBUIEST_MAIN(tst_QSizeGrip)
 #include "tst_qsizegrip.moc"
 

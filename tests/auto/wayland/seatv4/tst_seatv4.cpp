@@ -1,21 +1,21 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
-#include <QtGui/QRasterWindow>
-#if QT_CONFIG(cursor)
+#include <BobUIGui/QRasterWindow>
+#if BOBUI_CONFIG(cursor)
 #include <wayland-cursor.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandintegration_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandintegration_p.h>
 #endif
 
 using namespace MockCompositor;
 
 // wl_seat version 5 was introduced in wayland 1.10, and although that's pretty old,
 // there are still compositors that have yet to update their implementation to support
-// the new version (most importantly our own QtWaylandCompositor).
+// the new version (most importantly our own BobUIWaylandCompositor).
 // As long as that's the case, this test makes sure input events still works on version 4.
 class SeatV4Compositor : public DefaultCompositor {
 public:
@@ -42,7 +42,7 @@ private slots:
     void cleanup();
     void bindsToSeat();
     void keyboardKeyPress();
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     void createsPointer();
     void setsCursorOnEnter();
     void usesEnterSerial();
@@ -69,7 +69,7 @@ void tst_seatv4::init()
 
 void tst_seatv4::cleanup()
 {
-    QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
+    BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage()));
     QCOMPOSITOR_COMPARE(getAll<Output>().size(), 1); // No extra outputs left
 }
 
@@ -99,10 +99,10 @@ void tst_seatv4::keyboardKeyPress()
         keyboard()->sendKey(client(), keyCode, Keyboard::key_state_pressed);
         keyboard()->sendKey(client(), keyCode, Keyboard::key_state_released);
     });
-    QTRY_VERIFY(window.m_pressed);
+    BOBUIRY_VERIFY(window.m_pressed);
 }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 
 void tst_seatv4::createsPointer()
 {
@@ -134,7 +134,7 @@ void tst_seatv4::usesEnterSerial()
     });
     QCOMPOSITOR_TRY_VERIFY(cursorSurface());
 
-    QTRY_COMPARE(setCursorSpy.size(), 1);
+    BOBUIRY_COMPARE(setCursorSpy.size(), 1);
     QCOMPARE(setCursorSpy.takeFirst().at(0).toUInt(), enterSerial);
 }
 
@@ -152,7 +152,7 @@ void tst_seatv4::focusDestruction()
         return pointer()->sendEnter(xdgSurface()->m_surface, {32, 32});
     });
     QCOMPOSITOR_TRY_VERIFY(cursorSurface());
-    QTRY_COMPARE(setCursorSpy.size(), 1);
+    BOBUIRY_COMPARE(setCursorSpy.size(), 1);
     QCOMPARE(setCursorSpy.takeFirst().at(0).toUInt(), enterSerial);
 
     // Destroy the focus
@@ -161,7 +161,7 @@ void tst_seatv4::focusDestruction()
     QRasterWindow window2;
     window2.resize(64, 64);
     window2.show();
-    window2.setCursor(Qt::WaitCursor);
+    window2.setCursor(BobUI::WaitCursor);
     QCOMPOSITOR_TRY_VERIFY(xdgSurface() && xdgSurface()->m_committedConfigureSerial);
 
     // Setting a cursor now is not allowed since there has been no enter event
@@ -188,7 +188,7 @@ void tst_seatv4::mousePress()
         pointer()->sendButton(client(), BTN_LEFT, 1);
         pointer()->sendButton(client(), BTN_LEFT, 0);
     });
-    QTRY_VERIFY(window.m_pressed);
+    BOBUIRY_VERIFY(window.m_pressed);
 }
 
 void tst_seatv4::mousePressFloat()
@@ -212,21 +212,21 @@ void tst_seatv4::mousePressFloat()
     });
     QMargins m = window.frameMargins();
     QPointF pressedPosition(32.75 -m.left(), 32.25 - m.top());
-    QTRY_COMPARE(window.m_position, pressedPosition);
+    BOBUIRY_COMPARE(window.m_position, pressedPosition);
 }
 
 void tst_seatv4::simpleAxis_data()
 {
-    QTest::addColumn<uint>("axis");
-    QTest::addColumn<qreal>("value");
-    QTest::addColumn<QPoint>("angleDelta");
+    BOBUIest::addColumn<uint>("axis");
+    BOBUIest::addColumn<qreal>("value");
+    BOBUIest::addColumn<QPoint>("angleDelta");
 
     // Directions in regular windows/linux terms (no "natural" scrolling)
-    QTest::newRow("down") << uint(Pointer::axis_vertical_scroll) << 1.0  << QPoint{0, -12};
-    QTest::newRow("up") << uint(Pointer::axis_vertical_scroll) << -1.0 << QPoint{0, 12};
-    QTest::newRow("left") << uint(Pointer::axis_horizontal_scroll) << 1.0 << QPoint{-12, 0};
-    QTest::newRow("right") << uint(Pointer::axis_horizontal_scroll) << -1.0 << QPoint{12, 0};
-    QTest::newRow("up big") << uint(Pointer::axis_vertical_scroll) << -10.0 << QPoint{0, 120};
+    BOBUIest::newRow("down") << uint(Pointer::axis_vertical_scroll) << 1.0  << QPoint{0, -12};
+    BOBUIest::newRow("up") << uint(Pointer::axis_vertical_scroll) << -1.0 << QPoint{0, 12};
+    BOBUIest::newRow("left") << uint(Pointer::axis_horizontal_scroll) << 1.0 << QPoint{-12, 0};
+    BOBUIest::newRow("right") << uint(Pointer::axis_horizontal_scroll) << -1.0 << QPoint{12, 0};
+    BOBUIest::newRow("up big") << uint(Pointer::axis_vertical_scroll) << -10.0 << QPoint{0, 120};
 }
 
 void tst_seatv4::simpleAxis()
@@ -249,7 +249,7 @@ void tst_seatv4::simpleAxis()
             QVERIFY(!event->angleDelta().isNull());
 
             // There are now scroll phases on Wayland prior to v5
-            QCOMPARE(event->phase(), Qt::NoScrollPhase);
+            QCOMPARE(event->phase(), BobUI::NoScrollPhase);
 
             // Pixel delta should only be set if we know it's a high-res input device (which we don't)
             QCOMPARE(event->pixelDelta(), QPoint(0, 0));
@@ -259,11 +259,11 @@ void tst_seatv4::simpleAxis()
             QCOMPARE(event->inverted(), false);
 
             // We didn't press any buttons
-            QCOMPARE(event->buttons(), Qt::NoButton);
+            QCOMPARE(event->buttons(), BobUI::NoButton);
 
             // There has been no information about what created the event.
             // Documentation says not synthesized is appropriate in such cases
-            QCOMPARE(event->source(), Qt::MouseEventNotSynthesized);
+            QCOMPARE(event->source(), BobUI::MouseEventNotSynthesized);
 
             m_events.append(Event{event->pixelDelta(), event->angleDelta()});
         }
@@ -290,7 +290,7 @@ void tst_seatv4::simpleAxis()
         );
     });
 
-    QTRY_COMPARE(window.m_events.size(), 1);
+    BOBUIRY_COMPARE(window.m_events.size(), 1);
     auto event = window.m_events.takeFirst();
     QCOMPARE(event.angleDelta, angleDelta);
 }
@@ -333,7 +333,7 @@ static bool supportsCursorSize(uint size, wl_shm *shm)
 
 static bool supportsCursorSizes(const QList<uint> &sizes)
 {
-    auto *waylandIntegration = static_cast<QtWaylandClient::QWaylandIntegration *>(QGuiApplicationPrivate::platformIntegration());
+    auto *waylandIntegration = static_cast<BobUIWaylandClient::QWaylandIntegration *>(QGuiApplicationPrivate::platformIntegration());
     wl_shm *shm = waylandIntegration->display()->shm()->object();
     return std::all_of(sizes.begin(), sizes.end(), [&](uint size) {
         return supportsCursorSize(size, shm);
@@ -552,7 +552,7 @@ void tst_seatv4::animatedCursor()
 {
     QRasterWindow window;
     window.resize(64, 64);
-    window.setCursor(Qt::WaitCursor); // TODO: verify that the theme has an animated wait cursor or skip test
+    window.setCursor(BobUI::WaitCursor); // TODO: verify that the theme has an animated wait cursor or skip test
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgSurface() && xdgSurface()->m_committedConfigureSerial);
 
@@ -568,7 +568,7 @@ void tst_seatv4::animatedCursor()
         QVERIFY(bufferSpy.empty());
 
         if (QSysInfo::productType() == "opensuse-leap" && QSysInfo::productVersion() == QLatin1String("16.0"))
-            QEXPECT_FAIL("", "QTBUG-141773: opensuse-leap 16.0 fails", Continue);
+            QEXPECT_FAIL("", "BOBUIBUG-141773: opensuse-leap 16.0 fails", Continue);
 
         // The client should send a frame request in order to time animations correctly
         QVERIFY(!cursorSurface()->m_waitingFrameCallbacks.empty());
@@ -578,13 +578,13 @@ void tst_seatv4::animatedCursor()
     });
 
     if (QSysInfo::productType() == "opensuse-leap" && QSysInfo::productVersion() == QLatin1String("16.0"))
-        QEXPECT_FAIL("", "QTBUG-141773: opensuse-leap 16.0 fails", Continue);
+        QEXPECT_FAIL("", "BOBUIBUG-141773: opensuse-leap 16.0 fails", Continue);
 
     // Verify that we get a new cursor buffer
-    QTRY_COMPARE(bufferSpy.size(), 1);
+    BOBUIRY_COMPARE(bufferSpy.size(), 1);
 }
 
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 QCOMPOSITOR_TEST_MAIN(tst_seatv4)
 #include "tst_seatv4.moc"

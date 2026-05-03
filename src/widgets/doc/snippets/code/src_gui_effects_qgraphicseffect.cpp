@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QGraphicsEffect>
 #include <QPainter>
@@ -42,13 +42,13 @@ void MyGraphicsEffect::draw(QPainter *painter)
     QPoint offset;
     if (sourceIsPixmap()) {
         // No point in drawing in device coordinates (pixmap will be scaled anyways).
-        const QPixmap pixmap = sourcePixmap(Qt::LogicalCoordinates, &offset);
+        const QPixmap pixmap = sourcePixmap(BobUI::LogicalCoordinates, &offset);
         //...
         painter->drawPixmap(offset, pixmap);
     } else {
         // Draw pixmap in device coordinates to avoid pixmap scaling;
-        const QPixmap pixmap = sourcePixmap(Qt::DeviceCoordinates, &offset);
-        painter->setWorldTransform(QTransform());
+        const QPixmap pixmap = sourcePixmap(BobUI::DeviceCoordinates, &offset);
+        painter->setWorldTransform(BOBUIransform());
         //...
         painter->drawPixmap(offset, pixmap);
     }
@@ -63,9 +63,9 @@ void example()
     //! [2]
     //...
     QLinearGradient alphaGradient(rect.topLeft(), rect.bottomLeft());
-    alphaGradient.setColorAt(0.0, Qt::transparent);
-    alphaGradient.setColorAt(0.5, Qt::black);
-    alphaGradient.setColorAt(1.0, Qt::transparent);
+    alphaGradient.setColorAt(0.0, BobUI::transparent);
+    alphaGradient.setColorAt(0.5, BobUI::black);
+    alphaGradient.setColorAt(1.0, BobUI::transparent);
     QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect;
     effect->setOpacityMask(alphaGradient);
     //...

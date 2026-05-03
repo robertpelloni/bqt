@@ -1,28 +1,28 @@
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPIXMAPSTYLE_H
 #define QPIXMAPSTYLE_H
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtWidgets/QCommonStyle>
-#include <QtWidgets/QTileRules>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIWidgets/QCommonStyle>
+#include <BobUIWidgets/BOBUIileRules>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPixmapStylePrivate;
 
@@ -41,7 +41,7 @@ public:
         PB_PressedDisabled,
         PB_Checked,
         PB_Disabled,
-        TE_Enabled,             // QTextEdit
+        TE_Enabled,             // BOBUIextEdit
         TE_Disabled,
         TE_Focused,
         PB_HBackground,         // Horizontal QProgressBar
@@ -132,7 +132,7 @@ public:
 
     void addDescriptor(ControlDescriptor control, const QString &fileName,
                        QMargins margins = QMargins(),
-                       QTileRules tileRules = QTileRules(Qt::RepeatTile, Qt::RepeatTile));
+                       BOBUIileRules tileRules = BOBUIileRules(BobUI::RepeatTile, BobUI::RepeatTile));
     void copyDescriptor(ControlDescriptor source, ControlDescriptor dest);
     void drawCachedPixmap(ControlDescriptor control, const QRect &rect, QPainter *p) const;
 
@@ -191,6 +191,6 @@ private:
     Q_DECLARE_PRIVATE(QPixmapStyle)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPIXMAPSTYLE_H

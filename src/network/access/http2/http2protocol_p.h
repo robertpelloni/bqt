@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef HTTP2PROTOCOL_P_H
 #define HTTP2PROTOCOL_P_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/qnetworkreply.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qmap.h>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qmap.h>
 
 #include <vector>
 
 // Different HTTP/2 constants/values as defined by RFC 7540.
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttpNetworkRequest;
 class QHttp2Configuration;
@@ -115,7 +115,7 @@ const quint32 lastValidStreamID((quint32(1) << 31) - 1); // HTTP/2, 5.1.1
 // we do the same and split this window size between our concurrent streams.
 const qint32 maxSessionReceiveWindowSize((quint32(1) << 31) - 1);
 // Presumably, we never use up to 100 streams so let it be 10 simultaneous:
-const qint32 qtDefaultStreamReceiveWindowSize = maxSessionReceiveWindowSize / 10;
+const qint32 bobuiDefaultStreamReceiveWindowSize = maxSessionReceiveWindowSize / 10;
 
 struct Frame Q_AUTOTEST_EXPORT configurationToSettingsFrame(const QHttp2Configuration &configuration);
 QByteArray settingsFrameToBase64(const Frame &settingsFrame);
@@ -157,17 +157,17 @@ enum Http2Error : quint32
     HTTP_1_1_REQUIRED = 0xd
 };
 
-void qt_error(quint32 errorCode, QNetworkReply::NetworkError &error, QString &errorString);
-QString qt_error_string(quint32 errorCode);
-QNetworkReply::NetworkError qt_error(quint32 errorCode);
+void bobui_error(quint32 errorCode, QNetworkReply::NetworkError &error, QString &errorString);
+QString bobui_error_string(quint32 errorCode);
+QNetworkReply::NetworkError bobui_error(quint32 errorCode);
 bool is_protocol_upgraded(const QHttpNetworkReply &reply);
 
 } // namespace Http2
 
-Q_DECLARE_LOGGING_CATEGORY(QT_HTTP2)
+Q_DECLARE_LOGGING_CATEGORY(BOBUI_HTTP2)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(Http2::Settings, Http2__Settings, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(Http2::Settings, Http2__Settings, Q_NETWORK_EXPORT)
 
 #endif

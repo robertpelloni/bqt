@@ -1,0 +1,16 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUITest
+    \title BobUI Test C++ Classes
+    \ingroup modules
+    \bobuicmakepackage Test
+    \bobuivariable testlib
+
+    \keyword BobUITest
+
+    \brief Provides classes for unit testing BobUI applications and libraries.
+
+    The \l{BobUI Test} page contains information about how to use the module.
+*/

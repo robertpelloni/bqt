@@ -1,29 +1,29 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDTLS_OPENSSL_P_H
 #define QDTLS_OPENSSL_P_H
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qsslcontext_openssl_p.h"
-#include "qtlsbackend_openssl_p.h"
-#include "qtls_openssl_p.h"
+#include "bobuilsbackend_openssl_p.h"
+#include "bobuils_openssl_p.h"
 #include "qopenssl_p.h"
 
 #include "../shared/qdtls_base_p.h"
 
-#include <QtNetwork/private/qdtls_p.h>
+#include <BobUINetwork/private/qdtls_p.h>
 
-#include <QtNetwork/qsslpresharedkeyauthenticator.h>
-#include <QtNetwork/qhostaddress.h>
+#include <BobUINetwork/qsslpresharedkeyauthenticator.h>
+#include <BobUINetwork/qhostaddress.h>
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qlist.h>
 
 #include <openssl/ossl_typ.h>
 
@@ -31,17 +31,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_REQUIRE_CONFIG(openssl);
-QT_REQUIRE_CONFIG(dtls);
+BOBUI_REQUIRE_CONFIG(openssl);
+BOBUI_REQUIRE_CONFIG(dtls);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDtlsPrivateOpenSSL;
 class QDtlsBasePrivate;
@@ -100,10 +100,10 @@ private:
 // virtual functions is intentional. Too bad MSVC warns me about ... exactly the
 // feature of C++ that I want to use.
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4250)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4250)
 
-class QDtlsClientVerifierOpenSSL : public QTlsPrivate::DtlsCookieVerifier, public QDtlsBasePrivate
+class QDtlsClientVerifierOpenSSL : public BOBUIlsPrivate::DtlsCookieVerifier, public QDtlsBasePrivate
 {
 public:
     QDtlsClientVerifierOpenSSL();
@@ -117,7 +117,7 @@ private:
     QByteArray verifiedClientHello;
 };
 
-class QDtlsPrivateOpenSSL : public QTlsPrivate::DtlsCryptograph, public QDtlsBasePrivate
+class QDtlsPrivateOpenSSL : public BOBUIlsPrivate::DtlsCryptograph, public QDtlsBasePrivate
 {
 public:
 
@@ -183,7 +183,7 @@ private:
         void doubleTimeout();
         void resetTimeout() {timeoutMs = 1000;}
         void stop();
-        void timerEvent(QTimerEvent *event) override;
+        void timerEvent(BOBUIimerEvent *event) override;
 
         QBasicTimer timer;
         int timeoutMs = 1000;
@@ -205,8 +205,8 @@ private:
     QByteArray identityHint;
 };
 
-QT_WARNING_POP // C4250
+BOBUI_WARNING_POP // C4250
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDTLS_OPENSSL_P_H

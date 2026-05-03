@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcupsprintengine_p.h"
 
@@ -11,15 +11,15 @@
 #include <qdebug.h>
 #include <qbuffer.h>
 #include "private/qcups_p.h" // Only needed for PPK_CupsOptions
-#include <QtGui/qpagelayout.h>
+#include <BobUIGui/qpagelayout.h>
 
 #include <cups/cups.h>
 
-#include "private/qcore_unix_p.h" // overrides QT_OPEN
+#include "private/qcore_unix_p.h" // overrides BOBUI_OPEN
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
+extern QMarginsF bobui_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
 
 QCupsPrintEngine::QCupsPrintEngine(QPrinter::PrinterMode m, const QString &deviceId)
     : QPdfPrintEngine(*new QCupsPrintEnginePrivate(m))
@@ -290,8 +290,8 @@ void QCupsPrintEnginePrivate::setPageSize(const QPageSize &pageSize)
         QPageSize printerPageSize = m_printDevice.supportedPageSize(pageSize);
         QPageSize usePageSize = printerPageSize.isValid() ? printerPageSize : pageSize;
         QMarginsF printable = m_printDevice.printableMargins(usePageSize, m_pageLayout.orientation(), resolution);
-        m_pageLayout.setPageSize(usePageSize, qt_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
+        m_pageLayout.setPageSize(usePageSize, bobui_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

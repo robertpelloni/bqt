@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSOLE_H
 #define QWINDOWSOLE_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/private/qcomobject_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/private/qcomobject_p.h>
 
 #include <objidl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 class QWindow;
@@ -24,7 +24,7 @@ public:
     explicit QWindowsOleDataObject(QMimeData *mimeData);
     ~QWindowsOleDataObject() override;
 
-    void releaseQt();
+    void releaseBobUI();
     QMimeData *mimeData() const;
     DWORD reportedPerformedEffect() const;
 
@@ -70,6 +70,6 @@ private:
     bool m_isNull = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSOLE_H

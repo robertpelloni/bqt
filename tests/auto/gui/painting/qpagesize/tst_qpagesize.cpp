@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGlobal>
-#include <QtAlgorithms>
-#include <QtGui/QPageSize>
+#include <BOBUIest>
+#include <BobUIGlobal>
+#include <BobUIAlgorithms>
+#include <BobUIGui/QPageSize>
 
 #ifdef Q_OS_WIN
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #endif // Q_OS_WIN
 
 class tst_QPageSize : public QObject
@@ -220,6 +220,6 @@ void tst_QPageSize::statics()
     QCOMPARE(QPageSize::sizePixels(QPageSize::EnvelopeYou4, 72), QSize(298,  666));
 }
 
-QTEST_APPLESS_MAIN(tst_QPageSize)
+BOBUIEST_APPLESS_MAIN(tst_QPageSize)
 
 #include "tst_qpagesize.moc"

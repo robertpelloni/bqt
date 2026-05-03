@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwaitcondition.h"
 
@@ -19,19 +19,19 @@
 #include <sys/time.h>
 #include <time.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static void qt_report_pthread_error(int code, const char *where, const char *what)
+static void bobui_report_pthread_error(int code, const char *where, const char *what)
 {
     if (code != 0)
         qErrnoWarning(code, "%s: %s failure", where, what);
 }
 
-static void qt_initialize_pthread_cond(pthread_cond_t *cond, const char *where)
+static void bobui_initialize_pthread_cond(pthread_cond_t *cond, const char *where)
 {
     pthread_condattr_t *attrp = nullptr;
 
-#if QT_CONFIG(pthread_condattr_setclock)
+#if BOBUI_CONFIG(pthread_condattr_setclock)
     pthread_condattr_t condattr;
     attrp = &condattr;
 
@@ -41,7 +41,7 @@ static void qt_initialize_pthread_cond(pthread_cond_t *cond, const char *where)
         pthread_condattr_setclock(&condattr, QWaitConditionClockId);
 #endif
 
-    qt_report_pthread_error(pthread_cond_init(cond, attrp), where, "cv init");
+    bobui_report_pthread_error(pthread_cond_init(cond, attrp), where, "cv init");
 }
 
 class QWaitConditionPrivate
@@ -80,11 +80,11 @@ public:
             Q_ASSERT_X(wakeups > 0, "QWaitCondition::wait", "internal error (wakeups)");
             --wakeups;
         }
-        qt_report_pthread_error(pthread_mutex_unlock(&mutex), "QWaitCondition::wait()",
+        bobui_report_pthread_error(pthread_mutex_unlock(&mutex), "QWaitCondition::wait()",
                                 "mutex unlock");
 
         if (code && code != ETIMEDOUT)
-            qt_report_pthread_error(code, "QWaitCondition::wait()", "cv wait");
+            bobui_report_pthread_error(code, "QWaitCondition::wait()", "cv wait");
 
         return (code == 0);
     }
@@ -93,37 +93,37 @@ public:
 QWaitCondition::QWaitCondition()
 {
     d = new QWaitConditionPrivate;
-    qt_report_pthread_error(pthread_mutex_init(&d->mutex, nullptr), "QWaitCondition", "mutex init");
-    qt_initialize_pthread_cond(&d->cond, "QWaitCondition");
+    bobui_report_pthread_error(pthread_mutex_init(&d->mutex, nullptr), "QWaitCondition", "mutex init");
+    bobui_initialize_pthread_cond(&d->cond, "QWaitCondition");
     d->waiters = d->wakeups = 0;
 }
 
 QWaitCondition::~QWaitCondition()
 {
-    qt_report_pthread_error(pthread_cond_destroy(&d->cond), "QWaitCondition", "cv destroy");
-    qt_report_pthread_error(pthread_mutex_destroy(&d->mutex), "QWaitCondition", "mutex destroy");
+    bobui_report_pthread_error(pthread_cond_destroy(&d->cond), "QWaitCondition", "cv destroy");
+    bobui_report_pthread_error(pthread_mutex_destroy(&d->mutex), "QWaitCondition", "mutex destroy");
     delete d;
 }
 
 void QWaitCondition::wakeOne()
 {
-    qt_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wakeOne()",
+    bobui_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wakeOne()",
                             "mutex lock");
     d->wakeups = qMin(d->wakeups + 1, d->waiters);
-    qt_report_pthread_error(pthread_cond_signal(&d->cond), "QWaitCondition::wakeOne()",
+    bobui_report_pthread_error(pthread_cond_signal(&d->cond), "QWaitCondition::wakeOne()",
                             "cv signal");
-    qt_report_pthread_error(pthread_mutex_unlock(&d->mutex), "QWaitCondition::wakeOne()",
+    bobui_report_pthread_error(pthread_mutex_unlock(&d->mutex), "QWaitCondition::wakeOne()",
                             "mutex unlock");
 }
 
 void QWaitCondition::wakeAll()
 {
-    qt_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wakeAll()",
+    bobui_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wakeAll()",
                             "mutex lock");
     d->wakeups = d->waiters;
-    qt_report_pthread_error(pthread_cond_broadcast(&d->cond), "QWaitCondition::wakeAll()",
+    bobui_report_pthread_error(pthread_cond_broadcast(&d->cond), "QWaitCondition::wakeAll()",
                             "cv broadcast");
-    qt_report_pthread_error(pthread_mutex_unlock(&d->mutex), "QWaitCondition::wakeAll()",
+    bobui_report_pthread_error(pthread_mutex_unlock(&d->mutex), "QWaitCondition::wakeAll()",
                             "mutex unlock");
 }
 
@@ -139,7 +139,7 @@ bool QWaitCondition::wait(QMutex *mutex, QDeadlineTimer deadline)
     if (!mutex)
         return false;
 
-    qt_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wait()", "mutex lock");
+    bobui_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wait()", "mutex lock");
     ++d->waiters;
     mutex->unlock();
 
@@ -171,7 +171,7 @@ bool QWaitCondition::wait(QReadWriteLock *readWriteLock, QDeadlineTimer deadline
         return false;
     }
 
-    qt_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wait()", "mutex lock");
+    bobui_report_pthread_error(pthread_mutex_lock(&d->mutex), "QWaitCondition::wait()", "mutex lock");
     ++d->waiters;
 
     readWriteLock->unlock();
@@ -186,4 +186,4 @@ bool QWaitCondition::wait(QReadWriteLock *readWriteLock, QDeadlineTimer deadline
     return returnValue;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

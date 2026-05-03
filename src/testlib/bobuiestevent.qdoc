@@ -1,0 +1,150 @@
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \class BOBUIestEventList
+    \inmodule BobUITest
+
+    \brief The BOBUIestEventList class provides a list of GUI events.
+
+    A BOBUIestEventList can be populated with GUI events that can be
+    stored as test data for later usage, or be replayed on any
+    QWidget. BOBUIestEventList provides convenience functions for populating
+    the list.
+
+    Example:
+    \snippet code/doc_src_bobuiestevent.cpp 0
+
+    The example above simulates the user entering the character \c a
+    followed by a backspace, waiting for 200 milliseconds and
+    repeating it.
+*/
+
+/*! \fn BOBUIestEventList::BOBUIestEventList()
+
+    Constructs an empty BOBUIestEventList.
+*/
+
+/*! \fn BOBUIestEventList::BOBUIestEventList(const BOBUIestEventList &other)
+
+    Constructs a new BOBUIestEventList as a copy of \a other.
+*/
+
+/*! \fn BOBUIestEventList::~BOBUIestEventList()
+
+    Empties the list and destroys all stored events.
+*/
+
+/*! \fn void BOBUIestEventList::clear()
+
+    Removes all events from the list.
+*/
+
+/*! \fn void BOBUIestEventList::addKeyClick(BobUI::Key bobuiKey, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    Adds a new key click to the list. The event will simulate the key \a bobuiKey with the modifier \a modifiers and then wait for \a msecs milliseconds.
+
+    \sa BOBUIest::keyClick()
+*/
+
+/*! \fn void BOBUIestEventList::addKeyPress(BobUI::Key bobuiKey, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    Adds a new key press to the list. The event will press the key \a bobuiKey with the modifier \a modifiers and then wait for \a msecs milliseconds.
+
+    \sa BOBUIest::keyPress()
+*/
+
+/*! \fn void BOBUIestEventList::addKeyRelease(BobUI::Key bobuiKey, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    Adds a new key release to the list. The event will release the key \a bobuiKey with the modifier \a modifiers and then wait for \a msecs milliseconds.
+
+    \sa BOBUIest::keyRelease()
+
+*/
+
+/*! \fn void BOBUIestEventList::addKeyEvent(BOBUIest::KeyAction action, BobUI::Key bobuiKey, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+    \internal
+*/
+
+/*! \fn void BOBUIestEventList::addKeyClick(char ascii, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    \overload
+
+    Adds a new key click to the list. The event will simulate the key \a ascii with the modifier \a modifiers and then wait for \a msecs milliseconds.
+
+    \sa BOBUIest::keyClick()
+
+*/
+
+/*! \fn void BOBUIestEventList::addKeyPress(char ascii, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    \overload
+
+    Adds a new key press to the list. The event will press the key \a ascii with the modifier \a modifiers and then wait for \a msecs milliseconds.
+
+    \sa BOBUIest::keyPress()
+*/
+
+/*! \fn void BOBUIestEventList::addKeyRelease(char ascii, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    \overload
+
+    Adds a new key release to the list. The event will release the key \a ascii with the modifier \a modifiers and then wait for \a msecs milliseconds.
+
+    \sa BOBUIest::keyRelease()
+*/
+
+/*! \fn void BOBUIestEventList::addKeyClicks(const QString &keys, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+
+    Adds new keyboard entries to the list. The event will press the \a keys with the \a modifiers and wait \a msecs milliseconds between each key.
+
+    \sa BOBUIest::keyClicks()
+*/
+
+/*! \fn void BOBUIestEventList::addKeyEvent(BOBUIest::KeyAction action, char ascii, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int msecs = -1)
+    \internal
+*/
+
+/*! \fn void BOBUIestEventList::addDelay(int msecs)
+
+    Adds a \a msecs milliseconds delay.
+
+    \sa {BOBUIest::qWait()}
+*/
+
+/*! \fn void BOBUIestEventList::simulate(QWidget *w)
+
+    Simulates the events from the list one by one on the widget \a w.
+    For an example, please read the \l BOBUIestEventList class documentation.
+*/
+
+/*! \fn void BOBUIestEventList::addMousePress(BobUI::MouseButton button, BobUI::KeyboardModifiers modifiers, QPoint pos = QPoint(), int delay=-1)
+
+    Add a mouse press to the list. The event will press the \a button with optional \a modifiers at the position \a pos with an optional \a delay. The default position is the center of the widget.
+
+    \sa BOBUIest::mousePress()
+*/
+/*! \fn void BOBUIestEventList::addMouseRelease(BobUI::MouseButton button, BobUI::KeyboardModifiers modifiers, QPoint pos = QPoint(), int delay=-1)
+
+    Add a mouse release to the list. The event will release the \a button with optional \a modifiers at the position \a pos with an optional \a delay. The default position is the center of the widget.
+
+    \sa BOBUIest::mouseRelease()
+*/
+/*! \fn void BOBUIestEventList::addMouseClick(BobUI::MouseButton button, BobUI::KeyboardModifiers modifiers, QPoint pos = QPoint(), int delay=-1)
+
+    Add a mouse click to the list. The event will click the \a button with optional \a modifiers at the position \a pos with an optional \a delay. The default position is the center of the widget.
+
+    \sa BOBUIest::mouseClick()
+*/
+/*! \fn void BOBUIestEventList::addMouseDClick(BobUI::MouseButton button, BobUI::KeyboardModifiers modifiers, QPoint pos = QPoint(), int delay=-1)
+
+    Add a double mouse click to the list. The event will double click the \a button with optional \a modifiers at the position \a pos with an optional \a delay. The default position is the center of the widget.
+
+    \sa BOBUIest::mousePress()
+*/
+/*! \fn void BOBUIestEventList::addMouseMove(QPoint pos = QPoint(), int delay=-1)
+
+    Adds a mouse move to the list. The event will move the mouse to the position \a pos. If a \a delay (in milliseconds) is set, the test will wait after moving the mouse. The default position is the center of the widget.
+
+    \sa BOBUIest::mousePress()
+*/

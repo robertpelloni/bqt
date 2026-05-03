@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDOCKAREALAYOUT_P_H
 #define QDOCKAREALAYOUT_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qlayout.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qrect.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qlayout.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qrect.h"
 
-QT_REQUIRE_CONFIG(dockwidget);
+BOBUI_REQUIRE_CONFIG(dockwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLayoutItem;
 class QWidget;
@@ -35,7 +35,7 @@ class QMainWindow;
 class QWidgetAnimator;
 class QMainWindowLayout;
 struct QLayoutStruct;
-class QTabBar;
+class BOBUIabBar;
 
 // The classes in this file represent the tree structure that represents all the docks
 // Also see the wiki internal documentation
@@ -64,8 +64,8 @@ struct Q_AUTOTEST_EXPORT QDockAreaLayoutItem
     QSize minimumSize() const;
     QSize maximumSize() const;
     QSize sizeHint() const;
-    bool expansive(Qt::Orientation o) const;
-    bool hasFixedSize(Qt::Orientation o) const;
+    bool expansive(BobUI::Orientation o) const;
+    bool hasFixedSize(BobUI::Orientation o) const;
 
     QLayoutItem *widgetItem;
     QDockAreaLayoutInfo *subinfo;
@@ -73,7 +73,7 @@ struct Q_AUTOTEST_EXPORT QDockAreaLayoutItem
     int pos;
     int size;
     uint flags;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_AUTOTEST_EXPORT QDebug operator<<(QDebug dbg, const QDockAreaLayoutItem &item);
     friend Q_AUTOTEST_EXPORT QDebug operator<<(QDebug dbg, const QDockAreaLayoutItem *item);
 #endif
@@ -94,7 +94,7 @@ class Q_AUTOTEST_EXPORT QDockAreaLayoutInfo
 {
 public:
     QDockAreaLayoutInfo();
-    QDockAreaLayoutInfo(const int *_sep, QInternal::DockPosition _dockPos, Qt::Orientation _o,
+    QDockAreaLayoutInfo(const int *_sep, QInternal::DockPosition _dockPos, BobUI::Orientation _o,
                         int tbhape, QMainWindow *window);
 
     QSize minimumSize() const;
@@ -111,8 +111,8 @@ public:
     void remove(const QList<int> &path);
     void remove(QWidget *widget);
     void unnest(int index);
-    void split(int index, Qt::Orientation orientation, QLayoutItem *dockWidgetItem);
-#if QT_CONFIG(tabbar)
+    void split(int index, BobUI::Orientation orientation, QLayoutItem *dockWidgetItem);
+#if BOBUI_CONFIG(tabbar)
     void tab(int index, QLayoutItem *dockWidgetItem);
 #endif
     QDockAreaLayoutItem &item(const QList<int> &path);
@@ -128,7 +128,7 @@ public:
     bool restoreState(QDataStream &stream, QList<QDockWidget*> &widgets, bool testing);
 
     void fitItems();
-    bool expansive(Qt::Orientation o) const;
+    bool expansive(BobUI::Orientation o) const;
     int changeSize(int index, int size, bool below);
     QRect itemRect(int index, bool isGap = false) const;
     QRect itemRect(const QList<int> &path) const;
@@ -166,11 +166,11 @@ public:
     const int *sep;
     mutable QList<QWidget *> separatorWidgets;
     QInternal::DockPosition dockPos;
-    Qt::Orientation o;
+    BobUI::Orientation o;
     QRect rect;
     QMainWindow *mainWindow;
     QList<QDockAreaLayoutItem> item_list;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     void updateSeparatorWidgets() const;
     QSet<QWidget*> usedSeparatorWidgets() const;
 
@@ -179,7 +179,7 @@ public:
     void setCurrentTabId(quintptr id);
     QRect tabContentRect() const;
     bool tabbed;
-    QTabBar *tabBar;
+    BOBUIabBar *tabBar;
     int tabBarShape;
 
     void reparentWidgets(QWidget *p);
@@ -188,11 +188,11 @@ public:
     QSize tabBarMinimumSize() const;
     QSize tabBarSizeHint() const;
 
-    QSet<QTabBar*> usedTabBars() const;
+    QSet<BOBUIabBar*> usedTabBars() const;
 
     int tabIndexToListIndex(int) const;
     void moveTab(int from, int to);
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 };
 
 class Q_AUTOTEST_EXPORT QDockAreaLayout
@@ -200,7 +200,7 @@ class Q_AUTOTEST_EXPORT QDockAreaLayout
 public:
     enum { EmptyDropAreaSize = 80 }; // when a dock area is empty, how "wide" is it?
 
-    Qt::DockWidgetArea corners[4]; // use a Qt::Corner for indexing
+    BobUI::DockWidgetArea corners[4]; // use a BobUI::Corner for indexing
     QRect rect;
     QLayoutItem *centralWidgetItem;
     QMainWindow *mainWindow;
@@ -247,14 +247,14 @@ public:
     template<typename SizePMF, typename CenterPMF>
     QSize size_helper(SizePMF sizeFn, CenterPMF centerFn) const;
 
-    void addDockWidget(QInternal::DockPosition pos, QDockWidget *dockWidget, Qt::Orientation orientation);
+    void addDockWidget(QInternal::DockPosition pos, QDockWidget *dockWidget, BobUI::Orientation orientation);
     bool restoreDockWidget(QDockWidget *dockWidget);
     void splitDockWidget(QDockWidget *after, QDockWidget *dockWidget,
-                         Qt::Orientation orientation);
-#if QT_CONFIG(tabbar)
+                         BobUI::Orientation orientation);
+#if BOBUI_CONFIG(tabbar)
     void tabifyDockWidget(QDockWidget *first, QDockWidget *second);
 #endif
-    void resizeDocks(const QList<QDockWidget *> &docks, const QList<int> &sizes, Qt::Orientation o);
+    void resizeDocks(const QList<QDockWidget *> &docks, const QList<int> &sizes, BobUI::Orientation o);
 
     void apply(bool animate);
 
@@ -262,9 +262,9 @@ public:
                             const QPoint &mouse) const;
     QRegion separatorRegion() const;
     int separatorMove(const QList<int> &separator, const QPoint &origin, const QPoint &dest);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     void updateSeparatorWidgets() const;
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
     QLayoutItem *itemAt(int *x, int index) const;
     QLayoutItem *takeAt(int *x, int index);
@@ -277,13 +277,13 @@ public:
     QRect gapRect(QInternal::DockPosition dockPos) const;
 
     void keepSize(QDockWidget *w);
-#if QT_CONFIG(tabbar)
-    QSet<QTabBar*> usedTabBars() const;
+#if BOBUI_CONFIG(tabbar)
+    QSet<BOBUIabBar*> usedTabBars() const;
     QSet<QWidget*> usedSeparatorWidgets() const;
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
     void styleChangedEvent();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDOCKAREALAYOUT_P_H

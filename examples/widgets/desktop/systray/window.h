@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WINDOW_H
 #define WINDOW_H
 
 #include <QSystemTrayIcon>
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QCheckBox;
 class QComboBox;
@@ -20,8 +20,8 @@ class QLineEdit;
 class QMenu;
 class QPushButton;
 class QSpinBox;
-class QTextEdit;
-QT_END_NAMESPACE
+class BOBUIextEdit;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class Window : public QDialog
@@ -62,7 +62,7 @@ private:
     QComboBox *typeComboBox;
     QSpinBox *durationSpinBox;
     QLineEdit *titleEdit;
-    QTextEdit *bodyEdit;
+    BOBUIextEdit *bodyEdit;
     QPushButton *showMessageButton;
 
     QAction *minimizeAction;
@@ -75,6 +75,6 @@ private:
 };
 //! [0]
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON
 
 #endif

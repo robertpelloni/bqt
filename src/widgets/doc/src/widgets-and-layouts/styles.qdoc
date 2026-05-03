@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 /*!
     \page style-reference.html
     \title Styles and Style Aware Widgets
-    \ingroup qt-gui-concepts
+    \ingroup bobui-gui-concepts
     \brief Styles and the styling of widgets.
 
     Styles (classes that inherit QStyle) draw on behalf of widgets
     and encapsulate the look and feel of a GUI. The QStyle class is
     an abstract base class that encapsulates the look and feel of a
-    GUI. Qt's built-in widgets use it to perform nearly all of their
+    GUI. BobUI's built-in widgets use it to perform nearly all of their
     drawing, ensuring that they look exactly like the equivalent
     native widgets.
 
-    Qt comes with a selection of built-in styles. Certain styles are only
+    BobUI comes with a selection of built-in styles. Certain styles are only
     available on specific platforms. Custom styles are made available as
     plugins or by creating an instance of a specific style class with
     QStyleFactory::create() and setting it with QApplication::setStyle().
@@ -36,14 +36,14 @@
     inherit QCommonStyle instead and reimplement the appropriate virtual
     methods. Implementing a full custom style is somewhat involved, and
     we therefore provide this overview. We give a step-by-step walkthrough
-    of how to style individual Qt widgets. We will examine the QStyle
+    of how to style individual BobUI widgets. We will examine the QStyle
     virtual functions, member variables, and enumerations.
 
     The part of this document that does not concern the styling of
     individual widgets is meant to be read sequentially because later
     sections tend to depend on earlier ones. The description of the
     widgets can be used for reference while implementing a style.
-    However, you may need to consult the Qt source code in some cases.
+    However, you may need to consult the BobUI source code in some cases.
     The sequence in the styling process should become clear after
     reading this document, which will aid you in locating relevant code.
 
@@ -97,7 +97,7 @@
     how the palette is used.
 
     Items in item views are drawn by \l{Delegate Classes}{delegates} in
-    Qt. The item view headers are still drawn by the style. Qt's
+    BobUI. The item view headers are still drawn by the style. BobUI's
     default delegate, QStyledItemDelegate, draws its items partially
     through the current style; it draws the check box indicators and
     calculates bounding rectangles for the elements of which the item
@@ -125,7 +125,7 @@
 
     Widgets are not necessarily drawn by asking the style to draw
     only one element. Widgets can make several calls to the style to
-    draw different elements. An example is QTabWidget, which draws its
+    draw different elements. An example is BOBUIabWidget, which draws its
     tabs and frame individually.
 
     There are three element types: primitive elements, control
@@ -189,7 +189,7 @@
     rectangle in which the sub control should be drawn. It is common,
     though, that complex elements use control and primitive elements
     to draw their sub controls, which is an approach that is
-    frequently used by the built-in styles in Qt and also the Java
+    frequently used by the built-in styles in BobUI and also the Java
     style. For instance, the Java style uses PE_IndicatorCheckBox to
     draw the check box in group boxes (which is a sub control of
     \c CC_GroupBox). Some sub controls have an equivalent control element,
@@ -217,7 +217,7 @@
     A style usually has a set of standard images (such as a warning, a
     question, and an error image) for message boxes, file dialogs,
     etc. QStyle provides the \l{QStyle::}{StandardPixmap} enum. Its
-    values represent the standard images. Qt's widgets use these, so
+    values represent the standard images. BobUI's widgets use these, so
     when you implement a custom style you should supply the images
     used by the style that is being implemented.
 
@@ -265,12 +265,12 @@
     pointer type is correct. If the object isn't of the right type,
     qstyleoption_cast() returns \nullptr. For example:
 
-    \snippet code/doc_src_qt4-styles.cpp 0
+    \snippet code/doc_src_bobui4-styles.cpp 0
 
     The following code snippet illustrates how to use QStyle to
     draw the focus rectangle from a custom widget's paintEvent():
 
-    \snippet code/doc_src_qt4-styles.cpp 1
+    \snippet code/doc_src_bobui4-styles.cpp 1
 
     The next example shows how to derive from an existing style to
     customize the look of a graphical element:
@@ -350,7 +350,7 @@
     are hidden. You can use these functions to set attributes on the
     widgets or do other work that is required by your style. For
     instance, if you need to know when the mouse is hovering over the
-    widget, you need to set the \l{Qt::}{WA_Hover} widget attribute.
+    widget, you need to set the \l{BobUI::}{WA_Hover} widget attribute.
     The \c State_MouseOver state flag will then be set in the widget's
     style options.
 
@@ -394,7 +394,7 @@
 
     It is not recommended to hard-code colors, as applications and
     individual widgets can set their own palette and also use their
-    style's palette for drawing. Note that none of Qt's widgets set
+    style's palette for drawing. Note that none of BobUI's widgets set
     their own palette. The Java style does hard-code some colors, but
     only as a decision of the author; it is not advised. Of course,
     it is not intended that the style should look good with any palette.
@@ -426,9 +426,9 @@
     and feel (previously known as Metal). We have done this as it is
     relatively simple to implement and we wanted to build a style for
     this overview document. To keep it simple and not too extensive, we
-    have simplified the style somewhat, but Qt is perfectly able to
+    have simplified the style somewhat, but BobUI is perfectly able to
     make an exact copy of the style. However, there are no concrete
-    plans to implement the style as a part of Qt.
+    plans to implement the style as a part of BobUI.
 
     In this section we will have a look at some implementation
     issues. Finally, we will see a complete example on the styling of
@@ -458,7 +458,7 @@
     We have not fully implemented every element in the Java style.
     This way, we have reduced the amount and complexity of the code.
     In general, the style was intended as a practical example for
-    this style overview document, and not to be a part of Qt
+    this style overview document, and not to be a part of BobUI
     itself.
 
     Not all widgets have every state implemented. This goes for
@@ -470,7 +470,7 @@
     title bars and dock window titles grow too small for their
     contents, but simply draw sub controls over each other.
 
-    We have not tried to emulate the Java fonts. Java and Qt use very
+    We have not tried to emulate the Java fonts. Java and BobUI use very
     different font engines, so we don't consider it worth the effort
     as we only use the style as an example for this overview.
 
@@ -482,8 +482,8 @@
     dependent on the palette), so it does not present a problem in any
     case.
 
-    It is Qt's widgets that are styled. Some widgets do not exist
-    at all in Java, e.g., QToolBox. Others contain elements that the
+    It is BobUI's widgets that are styled. Some widgets do not exist
+    at all in Java, e.g., BOBUIoolBox. Others contain elements that the
     Java widgets don't. The tree widget is an example of the latter in
     which Java's JTree does not have a header.
 
@@ -497,7 +497,7 @@
 
     As an example, we will examine the styling of check boxes in the
     Java style. We describe the complete process and print all code in
-    both the Java style and Qt classes involved. In the rest of this
+    both the Java style and BobUI classes involved. In the rest of this
     document, we will not examine the source code of the individual
     widgets. Hopefully, this will give you an idea on how to search
     through the code if you need to check specific implementation
@@ -519,7 +519,7 @@
     \c State_NoChange state is set when we have a tri-state checkbox and
     it is partially checked. It has \c State_On if the box is checked and
     \c State_Off if it is unchecked. \c State_MouseOver is set if the mouse
-    hovers over the checkbox and the widget has attribute \c Qt::WA_Hover
+    hovers over the checkbox and the widget has attribute \c BobUI::WA_Hover
     set - you set this in QStyle::polish(). In addition, the style
     option also contains the text, icon, and icon size of the button.
 
@@ -534,7 +534,7 @@
     \c State_Active flag is set when the widget is a child of the active
     window. The \c State_MouseOver will only be set if the widget has
     the \c WA_HoverEnabled windows flag set. Notice that keypad
-    navigation must be enabled in Qt for the \c State_HasEditFocus to
+    navigation must be enabled in BobUI for the \c State_HasEditFocus to
     be included; it is not included by default.
 
     In addition to setting state flags the QStyleOption contains
@@ -663,7 +663,7 @@
 
     \section1 Widget Walkthrough
 
-    In this section, we will examine how most of Qt's widgets are
+    In this section, we will examine how most of BobUI's widgets are
     styled. Hopefully, this will save you some time and effort while
     developing your own styles and widgets. You will not find
     information here that is not attainable elsewhere (i.e., by
@@ -712,7 +712,7 @@
     \l{QStyle::}{subElementRect()} to calculate their bounding
     rectangles. We could draw trees for this as well. However, how
     these calculations are done is completely up to the individual
-    styles, and they do not have to follow a specific structure (Qt
+    styles, and they do not have to follow a specific structure (BobUI
     does not impose a specific structure). You should still make sure
     that you use the appropriate pixel metrics, though. To limit the
     size of the document, we have therefore chosen not to include
@@ -757,7 +757,7 @@
         \row
             \li \c State_KeyboardFocusChange
             \li Set when the user changes focus with the keyboard
-               (see Qt::WA_KeyboardFocusChange)
+               (see BobUI::WA_KeyboardFocusChange)
         \row
             \li \c State_MouseOver
             \li Set if the mouse cursor is over the widget
@@ -783,7 +783,7 @@
         \row
             \li direction
             \li The layout direction; a value of the
-               Qt::LayoutDirection enum.
+               BobUI::LayoutDirection enum.
         \row
             \li palette
             \li The QPalette to use when drawing the element. This
@@ -839,7 +839,7 @@
 
     \image javastyle/button.png {Button labeled with its elements}
 
-    The Java style, as well as all other styles implemented in Qt,
+    The Java style, as well as all other styles implemented in BobUI,
     does not use \c PE_FrameButtonBevel. It is usual that a button
     with a \c PE_DefaultFrame adjusts the \c PE_PanelButtonCommand's
     rectangle by \c PM_ButtonDefaultIndicator. The \c CE_PushButtonLabel
@@ -922,11 +922,11 @@
 
     \section3 Tabs
 
-    In Qt, QTabBar uses the style to draw its tabs. Tabs exist either
-    in a QTabWidget, which contains a QTabBar, or as a separate bar.
+    In BobUI, BOBUIabBar uses the style to draw its tabs. Tabs exist either
+    in a BOBUIabWidget, which contains a BOBUIabBar, or as a separate bar.
     If the bar is not part of a tab widget, it draws its own base.
 
-    QTabBar lays out the tabs, so the style does not have control over
+    BOBUIabBar lays out the tabs, so the style does not have control over
     tab placement. However, while laying out its tabs, the bar asks
     the style for \c PM_TabBarTabHSpace and \c PM_TabBarTabVSpace, which is
     extra width and height over the minimum size of the tab bar tab
@@ -938,16 +938,16 @@
 
     The tab bar is responsible for drawing the buttons that appear on
     the tab bar when all tabs do not fit. Their placement is not
-    controlled by the style, but the buttons are \l{QToolButton}s
+    controlled by the style, but the buttons are \l{BOBUIoolButton}s
     and are therefore drawn by the style.
 
-    Here is the style structure for QTabWidget and QTabBar:
+    Here is the style structure for BOBUIabWidget and BOBUIabBar:
 
     \image javastyle/tab.png
            {Tab widget and tab bar style tree and elements}
 
-    The dotted lines indicate that the QTabWidget contains a tab bar,
-    but does not draw the tab bar itself. QTabBar only draws its base line
+    The dotted lines indicate that the BOBUIabWidget contains a tab bar,
+    but does not draw the tab bar itself. BOBUIabBar only draws its base line
     when not part of a tab widget, and it keeps two tool
     buttons that scroll the bar when all tabs do not fit; see \l{Tool
     Buttons} for their element tree. Also note that since the buttons
@@ -1030,7 +1030,7 @@
                tab.
         \row
             \li shape
-            \li A value of the QTabBar::Shape enum indicating
+            \li A value of the BOBUIabBar::Shape enum indicating
                whether the tab has rounded or triangular corners
                and the orientation of the tab.
         \row
@@ -1126,7 +1126,7 @@
             \li The number of pixels between notches.
         \row
             \li orientation
-            \li A value of the Qt::Orientation enum that specifies
+            \li A value of the BobUI::Orientation enum that specifies
                whether the scroll bar is vertical or horizontal.
         \row
             \li pageStep
@@ -1189,7 +1189,7 @@
             \li This is the number of pixels between each notch.
         \row
             \li orientation
-            \li A Qt::Orientation enum value that indicates whether the
+            \li A BobUI::Orientation enum value that indicates whether the
                slider is vertical or horizontal.
         \row
             \li pageStep
@@ -1307,7 +1307,7 @@
             \li The text for the title bar's label.
         \row
             \li windowFlags
-            \li Flags of the Qt::WindowFlag enum. The window flags
+            \li Flags of the BobUI::WindowFlag enum. The window flags
                used by QMdiArea for window management.
         \row
             \li titleBarState
@@ -1398,7 +1398,7 @@
     \image javastyle/groupbox.png
            {Group box style tree and elements}
 
-    Qt does not impose restrictions on how the check box is drawn; the
+    BobUI does not impose restrictions on how the check box is drawn; the
     Java style draws it with \c CE_IndicatorCheckBox. See \l{Check and
     Radio Buttons} for the complete tree.
 
@@ -1529,7 +1529,7 @@
     \section3 Tool Buttons
 
     Tool buttons exist either independently or as part of tool bars.
-    They are drawn equally either way. The QToolButton draws only one
+    They are drawn equally either way. The BOBUIoolButton draws only one
     style element: \c CC_ToolButton.
 
     Below is a tree of the widget's style structure:
@@ -1579,7 +1579,7 @@
             \li Content
         \row
             \li arrowType
-            \li A Qt::ArrowType enum value, which contains the
+            \li A BobUI::ArrowType enum value, which contains the
                  direction of the buttons arrow (if an arrow is to
                  be used in place of an icon).
         \row
@@ -1605,7 +1605,7 @@
             \li The text of the button.
         \row
             \li toolButtonStyle
-            \li A Qt::ToolButtonStyle enum value which decides
+            \li A BobUI::ToolButtonStyle enum value which decides
                whether the button shows the icon, the text, or both.
     \endtable
 
@@ -1620,7 +1620,7 @@
     toolbars with equal orientation (vertical or horizontal) placed
     next to each other.
 
-    \l{QToolBar}{Toolbars} in Qt consist of three elements:
+    \l{BOBUIoolBar}{Toolbars} in BobUI consist of three elements:
     \c CE_ToolBar, \c PE_IndicatorToolBarHandle, and
     \c PE_IndicatorToolBarSeparator. It is QMainWindowLayout that
     calculates the bounding rectangles (i.e., position and size of the
@@ -1628,15 +1628,15 @@
     sizeHint() of the items in the toolbars when calculating the size
     of the bars.
 
-    Here is the element tree for QToolBar:
+    Here is the element tree for BOBUIoolBar:
 
     \image javastyle/toolbar.png
            {Tool bar style tree and elements}
 
-    The dotted lines indicate that the QToolBar keeps an instance of
-    QToolBarLayout and that QToolBarSeparators are kept by
-    QToolBarLayout. When the toolbar is floating (i.e., has its own
-    window) the \c PE_FrameMenu element is drawn, else QToolBar draws
+    The dotted lines indicate that the BOBUIoolBar keeps an instance of
+    BOBUIoolBarLayout and that BOBUIoolBarSeparators are kept by
+    BOBUIoolBarLayout. When the toolbar is floating (i.e., has its own
+    window) the \c PE_FrameMenu element is drawn, else BOBUIoolBar draws
     \c CE_ToolBar.
 
     Here is an image of a toolbar in the Java style:
@@ -1644,11 +1644,11 @@
     \image javastyle/toolbarimage.png
            {Tool bar labeled with its elements}
 
-    QToolBarSaparator uses QStyleOption for its style option. It
+    BOBUIoolBarSaparator uses QStyleOption for its style option. It
     sets the \c State_Horizontal flag if the toolbar it lives in is
     horizontal. Other than that, they use \l{QStyleOption::}{initFrom()}.
 
-    The style option for QToolBar is QStyleOptionToolBar. The only
+    The style option for BOBUIoolBar is QStyleOptionToolBar. The only
     state flag set (besides the common flags) is \c State_Horizontal
     if the bar is horizontal (i.e., in the north or south toolbar area).
     The member variables of the style option are:
@@ -1681,7 +1681,7 @@
 
     \section3 Menus
 
-    Menus in Qt are implemented in QMenu. The QMenu keeps a list of
+    Menus in BobUI are implemented in QMenu. The QMenu keeps a list of
     actions, which it draws as menu items. When QMenu receives paint
     events, it calculates the size of each menu item and draws them
     individually with \c CE_MenuItem. Menu items do not have a separate
@@ -1829,7 +1829,7 @@
 
     \section3 Item View Headers
 
-    It is the style that draws the headers of Qt's item views. The
+    It is the style that draws the headers of BobUI's item views. The
     item views keep the dimensions on individual sections. Also
     note that the delegates may use the style to paint decorations
     and frames around items. QItemDelegate, for instance, draws
@@ -1838,7 +1838,7 @@
     \image javastyle/header.png
            {Header style tree and elements}
 
-    Here is a QTableWidget showing the bounding rects of a Java
+    Here is a BOBUIableWidget showing the bounding rects of a Java
     header:
 
     \image javastyle/headerimage.png
@@ -1846,7 +1846,7 @@
 
     The QHeaderView uses \c CT_HeaderSection, \c PM_HeaderMargin and
     \c PM_HeaderGripMargin for size and hit test calculations. The
-    \c PM_HeaderMarkSize is currently not used by Qt. QTableView draws
+    \c PM_HeaderMarkSize is currently not used by BobUI. BOBUIableView draws
     the button in the top-left corner (i.e., the area where the
     vertical and horizontal headers intersect) as a \c CE_Header.
 
@@ -1863,10 +1863,10 @@
             \li The icon of the header (for section that is being drawn).
         \row
             \li iconAlignment
-            \li The alignment (Qt::Alignment) of the icon in the header.
+            \li The alignment (BobUI::Alignment) of the icon in the header.
         \row
             \li orientation
-            \li A Qt::Orientation value deciding whether the header
+            \li A BobUI::Orientation value deciding whether the header
                is the horizontal header above the view or the
                vertical header on the left.
         \row
@@ -1892,7 +1892,7 @@
             \li The text of the currently drawn section.
         \row
             \li textAlignment
-            \li The Qt::Alignment of the text within the header section.
+            \li The BobUI::Alignment of the text within the header section.
     \endtable
 
     \section3 Tree Branch Indicators
@@ -1944,7 +1944,7 @@
 
     \c PM_SmallIconSize for sizeHints.
 
-    QToolBox is a container that keeps a collection of widgets. It has
+    BOBUIoolBox is a container that keeps a collection of widgets. It has
     one tab for each widget and displays one of them at a time. The
     tool box lays the components it displays (the tool box buttons
     and selected widget) in a QVBoxLayout. The style tree for tool
@@ -1959,11 +1959,11 @@
            {Tool box labeled with its elements}
 
     All elements have the same bounding rectangles in the
-    Plastique style as well as the other built-in Qt styles.
+    Plastique style as well as the other built-in BobUI styles.
 
     The style option for tool boxes is QStyleOptionToolBox. It
     contains the text and icon of the tool box contents. The only
-    state set by QToolBox is \c State_Sunken, which is set when the user
+    state set by BOBUIoolBox is \c State_Sunken, which is set when the user
     presses a tab down with the mouse. The rest of the
     QStyleOptionToolBox members are:
 
@@ -1982,7 +1982,7 @@
     \section3 Size Grip
 
     The size grip calculates its size hint with \c CT_SizeGrip. The pixel
-    metric \c PM_SizeGripSize is currently unused by Qt. The element tree
+    metric \c PM_SizeGripSize is currently unused by BobUI. The element tree
     for an image in the Plastique style of QSizeGrip follows:
 
     \image javastyle/sizegrip.png {Size grip style tree and elements}
@@ -2001,7 +2001,7 @@
             \li Content
         \row
             \li corner
-            \li A Qt::Corner value that describes which corner in a
+            \li A BobUI::Corner value that describes which corner in a
                window (or equivalent) the grip is located.
     \endtable
 

@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qunicodetools_p.h"
 
-#include <QtCore/private/qstringiterator_p.h>
+#include <BobUICore/private/qstringiterator_p.h>
 #include "qunicodetables_p.h"
 #include "qvarlengtharray.h"
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 #include "qlibrary.h"
 #endif
 
@@ -15,16 +15,16 @@
 
 #define FLAG(x) (1 << (x))
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 Q_CONSTINIT Q_AUTOTEST_EXPORT
 #else
 constexpr
 #endif
-int qt_initcharattributes_default_algorithm_only = 0;
+int bobui_initcharattributes_default_algorithm_only = 0;
 
 namespace QUnicodeTools {
 
@@ -249,7 +249,7 @@ static void getWordBreaks(const char16_t *string, qsizetype len, QCharAttributes
 
         const auto prop = QUnicodeTables::properties(ucs4);
         QUnicodeTables::WordBreakClass ncls = (QUnicodeTables::WordBreakClass) prop->wordBreakClass;
-        if (qt_initcharattributes_default_algorithm_only) {
+        if (bobui_initcharattributes_default_algorithm_only) {
             // as of Unicode 5.1, some punctuation marks were mapped to MidLetter and MidNumLet
             // which caused "hi.there" to be treated like if it were just a single word;
             // we keep the pre-5.1 behavior by remapping these characters in the Unicode tables generator
@@ -1690,7 +1690,7 @@ static void indicAttributes(QChar::Script script, const char16_t *text, qsizetyp
 
 }
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 
 #define LIBTHAI_MAJOR   0
 
@@ -1842,12 +1842,12 @@ static void thaiAssignAttributes(const char16_t *string, qsizetype len, QCharAtt
     }
 }
 
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
 static void thaiAttributes(QChar::Script script, const char16_t *text, qsizetype from, qsizetype len, QCharAttributes *attributes)
 {
     assert(script == QChar::Script_Thai);
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     const char16_t *uc = text + from;
     attributes += from;
     Q_UNUSED(script);
@@ -2723,7 +2723,7 @@ static CharAttributeFunction charAttributeFunction(QChar::Script script)
     case QChar::Script_TuluTigalari:
         return nullptr;
     case QChar::ScriptCount:
-        // Don't Q_UNREACHABLE here; this might be a newer value in later Qt versions
+        // Don't Q_UNREACHABLE here; this might be a newer value in later BobUI versions
         // (incl. patch releases)
         ;
     }
@@ -2769,7 +2769,7 @@ Q_CORE_EXPORT void initCharAttributes(QStringView string,
     if (options & WhiteSpaces)
         getWhiteSpaces(string.utf16(), string.size(), attributes);
 
-    if (!qt_initcharattributes_default_algorithm_only) {
+    if (!bobui_initcharattributes_default_algorithm_only) {
         if (!items || numItems <= 0)
             return;
 
@@ -2830,4 +2830,4 @@ Q_CORE_EXPORT void initScripts(QStringView string, ScriptItemArray *scripts)
 
 } // namespace QUnicodeTools
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include <QApplication>
 #include <QDir>
@@ -31,7 +31,7 @@ struct testDataSet
 QString charHexCsv2String(const QString &csv)
 {
     QString result;
-    foreach (const QString &charString, csv.split(QLatin1Char(','), Qt::SkipEmptyParts)) {
+    foreach (const QString &charString, csv.split(QLatin1Char(','), BobUI::SkipEmptyParts)) {
         bool isOk;
         const uint charUInt = charString.toUInt(&isOk, 16);
         Q_ASSERT(isOk);
@@ -147,7 +147,7 @@ bool dumpHtml(const QString &pathName)
             " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n\n"
             "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n"
             "\t<head>\n"
-            "\t\t<title>Qt on %1 glyph shaping (%2)</title>\n"
+            "\t\t<title>BobUI on %1 glyph shaping (%2)</title>\n"
             "\t\t<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" />\n"
             "\t\t<style type=\"text/css\" media=\"screen\">\n"
             "\t\t\ttable { font-family: Arial; background-color: #ccccff; font-size: 12pt; }\n"
@@ -160,7 +160,7 @@ bool dumpHtml(const QString &pathName)
             "\t\t</style>\n"
             "\t</head>\n"
             "\t<body>\n"
-            "\t\t<h1>Qt on %1 glyph shaping (%2)</h1>\n"
+            "\t\t<h1>BobUI on %1 glyph shaping (%2)</h1>\n"
             "\t\t<dl>\n"
             "\t\t\t<dt>I</dt><dd>Input Utf-16 to shaper</dd>\n"
             "\t\t\t<dt>O-Utf</dt><dd>expected output Utf-16</dd>\n"
@@ -175,7 +175,7 @@ bool dumpHtml(const QString &pathName)
             result.append(QString::fromLatin1(
                     "\t\t\t<tr>\n"
                     "\t\t\t\t<th rowspan=\"2\"><h2>%1</h2></th>\n"
-                    "\t\t\t\t<th colspan=\"2\">Qt/%2</th>\n"
+                    "\t\t\t\t<th colspan=\"2\">BobUI/%2</th>\n"
                     "\t\t\t\t<th rowspan=\"2\">Glyphs</th>\n"
                     "\t\t\t\t<th colspan=\"2\">Browser</th>\n"
                     "\t\t\t</tr>\n"

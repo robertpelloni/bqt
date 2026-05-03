@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTPNETWORKCONNECTION_H
 #define QHTTPNETWORKCONNECTION_H
@@ -9,17 +9,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qabstractsocket.h>
 
 #include <qhttp2configuration.h>
 
@@ -27,7 +27,7 @@
 #include <qauthenticator.h>
 #include <qnetworkproxy.h>
 #include <qbuffer.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qsharedpointer.h>
 
 #include <private/qhttpnetworkheader_p.h>
@@ -36,23 +36,23 @@
 #include <private/http2protocol_p.h>
 
 #include <private/qhttpnetworkconnectionchannel_p.h>
-#include <private/qtcpkeepaliveconfiguration_p.h>
+#include <private/bobuicpkeepaliveconfiguration_p.h>
 
 #include <utility>
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttpNetworkRequest;
 class QHttpNetworkReply;
 class QHttpThreadDelegate;
 class QByteArray;
 class QHostInfo;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 class QSslConfiguration;
 class QSslContext;
-#endif // !QT_NO_SSL
+#endif // !BOBUI_NO_SSL
 
 class QHttpNetworkConnectionPrivate;
 class Q_NETWORK_EXPORT QHttpNetworkConnection : public QObject
@@ -81,7 +81,7 @@ public:
     QHttpNetworkReply* sendRequest(const QHttpNetworkRequest &request);
     void fillHttp2Queue();
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     //set the proxy for this connection
     void setCacheProxy(const QNetworkProxy &networkProxy);
     QNetworkProxy cacheProxy() const;
@@ -99,10 +99,10 @@ public:
     QHttp2Configuration http2Parameters() const;
     void setHttp2Parameters(const QHttp2Configuration &params);
 
-    QTcpKeepAliveConfiguration tcpKeepAliveParameters() const;
-    void setTcpKeepAliveParameters(QTcpKeepAliveConfiguration config);
+    BOBUIcpKeepAliveConfiguration tcpKeepAliveParameters() const;
+    void setTcpKeepAliveParameters(BOBUIcpKeepAliveConfiguration config);
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void setSslConfiguration(const QSslConfiguration &config);
     void ignoreSslErrors(int channel = -1);
     void ignoreSslErrors(const QList<QSslError> &errors, int channel = -1);
@@ -220,7 +220,7 @@ public:
     int activeChannelCount;
     // The total number of channels we reserved:
     const int channelCount;
-    QTimer delayedConnectionTimer;
+    BOBUIimer delayedConnectionTimer;
     QHttpNetworkConnectionChannel * const channels; // parallel connections to the server
     bool shouldEmitChannelError(QIODevice *socket);
 
@@ -238,7 +238,7 @@ public:
     // Used by the HTTP1 code-path
     QUrl parseRedirectResponse(QIODevice *socket, QHttpNetworkReply *reply);
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy networkProxy;
     void emitProxyAuthenticationRequired(const QHttpNetworkConnectionChannel *chan, const QNetworkProxy &proxy, QAuthenticator* auth);
 #endif
@@ -251,7 +251,7 @@ public:
 
     QHttpNetworkConnection::ConnectionType connectionType;
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     std::shared_ptr<QSslContext> sslContext;
 #endif
 
@@ -259,13 +259,13 @@ public:
 
     QString peerVerifyName;
 
-    QTcpKeepAliveConfiguration tcpKeepAliveConfiguration = {};
+    BOBUIcpKeepAliveConfiguration tcpKeepAliveConfiguration = {};
 
     friend class QHttpNetworkConnectionChannel;
 };
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

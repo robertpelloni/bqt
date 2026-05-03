@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLOGGINGREGISTRY_P_H
 #define QLOGGINGREGISTRY_P_H
@@ -9,43 +9,43 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of a number of Qt sources files.  This header file may change from
+// This file is not part of the BobUI API.  It exists for the convenience
+// of a number of BobUI sources files.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qloggingcategory_p.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qtextstream.h>
+#include <BobUICore/private/qloggingcategory_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/bobuiextstream.h>
 
 #include <map>
 
 class tst_QLoggingRegistry;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE_IMPL(name, env, categoryName) \
     const QLoggingCategory &name() \
     { \
         static constexpr char cname[] = categoryName;                               \
         static_assert(cname[0] == 'q' && cname[1] == 't' && cname[2] == '.'         \
-                      && cname[4] != '\0', "Category name must start with 'qt.'");  \
+                      && cname[4] != '\0', "Category name must start with 'bobui.'");  \
         static const QLoggingCategoryWithEnvironmentOverride category(cname, env);  \
         return category;                                                            \
     }
 
 #define Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(name, env, categoryName) \
-    inline namespace QtPrivateLogging { \
+    inline namespace BobUIPrivateLogging { \
     Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE_IMPL(name, env, categoryName) \
     } \
     Q_WEAK_OVERLOAD \
     Q_DECL_DEPRECATED_X("Logging categories should either be static or declared in a header") \
-    const QLoggingCategory &name() { return QtPrivateLogging::name(); }
+    const QLoggingCategory &name() { return BobUIPrivateLogging::name(); }
 
 #define Q_STATIC_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(name, env, categoryName) \
     static Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE_IMPL(name, env, categoryName)
@@ -55,7 +55,7 @@ class Q_AUTOTEST_EXPORT QLoggingRule
 public:
     QLoggingRule();
     QLoggingRule(QStringView pattern, bool enabled);
-    int pass(QLatin1StringView categoryName, QtMsgType type) const;
+    int pass(QLatin1StringView categoryName, BobUIMsgType type) const;
 
     enum PatternFlag {
         FullText = 0x1,
@@ -103,7 +103,7 @@ public:
 
     Q_AUTOTEST_EXPORT void initializeRules();
 
-    void registerCategory(QLoggingCategory *category, QtMsgType enableForLevel);
+    void registerCategory(QLoggingCategory *category, BobUIMsgType enableForLevel);
     void unregisterCategory(QLoggingCategory *category);
 
     Q_CORE_EXPORT void registerEnvironmentOverrideForCategory(const char *categoryName,
@@ -127,7 +127,7 @@ private:
 
     enum RuleSet {
         // sorted by order in which defaultCategoryFilter considers them:
-        QtConfigRules,
+        BobUIConfigRules,
         ConfigRules,
         ApiRules,
         EnvironmentRules,
@@ -139,9 +139,9 @@ private:
 
     // protected by mutex:
     QList<QLoggingRule> ruleSets[NumRuleSets];
-    QHash<QLoggingCategory *, QtMsgType> categories;
+    QHash<QLoggingCategory *, BobUIMsgType> categories;
     QLoggingCategory::CategoryFilter categoryFilter;
-    std::map<QByteArrayView, const char *> qtCategoryEnvironmentOverrides;
+    std::map<QByteArrayView, const char *> bobuiCategoryEnvironmentOverrides;
 
     friend class ::tst_QLoggingRegistry;
 };
@@ -150,7 +150,7 @@ class QLoggingCategoryWithEnvironmentOverride : public QLoggingCategory
 {
 public:
     QLoggingCategoryWithEnvironmentOverride(const char *category, const char *env)
-        : QLoggingCategory(registerOverride(category, env), QtInfoMsg)
+        : QLoggingCategory(registerOverride(category, env), BobUIInfoMsg)
     {}
 
 private:
@@ -163,6 +163,6 @@ private:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOGGINGREGISTRY_P_H

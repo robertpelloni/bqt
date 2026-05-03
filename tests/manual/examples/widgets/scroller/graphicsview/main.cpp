@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore>
-#include <QtWidgets>
+#include <BobUICore>
+#include <BobUIWidgets>
 
 #define NUM_ITEMS 100
 #define NUM_LISTS 10
@@ -46,11 +46,11 @@ public:
         painter->setBrush(m_brush);
         painter->drawRect(m_rect);
 
-        painter->setPen(Qt::black);
+        painter->setPen(BobUI::black);
         QFont f;
         f.setPixelSize(m_rect.height());
         painter->setFont(f);
-        painter->drawText(m_rect, Qt::AlignCenter, m_text);
+        painter->drawText(m_rect, BobUI::AlignCenter, m_text);
     }
 
     QString m_text;
@@ -148,7 +148,7 @@ public:
             // We need to return true for the MousePress here in the
             // top-most graphics object - otherwise gestures in our parent
             // objects will NOT work at all (the accept() flag is already
-            // set to true by Qt)
+            // set to true by BobUI)
             return true;
 
         }

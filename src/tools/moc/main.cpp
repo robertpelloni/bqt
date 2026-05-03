@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include <depfile_shared.h>
 #include "preprocessor.h"
@@ -22,9 +22,9 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
     This function looks at two file names and returns the name of the
@@ -170,7 +170,7 @@ static QStringList argumentsFromCommandLineAndFile(const QStringList &arguments,
 int runMoc(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationVersion(QString::fromLatin1(QT_VERSION_STR));
+    QCoreApplication::setApplicationVersion(QString::fromLatin1(BOBUI_VERSION_STR));
     // let moc identify itself as moc, even if the binary has been renamed
     QCoreApplication::setApplicationName(QString::fromLatin1("moc"));
 
@@ -197,8 +197,8 @@ int runMoc(int argc, char **argv)
     // Note that moc isn't translated.
     // If you use this code as an example for a translated app, make sure to translate the strings.
     QCommandLineParser parser;
-    parser.setApplicationDescription(QStringLiteral("Qt Meta Object Compiler version %1 (Qt %2)")
-                                     .arg(mocOutputRevision).arg(QString::fromLatin1(QT_VERSION_STR)));
+    parser.setApplicationDescription(QStringLiteral("BobUI Meta Object Compiler version %1 (BobUI %2)")
+                                     .arg(mocOutputRevision).arg(QString::fromLatin1(BOBUI_VERSION_STR)));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
@@ -281,9 +281,9 @@ int runMoc(int argc, char **argv)
     noNotesWarningsCompatOption.setFlags(QCommandLineOption::ShortOptionStyle);
     parser.addOption(noNotesWarningsCompatOption);
 
-    QCommandLineOption activeQtMode(QStringLiteral("active-qt"));
-    activeQtMode.setFlags(QCommandLineOption::HiddenFromHelp);
-    parser.addOption(activeQtMode);
+    QCommandLineOption activeBobUIMode(QStringLiteral("active-bobui"));
+    activeBobUIMode.setFlags(QCommandLineOption::HiddenFromHelp);
+    parser.addOption(activeBobUIMode);
 
     QCommandLineOption qmlMacroWarningIsFatal(QStringLiteral("fatal-qml-macro-warning"));
     qmlMacroWarningIsFatal.setFlags(QCommandLineOption::HiddenFromHelp);
@@ -347,8 +347,8 @@ int runMoc(int argc, char **argv)
 
     parser.process(arguments);
 
-    // used by ActiveQt's dumpcpp to suppress some functions
-    moc.activeQtMode = parser.isSet(activeQtMode);
+    // used by ActiveBobUI's dumpcpp to suppress some functions
+    moc.activeBobUIMode = parser.isSet(activeBobUIMode);
 
     const QStringList files = parser.positionalArguments();
     output = parser.value(outputOption);
@@ -666,9 +666,9 @@ int runMoc(int argc, char **argv)
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 int main(int _argc, char **_argv)
 {
-    return QT_PREPEND_NAMESPACE(runMoc)(_argc, _argv);
+    return BOBUI_PREPEND_NAMESPACE(runMoc)(_argc, _argv);
 }

@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcups_p.h"
 
 #include "qprintdevice_p.h"
 #include "qprintengine.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::JobHoldUntil,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::JobHoldUntil,
                                QCUPSSupport__JobHoldUntil)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::BannerPage,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::BannerPage,
                                QCUPSSupport__BannerPage)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PageSet, QCUPSSupport__PageSet)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheetLayout,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PageSet, QCUPSSupport__PageSet)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheetLayout,
                                QCUPSSupport__PagesPerSheetLayout)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheet,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheet,
                                QCUPSSupport__PagesPerSheet)
 
 static QStringList cupsOptionsList(QPrinter *printer) noexcept
@@ -59,7 +59,7 @@ void QCUPSSupport::clearCupsOptions(QPrinter *printer)
     setCupsOptions(printer, QStringList());
 }
 
-static inline QString jobHoldToString(const QCUPSSupport::JobHoldUntil jobHold, QTime holdUntilTime)
+static inline QString jobHoldToString(const QCUPSSupport::JobHoldUntil jobHold, BOBUIime holdUntilTime)
 {
     switch (jobHold) {
     case QCUPSSupport::Indefinite:
@@ -95,23 +95,23 @@ static inline QString jobHoldToString(const QCUPSSupport::JobHoldUntil jobHold, 
 QCUPSSupport::JobHoldUntilWithTime QCUPSSupport::parseJobHoldUntil(const QString &jobHoldUntil)
 {
     if (jobHoldUntil == "indefinite"_L1) {
-        return { QCUPSSupport::Indefinite, QTime() };
+        return { QCUPSSupport::Indefinite, BOBUIime() };
     } else if (jobHoldUntil == "day-time"_L1) {
-        return { QCUPSSupport::DayTime, QTime() };
+        return { QCUPSSupport::DayTime, BOBUIime() };
     } else if (jobHoldUntil == "night"_L1) {
-        return { QCUPSSupport::Night, QTime() };
+        return { QCUPSSupport::Night, BOBUIime() };
     } else if (jobHoldUntil == "second-shift"_L1) {
-        return { QCUPSSupport::SecondShift, QTime() };
+        return { QCUPSSupport::SecondShift, BOBUIime() };
     } else if (jobHoldUntil == "third-shift"_L1) {
-        return { QCUPSSupport::ThirdShift, QTime() };
+        return { QCUPSSupport::ThirdShift, BOBUIime() };
     } else if (jobHoldUntil == "weekend"_L1) {
-        return { QCUPSSupport::Weekend, QTime() };
+        return { QCUPSSupport::Weekend, BOBUIime() };
     }
 
 
-    QTime parsedTime = QTime::fromString(jobHoldUntil, u"h:m:s");
+    BOBUIime parsedTime = BOBUIime::fromString(jobHoldUntil, u"h:m:s");
     if (!parsedTime.isValid())
-        parsedTime = QTime::fromString(jobHoldUntil, u"h:m");
+        parsedTime = BOBUIime::fromString(jobHoldUntil, u"h:m");
     if (parsedTime.isValid()) {
         // CUPS time is in UTC, user expects local time, so get the equivalent
         QDateTime dateTimeUtc = QDateTime::currentDateTimeUtc();
@@ -119,7 +119,7 @@ QCUPSSupport::JobHoldUntilWithTime QCUPSSupport::parseJobHoldUntil(const QString
         return { QCUPSSupport::SpecificTime, dateTimeUtc.toLocalTime().time() };
     }
 
-    return { QCUPSSupport::NoHold, QTime() };
+    return { QCUPSSupport::NoHold, BOBUIime() };
 }
 
 ppd_option_t *QCUPSSupport::findPpdOption(const char *optionName, QPrintDevice *printDevice)
@@ -142,7 +142,7 @@ ppd_option_t *QCUPSSupport::findPpdOption(const char *optionName, QPrintDevice *
     return nullptr;
 }
 
-void QCUPSSupport::setJobHold(QPrinter *printer, const JobHoldUntil jobHold, QTime holdUntilTime)
+void QCUPSSupport::setJobHold(QPrinter *printer, const JobHoldUntil jobHold, BOBUIime holdUntilTime)
 {
     const QString jobHoldUntilArgument = jobHoldToString(jobHold, holdUntilTime);
     if (!jobHoldUntilArgument.isEmpty()) {
@@ -253,4 +253,4 @@ void QCUPSSupport::setPageRange(QPrinter *printer, const QString &pageRange)
     setCupsOption(printer, QStringLiteral("page-ranges"), pageRange);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSIMPLEDRAG_P_H
 #define QSIMPLEDRAG_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qpa/qplatformdrag.h>
 
-#include <QtCore/QObject>
-#include <QtCore/QPointer>
-#include <QtGui/QWindow>
+#include <BobUICore/QObject>
+#include <BobUICore/QPointer>
+#include <BobUIGui/QWindow>
 
-QT_REQUIRE_CONFIG(draganddrop);
+BOBUI_REQUIRE_CONFIG(draganddrop);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMouseEvent;
 class QEventLoop;
@@ -37,7 +37,7 @@ class Q_GUI_EXPORT QBasicDrag : public QPlatformDrag, public QObject
 public:
     ~QBasicDrag();
 
-    virtual Qt::DropAction drag(QDrag *drag) override;
+    virtual BobUI::DropAction drag(QDrag *drag) override;
     void cancelDrag() override;
 
     virtual bool eventFilter(QObject *o, QEvent *e) override;
@@ -47,15 +47,15 @@ protected:
 
     virtual void startDrag();
     virtual void cancel();
-    virtual void move(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) = 0;
-    virtual void drop(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) = 0;
+    virtual void move(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) = 0;
+    virtual void drop(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) = 0;
     virtual void endDrag();
 
 
     void moveShapedPixmapWindow(const QPoint &deviceIndependentPosition);
     QShapedPixmapWindow *shapedPixmapWindow() const { return m_drag_icon_window; }
     void recreateShapedPixmapWindow(QScreen *screen, const QPoint &pos);
-    void updateCursor(Qt::DropAction action);
+    void updateCursor(BobUI::DropAction action);
 
     bool canDrop() const { return m_can_drop; }
     void setCanDrop(bool c) { m_can_drop = c; }
@@ -65,8 +65,8 @@ protected:
 
     void setScreen(QScreen *screen) { m_screen = screen; }
 
-    Qt::DropAction executedDropAction() const { return m_executed_drop_action; }
-    void  setExecutedDropAction(Qt::DropAction da) { m_executed_drop_action = da; }
+    BobUI::DropAction executedDropAction() const { return m_executed_drop_action; }
+    void  setExecutedDropAction(BobUI::DropAction da) { m_executed_drop_action = da; }
 
     QDrag *drag() const { return m_drag; }
 
@@ -80,11 +80,11 @@ private:
     void restoreCursor();
     void exitDndEventLoop();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     bool m_dndHasSetOverrideCursor = false;
 #endif
     QEventLoop *m_eventLoop = nullptr;
-    Qt::DropAction m_executed_drop_action = Qt::IgnoreAction;
+    BobUI::DropAction m_executed_drop_action = BobUI::IgnoreAction;
     bool m_can_drop = false;
     QDrag *m_drag = nullptr;
     QShapedPixmapWindow *m_drag_icon_window = nullptr;
@@ -101,10 +101,10 @@ public:
 protected:
     virtual void startDrag() override;
     virtual void cancel() override;
-    virtual void move(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) override;
-    virtual void drop(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) override;
+    virtual void move(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) override;
+    virtual void drop(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

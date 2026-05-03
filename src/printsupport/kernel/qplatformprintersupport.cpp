@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformprintersupport.h"
 #include "qplatformprintdevice.h"
 
-#include <QtGui/qpagesize.h>
-#include <QtPrintSupport/qprinterinfo.h>
+#include <BobUIGui/qpagesize.h>
+#include <BobUIPrintSupport/qprinterinfo.h>
 
 #include <private/qprinterinfo_p.h>
 #include <private/qprintdevice_p.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformPrinterSupport
@@ -72,6 +72,6 @@ QPageSize QPlatformPrinterSupport::createPageSize(const QString &id, QSize size,
     return QPageSize();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

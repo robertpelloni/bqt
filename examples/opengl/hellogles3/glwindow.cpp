@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "glwindow.h"
 #include <QImage>
@@ -11,7 +11,7 @@
 #include <QOpenGLExtraFunctions>
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
-#include <QTimer>
+#include <BOBUIimer>
 
 GLWindow::GLWindow()
 {
@@ -46,7 +46,7 @@ GLWindow::GLWindow()
     rAnim->setLoopCount(-1);
     rAnim->start();
 
-    QTimer::singleShot(4000, this, &GLWindow::startSecondStage);
+    BOBUIimer::singleShot(4000, this, &GLWindow::startSecondStage);
 }
 
 GLWindow::~GLWindow()
@@ -141,7 +141,7 @@ void GLWindow::initializeGL()
 {
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-    QImage img(":/qtlogo.png");
+    QImage img(":/bobuilogo.png");
     Q_ASSERT(!img.isNull());
     delete m_texture;
     m_texture = new QOpenGLTexture(img.scaled(32, 36).flipped());

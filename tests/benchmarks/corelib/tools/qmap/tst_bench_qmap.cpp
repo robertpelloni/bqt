@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QFile>
 #include <QMap>
 #include <QString>
-#include <QTest>
+#include <BOBUIest>
 #include <qdebug.h>
 
 
@@ -299,6 +299,6 @@ void tst_QMap::insertMap()
     }
 }
 
-QTEST_MAIN(tst_QMap)
+BOBUIEST_MAIN(tst_QMap)
 
 #include "tst_bench_qmap.moc"

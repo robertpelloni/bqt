@@ -1,15 +1,15 @@
 // Copyright (C) 2016 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef LIBHYBRISEGLSERVERBUFFERINTEGRATION_H
 #define LIBHYBRISEGLSERVERBUFFERINTEGRATION_H
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
 #include "qwayland-libhybris-egl-server-buffer.h"
-#include <QtWaylandClient/private/qwaylandserverbufferintegration_p.h>
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtCore/QList>
-#include <QtCore/QTextStream>
+#include <BobUIWaylandClient/private/qwaylandserverbufferintegration_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUICore/QList>
+#include <BobUICore/BOBUIextStream>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -28,13 +28,13 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLHYBRISCREATEREMOTEBUFFERPROC)(EGLint widt
                                                                      int num_ints, int *ints, int num_fds, int *fds, EGLClientBuffer *buffer);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class LibHybrisEglServerBufferIntegration;
 
-class LibHybrisServerBuffer : public QWaylandServerBuffer, public QtWayland::qt_libhybris_buffer
+class LibHybrisServerBuffer : public QWaylandServerBuffer, public BobUIWayland::bobui_libhybris_buffer
 {
 public:
     LibHybrisServerBuffer(LibHybrisEglServerBufferIntegration *integration, int32_t numFds, wl_array *ints, int32_t name, int32_t width, int32_t height, int32_t stride, int32_t format);
@@ -57,12 +57,12 @@ private:
 
 class LibHybrisEglServerBufferIntegration
     : public QWaylandServerBufferIntegration
-    , public QtWayland::qt_libhybris_egl_server_buffer
+    , public BobUIWayland::bobui_libhybris_egl_server_buffer
 {
 public:
     void initialize(QWaylandDisplay *display) override;
 
-    virtual QWaylandServerBuffer *serverBuffer(struct qt_server_buffer *buffer) override;
+    virtual QWaylandServerBuffer *serverBuffer(struct bobui_server_buffer *buffer) override;
 
     inline EGLImageKHR eglCreateImageKHR(EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);
     inline EGLBoolean eglDestroyImageKHR (EGLImageKHR image);
@@ -70,7 +70,7 @@ public:
     inline EGLBoolean eglHybrisCreateRemoteBuffer(EGLint width, EGLint height, EGLint usage, EGLint format, EGLint stride, int num_ints, int *ints, int num_fds, int *fds, EGLClientBuffer *buffer);
 
 protected:
-    void libhybris_egl_server_buffer_server_buffer_created(struct ::qt_libhybris_buffer *id, struct ::qt_server_buffer *qid,
+    void libhybris_egl_server_buffer_server_buffer_created(struct ::bobui_libhybris_buffer *id, struct ::bobui_server_buffer *qid,
                                                            int32_t numFds, wl_array *ints, int32_t name, int32_t width, int32_t height, int32_t stride, int32_t format) override;
 private:
     static void wlDisplayHandleGlobal(void *data, struct ::wl_registry *registry, uint32_t id,
@@ -128,6 +128,6 @@ EGLBoolean LibHybrisEglServerBufferIntegration::eglHybrisCreateRemoteBuffer(EGLi
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

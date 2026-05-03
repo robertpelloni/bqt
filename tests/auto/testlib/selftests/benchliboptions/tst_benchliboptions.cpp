@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 #if defined(Q_OS_WIN32)
 #include <QWinEventNotifier>
 #endif
@@ -18,12 +18,12 @@ public:
     void interrupt() override {}
     bool processEvents(QEventLoop::ProcessEventsFlags) override { return false; }
     void registerSocketNotifier(QSocketNotifier*) override {}
-    void registerTimer(Qt::TimerId,Duration,Qt::TimerType,QObject*) override {}
+    void registerTimer(BobUI::TimerId,Duration,BobUI::TimerType,QObject*) override {}
     QList<TimerInfoV2> timersForObject(QObject*) const override { return {}; }
     void unregisterSocketNotifier(QSocketNotifier*) override {}
-    bool unregisterTimer(Qt::TimerId) override { return false; }
+    bool unregisterTimer(BobUI::TimerId) override { return false; }
     bool unregisterTimers(QObject*) override { return false; }
-    Duration remainingTime(Qt::TimerId) const override { return {}; }
+    Duration remainingTime(BobUI::TimerId) const override { return {}; }
     void wakeUp() override {}
 
 #ifdef Q_OS_WIN
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
     /* Run with no special arguments. */
     {
         tst_BenchlibOptions test;
-        ret += QTest::qExec(&test, int(args.size()), const_cast<char**>(&args[0]));
+        ret += BOBUIest::qExec(&test, int(args.size()), const_cast<char**>(&args[0]));
     }
 
     /* Run with an exact number of iterations. */
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
         extraArgs.push_back("-iterations");
         extraArgs.push_back("15");
         tst_BenchlibFifteenIterations test;
-        ret += QTest::qExec(&test, int(extraArgs.size()), const_cast<char**>(&extraArgs[0]));
+        ret += BOBUIest::qExec(&test, int(extraArgs.size()), const_cast<char**>(&extraArgs[0]));
     }
 
     /*
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
         extraArgs.push_back("-minimumvalue");
         extraArgs.push_back("100");
         tst_BenchlibOneHundredMinimum test;
-        ret += QTest::qExec(&test, int(extraArgs.size()), const_cast<char**>(&extraArgs[0]));
+        ret += BOBUIest::qExec(&test, int(extraArgs.size()), const_cast<char**>(&extraArgs[0]));
     }
 
     return ret;

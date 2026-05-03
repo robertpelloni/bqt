@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QDOM_P_H
 #define QDOM_P_H
 
@@ -11,17 +11,17 @@
 #include <qlist.h>
 #include <qshareddata.h>
 
-QT_REQUIRE_CONFIG(dom);
+BOBUI_REQUIRE_CONFIG(dom);
 
-#include <QtCore/qxpfunctional.h>
+#include <BobUICore/qxpfunctional.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience of
+// This file is not part of the BobUI API. It exists for the convenience of
 // qxml.cpp and qdom.cpp. This header file may change from version to version without
 // notice, or even be removed.
 //
@@ -112,9 +112,9 @@ public:
 
     virtual QDomNode::NodeType nodeType() const { return QDomNode::BaseNode; }
 
-    void saveSubTree(const QDomNodePrivate *n, QTextStream &s, int depth, int indent) const;
-    virtual void save(QTextStream &, int, int) const {}
-    virtual void afterSave(QTextStream &, int, int) const {}
+    void saveSubTree(const QDomNodePrivate *n, BOBUIextStream &s, int depth, int indent) const;
+    virtual void save(BOBUIextStream &, int, int) const {}
+    virtual void afterSave(BOBUIextStream &, int, int) const {}
 
     void setLocation(int lineNumber, int columnNumber);
 
@@ -234,7 +234,7 @@ public:
 
     QDomNode::NodeType nodeType() const override { return QDomNode::DocumentTypeNode; }
 
-    void save(QTextStream &s, int, int) const override;
+    void save(BOBUIextStream &s, int, int) const override;
 
     // Variables
     QDomNamedNodeMapPrivate *entities;
@@ -284,7 +284,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::TextNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 };
 
 class QDomAttrPrivate : public QDomNodePrivate
@@ -301,7 +301,7 @@ public:
     void setNodeValue(const QString &v) override;
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::AttributeNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 
     // Variables
     bool m_specified;
@@ -337,8 +337,8 @@ public:
     bool hasAttributes() { return (m_attr->length() > 0); }
     QDomNode::NodeType nodeType() const override { return QDomNode::ElementNode; }
     QDomNodePrivate *cloneNode(bool deep = true) override;
-    virtual void save(QTextStream &s, int, int) const override;
-    virtual void afterSave(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
+    virtual void afterSave(BOBUIextStream &s, int, int) const override;
 
     // Variables
     QDomNamedNodeMapPrivate *m_attr;
@@ -353,7 +353,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::CommentNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 };
 
 class QDomCDATASectionPrivate : public QDomTextPrivate
@@ -365,7 +365,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::CDATASectionNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 };
 
 class QDomNotationPrivate : public QDomNodePrivate
@@ -378,7 +378,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::NotationNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 
     // Variables
     QString m_sys;
@@ -395,7 +395,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::EntityNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 
     // Variables
     QString m_sys;
@@ -412,7 +412,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::EntityReferenceNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 };
 
 class QDomProcessingInstructionPrivate : public QDomNodePrivate
@@ -425,7 +425,7 @@ public:
     // Reimplemented from QDomNodePrivate
     QDomNodePrivate *cloneNode(bool deep = true) override;
     QDomNode::NodeType nodeType() const override { return QDomNode::ProcessingInstructionNode; }
-    virtual void save(QTextStream &s, int, int) const override;
+    virtual void save(BOBUIextStream &s, int, int) const override;
 };
 
 class QDomDocumentPrivate : public QDomNodePrivate
@@ -469,7 +469,7 @@ public:
     QExplicitlySharedDataPointer<QDomImplementationPrivate> impl;
     QExplicitlySharedDataPointer<QDomDocumentTypePrivate> type;
 
-    void saveDocument(QTextStream &stream, const int indent,
+    void saveDocument(BOBUIextStream &stream, const int indent,
                       QDomNode::EncodingPolicy encUsed) const;
 
     /* \internal
@@ -502,6 +502,6 @@ public:
     long nodeListTime;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDOMHELPERS_P_H

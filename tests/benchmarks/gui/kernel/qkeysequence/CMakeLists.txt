@@ -5,10 +5,10 @@
 ## tst_bench_qkeysequence Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_qkeysequence
+bobui_internal_add_benchmark(tst_bench_qkeysequence
     SOURCES
         tst_qkeysequence.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Test
+        BobUI::Gui
+        BobUI::Test
 )

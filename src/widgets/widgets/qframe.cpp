@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qframe.h"
 #include "qbitmap.h"
@@ -14,7 +14,7 @@
 
 #include "qframe_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QFramePrivate::QFramePrivate()
     : frect(0, 0, 0, 0),
@@ -39,7 +39,7 @@ inline void QFramePrivate::init()
     // The frameRect property is implemented in terms of the widget's
     // contentsRect, which conflicts with the implicit inclusion of
     // the safe area margins in the contentsRect.
-    q->setAttribute(Qt::WA_ContentsMarginsRespectsSafeArea, false);
+    q->setAttribute(BobUI::WA_ContentsMarginsRespectsSafeArea, false);
 }
 
 /*!
@@ -47,7 +47,7 @@ inline void QFramePrivate::init()
     \brief The QFrame class is the base class of widgets that can have a frame.
 
     \ingroup abstractwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QMenu uses this to "raise" the menu above the surrounding
     screen. QProgressBar has a "sunken" look. QLabel has a flat look.
@@ -169,7 +169,7 @@ inline void QFramePrivate::init()
     constructor.
 */
 
-QFrame::QFrame(QWidget* parent, Qt::WindowFlags f)
+QFrame::QFrame(QWidget* parent, BobUI::WindowFlags f)
     : QWidget(*new QFramePrivate, parent, f)
 {
     Q_D(QFrame);
@@ -177,7 +177,7 @@ QFrame::QFrame(QWidget* parent, Qt::WindowFlags f)
 }
 
 /*! \internal */
-QFrame::QFrame(QFramePrivate &dd, QWidget* parent, Qt::WindowFlags f)
+QFrame::QFrame(QFramePrivate &dd, QWidget* parent, BobUI::WindowFlags f)
     : QWidget(dd, parent, f)
 {
     Q_D(QFrame);
@@ -307,7 +307,7 @@ void QFrame::setFrameShadow(QFrame::Shadow s)
 void QFrame::setFrameStyle(int style)
 {
     Q_D(QFrame);
-    if (!testAttribute(Qt::WA_WState_OwnSizePolicy)) {
+    if (!testAttribute(BobUI::WA_WState_OwnSizePolicy)) {
         QSizePolicy sp;
 
         switch (style & Shape_Mask) {
@@ -321,7 +321,7 @@ void QFrame::setFrameStyle(int style)
             sp = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, QSizePolicy::Frame);
         }
         setSizePolicy(sp);
-        setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+        setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     }
     d->frameStyle = (short)style;
     update();
@@ -526,6 +526,6 @@ bool QFrame::event(QEvent *e)
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qframe.cpp"

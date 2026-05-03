@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS = hellovulkantriangle
 
-qtHaveModule(widgets) {
+bobuiHaveModule(widgets) {
     SUBDIRS += hellovulkanwidget
-    qtHaveModule(concurrent): SUBDIRS += hellovulkancubes
+    bobuiHaveModule(concurrent): SUBDIRS += hellovulkancubes
 }

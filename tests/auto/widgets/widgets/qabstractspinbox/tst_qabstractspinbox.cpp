@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -81,7 +81,7 @@ void tst_QAbstractSpinBox::getSetCheck()
     obj1.setLineEdit(var3);
     QCOMPARE(var3, obj1.lineEdit());
     // Will assert in debug, so only test in release
-#if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
+#if defined(BOBUI_NO_DEBUG) && !defined(BOBUI_FORCE_ASSERTS)
     obj1.setLineEdit(nullptr);
     QCOMPARE(var3, obj1.lineEdit()); // Setting 0 should keep the current editor
 #endif
@@ -127,22 +127,22 @@ void tst_QAbstractSpinBox::task228728_cssselector()
 
 void tst_QAbstractSpinBox::inputMethodUpdate()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QSpinBox box;
 
     box.setRange(0, 1);
 
-    QTestPrivate::centerOnScreen(&box);
+    BOBUIestPrivate::centerOnScreen(&box);
     box.clear();
     box.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&box));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&box));
 
     box.activateWindow();
     box.setFocus();
-    QTRY_VERIFY(box.hasFocus());
-    QTRY_COMPARE(QGuiApplication::focusObject(), &box);
+    BOBUIRY_VERIFY(box.hasFocus());
+    BOBUIRY_COMPARE(QGuiApplication::focusObject(), &box);
 
     m_platformInputContext.m_updateCallCount = 0;
     {
@@ -182,5 +182,5 @@ void tst_QAbstractSpinBox::inputMethodUpdate()
 }
 
 
-QTEST_MAIN(tst_QAbstractSpinBox)
+BOBUIEST_MAIN(tst_QAbstractSpinBox)
 #include "tst_qabstractspinbox.moc"

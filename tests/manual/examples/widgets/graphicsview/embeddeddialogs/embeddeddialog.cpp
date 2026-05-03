@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "embeddeddialog.h"
 #include "ui_embeddeddialog.h"
@@ -11,7 +11,7 @@ EmbeddedDialog::EmbeddedDialog(QWidget *parent)
     , ui(new Ui::EmbeddedDialog)
 {
     ui->setupUi(this);
-    ui->layoutDirection->setCurrentIndex(layoutDirection() != Qt::LeftToRight);
+    ui->layoutDirection->setCurrentIndex(layoutDirection() != BobUI::LeftToRight);
 
     const QStringList styleKeys = QStyleFactory::keys();
     for (const QString &styleName : styleKeys) {
@@ -37,7 +37,7 @@ EmbeddedDialog::~EmbeddedDialog()
 
 void EmbeddedDialog::layoutDirectionChanged(int index)
 {
-    setLayoutDirection(index == 0 ? Qt::LeftToRight : Qt::RightToLeft);
+    setLayoutDirection(index == 0 ? BobUI::LeftToRight : BobUI::RightToLeft);
 }
 
 void EmbeddedDialog::spacingChanged(int spacing)

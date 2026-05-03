@@ -1,11 +1,11 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QLatin1StringMatcher>
-#include <QtCore/QStaticLatin1StringMatcher>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QLatin1StringMatcher>
+#include <BobUICore/QStaticLatin1StringMatcher>
 
 #include <numeric>
 #include <string>
@@ -17,7 +17,7 @@
 #    undef interface
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QLatin1StringMatcher : public QObject
 {
@@ -39,7 +39,7 @@ void tst_QLatin1StringMatcher::overloads()
     QByteArray hello2B = QByteArrayView(hello).toByteArray().repeated(2);
     QLatin1StringView hello2(hello2B);
     {
-        QLatin1StringMatcher m("hello"_L1, Qt::CaseSensitive);
+        QLatin1StringMatcher m("hello"_L1, BobUI::CaseSensitive);
         QCOMPARE(m.pattern(), "hello"_L1);
         QCOMPARE(m.indexIn("hello"_L1), 0);
         QCOMPARE(m.indexIn("Hello"_L1), -1);
@@ -54,7 +54,7 @@ void tst_QLatin1StringMatcher::overloads()
         QCOMPARE(m.indexIn(u"helloHello", 1), -1);
     }
     {
-        QLatin1StringMatcher m("Hello"_L1, Qt::CaseSensitive);
+        QLatin1StringMatcher m("Hello"_L1, BobUI::CaseSensitive);
         QCOMPARE(m.pattern(), "Hello"_L1);
         QCOMPARE(m.indexIn("hello"_L1), -1);
         QCOMPARE(m.indexIn("Hello"_L1), 0);
@@ -69,7 +69,7 @@ void tst_QLatin1StringMatcher::overloads()
         QCOMPARE(m.indexIn(u"helloHello", 6), -1);
     }
     {
-        QLatin1StringMatcher m("hello"_L1, Qt::CaseInsensitive);
+        QLatin1StringMatcher m("hello"_L1, BobUI::CaseInsensitive);
         QCOMPARE(m.pattern(), "hello"_L1);
         QCOMPARE(m.indexIn("hello"_L1), 0);
         QCOMPARE(m.indexIn("Hello"_L1), 0);
@@ -86,7 +86,7 @@ void tst_QLatin1StringMatcher::overloads()
         QCOMPARE(m.indexIn(u"helloHello", 6), -1);
     }
     {
-        QLatin1StringMatcher m("Hello"_L1, Qt::CaseInsensitive);
+        QLatin1StringMatcher m("Hello"_L1, BobUI::CaseInsensitive);
         QCOMPARE(m.pattern(), "Hello"_L1);
         QCOMPARE(m.indexIn("hello"_L1), 0);
         QCOMPARE(m.indexIn("Hello"_L1), 0);
@@ -103,7 +103,7 @@ void tst_QLatin1StringMatcher::overloads()
         QCOMPARE(m.indexIn(u"helloHello", 6), -1);
     }
     {
-        QLatin1StringMatcher m(hello, Qt::CaseSensitive);
+        QLatin1StringMatcher m(hello, BobUI::CaseSensitive);
         QCOMPARE(m.pattern(), "hello"_L1);
         QCOMPARE(m.indexIn(hello), 0);
         QCOMPARE(m.indexIn(hello, 1), -1);
@@ -119,7 +119,7 @@ void tst_QLatin1StringMatcher::overloads()
 
 void tst_QLatin1StringMatcher::staticOverloads()
 {
-#ifdef QT_STATIC_BOYER_MOORE_NOT_SUPPORTED
+#ifdef BOBUI_STATIC_BOYER_MOORE_NOT_SUPPORTED
     QSKIP("Test is only valid on an OS that supports static latin1 string matcher");
 #else
     constexpr QLatin1StringView hello = "hello"_L1;
@@ -241,7 +241,7 @@ void tst_QLatin1StringMatcher::staticOverloads()
 
 void tst_QLatin1StringMatcher::staticOverloads_QStringViewHaystack()
 {
-#ifdef QT_STATIC_BOYER_MOORE_NOT_SUPPORTED
+#ifdef BOBUI_STATIC_BOYER_MOORE_NOT_SUPPORTED
     QSKIP("Test is only valid on an OS that supports static latin1 string matcher");
 #else
     constexpr QStringView hello = u"hello";
@@ -374,11 +374,11 @@ void tst_QLatin1StringMatcher::interface()
 
     QLatin1StringMatcher matcher1;
 
-    matcher1 = QLatin1StringMatcher(needle, Qt::CaseSensitive);
+    matcher1 = QLatin1StringMatcher(needle, BobUI::CaseSensitive);
     QLatin1StringMatcher matcher2;
     matcher2.setPattern(needle);
 
-    QLatin1StringMatcher matcher3 = QLatin1StringMatcher(needle, Qt::CaseSensitive);
+    QLatin1StringMatcher matcher3 = QLatin1StringMatcher(needle, BobUI::CaseSensitive);
     QLatin1StringMatcher matcher4;
     matcher4 = matcher3;
 
@@ -390,10 +390,10 @@ void tst_QLatin1StringMatcher::interface()
     QCOMPARE(matcher1.indexIn(haystack, 43), 84);
     QCOMPARE(matcher1.indexIn(haystack, 85), -1);
 
-    QLatin1StringMatcher matcher5("123"_L1, Qt::CaseSensitive);
+    QLatin1StringMatcher matcher5("123"_L1, BobUI::CaseSensitive);
     QCOMPARE(matcher5.indexIn(haystack), 6);
 
-    matcher5 = QLatin1StringMatcher("abc"_L1, Qt::CaseSensitive);
+    matcher5 = QLatin1StringMatcher("abc"_L1, BobUI::CaseSensitive);
     QCOMPARE(matcher5.indexIn(haystack), 31);
 
     matcher5.setPattern(matcher4.pattern());
@@ -427,7 +427,7 @@ void tst_QLatin1StringMatcher::indexIn()
 
     QLatin1StringMatcher matcher;
 
-    matcher = QLatin1StringMatcher(pattern, Qt::CaseSensitive);
+    matcher = QLatin1StringMatcher(pattern, BobUI::CaseSensitive);
     QCOMPARE(matcher.indexIn(haystack, 0), 5);
     QCOMPARE(matcher.indexIn(haystack, 1), 5);
     QCOMPARE(matcher.indexIn(haystack, 2), 5);
@@ -441,7 +441,7 @@ void tst_QLatin1StringMatcher::indexIn()
     for (int i = 0; i < 256; ++i)
         allChars[i] = char(i);
 
-    matcher = QLatin1StringMatcher(QLatin1StringView(allChars), Qt::CaseSensitive);
+    matcher = QLatin1StringMatcher(QLatin1StringView(allChars), BobUI::CaseSensitive);
     haystackT = LONG_STRING__32 "x";
     haystackT += matcher.pattern();
     haystack = QLatin1StringView(haystackT);
@@ -451,7 +451,7 @@ void tst_QLatin1StringMatcher::indexIn()
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
     QCOMPARE(matcher.indexIn(haystack, 34), -1);
 
-    matcher = QLatin1StringMatcher(QLatin1StringView(LONG_STRING_256), Qt::CaseSensitive);
+    matcher = QLatin1StringMatcher(QLatin1StringView(LONG_STRING_256), BobUI::CaseSensitive);
     haystackT = QByteArray(LONG_STRING__32 "x");
     haystackT += matcher.pattern();
     haystackT += QByteArrayView("Just junk at the end");
@@ -461,14 +461,14 @@ void tst_QLatin1StringMatcher::indexIn()
     QCOMPARE(matcher.indexIn(haystack, 2), 33);
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
     QCOMPARE(matcher.indexIn(haystack, 34), -1);
-    matcher.setCaseSensitivity(Qt::CaseInsensitive);
+    matcher.setCaseSensitivity(BobUI::CaseInsensitive);
     QCOMPARE(matcher.indexIn(haystack, 0), 33);
     QCOMPARE(matcher.indexIn(haystack, 1), 33);
     QCOMPARE(matcher.indexIn(haystack, 2), 33);
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
     QCOMPARE(matcher.indexIn(haystack, 34), -1);
 
-    matcher = QLatin1StringMatcher(QLatin1StringView(LONG_STRING_512), Qt::CaseInsensitive);
+    matcher = QLatin1StringMatcher(QLatin1StringView(LONG_STRING_512), BobUI::CaseInsensitive);
     haystackT = QByteArray(LONG_STRING__32 "x");
     haystackT += matcher.pattern();
     haystackT += QByteArrayView("Just junk at the end");
@@ -478,14 +478,14 @@ void tst_QLatin1StringMatcher::indexIn()
     QCOMPARE(matcher.indexIn(haystack, 2), 33);
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
     QCOMPARE(matcher.indexIn(haystack, 34), -1);
-    matcher.setCaseSensitivity(Qt::CaseSensitive);
+    matcher.setCaseSensitivity(BobUI::CaseSensitive);
     QCOMPARE(matcher.indexIn(haystack, 0), 33);
     QCOMPARE(matcher.indexIn(haystack, 1), 33);
     QCOMPARE(matcher.indexIn(haystack, 2), 33);
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
     QCOMPARE(matcher.indexIn(haystack, 34), -1);
 
-    matcher = QLatin1StringMatcher(QLatin1StringView(""), Qt::CaseSensitive);
+    matcher = QLatin1StringMatcher(QLatin1StringView(""), BobUI::CaseSensitive);
     haystackT = QByteArray(LONG_STRING__32 "x");
     haystack = QLatin1StringView(haystackT);
     QCOMPARE(matcher.indexIn(haystack, 0), 0);
@@ -493,7 +493,7 @@ void tst_QLatin1StringMatcher::indexIn()
     QCOMPARE(matcher.indexIn(haystack, 2), 2);
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
 
-    matcher = QLatin1StringMatcher(QLatin1StringView(""), Qt::CaseInsensitive);
+    matcher = QLatin1StringMatcher(QLatin1StringView(""), BobUI::CaseInsensitive);
     haystackT = QByteArray(LONG_STRING__32 "x");
     haystack = QLatin1StringView(haystackT);
     QCOMPARE(matcher.indexIn(haystack, 0), 0);
@@ -501,14 +501,14 @@ void tst_QLatin1StringMatcher::indexIn()
     QCOMPARE(matcher.indexIn(haystack, 2), 2);
     QCOMPARE(matcher.indexIn(haystack, 33), 33);
 
-    matcher = QLatin1StringMatcher(QLatin1StringView("m\xF8"), Qt::CaseInsensitive);
+    matcher = QLatin1StringMatcher(QLatin1StringView("m\xF8"), BobUI::CaseInsensitive);
     haystackT = QByteArray("M\xF8m\xF8");
     haystack = QLatin1StringView(haystackT);
     QCOMPARE(matcher.indexIn(haystack, 0), 0);
     QCOMPARE(matcher.indexIn(haystack, 1), 2);
     QCOMPARE(matcher.indexIn(haystack, 2), 2);
     QCOMPARE(matcher.indexIn(haystack, 3), -1);
-    matcher.setCaseSensitivity(Qt::CaseSensitive);
+    matcher.setCaseSensitivity(BobUI::CaseSensitive);
     QCOMPARE(matcher.indexIn(haystack, 0), 2);
     QCOMPARE(matcher.indexIn(haystack, 1), 2);
     QCOMPARE(matcher.indexIn(haystack, 2), 2);
@@ -517,7 +517,7 @@ void tst_QLatin1StringMatcher::indexIn()
 
 void tst_QLatin1StringMatcher::haystacksWithMoreThan4GiBWork()
 {
-#if QT_POINTER_SIZE > 4
+#if BOBUI_POINTER_SIZE > 4
     // use a large needle to trigger long skips in the Boyer-Moore algorithm
     // (to speed up the test)
     constexpr std::string_view needle = LONG_STRING_256;
@@ -549,7 +549,7 @@ void tst_QLatin1StringMatcher::haystacksWithMoreThan4GiBWork()
         //
         qsizetype dynamicResult;
         auto t = std::thread{ [&] {
-            QLatin1StringMatcher m(QLatin1StringView(needle), Qt::CaseSensitive);
+            QLatin1StringMatcher m(QLatin1StringView(needle), BobUI::CaseSensitive);
             dynamicResult = m.indexIn(QLatin1StringView(large));
         } };
         t.join();
@@ -570,7 +570,7 @@ void tst_QLatin1StringMatcher::haystacksWithMoreThan4GiBWork()
             QSKIP("Could not allocate additional 8GiB plus a couple hundred bytes of RAM.");
         }
         auto t = std::thread{ [&] {
-            QLatin1StringMatcher m(QLatin1StringView(needle), Qt::CaseSensitive);
+            QLatin1StringMatcher m(QLatin1StringView(needle), BobUI::CaseSensitive);
             dynamicResult = m.indexIn(QStringView(toSearch));
         } };
         t.join();
@@ -585,7 +585,7 @@ void tst_QLatin1StringMatcher::haystacksWithMoreThan4GiBWork()
 
 void tst_QLatin1StringMatcher::staticLatin1StringMatcher()
 {
-#ifdef QT_STATIC_BOYER_MOORE_NOT_SUPPORTED
+#ifdef BOBUI_STATIC_BOYER_MOORE_NOT_SUPPORTED
     QSKIP("Test is only valid on an OS that supports static latin1 string matcher");
 #else
     {
@@ -735,5 +735,5 @@ void tst_QLatin1StringMatcher::staticLatin1StringMatcher()
 #undef LONG_STRING__64
 #undef LONG_STRING__32
 
-QTEST_APPLESS_MAIN(tst_QLatin1StringMatcher)
+BOBUIEST_APPLESS_MAIN(tst_QLatin1StringMatcher)
 #include "tst_qlatin1stringmatcher.moc"

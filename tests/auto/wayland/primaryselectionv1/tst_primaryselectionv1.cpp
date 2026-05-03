@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
 #include <qwayland-server-wp-primary-selection-unstable-v1.h>
 
-#include <QtGui/QRasterWindow>
-#include <QtGui/QClipboard>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/QClipboard>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #include <fcntl.h>
 
@@ -18,7 +18,7 @@ constexpr int primarySelectionVersion = 1; // protocol VERSION, not the name suf
 class PrimarySelectionDeviceV1;
 class PrimarySelectionDeviceManagerV1;
 
-class PrimarySelectionOfferV1 : public QObject, public QtWaylandServer::zwp_primary_selection_offer_v1
+class PrimarySelectionOfferV1 : public QObject, public BobUIWaylandServer::zwp_primary_selection_offer_v1
 {
     Q_OBJECT
 public:
@@ -49,14 +49,14 @@ protected:
     void zwp_primary_selection_offer_v1_receive(Resource *resource, const QString &mime_type, int32_t fd) override
     {
         Q_UNUSED(resource);
-        QTRY_VERIFY(m_mimeTypes.contains(mime_type));
+        BOBUIRY_VERIFY(m_mimeTypes.contains(mime_type));
         emit receive(mime_type, fd);
     }
 
     void zwp_primary_selection_offer_v1_destroy(Resource *resource) override;
 };
 
-class PrimarySelectionSourceV1 : public QObject, public QtWaylandServer::zwp_primary_selection_source_v1
+class PrimarySelectionSourceV1 : public QObject, public BobUIWaylandServer::zwp_primary_selection_source_v1
 {
     Q_OBJECT
 public:
@@ -82,7 +82,7 @@ protected:
     }
 };
 
-class PrimarySelectionDeviceV1 : public QObject, public QtWaylandServer::zwp_primary_selection_device_v1
+class PrimarySelectionDeviceV1 : public QObject, public BobUIWaylandServer::zwp_primary_selection_device_v1
 {
     Q_OBJECT
 public:
@@ -131,12 +131,12 @@ protected:
     }
 };
 
-class PrimarySelectionDeviceManagerV1 : public Global, public QtWaylandServer::zwp_primary_selection_device_manager_v1
+class PrimarySelectionDeviceManagerV1 : public Global, public BobUIWaylandServer::zwp_primary_selection_device_manager_v1
 {
     Q_OBJECT
 public:
     explicit PrimarySelectionDeviceManagerV1(CoreCompositor *compositor, int version = 1)
-        : QtWaylandServer::zwp_primary_selection_device_manager_v1(compositor->m_display, version)
+        : BobUIWaylandServer::zwp_primary_selection_device_manager_v1(compositor->m_display, version)
         , m_version(version)
     {}
     ~PrimarySelectionDeviceManagerV1() override
@@ -201,7 +201,7 @@ PrimarySelectionOfferV1 *PrimarySelectionDeviceV1::sendDataOffer(wl_client *clie
     return offer;
 }
 
-void PrimarySelectionOfferV1::zwp_primary_selection_offer_v1_destroy(QtWaylandServer::zwp_primary_selection_offer_v1::Resource *resource)
+void PrimarySelectionOfferV1::zwp_primary_selection_offer_v1_destroy(BobUIWaylandServer::zwp_primary_selection_offer_v1::Resource *resource)
 {
     bool removed = m_device->m_sentSelectionOffers.removeOne(this);
     QVERIFY(removed);
@@ -226,7 +226,7 @@ class tst_primaryselectionv1 : public QObject, private PrimarySelectionComposito
 {
     Q_OBJECT
 private slots:
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void initTestCase();
     void bindsToManager();
     void createsPrimaryDevice();
@@ -255,7 +255,7 @@ void tst_primaryselectionv1::createsPrimaryDevice()
     QCOMPOSITOR_TRY_VERIFY(primarySelectionDevice());
     QCOMPOSITOR_TRY_VERIFY(primarySelectionDevice()->resourceMap().contains(client()));
     QCOMPOSITOR_TRY_COMPARE(primarySelectionDevice()->resourceMap().value(client())->version(), primarySelectionVersion);
-    QTRY_VERIFY(QGuiApplication::clipboard()->supportsSelection());
+    BOBUIRY_VERIFY(QGuiApplication::clipboard()->supportsSelection());
 }
 
 void tst_primaryselectionv1::createsPrimaryDeviceForNewSeats()
@@ -296,7 +296,7 @@ void tst_primaryselectionv1::pasteAscii()
             QCOMPARE(mimeType, "text/plain");
             file.write(QByteArray("normal ascii"));
             file.close();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
         device->sendSelection(offer);
 
         pointer()->sendEnter(surface, {32, 32});
@@ -306,8 +306,8 @@ void tst_primaryselectionv1::pasteAscii()
         pointer()->sendButton(client(), BTN_MIDDLE, 0);
         pointer()->sendFrame(client());
     });
-    QTRY_COMPARE(window.m_formats, QStringList{"text/plain"});
-    QTRY_COMPARE(window.m_text, "normal ascii");
+    BOBUIRY_COMPARE(window.m_formats, QStringList{"text/plain"});
+    BOBUIRY_COMPARE(window.m_text, "normal ascii");
 }
 
 void tst_primaryselectionv1::pasteUtf8()
@@ -342,7 +342,7 @@ void tst_primaryselectionv1::pasteUtf8()
             QCOMPARE(mimeType, "text/plain;charset=utf-8");
             file.write(QByteArray("face with tears of joy: 😂"));
             file.close();
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
         device->sendSelection(offer);
 
         pointer()->sendEnter(surface, {32, 32});
@@ -352,8 +352,8 @@ void tst_primaryselectionv1::pasteUtf8()
         pointer()->sendButton(client(), BTN_MIDDLE, 0);
         pointer()->sendFrame(client());
     });
-    QTRY_COMPARE(window.m_formats, QStringList({"text/plain"}));
-    QTRY_COMPARE(window.m_text, "face with tears of joy: 😂");
+    BOBUIRY_COMPARE(window.m_formats, QStringList({"text/plain"}));
+    BOBUIRY_COMPARE(window.m_text, "face with tears of joy: 😂");
 }
 
 void tst_primaryselectionv1::destroysPreviousSelection()
@@ -397,8 +397,8 @@ void tst_primaryselectionv1::destroysSelectionOnLeave()
         primarySelectionDevice()->sendSelection(offer);
     });
 
-    QTRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Selection));
-    QTRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Selection)->hasText());
+    BOBUIRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Selection));
+    BOBUIRY_VERIFY(QGuiApplication::clipboard()->mimeData(QClipboard::Selection)->hasText());
 
     QSignalSpy selectionChangedSpy(QGuiApplication::clipboard(), &QClipboard::selectionChanged);
 
@@ -407,7 +407,7 @@ void tst_primaryselectionv1::destroysSelectionOnLeave()
         keyboard()->sendLeave(surface);
     });
 
-    QTRY_COMPARE(selectionChangedSpy.size(), 1);
+    BOBUIRY_COMPARE(selectionChangedSpy.size(), 1);
     QVERIFY(!QGuiApplication::clipboard()->mimeData(QClipboard::Selection)->hasText());
 }
 
@@ -456,7 +456,7 @@ void tst_primaryselectionv1::copy()
         connect(notifier, &QSocketNotifier::activated, this, [&](int fd) {
             exec([&]{
                 static char buf[1024];
-                int n = QT_READ(fd, buf, sizeof buf);
+                int n = BOBUI_READ(fd, buf, sizeof buf);
                 if (n <= 0) {
                     delete notifier;
                     close(fd);
@@ -464,7 +464,7 @@ void tst_primaryselectionv1::copy()
                     pastedBuf.append(buf, n);
                 }
             });
-        }, Qt::DirectConnection);
+        }, BobUI::DirectConnection);
     });
 
     QCOMPOSITOR_TRY_VERIFY(pastedBuf.size()); // this assumes we got everything in one read

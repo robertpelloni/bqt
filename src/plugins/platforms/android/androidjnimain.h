@@ -1,6 +1,6 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROID_APP_H
 #define ANDROID_APP_H
@@ -12,14 +12,14 @@
 
 #include <QImage>
 #include <private/qjnihelpers_p.h>
-#include <QtCore/QJniObject>
+#include <BobUICore/QJniObject>
 #include <androidbackendregister.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRect;
 class QPoint;
-class QThread;
+class BOBUIhread;
 class QAndroidPlatformIntegration;
 class QWidget;
 class QString;
@@ -27,16 +27,16 @@ class QWindow;
 class QAndroidPlatformWindow;
 class QBasicMutex;
 
-Q_DECLARE_JNI_CLASS(QtActivityDelegateBase, "org/qtproject/qt/android/QtActivityDelegateBase")
-Q_DECLARE_JNI_CLASS(QtInputDelegate, "org/qtproject/qt/android/QtInputDelegate")
+Q_DECLARE_JNI_CLASS(BobUIActivityDelegateBase, "org/bobuiproject/bobui/android/BobUIActivityDelegateBase")
+Q_DECLARE_JNI_CLASS(BobUIInputDelegate, "org/bobuiproject/bobui/android/BobUIInputDelegate")
 
-namespace QtAndroid
+namespace BobUIAndroid
 {
     QBasicMutex *platformInterfaceMutex();
     QAndroidPlatformIntegration *androidPlatformIntegration();
     AndroidBackendRegister *backendRegister();
     void setAndroidPlatformIntegration(QAndroidPlatformIntegration *androidPlatformIntegration);
-    void setQtThread(QThread *thread);
+    void setBobUIThread(BOBUIhread *thread);
     void setViewVisibility(jobject view, bool visible);
 
     QWindow *topLevelWindowAt(const QPoint &globalPos);
@@ -52,7 +52,7 @@ namespace QtAndroid
     jobject createBitmap(int width, int height, QImage::Format format, JNIEnv *env);
     jobject createBitmapDrawable(jobject bitmap, JNIEnv *env = nullptr);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     void notifyAccessibilityLocationChange(uint accessibilityObjectId);
     void notifyObjectHide(uint accessibilityObjectId, uint parentObjectId);
     void notifyObjectShow(uint parentObjectId);
@@ -67,14 +67,14 @@ namespace QtAndroid
     const char *classErrorMsgFmt();
     const char *methodErrorMsgFmt();
     const char *staticFieldErrorMsgFmt();
-    const char *qtTagText();
+    const char *bobuiTagText();
 
     QString deviceName();
     bool blockEventLoopsWhenSuspended();
 
-    bool isQtApplication();
+    bool isBobUIApplication();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROID_APP_H

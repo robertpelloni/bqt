@@ -10,7 +10,7 @@ instructions:
       equals_value: Windows
   - type: EnvironmentVariable
     variableName: TESTRUNNER
-    variableValue: "{{.Env.LIBEXEC_INSTALL_DIR}}qt-testrunner.py --"
+    variableValue: "{{.Env.LIBEXEC_INSTALL_DIR}}bobui-testrunner.py --"
     # Running wasm tests with the coin testrunner is not yet implemented
     disable_if:
       condition: property
@@ -40,7 +40,7 @@ instructions:
       variableName: ASAN_OPTIONS
       variableValue: "malloc_context_size=100:detect_leaks=0"
     - type: EnvironmentVariable
-      # Override qt-testrunner as we don't want to gather test statistics
+      # Override bobui-testrunner as we don't want to gather test statistics
       # because many tests FAIL when built with ASAN.
       variableName: TESTRUNNER
       variableValue: "{{.Env.LIBEXEC_INSTALL_DIR}}sanitizer-testrunner.py"
@@ -59,7 +59,7 @@ instructions:
       property: host.os
       equals_value: Windows
 
-  - !include "{{qt/qtbase}}/vxworks_test_env_setup.yaml"
+  - !include "{{bobui/bobuibase}}/vxworks_test_env_setup.yaml"
 
   # Only output verbose test output for failures, unless
   # the VerboseCTestOutput feature is enabled. The full
@@ -97,7 +97,7 @@ instructions:
     variableName: CTEST_ARGS
     variableValue: " --output-junit {{.Env.COIN_CTEST_RESULTSDIR}}{{.Env.CI_PATH_SEP}}test_summary.ctest_junit_xml"
 
-  - !include "{{qt/qtbase}}/coin_module_test_android_start_emulator.yaml"
+  - !include "{{bobui/bobuibase}}/coin_module_test_android_start_emulator.yaml"
 
   - type: EnvironmentVariable
     variableName: COIN_CROSS_PLATFORM_VERSION_TEST
@@ -171,12 +171,12 @@ instructions:
 
   - type: Group
     instructions:
-      # Qttestrunner does not work with bic tests.
+      # BobUItestrunner does not work with bic tests.
       - type: EnvironmentVariable
         variableName: TESTRUNNER
         variableValue: ""
       - type: EnvironmentVariable
-        variableName: QT_MODULE_TO_TEST
+        variableName: BOBUI_MODULE_TO_TEST
         variableValue: "{{.SourceDir}}"
       - type: PrependToEnvironmentVariable
         variableName: PATH
@@ -184,20 +184,20 @@ instructions:
       - type: InstallSourceArchive
         maxTimeInSeconds: 600
         maxTimeBetweenOutput: 600
-        project: qt/qtqa
+        project: bobui/bobuiqa
         ref: dev
-        directory: qt/qtqa
-        userMessageOnFailure: "Could not install qt/qtqa source archive. Please investigate why."
+        directory: bobui/bobuiqa
+        userMessageOnFailure: "Could not install bobui/bobuiqa source archive. Please investigate why."
       - type: ChangeDirectory
-        directory: "{{.AgentWorkingDir}}/qt/qtqa/tests/postbuild/bic"
+        directory: "{{.AgentWorkingDir}}/bobui/bobuiqa/tests/postbuild/bic"
       - type: ExecuteCommand
         command: ["{{.InstallDir}}/bin/qmake"]
         maxTimeInSeconds: 7200
         maxTimeBetweenOutput: 300
         userMessageOnFailure: "Failed to execute qmake for bic tests"
-      - type: RunQtUnitTest
+      - type: RunBobUIUnitTest
         runTestCommand: ["make", "check", "-j1"]
-        directory: "{{.AgentWorkingDir}}/qt/qtqa/tests/postbuild/bic"
+        directory: "{{.AgentWorkingDir}}/bobui/bobuiqa/tests/postbuild/bic"
         testRepetitionAllowance: 0
         maxTimeInSeconds: 7200
         maxTimeBetweenOutput: 300

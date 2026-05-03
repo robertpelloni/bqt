@@ -1,0 +1,1 @@
+-release -opensource -confirm-license -static -no-icu -no-harfbuzz -no-libpng -qt-zlib -qt-pcre -nomake tests -nomake examples -- -G "Visual Studio 18 2026" -A x64 

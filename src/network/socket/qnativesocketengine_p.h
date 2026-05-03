@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNATIVESOCKETENGINE_P_H
 #define QNATIVESOCKETENGINE_P_H
@@ -10,16 +10,16 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include "QtNetwork/qhostaddress.h"
-#include "QtNetwork/qnetworkinterface.h"
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include "BobUINetwork/qhostaddress.h"
+#include "BobUINetwork/qnetworkinterface.h"
 #include "private/qabstractsocketengine_p.h"
 #include "qplatformdefs.h"
 
@@ -31,25 +31,25 @@
 #  include <mswsock.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN
-#  define QT_SOCKLEN_T int
-#  define QT_SOCKOPTLEN_T int
+#  define BOBUI_SOCKLEN_T int
+#  define BOBUI_SOCKOPTLEN_T int
 #endif
 
 namespace {
 namespace SetSALen {
-    template <typename T> void set(T *sa, typename std::enable_if<(&T::sa_len, true), QT_SOCKLEN_T>::type len)
+    template <typename T> void set(T *sa, typename std::enable_if<(&T::sa_len, true), BOBUI_SOCKLEN_T>::type len)
     { sa->sa_len = len; }
-    template <typename T> void set(T *sa, typename std::enable_if<(&T::sin_len, true), QT_SOCKLEN_T>::type len)
+    template <typename T> void set(T *sa, typename std::enable_if<(&T::sin_len, true), BOBUI_SOCKLEN_T>::type len)
     { sa->sin_len = len; }
-    template <typename T> void set(T *sin6, typename std::enable_if<(&T::sin6_len, true), QT_SOCKLEN_T>::type len)
+    template <typename T> void set(T *sin6, typename std::enable_if<(&T::sin6_len, true), BOBUI_SOCKLEN_T>::type len)
     { sin6->sin6_len = len; }
     template <typename T> void set(T *, ...) {}
 }
 
-inline QT_SOCKLEN_T setSockaddr(sockaddr_in *sin, const QHostAddress &addr, quint16 port = 0)
+inline BOBUI_SOCKLEN_T setSockaddr(sockaddr_in *sin, const QHostAddress &addr, quint16 port = 0)
 {
     *sin = {};
     SetSALen::set(sin, sizeof(*sin));
@@ -59,14 +59,14 @@ inline QT_SOCKLEN_T setSockaddr(sockaddr_in *sin, const QHostAddress &addr, quin
     return sizeof(*sin);
 }
 
-inline QT_SOCKLEN_T setSockaddr(sockaddr_in6 *sin6, const QHostAddress &addr, quint16 port = 0)
+inline BOBUI_SOCKLEN_T setSockaddr(sockaddr_in6 *sin6, const QHostAddress &addr, quint16 port = 0)
 {
     *sin6 = {};
     SetSALen::set(sin6, sizeof(*sin6));
     sin6->sin6_family = AF_INET6;
     sin6->sin6_port = htons(port);
     memcpy(sin6->sin6_addr.s6_addr, addr.toIPv6Address().c, sizeof(sin6->sin6_addr));
-#if QT_CONFIG(networkinterface)
+#if BOBUI_CONFIG(networkinterface)
     sin6->sin6_scope_id = QNetworkInterface::interfaceIndexFromName(addr.scopeId());
 #else
     // it had better be a number then, if it is not empty
@@ -75,7 +75,7 @@ inline QT_SOCKLEN_T setSockaddr(sockaddr_in6 *sin6, const QHostAddress &addr, qu
     return sizeof(*sin6);
 }
 
-inline QT_SOCKLEN_T setSockaddr(sockaddr *sa, const QHostAddress &addr, quint16 port = 0)
+inline BOBUI_SOCKLEN_T setSockaddr(sockaddr *sa, const QHostAddress &addr, quint16 port = 0)
 {
     switch (addr.protocol()) {
     case QHostAddress::IPv4Protocol:
@@ -95,7 +95,7 @@ inline QT_SOCKLEN_T setSockaddr(sockaddr *sa, const QHostAddress &addr, quint16 
 } // unnamed namespace
 
 class QNativeSocketEnginePrivate;
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 class QNetworkInterface;
 #endif
 
@@ -125,8 +125,8 @@ public:
     qint64 read(char *data, qint64 maxlen) override;
     qint64 write(const char *data, qint64 len) override;
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
     bool joinMulticastGroup(const QHostAddress &groupAddress,
                             const QNetworkInterface &iface) override;
     bool leaveMulticastGroup(const QHostAddress &groupAddress,
@@ -137,7 +137,7 @@ public:
 
     bool hasPendingDatagrams() const override;
     qint64 pendingDatagramSize() const override;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
     qint64 readDatagram(char *data, qint64 maxlen, QIpPacketHeader * = nullptr,
                         PacketHeaderOptions = WantNone) override;
@@ -180,6 +180,6 @@ private:
     Q_DISABLE_COPY_MOVE(QNativeSocketEngine)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNATIVESOCKETENGINE_P_H

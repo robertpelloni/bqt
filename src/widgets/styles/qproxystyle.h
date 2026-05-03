@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPROXYSTYLE_H
 #define QPROXYSTYLE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/QCommonStyle>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/QCommonStyle>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if !defined(QT_NO_STYLE_PROXY)
+#if !defined(BOBUI_NO_STYLE_PROXY)
 
 class QProxyStylePrivate;
 class Q_WIDGETS_EXPORT QProxyStyle : public QCommonStyle
@@ -44,7 +44,7 @@ public:
     int styleHint(StyleHint hint, const QStyleOption *option = nullptr, const QWidget *widget = nullptr, QStyleHintReturn *returnData = nullptr) const override;
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
     int layoutSpacing(QSizePolicy::ControlType control1, QSizePolicy::ControlType control2,
-                      Qt::Orientation orientation, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
+                      BobUI::Orientation orientation, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
 
     QIcon standardIcon(StandardPixmap standardIcon, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
     QPixmap standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt, const QWidget *widget = nullptr) const override;
@@ -66,8 +66,8 @@ private:
     Q_DECLARE_PRIVATE(QProxyStyle)
 };
 
-#endif // QT_NO_STYLE_PROXY
+#endif // BOBUI_NO_STYLE_PROXY
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROXYSTYLE_H
