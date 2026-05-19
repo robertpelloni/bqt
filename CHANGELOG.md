@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.66] - 2026-05-19
+### Added
+- Implemented `Synthesizer` in Go (`internal/audio/synthesizer.go`) to port `OmniSynthesizer` C++ logic to pure Go. It supports polyphony management and simple sine wave generation via the `AudioNode` interface.
+- Added tests for `Synthesizer` in `internal/audio/synthesizer_test.go` covering polyphony constraints and audio buffer processing.
+### Changed
+- Fixed broken build for Go pure ui engine (`DemoSurface`).
+
+
 All notable changes to this project will be documented in this file.
 
 ## [1.1.0] - 2026-04-03

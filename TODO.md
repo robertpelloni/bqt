@@ -68,4 +68,4 @@
 ## Refactoring & Documentation
 - [x] Outline U++ and JUCE bridging details explicitly inside `Manual.md` and the universal instruction suite.
 - [ ] Audit the BobQ C++ codebase to ensure that variable naming, structure, and paradigms match the cleanliness of the GTK implementation.
-- [ ] Continue porting `OmniAudioGraph` to pure Go.
+- [x] Continue porting `OmniAudioGraph` to pure Go.
