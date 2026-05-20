@@ -39,7 +39,7 @@ configure_file(
 
 write_basic_package_version_file(
     "${__build_internals_build_dir}/${INSTALL_CMAKE_NAMESPACE}BuildInternalsConfigVersionImpl.cmake"
-        VERSION 1.1.66
+    VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion
 )
 bobui_internal_write_bobui_package_version_file(
@@ -252,7 +252,7 @@ _bobui_internal_should_include_targets(
 
 write_basic_package_version_file(
     "${__GlobalConfig_build_dir}/${INSTALL_CMAKE_NAMESPACE}ConfigVersionImpl.cmake"
-        VERSION 1.1.66
+    VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion
 )
 bobui_internal_write_bobui_package_version_file(
