@@ -18,7 +18,7 @@
 
 ## C++ Core Fixes (Priority 2)
 - [x] Consolidate BobUI CMake compatibility validation command and wire it into Go CI. (Added `cmake/tests/bobui_consolidated_compatibility_validation.cmake` and updated `.github/workflows/go_wasm.yml`).
-- [ ] Complete the generic component registry (`BobQUppComponentRegistry`) so any QML string can summon a U++ or JUCE component.
+- [x] Complete the generic component registry (`BobQUppComponentRegistry`) so any QML string can summon a U++ or JUCE component.
 
 ## Refactoring & Documentation
 - [x] Outline U++ and JUCE bridging details explicitly inside `Manual.md` and the universal instruction suite.
