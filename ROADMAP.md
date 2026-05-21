@@ -15,7 +15,7 @@
 
 ## Phase 3: The Go Transcendence
 - [x] Implement native Go routines for audio synthesis (`OmniSynthesizer`).
-- [ ] Methodical 1:1 porting of remaining C++ components (`OmniFilter`, `OmniGain`) to Go.
+- [ ] Methodical 1:1 porting of remaining C++ components (`OmniGain`) to Go. (`OmniFilter` has been ported).
 - [ ] Implement Go routines to handle BobQ signal/slot emission seamlessly.
 
 ## Phase 4: World Domination
