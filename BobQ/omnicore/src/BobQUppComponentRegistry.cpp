@@ -1,5 +1,13 @@
 #include "BobQUppComponentRegistry.h"
 #include <QDebug>
+#include "../../../OmniUI/omnicore/include/BobQJuceHost.h"
+
+namespace juce {
+    class Slider : public Component { public: Slider() {} };
+    class TextButton : public Component { public: TextButton() {} };
+    class TreeView : public Component { public: TreeView() {} };
+}
+
 
 // Mock definitions for U++ components to simulate the registry mapping
 namespace Upp {
@@ -38,10 +46,22 @@ BobQUppComponentRegistry* BobQUppComponentRegistry::instance() {
     return s_instance;
 }
 
-BobQUltimatePPHost* BobQUppComponentRegistry::createComponent(const QString& componentName, QQuickItem* parent) {
+QQuickItem* BobQUppComponentRegistry::createComponent(const QString& componentName, QQuickItem* parent) {
     BobQUltimatePPHost* host = new BobQUltimatePPHost(parent);
 
-    // Map generic component names to concrete U++ equivalents
+    // Map generic component names to concrete U++ and JUCE equivalents
+    if (componentName.startsWith("Juce", Qt::CaseInsensitive)) {
+        BobQJuceHost* juceHost = new BobQJuceHost(parent);
+        if (componentName.compare("JuceButton", Qt::CaseInsensitive) == 0) {
+            juceHost->setJuceComponent(std::make_unique<juce::TextButton>());
+        } else if (componentName.compare("JuceSlider", Qt::CaseInsensitive) == 0) {
+            juceHost->setJuceComponent(std::make_unique<juce::Slider>());
+        } else {
+            qWarning() << "BobQUppComponentRegistry: Unrecognized JUCE component mapping for" << componentName;
+        }
+        return juceHost;
+    }
+
     if (componentName.compare("Button", Qt::CaseInsensitive) == 0) {
         host->setUppCtrl(std::make_unique<Upp::Button>());
     }
