@@ -9,6 +9,7 @@ import (
 )
 
 type DemoSurface struct {
+	WebView          WebView
 	btn1, btn2, btn3 widget.Clickable
     dialog           Dialog
     popup            Popup
@@ -79,4 +80,8 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 			return ds.tooltip.Layout(gtx, th)
 		}),
 	)
+}
+
+func NewDemoSurface() *DemoSurface {
+	return &DemoSurface{}
 }
