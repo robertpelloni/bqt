@@ -36,6 +36,9 @@ set(BOBUI_BUILD_EXTRA_IDE_FILE_PATTERNS bin/* libexec/*)
 <<<<<<< HEAD
 bobui_internal_bobuibase_build_repo()
 =======
+<<<<<<< HEAD
+bobui_internal_bobuibase_build_repo()
+=======
 qt_internal_qtbase_build_repo()
 
 
@@ -45,3 +48,4 @@ qt_internal_qtbase_build_repo()
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobQSubmodules.cmake)
 bobq_integrate_submodules()
 >>>>>>> origin/jules-11090863842246041945-58931a03
+>>>>>>> 677b0f352ad2c50efba02126daac7b26465b876d
