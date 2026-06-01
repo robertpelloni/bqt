@@ -31,7 +31,7 @@ public:
      * @param parent Optional parent item
      * @return A valid BobQUltimatePPHost acting as a drop-in replacement for the requested widget.
      */
-    Q_INVOKABLE BobQUltimatePPHost* createComponent(const QString& componentName, QQuickItem* parent = nullptr);
+    Q_INVOKABLE QQuickItem* createComponent(const QString& componentName, QQuickItem* parent = nullptr);
 
 private:
     explicit BobQUppComponentRegistry(QObject *parent = nullptr);

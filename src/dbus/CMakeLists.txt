@@ -79,6 +79,6 @@ bobui_internal_extend_target(DBus CONDITION WIN32
         user32
         ws2_32
 )
-qt_internal_add_docs(DBus
+bobui_internal_add_docs(DBus
     doc/bobuidbus.qdocconf
 )

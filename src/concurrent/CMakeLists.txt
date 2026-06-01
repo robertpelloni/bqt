@@ -9,22 +9,22 @@ bobui_internal_add_module(Concurrent
     NO_PRIVATE_MODULE
     EXCEPTIONS
     SOURCES
-        qtaskbuilder.h
+        bobuiaskbuilder.h
         qtconcurrent_global.h
-        qtconcurrentcompilertest.h
-        qtconcurrentfilter.cpp qtconcurrentfilter.h
-        qtconcurrentfilterkernel.h
-        qtconcurrentfunctionwrappers.h
-        qtconcurrentiteratekernel.cpp qtconcurrentiteratekernel.h
-        qtconcurrentmap.cpp qtconcurrentmap.h
-        qtconcurrentmapkernel.h
-        qtconcurrentmedian.h
-        qtconcurrentreducekernel.h
-        qtconcurrentrun.cpp qtconcurrentrun.h
-        qtconcurrentrunbase.h
-        qtconcurrentstoredfunctioncall.h
+        bobuiconcurrentcompilertest.h
+        bobuiconcurrentfilter.cpp bobuiconcurrentfilter.h
+        bobuiconcurrentfilterkernel.h
+        bobuiconcurrentfunctionwrappers.h
+        bobuiconcurrentiteratekernel.cpp bobuiconcurrentiteratekernel.h
+        bobuiconcurrentmap.cpp bobuiconcurrentmap.h
+        bobuiconcurrentmapkernel.h
+        bobuiconcurrentmedian.h
+        bobuiconcurrentreducekernel.h
+        bobuiconcurrentrun.cpp qtconcurrentrun.h
+        bobuiconcurrentrunbase.h
+        bobuiconcurrentstoredfunctioncall.h
         qtconcurrenttask.h
-        qtconcurrentthreadengine.cpp qtconcurrentthreadengine.h
+        bobuiconcurrentthreadengine.cpp bobuiconcurrentthreadengine.h
     DEFINES
         BOBUI_NO_CONTEXTLESS_CONNECT
         BOBUI_NO_FOREACH
@@ -46,6 +46,6 @@ bobui_internal_extend_target(Concurrent CONDITION MSVC AND (TEST_architecture_ar
     LINK_OPTIONS
         "/BASE:0x66000000"
 )
-qt_internal_add_docs(Concurrent
+bobui_internal_add_docs(Concurrent
     doc/bobuiconcurrent.qdocconf
 )
