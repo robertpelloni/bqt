@@ -9,14 +9,15 @@
 
 ## Phase 2: Unification & Interoperability (In Progress)
 - [x] Integrate U++ widgets through the BobQ standard API interface.
+- [x] Rename framework branding globally (BobUI/Qt to BQt).
 - [ ] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
-- [ ] Establish a unified Event Loop to drive Qt, GTK, JUCE, and U++ components seamlessly.
+- [ ] Establish a unified Event Loop to drive BQt, GTK, JUCE, and U++ components seamlessly.
 - [ ] Achieve 100% 1:1 feature parity with GTK.
 
 ## Phase 3: The Go Transcendence
 - [x] Implement native Go routines for audio synthesis (`OmniSynthesizer`).
-- [x] Methodical 1:1 porting of remaining C++ components (`OmniGain`) to Go. (`OmniFilter` has been ported).
-- [ ] Implement Go routines to handle BobQ signal/slot emission seamlessly.
+- [x] Methodical 1:1 porting of remaining C++ components (`OmniGain`, `OmniAudioGraph`) to Go.
+- [ ] Implement Go routines to handle BQt signal/slot emission seamlessly.
 
 ## Phase 4: World Domination
 - [ ] 1:1 parity with JavaFX, WinUI, and DearImGui.

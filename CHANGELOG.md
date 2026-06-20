@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.67] - 2026-06-20
+### Added
+- Added `Start()` and `Stop()` logic into `internal/audio/audio_graph.go` to achieve feature parity with C++ `OmniAudioGraph`.
+### Changed
+- Performed codebase renaming, changing core framework references from `bobui` to `bqt` within the Go backend (`internal/` and `main.go`).
+
+
 ## [1.1.66] - 2026-05-19
 ### Added
 - Implemented `Synthesizer` in Go (`internal/audio/synthesizer.go`) to port `OmniSynthesizer` C++ logic to pure Go. It supports polyphony management and simple sine wave generation via the `AudioNode` interface.
