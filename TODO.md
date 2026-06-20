@@ -22,3 +22,4 @@
 - [x] Outline U++ and JUCE bridging details explicitly inside `Manual.md` and the universal instruction suite.
 - [x] Audit the BobQ C++ codebase to ensure cleanliness of the GTK implementation.
 - [x] Continue porting `OmniAudioGraph` to pure Go.
+- [x] Begin porting components to Rust (Starting with `AudioGraph`)
