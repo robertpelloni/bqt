@@ -1,5 +1,15 @@
 # Changelog
 
+
+## [1.1.69] - 2026-06-20
+### Added
+- Initiated Java and C# ports of the framework, starting with the `AudioGraph` component (`java/src/main/java/com/bqt/audio/AudioGraph.java`, `csharp/src/Audio/AudioGraph.cs`).
+- Achieved 1:1 parity with the Go backend's `AudioGraph` logic including standard lifecycle (`Start()`, `Stop()`) and connection logic for both Java and C#.
+
+## [1.1.68] - 2026-06-20
+### Added
+- Initiated Rust port of the framework, starting with the `AudioGraph` component (`rust/src/audio/audio_graph.rs`).
+- Established 1:1 parity with the Go backend's `AudioGraph` logic including standard lifecycle (`Start()`, `Stop()`) and connection logic.
 ## [1.1.67] - 2026-06-20
 ### Added
 - Added `Start()` and `Stop()` logic into `internal/audio/audio_graph.go` to achieve feature parity with C++ `OmniAudioGraph`.
@@ -435,7 +445,3 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Implemented `BobQUppComponentRegistry`, a `QML_SINGLETON` factory that exposes generic Ultimate++ controls (e.g., `Upp::Button`, `Upp::ArrayCtrl`) via string names (like "Button" or "List") into dynamically instantiated `BobQUltimatePPHost` wrappers. This fulfills the interoperability goal of hot-swapping native Qt and U++ widgets directly in QML.
 >>>>>>> origin/jules-11090863842246041945-58931a03
-
-### v1.1.68
-* Initiated Rust port of the framework, starting with the `AudioGraph` component (`rust/src/audio/audio_graph.rs`).
-* Established 1:1 parity with the Go backend's `AudioGraph` logic including standard lifecycle (`Start()`, `Stop()`) and connection logic.
