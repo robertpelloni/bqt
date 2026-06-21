@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.1.70] - 2026-06-21
+### Added
+- Ported the `OmniGain` component to Rust, Java, and C# to maintain cross-language parity.
+- Implemented `Process()` logic for gain scaling across all ports with unit tests.
+
 ## [1.1.69] - 2026-06-20
 ### Added
 - Initiated Java and C# ports of the framework, starting with the `AudioGraph` component (`java/src/main/java/com/bqt/audio/AudioGraph.java`, `csharp/src/Audio/AudioGraph.cs`).

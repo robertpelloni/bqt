@@ -1,7 +1,9 @@
 pub mod audio {
     pub mod audio_graph;
-}
+    pub mod omni_gain;
 
-#[cfg(test)]
-#[path = "audio/audio_graph_test.rs"]
-mod audio_graph_test;
+    #[cfg(test)]
+    mod audio_graph_test;
+    #[cfg(test)]
+    mod omni_gain_test;
+}
