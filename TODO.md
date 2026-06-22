@@ -24,3 +24,4 @@
 - [x] Continue porting `OmniAudioGraph` to pure Go.
 - [x] Port components to Java and C# (Starting with `AudioGraph`)
 - [x] Begin porting components to Rust (Starting with `AudioGraph`)
+- [x] Port `OmniSynthesizer` to Rust, Java, and C#

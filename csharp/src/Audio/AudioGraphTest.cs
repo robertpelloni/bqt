@@ -24,6 +24,7 @@ namespace BQt.Audio.Tests
             TestAudioGraphConnect();
             Console.WriteLine("All tests passed.");
             OmniGainTest.Run();
+            OmniSynthesizerTest.Run();
         }
 
         private static void TestAudioGraphLifecycle()

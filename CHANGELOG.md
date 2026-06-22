@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.1.71] - 2026-06-21
+### Added
+- Ported the `OmniSynthesizer` component to Rust, Java, and C# to maintain cross-language parity.
+- Maintained 1:1 cross-language feature parity regarding polyphony management and `Process()` audio buffer sine generation.
+
 ## [1.1.70] - 2026-06-21
 ### Added
 - Ported the `OmniGain` component to Rust, Java, and C# to maintain cross-language parity.
