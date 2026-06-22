@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.1.72] - 2026-06-22
+### Added
+- Mapped JUCE audio primitives into the Go `AudioGraph` via `JUCEAudioGraphAdapter` to bridge external C++ processors natively into Go.
+- Added `JUCEProxyNode` to simulate the FFI/CGO barrier for bridging DSP logic.
+
 ## [1.1.71] - 2026-06-21
 ### Added
 - Ported the `OmniSynthesizer` component to Rust, Java, and C# to maintain cross-language parity.

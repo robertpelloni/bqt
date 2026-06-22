@@ -10,7 +10,7 @@
 ## Phase 2: Unification & Interoperability (In Progress)
 - [x] Integrate U++ widgets through the BobQ standard API interface.
 - [x] Rename framework branding globally (BobUI/Qt to BQt).
-- [ ] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
+- [x] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
 - [ ] Establish a unified Event Loop to drive BQt, GTK, JUCE, and U++ components seamlessly.
 - [ ] Achieve 100% 1:1 feature parity with GTK.
 
