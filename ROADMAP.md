@@ -17,7 +17,7 @@
 ## Phase 3: The Go Transcendence
 - [x] Implement native Go routines for audio synthesis (`OmniSynthesizer`).
 - [x] Methodical 1:1 porting of remaining C++ components (`OmniGain`, `OmniAudioGraph`) to Go.
-- [ ] Implement Go routines to handle BQt signal/slot emission seamlessly.
+- [x] Implement Go routines to handle BQt signal/slot emission seamlessly.
 
 ## Phase 4: World Domination
 - [ ] 1:1 parity with JavaFX, WinUI, and DearImGui.

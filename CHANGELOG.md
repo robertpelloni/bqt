@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.1.73] - 2026-06-22
+### Added
+- Implemented native Go routines to handle BQt signal/slot emission seamlessly (`internal/ui/signals.go`).
+- Signal emissions are executed asynchronously via goroutines to perfectly mirror Qt's queued connection behavior and maintain a non-blocking event loop.
+
 ## [1.1.72] - 2026-06-22
 ### Added
 - Mapped JUCE audio primitives into the Go `AudioGraph` via `JUCEAudioGraphAdapter` to bridge external C++ processors natively into Go.
