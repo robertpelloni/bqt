@@ -1,16 +1,6 @@
 # Changelog
 
 
-## [1.1.74] - 2026-06-23
-### Added
-- Fetched all upstream tags and merged local AudioGraph/Go refactoring progress directly into `main`.
-- Ensured workspace alignment with submodule tracking structure.
-
-## [1.1.74] - 2026-06-23
-### Added
-- Implemented native Go routines to handle BQt signal/slot emission seamlessly (`internal/ui/signals.go`).
-- Signal emissions are executed asynchronously via goroutines to perfectly mirror Qt's queued connection behavior and maintain a non-blocking event loop.
-
 ## [1.1.73] - 2026-06-22
 ### Added
 - Implemented native Go routines to handle BQt signal/slot emission seamlessly (`internal/ui/signals.go`).
