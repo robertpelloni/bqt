@@ -1,12 +1,12 @@
 @echo off
 setlocal
-title BobUI
+title BQt
 cd /d "%~dp0"
 
-echo [BobUI] Starting...
+echo [BQt] Starting...
 where go >nul 2>nul
 if errorlevel 1 (
-    echo [BobUI] go not found. Please install it.
+    echo [BQt] go not found. Please install it.
     pause
     exit /b 1
 )
@@ -14,7 +14,7 @@ if errorlevel 1 (
 go run .
 
 if errorlevel 1 (
-    echo [BobUI] Exited with error code %errorlevel%.
+    echo [BQt] Exited with error code %errorlevel%.
     pause
 )
 endlocal
