@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Validate BQt CMake Compatibility
       run: |
-        cmake -P cmake/tests/bqt_consolidated_compatibility_validation.cmake -DBOBUI_SKIP_NATIVE_CONFIGURE=ON
+        cmake -P cmake/tests/bqt_consolidated_compatibility_validation.cmake -DBQT_SKIP_NATIVE_CONFIGURE=ON
 
   test:
     runs-on: ubuntu-latest

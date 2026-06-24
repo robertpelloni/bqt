@@ -1,6 +1,7 @@
 # Changelog
 
 
+
 ## [1.1.73] - 2026-06-22
 ### Added
 - Implemented native Go routines to handle BQt signal/slot emission seamlessly (`internal/ui/signals.go`).

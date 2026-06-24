@@ -31,7 +31,7 @@ jobs:
         setup-python: 'true'
         host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
         target: desktop
-        modules: 'qtwebsockets qt5compat qtshadertools qtmultimedia qtsvg'
+        modules: 'qtwebsockets qt5compat qtshadertools qtmultimedia'
 
     - name: Setup Ninja
       uses: seanmiddleditch/gha-setup-ninja@master
