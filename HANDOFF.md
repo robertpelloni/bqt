@@ -11,7 +11,7 @@ The immediate goals completed in this session:
 
 ## What the next LLM should know:
 - **Massive Renaming Warning**: We ran a targeted script to switch `BobUI` / `bobui` to `BQt` / `bqt` inside the Go backend (`internal/` and `main.go`) and specific CI/cmake scripts. A broader regex replacement across the entire C++ repo was avoided due to the immense diff size causing code review failures and instability.
-- Version is now `v1.1.74`.
+- Version is now `v1.1.75`.
 - Never commit binary files (like `.class` files or `/obj/`, `/bin/` folders in C#). Ensure robust `.gitignore` protections are applied when establishing new language ecosystems.
 
 ## Active Priorities:
