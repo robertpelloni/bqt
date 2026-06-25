@@ -1,6 +1,11 @@
 # Changelog
 
 
+
+## [1.1.75] - 2026-06-25
+### Added
+- Stabilized the Go package graph running `go mod tidy` and verified the build using `go build` and `go test`.
+
 ## [1.1.73] - 2026-06-22
 ### Added
 - Implemented native Go routines to handle BQt signal/slot emission seamlessly (`internal/ui/signals.go`).

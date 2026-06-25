@@ -27,3 +27,5 @@
 - [x] Port `OmniSynthesizer` to Rust, Java, and C#
 - [x] Implement Go routines to handle BQt signal/slot emission seamlessly.
 - [x] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
+
+- [x] Establish a unified Event Loop to drive BQt components seamlessly.
