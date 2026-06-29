@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [1.1.93] - 2026-06-29
+### Added
+- Added unit tests for `Start()` and `Stop()` methods in `internal/audio/audio_graph.go` to prove the DSP execution.
+
+### Changed
+- Finalized removal of git merge conflict markers.
+- Bumped version to v1.1.93.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+
+
 
 ## [1.1.75] - 2026-06-25
 ### Added
