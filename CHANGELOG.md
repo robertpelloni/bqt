@@ -1,19 +1,6 @@
 # Changelog
 
 
-## [1.1.93] - 2026-06-29
-### Added
-- Added unit tests for `Start()` and `Stop()` methods in `internal/audio/audio_graph.go` to prove the DSP execution.
-
-### Changed
-- Finalized removal of git merge conflict markers.
-- Bumped version to v1.1.93.
-
-### Verified
-- `go test ./internal/...` passes.
-- `go build -buildvcs=false .` succeeds.
-
-
 
 ## [1.1.75] - 2026-06-25
 ### Added
@@ -460,6 +447,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated `internal/ui/engine.go` to initialize the demo surface and wire baseline WebView callbacks.
 - Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
+=======
 ### Added
 - Executed and validated the qtbase-native configure gate in a real C/C++ toolchain environment. Confirmed successful ninja compilation of Core, Network, Sql, Concurrent, DBus, and Gui modules.
 - Added a consolidated `bobui_consolidated_compatibility_validation.cmake` script to verify full framework integrity.
@@ -481,3 +469,4 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Implemented `BobQUppComponentRegistry`, a `QML_SINGLETON` factory that exposes generic Ultimate++ controls (e.g., `Upp::Button`, `Upp::ArrayCtrl`) via string names (like "Button" or "List") into dynamically instantiated `BobQUltimatePPHost` wrappers. This fulfills the interoperability goal of hot-swapping native Qt and U++ widgets directly in QML.
+>>>>>>> origin/jules-11090863842246041945-58931a03
