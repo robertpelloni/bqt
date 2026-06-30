@@ -1,6 +1,18 @@
 # Changelog
 
 
+## [1.1.94] - 2026-06-29
+### Changed
+- Stabilized and verified Go package graph.
+- Cleared legacy CMakeCache.txt to remove drifting legacy BobUI artifacts.
+- Bumped version to v1.1.94.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+
+
 ## [1.1.93] - 2026-06-29
 ### Added
 - Added unit tests for `Start()` and `Stop()` methods in `internal/audio/audio_graph.go` to prove the DSP execution.
