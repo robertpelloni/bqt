@@ -1,6 +1,17 @@
 # Changelog
 
 
+## [1.1.95] - 2026-06-29
+### Added
+- Added `Start()` and `Stop()` unit tests to `internal/audio/audio_graph_link_test.go` to explicitly verify thread safety and edge cases.
+- Bumped version to v1.1.95.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+
+
 ## [1.1.94] - 2026-06-29
 ### Changed
 - Stabilized and verified Go package graph.
