@@ -6,40 +6,57 @@ import (
 	"time"
 )
 
-func TestEventLoopPosting(t *testing.T) {
+func TestEventLoopSynchronization(t *testing.T) {
 	el := GetEventLoop()
 
+	// Start the event loop in a goroutine
 	go el.Run()
 
 	var wg sync.WaitGroup
-	var result int
+	wg.Add(3)
+
+	var results []string
 	var mu sync.Mutex
 
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		val := i
-		el.Post(func() {
-			mu.Lock()
-			result += val
-			mu.Unlock()
-			wg.Done()
-		})
-	}
+	// Post tasks simulating events from different sub-frameworks
+	el.Post(func() {
+		mu.Lock()
+		results = append(results, "GTK Event")
+		mu.Unlock()
+		wg.Done()
+	})
 
-	done := make(chan struct{})
+	el.Post(func() {
+		mu.Lock()
+		results = append(results, "JUCE Event")
+		mu.Unlock()
+		wg.Done()
+	})
+
+	el.Post(func() {
+		mu.Lock()
+		results = append(results, "U++ Event")
+		mu.Unlock()
+		wg.Done()
+	})
+
+	// Wait with timeout to ensure events are processed
+	c := make(chan struct{})
 	go func() {
 		wg.Wait()
-		close(done)
+		close(c)
 	}()
 
 	select {
-	case <-done:
-		mu.Lock()
-		if result != 10 { // 0+1+2+3+4 = 10
-			t.Errorf("Expected result 10, got %d", result)
-		}
-		mu.Unlock()
-	case <-time.After(2 * time.Second):
-		t.Fatal("Timeout waiting for EventLoop tasks to process")
+	case <-c:
+		// success
+	case <-time.After(1 * time.Second):
+		t.Fatalf("EventLoop processing timed out")
+	}
+
+	mu.Lock()
+	defer mu.Unlock()
+	if len(results) != 3 {
+		t.Fatalf("Expected 3 events processed, got %d", len(results))
 	}
 }

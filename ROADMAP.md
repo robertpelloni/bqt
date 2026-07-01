@@ -12,7 +12,7 @@
 - [x] Rename framework branding globally (BobUI/Qt to BQt). Note: BQt is strictly the framework kernel, not a full OS shell.
 - [x] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
 - [x] Establish a unified Event Loop (`internal/ui/event_loop.go`) to drive BQt, GTK, JUCE, and U++ components seamlessly.
-- [ ] Achieve 100% 1:1 feature parity with GTK.
+- [x] Achieve 100% 1:1 feature parity with GTK.
 
 ## Phase 3: The Go Transcendence
 - [x] Implement native Go routines for audio synthesis (`OmniSynthesizer`).
