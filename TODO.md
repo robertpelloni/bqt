@@ -29,3 +29,6 @@
 - [x] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
 
 - [x] Establish a unified Event Loop to drive BQt components seamlessly.
+
+## Phase 2 Unification (Completed)
+- [x] Finalize GTK 1:1 parity (BQtNotebook, BQtHeaderBar).
