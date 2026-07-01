@@ -16,7 +16,7 @@ The easiest way to execute the engine is using the native Go port, which bypasse
 ```bash
 go mod tidy
 go build -buildvcs=false .
-./bobui
+./bqt
 ```
 
 ## 4. Native C++ Compilation (Legacy)

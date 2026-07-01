@@ -12,11 +12,11 @@ type DemoSurface struct {
 	WebView          WebView
 	btn1, btn2, btn3 widget.Clickable
 	btn4, btn5, btn6 widget.Clickable // Added buttons for Audio, Synth, Event Loop
-    dialog           Dialog
-    popup            Popup
-    drawer           Drawer
-    menu             Menu
-    tooltip          ToolTip
+	dialog           Dialog
+	popup            Popup
+	drawer           Drawer
+	menu             Menu
+	tooltip          ToolTip
 }
 
 func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
@@ -27,84 +27,84 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 	if ds.btn1.Clicked(gtx) {
 		ds.dialog = Dialog{Visible: true, Title: "BQt Dialog", Body: "This is a native dialog."}
 	}
-    if ds.btn2.Clicked(gtx) {
+	if ds.btn2.Clicked(gtx) {
 		ds.popup = Popup{Visible: true, Title: "BQt Popup", Body: "This is a transient popup."}
 	}
-    if ds.btn3.Clicked(gtx) {
+	if ds.btn3.Clicked(gtx) {
 		ds.drawer = Drawer{Visible: true, Title: "Navigation Drawer", WidthDp: 250}
 	}
 
 	// Audio features simulation for UI
 	if ds.btn4.Clicked(gtx) {
-	    ds.popup = Popup{Visible: true, Title: "Audio Graph", Body: "OmniAudioGraph processing active."}
+		ds.popup = Popup{Visible: true, Title: "Audio Graph", Body: "OmniAudioGraph processing active."}
 	}
 	if ds.btn5.Clicked(gtx) {
-	    ds.popup = Popup{Visible: true, Title: "Synthesizer", Body: "OmniSynthesizer node added."}
+		ds.popup = Popup{Visible: true, Title: "Synthesizer", Body: "OmniSynthesizer node added."}
 	}
 	if ds.btn6.Clicked(gtx) {
-	    ds.popup = Popup{Visible: true, Title: "Event Loop", Body: "Unified Event Loop syncing tasks."}
+		ds.popup = Popup{Visible: true, Title: "Event Loop", Body: "Unified Event Loop syncing tasks."}
 	}
 
-    if ds.btn3.Hovered() {
-        ds.tooltip = ToolTip{Visible: true, Text: "Click to open drawer"}
-        ds.tooltip.X = 150
-        ds.tooltip.Y = 150
-    } else if ds.btn4.Hovered() {
-        ds.tooltip = ToolTip{Visible: true, Text: "Initialize OmniAudioGraph / JUCE Adapter"}
-        ds.tooltip.X = 150
-        ds.tooltip.Y = 200
-    } else if ds.btn5.Hovered() {
-        ds.tooltip = ToolTip{Visible: true, Text: "Initialize native Go OmniSynthesizer"}
-        ds.tooltip.X = 150
-        ds.tooltip.Y = 250
-    } else if ds.btn6.Hovered() {
-        ds.tooltip = ToolTip{Visible: true, Text: "Monitor BQt Unified Event Loop"}
-        ds.tooltip.X = 150
-        ds.tooltip.Y = 300
-    } else {
-        ds.tooltip.Visible = false
-    }
+	if ds.btn3.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Click to open drawer"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 150
+	} else if ds.btn4.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Initialize OmniAudioGraph / JUCE Adapter"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 200
+	} else if ds.btn5.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Initialize native Go OmniSynthesizer"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 250
+	} else if ds.btn6.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Monitor BQt Unified Event Loop"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 300
+	} else {
+		ds.tooltip.Visible = false
+	}
 
-    // Init menu items if needed
-    if len(ds.menu.Items) == 0 {
-        ds.menu.Items = []*MenuItem{
-            {Label: "File", Action: "file"},
-            {Label: "Edit", Action: "edit"},
-        }
-    }
+	// Init menu items if needed
+	if len(ds.menu.Items) == 0 {
+		ds.menu.Items = []*MenuItem{
+			{Label: "File", Action: "file"},
+			{Label: "Edit", Action: "edit"},
+		}
+	}
 
 	return layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Vertical, Spacing: layout.SpaceEvenly}.Layout(gtx,
 					layout.Rigid(material.Button(mth, &ds.btn1, "Show Dialog").Layout),
-                    layout.Rigid(material.Button(mth, &ds.btn2, "Show Popup").Layout),
-                    layout.Rigid(material.Button(mth, &ds.btn3, "Show Drawer").Layout),
-                    layout.Rigid(material.Button(mth, &ds.btn4, "OmniAudioGraph").Layout),
-                    layout.Rigid(material.Button(mth, &ds.btn5, "OmniSynthesizer").Layout),
-                    layout.Rigid(material.Button(mth, &ds.btn6, "Event Loop").Layout),
+					layout.Rigid(material.Button(mth, &ds.btn2, "Show Popup").Layout),
+					layout.Rigid(material.Button(mth, &ds.btn3, "Show Drawer").Layout),
+					layout.Rigid(material.Button(mth, &ds.btn4, "OmniAudioGraph").Layout),
+					layout.Rigid(material.Button(mth, &ds.btn5, "OmniSynthesizer").Layout),
+					layout.Rigid(material.Button(mth, &ds.btn6, "Event Loop").Layout),
 				)
 			})
 		}),
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			dims, _ := ds.dialog.Layout(gtx, th)
-            return dims
+			return dims
 		}),
-        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return ds.popup.Layout(gtx, th)
 		}),
-        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			// dummy child for drawer
-            dummyChild := func(gtx layout.Context) layout.Dimensions {
-                return material.Body1(mth, "Drawer Content").Layout(gtx)
-            }
-            return ds.drawer.Layout(gtx, th, dummyChild)
+			dummyChild := func(gtx layout.Context) layout.Dimensions {
+				return material.Body1(mth, "Drawer Content").Layout(gtx)
+			}
+			return ds.drawer.Layout(gtx, th, dummyChild)
 		}),
-        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			dims, _ := ds.menu.Layout(gtx, th)
-            return dims
+			return dims
 		}),
-        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return ds.tooltip.Layout(gtx, th)
 		}),
 	)
