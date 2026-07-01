@@ -11,6 +11,7 @@ import (
 type DemoSurface struct {
 	WebView          WebView
 	btn1, btn2, btn3 widget.Clickable
+	btn4, btn5, btn6 widget.Clickable // Added buttons for Audio, Synth, Event Loop
     dialog           Dialog
     popup            Popup
     drawer           Drawer
@@ -24,18 +25,42 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 	mth.Palette.Bg = th.Primary
 
 	if ds.btn1.Clicked(gtx) {
-		ds.dialog = Dialog{Visible: true, Title: "BobQ Dialog", Body: "This is a native dialog."}
+		ds.dialog = Dialog{Visible: true, Title: "BQt Dialog", Body: "This is a native dialog."}
 	}
     if ds.btn2.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "BobQ Popup", Body: "This is a transient popup."}
+		ds.popup = Popup{Visible: true, Title: "BQt Popup", Body: "This is a transient popup."}
 	}
     if ds.btn3.Clicked(gtx) {
 		ds.drawer = Drawer{Visible: true, Title: "Navigation Drawer", WidthDp: 250}
 	}
+
+	// Audio features simulation for UI
+	if ds.btn4.Clicked(gtx) {
+	    ds.popup = Popup{Visible: true, Title: "Audio Graph", Body: "OmniAudioGraph processing active."}
+	}
+	if ds.btn5.Clicked(gtx) {
+	    ds.popup = Popup{Visible: true, Title: "Synthesizer", Body: "OmniSynthesizer node added."}
+	}
+	if ds.btn6.Clicked(gtx) {
+	    ds.popup = Popup{Visible: true, Title: "Event Loop", Body: "Unified Event Loop syncing tasks."}
+	}
+
     if ds.btn3.Hovered() {
         ds.tooltip = ToolTip{Visible: true, Text: "Click to open drawer"}
         ds.tooltip.X = 150
         ds.tooltip.Y = 150
+    } else if ds.btn4.Hovered() {
+        ds.tooltip = ToolTip{Visible: true, Text: "Initialize OmniAudioGraph / JUCE Adapter"}
+        ds.tooltip.X = 150
+        ds.tooltip.Y = 200
+    } else if ds.btn5.Hovered() {
+        ds.tooltip = ToolTip{Visible: true, Text: "Initialize native Go OmniSynthesizer"}
+        ds.tooltip.X = 150
+        ds.tooltip.Y = 250
+    } else if ds.btn6.Hovered() {
+        ds.tooltip = ToolTip{Visible: true, Text: "Monitor BQt Unified Event Loop"}
+        ds.tooltip.X = 150
+        ds.tooltip.Y = 300
     } else {
         ds.tooltip.Visible = false
     }
@@ -55,6 +80,9 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 					layout.Rigid(material.Button(mth, &ds.btn1, "Show Dialog").Layout),
                     layout.Rigid(material.Button(mth, &ds.btn2, "Show Popup").Layout),
                     layout.Rigid(material.Button(mth, &ds.btn3, "Show Drawer").Layout),
+                    layout.Rigid(material.Button(mth, &ds.btn4, "OmniAudioGraph").Layout),
+                    layout.Rigid(material.Button(mth, &ds.btn5, "OmniSynthesizer").Layout),
+                    layout.Rigid(material.Button(mth, &ds.btn6, "Event Loop").Layout),
 				)
 			})
 		}),
