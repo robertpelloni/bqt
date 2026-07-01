@@ -5,18 +5,19 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"github.com/robertpelloni/bqt/internal/ui/theme"
+	"github.com/robertpelloni/bobui/internal/ui/theme"
 )
 
 type DemoSurface struct {
-	WebView          WebView
-	btn1, btn2, btn3 widget.Clickable
-	btn4, btn5, btn6 widget.Clickable // Added buttons for Audio, Synth, Event Loop
-	dialog           Dialog
-	popup            Popup
-	drawer           Drawer
-	menu             Menu
-	tooltip          ToolTip
+	WebView                                                   WebView
+	btn1, btn2, btn3                                          widget.Clickable
+	btn4, btn5, btn6                                          widget.Clickable // Audio, Synth, Event Loop
+	btnUndo, btnClipboard, btnTimeMachine, btnSearch, btnMesh widget.Clickable // Backend features
+	dialog                                                    Dialog
+	popup                                                     Popup
+	drawer                                                    Drawer
+	menu                                                      Menu
+	tooltip                                                   ToolTip
 }
 
 func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
@@ -34,7 +35,6 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.drawer = Drawer{Visible: true, Title: "Navigation Drawer", WidthDp: 250}
 	}
 
-	// Audio features simulation for UI
 	if ds.btn4.Clicked(gtx) {
 		ds.popup = Popup{Visible: true, Title: "Audio Graph", Body: "OmniAudioGraph processing active."}
 	}
@@ -43,6 +43,21 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 	}
 	if ds.btn6.Clicked(gtx) {
 		ds.popup = Popup{Visible: true, Title: "Event Loop", Body: "Unified Event Loop syncing tasks."}
+	}
+	if ds.btnUndo.Clicked(gtx) {
+		ds.popup = Popup{Visible: true, Title: "Undo Stack", Body: "Multi-user history ledger reversed."}
+	}
+	if ds.btnClipboard.Clicked(gtx) {
+		ds.popup = Popup{Visible: true, Title: "Clipboard Sync", Body: "P2P Clipboard shared memory updated."}
+	}
+	if ds.btnTimeMachine.Clicked(gtx) {
+		ds.popup = Popup{Visible: true, Title: "Time Machine", Body: "Ledger commit snapshot captured."}
+	}
+	if ds.btnSearch.Clicked(gtx) {
+		ds.popup = Popup{Visible: true, Title: "Omni Search", Body: "Global mesh query executed."}
+	}
+	if ds.btnMesh.Clicked(gtx) {
+		ds.popup = Popup{Visible: true, Title: "Mesh Network", Body: "Peer-to-peer data sync established."}
 	}
 
 	if ds.btn3.Hovered() {
@@ -61,6 +76,26 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.tooltip = ToolTip{Visible: true, Text: "Monitor BQt Unified Event Loop"}
 		ds.tooltip.X = 150
 		ds.tooltip.Y = 300
+	} else if ds.btnUndo.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Trigger kernel UndoStack ledger operation"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 350
+	} else if ds.btnClipboard.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Trigger distributed Clipboard synchronization"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 400
+	} else if ds.btnTimeMachine.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Trigger TimeMachine local snapshot commit"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 450
+	} else if ds.btnSearch.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Execute GlobalSearch across Go peer mesh"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 500
+	} else if ds.btnMesh.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "Initialize MeshNode telemetry & P2P"}
+		ds.tooltip.X = 150
+		ds.tooltip.Y = 550
 	} else {
 		ds.tooltip.Visible = false
 	}
@@ -83,6 +118,11 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 					layout.Rigid(material.Button(mth, &ds.btn4, "OmniAudioGraph").Layout),
 					layout.Rigid(material.Button(mth, &ds.btn5, "OmniSynthesizer").Layout),
 					layout.Rigid(material.Button(mth, &ds.btn6, "Event Loop").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnUndo, "Undo Stack").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnClipboard, "Clipboard Sync").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnTimeMachine, "Time Machine").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnSearch, "Global Search").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnMesh, "Mesh Network").Layout),
 				)
 			})
 		}),

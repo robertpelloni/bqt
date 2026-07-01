@@ -3,7 +3,7 @@ package data
 import (
 	"log"
 	"sync"
-	"github.com/robertpelloni/bqt/internal/net"
+	"github.com/robertpelloni/bobui/internal/net"
 )
 
 type TimeMachine struct {

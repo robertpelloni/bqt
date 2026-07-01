@@ -2,7 +2,7 @@ package audio
 
 import (
 	"log"
-	"github.com/robertpelloni/bqt/internal/net"
+	"github.com/robertpelloni/bobui/internal/net"
 )
 
 type MidiCommand struct {
