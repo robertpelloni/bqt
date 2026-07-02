@@ -3,7 +3,7 @@ package ui
 import (
 	"log"
 	"math"
-	"github.com/robertpelloni/bqt/internal/kernel"
+	"github.com/robertpelloni/bobui/internal/kernel"
 )
 
 type HapticsEngine struct {

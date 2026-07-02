@@ -2,7 +2,7 @@ package audio
 
 import (
 	"log"
-	"github.com/robertpelloni/bqt/internal/net"
+	"github.com/robertpelloni/bobui/internal/net"
 )
 
 // MeshAudioNode represents a remote peer's voice stream in the local Go graph.
