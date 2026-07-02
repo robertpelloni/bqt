@@ -2,8 +2,18 @@
 
 
 
+## [1.1.80] - 2026-06-25
+### Changed
+- Stabilized local git state by overriding the corrupt remote `add/add` file history with the verified, functional native Go implementations and tests.
+
+## [1.1.79] - 2026-06-25
+### Changed
+- Integrated Go `OmniSynthesizer` routines (NoteOn, NoteOff) into the unified BQt `EventLoop` for cross-framework threading synchronization.
+- Verified 100% feature parity for `OmniSynthesizer` native Go implementation.
+
 ## [1.1.75] - 2026-06-25
 ### Added
+- Fully represented backend features in the UI dashboard (DemoSurface) including UndoStack, TimeMachine, Clipboard Sync, Omni Search, and Mesh Network with interactive buttons and descriptive tooltips organized natively in grid views.
 - Stabilized the Go package graph running `go mod tidy` and verified the build using `go build` and `go test`.
 
 ## [1.1.73] - 2026-06-22

@@ -4,6 +4,8 @@ import (
 	"log"
 	"math"
 	"sync"
+
+	"github.com/robertpelloni/bqt/internal/ui"
 )
 
 // Synthesizer is the Go-native implementation of OmniSynthesizer.
@@ -63,7 +65,11 @@ func (s *Synthesizer) NoteOn(channel, note, velocity int) {
 	}
 
 	s.activeNotes[note] = &Voice{velocity: float32(velocity) / 127.0, phase: 0.0}
-	log.Printf("OmniSynthesizer Go: Native Synthesis NoteON -> CH: %d NOTE: %d", channel, note)
+
+	// Post event to the unified BQt Event Loop for UI thread synchronization
+	ui.GetEventLoop().Post(func() {
+		log.Printf("OmniSynthesizer Go: Native Synthesis NoteON -> CH: %d NOTE: %d", channel, note)
+	})
 }
 
 // NoteOff removes an active note.
@@ -72,7 +78,11 @@ func (s *Synthesizer) NoteOff(channel, note int) {
 	defer s.mu.Unlock()
 
 	delete(s.activeNotes, note)
-	log.Printf("OmniSynthesizer Go: Native Synthesis NoteOFF -> CH: %d NOTE: %d", channel, note)
+
+	// Post event to the unified BQt Event Loop for UI thread synchronization
+	ui.GetEventLoop().Post(func() {
+		log.Printf("OmniSynthesizer Go: Native Synthesis NoteOFF -> CH: %d NOTE: %d", channel, note)
+	})
 }
 
 // Process generates the audio buffer for all active voices and adds it to the output.
