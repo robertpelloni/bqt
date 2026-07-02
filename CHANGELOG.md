@@ -1,15 +1,43 @@
 # Changelog
 
 
+## [1.1.95] - 2026-06-29
+### Added
+- Added `Start()` and `Stop()` unit tests to `internal/audio/audio_graph_link_test.go` to explicitly verify thread safety and edge cases.
+- Bumped version to v1.1.95.
 
-## [1.1.80] - 2026-06-25
-### Changed
-- Stabilized local git state by overriding the corrupt remote `add/add` file history with the verified, functional native Go implementations and tests.
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
 
-## [1.1.79] - 2026-06-25
+
+
+## [1.1.94] - 2026-06-29
 ### Changed
-- Integrated Go `OmniSynthesizer` routines (NoteOn, NoteOff) into the unified BQt `EventLoop` for cross-framework threading synchronization.
-- Verified 100% feature parity for `OmniSynthesizer` native Go implementation.
+- Stabilized and verified Go package graph.
+- Cleared legacy CMakeCache.txt to remove drifting legacy BobUI artifacts.
+- Bumped version to v1.1.94.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+
+
+## [1.1.93] - 2026-06-29
+### Added
+- Added unit tests for `Start()` and `Stop()` methods in `internal/audio/audio_graph.go` to prove the DSP execution.
+
+### Changed
+- Finalized removal of git merge conflict markers.
+- Bumped version to v1.1.93.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+
+
 
 ## [1.1.75] - 2026-06-25
 ### Added

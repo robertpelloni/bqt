@@ -17,5 +17,6 @@ The immediate goals completed in this session:
 - Never commit binary files (like `.class` files or `/obj/`, `/bin/` folders in C#). Ensure robust `.gitignore` protections are applied when establishing new language ecosystems.
 
 ## Active Priorities:
-1. Finish linking `OmniAudioGraph` and `OmniSynthesizer` natively in Go.
-3. Finish bridging the Ultimate++ elements via `BobQUppComponentRegistry`.
+1. Achieve 100% 1:1 feature parity with GTK.
+2. Build robust native UI shells (web, desktop, embedded) via `bobfilez`.
+3. Continue stabilizing Go Package Graph and expanding test coverage for DSP components.
