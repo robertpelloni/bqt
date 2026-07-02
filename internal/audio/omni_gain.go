@@ -1,11 +1,6 @@
 package audio
 
-import (
-	"log"
-	"sync"
-
-	"github.com/robertpelloni/bqt/internal/ui"
-)
+import "sync"
 
 // OmniGain is the pure Go implementation of the OmniGain node.
 type OmniGain struct {
@@ -29,11 +24,6 @@ func (og *OmniGain) SetVolume(vol float32) {
 	og.mu.Lock()
 	defer og.mu.Unlock()
 	og.volume = vol
-
-	// Post event to the unified BQt Event Loop for UI thread synchronization
-	ui.GetEventLoop().Post(func() {
-		log.Printf("OmniGain Go: Volume updated to %.2f", vol)
-	})
 }
 
 // Process applies the gain to the audio buffer.

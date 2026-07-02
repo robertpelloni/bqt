@@ -10,9 +10,9 @@ import (
 
 type DemoSurface struct {
 	WebView                                                   WebView
-	btn1, btn2, btn3                                          widget.Clickable // Layout tests
+	btn1, btn2, btn3                                          widget.Clickable
 	btn4, btn5, btn6                                          widget.Clickable // Audio, Synth, Event Loop
-	btnUndo, btnClipboard, btnTimeMachine, btnSearch, btnMesh widget.Clickable // Backend logic features
+	btnUndo, btnClipboard, btnTimeMachine, btnSearch, btnMesh widget.Clickable // Backend features
 	dialog                                                    Dialog
 	popup                                                     Popup
 	drawer                                                    Drawer
