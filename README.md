@@ -1,62 +1,51 @@
-<<<<<<< HEAD
-🛠️ ALPHA SOFTWARE UNDER CONSTRUCTION — Use at your own risk. Backwards compatibility not guaranteed.
-
-```text
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                                                                              ║
-║                     ██╗   ██╗███╗   ██╗██████╗ ███████╗██████╗              ║
-║                     ██║   ██║████╗  ██║██╔══██╗██╔════╝██╔══██╗             ║
-║                     ██║   ██║██╔██╗ ██║██║  ██║█████╗  ██████╔╝             ║
-║                     ██║   ██║██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗             ║
-║                     ╚██████╔╝██║ ╚████║██████╔╝███████╗██║  ██║             ║
-║                      ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝             ║
-║                                                                              ║
-║                     ██████╗ ██████╗ ███╗   ██╗███████╗████████╗██████╗      ║
-║                    ██╔════╝██╔═══██╗████╗  ██║██╔════╝╚══██╔══╝██╔══██╗     ║
-║                    ██║     ██║   ██║██╔██╗ ██║███████╗   ██║   ██████╔╝     ║
-║                    ██║     ██║   ██║██║╚██╗██║╚════██║   ██║   ██╔══██╗     ║
-║                    ╚██████╗╚██████╔╝██║ ╚████║███████║   ██║   ██║  ██║     ║
-║                     ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝     ║
-║                                                                              ║
-║                     █████╗ ██╗     ██████╗ ██╗  ██╗ █████╗                  ║
-║                    ██╔══██╗██║     ██╔══██╗██║  ██║██╔══██╗                 ║
-║                    ███████║██║     ██████╔╝███████║███████║                 ║
-║                    ██╔══██║██║     ██╔═══╝ ██╔══██║██╔══██║                 ║
-║                    ██║  ██║███████╗██║     ██║  ██║██║  ██║                 ║
-║                    ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝                 ║
-║                                                                              ║
-║                    ╔══════════════════════════════════════╗                  ║
-║                    ║     ⚠️  ALPHA SOFTWARE  ⚠️           ║                  ║
-║                    ║  EXPECT BREAKING CHANGES & BUGS     ║                  ║
-║                    ║  NOT READY FOR PRODUCTION USE       ║                  ║
-║                    ╚══════════════════════════════════════╝                  ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
----
-[bqt](https://github.com/robertpelloni/bqt)
-=======
 # BQt
 
-BQt is an interoperable engine and framework kernel crossing C++, Go, Rust, Java, and C#. It provides a unified cross-framework architecture for UI and DSP.
+BQt (formerly BobUI) is an experimental cross-platform UI framework kernel.
+The repository is built on top of a **full Qt Base source tree** (that's what
+`src/`, `mkspecs/`, `configure`, `qmake/`, `coin/` and `QtBase.slnx` are),
+with two layers of original work on top of it:
 
-## Note on Scope
+1. **C++ "Omni" components** — a large set of custom widgets, layouts,
+   rendering nodes and an audio/DSP stack (OmniButton, OmniDockArea,
+   OmniAudioGraph, OmniSynthesizer, OmniSequencer, a JUCE host bridge —
+   `BobQJuceHost`, …) under `BobQ/` and `OmniUI/`. `ANALYSIS.md` inventories
+   them and tracks parity against the Go port.
+2. **A Go port intended to become the primary runtime** — `main.go`,
+   `go.mod`, and `internal/` (including `internal/ui/widgets/` and the
+   unified event loop). Per `VISION.md`, the direction is a Go-first kernel
+   with a unified event loop, signal/slot semantics mirroring Qt queued
+   connections, and the `OmniAudioGraph` DSP graph, progressively replacing
+   the C++ render bridges. JUCE and Ultimate++ are integrated as submodules
+   (see `SUBMODULE_INVENTORY.md`).
 
-BQt is the **framework kernel**, it is *not* a full OS shell. The OS shell capabilities are the separate scope of the `bobfilez` project.
+Scope note: BQt is the framework kernel only. The OS shell that consumes it
+is the separate `bobfilez` project.
 
-## Go Port State
+## Building
 
-The Go port of BQt represents the primary runtime kernel, featuring:
+The C++ tree is Qt Base, so it builds like Qt:
 
-* **Unified Event Loop**: A central message queue (`internal/ui/event_loop.go`) that synchronizes and orchestrates tasks across sub-frameworks (e.g., GTK, JUCE, and U++).
-* **Native Signal/Slot System**: Executes slots asynchronously via goroutines to mirror Qt's queued connections, ensuring the event loop is never blocked.
-* **Audio Graph (`OmniAudioGraph`)**: Native Go parallel DSP processing simulating the JUCE `DeviceManager`. Includes nodes like `OmniGain` and `OmniSynthesizer` with 1:1 cross-language feature parity.
+```bash
+./configure   # or configure.bat on Windows
+cmake --build .
+```
 
-## Submodules
+The Go port builds independently from the repo root:
 
-BQt incorporates powerful existing engines:
+```bash
+go build ./...
+```
 
-* **JUCE**: Handled via `BobQJuceHost` and mapped into the Go `AudioGraph`.
-* **Ultimate++ (U++)**: Bridged through `BobQUppComponentRegistry` and `BobQUltimatePPHost`.
->>>>>>> origin/main
+Neither path is packaged or released; expect a very large tree (~317 MB)
+with build artifacts, submodule checkouts, and agent session files mixed in.
+
+## Status
+
+Alpha, under active agent-driven development (latest commits October 2026
+are submodule-pointer fixes and agent "protocol" checkpoints). `VISION.md`
+describes the end state — hot-swappable rendering frontends over a pure Go
+kernel — as a goal, not the current reality: the C++ base is still the bulk
+of the tree and the Go port is partial (see the parity gaps in
+`ANALYSIS.md`). The README this replaces had been committed with unresolved
+merge-conflict markers in it, which is a fair summary of the repo's current
+level of polish.
