@@ -22,6 +22,16 @@ func TestDemoSurfaceInitialization(t *testing.T) {
 	if ds.synthWidget.activeVoices != 8 {
 		t.Errorf("Expected activeVoices to be 8, got %d", ds.synthWidget.activeVoices)
 	}
+
+	if ds.VolumeLevel != 0.80 {
+		t.Errorf("Expected initial volume 0.80, got %f", ds.VolumeLevel)
+	}
+	if ds.ClockBpm != 120.0 {
+		t.Errorf("Expected initial BPM 120, got %f", ds.ClockBpm)
+	}
+	if ds.Polyphony != 8 {
+		t.Errorf("Expected initial Polyphony 8, got %d", ds.Polyphony)
+	}
 }
 
 func TestDemoSurfaceLayout(t *testing.T) {
@@ -38,5 +48,27 @@ func TestDemoSurfaceLayout(t *testing.T) {
 	// Verify initial status message
 	if ds.StatusMessage == "" {
 		t.Errorf("Expected non-empty StatusMessage")
+	}
+}
+
+func TestDemoSurfaceInteractiveControls(t *testing.T) {
+	ds := NewDemoSurface()
+
+	// Direct adjustments
+	initialVol := ds.VolumeLevel
+	ds.VolumeLevel += 0.05
+	if ds.VolumeLevel <= initialVol {
+		t.Errorf("Expected VolumeLevel to increase")
+	}
+
+	initialBpm := ds.ClockBpm
+	ds.ClockBpm += 10.0
+	if ds.ClockBpm != initialBpm+10.0 {
+		t.Errorf("Expected ClockBpm to increase by 10")
+	}
+
+	ds.SetSynthVoices(16)
+	if ds.Polyphony != 16 {
+		t.Errorf("Expected Polyphony to be 16")
 	}
 }

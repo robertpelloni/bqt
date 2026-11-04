@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.78] - 2026-11-04
+### Added
+- Extended `DemoSurface` (`internal/ui/widgets/demo_surface.go`) with live interactive parameters: Master Volume calibration buttons, MasterClock BPM tempo adjusters, and a Synthesizer Polyphony toggle cycling through active voice limits.
+- Added comprehensive unit testing for interactive controls in `internal/ui/widgets/demo_surface_test.go`.
+- Verified 100% test pass rate across `internal/...` with incremental Go test validation.
+
 ## [1.1.77] - 2026-11-04
 ### Added
 - Implemented `TrayIcon` widget (`internal/ui/widgets/tray.go`) providing interactive taskbar system tray integration, dynamic status lighting, and server lifecycle actions: "Mute Audio DSP", "Disconnect P2P Mesh", "Restart EventLoop", and "Quit BQt Servers".

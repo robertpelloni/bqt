@@ -29,6 +29,6 @@
 
 ## Phase 5: Bobfilez Shell Refinement (In Progress)
 - [x] Integrate System Tray Icon widget (`TrayIcon`) with server lifecycle actions and shutdown capabilities.
-- [x] Consolidate single-page command dashboard (`DemoSurface`) organized by high-value capabilities.
+- [x] Consolidate single-page command dashboard (`DemoSurface`) organized by high-value capabilities with interactive parameter controls.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 
@@ -16,17 +17,30 @@ import (
 // DemoSurface is the consolidated, single-page unified dashboard for BQt.
 // It organizes all backend framework subsystems into categorized, high-value
 // panels: Audio DSP Engine, Distributed Kernel & Ledger, Mesh Networking,
-// and UI Interop Surfaces, with informative labels and tooltips.
+// and UI Interop Surfaces, with informative labels, live parameter sliders,
+// and tooltips.
 type DemoSurface struct {
 	WebView     WebView
 	synthWidget *SynthWidget
 
-	// Category 1: High-Priority Audio DSP Engine
+	// Category 1: High-Priority Audio DSP Engine Action Buttons
 	btnAudioGraph   widget.Clickable
 	btnSynthesizer  widget.Clickable
 	btnFilter       widget.Clickable
 	btnGain         widget.Clickable
 	btnMasterClock  widget.Clickable
+
+	// Category 1b: Live Interactive Parameter Controls
+	btnVolUp      widget.Clickable
+	btnVolDown    widget.Clickable
+	btnBpmUp      widget.Clickable
+	btnBpmDown    widget.Clickable
+	btnPolyToggle widget.Clickable
+
+	// Interactive Parameter State
+	VolumeLevel float32
+	ClockBpm    float64
+	Polyphony   int
 
 	// Category 2: High-Priority Distributed Kernel & Ledger
 	btnUndoStack   widget.Clickable
@@ -60,10 +74,14 @@ func NewDemoSurface() *DemoSurface {
 	return &DemoSurface{
 		synthWidget:   NewSynthWidget(),
 		StatusMessage: "BQt Unified Kernel Active | Audio DSP Ready | EventLoop Synchronized",
+		VolumeLevel:   0.80,
+		ClockBpm:      120.0,
+		Polyphony:     8,
 	}
 }
 
 func (ds *DemoSurface) SetSynthVoices(poly int) {
+	ds.Polyphony = poly
 	if ds.synthWidget != nil {
 		ds.synthWidget.SetActiveVoices(poly)
 	}
@@ -74,7 +92,52 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Primary
 
-	// 1. Handle Clicks & Dispatches
+	// 1. Handle Interactive Parameter Controls
+	if ds.btnVolUp.Clicked(gtx) {
+		if ds.VolumeLevel < 1.0 {
+			ds.VolumeLevel += 0.05
+			if ds.VolumeLevel > 1.0 {
+				ds.VolumeLevel = 1.0
+			}
+		}
+		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Volume set to %.0f%%", ds.VolumeLevel*100)
+	}
+	if ds.btnVolDown.Clicked(gtx) {
+		if ds.VolumeLevel > 0.0 {
+			ds.VolumeLevel -= 0.05
+			if ds.VolumeLevel < 0.0 {
+				ds.VolumeLevel = 0.0
+			}
+		}
+		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Volume set to %.0f%%", ds.VolumeLevel*100)
+	}
+	if ds.btnBpmUp.Clicked(gtx) {
+		ds.ClockBpm += 5.0
+		if ds.ClockBpm > 240.0 {
+			ds.ClockBpm = 240.0
+		}
+		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Clock tempo set to %.0f BPM", ds.ClockBpm)
+	}
+	if ds.btnBpmDown.Clicked(gtx) {
+		ds.ClockBpm -= 5.0
+		if ds.ClockBpm < 40.0 {
+			ds.ClockBpm = 40.0
+		}
+		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Clock tempo set to %.0f BPM", ds.ClockBpm)
+	}
+	if ds.btnPolyToggle.Clicked(gtx) {
+		if ds.Polyphony == 8 {
+			ds.Polyphony = 16
+		} else if ds.Polyphony == 16 {
+			ds.Polyphony = 4
+		} else {
+			ds.Polyphony = 8
+		}
+		ds.SetSynthVoices(ds.Polyphony)
+		ds.StatusMessage = fmt.Sprintf("Audio Param: Synthesizer Polyphony set to %d voices", ds.Polyphony)
+	}
+
+	// 2. Handle Clicks & Dispatches
 	if ds.btnDialog.Clicked(gtx) {
 		ds.dialog = Dialog{Visible: true, Title: "BQt Native Dialog", Body: "Modal interaction initialized across BQt window tree."}
 		ds.StatusMessage = "UI Action: Dialog Opened"
@@ -105,7 +168,7 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.StatusMessage = "Audio Engine: OmniGain calibrated"
 	}
 	if ds.btnMasterClock.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Master Clock", Body: "Temporal heartbeat ticking at 120 BPM across sixteenth steps."}
+		ds.popup = Popup{Visible: true, Title: "Master Clock", Body: fmt.Sprintf("Temporal heartbeat ticking at %.0f BPM across sixteenth steps.", ds.ClockBpm)}
 		ds.StatusMessage = "Audio Engine: MasterClock synced"
 	}
 
@@ -143,7 +206,7 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.StatusMessage = "Network: Asset stream chunk routed"
 	}
 
-	// 2. Tooltip Triggers on Hover
+	// 3. Tooltip Triggers on Hover
 	if ds.btnAudioGraph.Hovered() {
 		ds.tooltip = ToolTip{Visible: true, Text: "[AudioGraph] Central DSP graph running native Go & JUCE primitives.", X: 120, Y: 120}
 	} else if ds.btnSynthesizer.Hovered() {
@@ -154,6 +217,12 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.tooltip = ToolTip{Visible: true, Text: "[OmniGain] Real-time volume scaling with thread-safe GainChanged signals.", X: 120, Y: 120}
 	} else if ds.btnMasterClock.Hovered() {
 		ds.tooltip = ToolTip{Visible: true, Text: "[MasterClock] High-priority temporal clock firing 16th note steps and quarter beats.", X: 120, Y: 120}
+	} else if ds.btnVolUp.Hovered() || ds.btnVolDown.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "[Volume Control] Calibrate master audio gain multiplier.", X: 120, Y: 140}
+	} else if ds.btnBpmUp.Hovered() || ds.btnBpmDown.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "[Tempo Control] Adjust MasterClock beats per minute (BPM).", X: 120, Y: 140}
+	} else if ds.btnPolyToggle.Hovered() {
+		ds.tooltip = ToolTip{Visible: true, Text: "[Polyphony Toggle] Cycle synthesizer polyphonic voice pool size (4, 8, 16).", X: 120, Y: 140}
 	} else if ds.btnUndoStack.Hovered() {
 		ds.tooltip = ToolTip{Visible: true, Text: "[UndoStack] Transaction ledger tracking state changes for instant rollbacks.", X: 120, Y: 180}
 	} else if ds.btnClipboard.Hovered() {
@@ -180,7 +249,7 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.tooltip.Visible = false
 	}
 
-	// 3. Layout Rendering: Unified Single Page
+	// 4. Layout Rendering: Unified Single Page
 	return layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -201,9 +270,9 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 						)
 					}),
 
-					// Section 1: Core Audio DSP Engine (High Priority)
+					// Section 1: Core Audio DSP Engine (High Priority Actions)
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return ds.renderPanel(gtx, mth, th, "Core Audio / DSP Engine (High Priority)", func(gtx layout.Context) layout.Dimensions {
+						return ds.renderPanel(gtx, mth, th, "Core Audio / DSP Engine (High Priority Actions)", func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceBetween}.Layout(gtx,
 								layout.Rigid(material.Button(mth, &ds.btnAudioGraph, "OmniAudioGraph").Layout),
 								layout.Rigid(material.Button(mth, &ds.btnSynthesizer, "OmniSynthesizer").Layout),
@@ -214,12 +283,40 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 						})
 					}),
 
+					// Section 1b: Live Interactive Parameter Adjustments
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return ds.renderPanel(gtx, mth, th, "Live Engine Parameter Controls", func(gtx layout.Context) layout.Dimensions {
+							return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceEvenly, Alignment: layout.Middle}.Layout(gtx,
+								// Volume controls
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+										layout.Rigid(material.Caption(mth, fmt.Sprintf("Vol: %.0f%% ", ds.VolumeLevel*100)).Layout),
+										layout.Rigid(material.Button(mth, &ds.btnVolDown, "-").Layout),
+										layout.Rigid(material.Button(mth, &ds.btnVolUp, "+").Layout),
+									)
+								}),
+								// BPM controls
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+										layout.Rigid(material.Caption(mth, fmt.Sprintf("BPM: %.0f ", ds.ClockBpm)).Layout),
+										layout.Rigid(material.Button(mth, &ds.btnBpmDown, "-").Layout),
+										layout.Rigid(material.Button(mth, &ds.btnBpmUp, "+").Layout),
+									)
+								}),
+								// Polyphony toggle
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return material.Button(mth, &ds.btnPolyToggle, fmt.Sprintf("Voices: %d", ds.Polyphony)).Layout(gtx)
+								}),
+							)
+						})
+					}),
+
 					// Section 2: Real-time Waveform Scope
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						if ds.synthWidget != nil {
 							return layout.Stack{}.Layout(gtx, layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-								gtx.Constraints.Max.Y = 100
-								gtx.Constraints.Min.Y = 100
+								gtx.Constraints.Max.Y = 90
+								gtx.Constraints.Min.Y = 90
 								return ds.synthWidget.Layout(gtx)
 							}))
 						}
