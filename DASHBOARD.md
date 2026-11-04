@@ -15,5 +15,6 @@
    - **Purpose:** C++ rapid application development layout paradigms to be integrated 1:1.
 
 ## Project Status
-- **Current Version:** Reads from `VERSION.md`.
+- **Current Version:** v1.1.77 (reads from `VERSION.md`).
+- **Dashboard Surface:** Consolidated single-page unified dashboard (`DemoSurface`) with System Tray controls (`TrayIcon`).
 - **Active Agents:** Jules, Gemini, Claude, GPT.

@@ -1,6 +1,14 @@
 # Changelog
 
-
+## [1.1.77] - 2026-11-04
+### Added
+- Implemented `TrayIcon` widget (`internal/ui/widgets/tray.go`) providing interactive taskbar system tray integration, dynamic status lighting, and server lifecycle actions: "Mute Audio DSP", "Disconnect P2P Mesh", "Restart EventLoop", and "Quit BQt Servers".
+- Integrated `TrayIcon` into `Shell` taskbar layout (`internal/ui/widgets/shell.go`) and linked lifecycle triggers to `Engine` runtime controls (`internal/ui/engine.go`).
+- Redesigned and consolidated `DemoSurface` (`internal/ui/widgets/demo_surface.go`) into a unified single-page command dashboard grouped by high-value capabilities: Core Audio/DSP Engine, Distributed Kernel & Ledger, Mesh Networking, and UI Interop Surfaces, with rich tooltip guidance and live status reporting.
+- Added comprehensive unit tests for `TrayIcon` (`internal/ui/widgets/tray_test.go`) and `DemoSurface` (`internal/ui/widgets/demo_surface_test.go`).
+- Fixed `OmniGain.SetVolume` to reliably trigger `GainChanged` signal emissions.
+- Protected `AudioGraph` integration tests (`internal/audio/audio_graph_integration_test.go`) with `sync.Once` slot dispatch to prevent negative WaitGroup counters and test race conditions.
+- Enhanced `EventLoop.Stop()` with non-blocking wakeup channel signaling to avoid goroutine stalls during teardown.
 
 ## [1.1.76] - 2026-07-03
 ### Added

@@ -22,3 +22,7 @@
 - Ensured all Go components (`OmniSynthesizer`, `OmniFilter` represented as `BiquadFilter`) conform to the standard `AudioNode` interface.
 - Verified that `OmniFilter` has been natively ported and updated the documentation (`ANALYSIS.md` and `ROADMAP.md`) accordingly.
 - Verified GTK-style Box packing (`BobQBox`) has full `PackStart` and `PackEnd` parity in `internal/ui/widgets/box.go`.
+- Implemented `TrayIcon` widget (`internal/ui/widgets/tray.go`) with server lifecycle actions (Mute Audio DSP, Disconnect P2P Mesh, Restart EventLoop, Quit BQt Servers) integrated into the taskbar and engine.
+- Redesigned and consolidated `DemoSurface` (`internal/ui/widgets/demo_surface.go`) into a unified single-page command dashboard grouped by high-value capabilities with descriptive tooltips and real-time status reporting.
+- Resolved audio integration test race conditions and fixed `OmniGain.SetVolume` signal emission. All tests pass across `internal/...`.
+- Incremented version to `v1.1.77`.

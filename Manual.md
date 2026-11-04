@@ -35,3 +35,15 @@ To fulfill the goal of truly unified declarative UI, developers must be able to 
 
 ## 3. Go Port Architecture
 The Go port of BobQ maintains 1:1 feature parity. Where C++ uses `QQuickPaintedItem` to host foreign libraries, the Go port utilizes `gioui.org` to render pure Go implementations of these paradigms (such as GTK's `Box` packing or custom overlays). Future iterations of the Go port will use CGO to wrap the `BobQUppComponentRegistry` directly.
+
+### 3.1 Consolidated Dashboard Surface (`DemoSurface`)
+The `DemoSurface` widget in `internal/ui/widgets/demo_surface.go` serves as the consolidated single-page command dashboard unifying all framework domains:
+- **Core Audio & DSP Engine**: Real-time waveform scope (`SynthWidget`), `OmniAudioGraph`, `OmniSynthesizer`, digital `BiquadFilter`, calibrated `OmniGain`, and `MasterClock`.
+- **Distributed Kernel & Ledger**: `UndoStack` multi-user transaction undoing, `Clipboard` cryptographic peer sharing, `TimeMachine` ledger snapshots, `OmniSearch`, and RBAC `Permissions`.
+- **P2P Mesh Network**: `MeshNode` route management, discovery multicast, and binary `AssetStream`.
+- **UI Interop Surfaces**: Modals, transient popups, slide-out navigation drawers, and managed window tab sets.
+
+### 3.2 System Tray & Server Control (`TrayIcon`)
+The `TrayIcon` widget in `internal/ui/widgets/tray.go` docks into the desktop taskbar:
+- Displays a status light reflecting server connectivity.
+- Exposes interactive controls: Muting audio DSP, disconnecting/reconnecting the P2P mesh network, restarting the unified event loop, and cleanly shutting down BQt servers.
