@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.79] - 2026-11-04
+### Added
+- Added comprehensive unit testing for `VoiceEngine` (`internal/audio/voice_engine_test.go`), validating singleton lifecycle, buffer capture during `StartListening()`, and safe buffer clearing on `StopListening()`.
+- Stabilized buffer flushing in `VoiceEngine.StopListening()` to prevent stale PCM data re-read.
+
 ## [1.1.78] - 2026-11-04
 ### Added
 - Extended `DemoSurface` (`internal/ui/widgets/demo_surface.go`) with live interactive parameters: Master Volume calibration buttons, MasterClock BPM tempo adjusters, and a Synthesizer Polyphony toggle cycling through active voice limits.
