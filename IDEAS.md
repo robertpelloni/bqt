@@ -63,3 +63,8 @@ The C++ rename-bucket classification points to `cmake/` package/export surfaces 
 - **Current State 5:** A fourth direct slice now exists for `OpenGL` and `OpenGLWidgets`, showing that graphics-oriented public packages can follow the same additive compatibility pattern cleanly.
 - **Current State 6:** A fifth direct slice now exists for `DBus` and `PrintSupport`, which shows the same package-surface migration model also works for service/system and document-output oriented modules.
 - **Current State 7:** A sixth direct slice now exists for `Concurrent` and `Test`, which shows the same approach also works for workflow and testing-oriented public packages.
+
+## 12. Autonomous Server Orchestration via Native Tray
+With the introduction of `TrayIcon` in Go:
+- **The Pivot:** Turn the system tray icon into a headless-daemon monitor that can spawn, monitor, and hot-reload micro-services across local network nodes.
+- **The Execution:** Wire `TrayIcon` to a lightweight gRPC/RPC control plane that exposes telemetry, crash restarts, CPU/Memory telemetry per node, and dynamic port allocation.

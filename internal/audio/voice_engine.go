@@ -37,8 +37,10 @@ func (ve *VoiceEngine) StopListening() []byte {
 	ve.mu.Lock()
 	defer ve.mu.Unlock()
 	ve.IsListening = false
-	log.Printf("OmniVoice Go: Captured %d bytes of PCM data.", len(ve.audioBuffer))
-	return ve.audioBuffer
+	buf := ve.audioBuffer
+	ve.audioBuffer = nil
+	log.Printf("OmniVoice Go: Captured %d bytes of PCM data.", len(buf))
+	return buf
 }
 
 // PushData is called by the hardware-interrupt goroutine.

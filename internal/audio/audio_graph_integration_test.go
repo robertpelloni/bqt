@@ -27,18 +27,25 @@ func TestAudioGraphEventLoopIntegration(t *testing.T) {
 	stoppedReceived := false
 	graphChangedReceived := false
 
+	var startedOnce sync.Once
+	var stoppedOnce sync.Once
+	var graphChangedOnce sync.Once
+
 	// Connect slots to verify non-blocking event loop dispatch for native signals
 	graph.ProcessingStarted.Connect(func(args ...interface{}) {
-		defer wg.Done()
-		startedReceived = true
+		startedOnce.Do(func() {
+			defer wg.Done()
+			startedReceived = true
+		})
 	})
 
 	graph.ProcessingStopped.Connect(func(args ...interface{}) {
-		defer wg.Done()
-		stoppedReceived = true
+		stoppedOnce.Do(func() {
+			defer wg.Done()
+			stoppedReceived = true
+		})
 	})
 
-	var graphChangedOnce sync.Once
 	graph.GraphChanged.Connect(func(args ...interface{}) {
 		graphChangedOnce.Do(func() {
 			defer wg.Done()

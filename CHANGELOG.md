@@ -1,6 +1,30 @@
 # Changelog
 
+## [1.1.80] - 2026-11-05
+### Added
+- Added automated unit test coverage for `internal/vm` (`vm_test.go`), covering Lisp arithmetic and environment variable evaluation, `MacroRecorder` click recording and script compilation, `NeuralEngine.CaptureDOM` JSON serialization, `AIAssistant` cognitive completion and suggestion store, and `ExecuteAIAction` event dispatching.
+- Reached 100% test coverage across all active Go packages in `internal/`.
 
+## [1.1.79] - 2026-11-04
+### Added
+- Added comprehensive unit testing for `VoiceEngine` (`internal/audio/voice_engine_test.go`), validating singleton lifecycle, buffer capture during `StartListening()`, and safe buffer clearing on `StopListening()`.
+- Stabilized buffer flushing in `VoiceEngine.StopListening()` to prevent stale PCM data re-read.
+
+## [1.1.78] - 2026-11-04
+### Added
+- Extended `DemoSurface` (`internal/ui/widgets/demo_surface.go`) with live interactive parameters: Master Volume calibration buttons, MasterClock BPM tempo adjusters, and a Synthesizer Polyphony toggle cycling through active voice limits.
+- Added comprehensive unit testing for interactive controls in `internal/ui/widgets/demo_surface_test.go`.
+- Verified 100% test pass rate across `internal/...` with incremental Go test validation.
+
+## [1.1.77] - 2026-11-04
+### Added
+- Implemented `TrayIcon` widget (`internal/ui/widgets/tray.go`) providing interactive taskbar system tray integration, dynamic status lighting, and server lifecycle actions: "Mute Audio DSP", "Disconnect P2P Mesh", "Restart EventLoop", and "Quit BQt Servers".
+- Integrated `TrayIcon` into `Shell` taskbar layout (`internal/ui/widgets/shell.go`) and linked lifecycle triggers to `Engine` runtime controls (`internal/ui/engine.go`).
+- Redesigned and consolidated `DemoSurface` (`internal/ui/widgets/demo_surface.go`) into a unified single-page command dashboard grouped by high-value capabilities: Core Audio/DSP Engine, Distributed Kernel & Ledger, Mesh Networking, and UI Interop Surfaces, with rich tooltip guidance and live status reporting.
+- Added comprehensive unit tests for `TrayIcon` (`internal/ui/widgets/tray_test.go`) and `DemoSurface` (`internal/ui/widgets/demo_surface_test.go`).
+- Fixed `OmniGain.SetVolume` to reliably trigger `GainChanged` signal emissions.
+- Protected `AudioGraph` integration tests (`internal/audio/audio_graph_integration_test.go`) with `sync.Once` slot dispatch to prevent negative WaitGroup counters and test race conditions.
+- Enhanced `EventLoop.Stop()` with non-blocking wakeup channel signaling to avoid goroutine stalls during teardown.
 
 ## [1.1.76] - 2026-07-03
 ### Added

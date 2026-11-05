@@ -15,9 +15,20 @@ import (
 type Shell struct {
 	StartMenuVisible bool
 	StartBtn         widget.Clickable
+	Tray             *TrayIcon
+}
+
+func NewShell() *Shell {
+	return &Shell{
+		Tray: NewTrayIcon(),
+	}
 }
 
 func (s *Shell) LayoutTaskbar(gtx layout.Context, th theme.Theme) layout.Dimensions {
+	if s.Tray == nil {
+		s.Tray = NewTrayIcon()
+	}
+
 	mth := material.NewTheme()
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Surface
@@ -35,7 +46,14 @@ func (s *Shell) LayoutTaskbar(gtx layout.Context, th theme.Theme) layout.Dimensi
 			return material.Button(mth, &s.StartBtn, "START").Layout(gtx)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return material.Label(mth, unit.Sp(10), "DSP: SYNC | P2P: ACTIVE").Layout(gtx)
+			return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return material.Label(mth, unit.Sp(10), "DSP: SYNC | P2P: ACTIVE  ").Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return s.Tray.LayoutIcon(gtx, th)
+				}),
+			)
 		}),
 	)
 }

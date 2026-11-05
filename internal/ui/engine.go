@@ -24,8 +24,20 @@ type Engine struct {
 }
 
 func NewEngine() *Engine {
+	shell := widgets.NewShell()
+	// Connect tray lifecycle handlers to core server/loop actions
+	shell.Tray.OnQuitServer = func() {
+		log.Println("BQt Shell Tray: Quit signal received. Shutting down EventLoop & Runtime...")
+		GetEventLoop().Stop()
+	}
+	shell.Tray.OnRestartEventLoop = func() {
+		log.Println("BQt Shell Tray: Restarting Unified Event Loop...")
+		GetEventLoop().Stop()
+		go GetEventLoop().Run()
+	}
+
 	return &Engine{
-		shell: &widgets.Shell{},
+		shell: shell,
 		login: &widgets.LoginView{},
 		demo:  widgets.NewDemoSurface(),
 		wm:    GetWindowManager(),
@@ -168,6 +180,12 @@ func (e *Engine) layout(gtx layout.Context) layout.Dimensions {
 		}),
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			return e.shell.LayoutStartMenu(gtx, e.th)
+		}),
+		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+			if e.shell != nil && e.shell.Tray != nil {
+				return e.shell.Tray.LayoutMenu(gtx, e.th)
+			}
+			return layout.Dimensions{}
 		}),
 	)
 }

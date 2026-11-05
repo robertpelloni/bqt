@@ -29,3 +29,7 @@
 - [x] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer` (Go port in progress).
 
 - [x] Establish a unified Event Loop to drive BQt components seamlessly.
+- [x] Implement system tray icon (`TrayIcon`) with server lifecycle actions and shutdown handlers.
+- [x] Consolidate and redesign dashboard UI (`DemoSurface`) into a unified single-page layout grouped by high-value capabilities with descriptive tooltips and interactive parameter controls.
+- [x] Verify and test `VoiceEngine` microphone streaming buffer capture lifecycle.
+- [x] Implement automated test coverage for `internal/vm` subsystem (Lisp, MacroRecorder, NeuralEngine, AIAssistant).

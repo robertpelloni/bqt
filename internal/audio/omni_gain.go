@@ -30,8 +30,13 @@ func (og *OmniGain) Name() string {
 // It emits the GainChanged signal (similar to Q_PROPERTY NOTIFY in C++) if the volume changes.
 func (og *OmniGain) SetVolume(vol float32) {
 	og.mu.Lock()
-	defer og.mu.Unlock()
+	changed := (og.volume != vol)
 	og.volume = vol
+	og.mu.Unlock()
+
+	if changed && og.GainChanged != nil {
+		og.GainChanged.Emit(vol)
+	}
 
 	// Post event to the unified BQt Event Loop for UI thread synchronization
 	ui.GetEventLoop().Post(func() {
