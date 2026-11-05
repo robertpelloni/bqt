@@ -35,5 +35,6 @@
 - [x] Verify and test native Go `internal/net` discovery beacons and binary asset mesh transmission.
 - [x] Verify and test native Go `internal/state` hierarchical `ValueTree` parameters and subscriptions.
 - [x] Verify and test native Go `internal/ui/theme` palette generation and stylesheet parsing.
+- [x] Verify and test native Go `internal/ui/anim` cubic ease-out interpolation and animation lifecycles.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
