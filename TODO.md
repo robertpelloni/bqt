@@ -35,3 +35,4 @@
 - [x] Implement automated test coverage for `internal/vm` subsystem (Lisp, MacroRecorder, NeuralEngine, AIAssistant).
 - [x] Implement automated test coverage for `internal/net` subsystem (DiscoveryBeacon, StreamAssetToMesh).
 - [x] Implement automated test coverage for `internal/state` subsystem (`ValueTree`).
+- [x] Implement automated test coverage for `internal/ui/theme` subsystem (`Theme`, `StyleSheet`).

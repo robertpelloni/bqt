@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.83] - 2026-11-05
+### Added
+- Added automated unit test coverage for `internal/ui/theme` (`theme_test.go`), validating theme palette selection (`Dark`, `Cyberpunk`, `Aetheria`) and CSS stylesheet parsing with hex color extraction and fallbacks.
+
 ## [1.1.82] - 2026-11-05
 ### Added
 - Added automated unit test coverage for `internal/state` (`value_tree_test.go`), verifying singleton retrieval, parameter mutations, and asynchronous non-blocking subscriber channel broadcasts.
