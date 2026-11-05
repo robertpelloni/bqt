@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.81] - 2026-11-05
+### Added
+- Added automated unit tests for `internal/net` (`discovery_test.go` and `asset_stream_test.go`), validating `DiscoveryBeacon` initialization, binary asset encoding and mesh broadcasting, and remote asset reception.
+
 ## [1.1.80] - 2026-11-05
 ### Added
 - Added automated unit test coverage for `internal/vm` (`vm_test.go`), covering Lisp arithmetic and environment variable evaluation, `MacroRecorder` click recording and script compilation, `NeuralEngine.CaptureDOM` JSON serialization, `AIAssistant` cognitive completion and suggestion store, and `ExecuteAIAction` event dispatching.
