@@ -31,5 +31,6 @@
 - [x] Integrate System Tray Icon widget (`TrayIcon`) with server lifecycle actions and shutdown capabilities.
 - [x] Consolidate single-page command dashboard (`DemoSurface`) organized by high-value capabilities with interactive parameter controls.
 - [x] Stabilize native Go `VoiceEngine` buffer management with unit tests.
+- [x] Verify and test native Go `internal/vm` hypervisor, macro recorder, and neural DOM capture components.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
