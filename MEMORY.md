@@ -118,3 +118,5 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-04: Verified and unit-tested `VoiceEngine` (`internal/audio/voice_engine.go` & `voice_engine_test.go`), validating thread-safe PCM audio buffer capture and reset.
 - 2026-11-05: Added automated tests for `internal/vm` (`vm_test.go`), achieving comprehensive coverage over Lisp AST evaluation, MacroRecorder script generation, NeuralEngine DOM capture, and AIAssistant suggestions.
 - 2026-11-05: Added automated tests for `internal/net` (`discovery_test.go`, `asset_stream_test.go`), verifying DiscoveryBeacon zero-config broadcasting and binary mesh image streaming.
+- 2026-11-05: Added automated tests for `internal/state` (`value_tree_test.go`), confirming ValueTree singleton thread safety, parameter updates, and non-blocking channel subscriptions.
+- 2026-11-05: Added automated tests for `internal/ui/theme` (`theme_test.go`), verifying theme palette retrieval across Dark, Cyberpunk, and Aetheria, as well as CSS stylesheet color parsing and fallbacks.
