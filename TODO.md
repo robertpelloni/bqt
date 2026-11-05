@@ -34,3 +34,4 @@
 - [x] Verify and test `VoiceEngine` microphone streaming buffer capture lifecycle.
 - [x] Implement automated test coverage for `internal/vm` subsystem (Lisp, MacroRecorder, NeuralEngine, AIAssistant).
 - [x] Implement automated test coverage for `internal/net` subsystem (DiscoveryBeacon, StreamAssetToMesh).
+- [x] Implement automated test coverage for `internal/state` subsystem (`ValueTree`).
