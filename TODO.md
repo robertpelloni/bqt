@@ -41,3 +41,4 @@
 - [x] Verify and test `FilterNode` TPT low-pass DSP math in `internal/audio`.
 - [x] Verify and test `BobQBox` GTK sequential packing and layout in `internal/ui/widgets`.
 - [x] Verify and test `Grid` flexible layout distribution in `internal/ui/widgets`.
+- [x] Verify and test modal `Dialog` state and layout in `internal/ui/widgets`.

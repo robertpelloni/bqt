@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.89] - 2026-11-06
+### Added
+- Added automated unit test coverage for modal `Dialog` in `internal/ui/widgets/dialog_test.go`, verifying visibility state transitions and centered layout constraints.
+
 ## [1.1.88] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Grid` layout in `internal/ui/widgets/grid_test.go`, verifying flexible row/column layout distribution for populated and empty widget slices.

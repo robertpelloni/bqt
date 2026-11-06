@@ -125,3 +125,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `FilterNode` in `internal/audio/dsp_math_test.go`, verifying TPT digital low-pass filtering on audio buffers.
 - 2026-11-06: Added automated unit tests for `BobQBox` in `internal/ui/widgets/box_test.go`, verifying PackStart and PackEnd GTK-style sequential layout packing.
 - 2026-11-06: Added automated unit tests for `Grid` in `internal/ui/widgets/grid_test.go`, verifying flexible row/column layout distribution for populated and empty widget sets.
+- 2026-11-06: Added automated unit tests for `Dialog` in `internal/ui/widgets/dialog_test.go`, verifying modal visibility toggling and centered layout dimensions.
