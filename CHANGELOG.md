@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.85] - 2026-11-06
+### Fixed
+- Fixed repeated struct tag bug on `DeviceState` in `internal/kernel/input_manager.go` by separating `X, Y float64 json:"x"` into `X float64 json:"x"` and `Y float64 json:"y"`.
+- Verified clean `go vet ./internal/...` execution with zero warnings.
+
 ## [1.1.84] - 2026-11-05
 ### Added
 - Added automated unit test coverage for `internal/ui/anim` (`animator_test.go`), validating `Animator` singleton management, cubic ease-out interpolation step processing, and completion cleanup.
