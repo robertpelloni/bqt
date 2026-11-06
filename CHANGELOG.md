@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.88] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Grid` layout in `internal/ui/widgets/grid_test.go`, verifying flexible row/column layout distribution for populated and empty widget slices.
+
 ## [1.1.87] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `BobQBox` in `internal/ui/widgets/box_test.go`, verifying GTK-style sequential packing (`PackStart`, `PackEnd`) and flexible layout rendering.
