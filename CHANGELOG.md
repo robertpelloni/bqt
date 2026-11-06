@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.84] - 2026-11-05
+### Added
+- Added automated unit test coverage for `internal/ui/anim` (`animator_test.go`), validating `Animator` singleton management, cubic ease-out interpolation step processing, and completion cleanup.
+- Achieved 100% test coverage across every package in `internal/` (11 out of 11 packages verified with automated tests).
+
 ## [1.1.83] - 2026-11-05
 ### Added
 - Added automated unit test coverage for `internal/ui/theme` (`theme_test.go`), validating theme palette selection (`Dark`, `Cyberpunk`, `Aetheria`) and CSS stylesheet parsing with hex color extraction and fallbacks.

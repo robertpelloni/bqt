@@ -36,3 +36,4 @@
 - [x] Implement automated test coverage for `internal/net` subsystem (DiscoveryBeacon, StreamAssetToMesh).
 - [x] Implement automated test coverage for `internal/state` subsystem (`ValueTree`).
 - [x] Implement automated test coverage for `internal/ui/theme` subsystem (`Theme`, `StyleSheet`).
+- [x] Implement automated test coverage for `internal/ui/anim` subsystem (`Animator`, `Animation`).
