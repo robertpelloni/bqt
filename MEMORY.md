@@ -122,3 +122,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-05: Added automated tests for `internal/ui/theme` (`theme_test.go`), verifying theme palette retrieval across Dark, Cyberpunk, and Aetheria, as well as CSS stylesheet color parsing and fallbacks.
 - 2026-11-05: Added automated tests for `internal/ui/anim` (`animator_test.go`), validating Animator singleton lifecycle, cubic ease-out interpolation, and active slice teardown upon completion.
 - 2026-11-06: Fixed `DeviceState` struct tags in `internal/kernel/input_manager.go` to cleanly separate `X` and `Y` JSON fields, ensuring `go vet ./internal/...` executes with zero warnings.
+- 2026-11-06: Added automated unit tests for `FilterNode` in `internal/audio/dsp_math_test.go`, verifying TPT digital low-pass filtering on audio buffers.

@@ -38,3 +38,4 @@
 - [x] Implement automated test coverage for `internal/ui/theme` subsystem (`Theme`, `StyleSheet`).
 - [x] Implement automated test coverage for `internal/ui/anim` subsystem (`Animator`, `Animation`).
 - [x] Fix `DeviceState` struct tags and pass `go vet` across `internal/...`.
+- [x] Verify and test `FilterNode` TPT low-pass DSP math in `internal/audio`.

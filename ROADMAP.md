@@ -37,5 +37,6 @@
 - [x] Verify and test native Go `internal/ui/theme` palette generation and stylesheet parsing.
 - [x] Verify and test native Go `internal/ui/anim` cubic ease-out interpolation and animation lifecycles.
 - [x] Sanitize Go kernel structs and verify clean static analysis (`go vet ./internal/...`).
+- [x] Verify and test native Go `internal/audio` TPT low-pass digital filter mathematics.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

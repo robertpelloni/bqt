@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.86] - 2026-11-06
+### Added
+- Added automated unit test coverage for `FilterNode` in `internal/audio/dsp_math_test.go`, validating the TPT low-pass digital filter algorithm on audio PCM buffers.
+
 ## [1.1.85] - 2026-11-06
 ### Fixed
 - Fixed repeated struct tag bug on `DeviceState` in `internal/kernel/input_manager.go` by separating `X, Y float64 json:"x"` into `X float64 json:"x"` and `Y float64 json:"y"`.
