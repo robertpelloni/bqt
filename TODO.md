@@ -39,3 +39,4 @@
 - [x] Implement automated test coverage for `internal/ui/anim` subsystem (`Animator`, `Animation`).
 - [x] Fix `DeviceState` struct tags and pass `go vet` across `internal/...`.
 - [x] Verify and test `FilterNode` TPT low-pass DSP math in `internal/audio`.
+- [x] Verify and test `BobQBox` GTK sequential packing and layout in `internal/ui/widgets`.

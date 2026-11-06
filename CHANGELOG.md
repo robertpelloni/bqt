@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.87] - 2026-11-06
+### Added
+- Added automated unit test coverage for `BobQBox` in `internal/ui/widgets/box_test.go`, verifying GTK-style sequential packing (`PackStart`, `PackEnd`) and flexible layout rendering.
+
 ## [1.1.86] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `FilterNode` in `internal/audio/dsp_math_test.go`, validating the TPT low-pass digital filter algorithm on audio PCM buffers.
