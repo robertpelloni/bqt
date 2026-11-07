@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.95] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Drawer` in `internal/ui/widgets/drawer_test.go`, verifying visibility toggling, default width fallback (280dp), custom width dimensions, and child widget rendering.
+
 ## [1.1.94] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `ToolTip` in `internal/ui/widgets/tooltip_test.go`, verifying visibility toggling, empty text handling, and positioned layout rendering.
