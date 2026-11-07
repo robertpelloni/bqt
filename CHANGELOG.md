@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.90] - 2026-11-06
+### Added
+- Added automated unit test coverage for transient `Popup` in `internal/ui/widgets/popup_test.go`, verifying visibility state transitions and centered layout dimensions.
+
 ## [1.1.89] - 2026-11-06
 ### Added
 - Added automated unit test coverage for modal `Dialog` in `internal/ui/widgets/dialog_test.go`, verifying visibility state transitions and centered layout constraints.

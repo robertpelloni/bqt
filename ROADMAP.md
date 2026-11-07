@@ -41,5 +41,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` GTK Box sequential packing.
 - [x] Verify and test native Go `internal/ui/widgets` flexible GPU grid layouts.
 - [x] Verify and test native Go `internal/ui/widgets` QuickControls2 modal dialog overlays.
+- [x] Verify and test native Go `internal/ui/widgets` QuickControls2 transient popup overlays.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
