@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.05] - 2026-11-06
+### Added
+- Added automated unit test coverage for `LoginView` in `internal/ui/widgets/login_test.go`, verifying unauthenticated login view layout, authentication transition, and dimension suppression.
+
 ## [1.2.04] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `AuthShell` in `internal/ui/widgets/auth_test.go`, verifying centered login layout and boot button interaction.
