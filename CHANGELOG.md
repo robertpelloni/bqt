@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.92] - 2026-11-06
+### Added
+- Added automated unit test coverage for `SplitView` in `internal/ui/widgets/splitview_test.go`, verifying default ratio fallback (0.5) and flexible child widget layout rendering.
+
 ## [1.1.91] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `TabBar` in `internal/ui/widgets/tabbar_test.go`, verifying active title indexing, programmatic tab switching, and interactive button layout rendering.
