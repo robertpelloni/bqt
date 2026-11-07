@@ -60,5 +60,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` RewindSlider timeline visibility and slider rendering.
 - [x] Verify and test native Go `internal/ui/widgets` MarkdownView header parsing and layout rendering.
 - [x] Verify and test native Go `internal/ui/widgets` MeshExplorer file listing and remote tagging.
+- [x] Verify and test native Go `internal/ui/widgets` QuickControls (ProgressBar, Dial, CheckBox).
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

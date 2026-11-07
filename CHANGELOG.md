@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.09] - 2026-11-06
+### Added
+- Added automated unit test coverage for QuickControls (`ProgressBar`, `Dial`, `CheckBox`) in `internal/ui/widgets/controls_test.go`, verifying value clamping, circular clipping, and state transitions.
+
 ## [1.2.08] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `MeshExplorer` in `internal/ui/widgets/explorer_test.go`, verifying local and remote mesh file listing and vertical layout rendering.
