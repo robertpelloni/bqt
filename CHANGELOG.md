@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.00] - 2026-11-06
+### Added
+- Added automated unit test coverage for `TableView` in `internal/ui/widgets/table_test.go`, verifying empty table message fallback, header rendering, and row/column cell layout distribution.
+
 ## [1.1.99] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Calendar` in `internal/ui/widgets/calendar_test.go`, verifying zero-date fallback to `time.Now()`, explicit date grid formatting, and vertical layout rendering.

@@ -136,3 +136,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `Terminal` in `internal/ui/widgets/terminal_test.go`, verifying shell process output ingestion, buffer capping to 50 lines, and vertical layout rendering.
 - 2026-11-06: Added automated unit tests for `NotificationCenter` in `internal/ui/widgets/notifications_test.go`, verifying singleton lifecycle, toast queuing via `ShowToast()`, active toast rendering, and expiry cleanup.
 - 2026-11-06: Added automated unit tests for `Calendar` in `internal/ui/widgets/calendar_test.go`, verifying zero-date fallback to time.Now(), explicit date grid formatting, and vertical layout rendering.
+- 2026-11-06: Added automated unit tests for `TableView` in `internal/ui/widgets/table_test.go`, verifying empty column fallback message, header rendering, and row/column cell layout distribution.

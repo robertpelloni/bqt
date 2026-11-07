@@ -52,3 +52,4 @@
 - [x] Verify and test `Terminal` output ingestion and buffer trimming in `internal/ui/widgets`.
 - [x] Verify and test `NotificationCenter` singleton lifecycle and toast expiration in `internal/ui/widgets`.
 - [x] Verify and test `Calendar` fallback initialization and date formatting in `internal/ui/widgets`.
+- [x] Verify and test `TableView` empty fallback and cell distribution in `internal/ui/widgets`.
