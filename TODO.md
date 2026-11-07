@@ -53,3 +53,4 @@
 - [x] Verify and test `NotificationCenter` singleton lifecycle and toast expiration in `internal/ui/widgets`.
 - [x] Verify and test `Calendar` fallback initialization and date formatting in `internal/ui/widgets`.
 - [x] Verify and test `TableView` empty fallback and cell distribution in `internal/ui/widgets`.
+- [x] Verify and test `ScrollView` list-driven layout and cross-axis viewports in `internal/ui/widgets`.

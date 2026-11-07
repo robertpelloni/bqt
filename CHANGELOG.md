@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.01] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ScrollView` in `internal/ui/widgets/scrollview_test.go`, verifying vertical and horizontal scroll configurations, cross-axis viewport adjustments, and item layout rendering.
+
 ## [1.2.00] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `TableView` in `internal/ui/widgets/table_test.go`, verifying empty table message fallback, header rendering, and row/column cell layout distribution.
