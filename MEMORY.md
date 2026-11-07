@@ -144,3 +144,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `LoginView` in `internal/ui/widgets/login_test.go`, verifying unauthenticated login view layout, authentication transition, and dimension suppression.
 - 2026-11-06: Added automated unit tests for `RewindSlider` in `internal/ui/widgets/rewind_test.go`, verifying inactive dimension suppression and active temporal timeline slider layout rendering.
 - 2026-11-06: Added automated unit tests for `MarkdownView` in `internal/ui/widgets/markdown_test.go`, verifying H1/H2 header and body text parsing and vertical layout rendering.
+- 2026-11-06: Added automated unit tests for `MeshExplorer` in `internal/ui/widgets/explorer_test.go`, verifying local and remote mesh file listing and vertical layout rendering.
