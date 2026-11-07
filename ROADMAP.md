@@ -44,5 +44,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` QuickControls2 transient popup overlays.
 - [x] Verify and test native Go `internal/ui/widgets` docking TabBar layout and interactive button switching.
 - [x] Verify and test native Go `internal/ui/widgets` SplitView ratio fallback and child layout rendering.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollBar viewport clamping and multi-orientation layout.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

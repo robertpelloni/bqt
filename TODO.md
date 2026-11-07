@@ -45,3 +45,4 @@
 - [x] Verify and test transient `Popup` state and layout in `internal/ui/widgets`.
 - [x] Verify and test `TabBar` active indexing and interactive button layout in `internal/ui/widgets`.
 - [x] Verify and test `SplitView` ratio fallback and child widget layout in `internal/ui/widgets`.
+- [x] Verify and test `ScrollBar` viewport clamping and multi-orientation layout in `internal/ui/widgets`.

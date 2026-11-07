@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.93] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ScrollBar` in `internal/ui/widgets/scrollbar_test.go`, verifying viewport clamping, vertical and horizontal layout rendering, and visibility toggling.
+
 ## [1.1.92] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `SplitView` in `internal/ui/widgets/splitview_test.go`, verifying default ratio fallback (0.5) and flexible child widget layout rendering.
