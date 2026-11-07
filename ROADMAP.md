@@ -48,5 +48,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` ToolTip visibility states and layout positioning.
 - [x] Verify and test native Go `internal/ui/widgets` Drawer visibility states, width fallback, and child rendering.
 - [x] Verify and test native Go `internal/ui/widgets` Menu bounds clamping, item rendering, and selection dismissal.
+- [x] Verify and test native Go `internal/ui/widgets` Terminal process output ingestion and buffer trimming.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

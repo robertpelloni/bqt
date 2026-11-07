@@ -49,3 +49,4 @@
 - [x] Verify and test `ToolTip` visibility states and layout positioning in `internal/ui/widgets`.
 - [x] Verify and test `Drawer` visibility states, width fallback, and child layout in `internal/ui/widgets`.
 - [x] Verify and test `Menu` bounds clamping, item rendering, and selection dismissal in `internal/ui/widgets`.
+- [x] Verify and test `Terminal` output ingestion and buffer trimming in `internal/ui/widgets`.

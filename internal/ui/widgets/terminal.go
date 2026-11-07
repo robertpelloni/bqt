@@ -21,7 +21,9 @@ func (t *Terminal) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions 
 	select {
 	case out := <-t.Shell.Output:
 		t.Buffer = append(t.Buffer, out)
-		if len(t.Buffer) > 50 { t.Buffer = t.Buffer[1:] }
+		for len(t.Buffer) > 50 {
+			t.Buffer = t.Buffer[1:]
+		}
 	default:
 	}
 

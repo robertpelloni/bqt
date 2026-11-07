@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.97] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Terminal` in `internal/ui/widgets/terminal_test.go`, verifying shell process output ingestion, buffer capping to 50 lines, and vertical layout rendering.
+- Fixed `Terminal.Layout` to consistently trim the buffer loop down to 50 lines upon message ingestion.
+
 ## [1.1.96] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Menu` in `internal/ui/widgets/menu_test.go`, verifying visibility toggling, default width fallback (200dp), screen bounds clamping, item rendering, and selection click dismissal.
