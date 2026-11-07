@@ -55,3 +55,4 @@
 - [x] Verify and test `TableView` empty fallback and cell distribution in `internal/ui/widgets`.
 - [x] Verify and test `ScrollView` list-driven layout and cross-axis viewports in `internal/ui/widgets`.
 - [x] Verify and test `TouchArea` directional swipe gestures and layout in `internal/ui/widgets`.
+- [x] Verify and test `AdminShell` user listing and permission lock status in `internal/ui/widgets`.

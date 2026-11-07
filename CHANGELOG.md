@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.03] - 2026-11-06
+### Added
+- Added automated unit test coverage for `AdminShell` in `internal/ui/widgets/admin_test.go`, verifying user list rendering and lock status layout.
+
 ## [1.2.02] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `TouchArea` in `internal/ui/widgets/touch_test.go`, verifying swipe direction detection math (Left, Right, Up, Down), callback dispatch, and touch area layout rendering.
