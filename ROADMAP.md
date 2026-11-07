@@ -36,5 +36,22 @@
 - [x] Verify and test native Go `internal/state` hierarchical `ValueTree` parameters and subscriptions.
 - [x] Verify and test native Go `internal/ui/theme` palette generation and stylesheet parsing.
 - [x] Verify and test native Go `internal/ui/anim` cubic ease-out interpolation and animation lifecycles.
+- [x] Sanitize Go kernel structs and verify clean static analysis (`go vet ./internal/...`).
+- [x] Verify and test native Go `internal/audio` TPT low-pass digital filter mathematics.
+- [x] Verify and test native Go `internal/ui/widgets` GTK Box sequential packing.
+- [x] Verify and test native Go `internal/ui/widgets` flexible GPU grid layouts.
+- [x] Verify and test native Go `internal/ui/widgets` QuickControls2 modal dialog overlays.
+- [x] Verify and test native Go `internal/ui/widgets` QuickControls2 transient popup overlays.
+- [x] Verify and test native Go `internal/ui/widgets` docking TabBar layout and interactive button switching.
+- [x] Verify and test native Go `internal/ui/widgets` SplitView ratio fallback and child layout rendering.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollBar viewport clamping and multi-orientation layout.
+- [x] Verify and test native Go `internal/ui/widgets` ToolTip visibility states and layout positioning.
+- [x] Verify and test native Go `internal/ui/widgets` Drawer visibility states, width fallback, and child rendering.
+- [x] Verify and test native Go `internal/ui/widgets` Menu bounds clamping, item rendering, and selection dismissal.
+- [x] Verify and test native Go `internal/ui/widgets` Terminal process output ingestion and buffer trimming.
+- [x] Verify and test native Go `internal/ui/widgets` NotificationCenter toast queuing and expiry cleanup.
+- [x] Verify and test native Go `internal/ui/widgets` Calendar fallback initialization and date grid layout.
+- [x] Verify and test native Go `internal/ui/widgets` TableView empty state fallback and cell grid distribution.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollView list-driven layout and cross-axis viewports.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

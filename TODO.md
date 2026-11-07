@@ -37,3 +37,20 @@
 - [x] Implement automated test coverage for `internal/state` subsystem (`ValueTree`).
 - [x] Implement automated test coverage for `internal/ui/theme` subsystem (`Theme`, `StyleSheet`).
 - [x] Implement automated test coverage for `internal/ui/anim` subsystem (`Animator`, `Animation`).
+- [x] Fix `DeviceState` struct tags and pass `go vet` across `internal/...`.
+- [x] Verify and test `FilterNode` TPT low-pass DSP math in `internal/audio`.
+- [x] Verify and test `BobQBox` GTK sequential packing and layout in `internal/ui/widgets`.
+- [x] Verify and test `Grid` flexible layout distribution in `internal/ui/widgets`.
+- [x] Verify and test modal `Dialog` state and layout in `internal/ui/widgets`.
+- [x] Verify and test transient `Popup` state and layout in `internal/ui/widgets`.
+- [x] Verify and test `TabBar` active indexing and interactive button layout in `internal/ui/widgets`.
+- [x] Verify and test `SplitView` ratio fallback and child widget layout in `internal/ui/widgets`.
+- [x] Verify and test `ScrollBar` viewport clamping and multi-orientation layout in `internal/ui/widgets`.
+- [x] Verify and test `ToolTip` visibility states and layout positioning in `internal/ui/widgets`.
+- [x] Verify and test `Drawer` visibility states, width fallback, and child layout in `internal/ui/widgets`.
+- [x] Verify and test `Menu` bounds clamping, item rendering, and selection dismissal in `internal/ui/widgets`.
+- [x] Verify and test `Terminal` output ingestion and buffer trimming in `internal/ui/widgets`.
+- [x] Verify and test `NotificationCenter` singleton lifecycle and toast expiration in `internal/ui/widgets`.
+- [x] Verify and test `Calendar` fallback initialization and date formatting in `internal/ui/widgets`.
+- [x] Verify and test `TableView` empty fallback and cell distribution in `internal/ui/widgets`.
+- [x] Verify and test `ScrollView` list-driven layout and cross-axis viewports in `internal/ui/widgets`.

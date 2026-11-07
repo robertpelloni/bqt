@@ -121,3 +121,20 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-05: Added automated tests for `internal/state` (`value_tree_test.go`), confirming ValueTree singleton thread safety, parameter updates, and non-blocking channel subscriptions.
 - 2026-11-05: Added automated tests for `internal/ui/theme` (`theme_test.go`), verifying theme palette retrieval across Dark, Cyberpunk, and Aetheria, as well as CSS stylesheet color parsing and fallbacks.
 - 2026-11-05: Added automated tests for `internal/ui/anim` (`animator_test.go`), validating Animator singleton lifecycle, cubic ease-out interpolation, and active slice teardown upon completion.
+- 2026-11-06: Fixed `DeviceState` struct tags in `internal/kernel/input_manager.go` to cleanly separate `X` and `Y` JSON fields, ensuring `go vet ./internal/...` executes with zero warnings.
+- 2026-11-06: Added automated unit tests for `FilterNode` in `internal/audio/dsp_math_test.go`, verifying TPT digital low-pass filtering on audio buffers.
+- 2026-11-06: Added automated unit tests for `BobQBox` in `internal/ui/widgets/box_test.go`, verifying PackStart and PackEnd GTK-style sequential layout packing.
+- 2026-11-06: Added automated unit tests for `Grid` in `internal/ui/widgets/grid_test.go`, verifying flexible row/column layout distribution for populated and empty widget sets.
+- 2026-11-06: Added automated unit tests for `Dialog` in `internal/ui/widgets/dialog_test.go`, verifying modal visibility toggling and centered layout dimensions.
+- 2026-11-06: Added automated unit tests for `Popup` in `internal/ui/widgets/popup_test.go`, verifying transient surface visibility toggling and centered layout dimensions.
+- 2026-11-06: Added automated unit tests for `TabBar` in `internal/ui/widgets/tabbar_test.go`, verifying active title indexing, programmatic tab switching, and interactive button layout rendering.
+- 2026-11-06: Added automated unit tests for `SplitView` in `internal/ui/widgets/splitview_test.go`, verifying ratio fallback to 0.5 and child layout execution.
+- 2026-11-06: Added automated unit tests for `ScrollBar` in `internal/ui/widgets/scrollbar_test.go`, verifying viewport clamping, vertical/horizontal layout rendering, and hidden visibility toggling.
+- 2026-11-06: Added automated unit tests for `ToolTip` in `internal/ui/widgets/tooltip_test.go`, verifying visibility toggling, empty text suppression, and positioned layout rendering.
+- 2026-11-06: Added automated unit tests for `Drawer` in `internal/ui/widgets/drawer_test.go`, verifying visibility toggling, default width fallback (280dp), custom width dimensions, and child widget rendering.
+- 2026-11-06: Added automated unit tests for `Menu` in `internal/ui/widgets/menu_test.go`, verifying visibility toggles, width fallback, bounds clamping, item rendering, and selection dismissal.
+- 2026-11-06: Added automated unit tests for `Terminal` in `internal/ui/widgets/terminal_test.go`, verifying shell process output ingestion, buffer capping to 50 lines, and vertical layout rendering.
+- 2026-11-06: Added automated unit tests for `NotificationCenter` in `internal/ui/widgets/notifications_test.go`, verifying singleton lifecycle, toast queuing via `ShowToast()`, active toast rendering, and expiry cleanup.
+- 2026-11-06: Added automated unit tests for `Calendar` in `internal/ui/widgets/calendar_test.go`, verifying zero-date fallback to time.Now(), explicit date grid formatting, and vertical layout rendering.
+- 2026-11-06: Added automated unit tests for `TableView` in `internal/ui/widgets/table_test.go`, verifying empty column fallback message, header rendering, and row/column cell layout distribution.
+- 2026-11-06: Added automated unit tests for `ScrollView` in `internal/ui/widgets/scrollview_test.go`, verifying vertical and horizontal scroll configurations, cross-axis viewport adjustments, and item layout rendering.

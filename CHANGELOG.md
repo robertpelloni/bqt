@@ -1,5 +1,75 @@
 # Changelog
 
+## [1.2.01] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ScrollView` in `internal/ui/widgets/scrollview_test.go`, verifying vertical and horizontal scroll configurations, cross-axis viewport adjustments, and item layout rendering.
+
+## [1.2.00] - 2026-11-06
+### Added
+- Added automated unit test coverage for `TableView` in `internal/ui/widgets/table_test.go`, verifying empty table message fallback, header rendering, and row/column cell layout distribution.
+
+## [1.1.99] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Calendar` in `internal/ui/widgets/calendar_test.go`, verifying zero-date fallback to `time.Now()`, explicit date grid formatting, and vertical layout rendering.
+
+## [1.1.98] - 2026-11-06
+### Added
+- Added automated unit test coverage for `NotificationCenter` in `internal/ui/widgets/notifications_test.go`, verifying singleton lifecycle, toast queuing via `ShowToast()`, active toast rendering, and expiry cleanup.
+
+## [1.1.97] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Terminal` in `internal/ui/widgets/terminal_test.go`, verifying shell process output ingestion, buffer capping to 50 lines, and vertical layout rendering.
+- Fixed `Terminal.Layout` to consistently trim the buffer loop down to 50 lines upon message ingestion.
+
+## [1.1.96] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Menu` in `internal/ui/widgets/menu_test.go`, verifying visibility toggling, default width fallback (200dp), screen bounds clamping, item rendering, and selection click dismissal.
+
+## [1.1.95] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Drawer` in `internal/ui/widgets/drawer_test.go`, verifying visibility toggling, default width fallback (280dp), custom width dimensions, and child widget rendering.
+
+## [1.1.94] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ToolTip` in `internal/ui/widgets/tooltip_test.go`, verifying visibility toggling, empty text handling, and positioned layout rendering.
+
+## [1.1.93] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ScrollBar` in `internal/ui/widgets/scrollbar_test.go`, verifying viewport clamping, vertical and horizontal layout rendering, and visibility toggling.
+
+## [1.1.92] - 2026-11-06
+### Added
+- Added automated unit test coverage for `SplitView` in `internal/ui/widgets/splitview_test.go`, verifying default ratio fallback (0.5) and flexible child widget layout rendering.
+
+## [1.1.91] - 2026-11-06
+### Added
+- Added automated unit test coverage for `TabBar` in `internal/ui/widgets/tabbar_test.go`, verifying active title indexing, programmatic tab switching, and interactive button layout rendering.
+
+## [1.1.90] - 2026-11-06
+### Added
+- Added automated unit test coverage for transient `Popup` in `internal/ui/widgets/popup_test.go`, verifying visibility state transitions and centered layout dimensions.
+
+## [1.1.89] - 2026-11-06
+### Added
+- Added automated unit test coverage for modal `Dialog` in `internal/ui/widgets/dialog_test.go`, verifying visibility state transitions and centered layout constraints.
+
+## [1.1.88] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Grid` layout in `internal/ui/widgets/grid_test.go`, verifying flexible row/column layout distribution for populated and empty widget slices.
+
+## [1.1.87] - 2026-11-06
+### Added
+- Added automated unit test coverage for `BobQBox` in `internal/ui/widgets/box_test.go`, verifying GTK-style sequential packing (`PackStart`, `PackEnd`) and flexible layout rendering.
+
+## [1.1.86] - 2026-11-06
+### Added
+- Added automated unit test coverage for `FilterNode` in `internal/audio/dsp_math_test.go`, validating the TPT low-pass digital filter algorithm on audio PCM buffers.
+
+## [1.1.85] - 2026-11-06
+### Fixed
+- Fixed repeated struct tag bug on `DeviceState` in `internal/kernel/input_manager.go` by separating `X, Y float64 json:"x"` into `X float64 json:"x"` and `Y float64 json:"y"`.
+- Verified clean `go vet ./internal/...` execution with zero warnings.
+
 ## [1.1.84] - 2026-11-05
 ### Added
 - Added automated unit test coverage for `internal/ui/anim` (`animator_test.go`), validating `Animator` singleton management, cubic ease-out interpolation step processing, and completion cleanup.

@@ -25,7 +25,7 @@
 - Implemented `TrayIcon` widget (`internal/ui/widgets/tray.go`) with server lifecycle actions (Mute Audio DSP, Disconnect P2P Mesh, Restart EventLoop, Quit BQt Servers) integrated into the taskbar and engine.
 - Redesigned and consolidated `DemoSurface` (`internal/ui/widgets/demo_surface.go`) into a unified single-page command dashboard grouped by high-value capabilities with descriptive tooltips and real-time status reporting.
 - Resolved audio integration test race conditions and fixed `OmniGain.SetVolume` signal emission. All tests pass across `internal/...`.
-- Incremented version to `v1.1.84`.
+- Incremented version to `v1.2.01`.
 - Extended `DemoSurface` with interactive parameter adjustments (Master Volume, Tempo BPM, Polyphony voice limit) and unit tests.
 - Tested and stabilized `VoiceEngine` buffer lifecycle with `voice_engine_test.go`.
 - Added unit tests for `internal/vm` (`vm_test.go`), validating Lisp eval, MacroRecorder, NeuralEngine, and AIAssistant.
@@ -33,3 +33,20 @@
 - Added unit tests for `internal/state` (`value_tree_test.go`), validating `ValueTree` parameters and subscriptions.
 - Added unit tests for `internal/ui/theme` (`theme_test.go`), validating theme palettes and stylesheet parsing.
 - Added unit tests for `internal/ui/anim` (`animator_test.go`), validating Animator singleton and cubic ease-out interpolation.
+- Fixed `DeviceState` struct tags in `input_manager.go` and verified clean static analysis under `go vet`.
+- Added unit tests for `FilterNode` in `dsp_math_test.go`, validating TPT digital filtering math.
+- Added unit tests for `BobQBox` in `box_test.go`, validating GTK sequential packing.
+- Added unit tests for `Grid` in `grid_test.go`, validating flexible grid layouts.
+- Added unit tests for `Dialog` in `dialog_test.go`, validating modal visibility and centered dimensions.
+- Added unit tests for `Popup` in `popup_test.go`, validating transient surface visibility and centered dimensions.
+- Added unit tests for `TabBar` in `tabbar_test.go`, validating active title indexing, programmatic tab switching, and button layout rendering.
+- Added unit tests for `SplitView` in `splitview_test.go`, validating ratio fallback to 0.5 and child layout execution.
+- Added unit tests for `ScrollBar` in `scrollbar_test.go`, validating viewport clamping, multi-orientation rendering, and visibility toggling.
+- Added unit tests for `ToolTip` in `tooltip_test.go`, validating visibility states and positioned layout rendering.
+- Added unit tests for `Drawer` in `drawer_test.go`, validating visibility states, default width fallback, and child rendering.
+- Added unit tests for `Menu` in `menu_test.go`, validating bounds clamping, item rendering, and selection dismissal.
+- Added unit tests for `Terminal` in `terminal_test.go`, validating process output ingestion and buffer trimming to 50 lines.
+- Added unit tests for `NotificationCenter` in `notifications_test.go`, validating singleton lifecycle, toast queuing, and expiry cleanup.
+- Added unit tests for `Calendar` in `calendar_test.go`, validating zero-date fallback to time.Now(), date formatting, and grid rendering.
+- Added unit tests for `TableView` in `table_test.go`, validating empty state fallback and cell grid distribution.
+- Added unit tests for `ScrollView` in `scrollview_test.go`, validating vertical/horizontal configs and cross-axis viewports.

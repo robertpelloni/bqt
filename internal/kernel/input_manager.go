@@ -16,7 +16,8 @@ type DeviceState struct {
 	ID   string     `json:"id"`
 	Name string     `json:"name"`
 	Type DeviceType `json:"type"`
-	X, Y float64    `json:"x"`
+	X    float64    `json:"x"`
+	Y    float64    `json:"y"`
 }
 
 type InputManager struct {
