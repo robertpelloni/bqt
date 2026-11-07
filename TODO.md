@@ -43,3 +43,4 @@
 - [x] Verify and test `Grid` flexible layout distribution in `internal/ui/widgets`.
 - [x] Verify and test modal `Dialog` state and layout in `internal/ui/widgets`.
 - [x] Verify and test transient `Popup` state and layout in `internal/ui/widgets`.
+- [x] Verify and test `TabBar` active indexing and interactive button layout in `internal/ui/widgets`.

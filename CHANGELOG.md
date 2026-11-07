@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.91] - 2026-11-06
+### Added
+- Added automated unit test coverage for `TabBar` in `internal/ui/widgets/tabbar_test.go`, verifying active title indexing, programmatic tab switching, and interactive button layout rendering.
+
 ## [1.1.90] - 2026-11-06
 ### Added
 - Added automated unit test coverage for transient `Popup` in `internal/ui/widgets/popup_test.go`, verifying visibility state transitions and centered layout dimensions.
