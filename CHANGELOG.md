@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.02] - 2026-11-06
+### Added
+- Added automated unit test coverage for `TouchArea` in `internal/ui/widgets/touch_test.go`, verifying swipe direction detection math (Left, Right, Up, Down), callback dispatch, and touch area layout rendering.
+
 ## [1.2.01] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `ScrollView` in `internal/ui/widgets/scrollview_test.go`, verifying vertical and horizontal scroll configurations, cross-axis viewport adjustments, and item layout rendering.

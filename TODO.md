@@ -54,3 +54,4 @@
 - [x] Verify and test `Calendar` fallback initialization and date formatting in `internal/ui/widgets`.
 - [x] Verify and test `TableView` empty fallback and cell distribution in `internal/ui/widgets`.
 - [x] Verify and test `ScrollView` list-driven layout and cross-axis viewports in `internal/ui/widgets`.
+- [x] Verify and test `TouchArea` directional swipe gestures and layout in `internal/ui/widgets`.
