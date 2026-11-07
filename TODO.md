@@ -51,3 +51,4 @@
 - [x] Verify and test `Menu` bounds clamping, item rendering, and selection dismissal in `internal/ui/widgets`.
 - [x] Verify and test `Terminal` output ingestion and buffer trimming in `internal/ui/widgets`.
 - [x] Verify and test `NotificationCenter` singleton lifecycle and toast expiration in `internal/ui/widgets`.
+- [x] Verify and test `Calendar` fallback initialization and date formatting in `internal/ui/widgets`.

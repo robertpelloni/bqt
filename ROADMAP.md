@@ -50,5 +50,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` Menu bounds clamping, item rendering, and selection dismissal.
 - [x] Verify and test native Go `internal/ui/widgets` Terminal process output ingestion and buffer trimming.
 - [x] Verify and test native Go `internal/ui/widgets` NotificationCenter toast queuing and expiry cleanup.
+- [x] Verify and test native Go `internal/ui/widgets` Calendar fallback initialization and date grid layout.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

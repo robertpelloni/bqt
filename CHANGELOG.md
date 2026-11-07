@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.99] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Calendar` in `internal/ui/widgets/calendar_test.go`, verifying zero-date fallback to `time.Now()`, explicit date grid formatting, and vertical layout rendering.
+
 ## [1.1.98] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `NotificationCenter` in `internal/ui/widgets/notifications_test.go`, verifying singleton lifecycle, toast queuing via `ShowToast()`, active toast rendering, and expiry cleanup.

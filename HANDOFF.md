@@ -25,7 +25,7 @@
 - Implemented `TrayIcon` widget (`internal/ui/widgets/tray.go`) with server lifecycle actions (Mute Audio DSP, Disconnect P2P Mesh, Restart EventLoop, Quit BQt Servers) integrated into the taskbar and engine.
 - Redesigned and consolidated `DemoSurface` (`internal/ui/widgets/demo_surface.go`) into a unified single-page command dashboard grouped by high-value capabilities with descriptive tooltips and real-time status reporting.
 - Resolved audio integration test race conditions and fixed `OmniGain.SetVolume` signal emission. All tests pass across `internal/...`.
-- Incremented version to `v1.1.98`.
+- Incremented version to `v1.1.99`.
 - Extended `DemoSurface` with interactive parameter adjustments (Master Volume, Tempo BPM, Polyphony voice limit) and unit tests.
 - Tested and stabilized `VoiceEngine` buffer lifecycle with `voice_engine_test.go`.
 - Added unit tests for `internal/vm` (`vm_test.go`), validating Lisp eval, MacroRecorder, NeuralEngine, and AIAssistant.
@@ -47,3 +47,4 @@
 - Added unit tests for `Menu` in `menu_test.go`, validating bounds clamping, item rendering, and selection dismissal.
 - Added unit tests for `Terminal` in `terminal_test.go`, validating process output ingestion and buffer trimming to 50 lines.
 - Added unit tests for `NotificationCenter` in `notifications_test.go`, validating singleton lifecycle, toast queuing, and expiry cleanup.
+- Added unit tests for `Calendar` in `calendar_test.go`, validating zero-date fallback to time.Now(), date formatting, and grid rendering.
