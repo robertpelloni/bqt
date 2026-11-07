@@ -58,5 +58,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` AuthShell secure boot and database null-safety.
 - [x] Verify and test native Go `internal/ui/widgets` LoginView authentication transition and rendering.
 - [x] Verify and test native Go `internal/ui/widgets` RewindSlider timeline visibility and slider rendering.
+- [x] Verify and test native Go `internal/ui/widgets` MarkdownView header parsing and layout rendering.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

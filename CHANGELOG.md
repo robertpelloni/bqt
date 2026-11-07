@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.07] - 2026-11-06
+### Added
+- Added automated unit test coverage for `MarkdownView` in `internal/ui/widgets/markdown_test.go`, verifying H1/H2 header and body text parsing and vertical layout rendering.
+
 ## [1.2.06] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `RewindSlider` in `internal/ui/widgets/rewind_test.go`, verifying inactive dimension suppression and active temporal timeline slider layout rendering.

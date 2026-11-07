@@ -59,3 +59,4 @@
 - [x] Verify and test `AuthShell` secure boot interaction and database null-safety in `internal/ui/widgets`.
 - [x] Verify and test `LoginView` authentication transition and rendering in `internal/ui/widgets`.
 - [x] Verify and test `RewindSlider` timeline visibility and slider rendering in `internal/ui/widgets`.
+- [x] Verify and test `MarkdownView` header parsing and vertical layout in `internal/ui/widgets`.
