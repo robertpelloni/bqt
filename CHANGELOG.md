@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.06] - 2026-11-06
+### Added
+- Added automated unit test coverage for `RewindSlider` in `internal/ui/widgets/rewind_test.go`, verifying inactive dimension suppression and active temporal timeline slider layout rendering.
+
 ## [1.2.05] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `LoginView` in `internal/ui/widgets/login_test.go`, verifying unauthenticated login view layout, authentication transition, and dimension suppression.
