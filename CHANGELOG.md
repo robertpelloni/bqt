@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.98] - 2026-11-06
+### Added
+- Added automated unit test coverage for `NotificationCenter` in `internal/ui/widgets/notifications_test.go`, verifying singleton lifecycle, toast queuing via `ShowToast()`, active toast rendering, and expiry cleanup.
+
 ## [1.1.97] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Terminal` in `internal/ui/widgets/terminal_test.go`, verifying shell process output ingestion, buffer capping to 50 lines, and vertical layout rendering.
