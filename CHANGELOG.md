@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.94] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ToolTip` in `internal/ui/widgets/tooltip_test.go`, verifying visibility toggling, empty text handling, and positioned layout rendering.
+
 ## [1.1.93] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `ScrollBar` in `internal/ui/widgets/scrollbar_test.go`, verifying viewport clamping, vertical and horizontal layout rendering, and visibility toggling.

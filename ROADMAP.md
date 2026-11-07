@@ -45,5 +45,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` docking TabBar layout and interactive button switching.
 - [x] Verify and test native Go `internal/ui/widgets` SplitView ratio fallback and child layout rendering.
 - [x] Verify and test native Go `internal/ui/widgets` ScrollBar viewport clamping and multi-orientation layout.
+- [x] Verify and test native Go `internal/ui/widgets` ToolTip visibility states and layout positioning.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

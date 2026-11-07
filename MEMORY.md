@@ -130,3 +130,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `TabBar` in `internal/ui/widgets/tabbar_test.go`, verifying active title indexing, programmatic tab switching, and interactive button layout rendering.
 - 2026-11-06: Added automated unit tests for `SplitView` in `internal/ui/widgets/splitview_test.go`, verifying ratio fallback to 0.5 and child layout execution.
 - 2026-11-06: Added automated unit tests for `ScrollBar` in `internal/ui/widgets/scrollbar_test.go`, verifying viewport clamping, vertical/horizontal layout rendering, and hidden visibility toggling.
+- 2026-11-06: Added automated unit tests for `ToolTip` in `internal/ui/widgets/tooltip_test.go`, verifying visibility toggling, empty text suppression, and positioned layout rendering.
