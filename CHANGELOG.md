@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.96] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Menu` in `internal/ui/widgets/menu_test.go`, verifying visibility toggling, default width fallback (200dp), screen bounds clamping, item rendering, and selection click dismissal.
+
 ## [1.1.95] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Drawer` in `internal/ui/widgets/drawer_test.go`, verifying visibility toggling, default width fallback (280dp), custom width dimensions, and child widget rendering.

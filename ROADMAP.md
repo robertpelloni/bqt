@@ -47,5 +47,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` ScrollBar viewport clamping and multi-orientation layout.
 - [x] Verify and test native Go `internal/ui/widgets` ToolTip visibility states and layout positioning.
 - [x] Verify and test native Go `internal/ui/widgets` Drawer visibility states, width fallback, and child rendering.
+- [x] Verify and test native Go `internal/ui/widgets` Menu bounds clamping, item rendering, and selection dismissal.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

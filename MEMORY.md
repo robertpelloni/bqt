@@ -132,3 +132,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `ScrollBar` in `internal/ui/widgets/scrollbar_test.go`, verifying viewport clamping, vertical/horizontal layout rendering, and hidden visibility toggling.
 - 2026-11-06: Added automated unit tests for `ToolTip` in `internal/ui/widgets/tooltip_test.go`, verifying visibility toggling, empty text suppression, and positioned layout rendering.
 - 2026-11-06: Added automated unit tests for `Drawer` in `internal/ui/widgets/drawer_test.go`, verifying visibility toggling, default width fallback (280dp), custom width dimensions, and child widget rendering.
+- 2026-11-06: Added automated unit tests for `Menu` in `internal/ui/widgets/menu_test.go`, verifying visibility toggles, width fallback, bounds clamping, item rendering, and selection dismissal.
