@@ -28,7 +28,7 @@ func (a *AuthShell) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions
 			layout.Rigid(layout.Spacer{Height: unit.Dp(20)}.Layout),
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				if a.BootBtn.Clicked(gtx) {
-					// Verify against Go Database
+					// Verify against Go Database if initialized
 					db := data.GetDatabase()
 					db.ExecuteQuery("SELECT * FROM _omni_users")
 				}

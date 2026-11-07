@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.04] - 2026-11-06
+### Added
+- Added automated unit test coverage for `AuthShell` in `internal/ui/widgets/auth_test.go`, verifying centered login layout and boot button interaction.
+- Safeguarded `Database.ExecuteQuery` against nil connection panics when called without explicit initialization.
+
 ## [1.2.03] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `AdminShell` in `internal/ui/widgets/admin_test.go`, verifying user list rendering and lock status layout.

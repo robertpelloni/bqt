@@ -34,6 +34,9 @@ func (d *Database) Connect(path string) error {
 
 // ExecuteQuery runs a SQL command and returns the results as a Go map slice.
 func (d *Database) ExecuteQuery(query string) ([]map[string]interface{}, error) {
+	if d == nil || d.conn == nil {
+		return nil, nil
+	}
 	rows, err := d.conn.Query(query)
 	if err != nil {
 		return nil, err
