@@ -81,3 +81,4 @@
 - [x] Verify and test `ShaderSync` P2P mesh shader skin synchronization in `internal/ui`.
 - [x] Expand unit test coverage for `WebView.Layout` and `BridgeContractJSON` in `internal/ui/widgets`.
 - [x] Verify and test `MeshNode.Render` in `internal/ui/widgets`.
+- [x] Verify and test audio/desktop/teleport/voice/stream mesh network services in `internal/net`.

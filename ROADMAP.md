@@ -79,5 +79,6 @@
 - [x] Verify and test native Go `internal/ui` LiveReloader lifecycle.
 - [x] Verify and test native Go `internal/ui` ShaderSync mesh shader exchange.
 - [x] Verify and test native Go `internal/ui/widgets` WebView layout and bridge contracts.
+- [x] Verify and test native Go `internal/net` mesh streaming protocols (Audio, Desktop, Teleport, Voice, Video).
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

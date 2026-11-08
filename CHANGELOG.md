@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.21] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/net` subsystems in `mesh_streaming_test.go`, verifying `BroadcastAudioShards`, `HandleRemoteAudio`, `BroadcastDesktopFrame`, `HandleRemoteDesktop`, `TeleportState`, `HandleRemoteTeleport`, `VoiceMesh`, `BroadcastFrame`, and `HandleRemoteStream`.
+- Boosted statement test coverage of `internal/net` to 48.4%.
+
 ## [1.2.20] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/webview_test.go` to validate `WebView.Layout` rendering, `BridgeContractJSON` serialization, `PostMessage`, `JSBridge.Emit`, and `JSBridge.Dispatch`.
