@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.33] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/headerbar_test.go` verifying `BQtHeaderBar` layout with populated custom widgets aligned on the right.
+- Boosted statement test coverage of `internal/ui/widgets` to 85.8%.
+
 ## [1.2.32] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/tabbar_test.go` verifying `TabBar.ActiveTitle()` with nil receiver, empty tabs, negative active index, out-of-bounds active index, and zero dimensions during empty tab layout.

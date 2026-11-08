@@ -93,3 +93,4 @@
 - [x] Verify and test NodeHealth telemetry data and mesh broadcast in `internal/net`.
 - [x] Verify and test NewShell constructor in `internal/ui/widgets`.
 - [x] Verify and test TabBar edge cases (nil receiver, empty tabs, OOB index) in `internal/ui/widgets`.
+- [x] Verify and test BQtHeaderBar custom widgets layout in `internal/ui/widgets`.
