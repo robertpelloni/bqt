@@ -65,5 +65,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` Plot vertical column bar chart layout.
 - [x] Verify and test native Go `internal/ui/widgets` ParticleSystem physics and layout.
 - [x] Verify and test native Go `internal/ui/widgets` VectorIcon GPU path outline rendering.
+- [x] Verify and test native Go `internal/ui/widgets` BQtNotebook tab click switching and child layout.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

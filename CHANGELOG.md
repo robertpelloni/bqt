@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.14] - 2026-11-06
+### Added
+- Hardened automated unit test coverage for `BQtNotebook` in `internal/ui/widgets/notebook_test.go`, verifying tab click switching, active page selection, inactive tab styling, and empty container suppression.
+
 ## [1.2.13] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `VectorIcon` in `internal/ui/widgets/vector_test.go`, verifying geometric path construction and GPU outline fill clipping layout.
