@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.25] - 2026-11-06
+### Added
+- Added automated unit test coverage for `PluginManager` in `internal/kernel/managers_test.go`, verifying plugin interface compliance, registration, and duplicate rejection.
+- Boosted statement test coverage of `internal/kernel` to 60.2%.
+
 ## [1.2.24] - 2026-11-06
 ### Added
 - Added automated unit test coverage across `internal/kernel` subsystems in `kernel_features_test.go`, verifying `ActionRegistry` (registration & triggering), `AccessibilityManager` (visual DOM exposition), `SearchEngine` (global concurrent search), and `Property[T]` (generic reactive bindings and bi-directional listeners).

@@ -84,3 +84,38 @@ func TestUserManagerCreateAssignAndLookup(t *testing.T) {
 		t.Fatalf("expected nil for missing device, got %+v", *missing)
 	}
 }
+
+type mockPlugin struct {
+	name    string
+	version string
+	initErr error
+}
+
+func (m *mockPlugin) Name() string {
+	return m.name
+}
+
+func (m *mockPlugin) Version() string {
+	return m.version
+}
+
+func (m *mockPlugin) Initialize() error {
+	return m.initErr
+}
+
+func TestPluginManagerRegister(t *testing.T) {
+	pm := GetPluginManager()
+	if pm == nil {
+		t.Fatalf("expected GetPluginManager to return non-nil instance")
+	}
+
+	p1 := &mockPlugin{name: "audio-enhancer", version: "1.0.0"}
+	if err := pm.RegisterPlugin(p1); err != nil {
+		t.Fatalf("expected first registration to succeed, got %v", err)
+	}
+
+	// Register duplicate plugin name
+	if err := pm.RegisterPlugin(p1); err == nil {
+		t.Fatalf("expected duplicate plugin registration to fail")
+	}
+}

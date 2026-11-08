@@ -85,3 +85,4 @@
 - [x] Verify and test git/history/replicated-db/package-registry/timemachine in `internal/data`.
 - [x] Verify and test UI widgets signal dispatch and event loop synchronization in `internal/ui`.
 - [x] Verify and test ActionRegistry, AccessibilityManager, SearchEngine, and Property in `internal/kernel`.
+- [x] Verify and test PluginManager registration and duplicate rejection in `internal/kernel`.

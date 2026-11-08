@@ -83,5 +83,6 @@
 - [x] Verify and test native Go `internal/data` distributed storage services (TimeMachine, GitKernel, DistributedDB).
 - [x] Verify and test native Go UI widgets signal dispatch and unified event loop synchronization.
 - [x] Verify and test native Go `internal/kernel` reactive property bindings, action dispatching, and accessibility DOM.
+- [x] Verify and test native Go `internal/kernel` PluginManager dynamic plugin registry.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
