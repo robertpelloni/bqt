@@ -18,13 +18,15 @@ func (t *Terminal) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions 
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Surface
 
-	select {
-	case out := <-t.Shell.Output:
-		t.Buffer = append(t.Buffer, out)
-		for len(t.Buffer) > 50 {
-			t.Buffer = t.Buffer[1:]
+	if t.Shell != nil && t.Shell.Output != nil {
+		select {
+		case out := <-t.Shell.Output:
+			t.Buffer = append(t.Buffer, out)
+			for len(t.Buffer) > 50 {
+				t.Buffer = t.Buffer[1:]
+			}
+		default:
 		}
-	default:
 	}
 
 	list := &layout.List{Axis: layout.Vertical}

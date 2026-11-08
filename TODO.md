@@ -70,3 +70,5 @@
 - [x] Verify and test `CodeEditor` text input and flex layout in `internal/ui/widgets`.
 - [x] Verify and test `DockArea` child layout rendering in `internal/ui/widgets`.
 - [x] Verify and test `NodeEditor` layout, positioning, and clipping in `internal/ui/widgets`.
+- [x] Verify and test `OmniStudio` IDE shell composition and nil child handling in `internal/ui/widgets`.
+- [x] Verify and test `ShaderEffect` plasma and grid graphics layouts in `internal/ui/widgets`.

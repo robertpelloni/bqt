@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.17] - 2026-11-06
+### Added
+- Added automated unit test coverage for `OmniStudio` in `internal/ui/widgets/studio_test.go`, verifying composite rendering of editor, terminal, explorer, splitview, and nil fallback initialization.
+- Added automated unit test coverage for `ShaderEffect` in `internal/ui/widgets/shaders_test.go`, verifying plasma algorithmic rendering and fallback grid pattern layout.
+### Fixed
+- Fixed nil pointer dereference in `Terminal.Layout` (`internal/ui/widgets/terminal.go`) when `Terminal.Shell` or its `Output` channel is uninitialized.
+
 ## [1.2.16] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `DockArea` in `internal/ui/widgets/docking_test.go`, verifying child layout rendering and dimensions preservation.

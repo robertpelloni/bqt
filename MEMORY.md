@@ -154,3 +154,6 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `CodeEditor` in `internal/ui/widgets/editor_test.go`, verifying text mutation, font sizing, and vertical flex layout rendering.
 - 2026-11-06: Added automated unit tests for `DockArea` in `internal/ui/widgets/docking_test.go`, verifying child layout rendering and dimensions preservation.
 - 2026-11-06: Added automated unit tests for `NodeEditor` in `internal/ui/widgets/node_editor_test.go`, verifying empty node slices, multiple node positioning, clipping boundaries, and label layout.
+- 2026-11-06: Added automated unit tests for `OmniStudio` in `internal/ui/widgets/studio_test.go`, verifying composite rendering of editor, terminal, explorer, splitview, and nil fallback initialization.
+- 2026-11-06: Added automated unit tests for `ShaderEffect` in `internal/ui/widgets/shaders_test.go`, verifying plasma algorithmic rendering and fallback grid pattern layout.
+- 2026-11-06: Fixed nil pointer dereference in `Terminal.Layout` (`internal/ui/widgets/terminal.go`) when `Terminal.Shell` or its `Output` channel is nil.

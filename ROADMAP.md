@@ -69,5 +69,7 @@
 - [x] Verify and test native Go `internal/ui/widgets` CodeEditor text input and flex layout.
 - [x] Verify and test native Go `internal/ui/widgets` DockArea child layout rendering.
 - [x] Verify and test native Go `internal/ui/widgets` NodeEditor layout, positioning, and clipping.
+- [x] Verify and test native Go `internal/ui/widgets` OmniStudio IDE shell layout.
+- [x] Verify and test native Go `internal/ui/widgets` ShaderEffect procedural rendering.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
