@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.24] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/kernel` subsystems in `kernel_features_test.go`, verifying `ActionRegistry` (registration & triggering), `AccessibilityManager` (visual DOM exposition), `SearchEngine` (global concurrent search), and `Property[T]` (generic reactive bindings and bi-directional listeners).
+- Boosted statement test coverage of `internal/kernel` to 57.1%.
+
 ## [1.2.23] - 2026-11-06
 ### Added
 - Added automated integration test coverage in `internal/ui/widgets_event_loop_test.go` verifying UI widget interaction (`TrayIcon` callbacks) and signal/slot dispatching over the unified BQt `EventLoop`.
