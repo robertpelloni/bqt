@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.11] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Plot` in `internal/ui/widgets/plot_test.go`, verifying empty plot dimension suppression and column bar layout rendering.
+
 ## [1.2.10] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `DrawGrabGlow` in `internal/ui/widgets/glow_test.go`, verifying multi-pass halo painting without errors or panics.

@@ -62,5 +62,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` MeshExplorer file listing and remote tagging.
 - [x] Verify and test native Go `internal/ui/widgets` QuickControls (ProgressBar, Dial, CheckBox).
 - [x] Verify and test native Go `internal/ui/widgets` DrawGrabGlow multi-pass halo painting.
+- [x] Verify and test native Go `internal/ui/widgets` Plot vertical column bar chart layout.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

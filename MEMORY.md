@@ -147,3 +147,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `MeshExplorer` in `internal/ui/widgets/explorer_test.go`, verifying local and remote mesh file listing and vertical layout rendering.
 - 2026-11-06: Added automated unit tests for `ProgressBar`, `Dial`, and `CheckBox` in `internal/ui/widgets/controls_test.go`, verifying value clamping, circular clipping, and state transitions.
 - 2026-11-06: Added automated unit tests for `DrawGrabGlow` in `internal/ui/widgets/glow_test.go`, verifying multi-pass halo painting without errors or panics.
+- 2026-11-06: Added automated unit tests for `Plot` in `internal/ui/widgets/plot_test.go`, verifying empty plot dimension suppression and column bar layout rendering.
