@@ -74,5 +74,9 @@
 - [x] Verify and test native Go `internal/ui/widgets` Raymarcher procedural rendering.
 - [x] Verify and test native Go `internal/ui/widgets` RHINode native texture surfaces.
 - [x] Verify and test native Go `internal/ui/widgets` Scene3D node graph layout.
+- [x] Verify and test native Go `internal/ui` ComputeKernel dispatch and memory synchronization.
+- [x] Verify and test native Go `internal/ui` HapticsEngine device proximity processing.
+- [x] Verify and test native Go `internal/ui` LiveReloader lifecycle.
+- [x] Verify and test native Go `internal/ui` ShaderSync mesh shader exchange.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

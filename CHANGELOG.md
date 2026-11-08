@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.19] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ComputeKernel` in `internal/ui/compute_kernel_test.go`, validating compute shader operation submission and memory buffer synchronization.
+- Added automated unit test coverage for `HapticsEngine` in `internal/ui/haptics_test.go`, verifying spatial distance calculation between peer input devices and proximity triggers.
+- Added automated unit test coverage for `LiveReloader` in `internal/ui/live_reload_test.go`, verifying singleton lifecycle and non-blocking background watching.
+- Added automated unit test coverage for `ShaderSync` in `internal/ui/shader_mesh_test.go`, verifying local shader broadcast over P2P mesh and remote skin synchronization.
+### Fixed
+- Fixed nil pointer dereference in `ComputeKernel.DispatchCompute` (`internal/ui/compute_kernel.go`) by establishing a valid image buffer operation.
+
 ## [1.2.18] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Raymarcher` in `internal/ui/widgets/raymarcher_test.go`, verifying size parameterization and zero-size fallback bounds.

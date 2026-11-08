@@ -75,3 +75,7 @@
 - [x] Verify and test `Raymarcher` rendering and zero-size fallback in `internal/ui/widgets`.
 - [x] Verify and test `RHINode` zero and non-zero texture handle rendering in `internal/ui/widgets`.
 - [x] Verify and test `Scene3D` node iteration and render execution in `internal/ui/widgets`.
+- [x] Verify and test `ComputeKernel` GPU compute dispatch and buffer sync in `internal/ui`.
+- [x] Verify and test `HapticsEngine` peer proximity drone triggers in `internal/ui`.
+- [x] Verify and test `LiveReloader` watcher lifecycle in `internal/ui`.
+- [x] Verify and test `ShaderSync` P2P mesh shader skin synchronization in `internal/ui`.

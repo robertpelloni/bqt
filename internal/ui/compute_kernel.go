@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"image"
+
 	"gioui.org/op"
 	"gioui.org/op/paint"
 )
@@ -11,13 +13,15 @@ type ComputeKernel struct {
 
 // DispatchCompute offloads complex OS simulations to the GPU.
 func (ck *ComputeKernel) DispatchCompute(ops *op.Ops, shader string) {
-	if !ck.Active { return }
-	
+	if !ck.Active || ops == nil {
+		return
+	}
+
 	// In a full Gio implementation, we'd push a custom GPU operation
 	// that binds a compute shader to the RHI.
-	// For this parity milestone, we establish the structural kernel link.
-	
-	_ = paint.NewImageOp(nil) // GPU buffer reference
+	// For this parity milestone, we establish the structural kernel link with a valid buffer.
+	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
+	paint.NewImageOp(img).Add(ops)
 }
 
 // SyncBuffer transfers simulated data back to the Go kernel memory.

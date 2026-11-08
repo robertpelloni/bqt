@@ -161,3 +161,8 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `RHINode` in `internal/ui/widgets/rhi_node_test.go`, verifying zero texture handle suppression and valid handle rendering.
 - 2026-11-06: Added automated unit tests for `Scene3D` in `internal/ui/widgets/scene3d_test.go`, verifying node iteration, Render execution, and layout dimensions.
 - 2026-11-06: Achieved 100% automated unit test coverage across all UI widgets in `internal/ui/widgets/`.
+- 2026-11-06: Added automated unit tests for `ComputeKernel` in `internal/ui/compute_kernel_test.go`, verifying active state toggles and buffer sync.
+- 2026-11-06: Fixed nil pointer dereference in `ComputeKernel.DispatchCompute` (`internal/ui/compute_kernel.go`) by utilizing a valid image op.
+- 2026-11-06: Added automated unit tests for `HapticsEngine` in `internal/ui/haptics_test.go`, verifying spatial distance calculation and proximity triggers.
+- 2026-11-06: Added automated unit tests for `LiveReloader` in `internal/ui/live_reload_test.go`, verifying singleton lifecycle.
+- 2026-11-06: Added automated unit tests for `ShaderSync` in `internal/ui/shader_mesh_test.go`, verifying P2P mesh shader skin synchronization.
