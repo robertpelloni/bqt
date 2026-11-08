@@ -174,3 +174,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated integration test in `internal/ui/widgets_event_loop_test.go` verifying UI widget lifecycle callbacks (`TrayIcon`) and asynchronous slot dispatching across the unified `EventLoop`.
 - 2026-11-06: Added automated unit tests across `internal/kernel` subsystems in `kernel_features_test.go`, verifying ActionRegistry, AccessibilityManager, SearchEngine, and generic reactive Property[T] bindings.
 - 2026-11-06: Added automated unit tests for `PluginManager` in `internal/kernel/managers_test.go`, verifying plugin initialization and duplicate rejection.
+- 2026-11-06: Added automated unit tests across `internal/kernel` resilience components in `resilience_test.go`, verifying ConsensusEngine, GridCompute, and SelfHealer panic recovery.

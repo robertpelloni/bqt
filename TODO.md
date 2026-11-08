@@ -86,3 +86,4 @@
 - [x] Verify and test UI widgets signal dispatch and event loop synchronization in `internal/ui`.
 - [x] Verify and test ActionRegistry, AccessibilityManager, SearchEngine, and Property in `internal/kernel`.
 - [x] Verify and test PluginManager registration and duplicate rejection in `internal/kernel`.
+- [x] Verify and test ConsensusEngine, GridCompute, and SelfHealer in `internal/kernel`.

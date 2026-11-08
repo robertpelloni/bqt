@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.26] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/kernel` resilience components in `resilience_test.go`, verifying `ConsensusEngine` (mutation proposals and peer vote handling), `GridCompute` (`DispatchJob` and `HandleRemoteTask`), and `SelfHealer` (critical panic interception, callstack capture, and AI callback dispatch).
+- Boosted statement test coverage of `internal/kernel` to 65.1%.
+
 ## [1.2.25] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `PluginManager` in `internal/kernel/managers_test.go`, verifying plugin interface compliance, registration, and duplicate rejection.
