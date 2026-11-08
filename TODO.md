@@ -62,3 +62,4 @@
 - [x] Verify and test `MarkdownView` header parsing and vertical layout in `internal/ui/widgets`.
 - [x] Verify and test `MeshExplorer` file list rendering and remote tagging in `internal/ui/widgets`.
 - [x] Verify and test QuickControls (`ProgressBar`, `Dial`, `CheckBox`) in `internal/ui/widgets`.
+- [x] Verify and test `DrawGrabGlow` multi-pass halo painting in `internal/ui/widgets`.

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.10] - 2026-11-06
+### Added
+- Added automated unit test coverage for `DrawGrabGlow` in `internal/ui/widgets/glow_test.go`, verifying multi-pass halo painting without errors or panics.
+
 ## [1.2.09] - 2026-11-06
 ### Added
 - Added automated unit test coverage for QuickControls (`ProgressBar`, `Dial`, `CheckBox`) in `internal/ui/widgets/controls_test.go`, verifying value clamping, circular clipping, and state transitions.
