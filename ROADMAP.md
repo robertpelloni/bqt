@@ -64,5 +64,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` DrawGrabGlow multi-pass halo painting.
 - [x] Verify and test native Go `internal/ui/widgets` Plot vertical column bar chart layout.
 - [x] Verify and test native Go `internal/ui/widgets` ParticleSystem physics and layout.
+- [x] Verify and test native Go `internal/ui/widgets` VectorIcon GPU path outline rendering.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

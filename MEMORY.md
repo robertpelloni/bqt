@@ -149,3 +149,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `DrawGrabGlow` in `internal/ui/widgets/glow_test.go`, verifying multi-pass halo painting without errors or panics.
 - 2026-11-06: Added automated unit tests for `Plot` in `internal/ui/widgets/plot_test.go`, verifying empty plot dimension suppression and column bar layout rendering.
 - 2026-11-06: Added automated unit tests for `ParticleSystem` in `internal/ui/widgets/particles_test.go`, verifying Burst creation, gravity/velocity physics updates, life expiration cleanup, and layout rendering.
+- 2026-11-06: Added automated unit tests for `VectorIcon` in `internal/ui/widgets/vector_test.go`, verifying geometric path construction and GPU outline fill clipping layout.

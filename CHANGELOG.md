@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.13] - 2026-11-06
+### Added
+- Added automated unit test coverage for `VectorIcon` in `internal/ui/widgets/vector_test.go`, verifying geometric path construction and GPU outline fill clipping layout.
+
 ## [1.2.12] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `ParticleSystem` in `internal/ui/widgets/particles_test.go`, verifying Burst creation, gravity/velocity physics updates, life expiration cleanup, and layout rendering.
