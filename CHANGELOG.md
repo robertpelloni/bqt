@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.32] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/tabbar_test.go` verifying `TabBar.ActiveTitle()` with nil receiver, empty tabs, negative active index, out-of-bounds active index, and zero dimensions during empty tab layout.
+- Boosted statement test coverage of `internal/ui/widgets` to 85.5%.
+
 ## [1.2.31] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `NewShell` constructor in `internal/ui/widgets/shell_test.go`, verifying `TrayIcon` instance establishment and initial visibility defaults.

@@ -90,5 +90,6 @@
 - [x] Verify and test native Go `internal/audio` MidiHandler and MidiMesh hardware integration.
 - [x] Verify and test native Go `internal/net` NodeHealth telemetry.
 - [x] Verify and test native Go `internal/ui/widgets` Shell initialization.
+- [x] Verify and test native Go `internal/ui/widgets` TabBar bounds and edge cases.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
