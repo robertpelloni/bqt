@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.31] - 2026-11-06
+### Added
+- Added automated unit test coverage for `NewShell` constructor in `internal/ui/widgets/shell_test.go`, verifying `TrayIcon` instance establishment and initial visibility defaults.
+
 ## [1.2.30] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `NodeHealth` telemetry data in `internal/net/mesh_streaming_test.go`, verifying JSON serialization and mesh broadcasting.

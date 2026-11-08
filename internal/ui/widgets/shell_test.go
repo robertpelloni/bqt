@@ -71,3 +71,16 @@ func TestShellStartMenuLayoutRespectsVisibility(t *testing.T) {
 		t.Fatalf("expected start menu to fit within frame size %v, got %v", size, visible.Size)
 	}
 }
+
+func TestNewShellConstructor(t *testing.T) {
+	sh := NewShell()
+	if sh == nil {
+		t.Fatalf("expected NewShell to return non-nil instance")
+	}
+	if sh.Tray == nil {
+		t.Errorf("expected NewShell to initialize TrayIcon instance")
+	}
+	if sh.StartMenuVisible {
+		t.Errorf("expected initial StartMenuVisible to be false")
+	}
+}

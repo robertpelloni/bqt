@@ -91,3 +91,4 @@
 - [x] Verify and test AudioPlayer methods and Cluster DSP distribution in `internal/audio`.
 - [x] Verify and test MidiHandler NoteOn/NoteOff and MidiMesh broadcasting in `internal/audio`.
 - [x] Verify and test NodeHealth telemetry data and mesh broadcast in `internal/net`.
+- [x] Verify and test NewShell constructor in `internal/ui/widgets`.
