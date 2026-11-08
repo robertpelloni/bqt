@@ -81,5 +81,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` WebView layout and bridge contracts.
 - [x] Verify and test native Go `internal/net` mesh streaming protocols (Audio, Desktop, Teleport, Voice, Video).
 - [x] Verify and test native Go `internal/data` distributed storage services (TimeMachine, GitKernel, DistributedDB).
+- [x] Verify and test native Go UI widgets signal dispatch and unified event loop synchronization.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

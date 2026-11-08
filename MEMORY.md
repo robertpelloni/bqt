@@ -171,3 +171,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests across `internal/net` subsystems in `mesh_streaming_test.go`, verifying audio shards, desktop frame broadcasting, memory teleportation, voice buffers, and stream kernels.
 - 2026-11-06: Added automated unit tests across `internal/data` subsystems in `data_services_test.go`, verifying GitKernel, HistoryReconciler, DistributedDB, PackageRegistry, and TimeMachine.
 - 2026-11-06: Safeguarded `TimeMachine.CommitState` and `ReceiveRemoteCommit` (`internal/data/time_machine.go`) against uninitialized database connections.
+- 2026-11-06: Added automated integration test in `internal/ui/widgets_event_loop_test.go` verifying UI widget lifecycle callbacks (`TrayIcon`) and asynchronous slot dispatching across the unified `EventLoop`.

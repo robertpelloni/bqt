@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.23] - 2026-11-06
+### Added
+- Added automated integration test coverage in `internal/ui/widgets_event_loop_test.go` verifying UI widget interaction (`TrayIcon` callbacks) and signal/slot dispatching over the unified BQt `EventLoop`.
+- Validated thread-safe asynchronous queued execution and non-blocking lifecycle start/stop semantics.
+
 ## [1.2.22] - 2026-11-06
 ### Added
 - Added automated unit test coverage across `internal/data` subsystems in `data_services_test.go`, verifying `GitKernel`, `HistoryReconciler`, `DistributedDB`, `PackageRegistry`, and `TimeMachine`.
