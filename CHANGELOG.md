@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.22] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/data` subsystems in `data_services_test.go`, verifying `GitKernel`, `HistoryReconciler`, `DistributedDB`, `PackageRegistry`, and `TimeMachine`.
+- Boosted statement test coverage of `internal/data` to 56.0%.
+### Fixed
+- Safeguarded `TimeMachine.CommitState` and `TimeMachine.ReceiveRemoteCommit` (`internal/data/time_machine.go`) against uninitialized database connections.
+
 ## [1.2.21] - 2026-11-06
 ### Added
 - Added automated unit test coverage across `internal/net` subsystems in `mesh_streaming_test.go`, verifying `BroadcastAudioShards`, `HandleRemoteAudio`, `BroadcastDesktopFrame`, `HandleRemoteDesktop`, `TeleportState`, `HandleRemoteTeleport`, `VoiceMesh`, `BroadcastFrame`, and `HandleRemoteStream`.

@@ -169,3 +169,5 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Expanded unit test coverage in `internal/ui/widgets/webview_test.go` to validate `WebView.Layout` rendering, `BridgeContractJSON`, and `PostMessage`.
 - 2026-11-06: Verified `MeshNode.Render` execution in `internal/ui/widgets/scene3d_test.go`.
 - 2026-11-06: Added automated unit tests across `internal/net` subsystems in `mesh_streaming_test.go`, verifying audio shards, desktop frame broadcasting, memory teleportation, voice buffers, and stream kernels.
+- 2026-11-06: Added automated unit tests across `internal/data` subsystems in `data_services_test.go`, verifying GitKernel, HistoryReconciler, DistributedDB, PackageRegistry, and TimeMachine.
+- 2026-11-06: Safeguarded `TimeMachine.CommitState` and `ReceiveRemoteCommit` (`internal/data/time_machine.go`) against uninitialized database connections.
