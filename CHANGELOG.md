@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.12] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ParticleSystem` in `internal/ui/widgets/particles_test.go`, verifying Burst creation, gravity/velocity physics updates, life expiration cleanup, and layout rendering.
+
 ## [1.2.11] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `Plot` in `internal/ui/widgets/plot_test.go`, verifying empty plot dimension suppression and column bar layout rendering.
