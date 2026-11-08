@@ -88,3 +88,4 @@
 - [x] Verify and test PluginManager registration and duplicate rejection in `internal/kernel`.
 - [x] Verify and test ConsensusEngine, GridCompute, and SelfHealer in `internal/kernel`.
 - [x] Expand unit test coverage for TouchArea helpers and Window.SetActive in `internal/ui/widgets`.
+- [x] Verify and test AudioPlayer methods and Cluster DSP distribution in `internal/audio`.

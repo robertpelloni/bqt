@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.28] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/audio` subsystems in `audio_player_test.go` and `cluster_test.go`, verifying `AudioPlayer` getter/process/name methods and `DistributeDSPTask` / `HandleRemoteDSP` mesh cluster delegation.
+- Boosted statement test coverage of `internal/audio` to 86.8%.
+
 ## [1.2.27] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/touch_test.go` and `internal/ui/widgets/window_test.go`, verifying `SwipeDirection.String()`, touch header formatting, and `Window.SetActive` state transitions.

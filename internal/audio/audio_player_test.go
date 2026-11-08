@@ -80,4 +80,21 @@ func TestAudioPlayerEventLoopIntegration(t *testing.T) {
 	case <-time.After(2 * time.Second):
 		t.Fatal("Timeout waiting for AudioPlayer signals via EventLoop")
 	}
+
+	if ap.Source() != "test.wav" {
+		t.Errorf("expected Source 'test.wav', got %q", ap.Source())
+	}
+	if ap.IsPlaying() {
+		t.Errorf("expected IsPlaying to be false after Stop()")
+	}
+	if ap.Name() != "OmniAudioPlayer" {
+		t.Errorf("expected Name 'OmniAudioPlayer', got %q", ap.Name())
+	}
+
+	// Verify Process with buffer when stopped and playing
+	buf := make([]float32, 128)
+	ap.Process(buf) // stopped
+	ap.Play()
+	ap.Process(buf) // playing
+	ap.Stop()
 }
