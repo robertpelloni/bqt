@@ -3,7 +3,12 @@ package widgets
 import (
 	"errors"
 	"fmt"
+	"image"
 	"testing"
+
+	"gioui.org/layout"
+	"gioui.org/op"
+	"github.com/robertpelloni/bqt/internal/ui/theme"
 )
 
 func TestWebViewRequestAutoDispatchCorrelatesReply(t *testing.T) {
@@ -263,5 +268,39 @@ func TestWebViewBackForwardAndTruncateHistory(t *testing.T) {
 	}
 	if histories[len(histories)-1] != "2/3" {
 		t.Fatalf("expected final history callback 2/3, got %+v", histories)
+	}
+}
+
+func TestWebViewLayoutAndBridgeContract(t *testing.T) {
+	w := &WebView{}
+	w.Navigate("bqt://home", "Welcome to BQt<br>Subsystem active")
+
+	contract := w.BridgeContractJSON()
+	if contract == "" {
+		t.Fatalf("expected non-empty bridge contract JSON")
+	}
+
+	ops := new(op.Ops)
+	gtx := layout.Context{
+		Ops:         ops,
+		Constraints: layout.Exact(image.Point{X: 800, Y: 600}),
+	}
+	th := theme.GetTheme(theme.Dark)
+
+	dims := w.Layout(gtx, th)
+	if dims.Size.X != 800 || dims.Size.Y != 600 {
+		t.Errorf("expected dims 800x600, got %v", dims.Size)
+	}
+
+	// Test PostMessage, Emit, and Dispatch
+	w.RegisterHandler("status", func(payload string) (string, error) {
+		return "status:" + payload, nil
+	})
+	w.PostMessage("status", "ready")
+	w.Bridge.Emit("status", "emit-ready")
+
+	dispatched := w.Bridge.Dispatch("status", "dispatch-test")
+	if dispatched.Kind != "reply" || dispatched.Payload != "status:dispatch-test" {
+		t.Errorf("expected successful dispatch reply, got %+v", dispatched)
 	}
 }

@@ -78,5 +78,6 @@
 - [x] Verify and test native Go `internal/ui` HapticsEngine device proximity processing.
 - [x] Verify and test native Go `internal/ui` LiveReloader lifecycle.
 - [x] Verify and test native Go `internal/ui` ShaderSync mesh shader exchange.
+- [x] Verify and test native Go `internal/ui/widgets` WebView layout and bridge contracts.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

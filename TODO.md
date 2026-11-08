@@ -79,3 +79,5 @@
 - [x] Verify and test `HapticsEngine` peer proximity drone triggers in `internal/ui`.
 - [x] Verify and test `LiveReloader` watcher lifecycle in `internal/ui`.
 - [x] Verify and test `ShaderSync` P2P mesh shader skin synchronization in `internal/ui`.
+- [x] Expand unit test coverage for `WebView.Layout` and `BridgeContractJSON` in `internal/ui/widgets`.
+- [x] Verify and test `MeshNode.Render` in `internal/ui/widgets`.

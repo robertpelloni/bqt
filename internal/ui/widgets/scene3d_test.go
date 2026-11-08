@@ -50,4 +50,7 @@ func TestScene3D_Layout(t *testing.T) {
 	if !mockNode.rendered {
 		t.Errorf("expected mock 3D node Render to be executed")
 	}
+
+	// Directly invoke MeshNode Render to verify safe execution
+	mesh.Render(gtx)
 }

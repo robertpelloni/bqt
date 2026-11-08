@@ -166,3 +166,5 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `HapticsEngine` in `internal/ui/haptics_test.go`, verifying spatial distance calculation and proximity triggers.
 - 2026-11-06: Added automated unit tests for `LiveReloader` in `internal/ui/live_reload_test.go`, verifying singleton lifecycle.
 - 2026-11-06: Added automated unit tests for `ShaderSync` in `internal/ui/shader_mesh_test.go`, verifying P2P mesh shader skin synchronization.
+- 2026-11-06: Expanded unit test coverage in `internal/ui/widgets/webview_test.go` to validate `WebView.Layout` rendering, `BridgeContractJSON`, and `PostMessage`.
+- 2026-11-06: Verified `MeshNode.Render` execution in `internal/ui/widgets/scene3d_test.go`.

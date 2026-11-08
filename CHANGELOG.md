@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.20] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/webview_test.go` to validate `WebView.Layout` rendering, `BridgeContractJSON` serialization, `PostMessage`, `JSBridge.Emit`, and `JSBridge.Dispatch`.
+- Added unit test coverage for `MeshNode.Render` in `internal/ui/widgets/scene3d_test.go`.
+
 ## [1.2.19] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `ComputeKernel` in `internal/ui/compute_kernel_test.go`, validating compute shader operation submission and memory buffer synchronization.
