@@ -151,3 +151,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `ParticleSystem` in `internal/ui/widgets/particles_test.go`, verifying Burst creation, gravity/velocity physics updates, life expiration cleanup, and layout rendering.
 - 2026-11-06: Added automated unit tests for `VectorIcon` in `internal/ui/widgets/vector_test.go`, verifying geometric path construction and GPU outline fill clipping layout.
 - 2026-11-06: Hardened automated unit tests for `BQtNotebook` in `internal/ui/widgets/notebook_test.go`, verifying tab click switching, active page selection, inactive tab styling, and empty container suppression.
+- 2026-11-06: Added automated unit tests for `CodeEditor` in `internal/ui/widgets/editor_test.go`, verifying text mutation, font sizing, and vertical flex layout rendering.

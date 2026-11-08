@@ -67,3 +67,4 @@
 - [x] Verify and test `ParticleSystem` physics and layout in `internal/ui/widgets`.
 - [x] Verify and test `VectorIcon` GPU path outline rendering in `internal/ui/widgets`.
 - [x] Verify and test `BQtNotebook` tab click switching and active child layout in `internal/ui/widgets`.
+- [x] Verify and test `CodeEditor` text input and flex layout in `internal/ui/widgets`.

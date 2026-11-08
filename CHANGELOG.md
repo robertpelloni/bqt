@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.15] - 2026-11-06
+### Added
+- Added automated unit test coverage for `CodeEditor` in `internal/ui/widgets/editor_test.go`, verifying text mutation, font sizing, and vertical flex layout rendering.
+
 ## [1.2.14] - 2026-11-06
 ### Added
 - Hardened automated unit test coverage for `BQtNotebook` in `internal/ui/widgets/notebook_test.go`, verifying tab click switching, active page selection, inactive tab styling, and empty container suppression.
