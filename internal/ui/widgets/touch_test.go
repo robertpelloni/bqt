@@ -82,3 +82,34 @@ func TestTouchAreaSwipeDetectionAndLayout(t *testing.T) {
 		t.Fatalf("expected callback with SwipeUp 70, got dir=%v, dist=%f", receivedDir, receivedDist)
 	}
 }
+
+func TestTouchAreaHelpers(t *testing.T) {
+	if SwipeNone.String() != "none" {
+		t.Errorf("expected 'none', got %q", SwipeNone.String())
+	}
+	if SwipeLeft.String() != "left" {
+		t.Errorf("expected 'left', got %q", SwipeLeft.String())
+	}
+	if SwipeRight.String() != "right" {
+		t.Errorf("expected 'right', got %q", SwipeRight.String())
+	}
+	if SwipeUp.String() != "up" {
+		t.Errorf("expected 'up', got %q", SwipeUp.String())
+	}
+	if SwipeDown.String() != "down" {
+		t.Errorf("expected 'down', got %q", SwipeDown.String())
+	}
+
+	ta := &TouchArea{
+		Label:             "Workspace",
+		AllowMouseAsTouch: false,
+	}
+	if ta.headerText() != "Workspace (touch only)" {
+		t.Errorf("expected 'Workspace (touch only)', got %q", ta.headerText())
+	}
+
+	ta.AllowMouseAsTouch = true
+	if ta.headerText() != "Workspace (touch + mouse fallback)" {
+		t.Errorf("expected 'Workspace (touch + mouse fallback)', got %q", ta.headerText())
+	}
+}

@@ -85,5 +85,6 @@
 - [x] Verify and test native Go `internal/kernel` reactive property bindings, action dispatching, and accessibility DOM.
 - [x] Verify and test native Go `internal/kernel` PluginManager dynamic plugin registry.
 - [x] Verify and test native Go `internal/kernel` ConsensusEngine, GridCompute, and SelfHealer.
+- [x] Expand test coverage for native Go UI widgets (TouchArea, Window).
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

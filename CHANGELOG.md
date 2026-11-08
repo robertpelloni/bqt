@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.27] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/touch_test.go` and `internal/ui/widgets/window_test.go`, verifying `SwipeDirection.String()`, touch header formatting, and `Window.SetActive` state transitions.
+- Boosted statement test coverage of `internal/ui/widgets` to 85.3%.
+
 ## [1.2.26] - 2026-11-06
 ### Added
 - Added automated unit test coverage across `internal/kernel` resilience components in `resilience_test.go`, verifying `ConsensusEngine` (mutation proposals and peer vote handling), `GridCompute` (`DispatchJob` and `HandleRemoteTask`), and `SelfHealer` (critical panic interception, callstack capture, and AI callback dispatch).

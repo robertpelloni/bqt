@@ -43,4 +43,17 @@ func TestWindowMoveResizeCloseAndActivationRequest(t *testing.T) {
 	if closedDims.Size.X != 0 || closedDims.Size.Y != 0 {
 		t.Fatalf("expected closed window to layout to zero dimensions, got %v", closedDims.Size)
 	}
+
+	// Verify SetActive behavior
+	w2 := &Window{ID: "win-2", Title: "Console"}
+	w2.SetActive(true)
+	if !w2.Active {
+		t.Errorf("expected open window to become active")
+	}
+
+	w2.Close()
+	w2.SetActive(true)
+	if w2.Active {
+		t.Errorf("expected closed window to remain inactive even after SetActive(true)")
+	}
 }
