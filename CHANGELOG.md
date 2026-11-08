@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.16] - 2026-11-06
+### Added
+- Added automated unit test coverage for `DockArea` in `internal/ui/widgets/docking_test.go`, verifying child layout rendering and dimensions preservation.
+- Added automated unit test coverage for `NodeEditor` in `internal/ui/widgets/node_editor_test.go`, verifying empty node slices, multiple node positioning, clipping boundaries, and label layout.
+
 ## [1.2.15] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `CodeEditor` in `internal/ui/widgets/editor_test.go`, verifying text mutation, font sizing, and vertical flex layout rendering.
