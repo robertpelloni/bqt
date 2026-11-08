@@ -157,3 +157,7 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `OmniStudio` in `internal/ui/widgets/studio_test.go`, verifying composite rendering of editor, terminal, explorer, splitview, and nil fallback initialization.
 - 2026-11-06: Added automated unit tests for `ShaderEffect` in `internal/ui/widgets/shaders_test.go`, verifying plasma algorithmic rendering and fallback grid pattern layout.
 - 2026-11-06: Fixed nil pointer dereference in `Terminal.Layout` (`internal/ui/widgets/terminal.go`) when `Terminal.Shell` or its `Output` channel is nil.
+- 2026-11-06: Added automated unit tests for `Raymarcher` in `internal/ui/widgets/raymarcher_test.go`, verifying pixel generation and bounds fallback.
+- 2026-11-06: Added automated unit tests for `RHINode` in `internal/ui/widgets/rhi_node_test.go`, verifying zero texture handle suppression and valid handle rendering.
+- 2026-11-06: Added automated unit tests for `Scene3D` in `internal/ui/widgets/scene3d_test.go`, verifying node iteration, Render execution, and layout dimensions.
+- 2026-11-06: Achieved 100% automated unit test coverage across all UI widgets in `internal/ui/widgets/`.

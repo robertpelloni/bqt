@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.18] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Raymarcher` in `internal/ui/widgets/raymarcher_test.go`, verifying size parameterization and zero-size fallback bounds.
+- Added automated unit test coverage for `RHINode` in `internal/ui/widgets/rhi_node_test.go`, verifying zero-handle empty dimension suppression and valid texture handle rendering.
+- Added automated unit test coverage for `Scene3D` in `internal/ui/widgets/scene3d_test.go`, verifying node iteration, `Node3D` rendering, and layout dimensions.
+- Achieved complete automated unit test coverage across 100% of all UI widgets in `internal/ui/widgets/`.
+
 ## [1.2.17] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `OmniStudio` in `internal/ui/widgets/studio_test.go`, verifying composite rendering of editor, terminal, explorer, splitview, and nil fallback initialization.

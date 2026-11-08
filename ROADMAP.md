@@ -71,5 +71,8 @@
 - [x] Verify and test native Go `internal/ui/widgets` NodeEditor layout, positioning, and clipping.
 - [x] Verify and test native Go `internal/ui/widgets` OmniStudio IDE shell layout.
 - [x] Verify and test native Go `internal/ui/widgets` ShaderEffect procedural rendering.
+- [x] Verify and test native Go `internal/ui/widgets` Raymarcher procedural rendering.
+- [x] Verify and test native Go `internal/ui/widgets` RHINode native texture surfaces.
+- [x] Verify and test native Go `internal/ui/widgets` Scene3D node graph layout.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
