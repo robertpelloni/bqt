@@ -23,11 +23,14 @@ func TestMidiHandlerEventLoopIntegration(t *testing.T) {
 	wg.Add(1)
 
 	var emittedDevice string
+	var once sync.Once
 	deviceChangedReceived := false
 
 	mh.CurrentDeviceChanged.Connect(func(args ...interface{}) {
-		defer wg.Done()
-		deviceChangedReceived = true
+		once.Do(func() {
+			defer wg.Done()
+			deviceChangedReceived = true
+		})
 		if len(args) > 0 {
 			if v, ok := args[0].(string); ok {
 				emittedDevice = v
@@ -54,4 +57,21 @@ func TestMidiHandlerEventLoopIntegration(t *testing.T) {
 	case <-time.After(2 * time.Second):
 		t.Fatal("Timeout waiting for MidiHandler signals via EventLoop")
 	}
+
+	if mh.CurrentDevice() != "Virtual MIDI 1" {
+		t.Errorf("expected CurrentDevice 'Virtual MIDI 1', got %q", mh.CurrentDevice())
+	}
+
+	devs := mh.GetAvailableMidiDevices()
+	if len(devs) == 0 {
+		t.Errorf("expected available midi devices, got %v", devs)
+	}
+
+	// Verify NoteOn and NoteOff routing with valid device and with None
+	mh.SendNoteOn(1, 60, 100)
+	mh.SendNoteOff(1, 60)
+
+	mh.SetCurrentDevice("None")
+	mh.SendNoteOn(1, 60, 100)
+	mh.SendNoteOff(1, 60)
 }

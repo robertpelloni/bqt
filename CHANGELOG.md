@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.29] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/audio` MIDI subsystems in `midi_handler_test.go` and `midi_mesh_test.go`, verifying `MidiHandler` (device querying, NoteOn/NoteOff dispatch) and `MidiCommand` mesh broadcasting.
+- Guarded `MidiHandler` signal emission test slots with `sync.Once` to prevent negative `WaitGroup` panics during multiple device transitions.
+- Boosted statement test coverage of `internal/audio` to 92.2%.
+
 ## [1.2.28] - 2026-11-06
 ### Added
 - Added automated unit test coverage across `internal/audio` subsystems in `audio_player_test.go` and `cluster_test.go`, verifying `AudioPlayer` getter/process/name methods and `DistributeDSPTask` / `HandleRemoteDSP` mesh cluster delegation.
