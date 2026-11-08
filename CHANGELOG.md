@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.30] - 2026-11-06
+### Added
+- Added automated unit test coverage for `NodeHealth` telemetry data in `internal/net/mesh_streaming_test.go`, verifying JSON serialization and mesh broadcasting.
+
 ## [1.2.29] - 2026-11-06
 ### Added
 - Added automated unit test coverage across `internal/audio` MIDI subsystems in `midi_handler_test.go` and `midi_mesh_test.go`, verifying `MidiHandler` (device querying, NoteOn/NoteOff dispatch) and `MidiCommand` mesh broadcasting.

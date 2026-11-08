@@ -80,3 +80,22 @@ func TestMeshStreaming_StreamKernel(t *testing.T) {
 	BroadcastFrame("source_gpu_0", img)
 	HandleRemoteStream("peer_stream_1", []byte("jpeg_bytes"))
 }
+
+func TestMeshStreaming_NodeHealth(t *testing.T) {
+	health := NodeHealth{
+		CPUUsage:    12.5,
+		MemoryUsage: 256,
+		Goroutines:  18,
+	}
+
+	payload := map[string]interface{}{
+		"type":    "node_health",
+		"content": health,
+	}
+
+	GetMeshNode().Broadcast(payload)
+
+	if health.CPUUsage != 12.5 || health.MemoryUsage != 256 || health.Goroutines != 18 {
+		t.Errorf("unexpected health stats: %+v", health)
+	}
+}
