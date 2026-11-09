@@ -186,3 +186,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Expanded unit tests for `TouchArea` in `internal/ui/widgets/touch_test.go`, verifying `acceptSource`, `sourceString`, and `statusText`.
 - 2026-11-06: Expanded unit tests for `Plot` in `internal/ui/widgets/plot_test.go`, verifying single-item and high-density datasets.
 - 2026-11-06: Added unit tests for `TrayIcon` menu button clicks and `DemoSurface` button interactions in `tray_test.go` and `demo_surface_test.go`.
+- 2026-11-06: Added unit tests for `Dialog` button dismissals and `TouchArea` gesture thresholds in `dialog_test.go` and `touch_test.go`.

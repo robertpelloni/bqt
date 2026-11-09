@@ -99,3 +99,4 @@
 - [x] Verify and test Plot single-item and high-density datasets in `internal/ui/widgets`.
 - [x] Verify and test TrayIcon menu button clicks (mute, disconnect, restart, quit) in `internal/ui/widgets`.
 - [x] Verify and test DemoSurface parameter adjustments and navigation clicks in `internal/ui/widgets`.
+- [x] Verify and test Dialog button dismissals and TouchArea threshold/gesture lifecycle in `internal/ui/widgets`.

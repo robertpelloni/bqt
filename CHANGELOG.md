@@ -345,6 +345,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.38] - 2025-05-18
+### Added
+- Unit tests for `Dialog` button interactions (`TestDialogButtonInteractions`) verifying Accept/Cancel result strings and modal closure.
+- Unit tests for `TouchArea` threshold rejection, finishGesture callbacks (`OnTouch`, `OnSwipe`), and active state layout in `touch_test.go`.
+
 ## [v1.2.37] - 2025-05-18
 ### Added
 - Comprehensive click action tests for `TrayIcon` (`TestTrayIconMenuClickActions`) verifying icon popup toggling, server termination (`btnQuit`), event loop restart (`btnRestart`), DSP muting (`btnMute`), and P2P mesh disconnection (`btnDisconnect`).

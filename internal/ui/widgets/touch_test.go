@@ -155,3 +155,64 @@ func TestTouchAreaHelpers(t *testing.T) {
 		t.Errorf("expected active status text, got %q", activeStatus)
 	}
 }
+
+func TestTouchAreaThresholdAndGestureLifecycle(t *testing.T) {
+	ta := &TouchArea{
+		Label:             "Interactive Area",
+		MinSwipeDistance:  30,
+		AllowMouseAsTouch: true,
+	}
+
+	// 1. Below threshold swipe detection
+	ta.DeltaX = 15
+	ta.DeltaY = 10
+	dir, dist := ta.detectSwipe()
+	if dir != SwipeNone || dist != 0 {
+		t.Fatalf("expected SwipeNone below threshold, got dir=%v, dist=%f", dir, dist)
+	}
+
+	// 2. Gesture lifecycle: OnTouch and finishGesture
+	touchActive := false
+	ta.OnTouch = func(active bool) {
+		touchActive = active
+	}
+
+	swipeFired := false
+	ta.OnSwipe = func(direction SwipeDirection, distance float32) {
+		swipeFired = true
+	}
+
+	ta.Active = true
+	ta.DeltaX = -50
+	ta.DeltaY = 0
+
+	ta.finishGesture()
+	if ta.Active {
+		t.Errorf("expected Active to be false after finishGesture")
+	}
+	if touchActive {
+		t.Errorf("expected OnTouch(false) to be called in finishGesture")
+	}
+	if !swipeFired {
+		t.Errorf("expected OnSwipe to be called in finishGesture for valid swipe")
+	}
+	if ta.LastSwipe != SwipeLeft || ta.LastDistance != 50 {
+		t.Errorf("expected LastSwipe=SwipeLeft (50), got %v (%f)", ta.LastSwipe, ta.LastDistance)
+	}
+
+	// 3. Layout with active styling
+	var ops op.Ops
+	gtx := layout.Context{
+		Ops:         &ops,
+		Constraints: layout.Exact(image.Point{X: 300, Y: 120}),
+		Metric:      unit.Metric{PxPerDp: 1.0, PxPerSp: 1.0},
+	}
+	th := theme.GetTheme(theme.Cyberpunk)
+
+	ta.Active = true
+	ta.MinSize = image.Pt(300, 120)
+	dims := ta.Layout(gtx, th)
+	if dims.Size.X != 300 || dims.Size.Y != 120 {
+		t.Errorf("expected exact layout dimensions 300x120, got %v", dims.Size)
+	}
+}
