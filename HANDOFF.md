@@ -101,4 +101,5 @@
 - Added unit tests for `Dialog` button dismissals (`TestDialogButtonInteractions`) and `TouchArea` gesture thresholds (`TestTouchAreaThresholdAndGestureLifecycle`) in `internal/ui/widgets/`, boosting widget coverage to 90.3%.
 - Added unit tests for `BQtNotebook` (`TestNotebookActiveIndexOutOfBounds`) and `ParticleSystem` (`TestParticleSystemInactive`) in `internal/ui/widgets/`, boosting widget coverage to 90.5%.
 - Added unit tests for `SynthWidget` (`TestSynthWidgetBufferAndZeroConstraints`) in `internal/ui/widgets/`, boosting widget coverage to 90.7%.
-- Current Version: v1.2.40
+- Added unit tests for `Raymarcher` (`TestRaymarcher_maxInt`) and `Menu` (`TestMenu_EmptyItems`) in `internal/ui/widgets/`, boosting widget coverage to 90.8%.
+- Current Version: v1.2.41

@@ -345,6 +345,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.41] - 2025-05-18
+### Added
+- Unit tests for `Raymarcher` (`TestRaymarcher_maxInt`) verifying boundary integer comparisons.
+- Unit tests for `Menu` (`TestMenu_EmptyItems`) verifying safe handling and zero-dimension fallback on empty item sets.
+
 ## [v1.2.40] - 2025-05-18
 ### Added
 - Unit tests for `SynthWidget` (`TestSynthWidgetBufferAndZeroConstraints`) validating buffer capacity adjustments, active voice setting, and zero-dimension constraint layout safety.

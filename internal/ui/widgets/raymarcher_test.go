@@ -44,3 +44,15 @@ func TestRaymarcher_Layout_ZeroSizeFallback(t *testing.T) {
 		t.Errorf("expected dims 200x200, got %v", dims.Size)
 	}
 }
+
+func TestRaymarcher_maxInt(t *testing.T) {
+	if maxInt(10, 5) != 10 {
+		t.Errorf("expected 10, got %d", maxInt(10, 5))
+	}
+	if maxInt(3, 8) != 8 {
+		t.Errorf("expected 8, got %d", maxInt(3, 8))
+	}
+	if maxInt(4, 4) != 4 {
+		t.Errorf("expected 4, got %d", maxInt(4, 4))
+	}
+}
