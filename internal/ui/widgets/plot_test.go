@@ -40,4 +40,22 @@ func TestPlotLayout(t *testing.T) {
 	if dims.Size.X != 400 || dims.Size.Y != 200 {
 		t.Fatalf("expected layout dims 400x200, got %+v", dims.Size)
 	}
+
+	// Single item data
+	plotSingle := &Plot{Data: []float32{0.5}}
+	dimsSingle := plotSingle.Layout(gtx, th)
+	if dimsSingle.Size.X != 400 || dimsSingle.Size.Y != 200 {
+		t.Errorf("expected 400x200 for single item plot, got %+v", dimsSingle.Size)
+	}
+
+	// High density items where w / len(data) <= 1
+	highDensity := make([]float32, 500)
+	for i := range highDensity {
+		highDensity[i] = float32(i) / 500.0
+	}
+	plotDensity := &Plot{Data: highDensity}
+	dimsDensity := plotDensity.Layout(gtx, th)
+	if dimsDensity.Size.X != 400 || dimsDensity.Size.Y != 200 {
+		t.Errorf("expected 400x200 for high density plot, got %+v", dimsDensity.Size)
+	}
 }

@@ -96,3 +96,4 @@
 - [x] Verify and test BQtHeaderBar custom widgets layout in `internal/ui/widgets`.
 - [x] Verify and test ScrollView occupied placement and scroll deltas in `internal/ui/widgets`.
 - [x] Verify and test TouchArea acceptSource, sourceString, and statusText in `internal/ui/widgets`.
+- [x] Verify and test Plot single-item and high-density datasets in `internal/ui/widgets`.

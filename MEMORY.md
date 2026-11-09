@@ -184,3 +184,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added unit tests for `BQtHeaderBar` with custom widgets in `internal/ui/widgets/headerbar_test.go`.
 - 2026-11-06: Added unit tests for `ScrollView` with occupied scrollbar placement and delta applications in `internal/ui/widgets/scrollview_test.go`.
 - 2026-11-06: Expanded unit tests for `TouchArea` in `internal/ui/widgets/touch_test.go`, verifying `acceptSource`, `sourceString`, and `statusText`.
+- 2026-11-06: Expanded unit tests for `Plot` in `internal/ui/widgets/plot_test.go`, verifying single-item and high-density datasets.

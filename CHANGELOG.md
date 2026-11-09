@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.36] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/plot_test.go` verifying `Plot.Layout` behavior with single-item datasets and high-density datasets.
+- Boosted statement test coverage of `internal/ui/widgets` to 86.8%.
+
 ## [1.2.35] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/touch_test.go` verifying `acceptSource` (touch/mouse fallback toggling), `sourceString` (touch, mouse, unknown mapping), and `statusText` active vs idle formatting.
