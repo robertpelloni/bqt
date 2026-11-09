@@ -98,5 +98,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` TrayIcon menu actions and DemoSurface controls.
 - [x] Verify and test native Go `internal/ui/widgets` Dialog button dismissals and TouchArea gesture lifecycle.
 - [x] Verify and test native Go `internal/ui/widgets` BQtNotebook tab boundary resilience and ParticleSystem inactive state.
+- [x] Verify and test native Go `internal/ui/widgets` SynthWidget buffer adjustments and zero constraints.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

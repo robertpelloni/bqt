@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.40] - 2025-05-18
+### Added
+- Unit tests for `SynthWidget` (`TestSynthWidgetBufferAndZeroConstraints`) validating buffer capacity adjustments, active voice setting, and zero-dimension constraint layout safety.
+
 ## [v1.2.39] - 2025-05-18
 ### Added
 - Unit tests for `BQtNotebook` (`TestNotebookActiveIndexOutOfBounds`) verifying layout resilience when `ActiveIndex` is negative or out of bounds.

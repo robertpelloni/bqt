@@ -100,4 +100,5 @@
 - Added unit tests for `TrayIcon` menu button clicks (`TestTrayIconMenuClickActions`) and `DemoSurface` button interactions (`TestDemoSurfaceButtonInteractions`) in `internal/ui/widgets/`, boosting widget coverage to 87.2%.
 - Added unit tests for `Dialog` button dismissals (`TestDialogButtonInteractions`) and `TouchArea` gesture thresholds (`TestTouchAreaThresholdAndGestureLifecycle`) in `internal/ui/widgets/`, boosting widget coverage to 90.3%.
 - Added unit tests for `BQtNotebook` (`TestNotebookActiveIndexOutOfBounds`) and `ParticleSystem` (`TestParticleSystemInactive`) in `internal/ui/widgets/`, boosting widget coverage to 90.5%.
-- Current Version: v1.2.39
+- Added unit tests for `SynthWidget` (`TestSynthWidgetBufferAndZeroConstraints`) in `internal/ui/widgets/`, boosting widget coverage to 90.7%.
+- Current Version: v1.2.40
