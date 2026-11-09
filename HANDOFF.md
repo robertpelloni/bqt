@@ -103,4 +103,5 @@
 - Added unit tests for `SynthWidget` (`TestSynthWidgetBufferAndZeroConstraints`) in `internal/ui/widgets/`, boosting widget coverage to 90.7%.
 - Added unit tests for `Raymarcher` (`TestRaymarcher_maxInt`) and `Menu` (`TestMenu_EmptyItems`) in `internal/ui/widgets/`, boosting widget coverage to 90.8%.
 - Added unit tests for `ScrollBar` (`TestScrollBarHelpersAndZeroTrack`) in `internal/ui/widgets/`, boosting widget coverage to 91.1%.
-- Current Version: v1.2.42
+- Added unit tests for `TableView` (`TestTableView_tableMaxAndAlternatingRows`) in `internal/ui/widgets/`, boosting widget coverage to 91.2%.
+- Current Version: v1.2.43

@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.43] - 2025-05-18
+### Added
+- Unit tests for `TableView` (`TestTableView_tableMaxAndAlternatingRows`) verifying column partition calculations and odd/even alternating row layout styling.
+
 ## [v1.2.42] - 2025-05-18
 ### Added
 - Unit tests for `ScrollBar` (`TestScrollBarHelpersAndZeroTrack`) verifying clamp, maxInt calculations, scroll distance getter, and zero-dimension track bounds safety.
