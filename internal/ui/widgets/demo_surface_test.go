@@ -72,3 +72,70 @@ func TestDemoSurfaceInteractiveControls(t *testing.T) {
 		t.Errorf("Expected Polyphony to be 16")
 	}
 }
+
+func TestDemoSurfaceButtonInteractions(t *testing.T) {
+	ds := NewDemoSurface()
+	var ops op.Ops
+	gtx := layout.Context{Ops: &ops}
+	th := theme.GetTheme(theme.Cyberpunk)
+
+	// Test Volume Up/Down clicks
+	initVol := ds.VolumeLevel
+	ds.btnVolUp.Click()
+	ds.Layout(gtx, th)
+	if ds.VolumeLevel <= initVol {
+		t.Errorf("expected volume to increase on btnVolUp click, got %f", ds.VolumeLevel)
+	}
+
+	ds.btnVolDown.Click()
+	ds.Layout(gtx, th)
+	if ds.VolumeLevel > 0.85 {
+		t.Errorf("expected volume to decrease on btnVolDown click, got %f", ds.VolumeLevel)
+	}
+
+	// Test BPM Up/Down clicks
+	initBpm := ds.ClockBpm
+	ds.btnBpmUp.Click()
+	ds.Layout(gtx, th)
+	if ds.ClockBpm != initBpm+5.0 {
+		t.Errorf("expected BPM to increase by 5, got %f", ds.ClockBpm)
+	}
+
+	ds.btnBpmDown.Click()
+	ds.Layout(gtx, th)
+	if ds.ClockBpm != initBpm {
+		t.Errorf("expected BPM to return to %f, got %f", initBpm, ds.ClockBpm)
+	}
+
+	// Test Polyphony toggle click (cycles 8 -> 16 -> 32 -> 64 -> 4 -> 8)
+	ds.btnPolyToggle.Click()
+	ds.Layout(gtx, th)
+	if ds.Polyphony != 16 {
+		t.Errorf("expected Polyphony to cycle to 16, got %d", ds.Polyphony)
+	}
+
+	// Test AudioGraph and Kernel button clicks
+	ds.btnAudioGraph.Click()
+	ds.Layout(gtx, th)
+	if ds.StatusMessage == "" {
+		t.Errorf("expected status message update on btnAudioGraph click")
+	}
+
+	ds.btnTimeMachine.Click()
+	ds.Layout(gtx, th)
+	if ds.StatusMessage == "" {
+		t.Errorf("expected status message update on btnTimeMachine click")
+	}
+
+	ds.btnMeshNode.Click()
+	ds.Layout(gtx, th)
+	if ds.StatusMessage == "" {
+		t.Errorf("expected status message update on btnMeshNode click")
+	}
+
+	ds.btnDialog.Click()
+	ds.Layout(gtx, th)
+	if ds.StatusMessage == "" {
+		t.Errorf("expected status message update on btnDialog click")
+	}
+}

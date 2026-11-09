@@ -345,6 +345,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.37] - 2025-05-18
+### Added
+- Comprehensive click action tests for `TrayIcon` (`TestTrayIconMenuClickActions`) verifying icon popup toggling, server termination (`btnQuit`), event loop restart (`btnRestart`), DSP muting (`btnMute`), and P2P mesh disconnection (`btnDisconnect`).
+- Button interaction tests for `DemoSurface` (`TestDemoSurfaceButtonInteractions`) validating volume, BPM, and polyphony voice step cycling along with audio and kernel navigation status updates.
+
 ## [1.1.0] - 2026-04-03
 ### Added
 - **Liquid Glass Edition**: Complete Notepad++ UI overhaul with Apple-inspired liquid glass aesthetics.
