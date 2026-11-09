@@ -90,3 +90,65 @@ func TestWidgetsEventLoopIntegration(t *testing.T) {
 			quitHandled, restartHandled, muteHandled, disconnectHandled)
 	}
 }
+
+func TestTouchAreaEventLoopIntegration(t *testing.T) {
+	el := GetEventLoop()
+	el.Stop()
+
+	go el.Run()
+	defer el.Stop()
+
+	ta := &widgets.TouchArea{
+		Label:            "EventLoop Gesture Pad",
+		MinSwipeDistance: 20,
+	}
+
+	var wg sync.WaitGroup
+	var onceTouch, onceSwipe sync.Once
+
+	touchSignal := NewSignal("TouchStateChanged")
+	swipeSignal := NewSignal("SwipeDetected")
+
+	touchHandled := false
+	swipeHandled := false
+
+	wg.Add(2)
+
+	touchSignal.Connect(func(args ...interface{}) {
+		touchHandled = true
+		onceTouch.Do(func() { wg.Done() })
+	})
+
+	swipeSignal.Connect(func(args ...interface{}) {
+		swipeHandled = true
+		onceSwipe.Do(func() { wg.Done() })
+	})
+
+	ta.OnTouch = func(active bool) {
+		touchSignal.Emit(active)
+	}
+	ta.OnSwipe = func(direction widgets.SwipeDirection, distance float32) {
+		swipeSignal.Emit(direction.String(), distance)
+	}
+
+	// Trigger callbacks directly
+	ta.OnTouch(true)
+	ta.OnSwipe(widgets.SwipeRight, 45.0)
+
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+		// Successful async dispatch
+	case <-time.After(2 * time.Second):
+		t.Fatalf("timed out waiting for touch area event loop signal processing")
+	}
+
+	if !touchHandled || !swipeHandled {
+		t.Errorf("expected touch and swipe signals to be handled, got touch=%v, swipe=%v", touchHandled, swipeHandled)
+	}
+}

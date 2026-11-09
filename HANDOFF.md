@@ -106,4 +106,5 @@
 - Added unit tests for `TableView` (`TestTableView_tableMaxAndAlternatingRows`) in `internal/ui/widgets/`, boosting widget coverage to 91.2%.
 - Added unit tests for `ScrollView` (`TestScrollView_applyScrollDeltasNonZero`) in `internal/ui/widgets/`, boosting widget coverage to 91.4%.
 - Added unit tests for `Window` (`TestWindow_ActiveTitleColorAndDefaultMinSize`) in `internal/ui/widgets/`, boosting widget coverage to 91.7%.
-- Current Version: v1.2.45
+- Added integration tests for `TouchArea` (`TestTouchAreaEventLoopIntegration`) in `internal/ui/widgets_event_loop_test.go`, verifying async gesture dispatching over the unified `EventLoop`.
+- Current Version: v1.2.46
