@@ -109,4 +109,5 @@
 - Added integration tests for `TouchArea` (`TestTouchAreaEventLoopIntegration`) in `internal/ui/widgets_event_loop_test.go`, verifying async gesture dispatching over the unified `EventLoop`.
 - Added unit tests for `AdminShell` (`TestAdminShellLockedPermission`) in `internal/ui/widgets/`, boosting widget coverage to 91.8%.
 - Added unit tests for `WebView` (`TestWebViewBackForwardBoundaryNoOp`) in `internal/ui/widgets/`, boosting widget coverage to 91.9%.
-- Current Version: v1.2.48
+- Added unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) in `internal/ui/widgets/`, boosting widget coverage to 92.0%.
+- Current Version: v1.2.49

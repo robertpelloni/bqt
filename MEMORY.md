@@ -197,3 +197,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added integration tests for `TouchArea` gesture event loop dispatch in `widgets_event_loop_test.go`.
 - 2026-11-06: Added unit tests for `AdminShell` locked permission status branch in `admin_test.go`.
 - 2026-11-06: Added unit tests for `WebView` back/forward boundary no-op handling in `webview_test.go`.
+- 2026-11-06: Added unit tests for `TabBar` ClickTab out-of-bounds boundary handling in `tabbar_test.go`.

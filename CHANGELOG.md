@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.49] - 2025-05-18
+### Added
+- Unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) verifying negative and out-of-bounds `ClickTab` boundary resilience.
+
 ## [v1.2.48] - 2025-05-18
 ### Added
 - Unit tests for `WebView` (`TestWebViewBackForwardBoundaryNoOp`) validating boundary navigation history no-op behavior.

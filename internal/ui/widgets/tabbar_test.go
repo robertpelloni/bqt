@@ -89,3 +89,20 @@ func TestTabBarEdgeCases(t *testing.T) {
 		t.Errorf("expected negative active index to clamp to 'Home', got %q", negTabBar.ActiveTitle())
 	}
 }
+
+func TestTabBarClickTabOutOfBounds(t *testing.T) {
+	tabBar := &TabBar{
+		Tabs:   []string{"Tab 1", "Tab 2"},
+		Active: 0,
+	}
+
+	// Negative index
+	tabBar.ClickTab(-1)
+
+	// Past boundary index
+	tabBar.ClickTab(100)
+
+	if tabBar.Active != 0 {
+		t.Errorf("expected Active to remain 0 after OOB ClickTab calls, got %d", tabBar.Active)
+	}
+}
