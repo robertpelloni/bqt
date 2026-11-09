@@ -103,3 +103,4 @@
 - [x] Verify and test BQtNotebook out-of-bounds indexing and ParticleSystem inactive state in `internal/ui/widgets`.
 - [x] Verify and test SynthWidget buffer adjustments and zero constraints in `internal/ui/widgets`.
 - [x] Verify and test Raymarcher maxInt helper and Menu empty items handling in `internal/ui/widgets`.
+- [x] Verify and test ScrollBar helpers and zero track constraints in `internal/ui/widgets`.

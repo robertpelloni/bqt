@@ -73,3 +73,46 @@ func TestScrollBarViewportAndLayout(t *testing.T) {
 		t.Fatalf("expected 0x0 for hidden scrollbar, got %+v", dimsHidden.Size)
 	}
 }
+
+func TestScrollBarHelpersAndZeroTrack(t *testing.T) {
+	// 1. Test scrollClamp01
+	if scrollClamp01(-0.5) != 0.0 {
+		t.Errorf("expected 0.0, got %f", scrollClamp01(-0.5))
+	}
+	if scrollClamp01(1.5) != 1.0 {
+		t.Errorf("expected 1.0, got %f", scrollClamp01(1.5))
+	}
+	if scrollClamp01(0.7) != 0.7 {
+		t.Errorf("expected 0.7, got %f", scrollClamp01(0.7))
+	}
+
+	// 2. Test scrollMaxInt
+	if scrollMaxInt(15, 10) != 15 {
+		t.Errorf("expected 15, got %d", scrollMaxInt(15, 10))
+	}
+	if scrollMaxInt(4, 9) != 9 {
+		t.Errorf("expected 9, got %d", scrollMaxInt(4, 9))
+	}
+	if scrollMaxInt(7, 7) != 7 {
+		t.Errorf("expected 7, got %d", scrollMaxInt(7, 7))
+	}
+
+	// 3. Test ScrollDistance getter
+	sb := &ScrollBar{Visible: true}
+	sb.LastDelta = 0.35
+	if sb.ScrollDistance() != 0.35 {
+		t.Errorf("expected 0.35, got %f", sb.ScrollDistance())
+	}
+
+	// 4. Test zero-dimension track constraints returns empty dimensions
+	var ops op.Ops
+	gtxZero := layout.Context{
+		Ops:         &ops,
+		Constraints: layout.Exact(image.Point{X: 0, Y: 0}),
+	}
+	th := theme.GetTheme(theme.Dark)
+	dimsZero := sb.Layout(gtxZero, th)
+	if dimsZero.Size.X != 0 || dimsZero.Size.Y != 0 {
+		t.Errorf("expected 0x0 for zero track constraints, got %v", dimsZero.Size)
+	}
+}

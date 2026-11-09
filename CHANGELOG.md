@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.42] - 2025-05-18
+### Added
+- Unit tests for `ScrollBar` (`TestScrollBarHelpersAndZeroTrack`) verifying clamp, maxInt calculations, scroll distance getter, and zero-dimension track bounds safety.
+
 ## [v1.2.41] - 2025-05-18
 ### Added
 - Unit tests for `Raymarcher` (`TestRaymarcher_maxInt`) verifying boundary integer comparisons.

@@ -190,3 +190,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added unit tests for `BQtNotebook` out-of-bounds indexing and `ParticleSystem` inactive state in `notebook_test.go` and `particles_test.go`.
 - 2026-11-06: Added unit tests for `SynthWidget` buffer capacity adjustments and zero constraints fallback in `synth_widget_test.go`.
 - 2026-11-06: Added unit tests for `Raymarcher` maxInt helper and `Menu` empty items handling in `raymarcher_test.go` and `menu_test.go`.
+- 2026-11-06: Added unit tests for `ScrollBar` helpers and zero track constraints fallback in `scrollbar_test.go`.
