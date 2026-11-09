@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.44] - 2025-05-18
+### Added
+- Unit tests for `ScrollView` (`TestScrollView_applyScrollDeltasNonZero`) validating primary list scroll propagation and clamped cross-axis viewport tracking.
+
 ## [v1.2.43] - 2025-05-18
 ### Added
 - Unit tests for `TableView` (`TestTableView_tableMaxAndAlternatingRows`) verifying column partition calculations and odd/even alternating row layout styling.

@@ -87,3 +87,30 @@ func TestScrollViewOccupiedPlacementAndDeltas(t *testing.T) {
 	// Verify applyScrollDeltas
 	sv.applyScrollDeltas(100)
 }
+
+func TestScrollView_applyScrollDeltasNonZero(t *testing.T) {
+	sv := NewScrollView(layout.Vertical)
+	sv.VerticalBar.LastDelta = 0.05
+	sv.HorizontalBar.LastDelta = 0.10
+	sv.HorizontalBar.PageSize = 0.30
+	sv.HorizontalBar.Position = 0.20
+
+	sv.applyScrollDeltas(50)
+
+	if sv.LastScrollDelta != 0.05 {
+		t.Errorf("expected LastScrollDelta 0.05, got %f", sv.LastScrollDelta)
+	}
+	if sv.LastCrossDelta != 0.10 {
+		t.Errorf("expected LastCrossDelta 0.10, got %f", sv.LastCrossDelta)
+	}
+	if sv.HorizontalBar.Position != 0.30 {
+		t.Errorf("expected updated secondary position 0.30, got %f", sv.HorizontalBar.Position)
+	}
+
+	// Test cross delta clamped to maxPos (1 - PageSize)
+	sv.HorizontalBar.LastDelta = 0.90
+	sv.applyScrollDeltas(50)
+	if sv.HorizontalBar.Position > 0.70 {
+		t.Errorf("expected secondary position clamped to 0.70, got %f", sv.HorizontalBar.Position)
+	}
+}

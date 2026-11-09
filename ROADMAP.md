@@ -102,5 +102,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` Raymarcher maxInt helper and Menu empty items handling.
 - [x] Verify and test native Go `internal/ui/widgets` ScrollBar helpers and zero track constraints.
 - [x] Verify and test native Go `internal/ui/widgets` TableView tableMax helper and alternating row styling.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollView non-zero scroll deltas and cross-axis viewport clamping.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
