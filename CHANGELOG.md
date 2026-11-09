@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.47] - 2025-05-18
+### Added
+- Unit tests for `AdminShell` (`TestAdminShellLockedPermission`) validating peer user permission locking status layout.
+
 ## [v1.2.46] - 2025-05-18
 ### Added
 - Integration tests in `internal/ui/widgets_event_loop_test.go` (`TestTouchAreaEventLoopIntegration`) verifying `TouchArea` gesture callbacks dispatching asynchronously across the unified BQt `EventLoop`.

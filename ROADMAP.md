@@ -105,5 +105,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` ScrollView non-zero scroll deltas and cross-axis viewport clamping.
 - [x] Verify and test native Go `internal/ui/widgets` Window active title bar styling and custom MinSize clamping.
 - [x] Verify and test native Go `internal/ui` TouchArea event loop gesture integration.
+- [x] Verify and test native Go `internal/ui/widgets` AdminShell locked permission status branch.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
