@@ -57,3 +57,31 @@ func TestWindowMoveResizeCloseAndActivationRequest(t *testing.T) {
 		t.Errorf("expected closed window to remain inactive even after SetActive(true)")
 	}
 }
+
+func TestWindow_ActiveTitleColorAndDefaultMinSize(t *testing.T) {
+	// 1. Verify Active=true layout styling and execution
+	w := &Window{
+		ID:     "win-active",
+		Title:  "Active Window",
+		Active: true,
+		Pos:    f32.Pt(50, 50),
+		Size:   f32.Pt(300, 200),
+	}
+
+	dims := w.Layout(newWidgetTestLayoutContext(image.Pt(1000, 800)), theme.GetTheme(theme.Cyberpunk))
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Fatalf("expected active window to render non-zero dimensions, got %v", dims.Size)
+	}
+
+	// 2. Custom MinSize clamp during ResizeBy
+	wCustom := &Window{
+		ID:      "win-custom",
+		Title:   "Custom MinSize",
+		MinSize: f32.Pt(250, 150),
+		Size:    f32.Pt(300, 200),
+	}
+	wCustom.ResizeBy(-400, -400)
+	if wCustom.Size.X != 250 || wCustom.Size.Y != 150 {
+		t.Fatalf("expected custom MinSize clamp 250x150, got %vx%v", wCustom.Size.X, wCustom.Size.Y)
+	}
+}

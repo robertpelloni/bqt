@@ -106,3 +106,4 @@
 - [x] Verify and test ScrollBar helpers and zero track constraints in `internal/ui/widgets`.
 - [x] Verify and test TableView tableMax helper and alternating row styling in `internal/ui/widgets`.
 - [x] Verify and test ScrollView non-zero scroll deltas and cross-axis viewport clamping in `internal/ui/widgets`.
+- [x] Verify and test Window active title bar styling and custom MinSize clamping in `internal/ui/widgets`.

@@ -193,3 +193,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added unit tests for `ScrollBar` helpers and zero track constraints fallback in `scrollbar_test.go`.
 - 2026-11-06: Added unit tests for `TableView` tableMax helper and alternating row styling in `table_test.go`.
 - 2026-11-06: Added unit tests for `ScrollView` scroll delta application and cross-axis position clamping in `scrollview_test.go`.
+- 2026-11-06: Added unit tests for `Window` active title bar accent styling and custom MinSize clamping in `window_test.go`.

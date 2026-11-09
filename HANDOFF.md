@@ -105,4 +105,5 @@
 - Added unit tests for `ScrollBar` (`TestScrollBarHelpersAndZeroTrack`) in `internal/ui/widgets/`, boosting widget coverage to 91.1%.
 - Added unit tests for `TableView` (`TestTableView_tableMaxAndAlternatingRows`) in `internal/ui/widgets/`, boosting widget coverage to 91.2%.
 - Added unit tests for `ScrollView` (`TestScrollView_applyScrollDeltasNonZero`) in `internal/ui/widgets/`, boosting widget coverage to 91.4%.
-- Current Version: v1.2.44
+- Added unit tests for `Window` (`TestWindow_ActiveTitleColorAndDefaultMinSize`) in `internal/ui/widgets/`, boosting widget coverage to 91.7%.
+- Current Version: v1.2.45

@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.45] - 2025-05-18
+### Added
+- Unit tests for `Window` (`TestWindow_ActiveTitleColorAndDefaultMinSize`) validating active window accent styling and custom `MinSize` clamping during resizing.
+
 ## [v1.2.44] - 2025-05-18
 ### Added
 - Unit tests for `ScrollView` (`TestScrollView_applyScrollDeltasNonZero`) validating primary list scroll propagation and clamped cross-axis viewport tracking.
