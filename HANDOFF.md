@@ -99,4 +99,5 @@
 - Expanded unit tests for `Plot` in `plot_test.go` covering single-item and high-density datasets, boosting widget coverage to 86.8%.
 - Added unit tests for `TrayIcon` menu button clicks (`TestTrayIconMenuClickActions`) and `DemoSurface` button interactions (`TestDemoSurfaceButtonInteractions`) in `internal/ui/widgets/`, boosting widget coverage to 87.2%.
 - Added unit tests for `Dialog` button dismissals (`TestDialogButtonInteractions`) and `TouchArea` gesture thresholds (`TestTouchAreaThresholdAndGestureLifecycle`) in `internal/ui/widgets/`, boosting widget coverage to 90.3%.
-- Current Version: v1.2.38
+- Added unit tests for `BQtNotebook` (`TestNotebookActiveIndexOutOfBounds`) and `ParticleSystem` (`TestParticleSystemInactive`) in `internal/ui/widgets/`, boosting widget coverage to 90.5%.
+- Current Version: v1.2.39

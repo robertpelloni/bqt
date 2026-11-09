@@ -345,6 +345,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.39] - 2025-05-18
+### Added
+- Unit tests for `BQtNotebook` (`TestNotebookActiveIndexOutOfBounds`) verifying layout resilience when `ActiveIndex` is negative or out of bounds.
+- Unit tests for `ParticleSystem` (`TestParticleSystemInactive`) validating that physics updates are suppressed when inactive.
+
 ## [v1.2.38] - 2025-05-18
 ### Added
 - Unit tests for `Dialog` button interactions (`TestDialogButtonInteractions`) verifying Accept/Cancel result strings and modal closure.

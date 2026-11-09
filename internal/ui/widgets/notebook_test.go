@@ -76,3 +76,32 @@ func TestNotebook(t *testing.T) {
 		t.Fatalf("expected 0x0 for empty notebook, got %+v", dimsEmpty.Size)
 	}
 }
+
+func TestNotebookActiveIndexOutOfBounds(t *testing.T) {
+	notebook := &BQtNotebook{}
+	notebook.AddPage("Page 1", func(gtx layout.Context) layout.Dimensions {
+		return layout.Dimensions{Size: image.Pt(100, 50)}
+	})
+
+	var ops op.Ops
+	gtx := layout.Context{
+		Ops:         &ops,
+		Constraints: layout.Exact(image.Point{X: 300, Y: 200}),
+		Metric:      unit.Metric{PxPerDp: 1.0, PxPerSp: 1.0},
+	}
+	th := theme.GetTheme(theme.Dark)
+
+	// Test negative index
+	notebook.ActiveIndex = -1
+	dims := notebook.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Fatalf("expected non-zero dimensions with tab bar rendered, got %+v", dims.Size)
+	}
+
+	// Test index past page length
+	notebook.ActiveIndex = 99
+	dims = notebook.Layout(gtx, th)
+	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
+		t.Fatalf("expected non-zero dimensions with tab bar rendered, got %+v", dims.Size)
+	}
+}

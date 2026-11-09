@@ -97,5 +97,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` Plot dataset density handling.
 - [x] Verify and test native Go `internal/ui/widgets` TrayIcon menu actions and DemoSurface controls.
 - [x] Verify and test native Go `internal/ui/widgets` Dialog button dismissals and TouchArea gesture lifecycle.
+- [x] Verify and test native Go `internal/ui/widgets` BQtNotebook tab boundary resilience and ParticleSystem inactive state.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

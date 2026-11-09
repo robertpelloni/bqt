@@ -53,3 +53,25 @@ func TestParticleSystemLifecycleAndLayout(t *testing.T) {
 		t.Fatalf("expected layout dims (400, 300), got %+v", dims.Size)
 	}
 }
+
+func TestParticleSystemInactive(t *testing.T) {
+	ps := &ParticleSystem{
+		Active: false,
+	}
+
+	ps.Burst(f32.Pt(20, 20), 5)
+	if len(ps.Particles) != 5 {
+		t.Fatalf("expected 5 particles, got %d", len(ps.Particles))
+	}
+
+	// Update while inactive should do nothing
+	initialLife := ps.Particles[0].Life
+	ps.Update(1.0)
+
+	if len(ps.Particles) != 5 {
+		t.Fatalf("expected particle count to remain 5 when inactive, got %d", len(ps.Particles))
+	}
+	if ps.Particles[0].Life != initialLife {
+		t.Fatalf("expected particle life to remain unchanged when inactive, got %f vs %f", ps.Particles[0].Life, initialLife)
+	}
+}
