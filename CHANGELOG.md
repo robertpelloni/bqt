@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.35] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/touch_test.go` verifying `acceptSource` (touch/mouse fallback toggling), `sourceString` (touch, mouse, unknown mapping), and `statusText` active vs idle formatting.
+- Boosted statement test coverage of `internal/ui/widgets` to 86.7%.
+
 ## [1.2.34] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/scrollview_test.go` verifying `ScrollView` with `ScrollBarOccupy` placement, occupied dimensions, and delta applications.

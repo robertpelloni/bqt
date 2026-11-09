@@ -2,8 +2,10 @@ package widgets
 
 import (
 	"image"
+	"strings"
 	"testing"
 
+	"gioui.org/io/pointer"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/unit"
@@ -111,5 +113,45 @@ func TestTouchAreaHelpers(t *testing.T) {
 	ta.AllowMouseAsTouch = true
 	if ta.headerText() != "Workspace (touch + mouse fallback)" {
 		t.Errorf("expected 'Workspace (touch + mouse fallback)', got %q", ta.headerText())
+	}
+
+	// Verify acceptSource
+	ta.AllowMouseAsTouch = false
+	if !ta.acceptSource(pointer.Touch) {
+		t.Errorf("expected TouchArea to accept pointer.Touch")
+	}
+	if ta.acceptSource(pointer.Mouse) {
+		t.Errorf("expected TouchArea to reject pointer.Mouse when AllowMouseAsTouch is false")
+	}
+
+	ta.AllowMouseAsTouch = true
+	if !ta.acceptSource(pointer.Mouse) {
+		t.Errorf("expected TouchArea to accept pointer.Mouse when AllowMouseAsTouch is true")
+	}
+
+	// Verify sourceString
+	if ta.sourceString(pointer.Touch) != "touch" {
+		t.Errorf("expected 'touch', got %q", ta.sourceString(pointer.Touch))
+	}
+	if ta.sourceString(pointer.Mouse) != "mouse" {
+		t.Errorf("expected 'mouse', got %q", ta.sourceString(pointer.Mouse))
+	}
+	if ta.sourceString(pointer.Source(255)) != "unknown" {
+		t.Errorf("expected 'unknown', got %q", ta.sourceString(pointer.Source(255)))
+	}
+
+	// Verify statusText
+	idleStatus := ta.statusText()
+	if !strings.Contains(idleStatus, "state=idle") {
+		t.Errorf("expected idle status text, got %q", idleStatus)
+	}
+
+	ta.Active = true
+	ta.LastSource = pointer.Touch
+	ta.DeltaX = 20
+	ta.DeltaY = -15
+	activeStatus := ta.statusText()
+	if !strings.Contains(activeStatus, "state=active source=touch") {
+		t.Errorf("expected active status text, got %q", activeStatus)
 	}
 }
