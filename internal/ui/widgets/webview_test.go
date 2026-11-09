@@ -304,3 +304,34 @@ func TestWebViewLayoutAndBridgeContract(t *testing.T) {
 		t.Errorf("expected successful dispatch reply, got %+v", dispatched)
 	}
 }
+
+func TestWebViewBackForwardBoundaryNoOp(t *testing.T) {
+	w := &WebView{}
+	w.Navigate("bqt://single", "Solo Page")
+
+	callbackFired := false
+	w.OnNavigate = func(url string) {
+		callbackFired = true
+	}
+	w.OnHistoryChanged = func(index int, length int) {
+		callbackFired = true
+	}
+
+	// 1. Back when Index == 0 is no-op
+	w.Back()
+	if w.Index != 0 {
+		t.Errorf("expected index to stay 0, got %d", w.Index)
+	}
+	if callbackFired {
+		t.Errorf("expected no callbacks to fire on boundary Back()")
+	}
+
+	// 2. Forward when Index == len(History)-1 is no-op
+	w.Forward()
+	if w.Index != 0 {
+		t.Errorf("expected index to stay 0, got %d", w.Index)
+	}
+	if callbackFired {
+		t.Errorf("expected no callbacks to fire on boundary Forward()")
+	}
+}

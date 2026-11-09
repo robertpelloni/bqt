@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.48] - 2025-05-18
+### Added
+- Unit tests for `WebView` (`TestWebViewBackForwardBoundaryNoOp`) validating boundary navigation history no-op behavior.
+
 ## [v1.2.47] - 2025-05-18
 ### Added
 - Unit tests for `AdminShell` (`TestAdminShellLockedPermission`) validating peer user permission locking status layout.

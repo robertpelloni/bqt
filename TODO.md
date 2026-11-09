@@ -109,3 +109,4 @@
 - [x] Verify and test Window active title bar styling and custom MinSize clamping in `internal/ui/widgets`.
 - [x] Verify and test TouchArea event loop gesture integration in `internal/ui`.
 - [x] Verify and test AdminShell locked permission status branch in `internal/ui/widgets`.
+- [x] Verify and test WebView Back/Forward boundary no-op handling in `internal/ui/widgets`.
