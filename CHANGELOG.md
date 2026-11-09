@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.34] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/scrollview_test.go` verifying `ScrollView` with `ScrollBarOccupy` placement, occupied dimensions, and delta applications.
+- Boosted statement test coverage of `internal/ui/widgets` to 86.3%.
+
 ## [1.2.33] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/headerbar_test.go` verifying `BQtHeaderBar` layout with populated custom widgets aligned on the right.

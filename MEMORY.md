@@ -182,3 +182,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added automated unit tests for `NewShell` constructor in `internal/ui/widgets/shell_test.go`.
 - 2026-11-06: Added edge case tests for `TabBar` in `internal/ui/widgets/tabbar_test.go`, verifying nil receiver, empty tabs, and clamped indexing.
 - 2026-11-06: Added unit tests for `BQtHeaderBar` with custom widgets in `internal/ui/widgets/headerbar_test.go`.
+- 2026-11-06: Added unit tests for `ScrollView` with occupied scrollbar placement and delta applications in `internal/ui/widgets/scrollview_test.go`.

@@ -92,5 +92,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` Shell initialization.
 - [x] Verify and test native Go `internal/ui/widgets` TabBar bounds and edge cases.
 - [x] Verify and test native Go `internal/ui/widgets` BQtHeaderBar custom widget layout.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollView occupied layout and deltas.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
