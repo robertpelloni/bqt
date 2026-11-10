@@ -345,6 +345,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.50] - 2025-05-18
+### Added
+- Unit tests for `Popup` (`TestPopupDifferentThemesAndEmptyStrings`) validating layout with theme variants and empty strings.
+- Unit tests for `BQtHeaderBar` (`TestHeaderBarEmptyCustomWidgets`) validating layout with empty custom widget slices.
+
 ## [v1.2.49] - 2025-05-18
 ### Added
 - Unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) verifying negative and out-of-bounds `ClickTab` boundary resilience.

@@ -36,3 +36,23 @@ func TestPopupVisibilityAndLayout(t *testing.T) {
 		t.Errorf("Expected non-zero dimensions when popup is visible, got %v", dims)
 	}
 }
+
+func TestPopupDifferentThemesAndEmptyStrings(t *testing.T) {
+	p := &Popup{
+		Visible: true,
+		Title:   "",
+		Body:    "",
+	}
+
+	th := theme.GetTheme(theme.Dark)
+	var ops op.Ops
+	gtx := layout.Context{
+		Ops:         &ops,
+		Constraints: layout.Exact(image.Pt(500, 300)),
+	}
+
+	dims := p.Layout(gtx, th)
+	if dims.Size.X == 0 || dims.Size.Y == 0 {
+		t.Errorf("expected non-zero dimensions for empty string popup, got %v", dims)
+	}
+}

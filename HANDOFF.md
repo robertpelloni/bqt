@@ -110,4 +110,5 @@
 - Added unit tests for `AdminShell` (`TestAdminShellLockedPermission`) in `internal/ui/widgets/`, boosting widget coverage to 91.8%.
 - Added unit tests for `WebView` (`TestWebViewBackForwardBoundaryNoOp`) in `internal/ui/widgets/`, boosting widget coverage to 91.9%.
 - Added unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) in `internal/ui/widgets/`, boosting widget coverage to 92.0%.
-- Current Version: v1.2.49
+- Added unit tests for `Popup` (`TestPopupDifferentThemesAndEmptyStrings`) and `BQtHeaderBar` (`TestHeaderBarEmptyCustomWidgets`) in `internal/ui/widgets/`.
+- Current Version: v1.2.50

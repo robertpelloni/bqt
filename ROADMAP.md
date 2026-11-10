@@ -108,5 +108,6 @@
 - [x] Verify and test native Go `internal/ui/widgets` AdminShell locked permission status branch.
 - [x] Verify and test native Go `internal/ui/widgets` WebView Back/Forward boundary no-op handling.
 - [x] Verify and test native Go `internal/ui/widgets` TabBar ClickTab out-of-bounds boundary handling.
+- [x] Verify and test native Go `internal/ui/widgets` Popup empty strings and BQtHeaderBar empty custom widgets.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

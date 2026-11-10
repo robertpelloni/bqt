@@ -48,3 +48,22 @@ func TestHeaderBar(t *testing.T) {
 		t.Errorf("expected non-zero width with custom widgets, got %d", dimsWithWidgets.Size.X)
 	}
 }
+
+func TestHeaderBarEmptyCustomWidgets(t *testing.T) {
+	hb := &BQtHeaderBar{
+		Title:         "Minimal Title",
+		Subtitle:      "Minimal Subtitle",
+		CustomWidgets: []layout.Widget{},
+	}
+
+	gtx := layout.Context{
+		Ops:         new(op.Ops),
+		Constraints: layout.Exact(image.Point{X: 600, Y: 50}),
+	}
+	th := theme.GetTheme(theme.Cyberpunk)
+
+	dims := hb.Layout(gtx, th)
+	if dims.Size.X <= 0 {
+		t.Errorf("expected non-zero width for headerbar with empty custom widgets slice, got %d", dims.Size.X)
+	}
+}
