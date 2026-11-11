@@ -199,3 +199,4 @@ Phase 4 ("World Domination") is now complete as the shell integration API (`Shel
 - 2026-11-06: Added unit tests for `WebView` back/forward boundary no-op handling in `webview_test.go`.
 - 2026-11-06: Added unit tests for `TabBar` ClickTab out-of-bounds boundary handling in `tabbar_test.go`.
 - 2026-11-06: Added unit tests for `Popup` empty strings and `BQtHeaderBar` empty custom widgets in `popup_test.go` and `headerbar_test.go`.
+- 2026-11-06: Added unit tests for `PakManager` archive mounting and `ImageProvider` VFS retrieval in `data_services_test.go`.

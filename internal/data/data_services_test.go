@@ -79,3 +79,30 @@ func TestDataServices_TimeMachine(t *testing.T) {
 
 	tm.ReceiveRemoteCommit("/test/remote.go", "package remote\n")
 }
+
+func TestDataServices_PakManager(t *testing.T) {
+	pm := GetPakManager()
+	if pm == nil {
+		t.Fatalf("expected GetPakManager to return non-nil instance")
+	}
+
+	// 1. Mount non-existent archive returns error
+	err := pm.MountArchive("missing_archive.pak")
+	if err == nil {
+		t.Errorf("expected error when mounting non-existent archive")
+	}
+
+	// 2. Query file not in VFS returns error
+	data, err := pm.GetFileBytes("virtual/missing.png")
+	if err == nil || data != nil {
+		t.Errorf("expected error when getting non-existent file bytes from VFS, got data=%v, err=%v", data, err)
+	}
+}
+
+func TestDataServices_ImageProvider(t *testing.T) {
+	// RequestImage pulls asset via GetPakManager().GetFileBytes
+	_, err := RequestImage("virtual/non_existent_image.png")
+	if err == nil {
+		t.Errorf("expected error when requesting unmounted/missing image")
+	}
+}

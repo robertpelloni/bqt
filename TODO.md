@@ -112,3 +112,4 @@
 - [x] Verify and test WebView Back/Forward boundary no-op handling in `internal/ui/widgets`.
 - [x] Verify and test TabBar ClickTab out-of-bounds boundary handling in `internal/ui/widgets`.
 - [x] Verify and test Popup empty strings and BQtHeaderBar empty custom widgets in `internal/ui/widgets`.
+- [x] Verify and test PakManager archive mounting and ImageProvider VFS retrieval in `internal/data`.

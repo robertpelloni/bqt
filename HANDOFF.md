@@ -111,4 +111,5 @@
 - Added unit tests for `WebView` (`TestWebViewBackForwardBoundaryNoOp`) in `internal/ui/widgets/`, boosting widget coverage to 91.9%.
 - Added unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) in `internal/ui/widgets/`, boosting widget coverage to 92.0%.
 - Added unit tests for `Popup` (`TestPopupDifferentThemesAndEmptyStrings`) and `BQtHeaderBar` (`TestHeaderBarEmptyCustomWidgets`) in `internal/ui/widgets/`.
-- Current Version: v1.2.50
+- Added unit tests for `PakManager` and `ImageProvider` (`TestDataServices_PakManager`, `TestDataServices_ImageProvider`) in `internal/data/data_services_test.go`, boosting data coverage to 60.0%.
+- Current Version: v1.2.51

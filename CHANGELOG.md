@@ -345,6 +345,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.51] - 2025-05-18
+### Added
+- Unit tests for `PakManager` and `ImageProvider` (`TestDataServices_PakManager`, `TestDataServices_ImageProvider`) in `internal/data/data_services_test.go`, verifying archive mounting errors and missing VFS asset handling.
+
 ## [v1.2.50] - 2025-05-18
 ### Added
 - Unit tests for `Popup` (`TestPopupDifferentThemesAndEmptyStrings`) validating layout with theme variants and empty strings.
