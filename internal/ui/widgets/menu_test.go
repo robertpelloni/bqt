@@ -70,3 +70,22 @@ func TestMenuLayoutAndSelection(t *testing.T) {
 	menu.Y = 550 // Y + Height > 600, will clamp
 	menu.Layout(gtx, th)
 }
+
+func TestMenu_EmptyItems(t *testing.T) {
+	menu := &Menu{
+		Visible: true,
+		Items:   nil,
+	}
+
+	var ops op.Ops
+	gtx := layout.Context{
+		Ops:         &ops,
+		Constraints: layout.Exact(image.Point{X: 400, Y: 300}),
+	}
+	th := theme.GetTheme(theme.Dark)
+
+	dims, idx := menu.Layout(gtx, th)
+	if dims.Size.X != 0 || dims.Size.Y != 0 || idx != -1 {
+		t.Fatalf("expected empty dims and -1 index for empty items menu, got %+v, idx=%d", dims.Size, idx)
+	}
+}

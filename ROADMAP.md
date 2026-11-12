@@ -53,5 +53,62 @@
 - [x] Verify and test native Go `internal/ui/widgets` Calendar fallback initialization and date grid layout.
 - [x] Verify and test native Go `internal/ui/widgets` TableView empty state fallback and cell grid distribution.
 - [x] Verify and test native Go `internal/ui/widgets` ScrollView list-driven layout and cross-axis viewports.
+- [x] Verify and test native Go `internal/ui/widgets` TouchArea swipe gesture detection and touch rendering.
+- [x] Verify and test native Go `internal/ui/widgets` AdminShell user listing and permission lock status.
+- [x] Verify and test native Go `internal/ui/widgets` AuthShell secure boot and database null-safety.
+- [x] Verify and test native Go `internal/ui/widgets` LoginView authentication transition and rendering.
+- [x] Verify and test native Go `internal/ui/widgets` RewindSlider timeline visibility and slider rendering.
+- [x] Verify and test native Go `internal/ui/widgets` MarkdownView header parsing and layout rendering.
+- [x] Verify and test native Go `internal/ui/widgets` MeshExplorer file listing and remote tagging.
+- [x] Verify and test native Go `internal/ui/widgets` QuickControls (ProgressBar, Dial, CheckBox).
+- [x] Verify and test native Go `internal/ui/widgets` DrawGrabGlow multi-pass halo painting.
+- [x] Verify and test native Go `internal/ui/widgets` Plot vertical column bar chart layout.
+- [x] Verify and test native Go `internal/ui/widgets` ParticleSystem physics and layout.
+- [x] Verify and test native Go `internal/ui/widgets` VectorIcon GPU path outline rendering.
+- [x] Verify and test native Go `internal/ui/widgets` BQtNotebook tab click switching and child layout.
+- [x] Verify and test native Go `internal/ui/widgets` CodeEditor text input and flex layout.
+- [x] Verify and test native Go `internal/ui/widgets` DockArea child layout rendering.
+- [x] Verify and test native Go `internal/ui/widgets` NodeEditor layout, positioning, and clipping.
+- [x] Verify and test native Go `internal/ui/widgets` OmniStudio IDE shell layout.
+- [x] Verify and test native Go `internal/ui/widgets` ShaderEffect procedural rendering.
+- [x] Verify and test native Go `internal/ui/widgets` Raymarcher procedural rendering.
+- [x] Verify and test native Go `internal/ui/widgets` RHINode native texture surfaces.
+- [x] Verify and test native Go `internal/ui/widgets` Scene3D node graph layout.
+- [x] Verify and test native Go `internal/ui` ComputeKernel dispatch and memory synchronization.
+- [x] Verify and test native Go `internal/ui` HapticsEngine device proximity processing.
+- [x] Verify and test native Go `internal/ui` LiveReloader lifecycle.
+- [x] Verify and test native Go `internal/ui` ShaderSync mesh shader exchange.
+- [x] Verify and test native Go `internal/ui/widgets` WebView layout and bridge contracts.
+- [x] Verify and test native Go `internal/net` mesh streaming protocols (Audio, Desktop, Teleport, Voice, Video).
+- [x] Verify and test native Go `internal/data` distributed storage services (TimeMachine, GitKernel, DistributedDB).
+- [x] Verify and test native Go UI widgets signal dispatch and unified event loop synchronization.
+- [x] Verify and test native Go `internal/kernel` reactive property bindings, action dispatching, and accessibility DOM.
+- [x] Verify and test native Go `internal/kernel` PluginManager dynamic plugin registry.
+- [x] Verify and test native Go `internal/kernel` ConsensusEngine, GridCompute, and SelfHealer.
+- [x] Expand test coverage for native Go UI widgets (TouchArea, Window).
+- [x] Verify and test native Go `internal/audio` AudioPlayer and Cluster DSP mesh distribution.
+- [x] Verify and test native Go `internal/audio` MidiHandler and MidiMesh hardware integration.
+- [x] Verify and test native Go `internal/net` NodeHealth telemetry.
+- [x] Verify and test native Go `internal/ui/widgets` Shell initialization.
+- [x] Verify and test native Go `internal/ui/widgets` TabBar bounds and edge cases.
+- [x] Verify and test native Go `internal/ui/widgets` BQtHeaderBar custom widget layout.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollView occupied layout and deltas.
+- [x] Verify and test native Go `internal/ui/widgets` TouchArea source detection and status reporting.
+- [x] Verify and test native Go `internal/ui/widgets` Plot dataset density handling.
+- [x] Verify and test native Go `internal/ui/widgets` TrayIcon menu actions and DemoSurface controls.
+- [x] Verify and test native Go `internal/ui/widgets` Dialog button dismissals and TouchArea gesture lifecycle.
+- [x] Verify and test native Go `internal/ui/widgets` BQtNotebook tab boundary resilience and ParticleSystem inactive state.
+- [x] Verify and test native Go `internal/ui/widgets` SynthWidget buffer adjustments and zero constraints.
+- [x] Verify and test native Go `internal/ui/widgets` Raymarcher maxInt helper and Menu empty items handling.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollBar helpers and zero track constraints.
+- [x] Verify and test native Go `internal/ui/widgets` TableView tableMax helper and alternating row styling.
+- [x] Verify and test native Go `internal/ui/widgets` ScrollView non-zero scroll deltas and cross-axis viewport clamping.
+- [x] Verify and test native Go `internal/ui/widgets` Window active title bar styling and custom MinSize clamping.
+- [x] Verify and test native Go `internal/ui` TouchArea event loop gesture integration.
+- [x] Verify and test native Go `internal/ui/widgets` AdminShell locked permission status branch.
+- [x] Verify and test native Go `internal/ui/widgets` WebView Back/Forward boundary no-op handling.
+- [x] Verify and test native Go `internal/ui/widgets` TabBar ClickTab out-of-bounds boundary handling.
+- [x] Verify and test native Go `internal/ui/widgets` Popup empty strings and BQtHeaderBar empty custom widgets.
+- [x] Verify and test native Go `internal/data` PakManager archive mounting and ImageProvider VFS retrieval.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.

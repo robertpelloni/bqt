@@ -67,3 +67,57 @@ func TestTrayIconCallbacks(t *testing.T) {
 		t.Errorf("Expected OnQuitServer to be invoked")
 	}
 }
+
+func TestTrayIconMenuClickActions(t *testing.T) {
+	tray := NewTrayIcon()
+
+	var ops op.Ops
+	gtx := layout.Context{Ops: &ops}
+	th := theme.GetTheme(theme.Cyberpunk)
+
+	// Verify LayoutIcon toggles MenuVisible on click
+	if tray.MenuVisible {
+		t.Fatal("expected menu to initially be hidden")
+	}
+	tray.IconClick.Click()
+	tray.LayoutIcon(gtx, th)
+	if !tray.MenuVisible {
+		t.Fatal("expected menu to become visible after icon click")
+	}
+
+	// Test Mute button click
+	muteFired := false
+	tray.OnMuteDSP = func() { muteFired = true }
+	tray.btnMute.Click()
+	tray.LayoutMenu(gtx, th)
+	if !tray.isMuted || !muteFired {
+		t.Fatalf("expected isMuted true and mute callback fired, got muted=%v, fired=%v", tray.isMuted, muteFired)
+	}
+
+	// Test Disconnect button click
+	meshFired := false
+	tray.OnDisconnectMesh = func() { meshFired = true }
+	tray.btnDisconnect.Click()
+	tray.LayoutMenu(gtx, th)
+	if tray.isMeshActive || !meshFired {
+		t.Fatalf("expected isMeshActive false and mesh callback fired, got active=%v, fired=%v", tray.isMeshActive, meshFired)
+	}
+
+	// Test Restart button click
+	restartFired := false
+	tray.OnRestartEventLoop = func() { restartFired = true }
+	tray.btnRestart.Click()
+	tray.LayoutMenu(gtx, th)
+	if !restartFired {
+		t.Fatal("expected restart callback to be fired")
+	}
+
+	// Test Quit button click
+	quitFired := false
+	tray.OnQuitServer = func() { quitFired = true }
+	tray.btnQuit.Click()
+	tray.LayoutMenu(gtx, th)
+	if tray.serverRunning || !quitFired || tray.StatusText != "SHUTTING DOWN" {
+		t.Fatalf("expected serverRunning=false, quit callback fired, got running=%v, status=%s", tray.serverRunning, tray.StatusText)
+	}
+}

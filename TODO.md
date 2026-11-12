@@ -54,3 +54,62 @@
 - [x] Verify and test `Calendar` fallback initialization and date formatting in `internal/ui/widgets`.
 - [x] Verify and test `TableView` empty fallback and cell distribution in `internal/ui/widgets`.
 - [x] Verify and test `ScrollView` list-driven layout and cross-axis viewports in `internal/ui/widgets`.
+- [x] Verify and test `TouchArea` directional swipe gestures and layout in `internal/ui/widgets`.
+- [x] Verify and test `AdminShell` user listing and permission lock status in `internal/ui/widgets`.
+- [x] Verify and test `AuthShell` secure boot interaction and database null-safety in `internal/ui/widgets`.
+- [x] Verify and test `LoginView` authentication transition and rendering in `internal/ui/widgets`.
+- [x] Verify and test `RewindSlider` timeline visibility and slider rendering in `internal/ui/widgets`.
+- [x] Verify and test `MarkdownView` header parsing and vertical layout in `internal/ui/widgets`.
+- [x] Verify and test `MeshExplorer` file list rendering and remote tagging in `internal/ui/widgets`.
+- [x] Verify and test QuickControls (`ProgressBar`, `Dial`, `CheckBox`) in `internal/ui/widgets`.
+- [x] Verify and test `DrawGrabGlow` multi-pass halo painting in `internal/ui/widgets`.
+- [x] Verify and test `Plot` vertical column bar chart layout in `internal/ui/widgets`.
+- [x] Verify and test `ParticleSystem` physics and layout in `internal/ui/widgets`.
+- [x] Verify and test `VectorIcon` GPU path outline rendering in `internal/ui/widgets`.
+- [x] Verify and test `BQtNotebook` tab click switching and active child layout in `internal/ui/widgets`.
+- [x] Verify and test `CodeEditor` text input and flex layout in `internal/ui/widgets`.
+- [x] Verify and test `DockArea` child layout rendering in `internal/ui/widgets`.
+- [x] Verify and test `NodeEditor` layout, positioning, and clipping in `internal/ui/widgets`.
+- [x] Verify and test `OmniStudio` IDE shell composition and nil child handling in `internal/ui/widgets`.
+- [x] Verify and test `ShaderEffect` plasma and grid graphics layouts in `internal/ui/widgets`.
+- [x] Verify and test `Raymarcher` rendering and zero-size fallback in `internal/ui/widgets`.
+- [x] Verify and test `RHINode` zero and non-zero texture handle rendering in `internal/ui/widgets`.
+- [x] Verify and test `Scene3D` node iteration and render execution in `internal/ui/widgets`.
+- [x] Verify and test `ComputeKernel` GPU compute dispatch and buffer sync in `internal/ui`.
+- [x] Verify and test `HapticsEngine` peer proximity drone triggers in `internal/ui`.
+- [x] Verify and test `LiveReloader` watcher lifecycle in `internal/ui`.
+- [x] Verify and test `ShaderSync` P2P mesh shader skin synchronization in `internal/ui`.
+- [x] Expand unit test coverage for `WebView.Layout` and `BridgeContractJSON` in `internal/ui/widgets`.
+- [x] Verify and test `MeshNode.Render` in `internal/ui/widgets`.
+- [x] Verify and test audio/desktop/teleport/voice/stream mesh network services in `internal/net`.
+- [x] Verify and test git/history/replicated-db/package-registry/timemachine in `internal/data`.
+- [x] Verify and test UI widgets signal dispatch and event loop synchronization in `internal/ui`.
+- [x] Verify and test ActionRegistry, AccessibilityManager, SearchEngine, and Property in `internal/kernel`.
+- [x] Verify and test PluginManager registration and duplicate rejection in `internal/kernel`.
+- [x] Verify and test ConsensusEngine, GridCompute, and SelfHealer in `internal/kernel`.
+- [x] Expand unit test coverage for TouchArea helpers and Window.SetActive in `internal/ui/widgets`.
+- [x] Verify and test AudioPlayer methods and Cluster DSP distribution in `internal/audio`.
+- [x] Verify and test MidiHandler NoteOn/NoteOff and MidiMesh broadcasting in `internal/audio`.
+- [x] Verify and test NodeHealth telemetry data and mesh broadcast in `internal/net`.
+- [x] Verify and test NewShell constructor in `internal/ui/widgets`.
+- [x] Verify and test TabBar edge cases (nil receiver, empty tabs, OOB index) in `internal/ui/widgets`.
+- [x] Verify and test BQtHeaderBar custom widgets layout in `internal/ui/widgets`.
+- [x] Verify and test ScrollView occupied placement and scroll deltas in `internal/ui/widgets`.
+- [x] Verify and test TouchArea acceptSource, sourceString, and statusText in `internal/ui/widgets`.
+- [x] Verify and test Plot single-item and high-density datasets in `internal/ui/widgets`.
+- [x] Verify and test TrayIcon menu button clicks (mute, disconnect, restart, quit) in `internal/ui/widgets`.
+- [x] Verify and test DemoSurface parameter adjustments and navigation clicks in `internal/ui/widgets`.
+- [x] Verify and test Dialog button dismissals and TouchArea threshold/gesture lifecycle in `internal/ui/widgets`.
+- [x] Verify and test BQtNotebook out-of-bounds indexing and ParticleSystem inactive state in `internal/ui/widgets`.
+- [x] Verify and test SynthWidget buffer adjustments and zero constraints in `internal/ui/widgets`.
+- [x] Verify and test Raymarcher maxInt helper and Menu empty items handling in `internal/ui/widgets`.
+- [x] Verify and test ScrollBar helpers and zero track constraints in `internal/ui/widgets`.
+- [x] Verify and test TableView tableMax helper and alternating row styling in `internal/ui/widgets`.
+- [x] Verify and test ScrollView non-zero scroll deltas and cross-axis viewport clamping in `internal/ui/widgets`.
+- [x] Verify and test Window active title bar styling and custom MinSize clamping in `internal/ui/widgets`.
+- [x] Verify and test TouchArea event loop gesture integration in `internal/ui`.
+- [x] Verify and test AdminShell locked permission status branch in `internal/ui/widgets`.
+- [x] Verify and test WebView Back/Forward boundary no-op handling in `internal/ui/widgets`.
+- [x] Verify and test TabBar ClickTab out-of-bounds boundary handling in `internal/ui/widgets`.
+- [x] Verify and test Popup empty strings and BQtHeaderBar empty custom widgets in `internal/ui/widgets`.
+- [x] Verify and test PakManager archive mounting and ImageProvider VFS retrieval in `internal/data`.

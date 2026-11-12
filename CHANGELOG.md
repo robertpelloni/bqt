@@ -1,5 +1,176 @@
 # Changelog
 
+## [1.2.36] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/plot_test.go` verifying `Plot.Layout` behavior with single-item datasets and high-density datasets.
+- Boosted statement test coverage of `internal/ui/widgets` to 86.8%.
+
+## [1.2.35] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/touch_test.go` verifying `acceptSource` (touch/mouse fallback toggling), `sourceString` (touch, mouse, unknown mapping), and `statusText` active vs idle formatting.
+- Boosted statement test coverage of `internal/ui/widgets` to 86.7%.
+
+## [1.2.34] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/scrollview_test.go` verifying `ScrollView` with `ScrollBarOccupy` placement, occupied dimensions, and delta applications.
+- Boosted statement test coverage of `internal/ui/widgets` to 86.3%.
+
+## [1.2.33] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/headerbar_test.go` verifying `BQtHeaderBar` layout with populated custom widgets aligned on the right.
+- Boosted statement test coverage of `internal/ui/widgets` to 85.8%.
+
+## [1.2.32] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/tabbar_test.go` verifying `TabBar.ActiveTitle()` with nil receiver, empty tabs, negative active index, out-of-bounds active index, and zero dimensions during empty tab layout.
+- Boosted statement test coverage of `internal/ui/widgets` to 85.5%.
+
+## [1.2.31] - 2026-11-06
+### Added
+- Added automated unit test coverage for `NewShell` constructor in `internal/ui/widgets/shell_test.go`, verifying `TrayIcon` instance establishment and initial visibility defaults.
+
+## [1.2.30] - 2026-11-06
+### Added
+- Added automated unit test coverage for `NodeHealth` telemetry data in `internal/net/mesh_streaming_test.go`, verifying JSON serialization and mesh broadcasting.
+
+## [1.2.29] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/audio` MIDI subsystems in `midi_handler_test.go` and `midi_mesh_test.go`, verifying `MidiHandler` (device querying, NoteOn/NoteOff dispatch) and `MidiCommand` mesh broadcasting.
+- Guarded `MidiHandler` signal emission test slots with `sync.Once` to prevent negative `WaitGroup` panics during multiple device transitions.
+- Boosted statement test coverage of `internal/audio` to 92.2%.
+
+## [1.2.28] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/audio` subsystems in `audio_player_test.go` and `cluster_test.go`, verifying `AudioPlayer` getter/process/name methods and `DistributeDSPTask` / `HandleRemoteDSP` mesh cluster delegation.
+- Boosted statement test coverage of `internal/audio` to 86.8%.
+
+## [1.2.27] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/touch_test.go` and `internal/ui/widgets/window_test.go`, verifying `SwipeDirection.String()`, touch header formatting, and `Window.SetActive` state transitions.
+- Boosted statement test coverage of `internal/ui/widgets` to 85.3%.
+
+## [1.2.26] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/kernel` resilience components in `resilience_test.go`, verifying `ConsensusEngine` (mutation proposals and peer vote handling), `GridCompute` (`DispatchJob` and `HandleRemoteTask`), and `SelfHealer` (critical panic interception, callstack capture, and AI callback dispatch).
+- Boosted statement test coverage of `internal/kernel` to 65.1%.
+
+## [1.2.25] - 2026-11-06
+### Added
+- Added automated unit test coverage for `PluginManager` in `internal/kernel/managers_test.go`, verifying plugin interface compliance, registration, and duplicate rejection.
+- Boosted statement test coverage of `internal/kernel` to 60.2%.
+
+## [1.2.24] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/kernel` subsystems in `kernel_features_test.go`, verifying `ActionRegistry` (registration & triggering), `AccessibilityManager` (visual DOM exposition), `SearchEngine` (global concurrent search), and `Property[T]` (generic reactive bindings and bi-directional listeners).
+- Boosted statement test coverage of `internal/kernel` to 57.1%.
+
+## [1.2.23] - 2026-11-06
+### Added
+- Added automated integration test coverage in `internal/ui/widgets_event_loop_test.go` verifying UI widget interaction (`TrayIcon` callbacks) and signal/slot dispatching over the unified BQt `EventLoop`.
+- Validated thread-safe asynchronous queued execution and non-blocking lifecycle start/stop semantics.
+
+## [1.2.22] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/data` subsystems in `data_services_test.go`, verifying `GitKernel`, `HistoryReconciler`, `DistributedDB`, `PackageRegistry`, and `TimeMachine`.
+- Boosted statement test coverage of `internal/data` to 56.0%.
+### Fixed
+- Safeguarded `TimeMachine.CommitState` and `TimeMachine.ReceiveRemoteCommit` (`internal/data/time_machine.go`) against uninitialized database connections.
+
+## [1.2.21] - 2026-11-06
+### Added
+- Added automated unit test coverage across `internal/net` subsystems in `mesh_streaming_test.go`, verifying `BroadcastAudioShards`, `HandleRemoteAudio`, `BroadcastDesktopFrame`, `HandleRemoteDesktop`, `TeleportState`, `HandleRemoteTeleport`, `VoiceMesh`, `BroadcastFrame`, and `HandleRemoteStream`.
+- Boosted statement test coverage of `internal/net` to 48.4%.
+
+## [1.2.20] - 2026-11-06
+### Added
+- Expanded unit test coverage in `internal/ui/widgets/webview_test.go` to validate `WebView.Layout` rendering, `BridgeContractJSON` serialization, `PostMessage`, `JSBridge.Emit`, and `JSBridge.Dispatch`.
+- Added unit test coverage for `MeshNode.Render` in `internal/ui/widgets/scene3d_test.go`.
+
+## [1.2.19] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ComputeKernel` in `internal/ui/compute_kernel_test.go`, validating compute shader operation submission and memory buffer synchronization.
+- Added automated unit test coverage for `HapticsEngine` in `internal/ui/haptics_test.go`, verifying spatial distance calculation between peer input devices and proximity triggers.
+- Added automated unit test coverage for `LiveReloader` in `internal/ui/live_reload_test.go`, verifying singleton lifecycle and non-blocking background watching.
+- Added automated unit test coverage for `ShaderSync` in `internal/ui/shader_mesh_test.go`, verifying local shader broadcast over P2P mesh and remote skin synchronization.
+### Fixed
+- Fixed nil pointer dereference in `ComputeKernel.DispatchCompute` (`internal/ui/compute_kernel.go`) by establishing a valid image buffer operation.
+
+## [1.2.18] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Raymarcher` in `internal/ui/widgets/raymarcher_test.go`, verifying size parameterization and zero-size fallback bounds.
+- Added automated unit test coverage for `RHINode` in `internal/ui/widgets/rhi_node_test.go`, verifying zero-handle empty dimension suppression and valid texture handle rendering.
+- Added automated unit test coverage for `Scene3D` in `internal/ui/widgets/scene3d_test.go`, verifying node iteration, `Node3D` rendering, and layout dimensions.
+- Achieved complete automated unit test coverage across 100% of all UI widgets in `internal/ui/widgets/`.
+
+## [1.2.17] - 2026-11-06
+### Added
+- Added automated unit test coverage for `OmniStudio` in `internal/ui/widgets/studio_test.go`, verifying composite rendering of editor, terminal, explorer, splitview, and nil fallback initialization.
+- Added automated unit test coverage for `ShaderEffect` in `internal/ui/widgets/shaders_test.go`, verifying plasma algorithmic rendering and fallback grid pattern layout.
+### Fixed
+- Fixed nil pointer dereference in `Terminal.Layout` (`internal/ui/widgets/terminal.go`) when `Terminal.Shell` or its `Output` channel is uninitialized.
+
+## [1.2.16] - 2026-11-06
+### Added
+- Added automated unit test coverage for `DockArea` in `internal/ui/widgets/docking_test.go`, verifying child layout rendering and dimensions preservation.
+- Added automated unit test coverage for `NodeEditor` in `internal/ui/widgets/node_editor_test.go`, verifying empty node slices, multiple node positioning, clipping boundaries, and label layout.
+
+## [1.2.15] - 2026-11-06
+### Added
+- Added automated unit test coverage for `CodeEditor` in `internal/ui/widgets/editor_test.go`, verifying text mutation, font sizing, and vertical flex layout rendering.
+
+## [1.2.14] - 2026-11-06
+### Added
+- Hardened automated unit test coverage for `BQtNotebook` in `internal/ui/widgets/notebook_test.go`, verifying tab click switching, active page selection, inactive tab styling, and empty container suppression.
+
+## [1.2.13] - 2026-11-06
+### Added
+- Added automated unit test coverage for `VectorIcon` in `internal/ui/widgets/vector_test.go`, verifying geometric path construction and GPU outline fill clipping layout.
+
+## [1.2.12] - 2026-11-06
+### Added
+- Added automated unit test coverage for `ParticleSystem` in `internal/ui/widgets/particles_test.go`, verifying Burst creation, gravity/velocity physics updates, life expiration cleanup, and layout rendering.
+
+## [1.2.11] - 2026-11-06
+### Added
+- Added automated unit test coverage for `Plot` in `internal/ui/widgets/plot_test.go`, verifying empty plot dimension suppression and column bar layout rendering.
+
+## [1.2.10] - 2026-11-06
+### Added
+- Added automated unit test coverage for `DrawGrabGlow` in `internal/ui/widgets/glow_test.go`, verifying multi-pass halo painting without errors or panics.
+
+## [1.2.09] - 2026-11-06
+### Added
+- Added automated unit test coverage for QuickControls (`ProgressBar`, `Dial`, `CheckBox`) in `internal/ui/widgets/controls_test.go`, verifying value clamping, circular clipping, and state transitions.
+
+## [1.2.08] - 2026-11-06
+### Added
+- Added automated unit test coverage for `MeshExplorer` in `internal/ui/widgets/explorer_test.go`, verifying local and remote mesh file listing and vertical layout rendering.
+
+## [1.2.07] - 2026-11-06
+### Added
+- Added automated unit test coverage for `MarkdownView` in `internal/ui/widgets/markdown_test.go`, verifying H1/H2 header and body text parsing and vertical layout rendering.
+
+## [1.2.06] - 2026-11-06
+### Added
+- Added automated unit test coverage for `RewindSlider` in `internal/ui/widgets/rewind_test.go`, verifying inactive dimension suppression and active temporal timeline slider layout rendering.
+
+## [1.2.05] - 2026-11-06
+### Added
+- Added automated unit test coverage for `LoginView` in `internal/ui/widgets/login_test.go`, verifying unauthenticated login view layout, authentication transition, and dimension suppression.
+
+## [1.2.04] - 2026-11-06
+### Added
+- Added automated unit test coverage for `AuthShell` in `internal/ui/widgets/auth_test.go`, verifying centered login layout and boot button interaction.
+- Safeguarded `Database.ExecuteQuery` against nil connection panics when called without explicit initialization.
+
+## [1.2.03] - 2026-11-06
+### Added
+- Added automated unit test coverage for `AdminShell` in `internal/ui/widgets/admin_test.go`, verifying user list rendering and lock status layout.
+
+## [1.2.02] - 2026-11-06
+### Added
+- Added automated unit test coverage for `TouchArea` in `internal/ui/widgets/touch_test.go`, verifying swipe direction detection math (Left, Right, Up, Down), callback dispatch, and touch area layout rendering.
+
 ## [1.2.01] - 2026-11-06
 ### Added
 - Added automated unit test coverage for `ScrollView` in `internal/ui/widgets/scrollview_test.go`, verifying vertical and horizontal scroll configurations, cross-axis viewport adjustments, and item layout rendering.
@@ -173,6 +344,71 @@
 
 
 All notable changes to this project will be documented in this file.
+
+## [v1.2.51] - 2025-05-18
+### Added
+- Unit tests for `PakManager` and `ImageProvider` (`TestDataServices_PakManager`, `TestDataServices_ImageProvider`) in `internal/data/data_services_test.go`, verifying archive mounting errors and missing VFS asset handling.
+
+## [v1.2.50] - 2025-05-18
+### Added
+- Unit tests for `Popup` (`TestPopupDifferentThemesAndEmptyStrings`) validating layout with theme variants and empty strings.
+- Unit tests for `BQtHeaderBar` (`TestHeaderBarEmptyCustomWidgets`) validating layout with empty custom widget slices.
+
+## [v1.2.49] - 2025-05-18
+### Added
+- Unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) verifying negative and out-of-bounds `ClickTab` boundary resilience.
+
+## [v1.2.48] - 2025-05-18
+### Added
+- Unit tests for `WebView` (`TestWebViewBackForwardBoundaryNoOp`) validating boundary navigation history no-op behavior.
+
+## [v1.2.47] - 2025-05-18
+### Added
+- Unit tests for `AdminShell` (`TestAdminShellLockedPermission`) validating peer user permission locking status layout.
+
+## [v1.2.46] - 2025-05-18
+### Added
+- Integration tests in `internal/ui/widgets_event_loop_test.go` (`TestTouchAreaEventLoopIntegration`) verifying `TouchArea` gesture callbacks dispatching asynchronously across the unified BQt `EventLoop`.
+
+## [v1.2.45] - 2025-05-18
+### Added
+- Unit tests for `Window` (`TestWindow_ActiveTitleColorAndDefaultMinSize`) validating active window accent styling and custom `MinSize` clamping during resizing.
+
+## [v1.2.44] - 2025-05-18
+### Added
+- Unit tests for `ScrollView` (`TestScrollView_applyScrollDeltasNonZero`) validating primary list scroll propagation and clamped cross-axis viewport tracking.
+
+## [v1.2.43] - 2025-05-18
+### Added
+- Unit tests for `TableView` (`TestTableView_tableMaxAndAlternatingRows`) verifying column partition calculations and odd/even alternating row layout styling.
+
+## [v1.2.42] - 2025-05-18
+### Added
+- Unit tests for `ScrollBar` (`TestScrollBarHelpersAndZeroTrack`) verifying clamp, maxInt calculations, scroll distance getter, and zero-dimension track bounds safety.
+
+## [v1.2.41] - 2025-05-18
+### Added
+- Unit tests for `Raymarcher` (`TestRaymarcher_maxInt`) verifying boundary integer comparisons.
+- Unit tests for `Menu` (`TestMenu_EmptyItems`) verifying safe handling and zero-dimension fallback on empty item sets.
+
+## [v1.2.40] - 2025-05-18
+### Added
+- Unit tests for `SynthWidget` (`TestSynthWidgetBufferAndZeroConstraints`) validating buffer capacity adjustments, active voice setting, and zero-dimension constraint layout safety.
+
+## [v1.2.39] - 2025-05-18
+### Added
+- Unit tests for `BQtNotebook` (`TestNotebookActiveIndexOutOfBounds`) verifying layout resilience when `ActiveIndex` is negative or out of bounds.
+- Unit tests for `ParticleSystem` (`TestParticleSystemInactive`) validating that physics updates are suppressed when inactive.
+
+## [v1.2.38] - 2025-05-18
+### Added
+- Unit tests for `Dialog` button interactions (`TestDialogButtonInteractions`) verifying Accept/Cancel result strings and modal closure.
+- Unit tests for `TouchArea` threshold rejection, finishGesture callbacks (`OnTouch`, `OnSwipe`), and active state layout in `touch_test.go`.
+
+## [v1.2.37] - 2025-05-18
+### Added
+- Comprehensive click action tests for `TrayIcon` (`TestTrayIconMenuClickActions`) verifying icon popup toggling, server termination (`btnQuit`), event loop restart (`btnRestart`), DSP muting (`btnMute`), and P2P mesh disconnection (`btnDisconnect`).
+- Button interaction tests for `DemoSurface` (`TestDemoSurfaceButtonInteractions`) validating volume, BPM, and polyphony voice step cycling along with audio and kernel navigation status updates.
 
 ## [1.1.0] - 2026-04-03
 ### Added

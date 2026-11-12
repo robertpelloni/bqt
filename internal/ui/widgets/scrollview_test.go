@@ -52,3 +52,65 @@ func TestScrollViewLayout(t *testing.T) {
 		t.Fatalf("expected non-zero dimensions for horizontal ScrollView, got %+v", dimsHoriz.Size)
 	}
 }
+
+func TestScrollViewOccupiedPlacementAndDeltas(t *testing.T) {
+	sv := NewScrollView(layout.Vertical)
+	sv.VerticalPolicy = ScrollAlwaysOn
+	sv.HorizontalPolicy = ScrollAlwaysOn
+	sv.VerticalPlacement = ScrollBarOccupy
+	sv.HorizontalPlacement = ScrollBarOccupy
+	sv.BarThickness = 16
+
+	var ops op.Ops
+	gtx := layout.Context{
+		Ops:         &ops,
+		Constraints: layout.Exact(image.Point{X: 500, Y: 400}),
+		Metric:      unit.Metric{PxPerDp: 1.0, PxPerSp: 1.0},
+	}
+	th := theme.GetTheme(theme.Dark)
+	mth := material.NewTheme()
+
+	child := func(gtx layout.Context, i int) layout.Dimensions {
+		return material.Label(mth, unit.Sp(12), fmt.Sprintf("Occupied Item %d", i)).Layout(gtx)
+	}
+
+	dims := sv.LayoutWithTheme(gtx, th, 100, child)
+	if dims.Size.X != 500 || dims.Size.Y != 400 {
+		t.Errorf("expected dims 500x400, got %v", dims.Size)
+	}
+
+	w, h := sv.occupiedSpace()
+	if w != 16 || h != 16 {
+		t.Errorf("expected occupied space 16x16, got %dx%d", w, h)
+	}
+
+	// Verify applyScrollDeltas
+	sv.applyScrollDeltas(100)
+}
+
+func TestScrollView_applyScrollDeltasNonZero(t *testing.T) {
+	sv := NewScrollView(layout.Vertical)
+	sv.VerticalBar.LastDelta = 0.05
+	sv.HorizontalBar.LastDelta = 0.10
+	sv.HorizontalBar.PageSize = 0.30
+	sv.HorizontalBar.Position = 0.20
+
+	sv.applyScrollDeltas(50)
+
+	if sv.LastScrollDelta != 0.05 {
+		t.Errorf("expected LastScrollDelta 0.05, got %f", sv.LastScrollDelta)
+	}
+	if sv.LastCrossDelta != 0.10 {
+		t.Errorf("expected LastCrossDelta 0.10, got %f", sv.LastCrossDelta)
+	}
+	if sv.HorizontalBar.Position != 0.30 {
+		t.Errorf("expected updated secondary position 0.30, got %f", sv.HorizontalBar.Position)
+	}
+
+	// Test cross delta clamped to maxPos (1 - PageSize)
+	sv.HorizontalBar.LastDelta = 0.90
+	sv.applyScrollDeltas(50)
+	if sv.HorizontalBar.Position > 0.70 {
+		t.Errorf("expected secondary position clamped to 0.70, got %f", sv.HorizontalBar.Position)
+	}
+}
