@@ -112,4 +112,9 @@
 - Added unit tests for `TabBar` (`TestTabBarClickTabOutOfBounds`) in `internal/ui/widgets/`, boosting widget coverage to 92.0%.
 - Added unit tests for `Popup` (`TestPopupDifferentThemesAndEmptyStrings`) and `BQtHeaderBar` (`TestHeaderBarEmptyCustomWidgets`) in `internal/ui/widgets/`.
 - Added unit tests for `PakManager` and `ImageProvider` (`TestDataServices_PakManager`, `TestDataServices_ImageProvider`) in `internal/data/data_services_test.go`, boosting data coverage to 60.0%.
-- Current Version: v1.2.51
+- **2026-11-12 Repository Synchronization (v1.2.52):**
+  - Fetched all remotes and tags recursively across `bqt`, `submodules/juce`, and `submodules/ultimatepp`.
+  - Audited all remote feature branches (`jules-885412765636779725-8505c877`, `dependabot/go_modules/...`, `dependabot/uv/...`, `feature/audio-graph-native-linking-test-...`, `bqt-renaming-and-audio-graph-...`, `master`): all have `0` unique unmerged commits relative to `main`.
+  - Discarded a corrupted local auto-checkpoint commit (`ef870c13a`) in `submodules/ultimatepp` and updated both nested submodules cleanly to their latest upstream `origin/master` branch tips (`juce` @ `d60b7a78030661574a615b586d9325ba7a7fa7dd` / JUCE 9.0.5, `ultimatepp` @ `1a56dd3a4a02112563eb9e16f62f17bba8a0edd1`).
+  - Added `build.bat`, updated `.gitignore` to ignore nested `build_output/` and `OmniUI/omnicore/rust/target/` directories without purging compiled binaries, and updated `SUBMODULE_INVENTORY.md` & `SUBMODULE_DASHBOARD.md`.
+- Current Version: v1.2.52

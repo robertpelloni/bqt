@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.52] - 2026-11-12
+### Changed
+- **Submodule Synchronization:** Updated nested `submodules/juce` to latest upstream `origin/master` (`d60b7a78030661574a615b586d9325ba7a7fa7dd`, JUCE 9.0.5) and `submodules/ultimatepp` to latest upstream `origin/master` (`1a56dd3a4a02112563eb9e16f62f17bba8a0edd1`), keeping shallow-clone tips clean and verified.
+- **Workspace & Build Hygiene:** Added `build_output/`, `OmniUI/omnicore/rust/target/`, and nested `.build_success` ignore rules in `.gitignore` to preserve compiled C++/Rust artifacts on disk without staging intermediate CMake/Cargo build trees, while keeping all agent memory, sessions, databases, and documentation tracked.
+- **Execution Scripts & Documentation:** Added `build.bat` alongside `start.bat` for Windows Go kernel builds and updated `SUBMODULE_INVENTORY.md`, `SUBMODULE_DASHBOARD.md`, and `HANDOFF.md`.
+
+## [1.2.37 - 1.2.51] - 2026-11-06 to 2026-11-12
+### Added
+- Expanded unit and integration test suites across `internal/ui/widgets` (TrayIcon, DemoSurface, Dialog, TouchArea, BQtNotebook, ParticleSystem, SynthWidget, Raymarcher, Menu, ScrollBar, TableView, ScrollView, Window, AdminShell, WebView, TabBar, Popup, BQtHeaderBar), `internal/ui` (`TouchArea` event loop gestures), and `internal/data` (`PakManager` archive mounting and `ImageProvider` VFS retrieval), bringing widget statement coverage to 92.0%+ and data coverage to 60.0%.
+- Merged Go & Python Dependabot updates (`golang.org/x/image` v0.41.0 and `uv` lockfile updates).
+
 ## [1.2.36] - 2026-11-06
 ### Added
 - Expanded unit test coverage in `internal/ui/widgets/plot_test.go` verifying `Plot.Layout` behavior with single-item datasets and high-density datasets.

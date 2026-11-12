@@ -330,7 +330,12 @@ wrapper.bat
 
 # cmake related artifacts
 /build*
+!/build.bat
 build/
+build_output/
+**/.build_success
+!/.build_success
+OmniUI/omnicore/rust/target/
 CMakeFiles
 CTestTestfile.cmake
 cmake_install.cmake
