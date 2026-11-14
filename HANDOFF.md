@@ -135,3 +135,8 @@
 - Dashboard Health now shows LIVE MeshNode.PeerCount() (new mutex-safe accessor in internal/net/mesh_node.go, tested). Start of replacing popup-only inspect buttons with real readouts.
 - DO NOT commit submodule pointers: juce HEAD is a local 'auto checkpoint' commit (clean, non-upstream); ultimatepp is MID-MERGE with UU conflict in uppsrc/CtrlCore/CtrlCore.h plus local edits. Needs owner decision: resolve merge upstream vs discard local checkpoint. Left untouched (nondestructive).
 
+
+## v1.2.56 (2026-11-14) - More live readouts, import-cycle limit
+- LIVE now: Health=MeshNode.PeerCount, Plugins=PluginManager.GetLoadedPlugins, ValueTree=ParameterCount/Keys (new sorted Keys accessor). New MacroRecorder.Stats() accessor exists but dashboard cannot use it: internal/vm imports internal/ui (neural_engine) and internal/audio imports internal/ui, so widgets importing vm/audio cycles. Fix would be moving NeuralEngine's ui dependency behind an interface - owner/architecture decision.
+- Remaining popup-only buttons are descriptive by design until their packages are cycle-free (kernel/state/net are safe to import from widgets).
+

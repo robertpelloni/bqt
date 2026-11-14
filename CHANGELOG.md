@@ -921,3 +921,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 - MeshNode.PeerCount() live accessor; dashboard Node Health shows the real connected-peer count instead of a static description.
 
+
+## [1.2.56] - 2026-11-14
+### Added
+- Live dashboard readouts: loaded-plugin list/count and ValueTree parameter count/keys (new ValueTree.Keys/ParameterCount, MacroRecorder.Stats accessors with tests).
+### Notes
+- Macro/Audio live readouts blocked by import cycles (vm->ui, audio->ui); documented, not faked.
+

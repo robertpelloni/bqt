@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"strings"
 
 	"gioui.org/layout"
 	"gioui.org/op/clip"
@@ -11,7 +12,9 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/robertpelloni/bqt/internal/kernel"
 	bqtnet "github.com/robertpelloni/bqt/internal/net"
+	"github.com/robertpelloni/bqt/internal/state"
 	"github.com/robertpelloni/bqt/internal/ui/theme"
 )
 
@@ -178,7 +181,8 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 		ds.open("Permissions", "Capability/RBAC checks (internal/kernel PermissionManager, AdminShell lock state).", "Security: Permissions opened")
 	}
 	if ds.btnPlugins.Clicked(gtx) {
-		ds.open("Plugin Manager", "Dynamic plugin registry; duplicates rejected (internal/kernel PluginManager/PluginHost).", "Kernel: PluginManager opened")
+		loaded := kernel.GetPluginManager().GetLoadedPlugins()
+		ds.open("Plugin Manager", fmt.Sprintf("Loaded plugins now: %d [%s]. Registry rejects duplicates (internal/kernel).", len(loaded), strings.Join(loaded, ", ")), fmt.Sprintf("Kernel: PluginManager — %d loaded", len(loaded)))
 	}
 	if ds.btnConsensus.Clicked(gtx) {
 		ds.open("Consensus & Grid Compute", "Peer consensus and distributed compute (internal/kernel ConsensusEngine/GridCompute).", "Kernel: Consensus opened")
@@ -223,13 +227,15 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 		ds.open("Lisp VM", "Embedded Lisp evaluator and VM (internal/vm).", "VM: Lisp VM opened")
 	}
 	if ds.btnMacros.Clicked(gtx) {
-		ds.open("Macro Recorder", "Record/replay input macros (internal/vm MacroRecorder).", "VM: MacroRecorder opened")
+		// No live readout: internal/vm imports internal/ui (cycle). Stats() exists on MacroRecorder for non-UI callers.
+		ds.open("Macro Recorder", "Record/replay input macros (internal/vm MacroRecorder). Live state not shown here: vm imports ui, so widgets cannot import vm.", "VM: MacroRecorder opened (see note)")
 	}
 	if ds.btnNeural.Clicked(gtx) {
 		ds.open("Neural Engine / DOM Capture", "Neural inference and neural DOM capture (internal/vm NeuralEngine).", "VM: NeuralEngine opened")
 	}
 	if ds.btnValueTree.Clicked(gtx) {
-		ds.open("ValueTree State", "Hierarchical parameters with subscriptions (internal/state ValueTree).", "State: ValueTree opened")
+		vt := state.GetValueTree()
+		ds.open("ValueTree State", fmt.Sprintf("Parameters set now: %d [%s]. Subscriptions broadcast every change (internal/state).", vt.ParameterCount(), strings.Join(vt.Keys(), ", ")), fmt.Sprintf("State: ValueTree — %d params", vt.ParameterCount()))
 	}
 	// UI surfaces & widgets (real overlay state)
 	if ds.btnDialog.Clicked(gtx) {

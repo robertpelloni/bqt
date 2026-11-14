@@ -34,3 +34,11 @@ func TestValueTreeSetParameterAndSubscribe(t *testing.T) {
 		t.Fatal("Timeout waiting for ParameterChange on subscribed channel")
 	}
 }
+
+func TestValueTreeParameterCountAndKeys(t *testing.T) {
+ vt := &ValueTree{params: map[string]interface{}{"b": 2, "a": 1}}
+ if vt.ParameterCount() != 2 { t.Fatalf("want 2, got %d", vt.ParameterCount()) }
+ keys := vt.Keys()
+ if len(keys) != 2 || keys[0] != "a" { t.Fatalf("want sorted [a b], got %v", keys) }
+}
+

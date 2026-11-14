@@ -96,3 +96,10 @@ func TestExecuteAIAction(t *testing.T) {
 		t.Errorf("Expected ExecuteAIAction to return true")
 	}
 }
+
+func TestMacroRecorderStats(t *testing.T) {
+ mr := &MacroRecorder{}
+ rec, n := mr.Stats()
+ if rec || n != 0 { t.Fatalf("want idle/0, got %v/%d", rec, n) }
+}
+

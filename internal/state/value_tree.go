@@ -1,6 +1,7 @@
 package state
 
 import (
+	"sort"
 	"sync"
 )
 
@@ -46,6 +47,31 @@ func (vt *ValueTree) SetParameter(key string, value interface{}) {
 		}
 	}
 	vt.mu.RUnlock()
+}
+
+// ParameterCount reports how many parameters are set (dashboard readout).
+func (vt *ValueTree) ParameterCount() int {
+	if vt == nil {
+		return 0
+	}
+	vt.mu.RLock()
+	defer vt.mu.RUnlock()
+	return len(vt.params)
+}
+
+// Keys lists set parameter keys in sorted order (dashboard readout).
+func (vt *ValueTree) Keys() []string {
+	if vt == nil {
+		return nil
+	}
+	vt.mu.RLock()
+	defer vt.mu.RUnlock()
+	keys := make([]string, 0, len(vt.params))
+	for k := range vt.params {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 // Subscribe returns a channel that receives state updates.

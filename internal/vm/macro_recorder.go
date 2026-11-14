@@ -36,6 +36,16 @@ func (mr *MacroRecorder) RecordClick(target string) {
 	}
 }
 
+// Stats reports recording state and buffered command count (dashboard readout).
+func (mr *MacroRecorder) Stats() (recording bool, commands int) {
+	if mr == nil {
+		return false, 0
+	}
+	mr.mu.Lock()
+	defer mr.mu.Unlock()
+	return mr.IsRecording, len(mr.CommandLog)
+}
+
 // GenerateScript flattens the Go buffer into a pure OmniScript payload.
 func (mr *MacroRecorder) GenerateScript() string {
 	mr.mu.Lock()
