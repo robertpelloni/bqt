@@ -48,6 +48,16 @@ func (mn *MeshNode) StartNode(port string, spawnCallback func(string, string, f3
 	go http.ListenAndServe(":"+port, nil)
 }
 
+// PeerCount reports live mesh connections (dashboard Node Health readout).
+func (mn *MeshNode) PeerCount() int {
+	if mn == nil {
+		return 0
+	}
+	mn.mu.Lock()
+	defer mn.mu.Unlock()
+	return len(mn.peers)
+}
+
 func (mn *MeshNode) Broadcast(payload interface{}) {
 	mn.mu.Lock(); defer mn.mu.Unlock()
 	for peer := range mn.peers { peer.WriteJSON(payload) }

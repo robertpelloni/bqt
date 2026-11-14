@@ -916,3 +916,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Start Menu stub replaced with working Dashboard / Tray Controls / Quit BQt Servers actions (Shell.OnStartAction, Engine-wired).
 
+
+## [1.2.55] - 2026-11-14
+### Added
+- MeshNode.PeerCount() live accessor; dashboard Node Health shows the real connected-peer count instead of a static description.
+

@@ -121,3 +121,6 @@
 - [ ] Free disk / prune checked-in bobui.exe (20MB) from repo root.
 - [ ] Submodule pointers locally ahead of recorded commits (juce 73ebd07, ultimatepp 2bd4570) - review then commit or reset.
 
+
+- [ ] BLOCKED (owner decision): submodules/ultimatepp is mid-merge (UU uppsrc/CtrlCore/CtrlCore.h) at a local auto-checkpoint commit; juce also on a local checkpoint commit. Resolve toward upstream or keep local - do not pin pointers until decided.
+

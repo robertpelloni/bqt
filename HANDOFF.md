@@ -130,3 +130,8 @@
 ## v1.2.54 (2026-11-14) - Start Menu populated
 - Shell.LayoutStartMenu was a static 'Applications' label; now Dashboard/Tray/Quit actions via Shell.OnStartAction wired in Engine. Test: TestShellStartMenuActions. Still TODO: native OS tray, Voice STT, cluster timeout UI, submodule pointer review, C: disk space.
 
+
+## v1.2.55 (2026-11-14) - Real mesh health + submodule warning
+- Dashboard Health now shows LIVE MeshNode.PeerCount() (new mutex-safe accessor in internal/net/mesh_node.go, tested). Start of replacing popup-only inspect buttons with real readouts.
+- DO NOT commit submodule pointers: juce HEAD is a local 'auto checkpoint' commit (clean, non-upstream); ultimatepp is MID-MERGE with UU conflict in uppsrc/CtrlCore/CtrlCore.h plus local edits. Needs owner decision: resolve merge upstream vs discard local checkpoint. Left untouched (nondestructive).
+

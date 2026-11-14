@@ -11,6 +11,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	bqtnet "github.com/robertpelloni/bqt/internal/net"
 	"github.com/robertpelloni/bqt/internal/ui/theme"
 )
 
@@ -211,7 +212,8 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 		ds.open("Shader Sync & Live Reload", "P2P shader-skin sync and hot reload watchers (internal/ui ShaderSync/LiveReloader).", "Network: ShaderSync opened")
 	}
 	if ds.btnHealth.Clicked(gtx) {
-		ds.open("Node Health", "Per-peer telemetry and health broadcast (internal/net NodeHealth).", "Network: NodeHealth opened")
+		// Real readout: live peer count from the running MeshNode singleton.
+		ds.open("Node Health", fmt.Sprintf("Mesh peers connected now: %d (app node on :8081). Telemetry broadcast: internal/net NodeHealth.", bqtnet.GetMeshNode().PeerCount()), fmt.Sprintf("Network: NodeHealth — %d peer(s) connected", bqtnet.GetMeshNode().PeerCount()))
 	}
 	// AI, VM & State
 	if ds.btnAI.Clicked(gtx) {
