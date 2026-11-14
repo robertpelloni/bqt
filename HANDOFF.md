@@ -151,3 +151,9 @@
 - TimeMachine button now really calls CommitState(dashboard/status) and reports success/failure (DB unconnected in baseline = broadcast-only). Permissions=live CanInteract check. Consensus=really calls ProposeMutation but it is a local stub (labelled). SelfHeal button shows live ActionRegistry.Count + Accessibility.ElementCount (new accessors; a11y elements map is never populated by UpdateTree yet - count 0 is truthful).
 - NOT wired deliberately: GitKernel.AutonomousCommit (executes real git operations) - dashboard must not trigger it without confirmation design.
 
+
+## v1.2.59 (2026-11-14) - DiscoveryBeacon fixed + live
+- BUG FIXED: GetDiscoveryBeacon returned a NEW beacon per call (state unobservable); StartBroadcasting ignored dial errors and wrote to a possibly-nil conn in a goroutine (panic risk), with no stop. Now: singleton, idempotent Start, nil/error guards, StopBroadcasting/IsBroadcasting. Dashboard Discovery really starts it and reports state+peer count.
+- Also noted: MeshNode.StartNode registers on the global http mux - a second call panics on duplicate pattern. App calls it once; guard is future work.
+- Remaining descriptive: Asset/media streams (need asset/peer), Packages (need peer), Git (exec - needs confirmation), AI/Lisp/Neural (import cycle).
+

@@ -216,7 +216,9 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 		ds.open("Mesh Node", "Peer-to-peer mesh node; the running app starts it on port 8081 (internal/net MeshNode).", "Network: MeshNode opened")
 	}
 	if ds.btnDiscovery.Clicked(gtx) {
-		ds.open("P2P Discovery", "UDP/multicast peer discovery heartbeat (internal/net DiscoveryBeacon).", "Network: Discovery opened")
+		b := bqtnet.GetDiscoveryBeacon()
+		b.StartBroadcasting(8081)
+		ds.open("P2P Discovery", fmt.Sprintf("Beacon broadcasting on UDP 9999: %v (announces OMNI_NODE:8081 every 5s). Mesh peers connected: %d. Stop via tray mesh toggle design in TODO.", b.IsBroadcasting(), bqtnet.GetMeshNode().PeerCount()), fmt.Sprintf("Network: Discovery broadcasting=%v", b.IsBroadcasting()))
 	}
 	if ds.btnAssetStream.Clicked(gtx) {
 		ds.open("Asset Stream", "Chunked binary asset streaming to the mesh (internal/net StreamAssetToMesh).", "Network: Asset stream opened")
