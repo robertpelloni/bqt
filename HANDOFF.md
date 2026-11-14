@@ -146,3 +146,8 @@
 - BUG FIXED: kernel GlobalSearch appended to shared slice from a goroutine without a lock (data race); now holds SearchEngine.mu. Verified with go test -race on kernel/data/widgets.
 - SearchEngine.GlobalSearch local index is a hardcoded mock hit - real indexing is future work, dashboard labels it seeded.
 
+
+## v1.2.58 (2026-11-14) - TimeMachine/Permissions/Consensus/Actions live
+- TimeMachine button now really calls CommitState(dashboard/status) and reports success/failure (DB unconnected in baseline = broadcast-only). Permissions=live CanInteract check. Consensus=really calls ProposeMutation but it is a local stub (labelled). SelfHeal button shows live ActionRegistry.Count + Accessibility.ElementCount (new accessors; a11y elements map is never populated by UpdateTree yet - count 0 is truthful).
+- NOT wired deliberately: GitKernel.AutonomousCommit (executes real git operations) - dashboard must not trigger it without confirmation design.
+

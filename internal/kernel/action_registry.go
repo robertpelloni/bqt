@@ -38,6 +38,16 @@ func (ar *ActionRegistry) RegisterAction(id, label, shortcut string, handler fun
 	ar.actions[id] = Action{ID: id, Label: label, Shortcut: shortcut, Handler: handler}
 }
 
+// Count reports registered action count (dashboard readout).
+func (ar *ActionRegistry) Count() int {
+	if ar == nil {
+		return 0
+	}
+	ar.mu.RLock()
+	defer ar.mu.RUnlock()
+	return len(ar.actions)
+}
+
 // Trigger executes the action for a specific user ID.
 func (ar *ActionRegistry) Trigger(id, userID string) {
 	ar.mu.RLock()

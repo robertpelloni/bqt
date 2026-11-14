@@ -935,3 +935,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Data race in SearchEngine.GlobalSearch (unsynchronized slice append from fan-out goroutine); race-tested.
 
+
+## [1.2.58] - 2026-11-14
+### Added
+- Live dashboard actions: TimeMachine snapshot commit with honest result, Permissions CanInteract check, Consensus proposal (labelled stub), ActionRegistry/Accessibility counts (new Count/ElementCount accessors).
+

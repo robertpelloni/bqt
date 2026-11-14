@@ -175,24 +175,32 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 		ds.open("Clipboard Sync", fmt.Sprintf("Clipboard text: %d chars. MIME types held: %v (internal/kernel Clipboard).", len(cb.GetText()), cb.MimeTypes()), "Kernel: Clipboard — live contents shown")
 	}
 	if ds.btnTimeMachine.Clicked(gtx) {
-		ds.open("Time Machine", "Ledger snapshot/time-travel recovery (internal/data TimeMachine).", "Kernel Ledger: TimeMachine opened")
+		// Real action: commit a dashboard snapshot; reports DB/broadcast result honestly.
+		err := data.GetTimeMachine().CommitState("dashboard/status", ds.StatusMessage)
+		if err != nil {
+			ds.open("Time Machine", fmt.Sprintf("Snapshot FAILED: %v (database not connected in this baseline).", err), "Kernel Ledger: TimeMachine snapshot failed — see popup")
+		} else {
+			ds.open("Time Machine", "Snapshot committed and broadcast to mesh peers (0 peers is normal standalone). Restore/time-travel UI is future work.", "Kernel Ledger: TimeMachine snapshot committed")
+		}
 	}
 	if ds.btnSearch.Clicked(gtx) {
 		res := kernel.GetSearchEngine().GlobalSearch("bqt")
 		ds.open("Omni Search", fmt.Sprintf("Query 'bqt' returned %d result(s). NOTE: local index is a seeded stub hit until real indexing lands (internal/kernel SearchEngine).", len(res)), fmt.Sprintf("Search: %d result(s) (seeded index)", len(res)))
 	}
 	if ds.btnPermissions.Clicked(gtx) {
-		ds.open("Permissions", "Capability/RBAC checks (internal/kernel PermissionManager, AdminShell lock state).", "Security: Permissions opened")
+		ok := kernel.GetPermissionManager().CanInteract("local-dashboard", "dashboard")
+		ds.open("Permissions", fmt.Sprintf("Live check — device 'local-dashboard' may interact with 'dashboard': %v (unlocked targets allow all; internal/kernel PermissionManager).", ok), fmt.Sprintf("Security: Permissions — canInteract=%v", ok))
 	}
 	if ds.btnPlugins.Clicked(gtx) {
 		loaded := kernel.GetPluginManager().GetLoadedPlugins()
 		ds.open("Plugin Manager", fmt.Sprintf("Loaded plugins now: %d [%s]. Registry rejects duplicates (internal/kernel).", len(loaded), strings.Join(loaded, ", ")), fmt.Sprintf("Kernel: PluginManager — %d loaded", len(loaded)))
 	}
 	if ds.btnConsensus.Clicked(gtx) {
-		ds.open("Consensus & Grid Compute", "Peer consensus and distributed compute (internal/kernel ConsensusEngine/GridCompute).", "Kernel: Consensus opened")
+		ok := kernel.GetConsensusEngine().ProposeMutation("dashboard-ping")
+		ds.open("Consensus & Grid Compute", fmt.Sprintf("ProposeMutation('dashboard-ping') returned %v. NOTE: local stub — mesh voting is not layered on yet (internal/kernel ConsensusEngine).", ok), "Kernel: Consensus proposal queued (stub)")
 	}
 	if ds.btnSelfHeal.Clicked(gtx) {
-		ds.open("Self Healer & A11y", "Crash interception with AI repair reports plus Accessibility DOM (internal/kernel SelfHealer).", "Kernel: SelfHealer opened")
+		ds.open("Self Healer, Actions & A11y", fmt.Sprintf("Registered actions: %d. Accessible elements: %d (UpdateTree logs DOM size but does not yet populate elements). SelfHealer intercepts crashes in main (internal/kernel).", kernel.GetActionRegistry().Count(), kernel.GetAccessibilityManager().ElementCount()), "Kernel: SelfHealer/Actions/A11y — live counts shown")
 	}
 	if ds.btnGitKernel.Clicked(gtx) {
 		ds.open("Git Kernel", "In-kernel git/history services (internal/data GitKernel, HistoryReconciler).", "Data: GitKernel opened")

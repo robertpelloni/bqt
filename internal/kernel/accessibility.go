@@ -31,6 +31,16 @@ func GetAccessibilityManager() *AccessibilityManager {
 	return accessInstance
 }
 
+// ElementCount reports registered accessible elements (dashboard readout).
+func (am *AccessibilityManager) ElementCount() int {
+	if am == nil {
+		return 0
+	}
+	am.mu.RLock()
+	defer am.mu.RUnlock()
+	return len(am.elements)
+}
+
 // UpdateTree syncs the visual DOM with the system screen reader interface.
 func (am *AccessibilityManager) UpdateTree(domPayload string) {
 	am.mu.Lock()
