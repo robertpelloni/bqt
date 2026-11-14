@@ -50,6 +50,20 @@ func NewEngine() *Engine {
 		wm:    GetWindowManager(),
 		th:    theme.GetTheme(theme.Cyberpunk),
 	}
+	shell.OnStartAction = func(action string) {
+		switch action {
+		case "dashboard":
+			eng.demo.StatusMessage = "Start Menu: Dashboard — all systems on this one page; scroll for sections 1-6"
+		case "tray":
+			if shell.Tray != nil {
+				shell.Tray.MenuVisible = true
+			}
+		case "quit":
+			if shell.Tray != nil && shell.Tray.OnQuitServer != nil {
+				shell.Tray.OnQuitServer()
+			}
+		}
+	}
 	// Dashboard System section drives the same tray actions as the taskbar.
 	eng.demo.OnSystemAction = func(action string) {
 		if shell.Tray == nil {

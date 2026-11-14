@@ -911,3 +911,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Fully deprecated the legacy C++ `OmniMidiHandler` stubs, cleaning up references in `CMakeLists.txt` files and QML registration.
+
+## [1.2.54] - 2026-11-14
+### Fixed
+- Start Menu stub replaced with working Dashboard / Tray Controls / Quit BQt Servers actions (Shell.OnStartAction, Engine-wired).
+

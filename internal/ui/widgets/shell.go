@@ -16,6 +16,12 @@ type Shell struct {
 	StartMenuVisible bool
 	StartBtn         widget.Clickable
 	Tray             *TrayIcon
+	// OnStartAction receives "dashboard", "tray", or "quit" from the
+	// Start Menu. Nil-safe; wired by the Engine.
+	OnStartAction      func(action string)
+	btnStartDashboard  widget.Clickable
+	btnStartTray       widget.Clickable
+	btnStartQuit       widget.Clickable
 }
 
 func NewShell() *Shell {
@@ -65,7 +71,25 @@ func (s *Shell) LayoutStartMenu(gtx layout.Context, th theme.Theme) layout.Dimen
 	mth := material.NewTheme()
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Surface
-	rect := image.Rect(10, 10, 240, 200)
+	act := func(btn *widget.Clickable, action string) {
+		if btn.Clicked(gtx) {
+			s.StartMenuVisible = false
+			if s.OnStartAction != nil {
+				s.OnStartAction(action)
+			}
+		}
+	}
+	act(&s.btnStartDashboard, "dashboard")
+	act(&s.btnStartTray, "tray")
+	act(&s.btnStartQuit, "quit")
+	rect := image.Rect(10, 10, 260, 190)
 	paint.FillShape(gtx.Ops, th.Surface, clip.Rect(rect).Op())
-	return material.Label(mth, unit.Sp(11), "Applications").Layout(gtx)
+	return layout.Inset{Top: unit.Dp(10), Left: unit.Dp(10)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+			layout.Rigid(material.Label(mth, unit.Sp(11), "BQt Applications — everything lives on the dashboard").Layout),
+			layout.Rigid(material.Button(mth, &s.btnStartDashboard, "Open Dashboard (all systems)").Layout),
+			layout.Rigid(material.Button(mth, &s.btnStartTray, "Tray Controls (mute / mesh / restart)").Layout),
+			layout.Rigid(material.Button(mth, &s.btnStartQuit, "Quit BQt Servers").Layout),
+		)
+	})
 }

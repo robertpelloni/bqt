@@ -72,6 +72,21 @@ func TestShellStartMenuLayoutRespectsVisibility(t *testing.T) {
 	}
 }
 
+func TestShellStartMenuActions(t *testing.T) {
+	shell := NewShell()
+	shell.StartMenuVisible = true
+	got := ""
+	shell.OnStartAction = func(a string) { got = a }
+	shell.btnStartTray.Click()
+	shell.LayoutStartMenu(newWidgetTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
+	if got != "tray" {
+		t.Fatalf("expected start action tray, got %q", got)
+	}
+	if shell.StartMenuVisible {
+		t.Fatal("expected start menu to close after an action")
+	}
+}
+
 func TestNewShellConstructor(t *testing.T) {
 	sh := NewShell()
 	if sh == nil {

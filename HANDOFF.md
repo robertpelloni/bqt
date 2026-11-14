@@ -126,3 +126,7 @@
 - Env: C: 1.49GB free - always GOCACHE=D:\gocache-bqt GOTMPDIR=D:\gotmp-bqt. PowerShell 5.1 Start-Process has no -Priority; set PriorityClass after start.
 - Git: main==origin/main, local feature branches already merged. Submodule pointers dirty (ahead) - left unstaged deliberately.
 
+
+## v1.2.54 (2026-11-14) - Start Menu populated
+- Shell.LayoutStartMenu was a static 'Applications' label; now Dashboard/Tray/Quit actions via Shell.OnStartAction wired in Engine. Test: TestShellStartMenuActions. Still TODO: native OS tray, Voice STT, cluster timeout UI, submodule pointer review, C: disk space.
+
