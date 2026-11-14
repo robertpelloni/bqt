@@ -34,6 +34,16 @@ func GetUndoStack() *UndoStack {
 	return undoInstance
 }
 
+// Depth reports undo/redo history sizes (dashboard readout).
+func (us *UndoStack) Depth() (undo int, redo int) {
+	if us == nil {
+		return 0, 0
+	}
+	us.mu.Lock()
+	defer us.mu.Unlock()
+	return len(us.actions), len(us.redoPool)
+}
+
 // Push appends a new multi-user action to the Go temporal stack.
 func (us *UndoStack) Push(action UndoAction) {
 	us.mu.Lock()

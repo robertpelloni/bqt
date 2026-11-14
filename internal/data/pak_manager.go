@@ -64,6 +64,16 @@ func (pm *PakManager) MountArchive(path string) error {
 	return nil
 }
 
+// FileCount reports indexed archive file count (dashboard readout).
+func (pm *PakManager) FileCount() int {
+	if pm == nil {
+		return 0
+	}
+	pm.mu.RLock()
+	defer pm.mu.RUnlock()
+	return len(pm.vfs)
+}
+
 // GetFileBytes Seek-Slices the raw binary asset from the archive.
 func (pm *PakManager) GetFileBytes(virtualPath string) ([]byte, error) {
 	pm.mu.RLock()

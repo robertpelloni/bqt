@@ -12,6 +12,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/robertpelloni/bqt/internal/data"
 	"github.com/robertpelloni/bqt/internal/kernel"
 	bqtnet "github.com/robertpelloni/bqt/internal/net"
 	"github.com/robertpelloni/bqt/internal/state"
@@ -166,16 +167,19 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 	}
 	// Kernel & Data
 	if ds.btnUndoStack.Clicked(gtx) {
-		ds.open("Undo Stack", "Transaction ledger of state changes for rollback (internal/kernel UndoStack).", "Kernel Ledger: UndoStack opened")
+		u, r := kernel.GetUndoStack().Depth()
+		ds.open("Undo Stack", fmt.Sprintf("History now: %d undoable, %d redoable actions (cap 500, internal/kernel).", u, r), fmt.Sprintf("Kernel Ledger: UndoStack — %d/%d", u, r))
 	}
 	if ds.btnClipboard.Clicked(gtx) {
-		ds.open("Clipboard Sync", "P2P shared clipboard buffer (internal/kernel Clipboard).", "Kernel: Clipboard opened")
+		cb := kernel.GetClipboard()
+		ds.open("Clipboard Sync", fmt.Sprintf("Clipboard text: %d chars. MIME types held: %v (internal/kernel Clipboard).", len(cb.GetText()), cb.MimeTypes()), "Kernel: Clipboard — live contents shown")
 	}
 	if ds.btnTimeMachine.Clicked(gtx) {
 		ds.open("Time Machine", "Ledger snapshot/time-travel recovery (internal/data TimeMachine).", "Kernel Ledger: TimeMachine opened")
 	}
 	if ds.btnSearch.Clicked(gtx) {
-		ds.open("Omni Search", "Global index search across local state and peers (internal/kernel SearchEngine).", "Search: Omni Search opened")
+		res := kernel.GetSearchEngine().GlobalSearch("bqt")
+		ds.open("Omni Search", fmt.Sprintf("Query 'bqt' returned %d result(s). NOTE: local index is a seeded stub hit until real indexing lands (internal/kernel SearchEngine).", len(res)), fmt.Sprintf("Search: %d result(s) (seeded index)", len(res)))
 	}
 	if ds.btnPermissions.Clicked(gtx) {
 		ds.open("Permissions", "Capability/RBAC checks (internal/kernel PermissionManager, AdminShell lock state).", "Security: Permissions opened")
@@ -194,7 +198,7 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 		ds.open("Git Kernel", "In-kernel git/history services (internal/data GitKernel, HistoryReconciler).", "Data: GitKernel opened")
 	}
 	if ds.btnMeshDB.Clicked(gtx) {
-		ds.open("Mesh DB & VFS", "Replicated DB, PakManager archives and ImageProvider VFS (internal/data).", "Data: Mesh DB/VFS opened")
+		ds.open("Mesh DB & VFS", fmt.Sprintf("VFS assets mounted: %d. Pak archive files indexed: %d. Replicated DB: internal/data DistributedDB.", data.GetVFS().AssetCount(), data.GetPakManager().FileCount()), "Data: Mesh DB/VFS — live counts shown")
 	}
 	if ds.btnPackages.Clicked(gtx) {
 		ds.open("Package Registry", "Mesh package registry (internal/data PackageRegistry).", "Data: PackageRegistry opened")

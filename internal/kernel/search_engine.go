@@ -37,8 +37,11 @@ func (se *SearchEngine) GlobalSearch(query string) []SearchResult {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		// Mock local search hit
+		// Seeded local hit until a real index exists. Mutex: concurrent
+		// fan-out appends raced on the shared results slice.
+		se.mu.Lock()
 		results = append(results, SearchResult{Source: "Local", Path: "/omni/core.go", Match: "func GetSearchEngine()"})
+		se.mu.Unlock()
 	}()
 
 	// 2. Search Remote Peers via Mesh

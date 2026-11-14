@@ -928,3 +928,10 @@ All notable changes to this project will be documented in this file.
 ### Notes
 - Macro/Audio live readouts blocked by import cycles (vm->ui, audio->ui); documented, not faked.
 
+
+## [1.2.57] - 2026-11-14
+### Added
+- Live dashboard readouts for Undo depth, Clipboard contents, Search results, and VFS/Pak counts (new Depth/AssetCount/FileCount accessors).
+### Fixed
+- Data race in SearchEngine.GlobalSearch (unsynchronized slice append from fan-out goroutine); race-tested.
+

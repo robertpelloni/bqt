@@ -140,3 +140,9 @@
 - LIVE now: Health=MeshNode.PeerCount, Plugins=PluginManager.GetLoadedPlugins, ValueTree=ParameterCount/Keys (new sorted Keys accessor). New MacroRecorder.Stats() accessor exists but dashboard cannot use it: internal/vm imports internal/ui (neural_engine) and internal/audio imports internal/ui, so widgets importing vm/audio cycles. Fix would be moving NeuralEngine's ui dependency behind an interface - owner/architecture decision.
 - Remaining popup-only buttons are descriptive by design until their packages are cycle-free (kernel/state/net are safe to import from widgets).
 
+
+## v1.2.57 (2026-11-14) - Undo/Clipboard/Search/VFS live + search race fixed
+- LIVE now also: Undo=Depth(), Clipboard=text/MIME, Search=real GlobalSearch call (SEEDED stub index, labelled as such), MeshDB/VFS=AssetCount/FileCount. Accessors: kernel.UndoStack.Depth, data VFS.AssetCount, PakManager.FileCount.
+- BUG FIXED: kernel GlobalSearch appended to shared slice from a goroutine without a lock (data race); now holds SearchEngine.mu. Verified with go test -race on kernel/data/widgets.
+- SearchEngine.GlobalSearch local index is a hardcoded mock hit - real indexing is future work, dashboard labels it seeded.
+
