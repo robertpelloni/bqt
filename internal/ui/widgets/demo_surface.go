@@ -213,7 +213,8 @@ func (ds *DemoSurface) handleClicks(gtx layout.Context) {
 	}
 	// Mesh & Streaming
 	if ds.btnMeshNode.Clicked(gtx) {
-		ds.open("Mesh Node", "Peer-to-peer mesh node; the running app starts it on port 8081 (internal/net MeshNode).", "Network: MeshNode opened")
+		running, port := bqtnet.GetMeshNode().IsRunning()
+		ds.open("Mesh Node", fmt.Sprintf("Running: %v (port %s, started by main). Peers connected: %d. Start is idempotent — repeat StartNode calls no longer panic.", running, port, bqtnet.GetMeshNode().PeerCount()), fmt.Sprintf("Network: MeshNode running=%v peers=%d", running, bqtnet.GetMeshNode().PeerCount()))
 	}
 	if ds.btnDiscovery.Clicked(gtx) {
 		b := bqtnet.GetDiscoveryBeacon()

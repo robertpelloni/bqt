@@ -157,3 +157,7 @@
 - Also noted: MeshNode.StartNode registers on the global http mux - a second call panics on duplicate pattern. App calls it once; guard is future work.
 - Remaining descriptive: Asset/media streams (need asset/peer), Packages (need peer), Git (exec - needs confirmation), AI/Lisp/Neural (import cycle).
 
+
+## v1.2.60 (2026-11-14) - MeshNode hardening
+- BUGS FIXED in MeshNode: (1) StartNode registered on global http mux - second call panicked; now guarded (started flag) with private ServeMux, idempotent (tested on port 0). (2) Handler used unchecked type assertions on peer JSON and called a possibly-nil ledgerSync (main passes nil,nil) - malformed peer messages could panic it; now comma-ok + nil guard. (3) New IsRunning() accessor; dashboard Mesh Node shows live running/port/peers.
+

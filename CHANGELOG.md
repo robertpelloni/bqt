@@ -945,3 +945,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - DiscoveryBeacon: singleton (was new-per-call), idempotent nil-safe StartBroadcasting, StopBroadcasting/IsBroadcasting; dashboard Discovery button now really starts it and reports live state.
 
+
+## [1.2.60] - 2026-11-14
+### Fixed
+- MeshNode.StartNode double-start panic (global mux) via guard + private mux; hardened peer-message handler (comma-ok assertions, nil ledgerSync guard). Dashboard Mesh Node shows live running/port/peer state.
+

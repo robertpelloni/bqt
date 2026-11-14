@@ -29,3 +29,12 @@ func TestMeshNodePeerCount(t *testing.T) {
  if nilNode.PeerCount() != 0 { t.Fatal("nil node must report 0") }
 }
 
+
+func TestMeshNodeStartNodeIdempotent(t *testing.T) {
+ mn := &MeshNode{}
+ mn.StartNode("0", nil, nil)
+ mn.StartNode("0", nil, nil)
+ running, port := mn.IsRunning()
+ if !running || port != "0" { t.Fatalf("want running on port 0, got %v/%q", running, port) }
+}
+
