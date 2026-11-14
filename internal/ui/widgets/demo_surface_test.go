@@ -139,3 +139,32 @@ func TestDemoSurfaceButtonInteractions(t *testing.T) {
 		t.Errorf("expected status message update on btnDialog click")
 	}
 }
+
+func TestDemoSurfaceConsolidatedCoverage(t *testing.T) {
+	ds := NewDemoSurface()
+	var ops op.Ops
+	gtx := layout.Context{Ops: &ops}
+	th := theme.GetTheme(theme.Cyberpunk)
+	// Every consolidated section must dispatch a status update (no dead buttons).
+	for name, click := range map[string]func(){
+		"plugins": func() { ds.btnPlugins.Click() },
+		"git":     func() { ds.btnGitKernel.Click() },
+		"ai":      func() { ds.btnAI.Click() },
+		"webback": func() { ds.btnWebBack.Click() },
+	} {
+		ds.StatusMessage = ""
+		click()
+		ds.Layout(gtx, th)
+		if ds.StatusMessage == "" {
+			t.Errorf("%s: expected status update", name)
+		}
+	}
+	// System actions must reach the Engine callback when wired.
+	got := ""
+	ds.OnSystemAction = func(a string) { got = a }
+	ds.btnTrayQuit.Click()
+	ds.Layout(gtx, th)
+	if got != "quit" {
+		t.Errorf("expected OnSystemAction quit, got %q", got)
+	}
+}

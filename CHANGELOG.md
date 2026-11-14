@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.53] - 2026-11-14
+### Added
+- **Consolidated dashboard (single scrollable page):** `DemoSurface` now covers every `internal/` subsystem in value order — Audio DSP (incl. Voice/MIDI/Player/Sequencer) + live Vol/BPM/Voices + scope, Kernel/Ledger/Data (Plugins, Consensus, Self-Heal, Git, MeshDB/VFS, Packages), Mesh/Streaming/Health, AI/VM/State, UI gallery + real WebView Back/Forward/Reload, and a System section mirroring the tray. Hover tooltips on all controls; no subpages.
+- **Scripts:** `scripts/build.ps1`, `scripts/run.ps1` (BelowNormal priority; D: Go cache when C: is low) and `scripts/README.md`.
+### Fixed
+- `DemoSurface.WebView` was wired by the Engine but never rendered; it now has a visible panel with working navigation.
+- Tray `OnMuteDSP`/`OnDisconnectMesh` were never assigned (mute/disconnect were no-ops); wired in `Engine`, and dashboard System buttons drive the same tray via `DemoSurface.OnSystemAction`.
+- Dashboard overflow on small windows: content now scrolls (`material.List`).
+
 ## [1.2.52] - 2026-11-12
 ### Changed
 - **Submodule Synchronization:** Updated nested `submodules/juce` to latest upstream `origin/master` (`d60b7a78030661574a615b586d9325ba7a7fa7dd`, JUCE 9.0.5) and `submodules/ultimatepp` to latest upstream `origin/master` (`1a56dd3a4a02112563eb9e16f62f17bba8a0edd1`), keeping shallow-clone tips clean and verified.

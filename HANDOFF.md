@@ -118,3 +118,11 @@
   - Discarded a corrupted local auto-checkpoint commit (`ef870c13a`) in `submodules/ultimatepp` and updated both nested submodules cleanly to their latest upstream `origin/master` branch tips (`juce` @ `d60b7a78030661574a615b586d9325ba7a7fa7dd` / JUCE 9.0.5, `ultimatepp` @ `1a56dd3a4a02112563eb9e16f62f17bba8a0edd1`).
   - Added `build.bat`, updated `.gitignore` to ignore nested `build_output/` and `OmniUI/omnicore/rust/target/` directories without purging compiled binaries, and updated `SUBMODULE_INVENTORY.md` & `SUBMODULE_DASHBOARD.md`.
 - Current Version: v1.2.52
+
+## v1.2.53 (2026-11-14) - Dashboard consolidation
+- DemoSurface: one scrollable page, 6 value-ordered sections, ~40 controls, all with hover tooltips. Inspect buttons open an explanatory Popup + status line; Vol/BPM/Voices/WebView/System mutate real state. Do not claim inspect buttons execute backends.
+- Tray: in-window taskbar (Shell.LayoutTaskbar/TrayIcon), NOT an OS tray. Quit stops EventLoop only; full exit = close window. Mute/Mesh now wired (log-only; MeshNode not actually stopped).
+- Run: scripts/run.ps1 (BelowNormal, logs/bqt-last-run*.log). Verified: go test ./internal/... all ok, bqt.exe alive 6s BelowNormal, logs clean. GUI click-through (Login BOOT KERNEL) not automated.
+- Env: C: 1.49GB free - always GOCACHE=D:\gocache-bqt GOTMPDIR=D:\gotmp-bqt. PowerShell 5.1 Start-Process has no -Priority; set PriorityClass after start.
+- Git: main==origin/main, local feature branches already merged. Submodule pointers dirty (ahead) - left unstaged deliberately.
+

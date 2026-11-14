@@ -113,3 +113,11 @@
 - [x] Verify and test TabBar ClickTab out-of-bounds boundary handling in `internal/ui/widgets`.
 - [x] Verify and test Popup empty strings and BQtHeaderBar empty custom widgets in `internal/ui/widgets`.
 - [x] Verify and test PakManager archive mounting and ImageProvider VFS retrieval in `internal/data`.
+
+## v1.2.53 follow-ups
+- [ ] Native OS tray icon with real Quit (window close), Mute, Restart.
+- [ ] Populate Start Menu (currently static 'Applications' label).
+- [ ] C: drive at 1.5GB free breaks default Go cache - keep GOCACHE on D: (scripts/build.ps1 handles it).
+- [ ] Free disk / prune checked-in bobui.exe (20MB) from repo root.
+- [ ] Submodule pointers locally ahead of recorded commits (juce 73ebd07, ultimatepp 2bd4570) - review then commit or reset.
+

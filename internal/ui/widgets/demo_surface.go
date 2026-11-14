@@ -15,69 +15,64 @@ import (
 )
 
 // DemoSurface is the consolidated, single-page unified dashboard for BQt.
-// It organizes all backend framework subsystems into categorized, high-value
-// panels: Audio DSP Engine, Distributed Kernel & Ledger, Mesh Networking,
-// and UI Interop Surfaces, with informative labels, live parameter sliders,
-// and tooltips.
+// One scrollable page, ordered by value: Audio DSP first, then Kernel/Data,
+// Mesh, AI/VM, UI surfaces, and System/Tray last. Every backend subsystem in
+// internal/ has a labelled control here; hover any control for a tooltip.
+// There are no subpages: overlays (Dialog/Popup/Drawer) open in place.
 type DemoSurface struct {
 	WebView     WebView
 	synthWidget *SynthWidget
+	list        widget.List
 
-	// Category 1: High-Priority Audio DSP Engine Action Buttons
-	btnAudioGraph   widget.Clickable
-	btnSynthesizer  widget.Clickable
-	btnFilter       widget.Clickable
-	btnGain         widget.Clickable
-	btnMasterClock  widget.Clickable
+	// 1: Audio DSP Engine
+	btnAudioGraph, btnSynthesizer, btnFilter, btnGain, btnMasterClock widget.Clickable
+	btnVoice, btnMidi, btnPlayer, btnSequencer                        widget.Clickable
+	btnVolUp, btnVolDown, btnBpmUp, btnBpmDown, btnPolyToggle         widget.Clickable
+	VolumeLevel                                                       float32
+	ClockBpm                                                          float64
+	Polyphony                                                         int
 
-	// Category 1b: Live Interactive Parameter Controls
-	btnVolUp      widget.Clickable
-	btnVolDown    widget.Clickable
-	btnBpmUp      widget.Clickable
-	btnBpmDown    widget.Clickable
-	btnPolyToggle widget.Clickable
+	// 2: Distributed Kernel & Data
+	btnUndoStack, btnClipboard, btnTimeMachine, btnSearch, btnPermissions widget.Clickable
+	btnPlugins, btnConsensus, btnSelfHeal                                 widget.Clickable
+	btnGitKernel, btnMeshDB, btnPackages                                  widget.Clickable
 
-	// Interactive Parameter State
-	VolumeLevel float32
-	ClockBpm    float64
-	Polyphony   int
+	// 3: Mesh Network & Streaming
+	btnMeshNode, btnDiscovery, btnAssetStream widget.Clickable
+	btnVoiceMesh, btnMediaStream, btnHealth   widget.Clickable
 
-	// Category 2: High-Priority Distributed Kernel & Ledger
-	btnUndoStack   widget.Clickable
-	btnClipboard   widget.Clickable
-	btnTimeMachine widget.Clickable
-	btnSearch      widget.Clickable
-	btnPermissions widget.Clickable
+	// 4: AI, VM & State
+	btnAI, btnLispVM, btnMacros, btnNeural, btnValueTree widget.Clickable
 
-	// Category 3: Mesh Network & Discovery
-	btnMeshNode    widget.Clickable
-	btnDiscovery   widget.Clickable
-	btnAssetStream widget.Clickable
+	// 5: UI Interop, Widgets & WebView
+	btnDialog, btnPopup, btnDrawer                            widget.Clickable
+	btnTerminal, btnCalendar, btnTable, btnEditor, btnNodes   widget.Clickable
+	btnTheme, btnAnimate, btnWebBack, btnWebFwd, btnWebReload widget.Clickable
 
-	// Category 4: UI Interop & System Surfaces
-	btnDialog widget.Clickable
-	btnPopup  widget.Clickable
-	btnDrawer widget.Clickable
+	// 6: System & Tray (mirrors the taskbar tray menu)
+	btnTrayMute, btnTrayMesh, btnTrayRestart, btnTrayQuit widget.Clickable
+	// OnSystemAction is set by the Engine to drive the real Shell tray
+	// (mute DSP, mesh toggle, EventLoop restart, quit). Nil-safe.
+	OnSystemAction func(action string)
 
-	// Status message banner
 	StatusMessage string
-
-	// Overlays & Components
-	dialog  Dialog
-	popup   Popup
-	drawer  Drawer
-	menu    Menu
-	tooltip ToolTip
+	dialog        Dialog
+	popup         Popup
+	drawer        Drawer
+	menu          Menu
+	tooltip       ToolTip
 }
 
 func NewDemoSurface() *DemoSurface {
-	return &DemoSurface{
+	ds := &DemoSurface{
 		synthWidget:   NewSynthWidget(),
 		StatusMessage: "BQt Unified Kernel Active | Audio DSP Ready | EventLoop Synchronized",
 		VolumeLevel:   0.80,
 		ClockBpm:      120.0,
 		Polyphony:     8,
 	}
+	ds.list.Axis = layout.Vertical
+	return ds
 }
 
 func (ds *DemoSurface) SetSynthVoices(poly int) {
@@ -87,27 +82,27 @@ func (ds *DemoSurface) SetSynthVoices(poly int) {
 	}
 }
 
-func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
-	mth := material.NewTheme()
-	mth.Palette.Fg = th.Text
-	mth.Palette.Bg = th.Primary
+// open is the single dispatch pattern for inspect-style controls: it explains
+// the subsystem in place (Popup) and records the action in the status line.
+// Parameter and navigation controls mutate real state instead of using this.
+func (ds *DemoSurface) open(title, body, status string) {
+	ds.popup = Popup{Visible: true, Title: title, Body: body}
+	ds.StatusMessage = status
+}
 
-	// 1. Handle Interactive Parameter Controls
+func (ds *DemoSurface) handleClicks(gtx layout.Context) {
+	// Live parameters mutate real DemoSurface state (existing contract).
 	if ds.btnVolUp.Clicked(gtx) {
-		if ds.VolumeLevel < 1.0 {
-			ds.VolumeLevel += 0.05
-			if ds.VolumeLevel > 1.0 {
-				ds.VolumeLevel = 1.0
-			}
+		ds.VolumeLevel += 0.05
+		if ds.VolumeLevel > 1.0 {
+			ds.VolumeLevel = 1.0
 		}
 		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Volume set to %.0f%%", ds.VolumeLevel*100)
 	}
 	if ds.btnVolDown.Clicked(gtx) {
-		if ds.VolumeLevel > 0.0 {
-			ds.VolumeLevel -= 0.05
-			if ds.VolumeLevel < 0.0 {
-				ds.VolumeLevel = 0.0
-			}
+		ds.VolumeLevel -= 0.05
+		if ds.VolumeLevel < 0.0 {
+			ds.VolumeLevel = 0.0
 		}
 		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Volume set to %.0f%%", ds.VolumeLevel*100)
 	}
@@ -126,18 +121,115 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.StatusMessage = fmt.Sprintf("Audio Param: Master Clock tempo set to %.0f BPM", ds.ClockBpm)
 	}
 	if ds.btnPolyToggle.Clicked(gtx) {
-		if ds.Polyphony == 8 {
+		switch ds.Polyphony {
+		case 8:
 			ds.Polyphony = 16
-		} else if ds.Polyphony == 16 {
+		case 16:
 			ds.Polyphony = 4
-		} else {
+		default:
 			ds.Polyphony = 8
 		}
 		ds.SetSynthVoices(ds.Polyphony)
 		ds.StatusMessage = fmt.Sprintf("Audio Param: Synthesizer Polyphony set to %d voices", ds.Polyphony)
 	}
-
-	// 2. Handle Clicks & Dispatches
+	// Audio DSP
+	if ds.btnAudioGraph.Clicked(gtx) {
+		ds.open("OmniAudioGraph", "Central DSP graph (internal/audio): native Go nodes with JUCE adapter parity.", "Audio Engine: OmniAudioGraph opened")
+	}
+	if ds.btnSynthesizer.Clicked(gtx) {
+		ds.open("OmniSynthesizer", "Polyphonic Go synthesizer (internal/audio). Voice count follows the Voices control below.", "Audio Engine: OmniSynthesizer opened")
+	}
+	if ds.btnFilter.Clicked(gtx) {
+		ds.open("Biquad Filter", "TPT biquad filter (lowpass/highpass/bandpass) in internal/audio. Verified by dsp_math tests.", "Audio Engine: Biquad Filter opened")
+	}
+	if ds.btnGain.Clicked(gtx) {
+		ds.open("OmniGain", "Thread-safe gain node (internal/audio) emitting GainChanged through the unified EventLoop.", "Audio Engine: OmniGain opened")
+	}
+	if ds.btnMasterClock.Clicked(gtx) {
+		ds.open("Master Clock", fmt.Sprintf("Temporal heartbeat at %.0f BPM, firing 16th-note steps across the graph.", ds.ClockBpm), "Audio Engine: MasterClock opened")
+	}
+	if ds.btnVoice.Clicked(gtx) {
+		ds.open("Voice Engine", "PCM microphone capture/buffer lifecycle (internal/audio VoiceEngine). STT dispatch is not yet wired; see ROADMAP.", "Audio: VoiceEngine opened (capture ready, STT unwired)")
+	}
+	if ds.btnMidi.Clicked(gtx) {
+		ds.open("MIDI & MidiMesh", "NoteOn/NoteOff handling and mesh broadcast (internal/audio MidiHandler/MidiMesh).", "Audio: MIDI handler opened")
+	}
+	if ds.btnPlayer.Clicked(gtx) {
+		ds.open("Audio Player & Cluster DSP", "Playback plus DistributeDSPTask mesh offload (internal/audio). Watch for offload timeout UI in TODO.", "Audio: Player/Cluster opened")
+	}
+	if ds.btnSequencer.Clicked(gtx) {
+		ds.open("Sequencer", "Step sequencer driven by MasterClock (internal/audio Sequencer). Tempo follows the BPM control.", "Audio: Sequencer opened")
+	}
+	// Kernel & Data
+	if ds.btnUndoStack.Clicked(gtx) {
+		ds.open("Undo Stack", "Transaction ledger of state changes for rollback (internal/kernel UndoStack).", "Kernel Ledger: UndoStack opened")
+	}
+	if ds.btnClipboard.Clicked(gtx) {
+		ds.open("Clipboard Sync", "P2P shared clipboard buffer (internal/kernel Clipboard).", "Kernel: Clipboard opened")
+	}
+	if ds.btnTimeMachine.Clicked(gtx) {
+		ds.open("Time Machine", "Ledger snapshot/time-travel recovery (internal/data TimeMachine).", "Kernel Ledger: TimeMachine opened")
+	}
+	if ds.btnSearch.Clicked(gtx) {
+		ds.open("Omni Search", "Global index search across local state and peers (internal/kernel SearchEngine).", "Search: Omni Search opened")
+	}
+	if ds.btnPermissions.Clicked(gtx) {
+		ds.open("Permissions", "Capability/RBAC checks (internal/kernel PermissionManager, AdminShell lock state).", "Security: Permissions opened")
+	}
+	if ds.btnPlugins.Clicked(gtx) {
+		ds.open("Plugin Manager", "Dynamic plugin registry; duplicates rejected (internal/kernel PluginManager/PluginHost).", "Kernel: PluginManager opened")
+	}
+	if ds.btnConsensus.Clicked(gtx) {
+		ds.open("Consensus & Grid Compute", "Peer consensus and distributed compute (internal/kernel ConsensusEngine/GridCompute).", "Kernel: Consensus opened")
+	}
+	if ds.btnSelfHeal.Clicked(gtx) {
+		ds.open("Self Healer & A11y", "Crash interception with AI repair reports plus Accessibility DOM (internal/kernel SelfHealer).", "Kernel: SelfHealer opened")
+	}
+	if ds.btnGitKernel.Clicked(gtx) {
+		ds.open("Git Kernel", "In-kernel git/history services (internal/data GitKernel, HistoryReconciler).", "Data: GitKernel opened")
+	}
+	if ds.btnMeshDB.Clicked(gtx) {
+		ds.open("Mesh DB & VFS", "Replicated DB, PakManager archives and ImageProvider VFS (internal/data).", "Data: Mesh DB/VFS opened")
+	}
+	if ds.btnPackages.Clicked(gtx) {
+		ds.open("Package Registry", "Mesh package registry (internal/data PackageRegistry).", "Data: PackageRegistry opened")
+	}
+	// Mesh & Streaming
+	if ds.btnMeshNode.Clicked(gtx) {
+		ds.open("Mesh Node", "Peer-to-peer mesh node; the running app starts it on port 8081 (internal/net MeshNode).", "Network: MeshNode opened")
+	}
+	if ds.btnDiscovery.Clicked(gtx) {
+		ds.open("P2P Discovery", "UDP/multicast peer discovery heartbeat (internal/net DiscoveryBeacon).", "Network: Discovery opened")
+	}
+	if ds.btnAssetStream.Clicked(gtx) {
+		ds.open("Asset Stream", "Chunked binary asset streaming to the mesh (internal/net StreamAssetToMesh).", "Network: Asset stream opened")
+	}
+	if ds.btnVoiceMesh.Clicked(gtx) {
+		ds.open("Voice/Video/Desktop Streams", "Realtime voice, video, desktop and teleport streams (internal/net streaming protocols).", "Network: Media streams opened")
+	}
+	if ds.btnMediaStream.Clicked(gtx) {
+		ds.open("Shader Sync & Live Reload", "P2P shader-skin sync and hot reload watchers (internal/ui ShaderSync/LiveReloader).", "Network: ShaderSync opened")
+	}
+	if ds.btnHealth.Clicked(gtx) {
+		ds.open("Node Health", "Per-peer telemetry and health broadcast (internal/net NodeHealth).", "Network: NodeHealth opened")
+	}
+	// AI, VM & State
+	if ds.btnAI.Clicked(gtx) {
+		ds.open("AI Assistant", "Completion/repair assistant used by the SelfHealer (internal/vm AIAssistant).", "AI: Assistant opened")
+	}
+	if ds.btnLispVM.Clicked(gtx) {
+		ds.open("Lisp VM", "Embedded Lisp evaluator and VM (internal/vm).", "VM: Lisp VM opened")
+	}
+	if ds.btnMacros.Clicked(gtx) {
+		ds.open("Macro Recorder", "Record/replay input macros (internal/vm MacroRecorder).", "VM: MacroRecorder opened")
+	}
+	if ds.btnNeural.Clicked(gtx) {
+		ds.open("Neural Engine / DOM Capture", "Neural inference and neural DOM capture (internal/vm NeuralEngine).", "VM: NeuralEngine opened")
+	}
+	if ds.btnValueTree.Clicked(gtx) {
+		ds.open("ValueTree State", "Hierarchical parameters with subscriptions (internal/state ValueTree).", "State: ValueTree opened")
+	}
+	// UI surfaces & widgets (real overlay state)
 	if ds.btnDialog.Clicked(gtx) {
 		ds.dialog = Dialog{Visible: true, Title: "BQt Native Dialog", Body: "Modal interaction initialized across BQt window tree."}
 		ds.StatusMessage = "UI Action: Dialog Opened"
@@ -150,243 +242,239 @@ func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensi
 		ds.drawer = Drawer{Visible: true, Title: "Navigation Drawer", WidthDp: 260}
 		ds.StatusMessage = "UI Action: Drawer Toggled"
 	}
+	if ds.btnTerminal.Clicked(gtx) {
+		ds.open("Widget Gallery: Terminal", "Terminal, Calendar, TableView, CodeEditor, NodeEditor, Plot, ParticleSystem and 30+ widgets live in internal/ui/widgets, each unit-tested.", "UI: Widget gallery opened")
+	}
+	if ds.btnCalendar.Clicked(gtx) {
+		ds.open("Widget Gallery: Calendar", "Calendar/Table/Editor/Node widgets are layout-verified in internal/ui/widgets tests; this page surfaces them by category to avoid subpages.", "UI: Calendar/widgets opened")
+	}
+	if ds.btnTable.Clicked(gtx) {
+		ds.open("Widget Gallery: Table", "TableView empty-state fallback and cell distribution are covered by table tests in internal/ui/widgets.", "UI: Table/widgets opened")
+	}
+	if ds.btnEditor.Clicked(gtx) {
+		ds.open("Widget Gallery: Code Editor", "CodeEditor, DockArea, OmniStudio shell and Scene3D nodes are covered in internal/ui/widgets.", "UI: Editor/widgets opened")
+	}
+	if ds.btnNodes.Clicked(gtx) {
+		ds.open("Widget Gallery: Node Editor", "NodeEditor, ShaderEffect, Raymarcher and RHINode procedural surfaces (internal/ui/widgets).", "UI: Node/widgets opened")
+	}
+	if ds.btnTheme.Clicked(gtx) {
+		ds.open("Theme & Animation", "Palette generation, stylesheet parsing and cubic ease-out animation (internal/ui/theme, internal/ui/anim).", "UI: Theme/Anim opened")
+	}
+	if ds.btnAnimate.Clicked(gtx) {
+		ds.open("Compute & Haptics", "GPU ComputeKernel dispatch, HapticsEngine proximity and LiveReloader (internal/ui).", "UI: Compute/Haptics opened")
+	}
+	// WebView navigation mutates the real WebView history/bridge state.
+	if ds.btnWebBack.Clicked(gtx) {
+		ds.WebView.Back()
+		ds.StatusMessage = "WebView: Back (boundary-safe no-op at history start)"
+	}
+	if ds.btnWebFwd.Clicked(gtx) {
+		ds.WebView.Forward()
+		ds.StatusMessage = "WebView: Forward (boundary-safe no-op at history end)"
+	}
+	if ds.btnWebReload.Clicked(gtx) {
+		ds.WebView.Navigate("about:bqt", "")
+		ds.StatusMessage = "WebView: Reloaded about:bqt"
+	}
+	// System & Tray: drive the real shell tray through the Engine callback.
+	sys := func(btn *widget.Clickable, action, label string) {
+		if btn.Clicked(gtx) {
+			if ds.OnSystemAction != nil {
+				ds.OnSystemAction(action)
+			}
+			ds.StatusMessage = "System (tray): " + label + " — also in the taskbar BQt Tray menu (bottom-right)"
+		}
+	}
+	sys(&ds.btnTrayMute, "mute", "Mute/Unmute Audio DSP")
+	sys(&ds.btnTrayMesh, "mesh", "Disconnect/Reconnect P2P Mesh")
+	sys(&ds.btnTrayRestart, "restart", "Restart EventLoop")
+	sys(&ds.btnTrayQuit, "quit", "Quit BQt Servers (stops EventLoop; close window to exit)")
+}
 
-	if ds.btnAudioGraph.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "OmniAudioGraph", Body: "JUCE Adapter & Parallel Audio Processing Graph active."}
-		ds.StatusMessage = "Audio Engine: OmniAudioGraph active"
+type tipEntry struct {
+	btn  *widget.Clickable
+	text string
+	y    float32
+}
+
+func (ds *DemoSurface) updateTooltip() {
+	tips := []tipEntry{
+		{&ds.btnAudioGraph, "[AudioGraph] Central DSP graph: native Go nodes, JUCE parity.", 120},
+		{&ds.btnSynthesizer, "[Synthesizer] Polyphonic synth; set voices with the Voices control.", 120},
+		{&ds.btnFilter, "[Filter] TPT biquad: lowpass / highpass / bandpass.", 120},
+		{&ds.btnGain, "[Gain] Thread-safe volume node with GainChanged signals.", 120},
+		{&ds.btnMasterClock, "[MasterClock] 16th-note heartbeat; tempo from the BPM control.", 120},
+		{&ds.btnVoice, "[Voice] Mic PCM capture. STT dispatch not yet wired.", 120},
+		{&ds.btnMidi, "[MIDI] Note handling + MidiMesh broadcast.", 120},
+		{&ds.btnPlayer, "[Player] Playback + cluster DSP offload to mesh peers.", 120},
+		{&ds.btnSequencer, "[Sequencer] Step patterns locked to MasterClock BPM.", 120},
+		{&ds.btnVolUp, "[Volume] Master gain 0-100% in 5% steps.", 150},
+		{&ds.btnVolDown, "[Volume] Master gain 0-100% in 5% steps.", 150},
+		{&ds.btnBpmUp, "[Tempo] MasterClock 40-240 BPM in 5 BPM steps.", 150},
+		{&ds.btnBpmDown, "[Tempo] MasterClock 40-240 BPM in 5 BPM steps.", 150},
+		{&ds.btnPolyToggle, "[Voices] Cycle synth polyphony 8 > 16 > 4.", 150},
+		{&ds.btnUndoStack, "[UndoStack] Roll back ledgered state changes.", 220},
+		{&ds.btnClipboard, "[Clipboard] P2P shared clipboard buffer.", 220},
+		{&ds.btnTimeMachine, "[TimeMachine] Snapshot and restore system state.", 220},
+		{&ds.btnSearch, "[Search] Query local state and mesh peers.", 220},
+		{&ds.btnPermissions, "[Permissions] Capability/RBAC checks.", 220},
+		{&ds.btnPlugins, "[Plugins] Registry; duplicate registration is rejected.", 220},
+		{&ds.btnConsensus, "[Consensus] Peer agreement + grid compute.", 220},
+		{&ds.btnSelfHeal, "[SelfHealer] Crash interception, AI repair, a11y DOM.", 220},
+		{&ds.btnGitKernel, "[GitKernel] Git/history services in internal/data.", 260},
+		{&ds.btnMeshDB, "[MeshDB/VFS] Replicated DB, Pak archives, image VFS.", 260},
+		{&ds.btnPackages, "[Packages] Mesh package registry.", 260},
+		{&ds.btnMeshNode, "[MeshNode] P2P node started by the app on :8081.", 300},
+		{&ds.btnDiscovery, "[Discovery] Multicast peer discovery heartbeat.", 300},
+		{&ds.btnAssetStream, "[AssetStream] Chunked binary streaming to peers.", 300},
+		{&ds.btnVoiceMesh, "[Streams] Voice, video, desktop, teleport streams.", 300},
+		{&ds.btnMediaStream, "[ShaderSync] P2P shader sync + live reload.", 300},
+		{&ds.btnHealth, "[NodeHealth] Peer telemetry broadcast.", 300},
+		{&ds.btnAI, "[AI] Assistant behind SelfHealer repair reports.", 340},
+		{&ds.btnLispVM, "[LispVM] Embedded Lisp evaluator.", 340},
+		{&ds.btnMacros, "[Macros] Record and replay input macros.", 340},
+		{&ds.btnNeural, "[Neural] Inference + neural DOM capture.", 340},
+		{&ds.btnValueTree, "[ValueTree] Hierarchical params with subscriptions.", 340},
+		{&ds.btnDialog, "[Dialog] Modal dialog with scrim. Opens in place.", 380},
+		{&ds.btnPopup, "[Popup] Transient in-place feedback card.", 380},
+		{&ds.btnDrawer, "[Drawer] Slide-out navigation drawer.", 380},
+		{&ds.btnTerminal, "[Widgets] Terminal + 30 tested widgets, one gallery entry each.", 380},
+		{&ds.btnTheme, "[Theme] Palettes, stylesheets, animation easing.", 380},
+		{&ds.btnWebBack, "[WebView] History back; safe no-op at the start.", 400},
+		{&ds.btnWebFwd, "[WebView] History forward; safe no-op at the end.", 400},
+		{&ds.btnWebReload, "[WebView] Reload about:bqt in the embedded bridge.", 400},
+		{&ds.btnTrayQuit, "[Quit] Stops the EventLoop via the tray. Close the window to fully exit.", 440},
 	}
-	if ds.btnSynthesizer.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "OmniSynthesizer", Body: "Polyphonic Go synthesizer note rendering verified."}
-		ds.StatusMessage = "Audio Engine: OmniSynthesizer note dispatched"
+	ds.tooltip.Visible = false
+	for _, t := range tips {
+		if t.btn.Hovered() {
+			ds.tooltip = ToolTip{Visible: true, Text: t.text, X: 120, Y: int(t.y)}
+			return
+		}
 	}
-	if ds.btnFilter.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Biquad Filter", Body: "Real-time DSP lowpass filter applied to PCM buffer."}
-		ds.StatusMessage = "Audio Engine: Biquad Filter resonance tuned"
+}
+
+func btnRow(mth *material.Theme, pairs ...interface{}) layout.Widget {
+	return func(gtx layout.Context) layout.Dimensions {
+		var kids []layout.FlexChild
+		for i := 0; i+1 < len(pairs); i += 2 {
+			btn := pairs[i].(*widget.Clickable)
+			label := pairs[i+1].(string)
+			b, l := btn, label
+			kids = append(kids, layout.Rigid(material.Button(mth, b, l).Layout))
+		}
+		return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceStart}.Layout(gtx, kids...)
 	}
-	if ds.btnGain.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "OmniGain", Body: "Gain control updated via queued EventLoop signal."}
-		ds.StatusMessage = "Audio Engine: OmniGain calibrated"
-	}
-	if ds.btnMasterClock.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Master Clock", Body: fmt.Sprintf("Temporal heartbeat ticking at %.0f BPM across sixteenth steps.", ds.ClockBpm)}
-		ds.StatusMessage = "Audio Engine: MasterClock synced"
+}
+
+func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
+	mth := material.NewTheme()
+	mth.Palette.Fg = th.Text
+	mth.Palette.Bg = th.Primary
+	ds.handleClicks(gtx)
+	ds.updateTooltip()
+
+	sections := []layout.Widget{
+		func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					h := material.H6(mth, "BQt Unified Dashboard — one page, scroll for all systems")
+					h.Color = th.Text
+					return h.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					st := material.Caption(mth, "Status: "+ds.StatusMessage+"  |  Start at Login > BOOT KERNEL. Tray: taskbar bottom-right. Hover any button for help (?)")
+					st.Color = th.Primary
+					return st.Layout(gtx)
+				}),
+			)
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "1 · Audio DSP Engine — start here (graph, synth, filter, gain, clock, voice, MIDI)", btnRow(mth,
+				&ds.btnAudioGraph, "AudioGraph", &ds.btnSynthesizer, "Synthesizer", &ds.btnFilter, "Filter", &ds.btnGain, "Gain", &ds.btnMasterClock, "Clock",
+				&ds.btnVoice, "Voice", &ds.btnMidi, "MIDI", &ds.btnPlayer, "Player", &ds.btnSequencer, "Sequencer"))
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "1b · Live Parameters — these change real engine state", func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+					layout.Rigid(material.Caption(mth, fmt.Sprintf("Vol %.0f%% ", ds.VolumeLevel*100)).Layout),
+					layout.Rigid(material.Button(mth, &ds.btnVolDown, "Vol -").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnVolUp, "Vol +").Layout),
+					layout.Rigid(material.Caption(mth, fmt.Sprintf("  BPM %.0f ", ds.ClockBpm)).Layout),
+					layout.Rigid(material.Button(mth, &ds.btnBpmDown, "BPM -").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnBpmUp, "BPM +").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnPolyToggle, fmt.Sprintf("Voices: %d", ds.Polyphony)).Layout),
+				)
+			})
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			if ds.synthWidget == nil {
+				return layout.Dimensions{}
+			}
+			return layout.Stack{}.Layout(gtx, layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+				gtx.Constraints.Max.Y = 90
+				gtx.Constraints.Min.Y = 90
+				return ds.synthWidget.Layout(gtx)
+			}))
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "2 · Kernel, Ledger & Data — undo, search, security, plugins, git, storage", btnRow(mth,
+				&ds.btnUndoStack, "Undo", &ds.btnClipboard, "Clipboard", &ds.btnTimeMachine, "TimeMachine", &ds.btnSearch, "Search", &ds.btnPermissions, "Permissions",
+				&ds.btnPlugins, "Plugins", &ds.btnConsensus, "Consensus", &ds.btnSelfHeal, "Self-Heal", &ds.btnGitKernel, "Git", &ds.btnMeshDB, "MeshDB/VFS", &ds.btnPackages, "Packages"))
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "3 · Mesh Network & Streaming — peers, discovery, assets, media, health", btnRow(mth,
+				&ds.btnMeshNode, "Mesh Node", &ds.btnDiscovery, "Discovery", &ds.btnAssetStream, "Assets", &ds.btnVoiceMesh, "Voice/Video", &ds.btnMediaStream, "ShaderSync", &ds.btnHealth, "Health"))
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "4 · AI, VM & State — assistant, Lisp, macros, neural, ValueTree", btnRow(mth,
+				&ds.btnAI, "AI Assistant", &ds.btnLispVM, "Lisp VM", &ds.btnMacros, "Macros", &ds.btnNeural, "Neural", &ds.btnValueTree, "ValueTree"))
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "5 · UI Surfaces & Widgets — overlays open in place; gallery covers all 30+ widgets", btnRow(mth,
+				&ds.btnDialog, "Dialog", &ds.btnPopup, "Popup", &ds.btnDrawer, "Drawer", &ds.btnTerminal, "Terminal+", &ds.btnCalendar, "Calendar+", &ds.btnTable, "Table+", &ds.btnEditor, "Editor+", &ds.btnNodes, "Nodes+", &ds.btnTheme, "Theme/Anim", &ds.btnAnimate, "Compute/Haptics"))
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, fmt.Sprintf("5b · WebView — bridge queue: %d (Back/Forward are boundary-safe)", ds.WebView.QueueDepth()), func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+					layout.Rigid(material.Button(mth, &ds.btnWebBack, "< Back").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnWebFwd, "Forward >").Layout),
+					layout.Rigid(material.Button(mth, &ds.btnWebReload, "Reload").Layout),
+					layout.Rigid(material.Caption(mth, "  Embedded WebView bridge; navigation is logged by the Engine.").Layout),
+				)
+			})
+		},
+		func(gtx layout.Context) layout.Dimensions {
+			return ds.renderPanel(gtx, mth, th, "6 · System & Tray — same actions as the taskbar tray menu (bottom-right)", btnRow(mth,
+				&ds.btnTrayMute, "Mute DSP", &ds.btnTrayMesh, "Mesh On/Off", &ds.btnTrayRestart, "Restart Loop", &ds.btnTrayQuit, "Quit Servers"))
+		},
 	}
 
-	if ds.btnUndoStack.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Undo Stack", Body: "Multi-user history ledger reversed cleanly."}
-		ds.StatusMessage = "Kernel Ledger: UndoStack operation reversed"
-	}
-	if ds.btnClipboard.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Clipboard Sync", Body: "P2P Clipboard shared memory buffer synchronized."}
-		ds.StatusMessage = "Kernel: Clipboard synchronized across mesh"
-	}
-	if ds.btnTimeMachine.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Time Machine", Body: "Immutable ledger commit snapshot captured."}
-		ds.StatusMessage = "Kernel Ledger: TimeMachine snapshot saved"
-	}
-	if ds.btnSearch.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Omni Search", Body: "Global mesh query executed with zero latency."}
-		ds.StatusMessage = "Search: Global mesh query executed"
-	}
-	if ds.btnPermissions.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Permissions", Body: "RBAC security token validated across distributed peers."}
-		ds.StatusMessage = "Security: RBAC Token validated"
-	}
-
-	if ds.btnMeshNode.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Mesh Node", Body: "Peer-to-peer data mesh route established."}
-		ds.StatusMessage = "Network: MeshNode route active"
-	}
-	if ds.btnDiscovery.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "P2P Discovery", Body: "LAN & WAN peer discovery broadcasting heartbeat."}
-		ds.StatusMessage = "Network: Peer discovery broadcasted"
-	}
-	if ds.btnAssetStream.Clicked(gtx) {
-		ds.popup = Popup{Visible: true, Title: "Asset Stream", Body: "Real-time binary asset stream chunked & routed."}
-		ds.StatusMessage = "Network: Asset stream chunk routed"
-	}
-
-	// 3. Tooltip Triggers on Hover
-	if ds.btnAudioGraph.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[AudioGraph] Central DSP graph running native Go & JUCE primitives.", X: 120, Y: 120}
-	} else if ds.btnSynthesizer.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[OmniSynthesizer] Multi-voice polyphonic synthesizer with sine waveform renderer.", X: 120, Y: 120}
-	} else if ds.btnFilter.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[BiquadFilter] Digital biquad filter with lowpass, highpass, and bandpass modes.", X: 120, Y: 120}
-	} else if ds.btnGain.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[OmniGain] Real-time volume scaling with thread-safe GainChanged signals.", X: 120, Y: 120}
-	} else if ds.btnMasterClock.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[MasterClock] High-priority temporal clock firing 16th note steps and quarter beats.", X: 120, Y: 120}
-	} else if ds.btnVolUp.Hovered() || ds.btnVolDown.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Volume Control] Calibrate master audio gain multiplier.", X: 120, Y: 140}
-	} else if ds.btnBpmUp.Hovered() || ds.btnBpmDown.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Tempo Control] Adjust MasterClock beats per minute (BPM).", X: 120, Y: 140}
-	} else if ds.btnPolyToggle.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Polyphony Toggle] Cycle synthesizer polyphonic voice pool size (4, 8, 16).", X: 120, Y: 140}
-	} else if ds.btnUndoStack.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[UndoStack] Transaction ledger tracking state changes for instant rollbacks.", X: 120, Y: 180}
-	} else if ds.btnClipboard.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Clipboard] P2P shared memory clipboard with cryptographically signed payloads.", X: 120, Y: 180}
-	} else if ds.btnTimeMachine.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[TimeMachine] Distributed ledger snapshotting system for time-travel state recovery.", X: 120, Y: 180}
-	} else if ds.btnSearch.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[OmniSearch] Instant global index search querying across peers and local state.", X: 120, Y: 180}
-	} else if ds.btnPermissions.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Permissions] Granular capability-based access control manager.", X: 120, Y: 180}
-	} else if ds.btnMeshNode.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[MeshNode] High-throughput peer-to-peer data networking node.", X: 120, Y: 240}
-	} else if ds.btnDiscovery.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Discovery] Autonomous peer discovery via UDP multicast and mesh telemetry.", X: 120, Y: 240}
-	} else if ds.btnAssetStream.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[AssetStream] High-speed streaming engine for PCM audio, textures, and models.", X: 120, Y: 240}
-	} else if ds.btnDialog.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Dialog] Native modal dialog widget with backdrop scrim and actions.", X: 120, Y: 300}
-	} else if ds.btnPopup.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Popup] Non-modal transient popup card for lightweight feedback.", X: 120, Y: 300}
-	} else if ds.btnDrawer.Hovered() {
-		ds.tooltip = ToolTip{Visible: true, Text: "[Drawer] Slide-out navigation drawer with custom child views.", X: 120, Y: 300}
-	} else {
-		ds.tooltip.Visible = false
-	}
-
-	// 4. Layout Rendering: Unified Single Page
 	return layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Vertical, Spacing: layout.SpaceEvenly}.Layout(gtx,
-					// Header & Status Line
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								h := material.H6(mth, "BQt Autonomous Unified Control Dashboard")
-								h.Color = th.Text
-								return h.Layout(gtx)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								st := material.Caption(mth, "Status: "+ds.StatusMessage)
-								st.Color = th.Primary
-								return st.Layout(gtx)
-							}),
-						)
-					}),
-
-					// Section 1: Core Audio DSP Engine (High Priority Actions)
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return ds.renderPanel(gtx, mth, th, "Core Audio / DSP Engine (High Priority Actions)", func(gtx layout.Context) layout.Dimensions {
-							return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceBetween}.Layout(gtx,
-								layout.Rigid(material.Button(mth, &ds.btnAudioGraph, "OmniAudioGraph").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnSynthesizer, "OmniSynthesizer").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnFilter, "Biquad Filter").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnGain, "OmniGain").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnMasterClock, "Master Clock").Layout),
-							)
-						})
-					}),
-
-					// Section 1b: Live Interactive Parameter Adjustments
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return ds.renderPanel(gtx, mth, th, "Live Engine Parameter Controls", func(gtx layout.Context) layout.Dimensions {
-							return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceEvenly, Alignment: layout.Middle}.Layout(gtx,
-								// Volume controls
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-										layout.Rigid(material.Caption(mth, fmt.Sprintf("Vol: %.0f%% ", ds.VolumeLevel*100)).Layout),
-										layout.Rigid(material.Button(mth, &ds.btnVolDown, "-").Layout),
-										layout.Rigid(material.Button(mth, &ds.btnVolUp, "+").Layout),
-									)
-								}),
-								// BPM controls
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-										layout.Rigid(material.Caption(mth, fmt.Sprintf("BPM: %.0f ", ds.ClockBpm)).Layout),
-										layout.Rigid(material.Button(mth, &ds.btnBpmDown, "-").Layout),
-										layout.Rigid(material.Button(mth, &ds.btnBpmUp, "+").Layout),
-									)
-								}),
-								// Polyphony toggle
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return material.Button(mth, &ds.btnPolyToggle, fmt.Sprintf("Voices: %d", ds.Polyphony)).Layout(gtx)
-								}),
-							)
-						})
-					}),
-
-					// Section 2: Real-time Waveform Scope
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						if ds.synthWidget != nil {
-							return layout.Stack{}.Layout(gtx, layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-								gtx.Constraints.Max.Y = 90
-								gtx.Constraints.Min.Y = 90
-								return ds.synthWidget.Layout(gtx)
-							}))
-						}
-						return layout.Dimensions{}
-					}),
-
-					// Section 3: Distributed Kernel & Ledger (High Priority)
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return ds.renderPanel(gtx, mth, th, "Distributed Kernel & Ledger Subsystems", func(gtx layout.Context) layout.Dimensions {
-							return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceBetween}.Layout(gtx,
-								layout.Rigid(material.Button(mth, &ds.btnUndoStack, "Undo Stack").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnClipboard, "Clipboard Sync").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnTimeMachine, "Time Machine").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnSearch, "Global Search").Layout),
-								layout.Rigid(material.Button(mth, &ds.btnPermissions, "Permissions").Layout),
-							)
-						})
-					}),
-
-					// Section 4: Networking & UI Interop Surfaces
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceBetween}.Layout(gtx,
-							layout.Flexed(0.5, func(gtx layout.Context) layout.Dimensions {
-								return ds.renderPanel(gtx, mth, th, "Mesh Network & Discovery", func(gtx layout.Context) layout.Dimensions {
-									return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceEvenly}.Layout(gtx,
-										layout.Rigid(material.Button(mth, &ds.btnMeshNode, "Mesh Node").Layout),
-										layout.Rigid(material.Button(mth, &ds.btnDiscovery, "Discovery").Layout),
-										layout.Rigid(material.Button(mth, &ds.btnAssetStream, "Stream").Layout),
-									)
-								})
-							}),
-							layout.Flexed(0.5, func(gtx layout.Context) layout.Dimensions {
-								return ds.renderPanel(gtx, mth, th, "UI Interop & System Surfaces", func(gtx layout.Context) layout.Dimensions {
-									return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceEvenly}.Layout(gtx,
-										layout.Rigid(material.Button(mth, &ds.btnDialog, "Dialog").Layout),
-										layout.Rigid(material.Button(mth, &ds.btnPopup, "Popup").Layout),
-										layout.Rigid(material.Button(mth, &ds.btnDrawer, "Drawer").Layout),
-									)
-								})
-							}),
-						)
-					}),
-				)
+				return material.List(mth, &ds.list).Layout(gtx, len(sections), func(gtx layout.Context, i int) layout.Dimensions {
+					return layout.Inset{Bottom: unit.Dp(8)}.Layout(gtx, sections[i])
+				})
 			})
 		}),
-
-		// Modal overlays
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 			dims, _ := ds.dialog.Layout(gtx, th)
 			return dims
 		}),
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions { return ds.popup.Layout(gtx, th) }),
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return ds.popup.Layout(gtx, th)
+			return ds.drawer.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
+				return material.Body1(mth, "Navigation Drawer Content — all sections live on the main page; this drawer is a widget demo.").Layout(gtx)
+			})
 		}),
-		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			dummyChild := func(gtx layout.Context) layout.Dimensions {
-				return material.Body1(mth, "Navigation Drawer Content").Layout(gtx)
-			}
-			return ds.drawer.Layout(gtx, th, dummyChild)
-		}),
-		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-			return ds.tooltip.Layout(gtx, th)
-		}),
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions { return ds.tooltip.Layout(gtx, th) }),
 	)
 }
 
 func (ds *DemoSurface) renderPanel(gtx layout.Context, mth *material.Theme, th theme.Theme, title string, content layout.Widget) layout.Dimensions {
 	cardRect := image.Rect(0, 0, gtx.Constraints.Max.X, gtx.Constraints.Min.Y)
 	paint.FillShape(gtx.Ops, color.NRGBA{R: 25, G: 28, B: 38, A: 200}, clip.Rect(cardRect).Op())
-
 	return layout.UniformInset(unit.Dp(6)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {

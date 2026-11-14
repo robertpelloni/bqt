@@ -35,14 +35,47 @@ func NewEngine() *Engine {
 		GetEventLoop().Stop()
 		go GetEventLoop().Run()
 	}
+	// Previously nil: tray Mute/Disconnect flipped local booleans only.
+	shell.Tray.OnMuteDSP = func() {
+		log.Println("BQt Shell Tray: Audio DSP mute toggled (dashboard System section mirrors this).")
+	}
+	shell.Tray.OnDisconnectMesh = func() {
+		log.Println("BQt Shell Tray: P2P mesh connect/disconnect toggled. MeshNode itself keeps running; see HANDOFF known limits.")
+	}
 
-	return &Engine{
+	eng := &Engine{
 		shell: shell,
 		login: &widgets.LoginView{},
 		demo:  widgets.NewDemoSurface(),
 		wm:    GetWindowManager(),
 		th:    theme.GetTheme(theme.Cyberpunk),
 	}
+	// Dashboard System section drives the same tray actions as the taskbar.
+	eng.demo.OnSystemAction = func(action string) {
+		if shell.Tray == nil {
+			return
+		}
+		shell.Tray.MenuVisible = true
+		switch action {
+		case "mute":
+			if shell.Tray.OnMuteDSP != nil {
+				shell.Tray.OnMuteDSP()
+			}
+		case "mesh":
+			if shell.Tray.OnDisconnectMesh != nil {
+				shell.Tray.OnDisconnectMesh()
+			}
+		case "restart":
+			if shell.Tray.OnRestartEventLoop != nil {
+				shell.Tray.OnRestartEventLoop()
+			}
+		case "quit":
+			if shell.Tray.OnQuitServer != nil {
+				shell.Tray.OnQuitServer()
+			}
+		}
+	}
+	return eng
 }
 
 // Run now opens a real Gio window/frame loop so the current BQt Go baseline

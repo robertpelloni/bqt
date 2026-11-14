@@ -112,3 +112,10 @@
 - [x] Verify and test native Go `internal/data` PakManager archive mounting and ImageProvider VFS retrieval.
 - [ ] Implement embedded OS specific logic for `bobfilez` desktop instances.
 - [ ] Connect `bobfilez` web deployment bindings to the `ShellBridge` API.
+
+## Phase 5 update (v1.2.53)
+- [x] Single scrollable dashboard covering all internal/ subsystems with tooltips; WebView panel rendered; tray mute/mesh wired; System section mirrors tray.
+- [ ] Native OS system-tray icon (current tray is in-window taskbar only; no systray dependency).
+- [ ] Wire VoiceEngine STT dispatch + cluster-DSP offload timeout indicator.
+- [ ] Start Menu is a stub label - populate or remove.
+
